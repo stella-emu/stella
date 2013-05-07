@@ -502,8 +502,8 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
-                            bool newrom)
+string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
+                              bool newrom)
 {
   // Do a little error checking; it shouldn't be necessary
   if(myConsole) deleteConsole();
@@ -529,7 +529,18 @@ bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   // Create an instance of the 2600 game console
   ostringstream buf;
   string type, id;
-  myConsole = openConsole(myRomFile, myRomMD5, type, id);
+  try
+  {
+    myConsole = openConsole(myRomFile, myRomMD5, type, id);
+  }
+  catch(const char* err_msg)
+  {
+    myConsole = 0;
+    buf << "ERROR: Couldn't create console (" << err_msg << ")";
+    logMessage(buf.str(), 0);
+    return buf.str();
+  }
+
   if(myConsole)
   {
   #ifdef DEBUGGER_SUPPORT
@@ -554,7 +565,7 @@ bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     {
       logMessage("ERROR: Couldn't create framebuffer for console", 0);
       myEventHandler->reset(EventHandler::S_LAUNCHER);
-      return false;
+      return "ERROR: Couldn't create framebuffer for console";
     }
 
     if(showmessage)
@@ -582,15 +593,8 @@ bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       myEventHandler->handleEvent(Event::ConsoleSelect, 1);
     if(mySettings->getBool("holdbutton0"))
       myEventHandler->handleEvent(Event::JoystickZeroFire, 1);
-
-    return true;
   }
-  else
-  {
-    buf << "ERROR: Couldn't create console for " << myRomFile.getShortPath() << endl;
-    logMessage(buf.str(), 0);
-    return false;
-  }
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -623,7 +627,7 @@ void OSystem::deleteConsole()
 bool OSystem::reloadConsole()
 {
   deleteConsole();
-  return createConsole(myRomFile, myRomMD5, false);
+  return createConsole(myRomFile, myRomMD5, false) == EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -654,15 +658,20 @@ bool OSystem::createLauncher(const string& startdir)
 string OSystem::getROMInfo(const FilesystemNode& romfile)
 {
   string md5, type, id, result = "";
-  Console* console = openConsole(romfile, md5, type, id);
-  if(console)
+  Console* console = 0;
+  try
   {
-    result = getROMInfo(console);
-    delete console;
+    console = openConsole(romfile, md5, type, id);
   }
-  else
-    result = "ERROR: Couldn't get ROM info for " + romfile.getShortPath() + " ...";
+  catch(const char* err_msg)
+  {
+    ostringstream buf;
+    buf << "ERROR: Couldn't get ROM info (" << err_msg << ")";
+    return buf.str();
+  }
 
+  result = getROMInfo(console);
+  delete console;
   return result;
 }
 
@@ -746,12 +755,6 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
     if(cart)
       console = new Console(this, cart, props);
   }
-  else
-  {
-    ostringstream buf;
-    buf << "ERROR: Couldn't open \'" << romfile.getShortPath() << "\'" << endl;
-    logMessage(buf.str(), 0);
-  }
 
   // Free the image since we don't need it any longer
   if(image != 0 && size > 0)
@@ -769,7 +772,7 @@ uInt8* OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
   // contain a valid name
 
   uInt8* image = 0;
-  if(!rom.read(image, size))
+  if((size = rom.read(image)) == 0)
   {
     delete[] image;
     return (uInt8*) 0;

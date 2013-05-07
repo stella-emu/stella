@@ -87,22 +87,38 @@ string ZipHandler::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ZipHandler::decompress(uInt8*& image, uInt32& length)
+uInt32 ZipHandler::decompress(uInt8*& image)
 {
+  static const char* zip_error_s[] = {
+    "ZIPERR_NONE",
+    "ZIPERR_OUT_OF_MEMORY",
+    "ZIPERR_FILE_ERROR",
+    "ZIPERR_BAD_SIGNATURE",
+    "ZIPERR_DECOMPRESS_ERROR",
+    "ZIPERR_FILE_TRUNCATED",
+    "ZIPERR_FILE_CORRUPT",
+    "ZIPERR_UNSUPPORTED",
+    "ZIPERR_BUFFER_TOO_SMALL"
+  };
+
   if(myZip)
   {
-    length = myZip->header.uncompressed_length;
+    uInt32 length = myZip->header.uncompressed_length;
     image = new uInt8[length];
-    if(zip_file_decompress(myZip, image, length) != ZIPERR_NONE)
+
+    ZipHandler::zip_error err = zip_file_decompress(myZip, image, length);
+    if(err == ZIPERR_NONE)
+      return length;
+    else
     {
       delete[] image;  image = 0;
       length = 0;
-      return false;
+
+      throw zip_error_s[err];
     }
-    return true;
   }
   else
-    return false;
+    throw "Invalid ZIP archive";
 }
 
 /*-------------------------------------------------

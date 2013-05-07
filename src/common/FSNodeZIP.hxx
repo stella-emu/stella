@@ -51,15 +51,15 @@ class FilesystemNodeZIP : public AbstractFSNode
      */
     FilesystemNodeZIP(const string& path);
 
-    bool exists() const      { return _realNode->exists();     }
+    bool exists() const      { return _realNode && _realNode->exists(); }
     const string& getName() const { return _virtualFile; }
     const string& getPath() const { return _path;        }
     string getShortPath() const   { return _shortPath;   }
     bool isDirectory() const { return _numFiles > 1;           }
     bool isFile() const      { return _numFiles == 1;          }
-    bool isReadable() const  { return _realNode->isReadable(); }
+    bool isReadable() const  { return _realNode && _realNode->isReadable(); }
     bool isWritable() const  { return false; }
-    bool isAbsolute() const  { return _realNode->isAbsolute(); }
+    bool isAbsolute() const  { return _realNode && _realNode->isAbsolute(); }
 
     //////////////////////////////////////////////////////////
     // For now, ZIP files cannot be modified in any way
@@ -70,7 +70,7 @@ class FilesystemNodeZIP : public AbstractFSNode
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
     AbstractFSNode* getParent() const;
 
-    bool read(uInt8*& image, uInt32& size) const;
+    uInt32 read(uInt8*& image) const;
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualfile,

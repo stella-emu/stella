@@ -351,8 +351,14 @@ string MD5(const FilesystemNode& node)
 {
   uInt8* image = 0;
   uInt32 size = 0;
-  if(!node.read(image, size))
+  try
+  {
+    size = node.read(image);
+  }
+  catch(...)
+  {
     return EmptyString;
+  }
 
   const string& md5 = MD5(image, size);
   delete[] image;

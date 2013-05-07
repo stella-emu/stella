@@ -132,10 +132,7 @@ int main(int argc, char* argv[])
   {
     theOSystem->logMessage("Showing output from 'rominfo' ...", 2);
     FilesystemNode romnode(romfile);
-    if(argc > 1 && romnode.exists() && romnode.isFile())
-      theOSystem->logMessage(theOSystem->getROMInfo(romnode), 0);
-    else
-      theOSystem->logMessage("ERROR: ROM doesn't exist", 0);
+    theOSystem->logMessage(theOSystem->getROMInfo(romnode), 0);
 
     return Cleanup();
   }
@@ -175,8 +172,12 @@ int main(int argc, char* argv[])
       return Cleanup();
     }
   }
-  else if(theOSystem->createConsole(romnode))
+  else
   {
+    const string& result = theOSystem->createConsole(romnode);
+    if(result != EmptyString)
+      return Cleanup();
+
     if(theOSystem->settings().getBool("takesnapshot"))
     {
       theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...", 2);
@@ -201,8 +202,6 @@ int main(int argc, char* argv[])
       theOSystem->eventHandler().enterDebugMode();
 #endif
   }
-  else
-    return Cleanup();
 
   // Swallow any spurious events in the queue
   // These are normally caused by joystick/mouse jitter

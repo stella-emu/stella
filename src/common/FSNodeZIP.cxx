@@ -133,10 +133,10 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeZIP::read(uInt8*& image, uInt32& size) const
+uInt32 FilesystemNodeZIP::read(uInt8*& image) const
 {
   if(!_isValid)
-    return false;
+    throw "ZIP file not found/readable";
 
   ZipHandler& zip = OSystem::zip(_zipFile);
 
@@ -144,7 +144,7 @@ bool FilesystemNodeZIP::read(uInt8*& image, uInt32& size) const
   while(zip.hasNext() && !found)
     found = zip.next() == _virtualFile;
 
-  return found ? zip.decompress(image, size) : false;
+  return found ? zip.decompress(image) : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

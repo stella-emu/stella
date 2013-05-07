@@ -154,11 +154,17 @@ bool FilesystemNode::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::read(uInt8*& image, uInt32& size) const
+uInt32 FilesystemNode::read(uInt8*& image) const
 {
+  uInt32 size = 0;
+
   // First let the private subclass attempt to open the file
-  if(_realNode->read(image, size))
-    return true;
+  if((size = _realNode->read(image)) > 0)
+    return size;
+
+  // File must actually exist
+  if(!(exists() && isReadable()))
+    throw "File not found/readable";
 
   // Otherwise, assume the file is either gzip'ed or not compressed at all
   gzFile f = gzopen(getPath().c_str(), "rb");
@@ -168,9 +174,15 @@ bool FilesystemNode::read(uInt8*& image, uInt32& size) const
     size = gzread(f, image, 512 * 1024);
     gzclose(f);
 
-    return true;
+    if(size == 0)
+    {
+      delete[] image;  image = 0;
+      throw "Zero-byte file";
+    }
+    return size;
   }
-  return false;
+  else
+    throw "ZLIB open/read error";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

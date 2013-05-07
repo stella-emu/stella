@@ -377,10 +377,10 @@ class OSystem
       @param md5     The MD5sum of the ROM
       @param newrom  Whether this is a new ROM, or a reload of current one
 
-      @return  True on successful creation, otherwise false
+      @return  String indicating any error message (EmptyString for no errors)
     */
-    bool createConsole(const FilesystemNode& rom, const string& md5 = "",
-                       bool newrom = true);
+    string createConsole(const FilesystemNode& rom, const string& md5 = "",
+                         bool newrom = true);
 
     /**
       Deletes the currently defined console, if it exists.

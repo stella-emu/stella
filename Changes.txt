@@ -41,7 +41,8 @@
         a label in the case where it occurred in the middle of the data.
 
   * Fixed regression in handling ZIP files (as compared to version 3.7.5)
-    created with newer versions of the ZIP program.
+    created with newer versions of the ZIP program.  Related to this, added
+    better error messages for invalid/missing/unreadable ROM files.
 
   * Fixed bug in Linux/OSX versions when starting Stella for the first
     time; it was previously creating mislabeled directories to store
@@ -62,7 +63,7 @@
     menus in the UI; they can now be navigated more fully by the keyboard
     and mouse.
 
-  * Updated included PNG library to latest stable version.
+  * Updated included PNG and ZLIB libraries to latest stable version.
 
 -Have fun!
 

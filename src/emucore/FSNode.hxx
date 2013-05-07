@@ -240,10 +240,11 @@ class FilesystemNode
      * @param buffer  The buffer to containing the data
      *                This will be allocated by the method, and must be
      *                freed by the caller.
-     * @param size    Holds the size of the created buffer.
-     * @return  True if the read succeeded, else false for any reason
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
      */
-    virtual bool read(uInt8*& buffer, uInt32& size) const;
+    virtual uInt32 read(uInt8*& buffer) const;
 
     // TODO - this function is deprecated, and will be removed soon ...
     /**
@@ -389,10 +390,11 @@ class AbstractFSNode
      * @param buffer  The buffer to containing the data
      *                This will be allocated by the method, and must be
      *                freed by the caller.
-     * @param size    Holds the size of the created buffer.
-     * @return  True if the read succeeded, else false for any reason
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
      */
-    virtual bool read(uInt8*& buffer, uInt32& size) const { return false; }
+    virtual uInt32 read(uInt8*& buffer) const { return 0; }
 
     /**
      * The parent node of this directory.

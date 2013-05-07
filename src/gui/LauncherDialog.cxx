@@ -523,15 +523,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           string extension;
           if(LauncherFilterDialog::isValidRomName(romnode, extension))
           {
-            if(instance().createConsole(romnode, myGameList->md5(item)))
+            const string& result =
+              instance().createConsole(romnode, myGameList->md5(item));
+            if(result == EmptyString)
               instance().settings().setString("lastrom", myList->getSelectedString());
             else
-              instance().frameBuffer().showMessage(
-                  "Error creating console (check ROM file/bankswitch scheme)",
-                  kMiddleCenter, true);
+              instance().frameBuffer().showMessage(result, kMiddleCenter, true);
           }
           else
-            instance().frameBuffer().showMessage("Not a valid ROM file",
+            instance().frameBuffer().showMessage("Not a valid ROM filename",
                                                  kMiddleCenter, true);
         }
       }
