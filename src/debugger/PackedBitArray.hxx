@@ -38,9 +38,6 @@ class PackedBitArray
     void toggle(uInt32 bit);
 
   private:
-    // number of bits in the array:
-    uInt32 size;
-
     // number of unsigned ints (size/wordSize):
     uInt32 words;
 

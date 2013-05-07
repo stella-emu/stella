@@ -37,8 +37,7 @@
 StateManager::StateManager(OSystem* osystem)
   : myOSystem(osystem),
     myCurrentSlot(0),
-    myActiveMode(kOffMode),
-    myFrameCounter(0)
+    myActiveMode(kOffMode)
 {
   reset();
 }

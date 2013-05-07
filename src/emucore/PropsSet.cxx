@@ -32,8 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet(OSystem* osystem)
-  : myOSystem(osystem),
-    mySize(0)
+  : myOSystem(osystem)
 {
   load(myOSystem->propertiesFile());
 }

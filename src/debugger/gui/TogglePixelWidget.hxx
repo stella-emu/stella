@@ -43,9 +43,8 @@ class TogglePixelWidget : public ToggleWidget
     void drawWidget(bool hilite);
 
   private:
-    int          _pixelColor;
-    unsigned int _numBits;
-    bool         _swapBits;
+    int  _pixelColor;
+    bool _swapBits;
 };
 
 #endif

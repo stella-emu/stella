@@ -132,9 +132,6 @@ class StateManager
     // Whether the manager is in record or playback mode
     Mode myActiveMode;
 
-    // Current frame count (write full state every 60 frames)
-    int myFrameCounter;
-
     // MD5 of the currently active ROM (either in movie or rewind mode)
     string myMD5;
 

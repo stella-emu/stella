@@ -53,7 +53,6 @@ class GameInfoDialog : public Dialog, public CommandSender
 
   private:
     TabWidget* myTab;
-    ButtonWidget* myCancelButton;
 
     // Cartridge properties
     EditTextWidget*   myName;

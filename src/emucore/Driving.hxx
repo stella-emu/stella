@@ -88,7 +88,7 @@ class Driving : public Controller
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myCWEvent, myCCWEvent, myFireEvent,
-                myXAxisValue, myYAxisValue, myAxisMouseMotion;
+                myXAxisValue, myYAxisValue;
 
     // Controller to emulate in normal mouse axis mode
     int myControlID;

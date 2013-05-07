@@ -22,8 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PackedBitArray::PackedBitArray(uInt32 length)
-  : size(length),
-    words(length / wordSize + 1)
+  : words(length / wordSize + 1)
 {
   bits = new uInt32[ words ];
 

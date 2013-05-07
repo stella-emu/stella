@@ -39,9 +39,6 @@ class CommandDialog : public Dialog
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-  private:
-    int mySelectedItem;
-
     enum {
       kSelectCmd     = 'Csel',
       kResetCmd      = 'Cres',

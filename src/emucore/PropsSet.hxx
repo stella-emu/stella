@@ -134,9 +134,6 @@ class PropertiesSet
     // The properties temporarily inserted by the program, which should
     // be discarded when the program ends
     PropsList myTempProps;
-
-    // The size of the properties bst (i.e. the number of properties in it)
-    uInt32 mySize;
 };
 
 #endif
