@@ -467,6 +467,7 @@ SDLmain.lib
     <ClInclude Include="..\common\tv_filters\atari_ntsc.h" />
     <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.h" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
+    <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx" />
