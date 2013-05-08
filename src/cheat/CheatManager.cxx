@@ -300,7 +300,7 @@ void CheatManager::loadCheats(const string& md5sum)
   // (and remove the key from the settings, so they won't get set again)
   const string& cheats = myOSystem->settings().getString("cheat");
   if(cheats != "")
-    myOSystem->settings().setString("cheat", "");
+    myOSystem->settings().setValue("cheat", "");
 
   CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
   if(iter == myCheatMap.end() && cheats == "")

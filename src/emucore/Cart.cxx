@@ -262,7 +262,7 @@ string Cartridge::createFromMultiCart(const uInt8*& image, uInt32& size,
   id = buf.str();
 
   // Move to the next game the next time this ROM is loaded
-  settings.setInt("romloadcount", (i+1)%numroms);
+  settings.setValue("romloadcount", (i+1)%numroms);
 
   if(size <= 2048)       return "2K";
   else if(size == 4096)  return "4K";

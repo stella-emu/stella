@@ -202,23 +202,23 @@ void GlobalPropsDialog::saveConfig()
 
   s = myBSType->getSelectedTag();
   if(s == "AUTO") s = "";
-  settings.setString("bs", s);
+  settings.setValue("bs", s);
 
   s = myLeftDiff->getSelectedTag();
   if(s == "DEFAULT") s = "";
-  settings.setString("ld", s);
+  settings.setValue("ld", s);
 
   s = myRightDiff->getSelectedTag();
   if(s == "DEFAULT") s = "";
-  settings.setString("rd", s);
+  settings.setValue("rd", s);
 
   s = myTVType->getSelectedTag();
   if(s == "DEFAULT") s = "";
-  settings.setString("tv", s);
+  settings.setValue("tv", s);
 
-  settings.setBool("holdselect", myHoldSelect->getState());
-  settings.setBool("holdreset", myHoldReset->getState());
-  settings.setBool("holdbutton0", myHoldButton0->getState());
+  settings.setValue("holdselect", myHoldSelect->getState());
+  settings.setValue("holdreset", myHoldReset->getState());
+  settings.setValue("holdbutton0", myHoldButton0->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

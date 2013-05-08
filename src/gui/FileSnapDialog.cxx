@@ -213,17 +213,17 @@ void FileSnapDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::saveConfig()
 {
-  instance().settings().setString("romdir", myRomPath->getEditString());
-  instance().settings().setString("snapsavedir", mySnapSavePath->getEditString());
-  instance().settings().setString("snaploaddir", mySnapLoadPath->getEditString());
-  instance().settings().setString("cheatfile", myCheatFile->getEditString());
-  instance().settings().setString("palettefile", myPaletteFile->getEditString());
-  instance().settings().setString("propsfile", myPropsFile->getEditString());
-  instance().settings().setString("statedir", myStatePath->getEditString());
-  instance().settings().setString("nvramdir", myNVRamPath->getEditString());
-  instance().settings().setBool("sssingle", mySnapSingle->getState());
-  instance().settings().setBool("ss1x", mySnap1x->getState());
-  instance().settings().setString("ssinterval", mySnapInterval->getSelectedTag());
+  instance().settings().setValue("romdir", myRomPath->getEditString());
+  instance().settings().setValue("snapsavedir", mySnapSavePath->getEditString());
+  instance().settings().setValue("snaploaddir", mySnapLoadPath->getEditString());
+  instance().settings().setValue("cheatfile", myCheatFile->getEditString());
+  instance().settings().setValue("palettefile", myPaletteFile->getEditString());
+  instance().settings().setValue("propsfile", myPropsFile->getEditString());
+  instance().settings().setValue("statedir", myStatePath->getEditString());
+  instance().settings().setValue("nvramdir", myNVRamPath->getEditString());
+  instance().settings().setValue("sssingle", mySnapSingle->getState());
+  instance().settings().setValue("ss1x", mySnap1x->getState());
+  instance().settings().setValue("ssinterval", mySnapInterval->getSelectedTag());
 
   // Flush changes to disk and inform the OSystem
   instance().saveConfig();

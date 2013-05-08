@@ -155,14 +155,14 @@ void AudioDialog::saveConfig()
   Settings& settings = instance().settings();
 
   // Volume
-  settings.setInt("volume", myVolumeSlider->getValue());
+  settings.setValue("volume", myVolumeSlider->getValue());
   instance().sound().setVolume(myVolumeSlider->getValue());
 
   // Fragsize
-  settings.setString("fragsize", myFragsizePopup->getSelectedTag());
+  settings.setValue("fragsize", myFragsizePopup->getSelectedTag());
 
   // Output frequency
-  settings.setString("freq", myFreqPopup->getSelectedTag());
+  settings.setValue("freq", myFreqPopup->getSelectedTag());
 
   // Enable/disable sound (requires a restart to take effect)
   instance().sound().setEnabled(mySoundEnableCheckbox->getState());

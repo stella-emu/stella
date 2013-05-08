@@ -174,7 +174,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       else if(rmb == "pcaddr")
       {
         DiStella::settings.show_addresses = !DiStella::settings.show_addresses;
-        instance().settings().setBool("dis.showaddr",
+        instance().settings().setValue("dis.showaddr",
             DiStella::settings.show_addresses);
         invalidate();
       }
@@ -183,19 +183,19 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         if(DiStella::settings.gfx_format == kBASE_16)
         {
           DiStella::settings.gfx_format = kBASE_2;
-          instance().settings().setString("dis.gfxformat", "2");
+          instance().settings().setValue("dis.gfxformat", "2");
         }
         else
         {
           DiStella::settings.gfx_format = kBASE_16;
-          instance().settings().setString("dis.gfxformat", "16");
+          instance().settings().setValue("dis.gfxformat", "16");
         }
         invalidate();
       }
       else if(rmb == "relocate")
       {
         DiStella::settings.rflag = !DiStella::settings.rflag;
-        instance().settings().setBool("dis.relocate",
+        instance().settings().setValue("dis.relocate",
             DiStella::settings.rflag);
         invalidate();
       }
@@ -207,7 +207,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kResolveDataChanged:
-      instance().settings().setString("dis.resolvedata", myResolveData->getSelectedTag());
+      instance().settings().setValue("dis.resolvedata", myResolveData->getSelectedTag());
       invalidate();
       loadConfig();
       break;

@@ -166,13 +166,12 @@ Debugger::~Debugger()
 void Debugger::initialize()
 {
   // Get the dialog size
-  int w, h;
-  myOSystem->settings().getSize("debuggerres", w, h);
-  myWidth = BSPF_max(w, 0);
-  myHeight = BSPF_max(h, 0);
+  const GUI::Size& size = myOSystem->settings().getSize("debuggerres");
+  myWidth = BSPF_max(size.w, 0);
+  myHeight = BSPF_max(size.h, 0);
   myWidth = BSPF_max(myWidth, 1080u);
   myHeight = BSPF_max(myHeight, 720u);
-  myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
+  myOSystem->settings().setValue("debuggerres", GUI::Size(myWidth, myHeight));
 
   const GUI::Rect& r = getDialogBounds();
 

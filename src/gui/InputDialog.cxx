@@ -238,32 +238,32 @@ void InputDialog::saveConfig()
 
   // Joystick deadzone
   int deadzone = myDeadzone->getValue();
-  instance().settings().setInt("joydeadzone", deadzone);
+  instance().settings().setValue("joydeadzone", deadzone);
   Joystick::setDeadZone(deadzone);
 
   // Grab mouse	 
-  instance().settings().setBool("grabmouse", myGrabMouse->getState());	 
+  instance().settings().setValue("grabmouse", myGrabMouse->getState());	 
   instance().frameBuffer().setCursorState();
 
   // Paddle speed (digital and mouse)
   int sensitivity = myDPaddleSpeed->getValue();
-  instance().settings().setInt("dsense", sensitivity);
+  instance().settings().setValue("dsense", sensitivity);
   Paddles::setDigitalSensitivity(sensitivity);
   sensitivity = myMPaddleSpeed->getValue();
-  instance().settings().setInt("msense", sensitivity);
+  instance().settings().setValue("msense", sensitivity);
   Paddles::setMouseSensitivity(sensitivity);
 
   // AtariVox serial port
-  instance().settings().setString("avoxport", myAVoxPort->getEditString());
+  instance().settings().setValue("avoxport", myAVoxPort->getEditString());
 
   // Allow all 4 joystick directions
   bool allowall4 = myAllowAll4->getState();
-  instance().settings().setBool("joyallow4", allowall4);
+  instance().settings().setValue("joyallow4", allowall4);
   instance().eventHandler().allowAllDirections(allowall4);
 
   // Use mouse as a controller
   bool usemouse = myMouseControl->getState();
-  instance().settings().setBool("usemouse", usemouse);
+  instance().settings().setValue("usemouse", usemouse);
   instance().eventHandler().setMouseControllerMode(usemouse);
 }
 

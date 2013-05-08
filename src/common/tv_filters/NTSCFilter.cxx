@@ -210,16 +210,16 @@ void NTSCFilter::loadConfig(const Settings& settings)
 void NTSCFilter::saveConfig(Settings& settings) const
 {
   // Save adjustables for custom mode
-  settings.setFloat("tv_hue", myCustomSetup.hue);
-  settings.setFloat("tv_saturation", myCustomSetup.saturation);
-  settings.setFloat("tv_contrast", myCustomSetup.contrast);
-  settings.setFloat("tv_brightness", myCustomSetup.brightness);
-  settings.setFloat("tv_sharpness", myCustomSetup.sharpness);
-  settings.setFloat("tv_gamma", myCustomSetup.gamma);
-  settings.setFloat("tv_resolution", myCustomSetup.resolution);
-  settings.setFloat("tv_artifacts", myCustomSetup.artifacts);
-  settings.setFloat("tv_fringing", myCustomSetup.fringing);
-  settings.setFloat("tv_bleed", myCustomSetup.bleed);
+  settings.setValue("tv_hue", myCustomSetup.hue);
+  settings.setValue("tv_saturation", myCustomSetup.saturation);
+  settings.setValue("tv_contrast", myCustomSetup.contrast);
+  settings.setValue("tv_brightness", myCustomSetup.brightness);
+  settings.setValue("tv_sharpness", myCustomSetup.sharpness);
+  settings.setValue("tv_gamma", myCustomSetup.gamma);
+  settings.setValue("tv_resolution", myCustomSetup.resolution);
+  settings.setValue("tv_artifacts", myCustomSetup.artifacts);
+  settings.setValue("tv_fringing", myCustomSetup.fringing);
+  settings.setValue("tv_bleed", myCustomSetup.bleed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

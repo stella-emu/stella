@@ -357,19 +357,19 @@ void OSystem::setConfigPaths()
   if(s == "") s = myBaseDir + "stella.cht";
   node = FilesystemNode(s);
   myCheatFile = node.getPath();
-  mySettings->setString("cheatfile", node.getShortPath());
+  mySettings->setValue("cheatfile", node.getShortPath());
 
   s = mySettings->getString("palettefile");
   if(s == "") s = myBaseDir + "stella.pal";
   node = FilesystemNode(s);
   myPaletteFile = node.getPath();
-  mySettings->setString("palettefile", node.getShortPath());
+  mySettings->setValue("palettefile", node.getShortPath());
 
   s = mySettings->getString("propsfile");
   if(s == "") s = myBaseDir + "stella.pro";
   node = FilesystemNode(s);
   myPropertiesFile = node.getPath();
-  mySettings->setString("propsfile", node.getShortPath());
+  mySettings->setValue("propsfile", node.getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -477,7 +477,7 @@ fallback:
   {
     logMessage("ERROR: OpenGL mode failed, fallback to software", 0);
     delete myFrameBuffer; myFrameBuffer = NULL;
-    mySettings->setString("video", "soft");
+    mySettings->setValue("video", "soft");
     FBInitStatus newstatus = createFrameBuffer();
     if(newstatus == kSuccess)
     {
@@ -497,7 +497,7 @@ void OSystem::createSound()
   if(!mySound)
     mySound = MediaFactory::createAudio(this);
 #ifndef SOUND_SUPPORT
-  mySettings->setBool("sound", false);
+  mySettings->setValue("sound", false);
 #endif
 }
 
@@ -523,7 +523,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     // Each time a new console is loaded, we simulate a cart removal
     // Some carts need knowledge of this, as they behave differently
     // based on how many power-cycles they've been through since plugged in
-    mySettings->setInt("romloadcount", 0);
+    mySettings->setValue("romloadcount", 0);
   }
 
   // Create an instance of the 2600 game console
@@ -633,7 +633,7 @@ bool OSystem::reloadConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createLauncher(const string& startdir)
 {
-  mySettings->setString("tmpromdir", startdir);
+  mySettings->setValue("tmpromdir", startdir);
   bool status = false;
 
   myEventHandler->reset(EventHandler::S_LAUNCHER);
@@ -829,7 +829,7 @@ void OSystem::validatePath(string& path, const string& setting,
     node.makeDir();
 
   path = node.getPath();
-  mySettings->setString(setting, node.getShortPath());
+  mySettings->setValue(setting, node.getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -982,9 +982,8 @@ bool OSystem::queryVideoHardware()
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size
   // Normally, this wouldn't be set, and we ask SDL directly
-  int w, h;
-  mySettings->getSize("maxres", w, h);
-  if(w <= 0 || h <= 0)
+  const GUI::Size& s = mySettings->getSize("maxres");
+  if(s.w <= 0 || s.h <= 0)
   {
     const SDL_VideoInfo* info = SDL_GetVideoInfo();
     myDesktopWidth  = info->current_w;
@@ -992,8 +991,8 @@ bool OSystem::queryVideoHardware()
   }
   else
   {
-    myDesktopWidth  = BSPF_max(w, 320);
-    myDesktopHeight = BSPF_max(h, 240);
+    myDesktopWidth  = BSPF_max(s.w, 320);
+    myDesktopHeight = BSPF_max(s.h, 240);
   }
 
   // Various parts of the codebase assume a minimum screen size of 320x240

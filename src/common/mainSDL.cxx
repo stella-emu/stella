@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
       Debugger& dbg = theOSystem->debugger();
       int bp = dbg.stringToValue(initBreak);
       dbg.setBreakPoint(bp, true);
-      theOSystem->settings().setString("break", "");
+      theOSystem->settings().setValue("break", "");
     }
 
     if(theOSystem->settings().getBool("debug"))

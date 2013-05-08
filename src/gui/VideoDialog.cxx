@@ -495,31 +495,31 @@ void VideoDialog::loadConfig()
 void VideoDialog::saveConfig()
 {
   // Renderer setting
-  instance().settings().setString("video", myRendererPopup->getSelectedTag());
+  instance().settings().setValue("video", myRendererPopup->getSelectedTag());
 
   // TIA Filter
-  instance().settings().setString("tia_filter", myTIAFilterPopup->getSelectedTag());
+  instance().settings().setValue("tia_filter", myTIAFilterPopup->getSelectedTag());
 
   // TIA Palette
-  instance().settings().setString("palette", myTIAPalettePopup->getSelectedTag());
+  instance().settings().setValue("palette", myTIAPalettePopup->getSelectedTag());
 
   // Fullscreen resolution
-  instance().settings().setString("fullres", myFSResPopup->getSelectedTag());
+  instance().settings().setValue("fullres", myFSResPopup->getSelectedTag());
 
   // Wait between frames
-  instance().settings().setString("timing", myFrameTimingPopup->getSelectedTag());
+  instance().settings().setValue("timing", myFrameTimingPopup->getSelectedTag());
 
   // GL Filter setting
-  instance().settings().setBool("gl_inter",
+  instance().settings().setValue("gl_inter",
     myGLFilterPopup->getSelectedTag() == "linear" ? true : false);
 
   // GL aspect ratio setting (NTSC and PAL)
-  instance().settings().setString("gl_aspectn", myNAspectRatioLabel->getLabel());
-  instance().settings().setString("gl_aspectp", myPAspectRatioLabel->getLabel());
+  instance().settings().setValue("gl_aspectn", myNAspectRatioLabel->getLabel());
+  instance().settings().setValue("gl_aspectp", myPAspectRatioLabel->getLabel());
 
   // Framerate
   int i = myFrameRateSlider->getValue();
-  instance().settings().setInt("framerate", i);
+  instance().settings().setValue("framerate", i);
   if(&instance().console())
   {
     // Make sure auto-frame calculation is only enabled when necessary
@@ -528,30 +528,30 @@ void VideoDialog::saveConfig()
   }
 
   // Fullscreen
-  instance().settings().setString("fullscreen", myFullscreenPopup->getSelectedTag());
+  instance().settings().setValue("fullscreen", myFullscreenPopup->getSelectedTag());
 
   // PAL color-loss effect
-  instance().settings().setBool("colorloss", myColorLossCheckbox->getState());
+  instance().settings().setValue("colorloss", myColorLossCheckbox->getState());
   if(&instance().console())
     instance().console().toggleColorLoss(myColorLossCheckbox->getState());
 
   // GL stretch setting
-  instance().settings().setBool("gl_fsscale", myGLStretchCheckbox->getState());
+  instance().settings().setValue("gl_fsscale", myGLStretchCheckbox->getState());
 
   // Use sync to vertical blank (GL mode only)
-  instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
+  instance().settings().setValue("gl_vsync", myUseVSyncCheckbox->getState());
 
   // Show UI messages
-  instance().settings().setBool("uimessages", myUIMessagesCheckbox->getState());
+  instance().settings().setValue("uimessages", myUIMessagesCheckbox->getState());
 
   // Center window
-  instance().settings().setBool("center", myCenterCheckbox->getState());
+  instance().settings().setValue("center", myCenterCheckbox->getState());
 
   // Fast loading of Supercharger BIOS
-  instance().settings().setBool("fastscbios", myFastSCBiosCheckbox->getState());
+  instance().settings().setValue("fastscbios", myFastSCBiosCheckbox->getState());
 
   // TV Mode
-  instance().settings().setString("tv_filter", myTVMode->getSelectedTag());
+  instance().settings().setValue("tv_filter", myTVMode->getSelectedTag());
 
   // TV Custom adjustables
   NTSCFilter::Adjustable adj;
@@ -568,8 +568,8 @@ void VideoDialog::saveConfig()
   instance().frameBuffer().ntsc().setCustomAdjustables(adj);
 
   // TV scanline intensity and interpolation
-  instance().settings().setString("tv_scanlines", myTVScanIntenseLabel->getLabel());
-  instance().settings().setBool("tv_scaninter", myTVScanInterpolate->getState());
+  instance().settings().setValue("tv_scanlines", myTVScanIntenseLabel->getLabel());
+  instance().settings().setValue("tv_scaninter", myTVScanInterpolate->getState());
 
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();

@@ -152,7 +152,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
       // Did we get the requested fullscreen state?
       const string& fullscreen = myOSystem->settings().getString("fullscreen");
       if(fullscreen != "-1")
-        myOSystem->settings().setString("fullscreen", fullScreen() ? "1" : "0");
+        myOSystem->settings().setValue("fullscreen", fullScreen() ? "1" : "0");
       setCursorState();
     }
     else
@@ -335,7 +335,7 @@ void FrameBuffer::toggleFrameStats()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showFrameStats(bool enable)
 {
-  myOSystem->settings().setBool("stats", enable);
+  myOSystem->settings().setValue("stats", enable);
   myStatsMsg.enabled = enable;
   refresh();
 }
@@ -533,7 +533,7 @@ void FrameBuffer::setNTSC(NTSCFilter::Preset preset, bool show)
       const string& mode = myNTSCFilter.setPreset(preset);
       buf << "TV filtering (" << mode << " mode)";
     }
-    myOSystem->settings().setInt("tv_filter", (int)preset);
+    myOSystem->settings().setValue("tv_filter", (int)preset);
   }
   else
     buf << "TV filtering not available in software mode";
@@ -551,7 +551,7 @@ void FrameBuffer::setScanlineIntensity(int amount)
     {
       uInt32 intensity = enableScanlines(amount);
       buf << "Scanline intensity at " << intensity  << "%";
-      myOSystem->settings().setInt("tv_scanlines", intensity);
+      myOSystem->settings().setValue("tv_scanlines", intensity);
     }
     else
       buf << "Scanlines only available in TV filtering mode";
@@ -573,7 +573,7 @@ void FrameBuffer::toggleScanlineInterpolation()
       bool enable = !myOSystem->settings().getBool("tv_scaninter");
       enableScanlineInterpolation(enable);
       buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
-      myOSystem->settings().setBool("tv_scaninter", enable);
+      myOSystem->settings().setValue("tv_scaninter", enable);
     }
     else
       buf << "Scanlines only available in TV filtering mode";
@@ -779,7 +779,7 @@ bool FrameBuffer::changeVidMode(int direction)
     // Did we get the requested fullscreen state?
     const string& fullscreen = myOSystem->settings().getString("fullscreen");
     if(fullscreen != "-1")
-      myOSystem->settings().setString("fullscreen", fullScreen() ? "1" : "0");
+      myOSystem->settings().setValue("fullscreen", fullScreen() ? "1" : "0");
     setCursorState();
 
     if(!inUIMode)
@@ -788,7 +788,7 @@ bool FrameBuffer::changeVidMode(int direction)
         showMessage(vidmode.gfxmode.description);
     }
     if(saveModeChange)
-      myOSystem->settings().setString("tia_filter", vidmode.gfxmode.name);
+      myOSystem->settings().setValue("tia_filter", vidmode.gfxmode.name);
 
     refresh();
   }
@@ -826,7 +826,7 @@ void FrameBuffer::setCursorState()
 void FrameBuffer::toggleGrabMouse()
 {
   bool state = myOSystem->settings().getBool("grabmouse");
-  myOSystem->settings().setBool("grabmouse", !state);
+  myOSystem->settings().setValue("grabmouse", !state);
   setCursorState();
 }
 
@@ -1156,15 +1156,14 @@ const FrameBuffer::VideoMode FrameBuffer::
   if(isFullscreen && !BSPF_equalsIgnoreCase(settings.getString("fullres"), "auto"))
   {
     // Only use 'fullres' if it's *bigger* than the requested mode
-    int w, h;
-    settings.getSize("fullres", w, h);
+    const GUI::Size& s = settings.getSize("fullres");
 
-    if(w != -1 && h != -1 && (uInt32)w >= myModeList[myIdx].screen_w &&
-      (uInt32)h >= myModeList[myIdx].screen_h)
+    if(s.w != -1 && s.h != -1 && (uInt32)s.w >= myModeList[myIdx].screen_w &&
+      (uInt32)s.h >= myModeList[myIdx].screen_h)
     {
       VideoMode mode = myModeList[myIdx];
-      mode.screen_w = w;
-      mode.screen_h = h;
+      mode.screen_w = s.w;
+      mode.screen_h = s.h;
       mode.image_x = (mode.screen_w - mode.image_w) >> 1;
       mode.image_y = (mode.screen_h - mode.image_h) >> 1;
 

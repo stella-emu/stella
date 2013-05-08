@@ -469,6 +469,28 @@ void Settings::usage()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Variant& Settings::value(const string& key) const
+{
+  // Try to find the named setting and answer its value
+  int idx = -1;
+  if((idx = getInternalPos(key)) != -1)
+    return myInternalSettings[idx].value;
+  else if((idx = getExternalPos(key)) != -1)
+    return myExternalSettings[idx].value;
+  else
+    return EmptyVariant;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::setValue(const string& key, const Variant& value)
+{
+  if(int idx = getInternalPos(key) != -1)
+    setInternal(key, value, idx);
+  else
+    setExternal(key, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
   // Do a quick scan of the internal settings to see if any have
@@ -519,139 +541,6 @@ void Settings::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setInt(const string& key, const int value)
-{
-  ostringstream stream;
-  stream << value;
-
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, stream.str(), idx);
-  else
-    setExternal(key, stream.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setFloat(const string& key, const float value)
-{
-  ostringstream stream;
-  stream << value;
-
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, stream.str(), idx);
-  else
-    setExternal(key, stream.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setBool(const string& key, const bool value)
-{
-  ostringstream stream;
-  stream << value;
-
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, stream.str(), idx);
-  else
-    setExternal(key, stream.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setString(const string& key, const string& value)
-{
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, value, idx);
-  else
-    setExternal(key, value);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::getSize(const string& key, int& x, int& y) const
-{
-  char c = '\0';
-  x = y = -1;
-  string size = getString(key);
-  istringstream buf(size);
-  buf >> x >> c >> y;
-  if(c != 'x')
-    x = y = -1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::getInt(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return (int) atoi(myInternalSettings[idx].value.c_str());
-  else if((idx = getExternalPos(key)) != -1)
-    return (int) atoi(myExternalSettings[idx].value.c_str());
-  else
-    return -1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float Settings::getFloat(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return (float) atof(myInternalSettings[idx].value.c_str());
-  else if((idx = getExternalPos(key)) != -1)
-    return (float) atof(myExternalSettings[idx].value.c_str());
-  else
-    return -1.0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Settings::getBool(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-  {
-    const string& value = myInternalSettings[idx].value;
-    if(value == "1" || value == "true")
-      return true;
-    else if(value == "0" || value == "false")
-      return false;
-    else
-      return false;
-  }
-  else if((idx = getExternalPos(key)) != -1)
-  {
-    const string& value = myExternalSettings[idx].value;
-    if(value == "1" || value == "true")
-      return true;
-    else if(value == "0" || value == "false")
-      return false;
-    else
-      return false;
-  }
-  else
-    return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& Settings::getString(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return myInternalSettings[idx].value;
-  else if((idx = getExternalPos(key)) != -1)
-    return myExternalSettings[idx].value;
-  else
-    return EmptyString;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setSize(const string& key, const int value1, const int value2)
-{
-  ostringstream buf;
-  buf << value1 << "x" << value2;
-  setString(key, buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Settings::getInternalPos(const string& key) const
 {
   for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
@@ -672,7 +561,7 @@ int Settings::getExternalPos(const string& key) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setInternal(const string& key, const string& value,
+int Settings::setInternal(const string& key, const Variant& value,
                           int pos, bool useAsInitial)
 {
   int idx = -1;
@@ -727,7 +616,7 @@ int Settings::setInternal(const string& key, const string& value,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setExternal(const string& key, const string& value,
+int Settings::setExternal(const string& key, const Variant& value,
                           int pos, bool useAsInitial)
 {
   int idx = -1;

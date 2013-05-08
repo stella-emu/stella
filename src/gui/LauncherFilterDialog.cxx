@@ -175,7 +175,7 @@ void LauncherFilterDialog::saveConfig()
 {
   const string& type = myFileType->getSelectedTag();
   if(type == "allfiles" || type == "allroms")
-    instance().settings().setString("launcherexts", type);
+    instance().settings().setValue("launcherexts", type);
   else
   {
     ostringstream buf;
@@ -185,9 +185,9 @@ void LauncherFilterDialog::saveConfig()
 
     // No ROMs selected means use all files
     if(buf.str() == "")
-      instance().settings().setString("launcherexts", "allfiles");
+      instance().settings().setValue("launcherexts", "allfiles");
     else
-      instance().settings().setString("launcherexts", buf.str());
+      instance().settings().setValue("launcherexts", buf.str());
   }
 
   // Let parent know about the changes

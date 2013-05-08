@@ -119,7 +119,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     // will take over 250 frames!
     // The 'fastscbios' option must be changed before the system is reset
     bool fastscbios = myOSystem->settings().getBool("fastscbios");
-    myOSystem->settings().setBool("fastscbios", true);
+    myOSystem->settings().setValue("fastscbios", true);
     mySystem->reset(true);  // autodetect in reset enabled
     for(int i = 0; i < 60; ++i)
       myTIA->update();
@@ -131,7 +131,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     }
 
     // Don't forget to reset the SC progress bars again
-    myOSystem->settings().setBool("fastscbios", fastscbios);
+    myOSystem->settings().setValue("fastscbios", fastscbios);
   }
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
@@ -286,7 +286,7 @@ void Console::toggleFormat(int direction)
 void Console::toggleColorLoss()
 {
   bool colorloss = !myOSystem->settings().getBool("colorloss");
-  myOSystem->settings().setBool("colorloss", colorloss);
+  myOSystem->settings().setValue("colorloss", colorloss);
   myTIA->enableColorLoss(colorloss);
 
   string message = string("PAL color-loss ") +
@@ -337,7 +337,7 @@ void Console::togglePalette()
     message = "Standard Stella palette";
   }
 
-  myOSystem->settings().setString("palette", palette);
+  myOSystem->settings().setValue("palette", palette);
   myOSystem->frameBuffer().showMessage(message);
 
   setPalette(palette);

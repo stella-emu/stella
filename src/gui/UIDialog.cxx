@@ -285,10 +285,10 @@ UIDialog::~UIDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::loadConfig()
 {
-  int w, h;
-
   // Launcher size
-  instance().settings().getSize("launcherres", w, h);
+  const GUI::Size& ls = instance().settings().getSize("launcherres");
+  int w = ls.w, h = ls.h;
+
   w = BSPF_max(w, 320);
   h = BSPF_max(h, 240);
   w = BSPF_min(w, 1920);
@@ -313,7 +313,8 @@ void UIDialog::loadConfig()
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
-  instance().settings().getSize("debuggerres", w, h);
+  const GUI::Size& ds = instance().settings().getSize("debuggerres");
+  w = ds.w, h = ds.h;
   w = BSPF_max(w, 1080);
   h = BSPF_max(h, 720);
   w = BSPF_min(w, 1920);
@@ -344,36 +345,38 @@ void UIDialog::loadConfig()
 void UIDialog::saveConfig()
 {
   // Launcher size
-  instance().settings().setSize("launcherres", 
-    myLauncherWidthSlider->getValue(), myLauncherHeightSlider->getValue());
+  instance().settings().setValue("launcherres", 
+    GUI::Size(myLauncherWidthSlider->getValue(),
+              myLauncherHeightSlider->getValue()));
 
   // Launcher font
-  instance().settings().setString("launcherfont",
+  instance().settings().setValue("launcherfont",
     myLauncherFontPopup->getSelectedTag());
 
   // ROM launcher info viewer
-  instance().settings().setString("romviewer",
+  instance().settings().setValue("romviewer",
     myRomViewerPopup->getSelectedTag());
 
   // Exit to Launcher
-  instance().settings().setString("exitlauncher",
+  instance().settings().setValue("exitlauncher",
     myLauncherExitPopup->getSelectedTag());
 
   // Debugger size
-  instance().settings().setSize("debuggerres", 
-    myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
+  instance().settings().setValue("debuggerres",
+    GUI::Size(myDebuggerWidthSlider->getValue(),
+              myDebuggerHeightSlider->getValue()));
 
   // UI palette
-  instance().settings().setString("uipalette",
+  instance().settings().setValue("uipalette",
     myPalettePopup->getSelectedTag());
 
   // Listwidget quick delay
-  instance().settings().setString("listdelay",
+  instance().settings().setValue("listdelay",
     myListDelayPopup->getSelectedTag());
   ListWidget::setQuickSelectDelay(atoi(myListDelayPopup->getSelectedTag().c_str()));
 
   // Mouse wheel lines
-  instance().settings().setString("mwheel",
+  instance().settings().setValue("mwheel",
     myWheelLinesPopup->getSelectedTag());
   ScrollBarWidget::setWheelLines(atoi(myWheelLinesPopup->getSelectedTag().c_str()));
 }

@@ -106,7 +106,7 @@ SoundSDL::~SoundSDL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::setEnabled(bool state)
 {
-  myOSystem->settings().setBool("sound", state);
+  myOSystem->settings().setValue("sound", state);
 
   myOSystem->logMessage(state ? "SoundSDL::setEnabled(true)" : 
                                 "SoundSDL::setEnabled(false)", 2);
@@ -193,7 +193,7 @@ void SoundSDL::setVolume(Int32 percent)
 {
   if(myIsInitializedFlag && (percent >= 0) && (percent <= 100))
   {
-    myOSystem->settings().setInt("volume", percent);
+    myOSystem->settings().setValue("volume", percent);
     SDL_LockAudio();
     myVolume = percent;
     myTIASound.volume(percent);

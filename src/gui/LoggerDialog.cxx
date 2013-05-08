@@ -107,9 +107,9 @@ void LoggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveConfig()
 {
-  instance().settings().setString("loglevel",
+  instance().settings().setValue("loglevel",
     myLogLevel->getSelectedTag());
-  instance().settings().setBool("logtoconsole", myLogToConsole->getState());
+  instance().settings().setValue("logtoconsole", myLogToConsole->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

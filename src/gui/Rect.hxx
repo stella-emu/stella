@@ -40,9 +40,48 @@ struct Point
   Point() : x(0), y(0) {};
   Point(const Point & p) : x(p.x), y(p.y) {};
   explicit Point(int x1, int y1) : x(x1), y(y1) {};
+  Point(const string& p) {
+    char c = '\0';
+    x = y = -1;
+    istringstream buf(p);
+    buf >> x >> c >> y;
+    if(c != 'x')
+      x = y = 0;
+  }
   Point & operator=(const Point & p) { x = p.x; y = p.y; return *this; };
   bool operator==(const Point & p) const { return x == p.x && y == p.y; };
   bool operator!=(const Point & p) const { return x != p.x || y != p.y; };
+
+  friend ostream& operator<<(ostream& os, const Point& p) {
+    os << p.x << "x" << p.y;
+    return os;
+  }
+};
+
+struct Size
+{
+  int w;  //!< The width part of the size
+  int h;  //!< The height part of the size
+
+  Size() : w(0), h(0) {};
+  Size(const Size & s) : w(s.w), h(s.h) {};
+  explicit Size(int w1, int h1) : w(w1), h(h1) {};
+  Size(const string& s) {
+    char c = '\0';
+    w = h = -1;
+    istringstream buf(s);
+    buf >> w >> c >> h;
+    if(c != 'x')
+      w = h = -1;
+  }
+  Size & operator=(const Size & s) { w = s.w; h = s.h; return *this; };
+  bool operator==(const Size & s) const { return w == s.w && h == s.h; };
+  bool operator!=(const Size & s) const { return w != s.w || h != s.h; };
+
+  friend ostream& operator<<(ostream& os, const Size& s) {
+    os << s.w << "x" << s.h;
+    return os;
+  }
 };
 
 /*
@@ -73,13 +112,18 @@ struct Rect
   {
     assert(isValidRect());
   }
+
   int x() const { return left; }
   int y() const { return top; }
-  int width() const { return right - left; }
-  int height() const { return bottom - top; }
+  Point point() const { return Point(x(), y()); }
 
-  void setWidth(int aWidth) { right = left + aWidth; }
+  int width() const  { return right - left; }
+  int height() const { return bottom - top; }
+  Size size() const  { return Size(width(), height()); }
+
+  void setWidth(int aWidth)   { right = left + aWidth; }
   void setHeight(int aHeight) { bottom = top + aHeight; }
+  void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
 
   /*
     @param x the horizontal position to check
@@ -166,8 +210,7 @@ struct Rect
   }
 
   friend ostream& operator<<(ostream& os, const Rect& r) {
-    os << "x=" << r.x() << ", y=" << r.y()
-       << ", w=" << r.width() << ", h=" << r.height();
+    os << "Point: " << r.point() << ", Size: " << r.size();
     return os;
   }
 };

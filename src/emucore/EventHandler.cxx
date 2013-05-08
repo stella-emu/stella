@@ -274,7 +274,7 @@ void EventHandler::mapStelladaptors(const string& saport)
       }
     }
   }
-  myOSystem->settings().setString("saport", saport);
+  myOSystem->settings().setValue("saport", saport);
 
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
@@ -1721,7 +1721,7 @@ void EventHandler::saveKeyMapping()
     for(int i = 0; i < KBDK_LAST; ++i)
       keybuf << ":" << myKeyTable[i][mode];
 
-  myOSystem->settings().setString("keymap", keybuf.str());
+  myOSystem->settings().setValue("keymap", keybuf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1756,7 +1756,7 @@ void EventHandler::saveJoyMapping()
   for(iter = myJoystickMap.begin(); iter != myJoystickMap.end(); ++iter)
     joybuf << "^" << iter->second;
 
-  myOSystem->settings().setString("joymap", joybuf.str());
+  myOSystem->settings().setValue("joymap", joybuf.str());
 #endif
 }
 
@@ -1774,7 +1774,7 @@ void EventHandler::saveComboMapping()
     for(int j = 1; j < kEventsPerCombo; ++j)
       buf << "," << myComboTable[i][j];
   }
-  myOSystem->settings().setString("combomap", buf.str());
+  myOSystem->settings().setValue("combomap", buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -526,7 +526,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             const string& result =
               instance().createConsole(romnode, myGameList->md5(item));
             if(result == EmptyString)
-              instance().settings().setString("lastrom", myList->getSelectedString());
+              instance().settings().setValue("lastrom", myList->getSelectedString());
             else
               instance().frameBuffer().showMessage(result, kMiddleCenter, true);
           }
@@ -569,7 +569,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kStartupRomDirChosenCmd:
     {
       FilesystemNode dir(myRomDir->getResult());
-      instance().settings().setString("romdir", dir.getShortPath());
+      instance().settings().setValue("romdir", dir.getShortPath());
       // fall through to the next case
     }
     case kRomDirChosenCmd:
