@@ -322,6 +322,9 @@
 		DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */; };
 		DC74D6A1138D4D7E00F05C5C /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D69F138D4D7E00F05C5C /* StringList.hxx */; };
 		DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */; };
+		DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24D4173B1CF600B20FE9 /* Variant.hxx */; };
+		DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */; };
+		DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
@@ -826,6 +829,9 @@
 		DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LoggerDialog.hxx; path = ../gui/LoggerDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC74D69F138D4D7E00F05C5C /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../common/StringList.hxx; sourceTree = SOURCE_ROOT; };
 		DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringParser.hxx; path = ../common/StringParser.hxx; sourceTree = SOURCE_ROOT; };
+		DC7A24D4173B1CF600B20FE9 /* Variant.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Variant.hxx; path = ../common/Variant.hxx; sourceTree = SOURCE_ROOT; };
+		DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileListWidget.cxx; path = ../gui/FileListWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FileListWidget.hxx; path = ../gui/FileListWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
@@ -1225,6 +1231,7 @@
 				DC74D69F138D4D7E00F05C5C /* StringList.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
 				DCC467EA14FBEC9600E15508 /* tv_filters */,
+				DC7A24D4173B1CF600B20FE9 /* Variant.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 				DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */,
 				DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */,
@@ -1433,6 +1440,8 @@
 				2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */,
 				2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */,
 				2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */,
+				DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */,
+				DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */,
 				DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */,
 				DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */,
 				2D9217FB0857CC88001D664B /* Font.cxx */,
@@ -1832,6 +1841,8 @@
 				DC676A581729A0B000E4E73D /* CartMCWidget.hxx in Headers */,
 				DC676A5A1729A0B000E4E73D /* CartSBWidget.hxx in Headers */,
 				DC676A5C1729A0B000E4E73D /* CartX07Widget.hxx in Headers */,
+				DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */,
+				DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2136,6 +2147,7 @@
 				DC676A571729A0B000E4E73D /* CartMCWidget.cxx in Sources */,
 				DC676A591729A0B000E4E73D /* CartSBWidget.cxx in Sources */,
 				DC676A5B1729A0B000E4E73D /* CartX07Widget.cxx in Sources */,
+				DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
