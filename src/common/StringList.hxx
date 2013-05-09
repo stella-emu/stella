@@ -23,7 +23,6 @@
 #include "Array.hxx"
 #include "bspf.hxx"
 
-
 class StringList : public Common::Array<string>
 {
   public:
@@ -57,16 +56,6 @@ class StringList : public Common::Array<string>
         if(!match) tmp += str[i];
       }
       return tmp;
-    }
-};
-
-class StringMap : public Common::Array< pair<string,string> >
-{
-  public:
-    void push_back(const string& name, const string& tag)
-    {
-      ensureCapacity(_size + 1);
-      _data[_size++] = make_pair(name, tag);
     }
 };
 
