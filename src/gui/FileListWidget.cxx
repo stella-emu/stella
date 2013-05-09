@@ -41,8 +41,6 @@ FileListWidget::~FileListWidget()
 void FileListWidget::setLocation(const FilesystemNode& node, string select)
 {
   _node = node;
-  if(!_node.exists())
-    _node = FilesystemNode("~");
 
   // Generally, we always want a directory listing 
   if(!_node.isDirectory() && _node.hasParent())
