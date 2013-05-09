@@ -50,10 +50,10 @@
 // TODO - use C++ streams instead of nasty C-strings and pointers
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerParser::DebuggerParser(Debugger* d)
-  : debugger(d)
+DebuggerParser::DebuggerParser(Debugger& d)
+  : debugger(d),
+    defaultBase(kBASE_16)
 {
-  defaultBase = kBASE_16;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,11 +77,11 @@ string DebuggerParser::run(const string& command)
     delete lastExpression;
     commandResult = "parser test: status==";
     int status = YaccParser::parse(command.c_str() + 5);
-    commandResult += debugger->valueToString(status);
+    commandResult += debugger.valueToString(status);
     commandResult += ", result==";
     if(status == 0) {
       lastExpression = YaccParser::getResult();
-      commandResult += debugger->valueToString(lastExpression->evaluate());
+      commandResult += debugger.valueToString(lastExpression->evaluate());
     } else {
       //  delete lastExpression; // NO! lastExpression isn't valid (not 0 either)
                                 // It's the result of casting the last token
@@ -96,7 +96,7 @@ string DebuggerParser::run(const string& command)
 
   if(command == "expr") {
     if(lastExpression)
-      commandResult = "result==" + debugger->valueToString(lastExpression->evaluate());
+      commandResult = "result==" + debugger.valueToString(lastExpression->evaluate());
     else
       commandResult = "no valid expr";
     return commandResult;
@@ -119,7 +119,7 @@ string DebuggerParser::run(const string& command)
         CALL_METHOD(commands[i].executor);
 
       if(commands[i].refreshRequired)
-        debugger->myBaseDialog->loadConfig();
+        debugger.myBaseDialog->loadConfig();
 
       return commandResult.str();
     }
@@ -148,7 +148,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
       run(command);
       count++;
     }
-    buf << "Executed " << debugger->valueToString(count) << " commands from \""
+    buf << "Executed " << debugger.valueToString(count) << " commands from \""
         << file.getShortPath() << "\"";
 
     return buf.str();
@@ -225,7 +225,7 @@ int DebuggerParser::decipher_arg(const string &str)
   if(bin && dec) return -1;
 
   // Special cases (registers):
-  CpuState& state = (CpuState&) debugger->cpuDebug().getState();
+  CpuState& state = (CpuState&) debugger.cpuDebug().getState();
   if(arg == "a") result = state.A;
   else if(arg == "x") result = state.X;
   else if(arg == "y") result = state.Y;
@@ -234,7 +234,7 @@ int DebuggerParser::decipher_arg(const string &str)
   else if(arg == "pc" || arg == ".") result = state.PC;
   else { // Not a special, must be a regular arg: check for label first
     const char* a = arg.c_str();
-    result = debugger->cartDebug().getAddress(arg);
+    result = debugger.cartDebug().getAddress(arg);
 
     if(result < 0) { // if not label, must be a number
       if(bin) { // treat as binary
@@ -283,8 +283,8 @@ int DebuggerParser::decipher_arg(const string &str)
   else if(hibyte) result = (result >> 8) & 0xff;
 
   // dereference if we're supposed to:
-  if(derefByte) result = debugger->peek(result);
-  if(derefWord) result = debugger->dpeek(result);
+  if(derefByte) result = debugger.peek(result);
+  if(derefWord) result = debugger.dpeek(result);
 
   return result;
 }
@@ -526,8 +526,8 @@ string DebuggerParser::eval()
   ostringstream buf;
   for(int i = 0; i < argCount; ++i)
   {
-    string rlabel = debugger->cartDebug().getLabel(args[i], true);
-    string wlabel = debugger->cartDebug().getLabel(args[i], false);
+    string rlabel = debugger.cartDebug().getLabel(args[i], true);
+    string wlabel = debugger.cartDebug().getLabel(args[i], false);
     bool validR = rlabel != "" && rlabel[0] != '$',
          validW = wlabel != "" && wlabel[0] != '$';
     if(validR && validW)
@@ -543,11 +543,11 @@ string DebuggerParser::eval()
       buf << wlabel << "(W): ";
 
     if(args[i] < 0x100)
-      buf << "$" << debugger->valueToString(args[i], kBASE_16_2)
-          << " %" << debugger->valueToString(args[i], kBASE_2_8);
+      buf << "$" << debugger.valueToString(args[i], kBASE_16_2)
+          << " %" << debugger.valueToString(args[i], kBASE_2_8);
     else
-      buf << "$" << debugger->valueToString(args[i], kBASE_16_4)
-          << " %" << debugger->valueToString(args[i], kBASE_2_16);
+      buf << "$" << debugger.valueToString(args[i], kBASE_16_4)
+          << " %" << debugger.valueToString(args[i], kBASE_2_16);
 
     buf << " #" << (int) args[i]; 
     if(i != argCount - 1)
@@ -561,10 +561,10 @@ string DebuggerParser::eval()
 string DebuggerParser::trapStatus(int addr)
 {
   string result;
-  result += debugger->valueToString(addr);
+  result += debugger.valueToString(addr);
   result += ": ";
-  bool r = debugger->readTrap(addr);
-  bool w = debugger->writeTrap(addr);
+  bool r = debugger.readTrap(addr);
+  bool w = debugger.writeTrap(addr);
   if(r && w)
     result += "read|write";
   else if(r)
@@ -575,7 +575,7 @@ string DebuggerParser::trapStatus(int addr)
     result += "   none   ";
 
   // TODO - technically, we should determine if the label is read or write
-  const string& l = debugger->cartDebug().getLabel(addr, true);
+  const string& l = debugger.cartDebug().getLabel(addr, true);
   if(l != "") {
     result += "  (";
     result += l;
@@ -594,7 +594,7 @@ bool DebuggerParser::saveScriptFile(string file)
 
   ofstream out(file.c_str());
 
-  FunctionDefMap funcs = debugger->getFunctionDefMap();
+  FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(FunctionDefMap::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
     out << "function " << i->first << " { " << i->second << " }" << endl;
 
@@ -602,12 +602,12 @@ bool DebuggerParser::saveScriptFile(string file)
     out << "watch " << watches[i] << endl;
 
   for(unsigned int i=0; i<0x10000; i++)
-    if(debugger->breakPoint(i))
+    if(debugger.breakPoint(i))
       out << "break #" << i << endl;
 
   for(unsigned int i=0; i<0x10000; i++) {
-    bool r = debugger->readTrap(i);
-    bool w = debugger->writeTrap(i);
+    bool r = debugger.readTrap(i);
+    bool w = debugger.writeTrap(i);
 
     if(r && w)
       out << "trap #" << i << endl;
@@ -617,7 +617,7 @@ bool DebuggerParser::saveScriptFile(string file)
       out << "trapwrite #" << i << endl;
   }
 
-  StringList conds = debugger->cpuDebug().m6502().getCondBreakNames();
+  StringList conds = debugger.cpuDebug().m6502().getCondBreakNames();
   for(unsigned int i=0; i<conds.size(); i++)
     out << "breakif {" << conds[i] << "}" << endl;
 
@@ -634,23 +634,23 @@ bool DebuggerParser::saveScriptFile(string file)
 // "a"
 void DebuggerParser::executeA()
 {
-  debugger->cpuDebug().setA((uInt8)args[0]);
+  debugger.cpuDebug().setA((uInt8)args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "bank"
 void DebuggerParser::executeBank()
 {
-  int banks = debugger->cartDebug().bankCount();
+  int banks = debugger.cartDebug().bankCount();
   if(argCount == 0)
   {
-    commandResult << debugger->cartDebug().getCartType() << ": ";
+    commandResult << debugger.cartDebug().getCartType() << ": ";
     if(banks < 2)
       commandResult << red("bankswitching not supported by this cartridge");
     else
     {
-      commandResult << "current = " << debugger->valueToString(debugger->cartDebug().getBank())
-                    << " out of " << debugger->valueToString(banks) << " banks";
+      commandResult << "current = " << debugger.valueToString(debugger.cartDebug().getBank())
+                    << " out of " << debugger.valueToString(banks) << " banks";
     }
   }
   else
@@ -659,8 +659,8 @@ void DebuggerParser::executeBank()
       commandResult << red("bankswitching not supported by this cartridge");
     else if(args[0] >= banks)
       commandResult << red("invalid bank number (must be 0 to ")
-                    << debugger->valueToString(banks - 1) << ")";
-    else if(debugger->setBank(args[0]))
+                    << debugger.valueToString(banks - 1) << ")";
+    else if(debugger.setBank(args[0]))
       commandResult << "switched bank OK";
     else
       commandResult << red("error switching banks (bankswitching may not be supported)");
@@ -704,18 +704,18 @@ void DebuggerParser::executeBreak()
 {
   int bp;
   if(argCount == 0)
-    bp = debugger->cpuDebug().pc();
+    bp = debugger.cpuDebug().pc();
   else
     bp = args[0];
-  debugger->toggleBreakPoint(bp);
-  debugger->rom().invalidate();
+  debugger.toggleBreakPoint(bp);
+  debugger.rom().invalidate();
 
-  if(debugger->breakPoint(bp))
+  if(debugger.breakPoint(bp))
     commandResult << "Set";
   else
     commandResult << "Cleared";
 
-  commandResult << " breakpoint at " << debugger->valueToString(bp);
+  commandResult << " breakpoint at " << debugger.valueToString(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -725,9 +725,9 @@ void DebuggerParser::executeBreakif()
   int res = YaccParser::parse(argStrings[0].c_str());
   if(res == 0)
   {
-    uInt32 ret = debugger->cpuDebug().m6502().addCondBreak(
+    uInt32 ret = debugger.cpuDebug().m6502().addCondBreak(
                  YaccParser::getResult(), argStrings[0] );
-    commandResult << "Added breakif " << debugger->valueToString(ret);
+    commandResult << "Added breakif " << debugger.valueToString(ret);
   }
   else
     commandResult << red("invalid expression");
@@ -738,9 +738,9 @@ void DebuggerParser::executeBreakif()
 void DebuggerParser::executeC()
 {
   if(argCount == 0)
-    debugger->cpuDebug().toggleC();
+    debugger.cpuDebug().toggleC();
   else if(argCount == 1)
-    debugger->cpuDebug().setC(args[0]);
+    debugger.cpuDebug().setC(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -758,7 +758,7 @@ void DebuggerParser::executeCheat()
   for(int arg = 0; arg < argCount; arg++)
   {
     const string& cheat = argStrings[arg];
-    const Cheat* c = debugger->myOSystem->cheat().add("DBG", cheat);
+    const Cheat* c = debugger.myOSystem->cheat().add("DBG", cheat);
     if(c && c->enabled())
       commandResult << "Cheat code " << cheat << " enabled" << endl;
     else
@@ -773,8 +773,8 @@ void DebuggerParser::executeCheat()
 // "clearbreaks"
 void DebuggerParser::executeClearbreaks()
 {
-  debugger->clearAllBreakPoints();
-  debugger->cpuDebug().m6502().clearCondBreaks();
+  debugger.clearAllBreakPoints();
+  debugger.cpuDebug().m6502().clearCondBreaks();
   commandResult << "all breakpoints cleared";
 }
 
@@ -783,16 +783,16 @@ void DebuggerParser::executeClearbreaks()
 void DebuggerParser::executeClearconfig()
 {
   if(argCount == 1)
-    commandResult << debugger->cartDebug().clearConfig(args[0]);
+    commandResult << debugger.cartDebug().clearConfig(args[0]);
   else
-    commandResult << debugger->cartDebug().clearConfig();
+    commandResult << debugger.cartDebug().clearConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "cleartraps"
 void DebuggerParser::executeCleartraps()
 {
-  debugger->clearAllTraps();
+  debugger.clearAllTraps();
   commandResult << "all traps cleared";
 }
 
@@ -808,7 +808,7 @@ void DebuggerParser::executeClearwatches()
 // "cls"
 void DebuggerParser::executeCls()
 {
-  debugger->prompt().clearScreen();
+  debugger.prompt().clearScreen();
   commandResult << "";
 }
 
@@ -827,11 +827,11 @@ void DebuggerParser::executeCode()
     return;
   }
 
-  bool result = debugger->cartDebug().addDirective(
+  bool result = debugger.cartDebug().addDirective(
                   CartDebug::CODE, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " CODE directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->rom().invalidate();
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -848,9 +848,9 @@ void DebuggerParser::executeColortest()
 void DebuggerParser::executeD()
 {
   if(argCount == 0)
-    debugger->cpuDebug().toggleD();
+    debugger.cpuDebug().toggleD();
   else if(argCount == 1)
-    debugger->cpuDebug().setD(args[0]);
+    debugger.cpuDebug().setD(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -868,11 +868,11 @@ void DebuggerParser::executeData()
     return;
   }
 
-  bool result = debugger->cartDebug().addDirective(
+  bool result = debugger.cartDebug().addDirective(
                   CartDebug::DATA, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " DATA directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->rom().invalidate();
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -880,22 +880,22 @@ void DebuggerParser::executeData()
 void DebuggerParser::executeDefine()
 {
   // TODO: check if label already defined?
-  debugger->cartDebug().addLabel(argStrings[0], args[1]);
-  debugger->rom().invalidate();
+  debugger.cartDebug().addLabel(argStrings[0], args[1]);
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "delbreakif"
 void DebuggerParser::executeDelbreakif()
 {
-  debugger->cpuDebug().m6502().delCondBreak(args[0]);
+  debugger.cpuDebug().m6502().delCondBreak(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "delfunction"
 void DebuggerParser::executeDelfunction()
 {
-  if(debugger->delFunction(argStrings[0]))
+  if(debugger.delFunction(argStrings[0]))
     commandResult << "removed function " << argStrings[0];
   else
     commandResult << "function " << argStrings[0] << " not found";
@@ -922,7 +922,7 @@ void DebuggerParser::executeDisasm()
   int start, lines = 20;
 
   if(argCount == 0) {
-    start = debugger->cpuDebug().pc();
+    start = debugger.cpuDebug().pc();
   } else if(argCount == 1) {
     start = args[0];
   } else if(argCount == 2) {
@@ -933,7 +933,7 @@ void DebuggerParser::executeDisasm()
     return;
   }
 
-  commandResult << debugger->cartDebug().disassemble(start, lines);
+  commandResult << debugger.cartDebug().disassemble(start, lines);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -943,10 +943,10 @@ void DebuggerParser::executeDump()
   for(int i=0; i<8; i++)
   {
     int start = args[0] + i*16;
-    commandResult << debugger->valueToString(start) << ": ";
+    commandResult << debugger.valueToString(start) << ": ";
     for(int j=0; j<16; j++)
     {
-      commandResult << debugger->valueToString(debugger->peek(start+j)) << " ";
+      commandResult << debugger.valueToString(debugger.peek(start+j)) << " ";
       if(j == 7) commandResult << "- ";
     }
     if(i != 7) commandResult << endl;
@@ -965,7 +965,7 @@ void DebuggerParser::executeExec()
 // "exitrom"
 void DebuggerParser::executeExitRom()
 {
-  debugger->quit(true);
+  debugger.quit(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -974,8 +974,8 @@ void DebuggerParser::executeFrame()
 {
   int count = 1;
   if(argCount != 0) count = args[0];
-  debugger->nextFrame(count);
-  commandResult << "advanced " << debugger->valueToString(count) << " frame";
+  debugger.nextFrame(count);
+  commandResult << "advanced " << debugger.valueToString(count) << " frame";
   if(count != 1) commandResult << "s";
 }
 
@@ -992,7 +992,7 @@ void DebuggerParser::executeFunction()
   int res = YaccParser::parse(argStrings[1].c_str());
   if(res == 0)
   {
-    debugger->addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
+    debugger.addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
     commandResult << "Added function " << argStrings[0] << " -> " << argStrings[1];
   }
   else
@@ -1014,11 +1014,11 @@ void DebuggerParser::executeGfx()
     return;
   }
 
-  bool result = debugger->cartDebug().addDirective(
+  bool result = debugger.cartDebug().addDirective(
                   CartDebug::GFX, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " GFX directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->rom().invalidate();
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1038,7 +1038,7 @@ void DebuggerParser::executeHelp()
     commandResult << setw(clen) << right << commands[i].cmdString
                   << " - " << commands[i].description << endl;
 
-  commandResult << debugger->builtinHelp();
+  commandResult << debugger.builtinHelp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1050,13 +1050,13 @@ void DebuggerParser::executeJump()
 
   // The specific address we want may not exist (it may be part of a data section)
   // If so, scroll backward a little until we find it
-  while(((line = debugger->cartDebug().addressToLine(address)) == -1) &&
+  while(((line = debugger.cartDebug().addressToLine(address)) == -1) &&
         ((address & 0xFFF) >= 0))
     address--;
 
   if(line >= 0 && address >= 0)
   {
-    debugger->rom().scrollTo(line);
+    debugger.rom().scrollTo(line);
     commandResult << "disassembly scrolled to address $" << HEX4 << address;
   }
   else
@@ -1072,9 +1072,9 @@ void DebuggerParser::executeListbreaks()
 
   for(unsigned int i = 0; i < 0x10000; i++)
   {
-    if(debugger->breakpoints().isSet(i))
+    if(debugger.breakpoints().isSet(i))
     {
-      buf << debugger->cartDebug().getLabel(i, true, 4) << " ";
+      buf << debugger.cartDebug().getLabel(i, true, 4) << " ";
       if(! (++count % 8) ) buf << "\n";
     }
   }
@@ -1088,13 +1088,13 @@ void DebuggerParser::executeListbreaks()
   if(count)
     commandResult << "breaks:\n" << buf.str();
 
-  StringList conds = debugger->cpuDebug().m6502().getCondBreakNames();
+  StringList conds = debugger.cpuDebug().m6502().getCondBreakNames();
   if(conds.size() > 0)
   {
     commandResult << "\nbreakifs:\n";
     for(unsigned int i=0; i<conds.size(); i++)
     {
-      commandResult << debugger->valueToString(i) << ": " << conds[i];
+      commandResult << debugger.valueToString(i) << ": " << conds[i];
       if(i != (conds.size() - 1)) commandResult << endl;
     }
   }
@@ -1108,16 +1108,16 @@ void DebuggerParser::executeListbreaks()
 void DebuggerParser::executeListconfig()
 {
   if(argCount == 1)
-    commandResult << debugger->cartDebug().listConfig(args[0]);
+    commandResult << debugger.cartDebug().listConfig(args[0]);
   else
-    commandResult << debugger->cartDebug().listConfig();
+    commandResult << debugger.cartDebug().listConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listfunctions"
 void DebuggerParser::executeListfunctions()
 {
-  const FunctionDefMap& functions = debugger->getFunctionDefMap();
+  const FunctionDefMap& functions = debugger.getFunctionDefMap();
 
   if(functions.size() > 0)
   {
@@ -1137,7 +1137,7 @@ void DebuggerParser::executeListtraps()
 
   for(unsigned int i=0; i<0x10000; i++)
   {
-    if(debugger->readTrap(i) || debugger->writeTrap(i))
+    if(debugger.readTrap(i) || debugger.writeTrap(i))
     {
       commandResult << trapStatus(i) << endl;
       count++;
@@ -1153,11 +1153,11 @@ void DebuggerParser::executeListtraps()
 void DebuggerParser::executeLoadconfig()
 {
   if(argCount == 1)
-    commandResult << debugger->cartDebug().loadConfigFile(argStrings[0]);
+    commandResult << debugger.cartDebug().loadConfigFile(argStrings[0]);
   else
-    commandResult << debugger->cartDebug().loadConfigFile();
+    commandResult << debugger.cartDebug().loadConfigFile();
 
-  debugger->rom().invalidate();
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1165,7 +1165,7 @@ void DebuggerParser::executeLoadconfig()
 void DebuggerParser::executeLoadstate()
 {
   if(args[0] >= 0 && args[0] <= 9)
-    debugger->loadState(args[0]);
+    debugger.loadState(args[0]);
   else
     commandResult << red("invalid slot (must be 0-9)");
 }
@@ -1174,8 +1174,8 @@ void DebuggerParser::executeLoadstate()
 // "loadsym"
 void DebuggerParser::executeLoadsym()
 {
-  commandResult << debugger->cartDebug().loadSymbolFile(argStrings[0]);
-  debugger->rom().invalidate();
+  commandResult << debugger.cartDebug().loadSymbolFile(argStrings[0]);
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1183,16 +1183,16 @@ void DebuggerParser::executeLoadsym()
 void DebuggerParser::executeN()
 {
   if(argCount == 0)
-    debugger->cpuDebug().toggleN();
+    debugger.cpuDebug().toggleN();
   else if(argCount == 1)
-    debugger->cpuDebug().setN(args[0]);
+    debugger.cpuDebug().setN(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "pc"
 void DebuggerParser::executePc()
 {
-  debugger->cpuDebug().setPC(args[0]);
+  debugger.cpuDebug().setPC(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1210,11 +1210,11 @@ void DebuggerParser::executePGfx()
     return;
   }
 
-  bool result = debugger->cartDebug().addDirective(
+  bool result = debugger.cartDebug().addDirective(
                   CartDebug::PGFX, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " PGFX directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->rom().invalidate();
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1229,17 +1229,17 @@ void DebuggerParser::executePrint()
 void DebuggerParser::executeRam()
 {
   if(argCount == 0)
-    commandResult << debugger->cartDebug().toString();
+    commandResult << debugger.cartDebug().toString();
   else
-    commandResult << debugger->setRAM(args);
+    commandResult << debugger.setRAM(args);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "reset"
 void DebuggerParser::executeReset()
 {
-  debugger->reset();
-  debugger->rom().invalidate();
+  debugger.reset();
+  debugger.rom().invalidate();
   commandResult << "reset CPU";
 }
 
@@ -1247,9 +1247,9 @@ void DebuggerParser::executeReset()
 // "rewind"
 void DebuggerParser::executeRewind()
 {
-  if(debugger->rewindState())
+  if(debugger.rewindState())
   {
-    debugger->rom().invalidate();
+    debugger.rom().invalidate();
     commandResult << "rewind by one level";
   }
   else
@@ -1260,7 +1260,7 @@ void DebuggerParser::executeRewind()
 // "riot"
 void DebuggerParser::executeRiot()
 {
-  commandResult << debugger->riotDebug().toString();
+  commandResult << debugger.riotDebug().toString();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1270,7 +1270,7 @@ void DebuggerParser::executeRom()
   int addr = args[0];
   for(int i=1; i<argCount; i++)
   {
-    if( !(debugger->patchROM(addr++, args[i])) )
+    if( !(debugger.patchROM(addr++, args[i])) )
     {
       commandResult << red("patching ROM unsupported for this cart type");
       return;
@@ -1282,9 +1282,9 @@ void DebuggerParser::executeRom()
   // The RomWidget is a special case, since we don't want to re-disassemble
   // any more than necessary.  So we only do it by calling the following
   // method ...
-  debugger->rom().invalidate();
+  debugger.rom().invalidate();
 
-  commandResult << "changed " << debugger->valueToString( args.size() - 1 )
+  commandResult << "changed " << debugger.valueToString( args.size() - 1 )
                 << " location(s)";
 }
 
@@ -1303,19 +1303,19 @@ void DebuggerParser::executeRow()
     return;
   }
 
-  bool result = debugger->cartDebug().addDirective(
+  bool result = debugger.cartDebug().addDirective(
                   CartDebug::ROW, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " ROW directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->rom().invalidate();
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "run"
 void DebuggerParser::executeRun()
 {
-  debugger->saveOldState();
-  debugger->quit(false);
+  debugger.saveOldState();
+  debugger.quit(false);
   commandResult << "_EXIT_DEBUGGER";  // See PromptWidget for more info
 }
 
@@ -1323,7 +1323,7 @@ void DebuggerParser::executeRun()
 // "runto"
 void DebuggerParser::executeRunTo()
 {
-  const CartDebug& cartdbg = debugger->cartDebug();
+  const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
   uInt32 count = 0, max_iterations = list.size();
@@ -1332,16 +1332,16 @@ void DebuggerParser::executeRunTo()
   // disassembly, since this may be a time-consuming operation
   ostringstream buf;
   buf << "RunTo searching through " << max_iterations << " disassembled instructions";
-  ProgressDialog progress(debugger->myBaseDialog,
-      debugger->myOSystem->consoleFont(), buf.str());
+  ProgressDialog progress(debugger.myBaseDialog,
+      debugger.myOSystem->consoleFont(), buf.str());
   progress.setRange(0, max_iterations, 5);
 
   bool done = false;
   do {
-    debugger->step();
+    debugger.step();
 
     // Update romlist to point to current PC
-    int pcline = cartdbg.addressToLine(debugger->cpuDebug().pc());
+    int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     if(pcline >= 0)
     {
       const string& next = list[pcline].disasm;
@@ -1356,12 +1356,12 @@ void DebuggerParser::executeRunTo()
   if(done)
     commandResult
       << "found " << argStrings[0] << " in "
-      << debugger->valueToString(count, kBASE_10)
+      << debugger.valueToString(count, kBASE_10)
       << " disassembled instructions";
   else
     commandResult
       << argStrings[0] << " not found in "
-      << debugger->valueToString(count, kBASE_10)
+      << debugger.valueToString(count, kBASE_10)
       << " disassembled instructions";
 }
 
@@ -1369,16 +1369,16 @@ void DebuggerParser::executeRunTo()
 // "runtopc"
 void DebuggerParser::executeRunToPc()
 {
-  const CartDebug& cartdbg = debugger->cartDebug();
+  const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
   uInt32 count = 0;
   bool done = false;
   do {
-    debugger->step();
+    debugger.step();
 
     // Update romlist to point to current PC
-    int pcline = cartdbg.addressToLine(debugger->cpuDebug().pc());
+    int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     done = (pcline >= 0) && (list[pcline].address == args[0]);
     ++count;
   } while(!done && count < list.size());
@@ -1386,12 +1386,12 @@ void DebuggerParser::executeRunToPc()
   if(done)
     commandResult
       << "set PC to " << hex << args[0] << " in "
-      << debugger->valueToString(count, kBASE_10)
+      << debugger.valueToString(count, kBASE_10)
       << " disassembled instructions";
   else
     commandResult
       << "PC " << hex << args[0] << " not reached or found in "
-      << debugger->valueToString(count, kBASE_10)
+      << debugger.valueToString(count, kBASE_10)
       << " disassembled instructions";
 }
 
@@ -1399,7 +1399,7 @@ void DebuggerParser::executeRunToPc()
 // "s"
 void DebuggerParser::executeS()
 {
-  debugger->cpuDebug().setSP((uInt8)args[0]);
+  debugger.cpuDebug().setSP((uInt8)args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1417,9 +1417,9 @@ void DebuggerParser::executeSave()
 void DebuggerParser::executeSaveconfig()
 {
   if(argCount == 1)
-    commandResult << debugger->cartDebug().saveConfigFile(argStrings[0]);
+    commandResult << debugger.cartDebug().saveConfigFile(argStrings[0]);
   else
-    commandResult << debugger->cartDebug().saveConfigFile();
+    commandResult << debugger.cartDebug().saveConfigFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1427,16 +1427,16 @@ void DebuggerParser::executeSaveconfig()
 void DebuggerParser::executeSavedisassembly()
 {
   if(argCount == 1)
-    commandResult << debugger->cartDebug().saveDisassembly(argStrings[0]);
+    commandResult << debugger.cartDebug().saveDisassembly(argStrings[0]);
   else
-    commandResult << debugger->cartDebug().saveDisassembly();
+    commandResult << debugger.cartDebug().saveDisassembly();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "saverom"
 void DebuggerParser::executeSaverom()
 {
-  const string& result = debugger->saveROM(argStrings[0]);
+  const string& result = debugger.saveROM(argStrings[0]);
   if(result != "")
     commandResult << "saved ROM as " << result;
   else
@@ -1447,7 +1447,7 @@ void DebuggerParser::executeSaverom()
 // "saveses"
 void DebuggerParser::executeSaveses()
 {
-  if(debugger->prompt().saveBuffer(argStrings[0]))
+  if(debugger.prompt().saveBuffer(argStrings[0]))
     commandResult << "saved session to file " << argStrings[0];
   else
     commandResult << red("I/O error");
@@ -1458,7 +1458,7 @@ void DebuggerParser::executeSaveses()
 void DebuggerParser::executeSavestate()
 {
   if(args[0] >= 0 && args[0] <= 9)
-    debugger->saveState(args[0]);
+    debugger.saveState(args[0]);
   else
     commandResult << red("invalid slot (must be 0-9)");
 }
@@ -1469,8 +1469,8 @@ void DebuggerParser::executeScanline()
 {
   int count = 1;
   if(argCount != 0) count = args[0];
-  debugger->nextScanline(count);
-  commandResult << "advanced " << debugger->valueToString(count) << " scanline";
+  debugger.nextScanline(count);
+  commandResult << "advanced " << debugger.valueToString(count) << " scanline";
   if(count != 1) commandResult << "s";
 }
 
@@ -1479,14 +1479,14 @@ void DebuggerParser::executeScanline()
 void DebuggerParser::executeStep()
 {
   commandResult
-    << "executed " << debugger->valueToString(debugger->step()) << " cycles";
+    << "executed " << debugger.valueToString(debugger.step()) << " cycles";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "tia"
 void DebuggerParser::executeTia()
 {
-  commandResult << debugger->tiaDebug().toString();
+  commandResult << debugger.tiaDebug().toString();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1494,7 +1494,7 @@ void DebuggerParser::executeTia()
 void DebuggerParser::executeTrace()
 {
   commandResult
-    << "executed " << debugger->valueToString(debugger->trace()) << " cycles";
+    << "executed " << debugger.valueToString(debugger.trace()) << " cycles";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1507,8 +1507,8 @@ void DebuggerParser::executeTrap()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    debugger->toggleReadTrap(i);
-    debugger->toggleWriteTrap(i);
+    debugger.toggleReadTrap(i);
+    debugger.toggleWriteTrap(i);
     commandResult << trapStatus(i) << endl;
   }
 }
@@ -1523,7 +1523,7 @@ void DebuggerParser::executeTrapread()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    debugger->toggleReadTrap(i);
+    debugger.toggleReadTrap(i);
     commandResult << trapStatus(i) << endl;
   }
 }
@@ -1538,7 +1538,7 @@ void DebuggerParser::executeTrapwrite()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    debugger->toggleWriteTrap(i);
+    debugger.toggleWriteTrap(i);
     commandResult << trapStatus(i) << endl;
   }
 }
@@ -1554,7 +1554,7 @@ void DebuggerParser::executeType()
   for(uInt32 i = beg; i <= end; ++i)
   {
     commandResult << HEX4 << i << ": ";
-    debugger->cartDebug().addressTypeAsString(commandResult, i);
+    debugger.cartDebug().addressTypeAsString(commandResult, i);
     commandResult << endl;
   }
 }
@@ -1563,9 +1563,9 @@ void DebuggerParser::executeType()
 // "undef"
 void DebuggerParser::executeUndef()
 {
-  if(debugger->cartDebug().removeLabel(argStrings[0]))
+  if(debugger.cartDebug().removeLabel(argStrings[0]))
   {
-    debugger->rom().invalidate();
+    debugger.rom().invalidate();
     commandResult << argStrings[0] + " now undefined";
   }
   else
@@ -1577,9 +1577,9 @@ void DebuggerParser::executeUndef()
 void DebuggerParser::executeV()
 {
   if(argCount == 0)
-    debugger->cpuDebug().toggleV();
+    debugger.cpuDebug().toggleV();
   else if(argCount == 1)
-    debugger->cpuDebug().setV(args[0]);
+    debugger.cpuDebug().setV(args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1594,14 +1594,14 @@ void DebuggerParser::executeWatch()
 // "x"
 void DebuggerParser::executeX()
 {
-  debugger->cpuDebug().setX((uInt8)args[0]);
+  debugger.cpuDebug().setX((uInt8)args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "y"
 void DebuggerParser::executeY()
 {
-  debugger->cpuDebug().setY((uInt8)args[0]);
+  debugger.cpuDebug().setY((uInt8)args[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1609,9 +1609,9 @@ void DebuggerParser::executeY()
 void DebuggerParser::executeZ()
 {
   if(argCount == 0)
-    debugger->cpuDebug().toggleZ();
+    debugger.cpuDebug().toggleZ();
   else if(argCount == 1)
-    debugger->cpuDebug().setZ(args[0]);
+    debugger.cpuDebug().setZ(args[0]);
 }
 
 

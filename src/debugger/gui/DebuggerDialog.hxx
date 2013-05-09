@@ -45,7 +45,7 @@ class DebuggerDialog : public Dialog
 {
   public:
     DebuggerDialog(OSystem* osystem, DialogContainer* parent,
-                          int x, int y, int w, int h);
+                   int x, int y, int w, int h);
     ~DebuggerDialog();
 
     PromptWidget& prompt()       { return *myPrompt;       }

@@ -51,7 +51,7 @@ class BrowserDialog : public Dialog, public CommandSender
     void show(const string& title, const string& startpath,
               BrowserDialog::ListMode mode, int cmd);
 
-    /** Get resulting file node (called after receiving kChooseCmd */
+    /** Get resulting file node (called after receiving kChooseCmd) */
     const FilesystemNode& getResult() const;
 
   protected:

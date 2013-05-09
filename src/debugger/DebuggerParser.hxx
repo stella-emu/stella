@@ -49,7 +49,7 @@ typedef enum {
 class DebuggerParser
 {
   public:
-    DebuggerParser(Debugger* debugger);
+    DebuggerParser(Debugger& debugger);
     ~DebuggerParser();
 
     /** Run the given command, and return the result */
@@ -127,8 +127,8 @@ class DebuggerParser
       METHOD executor;
     };
 
-    // Pointer to our debugger object
-    Debugger* debugger;
+    // Reference to our debugger object
+    Debugger& debugger;
 
     // The results of the currently running command
     ostringstream commandResult;

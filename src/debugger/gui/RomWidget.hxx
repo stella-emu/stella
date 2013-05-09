@@ -39,9 +39,8 @@ class StringList;
 class RomWidget : public Widget, public CommandSender
 {
   public:
+    // This enum needs to be seen outside the class
     enum {
-      kResolveDataChanged = 'ACrd',
-      kRomNameEntered     = 'RWrn',
       kInvalidateListing  = 'INli'
     };
 
@@ -57,6 +56,11 @@ class RomWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
+    enum {
+      kResolveDataChanged = 'ACrd',
+      kRomNameEntered     = 'RWrn'
+    };
+
     void setBank(uInt16 bank);
     void setBreak(int disasm_line, bool state);
     void setPC(int disasm_line);

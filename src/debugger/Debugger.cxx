@@ -127,7 +127,7 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     myRewindManager(NULL)
 {
   // Init parser
-  myParser = new DebuggerParser(this);
+  myParser = new DebuggerParser(*this);
 
   // Create debugger subsystems
   myCpuDebug  = new CpuDebug(*this, myConsole);
