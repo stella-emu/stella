@@ -263,6 +263,9 @@
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
 		DC20D6F3138EB130002A7428 /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC20D6F1138EB130002A7428 /* StringList.hxx */; };
 		DC20D6F4138EB130002A7428 /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC20D6F2138EB130002A7428 /* StringParser.hxx */; };
+		DC3C3CDC173B1EB2009FFE61 /* Variant.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3C3CDB173B1EB2009FFE61 /* Variant.hxx */; };
+		DC3C3CE1173B1EC8009FFE61 /* FileListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3C3CDF173B1EC8009FFE61 /* FileListWidget.cxx */; };
+		DC3C3CE2173B1EC8009FFE61 /* FileListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3C3CE0173B1EC8009FFE61 /* FileListWidget.hxx */; };
 		DC3E4A6614B25EB30071D7BC /* CartCM.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3E4A6014B25EB30071D7BC /* CartCM.cxx */; };
 		DC3E4A6714B25EB30071D7BC /* CartCM.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3E4A6114B25EB30071D7BC /* CartCM.hxx */; };
 		DC3E4A6814B25EB30071D7BC /* CompuMate.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3E4A6214B25EB30071D7BC /* CompuMate.cxx */; };
@@ -769,6 +772,9 @@
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
 		DC20D6F1138EB130002A7428 /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../common/StringList.hxx; sourceTree = SOURCE_ROOT; };
 		DC20D6F2138EB130002A7428 /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringParser.hxx; path = ../common/StringParser.hxx; sourceTree = SOURCE_ROOT; };
+		DC3C3CDB173B1EB2009FFE61 /* Variant.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Variant.hxx; path = ../common/Variant.hxx; sourceTree = SOURCE_ROOT; };
+		DC3C3CDF173B1EC8009FFE61 /* FileListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileListWidget.cxx; path = ../gui/FileListWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DC3C3CE0173B1EC8009FFE61 /* FileListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FileListWidget.hxx; path = ../gui/FileListWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC3E4A6014B25EB30071D7BC /* CartCM.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCM.cxx; path = ../emucore/CartCM.cxx; sourceTree = SOURCE_ROOT; };
 		DC3E4A6114B25EB30071D7BC /* CartCM.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCM.hxx; path = ../emucore/CartCM.hxx; sourceTree = SOURCE_ROOT; };
 		DC3E4A6214B25EB30071D7BC /* CompuMate.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CompuMate.cxx; path = ../emucore/CompuMate.cxx; sourceTree = SOURCE_ROOT; };
@@ -1228,6 +1234,7 @@
 				DC20D6F1138EB130002A7428 /* StringList.hxx */,
 				DC20D6F2138EB130002A7428 /* StringParser.hxx */,
 				DC881B87151676A200021371 /* tv_filters */,
+				DC3C3CDB173B1EB2009FFE61 /* Variant.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 				DCA6277216CB0D45004E9AF0 /* ZipHandler.cxx */,
 				DCA6277316CB0D45004E9AF0 /* ZipHandler.hxx */,
@@ -1436,6 +1443,8 @@
 				2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */,
 				2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */,
 				2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */,
+				DC3C3CDF173B1EC8009FFE61 /* FileListWidget.cxx */,
+				DC3C3CE0173B1EC8009FFE61 /* FileListWidget.hxx */,
 				DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */,
 				DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */,
 				2D9217FB0857CC88001D664B /* Font.cxx */,
@@ -1835,6 +1844,8 @@
 				DCF28F211729A5CD00DD0CA9 /* CartSBWidget.hxx in Headers */,
 				DCF28F231729A5CD00DD0CA9 /* CartUAWidget.hxx in Headers */,
 				DCF28F251729A5CD00DD0CA9 /* CartX07Widget.hxx in Headers */,
+				DC3C3CDC173B1EB2009FFE61 /* Variant.hxx in Headers */,
+				DC3C3CE2173B1EC8009FFE61 /* FileListWidget.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2137,6 +2148,7 @@
 				DCF28F201729A5CD00DD0CA9 /* CartSBWidget.cxx in Sources */,
 				DCF28F221729A5CD00DD0CA9 /* CartUAWidget.cxx in Sources */,
 				DCF28F241729A5CD00DD0CA9 /* CartX07Widget.cxx in Sources */,
+				DC3C3CE1173B1EC8009FFE61 /* FileListWidget.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
