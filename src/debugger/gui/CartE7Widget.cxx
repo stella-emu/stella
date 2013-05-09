@@ -53,20 +53,20 @@ CartridgeE7Widget::CartridgeE7Widget(
       ypos = addBaseInformation(size, "M-Network", info.str(), 15) +
               myLineHeight;
 
-  StringMap items0, items1;
-  items0.push_back("0 - ROM ($FE0)", "0");
-  items0.push_back("1 - ROM ($FE1)", "1");
-  items0.push_back("2 - ROM ($FE2)", "2");
-  items0.push_back("3 - ROM ($FE3)", "3");
-  items0.push_back("4 - ROM ($FE4)", "4");
-  items0.push_back("5 - ROM ($FE5)", "5");
-  items0.push_back("6 - ROM ($FE6)", "6");
-  items0.push_back("7 - RAM ($FE7)", "7");
+  VariantList items0, items1;
+  items0.push_back("0 - ROM ($FE0)");
+  items0.push_back("1 - ROM ($FE1)");
+  items0.push_back("2 - ROM ($FE2)");
+  items0.push_back("3 - ROM ($FE3)");
+  items0.push_back("4 - ROM ($FE4)");
+  items0.push_back("5 - ROM ($FE5)");
+  items0.push_back("6 - ROM ($FE6)");
+  items0.push_back("7 - RAM ($FE7)");
 
-  items1.push_back("0 - RAM ($FE8)", "0");
-  items1.push_back("1 - RAM ($FE9)", "1");
-  items1.push_back("2 - RAM ($FEA)", "2");
-  items1.push_back("3 - RAM ($FEB)", "3");
+  items1.push_back("0 - RAM ($FE8)");
+  items1.push_back("1 - RAM ($FE9)");
+  items1.push_back("2 - RAM ($FEA)");
+  items1.push_back("3 - RAM ($FEB)");
 
   const int lwidth = font.getStringWidth("Set slice for upper 256B: "),
             fwidth = font.getStringWidth("3 - RAM ($FEB)");

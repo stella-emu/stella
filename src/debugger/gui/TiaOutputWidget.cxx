@@ -46,7 +46,7 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   _type = kTiaOutputWidget;
 
   // Create context menu for commands
-  StringMap l;
+  VariantList l;
   l.push_back("Fill to scanline", "scanline");
   l.push_back("Set breakpoint", "bp");
   l.push_back("Set zoom position", "zoom");
@@ -89,7 +89,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
   {
     case ContextMenu::kItemSelectedCmd:
     {
-      const string& rmb = myMenu->getSelectedTag();
+      const string& rmb = myMenu->getSelectedTag().toString();
 
       if(rmb == "scanline")
       {

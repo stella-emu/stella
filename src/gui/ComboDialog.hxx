@@ -23,7 +23,7 @@
 class PopUpWidget;
 class EditTextWidget;
 class StaticTextWidget;
-class StringMap;
+class VariantList;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -32,7 +32,7 @@ class OSystem;
 class ComboDialog : public Dialog
 {
   public:
-    ComboDialog(GuiObject* boss, const GUI::Font& font, const StringMap& combolist);
+    ComboDialog(GuiObject* boss, const GUI::Font& font, const VariantList& combolist);
     ~ComboDialog();
 
     /** Place the dialog onscreen and center it */

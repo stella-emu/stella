@@ -45,11 +45,11 @@ CartridgeCMWidget::CartridgeCMWidget(
   int xpos = 10,
       ypos = addBaseInformation(size, "CompuMate", info) + myLineHeight;
 
-  StringMap items;
-  items.push_back(" 0 ", "0");
-  items.push_back(" 1 ", "1");
-  items.push_back(" 2 ", "2");
-  items.push_back(" 3 ", "3");
+  VariantList items;
+  items.push_back(" 0 ");
+  items.push_back(" 1 ");
+  items.push_back(" 2 ");
+  items.push_back(" 3 ");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth(" 0 "),
                     myLineHeight, items, "Set bank: ",

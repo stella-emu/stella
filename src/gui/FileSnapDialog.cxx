@@ -149,7 +149,7 @@ FileSnapDialog::FileSnapDialog(
   wid.push_back(mySnap1x);
 
   // Snapshot interval (continuous mode)
-  StringMap items;
+  VariantList items;
   items.clear();
   items.push_back("1 second", "1");
   items.push_back("2 seconds", "2");
@@ -223,7 +223,8 @@ void FileSnapDialog::saveConfig()
   instance().settings().setValue("nvramdir", myNVRamPath->getEditString());
   instance().settings().setValue("sssingle", mySnapSingle->getState());
   instance().settings().setValue("ss1x", mySnap1x->getState());
-  instance().settings().setValue("ssinterval", mySnapInterval->getSelectedTag());
+  instance().settings().setValue("ssinterval",
+    mySnapInterval->getSelectedTag().toString());
 
   // Flush changes to disk and inform the OSystem
   instance().saveConfig();

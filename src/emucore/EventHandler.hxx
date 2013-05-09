@@ -27,9 +27,9 @@ class Console;
 class OSystem;
 class DialogContainer;
 class EventMappingWidget;
-class StringMap;
-class StringList;
 class MouseControl;
+class StringList;
+class VariantList;
 
 #include "Array.hxx"
 #include "Event.hxx"
@@ -210,7 +210,7 @@ class EventHandler
     bool frying() const { return myFryingFlag; }
 
     void getActionList(EventMode mode, StringList& list) const;
-    void getComboList(EventMode mode, StringMap& map) const;
+    void getComboList(EventMode mode, VariantList& map) const;
 
     /** Used to access the list of events assigned to a specific combo event. */
     void getComboListForEvent(Event::Type event, StringList& list) const;

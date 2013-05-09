@@ -48,23 +48,23 @@ CartridgeF0Widget::CartridgeF0Widget(
       ypos = addBaseInformation(size, "Dynacom Megaboy",
                                 info.str()) + myLineHeight;
 
-  StringMap items;
-  items.push_back("  0", "0");
-  items.push_back("  1", "1");
-  items.push_back("  2", "2");
-  items.push_back("  3", "3");
-  items.push_back("  4", "4");
-  items.push_back("  5", "5");
-  items.push_back("  6", "6");
-  items.push_back("  7", "7");
-  items.push_back("  8", "8");
-  items.push_back("  9", "9");
-  items.push_back(" 10", "10");
-  items.push_back(" 11", "11");
-  items.push_back(" 12", "12");
-  items.push_back(" 13", "13");
-  items.push_back(" 14", "14");
-  items.push_back(" 15", "15");
+  VariantList items;
+  items.push_back("  0");
+  items.push_back("  1");
+  items.push_back("  2");
+  items.push_back("  3");
+  items.push_back("  4");
+  items.push_back("  5");
+  items.push_back("  6");
+  items.push_back("  7");
+  items.push_back("  8");
+  items.push_back("  9");
+  items.push_back(" 10");
+  items.push_back(" 11");
+  items.push_back(" 12");
+  items.push_back(" 13");
+  items.push_back(" 14");
+  items.push_back(" 15");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth(" 15 "),
                     myLineHeight, items, "Set bank: ",

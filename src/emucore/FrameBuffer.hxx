@@ -37,6 +37,7 @@ namespace GUI {
 #include "Rect.hxx"
 #include "StringList.hxx"
 #include "NTSCFilter.hxx"
+#include "Variant.hxx"
 #include "bspf.hxx"
 
 // Different types of framebuffer derived objects
@@ -258,7 +259,7 @@ class FrameBuffer
     /**
       Get the supported TIA filters for the given framebuffer type.
     */
-    const StringMap& supportedTIAFilters(const string& type);
+    const VariantList& supportedTIAFilters(const string& type);
 
     /**
       Get the TIA pixel associated with the given TIA buffer index,
@@ -526,7 +527,7 @@ class FrameBuffer
     Uint8 myDefPalette24[256+kNumColors][3];
 
     // Names of the TIA filters that can be used for this framebuffer
-    StringMap myTIAFilters;
+    VariantList myTIAFilters;
 
   private:
     /**

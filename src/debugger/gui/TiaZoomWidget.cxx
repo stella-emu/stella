@@ -58,7 +58,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   myYCenter = myNumRows >> 1;
 
   // Create context menu for zoom levels
-  StringMap l;
+  VariantList l;
   l.push_back("2x zoom", "2");
   l.push_back("4x zoom", "4");
   l.push_back("8x zoom", "8");
@@ -202,7 +202,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
   {
     case ContextMenu::kItemSelectedCmd:
     {
-      int level = (int) atoi(myMenu->getSelectedTag().c_str());
+      int level = myMenu->getSelectedTag().toInt();
       if(level > 0)
         zoom(level);
       break;

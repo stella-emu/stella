@@ -60,7 +60,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   myScrollBar->setTarget(this);
 
   // Add context menu
-  StringMap l;
+  VariantList l;
 //  l.push_back("Add bookmark");
   l.push_back("Save ROM", "saverom");
   l.push_back("Set PC", "setpc");

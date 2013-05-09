@@ -46,7 +46,7 @@ CartridgeMCWidget::CartridgeMCWidget(
       ypos = addBaseInformation(size, "Chris Wilkson's Megacart", info) +
              myLineHeight;
 
-  StringMap items;
+  VariantList items;
   // Add 128 1K 'ROM' blocks
   for(uInt32 i = 0x80; i <= 0xFF; ++i)
   {
@@ -98,15 +98,10 @@ CartridgeMCWidget::CartridgeMCWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMCWidget::loadConfig()
 {
-  const string& b0 = BSPF_toString(myCart.myCurrentBlock[0]);
-  const string& b1 = BSPF_toString(myCart.myCurrentBlock[1]);
-  const string& b2 = BSPF_toString(myCart.myCurrentBlock[2]);
-  const string& b3 = BSPF_toString(myCart.myCurrentBlock[3]);
-
-  mySlice0->setSelected(b0, b0);
-  mySlice1->setSelected(b1, b1);
-  mySlice2->setSelected(b2, b2);
-  mySlice3->setSelected(b3, b3);
+  mySlice0->setSelected(myCart.myCurrentBlock[0]);
+  mySlice1->setSelected(myCart.myCurrentBlock[1]);
+  mySlice2->setSelected(myCart.myCurrentBlock[2]);
+  mySlice3->setSelected(myCart.myCurrentBlock[3]);
 
   CartDebugWidget::loadConfig();
 }
@@ -120,16 +115,16 @@ void CartridgeMCWidget::handleCommand(CommandSender* sender,
   switch(cmd)
   {
     case kSlice0Changed:
-      myCart.myCurrentBlock[0] = atoi(mySlice0->getSelectedTag().c_str());
+      myCart.myCurrentBlock[0] = mySlice0->getSelectedTag().toInt();
       break;
     case kSlice1Changed:
-      myCart.myCurrentBlock[1] = atoi(mySlice1->getSelectedTag().c_str());
+      myCart.myCurrentBlock[1] = mySlice1->getSelectedTag().toInt();
       break;
     case kSlice2Changed:
-      myCart.myCurrentBlock[2] = atoi(mySlice2->getSelectedTag().c_str());
+      myCart.myCurrentBlock[2] = mySlice2->getSelectedTag().toInt();
       break;
     case kSlice3Changed:
-      myCart.myCurrentBlock[3] = atoi(mySlice3->getSelectedTag().c_str());
+      myCart.myCurrentBlock[3] = mySlice3->getSelectedTag().toInt();
       break;
   }
 

@@ -46,11 +46,11 @@ CartridgeF6Widget::CartridgeF6Widget(
   int xpos = 10,
       ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
 
-  StringMap items;
-  items.push_back("0 ($FF6)", "0");
-  items.push_back("1 ($FF7)", "1");
-  items.push_back("2 ($FF8)", "2");
-  items.push_back("3 ($FF9)", "3");
+  VariantList items;
+  items.push_back("0 ($FF6)");
+  items.push_back("1 ($FF7)");
+  items.push_back("2 ($FF8)");
+  items.push_back("3 ($FF9)");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",

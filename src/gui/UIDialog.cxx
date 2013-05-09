@@ -51,7 +51,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   int xpos, ypos, tabID;
   int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
@@ -351,15 +351,15 @@ void UIDialog::saveConfig()
 
   // Launcher font
   instance().settings().setValue("launcherfont",
-    myLauncherFontPopup->getSelectedTag());
+    myLauncherFontPopup->getSelectedTag().toString());
 
   // ROM launcher info viewer
   instance().settings().setValue("romviewer",
-    myRomViewerPopup->getSelectedTag());
+    myRomViewerPopup->getSelectedTag().toString());
 
   // Exit to Launcher
   instance().settings().setValue("exitlauncher",
-    myLauncherExitPopup->getSelectedTag());
+    myLauncherExitPopup->getSelectedTag().toString());
 
   // Debugger size
   instance().settings().setValue("debuggerres",
@@ -368,17 +368,17 @@ void UIDialog::saveConfig()
 
   // UI palette
   instance().settings().setValue("uipalette",
-    myPalettePopup->getSelectedTag());
+    myPalettePopup->getSelectedTag().toString());
 
   // Listwidget quick delay
   instance().settings().setValue("listdelay",
-    myListDelayPopup->getSelectedTag());
-  ListWidget::setQuickSelectDelay(atoi(myListDelayPopup->getSelectedTag().c_str()));
+    myListDelayPopup->getSelectedTag().toString());
+  ListWidget::setQuickSelectDelay(myListDelayPopup->getSelectedTag().toInt());
 
   // Mouse wheel lines
   instance().settings().setValue("mwheel",
-    myWheelLinesPopup->getSelectedTag());
-  ScrollBarWidget::setWheelLines(atoi(myWheelLinesPopup->getSelectedTag().c_str()));
+    myWheelLinesPopup->getSelectedTag().toString());
+  ScrollBarWidget::setWheelLines(myWheelLinesPopup->getSelectedTag().toInt());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

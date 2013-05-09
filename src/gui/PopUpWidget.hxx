@@ -45,7 +45,7 @@ class PopUpWidget : public Widget, public CommandSender
 {
   public:
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                int x, int y, int w, int h, const StringMap& items,
+                int x, int y, int w, int h, const VariantList& items,
                 const string& label, int labelWidth = 0, int cmd = 0);
     ~PopUpWidget();
 
@@ -53,16 +53,17 @@ class PopUpWidget : public Widget, public CommandSender
 
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */
-    void addItems(const StringMap& items) { myMenu->addItems(items);       }
-    void setSelected(int item)            { myMenu->setSelected(item);     }
-    void setSelected(const string& tag,
-                     const string& def)   { myMenu->setSelected(tag, def); }
+    void addItems(const VariantList& items) { myMenu->addItems(items);     }
+    void setSelected(int item)              { myMenu->setSelected(item);   }
+    void setSelected(const Variant& tag,
+                     const Variant& def = EmptyVariant)
+                                          { myMenu->setSelected(tag, def); }
     void setSelectedMax()                 { myMenu->setSelectedMax();      }
     void clearSelection()                 { myMenu->clearSelection();      }
 
     int getSelected() const               { return myMenu->getSelected();     }
     const string& getSelectedName() const { return myMenu->getSelectedName(); }
-    const string& getSelectedTag() const  { return myMenu->getSelectedTag();  }
+    const Variant& getSelectedTag() const { return myMenu->getSelectedTag();  }
 
     bool wantsFocus()  { return true; }
 

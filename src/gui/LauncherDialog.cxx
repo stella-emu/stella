@@ -183,7 +183,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   addToFocusList(wid);
 
   // Create context menu for ROM list options
-  StringMap l;
+  VariantList l;
   l.push_back("Override properties", "override");
   l.push_back("Filter listing", "filter");
   l.push_back("Reload listing", "reload");
@@ -387,7 +387,7 @@ void LauncherDialog::loadRomInfo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleContextMenu()
 {
-  const string& cmd = myMenu->getSelectedTag();
+  const string& cmd = myMenu->getSelectedTag().toString();
 
   if(cmd == "override")
   {

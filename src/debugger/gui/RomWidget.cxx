@@ -72,7 +72,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
 
   // 'resolvedata' setting for Distella
   xpos += myBank->getWidth() + 20;
-  StringMap items;
+  VariantList items;
   items.push_back("Never", "never");
   items.push_back("Always", "always");
   items.push_back("Automatic", "auto");
@@ -118,7 +118,8 @@ void RomWidget::loadConfig()
   myCurrentBank = cart.getBank();
 
   // Fill romlist the current bank of source or disassembly
-  myListIsDirty |= cart.disassemble(myResolveData->getSelectedTag(), myListIsDirty);
+  myListIsDirty |= cart.disassemble(myResolveData->getSelectedTag().toString(),
+                                    myListIsDirty);
   if(myListIsDirty)
   {
     myRomList->setList(cart.disassembly(), dbg.breakpoints());
@@ -156,7 +157,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case ContextMenu::kItemSelectedCmd:
     {
-      const string& rmb = myRomList->myMenu->getSelectedTag();
+      const string& rmb = myRomList->myMenu->getSelectedTag().toString();
 
       if(rmb == "saverom")
       {

@@ -31,7 +31,7 @@
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 #include "ComboDialog.hxx"
-
+#include "Variant.hxx"
 #include "EventMappingWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,7 +97,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myComboButton->setTarget(this);
     addFocusWidget(myComboButton);
 
-    StringMap combolist;
+    VariantList combolist;
     instance().eventHandler().getComboList(mode, combolist);
     myComboDialog = new ComboDialog(boss, font, combolist);
   }

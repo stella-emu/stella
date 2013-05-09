@@ -108,7 +108,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
             fontHeight = font.getFontHeight();
   int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Devices/ports
   tabID = myTab->addTab("Devices & Ports");
@@ -234,7 +234,7 @@ void InputDialog::loadConfig()
 void InputDialog::saveConfig()
 {
   // Left & right ports
-  instance().eventHandler().mapStelladaptors(mySAPort->getSelectedTag());
+  instance().eventHandler().mapStelladaptors(mySAPort->getSelectedTag().toString());
 
   // Joystick deadzone
   int deadzone = myDeadzone->getValue();

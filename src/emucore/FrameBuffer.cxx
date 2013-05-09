@@ -929,7 +929,7 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const StringMap& FrameBuffer::supportedTIAFilters(const string& type)
+const VariantList& FrameBuffer::supportedTIAFilters(const string& type)
 {
   uInt32 max_zoom = maxWindowSizeForScreen(320, 210,
                     myOSystem->desktopWidth(), myOSystem->desktopHeight());

@@ -51,7 +51,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   int lwidth = font.getStringWidth("Sample Size (*): "),
       pwidth = font.getStringWidth("512 bytes");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = 35 * fontWidth + 10;
@@ -159,10 +159,10 @@ void AudioDialog::saveConfig()
   instance().sound().setVolume(myVolumeSlider->getValue());
 
   // Fragsize
-  settings.setValue("fragsize", myFragsizePopup->getSelectedTag());
+  settings.setValue("fragsize", myFragsizePopup->getSelectedTag().toString());
 
   // Output frequency
-  settings.setValue("freq", myFreqPopup->getSelectedTag());
+  settings.setValue("freq", myFreqPopup->getSelectedTag().toString());
 
   // Enable/disable sound (requires a restart to take effect)
   instance().sound().setEnabled(mySoundEnableCheckbox->getState());

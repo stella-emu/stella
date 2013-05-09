@@ -30,7 +30,7 @@ CartridgeSBWidget::CartridgeSBWidget(
 {
   uInt32 size = myCart.mySize;
 
-  StringMap items;
+  VariantList items;
   ostringstream info, bank;
   info << "SB SUPERbanking, 32 or 64 4K banks\n"
        << "Hotspots are from $800 to $"
@@ -48,7 +48,7 @@ CartridgeSBWidget::CartridgeSBWidget(
          << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
 
     bank << dec << setw(2) << setfill(' ') << i << " ($" << HEX2 << spot << ")";
-    items.push_back(bank.str(), BSPF_toString(i));
+    items.push_back(bank.str());
     bank.str("");
   }
 

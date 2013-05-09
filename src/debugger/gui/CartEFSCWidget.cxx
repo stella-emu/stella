@@ -49,23 +49,23 @@ CartridgeEFSCWidget::CartridgeEFSCWidget(
       ypos = addBaseInformation(size, "Paul Slocum / Homestar Runner",
                                 info.str()) + myLineHeight;
 
-  StringMap items;
-  items.push_back(" 0 ($FE0)", "0");
-  items.push_back(" 1 ($FE1)", "1");
-  items.push_back(" 2 ($FE2)", "2");
-  items.push_back(" 3 ($FE3)", "3");
-  items.push_back(" 4 ($FE4)", "4");
-  items.push_back(" 5 ($FE5)", "5");
-  items.push_back(" 6 ($FE6)", "6");
-  items.push_back(" 7 ($FE7)", "7");
-  items.push_back(" 8 ($FE8)", "8");
-  items.push_back(" 9 ($FE9)", "9");
-  items.push_back("10 ($FEA)", "10");
-  items.push_back("11 ($FEB)", "11");
-  items.push_back("12 ($FEC)", "12");
-  items.push_back("13 ($FED)", "13");
-  items.push_back("14 ($FEE)", "14");
-  items.push_back("15 ($FEF)", "15");
+  VariantList items;
+  items.push_back(" 0 ($FE0)");
+  items.push_back(" 1 ($FE1)");
+  items.push_back(" 2 ($FE2)");
+  items.push_back(" 3 ($FE3)");
+  items.push_back(" 4 ($FE4)");
+  items.push_back(" 5 ($FE5)");
+  items.push_back(" 6 ($FE6)");
+  items.push_back(" 7 ($FE7)");
+  items.push_back(" 8 ($FE8)");
+  items.push_back(" 9 ($FE9)");
+  items.push_back("10 ($FEA)");
+  items.push_back("11 ($FEB)");
+  items.push_back("12 ($FEC)");
+  items.push_back("13 ($FED)");
+  items.push_back("14 ($FEE)");
+  items.push_back("15 ($FEF)");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("15 ($FE0) "),
                     myLineHeight, items, "Set bank: ",

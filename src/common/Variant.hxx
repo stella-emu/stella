@@ -20,8 +20,9 @@
 #ifndef VARIANT_HXX
 #define VARIANT_HXX
 
-#include "bspf.hxx"
+#include "Array.hxx"
 #include "Rect.hxx"
+#include "bspf.hxx"
 
 /**
   This class implements a very simple variant type, which is convertible
@@ -74,6 +75,18 @@ class Variant
     }
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Variant EmptyVariant("");
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class VariantList : public Common::Array< pair<string,Variant> >
+{
+  public:
+    void push_back(const string& name, const Variant& tag = EmptyVariant)
+    {
+      ensureCapacity(_size + 1);
+      _data[_size++] = make_pair(name, tag);
+    }
+};
 
 #endif

@@ -51,15 +51,15 @@ CartridgeFA2Widget::CartridgeFA2Widget(
       ypos = addBaseInformation(size, "Chris D. Walton (Star Castle 2600)",
                 info.str(), 15) + myLineHeight;
 
-  StringMap items;
-  items.push_back("0 ($FF5)", "0");
-  items.push_back("1 ($FF6)", "1");
-  items.push_back("2 ($FF7)", "2");
-  items.push_back("3 ($FF8)", "3");
-  items.push_back("4 ($FF9)", "4");
-  items.push_back("5 ($FFA)", "5");
+  VariantList items;
+  items.push_back("0 ($FF5)");
+  items.push_back("1 ($FF6)");
+  items.push_back("2 ($FF7)");
+  items.push_back("3 ($FF8)");
+  items.push_back("4 ($FF9)");
+  items.push_back("5 ($FFA)");
   if(cart.bankCount() == 7)
-    items.push_back("6 ($FFB)", "6");
+    items.push_back("6 ($FFB)");
 
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),

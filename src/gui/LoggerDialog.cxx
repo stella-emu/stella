@@ -62,7 +62,7 @@ LoggerDialog::LoggerDialog(OSystem* osystem, DialogContainer* parent,
 
   // Level of logging (how much info to print)
   xpos += 20;
-  StringMap items;
+  VariantList items;
   items.clear();
   items.push_back("None", "0");
   items.push_back("Basic", "1");
@@ -108,7 +108,7 @@ void LoggerDialog::loadConfig()
 void LoggerDialog::saveConfig()
 {
   instance().settings().setValue("loglevel",
-    myLogLevel->getSelectedTag());
+    myLogLevel->getSelectedTag().toString());
   instance().settings().setValue("logtoconsole", myLogToConsole->getState());
 }
 

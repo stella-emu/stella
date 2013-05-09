@@ -26,6 +26,7 @@
 #include "bspf.hxx"
 #include "Command.hxx"
 #include "Dialog.hxx"
+#include "Variant.hxx"
 
 /**
  * Popup context menu which, when clicked, "pop up" a list of items and
@@ -46,11 +47,11 @@ class ContextMenu : public Dialog, public CommandSender
 
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
-                const StringMap& items, int cmd = 0);
+                const VariantList& items, int cmd = 0);
     virtual ~ContextMenu();
 
     /** Add the given items to the widget. */
-    void addItems(const StringMap& items);
+    void addItems(const VariantList& items);
 
     /** Show context menu onscreen at the specified coordinates */
     void show(uInt32 x, uInt32 y, int item = -1);
@@ -59,7 +60,7 @@ class ContextMenu : public Dialog, public CommandSender
     void setSelected(int item);
 	
     /** Select the first entry matching the given tag. */
-    void setSelected(const string& tag, const string& defaultTag);
+    void setSelected(const Variant& tag, const Variant& defaultTag);
 
     /** Select the highest/last entry in the internal list. */
     void setSelectedMax();
@@ -70,7 +71,7 @@ class ContextMenu : public Dialog, public CommandSender
     /** Accessor methods for the currently selected item. */
     int getSelected() const;
     const string& getSelectedName() const;
-    const string& getSelectedTag() const;
+    const Variant& getSelectedTag() const;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center();
@@ -116,7 +117,7 @@ class ContextMenu : public Dialog, public CommandSender
     void sendSelection();
 
   private:
-    StringMap _entries;
+    VariantList _entries;
 
     int _rowHeight;
     int _firstEntry, _numEntries;

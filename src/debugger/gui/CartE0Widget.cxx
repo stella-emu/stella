@@ -51,33 +51,33 @@ CartridgeE0Widget::CartridgeE0Widget(
   int xpos = 10,
       ypos = addBaseInformation(size, "Parker Brothers", info) + myLineHeight;
 
-  StringMap items0, items1, items2;
-  items0.push_back("0 ($FE0)", "0");
-  items0.push_back("1 ($FE1)", "1");
-  items0.push_back("2 ($FE2)", "2");
-  items0.push_back("3 ($FE3)", "3");
-  items0.push_back("4 ($FE4)", "4");
-  items0.push_back("5 ($FE5)", "5");
-  items0.push_back("6 ($FE6)", "6");
-  items0.push_back("7 ($FE7)", "7");
+  VariantList items0, items1, items2;
+  items0.push_back("0 ($FE0)");
+  items0.push_back("1 ($FE1)");
+  items0.push_back("2 ($FE2)");
+  items0.push_back("3 ($FE3)");
+  items0.push_back("4 ($FE4)");
+  items0.push_back("5 ($FE5)");
+  items0.push_back("6 ($FE6)");
+  items0.push_back("7 ($FE7)");
 
-  items1.push_back("0 ($FE8)", "0");
-  items1.push_back("1 ($FE9)", "1");
-  items1.push_back("2 ($FEA)", "2");
-  items1.push_back("3 ($FEB)", "3");
-  items1.push_back("4 ($FEC)", "4");
-  items1.push_back("5 ($FED)", "5");
-  items1.push_back("6 ($FEE)", "6");
-  items1.push_back("7 ($FEF)", "7");
+  items1.push_back("0 ($FE8)");
+  items1.push_back("1 ($FE9)");
+  items1.push_back("2 ($FEA)");
+  items1.push_back("3 ($FEB)");
+  items1.push_back("4 ($FEC)");
+  items1.push_back("5 ($FED)");
+  items1.push_back("6 ($FEE)");
+  items1.push_back("7 ($FEF)");
 
-  items2.push_back("0 ($FF0)", "0");
-  items2.push_back("1 ($FF1)", "1");
-  items2.push_back("2 ($FF2)", "2");
-  items2.push_back("3 ($FF3)", "3");
-  items2.push_back("4 ($FF4)", "4");
-  items2.push_back("5 ($FF5)", "5");
-  items2.push_back("6 ($FF6)", "6");
-  items2.push_back("7 ($FF7)", "7");
+  items2.push_back("0 ($FF0)");
+  items2.push_back("1 ($FF1)");
+  items2.push_back("2 ($FF2)");
+  items2.push_back("3 ($FF3)");
+  items2.push_back("4 ($FF4)");
+  items2.push_back("5 ($FF5)");
+  items2.push_back("6 ($FF6)");
+  items2.push_back("7 ($FF7)");
 
   const int lwidth = font.getStringWidth("Set slice for segment X: ");
   mySlice0 =

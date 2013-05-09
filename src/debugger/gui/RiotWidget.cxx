@@ -64,7 +64,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
             lineHeight = font.getLineHeight();
   int xpos = 10, ypos = 25, lwidth = 9 * fontWidth, col = 0;
   StaticTextWidget* t;
-  StringMap items;
+  VariantList items;
 
   // Set the strings to be used in the various bit registers
   // We only do this once because it's the state that changes, not the strings
@@ -378,11 +378,11 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kP0DiffChanged:
-      riot.diffP0(myP0Diff->getSelectedTag() != "b");
+      riot.diffP0(myP0Diff->getSelectedTag().toString() != "b");
       break;
 
     case kP1DiffChanged:
-      riot.diffP1(myP1Diff->getSelectedTag() != "b");
+      riot.diffP1(myP1Diff->getSelectedTag().toString() != "b");
       break;
 
     case kTVTypeChanged:

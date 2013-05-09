@@ -40,33 +40,21 @@ Cartridge4A50Widget::Cartridge4A50Widget(
       ypos = addBaseInformation(cart.mySize, "John Payson / Supercat", info) +
                myLineHeight;
 
-  StringMap items16, items32, items128, items256;
+  VariantList items16, items32, items128, items256;
   for(uInt32 i = 0; i < 16; ++i)
-  {
-    const string& b = BSPF_toString(i);
-    items16.push_back(b, b);
-  }
+    items16.push_back(BSPF_toString(i));
   items16.push_back("Inactive", "");
 
   for(uInt32 i = 0; i < 32; ++i)
-  {
-    const string& b = BSPF_toString(i);
-    items32.push_back(b, b);
-  }
+    items32.push_back(BSPF_toString(i));
   items32.push_back("Inactive", "");
 
   for(uInt32 i = 0; i < 128; ++i)
-  {
-    const string& b = BSPF_toString(i);
-    items128.push_back(b, b);
-  }
+    items128.push_back(BSPF_toString(i));
   items128.push_back("Inactive", "");
 
   for(uInt32 i = 0; i < 256; ++i)
-  {
-    const string& b = BSPF_toString(i);
-    items256.push_back(b, b);
-  }
+    items256.push_back(BSPF_toString(i));
   items256.push_back("Inactive", "");
 
   string lowerlabel  = "Set lower 2K region ($F000 - $F7FF): ";

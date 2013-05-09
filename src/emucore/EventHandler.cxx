@@ -1811,7 +1811,7 @@ void EventHandler::getActionList(EventMode mode, StringList& l) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getComboList(EventMode, StringMap& l) const
+void EventHandler::getComboList(EventMode, VariantList& l) const
 {
   // For now, this only works in emulation mode
 

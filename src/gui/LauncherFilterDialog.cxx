@@ -48,7 +48,7 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   int lwidth = font.getStringWidth("Show: "),
       pwidth = font.getStringWidth("ROMs ending with");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = 3 * buttonWidth;//lwidth + pwidth + fontWidth*5 + 10;
@@ -173,7 +173,7 @@ void LauncherFilterDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFilterDialog::saveConfig()
 {
-  const string& type = myFileType->getSelectedTag();
+  const string& type = myFileType->getSelectedTag().toString();
   if(type == "allfiles" || type == "allroms")
     instance().settings().setValue("launcherexts", type);
   else
@@ -251,7 +251,7 @@ void LauncherFilterDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kFileTypeChanged:
-      handleFileTypeChange(myFileType->getSelectedTag());
+      handleFileTypeChange(myFileType->getSelectedTag().toString());
       break;
 
     default:

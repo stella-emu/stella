@@ -52,20 +52,14 @@ Cartridge3EWidget::Cartridge3EWidget(
   int xpos = 10,
       ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
 
-  StringMap romitems;
+  VariantList romitems;
   for(uInt32 i = 0; i < myNumRomBanks; ++i)
-  {
-    const string& b = BSPF_toString(i);
-    romitems.push_back(b, b);
-  }
+    romitems.push_back(BSPF_toString(i));
   romitems.push_back("Inactive", "");
 
-  StringMap ramitems;
+  VariantList ramitems;
   for(uInt32 i = 0; i < myNumRamBanks; ++i)
-  {
-    const string& b = BSPF_toString(i);
-    ramitems.push_back(b, b);
-  }
+    ramitems.push_back(BSPF_toString(i));
   ramitems.push_back("Inactive", "");
 
   ostringstream label;

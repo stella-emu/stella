@@ -35,7 +35,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
-                         const StringMap& combolist)
+                         const VariantList& combolist)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
     myComboEvent(Event::NoType)
 {
@@ -129,7 +129,7 @@ void ComboDialog::saveConfig()
 {
   StringList events;
   for(int i = 0; i < 8; ++i)
-    events.push_back(myEvents[i]->getSelectedTag());
+    events.push_back(myEvents[i]->getSelectedTag().toString());
 
   instance().eventHandler().setComboListForEvent(myComboEvent, events);
 }

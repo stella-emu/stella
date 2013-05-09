@@ -44,7 +44,7 @@ static unsigned int up_down_arrows[8] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, const StringMap& list,
+                         int x, int y, int w, int h, const VariantList& list,
                          const string& label, int labelWidth, int cmd)
   : Widget(boss, font, x, y - 1, w, h + 2),
     CommandSender(boss),

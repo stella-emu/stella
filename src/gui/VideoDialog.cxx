@@ -56,7 +56,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
       pwidth = font.getStringWidth("1920x1200"),
       fwidth = font.getStringWidth("Renderer: ");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = BSPF_min(52 * fontWidth + 10, max_w);
@@ -409,7 +409,7 @@ void VideoDialog::loadConfig()
   // TIA Filter
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
-  const StringMap& items =
+  const VariantList& items =
     instance().frameBuffer().supportedTIAFilters(gl ? "gl" : "soft");
   myTIAFilterPopup->addItems(items);
   myTIAFilterPopup->setSelected(instance().settings().getString("tia_filter"),
@@ -495,23 +495,28 @@ void VideoDialog::loadConfig()
 void VideoDialog::saveConfig()
 {
   // Renderer setting
-  instance().settings().setValue("video", myRendererPopup->getSelectedTag());
+  instance().settings().setValue("video",
+    myRendererPopup->getSelectedTag().toString());
 
   // TIA Filter
-  instance().settings().setValue("tia_filter", myTIAFilterPopup->getSelectedTag());
+  instance().settings().setValue("tia_filter",
+    myTIAFilterPopup->getSelectedTag().toString());
 
   // TIA Palette
-  instance().settings().setValue("palette", myTIAPalettePopup->getSelectedTag());
+  instance().settings().setValue("palette",
+    myTIAPalettePopup->getSelectedTag().toString());
 
   // Fullscreen resolution
-  instance().settings().setValue("fullres", myFSResPopup->getSelectedTag());
+  instance().settings().setValue("fullres",
+    myFSResPopup->getSelectedTag().toString());
 
   // Wait between frames
-  instance().settings().setValue("timing", myFrameTimingPopup->getSelectedTag());
+  instance().settings().setValue("timing",
+    myFrameTimingPopup->getSelectedTag().toString());
 
   // GL Filter setting
   instance().settings().setValue("gl_inter",
-    myGLFilterPopup->getSelectedTag() == "linear" ? true : false);
+    myGLFilterPopup->getSelectedTag().toString() == "linear" ? true : false);
 
   // GL aspect ratio setting (NTSC and PAL)
   instance().settings().setValue("gl_aspectn", myNAspectRatioLabel->getLabel());
@@ -528,7 +533,8 @@ void VideoDialog::saveConfig()
   }
 
   // Fullscreen
-  instance().settings().setValue("fullscreen", myFullscreenPopup->getSelectedTag());
+  instance().settings().setValue("fullscreen",
+    myFullscreenPopup->getSelectedTag().toString());
 
   // PAL color-loss effect
   instance().settings().setValue("colorloss", myColorLossCheckbox->getState());
@@ -551,7 +557,8 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("fastscbios", myFastSCBiosCheckbox->getState());
 
   // TV Mode
-  instance().settings().setValue("tv_filter", myTVMode->getSelectedTag());
+  instance().settings().setValue("tv_filter",
+    myTVMode->getSelectedTag().toString());
 
   // TV Custom adjustables
   NTSCFilter::Adjustable adj;
@@ -742,11 +749,11 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kFullScrChanged:
-      handleFullscreenChange(myFullscreenPopup->getSelectedTag() != "-1");
+      handleFullscreenChange(myFullscreenPopup->getSelectedTag().toString() != "-1");
       break;
 
     case kTVModeChanged:
-      handleTVModeChange((NTSCFilter::Preset)atoi(myTVMode->getSelectedTag().c_str()));
+      handleTVModeChange((NTSCFilter::Preset)myTVMode->getSelectedTag().toInt());
 
     case kTVSharpChanged:  myTVSharpLabel->setValue(myTVSharp->getValue());
       break;

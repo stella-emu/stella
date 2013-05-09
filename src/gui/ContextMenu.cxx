@@ -29,7 +29,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
-                         const StringMap& items, int cmd)
+                         const VariantList& items, int cmd)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
     _rowHeight(font.getLineHeight()),
@@ -56,7 +56,7 @@ ContextMenu::~ContextMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::addItems(const StringMap& items)
+void ContextMenu::addItems(const VariantList& items)
 {
   _entries.clear();
   _entries = items;
@@ -140,13 +140,13 @@ void ContextMenu::setSelected(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::setSelected(const string& tag, const string& defaultTag)
+void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 {
   if(tag != "")  // indicates that the defaultTag should be used instead
   {
     for(unsigned int item = 0; item < _entries.size(); ++item)
     { 
-      if(BSPF_equalsIgnoreCase(_entries[item].second, tag))
+      if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
       {
         setSelected(item);
         return;
@@ -157,7 +157,7 @@ void ContextMenu::setSelected(const string& tag, const string& defaultTag)
   // If we get this far, the value wasn't found; use the default value
   for(unsigned int item = 0; item < _entries.size(); ++item)
   {
-    if(BSPF_equalsIgnoreCase(_entries[item].second, defaultTag))
+    if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
     {
       setSelected(item);
       return;
@@ -190,9 +190,9 @@ const string& ContextMenu::getSelectedName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& ContextMenu::getSelectedTag() const
+const Variant& ContextMenu::getSelectedTag() const
 {
-  return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyString;
+  return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyVariant;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

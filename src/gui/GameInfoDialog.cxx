@@ -53,7 +53,7 @@ GameInfoDialog::GameInfoDialog(
   const int vBorder = 4;
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   WidgetArray wid;
-  StringMap items, ports, ctrls;
+  VariantList items, ports, ctrls;
 
   // Set real dimensions
   _w = 52 * fontWidth + 8;
@@ -515,30 +515,31 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Cartridge_ModelNo, myModelNo->getEditString());
   myGameProperties.set(Cartridge_Rarity, myRarity->getEditString());
   myGameProperties.set(Cartridge_Note, myNote->getEditString());
-  myGameProperties.set(Cartridge_Sound, mySound->getSelectedTag());
-  myGameProperties.set(Cartridge_Type, myType->getSelectedTag());
+  myGameProperties.set(Cartridge_Sound, mySound->getSelectedTag().toString());
+  myGameProperties.set(Cartridge_Type, myType->getSelectedTag().toString());
 
   // Console properties
-  myGameProperties.set(Console_LeftDifficulty, myLeftDiff->getSelectedTag());
-  myGameProperties.set(Console_RightDifficulty, myRightDiff->getSelectedTag());
-  myGameProperties.set(Console_TelevisionType, myTVType->getSelectedTag());
+  myGameProperties.set(Console_LeftDifficulty, myLeftDiff->getSelectedTag().toString());
+  myGameProperties.set(Console_RightDifficulty, myRightDiff->getSelectedTag().toString());
+  myGameProperties.set(Console_TelevisionType, myTVType->getSelectedTag().toString());
 
   // Controller properties
-  myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag());
-  myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag());
+  myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag().toString());
+  myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag().toString());
   myGameProperties.set(Console_SwapPorts,
-    myLeftPort->getSelectedTag() == "L" ? "NO" : "YES");
-  myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag());
-  string mcontrol = myMouseControl->getSelectedTag();
+    myLeftPort->getSelectedTag().toString() == "L" ? "NO" : "YES");
+  myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag().toString());
+  string mcontrol = myMouseControl->getSelectedTag().toString();
   if(mcontrol != "auto")
-    mcontrol = myMouseX->getSelectedTag() + myMouseY->getSelectedTag();
+    mcontrol = myMouseX->getSelectedTag().toString() +
+               myMouseY->getSelectedTag().toString();
   myGameProperties.set(Controller_MouseAxis, mcontrol);
 
   // Display properties
-  myGameProperties.set(Display_Format, myFormat->getSelectedTag());
+  myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
   myGameProperties.set(Display_YStart, myYStart->getEditString());
   myGameProperties.set(Display_Height, myHeight->getEditString());
-  myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag());
+  myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag().toString());
   myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel());
 
   // Determine whether to add or remove an entry from the properties set
@@ -592,7 +593,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPhosphorChanged:
     {
-      bool status = myPhosphor->getSelectedTag() == "YES";
+      bool status = myPhosphor->getSelectedTag().toString() == "YES";
       myPPBlend->setEnabled(status);
       myPPBlendLabel->setEnabled(status);
       break;
@@ -604,7 +605,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMCtrlChanged:
     {
-      bool state = myMouseControl->getSelectedTag() != "auto";
+      bool state = myMouseControl->getSelectedTag().toString() != "auto";
       myMouseX->setEnabled(state);
       myMouseY->setEnabled(state);
       break;

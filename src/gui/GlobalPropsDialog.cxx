@@ -46,7 +46,7 @@ GlobalPropsDialog::
   int lwidth = font.getStringWidth("Right Difficulty: "),
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = lwidth + pwidth + fontWidth*3 + 15;
@@ -200,19 +200,19 @@ void GlobalPropsDialog::saveConfig()
   Settings& settings = instance().settings();
   string s;
 
-  s = myBSType->getSelectedTag();
+  s = myBSType->getSelectedTag().toString();
   if(s == "AUTO") s = "";
   settings.setValue("bs", s);
 
-  s = myLeftDiff->getSelectedTag();
+  s = myLeftDiff->getSelectedTag().toString();
   if(s == "DEFAULT") s = "";
   settings.setValue("ld", s);
 
-  s = myRightDiff->getSelectedTag();
+  s = myRightDiff->getSelectedTag().toString();
   if(s == "DEFAULT") s = "";
   settings.setValue("rd", s);
 
-  s = myTVType->getSelectedTag();
+  s = myTVType->getSelectedTag().toString();
   if(s == "DEFAULT") s = "";
   settings.setValue("tv", s);
 

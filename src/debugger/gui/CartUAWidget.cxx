@@ -47,9 +47,9 @@ CartridgeUAWidget::CartridgeUAWidget(
   int xpos = 10,
       ypos = addBaseInformation(size, "UA Limited", info.str()) + myLineHeight;
 
-  StringMap items;
-  items.push_back("0 ($220)", "0");
-  items.push_back("1 ($240)", "1");
+  VariantList items;
+  items.push_back("0 ($220)");
+  items.push_back("1 ($240)");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",

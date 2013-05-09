@@ -44,11 +44,11 @@ Cartridge3FWidget::Cartridge3FWidget(
   int xpos = 10,
       ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
 
-  StringMap items;
+  VariantList items;
   for(uInt16 i = 0; i < cart.bankCount(); ++i)
   {
     const string& b = BSPF_toString(i);
-    items.push_back(b + " ($3F)", b);
+    items.push_back(b + " ($3F)");
   }
   ostringstream label;
   label << "Set bank ($" << HEX4 << start << " - $" << (start+0x7FF) << "): ";
