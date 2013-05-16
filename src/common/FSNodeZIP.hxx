@@ -59,7 +59,6 @@ class FilesystemNodeZIP : public AbstractFSNode
     bool isFile() const      { return _numFiles == 1;          }
     bool isReadable() const  { return _realNode && _realNode->isReadable(); }
     bool isWritable() const  { return false; }
-    bool isAbsolute() const  { return _realNode && _realNode->isAbsolute(); }
 
     //////////////////////////////////////////////////////////
     // For now, ZIP files cannot be modified in any way

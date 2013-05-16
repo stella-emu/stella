@@ -75,7 +75,6 @@ class Debugger : public DialogContainer
   // Make these friend classes, to ease communications with the debugger
   // Although it isn't enforced, these classes should use accessor methods
   // directly, and not touch the instance variables
-  friend class DebuggerDialog;
   friend class DebuggerParser;
   friend class EventHandler;
 
@@ -133,6 +132,11 @@ class Debugger : public DialogContainer
     void getCompletions(const char* in, StringList& list) const;
 
     /**
+      The dialog/GUI associated with the debugger
+    */
+    Dialog& dialog() const { return *myDialog; }
+
+    /**
       The debugger subsystem responsible for all CPU state
     */
     CpuDebug& cpuDebug() const { return *myCpuDebug; }
@@ -152,10 +156,12 @@ class Debugger : public DialogContainer
     */
     TIADebug& tiaDebug() const { return *myTiaDebug; }
 
-    DebuggerParser& parser() const      { return *myParser;      }
-    PackedBitArray& breakpoints() const { return *myBreakPoints; }
-    PackedBitArray& readtraps() const   { return *myReadTraps;   }
-    PackedBitArray& writetraps() const  { return *myWriteTraps;  }
+    DebuggerParser& parser() const      { return *myParser;          }
+    PackedBitArray& breakpoints() const { return *myBreakPoints;     }
+    PackedBitArray& readtraps() const   { return *myReadTraps;       }
+    PackedBitArray& writetraps() const  { return *myWriteTraps;      }
+    PromptWidget& prompt() const        { return myDialog->prompt(); }
+    RomWidget& rom() const              { return myDialog->rom();    }
 
     /**
       Run the debugger command and return the result.
@@ -240,8 +246,6 @@ class Debugger : public DialogContainer
 
     void setBreakPoint(int bp, bool set);
 
-    string saveROM(const string& filename) const;
-
     bool setBank(int bank);
     bool patchROM(int addr, int value);
 
@@ -293,9 +297,6 @@ class Debugger : public DialogContainer
 
     void reset();
     void clearAllBreakPoints();
-
-    PromptWidget& prompt() { return myDialog->prompt(); }
-    RomWidget& rom() { return myDialog->rom(); };
 
     void saveState(int state);
     void loadState(int state);

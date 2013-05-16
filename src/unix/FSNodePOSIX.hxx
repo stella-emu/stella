@@ -75,7 +75,6 @@ class FilesystemNodePOSIX : public AbstractFSNode
     bool isFile() const      { return _isFile;      }
     bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
-    bool isAbsolute() const;
     bool makeDir();
     bool rename(const string& newfile);
 

@@ -206,12 +206,6 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodePOSIX::isAbsolute() const
-{
-  return _path.length() > 0 && (_path[0] == '~' || _path[0] == '/');
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodePOSIX::makeDir()
 {
   if(mkdir(_path.c_str(), 0777) == 0)

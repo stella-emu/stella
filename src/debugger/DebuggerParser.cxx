@@ -1152,12 +1152,7 @@ void DebuggerParser::executeListtraps()
 // "loadconfig"
 void DebuggerParser::executeLoadconfig()
 {
-  if(argCount == 1)
-    commandResult << debugger.cartDebug().loadConfigFile(argStrings[0]);
-  else
-    commandResult << debugger.cartDebug().loadConfigFile();
-
-  debugger.rom().invalidate();
+  commandResult << debugger.cartDebug().loadConfigFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1174,8 +1169,7 @@ void DebuggerParser::executeLoadstate()
 // "loadsym"
 void DebuggerParser::executeLoadsym()
 {
-  commandResult << debugger.cartDebug().loadSymbolFile(argStrings[0]);
-  debugger.rom().invalidate();
+  commandResult << debugger.cartDebug().loadSymbolFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1416,31 +1410,21 @@ void DebuggerParser::executeSave()
 // "saveconfig"
 void DebuggerParser::executeSaveconfig()
 {
-  if(argCount == 1)
-    commandResult << debugger.cartDebug().saveConfigFile(argStrings[0]);
-  else
-    commandResult << debugger.cartDebug().saveConfigFile();
+  commandResult << debugger.cartDebug().saveConfigFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "savedis"
 void DebuggerParser::executeSavedisassembly()
 {
-  if(argCount == 1)
-    commandResult << debugger.cartDebug().saveDisassembly(argStrings[0]);
-  else
-    commandResult << debugger.cartDebug().saveDisassembly();
+  commandResult << debugger.cartDebug().saveDisassembly();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "saverom"
 void DebuggerParser::executeSaverom()
 {
-  const string& result = debugger.saveROM(argStrings[0]);
-  if(result != "")
-    commandResult << "saved ROM as " << result;
-  else
-    commandResult << red("failed to save ROM");
+  commandResult << debugger.cartDebug().saveRom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1917,10 +1901,10 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "loadconfig",
-    "Load Distella config file [from file xx]",
+    "Load Distella config file",
     false,
     true,
-    { kARG_FILE, kARG_MULTI_BYTE },
+    { kARG_END_ARGS },
     &DebuggerParser::executeLoadconfig
   },
 
@@ -1935,10 +1919,10 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "loadsym",
-    "Load symbol file named xx",
+    "Load symbol file",
+    false,
     true,
-    true,
-    { kARG_FILE, kARG_END_ARGS },
+    { kARG_END_ARGS },
     &DebuggerParser::executeLoadsym
   },
 
@@ -2079,28 +2063,28 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saveconfig",
-    "Save Distella config file [to file xx]",
+    "Save Distella config file",
     false,
     false,
-    { kARG_FILE, kARG_MULTI_BYTE },
+    { kARG_END_ARGS },
     &DebuggerParser::executeSaveconfig
   },
 
   {
     "savedis",
-    "Save Distella disassembly [to file xx]",
+    "Save Distella disassembly",
     false,
     false,
-    { kARG_FILE, kARG_MULTI_BYTE },
+    { kARG_END_ARGS },
     &DebuggerParser::executeSavedisassembly
   },
 
   {
     "saverom",
-    "Save (possibly patched) ROM to file xx",
-    true,
+    "Save (possibly patched) ROM",
     false,
-    { kARG_FILE, kARG_END_ARGS },
+    false,
+    { kARG_END_ARGS },
     &DebuggerParser::executeSaverom
   },
 

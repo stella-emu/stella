@@ -153,13 +153,20 @@ void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
 {
   if(!getMD5(md5, properties))
   {
-    // Create a name suitable for using in properties
-    size_t pos = rom.getName().find_last_of("/\\");
-    const string& name = pos == string::npos ? rom.getName() :
-                         rom.getName().substr(pos+1);
-
     properties.set(Cartridge_MD5, md5);
-    properties.set(Cartridge_Name, name);
+
+    // Create a name suitable for using in properties
+    const string& filename = rom.getName();
+    if(BSPF_endsWithIgnoreCase(filename, ".a26") ||
+       BSPF_endsWithIgnoreCase(filename, ".bin") ||
+       BSPF_endsWithIgnoreCase(filename, ".rom"))
+    {
+      const string& name = filename.substr(0, filename.size() - 4);
+      properties.set(Cartridge_Name, name);
+    }
+    else
+      properties.set(Cartridge_Name, filename);
+
     insert(properties, false);
   }
 }

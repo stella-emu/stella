@@ -53,6 +53,7 @@ class FileListWidget : public StringListWidget
 
     /** Determines how to display files/folders */
     void setFileListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }
+    void setFileExtension(const string& ext) { _extension = ext; }
 
     /** Set current location (file or directory) */
     void setLocation(const FilesystemNode& node, string select = "");
@@ -70,6 +71,7 @@ class FileListWidget : public StringListWidget
   private:
     FilesystemNode::ListMode _fsmode;
     FilesystemNode _node, _selected;
+    string _extension;
 
     GameList _gameList;
 };

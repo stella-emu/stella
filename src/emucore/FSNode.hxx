@@ -214,13 +214,6 @@ class FilesystemNode
     virtual bool isWritable() const;
 
     /**
-     * Indicates whether the path is a fully-qualified, absolute pathname.
-     *
-     * @return bool true if the object contains an absolute path, false otherwise.
-     */
-    virtual bool isAbsolute() const;
-
-    /**
      * Create a directory from the current node path.
      *
      * @return bool true if the directory was created, false otherwise.
@@ -245,15 +238,6 @@ class FilesystemNode
      *          a try-catch block.
      */
     virtual uInt32 read(uInt8*& buffer) const;
-
-    // TODO - this function is deprecated, and will be removed soon ...
-    /**
-      Create an absolute pathname from the given path (if it isn't already
-      absolute), pre-pending 'startpath' when necessary.  If the path doesn't
-      have an extension matching 'ext', append it to the path.
-     */
-    static string createAbsolutePath(const string& p, const string& startpath,
-                                     const string& ext);
 
   private:
     Common::SharedPtr<AbstractFSNode> _realNode;
@@ -362,13 +346,6 @@ class AbstractFSNode
      * @return bool true if the object can be written to, false otherwise.
      */
     virtual bool isWritable() const = 0;
-
-    /**
-     * Indicates whether the path is a fully-qualified, absolute pathname.
-     *
-     * @return bool true if the object contains an absolute path, false otherwise.
-     */
-    virtual bool isAbsolute() const = 0;
 
     /**
      * Create a directory from the current node path.

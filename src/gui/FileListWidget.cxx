@@ -26,7 +26,8 @@
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
-    _fsmode(FilesystemNode::kListAll)
+    _fsmode(FilesystemNode::kListAll),
+    _extension("")
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
@@ -68,6 +69,8 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
     bool isDir = content[idx].isDirectory();
     if(isDir)
       name = " [" + name + "]";
+    else if(!BSPF_endsWithIgnoreCase(name, _extension))
+      continue;
 
     _gameList.appendGame(name, content[idx].getPath(), "", isDir);
   }
@@ -110,14 +113,17 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:
-      cmd = ItemActivated;
       if(_gameList.isDir(data))
       {
+        cmd = ItemChanged;
         if(_gameList.name(data) == " [..]")
           selectParent();
         else
           setLocation(FilesystemNode(_gameList.path(data)));
       }
+      else
+        cmd = ItemActivated;
+
       break;
 
     default:

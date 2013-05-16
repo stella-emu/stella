@@ -646,225 +646,205 @@ int CartDebug::getAddress(const string& label) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::loadSymbolFile(string file)
+string CartDebug::loadSymbolFile()
 {
-  if(file == "")
-    file = myOSystem.romFile();
+  // Currently, the default naming/location for symbol files is:
+  // 1) ROM dir based on properties entry name
 
-  string::size_type spos;
-  if( (spos = file.find_last_of('.')) != string::npos )
-    file.replace(spos, file.size(), ".sym");
-  else
-    file += ".sym";
-
-  FilesystemNode node(file);
-  if(node.exists() && node.isFile())
+  if(mySymbolFile == "")
   {
-    ifstream in(node.getPath().c_str());
-    if(!in.is_open())
-      return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not found");
+    const string& propsname =
+      myConsole.properties().get(Cartridge_Name) + ".sym";
 
-    myUserAddresses.clear();
-    myUserLabels.clear();
-
-    while(!in.eof())
-    {
-      string label;
-      int value = -1;
-
-      getline(in, label);
-      stringstream buf;
-      buf << label;
-      buf >> label >> hex >> value;
-
-      if(label.length() > 0 && label[0] != '-' && value >= 0)
-        addLabel(label, value);
-    }
-    in.close();
-    return "loaded " + node.getShortPath() + " OK";
+    FilesystemNode case1(FilesystemNode(myOSystem.romFile()).getParent().getPath() +
+                         propsname);
+    if(case1.isFile() && case1.isReadable())
+      mySymbolFile = case1.getPath();
+    else
+      return DebuggerParser::red("symbol file not found in:\n  " + case1.getShortPath());
   }
-  return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not found");
+
+  FilesystemNode node(mySymbolFile);
+  ifstream in(node.getPath().c_str());
+  if(!in.is_open())
+    return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not readable");
+
+  myUserAddresses.clear();
+  myUserLabels.clear();
+
+  while(!in.eof())
+  {
+    string label;
+    int value = -1;
+
+    getline(in, label);
+    stringstream buf;
+    buf << label;
+    buf >> label >> hex >> value;
+
+    if(label.length() > 0 && label[0] != '-' && value >= 0)
+      addLabel(label, value);
+  }
+  in.close();
+  myDebugger.rom().invalidate();
+
+  return "loaded " + node.getShortPath() + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::loadConfigFile(string file)
+string CartDebug::loadConfigFile()
 {
-  FilesystemNode node(file);
+  // There are two possible locations for loading config files
+  //   (in order of decreasing relevance):
+  // 1) ROM dir based on properties entry name
+  // 2) CFG dir based on properties entry name
 
-  if(file == "")
+  if(myCfgFile == "")
   {
-    // There are three possible locations for loading config files
-    //   (in order of decreasing relevance):
-    // 1) ROM dir based on properties entry name
-    // 2) ROM dir based on actual ROM name
-    // 3) CFG dir based on properties entry name
-
     const string& propsname =
       myConsole.properties().get(Cartridge_Name) + ".cfg";
 
-    // Case 1
     FilesystemNode case1(FilesystemNode(myOSystem.romFile()).getParent().getPath() +
                          propsname);
-    if(case1.exists())
-    {
-      node = case1;
-    }
+    FilesystemNode case2(myOSystem.cfgDir() + propsname);
+
+    if(case1.isFile() && case1.isReadable())
+      myCfgFile = case1.getPath();
+    else if(case2.isFile() && case2.isReadable())
+      myCfgFile = case2.getPath();
     else
-    {
-      file = myOSystem.romFile();
-      string::size_type spos;
-      if((spos = file.find_last_of('.')) != string::npos )
-        file.replace(spos, file.size(), ".cfg");
-      else
-        file += ".cfg";
-      FilesystemNode case2(file);
-      if(case2.exists())
-      {
-        node = case2;
-      }
-      else  // Use global config file based on properties cart name
-      {
-        FilesystemNode case3(myOSystem.cfgDir() + propsname);
-        if(case3.exists())
-          node = case3;
-      }
-    }
+      return DebuggerParser::red("config file not found in:\n  " +
+          case1.getShortPath() + "\n  " + case2.getShortPath());
   }
 
-  if(node.exists() && node.isFile())
+  FilesystemNode node(myCfgFile);
+  ifstream in(node.getPath().c_str());
+  if(!in.is_open())
+    return "Unable to load directives from " + node.getPath();
+
+  // Erase all previous directives
+  for(Common::Array<BankInfo>::iterator bi = myBankInfo.begin();
+      bi != myBankInfo.end(); ++bi)
   {
-    ifstream in(node.getPath().c_str());
-    if(!in.is_open())
-      return "Unable to load directives from " + node.getPath();
-
-    // Erase all previous directives
-    for(Common::Array<BankInfo>::iterator bi = myBankInfo.begin();
-        bi != myBankInfo.end(); ++bi)
-    {
-      bi->directiveList.clear();
-    }
-
-    int currentbank = 0;
-    while(!in.eof())
-    {
-      // Skip leading space
-      int c = in.peek();
-      while(c == ' ' && c == '\t')
-      {
-        in.get();
-        c = in.peek();
-      }
-
-      string line;
-      c = in.peek();
-      if(c == '/')  // Comment, swallow line and continue
-      {
-        getline(in, line);
-        continue;
-      }
-      else if(c == '[')
-      {
-        in.get();
-        getline(in, line, ']');
-        stringstream buf(line);
-        buf >> currentbank;
-      }
-      else  // Should be commands from this point on
-      {
-        getline(in, line);
-        stringstream buf;
-        buf << line;
-
-        string directive;
-        uInt16 start = 0, end = 0;
-        buf >> directive;
-        if(BSPF_startsWithIgnoreCase(directive, "ORG"))
-        {
-          // TODO - figure out what to do with this
-          buf >> hex >> start;
-        }
-        else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
-        {
-          buf >> hex >> start >> hex >> end;
-          addDirective(CartDebug::CODE, start, end, currentbank);
-        }
-        else if(BSPF_startsWithIgnoreCase(directive, "GFX"))
-        {
-          buf >> hex >> start >> hex >> end;
-          addDirective(CartDebug::GFX, start, end, currentbank);
-        }
-        else if(BSPF_startsWithIgnoreCase(directive, "PGFX"))
-        {
-          buf >> hex >> start >> hex >> end;
-          addDirective(CartDebug::PGFX, start, end, currentbank);
-        }
-        else if(BSPF_startsWithIgnoreCase(directive, "DATA"))
-        {
-          buf >> hex >> start >> hex >> end;
-          addDirective(CartDebug::DATA, start, end, currentbank);
-        }
-        else if(BSPF_startsWithIgnoreCase(directive, "ROW"))
-        {
-          buf >> hex >> start;
-          buf >> hex >> end;
-          addDirective(CartDebug::ROW, start, end, currentbank);
-        }
-      }
-    }
-    in.close();
-
-    return "loaded " + node.getShortPath() + " OK";
+    bi->directiveList.clear();
   }
-  else
-    return DebuggerParser::red("config file not found");
+
+  int currentbank = 0;
+  while(!in.eof())
+  {
+    // Skip leading space
+    int c = in.peek();
+    while(c == ' ' && c == '\t')
+    {
+      in.get();
+      c = in.peek();
+    }
+
+    string line;
+    c = in.peek();
+    if(c == '/')  // Comment, swallow line and continue
+    {
+      getline(in, line);
+      continue;
+    }
+    else if(c == '[')
+    {
+      in.get();
+      getline(in, line, ']');
+      stringstream buf(line);
+      buf >> currentbank;
+    }
+    else  // Should be commands from this point on
+    {
+      getline(in, line);
+      stringstream buf;
+      buf << line;
+
+      string directive;
+      uInt16 start = 0, end = 0;
+      buf >> directive;
+      if(BSPF_startsWithIgnoreCase(directive, "ORG"))
+      {
+        // TODO - figure out what to do with this
+        buf >> hex >> start;
+      }
+      else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(CartDebug::CODE, start, end, currentbank);
+      }
+      else if(BSPF_startsWithIgnoreCase(directive, "GFX"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(CartDebug::GFX, start, end, currentbank);
+      }
+      else if(BSPF_startsWithIgnoreCase(directive, "PGFX"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(CartDebug::PGFX, start, end, currentbank);
+      }
+      else if(BSPF_startsWithIgnoreCase(directive, "DATA"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(CartDebug::DATA, start, end, currentbank);
+      }
+      else if(BSPF_startsWithIgnoreCase(directive, "ROW"))
+      {
+        buf >> hex >> start;
+        buf >> hex >> end;
+        addDirective(CartDebug::ROW, start, end, currentbank);
+      }
+    }
+  }
+  in.close();
+  myDebugger.rom().invalidate();
+
+  return "loaded " + node.getShortPath() + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::saveConfigFile(string file)
+string CartDebug::saveConfigFile()
 {
-  FilesystemNode node(file);
+  // While there are two possible locations for loading config files,
+  // the main 'config' directory is used whenever possible when saving,
+  // unless the rom-specific file already exists
+
+  FilesystemNode node;
+
+  FilesystemNode case0(myCfgFile);
+  if(myCfgFile != "" && case0.isFile() && case0.isWritable())
+    node = case0;
+  else
+  {
+    const string& propsname =
+      myConsole.properties().get(Cartridge_Name) + ".cfg";
+
+    node = FilesystemNode(myOSystem.cfgDir() + propsname);
+  }
 
   const string& name = myConsole.properties().get(Cartridge_Name);
   const string& md5 = myConsole.properties().get(Cartridge_MD5);
 
-  if(file == "")
+  ofstream out(node.getPath().c_str());
+  if(!out.is_open())
+    return "Unable to save directives to " + node.getShortPath();
+
+  // Store all bank information
+  out << "//Stella.pro: \"" << name << "\"" << endl
+      << "//MD5: " << md5 << endl
+      << endl;
+  for(uInt32 b = 0; b < myConsole.cartridge().bankCount(); ++b)
   {
-    // There are two possible locations for saving config files
-    //   (in order of decreasing relevance):
-    // 1) ROM dir based on properties entry name
-    // 2) ROM dir based on actual ROM name
-    //
-    // In either case, we're using the properties entry, since even ROMs that
-    // don't have a proper entry have a temporary one inserted by OSystem
-    node = FilesystemNode(FilesystemNode(
-        myOSystem.romFile()).getParent().getPath() + name + ".cfg");
+    out << "[" << b << "]" << endl;
+    getBankDirectives(out, myBankInfo[b]);
   }
+  out.close();
 
-  if(node.isFile())
-  {
-    ofstream out(node.getPath().c_str());
-    if(!out.is_open())
-      return "Unable to save directives to " + node.getPath();
-
-    // Store all bank information
-    out << "//Stella.pro: \"" << name << "\"" << endl
-        << "//MD5: " << md5 << endl
-        << endl;
-    for(uInt32 b = 0; b < myConsole.cartridge().bankCount(); ++b)
-    {
-      out << "[" << b << "]" << endl;
-      getBankDirectives(out, myBankInfo[b]);
-    }
-    out.close();
-
-    return "saved " + node.getShortPath() + " OK";
-  }
-  else
-    return DebuggerParser::red("config file not found");
+  return "saved " + node.getShortPath() + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::saveDisassembly(string file)
+string CartDebug::saveDisassembly()
 {
 #define ALIGN(x) setfill(' ') << left << setw(x)
 
@@ -877,7 +857,7 @@ string CartDebug::saveDisassembly(string file)
   // Some boilerplate, similar to what DiStella adds
   time_t currtime;
   time(&currtime);
-  buf << "; Disassembly of " << file << "\n"
+  buf << "; Disassembly of " << myOSystem.romFile() << "\n"
       << "; Disassembled " << ctime(&currtime)
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
       << "; Settings used: TODO - add args\n;\n"
@@ -992,6 +972,20 @@ string CartDebug::saveDisassembly(string file)
   cout << buf.str() << endl;  // TODO - redirect to file
 
   return DebuggerParser::red("not save to file yet");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::saveRom()
+{
+  const string& path = "~" BSPF_PATH_SEPARATOR + 
+    myConsole.properties().get(Cartridge_Name) + ".a26";
+
+  FilesystemNode node(path);
+  ofstream out(node.getPath().c_str(), ios::out | ios::binary);
+  if(out.is_open() && myConsole.cartridge().save(out))
+    return "saved ROM as " + node.getShortPath();
+  else
+    return DebuggerParser::red("failed to save ROM");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

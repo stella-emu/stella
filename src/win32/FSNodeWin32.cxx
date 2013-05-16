@@ -284,12 +284,6 @@ bool FilesystemNodeWin32::
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWin32::isAbsolute() const
-{
-  return _path.length() >= 2 && (_path[0] == '~' || _path[1] == ':');
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeWin32::makeDir()
 {
   if(!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)

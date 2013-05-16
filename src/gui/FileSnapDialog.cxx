@@ -327,57 +327,49 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRomDirChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.getShortPath());
+      myRomPath->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kSnapSaveDirChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      mySnapSavePath->setEditString(dir.getShortPath());
+      mySnapSavePath->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kSnapLoadDirChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      mySnapLoadPath->setEditString(dir.getShortPath());
+      mySnapLoadPath->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kCheatFileChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      myCheatFile->setEditString(dir.getShortPath());
+      myCheatFile->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kPaletteFileChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      myPaletteFile->setEditString(dir.getShortPath());
+      myPaletteFile->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kPropsFileChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      myPropsFile->setEditString(dir.getShortPath());
+      myPropsFile->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kNVRamDirChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      myNVRamPath->setEditString(dir.getShortPath());
+      myNVRamPath->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kStateDirChosenCmd:
     {
-      FilesystemNode dir(myBrowser->getResult());
-      myStatePath->setEditString(dir.getShortPath());
+      myStatePath->setEditString(myBrowser->getResult().getShortPath());
       break;
     }
 

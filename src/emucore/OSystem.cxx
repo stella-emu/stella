@@ -724,12 +724,11 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
     // and that the md5 (and hence the cart) has changed
     if(props.get(Cartridge_MD5) != cartmd5)
     {
-      const string& name = props.get(Cartridge_Name);
       if(!myPropSet->getMD5(cartmd5, props))
       {
         // Cart md5 wasn't found, so we create a new props for it
         props.set(Cartridge_MD5, cartmd5);
-        props.set(Cartridge_Name, name+id);
+        props.set(Cartridge_Name, props.get(Cartridge_Name)+id);
         myPropSet->insert(props, false);
       }
     }

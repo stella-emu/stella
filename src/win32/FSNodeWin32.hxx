@@ -70,7 +70,6 @@ class FilesystemNodeWin32 : public AbstractFSNode
     bool isFile() const      { return _isFile;      }
     bool isReadable() const;
     bool isWritable() const;
-    bool isAbsolute() const;
     bool makeDir();
     bool rename(const string& newfile);
 

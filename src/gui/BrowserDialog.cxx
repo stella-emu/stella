@@ -123,7 +123,8 @@ BrowserDialog::~BrowserDialog()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::show(const string& title, const string& startpath,
-                         BrowserDialog::ListMode mode, int cmd)
+                         BrowserDialog::ListMode mode, int cmd,
+                         const string& ext)
 {
   _title->setLabel(title);
   _cmd = cmd;
@@ -131,13 +132,15 @@ void BrowserDialog::show(const string& title, const string& startpath,
 
   switch(_mode)
   {
-    case FileLoad:   
+    case FileLoad:
       _fileList->setFileListMode(FilesystemNode::kListAll);
+      _fileList->setFileExtension(ext);
       _selected->setEditable(false);
       break;
 
     case FileSave:
       _fileList->setFileListMode(FilesystemNode::kListAll);
+      _fileList->setFileExtension(ext);
       _selected->setEditable(false);  // FIXME - disable user input for now
       break;
 
@@ -191,6 +194,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kChooseCmd:
+    case FileListWidget::ItemActivated:
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
       if(_cmd) sendCommand(_cmd, -1, -1);
@@ -206,7 +210,6 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case FileListWidget::ItemChanged:
-    case FileListWidget::ItemActivated:
       updateUI();
       break;
 

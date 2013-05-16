@@ -814,19 +814,6 @@ void Debugger::getCompletions(const char* in, StringList& list) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::saveROM(const string& filename) const
-{
-  string path = FilesystemNode::createAbsolutePath(filename, "~", "a26");
-  FilesystemNode node(path);
-
-  ofstream out(node.getPath().c_str(), ios::out | ios::binary);
-  if(out.is_open() && myConsole.cartridge().save(out))
-    return node.getShortPath();
-  else
-    return "";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::lockBankswitchState()
 {
   mySystem.lockDataBus();

@@ -49,7 +49,7 @@ class BrowserDialog : public Dialog, public CommandSender
 
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& title, const string& startpath,
-              BrowserDialog::ListMode mode, int cmd);
+              BrowserDialog::ListMode mode, int cmd, const string& ext = "");
 
     /** Get resulting file node (called after receiving kChooseCmd) */
     const FilesystemNode& getResult() const;
