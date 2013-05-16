@@ -67,7 +67,8 @@ class CartDebug : public DebuggerSystem
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of decreasing hierarchy
       //
-      CODE   = 1 << 6,  // disassemble-able code segments
+      CODE   = 1 << 7,  // disassemble-able code segments
+      PCODE  = 1 << 6,  // (preliminary) disassemble-able code segments
       GFX    = 1 << 5,  // addresses loaded into GRPx registers
       PGFX   = 1 << 4,  // addresses loaded into PFx registers
       DATA   = 1 << 3,  // addresses loaded into registers other than GRPx / PFx
@@ -318,6 +319,9 @@ class CartDebug : public DebuggerSystem
     // Analyze of bank of ROM, generating a list of Distella directives
     // based on its disassembly
     void getBankDirectives(ostream& buf, BankInfo& info) const;
+
+    // Get disassembly enum type from 'flags', taking precendence into account
+    DisasmType disasmTypeAbsolute(uInt8 flags) const;
 
     // Convert disassembly enum type to corresponding string and append to buf
     void disasmTypeAsString(ostream& buf, DisasmType type) const;

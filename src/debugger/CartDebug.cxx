@@ -694,6 +694,9 @@ string CartDebug::loadSymbolFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadConfigFile()
 {
+  if(myConsole.cartridge().bankCount() > 1)
+    return DebuggerParser::red("multi-bank ROM not yet supported");
+
   // There are two possible locations for loading config files
   //   (in order of decreasing relevance):
   // 1) ROM dir based on properties entry name
@@ -805,6 +808,9 @@ string CartDebug::loadConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveConfigFile()
 {
+  if(myConsole.cartridge().bankCount() > 1)
+    return DebuggerParser::red("multi-bank ROM not yet supported");
+
   // While there are two possible locations for loading config files,
   // the main 'config' directory is used whenever possible when saving,
   // unless the rom-specific file already exists
@@ -991,6 +997,9 @@ string CartDebug::saveRom()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::listConfig(int bank)
 {
+  if(myConsole.cartridge().bankCount() > 1)
+    return DebuggerParser::red("multi-bank ROM not yet supported");
+
   uInt32 startbank = 0, endbank = bankCount();
   if(bank >= 0 && bank < bankCount())
   {
@@ -1115,46 +1124,33 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 {
-  // Disassemble the bank, then scan it for an up-to-date description
-  DisassemblyList list;
-  DiStella distella(*this, list, info, DiStella::settings,
-                    (uInt8*)myDisLabels, (uInt8*)myDisDirectives,
-                    (ReservedEquates&)myReserved, true);
-
-  if(list.size() == 0)
-    return;
-
   // Start with the offset for this bank
   buf << "ORG " << HEX4 << info.offset << endl;
 
-  DisasmType type = list[0].type;
-  uInt16 start = list[0].address, last = list[1].address;
-  if(start == 0) start = info.offset;
-  for(uInt32 i = 1; i < list.size(); ++i)
+  // Now consider each byte
+  uInt32 prev = info.offset, addr = prev + 1;
+  DisasmType prevType = disasmTypeAbsolute(mySystem.getAccessFlags(prev));
+  for( ; addr < info.offset + info.size; ++addr)
   {
-    const DisassemblyTag& tag = list[i];
+    DisasmType currType = disasmTypeAbsolute(mySystem.getAccessFlags(addr));
 
-    if(tag.type == CartDebug::NONE)
-      continue;
-    else if(tag.type != type)  // new range has started
+    // Have we changed to a new type?
+    if(currType != prevType)
     {
-      // If switching data ranges, make sure the endpoint is valid
-      // This is necessary because DATA sections don't always generate
-      // consecutive numbers/addresses for the range
-      last = tag.address - 1;
+      disasmTypeAsString(buf, prevType);
+      buf << " " << HEX4 << prev << " " << HEX4 << (addr-1) << endl;
 
-      disasmTypeAsString(buf, type);
-      buf << " " << HEX4 << start << " " << HEX4 << last << endl;
-
-      type = tag.type;
-      start = last = tag.address;
+      prev = addr;
+      prevType = currType;
     }
-    else
-      last = tag.address;
   }
+
   // Grab the last directive, making sure it accounts for all remaining space
-  disasmTypeAsString(buf, type);
-  buf << " " << HEX4 << start << " " << HEX4 << (info.offset+info.end) << endl;
+  if(prev != addr)
+  {
+    disasmTypeAsString(buf, prevType);
+    buf << " " << HEX4 << prev << " " << HEX4 << (addr-1) << endl;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1180,11 +1176,32 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt8 flags) const
+{
+  if(flags & CartDebug::CODE)
+    return CartDebug::CODE;
+  else if(flags & CartDebug::PCODE)
+    return CartDebug::PCODE;
+  else if(flags & CartDebug::GFX)
+    return CartDebug::GFX;
+  else if(flags & CartDebug::PGFX)
+    return CartDebug::PGFX;
+  else if(flags & CartDebug::DATA)
+    return CartDebug::DATA;
+  else if(flags & CartDebug::ROW)
+    return CartDebug::ROW;
+  else
+    return CartDebug::NONE;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
 {
   switch(type)
   {
     case CartDebug::CODE:   buf << "CODE";   break;
+    case CartDebug::PCODE:  buf << "PCODE";  break;
     case CartDebug::GFX:    buf << "GFX";    break;
     case CartDebug::PGFX:   buf << "PGFX";   break;
     case CartDebug::DATA:   buf << "DATA";   break;
@@ -1202,6 +1219,8 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
   {
     if(flags & CartDebug::CODE)
       buf << "CODE ";
+    if(flags & CartDebug::PCODE)
+      buf << "PCODE ";
     if(flags & CartDebug::GFX)
       buf << "GFX ";
     if(flags & CartDebug::PGFX)
