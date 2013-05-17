@@ -339,33 +339,16 @@ int CartDebug::addressToLine(uInt16 address) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
-  Disassembly disasm;
-
-  BankInfo info;
-  info.addressList.push_back(start);
-  if(start & 0x1000)
-  {
-    int banksize = 0;
-    myConsole.cartridge().getImage(banksize);
-    info.size = BSPF_min(banksize, 4096);
-  }
-  else
-    info.size = 128;
-
-  DiStella distella(*this, disasm.list, info, DiStella::settings,
-                    (uInt8*)myDisLabels, (uInt8*)myDisDirectives,
-                    (ReservedEquates&)myReserved, false);
-
   // Fill the string with disassembled data
   start &= 0xFFF;
   ostringstream buffer;
 
   // First find the lines in the range, and determine the longest string
-  uInt32 list_size = disasm.list.size();
+  uInt32 list_size = myDisassembly.list.size();
   uInt32 begin = list_size, end = 0, length = 0;
   for(end = 0; end < list_size && lines > 0; ++end)
   {
-    const CartDebug::DisassemblyTag& tag = disasm.list[end];
+    const CartDebug::DisassemblyTag& tag = myDisassembly.list[end];
     if((tag.address & 0xfff) >= start)
     {
       if(begin == list_size) begin = end;
@@ -379,7 +362,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   // Now output the disassembly, using as little space as possible
   for(uInt32 i = begin; i < end; ++i)
   {
-    const CartDebug::DisassemblyTag& tag = disasm.list[i];
+    const CartDebug::DisassemblyTag& tag = myDisassembly.list[i];
     if(tag.type == CartDebug::NONE)
       continue;
     else if(tag.address)
@@ -388,9 +371,9 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     else
       buffer << "       ";
 
-    buffer << tag.disasm << setw(length - tag.disasm.length() + 1)
+    buffer << tag.disasm << setw(length - tag.disasm.length() + 2)
            << setfill(' ') << " "
-           << tag.ccount << "   " << tag.bytes << endl;
+           << setw(4) << left << tag.ccount << "   " << tag.bytes << endl;
   }
 
   return buffer.str();
@@ -1181,7 +1164,7 @@ CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt8 flags) const
   if(flags & CartDebug::CODE)
     return CartDebug::CODE;
   else if(flags & CartDebug::PCODE)
-    return CartDebug::PCODE;
+    return CartDebug::CODE;          // TODO - should this be separate??
   else if(flags & CartDebug::GFX)
     return CartDebug::GFX;
   else if(flags & CartDebug::PGFX)

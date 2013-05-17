@@ -175,6 +175,15 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     }
     for (int k = 0; k <= myAppData.end; k++)
     {
+      // Let the emulation core know about preliminary code
+      if(check_bit(k, CartDebug::CODE) &&
+        !(Debugger::debugger().getAccessFlags(k+myOffset) & CartDebug::CODE)
+         && myOffset != 0)
+      {
+        Debugger::debugger().setAccessFlags(k+myOffset, CartDebug::PCODE);
+      }
+
+      // Must be ROW / unused bytes
       if (!check_bit(k, CartDebug::CODE | CartDebug::GFX |
                         CartDebug::PGFX | CartDebug::DATA))
         mark(k+myOffset, CartDebug::ROW);
@@ -1020,8 +1029,11 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       // Since it is impossible to tell the difference, marking the address
       // in the disassembly at least tells the user about it
       if(!(Debugger::debugger().getAccessFlags(tag.address) & CartDebug::CODE)
-         && myAppData.length >= 4096)
+         && myOffset != 0)
+      {
         tag.ccount += " *";
+        Debugger::debugger().setAccessFlags(tag.address, CartDebug::PCODE);
+      }
       break;
     case CartDebug::GFX:
     case CartDebug::PGFX:
