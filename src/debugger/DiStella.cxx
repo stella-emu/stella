@@ -221,10 +221,8 @@ DiStella::~DiStella()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::disasm(uInt32 distart, int pass)
 {
-#define USER_OR_AUTO_LABEL(pre, address, post)        \
-  const string& l = myDbg.getLabel(address, true);    \
-  if(l != EmptyString)  nextline << pre << l << post; \
-  else                  nextline << pre << "L" << HEX4 << address << post;
+#define LABEL_A12_HIGH(address) labelA12High(nextline, op, address, labfound)
+#define LABEL_A12_LOW(address)  labelA12Low(nextline, op, address, labfound)
 
   uInt8 op, d1;
   uInt16 ad;
@@ -517,24 +515,26 @@ void DiStella::disasm(uInt32 distart, int pass)
 
             if (labfound == 1)
             {
-              USER_OR_AUTO_LABEL("", ad, "");
+              LABEL_A12_HIGH(ad);
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 3)
+            else if (labfound == 4)
             {
-              nextline << CartDebug::ourIOMnemonic[ad-0x280];
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
-              myReserved.IOReadWrite[ad-0x280] = true;
-            }
-            else if (labfound == 4 && mySettings.rflag)
-            {
-              int tmp = (ad & myAppData.end)+myOffset;
-              USER_OR_AUTO_LABEL("", tmp, "");
-              nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+              if(mySettings.rflag)
+              {
+                int tmp = (ad & myAppData.end)+myOffset;
+                LABEL_A12_HIGH(tmp);
+                nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+              }
+              else
+              {
+                nextline << "$" << HEX4 << ad;
+                nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              }
             }
             else
             {
-              nextline << "$" << HEX4 << ad;
+              LABEL_A12_LOW(ad);
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
           }
@@ -550,19 +550,15 @@ void DiStella::disasm(uInt32 distart, int pass)
             if (labfound == 2)
             {
               if(ourLookup[op].rw_mode == READ)
-              {
-                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x3f];
-                myReserved.TIARead[d1&0x3f] = true;
-              }
+                myReserved.TIARead[d1 & 0x0F] = true;
               else
-              {
-                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x7f];
-                myReserved.TIAWrite[d1&0x7f] = true;
-              }
+                myReserved.TIAWrite[d1 & 0x3F] = true;
             }
-            else
-              nextline << "    $" << HEX2 << (int)d1;
+            else if (labfound == 5)
+              myReserved.ZPRAM[(d1 & 0xFF) - 0x80] = true;
 
+            nextline << "    ";
+            LABEL_A12_LOW((int)d1);
             nextlinebytes << HEX2 << (int)d1;
           }
           break;
@@ -600,24 +596,29 @@ void DiStella::disasm(uInt32 distart, int pass)
 
             if (labfound == 1)
             {
-              USER_OR_AUTO_LABEL("", ad, ",X");
+              LABEL_A12_HIGH(ad);
+              nextline << ",X";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 3)
+            else if (labfound == 4)
             {
-              nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",X";
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
-              myReserved.IOReadWrite[ad-0x280] = true;
-            }
-            else if (labfound == 4 && mySettings.rflag)
-            {
-              int tmp = (ad & myAppData.end)+myOffset;
-              USER_OR_AUTO_LABEL("", tmp, ",X");
-              nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+              if(mySettings.rflag)
+              {
+                int tmp = (ad & myAppData.end)+myOffset;
+                LABEL_A12_HIGH(tmp);
+                nextline << ",X";
+                nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+              }
+              else
+              {
+                nextline << "$" << HEX4 << ad << ",X";
+                nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              }
             }
             else
             {
-              nextline << "$" << HEX4 << ad << ",X";
+              LABEL_A12_LOW(ad);
+              nextline << ",X";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
           }
@@ -645,24 +646,29 @@ void DiStella::disasm(uInt32 distart, int pass)
 
             if (labfound == 1)
             {
-              USER_OR_AUTO_LABEL("", ad, ",Y");
+              LABEL_A12_HIGH(ad);
+              nextline << ",Y";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 3)
+            else if (labfound == 4)
             {
-              nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",Y";
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
-              myReserved.IOReadWrite[ad-0x280] = true;
-            }
-            else if (labfound == 4 && mySettings.rflag)
-            {
-              int tmp = (ad & myAppData.end)+myOffset;
-              USER_OR_AUTO_LABEL("", tmp, ",Y");
-              nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+              if(mySettings.rflag)
+              {
+                int tmp = (ad & myAppData.end)+myOffset;
+                LABEL_A12_HIGH(tmp);
+                nextline << ",Y";
+                nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+              }
+              else
+              {
+                nextline << "$" << HEX4 << ad << ",Y";
+                nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              }
             }
             else
             {
-              nextline << "$" << HEX4 << ad << ",Y";
+              LABEL_A12_LOW(ad);
+              nextline << ",Y";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
           }
@@ -674,7 +680,10 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
-            nextline << "    ($" << HEX2 << (int)d1 << ",X)";
+            labfound = mark(d1, 0);  // dummy call to get address type
+            nextline << "    (";
+            LABEL_A12_LOW(d1);
+            nextline << ",X)";
             nextlinebytes << HEX2 << (int)d1;
           }
           break;
@@ -685,7 +694,10 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
-            nextline << "    ($" << HEX2 << (int)d1 << "),Y";
+            labfound = mark(d1, 0);  // dummy call to get address type
+            nextline << "    (";
+            LABEL_A12_LOW(d1);
+            nextline << "),Y";
             nextlinebytes << HEX2 << (int)d1;
           }
           break;
@@ -697,21 +709,9 @@ void DiStella::disasm(uInt32 distart, int pass)
           labfound = mark(d1, CartDebug::REFERENCED);
           if (pass == 3)
           {
-            if (labfound == 2)
-            {
-              if(ourLookup[op].rw_mode == READ)
-              {
-                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x3f] << ",X";
-                myReserved.TIARead[d1&0x3f] = true;
-              }
-              else
-              {
-                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x7f] << ",X";
-                myReserved.TIAWrite[d1&0x7f] = true;
-              }
-            }
-            else
-              nextline << "    $" << HEX2 << (int)d1 << ",X";
+            nextline << "    ";
+            LABEL_A12_LOW(d1);
+            nextline << ",X";
           }
           nextlinebytes << HEX2 << (int)d1;
           break;
@@ -723,21 +723,9 @@ void DiStella::disasm(uInt32 distart, int pass)
           labfound = mark(d1, CartDebug::REFERENCED);
           if (pass == 3)
           {
-            if (labfound == 2)
-            {
-              if(ourLookup[op].rw_mode == READ)
-              {
-                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x3f] << ",Y";
-                myReserved.TIARead[d1&0x3f] = true;
-              }
-              else
-              {
-                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x7f] << ",Y";
-                myReserved.TIAWrite[d1&0x7f] = true;
-              }
-            }
-            else
-              nextline << "    $" << HEX2 << (int)d1 << ",Y";
+            nextline << "    ";
+            LABEL_A12_LOW(d1);
+            nextline << ",Y";
           }
           nextlinebytes << HEX2 << (int)d1;
           break;
@@ -764,7 +752,8 @@ void DiStella::disasm(uInt32 distart, int pass)
           {
             if (labfound == 1)
             {
-              USER_OR_AUTO_LABEL("    ", ad, "");
+              nextline << "    ";
+              LABEL_A12_HIGH(ad);
             }
             else
               nextline << "    $" << HEX4 << ad;
@@ -795,15 +784,17 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           if (labfound == 1)
           {
-            USER_OR_AUTO_LABEL("(", ad, ")");
+            nextline << "(";
+            LABEL_A12_HIGH(ad);
+            nextline << ")";
           }
-          else if (labfound == 3)
-          {
-            nextline << "(" << CartDebug::ourIOMnemonic[ad-0x280] << ")";
-            myReserved.IOReadWrite[ad-0x280] = true;
-          }
+          // TODO - should we consider case 4??
           else
-            nextline << "($" << HEX4 << ad << ")";
+          {
+            nextline << "(";
+            LABEL_A12_LOW(ad);
+            nextline << ")";
+          }
 
           nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
           break;
@@ -874,8 +865,8 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
 
     A quick example breakdown for a 2600 4K cart:
     ===========================================================
-      $00-$3d =     system equates (WSYNC, etc...); mark the array's element
-                    with the appropriate bit; return 2.
+      $00-$3d     = system equates (WSYNC, etc...); return 2.
+      $80-$ff     = zero-page RAM (ram_80, etc...); return 5.
       $0280-$0297 = system equates (INPT0, etc...); mark the array's element
                     with the appropriate bit; return 3.
       $1000-$1FFF = mark the code/data array for the mirrored address
@@ -900,13 +891,18 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
 
   // Check for equates before ROM/ZP-RAM accesses, because the original logic
   // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
-  if (address <= 0x3f)
+  CartDebug::AddrType type = myDbg.addressType(address);
+  if (type == CartDebug::ADDR_TIA)
   {
     return 2;
   }
-  else if (address >= 0x280 && address <= 0x297)
+  else if (type == CartDebug::ADDR_IO)
   {
     return 3;
+  }
+  else if (type == CartDebug::ADDR_ZPRAM)
+  {
+    return 5;
   }
   else if (address >= myOffset && address <= myAppData.end + myOffset)
   {

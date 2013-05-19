@@ -227,7 +227,8 @@ class CartDebug : public DebuggerSystem
       If places is not -1 and a label hasn't been defined, return a
       formatted hexidecimal address
     */
-    const string& getLabel(uInt16 addr, bool isRead, int places = -1) const;
+    bool getLabel(ostream& buf, uInt16 addr, bool isRead, int places = -1) const;
+    string getLabel(uInt16 addr, bool isRead, int places = -1) const;
     int getAddress(const string& label) const;
 
     /**
@@ -275,8 +276,8 @@ class CartDebug : public DebuggerSystem
     // Determine 'type' of address (ie, what part of the system accessed)
     enum AddrType {
       ADDR_TIA,
-      ADDR_RAM,
-      ADDR_RIOT,
+      ADDR_IO,
+      ADDR_ZPRAM,
       ADDR_ROM
     };
     AddrType addressType(uInt16 addr) const;
@@ -305,9 +306,10 @@ class CartDebug : public DebuggerSystem
 
     // Information on equates used in the disassembly
     struct ReservedEquates {
-      bool TIARead[64];
-      bool TIAWrite[128];
+      bool TIARead[16];
+      bool TIAWrite[64];
       bool IOReadWrite[24];
+      bool ZPRAM[128];
       AddrToLabel Label;
     };
     ReservedEquates myReserved;
@@ -370,9 +372,10 @@ class CartDebug : public DebuggerSystem
     string mySymbolFile, myCfgFile, myDisasmFile, myRomFile;
 
     /// Table of instruction mnemonics
-    static const char* ourTIAMnemonicR[64];  // read mode
-    static const char* ourTIAMnemonicW[128]; // write mode
+    static const char* ourTIAMnemonicR[16]; // read mode
+    static const char* ourTIAMnemonicW[64]; // write mode
     static const char* ourIOMnemonic[24];
+    static const char* ourZPMnemonic[128];
 };
 
 #endif

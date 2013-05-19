@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.8.1 to 3.9: (XXXXX xxx, 2013)
+3.8.1 to 3.9: (June xx, 2013)
 
   * Greatly extended functionality of the debugger disassembly:
       - There is now a new tab which lists information specific to the
@@ -28,9 +28,9 @@
         only differentiates between CODE/GFX/ROW.  For now, only
         single-bank (4K and smaller) ROMs are supported.
 
-      - The disassembly now recognizes various TIA read/write mirrors,
-        and marks them as such (for example, INPT4.30 instead of INPT4
-        for address $3C).
+      - The disassembly now recognizes various TIA/RIOT read/write
+        mirrors, and marks them as such (for example, INPT4|$30 instead
+        of INPT4 for address $3C).
 
       - ROMS less than 2K in size (so called 'Sub2K' ROMs) now show only
         the actual data in the binary.  This means, for example, that a

@@ -90,6 +90,28 @@ class DiStella
     int mark(uInt32 address, uInt8 mask, bool directive = false);
     bool check_bit(uInt16 address, uInt8 mask) const;
 
+    // Convenience methods to generate appropriate labels
+    inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
+    {
+      if(!myDbg.getLabel(buf, addr, true))
+        buf << "L" << HEX4 << addr;
+    }
+    inline void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
+    {
+      myDbg.getLabel(buf, addr, ourLookup[op].rw_mode == READ, 2);
+      if (labfound == 2)
+      {
+        if(ourLookup[op].rw_mode == READ)
+          myReserved.TIARead[addr & 0x0F] = true;
+        else
+          myReserved.TIAWrite[addr & 0x3F] = true;
+      }
+      else if (labfound == 3)
+        myReserved.IOReadWrite[(addr & 0xFF) - 0x80] = true;
+      else if (labfound == 5)
+        myReserved.ZPRAM[(addr & 0xFF) - 0x80] = true;
+    }
+
   private:
     const CartDebug& myDbg;
     CartDebug::DisassemblyList& myList;

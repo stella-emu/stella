@@ -68,20 +68,28 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   addLabel("START", myDebugger.dpeek(0xfffc));
 
   // Add system equates
-  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
   {
-    mySystemAddresses.insert(make_pair(ourTIAMnemonicR[addr], addr));
+    if(ourTIAMnemonicR[addr])
+      mySystemAddresses.insert(make_pair(ourTIAMnemonicR[addr], addr));
     myReserved.TIARead[addr] = false;
   }
-  for(uInt16 addr = 0x00; addr <= 0x7F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
   {
-    mySystemAddresses.insert(make_pair(ourTIAMnemonicW[addr], addr));
+    if(ourTIAMnemonicW[addr])
+      mySystemAddresses.insert(make_pair(ourTIAMnemonicW[addr], addr));
     myReserved.TIAWrite[addr] = false;
   }
   for(uInt16 addr = 0x280; addr <= 0x297; ++addr)
   {
-    mySystemAddresses.insert(make_pair(ourIOMnemonic[addr-0x280], addr));
+    if(ourIOMnemonic[addr-0x280])
+      mySystemAddresses.insert(make_pair(ourIOMnemonic[addr-0x280], addr));
     myReserved.IOReadWrite[addr-0x280] = false;
+  }
+  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
+  {
+    mySystemAddresses.insert(make_pair(ourZPMnemonic[addr-0x80], addr));
+    myReserved.ZPRAM[addr-0x80] = false;
   }
 
   myReserved.Label.clear();
@@ -303,7 +311,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 sea
 {
   myDisassembly.list.clear();
   myDisassembly.list.reserve(2048);
-  myDisassembly.fieldwidth = 10 + myLabelLength;
+  myDisassembly.fieldwidth = 14 + myLabelLength;
   DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, myReserved, resolvedata);
 
@@ -543,7 +551,7 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
   switch(addressType(address))
   {
     case ADDR_TIA:
-    case ADDR_RIOT:
+    case ADDR_IO:
       return false;
     default:
       removeLabel(label);
@@ -576,43 +584,110 @@ bool CartDebug::removeLabel(const string& label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
+bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) const
 {
-  static string result;
-
   switch(addressType(addr))
   {
     case ADDR_TIA:
-      return result =
-        (isRead ? ourTIAMnemonicR[addr&0x3f] : ourTIAMnemonicW[addr&0x7f]);
-
-    case ADDR_RIOT:
     {
-      uInt16 idx = (addr&0xff) - 0x80;
-      if(idx < 24)
-        return result = ourIOMnemonic[idx];
-      break;
+      if(isRead)
+      {
+        uInt16 a = addr & 0x0F, offset = addr & 0xFFF0;
+        if(ourTIAMnemonicR[a])
+        {
+          buf << ourTIAMnemonicR[a];
+          if(offset > 0)
+            buf << "|$" << HEX2 << offset;
+        }
+        else
+          buf << "$" << HEX2 << addr;
+      }
+      else
+      {
+        uInt16 a = addr & 0x3F, offset = addr & 0xFFC0;
+        if(ourTIAMnemonicW[a])
+        {
+          buf << ourTIAMnemonicW[a];
+          if(offset > 0)
+            buf << "|$" << HEX2 << offset;
+        }
+        else
+          buf << "$" << HEX2 << addr;
+      }
+      return true;
     }
 
-    case ADDR_RAM:
+    case ADDR_IO:
+    {
+      uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
+      if(a <= 0x97)
+      {
+        if(ourIOMnemonic[a - 0x80])
+        {
+            buf << ourIOMnemonic[a - 0x80];
+            if(offset > 0)
+              buf << "|$" << HEX2 << offset;
+        }
+        else
+          buf << "$" << HEX2 << addr;
+      }
+      else
+        buf << "$" << HEX2 << addr;
+
+      return true;
+    }
+
+    case ADDR_ZPRAM:
+    {
+      // RAM can use user-defined labels; otherwise we default to
+      // standard mnemonics
+      AddrToLabel::const_iterator iter;
+      if((iter = myUserLabels.find(addr)) != myUserLabels.end())
+      {
+        buf << iter->second;
+      }
+      else
+      {
+        uInt16 a = addr & 0xFF, offset = addr & 0xFF00;
+        if((iter = myUserLabels.find(a)) != myUserLabels.end())
+          buf << iter->second;
+        else
+          buf << ourZPMnemonic[a - 0x80];
+        if(offset > 0)
+          buf << "|$" << HEX2 << offset;
+      }
+
+      return true;
+    }
+
     case ADDR_ROM:
     {
       // These addresses can never be in the system labels list
       AddrToLabel::const_iterator iter;
       if((iter = myUserLabels.find(addr)) != myUserLabels.end())
-        return iter->second;
+      {
+        buf << iter->second;
+        return true;
+      }
       break;
     }
   }
 
   if(places > -1)
   {
-    ostringstream buf;
     buf << "$" << setw(places) << hex << addr;
-    return result = buf.str();
+    return true;
   }
 
-  return EmptyString;
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
+{
+  ostringstream buf;
+  getLabel(buf, addr, isRead, places);
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -843,39 +918,73 @@ string CartDebug::saveDisassembly()
   // Output stream for disassembly
   ostringstream buf;
 
+  AddrToLabel::const_iterator iter;
+
   // Some boilerplate, similar to what DiStella adds
   time_t currtime;
   time(&currtime);
   buf << "; Disassembly of " << myOSystem.romFile() << "\n"
       << "; Disassembled " << ctime(&currtime)
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
-      << "; Settings used: TODO - add args\n;\n"
       << "; Legend: * = CODE not yet run (preliminary code)\n"
       << ";         D = DATA directive (referenced in some way)\n"
       << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
-      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n"
-      << "\n      processor 6502\n\n";
+      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n\n"
+      << "      processor 6502\n\n"
+      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+      << ";      TIA AND IO CONSTANTS\n"
+      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
 
-  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr][0] != '$')
-      buf << ALIGN(10) << ourTIAMnemonicR[addr] << " =  $"
+  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+    if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
+      buf << ALIGN(6) << ourTIAMnemonicR[addr] << "  =  $"
           << HEX2 << right << addr << " ; (R)\n";
-
-  for(uInt16 addr = 0x00; addr <= 0x7F; ++addr)
-    if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr][0] != '$')
-      buf << ALIGN(10) << ourTIAMnemonicW[addr] << " =  $"
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+    if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
+      buf << ALIGN(6) << ourTIAMnemonicW[addr] << "  =  $"
           << HEX2 << right << addr << " ; (W)\n";
-
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
-    if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr][0] != '$')
-      buf << ALIGN(10) << ourIOMnemonic[addr] << " =  $"
+    if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
+      buf << ALIGN(6) << ourIOMnemonic[addr] << "  =  $"
           << HEX4 << right << (addr+0x280) << "\n";
 
-  AddrToLabel::const_iterator iter;
-  for(iter = myReserved.Label.begin(); iter != myReserved.Label.end(); ++iter)
-      buf << ALIGN(10) << iter->second << " =  $" << iter->first << "\n";
+  buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+      << ";      RIOT (zero-page) RAM\n"
+      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
+  {
+    if(myReserved.ZPRAM[addr-0x80] &&
+       myUserLabels.find(addr) == myUserLabels.end())
+    {
+      buf << ALIGN(6) << ourZPMnemonic[addr-0x80] << "  =  $"
+          << HEX2 << right << (addr) << "\n";
+    }
+  }
 
-  buf << "\n";
+  if(myReserved.Label.size() > 0)
+  {
+    buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+        << ";      NON LOCATABLE\n"
+        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    for(iter = myReserved.Label.begin(); iter != myReserved.Label.end(); ++iter)
+        buf << ALIGN(10) << iter->second << "  =  $" << iter->first << "\n";
+  }
+
+  if(myUserLabels.size() > 0)
+  {
+    buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+        << ";      USER DEFINED\n"
+        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    int max_len = 0;
+    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
+      max_len = BSPF_max(max_len, (int)iter->second.size());
+    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
+        buf << ALIGN(max_len) << iter->second << "  =  $" << iter->first << "\n";
+  }
+
+  buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n;\n"
+      << ";      MAIN PROGRAM\n"
+      << ";\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
 
   // Use specific settings for disassembly output
   // This will most likely differ from what you see in the debugger
@@ -889,7 +998,6 @@ string CartDebug::saveDisassembly()
 
   Disassembly disasm;
   disasm.list.reserve(2048);
-  disasm.fieldwidth = 10 + myLabelLength;
   for(int bank = 0; bank < myConsole.cartridge().bankCount(); ++bank)
   {
     BankInfo& info = myBankInfo[bank];
@@ -898,7 +1006,8 @@ string CartDebug::saveDisassembly()
     DiStella distella(*this, disasm.list, info, settings,
                       myDisLabels, myDisDirectives, myReserved, true);
 
-    buf << "      ORG $" << HEX4 << info.offset << "\n\n";
+    buf << "       SEG CODE\n"
+        << "       ORG $" << HEX4 << info.offset << "\n\n";
 
     // Format in 'distella' style
     for(uInt32 i = 0; i < disasm.list.size(); ++i)
@@ -907,15 +1016,14 @@ string CartDebug::saveDisassembly()
 
       // Add label (if any)
       if(tag.label != "")
-        buf << ALIGN(7) << (tag.label+":");
-      else
-        buf << "       ";
+        buf << ALIGN(7) << (tag.label+":") << endl;
+      buf << "       ";
 
       switch(tag.type)
       {
         case CartDebug::CODE:
         {
-          buf << ALIGN(19) << tag.disasm << tag.ccount << "\n";
+          buf << ALIGN(25) << tag.disasm << tag.ccount << "\n";
           break;
         }
         case CartDebug::NONE:
@@ -1042,10 +1150,10 @@ string CartDebug::clearConfig(int bank)
 void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates
-  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
     if(BSPF_startsWithIgnoreCase(ourTIAMnemonicR[addr], in))
       completions.push_back(ourTIAMnemonicR[addr]);
-  for(uInt16 addr = 0x00; addr <= 0x7F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
     if(BSPF_startsWithIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.push_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
@@ -1068,12 +1176,10 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
   // Determine the type of address to access the correct list
   // These addresses were based on (and checked against) Kroko's 2600 memory
   // map, found at http://www.qotile.net/minidig/docs/2600_mem_map.txt
-  AddrType type = ADDR_ROM;
   if(addr % 0x2000 < 0x1000)
   {
-    uInt16 z = addr & 0x00ff;
-    if(z < 0x80)
-      type = ADDR_TIA;
+    if((addr & 0x00ff) < 0x80)
+      return ADDR_TIA;
     else
     {
       switch(addr & 0x0f00)
@@ -1086,8 +1192,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
         case 0x900:
         case 0xc00:
         case 0xd00:
-          type = ADDR_RAM;
-          break;
+          return ADDR_ZPRAM;
         case 0x200:
         case 0x300:
         case 0x600:
@@ -1096,12 +1201,11 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
         case 0xb00:
         case 0xe00:
         case 0xf00:
-          type = ADDR_RIOT;
-          break;
+          return ADDR_IO;
       }
     }
   }
-  return type;
+  return ADDR_ROM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1222,51 +1326,44 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourTIAMnemonicR[64] = {
-// Standard $00-based TIA read locations:
+const char* CartDebug::ourTIAMnemonicR[16] = {
   "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
-  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$0E", "$0F",
-// Mirrored $10-based TIA read locations:
-  "CXM0P.10", "CXM1P.10", "CXP0FB.10", "CXP1FB.10", "CXM0FB.10", "CXM1FB.10",
-  "CXBLPF.10", "CXPPMM.10", "INPT0.10", "INPT1.10", "INPT2.10", "INPT3.10",
-  "INPT4.10", "INPT5.10", "$1E", "$1F",
-// Mirrored $20-based TIA read locations:
-  "CXM0P.20", "CXM1P.20", "CXP0FB.20", "CXP1FB.20", "CXM0FB.20", "CXM1FB.20",
-  "CXBLPF.20", "CXPPMM.20", "INPT0.20", "INPT1.20", "INPT2.20", "INPT3.20",
-  "INPT4.20", "INPT5.20", "$2E", "$2F",
-// Mirrored $30-based TIA read locations:
-  "CXM0P.30", "CXM1P.30", "CXP0FB.30", "CXP1FB.30", "CXM0FB.30", "CXM1FB.30",
-  "CXBLPF.30", "CXPPMM.30", "INPT0.30", "INPT1.30", "INPT2.30", "INPT3.30",
-  "INPT4.30", "INPT5.30", "$3E", "$3F",
+  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", 0, 0
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourTIAMnemonicW[128] = {
-// Standard $00-based TIA write locations:
+const char* CartDebug::ourTIAMnemonicW[64] = {
   "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
   "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
   "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
   "AUDF1", "AUDV0", "AUDV1", "GRP0", "GRP1", "ENAM0", "ENAM1", "ENABL",
   "HMP0", "HMP1", "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL",
-  "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", "$2D", "$2E", "$2F",
-  "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37",
-  "$38", "$39", "$3A", "$3B", "$3C", "$3D", "$3E", "$3F",
-// Mirrored $40-based TIA write locations:
-  "VSYNC.40", "VBLANK.40", "WSYNC.40", "RSYNC.40", "NUSIZ0.40", "NUSIZ1.40",
-  "COLUP0.40", "COLUP1.40", "COLUPF.40", "COLUBK.40", "CTRLPF.40", "REFP0.40",
-  "REFP1.40", "PF0.40", "PF1.40", "PF2.40", "RESP0.40", "RESP1.40", "RESM0.40",
-  "RESM1.40", "RESBL.40", "AUDC0.40", "AUDC1.40", "AUDF0.40", "AUDF1.40",
-  "AUDV0.40", "AUDV1.40", "GRP0.40", "GRP1.40", "ENAM0.40", "ENAM1.40",
-  "ENABL.40", "HMP0.40", "HMP1.40", "HMM0.40", "HMM1.40", "HMBL.40",
-  "VDELP0.40", "VDELP1.40", "VDELBL.40", "RESMP0.40", "RESMP1.40", "HMOVE.40",
-  "HMCLR.40", "CXCLR.40", "$6D", "$6E", "$6F",
-  "$70", "$71", "$72", "$73", "$74", "$75", "$76", "$77",
-  "$78", "$79", "$7A", "$7B", "$7C", "$7D", "$7E", "$7F"
+  "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* CartDebug::ourIOMnemonic[24] = {
-  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT", "$0286", "$0287",
-  "$0288", "$0289", "$028A", "$028B", "$028C", "$028D", "$028E", "$028F",
-  "$0290", "$0291", "$0292", "$0293", "TIM1T", "TIM8T", "TIM64T", "T1024T"
+  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT", 0, 0,  0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, "TIM1T", "TIM8T", "TIM64T", "T1024T"
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* CartDebug::ourZPMnemonic[128] = {
+  "ram_80", "ram_81", "ram_82", "ram_83", "ram_84", "ram_85", "ram_86", "ram_87", 
+  "ram_88", "ram_89", "ram_8A", "ram_8B", "ram_8C", "ram_8D", "ram_8E", "ram_8F", 
+  "ram_90", "ram_91", "ram_92", "ram_93", "ram_94", "ram_95", "ram_96", "ram_97", 
+  "ram_98", "ram_99", "ram_9A", "ram_9B", "ram_9C", "ram_9D", "ram_9E", "ram_9F", 
+  "ram_A0", "ram_A1", "ram_A2", "ram_A3", "ram_A4", "ram_A5", "ram_A6", "ram_A7", 
+  "ram_A8", "ram_A9", "ram_AA", "ram_AB", "ram_AC", "ram_AD", "ram_AE", "ram_AF", 
+  "ram_B0", "ram_B1", "ram_B2", "ram_B3", "ram_B4", "ram_B5", "ram_B6", "ram_B7", 
+  "ram_B8", "ram_B9", "ram_BA", "ram_BB", "ram_BC", "ram_BD", "ram_BE", "ram_BF", 
+  "ram_C0", "ram_C1", "ram_C2", "ram_C3", "ram_C4", "ram_C5", "ram_C6", "ram_C7", 
+  "ram_C8", "ram_C9", "ram_CA", "ram_CB", "ram_CC", "ram_CD", "ram_CE", "ram_CF", 
+  "ram_D0", "ram_D1", "ram_D2", "ram_D3", "ram_D4", "ram_D5", "ram_D6", "ram_D7", 
+  "ram_D8", "ram_D9", "ram_DA", "ram_DB", "ram_DC", "ram_DD", "ram_DE", "ram_DF", 
+  "ram_E0", "ram_E1", "ram_E2", "ram_E3", "ram_E4", "ram_E5", "ram_E6", "ram_E7", 
+  "ram_E8", "ram_E9", "ram_EA", "ram_EB", "ram_EC", "ram_ED", "ram_EE", "ram_EF", 
+  "ram_F0", "ram_F1", "ram_F2", "ram_F3", "ram_F4", "ram_F5", "ram_F6", "ram_F7", 
+  "ram_F8", "ram_F9", "ram_FA", "ram_FB", "ram_FC", "ram_FD", "ram_FE", "ram_FF"
 };
