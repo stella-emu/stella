@@ -156,7 +156,9 @@ void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
     properties.set(Cartridge_MD5, md5);
 
     // Create a name suitable for using in properties
-    const string& filename = rom.getName();
+    size_t pos = rom.getName().find_last_of("/\\");
+    const string& filename = pos == string::npos ? rom.getName() :
+        rom.getName().substr(pos+1);
     if(BSPF_endsWithIgnoreCase(filename, ".a26") ||
        BSPF_endsWithIgnoreCase(filename, ".bin") ||
        BSPF_endsWithIgnoreCase(filename, ".rom"))
