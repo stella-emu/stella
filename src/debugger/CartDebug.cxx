@@ -1151,14 +1151,17 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    if(BSPF_startsWithIgnoreCase(ourTIAMnemonicR[addr], in))
+    if(ourTIAMnemonicR[addr] && BSPF_startsWithIgnoreCase(ourTIAMnemonicR[addr], in))
       completions.push_back(ourTIAMnemonicR[addr]);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(BSPF_startsWithIgnoreCase(ourTIAMnemonicW[addr], in))
+    if(ourTIAMnemonicW[addr] && BSPF_startsWithIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.push_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
-    if(BSPF_startsWithIgnoreCase(ourIOMnemonic[addr], in))
+    if(ourIOMnemonic[addr] && BSPF_startsWithIgnoreCase(ourIOMnemonic[addr], in))
       completions.push_back(ourIOMnemonic[addr]);
+  for(uInt16 addr = 0; addr <= 0x7F; ++addr)
+    if(ourZPMnemonic[addr] && BSPF_startsWithIgnoreCase(ourZPMnemonic[addr], in))
+      completions.push_back(ourZPMnemonic[addr]);
 
   // Now scan user-defined labels
   LabelToAddr::const_iterator iter;

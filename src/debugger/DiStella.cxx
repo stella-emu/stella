@@ -900,7 +900,7 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
   {
     return 3;
   }
-  else if (type == CartDebug::ADDR_ZPRAM)
+  else if (type == CartDebug::ADDR_ZPRAM && myOffset != 0)
   {
     return 5;
   }
