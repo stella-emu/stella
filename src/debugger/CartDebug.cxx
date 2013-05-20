@@ -93,6 +93,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   }
 
   myReserved.Label.clear();
+  myDisassembly.list.reserve(2048);
 
   // Add settings for Distella
   DiStella::settings.gfx_format =
@@ -309,8 +310,7 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 search)
 {
-  myDisassembly.list.clear();
-  myDisassembly.list.reserve(2048);
+  myDisassembly.list.clear(false);
   myDisassembly.fieldwidth = 14 + myLabelLength;
   DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, myReserved, resolvedata);
@@ -910,78 +910,37 @@ string CartDebug::saveConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly()
 {
-#define ALIGN(x) setfill(' ') << left << setw(x)
-
   if(myConsole.cartridge().bankCount() > 1)
     return DebuggerParser::red("multi-bank ROM not yet supported");
 
-  // Output stream for disassembly
-  ostringstream buf;
+  // Currently, the default naming/location for disassembly files is:
+  // 1) ROM dir based on properties entry name
+
+  if(myDisasmFile == "")
+  {
+    const string& propsname =
+      myConsole.properties().get(Cartridge_Name) + ".asm";
+
+    FilesystemNode case0(FilesystemNode(myOSystem.romFile()).getParent().getPath() +
+                         propsname);
+    if(case0.getParent().isWritable())
+      myDisasmFile = case0.getPath();
+    else
+      return DebuggerParser::red("disassembly file not writable:\n  " + case0.getShortPath());
+  }
+
+  FilesystemNode node(myDisasmFile);
+  ofstream out(node.getPath().c_str());
+  if(!out.is_open())
+    return "Unable to save disassembly to " + node.getShortPath();
+
+#define ALIGN(x) setfill(' ') << left << setw(x)
 
   AddrToLabel::const_iterator iter;
 
-  // Some boilerplate, similar to what DiStella adds
-  time_t currtime;
-  time(&currtime);
-  buf << "; Disassembly of " << myOSystem.romFile() << "\n"
-      << "; Disassembled " << ctime(&currtime)
-      << "; Using Stella " << STELLA_VERSION << "\n;\n"
-      << "; Legend: * = CODE not yet run (preliminary code)\n"
-      << ";         D = DATA directive (referenced in some way)\n"
-      << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
-      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n\n"
-      << "      processor 6502\n\n"
-      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-      << ";      TIA AND IO CONSTANTS\n"
-      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
-
-  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
-      buf << ALIGN(6) << ourTIAMnemonicR[addr] << "  =  $"
-          << HEX2 << right << addr << " ; (R)\n";
-  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
-      buf << ALIGN(6) << ourTIAMnemonicW[addr] << "  =  $"
-          << HEX2 << right << addr << " ; (W)\n";
-  for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
-    if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
-      buf << ALIGN(6) << ourIOMnemonic[addr] << "  =  $"
-          << HEX4 << right << (addr+0x280) << "\n";
-
-  buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-      << ";      RIOT (zero-page) RAM\n"
-      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
-  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
-  {
-    if(myReserved.ZPRAM[addr-0x80] &&
-       myUserLabels.find(addr) == myUserLabels.end())
-    {
-      buf << ALIGN(6) << ourZPMnemonic[addr-0x80] << "  =  $"
-          << HEX2 << right << (addr) << "\n";
-    }
-  }
-
-  if(myReserved.Label.size() > 0)
-  {
-    buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-        << ";      NON LOCATABLE\n"
-        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
-    for(iter = myReserved.Label.begin(); iter != myReserved.Label.end(); ++iter)
-        buf << ALIGN(10) << iter->second << "  =  $" << iter->first << "\n";
-  }
-
-  if(myUserLabels.size() > 0)
-  {
-    buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-        << ";      USER DEFINED\n"
-        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
-    int max_len = 0;
-    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
-      max_len = BSPF_max(max_len, (int)iter->second.size());
-    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
-        buf << ALIGN(max_len) << iter->second << "  =  $" << iter->first << "\n";
-  }
-
+  // We can't print the header to the disassembly until it's actually
+  // been processed; therefore buffer output to a string first
+  ostringstream buf;
   buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n;\n"
       << ";      MAIN PROGRAM\n"
       << ";\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
@@ -1066,9 +1025,77 @@ string CartDebug::saveDisassembly()
     }
   }
 
-  cout << buf.str() << endl;  // TODO - redirect to file
+  // Some boilerplate, similar to what DiStella adds
+  time_t currtime;
+  time(&currtime);
+  out << "; Disassembly of " << myOSystem.romFile() << "\n"
+      << "; Disassembled " << ctime(&currtime)
+      << "; Using Stella " << STELLA_VERSION << "\n;\n"
+      << "; ROM properties name : " << myConsole.properties().get(Cartridge_Name) << "\n"
+      << "; ROM properties MD5  : " << myConsole.properties().get(Cartridge_MD5) << "\n"
+      << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
+      << "; Legend: * = CODE not yet run (preliminary code)\n"
+      << ";         D = DATA directive (referenced in some way)\n"
+      << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
+      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n\n"
+      << "      processor 6502\n\n";
 
-  return DebuggerParser::red("not save to file yet");
+  out << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+      << ";      TIA AND IO CONSTANTS\n"
+      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+    if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
+      out << ALIGN(6) << ourTIAMnemonicR[addr] << "  =  $"
+          << HEX2 << right << addr << " ; (R)\n";
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+    if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
+      out << ALIGN(6) << ourTIAMnemonicW[addr] << "  =  $"
+          << HEX2 << right << addr << " ; (W)\n";
+  for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
+    if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
+      out << ALIGN(6) << ourIOMnemonic[addr] << "  =  $"
+          << HEX4 << right << (addr+0x280) << "\n";
+
+  out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+      << ";      RIOT RAM (zero-page)\n"
+      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
+  {
+    if(myReserved.ZPRAM[addr-0x80] &&
+       myUserLabels.find(addr) == myUserLabels.end())
+    {
+      out << ALIGN(6) << ourZPMnemonic[addr-0x80] << "  =  $"
+          << HEX2 << right << (addr) << "\n";
+    }
+  }
+
+  if(myReserved.Label.size() > 0)
+  {
+    out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+        << ";      NON LOCATABLE\n"
+        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    for(iter = myReserved.Label.begin(); iter != myReserved.Label.end(); ++iter)
+        out << ALIGN(10) << iter->second << "  =  $" << iter->first << "\n";
+  }
+
+  if(myUserLabels.size() > 0)
+  {
+    out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+        << ";      USER DEFINED\n"
+        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    int max_len = 0;
+    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
+      max_len = BSPF_max(max_len, (int)iter->second.size());
+    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
+        out << ALIGN(max_len) << iter->second << "  =  $" << iter->first << "\n";
+  }
+
+  // And finally, output the disassembly
+  out << buf.str();
+
+  out.close();
+
+  return "saved " + node.getShortPath() + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1187,23 +1214,11 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
     {
       switch(addr & 0x0f00)
       {
-        case 0x000:
-        case 0x100:
-        case 0x400:
-        case 0x500:
-        case 0x800:
-        case 0x900:
-        case 0xc00:
-        case 0xd00:
+        case 0x000:  case 0x100:  case 0x400:  case 0x500:
+        case 0x800:  case 0x900:  case 0xc00:  case 0xd00:
           return ADDR_ZPRAM;
-        case 0x200:
-        case 0x300:
-        case 0x600:
-        case 0x700:
-        case 0xa00:
-        case 0xb00:
-        case 0xe00:
-        case 0xf00:
+        case 0x200:  case 0x300:  case 0x600:  case 0x700:
+        case 0xa00:  case 0xb00:  case 0xe00:  case 0xf00:
           return ADDR_IO;
       }
     }
@@ -1283,7 +1298,6 @@ CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt8 flags) const
   else
     return CartDebug::NONE;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const

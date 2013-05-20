@@ -203,9 +203,14 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       // If we have a piece of code referenced somewhere else, but cannot
       // locate the label in code (i.e because the address is inside of a
       // multi-byte instruction, then we make note of that address for reference
-      reservedLabel.str("");
-      reservedLabel << "L" << HEX4 << (k+myOffset);
-      myReserved.Label.insert(make_pair(k+myOffset, reservedLabel.str()));
+      //
+      // However, we only do this for labels pointing to ROM (above $1000)
+      if(myDbg.addressType(k+myOffset) == CartDebug::ADDR_ROM)
+      {
+        reservedLabel.str("");
+        reservedLabel << "L" << HEX4 << (k+myOffset);
+        myReserved.Label.insert(make_pair(k+myOffset, reservedLabel.str()));
+      }
     }
   }
 
@@ -547,16 +552,6 @@ void DiStella::disasm(uInt32 distart, int pass)
           labfound = mark(d1, CartDebug::REFERENCED);
           if (pass == 3)
           {
-            if (labfound == 2)
-            {
-              if(ourLookup[op].rw_mode == READ)
-                myReserved.TIARead[d1 & 0x0F] = true;
-              else
-                myReserved.TIAWrite[d1 & 0x3F] = true;
-            }
-            else if (labfound == 5)
-              myReserved.ZPRAM[(d1 & 0xFF) - 0x80] = true;
-
             nextline << "    ";
             LABEL_A12_LOW((int)d1);
             nextlinebytes << HEX2 << (int)d1;
