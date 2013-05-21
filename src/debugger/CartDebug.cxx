@@ -921,12 +921,13 @@ string CartDebug::saveDisassembly()
     const string& propsname =
       myConsole.properties().get(Cartridge_Name) + ".asm";
 
-    FilesystemNode case0(FilesystemNode(myOSystem.romFile()).getParent().getPath() +
-                         propsname);
+    FilesystemNode case0(
+      FilesystemNode(myOSystem.romFile()).getParent().getPath() + propsname);
     if(case0.getParent().isWritable())
       myDisasmFile = case0.getPath();
     else
-      return DebuggerParser::red("disassembly file not writable:\n  " + case0.getShortPath());
+      return DebuggerParser::red("disassembly file not writable:\n  " +
+          case0.getShortPath());
   }
 
   FilesystemNode node(myDisasmFile);
@@ -935,8 +936,6 @@ string CartDebug::saveDisassembly()
     return "Unable to save disassembly to " + node.getShortPath();
 
 #define ALIGN(x) setfill(' ') << left << setw(x)
-
-  AddrToLabel::const_iterator iter;
 
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first
@@ -1028,7 +1027,7 @@ string CartDebug::saveDisassembly()
   // Some boilerplate, similar to what DiStella adds
   time_t currtime;
   time(&currtime);
-  out << "; Disassembly of " << myOSystem.romFile() << "\n"
+  out << "; Disassembly of " << FilesystemNode(myOSystem.romFile()).getShortPath() << "\n"
       << "; Disassembled " << ctime(&currtime)
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
       << "; ROM properties name : " << myConsole.properties().get(Cartridge_Name) << "\n"
@@ -1040,35 +1039,52 @@ string CartDebug::saveDisassembly()
       << ";         P = PGFX directive, shown as '*' (stored in playfield)\n\n"
       << "      processor 6502\n\n";
 
-  out << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-      << ";      TIA AND IO CONSTANTS\n"
-      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+  bool addrUsed = false;
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
-      out << ALIGN(6) << ourTIAMnemonicR[addr] << "  =  $"
-          << HEX2 << right << addr << " ; (R)\n";
+    addrUsed = addrUsed || myReserved.TIARead[addr];
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
-      out << ALIGN(6) << ourTIAMnemonicW[addr] << "  =  $"
-          << HEX2 << right << addr << " ; (W)\n";
+    addrUsed = addrUsed || myReserved.TIAWrite[addr];
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
-    if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
-      out << ALIGN(6) << ourIOMnemonic[addr] << "  =  $"
-          << HEX4 << right << (addr+0x280) << "\n";
-
-  out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-      << ";      RIOT RAM (zero-page)\n"
-      << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
-  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
+    addrUsed = addrUsed || myReserved.IOReadWrite[addr];
+  if(addrUsed)
   {
-    if(myReserved.ZPRAM[addr-0x80] &&
-       myUserLabels.find(addr) == myUserLabels.end())
+    out << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+        << ";      TIA AND IO CONSTANTS\n"
+        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+      if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
+        out << ALIGN(6) << ourTIAMnemonicR[addr] << "  =  $"
+            << HEX2 << right << addr << " ; (R)\n";
+    for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+      if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
+        out << ALIGN(6) << ourTIAMnemonicW[addr] << "  =  $"
+            << HEX2 << right << addr << " ; (W)\n";
+    for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
+      if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
+        out << ALIGN(6) << ourIOMnemonic[addr] << "  =  $"
+            << HEX4 << right << (addr+0x280) << "\n";
+  }
+
+  addrUsed = false;
+  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
+    addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80];
+  if(addrUsed)
+  {
+    out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
+        << ";      RIOT RAM (zero-page)\n"
+        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
     {
-      out << ALIGN(6) << ourZPMnemonic[addr-0x80] << "  =  $"
-          << HEX2 << right << (addr) << "\n";
+      if(myReserved.ZPRAM[addr-0x80] &&
+         myUserLabels.find(addr) == myUserLabels.end())
+      {
+        out << ALIGN(6) << ourZPMnemonic[addr-0x80] << "  =  $"
+            << HEX2 << right << (addr) << "\n";
+      }
     }
   }
 
+  AddrToLabel::const_iterator iter;
   if(myReserved.Label.size() > 0)
   {
     out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"

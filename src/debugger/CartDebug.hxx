@@ -299,6 +299,7 @@ class CartDebug : public DebuggerSystem
       DirectiveList directiveList; // overrides for automatic code determination
 
       BankInfo() : start(0), end(0), offset(0), size(0) { }
+#if 0
       friend ostream& operator<<(ostream& os, const BankInfo& b)
       {
         os << "start=$" << HEX4 << b.start << ", end=$" << HEX4 << b.end
@@ -310,6 +311,7 @@ class CartDebug : public DebuggerSystem
           os << HEX4 << *i << " ";
         return os;
       }
+#endif
     };
 
     // Address type information determined by Distella
