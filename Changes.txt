@@ -64,6 +64,10 @@
     menus in the UI; they can now be navigated more fully by the keyboard
     and mouse.
 
+  * Updated internal ROM properties database to ROM-Hunter version 9
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
+
   * Updated included PNG and ZLIB libraries to latest stable version.
 
 -Have fun!

@@ -146,6 +146,10 @@
 "Cartridge.Name" "Pigs in Space (1983) (Atari)"
 ""
 
+"Cartridge.MD5" "62ffd175cac3f781ef6e4870136a2520"
+"Cartridge.Name" "2600 Digital Clock (V x.xx) (PD)"
+""
+
 "Cartridge.MD5" "afe776db50e3378cd6f29c7cdd79104a"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Bobby is Going Home (TJ)"
@@ -153,10 +157,6 @@
 "Cartridge.Rarity" "Homebrew"
 "Display.YStart" "23"
 "Display.Height" "245"
-""
-
-"Cartridge.MD5" "62ffd175cac3f781ef6e4870136a2520"
-"Cartridge.Name" "2600 Digital Clock (V x.xx) (PD)"
 ""
 
 "Cartridge.MD5" "69fac82cd2312dd9ce5d90e22e2f070a"
@@ -2912,7 +2912,7 @@
 "Cartridge.MD5" "48287a9323a0ae6ab15e671ac2a87598"
 "Cartridge.Manufacturer" "Zellers"
 "Cartridge.Name" "Laser Volley (Zellers)"
-"Cartridge.Note" "AKA Laser Gates"
+"Cartridge.Note" "AKA Innerspace"
 ""
 
 "Cartridge.MD5" "3e88cca5b860d0bd8947479e74c44284"
@@ -3112,7 +3112,7 @@
 "Cartridge.Manufacturer" "Quelle"
 "Cartridge.ModelNo" "292.651 7"
 "Cartridge.Name" "Weltraumtunnel (1983) (Quelle) (PAL)"
-"Cartridge.Note" "AKA Laser Gates"
+"Cartridge.Note" "AKA Innerspace"
 ""
 
 "Cartridge.MD5" "b79fe32320388a197ac3a0b932cc2189"
@@ -4566,8 +4566,8 @@
 ""
 
 "Cartridge.MD5" "fb833ed50c865a9a505a125fc9d79a7e"
-"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
-"Cartridge.Name" "Zoo Fun (1983) (Home Vision) (PAL)"
+"Cartridge.Manufacturer" "ITT Family Games"
+"Cartridge.Name" "Pumuckl I (1983) (ITT Family Games) (PAL)"
 "Cartridge.Note" "AKA Panda Chase"
 "Display.YStart" "30"
 ""
@@ -5904,7 +5904,7 @@
 "Cartridge.MD5" "a2170318a8ef4b50a1b1d38567c220d6"
 "Cartridge.Manufacturer" "Amiga"
 "Cartridge.ModelNo" "3125"
-"Cartridge.Name" "Surf's Up (1983) (Amiga) (Prototype) [a]"
+"Cartridge.Name" "Surf's Up (1983) (Amiga) (Prototype) [a1]"
 "Cartridge.Note" "Uses the Amiga Joyboard"
 "Cartridge.Rarity" "Prototype"
 ""
@@ -6180,7 +6180,7 @@
 ""
 
 "Cartridge.MD5" "76a9bf05a6de8418a3ebc7fc254b71b4"
-"Cartridge.Manufacturer" "VideoSoft, Jerry Lawson"
+"Cartridge.Manufacturer" "VideoSoft, Jerry Lawson, Dan McElroy"
 "Cartridge.ModelNo" "VS1008"
 "Cartridge.Name" "Color Bar Generator (1984) (VideoSoft)"
 ""
@@ -6398,6 +6398,7 @@
 "Cartridge.Manufacturer" "Imagic, Dan Oliver"
 "Cartridge.ModelNo" "720118-1A, 03208"
 "Cartridge.Name" "Laser Gates (1983) (Imagic)"
+"Cartridge.Note" "AKA Innerspace"
 ""
 
 "Cartridge.MD5" "c1b038ce5cb6d85e956c5509b0e0d0d8"
@@ -8014,9 +8015,9 @@
 ""
 
 "Cartridge.MD5" "ebd2488dcace40474c1a78fa53ebfadf"
-"Cartridge.Manufacturer" "Skill Screen Games"
+"Cartridge.Manufacturer" "Skill Screen Games, Herman Quast"
 "Cartridge.ModelNo" "SSG001"
-"Cartridge.Name" "Extra Terrestrials (1983) (SSG)"
+"Cartridge.Name" "Extra Terrestrials (1984) (SSG)"
 "Cartridge.Note" "The only Canadian-designed and manufactured Atari 2600 game from the 1980's"
 "Cartridge.Rarity" "Extremely Rare"
 ""
@@ -8663,7 +8664,7 @@
 "Cartridge.MD5" "cd4ded1ede63c4dd09f3dd01bda7458c"
 "Cartridge.Manufacturer" "Future Video Games"
 "Cartridge.Name" "Laser Gate (Future Video Games) (PAL)"
-"Cartridge.Note" "AKA Laser Gates"
+"Cartridge.Note" "AKA Innerspace"
 "Display.YStart" "14"
 ""
 
@@ -9185,7 +9186,7 @@
 ""
 
 "Cartridge.MD5" "0e224ea74310da4e7e2103400eb1b4bf"
-"Cartridge.Manufacturer" "Atari, Peter C. Niday, Howard Scott Warshaw"
+"Cartridge.Manufacturer" "Atari, Gary Shannon, Howard Scott Warshaw"
 "Cartridge.Name" "Mind Maze (10-10-1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Right" "MINDLINK"
@@ -10325,6 +10326,7 @@
 "Cartridge.Manufacturer" "Atari, Douglas Neubauer"
 "Cartridge.ModelNo" "CX26136"
 "Cartridge.Name" "Solaris (1986) (Atari)"
+"Cartridge.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
 ""
 
 "Cartridge.MD5" "8df4be9ddc54ac363b13dc57ceaf161a"
@@ -11318,7 +11320,7 @@
 
 "Cartridge.MD5" "c4bc8c2e130d76346ebf8eb544991b46"
 "Cartridge.Manufacturer" "Imagic"
-"Cartridge.Name" "Imagic Selector ROM (1982) (Imagic)"
+"Cartridge.Name" "Imagic Selector ROM (1982) (Imagic) [a]"
 ""
 
 "Cartridge.MD5" "457f4ad2cda5f4803f122508bfbde3f5"
@@ -12824,6 +12826,7 @@
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-026"
 "Cartridge.Name" "Treasure Island (Suntek) (PAL)"
+"Cartridge.Note" "AKA Treasure Discovery"
 ""
 
 "Cartridge.MD5" "8454ed9787c9d8211748ccddb673e920"
@@ -12858,6 +12861,7 @@
 "Cartridge.Manufacturer" "Atari, Douglas Neubauer"
 "Cartridge.ModelNo" "CX26136"
 "Cartridge.Name" "Solaris (1986) (Atari) (PAL)"
+"Cartridge.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
 ""
 
 "Cartridge.MD5" "814210c0e121f7dbc25661b93c06311c"
@@ -13676,7 +13680,7 @@
 ""
 
 "Cartridge.MD5" "835759ff95c2cdc2324d7c1e7c5fa237"
-"Cartridge.Manufacturer" "20th Century Fox Video Games, Frank Cohen, Douglas 'Dallas North' Neubauer"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Douglas 'Dallas North' Neubauer"
 "Cartridge.ModelNo" "11011"
 "Cartridge.Name" "M.A.S.H (1983) (20th Century Fox)"
 ""
@@ -14184,10 +14188,11 @@
 "Cartridge.Manufacturer" "Imagic, Dan Oliver"
 "Cartridge.ModelNo" "720118-2A, 13208, EIX-007-04I"
 "Cartridge.Name" "Laser Gates (1983) (Imagic) (PAL)"
+"Cartridge.Note" "AKA Innerspace"
 ""
 
 "Cartridge.MD5" "d326db524d93fa2897ab69c42d6fb698"
-"Cartridge.Manufacturer" "Parker Brothers, Mike Brodie"
+"Cartridge.Manufacturer" "Parker Brothers, Paul Crowley"
 "Cartridge.ModelNo" "931505"
 "Cartridge.Name" "Super Cobra (1982) (Parker Bros) (PAL)"
 ""
@@ -15168,7 +15173,7 @@
 ""
 
 "Cartridge.MD5" "43c6cfffeddab6b3787357fed9d44529"
-"Cartridge.Manufacturer" "20th Century Fox Video Games, Frank Cohen, Douglas 'Dallas North' Neubauer"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Douglas 'Dallas North' Neubauer"
 "Cartridge.ModelNo" "11111"
 "Cartridge.Name" "M.A.S.H (1983) (20th Century Fox) (PAL)"
 ""
@@ -17033,7 +17038,7 @@
 ""
 
 "Cartridge.MD5" "92a1a605b7ad56d863a56373a866761b"
-"Cartridge.Manufacturer" "U.S. Games Corporation"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Dave Hampton"
 "Cartridge.ModelNo" "VC2006"
 "Cartridge.Name" "Raft Rider (1982) (U.S. Games)"
 ""
@@ -17105,7 +17110,7 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-860"
 "Cartridge.Name" "Laser Gate (1983) (CCE)"
-"Cartridge.Note" "AKA Laser Gates"
+"Cartridge.Note" "AKA Innerspace"
 ""
 
 "Cartridge.MD5" "ca09fa7406b7d2aea10d969b6fc90195"
@@ -17474,7 +17479,7 @@
 ""
 
 "Cartridge.MD5" "c29f8db680990cb45ef7fef6ab57a2c2"
-"Cartridge.Manufacturer" "Parker Brothers, Mike Brodie"
+"Cartridge.Manufacturer" "Parker Brothers, Paul Crowley"
 "Cartridge.ModelNo" "PB5320"
 "Cartridge.Name" "Super Cobra (1982) (Parker Bros)"
 ""
@@ -18587,7 +18592,7 @@
 ""
 
 "Cartridge.MD5" "fa2be8125c3c60ab83e1c0fe56922fcb"
-"Cartridge.Manufacturer" "DSD-Camelot - Johnson & Johnson"
+"Cartridge.Manufacturer" "DSD-Camelot - Johnson & Johnson, Michael Doherty, Clyde Hager"
 "Cartridge.Name" "Tooth Protectors (1983) (DSD-Camelot)"
 "Display.YStart" "26"
 "Display.Phosphor" "YES"
@@ -18663,6 +18668,7 @@
 "Cartridge.Manufacturer" "20th Century Fox Video Games, Dan Thompson"
 "Cartridge.ModelNo" "11020"
 "Cartridge.Name" "Earth Dies Screaming, The (1983) (20th Century Fox)"
+"Cartridge.Note" "The Day the Earth Stood Still"
 "Display.YStart" "29"
 ""
 
@@ -19781,3 +19787,119 @@
 "Cartridge.Name" "Seaquest (Digivision)"
 ""
 
+"Cartridge.MD5" "7cedffa0db65d610568b90aeca705ac6"
+"Cartridge.Manufacturer" "Atari, Rob Fulop - Sears"
+"Cartridge.ModelNo" "CX2638 - 49-75166"
+"Cartridge.Name" "Missile Command (1981) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "e04f1c1e4401d584d3f4343410a5bcc4"
+"Cartridge.Manufacturer" "Wizard Video Games, Robert Barber, Tim Martin"
+"Cartridge.ModelNo" "007"
+"Cartridge.Name" "Halloween (1983) (Wizard Video Games) (Prototype) [a]"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "59d33e00c07665395209c1e55da0b139"
+"Cartridge.Name" "Imagic Selector ROM (1982) (Imagic)"
+""
+
+"Cartridge.MD5" "6e179eee3d4631a7434d40cf7aeea6e8"
+"Cartridge.Manufacturer" "Wizard Video Games, Robert Barber, Tim Martin"
+"Cartridge.ModelNo" "007"
+"Cartridge.Name" "Halloween (1983) (Wizard Video Games) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "aa5cfe3b20395aba1d479135943ad85c"
+"Cartridge.Name" "Defender (Hack) (Unknown)"
+"Cartridge.Rarity" "Hack of Defender"
+""
+
+"Cartridge.MD5" "dc905b22de0f191a029df13eddfcabc4"
+"Cartridge.Manufacturer" "Atari, Warren Robinett"
+"Cartridge.Name" "Elf Adventure (05-02-83) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "7c7a4a2d505c2d0c75337c44711d8d54"
+"Cartridge.Manufacturer" "Atari, Warren Robinett"
+"Cartridge.Name" "Elf Adventure (04-22-83) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "8e7241bfc8380aac3c0ef1b6881cdded"
+"Cartridge.Manufacturer" "Atari, Howard Scott Warshaw - Sears"
+"Cartridge.ModelNo" "CX2655 - 49-75167"
+"Cartridge.Name" "Yars' Revenge (09-01-81) (Atari) (Prototype)"
+"Cartridge.Note" "Time Freeze"
+"Cartridge.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "2d15b092e8350912ec4b2e5e750fa1c6"
+"Cartridge.Manufacturer" "Wizard Video Games, Bob Davis, Robert H. O'Neil"
+"Cartridge.Name" "Texas Chainsaw Massacre, The (1982) (Wizard Video Games) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "d0e15a3ce322c5af60f07343594392af"
+"Cartridge.Manufacturer" "Amiga"
+"Cartridge.ModelNo" "3125"
+"Cartridge.Name" "Surf's Up (1983) (Amiga) (Prototype) (4K)"
+"Cartridge.Note" "Uses the Joyboard controller"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "297236cb9156be35679f83c4e38ee169"
+"Cartridge.Manufacturer" "Exus Corporation"
+"Cartridge.Name" "Video Reflex (1983) (Exus) [no roman numbers]"
+"Cartridge.Note" "AKA Foot Craz (no roman numbers)"
+""
+
+"Cartridge.MD5" "192aa2e8c795c9e10a7913e5d41feb81"
+"Cartridge.Manufacturer" "Atari - GCC, Jaques Hugon, Seth Lipkin"
+"Cartridge.ModelNo" "CX26125"
+"Cartridge.Name" "Los Angeles 1984 Games (1984) (Atari) (Prototype) (PAL)"
+"Cartridge.Note" "AKA Track and Field (Uses Track & Field Controller)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "b16cd9784589219391c839cb68c47b9c"
+"Cartridge.Manufacturer" "Video Soft, Jerry Lawson, Dan McElroy"
+"Cartridge.Name" "Golf Diagnostic (1983) (Video Soft) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "dfc3dbbb39f05d7dd8ee3ac987478970"
+"Cartridge.Name" "Imagic Selector ROM (1982) (Imagic) (PAL)"
+""
+
+"Cartridge.MD5" "fd78f186bdff83fbad7f97cb583812fe"
+"Cartridge.Manufacturer" "Amiga"
+"Cartridge.ModelNo" "3125"
+"Cartridge.Name" "Surf's Up (1983) (Amiga) (Prototype) [a2]"
+"Cartridge.Note" "Uses the Joyboard controller"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "b59fd465abf76f64c85652ff29d5952d"
+"Cartridge.Manufacturer" "VentureVision, Dan Oliver"
+"Cartridge.Name" "Innerspace (1983) (VentureVision) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "3ca51b5c08f5a0ecfb17d0c1ec6d0942"
+"Cartridge.Manufacturer" "Atari, James Andreasen - Sears"
+"Cartridge.ModelNo" "CX2654 - 49-75141"
+"Cartridge.Name" "Haunted House (09-28-81) (Atari) (Prototype)"
+"Cartridge.Note" "AKA Mystery Mansion, Graves' Manor, Nightmare Manor"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "7d483b702c44ee65cd2df22cbcc8b7ed"
+"Cartridge.Manufacturer" "Atari, Warren Robinett"
+"Cartridge.Name" "Elf Adventure (05-25-83) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""

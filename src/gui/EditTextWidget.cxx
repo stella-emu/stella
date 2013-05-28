@@ -122,12 +122,12 @@ void EditTextWidget::startEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::endEditMode()
 {
-  EditableWidget::endEditMode();
+  // Editing is always enabled
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::abortEditMode()
 {
+  // Editing is always enabled
   setEditString(_backupString);
-  EditableWidget::abortEditMode();
 }
