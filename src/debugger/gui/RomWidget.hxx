@@ -26,10 +26,7 @@
 class GuiObject;
 class EditTextWidget;
 
-#include "Array.hxx"
-#include "Widget.hxx"
 #include "Command.hxx"
-#include "CartDebug.hxx"
 #include "RomListWidget.hxx"
 
 class RomWidget : public Widget, public CommandSender

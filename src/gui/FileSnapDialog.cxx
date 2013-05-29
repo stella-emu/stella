@@ -213,14 +213,14 @@ void FileSnapDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::saveConfig()
 {
-  instance().settings().setValue("romdir", myRomPath->getEditString());
-  instance().settings().setValue("snapsavedir", mySnapSavePath->getEditString());
-  instance().settings().setValue("snaploaddir", mySnapLoadPath->getEditString());
-  instance().settings().setValue("cheatfile", myCheatFile->getEditString());
-  instance().settings().setValue("palettefile", myPaletteFile->getEditString());
-  instance().settings().setValue("propsfile", myPropsFile->getEditString());
-  instance().settings().setValue("statedir", myStatePath->getEditString());
-  instance().settings().setValue("nvramdir", myNVRamPath->getEditString());
+  instance().settings().setValue("romdir", myRomPath->getText());
+  instance().settings().setValue("snapsavedir", mySnapSavePath->getText());
+  instance().settings().setValue("snaploaddir", mySnapLoadPath->getText());
+  instance().settings().setValue("cheatfile", myCheatFile->getText());
+  instance().settings().setValue("palettefile", myPaletteFile->getText());
+  instance().settings().setValue("propsfile", myPropsFile->getText());
+  instance().settings().setValue("statedir", myStatePath->getText());
+  instance().settings().setValue("nvramdir", myNVRamPath->getText());
   instance().settings().setValue("sssingle", mySnapSingle->getState());
   instance().settings().setValue("ss1x", mySnap1x->getState());
   instance().settings().setValue("ssinterval",
@@ -286,42 +286,42 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseRomDirCmd:
-      myBrowser->show("Select ROM directory:", myRomPath->getEditString(),
+      myBrowser->show("Select ROM directory:", myRomPath->getText(),
                       BrowserDialog::Directories, kRomDirChosenCmd);
       break;
 
     case kChooseSnapSaveDirCmd:
-      myBrowser->show("Select snapshot save directory:", mySnapSavePath->getEditString(),
+      myBrowser->show("Select snapshot save directory:", mySnapSavePath->getText(),
                       BrowserDialog::Directories, kSnapSaveDirChosenCmd);
       break;
 
     case kChooseSnapLoadDirCmd:
-      myBrowser->show("Select snapshot load directory:", mySnapLoadPath->getEditString(),
+      myBrowser->show("Select snapshot load directory:", mySnapLoadPath->getText(),
                       BrowserDialog::Directories, kSnapLoadDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
-      myBrowser->show("Select cheat file:", myCheatFile->getEditString(),
+      myBrowser->show("Select cheat file:", myCheatFile->getText(),
                       BrowserDialog::FileLoad, kCheatFileChosenCmd);
       break;
 
     case kChoosePaletteFileCmd:
-      myBrowser->show("Select palette file:", myPaletteFile->getEditString(),
+      myBrowser->show("Select palette file:", myPaletteFile->getText(),
                       BrowserDialog::FileLoad, kPaletteFileChosenCmd);
       break;
 
     case kChoosePropsFileCmd:
-      myBrowser->show("Select properties file:", myPropsFile->getEditString(),
+      myBrowser->show("Select properties file:", myPropsFile->getText(),
                       BrowserDialog::FileLoad, kPropsFileChosenCmd);
       break;
 
     case kChooseNVRamDirCmd:
-      myBrowser->show("Select NVRAM directory:", myNVRamPath->getEditString(),
+      myBrowser->show("Select NVRAM directory:", myNVRamPath->getText(),
                       BrowserDialog::Directories, kNVRamDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
-      myBrowser->show("Select state directory:", myStatePath->getEditString(),
+      myBrowser->show("Select state directory:", myStatePath->getText(),
                       BrowserDialog::Directories, kStateDirChosenCmd);
       break;
 

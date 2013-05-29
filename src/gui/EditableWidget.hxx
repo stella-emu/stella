@@ -45,7 +45,7 @@ class EditableWidget : public Widget, public CommandSender
     virtual ~EditableWidget();
 
     virtual void setText(const string& str, bool changed = false);
-    virtual const string& getEditString() const { return _editString; }
+    virtual const string& getText() const { return _editString; }
 
     bool isEditable() const	 { return _editable; }
     void setEditable(bool editable);

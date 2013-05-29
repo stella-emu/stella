@@ -510,11 +510,11 @@ void GameInfoDialog::saveConfig()
     return;
 
   // Cartridge properties
-  myGameProperties.set(Cartridge_Name, myName->getEditString());
-  myGameProperties.set(Cartridge_Manufacturer, myManufacturer->getEditString());
-  myGameProperties.set(Cartridge_ModelNo, myModelNo->getEditString());
-  myGameProperties.set(Cartridge_Rarity, myRarity->getEditString());
-  myGameProperties.set(Cartridge_Note, myNote->getEditString());
+  myGameProperties.set(Cartridge_Name, myName->getText());
+  myGameProperties.set(Cartridge_Manufacturer, myManufacturer->getText());
+  myGameProperties.set(Cartridge_ModelNo, myModelNo->getText());
+  myGameProperties.set(Cartridge_Rarity, myRarity->getText());
+  myGameProperties.set(Cartridge_Note, myNote->getText());
   myGameProperties.set(Cartridge_Sound, mySound->getSelectedTag().toString());
   myGameProperties.set(Cartridge_Type, myType->getSelectedTag().toString());
 
@@ -537,8 +537,8 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
-  myGameProperties.set(Display_YStart, myYStart->getEditString());
-  myGameProperties.set(Display_Height, myHeight->getEditString());
+  myGameProperties.set(Display_YStart, myYStart->getText());
+  myGameProperties.set(Display_Height, myHeight->getText());
   myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag().toString());
   myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel());
 

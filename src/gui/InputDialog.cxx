@@ -254,7 +254,7 @@ void InputDialog::saveConfig()
   Paddles::setMouseSensitivity(sensitivity);
 
   // AtariVox serial port
-  instance().settings().setValue("avoxport", myAVoxPort->getEditString());
+  instance().settings().setValue("avoxport", myAVoxPort->getText());
 
   // Allow all 4 joystick directions
   bool allowall4 = myAllowAll4->getState();

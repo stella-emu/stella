@@ -147,7 +147,7 @@ void InputTextDialog::setTitle(const string& title)
 const string& InputTextDialog::getResult(int idx)
 {
   if((unsigned int)idx < myInput.size())
-    return myInput[idx]->getEditString();
+    return myInput[idx]->getText();
   else
     return EmptyString;
 }

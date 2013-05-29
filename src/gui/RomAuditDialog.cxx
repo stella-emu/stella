@@ -121,7 +121,7 @@ void RomAuditDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::auditRoms()
 {
-  const string& auditPath = myRomPath->getEditString();
+  const string& auditPath = myRomPath->getText();
   myResults1->setLabel("");
   myResults2->setLabel("");
 
@@ -203,7 +203,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      myBrowser->show("Select ROM directory to audit:", myRomPath->getEditString(),
+      myBrowser->show("Select ROM directory to audit:", myRomPath->getText(),
                       BrowserDialog::Directories, kAuditDirChosenCmd);
       break;
 

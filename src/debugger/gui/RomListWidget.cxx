@@ -170,7 +170,7 @@ void RomListWidget::setHighlighted(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& RomListWidget::getEditString() const
+const string& RomListWidget::getText() const
 {
   if(_selectedItem < -1 || _selectedItem >= (int)myDisasm->list.size())
     return EmptyString;
@@ -596,7 +596,7 @@ void RomListWidget::endEditMode()
     return;
 
   // Send a message that editing finished with a return/enter key press
-  // The parent then calls getEditString() to get the newly entered data
+  // The parent then calls getText() to get the newly entered data
   _editMode = false;
   sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, _id);
 

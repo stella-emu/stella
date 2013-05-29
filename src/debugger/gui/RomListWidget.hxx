@@ -35,8 +35,6 @@ class CheckListWidget;
 /** RomListWidget */
 class RomListWidget : public EditableWidget
 {
-//  friend class RomWidget;
-
   public:
     enum {
       kBreakpointChangedCmd = 'RLbp', // click on the checkbox for a breakpoint
@@ -55,7 +53,7 @@ class RomListWidget : public EditableWidget
     void setSelected(int item);
     void setHighlighted(int item);
 
-    const string& getEditString() const;
+    const string& getText() const;
     void startEditMode();
     void endEditMode();
 

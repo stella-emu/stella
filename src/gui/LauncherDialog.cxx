@@ -330,7 +330,7 @@ void LauncherDialog::loadDirListing()
     myGameList->appendGame(" [..]", "", "", true);
 
   // Now add the directory entries
-  bool domatch = myPattern && myPattern->getEditString() != "";
+  bool domatch = myPattern && myPattern->getText() != "";
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
     bool isDir = files[idx].isDirectory();
@@ -349,7 +349,7 @@ void LauncherDialog::loadDirListing()
     }
 
     // Skip over files that don't match the pattern in the 'pattern' textbox
-    if(domatch && !isDir && !matchPattern(name, myPattern->getEditString()))
+    if(domatch && !isDir && !matchPattern(name, myPattern->getText()))
       continue;
 
     myGameList->appendGame(name, files[idx].getPath(), "", isDir);

@@ -116,7 +116,7 @@ cerr << cmd << " " << data << " " << id << endl;
 
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
-      patchROM(data, myRomList->getEditString());
+      patchROM(data, myRomList->getText());
       break;
 
 #if 0
