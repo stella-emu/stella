@@ -461,7 +461,7 @@ void ListWidget::startEditMode()
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
-    setEditString(_list[_selectedItem]);
+    setText(_list[_selectedItem]);
 
     // Widget gets raw data while editing
     EditableWidget::startEditMode();

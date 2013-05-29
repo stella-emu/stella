@@ -35,13 +35,12 @@ class CheckListWidget;
 /** RomListWidget */
 class RomListWidget : public EditableWidget
 {
-  friend class RomWidget;
+//  friend class RomWidget;
 
   public:
     enum {
-      kBreakpointChangedCmd = 'RLbp',  // click on the checkbox for a breakpoint
-      kRomChangedCmd        = 'RLpr'   // ROM item data changed - 'data' will be
-                                         // item index
+      kBreakpointChangedCmd = 'RLbp', // click on the checkbox for a breakpoint
+      kRomChangedCmd        = 'RLpr'  // ROM item data changed - 'data' will be item index
     };
 
   public:

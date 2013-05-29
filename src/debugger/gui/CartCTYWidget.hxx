@@ -36,6 +36,8 @@ class CartridgeCTYWidget : public CartDebugWidget
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    string bankState();
+
   private:
     CartridgeCTY& myCart;
     PopUpWidget* myBank;

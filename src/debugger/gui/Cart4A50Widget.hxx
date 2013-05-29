@@ -36,6 +36,8 @@ class Cartridge4A50Widget : public CartDebugWidget
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    string bankState();
+
   private:
     Cartridge4A50& myCart;
     PopUpWidget *myROMLower, *myRAMLower;

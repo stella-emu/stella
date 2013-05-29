@@ -447,12 +447,12 @@ void GameInfoDialog::loadView()
     return;
 
   // Cartridge properties
-  myName->setEditString(myGameProperties.get(Cartridge_Name));
+  myName->setText(myGameProperties.get(Cartridge_Name));
   myMD5->setLabel(myGameProperties.get(Cartridge_MD5));
-  myManufacturer->setEditString(myGameProperties.get(Cartridge_Manufacturer));
-  myModelNo->setEditString(myGameProperties.get(Cartridge_ModelNo));
-  myRarity->setEditString(myGameProperties.get(Cartridge_Rarity));
-  myNote->setEditString(myGameProperties.get(Cartridge_Note));
+  myManufacturer->setText(myGameProperties.get(Cartridge_Manufacturer));
+  myModelNo->setText(myGameProperties.get(Cartridge_ModelNo));
+  myRarity->setText(myGameProperties.get(Cartridge_Rarity));
+  myNote->setText(myGameProperties.get(Cartridge_Note));
   mySound->setSelected(myGameProperties.get(Cartridge_Sound), "MONO");
   myType->setSelected(myGameProperties.get(Cartridge_Type), "AUTO");
 
@@ -488,8 +488,8 @@ void GameInfoDialog::loadView()
 
   // Display properties
   myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO");
-  myYStart->setEditString(myGameProperties.get(Display_YStart));
-  myHeight->setEditString(myGameProperties.get(Display_Height));
+  myYStart->setText(myGameProperties.get(Display_YStart));
+  myHeight->setText(myGameProperties.get(Display_Height));
 
   const string& phos = myGameProperties.get(Display_Phosphor);
   myPhosphor->setSelected(phos, "NO");

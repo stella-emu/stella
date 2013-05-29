@@ -93,3 +93,13 @@ void CartridgeF0Widget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeF0Widget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Bank = " << myCart.myCurrentBank << ", hotspot = $FF0";
+
+  return buf.str();
+}

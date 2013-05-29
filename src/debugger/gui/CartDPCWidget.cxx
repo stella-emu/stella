@@ -222,3 +222,15 @@ void CartridgeDPCWidget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeDPCWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  static const char* spot[] = { "$FF8", "$FF9" };
+  buf << "Bank = " << myCart.myCurrentBank
+      << ", hotspot = " << spot[myCart.myCurrentBank];
+
+  return buf.str();
+}

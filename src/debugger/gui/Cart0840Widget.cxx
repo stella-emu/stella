@@ -78,3 +78,15 @@ void Cartridge0840Widget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge0840Widget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  static const char* spot[] = { "$800", "$840" };
+  buf << "Bank = " << myCart.myCurrentBank
+      << ", hotspot = " << spot[myCart.myCurrentBank];
+
+  return buf.str();
+}

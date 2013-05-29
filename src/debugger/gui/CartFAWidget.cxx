@@ -80,3 +80,15 @@ void CartridgeFAWidget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeFAWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  static const char* spot[] = { "$FF8", "$FF9", "$FFA" };
+  buf << "Bank = " << myCart.myCurrentBank
+      << ", hotspot = " << spot[myCart.myCurrentBank];
+
+  return buf.str();
+}

@@ -46,6 +46,7 @@ class CartState : public DebuggerState
     IntArray ram;    // The actual data values
     IntArray rport;  // Address for reading from RAM
     IntArray wport;  // Address for writing to RAM
+    string bank;     // Current banking layout
 };
 
 class CartDebug : public DebuggerSystem
@@ -68,7 +69,7 @@ class CartDebug : public DebuggerSystem
       // of decreasing hierarchy
       //
       CODE   = 1 << 7,  // disassemble-able code segments
-      PCODE  = 1 << 6,  // (preliminary) disassemble-able code segments
+      TCODE  = 1 << 6,  // (tentative) disassemble-able code segments
       GFX    = 1 << 5,  // addresses loaded into GRPx registers
       PGFX   = 1 << 4,  // addresses loaded into PFx registers
       DATA   = 1 << 3,  // addresses loaded into registers other than GRPx / PFx
@@ -193,17 +194,17 @@ class CartDebug : public DebuggerSystem
     /**
       Get the current bank in use by the cartridge.
     */
-    int getBank();
+    int getBank();  // non-const because of use in YaccParser
 
     /**
       Get the total number of banks supported by the cartridge.
     */
-    int bankCount();
+    int bankCount() const;
 
     /**
       Get the name/type of the cartridge.
     */
-    string getCartType();
+    string getCartType() const;
 
     /**
       Add a label and associated address.

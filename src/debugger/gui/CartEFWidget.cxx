@@ -92,3 +92,18 @@ void CartridgeEFWidget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeEFWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  static const char* spot[] = {
+    "$FE0", "$FE1", "$FE2", "$FE3", "$FE4", "$FE5", "$FE6", "$FE7",
+    "$FE8", "$FE9", "$FEA", "$FEB", "$FEC", "$FED", "$FEE", "$FEF"
+  };
+  buf << "Bank = " << myCart.myCurrentBank
+      << ", hotspot = " << spot[myCart.myCurrentBank];
+
+  return buf.str();
+}

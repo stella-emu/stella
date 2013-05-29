@@ -516,8 +516,8 @@ class OSystem
       that usually isn't user-modifiable), we create a special method
       for it.
     */
-    virtual string defaultSnapSaveDir() { return "~"; }
-    virtual string defaultSnapLoadDir() { return "~"; }
+    virtual string defaultSnapSaveDir() { return "~" BSPF_PATH_SEPARATOR; }
+    virtual string defaultSnapLoadDir() { return "~" BSPF_PATH_SEPARATOR; }
 
     /**
       Set the position of the application window, generally using

@@ -316,3 +316,17 @@ void CartridgeDPCPlusWidget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeDPCPlusWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  static const char* spot[] = {
+    "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
+  };
+  buf << "Bank = " << myCart.myCurrentBank
+      << ", hotspot = " << spot[myCart.myCurrentBank];
+
+  return buf.str();
+}

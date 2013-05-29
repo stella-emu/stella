@@ -263,3 +263,25 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
   myCart.lockBank();
   invalidate();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge4A50Widget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "L/M/H = ";
+  if(myCart.myIsRomLow)
+    buf << "ROM bank " << ((myCart.mySliceLow >> 11) & 0x1F) << " / ";
+  else
+    buf << "RAM bank " << ((myCart.mySliceLow >> 11) & 0x0F) << " / ";
+  if(myCart.myIsRomMiddle)
+    buf << "ROM bank " << ((myCart.mySliceMiddle >> 11) & 0x1F) << " / ";
+  else
+    buf << "RAM bank " << ((myCart.mySliceMiddle >> 11) & 0x0F) << " / ";
+  if(myCart.myIsRomHigh)
+    buf << "ROM bank " << ((myCart.mySliceHigh >> 11) & 0xFF);
+  else
+    buf << "RAM bank " << ((myCart.mySliceHigh >> 11) & 0x7F);
+
+  return buf.str();
+}

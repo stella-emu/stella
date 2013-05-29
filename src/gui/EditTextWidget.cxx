@@ -42,9 +42,9 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::setEditString(const string& str, bool changed)
+void EditTextWidget::setText(const string& str, bool changed)
 {
-  EditableWidget::setEditString(str, changed);
+  EditableWidget::setText(str, changed);
   _backupString = str;
   _changed = changed;
 }
@@ -129,5 +129,5 @@ void EditTextWidget::endEditMode()
 void EditTextWidget::abortEditMode()
 {
   // Editing is always enabled
-  setEditString(_backupString);
+  setText(_backupString);
 }

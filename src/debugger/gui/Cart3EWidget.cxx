@@ -141,3 +141,18 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
   myCart.lockBank();
   invalidate();
 }
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge3EWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  uInt16& bank = myCart.myCurrentBank;
+  if(bank < 256)
+    buf << "ROM bank " << bank % myNumRomBanks << ", RAM inactive";
+  else
+    buf << "ROM inactive, RAM bank " << bank % myNumRomBanks;
+
+  return buf.str();
+}

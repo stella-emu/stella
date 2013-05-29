@@ -83,3 +83,14 @@ void CartridgeSBWidget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeSBWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Bank = " << myCart.myCurrentBank
+      << ", hotspot = $" << HEX2 << (myCart.myCurrentBank + 0x800);
+
+  return buf.str();
+}

@@ -131,3 +131,17 @@ void CartridgeMCWidget::handleCommand(CommandSender* sender,
   myCart.lockBank();
   invalidate();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeMCWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Slices: "
+      << myCart.myCurrentBlock[0] << " / "
+      << myCart.myCurrentBlock[1] << " / "
+      << myCart.myCurrentBlock[2] << " / "
+      << myCart.myCurrentBlock[3];
+
+  return buf.str();
+}

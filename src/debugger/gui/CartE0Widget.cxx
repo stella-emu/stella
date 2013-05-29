@@ -21,6 +21,19 @@
 #include "PopUpWidget.hxx"
 #include "CartE0Widget.hxx"
 
+static const char* seg0[] = {
+  "0 ($FE0)", "1 ($FE1)", "2 ($FE2)", "3 ($FE3)",
+  "4 ($FE4)", "5 ($FE5)", "6 ($FE6)", "7 ($FE7)"
+};
+static const char* seg1[] = {
+  "0 ($FE8)", "1 ($FE9)", "2 ($FEA)", "3 ($FEB)",
+  "4 ($FEC)", "5 ($FED)", "6 ($FEE)", "7 ($FEF)"
+};
+static const char* seg2[] = {
+  "0 ($FF0)", "1 ($FF1)", "2 ($FF2)", "3 ($FF3)",
+  "4 ($FF4)", "5 ($FF5)", "6 ($FF6)", "7 ($FF7)"
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0Widget::CartridgeE0Widget(
       GuiObject* boss, const GUI::Font& font,
@@ -52,32 +65,12 @@ CartridgeE0Widget::CartridgeE0Widget(
       ypos = addBaseInformation(size, "Parker Brothers", info) + myLineHeight;
 
   VariantList items0, items1, items2;
-  items0.push_back("0 ($FE0)");
-  items0.push_back("1 ($FE1)");
-  items0.push_back("2 ($FE2)");
-  items0.push_back("3 ($FE3)");
-  items0.push_back("4 ($FE4)");
-  items0.push_back("5 ($FE5)");
-  items0.push_back("6 ($FE6)");
-  items0.push_back("7 ($FE7)");
-
-  items1.push_back("0 ($FE8)");
-  items1.push_back("1 ($FE9)");
-  items1.push_back("2 ($FEA)");
-  items1.push_back("3 ($FEB)");
-  items1.push_back("4 ($FEC)");
-  items1.push_back("5 ($FED)");
-  items1.push_back("6 ($FEE)");
-  items1.push_back("7 ($FEF)");
-
-  items2.push_back("0 ($FF0)");
-  items2.push_back("1 ($FF1)");
-  items2.push_back("2 ($FF2)");
-  items2.push_back("3 ($FF3)");
-  items2.push_back("4 ($FF4)");
-  items2.push_back("5 ($FF5)");
-  items2.push_back("6 ($FF6)");
-  items2.push_back("7 ($FF7)");
+  for(int i = 0; i < 8; ++i)
+  {
+    items0.push_back(seg0[i]);
+    items1.push_back(seg1[i]);
+    items2.push_back(seg2[i]);
+  }
 
   const int lwidth = font.getStringWidth("Set slice for segment X: ");
   mySlice0 =
@@ -135,4 +128,17 @@ void CartridgeE0Widget::handleCommand(CommandSender* sender,
 
   myCart.lockBank();
   invalidate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeE0Widget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Slices: "
+      << seg0[myCart.myCurrentSlice[0]] << " / "
+      << seg1[myCart.myCurrentSlice[1]] << " / "
+      << seg2[myCart.myCurrentSlice[2]];
+
+  return buf.str();
 }

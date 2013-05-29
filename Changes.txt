@@ -36,7 +36,7 @@
       - ROMS less than 2K in size (so called 'Sub2K' ROMs) now show only
         the actual data in the binary.  This means, for example, that a
         256 byte ROM will show only 256 bytes in the disassembly, instead
-        of padding garbage/duplicated data to 2K boundary.
+        of padding duplicated data to 2K boundary.
 
       - Fixed labelling in ROW directives; it wasn't accurately setting
         a label in the case where it occurred in the middle of the data.
@@ -55,6 +55,10 @@
   * Updated profile database for "BasketBall" ROMs; the joysticks are now
     swapped by default, which allows one and two-player games to work
     correctly.
+
+  * SuperCharger/AR ROMs now ignore the 'ramrandom' setting, and start with
+    RAM containing all zeroes.  This seems to fix issues with Dragonstomper
+    always starting in exactly the same state.
 
   * Changed colour of the 'current PC indicator' in the debugger to
     match the one used for line selection.  This makes it easier to

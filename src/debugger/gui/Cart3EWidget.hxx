@@ -36,6 +36,8 @@ class Cartridge3EWidget : public CartDebugWidget
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    string bankState();
+
   private:
     Cartridge3E& myCart;
     const uInt32 myNumRomBanks;

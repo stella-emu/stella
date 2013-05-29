@@ -149,6 +149,9 @@ const DebuggerState& CartDebug::getState()
   for(uInt32 i = 0; i < myState.rport.size(); ++i)
     myState.ram.push_back(peek(myState.rport[i]));
 
+  if(myDebugWidget)
+    myState.bank = myDebugWidget->bankState();
+
   return myState;
 }
 
@@ -160,7 +163,10 @@ void CartDebug::saveOldState()
     myOldState.ram.push_back(peek(myOldState.rport[i]));
 
   if(myDebugWidget)
+  {
+    myOldState.bank = myDebugWidget->bankState();
     myDebugWidget->saveOldState();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,13 +539,13 @@ int CartDebug::getBank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::bankCount()
+int CartDebug::bankCount() const
 {
   return myConsole.cartridge().bankCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::getCartType()
+string CartDebug::getCartType() const
 {
   return myConsole.cartridge().name();
 }
@@ -996,7 +1002,8 @@ string CartDebug::saveDisassembly()
         }
         case CartDebug::GFX:
         {
-          buf << tag.disasm.substr(0, 9) << " ; |";
+          buf << ".byte " << (settings.gfx_format == kBASE_2 ? "%" : "$")
+              << tag.bytes << " ; |";
           for(int i = 12; i < 20; ++i)
             buf << ((tag.disasm[i] == '\x1e') ? "#" : " ");
           buf << "| $" << HEX4 << tag.address << " (G)\n";
@@ -1004,7 +1011,8 @@ string CartDebug::saveDisassembly()
         }
         case CartDebug::PGFX:
         {
-          buf << tag.disasm.substr(0, 9) << " ; |";
+          buf << ".byte " << (settings.gfx_format == kBASE_2 ? "%" : "$")
+              << tag.bytes << " ; |";
           for(int i = 12; i < 20; ++i)
             buf << ((tag.disasm[i] == '\x1f') ? "*" : " ");
           buf << "| $" << HEX4 << tag.address << " (P)\n";
@@ -1033,7 +1041,7 @@ string CartDebug::saveDisassembly()
       << "; ROM properties name : " << myConsole.properties().get(Cartridge_Name) << "\n"
       << "; ROM properties MD5  : " << myConsole.properties().get(Cartridge_MD5) << "\n"
       << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
-      << "; Legend: * = CODE not yet run (preliminary code)\n"
+      << "; Legend: * = CODE not yet run (tentative code)\n"
       << ";         D = DATA directive (referenced in some way)\n"
       << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
       << ";         P = PGFX directive, shown as '*' (stored in playfield)\n\n"
@@ -1301,7 +1309,7 @@ CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt8 flags) const
 {
   if(flags & CartDebug::CODE)
     return CartDebug::CODE;
-  else if(flags & CartDebug::PCODE)
+  else if(flags & CartDebug::TCODE)
     return CartDebug::CODE;          // TODO - should this be separate??
   else if(flags & CartDebug::GFX)
     return CartDebug::GFX;
@@ -1321,7 +1329,7 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
   switch(type)
   {
     case CartDebug::CODE:   buf << "CODE";   break;
-    case CartDebug::PCODE:  buf << "PCODE";  break;
+    case CartDebug::TCODE:  buf << "TCODE";  break;
     case CartDebug::GFX:    buf << "GFX";    break;
     case CartDebug::PGFX:   buf << "PGFX";   break;
     case CartDebug::DATA:   buf << "DATA";   break;
@@ -1339,8 +1347,8 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
   {
     if(flags & CartDebug::CODE)
       buf << "CODE ";
-    if(flags & CartDebug::PCODE)
-      buf << "PCODE ";
+    if(flags & CartDebug::TCODE)
+      buf << "TCODE ";
     if(flags & CartDebug::GFX)
       buf << "GFX ";
     if(flags & CartDebug::PGFX)

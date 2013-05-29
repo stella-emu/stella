@@ -98,3 +98,13 @@ void CartridgeARWidget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeARWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Bank = " << myCart.myCurrentBank;
+
+  return buf.str();
+}

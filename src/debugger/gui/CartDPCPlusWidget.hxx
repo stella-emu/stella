@@ -17,8 +17,8 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGEDPCPlus_WIDGET_HXX
-#define CARTRIDGEDPCPlus_WIDGET_HXX
+#ifndef CARTRIDGEDPCPLUS_WIDGET_HXX
+#define CARTRIDGEDPCPLUS_WIDGET_HXX
 
 class CartridgeDPCPlus;
 class PopUpWidget;
@@ -39,6 +39,8 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
 
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
+
+    string bankState();
 
   private:
     struct CartState {

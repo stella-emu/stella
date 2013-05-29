@@ -75,3 +75,17 @@ void CartridgeCTYWidget::handleCommand(CommandSender* sender,
     invalidate();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCTYWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  static const char* spot[] = {
+    "", "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
+  };
+  uInt16 bank = myCart.bank();
+  buf << "Bank = " << bank << ", hotspot = " << spot[bank];
+
+  return buf.str();
+}

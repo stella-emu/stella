@@ -219,7 +219,7 @@ void InputDialog::loadConfig()
   myMPaddleLabel->setLabel(instance().settings().getString("msense"));
 
   // AtariVox serial port
-  myAVoxPort->setEditString(instance().settings().getString("avoxport"));
+  myAVoxPort->setText(instance().settings().getString("avoxport"));
 
   // Allow all 4 joystick directions
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
@@ -299,7 +299,7 @@ void InputDialog::setDefaults()
       myMPaddleLabel->setLabel("6");
 
       // AtariVox serial port
-      myAVoxPort->setEditString("");
+      myAVoxPort->setText("");
 
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);

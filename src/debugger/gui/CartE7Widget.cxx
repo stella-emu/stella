@@ -21,6 +21,14 @@
 #include "PopUpWidget.hxx"
 #include "CartE7Widget.hxx"
 
+static const char* spot_lower[] = {
+  "0 - ROM ($FE0)", "1 - ROM ($FE1)", "2 - ROM ($FE2)", "3 - ROM ($FE3)",
+  "4 - ROM ($FE4)", "5 - ROM ($FE5)", "6 - ROM ($FE6)", "7 - RAM ($FE7)"
+};
+static const char* spot_upper[] = {
+  "0 - RAM ($FE8)", "1 - RAM ($FE9)", "2 - RAM ($FEA)", "3 - RAM ($FEB)"
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7Widget::CartridgeE7Widget(
       GuiObject* boss, const GUI::Font& font,
@@ -54,19 +62,10 @@ CartridgeE7Widget::CartridgeE7Widget(
               myLineHeight;
 
   VariantList items0, items1;
-  items0.push_back("0 - ROM ($FE0)");
-  items0.push_back("1 - ROM ($FE1)");
-  items0.push_back("2 - ROM ($FE2)");
-  items0.push_back("3 - ROM ($FE3)");
-  items0.push_back("4 - ROM ($FE4)");
-  items0.push_back("5 - ROM ($FE5)");
-  items0.push_back("6 - ROM ($FE6)");
-  items0.push_back("7 - RAM ($FE7)");
-
-  items1.push_back("0 - RAM ($FE8)");
-  items1.push_back("1 - RAM ($FE9)");
-  items1.push_back("2 - RAM ($FEA)");
-  items1.push_back("3 - RAM ($FEB)");
+  for(int i = 0; i < 8; ++i)
+    items0.push_back(spot_lower[i]);
+  for(int i = 0; i < 4; ++i)
+    items1.push_back(spot_upper[i]);
 
   const int lwidth = font.getStringWidth("Set slice for upper 256B: "),
             fwidth = font.getStringWidth("3 - RAM ($FEB)");
@@ -111,4 +110,16 @@ void CartridgeE7Widget::handleCommand(CommandSender* sender,
 
   myCart.lockBank();
   invalidate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeE7Widget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Slices: "
+      << spot_lower[myCart.myCurrentSlice[0]] << " / "
+      << spot_upper[myCart.myCurrentRAM];
+
+  return buf.str();
 }

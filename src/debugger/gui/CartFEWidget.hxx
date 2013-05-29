@@ -34,6 +34,11 @@ class CartridgeFEWidget : public CartDebugWidget
     // No implementation for non-bankswitched ROMs
     void loadConfig() { }
     void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
+
+    string bankState();
+
+  private:
+    CartridgeFE& myCart;
 };
 
 #endif

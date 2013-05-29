@@ -309,5 +309,5 @@ void CpuWidget::fillGrid()
     changed.push_back(state.PSbits[i] != oldstate.PSbits[i]);
 
   myPSRegister->setState(state.PSbits, changed);
-  myPCLabel->setEditString(dbg.cartDebug().getLabel(state.PC, true));
+  myPCLabel->setText(dbg.cartDebug().getLabel(state.PC, true));
 }

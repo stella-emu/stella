@@ -182,9 +182,9 @@ void BrowserDialog::updateUI()
   _okWidget->setEnabled(enable);
 
   if(!_fileList->selected().isDirectory())
-    _selected->setEditString(_fileList->getSelectedString());
+    _selected->setText(_fileList->getSelectedString());
   else
-    _selected->setEditString("");
+    _selected->setText("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

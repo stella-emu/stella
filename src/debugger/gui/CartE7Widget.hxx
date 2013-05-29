@@ -36,6 +36,8 @@ class CartridgeE7Widget : public CartDebugWidget
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    string bankState();
+
   private:
     CartridgeE7& myCart;
     PopUpWidget *myLower2K, *myUpper256B;

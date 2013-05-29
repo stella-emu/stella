@@ -28,7 +28,6 @@
 #include "DiStella.hxx"
 #include "CpuDebug.hxx"
 #include "GuiObject.hxx"
-#include "InputTextDialog.hxx"
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
@@ -42,8 +41,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    myListIsDirty(true),
-    myCurrentBank(-1)
+    myListIsDirty(true)
 {
   _type = kRomWidget;
 
@@ -51,62 +49,27 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
   StaticTextWidget* t;
   WidgetArray wid;
 
-  // Show current bank
+  // Show current bank state
   xpos = x;  ypos = y + 7;
-  ostringstream buf;
-  buf << "Current bank (" << dec
-      << instance().debugger().cartDebug().bankCount() << " total):";
   t = new StaticTextWidget(boss, font, xpos, ypos,
-                           font.getStringWidth(buf.str()),
+                           font.getStringWidth("Bank state: "),
                            font.getFontHeight(),
-                           buf.str(), kTextAlignLeft);
+                           "Bank state: ", kTextAlignLeft);
 
   xpos += t->getWidth() + 5;
-  myBank = new DataGridWidget(boss, font, xpos, ypos-2,
-                              1, 1, 4, 8, kBASE_10);
-  myBank->setTarget(this);
-  myBank->setRange(0, instance().debugger().cartDebug().bankCount());
-  if(instance().debugger().cartDebug().bankCount() <= 1)
-    myBank->setEditable(false);
-  addFocusWidget(myBank);
-
-  // 'resolvedata' setting for Distella
-  xpos += myBank->getWidth() + 20;
-  VariantList items;
-  items.push_back("Never", "never");
-  items.push_back("Always", "always");
-  items.push_back("Automatic", "auto");
-  myResolveData =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("Automatic"),
-                    font.getLineHeight(), items,
-                    "Resolve data: ", font.getStringWidth("Resolve data: "),
-                    kResolveDataChanged);
-  myResolveData->setTarget(this);
-  addFocusWidget(myResolveData);
+  myBank = new EditTextWidget(boss, font, xpos, ypos,
+                              _w - 2 - xpos, font.getFontHeight());
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
 
   myRomList = new RomListWidget(boss, font, xpos, ypos, _w - 4, _h - ypos - 2);
-  myRomList->setTarget(this);
-  myRomList->myMenu->setTarget(this);
   addFocusWidget(myRomList);
-
-  // Create dialog box for save ROM (get name)
-  StringList label;
-  label.push_back("Filename: ");
-  mySaveRom = new InputTextDialog(boss, font, label);
-  mySaveRom->setTarget(this);
-
-  // By default, we try to automatically determine code vs. data sections
-  myResolveData->setSelected(
-    instance().settings().getString("dis.resolvedata"), "auto");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomWidget::~RomWidget()
 {
-  delete mySaveRom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,11 +77,11 @@ void RomWidget::loadConfig()
 {
   Debugger& dbg = instance().debugger();
   CartDebug& cart = dbg.cartDebug();
-  bool bankChanged = myCurrentBank != cart.getBank();
-  myCurrentBank = cart.getBank();
+  const CartState& state = (CartState&) cart.getState();
+  const CartState& oldstate = (CartState&) cart.getOldState();
 
   // Fill romlist the current bank of source or disassembly
-  myListIsDirty |= cart.disassemble(myResolveData->getSelectedTag().toString(),
+  myListIsDirty |= cart.disassemble("always", /*FIXME myResolveData->getSelectedTag().toString(),*/
                                     myListIsDirty);
   if(myListIsDirty)
   {
@@ -131,13 +94,14 @@ void RomWidget::loadConfig()
   if(pcline >= 0 && pcline != myRomList->getHighlighted())
     myRomList->setHighlighted(pcline);
 
-  // Set current bank and number of banks
-  myBank->setList(-1, myCurrentBank, bankChanged);
+  // Set current bank state
+  myBank->setText(state.bank, state.bank != oldstate.bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
+cerr << cmd << " " << data << " " << id << endl;
   switch(cmd)
   {
     case RomListWidget::kBreakpointChangedCmd:
@@ -155,18 +119,12 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       patchROM(data, myRomList->getEditString());
       break;
 
+#if 0
     case ContextMenu::kItemSelectedCmd:
     {
       const string& rmb = myRomList->myMenu->getSelectedTag().toString();
 
-      if(rmb == "saverom")
-      {
-        mySaveRom->show(_x + 50, _y + 80);
-        mySaveRom->setEditString("");
-        mySaveRom->setTitle("");
-        mySaveRom->setEmitSignal(kRomNameEntered);
-      }
-      else if(rmb == "setpc")
+      if(rmb == "setpc")
         setPC(myRomList->getSelected());
       else if(rmb == "runtopc")
         runtoPC(myRomList->getSelected());
@@ -203,10 +161,6 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;  // kCMenuItemSelectedCmd
     }
 
-    case DataGridWidget::kItemDataChangedCmd:
-      setBank(myBank->getSelectedValue());
-      break;
-
     case kResolveDataChanged:
       instance().settings().setValue("dis.resolvedata", myResolveData->getSelectedTag());
       invalidate();
@@ -225,15 +179,8 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
     }
+#endif
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::setBank(uInt16 bank)
-{
-  ostringstream command;
-  command << "bank #" << bank;
-  instance().debugger().run(command.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,12 +249,4 @@ void RomWidget::patchROM(int disasm_line, const string& bytes)
     // Restore previous base
     instance().debugger().parser().setBase(oldbase);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::saveROM(const string& rom)
-{
-  ostringstream command;
-  command << "saverom " << rom;
-  instance().debugger().run(command.str());
 }

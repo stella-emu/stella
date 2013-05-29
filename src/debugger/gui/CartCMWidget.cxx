@@ -192,7 +192,7 @@ void CartridgeCMWidget::loadConfig()
   // RAM state (several bits from SWCHA)
   const string& ram = swcha & 0x10 ? " Inactive" :
                         swcha & 0x20 ? " Read-only" : " Write-only";
-  myRAM->setEditString(ram, (swcha & 0x30) != (myOldState.swcha & 0x30));
+  myRAM->setText(ram, (swcha & 0x30) != (myOldState.swcha & 0x30));
 
   CartDebugWidget::loadConfig();
 }
@@ -210,4 +210,16 @@ void CartridgeCMWidget::handleCommand(CommandSender* sender,
     myCart.lockBank();
     invalidate();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCMWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Bank = " << myCart.myCurrentBank
+      << ", RAM is" << (myCart.mySWCHA & 0x10 ? " Inactive" :
+         myCart.mySWCHA & 0x20 ? " Read-only" : " Write-only");
+
+  return buf.str();
 }

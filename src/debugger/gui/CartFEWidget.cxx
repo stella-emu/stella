@@ -24,7 +24,8 @@
 CartridgeFEWidget::CartridgeFEWidget(
       GuiObject* boss, const GUI::Font& font,
       int x, int y, int w, int h, CartridgeFE& cart)
-  : CartDebugWidget(boss, font, x, y, w, h)
+  : CartDebugWidget(boss, font, x, y, w, h),
+    myCart(cart)
 {
   string info = 
     "FE cartridge, two 4K banks\n"
@@ -37,4 +38,15 @@ CartridgeFEWidget::CartridgeFEWidget(
     "would immediately switch on the next address change\n";
 
   addBaseInformation(2 * 4096, "Activision", info);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeFEWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  static const char* range[] = { "$F000", "$D000" };
+  buf << "Bank = " << myCart.bank() << ", address range = " << range[myCart.bank()];
+
+  return buf.str();
 }

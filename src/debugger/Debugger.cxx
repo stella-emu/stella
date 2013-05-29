@@ -205,7 +205,7 @@ bool Debugger::start(const string& message, int address)
     if(address > -1)
       buf << valueToString(address);
 
-    myDialog->message().setEditString(buf.str());
+    myDialog->message().setText(buf.str());
     return true;
   }
   return false;

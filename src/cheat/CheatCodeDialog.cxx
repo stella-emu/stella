@@ -149,8 +149,8 @@ void CheatCodeDialog::saveConfig()
 void CheatCodeDialog::addCheat()
 {
   myCheatInput->show();    // Center input dialog over entire screen
-  myCheatInput->setEditString("", 0);
-  myCheatInput->setEditString("", 1);
+  myCheatInput->setText("", 0);
+  myCheatInput->setText("", 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(0);
   myCheatInput->setEmitSignal(kCheatAdded);
@@ -168,8 +168,8 @@ void CheatCodeDialog::editCheat()
   const string& code = list[idx]->code();
 
   myCheatInput->show();    // Center input dialog over entire screen
-  myCheatInput->setEditString(name, 0);
-  myCheatInput->setEditString(code, 1);
+  myCheatInput->setText(name, 0);
+  myCheatInput->setText(code, 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kCheatEdited);
@@ -186,8 +186,8 @@ void CheatCodeDialog::removeCheat()
 void CheatCodeDialog::addOneShotCheat()
 {
   myCheatInput->show();    // Center input dialog over entire screen
-  myCheatInput->setEditString("One-shot cheat", 0);
-  myCheatInput->setEditString("", 1);
+  myCheatInput->setText("One-shot cheat", 0);
+  myCheatInput->setText("", 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kOneShotCheatAdded);

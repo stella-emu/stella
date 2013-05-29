@@ -182,8 +182,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myUndoAddress = addr;
       myUndoValue = oldval;
 
-      myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
+      myDecValue->setText(instance().debugger().valueToString(value, kBASE_10));
+      myBinValue->setText(instance().debugger().valueToString(value, kBASE_2));
       myRevertButton->setEnabled(true);
       myUndoButton->setEnabled(true);
       break;
@@ -194,9 +194,9 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
-      myLabel->setEditString(dbg.getLabel(state.rport[addr], true));
-      myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
+      myLabel->setText(dbg.getLabel(state.rport[addr], true));
+      myDecValue->setText(instance().debugger().valueToString(value, kBASE_10));
+      myBinValue->setText(instance().debugger().valueToString(value, kBASE_2));
       break;
     }
 
@@ -320,7 +320,7 @@ void RamWidget::showInputBox(int cmd)
   uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
   uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
   myInputBox->show(x, y);
-  myInputBox->setEditString("");
+  myInputBox->setText("");
   myInputBox->setTitle("");
   myInputBox->setFocus(0);
   myInputBox->setEmitSignal(cmd);

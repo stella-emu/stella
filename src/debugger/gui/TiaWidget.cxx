@@ -634,12 +634,12 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
         case kNusizP0ID:
           tia.nusizP0(myNusizP0->getSelectedValue());
-          myNusizP0Text->setEditString(tia.nusizP0String());
+          myNusizP0Text->setText(tia.nusizP0String());
           break;
 
         case kNusizP1ID:
           tia.nusizP1(myNusizP1->getSelectedValue());
-          myNusizP1Text->setEditString(tia.nusizP1String());
+          myNusizP1Text->setText(tia.nusizP1String());
           break;
 
         case kNusizM0ID:
@@ -865,7 +865,7 @@ void TiaWidget::fillGrid()
   // NUSIZ0 (player portion)
   bool nusiz0changed = state.size[P0] != oldstate.size[P0];
   myNusizP0->setList(0, state.size[P0], nusiz0changed);
-  myNusizP0Text->setEditString(tia.nusizP0String(), nusiz0changed);
+  myNusizP0Text->setText(tia.nusizP0String(), nusiz0changed);
 
   ////////////////////////////
   // P1 register info
@@ -887,7 +887,7 @@ void TiaWidget::fillGrid()
   // NUSIZ1 (player portion)
   bool nusiz1changed = state.size[P1] != oldstate.size[P1];
   myNusizP1->setList(0, state.size[P1], nusiz1changed);
-  myNusizP1Text->setEditString(tia.nusizP1String(), nusiz1changed);
+  myNusizP1Text->setText(tia.nusizP1String(), nusiz1changed);
 
   ////////////////////////////
   // M0 register info

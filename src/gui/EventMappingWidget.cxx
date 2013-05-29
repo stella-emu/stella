@@ -170,7 +170,7 @@ void EventMappingWidget::startRemapping()
       << instance().eventHandler().actionAtIndex(myActionSelected, myEventMode)
       << "' event";
   myKeyMapping->setTextColor(kTextColorEm);
-  myKeyMapping->setEditString(buf.str());
+  myKeyMapping->setText(buf.str());
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs
@@ -228,7 +228,7 @@ void EventMappingWidget::drawKeyMapping()
   if(myActionSelected >= 0)
   {
     myKeyMapping->setTextColor(kTextColor);
-    myKeyMapping->setEditString(instance().eventHandler().keyAtIndex(myActionSelected, myEventMode));
+    myKeyMapping->setText(instance().eventHandler().keyAtIndex(myActionSelected, myEventMode));
   }
 }
 

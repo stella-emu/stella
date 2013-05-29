@@ -113,7 +113,7 @@ void RomAuditDialog::loadConfig()
   const string& path = currentdir == "" ?
     instance().settings().getString("romdir") : currentdir;
 
-  myRomPath->setEditString(path);
+  myRomPath->setText(path);
   myResults1->setLabel("");
   myResults2->setLabel("");
 }
@@ -210,7 +210,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
     case kAuditDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.getShortPath());
+      myRomPath->setText(dir.getShortPath());
       myResults1->setLabel("");
       myResults2->setLabel("");
       break;

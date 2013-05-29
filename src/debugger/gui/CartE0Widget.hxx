@@ -36,6 +36,8 @@ class CartridgeE0Widget : public CartDebugWidget
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    string bankState();
+
   private:
     CartridgeE0& myCart;
     PopUpWidget *mySlice0, *mySlice1, *mySlice2;

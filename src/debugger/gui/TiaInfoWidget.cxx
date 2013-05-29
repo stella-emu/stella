@@ -125,15 +125,15 @@ void TiaInfoWidget::loadConfig()
   Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
 
-  myFrameCount->setEditString(dbg.valueToString(tia.frameCount(), kBASE_10));
-  myFrameCycles->setEditString(dbg.valueToString(dbg.cycles(), kBASE_10));
+  myFrameCount->setText(dbg.valueToString(tia.frameCount(), kBASE_10));
+  myFrameCycles->setText(dbg.valueToString(dbg.cycles(), kBASE_10));
 
   myVSync->setState(tia.vsync());
   myVBlank->setState(tia.vblank());
 
   int clk = tia.clocksThisLine();
-  myScanlineCount->setEditString(dbg.valueToString(tia.scanlines(), kBASE_10));
-  myScanlineCycles->setEditString(dbg.valueToString(clk/3, kBASE_10));
-  myPixelPosition->setEditString(dbg.valueToString(clk-68, kBASE_10));
-  myColorClocks->setEditString(dbg.valueToString(clk, kBASE_10));
+  myScanlineCount->setText(dbg.valueToString(tia.scanlines(), kBASE_10));
+  myScanlineCycles->setText(dbg.valueToString(clk/3, kBASE_10));
+  myPixelPosition->setText(dbg.valueToString(clk-68, kBASE_10));
+  myColorClocks->setText(dbg.valueToString(clk, kBASE_10));
 }

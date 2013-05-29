@@ -110,13 +110,19 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual void loadConfig() { myDesc->setSelected(0); }
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { };
 
+    // Query internal state of the cart (usually just bankswitching info)
+    virtual string bankState() { return "0 (non-bankswitched)"; }
+
   protected:
     // These will be needed by most of the child classes;
     // we may as well make them protected variables
     int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;
 
+    ostringstream& buffer() { myBuffer.str(""); return myBuffer; }
+
   private:
     StringListWidget* myDesc;
+    ostringstream myBuffer;
 };
 
 #endif

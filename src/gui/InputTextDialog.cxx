@@ -153,10 +153,10 @@ const string& InputTextDialog::getResult(int idx)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::setEditString(const string& str, int idx)
+void InputTextDialog::setText(const string& str, int idx)
 {
   if((unsigned int)idx < myInput.size())
-    myInput[idx]->setEditString(str);
+    myInput[idx]->setText(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

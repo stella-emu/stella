@@ -197,14 +197,14 @@ FileSnapDialog::~FileSnapDialog()
 void FileSnapDialog::loadConfig()
 {
   const Settings& settings = instance().settings();
-  myRomPath->setEditString(settings.getString("romdir"));
-  mySnapSavePath->setEditString(settings.getString("snapsavedir"));
-  mySnapLoadPath->setEditString(settings.getString("snaploaddir"));
-  myCheatFile->setEditString(settings.getString("cheatfile"));
-  myPaletteFile->setEditString(settings.getString("palettefile"));
-  myPropsFile->setEditString(settings.getString("propsfile"));
-  myNVRamPath->setEditString(settings.getString("nvramdir"));
-  myStatePath->setEditString(settings.getString("statedir"));
+  myRomPath->setText(settings.getString("romdir"));
+  mySnapSavePath->setText(settings.getString("snapsavedir"));
+  mySnapLoadPath->setText(settings.getString("snaploaddir"));
+  myCheatFile->setText(settings.getString("cheatfile"));
+  myPaletteFile->setText(settings.getString("palettefile"));
+  myPropsFile->setText(settings.getString("propsfile"));
+  myNVRamPath->setText(settings.getString("nvramdir"));
+  myStatePath->setText(settings.getString("statedir"));
   mySnapSingle->setState(settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
   mySnapInterval->setSelected(instance().settings().getString("ssinterval"), "2");
@@ -238,30 +238,30 @@ void FileSnapDialog::setDefaults()
   const string& basedir = instance().baseDir();
 
   node = FilesystemNode("~");
-  myRomPath->setEditString(node.getShortPath());
+  myRomPath->setText(node.getShortPath());
 
-  mySnapSavePath->setEditString(instance().defaultSnapSaveDir());
-  mySnapLoadPath->setEditString(instance().defaultSnapLoadDir());
+  mySnapSavePath->setText(instance().defaultSnapSaveDir());
+  mySnapLoadPath->setText(instance().defaultSnapLoadDir());
  
   const string& cheatfile = basedir + "stella.cht";
   node = FilesystemNode(cheatfile);
-  myCheatFile->setEditString(node.getShortPath());
+  myCheatFile->setText(node.getShortPath());
 
   const string& palettefile = basedir + "stella.pal";
   node = FilesystemNode(palettefile);
-  myPaletteFile->setEditString(node.getShortPath());
+  myPaletteFile->setText(node.getShortPath());
 
   const string& propsfile = basedir + "stella.pro";
   node = FilesystemNode(propsfile);
-  myPropsFile->setEditString(node.getShortPath());
+  myPropsFile->setText(node.getShortPath());
 
   const string& nvramdir = basedir + "nvram";
   node = FilesystemNode(nvramdir);
-  myNVRamPath->setEditString(node.getShortPath());
+  myNVRamPath->setText(node.getShortPath());
 
   const string& statedir = basedir + "state";
   node = FilesystemNode(statedir);
-  myStatePath->setEditString(node.getShortPath());
+  myStatePath->setText(node.getShortPath());
 
   mySnapSingle->setState(false);
   mySnap1x->setState(false);
@@ -327,49 +327,49 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRomDirChosenCmd:
     {
-      myRomPath->setEditString(myBrowser->getResult().getShortPath());
+      myRomPath->setText(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kSnapSaveDirChosenCmd:
     {
-      mySnapSavePath->setEditString(myBrowser->getResult().getShortPath());
+      mySnapSavePath->setText(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kSnapLoadDirChosenCmd:
     {
-      mySnapLoadPath->setEditString(myBrowser->getResult().getShortPath());
+      mySnapLoadPath->setText(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kCheatFileChosenCmd:
     {
-      myCheatFile->setEditString(myBrowser->getResult().getShortPath());
+      myCheatFile->setText(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kPaletteFileChosenCmd:
     {
-      myPaletteFile->setEditString(myBrowser->getResult().getShortPath());
+      myPaletteFile->setText(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kPropsFileChosenCmd:
     {
-      myPropsFile->setEditString(myBrowser->getResult().getShortPath());
+      myPropsFile->setText(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kNVRamDirChosenCmd:
     {
-      myNVRamPath->setEditString(myBrowser->getResult().getShortPath());
+      myNVRamPath->setText(myBrowser->getResult().getShortPath());
       break;
     }
 
     case kStateDirChosenCmd:
     {
-      myStatePath->setEditString(myBrowser->getResult().getShortPath());
+      myStatePath->setText(myBrowser->getResult().getShortPath());
       break;
     }
 

@@ -34,7 +34,7 @@ class EditTextWidget : public EditableWidget
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& text = "");
 
-    void setEditString(const string& str, bool changed = false);
+    void setText(const string& str, bool changed = false);
 
     void handleMouseDown(int x, int y, int button, int clickCount);
 

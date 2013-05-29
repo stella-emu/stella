@@ -36,6 +36,8 @@ class CartridgeARWidget : public CartDebugWidget
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
+    string bankState();
+
   private:
     CartridgeAR& myCart;
     PopUpWidget* myBank;

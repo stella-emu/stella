@@ -62,14 +62,14 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   // Add context menu
   VariantList l;
 //  l.push_back("Add bookmark");
-  l.push_back("Save ROM", "saverom");
   l.push_back("Set PC", "setpc");
   l.push_back("RunTo PC", "runtopc");
-  l.push_back("-------------------------", "");
-  l.push_back("Toggle PC addresses", "pcaddr");
-  l.push_back("Toggle GFX binary/hex", "gfx");
-  l.push_back("Toggle address relocation", "relocate");
   l.push_back("Re-disassemble", "disasm");
+  l.push_back("-------------------------", "");
+  l.push_back("Show tentative code", "code");
+  l.push_back("Show PC addresses", "pcaddr");
+  l.push_back("Show GFX as binary", "gfx");
+  l.push_back("Use address relocation", "relocate");
   myMenu = new ContextMenu(this, font, l);
 
   // Take advantage of a wide debugger window when possible
@@ -585,7 +585,7 @@ void RomListWidget::startEditMode()
 
     // Widget gets raw data while editing
     EditableWidget::startEditMode();
-    setEditString(myDisasm->list[_selectedItem].bytes);
+    setText(myDisasm->list[_selectedItem].bytes);
   }
 }
 

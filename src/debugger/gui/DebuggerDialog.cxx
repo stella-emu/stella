@@ -76,7 +76,7 @@ void DebuggerDialog::loadConfig()
   myRam->loadConfig();
   myRomTab->loadConfig();
 
-  myMessageBox->setEditString("");
+  myMessageBox->setText("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
