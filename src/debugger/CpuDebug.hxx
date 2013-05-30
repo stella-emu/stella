@@ -94,6 +94,8 @@ class CpuDebug : public DebuggerSystem
     void toggleC();
 
   private:
+    M6502& my6502;
+
     CpuState myState;
     CpuState myOldState;
 };

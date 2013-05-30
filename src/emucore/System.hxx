@@ -115,10 +115,7 @@ class System : public Serializable
 
       @return The attached 6502 microprocessor
     */
-    M6502& m6502()
-    {
-      return *myM6502;
-    }
+    M6502& m6502() { return *myM6502; }
 
     /**
       Answer the 6532 processor attached to the system.  If a
@@ -126,30 +123,21 @@ class System : public Serializable
 
       @return The attached 6532 microprocessor
     */
-    M6532& m6532()
-    {
-      return *myM6532;
-    }
+    M6532& m6532() { return *myM6532; }
 
     /**
       Answer the TIA device attached to the system.
 
       @return The attached TIA device
     */
-    TIA& tia()
-    {
-      return *myTIA;
-    }
+    TIA& tia() { return *myTIA; }
 
     /**
       Answer the random generator attached to the system.
 
       @return The random generator
     */
-    Random& randGenerator()
-    {
-      return *myRandom;
-    }
+    Random& randGenerator() { return *myRandom; }
 
     /**
       Get the null device associated with the system.  Every system 
@@ -158,10 +146,7 @@ class System : public Serializable
 
       @return The null device associated with the system
     */
-    NullDevice& nullDevice()
-    {
-      return myNullDevice;
-    }
+    NullDevice& nullDevice() { return myNullDevice; }
 
     /**
       Get the total number of pages available in the system.
@@ -198,10 +183,7 @@ class System : public Serializable
 
       @param amount The amount to add to the system cycles counter
     */
-    void incrementCycles(uInt32 amount) 
-    { 
-      myCycles += amount; 
-    }
+    void incrementCycles(uInt32 amount) { myCycles += amount; }
 
     /**
       Reset the system cycle count to zero.  The first thing that

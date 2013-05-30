@@ -29,24 +29,25 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CpuDebug::CpuDebug(Debugger& dbg, Console& console)
-  : DebuggerSystem(dbg, console)
+  : DebuggerSystem(dbg, console),
+    my6502(mySystem.m6502())
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const DebuggerState& CpuDebug::getState()
 {
-  myState.PC = mySystem.m6502().PC;
-  myState.SP = mySystem.m6502().SP;
-  myState.PS = mySystem.m6502().PS();
-  myState.A  = mySystem.m6502().A;
-  myState.X  = mySystem.m6502().X;
-  myState.Y  = mySystem.m6502().Y;
+  myState.PC = my6502.PC;
+  myState.SP = my6502.SP;
+  myState.PS = my6502.PS();
+  myState.A  = my6502.A;
+  myState.X  = my6502.X;
+  myState.Y  = my6502.Y;
 
-  myState.srcS = mySystem.m6502().lastSrcAddressS();
-  myState.srcA = mySystem.m6502().lastSrcAddressA();
-  myState.srcX = mySystem.m6502().lastSrcAddressX();
-  myState.srcY = mySystem.m6502().lastSrcAddressY();
+  myState.srcS = my6502.lastSrcAddressS();
+  myState.srcA = my6502.lastSrcAddressA();
+  myState.srcX = my6502.lastSrcAddressX();
+  myState.srcY = my6502.lastSrcAddressY();
 
   Debugger::set_bits(myState.PS, myState.PSbits);
 
@@ -56,17 +57,17 @@ const DebuggerState& CpuDebug::getState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::saveOldState()
 {
-  myOldState.PC = mySystem.m6502().PC;
-  myOldState.SP = mySystem.m6502().SP;
-  myOldState.PS = mySystem.m6502().PS();
-  myOldState.A  = mySystem.m6502().A;
-  myOldState.X  = mySystem.m6502().X;
-  myOldState.Y  = mySystem.m6502().Y;
+  myOldState.PC = my6502.PC;
+  myOldState.SP = my6502.SP;
+  myOldState.PS = my6502.PS();
+  myOldState.A  = my6502.A;
+  myOldState.X  = my6502.X;
+  myOldState.Y  = my6502.Y;
 
-  myOldState.srcS = mySystem.m6502().lastSrcAddressS();
-  myOldState.srcA = mySystem.m6502().lastSrcAddressA();
-  myOldState.srcX = mySystem.m6502().lastSrcAddressX();
-  myOldState.srcY = mySystem.m6502().lastSrcAddressY();
+  myOldState.srcS = my6502.lastSrcAddressS();
+  myOldState.srcA = my6502.lastSrcAddressA();
+  myOldState.srcX = my6502.lastSrcAddressX();
+  myOldState.srcY = my6502.lastSrcAddressY();
 
   Debugger::set_bits(myOldState.PS, myOldState.PSbits);
 }
@@ -74,119 +75,119 @@ void CpuDebug::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPC(int pc)
 {
-  mySystem.m6502().PC = pc;
+  my6502.PC = pc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setSP(int sp)
 {
-  mySystem.m6502().SP = sp;
+  my6502.SP = sp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPS(int ps)
 {
-  mySystem.m6502().PS(ps);
+  my6502.PS(ps);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setA(int a)
 {
-  mySystem.m6502().A = a;
+  my6502.A = a;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setX(int x)
 {
-  mySystem.m6502().X = x;
+  my6502.X = x;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setY(int y)
 {
-  mySystem.m6502().Y = y;
+  my6502.Y = y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setN(bool on)
 {
-  setPS( Debugger::set_bit(mySystem.m6502().PS(), 7, on) );
+  my6502.N = on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setV(bool on)
 {
-  setPS( Debugger::set_bit(mySystem.m6502().PS(), 6, on) );
+  my6502.V = on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setB(bool on)
 {
-  setPS( Debugger::set_bit(mySystem.m6502().PS(), 4, on) );
+  // nop - B is always true
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setD(bool on)
 {
-  setPS( Debugger::set_bit(mySystem.m6502().PS(), 3, on) );
+  my6502.D = on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setI(bool on)
 {
-  setPS( Debugger::set_bit(mySystem.m6502().PS(), 2, on) );
+  my6502.I = on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setZ(bool on)
 {
-  setPS( Debugger::set_bit(mySystem.m6502().PS(), 1, on) );
+  my6502.notZ = !on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setC(bool on)
 {
-  setPS( Debugger::set_bit(mySystem.m6502().PS(), 0, on) );
+  my6502.C = on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleN()
 {
-  setPS( mySystem.m6502().PS() ^ 0x80 );
+  my6502.N = !my6502.N;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleV()
 {
-  setPS( mySystem.m6502().PS() ^ 0x40 );
+  my6502.V = !my6502.V;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleB()
 {
-  setPS( mySystem.m6502().PS() ^ 0x10 );
+  // nop - B is always true
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleD()
 {
-  setPS( mySystem.m6502().PS() ^ 0x08 );
+  my6502.D = !my6502.D;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleI()
 {
-  setPS( mySystem.m6502().PS() ^ 0x04 );
+  my6502.I = !my6502.I;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleZ()
 {
-  setPS( mySystem.m6502().PS() ^ 0x02 );
+  my6502.notZ = !my6502.notZ;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleC()
 {
-  setPS( mySystem.m6502().PS() ^ 0x01 );
+  my6502.C = !my6502.C;
 }

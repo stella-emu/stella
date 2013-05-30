@@ -23,8 +23,6 @@
 #include "bspf.hxx"
 #include "StellaKeys.hxx"
 
-class Event;
-
 /**
   @author  Bradford W. Mott
   @version $Id$
