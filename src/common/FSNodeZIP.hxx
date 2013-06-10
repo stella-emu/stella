@@ -55,8 +55,8 @@ class FilesystemNodeZIP : public AbstractFSNode
     const string& getName() const { return _virtualFile; }
     const string& getPath() const { return _path;        }
     string getShortPath() const   { return _shortPath;   }
-    bool isDirectory() const { return _numFiles > 1;           }
-    bool isFile() const      { return _numFiles == 1;          }
+    bool isDirectory() const { return _numFiles > 1;  }
+    bool isFile() const      { return _numFiles == 1; }
     bool isReadable() const  { return _realNode && _realNode->isReadable(); }
     bool isWritable() const  { return false; }
 
@@ -78,11 +78,20 @@ class FilesystemNodeZIP : public AbstractFSNode
     void setFlags(const string& zipfile, const string& virtualfile,
         Common::SharedPtr<AbstractFSNode> realnode);
 
-  protected:
+  private:
+    /* Error types */
+    enum zip_error
+    {
+      ZIPERR_NONE = 0,
+      ZIPERR_NOT_A_FILE,
+      ZIPERR_NOT_READABLE,
+      ZIPERR_NO_ROMS
+    };
+
     Common::SharedPtr<AbstractFSNode> _realNode;
     string _zipFile, _virtualFile;
     string _path, _shortPath;
-    bool _isValid;
+    zip_error _error;
     uInt32 _numFiles;
 };
 

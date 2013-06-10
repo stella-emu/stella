@@ -30,7 +30,7 @@ FilesystemNodeZIP::FilesystemNodeZIP()
 {
   // We need a name, else the node is invalid
   _path = _shortPath = _virtualFile = "";
-  _isValid = false;
+  _error = ZIPERR_NOT_A_FILE;
   _numFiles = 0;
 
   AbstractFSNode* tmp = 0;
@@ -41,7 +41,7 @@ FilesystemNodeZIP::FilesystemNodeZIP()
 FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 {
   _path = _shortPath = _virtualFile = "";
-  _isValid = false;
+  _error = ZIPERR_NOT_A_FILE;
 
   // Extract ZIP file and virtual file (if specified)
   size_t pos = BSPF_findIgnoreCase(p, ".zip");
@@ -54,7 +54,10 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   ZipHandler& zip = OSystem::zip(_zipFile);
   _numFiles = zip.romFiles();
   if(_numFiles == 0)
+  {
+    _error = ZIPERR_NO_ROMS;
     return;
+  }
 
   // We always need a virtual file
   // Either one is given, or we use the first one
@@ -111,7 +114,11 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
     _shortPath += ("/" + _virtualFile);
     _numFiles = 1;
   }
-  _isValid = _realNode->isFile() && _realNode->isReadable();
+  _error = ZIPERR_NONE;
+  if(!_realNode->isFile())
+    _error = ZIPERR_NOT_A_FILE;
+  if(!_realNode->isReadable())
+    _error = ZIPERR_NOT_READABLE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,7 +126,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
                                     bool hidden) const
 {
   // Files within ZIP archives don't contain children
-  if(!isDirectory() || !_isValid)
+  if(!isDirectory() || _error != ZIPERR_NONE)
     return false;
 
   ZipHandler& zip = OSystem::zip(_zipFile);
@@ -135,8 +142,13 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FilesystemNodeZIP::read(uInt8*& image) const
 {
-  if(!_isValid)
-    throw "ZIP file not found/readable";
+  switch(_error)
+  {
+    case ZIPERR_NONE:         break;
+    case ZIPERR_NOT_A_FILE:   throw "ZIP file contains errors/not found";
+    case ZIPERR_NOT_READABLE: throw "ZIP file not readable";
+    case ZIPERR_NO_ROMS:      throw "ZIP file doesn't contain any ROMs";
+  }
 
   ZipHandler& zip = OSystem::zip(_zipFile);
 

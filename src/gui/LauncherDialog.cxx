@@ -493,16 +493,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       {
         const FilesystemNode romnode(myGameList->path(item));
 
-        // If a node isn't a file or directory, there's nothing we can
-        // do with it
-        if(!romnode.isDirectory() && !romnode.isFile())
-        {
-          instance().frameBuffer().showMessage(
-            "Invalid file (check file size and/or contents)",
-            kMiddleCenter, true);
-        }
         // Directory's should be selected (ie, enter them and redisplay)
-        else if(romnode.isDirectory())
+        if(romnode.isDirectory())
         {
           string dirname = "";
           if(myGameList->name(item) == " [..]")
@@ -520,19 +512,12 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         }
         else
         {
-          string extension;
-          if(LauncherFilterDialog::isValidRomName(romnode, extension))
-          {
-            const string& result =
-              instance().createConsole(romnode, myGameList->md5(item));
-            if(result == EmptyString)
-              instance().settings().setValue("lastrom", myList->getSelectedString());
-            else
-              instance().frameBuffer().showMessage(result, kMiddleCenter, true);
-          }
+          const string& result =
+            instance().createConsole(romnode, myGameList->md5(item));
+          if(result == EmptyString)
+            instance().settings().setValue("lastrom", myList->getSelectedString());
           else
-            instance().frameBuffer().showMessage("Not a valid ROM filename",
-                                                 kMiddleCenter, true);
+            instance().frameBuffer().showMessage(result, kMiddleCenter, true);
         }
       }
       break;
