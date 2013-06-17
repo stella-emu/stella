@@ -98,6 +98,8 @@ class Dialog : public GuiObject
                            const string& okText = "",
                            const string& cancelText = "");
 
+    void processCancelWithoutWidget(bool state) { _processCancel = state; }
+
   private:
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);
@@ -112,6 +114,7 @@ class Dialog : public GuiObject
     Widget* _cancelWidget;
     bool    _visible;
     bool    _isBase;
+    bool    _processCancel;
 
   private:
     struct Focus {

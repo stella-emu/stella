@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include <sstream>
@@ -64,6 +61,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
   xpos = x;  ypos += myBank->getHeight() + 4;
 
   myRomList = new RomListWidget(boss, font, xpos, ypos, _w - 4, _h - ypos - 2);
+  myRomList->setTarget(this);
   addFocusWidget(myRomList);
 }
 
@@ -81,8 +79,7 @@ void RomWidget::loadConfig()
   const CartState& oldstate = (CartState&) cart.getOldState();
 
   // Fill romlist the current bank of source or disassembly
-  myListIsDirty |= cart.disassemble("always", /*FIXME myResolveData->getSelectedTag().toString(),*/
-                                    myListIsDirty);
+  myListIsDirty |= cart.disassemble(myListIsDirty);
   if(myListIsDirty)
   {
     myRomList->setList(cart.disassembly(), dbg.breakpoints());
@@ -101,10 +98,9 @@ void RomWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-cerr << cmd << " " << data << " " << id << endl;
   switch(cmd)
   {
-    case RomListWidget::kBreakpointChangedCmd:
+    case RomListWidget::kBPointChangedCmd:
       // 'id' is the line in the disassemblylist to be accessed
       // 'data' is the state of the breakpoint at 'id'
       setBreak(id, data);
@@ -119,67 +115,60 @@ cerr << cmd << " " << data << " " << id << endl;
       patchROM(data, myRomList->getText());
       break;
 
-#if 0
-    case ContextMenu::kItemSelectedCmd:
-    {
-      const string& rmb = myRomList->myMenu->getSelectedTag().toString();
-
-      if(rmb == "setpc")
-        setPC(myRomList->getSelected());
-      else if(rmb == "runtopc")
-        runtoPC(myRomList->getSelected());
-      else if(rmb == "disasm")
-        invalidate();
-      else if(rmb == "pcaddr")
-      {
-        DiStella::settings.show_addresses = !DiStella::settings.show_addresses;
-        instance().settings().setValue("dis.showaddr",
-            DiStella::settings.show_addresses);
-        invalidate();
-      }
-      else if(rmb == "gfx")
-      {
-        if(DiStella::settings.gfx_format == kBASE_16)
-        {
-          DiStella::settings.gfx_format = kBASE_2;
-          instance().settings().setValue("dis.gfxformat", "2");
-        }
-        else
-        {
-          DiStella::settings.gfx_format = kBASE_16;
-          instance().settings().setValue("dis.gfxformat", "16");
-        }
-        invalidate();
-      }
-      else if(rmb == "relocate")
-      {
-        DiStella::settings.rflag = !DiStella::settings.rflag;
-        instance().settings().setValue("dis.relocate",
-            DiStella::settings.rflag);
-        invalidate();
-      }
-      break;  // kCMenuItemSelectedCmd
-    }
-
-    case kResolveDataChanged:
-      instance().settings().setValue("dis.resolvedata", myResolveData->getSelectedTag());
-      invalidate();
-      loadConfig();
+    case RomListWidget::kSetPCCmd:
+      // 'data' is the line in the disassemblylist to be accessed
+      setPC(data);
       break;
 
-    case kRomNameEntered:
+    case RomListWidget::kRuntoPCCmd:
+      // 'data' is the line in the disassemblylist to be accessed
+      runtoPC(data);
+      break;
+
+    case RomListWidget::kDisassembleCmd:
+      invalidate();
+      break;
+
+    case RomListWidget::kTentativeCodeCmd:
     {
-      const string& rom = mySaveRom->getResult();
-      if(rom == "")
-        mySaveRom->setTitle("Invalid name");
+      // 'data' is the boolean value
+      DiStella::settings.resolve_code = data;
+      instance().settings().setValue("dis.resolve",
+          DiStella::settings.resolve_code);
+      invalidate();
+      break;
+    }
+
+    case RomListWidget::kPCAddressesCmd:
+      // 'data' is the boolean value
+      DiStella::settings.show_addresses = data;
+      instance().settings().setValue("dis.showaddr",
+          DiStella::settings.show_addresses);
+      invalidate();
+      break;
+
+    case RomListWidget::kGfxAsBinaryCmd:
+      // 'data' is the boolean value
+      if(data)
+      {
+        DiStella::settings.gfx_format = kBASE_2;
+        instance().settings().setValue("dis.gfxformat", "2");
+      }
       else
       {
-        saveROM(rom);
-        dialog().close();
+        DiStella::settings.gfx_format = kBASE_16;
+        instance().settings().setValue("dis.gfxformat", "16");
       }
+      invalidate();
       break;
-    }
-#endif
+
+    case RomListWidget::kAddrRelocationCmd:
+      // 'data' is the boolean value
+      DiStella::settings.rflag = data;
+      instance().settings().setValue("dis.relocate",
+          DiStella::settings.rflag);
+      invalidate();
+      break;
   }
 }
 

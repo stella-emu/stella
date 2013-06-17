@@ -136,7 +136,7 @@ Settings::Settings(OSystem* osystem)
   setExternal("maxres", "");
 
   // Debugger disassembly options
-  setInternal("dis.resolvedata", "auto");
+  setInternal("dis.resolve", "true");
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");
   setInternal("dis.relocate", "false");
@@ -437,12 +437,10 @@ void Settings::usage()
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
     << endl
-    << "   -dis.resolvedata <never|    Set automatic code vs. data determination in disassembler\n"
-    << "                     always|\n"
-    << "                     auto>\n"
-    << "   -dis.gfxformat   <2|16>     Set base to use for displaying GFX sections in disassembler\n"
-    << "   -dis.showaddr    <1|0>      Show opcode addresses in disassembler\n"
-    << "   -dis.relocate    <1|0>      Relocate calls out of address range in disassembler\n"
+    << "   -dis.resolve   <1|0>        Attempt to resolve code sections in disassembler\n"
+    << "   -dis.gfxformat <2|16>       Set base to use for displaying GFX sections in disassembler\n"
+    << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
+    << "   -dis.relocate  <1|0>        Relocate calls out of address range in disassembler\n"
     << endl
     << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"

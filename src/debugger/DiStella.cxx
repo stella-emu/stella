@@ -25,7 +25,7 @@
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
                    CartDebug::BankInfo& info, const DiStella::Settings& settings,
                    uInt8* labels, uInt8* directives,
-                   CartDebug::ReservedEquates& reserved, bool resolvedata)
+                   CartDebug::ReservedEquates& reserved)
   : myDbg(dbg),
     myList(list),
     mySettings(settings),
@@ -39,6 +39,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
+
+  bool resolve_code = mySettings.resolve_code;
 
   CartDebug::AddressList::iterator it = addresses.begin();
   uInt16 start = *it++;
@@ -83,8 +85,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     info.end    = myAppData.end   = 0x00FF;
     info.offset = myOffset        = 0;
 
-    // Resolve data is never used in ZP RAM mode
-    resolvedata = false;
+    // Resolve code is never used in ZP RAM mode
+    resolve_code = false;
   }
   myAppData.length = info.size;
 
@@ -95,7 +97,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   // Process any directives first, as they override automatic code determination
   processDirectives(info.directiveList);
 
-  if(resolvedata)
+  if(resolve_code)
   {
     // After we've disassembled from all addresses in the address list,
     // use all access points determined by Stella during emulation
@@ -1065,6 +1067,7 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::Settings DiStella::settings = {
   kBASE_2,  // gfx_format
+  true,     // resolve_code (opposite of -d in Distella)
   true,     // show_addresses (not used externally; always off)
   false,    // aflag (-a in Distella)
   true,     // fflag (-f in Distella)

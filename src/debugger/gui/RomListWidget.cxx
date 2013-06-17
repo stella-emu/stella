@@ -15,17 +15,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
-#include "ContextMenu.hxx"
 #include "PackedBitArray.hxx"
 #include "Widget.hxx"
 #include "ScrollBarWidget.hxx"
+#include "RomListSettings.hxx"
 #include "RomListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,18 +56,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   myScrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
   myScrollBar->setTarget(this);
 
-  // Add context menu
-  VariantList l;
-//  l.push_back("Add bookmark");
-  l.push_back("Set PC", "setpc");
-  l.push_back("RunTo PC", "runtopc");
-  l.push_back("Re-disassemble", "disasm");
-  l.push_back("-------------------------", "");
-  l.push_back("Show tentative code", "code");
-  l.push_back("Show PC addresses", "pcaddr");
-  l.push_back("Show GFX as binary", "gfx");
-  l.push_back("Use address relocation", "relocate");
-  myMenu = new ContextMenu(this, font, l);
+  // Add settings menu
+  myMenu = new RomListSettings(this, font);
 
   // Take advantage of a wide debugger window when possible
   const int fontWidth = font.getMaxCharWidth(),
@@ -244,7 +231,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     // Set selected and add menu at current x,y mouse location
     _selectedItem = findItem(x, y);
     scrollToSelected();
-    myMenu->show(x + getAbsX(), y + getAbsY());
+    myMenu->show(x + getAbsX(), y + getAbsY(), _selectedItem);
   }
   else
   {
@@ -405,7 +392,7 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     case kCheckActionCmd:
       // We let the parent class handle this
       // Pass it as a kRLBreakpointChangedCmd command, since that's the intent
-      sendCommand(RomListWidget::kBreakpointChangedCmd,
+      sendCommand(RomListWidget::kBPointChangedCmd,
                   myCheckList[id]->getState(), _currentPos+id);
       break;
 
@@ -416,6 +403,10 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
         setDirty(); draw();
       }
       break;
+
+    default:
+      // Let the parent class handle all other commands directly
+      sendCommand(cmd, data, id);
   }
 }
 

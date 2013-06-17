@@ -46,6 +46,7 @@ class DiStella
     // standalone Distella
     typedef struct {
       BaseFormat gfx_format;
+      bool resolve_code;    // Attempt to detect code vs. data sections
       bool show_addresses;  // Show PC addresses (always off for external output)
       bool aflag;  // Turns 'A' off in accumulator instructions (-a in Distella)
       bool fflag;  // Forces correct address length (-f in Distella)
@@ -65,12 +66,11 @@ class DiStella
       @param labels      Array storing label info determined by Distella
       @param directives  Array storing directive info determined by Distella
       @param reserved    The TIA/RIOT addresses referenced in the disassembled code
-      @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
              CartDebug::BankInfo& info, const DiStella::Settings& settings,
              uInt8* labels, uInt8* directives,
-             CartDebug::ReservedEquates& reserved, bool resolvedata);
+             CartDebug::ReservedEquates& reserved);
 
     ~DiStella();
 

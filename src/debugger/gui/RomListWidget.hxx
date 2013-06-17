@@ -15,15 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef ROM_LIST_WIDGET_HXX
 #define ROM_LIST_WIDGET_HXX
 
-class ContextMenu;
+class RomListSettings;
 class ScrollBarWidget;
 class PackedBitArray;
 class CheckListWidget;
@@ -37,8 +34,15 @@ class RomListWidget : public EditableWidget
 {
   public:
     enum {
-      kBreakpointChangedCmd = 'RLbp', // click on the checkbox for a breakpoint
-      kRomChangedCmd        = 'RLpr'  // ROM item data changed - 'data' will be item index
+      kBPointChangedCmd  = 'RLbp',  // click on the checkbox for a breakpoint
+      kRomChangedCmd     = 'RLpr',  // 'data' will be disassembly line number
+      kSetPCCmd          = 'STpc',  // 'data' will be disassembly line number
+      kRuntoPCCmd        = 'RTpc',  // 'data' will be disassembly line number
+      kDisassembleCmd    = 'REds',
+      kTentativeCodeCmd  = 'TEcd',  // 'data' will be boolean
+      kPCAddressesCmd    = 'PCad',  // 'data' will be boolean
+      kGfxAsBinaryCmd    = 'GFXb',  // 'data' will be boolean
+      kAddrRelocationCmd = 'ADre'   // 'data' will be boolean
     };
 
   public:
@@ -84,7 +88,7 @@ class RomListWidget : public EditableWidget
     void scrollToCurrent(int item);
 
   private:
-    ContextMenu*     myMenu;
+    RomListSettings* myMenu;
     ScrollBarWidget* myScrollBar;
 
     int  _labelWidth;

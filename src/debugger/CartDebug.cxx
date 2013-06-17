@@ -98,6 +98,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // Add settings for Distella
   DiStella::settings.gfx_format =
     myOSystem.settings().getInt("dis.gfxformat") == 16 ? kBASE_16 : kBASE_2;
+  DiStella::settings.resolve_code =
+    myOSystem.settings().getBool("dis.resolve");
   DiStella::settings.show_addresses =
     myOSystem.settings().getBool("dis.showaddr");
   DiStella::settings.aflag = false; // Not currently configurable
@@ -249,7 +251,7 @@ string CartDebug::toString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::disassemble(const string& resolvedata, bool force)
+bool CartDebug::disassemble(bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
@@ -297,16 +299,15 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
         addresses.push_back(PC);
     }
 
-    // Check whether to use the 'resolvedata' functionality from Distella
-    if(resolvedata == "never")
-      fillDisassemblyList(info, false, PC);
-    else if(resolvedata == "always")
-      fillDisassemblyList(info, true, PC);
-    else  // 'auto'
+    // Always attempt to resolve code sections unless it's been
+    // specifically disabled
+    bool found = fillDisassemblyList(info, PC);
+    if(!found && DiStella::settings.resolve_code)
     {
-      // First try with resolvedata on, then turn off if PC isn't found
-      if(!fillDisassemblyList(info, true, PC))
-        fillDisassemblyList(info, false, PC);
+      // Temporarily turn off code resolution
+      DiStella::settings.resolve_code = false;
+      fillDisassemblyList(info, PC);
+      DiStella::settings.resolve_code = true;
     }
   }
 
@@ -314,12 +315,12 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 search)
+bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
 {
   myDisassembly.list.clear(false);
   myDisassembly.fieldwidth = 14 + myLabelLength;
   DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
-                    myDisLabels, myDisDirectives, myReserved, resolvedata);
+                    myDisLabels, myDisDirectives, myReserved);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -954,6 +955,7 @@ string CartDebug::saveDisassembly()
   // This will most likely differ from what you see in the debugger
   DiStella::Settings settings;
   settings.gfx_format = DiStella::settings.gfx_format;
+  settings.resolve_code = true;
   settings.show_addresses = false;
   settings.aflag = false; // Otherwise DASM gets confused
   settings.fflag = DiStella::settings.fflag;
@@ -968,7 +970,7 @@ string CartDebug::saveDisassembly()
     // Disassemble bank
     disasm.list.clear(false);  // don't fully de-allocate space
     DiStella distella(*this, disasm.list, info, settings,
-                      myDisLabels, myDisDirectives, myReserved, true);
+                      myDisLabels, myDisDirectives, myReserved);
 
     buf << "       SEG CODE\n"
         << "       ORG $" << HEX4 << info.offset << "\n\n";

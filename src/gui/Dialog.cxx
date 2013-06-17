@@ -46,6 +46,7 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _cancelWidget(0),
     _visible(false),
     _isBase(isBase),
+    _processCancel(false),
     _surface(0),
     _tabID(0)
 {
@@ -576,6 +577,13 @@ bool Dialog::handleNavEvent(Event::Type e)
       {
         // Receiving 'Cancel' is the same as getting the 'Select' event
         _cancelWidget->handleEvent(Event::UISelect);
+        return true;
+      }
+      else if(_processCancel)
+      {
+        // Some dialogs want the ability to cancel without actually having
+        // a corresponding cancel button
+        close();
         return true;
       }
       break;

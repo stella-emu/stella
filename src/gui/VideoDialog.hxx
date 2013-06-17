@@ -26,7 +26,6 @@
 class CommandSender;
 class CheckboxWidget;
 class DialogContainer;
-class EditTextWidget;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
@@ -51,7 +50,7 @@ class VideoDialog : public Dialog
     void handleFullscreenChange(bool enable);
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     TabWidget* myTab;
