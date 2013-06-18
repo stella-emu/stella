@@ -292,6 +292,8 @@
 		DC3FE48D11C7D35600C91C72 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3FE47B11C7D35600C91C72 /* pngwutil.c */; };
 		DC3FE49F11C7D3FE00C91C72 /* PNGLibrary.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3FE49D11C7D3FE00C91C72 /* PNGLibrary.cxx */; };
 		DC3FE4A011C7D3FE00C91C72 /* PNGLibrary.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3FE49E11C7D3FE00C91C72 /* PNGLibrary.hxx */; };
+		DC449CAF176FF512004FA2D4 /* RomListSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC449CAD176FF512004FA2D4 /* RomListSettings.cxx */; };
+		DC449CB0176FF512004FA2D4 /* RomListSettings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC449CAE176FF512004FA2D4 /* RomListSettings.hxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -802,6 +804,8 @@
 		DC3FE49D11C7D3FE00C91C72 /* PNGLibrary.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PNGLibrary.cxx; path = ../common/PNGLibrary.cxx; sourceTree = SOURCE_ROOT; };
 		DC3FE49E11C7D3FE00C91C72 /* PNGLibrary.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PNGLibrary.hxx; path = ../common/PNGLibrary.hxx; sourceTree = SOURCE_ROOT; };
 		DC419D81108E10A3006E8687 /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
+		DC449CAD176FF512004FA2D4 /* RomListSettings.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RomListSettings.cxx; path = ../debugger/gui/RomListSettings.cxx; sourceTree = SOURCE_ROOT; };
+		DC449CAE176FF512004FA2D4 /* RomListSettings.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RomListSettings.hxx; path = ../debugger/gui/RomListSettings.hxx; sourceTree = SOURCE_ROOT; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomAuditDialog.cxx; path = ../gui/RomAuditDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomAuditDialog.hxx; path = ../gui/RomAuditDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
@@ -1182,6 +1186,8 @@
 				2D20F9F108C603EC00A73076 /* RamWidget.hxx */,
 				DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */,
 				DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */,
+				DC449CAD176FF512004FA2D4 /* RomListSettings.cxx */,
+				DC449CAE176FF512004FA2D4 /* RomListSettings.hxx */,
 				2D20F9F208C603EC00A73076 /* RomListWidget.cxx */,
 				2D20F9F308C603EC00A73076 /* RomListWidget.hxx */,
 				2D20F9F408C603EC00A73076 /* RomWidget.cxx */,
@@ -1846,6 +1852,7 @@
 				DCF28F251729A5CD00DD0CA9 /* CartX07Widget.hxx in Headers */,
 				DC3C3CDC173B1EB2009FFE61 /* Variant.hxx in Headers */,
 				DC3C3CE2173B1EC8009FFE61 /* FileListWidget.hxx in Headers */,
+				DC449CB0176FF512004FA2D4 /* RomListSettings.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2149,6 +2156,7 @@
 				DCF28F221729A5CD00DD0CA9 /* CartUAWidget.cxx in Sources */,
 				DCF28F241729A5CD00DD0CA9 /* CartX07Widget.cxx in Sources */,
 				DC3C3CE1173B1EC8009FFE61 /* FileListWidget.cxx in Sources */,
+				DC449CAF176FF512004FA2D4 /* RomListSettings.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
