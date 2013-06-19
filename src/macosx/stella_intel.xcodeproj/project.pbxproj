@@ -328,8 +328,6 @@
 		DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */; };
 		DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
-		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
-		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
 		DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BA714B25DE7006440EE /* CartCM.cxx */; };
@@ -439,6 +437,10 @@
 		DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6F11C281ED005DA767 /* pngwutil.c */; };
 		DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */; };
 		DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */; };
+		DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */; };
+		DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */; };
+		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
+		DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */; };
 		DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */; };
 		DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */; };
 		DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */; };
@@ -837,8 +839,6 @@
 		DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileListWidget.cxx; path = ../gui/FileListWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FileListWidget.hxx; path = ../gui/FileListWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
-		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
-		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = ../gui/UIDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC8C1BA714B25DE7006440EE /* CartCM.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCM.cxx; path = ../emucore/CartCM.cxx; sourceTree = SOURCE_ROOT; };
@@ -950,6 +950,10 @@
 		DCD6FC6F11C281ED005DA767 /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwutil.c; path = ../libpng/pngwutil.c; sourceTree = SOURCE_ROOT; };
 		DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PNGLibrary.cxx; path = ../common/PNGLibrary.cxx; sourceTree = SOURCE_ROOT; };
 		DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PNGLibrary.hxx; path = ../common/PNGLibrary.hxx; sourceTree = SOURCE_ROOT; };
+		DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConfigPathDialog.cxx; path = ../gui/ConfigPathDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConfigPathDialog.hxx; path = ../gui/ConfigPathDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SnapshotDialog.cxx; path = ../gui/SnapshotDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SnapshotDialog.hxx; path = ../gui/SnapshotDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FSNodePOSIX.hxx; path = ../unix/FSNodePOSIX.hxx; sourceTree = SOURCE_ROOT; };
 		DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FSNodeFactory.hxx; path = ../common/FSNodeFactory.hxx; sourceTree = SOURCE_ROOT; };
 		DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FSNodeZIP.cxx; path = ../common/FSNodeZIP.cxx; sourceTree = SOURCE_ROOT; };
@@ -1433,6 +1437,8 @@
 				2D73959408C3EB4E0060BB99 /* CommandDialog.hxx */,
 				2D73959508C3EB4E0060BB99 /* CommandMenu.cxx */,
 				2D73959608C3EB4E0060BB99 /* CommandMenu.hxx */,
+				DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */,
+				DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */,
 				2D9217FA0857CC88001D664B /* ConsoleFont.hxx */,
 				DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */,
 				DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */,
@@ -1448,8 +1454,6 @@
 				2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */,
 				DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */,
 				DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */,
-				DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */,
-				DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */,
 				2D9217FB0857CC88001D664B /* Font.cxx */,
 				2D9217FC0857CC88001D664B /* Font.hxx */,
 				2DDBEAB2084578BF00812C11 /* GameInfoDialog.cxx */,
@@ -1492,6 +1496,8 @@
 				DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */,
 				2DDBEACA084578BF00812C11 /* ScrollBarWidget.cxx */,
 				2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */,
+				DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */,
+				DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */,
 				DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */,
 				DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */,
 				DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */,
@@ -1732,7 +1738,6 @@
 				DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */,
 				DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */,
 				DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */,
-				DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */,
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
@@ -1850,6 +1855,8 @@
 				DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */,
 				DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */,
 				DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */,
+				DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */,
+				DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2055,7 +2062,6 @@
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
 				DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */,
-				DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */,
 				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
@@ -2156,6 +2162,8 @@
 				DC676A5B1729A0B000E4E73D /* CartX07Widget.cxx in Sources */,
 				DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */,
 				DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */,
+				DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */,
+				DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
