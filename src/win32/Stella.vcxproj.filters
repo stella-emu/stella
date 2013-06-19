@@ -720,6 +720,9 @@
     <ClCompile Include="..\gui\FileListWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\RomListSettings.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1441,6 +1444,9 @@
     </ClInclude>
     <ClInclude Include="..\common\Variant.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\RomListSettings.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
