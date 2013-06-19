@@ -29,7 +29,8 @@
 #include "AudioDialog.hxx"
 #include "InputDialog.hxx"
 #include "UIDialog.hxx"
-#include "FileSnapDialog.hxx"
+#include "SnapshotDialog.hxx"
+#include "ConfigPathDialog.hxx"
 #include "RomAuditDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "LoggerDialog.hxx"
@@ -55,7 +56,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myAudioDialog(NULL),
     myInputDialog(NULL),
     myUIDialog(NULL),
-    myFileSnapDialog(NULL),
+    mySnapshotDialog(NULL),
+    myConfigPathDialog(NULL),
     myGameInfoDialog(NULL),
     myCheatCodeDialog(NULL),
     myLoggerDialog(NULL),
@@ -64,34 +66,37 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myIsGlobal(global)
 {
   const GUI::Font& font = instance().font();
-  const int buttonWidth = font.getStringWidth("Game Properties") + 20,
+  const int buttonWidth = font.getStringWidth("Snapshot Settings") + 20,
             buttonHeight = font.getLineHeight() + 6,
             rowHeight = font.getLineHeight() + 10;
 
   _w = 2 * buttonWidth + 30;
-  _h = 6 * rowHeight + 15;
+  _h = 7 * rowHeight + 15;
 
   int xoffset = 10, yoffset = 10;
   WidgetArray wid;
   ButtonWidget* b = NULL;
 
-  myVideoSettingsButton = addODButton("Video Settings", kVidCmd);
-  wid.push_back(myVideoSettingsButton);
+  b = addODButton("Video Settings", kVidCmd);
+  wid.push_back(b);
 
-  myAudioSettingsButton = addODButton("Audio Settings", kAudCmd);
+  b = addODButton("Audio Settings", kAudCmd);
 #ifndef SOUND_SUPPORT
-  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);
+  b->clearFlags(WIDGET_ENABLED);
 #endif
-  wid.push_back(myAudioSettingsButton);
+  wid.push_back(b);
 
   b = addODButton("Input Settings", kInptCmd);
   wid.push_back(b);
 
-  myUIButton = addODButton("UI Settings", kUsrIfaceCmd);
-  wid.push_back(myUIButton);
+  b = addODButton("UI Settings", kUsrIfaceCmd);
+  wid.push_back(b);
 
-  myFileSnapButton = addODButton("Config Paths", kFileSnapCmd);
-  wid.push_back(myFileSnapButton);
+  b = addODButton("Snapshot Settings", kSnapCmd);
+  wid.push_back(b);
+
+  b = addODButton("Config Paths", kFileSnapCmd);
+  wid.push_back(b);
 
   myRomAuditButton = addODButton("Audit ROMs", kAuditCmd);
   wid.push_back(myRomAuditButton);
@@ -108,33 +113,34 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   wid.push_back(myCheatCodeButton);
 
-  myLoggerButton = addODButton("System Logs", kLoggerCmd);
-  wid.push_back(myLoggerButton);
+  b = addODButton("System Logs", kLoggerCmd);
+  wid.push_back(b);
 
-  myHelpButton = addODButton("Help", kHelpCmd);
-  wid.push_back(myHelpButton);
+  b = addODButton("Help", kHelpCmd);
+  wid.push_back(b);
 
-  myAboutButton = addODButton("About", kAboutCmd);
-  wid.push_back(myAboutButton);
+  b = addODButton("About", kAboutCmd);
+  wid.push_back(b);
 
   b = addODButton("Exit Menu", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog = new VideoDialog(osystem, parent, font, max_w, max_h);
-  myAudioDialog = new AudioDialog(osystem, parent, font);
-  myInputDialog = new InputDialog(osystem, parent, font, max_w, max_h);
-  myUIDialog = new UIDialog(osystem, parent, font);
-  myFileSnapDialog = new FileSnapDialog(osystem, parent, font, boss, max_w, max_h);
+  myVideoDialog    = new VideoDialog(osystem, parent, font, max_w, max_h);
+  myAudioDialog    = new AudioDialog(osystem, parent, font);
+  myInputDialog    = new InputDialog(osystem, parent, font, max_w, max_h);
+  myUIDialog       = new UIDialog(osystem, parent, font);
+  mySnapshotDialog = new SnapshotDialog(osystem, parent, font, boss, max_w, max_h);
+  myConfigPathDialog = new ConfigPathDialog(osystem, parent, font, boss, max_w, max_h);
   myRomAuditDialog = new RomAuditDialog(osystem, parent, font, max_w, max_h);
   myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
   myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font);
 #endif
-  myLoggerDialog = new LoggerDialog(osystem, parent, font, max_w, max_h);
-  myHelpDialog = new HelpDialog(osystem, parent, font);
-  myAboutDialog = new AboutDialog(osystem, parent, font);
+  myLoggerDialog    = new LoggerDialog(osystem, parent, font, max_w, max_h);
+  myHelpDialog      = new HelpDialog(osystem, parent, font);
+  myAboutDialog     = new AboutDialog(osystem, parent, font);
 
   addToFocusList(wid);
 
@@ -147,9 +153,6 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   {
     myRomAuditButton->clearFlags(WIDGET_ENABLED);
   }
-#ifdef _WIN32_WCE
-  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);  // not honored in wince port
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,7 +162,8 @@ OptionsDialog::~OptionsDialog()
   delete myAudioDialog;
   delete myInputDialog;
   delete myUIDialog;
-  delete myFileSnapDialog;
+  delete mySnapshotDialog;
+  delete myConfigPathDialog;
   delete myRomAuditDialog;
   delete myGameInfoDialog;
 #ifdef CHEATCODE_SUPPORT
@@ -214,8 +218,12 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       myUIDialog->open();
       break;
 
+    case kSnapCmd:
+      mySnapshotDialog->open();
+      break;
+
     case kFileSnapCmd:
-      myFileSnapDialog->open();
+      myConfigPathDialog->open();
       break;
 
     case kAuditCmd:

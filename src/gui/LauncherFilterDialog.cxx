@@ -191,7 +191,7 @@ void LauncherFilterDialog::saveConfig()
   }
 
   // Let parent know about the changes
-  sendCommand(kReloadFiltersCmd, 0, 0);
+  sendCommand(LauncherDialog::kReloadFiltersCmd, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -15,13 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef FILE_SNAP_DIALOG_HXX
-#define FILE_SNAP_DIALOG_HXX
+#ifndef CONFIG_PATH_DIALOG_HXX
+#define CONFIG_PATH_DIALOG_HXX
 
 class OSystem;
 class GuiObject;
@@ -36,13 +33,13 @@ class StaticTextWidget;
 #include "Dialog.hxx"
 #include "Command.hxx"
 
-class FileSnapDialog : public Dialog, public CommandSender
+class ConfigPathDialog : public Dialog, public CommandSender
 {
   public:
-    FileSnapDialog(OSystem* osystem, DialogContainer* parent,
-                   const GUI::Font& font, GuiObject* boss,
-                   int max_w, int max_h);
-    ~FileSnapDialog();
+    ConfigPathDialog(OSystem* osystem, DialogContainer* parent,
+                     const GUI::Font& font, GuiObject* boss,
+                     int max_w, int max_h);
+    ~ConfigPathDialog();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
@@ -58,8 +55,6 @@ class FileSnapDialog : public Dialog, public CommandSender
       kChooseCheatFileCmd   = 'LOcf', // cheatfile (stella.cht)
       kChoosePaletteFileCmd = 'LOpf', // palette file (stella.pal)
       kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
-      kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
-      kChooseSnapLoadDirCmd = 'LOsl', // snapshot dir (load files)
       kChooseNVRamDirCmd   =  'LOnv', // nvram (flash/eeprom) dir
       kStateDirChosenCmd    = 'LOsc', // state dir changed
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
@@ -77,13 +72,6 @@ class FileSnapDialog : public Dialog, public CommandSender
     EditTextWidget* myCheatFile;
     EditTextWidget* myPaletteFile;
     EditTextWidget* myPropsFile;
-    EditTextWidget* mySnapSavePath;
-    EditTextWidget* mySnapLoadPath;
-
-    // Other snapshot settings
-    CheckboxWidget* mySnapSingle;
-    CheckboxWidget* mySnap1x;
-    PopUpWidget*    mySnapInterval;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

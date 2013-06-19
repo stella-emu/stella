@@ -30,7 +30,8 @@ class VideoDialog;
 class AudioDialog;
 class InputDialog;
 class UIDialog;
-class FileSnapDialog;
+class SnapshotDialog;
+class ConfigPathDialog;
 class RomAuditDialog;
 class GameInfoDialog;
 class CheatCodeDialog;
@@ -54,28 +55,22 @@ class OptionsDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    VideoDialog*     myVideoDialog;
-    AudioDialog*     myAudioDialog;
-    InputDialog*     myInputDialog;
-    UIDialog*        myUIDialog;
-    FileSnapDialog*  myFileSnapDialog;
-    RomAuditDialog*  myRomAuditDialog;
-    GameInfoDialog*  myGameInfoDialog;
-    CheatCodeDialog* myCheatCodeDialog;
-    LoggerDialog*    myLoggerDialog;
-    HelpDialog*      myHelpDialog;
-    AboutDialog*     myAboutDialog;
+    VideoDialog*      myVideoDialog;
+    AudioDialog*      myAudioDialog;
+    InputDialog*      myInputDialog;
+    UIDialog*         myUIDialog;
+    SnapshotDialog*   mySnapshotDialog;
+    ConfigPathDialog* myConfigPathDialog;
+    RomAuditDialog*   myRomAuditDialog;
+    GameInfoDialog*   myGameInfoDialog;
+    CheatCodeDialog*  myCheatCodeDialog;
+    LoggerDialog*     myLoggerDialog;
+    HelpDialog*       myHelpDialog;
+    AboutDialog*      myAboutDialog;
 
-    ButtonWidget* myVideoSettingsButton;
-    ButtonWidget* myAudioSettingsButton;
-    ButtonWidget* myUIButton;
-    ButtonWidget* myFileSnapButton;
     ButtonWidget* myRomAuditButton;
     ButtonWidget* myGameInfoButton;
     ButtonWidget* myCheatCodeButton;
-    ButtonWidget* myLoggerButton;
-    ButtonWidget* myHelpButton;
-    ButtonWidget* myAboutButton;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;
@@ -85,6 +80,7 @@ class OptionsDialog : public Dialog
       kAudCmd      = 'AUDO',
       kInptCmd     = 'INPT',
       kUsrIfaceCmd = 'URIF',
+      kSnapCmd     = 'SNAP',
       kFileSnapCmd = 'FLSN',
       kAuditCmd    = 'RAUD',
       kInfoCmd     = 'INFO',

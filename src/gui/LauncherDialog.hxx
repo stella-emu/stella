@@ -47,17 +47,16 @@ class StringListWidget;
 #include "Stack.hxx"
 #include "MessageBox.hxx"
 
-// These must be accessible from dialogs created by this class
-enum {
-  kRomDirChosenCmd      = 'romc',  // rom chosen
-  kSnapSaveDirChosenCmd = 'snsc',  // snap chosen (save files)
-  kSnapLoadDirChosenCmd = 'snlc',  // snap chosen (load files)
-  kReloadRomDirCmd      = 'rdrl',  // reload the current listing
-  kReloadFiltersCmd     = 'rlfl'   // reload filtering options and current listing
-};
-
 class LauncherDialog : public Dialog
 {
+  public:
+    // These must be accessible from dialogs created by this class
+    enum {
+      kRomDirChosenCmd  = 'romc',  // rom chosen
+      kReloadRomDirCmd  = 'rdrl',  // reload the current listing
+      kReloadFiltersCmd = 'rlfl'   // reload filtering options and current listing
+    };
+
   public:
     LauncherDialog(OSystem* osystem, DialogContainer* parent,
                    int x, int y, int w, int h);

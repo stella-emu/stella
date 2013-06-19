@@ -564,14 +564,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       updateListing();
       break;
 
-    case kSnapSaveDirChosenCmd:
-      // Stub just in case we need it
-      break;
-
-    case kSnapLoadDirChosenCmd:
-      // Stub just in case we need it
-      break;
-
     case kReloadRomDirCmd:
       updateListing();
       break;

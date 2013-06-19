@@ -396,7 +396,7 @@ SDLmain.lib
     <ClCompile Include="..\gui\EditableWidget.cxx" />
     <ClCompile Include="..\gui\EditTextWidget.cxx" />
     <ClCompile Include="..\gui\EventMappingWidget.cxx" />
-    <ClCompile Include="..\gui\FileSnapDialog.cxx" />
+    <ClCompile Include="..\gui\ConfigPathDialog.cxx" />
     <ClCompile Include="..\gui\Font.cxx" />
     <ClCompile Include="..\gui\GameInfoDialog.cxx" />
     <ClCompile Include="..\gui\GameList.cxx" />
@@ -651,7 +651,7 @@ SDLmain.lib
     <ClInclude Include="..\gui\EditableWidget.hxx" />
     <ClInclude Include="..\gui\EditTextWidget.hxx" />
     <ClInclude Include="..\gui\EventMappingWidget.hxx" />
-    <ClInclude Include="..\gui\FileSnapDialog.hxx" />
+    <ClInclude Include="..\gui\ConfigPathDialog.hxx" />
     <ClInclude Include="..\gui\Font.hxx" />
     <ClInclude Include="..\gui\GameInfoDialog.hxx" />
     <ClInclude Include="..\gui\GameList.hxx" />
