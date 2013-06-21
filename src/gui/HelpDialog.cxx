@@ -33,7 +33,7 @@ HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
                        const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     myPage(1),
-    myNumPages(4)
+    myNumPages(5)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -99,6 +99,11 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 #define ADD_BIND(k,d) do { myKeyStr[i] = k; myDescStr[i] = d; i++; } while(0)
 #define ADD_TEXT(d) ADD_BIND("",d)
 #define ADD_LINE ADD_BIND("","")
+#ifdef MAC_OSX
+  #define ALT_ "Cmd"
+#else
+  #define ALT_ "Alt"
+#endif
 
   uInt8 i = 0;
   switch(page)
@@ -110,24 +115,15 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 #else
       ADD_BIND("Cmd Q",     "Quit emulation");
 #endif
-      ADD_BIND("Escape",    "Exit current game");
-      ADD_BIND("Tab",       "Enter options menu");
-      ADD_BIND("\\",        "Toggle command menu");
-#ifndef MAC_OSX
-      ADD_BIND("Alt =",     "Increase window size");
-      ADD_BIND("Alt -",     "Decrease window size");
-      ADD_BIND("Alt Enter", "Toggle fullscreen /");
-      ADD_BIND("",          "  windowed mode");
-      ADD_BIND("Alt ]",     "Increase volume by 2%");
-      ADD_BIND("Alt [",     "Decrease volume by 2%");
-#else
-      ADD_BIND("Cmd =",     "Increase window size");
-      ADD_BIND("Cmd -",     "Decrease window size");
-      ADD_BIND("Cmd Enter", "Toggle fullscreen /");
-      ADD_BIND("",          "  windowed mode");
-      ADD_BIND("Cmd ]",     "Increase volume by 2%");
-      ADD_BIND("Cmd [",     "Decrease volume by 2%");
-#endif
+      ADD_BIND("Escape",     "Exit current game");
+      ADD_BIND("Tab",        "Enter options menu");
+      ADD_BIND("\\",         "Toggle command menu");
+      ADD_BIND(ALT_" =",     "Increase window size");
+      ADD_BIND(ALT_" -",     "Decrease window size");
+      ADD_BIND(ALT_" Enter", "Toggle fullscreen /");
+      ADD_BIND("",           "  windowed mode");
+      ADD_BIND(ALT_" ]",     "Increase volume by 2%");
+      ADD_BIND(ALT_" [",     "Decrease volume by 2%");
       break;
 
     case 2:
@@ -137,26 +133,35 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Ctrl s", "Save game properties");
       ADD_BIND("",       "  to a new file");
       ADD_LINE;
-      ADD_BIND("Ctrl 0", "Mouse emulates paddle 0");
-      ADD_BIND("Ctrl 1", "Mouse emulates paddle 1");
-      ADD_BIND("Ctrl 2", "Mouse emulates paddle 2");
-      ADD_BIND("Ctrl 3", "Mouse emulates paddle 3");
+      ADD_BIND("Ctrl 0", "Toggle controller for Mouse");
+      ADD_BIND("Ctrl 1", "Toggle Stelladaptor left/right");
       break;
 
     case 3:
+      title = "TV Filters:";
+      ADD_BIND(ALT_" 1", "Disable filtering");
+      ADD_BIND(ALT_" 2", "Enable 'Composite' mode");
+      ADD_BIND(ALT_" 3", "Enable 'S-video' mode");
+      ADD_BIND(ALT_" 4", "Enable 'RGB' mode");
+      ADD_BIND(ALT_" 5", "Enable 'Bad Adjust' mode");
+      ADD_BIND(ALT_" 6", "Enable 'Custom' mode");
+      ADD_BIND(ALT_" 7", "Adjust scanline intensity");
+      ADD_BIND(ALT_" 8", "Toggle scanline interpol.");
+      ADD_BIND(ALT_" 9", "Select 'Custom' adjustable");
+      ADD_BIND(ALT_" 0", "Modify 'Custom' adjustable");
+      break;
+
+    case 4:
       title = "Developer commands:";
-#ifndef MAC_OSX
-      ADD_BIND("Alt PgUp",  "Increase Display.YStart");
-      ADD_BIND("Alt PgDn",  "Decrease Display.YStart");
-#else
-      ADD_BIND("Cmd PgUp",  "Increase Display.YStart");
-      ADD_BIND("Cmd PgDn",  "Decrease Display.YStart");
-#endif
+      ADD_BIND("~",         "Enter/exit debugger");
+      ADD_LINE;
+      ADD_BIND(ALT_" PgUp", "Increase Display.YStart");
+      ADD_BIND(ALT_" PgDn", "Decrease Display.YStart");
       ADD_BIND("Ctrl PgUp", "Increase Display.Height");
       ADD_BIND("Ctrl PgDn", "Decrease Display.Height");
       break;
 
-    case 4:
+    case 5:
       title = "All other commands:";
       ADD_LINE;
       ADD_BIND("Remapped Events", "");
