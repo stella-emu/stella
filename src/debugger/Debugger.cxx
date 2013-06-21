@@ -244,14 +244,7 @@ string Debugger::autoExec()
       << myParser->exec(autoexec) << endl;
 
   // Also, "romname.stella" if present
-  string file = myOSystem->romFile();
-  string::size_type pos;
-  if( (pos = file.find_last_of('.')) != string::npos )
-    file.replace(pos, file.size(), ".stella");
-  else
-    file += ".stella";
-
-  FilesystemNode romname(file);
+  FilesystemNode romname(myOSystem->romFile().getPathWithExt(".stella"));
   buf << myParser->exec(romname) << endl;
 
   // Init builtins

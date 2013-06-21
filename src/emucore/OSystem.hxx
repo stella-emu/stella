@@ -365,9 +365,9 @@ class OSystem
       This method should be called to get the full path of the currently
       loaded ROM.
 
-      @return String representing the full path of the ROM file.
+      @return FSNode object representing the ROM file.
     */
-    const string& romFile() const { return myRomFile.getPath(); }
+    const FilesystemNode& romFile() const { return myRomFile; }
 
     /**
       Creates a new game console from the specified romfile, and correctly

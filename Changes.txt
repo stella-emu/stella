@@ -51,6 +51,12 @@
     created with newer versions of the ZIP program.  Related to this, added
     better error messages for invalid/missing/unreadable ROM files.
 
+  * Added 'snapname' commandline argument and associated UI item, for
+    specifying whether snapshots should be saved using either the internal
+    ROM database name or the actual ROM filename.  This feature was
+    present in older releases of Stella, and due to popular demand it's
+    now back again.
+
   * Fixed bug in Linux/OSX versions when starting Stella for the first
     time; it was previously creating mislabeled directories to store
     settings, snapshots, etc.

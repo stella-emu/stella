@@ -96,6 +96,7 @@ Settings::Settings(OSystem* osystem)
   // Snapshot options
   setInternal("snapsavedir", "");
   setInternal("snaploaddir", "");
+  setInternal("snapname", "int");
   setInternal("sssingle", "false");
   setInternal("ss1x", "false");
   setInternal("ssinterval", "2");
@@ -401,6 +402,7 @@ void Settings::usage()
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -snapsavedir  <path>         The directory to save snapshot files to\n"
     << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
+    << "  -snapname     <int|rom>      Name snapshots according to internal database or ROM\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"
     << "  -ssinterval   <number        Number of seconds between snapshots in continuous snapshot mode\n"

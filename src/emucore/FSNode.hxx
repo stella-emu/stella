@@ -239,6 +239,16 @@ class FilesystemNode
      */
     virtual uInt32 read(uInt8*& buffer) const;
 
+    /**
+     * The following methods are almost exactly the same as the various
+     * getXXXX() methods above.  Internally, they call the respective methods
+     * and replace the extension (if present) with the given one.  If no
+     * extension is present, the given one is appended instead.
+     */
+    string getNameWithExt(const string& ext) const;
+    string getPathWithExt(const string& ext) const;
+    string getShortPathWithExt(const string& ext) const;
+
   private:
     Common::SharedPtr<AbstractFSNode> _realNode;
     FilesystemNode(AbstractFSNode* realNode);

@@ -79,8 +79,48 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& FilesystemNode::getName() const
 {
-  assert(_realNode);
   return _realNode->getName();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& FilesystemNode::getPath() const
+{
+  return _realNode->getPath();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getShortPath() const
+{
+  return _realNode->getShortPath();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getNameWithExt(const string& ext) const
+{
+  size_t pos = _realNode->getName().find_last_of("/\\");
+  string s = pos == string::npos ? _realNode->getName() :
+        _realNode->getName().substr(pos+1);
+
+  pos = s.find_last_of(".");
+  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getPathWithExt(const string& ext) const
+{
+  string s = _realNode->getPath();
+
+  size_t pos = s.find_last_of(".");
+  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getShortPathWithExt(const string& ext) const
+{
+  string s = _realNode->getShortPath();
+
+  size_t pos = s.find_last_of(".");
+  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,18 +137,6 @@ FilesystemNode FilesystemNode::getParent() const
 
   AbstractFSNode* node = _realNode->getParent();
   return (node == 0) ? *this : FilesystemNode(node);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& FilesystemNode::getPath() const
-{
-  return _realNode->getPath();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getShortPath() const
-{
-  return _realNode->getShortPath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

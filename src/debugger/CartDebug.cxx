@@ -721,8 +721,7 @@ string CartDebug::loadSymbolFile()
     const string& propsname =
       myConsole.properties().get(Cartridge_Name) + ".sym";
 
-    FilesystemNode case1(FilesystemNode(myOSystem.romFile()).getParent().getPath() +
-                         propsname);
+    FilesystemNode case1(myOSystem.romFile().getParent().getPath() + propsname);
     if(case1.isFile() && case1.isReadable())
       mySymbolFile = case1.getPath();
     else
@@ -772,8 +771,7 @@ string CartDebug::loadConfigFile()
     const string& propsname =
       myConsole.properties().get(Cartridge_Name) + ".cfg";
 
-    FilesystemNode case1(FilesystemNode(myOSystem.romFile()).getParent().getPath() +
-                         propsname);
+    FilesystemNode case1(myOSystem.romFile().getParent().getPath() + propsname);
     FilesystemNode case2(myOSystem.cfgDir() + propsname);
 
     if(case1.isFile() && case1.isReadable())
@@ -928,8 +926,7 @@ string CartDebug::saveDisassembly()
     const string& propsname =
       myConsole.properties().get(Cartridge_Name) + ".asm";
 
-    FilesystemNode case0(
-      FilesystemNode(myOSystem.romFile()).getParent().getPath() + propsname);
+    FilesystemNode case0(myOSystem.romFile().getParent().getPath() + propsname);
     if(case0.getParent().isWritable())
       myDisasmFile = case0.getPath();
     else
@@ -1037,7 +1034,7 @@ string CartDebug::saveDisassembly()
   // Some boilerplate, similar to what DiStella adds
   time_t currtime;
   time(&currtime);
-  out << "; Disassembly of " << FilesystemNode(myOSystem.romFile()).getShortPath() << "\n"
+  out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
       << "; Disassembled " << ctime(&currtime)
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
       << "; ROM properties name : " << myConsole.properties().get(Cartridge_Name) << "\n"

@@ -38,22 +38,22 @@ SnapshotDialog::SnapshotDialog(
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Snapshot load path:") + 20,
+            buttonWidth  = font.getStringWidth("Save path:") + 20,
             buttonHeight = font.getLineHeight() + 4;
-  const int vBorder = 8;
-  int xpos, ypos;
+  const int vBorder = 10;
+  int xpos, ypos, lwidth, fwidth;
   WidgetArray wid;
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = 56 * fontWidth + 8;
-  _h = 13 * (lineHeight + 4) + 10;
+  _w = 53 * fontWidth + 8;
+  _h = 10 * (lineHeight + 4) + 10;
 
   xpos = vBorder;  ypos = vBorder;
 
   // Snapshot path (save files)
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Snapshot save path:", kChooseSnapSaveDirCmd);
+                       "Save path:", kChooseSnapSaveDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -63,27 +63,26 @@ SnapshotDialog::SnapshotDialog(
   // Snapshot path (load files)
   xpos = vBorder;  ypos += buttonHeight + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Snapshot load path:", kChooseSnapLoadDirCmd);
+                       "Load path:", kChooseSnapLoadDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   mySnapLoadPath = new EditTextWidget(this, font, xpos, ypos + 2,
                                   _w - xpos - 10, lineHeight, "");
   wid.push_back(mySnapLoadPath);
 
-  // Snapshot single or multiple saves
-  xpos = 30;  ypos += b->getHeight() + 5;
-  mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
-                                    "Overwrite snapshots");
-  wid.push_back(mySnapSingle);
-
-  // Snapshot in 1x mode (ignore scaling)
-  xpos += mySnapSingle->getWidth() + 20;
-  mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
-                                "Snapshot in 1x mode");
-  wid.push_back(mySnap1x);
+  // Snapshot naming
+  lwidth = font.getStringWidth("Continuous snapshot interval: ");
+  fwidth = font.getStringWidth("internal database");
+  VariantList items;
+  items.push_back("actual ROM name", "rom");
+  items.push_back("internal database", "int");
+  xpos = vBorder+10;  ypos += buttonHeight + 8;
+  mySnapName =
+    new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
+                    "Save snapshots according to: ", lwidth);
+  wid.push_back(mySnapName);
 
   // Snapshot interval (continuous mode)
-  VariantList items;
   items.clear();
   items.push_back("1 second", "1");
   items.push_back("2 seconds", "2");
@@ -95,11 +94,29 @@ SnapshotDialog::SnapshotDialog(
   items.push_back("8 seconds", "8");
   items.push_back("9 seconds", "9");
   items.push_back("10 seconds", "10");
-  xpos = 30;  ypos += b->getHeight();
-  mySnapInterval = new PopUpWidget(this, font, xpos, ypos,
-                                   font.getStringWidth("10 seconds"), lineHeight,
-                                   items, "Continuous snapshot interval: ");
+  ypos += buttonHeight;
+  mySnapInterval =
+    new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
+                    "Continuous snapshot interval: ", lwidth);
   wid.push_back(mySnapInterval);
+
+  // Booleans for saving snapshots
+  fwidth = font.getStringWidth("When saving snapshots:");
+  xpos = vBorder;  ypos += buttonHeight + 5;
+  new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
+                       "When saving snapshots:", kTextAlignLeft);
+
+  // Snapshot single or multiple saves
+  xpos += 30;  ypos += lineHeight + 3;
+  mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
+                                    "Overwrite existing files");
+  wid.push_back(mySnapSingle);
+
+  // Snapshot in 1x mode (ignore scaling)
+  ypos += mySnapSingle->getHeight() + 4;
+  mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
+                                "Disable image filtering (1x mode)");
+  wid.push_back(mySnap1x);
 
   // Add Defaults, OK and Cancel buttons
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
@@ -126,9 +143,10 @@ void SnapshotDialog::loadConfig()
   const Settings& settings = instance().settings();
   mySnapSavePath->setText(settings.getString("snapsavedir"));
   mySnapLoadPath->setText(settings.getString("snaploaddir"));
+  mySnapName->setSelected(instance().settings().getString("snapname"), "int");
+  mySnapInterval->setSelected(instance().settings().getString("ssinterval"), "2");
   mySnapSingle->setState(settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
-  mySnapInterval->setSelected(instance().settings().getString("ssinterval"), "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,6 +154,8 @@ void SnapshotDialog::saveConfig()
 {
   instance().settings().setValue("snapsavedir", mySnapSavePath->getText());
   instance().settings().setValue("snaploaddir", mySnapLoadPath->getText());
+  instance().settings().setValue("snapname",
+    mySnapName->getSelectedTag().toString());
   instance().settings().setValue("sssingle", mySnapSingle->getState());
   instance().settings().setValue("ss1x", mySnap1x->getState());
   instance().settings().setValue("ssinterval",

@@ -1949,7 +1949,9 @@ void EventHandler::takeSnapshot(uInt32 number)
   string filename;
   bool showmessage = number == 0;
   string sspath = myOSystem->snapshotSaveDir() +
-      myOSystem->console().properties().get(Cartridge_Name);
+      (myOSystem->settings().getString("snapname") != "int" ?
+          myOSystem->romFile().getNameWithExt("")
+        : myOSystem->console().properties().get(Cartridge_Name));
 
   // Check whether we want multiple snapshots created
   if(number > 0)
