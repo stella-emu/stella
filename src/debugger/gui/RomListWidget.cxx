@@ -19,6 +19,7 @@
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
+#include "DiStella.hxx"
 #include "PackedBitArray.hxx"
 #include "Widget.hxx"
 #include "ScrollBarWidget.hxx"
@@ -392,8 +393,8 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     case kCheckActionCmd:
       // We let the parent class handle this
       // Pass it as a kRLBreakpointChangedCmd command, since that's the intent
-      sendCommand(RomListWidget::kBPointChangedCmd,
-                  myCheckList[id]->getState(), _currentPos+id);
+      sendCommand(RomListWidget::kBPointChangedCmd, _currentPos+id,
+                  myCheckList[id]->getState());
       break;
 
     case kSetPositionCmd:
@@ -552,15 +553,34 @@ GUI::Rect RomListWidget::getEditRect() const
 bool RomListWidget::tryInsertChar(char c, int pos)
 {
   // Not sure how efficient this is, or should we even care?
+  bool insert = false;
   c = tolower(c);
-  if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
-     c == '\\' || c == '#' || c == '$' || c == ' ')
+  switch(_base)
   {
-    _editString.insert(pos, 1, c);
-    return true;
+    case kBASE_16:
+    case kBASE_16_1:
+    case kBASE_16_2:
+    case kBASE_16_4:
+    case kBASE_16_8:
+      insert = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == ' ';
+      break;
+    case kBASE_2:
+    case kBASE_2_8:
+    case kBASE_2_16:
+      insert = c == '0' || c == '1' || c == ' ';
+      break;
+    case kBASE_10:
+      if((c >= '0' && c <= '9') || c == ' ')
+        insert = true;
+      break;
+    case kBASE_DEFAULT:
+      break;
   }
-  else
-    return false;
+
+  if(insert)
+    _editString.insert(pos, 1, c);
+
+  return insert;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -573,6 +593,15 @@ void RomListWidget::startEditMode()
       return;
 
     _editMode = true;
+    switch(myDisasm->list[_selectedItem].type)
+    {
+      case CartDebug::GFX:
+      case CartDebug::PGFX:
+        _base = DiStella::settings.gfx_format;
+        break;
+      default:
+        _base = instance().debugger().parser().base();
+    }
 
     // Widget gets raw data while editing
     EditableWidget::startEditMode();
@@ -589,7 +618,7 @@ void RomListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   // The parent then calls getText() to get the newly entered data
   _editMode = false;
-  sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, _id);
+  sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, _base);
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

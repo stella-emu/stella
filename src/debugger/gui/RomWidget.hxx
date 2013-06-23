@@ -24,6 +24,7 @@ class GuiObject;
 class EditTextWidget;
 
 #include "Command.hxx"
+#include "DebuggerParser.hxx"
 #include "RomListWidget.hxx"
 
 class RomWidget : public Widget, public CommandSender
@@ -46,15 +47,10 @@ class RomWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    enum {
-      kResolveDataChanged = 'ACrd',
-      kRomNameEntered     = 'RWrn'
-    };
-
     void setBreak(int disasm_line, bool state);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
-    void patchROM(int disasm_line, const string& bytes);
+    void patchROM(int disasm_line, const string& bytes, BaseFormat base);
 
   private:
     RomListWidget*   myRomList;

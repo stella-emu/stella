@@ -20,7 +20,6 @@
 #include <sstream>
 
 #include "Debugger.hxx"
-#include "DebuggerParser.hxx"
 #include "CartDebug.hxx"
 #include "DiStella.hxx"
 #include "CpuDebug.hxx"
@@ -101,9 +100,9 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case RomListWidget::kBPointChangedCmd:
-      // 'id' is the line in the disassemblylist to be accessed
-      // 'data' is the state of the breakpoint at 'id'
-      setBreak(id, data);
+      // 'data' is the line in the disassemblylist to be accessed
+      // 'id' is the state of the breakpoint at 'data'
+      setBreak(data, id);
       // Refresh the romlist, since the breakpoint may not have
       // actually changed
       myRomList->setDirty();
@@ -112,7 +111,8 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
-      patchROM(data, myRomList->getText());
+      // 'id' is the base to use for the data to be changed
+      patchROM(data, myRomList->getText(), (BaseFormat)id);
       break;
 
     case RomListWidget::kSetPCCmd:
@@ -214,7 +214,7 @@ void RomWidget::runtoPC(int disasm_line)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::patchROM(int disasm_line, const string& bytes)
+void RomWidget::patchROM(int disasm_line, const string& bytes, BaseFormat base)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
@@ -227,11 +227,8 @@ void RomWidget::patchROM(int disasm_line, const string& bytes)
     // Temporarily set to correct base, so we don't have to prefix each byte
     // with the type of data
     BaseFormat oldbase = instance().debugger().parser().base();
-    if(list[disasm_line].type == CartDebug::GFX)
-      instance().debugger().parser().setBase(DiStella::settings.gfx_format);
-    else
-      instance().debugger().parser().setBase(kBASE_16);
 
+    instance().debugger().parser().setBase(base);
     command << "rom #" << list[disasm_line].address << " " << bytes;
     instance().debugger().run(command.str());
 

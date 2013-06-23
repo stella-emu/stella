@@ -26,7 +26,8 @@
         accurate.  It also automatically differentiates between
         CODE/PGFX/GFX/DATA/ROW areas, whereas normal Distella
         only differentiates between CODE/GFX/ROW.  For now, only
-        single-bank (4K and smaller) ROMs are supported.
+        single-bank (4K and smaller) ROMs are supported; support for
+        multi-bank ROMs will come in a future release.
 
       - The disassembly now recognizes various TIA/RIOT read/write
         mirrors, and marks them as such (for example, INPT4|$30 instead
@@ -37,6 +38,9 @@
         the actual data in the binary.  This means, for example, that a
         256 byte ROM will show only 256 bytes in the disassembly, instead
         of padding duplicated data to 2K boundary.
+
+      - Fixed bug when entering patched bytes; the current number base
+        wasn't being used.
 
       - Fixed labelling in ROW directives; it wasn't accurately setting
         a label in the case where it occurred in the middle of the data.
