@@ -384,7 +384,6 @@ void Settings::usage()
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
     << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
-    << "  -clipvol      <1|0>          Enable volume clipping (eliminates popping)\n"
     << endl
   #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"

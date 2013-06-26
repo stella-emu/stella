@@ -95,7 +95,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   b = addODButton("Snapshot Settings", kSnapCmd);
   wid.push_back(b);
 
-  b = addODButton("Config Paths", kFileSnapCmd);
+  b = addODButton("Config Paths", kCfgPathsCmd);
   wid.push_back(b);
 
   myRomAuditButton = addODButton("Audit ROMs", kAuditCmd);
@@ -222,7 +222,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       mySnapshotDialog->open();
       break;
 
-    case kFileSnapCmd:
+    case kCfgPathsCmd:
       myConfigPathDialog->open();
       break;
 

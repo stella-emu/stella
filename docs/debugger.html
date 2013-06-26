@@ -67,6 +67,10 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Symbolic names in disassembly.</li>
 
 	<li>Symbolic names accepted as input.</li>
+
+	<li>Ability to generate DASM-compatible disassembly files (currently single-bank
+    only) with all the features mentioned above.</li>
+
 	<li>Tab completion for commands, symbol names and functions.</li>
 	<li>Graphical editor for RIOT and extended RAM. Acts a lot like a spreadsheet.
 		Input in hex, with displays for label/decimal/binary for
@@ -647,9 +651,9 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
    listconfig - List Distella config directives [bank xx]
 listfunctions - List user-defined functions
     listtraps - List traps
-   loadconfig - Load Distella config file [from file xx]
+   loadconfig - Load Distella config file
     loadstate - Load emulator state xx (0-9)
-      loadsym - Load symbol file named xx
+      loadsym - Load symbol file
             n - Negative Flag: set (0 or 1), or toggle (no arg)
            pc - Set Program Counter to address xx
          pgfx - Mark 'PGFX' range in disassembly
@@ -665,8 +669,9 @@ listfunctions - List user-defined functions
       runtopc - Run until PC is set to value xx
             s - Set Stack Pointer to value xx
          save - Save breaks, watches, traps to file xx
-   saveconfig - Save Distella config file [to file xx]
-      saverom - Save (possibly patched) ROM to file xx
+   saveconfig - Save Distella config file
+      savedis - Save Distella disassembly
+      saverom - Save (possibly patched) ROM
       saveses - Save console session to file xx
     savestate - Save emulator state xx (valid args 0-9)
      scanline - Advance emulation by xx scanlines (default=1)
@@ -915,7 +920,7 @@ these cases, the values shown may not always be for RAM, and may point
 to ROM instead.  In the latter case, the data cannot be modified.</p>
 <p><img src="graphics/debugger_ram.png"></p>
 <p>The 'Undo' button in the upper right should be self-explanatory; it will
-undo the most previous operation to one cell only.  The 'Rev' button is
+undo the most previous operation to one cell only.  The 'Revert' button is
 more comprehensive.  It will undo <i>all</i> operations on <i>all</i> cells
 since you first made a change.</p>
 <p>The UI objects at the bottom refer to the currently selected RAM cell.
@@ -931,38 +936,37 @@ The remaining buttons to the right are further explained in section (L).</p>
 energy, but it's also very useful when debugging to determine which
 memory location holds which quantity.</p>
 <p><img src="graphics/debugger_ramsearch.png"></p>
-<p>To search RAM, click 'Srch' and enter a byte value into the search editbox (0-255).
+<p>To search RAM, click 'Search' and enter a byte value into the search editbox (0-255).
 All matching values will be highlighted in the RAM widget.  If 'Search' is clicked
 and the input is empty, all RAM locations are highlighted.</p>
 
-<p>The 'Cmp' button is used to compare the given value using all
+<p>The 'Compare' button is used to compare the given value using all
 addresses currently highlighted.  This may be an absolute number (such as 2),
 or a comparitive number (such as -1).  Using a '+' or '-' operator
 means 'search addresses for values that have changed by that amount'.</p>
-<p>The 'Rset' button resets the entire operation; it clears the highlighted
+<p>The 'Reset' button resets the entire operation; it clears the highlighted
 addresses and allows another search.</p>
 <p>The following is an example of inspecting all addresses that have
 decreased by 1:</p>
 <ul>
-	<li>Click 'Srch' with empty input.  All address/values are highlighted</li>
+	<li>Click 'Search' with empty input.  All address/values are highlighted</li>
 	<li>Exit debugger mode and lose a life, let your energy decrease, or
 		do whatever it is you're trying to debug</li>
-	<li>Enter debugger mode again, click 'Cmp' and and enter a '-1' for input.
+	<li>Enter debugger mode again, click 'Compare' and and enter a '-1' for input.
 		This finds all values that have decreased by 1 (as compared to their current
 		values)</li>
 	<li>Repeatedly following these steps may help to narrow number of
 		addresses under consideration, and eventually you'll find the
 		memory address you're looking for</li>
-	<li>Click 'Rset' when you're finished</li>
+	<li>Click 'Reset' when you're finished</li>
 </ul>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
-<h2><u>(M)</u> ROM Listing</h2>
-<p>The ROM Widget is a disassembly of the current bank of ROM. If a symbol
-file is loaded, the disassembly will have labels.  Even without a symbol file, the standard
-TIA/RIOT labels will still be present.</p>
+<h2><u>(M)</u> ROM Disassembly</h2>
+<p>This area contains a disassembly of the current bank of ROM. If a symbol
+file is loaded, the disassembly will have labels.  Even without a symbol file, the standard TIA/RIOT labels will still be present.</p>
 <p>The disassembly is often quite extensive, and whenever possible tries to automatically
 differentiate between code, graphics, data and unused bytes.  There are actually two
 levels of disassembly in Stella.  First, the emulation core tracks accesses as a game
@@ -981,26 +985,10 @@ a relative jump are in fact code, or simply data.</p>
 
 <p><img src="graphics/debugger_rom.png"></p>
 
-<p>The top area contains two items:
-<ul>
-<li><b>Current bank (x total)</b>: Shows the current bank in use (number in textbox),
-and the total number of banks (x).  Note that bank numbers start at 0 (as in most
-programming languages).  If the cartridge contains multiple banks, the bank can
-be changed in the bank textbox, and the ROM will be re-disassembled.
-Note that certain ROMs are quite complex, and may only show has having one
-'virtual' bank when their address space can be swapped in and out in many
-different ways.</li>
-<li><b>Resolve data</b>: Informs Distella about the 'resolvedata'
-commandline argument, which says how code and data sections are disassembled.
-If set to 'Never', the entire address space is treated as code.  If set to
-'Always', an attempt is always made to resolve data sections.
-The 'Automatic' setting is a combination of the previous two.  First, an
-attempt is made to resolve data sections.  If this results in the current program
-counter not being present in the disassembly, then a second disassembly is
-done, without resolving data sections.  Note that this option applies only to
-addresses determined by Distella; addresses marked as code or graphics by the
-emulation core will stay as such, no matter what this setting says.</li>
-</ul>
+<p>The <B>"Bank state"</B> is self-explanatory, and shows a summary of the current
+bank information.  For normal bankswitched ROMs, this will be the current bank number,
+however more advanced schemes will show other types of information here.  More detailed
+information is available in Detailed Bankswitch Information (N).</p>
 
 <p>Each line of disassembly has four fields:</p>
 <ul>
@@ -1045,8 +1033,8 @@ to 8 per line, and cannot be edited.</td></tr>
 
 
 <p>For code sections, the 6502 mnemonic will be UPPERCASE for all standard instructions,
-or lowercase for "illegal" 6502 instructions (like "dcp"). If resolving
-of data sections has been disabled for any reason, you'll likely see a lot
+or lowercase for "illegal" 6502 instructions (like "dcp"). If automatic resolving
+of code sections has been disabled for any reason, you'll likely see a lot
 of illegal opcodes if you scroll to a data table in ROM.  This can also
 occur if the disassembler hasn't yet encountered addresses in the PC.
 If you step/trace/scanline/frame advance into such an area, the disassembler
@@ -1073,41 +1061,38 @@ them. When you're done, press Enter to accept the changes (in which case
 the cart will be re-disasembled) or Escape to cancel them.
 Note that only instructions that have been fully disassembled
 can be edited.  In particular, blank lines or 'ROW' directives
-cannot be edited.  If you wish to edit the latter, then the 'Resolve data'
-item should be set to 'Never' first.  Also note that certain ROMs can have
+cannot be edited.  Also note that certain ROMs can have
 sections of address space swapped in and out dynamically.  As such, changing
 the contents of a certain address will change the area pointed to <b>at
 that time</b>.  In particular, modifying an address that points to internal
 RAM will change the RAM, not the underlying ROM.  A future release may 
 graphically differentiate between RAM and ROM areas.</p>
 
-<p>The ROM listing also contains a context menu, accessible by right-clicking
+<p>The ROM Disassembly also contains a Settings dialog, accessible by right-clicking
 anywhere in the listing:</p>
 <p><img src="graphics/debugger_romcmenu.png"></p>
 <p>The following options are available:</p>
 <ul>
-<li><b>Save ROM</b>: A textbox will appear for you to enter filename,
-and then the ROM will be saved. Note that the filename is considered
-relative to the <b>current</b> directory, not the ROM or base directory.
-You can enter a full path, though, in which case it doesn't matter.</li>
+<li><b>Set PC @ current line</b>: Set the Program Counter to the address of the
+disassembly line where the mouse was clicked (highlighted in green).</li>
 
-<li><b>Set PC</b>: Set the Program Counter to the address of the
-disassembly line where the mouse was clicked.</li>
-
-<li><b>RunTo PC</b>: Single-step through code until the Program Counter
-matches the address of the disassembly line where the mouse was clicked.</li>
-
-<li><b>Toggle PC addresses</b>: Show or hide blank labels as Program Counter
-addresses.</li>
-
-<li><b>Toggle GFX binary/hex</b>: Switch between editing GFX and PGFX sections
-in either hexidecimal or binary.</li>
-
-<li><b>Toggle address relocation</b>: Corresponds to the Distella '-r' option
-(Relocate calls out of address range).</li>
+<li><b>RunTo PC @ current line</b>: Single-step through code until the Program Counter
+matches the address of the disassembly line where the mouse was clicked (highlighted in green)</li>
 
 <li><b>Re-disassemble</b>: Self-explanatory; force the current bank to be
 disassembled, regardless of whether anything has changed.</li>
+
+<li><b>Show tentative code</b>: Allow Distella to do a static analysis/disassembly.</li>
+
+<li><b>Show PC addresses</b>: Show Program Counter addresses as labels (where there
+isn't already a defined label).</li>
+
+<li><b>Show GFX as binary</b>: Switch between displaying/editing GFX and PGFX sections
+in either binary or hexidecimal.</li>
+
+<li><b>Use address relocation</b>: Corresponds to the Distella '-r' option
+(Relocate calls out of address range).</li>
+
 </ul>
 
 <h3>Limitations</h3>
@@ -1140,6 +1125,22 @@ the same address.</li>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
+<h2><u>(N)</u> Detailed Bankswitch Information</h2>
+
+<p>This area shows a detailed breakdown of the bankswitching scheme.  Since
+the bankswitch schemes can greatly vary in operation, this tab will be
+different for each scheme, but its specific functionality should be self-explanatory.
+An example of both 4K (non-bankswitched) and DPC (Pitfall II) is as follows:</p>
+
+<p><img src="graphics/debugger_banksimple.png"></p>
+<p><img src="graphics/debugger_bankcomplex.png"></p>
+
+<p>In many cases, quite a bit of the scheme functionality can be modified.
+Go ahead and try to change something!</p>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+<br>
 <h2>Global Buttons</h2>
 
 <p>There are also buttons on the right that always show up no matter which
@@ -1160,7 +1161,7 @@ anywhere in the GUI via the keyboard, with Alt-S, Alt-T, Alt-L, Alt-F and Alt-R.
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2>Distella Configuration Files</h2>
-<p>As mentioned in ROM Listing (M), Stella supports the following directives:
+<p>As mentioned in ROM Disassembly (M), Stella supports the following directives:
 CODE/GFX/PGFX/DATA/ROW.  While the debugger will try to automatically mark address
 space with the appropriate directive, there are times when it will fail.  There are
 several options in this case:</p>
@@ -1231,7 +1232,7 @@ but it helps to know at least a little about 6502 programming.</p>
 	<li>Enter the debugger by pressing the ` (backquote) key. Don't get
 		killed before you do this, though.  You should still have all 5 lives.</li>
 
-	<li>In the RAM display, click the "Search" button (labelled 'Srch') and enter "5" for input.
+	<li>In the RAM display, click the "Search" button and enter "5" for input.
 		This searches RAM for your value and highlights all addresses that match
 		the input.  You should see two addresses highlighted: "00a5" and "00ba".
 		These are the only two addresses that currently have the value 5, so they're
@@ -1247,7 +1248,7 @@ but it helps to know at least a little about 6502 programming.</p>
 	<li>Get killed! Ram an enemy tank, or let him shoot you. Wait for
 		the explosion to finish. You will now have 4 lives.</li>
 
-	<li>Enter the debugger again.  Click the "Compare" button (labelled 'Cmp') in RAM widget and enter
+	<li>Enter the debugger again.  Click the "Compare" button in RAM widget and enter
 		a value of 4.  Now the RAM widget should only show one highlighted address:
 		"00ba".  What we did was search within our previous results (the ones that
 		were 5 before) for the new value 4. Address $00ba used to have the value 5,
@@ -1319,12 +1320,11 @@ but it helps to know at least a little about 6502 programming.</p>
 		will *still* see 3 lives: Success! We've hacked Battlezone to give us
 		infinite lives.</li>
 
-	<li>Save your work. In the prompt: "saverom bzhack.bin". You now
+	<li>Save your work. In the prompt: "saverom". You now
 		have your very own infinite-lives version of Battlezone. The file will
-		be saved in the current directory (NOT your ROM directory), so you might
+		be saved in your HOME directory (NOT your ROM directory), so you might
 		want to move it to your ROM directory if it isn't the current directory.
-		This can also be accomplished by right-clicking on the ROM widget and
-		selecting 'Save ROM'.</li>
+  </li>
 
 	<li>Test the new ROM: exit Stella, and re-run it. Open your ROM
 		(or give its name on the command line) and play the game. You can play

@@ -81,7 +81,7 @@ class OptionsDialog : public Dialog
       kInptCmd     = 'INPT',
       kUsrIfaceCmd = 'URIF',
       kSnapCmd     = 'SNAP',
-      kFileSnapCmd = 'FLSN',
+      kCfgPathsCmd = 'CFGP',
       kAuditCmd    = 'RAUD',
       kInfoCmd     = 'INFO',
       kCheatCmd    = 'CHET',

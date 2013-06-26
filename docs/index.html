@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.8.1</b></h4></center>
+  <center><h4><b>Release 3.9</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - March 2013</b></center>
+  <center><b>February 1999 - June 2013</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -288,8 +288,9 @@
       both TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
-    <li>Built-in extensive debugger, including static analysis with the Distella disassembler,
-      and dynamic analysis at runtime by tracking code/graphics/data sections</li>
+    <li>Built-in extensive debugger, including static analysis with the Distella disassembler
+      and dynamic analysis at runtime by tracking code/graphics/data sections, and 
+      generation of DASM-compatible disassembly files</li>
     <li>Emulation of CRT TV systems using <a href="http://slack.net/~ant/libs/ntsc.html">
       Blargg filtering</a>, including presets for several common TV outputs
       (composite, S-video, RGB, etc), and ability to fully customize
@@ -556,6 +557,7 @@
 
   <p>At this point, you may want to set the locations for snapshots and other
   external paths.  This is described in more detail in
+  <b>Advanced Configuration - <a href="#Snapshots">Snapshot Settings</a></b> and
   <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>.
   These settings are optional, and can be left at the defaults if you won't be using
   snapshots in the ROM launcher.</p>
@@ -1786,7 +1788,7 @@
       <td><pre>-tv_filter &lt;1 - 6&gt;</pre></td>
       <td>OpenGL mode only.  Blargg TV effects, 0 is disabled, next numbers in
         sequence represent presets for 'composite', 's-video', 'RGB', 'bad adjust',
-        and 'custom' modes'.</td>
+        and 'custom' modes.</td>
     </tr>
 
     <tr>
@@ -1945,12 +1947,6 @@
     </tr>
 
     <tr>
-      <td><pre>-clipvol &lt;1|0&gt;</pre></td>
-      <td>Enable volume clipping (eliminates popping).  Do not change
-        unless you experience sound issues.</td>
-    </tr>
-
-    <tr>
       <td><pre>-cheat &lt;code&gt;</pre></td>
       <td>Use the specified cheatcode (see Cheat section for description).</td>
     </tr>
@@ -2047,6 +2043,12 @@
     <tr>
       <td><pre>-snaploaddir &lt;path&gt;</pre></td>
       <td>The directory to load snapshot files from.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-snapname &lt;int|rom&gt;</pre></td>
+      <td>When saving snapshots, use either the internal database name or
+          the actual ROM filename.</td>
     </tr>
 
     <tr>
@@ -2191,7 +2193,7 @@
     </tr>
 
     <tr>
-      <td><pre>-dis.resolvedata &lt;never|always|auto&gt;</pre></td>
+      <td><pre>-dis.resolve &lt;1|0&gt;</pre></td>
       <td>Try to differentiate between code vs. data sections in the
       disassembler.  See the Debugger section for more information.</td>
     </tr>
@@ -2465,7 +2467,7 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Debugger Width/Height</td><td>self-explanatory (requires restart)</td><td>-debuggerres</td></tr>
+          <tr><td>Debugger Width/Height</td><td>self-explanatory (requires ROM reload)</td><td>-debuggerres</td></tr>
         </table>
       </td>
     </tr>
@@ -2486,6 +2488,26 @@
     </tr>
   </table>
   <br>
+  <a name="Snapshots"></a>
+  <p><b>Snapshot Settings</b> dialog:</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/launcher_options_snapshots.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Save path</td><td>specifies where to save snapshots</td><td>-snapsavedir</td></tr>
+          <tr><td>Load path</td><td>specifies where to load snapshots</td><td>-snaploaddir</td></tr>
+          <tr><td>Save snapshots according to</td><td>specifies how to name saved snapshots</td><td>-snapname</td></tr>
+          <tr><td>Continuous snapshot interval</td><td>interval (in seconds) between snapshot</td><td>-ssinterval</td></tr>
+          <tr><td>Overwrite existing files</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
+          <tr><td>Disable image filtering (1x mode)</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
   <a name="ConfigPaths"></a>
   <p><b>Config Paths</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
@@ -2496,16 +2518,11 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Rom path</td><td>specifies location of ROM files</td><td>-romdir</td></tr>
-          <tr><td>Snapshot save path</td><td>specifies where to save snapshots</td><td>-snapsavedir</td></tr>
-          <tr><td>Snapshot load path</td><td>specifies where to load snapshots</td><td>-snaploaddir</td></tr>
           <tr><td>Cheat file</td><td>specifies location of cheatfile database</td><td>-cheatfile</td></tr>
           <tr><td>Palette file</td><td>specifies location of user palette</td><td>-palettefile</td></tr>
           <tr><td>Properties file </td><td>specifies location of external stella.pro database</td><td>-propsfile</td></tr>
           <tr><td>State path</td><td>specifies location of state files</td><td>-statedir</td></tr>
           <tr><td>NVRAM path</td><td>specifies location of NVRAM (flash/EEPROM) files</td><td>-nvramdir</td></tr>
-          <tr><td>Overwrite snapshots</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
-          <tr><td>Snapshot in 1x mode</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
-          <tr><td>Continuous snapshot interval</td><td>interval (in seconds) between snapshot</td><td>-ssinterval</td></tr>
         </table>
       </td>
     </tr>

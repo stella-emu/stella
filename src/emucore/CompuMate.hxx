@@ -68,7 +68,7 @@ class CompuMate
 
     /**
       In normal key-handling mode, the update handler receives key events
-      from the keyboard.  This is meant to used during emulation.
+      from the keyboard.  This is meant to be used during emulation.
 
       Otherwise, the update handler ignores keys from the keyboard and uses
       its own internal buffer, which essentially can only be set directly

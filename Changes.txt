@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.8.1 to 3.9: (June xx, 2013)
+3.8.1 to 3.9: (June 27, 2013)
 
   * Greatly extended functionality of the debugger disassembly:
       - There is now a new tab which lists information specific to the
@@ -59,7 +59,8 @@
     specifying whether snapshots should be saved using either the internal
     ROM database name or the actual ROM filename.  This feature was
     present in older releases of Stella, and due to popular demand it's
-    now back again.
+    now back again.  Related to this, added a new dialog specifically for
+    the numerous snapshot-related items.
 
   * Fixed bug in Linux/OSX versions when starting Stella for the first
     time; it was previously creating mislabeled directories to store
@@ -75,6 +76,9 @@
   * SuperCharger/AR ROMs now ignore the 'ramrandom' setting, and start with
     RAM containing all zeroes.  This seems to fix issues with Dragonstomper
     always starting in exactly the same state.
+
+  * Fixed issue when debugging CompuMate ROMs; keystrokes entering while
+    debugging would be interpreted as typing on the CompuMate keyboard.
 
   * Changed colour of the 'current PC indicator' in the debugger to
     match the one used for line selection.  This makes it easier to

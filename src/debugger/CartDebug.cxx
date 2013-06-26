@@ -759,7 +759,7 @@ string CartDebug::loadSymbolFile()
 string CartDebug::loadConfigFile()
 {
   if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("multi-bank ROM not yet supported");
+    return DebuggerParser::red("config file for multi-bank ROM not yet supported");
 
   // There are two possible locations for loading config files
   //   (in order of decreasing relevance):
@@ -872,7 +872,7 @@ string CartDebug::loadConfigFile()
 string CartDebug::saveConfigFile()
 {
   if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("multi-bank ROM not yet supported");
+    return DebuggerParser::red("config file for multi-bank ROM not yet supported");
 
   // While there are two possible locations for loading config files,
   // the main 'config' directory is used whenever possible when saving,
@@ -916,7 +916,7 @@ string CartDebug::saveConfigFile()
 string CartDebug::saveDisassembly()
 {
   if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("multi-bank ROM not yet supported");
+    return DebuggerParser::red("disassembly for multi-bank ROM not yet supported");
 
   // Currently, the default naming/location for disassembly files is:
   // 1) ROM dir based on properties entry name
@@ -1139,7 +1139,7 @@ string CartDebug::saveRom()
 string CartDebug::listConfig(int bank)
 {
   if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("multi-bank ROM not yet supported");
+    return DebuggerParser::red("config file for multi-bank ROM not yet supported");
 
   uInt32 startbank = 0, endbank = bankCount();
   if(bank >= 0 && bank < bankCount())
