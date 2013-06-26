@@ -77,7 +77,7 @@
     RAM containing all zeroes.  This seems to fix issues with Dragonstomper
     always starting in exactly the same state.
 
-  * Fixed issue when debugging CompuMate ROMs; keystrokes entering while
+  * Fixed issue when debugging CompuMate ROMs; keystrokes entered while
     debugging would be interpreted as typing on the CompuMate keyboard.
 
   * Changed colour of the 'current PC indicator' in the debugger to
