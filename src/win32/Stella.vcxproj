@@ -276,6 +276,7 @@ SDLmain.lib
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
+    <ClCompile Include="..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="FSNodeWin32.cxx" />
     <ClCompile Include="..\common\mainSDL.cxx">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Full</Optimization>
@@ -518,6 +519,7 @@ SDLmain.lib
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
+    <ClInclude Include="..\gui\SnapshotDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />
