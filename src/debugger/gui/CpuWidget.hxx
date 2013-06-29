@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef CPU_WIDGET_HXX
@@ -39,13 +36,11 @@ class CpuWidget : public Widget, public CommandSender
     CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     virtual ~CpuWidget();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    void loadConfig();
     void setOpsWidget(DataGridOpsWidget* w);
+    void loadConfig();
 
   private:
-    void fillGrid();
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     // ID's for the various widgets

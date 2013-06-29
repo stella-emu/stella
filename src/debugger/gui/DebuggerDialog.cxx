@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "Widget.hxx"
@@ -197,7 +194,7 @@ void DebuggerDialog::addTabArea()
   int tabID;
 
   // The Prompt/console tab
-  tabID = myTab->addTab("Prompt");
+  tabID = myTab->addTab(" Prompt ");
   myPrompt = new PromptWidget(myTab, instance().consoleFont(),
                               2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, myPrompt);

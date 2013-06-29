@@ -12,6 +12,20 @@
                                Release History
 ===========================================================================
 
+3.9 to 3.9.1: (XXXX xx, 2013)
+
+  * Added ability to modify 'tiadriven' commandline argument to the
+    debugger 'TIA' tab, and 'ramrandom' to the debugger 'I/O' tab.  These
+    options were available for quite some time, but they weren't exposed
+    in the UI.
+
+  * Fixed bug in Linux/UNIX port, whereby a maximize button was always
+    present in the window title bar.  Stella could not be expanded in
+    this way, so the button was removed.
+
+-Have fun!
+
+
 3.8.1 to 3.9: (June 27, 2013)
 
   * Greatly extended functionality of the debugger disassembly:
@@ -93,8 +107,6 @@
     Related to this, updated the snapshot collection.
 
   * Updated included PNG and ZLIB libraries to latest stable version.
-
--Have fun!
 
 
 3.8 to 3.8.1: (March 3, 2013)

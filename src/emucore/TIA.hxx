@@ -316,6 +316,15 @@ class TIA : public Device
     */
     bool toggleFixedColors(uInt8 mode = 2);
 
+    /**
+      Enable/disable/query state of 'undriven/floating TIA pins'.
+
+      @param mode  1/0 indicates on/off, otherwise return the current state
+
+      @return  Whether the mode was enabled or disabled
+    */
+    bool driveUnusedPinsRandom(uInt8 mode = 2);
+
 #ifdef DEBUGGER_SUPPORT
     /**
       This method should be called to update the TIA with a new scanline.

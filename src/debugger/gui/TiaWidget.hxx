@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef TIA_WIDGET_HXX
@@ -35,7 +32,6 @@ class ColorWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
-
 class TiaWidget : public Widget, public CommandSender
 {
   public:
@@ -47,7 +43,6 @@ class TiaWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    void fillGrid();
     void changeColorRegs();
 
   private:
@@ -102,6 +97,8 @@ class TiaWidget : public Widget, public CommandSender
     CheckboxWidget* myScorePF;
     CheckboxWidget* myPriorityPF;
 
+    CheckboxWidget* myUndrivenPins;
+
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
     enum {
@@ -128,7 +125,7 @@ class TiaWidget : public Widget, public CommandSender
       kRefPFID,   kScorePFID, kPriorityPFID
     };
 
-    // Strobe button commands
+    // Strobe button and misc commands
     enum {
       kWsyncCmd = 'Swsy',
       kRsyncCmd = 'Srsy',
@@ -139,7 +136,8 @@ class TiaWidget : public Widget, public CommandSender
       kResBLCmd = 'Srbl',
       kHmoveCmd = 'Shmv',
       kHmclrCmd = 'Shmc',
-      kCxclrCmd = 'Scxl'
+      kCxclrCmd = 'Scxl',
+      kPPinCmd  = 'PPin'
     };
 
     // Color registers

@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "ColorWidget.hxx"
@@ -27,6 +24,7 @@
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "CartDebug.hxx"
+#include "TIA.hxx"
 #include "TIADebug.hxx"
 #include "ToggleBitWidget.hxx"
 #include "TogglePixelWidget.hxx"
@@ -530,6 +528,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   myPriorityPF->setTarget(this);
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
+
+  // How to handle undriven pins
+  xpos = 10;  ypos += 2*lineHeight;
+  myUndrivenPins = new CheckboxWidget(boss, font, xpos, ypos+1,
+      "Drive unused TIA pins randomly on a read/peek", kPPinCmd);
+  myUndrivenPins->setTarget(this);
+  addFocusWidget(myUndrivenPins);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -583,6 +588,10 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kCxclrCmd:
       tia.strobeCxclr();
+      break;
+
+    case kPPinCmd:
+      tia.tia().driveUnusedPinsRandom(myUndrivenPins->getState());
       break;
 
     case DataGridWidget::kItemDataChangedCmd:
@@ -795,13 +804,6 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::loadConfig()
 {
-//cerr << "TiaWidget::loadConfig()\n";
-  fillGrid();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaWidget::fillGrid()
-{
   IntArray alist;
   IntArray vlist;
   BoolArray blist, changed, grNew, grOld;
@@ -966,6 +968,9 @@ void TiaWidget::fillGrid()
 
   // Priority
   myPriorityPF->setState(tia.priorityPF());
+
+  // Undriven pins
+  myUndrivenPins->setState(tia.tia().driveUnusedPinsRandom());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

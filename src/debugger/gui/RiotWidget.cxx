@@ -15,11 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "Settings.hxx"
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "FrameBuffer.hxx"
@@ -175,6 +173,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   int pwidth = font.getStringWidth("B/easy");
   lwidth = font.getStringWidth("P0 Diff: ");
   xpos = col;  ypos += 2 * lineHeight;
+  int col2_ypos = ypos;
   items.clear();
   items.push_back("B/easy", "b");
   items.push_back("A/hard", "a");
@@ -199,18 +198,26 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myTVType);
 
   // Select and Reset
-  xpos += 20;  ypos += myTVType->getHeight() + 5;
+  xpos += myP0Diff->getWidth() + 20;  ypos = col2_ypos + lineHeight;
   mySelect = new CheckboxWidget(boss, font, xpos, ypos, "Select",
                                 kCheckActionCmd);
   mySelect->setID(kSelectID);
   mySelect->setTarget(this);
   addFocusWidget(mySelect);
-  ypos += myTVType->getHeight() + 5;
+  ypos += mySelect->getHeight() + 5;
   myReset = new CheckboxWidget(boss, font, xpos, ypos, "Reset",
                                kCheckActionCmd);
   myReset->setID(kResetID);
   myReset->setTarget(this);
   addFocusWidget(myReset);
+
+  // Randomize RAM
+  xpos = 10;  ypos += 3*lineHeight;
+  myRandomizeRAM = new CheckboxWidget(boss, font, 10, ypos+1,
+      "Randomize RAM on startup (requires ROM reload)", kCheckActionCmd);
+  myRandomizeRAM->setID(kRandRAMID);
+  myRandomizeRAM->setTarget(this);
+  addFocusWidget(myRandomizeRAM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,6 +317,8 @@ void RiotWidget::loadConfig()
 
   myLeftControl->loadConfig();
   myRightControl->loadConfig();
+
+  myRandomizeRAM->setState(instance().settings().getBool("ramrandom"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -373,6 +382,9 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
         case kResetID:
           riot.reset(!myReset->getState());
+          break;
+        case kRandRAMID:
+          instance().settings().setValue("ramrandom", myRandomizeRAM->getState());
           break;
       }
       break;

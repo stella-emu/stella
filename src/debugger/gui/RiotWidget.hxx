@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef RIOT_WIDGET_HXX
@@ -70,12 +67,15 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* mySelect;
     CheckboxWidget* myReset;
 
+    CheckboxWidget* myRandomizeRAM;
+
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
     enum {
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
-      kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID
+      kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
+      kRandRAMID
     };
 };
 

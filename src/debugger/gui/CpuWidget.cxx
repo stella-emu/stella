@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include <sstream>
@@ -131,6 +128,13 @@ CpuWidget::~CpuWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
+{
+  myPCGrid->setOpsWidget(w);
+  myCpuGrid->setOpsWidget(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   int addr = -1, value = -1;
@@ -230,19 +234,6 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::loadConfig()
-{
-  fillGrid();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
-{
-  myPCGrid->setOpsWidget(w);
-  myCpuGrid->setOpsWidget(w);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuWidget::fillGrid()
 {
   IntArray alist;
   IntArray vlist;

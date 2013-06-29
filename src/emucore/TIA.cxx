@@ -75,6 +75,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 
   // Zero audio registers
   myAUDV0 = myAUDV1 = myAUDF0 = myAUDF1 = myAUDC0 = myAUDC1 = 0;
+
+  // Should undriven pins be randomly pulled high or low?
+  myTIAPinsDriven = mySettings.getBool("tiadriven");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,9 +138,6 @@ void TIA::reset()
   myDumpEnabled = false;
   myDumpDisabledCycle = 0;
   myINPT4 = myINPT5 = 0x80;
-
-  // Should undriven pins be randomly driven high or low?
-  myTIAPinsDriven = mySettings.getBool("tiadriven");
 
   myFrameCounter = myPALFrameCounter = 0;
   myScanlineCountForLastFrame = 0;
@@ -850,6 +850,19 @@ bool TIA::toggleFixedColors(uInt8 mode)
   }
 
   return on;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::driveUnusedPinsRandom(uInt8 mode)
+{
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, return the state
+  if(mode == 0 || mode == 1)
+  {
+    myTIAPinsDriven = bool(mode);
+    mySettings.setValue("tiadriven", myTIAPinsDriven);
+  }
+  return myTIAPinsDriven;
 }
 
 #ifdef DEBUGGER_SUPPORT

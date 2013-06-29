@@ -180,9 +180,9 @@ void TIADebug::saveOldState()
    so the GUI and/or TIADebug don't have to duplicate logic from TIA::poke().
 */
 
-//	 bool vdelP0(int newVal = -1);
-//	 bool vdelP1(int newVal = -1);
-//	 bool vdelBL(int newVal = -1);
+//   bool vdelP0(int newVal = -1);
+//   bool vdelP1(int newVal = -1);
+//   bool vdelBL(int newVal = -1);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vdelP0(int newVal)

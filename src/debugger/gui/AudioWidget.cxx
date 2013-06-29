@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "DataGridWidget.hxx"
@@ -28,14 +25,6 @@
 #include "Widget.hxx"
 
 #include "AudioWidget.hxx"
-
-// ID's for the various widgets
-// We need ID's, since there are more than one of several types of widgets
-enum {
-  kAUDFID,
-  kAUDCID,
-  kAUDVID
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
@@ -108,13 +97,6 @@ void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::loadConfig()
-{
-//cerr << "AudioWidget::loadConfig()\n";
-  fillGrid();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioWidget::fillGrid()
 {
   IntArray alist;
   IntArray vlist;

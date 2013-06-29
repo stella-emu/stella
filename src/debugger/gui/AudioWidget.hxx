@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef AUDIO_WIDGET_HXX
@@ -37,11 +34,17 @@ class AudioWidget : public Widget, public CommandSender
                 int x, int y, int w, int h);
     virtual ~AudioWidget();
 
+  private:
+    // ID's for the various widgets
+    // We need ID's, since there are more than one of several types of widgets
+    enum {
+      kAUDFID,
+      kAUDCID,
+      kAUDVID
+    };
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
-
-  private:
-    void fillGrid();
 
   private:
     DataGridWidget* myAudF;

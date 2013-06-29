@@ -57,6 +57,7 @@ class TIADebug : public DebuggerSystem
 {
   public:
     TIADebug(Debugger& dbg, Console& console);
+    TIA& tia() const { return myTIA; }
 
     const DebuggerState& getState();
     const DebuggerState& getOldState() { return myOldState; }
@@ -64,7 +65,7 @@ class TIADebug : public DebuggerSystem
     void saveOldState();
     string toString();
 
-	 /* TIA byte (or part of a byte) registers */
+    // TIA byte (or part of a byte) registers
     uInt8 nusiz0(int newVal = -1);
     uInt8 nusiz1(int newVal = -1);
     uInt8 nusizP0(int newVal = -1);
@@ -106,7 +107,7 @@ class TIADebug : public DebuggerSystem
     uInt8 audV0(int newVal = -1);
     uInt8 audV1(int newVal = -1);
 
-    /* TIA bool registers */
+    // TIA bool registers
     bool refP0(int newVal = -1);
     bool refP1(int newVal = -1);
     bool enaM0(int newVal = -1);
@@ -124,7 +125,7 @@ class TIADebug : public DebuggerSystem
     bool scorePF(int newVal = -1);
     bool priorityPF(int newVal = -1);
 
-    /* Collision registers */
+    // Collision registers
     bool collM0_P1(int newVal = -1) { return collision(0,  newVal); }
     bool collM0_P0(int newVal = -1) { return collision(1,  newVal); }
     bool collM1_P0(int newVal = -1) { return collision(2,  newVal); }
@@ -141,7 +142,7 @@ class TIADebug : public DebuggerSystem
     bool collP0_P1(int newVal = -1) { return collision(13, newVal); }
     bool collM0_M1(int newVal = -1) { return collision(14, newVal); }
 
-    /* TIA strobe registers */
+    // TIA strobe registers
     void strobeWsync() { mySystem.poke(WSYNC, 0); }
     void strobeRsync() { mySystem.poke(RSYNC, 0); } // not emulated!
     void strobeResP0() { mySystem.poke(RESP0, 0); }
@@ -153,7 +154,7 @@ class TIADebug : public DebuggerSystem
     void strobeHmclr() { mySystem.poke(HMCLR, 0); }
     void strobeCxclr() { mySystem.poke(CXCLR, 0); }
 
-	 /* read-only internal TIA state */
+    // Read-only internal TIA state
     int scanlines();
     int frameCount();
     int clocksThisLine();
