@@ -468,9 +468,9 @@ class TIA : public Device
 
     uInt8 myPlayfieldPriorityAndScore;
     uInt8 myPriorityEncoder[2][256];
-    uInt32 myColor[8];
-    uInt32 myFixedColor[8];
-    uInt32* myColorPtr;
+    uInt8 myColor[8];
+    uInt8 myFixedColor[8];
+    uInt8* myColorPtr;
 
     uInt8 myCTRLPF;       // Playfield control register
 
