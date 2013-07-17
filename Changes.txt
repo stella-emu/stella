@@ -14,6 +14,10 @@
 
 3.9 to 3.9.1: (XXXX xx, 2013)
 
+  * Fixed bug in debugger disassembly when the mirror used for the current
+    PC didn't match the mirror for the current bank.  In this case, the
+    disassembler became confused and didn't properly track the PC address.
+
   * Added ability to modify 'tiadriven' commandline argument to the
     debugger 'TIA' tab, and 'ramrandom' to the debugger 'I/O' tab.  These
     options were available for quite some time, but they weren't exposed

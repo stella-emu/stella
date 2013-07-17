@@ -360,6 +360,7 @@ class CartDebug : public DebuggerSystem
     // to corresponding lines of text in that display
     Disassembly myDisassembly;
     map<uInt16, int> myAddrToLineList;
+    bool myAddrToLineIsROM;
 
     // Mappings from label to address (and vice versa) for items
     // defined by the user (either through a symbol file or manually

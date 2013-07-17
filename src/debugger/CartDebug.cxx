@@ -326,18 +326,20 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
   // We place those parts in separate maps, to speed up access
   bool found = false;
   myAddrToLineList.clear();
+  myAddrToLineIsROM = info.offset & 0x1000;
   for(uInt32 i = 0; i < myDisassembly.list.size(); ++i)
   {
     const DisassemblyTag& tag = myDisassembly.list[i];
+    const uInt16 address = tag.address & 0xFFF;
 
     // Addresses marked as 'ROW' normally won't have an address
-    if(tag.address)
+    if(address)
     {
       // Create a mapping from addresses to line numbers
-      myAddrToLineList.insert(make_pair(tag.address, i));
+      myAddrToLineList.insert(make_pair(address, i));
 
       // Did we find the search value?
-      if(tag.address == search)
+      if(address == (search & 0xFFF))
         found = true;
     }
   }
@@ -347,7 +349,12 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::addressToLine(uInt16 address) const
 {
-  map<uInt16, int>::const_iterator iter = myAddrToLineList.find(address);
+  // Switching between ZP RAM address space and Cart/ROM address space
+  // means the line isn't present
+  if(!myAddrToLineIsROM != !(address & 0x1000))
+    return -1;
+
+  map<uInt16, int>::const_iterator iter = myAddrToLineList.find(address & 0xFFF);
   return iter != myAddrToLineList.end() ? iter->second : -1;
 }
 
