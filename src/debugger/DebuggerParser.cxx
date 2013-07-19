@@ -175,7 +175,7 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions) con
 // they're valid, or -1 if they're not.
 // decipher_arg may be called by the GUI as needed. It is also called
 // internally by DebuggerParser::run()
-int DebuggerParser::decipher_arg(const string &str)
+int DebuggerParser::decipher_arg(const string& str)
 {
   bool derefByte=false, derefWord=false, lobyte=false, hibyte=false, bin=false, dec=false;
   int result;
@@ -205,7 +205,7 @@ int DebuggerParser::decipher_arg(const string &str)
     arg.erase(0, 1);
   }
 
-  if(arg.substr(0, 1) == "%") {
+  if(arg.substr(0, 1) == "\\") {
     bin = true;
     dec = false;
     arg.erase(0, 1);

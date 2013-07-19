@@ -102,6 +102,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   switch(key)
   {
     case KBDK_RETURN:
+    case KBDK_KP_ENTER:
       // confirm edit and exit editmode
       endEditMode();
       sendCommand(EditableWidget::kAcceptCmd, 0, _id);

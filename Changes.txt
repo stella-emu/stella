@@ -18,6 +18,12 @@
     PC didn't match the mirror for the current bank.  In this case, the
     disassembler became confused and didn't properly track the PC address.
 
+  * Changed display for various TIA position counters to decimal
+    (from hex) in the debugger TIA tab.  Related to this, all data input
+    widgets in the debugger UI now have the ability to enter binary,
+    decimal or hex values by using the proper leading character (\, #, $,
+    respectively).
+
   * Added ability to modify 'tiadriven' commandline argument to the
     debugger 'TIA' tab, and 'ramrandom' to the debugger 'I/O' tab.  These
     options were available for quite some time, but they weren't exposed
@@ -26,6 +32,8 @@
   * Fixed bug in Linux/UNIX port, whereby a maximize button was always
     present in the window title bar.  Stella could not be expanded in
     this way, so the button was removed.
+
+  * Updated included PNG library to latest stable version.
 
 -Have fun!
 

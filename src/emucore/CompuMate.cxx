@@ -145,7 +145,8 @@ void CompuMate::update()
         lp.myDigitalPinState[Controller::Six] = false;
       }
       if (myKeyTable[KBDK_p]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_RETURN]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_RETURN] || myKeyTable[KBDK_KP_ENTER])
+        rp.myDigitalPinState[Controller::Six] = false;
       if (myKeyTable[KBDK_SPACE]) rp.myDigitalPinState[Controller::Four] = false;
       // Emulate Ctrl-space (aka backspace) with the actual Backspace key
       if (myKeyTable[KBDK_BACKSPACE])

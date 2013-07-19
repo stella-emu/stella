@@ -196,13 +196,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   // posP0
   xpos += myGRP0->getWidth() + 8;
   t = new StaticTextWidget(boss, font, xpos, ypos+2,
-                           4*fontWidth, fontHeight,
-                           "Pos:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
+                           6*fontWidth, fontHeight,
+                           "Pos: #", kTextAlignLeft);
+  xpos += t->getWidth() + 2;
   myPosP0 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 2, 8, kBASE_16);
+                               1, 1, 3, 8, kBASE_10);
   myPosP0->setTarget(this);
   myPosP0->setID(kPosP0ID);
+  myPosP0->setRange(0, 160);
   addFocusWidget(myPosP0);
 
   // hmP0
@@ -264,13 +265,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
 
   // posP1
   xpos += myGRP1->getWidth() + 8;
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
+  t = new StaticTextWidget(boss, font, xpos, ypos+2, 6*fontWidth, fontHeight,
+                           "Pos: #", kTextAlignLeft);
+  xpos += t->getWidth() + 2;
   myPosP1 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 2, 8, kBASE_16);
+                               1, 1, 3, 8, kBASE_10);
   myPosP1->setTarget(this);
   myPosP1->setID(kPosP1ID);
+  myPosP1->setRange(0, 160);
   addFocusWidget(myPosP1);
 
   // hmP1
@@ -331,13 +333,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   
   // posM0
   xpos += myEnaM0->getWidth() + 12;
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
+  t = new StaticTextWidget(boss, font, xpos, ypos+2, 6*fontWidth, fontHeight,
+                           "Pos: #", kTextAlignLeft);
+  xpos += t->getWidth() + 2;
   myPosM0 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 2, 8, kBASE_16);
+                               1, 1, 3, 8, kBASE_10);
   myPosM0->setTarget(this);
   myPosM0->setID(kPosM0ID);
+  myPosM0->setRange(0, 160);
   addFocusWidget(myPosM0);
 
   // hmM0
@@ -386,13 +389,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   
   // posM0
   xpos += myEnaM1->getWidth() + 12;
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
+  t = new StaticTextWidget(boss, font, xpos, ypos+2, 6*fontWidth, fontHeight,
+                           "Pos: #", kTextAlignLeft);
+  xpos += t->getWidth() + 2;
   myPosM1 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 2, 8, kBASE_16);
+                               1, 1, 3, 8, kBASE_10);
   myPosM1->setTarget(this);
   myPosM1->setID(kPosM1ID);
+  myPosM1->setRange(0, 160);
   addFocusWidget(myPosM1);
 
   // hmM0
@@ -441,13 +445,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   
   // posBL
   xpos += myEnaBL->getWidth() + 12;
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
+  t = new StaticTextWidget(boss, font, xpos, ypos+2, 6*fontWidth, fontHeight,
+                           "Pos: #", kTextAlignLeft);
+  xpos += t->getWidth() + 2;
   myPosBL = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 2, 8, kBASE_16);
+                               1, 1, 3, 8, kBASE_10);
   myPosBL->setTarget(this);
   myPosBL->setID(kPosBLID);
+  myPosBL->setRange(0, 160);
   addFocusWidget(myPosBL);
 
   // hmBL

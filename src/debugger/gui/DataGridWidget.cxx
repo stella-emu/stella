@@ -306,6 +306,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     switch(key)
     {
       case KBDK_RETURN:
+      case KBDK_KP_ENTER:
         if (_currentRow >= 0 && _currentCol >= 0)
         {
           dirty = true;
@@ -649,10 +650,33 @@ void DataGridWidget::endEditMode()
   if (!_editMode)
     return;
 
-  // send a message that editing finished with a return/enter key press
   _editMode = false;
 
   // Update the both the string representation and the real data
+  if(_editString.size() > 0 && !(_editString[0] == '$' ||
+        _editString[0] == '#' || _editString[0] == '\\'))
+  {
+    switch(_base)
+    {
+      case kBASE_16:
+      case kBASE_16_1:
+      case kBASE_16_2:
+      case kBASE_16_4:
+      case kBASE_16_8:
+        _editString.insert(0, 1, '$');
+        break;
+      case kBASE_2:
+      case kBASE_2_8:
+      case kBASE_2_16:
+        _editString.insert(0, 1, '\\');
+        break;
+      case kBASE_10:
+        _editString.insert(0, 1, '#');
+        break;
+      case kBASE_DEFAULT:
+        break;
+    }
+  }
   int value = instance().debugger().stringToValue(_editString);
   if(value < _lowerBound || value >= _upperBound)
   {
@@ -674,16 +698,34 @@ void DataGridWidget::abortEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DataGridWidget::tryInsertChar(char c, int pos)
 {
-  // Not sure how efficient this is, or should we even care?
+  // Input is very strict here, to eliminate time-consuming error checking
+  // elsewhere, and includes the following restrictions:
+  //    Cannot contain spaces
+  //    Starts with leading specifier ($, #, \), or with a base character
+  //    Only one specifier is allowed
+  //    If starting with a specifier, only allow numbers applicable to that
+  //    base to follow
+
   c = tolower(c);
-  if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
-     c == '\\' || c == '#' || c == '$')
-  {
+  bool isBin = c == '0' || c == '1',
+       isDec = c >= '0' && c <= '9',
+       isHex = isDec || (c >= 'a' && c <= 'f'),
+       isOp = c == '$' || c == '#' || c == '\\',
+       insert = false;
+
+  if(BSPF_startsWithIgnoreCase(_editString, "$"))
+    insert = isHex && pos > 0;
+  else if(BSPF_startsWithIgnoreCase(_editString, "#"))
+    insert = isDec && pos > 0;
+  else if(BSPF_startsWithIgnoreCase(_editString, "\\"))
+    insert = isBin && pos > 0;
+  else 
+    insert = isHex || isDec || isBin || isOp;
+
+  if(insert)
     _editString.insert(pos, 1, c);
-    return true;
-  }
-  else
-    return false;
+
+  return insert;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

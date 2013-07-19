@@ -107,6 +107,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   switch(key)
   {
     case KBDK_RETURN:
+    case KBDK_KP_ENTER:
       if (_currentRow >= 0 && _currentCol >= 0)
       {
         dirty = true;
