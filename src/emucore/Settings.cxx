@@ -129,6 +129,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("loglevel", "1");
   setInternal("logtoconsole", "0");
   setInternal("tiadriven", "false");
+  setInternal("cpurandom", "true");
   setInternal("ramrandom", "true");
   setInternal("avoxport", "");
   setInternal("stats", "false");
@@ -431,6 +432,7 @@ void Settings::usage()
     << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
     << "  -holdbutton0                 Start the emulator with the left joystick button held down\n"
     << "  -tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
+    << "  -cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
     << "  -ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT

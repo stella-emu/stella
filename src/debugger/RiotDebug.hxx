@@ -39,7 +39,7 @@ class RiotState : public DebuggerState
     BoolArray swbcntBits;
 
     uInt8 TIM1T, TIM8T, TIM64T, TIM1024T, INTIM, TIMINT;
-    Int32 TIMCLKS;
+    Int32 TIMCLKS, INTIMCLKS;
 
     // These are actually from the TIA, but are I/O related
     uInt8 INPT0, INPT1, INPT2, INPT3, INPT4, INPT5;
@@ -72,9 +72,10 @@ class RiotDebug : public DebuggerSystem
     uInt8 tim8T(int newVal = -1);
     uInt8 tim64T(int newVal = -1);
     uInt8 tim1024T(int newVal = -1);
-    uInt8 intim() const     { return mySystem.m6532().intim();       }
-    uInt8 timint() const    { return mySystem.m6532().timint();      }
-    Int32 timClocks() const { return mySystem.m6532().timerClocks(); }
+    uInt8 intim() const       { return mySystem.m6532().intim();       }
+    uInt8 timint() const      { return mySystem.m6532().timint();      }
+    Int32 timClocks() const   { return mySystem.m6532().timerClocks(); }
+    Int32 intimClocks() const { return mySystem.m6532().intimClocks(); }
 
     /* Controller ports */
     Controller& controller(Controller::Jack jack) const;

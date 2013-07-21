@@ -67,6 +67,7 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* mySelect;
     CheckboxWidget* myReset;
 
+    CheckboxWidget* myRandomizeCPU;
     CheckboxWidget* myRandomizeRAM;
 
     // ID's for the various widgets
@@ -75,7 +76,7 @@ class RiotWidget : public Widget, public CommandSender
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
-      kRandRAMID
+      kRandCPUID, kRandRAMID
     };
 };
 

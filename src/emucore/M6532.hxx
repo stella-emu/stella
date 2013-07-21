@@ -151,6 +151,7 @@ class M6532 : public Device
     // isn't changed
     uInt8 intim() const;
     uInt8 timint() const;
+    Int32 intimClocks() const;
 
   private:
     // Accessible bits in the interrupt flag register

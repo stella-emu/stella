@@ -25,6 +25,7 @@ class Debugger;
 class CpuDebug;
 class Expression;
 class PackedBitArray;
+class Settings;
 
 #include "bspf.hxx"
 #include "System.hxx"
@@ -61,7 +62,7 @@ class M6502 : public Serializable
 
       @param systemCyclesPerProcessorCycle The cycle multiplier
     */
-    M6502(uInt32 systemCyclesPerProcessorCycle);
+    M6502(uInt32 systemCyclesPerProcessorCycle, const Settings& settings);
 
     /**
       Destructor
@@ -319,6 +320,9 @@ class M6502 : public Serializable
   
     /// Pointer to the system the processor is installed in or the null pointer
     System* mySystem;
+
+    /// Reference to the settings
+    const Settings& mySettings;
 
     /// Indicates the number of system cycles per processor cycle 
     const uInt32 mySystemCyclesPerProcessorCycle;

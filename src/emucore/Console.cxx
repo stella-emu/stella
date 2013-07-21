@@ -99,7 +99,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myControllers[0] = new Joystick(Controller::Left, myEvent, *mySystem);
   myControllers[1] = new Joystick(Controller::Right, myEvent, *mySystem);
 
-  M6502* m6502 = new M6502(1);
+  M6502* m6502 = new M6502(1, myOSystem->settings());
 
   myRiot = new M6532(*this, myOSystem->settings());
   myTIA  = new TIA(*this, myOSystem->sound(), myOSystem->settings());

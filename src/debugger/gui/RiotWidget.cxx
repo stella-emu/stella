@@ -112,15 +112,15 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myTimWrite);
 
   // Timer registers (RO)
-  const char* readNames[] = { "INTIM:", "TIMINT:", "Tim Clks:" };
+  const char* readNames[] = { "INTIM:", "TIMINT:", "Total Clks:", "INTIM Clks:" };
   xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight;
-  for(int row = 0; row < 3; ++row)
+  for(int row = 0; row < 4; ++row)
   {
     t = new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
-                             9*fontWidth, fontHeight, readNames[row], kTextAlignLeft);
+                             11*fontWidth, fontHeight, readNames[row], kTextAlignLeft);
   }
-  xpos += 9*fontWidth + 5;
-  myTimRead = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 8, 32, kBASE_16);
+  xpos += t->getWidth() + 5;
+  myTimRead = new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 32, kBASE_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
@@ -211,10 +211,24 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   myReset->setTarget(this);
   addFocusWidget(myReset);
 
-  // Randomize RAM
+  // Randomize items
   xpos = 10;  ypos += 3*lineHeight;
-  myRandomizeRAM = new CheckboxWidget(boss, font, 10, ypos+1,
-      "Randomize RAM on startup (requires ROM reload)", kCheckActionCmd);
+  new StaticTextWidget(boss, font, xpos, ypos,
+      font.getStringWidth("When loading a ROM:"), fontHeight, 
+      "When loading a ROM:", kTextAlignLeft);
+
+  // Randomize CPU
+  xpos += 30;  ypos += lineHeight + 4;
+  myRandomizeCPU = new CheckboxWidget(boss, font, xpos, ypos+1,
+      "Randomize CPU registers (A/X/Y/PS)", kCheckActionCmd);
+  myRandomizeCPU->setID(kRandCPUID);
+  myRandomizeCPU->setTarget(this);
+  addFocusWidget(myRandomizeCPU);
+
+  // Randomize RAM
+  ypos += lineHeight + 4;
+  myRandomizeRAM = new CheckboxWidget(boss, font, xpos, ypos+1,
+      "Randomize zero-page and extended RAM", kCheckActionCmd);
   myRandomizeRAM->setID(kRandRAMID);
   myRandomizeRAM->setTarget(this);
   addFocusWidget(myRandomizeRAM);
@@ -305,6 +319,8 @@ void RiotWidget::loadConfig()
     changed.push_back(state.TIMINT != oldstate.TIMINT);
   alist.push_back(0);  vlist.push_back(state.TIMCLKS);
     changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
+  alist.push_back(0);  vlist.push_back(state.INTIMCLKS);
+    changed.push_back(state.INTIMCLKS != oldstate.INTIMCLKS);
   myTimRead->setList(alist, vlist, changed);
 
   // Console switches (inverted, since 'selected' in the UI
@@ -318,6 +334,7 @@ void RiotWidget::loadConfig()
   myLeftControl->loadConfig();
   myRightControl->loadConfig();
 
+  myRandomizeCPU->setState(instance().settings().getBool("cpurandom"));
   myRandomizeRAM->setState(instance().settings().getBool("ramrandom"));
 }
 
@@ -382,6 +399,9 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
         case kResetID:
           riot.reset(!myReset->getState());
+          break;
+        case kRandCPUID:
+          instance().settings().setValue("cpurandom", myRandomizeCPU->getState());
           break;
         case kRandRAMID:
           instance().settings().setValue("ramrandom", myRandomizeRAM->getState());

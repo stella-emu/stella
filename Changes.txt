@@ -14,20 +14,28 @@
 
 3.9 to 3.9.1: (XXXX xx, 2013)
 
-  * Fixed bug in debugger disassembly when the mirror used for the current
-    PC didn't match the mirror for the current bank.  In this case, the
-    disassembler became confused and didn't properly track the PC address.
+  * Several bugfixes and improvements to the debugger:
+      - Fixed bug in disassembly when the mirror used for the current
+        PC didn't match the mirror for the current bank.  In this case,
+        the disassembler became confused and didn't properly track the
+        PC address.
 
-  * Changed display for various TIA position counters to decimal
-    (from hex) in the debugger TIA tab.  Related to this, all data input
-    widgets in the debugger UI now have the ability to enter binary,
-    decimal or hex values by using the proper leading character (\, #, $,
-    respectively).
+      - Changed display for various TIA position counters to decimal
+        (from hex) in the TIA tab.  Related to this, all data input
+        widgets in the UI now have the ability to enter binary,
+        decimal or hex values by using the proper leading character
+        (\, #, $, respectively).
 
-  * Added ability to modify 'tiadriven' commandline argument to the
-    debugger 'TIA' tab, and 'ramrandom' to the debugger 'I/O' tab.  These
-    options were available for quite some time, but they weren't exposed
-    in the UI.
+      - Added 'INTIM Clks' to the 'I/O' tab. which shows the number of
+        clocks between each 'step' of the INTIM timer.
+
+      - Added ability to modify 'tiadriven' commandline argument to the
+        'TIA' tab, and 'ramrandom' to the 'I/O' tab.  These options were
+        available for quite some time, but they weren't exposed in the UI.
+
+      - Added 'cpurandom' commandline argument, and associated UI item
+        to the 'I/O' tab.  This works similar to 'ramrandom', and
+        randomizes the contents on the CPU registers on ROM startup.
 
   * Fixed bug in Linux/UNIX port, whereby a maximize button was always
     present in the window title bar.  Stella could not be expanded in

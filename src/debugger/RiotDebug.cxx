@@ -58,13 +58,14 @@ const DebuggerState& RiotDebug::getState()
   myState.INPT5 = inpt(5);
 
   // Timer registers
-  myState.TIM1T    = tim1T();
-  myState.TIM8T    = tim8T();
-  myState.TIM64T   = tim64T();
-  myState.TIM1024T = tim1024T();
-  myState.INTIM    = intim();
-  myState.TIMINT   = timint();
-  myState.TIMCLKS  = timClocks();
+  myState.TIM1T     = tim1T();
+  myState.TIM8T     = tim8T();
+  myState.TIM64T    = tim64T();
+  myState.TIM1024T  = tim1024T();
+  myState.INTIM     = intim();
+  myState.TIMINT    = timint();
+  myState.TIMCLKS   = timClocks();
+  myState.INTIMCLKS = intimClocks();
 
   return myState;
 }
@@ -95,13 +96,14 @@ void RiotDebug::saveOldState()
   myOldState.INPT5 = inpt(5);
 
   // Timer registers
-  myOldState.TIM1T    = tim1T();
-  myOldState.TIM8T    = tim8T();
-  myOldState.TIM64T   = tim64T();
-  myOldState.TIM1024T = tim1024T();
-  myOldState.INTIM    = intim();
-  myOldState.TIMINT   = timint();
-  myOldState.TIMCLKS  = timClocks();
+  myOldState.TIM1T     = tim1T();
+  myOldState.TIM8T     = tim8T();
+  myOldState.TIM64T    = tim64T();
+  myOldState.TIM1024T  = tim1024T();
+  myOldState.INTIM     = intim();
+  myOldState.TIMINT    = timint();
+  myOldState.TIMCLKS   = timClocks();
+  myOldState.INTIMCLKS = intimClocks();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -344,6 +346,8 @@ string RiotDebug::toString()
       << myDebugger.invIfChanged(state.TIMINT, oldstate.TIMINT) << " "
       << "Timer_Clocks="
       << myDebugger.invIfChanged(state.TIMCLKS, oldstate.TIMCLKS) << " "
+      << "INTIM_Clocks="
+      << myDebugger.invIfChanged(state.INTIMCLKS, oldstate.INTIMCLKS) << " "
       << endl
 
       << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP0String()

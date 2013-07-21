@@ -179,7 +179,7 @@ uInt8 M6532::peek(uInt16 addr)
       myInterruptFlag &= ~TimerBit;
 
       // Get number of clocks since timer was set
-      Int32 timer = timerClocks();  
+      Int32 timer = timerClocks();
 
       // Note that this constant comes from z26, and corresponds to
       // 256 intervals of T1024T (ie, the maximum that the timer should hold)
@@ -427,6 +427,21 @@ uInt8 M6532::timint() const
     interrupt |= TimerBit;
 
   return interrupt;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 M6532::intimClocks() const
+{
+  // This method is similar to intim(), except instead of giving the actual
+  // INTIM value, it will give the current number of clocks between one
+  // INTIM value and the next
+
+  // Get number of clocks since timer was set
+  Int32 timer = timerClocks();  
+  if(!(timer & 0x40000))
+    return timerClocks() & ((1 << myIntervalShift) - 1);
+  else
+    return timer & 0xff;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

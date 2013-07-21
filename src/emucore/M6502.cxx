@@ -42,13 +42,15 @@
   #define DISASM_ROW   0
   #define DISASM_NONE  0
 #endif
+#include "Settings.hxx"
 
 #include "M6502.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
+M6502::M6502(uInt32 systemCyclesPerProcessorCycle, const Settings& settings)
   : myExecutionStatus(0),
     mySystem(0),
+    mySettings(settings),
     mySystemCyclesPerProcessorCycle(systemCyclesPerProcessorCycle),
     myLastAccessWasRead(true),
     myTotalInstructionCount(0),
@@ -108,9 +110,19 @@ void M6502::reset()
   myExecutionStatus = 0;
 
   // Set registers to default values
-  A = X = Y = 0;
   SP = 0xff;
-  PS(0x20);
+  if(mySettings.getBool("cpurandom"))
+  {
+    A = mySystem->randGenerator().next();
+    X = mySystem->randGenerator().next();
+    Y = mySystem->randGenerator().next();
+    PS(mySystem->randGenerator().next());
+  }
+  else
+  {
+    A = X = Y = 0;
+    PS(0x20);
+  }
 
   // Reset access flag
   myLastAccessWasRead = true;
