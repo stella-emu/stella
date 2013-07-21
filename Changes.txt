@@ -37,9 +37,13 @@
         to the 'I/O' tab.  This works similar to 'ramrandom', and
         randomizes the contents on the CPU registers on ROM startup.
 
-  * Fixed bug in Linux/UNIX port, whereby a maximize button was always
-    present in the window title bar.  Stella could not be expanded in
-    this way, so the button was removed.
+  * For the Linux/UNIX port:
+      - Fixed bug whereby a maximize button was always present in the
+        window title bar.  Stella could not be expanded in this way,
+        so the button was removed.
+
+      - Added Startup notification protocol patch to the .desktop
+        file from Dan Fandrich.
 
   * Updated included PNG library to latest stable version.
 

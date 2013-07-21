@@ -5,4 +5,5 @@ Exec=stella %f
 Icon=stella
 Terminal=false
 Type=Application
+StartupNotify=true
 Categories=Emulator;Game;
