@@ -30,7 +30,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int cols, int rows,
-                               int colchars, int bits, BaseFormat base,
+                               int colchars, int bits,
+                               Common::Base::Format base,
                                bool useScrollbar)
   : EditableWidget(boss, font, x, y,
                    cols*(colchars * font.getMaxCharWidth() + 8) + 1,
@@ -114,10 +115,7 @@ cerr << "alist.size() = "     << alist.size()
   // An efficiency thing
   string temp;
   for(int i = 0; i < size; ++i)
-  {
-    temp = instance().debugger().valueToString(_valueList[i], _base);
-    _valueStringList.push_back(temp);
-  }
+    _valueStringList.push_back(Common::Base::toString(_valueList[i], _base));
 
 /*
 cerr << "_addrList.size() = "     << _addrList.size()
@@ -196,7 +194,7 @@ void DataGridWidget::setValue(int position, int value, bool changed)
   if(position >= 0 && uInt32(position) < _valueList.size())
   {
     // Correctly format the data for viewing
-    _editString = instance().debugger().valueToString(value, _base);
+    _editString = Common::Base::toString(value, _base);
 
     _valueStringList[position] = _editString;
     _changedList[position] = changed;
@@ -658,22 +656,22 @@ void DataGridWidget::endEditMode()
   {
     switch(_base)
     {
-      case kBASE_16:
-      case kBASE_16_1:
-      case kBASE_16_2:
-      case kBASE_16_4:
-      case kBASE_16_8:
+      case Common::Base::F_16:
+      case Common::Base::F_16_1:
+      case Common::Base::F_16_2:
+      case Common::Base::F_16_4:
+      case Common::Base::F_16_8:
         _editString.insert(0, 1, '$');
         break;
-      case kBASE_2:
-      case kBASE_2_8:
-      case kBASE_2_16:
+      case Common::Base::F_2:
+      case Common::Base::F_2_8:
+      case Common::Base::F_2_16:
         _editString.insert(0, 1, '\\');
         break;
-      case kBASE_10:
+      case Common::Base::F_10:
         _editString.insert(0, 1, '#');
         break;
-      case kBASE_DEFAULT:
+      case Common::Base::F_DEFAULT:
         break;
     }
   }

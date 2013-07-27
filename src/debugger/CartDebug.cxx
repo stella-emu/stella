@@ -31,6 +31,7 @@
 #include "Version.hxx"
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"
+using namespace Common;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
@@ -97,7 +98,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 
   // Add settings for Distella
   DiStella::settings.gfx_format =
-    myOSystem.settings().getInt("dis.gfxformat") == 16 ? kBASE_16 : kBASE_2;
+    myOSystem.settings().getInt("dis.gfxformat") == 16 ? Base::F_16 : Base::F_2;
   DiStella::settings.resolve_code =
     myOSystem.settings().getBool("dis.resolve");
   DiStella::settings.show_addresses =
@@ -201,18 +202,18 @@ string CartDebug::toString()
   ostringstream buf;
   uInt32 bytesPerLine;
 
-  switch(myDebugger.parser().base())
+  switch(Base::format())
   {
-    case kBASE_16:
-    case kBASE_10:
+    case Base::F_16:
+    case Base::F_10:
       bytesPerLine = 0x10;
       break;
 
-    case kBASE_2:
+    case Base::F_2:
       bytesPerLine = 0x04;
       break;
 
-    case kBASE_DEFAULT:
+    case Base::F_DEFAULT:
     default:
       return DebuggerParser::red("invalid base, this is a BUG");
   }
@@ -236,7 +237,7 @@ string CartDebug::toString()
       bytesSoFar = 0;
     }
     curraddr = state.rport[i];
-    buf << HEX2 << (curraddr & 0x00ff) << ": ";
+    buf << Base::HEX2 << (curraddr & 0x00ff) << ": ";
 
     for(uInt8 j = 0; j < bytesPerLine; ++j)
     {
@@ -611,10 +612,10 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
         {
           buf << ourTIAMnemonicR[a];
           if(offset > 0)
-            buf << "|$" << HEX2 << offset;
+            buf << "|$" << Base::HEX2 << offset;
         }
         else
-          buf << "$" << HEX2 << addr;
+          buf << "$" << Base::HEX2 << addr;
       }
       else
       {
@@ -623,10 +624,10 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
         {
           buf << ourTIAMnemonicW[a];
           if(offset > 0)
-            buf << "|$" << HEX2 << offset;
+            buf << "|$" << Base::HEX2 << offset;
         }
         else
-          buf << "$" << HEX2 << addr;
+          buf << "$" << Base::HEX2 << addr;
       }
       return true;
     }
@@ -640,13 +641,13 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
         {
             buf << ourIOMnemonic[a - 0x80];
             if(offset > 0)
-              buf << "|$" << HEX2 << offset;
+              buf << "|$" << Base::HEX2 << offset;
         }
         else
-          buf << "$" << HEX2 << addr;
+          buf << "$" << Base::HEX2 << addr;
       }
       else
-        buf << "$" << HEX2 << addr;
+        buf << "$" << Base::HEX2 << addr;
 
       return true;
     }
@@ -668,7 +669,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
         else
           buf << ourZPMnemonic[a - 0x80];
         if(offset > 0)
-          buf << "|$" << HEX2 << offset;
+          buf << "|$" << Base::HEX2 << offset;
       }
 
       return true;
@@ -977,7 +978,7 @@ string CartDebug::saveDisassembly()
                       myDisLabels, myDisDirectives, myReserved);
 
     buf << "       SEG CODE\n"
-        << "       ORG $" << HEX4 << info.offset << "\n\n";
+        << "       ORG $" << Base::HEX4 << info.offset << "\n\n";
 
     // Format in 'distella' style
     for(uInt32 i = 0; i < disasm.list.size(); ++i)
@@ -1008,25 +1009,25 @@ string CartDebug::saveDisassembly()
         }
         case CartDebug::GFX:
         {
-          buf << ".byte " << (settings.gfx_format == kBASE_2 ? "%" : "$")
+          buf << ".byte " << (settings.gfx_format == Base::F_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int i = 12; i < 20; ++i)
             buf << ((tag.disasm[i] == '\x1e') ? "#" : " ");
-          buf << "| $" << HEX4 << tag.address << " (G)\n";
+          buf << "| $" << Base::HEX4 << tag.address << " (G)\n";
           break;
         }
         case CartDebug::PGFX:
         {
-          buf << ".byte " << (settings.gfx_format == kBASE_2 ? "%" : "$")
+          buf << ".byte " << (settings.gfx_format == Base::F_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int i = 12; i < 20; ++i)
             buf << ((tag.disasm[i] == '\x1f') ? "*" : " ");
-          buf << "| $" << HEX4 << tag.address << " (P)\n";
+          buf << "| $" << Base::HEX4 << tag.address << " (P)\n";
           break;
         }
         case CartDebug::DATA:
         {
-          buf << tag.disasm.substr(0, 9) << " ;  $" << HEX4 << tag.address << " (D)\n";
+          buf << tag.disasm.substr(0, 9) << " ;  $" << Base::HEX4 << tag.address << " (D)\n";
           break;
         }
         default:
@@ -1068,15 +1069,15 @@ string CartDebug::saveDisassembly()
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
       if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
         out << ALIGN(6) << ourTIAMnemonicR[addr] << "  =  $"
-            << HEX2 << right << addr << " ; (R)\n";
+            << Base::HEX2 << right << addr << " ; (R)\n";
     for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
       if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
         out << ALIGN(6) << ourTIAMnemonicW[addr] << "  =  $"
-            << HEX2 << right << addr << " ; (W)\n";
+            << Base::HEX2 << right << addr << " ; (W)\n";
     for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
       if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
         out << ALIGN(6) << ourIOMnemonic[addr] << "  =  $"
-            << HEX4 << right << (addr+0x280) << "\n";
+            << Base::HEX4 << right << (addr+0x280) << "\n";
   }
 
   addrUsed = false;
@@ -1093,7 +1094,7 @@ string CartDebug::saveDisassembly()
          myUserLabels.find(addr) == myUserLabels.end())
       {
         out << ALIGN(6) << ourZPMnemonic[addr-0x80] << "  =  $"
-            << HEX2 << right << (addr) << "\n";
+            << Base::HEX2 << right << (addr) << "\n";
       }
     }
   }
@@ -1168,7 +1169,7 @@ string CartDebug::listConfig(int bank)
       {
         buf << "(*) ";
         disasmTypeAsString(buf, i->type);
-        buf << " " << HEX4 << i->start << " " << HEX4 << i->end << endl;
+        buf << " " << Base::HEX4 << i->start << " " << Base::HEX4 << i->end << endl;
       }
     }
     getBankDirectives(buf, info);
@@ -1260,7 +1261,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 {
   // Start with the offset for this bank
-  buf << "ORG " << HEX4 << info.offset << endl;
+  buf << "ORG " << Base::HEX4 << info.offset << endl;
 
   // Now consider each byte
   uInt32 prev = info.offset, addr = prev + 1;
@@ -1273,7 +1274,7 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
     if(currType != prevType)
     {
       disasmTypeAsString(buf, prevType);
-      buf << " " << HEX4 << prev << " " << HEX4 << (addr-1) << endl;
+      buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
 
       prev = addr;
       prevType = currType;
@@ -1284,7 +1285,7 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
   if(prev != addr)
   {
     disasmTypeAsString(buf, prevType);
-    buf << " " << HEX4 << prev << " " << HEX4 << (addr-1) << endl;
+    buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
   }
 }
 
@@ -1301,11 +1302,11 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
         debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
         label     = myDisLabels[addr & 0xFFF];
 
-  buf << endl << "directive: " << myDebugger.valueToString(directive, kBASE_2_8) << " ";
+  buf << endl << "directive: " << Base::toString(directive, Base::F_2_8) << " ";
   disasmTypeAsString(buf, directive);
-  buf << endl << "emulation: " << myDebugger.valueToString(debugger, kBASE_2_8) << " ";
+  buf << endl << "emulation: " << Base::toString(debugger, Base::F_2_8) << " ";
   disasmTypeAsString(buf, debugger);
-  buf << endl << "tentative: " << myDebugger.valueToString(label, kBASE_2_8) << " ";
+  buf << endl << "tentative: " << Base::toString(label, Base::F_2_8) << " ";
   disasmTypeAsString(buf, label);
   buf << endl;
 }

@@ -47,7 +47,7 @@ Cartridge3EWidget::Cartridge3EWidget(
   // Eventually, we should query this from the debugger/disassembler
   uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
   start -= start % 0x1000;
-  info << "Bank RORG" << " = $" << HEX4 << start << "\n";
+  info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
 
   int xpos = 10,
       ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
@@ -63,7 +63,8 @@ Cartridge3EWidget::Cartridge3EWidget(
   ramitems.push_back("Inactive", "");
 
   ostringstream label;
-  label << "Set bank ($" << HEX4 << start << " - $" << (start+0x7FF) << "): ";
+  label << "Set bank ($" << Common::Base::HEX4 << start << " - $"
+        << (start+0x7FF) << "): ";
 
   new StaticTextWidget(_boss, _font, xpos, ypos, font.getStringWidth(label.str()),
     myFontHeight, label.str(), kTextAlignLeft);

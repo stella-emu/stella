@@ -50,7 +50,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
 
   xpos += myGreyDown->getWidth() + 10;  ypos -= 10;
   myGreyValue = new DataGridWidget(boss, font, xpos, ypos,
-                                   1, 1, 2, 8, kBASE_16);
+                                   1, 1, 2, 8, Common::Base::F_16);
   myGreyValue->setTarget(this);
   myGreyValue->setEditable(false);
 

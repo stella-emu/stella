@@ -20,6 +20,7 @@
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "DiStella.hxx"
+using namespace Common;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
@@ -210,7 +211,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       if(myDbg.addressType(k+myOffset) == CartDebug::ADDR_ROM)
       {
         reservedLabel.str("");
-        reservedLabel << "L" << HEX4 << (k+myOffset);
+        reservedLabel << "L" << Base::HEX4 << (k+myOffset);
         myReserved.Label.insert(make_pair(k+myOffset, reservedLabel.str()));
       }
     }
@@ -249,21 +250,21 @@ void DiStella::disasm(uInt32 distart, int pass)
       if (pass == 3)
       {
         if (check_bit(myPC, CartDebug::REFERENCED))
-          myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
+          myDisasmBuf << Base::HEX4 << myPC+myOffset << "'L" << Base::HEX4 << myPC+myOffset << "'";
         else
-          myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
+          myDisasmBuf << Base::HEX4 << myPC+myOffset << "'     '";
 
         bool isPGfx = check_bit(myPC, CartDebug::PGFX);
         const string& bit_string = isPGfx ? "\x1f" : "\x1e";
         uInt8 byte = Debugger::debugger().peek(myPC+myOffset);
-        myDisasmBuf << ".byte $" << HEX2 << (int)byte << "  |";
+        myDisasmBuf << ".byte $" << Base::HEX2 << (int)byte << "  |";
         for(uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
           myDisasmBuf << ((c > 127) ? bit_string : " ");
-        myDisasmBuf << "|  $" << HEX4 << myPC+myOffset << "'";
-        if(mySettings.gfx_format == kBASE_2)
-          myDisasmBuf << Debugger::debugger().valueToString(byte, kBASE_2_8);
+        myDisasmBuf << "|  $" << Base::HEX4 << myPC+myOffset << "'";
+        if(mySettings.gfx_format == Base::F_2)
+          myDisasmBuf << Base::toString(byte, Base::F_2_8);
         else
-          myDisasmBuf << HEX2 << (int)byte;
+          myDisasmBuf << Base::HEX2 << (int)byte;
         addEntry(isPGfx ? CartDebug::PGFX : CartDebug::GFX);
       }
       myPC++;
@@ -276,14 +277,14 @@ void DiStella::disasm(uInt32 distart, int pass)
       else if (pass == 3)
       {
         if (check_bit(myPC, CartDebug::REFERENCED))
-          myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
+          myDisasmBuf << Base::HEX4 << myPC+myOffset << "'L" << Base::HEX4 << myPC+myOffset << "'";
         else
-          myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
+          myDisasmBuf << Base::HEX4 << myPC+myOffset << "'     '";
 
         uInt8 byte = Debugger::debugger().peek(myPC+myOffset);
-        myDisasmBuf << ".byte $" << HEX2 << (int)byte << "              $"
-                    << HEX4 << myPC+myOffset << "'"
-                    << HEX2 << (int)byte;
+        myDisasmBuf << ".byte $" << Base::HEX2 << (int)byte << "              $"
+                    << Base::HEX4 << myPC+myOffset << "'"
+                    << Base::HEX2 << (int)byte;
         addEntry(CartDebug::DATA);
       }
       myPC++;
@@ -310,8 +311,8 @@ void DiStella::disasm(uInt32 distart, int pass)
               addEntry(CartDebug::ROW);
               line_empty = true;
             }
-            myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4
-                        << myPC+myOffset << "'.byte " << "$" << HEX2
+            myDisasmBuf << Base::HEX4 << myPC+myOffset << "'L" << Base::HEX4
+                        << myPC+myOffset << "'.byte " << "$" << Base::HEX2
                         << (int)Debugger::debugger().peek(myPC+myOffset);
             myPC++;
             bytes = 1;
@@ -319,7 +320,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if(line_empty)   // start a new line without a label
           {
-            myDisasmBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
+            myDisasmBuf << "    '     '.byte $" << Base::HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
             myPC++;
             bytes = 1;
             line_empty = false;
@@ -332,7 +333,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else
           {
-            myDisasmBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
+            myDisasmBuf << ",$" << Base::HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
             myPC++;
           }
 
@@ -360,9 +361,9 @@ void DiStella::disasm(uInt32 distart, int pass)
       else if (pass == 3)
       {
         if (check_bit(myPC, CartDebug::REFERENCED))
-          myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
+          myDisasmBuf << Base::HEX4 << myPC+myOffset << "'L" << Base::HEX4 << myPC+myOffset << "'";
         else
-          myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
+          myDisasmBuf << Base::HEX4 << myPC+myOffset << "'     '";
       }
 
       // Add opcode mneumonic
@@ -376,7 +377,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       {
         addr_mode = IMPLIED;
         if (pass == 3)
-          nextline << ".byte $" << HEX2 << (int)op << " ;";
+          nextline << ".byte $" << Base::HEX2 << (int)op << " ;";
       }
 
       if (pass == 1)
@@ -399,7 +400,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       else if (pass == 3)
       {
         nextline << ourLookup[op].mnemonic;
-        nextlinebytes << HEX2 << (int)op << " ";
+        nextlinebytes << Base::HEX2 << (int)op << " ";
       }
 
       // Add operand(s) for PC values outside the app data range
@@ -420,22 +421,22 @@ void DiStella::disasm(uInt32 distart, int pass)
               /* Line information is already printed; append .byte since last
                  instruction will put recompilable object larger that original
                  binary file */
-              myDisasmBuf << ".byte $" << HEX2 << (int)op << "              $"
-                          << HEX4 << myPC+myOffset << "'"
-                          << HEX2 << (int)op;
+              myDisasmBuf << ".byte $" << Base::HEX2 << (int)op << "              $"
+                          << Base::HEX4 << myPC+myOffset << "'"
+                          << Base::HEX2 << (int)op;
               addEntry(CartDebug::DATA);
 
               if (myPC == myAppData.end)
               {
                 if (check_bit(myPC, CartDebug::REFERENCED))
-                  myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
+                  myDisasmBuf << Base::HEX4 << myPC+myOffset << "'L" << Base::HEX4 << myPC+myOffset << "'";
                 else
-                  myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
+                  myDisasmBuf << Base::HEX4 << myPC+myOffset << "'     '";
 
                 op = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-                myDisasmBuf << ".byte $" << HEX2 << (int)op << "              $"
-                            << HEX4 << myPC+myOffset << "'"
-                            << HEX2 << (int)op;
+                myDisasmBuf << ".byte $" << Base::HEX2 << (int)op << "              $"
+                            << Base::HEX4 << myPC+myOffset << "'"
+                            << Base::HEX2 << (int)op;
                 addEntry(CartDebug::DATA);
               }
             }
@@ -455,7 +456,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               {
                 /* Line information is already printed, but we can remove the
                    Instruction (i.e. BMI) by simply clearing the buffer to print */
-                myDisasmBuf << ".byte $" << HEX2 << (int)op;
+                myDisasmBuf << ".byte $" << Base::HEX2 << (int)op;
                 addEntry(CartDebug::ROW);
                 nextline.str("");
                 nextlinebytes.str("");
@@ -523,7 +524,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             if (labfound == 1)
             {
               LABEL_A12_HIGH(ad);
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
             }
             else if (labfound == 4)
             {
@@ -531,18 +532,18 @@ void DiStella::disasm(uInt32 distart, int pass)
               {
                 int tmp = (ad & myAppData.end)+myOffset;
                 LABEL_A12_HIGH(tmp);
-                nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+                nextlinebytes << Base::HEX2 << (int)(tmp&0xff) << " " << Base::HEX2 << (int)(tmp>>8);
               }
               else
               {
-                nextline << "$" << HEX4 << ad;
-                nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+                nextline << "$" << Base::HEX4 << ad;
+                nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
               }
             }
             else
             {
               LABEL_A12_LOW(ad);
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
             }
           }
           break;
@@ -556,7 +557,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           {
             nextline << "    ";
             LABEL_A12_LOW((int)d1);
-            nextlinebytes << HEX2 << (int)d1;
+            nextlinebytes << Base::HEX2 << (int)d1;
           }
           break;
         }
@@ -566,8 +567,8 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
-            nextline << "    #$" << HEX2 << (int)d1 << " ";
-            nextlinebytes << HEX2 << (int)d1;
+            nextline << "    #$" << Base::HEX2 << (int)d1 << " ";
+            nextlinebytes << Base::HEX2 << (int)d1;
           }
           break;
         }
@@ -595,7 +596,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               LABEL_A12_HIGH(ad);
               nextline << ",X";
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
             }
             else if (labfound == 4)
             {
@@ -604,19 +605,19 @@ void DiStella::disasm(uInt32 distart, int pass)
                 int tmp = (ad & myAppData.end)+myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextline << ",X";
-                nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+                nextlinebytes << Base::HEX2 << (int)(tmp&0xff) << " " << Base::HEX2 << (int)(tmp>>8);
               }
               else
               {
-                nextline << "$" << HEX4 << ad << ",X";
-                nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+                nextline << "$" << Base::HEX4 << ad << ",X";
+                nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
               }
             }
             else
             {
               LABEL_A12_LOW(ad);
               nextline << ",X";
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
             }
           }
           break;
@@ -645,7 +646,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               LABEL_A12_HIGH(ad);
               nextline << ",Y";
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
             }
             else if (labfound == 4)
             {
@@ -654,19 +655,19 @@ void DiStella::disasm(uInt32 distart, int pass)
                 int tmp = (ad & myAppData.end)+myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextline << ",Y";
-                nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+                nextlinebytes << Base::HEX2 << (int)(tmp&0xff) << " " << Base::HEX2 << (int)(tmp>>8);
               }
               else
               {
-                nextline << "$" << HEX4 << ad << ",Y";
-                nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+                nextline << "$" << Base::HEX4 << ad << ",Y";
+                nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
               }
             }
             else
             {
               LABEL_A12_LOW(ad);
               nextline << ",Y";
-              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
             }
           }
           break;
@@ -681,7 +682,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             nextline << "    (";
             LABEL_A12_LOW(d1);
             nextline << ",X)";
-            nextlinebytes << HEX2 << (int)d1;
+            nextlinebytes << Base::HEX2 << (int)d1;
           }
           break;
         }
@@ -695,7 +696,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             nextline << "    (";
             LABEL_A12_LOW(d1);
             nextline << "),Y";
-            nextlinebytes << HEX2 << (int)d1;
+            nextlinebytes << Base::HEX2 << (int)d1;
           }
           break;
         }
@@ -710,7 +711,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             LABEL_A12_LOW(d1);
             nextline << ",X";
           }
-          nextlinebytes << HEX2 << (int)d1;
+          nextlinebytes << Base::HEX2 << (int)d1;
           break;
         }
 
@@ -724,7 +725,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             LABEL_A12_LOW(d1);
             nextline << ",Y";
           }
-          nextlinebytes << HEX2 << (int)d1;
+          nextlinebytes << Base::HEX2 << (int)d1;
           break;
         }
 
@@ -753,9 +754,9 @@ void DiStella::disasm(uInt32 distart, int pass)
               LABEL_A12_HIGH(ad);
             }
             else
-              nextline << "    $" << HEX4 << ad;
+              nextline << "    $" << Base::HEX4 << ad;
 
-            nextlinebytes << HEX2 << (int)d1;
+            nextlinebytes << Base::HEX2 << (int)d1;
           }
           break;
         }
@@ -793,7 +794,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             nextline << ")";
           }
 
-          nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+          nextlinebytes << Base::HEX2 << (int)(ad&0xff) << " " << Base::HEX2 << (int)(ad>>8);
           break;
         }
 
@@ -997,9 +998,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       else if(mySettings.show_addresses && tag.type == CartDebug::CODE)
       {
         // Have addresses indented, to differentiate from actual labels
-        char address[7];
-        BSPF_snprintf(address, 6, " %4X", tag.address);
-        tag.label = address;
+        tag.label = " " + Base::toString(tag.address, Base::F_16_4);
         tag.hllabel = false;
       }
     }
@@ -1066,13 +1065,13 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::Settings DiStella::settings = {
-  kBASE_2,  // gfx_format
-  true,     // resolve_code (opposite of -d in Distella)
-  true,     // show_addresses (not used externally; always off)
-  false,    // aflag (-a in Distella)
-  true,     // fflag (-f in Distella)
-  false,    // rflag (-r in Distella)
-  9         // number of bytes to use with .byte directive
+  Base::F_2, // gfx_format
+  true,      // resolve_code (opposite of -d in Distella)
+  true,      // show_addresses (not used externally; always off)
+  false,     // aflag (-a in Distella)
+  true,      // fflag (-f in Distella)
+  false,     // rflag (-r in Distella)
+  9          // number of bytes to use with .byte directive
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

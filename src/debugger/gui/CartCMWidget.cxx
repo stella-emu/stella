@@ -73,7 +73,7 @@ CartridgeCMWidget::CartridgeCMWidget(
         myFontHeight, "Current column: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myColumn = new DataGridWidget(boss, font, xpos, ypos-2, 1, 1, 2, 8, kBASE_16);
+  myColumn = new DataGridWidget(boss, font, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
   myColumn->setTarget(this);
   myColumn->setEditable(false);
 

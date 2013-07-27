@@ -57,7 +57,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   }
   xpos += 7*fontWidth + 5;
   myColorRegs = new DataGridWidget(boss, font, xpos, ypos,
-                                   1, 4, 2, 8, kBASE_16);
+                                   1, 4, 2, 8, Common::Base::F_16);
   myColorRegs->setTarget(this);
   myColorRegs->setID(kColorRegsID);
   addFocusWidget(myColorRegs);
@@ -200,7 +200,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Pos: #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosP0 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 3, 8, kBASE_10);
+                               1, 1, 3, 8, Common::Base::F_10);
   myPosP0->setTarget(this);
   myPosP0->setID(kPosP0ID);
   myPosP0->setRange(0, 160);
@@ -213,7 +213,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "HM:", kTextAlignLeft);
   xpos += 3*fontWidth + 5;
   myHMP0 = new DataGridWidget(boss, font, xpos, ypos,
-                              1, 1, 1, 4, kBASE_16_1);
+                              1, 1, 1, 4, Common::Base::F_16_1);
   myHMP0->setTarget(this);
   myHMP0->setID(kHMP0ID);
   addFocusWidget(myHMP0);
@@ -240,7 +240,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "NusizP0:", kTextAlignLeft);
   xpos += 8*fontWidth + 5;
   myNusizP0 = new DataGridWidget(boss, font, xpos, ypos,
-                                 1, 1, 1, 3, kBASE_16_1);
+                                 1, 1, 1, 3, Common::Base::F_16_1);
   myNusizP0->setTarget(this);
   myNusizP0->setID(kNusizP0ID);
   addFocusWidget(myNusizP0);
@@ -269,7 +269,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Pos: #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosP1 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 3, 8, kBASE_10);
+                               1, 1, 3, 8, Common::Base::F_10);
   myPosP1->setTarget(this);
   myPosP1->setID(kPosP1ID);
   myPosP1->setRange(0, 160);
@@ -281,7 +281,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "HM:", kTextAlignLeft);
   xpos += 3*fontWidth + 5;
   myHMP1 = new DataGridWidget(boss, font, xpos, ypos,
-                              1, 1, 1, 4, kBASE_16_1);
+                              1, 1, 1, 4, Common::Base::F_16_1);
   myHMP1->setTarget(this);
   myHMP1->setID(kHMP1ID);
   addFocusWidget(myHMP1);
@@ -307,7 +307,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "NusizP1:", kTextAlignLeft);
   xpos += 8*fontWidth + 5;
   myNusizP1 = new DataGridWidget(boss, font, xpos, ypos,
-                                 1, 1, 1, 3, kBASE_16_1);
+                                 1, 1, 1, 3, Common::Base::F_16_1);
   myNusizP1->setTarget(this);
   myNusizP1->setID(kNusizP1ID);
   addFocusWidget(myNusizP1);
@@ -337,7 +337,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Pos: #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosM0 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 3, 8, kBASE_10);
+                               1, 1, 3, 8, Common::Base::F_10);
   myPosM0->setTarget(this);
   myPosM0->setID(kPosM0ID);
   myPosM0->setRange(0, 160);
@@ -349,7 +349,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "HM:", kTextAlignLeft);
   xpos += 3*fontWidth + 5;
   myHMM0 = new DataGridWidget(boss, font, xpos, ypos,
-                              1, 1, 1, 4, kBASE_16_1);
+                              1, 1, 1, 4, Common::Base::F_16_1);
   myHMM0->setTarget(this);
   myHMM0->setID(kHMM0ID);
   addFocusWidget(myHMM0);
@@ -360,7 +360,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Size:", kTextAlignLeft);
   xpos += 5*fontWidth + 5;
   myNusizM0 = new DataGridWidget(boss, font, xpos, ypos,
-                                 1, 1, 1, 2, kBASE_16_1);
+                                 1, 1, 1, 2, Common::Base::F_16_1);
   myNusizM0->setTarget(this);
   myNusizM0->setID(kNusizM0ID);
   addFocusWidget(myNusizM0);
@@ -393,7 +393,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Pos: #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosM1 = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 3, 8, kBASE_10);
+                               1, 1, 3, 8, Common::Base::F_10);
   myPosM1->setTarget(this);
   myPosM1->setID(kPosM1ID);
   myPosM1->setRange(0, 160);
@@ -405,7 +405,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "HM:", kTextAlignLeft);
   xpos += 3*fontWidth + 5;
   myHMM1 = new DataGridWidget(boss, font, xpos, ypos,
-                              1, 1, 1, 4, kBASE_16_1);
+                              1, 1, 1, 4, Common::Base::F_16_1);
   myHMM1->setTarget(this);
   myHMM1->setID(kHMM1ID);
   addFocusWidget(myHMM1);
@@ -416,7 +416,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Size:", kTextAlignLeft);
   xpos += 5*fontWidth + 5;
   myNusizM1 = new DataGridWidget(boss, font, xpos, ypos,
-                                 1, 1, 1, 2, kBASE_16_1);
+                                 1, 1, 1, 2, Common::Base::F_16_1);
   myNusizM1->setTarget(this);
   myNusizM1->setID(kNusizM1ID);
   addFocusWidget(myNusizM1);
@@ -449,7 +449,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Pos: #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosBL = new DataGridWidget(boss, font, xpos, ypos,
-                               1, 1, 3, 8, kBASE_10);
+                               1, 1, 3, 8, Common::Base::F_10);
   myPosBL->setTarget(this);
   myPosBL->setID(kPosBLID);
   myPosBL->setRange(0, 160);
@@ -461,7 +461,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "HM:", kTextAlignLeft);
   xpos += 3*fontWidth + 5;
   myHMBL = new DataGridWidget(boss, font, xpos, ypos,
-                              1, 1, 1, 4, kBASE_16_1);
+                              1, 1, 1, 4, Common::Base::F_16_1);
   myHMBL->setTarget(this);
   myHMBL->setID(kHMBLID);
   addFocusWidget(myHMBL);
@@ -472,7 +472,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            "Size:", kTextAlignLeft);
   xpos += 5*fontWidth + 5;
   mySizeBL = new DataGridWidget(boss, font, xpos, ypos,
-                                1, 1, 1, 2, kBASE_16_1);
+                                1, 1, 1, 2, Common::Base::F_16_1);
   mySizeBL->setTarget(this);
   mySizeBL->setID(kSizeBLID);
   addFocusWidget(mySizeBL);

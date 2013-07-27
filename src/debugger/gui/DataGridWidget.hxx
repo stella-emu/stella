@@ -28,6 +28,7 @@ class ScrollBarWidget;
 #include "Debugger.hxx"
 #include "EditableWidget.hxx"
 #include "Array.hxx"
+#include "Base.hxx"
 #include "Rect.hxx"
 
 /* DataGridWidget */
@@ -45,7 +46,8 @@ class DataGridWidget : public EditableWidget
   public:
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int cols, int rows,
-                   int colchars, int bits, BaseFormat format = kBASE_DEFAULT,
+                   int colchars, int bits,
+                   Common::Base::Format format = Common::Base::F_DEFAULT,
                    bool useScrollbar = false);
     virtual ~DataGridWidget();
 
@@ -114,7 +116,7 @@ class DataGridWidget : public EditableWidget
     int  _lowerBound;
     int  _upperBound;
 
-    BaseFormat _base;
+    Common::Base::Format _base;
 
     IntArray    _addrList;
     IntArray    _valueList;

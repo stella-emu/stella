@@ -17,6 +17,7 @@
 // $Id$
 //============================================================================
 
+#include "Base.hxx"
 #include "System.hxx"
 #include "Debugger.hxx"
 #include "TIA.hxx"
@@ -740,7 +741,7 @@ string TIADebug::toString()
   buf << "00: ";
   for (uInt8 j = 0; j < 0x010; j++)
   {
-    buf << HEX2 << (int)mySystem.peek(j) << " ";
+    buf << Common::Base::HEX2 << (int)mySystem.peek(j) << " ";
     if(j == 0x07) buf << "- ";
   }
   buf << endl;
@@ -752,7 +753,7 @@ string TIADebug::toString()
 //  const TiaState& oldstate = (TiaState&) getOldState();
 
   // build up output, then return it.
-  buf << "scanline " << myDebugger.valueToString(myTIA.scanlines()) << " "
+  buf << "scanline " << dec << myTIA.scanlines() << " "
       << booleanWithLabel("vsync", vsync()) << " "
       << booleanWithLabel("vblank", vblank())
       << endl
@@ -765,53 +766,53 @@ string TIADebug::toString()
       << booleanWithLabel("dump_gnd_0123", myTIA.myDumpEnabled)
       << endl
       << "COLUxx: "
-      << "P0=" << myDebugger.valueToString(state.coluRegs[0]) << "/"
+      << "P0=$" << Common::Base::HEX2 << state.coluRegs[0] << "/"
       << colorSwatch(state.coluRegs[0])
-      << "P1=" << myDebugger.valueToString(state.coluRegs[1]) << "/"
+      << "P1=$" << Common::Base::HEX2 << state.coluRegs[1] << "/"
       << colorSwatch(state.coluRegs[1])
-      << "PF=" << myDebugger.valueToString(state.coluRegs[2]) << "/"
+      << "PF=$" << Common::Base::HEX2 << state.coluRegs[2] << "/"
       << colorSwatch(state.coluRegs[2])
-      << "BK=" << myDebugger.valueToString(state.coluRegs[3]) << "/"
+      << "BK=$" << Common::Base::HEX2 << state.coluRegs[3] << "/"
       << colorSwatch(state.coluRegs[3])
       << endl
-      << "P0: GR=" << myDebugger.valueToString(state.gr[P0], kBASE_2_8)
-      << " pos=" << myDebugger.valueToString(state.pos[P0])
-      << " HM=" << myDebugger.valueToString(state.hm[P0]) << " "
+      << "P0: GR=%" << Common::Base::toString(state.gr[P0], Common::Base::F_2_8)
+      << " pos=#" << dec << state.pos[P0]
+      << " HM=$" << Common::Base::HEX2 << state.hm[P0] << " "
       << nusizP0String() << " "
       << booleanWithLabel("refl", refP0()) << " "
       << booleanWithLabel("delay", vdelP0())
       << endl
-      << "P1: GR=" << myDebugger.valueToString(state.gr[P1], kBASE_2_8)
-      << " pos=" << myDebugger.valueToString(state.pos[P1])
-      << " HM=" << myDebugger.valueToString(state.hm[P1]) << " "
+      << "P1: GR=%" << Common::Base::toString(state.gr[P1], Common::Base::F_2_8)
+      << " pos=#" << dec << state.pos[P1]
+      << " HM=$" << Common::Base::HEX2 << state.hm[P1] << " "
       << nusizP1String() << " "
       << booleanWithLabel("refl", refP1()) << " "
       << booleanWithLabel("delay", vdelP1())
       << endl
       << "M0: " << (myTIA.myENAM0 ? " ENABLED" : "disabled")
-      << " pos=" << myDebugger.valueToString(state.pos[M0])
-      << " HM=" << myDebugger.valueToString(state.hm[M0])
-      << " size=" << myDebugger.valueToString(state.size[M0]) << " "
+      << " pos=#" << dec << state.pos[M0]
+      << " HM=$" << Common::Base::HEX2 << state.hm[M0]
+      << " size=" << dec << state.size[M0] << " "
       << booleanWithLabel("reset", resMP0())
       << endl
       << "M1: " << (myTIA.myENAM1 ? " ENABLED" : "disabled")
-      << " pos=" << myDebugger.valueToString(state.pos[M1])
-      << " HM=" << myDebugger.valueToString(state.hm[M1])
-      << " size=" << myDebugger.valueToString(state.size[M1]) << " "
+      << " pos=#" << dec << state.pos[M1]
+      << " HM=$" << Common::Base::HEX2 << state.hm[M1]
+      << " size=" << dec << state.size[M1] << " "
       << booleanWithLabel("reset", resMP0())
       << endl
       << "BL: " << (myTIA.myENABL ? " ENABLED" : "disabled")
-      << " pos=" << myDebugger.valueToString(state.pos[BL])
-      << " HM=" << myDebugger.valueToString(state.hm[BL])
-      << " size=" << myDebugger.valueToString(state.size[BL]) << " "
+      << " pos=#" << dec << state.pos[BL]
+      << " HM=$" << Common::Base::HEX2 << state.hm[BL]
+      << " size=" << dec << state.size[BL] << " "
       << booleanWithLabel("delay", vdelBL())
       << endl
-      << "PF0: " << myDebugger.valueToString(state.pf[0], kBASE_2_8) << "/"
-      << myDebugger.valueToString(state.pf[0])
-      << " PF1: " << myDebugger.valueToString(state.pf[1], kBASE_2_8) << "/"
-      << myDebugger.valueToString(state.pf[1])
-      << " PF2: " << myDebugger.valueToString(state.pf[2], kBASE_2_8) << "/"
-      << myDebugger.valueToString(state.pf[2])
+      << "PF0: %" << Common::Base::toString(state.pf[0], Common::Base::F_2_8) << "/$"
+      << Common::Base::HEX2 << state.pf[0]
+      << " PF1: %" << Common::Base::toString(state.pf[1], Common::Base::F_2_8) << "/$"
+      << Common::Base::HEX2 << state.pf[1]
+      << " PF2: %" << Common::Base::toString(state.pf[2], Common::Base::F_2_8) << "/$"
+      << Common::Base::HEX2 << state.pf[2]
       << endl << "     "
       << booleanWithLabel("reflect",  refPF()) << " "
       << booleanWithLabel("score",    scorePF()) << " "
@@ -836,15 +837,15 @@ string TIADebug::toString()
       << endl << "            "
       << booleanWithLabel("m0_m1 ", collM0_M1())
       << endl
-      << "AUDF0: " << myDebugger.valueToString(myTIA.myAUDF0)
+      << "AUDF0: $" << Common::Base::HEX2 << (int)myTIA.myAUDF0
       << "/" << audFreq(myTIA.myAUDF0) << " "
-      << "AUDC0: " << myDebugger.valueToString(myTIA.myAUDC0) << " "
-      << "AUDV0: " << myDebugger.valueToString(myTIA.myAUDV0)
+      << "AUDC0: $" << Common::Base::HEX2 << (int)myTIA.myAUDC0 << " "
+      << "AUDV0: $" << Common::Base::HEX2 << (int)myTIA.myAUDV0
       << endl
-      << "AUDF1: " << myDebugger.valueToString(myTIA.myAUDF1)
+      << "AUDF1: $" << Common::Base::HEX2 << (int)myTIA.myAUDF1
       << "/" << audFreq(myTIA.myAUDF1) << " "
-      << "AUDC1: " << myDebugger.valueToString(myTIA.myAUDC1) << " "
-      << "AUDV1: " << myDebugger.valueToString(myTIA.myAUDV1)
+      << "AUDC1: $" << Common::Base::HEX2 << (int)myTIA.myAUDC1 << " "
+      << "AUDV1: $" << Common::Base::HEX2 << (int)myTIA.myAUDV1
       ;
   // note: last line should not contain \n, caller will add.
   return buf.str();

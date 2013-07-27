@@ -137,7 +137,8 @@ Settings::Settings(OSystem* osystem)
   setExternal("romloadcount", "0");
   setExternal("maxres", "");
 
-  // Debugger disassembly options
+  // Debugger/disassembly options
+  setInternal("dbg.uhex", "true");
   setInternal("dis.resolve", "true");
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");

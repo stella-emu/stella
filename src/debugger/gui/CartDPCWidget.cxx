@@ -43,7 +43,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << (start + 0x80) << " - "
+    info << "Bank " << i << " @ $" << Common::Base::HEX4 << (start + 0x80) << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 
@@ -74,7 +74,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Top Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myTops = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, kBASE_16);
+  myTops = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myTops->setTarget(this);
   myTops->setEditable(false);
 
@@ -84,7 +84,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Bottom Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myBottoms = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, kBASE_16);
+  myBottoms = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myBottoms->setTarget(this);
   myBottoms->setEditable(false);
 
@@ -94,7 +94,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Counter Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myCounters = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 4, 16, kBASE_16_4);
+  myCounters = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
   myCounters->setTarget(this);
   myCounters->setEditable(false);
 
@@ -104,7 +104,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Flag Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myFlags = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, kBASE_16);
+  myFlags = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myFlags->setTarget(this);
   myFlags->setEditable(false);
 
@@ -115,7 +115,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Music mode (DF5/DF6/DF7): ", kTextAlignLeft);
   xpos += lwidth;
 
-  myMusicMode = new DataGridWidget(boss, font, xpos, ypos-2, 3, 1, 2, 8, kBASE_16);
+  myMusicMode = new DataGridWidget(boss, font, xpos, ypos-2, 3, 1, 2, 8, Common::Base::F_16);
   myMusicMode->setTarget(this);
   myMusicMode->setEditable(false);
 
@@ -125,7 +125,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Current random number: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myRandom = new DataGridWidget(boss, font, xpos, ypos-2, 1, 1, 2, 8, kBASE_16);
+  myRandom = new DataGridWidget(boss, font, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
   myRandom->setTarget(this);
   myRandom->setEditable(false);
 }

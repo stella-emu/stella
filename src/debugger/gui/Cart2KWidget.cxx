@@ -33,6 +33,6 @@ Cartridge2KWidget::Cartridge2KWidget(
 
   ostringstream info;
   info << "Standard 2K cartridge, non-bankswitched\n"
-       << "Accessible @ $" << HEX4 << start << " - " << "$" << (start + size - 1);
+       << "Accessible @ $" << Common::Base::HEX4 << start << " - " << "$" << (start + size - 1);
   addBaseInformation(size, "Atari", info.str());
 }

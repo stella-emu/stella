@@ -48,7 +48,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
                        "PC:", kTextAlignLeft);
   myPCGrid =
-    new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 1, 4, 16, kBASE_16);
+    new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::F_16);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
@@ -62,7 +62,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Create a 1x4 grid with labels for the other CPU registers
   xpos = x + lwidth;  ypos += myPCGrid->getHeight() + 1;
   myCpuGrid =
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 2, 8, kBASE_16);
+    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 2, 8, Common::Base::F_16);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
@@ -70,17 +70,17 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Create a 1x4 grid with decimal and binary values for the other CPU registers
   xpos = x + lwidth + myPCGrid->getWidth() + 10;
   myCpuGridDecValue = 
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 3, 8, kBASE_10);
+    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 3, 8, Common::Base::F_10);
   myCpuGridDecValue->setEditable(false);
   xpos += myCpuGridDecValue->getWidth() + 5;
   myCpuGridBinValue = 
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 8, kBASE_2);
+    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 8, Common::Base::F_2);
   myCpuGridBinValue->setEditable(false);
 
   // Create a label and 1x3 grid showing the source of data for A/X/Y registers
   xpos += myCpuGridBinValue->getWidth() + 20;
   myCpuDataSrcGrid = 
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 4, 16, kBASE_16);
+    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 4, 16, Common::Base::F_16);
   myCpuDataSrcGrid->setEditable(false);
   new StaticTextWidget(boss, font, xpos-font.getMaxCharWidth(),
                        ypos+myCpuDataSrcGrid->getHeight() + 4,

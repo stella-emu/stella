@@ -23,6 +23,7 @@
 class GuiObject;
 class ButtonWidget;
 
+#include "Base.hxx"
 #include "Font.hxx"
 #include "Command.hxx"
 #include "Debugger.hxx"

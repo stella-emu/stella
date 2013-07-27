@@ -32,6 +32,7 @@ Cartridge4KWidget::Cartridge4KWidget(
 
   ostringstream info;
   info << "Standard 4K cartridge, non-bankswitched\n"
-       << "Accessible @ $" << HEX4 << start << " - " << "$" << (start + 0xFFF);
+       << "Accessible @ $" << Common::Base::HEX4 << start << " - "
+       << "$" << (start + 0xFFF);
   addBaseInformation(4096, "Atari", info.str());
 }

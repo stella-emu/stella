@@ -39,7 +39,7 @@ CartridgeF8Widget::CartridgeF8Widget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << start << " - "
+    info << "Bank " << i << " @ $" << Common::Base::HEX4 << start << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 

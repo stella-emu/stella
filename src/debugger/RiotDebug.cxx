@@ -61,7 +61,7 @@ const DebuggerState& RiotDebug::getState()
   myState.TIM1T     = tim1T();
   myState.TIM8T     = tim8T();
   myState.TIM64T    = tim64T();
-  myState.TIM1024T  = tim1024T();
+  myState.T1024T    = tim1024T();
   myState.INTIM     = intim();
   myState.TIMINT    = timint();
   myState.TIMCLKS   = timClocks();
@@ -99,7 +99,7 @@ void RiotDebug::saveOldState()
   myOldState.TIM1T     = tim1T();
   myOldState.TIM8T     = tim8T();
   myOldState.TIM64T    = tim64T();
-  myOldState.TIM1024T  = tim1024T();
+  myOldState.T1024T    = tim1024T();
   myOldState.INTIM     = intim();
   myOldState.TIMINT    = timint();
   myOldState.TIMCLKS   = timClocks();
@@ -313,41 +313,28 @@ string RiotDebug::toString()
   const RiotState& oldstate = (RiotState&) getOldState();
 
   ostringstream buf;
-  buf << myDebugger.valueToString(0x280) + "/SWCHA(R)="
-      << myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R) << " "
-      << myDebugger.valueToString(0x280) + "/SWCHA(W)="
-      << myDebugger.invIfChanged(state.SWCHA_W, oldstate.SWCHA_W) << " "
-      << myDebugger.valueToString(0x281) + "/SWACNT="
-      << myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) << " "
-      << myDebugger.valueToString(0x282) + "/SWCHB(R)="
-      << myDebugger.invIfChanged(state.SWCHB_R, oldstate.SWCHB_R) << " "
-      << myDebugger.valueToString(0x282) + "/SWCHB(W)="
-      << myDebugger.invIfChanged(state.SWCHB_W, oldstate.SWCHB_W) << " "
-      << myDebugger.valueToString(0x283) + "/SWBCNT="
-      << myDebugger.invIfChanged(state.SWBCNT, oldstate.SWBCNT) << " "
+  buf << "280/SWCHA(R)=" << myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R)
+      << " 280/SWCHA(W)=" << myDebugger.invIfChanged(state.SWCHA_W, oldstate.SWCHA_W)
+      << " 281/SWACNT=" << myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT)
+      << endl
+      << "282/SWCHB(R)=" << myDebugger.invIfChanged(state.SWCHB_R, oldstate.SWCHB_R)
+      << " 282/SWCHB(W)=" << myDebugger.invIfChanged(state.SWCHB_W, oldstate.SWCHB_W)
+      << " 283/SWBCNT=" << myDebugger.invIfChanged(state.SWBCNT, oldstate.SWBCNT)
       << endl
 
       // These are squirrely: some symbol files will define these as
       // 0x284-0x287. Doesn't actually matter, these registers repeat
       // every 16 bytes.
-      << myDebugger.valueToString(0x294) + "/TIM1T="
-      << myDebugger.invIfChanged(state.TIM1T, oldstate.TIM1T) << " "
-      << myDebugger.valueToString(0x295) + "/TIM8T="
-      << myDebugger.invIfChanged(state.TIM8T, oldstate.TIM8T) << " "
-      << myDebugger.valueToString(0x296) + "/TIM64T="
-      << myDebugger.invIfChanged(state.TIM64T, oldstate.TIM64T) << " "
-      << myDebugger.valueToString(0x297) + "/TIM1024T="
-      << myDebugger.invIfChanged(state.TIM1024T, oldstate.TIM1024T) << " "
+      << "294/TIM1T=" << myDebugger.invIfChanged(state.TIM1T, oldstate.TIM1T)
+      << " 295/TIM8T=" << myDebugger.invIfChanged(state.TIM8T, oldstate.TIM8T)
+      << " 296/TIM64T=" << myDebugger.invIfChanged(state.TIM64T, oldstate.TIM64T)
+      << " 297/T1024T=" << myDebugger.invIfChanged(state.T1024T, oldstate.T1024T)
       << endl
 
-      << myDebugger.valueToString(0x284) + "/INTIM="
-      << myDebugger.invIfChanged(state.INTIM, oldstate.INTIM) << " "
-      << myDebugger.valueToString(0x285) + "/TIMINT="
-      << myDebugger.invIfChanged(state.TIMINT, oldstate.TIMINT) << " "
-      << "Timer_Clocks="
-      << myDebugger.invIfChanged(state.TIMCLKS, oldstate.TIMCLKS) << " "
-      << "INTIM_Clocks="
-      << myDebugger.invIfChanged(state.INTIMCLKS, oldstate.INTIMCLKS) << " "
+      << "0x284/INTIM=" << myDebugger.invIfChanged(state.INTIM, oldstate.INTIM)
+      << " 285/TIMINT=" << myDebugger.invIfChanged(state.TIMINT, oldstate.TIMINT)
+      << " Timer_Clocks=" << myDebugger.invIfChanged(state.TIMCLKS, oldstate.TIMCLKS)
+      << " INTIM_Clocks=" << myDebugger.invIfChanged(state.INTIMCLKS, oldstate.INTIMCLKS)
       << endl
 
       << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP0String()

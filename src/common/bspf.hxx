@@ -70,6 +70,7 @@
 #include <sstream>
 #include <cstring>
 #include <cctype>
+#include <cstdio>
 using namespace std;
 
 // Defines to help with path handling
@@ -111,11 +112,6 @@ using namespace std;
 #else
   #define BSPF_ARCH "NOARCH"
 #endif
-
-// Used for stringstreams
-#define HEX8 uppercase << hex << setw(8) << setfill('0')
-#define HEX4 uppercase << hex << setw(4) << setfill('0')
-#define HEX2 uppercase << hex << setw(2) << setfill('0')
 
 // Some convenience functions
 template<typename T> inline void BSPF_swap(T& a, T& b) { T tmp = a; a = b; b = tmp; }

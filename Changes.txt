@@ -35,7 +35,11 @@
 
       - Added 'cpurandom' commandline argument, and associated UI item
         to the 'I/O' tab.  This works similar to 'ramrandom', and
-        randomizes the contents on the CPU registers on ROM startup.
+        randomizes the contents of the CPU registers on ROM startup.
+
+      - Added 'uhex' debugger prompt command, which toggles all
+        hexadecimal display between upper/lower case.  This setting is
+        also saved in the settings file as argument 'dbg.uhex'.
 
   * For the Linux/UNIX port:
       - Fixed bug whereby a maximize button was always present in the

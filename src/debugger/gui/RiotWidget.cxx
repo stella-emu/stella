@@ -98,7 +98,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   CREATE_IO_REGS("SWCHB(R):", mySWCHBReadBits, 0, false);
 
   // Timer registers (R/W)
-  const char* writeNames[] = { "TIM1T:", "TIM8T:", "TIM64T:", "TIM1024T:" };
+  const char* writeNames[] = { "TIM1T:", "TIM8T:", "TIM64T:", "T1024T:" };
   xpos = 10;  ypos += 2*lineHeight;
   for(int row = 0; row < 4; ++row)
   {
@@ -106,7 +106,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
                              9*fontWidth, fontHeight, writeNames[row], kTextAlignLeft);
   }
   xpos += 9*fontWidth + 5;
-  myTimWrite = new DataGridWidget(boss, font, xpos, ypos, 1, 4, 2, 8, kBASE_16);
+  myTimWrite = new DataGridWidget(boss, font, xpos, ypos, 1, 4, 2, 8, Common::Base::F_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
@@ -120,7 +120,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
                              11*fontWidth, fontHeight, readNames[row], kTextAlignLeft);
   }
   xpos += t->getWidth() + 5;
-  myTimRead = new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 32, kBASE_16);
+  myTimRead = new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 32, Common::Base::F_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
@@ -142,7 +142,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
                          6*fontWidth, fontHeight, contLeftReadNames[row], kTextAlignLeft);
   }
   xpos += 6*fontWidth + 5;
-  myLeftINPT = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 2, 8, kBASE_16);
+  myLeftINPT = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
   myLeftINPT->setTarget(this);
   myLeftINPT->setEditable(false);
 
@@ -155,7 +155,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
                          6*fontWidth, fontHeight, contRightReadNames[row], kTextAlignLeft);
   }
   xpos += 6*fontWidth + 5;
-  myRightINPT = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 2, 8, kBASE_16);
+  myRightINPT = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
   myRightINPT->setTarget(this);
   myRightINPT->setEditable(false);
 
@@ -307,8 +307,8 @@ void RiotWidget::loadConfig()
     changed.push_back(state.TIM8T != oldstate.TIM8T);
   alist.push_back(kTim64TID);  vlist.push_back(state.TIM64T);
     changed.push_back(state.TIM64T != oldstate.TIM64T);
-  alist.push_back(kTim1024TID);  vlist.push_back(state.TIM1024T);
-    changed.push_back(state.TIM1024T != oldstate.TIM1024T);
+  alist.push_back(kTim1024TID);  vlist.push_back(state.T1024T);
+    changed.push_back(state.T1024T != oldstate.T1024T);
   myTimWrite->setList(alist, vlist, changed);
 
   // Update timer read registers

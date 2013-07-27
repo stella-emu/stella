@@ -127,7 +127,7 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     myRewindManager(NULL)
 {
   // Init parser
-  myParser = new DebuggerParser(*this);
+  myParser = new DebuggerParser(*this, osystem.settings());
 
   // Create debugger subsystems
   myCpuDebug  = new CpuDebug(*this, myConsole);
@@ -203,7 +203,7 @@ bool Debugger::start(const string& message, int address)
     ostringstream buf;
     buf << message;
     if(address > -1)
-      buf << valueToString(address);
+      buf << Common::Base::HEX4 << address;
 
     myDialog->message().setText(buf.str());
     return true;
@@ -266,73 +266,13 @@ const string Debugger::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::valueToString(int value, BaseFormat outputBase) const
-{
-  static char vToS_buf[32];
-
-  if(outputBase == kBASE_DEFAULT)
-    outputBase = myParser->base();
-
-  switch(outputBase)
-  {
-    case kBASE_2:     // base 2:  8 or 16 bits (depending on value)
-    case kBASE_2_8:   // base 2:  1 byte (8 bits) wide
-    case kBASE_2_16:  // base 2:  2 bytes (16 bits) wide
-    {
-      int places = (outputBase == kBASE_2_8 ||
-               (outputBase == kBASE_2 && value < 0x100)) ? 8 : 16;
-      vToS_buf[places] = '\0';
-      int bit = 1;
-      while(--places >= 0) {
-        if(value & bit) vToS_buf[places] = '1';
-        else            vToS_buf[places] = '0';
-        bit <<= 1;
-      }
-      break;
-    }
-
-    case kBASE_10:    // base 10: 3 or 5 bytes (depending on value)
-      if(value < 0x100)
-        BSPF_snprintf(vToS_buf, 4, "%3d", value);
-      else
-        BSPF_snprintf(vToS_buf, 6, "%5d", value);
-      break;
-
-    case kBASE_16_1:  // base 16: 1 byte wide
-      BSPF_snprintf(vToS_buf, 2, "%1X", value);
-      break;
-    case kBASE_16_2:  // base 16: 2 bytes wide
-      BSPF_snprintf(vToS_buf, 3, "%02X", value);
-      break;
-    case kBASE_16_4:  // base 16: 4 bytes wide
-      BSPF_snprintf(vToS_buf, 5, "%04X", value);
-      break;
-    case kBASE_16_8:  // base 16: 8 bytes wide
-      BSPF_snprintf(vToS_buf, 9, "%08X", value);
-      break;
-
-    case kBASE_16:    // base 16: 2, 4, 8 bytes (depending on value)
-    default:
-      if(value < 0x100)
-        BSPF_snprintf(vToS_buf, 3, "%02X", value);
-      else if(value < 0x10000)
-        BSPF_snprintf(vToS_buf, 5, "%04X", value);
-      else
-        BSPF_snprintf(vToS_buf, 9, "%08X", value);
-      break;
-  }
-
-  return string(vToS_buf);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::invIfChanged(int reg, int oldReg)
 {
   string ret;
 
   bool changed = reg != oldReg;
   if(changed) ret += "\177";
-  ret += valueToString(reg);
+  ret += Common::Base::toString(reg, Common::Base::F_16_2);
   if(changed) ret += "\177";
 
   return ret;

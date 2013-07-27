@@ -557,23 +557,23 @@ bool RomListWidget::tryInsertChar(char c, int pos)
   c = tolower(c);
   switch(_base)
   {
-    case kBASE_16:
-    case kBASE_16_1:
-    case kBASE_16_2:
-    case kBASE_16_4:
-    case kBASE_16_8:
+    case Common::Base::F_16:
+    case Common::Base::F_16_1:
+    case Common::Base::F_16_2:
+    case Common::Base::F_16_4:
+    case Common::Base::F_16_8:
       insert = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == ' ';
       break;
-    case kBASE_2:
-    case kBASE_2_8:
-    case kBASE_2_16:
+    case Common::Base::F_2:
+    case Common::Base::F_2_8:
+    case Common::Base::F_2_16:
       insert = c == '0' || c == '1' || c == ' ';
       break;
-    case kBASE_10:
+    case Common::Base::F_10:
       if((c >= '0' && c <= '9') || c == ' ')
         insert = true;
       break;
-    case kBASE_DEFAULT:
+    case Common::Base::F_DEFAULT:
       break;
   }
 
@@ -600,7 +600,7 @@ void RomListWidget::startEditMode()
         _base = DiStella::settings.gfx_format;
         break;
       default:
-        _base = instance().debugger().parser().base();
+        _base = Common::Base::format();
     }
 
     // Widget gets raw data while editing

@@ -17,6 +17,7 @@
 // $Id$
 //============================================================================
 
+#include "Base.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "Debugger.hxx"
@@ -122,15 +123,15 @@ void TiaInfoWidget::loadConfig()
   Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
 
-  myFrameCount->setText(dbg.valueToString(tia.frameCount(), kBASE_10));
-  myFrameCycles->setText(dbg.valueToString(dbg.cycles(), kBASE_10));
+  myFrameCount->setText(Common::Base::toString(tia.frameCount(), Common::Base::F_10));
+  myFrameCycles->setText(Common::Base::toString(dbg.cycles(), Common::Base::F_10));
 
   myVSync->setState(tia.vsync());
   myVBlank->setState(tia.vblank());
 
   int clk = tia.clocksThisLine();
-  myScanlineCount->setText(dbg.valueToString(tia.scanlines(), kBASE_10));
-  myScanlineCycles->setText(dbg.valueToString(clk/3, kBASE_10));
-  myPixelPosition->setText(dbg.valueToString(clk-68, kBASE_10));
-  myColorClocks->setText(dbg.valueToString(clk, kBASE_10));
+  myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::F_10));
+  myScanlineCycles->setText(Common::Base::toString(clk/3, Common::Base::F_10));
+  myPixelPosition->setText(Common::Base::toString(clk-68, Common::Base::F_10));
+  myColorClocks->setText(Common::Base::toString(clk, Common::Base::F_10));
 }

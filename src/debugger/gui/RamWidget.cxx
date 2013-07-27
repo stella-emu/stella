@@ -51,7 +51,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Add a scrollbar, since there may be more than 128 bytes of RAM available
   xpos = x;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
   myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
-                                 16, 8, 2, 8, kBASE_16, true);
+                                 16, 8, 2, 8, Common::Base::F_16, true);
   myRamGrid->setTarget(this);
   addFocusWidget(myRamGrid);
 
@@ -93,7 +93,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     new StaticTextWidget(boss, font, xpos + col*myRamGrid->colWidth() + lwidth + 8,
                          ypos - lineHeight,
                          fontWidth, fontHeight,
-                         instance().debugger().valueToString(col, kBASE_16_1),
+                         Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
   }
   for(int row = 0; row < 8; ++row)
@@ -179,8 +179,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myUndoAddress = addr;
       myUndoValue = oldval;
 
-      myDecValue->setText(instance().debugger().valueToString(value, kBASE_10));
-      myBinValue->setText(instance().debugger().valueToString(value, kBASE_2));
+      myDecValue->setText(Common::Base::toString(value, Common::Base::F_10));
+      myBinValue->setText(Common::Base::toString(value, Common::Base::F_2));
       myRevertButton->setEnabled(true);
       myUndoButton->setEnabled(true);
       break;
@@ -192,8 +192,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       value = myRamGrid->getSelectedValue();
 
       myLabel->setText(dbg.getLabel(state.rport[addr], true));
-      myDecValue->setText(instance().debugger().valueToString(value, kBASE_10));
-      myBinValue->setText(instance().debugger().valueToString(value, kBASE_2));
+      myDecValue->setText(Common::Base::toString(value, Common::Base::F_10));
+      myBinValue->setText(Common::Base::toString(value, Common::Base::F_2));
       break;
     }
 

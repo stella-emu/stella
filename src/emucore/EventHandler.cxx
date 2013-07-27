@@ -24,6 +24,7 @@
 
 #include "bspf.hxx"
 
+#include "Base.hxx"
 #include "CommandMenu.hxx"
 #include "Console.hxx"
 #include "DialogContainer.hxx"
@@ -117,6 +118,9 @@ void EventHandler::initialize()
 
   // Set number of lines a mousewheel will scroll
   ScrollBarWidget::setWheelLines(myOSystem->settings().getInt("mwheel"));
+
+  // Integer to string conversions (for HEX) use upper or lower-case
+  Common::Base::setHexUppercase(myOSystem->settings().getBool("dbg.uhex"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1780,7 +1784,7 @@ void EventHandler::saveComboMapping()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline bool EventHandler::eventIsAnalog(Event::Type event) const
 {
-  switch((int)event)
+  switch(event)
   {
     case Event::PaddleZeroAnalog:
     case Event::PaddleOneAnalog:

@@ -45,7 +45,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
                        "AUDF:", kTextAlignLeft);
   xpos += lwidth;
   myAudF = new DataGridWidget(boss, font, xpos, ypos,
-                              2, 1, 2, 5, kBASE_16);
+                              2, 1, 2, 5, Common::Base::F_16);
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
   myAudF->setEditable(false);
@@ -55,7 +55,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
   {
     new StaticTextWidget(boss, font, xpos + col*myAudF->colWidth() + 7,
                          ypos - lineHeight, fontWidth, fontHeight,
-                         instance().debugger().valueToString(col, kBASE_16_1),
+                         Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
   }
 
@@ -65,7 +65,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
                        "AUDC:", kTextAlignLeft);
   xpos += lwidth;
   myAudC = new DataGridWidget(boss, font, xpos, ypos,
-                              2, 1, 2, 4, kBASE_16);
+                              2, 1, 2, 4, Common::Base::F_16);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
   myAudC->setEditable(false);
@@ -77,7 +77,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
                        "AUDV:", kTextAlignLeft);
   xpos += lwidth;
   myAudV = new DataGridWidget(boss, font, xpos, ypos,
-                              2, 1, 2, 4, kBASE_16);
+                              2, 1, 2, 4, Common::Base::F_16);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
   myAudV->setEditable(false);

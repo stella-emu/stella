@@ -112,7 +112,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
-      patchROM(data, myRomList->getText(), (BaseFormat)id);
+      patchROM(data, myRomList->getText(), (Common::Base::Format)id);
       break;
 
     case RomListWidget::kSetPCCmd:
@@ -151,12 +151,12 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       // 'data' is the boolean value
       if(data)
       {
-        DiStella::settings.gfx_format = kBASE_2;
+        DiStella::settings.gfx_format = Common::Base::F_2;
         instance().settings().setValue("dis.gfxformat", "2");
       }
       else
       {
-        DiStella::settings.gfx_format = kBASE_16;
+        DiStella::settings.gfx_format = Common::Base::F_16;
         instance().settings().setValue("dis.gfxformat", "16");
       }
       invalidate();
@@ -214,7 +214,8 @@ void RomWidget::runtoPC(int disasm_line)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::patchROM(int disasm_line, const string& bytes, BaseFormat base)
+void RomWidget::patchROM(int disasm_line, const string& bytes,
+                         Common::Base::Format base)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
@@ -226,13 +227,13 @@ void RomWidget::patchROM(int disasm_line, const string& bytes, BaseFormat base)
 
     // Temporarily set to correct base, so we don't have to prefix each byte
     // with the type of data
-    BaseFormat oldbase = instance().debugger().parser().base();
+    Common::Base::Format oldbase = Common::Base::format();
 
-    instance().debugger().parser().setBase(base);
+    Common::Base::setFormat(base);
     command << "rom #" << list[disasm_line].address << " " << bytes;
     instance().debugger().run(command.str());
 
     // Restore previous base
-    instance().debugger().parser().setBase(oldbase);
+    Common::Base::setFormat(oldbase);
   }
 }

@@ -39,7 +39,7 @@ Cartridge3FWidget::Cartridge3FWidget(
   // Eventually, we should query this from the debugger/disassembler
   uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
   start -= start % 0x1000;
-  info << "Bank RORG" << " = $" << HEX4 << start << "\n";
+  info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
 
   int xpos = 10,
       ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
@@ -51,7 +51,8 @@ Cartridge3FWidget::Cartridge3FWidget(
     items.push_back(b + " ($3F)");
   }
   ostringstream label;
-  label << "Set bank ($" << HEX4 << start << " - $" << (start+0x7FF) << "): ";
+  label << "Set bank ($" << Common::Base::HEX4 << start << " - $" <<
+           (start+0x7FF) << "): ";
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($3F) "),
                     myLineHeight, items, label.str(),

@@ -41,8 +41,8 @@ CartridgeX07Widget::CartridgeX07Widget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << dec << i << " @ $" << HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << "\n";
+    info << "Bank " << dec << i << " @ $" << Common::Base::HEX4 << start
+         << " - " << "$" << (start + 0xFFF) << "\n";
   }
 
   int xpos = 10,

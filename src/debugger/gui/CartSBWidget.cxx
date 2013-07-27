@@ -34,7 +34,7 @@ CartridgeSBWidget::CartridgeSBWidget(
   ostringstream info, bank;
   info << "SB SUPERbanking, 32 or 64 4K banks\n"
        << "Hotspots are from $800 to $"
-       << HEX2 << (0x800 + myCart.bankCount() - 1) << ", including\n"
+       << Common::Base::HEX2 << (0x800 + myCart.bankCount() - 1) << ", including\n"
        << "mirrors ($900, $A00, $B00, ...)\n"
        << "Startup bank = " << dec << cart.myStartBank << "\n";
 
@@ -44,10 +44,11 @@ CartridgeSBWidget::CartridgeSBWidget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << dec << i << " @ $" << HEX4 << start << " - "
+    info << "Bank " << dec << i << " @ $" << Common::Base::HEX4 << start << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
 
-    bank << dec << setw(2) << setfill(' ') << i << " ($" << HEX2 << spot << ")";
+    bank << dec << setw(2) << setfill(' ') << i << " ($" << Common::Base::HEX2
+         << spot << ")";
     items.push_back(bank.str());
     bank.str("");
   }
@@ -90,7 +91,7 @@ string CartridgeSBWidget::bankState()
   ostringstream& buf = buffer();
 
   buf << "Bank = " << myCart.myCurrentBank
-      << ", hotspot = $" << HEX2 << (myCart.myCurrentBank + 0x800);
+      << ", hotspot = $" << Common::Base::HEX2 << (myCart.myCurrentBank + 0x800);
 
   return buf.str();
 }

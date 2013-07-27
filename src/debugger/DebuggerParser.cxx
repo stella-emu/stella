@@ -36,6 +36,9 @@
 #include "ProgressDialog.hxx"
 #include "PackedBitArray.hxx"
 
+#include "Base.hxx"
+using namespace Common;
+
 #ifdef CHEATCODE_SUPPORT
   #include "Cheat.hxx"
   #include "CheatManager.hxx"
@@ -50,9 +53,9 @@
 // TODO - use C++ streams instead of nasty C-strings and pointers
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerParser::DebuggerParser(Debugger& d)
+DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger(d),
-    defaultBase(kBASE_16)
+    settings(s)
 {
 }
 
@@ -148,7 +151,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
       run(command);
       count++;
     }
-    buf << "Executed " << debugger.valueToString(count) << " commands from \""
+    buf << "Executed " << count << " commands from \""
         << file.getShortPath() << "\"";
 
     return buf.str();
@@ -181,9 +184,11 @@ int DebuggerParser::decipher_arg(const string& str)
   int result;
   string arg = str;
 
-  if(defaultBase == kBASE_2) {
+  Base::Format defaultBase = Base::format();
+
+  if(defaultBase == Base::F_2) {
     bin=true; dec=false;
-  } else if(defaultBase == kBASE_10) {
+  } else if(defaultBase == Base::F_10) {
     bin=false; dec=true;
   } else {
     bin=false; dec=false;
@@ -543,11 +548,11 @@ string DebuggerParser::eval()
       buf << wlabel << "(W): ";
 
     if(args[i] < 0x100)
-      buf << "$" << debugger.valueToString(args[i], kBASE_16_2)
-          << " %" << debugger.valueToString(args[i], kBASE_2_8);
+      buf << "$" << Base::toString(args[i], Base::F_16_2)
+          << " %" << Base::toString(args[i], Base::F_2_8);
     else
-      buf << "$" << debugger.valueToString(args[i], kBASE_16_4)
-          << " %" << debugger.valueToString(args[i], kBASE_2_16);
+      buf << "$" << Base::toString(args[i], Base::F_16_4)
+          << " %" << Base::toString(args[i], Base::F_2_16);
 
     buf << " #" << (int) args[i]; 
     if(i != argCount - 1)
@@ -561,7 +566,7 @@ string DebuggerParser::eval()
 string DebuggerParser::trapStatus(int addr)
 {
   string result;
-  result += debugger.valueToString(addr);
+  result += Base::toString(addr);
   result += ": ";
   bool r = debugger.readTrap(addr);
   bool w = debugger.writeTrap(addr);
@@ -649,8 +654,8 @@ void DebuggerParser::executeBank()
       commandResult << red("bankswitching not supported by this cartridge");
     else
     {
-      commandResult << "current = " << debugger.valueToString(debugger.cartDebug().getBank())
-                    << " out of " << debugger.valueToString(banks) << " banks";
+      commandResult << "current = " << debugger.cartDebug().getBank()
+                    << " out of " << banks << " banks";
     }
   }
   else
@@ -659,7 +664,7 @@ void DebuggerParser::executeBank()
       commandResult << red("bankswitching not supported by this cartridge");
     else if(args[0] >= banks)
       commandResult << red("invalid bank number (must be 0 to ")
-                    << debugger.valueToString(banks - 1) << ")";
+                    << (banks - 1) << ")";
     else if(debugger.setBank(args[0]))
       commandResult << "switched bank OK";
     else
@@ -672,23 +677,23 @@ void DebuggerParser::executeBank()
 void DebuggerParser::executeBase()
 {
   if(args[0] == 2 || argStrings[0] == "bin")
-    setBase(kBASE_2);
+    Base::setFormat(Base::F_2);
   else if(args[0] == 10 || argStrings[0] == "dec")
-    setBase(kBASE_10);
+    Base::setFormat(Base::F_10);
   else if(args[0] == 16 || argStrings[0] == "hex")
-    setBase(kBASE_16);
+    Base::setFormat(Base::F_16);
 
   commandResult << "default base set to ";
-  switch(defaultBase) {
-    case kBASE_2:
+  switch(Base::format()) {
+    case Base::F_2:
       commandResult << "#2/bin";
       break;
 
-    case kBASE_10:
+    case Base::F_10:
       commandResult << "#10/dec";
       break;
 
-    case kBASE_16:
+    case Base::F_16:
       commandResult << "#16/hex";
       break;
 
@@ -715,7 +720,7 @@ void DebuggerParser::executeBreak()
   else
     commandResult << "Cleared";
 
-  commandResult << " breakpoint at " << debugger.valueToString(bp);
+  commandResult << " breakpoint at " << Base::toString(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -727,7 +732,7 @@ void DebuggerParser::executeBreakif()
   {
     uInt32 ret = debugger.cpuDebug().m6502().addCondBreak(
                  YaccParser::getResult(), argStrings[0] );
-    commandResult << "Added breakif " << debugger.valueToString(ret);
+    commandResult << "Added breakif " << Base::toString(ret);
   }
   else
     commandResult << red("invalid expression");
@@ -943,10 +948,10 @@ void DebuggerParser::executeDump()
   for(int i=0; i<8; i++)
   {
     int start = args[0] + i*16;
-    commandResult << debugger.valueToString(start) << ": ";
-    for(int j=0; j<16; j++)
+    commandResult << Base::toString(start) << ": ";
+    for(int j = 0; j < 16; j++)
     {
-      commandResult << debugger.valueToString(debugger.peek(start+j)) << " ";
+      commandResult << Base::toString(debugger.peek(start+j)) << " ";
       if(j == 7) commandResult << "- ";
     }
     if(i != 7) commandResult << endl;
@@ -975,8 +980,7 @@ void DebuggerParser::executeFrame()
   int count = 1;
   if(argCount != 0) count = args[0];
   debugger.nextFrame(count);
-  commandResult << "advanced " << debugger.valueToString(count) << " frame";
-  if(count != 1) commandResult << "s";
+  commandResult << "advanced " << dec << count << " frame(s)";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1057,10 +1061,10 @@ void DebuggerParser::executeJump()
   if(line >= 0 && address >= 0)
   {
     debugger.rom().scrollTo(line);
-    commandResult << "disassembly scrolled to address $" << HEX4 << address;
+    commandResult << "disassembly scrolled to address $" << Base::HEX4 << address;
   }
   else
-    commandResult << "address $" << HEX4 << args[0] << " doesn't exist";
+    commandResult << "address $" << Base::HEX4 << args[0] << " doesn't exist";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1092,9 +1096,9 @@ void DebuggerParser::executeListbreaks()
   if(conds.size() > 0)
   {
     commandResult << "\nbreakifs:\n";
-    for(unsigned int i=0; i<conds.size(); i++)
+    for(unsigned int i = 0; i < conds.size(); i++)
     {
-      commandResult << debugger.valueToString(i) << ": " << conds[i];
+      commandResult << i << ": " << conds[i];
       if(i != (conds.size() - 1)) commandResult << endl;
     }
   }
@@ -1278,8 +1282,7 @@ void DebuggerParser::executeRom()
   // method ...
   debugger.rom().invalidate();
 
-  commandResult << "changed " << debugger.valueToString( args.size() - 1 )
-                << " location(s)";
+  commandResult << "changed " << (args.size() - 1) << " location(s)";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1349,13 +1352,11 @@ void DebuggerParser::executeRunTo()
 
   if(done)
     commandResult
-      << "found " << argStrings[0] << " in "
-      << debugger.valueToString(count, kBASE_10)
+      << "found " << argStrings[0] << " in " << dec << count
       << " disassembled instructions";
   else
     commandResult
-      << argStrings[0] << " not found in "
-      << debugger.valueToString(count, kBASE_10)
+      << argStrings[0] << " not found in " << dec << count
       << " disassembled instructions";
 }
 
@@ -1379,14 +1380,12 @@ void DebuggerParser::executeRunToPc()
 
   if(done)
     commandResult
-      << "set PC to " << hex << args[0] << " in "
-      << debugger.valueToString(count, kBASE_10)
-      << " disassembled instructions";
+      << "set PC to " << Base::HEX4 << args[0] << " in "
+      << dec << count << " disassembled instructions";
   else
     commandResult
-      << "PC " << hex << args[0] << " not reached or found in "
-      << debugger.valueToString(count, kBASE_10)
-      << " disassembled instructions";
+      << "PC " << Base::HEX4 << args[0] << " not reached or found in "
+      << dec << count << " disassembled instructions";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1454,8 +1453,7 @@ void DebuggerParser::executeScanline()
   int count = 1;
   if(argCount != 0) count = args[0];
   debugger.nextScanline(count);
-  commandResult << "advanced " << debugger.valueToString(count) << " scanline";
-  if(count != 1) commandResult << "s";
+  commandResult << "advanced " << dec << count << " scanline(s)";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1463,7 +1461,7 @@ void DebuggerParser::executeScanline()
 void DebuggerParser::executeStep()
 {
   commandResult
-    << "executed " << debugger.valueToString(debugger.step()) << " cycles";
+    << "executed " << dec << debugger.step() << " cycles";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1477,8 +1475,7 @@ void DebuggerParser::executeTia()
 // "trace"
 void DebuggerParser::executeTrace()
 {
-  commandResult
-    << "executed " << debugger.valueToString(debugger.trace()) << " cycles";
+  commandResult << "executed " << dec << debugger.trace() << " cycles";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1537,10 +1534,22 @@ void DebuggerParser::executeType()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    commandResult << HEX4 << i << ": ";
+    commandResult << Base::HEX4 << i << ": ";
     debugger.cartDebug().addressTypeAsString(commandResult, i);
     commandResult << endl;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "uhex"
+void DebuggerParser::executeUHex()
+{
+  bool enable = !Base::hexUppercase();
+  Base::setHexUppercase(enable);
+
+  settings.setValue("dbg.uhex", enable);
+
+  commandResult << "uppercase HEX " << (enable ? "enabled" : "disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2178,6 +2187,14 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     &DebuggerParser::executeType
   },
 
+  {
+    "uhex",
+    "Toggle upper/lowercase HEX display",
+    false,
+    true,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeUHex
+  },
 
   {
     "undef",

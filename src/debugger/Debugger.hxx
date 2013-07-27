@@ -41,6 +41,7 @@ class ButtonWidget;
 #include <map>
 
 #include "Array.hxx"
+#include "Base.hxx"
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
@@ -183,7 +184,6 @@ class Debugger : public DialogContainer
     */
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
-    string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT) const;
 
     /* Convenience methods to get/set bit(s) in an 8-bit register */
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)

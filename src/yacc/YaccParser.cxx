@@ -23,6 +23,7 @@
 //extern "C" {
 //#endif
 
+#include "Base.hxx"
 #include "Expression.hxx"
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
@@ -107,21 +108,21 @@ inline bool is_operator(char x)
 // responsibility, not the lexer's
 int const_to_int(char *c) {
   // what base is the input in?
-  BaseFormat base = Debugger::debugger().parser().base();
+  Common::Base::Format format = Common::Base::format();
 
   switch(*c) {
     case '\\':
-      base = kBASE_2;
+      format = Common::Base::F_2;
       c++;
       break;
 
     case '#':
-      base = kBASE_10;
+      format = Common::Base::F_10;
       c++;
       break;
 
     case '$':
-      base = kBASE_16;
+      format = Common::Base::F_16;
       c++;
       break;
 
@@ -130,8 +131,8 @@ int const_to_int(char *c) {
   }
 
   int ret = 0;
-  switch(base) {
-    case kBASE_2:
+  switch(format) {
+    case Common::Base::F_2:
       while(*c) {
         if(*c != '0' && *c != '1')
           return -1;
@@ -141,7 +142,7 @@ int const_to_int(char *c) {
       }
       return ret;
 
-    case kBASE_10:
+    case Common::Base::F_10:
       while(*c) {
         if(!isdigit(*c))
           return -1;
@@ -151,7 +152,7 @@ int const_to_int(char *c) {
       }
       return ret;
 
-    case kBASE_16:
+    case Common::Base::F_16:
       while(*c) { // FIXME: error check!
         if(!isxdigit(*c))
           return -1;

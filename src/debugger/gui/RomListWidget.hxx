@@ -26,8 +26,8 @@ class PackedBitArray;
 class CheckListWidget;
 
 #include "Array.hxx"
+#include "Base.hxx"
 #include "CartDebug.hxx"
-#include "DebuggerParser.hxx"
 #include "EditableWidget.hxx"
 
 /** RomListWidget */
@@ -38,7 +38,7 @@ class RomListWidget : public EditableWidget
       kBPointChangedCmd  = 'RLbp',  // 'data' will be disassembly line number,
                                     // 'id' will be the checkbox state
       kRomChangedCmd     = 'RLpr',  // 'data' will be disassembly line number
-                                    // 'id' will be the BaseFormat of the data
+                                    // 'id' will be the Base::Format of the data
       kSetPCCmd          = 'STpc',  // 'data' will be disassembly line number
       kRuntoPCCmd        = 'RTpc',  // 'data' will be disassembly line number
       kDisassembleCmd    = 'REds',
@@ -102,8 +102,8 @@ class RomListWidget : public EditableWidget
     int  _selectedItem;
     int  _highlightedItem;
     bool _editMode;
-    BaseFormat _base;  // base used during editing
     StellaKey  _currentKeyDown;
+    Common::Base::Format _base;  // base used during editing
 
     const CartDebug::Disassembly* myDisasm;
     const PackedBitArray* myBPState;

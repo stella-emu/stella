@@ -38,7 +38,7 @@ class RiotState : public DebuggerState
     BoolArray swchbWriteBits;
     BoolArray swbcntBits;
 
-    uInt8 TIM1T, TIM8T, TIM64T, TIM1024T, INTIM, TIMINT;
+    uInt8 TIM1T, TIM8T, TIM64T, T1024T, INTIM, TIMINT;
     Int32 TIMCLKS, INTIMCLKS;
 
     // These are actually from the TIA, but are I/O related

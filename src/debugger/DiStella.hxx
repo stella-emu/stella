@@ -24,9 +24,9 @@
 #include <sstream>
 
 #include "Array.hxx"
-#include "bspf.hxx"
+#include "Base.hxx"
 #include "CartDebug.hxx"
-#include "DebuggerParser.hxx"
+#include "bspf.hxx"
 
 /**
   This class is a wrapper around the Distella code.  Much of the code remains
@@ -45,7 +45,7 @@ class DiStella
     // This will eventually grow to include all options supported by
     // standalone Distella
     typedef struct {
-      BaseFormat gfx_format;
+      Common::Base::Format gfx_format;
       bool resolve_code;    // Attempt to detect code vs. data sections
       bool show_addresses;  // Show PC addresses (always off for external output)
       bool aflag;  // Turns 'A' off in accumulator instructions (-a in Distella)
@@ -94,7 +94,7 @@ class DiStella
     inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
     {
       if(!myDbg.getLabel(buf, addr, true))
-        buf << "L" << HEX4 << addr;
+        buf << "L" << Common::Base::HEX4 << addr;
     }
     inline void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
     {
