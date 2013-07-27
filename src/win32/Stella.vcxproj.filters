@@ -726,6 +726,9 @@
     <ClCompile Include="..\gui\SnapshotDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\Base.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1453,6 +1456,9 @@
     </ClInclude>
     <ClInclude Include="..\gui\SnapshotDialog.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\Base.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

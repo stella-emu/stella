@@ -223,6 +223,7 @@ SDLmain.lib
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\FBSurfaceGL.cxx" />
     <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
     <ClCompile Include="..\common\FrameBufferGL.cxx" />
@@ -455,6 +456,7 @@ SDLmain.lib
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx" />
+    <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\FBSurfaceGL.hxx" />
     <ClInclude Include="..\common\FBSurfaceTIA.hxx" />
