@@ -120,14 +120,6 @@ template<typename T> inline T BSPF_min (T a, T b) { return (a<b) ? a : b; }
 template<typename T> inline T BSPF_max (T a, T b) { return (a>b) ? a : b; }
 template<typename T> inline T BSPF_clamp (T a, T l, T u) { return (a<l) ? l : (a>u) ? u : a; }
 
-// Convert integer to string
-inline string BSPF_toString(int num)
-{
-  ostringstream buf;
-  buf << num;
-  return buf.str();
-}
-
 // Test whether two characters are equal (case insensitive)
 static bool BSPF_equalsIgnoreCaseChar(char ch1, char ch2)
 {

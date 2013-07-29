@@ -50,13 +50,13 @@ CartridgeMCWidget::CartridgeMCWidget(
   // Add 128 1K 'ROM' blocks
   for(uInt32 i = 0x80; i <= 0xFF; ++i)
   {
-    const string& b = BSPF_toString(i);
+    const string& b = Variant(i).toString();
     items.push_back(b + " (ROM)", b);
   }
   // Add 64 512B 'RAM' blocks
   for(uInt32 i = 0x00; i <= 0x3F; ++i)
   {
-    const string& b = BSPF_toString(i);
+    const string& b = Variant(i).toString();
     items.push_back(b + " (RAM)", b);
   }
 

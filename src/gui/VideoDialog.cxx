@@ -242,12 +242,12 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // TV Mode
   items.clear();
-  items.push_back("Disabled", BSPF_toString(NTSCFilter::PRESET_OFF));
-  items.push_back("Composite", BSPF_toString(NTSCFilter::PRESET_COMPOSITE));
-  items.push_back("S-Video", BSPF_toString(NTSCFilter::PRESET_SVIDEO));
-  items.push_back("RGB", BSPF_toString(NTSCFilter::PRESET_RGB));
-  items.push_back("Bad adjust", BSPF_toString(NTSCFilter::PRESET_BAD));
-  items.push_back("Custom", BSPF_toString(NTSCFilter::PRESET_CUSTOM));
+  items.push_back("Disabled", NTSCFilter::PRESET_OFF);
+  items.push_back("Composite", NTSCFilter::PRESET_COMPOSITE);
+  items.push_back("S-Video", NTSCFilter::PRESET_SVIDEO);
+  items.push_back("RGB", NTSCFilter::PRESET_RGB);
+  items.push_back("Bad adjust", NTSCFilter::PRESET_BAD);
+  items.push_back("Custom", NTSCFilter::PRESET_CUSTOM);
   lwidth = font.getStringWidth("TV Mode: ");
   pwidth = font.getStringWidth("Bad adjust"),
   myTVMode =

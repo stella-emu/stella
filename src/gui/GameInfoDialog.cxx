@@ -301,15 +301,15 @@ GameInfoDialog::GameInfoDialog(
   lwidth = font.getStringWidth("X-Axis is: ");
   pwidth = font.getStringWidth("MindLink 0");
   items.clear();
-  items.push_back("None",       BSPF_toString(MouseControl::NoControl));
-  items.push_back("Paddle 0",   BSPF_toString(MouseControl::Paddle0));
-  items.push_back("Paddle 1",   BSPF_toString(MouseControl::Paddle1));
-  items.push_back("Paddle 2",   BSPF_toString(MouseControl::Paddle2));
-  items.push_back("Paddle 3",   BSPF_toString(MouseControl::Paddle3));
-  items.push_back("Driving 0",  BSPF_toString(MouseControl::Driving0));
-  items.push_back("Driving 1",  BSPF_toString(MouseControl::Driving1));
-  items.push_back("MindLink 0", BSPF_toString(MouseControl::MindLink0));
-  items.push_back("MindLink 1", BSPF_toString(MouseControl::MindLink1));
+  items.push_back("None",       MouseControl::NoControl);
+  items.push_back("Paddle 0",   MouseControl::Paddle0);
+  items.push_back("Paddle 1",   MouseControl::Paddle1);
+  items.push_back("Paddle 2",   MouseControl::Paddle2);
+  items.push_back("Paddle 3",   MouseControl::Paddle3);
+  items.push_back("Driving 0",  MouseControl::Driving0);
+  items.push_back("Driving 1",  MouseControl::Driving1);
+  items.push_back("MindLink 0", MouseControl::MindLink0);
+  items.push_back("MindLink 1", MouseControl::MindLink1);
 
   xpos = 45;  ypos += lineHeight + 4;
   myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
@@ -477,8 +477,8 @@ void GameInfoDialog::loadView()
   else
   {
     myMouseControl->setSelected(1);
-    myMouseX->setSelected(BSPF_toString(mcontrol[0] - '0'), "");
-    myMouseY->setSelected(BSPF_toString(mcontrol[1] - '0'), "");
+    myMouseX->setSelected(Variant(mcontrol[0] - '0'));
+    myMouseY->setSelected(Variant(mcontrol[1] - '0'));
   }
   myMouseX->setEnabled(!autoAxis);
   myMouseY->setEnabled(!autoAxis);

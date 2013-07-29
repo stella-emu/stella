@@ -54,12 +54,12 @@ Cartridge3EWidget::Cartridge3EWidget(
 
   VariantList romitems;
   for(uInt32 i = 0; i < myNumRomBanks; ++i)
-    romitems.push_back(BSPF_toString(i));
+    romitems.push_back(i);
   romitems.push_back("Inactive", "");
 
   VariantList ramitems;
   for(uInt32 i = 0; i < myNumRamBanks; ++i)
-    ramitems.push_back(BSPF_toString(i));
+    ramitems.push_back(i);
   ramitems.push_back("Inactive", "");
 
   ostringstream label;
