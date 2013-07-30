@@ -227,7 +227,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        dialog().close();
+        myInputBox->close();
       break;
     }
 
@@ -237,7 +237,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        dialog().close();
+        myInputBox->close();
       break;
     }
 

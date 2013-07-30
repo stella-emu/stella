@@ -477,8 +477,8 @@ void GameInfoDialog::loadView()
   else
   {
     myMouseControl->setSelectedIndex(1);
-    myMouseX->setSelected(Variant(mcontrol[0] - '0'));
-    myMouseY->setSelected(Variant(mcontrol[1] - '0'));
+    myMouseX->setSelected(mcontrol[0] - '0');
+    myMouseY->setSelected(mcontrol[1] - '0');
   }
   myMouseX->setEnabled(!autoAxis);
   myMouseY->setEnabled(!autoAxis);
