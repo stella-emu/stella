@@ -325,9 +325,9 @@ void RiotWidget::loadConfig()
 
   // Console switches (inverted, since 'selected' in the UI
   // means 'grounded' in the system)
-  myP0Diff->setSelected((int)riot.diffP0());
-  myP1Diff->setSelected((int)riot.diffP1());
-  myTVType->setSelected((int)riot.tvType());
+  myP0Diff->setSelectedIndex((int)riot.diffP0());
+  myP1Diff->setSelectedIndex((int)riot.diffP1());
+  myTVType->setSelectedIndex((int)riot.tvType());
   mySelect->setState(!riot.select());
   myReset->setState(!riot.reset());
 

@@ -64,7 +64,7 @@ CartridgeF6SCWidget::CartridgeF6SCWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6SCWidget::loadConfig()
 {
-  myBank->setSelected(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.myCurrentBank);
 
   CartDebugWidget::loadConfig();
 }
@@ -88,7 +88,7 @@ string CartridgeF6SCWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = { "$FF6", "$FF7", "$FF8", "$FF9" };
-  buf << "Bank = " << myCart.myCurrentBank
+  buf << "Bank = " << dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();

@@ -77,7 +77,7 @@ CartridgeX07Widget::CartridgeX07Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeX07Widget::loadConfig()
 {
-  myBank->setSelected(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.myCurrentBank);
 
   CartDebugWidget::loadConfig();
 }
@@ -100,7 +100,7 @@ string CartridgeX07Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << myCart.myCurrentBank;
+  buf << "Bank = " << dec << myCart.myCurrentBank;
 
   return buf.str();
 }

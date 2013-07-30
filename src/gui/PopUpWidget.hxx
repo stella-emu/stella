@@ -51,10 +51,10 @@ class PopUpWidget : public Widget, public CommandSender
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */
     void addItems(const VariantList& items) { myMenu->addItems(items);     }
-    void setSelected(int item)              { myMenu->setSelected(item);   }
     void setSelected(const Variant& tag,
                      const Variant& def = EmptyVariant)
                                           { myMenu->setSelected(tag, def); }
+    void setSelectedIndex(int idx)        { myMenu->setSelectedIndex(idx); }
     void setSelectedMax()                 { myMenu->setSelectedMax();      }
     void clearSelection()                 { myMenu->clearSelection();      }
 

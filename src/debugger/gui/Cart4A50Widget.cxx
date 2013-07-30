@@ -131,37 +131,37 @@ void Cartridge4A50Widget::loadConfig()
   // Lower bank
   if(myCart.myIsRomLow) // ROM active
   {
-    myROMLower->setSelected((myCart.mySliceLow >> 11) & 0x1F);
+    myROMLower->setSelectedIndex((myCart.mySliceLow >> 11) & 0x1F);
     myRAMLower->setSelectedMax();
   }
   else                  // RAM active
   {
     myROMLower->setSelectedMax();
-    myRAMLower->setSelected((myCart.mySliceLow >> 11) & 0x0F);
+    myRAMLower->setSelectedIndex((myCart.mySliceLow >> 11) & 0x0F);
   }
 
   // Middle bank
   if(myCart.myIsRomMiddle)  // ROM active
   {
-    myROMMiddle->setSelected((myCart.mySliceMiddle >> 11) & 0x1F);
+    myROMMiddle->setSelectedIndex((myCart.mySliceMiddle >> 11) & 0x1F);
     myRAMMiddle->setSelectedMax();
   }
   else                      // RAM active
   {
     myROMMiddle->setSelectedMax();
-    myRAMMiddle->setSelected((myCart.mySliceMiddle >> 11) & 0x0F);
+    myRAMMiddle->setSelectedIndex((myCart.mySliceMiddle >> 11) & 0x0F);
   }
 
   // High bank
   if(myCart.myIsRomHigh)   // ROM active
   {
-    myROMHigh->setSelected((myCart.mySliceHigh >> 11) & 0xFF);
+    myROMHigh->setSelectedIndex((myCart.mySliceHigh >> 11) & 0xFF);
     myRAMHigh->setSelectedMax();
   }
   else                      // RAM active
   {
     myROMHigh->setSelectedMax();
-    myRAMHigh->setSelected((myCart.mySliceHigh >> 11) & 0x7F);
+    myRAMHigh->setSelectedIndex((myCart.mySliceHigh >> 11) & 0x7F);
   }
 
   CartDebugWidget::loadConfig();
@@ -184,7 +184,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       else
       {
         // default to first RAM bank
-        myRAMLower->setSelected(0);
+        myRAMLower->setSelectedIndex(0);
         myCart.bankRAMLower(0);
       }
       break;
@@ -198,7 +198,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       else
       {
         // default to first ROM bank
-        myROMLower->setSelected(0);
+        myROMLower->setSelectedIndex(0);
         myCart.bankROMLower(0);
       }
       break;
@@ -212,7 +212,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       else
       {
         // default to first RAM bank
-        myRAMMiddle->setSelected(0);
+        myRAMMiddle->setSelectedIndex(0);
         myCart.bankRAMMiddle(0);
       }
       break;
@@ -226,7 +226,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       else
       {
         // default to first ROM bank
-        myROMMiddle->setSelected(0);
+        myROMMiddle->setSelectedIndex(0);
         myCart.bankROMMiddle(0);
       }
       break;
@@ -240,7 +240,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       else
       {
         // default to first RAM bank
-        myRAMHigh->setSelected(0);
+        myRAMHigh->setSelectedIndex(0);
         myCart.bankRAMHigh(0);
       }
       break;
@@ -254,7 +254,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       else
       {
         // default to first ROM bank
-        myROMHigh->setSelected(0);
+        myROMHigh->setSelectedIndex(0);
         myCart.bankROMHigh(0);
       }
       break;
@@ -269,7 +269,7 @@ string Cartridge4A50Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "L/M/H = ";
+  buf << "L/M/H = " << dec;
   if(myCart.myIsRomLow)
     buf << "ROM bank " << ((myCart.mySliceLow >> 11) & 0x1F) << " / ";
   else

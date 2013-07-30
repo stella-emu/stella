@@ -84,7 +84,7 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
 
   recalc(instance().frameBuffer().imageRect());
   open();
-  setSelected(item);
+  setSelectedIndex(item);
   moveToSelected();
 }
 
@@ -128,10 +128,10 @@ void ContextMenu::recalc(const GUI::Rect& image)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::setSelected(int item)
+void ContextMenu::setSelectedIndex(int idx)
 {
-  if(item >= 0 && item < (int)_entries.size())
-    _selectedItem = item;
+  if(idx >= 0 && idx < (int)_entries.size())
+    _selectedItem = idx;
   else
     _selectedItem = -1;
 }
@@ -145,7 +145,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
     { 
       if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
       {
-        setSelected(item);
+        setSelectedIndex(item);
         return;
       }
     }
@@ -156,7 +156,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
   {
     if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
     {
-      setSelected(item);
+      setSelectedIndex(item);
       return;
     }
   }
@@ -165,7 +165,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedMax()
 {
-  setSelected(_entries.size() - 1);
+  setSelectedIndex(_entries.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -53,11 +53,11 @@ class ContextMenu : public Dialog, public CommandSender
     /** Show context menu onscreen at the specified coordinates */
     void show(uInt32 x, uInt32 y, int item = -1);
 
-    /** Select the entry at the given index. */
-    void setSelected(int item);
-	
     /** Select the first entry matching the given tag. */
     void setSelected(const Variant& tag, const Variant& defaultTag);
+
+    /** Select the entry at the given index. */
+    void setSelectedIndex(int idx);
 
     /** Select the highest/last entry in the internal list. */
     void setSelectedMax();

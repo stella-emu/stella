@@ -46,7 +46,8 @@ string CartridgeFEWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* range[] = { "$F000", "$D000" };
-  buf << "Bank = " << myCart.bank() << ", address range = " << range[myCart.bank()];
+  buf << "Bank = " << dec << myCart.bank()
+      << ", address range = " << range[myCart.bank()];
 
   return buf.str();
 }

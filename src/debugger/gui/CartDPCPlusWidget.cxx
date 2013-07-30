@@ -216,7 +216,7 @@ void CartridgeDPCPlusWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlusWidget::loadConfig()
 {
-  myBank->setSelected(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.myCurrentBank);
 
   // Get registers, using change tracking
   IntArray alist;
@@ -325,7 +325,7 @@ string CartridgeDPCPlusWidget::bankState()
   static const char* spot[] = {
     "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
   };
-  buf << "Bank = " << myCart.myCurrentBank
+  buf << "Bank = " << dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();

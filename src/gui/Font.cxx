@@ -51,12 +51,18 @@ int Font::getCharWidth(uInt8 chr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Font::getStringWidth(const string& str) const
 {
-  int space = 0;
+  // If no width table is specified, use the maximum width
+  if(!myFontDesc.width)
+    return myFontDesc.maxwidth * str.size();
+  else
+  {
+    int space = 0;
 
-  for(unsigned int i = 0; i < str.size(); ++i)
-    space += getCharWidth(str[i]);
+    for(unsigned int i = 0; i < str.size(); ++i)
+      space += getCharWidth(str[i]);
 
-  return space;
+    return space;
+  }
 }
 
 }  // namespace GUI

@@ -86,8 +86,8 @@ CartridgeE7Widget::CartridgeE7Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7Widget::loadConfig()
 {
-  myLower2K->setSelected(myCart.myCurrentSlice[0]);
-  myUpper256B->setSelected(myCart.myCurrentRAM);
+  myLower2K->setSelectedIndex(myCart.myCurrentSlice[0]);
+  myUpper256B->setSelectedIndex(myCart.myCurrentRAM);
 
   CartDebugWidget::loadConfig();
 }
@@ -117,7 +117,7 @@ string CartridgeE7Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Slices: "
+  buf << "Slices: " << dec
       << spot_lower[myCart.myCurrentSlice[0]] << " / "
       << spot_upper[myCart.myCurrentRAM];
 

@@ -596,7 +596,11 @@ inline void TIA::startFrame()
     }
   }
   myStartScanline = 0;
+
+  // Stats counters
   myFrameCounter++;
+  if(myScanlineCountForLastFrame >= 287)
+    myPALFrameCounter++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -666,10 +670,6 @@ inline void TIA::endFrame()
     if(offset > myStopDisplayOffset && offset < 228 * 320)
       myStopDisplayOffset = offset;
   }
-
-  // Is this a PAL ROM?
-  if(myScanlineCountForLastFrame >= 287)
-    myPALFrameCounter++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

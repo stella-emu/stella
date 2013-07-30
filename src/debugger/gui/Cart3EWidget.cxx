@@ -92,13 +92,13 @@ void Cartridge3EWidget::loadConfig()
 {
   if(myCart.myCurrentBank < 256)
   {
-    myROMBank->setSelected(myCart.myCurrentBank % myNumRomBanks);
+    myROMBank->setSelectedIndex(myCart.myCurrentBank % myNumRomBanks);
     myRAMBank->setSelectedMax();
   }
   else
   {
     myROMBank->setSelectedMax();
-    myRAMBank->setSelected(myCart.myCurrentBank - 256);
+    myRAMBank->setSelectedIndex(myCart.myCurrentBank - 256);
   }
 
   CartDebugWidget::loadConfig();
@@ -120,7 +120,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
     else
     {
       bank = 256;  // default to first RAM bank
-      myRAMBank->setSelected(0);
+      myRAMBank->setSelectedIndex(0);
     }
   }
   else if(cmd == kRAMBankChanged)
@@ -133,7 +133,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
     else
     {
       bank = 0;  // default to first ROM bank
-      myROMBank->setSelected(0);
+      myROMBank->setSelectedIndex(0);
     }
   }
 
@@ -151,7 +151,7 @@ string Cartridge3EWidget::bankState()
 
   uInt16& bank = myCart.myCurrentBank;
   if(bank < 256)
-    buf << "ROM bank " << bank % myNumRomBanks << ", RAM inactive";
+    buf << "ROM bank " << dec << bank % myNumRomBanks << ", RAM inactive";
   else
     buf << "ROM inactive, RAM bank " << bank % myNumRomBanks;
 

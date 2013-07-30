@@ -81,7 +81,7 @@ CartridgeARWidget::CartridgeARWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARWidget::loadConfig()
 {
-  myBank->setSelected(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.myCurrentBank);
 
   CartDebugWidget::loadConfig();
 }
@@ -104,7 +104,7 @@ string CartridgeARWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << myCart.myCurrentBank;
+  buf << "Bank = " << dec << myCart.myCurrentBank;
 
   return buf.str();
 }

@@ -156,7 +156,7 @@ void CartridgeCMWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCMWidget::loadConfig()
 {
-  myBank->setSelected(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.myCurrentBank);
 
   RiotDebug& riot = Debugger::debugger().riotDebug();
   const RiotState& state = (RiotState&) riot.getState();
@@ -217,7 +217,7 @@ string CartridgeCMWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << myCart.myCurrentBank
+  buf << "Bank = " << dec << myCart.myCurrentBank
       << ", RAM is" << (myCart.mySWCHA & 0x10 ? " Inactive" :
          myCart.mySWCHA & 0x20 ? " Read-only" : " Write-only");
 

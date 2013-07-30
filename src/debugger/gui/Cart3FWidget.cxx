@@ -62,7 +62,7 @@ Cartridge3FWidget::Cartridge3FWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3FWidget::loadConfig()
 {
-  myBank->setSelected(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.myCurrentBank);
 
   CartDebugWidget::loadConfig();
 }
@@ -85,7 +85,7 @@ string Cartridge3FWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << myCart.myCurrentBank << ", hotspot = $3F";
+  buf << "Bank = " << dec << myCart.myCurrentBank << ", hotspot = $3F";
 
   return buf.str();
 }

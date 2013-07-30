@@ -470,13 +470,13 @@ void GameInfoDialog::loadView()
   bool autoAxis = BSPF_equalsIgnoreCase(mcontrol, "auto");
   if(autoAxis)
   {
-    myMouseControl->setSelected(0);
-    myMouseX->setSelected(0);
-    myMouseY->setSelected(0);
+    myMouseControl->setSelectedIndex(0);
+    myMouseX->setSelectedIndex(0);
+    myMouseY->setSelectedIndex(0);
   }
   else
   {
-    myMouseControl->setSelected(1);
+    myMouseControl->setSelectedIndex(1);
     myMouseX->setSelected(Variant(mcontrol[0] - '0'));
     myMouseY->setSelected(Variant(mcontrol[1] - '0'));
   }
@@ -579,12 +579,12 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kLeftCChanged:
-      myRightPort->setSelected(
+      myRightPort->setSelectedIndex(
         myLeftPort->getSelected() == 1 ? 0 : 1);
       break;
 
     case kRightCChanged:
-      myLeftPort->setSelected(
+      myLeftPort->setSelectedIndex(
         myRightPort->getSelected() == 1 ? 0 : 1);
       break;
 

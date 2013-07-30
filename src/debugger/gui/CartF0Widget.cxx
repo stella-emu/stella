@@ -76,7 +76,7 @@ CartridgeF0Widget::CartridgeF0Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF0Widget::loadConfig()
 {
-  myBank->setSelected(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.myCurrentBank);
 
   CartDebugWidget::loadConfig();
 }
@@ -99,7 +99,7 @@ string CartridgeF0Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << myCart.myCurrentBank << ", hotspot = $FF0";
+  buf << "Bank = " << dec << myCart.myCurrentBank << ", hotspot = $FF0";
 
   return buf.str();
 }

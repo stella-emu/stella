@@ -58,7 +58,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTYWidget::loadConfig()
 {
-  myBank->setSelected(myCart.bank()-1);
+  myBank->setSelectedIndex(myCart.bank()-1);
 
   CartDebugWidget::loadConfig();
 }
@@ -85,7 +85,7 @@ string CartridgeCTYWidget::bankState()
     "", "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
   };
   uInt16 bank = myCart.bank();
-  buf << "Bank = " << bank << ", hotspot = " << spot[bank];
+  buf << "Bank = " << dec << bank << ", hotspot = " << spot[bank];
 
   return buf.str();
 }

@@ -203,7 +203,7 @@ void InputDialog::loadConfig()
 {
   // Left & right ports
   const string& saport = instance().settings().getString("saport");
-  mySAPort->setSelected(BSPF_equalsIgnoreCase(saport, "rl") ? 1 : 0);
+  mySAPort->setSelectedIndex(BSPF_equalsIgnoreCase(saport, "rl") ? 1 : 0);
 
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
@@ -283,7 +283,7 @@ void InputDialog::setDefaults()
     case 2:  // Virtual devices
     {
       // Left & right ports
-      mySAPort->setSelected("lr", "lr");
+      mySAPort->setSelected("lr");
 
       // Joystick deadzone
       myDeadzone->setValue(0);
