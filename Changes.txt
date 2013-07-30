@@ -20,6 +20,9 @@
         the disassembler became confused and didn't properly track the
         PC address.
 
+      - Fixed bug in display of current TIA frame in the UI; depending on
+        how breakpoints were set, it was sometimes off by one.
+
       - Changed display for various TIA position counters to decimal
         (from hex) in the TIA tab.  Related to this, all data input
         widgets in the UI now have the ability to enter binary,

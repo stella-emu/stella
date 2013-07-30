@@ -596,6 +596,7 @@ inline void TIA::startFrame()
     }
   }
   myStartScanline = 0;
+  myFrameCounter++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -612,6 +613,7 @@ inline void TIA::endFrame()
   {
     // Skip display of this frame, as if it wasn't generated at all
     startFrame();
+    myFrameCounter--;  // This frame doesn't contribute to frame count
     return;
   }
 
@@ -650,11 +652,6 @@ inline void TIA::endFrame()
     memset(myPreviousFrameBuffer + offset, 1, stride);
   }
 
-  // Stats counters
-  myFrameCounter++;
-  if(myScanlineCountForLastFrame >= 287)
-    myPALFrameCounter++;
-
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)
   {
@@ -669,6 +666,10 @@ inline void TIA::endFrame()
     if(offset > myStopDisplayOffset && offset < 228 * 320)
       myStopDisplayOffset = offset;
   }
+
+  // Is this a PAL ROM?
+  if(myScanlineCountForLastFrame >= 287)
+    myPALFrameCounter++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
