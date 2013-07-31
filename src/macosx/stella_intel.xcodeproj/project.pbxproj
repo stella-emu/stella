@@ -324,6 +324,8 @@
 		DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */; };
 		DC74D6A1138D4D7E00F05C5C /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D69F138D4D7E00F05C5C /* StringList.hxx */; };
 		DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */; };
+		DC79F81217A88D9E00288B91 /* Base.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC79F81017A88D9E00288B91 /* Base.cxx */; };
+		DC79F81317A88D9E00288B91 /* Base.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC79F81117A88D9E00288B91 /* Base.hxx */; };
 		DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24D4173B1CF600B20FE9 /* Variant.hxx */; };
 		DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */; };
 		DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */; };
@@ -835,6 +837,8 @@
 		DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LoggerDialog.hxx; path = ../gui/LoggerDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC74D69F138D4D7E00F05C5C /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../common/StringList.hxx; sourceTree = SOURCE_ROOT; };
 		DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringParser.hxx; path = ../common/StringParser.hxx; sourceTree = SOURCE_ROOT; };
+		DC79F81017A88D9E00288B91 /* Base.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Base.cxx; path = ../common/Base.cxx; sourceTree = SOURCE_ROOT; };
+		DC79F81117A88D9E00288B91 /* Base.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Base.hxx; path = ../common/Base.hxx; sourceTree = SOURCE_ROOT; };
 		DC7A24D4173B1CF600B20FE9 /* Variant.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Variant.hxx; path = ../common/Variant.hxx; sourceTree = SOURCE_ROOT; };
 		DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileListWidget.cxx; path = ../gui/FileListWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FileListWidget.hxx; path = ../gui/FileListWidget.hxx; sourceTree = SOURCE_ROOT; };
@@ -1213,6 +1217,8 @@
 			isa = PBXGroup;
 			children = (
 				DCF467B10F93993B00B25D7A /* Array.hxx */,
+				DC79F81017A88D9E00288B91 /* Base.cxx */,
+				DC79F81117A88D9E00288B91 /* Base.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
 				DC3EE2D61417801800F9DA4A /* FBSurfaceGL.cxx */,
 				DC3EE2D71417801800F9DA4A /* FBSurfaceGL.hxx */,
@@ -1857,6 +1863,7 @@
 				DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */,
 				DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */,
 				DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */,
+				DC79F81317A88D9E00288B91 /* Base.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2164,6 +2171,7 @@
 				DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */,
 				DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */,
 				DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */,
+				DC79F81217A88D9E00288B91 /* Base.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
