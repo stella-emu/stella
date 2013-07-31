@@ -45,14 +45,14 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "Frame:", kTextAlignLeft);
   xpos += lwidth;
-  myFrameCount = new EditTextWidget(boss, font, xpos, ypos-2, 45, lineHeight, "");
+  myFrameCount = new EditTextWidget(boss, font, xpos, ypos-1, 45, lineHeight, "");
   myFrameCount->setEditable(false);
 
   xpos = x;  ypos += lineHeight + 5;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "F. Cyc:", kTextAlignLeft);
   xpos += lwidth;
-  myFrameCycles = new EditTextWidget(boss, font, xpos, ypos-2, 45, lineHeight, "");
+  myFrameCycles = new EditTextWidget(boss, font, xpos, ypos-1, 45, lineHeight, "");
   myFrameCycles->setEditable(false);
 
   xpos = x + 10;  ypos += lineHeight + 8;
@@ -68,7 +68,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "Scanline:", kTextAlignLeft);
 
-  myScanlineCount = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myScanlineCount = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
                                        lineHeight, "");
   myScanlineCount->setEditable(false);
 
@@ -76,7 +76,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "S. Cyc:", kTextAlignLeft);
 
-  myScanlineCycles = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myScanlineCycles = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
                                         lineHeight, "");
   myScanlineCycles->setEditable(false);
 
@@ -84,7 +84,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "Pixel Pos:", kTextAlignLeft);
 
-  myPixelPosition = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myPixelPosition = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
                                        lineHeight, "");
   myPixelPosition->setEditable(false);
 
@@ -92,7 +92,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "Color Clk:", kTextAlignLeft);
 
-  myColorClocks = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myColorClocks = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
                                      lineHeight, "");
   myColorClocks->setEditable(false);
 

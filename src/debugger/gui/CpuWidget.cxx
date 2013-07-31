@@ -45,7 +45,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create a 1x1 grid with label for the PC register
   xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
-  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
+  new StaticTextWidget(boss, font, xpos, ypos+1, lwidth-2, fontHeight,
                        "PC:", kTextAlignLeft);
   myPCGrid =
     new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::F_16);
@@ -55,7 +55,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create a read-only textbox containing the current PC label
   xpos += lwidth + myPCGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, font, xpos, ypos, fontWidth*25,
+  myPCLabel = new EditTextWidget(boss, font, xpos, ypos-1, fontWidth*25,
                                  lineHeight, "");
   myPCLabel->setEditable(false);
 
@@ -92,14 +92,14 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   string labels[4] = { "SP:", "A:", "X:", "Y:" };
   for(int row = 0; row < 4; ++row)
   {
-    new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
+    new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 1,
                          lwidth-2, fontHeight,
                          labels[row], kTextAlignLeft);
   }
 
   // Create a bitfield widget for changing the processor status
   xpos = x;  ypos += 4*lineHeight + 2;
-  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
+  new StaticTextWidget(boss, font, xpos, ypos+1, lwidth-2, fontHeight,
                        "PS:", kTextAlignLeft);
   myPSRegister = new ToggleBitWidget(boss, font, xpos+lwidth, ypos, 8, 1);
   myPSRegister->setTarget(this);

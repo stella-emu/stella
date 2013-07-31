@@ -53,8 +53,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
                            "Bank state: ", kTextAlignLeft);
 
   xpos += t->getWidth() + 5;
-  myBank = new EditTextWidget(boss, font, xpos, ypos,
-                              _w - 2 - xpos, font.getFontHeight());
+  myBank = new EditTextWidget(boss, font, xpos, ypos-1,
+                              _w - 2 - xpos, font.getLineHeight());
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;

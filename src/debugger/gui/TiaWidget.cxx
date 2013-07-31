@@ -43,7 +43,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
-  int xpos = 10, ypos = 15 + lineHeight, lwidth = 4 * font.getMaxCharWidth();
+  int xpos = 10, ypos = 15 + lineHeight, lwidth = 4 * fontWidth;
   StaticTextWidget* t;
 
   // Color registers
@@ -128,54 +128,55 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   // Strobe buttons
   ////////////////////////////
   ButtonWidget* b;
-  unsigned int buttonX, buttonY;
+  unsigned int buttonX, buttonY, buttonW;
   buttonX = collX + 20*fontWidth;  buttonY = ypos;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  buttonW = 7 * fontWidth;
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "WSync", kWsyncCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "ResP0", kResP0Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "ResM0", kResM0Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "ResBL", kResBLCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "HmClr", kHmclrCmd);
   b->setTarget(this);
 
   buttonX += 50 + 10;  buttonY = ypos;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "RSync", kRsyncCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "ResP1", kResP1Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "ResM1", kResM1Cmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "HMove", kHmoveCmd);
   b->setTarget(this);
 
   buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
+  b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "CxClr", kCxclrCmd);
   b->setTarget(this);
 
@@ -188,7 +189,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                            7*fontWidth, fontHeight,
                            "P0: GR:", kTextAlignLeft);
   xpos += 7*fontWidth + 5;
-  myGRP0 = new TogglePixelWidget(boss, font, xpos, ypos+2, 8, 1);
+  myGRP0 = new TogglePixelWidget(boss, font, xpos, ypos+1, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
   addFocusWidget(myGRP0);
@@ -246,7 +247,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myNusizP0);
 
   xpos += myNusizP0->getWidth() + 5;
-  myNusizP0Text = new EditTextWidget(boss, font, xpos, ypos+1, 23*fontWidth,
+  myNusizP0Text = new EditTextWidget(boss, font, xpos, ypos, 23*fontWidth,
                                      lineHeight, "");
   myNusizP0Text->setEditable(false);
 
@@ -258,7 +259,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   t = new StaticTextWidget(boss, font, xpos, ypos+2, 7*fontWidth, fontHeight,
                            "P1: GR:", kTextAlignLeft);
   xpos += 7*fontWidth + 5;
-  myGRP1 = new TogglePixelWidget(boss, font, xpos, ypos+2, 8, 1);
+  myGRP1 = new TogglePixelWidget(boss, font, xpos, ypos+1, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
   addFocusWidget(myGRP1);
@@ -313,7 +314,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myNusizP1);
 
   xpos += myNusizP1->getWidth() + 5;
-  myNusizP1Text = new EditTextWidget(boss, font, xpos, ypos+1, 23*fontWidth,
+  myNusizP1Text = new EditTextWidget(boss, font, xpos, ypos, 23*fontWidth,
                                      lineHeight, "");
   myNusizP1Text->setEditable(false);
 
@@ -493,21 +494,21 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   t = new StaticTextWidget(boss, font, xpos, ypos+2, 4*fontWidth, fontHeight,
                            "PF:", kTextAlignLeft);
   xpos += 4*fontWidth;
-  myPF[0] = new TogglePixelWidget(boss, font, xpos, ypos+2, 4, 1);
+  myPF[0] = new TogglePixelWidget(boss, font, xpos, ypos+1, 4, 1);
   myPF[0]->setTarget(this);
   myPF[0]->setID(kPF0ID);
   addFocusWidget(myPF[0]);
 
   // PF1
   xpos += myPF[0]->getWidth() + 2;
-  myPF[1] = new TogglePixelWidget(boss, font, xpos, ypos+2, 8, 1);
+  myPF[1] = new TogglePixelWidget(boss, font, xpos, ypos+1, 8, 1);
   myPF[1]->setTarget(this);
   myPF[1]->setID(kPF1ID);
   addFocusWidget(myPF[1]);
 
   // PF2
   xpos += myPF[1]->getWidth() + 2;
-  myPF[2] = new TogglePixelWidget(boss, font, xpos, ypos+2, 8, 1);
+  myPF[2] = new TogglePixelWidget(boss, font, xpos, ypos+1, 8, 1);
   myPF[2]->setTarget(this);
   myPF[2]->setID(kPF2ID);
   addFocusWidget(myPF[2]);

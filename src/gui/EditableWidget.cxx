@@ -200,7 +200,7 @@ void EditableWidget::drawCaret()
   y += _y;
 
   FBSurface& s = _boss->dialog().surface();
-  s.vLine(x, y+2, y + editRect.height() - 3, kTextColorHi);
+  s.vLine(x, y+2, y + editRect.height() - 2, kTextColorHi);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

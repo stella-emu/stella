@@ -69,14 +69,14 @@ class CartDebugWidget : public Widget, public CommandSender
         buf << " / " << (bytes/1024) << "KB";
 
       w = new EditTextWidget(_boss, _font, x+lwidth, y,
-            fwidth, myFontHeight, buf.str());
+            fwidth, myLineHeight, buf.str());
       w->setEditable(false);
       y += myLineHeight + 4;
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
             myFontHeight, "Manufacturer: ", kTextAlignLeft);
       w = new EditTextWidget(_boss, _font, x+lwidth, y,
-            fwidth, myFontHeight, manufacturer);
+            fwidth, myLineHeight, manufacturer);
       w->setEditable(false);
       y += myLineHeight + 4;
 
