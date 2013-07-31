@@ -385,6 +385,8 @@
 		DCE9CC2B1103812700C86671 /* CartDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9CC271103812700C86671 /* CartDebug.hxx */; };
 		DCE9CC2C1103812700C86671 /* DiStella.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9CC281103812700C86671 /* DiStella.cxx */; };
 		DCE9CC2D1103812700C86671 /* DiStella.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9CC291103812700C86671 /* DiStella.hxx */; };
+		DCECD7A917A88E51000A9753 /* Base.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCECD7A717A88E51000A9753 /* Base.cxx */; };
+		DCECD7AA17A88E51000A9753 /* Base.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECD7A817A88E51000A9753 /* Base.hxx */; };
 		DCECDAFB10B9DBDC00AF4E1B /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDAF310B9DBDC00AF4E1B /* Device.hxx */; };
 		DCECDAFC10B9DBDC00AF4E1B /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCECDAF410B9DBDC00AF4E1B /* M6502.cxx */; };
 		DCECDAFD10B9DBDC00AF4E1B /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDAF510B9DBDC00AF4E1B /* M6502.hxx */; };
@@ -899,6 +901,8 @@
 		DCE9CC271103812700C86671 /* CartDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDebug.hxx; path = ../debugger/CartDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCE9CC281103812700C86671 /* DiStella.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiStella.cxx; path = ../debugger/DiStella.cxx; sourceTree = SOURCE_ROOT; };
 		DCE9CC291103812700C86671 /* DiStella.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DiStella.hxx; path = ../debugger/DiStella.hxx; sourceTree = SOURCE_ROOT; };
+		DCECD7A717A88E51000A9753 /* Base.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Base.cxx; path = ../common/Base.cxx; sourceTree = SOURCE_ROOT; };
+		DCECD7A817A88E51000A9753 /* Base.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Base.hxx; path = ../common/Base.hxx; sourceTree = SOURCE_ROOT; };
 		DCECDAF310B9DBDC00AF4E1B /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCECDAF410B9DBDC00AF4E1B /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
 		DCECDAF510B9DBDC00AF4E1B /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/M6502.hxx; sourceTree = SOURCE_ROOT; };
@@ -1216,6 +1220,8 @@
 			isa = PBXGroup;
 			children = (
 				DCF467B10F93993B00B25D7A /* Array.hxx */,
+				DCECD7A717A88E51000A9753 /* Base.cxx */,
+				DCECD7A817A88E51000A9753 /* Base.hxx */,
 				DCECDB0210B9DC0400AF4E1B /* bspf.hxx */,
 				DC8AE5BF1417804C00335D45 /* FBSurfaceGL.cxx */,
 				DC8AE5C01417804C00335D45 /* FBSurfaceGL.hxx */,
@@ -1860,6 +1866,7 @@
 				DC449CB0176FF512004FA2D4 /* RomListSettings.hxx in Headers */,
 				DC0D76A7177259C3005C7805 /* ConfigPathDialog.hxx in Headers */,
 				DC0D76A9177259C3005C7805 /* SnapshotDialog.hxx in Headers */,
+				DCECD7AA17A88E51000A9753 /* Base.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2165,6 +2172,7 @@
 				DC449CAF176FF512004FA2D4 /* RomListSettings.cxx in Sources */,
 				DC0D76A6177259C3005C7805 /* ConfigPathDialog.cxx in Sources */,
 				DC0D76A8177259C3005C7805 /* SnapshotDialog.cxx in Sources */,
+				DCECD7A917A88E51000A9753 /* Base.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
