@@ -56,6 +56,8 @@
       - Added Startup notification protocol patch to the .desktop
         file from Dan Fandrich.
 
+  * Added properties database info for "Princess Rescue" ROM.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!
