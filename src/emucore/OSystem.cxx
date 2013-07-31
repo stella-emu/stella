@@ -62,6 +62,8 @@
 #include "StellaMediumFont.hxx"
 #include "StellaLargeFont.hxx"
 #include "ConsoleFont.hxx"
+#include "ConsoleMediumFont.hxx"
+#include "ConsoleLargeFont.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
 #include "Random.hxx"

@@ -169,8 +169,8 @@ FBInitStatus FrameBuffer::initialize(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kBtnTextColor;
-  myStatsMsg.w = myOSystem->consoleFont().getMaxCharWidth() * 24 + 2;
-  myStatsMsg.h = (myOSystem->consoleFont().getFontHeight() + 2) * 2;
+  myStatsMsg.w = myOSystem->infoFont().getMaxCharWidth() * 24 + 2;
+  myStatsMsg.h = (myOSystem->infoFont().getFontHeight() + 2) * 2;
 
  if(myStatsMsg.surface == NULL)
   {
@@ -223,9 +223,9 @@ void FrameBuffer::update()
                 myOSystem->console().tia().scanlines(),
                 myOSystem->console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
-        myStatsMsg.surface->drawString(myOSystem->consoleFont(),
+        myStatsMsg.surface->drawString(myOSystem->infoFont(),
           msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->drawString(myOSystem->consoleFont(),
+        myStatsMsg.surface->drawString(myOSystem->infoFont(),
           info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
         myStatsMsg.surface->setPos(myImageRect.x() + 1, myImageRect.y() + 1);
