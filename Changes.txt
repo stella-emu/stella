@@ -56,6 +56,9 @@
       - Added Startup notification protocol patch to the .desktop
         file from Dan Fandrich.
 
+  * Fixed bug when using event remapping; it was only working when
+    launching a ROM from the launcher, not in standalone mode.
+
   * Added properties database info for "Princess Rescue" ROM.
 
   * Updated included PNG library to latest stable version.

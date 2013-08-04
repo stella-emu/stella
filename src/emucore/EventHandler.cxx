@@ -1085,7 +1085,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myOSystem->createLauncher();
         }
         else
-          myOSystem->quit();
+          handleEvent(Event::Quit, 1);
       }
       return;
 
