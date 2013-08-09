@@ -335,9 +335,9 @@ class Cartridge : public Device
     static bool isProbablyE7(const uInt8* image, uInt32 size);
 
     /**
-      Returns true if the image is probably a EF bankswitching cartridge
+      Returns true if the image is probably an EF/EFSC bankswitching cartridge
     */
-    static bool isProbablyEF(const uInt8* image, uInt32 size);
+    static bool isProbablyEF(const uInt8* image, uInt32 size, const char*& type);
 
     /**
       Returns true if the image is probably an F6 bankswitching cartridge

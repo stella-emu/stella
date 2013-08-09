@@ -460,8 +460,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3F";
     else if(isProbably4A50(image, size))
       type = "4A50";
-    else if(isProbablyEF(image, size))
-      type = isProbablySC(image, size) ? "EFSC" : "EF";
+    else if(isProbablyEF(image, size, type))
+      ; // type has been set directly in the function
     else if(isProbablyX07(image, size))
       type = "X07";
     else
@@ -653,7 +653,7 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
 bool Cartridge::isProbablyDPCplus(const uInt8* image, uInt32 size)
 {
   // DPC+ ARM code has 2 occurrences of the string DPC+
-  uInt8 signature[] = { 0x44, 0x50, 0x43, 0x2B };  // DPC+
+  uInt8 signature[] = { 'D', 'P', 'C', '+' };
   return searchForBytes(image, size, signature, 4, 2);
 }
 
@@ -709,11 +709,27 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size)
+bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size, const char*& type)
 {
-  // EF cart bankswitching switches banks by accessing addresses 0xFE0
-  // to 0xFEF, usually with either a NOP or LDA
+  // Newer EF carts store strings 'EFEF' and 'EFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 efef[] = { 'E', 'F', 'E', 'F' };
+  uInt8 efsc[] = { 'E', 'F', 'S', 'C' };
+  if(searchForBytes(image+size-8, 8, efef, 4, 1) > 0)
+  {
+    type = "EF";
+    return true;
+  }
+  else if(searchForBytes(image+size-8, 8, efsc, 4, 1) > 0)
+  {
+    type = "EFSC";
+    return true;
+  }
+
+  // Otherwise, EF cart bankswitching switches banks by accessing addresses
+  // 0xFE0 to 0xFEF, usually with either a NOP or LDA
   // It's likely that the code will switch to bank 0, so that's what is tested
+  bool isEF = false;
   uInt8 signature[4][3] = {
     { 0x0C, 0xE0, 0xFF },  // NOP $FFE0
     { 0xAD, 0xE0, 0xFF },  // LDA $FFE0
@@ -721,8 +737,21 @@ bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size)
     { 0xAD, 0xE0, 0x1F }   // LDA $1FE0
   };
   for(uInt32 i = 0; i < 4; ++i)
+  {
     if(searchForBytes(image, size, signature[i], 3, 1))
-      return true;
+    {
+      isEF = true;
+      break;
+    }
+  }
+
+  // Now that we know that the ROM is EF, we need to check if it's
+  // the SC variant
+  if(isEF)
+  {
+    type = isProbablySC(image, size) ? "EFSC" : "EF";
+    return true;
+  }
 
   return false;
 }

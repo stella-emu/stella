@@ -65,8 +65,11 @@
         the ROM, to simulate pressing and releasing the buttons on a
         real console.
 
-  * Fixed bug when using event remapping; any changes were being saved only
+  * Fixed bug when using event remapping; changes were being saved only
     when launching a ROM from the launcher, not in standalone mode.
+
+  * Improved bankswitch autodetection for EF and EFSC ROMs, thanks to
+    RevEng of AtariAge.
 
   * Added properties database info for "Princess Rescue" ROM.
 
