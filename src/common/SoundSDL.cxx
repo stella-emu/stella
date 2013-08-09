@@ -365,7 +365,7 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
     // The callback is requesting 8-bit (unsigned) data, but the TIA sound
     // emulator deals in 16-bit (signed) data
     // So, we need to convert the pointer and half the length
-    sound->processFragment((Int16*)stream, (uInt32)len / 2);
+    sound->processFragment((Int16*)stream, (uInt32)len >> 1);
   }
 }
 

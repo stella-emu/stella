@@ -48,6 +48,28 @@
         hexadecimal display between upper/lower case.  This setting is
         also saved in the settings file as argument 'dbg.uhex'.
 
+  * Renamed 'Override properties' dialog (accessible from the ROM
+    launcher by a right-mouse-button click) to 'Power-on options', with
+    the following new options:
+      - Set start-up state for both joysticks as well as console select/
+        reset buttons.  Related to this, added 'holdjoy01' and 'holdjoy1'
+        commandline arguments, and removed 'holdbutton0' argument.
+
+      - The ability to load the ROM directly from this dialog, after
+        changing any settings.
+
+      - Added more detailed information as to how to use this
+        functionality to the UI.
+
+      - Buttons held down are reset approx. 0.5 seconds after starting
+        the ROM, to simulate pressing and releasing the buttons on a
+        real console.
+
+  * Fixed bug when using event remapping; any changes were being saved only
+    when launching a ROM from the launcher, not in standalone mode.
+
+  * Added properties database info for "Princess Rescue" ROM.
+
   * For the Linux/UNIX port:
       - Fixed bug whereby a maximize button was always present in the
         window title bar.  Stella could not be expanded in this way,
@@ -55,11 +77,6 @@
 
       - Added Startup notification protocol patch to the .desktop
         file from Dan Fandrich.
-
-  * Fixed bug when using event remapping; it was only working when
-    launching a ROM from the launcher, not in standalone mode.
-
-  * Added properties database info for "Princess Rescue" ROM.
 
   * Updated included PNG library to latest stable version.
 

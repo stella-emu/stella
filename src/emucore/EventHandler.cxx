@@ -130,6 +130,12 @@ void EventHandler::reset(State state)
   myOSystem->state().reset();
 
   setContinuousSnapshots(0);
+
+  // Reset events almost immediately after starting emulation mode
+  // We wait a little while, since 'hold' events may be present, and we want
+  // time for the ROM to process them
+  if(state == S_EMULATE)
+    SDL_AddTimer(500, resetEventsCallback, (void*)this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2174,6 +2180,13 @@ void EventHandler::setEventState(State state)
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed
   mySkipMouseMotion = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
+{
+  ((EventHandler*)param)->myEvent.clear();
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -49,6 +49,7 @@ class LauncherDialog : public Dialog
   public:
     // These must be accessible from dialogs created by this class
     enum {
+      kLoadROMCmd       = 'STRT',  // load currently selected ROM
       kRomDirChosenCmd  = 'romc',  // rom chosen
       kReloadRomDirCmd  = 'rdrl',  // reload the current listing
       kReloadFiltersCmd = 'rlfl'   // reload filtering options and current listing
@@ -124,7 +125,6 @@ class LauncherDialog : public Dialog
     StringList myRomExts;
 
     enum {
-      kStartCmd   = 'STRT',
       kPrevDirCmd = 'PRVD',
       kOptionsCmd = 'OPTI',
       kQuitCmd    = 'QUIT',

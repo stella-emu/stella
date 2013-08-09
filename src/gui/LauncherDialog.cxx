@@ -135,7 +135,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 10;  ypos += myDir->getHeight() + 4;
 #ifndef MAC_OSX
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Select", kStartCmd);
+                                  "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
   myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
@@ -181,7 +181,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Create context menu for ROM list options
   VariantList l;
-  l.push_back("Override properties", "override");
+  l.push_back("Power-on options", "override");
   l.push_back("Filter listing", "filter");
   l.push_back("Reload listing", "reload");
   myMenu = new ContextMenu(this, osystem->font(), l);
@@ -481,7 +481,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case kStartCmd:
+    case kLoadROMCmd:
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:
     {

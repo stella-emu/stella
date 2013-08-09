@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cstring>
 #include <cstdlib>
+#include <list>
 
 using namespace std;
 
@@ -12,9 +13,9 @@ typedef unsigned int uInt32;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int searchForBytes(const uInt8* image, uInt32 imagesize,
-                   const uInt8* signature, uInt32 sigsize)
+                   const uInt8* signature, uInt32 sigsize,
+                   list<int>& locations)
 {
-#if 1
   uInt32 count = 0;
   for(uInt32 i = 0; i < imagesize - sigsize; ++i)
   {
@@ -27,26 +28,13 @@ int searchForBytes(const uInt8* image, uInt32 imagesize,
         break;
     }
     if(matches == sigsize)
-      ++count;
-  }
-
-  return count;
-#else
-  uInt32 minhits = 2;
-  uInt32 count = 0;
-  for(uInt32 i = 0; i < imagesize - 3; ++i)
-  {
-    if(image[i] == 0xEA && image[i+2] >= 0x60 && image[i+2] <= 0x6F)
     {
       ++count;
-      i += 3;
+      locations.push_back(i);
     }
-    if(count >= minhits)
-      break;
   }
 
   return count;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,9 +67,15 @@ int main(int ac, char* av[])
   }
 //  cerr << "sig size = " << hex << s_size << endl;
 
-  int result = searchForBytes(image, i_size, sig, s_size);
+  list<int> locations;
+  int result = searchForBytes(image, i_size, sig, s_size, locations);
   if(result > 0)
-    cout << setw(3) << result << " hits:  \'" << av[2] << "\' - \"" << av[1] << "\"" << endl;
+  {
+    cout << setw(3) << result << " hits:  \'" << av[2] << "\' - \"" << av[1] << "\" @";
+    for(list<int>::iterator it = locations.begin(); it != locations.end(); ++it)
+      cout << ' ' << hex << (int)*it;
+    cout << endl;
+  }
 
   delete[] image;
   delete[] sig;

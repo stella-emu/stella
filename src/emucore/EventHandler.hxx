@@ -356,6 +356,9 @@ class EventHandler
 
     void setEventState(State state);
 
+    // Callback function invoked by the event-reset SDL Timer
+    static uInt32 resetEventsCallback(uInt32 interval, void* param);
+
   private:
     // Structure used for action menu items
     struct ActionList {

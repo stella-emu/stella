@@ -593,8 +593,30 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       myEventHandler->handleEvent(Event::ConsoleReset, 1);
     if(mySettings->getBool("holdselect"))
       myEventHandler->handleEvent(Event::ConsoleSelect, 1);
-    if(mySettings->getBool("holdbutton0"))
+
+    const string& holdjoy0 = mySettings->getString("holdjoy0");
+    if(BSPF_containsIgnoreCase(holdjoy0, "U"))
+      myEventHandler->handleEvent(Event::JoystickZeroUp, 1);
+    if(BSPF_containsIgnoreCase(holdjoy0, "D"))
+      myEventHandler->handleEvent(Event::JoystickZeroDown, 1);
+    if(BSPF_containsIgnoreCase(holdjoy0, "L"))
+      myEventHandler->handleEvent(Event::JoystickZeroLeft, 1);
+    if(BSPF_containsIgnoreCase(holdjoy0, "R"))
+      myEventHandler->handleEvent(Event::JoystickZeroRight, 1);
+    if(BSPF_containsIgnoreCase(holdjoy0, "F"))
       myEventHandler->handleEvent(Event::JoystickZeroFire, 1);
+
+    const string& holdjoy1 = mySettings->getString("holdjoy1");
+    if(BSPF_containsIgnoreCase(holdjoy1, "U"))
+      myEventHandler->handleEvent(Event::JoystickOneUp, 1);
+    if(BSPF_containsIgnoreCase(holdjoy1, "D"))
+      myEventHandler->handleEvent(Event::JoystickOneDown, 1);
+    if(BSPF_containsIgnoreCase(holdjoy1, "L"))
+      myEventHandler->handleEvent(Event::JoystickOneLeft, 1);
+    if(BSPF_containsIgnoreCase(holdjoy1, "R"))
+      myEventHandler->handleEvent(Event::JoystickOneRight, 1);
+    if(BSPF_containsIgnoreCase(holdjoy1, "F"))
+      myEventHandler->handleEvent(Event::JoystickOneFire, 1);
   }
   return EmptyString;
 }

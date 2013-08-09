@@ -29,13 +29,15 @@ class OSystem;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
-class GlobalPropsDialog : public Dialog
+class GlobalPropsDialog : public Dialog, public CommandSender
 {
   public:
     GlobalPropsDialog(GuiObject* boss, const GUI::Font& font);
     virtual ~GlobalPropsDialog();
 
   private:
+    int addHoldWidgets(const GUI::Font& font, int x, int y, WidgetArray& wid);
+
     void loadConfig();
     void saveConfig();
     void setDefaults();
@@ -43,14 +45,21 @@ class GlobalPropsDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    PopUpWidget*    myBSType;
-    PopUpWidget*    myLeftDiff;
-    PopUpWidget*    myRightDiff;
-    PopUpWidget*    myTVType;
+    enum {
+      kJ0Up, kJ0Down, kJ0Left, kJ0Right, kJ0Fire,
+      kJ1Up, kJ1Down, kJ1Left, kJ1Right, kJ1Fire
+    };
 
+    PopUpWidget* myBSType;
+    PopUpWidget* myLeftDiff;
+    PopUpWidget* myRightDiff;
+    PopUpWidget* myTVType;
+
+    CheckboxWidget* myJoy[10];
     CheckboxWidget* myHoldSelect;
     CheckboxWidget* myHoldReset;
-    CheckboxWidget* myHoldButton0;
+
+    static const char* ourJoyState[10];
 };
 
 #endif

@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.9</b></h4></center>
+  <center><h4><b>Release 3.9.1</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - June 2013</b></center>
+  <center><b>February 1999 - August 2013</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -2230,8 +2230,15 @@
     </tr>
 
     <tr>
-      <td><pre>-holdreset</pre></td>
-      <td>Start the emulator with the Game Reset switch held down.</td>
+      <td><pre>-holdjoy0 &lt;U,D,L,R,F&gt;</pre></td>
+      <td>Start the emulator with the left joystick direction/button held down
+        (ie, use 'UF' for up and fire).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-holdjoy1 &lt;U,D,L,R,F&gt;</pre></td>
+      <td>Start the emulator with the right joystick direction/button held down
+        (ie, use 'UF' for up and fire).</td>
     </tr>
 
     <tr>
@@ -2240,8 +2247,8 @@
     </tr>
 
     <tr>
-      <td><pre>-holdbutton0</pre></td>
-      <td>Start the emulator with the left joystick button held down.</td>
+      <td><pre>-holdreset</pre></td>
+      <td>Start the emulator with the Game Reset switch held down.</td>
     </tr>
 
     <tr>
@@ -2673,11 +2680,11 @@
   contains the following items:</p>
 
   <p><ol>
-    <li><p><b>Override properties</b>: Selecting this option shows a dialog whereby
-    ROM properties can be temporarily overriden.  Selecting options from this
-    dialog will cause all ROMs launched after that to use those properties
-    you specify.  Clicking <b>Default</b> will disable its functionality,
-    and use ROM properties as defined by the ROM itself.  The dialog is as
+    <li><p><b>Power-on options</b>: Selecting this option shows a dialog whereby
+    ROM properties can be temporarily overriden, and joystick/console buttons can be
+    temporarily held down.  Selecting options from this dialog will cause all ROMs launched
+    after that to use those properties you specify.  Clicking <b>Defaults</b> will disable
+    its functionality, and use ROM properties as defined by the ROM itself.  The dialog is as
     follows (See <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
     for more information concerning ROM properties):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
@@ -2691,9 +2698,10 @@
           <tr><td>Left Difficulty</td><td>-ld</td></tr>
           <tr><td>Right Difficulty</td><td>-rd</td></tr>
           <tr><td>TV Type</td><td>-tv</td></tr>
-          <tr><td>Hold Select down</td><td>-holdselect</td></tr>
-          <tr><td>Hold Reset down</td><td>-holdreset</td></tr>
-          <tr><td>Hold Button 0 down</td><td>-holdbutton0</td></tr>
+          <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
+          <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
+          <tr><td>Console: Select</td><td>-holdselect</td></tr>
+          <tr><td>Console: Reset</td><td>-holdreset</td></tr>
         </table>
         <p></p>
       </td>

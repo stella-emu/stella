@@ -219,9 +219,10 @@ string Settings::loadCommandLine(int argc, char** argv)
         return "";
       }
 
-      // Take care of arguments without an option
+      // Take care of arguments without an option or ones that shouldn't
+      // be saved to the config file
       if(key == "rominfo" || key == "debug" || key == "holdreset" ||
-         key == "holdselect" || key == "holdbutton0" || key == "takesnapshot")
+         key == "holdselect" || key == "takesnapshot")
       {
         setExternal(key, "true");
         continue;
@@ -431,7 +432,8 @@ void Settings::usage()
     << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch held down\n"
     << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
-    << "  -holdbutton0                 Start the emulator with the left joystick button held down\n"
+    << "  -holdjoy0     <U,D,L,R,F>    Start the emulator with the left joystick direction/fire button held down\n"
+    << "  -holdjoy1     <U,D,L,R,F>    Start the emulator with the right joystick direction/fire button held down\n"
     << "  -tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
     << "  -cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
     << "  -ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
