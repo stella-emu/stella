@@ -58,7 +58,6 @@ class Cartridge : public Device
       @param image    A pointer to the ROM image
       @param size     The size of the ROM image 
       @param md5      The md5sum for the given ROM image (can be updated)
-      @param name     The name of the ROM (can be updated)
       @param dtype    The detected bankswitch type of the ROM image
       @param id       Any extra info about the ROM (currently which part
                       of a multiload game is being accessed

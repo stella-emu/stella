@@ -12,7 +12,10 @@
                                Release History
 ===========================================================================
 
-3.9 to 3.9.1: (XXXX xx, 2013)
+3.9 to 3.9.1: (August 14, 2013)
+
+  * Note: because of TIA changes, the state file format has changed again,
+          and old state files will not work with this release.
 
   * Several bugfixes and improvements to the debugger:
       - Fixed bug in disassembly when the mirror used for the current

@@ -1,5 +1,5 @@
 %define name    stella
-%define version 3.9
+%define version 3.9.1
 %define rel     1
 
 %define enable_gl 1
@@ -108,6 +108,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Wed Aug 14 2013 Stephen Anthony <stephena@users.sf.net> 3.9.1-1
+- Version 3.9.1 release
+
 * Thu Jun 27 2013 Stephen Anthony <stephena@users.sf.net> 3.9-1
 - Version 3.9 release
 
