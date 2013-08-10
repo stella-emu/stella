@@ -35,7 +35,6 @@ class ControllerWidget : public Widget, public CommandSender
         CommandSender(boss),
         myController(controller)
     {
-      _type = kControllerWidget;
       _w = 18 * font.getMaxCharWidth();
       _h = 8 * font.getLineHeight();
     }

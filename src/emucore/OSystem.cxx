@@ -121,43 +121,10 @@ OSystem::OSystem()
   ostringstream info;
   const SDL_version* ver = SDL_Linked_Version();
 
-  info << "Build " << STELLA_BUILD << ", using ";
-  info << "SDL " << (int)ver->major << "." << (int)ver->minor << "." << (int)ver->patch << " ";
-  info << "[" << BSPF_ARCH << "]";
+  info << "Build " << STELLA_BUILD << ", using SDL " << (int)ver->major
+       << "." << (int)ver->minor << "."<< (int)ver->patch
+       << " [" << BSPF_ARCH << "]";
   myBuildInfo = info.str();
-
-#if 0
-  // Debugging info for the GUI widgets
-  ostringstream buf;
-  buf << "  kStaticTextWidget   = " << kStaticTextWidget   << endl
-      << "  kEditTextWidget     = " << kEditTextWidget     << endl
-      << "  kButtonWidget       = " << kButtonWidget       << endl
-      << "  kCheckboxWidget     = " << kCheckboxWidget     << endl
-      << "  kSliderWidget       = " << kSliderWidget       << endl
-      << "  kListWidget         = " << kListWidget         << endl
-      << "  kScrollBarWidget    = " << kScrollBarWidget    << endl
-      << "  kPopUpWidget        = " << kPopUpWidget        << endl
-      << "  kTabWidget          = " << kTabWidget          << endl
-      << "  kEventMappingWidget = " << kEventMappingWidget << endl
-      << "  kEditableWidget     = " << kEditableWidget     << endl
-      << "  kAudioWidget        = " << kAudioWidget        << endl
-      << "  kColorWidget        = " << kColorWidget        << endl
-      << "  kCpuWidget          = " << kCpuWidget          << endl
-      << "  kDataGridOpsWidget  = " << kDataGridOpsWidget  << endl
-      << "  kDataGridWidget     = " << kDataGridWidget     << endl
-      << "  kPromptWidget       = " << kPromptWidget       << endl
-      << "  kRamWidget          = " << kRamWidget          << endl
-      << "  kRomListWidget      = " << kRomListWidget      << endl
-      << "  kRomWidget          = " << kRomWidget          << endl
-      << "  kTiaInfoWidget      = " << kTiaInfoWidget      << endl
-      << "  kTiaOutputWidget    = " << kTiaOutputWidget    << endl
-      << "  kTiaWidget          = " << kTiaWidget          << endl
-      << "  kTiaZoomWidget      = " << kTiaZoomWidget      << endl
-      << "  kToggleBitWidget    = " << kToggleBitWidget    << endl
-      << "  kTogglePixelWidget  = " << kTogglePixelWidget  << endl
-      << "  kToggleWidget       = " << kToggleWidget       << endl;
-  logMessage(buf.str(), 0);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

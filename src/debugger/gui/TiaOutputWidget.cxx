@@ -40,8 +40,6 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
     myMenu(NULL),
     myZoom(NULL)
 {
-  _type = kTiaOutputWidget;
-
   // Create context menu for commands
   VariantList l;
   l.push_back("Fill to scanline", "scanline");

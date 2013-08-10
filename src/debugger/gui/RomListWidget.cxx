@@ -40,7 +40,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
     _currentKeyDown(KBDK_UNKNOWN)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kRomListWidget;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;

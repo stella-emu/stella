@@ -35,7 +35,6 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
     myMenu(NULL)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kTiaZoomWidget;
   _bgcolor = _bgcolorhi = kDlgColor;
 
   // Use all available space, up to the maximum bounds of the TIA image

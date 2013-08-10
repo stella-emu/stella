@@ -37,7 +37,6 @@
 Widget::Widget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h)
   : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
-    _type(0),
     _boss(boss),
     _font(font),
     _id(-1),
@@ -293,7 +292,6 @@ StaticTextWidget::StaticTextWidget(GuiObject *boss, const GUI::Font& font,
     _align(align)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
-  _type = kStaticTextWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -337,7 +335,6 @@ ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
     _cmd(cmd)
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
-  _type = kButtonWidget;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
   _textcolor = kBtnTextColor;
@@ -446,7 +443,6 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
     _textY(0)
 {
   _flags = WIDGET_ENABLED;
-  _type = kCheckboxWidget;
   _bgcolor = _bgcolorhi = kWidColor;
 
   _editable = true;
@@ -555,7 +551,6 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
     _labelWidth(labelWidth)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
-  _type = kSliderWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 

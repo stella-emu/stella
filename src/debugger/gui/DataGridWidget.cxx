@@ -51,7 +51,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_RAWDATA;
-  _type = kDataGridWidget;
   _editMode = false;
 
   // The item is selected, thus _bgcolor is used to draw the caret and

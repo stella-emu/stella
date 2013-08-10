@@ -38,8 +38,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     myUndoValue(-1),
     myCurrentRamBank(0)
 {
-  _type = kRamWidget;
-
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),

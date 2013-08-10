@@ -50,39 +50,6 @@ enum {
   WIDGET_WANTS_RAWDATA = 1 << 8
 };
 
-enum {
-  kStaticTextWidget   = 'TEXT',
-  kEditTextWidget     = 'EDIT',
-  kButtonWidget       = 'BTTN',
-  kCheckboxWidget     = 'CHKB',
-  kSliderWidget       = 'SLDE',
-  kListWidget         = 'LIST',
-  kScrollBarWidget    = 'SCRB',
-  kPopUpWidget        = 'POPU',
-  kTabWidget          = 'TABW',
-  kEventMappingWidget = 'EVMP',
-  kEditableWidget     = 'EDLE',
-  kAudioWidget        = 'AUDW',
-  kColorWidget        = 'COLR',
-  kCpuWidget          = 'CPUW',
-  kDataGridOpsWidget  = 'BGRO',
-  kDataGridWidget     = 'BGRI',
-  kPromptWidget       = 'PROM',
-  kRamWidget          = 'RAMW',
-  kRiotWidget         = 'RIOW',
-  kRomListWidget      = 'ROML',
-  kRomWidget          = 'ROMW',
-  kTiaInfoWidget      = 'TIAI',
-  kTiaOutputWidget    = 'TIAO',
-  kTiaWidget          = 'TIAW',
-  kTiaZoomWidget      = 'TIAZ',
-  kToggleBitWidget    = 'TGLB',
-  kTogglePixelWidget  = 'TGLP',
-  kToggleWidget       = 'TOGL',
-  kControllerWidget   = 'CTRL',
-  kCartDebugWidget    = 'CDBG'
-};
-
 /**
   This is the base class for all widgets.
   
@@ -160,7 +127,6 @@ class Widget : public GuiObject
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
   protected:
-    int        _type;
     GuiObject* _boss;
     const GUI::Font& _font;
     Widget*    _next;

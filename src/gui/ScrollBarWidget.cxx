@@ -46,14 +46,14 @@ static unsigned int up_arrow[8] = {
 
 // Down arrow
 static unsigned int down_arrow[8] = {
-    0x11111111,
-    0x11111111,
-    0x01111110,
-    0x01111110,
-    0x00111100,
-    0x00111100,
-    0x00011000,
-    0x00011000
+  0x11111111,
+  0x11111111,
+  0x01111110,
+  0x01111110,
+  0x00111100,
+  0x00111100,
+  0x00011000,
+  0x00011000
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +71,6 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
     _sliderDeltaMouseDownPos(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
-  _type = kScrollBarWidget;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
 }

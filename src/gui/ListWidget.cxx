@@ -43,7 +43,6 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
     _quickSelectTime(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kListWidget;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;

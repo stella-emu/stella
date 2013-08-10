@@ -36,8 +36,6 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
-  _type = kCpuWidget;
-
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();

@@ -49,7 +49,6 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth(labelWidth)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kPopUpWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;

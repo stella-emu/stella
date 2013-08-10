@@ -32,8 +32,6 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss)
 {
-  _type = kAudioWidget;
-
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();

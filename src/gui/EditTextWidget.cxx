@@ -33,7 +33,6 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
     _changed(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kEditTextWidget;
 
   startEditMode();  // We're always in edit mode
 }

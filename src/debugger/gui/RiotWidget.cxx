@@ -55,8 +55,6 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss)
 {
-  _type = kRiotWidget;
-
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();

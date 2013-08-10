@@ -30,8 +30,6 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   : ToggleWidget(boss, font, x, y, cols, rows),
     _pixelColor(0)
 {
-  _type = kTogglePixelWidget;
-
   _rowHeight = _colWidth = font.getLineHeight();
 
   // Calculate real dimensions

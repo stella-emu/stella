@@ -39,8 +39,6 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
     CommandSender(boss),
     myListIsDirty(true)
 {
-  _type = kRomWidget;
-
   int xpos, ypos;
   StaticTextWidget* t;
   WidgetArray wid;

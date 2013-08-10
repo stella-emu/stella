@@ -34,8 +34,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
-  _type = kTiaInfoWidget;
-
   x += 5;
   const int lineHeight = font.getLineHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("F. Cyc:");

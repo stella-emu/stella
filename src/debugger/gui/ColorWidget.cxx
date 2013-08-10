@@ -35,7 +35,6 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
     _cmd(cmd)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kColorWidget;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
