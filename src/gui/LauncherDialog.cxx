@@ -164,7 +164,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                   "Select", kStartCmd);
+                                   "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
     xpos += bwidth + 8;
 #endif
