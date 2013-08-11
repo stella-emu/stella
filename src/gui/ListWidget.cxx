@@ -271,8 +271,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     int newSelectedItem = 0;
     for (StringList::const_iterator i = _list.begin(); i != _list.end(); ++i)
     {
-      if(BSPF_strncasecmp((*i).c_str(), _quickSelectStr.c_str(),
-         _quickSelectStr.length()) == 0)
+      if(BSPF_startsWithIgnoreCase(*i, _quickSelectStr))
       {
         _selectedItem = newSelectedItem;
         break;

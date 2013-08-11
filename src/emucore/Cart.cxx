@@ -715,12 +715,12 @@ bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size, const char*& type)
   // This signature is attributed to "RevEng" of AtariAge
   uInt8 efef[] = { 'E', 'F', 'E', 'F' };
   uInt8 efsc[] = { 'E', 'F', 'S', 'C' };
-  if(searchForBytes(image+size-8, 8, efef, 4, 1) > 0)
+  if(searchForBytes(image+size-8, 8, efef, 4, 1))
   {
     type = "EF";
     return true;
   }
-  else if(searchForBytes(image+size-8, 8, efsc, 4, 1) > 0)
+  else if(searchForBytes(image+size-8, 8, efsc, 4, 1))
   {
     type = "EFSC";
     return true;
