@@ -100,8 +100,7 @@ string Base::toString(int value, Common::Base::Format outputBase)
 Base::Format Base::myDefaultBase = Base::F_16;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::ios_base::fmtflags Base::myHexflags =
-      std::ios_base::hex | std::ios_base::left;
+std::ios_base::fmtflags Base::myHexflags = std::ios_base::hex;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* Base::myLowerFmt[4] = {
