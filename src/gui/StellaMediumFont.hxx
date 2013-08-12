@@ -32,9 +32,9 @@
    size: 95
    ascent: 14
    descent: 4
-   first char: 32 (0x20)
+   first char: 30 (0x1e)
    last char: 126 (0x7e)
-   default char: 32 (0x20)
+   default char: 30 (0x1e)
    proportional: no
    Public domain font.  Share and enjoy.
 */
@@ -43,6 +43,96 @@ namespace GUI {
 
 // Font character bitmap data.
 static const uInt16 stellaMedium_font_bits[] = {
+
+/* MODIFIED
+   Character 30 (0x1e): large centered rounded rectangle
+   width 9
+   bbx ( 9, 15, 0, -3 )
+
+   +---------+
+   |  *****  |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   |  *****  |
+   +---------+
+*/
+0x3e00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x3e00,
+
+/* MODIFIED
+   Character 31 (0x1f): large centered circle
+   width 9
+   bbx ( 9, 15, 0, -3 )
+
+   +---------+
+   |         |
+   |         |
+   |         |
+   |         |
+   |         |
+   |   ***   |
+   |  *****  |
+   | ******* |
+   | ******* |
+   | ******* |
+   | ******* |
+   |  *****  |
+   |   ***   |
+   |         |
+   |         |
+   |         |
+   |         |
+   |         |
+   +---------+
+*/
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x1c00,
+0x3e00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x7f00,
+0x3e00,
+0x1c00,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
 
 /* Character 32 (0x20):
    width 9
@@ -4232,13 +4322,13 @@ static const FontDesc stellaMediumDesc = {
   18,
   9, 18, 0, -4,
   14,
-  32,
-  95,
+  30,
+  97,
   stellaMedium_font_bits,
   0,  /* no encode table*/
   0,  /* fixed width*/
   0,  /* fixed bbox*/
-  32,
+  32,                       // Originally 30
   sizeof(stellaMedium_font_bits)/sizeof(uInt16)
 };
 
