@@ -153,7 +153,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
                        "HmClr", kHmclrCmd);
   b->setTarget(this);
 
-  buttonX += 50 + 10;  buttonY = ypos;
+  buttonX += buttonW + 4;  buttonY = ypos;
   b = new ButtonWidget(boss, font, buttonX, buttonY, buttonW, lineHeight,
                        "RSync", kRsyncCmd);
   b->setTarget(this);

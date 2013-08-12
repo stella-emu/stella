@@ -37,12 +37,9 @@
 #include "Rect.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
-
 #include "ConsoleFont.hxx"
 #include "ConsoleMediumFont.hxx"
-#include "ConsoleLargeFont.hxx"
 #include "StellaMediumFont.hxx"
-
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
