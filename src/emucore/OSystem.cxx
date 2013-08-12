@@ -62,8 +62,6 @@
 #include "StellaMediumFont.hxx"
 #include "StellaLargeFont.hxx"
 #include "ConsoleFont.hxx"
-#include "ConsoleMediumFont.hxx"
-#include "ConsoleLargeFont.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
 #include "Random.hxx"
@@ -94,8 +92,7 @@ OSystem::OSystem()
     myRomMD5(""),
     myFeatures(""),
     myBuildInfo(""),
-    myFont(NULL),
-    myConsoleFont(NULL)
+    myFont(NULL)
 {
   // Calculate startup time
   myMillisAtStart = (uInt32)(time(NULL) * 1000);
@@ -136,7 +133,6 @@ OSystem::~OSystem()
   delete myFont;
   delete myInfoFont;
   delete mySmallFont;
-  delete myConsoleFont;
   delete myLauncherFont;
 
   // Remove any game console that is currently attached
@@ -200,9 +196,6 @@ bool OSystem::create()
   //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
   bool smallScreen = myDesktopWidth < 640 || myDesktopHeight < 480;
-
-  // The console font is always the same size (for now at least)
-  myConsoleFont  = new GUI::Font(GUI::consoleDesc);
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to

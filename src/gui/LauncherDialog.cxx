@@ -116,7 +116,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   {
     xpos += myList->getWidth() + 5;
     myRomInfoWidget =
-      new RomInfoWidget(this, romWidth < 660 ? instance().smallFont() : instance().consoleFont(),
+      new RomInfoWidget(this, romWidth < 660 ? instance().smallFont() : instance().infoFont(),
                         xpos, ypos, romWidth, myList->getHeight());
   }
 

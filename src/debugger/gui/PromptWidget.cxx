@@ -100,7 +100,7 @@ void PromptWidget::drawWidget(bool hilite)
       } else {
         fgcolor = c >> 8;
       }
-      s.drawChar(instance().consoleFont(), c & 0x7f, x, y, fgcolor);
+      s.drawChar(_font, c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -830,7 +830,7 @@ void PromptWidget::drawCaret()
 
   char c = buffer(_currentPos);
   s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
-  s.drawChar(_boss->instance().consoleFont(), c, x, y + 2, kBGColor);
+  s.drawChar(_font, c, x, y + 2, kBGColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

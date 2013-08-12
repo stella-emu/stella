@@ -41,18 +41,25 @@ class CartDebugWidget;
 class DebuggerDialog : public Dialog
 {
   public:
+    enum {
+      kSmallFontMinW  = 1080, kSmallFontMinH  = 720,
+      kMediumFontMinW = 1280, kMediumFontMinH = 860,
+      kLargeFontMinW  = 1300, kLargeFontMinH  = 940
+    };
+
     DebuggerDialog(OSystem* osystem, DialogContainer* parent,
                    int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    PromptWidget& prompt()       { return *myPrompt;       }
-    TiaInfoWidget& tiaInfo()     { return *myTiaInfo;      }
-    TiaOutputWidget& tiaOutput() { return *myTiaOutput;    }
-    TiaZoomWidget& tiaZoom()     { return *myTiaZoom;      }
-    RomWidget& rom()             { return *myRom;          }
-    CartDebugWidget& cartDebug() { return *myCartDebug;    }
-    EditTextWidget& message()    { return *myMessageBox;   }
-    ButtonWidget& rewindButton() { return *myRewindButton; }
+    const GUI::Font& font() const      { return *myFont;         }
+    PromptWidget& prompt() const       { return *myPrompt;       }
+    TiaInfoWidget& tiaInfo() const     { return *myTiaInfo;      }
+    TiaOutputWidget& tiaOutput() const { return *myTiaOutput;    }
+    TiaZoomWidget& tiaZoom() const     { return *myTiaZoom;      }
+    RomWidget& rom() const             { return *myRom;          }
+    CartDebugWidget& cartDebug() const { return *myCartDebug;    }
+    EditTextWidget& message() const    { return *myMessageBox;   }
+    ButtonWidget& rewindButton() const { return *myRewindButton; }
 
     void loadConfig();
     void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
@@ -73,6 +80,7 @@ class DebuggerDialog : public Dialog
 
     TabWidget *myTab, *myRomTab;
 
+    GUI::Font*       myFont;
     PromptWidget*    myPrompt;
     TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;
@@ -86,6 +94,7 @@ class DebuggerDialog : public Dialog
     GUI::MessageBox* myFatalError;
 
   private:
+    void createFont();
     void addTiaArea();
     void addTabArea();
     void addStatusArea();

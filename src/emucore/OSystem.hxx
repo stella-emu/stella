@@ -259,13 +259,6 @@ class OSystem
     const GUI::Font& launcherFont() const { return *myLauncherFont; }
 
     /**
-      Get the console font object of the system
-
-      @return The console font reference
-    */
-    const GUI::Font& consoleFont() const { return *myConsoleFont; }
-
-    /**
       Set the framerate for the video system.  It's placed in this class since
       the mainLoop() method is defined here.
 
@@ -643,9 +636,6 @@ class OSystem
 
     // The font object to use for the ROM launcher
     GUI::Font* myLauncherFont;
-
-    // The font object to use for the console/debugger 
-    GUI::Font* myConsoleFont;
 
     // Indicates whether the main processing loop should proceed
     TimingInfo myTimingInfo;

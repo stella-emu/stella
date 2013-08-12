@@ -38,6 +38,11 @@
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 
+#include "ConsoleFont.hxx"
+#include "ConsoleMediumFont.hxx"
+#include "ConsoleLargeFont.hxx"
+#include "StellaMediumFont.hxx"
+
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,8 +51,11 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   : Dialog(osystem, parent, x, y, w, h, true),  // use base surface
     myTab(NULL),
     myRomTab(NULL),
+    myFont(NULL),
     myFatalError(NULL)
 {
+  createFont();
+
   addTiaArea();
   addTabArea();
   addStatusArea();
@@ -60,6 +68,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::~DebuggerDialog()
 {
+  delete myFont;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -153,6 +162,19 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
   }
 }
 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::createFont()
+{
+  // For now, these sizes are hardcoded based on actual font size
+  if(_w >= kLargeFontMinW && _h >= kLargeFontMinH)
+    myFont = new GUI::Font(GUI::stellaMediumDesc);
+  else if(_w >= kMediumFontMinW && _h >= kMediumFontMinH)
+    myFont = new GUI::Font(GUI::consoleMediumDesc);
+  else
+    myFont = new GUI::Font(GUI::consoleDesc);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(const string& msg)
 {
@@ -160,7 +182,7 @@ void DebuggerDialog::showFatalMessage(const string& msg)
 
   delete myFatalError;
   myFatalError =
-    new GUI::MessageBox(this, instance().consoleFont(), msg,
+    new GUI::MessageBox(this, *myFont, msg,
                         r.width(), r.height(), kDDExitFatalCmd,
                         "Exit ROM", "Continue");
   myFatalError->show();
@@ -171,7 +193,7 @@ void DebuggerDialog::addTiaArea()
 {
   const GUI::Rect& r = instance().debugger().getTiaBounds();
 
-  myTiaOutput = new TiaOutputWidget(this, instance().consoleFont(),
+  myTiaOutput = new TiaOutputWidget(this, *myFont,
                                     r.left, r.top, r.width(), r.height());
 }
 
@@ -184,7 +206,7 @@ void DebuggerDialog::addTabArea()
   // The tab widget
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 0
-  myTab = new TabWidget(this, instance().consoleFont(), r.left, r.top + vBorder,
+  myTab = new TabWidget(this, *myFont, r.left, r.top + vBorder,
                         r.width(), r.height() - vBorder);
   myTab->setID(0);
   addTabWidget(myTab);
@@ -195,28 +217,28 @@ void DebuggerDialog::addTabArea()
 
   // The Prompt/console tab
   tabID = myTab->addTab(" Prompt ");
-  myPrompt = new PromptWidget(myTab, instance().consoleFont(),
+  myPrompt = new PromptWidget(myTab, *myFont,
                               2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
   // The TIA tab
   tabID = myTab->addTab("TIA");
-  TiaWidget* tia = new TiaWidget(myTab, instance().consoleFont(),
+  TiaWidget* tia = new TiaWidget(myTab, *myFont,
                                  2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, tia);
   addToFocusList(tia->getFocusList(), myTab, tabID);
 
   // The input/output tab (includes RIOT and INPTx from TIA)
   tabID = myTab->addTab("I/O");
-  RiotWidget* riot = new RiotWidget(myTab, instance().consoleFont(),
+  RiotWidget* riot = new RiotWidget(myTab, *myFont,
                                     2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, riot);
   addToFocusList(riot->getFocusList(), myTab, tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
-  AudioWidget* aud = new AudioWidget(myTab, instance().consoleFont(),
+  AudioWidget* aud = new AudioWidget(myTab, *myFont,
                                      2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, aud);
   addToFocusList(aud->getFocusList(), myTab, tabID);
@@ -227,21 +249,21 @@ void DebuggerDialog::addTabArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addStatusArea()
 {
-  const GUI::Font& font = instance().consoleFont();
+  const GUI::Font& font = *myFont;
   const int lineHeight = font.getLineHeight();
   const GUI::Rect& r = instance().debugger().getStatusBounds();
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
-  myTiaInfo = new TiaInfoWidget(this, instance().consoleFont(), xpos, ypos);
+  myTiaInfo = new TiaInfoWidget(this, *myFont, xpos, ypos);
 
   ypos += myTiaInfo->getHeight() + 10;
-  myTiaZoom = new TiaZoomWidget(this, instance().consoleFont(), xpos+10, ypos,
+  myTiaZoom = new TiaZoomWidget(this, *myFont, xpos+10, ypos,
                                 r.width()-10, r.height()-lineHeight-ypos-10);
   addToFocusList(myTiaZoom->getFocusList());
 
   xpos += 10;  ypos += myTiaZoom->getHeight() + 10;
-  myMessageBox = new EditTextWidget(this, instance().consoleFont(),
+  myMessageBox = new EditTextWidget(this, *myFont,
                                     xpos, ypos, myTiaZoom->getWidth(),
                                     font.getLineHeight(), "");
   myMessageBox->setEditable(false);
@@ -258,41 +280,41 @@ void DebuggerDialog::addRomArea()
   int xpos, ypos;
 
   xpos = r.left + 10;  ypos = 10;
-  myCpu = new CpuWidget(this, instance().consoleFont(), xpos, ypos);
+  myCpu = new CpuWidget(this, *myFont, xpos, ypos);
   addToFocusList(myCpu->getFocusList());
 
   xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
-  myRam = new RamWidget(this, instance().consoleFont(), xpos, ypos);
+  myRam = new RamWidget(this, *myFont, xpos, ypos);
   addToFocusList(myRam->getFocusList());
 
   xpos = r.left + 10 + myCpu->getWidth() + 5;
-  DataGridOpsWidget* ops = new DataGridOpsWidget(this, instance().consoleFont(),
+  DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myFont,
                                                  xpos, 20);
 
-  int bwidth  = instance().consoleFont().getStringWidth("Frame +1 "),
-      bheight = instance().consoleFont().getLineHeight() + 2;
+  int bwidth  = myFont->getStringWidth("Frame +1 "),
+      bheight = myFont->getLineHeight() + 2;
   int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
-  new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
+  new ButtonWidget(this, *myFont, buttonX, buttonY,
                    bwidth, bheight, "Step", kDDStepCmd);
   buttonY += bheight + 4;
-  new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
+  new ButtonWidget(this, *myFont, buttonX, buttonY,
                    bwidth, bheight, "Trace", kDDTraceCmd);
   buttonY += bheight + 4;
-  new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
+  new ButtonWidget(this, *myFont, buttonX, buttonY,
                    bwidth, bheight, "Scan +1", kDDSAdvCmd);
   buttonY += bheight + 4;
-  new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
+  new ButtonWidget(this, *myFont, buttonX, buttonY,
                    bwidth, bheight, "Frame +1", kDDAdvCmd);
   buttonY += bheight + 4;
-  new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
+  new ButtonWidget(this, *myFont, buttonX, buttonY,
                    bwidth, bheight, "Exit", kDDExitCmd);
 
-  bwidth = instance().consoleFont().getStringWidth("< ") + 4;
+  bwidth = myFont->getStringWidth("< ") + 4;
   bheight = bheight * 5 + 4*4;
   buttonX -= (bwidth + 5);
   buttonY = r.top + 5;
   myRewindButton =
-    new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
+    new ButtonWidget(this, *myFont, buttonX, buttonY,
                      bwidth, bheight, "<", kDDRewindCmd);
   myRewindButton->clearFlags(WIDGET_ENABLED);
 
@@ -312,13 +334,13 @@ void DebuggerDialog::addRomArea()
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 1
   myRomTab = new TabWidget(
-      this, instance().consoleFont(), xpos, ypos, tabWidth, tabHeight);
+      this, *myFont, xpos, ypos, tabWidth, tabHeight);
   myRomTab->setID(1);
   addTabWidget(myRomTab);
 
   // The main disassembly tab
   tabID = myRomTab->addTab("   Disassembly   ");
-  myRom = new RomWidget(myRomTab, instance().consoleFont(),
+  myRom = new RomWidget(myRomTab, *myFont,
                         2, 2, tabWidth - 1,
                         tabHeight - myRomTab->getTabHeight() - 2);
   myRomTab->setParentWidget(tabID, myRom);
@@ -327,7 +349,7 @@ void DebuggerDialog::addRomArea()
   // The 'cart-specific' information tab
   tabID = myRomTab->addTab(instance().console().cartridge().name());
   myCartDebug = instance().console().cartridge().debugWidget(
-        myRomTab, instance().consoleFont(), 2, 2, tabWidth - 1,
+        myRomTab, *myFont, 2, 2, tabWidth - 1,
         tabHeight - myRomTab->getTabHeight() - 2);
   if(myCartDebug)  // TODO - make this always non-null
   {
