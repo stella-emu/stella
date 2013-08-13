@@ -173,11 +173,8 @@ void Debugger::initialize()
   myHeight = BSPF_max(myHeight, 720u);
   myOSystem->settings().setValue("debuggerres", GUI::Size(myWidth, myHeight));
 
-  const GUI::Rect& r = getDialogBounds();
-
   delete myBaseDialog;  myBaseDialog = myDialog = NULL;
-  myDialog = new DebuggerDialog(myOSystem, this,
-      r.left, r.top, r.width(), r.height());
+  myDialog = new DebuggerDialog(myOSystem, this, 0, 0, myWidth, myHeight);
   myBaseDialog = myDialog;
 
   myRewindManager = new RewindManager(*myOSystem, myDialog->rewindButton());
@@ -187,10 +184,8 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  const GUI::Rect& r = getDialogBounds();
-
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  return myOSystem->frameBuffer().initialize(title, r.width(), r.height());
+  return myOSystem->frameBuffer().initialize(title, myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -559,74 +554,6 @@ void Debugger::setQuitState()
   // Somehow this feels like a hack to me, but I don't know why
   //	if(myBreakPoints->isSet(myCpuDebug->pc()))
   mySystem.m6502().execute(1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getDialogBounds() const
-{
-  // The dialog bounds are the actual size of the entire dialog container
-  GUI::Rect r(0, 0, myWidth, myHeight);
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getTiaBounds() const
-{
-  // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
-  GUI::Rect r(0, 0, 320, 260);
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getRomBounds() const
-{
-  // The ROM area is the full area to the right of the tabs
-  const GUI::Rect& dialog = getDialogBounds();
-  const GUI::Rect& status = getStatusBounds();
-
-  int x1 = status.right + 1;
-  int y1 = 0;
-  int x2 = dialog.right;
-  int y2 = dialog.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
-
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getStatusBounds() const
-{
-  // The status area is the full area to the right of the TIA image
-  // extending as far as necessary
-  // 30% of any space above 1030 pixels will be allocated to this area
-  const GUI::Rect& dlg = getDialogBounds();
-  const GUI::Rect& tia = getTiaBounds();
-
-  int x1 = tia.right + 1;
-  int y1 = 0;
-  int x2 = tia.right + 225 + (dlg.width() > 1030 ?
-           (int) (0.35 * (dlg.width() - 1030)) : 0);
-  int y2 = tia.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
-
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getTabBounds() const
-{
-  // The tab area is the full area below the TIA image
-  const GUI::Rect& dialog = getDialogBounds();
-  const GUI::Rect& tia    = getTiaBounds();
-  const GUI::Rect& status = getStatusBounds();
-
-  int x1 = 0;
-  int y1 = tia.bottom + 1;
-  int x2 = status.right + 1;
-  int y2 = dialog.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
-
-  return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

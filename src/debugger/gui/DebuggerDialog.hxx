@@ -37,6 +37,7 @@ class CartDebugWidget;
 
 #include "Dialog.hxx"
 #include "MessageBox.hxx"
+#include "Rect.hxx"
 
 class DebuggerDialog : public Dialog
 {
@@ -61,11 +62,32 @@ class DebuggerDialog : public Dialog
     EditTextWidget& message() const    { return *myMessageBox;   }
     ButtonWidget& rewindButton() const { return *myRewindButton; }
 
+    void showFatalMessage(const string& msg);
+
+  private:
     void loadConfig();
     void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-    void showFatalMessage(const string& msg);
+    void doStep();
+    void doTrace();
+    void doScanlineAdvance();
+    void doAdvance();
+    void doRewind();
+    void doExitDebugger();
+    void doExitRom();
+
+    void createFont();
+    void addTiaArea();
+    void addTabArea();
+    void addStatusArea();
+    void addRomArea();
+
+    GUI::Rect getDialogBounds() const;
+    GUI::Rect getTiaBounds() const;
+    GUI::Rect getRomBounds() const;
+    GUI::Rect getStatusBounds() const;
+    GUI::Rect getTabBounds() const;
 
   private:
     enum {
@@ -92,21 +114,6 @@ class DebuggerDialog : public Dialog
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
     GUI::MessageBox* myFatalError;
-
-  private:
-    void createFont();
-    void addTiaArea();
-    void addTabArea();
-    void addStatusArea();
-    void addRomArea();
-
-    void doStep();
-    void doTrace();
-    void doScanlineAdvance();
-    void doAdvance();
-    void doRewind();
-    void doExitDebugger();
-    void doExitRom();
 };
 
 #endif

@@ -34,7 +34,6 @@
 #include "DataGridOpsWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "MessageBox.hxx"
-#include "Rect.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 #include "ConsoleFont.hxx"
@@ -51,7 +50,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
     myFont(NULL),
     myFatalError(NULL)
 {
-  createFont();
+  createFont();  // Font is sized according to available space
 
   addTiaArea();
   addTabArea();
@@ -175,7 +174,7 @@ void DebuggerDialog::createFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(const string& msg)
 {
-  const GUI::Rect& r = instance().debugger().getDialogBounds();
+  const GUI::Rect& r = getDialogBounds();
 
   delete myFatalError;
   myFatalError =
@@ -188,7 +187,7 @@ void DebuggerDialog::showFatalMessage(const string& msg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTiaArea()
 {
-  const GUI::Rect& r = instance().debugger().getTiaBounds();
+  const GUI::Rect& r = getTiaBounds();
 
   myTiaOutput = new TiaOutputWidget(this, *myFont,
                                     r.left, r.top, r.width(), r.height());
@@ -197,7 +196,7 @@ void DebuggerDialog::addTiaArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTabArea()
 {
-  const GUI::Rect& r = instance().debugger().getTabBounds();
+  const GUI::Rect& r = getTabBounds();
   const int vBorder = 4;
 
   // The tab widget
@@ -248,7 +247,7 @@ void DebuggerDialog::addStatusArea()
 {
   const GUI::Font& font = *myFont;
   const int lineHeight = font.getLineHeight();
-  const GUI::Rect& r = instance().debugger().getStatusBounds();
+  const GUI::Rect& r = getStatusBounds();
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
@@ -271,7 +270,7 @@ void DebuggerDialog::addStatusArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addRomArea()
 {
-  const GUI::Rect& r = instance().debugger().getRomBounds();
+  const GUI::Rect& r = getRomBounds();
   const int vBorder = 4;
 
   int xpos, ypos;
@@ -355,6 +354,74 @@ void DebuggerDialog::addRomArea()
   }
 
   myRomTab->setActiveTab(0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect DebuggerDialog::getDialogBounds() const
+{
+  // The dialog bounds are the actual size of the entire dialog container
+  GUI::Rect r(0, 0, _w, _h);
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect DebuggerDialog::getTiaBounds() const
+{
+  // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
+  GUI::Rect r(0, 0, 320, 260);
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect DebuggerDialog::getRomBounds() const
+{
+  // The ROM area is the full area to the right of the tabs
+  const GUI::Rect& dialog = getDialogBounds();
+  const GUI::Rect& status = getStatusBounds();
+
+  int x1 = status.right + 1;
+  int y1 = 0;
+  int x2 = dialog.right;
+  int y2 = dialog.bottom;
+  GUI::Rect r(x1, y1, x2, y2);
+
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect DebuggerDialog::getStatusBounds() const
+{
+  // The status area is the full area to the right of the TIA image
+  // extending as far as necessary
+  // 30% of any space above 1030 pixels will be allocated to this area
+  const GUI::Rect& dlg = getDialogBounds();
+  const GUI::Rect& tia = getTiaBounds();
+
+  int x1 = tia.right + 1;
+  int y1 = 0;
+  int x2 = tia.right + 225 + (dlg.width() > 1030 ?
+           (int) (0.35 * (dlg.width() - 1030)) : 0);
+  int y2 = tia.bottom;
+  GUI::Rect r(x1, y1, x2, y2);
+
+  return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GUI::Rect DebuggerDialog::getTabBounds() const
+{
+  // The tab area is the full area below the TIA image
+  const GUI::Rect& dialog = getDialogBounds();
+  const GUI::Rect& tia    = getTiaBounds();
+  const GUI::Rect& status = getStatusBounds();
+
+  int x1 = 0;
+  int y1 = tia.bottom + 1;
+  int x2 = status.right + 1;
+  int y2 = dialog.bottom;
+  GUI::Rect r(x1, y1, x2, y2);
+
+  return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

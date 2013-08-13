@@ -46,7 +46,6 @@ class ButtonWidget;
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
 #include "System.hxx"
-#include "Rect.hxx"
 #include "Stack.hxx"
 #include "bspf.hxx"
 
@@ -226,16 +225,6 @@ class Debugger : public DialogContainer
       YaccParser (which technically isn't related to it at all).
     */
     static Debugger& debugger() { return *myStaticDebugger; }
-
-    /**
-      Get the dimensions of the various debugger dialog areas
-      (takes mediasource into account)
-    */
-    GUI::Rect getDialogBounds() const;
-    GUI::Rect getTiaBounds() const;
-    GUI::Rect getRomBounds() const;
-    GUI::Rect getStatusBounds() const;
-    GUI::Rect getTabBounds() const;
 
     /* These are now exposed so Expressions can use them. */
     int peek(int addr) { return mySystem.peek(addr); }
