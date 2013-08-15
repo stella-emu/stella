@@ -62,6 +62,10 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 		including automatically loading symbol files if they're named
 		romname.sym</li>
 
+	<li>Support for DASM list files (created with DASM's -l option),
+		including automatically loading list files if they're named
+		romname.lst</li>
+
 	<li>Built-in VCS.H symbols, if no symbol file is loaded.</li>
 
 	<li>Symbolic names in disassembly.</li>
@@ -343,8 +347,7 @@ to change the meaning of an expression. The prefixes are:</p>
 		the section on "Startup").</p>
 
 		<p>Remember, you can use arbitrarily complex expressions with any
-		command that takes arguments (except the ones that take filenames,
-		like "loadsym").</p>
+		command that takes arguments.</p>
 	</li>
 </ul>
 
@@ -653,7 +656,6 @@ listfunctions - List user-defined functions
     listtraps - List traps
    loadconfig - Load Distella config file
     loadstate - Load emulator state xx (0-9)
-      loadsym - Load symbol file
             n - Negative Flag: set (0 or 1), or toggle (no arg)
            pc - Set Program Counter to address xx
          pgfx - Mark 'PGFX' range in disassembly

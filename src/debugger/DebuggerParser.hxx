@@ -72,7 +72,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 71,
+      kNumCommands   = 70,
       kMAX_ARG_TYPES = 10
     };
 
@@ -160,7 +160,6 @@ class DebuggerParser
     void executeListtraps();
     void executeLoadconfig();
     void executeLoadstate();
-    void executeLoadsym();
     void executeN();
     void executePc();
     void executePGfx();

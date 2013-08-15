@@ -114,6 +114,8 @@ CartDebug::~CartDebug()
 {
   myUserLabels.clear();
   myUserAddresses.clear();
+  myUserCLabels.clear();
+  // myUserCAddresses.clear();
   mySystemAddresses.clear();
 
   for(uInt32 i = 0; i < myBankInfo.size(); ++i)
@@ -587,6 +589,7 @@ bool CartDebug::removeLabel(const string& label)
   {
     // Erase the label
     myUserAddresses.erase(iter);
+    mySystem.setDirtyPage(iter->second);
 
     // And also erase the address assigned to it
     AddrToLabel::iterator iter2 = myUserLabels.find(iter->second);
@@ -719,6 +722,65 @@ int CartDebug::getAddress(const string& label) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::loadListFile()
+{
+  // Currently, the default naming/location for list files is:
+  // 1) ROM dir based on properties entry name
+
+  if(myListFile == "")
+  {
+    const string& propsname =
+      myConsole.properties().get(Cartridge_Name) + ".lst";
+
+    FilesystemNode case1(myOSystem.romFile().getParent().getPath() + propsname);
+    if(case1.isFile() && case1.isReadable())
+      myListFile = case1.getPath();
+    else
+      return DebuggerParser::red("list file not found in:\n  " + case1.getShortPath());
+  }
+
+  FilesystemNode node(myListFile);
+  ifstream in(node.getPath().c_str());
+  if(!in.is_open())
+    return DebuggerParser::red("list file '" + node.getShortPath() + "' not readable");
+
+  myUserCLabels.clear();
+
+  while(!in.eof())
+  {
+    string line, addr1;
+    int value = -1;
+
+    getline(in, line);
+
+    if(line.length() == 0 || line[0] == '-')
+      continue;
+    else  // Search for constants
+    {
+      stringstream buf(line);
+
+      // Swallow first value
+      buf >> value >> addr1;
+
+      // Search for lines containing Uxxxx
+      if(addr1.length() > 0 && toupper(addr1[0]) == 'U')
+      {
+        // Search for pattern 'xx yy  CONSTANT ='
+        int xx = -1, yy = -1;
+        char eq = '\0';
+        buf >> hex >> xx >> hex >> yy >> line >> eq;
+        if(xx == 0 && yy >= 0 && eq == '=')
+          myUserCLabels.insert(make_pair(yy, line));
+      }
+    }
+  }
+  in.close();
+  myDebugger.rom().invalidate();
+
+  return "loaded " + node.getShortPath() + " OK";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadSymbolFile()
 {
   // Currently, the default naming/location for symbol files is:
@@ -750,12 +812,17 @@ string CartDebug::loadSymbolFile()
     int value = -1;
 
     getline(in, label);
-    stringstream buf;
-    buf << label;
+    stringstream buf(label);
     buf >> label >> hex >> value;
 
     if(label.length() > 0 && label[0] != '-' && value >= 0)
-      addLabel(label, value);
+    {
+      // Make sure the value doesn't represent a constant
+      // For now, we simply ignore constants completely
+      AddrToLabel::const_iterator iter = myUserCLabels.find(value);
+      if(iter == myUserCLabels.end() || !BSPF_equalsIgnoreCase(label, iter->second))
+        addLabel(label, value);
+    }
   }
   in.close();
   myDebugger.rom().invalidate();

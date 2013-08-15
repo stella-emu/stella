@@ -1170,13 +1170,6 @@ void DebuggerParser::executeLoadstate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "loadsym"
-void DebuggerParser::executeLoadsym()
-{
-  commandResult << debugger.cartDebug().loadSymbolFile();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "n"
 void DebuggerParser::executeN()
 {
@@ -1923,15 +1916,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeLoadstate
-  },
-
-  {
-    "loadsym",
-    "Load symbol file",
-    false,
-    true,
-    { kARG_END_ARGS },
-    &DebuggerParser::executeLoadsym
   },
 
   {

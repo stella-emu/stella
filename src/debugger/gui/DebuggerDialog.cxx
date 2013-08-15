@@ -158,6 +158,47 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doStep()
+{
+  instance().debugger().parser().run("step");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doTrace()
+{
+  instance().debugger().parser().run("trace");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doAdvance()
+{
+  instance().debugger().parser().run("frame #1");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doScanlineAdvance()
+{
+  instance().debugger().parser().run("scanline #1");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doRewind()
+{
+  instance().debugger().parser().run("rewind");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doExitDebugger()
+{
+  instance().debugger().parser().run("run");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doExitRom()
+{
+  instance().debugger().parser().run("exitrom");
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::createFont()
@@ -422,46 +463,4 @@ GUI::Rect DebuggerDialog::getTabBounds() const
   GUI::Rect r(x1, y1, x2, y2);
 
   return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doStep()
-{
-  instance().debugger().parser().run("step");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doTrace()
-{
-  instance().debugger().parser().run("trace");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doAdvance()
-{
-  instance().debugger().parser().run("frame #1");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doScanlineAdvance()
-{
-  instance().debugger().parser().run("scanline #1");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doRewind()
-{
-  instance().debugger().parser().run("rewind");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doExitDebugger()
-{
-  instance().debugger().parser().run("run");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doExitRom()
-{
-  instance().debugger().parser().run("exitrom");
 }

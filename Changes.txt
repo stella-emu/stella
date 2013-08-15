@@ -51,6 +51,15 @@
         hexadecimal display between upper/lower case.  This setting is
         also saved in the settings file as argument 'dbg.uhex'.
 
+      - Removed 'loadsym' command from the debugger prompt, since the
+        DASM symbol file is always loaded anyway, making the command
+        redundant.
+
+      - Added support for DASM lst files (created with the -l option).
+        For now, the contents are only partially used, to detect
+        constants vs. symbolic addresses in the symbol file.  Eventually,
+        further information from the lst file may be used.
+
   * Renamed 'Override properties' dialog (accessible from the ROM
     launcher by a right-mouse-button click) to 'Power-on options', with
     the following new options:
