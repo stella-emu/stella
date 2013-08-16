@@ -60,6 +60,11 @@
         constants vs. symbolic addresses in the symbol file.  Eventually,
         further information from the lst file may be used.
 
+      - The various graphics registers in the TIA output (GRPx and PFx)
+        now have their background pixels (ie, pixels not actively being
+        drawn) set to COLUBK instead of always being black.  Thanks to
+        Tjoppen of AtariAge for this idea and the actual code.
+
   * Renamed 'Override properties' dialog (accessible from the ROM
     launcher by a right-mouse-button click) to 'Power-on options', with
     the following new options:

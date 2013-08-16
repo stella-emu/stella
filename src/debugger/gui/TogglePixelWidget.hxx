@@ -31,6 +31,7 @@ class TogglePixelWidget : public ToggleWidget
     virtual ~TogglePixelWidget();
 
     void setColor(int color) { _pixelColor = color; }
+    void setBackgroundColor(int color) { _backgroundColor = color; }
     void setState(const BoolArray& state);
 
     void setIntState(int value, bool swap);
@@ -40,7 +41,7 @@ class TogglePixelWidget : public ToggleWidget
     void drawWidget(bool hilite);
 
   private:
-    int  _pixelColor;
+    int  _pixelColor, _backgroundColor;
     bool _swapBits;
 };
 

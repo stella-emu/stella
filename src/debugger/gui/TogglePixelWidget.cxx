@@ -28,7 +28,8 @@
 TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
                                      int x, int y, int cols, int rows)
   : ToggleWidget(boss, font, x, y, cols, rows),
-    _pixelColor(0)
+    _pixelColor(0),
+    _backgroundColor(kBGColor)
 {
   _rowHeight = _colWidth = font.getLineHeight();
 
@@ -136,7 +137,7 @@ void TogglePixelWidget::drawWidget(bool hilite)
 
       // Either draw the pixel in given color, or erase (show background)
       s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
-                 _stateList[pos] ? _pixelColor : kBGColor);
+                 _stateList[pos] ? _pixelColor : _backgroundColor);
     }
   }
 }

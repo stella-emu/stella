@@ -856,6 +856,7 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // grP0
   myGRP0->setColor(state.coluRegs[0]);
+  myGRP0->setBackgroundColor(state.coluRegs[3]);
   myGRP0->setIntState(state.gr[P0], false);
 
   // posP0
@@ -878,6 +879,7 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // grP1
   myGRP1->setColor(state.coluRegs[1]);
+  myGRP1->setBackgroundColor(state.coluRegs[3]);
   myGRP1->setIntState(state.gr[P1], false);
 
   // posP1
@@ -954,14 +956,17 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // PF0
   myPF[0]->setColor(state.coluRegs[2]);
+  myPF[0]->setBackgroundColor(state.coluRegs[3]);
   myPF[0]->setIntState(state.pf[0], true);  // reverse bit order
 
   // PF1
   myPF[1]->setColor(state.coluRegs[2]);
+  myPF[1]->setBackgroundColor(state.coluRegs[3]);
   myPF[1]->setIntState(state.pf[1], false);
 
   // PF2
   myPF[2]->setColor(state.coluRegs[2]);
+  myPF[2]->setBackgroundColor(state.coluRegs[3]);
   myPF[2]->setIntState(state.pf[2], true);  // reverse bit order
 
   // Reflect
