@@ -30,8 +30,12 @@ class TogglePixelWidget : public ToggleWidget
                       int x, int y, int cols, int rows);
     virtual ~TogglePixelWidget();
 
-    void setColor(int color) { _pixelColor = color; }
-    void setBackgroundColor(int color) { _backgroundColor = color; }
+    void setColor(int color) {
+      _pixelColor = (color >= 0 && color <= 255) ? color : kDlgColor;
+    }
+    void setBackgroundColor(int color) {
+      _backgroundColor = (color >= 0 && color <= 255) ? color : kDlgColor;
+    }
     void setState(const BoolArray& state);
 
     void setIntState(int value, bool swap);

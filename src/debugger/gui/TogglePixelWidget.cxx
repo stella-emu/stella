@@ -29,7 +29,7 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
                                      int x, int y, int cols, int rows)
   : ToggleWidget(boss, font, x, y, cols, rows),
     _pixelColor(0),
-    _backgroundColor(kBGColor)
+    _backgroundColor(kDlgColor)
 {
   _rowHeight = _colWidth = font.getLineHeight();
 
