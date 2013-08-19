@@ -366,6 +366,7 @@
 		DCA6277816CB0D45004E9AF0 /* ZipHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA6277316CB0D45004E9AF0 /* ZipHandler.hxx */; };
 		DCAE2A9314CCCCBD004327BB /* MouseControl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAE2A9114CCCCBD004327BB /* MouseControl.cxx */; };
 		DCAE2A9414CCCCBD004327BB /* MouseControl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAE2A9214CCCCBD004327BB /* MouseControl.hxx */; };
+		DCB31D3E17C2D667002C0868 /* ConsoleMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB31D3D17C2D667002C0868 /* ConsoleMediumFont.hxx */; };
 		DCB5CEE711F5B78C00C68D09 /* MessageBox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5CEE511F5B78C00C68D09 /* MessageBox.cxx */; };
 		DCB5CEE811F5B78C00C68D09 /* MessageBox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB5CEE611F5B78C00C68D09 /* MessageBox.hxx */; };
 		DCBD96891210314C0087CEFD /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBD96871210314C0087CEFD /* ComboDialog.cxx */; };
@@ -882,6 +883,7 @@
 		DCA6277316CB0D45004E9AF0 /* ZipHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ZipHandler.hxx; path = ../common/ZipHandler.hxx; sourceTree = SOURCE_ROOT; };
 		DCAE2A9114CCCCBD004327BB /* MouseControl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MouseControl.cxx; path = ../common/MouseControl.cxx; sourceTree = SOURCE_ROOT; };
 		DCAE2A9214CCCCBD004327BB /* MouseControl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MouseControl.hxx; path = ../common/MouseControl.hxx; sourceTree = SOURCE_ROOT; };
+		DCB31D3D17C2D667002C0868 /* ConsoleMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConsoleMediumFont.hxx; path = ../gui/ConsoleMediumFont.hxx; sourceTree = SOURCE_ROOT; };
 		DCB5CEE511F5B78C00C68D09 /* MessageBox.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MessageBox.cxx; path = ../gui/MessageBox.cxx; sourceTree = SOURCE_ROOT; };
 		DCB5CEE611F5B78C00C68D09 /* MessageBox.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MessageBox.hxx; path = ../gui/MessageBox.hxx; sourceTree = SOURCE_ROOT; };
 		DCBD96871210314C0087CEFD /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ComboDialog.cxx; path = ../gui/ComboDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -1449,6 +1451,7 @@
 				DC0D76A2177259C3005C7805 /* ConfigPathDialog.cxx */,
 				DC0D76A3177259C3005C7805 /* ConfigPathDialog.hxx */,
 				2D9217FA0857CC88001D664B /* ConsoleFont.hxx */,
+				DCB31D3D17C2D667002C0868 /* ConsoleMediumFont.hxx */,
 				DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */,
 				DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */,
 				2DDBEAAB084578BF00812C11 /* Dialog.cxx */,
@@ -1867,6 +1870,7 @@
 				DC0D76A7177259C3005C7805 /* ConfigPathDialog.hxx in Headers */,
 				DC0D76A9177259C3005C7805 /* SnapshotDialog.hxx in Headers */,
 				DCECD7AA17A88E51000A9753 /* Base.hxx in Headers */,
+				DCB31D3E17C2D667002C0868 /* ConsoleMediumFont.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
