@@ -83,7 +83,6 @@ class DebuggerDialog : public Dialog
     void addStatusArea();
     void addRomArea();
 
-    GUI::Rect getDialogBounds() const;
     GUI::Rect getTiaBounds() const;
     GUI::Rect getRomBounds() const;
     GUI::Rect getStatusBounds() const;

@@ -79,6 +79,9 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
                                      "Reset", kRestartCmd);
   myRestartButton->setTarget(this);
 
+  // Remember position of right side of buttons
+  int xpos_r = xpos + bwidth ;
+
   // Labels for RAM grid
   xpos = x;  ypos = y + lineHeight;
   myRamStart =
@@ -101,30 +104,33 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
                            3*fontWidth, fontHeight, "", kTextAlignLeft);
   }
 
-  xpos = x + 10;  ypos += 9 * lineHeight;
+  ypos += 9 * lineHeight;
+
+  // We need to define these widgets from right to left since the leftmost
+  // one resizes as much as possible
+  xpos = xpos_r - 13*fontWidth - 5;
+  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                       "Bin:", kTextAlignLeft);
+  myBinValue = new EditTextWidget(boss, font, xpos + 4*fontWidth + 5,
+                                  ypos-2, 9*fontWidth, lineHeight, "");
+  myBinValue->setEditable(false);
+
+  xpos -= 8*fontWidth + 5 + 20;
+  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                       "Dec:", kTextAlignLeft);
+  myDecValue = new EditTextWidget(boss, font, xpos + 4*fontWidth + 5, ypos-2,
+                                  4*fontWidth, lineHeight, "");
+  myDecValue->setEditable(false);
+
+  xpos_r = xpos - 20;
+  xpos = x + 10;
   new StaticTextWidget(boss, font, xpos, ypos,
                        6*fontWidth, fontHeight,
                        "Label:", kTextAlignLeft);
   xpos += 6*fontWidth + 5;
-  myLabel = new EditTextWidget(boss, font, xpos, ypos-2, 17*fontWidth,
+  myLabel = new EditTextWidget(boss, font, xpos, ypos-2, xpos_r-xpos,
                                lineHeight, "");
   myLabel->setEditable(false);
-
-  xpos += 17*fontWidth + 20;
-  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
-                       "Dec:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
-  myDecValue = new EditTextWidget(boss, font, xpos, ypos-2, 4*fontWidth,
-                                  lineHeight, "");
-  myDecValue->setEditable(false);
-
-  xpos += 4*fontWidth + 20;
-  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
-                       "Bin:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
-  myBinValue = new EditTextWidget(boss, font, xpos, ypos-2, 9*fontWidth,
-                                  lineHeight, "");
-  myBinValue->setEditable(false);
 
   // Calculate real dimensions
   _w = lwidth + myRamGrid->getWidth();

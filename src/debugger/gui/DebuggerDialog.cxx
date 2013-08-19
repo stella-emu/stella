@@ -57,7 +57,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
   addStatusArea();
   addRomArea();
 
-  // Inform the output widget about its associated zoom widget
+  // Inform the TIA output widget about its associated zoom widget
   myTiaOutput->setZoomWidget(myTiaZoom);
 }
 
@@ -215,12 +215,10 @@ void DebuggerDialog::createFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(const string& msg)
 {
-  const GUI::Rect& r = getDialogBounds();
-
   delete myFatalError;
   myFatalError =
     new GUI::MessageBox(this, *myFont, msg,
-                        r.width(), r.height(), kDDExitFatalCmd,
+                        _w*0.5, _h*0.5, kDDExitFatalCmd,
                         "Exit ROM", "Continue");
   myFatalError->show();
 }
@@ -398,18 +396,10 @@ void DebuggerDialog::addRomArea()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect DebuggerDialog::getDialogBounds() const
-{
-  // The dialog bounds are the actual size of the entire dialog container
-  GUI::Rect r(0, 0, _w, _h);
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect DebuggerDialog::getTiaBounds() const
 {
   // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
-  GUI::Rect r(0, 0, 320, 260);
+  GUI::Rect r(0, 0, 320, BSPF_max(260, (int)(_h * 0.35)));
   return r;
 }
 
@@ -417,14 +407,8 @@ GUI::Rect DebuggerDialog::getTiaBounds() const
 GUI::Rect DebuggerDialog::getRomBounds() const
 {
   // The ROM area is the full area to the right of the tabs
-  const GUI::Rect& dialog = getDialogBounds();
   const GUI::Rect& status = getStatusBounds();
-
-  int x1 = status.right + 1;
-  int y1 = 0;
-  int x2 = dialog.right;
-  int y2 = dialog.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
+  GUI::Rect r(status.right + 1, 0, _w, _h);
 
   return r;
 }
@@ -435,13 +419,11 @@ GUI::Rect DebuggerDialog::getStatusBounds() const
   // The status area is the full area to the right of the TIA image
   // extending as far as necessary
   // 30% of any space above 1030 pixels will be allocated to this area
-  const GUI::Rect& dlg = getDialogBounds();
   const GUI::Rect& tia = getTiaBounds();
 
   int x1 = tia.right + 1;
   int y1 = 0;
-  int x2 = tia.right + 225 + (dlg.width() > 1030 ?
-           (int) (0.35 * (dlg.width() - 1030)) : 0);
+  int x2 = tia.right + 225 + (_w > 1030 ? (int) (0.35 * (_w - 1030)) : 0);
   int y2 = tia.bottom;
   GUI::Rect r(x1, y1, x2, y2);
 
@@ -452,15 +434,9 @@ GUI::Rect DebuggerDialog::getStatusBounds() const
 GUI::Rect DebuggerDialog::getTabBounds() const
 {
   // The tab area is the full area below the TIA image
-  const GUI::Rect& dialog = getDialogBounds();
   const GUI::Rect& tia    = getTiaBounds();
   const GUI::Rect& status = getStatusBounds();
-
-  int x1 = 0;
-  int y1 = tia.bottom + 1;
-  int x2 = status.right + 1;
-  int y2 = dialog.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
+  GUI::Rect r(0, tia.bottom + 1, status.right + 1, _h);
 
   return r;
 }
