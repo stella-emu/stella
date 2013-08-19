@@ -338,6 +338,7 @@
 		DC8C1BB014B25DE7006440EE /* CompuMate.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */; };
 		DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BAB14B25DE7006440EE /* MindLink.cxx */; };
 		DC8C1BB214B25DE7006440EE /* MindLink.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8C1BAC14B25DE7006440EE /* MindLink.hxx */; };
+		DC8CF9BD17C15A27004B533D /* ConsoleMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8CF9BC17C15A27004B533D /* ConsoleMediumFont.hxx */; };
 		DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D3F0F278A5200FEFEFC /* DefProps.hxx */; };
 		DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D400F278A5200FEFEFC /* Serializable.hxx */; };
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
@@ -851,6 +852,7 @@
 		DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CompuMate.hxx; path = ../emucore/CompuMate.hxx; sourceTree = SOURCE_ROOT; };
 		DC8C1BAB14B25DE7006440EE /* MindLink.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MindLink.cxx; path = ../emucore/MindLink.cxx; sourceTree = SOURCE_ROOT; };
 		DC8C1BAC14B25DE7006440EE /* MindLink.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MindLink.hxx; path = ../emucore/MindLink.hxx; sourceTree = SOURCE_ROOT; };
+		DC8CF9BC17C15A27004B533D /* ConsoleMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConsoleMediumFont.hxx; path = ../gui/ConsoleMediumFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D3F0F278A5200FEFEFC /* DefProps.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DefProps.hxx; path = ../emucore/DefProps.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D400F278A5200FEFEFC /* Serializable.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Serializable.hxx; path = ../emucore/Serializable.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
@@ -1446,6 +1448,7 @@
 				DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */,
 				DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */,
 				2D9217FA0857CC88001D664B /* ConsoleFont.hxx */,
+				DC8CF9BC17C15A27004B533D /* ConsoleMediumFont.hxx */,
 				DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */,
 				DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */,
 				2DDBEAAB084578BF00812C11 /* Dialog.cxx */,
@@ -1864,6 +1867,7 @@
 				DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */,
 				DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */,
 				DC79F81317A88D9E00288B91 /* Base.hxx in Headers */,
+				DC8CF9BD17C15A27004B533D /* ConsoleMediumFont.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
