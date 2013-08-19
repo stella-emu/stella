@@ -32,7 +32,7 @@
 #include "CpuWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
+CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int max_w)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
@@ -53,8 +53,8 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create a read-only textbox containing the current PC label
   xpos += lwidth + myPCGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, font, xpos, ypos-1, fontWidth*25,
-                                 lineHeight, "");
+  myPCLabel = new EditTextWidget(boss, font, xpos, ypos, (max_w - xpos + x) - 10,
+                                 fontHeight+1, "");
   myPCLabel->setEditable(false);
 
   // Create a 1x4 grid with labels for the other CPU registers
@@ -75,15 +75,23 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 8, Common::Base::F_2);
   myCpuGridBinValue->setEditable(false);
 
-  // Create a label and 1x3 grid showing the source of data for A/X/Y registers
+  // Calculate real dimensions (_y will be calculated at the end)
+  _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
+
+  // Create labels showing the source of data for SP/A/X/Y registers
   xpos += myCpuGridBinValue->getWidth() + 20;
-  myCpuDataSrcGrid = 
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 4, 16, Common::Base::F_16);
-  myCpuDataSrcGrid->setEditable(false);
-  new StaticTextWidget(boss, font, xpos-font.getMaxCharWidth(),
-                       ypos+myCpuDataSrcGrid->getHeight() + 4,
-                       font.getStringWidth("Src Addr"), fontHeight, "Src Addr",
-                       kTextAlignLeft);
+  int src_y = ypos, src_w = (max_w - xpos + x) - 10;
+  for(int i = 0; i < 4; ++i)
+  {
+    myCpuDataSrc[i] = new EditTextWidget(boss, font, xpos, src_y, src_w,
+                                 fontHeight+1, "");
+    myCpuDataSrc[i]->setEditable(false);
+    src_y += fontHeight+2;
+  }
+  int swidth = font.getStringWidth("Source Address");
+  new StaticTextWidget(boss, font, xpos, src_y + 4, src_w,
+                       fontHeight, swidth <= src_w ? "Source Address" : "Source Addr",
+                       kTextAlignCenter);
 
   // Add labels for other CPU registers
   xpos = x;
@@ -115,8 +123,6 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   }
   myPSRegister->setList(off, on);
 
-  // Calculate real dimensions
-  _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
   _h = ypos + myPSRegister->getHeight() - y;
 }
 
@@ -275,22 +281,16 @@ void CpuWidget::loadConfig()
   myCpuGridDecValue->setList(alist, vlist, changed);
   myCpuGridBinValue->setList(alist, vlist, changed);
 
-  // Update the data sources for the A/X/Y registers
-  alist.clear(); vlist.clear(); changed.clear();
-  alist.push_back(0);
-  alist.push_back(0);
-  alist.push_back(0);
-
-  vlist.push_back(state.srcS);
-  vlist.push_back(state.srcA);
-  vlist.push_back(state.srcX);
-  vlist.push_back(state.srcY);
-
-  changed.push_back(state.srcS  != oldstate.srcS);
-  changed.push_back(state.srcA  != oldstate.srcA);
-  changed.push_back(state.srcX  != oldstate.srcX);
-  changed.push_back(state.srcY  != oldstate.srcY);
-  myCpuDataSrcGrid->setList(alist, vlist, changed);
+  // Update the data sources for the SP/A/X/Y registers
+  // TODO - change this to use actual labels
+  myCpuDataSrc[0]->setText(Common::Base::toString(state.srcS),
+                           state.srcS != oldstate.srcS);
+  myCpuDataSrc[1]->setText(Common::Base::toString(state.srcA),
+                           state.srcA != oldstate.srcA);
+  myCpuDataSrc[2]->setText(Common::Base::toString(state.srcX),
+                           state.srcX != oldstate.srcX);
+  myCpuDataSrc[3]->setText(Common::Base::toString(state.srcY),
+                           state.srcY != oldstate.srcY);
 
   // Update the PS register booleans
   changed.clear();

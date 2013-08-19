@@ -33,7 +33,7 @@ class ToggleBitWidget;
 class CpuWidget : public Widget, public CommandSender
 {
   public:
-    CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int max_w);
     virtual ~CpuWidget();
 
     void setOpsWidget(DataGridOpsWidget* w);
@@ -72,7 +72,7 @@ class CpuWidget : public Widget, public CommandSender
     DataGridWidget*  myCpuGrid;
     DataGridWidget*  myCpuGridDecValue;
     DataGridWidget*  myCpuGridBinValue;
-    DataGridWidget*  myCpuDataSrcGrid;
+    EditTextWidget*  myCpuDataSrc[4];
     ToggleBitWidget* myPSRegister;
     EditTextWidget*  myPCLabel;
 };

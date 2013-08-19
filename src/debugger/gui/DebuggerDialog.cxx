@@ -312,20 +312,6 @@ void DebuggerDialog::addRomArea()
   const GUI::Rect& r = getRomBounds();
   const int vBorder = 4;
 
-  int xpos, ypos;
-
-  xpos = r.left + 10;  ypos = 10;
-  myCpu = new CpuWidget(this, *myFont, xpos, ypos);
-  addToFocusList(myCpu->getFocusList());
-
-  xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
-  myRam = new RamWidget(this, *myFont, xpos, ypos);
-  addToFocusList(myRam->getFocusList());
-
-  xpos = r.left + 10 + myCpu->getWidth() + 5;
-  DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myFont,
-                                                 xpos, 20);
-
   int bwidth  = myFont->getStringWidth("Frame +1 "),
       bheight = myFont->getLineHeight() + 2;
   int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
@@ -352,6 +338,20 @@ void DebuggerDialog::addRomArea()
     new ButtonWidget(this, *myFont, buttonX, buttonY,
                      bwidth, bheight, "<", kDDRewindCmd);
   myRewindButton->clearFlags(WIDGET_ENABLED);
+
+  int xpos = buttonX - 8*myFont->getMaxCharWidth() - 20, ypos = 20;
+  DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myFont, xpos, ypos);
+
+  int max_w = xpos - r.left - 10;
+  xpos = r.left + 10;  ypos = 10;
+  myCpu = new CpuWidget(this, *myFont, xpos, ypos, max_w);
+  addToFocusList(myCpu->getFocusList());
+
+  xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
+  myRam = new RamWidget(this, *myFont, xpos, ypos);
+  addToFocusList(myRam->getFocusList());
+
+
 
   // Add the DataGridOpsWidget to any widgets which contain a
   // DataGridWidget which we want controlled
