@@ -828,7 +828,13 @@ string CartDebug::loadSymbolFile()
       // For now, we simply ignore constants completely
       AddrToLabel::const_iterator iter = myUserCLabels.find(value);
       if(iter == myUserCLabels.end() || !BSPF_equalsIgnoreCase(label, iter->second))
-        addLabel(label, value);
+      { 
+        // Check for period, and strip leading number
+        if(string::size_type pos = label.find_first_of(".", 0) != string::npos)
+          addLabel(label.substr(pos), value);
+        else
+          addLabel(label, value);
+      }
     }
   }
   in.close();

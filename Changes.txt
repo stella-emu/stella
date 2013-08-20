@@ -18,13 +18,19 @@
           and old state files will not work with this release.
 
   * Several bugfixes and improvements to the debugger:
+      - Improved display of debugger when using larger video modes.  There
+        are now three font sizes, which are automatically selected when
+        the debugger is sized accordingly.  When using larger fonts, the
+        space is now used more efficiently.
+
       - Fixed bug in disassembly when the mirror used for the current
         PC didn't match the mirror for the current bank.  In this case,
         the disassembler became confused and didn't properly track the
         PC address.
 
-      - Fixed bug in display of current TIA frame in the UI; depending on
-        how breakpoints were set, it was sometimes off by one.
+      - Fixed bug in display of current TIA frame number in the UI;
+        depending on how breakpoints were set, it was sometimes off by
+        one.
 
       - Fixed RAM widget Search/Compare textboxes; entering any data and
         then pressing 'Enter' / clicking 'OK' locked the UI until exiting
@@ -53,7 +59,8 @@
 
       - Removed 'loadsym' command from the debugger prompt, since the
         DASM symbol file is always loaded anyway, making the command
-        redundant.
+        redundant.  Related to this, fixed loading symbols with
+        ###.name convention; the leading number is now stripped.
 
       - Added support for DASM lst files (created with the -l option).
         For now, the contents are only partially used, to detect
@@ -64,7 +71,10 @@
         background pixels as either blanked or with the underlying object
         colour, instead of always being black.   This gives a more accurate
         representation of how the registers are actually drawn onscreen.
-        Thanks to Tjoppen of AtariAge for this idea and the actual code.
+        Thanks to Tjoppen of AtariAge for this idea and sample code.
+
+      - The 'Source Address' locations for the CPU registers now show
+        labels when appropriate.
 
   * Renamed 'Override properties' dialog (accessible from the ROM
     launcher by a right-mouse-button click) to 'Power-on options', with
