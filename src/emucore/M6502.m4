@@ -38,7 +38,7 @@
 
 #ifndef CLEAR_LAST_PEEK
   #ifdef DEBUGGER_SUPPORT
-    #define CLEAR_LAST_PEEK(_addr) _addr = 0;
+    #define CLEAR_LAST_PEEK(_addr) _addr = -1;
   #else
     #define CLEAR_LAST_PEEK(_addr)
   #endif

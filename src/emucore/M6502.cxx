@@ -58,10 +58,10 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle, const Settings& settings)
     myLastAddress(0),
     myLastPeekAddress(0),
     myLastPokeAddress(0),
-    myLastSrcAddressS(0),
-    myLastSrcAddressA(0),
-    myLastSrcAddressX(0),
-    myLastSrcAddressY(0),
+    myLastSrcAddressS(-1),
+    myLastSrcAddressA(-1),
+    myLastSrcAddressX(-1),
+    myLastSrcAddressY(-1),
     myDataAddressForPoke(0)
 {
 #ifdef DEBUGGER_SUPPORT
@@ -134,7 +134,7 @@ void M6502::reset()
 
   myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
   myLastSrcAddressS = myLastSrcAddressA =
-    myLastSrcAddressX = myLastSrcAddressY = 0;
+    myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
 }
 
@@ -362,11 +362,11 @@ bool M6502::save(Serializer& out) const
     out.putShort(myLastAddress);
     out.putShort(myLastPeekAddress);
     out.putShort(myLastPokeAddress);
-    out.putShort(myLastSrcAddressS);
-    out.putShort(myLastSrcAddressA);
-    out.putShort(myLastSrcAddressX);
-    out.putShort(myLastSrcAddressY);
     out.putShort(myDataAddressForPoke);
+    out.putInt(myLastSrcAddressS);
+    out.putInt(myLastSrcAddressA);
+    out.putInt(myLastSrcAddressX);
+    out.putInt(myLastSrcAddressY);
   }
   catch(...)
   {
@@ -410,11 +410,11 @@ bool M6502::load(Serializer& in)
     myLastAddress = in.getShort();
     myLastPeekAddress = in.getShort();
     myLastPokeAddress = in.getShort();
-    myLastSrcAddressS = in.getShort();
-    myLastSrcAddressA = in.getShort();
-    myLastSrcAddressX = in.getShort();
-    myLastSrcAddressY = in.getShort();
     myDataAddressForPoke = in.getShort();
+    myLastSrcAddressS = in.getInt();
+    myLastSrcAddressA = in.getInt();
+    myLastSrcAddressX = in.getInt();
+    myLastSrcAddressY = in.getInt();
   }
   catch(...)
   {

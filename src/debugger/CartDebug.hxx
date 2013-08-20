@@ -29,6 +29,7 @@ class CartDebugWidget;
 
 #include "bspf.hxx"
 #include "Array.hxx"
+#include "Base.hxx"
 #include "Cart.hxx"
 #include "DebuggerSystem.hxx"
 #include "System.hxx"

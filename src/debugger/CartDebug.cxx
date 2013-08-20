@@ -691,10 +691,17 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
     }
   }
 
-  if(places > -1)
+  switch(places)
   {
-    buf << "$" << setw(places) << hex << addr;
-    return true;
+    case 2:
+      buf << "$" << Base::HEX2 << addr;
+      return true;
+    case 4:
+      buf << "$" << Base::HEX4 << addr;
+      return true;
+    case 8:
+      buf << "$" << Base::HEX8 << addr;
+      return true;
   }
 
   return false;

@@ -351,8 +351,6 @@ void DebuggerDialog::addRomArea()
   myRam = new RamWidget(this, *myFont, xpos, ypos);
   addToFocusList(myRam->getFocusList());
 
-
-
   // Add the DataGridOpsWidget to any widgets which contain a
   // DataGridWidget which we want controlled
   myCpu->setOpsWidget(ops);

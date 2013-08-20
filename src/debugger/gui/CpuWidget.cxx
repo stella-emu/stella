@@ -246,6 +246,7 @@ void CpuWidget::loadConfig()
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
   Debugger& dbg = instance().debugger();
+  CartDebug& cart = dbg.cartDebug();
   CpuDebug& cpu = dbg.cpuDebug();
   const CpuState& state    = (CpuState&) cpu.getState();
   const CpuState& oldstate = (CpuState&) cpu.getOldState();
@@ -282,14 +283,17 @@ void CpuWidget::loadConfig()
   myCpuGridBinValue->setList(alist, vlist, changed);
 
   // Update the data sources for the SP/A/X/Y registers
-  // TODO - change this to use actual labels
-  myCpuDataSrc[0]->setText(Common::Base::toString(state.srcS),
+  const string& srcS = state.srcS < 0 ? "IMM" : cart.getLabel(state.srcS, true);
+  myCpuDataSrc[0]->setText((srcS != EmptyString ? srcS : Common::Base::toString(state.srcS)),
                            state.srcS != oldstate.srcS);
-  myCpuDataSrc[1]->setText(Common::Base::toString(state.srcA),
+  const string& srcA = state.srcA < 0 ? "IMM" : cart.getLabel(state.srcA, true);
+  myCpuDataSrc[1]->setText((srcA != EmptyString ? srcA : Common::Base::toString(state.srcA)),
                            state.srcA != oldstate.srcA);
-  myCpuDataSrc[2]->setText(Common::Base::toString(state.srcX),
+  const string& srcX = state.srcX < 0 ? "IMM" : cart.getLabel(state.srcX, true);
+  myCpuDataSrc[2]->setText((srcX != EmptyString ? srcX : Common::Base::toString(state.srcX)),
                            state.srcX != oldstate.srcX);
-  myCpuDataSrc[3]->setText(Common::Base::toString(state.srcY),
+  const string& srcY = state.srcY < 0 ? "IMM" : cart.getLabel(state.srcY, true);
+  myCpuDataSrc[3]->setText((srcY != EmptyString ? srcY : Common::Base::toString(state.srcY)),
                            state.srcY != oldstate.srcY);
 
   // Update the PS register booleans

@@ -43,6 +43,8 @@ void EditTextWidget::setText(const string& str, bool changed)
   EditableWidget::setText(str, changed);
   _backupString = str;
   _changed = changed;
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

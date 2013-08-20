@@ -1540,6 +1540,7 @@ void DebuggerParser::executeUHex()
   Base::setHexUppercase(enable);
 
   settings.setValue("dbg.uhex", enable);
+  debugger.rom().invalidate();
 
   commandResult << "uppercase HEX " << (enable ? "enabled" : "disabled");
 }

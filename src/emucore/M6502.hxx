@@ -160,14 +160,14 @@ class M6502 : public Serializable
     /**                                                                    
       Return the last data address used as part of a peek operation for
       the S/A/X/Y registers.  Note that if an address wasn't used (as in
-      immediate mode), then the address is zero.
+      immediate mode), then the address is -1.
 
-      @return The address of the data used in the last peek, else 0
+      @return The address of the data used in the last peek, else -1
     */
-    uInt16 lastSrcAddressS() const { return myLastSrcAddressS; }
-    uInt16 lastSrcAddressA() const { return myLastSrcAddressA; }
-    uInt16 lastSrcAddressX() const { return myLastSrcAddressX; }
-    uInt16 lastSrcAddressY() const { return myLastSrcAddressY; }
+    Int32 lastSrcAddressS() const { return myLastSrcAddressS; }
+    Int32 lastSrcAddressA() const { return myLastSrcAddressA; }
+    Int32 lastSrcAddressX() const { return myLastSrcAddressX; }
+    Int32 lastSrcAddressY() const { return myLastSrcAddressY; }
 
     /**
       Get the total number of instructions executed so far.
@@ -348,8 +348,8 @@ class M6502 : public Serializable
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)
-    uInt16 myLastSrcAddressS, myLastSrcAddressA,
-           myLastSrcAddressX, myLastSrcAddressY;
+    Int32 myLastSrcAddressS, myLastSrcAddressA,
+          myLastSrcAddressX, myLastSrcAddressY;
 
     /// Indicates the data address used by the last command that performed
     /// a poke (currently, the last address used by STx)
