@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.9 to 3.9.1: (August xx, 2013)
+3.9 to 3.9.1: (August 21, 2013)
 
   * Note: because of TIA/6502 changes, the state file format has changed
           again, and old state files will not work with this release.
