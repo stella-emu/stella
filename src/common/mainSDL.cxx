@@ -197,9 +197,6 @@ int main(int argc, char* argv[])
       dbg.setBreakPoint(bp, true);
       theOSystem->settings().setValue("break", "");
     }
-
-    if(theOSystem->settings().getBool("debug"))
-      theOSystem->eventHandler().enterDebugMode();
 #endif
   }
 

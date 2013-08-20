@@ -577,6 +577,10 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       myEventHandler->handleEvent(Event::JoystickOneRight, 1);
     if(BSPF_containsIgnoreCase(holdjoy1, "F"))
       myEventHandler->handleEvent(Event::JoystickOneFire, 1);
+  #ifdef DEBUGGER_SUPPORT
+    if(mySettings->getBool("debug"))
+      myEventHandler->enterDebugMode();
+  #endif
   }
   return EmptyString;
 }

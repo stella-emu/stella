@@ -54,6 +54,7 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     PopUpWidget* myLeftDiff;
     PopUpWidget* myRightDiff;
     PopUpWidget* myTVType;
+    PopUpWidget* myDebug;
 
     CheckboxWidget* myJoy[10];
     CheckboxWidget* myHoldSelect;

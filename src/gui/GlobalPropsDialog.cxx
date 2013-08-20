@@ -49,7 +49,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Set real dimensions
   _w = lwidth + pwidth + fontWidth*3 + 15;
-  _h = 15 * (lineHeight + 4) + buttonHeight + 20;
+  _h = 17 * (lineHeight + 4) + buttonHeight + 20;
 
   xpos = 10;  ypos = 10;
 
@@ -106,7 +106,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   ypos += lineHeight + 10;
 
   // Left difficulty
-  pwidth = font.getStringWidth("Default");
+  pwidth = font.getStringWidth("Debugger");
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
   items.clear();
@@ -137,6 +137,17 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   myTVType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
+  ypos += lineHeight + 10;
+
+  // Start in debugger mode
+  new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
+                       "Startup Mode:", kTextAlignLeft);
+  items.clear();
+  items.push_back("Console", "false");
+  items.push_back("Debugger", "true");
+  myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
+                            pwidth, lineHeight, items, "", 0, 0);
+  wid.push_back(myDebug);
   ypos += lineHeight + 10;
 
   // Start console with buttons held down
@@ -253,6 +264,7 @@ void GlobalPropsDialog::loadConfig()
   myLeftDiff->setSelected(settings.getString("ld"), "DEFAULT");
   myRightDiff->setSelected(settings.getString("rd"), "DEFAULT");
   myTVType->setSelected(settings.getString("tv"), "DEFAULT");
+  myDebug->setSelected(settings.getBool("debug") ? "true" : "false");
 
   const string& holdjoy0 = settings.getString("holdjoy0");
   for(int i = kJ0Up; i <= kJ0Fire; ++i)
@@ -287,6 +299,8 @@ void GlobalPropsDialog::saveConfig()
   if(s == "DEFAULT") s = "";
   settings.setValue("tv", s);
 
+  settings.setValue("debug", myDebug->getSelectedTag().toBool());
+
   s = "";
   for(int i = kJ0Up; i <= kJ0Fire; ++i)
     if(myJoy[i]->getState())  s += ourJoyState[i];
@@ -307,6 +321,7 @@ void GlobalPropsDialog::setDefaults()
   myLeftDiff->setSelected("DEFAULT");
   myRightDiff->setSelected("DEFAULT");
   myTVType->setSelected("DEFAULT");
+  myDebug->setSelected("false");
 
   for(int i = kJ0Up; i <= kJ1Fire; ++i)
     myJoy[i]->setState(false);

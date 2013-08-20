@@ -84,7 +84,7 @@
         commandline arguments, and removed 'holdbutton0' argument.
 
       - The ability to load the ROM directly from this dialog, after
-        changing any settings.
+        changing any settings, and also to start in the debugger.
 
       - Added more detailed information as to how to use this
         functionality to the UI.
