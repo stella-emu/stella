@@ -290,7 +290,7 @@ void DebuggerDialog::addStatusArea()
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
-  myTiaInfo = new TiaInfoWidget(this, *myFont, xpos, ypos);
+  myTiaInfo = new TiaInfoWidget(this, *myFont, xpos, ypos, r.width());
 
   ypos += myTiaInfo->getHeight() + 10;
   myTiaZoom = new TiaZoomWidget(this, *myFont, xpos+10, ypos,

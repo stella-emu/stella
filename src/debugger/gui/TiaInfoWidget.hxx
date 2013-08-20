@@ -30,7 +30,7 @@ class EditTextWidget;
 class TiaInfoWidget : public Widget, public CommandSender
 {
   public:
-    TiaInfoWidget(GuiObject *boss, const GUI::Font& font, int x, int y);
+    TiaInfoWidget(GuiObject *boss, const GUI::Font& font, int x, int y, int max_w);
     virtual ~TiaInfoWidget();
 
     void loadConfig();

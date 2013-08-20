@@ -30,51 +30,58 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y)
+                             int x, int y, int max_w)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
+  bool longstr = 34 * font.getMaxCharWidth() <= max_w;
+
   x += 5;
   const int lineHeight = font.getLineHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("F. Cyc:");
+  int xpos = x, ypos = y;
+  int lwidth = font.getStringWidth(longstr ? "Frame Cycle:" : "F. Cycle:");
+  int fwidth = 5 * font.getMaxCharWidth() + 4;
 
   // Add frame info
   xpos = x;  ypos = y + 10;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "Frame:", kTextAlignLeft);
+                       longstr ? "Frame Count:" : "Frame:",
+                       kTextAlignLeft);
   xpos += lwidth;
-  myFrameCount = new EditTextWidget(boss, font, xpos, ypos-1, 45, lineHeight, "");
+  myFrameCount = new EditTextWidget(boss, font, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCount->setEditable(false);
 
   xpos = x;  ypos += lineHeight + 5;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "F. Cyc:", kTextAlignLeft);
+                       longstr ? "Frame Cycle:" : "F. Cycle:",
+                       kTextAlignLeft);
   xpos += lwidth;
-  myFrameCycles = new EditTextWidget(boss, font, xpos, ypos-1, 45, lineHeight, "");
+  myFrameCycles = new EditTextWidget(boss, font, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCycles->setEditable(false);
 
-  xpos = x + 10;  ypos += lineHeight + 8;
+  xpos = x + 20;  ypos += lineHeight + 8;
   myVSync = new CheckboxWidget(boss, font, xpos, ypos-3, "VSync", 0);
   myVSync->setEditable(false);
 
-  xpos = x + 10;  ypos += lineHeight + 5;
+  xpos = x + 20;  ypos += lineHeight + 5;
   myVBlank = new CheckboxWidget(boss, font, xpos, ypos-3, "VBlank", 0);
   myVBlank->setEditable(false);
 
-  xpos = x + lwidth + myFrameCycles->getWidth() + 5;  ypos = y + 10;
-  lwidth = font.getStringWidth("Pixel Pos:");
+  xpos = x + lwidth + myFrameCycles->getWidth() + 8;  ypos = y + 10;
+  lwidth = font.getStringWidth(longstr ? "Color Clock:" : "Pixel Pos:");
+  fwidth = 3 * font.getMaxCharWidth() + 4;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "Scanline:", kTextAlignLeft);
 
-  myScanlineCount = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
+  myScanlineCount = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myScanlineCount->setEditable(false);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "S. Cyc:", kTextAlignLeft);
+                       longstr ? "Scan Cycle:" : "S. Cycle:", kTextAlignLeft);
 
-  myScanlineCycles = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
+  myScanlineCycles = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
                                         lineHeight, "");
   myScanlineCycles->setEditable(false);
 
@@ -82,20 +89,20 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
                        "Pixel Pos:", kTextAlignLeft);
 
-  myPixelPosition = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
+  myPixelPosition = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myPixelPosition->setEditable(false);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "Color Clk:", kTextAlignLeft);
+                       longstr ? "Color Clock:" : "Color Clk:", kTextAlignLeft);
 
-  myColorClocks = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, 30,
+  myColorClocks = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
                                      lineHeight, "");
   myColorClocks->setEditable(false);
 
   // Calculate actual dimensions
-  _w = 100 + 30 + lwidth;
+  _w = myColorClocks->getAbsX() + myColorClocks->getWidth() - x;
   _h = ypos + lineHeight;
 }
 
