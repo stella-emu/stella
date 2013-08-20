@@ -14,14 +14,14 @@
 
 3.9 to 3.9.1: (August xx, 2013)
 
-  * Note: because of TIA changes, the state file format has changed again,
-          and old state files will not work with this release.
+  * Note: because of TIA/6502 changes, the state file format has changed
+          again, and old state files will not work with this release.
 
   * Several bugfixes and improvements to the debugger:
       - Improved display of debugger when using larger video modes.  There
         are now three font sizes, which are automatically selected when
         the debugger is sized accordingly.  When using larger fonts, the
-        space is now used more efficiently.
+        extra space is now used more efficiently.
 
       - Fixed bug in disassembly when the mirror used for the current
         PC didn't match the mirror for the current bank.  In this case,
@@ -74,7 +74,7 @@
         Thanks to Tjoppen of AtariAge for this idea and sample code.
 
       - The 'Source Address' locations for the CPU registers now show
-        labels when appropriate.
+        labels where appropriate.
 
   * Renamed 'Override properties' dialog (accessible from the ROM
     launcher by a right-mouse-button click) to 'Power-on options', with

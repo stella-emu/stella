@@ -170,7 +170,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
-  addOKCancelBGroup(wid, font, "Load ROM");
+  addOKCancelBGroup(wid, font, "Load ROM", "Close");
 
   addToFocusList(wid);
 }
@@ -332,6 +332,7 @@ void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDefaultsCmd:
       setDefaults();
+      saveConfig();
       break;
 
     default:
