@@ -72,7 +72,11 @@ class UIDialog : public Dialog
       kLWidthChanged  = 'UIlw',
       kLHeightChanged = 'UIlh',
       kDWidthChanged  = 'UIdw',
-      kDHeightChanged = 'UIdh'
+      kDHeightChanged = 'UIdh',
+
+      kDSmallSize  = 'UIds',
+      kDMediumSize = 'UIdm',
+      kDLargeSize  = 'UIdl'
     };
 };
 

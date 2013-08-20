@@ -22,6 +22,7 @@
 #include "bspf.hxx"
 
 #include "Dialog.hxx"
+#include "DebuggerDialog.hxx"
 #include "OSystem.hxx"
 #include "ListWidget.hxx"
 #include "PopUpWidget.hxx"
@@ -49,6 +50,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
   VariantList items;
+  ButtonWidget* b;
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
@@ -166,8 +168,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                            lineHeight, "Debugger Width: ",
                                            lwidth, kDWidthChanged);
-  myDebuggerWidthSlider->setMinValue(1080);
-  myDebuggerWidthSlider->setMaxValue(1920);
+  myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
+  myDebuggerWidthSlider->setMaxValue(osystem->desktopWidth());
   myDebuggerWidthSlider->setStepValue(10);
   wid.push_back(myDebuggerWidthSlider);
   myDebuggerWidthLabel =
@@ -180,8 +182,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                             lineHeight, "Debugger Height: ",
                                             lwidth, kDHeightChanged);
-  myDebuggerHeightSlider->setMinValue(720);
-  myDebuggerHeightSlider->setMaxValue(1200);
+  myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
+  myDebuggerHeightSlider->setMaxValue(osystem->desktopHeight());
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
   myDebuggerHeightLabel =
@@ -189,6 +191,21 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                            xpos + myDebuggerHeightSlider->getWidth() + 4,
                            ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
   myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
+
+  // Add minimum window size buttons for different fonts
+  int fbwidth = font.getStringWidth("Set window size for medium font") + 20;
+  xpos = (_w - fbwidth - 2*vBorder)/2;  ypos += 2*lineHeight + 4;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+      "Set window size for small font", kDSmallSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + 4;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+      "Set window size for medium font", kDMediumSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + 4;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+      "Set window size for large font", kDLargeSize);
+  wid.push_back(b);
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -266,7 +283,6 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add Defaults, OK and Cancel buttons
   wid.clear();
-  ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
@@ -312,10 +328,10 @@ void UIDialog::loadConfig()
   // Debugger size
   const GUI::Size& ds = instance().settings().getSize("debuggerres");
   w = ds.w, h = ds.h;
-  w = BSPF_max(w, 1080);
-  h = BSPF_max(h, 720);
-  w = BSPF_min(w, 1920);
-  h = BSPF_min(h, 1200);
+  w = BSPF_max(w, (int)DebuggerDialog::kSmallFontMinW);
+  h = BSPF_max(h, (int)DebuggerDialog::kSmallFontMinH);
+  w = BSPF_min(w, (int)instance().desktopWidth());
+  h = BSPF_min(h, (int)instance().desktopHeight());
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerWidthLabel->setValue(w);
@@ -398,11 +414,15 @@ void UIDialog::setDefaults()
     }
 
     case 1:  // Debugger options
-      myDebuggerWidthSlider->setValue(1080);
-      myDebuggerWidthLabel->setValue(1080);
-      myDebuggerHeightSlider->setValue(720);
-      myDebuggerHeightLabel->setValue(720);
+    {
+      int w = BSPF_min(instance().desktopWidth(), (uInt32)DebuggerDialog::kMediumFontMinW);
+      int h = BSPF_min(instance().desktopHeight(), (uInt32)DebuggerDialog::kMediumFontMinH);
+      myDebuggerWidthSlider->setValue(w);
+      myDebuggerWidthLabel->setValue(w);
+      myDebuggerHeightSlider->setValue(h);
+      myDebuggerHeightLabel->setValue(h);
       break;
+    }
 
     case 2:  // Misc. options
       myPalettePopup->setSelected("1", "1");
@@ -436,6 +456,27 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kDHeightChanged:
       myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
+      break;
+
+    case kDSmallSize:
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kSmallFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kSmallFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kSmallFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kSmallFontMinH);
+      break;
+
+    case kDMediumSize:
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kMediumFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kMediumFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kMediumFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kMediumFontMinH);
+      break;
+
+    case kDLargeSize:
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kLargeFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kLargeFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kLargeFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kLargeFontMinH);
       break;
 
     case kOKCmd:

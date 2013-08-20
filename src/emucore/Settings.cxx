@@ -24,6 +24,7 @@
 
 #include "bspf.hxx"
 
+#include "DebuggerDialog.hxx"
 #include "OSystem.hxx"
 #include "Version.hxx"
 
@@ -112,14 +113,15 @@ Settings::Settings(OSystem* osystem)
 
   // ROM browser options
   setInternal("exitlauncher", "false");
-  setInternal("launcherres", "640x480");
+  setInternal("launcherres", GUI::Size(640, 480));
   setInternal("launcherfont", "medium");
   setInternal("launcherexts", "allroms");
   setInternal("romviewer", "0");
   setInternal("lastrom", "");
 
   // UI-related options
-  setInternal("debuggerres", "1030x690");
+  setInternal("debuggerres",
+    GUI::Size(DebuggerDialog::kMediumFontMinW, DebuggerDialog::kMediumFontMinH));
   setInternal("uipalette", "0");
   setInternal("listdelay", "300");
   setInternal("mwheel", "4");
