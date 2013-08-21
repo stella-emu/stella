@@ -217,8 +217,7 @@ void DebuggerDialog::showFatalMessage(const string& msg)
 {
   delete myFatalError;
   myFatalError =
-    new GUI::MessageBox(this, *myFont, msg,
-                        _w*0.5, _h*0.5, kDDExitFatalCmd,
+    new GUI::MessageBox(this, *myFont, msg, _w/2, _h/2, kDDExitFatalCmd,
                         "Exit ROM", "Continue");
   myFatalError->show();
 }
