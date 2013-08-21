@@ -147,11 +147,12 @@ or right arrow keys cycles between tabs from right-to-left and left-to-right,
 respectively.  Pressing Tab cycles between widgets in the current tab (except
 for in the Prompt area, where 'tab' is used for something else).</p>
 
-<p>You can also enter the debugger at emulator startup by giving a breakpoint on the command line:
+<p>You can also enter the debugger at emulator startup by use the 'debug' command on the command line, or alternatively within the ROM launcher in 'Power-on options':
 <pre>
-  ; will enter the debugger the first time the instruction at "kernel" runs
-  stella -break kernel mygame.bin
+  ; will enter the debugger before any instructions run
+  stella -debug mygame.bin
 
+  ; alternatively, you can use 'break' to accomplish the same thing
   ; $fffc is the 6502/6507 init vector. This command will break and enter the
   ; debugger before the first 6507 instruction runs, so you can debug the
   ; startup code:
@@ -801,13 +802,13 @@ as illustrated:</p>
 <p><img src="graphics/debugger_tiainfo.png"></p>
 <p>The indicators are as follows:</p>
 <ul>
-<li><b>Frame</b>: The current frame number, since this ROM was loaded or reset.</li>
-<li><b>F. Cyc</b>: The number of CPU cycles that have been executed this frame, since
+<li><b>Frame Count</b>: The current frame number, since this ROM was loaded or reset.</li>
+<li><b>Frame Cycle</b>: The number of CPU cycles that have been executed this frame, since
 VSYNC was cleared at scanline 0.</li>
 <li><b>Scanline</b>: The scanline that's currently being drawn. Scanline 0 is the one
 on which VSYNC is cleared (after being set for 3 scanlines, as per the Stella
 Programmer's Guide)</li>
-<li><b>S. Cyc</b>: The number of CPU cycles that have been executed since the beginning
+<li><b>Scan Cycle</b>: The number of CPU cycles that have been executed since the beginning
 of the current scanline.</li>
 <li><b>VSYNC &amp; VBLANK</b>: Self explanatory.</li>
 <li><b>Pixel Pos</b>: The current number of visible color clocks that have been displayed on
@@ -815,7 +816,7 @@ the current scanline, starting from the beginning of the Horizontal Blank period
 During HBLANK, this value will be negative (representing the number of clocks
 until the first visible one). Since there are 68 color clocks per HBLANK and
 160 visible clocks per scanline, the Pixel Position will range from -68 to 159.</li>
-<li><b>Color Clk</b>: The current number of total color clocks since the beginning of this
+<li><b>Color Clock</b>: The current number of total color clocks since the beginning of this
 scanline's HBLANK. This counter starts at zero, but otherwise displays the same
 information as the Pixel Position (so Color Clock will always be 68 more than Pixel
 Position, and will range from 0 to 228).</li>
