@@ -755,8 +755,8 @@ string CartDebug::loadListFile()
 
   while(!in.eof())
   {
-    string line, addr1;
-    int value = -1;
+    string line, addr_s;
+    int addr = -1;
 
     getline(in, line);
 
@@ -766,18 +766,24 @@ string CartDebug::loadListFile()
     {
       stringstream buf(line);
 
-      // Swallow first value
-      buf >> value >> addr1;
+      // Swallow first value, then get actual numerical value for address
+      // We need to read the address as a string, since it may contain 'U'
+      buf >> addr >> addr_s;
+      if(addr_s.length() == 0)
+        continue;
+      const char* p = addr_s[0] == 'U' ? addr_s.c_str() + 1 : addr_s.c_str();
+      addr = strtoul(p, NULL, 16);
 
-      // Search for lines containing Uxxxx
-      if(addr1.length() > 0 && toupper(addr1[0]) == 'U')
+      // For now, completely ignore ROM addresses
+      if(!(addr & 0x1000))
       {
         // Search for pattern 'xx yy  CONSTANT ='
+        buf.seekg(20);  // skip potential '????'
         int xx = -1, yy = -1;
         char eq = '\0';
         buf >> hex >> xx >> hex >> yy >> line >> eq;
-        if(xx == 0 && yy >= 0 && eq == '=')
-          myUserCLabels.insert(make_pair(yy, line));
+        if(xx >= 0 && yy >= 0 && eq == '=')
+          myUserCLabels.insert(make_pair(xx*256+yy, line));
       }
     }
   }
