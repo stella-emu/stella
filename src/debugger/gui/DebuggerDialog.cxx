@@ -37,7 +37,9 @@
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 #include "ConsoleFont.hxx"
+#include "ConsoleBFont.hxx"
 #include "ConsoleMediumFont.hxx"
+#include "ConsoleMediumBFont.hxx"
 #include "StellaMediumFont.hxx"
 #include "DebuggerDialog.hxx"
 
@@ -203,13 +205,15 @@ void DebuggerDialog::doExitRom()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::createFont()
 {
+  bool bold = instance().settings().getBool("dbg.boldfont");
+
   // For now, these sizes are hardcoded based on actual font size
   if(_w >= kLargeFontMinW && _h >= kLargeFontMinH)
     myFont = new GUI::Font(GUI::stellaMediumDesc);
   else if(_w >= kMediumFontMinW && _h >= kMediumFontMinH)
-    myFont = new GUI::Font(GUI::consoleMediumDesc);
+    myFont = new GUI::Font(bold ? GUI::consoleMediumBDesc : GUI::consoleMediumDesc);
   else
-    myFont = new GUI::Font(GUI::consoleDesc);
+    myFont = new GUI::Font(bold ? GUI::consoleBDesc : GUI::consoleDesc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

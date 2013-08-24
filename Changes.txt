@@ -12,6 +12,19 @@
                                Release History
 ===========================================================================
 
+3.9.1 to 3.9.2: (August xx, 2013)
+
+  * Added ability to use bold fonts within the debugger window, which can
+    be set with the 'dbg.boldfont' commandline argument as well as in the
+    debugger UI Settings dialog.  This is useful for those that find the
+    current font too narrow.
+
+  * Renamed 'debuggerres' argument to 'dbg.res'.  All future debugger-
+    specific options will start with 'dbg.'.
+
+-Have fun!
+
+
 3.9 to 3.9.1: (August 21, 2013)
 
   * Note: because of TIA/6502 changes, the state file format has changed
@@ -110,8 +123,6 @@
         file from Dan Fandrich.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 3.8.1 to 3.9: (June 27, 2013)

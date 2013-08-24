@@ -235,8 +235,8 @@ void getopts(int *pac, char ***pav)
           char* u;
           strcpy(fontnameU, fontname);
           u = fontnameU;
-          while(*u++=toupper(*u))
-            ;
+          while(*u=toupper(*u))
+            *u++;
         }
         break;
       default:

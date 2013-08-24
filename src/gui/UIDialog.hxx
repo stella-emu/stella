@@ -55,6 +55,7 @@ class UIDialog : public Dialog
     StaticTextWidget* myDebuggerWidthLabel;
     SliderWidget*     myDebuggerHeightSlider;
     StaticTextWidget* myDebuggerHeightLabel;
+    CheckboxWidget*   myDebuggerFontBold;
 
     // Misc options
     PopUpWidget*      myPalettePopup;

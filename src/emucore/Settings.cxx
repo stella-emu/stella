@@ -120,7 +120,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("lastrom", "");
 
   // UI-related options
-  setInternal("debuggerres",
+  setInternal("dbg.res",
     GUI::Size(DebuggerDialog::kMediumFontMinW, DebuggerDialog::kMediumFontMinH));
   setInternal("uipalette", "0");
   setInternal("listdelay", "300");
@@ -140,6 +140,7 @@ Settings::Settings(OSystem* osystem)
   setExternal("maxres", "");
 
   // Debugger/disassembly options
+  setInternal("dbg.boldfont", "false");
   setInternal("dbg.uhex", "true");
   setInternal("dis.resolve", "true");
   setInternal("dis.gfxformat", "2");
@@ -450,7 +451,8 @@ void Settings::usage()
     << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
     << "   -dis.relocate  <1|0>        Relocate calls out of address range in disassembler\n"
     << endl
-    << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
+    << "   -dbg.res      <WxH>         The resolution to use in debugger mode\n"
+    << "   -dbg.boldfont <1|0>         Use bold fonts in the debugger window\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"
     << endl

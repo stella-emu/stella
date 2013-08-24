@@ -54,7 +54,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
-  _h = 10 * (lineHeight + 4) + 10;
+  _h = 11 * (lineHeight + 4) + 10;
 
   // The tab widget
   xpos = ypos = vBorder;
@@ -206,6 +206,12 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
       "Set window size for large font", kDLargeSize);
   wid.push_back(b);
+  ypos += b->getHeight() + 12;
+
+  // Do we use bold fonts?
+  myDebuggerFontBold =
+    new CheckboxWidget(myTab, font, xpos+10, ypos, "Use bold fonts when possible");
+  wid.push_back(myDebuggerFontBold);
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -326,7 +332,7 @@ void UIDialog::loadConfig()
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
-  const GUI::Size& ds = instance().settings().getSize("debuggerres");
+  const GUI::Size& ds = instance().settings().getSize("dbg.res");
   w = ds.w, h = ds.h;
   w = BSPF_max(w, (int)DebuggerDialog::kSmallFontMinW);
   h = BSPF_max(h, (int)DebuggerDialog::kSmallFontMinH);
@@ -337,6 +343,9 @@ void UIDialog::loadConfig()
   myDebuggerWidthLabel->setValue(w);
   myDebuggerHeightSlider->setValue(h);
   myDebuggerHeightLabel->setValue(h);
+
+  // Debugger bold font
+  myDebuggerFontBold->setState(instance().settings().getBool("dbg.boldfont"));
 #endif
 
   // UI palette
@@ -375,9 +384,12 @@ void UIDialog::saveConfig()
     myLauncherExitPopup->getSelectedTag().toString());
 
   // Debugger size
-  instance().settings().setValue("debuggerres",
+  instance().settings().setValue("dbg.res",
     GUI::Size(myDebuggerWidthSlider->getValue(),
               myDebuggerHeightSlider->getValue()));
+
+  // Debugger bold font
+  instance().settings().setValue("dbg.boldfont", myDebuggerFontBold->getState());
 
   // UI palette
   instance().settings().setValue("uipalette",
@@ -421,6 +433,7 @@ void UIDialog::setDefaults()
       myDebuggerWidthLabel->setValue(w);
       myDebuggerHeightSlider->setValue(h);
       myDebuggerHeightLabel->setValue(h);
+      myDebuggerFontBold->setState(false);
       break;
     }
 
