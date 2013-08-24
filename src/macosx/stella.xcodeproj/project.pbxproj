@@ -276,6 +276,8 @@
 		DC3E4A6914B25EB30071D7BC /* CompuMate.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3E4A6314B25EB30071D7BC /* CompuMate.hxx */; };
 		DC3E4A6A14B25EB30071D7BC /* MindLink.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3E4A6414B25EB30071D7BC /* MindLink.cxx */; };
 		DC3E4A6B14B25EB30071D7BC /* MindLink.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3E4A6514B25EB30071D7BC /* MindLink.hxx */; };
+		DC3F601717C9140100A1977D /* ConsoleBFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3F601517C9140100A1977D /* ConsoleBFont.hxx */; };
+		DC3F601817C9140100A1977D /* ConsoleMediumBFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3F601617C9140100A1977D /* ConsoleMediumBFont.hxx */; };
 		DC3FE47C11C7D35600C91C72 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3FE46A11C7D35600C91C72 /* png.c */; };
 		DC3FE47D11C7D35600C91C72 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3FE46B11C7D35600C91C72 /* png.h */; };
 		DC3FE47E11C7D35600C91C72 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3FE46C11C7D35600C91C72 /* pngconf.h */; };
@@ -792,6 +794,8 @@
 		DC3E4A6314B25EB30071D7BC /* CompuMate.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CompuMate.hxx; path = ../emucore/CompuMate.hxx; sourceTree = SOURCE_ROOT; };
 		DC3E4A6414B25EB30071D7BC /* MindLink.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MindLink.cxx; path = ../emucore/MindLink.cxx; sourceTree = SOURCE_ROOT; };
 		DC3E4A6514B25EB30071D7BC /* MindLink.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MindLink.hxx; path = ../emucore/MindLink.hxx; sourceTree = SOURCE_ROOT; };
+		DC3F601517C9140100A1977D /* ConsoleBFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConsoleBFont.hxx; path = ../gui/ConsoleBFont.hxx; sourceTree = SOURCE_ROOT; };
+		DC3F601617C9140100A1977D /* ConsoleMediumBFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConsoleMediumBFont.hxx; path = ../gui/ConsoleMediumBFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC3FE46A11C7D35600C91C72 /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = png.c; path = ../libpng/png.c; sourceTree = SOURCE_ROOT; };
 		DC3FE46B11C7D35600C91C72 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../libpng/png.h; sourceTree = SOURCE_ROOT; };
 		DC3FE46C11C7D35600C91C72 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = ../libpng/pngconf.h; sourceTree = SOURCE_ROOT; };
@@ -1450,7 +1454,9 @@
 				2D73959608C3EB4E0060BB99 /* CommandMenu.hxx */,
 				DC0D76A2177259C3005C7805 /* ConfigPathDialog.cxx */,
 				DC0D76A3177259C3005C7805 /* ConfigPathDialog.hxx */,
+				DC3F601517C9140100A1977D /* ConsoleBFont.hxx */,
 				2D9217FA0857CC88001D664B /* ConsoleFont.hxx */,
+				DC3F601617C9140100A1977D /* ConsoleMediumBFont.hxx */,
 				DCB31D3D17C2D667002C0868 /* ConsoleMediumFont.hxx */,
 				DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */,
 				DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */,
@@ -1871,6 +1877,8 @@
 				DC0D76A9177259C3005C7805 /* SnapshotDialog.hxx in Headers */,
 				DCECD7AA17A88E51000A9753 /* Base.hxx in Headers */,
 				DCB31D3E17C2D667002C0868 /* ConsoleMediumFont.hxx in Headers */,
+				DC3F601717C9140100A1977D /* ConsoleBFont.hxx in Headers */,
+				DC3F601817C9140100A1977D /* ConsoleMediumBFont.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
