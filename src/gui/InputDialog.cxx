@@ -115,15 +115,25 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Stelladaptor mappings
   xpos = 5;  ypos = 5;
-  lwidth = font.getStringWidth("Stelladaptor port order: ");
-  pwidth = font.getStringWidth("left / right");
+  lwidth = font.getStringWidth("Use mouse as a controller: ");
+  pwidth = font.getStringWidth("Analog devices");
 
   items.clear();
-  items.push_back("left / right", "lr");
-  items.push_back("right / left", "rl");
+  items.push_back("Left / Right", "lr");
+  items.push_back("Right / Left", "rl");
   mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                              "Stelladaptor port order: ", lwidth);
   wid.push_back(mySAPort);
+
+  // Use mouse as controller
+  ypos += lineHeight + 5;
+  items.clear();
+  items.push_back("Always", "always");
+  items.push_back("Analog devices", "analog");
+  items.push_back("Never", "never");
+  myMouseControl = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                             "Use mouse as a controller: ", lwidth);
+  wid.push_back(myMouseControl);
 
   // Add AtariVox serial port
   ypos += lineHeight + 5;
@@ -188,12 +198,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myGrabMouse->clearFlags(WIDGET_ENABLED);
 #endif
 
-  // Use mouse as a controller
-  ypos += lineHeight + 4;
-  myMouseControl = new CheckboxWidget(myTab, font, xpos, ypos,
-                     "Use mouse as a controller");
-  wid.push_back(myMouseControl);
-
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
 }
@@ -202,8 +206,11 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 void InputDialog::loadConfig()
 {
   // Left & right ports
-  const string& saport = instance().settings().getString("saport");
-  mySAPort->setSelectedIndex(BSPF_equalsIgnoreCase(saport, "rl") ? 1 : 0);
+  mySAPort->setSelected(instance().settings().getString("saport"), "lr");
+
+  // Use mouse as a controller
+  myMouseControl->setSelected(
+    instance().settings().getString("usemouse"), "analog");
 
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
@@ -224,9 +231,6 @@ void InputDialog::loadConfig()
   // Allow all 4 joystick directions
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
 
-  // Use mouse as a controller
-  myMouseControl->setState(instance().settings().getBool("usemouse"));
-
   myTab->loadConfig();
 }
 
@@ -235,6 +239,11 @@ void InputDialog::saveConfig()
 {
   // Left & right ports
   instance().eventHandler().mapStelladaptors(mySAPort->getSelectedTag().toString());
+
+  // Use mouse as a controller
+  const string& usemouse = myMouseControl->getSelectedTag().toString();
+  instance().settings().setValue("usemouse", usemouse);
+  instance().eventHandler().setMouseControllerMode(usemouse);
 
   // Joystick deadzone
   int deadzone = myDeadzone->getValue();
@@ -260,11 +269,6 @@ void InputDialog::saveConfig()
   bool allowall4 = myAllowAll4->getState();
   instance().settings().setValue("joyallow4", allowall4);
   instance().eventHandler().allowAllDirections(allowall4);
-
-  // Use mouse as a controller
-  bool usemouse = myMouseControl->getState();
-  instance().settings().setValue("usemouse", usemouse);
-  instance().eventHandler().setMouseControllerMode(usemouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -285,6 +289,9 @@ void InputDialog::setDefaults()
       // Left & right ports
       mySAPort->setSelected("lr");
 
+      // Use mouse as a controller
+      myMouseControl->setSelected("analog");
+
       // Joystick deadzone
       myDeadzone->setValue(0);
       myDeadzoneLabel->setValue(3200);
@@ -304,8 +311,6 @@ void InputDialog::setDefaults()
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
 
-      // Use mouse as a controller
-      myMouseControl->setState(true);
       break;
     }
 

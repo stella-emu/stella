@@ -161,8 +161,10 @@ class EventHandler
       the ROM properties, otherwise disable mouse control completely
 
       @param enable  Whether to use the mouse to emulate controllers
+                     Currently, this will be one of the following values:
+                       'always', 'analog', 'never'
     */
-    void setMouseControllerMode(bool enable);
+    void setMouseControllerMode(const string& enable);
 
     /**
       Set the number of seconds between taking a snapshot in

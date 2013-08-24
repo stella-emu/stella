@@ -2020,13 +2020,48 @@ void EventHandler::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setMouseControllerMode(bool enable)
+void EventHandler::setMouseControllerMode(const string& enable)
 {
   if(&myOSystem->console())
   {
     delete myMouseControl;  myMouseControl = NULL;
 
-    const string& control = enable ?
+    bool usemouse = false;
+    if(BSPF_equalsIgnoreCase(enable, "always"))
+      usemouse = true;
+    else if(BSPF_equalsIgnoreCase(enable, "never"))
+      usemouse = false;
+    else  // 'analog'
+    {
+      switch(myOSystem->console().controller(Controller::Left).type())
+      {
+        case Controller::Paddles:
+        case Controller::Driving:
+        case Controller::TrackBall22:
+        case Controller::TrackBall80:
+        case Controller::AmigaMouse:
+        case Controller::MindLink:
+          usemouse = true;
+          break;
+        default:
+          break;
+      }
+      switch(myOSystem->console().controller(Controller::Right).type())
+      {
+        case Controller::Paddles:
+        case Controller::Driving:
+        case Controller::TrackBall22:
+        case Controller::TrackBall80:
+        case Controller::AmigaMouse:
+        case Controller::MindLink:
+          usemouse = true;
+          break;
+        default:
+          break;
+      }
+    }
+
+    const string& control = usemouse ?
       myOSystem->console().properties().get(Controller_MouseAxis) : "none";
 
     myMouseControl = new MouseControl(myOSystem->console(), control);

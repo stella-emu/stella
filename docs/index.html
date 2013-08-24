@@ -1984,8 +1984,10 @@
     </tr>
 
     <tr>
-      <td><pre>-usemouse &lt;1|0&gt;</pre></td>
-      <td>Use mouse as a controller as specified by ROM properties.</td>
+      <td><pre>-usemouse &lt;always|analog|never&gt;</pre></td>
+      <td>Use mouse as a controller as specified by ROM properties in specific case.
+      Always and never are self-explanatory, analog means only for analog-type devices
+      (paddles, trackball, etc).</td>
     </tr>
 
     <tr>
@@ -2616,14 +2618,14 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
+          <tr><td>Stelladaptor port order</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
+          <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
           <tr><td>Joy deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
-          <tr><td>Digital paddle sensitivity</td><td>Sensitvity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
+          <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode</td><td>-grabmouse</td></tr>
-          <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
         </table>
       </td>
     </tr>
@@ -2687,7 +2689,7 @@
 
   <p><ol>
     <li><p><b>Power-on options</b>: Selecting this option shows a dialog whereby
-    ROM properties can be temporarily overriden, and joystick/console buttons can be
+    ROM properties can be temporarily overridden, and joystick/console buttons can be
     temporarily held down.  Selecting options from this dialog will cause all ROMs launched
     after that to use those properties you specify.  Clicking <b>Defaults</b> will disable
     its functionality, and use ROM properties as defined by the ROM itself.  The dialog is as

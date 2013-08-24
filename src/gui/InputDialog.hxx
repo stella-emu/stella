@@ -67,6 +67,7 @@ class InputDialog : public Dialog
     EventMappingWidget* myMenuEventMapper;
 
     PopUpWidget* mySAPort;
+    PopUpWidget* myMouseControl;
 
     EditTextWidget*   myAVoxPort;
 
@@ -78,7 +79,6 @@ class InputDialog : public Dialog
     StaticTextWidget* myMPaddleLabel;
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
-    CheckboxWidget*   myMouseControl;
 };
 
 #endif

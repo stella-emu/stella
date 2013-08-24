@@ -14,6 +14,15 @@
 
 3.9.1 to 3.9.2: (August xx, 2013)
 
+  * Improved parsing of the DASM lst file for the debugger disassembly;
+    it sometimes missed constant declarations.
+
+  * Changed 'usemouse' argument from a true/false option to accept
+    'always', 'analog' and 'never'.  This allows to use the mouse as a
+    controller under more specific circumstances.  The default is
+    'analog', which means the mouse is only used to emulate analog-like
+    devices (paddles, trackball, etc).
+
   * Added ability to use bold fonts within the debugger window, which can
     be set with the 'dbg.boldfont' commandline argument as well as in the
     debugger UI Settings dialog.  This is useful for those that find the
