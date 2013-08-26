@@ -24,9 +24,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCWidget::CartridgeDPCWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeDPC& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt16 size = cart.mySize;
@@ -55,77 +55,77 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   items.push_back("0 ($FF8)");
   items.push_back("1 ($FF9)");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
-                    font.getStringWidth("Set bank: "), kBankChanged);
+                    _font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   ypos += myLineHeight + 8;
 
   // Data fetchers
-  int lwidth = font.getStringWidth("Data Fetchers: ");
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  int lwidth = _font.getStringWidth("Data Fetchers: ");
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Data Fetchers: ", kTextAlignLeft);
 
   // Top registers
-  lwidth = font.getStringWidth("Counter Registers: ");
+  lwidth = _font.getStringWidth("Counter Registers: ");
   xpos = 18;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Top Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myTops = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myTops->setTarget(this);
   myTops->setEditable(false);
 
   // Bottom registers
   xpos = 18;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Bottom Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myBottoms = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myBottoms->setTarget(this);
   myBottoms->setEditable(false);
 
   // Counter registers
   xpos = 18;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Counter Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myCounters = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
+  myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
   myCounters->setTarget(this);
   myCounters->setEditable(false);
 
   // Flag registers
   xpos = 18;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Flag Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myFlags = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myFlags->setTarget(this);
   myFlags->setEditable(false);
 
   // Music mode
   xpos = 10;  ypos += myLineHeight + 12;
-  lwidth = font.getStringWidth("Music mode (DF5/DF6/DF7): ");
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7): ");
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music mode (DF5/DF6/DF7): ", kTextAlignLeft);
   xpos += lwidth;
 
-  myMusicMode = new DataGridWidget(boss, font, xpos, ypos-2, 3, 1, 2, 8, Common::Base::F_16);
+  myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::F_16);
   myMusicMode->setTarget(this);
   myMusicMode->setEditable(false);
 
   // Current random number
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Current random number: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myRandom = new DataGridWidget(boss, font, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
+  myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
   myRandom->setTarget(this);
   myRandom->setEditable(false);
 }

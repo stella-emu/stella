@@ -1322,7 +1322,7 @@ void DebuggerParser::executeRunTo()
   // disassembly, since this may be a time-consuming operation
   ostringstream buf;
   buf << "RunTo searching through " << max_iterations << " disassembled instructions";
-  ProgressDialog progress(debugger.myBaseDialog, debugger.font(), buf.str());
+  ProgressDialog progress(debugger.myBaseDialog, debugger.lfont(), buf.str());
   progress.setRange(0, max_iterations, 5);
 
   bool done = false;

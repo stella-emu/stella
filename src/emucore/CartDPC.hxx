@@ -142,10 +142,10 @@ class CartridgeDPC : public Cartridge
       Get debugger widget responsible for accessing the inner workings
       of the cart.
     */
-    CartDebugWidget* debugWidget(GuiObject* boss,
-        const GUI::Font& font, int x, int y, int w, int h)
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+        const GUI::Font& nfont, int x, int y, int w, int h)
     {
-      return new CartridgeDPCWidget(boss, font, x, y, w, h, *this);
+      return new CartridgeDPCWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 

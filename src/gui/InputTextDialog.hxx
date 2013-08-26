@@ -32,6 +32,8 @@ class InputTextDialog : public Dialog, public CommandSender
   public:
     InputTextDialog(GuiObject* boss, const GUI::Font& font,
                     const StringList& labels);
+    InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
+                    const GUI::Font& nfont, const StringList& labels);
     virtual ~InputTextDialog();
 
     /** Place the input dialog onscreen and center it */
@@ -52,6 +54,8 @@ class InputTextDialog : public Dialog, public CommandSender
     void center();
 
   protected:
+    void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
+                    const StringList& labels);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:

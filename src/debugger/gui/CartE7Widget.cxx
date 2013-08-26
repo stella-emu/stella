@@ -31,9 +31,9 @@ static const char* spot_upper[] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7Widget::CartridgeE7Widget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeE7& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt32 size = 8 * 2048;
@@ -67,17 +67,17 @@ CartridgeE7Widget::CartridgeE7Widget(
   for(int i = 0; i < 4; ++i)
     items1.push_back(spot_upper[i]);
 
-  const int lwidth = font.getStringWidth("Set slice for upper 256B: "),
-            fwidth = font.getStringWidth("3 - RAM ($FEB)");
+  const int lwidth = _font.getStringWidth("Set slice for upper 256B: "),
+            fwidth = _font.getStringWidth("3 - RAM ($FEB)");
   myLower2K =
-    new PopUpWidget(boss, font, xpos, ypos-2, fwidth, myLineHeight, items0,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight, items0,
                     "Set slice for lower 2K: ", lwidth, kLowerChanged);
   myLower2K->setTarget(this);
   addFocusWidget(myLower2K);
   ypos += myLower2K->getHeight() + 4;
 
   myUpper256B =
-    new PopUpWidget(boss, font, xpos, ypos-2, fwidth, myLineHeight, items1,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight, items1,
                     "Set slice for upper 256B: ", lwidth, kUpperChanged);
   myUpper256B->setTarget(this);
   addFocusWidget(myUpper256B);

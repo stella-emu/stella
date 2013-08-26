@@ -36,7 +36,8 @@ class RomWidget : public Widget, public CommandSender
     };
 
   public:
-    RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
+    RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+              int x, int y, int w, int h);
     virtual ~RomWidget();
 
     void invalidate(bool forcereload = true)

@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeSBWidget::CartridgeSBWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeSB& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt32 size = myCart.mySize;
@@ -57,9 +57,9 @@ CartridgeSBWidget::CartridgeSBWidget(
       ypos = addBaseInformation(size, "Fred X. Quimby", info.str()) + myLineHeight;
 
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("XX ($800) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("XX ($800) "),
                     myLineHeight, items, "Set bank: ",
-                    font.getStringWidth("Set bank: "), kBankChanged);
+                    _font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

@@ -27,9 +27,10 @@
 #include "RomListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
+RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
+                             const GUI::Font& nfont,
                              int x, int y, int w, int h)
-  : EditableWidget(boss, font, x, y, 16, 16),
+  : EditableWidget(boss, nfont, x, y, 16, 16),
     myMenu(NULL),
     _rows(0),
     _cols(0),
@@ -53,14 +54,14 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   _h = h + 2;
 
   // Create scrollbar and attach to the list
-  myScrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
+  myScrollBar = new ScrollBarWidget(boss, lfont, _x + _w, _y, kScrollBarWidth, _h);
   myScrollBar->setTarget(this);
 
   // Add settings menu
-  myMenu = new RomListSettings(this, font);
+  myMenu = new RomListSettings(this, lfont);
 
   // Take advantage of a wide debugger window when possible
-  const int fontWidth = font.getMaxCharWidth(),
+  const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
   _labelWidth = BSPF_max(16, int(0.20 * (numchars - 12))) * fontWidth - 1;
@@ -79,7 +80,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   CheckboxWidget* t;
   for(int i = 0; i < _rows; ++i)
   {
-    t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
+    t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "", kCheckActionCmd);
     t->setTarget(this);
     t->setID(i);
     t->setFill(CheckboxWidget::Circle);

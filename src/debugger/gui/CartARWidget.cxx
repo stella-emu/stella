@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeARWidget::CartridgeARWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeAR& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt16 size = myCart.mySize;
@@ -71,9 +71,9 @@ CartridgeARWidget::CartridgeARWidget(
   items.push_back(" 30");
   items.push_back(" 31");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth(" XX "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX "),
                     myLineHeight, items, "Set bank: ",
-                    font.getStringWidth("Set bank: "), kBankChanged);
+                    _font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

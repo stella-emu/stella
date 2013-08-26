@@ -29,7 +29,8 @@ class PopUpWidget;
 class CartridgeFA2Widget : public CartDebugWidget
 {
   public:
-    CartridgeFA2Widget(GuiObject* boss, const GUI::Font& font,
+    CartridgeFA2Widget(GuiObject* boss, const GUI::Font& lfont,
+                       const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeFA2& cart);
     virtual ~CartridgeFA2Widget() { }

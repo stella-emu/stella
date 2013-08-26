@@ -38,9 +38,36 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
     myXOrig(0),
     myYOrig(0)
 {
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+  initialize(font, font, labels);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
+                                 const GUI::Font& nfont,
+                                 const StringList& labels)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
+    CommandSender(boss),
+    myEnableCenter(false),
+    myErrorFlag(false),
+    myXOrig(0),
+    myYOrig(0)
+{
+  initialize(lfont, nfont, labels);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+InputTextDialog::~InputTextDialog()
+{
+  myInput.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
+                                 const StringList& labels)
+{
+  const int fontWidth  = lfont.getMaxCharWidth(),
+            fontHeight = lfont.getFontHeight(),
+            lineHeight = lfont.getLineHeight();
   unsigned int xpos, ypos, i, lwidth = 0, maxIdx = 0;
   WidgetArray wid;
 
@@ -57,19 +84,19 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
       maxIdx = i;
     }
   }
-  lwidth = font.getStringWidth(labels[maxIdx]);
+  lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels
   ypos = lineHeight;
   for(i = 0; i < labels.size(); ++i)
   {
     xpos = 10;
-    new StaticTextWidget(this, font, xpos, ypos,
+    new StaticTextWidget(this, lfont, xpos, ypos,
                          lwidth, fontHeight,
                          labels[i], kTextAlignLeft);
 
     xpos += lwidth + fontWidth;
-    EditTextWidget* w = new EditTextWidget(this, font, xpos, ypos,
+    EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
                                            _w - xpos - 10, lineHeight, "");
     wid.push_back(w);
 
@@ -78,7 +105,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   }
 
   xpos = 10;
-  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 2*xpos, fontHeight,
+  myTitle = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
                                  "", kTextAlignCenter);
   myTitle->setTextColor(kTextColorEm);
 
@@ -86,14 +113,8 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 
   // Add OK and Cancel buttons
   wid.clear();
-  addOKCancelBGroup(wid, font);
+  addOKCancelBGroup(wid, lfont);
   addBGroupToFocusList(wid);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputTextDialog::~InputTextDialog()
-{
-  myInput.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

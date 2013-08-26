@@ -140,7 +140,7 @@ Settings::Settings(OSystem* osystem)
   setExternal("maxres", "");
 
   // Debugger/disassembly options
-  setInternal("dbg.boldfont", "false");
+  setInternal("dbg.fontstyle", "0");
   setInternal("dbg.uhex", "true");
   setInternal("dis.resolve", "true");
   setInternal("dis.gfxformat", "2");
@@ -453,9 +453,9 @@ void Settings::usage()
     << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
     << "   -dis.relocate  <1|0>        Relocate calls out of address range in disassembler\n"
     << endl
-    << "   -dbg.res      <WxH>         The resolution to use in debugger mode\n"
-    << "   -dbg.boldfont <1|0>         Use bold fonts in the debugger window\n"
-    << "   -break        <address>     Set a breakpoint at 'address'\n"
+    << "   -dbg.res       <WxH>        The resolution to use in debugger mode\n"
+    << "   -dbg.fontstyle <0-3>        Font style to use in debugger window (bold vs. normal)\n"
+    << "   -break         <address>    Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"

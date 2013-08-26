@@ -24,7 +24,7 @@
     devices (paddles, trackball, etc).
 
   * Added ability to use bold fonts within the debugger window, which can
-    be set with the 'dbg.boldfont' commandline argument as well as in the
+    be set with the 'dbg.fontstyle' commandline argument as well as in the
     debugger UI Settings dialog.  This is useful for those that find the
     current font too narrow.
 

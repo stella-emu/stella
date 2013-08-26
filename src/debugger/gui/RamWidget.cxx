@@ -31,51 +31,52 @@
 #include "RamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
-  : Widget(boss, font, x, y, 16, 16),
+RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+                     int x, int y)
+  : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss),
     myUndoAddress(-1),
     myUndoValue(-1),
     myCurrentRamBank(0)
 {
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight(),
-            bwidth  = font.getStringWidth("Compare "),
+  const int fontWidth  = lfont.getMaxCharWidth(),
+            fontHeight = lfont.getFontHeight(),
+            lineHeight = lfont.getLineHeight(),
+            bwidth  = lfont.getStringWidth("Compare "),
             bheight = lineHeight + 2;
   int xpos, ypos, lwidth;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
   // Add a scrollbar, since there may be more than 128 bytes of RAM available
   xpos = x;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
-  myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
+  myRamGrid = new DataGridWidget(boss, nfont, xpos + lwidth, ypos,
                                  16, 8, 2, 8, Common::Base::F_16, true);
   myRamGrid->setTarget(this);
   addFocusWidget(myRamGrid);
 
   // Create actions buttons to the left of the RAM grid
   xpos += lwidth + myRamGrid->getWidth() + 4;
-  myUndoButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+  myUndoButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
                                   "Undo", kUndoCmd);
   myUndoButton->setTarget(this);
 
   ypos += bheight + 4;
-  myRevertButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+  myRevertButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
                                     "Revert", kRevertCmd);
   myRevertButton->setTarget(this);
 
   ypos += 2 * bheight + 2;
-  mySearchButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+  mySearchButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
                                     "Search", kSearchCmd);
   mySearchButton->setTarget(this);
 
   ypos += bheight + 4;
-  myCompareButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+  myCompareButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
                                      "Compare", kCmpCmd);
   myCompareButton->setTarget(this);
 
   ypos += bheight + 4;
-  myRestartButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+  myRestartButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
                                      "Reset", kRestartCmd);
   myRestartButton->setTarget(this);
 
@@ -85,13 +86,13 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Labels for RAM grid
   xpos = x;  ypos = y + lineHeight;
   myRamStart =
-    new StaticTextWidget(boss, font, xpos, ypos - lineHeight,
-                         font.getStringWidth("xxxx"), fontHeight,
+    new StaticTextWidget(boss, lfont, xpos, ypos - lineHeight,
+                         lfont.getStringWidth("xxxx"), fontHeight,
                          "00xx", kTextAlignLeft);
 
   for(int col = 0; col < 16; ++col)
   {
-    new StaticTextWidget(boss, font, xpos + col*myRamGrid->colWidth() + lwidth + 8,
+    new StaticTextWidget(boss, lfont, xpos + col*myRamGrid->colWidth() + lwidth + 8,
                          ypos - lineHeight,
                          fontWidth, fontHeight,
                          Common::Base::toString(col, Common::Base::F_16_1),
@@ -100,7 +101,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   for(int row = 0; row < 8; ++row)
   {
     myRamLabels[row] =
-      new StaticTextWidget(boss, font, xpos + 8, ypos + row*lineHeight + 2,
+      new StaticTextWidget(boss, lfont, xpos + 8, ypos + row*lineHeight + 2,
                            3*fontWidth, fontHeight, "", kTextAlignLeft);
   }
 
@@ -109,26 +110,25 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // We need to define these widgets from right to left since the leftmost
   // one resizes as much as possible
   xpos = xpos_r - 13*fontWidth - 5;
-  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, 4*fontWidth, fontHeight,
                        "Bin:", kTextAlignLeft);
-  myBinValue = new EditTextWidget(boss, font, xpos + 4*fontWidth + 5,
+  myBinValue = new EditTextWidget(boss, nfont, xpos + 4*fontWidth + 5,
                                   ypos-2, 9*fontWidth, lineHeight, "");
   myBinValue->setEditable(false);
 
   xpos -= 8*fontWidth + 5 + 20;
-  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, 4*fontWidth, fontHeight,
                        "Dec:", kTextAlignLeft);
-  myDecValue = new EditTextWidget(boss, font, xpos + 4*fontWidth + 5, ypos-2,
+  myDecValue = new EditTextWidget(boss, nfont, xpos + 4*fontWidth + 5, ypos-2,
                                   4*fontWidth, lineHeight, "");
   myDecValue->setEditable(false);
 
   xpos_r = xpos - 20;
   xpos = x + 10;
-  new StaticTextWidget(boss, font, xpos, ypos,
-                       6*fontWidth, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, 6*fontWidth, fontHeight,
                        "Label:", kTextAlignLeft);
   xpos += 6*fontWidth + 5;
-  myLabel = new EditTextWidget(boss, font, xpos, ypos-2, xpos_r-xpos,
+  myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
                                lineHeight, "");
   myLabel->setEditable(false);
 
@@ -139,7 +139,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Inputbox which will pop up when searching RAM
   StringList labels;
   labels.push_back("Search: ");
-  myInputBox = new InputTextDialog(boss, font, labels);
+  myInputBox = new InputTextDialog(boss, lfont, nfont, labels);
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled

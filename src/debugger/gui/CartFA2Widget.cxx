@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2Widget::CartridgeFA2Widget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFA2& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt16 size = cart.mySize;
@@ -62,36 +62,36 @@ CartridgeFA2Widget::CartridgeFA2Widget(
     items.push_back("6 ($FFB)");
 
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
-                    font.getStringWidth("Set bank: "), kBankChanged);
+                    _font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   ypos += myLineHeight + 20;
 
-  const int bwidth = font.getStringWidth("Erase") + 20;
+  const int bwidth = _font.getStringWidth("Erase") + 20;
 
-  StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos,
-      font.getStringWidth("Harmony Flash: "),
+  StaticTextWidget* t = new StaticTextWidget(boss, _font, xpos, ypos,
+      _font.getStringWidth("Harmony Flash: "),
       myFontHeight, "Harmony Flash: ", kTextAlignLeft);
 
   xpos += t->getWidth() + 4;
   myFlashErase =
-    new ButtonWidget(boss, font, xpos, ypos-4, bwidth, myButtonHeight,
+    new ButtonWidget(boss, _font, xpos, ypos-4, bwidth, myButtonHeight,
                      "Erase", kFlashErase);
   myFlashErase->setTarget(this);
   addFocusWidget(myFlashErase);
   xpos += myFlashErase->getWidth() + 8;
 
   myFlashLoad =
-    new ButtonWidget(boss, font, xpos, ypos-4, bwidth, myButtonHeight,
+    new ButtonWidget(boss, _font, xpos, ypos-4, bwidth, myButtonHeight,
                      "Load", kFlashLoad);
   myFlashLoad->setTarget(this);
   addFocusWidget(myFlashLoad);
   xpos += myFlashLoad->getWidth() + 8;
 
   myFlashSave =
-    new ButtonWidget(boss, font, xpos, ypos-4, bwidth, myButtonHeight,
+    new ButtonWidget(boss, _font, xpos, ypos-4, bwidth, myButtonHeight,
                      "Save", kFlashSave);
   myFlashSave->setTarget(this);
   addFocusWidget(myFlashSave);

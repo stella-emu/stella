@@ -22,9 +22,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4KWidget::Cartridge4KWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge4K& cart)
-  : CartDebugWidget(boss, font, x, y, w, h)
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
   // Eventually, we should query this from the debugger/disassembler
   uInt16 start = (cart.myImage[0xFFD] << 8) | cart.myImage[0xFFC];

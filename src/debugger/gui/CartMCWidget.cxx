@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMCWidget::CartridgeMCWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeMC& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
 #define ROM_BLOCKS
@@ -60,11 +60,11 @@ CartridgeMCWidget::CartridgeMCWidget(
     items.push_back(b + " (RAM)", b);
   }
 
-  const int lwidth = font.getStringWidth("Set slice for segment X ($3X): "),
-            fwidth = font.getStringWidth("255 (ROM)");
+  const int lwidth = _font.getStringWidth("Set slice for segment X ($3X): "),
+            fwidth = _font.getStringWidth("255 (ROM)");
 
   mySlice0 =
-    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
                     myLineHeight, items, "Set slice for segment 0 ($3C): ",
                     lwidth, kSlice0Changed);
   mySlice0->setTarget(this);
@@ -72,7 +72,7 @@ CartridgeMCWidget::CartridgeMCWidget(
   ypos += mySlice0->getHeight() + 4;
 
   mySlice1 =
-    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
                     myLineHeight, items, "Set slice for segment 1 ($3D): ",
                     lwidth, kSlice1Changed);
   mySlice1->setTarget(this);
@@ -80,7 +80,7 @@ CartridgeMCWidget::CartridgeMCWidget(
   ypos += mySlice1->getHeight() + 4;
 
   mySlice2 =
-    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
                     myLineHeight, items, "Set slice for segment 2 ($3E): ",
                     lwidth, kSlice2Changed);
   mySlice2->setTarget(this);
@@ -88,7 +88,7 @@ CartridgeMCWidget::CartridgeMCWidget(
   ypos += mySlice2->getHeight() + 4;
 
   mySlice3 =
-    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+    new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
                     myLineHeight, items, "Set slice for segment 3 ($3F): ",
                     lwidth, kSlice3Changed);
   mySlice3->setTarget(this);

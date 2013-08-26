@@ -156,7 +156,8 @@ class Debugger : public DialogContainer
     */
     TIADebug& tiaDebug() const { return *myTiaDebug; }
 
-    const GUI::Font& font() const       { return myDialog->font();   }
+    const GUI::Font& lfont() const      { return myDialog->lfont();  }
+    const GUI::Font& nlfont() const     { return myDialog->nfont();  }
     DebuggerParser& parser() const      { return *myParser;          }
     PackedBitArray& breakpoints() const { return *myBreakPoints;     }
     PackedBitArray& readtraps() const   { return *myReadTraps;       }

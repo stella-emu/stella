@@ -208,8 +208,8 @@ class Cartridge : public Device
       each specific cart type, since the bankswitching/inner workings
       of each cart type can be very different from each other.
     */
-    virtual CartDebugWidget* debugWidget(GuiObject* boss,
-        const GUI::Font& font, int x, int y, int w, int h) { return NULL; }
+    virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+        const GUI::Font& nfont, int x, int y, int w, int h) { return NULL; }
 
   protected:
     /**

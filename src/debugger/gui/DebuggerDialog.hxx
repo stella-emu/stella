@@ -52,7 +52,8 @@ class DebuggerDialog : public Dialog
                    int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    const GUI::Font& font() const      { return *myFont;         }
+    const GUI::Font& lfont() const     { return *myLFont;        }
+    const GUI::Font& nfont() const     { return *myNFont;        }
     PromptWidget& prompt() const       { return *myPrompt;       }
     TiaInfoWidget& tiaInfo() const     { return *myTiaInfo;      }
     TiaOutputWidget& tiaOutput() const { return *myTiaOutput;    }
@@ -101,7 +102,8 @@ class DebuggerDialog : public Dialog
 
     TabWidget *myTab, *myRomTab;
 
-    GUI::Font*       myFont;
+    GUI::Font*       myLFont;    // used for labels
+    GUI::Font*       myNFont;    // used for normal text
     PromptWidget*    myPrompt;
     TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;

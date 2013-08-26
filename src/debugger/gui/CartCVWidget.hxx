@@ -26,7 +26,8 @@ class CartridgeCV;
 class CartridgeCVWidget : public CartDebugWidget
 {
   public:
-    CartridgeCVWidget(GuiObject* boss, const GUI::Font& font,
+    CartridgeCVWidget(GuiObject* boss, const GUI::Font& lfont,
+                      const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeCV& cart);
     virtual ~CartridgeCVWidget() { }

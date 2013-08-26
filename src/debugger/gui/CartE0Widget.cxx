@@ -36,9 +36,9 @@ static const char* seg2[] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0Widget::CartridgeE0Widget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeE0& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt32 size = 8 * 1024;
@@ -72,9 +72,9 @@ CartridgeE0Widget::CartridgeE0Widget(
     items2.push_back(seg2[i]);
   }
 
-  const int lwidth = font.getStringWidth("Set slice for segment X: ");
+  const int lwidth = _font.getStringWidth("Set slice for segment X: ");
   mySlice0 =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("7 ($FF7)"),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FF7)"),
                     myLineHeight, items0, "Set slice for segment 0: ",
                     lwidth, kSlice0Changed);
   mySlice0->setTarget(this);
@@ -82,7 +82,7 @@ CartridgeE0Widget::CartridgeE0Widget(
   ypos += mySlice0->getHeight() + 4;
 
   mySlice1 =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("7 ($FF7)"),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FF7)"),
                     myLineHeight, items1, "Set slice for segment 1: ",
                     lwidth, kSlice1Changed);
   mySlice1->setTarget(this);
@@ -90,7 +90,7 @@ CartridgeE0Widget::CartridgeE0Widget(
   ypos += mySlice1->getHeight() + 4;
 
   mySlice2 =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("7 ($FF7)"),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FF7)"),
                     myLineHeight, items2, "Set slice for segment 2: ",
                     lwidth, kSlice2Changed);
   mySlice2->setTarget(this);

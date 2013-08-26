@@ -32,7 +32,8 @@ class ToggleBitWidget;
 class CartridgeCMWidget : public CartDebugWidget
 {
   public:
-    CartridgeCMWidget(GuiObject* boss, const GUI::Font& font,
+    CartridgeCMWidget(GuiObject* boss, const GUI::Font& lfont,
+                      const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeCM& cart);
     virtual ~CartridgeCMWidget() { }

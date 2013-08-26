@@ -26,7 +26,8 @@ class Cartridge4K;
 class Cartridge4KWidget : public CartDebugWidget
 {
   public:
-    Cartridge4KWidget(GuiObject* boss, const GUI::Font& font,
+    Cartridge4KWidget(GuiObject* boss, const GUI::Font& lfont,
+                      const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       Cartridge4K& cart);
     virtual ~Cartridge4KWidget() { }

@@ -22,9 +22,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2KWidget::Cartridge2KWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge2K& cart)
-  : CartDebugWidget(boss, font, x, y, w, h)
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
   // Eventually, we should query this from the debugger/disassembler
   uInt16 size = cart.mySize;

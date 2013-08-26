@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EWidget::Cartridge3EWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge3E& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart),
     myNumRomBanks(cart.mySize >> 11),
     myNumRamBanks(32)
@@ -66,23 +66,23 @@ Cartridge3EWidget::Cartridge3EWidget(
   label << "Set bank ($" << Common::Base::HEX4 << start << " - $"
         << (start+0x7FF) << "): ";
 
-  new StaticTextWidget(_boss, _font, xpos, ypos, font.getStringWidth(label.str()),
+  new StaticTextWidget(_boss, _font, xpos, ypos, _font.getStringWidth(label.str()),
     myFontHeight, label.str(), kTextAlignLeft);
   ypos += myLineHeight + 8;
 
   xpos += 40;
   myROMBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($3E) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($3E) "),
                     myLineHeight, romitems, "ROM ($3F): ",
-                    font.getStringWidth("ROM ($3F): "), kROMBankChanged);
+                    _font.getStringWidth("ROM ($3F): "), kROMBankChanged);
   myROMBank->setTarget(this);
   addFocusWidget(myROMBank);
 
   xpos += myROMBank->getWidth() + 20;
   myRAMBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($3E) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($3E) "),
                     myLineHeight, ramitems, "RAM ($3E): ",
-                    font.getStringWidth("RAM ($3E): "), kRAMBankChanged);
+                    _font.getStringWidth("RAM ($3E): "), kRAMBankChanged);
   myRAMBank->setTarget(this);
   addFocusWidget(myRAMBank);
 }

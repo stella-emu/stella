@@ -36,13 +36,15 @@ class ButtonWidget;
 class CartDebugWidget : public Widget, public CommandSender
 {
   public:
-    CartDebugWidget(GuiObject* boss, const GUI::Font& font,
+    CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
+                    const GUI::Font& nfont,
                     int x, int y, int w, int h)
-      : Widget(boss, font, x, y, w, h),
+      : Widget(boss, lfont, x, y, w, h),
         CommandSender(boss),
-        myFontWidth(font.getMaxCharWidth()),
-        myFontHeight(font.getFontHeight()),
-        myLineHeight(font.getLineHeight()),
+        _nfont(nfont),
+        myFontWidth(lfont.getMaxCharWidth()),
+        myFontHeight(lfont.getFontHeight()),
+        myLineHeight(lfont.getLineHeight()),
         myButtonHeight(myLineHeight + 4)    { }
 
     virtual ~CartDebugWidget() { };
@@ -65,14 +67,14 @@ class CartDebugWidget : public Widget, public CommandSender
       if(bytes >= 1024)
         buf << " / " << (bytes/1024) << "KB";
 
-      w = new EditTextWidget(_boss, _font, x+lwidth, y,
+      w = new EditTextWidget(_boss, _nfont, x+lwidth, y,
             fwidth, myLineHeight, buf.str());
       w->setEditable(false);
       y += myLineHeight + 4;
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
             myFontHeight, "Manufacturer: ", kTextAlignLeft);
-      w = new EditTextWidget(_boss, _font, x+lwidth, y,
+      w = new EditTextWidget(_boss, _nfont, x+lwidth, y,
             fwidth, myLineHeight, manufacturer);
       w->setEditable(false);
       y += myLineHeight + 4;
@@ -85,7 +87,7 @@ class CartDebugWidget : public Widget, public CommandSender
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
             myFontHeight, "Description: ", kTextAlignLeft);
-      myDesc = new StringListWidget(_boss, _font, x+lwidth, y,
+      myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y,
                    fwidth, lines * myLineHeight, false);
       myDesc->setEditable(false);
       myDesc->setList(sl);
@@ -112,6 +114,9 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual string bankState() { return "0 (non-bankswitched)"; }
 
   protected:
+    // Font used for 'normal' text; _font is for 'label' text
+    const GUI::Font& _nfont;
+
     // These will be needed by most of the child classes;
     // we may as well make them protected variables
     int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;

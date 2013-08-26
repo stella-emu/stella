@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeEFWidget::CartridgeEFWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeEF& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt32 size = 16 * 4096;
@@ -65,9 +65,9 @@ CartridgeEFWidget::CartridgeEFWidget(
   items.push_back("14 ($FEE)");
   items.push_back("15 ($FEF)");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("15 ($FE0) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("15 ($FE0) "),
                     myLineHeight, items, "Set bank: ",
-                    font.getStringWidth("Set bank: "), kBankChanged);
+                    _font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

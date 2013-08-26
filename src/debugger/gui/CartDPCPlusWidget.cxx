@@ -24,9 +24,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeDPCPlus& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt16 size = cart.mySize;
@@ -62,121 +62,121 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   items.push_back("4 ($FFA)");
   items.push_back("5 ($FFB)");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
-                    font.getStringWidth("Set bank: "), kBankChanged);
+                    _font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // Top registers
-  int lwidth = font.getStringWidth("Counter Registers: ");
+  int lwidth = _font.getStringWidth("Counter Registers: ");
   xpos = 10;  ypos += myLineHeight + 8;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Top Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myTops = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myTops->setTarget(this);
   myTops->setEditable(false);
 
   // Bottom registers
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Bottom Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myBottoms = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myBottoms->setTarget(this);
   myBottoms->setEditable(false);
 
   // Counter registers
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Counter Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myCounters = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
+  myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
   myCounters->setTarget(this);
   myCounters->setEditable(false);
 
   // Fractional counter registers
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Frac Counters: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myFracCounters = new DataGridWidget(boss, font, xpos, ypos-2, 4, 2, 8, 32, Common::Base::F_16_8);
+  myFracCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 4, 2, 8, 32, Common::Base::F_16_8);
   myFracCounters->setTarget(this);
   myFracCounters->setEditable(false);
 
   // Fractional increment registers
   xpos = 10;  ypos += myFracCounters->getHeight() + 8;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Frac Increments: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myFracIncrements = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myFracIncrements = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myFracIncrements->setTarget(this);
   myFracIncrements->setEditable(false);
 
   // Special function parameters
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Function Params: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myParameter = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myParameter = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
   myParameter->setTarget(this);
   myParameter->setEditable(false);
 
   // Music counters
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Counters: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myMusicCounters = new DataGridWidget(boss, font, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
+  myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
   myMusicCounters->setTarget(this);
   myMusicCounters->setEditable(false);
 
   // Music frequencies
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Frequencies: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myMusicFrequencies = new DataGridWidget(boss, font, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
+  myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
   myMusicFrequencies->setTarget(this);
   myMusicFrequencies->setEditable(false);
 
   // Music waveforms
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Waveforms: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myMusicWaveforms = new DataGridWidget(boss, font, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_4);
+  myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_4);
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
 
   // Current random number
-  lwidth = font.getStringWidth("Current random number: ");
+  lwidth = _font.getStringWidth("Current random number: ");
   xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Current random number: ", kTextAlignLeft);
   xpos += lwidth;
 
-  myRandom = new DataGridWidget(boss, font, xpos, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
+  myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
   myRandom->setTarget(this);
   myRandom->setEditable(false);
 
   // Fast fetch and immediate mode LDA flags
   xpos += myRandom->getWidth() + 30;
-  myFastFetch = new CheckboxWidget(boss, font, xpos, ypos, "Fast Fetcher enabled");
+  myFastFetch = new CheckboxWidget(boss, _font, xpos, ypos, "Fast Fetcher enabled");
   myFastFetch->setTarget(this);
   myFastFetch->setEditable(false);
   ypos += myLineHeight + 4;
-  myIMLDA = new CheckboxWidget(boss, font, xpos, ypos, "Immediate mode LDA");
+  myIMLDA = new CheckboxWidget(boss, _font, xpos, ypos, "Immediate mode LDA");
   myIMLDA->setTarget(this);
   myIMLDA->setEditable(false);
 }

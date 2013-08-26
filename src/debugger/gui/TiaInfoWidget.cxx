@@ -29,75 +29,76 @@
 #include "TiaInfoWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
+TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
+                             const GUI::Font& nfont,
                              int x, int y, int max_w)
-  : Widget(boss, font, x, y, 16, 16),
+  : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  bool longstr = 34 * font.getMaxCharWidth() <= max_w;
+  bool longstr = 34 * lfont.getMaxCharWidth() <= max_w;
 
   x += 5;
-  const int lineHeight = font.getLineHeight();
+  const int lineHeight = lfont.getLineHeight();
   int xpos = x, ypos = y;
-  int lwidth = font.getStringWidth(longstr ? "Frame Cycle:" : "F. Cycle:");
-  int fwidth = 5 * font.getMaxCharWidth() + 4;
+  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle:" : "F. Cycle:");
+  int fwidth = 5 * lfont.getMaxCharWidth() + 4;
 
   // Add frame info
   xpos = x;  ypos = y + 10;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Frame Count:" : "Frame:",
                        kTextAlignLeft);
   xpos += lwidth;
-  myFrameCount = new EditTextWidget(boss, font, xpos, ypos-1, fwidth, lineHeight, "");
+  myFrameCount = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCount->setEditable(false);
 
   xpos = x;  ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Frame Cycle:" : "F. Cycle:",
                        kTextAlignLeft);
   xpos += lwidth;
-  myFrameCycles = new EditTextWidget(boss, font, xpos, ypos-1, fwidth, lineHeight, "");
+  myFrameCycles = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCycles->setEditable(false);
 
   xpos = x + 20;  ypos += lineHeight + 8;
-  myVSync = new CheckboxWidget(boss, font, xpos, ypos-3, "VSync", 0);
+  myVSync = new CheckboxWidget(boss, lfont, xpos, ypos-3, "VSync", 0);
   myVSync->setEditable(false);
 
   xpos = x + 20;  ypos += lineHeight + 5;
-  myVBlank = new CheckboxWidget(boss, font, xpos, ypos-3, "VBlank", 0);
+  myVBlank = new CheckboxWidget(boss, lfont, xpos, ypos-3, "VBlank", 0);
   myVBlank->setEditable(false);
 
   xpos = x + lwidth + myFrameCycles->getWidth() + 8;  ypos = y + 10;
-  lwidth = font.getStringWidth(longstr ? "Color Clock:" : "Pixel Pos:");
-  fwidth = 3 * font.getMaxCharWidth() + 4;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  lwidth = lfont.getStringWidth(longstr ? "Color Clock:" : "Pixel Pos:");
+  fwidth = 3 * lfont.getMaxCharWidth() + 4;
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        "Scanline:", kTextAlignLeft);
 
-  myScanlineCount = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
+  myScanlineCount = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myScanlineCount->setEditable(false);
 
   ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Scan Cycle:" : "S. Cycle:", kTextAlignLeft);
 
-  myScanlineCycles = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
+  myScanlineCycles = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                         lineHeight, "");
   myScanlineCycles->setEditable(false);
 
   ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        "Pixel Pos:", kTextAlignLeft);
 
-  myPixelPosition = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
+  myPixelPosition = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myPixelPosition->setEditable(false);
 
   ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Color Clock:" : "Color Clk:", kTextAlignLeft);
 
-  myColorClocks = new EditTextWidget(boss, font, xpos+lwidth, ypos-1, fwidth,
+  myColorClocks = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                      lineHeight, "");
   myColorClocks->setEditable(false);
 

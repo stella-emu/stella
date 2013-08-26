@@ -29,7 +29,8 @@ class DataGridWidget;
 class CartridgeDPCWidget : public CartDebugWidget
 {
   public:
-    CartridgeDPCWidget(GuiObject* boss, const GUI::Font& font,
+    CartridgeDPCWidget(GuiObject* boss, const GUI::Font& lfont,
+                       const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeDPC& cart);
     virtual ~CartridgeDPCWidget() { }

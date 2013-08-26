@@ -34,7 +34,8 @@ class StaticTextWidget;
 class RamWidget : public Widget, public CommandSender
 {
   public:
-    RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+              int x, int y);
     virtual ~RamWidget();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);

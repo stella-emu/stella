@@ -161,7 +161,6 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.clear();
   tabID = myTab->addTab(" Debugger ");
   lwidth = font.getStringWidth("Debugger Height: ");
-  pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
 
   // Debugger width and height
@@ -208,10 +207,19 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(b);
   ypos += b->getHeight() + 12;
 
-  // Do we use bold fonts?
-  myDebuggerFontBold =
-    new CheckboxWidget(myTab, font, xpos+10, ypos, "Use bold fonts when possible");
-  wid.push_back(myDebuggerFontBold);
+  // Font style (bold label vs. text, etc)
+  lwidth = font.getStringWidth("Font Style: ");
+  pwidth = font.getStringWidth("Bold non-labels only");
+  xpos = vBorder;
+  items.clear();
+  items.push_back("All Normal font", "0");
+  items.push_back("Bold labels only", "1");
+  items.push_back("Bold non-labels only", "2");
+  items.push_back("All Bold font", "3");
+  myDebuggerFontStyle =
+    new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
+                    "Font Style: ", lwidth);
+  wid.push_back(myDebuggerFontStyle);
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -237,6 +245,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.clear();
   tabID = myTab->addTab(" Misc. ");
   lwidth = font.getStringWidth("Mouse wheel scroll: ");
+  pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
 
   // UI Palette
@@ -344,8 +353,9 @@ void UIDialog::loadConfig()
   myDebuggerHeightSlider->setValue(h);
   myDebuggerHeightLabel->setValue(h);
 
-  // Debugger bold font
-  myDebuggerFontBold->setState(instance().settings().getBool("dbg.boldfont"));
+  // Debugger font style
+  int style = instance().settings().getInt("dbg.fontstyle");
+  myDebuggerFontStyle->setSelected(style, "0");
 #endif
 
   // UI palette
@@ -388,8 +398,9 @@ void UIDialog::saveConfig()
     GUI::Size(myDebuggerWidthSlider->getValue(),
               myDebuggerHeightSlider->getValue()));
 
-  // Debugger bold font
-  instance().settings().setValue("dbg.boldfont", myDebuggerFontBold->getState());
+  // Debugger font style
+  instance().settings().setValue("dbg.fontstyle",
+    myDebuggerFontStyle->getSelectedTag().toString());
 
   // UI palette
   instance().settings().setValue("uipalette",
@@ -433,14 +444,14 @@ void UIDialog::setDefaults()
       myDebuggerWidthLabel->setValue(w);
       myDebuggerHeightSlider->setValue(h);
       myDebuggerHeightLabel->setValue(h);
-      myDebuggerFontBold->setState(false);
+      myDebuggerFontStyle->setSelected("0");
       break;
     }
 
     case 2:  // Misc. options
-      myPalettePopup->setSelected("1", "1");
-      myListDelayPopup->setSelected("300", "300");
-      myWheelLinesPopup->setSelected("4", "4");
+      myPalettePopup->setSelected("1");
+      myListDelayPopup->setSelected("300");
+      myWheelLinesPopup->setSelected("4");
       break;
 
     default:

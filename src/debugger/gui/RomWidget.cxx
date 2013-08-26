@@ -33,9 +33,9 @@
 #include "RomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
+RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                      int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+  : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
     myListIsDirty(true)
 {
@@ -45,19 +45,19 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
 
   // Show current bank state
   xpos = x;  ypos = y + 7;
-  t = new StaticTextWidget(boss, font, xpos, ypos,
-                           font.getStringWidth("Bank state: "),
-                           font.getFontHeight(),
+  t = new StaticTextWidget(boss, lfont, xpos, ypos,
+                           lfont.getStringWidth("Bank state: "),
+                           lfont.getFontHeight(),
                            "Bank state: ", kTextAlignLeft);
 
   xpos += t->getWidth() + 5;
-  myBank = new EditTextWidget(boss, font, xpos, ypos-1,
-                              _w - 2 - xpos, font.getLineHeight());
+  myBank = new EditTextWidget(boss, nfont, xpos, ypos-1,
+                              _w - 2 - xpos, nfont.getLineHeight());
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
 
-  myRomList = new RomListWidget(boss, font, xpos, ypos, _w - 4, _h - ypos - 2);
+  myRomList = new RomListWidget(boss, lfont, nfont, xpos, ypos, _w - 4, _h - ypos - 2);
   myRomList->setTarget(this);
   addFocusWidget(myRomList);
 }

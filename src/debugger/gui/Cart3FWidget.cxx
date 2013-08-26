@@ -23,9 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3FWidget::Cartridge3FWidget(
-      GuiObject* boss, const GUI::Font& font,
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge3F& cart)
-  : CartDebugWidget(boss, font, x, y, w, h),
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
   uInt32 size = cart.mySize;
@@ -52,9 +52,9 @@ Cartridge3FWidget::Cartridge3FWidget(
   label << "Set bank ($" << Common::Base::HEX4 << start << " - $" <<
            (start+0x7FF) << "): ";
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($3F) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($3F) "),
                     myLineHeight, items, label.str(),
-                    font.getStringWidth(label.str()), kBankChanged);
+                    _font.getStringWidth(label.str()), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

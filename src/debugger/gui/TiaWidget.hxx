@@ -35,7 +35,7 @@ class ColorWidget;
 class TiaWidget : public Widget, public CommandSender
 {
   public:
-    TiaWidget(GuiObject* boss, const GUI::Font& font,
+    TiaWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int w, int h);
     virtual ~TiaWidget();
 
