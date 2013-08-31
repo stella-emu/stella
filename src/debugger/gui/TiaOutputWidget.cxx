@@ -45,7 +45,7 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   l.push_back("Fill to scanline", "scanline");
   l.push_back("Set breakpoint", "bp");
   l.push_back("Set zoom position", "zoom");
-  l.push_back("Toggle fixed debug colors", "fixed");
+  l.push_back("Toggle fixed debug colors (from beam pos)", "fixed");
   myMenu = new ContextMenu(this, font, l);
 }
 

@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.9.1 to 3.9.2: (August xx, 2013)
+3.9.1 to 3.9.2: (August 31, 2013)
 
   * Improved parsing of the DASM lst file for the debugger disassembly;
     it sometimes missed constant declarations.
@@ -30,6 +30,10 @@
 
   * Renamed 'debuggerres' argument to 'dbg.res'.  All future debugger-
     specific options will start with 'dbg.'.
+
+  * The TIA 'zoom' area in the debugger now supports scrolling the
+    mouse wheel (currently up/down only, as I don't have a sideways
+    scrolling mouse to test with).
 
 -Have fun!
 

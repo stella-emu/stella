@@ -39,6 +39,10 @@ class TiaZoomWidget : public Widget, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseUp(int x, int y, int button, int clickCount);
+    void handleMouseWheel(int x, int y, int direction);
+    void handleMouseMoved(int x, int y, int button);
+    void handleMouseLeft(int button);
     bool handleEvent(Event::Type event);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
@@ -54,8 +58,10 @@ class TiaZoomWidget : public Widget, public CommandSender
 
     int myZoomLevel;
     int myNumCols, myNumRows;
-    int myXoff, myYoff;
-    int myXCenter, myYCenter;
+    int myXOff, myYOff;
+
+    bool myMouseMoving;
+    int myXClick, myYClick;
 };
 
 #endif
