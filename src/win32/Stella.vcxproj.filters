@@ -1463,6 +1463,12 @@
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\gui\ConsoleBFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\ConsoleMediumBFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">

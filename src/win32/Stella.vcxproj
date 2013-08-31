@@ -519,6 +519,8 @@ SDLmain.lib
     <ClInclude Include="..\emucore\CartFA2.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
+    <ClInclude Include="..\gui\ConsoleBFont.hxx" />
+    <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
