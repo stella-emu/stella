@@ -1429,6 +1429,13 @@ void DebuggerParser::executeSaveses()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "savesnap"
+void DebuggerParser::executeSavesnap()
+{
+  debugger.myOSystem->eventHandler().takeSnapshot();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "savestate"
 void DebuggerParser::executeSavestate()
 {
@@ -2088,6 +2095,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_FILE, kARG_END_ARGS },
     &DebuggerParser::executeSaveses
+  },
+
+  {
+    "savesnap",
+    "Save current TIA image to PNG file",
+    false,
+    false,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeSavesnap
   },
 
   {

@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+3.9.2 to 3.9.3: (xxxx xx, 2013)
+
+  * Added 'savesnap' debugger prompt command, and also associated
+    context menu item to the debugger TIA output area.  This saves the
+    current TIA image to a PNG file.
+
+-Have fun!
+
+
 3.9.1 to 3.9.2: (August 31, 2013)
 
   * Improved parsing of the DASM lst file for the debugger disassembly;
@@ -34,8 +43,6 @@
   * The TIA 'zoom' area in the debugger now supports scrolling the
     mouse wheel (currently up/down only, as I don't have a sideways
     scrolling mouse to test with).
-
--Have fun!
 
 
 3.9 to 3.9.1: (August 21, 2013)
