@@ -348,17 +348,11 @@ void Console::setPalette(const string& type)
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
-  uInt32* palettes[3][3] = {
-    { &ourNTSCPalette[0],    &ourPALPalette[0],    &ourSECAMPalette[0]    },
-    { &ourNTSCPaletteZ26[0], &ourPALPaletteZ26[0], &ourSECAMPaletteZ26[0] },
-    { 0, 0, 0 }
+  static uInt32* palettes[3][3] = {
+    { &ourNTSCPalette[0],     &ourPALPalette[0],     &ourSECAMPalette[0]     },
+    { &ourNTSCPaletteZ26[0],  &ourPALPaletteZ26[0],  &ourSECAMPaletteZ26[0]  },
+    { &ourUserNTSCPalette[0], &ourUserPALPalette[0], &ourUserSECAMPalette[0] }
   };
-  if(myUserPaletteDefined)
-  {
-    palettes[2][0] = &ourUserNTSCPalette[0];
-    palettes[2][1] = &ourUserPALPalette[0];
-    palettes[2][2] = &ourUserSECAMPalette[0];
-  }
 
   // See which format we should be using
   int paletteNum = 0;
