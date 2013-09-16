@@ -1432,7 +1432,12 @@ void DebuggerParser::executeSaveses()
 // "savesnap"
 void DebuggerParser::executeSavesnap()
 {
+  // FIXME - for now, temporarily enable 1x snapshot mode, and reset it
+  //         afterwards; this will change once we move to FBSurfaces
+  bool ss1x = settings.getBool("ss1x");
+  settings.setValue("ss1x", true);
   debugger.myOSystem->eventHandler().takeSnapshot();
+  settings.setValue("ss1x", ss1x);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
