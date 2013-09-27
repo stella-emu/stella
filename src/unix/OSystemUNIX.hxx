@@ -20,7 +20,7 @@
 #ifndef OSYSTEM_UNIX_HXX
 #define OSYSTEM_UNIX_HXX
 
-#include "bspf.hxx"
+#include "OSystem.hxx"
 
 /**
   This class defines UNIX-like OS's (Linux) system specific settings.
@@ -40,13 +40,6 @@ class OSystemUNIX : public OSystem
       Destructor
     */
     virtual ~OSystemUNIX();
-
-  public:
-    /**
-      Move X11 window to given position.  Width and height are not
-      used (or modified).
-    */
-    void setAppWindowPos(int x, int y, /* not used*/ int, int);
 };
 
 #endif

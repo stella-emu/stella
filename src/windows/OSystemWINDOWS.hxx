@@ -21,7 +21,6 @@
 #define OSYSTEM_WINDOWS_HXX
 
 #include "OSystem.hxx"
-#include "bspf.hxx"
 
 /**
   This class defines Windows system specific settings.
@@ -48,13 +47,6 @@ class OSystemWINDOWS : public OSystem
     */
     string defaultSnapSaveDir();
     string defaultSnapLoadDir();
-
-    /**
-      Move window to given position.  The width and height are also
-      required for the underlying function, but the window size itself
-      absolutely must not be changed.
-    */
-    void setAppWindowPos(int x, int y, int w, int h);
 };
 
 #endif

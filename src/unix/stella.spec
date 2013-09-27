@@ -66,8 +66,7 @@ export CXXFLAGS=$RPM_OPT_FLAGS
   --enable-shared \
 %endif
   --force-builtin-libpng --force-builtin-zlib \
-  --docdir=%{_docdir}/stella \
-  --x-libraries=%{_prefix}/X11R6/%{_lib}
+  --docdir=%{_docdir}/stella
 
 %make
 

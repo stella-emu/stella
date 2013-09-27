@@ -17,13 +17,12 @@
 // $Id$
 //============================================================================
 
-#include <SDL_syswm.h>
 #include <fstream>
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
 #include "HomeFinder.hxx"
-#include "OSystem.hxx"
+
 #include "OSystemWINDOWS.hxx"
 
 /**
@@ -102,27 +101,4 @@ string OSystemWINDOWS::defaultSnapSaveDir()
 string OSystemWINDOWS::defaultSnapLoadDir()
 {
   return defaultSnapSaveDir();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemWINDOWS::setAppWindowPos(int x, int y, int w, int h)
-{
-  SDL_SysWMinfo sdl_info;
-  memset(&sdl_info, 0, sizeof(sdl_info));
-  SDL_VERSION (&sdl_info.version);
-  if(SDL_GetWMInfo(&sdl_info) <= 0)
-    return;
-
-  // The following mostly comes from SDL_dx5video.c
-  HWND window = sdl_info.window;
-  RECT bounds;
-
-  bounds.left   = x;
-  bounds.top    = y;
-  bounds.right  = x + w;
-  bounds.bottom = y + h;
-  AdjustWindowRectEx(&bounds, GetWindowLong(window, GWL_STYLE), (GetMenu(window) != NULL), 0);
-
-  SetWindowPos(window, HWND_NOTOPMOST, x, y, bounds.right-bounds.left,
-    bounds.bottom-bounds.top, SWP_NOCOPYBITS | SWP_SHOWWINDOW);
 }

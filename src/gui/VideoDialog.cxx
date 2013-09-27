@@ -383,7 +383,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
-#if !(defined(BSPF_WINDOWS) || (defined(BSPF_UNIX) && defined(HAVE_X11)))
+#if !(defined(BSPF_WINDOWS) || defined(BSPF_UNIX))
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 }

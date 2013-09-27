@@ -1091,6 +1091,8 @@ FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::centerAppWindow(const VideoMode& mode)
 {
+  // FIXSDL
+#if 0
   // Attempt to center the application window in non-fullscreen mode
   if(!fullScreen() && myOSystem->settings().getBool("center"))
   {
@@ -1098,8 +1100,8 @@ void FrameBuffer::centerAppWindow(const VideoMode& mode)
       ((myOSystem->desktopWidth() - mode.screen_w) >> 1);
     int y = mode.screen_h >= myOSystem->desktopHeight() ? 0 : 
       ((myOSystem->desktopHeight() - mode.screen_h) >> 1);
-    myOSystem->setAppWindowPos(x, y, mode.screen_w, mode.screen_h);
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

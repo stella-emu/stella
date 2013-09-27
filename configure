@@ -759,20 +759,6 @@ case $_host_os in
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/unix"
 			INCLUDES="$INCLUDES -I$SRC/unix"
-
-			#
-			# Check for X11
-			#
-			_x11=no
-			cat > $TMPC << EOF
-			#include <X11/Xutil.h>
-			int main(void) { return 0; }
-EOF
-			cc_check $LDFLAGS $CXXFLAGS -lX11 && _x11=yes
-			if test "$_x11" = yes ; then
-				DEFINES="$DEFINES -DHAVE_X11"
-				LIBS="$LIBS -lX11"
-			fi
 			;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WINDOWS -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
@@ -781,7 +767,7 @@ EOF
 			LIBS="$LIBS -lmingw32 -lwinmm"
 			;;
 		*)
-			echo "WARNING: host system not currenty supported"
+			echo "WARNING: host system not currently supported"
 			exit
 			;;
 esac
