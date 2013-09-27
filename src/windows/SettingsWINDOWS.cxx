@@ -19,10 +19,10 @@
 
 #include "bspf.hxx"
 #include "Settings.hxx"
-#include "SettingsWin32.hxx"
+#include "SettingsWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsWin32::SettingsWin32(OSystem* osystem)
+SettingsWINDOWS::SettingsWINDOWS(OSystem* osystem)
   : Settings(osystem)
 {
   setInternal("gl_lib", "opengl32.dll");
@@ -30,6 +30,6 @@ SettingsWin32::SettingsWin32(OSystem* osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsWin32::~SettingsWin32()
+SettingsWINDOWS::~SettingsWINDOWS()
 {
 }

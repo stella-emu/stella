@@ -42,7 +42,7 @@ _rm="rm -f"
 _rm_rec="$_rm -r"
 _zip="zip -q"
 _cp=cp
-_win32path=""
+_windowspath=""
 _windres=windres
 _sdlconfig=sdl-config
 _sdlpath="$PATH"
@@ -517,14 +517,8 @@ if test -n "$_host"; then
 #			CXXFLAGS="$CFLAGS -newlib -mstrict-align -mcpu=750 -mtune=7400"
 #			LDFLAGS="$LDFLAGS -newlib"
 #			;;
-		gp2x)
-			echo "Cross-compiling to $_host, forcing static build, and disabling OpenGL."
-			_build_static=yes
-			_build_gl=no
-			_build_windowed=no
-			;;
 		mingw32-cross)
-			echo "Cross-compiling for Win32 using MinGW."
+			echo "Cross-compiling for Windows using MinGW."
 			DEFINES="$DEFINES -DWIN32"
 			_host_os=win32
 			;;
@@ -781,20 +775,10 @@ EOF
 			fi
 			;;
 		win32)
-			DEFINES="$DEFINES -DBSPF_WIN32 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
-			MODULES="$MODULES $SRC/win32"
-			INCLUDES="$INCLUDES -I$SRC/win32"
+			DEFINES="$DEFINES -DBSPF_WINDOWS -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
+			MODULES="$MODULES $SRC/windows"
+			INCLUDES="$INCLUDES -I$SRC/windows"
 			LIBS="$LIBS -lmingw32 -lwinmm"
-			;;
-		gp2x)
-			# -O3 hangs the GP2X, do not use.
-			CXXFLAGS="-O2 -finline-functions -mtune=arm920t"
-			DEFINES="$DEFINES -DBSPF_GP2X -DGP2X -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
-			MODULES="$MODULES $SRC/gp2x"
-			INCLUDES="$INCLUDES -I$SRC/gp2x $ZLIB_CFLAGS"
-			
-			_ranlib="arm-linux-ranlib"
-			_ar="arm-linux-ar cru"
 			;;
 		*)
 			echo "WARNING: host system not currenty supported"
@@ -875,7 +859,7 @@ RM := $_rm
 RM_REC := $_rm_rec
 ZIP := $_zip
 CP := $_cp
-WIN32PATH=$_win32path
+WINDOWSPATH=$_windowspath
 STRIP := $_strip
 WINDRES := $_windres
 

@@ -43,7 +43,7 @@
   // Types for 64-bit signed and unsigned integers
   typedef int64_t Int64;
   typedef uint64_t uInt64;
-#elif defined BSPF_WIN32
+#elif defined BSPF_WINDOWS
   // Types for 8-bit signed and unsigned integers
   typedef signed char Int8;
   typedef unsigned char uInt8;
@@ -76,7 +76,7 @@ using namespace std;
 // Defines to help with path handling
 #if (defined(BSPF_UNIX) || defined(BSPF_MAC_OSX))
   #define BSPF_PATH_SEPARATOR  "/"
-#elif (defined(BSPF_DOS) || defined(BSPF_WIN32) || defined(BSPF_OS2))
+#elif (defined(BSPF_DOS) || defined(BSPF_WINDOWS) || defined(BSPF_OS2))
   #define BSPF_PATH_SEPARATOR  "\\"
 #else
   #error Update src/common/bspf.hxx for path separator
@@ -95,7 +95,7 @@ using namespace std;
 #endif
 
 // I wish Windows had a complete POSIX layer
-#if defined BSPF_WIN32 && !defined __GNUG__
+#if defined BSPF_WINDOWS && !defined __GNUG__
   #define BSPF_snprintf _snprintf
   #define BSPF_vsnprintf _vsnprintf
 #else
@@ -125,7 +125,7 @@ static bool BSPF_equalsIgnoreCaseChar(char ch1, char ch2)
 // Compare two strings, ignoring case
 inline int BSPF_compareIgnoreCase(const string& s1, const string& s2)
 {
-#if defined WIN32 && !defined __GNUG__
+#if defined WINDOWS && !defined __GNUG__
   return _stricmp(s1.c_str(), s2.c_str());
 #else
   return strcasecmp(s1.c_str(), s2.c_str());
@@ -133,7 +133,7 @@ inline int BSPF_compareIgnoreCase(const string& s1, const string& s2)
 }
 inline int BSPF_compareIgnoreCase(const char* s1, const char* s2)
 {
-#if defined WIN32 && !defined __GNUG__
+#if defined WINDOWS && !defined __GNUG__
   return _stricmp(s1, s2);
 #else
   return strcasecmp(s1, s2);
@@ -143,7 +143,7 @@ inline int BSPF_compareIgnoreCase(const char* s1, const char* s2)
 // Test whether the first string starts with the second one (case insensitive)
 inline bool BSPF_startsWithIgnoreCase(const string& s1, const string& s2)
 {
-#if defined WIN32 && !defined __GNUG__
+#if defined WINDOWS && !defined __GNUG__
   return _strnicmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
 #else
   return strncasecmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
@@ -151,7 +151,7 @@ inline bool BSPF_startsWithIgnoreCase(const string& s1, const string& s2)
 }
 inline bool BSPF_startsWithIgnoreCase(const char* s1, const char* s2)
 {
-#if defined WIN32 && !defined __GNUG__
+#if defined WINDOWS && !defined __GNUG__
   return _strnicmp(s1, s2, strlen(s2)) == 0;
 #else
   return strncasecmp(s1, s2, strlen(s2)) == 0;

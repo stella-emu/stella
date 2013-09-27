@@ -19,23 +19,23 @@
 
 #include <windows.h>
 
-#include "SerialPortWin32.hxx"
+#include "SerialPortWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortWin32::SerialPortWin32()
+SerialPortWINDOWS::SerialPortWINDOWS()
   : SerialPort(),
     myHandle(NULL)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortWin32::~SerialPortWin32()
+SerialPortWINDOWS::~SerialPortWINDOWS()
 {
   closePort();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortWin32::openPort(const string& device)
+bool SerialPortWINDOWS::openPort(const string& device)
 {
   if(!myHandle)
   {
@@ -68,7 +68,7 @@ bool SerialPortWin32::openPort(const string& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SerialPortWin32::closePort()
+void SerialPortWINDOWS::closePort()
 {
   if(myHandle)
   {
@@ -78,7 +78,7 @@ void SerialPortWin32::closePort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortWin32::writeByte(const uInt8* data)
+bool SerialPortWINDOWS::writeByte(const uInt8* data)
 {
   if(myHandle)
   {

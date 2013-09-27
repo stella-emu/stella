@@ -17,44 +17,49 @@
 // $Id$
 //============================================================================
 
-#ifndef OSYSTEM_WIN32_HXX
-#define OSYSTEM_WIN32_HXX
+#ifndef SERIALPORT_WINDOWS_HXX
+#define SERIALPORT_WINDOWS_HXX
 
-#include "OSystem.hxx"
-#include "bspf.hxx"
+#include <windows.h>
+
+#include "SerialPort.hxx"
 
 /**
-  This class defines Windows system specific settings.
+  Implement reading and writing from a serial port under Windows systems.
 
   @author  Stephen Anthony
   @version $Id$
 */
-class OSystemWin32 : public OSystem
+class SerialPortWINDOWS : public SerialPort
 {
   public:
-    /**
-      Create a new Win32 operating system object
-    */
-    OSystemWin32();
+    SerialPortWINDOWS();
+    virtual ~SerialPortWINDOWS();
 
     /**
-      Destructor
-    */
-    virtual ~OSystemWin32();
+      Open the given serial port with the specified attributes.
 
-  public:
-    /**
-      Returns the default paths for the snapshot directory.
+      @param device  The name of the port
+      @return  False on any errors, else true
     */
-    string defaultSnapSaveDir();
-    string defaultSnapLoadDir();
+    bool openPort(const string& device);
 
     /**
-      Move window to given position.  The width and height are also
-      required for the underlying function, but the window size itself
-      absolutely must not be changed.
+      Close a previously opened serial port.
     */
-    void setAppWindowPos(int x, int y, int w, int h);
+    void closePort();
+
+    /**
+      Write a byte to the serial port.
+
+      @param data  The byte to write to the port
+      @return  True if a byte was written, else false
+    */
+    bool writeByte(const uInt8* data);
+
+  private:
+    // Handle to serial port
+    HANDLE myHandle;
 };
 
 #endif

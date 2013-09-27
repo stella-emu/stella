@@ -23,20 +23,12 @@
 #ifdef ARRAYSIZE
   #undef ARRAYSIZE
 #endif
-#ifdef _WIN32_WCE
-  #include <windows.h>
-  // winnt.h defines ARRAYSIZE, but we want our own one...
-  #undef ARRAYSIZE
-  #undef GetCurrentDirectory
-#endif
 
 #include <io.h>
 #include <stdio.h>
-#ifndef _WIN32_WCE
-  #include <windows.h>
-  // winnt.h defines ARRAYSIZE, but we want our own one...
-  #undef ARRAYSIZE
-#endif
+#include <windows.h>
+// winnt.h defines ARRAYSIZE, but we want our own one...
+#undef ARRAYSIZE
 
 // F_OK, R_OK and W_OK are not defined under MSVC, so we define them here
 // For more information on the modes used by MSVC, check:
@@ -53,7 +45,7 @@
   #define W_OK 2
 #endif
 
-#include "FSNodeWin32.hxx"
+#include "FSNodeWINDOWS.hxx"
 
 /**
  * Returns the last component of a given path.
@@ -81,25 +73,25 @@ const char* lastPathComponent(const string& str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWin32::exists() const
+bool FilesystemNodeWINDOWS::exists() const
 {
   return _access(_path.c_str(), F_OK) == 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWin32::isReadable() const
+bool FilesystemNodeWINDOWS::isReadable() const
 {
   return _access(_path.c_str(), R_OK) == 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWin32::isWritable() const
+bool FilesystemNodeWINDOWS::isWritable() const
 {
   return _access(_path.c_str(), W_OK) == 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNodeWin32::setFlags()
+void FilesystemNodeWINDOWS::setFlags()
 {
   // Get absolute path
   TCHAR buf[4096];
@@ -129,10 +121,10 @@ void FilesystemNodeWin32::setFlags()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNodeWin32::addFile(AbstractFSList& list, ListMode mode,
+void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
                                     const char* base, WIN32_FIND_DATA* find_data)
 {
-  FilesystemNodeWin32 entry;
+  FilesystemNodeWINDOWS entry;
   char* asciiName = toAscii(find_data->cFileName);
   bool isDirectory, isFile;
 
@@ -157,11 +149,11 @@ void FilesystemNodeWin32::addFile(AbstractFSList& list, ListMode mode,
   entry._isValid = true;
   entry._isPseudoRoot = false;
 
-  list.push_back(new FilesystemNodeWin32(entry));
+  list.push_back(new FilesystemNodeWINDOWS(entry));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-char* FilesystemNodeWin32::toAscii(TCHAR* str)
+char* FilesystemNodeWINDOWS::toAscii(TCHAR* str)
 {
 #ifndef UNICODE
   return (char*)str;
@@ -173,7 +165,7 @@ char* FilesystemNodeWin32::toAscii(TCHAR* str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const TCHAR* FilesystemNodeWin32::toUnicode(const char* str)
+const TCHAR* FilesystemNodeWINDOWS::toUnicode(const char* str)
 {
 #ifndef UNICODE
   return (const TCHAR *)str;
@@ -185,7 +177,7 @@ const TCHAR* FilesystemNodeWin32::toUnicode(const char* str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeWin32::FilesystemNodeWin32()
+FilesystemNodeWINDOWS::FilesystemNodeWINDOWS()
 {
   // Create a virtual root directory for standard Windows system
   _isDirectory = true;
@@ -196,7 +188,7 @@ FilesystemNodeWin32::FilesystemNodeWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeWin32::FilesystemNodeWin32(const string& p)
+FilesystemNodeWINDOWS::FilesystemNodeWINDOWS(const string& p)
 {
   // Default to home directory
   _path = p.length() > 0 ? p : "~";
@@ -209,7 +201,7 @@ FilesystemNodeWin32::FilesystemNodeWin32(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNodeWin32::getShortPath() const
+string FilesystemNodeWINDOWS::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = myHomeFinder.getHomePath();
@@ -225,7 +217,7 @@ string FilesystemNodeWin32::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWin32::
+bool FilesystemNodeWINDOWS::
     getChildren(AbstractFSList& myList, ListMode mode, bool hidden) const
 {
   assert(_isDirectory);
@@ -241,7 +233,7 @@ bool FilesystemNodeWin32::
     for (TCHAR *current_drive = drive_buffer; *current_drive;
          current_drive += _tcslen(current_drive) + 1)
     {
-      FilesystemNodeWin32 entry;
+      FilesystemNodeWINDOWS entry;
       char drive_name[2];
 
       drive_name[0] = toAscii(current_drive)[0];
@@ -252,7 +244,7 @@ bool FilesystemNodeWin32::
       entry._isValid = true;
       entry._isPseudoRoot = false;
       entry._path = toAscii(current_drive);
-      myList.push_back(new FilesystemNodeWin32(entry));
+      myList.push_back(new FilesystemNodeWINDOWS(entry));
     }
   }
   else
@@ -281,7 +273,7 @@ bool FilesystemNodeWin32::
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWin32::makeDir()
+bool FilesystemNodeWINDOWS::makeDir()
 {
   if(!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)
   {
@@ -293,7 +285,7 @@ bool FilesystemNodeWin32::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWin32::rename(const string& newfile)
+bool FilesystemNodeWINDOWS::rename(const string& newfile)
 {
   if(!_isPseudoRoot && MoveFile(_path.c_str(), newfile.c_str()) != 0)
   {
@@ -305,12 +297,12 @@ bool FilesystemNodeWin32::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNode* FilesystemNodeWin32::getParent() const
+AbstractFSNode* FilesystemNodeWINDOWS::getParent() const
 {
   if (!_isValid || _isPseudoRoot)
     return 0;
 
-  FilesystemNodeWin32* p = new FilesystemNodeWin32();
+  FilesystemNodeWINDOWS* p = new FilesystemNodeWINDOWS();
   if (_path.size() > 3)
   {
     const char *start = _path.c_str();

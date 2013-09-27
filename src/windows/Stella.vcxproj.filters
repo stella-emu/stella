@@ -54,31 +54,25 @@
     <ClCompile Include="..\common\FrameBufferGL.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\FrameBufferSoft.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FSNodeWin32.cxx">
+    <ClCompile Include="FSNodeWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\mainSDL.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OSystemWin32.cxx">
+    <ClCompile Include="OSystemWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\PNGLibrary.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\RectList.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SDL_win32_main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SerialPortWin32.cxx">
+    <ClCompile Include="SerialPortWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SettingsWin32.cxx">
+    <ClCompile Include="SettingsWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\SoundSDL.cxx">
@@ -740,25 +734,19 @@
     <ClInclude Include="..\common\FrameBufferGL.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\FrameBufferSoft.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HomeFinder.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OSystemWin32.hxx">
+    <ClInclude Include="OSystemWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\PNGLibrary.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\RectList.hxx">
+    <ClInclude Include="SerialPortWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SerialPortWin32.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SettingsWin32.hxx">
+    <ClInclude Include="SettingsWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\SharedPtr.hxx">
@@ -1346,7 +1334,7 @@
     <ClInclude Include="..\common\FSNodeZIP.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FSNodeWin32.hxx">
+    <ClInclude Include="FSNodeWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\ZipHandler.hxx">

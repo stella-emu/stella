@@ -24,7 +24,7 @@
 #include "FSNode.hxx"
 #include "HomeFinder.hxx"
 #include "OSystem.hxx"
-#include "OSystemWin32.hxx"
+#include "OSystemWINDOWS.hxx"
 
 /**
   Each derived class is responsible for calling the following methods
@@ -37,7 +37,7 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemWin32::OSystemWin32()
+OSystemWINDOWS::OSystemWINDOWS()
   : OSystem()
 {
   string basedir = "";
@@ -86,12 +86,12 @@ OSystemWin32::OSystemWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemWin32::~OSystemWin32()
+OSystemWINDOWS::~OSystemWINDOWS()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWin32::defaultSnapSaveDir()
+string OSystemWINDOWS::defaultSnapSaveDir()
 {
   HomeFinder homefinder;
   FilesystemNode desktop(homefinder.getDesktopPath());
@@ -99,13 +99,13 @@ string OSystemWin32::defaultSnapSaveDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWin32::defaultSnapLoadDir()
+string OSystemWINDOWS::defaultSnapLoadDir()
 {
   return defaultSnapSaveDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemWin32::setAppWindowPos(int x, int y, int w, int h)
+void OSystemWINDOWS::setAppWindowPos(int x, int y, int w, int h)
 {
   SDL_SysWMinfo sdl_info;
   memset(&sdl_info, 0, sizeof(sdl_info));

@@ -17,25 +17,25 @@
 // $Id$
 //============================================================================
 
-#ifndef SETTINGS_WIN32_HXX
-#define SETTINGS_WIN32_HXX
+#ifndef SETTINGS_WINDOWS_HXX
+#define SETTINGS_WINDOWS_HXX
 
 class OSystem;
 
 #include "bspf.hxx"
 
-class SettingsWin32 : public Settings
+class SettingsWINDOWS : public Settings
 {
   public:
     /**
       Create a new UNIX settings object
     */
-    SettingsWin32(OSystem* osystem);
+    SettingsWINDOWS(OSystem* osystem);
 
     /**
       Destructor
     */
-    virtual ~SettingsWin32();
+    virtual ~SettingsWINDOWS();
 };
 
 #endif

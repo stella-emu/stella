@@ -32,13 +32,13 @@
 #include "OSystem.hxx"
 #include "System.hxx"
 
-#if defined(UNIX)
+#if defined(BSPF_UNIX)
   #include "SettingsUNIX.hxx"
   #include "OSystemUNIX.hxx"
-#elif defined(WIN32)
-  #include "SettingsWin32.hxx"
-  #include "OSystemWin32.hxx"
-#elif defined(MAC_OSX)
+#elif defined(BSPF_WINDOWS)
+  #include "SettingsWINDOWS.hxx"
+  #include "OSystemWINDOWS.hxx"
+#elif defined(BSPF_MAC_OSX)
   #include "SettingsMACOSX.hxx"
   #include "OSystemMACOSX.hxx"
   extern "C" {
@@ -85,12 +85,12 @@ int main(int argc, char* argv[])
   ios_base::sync_with_stdio(false);
 
   // Create the parent OSystem object and settings
-#if defined(UNIX)
+#if defined(BSPF_UNIX)
   theOSystem = new OSystemUNIX();
   SettingsUNIX settings(theOSystem);
-#elif defined(WIN32)
-  theOSystem = new OSystemWin32();
-  SettingsWin32 settings(theOSystem);
+#elif defined(BSPF_WINDOWS)
+  theOSystem = new OSystemWINDOWS();
+  SettingsWINDOWS settings(theOSystem);
 #elif defined(MAC_OSX)
   theOSystem = new OSystemMACOSX();
   SettingsMACOSX settings(theOSystem);

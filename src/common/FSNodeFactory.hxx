@@ -21,10 +21,10 @@
 #define FSNODE_FACTORY_HXX
 
 class AbstractFSNode;
-#if defined(UNIX) || defined(MAC_OSX)
+#if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
   #include "FSNodePOSIX.hxx"
-#elif defined(WIN32)
-  #include "FSNodeWin32.hxx"
+#elif defined(BSPF_WINDOWS)
+  #include "FSNodeWINDOWS.hxx"
 #else
   #error Unsupported platform in FSNodeFactory!
 #endif
@@ -47,10 +47,10 @@ class FilesystemNodeFactory
       switch(type)
       {
         case SYSTEM:
-      #if defined(UNIX) || defined(MAC_OSX)
+      #if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
           return new FilesystemNodePOSIX(path);
-      #elif defined(WIN32)
-          return new FilesystemNodeWin32(path);
+      #elif defined(BSPF_WINDOWS)
+          return new FilesystemNodeWINDOWS(path);
       #endif
           break;
         case ZIP:

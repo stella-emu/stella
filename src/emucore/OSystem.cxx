@@ -40,11 +40,11 @@
 #endif
 
 #include "SerialPort.hxx"
-#if defined(UNIX)
+#if defined(BSPF_UNIX)
   #include "SerialPortUNIX.hxx"
-#elif defined(WIN32)
-  #include "SerialPortWin32.hxx"
-#elif defined(MAC_OSX)
+#elif defined(BSPF_WINDOWS)
+  #include "SerialPortWINDOWS.hxx"
+#elif defined(BSPF_MAC_OSX)
   #include "SerialPortMACOSX.hxx"
 #endif
 
@@ -251,11 +251,11 @@ bool OSystem::create()
   // Create the serial port object
   // This is used by any controller that wants to directly access
   // a real serial port on the system
-#if defined(UNIX)
+#if defined(BSPF_UNIX)
   mySerialPort = new SerialPortUNIX();
-#elif defined(WIN32)
-  mySerialPort = new SerialPortWin32();
-#elif defined(MAC_OSX)
+#elif defined(BSPF_WINDOWS)
+  mySerialPort = new SerialPortWINDOWS();
+#elif defined(BSPF_MAC_OSX)
   mySerialPort = new SerialPortMACOSX();
 #else
   // Create an 'empty' serial port

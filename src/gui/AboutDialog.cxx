@@ -128,7 +128,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\L\\c0""  Bradford W. Mott");
       ADD_ATEXT("\\L\\c2""    Original author");
       ADD_ATEXT("\\L\\c0""  Stephen Anthony");
-      ADD_ATEXT("\\L\\c2""    Lead developer, Linux/MacOS X/Win32 maintainer");
+      ADD_ATEXT("\\L\\c2""    Lead developer, Linux/MacOS X/Windows maintainer");
       ADD_ATEXT("\\L\\c0""  Eckhard Stolberg");
       ADD_ATEXT("\\L\\c2""    Emulation core development");
       ADD_ATEXT("\\L\\c0""  Brian Watson");
