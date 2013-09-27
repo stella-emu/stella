@@ -24,7 +24,6 @@
 #include "Settings.hxx"
 
 #include "FrameBuffer.hxx"
-#include "FrameBufferSoft.hxx"
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
 #endif
@@ -62,11 +61,6 @@ class MediaFactory
           fb = new FrameBufferGL(osystem);
       }
     #endif
-
-      // If OpenGL failed, or if it wasn't requested, create the appropriate
-      // software framebuffer
-      if(!fb)
-        fb = new FrameBufferSoft(osystem);
 
       // This should never happen
       assert(fb != NULL);

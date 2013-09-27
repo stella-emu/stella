@@ -24,9 +24,12 @@
 
 #include "bspf.hxx"
 
-#include "DebuggerDialog.hxx"
 #include "OSystem.hxx"
 #include "Version.hxx"
+
+#ifdef DEBUGGER_SUPPORT
+  #include "DebuggerDialog.hxx"
+#endif
 
 #include "Settings.hxx"
 
@@ -120,8 +123,11 @@ Settings::Settings(OSystem* osystem)
   setInternal("lastrom", "");
 
   // UI-related options
+#ifdef DEBUGGER_SUPPORT
   setInternal("dbg.res",
-    GUI::Size(DebuggerDialog::kMediumFontMinW, DebuggerDialog::kMediumFontMinH));
+    GUI::Size(DebuggerDialog::kMediumFontMinW,
+              DebuggerDialog::kMediumFontMinH));
+#endif
   setInternal("uipalette", "0");
   setInternal("listdelay", "300");
   setInternal("mwheel", "4");
@@ -139,6 +145,7 @@ Settings::Settings(OSystem* osystem)
   setExternal("romloadcount", "0");
   setExternal("maxres", "");
 
+#ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
   setInternal("dbg.fontstyle", "0");
   setInternal("dbg.uhex", "true");
@@ -146,9 +153,12 @@ Settings::Settings(OSystem* osystem)
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");
   setInternal("dis.relocate", "false");
+#endif
 
+#ifdef DTHUMB_SUPPORT
   // Thumb ARM emulation options
   setInternal("thumb.trapfatal", "true");
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -128,8 +128,12 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 void TiaOutputWidget::drawWidget(bool hilite)
 {
 //cerr << "TiaOutputWidget::drawWidget\n";
-  FBSurface& s = dialog().surface();
+  renderToSurface(dialog().surface());
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::renderToSurface(FBSurface& s)
+{
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();
 

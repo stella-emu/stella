@@ -22,6 +22,7 @@
 
 class GuiObject;
 class ContextMenu;
+class FBSurface;
 class TiaZoomWidget;
 
 #include "Widget.hxx"
@@ -37,6 +38,8 @@ class TiaOutputWidget : public Widget, public CommandSender
 
     void loadConfig();
     void setZoomWidget(TiaZoomWidget* w) { myZoom = w; }
+
+    void saveSnapshot();
 
 // Eventually, these methods will enable access to the onscreen TIA image
 // For example, clicking an area may cause an action
@@ -56,6 +59,9 @@ class TiaOutputWidget : public Widget, public CommandSender
     bool wantsFocus() { return false; }
 
   private:
+    void renderToSurface(FBSurface& s);
+
+  private:
     ContextMenu*   myMenu;
     TiaZoomWidget* myZoom;
 
@@ -64,6 +70,9 @@ class TiaOutputWidget : public Widget, public CommandSender
     // Create this buffer once, instead of allocating it each time the
     // TIA image is redrawn
     uInt32 myLineBuffer[320];
+
+    // Surface to use when taking snapshots
+    FBSurface* mySnapSurface;
 };
 
 #endif
