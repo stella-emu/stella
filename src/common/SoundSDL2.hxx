@@ -19,8 +19,8 @@
 
 #ifdef SOUND_SUPPORT
 
-#ifndef SOUND_SDL_HXX
-#define SOUND_SDL_HXX
+#ifndef SOUND_SDL2_HXX
+#define SOUND_SDL2_HXX
 
 class OSystem;
 
@@ -36,19 +36,19 @@ class OSystem;
   @author Stephen Anthony and Bradford W. Mott
   @version $Id$
 */
-class SoundSDL : public Sound
+class SoundSDL2 : public Sound
 {
   public:
     /**
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundSDL(OSystem* osystem);
+    SoundSDL2(OSystem* osystem);
  
     /**
       Destructor
     */
-    virtual ~SoundSDL();
+    virtual ~SoundSDL2();
 
   public:
     /**

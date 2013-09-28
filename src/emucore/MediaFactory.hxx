@@ -23,14 +23,10 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 
-#include "FrameBuffer.hxx"
-#ifdef DISPLAY_OPENGL
-  #include "FrameBufferGL.hxx"
-#endif
+#include "FrameBufferSDL2.hxx"
 
-#include "Sound.hxx"
 #ifdef SOUND_SUPPORT
-  #include "SoundSDL.hxx"
+  #include "SoundSDL2.hxx"
 #else
   #include "SoundNull.hxx"
 #endif
@@ -40,7 +36,9 @@
   for the various ports of Stella, and always returns a valid media object
   based on the specific port and restrictions on that port.
 
-  I think you can see why this mess was put into a factory class :)
+  As of SDL2, this code is greatly simplified.  However, it remains here
+  in case we ever have multiple backend implementations again (should
+  not be necessary since SDL2 covers this nicely).
 
   @author  Stephen Anthony
   @version $Id$
@@ -50,35 +48,16 @@ class MediaFactory
   public:
     static FrameBuffer* createVideo(OSystem* osystem)
     {
-      FrameBuffer* fb = (FrameBuffer*) NULL;
-
-      // OpenGL mode *may* fail, so we check for it first
-    #ifdef DISPLAY_OPENGL
-      if(osystem->settings().getString("video") == "gl")
-      {
-        const string& gl_lib = osystem->settings().getString("gl_lib");
-        if(FrameBufferGL::loadLibrary(gl_lib))
-          fb = new FrameBufferGL(osystem);
-      }
-    #endif
-
-      // This should never happen
-      assert(fb != NULL);
-
-      return fb;
+      return new FrameBufferSDL2(osystem);
     }
 
     static Sound* createAudio(OSystem* osystem)
     {
-      Sound* sound = (Sound*) NULL;
-
     #ifdef SOUND_SUPPORT
-      sound = new SoundSDL(osystem);
+      return new SoundSDL2(osystem);
     #else
-      sound = new SoundNull(osystem);
+      return new SoundNull(osystem);
     #endif
-
-      return sound;
     }
 };
 

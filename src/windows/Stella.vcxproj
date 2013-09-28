@@ -102,7 +102,7 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -134,7 +134,7 @@ SDLmain.lib
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -164,7 +164,7 @@ SDLmain.lib
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -198,7 +198,7 @@ SDLmain.lib
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -224,9 +224,9 @@ SDLmain.lib
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\Base.cxx" />
-    <ClCompile Include="..\common\FBSurfaceGL.cxx" />
+    <ClCompile Include="..\common\FBSurfaceUI.cxx" />
     <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
-    <ClCompile Include="..\common\FrameBufferGL.cxx" />
+    <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
     <ClCompile Include="..\common\tv_filters\atari_ntsc.c" />
@@ -288,7 +288,7 @@ SDLmain.lib
     <ClCompile Include="SDL_win32_main.c" />
     <ClCompile Include="SerialPortWINDOWS.cxx" />
     <ClCompile Include="SettingsWINDOWS.cxx" />
-    <ClCompile Include="..\common\SoundSDL.cxx" />
+    <ClCompile Include="..\common\SoundSDL2.cxx" />
     <ClCompile Include="..\emucore\AtariVox.cxx" />
     <ClCompile Include="..\emucore\Booster.cxx" />
     <ClCompile Include="..\emucore\Cart.cxx" />
@@ -456,9 +456,9 @@ SDLmain.lib
     <ClInclude Include="..\common\Array.hxx" />
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
-    <ClInclude Include="..\common\FBSurfaceGL.hxx" />
+    <ClInclude Include="..\common\FBSurfaceUI.hxx" />
     <ClInclude Include="..\common\FBSurfaceTIA.hxx" />
-    <ClInclude Include="..\common\FrameBufferGL.hxx" />
+    <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
@@ -533,7 +533,7 @@ SDLmain.lib
     <ClInclude Include="SerialPortWINDOWS.hxx" />
     <ClInclude Include="SettingsWINDOWS.hxx" />
     <ClInclude Include="..\common\SharedPtr.hxx" />
-    <ClInclude Include="..\common\SoundSDL.hxx" />
+    <ClInclude Include="..\common\SoundSDL2.hxx" />
     <ClInclude Include="..\common\Stack.hxx" />
     <ClInclude Include="..\common\Version.hxx" />
     <ClInclude Include="..\common\VideoModeList.hxx" />

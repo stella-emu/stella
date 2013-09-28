@@ -17,14 +17,11 @@
 // $Id$
 //============================================================================
 
-#ifndef FB_SURFACE_GL_HXX
-#define FB_SURFACE_GL_HXX
-
-#ifdef DISPLAY_OPENGL
+#ifndef FB_SURFACE_UI_HXX
+#define FB_SURFACE_UI_HXX
 
 #include "bspf.hxx"
-#include "FrameBuffer.hxx"
-#include "FrameBufferGL.hxx"
+#include "FrameBufferSDL2.hxx"
 
 /**
   A surface suitable for OpenGL rendering mode, used for various UI dialogs.
@@ -32,13 +29,13 @@
 
   @author  Stephen Anthony
 */
-class FBSurfaceGL : public FBSurface
+class FBSurfaceUI : public FBSurface
 {
-  friend class FrameBufferGL;
+  friend class FrameBufferSDL2;
 
   public:
-    FBSurfaceGL(FrameBufferGL& buffer, uInt32 width, uInt32 height);
-    virtual ~FBSurfaceGL();
+    FBSurfaceUI(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
+    virtual ~FBSurfaceUI();
 
     // Normal surfaces need all drawing primitives
     void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
@@ -64,8 +61,8 @@ class FBSurfaceGL : public FBSurface
     void updateCoords();
 
   private:
-    FrameBufferGL& myFB;
-    const FrameBufferGL::GLpointers& myGL;
+    FrameBufferSDL2& myFB;
+    const FrameBufferSDL2::GLpointers& myGL;
     SDL_Surface* myTexture;
 
     GLuint  myTexID, myVBOID;
@@ -78,7 +75,5 @@ class FBSurfaceGL : public FBSurface
     bool mySurfaceIsDirty;
     uInt32 myPitch;
 };
-
-#endif  // DISPLAY_OPENGL
 
 #endif

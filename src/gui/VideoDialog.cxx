@@ -33,7 +33,6 @@
 #include "StringList.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
-#include "FrameBufferGL.hxx"
 #include "NTSCFilter.hxx"
 
 #include "VideoDialog.hxx"
@@ -78,9 +77,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   items.clear();
   items.push_back("Software", "soft");
-#ifdef DISPLAY_OPENGL
+//FIXSDL
   items.push_back("OpenGL", "gl");
-#endif
+/////////////
   myRendererPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                     items, "(*) ", lwidth);
   wid.push_back(myRendererPopup);
@@ -337,7 +336,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   addBGroupToFocusList(wid);
 
   // Disable certain functions when we know they aren't present
-#ifndef DISPLAY_OPENGL
+//FIXSDL
   myGLFilterPopup->clearFlags(WIDGET_ENABLED);
   myNAspectRatioSlider->clearFlags(WIDGET_ENABLED);
   myNAspectRatioLabel->clearFlags(WIDGET_ENABLED);
@@ -378,7 +377,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myCloneRGB->clearFlags(WIDGET_ENABLED);
   myCloneBad->clearFlags(WIDGET_ENABLED);
   myCloneCustom->clearFlags(WIDGET_ENABLED);
-#endif
+//////////////////////////
 #ifndef WINDOWED_SUPPORT
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);

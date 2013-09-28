@@ -17,15 +17,11 @@
 // $Id$
 //============================================================================
 
-#ifdef DISPLAY_OPENGL
-
 #include "Font.hxx"
-#include "FrameBufferGL.hxx"
-
-#include "FBSurfaceGL.hxx"
+#include "FBSurfaceUI.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer, uInt32 width, uInt32 height)
+FBSurfaceUI::FBSurfaceUI(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
   : myFB(buffer),
     myGL(myFB.p_gl),
     myTexture(NULL),
@@ -37,8 +33,8 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer, uInt32 width, uInt32 height)
     myImageH(height)
 {
   // Fill buffer struct with valid data
-  myTexWidth  = FrameBufferGL::power_of_two(myImageW);
-  myTexHeight = FrameBufferGL::power_of_two(myImageH);
+  myTexWidth  = FrameBufferSDL2::power_of_two(myImageW);
+  myTexHeight = FrameBufferSDL2::power_of_two(myImageH);
   myTexCoordW = (GLfloat) myImageW / myTexWidth;
   myTexCoordH = (GLfloat) myImageH / myTexHeight;
 
@@ -55,7 +51,7 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer, uInt32 width, uInt32 height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceGL::~FBSurfaceGL()
+FBSurfaceUI::~FBSurfaceUI()
 {
   if(myTexture)
     SDL_FreeSurface(myTexture);
@@ -64,7 +60,7 @@ FBSurfaceGL::~FBSurfaceGL()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
+void FBSurfaceUI::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 {
   uInt32* buffer = (uInt32*) myTexture->pixels + y * myPitch + x;
   while(x++ <= x2)
@@ -72,7 +68,7 @@ void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
+void FBSurfaceUI::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
 {
   uInt32* buffer = (uInt32*) myTexture->pixels + y * myPitch + x;
   while(y++ <= y2)
@@ -83,7 +79,7 @@ void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
+void FBSurfaceUI::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 {
   // Fill the rectangle
   SDL_Rect tmp;
@@ -95,7 +91,7 @@ void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::drawChar(const GUI::Font& font, uInt8 chr,
+void FBSurfaceUI::drawChar(const GUI::Font& font, uInt8 chr,
                            uInt32 tx, uInt32 ty, uInt32 color)
 {
   const FontDesc& desc = font.desc();
@@ -144,7 +140,7 @@ void FBSurfaceGL::drawChar(const GUI::Font& font, uInt8 chr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
+void FBSurfaceUI::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
                              uInt32 color, uInt32 h)
 {
   uInt32* buffer = (uInt32*) myTexture->pixels + ty * myPitch + tx;
@@ -161,7 +157,7 @@ void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
+void FBSurfaceUI::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
 {
   uInt32* buffer = (uInt32*) myTexture->pixels + ty * myPitch + tx;
 
@@ -170,9 +166,9 @@ void FBSurfaceGL::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixel
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
+void FBSurfaceUI::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
 {
-  const FBSurfaceGL* s = (const FBSurfaceGL*) surface;
+  const FBSurfaceUI* s = (const FBSurfaceUI*) surface;
 
   SDL_Rect dstrect;
   dstrect.x = tx;
@@ -187,7 +183,7 @@ void FBSurfaceGL::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+void FBSurfaceUI::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   // OpenGL mode doesn't make use of dirty rectangles
   // It's faster to just update the entire surface
@@ -195,14 +191,14 @@ void FBSurfaceGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::getPos(uInt32& x, uInt32& y) const
+void FBSurfaceUI::getPos(uInt32& x, uInt32& y) const
 {
   x = myImageX;
   y = myImageY;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
+void FBSurfaceUI::setPos(uInt32 x, uInt32 y)
 {
   if(myImageX != x || myImageY != y)
   {
@@ -213,7 +209,7 @@ void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::setWidth(uInt32 w)
+void FBSurfaceUI::setWidth(uInt32 w)
 {
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
@@ -227,7 +223,7 @@ void FBSurfaceGL::setWidth(uInt32 w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::setHeight(uInt32 h)
+void FBSurfaceUI::setHeight(uInt32 h)
 {
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
@@ -241,14 +237,14 @@ void FBSurfaceGL::setHeight(uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::translateCoords(Int32& x, Int32& y) const
+void FBSurfaceUI::translateCoords(Int32& x, Int32& y) const
 {
   x -= myImageX;
   y -= myImageY;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::update()
+void FBSurfaceUI::update()
 {
   if(mySurfaceIsDirty)
   {
@@ -287,7 +283,7 @@ void FBSurfaceGL::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::free()
+void FBSurfaceUI::free()
 {
   myGL.DeleteTextures(1, &myTexID);
   if(myFB.myVBOAvailable)
@@ -295,12 +291,12 @@ void FBSurfaceGL::free()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::reload()
+void FBSurfaceUI::reload()
 {
   // This does a 'soft' reset of the surface
   // It seems that on some system (notably, OSX), creating a new SDL window
   // destroys the GL context, requiring a reload of all textures
-  // However, destroying the entire FBSurfaceGL object is wasteful, since
+  // However, destroying the entire FBSurfaceUI object is wasteful, since
   // it will also regenerate SDL software surfaces (which are not required
   // to be regenerated)
   // Basically, all that needs to be done is to re-call glTexImage2D with a
@@ -331,7 +327,7 @@ void FBSurfaceGL::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::updateCoords()
+void FBSurfaceUI::updateCoords()
 {
   // Vertex coordinates for texture
   // Upper left (x,y)
@@ -368,5 +364,3 @@ void FBSurfaceGL::updateCoords()
     myGL.BufferData(GL_ARRAY_BUFFER, 16*sizeof(GLfloat), myCoord, GL_STATIC_DRAW);
   }
 }
-
-#endif

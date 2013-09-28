@@ -287,7 +287,7 @@ void Settings::validate()
   s = getString("timing");
   if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
 
-#ifdef DISPLAY_OPENGL
+//FIXSDL
   i = getInt("gl_aspectn");
   if(i < 80 || i > 120)  setInternal("gl_aspectn", "100");
   i = getInt("gl_aspectp");
@@ -295,8 +295,7 @@ void Settings::validate()
 
   i = getInt("tv_filter");
   if(i < 0 || i > 5)  setInternal("tv_filter", "0");
-
-#endif
+//////////////////
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
@@ -356,7 +355,7 @@ void Settings::usage()
     << endl
     << "  -video        <type>         Type is one of the following:\n"
     << "                 soft            SDL software mode\n"
-  #ifdef DISPLAY_OPENGL
+// FIXSDL
     << "                 gl              SDL OpenGL mode\n"
     << endl
     << "  -gl_lib       <name>         Specify the OpenGL library\n"
@@ -381,7 +380,6 @@ void Settings::usage()
     << "  -tv_fringing    <value>      Set TV effects custom fringing to value 1.0 - 1.0\n"
     << "  -tv_bleed       <value>      Set TV effects custom bleed to value 1.0 - 1.0\n"
     << endl
-  #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
     << "  -fullscreen   <1|0|-1>       Use fullscreen mode (1 or 0), or disable switching to fullscreen entirely\n"
     << "  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"

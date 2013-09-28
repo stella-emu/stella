@@ -17,17 +17,15 @@
 // $Id$
 //============================================================================
 
-#ifndef FRAMEBUFFER_GL_HXX
-#define FRAMEBUFFER_GL_HXX
-
-#ifdef DISPLAY_OPENGL
+#ifndef FRAMEBUFFER_SDL2_HXX
+#define FRAMEBUFFER_SDL2_HXX
 
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_syswm.h>
 
 class OSystem;
-class FBSurfaceGL;
+class FBSurfaceUI;
 class FBSurfaceTIA;
 class TIA;
 
@@ -35,31 +33,32 @@ class TIA;
 #include "FrameBuffer.hxx"
 
 /**
-  This class implements an SDL OpenGL framebuffer.
+  This class implements a standard SDL2 2D, hardware accelerated framebuffer.
+  Behind the scenes, it may be using Direct3D, OpenGL(ES), etc.
 
   @author  Stephen Anthony
   @version $Id$
 */
-class FrameBufferGL : public FrameBuffer
+class FrameBufferSDL2 : public FrameBuffer
 {
-  friend class FBSurfaceGL;
+  friend class FBSurfaceUI;
   friend class FBSurfaceTIA;
 
   public:
     /**
       Creates a new OpenGL framebuffer
     */
-    FrameBufferGL(OSystem* osystem);
+    FrameBufferSDL2(OSystem* osystem);
 
     /**
       Destructor
     */
-    virtual ~FrameBufferGL();
+    virtual ~FrameBufferSDL2();
 
     /**
       Check if OpenGL is available on this system, and then opens it.
       If any errors occur, we shouldn't attempt to instantiate a
-      FrameBufferGL object.
+      FrameBufferSDL2 object.
 
       @param library  The filename of the OpenGL library
     */
@@ -68,6 +67,27 @@ class FrameBufferGL : public FrameBuffer
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
+    /**
+      Toggles the use of grabmouse (only has effect in emulation mode).
+      The method changes the 'grabmouse' setting and saves it.
+    */
+    void toggleGrabMouse();
+
+    /**
+      Shows or hides the cursor based on the given boolean value.
+    */
+    void showCursor(bool show);
+
+    /**
+      Answers if the display is currently in fullscreen mode.
+    */
+    bool fullScreen() const;
+
+    /**
+      Set the title for the main window.
+    */
+    void setWindowTitle(const string& title);
+
     /**
       Enable/disable phosphor effect.
     */
@@ -134,10 +154,11 @@ class FrameBufferGL : public FrameBuffer
       with the given video mode.  Normally, it will also call setVidMode().
 
       @param mode  The video mode to use
+      @param full  Whether this is a fullscreen or windowed mode
 
       @return  False on any errors, else true
     */
-    bool initSubsystem(VideoMode& mode);
+    bool initSubsystem(VideoMode& mode, bool full);
 
     /**
       This method is called to change to the given video mode.  If the mode
@@ -148,6 +169,15 @@ class FrameBufferGL : public FrameBuffer
       @return  False on any errors (in which case 'mode' is invalid), else true
     */
     bool setVidMode(VideoMode& mode);
+
+    /**
+      Sets a hint that the underlying renderer may use; it is also free
+      to ignore it completely.
+
+      @param hint     The hint to set
+      @param enabled  Whether the hint should be turned on or off
+    */
+    void setHint(FBHint hint, bool enabled);
 
     /**
       This method is called to invalidate the contents of the entire
@@ -165,6 +195,16 @@ class FrameBufferGL : public FrameBuffer
       @param useBase Use the base surface instead of creating a new one
     */
     FBSurface* createSurface(int w, int h, bool useBase = false) const;
+
+    /**
+      Grabs or ungrabs the mouse based on the given boolean value.
+    */
+    void grabMouse(bool grab);
+
+    /**
+      Set the icon for the main SDL window.
+    */
+    void setWindowIcon();
 
     /**
       This method should be called anytime the TIA needs to be redrawn
@@ -217,6 +257,15 @@ class FrameBufferGL : public FrameBuffer
     }
 
   private:
+    // The SDL video buffer
+    SDL_Surface* myScreen;
+
+    // SDL initialization flags
+    // This is set by the base FrameBuffer class, and read by the derived classes
+    // If a FrameBuffer is successfully created, the derived classes must modify
+    // it to point to the actual flags used by the SDL_Surface
+    uInt32 mySDLFlags;
+
     // The lower-most base surface (will always be a TIA surface,
     // since Dialog surfaces are allocated by the Dialog class directly).
     FBSurfaceTIA* myTiaSurface;
@@ -279,7 +328,5 @@ class FrameBufferGL : public FrameBuffer
     } GLpointers;
     GLpointers p_gl;
 };
-
-#endif  // DISPLAY_OPENGL
 
 #endif

@@ -3,10 +3,10 @@ MODULE := src/common
 MODULE_OBJS := \
 	src/common/mainSDL.o \
 	src/common/Base.o \
-	src/common/SoundSDL.o \
-	src/common/FrameBufferGL.o \
-	src/common/FBSurfaceGL.o \
+	src/common/FrameBufferSDL2.o \
+	src/common/FBSurfaceUI.o \
 	src/common/FBSurfaceTIA.o \
+	src/common/SoundSDL2.o \
 	src/common/FSNodeZIP.o \
 	src/common/PNGLibrary.o \
 	src/common/MouseControl.o \

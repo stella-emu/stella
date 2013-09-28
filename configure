@@ -14,12 +14,10 @@
 CXXFLAGS="$CXXFLAGS $CPPFLAGS"
 
 # default lib behaviour yes/no/auto
-_opengl=auto
 _libpng=auto
 _zlib=auto
 
 # default option behaviour yes/no
-_build_gl=yes
 _build_windowed=yes
 _build_sound=yes
 _build_debugger=yes
@@ -201,10 +199,6 @@ Installation directories:
   --datadir=DIR          directory to install icons/data files  [PREFIX/share]
 
 Optional Features:
-  --enable-gl            enable/disable OpenGL rendering support [enabled]
-  --disable-gl
-  --enable-windowed      enable/disable windowed rendering modes [enabled]
-  --disable-windowed
   --enable-sound         enable/disable sound support [enabled]
   --disable-sound
   --enable-debugger      enable/disable all debugger options [enabled]
@@ -215,6 +209,8 @@ Optional Features:
   --disable-cheats
   --enable-thumb         enable/disable Thumb ARM support [enabled]
   --disable-thumb
+  --enable-windowed      enable/disable windowed rendering modes [enabled]
+  --disable-windowed
   --enable-shared        build shared binary [enabled]
   --enable-static        build static binary (if possible) [disabled]
   --disable-static
@@ -244,10 +240,6 @@ done # for parm in ...
 
 for ac_option in $@; do
     case "$ac_option" in
-      --enable-gl)              _build_gl=yes        ;;
-      --disable-gl)             _build_gl=no         ;;
-      --enable-windowed)        _build_windowed=yes  ;;
-      --disable-windowed)       _build_windowed=no   ;;
       --enable-sound)           _build_sound=yes     ;;
       --disable-sound)          _build_sound=no      ;;
       --enable-debugger)        _build_debugger=yes  ;;
@@ -256,6 +248,8 @@ for ac_option in $@; do
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;
       --disable-cheats)         _build_cheats=no     ;;
+      --enable-windowed)        _build_windowed=yes  ;;
+      --disable-windowed)       _build_windowed=no   ;;
       --enable-thumb)           _build_thumb=yes     ;;
       --disable-thumb)          _build_thumb=no      ;;
       --enable-shared)          _build_static=no     ;;
@@ -611,22 +605,6 @@ else
 fi
 
 #
-# Check for GL
-#
-echocheck "opengl"
-if test "$_opengl" = auto ; then
-	_opengl=no
-	cat > $TMPC << EOF
-#include <string.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-int main(void) { return 0; }
-EOF
-	cc_check $LDFLAGS $CXXFLAGS && _opengl=yes
-fi
-echo "$_opengl"
-
-#
 # figure out installation directories
 #
 test -z "$_bindir" && _bindir="$_prefix/bin"
@@ -636,28 +614,6 @@ test -z "$_datadir" && _datadir="$_prefix/share"
 echo
 echo_n "Summary:"
 echo
-
-if test "$_build_gl" = "yes" ; then
-	if test "$_opengl" = "yes" ; then
-		echo_n "   OpenGL rendering enabled"
-		echo
-	else
-		echo_n "   OpenGL rendering disabled (missing OpenGL headers)"
-		echo
-		_build_gl=no
-	fi
-else
-	echo_n "   OpenGL rendering disabled"
-	echo
-fi
-
-if test "$_build_windowed" = "yes" ; then
-	echo_n "   Windowed rendering modes enabled"
-	echo
-else
-	echo_n "   Windowed rendering modes disabled"
-	echo
-fi
 
 if test "$_build_sound" = "yes" ; then
 	echo_n "   Sound support enabled"
@@ -696,6 +652,14 @@ if test "$_build_cheats" = yes ; then
 	echo
 else
 	echo_n "   Cheatcode support disabled"
+	echo
+fi
+
+if test "$_build_windowed" = "yes" ; then
+	echo_n "   Windowed rendering modes enabled"
+	echo
+else
+	echo_n "   Windowed rendering modes disabled"
 	echo
 fi
 
@@ -784,10 +748,6 @@ if test "$_zlib" = yes ; then
 else
 	MODULES="$MODULES $ZLIB"
 	INCLUDES="$INCLUDES -I$ZLIB"
-fi
-
-if test "$_build_gl" = yes ; then
-	DEFINES="$DEFINES -DDISPLAY_OPENGL"
 fi
 
 if test "$_build_windowed" = yes ; then

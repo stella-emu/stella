@@ -20,11 +20,9 @@
 #ifndef FB_SURFACE_TIA_HXX
 #define FB_SURFACE_TIA_HXX
 
-#ifdef DISPLAY_OPENGL
-
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
-#include "FrameBufferGL.hxx"
+#include "FrameBufferSDL2.hxx"
 
 /**
   A surface suitable for OpenGL rendering mode, but specifically for
@@ -36,10 +34,10 @@
 */
 class FBSurfaceTIA : public FBSurface
 {
-  friend class FrameBufferGL;
+  friend class FrameBufferSDL2;
 
   public:
-    FBSurfaceTIA(FrameBufferGL& buffer);
+    FBSurfaceTIA(FrameBufferSDL2& buffer);
     virtual ~FBSurfaceTIA();
 
     // TIA surfaces don't implement most of the drawing primitives,
@@ -65,8 +63,8 @@ class FBSurfaceTIA : public FBSurface
     void updateCoords();
 
   private:
-    FrameBufferGL& myFB;
-    const FrameBufferGL::GLpointers& myGL;
+    FrameBufferSDL2& myFB;
+    const FrameBufferSDL2::GLpointers& myGL;
     const TIA* myTIA;
     SDL_Surface* myTexture;
     uInt32 myPitch;
@@ -84,7 +82,5 @@ class FBSurfaceTIA : public FBSurface
     GLuint  myScanlineIntensityI;
     GLfloat myScanlineIntensityF;
 };
-
-#endif  // DISPLAY_OPENGL
 
 #endif

@@ -51,7 +51,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\FrameBufferGL.cxx">
+    <ClCompile Include="..\common\FrameBufferSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FSNodeWINDOWS.cxx">
@@ -75,7 +75,7 @@
     <ClCompile Include="SettingsWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\SoundSDL.cxx">
+    <ClCompile Include="..\common\SoundSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\AtariVox.cxx">
@@ -567,7 +567,7 @@
     <ClCompile Include="..\gui\LoggerDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\FBSurfaceGL.cxx">
+    <ClCompile Include="..\common\FBSurfaceUI.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\FBSurfaceTIA.cxx">
@@ -731,7 +731,7 @@
     <ClInclude Include="..\common\bspf.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\FrameBufferGL.hxx">
+    <ClInclude Include="..\common\FrameBufferSDL2.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HomeFinder.hxx">
@@ -752,7 +752,7 @@
     <ClInclude Include="..\common\SharedPtr.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\SoundSDL.hxx">
+    <ClInclude Include="..\common\SoundSDL2.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Stack.hxx">
@@ -1265,7 +1265,7 @@
     <ClInclude Include="..\gui\LoggerDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\FBSurfaceGL.hxx">
+    <ClInclude Include="..\common\FBSurfaceUI.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\FBSurfaceTIA.hxx">

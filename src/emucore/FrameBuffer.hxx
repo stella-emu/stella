@@ -21,7 +21,6 @@
 #define FRAMEBUFFER_HXX
 
 #include <map>
-#include <SDL.h>
 
 class FBSurface;
 class OSystem;
@@ -52,6 +51,12 @@ enum FBInitStatus {
   kFailComplete,
   kFailTooLarge,
   kFailNotSupported,
+};
+
+// Various hints that the FrameBuffer can pass to the underlying
+// video renderer (this will expand as required
+enum FBHint {
+  kFullScreen = 0x1
 };
 
 // Positions for onscreen/overlaid messages
@@ -242,21 +247,6 @@ class FrameBuffer
     void toggleGrabMouse();
 
     /**
-      Shows or hides the cursor based on the given boolean value.
-    */
-    virtual void showCursor(bool show);
-
-    /**
-      Answers if the display is currently in fullscreen mode.
-    */
-    bool fullScreen() const;
-
-    /**
-      Set the title for the main SDL window.
-    */
-    void setWindowTitle(const string& title);
-
-    /**
       Get the supported TIA filters for the given framebuffer type.
     */
     const VariantList& supportedTIAFilters(const string& type);
@@ -317,10 +307,25 @@ class FrameBuffer
     uInt8 getPhosphor(uInt8 c1, uInt8 c2) const;
 
   //////////////////////////////////////////////////////////////////////
-  // The following methods are system-specific and *may* be implemented
-  // in derived classes.
+  // The following methods are system-specific and can/must be
+  // implemented in derived classes.
   //////////////////////////////////////////////////////////////////////
   public:
+    /**
+      Shows or hides the cursor based on the given boolean value.
+    */
+    virtual void showCursor(bool show) = 0;
+
+    /**
+      Answers if the display is currently in fullscreen mode.
+    */
+    virtual bool fullScreen() const = 0;
+
+    /**
+      Set the title for the main window.
+    */
+    virtual void setWindowTitle(const string& title) = 0;
+
     /**
       Enable/disable NTSC filtering effects.
     */
@@ -331,22 +336,6 @@ class FrameBuffer
     */
     virtual string effectsInfo() const { return "None / not available"; }
 
-  private:
-    /**
-      Change scanline intensity and interpolation.
-
-      @param relative  If non-zero, change current intensity by
-                       'relative' amount, otherwise set to 'absolute'
-      @return  New current intensity
-    */
-    virtual uInt32 enableScanlines(int relative, int absolute = 50) { return absolute; }
-    virtual void enableScanlineInterpolation(bool enable) { }
-
-  //////////////////////////////////////////////////////////////////////
-  // The following methods are system-specific and *must* be implemented
-  // in derived classes.
-  //////////////////////////////////////////////////////////////////////
-  public:
     /**
       Enable/disable phosphor effect.
     */
@@ -411,11 +400,11 @@ class FrameBuffer
       uInt8 avail;  // 0x1 bit -> software, 0x2 bit -> opengl
     };
 
-    // Contains all relevant info for the dimensions of an SDL screen
-    // Also takes care of the case when the SDL image should be 'centered'
+    // Contains all relevant info for the dimensions of a video screen
+    // Also takes care of the case when the image should be 'centered'
     // within the given screen
-    //   image_XXX are the image offsets into the SDL screen
-    //   screen_XXX are the dimensions of the SDL screen itself
+    //   image_XXX are the image offsets into the screen
+    //   screen_XXX are the dimensions of the screen itself
     // Also contains relevant info for the graphics mode/filter to use
     // when rendering the image
     struct VideoMode {
@@ -436,11 +425,13 @@ class FrameBuffer
       This method is called to initialize the video subsystem
       with the given video mode.  Normally, it will also call setVidMode().
 
+      @param title The title for 
       @param mode  The video mode to use
+      @param full  Whether this is a fullscreen or windowed mode
 
       @return  False on any errors, else true
     */
-    virtual bool initSubsystem(VideoMode& mode) = 0;
+    virtual bool initSubsystem(VideoMode& mode, bool full) = 0;
 
     /**
       This method is called to change to the given video mode.  If the mode
@@ -451,6 +442,15 @@ class FrameBuffer
       @return  False on any errors (in which case 'mode' is invalid), else true
     */
     virtual bool setVidMode(VideoMode& mode) = 0;
+
+    /**
+      Sets a hint that the underlying renderer may use; it is also free
+      to ignore it completely.
+
+      @param hint     The hint to set
+      @param enabled  Whether the hint should be turned on or off
+    */
+    virtual void setHint(FBHint hint, bool enabled) = 0;
 
     /**
       This method is called to invalidate the contents of the entire
@@ -468,6 +468,26 @@ class FrameBuffer
       @param useBase Use the base surface instead of creating a new one
     */
     virtual FBSurface* createSurface(int w, int h, bool useBase = false) const = 0;
+
+    /**
+      Change scanline intensity and interpolation.
+
+      @param relative  If non-zero, change current intensity by
+                       'relative' amount, otherwise set to 'absolute'
+      @return  New current intensity
+    */
+    virtual uInt32 enableScanlines(int relative, int absolute = 50) { return absolute; }
+    virtual void enableScanlineInterpolation(bool enable) { }
+
+    /**
+      Grabs or ungrabs the mouse based on the given boolean value.
+    */
+    virtual void grabMouse(bool grab) = 0;
+
+    /**
+      Set the icon for the main window.
+    */
+    virtual void setWindowIcon() = 0;
 
     /**
       This method should be called anytime the TIA needs to be redrawn
@@ -495,15 +515,6 @@ class FrameBuffer
     // The parent system for the framebuffer
     OSystem* myOSystem;
 
-    // The SDL video buffer
-    SDL_Surface* myScreen;
-
-    // SDL initialization flags
-    // This is set by the base FrameBuffer class, and read by the derived classes
-    // If a FrameBuffer is successfully created, the derived classes must modify
-    // it to point to the actual flags used by the SDL_Surface
-    uInt32 mySDLFlags;
-
     // Indicates if the entire frame need to redrawn
     bool myRedrawEntireFrame;
 
@@ -518,28 +529,13 @@ class FrameBuffer
 
     // TIA palettes for normal and phosphor modes
     // 'myDefPalette' also contains the UI palette
-    // The '24' version of myDefPalette is used in 24-bit colour mode,
-    // eliminating having to deal with endian and shift issues
-    // Phosphor mode doesn't have a corresponding '24' mode, since it
-    // would require a 192KB lookup table
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
-    Uint8 myDefPalette24[256+kNumColors][3];
 
     // Names of the TIA filters that can be used for this framebuffer
     VariantList myTIAFilters;
 
   private:
-    /**
-      Grabs or ungrabs the mouse based on the given boolean value.
-    */
-    void grabMouse(bool grab);
-
-    /**
-      Set the icon for the main SDL window.
-    */
-    void setWindowIcon();
-
     /**
       Draw pending messages.
     */
@@ -622,7 +618,7 @@ class FrameBuffer
     // any image 'centering'
     GUI::Rect myImageRect;
 
-    // Dimensions of the SDL window (not always the same as the image)
+    // Dimensions of the main window (not always the same as the image)
     GUI::Rect myScreenRect;
 
     // Used for onscreen messages and frame statistics
@@ -653,11 +649,11 @@ class FrameBuffer
 
 
 /**
-  This class is basically a thin wrapper around an SDL_Surface structure.
-  We do it this way so the SDL stuff won't be dragged into the depths of
-  the codebase.  All drawing is done into FBSurfaces, which are then
-  drawn into the FrameBuffer.  Each FrameBuffer-derived class is
-  responsible for extending an FBSurface object suitable to the
+  This class is basically a thin wrapper around the video toolkit 'surface'
+  structure.  We do it this way so the actual video toolkit won't be dragged
+  into the depths of the codebase.  All drawing is done into FBSurfaces,
+  which are then drawn into the FrameBuffer.  Each FrameBuffer-derived class
+  is responsible for extending an FBSurface object suitable to the
   FrameBuffer type.
 
   @author  Stephen Anthony

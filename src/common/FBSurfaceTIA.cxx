@@ -17,19 +17,17 @@
 // $Id$
 //============================================================================
 
-#ifdef DISPLAY_OPENGL
-
 #include <cmath>
 
 #include "Font.hxx"
-#include "FrameBufferGL.hxx"
+#include "FrameBufferSDL2.hxx"
 #include "TIA.hxx"
 #include "NTSCFilter.hxx"
 
 #include "FBSurfaceTIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer)
+FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
   : myFB(buffer),
     myGL(myFB.p_gl),
     myTexture(NULL),
@@ -44,8 +42,8 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer)
 
   // Texture width is set to contain all possible sizes for a TIA image,
   // including Blargg filtering
-  myTexWidth  = FrameBufferGL::power_of_two(ATARI_NTSC_OUT_WIDTH(160));
-  myTexHeight = FrameBufferGL::power_of_two(320);
+  myTexWidth  = FrameBufferSDL2::power_of_two(ATARI_NTSC_OUT_WIDTH(160));
+  myTexHeight = FrameBufferSDL2::power_of_two(320);
 
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormat& pf = myFB.myPixelFormat;
@@ -95,7 +93,7 @@ void FBSurfaceTIA::update()
   //        a post-processing filter by blending several frames.
   switch(myFB.myFilterType)
   {
-    case FrameBufferGL::kNormal:
+    case FrameBufferSDL2::kNormal:
     {
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -110,7 +108,7 @@ void FBSurfaceTIA::update()
       }
       break;
     }
-    case FrameBufferGL::kPhosphor:
+    case FrameBufferSDL2::kPhosphor:
     {
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -128,13 +126,13 @@ void FBSurfaceTIA::update()
       }
       break;
     }
-    case FrameBufferGL::kBlarggNormal:
+    case FrameBufferSDL2::kBlarggNormal:
     {
       myFB.myNTSCFilter.blit_single(currentFrame, width, height,
                                     buffer, myTexture->pitch);
       break;
     }
-    case FrameBufferGL::kBlarggPhosphor:
+    case FrameBufferSDL2::kBlarggPhosphor:
     {
       myFB.myNTSCFilter.blit_double(currentFrame, previousFrame, width, height,
                                     buffer, myTexture->pitch);
@@ -391,5 +389,3 @@ void FBSurfaceTIA::setTIAPalette(const uInt32* palette)
 {
   myFB.myNTSCFilter.setTIAPalette(myFB, palette);
 }
-
-#endif
