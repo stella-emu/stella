@@ -10,6 +10,7 @@ MODULE_OBJS := \
 	src/emucore/Cart3F.o \
 	src/emucore/Cart4A50.o \
 	src/emucore/Cart4K.o \
+	src/emucore/Cart4KSC.o \
 	src/emucore/CartAR.o \
 	src/emucore/CartCM.o \
 	src/emucore/CartCTY.o \
@@ -20,6 +21,10 @@ MODULE_OBJS := \
 	src/emucore/CartE7.o \
 	src/emucore/CartEF.o \
 	src/emucore/CartEFSC.o \
+	src/emucore/CartBF.o \
+	src/emucore/CartBFSC.o \
+	src/emucore/CartDF.o \
+	src/emucore/CartDFSC.o \
 	src/emucore/CartF0.o \
 	src/emucore/CartF4.o \
 	src/emucore/CartF4SC.o \

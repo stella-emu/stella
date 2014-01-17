@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+3.9.2 to 3.9.3: (January xx, 2014)
+
+  * Added bankswitch schemes BF, BFSC, DF, DFSC and 4KSC, thanks to
+    RevEng and CPUWIZ of AtariAge.
+
+-Have fun!
+
+
 3.9.1 to 3.9.2: (August 31, 2013)
 
   * Improved parsing of the DASM lst file for the debugger disassembly;
@@ -34,8 +42,6 @@
   * The TIA 'zoom' area in the debugger now supports scrolling the
     mouse wheel (currently up/down only, as I don't have a sideways
     scrolling mouse to test with).
-
--Have fun!
 
 
 3.9 to 3.9.1: (August 21, 2013)

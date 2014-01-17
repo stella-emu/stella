@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -17,25 +17,27 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGE4K_HXX
-#define CARTRIDGE4K_HXX
+#ifndef CARTRIDGEBFSC_HXX
+#define CARTRIDGEBFSC_HXX
 
 class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
 #ifdef DEBUGGER_SUPPORT
-  #include "Cart4KWidget.hxx"
+  #include "CartBFSCWidget.hxx"
 #endif
 
 /**
-  This is the standard Atari 4K cartridge.  These cartridges are 
-  not bankswitched.
-*/
+  There are 32 4K banks (total of 128K ROM) with 128 bytes of RAM.
+  Accessing $1FD0 - $1FEF switches to each bank.
 
-class Cartridge4K : public Cartridge
+  @author  Stephen Anthony
+  @version $Id$
+*/
+class CartridgeBFSC : public Cartridge
 {
-  friend class Cartridge4KWidget;
+  friend class CartridgeBFSCWidget;
 
   public:
     /**
@@ -45,16 +47,16 @@ class Cartridge4K : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge4K(const uInt8* image, uInt32 size, const Settings& settings);
- 
+    CartridgeBFSC(const uInt8* image, uInt32 size, const Settings& settings);
+
     /**
       Destructor
     */
-    virtual ~Cartridge4K();
+    virtual ~CartridgeBFSC();
 
   public:
     /**
-      Reset cartridge to its power-on state
+      Reset device to its power-on state
     */
     void reset();
 
@@ -121,7 +123,7 @@ class Cartridge4K : public Cartridge
 
       @return The name of the object
     */
-    string name() const { return "Cartridge4K"; }
+    string name() const { return "CartridgeBFSC"; }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -131,7 +133,7 @@ class Cartridge4K : public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h)
     {
-      return new Cartridge4KWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new CartridgeBFSCWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 
@@ -153,8 +155,14 @@ class Cartridge4K : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
-    // The 4K ROM image for the cartridge
-    uInt8 myImage[4096];
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
+
+    // The 64K ROM image of the cartridge
+    uInt8 myImage[131072*2];
+
+    // The 128 bytes of RAM
+    uInt8 myRAM[128];
 };
 
 #endif

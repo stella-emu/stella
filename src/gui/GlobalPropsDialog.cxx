@@ -77,9 +77,14 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   items.push_back("3F (512K Tigervision)",       "3F"    );
   items.push_back("4A50 (64K 4A50 + ram)",       "4A50"  );
   items.push_back("4K (4K Atari)",               "4K"    );
+  items.push_back("4KSC (CPUWIZ 4K + ram)",      "4KSC"  );
   items.push_back("AR (Supercharger)",           "AR"    );
+  items.push_back("BF (CPUWIZ 256K)",            "BF"    );
+  items.push_back("BFSC (CPUWIZ 256K + ram)",    "BFSC"  );
   items.push_back("CV (Commavid extra ram)",     "CV"    );
   items.push_back("CM (SpectraVideo CompuMate)", "CM"    );
+  items.push_back("DF (CPUWIZ 128K)",            "DF"    );
+  items.push_back("DFSC (CPUWIZ 128K + ram)",    "DFSC"  );
   items.push_back("DPC (Pitfall II)",            "DPC"   );
   items.push_back("DPC+ (Enhanced DPC)",         "DPC+"  );
   items.push_back("E0 (8K Parker Bros)",         "E0"    );

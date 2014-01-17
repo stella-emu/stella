@@ -284,6 +284,11 @@ class Cartridge : public Device
     static bool isProbablySC(const uInt8* image, uInt32 size);
 
     /**
+      Returns true if the image is probably a 4K SuperChip (256 bytes RAM)
+    */
+    static bool isProbably4KSC(const uInt8* image, uInt32 size);
+
+    /**
       Returns true if the image probably contains ARM code in the first 1K
     */
     static bool isProbablyARM(const uInt8* image, uInt32 size);
@@ -337,6 +342,15 @@ class Cartridge : public Device
       Returns true if the image is probably an EF/EFSC bankswitching cartridge
     */
     static bool isProbablyEF(const uInt8* image, uInt32 size, const char*& type);
+
+    /**
+      Returns true if the image is probably a BF/BFSC bankswitching cartridge
+    */
+    static bool isProbablyBF(const uInt8* image, uInt32 size, const char*& type);
+    /**
+      Returns true if the image is probably a DF/DFSC bankswitching cartridge
+    */
+    static bool isProbablyDF(const uInt8* image, uInt32 size, const char*& type);
 
     /**
       Returns true if the image is probably an F6 bankswitching cartridge
