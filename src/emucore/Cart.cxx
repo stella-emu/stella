@@ -29,6 +29,7 @@
 #include "Cart3F.hxx"
 #include "Cart4A50.hxx"
 #include "Cart4K.hxx"
+#include "Cart4KSC.hxx"
 #include "CartAR.hxx"
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
@@ -39,6 +40,10 @@
 #include "CartE7.hxx"
 #include "CartEF.hxx"
 #include "CartEFSC.hxx"
+#include "CartBF.hxx"
+#include "CartBFSC.hxx"
+#include "CartDF.hxx"
+#include "CartDFSC.hxx"
 #include "CartF0.hxx"
 #include "CartF4.hxx"
 #include "CartF4SC.hxx"
@@ -184,6 +189,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new Cartridge4A50(image, size, settings);
   else if(type == "4K")
     cartridge = new Cartridge4K(image, size, settings);
+  else if(type == "4KSC")
+    cartridge = new Cartridge4KSC(image, size, settings);
   else if(type == "AR")
     cartridge = new CartridgeAR(image, size, settings);
   else if(type == "CM")
@@ -204,6 +211,14 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeEF(image, size, settings);
   else if(type == "EFSC")
     cartridge = new CartridgeEFSC(image, size, settings);
+  else if(type == "BF")
+    cartridge = new CartridgeBF(image, size, settings);
+  else if(type == "BFSC")
+    cartridge = new CartridgeBFSC(image, size, settings);
+  else if(type == "DF")
+    cartridge = new CartridgeDF(image, size, settings);
+  else if(type == "DFSC")
+    cartridge = new CartridgeDFSC(image, size, settings);
   else if(type == "F0" || type == "MB")
     cartridge = new CartridgeF0(image, size, settings);
   else if(type == "F4")
@@ -374,7 +389,12 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 4096)
   {
-    type = isProbablyCV(image, size) ? "CV" : "4K";
+    if(isProbablyCV(image,size))
+      type = "CV";
+    else if(isProbably4KSC(image,size))
+      type = "4KSC";
+    else 
+      type = "4K";
   }
   else if(size == 8*1024)  // 8K
   {
@@ -471,6 +491,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbablyDF(image, size, type))
+      ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = "3F";
     else if(isProbably4A50(image, size))
@@ -484,6 +506,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbablyBF(image, size, type))
+      ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = "3F";
     else /*if(isProbablySB(image, size))*/
@@ -548,6 +572,23 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
   }
   return true;
 }
+
+bool Cartridge::isProbably4KSC(const uInt8* image, uInt32 size)
+{
+  // We check if the first 256 bytes are identical *and* if there's
+  // an "SC" signature for one of our larger SC types at 1FFA.
+
+  uInt8 first = image[0];
+  for(uInt32 i = 1; i < 256; ++i)
+      if(image[i] != first)
+        return false;
+
+  if((image[size-6]=='S') && (image[size-5]=='C'))
+      return true;
+
+  return false;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyARM(const uInt8* image, uInt32 size)
@@ -755,6 +796,50 @@ bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size, const char*& type)
 
   return false;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyBF(const uInt8* image, uInt32 size, const char*& type)
+{
+  // BF carts store strings 'BFBF' and 'BFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 bf[] = { 'B', 'F', 'B', 'F' };
+  uInt8 bfsc[] = { 'B', 'F', 'S', 'C' };
+  if(searchForBytes(image+size-8, 8, bf, 4, 1))
+  {
+    type = "BF";
+    return true;
+  }
+  else if(searchForBytes(image+size-8, 8, bfsc, 4, 1))
+  {
+    type = "BFSC";
+    return true;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyDF(const uInt8* image, uInt32 size, const char*& type)
+{
+
+  // BF carts store strings 'DFDF' and 'DFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 df[] = { 'D', 'F', 'D', 'F' };
+  uInt8 dfsc[] = { 'D', 'F', 'S', 'C' };
+  if(searchForBytes(image+size-8, 8, df, 4, 1))
+  {
+    type = "DF";
+    return true;
+  }
+  else if(searchForBytes(image+size-8, 8, dfsc, 4, 1))
+  {
+    type = "DFSC";
+    return true;
+  }
+
+  return false;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyFA2(const uInt8* image, uInt32 size)

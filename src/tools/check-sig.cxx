@@ -40,11 +40,15 @@ int searchForBytes(const uInt8* image, uInt32 imagesize,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int main(int ac, char* av[])
 {
-  if(ac != 3)
+  int offset = 0;
+
+  if(ac < 3)
   {
-    cout << "usage: " << av[0] << " <filename> <hex pattern>\n";
+    cout << "usage: " << av[0] << " <filename> <hex pattern> [start address]\n";
     exit(0);
   }
+  if(ac > 3)
+    offset = atoi(av[3]);
   
   ifstream in(av[1], ios_base::binary);
   in.seekg(0, ios::end);
@@ -68,12 +72,12 @@ int main(int ac, char* av[])
 //  cerr << "sig size = " << hex << s_size << endl;
 
   list<int> locations;
-  int result = searchForBytes(image, i_size, sig, s_size, locations);
+  int result = searchForBytes(image+offset, i_size-offset, sig, s_size, locations);
   if(result > 0)
   {
     cout << setw(3) << result << " hits:  \'" << av[2] << "\' - \"" << av[1] << "\" @";
     for(list<int>::iterator it = locations.begin(); it != locations.end(); ++it)
-      cout << ' ' << hex << (int)*it;
+      cout << ' ' << hex << ((int)*it + offset);
     cout << endl;
   }
 
