@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.9.2 to 3.9.3: (xxxx xx, 2013)
+3.9.3 to 4.0: (xxxx xx, 2014)
 
   * Added 'savesnap' debugger prompt command, and also associated
     context menu item to the debugger TIA output area.  This saves the
@@ -21,6 +21,18 @@
   * Updated included PNG library to latest stable version.
 
 -Have fun!
+
+
+3.9.2 to 3.9.3: (January 20, 2014)
+
+  * Added bankswitch schemes BF, BFSC, DF, DFSC and 4KSC, thanks to
+    RevEng and CPUWIZ of AtariAge.
+ 
+  * Updated ROM properties for several ROMs, thanks to Omegamatrix of
+    AtariAge.
+
+  * Fixed program crash when specifying a bankswitch type that Stella
+    didn't recognize; an error message is now displayed.
 
 
 3.9.1 to 3.9.2: (August 31, 2013)

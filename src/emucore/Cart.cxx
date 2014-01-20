@@ -248,9 +248,15 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "X07")
     cartridge = new CartridgeX07(image, size, settings);
   else if(dtype == "WRONG_SIZE")
-    cerr << "ERROR: Invalid cartridge size for type " << type << " ..." << endl;
+  {
+    string err = "Invalid cart size for type '" + type + "'";
+    throw err.c_str();
+  }
   else
-    cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
+  {
+    string err = "Invalid cart type '" + type + "'";
+    throw err.c_str();
+  }
 
   if(size < 1024)
     buf << " (" << size << "B) ";
