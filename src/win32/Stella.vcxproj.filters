@@ -729,6 +729,36 @@
     <ClCompile Include="..\common\Base.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\Cart4KSC.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartBF.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartBFSC.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartDF.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartDFSC.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart4KSCWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartBFSCWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartBFWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDFSCWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDFWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1468,6 +1498,36 @@
     </ClInclude>
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Cart4KSC.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartBF.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartBFSC.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartDF.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartDFSC.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart4KSCWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartBFSCWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartBFWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDFSCWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDFWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
