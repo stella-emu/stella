@@ -272,11 +272,6 @@ class OSystem
     void setConfigPaths();
 
     /**
-      Set the user-interface palette which is specified in current settings.
-    */
-    void setUIPalette();
-
-    /**
       Get the current framerate for the video system.
 
       @return  The video framerate currently in use
@@ -598,7 +593,6 @@ class OSystem
     static ZipHandler* myZipHandler;
 
   private:
-    enum { kNumUIPalettes = 2 };
     string myBaseDir;
     string myStateDir;
     string mySnapshotSaveDir;
@@ -631,9 +625,6 @@ class OSystem
 
     // Indicates whether the main processing loop should proceed
     TimingInfo myTimingInfo;
-
-    // Table of RGB values for GUI elements
-    static uInt32 ourGUIColors[kNumUIPalettes][kNumColors-256];
 
   private:
     /**

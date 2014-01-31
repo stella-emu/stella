@@ -18,6 +18,9 @@
     context menu item to the debugger TIA output area.  This saves the
     current TIA image to a PNG file.
 
+  * Removed 'uipalette' option, as the original palette is no longer
+    supported.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!

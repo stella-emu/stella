@@ -265,13 +265,6 @@ class FrameBuffer
     virtual void setTIAPalette(const uInt32* palette);
 
     /**
-      Set up the user interface palette for a screen of any depth > 8.
-
-      @param palette  The array of colors
-    */
-    virtual void setUIPalette(const uInt32* palette);
-
-    /**
       Informs the Framebuffer of a change in EventHandler state.
     */
     void stateChanged(EventHandler::State state);
@@ -573,6 +566,11 @@ class FrameBuffer
     */
     void centerAppWindow(const VideoMode& mode);
 
+    /**
+      Set up the user interface palette for a screen of any depth > 8.
+    */
+    void setUIPalette();
+
   private:
     /**
       This class implements an iterator around an array of VideoMode objects.
@@ -645,6 +643,9 @@ class FrameBuffer
 
     // Holds static strings for the remap menu (emulation and menu events)
     static GraphicsMode ourGraphicsModes[GFX_NumModes];
+
+    // Holds UI palette data
+    static uInt32 ourGUIColors[kNumColors-256];
 };
 
 

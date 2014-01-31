@@ -128,7 +128,6 @@ Settings::Settings(OSystem* osystem)
     GUI::Size(DebuggerDialog::kMediumFontMinW,
               DebuggerDialog::kMediumFontMinH));
 #endif
-  setInternal("uipalette", "0");
   setInternal("listdelay", "300");
   setInternal("mwheel", "4");
 
@@ -432,7 +431,6 @@ void Settings::usage()
     << "                 allroms|        (exts is a ':' separated list of extensions)\n"
     << "                 exts\n"
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
-    << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
     << "  -statedir     <dir>          Directory in which to save/load state files\n"

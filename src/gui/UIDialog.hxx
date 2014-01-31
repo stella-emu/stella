@@ -58,7 +58,6 @@ class UIDialog : public Dialog
     PopUpWidget*      myDebuggerFontStyle;
 
     // Misc options
-    PopUpWidget*      myPalettePopup;
     PopUpWidget*      myListDelayPopup;
     PopUpWidget*      myWheelLinesPopup;
     

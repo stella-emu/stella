@@ -332,15 +332,6 @@ void OSystem::setConfigPaths()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setUIPalette()
-{
-  int palette = mySettings->getInt("uipalette") - 1;
-  if(palette < 0 || palette >= kNumUIPalettes) palette = 0;
-  myFrameBuffer->setUIPalette(&ourGUIColors[palette][0]);
-  myFrameBuffer->refresh();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setBaseDir(const string& basedir)
 {
   FilesystemNode node(basedir);
@@ -416,9 +407,6 @@ FBInitStatus OSystem::createFrameBuffer()
   {
     // Setup the SDL joysticks (must be done after FrameBuffer is created)
     myEventHandler->setupJoysticks();
-
-    // Update the UI palette
-    setUIPalette();
   }
 
   return fbstatus;
@@ -1001,62 +989,6 @@ bool OSystem::queryVideoHardware()
 
   return true;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*
-  Palette is defined as follows:
-    // Base colors
-    kColor            Normal foreground color (non-text)
-    kBGColor          Normal background color (non-text)
-    kShadowColor      Item is disabled
-    kTextColor        Normal text color
-    kTextColorHi      Highlighted text color
-    kTextColorEm      Emphasized text color
-
-    // UI elements (dialog and widgets)
-    kDlgColor         Dialog background
-    kWidColor         Widget background
-    kWidFrameColor    Border for currently selected widget
-
-    // Button colors
-    kBtnColor         Normal button background
-    kBtnColorHi       Highlighted button background
-    kBtnTextColor     Normal button font color
-    kBtnTextColorHi   Highlighted button font color
-
-    // Checkbox colors
-    kCheckColor       Color of 'X' in checkbox
-
-    // Scrollbar colors
-    kScrollColor      Normal scrollbar color
-    kScrollColorHi    Highlighted scrollbar color
-
-    // Debugger colors
-    kDbgChangedColor      Background color for changed cells
-    kDbgChangedTextColor  Text color for changed cells
-    kDbgColorHi           Highlighted color in debugger data cells
-*/
-uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
-  // Standard
-  { 0x686868, 0x000000, 0x404040, 0x000000, 0x62a108, 0x9f0000,
-    0xc9af7c, 0xf0f0cf, 0xc80000,
-    0xac3410, 0xd55941, 0xffffff, 0xffd652,
-    0xac3410,
-    0xac3410, 0xd55941,
-    0xac3410, 0xd55941,
-    0xc80000, 0x00ff00, 0xc8c8ff
-  },
-
-  // Classic
-  { 0x686868, 0x000000, 0x404040, 0x20a020, 0x00ff00, 0xc80000,
-    0x000000, 0x000000, 0xc80000,
-    0x000000, 0x000000, 0x20a020, 0x00ff00,
-    0x20a020,
-    0x20a020, 0x00ff00,
-    0x20a020, 0x00ff00,
-    0xc80000, 0x00ff00, 0xc8c8ff
-  }
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem(const OSystem& osystem)

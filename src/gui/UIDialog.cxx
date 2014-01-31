@@ -254,16 +254,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   lwidth = font.getStringWidth("Mouse wheel scroll: ");
   pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
-
-  // UI Palette
   ypos += 1;
-  items.clear();
-  items.push_back("Standard", "1");
-  items.push_back("Classic", "2");
-  myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   items, "Interface Palette: ", lwidth);
-  wid.push_back(myPalettePopup);
-  ypos += lineHeight + 4;
 
   // Delay between quick-selecting characters in ListWidget
   items.clear();
@@ -365,10 +356,6 @@ void UIDialog::loadConfig()
   myDebuggerFontStyle->setSelected(style, "0");
 #endif
 
-  // UI palette
-  const string& pal = instance().settings().getString("uipalette");
-  myPalettePopup->setSelected(pal, "1");
-
   // Listwidget quick delay
   const string& delay = instance().settings().getString("listdelay");
   myListDelayPopup->setSelected(delay, "300");
@@ -408,10 +395,6 @@ void UIDialog::saveConfig()
   // Debugger font style
   instance().settings().setValue("dbg.fontstyle",
     myDebuggerFontStyle->getSelectedTag().toString());
-
-  // UI palette
-  instance().settings().setValue("uipalette",
-    myPalettePopup->getSelectedTag().toString());
 
   // Listwidget quick delay
   instance().settings().setValue("listdelay",
@@ -458,7 +441,6 @@ void UIDialog::setDefaults()
     }
 
     case 2:  // Misc. options
-      myPalettePopup->setSelected("1");
       myListDelayPopup->setSelected("300");
       myWheelLinesPopup->setSelected("4");
       break;
@@ -517,7 +499,6 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kOKCmd:
       saveConfig();
       close();
-      instance().setUIPalette();
       break;
 
     case kDefaultsCmd:

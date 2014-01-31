@@ -116,10 +116,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
   VideoMode mode = getSavedVidMode();
   if(width <= mode.screen_w && height <= mode.screen_h)
   {
-    // Set window title and icon
     setWindowTitle(title);
-    if(myInitializedCount == 1) setWindowIcon();
-
     if(initSubsystem(mode, useFullscreen))
     {
       centerAppWindow(mode);
@@ -165,10 +162,13 @@ FBInitStatus FrameBuffer::initialize(const string& title,
     myMsg.surface = surface(surfaceID);
   }
 
-  // Finally, show some information about the framebuffer,
-  // but only on the first initialization
+  // Take care of some items that are only done once per framebuffer creation.
   if(myInitializedCount == 1)
+  {
     myOSystem->logMessage(about(), 1);
+    setUIPalette();
+    setWindowIcon();
+  }
 
   return kSuccess;
 }
@@ -654,14 +654,14 @@ void FrameBuffer::setTIAPalette(const uInt32* palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setUIPalette(const uInt32* palette)
+void FrameBuffer::setUIPalette()
 {
   // Set palette for GUI
   for(int i = 0, j = 256; i < kNumColors-256; ++i, ++j)
   {
-    Uint8 r = (palette[i] >> 16) & 0xff;
-    Uint8 g = (palette[i] >> 8) & 0xff;
-    Uint8 b = palette[i] & 0xff;
+    Uint8 r = (ourGUIColors[i] >> 16) & 0xff;
+    Uint8 g = (ourGUIColors[i] >> 8) & 0xff;
+    Uint8 b = ourGUIColors[i] & 0xff;
 
     myDefPalette[j] = mapRGB(r, g, b);
   }
@@ -1300,4 +1300,48 @@ FrameBuffer::GraphicsMode FrameBuffer::ourGraphicsModes[GFX_NumModes] = {
   { GFX_Zoom8x,  "zoom8x",  "Zoom 8x",  8,  0x3 },
   { GFX_Zoom9x,  "zoom9x",  "Zoom 9x",  9,  0x3 },
   { GFX_Zoom10x, "zoom10x", "Zoom 10x", 10, 0x3 }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*
+  Palette is defined as follows:
+    // Base colors
+    kColor            Normal foreground color (non-text)
+    kBGColor          Normal background color (non-text)
+    kShadowColor      Item is disabled
+    kTextColor        Normal text color
+    kTextColorHi      Highlighted text color
+    kTextColorEm      Emphasized text color
+
+    // UI elements (dialog and widgets)
+    kDlgColor         Dialog background
+    kWidColor         Widget background
+    kWidFrameColor    Border for currently selected widget
+
+    // Button colors
+    kBtnColor         Normal button background
+    kBtnColorHi       Highlighted button background
+    kBtnTextColor     Normal button font color
+    kBtnTextColorHi   Highlighted button font color
+
+    // Checkbox colors
+    kCheckColor       Color of 'X' in checkbox
+
+    // Scrollbar colors
+    kScrollColor      Normal scrollbar color
+    kScrollColorHi    Highlighted scrollbar color
+
+    // Debugger colors
+    kDbgChangedColor      Background color for changed cells
+    kDbgChangedTextColor  Text color for changed cells
+    kDbgColorHi           Highlighted color in debugger data cells
+*/
+uInt32 FrameBuffer::ourGUIColors[kNumColors-256] = {
+  0x686868, 0x000000, 0x404040, 0x000000, 0x62a108, 0x9f0000,
+  0xc9af7c, 0xf0f0cf, 0xc80000,
+  0xac3410, 0xd55941, 0xffffff, 0xffd652,
+  0xac3410,
+  0xac3410, 0xd55941,
+  0xac3410, 0xd55941,
+  0xc80000, 0x00ff00, 0xc8c8ff
 };
