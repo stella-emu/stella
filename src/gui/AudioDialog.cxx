@@ -105,7 +105,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add message concerning usage
   ypos += lineHeight + 12;
-  const GUI::Font& infofont = instance().infoFont();
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
   new StaticTextWidget(this, infofont, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
         "(*) Requires application restart", kTextAlignLeft);

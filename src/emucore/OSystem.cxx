@@ -57,11 +57,6 @@
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Launcher.hxx"
-#include "Font.hxx"
-#include "StellaFont.hxx"
-#include "StellaMediumFont.hxx"
-#include "StellaLargeFont.hxx"
-#include "ConsoleFont.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
 #include "Random.hxx"
@@ -91,8 +86,7 @@ OSystem::OSystem()
     myRomFile(""),
     myRomMD5(""),
     myFeatures(""),
-    myBuildInfo(""),
-    myFont(NULL)
+    myBuildInfo("")
 {
   // Calculate startup time
   myMillisAtStart = (uInt32)(time(NULL) * 1000);
@@ -127,10 +121,6 @@ OSystem::~OSystem()
   delete myMenu;
   delete myCommandMenu;
   delete myLauncher;
-  delete myFont;
-  delete myInfoFont;
-  delete mySmallFont;
-  delete myLauncherFont;
 
   // Remove any game console that is currently attached
   deleteConsole();
@@ -176,51 +166,13 @@ bool OSystem::create()
       << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl;
   logMessage(buf.str(), 1);
 
+  // NOTE: The framebuffer MUST be created before any other object!!!
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
-  if(!queryVideoHardware())
+  myFrameBuffer = MediaFactory::createVideo(this);
+  if(!myFrameBuffer->initialize())
     return false;
-
-  ////////////////////////////////////////////////////////////////////
-  // Create fonts to draw text
-  // NOTE: the logic determining appropriate font sizes is done here,
-  //       so that the UI classes can just use the font they expect,
-  //       and not worry about it
-  //       This logic should also take into account the size of the
-  //       framebuffer, and try to be intelligent about font sizes
-  //       We can probably add ifdefs to take care of corner cases,
-  //       but that means we've failed to abstract it enough ...
-  ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopWidth < 640 || myDesktopHeight < 480;
-
-  // This font is used in a variety of situations when a really small
-  // font is needed; we let the specific widget/dialog decide when to
-  // use it
-  mySmallFont = new GUI::Font(GUI::stellaDesc);
-
-  // The general font used in all UI elements
-  // This is determined by the size of the framebuffer
-  myFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
-
-  // The info font used in all UI elements
-  // This is determined by the size of the framebuffer
-  myInfoFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
-
-  // The font used by the ROM launcher
-  // Normally, this is configurable by the user, except in the case of
-  // very small screens
-  if(!smallScreen)
-  {    
-    if(mySettings->getString("launcherfont") == "small")
-      myLauncherFont = new GUI::Font(GUI::consoleDesc);
-    else if(mySettings->getString("launcherfont") == "medium")
-      myLauncherFont = new GUI::Font(GUI::stellaMediumDesc);
-    else
-      myLauncherFont = new GUI::Font(GUI::stellaLargeDesc);
-  }
-  else
-    myLauncherFont = new GUI::Font(GUI::stellaDesc);
 
   // Create the event handler for the system
   myEventHandler = new EventHandler(this);
@@ -361,18 +313,6 @@ void OSystem::setFramerate(float framerate)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus OSystem::createFrameBuffer()
 {
-  // There is only ever one FrameBuffer created per run of Stella
-  // Due to the multi-surface nature of the FrameBuffer, repeatedly
-  // creating and destroying framebuffer objects causes crashes which
-  // are far too invasive to fix right now
-  // Besides, how often does one really switch between software and
-  // OpenGL rendering modes, and even when they do, does it really
-  // need to be dynamic?
-
-  bool firstTime = (myFrameBuffer == NULL);
-  if(firstTime)
-    myFrameBuffer = MediaFactory::createVideo(this);
-
   // Re-initialize the framebuffer to current settings
   FBInitStatus fbstatus = kFailComplete;
   switch(myEventHandler->state())
@@ -402,12 +342,14 @@ FBInitStatus OSystem::createFrameBuffer()
       break;
   }
 
+#if 0 // FIXME
   // The following only need to be done once
   if(firstTime)
   {
     // Setup the SDL joysticks (must be done after FrameBuffer is created)
     myEventHandler->setupJoysticks();
   }
+#endif
 
   return fbstatus;
 }
@@ -905,89 +847,6 @@ void OSystem::mainLoop()
       myTimingInfo.totalFrames++;
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::queryVideoHardware()
-{
-  // Go ahead and open the video hardware; we're going to need it eventually
-  if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-      return false;
-
-  // First get the maximum windowed desktop resolution
-  // Check the 'maxres' setting, which is an undocumented developer feature
-  // that specifies the desktop size
-  // Normally, this wouldn't be set, and we ask SDL directly
-  const GUI::Size& s = mySettings->getSize("maxres");
-  if(s.w <= 0 || s.h <= 0)
-  {
-    const SDL_VideoInfo* info = SDL_GetVideoInfo();
-    myDesktopWidth  = info->current_w;
-    myDesktopHeight = info->current_h;
-  }
-  else
-  {
-    myDesktopWidth  = BSPF_max(s.w, 320);
-    myDesktopHeight = BSPF_max(s.h, 240);
-  }
-
-  // Various parts of the codebase assume a minimum screen size of 320x240
-  if(!(myDesktopWidth >= 320 && myDesktopHeight >= 240))
-  {
-    logMessage("ERROR: queryVideoHardware failed, "
-               "window 320x240 or larger required", 0);
-    return false;
-  }
-
-  // Then get the valid fullscreen modes
-  // If there are any errors, just use the desktop resolution
-  ostringstream buf;
-  SDL_Rect** modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
-  if((modes == (SDL_Rect**)0) || (modes == (SDL_Rect**)-1))
-  {
-    Resolution r;
-    r.width  = myDesktopWidth;
-    r.height = myDesktopHeight;
-    buf << r.width << "x" << r.height;
-    r.name = buf.str();
-    myResolutions.push_back(r);
-  }
-  else
-  {
-    // All modes must fit between the lower and upper limits of the desktop
-    // For 'small' desktop, this means larger than 320x240
-    // For 'large'/normal desktop, exclude all those less than 640x480
-    bool largeDesktop = myDesktopWidth >= 640 && myDesktopHeight >= 480;
-    uInt32 lowerWidth  = largeDesktop ? 640 : 320,
-           lowerHeight = largeDesktop ? 480 : 240;
-    for(uInt32 i = 0; modes[i]; ++i)
-    {
-      if(modes[i]->w >= lowerWidth && modes[i]->w <= myDesktopWidth &&
-         modes[i]->h >= lowerHeight && modes[i]->h <= myDesktopHeight)
-      {
-        Resolution r;
-        r.width  = modes[i]->w;
-        r.height = modes[i]->h;
-        buf.str("");
-        buf << r.width << "x" << r.height;
-        r.name = buf.str();
-        myResolutions.insert_at(0, r);  // insert in opposite (of descending) order
-      }
-    }
-    // If no modes were valid, use the desktop dimensions
-    if(myResolutions.size() == 0)
-    {
-      Resolution r;
-      r.width  = myDesktopWidth;
-      r.height = myDesktopHeight;
-      buf << r.width << "x" << r.height;
-      r.name = buf.str();
-      myResolutions.push_back(r);
-    }
-  }
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

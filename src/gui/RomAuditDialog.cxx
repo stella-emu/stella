@@ -129,7 +129,7 @@ void RomAuditDialog::auditRoms()
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
-  ProgressDialog progress(this, instance().font(),
+  ProgressDialog progress(this, instance().frameBuffer().font(),
                           "Auditing ROM files ...");
   progress.setRange(0, files.size() - 1, 5);
 
@@ -187,7 +187,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("If you're sure you want to proceed with the");
         msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
         myConfirmMsg =
-          new GUI::MessageBox(this, instance().font(), msg,
+          new GUI::MessageBox(this, instance().frameBuffer().font(), msg,
                               myMaxWidth, myMaxHeight,
                               kConfirmAuditCmd);
       }

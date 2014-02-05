@@ -53,9 +53,10 @@ LoggerDialog::LoggerDialog(OSystem* osystem, DialogContainer* parent,
 
   // Test listing of the log output
   xpos = 10;  ypos = 10;
-  myLogInfo = new StringListWidget(this, instance().infoFont(), xpos, ypos,
-                                   _w - 2 * xpos, _h - buttonHeight - ypos - 20 -
-                                   2 * lineHeight, false);
+  myLogInfo = new StringListWidget(this, instance().frameBuffer().infoFont(),
+                                   xpos, ypos, _w - 2 * xpos,
+                                   _h - buttonHeight - ypos - 20 - 2 * lineHeight,
+                                   false);
   myLogInfo->setEditable(false);
   wid.push_back(myLogInfo);
   ypos += myLogInfo->getHeight() + 8;

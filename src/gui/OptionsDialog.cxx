@@ -62,7 +62,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myAboutDialog(NULL),
     myIsGlobal(global)
 {
-  const GUI::Font& font = instance().font();
+  const GUI::Font& font = instance().frameBuffer().font();
   const int buttonWidth = font.getStringWidth("Snapshot Settings") + 20,
             buttonHeight = font.getLineHeight() + 6,
             rowHeight = font.getLineHeight() + 10;

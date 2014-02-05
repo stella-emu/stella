@@ -150,6 +150,14 @@ class FrameBufferSDL2 : public FrameBuffer
     // The following are derived from protected methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
     /**
+      This method is called to query and initialize the video hardware
+      for desktop and fullscreen resolution information.
+
+      @return  False on any errors, else true
+    */
+    bool queryHardware(uInt32& w, uInt32& h, ResolutionList& res);
+
+    /**
       This method is called to initialize the video subsystem
       with the given video mode.  Normally, it will also call setVidMode().
 

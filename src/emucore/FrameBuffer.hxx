@@ -98,6 +98,14 @@ enum {
   kNumColors
 };
 
+// Fullscreen resolutions supported by the underlying hardware
+struct Resolution {
+  uInt32 width;
+  uInt32 height;
+  string name;
+};
+typedef Common::Array<Resolution> ResolutionList;
+
 
 /**
   This class encapsulates all video buffers and is the basis for the video
@@ -124,16 +132,21 @@ class FrameBuffer
     virtual ~FrameBuffer();
 
     /**
-      (Re)initializes the framebuffer display.  This must be called before any
+      Initialize the framebuffer object (set up the underlying hardware)
+    */
+    bool initialize();
+
+    /**
+      (Re)creates the framebuffer display.  This must be called before any
       calls are made to derived methods.
 
-      @param title   The title of the window
+      @param title   The title of the application / window
       @param width   The width of the framebuffer
       @param height  The height of the framebuffer
 
       @return  Status of initialization (see FBInitStatus 'enum')
     */
-    FBInitStatus initialize(const string& title, uInt32 width, uInt32 height);
+    FBInitStatus createDisplay(const string& title, uInt32 width, uInt32 height);
 
     /**
       Updates the display, which depending on the current mode could mean
@@ -202,6 +215,27 @@ class FrameBuffer
       'unusable' area.
     */
     const GUI::Rect& screenRect() const { return myScreenRect; }
+
+    /**
+      Get the maximum dimensions of a window for the framebuffer hardware.
+    */
+    uInt32 desktopWidth() const  { return myDesktopWidth; }
+    uInt32 desktopHeight() const { return myDesktopHeight; }
+
+    /**
+      Get the supported fullscreen resolutions for the video hardware.
+
+      @return  An array of supported resolutions
+    */
+    const ResolutionList& supportedResolutions() const { return myResolutions; }
+
+    /**
+      Get the font object(s) of the framebuffer
+    */
+    const GUI::Font& font() const { return *myFont; }
+    const GUI::Font& infoFont() const { return *myInfoFont; }
+    const GUI::Font& smallFont() const { return *mySmallFont; }
+    const GUI::Font& launcherFont() const { return *myLauncherFont; }
 
     /**
       Refresh display according to the current state, taking single vs.
@@ -320,13 +354,10 @@ class FrameBuffer
     virtual void setWindowTitle(const string& title) = 0;
 
     /**
-      Enable/disable NTSC filtering effects.
+      Enable/disable/query NTSC filtering effects.
     */
     virtual void enableNTSC(bool enable) { }
     virtual bool ntscEnabled() const { return false; }
-    /**
-      This method is called to query the TV effects in use by the FrameBuffer.
-    */
     virtual string effectsInfo() const { return "None / not available"; }
 
     /**
@@ -413,6 +444,14 @@ class FrameBuffer
         return os;
       }
     };
+
+    /**
+      This method is called to query and initialize the video hardware
+      for desktop and fullscreen resolution information.
+
+      @return  False on any errors, else true
+    */
+    virtual bool queryHardware(uInt32& w, uInt32& h, ResolutionList& res) = 0;
 
     /**
       This method is called to initialize the video subsystem
@@ -618,6 +657,24 @@ class FrameBuffer
 
     // Dimensions of the main window (not always the same as the image)
     GUI::Rect myScreenRect;
+
+    // Maximum dimensions of the desktop area
+    uInt32 myDesktopWidth, myDesktopHeight;
+
+    // Supported fullscreen resolutions
+    ResolutionList myResolutions;
+
+    // The font object to use for the normal in-game GUI
+    GUI::Font* myFont;
+
+    // The info font object to use for the normal in-game GUI
+    GUI::Font* myInfoFont;
+
+    // The font object to use when space is very limited
+    GUI::Font* mySmallFont;
+
+    // The font object to use for the ROM launcher
+    GUI::Font* myLauncherFont;
 
     // Used for onscreen messages and frame statistics
     // (scanline count and framerate)

@@ -44,10 +44,15 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
     myTiaSurface(NULL),
     myDirtyFlag(true)
 {
-  // Added from MediaFactory /////////////////////////
-  const string& gl_lib = osystem->settings().getString("gl_lib");
-  loadLibrary(gl_lib);
-  ////////////////////////////////////////////////////
+  // Initialize SDL2 context
+  if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+      return;
+
+  // Load OpenGL function pointers
+  loadLibrary(osystem->settings().getString("gl_lib"));
+  if(loadFuncs(kGL_BASIC))
+    myVBOAvailable = myOSystem->settings().getBool("gl_vbo") && loadFuncs(kGL_VBO);
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceUI object)
@@ -139,6 +144,81 @@ bool FrameBufferSDL2::loadFuncs(GLFunctionality functionality)
   }
   else
     return false;
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, ResolutionList& res)
+{
+  // First get the maximum windowed desktop resolution
+  // Check the 'maxres' setting, which is an undocumented developer feature
+  // that specifies the desktop size
+  // Normally, this wouldn't be set, and we ask SDL directly
+  const GUI::Size& s = myOSystem->settings().getSize("maxres");
+  if(s.w <= 0 || s.h <= 0)
+  {
+    const SDL_VideoInfo* info = SDL_GetVideoInfo();
+    w = info->current_w;
+    h = info->current_h;
+  }
+
+#if 0
+  // Various parts of the codebase assume a minimum screen size of 320x240
+  if(!(myDesktopWidth >= 320 && myDesktopHeight >= 240))
+  {
+    logMessage("ERROR: queryVideoHardware failed, "
+               "window 320x240 or larger required", 0);
+    return false;
+  }
+
+  // Then get the valid fullscreen modes
+  // If there are any errors, just use the desktop resolution
+  ostringstream buf;
+  SDL_Rect** modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
+  if((modes == (SDL_Rect**)0) || (modes == (SDL_Rect**)-1))
+  {
+    Resolution r;
+    r.width  = myDesktopWidth;
+    r.height = myDesktopHeight;
+    buf << r.width << "x" << r.height;
+    r.name = buf.str();
+    myResolutions.push_back(r);
+  }
+  else
+  {
+    // All modes must fit between the lower and upper limits of the desktop
+    // For 'small' desktop, this means larger than 320x240
+    // For 'large'/normal desktop, exclude all those less than 640x480
+    bool largeDesktop = myDesktopWidth >= 640 && myDesktopHeight >= 480;
+    uInt32 lowerWidth  = largeDesktop ? 640 : 320,
+           lowerHeight = largeDesktop ? 480 : 240;
+    for(uInt32 i = 0; modes[i]; ++i)
+    {
+      if(modes[i]->w >= lowerWidth && modes[i]->w <= myDesktopWidth &&
+         modes[i]->h >= lowerHeight && modes[i]->h <= myDesktopHeight)
+      {
+        Resolution r;
+        r.width  = modes[i]->w;
+        r.height = modes[i]->h;
+        buf.str("");
+        buf << r.width << "x" << r.height;
+        r.name = buf.str();
+        myResolutions.insert_at(0, r);  // insert in opposite (of descending) order
+      }
+    }
+    // If no modes were valid, use the desktop dimensions
+    if(myResolutions.size() == 0)
+    {
+      Resolution r;
+      r.width  = myDesktopWidth;
+      r.height = myDesktopHeight;
+      buf << r.width << "x" << r.height;
+      r.name = buf.str();
+      myResolutions.push_back(r);
+    }
+  }
+#endif
 
   return true;
 }
@@ -288,17 +368,12 @@ bool FrameBufferSDL2::setVidMode(VideoMode& mode)
   myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0, mySDLFlags);
   if(myScreen == NULL)
   {
-    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
+    myOSystem->logMessage(msg, 0);
     return false;
   }
   // Make sure the flags represent the current screen state
   mySDLFlags = myScreen->flags;
-
-  // Load OpenGL function pointers
-  if(loadFuncs(kGL_BASIC))
-    myVBOAvailable = myOSystem->settings().getBool("gl_vbo") && loadFuncs(kGL_VBO);
-  else
-    return false;
 
   // Optimization hints
   p_gl.ShadeModel(GL_FLAT);

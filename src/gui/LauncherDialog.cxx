@@ -63,7 +63,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myRomDir(NULL),
     mySelectedItem(0)
 {
-  const GUI::Font& font = instance().launcherFont();
+  const GUI::Font& font = instance().frameBuffer().launcherFont();
 
   const int fontWidth = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
@@ -115,9 +115,10 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   if(romWidth > 0)
   {
     xpos += myList->getWidth() + 5;
-    myRomInfoWidget =
-      new RomInfoWidget(this, romWidth < 660 ? instance().smallFont() : instance().infoFont(),
-                        xpos, ypos, romWidth, myList->getHeight());
+    myRomInfoWidget = new RomInfoWidget(this,
+        romWidth < 660 ? instance().frameBuffer().smallFont() :
+                         instance().frameBuffer().infoFont(),
+        xpos, ypos, romWidth, myList->getHeight());
   }
 
   // Add note textwidget to show any notes for the currently selected ROM
@@ -184,14 +185,14 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   l.push_back("Power-on options", "override");
   l.push_back("Filter listing", "filter");
   l.push_back("Reload listing", "reload");
-  myMenu = new ContextMenu(this, osystem->font(), l);
+  myMenu = new ContextMenu(this, osystem->frameBuffer().font(), l);
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
-  myGlobalProps = new GlobalPropsDialog(this, osystem->font());
+  myGlobalProps = new GlobalPropsDialog(this, osystem->frameBuffer().font());
 
   // Create dialog whereby the files shown in the ROM listing can be customized
-  myFilters = new LauncherFilterDialog(this, osystem->font());
+  myFilters = new LauncherFilterDialog(this, osystem->frameBuffer().font());
 
   // Figure out which filters are needed for the ROM listing
   setListFilters();
@@ -247,8 +248,8 @@ void LauncherDialog::loadConfig()
       msg.push_back("");
       msg.push_back("Click 'OK' to select a default ROM directory,");
       msg.push_back("or 'Cancel' to browse the filesystem manually.");
-      myFirstRunMsg = new GUI::MessageBox(this, instance().font(), msg,
-                                          _w, _h, kFirstRunMsgChosenCmd);
+      myFirstRunMsg = new GUI::MessageBox(this, instance().frameBuffer().font(),
+                                          msg, _w, _h, kFirstRunMsgChosenCmd);
     }
     myFirstRunMsg->show();
   }
@@ -542,7 +543,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kFirstRunMsgChosenCmd:
       // Show a file browser, starting from the users' home directory
       if(!myRomDir)
-        myRomDir = new BrowserDialog(this, instance().font(), _w, _h);
+        myRomDir = new BrowserDialog(this, instance().frameBuffer().font(), _w, _h);
 
       myRomDir->show("Select ROM directory:", "~",
                      BrowserDialog::Directories, kStartupRomDirChosenCmd);

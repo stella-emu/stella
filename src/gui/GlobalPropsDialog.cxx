@@ -45,7 +45,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
   VariantList items;
-  const GUI::Font& infofont = instance().infoFont();
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
 
   // Set real dimensions
   _w = lwidth + pwidth + fontWidth*3 + 15;

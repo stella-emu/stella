@@ -41,7 +41,7 @@ GameInfoDialog::GameInfoDialog(
     myPropertiesLoaded(false),
     myDefaultsSelected(false)
 {
-  const GUI::Font& ifont = instance().infoFont();
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),

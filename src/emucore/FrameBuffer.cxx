@@ -27,6 +27,10 @@
 #include "EventHandler.hxx"
 #include "Event.hxx"
 #include "Font.hxx"
+#include "StellaFont.hxx"
+#include "StellaMediumFont.hxx"
+#include "StellaLargeFont.hxx"
+#include "ConsoleFont.hxx"
 #include "Launcher.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
@@ -58,6 +62,11 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer(void)
 {
+  delete myFont;
+  delete myInfoFont;
+  delete mySmallFont;
+  delete myLauncherFont;
+
   // Free all allocated surfaces
   while(!mySurfaceList.empty())
   {
@@ -67,8 +76,69 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBInitStatus FrameBuffer::initialize(const string& title,
-                                     uInt32 width, uInt32 height)
+bool FrameBuffer::initialize()
+{
+  // Get desktop resolution information
+  if(!queryHardware(myDesktopWidth, myDesktopHeight, myResolutions))
+    return false;
+
+  // Various parts of the codebase assume a minimum screen size of 320x240
+  myDesktopWidth = BSPF_max(myDesktopWidth, 320u);
+  myDesktopHeight = BSPF_max(myDesktopHeight, 240u);
+  if(!(myDesktopWidth >= 320 && myDesktopHeight >= 240))
+  {
+    myOSystem->logMessage("ERROR: queryVideoHardware failed, "
+                          "window 320x240 or larger required", 0);
+    return false;
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  // Create fonts to draw text
+  // NOTE: the logic determining appropriate font sizes is done here,
+  //       so that the UI classes can just use the font they expect,
+  //       and not worry about it
+  //       This logic should also take into account the size of the
+  //       framebuffer, and try to be intelligent about font sizes
+  //       We can probably add ifdefs to take care of corner cases,
+  //       but that means we've failed to abstract it enough ...
+  ////////////////////////////////////////////////////////////////////
+  bool smallScreen = myDesktopWidth < 640 || myDesktopHeight < 480;
+
+  // This font is used in a variety of situations when a really small
+  // font is needed; we let the specific widget/dialog decide when to
+  // use it
+  mySmallFont = new GUI::Font(GUI::stellaDesc);
+
+  // The general font used in all UI elements
+  // This is determined by the size of the framebuffer
+  myFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
+
+  // The info font used in all UI elements
+  // This is determined by the size of the framebuffer
+  myInfoFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
+
+  // The font used by the ROM launcher
+  // Normally, this is configurable by the user, except in the case of
+  // very small screens
+  if(!smallScreen)
+  {    
+    const string& lf = myOSystem->settings().getString("launcherfont");
+    if(lf == "small")
+      myLauncherFont = new GUI::Font(GUI::consoleDesc);
+    else if(lf == "medium")
+      myLauncherFont = new GUI::Font(GUI::stellaMediumDesc);
+    else
+      myLauncherFont = new GUI::Font(GUI::stellaLargeDesc);
+  }
+  else
+    myLauncherFont = new GUI::Font(GUI::stellaDesc);
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBInitStatus FrameBuffer::createDisplay(const string& title,
+                                        uInt32 width, uInt32 height)
 {
   myInitializedCount++;
 
@@ -148,8 +218,8 @@ FBInitStatus FrameBuffer::initialize(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kBtnTextColor;
-  myStatsMsg.w = myOSystem->infoFont().getMaxCharWidth() * 24 + 2;
-  myStatsMsg.h = (myOSystem->infoFont().getFontHeight() + 2) * 2;
+  myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
+  myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
  if(myStatsMsg.surface == NULL)
   {
@@ -158,7 +228,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
   }
   if(myMsg.surface == NULL)
   {
-    uInt32 surfaceID = allocateSurface(640, myOSystem->font().getFontHeight()+10);
+    uInt32 surfaceID = allocateSurface(640, font().getFontHeight()+10);
     myMsg.surface = surface(surfaceID);
   }
 
@@ -205,9 +275,9 @@ void FrameBuffer::update()
                 myOSystem->console().tia().scanlines(),
                 myOSystem->console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
-        myStatsMsg.surface->drawString(myOSystem->infoFont(),
+        myStatsMsg.surface->drawString(infoFont(),
           msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->drawString(myOSystem->infoFont(),
+        myStatsMsg.surface->drawString(infoFont(),
           info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
         myStatsMsg.surface->setPos(myImageRect.x() + 1, myImageRect.y() + 1);
@@ -300,8 +370,8 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   myMsg.counter = uInt32(myOSystem->frameRate()) << 1; // Show message for 2 seconds
   myMsg.color   = kBtnTextColor;
 
-  myMsg.w = myOSystem->font().getStringWidth(myMsg.text) + 10;
-  myMsg.h = myOSystem->font().getFontHeight() + 8;
+  myMsg.w = font().getStringWidth(myMsg.text) + 10;
+  myMsg.h = font().getFontHeight() + 8;
   myMsg.surface->setWidth(myMsg.w);
   myMsg.surface->setHeight(myMsg.h);
   myMsg.position = position;
@@ -398,8 +468,8 @@ inline void FrameBuffer::drawMessage()
   myMsg.surface->setPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
   myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
-  myMsg.surface->drawString(myOSystem->font(), myMsg.text, 4, 4,
-                               myMsg.w, myMsg.color, kTextAlignLeft);
+  myMsg.surface->drawString(font(), myMsg.text, 4, 4,
+                            myMsg.w, myMsg.color, kTextAlignLeft);
   myMsg.counter--;
 
   // Either erase the entire message (when time is reached),
@@ -912,15 +982,15 @@ void FrameBuffer::addVidMode(VideoMode& mode)
   // normally different depending on the OSystem in use
   // As well, we usually can't get fullscreen modes in the exact size
   // we want, so we need to calculate image offsets
-  const ResolutionList& res = myOSystem->supportedResolutions();
-  for(uInt32 i = 0; i < res.size(); ++i)
+  for(uInt32 i = 0; i < myResolutions.size(); ++i)
   {
-    if(mode.screen_w <= res[i].width && mode.screen_h <= res[i].height)
+    if(mode.screen_w <= myResolutions[i].width &&
+       mode.screen_h <= myResolutions[i].height)
     {
       // Auto-calculate 'smart' centering; platform-specific framebuffers are
       // free to ignore or augment it
-      mode.screen_w = BSPF_max(res[i].width, 320u);
-      mode.screen_h = BSPF_max(res[i].height, 240u);
+      mode.screen_w = BSPF_max(myResolutions[i].width, 320u);
+      mode.screen_h = BSPF_max(myResolutions[i].height, 240u);
       mode.image_x = (mode.screen_w - mode.image_w) >> 1;
       mode.image_y = (mode.screen_h - mode.image_h) >> 1;
       break;

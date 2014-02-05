@@ -105,9 +105,8 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Fullscreen resolution
   items.clear();
   items.push_back("Auto", "auto");
-  for(uInt32 i = 0; i < instance().supportedResolutions().size(); ++i)
-    items.push_back(instance().supportedResolutions()[i].name,
-                    instance().supportedResolutions()[i].name);
+  for(uInt32 i = 0; i < instance().frameBuffer().supportedResolutions().size(); ++i)
+    items.push_back(instance().frameBuffer().supportedResolutions()[i].name);
   myFSResPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                  lineHeight, items, "Fullscrn Res: ", lwidth);
   wid.push_back(myFSResPopup);
@@ -168,7 +167,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Add message concerning usage
-  const GUI::Font& infofont = instance().infoFont();
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
   new StaticTextWidget(myTab, infofont, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,

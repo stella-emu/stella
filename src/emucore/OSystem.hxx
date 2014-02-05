@@ -35,23 +35,12 @@ class Sound;
 class StateManager;
 class VideoDialog;
 
-namespace GUI {
-  class Font;
-}
-
 #include "Array.hxx"
 #include "FSNode.hxx"
 #include "FrameBuffer.hxx"
 #include "PNGLibrary.hxx"
 #include "ZipHandler.hxx"
 #include "bspf.hxx"
-
-struct Resolution {
-  uInt32 width;
-  uInt32 height;
-  string name;
-};
-typedef Common::Array<Resolution> ResolutionList;
 
 struct TimingInfo {
   uInt64 start;
@@ -231,34 +220,6 @@ class OSystem
 #endif
 
     /**
-      Get the font object of the system
-
-      @return The font reference
-    */
-    const GUI::Font& font() const { return *myFont; }
-
-    /**
-      Get the info font object of the system
-
-      @return The font reference
-    */
-    const GUI::Font& infoFont() const { return *myInfoFont; }
-
-    /**
-      Get the small font object of the system
-
-      @return The font reference
-    */
-    const GUI::Font& smallFont() const { return *mySmallFont; }
-
-    /**
-      Get the launcher font object of the system
-
-      @return The font reference
-    */
-    const GUI::Font& launcherFont() const { return *myLauncherFont; }
-
-    /**
       Set the framerate for the video system.  It's placed in this class since
       the mainLoop() method is defined here.
 
@@ -278,19 +239,13 @@ class OSystem
     */
     float frameRate() const { return myDisplayFrameRate; }
 
+//FIXME - remove this code
     /**
       Get the maximum dimensions of a window for the video hardware.
     */
-    uInt32 desktopWidth() const  { return myDesktopWidth; }
-    uInt32 desktopHeight() const { return myDesktopHeight; }
-
-    /**
-      Get the supported fullscreen resolutions for the video hardware.
-
-      @return  An array of supported resolutions
-    */
-    const ResolutionList& supportedResolutions() const { return myResolutions; }
-
+    uInt32 desktopWidth() const  { return myFrameBuffer->desktopWidth(); }
+    uInt32 desktopHeight() const { return myFrameBuffer->desktopHeight(); }
+/////////////////////////////////////////////////
     /**
       Return the default full/complete directory name for storing data.
     */
@@ -419,7 +374,7 @@ class OSystem
     const string& features() const { return myFeatures; }
 
     /**
-      The build information for Stella (SDL version, architecture, etc).
+      The build information for Stella (toolkit version, architecture, etc).
 
       @return  The build info
     */
@@ -509,11 +464,6 @@ class OSystem
 
   protected:
     /**
-      Query the OSystem video hardware for resolution information.
-    */
-    virtual bool queryVideoHardware();
-
-    /**
       Set the base directory for all Stella files (these files may be
       located in other places through settings).
     */
@@ -571,12 +521,6 @@ class OSystem
     // The list of log messages
     string myLogMessages;
 
-    // Maximum dimensions of the desktop area
-    uInt32 myDesktopWidth, myDesktopHeight;
-
-    // Supported fullscreen resolutions
-    ResolutionList myResolutions;
-
     // Number of times per second to iterate through the main loop
     float myDisplayFrameRate;
 
@@ -611,18 +555,6 @@ class OSystem
     string myFeatures;
     string myBuildInfo;
 
-    // The font object to use for the normal in-game GUI
-    GUI::Font* myFont;
-
-    // The info font object to use for the normal in-game GUI
-    GUI::Font* myInfoFont;
-
-    // The font object to use when space is very limited
-    GUI::Font* mySmallFont;
-
-    // The font object to use for the ROM launcher
-    GUI::Font* myLauncherFont;
-
     // Indicates whether the main processing loop should proceed
     TimingInfo myTimingInfo;
 
@@ -641,7 +573,6 @@ class OSystem
 
     /**
       Creates the various sound devices available in this system
-      (for now, that means either 'SDL' or 'Null').
     */
     void createSound();
 
