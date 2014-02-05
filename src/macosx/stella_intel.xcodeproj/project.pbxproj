@@ -43,13 +43,10 @@
 		2D9173EF09BA90380026E9FF /* Sound.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF8D0627AE34006BEC99 /* Sound.hxx */; };
 		2D9173F009BA90380026E9FF /* Switches.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF8F0627AE34006BEC99 /* Switches.hxx */; };
 		2D9173F109BA90380026E9FF /* TIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF910627AE34006BEC99 /* TIA.hxx */; };
-		2D9173F709BA90380026E9FF /* FrameBufferGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */; };
-		2D9173F809BA90380026E9FF /* FrameBufferSoft.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D62062893E7006265D9 /* FrameBufferSoft.hxx */; };
 		2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D6F062895B2006265D9 /* EventHandler.hxx */; };
 		2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D71062895B2006265D9 /* FrameBuffer.hxx */; };
 		2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D77062895F1006265D9 /* Settings.hxx */; };
 		2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D94486C0629124700DD9879 /* SettingsMACOSX.hxx */; };
-		2D9173FD09BA90380026E9FF /* SoundSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDA34030665817D00CDD299 /* SoundSDL.hxx */; };
 		2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEA0F0845709700812C11 /* OSystemMACOSX.hxx */; };
 		2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAA4084578BF00812C11 /* AboutDialog.hxx */; };
 		2D91740109BA90380026E9FF /* AudioDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAA7084578BF00812C11 /* AudioDialog.hxx */; };
@@ -154,13 +151,10 @@
 		2D91749709BA90380026E9FF /* Serializer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF8A0627AE34006BEC99 /* Serializer.cxx */; };
 		2D91749809BA90380026E9FF /* Switches.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF8E0627AE34006BEC99 /* Switches.cxx */; };
 		2D91749909BA90380026E9FF /* TIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF900627AE34006BEC99 /* TIA.cxx */; };
-		2D91749F09BA90380026E9FF /* FrameBufferGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */; };
-		2D9174A009BA90380026E9FF /* FrameBufferSoft.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */; };
 		2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D6E062895B2006265D9 /* EventHandler.cxx */; };
 		2D9174A209BA90380026E9FF /* FrameBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D70062895B2006265D9 /* FrameBuffer.cxx */; };
 		2D9174A309BA90380026E9FF /* Settings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D944848062904E800DD9879 /* Settings.cxx */; };
 		2D9174A409BA90380026E9FF /* SettingsMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D944866062911CD00DD9879 /* SettingsMACOSX.cxx */; };
-		2D9174A509BA90380026E9FF /* SoundSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDA34020665817D00CDD299 /* SoundSDL.cxx */; };
 		2D9174A709BA90380026E9FF /* mainSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0A0845700300812C11 /* mainSDL.cxx */; };
 		2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */; };
 		2D9174A909BA90380026E9FF /* OSystemMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0E0845709700812C11 /* OSystemMACOSX.cxx */; };
@@ -244,10 +238,14 @@
 		DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */; };
 		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
+		DC368F5418A2FB710084199C /* FBSurfaceUI.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F4E18A2FB710084199C /* FBSurfaceUI.cxx */; };
+		DC368F5518A2FB710084199C /* FBSurfaceUI.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F4F18A2FB710084199C /* FBSurfaceUI.hxx */; };
+		DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */; };
+		DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */; };
+		DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5218A2FB710084199C /* SoundSDL2.cxx */; };
+		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
 		DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */; };
-		DC3EE2DA1417801800F9DA4A /* FBSurfaceGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE2D61417801800F9DA4A /* FBSurfaceGL.cxx */; };
-		DC3EE2DB1417801800F9DA4A /* FBSurfaceGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE2D71417801800F9DA4A /* FBSurfaceGL.hxx */; };
 		DC3EE2DC1417801800F9DA4A /* FBSurfaceTIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE2D81417801800F9DA4A /* FBSurfaceTIA.cxx */; };
 		DC3EE2DD1417801800F9DA4A /* FBSurfaceTIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE2D91417801800F9DA4A /* FBSurfaceTIA.hxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
@@ -440,8 +438,6 @@
 		DCD3F7C611340AAF00DBA3AE /* Genesis.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
-		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
-		DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D3B0B247DB40092F9F8 /* RectList.hxx */; };
 		DCD6FC7011C281ED005DA767 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC5D11C281ED005DA767 /* png.c */; };
 		DCD6FC7111C281ED005DA767 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC5E11C281ED005DA767 /* png.h */; };
 		DCD6FC7211C281ED005DA767 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC5F11C281ED005DA767 /* pngconf.h */; };
@@ -610,10 +606,6 @@
 		2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerParser.hxx; path = ../debugger/DebuggerParser.hxx; sourceTree = SOURCE_ROOT; };
 		2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TiaZoomWidget.cxx; path = ../debugger/gui/TiaZoomWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TiaZoomWidget.hxx; path = ../debugger/gui/TiaZoomWidget.hxx; sourceTree = SOURCE_ROOT; };
-		2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FrameBufferGL.cxx; path = ../common/FrameBufferGL.cxx; sourceTree = SOURCE_ROOT; };
-		2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FrameBufferGL.hxx; path = ../common/FrameBufferGL.hxx; sourceTree = SOURCE_ROOT; };
-		2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FrameBufferSoft.cxx; path = ../common/FrameBufferSoft.cxx; sourceTree = SOURCE_ROOT; };
-		2D733D62062893E7006265D9 /* FrameBufferSoft.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FrameBufferSoft.hxx; path = ../common/FrameBufferSoft.hxx; sourceTree = SOURCE_ROOT; };
 		2D733D6E062895B2006265D9 /* EventHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EventHandler.cxx; path = ../emucore/EventHandler.cxx; sourceTree = SOURCE_ROOT; };
 		2D733D6F062895B2006265D9 /* EventHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EventHandler.hxx; path = ../emucore/EventHandler.hxx; sourceTree = SOURCE_ROOT; };
 		2D733D70062895B2006265D9 /* FrameBuffer.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FrameBuffer.cxx; path = ../emucore/FrameBuffer.cxx; sourceTree = SOURCE_ROOT; };
@@ -634,8 +626,6 @@
 		2D9555DA0880E78000466554 /* Cart3E.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart3E.hxx; path = ../emucore/Cart3E.hxx; sourceTree = SOURCE_ROOT; };
 		2D9555DD0880E79600466554 /* CpuDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CpuDebug.cxx; path = ../debugger/CpuDebug.cxx; sourceTree = SOURCE_ROOT; };
 		2D9555DE0880E79600466554 /* CpuDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CpuDebug.hxx; path = ../debugger/CpuDebug.hxx; sourceTree = SOURCE_ROOT; };
-		2DDA34020665817D00CDD299 /* SoundSDL.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SoundSDL.cxx; path = ../common/SoundSDL.cxx; sourceTree = SOURCE_ROOT; };
-		2DDA34030665817D00CDD299 /* SoundSDL.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SoundSDL.hxx; path = ../common/SoundSDL.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEA0A0845700300812C11 /* mainSDL.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainSDL.cxx; path = ../common/mainSDL.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FSNodePOSIX.cxx; path = ../unix/FSNodePOSIX.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEA0E0845709700812C11 /* OSystemMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OSystemMACOSX.cxx; sourceTree = "<group>"; };
@@ -780,10 +770,14 @@
 		DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ContextMenu.hxx; path = ../gui/ContextMenu.hxx; sourceTree = SOURCE_ROOT; };
 		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
+		DC368F4E18A2FB710084199C /* FBSurfaceUI.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceUI.cxx; path = ../common/FBSurfaceUI.cxx; sourceTree = SOURCE_ROOT; };
+		DC368F4F18A2FB710084199C /* FBSurfaceUI.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceUI.hxx; path = ../common/FBSurfaceUI.hxx; sourceTree = SOURCE_ROOT; };
+		DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrameBufferSDL2.cxx; path = ../common/FrameBufferSDL2.cxx; sourceTree = SOURCE_ROOT; };
+		DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FrameBufferSDL2.hxx; path = ../common/FrameBufferSDL2.hxx; sourceTree = SOURCE_ROOT; };
+		DC368F5218A2FB710084199C /* SoundSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoundSDL2.cxx; path = ../common/SoundSDL2.cxx; sourceTree = SOURCE_ROOT; };
+		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SoundSDL2.hxx; path = ../common/SoundSDL2.hxx; sourceTree = SOURCE_ROOT; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFA2.cxx; path = ../emucore/CartFA2.cxx; sourceTree = SOURCE_ROOT; };
 		DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFA2.hxx; path = ../emucore/CartFA2.hxx; sourceTree = SOURCE_ROOT; };
-		DC3EE2D61417801800F9DA4A /* FBSurfaceGL.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceGL.cxx; path = ../common/FBSurfaceGL.cxx; sourceTree = SOURCE_ROOT; };
-		DC3EE2D71417801800F9DA4A /* FBSurfaceGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceGL.hxx; path = ../common/FBSurfaceGL.hxx; sourceTree = SOURCE_ROOT; };
 		DC3EE2D81417801800F9DA4A /* FBSurfaceTIA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceTIA.cxx; path = ../common/FBSurfaceTIA.cxx; sourceTree = SOURCE_ROOT; };
 		DC3EE2D91417801800F9DA4A /* FBSurfaceTIA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceTIA.hxx; path = ../common/FBSurfaceTIA.hxx; sourceTree = SOURCE_ROOT; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomAuditDialog.cxx; path = ../gui/RomAuditDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -978,8 +972,6 @@
 		DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Genesis.hxx; path = ../emucore/Genesis.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
-		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
-		DCD56D3B0B247DB40092F9F8 /* RectList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RectList.hxx; path = ../common/RectList.hxx; sourceTree = SOURCE_ROOT; };
 		DCD6FC5D11C281ED005DA767 /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = png.c; path = ../libpng/png.c; sourceTree = SOURCE_ROOT; };
 		DCD6FC5E11C281ED005DA767 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../libpng/png.h; sourceTree = SOURCE_ROOT; };
 		DCD6FC5F11C281ED005DA767 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = ../libpng/pngconf.h; sourceTree = SOURCE_ROOT; };
@@ -1276,14 +1268,12 @@
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DC79F81117A88D9E00288B91 /* Base.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
-				DC3EE2D61417801800F9DA4A /* FBSurfaceGL.cxx */,
-				DC3EE2D71417801800F9DA4A /* FBSurfaceGL.hxx */,
 				DC3EE2D81417801800F9DA4A /* FBSurfaceTIA.cxx */,
 				DC3EE2D91417801800F9DA4A /* FBSurfaceTIA.hxx */,
-				2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */,
-				2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */,
-				2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */,
-				2D733D62062893E7006265D9 /* FrameBufferSoft.hxx */,
+				DC368F4E18A2FB710084199C /* FBSurfaceUI.cxx */,
+				DC368F4F18A2FB710084199C /* FBSurfaceUI.hxx */,
+				DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */,
+				DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */,
 				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
@@ -1292,12 +1282,10 @@
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
-				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
-				DCD56D3B0B247DB40092F9F8 /* RectList.hxx */,
 				DCF467B20F93993B00B25D7A /* SharedPtr.hxx */,
 				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
-				2DDA34020665817D00CDD299 /* SoundSDL.cxx */,
-				2DDA34030665817D00CDD299 /* SoundSDL.hxx */,
+				DC368F5218A2FB710084199C /* SoundSDL2.cxx */,
+				DC368F5318A2FB710084199C /* SoundSDL2.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
 				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D69F138D4D7E00F05C5C /* StringList.hxx */,
@@ -1730,13 +1718,10 @@
 				2D9173EF09BA90380026E9FF /* Sound.hxx in Headers */,
 				2D9173F009BA90380026E9FF /* Switches.hxx in Headers */,
 				2D9173F109BA90380026E9FF /* TIA.hxx in Headers */,
-				2D9173F709BA90380026E9FF /* FrameBufferGL.hxx in Headers */,
-				2D9173F809BA90380026E9FF /* FrameBufferSoft.hxx in Headers */,
 				2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */,
 				2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
 				2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */,
-				2D9173FD09BA90380026E9FF /* SoundSDL.hxx in Headers */,
 				2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */,
 				2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */,
 				2D91740109BA90380026E9FF /* AudioDialog.hxx in Headers */,
@@ -1811,7 +1796,6 @@
 				DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */,
 				2D28DDE509DC2D9F00A17585 /* MenusEvents.h in Headers */,
 				DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */,
-				DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */,
 				DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */,
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
@@ -1871,7 +1855,6 @@
 				DC74D6A1138D4D7E00F05C5C /* StringList.hxx in Headers */,
 				DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */,
 				DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */,
-				DC3EE2DB1417801800F9DA4A /* FBSurfaceGL.hxx in Headers */,
 				DC3EE2DD1417801800F9DA4A /* FBSurfaceTIA.hxx in Headers */,
 				DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */,
 				DC8C1BB014B25DE7006440EE /* CompuMate.hxx in Headers */,
@@ -1946,6 +1929,9 @@
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
+				DC368F5518A2FB710084199C /* FBSurfaceUI.hxx in Headers */,
+				DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */,
+				DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2074,13 +2060,10 @@
 				2D91749709BA90380026E9FF /* Serializer.cxx in Sources */,
 				2D91749809BA90380026E9FF /* Switches.cxx in Sources */,
 				2D91749909BA90380026E9FF /* TIA.cxx in Sources */,
-				2D91749F09BA90380026E9FF /* FrameBufferGL.cxx in Sources */,
-				2D9174A009BA90380026E9FF /* FrameBufferSoft.cxx in Sources */,
 				2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */,
 				2D9174A209BA90380026E9FF /* FrameBuffer.cxx in Sources */,
 				2D9174A309BA90380026E9FF /* Settings.cxx in Sources */,
 				2D9174A409BA90380026E9FF /* SettingsMACOSX.cxx in Sources */,
-				2D9174A509BA90380026E9FF /* SoundSDL.cxx in Sources */,
 				2D9174A709BA90380026E9FF /* mainSDL.cxx in Sources */,
 				2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */,
 				2D9174A909BA90380026E9FF /* OSystemMACOSX.cxx in Sources */,
@@ -2150,7 +2133,6 @@
 				DC47455C09C34BFA00EDDA3A /* CheetahCheat.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
-				DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */,
 				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
@@ -2201,7 +2183,6 @@
 				DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */,
 				DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */,
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
-				DC3EE2DA1417801800F9DA4A /* FBSurfaceGL.cxx in Sources */,
 				DC3EE2DC1417801800F9DA4A /* FBSurfaceTIA.cxx in Sources */,
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
@@ -2264,6 +2245,9 @@
 				DCAACB12188D636F00A4D282 /* CartBFWidget.cxx in Sources */,
 				DCAACB14188D636F00A4D282 /* CartDFSCWidget.cxx in Sources */,
 				DCAACB16188D636F00A4D282 /* CartDFWidget.cxx in Sources */,
+				DC368F5418A2FB710084199C /* FBSurfaceUI.cxx in Sources */,
+				DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */,
+				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
