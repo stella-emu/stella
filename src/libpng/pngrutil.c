@@ -1,7 +1,7 @@
 
 /* pngrutil.c - utilities to read a PNG file
  *
- * Last changed in libpng 1.6.4 [September 14, 2013]
+ * Last changed in libpng 1.6.8 [December 19, 2013]
  * Copyright (c) 1998-2013 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
@@ -278,6 +278,10 @@ png_crc_error(png_structrp png_ptr)
       return (0);
 }
 
+#if defined(PNG_READ_iCCP_SUPPORTED) || defined(PNG_READ_iTXt_SUPPORTED) ||\
+    defined(PNG_READ_pCAL_SUPPORTED) || defined(PNG_READ_sCAL_SUPPORTED) ||\
+    defined(PNG_READ_sPLT_SUPPORTED) || defined(PNG_READ_tEXt_SUPPORTED) ||\
+    defined(PNG_READ_zTXt_SUPPORTED) || defined(PNG_SEQUENTIAL_READ_SUPPORTED)
 /* Manage the read buffer; this simply reallocates the buffer if it is not small
  * enough (or if it is not allocated).  The routine returns a pointer to the
  * buffer; if an error occurs and 'warn' is set the routine returns NULL, else
@@ -325,6 +329,7 @@ png_read_buffer(png_structrp png_ptr, png_alloc_size_t new_size, int warn)
 
    return buffer;
 }
+#endif /* PNG_READ_iCCP|iTXt|pCAL|sCAL|sPLT|tEXt|zTXt|SEQUENTIAL_READ */
 
 /* png_inflate_claim: claim the zstream for some nefarious purpose that involves
  * decompression.  Returns Z_OK on success, else a zlib error code.  It checks
@@ -2764,6 +2769,7 @@ png_handle_unknown(png_structrp png_ptr, png_inforp info_ptr,
 
    png_debug(1, "in png_handle_unknown");
 
+#ifdef PNG_READ_UNKNOWN_CHUNKS_SUPPORTED
    /* NOTE: this code is based on the code in libpng-1.4.12 except for fixing
     * the bug which meant that setting a non-default behavior for a specific
     * chunk would be ignored (the default was always used unless a user
@@ -2775,15 +2781,16 @@ png_handle_unknown(png_structrp png_ptr, png_inforp info_ptr,
     * This is just an optimization to avoid multiple calls to the lookup
     * function.
     */
-#  ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
-   keep = png_chunk_unknown_handling(png_ptr, png_ptr->chunk_name);
+#  ifndef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
+#     ifdef PNG_SET_UNKNOWN_CHUNKS_SUPPORTED
+         keep = png_chunk_unknown_handling(png_ptr, png_ptr->chunk_name);
+#     endif
 #  endif
 
    /* One of the following methods will read the chunk or skip it (at least one
     * of these is always defined because this is the only way to switch on
     * PNG_READ_UNKNOWN_CHUNKS_SUPPORTED)
     */
-#ifdef PNG_READ_UNKNOWN_CHUNKS_SUPPORTED
 #  ifdef PNG_READ_USER_CHUNKS_SUPPORTED
       /* The user callback takes precedence over the chunk keep value, but the
        * keep value is still required to validate a save of a critical chunk.
@@ -2891,7 +2898,7 @@ png_handle_unknown(png_structrp png_ptr, png_inforp info_ptr,
 
          png_crc_finish(png_ptr, length);
       }
-#  endif /* PNG_SAVE_UNKNOWN_CHUNKS_SUPPORTED */
+#  endif
 
 #  ifdef PNG_STORE_UNKNOWN_CHUNKS_SUPPORTED
       /* Now store the chunk in the chunk list if appropriate, and if the limits
@@ -2930,9 +2937,8 @@ png_handle_unknown(png_structrp png_ptr, png_inforp info_ptr,
          }
 #     endif
       }
-#  else /* no store support! */
+#  else /* no store support: the chunk must be handled by the user callback */
       PNG_UNUSED(info_ptr)
-#     error untested code (reading unknown chunks with no store support)
 #  endif
 
    /* Regardless of the error handling below the cached data (if any) can be
@@ -3870,7 +3876,6 @@ png_read_filter_row_paeth_multibyte_pixel(png_row_infop row_info, png_bytep row,
       if (pb < pa) pa = pb, a = b;
       if (pc < pa) a = c;
 
-      c = b;
       a += *row;
       *row++ = (png_byte)a;
    }
