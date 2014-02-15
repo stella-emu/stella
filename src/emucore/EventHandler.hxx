@@ -21,7 +21,6 @@
 #define EVENTHANDLER_HXX
 
 #include <map>
-#include <SDL.h>
 
 class Console;
 class OSystem;
@@ -51,6 +50,13 @@ enum JoyHat {
   EVENT_HATLEFT   = 2,
   EVENT_HATRIGHT  = 3,
   EVENT_HATCENTER = 4
+};
+enum JoyHatMask {
+  EVENT_HATUP_M     = 1<<0,
+  EVENT_HATDOWN_M   = 1<<1,
+  EVENT_HATLEFT_M   = 1<<2,
+  EVENT_HATRIGHT_M  = 1<<3,
+  EVENT_HATCENTER_M = 1<<4
 };
 
 enum EventMode {
@@ -109,13 +115,6 @@ class EventHandler
       Initialize state of this eventhandler.
     */
     void initialize();
-
-    /**
-      Set up any joysticks on the system.  This must be called *after* the
-      framebuffer has been created, since SDL requires the video to be
-      intialized before joysticks can be probed.
-    */
-    void setupJoysticks();
 
     /**
       Maps the given Stelladaptor/2600-daptor(s) to specified ports on a real 2600.
@@ -177,7 +176,7 @@ class EventHandler
 
     inline bool kbdAlt(int mod) const
     {
-  #ifndef MAC_OSX
+  #ifndef BSPF_MAC_OSX
       return (mod & KMOD_ALT);
   #else
       return (mod & KMOD_META);
@@ -221,11 +220,11 @@ class EventHandler
     Event::Type eventForKey(StellaKey key, EventMode mode) const
       { return myKeyTable[key][mode]; }
     Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const
-      { return myJoysticks[stick].axisTable[axis][(value > 0)][mode]; }
+      { return myJoysticks[stick]->axisTable[axis][(value > 0)][mode]; }
     Event::Type eventForJoyButton(int stick, int button, EventMode mode) const
-      { return myJoysticks[stick].btnTable[button][mode]; }
+      { return myJoysticks[stick]->btnTable[button][mode]; }
     Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const
-      { return myJoysticks[stick].hatTable[hat][value][mode]; }
+      { return myJoysticks[stick]->hatTable[hat][value][mode]; }
 
     Event::Type eventAtIndex(int idx, EventMode mode) const;
     string actionAtIndex(int idx, EventMode mode) const;
@@ -318,6 +317,82 @@ class EventHandler
     */
     void allowAllDirections(bool allow) { myAllowAllDirectionsFlag = allow; }
 
+  protected:
+    // Global OSystem object
+    OSystem* myOSystem;
+
+    /**
+      Methods which are called by derived classes to handle specific types
+      of input.
+    */
+    // TODO - adapt these to SDL2
+    void handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool state);
+    void handleMouseMotionEvent(int x, int y, int xrel, int yrel, int button);
+    void handleMouseButtonEvent(MouseButton b, int x, int y);
+    void handleJoyEvent(int stick, int button, uInt8 state);
+    void handleJoyAxisEvent(int stick, int axis, int value);
+    void handleJoyHatEvent(int stick, int hat, int value);
+
+    /**
+      Set up any joysticks on the system.
+    */
+    virtual void initializeJoysticks() = 0;
+
+    /**
+      Collects and dispatches any pending events.
+    */
+    virtual void pollEvent() = 0;
+
+    // An abstraction of joystick in Stella.
+    // A StellaJoystick holds its own event mapping information, space for
+    // which is dynamically allocated based on the actual number of buttons,
+    // axes, etc that the device contains.
+    // Specific backend class(es) will inherit from this class, and implement
+    // functionality specific to the device.
+    class StellaJoystick
+    {
+      friend class EventHandler;
+
+      public:
+        StellaJoystick();
+        virtual ~StellaJoystick();
+
+        string getMap() const;
+        bool setMap(const string& map);
+        void eraseMap(EventMode mode);
+        void eraseEvent(Event::Type event, EventMode mode);
+        string about() const;
+
+      protected:
+        void initialize(const string& desc, int axes, int buttons, int hats);
+
+      private:
+        enum JoyType {
+          JT_NONE               = 0,
+          JT_REGULAR            = 1,
+          JT_STELLADAPTOR_LEFT  = 2,
+          JT_STELLADAPTOR_RIGHT = 3,
+          JT_2600DAPTOR_LEFT    = 4,
+          JT_2600DAPTOR_RIGHT   = 5
+        };
+
+        JoyType type;
+        string name;
+        int numAxes, numButtons, numHats;
+        Event::Type (*axisTable)[2][kNumModes];
+        Event::Type (*btnTable)[kNumModes];
+        Event::Type (*hatTable)[4][kNumModes];
+        int* axisLastValue;
+
+      private:
+        void getValues(const string& list, IntArray& map);
+    };
+
+    /**
+      Add the given joystick to the list of sticks available to the handler.
+    */
+    void addJoystick(StellaJoystick* stick, int idx);
+
   private:
     enum {
       kComboSize          = 16,
@@ -338,7 +413,7 @@ class EventHandler
       The following methods take care of assigning action mappings.
     */
     void setActionMappings(EventMode mode);
-    void setSDLMappings();
+    void setKeyNames();
     void setKeymap();
     void setJoymap();
     void setDefaultKeymap(Event::Type, EventMode mode);
@@ -346,7 +421,6 @@ class EventHandler
     void saveKeyMapping();
     void saveJoyMapping();
     void saveComboMapping();
-    void setMouseAsPaddle(int paddle, const string& message);
 
     /**
       Tests if a given event should use continuous/analog values.
@@ -358,7 +432,7 @@ class EventHandler
 
     void setEventState(State state);
 
-    // Callback function invoked by the event-reset SDL Timer
+    // Callback function invoked by the event-reset timer
     static uInt32 resetEventsCallback(uInt32 interval, void* param);
 
   private:
@@ -369,14 +443,6 @@ class EventHandler
       char* key;
       bool allow_combo;
     };
-
-    struct JoyMouse {   // Used for joystick to mouse emulation
-      bool active;
-      int x, y, x_amt, y_amt, amt, val, old_val;
-    };
-
-    // Global OSystem object
-    OSystem* myOSystem;
 
     // Global Event object
     Event myEvent;
@@ -395,7 +461,7 @@ class EventHandler
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
 
     // Array of strings which correspond to the given StellaKey
-    string ourKBDKMapping[KBDK_LAST];
+    string ourKBDKNames[KBDK_LAST];
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
@@ -430,47 +496,7 @@ class EventHandler
     static const Event::Type SA_Button[2][4];
     static const Event::Type SA_Key[2][12];
 
-    // Thin wrapper holding all information about an SDL joystick in Stella.
-    // A StellaJoystick holds its own event mapping information, space for
-    // which is dynamically allocated based on the actual number of buttons,
-    // axes, etc that the device contains.
-    class StellaJoystick
-    {
-      public:
-        StellaJoystick();
-        virtual ~StellaJoystick();
-
-        string setStick(int i);
-        string getMap() const;
-        bool setMap(const string& map);
-        void eraseMap(EventMode mode);
-        void eraseEvent(Event::Type event, EventMode mode);
-        string about() const;
-
-      public:
-        enum JoyType {
-          JT_NONE               = 0,
-          JT_REGULAR            = 1,
-          JT_STELLADAPTOR_LEFT  = 2,
-          JT_STELLADAPTOR_RIGHT = 3,
-          JT_2600DAPTOR_LEFT    = 4,
-          JT_2600DAPTOR_RIGHT   = 5
-        };
-
-        JoyType type;
-        string name;
-        SDL_Joystick* stick;
-        int numAxes, numButtons, numHats;
-        Event::Type (*axisTable)[2][kNumModes];
-        Event::Type (*btnTable)[kNumModes];
-        Event::Type (*hatTable)[4][kNumModes];
-        int* axisLastValue;
-
-      private:
-        void getValues(const string& list, IntArray& map);
-    };
-    StellaJoystick* myJoysticks;
-    uInt32 myNumJoysticks;
+    Common::Array<StellaJoystick*> myJoysticks;
     map<string,string> myJoystickMap;
 };
 

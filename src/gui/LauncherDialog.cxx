@@ -134,7 +134,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add four buttons at the bottom
   xpos = 10;  ypos += myDir->getHeight() + 4;
-#ifndef MAC_OSX
+#ifndef BSPF_MAC_OSX
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                   "Select", kLoadROMCmd);
   wid.push_back(myStartButton);

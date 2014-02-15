@@ -96,7 +96,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 #define ADD_BIND(k,d) do { myKeyStr[i] = k; myDescStr[i] = d; i++; } while(0)
 #define ADD_TEXT(d) ADD_BIND("",d)
 #define ADD_LINE ADD_BIND("","")
-#ifdef MAC_OSX
+#ifdef BSPF_MAC_OSX
   #define ALT_ "Cmd"
 #else
   #define ALT_ "Alt"
@@ -107,7 +107,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   {
     case 1:
       title = "Common commands:";
-#ifndef MAC_OSX
+#ifndef BSPF_MAC_OSX
       ADD_BIND("Ctrl Q",    "Quit emulation");
 #else
       ADD_BIND("Cmd Q",     "Quit emulation");

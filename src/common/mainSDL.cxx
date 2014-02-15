@@ -21,6 +21,7 @@
 #include <cstdlib>
 
 #include "bspf.hxx"
+#include "MediaFactory.hxx"
 #include "Console.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
@@ -31,22 +32,6 @@
 #include "FSNode.hxx"
 #include "OSystem.hxx"
 #include "System.hxx"
-
-#if defined(BSPF_UNIX)
-  #include "SettingsUNIX.hxx"
-  #include "OSystemUNIX.hxx"
-#elif defined(BSPF_WINDOWS)
-  #include "SettingsWINDOWS.hxx"
-  #include "OSystemWINDOWS.hxx"
-#elif defined(BSPF_MAC_OSX)
-  #include "SettingsMACOSX.hxx"
-  #include "OSystemMACOSX.hxx"
-  extern "C" {
-    int stellaMain(int argc, char* argv[]);
-  }
-#else
-  #error Unsupported platform!
-#endif
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -59,6 +44,7 @@
 // Pointer to the main parent osystem object or the null pointer
 OSystem* theOSystem = (OSystem*) NULL;
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Does general Cleanup in case any operation failed (or at end of program)
 int Cleanup()
 {
@@ -74,9 +60,8 @@ int Cleanup()
   return 0;
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#if defined(MAC_OSX)
+#if defined(BSPF_MAC_OSX)
 int stellaMain(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
@@ -84,20 +69,8 @@ int main(int argc, char* argv[])
 {
   ios_base::sync_with_stdio(false);
 
-  // Create the parent OSystem object and settings
-#if defined(BSPF_UNIX)
-  theOSystem = new OSystemUNIX();
-  SettingsUNIX settings(theOSystem);
-#elif defined(BSPF_WINDOWS)
-  theOSystem = new OSystemWINDOWS();
-  SettingsWINDOWS settings(theOSystem);
-#elif defined(MAC_OSX)
-  theOSystem = new OSystemMACOSX();
-  SettingsMACOSX settings(theOSystem);
-#else
-  #error Unsupported platform!
-#endif
-
+  // Create the parent OSystem object
+  theOSystem = MediaFactory::createOSystem();
   theOSystem->loadConfig();
   theOSystem->logMessage("Loading config options ...", 2);
 

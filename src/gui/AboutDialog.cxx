@@ -41,7 +41,7 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 52 * fontWidth + 8;
+  _w = 55 * fontWidth + 8;
   _h = 14 * lineHeight + 20;
 
   // Add Previous, Next and Close buttons

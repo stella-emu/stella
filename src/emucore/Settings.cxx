@@ -37,9 +37,6 @@
 Settings::Settings(OSystem* osystem)
   : myOSystem(osystem)
 {
-  // Add this settings object to the OSystem
-  myOSystem->attach(this);
-
   // Add options that are common to all versions of Stella
   setInternal("video", "soft");
 

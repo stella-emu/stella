@@ -22,9 +22,21 @@
 
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#if defined(BSPF_UNIX)
+  #include "SettingsUNIX.hxx"
+  #include "OSystemUNIX.hxx"
+#elif defined(BSPF_WINDOWS)
+  #include "SettingsWINDOWS.hxx"
+  #include "OSystemWINDOWS.hxx"
+#elif defined(BSPF_MAC_OSX)
+  #include "SettingsMACOSX.hxx"
+  #include "OSystemMACOSX.hxx"
+#else
+  #error Unsupported platform!
+#endif
 
 #include "FrameBufferSDL2.hxx"
-
+#include "EventHandlerSDL2.hxx"
 #ifdef SOUND_SUPPORT
   #include "SoundSDL2.hxx"
 #else
@@ -32,9 +44,9 @@
 #endif
 
 /**
-  This class deals with the different framebuffer/sound implementations
-  for the various ports of Stella, and always returns a valid media object
-  based on the specific port and restrictions on that port.
+  This class deals with the different framebuffer/sound/event
+  implementations for the various ports of Stella, and always returns a
+  valid object based on the specific port and restrictions on that port.
 
   As of SDL2, this code is greatly simplified.  However, it remains here
   in case we ever have multiple backend implementations again (should
@@ -46,6 +58,32 @@
 class MediaFactory
 {
   public:
+    static OSystem* createOSystem()
+    {
+    #if defined(BSPF_UNIX)
+      return new OSystemUNIX();
+    #elif defined(BSPF_WINDOWS)
+      return new OSystemWINDOWS();
+    #elif defined(BSPF_MAC_OSX)
+      return new OSystemMACOSX();
+    #else
+      #error Unsupported platform for OSystem!
+    #endif
+    }
+
+    static Settings* createSettings(OSystem* osystem)
+    {
+    #if defined(BSPF_UNIX)
+      return new SettingsUNIX(osystem);
+    #elif defined(BSPF_WINDOWS)
+      return new SettingsWINDOWS(osystem);
+    #elif defined(BSPF_MAC_OSX)
+      return new SettingsMACOSX(osystem);
+    #else
+      #error Unsupported platform for Settings!
+    #endif
+    }
+
     static FrameBuffer* createVideo(OSystem* osystem)
     {
       return new FrameBufferSDL2(osystem);
@@ -59,6 +97,12 @@ class MediaFactory
       return new SoundNull(osystem);
     #endif
     }
+
+    static EventHandler* createEventHandler(OSystem* osystem)
+    {
+      return new EventHandlerSDL2(osystem);
+    }
+
 };
 
 #endif

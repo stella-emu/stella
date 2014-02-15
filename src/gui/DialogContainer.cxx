@@ -185,7 +185,7 @@ void DialogContainer::handleMouseMotionEvent(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 state)
+void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y)
 {
   if(myDialogStack.empty())
     return;

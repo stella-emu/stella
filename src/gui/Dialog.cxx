@@ -658,7 +658,7 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                       font.getStringWidth(okText))) + 15;
   int buttonHeight = font.getLineHeight() + 4;
   ButtonWidget* b;
-#ifndef MAC_OSX
+#ifndef BSPF_MAC_OSX
   b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
                        buttonWidth, buttonHeight,
                        okText == "" ? "OK" : okText, kOKCmd);

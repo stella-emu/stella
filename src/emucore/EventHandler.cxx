@@ -18,7 +18,6 @@
 //============================================================================
 
 #include <sstream>
-#include <set>
 #include <map>
 #include <SDL.h>
 
@@ -63,17 +62,12 @@ EventHandler::EventHandler(OSystem* osystem)
     myState(S_NONE),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
-    mySkipMouseMotion(true),
-    myJoysticks(NULL),
-    myNumJoysticks(0)
+    mySkipMouseMotion(true)
 {
   // Erase the key mapping array
   for(int i = 0; i < KBDK_LAST; ++i)
-  {
-    ourKBDKMapping[i] = "";
     for(int m = 0; m < kNumModes; ++m)
       myKeyTable[i][m] = Event::NoType;
-  }
 
   // Erase the 'combo' array
   for(int i = 0; i < kComboSize; ++i)
@@ -93,7 +87,8 @@ EventHandler::~EventHandler()
       free(ourMenuActionList[i].key);
 
   delete myMouseControl;
-  delete[] myJoysticks;
+  for(int i = 0; i < myJoysticks.size(); ++i)
+    delete myJoysticks[i];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,7 +96,7 @@ void EventHandler::initialize()
 {
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
-  setSDLMappings();
+  setKeyNames();
   setKeymap();
   setComboMap();
   setActionMappings(kEmulationMode);
@@ -121,6 +116,26 @@ void EventHandler::initialize()
 
   // Integer to string conversions (for HEX) use upper or lower-case
   Common::Base::setHexUppercase(myOSystem->settings().getBool("dbg.uhex"));
+
+  // Joystick stuff
+#ifdef JOYSTICK_SUPPORT
+  initializeJoysticks();
+
+  // Map the stelladaptors we've found according to the specified ports
+  mapStelladaptors(myOSystem->settings().getString("saport"));
+
+  setJoymap();
+  setActionMappings(kEmulationMode);
+  setActionMappings(kMenuMode);
+
+  ostringstream buf;
+  buf << "Joystick devices found:" << endl;
+  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
+    buf << "  " << i << ": " << myJoysticks[i]->about() << endl << endl;
+  myOSystem->logMessage(buf.str(), 1);
+#else
+  myOSystem->logMessage("Joystick support disabled.", 1);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,97 +154,49 @@ void EventHandler::reset(State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setupJoysticks()
+void EventHandler::addJoystick(StellaJoystick* stick, int idx)
 {
 #ifdef JOYSTICK_SUPPORT
-  // Initialize the joystick subsystem
-  if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
-  {
-    myOSystem->logMessage("No joysticks present.", 1);
+  myJoysticks.insert_at(idx, stick);
+
+  // Skip if we couldn't open it for any reason
+  if(stick->name == "None")
     return;
-  }
 
-  // We need unique names for mappable devices
-  set<string> joyNames;
-
-  // Keep track of how many Stelladaptors we've found
-  int saCount = 0;
-
-  // Open all SDL joysticks (only the first 2 Stelladaptor devices are used)
-  if((myNumJoysticks = SDL_NumJoysticks()) > 0)
-    myJoysticks = new StellaJoystick[myNumJoysticks];
-  for(uInt32 i = 0; i < myNumJoysticks; ++i)
+  // Figure out what type of joystick this is
+  if(stick->name.find("2600-daptor", 0) != string::npos)
   {
-    string name = myJoysticks[i].setStick(i);
-
-    // Skip if we couldn't open it for any reason
-    if(name == "None")
-      continue;
-
-    // Figure out what type of joystick this is
-    if(name.find("2600-daptor", 0) != string::npos)
+    // 2600-daptorII devices have 3 axes and 12 buttons, and the value of the z-axis
+    // determines how those 12 buttons are used (not all buttons are used in all modes)
+    if(stick->numAxes == 3)
     {
-      saCount++;
-      if(saCount > 2)  // Ignore more than 2 2600-daptors
-      {
-        myJoysticks[i].type = StellaJoystick::JT_NONE;
-        continue;
-      }
-
-      // 2600-daptorII devices have 3 axes and 12 buttons, and the value of the z-axis
-      // determines how those 12 buttons are used (not all buttons are used in all modes)
-      if(myJoysticks[i].numAxes == 3)
-      {
-        // TODO - stubbed out for now, until we find a way to reliably get info
-        //        from the Z axis
-        myJoysticks[i].name = "2600-daptor II";
-      }
-      else
-        myJoysticks[i].name = "2600-daptor";
-    }
-    else if(name.find("Stelladaptor", 0) != string::npos)
-    {
-      saCount++;
-      if(saCount > 2)  // Ignore more than 2 Stelladaptors
-        continue;
-      else             // Type will be set by mapStelladaptors()
-        myJoysticks[i].name = "Stelladaptor";
+      // TODO - stubbed out for now, until we find a way to reliably get info
+      //        from the Z axis
+      stick->name = "2600-daptor II";
     }
     else
-    {
-      // Names must be unique
-      ostringstream namebuf;
-      pair<set<string>::iterator,bool> ret;
-      string actualName = name;
-      int j = 2;
-      do {
-        ret = joyNames.insert(actualName);
-        namebuf.str("");
-        namebuf << name << " " << j++;
-        actualName = namebuf.str();
-      }
-      while(ret.second == false);
-      name = *ret.first;
-
-      myJoysticks[i].name = name;
-      myJoysticks[i].type = StellaJoystick::JT_REGULAR;
-    }
+      stick->name = "2600-daptor";
   }
+  else if(stick->name.find("Stelladaptor", 0) != string::npos)
+  {
+    stick->name = "Stelladaptor";
+  }
+  else
+  {
+    // We need unique names for mappable devices
+    int count = 0;
+    for(uInt32 i = 0; i < myJoysticks.size(); ++i)
+      if(BSPF_startsWithIgnoreCase(myJoysticks[i]->name, stick->name))
+        ++count;
 
-  // Map the stelladaptors we've found according to the specified ports
-  mapStelladaptors(myOSystem->settings().getString("saport"));
-
-  setJoymap();
-  setActionMappings(kEmulationMode);
-  setActionMappings(kMenuMode);
-
-  ostringstream buf;
-  buf << "Joystick devices found:" << endl;
-  for(uInt32 i = 0; i < myNumJoysticks; ++i)
-    buf << "  " << i << ": " << myJoysticks[i].about() << endl << endl;
-  myOSystem->logMessage(buf.str(), 1);
-#else
-  myOSystem->logMessage("No joysticks present.", 1);
+    if(count > 1)
+    {
+      ostringstream name;
+      name << stick->name << " " << count;
+      stick->name = name.str();
+    }
+    stick->type = StellaJoystick::JT_REGULAR;
+  }
 #endif
 }
 
@@ -253,34 +220,34 @@ void EventHandler::mapStelladaptors(const string& saport)
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
-  for(uInt32 i = 0; i < myNumJoysticks; i++)
+  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
   {
-    if(BSPF_startsWithIgnoreCase(myJoysticks[i].name, "Stelladaptor"))
+    if(BSPF_startsWithIgnoreCase(myJoysticks[i]->name, "Stelladaptor"))
     {
       saCount++;
       if(saOrder[saCount-1] == 1)
       {
-        myJoysticks[i].name += " (emulates left joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_LEFT;
+        myJoysticks[i]->name += " (emulates left joystick port)";
+        myJoysticks[i]->type = StellaJoystick::JT_STELLADAPTOR_LEFT;
       }
       else if(saOrder[saCount-1] == 2)
       {
-        myJoysticks[i].name += " (emulates right joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
+        myJoysticks[i]->name += " (emulates right joystick port)";
+        myJoysticks[i]->type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
       }
     }
-    else if(BSPF_startsWithIgnoreCase(myJoysticks[i].name, "2600-daptor"))
+    else if(BSPF_startsWithIgnoreCase(myJoysticks[i]->name, "2600-daptor"))
     {
       saCount++;
       if(saOrder[saCount-1] == 1)
       {
-        myJoysticks[i].name += " (emulates left joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_LEFT;
+        myJoysticks[i]->name += " (emulates left joystick port)";
+        myJoysticks[i]->type = StellaJoystick::JT_2600DAPTOR_LEFT;
       }
       else if(saOrder[saCount-1] == 2)
       {
-        myJoysticks[i].name += " (emulates right joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_RIGHT;
+        myJoysticks[i]->name += " (emulates right joystick port)";
+        myJoysticks[i]->type = StellaJoystick::JT_2600DAPTOR_RIGHT;
       }
     }
   }
@@ -320,644 +287,8 @@ void EventHandler::toggleSAPortOrder()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt64 time)
 {
-  // Synthesize events for platform-specific hardware
-  myOSystem->pollEvent();
-
-  // Check for an event
-  SDL_Event event;
-  while(SDL_PollEvent(&event))
-  {
-    switch(event.type)
-    {
-      // keyboard events
-      case SDL_KEYUP:
-      case SDL_KEYDOWN:
-      {
-        StellaKey key  = (StellaKey)event.key.keysym.sym;
-        StellaMod mod  = event.key.keysym.mod;
-        bool state = event.key.type == SDL_KEYDOWN;
-        bool handled = true;
-
-        // Immediately store the key state
-        myEvent.setKey(key, state);
-
-        // An attempt to speed up event processing
-        // All SDL-specific event actions are accessed by either
-        // Control or Alt/Cmd keys.  So we quickly check for those.
-        if(kbdAlt(mod) && state)
-        {
-      #ifdef MAC_OSX
-          // These keys work in all states
-          if(key == KBDK_q)
-          {
-            handleEvent(Event::Quit, 1);
-          }
-          else
-      #endif
-          if(key == KBDK_RETURN)
-          {
-            myOSystem->frameBuffer().toggleFullscreen();
-          }
-          // These only work when in emulation mode
-          else if(myState == S_EMULATE)
-          {
-            switch(key)
-            {
-              case KBDK_EQUALS:
-                myOSystem->frameBuffer().changeVidMode(+1);
-                break;
-
-              case KBDK_MINUS:
-                myOSystem->frameBuffer().changeVidMode(-1);
-                break;
-
-              case KBDK_LEFTBRACKET:
-                myOSystem->sound().adjustVolume(-1);
-                break;
-
-              case KBDK_RIGHTBRACKET:
-                myOSystem->sound().adjustVolume(+1);
-                break;
-
-              case KBDK_PAGEUP:    // Alt-PageUp increases YStart
-                myOSystem->console().changeYStart(+1);
-                break;
-
-              case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
-                myOSystem->console().changeYStart(-1);
-                break;
-
-              case KBDK_1:  // Alt-1 turns off NTSC filtering
-                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_OFF);
-                break;
-
-              case KBDK_2:  // Alt-2 turns on 'composite' NTSC filtering
-                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_COMPOSITE);
-                break;
-
-              case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
-                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_SVIDEO);
-                break;
-
-              case KBDK_4:  // Alt-4 turns on 'rgb' NTSC filtering
-                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_RGB);
-                break;
-
-              case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering
-                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_BAD);
-                break;
-
-              case KBDK_6:  // Alt-6 turns on 'custom' NTSC filtering
-                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_CUSTOM);
-                break;
-
-              case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
-                if(mod & KMOD_SHIFT)
-                  myOSystem->frameBuffer().setScanlineIntensity(-5);
-                else
-                  myOSystem->frameBuffer().setScanlineIntensity(+5);
-                break;
-
-              case KBDK_8:  // Alt-8 turns toggles scanline interpolation
-                myOSystem->frameBuffer().toggleScanlineInterpolation();
-                break;
-
-              case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
-                if(myOSystem->frameBuffer().ntscEnabled())
-                {
-                  if(mod & KMOD_SHIFT)
-                    myOSystem->frameBuffer().showMessage(
-                      myOSystem->frameBuffer().ntsc().setPreviousAdjustable());
-                  else
-                    myOSystem->frameBuffer().showMessage(
-                      myOSystem->frameBuffer().ntsc().setNextAdjustable());
-                }
-                break;
-
-              case KBDK_0:  // Alt-0 changes custom adjustables for NTSC filtering
-                if(myOSystem->frameBuffer().ntscEnabled())
-                {
-                  if(mod & KMOD_SHIFT)
-                    myOSystem->frameBuffer().showMessage(
-                      myOSystem->frameBuffer().ntsc().decreaseAdjustable());
-                  else
-                    myOSystem->frameBuffer().showMessage(
-                      myOSystem->frameBuffer().ntsc().increaseAdjustable());
-                }
-                break;
-
-              case KBDK_z:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().toggleP0Collision();
-                else
-                  myOSystem->console().toggleP0Bit();
-                break;
-
-              case KBDK_x:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().toggleP1Collision();
-                else
-                  myOSystem->console().toggleP1Bit();
-                break;
-
-              case KBDK_c:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().toggleM0Collision();
-                else
-                  myOSystem->console().toggleM0Bit();
-                break;
-
-              case KBDK_v:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().toggleM1Collision();
-                else
-                  myOSystem->console().toggleM1Bit();
-                break;
-
-              case KBDK_b:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().toggleBLCollision();
-                else
-                  myOSystem->console().toggleBLBit();
-                break;
-
-              case KBDK_n:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().togglePFCollision();
-                else
-                  myOSystem->console().togglePFBit();
-                break;
-
-              case KBDK_m:
-                myOSystem->console().toggleHMOVE();
-                break;
-
-              case KBDK_COMMA:
-                myOSystem->console().toggleFixedColors();
-                break;
-
-              case KBDK_PERIOD:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().toggleCollisions();
-                else
-                  myOSystem->console().toggleBits();
-                break;
-
-              case KBDK_p:  // Alt-p toggles phosphor effect
-                myOSystem->console().togglePhosphor();
-                break;
-
-              case KBDK_l:
-                myOSystem->frameBuffer().toggleFrameStats();
-                break;
-
-              case KBDK_s:
-                if(myContSnapshotInterval == 0)
-                {
-                  ostringstream buf;
-                  uInt32 interval = myOSystem->settings().getInt("ssinterval");
-                  buf << "Enabling shotshots in " << interval << " second intervals";
-                  myOSystem->frameBuffer().showMessage(buf.str());
-                  setContinuousSnapshots(interval);
-                }
-                else
-                {
-                  ostringstream buf;
-                  buf << "Disabling snapshots, generated "
-                      << (myContSnapshotCounter / myContSnapshotInterval)
-                      << " files";
-                  myOSystem->frameBuffer().showMessage(buf.str());
-                  setContinuousSnapshots(0);
-                }
-                break;
-#if 0
-// these will be removed when a UI is added for event recording
-              case KBDK_e:  // Alt-e starts/stops event recording
-                if(myOSystem->state().toggleRecordMode())
-                  myOSystem->frameBuffer().showMessage("Recording started");
-                else
-                  myOSystem->frameBuffer().showMessage("Recording stopped");
-                break;
-
-              case KBDK_r:  // Alt-r starts/stops rewind mode
-                if(myOSystem->state().toggleRewindMode())
-                  myOSystem->frameBuffer().showMessage("Rewind mode started");
-                else
-                  myOSystem->frameBuffer().showMessage("Rewind mode stopped");
-                break;
-/*
-              case KBDK_l:  // Alt-l loads a recording
-                if(myEventStreamer->loadRecording())
-                  myOSystem->frameBuffer().showMessage("Playing recording");
-                else
-                  myOSystem->frameBuffer().showMessage("Playing recording error");
-                return;
-                break;
-*/
-////////////////////////////////////////////////////////////////////////
-#endif
-              default:
-                handled = false;
-                break;
-            }
-          }
-          else
-            handled = false;
-        }
-        else if(kbdControl(mod) && state && myUseCtrlKeyFlag)
-        {
-          // These keys work in all states
-          if(key == KBDK_q)
-          {
-            handleEvent(Event::Quit, 1);
-          }
-          // These only work when in emulation mode
-          else if(myState == S_EMULATE)
-          {
-            switch(key)
-            {
-              case KBDK_0:  // Ctrl-0 switches between mouse control modes
-                if(myMouseControl)
-                  myOSystem->frameBuffer().showMessage(myMouseControl->next());
-                break;
-
-              case KBDK_1:  // Ctrl-1 swaps Stelladaptor/2600-daptor ports
-                toggleSAPortOrder();
-                break;
-
-              case KBDK_f:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
-                myOSystem->console().toggleFormat(mod & KMOD_SHIFT ? -1 : 1);
-                break;
-
-              case KBDK_g:  // Ctrl-g (un)grabs mouse
-                if(!myOSystem->frameBuffer().fullScreen())
-                  myOSystem->frameBuffer().toggleGrabMouse();
-                break;
-
-              case KBDK_l:  // Ctrl-l toggles PAL color-loss effect
-                myOSystem->console().toggleColorLoss();
-                break;
-
-              case KBDK_p:  // Ctrl-p toggles different palettes
-                myOSystem->console().togglePalette();
-                break;
-
-              case KBDK_r:  // Ctrl-r reloads the currently loaded ROM
-                myOSystem->reloadConsole();
-                break;
-
-              case KBDK_PAGEUP:    // Ctrl-PageUp increases Height
-                myOSystem->console().changeHeight(+1);
-                break;
-
-              case KBDK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-                myOSystem->console().changeHeight(-1);
-                break;
-
-              case KBDK_s:         // Ctrl-s saves properties to a file
-              {
-                string filename = myOSystem->baseDir() +
-                    myOSystem->console().properties().get(Cartridge_Name) + ".pro";
-                ofstream out(filename.c_str(), ios::out);
-                if(out)
-                {
-                  myOSystem->console().properties().save(out);
-                  out.close();
-                  myOSystem->frameBuffer().showMessage("Properties saved");
-                }
-                else
-                  myOSystem->frameBuffer().showMessage("Error saving properties");
-                break;
-              }
-
-              default:
-                handled = false;
-                break;
-            }
-          }
-          else
-            handled = false;
-        }
-        else
-          handled = false;
-
-        // Don't pass the key on if we've already taken care of it
-        if(handled) break;
-
-        // Handle keys which switch eventhandler state
-        // Arrange the logic to take advantage of short-circuit evaluation
-        if(!(kbdControl(mod) || kbdShift(mod) || kbdAlt(mod)) &&
-            state && eventStateChange(myKeyTable[key][kEmulationMode]))
-          return;
-
-        // Otherwise, let the event handler deal with it
-        if(myState == S_EMULATE)
-          handleEvent(myKeyTable[key][kEmulationMode], state);
-        else if(myOverlay != NULL)
-          myOverlay->handleKeyEvent(key, mod, event.key.keysym.unicode & 0x7f, state);
-
-        break;  // SDL_KEYUP, SDL_KEYDOWN
-      }
-
-      case SDL_MOUSEMOTION:
-        // Determine which mode we're in, then send the event to the appropriate place
-        if(myState == S_EMULATE)
-        {
-          if(!mySkipMouseMotion)
-          {
-            myEvent.set(Event::MouseAxisXValue, event.motion.xrel);
-            myEvent.set(Event::MouseAxisYValue, event.motion.yrel);
-          }
-          mySkipMouseMotion = false;
-        }
-        else if(myOverlay)
-          myOverlay->handleMouseMotionEvent(event.motion.x, event.motion.y, 0);
-
-        break;  // SDL_MOUSEMOTION
-
-      case SDL_MOUSEBUTTONUP:
-      case SDL_MOUSEBUTTONDOWN:
-      {
-        uInt8 state = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
-
-        // Determine which mode we're in, then send the event to the appropriate place
-        if(myState == S_EMULATE)
-        {
-          switch(event.button.button)
-          {
-            case SDL_BUTTON_LEFT:
-              myEvent.set(Event::MouseButtonLeftValue, state);
-              break;
-            case SDL_BUTTON_RIGHT:
-              myEvent.set(Event::MouseButtonRightValue, state);
-              break;
-            default:
-              break;
-          }
-        }
-        else if(myOverlay)
-        {
-          Int32 x = event.button.x, y = event.button.y;
-
-          switch(event.button.button)
-          {
-            case SDL_BUTTON_LEFT:
-              myOverlay->handleMouseButtonEvent(
-                  state ? EVENT_LBUTTONDOWN : EVENT_LBUTTONUP, x, y, state);
-              break;
-            case SDL_BUTTON_RIGHT:
-              myOverlay->handleMouseButtonEvent(
-                  state ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP, x, y, state);
-              break;
-            case SDL_BUTTON_WHEELDOWN:
-              if(state)
-                myOverlay->handleMouseButtonEvent(EVENT_WHEELDOWN, x, y, 1);
-              break;
-            case SDL_BUTTON_WHEELUP:
-              if(state)
-                myOverlay->handleMouseButtonEvent(EVENT_WHEELUP, x, y, 1);
-              break;
-            default:
-              break;
-          }
-        }
-        break;  // SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN
-      }
-
-      case SDL_ACTIVEEVENT:
-        if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
-          if(myState == S_EMULATE) enterMenuMode(S_MENU);
-        break; // SDL_ACTIVEEVENT
-
-      case SDL_QUIT:
-        handleEvent(Event::Quit, 1);
-        break;  // SDL_QUIT
-
-      case SDL_VIDEOEXPOSE:
-        myOSystem->frameBuffer().refresh();
-        break;  // SDL_VIDEOEXPOSE
-
-#ifdef JOYSTICK_SUPPORT
-      case SDL_JOYBUTTONUP:
-      case SDL_JOYBUTTONDOWN:
-      {
-        if(event.jbutton.which >= myNumJoysticks)
-          break;
-
-        // Stelladaptors handle buttons differently than regular joysticks
-        const StellaJoystick& joy = myJoysticks[event.jbutton.which];
-        int button = event.jbutton.button;
-        int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
-
-        switch(joy.type)
-        {
-          case StellaJoystick::JT_REGULAR:
-            // Handle buttons which switch eventhandler state
-            if(state && eventStateChange(joy.btnTable[button][kEmulationMode]))
-              return;
-
-            // Determine which mode we're in, then send the event to the appropriate place
-            if(myState == S_EMULATE)
-              handleEvent(joy.btnTable[button][kEmulationMode], state);
-            else if(myOverlay != NULL)
-              myOverlay->handleJoyEvent(event.jbutton.which, button, state);
-            break;  // Regular button
-
-          // These events don't have to pass through handleEvent, since
-          // they can never be remapped
-          case StellaJoystick::JT_STELLADAPTOR_LEFT:
-          case StellaJoystick::JT_STELLADAPTOR_RIGHT:
-            // The 'type-2' here refers to the fact that 'StellaJoystick::JT_STELLADAPTOR_LEFT'
-            // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
-            // enum; subtracting two gives us Controller 0 and 1
-            if(button < 2) myEvent.set(SA_Button[joy.type-2][button], state);
-            break;  // Stelladaptor button
-          case StellaJoystick::JT_2600DAPTOR_LEFT:
-          case StellaJoystick::JT_2600DAPTOR_RIGHT:
-            // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
-            // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
-            // enum; subtracting four gives us Controller 0 and 1
-            if(myState == S_EMULATE)
-            {
-              switch(myOSystem->console().controller(Controller::Left).type())
-              {
-                case Controller::Keyboard:
-                  if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
-                  break;
-                default:
-                  if(button < 4) myEvent.set(SA_Button[joy.type-4][button], state);
-              }
-              switch(myOSystem->console().controller(Controller::Right).type())
-              {
-                case Controller::Keyboard:
-                  if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
-                  break;
-                default:
-                  if(button < 4) myEvent.set(SA_Button[joy.type-4][button], state);
-              }
-            }
-            break;  // 2600DAPTOR button
-          default:
-            break;
-        }
-        break;  // SDL_JOYBUTTONUP, SDL_JOYBUTTONDOWN
-      }  
-
-      case SDL_JOYAXISMOTION:
-      {
-        if(event.jaxis.which >= myNumJoysticks)
-          break;
-
-        // Stelladaptors handle axis differently than regular joysticks
-        const StellaJoystick& joy = myJoysticks[event.jaxis.which];
-        int type = myJoysticks[event.jaxis.which].type;
-        int axis  = event.jaxis.axis;
-        int value = event.jaxis.value;
-
-        switch(type)
-        {
-          case StellaJoystick::JT_REGULAR:
-            if(myState == S_EMULATE)
-            {
-              // Every axis event has two associated values, negative and positive
-              Event::Type eventAxisNeg = joy.axisTable[axis][0][kEmulationMode];
-              Event::Type eventAxisPos = joy.axisTable[axis][1][kEmulationMode];
-
-              // Check for analog events, which are handled differently
-              // We'll pass them off as Stelladaptor events, and let the controllers
-              // handle it
-              switch((int)eventAxisNeg)
-              {
-                case Event::PaddleZeroAnalog:
-                  myEvent.set(Event::SALeftAxis0Value, value);
-                  break;
-                case Event::PaddleOneAnalog:
-                  myEvent.set(Event::SALeftAxis1Value, value);
-                  break;
-                case Event::PaddleTwoAnalog:
-                  myEvent.set(Event::SARightAxis0Value, value);
-                  break;
-                case Event::PaddleThreeAnalog:
-                  myEvent.set(Event::SARightAxis1Value, value);
-                  break;
-                default:
-                {
-                  // Otherwise, we know the event is digital
-                  if(value > Joystick::deadzone())
-                    handleEvent(eventAxisPos, 1);
-                  else if(value < -Joystick::deadzone())
-                    handleEvent(eventAxisNeg, 1);
-                  else
-                  {
-                    // Treat any deadzone value as zero
-                    value = 0;
-
-                    // Now filter out consecutive, similar values
-                    // (only pass on the event if the state has changed)
-                    if(joy.axisLastValue[axis] != value)
-                    {
-                      // Turn off both events, since we don't know exactly which one
-                      // was previously activated.
-                      handleEvent(eventAxisNeg, 0);
-                      handleEvent(eventAxisPos, 0);
-                    }
-                  }
-                  joy.axisLastValue[axis] = value;
-                  break;
-                }
-              }
-            }
-            else if(myOverlay != NULL)
-            {
-              // First, clamp the values to simulate digital input
-              // (the only thing that the underlying code understands)
-              if(value > Joystick::deadzone())
-                value = 32000;
-              else if(value < -Joystick::deadzone())
-                value = -32000;
-              else
-                value = 0;
-
-              // Now filter out consecutive, similar values
-              // (only pass on the event if the state has changed)
-              if(value != joy.axisLastValue[axis])
-              {
-                myOverlay->handleJoyAxisEvent(event.jaxis.which, axis, value);
-                joy.axisLastValue[axis] = value;
-              }
-            }
-            break;  // Regular joystick axis
-
-          // Since the various controller classes deal with Stelladaptor
-          // devices differently, we send the raw X and Y axis data directly,
-          // and let the controller handle it
-          // These events don't have to pass through handleEvent, since
-          // they can never be remapped
-          case StellaJoystick::JT_STELLADAPTOR_LEFT:
-          case StellaJoystick::JT_STELLADAPTOR_RIGHT:
-            // The 'type-2' here refers to the fact that 'StellaJoystick::JT_STELLADAPTOR_LEFT'
-            // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
-            // enum; subtracting two gives us Controller 0 and 1
-            if(axis < 2)
-              myEvent.set(SA_Axis[type-2][axis], value);
-            break;  // Stelladaptor axis
-          case StellaJoystick::JT_2600DAPTOR_LEFT:
-          case StellaJoystick::JT_2600DAPTOR_RIGHT:
-            // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
-            // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
-            // enum; subtracting four gives us Controller 0 and 1
-            if(axis < 2)
-              myEvent.set(SA_Axis[type-4][axis], value);
-            break;  // 26000daptor axis
-        }
-        break;  // SDL_JOYAXISMOTION
-      }
-
-      case SDL_JOYHATMOTION:
-      {
-        if(event.jhat.which >= myNumJoysticks)
-          break;
-
-        const StellaJoystick& joy = myJoysticks[event.jhat.which];
-        int stick = event.jhat.which;
-        int hat   = event.jhat.hat;
-        int value = event.jhat.value;
-
-        // Preprocess all hat events, converting to Stella JoyHat type
-        // Generate multiple equivalent hat events representing combined direction
-        // when we get a diagonal hat event
-        if(myState == S_EMULATE)
-        {
-          handleEvent(joy.hatTable[hat][EVENT_HATUP][kEmulationMode],
-                      value & SDL_HAT_UP);
-          handleEvent(joy.hatTable[hat][EVENT_HATRIGHT][kEmulationMode],
-                      value & SDL_HAT_RIGHT);
-          handleEvent(joy.hatTable[hat][EVENT_HATDOWN][kEmulationMode],
-                      value & SDL_HAT_DOWN);
-          handleEvent(joy.hatTable[hat][EVENT_HATLEFT][kEmulationMode],
-                      value & SDL_HAT_LEFT);
-        }
-        else if(myOverlay != NULL)
-        {
-          if(value == SDL_HAT_CENTERED)
-            myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
-          else
-          {
-            if(value & SDL_HAT_UP)
-              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATUP);
-            if(value & SDL_HAT_RIGHT)
-              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATRIGHT); 
-            if(value & SDL_HAT_DOWN)
-              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
-            if(value & SDL_HAT_LEFT)
-              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
-          }
-        }
-        break;  // SDL_JOYHATMOTION
-      }
-#endif  // JOYSTICK_SUPPORT
-    }
-  }
+  // Process events from the underlying hardware
+  pollEvent();
 
   // Update controllers and console switches, and in general all other things
   // related to emulation
@@ -999,6 +330,558 @@ void EventHandler::poll(uInt64 time)
   // in the previous ::update() methods, they're now invalid
   myEvent.set(Event::MouseAxisXValue, 0);
   myEvent.set(Event::MouseAxisYValue, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool state)
+{
+  bool handled = true;
+
+  // Immediately store the key state
+  myEvent.setKey(key, state);
+
+  // An attempt to speed up event processing; we quickly check for
+  // Control or Alt/Cmd combos first
+  if(kbdAlt(mod) && state)
+  {
+#ifdef BSPF_MAC_OSX
+    // These keys work in all states
+    if(key == KBDK_q)
+    {
+      handleEvent(Event::Quit, 1);
+    }
+    else
+#endif
+    if(key == KBDK_RETURN)
+    {
+      myOSystem->frameBuffer().toggleFullscreen();
+    }
+    // These only work when in emulation mode
+    else if(myState == S_EMULATE)
+    {
+      switch(key)
+      {
+        case KBDK_EQUALS:
+          myOSystem->frameBuffer().changeVidMode(+1);
+          break;
+
+        case KBDK_MINUS:
+          myOSystem->frameBuffer().changeVidMode(-1);
+          break;
+
+        case KBDK_LEFTBRACKET:
+          myOSystem->sound().adjustVolume(-1);
+          break;
+
+        case KBDK_RIGHTBRACKET:
+          myOSystem->sound().adjustVolume(+1);
+          break;
+
+        case KBDK_PAGEUP:    // Alt-PageUp increases YStart
+          myOSystem->console().changeYStart(+1);
+          break;
+
+        case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
+          myOSystem->console().changeYStart(-1);
+          break;
+
+        case KBDK_1:  // Alt-1 turns off NTSC filtering
+          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_OFF);
+          break;
+
+        case KBDK_2:  // Alt-2 turns on 'composite' NTSC filtering
+          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_COMPOSITE);
+          break;
+
+        case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
+          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_SVIDEO);
+          break;
+
+        case KBDK_4:  // Alt-4 turns on 'rgb' NTSC filtering
+          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_RGB);
+          break;
+
+        case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering
+          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_BAD);
+          break;
+
+        case KBDK_6:  // Alt-6 turns on 'custom' NTSC filtering
+          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_CUSTOM);
+          break;
+
+        case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
+          if(mod & KMOD_SHIFT)
+            myOSystem->frameBuffer().setScanlineIntensity(-5);
+          else
+            myOSystem->frameBuffer().setScanlineIntensity(+5);
+          break;
+
+        case KBDK_8:  // Alt-8 turns toggles scanline interpolation
+          myOSystem->frameBuffer().toggleScanlineInterpolation();
+          break;
+
+        case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
+          if(myOSystem->frameBuffer().ntscEnabled())
+          {
+            if(mod & KMOD_SHIFT)
+              myOSystem->frameBuffer().showMessage(
+                  myOSystem->frameBuffer().ntsc().setPreviousAdjustable());
+            else
+              myOSystem->frameBuffer().showMessage(
+                  myOSystem->frameBuffer().ntsc().setNextAdjustable());
+          }
+          break;
+
+        case KBDK_0:  // Alt-0 changes custom adjustables for NTSC filtering
+          if(myOSystem->frameBuffer().ntscEnabled())
+          {
+            if(mod & KMOD_SHIFT)
+              myOSystem->frameBuffer().showMessage(
+                  myOSystem->frameBuffer().ntsc().decreaseAdjustable());
+            else
+              myOSystem->frameBuffer().showMessage(
+                  myOSystem->frameBuffer().ntsc().increaseAdjustable());
+          }
+          break;
+
+        case KBDK_z:
+          if(mod & KMOD_SHIFT)
+            myOSystem->console().toggleP0Collision();
+          else
+            myOSystem->console().toggleP0Bit();
+          break;
+
+        case KBDK_x:
+          if(mod & KMOD_SHIFT)
+            myOSystem->console().toggleP1Collision();
+          else
+              myOSystem->console().toggleP1Bit();
+          break;
+
+        case KBDK_c:
+          if(mod & KMOD_SHIFT)
+            myOSystem->console().toggleM0Collision();
+          else
+            myOSystem->console().toggleM0Bit();
+          break;
+
+        case KBDK_v:
+          if(mod & KMOD_SHIFT)
+            myOSystem->console().toggleM1Collision();
+          else
+            myOSystem->console().toggleM1Bit();
+          break;
+
+        case KBDK_b:
+          if(mod & KMOD_SHIFT)
+            myOSystem->console().toggleBLCollision();
+          else
+            myOSystem->console().toggleBLBit();
+          break;
+
+        case KBDK_n:
+          if(mod & KMOD_SHIFT)
+            myOSystem->console().togglePFCollision();
+          else
+            myOSystem->console().togglePFBit();
+          break;
+
+        case KBDK_m:
+          myOSystem->console().toggleHMOVE();
+          break;
+
+        case KBDK_COMMA:
+          myOSystem->console().toggleFixedColors();
+          break;
+
+        case KBDK_PERIOD:
+          if(mod & KMOD_SHIFT)
+            myOSystem->console().toggleCollisions();
+          else
+            myOSystem->console().toggleBits();
+          break;
+
+        case KBDK_p:  // Alt-p toggles phosphor effect
+          myOSystem->console().togglePhosphor();
+          break;
+
+        case KBDK_l:
+          myOSystem->frameBuffer().toggleFrameStats();
+          break;
+
+        case KBDK_s:
+          if(myContSnapshotInterval == 0)
+          {
+            ostringstream buf;
+            uInt32 interval = myOSystem->settings().getInt("ssinterval");
+            buf << "Enabling shotshots in " << interval << " second intervals";
+            myOSystem->frameBuffer().showMessage(buf.str());
+            setContinuousSnapshots(interval);
+          }
+          else
+          {
+            ostringstream buf;
+            buf << "Disabling snapshots, generated "
+                << (myContSnapshotCounter / myContSnapshotInterval)
+                << " files";
+            myOSystem->frameBuffer().showMessage(buf.str());
+            setContinuousSnapshots(0);
+          }
+          break;
+
+        default:
+          handled = false;
+          break;
+      }
+    }
+    else
+      handled = false;
+  }
+  else if(kbdControl(mod) && state && myUseCtrlKeyFlag)
+  {
+    // These keys work in all states
+    if(key == KBDK_q)
+    {
+      handleEvent(Event::Quit, 1);
+    }
+    // These only work when in emulation mode
+    else if(myState == S_EMULATE)
+    {
+      switch(key)
+      {
+        case KBDK_0:  // Ctrl-0 switches between mouse control modes
+          if(myMouseControl)
+            myOSystem->frameBuffer().showMessage(myMouseControl->next());
+          break;
+
+        case KBDK_1:  // Ctrl-1 swaps Stelladaptor/2600-daptor ports
+          toggleSAPortOrder();
+          break;
+
+        case KBDK_f:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
+          myOSystem->console().toggleFormat(mod & KMOD_SHIFT ? -1 : 1);
+          break;
+
+        case KBDK_g:  // Ctrl-g (un)grabs mouse
+          if(!myOSystem->frameBuffer().fullScreen())
+            myOSystem->frameBuffer().toggleGrabMouse();
+          break;
+
+        case KBDK_l:  // Ctrl-l toggles PAL color-loss effect
+          myOSystem->console().toggleColorLoss();
+          break;
+
+        case KBDK_p:  // Ctrl-p toggles different palettes
+          myOSystem->console().togglePalette();
+          break;
+
+        case KBDK_r:  // Ctrl-r reloads the currently loaded ROM
+          myOSystem->reloadConsole();
+          break;
+
+        case KBDK_PAGEUP:    // Ctrl-PageUp increases Height
+          myOSystem->console().changeHeight(+1);
+          break;
+
+        case KBDK_PAGEDOWN:  // Ctrl-PageDown decreases Height
+          myOSystem->console().changeHeight(-1);
+          break;
+
+        case KBDK_s:         // Ctrl-s saves properties to a file
+        {
+          string filename = myOSystem->baseDir() +
+              myOSystem->console().properties().get(Cartridge_Name) + ".pro";
+          ofstream out(filename.c_str(), ios::out);
+          if(out)
+          {
+            myOSystem->console().properties().save(out);
+            out.close();
+            myOSystem->frameBuffer().showMessage("Properties saved");
+          }
+          else
+            myOSystem->frameBuffer().showMessage("Error saving properties");
+          break;
+        }
+
+        default:
+          handled = false;
+          break;
+      }
+    }
+    else
+      handled = false;
+  }
+  else
+    handled = false;
+
+  // Don't pass the key on if we've already taken care of it
+  if(handled) return;
+
+  // Handle keys which switch eventhandler state
+  // Arrange the logic to take advantage of short-circuit evaluation
+  if(!(kbdControl(mod) || kbdShift(mod) || kbdAlt(mod)) &&
+      state && eventStateChange(myKeyTable[key][kEmulationMode]))
+    return;
+
+  // Otherwise, let the event handler deal with it
+  if(myState == S_EMULATE)
+    handleEvent(myKeyTable[key][kEmulationMode], state);
+  else if(myOverlay != NULL)
+    myOverlay->handleKeyEvent(key, mod, ascii, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel, int button)
+{
+  // Determine which mode we're in, then send the event to the appropriate place
+  if(myState == S_EMULATE)
+  {
+    if(!mySkipMouseMotion)
+    {
+      myEvent.set(Event::MouseAxisXValue, xrel);
+      myEvent.set(Event::MouseAxisYValue, yrel);
+    }
+    mySkipMouseMotion = false;
+  }
+  else if(myOverlay)
+    myOverlay->handleMouseMotionEvent(x, y, button);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleMouseButtonEvent(MouseButton b, int x, int y)
+{
+  // Determine which mode we're in, then send the event to the appropriate place
+  if(myState == S_EMULATE)
+  {
+    switch(b)
+    {
+      case EVENT_LBUTTONDOWN:
+        myEvent.set(Event::MouseButtonLeftValue, 1);
+        break;
+      case EVENT_LBUTTONUP:
+        myEvent.set(Event::MouseButtonLeftValue, 0);
+        break;
+      case EVENT_RBUTTONDOWN:
+        myEvent.set(Event::MouseButtonRightValue, 1);
+        break;
+      case EVENT_RBUTTONUP:
+        myEvent.set(Event::MouseButtonRightValue, 0);
+        break;
+      default:
+        return;
+    }
+  }
+  else if(myOverlay)
+    myOverlay->handleMouseButtonEvent(b, x, y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
+{
+  if(stick >= myJoysticks.size())
+    return;
+
+  // Stelladaptors handle buttons differently than regular joysticks
+  const StellaJoystick& joy = *myJoysticks[stick];
+  switch(joy.type)
+  {
+    case StellaJoystick::JT_REGULAR:
+      // Handle buttons which switch eventhandler state
+      if(state && eventStateChange(joy.btnTable[button][kEmulationMode]))
+        return;
+
+      // Determine which mode we're in, then send the event to the appropriate place
+      if(myState == S_EMULATE)
+        handleEvent(joy.btnTable[button][kEmulationMode], state);
+      else if(myOverlay != NULL)
+        myOverlay->handleJoyEvent(stick, button, state);
+      break;  // Regular button
+
+    // These events don't have to pass through handleEvent, since
+    // they can never be remapped
+    case StellaJoystick::JT_STELLADAPTOR_LEFT:
+    case StellaJoystick::JT_STELLADAPTOR_RIGHT:
+      // The 'type-2' here refers to the fact that 'StellaJoystick::JT_STELLADAPTOR_LEFT'
+      // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
+      // enum; subtracting two gives us Controller 0 and 1
+      if(button < 2) myEvent.set(SA_Button[joy.type-2][button], state);
+      break;  // Stelladaptor button
+    case StellaJoystick::JT_2600DAPTOR_LEFT:
+    case StellaJoystick::JT_2600DAPTOR_RIGHT:
+      // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
+      // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
+      // enum; subtracting four gives us Controller 0 and 1
+      if(myState == S_EMULATE)
+      {
+        switch(myOSystem->console().controller(Controller::Left).type())
+        {
+          case Controller::Keyboard:
+            if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
+            break;
+          default:
+            if(button < 4) myEvent.set(SA_Button[joy.type-4][button], state);
+        }
+        switch(myOSystem->console().controller(Controller::Right).type())
+        {
+          case Controller::Keyboard:
+            if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
+            break;
+          default:
+            if(button < 4) myEvent.set(SA_Button[joy.type-4][button], state);
+        }
+      }
+      break;  // 2600DAPTOR button
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
+{
+  if(stick >= myJoysticks.size())
+    return;
+
+  // Stelladaptors handle axis differently than regular joysticks
+  const StellaJoystick& joy = *myJoysticks[stick];
+  switch(joy.type)
+  {
+    case StellaJoystick::JT_REGULAR:
+      if(myState == S_EMULATE)
+      {
+        // Every axis event has two associated values, negative and positive
+        Event::Type eventAxisNeg = joy.axisTable[axis][0][kEmulationMode];
+        Event::Type eventAxisPos = joy.axisTable[axis][1][kEmulationMode];
+
+        // Check for analog events, which are handled differently
+        // We'll pass them off as Stelladaptor events, and let the controllers
+        // handle it
+        switch((int)eventAxisNeg)
+        {
+          case Event::PaddleZeroAnalog:
+            myEvent.set(Event::SALeftAxis0Value, value);
+            break;
+          case Event::PaddleOneAnalog:
+            myEvent.set(Event::SALeftAxis1Value, value);
+            break;
+          case Event::PaddleTwoAnalog:
+            myEvent.set(Event::SARightAxis0Value, value);
+            break;
+          case Event::PaddleThreeAnalog:
+            myEvent.set(Event::SARightAxis1Value, value);
+            break;
+          default:
+          {
+            // Otherwise, we know the event is digital
+            if(value > Joystick::deadzone())
+              handleEvent(eventAxisPos, 1);
+            else if(value < -Joystick::deadzone())
+              handleEvent(eventAxisNeg, 1);
+            else
+            {
+              // Treat any deadzone value as zero
+              value = 0;
+
+              // Now filter out consecutive, similar values
+              // (only pass on the event if the state has changed)
+              if(joy.axisLastValue[axis] != value)
+              {
+                // Turn off both events, since we don't know exactly which one
+                // was previously activated.
+                handleEvent(eventAxisNeg, 0);
+                handleEvent(eventAxisPos, 0);
+              }
+            }
+            joy.axisLastValue[axis] = value;
+            break;
+          }
+        }
+      }
+      else if(myOverlay != NULL)
+      {
+        // First, clamp the values to simulate digital input
+        // (the only thing that the underlying code understands)
+        if(value > Joystick::deadzone())
+          value = 32000;
+        else if(value < -Joystick::deadzone())
+          value = -32000;
+        else
+          value = 0;
+
+        // Now filter out consecutive, similar values
+        // (only pass on the event if the state has changed)
+        if(value != joy.axisLastValue[axis])
+        {
+          myOverlay->handleJoyAxisEvent(stick, axis, value);
+          joy.axisLastValue[axis] = value;
+        }
+      }
+      break;  // Regular joystick axis
+
+    // Since the various controller classes deal with Stelladaptor
+    // devices differently, we send the raw X and Y axis data directly,
+    // and let the controller handle it
+    // These events don't have to pass through handleEvent, since
+    // they can never be remapped
+    case StellaJoystick::JT_STELLADAPTOR_LEFT:
+    case StellaJoystick::JT_STELLADAPTOR_RIGHT:
+      // The 'type-2' here refers to the fact that 'StellaJoystick::JT_STELLADAPTOR_LEFT'
+      // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
+      // enum; subtracting two gives us Controller 0 and 1
+      if(axis < 2)
+        myEvent.set(SA_Axis[joy.type-2][axis], value);
+      break;  // Stelladaptor axis
+    case StellaJoystick::JT_2600DAPTOR_LEFT:
+    case StellaJoystick::JT_2600DAPTOR_RIGHT:
+      // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
+      // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
+      // enum; subtracting four gives us Controller 0 and 1
+      if(axis < 2)
+        myEvent.set(SA_Axis[joy.type-4][axis], value);
+      break;  // 26000daptor axis
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
+{
+  if(stick >= myJoysticks.size())
+    return;
+
+  const StellaJoystick& joy = *myJoysticks[stick];
+
+  // Preprocess all hat events, converting to Stella JoyHat type
+  // Generate multiple equivalent hat events representing combined direction
+  // when we get a diagonal hat event
+  if(myState == S_EMULATE)
+  {
+    handleEvent(joy.hatTable[hat][EVENT_HATUP][kEmulationMode],
+                value & EVENT_HATUP_M);
+    handleEvent(joy.hatTable[hat][EVENT_HATRIGHT][kEmulationMode],
+                value & EVENT_HATRIGHT_M);
+    handleEvent(joy.hatTable[hat][EVENT_HATDOWN][kEmulationMode],
+                value & EVENT_HATDOWN_M);
+    handleEvent(joy.hatTable[hat][EVENT_HATLEFT][kEmulationMode],
+                value & EVENT_HATLEFT_M);
+  }
+  else if(myOverlay != NULL)
+  {
+    if(value == EVENT_HATCENTER_M)
+      myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
+    else
+    {
+      if(value & EVENT_HATUP_M)
+        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATUP);
+      if(value & EVENT_HATRIGHT_M)
+        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATRIGHT); 
+      if(value & EVENT_HATDOWN_M)
+        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
+      if(value & EVENT_HATLEFT_M)
+        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1243,16 +1126,16 @@ void EventHandler::setActionMappings(EventMode mode)
       if(myKeyTable[j][mode] == event)
       {
         if(key == "")
-          key = key + ourKBDKMapping[j];
+          key = key + ourKBDKNames[j];
         else
-          key = key + ", " + ourKBDKMapping[j];
+          key = key + ", " + ourKBDKNames[j];
       }
     }
 
 #ifdef JOYSTICK_SUPPORT
-    for(uInt32 stick = 0; stick < myNumJoysticks; ++stick)
+    for(uInt32 stick = 0; stick < myJoysticks.size(); ++stick)
     {
-      const StellaJoystick& joy = myJoysticks[stick];
+      const StellaJoystick& joy = *myJoysticks[stick];
 
       // Joystick button mapping/labeling
       for(int button = 0; button < joy.numButtons; ++button)
@@ -1324,7 +1207,7 @@ void EventHandler::setActionMappings(EventMode mode)
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
     if(event == Event::Quit)
-#ifndef MAC_OSX
+#ifndef BSPF_MAC_OSX
       prepend = "Ctrl Q";
 #else
       prepend = "Cmd Q";
@@ -1413,9 +1296,9 @@ void EventHandler::setJoymap()
   // Next try to match the mappings to the specific joystick (by name)
   // We do it this way since a joystick may be unplugged and replugged,
   // but it's settings should stay the same
-  for(uInt32 i = 0; i < myNumJoysticks; ++i)
+  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
   {
-    StellaJoystick& joy = myJoysticks[i];
+    StellaJoystick& joy = *myJoysticks[i];
     if(joy.type == StellaJoystick::JT_REGULAR)
     {
       map<string,string>::const_iterator iter = myJoystickMap.find(joy.name);
@@ -1490,9 +1373,9 @@ bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
                                      bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
-  if(stick >= 0 && stick < (int)myNumJoysticks)
+  if(stick >= 0 && stick < (int)myJoysticks.size())
   {
-    const StellaJoystick& joy = myJoysticks[stick];
+    const StellaJoystick& joy = *myJoysticks[stick];
     if(axis >= 0 && axis < joy.numAxes &&
        event >= 0 && event < Event::LastType)
     {
@@ -1528,9 +1411,9 @@ bool EventHandler::addJoyButtonMapping(Event::Type event, EventMode mode,
                                        bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
-  if(stick >= 0 && stick < (int)myNumJoysticks && !eventIsAnalog(event))
+  if(stick >= 0 && stick < (int)myJoysticks.size() && !eventIsAnalog(event))
   {
-    const StellaJoystick& joy = myJoysticks[stick];
+    const StellaJoystick& joy = *myJoysticks[stick];
     if(button >= 0 && button < joy.numButtons &&
        event >= 0 && event < Event::LastType)
     {
@@ -1552,9 +1435,9 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
                                     bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
-  if(stick >= 0 && stick < (int)myNumJoysticks && !eventIsAnalog(event))
+  if(stick >= 0 && stick < (int)myJoysticks.size() && !eventIsAnalog(event))
   {
-    const StellaJoystick& joy = myJoysticks[stick];
+    const StellaJoystick& joy = *myJoysticks[stick];
     if(hat >= 0 && hat < joy.numHats &&
        event >= 0 && event < Event::LastType && value != EVENT_HATCENTER)
     {
@@ -1580,8 +1463,8 @@ void EventHandler::eraseMapping(Event::Type event, EventMode mode)
 
 #ifdef JOYSTICK_SUPPORT
   // Erase the joystick mapping arrays
-  for(uInt32 i = 0; i < myNumJoysticks; ++i)
-    myJoysticks[i].eraseMap(mode);
+  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
+    myJoysticks[i]->eraseMap(mode);
 #endif
 
   setActionMappings(mode);
@@ -1708,12 +1591,12 @@ void EventHandler::setDefaultJoymap(Event::Type event, EventMode mode)
 #ifdef JOYSTICK_SUPPORT
   // If event is 'NoType', erase and reset all mappings
   // Otherwise, only reset the given event
-  for(uInt32 i = 0; i < myNumJoysticks; ++i)
+  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
   {
     if(event == Event::NoType)
-      myJoysticks[i].eraseMap(mode);     // erase *all* mappings 
+      myJoysticks[i]->eraseMap(mode);     // erase *all* mappings 
     else
-      myJoysticks[i].eraseEvent(event, mode);  // only reset the specific event
+      myJoysticks[i]->eraseEvent(event, mode);  // only reset the specific event
   }
   myOSystem->setDefaultJoymap(event, mode);
   setActionMappings(mode);
@@ -1740,14 +1623,14 @@ void EventHandler::saveJoyMapping()
 #ifdef JOYSTICK_SUPPORT
   // Don't update the joymap at all if it hasn't been modified during the
   // program run
-  if(myNumJoysticks == 0)
+  if(myJoysticks.size() == 0)
     return;
 
   // Save the joystick mapping hash table, making sure to update it with
   // any changes that have been made during the program run
-  for(uInt32 i = 0; i < myNumJoysticks; ++i)
+  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
   {
-    const StellaJoystick& joy = myJoysticks[i];
+    const StellaJoystick& joy = *myJoysticks[i];
     if(joy.type == StellaJoystick::JT_REGULAR)
     {
       // Update hashmap, removing the joystick entry (if it exists)
@@ -2225,239 +2108,239 @@ uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setSDLMappings()
+void EventHandler::setKeyNames()
 {
-  ourKBDKMapping[ KBDK_BACKSPACE ]    = "BACKSPACE";
-  ourKBDKMapping[ KBDK_TAB ]          = "TAB";
-  ourKBDKMapping[ KBDK_CLEAR ]        = "CLEAR";
-  ourKBDKMapping[ KBDK_RETURN ]       = "RETURN";
-  ourKBDKMapping[ KBDK_PAUSE ]        = "PAUSE";
-  ourKBDKMapping[ KBDK_ESCAPE ]       = "ESCAPE";
-  ourKBDKMapping[ KBDK_SPACE ]        = "SPACE";
-  ourKBDKMapping[ KBDK_EXCLAIM ]      = "!";
-  ourKBDKMapping[ KBDK_QUOTEDBL ]     = "\"";
-  ourKBDKMapping[ KBDK_HASH ]         = "#";
-  ourKBDKMapping[ KBDK_DOLLAR ]       = "$";
-  ourKBDKMapping[ KBDK_AMPERSAND ]    = "&";
-  ourKBDKMapping[ KBDK_QUOTE ]        = "\'";
-  ourKBDKMapping[ KBDK_LEFTPAREN ]    = "(";
-  ourKBDKMapping[ KBDK_RIGHTPAREN ]   = ")";
-  ourKBDKMapping[ KBDK_ASTERISK ]     = "*";
-  ourKBDKMapping[ KBDK_PLUS ]         = "+";
-  ourKBDKMapping[ KBDK_COMMA ]        = "COMMA";
-  ourKBDKMapping[ KBDK_MINUS ]        = "-";
-  ourKBDKMapping[ KBDK_PERIOD ]       = ".";
-  ourKBDKMapping[ KBDK_SLASH ]        = "/";
-  ourKBDKMapping[ KBDK_0 ]            = "0";
-  ourKBDKMapping[ KBDK_1 ]            = "1";
-  ourKBDKMapping[ KBDK_2 ]            = "2";
-  ourKBDKMapping[ KBDK_3 ]            = "3";
-  ourKBDKMapping[ KBDK_4 ]            = "4";
-  ourKBDKMapping[ KBDK_5 ]            = "5";
-  ourKBDKMapping[ KBDK_6 ]            = "6";
-  ourKBDKMapping[ KBDK_7 ]            = "7";
-  ourKBDKMapping[ KBDK_8 ]            = "8";
-  ourKBDKMapping[ KBDK_9 ]            = "9";
-  ourKBDKMapping[ KBDK_COLON ]        = ":";
-  ourKBDKMapping[ KBDK_SEMICOLON ]    = ";";
-  ourKBDKMapping[ KBDK_LESS ]         = "<";
-  ourKBDKMapping[ KBDK_EQUALS ]       = "=";
-  ourKBDKMapping[ KBDK_GREATER ]      = ">";
-  ourKBDKMapping[ KBDK_QUESTION ]     = "?";
-  ourKBDKMapping[ KBDK_AT ]           = "@";
-  ourKBDKMapping[ KBDK_LEFTBRACKET ]  = "[";
-  ourKBDKMapping[ KBDK_BACKSLASH ]    = "\\";
-  ourKBDKMapping[ KBDK_RIGHTBRACKET ] = "]";
-  ourKBDKMapping[ KBDK_CARET ]        = "^";
-  ourKBDKMapping[ KBDK_UNDERSCORE ]   = "_";
-  ourKBDKMapping[ KBDK_BACKQUOTE ]    = "`";
-  ourKBDKMapping[ KBDK_a ]            = "A";
-  ourKBDKMapping[ KBDK_b ]            = "B";
-  ourKBDKMapping[ KBDK_c ]            = "C";
-  ourKBDKMapping[ KBDK_d ]            = "D";
-  ourKBDKMapping[ KBDK_e ]            = "E";
-  ourKBDKMapping[ KBDK_f ]            = "F";
-  ourKBDKMapping[ KBDK_g ]            = "G";
-  ourKBDKMapping[ KBDK_h ]            = "H";
-  ourKBDKMapping[ KBDK_i ]            = "I";
-  ourKBDKMapping[ KBDK_j ]            = "J";
-  ourKBDKMapping[ KBDK_k ]            = "K";
-  ourKBDKMapping[ KBDK_l ]            = "L";
-  ourKBDKMapping[ KBDK_m ]            = "M";
-  ourKBDKMapping[ KBDK_n ]            = "N";
-  ourKBDKMapping[ KBDK_o ]            = "O";
-  ourKBDKMapping[ KBDK_p ]            = "P";
-  ourKBDKMapping[ KBDK_q ]            = "Q";
-  ourKBDKMapping[ KBDK_r ]            = "R";
-  ourKBDKMapping[ KBDK_s ]            = "S";
-  ourKBDKMapping[ KBDK_t ]            = "T";
-  ourKBDKMapping[ KBDK_u ]            = "U";
-  ourKBDKMapping[ KBDK_v ]            = "V";
-  ourKBDKMapping[ KBDK_w ]            = "W";
-  ourKBDKMapping[ KBDK_x ]            = "X";
-  ourKBDKMapping[ KBDK_y ]            = "Y";
-  ourKBDKMapping[ KBDK_z ]            = "Z";
-  ourKBDKMapping[ KBDK_DELETE ]       = "DELETE";
-  ourKBDKMapping[ KBDK_WORLD_0 ]      = "WORLD_0";
-  ourKBDKMapping[ KBDK_WORLD_1 ]      = "WORLD_1";
-  ourKBDKMapping[ KBDK_WORLD_2 ]      = "WORLD_2";
-  ourKBDKMapping[ KBDK_WORLD_3 ]      = "WORLD_3";
-  ourKBDKMapping[ KBDK_WORLD_4 ]      = "WORLD_4";
-  ourKBDKMapping[ KBDK_WORLD_5 ]      = "WORLD_5";
-  ourKBDKMapping[ KBDK_WORLD_6 ]      = "WORLD_6";
-  ourKBDKMapping[ KBDK_WORLD_7 ]      = "WORLD_7";
-  ourKBDKMapping[ KBDK_WORLD_8 ]      = "WORLD_8";
-  ourKBDKMapping[ KBDK_WORLD_9 ]      = "WORLD_9";
-  ourKBDKMapping[ KBDK_WORLD_10 ]     = "WORLD_10";
-  ourKBDKMapping[ KBDK_WORLD_11 ]     = "WORLD_11";
-  ourKBDKMapping[ KBDK_WORLD_12 ]     = "WORLD_12";
-  ourKBDKMapping[ KBDK_WORLD_13 ]     = "WORLD_13";
-  ourKBDKMapping[ KBDK_WORLD_14 ]     = "WORLD_14";
-  ourKBDKMapping[ KBDK_WORLD_15 ]     = "WORLD_15";
-  ourKBDKMapping[ KBDK_WORLD_16 ]     = "WORLD_16";
-  ourKBDKMapping[ KBDK_WORLD_17 ]     = "WORLD_17";
-  ourKBDKMapping[ KBDK_WORLD_18 ]     = "WORLD_18";
-  ourKBDKMapping[ KBDK_WORLD_19 ]     = "WORLD_19";
-  ourKBDKMapping[ KBDK_WORLD_20 ]     = "WORLD_20";
-  ourKBDKMapping[ KBDK_WORLD_21 ]     = "WORLD_21";
-  ourKBDKMapping[ KBDK_WORLD_22 ]     = "WORLD_22";
-  ourKBDKMapping[ KBDK_WORLD_23 ]     = "WORLD_23";
-  ourKBDKMapping[ KBDK_WORLD_24 ]     = "WORLD_24";
-  ourKBDKMapping[ KBDK_WORLD_25 ]     = "WORLD_25";
-  ourKBDKMapping[ KBDK_WORLD_26 ]     = "WORLD_26";
-  ourKBDKMapping[ KBDK_WORLD_27 ]     = "WORLD_27";
-  ourKBDKMapping[ KBDK_WORLD_28 ]     = "WORLD_28";
-  ourKBDKMapping[ KBDK_WORLD_29 ]     = "WORLD_29";
-  ourKBDKMapping[ KBDK_WORLD_30 ]     = "WORLD_30";
-  ourKBDKMapping[ KBDK_WORLD_31 ]     = "WORLD_31";
-  ourKBDKMapping[ KBDK_WORLD_32 ]     = "WORLD_32";
-  ourKBDKMapping[ KBDK_WORLD_33 ]     = "WORLD_33";
-  ourKBDKMapping[ KBDK_WORLD_34 ]     = "WORLD_34";
-  ourKBDKMapping[ KBDK_WORLD_35 ]     = "WORLD_35";
-  ourKBDKMapping[ KBDK_WORLD_36 ]     = "WORLD_36";
-  ourKBDKMapping[ KBDK_WORLD_37 ]     = "WORLD_37";
-  ourKBDKMapping[ KBDK_WORLD_38 ]     = "WORLD_38";
-  ourKBDKMapping[ KBDK_WORLD_39 ]     = "WORLD_39";
-  ourKBDKMapping[ KBDK_WORLD_40 ]     = "WORLD_40";
-  ourKBDKMapping[ KBDK_WORLD_41 ]     = "WORLD_41";
-  ourKBDKMapping[ KBDK_WORLD_42 ]     = "WORLD_42";
-  ourKBDKMapping[ KBDK_WORLD_43 ]     = "WORLD_43";
-  ourKBDKMapping[ KBDK_WORLD_44 ]     = "WORLD_44";
-  ourKBDKMapping[ KBDK_WORLD_45 ]     = "WORLD_45";
-  ourKBDKMapping[ KBDK_WORLD_46 ]     = "WORLD_46";
-  ourKBDKMapping[ KBDK_WORLD_47 ]     = "WORLD_47";
-  ourKBDKMapping[ KBDK_WORLD_48 ]     = "WORLD_48";
-  ourKBDKMapping[ KBDK_WORLD_49 ]     = "WORLD_49";
-  ourKBDKMapping[ KBDK_WORLD_50 ]     = "WORLD_50";
-  ourKBDKMapping[ KBDK_WORLD_51 ]     = "WORLD_51";
-  ourKBDKMapping[ KBDK_WORLD_52 ]     = "WORLD_52";
-  ourKBDKMapping[ KBDK_WORLD_53 ]     = "WORLD_53";
-  ourKBDKMapping[ KBDK_WORLD_54 ]     = "WORLD_54";
-  ourKBDKMapping[ KBDK_WORLD_55 ]     = "WORLD_55";
-  ourKBDKMapping[ KBDK_WORLD_56 ]     = "WORLD_56";
-  ourKBDKMapping[ KBDK_WORLD_57 ]     = "WORLD_57";
-  ourKBDKMapping[ KBDK_WORLD_58 ]     = "WORLD_58";
-  ourKBDKMapping[ KBDK_WORLD_59 ]     = "WORLD_59";
-  ourKBDKMapping[ KBDK_WORLD_60 ]     = "WORLD_60";
-  ourKBDKMapping[ KBDK_WORLD_61 ]     = "WORLD_61";
-  ourKBDKMapping[ KBDK_WORLD_62 ]     = "WORLD_62";
-  ourKBDKMapping[ KBDK_WORLD_63 ]     = "WORLD_63";
-  ourKBDKMapping[ KBDK_WORLD_64 ]     = "WORLD_64";
-  ourKBDKMapping[ KBDK_WORLD_65 ]     = "WORLD_65";
-  ourKBDKMapping[ KBDK_WORLD_66 ]     = "WORLD_66";
-  ourKBDKMapping[ KBDK_WORLD_67 ]     = "WORLD_67";
-  ourKBDKMapping[ KBDK_WORLD_68 ]     = "WORLD_68";
-  ourKBDKMapping[ KBDK_WORLD_69 ]     = "WORLD_69";
-  ourKBDKMapping[ KBDK_WORLD_70 ]     = "WORLD_70";
-  ourKBDKMapping[ KBDK_WORLD_71 ]     = "WORLD_71";
-  ourKBDKMapping[ KBDK_WORLD_72 ]     = "WORLD_72";
-  ourKBDKMapping[ KBDK_WORLD_73 ]     = "WORLD_73";
-  ourKBDKMapping[ KBDK_WORLD_74 ]     = "WORLD_74";
-  ourKBDKMapping[ KBDK_WORLD_75 ]     = "WORLD_75";
-  ourKBDKMapping[ KBDK_WORLD_76 ]     = "WORLD_76";
-  ourKBDKMapping[ KBDK_WORLD_77 ]     = "WORLD_77";
-  ourKBDKMapping[ KBDK_WORLD_78 ]     = "WORLD_78";
-  ourKBDKMapping[ KBDK_WORLD_79 ]     = "WORLD_79";
-  ourKBDKMapping[ KBDK_WORLD_80 ]     = "WORLD_80";
-  ourKBDKMapping[ KBDK_WORLD_81 ]     = "WORLD_81";
-  ourKBDKMapping[ KBDK_WORLD_82 ]     = "WORLD_82";
-  ourKBDKMapping[ KBDK_WORLD_83 ]     = "WORLD_83";
-  ourKBDKMapping[ KBDK_WORLD_84 ]     = "WORLD_84";
-  ourKBDKMapping[ KBDK_WORLD_85 ]     = "WORLD_85";
-  ourKBDKMapping[ KBDK_WORLD_86 ]     = "WORLD_86";
-  ourKBDKMapping[ KBDK_WORLD_87 ]     = "WORLD_87";
-  ourKBDKMapping[ KBDK_WORLD_88 ]     = "WORLD_88";
-  ourKBDKMapping[ KBDK_WORLD_89 ]     = "WORLD_89";
-  ourKBDKMapping[ KBDK_WORLD_90 ]     = "WORLD_90";
-  ourKBDKMapping[ KBDK_WORLD_91 ]     = "WORLD_91";
-  ourKBDKMapping[ KBDK_WORLD_92 ]     = "WORLD_92";
-  ourKBDKMapping[ KBDK_WORLD_93 ]     = "WORLD_93";
-  ourKBDKMapping[ KBDK_WORLD_94 ]     = "WORLD_94";
-  ourKBDKMapping[ KBDK_WORLD_95 ]     = "WORLD_95";
-  ourKBDKMapping[ KBDK_KP0 ]          = "KP0";
-  ourKBDKMapping[ KBDK_KP1 ]          = "KP1";
-  ourKBDKMapping[ KBDK_KP2 ]          = "KP2";
-  ourKBDKMapping[ KBDK_KP3 ]          = "KP3";
-  ourKBDKMapping[ KBDK_KP4 ]          = "KP4";
-  ourKBDKMapping[ KBDK_KP5 ]          = "KP5";
-  ourKBDKMapping[ KBDK_KP6 ]          = "KP6";
-  ourKBDKMapping[ KBDK_KP7 ]          = "KP7";
-  ourKBDKMapping[ KBDK_KP8 ]          = "KP8";
-  ourKBDKMapping[ KBDK_KP9 ]          = "KP9";
-  ourKBDKMapping[ KBDK_KP_PERIOD ]    = "KP .";
-  ourKBDKMapping[ KBDK_KP_DIVIDE ]    = "KP /";
-  ourKBDKMapping[ KBDK_KP_MULTIPLY ]  = "KP *";
-  ourKBDKMapping[ KBDK_KP_MINUS ]     = "KP -";
-  ourKBDKMapping[ KBDK_KP_PLUS ]      = "KP +";
-  ourKBDKMapping[ KBDK_KP_ENTER ]     = "KP ENTER";
-  ourKBDKMapping[ KBDK_KP_EQUALS ]    = "KP =";
-  ourKBDKMapping[ KBDK_UP ]           = "UP";
-  ourKBDKMapping[ KBDK_DOWN ]         = "DOWN";
-  ourKBDKMapping[ KBDK_RIGHT ]        = "RIGHT";
-  ourKBDKMapping[ KBDK_LEFT ]         = "LEFT";
-  ourKBDKMapping[ KBDK_INSERT ]       = "INS";
-  ourKBDKMapping[ KBDK_HOME ]         = "HOME";
-  ourKBDKMapping[ KBDK_END ]          = "END";
-  ourKBDKMapping[ KBDK_PAGEUP ]       = "PGUP";
-  ourKBDKMapping[ KBDK_PAGEDOWN ]     = "PGDN";
-  ourKBDKMapping[ KBDK_F1 ]           = "F1";
-  ourKBDKMapping[ KBDK_F2 ]           = "F2";
-  ourKBDKMapping[ KBDK_F3 ]           = "F3";
-  ourKBDKMapping[ KBDK_F4 ]           = "F4";
-  ourKBDKMapping[ KBDK_F5 ]           = "F5";
-  ourKBDKMapping[ KBDK_F6 ]           = "F6";
-  ourKBDKMapping[ KBDK_F7 ]           = "F7";
-  ourKBDKMapping[ KBDK_F8 ]           = "F8";
-  ourKBDKMapping[ KBDK_F9 ]           = "F9";
-  ourKBDKMapping[ KBDK_F10 ]          = "F10";
-  ourKBDKMapping[ KBDK_F11 ]          = "F11";
-  ourKBDKMapping[ KBDK_F12 ]          = "F12";
-  ourKBDKMapping[ KBDK_F13 ]          = "F13";
-  ourKBDKMapping[ KBDK_F14 ]          = "F14";
-  ourKBDKMapping[ KBDK_F15 ]          = "F15";
-  ourKBDKMapping[ KBDK_NUMLOCK ]      = "NUMLOCK";
-  ourKBDKMapping[ KBDK_CAPSLOCK ]     = "CAPSLOCK";
-  ourKBDKMapping[ KBDK_SCROLLOCK ]    = "SCROLLOCK";
-  ourKBDKMapping[ KBDK_RSHIFT ]       = "RSHIFT";
-  ourKBDKMapping[ KBDK_LSHIFT ]       = "LSHIFT";
-  ourKBDKMapping[ KBDK_RCTRL ]        = "RCTRL";
-  ourKBDKMapping[ KBDK_LCTRL ]        = "LCTRL";
-  ourKBDKMapping[ KBDK_RALT ]         = "RALT";
-  ourKBDKMapping[ KBDK_LALT ]         = "LALT";
-  ourKBDKMapping[ KBDK_RMETA ]        = "RMETA";
-  ourKBDKMapping[ KBDK_LMETA ]        = "LMETA";
-  ourKBDKMapping[ KBDK_LSUPER ]       = "LSUPER";
-  ourKBDKMapping[ KBDK_RSUPER ]       = "RSUPER";
-  ourKBDKMapping[ KBDK_MODE ]         = "MODE";
-  ourKBDKMapping[ KBDK_COMPOSE ]      = "COMPOSE";
-  ourKBDKMapping[ KBDK_HELP ]         = "HELP";
-  ourKBDKMapping[ KBDK_PRINT ]        = "PRINT";
-  ourKBDKMapping[ KBDK_SYSREQ ]       = "SYSREQ";
-  ourKBDKMapping[ KBDK_BREAK ]        = "BREAK";
-  ourKBDKMapping[ KBDK_MENU ]         = "MENU";
-  ourKBDKMapping[ KBDK_POWER ]        = "POWER";
-  ourKBDKMapping[ KBDK_EURO ]         = "EURO";
-  ourKBDKMapping[ KBDK_UNDO ]         = "UNDO";
+  ourKBDKNames[ KBDK_BACKSPACE ]    = "BACKSPACE";
+  ourKBDKNames[ KBDK_TAB ]          = "TAB";
+  ourKBDKNames[ KBDK_CLEAR ]        = "CLEAR";
+  ourKBDKNames[ KBDK_RETURN ]       = "RETURN";
+  ourKBDKNames[ KBDK_PAUSE ]        = "PAUSE";
+  ourKBDKNames[ KBDK_ESCAPE ]       = "ESCAPE";
+  ourKBDKNames[ KBDK_SPACE ]        = "SPACE";
+  ourKBDKNames[ KBDK_EXCLAIM ]      = "!";
+  ourKBDKNames[ KBDK_QUOTEDBL ]     = "\"";
+  ourKBDKNames[ KBDK_HASH ]         = "#";
+  ourKBDKNames[ KBDK_DOLLAR ]       = "$";
+  ourKBDKNames[ KBDK_AMPERSAND ]    = "&";
+  ourKBDKNames[ KBDK_QUOTE ]        = "\'";
+  ourKBDKNames[ KBDK_LEFTPAREN ]    = "(";
+  ourKBDKNames[ KBDK_RIGHTPAREN ]   = ")";
+  ourKBDKNames[ KBDK_ASTERISK ]     = "*";
+  ourKBDKNames[ KBDK_PLUS ]         = "+";
+  ourKBDKNames[ KBDK_COMMA ]        = "COMMA";
+  ourKBDKNames[ KBDK_MINUS ]        = "-";
+  ourKBDKNames[ KBDK_PERIOD ]       = ".";
+  ourKBDKNames[ KBDK_SLASH ]        = "/";
+  ourKBDKNames[ KBDK_0 ]            = "0";
+  ourKBDKNames[ KBDK_1 ]            = "1";
+  ourKBDKNames[ KBDK_2 ]            = "2";
+  ourKBDKNames[ KBDK_3 ]            = "3";
+  ourKBDKNames[ KBDK_4 ]            = "4";
+  ourKBDKNames[ KBDK_5 ]            = "5";
+  ourKBDKNames[ KBDK_6 ]            = "6";
+  ourKBDKNames[ KBDK_7 ]            = "7";
+  ourKBDKNames[ KBDK_8 ]            = "8";
+  ourKBDKNames[ KBDK_9 ]            = "9";
+  ourKBDKNames[ KBDK_COLON ]        = ":";
+  ourKBDKNames[ KBDK_SEMICOLON ]    = ";";
+  ourKBDKNames[ KBDK_LESS ]         = "<";
+  ourKBDKNames[ KBDK_EQUALS ]       = "=";
+  ourKBDKNames[ KBDK_GREATER ]      = ">";
+  ourKBDKNames[ KBDK_QUESTION ]     = "?";
+  ourKBDKNames[ KBDK_AT ]           = "@";
+  ourKBDKNames[ KBDK_LEFTBRACKET ]  = "[";
+  ourKBDKNames[ KBDK_BACKSLASH ]    = "\\";
+  ourKBDKNames[ KBDK_RIGHTBRACKET ] = "]";
+  ourKBDKNames[ KBDK_CARET ]        = "^";
+  ourKBDKNames[ KBDK_UNDERSCORE ]   = "_";
+  ourKBDKNames[ KBDK_BACKQUOTE ]    = "`";
+  ourKBDKNames[ KBDK_a ]            = "A";
+  ourKBDKNames[ KBDK_b ]            = "B";
+  ourKBDKNames[ KBDK_c ]            = "C";
+  ourKBDKNames[ KBDK_d ]            = "D";
+  ourKBDKNames[ KBDK_e ]            = "E";
+  ourKBDKNames[ KBDK_f ]            = "F";
+  ourKBDKNames[ KBDK_g ]            = "G";
+  ourKBDKNames[ KBDK_h ]            = "H";
+  ourKBDKNames[ KBDK_i ]            = "I";
+  ourKBDKNames[ KBDK_j ]            = "J";
+  ourKBDKNames[ KBDK_k ]            = "K";
+  ourKBDKNames[ KBDK_l ]            = "L";
+  ourKBDKNames[ KBDK_m ]            = "M";
+  ourKBDKNames[ KBDK_n ]            = "N";
+  ourKBDKNames[ KBDK_o ]            = "O";
+  ourKBDKNames[ KBDK_p ]            = "P";
+  ourKBDKNames[ KBDK_q ]            = "Q";
+  ourKBDKNames[ KBDK_r ]            = "R";
+  ourKBDKNames[ KBDK_s ]            = "S";
+  ourKBDKNames[ KBDK_t ]            = "T";
+  ourKBDKNames[ KBDK_u ]            = "U";
+  ourKBDKNames[ KBDK_v ]            = "V";
+  ourKBDKNames[ KBDK_w ]            = "W";
+  ourKBDKNames[ KBDK_x ]            = "X";
+  ourKBDKNames[ KBDK_y ]            = "Y";
+  ourKBDKNames[ KBDK_z ]            = "Z";
+  ourKBDKNames[ KBDK_DELETE ]       = "DELETE";
+  ourKBDKNames[ KBDK_WORLD_0 ]      = "WORLD_0";
+  ourKBDKNames[ KBDK_WORLD_1 ]      = "WORLD_1";
+  ourKBDKNames[ KBDK_WORLD_2 ]      = "WORLD_2";
+  ourKBDKNames[ KBDK_WORLD_3 ]      = "WORLD_3";
+  ourKBDKNames[ KBDK_WORLD_4 ]      = "WORLD_4";
+  ourKBDKNames[ KBDK_WORLD_5 ]      = "WORLD_5";
+  ourKBDKNames[ KBDK_WORLD_6 ]      = "WORLD_6";
+  ourKBDKNames[ KBDK_WORLD_7 ]      = "WORLD_7";
+  ourKBDKNames[ KBDK_WORLD_8 ]      = "WORLD_8";
+  ourKBDKNames[ KBDK_WORLD_9 ]      = "WORLD_9";
+  ourKBDKNames[ KBDK_WORLD_10 ]     = "WORLD_10";
+  ourKBDKNames[ KBDK_WORLD_11 ]     = "WORLD_11";
+  ourKBDKNames[ KBDK_WORLD_12 ]     = "WORLD_12";
+  ourKBDKNames[ KBDK_WORLD_13 ]     = "WORLD_13";
+  ourKBDKNames[ KBDK_WORLD_14 ]     = "WORLD_14";
+  ourKBDKNames[ KBDK_WORLD_15 ]     = "WORLD_15";
+  ourKBDKNames[ KBDK_WORLD_16 ]     = "WORLD_16";
+  ourKBDKNames[ KBDK_WORLD_17 ]     = "WORLD_17";
+  ourKBDKNames[ KBDK_WORLD_18 ]     = "WORLD_18";
+  ourKBDKNames[ KBDK_WORLD_19 ]     = "WORLD_19";
+  ourKBDKNames[ KBDK_WORLD_20 ]     = "WORLD_20";
+  ourKBDKNames[ KBDK_WORLD_21 ]     = "WORLD_21";
+  ourKBDKNames[ KBDK_WORLD_22 ]     = "WORLD_22";
+  ourKBDKNames[ KBDK_WORLD_23 ]     = "WORLD_23";
+  ourKBDKNames[ KBDK_WORLD_24 ]     = "WORLD_24";
+  ourKBDKNames[ KBDK_WORLD_25 ]     = "WORLD_25";
+  ourKBDKNames[ KBDK_WORLD_26 ]     = "WORLD_26";
+  ourKBDKNames[ KBDK_WORLD_27 ]     = "WORLD_27";
+  ourKBDKNames[ KBDK_WORLD_28 ]     = "WORLD_28";
+  ourKBDKNames[ KBDK_WORLD_29 ]     = "WORLD_29";
+  ourKBDKNames[ KBDK_WORLD_30 ]     = "WORLD_30";
+  ourKBDKNames[ KBDK_WORLD_31 ]     = "WORLD_31";
+  ourKBDKNames[ KBDK_WORLD_32 ]     = "WORLD_32";
+  ourKBDKNames[ KBDK_WORLD_33 ]     = "WORLD_33";
+  ourKBDKNames[ KBDK_WORLD_34 ]     = "WORLD_34";
+  ourKBDKNames[ KBDK_WORLD_35 ]     = "WORLD_35";
+  ourKBDKNames[ KBDK_WORLD_36 ]     = "WORLD_36";
+  ourKBDKNames[ KBDK_WORLD_37 ]     = "WORLD_37";
+  ourKBDKNames[ KBDK_WORLD_38 ]     = "WORLD_38";
+  ourKBDKNames[ KBDK_WORLD_39 ]     = "WORLD_39";
+  ourKBDKNames[ KBDK_WORLD_40 ]     = "WORLD_40";
+  ourKBDKNames[ KBDK_WORLD_41 ]     = "WORLD_41";
+  ourKBDKNames[ KBDK_WORLD_42 ]     = "WORLD_42";
+  ourKBDKNames[ KBDK_WORLD_43 ]     = "WORLD_43";
+  ourKBDKNames[ KBDK_WORLD_44 ]     = "WORLD_44";
+  ourKBDKNames[ KBDK_WORLD_45 ]     = "WORLD_45";
+  ourKBDKNames[ KBDK_WORLD_46 ]     = "WORLD_46";
+  ourKBDKNames[ KBDK_WORLD_47 ]     = "WORLD_47";
+  ourKBDKNames[ KBDK_WORLD_48 ]     = "WORLD_48";
+  ourKBDKNames[ KBDK_WORLD_49 ]     = "WORLD_49";
+  ourKBDKNames[ KBDK_WORLD_50 ]     = "WORLD_50";
+  ourKBDKNames[ KBDK_WORLD_51 ]     = "WORLD_51";
+  ourKBDKNames[ KBDK_WORLD_52 ]     = "WORLD_52";
+  ourKBDKNames[ KBDK_WORLD_53 ]     = "WORLD_53";
+  ourKBDKNames[ KBDK_WORLD_54 ]     = "WORLD_54";
+  ourKBDKNames[ KBDK_WORLD_55 ]     = "WORLD_55";
+  ourKBDKNames[ KBDK_WORLD_56 ]     = "WORLD_56";
+  ourKBDKNames[ KBDK_WORLD_57 ]     = "WORLD_57";
+  ourKBDKNames[ KBDK_WORLD_58 ]     = "WORLD_58";
+  ourKBDKNames[ KBDK_WORLD_59 ]     = "WORLD_59";
+  ourKBDKNames[ KBDK_WORLD_60 ]     = "WORLD_60";
+  ourKBDKNames[ KBDK_WORLD_61 ]     = "WORLD_61";
+  ourKBDKNames[ KBDK_WORLD_62 ]     = "WORLD_62";
+  ourKBDKNames[ KBDK_WORLD_63 ]     = "WORLD_63";
+  ourKBDKNames[ KBDK_WORLD_64 ]     = "WORLD_64";
+  ourKBDKNames[ KBDK_WORLD_65 ]     = "WORLD_65";
+  ourKBDKNames[ KBDK_WORLD_66 ]     = "WORLD_66";
+  ourKBDKNames[ KBDK_WORLD_67 ]     = "WORLD_67";
+  ourKBDKNames[ KBDK_WORLD_68 ]     = "WORLD_68";
+  ourKBDKNames[ KBDK_WORLD_69 ]     = "WORLD_69";
+  ourKBDKNames[ KBDK_WORLD_70 ]     = "WORLD_70";
+  ourKBDKNames[ KBDK_WORLD_71 ]     = "WORLD_71";
+  ourKBDKNames[ KBDK_WORLD_72 ]     = "WORLD_72";
+  ourKBDKNames[ KBDK_WORLD_73 ]     = "WORLD_73";
+  ourKBDKNames[ KBDK_WORLD_74 ]     = "WORLD_74";
+  ourKBDKNames[ KBDK_WORLD_75 ]     = "WORLD_75";
+  ourKBDKNames[ KBDK_WORLD_76 ]     = "WORLD_76";
+  ourKBDKNames[ KBDK_WORLD_77 ]     = "WORLD_77";
+  ourKBDKNames[ KBDK_WORLD_78 ]     = "WORLD_78";
+  ourKBDKNames[ KBDK_WORLD_79 ]     = "WORLD_79";
+  ourKBDKNames[ KBDK_WORLD_80 ]     = "WORLD_80";
+  ourKBDKNames[ KBDK_WORLD_81 ]     = "WORLD_81";
+  ourKBDKNames[ KBDK_WORLD_82 ]     = "WORLD_82";
+  ourKBDKNames[ KBDK_WORLD_83 ]     = "WORLD_83";
+  ourKBDKNames[ KBDK_WORLD_84 ]     = "WORLD_84";
+  ourKBDKNames[ KBDK_WORLD_85 ]     = "WORLD_85";
+  ourKBDKNames[ KBDK_WORLD_86 ]     = "WORLD_86";
+  ourKBDKNames[ KBDK_WORLD_87 ]     = "WORLD_87";
+  ourKBDKNames[ KBDK_WORLD_88 ]     = "WORLD_88";
+  ourKBDKNames[ KBDK_WORLD_89 ]     = "WORLD_89";
+  ourKBDKNames[ KBDK_WORLD_90 ]     = "WORLD_90";
+  ourKBDKNames[ KBDK_WORLD_91 ]     = "WORLD_91";
+  ourKBDKNames[ KBDK_WORLD_92 ]     = "WORLD_92";
+  ourKBDKNames[ KBDK_WORLD_93 ]     = "WORLD_93";
+  ourKBDKNames[ KBDK_WORLD_94 ]     = "WORLD_94";
+  ourKBDKNames[ KBDK_WORLD_95 ]     = "WORLD_95";
+  ourKBDKNames[ KBDK_KP0 ]          = "KP0";
+  ourKBDKNames[ KBDK_KP1 ]          = "KP1";
+  ourKBDKNames[ KBDK_KP2 ]          = "KP2";
+  ourKBDKNames[ KBDK_KP3 ]          = "KP3";
+  ourKBDKNames[ KBDK_KP4 ]          = "KP4";
+  ourKBDKNames[ KBDK_KP5 ]          = "KP5";
+  ourKBDKNames[ KBDK_KP6 ]          = "KP6";
+  ourKBDKNames[ KBDK_KP7 ]          = "KP7";
+  ourKBDKNames[ KBDK_KP8 ]          = "KP8";
+  ourKBDKNames[ KBDK_KP9 ]          = "KP9";
+  ourKBDKNames[ KBDK_KP_PERIOD ]    = "KP .";
+  ourKBDKNames[ KBDK_KP_DIVIDE ]    = "KP /";
+  ourKBDKNames[ KBDK_KP_MULTIPLY ]  = "KP *";
+  ourKBDKNames[ KBDK_KP_MINUS ]     = "KP -";
+  ourKBDKNames[ KBDK_KP_PLUS ]      = "KP +";
+  ourKBDKNames[ KBDK_KP_ENTER ]     = "KP ENTER";
+  ourKBDKNames[ KBDK_KP_EQUALS ]    = "KP =";
+  ourKBDKNames[ KBDK_UP ]           = "UP";
+  ourKBDKNames[ KBDK_DOWN ]         = "DOWN";
+  ourKBDKNames[ KBDK_RIGHT ]        = "RIGHT";
+  ourKBDKNames[ KBDK_LEFT ]         = "LEFT";
+  ourKBDKNames[ KBDK_INSERT ]       = "INS";
+  ourKBDKNames[ KBDK_HOME ]         = "HOME";
+  ourKBDKNames[ KBDK_END ]          = "END";
+  ourKBDKNames[ KBDK_PAGEUP ]       = "PGUP";
+  ourKBDKNames[ KBDK_PAGEDOWN ]     = "PGDN";
+  ourKBDKNames[ KBDK_F1 ]           = "F1";
+  ourKBDKNames[ KBDK_F2 ]           = "F2";
+  ourKBDKNames[ KBDK_F3 ]           = "F3";
+  ourKBDKNames[ KBDK_F4 ]           = "F4";
+  ourKBDKNames[ KBDK_F5 ]           = "F5";
+  ourKBDKNames[ KBDK_F6 ]           = "F6";
+  ourKBDKNames[ KBDK_F7 ]           = "F7";
+  ourKBDKNames[ KBDK_F8 ]           = "F8";
+  ourKBDKNames[ KBDK_F9 ]           = "F9";
+  ourKBDKNames[ KBDK_F10 ]          = "F10";
+  ourKBDKNames[ KBDK_F11 ]          = "F11";
+  ourKBDKNames[ KBDK_F12 ]          = "F12";
+  ourKBDKNames[ KBDK_F13 ]          = "F13";
+  ourKBDKNames[ KBDK_F14 ]          = "F14";
+  ourKBDKNames[ KBDK_F15 ]          = "F15";
+  ourKBDKNames[ KBDK_NUMLOCK ]      = "NUMLOCK";
+  ourKBDKNames[ KBDK_CAPSLOCK ]     = "CAPSLOCK";
+  ourKBDKNames[ KBDK_SCROLLOCK ]    = "SCROLLOCK";
+  ourKBDKNames[ KBDK_RSHIFT ]       = "RSHIFT";
+  ourKBDKNames[ KBDK_LSHIFT ]       = "LSHIFT";
+  ourKBDKNames[ KBDK_RCTRL ]        = "RCTRL";
+  ourKBDKNames[ KBDK_LCTRL ]        = "LCTRL";
+  ourKBDKNames[ KBDK_RALT ]         = "RALT";
+  ourKBDKNames[ KBDK_LALT ]         = "LALT";
+  ourKBDKNames[ KBDK_RMETA ]        = "RMETA";
+  ourKBDKNames[ KBDK_LMETA ]        = "LMETA";
+  ourKBDKNames[ KBDK_LSUPER ]       = "LSUPER";
+  ourKBDKNames[ KBDK_RSUPER ]       = "RSUPER";
+  ourKBDKNames[ KBDK_MODE ]         = "MODE";
+  ourKBDKNames[ KBDK_COMPOSE ]      = "COMPOSE";
+  ourKBDKNames[ KBDK_HELP ]         = "HELP";
+  ourKBDKNames[ KBDK_PRINT ]        = "PRINT";
+  ourKBDKNames[ KBDK_SYSREQ ]       = "SYSREQ";
+  ourKBDKNames[ KBDK_BREAK ]        = "BREAK";
+  ourKBDKNames[ KBDK_MENU ]         = "MENU";
+  ourKBDKNames[ KBDK_POWER ]        = "POWER";
+  ourKBDKNames[ KBDK_EURO ]         = "EURO";
+  ourKBDKNames[ KBDK_UNDO ]         = "UNDO";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2620,7 +2503,6 @@ const Event::Type EventHandler::SA_Key[2][12] = {
 EventHandler::StellaJoystick::StellaJoystick()
   : type(JT_NONE),
     name("None"),
-    stick(NULL),
     numAxes(0),
     numButtons(0),
     numHats(0),
@@ -2638,49 +2520,45 @@ EventHandler::StellaJoystick::~StellaJoystick()
   delete[] btnTable;       btnTable = NULL;
   delete[] hatTable;       hatTable = NULL;
   delete[] axisLastValue;  axisLastValue = NULL;
-  if(stick)
-    SDL_JoystickClose(stick);
-  stick = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::StellaJoystick::setStick(int index)
+void EventHandler::StellaJoystick::initialize(const string& desc,
+            int axes, int buttons, int hats)
 {
-  stick = SDL_JoystickOpen(index);
-  if(stick)
-  {
-    // Dynamically create the various mapping arrays for this joystick,
-    // based on its specific attributes
-    numAxes    = SDL_JoystickNumAxes(stick);
-    numButtons = SDL_JoystickNumButtons(stick);
-    numHats    = SDL_JoystickNumHats(stick);
+  name = desc;
+
+  // Dynamically create the various mapping arrays for this joystick,
+  // based on its specific attributes
+  numAxes    = axes;
+  numButtons = buttons;
+  numHats    = hats;
+  if(numAxes)
     axisTable = new Event::Type[numAxes][2][kNumModes];
-    btnTable  = new Event::Type[numButtons][kNumModes];
-    hatTable  = new Event::Type[numHats][4][kNumModes];
-    axisLastValue = new int[numAxes];
+  if(numButtons)
+    btnTable = new Event::Type[numButtons][kNumModes];
+  if(numHats)
+    hatTable = new Event::Type[numHats][4][kNumModes];
+  axisLastValue = new int[numAxes];
 
-    // Erase the joystick axis mapping array and last axis value
-    for(int a = 0; a < numAxes; ++a)
-    {
-      axisLastValue[a] = 0;
-      for(int m = 0; m < kNumModes; ++m)
-        axisTable[a][0][m] = axisTable[a][1][m] = Event::NoType;
-    }
-
-    // Erase the joystick button mapping array
-    for(int b = 0; b < numButtons; ++b)
-      for(int m = 0; m < kNumModes; ++m)
-        btnTable[b][m] = Event::NoType;
-
-    // Erase the joystick hat mapping array
-    for(int h = 0; h < numHats; ++h)
-      for(int m = 0; m < kNumModes; ++m)
-        hatTable[h][0][m] = hatTable[h][1][m] =
-        hatTable[h][2][m] = hatTable[h][3][m] = Event::NoType;
-
-    name = SDL_JoystickName(index);
+  // Erase the joystick axis mapping array and last axis value
+  for(int a = 0; a < numAxes; ++a)
+  {
+    axisLastValue[a] = 0;
+    for(int m = 0; m < kNumModes; ++m)
+      axisTable[a][0][m] = axisTable[a][1][m] = Event::NoType;
   }
-  return name;
+
+  // Erase the joystick button mapping array
+  for(int b = 0; b < numButtons; ++b)
+    for(int m = 0; m < kNumModes; ++m)
+      btnTable[b][m] = Event::NoType;
+
+  // Erase the joystick hat mapping array
+  for(int h = 0; h < numHats; ++h)
+    for(int m = 0; m < kNumModes; ++m)
+      hatTable[h][0][m] = hatTable[h][1][m] =
+      hatTable[h][2][m] = hatTable[h][3][m] = Event::NoType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

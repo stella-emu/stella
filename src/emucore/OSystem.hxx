@@ -81,13 +81,6 @@ class OSystem
 
   public:
     /**
-      Adds the specified settings object to the system.
-
-      @param settings The settings object to add 
-    */
-    void attach(Settings* settings) { mySettings = settings; }
-
-    /**
       Get the event handler of the system
 
       @return The event handler
@@ -441,11 +434,6 @@ class OSystem
       @param mode   The mode for which the defaults are set
     */
     virtual void setDefaultJoymap(Event::Type event, EventMode mode);
-
-    /**
-      This method creates events from platform-specific hardware.
-    */
-    virtual void pollEvent() { }
 
     /**
       Informs the OSystem of a change in EventHandler state.

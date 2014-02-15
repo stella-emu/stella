@@ -113,6 +113,8 @@ OSystem::OSystem()
        << "." << (int)ver->minor << "."<< (int)ver->patch
        << " [" << BSPF_ARCH << "]";
   myBuildInfo = info.str();
+
+  mySettings = MediaFactory::createSettings(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,11 +126,6 @@ OSystem::~OSystem()
 
   // Remove any game console that is currently attached
   deleteConsole();
-
-  // OSystem takes responsibility for framebuffer and sound,
-  // since it created them
-  delete myFrameBuffer;
-  delete mySound;
 
   // These must be deleted after all the others
   // This is a bit hacky, since it depends on ordering
@@ -142,11 +139,17 @@ OSystem::~OSystem()
 
   delete myStateManager;
   delete myPropSet;
-  delete myEventHandler;
 
   delete mySerialPort;
   delete myPNGLib;
   delete myZipHandler;
+
+  // OSystem takes responsibility for these, since it called MediaFactory
+  // to create them
+  delete myFrameBuffer;
+  delete mySound;
+  delete myEventHandler;
+  delete mySettings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,7 +178,7 @@ bool OSystem::create()
     return false;
 
   // Create the event handler for the system
-  myEventHandler = new EventHandler(this);
+  myEventHandler = MediaFactory::createEventHandler(this);
   myEventHandler->initialize();
 
   // Create a properties set for us to use and set it up
@@ -341,16 +344,6 @@ FBInitStatus OSystem::createFrameBuffer()
       logMessage("ERROR: Unknown emulation state in createFrameBuffer()", 0);
       break;
   }
-
-#if 0 // FIXME
-  // The following only need to be done once
-  if(firstTime)
-  {
-    // Setup the SDL joysticks (must be done after FrameBuffer is created)
-    myEventHandler->setupJoysticks();
-  }
-#endif
-
   return fbstatus;
 }
 
@@ -754,6 +747,12 @@ void OSystem::setDefaultJoymap(Event::Type event, EventMode mode)
       // Left joystick up/down directions (assume joystick zero and hat 0)
       SET_DEFAULT_HAT(Event::JoystickZeroUp, mode, 0, 0, EVENT_HATUP, event);
       SET_DEFAULT_HAT(Event::JoystickZeroDown, mode, 0, 0, EVENT_HATDOWN, event);
+      // Right joystick left/right directions (assume joystick one and hat 0)
+      SET_DEFAULT_HAT(Event::JoystickOneLeft, mode, 1, 0, EVENT_HATLEFT, event);
+      SET_DEFAULT_HAT(Event::JoystickOneRight, mode, 1, 0, EVENT_HATRIGHT, event);
+      // Right joystick up/down directions (assume joystick one and hat 0)
+      SET_DEFAULT_HAT(Event::JoystickOneUp, mode, 1, 0, EVENT_HATUP, event);
+      SET_DEFAULT_HAT(Event::JoystickOneDown, mode, 1, 0, EVENT_HATDOWN, event);
 
       break;
 
