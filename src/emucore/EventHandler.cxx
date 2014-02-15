@@ -87,7 +87,7 @@ EventHandler::~EventHandler()
       free(ourMenuActionList[i].key);
 
   delete myMouseControl;
-  for(int i = 0; i < myJoysticks.size(); ++i)
+  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
     delete myJoysticks[i];
 }
 
@@ -678,7 +678,7 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, int x, int y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
 {
-  if(stick >= myJoysticks.size())
+  if(stick >= (int)myJoysticks.size())
     return;
 
   // Stelladaptors handle buttons differently than regular joysticks
@@ -739,7 +739,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 {
-  if(stick >= myJoysticks.size())
+  if(stick >= (int)myJoysticks.size())
     return;
 
   // Stelladaptors handle axis differently than regular joysticks
@@ -847,7 +847,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
 {
-  if(stick >= myJoysticks.size())
+  if(stick >= (int)myJoysticks.size())
     return;
 
   const StellaJoystick& joy = *myJoysticks[stick];

@@ -486,6 +486,8 @@
 		DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DA10A762FC007A2870 /* CartF0.hxx */; };
 		DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7B0DB10A762FC007A2870 /* CartFA.cxx */; };
 		DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DC10A762FC007A2870 /* CartFA.hxx */; };
+		DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */; };
+		DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */; };
 		DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */; };
 		DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */; };
 /* End PBXBuildFile section */
@@ -1020,6 +1022,8 @@
 		DCF7B0DA10A762FC007A2870 /* CartF0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF0.hxx; path = ../emucore/CartF0.hxx; sourceTree = SOURCE_ROOT; };
 		DCF7B0DB10A762FC007A2870 /* CartFA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFA.cxx; path = ../emucore/CartFA.cxx; sourceTree = SOURCE_ROOT; };
 		DCF7B0DC10A762FC007A2870 /* CartFA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFA.hxx; path = ../emucore/CartFA.hxx; sourceTree = SOURCE_ROOT; };
+		DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EventHandlerSDL2.cxx; path = ../common/EventHandlerSDL2.cxx; sourceTree = SOURCE_ROOT; };
+		DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = EventHandlerSDL2.hxx; path = ../common/EventHandlerSDL2.hxx; sourceTree = SOURCE_ROOT; };
 		DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ComboDialog.cxx; path = ../gui/ComboDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ComboDialog.hxx; path = ../gui/ComboDialog.hxx; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
@@ -1268,6 +1272,8 @@
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DC79F81117A88D9E00288B91 /* Base.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
+				DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */,
+				DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */,
 				DC3EE2D81417801800F9DA4A /* FBSurfaceTIA.cxx */,
 				DC3EE2D91417801800F9DA4A /* FBSurfaceTIA.hxx */,
 				DC368F4E18A2FB710084199C /* FBSurfaceUI.cxx */,
@@ -1932,6 +1938,7 @@
 				DC368F5518A2FB710084199C /* FBSurfaceUI.hxx in Headers */,
 				DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */,
 				DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */,
+				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2248,6 +2255,7 @@
 				DC368F5418A2FB710084199C /* FBSurfaceUI.cxx in Sources */,
 				DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */,
 				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
+				DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
