@@ -753,6 +753,9 @@
     <ClCompile Include="..\debugger\gui\CartDFWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\EventHandlerSDL2.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1516,6 +1519,9 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartDFWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\EventHandlerSDL2.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

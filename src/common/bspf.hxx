@@ -125,7 +125,7 @@ static bool BSPF_equalsIgnoreCaseChar(char ch1, char ch2)
 // Compare two strings, ignoring case
 inline int BSPF_compareIgnoreCase(const string& s1, const string& s2)
 {
-#if defined WINDOWS && !defined __GNUG__
+#if defined BSPF_WINDOWS && !defined __GNUG__
   return _stricmp(s1.c_str(), s2.c_str());
 #else
   return strcasecmp(s1.c_str(), s2.c_str());
@@ -133,7 +133,7 @@ inline int BSPF_compareIgnoreCase(const string& s1, const string& s2)
 }
 inline int BSPF_compareIgnoreCase(const char* s1, const char* s2)
 {
-#if defined WINDOWS && !defined __GNUG__
+#if defined BSPF_WINDOWS && !defined __GNUG__
   return _stricmp(s1, s2);
 #else
   return strcasecmp(s1, s2);
@@ -143,7 +143,7 @@ inline int BSPF_compareIgnoreCase(const char* s1, const char* s2)
 // Test whether the first string starts with the second one (case insensitive)
 inline bool BSPF_startsWithIgnoreCase(const string& s1, const string& s2)
 {
-#if defined WINDOWS && !defined __GNUG__
+#if defined BSPF_WINDOWS && !defined __GNUG__
   return _strnicmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
 #else
   return strncasecmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
@@ -151,7 +151,7 @@ inline bool BSPF_startsWithIgnoreCase(const string& s1, const string& s2)
 }
 inline bool BSPF_startsWithIgnoreCase(const char* s1, const char* s2)
 {
-#if defined WINDOWS && !defined __GNUG__
+#if defined BSPF_WINDOWS && !defined __GNUG__
   return _strnicmp(s1, s2, strlen(s2)) == 0;
 #else
   return strncasecmp(s1, s2, strlen(s2)) == 0;
