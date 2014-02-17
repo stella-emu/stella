@@ -41,12 +41,6 @@
   #include "CheatManager.hxx"
 #endif
 
-#if defined(BSPF_MAC_OSX)
-  extern "C" {
-    int stellaMain(int argc, char* argv[]);
-  }
-#endif
-
 // Pointer to the main parent osystem object or the null pointer
 OSystem* theOSystem = (OSystem*) NULL;
 

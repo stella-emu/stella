@@ -44,7 +44,7 @@ void EventHandlerSDL2::initializeJoysticks()
   }
 
   int numSticks = SDL_NumJoysticks();
-  for(uInt32 i = 0; i < numSticks; ++i)
+  for(int i = 0; i < numSticks; ++i)
     addJoystick(new JoystickSDL2(i), i);
 #endif
 }

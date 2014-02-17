@@ -31,6 +31,9 @@
 #elif defined(BSPF_MAC_OSX)
   #include "SettingsMACOSX.hxx"
   #include "OSystemMACOSX.hxx"
+  extern "C" {
+    int stellaMain(int argc, char* argv[]);
+  }
 #else
   #error Unsupported platform!
 #endif
