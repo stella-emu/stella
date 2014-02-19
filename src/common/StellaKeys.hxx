@@ -310,6 +310,6 @@ typedef enum {
 
 // Just pass SDLMod directly as int (placeholder for now)
 // The underlying code doesn't need to know how it's implemented
-typedef int StellaMod;
+typedef SDL_Keymod StellaMod;
 
 #endif /* StellaKeys */

@@ -25,10 +25,9 @@
 #include "FrameBufferSDL2.hxx"
 
 /**
-  A surface suitable for OpenGL rendering mode, but specifically for
-  rendering from a TIA source.  It doesn't implement most of the
-  drawing primitives, since it's concerned with TIA images only.
-  This class extends FrameBuffer::FBSurface.
+  A surface suitable for SDL Render2D API and rendering from a TIA source.
+  It doesn't implement most of the drawing primitives, since it's concerned
+  with TIA images only.  This class extends FrameBuffer::FBSurface.
 
   @author  Stephen Anthony
 */
@@ -44,8 +43,8 @@ class FBSurfaceTIA : public FBSurface
     // only the methods absolutely necessary for dealing with drawing
     // a TIA image
     void getPos(uInt32& x, uInt32& y) const;
-    uInt32 getWidth()  const { return myImageW; }
-    uInt32 getHeight() const { return myImageH; }
+    uInt32 getWidth()  const { return mySrc.w; }
+    uInt32 getHeight() const { return mySrc.h; }
     void translateCoords(Int32& x, Int32& y) const;
     void update();
     void invalidate();
@@ -64,23 +63,14 @@ class FBSurfaceTIA : public FBSurface
 
   private:
     FrameBufferSDL2& myFB;
-    const FrameBufferSDL2::GLpointers& myGL;
     const TIA* myTIA;
-    SDL_Surface* myTexture;
+
+    SDL_Surface* mySurface;
+    SDL_Texture* myTexture;
+    SDL_Rect mySrc, myDst;
     uInt32 myPitch;
 
-    GLuint  myTexID[2], myVBOID;
-    GLsizei myTexWidth;
-    GLsizei myTexHeight;
-    GLuint  myBaseW, myBaseH;
-    GLuint  myImageX, myImageY, myImageW, myImageH;
-    GLfloat myTexCoordW, myTexCoordH;
-    GLfloat myCoord[32];
-    GLint myTexFilter[2];
-
     bool myScanlinesEnabled;
-    GLuint  myScanlineIntensityI;
-    GLfloat myScanlineIntensityF;
 };
 
 #endif

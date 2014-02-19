@@ -349,11 +349,6 @@ class FrameBuffer
     virtual bool fullScreen() const = 0;
 
     /**
-      Set the title for the main window.
-    */
-    virtual void setWindowTitle(const string& title) = 0;
-
-    /**
       Enable/disable/query NTSC filtering effects.
     */
     virtual void enableNTSC(bool enable) { }
@@ -454,35 +449,16 @@ class FrameBuffer
     virtual bool queryHardware(uInt32& w, uInt32& h, ResolutionList& res) = 0;
 
     /**
-      This method is called to initialize the video subsystem
-      with the given video mode.  Normally, it will also call setVidMode().
+      This method is called to change to the given video mode.  If the mode
+      is successfully changed, 'mode' holds the actual dimensions used.
 
-      @param title The title for 
+      @param title The title for the created window
       @param mode  The video mode to use
       @param full  Whether this is a fullscreen or windowed mode
 
       @return  False on any errors, else true
     */
-    virtual bool initSubsystem(VideoMode& mode, bool full) = 0;
-
-    /**
-      This method is called to change to the given video mode.  If the mode
-      is successfully changed, 'mode' holds the actual dimensions used.
-
-      @param mode  The video mode to use
-
-      @return  False on any errors (in which case 'mode' is invalid), else true
-    */
-    virtual bool setVidMode(VideoMode& mode) = 0;
-
-    /**
-      Sets a hint that the underlying renderer may use; it is also free
-      to ignore it completely.
-
-      @param hint     The hint to set
-      @param enabled  Whether the hint should be turned on or off
-    */
-    virtual void setHint(FBHint hint, bool enabled) = 0;
+    virtual bool setVideoMode(const string& title, VideoMode& mode, bool full) = 0;
 
     /**
       This method is called to invalidate the contents of the entire
@@ -599,11 +575,6 @@ class FrameBuffer
       @return  A valid VideoMode for this framebuffer
     */
     VideoMode getSavedVidMode();
-
-    /**
-      Attempt to center the application window in windowed mode.
-    */
-    void centerAppWindow(const VideoMode& mode);
 
     /**
       Set up the user interface palette for a screen of any depth > 8.

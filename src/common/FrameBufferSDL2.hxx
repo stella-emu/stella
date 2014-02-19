@@ -54,15 +54,6 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     virtual ~FrameBufferSDL2();
 
-    /**
-      Check if OpenGL is available on this system, and then opens it.
-      If any errors occur, we shouldn't attempt to instantiate a
-      FrameBufferSDL2 object.
-
-      @param library  The filename of the OpenGL library
-    */
-    static bool loadLibrary(const string& library);
-
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
@@ -81,11 +72,6 @@ class FrameBufferSDL2 : public FrameBuffer
       Answers if the display is currently in fullscreen mode.
     */
     bool fullScreen() const;
-
-    /**
-      Set the title for the main window.
-    */
-    void setWindowTitle(const string& title);
 
     /**
       Enable/disable phosphor effect.
@@ -157,34 +143,16 @@ class FrameBufferSDL2 : public FrameBuffer
     bool queryHardware(uInt32& w, uInt32& h, ResolutionList& res);
 
     /**
-      This method is called to initialize the video subsystem
-      with the given video mode.  Normally, it will also call setVidMode().
+      This method is called to change to the given video mode.  If the mode
+      is successfully changed, 'mode' holds the actual dimensions used.
 
+      @param title The title for the created window
       @param mode  The video mode to use
       @param full  Whether this is a fullscreen or windowed mode
 
       @return  False on any errors, else true
     */
-    bool initSubsystem(VideoMode& mode, bool full);
-
-    /**
-      This method is called to change to the given video mode.  If the mode
-      is successfully changed, 'mode' holds the actual dimensions used.
-
-      @param mode  The video mode to use
-
-      @return  False on any errors (in which case 'mode' is invalid), else true
-    */
-    bool setVidMode(VideoMode& mode);
-
-    /**
-      Sets a hint that the underlying renderer may use; it is also free
-      to ignore it completely.
-
-      @param hint     The hint to set
-      @param enabled  Whether the hint should be turned on or off
-    */
-    void setHint(FBHint hint, bool enabled);
+    bool setVideoMode(const string& title, VideoMode& mode, bool full);
 
     /**
       This method is called to invalidate the contents of the entire
@@ -240,11 +208,6 @@ class FrameBufferSDL2 : public FrameBuffer
     void enableScanlineInterpolation(bool enable);
 
   private:
-    enum GLFunctionality {
-      kGL_BASIC, kGL_VBO
-    };
-    bool loadFuncs(GLFunctionality functionality);
-
     // Enumeration created such that phosphor off/on is in LSB,
     // and Blargg off/on is in MSB
     enum FilterType {
@@ -255,23 +218,17 @@ class FrameBufferSDL2 : public FrameBuffer
     };
     FilterType myFilterType;
 
-    static uInt32 power_of_two(uInt32 input)
-    {
-      uInt32 value = 1;
-      while( value < input )
-        value <<= 1;
-      return value;
-    }
-
   private:
     // The SDL video buffer
     SDL_Surface* myScreen;
+    SDL_Window* myWindow;
+    SDL_Renderer* myRenderer;
 
     // SDL initialization flags
     // This is set by the base FrameBuffer class, and read by the derived classes
     // If a FrameBuffer is successfully created, the derived classes must modify
     // it to point to the actual flags used by the SDL_Surface
-    uInt32 mySDLFlags;
+    uInt32 myWindowFlags;
 
     // The lower-most base surface (will always be a TIA surface,
     // since Dialog surfaces are allocated by the Dialog class directly).
@@ -283,57 +240,8 @@ class FrameBufferSDL2 : public FrameBuffer
     // The depth of the texture buffer
     uInt32 myDepth;
 
-    // The size of color components for OpenGL
-    Int32 myRGB[4];
-
     // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
-
-    // Indicates if the OpenGL library has been properly loaded
-    static bool myLibraryLoaded;
-
-    // Indicates whether Vertex Buffer Objects (VBO) are available
-    static bool myVBOAvailable;
-
-    // Structure containing dynamically-loaded OpenGL function pointers
-    #define OGL_DECLARE(NAME,RET,FUNC,PARAMS) RET (APIENTRY* NAME) PARAMS
-    typedef struct {
-      OGL_DECLARE(Clear,void,glClear,(GLbitfield));
-      OGL_DECLARE(Enable,void,glEnable,(GLenum));
-      OGL_DECLARE(Disable,void,glDisable,(GLenum));
-      OGL_DECLARE(PushAttrib,void,glPushAttrib,(GLbitfield));
-      OGL_DECLARE(GetString,const GLubyte*,glGetString,(GLenum));
-      OGL_DECLARE(Hint,void,glHint,(GLenum, GLenum));
-      OGL_DECLARE(ShadeModel,void,glShadeModel,(GLenum));
-      OGL_DECLARE(MatrixMode,void,glMatrixMode,(GLenum));
-      OGL_DECLARE(Ortho,void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
-      OGL_DECLARE(Viewport,void,glViewport,(GLint, GLint, GLsizei, GLsizei));
-      OGL_DECLARE(LoadIdentity,void,glLoadIdentity,(void));
-      OGL_DECLARE(Translatef,void,glTranslatef,(GLfloat,GLfloat,GLfloat));
-      OGL_DECLARE(EnableClientState,void,glEnableClientState,(GLenum));
-      OGL_DECLARE(DisableClientState,void,glDisableClientState,(GLenum));
-      OGL_DECLARE(VertexPointer,void,glVertexPointer,(GLint,GLenum,GLsizei,const GLvoid*));
-      OGL_DECLARE(TexCoordPointer,void,glTexCoordPointer,(GLint,GLenum,GLsizei,const GLvoid*));
-      OGL_DECLARE(DrawArrays,void,glDrawArrays,(GLenum,GLint,GLsizei));
-      OGL_DECLARE(ReadPixels,void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
-      OGL_DECLARE(PixelStorei,void,glPixelStorei,(GLenum, GLint));
-      OGL_DECLARE(TexEnvf,void,glTexEnvf,(GLenum, GLenum, GLfloat));
-      OGL_DECLARE(GenTextures,void,glGenTextures,(GLsizei, GLuint*));
-      OGL_DECLARE(DeleteTextures,void,glDeleteTextures,(GLsizei, const GLuint*));
-      OGL_DECLARE(ActiveTexture,void,glActiveTexture,(GLenum));
-      OGL_DECLARE(BindTexture,void,glBindTexture,(GLenum, GLuint));
-      OGL_DECLARE(TexImage2D,void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
-      OGL_DECLARE(TexSubImage2D,void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
-      OGL_DECLARE(TexParameteri,void,glTexParameteri,(GLenum, GLenum, GLint));
-      OGL_DECLARE(GetError,GLenum,glGetError,(void));
-      OGL_DECLARE(Color4f,void,glColor4f,(GLfloat,GLfloat,GLfloat,GLfloat));
-      OGL_DECLARE(BlendFunc,void,glBlendFunc,(GLenum,GLenum));
-      OGL_DECLARE(GenBuffers,void,glGenBuffers,(GLsizei,GLuint*));
-      OGL_DECLARE(BindBuffer,void,glBindBuffer,(GLenum,GLuint));
-      OGL_DECLARE(BufferData,void,glBufferData,(GLenum,GLsizei,const void*,GLenum));
-      OGL_DECLARE(DeleteBuffers,void,glDeleteBuffers,(GLsizei, const GLuint*));
-    } GLpointers;
-    GLpointers p_gl;
 };
 
 #endif

@@ -165,8 +165,8 @@ class DialogContainer
     // For continuous 'key down' events
     struct {
       StellaKey keycode;
+      StellaMod flags;
       char ascii;
-      int flags;
     } myCurrentKeyDown;
     uInt64 myKeyRepeatTime;
 

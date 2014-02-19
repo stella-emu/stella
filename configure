@@ -6,7 +6,7 @@
 # * command line options to...
 #   - override the host settings (for cross compiles
 #   - whether to do a debug build (with -g) or an optimized build (-O3 etc.)
-# * detect whether the chosen backend is available (e.g. call sdl-config)
+# * detect whether the chosen backend is available (e.g. call sdl2-config)
 # * ....
 
 
@@ -42,10 +42,9 @@ _zip="zip -q"
 _cp=cp
 _windowspath=""
 _windres=windres
-_sdlconfig=sdl-config
+_sdlconfig=sdl2-config
 _sdlpath="$PATH"
 _prefix=/usr/local
-X_LIBS="/usr/X11R6/lib"
 
 _srcdir=`dirname $0`
 
@@ -124,13 +123,13 @@ add_line_to_config_mk() {
 
 
 #
-# Determine sdl-config
+# Determine sdl2-config
 #
 # TODO: small bit of code to test sdl useability
 find_sdlconfig()
 {
-	echo_n "Looking for sdl-config... "
-	sdlconfigs="$_sdlconfig:sdl-config:sdl11-config:sdl12-config"
+	echo_n "Looking for sdl2-config... "
+	sdlconfigs="$_sdlconfig"
 	_sdlconfig=
 	
 	IFS="${IFS=   }"; ac_save_ifs="$IFS"; IFS="$SEPARATOR"
@@ -220,10 +219,9 @@ Optional Features:
   --force-builtin-zlib   force use of built-in zlib library [auto]
 
 Optional Libraries:
-  --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
+  --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
   --with-libpng-prefix=DIR Prefix where libpng is installed (optional)
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
-  --x-libraries            Path to X11 libraries [${X_LIBS}]
 
 Some influential environment variables:
   LDFLAGS	linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -272,10 +270,6 @@ for ac_option in $@; do
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ZLIB_CFLAGS="-I$_prefix/include"
         ZLIB_LIBS="-L$_prefix/lib"
-        ;;
-      --x-libraries=*)
-        arg=`echo $ac_option | cut -d '=' -f 2`
-        X_LIBS="$arg"
         ;;
       --host=*)
         _host=`echo $ac_option | cut -d '=' -f 2`

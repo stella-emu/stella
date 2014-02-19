@@ -39,19 +39,20 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
   : FrameBuffer(osystem),
     myFilterType(kNormal),
     myScreen(0),
-    mySDLFlags(0),
+    myWindow(NULL),
+    myRenderer(NULL),
+    myWindowFlags(0),
     myTiaSurface(NULL),
     myDirtyFlag(true)
 {
   // Initialize SDL2 context
-  if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-      return;
-
-  // Load OpenGL function pointers
-  loadLibrary(osystem->settings().getString("gl_lib"));
-  if(loadFuncs(kGL_BASIC))
-    myVBOAvailable = myOSystem->settings().getBool("gl_vbo") && loadFuncs(kGL_VBO);
+  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+  {
+    ostringstream buf;
+    buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
+    myOSystem->logMessage(buf.str(), 0);
+    return;
+  }
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceUI object)
@@ -59,7 +60,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
   // been created
   // Note: alpha disabled for now, since it's not used
   SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 32,
-                       0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000);
+                       0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
   myPixelFormat = *(s->format);
   SDL_FreeSurface(s);
@@ -68,83 +69,11 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::~FrameBufferSDL2()
 {
+//  if(myWindow)
+//    SDL_DestroyWindow(myWindow);
+
   // We're taking responsibility for this surface
   delete myTiaSurface;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::loadLibrary(const string& library)
-{
-  if(myLibraryLoaded)
-    return true;
-
-  // Try both the specified library and auto-detection
-  bool libLoaded = (library != "" && SDL_GL_LoadLibrary(library.c_str()) >= 0);
-  bool autoLoaded = false;
-  if(!libLoaded) autoLoaded = (SDL_GL_LoadLibrary(0) >= 0);
-  if(!libLoaded && !autoLoaded)
-    return false;
-
-  return myLibraryLoaded = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::loadFuncs(GLFunctionality functionality)
-{
-#define OGL_INIT(NAME,RET,FUNC,PARAMS) \
-  p_gl.NAME = (RET(APIENTRY*)PARAMS) SDL_GL_GetProcAddress(#FUNC); if(!p_gl.NAME) return false
-
-  if(myLibraryLoaded)
-  {
-    // Fill the function pointers for GL functions
-    // If anything fails, we'll know it immediately, and return false
-    switch(functionality)
-    {
-      case kGL_BASIC:
-        OGL_INIT(Clear,void,glClear,(GLbitfield));
-        OGL_INIT(Enable,void,glEnable,(GLenum));
-        OGL_INIT(Disable,void,glDisable,(GLenum));
-        OGL_INIT(PushAttrib,void,glPushAttrib,(GLbitfield));
-        OGL_INIT(GetString,const GLubyte*,glGetString,(GLenum));
-        OGL_INIT(Hint,void,glHint,(GLenum, GLenum));
-        OGL_INIT(ShadeModel,void,glShadeModel,(GLenum));
-        OGL_INIT(MatrixMode,void,glMatrixMode,(GLenum));
-        OGL_INIT(Ortho,void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
-        OGL_INIT(Viewport,void,glViewport,(GLint, GLint, GLsizei, GLsizei));
-        OGL_INIT(LoadIdentity,void,glLoadIdentity,(void));
-        OGL_INIT(Translatef,void,glTranslatef,(GLfloat,GLfloat,GLfloat));
-        OGL_INIT(EnableClientState,void,glEnableClientState,(GLenum));
-        OGL_INIT(DisableClientState,void,glDisableClientState,(GLenum));
-        OGL_INIT(VertexPointer,void,glVertexPointer,(GLint,GLenum,GLsizei,const GLvoid*));
-        OGL_INIT(TexCoordPointer,void,glTexCoordPointer,(GLint,GLenum,GLsizei,const GLvoid*));
-        OGL_INIT(DrawArrays,void,glDrawArrays,(GLenum,GLint,GLsizei));
-        OGL_INIT(ReadPixels,void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
-        OGL_INIT(PixelStorei,void,glPixelStorei,(GLenum, GLint));
-        OGL_INIT(TexEnvf,void,glTexEnvf,(GLenum, GLenum, GLfloat));
-        OGL_INIT(GenTextures,void,glGenTextures,(GLsizei, GLuint*));
-        OGL_INIT(DeleteTextures,void,glDeleteTextures,(GLsizei, const GLuint*));
-        OGL_INIT(ActiveTexture,void,glActiveTexture,(GLenum));
-        OGL_INIT(BindTexture,void,glBindTexture,(GLenum, GLuint));
-        OGL_INIT(TexImage2D,void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
-        OGL_INIT(TexSubImage2D,void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
-        OGL_INIT(TexParameteri,void,glTexParameteri,(GLenum, GLenum, GLint));
-        OGL_INIT(GetError,GLenum,glGetError,(void));
-        OGL_INIT(Color4f,void,glColor4f,(GLfloat,GLfloat,GLfloat,GLfloat));
-        OGL_INIT(BlendFunc,void,glBlendFunc,(GLenum,GLenum));
-        break; // kGL_Full
-
-      case kGL_VBO:
-        OGL_INIT(GenBuffers,void,glGenBuffers,(GLsizei,GLuint*));
-        OGL_INIT(BindBuffer,void,glBindBuffer,(GLenum,GLuint));
-        OGL_INIT(BufferData,void,glBufferData,(GLenum,GLsizei,const void*,GLenum));
-        OGL_INIT(DeleteBuffers,void,glDeleteBuffers,(GLsizei, const GLuint*));
-        break;  // kGL_VBO
-    }
-  }
-  else
-    return false;
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,9 +86,10 @@ bool FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, ResolutionList& res)
   const GUI::Size& s = myOSystem->settings().getSize("maxres");
   if(s.w <= 0 || s.h <= 0)
   {
-    const SDL_VideoInfo* info = SDL_GetVideoInfo();
-    w = info->current_w;
-    h = info->current_h;
+    SDL_DisplayMode desktop;
+    SDL_GetDesktopDisplayMode(0, &desktop);
+    w = desktop.w;
+    h = desktop.h;
   }
 
 #if 0
@@ -223,73 +153,45 @@ bool FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, ResolutionList& res)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::initSubsystem(VideoMode& mode, bool full)
+bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool full)
 {
-  // Now (re)initialize the SDL video system
-  // These things only have to be done one per FrameBuffer creation
+  // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
-  {
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-    {
-      ostringstream buf;
-      buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
-      myOSystem->logMessage(buf.str(), 0);
-      return false;
-    }
-  }
-
-  mySDLFlags |= SDL_OPENGL;
-  setHint(kFullScreen, full);
-
-  // Set up the OpenGL attributes
-  myDepth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
-  switch(myDepth)
-  {
-    case 15:
-    case 16:
-      myRGB[0] = 5; myRGB[1] = 5; myRGB[2] = 5; myRGB[3] = 0;
-      break;
-    case 24:
-    case 32:
-      myRGB[0] = 8; myRGB[1] = 8; myRGB[2] = 8; myRGB[3] = 0;
-      break;
-    default:  // This should never happen
-      return false;
-      break;
-  }
-
-  // Create the screen
-  if(!setVidMode(mode))
     return false;
 
-  // Now check to see what color components were actually created
-  SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &myRGB[0] );
-  SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &myRGB[1] );
-  SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &myRGB[2] );
-  SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &myRGB[3] );
+  // (Re)create window and renderer
+  if(myRenderer)
+  {
+    SDL_DestroyRenderer(myRenderer);
+    myRenderer = NULL;
+  }
+  if(myWindow)
+  {
+    SDL_DestroyWindow(myWindow);
+    myWindow = NULL;
+  }
 
-  return true;
-}
+  myWindow = SDL_CreateWindow(title.c_str(),
+                 SDL_WINDOWPOS_CENTERED,
+                 SDL_WINDOWPOS_CENTERED,
+                 mode.image_w, mode.image_h,
+                 0);
+  if(myWindow == NULL)
+  {
+    string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
+    myOSystem->logMessage(msg, 0);
+    return false;
+  }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBufferSDL2::about() const
-{
-  ostringstream out;
-  out << "Video rendering: OpenGL mode" << endl
-      << "  Vendor:     " << p_gl.GetString(GL_VENDOR) << endl
-      << "  Renderer:   " << p_gl.GetString(GL_RENDERER) << endl
-      << "  Version:    " << p_gl.GetString(GL_VERSION) << endl
-      << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
-      << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << ", "
-      << "GL_BGRA" << endl
-      << "  Extensions: VBO " << (myVBOAvailable ? "enabled" : "disabled")
-      << endl;
-  return out.str();
-}
+  myRenderer = SDL_CreateRenderer(myWindow, -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  if(myWindow == NULL)
+  {
+    string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
+    myOSystem->logMessage(msg, 0);
+    return false;
+  }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::setVidMode(VideoMode& mode)
-{
   bool inTIAMode =
     myOSystem->eventHandler().state() != EventHandler::S_LAUNCHER &&
     myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER;
@@ -298,6 +200,7 @@ bool FrameBufferSDL2::setVidMode(VideoMode& mode)
   // We need it for the creating the TIA surface
   uInt32 baseHeight = mode.image_h / mode.gfxmode.zoom;
 
+#if 0
   // Aspect ratio and fullscreen stretching only applies to the TIA
   if(inTIAMode)
   {
@@ -362,18 +265,12 @@ bool FrameBufferSDL2::setVidMode(VideoMode& mode)
   // We leave it to the user to test and decide
   int vsync = myOSystem->settings().getBool("gl_vsync") ? 1 : 0;
   SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, vsync );
+#endif
 
-  // Create screen containing GL context
-  myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0, mySDLFlags);
-  if(myScreen == NULL)
-  {
-    string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
-    myOSystem->logMessage(msg, 0);
-    return false;
-  }
   // Make sure the flags represent the current screen state
-  mySDLFlags = myScreen->flags;
+//  myWindowFlags = myScreen->flags;
 
+#if 0
   // Optimization hints
   p_gl.ShadeModel(GL_FLAT);
   p_gl.Disable(GL_CULL_FACE);
@@ -390,7 +287,7 @@ bool FrameBufferSDL2::setVidMode(VideoMode& mode)
   p_gl.MatrixMode(GL_MODELVIEW);
   p_gl.LoadIdentity();
   p_gl.Translatef(0.375, 0.375, 0.0);  // fix scanline mis-draw issues
-
+#endif
 //cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl << mode << endl;
 
   // The framebuffer only takes responsibility for TIA surfaces
@@ -422,25 +319,28 @@ bool FrameBufferSDL2::setVidMode(VideoMode& mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::setHint(FBHint hint, bool enabled)
+string FrameBufferSDL2::about() const
 {
-  int flag = 0;
-  switch(hint)
-  {
-    case kFullScreen:
-      flag = SDL_FULLSCREEN;
-      break;
-  }
-  if(enabled)
-    mySDLFlags |= flag;
-  else
-    mySDLFlags &= ~flag;
+#if 0
+  ostringstream out;
+  out << "Video rendering: OpenGL mode" << endl
+      << "  Vendor:     " << p_gl.GetString(GL_VENDOR) << endl
+      << "  Renderer:   " << p_gl.GetString(GL_RENDERER) << endl
+      << "  Version:    " << p_gl.GetString(GL_VERSION) << endl
+      << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
+      << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << ", "
+      << "GL_BGRA" << endl
+      << "  Extensions: VBO " << (myVBOAvailable ? "enabled" : "disabled")
+      << endl;
+  return out.str();
+#endif
+return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::invalidate()
 {
-  p_gl.Clear(GL_COLOR_BUFFER_BIT);
+  SDL_RenderClear(myRenderer);
   if(myTiaSurface)
     myTiaSurface->invalidate();
 }
@@ -448,34 +348,32 @@ void FrameBufferSDL2::invalidate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::showCursor(bool show)
 {
-  SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
+//FIXSDL  SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::grabMouse(bool grab)
 {
-  SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
+//FIXSDL  SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::fullScreen() const
 {
+#if 0//FIXSDL
 #ifdef WINDOWED_SUPPORT
-  return mySDLFlags & SDL_FULLSCREEN;
+  return myWindowFlags & SDL_FULLSCREEN;
 #else
   return true;
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::setWindowTitle(const string& title)
-{
-  SDL_WM_SetCaption(title.c_str(), "stella");
+#endif
+return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setWindowIcon()
 {
+#if 0 //FIXSDL
 #if !defined(BSPF_MAC_OSX) && !defined(BSPF_UNIX)
   #include "stella.xpm"   // The Stella icon
 
@@ -532,6 +430,7 @@ void FrameBufferSDL2::setWindowIcon()
   SDL_WM_SetIcon(surface, (unsigned char *) mask);
   SDL_FreeSurface(surface);
 #endif
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -547,7 +446,7 @@ void FrameBufferSDL2::postFrameUpdate()
   if(myDirtyFlag)
   {
     // Now show all changes made to the texture(s)
-    SDL_GL_SwapBuffers();
+    SDL_RenderPresent(myRenderer);
     myDirtyFlag = false;
   }
 }
@@ -570,7 +469,7 @@ void FrameBufferSDL2::enableNTSC(bool enable)
   if(myTiaSurface)
   {
     myFilterType = FilterType(enable ? myFilterType | 0x10 : myFilterType & 0x01);
-    myTiaSurface->updateCoords();
+//FIXSDL    myTiaSurface->updateCoords();
 
     myTiaSurface->enableScanlines(ntscEnabled());
     myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
@@ -584,6 +483,7 @@ void FrameBufferSDL2::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
 {
+#if 0//FIXSDL
   int intensity = myTiaSurface->myScanlineIntensityI;
   if(myTiaSurface)
   {
@@ -596,6 +496,8 @@ uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
     myRedrawEntireFrame = true;
   }
   return intensity;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -627,6 +529,7 @@ FBSurface* FrameBufferSDL2::createSurface(int w, int h, bool isBase) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::scanline(uInt32 row, uInt8* data) const
 {
+#if 0
   // Invert the row, since OpenGL rows start at the bottom
   // of the framebuffer
   const GUI::Rect& image = imageRect();
@@ -634,6 +537,7 @@ void FrameBufferSDL2::scanline(uInt32 row, uInt8* data) const
 
   p_gl.PixelStorei(GL_PACK_ALIGNMENT, 1);
   p_gl.ReadPixels(image.x(), row, image.width(), 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -650,20 +554,20 @@ string FrameBufferSDL2::effectsInfo() const
       break;
     case kBlarggNormal:
       buf << myNTSCFilter.getPreset() << ", scanlines="
+#if 0
           << myTiaSurface->myScanlineIntensityI << "/"
           << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
+#endif
+ ;
       break;
     case kBlarggPhosphor:
       buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
+#if 0
           << myTiaSurface->myScanlineIntensityI << "/"
           << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
+#endif
+ ;
       break;
   }
   return buf.str();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::myLibraryLoaded = false;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::myVBOAvailable = false;

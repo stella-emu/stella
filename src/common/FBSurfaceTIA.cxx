@@ -29,35 +29,38 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
   : myFB(buffer),
-    myGL(myFB.p_gl),
+    mySurface(NULL),
     myTexture(NULL),
-    myVBOID(0),
-    myBaseW(0),
-    myBaseH(0),
-    myScanlinesEnabled(false),
-    myScanlineIntensityI(50),
-    myScanlineIntensityF(0.5)
+    myScanlinesEnabled(false)
+//    myScanlineIntensityI(50),
+//    myScanlineIntensityF(0.5)
 {
-  myTexID[0] = myTexID[1] = 0;
-
   // Texture width is set to contain all possible sizes for a TIA image,
   // including Blargg filtering
-  myTexWidth  = FrameBufferSDL2::power_of_two(ATARI_NTSC_OUT_WIDTH(160));
-  myTexHeight = FrameBufferSDL2::power_of_two(320);
+  int width = ATARI_NTSC_OUT_WIDTH(160);
+  int height = 320;
 
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormat& pf = myFB.myPixelFormat;
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, myTexWidth, myTexHeight,
-                  pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
 
-  myPitch = myTexture->pitch / pf.BytesPerPixel;
+  mySurface = SDL_CreateRGBSurface(0, width, height,
+      pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
+
+  mySrc.x = mySrc.y = myDst.x = myDst.y = 0;
+  mySrc.w = myDst.w = width;
+  mySrc.h = myDst.h = height;
+
+  myPitch = mySurface->pitch / pf.BytesPerPixel;
+
+  // To generate texture
+  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceTIA::~FBSurfaceTIA()
 {
-  if(myTexture)
-    SDL_FreeSurface(myTexture);
+  if(mySurface)
+    SDL_FreeSurface(mySurface);
 
   free();
 }
@@ -65,29 +68,29 @@ FBSurfaceTIA::~FBSurfaceTIA()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::getPos(uInt32& x, uInt32& y) const
 {
-  x = myImageX;
-  y = myImageY;
+  x = mySrc.x;
+  y = mySrc.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::translateCoords(Int32& x, Int32& y) const
 {
-  x -= myImageX;
-  y -= myImageY;
+  x = mySrc.x;
+  y = mySrc.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::update()
 {
   // Copy the mediasource framebuffer to the RGB texture
-  // In OpenGL mode, it's faster to just assume that the screen is dirty
-  // and always do an update
+  // In hardware rendering mode, it's faster to just assume that the screen
+  // is dirty and always do an update
 
   uInt8* currentFrame  = myTIA->currentFrameBuffer();
   uInt8* previousFrame = myTIA->previousFrameBuffer();
   uInt32 width         = myTIA->width();
   uInt32 height        = myTIA->height();
-  uInt32* buffer       = (uInt32*) myTexture->pixels;
+  uInt32* buffer       = (uInt32*) mySurface->pixels;
 
   // TODO - Eventually 'phosphor' won't be a separate mode, and will become
   //        a post-processing filter by blending several frames.
@@ -129,17 +132,25 @@ void FBSurfaceTIA::update()
     case FrameBufferSDL2::kBlarggNormal:
     {
       myFB.myNTSCFilter.blit_single(currentFrame, width, height,
-                                    buffer, myTexture->pitch);
+                                    buffer, mySurface->pitch);
       break;
     }
     case FrameBufferSDL2::kBlarggPhosphor:
     {
       myFB.myNTSCFilter.blit_double(currentFrame, previousFrame, width, height,
-                                    buffer, myTexture->pitch);
+                                    buffer, mySurface->pitch);
       break;
     }
   }
 
+SDL_Rect tmp;
+tmp.x = tmp.y = 0;
+tmp.w = 160;  tmp.h = 210;
+  SDL_UpdateTexture(myTexture, NULL, mySurface->pixels, mySurface->pitch);
+  SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrc, &myDst);
+
+
+#if 0
   myGL.EnableClientState(GL_VERTEX_ARRAY);
   myGL.EnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -150,7 +161,7 @@ void FBSurfaceTIA::update()
   myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
   myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myBaseW, myBaseH,
                     GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-                    myTexture->pixels);
+                    mySurface->pixels);
 
   if(myFB.myVBOAvailable)
   {
@@ -192,6 +203,7 @@ void FBSurfaceTIA::update()
 
   myGL.DisableClientState(GL_VERTEX_ARRAY);
   myGL.DisableClientState(GL_TEXTURE_COORD_ARRAY);
+#endif
 
   // Let postFrameUpdate() know that a change has been made
   myFB.myDirtyFlag = true;
@@ -200,20 +212,27 @@ void FBSurfaceTIA::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::invalidate()
 {
-  SDL_FillRect(myTexture, NULL, 0);
+  SDL_FillRect(mySurface, NULL, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::free()
 {
-  myGL.DeleteTextures(2, myTexID);
-  if(myFB.myVBOAvailable)
-    myGL.DeleteBuffers(1, &myVBOID);
+  if(myTexture)
+  {
+    SDL_DestroyTexture(myTexture);
+    myTexture = NULL;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::reload()
 {
+  // Re-create texture; the underlying SDL_Surface is fine as-is
+  myTexture = SDL_CreateTexture(myFB.myRenderer,
+      SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+      mySurface->w, mySurface->h);
+#if 0
   // This does a 'soft' reset of the surface
   // It seems that on some system (notably, OSX), creating a new SDL window
   // destroys the GL context, requiring a reload of all textures
@@ -241,7 +260,7 @@ void FBSurfaceTIA::reload()
   myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
   myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
                  GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-                 myTexture->pixels);
+                 mySurface->pixels);
 
   // Scanline texture (@ index 1)
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
@@ -264,51 +283,72 @@ void FBSurfaceTIA::reload()
     myGL.BindBuffer(GL_ARRAY_BUFFER, myVBOID);
     myGL.BufferData(GL_ARRAY_BUFFER, 32*sizeof(GLfloat), myCoord, GL_STATIC_DRAW);
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::setScanIntensity(uInt32 intensity)
 {
+#if 0
   myScanlineIntensityI = (GLuint)intensity;
   myScanlineIntensityF = (GLfloat)intensity / 100;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::setTexInterpolation(bool enable)
 {
+#if 0
   myTexFilter[0] = enable ? GL_LINEAR : GL_NEAREST;
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[0]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[0]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::setScanInterpolation(bool enable)
 {
+#if 0
   myTexFilter[1] = enable ? GL_LINEAR : GL_NEAREST;
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[1]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[1]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::updateCoords(uInt32 baseH,
      uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH)
 {
+//cerr << "baseH=" << baseH << ", x=" << imgX << ", y=" << imgY << ", w=" << imgW << ", h=" << imgH << endl;
+
+  mySrc.w = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
+  mySrc.h = baseH;
+
+  myDst.w = imgW;
+  myDst.h = imgH;
+
+//cerr << "src: x=" << mySrc.x << ", y=" << mySrc.y << ", w=" << mySrc.w << ", h=" << mySrc.h << endl;
+//cerr << "dst: x=" << myDst.x << ", y=" << myDst.y << ", w=" << myDst.w << ", h=" << myDst.h << endl;
+
+#if 0
   myBaseH = baseH;
   myImageX = imgX;  myImageY = imgY;
   myImageW = imgW;  myImageH = imgH;
 
   updateCoords();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::updateCoords()
 {
+#if 0
   // Normal TIA rendering and TV effects use different widths
   // We use the same buffer, and only pick the width we need
   myBaseW = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
@@ -382,6 +422,7 @@ void FBSurfaceTIA::updateCoords()
     myGL.BindBuffer(GL_ARRAY_BUFFER, myVBOID);
     myGL.BufferData(GL_ARRAY_BUFFER, 32*sizeof(GLfloat), myCoord, GL_STATIC_DRAW);
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

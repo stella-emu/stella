@@ -58,6 +58,7 @@ class EventHandlerSDL2 : public EventHandler
   private:
     SDL_Event event;
 
+  #ifdef JOYSTICK_SUPPORT
     // A thin wrapper around a basic StellaJoystick, holding the pointer to
     // the underlying SDL stick.
     class JoystickSDL2 : public StellaJoystick
@@ -69,6 +70,7 @@ class EventHandlerSDL2 : public EventHandler
       private:
         SDL_Joystick* stick;
     };
+  #endif
 };
 
 #endif

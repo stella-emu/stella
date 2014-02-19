@@ -62,7 +62,8 @@ void EventHandlerSDL2::pollEvent()
       {
         handleKeyEvent((StellaKey)event.key.keysym.sym,
                        (StellaMod)event.key.keysym.mod,
-                       event.key.keysym.unicode & 0x7f,
+//FIXSDL                       event.key.keysym.unicode & 0x7f,
+                       event.key.keysym.scancode,
                        event.key.type == SDL_KEYDOWN);
         break;
       }
@@ -88,17 +89,16 @@ void EventHandlerSDL2::pollEvent()
             handleMouseButtonEvent(pressed ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP,
                                    event.button.x, event.button.y);
             break;
-          case SDL_BUTTON_WHEELDOWN:
-            if(pressed)
-              handleMouseButtonEvent(EVENT_WHEELDOWN, event.button.x,
-                                     event.button.y);
-            break;
-          case SDL_BUTTON_WHEELUP:
-            if(pressed)
-              handleMouseButtonEvent(EVENT_WHEELUP, event.button.x,
-                                     event.button.y);
-            break;
         }
+        break;
+      }
+
+      case SDL_MOUSEWHEEL:
+      {
+        if(event.wheel.y < 0)
+          handleMouseButtonEvent(EVENT_WHEELDOWN, 0, event.wheel.y);
+        else if(event.wheel.y > 0)
+          handleMouseButtonEvent(EVENT_WHEELUP, 0, event.wheel.y);
         break;
       }
 
@@ -151,26 +151,24 @@ void EventHandlerSDL2::pollEvent()
   }
 }
 
+#ifdef JOYSTICK_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
   : stick(NULL)
 {
-#ifdef JOYSTICK_SUPPORT
   stick = SDL_JoystickOpen(idx);
   if(stick)
   {
     initialize(SDL_JoystickName(idx), SDL_JoystickNumAxes(stick),
                SDL_JoystickNumButtons(stick), SDL_JoystickNumHats(stick));
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
 {
-#ifdef JOYSTICK_SUPPORT
   if(stick)
     SDL_JoystickClose(stick);
   stick = NULL;
-#endif
 }
+#endif

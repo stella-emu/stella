@@ -186,11 +186,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   VideoMode mode = getSavedVidMode();
   if(width <= mode.screen_w && height <= mode.screen_h)
   {
-    setWindowTitle(title);
-    if(initSubsystem(mode, useFullscreen))
+    if(setVideoMode(title, mode, useFullscreen))
     {
-      centerAppWindow(mode);
-
       myImageRect.setWidth(mode.image_w);
       myImageRect.setHeight(mode.image_h);
       myImageRect.moveTo(mode.image_x, mode.image_y);
@@ -498,7 +495,7 @@ void FrameBuffer::refresh()
   // This method is in essence a FULL refresh, putting all rendering
   // buffers in a known, fully redrawn state
 
-  bool doubleBuffered = (type() == kDoubleBuffer);
+  bool doubleBuffered = false;//FIXSDL(type() == kDoubleBuffer);
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
@@ -756,6 +753,7 @@ void FrameBuffer::toggleFullscreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
+#if 0 //FIXSDL
 #ifdef WINDOWED_SUPPORT
   // '-1' means fullscreen mode is completely disabled
   bool full = enable && myOSystem->settings().getString("fullscreen") != "-1";
@@ -769,11 +767,13 @@ void FrameBuffer::setFullscreen(bool enable)
   // to changeVidMode()
   changeVidMode(0);
 #endif
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::changeVidMode(int direction)
 {
+#if 0 //FIXSDL
   EventHandler::State state = myOSystem->eventHandler().state();
   bool inUIMode = (state == EventHandler::S_DEBUGGER ||
                    state == EventHandler::S_LAUNCHER);
@@ -793,8 +793,6 @@ bool FrameBuffer::changeVidMode(int direction)
   VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
   if(setVidMode(vidmode))
   {
-    centerAppWindow(vidmode);
-
     myImageRect.setWidth(vidmode.image_w);
     myImageRect.setHeight(vidmode.image_h);
     myImageRect.moveTo(vidmode.image_x, vidmode.image_y);
@@ -820,7 +818,7 @@ bool FrameBuffer::changeVidMode(int direction)
   }
   else
     return false;
-
+#endif
   return true;
 /*
 cerr << "New mode:" << endl
@@ -1023,22 +1021,6 @@ FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
   }
 
   return myCurrentModeList->current(myOSystem->settings(), fullScreen());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::centerAppWindow(const VideoMode& mode)
-{
-  // FIXSDL
-#if 0
-  // Attempt to center the application window in non-fullscreen mode
-  if(!fullScreen() && myOSystem->settings().getBool("center"))
-  {
-    int x = mode.screen_w >= myOSystem->desktopWidth() ? 0 : 
-      ((myOSystem->desktopWidth() - mode.screen_w) >> 1);
-    int y = mode.screen_h >= myOSystem->desktopHeight() ? 0 : 
-      ((myOSystem->desktopHeight() - mode.screen_h) >> 1);
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

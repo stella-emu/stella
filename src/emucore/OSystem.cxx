@@ -107,10 +107,11 @@ OSystem::OSystem()
 
   // Get build info
   ostringstream info;
-  const SDL_version* ver = SDL_Linked_Version();
+  SDL_version ver;
+  SDL_GetVersion(&ver);
 
-  info << "Build " << STELLA_BUILD << ", using SDL " << (int)ver->major
-       << "." << (int)ver->minor << "."<< (int)ver->patch
+  info << "Build " << STELLA_BUILD << ", using SDL " << (int)ver.major
+       << "." << (int)ver.minor << "."<< (int)ver.patch
        << " [" << BSPF_ARCH << "]";
   myBuildInfo = info.str();
 

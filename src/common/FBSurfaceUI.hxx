@@ -24,7 +24,7 @@
 #include "FrameBufferSDL2.hxx"
 
 /**
-  A surface suitable for OpenGL rendering mode, used for various UI dialogs.
+  A surface suitable for SDL Render2D API, used for various UI dialogs.
   This class extends FrameBuffer::FBSurface.
 
   @author  Stephen Anthony
@@ -48,29 +48,22 @@ class FBSurfaceUI : public FBSurface
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
     void getPos(uInt32& x, uInt32& y) const;
     void setPos(uInt32 x, uInt32 y);
-    uInt32 getWidth()  const { return myImageW; }
-    uInt32 getHeight() const { return myImageH; }
+    uInt32 getWidth()  const { return mySrc.w; }
+    uInt32 getHeight() const { return mySrc.h; }
     void setWidth(uInt32 w);
     void setHeight(uInt32 h);
     void translateCoords(Int32& x, Int32& y) const;
     void update();
+    void invalidate();
     void free();
     void reload();
 
   private:
-    void updateCoords();
-
-  private:
     FrameBufferSDL2& myFB;
-    const FrameBufferSDL2::GLpointers& myGL;
-    SDL_Surface* myTexture;
 
-    GLuint  myTexID, myVBOID;
-    GLsizei myTexWidth;
-    GLsizei myTexHeight;
-    GLuint  myImageX, myImageY, myImageW, myImageH;
-    GLfloat myTexCoordW, myTexCoordH;
-    GLfloat myCoord[16];
+    SDL_Surface* mySurface;
+    SDL_Texture* myTexture;
+    SDL_Rect mySrc, myDst;
 
     bool mySurfaceIsDirty;
     uInt32 myPitch;
