@@ -228,7 +228,7 @@ void FBSurfaceUI::update()
 //cerr << "src: x=" << mySrc.x << ", y=" << mySrc.y << ", w=" << mySrc.w << ", h=" << mySrc.h << endl;
 //cerr << "dst: x=" << myDst.x << ", y=" << myDst.y << ", w=" << myDst.w << ", h=" << myDst.h << endl;
 
-    SDL_UpdateTexture(myTexture, NULL, mySurface->pixels, mySurface->pitch);
+    SDL_UpdateTexture(myTexture, &mySrc, mySurface->pixels, mySurface->pitch);
     SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrc, &myDst);
 
     mySurfaceIsDirty = false;

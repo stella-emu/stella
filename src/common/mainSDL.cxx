@@ -116,15 +116,6 @@ int main(int argc, char* argv[])
     return Cleanup();
   }
 
-#ifdef BSPF_UNIX
-  // Nvidia cards under UNIX don't currently support SDL_GL_SWAP_CONTROL
-  // So we need to do it with an Nvidia-specific environment variable
-  // This also means the setting can only be changed by restarting Stella
-  // This functionality should really be integrated into SDL directly
-  if(theOSystem->settings().getBool("gl_vsync"))
-    putenv((char*)"__GL_SYNC_TO_VBLANK=1");
-#endif
-
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if
   //   the ROM actually exists, use it to create a new console.
