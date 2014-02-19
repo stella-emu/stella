@@ -31,9 +31,10 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
   : myFB(buffer),
     mySurface(NULL),
     myTexture(NULL),
-    myScanlinesEnabled(false)
-//    myScanlineIntensityI(50),
-//    myScanlineIntensityF(0.5)
+    myScanlines(NULL),
+    myScanlinesEnabled(false),
+    myScanlineIntensityI(50),
+    myScanlineIntensityF(0.5)
 {
   // Texture width is set to contain all possible sizes for a TIA image,
   // including Blargg filtering
@@ -52,7 +53,7 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
 
   myPitch = mySurface->pitch / pf.BytesPerPixel;
 
-  // To generate texture
+  // To generate textures
   reload();
 }
 
@@ -143,67 +144,13 @@ void FBSurfaceTIA::update()
     }
   }
 
-SDL_Rect tmp;
-tmp.x = tmp.y = 0;
-tmp.w = 160;  tmp.h = 210;
-  SDL_UpdateTexture(myTexture, NULL, mySurface->pixels, mySurface->pitch);
+  // Draw TIA image
+  SDL_UpdateTexture(myTexture, &mySrc, mySurface->pixels, mySurface->pitch);
   SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrc, &myDst);
 
-
-#if 0
-  myGL.EnableClientState(GL_VERTEX_ARRAY);
-  myGL.EnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-  // Update TIA image (texture 0), then blend scanlines (texture 1)
-  myGL.ActiveTexture(GL_TEXTURE0);
-  myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
-  myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
-  myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myBaseW, myBaseH,
-                    GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mySurface->pixels);
-
-  if(myFB.myVBOAvailable)
-  {
-    myGL.BindBuffer(GL_ARRAY_BUFFER, myVBOID);
-    myGL.VertexPointer(2, GL_FLOAT, 0, (const GLvoid*)0);
-    myGL.TexCoordPointer(2, GL_FLOAT, 0, (const GLvoid*)(8*sizeof(GLfloat)));
-    myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    if(myScanlinesEnabled)
-    {
-      myGL.Enable(GL_BLEND);
-      myGL.Color4f(1.0f, 1.0f, 1.0f, myScanlineIntensityF);
-      myGL.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
-      myGL.VertexPointer(2, GL_FLOAT, 0, (const GLvoid*)(16*sizeof(GLfloat)));
-      myGL.TexCoordPointer(2, GL_FLOAT, 0, (const GLvoid*)(24*sizeof(GLfloat)));
-      myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-      myGL.Disable(GL_BLEND);
-    }
-  }
-  else
-  {
-    myGL.VertexPointer(2, GL_FLOAT, 0, myCoord);
-    myGL.TexCoordPointer(2, GL_FLOAT, 0, myCoord+8);
-    myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    if(myScanlinesEnabled)
-    {
-      myGL.Enable(GL_BLEND);
-      myGL.Color4f(1.0f, 1.0f, 1.0f, myScanlineIntensityF);
-      myGL.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
-      myGL.VertexPointer(2, GL_FLOAT, 0, myCoord+16);
-      myGL.TexCoordPointer(2, GL_FLOAT, 0, myCoord+24);
-      myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-      myGL.Disable(GL_BLEND);
-    }
-  }
-
-  myGL.DisableClientState(GL_VERTEX_ARRAY);
-  myGL.DisableClientState(GL_TEXTURE_COORD_ARRAY);
-#endif
+  // Draw overlaying scanlines
+  if(myScanlinesEnabled)
+    SDL_RenderCopy(myFB.myRenderer, myScanlines, NULL, &myDst);
 
   // Let postFrameUpdate() know that a change has been made
   myFB.myDirtyFlag = true;
@@ -223,6 +170,11 @@ void FBSurfaceTIA::free()
     SDL_DestroyTexture(myTexture);
     myTexture = NULL;
   }
+  if(myScanlines)
+  {
+    SDL_DestroyTexture(myScanlines);
+    myScanlines = NULL;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -232,67 +184,21 @@ void FBSurfaceTIA::reload()
   myTexture = SDL_CreateTexture(myFB.myRenderer,
       SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
       mySurface->w, mySurface->h);
-#if 0
-  // This does a 'soft' reset of the surface
-  // It seems that on some system (notably, OSX), creating a new SDL window
-  // destroys the GL context, requiring a reload of all textures
-  // However, destroying the entire FBSurfaceGL object is wasteful, since
-  // it will also regenerate SDL software surfaces (which are not required
-  // to be regenerated)
-  // Basically, all that needs to be done is to re-call glTexImage2D with a
-  // new texture ID, so that's what we do here
 
-  myGL.ActiveTexture(GL_TEXTURE0);
-  myGL.Enable(GL_TEXTURE_2D);
-
-  // TIA surfaces also use a scanline texture
-  myGL.GenTextures(2, myTexID);
-
-  // Base texture (@ index 0)
-  myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  // Create the texture in the most optimal format
-  myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
-                 GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-                 mySurface->pixels);
-
-  // Scanline texture (@ index 1)
-  myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[1]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[1]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-  static uInt32 const scanline[2] = { 0x00000000, 0xff000000 };
-  myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, 1);
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 2, 0,
-                 GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-                 scanline);
-
-  // Cache vertex and texture coordinates using vertex buffer object
-  if(myFB.myVBOAvailable)
-  {
-    myGL.GenBuffers(1, &myVBOID);
-    myGL.BindBuffer(GL_ARRAY_BUFFER, myVBOID);
-    myGL.BufferData(GL_ARRAY_BUFFER, 32*sizeof(GLfloat), myCoord, GL_STATIC_DRAW);
-  }
-#endif
+  // Re-create scanline texture (contents don't change)
+  myScanlines = SDL_CreateTexture(myFB.myRenderer,
+      SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC,
+      1, 2);
+  SDL_SetTextureBlendMode(myScanlines, SDL_BLENDMODE_BLEND);
+  SDL_SetTextureAlphaMod(myScanlines, myScanlineIntensityF*255);
+  SDL_UpdateTexture(myScanlines, NULL, ourScanData, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::setScanIntensity(uInt32 intensity)
 {
-#if 0
-  myScanlineIntensityI = (GLuint)intensity;
-  myScanlineIntensityF = (GLfloat)intensity / 100;
-#endif
+  myScanlineIntensityI = intensity;
+  myScanlineIntensityF = intensity / 100.0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,29 +231,19 @@ void FBSurfaceTIA::setScanInterpolation(bool enable)
 void FBSurfaceTIA::updateCoords(uInt32 baseH,
      uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH)
 {
-//cerr << "baseH=" << baseH << ", x=" << imgX << ", y=" << imgY << ", w=" << imgW << ", h=" << imgH << endl;
-
-  mySrc.w = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
   mySrc.h = baseH;
-
   myDst.w = imgW;
   myDst.h = imgH;
 
-//cerr << "src: x=" << mySrc.x << ", y=" << mySrc.y << ", w=" << mySrc.w << ", h=" << mySrc.h << endl;
-//cerr << "dst: x=" << myDst.x << ", y=" << myDst.y << ", w=" << myDst.w << ", h=" << myDst.h << endl;
-
-#if 0
-  myBaseH = baseH;
-  myImageX = imgX;  myImageY = imgY;
-  myImageW = imgW;  myImageH = imgH;
-
   updateCoords();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::updateCoords()
 {
+  // For a TIA surface, only the width can possibly change
+  mySrc.w = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
+
 #if 0
   // Normal TIA rendering and TV effects use different widths
   // We use the same buffer, and only pick the width we need
@@ -430,3 +326,6 @@ void FBSurfaceTIA::setTIAPalette(const uInt32* palette)
 {
   myFB.myNTSCFilter.setTIAPalette(myFB, palette);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 const FBSurfaceTIA::ourScanData[2] = { 0x00000000, 0xff000000 };

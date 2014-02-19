@@ -69,8 +69,16 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::~FrameBufferSDL2()
 {
-//  if(myWindow)
-//    SDL_DestroyWindow(myWindow);
+  if(myRenderer)
+  {
+    SDL_DestroyRenderer(myRenderer);
+    myRenderer = NULL;
+  }
+  if(myWindow)
+  {
+    SDL_DestroyWindow(myWindow);
+    myWindow = NULL;
+  }
 
   // We're taking responsibility for this surface
   delete myTiaSurface;
@@ -469,7 +477,7 @@ void FrameBufferSDL2::enableNTSC(bool enable)
   if(myTiaSurface)
   {
     myFilterType = FilterType(enable ? myFilterType | 0x10 : myFilterType & 0x01);
-//FIXSDL    myTiaSurface->updateCoords();
+    myTiaSurface->updateCoords();
 
     myTiaSurface->enableScanlines(ntscEnabled());
     myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
@@ -483,7 +491,6 @@ void FrameBufferSDL2::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
 {
-#if 0//FIXSDL
   int intensity = myTiaSurface->myScanlineIntensityI;
   if(myTiaSurface)
   {
@@ -496,8 +503,6 @@ uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
     myRedrawEntireFrame = true;
   }
   return intensity;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -529,7 +534,7 @@ FBSurface* FrameBufferSDL2::createSurface(int w, int h, bool isBase) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::scanline(uInt32 row, uInt8* data) const
 {
-#if 0
+#if 0 //FIXSDL
   // Invert the row, since OpenGL rows start at the bottom
   // of the framebuffer
   const GUI::Rect& image = imageRect();
@@ -554,16 +559,16 @@ string FrameBufferSDL2::effectsInfo() const
       break;
     case kBlarggNormal:
       buf << myNTSCFilter.getPreset() << ", scanlines="
-#if 0
           << myTiaSurface->myScanlineIntensityI << "/"
+#if 0
           << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
 #endif
  ;
       break;
     case kBlarggPhosphor:
       buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
-#if 0
           << myTiaSurface->myScanlineIntensityI << "/"
+#if 0
           << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
 #endif
  ;

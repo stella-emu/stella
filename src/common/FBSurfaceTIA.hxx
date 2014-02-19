@@ -67,10 +67,15 @@ class FBSurfaceTIA : public FBSurface
 
     SDL_Surface* mySurface;
     SDL_Texture* myTexture;
+    SDL_Texture* myScanlines;
     SDL_Rect mySrc, myDst;
     uInt32 myPitch;
 
     bool myScanlinesEnabled;
+    uInt32 myScanlineIntensityI;
+    float myScanlineIntensityF;
+
+    static uInt32 const ourScanData[2];
 };
 
 #endif
