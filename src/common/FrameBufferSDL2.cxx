@@ -88,74 +88,10 @@ FrameBufferSDL2::~FrameBufferSDL2()
 bool FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, ResolutionList& res)
 {
   // First get the maximum windowed desktop resolution
-  // Check the 'maxres' setting, which is an undocumented developer feature
-  // that specifies the desktop size
-  // Normally, this wouldn't be set, and we ask SDL directly
-  const GUI::Size& s = myOSystem->settings().getSize("maxres");
-  if(s.w <= 0 || s.h <= 0)
-  {
-    SDL_DisplayMode desktop;
-    SDL_GetDesktopDisplayMode(0, &desktop);
-    w = desktop.w;
-    h = desktop.h;
-  }
-
-#if 0
-  // Various parts of the codebase assume a minimum screen size of 320x240
-  if(!(myDesktopWidth >= 320 && myDesktopHeight >= 240))
-  {
-    logMessage("ERROR: queryVideoHardware failed, "
-               "window 320x240 or larger required", 0);
-    return false;
-  }
-
-  // Then get the valid fullscreen modes
-  // If there are any errors, just use the desktop resolution
-  ostringstream buf;
-  SDL_Rect** modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
-  if((modes == (SDL_Rect**)0) || (modes == (SDL_Rect**)-1))
-  {
-    Resolution r;
-    r.width  = myDesktopWidth;
-    r.height = myDesktopHeight;
-    buf << r.width << "x" << r.height;
-    r.name = buf.str();
-    myResolutions.push_back(r);
-  }
-  else
-  {
-    // All modes must fit between the lower and upper limits of the desktop
-    // For 'small' desktop, this means larger than 320x240
-    // For 'large'/normal desktop, exclude all those less than 640x480
-    bool largeDesktop = myDesktopWidth >= 640 && myDesktopHeight >= 480;
-    uInt32 lowerWidth  = largeDesktop ? 640 : 320,
-           lowerHeight = largeDesktop ? 480 : 240;
-    for(uInt32 i = 0; modes[i]; ++i)
-    {
-      if(modes[i]->w >= lowerWidth && modes[i]->w <= myDesktopWidth &&
-         modes[i]->h >= lowerHeight && modes[i]->h <= myDesktopHeight)
-      {
-        Resolution r;
-        r.width  = modes[i]->w;
-        r.height = modes[i]->h;
-        buf.str("");
-        buf << r.width << "x" << r.height;
-        r.name = buf.str();
-        myResolutions.insert_at(0, r);  // insert in opposite (of descending) order
-      }
-    }
-    // If no modes were valid, use the desktop dimensions
-    if(myResolutions.size() == 0)
-    {
-      Resolution r;
-      r.width  = myDesktopWidth;
-      r.height = myDesktopHeight;
-      buf << r.width << "x" << r.height;
-      r.name = buf.str();
-      myResolutions.push_back(r);
-    }
-  }
-#endif
+  SDL_DisplayMode desktop;
+  SDL_GetDesktopDisplayMode(0, &desktop);
+  w = desktop.w;
+  h = desktop.h;
 
   return true;
 }
@@ -491,7 +427,7 @@ void FrameBufferSDL2::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
 {
-  int intensity = myTiaSurface->myScanlineIntensityI;
+  int intensity = myTiaSurface->myScanlineIntensity;
   if(myTiaSurface)
   {
     if(relative == 0)  intensity = absolute;
@@ -559,7 +495,7 @@ string FrameBufferSDL2::effectsInfo() const
       break;
     case kBlarggNormal:
       buf << myNTSCFilter.getPreset() << ", scanlines="
-          << myTiaSurface->myScanlineIntensityI << "/"
+          << myTiaSurface->myScanlineIntensity << "/"
 #if 0
           << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
 #endif
@@ -567,7 +503,7 @@ string FrameBufferSDL2::effectsInfo() const
       break;
     case kBlarggPhosphor:
       buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
-          << myTiaSurface->myScanlineIntensityI << "/"
+          << myTiaSurface->myScanlineIntensity << "/"
 #if 0
           << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
 #endif

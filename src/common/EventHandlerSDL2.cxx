@@ -136,7 +136,7 @@ void EventHandlerSDL2::pollEvent()
         handleEvent(Event::Quit, 1);
         break;  // SDL_QUIT
 
-#if 0 // FIXME
+#if 0 //FIXSDL
       case SDL_ACTIVEEVENT:
         if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
           if(myState == S_EMULATE) enterMenuMode(S_MENU);
@@ -159,7 +159,7 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
   stick = SDL_JoystickOpen(idx);
   if(stick)
   {
-    initialize(SDL_JoystickName(idx), SDL_JoystickNumAxes(stick),
+    initialize(SDL_JoystickName(stick), SDL_JoystickNumAxes(stick),
                SDL_JoystickNumButtons(stick), SDL_JoystickNumHats(stick));
   }
 }

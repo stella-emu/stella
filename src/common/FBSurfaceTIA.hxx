@@ -43,8 +43,8 @@ class FBSurfaceTIA : public FBSurface
     // only the methods absolutely necessary for dealing with drawing
     // a TIA image
     void getPos(uInt32& x, uInt32& y) const;
-    uInt32 getWidth()  const { return mySrc.w; }
-    uInt32 getHeight() const { return mySrc.h; }
+    uInt32 getWidth()  const { return mySrcR.w; }
+    uInt32 getHeight() const { return mySrcR.h; }
     void translateCoords(Int32& x, Int32& y) const;
     void update();
     void invalidate();
@@ -68,14 +68,13 @@ class FBSurfaceTIA : public FBSurface
     SDL_Surface* mySurface;
     SDL_Texture* myTexture;
     SDL_Texture* myScanlines;
-    SDL_Rect mySrc, myDst;
+    SDL_Rect mySrcR, myDstR, myScanR;
     uInt32 myPitch;
 
     bool myScanlinesEnabled;
-    uInt32 myScanlineIntensityI;
-    float myScanlineIntensityF;
+    uInt32 myScanlineIntensity;
 
-    static uInt32 const ourScanData[2];
+    uInt32 ourScanData[320];
 };
 
 #endif

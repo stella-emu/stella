@@ -19,10 +19,8 @@
 
 #include <cmath>
 
-#include "Font.hxx"
-#include "FrameBufferSDL2.hxx"
-#include "TIA.hxx"
 #include "NTSCFilter.hxx"
+#include "TIA.hxx"
 
 #include "FBSurfaceTIA.hxx"
 
@@ -33,8 +31,7 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
     myTexture(NULL),
     myScanlines(NULL),
     myScanlinesEnabled(false),
-    myScanlineIntensityI(50),
-    myScanlineIntensityF(0.5)
+    myScanlineIntensity(50)
 {
   // Texture width is set to contain all possible sizes for a TIA image,
   // including Blargg filtering
@@ -47,11 +44,19 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
   mySurface = SDL_CreateRGBSurface(0, width, height,
       pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
 
-  mySrc.x = mySrc.y = myDst.x = myDst.y = 0;
-  mySrc.w = myDst.w = width;
-  mySrc.h = myDst.h = height;
+  mySrcR.x = mySrcR.y = myDstR.x = myDstR.y = myScanR.x = myScanR.y = 0;
+  mySrcR.w = myDstR.w = width;
+  mySrcR.h = myDstR.h = height;
+  myScanR.w = 1;  myScanR.h = 0;
 
   myPitch = mySurface->pitch / pf.BytesPerPixel;
+
+  // Generate scanline data
+  for(int i = 0; i < mySurface->h; i+=2)
+  {
+    ourScanData[i]   = 0x00000000;
+    ourScanData[i+1] = 0xff000000;
+  }
 
   // To generate textures
   reload();
@@ -69,15 +74,15 @@ FBSurfaceTIA::~FBSurfaceTIA()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::getPos(uInt32& x, uInt32& y) const
 {
-  x = mySrc.x;
-  y = mySrc.y;
+  x = mySrcR.x;
+  y = mySrcR.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::translateCoords(Int32& x, Int32& y) const
 {
-  x = mySrc.x;
-  y = mySrc.y;
+  x = mySrcR.x;
+  y = mySrcR.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,12 +150,12 @@ void FBSurfaceTIA::update()
   }
 
   // Draw TIA image
-  SDL_UpdateTexture(myTexture, &mySrc, mySurface->pixels, mySurface->pitch);
-  SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrc, &myDst);
+  SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
+  SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrcR, &myDstR);
 
   // Draw overlaying scanlines
   if(myScanlinesEnabled)
-    SDL_RenderCopy(myFB.myRenderer, myScanlines, NULL, &myDst);
+    SDL_RenderCopy(myFB.myRenderer, myScanlines, &myScanR, &myDstR);
 
   // Let postFrameUpdate() know that a change has been made
   myFB.myDirtyFlag = true;
@@ -188,17 +193,16 @@ void FBSurfaceTIA::reload()
   // Re-create scanline texture (contents don't change)
   myScanlines = SDL_CreateTexture(myFB.myRenderer,
       SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC,
-      1, 2);
+      1, mySurface->h);
   SDL_SetTextureBlendMode(myScanlines, SDL_BLENDMODE_BLEND);
-  SDL_SetTextureAlphaMod(myScanlines, myScanlineIntensityF*255);
-  SDL_UpdateTexture(myScanlines, NULL, ourScanData, 1);
+  SDL_SetTextureAlphaMod(myScanlines, myScanlineIntensity*2.55);
+  SDL_UpdateTexture(myScanlines, &myScanR, ourScanData, 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::setScanIntensity(uInt32 intensity)
 {
-  myScanlineIntensityI = intensity;
-  myScanlineIntensityF = intensity / 100.0;
+  myScanlineIntensity = intensity;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,9 +235,20 @@ void FBSurfaceTIA::setScanInterpolation(bool enable)
 void FBSurfaceTIA::updateCoords(uInt32 baseH,
      uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH)
 {
-  mySrc.h = baseH;
-  myDst.w = imgW;
-  myDst.h = imgH;
+  mySrcR.h = baseH;
+  myDstR.w = imgW;
+  myDstR.h = imgH;
+
+  // Scanline repeating is sensitive to non-integral vertical resolution,
+  // so rounding is performed to eliminate it
+  // This won't be 100% accurate, but non-integral scaling isn't 100%
+  // accurate anyway
+
+float x = float(imgH) / floor(((float)imgH / baseH) + 0.5);
+cerr << "myScanR.h = " << x << endl;
+
+  myScanR.w = 1;
+  myScanR.h = x;
 
   updateCoords();
 }
@@ -242,7 +257,7 @@ void FBSurfaceTIA::updateCoords(uInt32 baseH,
 void FBSurfaceTIA::updateCoords()
 {
   // For a TIA surface, only the width can possibly change
-  mySrc.w = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
+  mySrcR.w = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
 
 #if 0
   // Normal TIA rendering and TV effects use different widths
@@ -326,6 +341,3 @@ void FBSurfaceTIA::setTIAPalette(const uInt32* palette)
 {
   myFB.myNTSCFilter.setTIAPalette(myFB, palette);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 const FBSurfaceTIA::ourScanData[2] = { 0x00000000, 0xff000000 };

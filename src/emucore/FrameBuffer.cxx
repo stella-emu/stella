@@ -82,12 +82,21 @@ bool FrameBuffer::initialize()
   if(!queryHardware(myDesktopWidth, myDesktopHeight, myResolutions))
     return false;
 
+  // Check the 'maxres' setting, which is an undocumented developer feature
+  // that specifies the desktop size (not normally set)
+  const GUI::Size& s = myOSystem->settings().getSize("maxres");
+  if(s.w > 0 && s.h > 0)
+  {
+    myDesktopWidth  = s.w;
+    myDesktopHeight = s.h;
+  }
+
   // Various parts of the codebase assume a minimum screen size of 320x240
   myDesktopWidth = BSPF_max(myDesktopWidth, 320u);
   myDesktopHeight = BSPF_max(myDesktopHeight, 240u);
   if(!(myDesktopWidth >= 320 && myDesktopHeight >= 240))
   {
-    myOSystem->logMessage("ERROR: queryVideoHardware failed, "
+    myOSystem->logMessage("ERROR: video init failed, "
                           "window 320x240 or larger required", 0);
     return false;
   }
