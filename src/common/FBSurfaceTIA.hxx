@@ -55,9 +55,9 @@ class FBSurfaceTIA : public FBSurface
     void setTIA(const TIA& tia) { myTIA = &tia; }
     void setTIAPalette(const uInt32* palette);
     void enableScanlines(bool enable) { myScanlinesEnabled = enable; }
-    void setScanIntensity(uInt32 intensity);
-    void setTexInterpolation(bool enable);
-    void setScanInterpolation(bool enable);
+    void setScanIntensity(uInt32 intensity) { myScanlineIntensity = intensity; }
+    void setTexInterpolation(bool enable) { myTexFilter[0] = enable; }
+    void setScanInterpolation(bool enable) { myTexFilter[1] = enable; }
     void updateCoords(uInt32 baseH, uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH);
     void updateCoords();
 
@@ -72,9 +72,10 @@ class FBSurfaceTIA : public FBSurface
     uInt32 myPitch;
 
     bool myScanlinesEnabled;
+    uInt32* myScanData;
     uInt32 myScanlineIntensity;
 
-    uInt32 ourScanData[320];
+    bool myTexFilter[2];
 };
 
 #endif

@@ -41,7 +41,7 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormat* pf = myFB.myPixelFormat;
 
-  mySurface = SDL_CreateRGBSurface(0, width, height,
+  mySurface = SDL_CreateRGBSurface(0, width, height*2,
       pf->BitsPerPixel, pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
 
   mySrcR.x = mySrcR.y = myDstR.x = myDstR.y = myScanR.x = myScanR.y = 0;
@@ -52,10 +52,11 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
   myPitch = mySurface->pitch / pf->BytesPerPixel;
 
   // Generate scanline data
+  myScanData = new uInt32[mySurface->h];
   for(int i = 0; i < mySurface->h; i+=2)
   {
-    ourScanData[i]   = 0x00000000;
-    ourScanData[i+1] = 0xff000000;
+    myScanData[i]   = 0x00000000;
+    myScanData[i+1] = 0xff000000;
   }
 
   // To generate textures
@@ -69,6 +70,7 @@ FBSurfaceTIA::~FBSurfaceTIA()
     SDL_FreeSurface(mySurface);
 
   free();
+  delete[] myScanData;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,49 +188,19 @@ void FBSurfaceTIA::free()
 void FBSurfaceTIA::reload()
 {
   // Re-create texture; the underlying SDL_Surface is fine as-is
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myTexFilter[0] ? "1" : "0");
   myTexture = SDL_CreateTexture(myFB.myRenderer,
-      SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+      myFB.myPixelFormat->format, SDL_TEXTUREACCESS_STREAMING,
       mySurface->w, mySurface->h);
 
   // Re-create scanline texture (contents don't change)
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myTexFilter[1] ? "1" : "0");
   myScanlines = SDL_CreateTexture(myFB.myRenderer,
-      SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC,
+      myFB.myPixelFormat->format, SDL_TEXTUREACCESS_STATIC,
       1, mySurface->h);
   SDL_SetTextureBlendMode(myScanlines, SDL_BLENDMODE_BLEND);
   SDL_SetTextureAlphaMod(myScanlines, myScanlineIntensity*2.55);
-  SDL_UpdateTexture(myScanlines, &myScanR, ourScanData, 4);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceTIA::setScanIntensity(uInt32 intensity)
-{
-  myScanlineIntensity = intensity;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceTIA::setTexInterpolation(bool enable)
-{
-#if 0
-  myTexFilter[0] = enable ? GL_LINEAR : GL_NEAREST;
-  myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceTIA::setScanInterpolation(bool enable)
-{
-#if 0
-  myTexFilter[1] = enable ? GL_LINEAR : GL_NEAREST;
-  myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[1]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[1]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-#endif
+  SDL_UpdateTexture(myScanlines, &myScanR, myScanData, 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,12 +215,8 @@ void FBSurfaceTIA::updateCoords(uInt32 baseH,
   // so rounding is performed to eliminate it
   // This won't be 100% accurate, but non-integral scaling isn't 100%
   // accurate anyway
-
-float x = float(imgH) / floor(((float)imgH / baseH) + 0.5);
-cerr << "myScanR.h = " << x << endl;
-
   myScanR.w = 1;
-  myScanR.h = x;
+  myScanR.h = 2 * float(imgH) / floor(((float)imgH / baseH) + 0.5);
 
   updateCoords();
 }
@@ -256,84 +224,9 @@ cerr << "myScanR.h = " << x << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::updateCoords()
 {
-  // For a TIA surface, only the width can possibly change
-  mySrcR.w = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
-
-#if 0
   // Normal TIA rendering and TV effects use different widths
   // We use the same buffer, and only pick the width we need
-  myBaseW = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
-
-  myTexCoordW = (GLfloat) myBaseW / myTexWidth;
-  myTexCoordH = (GLfloat) myBaseH / myTexHeight;
-
-  // Vertex coordinates for texture 0 (main texture)
-  // Upper left (x,y)
-  myCoord[0] = (GLfloat)myImageX;
-  myCoord[1] = (GLfloat)myImageY;
-  // Upper right (x+w,y)
-  myCoord[2] = (GLfloat)(myImageX + myImageW);
-  myCoord[3] = (GLfloat)myImageY;
-  // Lower left (x,y+h)
-  myCoord[4] = (GLfloat)myImageX;
-  myCoord[5] = (GLfloat)(myImageY + myImageH);
-  // Lower right (x+w,y+h)
-  myCoord[6] = (GLfloat)(myImageX + myImageW);
-  myCoord[7] = (GLfloat)(myImageY + myImageH);
-
-  // Texture coordinates for texture 0 (main texture)
-  // Upper left (x,y)
-  myCoord[8] = 0.0f;
-  myCoord[9] = 0.0f;
-  // Upper right (x+w,y)
-  myCoord[10] = myTexCoordW;
-  myCoord[11] = 0.0f;
-  // Lower left (x,y+h)
-  myCoord[12] = 0.0f;
-  myCoord[13] = myTexCoordH;
-  // Lower right (x+w,y+h)
-  myCoord[14] = myTexCoordW;
-  myCoord[15] = myTexCoordH;
-
-  // Vertex coordinates for texture 1 (scanline texture)
-  // Upper left (x,y)
-  myCoord[16] = (GLfloat)myImageX;
-  myCoord[17] = (GLfloat)myImageY;
-  // Upper right (x+w,y)
-  myCoord[18] = (GLfloat)(myImageX + myImageW);
-  myCoord[19] = (GLfloat)myImageY;
-  // Lower left (x,y+h)
-  myCoord[20] = (GLfloat)myImageX;
-  myCoord[21] = (GLfloat)(myImageY + myImageH);
-  // Lower right (x+w,y+h)
-  myCoord[22] = (GLfloat)(myImageX + myImageW);
-  myCoord[23] = (GLfloat)(myImageY + myImageH);
-
-  // Texture coordinates for texture 1 (scanline texture)
-  // Upper left (x,y)
-  myCoord[24] = 0.0f;
-  myCoord[25] = 0.0f;
-  // Upper right (x+w,y)
-  myCoord[26] = 1.0f;
-  myCoord[27] = 0.0f;
-  // Scanline repeating is sensitive to non-integral vertical resolution,
-  // so rounding is performed to eliminate it
-  // This won't be 100% accurate, but non-integral scaling isn't 100%
-  // accurate anyway
-  // Lower left (x,y+h)
-  myCoord[28] = 0.0f;
-  myCoord[29] = GLfloat(myImageH) / floor(((float)myImageH / myBaseH) + 0.5);
-  // Lower right (x+w,y+h)
-  myCoord[30] = 1.0f;
-  myCoord[31] = myCoord[29];
-
-  // Cache vertex and texture coordinates using vertex buffer object
-  if(myFB.myVBOAvailable)
-  {
-    myGL.BindBuffer(GL_ARRAY_BUFFER, myVBOID);
-    myGL.BufferData(GL_ARRAY_BUFFER, 32*sizeof(GLfloat), myCoord, GL_STATIC_DRAW);
-  }
-#endif
+  mySrcR.w = myFB.ntscEnabled() ? ATARI_NTSC_OUT_WIDTH(160) : 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

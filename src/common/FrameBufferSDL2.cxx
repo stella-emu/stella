@@ -221,7 +221,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
   }
 
   // Any previously allocated textures currently in use by various UI items
-  // need to be refreshed as well (only seems to be required for OSX)
+  // need to be refreshed as well
+  // This *must* come after the TIA settings have been updated
   resetSurfaces(myTiaSurface);
 
   return true;
