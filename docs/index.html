@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.9.3</b></h4></center>
+  <center><h4><b>Release 4.0</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - January 2014</b></center>
+  <center><b>February 1999 - xxx 2014</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -314,11 +314,9 @@
   <p>
   <h3><b><u>General</u> (required for all versions of Stella)</b></h3>
   <ul>
-    <li>1GHz+ CPU</li>
-    <li>Enough RAM for the OS + 64MB RAM for the emulation; 128MB+ highly recommended</li>
+    <li>SDL version 2.0.1 or greater, latest version highly recommended</li>
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
-    <li>SDL version 1.2.10 or greater, latest version highly recommended</li>
-    <li>CRT TV emulation effects require OpenGL 1.2/OpenGLES 1 or higher</li>
+    <li>Enough RAM for the OS + 64MB RAM for the emulation; 128MB+ highly recommended</li>
     <li>Joysticks or gamepads are highly recommended</li>
     <li>Mouse or <a href="http://www.stelladaptor.com">Stelladaptor</a> / 
     <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
@@ -330,12 +328,12 @@
   <p>The Linux version of Stella is designed to work on a Linux Workstation with
   the following:</p>
   <ul>
-    <li>Linux Kernel 2.6.x/3.x</li>
+    <li>Linux Kernel 3.x</li>
     <li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
-    <li>OpenGL accelerated video card highly recommended</li>
+    <li>OpenGL capable video card</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc) have been confirmed to work,
       but aren't as well tested as i386/x86_64</li>
-    <li>GNU C++ compiler version 4.x and the make utility are required for compiling
+    <li>GNU C++ compiler version 4.x or Clang++ and the make utility are required for compiling
       the Stella source code</li>
   </ul>
 
@@ -345,26 +343,24 @@
   <p>The Mac version of Stella is designed to work on an Apple Macintosh with
   the following:</p>
   <ul>
-    <li>MacOSX 10.4 (Tiger) or above</li>
-    <li>PPC G4/G5 or Intel processor</li>
+    <li>MacOSX 10.7 (Lion) or above</li>
+    <li>Intel processor</li>
     <li>OpenGL capable video card</li>
-    <li>Xcode 3.1 and SDL 1.2.14 required to compile a 10.4 compatible Universal Binary version;
+    <li>FIXSDL Xcode 3.1 and SDL 1.2.14 required to compile a 10.4 compatible Universal Binary version;
       Xcode 3.2 and SDL 1.2.15 required to compile the Intel/64-bit version</li>
-    <li>The 64-bit version requires at minimum Snow Leopard (10.6) and Intel CPU/architecture</li>
   </ul>
 
   <p>
   <h3><b><u>Windows</u></b></h3>
 
-  <p>The Windows version of Stella is designed to work on Windows XP/Vista/7
+  <p>The Windows version of Stella is designed to work on Windows XP/Vista/7/8
   with the following:</p>
 
   <ul>
-    <li>OpenGL accelerated video card highly recommended</li>
-    <li>64-bit port has been tested on Windows Vista/7 only; it may work on
+    <li>Direct3D or OpenGL capable video card</li>
+    <li>64-bit port has been tested on Windows Vista and above only; it may work on
       WinXP64 as well, but isn't a priority</li>
-    <li>Visual C++ 2010 is required to compile the Stella source code</li>
-    <li>It may be possible to compile using MinGW, but this hasn't been extensively tested since Stella version 3.0</li>
+    <li>Visual C++ 2013 (or Express version) is required to compile the Stella source code</li>
   </ul>
 
   <p>
@@ -1233,7 +1229,7 @@
 
   </table>
 
-  <p><b>TV effects (only active in TIA mode when using OpenGL rendering)</b></p>
+  <p><b>TV effects (only active in TIA mode)</b></p>
 
   <table BORDER=2 cellpadding=5>
     <tr>
@@ -1741,132 +1737,13 @@
 
     <tr>
       <td><pre>-video &lt;soft|gl&gt;</pre></td>
-      <td>Use software or OpenGL rendering mode.</td>
+      <td>FIXSDL Use software or OpenGL rendering mode.</td>
     </tr>
 
     <tr>
-      <td><pre>-gl_lib &lt;filename&gt;</pre></td>
-      <td>OpenGL mode only. Specify the OpenGL library to use (only use
-        this if you know what you're doing).  For MacOSX, this should
-        probably be left blank.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-gl_inter &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only. Use interpolation for the TIA image (results in
-        blending/smoothing of the image).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-gl_aspectn &lt;number&gt;<br>-gl_aspectp &lt;number&gt;</pre></td>
-      <td>OpenGL mode only. Specify the amount (as a percentage) to scale the
-        TIA image width in NTSC and PAL mode. Since many video modes do not
-        use square pixels, you can reduce width until the pixels appear square.
-        Allowable values are 80 - 120; I find 85 - 90 gives the most authentic
-        look for NTSC, and 105 - 110 for PAL.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-gl_fsscale &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only. Stretch TIA image completely while in fullscreen mode
-        (vs. an integral stretch which won't necessarily completely fill the screen).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-gl_vbo &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only.  Use the Vertex Buffer Object extension, if available.
-        This is enabled by default.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-gl_vsync &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only. Synchronize screen updates to the vertical blank
-        period.  This can result in smoother updates, and eliminate tearing.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_filter &lt;1 - 6&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects, 0 is disabled, next numbers in
-        sequence represent presets for 'composite', 's-video', 'RGB', 'bad adjust',
-        and 'custom' modes.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_scanlines &lt;0 - 100&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects scanline intensity, where 0
-        means completely off.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_scaninter &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects scanline interpolation, resulting
-        in blending/smoothing of the scanlines.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_contrast &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'contrast'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_brightness &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'brightness'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_hue &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'hue'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_saturation &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'saturation'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_gamma &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'gamma'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_sharpness &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'sharpness'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_resolution &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'resolution'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_artifacts &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'artifacts'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_fringing &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'fringing'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv_bleed &lt;number&gt;</pre></td>
-      <td>OpenGL mode only.  Blargg TV effects 'bleed'
-        (only available in custom mode, range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tia_filter &lt;filter&gt;</pre></td>
-      <td>Use the specified filter while in TIA/emulation mode.  Currently,
-        this can be zoomZx, where Z={2..10}.</td>
+      <td><pre>-vsync &lt;1|0&gt;</pre></td>
+      <td>Synchronize screen updates to the vertical blank period.
+          This can result in smoother updates, and eliminate tearing.</td>
     </tr>
 
     <tr>
@@ -1910,7 +1787,7 @@
       <td>Determines type of wait to perform between processing frames.
         Sleep will release the CPU as much as possible, and is the
         preferred method on laptops (and other low-powered devices)
-        and when using GL VSync.  Busy will emulate z26 busy-wait
+        and when using VSync.  Busy will emulate z26 busy-wait
         behaviour, and use all possible CPU time, but may eliminate
         graphical 'tearing' in software mode.</td>
     </tr>
@@ -1920,6 +1797,112 @@
       <td>Enable or disable display of message in the UI.  Note that messages
         indicating serious errors override this setting, and are always
         shown.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tia.filter &lt;filter&gt;</pre></td>
+      <td>Use the specified filter while in TIA/emulation mode.  Currently,
+        this can be zoomZx, where Z={2..10}.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tia.inter &lt;1|0&gt;</pre></td>
+      <td>Use interpolation for the TIA image (results in blending/smoothing
+        of the image).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tia.aspectn &lt;number&gt;<br>-tia.aspectp &lt;number&gt;</pre></td>
+      <td>Specify the amount (as a percentage) to scale the
+        TIA image width in NTSC and PAL mode. Since many video modes do not
+        use square pixels, you can reduce width until the pixels appear square.
+        Allowable values are 80 - 120; I find 85 - 90 gives the most authentic
+        look for NTSC, and 105 - 110 for PAL.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-gl_fsscale &lt;1|0&gt;</pre></td>
+      <td>FIXSDL OpenGL mode only. Stretch TIA image completely while in fullscreen mode
+        (vs. an integral stretch which won't necessarily completely fill the screen).</td>
+    </tr>
+
+
+    <tr>
+      <td><pre>-tv.filter &lt;1 - 6&gt;</pre></td>
+      <td>Blargg TV effects, 0 is disabled, next numbers in
+        sequence represent presets for 'Composite', 'S-Video', 'RGB', 'Bad Adjust',
+        and 'Custom' modes.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.scanlines &lt;0 - 100&gt;</pre></td>
+      <td>Blargg TV effects scanline intensity, where 0 means completely off.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.scaninter &lt;1|0&gt;</pre></td>
+      <td>Blargg TV effects scanline interpolation, resulting
+        in blending/smoothing of the scanlines.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.contrast &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'contrast' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.brightness &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'brightness' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.hue &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'hue' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.saturation &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'saturation' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.gamma &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'gamma' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.sharpness &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'sharpness' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.resolution &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'resolution' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.artifacts &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'artifacts' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.fringing &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'fringing' (only available in custom mode,
+        range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.bleed &lt;number&gt;</pre></td>
+      <td>Blargg TV effects 'bleed' (only available in custom mode,
+        range -1.0 to 1.0).</td>
     </tr>
 
     <tr>
@@ -2387,18 +2370,17 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer (*)</td><td>use specified rendering mode (requires restart)</td><td>-video</td></tr>
-          <tr><td>TIA Filter</td><td>filter for emulation mode </td><td>-tia_filter</td></tr>
+          <tr><td>TIA Filter</td><td>filter for emulation mode </td><td>-tia.filter</td></tr>
           <tr><td>TIA Palette</td><td>palette for emulation mode</td><td>-palette</td></tr>
           <tr><td>Fullscrn Res</td><td>resolution for fullscreen mode</td><td>-fullres</td></tr>
           <tr><td>Timing (*)</td><td>how to wait between frames (requires restart)</td><td>-timing</td></tr>
           <tr><td>GL Filter</td><td>OpenGL filter mode</td><td>-gl_filter</td></tr>
-          <tr><td>GL Aspect (N)</td><td>OpenGL width of TIA image in NTSC mode</td><td>-gl_aspectn</td></tr>
-          <tr><td>GL Aspect (P)</td><td>OpenGL width of TIA image in PAL mode</td><td>-gl_aspectp</td></tr>
+          <tr><td>Aspect (N)</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
+          <tr><td>Aspect (P)</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
           <tr><td>Framerate</td><td>frames per second in emulation mode</td><td>-framerate</td></tr>
           <tr><td>Fullscreen mode</td><td>self-explanatory</td><td>-fullscreen</td></tr>
           <tr><td>GL FS Stretch</td><td>stretch fullscreen OpenGL in emulation mode</td><td>-gl_fsmax</td></tr>
-          <tr><td>GL VBO</td><td>enable OpenGL Vertex Buffer Objects</td><td>-gl_vbo</td></tr>
-          <tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
+          <tr><td>VSync</td><td>enable vertical sync'ed updates</td><td>-vsync</td></tr>
           <tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
           <tr><td>Fast SC/AR BIOS</td><td>skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
@@ -2417,10 +2399,10 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>TV Mode</td><td>disable TV effects, or select TV preset</td><td>-tv_filter</td></tr>
-          <tr><td>Scanline Intensity</td><td>sets scanline black-level intensity</td><td>-tv_scanlines</td></tr>
-          <tr><td>Scanline Interpolation</td><td>smooth/blend scanlines into image</td><td>-tv_scaninter</td></tr>
-          <tr><td>Adjustable sliders</td><td>set specific attribute in 'Custom' mode</td><td>-tv_contrast, tv_hue, etc.</td></tr>
+          <tr><td>TV Mode</td><td>disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
+          <tr><td>Scanline Intensity</td><td>sets scanline black-level intensity</td><td>-tv.scanlines</td></tr>
+          <tr><td>Scanline Interpolation</td><td>smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
+          <tr><td>Adjustable sliders</td><td>set specific attribute in 'Custom' mode</td><td>-tv.contrast, tv.hue, etc.</td></tr>
           <tr><td>Clone Composite</td><td>copy 'Composite' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone S-Video</td><td>copy 'S-Video' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone RGB</td><td>copy 'RGB' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>

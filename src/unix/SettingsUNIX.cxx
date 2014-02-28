@@ -25,9 +25,6 @@
 SettingsUNIX::SettingsUNIX(OSystem* osystem)
   : Settings(osystem)
 {
-  setInternal("gl_lib", "libGL.so");
-  // Most Linux GL implementations don't support this yet
-  setInternal("gl_vsync", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

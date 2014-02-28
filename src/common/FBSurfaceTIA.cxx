@@ -39,17 +39,17 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
   int height = 320;
 
   // Create a surface in the same format as the parent GL class
-  const SDL_PixelFormat& pf = myFB.myPixelFormat;
+  const SDL_PixelFormat* pf = myFB.myPixelFormat;
 
   mySurface = SDL_CreateRGBSurface(0, width, height,
-      pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
+      pf->BitsPerPixel, pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
 
   mySrcR.x = mySrcR.y = myDstR.x = myDstR.y = myScanR.x = myScanR.y = 0;
   mySrcR.w = myDstR.w = width;
   mySrcR.h = myDstR.h = height;
   myScanR.w = 1;  myScanR.h = 0;
 
-  myPitch = mySurface->pitch / pf.BytesPerPixel;
+  myPitch = mySurface->pitch / pf->BytesPerPixel;
 
   // Generate scanline data
   for(int i = 0; i < mySurface->h; i+=2)

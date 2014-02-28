@@ -40,17 +40,8 @@ Settings::Settings(OSystem* osystem)
   // Add options that are common to all versions of Stella
   setInternal("video", "soft");
 
-  // OpenGL specific options
-  setInternal("gl_inter", "false");
-  setInternal("gl_aspectn", "90");
-  setInternal("gl_aspectp", "100");
-  setInternal("gl_fsscale", "false");
-  setInternal("gl_lib", "libGL.so");
-  setInternal("gl_vsync", "true");
-  setInternal("gl_vbo", "true");
-
-  // Framebuffer-related options
-  setInternal("tia_filter", "zoom2x");
+  // Video-related options
+  setInternal("vsync", "true");
   setInternal("fullscreen", "0");
   setInternal("fullres", "auto");
   setInternal("center", "false");
@@ -60,21 +51,28 @@ Settings::Settings(OSystem* osystem)
   setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
+  // TIA specific options
+  setInternal("tia.filter", "zoom2x");
+  setInternal("tia.inter", "false");
+  setInternal("tia.aspectn", "90");
+  setInternal("tia.aspectp", "100");
+  setInternal("gl_fsscale", "false");  //FIXSDL - deprecated
+
   // TV filtering options
-  setInternal("tv_filter", "0");
-  setInternal("tv_scanlines", "25");
-  setInternal("tv_scaninter", "true");
+  setInternal("tv.filter", "0");
+  setInternal("tv.scanlines", "25");
+  setInternal("tv.scaninter", "true");
   // TV options when using 'custom' mode
-  setInternal("tv_contrast", "0.0");
-  setInternal("tv_brightness", "0.0");
-  setInternal("tv_hue", "0.0");
-  setInternal("tv_saturation", "0.0");
-  setInternal("tv_gamma", "0.0");
-  setInternal("tv_sharpness", "0.0");
-  setInternal("tv_resolution", "0.0");
-  setInternal("tv_artifacts", "0.0");
-  setInternal("tv_fringing", "0.0");
-  setInternal("tv_bleed", "0.0");
+  setInternal("tv.contrast", "0.0");
+  setInternal("tv.brightness", "0.0");
+  setInternal("tv.hue", "0.0");
+  setInternal("tv.saturation", "0.0");
+  setInternal("tv.gamma", "0.0");
+  setInternal("tv.sharpness", "0.0");
+  setInternal("tv.resolution", "0.0");
+  setInternal("tv.artifacts", "0.0");
+  setInternal("tv.fringing", "0.0");
+  setInternal("tv.bleed", "0.0");
 
   // Sound options
   setInternal("sound", "true");
@@ -284,13 +282,13 @@ void Settings::validate()
   if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
 
 //FIXSDL
-  i = getInt("gl_aspectn");
-  if(i < 80 || i > 120)  setInternal("gl_aspectn", "100");
-  i = getInt("gl_aspectp");
-  if(i < 80 || i > 120)  setInternal("gl_aspectp", "100");
+  i = getInt("tia.aspectn");
+  if(i < 80 || i > 120)  setInternal("tia.aspectn", "100");
+  i = getInt("tia.aspectp");
+  if(i < 80 || i > 120)  setInternal("tia.aspectp", "100");
 
-  i = getInt("tv_filter");
-  if(i < 0 || i > 5)  setInternal("tv_filter", "0");
+  i = getInt("tv.filter");
+  if(i < 0 || i > 5)  setInternal("tv.filter", "0");
 //////////////////
 
 #ifdef SOUND_SUPPORT
@@ -354,29 +352,27 @@ void Settings::usage()
 // FIXSDL
     << "                 gl              SDL OpenGL mode\n"
     << endl
-    << "  -gl_lib       <name>         Specify the OpenGL library\n"
-    << "  -gl_inter     <1|0>          Enable interpolated (smooth) scaling\n"
-    << "  -gl_aspectn   <number>       Scale the TIA width by the given percentage in NTSC mode\n"
-    << "  -gl_aspectp   <number>       Scale the TIA width by the given percentage in PAL mode\n"
+    << "  -tia.filter   <filter>       Use the specified filter for TIA image\n"
+    << "  -tia.inter    <1|0>          Enable interpolated (smooth) scaling for TIA image\n"
+    << "  -tia.aspectn  <number>       Scale the TIA width by the given percentage in NTSC mode\n"
+    << "  -tia.aspectp  <number>       Scale the TIA width by the given percentage in PAL mode\n"
     << "  -gl_fsscale   <1|0>          Stretch GL image in fullscreen emulation mode to max/integer scale\n"
-    << "  -gl_vsync     <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
-    << "  -gl_vbo       <1|0>          Enable 'vertex buffer objects'\n"
     << endl
-    << "  -tv_filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
-    << "  -tv_scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
-    << "  -tv_scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
-    << "  -tv_contrast    <value>      Set TV effects custom contrast to value 1.0 - 1.0\n"
-    << "  -tv_brightness  <value>      Set TV effects custom brightness to value 1.0 - 1.0\n"
-    << "  -tv_hue         <value>      Set TV effects custom hue to value 1.0 - 1.0\n"
-    << "  -tv_saturation  <value>      Set TV effects custom saturation to value 1.0 - 1.0\n"
-    << "  -tv_gamma       <value>      Set TV effects custom gamma to value 1.0 - 1.0\n"
-    << "  -tv_sharpness   <value>      Set TV effects custom sharpness to value 1.0 - 1.0\n"
-    << "  -tv_resolution  <value>      Set TV effects custom resolution to value 1.0 - 1.0\n"
-    << "  -tv_artifacts   <value>      Set TV effects custom artifacts to value 1.0 - 1.0\n"
-    << "  -tv_fringing    <value>      Set TV effects custom fringing to value 1.0 - 1.0\n"
-    << "  -tv_bleed       <value>      Set TV effects custom bleed to value 1.0 - 1.0\n"
+    << "  -tv.filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
+    << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
+    << "  -tv.scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
+    << "  -tv.contrast    <value>      Set TV effects custom contrast to value 1.0 - 1.0\n"
+    << "  -tv.brightness  <value>      Set TV effects custom brightness to value 1.0 - 1.0\n"
+    << "  -tv.hue         <value>      Set TV effects custom hue to value 1.0 - 1.0\n"
+    << "  -tv.saturation  <value>      Set TV effects custom saturation to value 1.0 - 1.0\n"
+    << "  -tv.gamma       <value>      Set TV effects custom gamma to value 1.0 - 1.0\n"
+    << "  -tv.sharpness   <value>      Set TV effects custom sharpness to value 1.0 - 1.0\n"
+    << "  -tv.resolution  <value>      Set TV effects custom resolution to value 1.0 - 1.0\n"
+    << "  -tv.artifacts   <value>      Set TV effects custom artifacts to value 1.0 - 1.0\n"
+    << "  -tv.fringing    <value>      Set TV effects custom fringing to value 1.0 - 1.0\n"
+    << "  -tv.bleed       <value>      Set TV effects custom bleed to value 1.0 - 1.0\n"
     << endl
-    << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
+    << "  -vsync        <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -fullscreen   <1|0|-1>       Use fullscreen mode (1 or 0), or disable switching to fullscreen entirely\n"
     << "  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"

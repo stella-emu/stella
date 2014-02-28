@@ -99,8 +99,8 @@ class FrameBufferSDL2 : public FrameBuffer
       @param g      The green component of the color
       @param b      The blue component of the color
     */
-    void getRGB(Uint32 pixel, Uint8* r, Uint8* g, Uint8* b) const
-      { SDL_GetRGB(pixel, (SDL_PixelFormat*)&myPixelFormat, r, g, b); }
+    inline void getRGB(Uint32 pixel, Uint8* r, Uint8* g, Uint8* b) const
+      { SDL_GetRGB(pixel, myPixelFormat, r, g, b); }
 
     /**
       This method is called to map a given R/G/B triple to the screen palette.
@@ -109,8 +109,8 @@ class FrameBufferSDL2 : public FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
-      { return SDL_MapRGB((SDL_PixelFormat*)&myPixelFormat, r, g, b); }
+    inline Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
+      { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -235,7 +235,7 @@ class FrameBufferSDL2 : public FrameBuffer
     FBSurfaceTIA* myTiaSurface;
 
     // Used by mapRGB (when palettes are created)
-    SDL_PixelFormat myPixelFormat;
+    SDL_PixelFormat* myPixelFormat;
 
     // The depth of the texture buffer
     uInt32 myDepth;

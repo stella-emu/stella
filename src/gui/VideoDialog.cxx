@@ -407,7 +407,7 @@ void VideoDialog::loadConfig()
   const VariantList& items =
     instance().frameBuffer().supportedTIAFilters(gl ? "gl" : "soft");
   myTIAFilterPopup->addItems(items);
-  myTIAFilterPopup->setSelected(instance().settings().getString("tia_filter"),
+  myTIAFilterPopup->setSelected(instance().settings().getString("tia.filter"),
     instance().desktopWidth() < 640 ? "zoom1x" : "zoom2x");
 
   // TIA Palette
@@ -423,19 +423,19 @@ void VideoDialog::loadConfig()
     instance().settings().getString("timing"), "sleep");
 
   // GL Filter setting
-  const string& gl_inter = instance().settings().getBool("gl_inter") ?
+  const string& tia_inter = instance().settings().getBool("tia.inter") ?
                            "linear" : "nearest";
-  myGLFilterPopup->setSelected(gl_inter, "nearest");
+  myGLFilterPopup->setSelected(tia_inter, "nearest");
   myGLFilterPopup->setEnabled(gl);
 
   // GL aspect ratio setting (NTSC and PAL)
-  myNAspectRatioSlider->setValue(instance().settings().getInt("gl_aspectn"));
+  myNAspectRatioSlider->setValue(instance().settings().getInt("tia.aspectn"));
   myNAspectRatioSlider->setEnabled(gl);
-  myNAspectRatioLabel->setLabel(instance().settings().getString("gl_aspectn"));
+  myNAspectRatioLabel->setLabel(instance().settings().getString("tia.aspectn"));
   myNAspectRatioLabel->setEnabled(gl);
-  myPAspectRatioSlider->setValue(instance().settings().getInt("gl_aspectp"));
+  myPAspectRatioSlider->setValue(instance().settings().getInt("tia.aspectp"));
   myPAspectRatioSlider->setEnabled(gl);
-  myPAspectRatioLabel->setLabel(instance().settings().getString("gl_aspectp"));
+  myPAspectRatioLabel->setLabel(instance().settings().getString("tia.aspectp"));
   myPAspectRatioLabel->setEnabled(gl);
 
   // Framerate (0 or -1 means automatic framerate calculation)
@@ -457,7 +457,7 @@ void VideoDialog::loadConfig()
   myGLStretchCheckbox->setEnabled(gl);
 
   // Use sync to vertical blank (GL mode only)
-  myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
+  myUseVSyncCheckbox->setState(instance().settings().getBool("vsync"));
   myUseVSyncCheckbox->setEnabled(gl);
 
   // Show UI messages
@@ -471,17 +471,17 @@ void VideoDialog::loadConfig()
 
   // TV Mode
   myTVMode->setSelected(
-    instance().settings().getString("tv_filter"), "0");
-  int preset = instance().settings().getInt("tv_filter");
+    instance().settings().getString("tv.filter"), "0");
+  int preset = instance().settings().getInt("tv.filter");
   handleTVModeChange((NTSCFilter::Preset)preset);
 
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
 
   // TV scanline intensity and interpolation
-  myTVScanIntense->setValue(instance().settings().getInt("tv_scanlines"));
-  myTVScanIntenseLabel->setLabel(instance().settings().getString("tv_scanlines"));
-  myTVScanInterpolate->setState(instance().settings().getBool("tv_scaninter"));
+  myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
+  myTVScanIntenseLabel->setLabel(instance().settings().getString("tv.scanlines"));
+  myTVScanInterpolate->setState(instance().settings().getBool("tv.scaninter"));
 
   myTab->loadConfig();
 }
@@ -494,7 +494,7 @@ void VideoDialog::saveConfig()
     myRendererPopup->getSelectedTag().toString());
 
   // TIA Filter
-  instance().settings().setValue("tia_filter",
+  instance().settings().setValue("tia.filter",
     myTIAFilterPopup->getSelectedTag().toString());
 
   // TIA Palette
@@ -510,12 +510,12 @@ void VideoDialog::saveConfig()
     myFrameTimingPopup->getSelectedTag().toString());
 
   // GL Filter setting
-  instance().settings().setValue("gl_inter",
+  instance().settings().setValue("tia.inter",
     myGLFilterPopup->getSelectedTag().toString() == "linear" ? true : false);
 
   // GL aspect ratio setting (NTSC and PAL)
-  instance().settings().setValue("gl_aspectn", myNAspectRatioLabel->getLabel());
-  instance().settings().setValue("gl_aspectp", myPAspectRatioLabel->getLabel());
+  instance().settings().setValue("tia.aspectn", myNAspectRatioLabel->getLabel());
+  instance().settings().setValue("tia.aspectp", myPAspectRatioLabel->getLabel());
 
   // Framerate
   int i = myFrameRateSlider->getValue();
@@ -540,7 +540,7 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("gl_fsscale", myGLStretchCheckbox->getState());
 
   // Use sync to vertical blank (GL mode only)
-  instance().settings().setValue("gl_vsync", myUseVSyncCheckbox->getState());
+  instance().settings().setValue("vsync", myUseVSyncCheckbox->getState());
 
   // Show UI messages
   instance().settings().setValue("uimessages", myUIMessagesCheckbox->getState());
@@ -552,7 +552,7 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("fastscbios", myFastSCBiosCheckbox->getState());
 
   // TV Mode
-  instance().settings().setValue("tv_filter",
+  instance().settings().setValue("tv.filter",
     myTVMode->getSelectedTag().toString());
 
   // TV Custom adjustables
@@ -570,8 +570,8 @@ void VideoDialog::saveConfig()
   instance().frameBuffer().ntsc().setCustomAdjustables(adj);
 
   // TV scanline intensity and interpolation
-  instance().settings().setValue("tv_scanlines", myTVScanIntenseLabel->getLabel());
-  instance().settings().setValue("tv_scaninter", myTVScanInterpolate->getState());
+  instance().settings().setValue("tv.scanlines", myTVScanIntenseLabel->getLabel());
+  instance().settings().setValue("tv.scaninter", myTVScanInterpolate->getState());
 
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();

@@ -58,17 +58,14 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
   // It's done this way (vs directly accessing a FBSurfaceUI object)
   // since the structure may be needed before any FBSurface's have
   // been created
-  // Note: alpha disabled for now, since it's not used
-  SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 32,
-                       0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-
-  myPixelFormat = *(s->format);
-  SDL_FreeSurface(s);
+  myPixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::~FrameBufferSDL2()
 {
+  SDL_FreeFormat(myPixelFormat);
+
   if(myRenderer)
   {
     SDL_DestroyRenderer(myRenderer);
@@ -103,39 +100,6 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
-  // (Re)create window and renderer
-  if(myRenderer)
-  {
-    SDL_DestroyRenderer(myRenderer);
-    myRenderer = NULL;
-  }
-  if(myWindow)
-  {
-    SDL_DestroyWindow(myWindow);
-    myWindow = NULL;
-  }
-
-  myWindow = SDL_CreateWindow(title.c_str(),
-                 SDL_WINDOWPOS_CENTERED,
-                 SDL_WINDOWPOS_CENTERED,
-                 mode.image_w, mode.image_h,
-                 0);
-  if(myWindow == NULL)
-  {
-    string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
-    myOSystem->logMessage(msg, 0);
-    return false;
-  }
-
-  myRenderer = SDL_CreateRenderer(myWindow, -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if(myWindow == NULL)
-  {
-    string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
-    myOSystem->logMessage(msg, 0);
-    return false;
-  }
-
   bool inTIAMode =
     myOSystem->eventHandler().state() != EventHandler::S_LAUNCHER &&
     myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER;
@@ -144,7 +108,6 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
   // We need it for the creating the TIA surface
   uInt32 baseHeight = mode.image_h / mode.gfxmode.zoom;
 
-#if 0
   // Aspect ratio and fullscreen stretching only applies to the TIA
   if(inTIAMode)
   {
@@ -154,7 +117,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
     {
       const string& frate = myOSystem->console().about().InitialFrameRate;
       int aspect =
-        myOSystem->settings().getInt(frate == "60" ? "gl_aspectn" : "gl_aspectp");
+        myOSystem->settings().getInt(frate == "60" ? "tia.aspectn" : "tia.aspectp");
       mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
     }
 
@@ -199,40 +162,42 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
   mode.image_x = (mode.screen_w - mode.image_w) >> 1;
   mode.image_y = (mode.screen_h - mode.image_h) >> 1;
 
-  SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   myRGB[0] );
-  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
-  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
-  SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
-  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+  // (Re)create window and renderer
+  if(myRenderer)
+  {
+    SDL_DestroyRenderer(myRenderer);
+    myRenderer = NULL;
+  }
+  if(myWindow)
+  {
+    SDL_DestroyWindow(myWindow);
+    myWindow = NULL;
+  }
 
-  // There's no guarantee this is supported on all hardware
-  // We leave it to the user to test and decide
-  int vsync = myOSystem->settings().getBool("gl_vsync") ? 1 : 0;
-  SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, vsync );
-#endif
+  // Window centering option
+  int pos = myOSystem->settings().getBool("center")
+              ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
+  myWindow = SDL_CreateWindow(title.c_str(),
+                 pos, pos, mode.image_w, mode.image_h,
+                 0);
+  if(myWindow == NULL)
+  {
+    string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
+    myOSystem->logMessage(msg, 0);
+    return false;
+  }
 
-  // Make sure the flags represent the current screen state
-//  myWindowFlags = myScreen->flags;
-
-#if 0
-  // Optimization hints
-  p_gl.ShadeModel(GL_FLAT);
-  p_gl.Disable(GL_CULL_FACE);
-  p_gl.Disable(GL_DEPTH_TEST);
-  p_gl.Disable(GL_ALPHA_TEST);
-  p_gl.Disable(GL_LIGHTING);
-  p_gl.Hint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-
-  // Initialize GL display
-  p_gl.Viewport(0, 0, mode.screen_w, mode.screen_h);
-  p_gl.MatrixMode(GL_PROJECTION);
-  p_gl.LoadIdentity();
-  p_gl.Ortho(0.0, mode.screen_w, mode.screen_h, 0.0, -1.0, 1.0);
-  p_gl.MatrixMode(GL_MODELVIEW);
-  p_gl.LoadIdentity();
-  p_gl.Translatef(0.375, 0.375, 0.0);  // fix scanline mis-draw issues
-#endif
-//cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl << mode << endl;
+  // V'synced blits option
+  Uint32 renderFlags = SDL_RENDERER_ACCELERATED;
+  if(myOSystem->settings().getBool("vsync"))
+    renderFlags |= SDL_RENDERER_PRESENTVSYNC;
+  myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
+  if(myWindow == NULL)
+  {
+    string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
+    myOSystem->logMessage(msg, 0);
+    return false;
+  }
 
   // The framebuffer only takes responsibility for TIA surfaces
   // Other surfaces (such as the ones used for dialogs) are allocated
@@ -249,9 +214,9 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
                                mode.image_w, mode.image_h);
 
     myTiaSurface->enableScanlines(ntscEnabled());
-    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
-    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("gl_inter"));
-    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv_scaninter"));
+    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("tia.inter"));
+    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv.scanlines"));
+    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv.scaninter"));
     myTiaSurface->setTIA(myOSystem->console().tia());
   }
 
@@ -416,9 +381,9 @@ void FrameBufferSDL2::enableNTSC(bool enable)
     myTiaSurface->updateCoords();
 
     myTiaSurface->enableScanlines(ntscEnabled());
-    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
-    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("gl_inter"));
-    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv_scaninter"));
+    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv.scanlines"));
+    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("tia.inter"));
+    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv.scaninter"));
 
     myRedrawEntireFrame = true;
   }

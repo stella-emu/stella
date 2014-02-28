@@ -28,16 +28,16 @@ FBSurfaceUI::FBSurfaceUI(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
     mySurfaceIsDirty(true)
 {
   // Create a surface in the same format as the parent GL class
-  const SDL_PixelFormat& pf = myFB.myPixelFormat;
+  const SDL_PixelFormat* pf = myFB.myPixelFormat;
 
   mySurface = SDL_CreateRGBSurface(0, width, height,
-      pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
+      pf->BitsPerPixel, pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
 
   mySrc.x = mySrc.y = myDst.x = myDst.y = 0;
   mySrc.w = myDst.w = width;
   mySrc.h = myDst.h = height;
 
-  myPitch = mySurface->pitch / pf.BytesPerPixel;
+  myPitch = mySurface->pitch / pf->BytesPerPixel;
 
   // To generate texture
   reload();

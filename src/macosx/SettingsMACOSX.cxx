@@ -31,9 +31,6 @@ extern "C" {
 SettingsMACOSX::SettingsMACOSX(OSystem* osystem)
   : Settings(osystem)
 {
-  setInternal("video", "gl");        // Use opengl mode by default
-  setInternal("gl_lib", "libGL.so"); // Try this one first, then let the system decide
-  setInternal("gl_vsync", "true");   // OSX almost always supports vsync; let's use it
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

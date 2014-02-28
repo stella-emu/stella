@@ -591,7 +591,7 @@ void FrameBuffer::setNTSC(NTSCFilter::Preset preset, bool show)
       const string& mode = myNTSCFilter.setPreset(preset);
       buf << "TV filtering (" << mode << " mode)";
     }
-    myOSystem->settings().setValue("tv_filter", (int)preset);
+    myOSystem->settings().setValue("tv.filter", (int)preset);
   }
   else
     buf << "TV filtering not available in software mode";
@@ -609,7 +609,7 @@ void FrameBuffer::setScanlineIntensity(int amount)
     {
       uInt32 intensity = enableScanlines(amount);
       buf << "Scanline intensity at " << intensity  << "%";
-      myOSystem->settings().setValue("tv_scanlines", intensity);
+      myOSystem->settings().setValue("tv.scanlines", intensity);
     }
     else
       buf << "Scanlines only available in TV filtering mode";
@@ -628,10 +628,10 @@ void FrameBuffer::toggleScanlineInterpolation()
   {
     if(ntscEnabled())
     {
-      bool enable = !myOSystem->settings().getBool("tv_scaninter");
+      bool enable = !myOSystem->settings().getBool("tv.scaninter");
       enableScanlineInterpolation(enable);
       buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
-      myOSystem->settings().setValue("tv_scaninter", enable);
+      myOSystem->settings().setValue("tv.scaninter", enable);
     }
     else
       buf << "Scanlines only available in TV filtering mode";
@@ -821,7 +821,7 @@ bool FrameBuffer::changeVidMode(int direction)
         showMessage(vidmode.gfxmode.description);
     }
     if(saveModeChange)
-      myOSystem->settings().setValue("tia_filter", vidmode.gfxmode.name);
+      myOSystem->settings().setValue("tia.filter", vidmode.gfxmode.name);
 
     refresh();
   }
@@ -1025,7 +1025,7 @@ FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
   }
   else
   {
-    const string& name = myOSystem->settings().getString("tia_filter");
+    const string& name = myOSystem->settings().getString("tia.filter");
     myCurrentModeList->setByGfxMode(name);
   }
 

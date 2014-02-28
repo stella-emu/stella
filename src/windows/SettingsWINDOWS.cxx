@@ -25,7 +25,6 @@
 SettingsWINDOWS::SettingsWINDOWS(OSystem* osystem)
   : Settings(osystem)
 {
-  setInternal("gl_lib", "opengl32.dll");
   setInternal("fragsize", "512");
 }
 

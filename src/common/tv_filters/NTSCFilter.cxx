@@ -194,32 +194,32 @@ string NTSCFilter::decreaseAdjustable()
 void NTSCFilter::loadConfig(const Settings& settings)
 {
   // Load adjustables for custom mode
-  myCustomSetup.hue = BSPF_clamp(settings.getFloat("tv_hue"), -1.0f, 1.0f);
-  myCustomSetup.saturation = BSPF_clamp(settings.getFloat("tv_saturation"), -1.0f, 1.0f);
-  myCustomSetup.contrast = BSPF_clamp(settings.getFloat("tv_contrast"), -1.0f, 1.0f);
-  myCustomSetup.brightness = BSPF_clamp(settings.getFloat("tv_brightness"), -1.0f, 1.0f);
-  myCustomSetup.sharpness = BSPF_clamp(settings.getFloat("tv_sharpness"), -1.0f, 1.0f);
-  myCustomSetup.gamma = BSPF_clamp(settings.getFloat("tv_gamma"), -1.0f, 1.0f);
-  myCustomSetup.resolution = BSPF_clamp(settings.getFloat("tv_resolution"), -1.0f, 1.0f);
-  myCustomSetup.artifacts = BSPF_clamp(settings.getFloat("tv_artifacts"), -1.0f, 1.0f);
-  myCustomSetup.fringing = BSPF_clamp(settings.getFloat("tv_fringing"), -1.0f, 1.0f);
-  myCustomSetup.bleed = BSPF_clamp(settings.getFloat("tv_bleed"), -1.0f, 1.0f);
+  myCustomSetup.hue = BSPF_clamp(settings.getFloat("tv.hue"), -1.0f, 1.0f);
+  myCustomSetup.saturation = BSPF_clamp(settings.getFloat("tv.saturation"), -1.0f, 1.0f);
+  myCustomSetup.contrast = BSPF_clamp(settings.getFloat("tv.contrast"), -1.0f, 1.0f);
+  myCustomSetup.brightness = BSPF_clamp(settings.getFloat("tv.brightness"), -1.0f, 1.0f);
+  myCustomSetup.sharpness = BSPF_clamp(settings.getFloat("tv.sharpness"), -1.0f, 1.0f);
+  myCustomSetup.gamma = BSPF_clamp(settings.getFloat("tv.gamma"), -1.0f, 1.0f);
+  myCustomSetup.resolution = BSPF_clamp(settings.getFloat("tv.resolution"), -1.0f, 1.0f);
+  myCustomSetup.artifacts = BSPF_clamp(settings.getFloat("tv.artifacts"), -1.0f, 1.0f);
+  myCustomSetup.fringing = BSPF_clamp(settings.getFloat("tv.fringing"), -1.0f, 1.0f);
+  myCustomSetup.bleed = BSPF_clamp(settings.getFloat("tv.bleed"), -1.0f, 1.0f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::saveConfig(Settings& settings) const
 {
   // Save adjustables for custom mode
-  settings.setValue("tv_hue", myCustomSetup.hue);
-  settings.setValue("tv_saturation", myCustomSetup.saturation);
-  settings.setValue("tv_contrast", myCustomSetup.contrast);
-  settings.setValue("tv_brightness", myCustomSetup.brightness);
-  settings.setValue("tv_sharpness", myCustomSetup.sharpness);
-  settings.setValue("tv_gamma", myCustomSetup.gamma);
-  settings.setValue("tv_resolution", myCustomSetup.resolution);
-  settings.setValue("tv_artifacts", myCustomSetup.artifacts);
-  settings.setValue("tv_fringing", myCustomSetup.fringing);
-  settings.setValue("tv_bleed", myCustomSetup.bleed);
+  settings.setValue("tv.hue", myCustomSetup.hue);
+  settings.setValue("tv.saturation", myCustomSetup.saturation);
+  settings.setValue("tv.contrast", myCustomSetup.contrast);
+  settings.setValue("tv.brightness", myCustomSetup.brightness);
+  settings.setValue("tv.sharpness", myCustomSetup.sharpness);
+  settings.setValue("tv.gamma", myCustomSetup.gamma);
+  settings.setValue("tv.resolution", myCustomSetup.resolution);
+  settings.setValue("tv.artifacts", myCustomSetup.artifacts);
+  settings.setValue("tv.fringing", myCustomSetup.fringing);
+  settings.setValue("tv.bleed", myCustomSetup.bleed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
