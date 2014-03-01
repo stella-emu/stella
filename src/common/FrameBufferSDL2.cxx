@@ -393,9 +393,9 @@ void FrameBufferSDL2::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
 {
-  int intensity = myTiaSurface->myScanlineIntensity;
   if(myTiaSurface)
   {
+    int intensity = myTiaSurface->myScanlineIntensity;
     if(relative == 0)  intensity = absolute;
     else               intensity += relative;
     intensity = BSPF_max(0, intensity);
@@ -403,8 +403,9 @@ uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
 
     myTiaSurface->setScanIntensity(intensity);
     myRedrawEntireFrame = true;
+    return intensity;
   }
-  return intensity;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -462,18 +463,12 @@ string FrameBufferSDL2::effectsInfo() const
     case kBlarggNormal:
       buf << myNTSCFilter.getPreset() << ", scanlines="
           << myTiaSurface->myScanlineIntensity << "/"
-#if 0
-          << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
-#endif
- ;
+          << (myTiaSurface->myTexFilter[1] ? "inter" : "nointer");
       break;
     case kBlarggPhosphor:
       buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
           << myTiaSurface->myScanlineIntensity << "/"
-#if 0
-          << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
-#endif
- ;
+          << (myTiaSurface->myTexFilter[1] ? "inter" : "nointer");
       break;
   }
   return buf.str();
