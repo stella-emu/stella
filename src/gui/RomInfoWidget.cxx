@@ -93,7 +93,7 @@ void RomInfoWidget::parseProperties()
   if(mySurface == NULL)
   {
     mySurfaceID = instance().frameBuffer().allocateSurface(
-                    320*myZoomLevel, 256*myZoomLevel, false);
+                    320*myZoomLevel, 256*myZoomLevel);
     mySurface   = instance().frameBuffer().surface(mySurfaceID);
   }
   else

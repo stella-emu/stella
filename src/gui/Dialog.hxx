@@ -47,7 +47,7 @@ class Dialog : public GuiObject
 
   public:
     Dialog(OSystem* instance, DialogContainer* parent,
-           int x, int y, int w, int h, bool isBase = false);
+           int x, int y, int w, int h);
 
     virtual ~Dialog();
 
@@ -55,7 +55,6 @@ class Dialog : public GuiObject
     void close(bool refresh = true);
 
     bool isVisible() const { return _visible; }
-    bool isBase() const    { return _isBase;  }
 
     virtual void center();
     virtual void drawDialog();
@@ -113,7 +112,6 @@ class Dialog : public GuiObject
     Widget* _okWidget;
     Widget* _cancelWidget;
     bool    _visible;
-    bool    _isBase;
     bool    _processCancel;
 
   private:

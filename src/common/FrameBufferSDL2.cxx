@@ -38,7 +38,6 @@
 FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
   : FrameBuffer(osystem),
     myFilterType(kNormal),
-    myScreen(0),
     myWindow(NULL),
     myRenderer(NULL),
     myWindowFlags(0),
@@ -426,11 +425,8 @@ void FrameBufferSDL2::setTIAPalette(const uInt32* palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface* FrameBufferSDL2::createSurface(int w, int h, bool isBase) const
+FBSurface* FrameBufferSDL2::createSurface(int w, int h) const
 {
-  // Ignore 'isBase' argument; all GL surfaces are separate
-  // Also, this method will only be called for use in external dialogs.
-  // and never used for TIA surfaces
   return new FBSurfaceUI((FrameBufferSDL2&)*this, w, h);
 }
 

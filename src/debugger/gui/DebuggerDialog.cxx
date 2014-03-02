@@ -46,7 +46,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h, true),  // use base surface
+  : Dialog(osystem, parent, x, y, w, h),
     myTab(NULL),
     myRomTab(NULL),
     myLFont(NULL),

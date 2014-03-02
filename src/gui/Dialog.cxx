@@ -37,7 +37,7 @@
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem* instance, DialogContainer* parent,
-               int x, int y, int w, int h, bool isBase)
+               int x, int y, int w, int h)
   : GuiObject(*instance, *parent, *this, x, y, w, h),
     _mouseWidget(0),
     _focusedWidget(0),
@@ -45,7 +45,6 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _okWidget(0),
     _cancelWidget(0),
     _visible(false),
-    _isBase(isBase),
     _processCancel(false),
     _surface(0),
     _tabID(0)
@@ -78,7 +77,7 @@ void Dialog::open(bool refresh)
   // ignore it
   if(_surface == NULL)
   {
-    uInt32 surfaceID = instance().frameBuffer().allocateSurface(_w, _h, _isBase);
+    uInt32 surfaceID = instance().frameBuffer().allocateSurface(_w, _h);
     _surface = instance().frameBuffer().surface(surfaceID);
   }
   parent().addDialog(this);

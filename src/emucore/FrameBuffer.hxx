@@ -186,13 +186,12 @@ class FrameBuffer
       all responsibility for freeing this surface (ie, other classes must not
       delete it directly).
 
-      @param w       The requested width of the new surface.
-      @param h       The requested height of the new surface.
-      @param useBase Use the base surface instead of creating a new one
+      @param w  The requested width of the new surface.
+      @param h  The requested height of the new surface.
 
       @return  A unique ID used to identify this surface
     */
-    uInt32 allocateSurface(int w, int h, bool useBase = false);
+    uInt32 allocateSurface(int w, int h);
 
     /**
       Retrieve the surface associated with the given ID.
@@ -471,11 +470,10 @@ class FrameBuffer
       This method is called to create a surface compatible with the one
       currently in use, but having the given dimensions.
 
-      @param w       The requested width of the new surface.
-      @param h       The requested height of the new surface.
-      @param useBase Use the base surface instead of creating a new one
+      @param w  The requested width of the new surface.
+      @param h  The requested height of the new surface.
     */
-    virtual FBSurface* createSurface(int w, int h, bool useBase = false) const = 0;
+    virtual FBSurface* createSurface(int w, int h) const = 0;
 
     /**
       Change scanline intensity and interpolation.

@@ -165,11 +165,10 @@ class FrameBufferSDL2 : public FrameBuffer
       This method is called to create a surface compatible with the one
       currently in use, but having the given dimensions.
 
-      @param w       The requested width of the new surface.
-      @param h       The requested height of the new surface.
-      @param useBase Use the base surface instead of creating a new one
+      @param w  The requested width of the new surface.
+      @param h  The requested height of the new surface.
     */
-    FBSurface* createSurface(int w, int h, bool useBase = false) const;
+    FBSurface* createSurface(int w, int h) const;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.
@@ -220,7 +219,6 @@ class FrameBufferSDL2 : public FrameBuffer
 
   private:
     // The SDL video buffer
-    SDL_Surface* myScreen;
     SDL_Window* myWindow;
     SDL_Renderer* myRenderer;
 

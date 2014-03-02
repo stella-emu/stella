@@ -643,10 +643,10 @@ void FrameBuffer::toggleScanlineInterpolation()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::allocateSurface(int w, int h, bool useBase)
+uInt32 FrameBuffer::allocateSurface(int w, int h)
 {
   // Create a new surface
-  FBSurface* surface = createSurface(w, h, useBase);
+  FBSurface* surface = createSurface(w, h);
 
   // Add it to the list
   mySurfaceList.insert(make_pair((uInt32)mySurfaceList.size(), surface));

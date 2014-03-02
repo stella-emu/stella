@@ -48,7 +48,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h, true),  // use base surface
+  : Dialog(osystem, parent, x, y, w, h),
     myStartButton(NULL),
     myPrevDirButton(NULL),
     myOptionsButton(NULL),
