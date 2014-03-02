@@ -199,7 +199,7 @@ void FBSurfaceTIA::reload()
       myFB.myPixelFormat->format, SDL_TEXTUREACCESS_STATIC,
       1, mySurface->h);
   SDL_SetTextureBlendMode(myScanlines, SDL_BLENDMODE_BLEND);
-  SDL_SetTextureAlphaMod(myScanlines, myScanlineIntensity*2.55);
+  SDL_SetTextureAlphaMod(myScanlines, Uint8(myScanlineIntensity*2.55));
   SDL_UpdateTexture(myScanlines, &myScanR, myScanData, 4);
 }
 
@@ -216,7 +216,7 @@ void FBSurfaceTIA::updateCoords(uInt32 baseH,
   // This won't be 100% accurate, but non-integral scaling isn't 100%
   // accurate anyway
   myScanR.w = 1;
-  myScanR.h = 2 * float(imgH) / floor(((float)imgH / baseH) + 0.5);
+  myScanR.h = int(2 * float(imgH) / floor(((float)imgH / baseH) + 0.5));
 
   updateCoords();
 }
