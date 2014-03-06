@@ -230,20 +230,21 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FrameBufferSDL2::about() const
 {
-#if 0
   ostringstream out;
-  out << "Video rendering: OpenGL mode" << endl
-      << "  Vendor:     " << p_gl.GetString(GL_VENDOR) << endl
-      << "  Renderer:   " << p_gl.GetString(GL_RENDERER) << endl
-      << "  Version:    " << p_gl.GetString(GL_VERSION) << endl
-      << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
-      << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << ", "
-      << "GL_BGRA" << endl
-      << "  Extensions: VBO " << (myVBOAvailable ? "enabled" : "disabled")
-      << endl;
+  out << "Video system: " << SDL_GetCurrentVideoDriver() << endl;
+  SDL_RendererInfo info;
+  if(SDL_GetRendererInfo(myRenderer, &info) >= 0)
+  {
+    out << "  Renderer: " << info.name << endl;
+    if(info.max_texture_width > 0 && info.max_texture_height > 0)
+      out << "  Max texture: " << info.max_texture_width << "x"
+                               << info.max_texture_height << endl;
+    out << "  Flags: "
+        << ((info.flags & SDL_RENDERER_PRESENTVSYNC) ? "+" : "-") << "vsync, "
+        << ((info.flags & SDL_RENDERER_ACCELERATED) ? "+" : "-") << "accel"
+        << endl;
+  }
   return out.str();
-#endif
-return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
