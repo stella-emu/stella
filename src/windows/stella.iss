@@ -26,7 +26,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#STELLA_PATH}\Stella.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#STELLA_PATH}\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#STELLA_PATH}\SDL2.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#STELLA_DOCPATH}\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
