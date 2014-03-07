@@ -37,15 +37,12 @@ void EventHandlerSDL2::initializeJoysticks()
 {
 #ifdef JOYSTICK_SUPPORT
   // Initialize the joystick subsystem
-  if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
+  if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) >= 0) && (SDL_NumJoysticks() > 0))
   {
-    myOSystem->logMessage("No joysticks present.", 1);
-    return;
+    int numSticks = SDL_NumJoysticks();
+    for(int i = 0; i < numSticks; ++i)
+      addJoystick(new JoystickSDL2(i), i);
   }
-
-  int numSticks = SDL_NumJoysticks();
-  for(int i = 0; i < numSticks; ++i)
-    addJoystick(new JoystickSDL2(i), i);
 #endif
 }
 

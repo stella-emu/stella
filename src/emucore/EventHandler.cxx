@@ -130,8 +130,13 @@ void EventHandler::initialize()
 
   ostringstream buf;
   buf << "Joystick devices found:" << endl;
-  for(uInt32 i = 0; i < myJoysticks.size(); ++i)
-    buf << "  " << i << ": " << myJoysticks[i]->about() << endl << endl;
+  if(myJoysticks.size() == 0)
+    buf << "No joysticks present." << endl;
+  else
+  {
+    for(uInt32 i = 0; i < myJoysticks.size(); ++i)
+      buf << "  " << i << ": " << myJoysticks[i]->about() << endl;
+  }
   myOSystem->logMessage(buf.str(), 1);
 #else
   myOSystem->logMessage("Joystick support disabled.", 1);
