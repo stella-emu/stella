@@ -26,6 +26,9 @@ class Settings;
 #include "bspf.hxx"
 #include "atari_ntsc.h"
 
+#define SCALE_FROM_100(x) ((x/50.0)-1.0)
+#define SCALE_TO_100(x) (uInt32)(50*(x+1.0))
+
 /**
   This class is based on the Blargg NTSC filter code from Atari800,
   and is derived from 'filter_ntsc.(h|c)'.  Original code based on

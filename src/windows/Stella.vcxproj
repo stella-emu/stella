@@ -120,9 +120,6 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalOptions>SDL.lib
-SDLmain.lib
- %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -152,9 +149,6 @@ SDLmain.lib
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalOptions>SDL.lib
-SDLmain.lib
- %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Stella.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>

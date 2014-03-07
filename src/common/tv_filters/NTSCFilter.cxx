@@ -22,9 +22,6 @@
 
 #include "NTSCFilter.hxx"
 
-#define SCALE_FROM_100(x) ((x/50.0)-1.0)
-#define SCALE_TO_100(x) (uInt32)(50*(x+1.0))
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()
   : mySetup(atari_ntsc_composite),

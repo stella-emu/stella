@@ -164,10 +164,12 @@ int main(int argc, char* argv[])
 #endif
   }
 
+#if 0
   // Swallow any spurious events in the queue
   // These are normally caused by joystick/mouse jitter
   SDL_Event event;
   while(SDL_PollEvent(&event)) /* swallow event */ ;
+#endif
 
   // Start the main loop, and don't exit until the user issues a QUIT command
   theOSystem->logMessage("Starting main loop ...", 2);
