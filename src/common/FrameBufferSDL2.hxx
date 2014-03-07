@@ -176,7 +176,7 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       Set the icon for the main SDL window.
     */
-    void setWindowIcon();
+    void setWindowIcon() { }  // Not currently needed on any supported systems
 
     /**
       This method should be called anytime the TIA needs to be redrawn

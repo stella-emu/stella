@@ -296,54 +296,6 @@ return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::setWindowIcon()
-{
-#if !defined(BSPF_MAC_OSX) && !defined(BSPF_UNIX)
-  #include "stella.xpm"   // The Stella icon
-
-  // Set the window icon
-  uInt32 w, h, ncols, nbytes;
-  uInt32 rgba[256], icon[32 * 32];
-
-  sscanf(stella_icon[0], "%u %u %u %u", &w, &h, &ncols, &nbytes);
-  if((w != 32) || (h != 32) || (ncols > 255) || (nbytes > 1))
-  {
-    myOSystem->logMessage("ERROR: Couldn't load the application icon.", 0);
-    return;
-  }
-
-  for(uInt32 i = 0; i < ncols; i++)
-  {
-    unsigned char code;
-    char color[32];
-    uInt32 col;
-
-    sscanf(stella_icon[1 + i], "%c c %s", &code, color);
-    if(!strcmp(color, "None"))
-      col = 0x00000000;
-    else if(!strcmp(color, "black"))
-      col = 0xFF000000;
-    else if (color[0] == '#')
-    {
-      sscanf(color + 1, "%06x", &col);
-      col |= 0xFF000000;
-    }
-    else
-    {
-      myOSystem->logMessage("ERROR: Couldn't load the application icon.", 0);
-      return;
-    }
-    rgba[code] = col;
-  }
-
-  SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(icon, 32, 32, 32,
-                         32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
-  SDL_SetWindowIcon(myWindow, surface);
-  SDL_FreeSurface(surface);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::drawTIA(bool fullRedraw)
 {
   // The TIA surface takes all responsibility for drawing
