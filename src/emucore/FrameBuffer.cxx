@@ -78,9 +78,8 @@ FrameBuffer::~FrameBuffer(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::initialize()
 {
-  // Get desktop resolution information
-  if(!queryHardware(myDesktopWidth, myDesktopHeight, myResolutions))
-    return false;
+  // Get desktop resolution and supported renderers
+  queryHardware(myDesktopWidth, myDesktopHeight, myRenderers);
 
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
@@ -241,10 +240,10 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Take care of some items that are only done once per framebuffer creation.
   if(myInitializedCount == 1)
   {
-    myOSystem->logMessage(about(), 1);
     setUIPalette();
     setWindowIcon();
   }
+  myOSystem->logMessage(about(), 1);
 
   return kSuccess;
 }
@@ -873,11 +872,10 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const VariantList& FrameBuffer::supportedTIAFilters(const string& type)
+const VariantList& FrameBuffer::supportedTIAFilters()
 {
   uInt32 max_zoom = maxWindowSizeForScreen(320, 210,
                     myOSystem->desktopWidth(), myOSystem->desktopHeight());
-  uInt8 mask = (type == "soft" ? 0x1 : 0x2);
 
   uInt32 firstmode = 1;
   if(myOSystem->desktopWidth() < 640 || myOSystem->desktopHeight() < 480)
@@ -886,9 +884,7 @@ const VariantList& FrameBuffer::supportedTIAFilters(const string& type)
   myTIAFilters.clear();
   for(uInt32 i = firstmode; i < GFX_NumModes; ++i)
   {
-    // For now, just include all filters
-    // This will change once OpenGL-only filters are added
-    if((ourGraphicsModes[i].avail & mask) && ourGraphicsModes[i].zoom <= max_zoom)
+    if(ourGraphicsModes[i].zoom <= max_zoom)
     {
       myTIAFilters.push_back(ourGraphicsModes[i].description,
                              ourGraphicsModes[i].name);
@@ -985,6 +981,7 @@ void FrameBuffer::addVidMode(VideoMode& mode)
   mode.image_y = (mode.screen_h - mode.image_h) >> 1;
   myWindowedModeList.add(mode);
 
+#if 0 //FIXSDL
   // There are often stricter requirements on fullscreen modes, and they're
   // normally different depending on the OSystem in use
   // As well, we usually can't get fullscreen modes in the exact size
@@ -1003,6 +1000,7 @@ void FrameBuffer::addVidMode(VideoMode& mode)
       break;
     }
   }
+#endif
   myFullscreenModeList.add(mode);
 }
 
@@ -1351,16 +1349,16 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::GraphicsMode FrameBuffer::ourGraphicsModes[GFX_NumModes] = {
-  { GFX_Zoom1x,  "zoom1x",  "Zoom 1x",  1,  0x3 },
-  { GFX_Zoom2x,  "zoom2x",  "Zoom 2x",  2,  0x3 },
-  { GFX_Zoom3x,  "zoom3x",  "Zoom 3x",  3,  0x3 },
-  { GFX_Zoom4x,  "zoom4x",  "Zoom 4x",  4,  0x3 },
-  { GFX_Zoom5x,  "zoom5x",  "Zoom 5x",  5,  0x3 },
-  { GFX_Zoom6x,  "zoom6x",  "Zoom 6x",  6,  0x3 },
-  { GFX_Zoom7x,  "zoom7x",  "Zoom 7x",  7,  0x3 },
-  { GFX_Zoom8x,  "zoom8x",  "Zoom 8x",  8,  0x3 },
-  { GFX_Zoom9x,  "zoom9x",  "Zoom 9x",  9,  0x3 },
-  { GFX_Zoom10x, "zoom10x", "Zoom 10x", 10, 0x3 }
+  { GFX_Zoom1x,  "zoom1x",  "Zoom 1x",  1  },
+  { GFX_Zoom2x,  "zoom2x",  "Zoom 2x",  2  },
+  { GFX_Zoom3x,  "zoom3x",  "Zoom 3x",  3  },
+  { GFX_Zoom4x,  "zoom4x",  "Zoom 4x",  4  },
+  { GFX_Zoom5x,  "zoom5x",  "Zoom 5x",  5  },
+  { GFX_Zoom6x,  "zoom6x",  "Zoom 6x",  6  },
+  { GFX_Zoom7x,  "zoom7x",  "Zoom 7x",  7  },
+  { GFX_Zoom8x,  "zoom8x",  "Zoom 8x",  8  },
+  { GFX_Zoom9x,  "zoom9x",  "Zoom 9x",  9  },
+  { GFX_Zoom10x, "zoom10x", "Zoom 10x", 10 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

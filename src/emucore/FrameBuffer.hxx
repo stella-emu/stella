@@ -98,14 +98,6 @@ enum {
   kNumColors
 };
 
-// Fullscreen resolutions supported by the underlying hardware
-struct Resolution {
-  uInt32 width;
-  uInt32 height;
-  string name;
-};
-typedef Common::Array<Resolution> ResolutionList;
-
 
 /**
   This class encapsulates all video buffers and is the basis for the video
@@ -222,11 +214,11 @@ class FrameBuffer
     uInt32 desktopHeight() const { return myDesktopHeight; }
 
     /**
-      Get the supported fullscreen resolutions for the video hardware.
+      Get the supported renderers for the video hardware.
 
-      @return  An array of supported resolutions
+      @return  An array of supported renderers
     */
-    const ResolutionList& supportedResolutions() const { return myResolutions; }
+    const VariantList& supportedRenderers() const { return myRenderers; }
 
     /**
       Get the font object(s) of the framebuffer
@@ -280,9 +272,9 @@ class FrameBuffer
     void toggleGrabMouse();
 
     /**
-      Get the supported TIA filters for the given framebuffer type.
+      Get the supported TIA filters for the framebuffer.
     */
-    const VariantList& supportedTIAFilters(const string& type);
+    const VariantList& supportedTIAFilters();
 
     /**
       Get the TIA pixel associated with the given TIA buffer index,
@@ -415,7 +407,6 @@ class FrameBuffer
       const char* name;
       const char* description;
       uInt32 zoom;
-      uInt8 avail;  // 0x1 bit -> software, 0x2 bit -> opengl
     };
 
     // Contains all relevant info for the dimensions of a video screen
@@ -442,10 +433,8 @@ class FrameBuffer
     /**
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.
-
-      @return  False on any errors, else true
     */
-    virtual bool queryHardware(uInt32& w, uInt32& h, ResolutionList& res) = 0;
+    virtual void queryHardware(uInt32& w, uInt32& h, VariantList& ren) = 0;
 
     /**
       This method is called to change to the given video mode.  If the mode
@@ -630,8 +619,8 @@ class FrameBuffer
     // Maximum dimensions of the desktop area
     uInt32 myDesktopWidth, myDesktopHeight;
 
-    // Supported fullscreen resolutions
-    ResolutionList myResolutions;
+    // Supported renderers
+    VariantList myRenderers;
 
     // The font object to use for the normal in-game GUI
     GUI::Font* myFont;

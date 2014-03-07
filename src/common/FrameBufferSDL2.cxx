@@ -81,7 +81,7 @@ FrameBufferSDL2::~FrameBufferSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, ResolutionList& res)
+void FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, VariantList& renderers)
 {
   // First get the maximum windowed desktop resolution
   SDL_DisplayMode desktop;
@@ -89,7 +89,15 @@ bool FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, ResolutionList& res)
   w = desktop.w;
   h = desktop.h;
 
-  return true;
+  // For now, supported render types are hardcoded; eventually, SDL may
+  // provide a method to query this
+#if defined(BSPF_WINDOWS)
+  renderers.push_back("Direct3D", "direct3d");
+#endif
+  renderers.push_back("OpenGL", "opengl");
+  renderers.push_back("OpenGLES2", "opengles2");
+  renderers.push_back("OpenGLES", "opengles");
+  renderers.push_back("Software", "software");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,6 +198,10 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
   Uint32 renderFlags = SDL_RENDERER_ACCELERATED;
   if(myOSystem->settings().getBool("vsync"))
     renderFlags |= SDL_RENDERER_PRESENTVSYNC;
+  // Render hint
+  const string& video = myOSystem->settings().getString("video");
+  if(video != "")
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
   myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
   if(myWindow == NULL)
   {
@@ -197,6 +209,9 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
     myOSystem->logMessage(msg, 0);
     return false;
   }
+  SDL_RendererInfo renderinfo;
+  if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
+    myOSystem->settings().setValue("video", renderinfo.name);
 
   // The framebuffer only takes responsibility for TIA surfaces
   // Other surfaces (such as the ones used for dialogs) are allocated
@@ -283,14 +298,12 @@ return false;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setWindowIcon()
 {
-#if 0 //FIXSDL
 #if !defined(BSPF_MAC_OSX) && !defined(BSPF_UNIX)
   #include "stella.xpm"   // The Stella icon
 
   // Set the window icon
   uInt32 w, h, ncols, nbytes;
   uInt32 rgba[256], icon[32 * 32];
-  uInt8  mask[32][4];
 
   sscanf(stella_icon[0], "%u %u %u %u", &w, &h, &ncols, &nbytes);
   if((w != 32) || (h != 32) || (ncols > 255) || (nbytes > 1))
@@ -323,23 +336,10 @@ void FrameBufferSDL2::setWindowIcon()
     rgba[code] = col;
   }
 
-  memset(mask, 0, sizeof(mask));
-  for(h = 0; h < 32; h++)
-  {
-    const char* line = stella_icon[1 + ncols + h];
-    for(w = 0; w < 32; w++)
-    {
-      icon[w + 32 * h] = rgba[(int)line[w]];
-      if(rgba[(int)line[w]] & 0xFF000000)
-        mask[h][w >> 3] |= 1 << (7 - (w & 0x07));
-    }
-  }
-
   SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(icon, 32, 32, 32,
                          32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
-  SDL_WM_SetIcon(surface, (unsigned char *) mask);
+  SDL_SetWindowIcon(myWindow, surface);
   SDL_FreeSurface(surface);
-#endif
 #endif
 }
 

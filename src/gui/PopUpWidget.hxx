@@ -47,10 +47,10 @@ class PopUpWidget : public Widget, public CommandSender
     ~PopUpWidget();
 
     /** Add the given items to the widget. */
+    void addItems(const VariantList& items) { myMenu->addItems(items);     }
 
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */
-    void addItems(const VariantList& items) { myMenu->addItems(items);     }
     void setSelected(const Variant& tag,
                      const Variant& def = EmptyVariant)
                                           { myMenu->setSelected(tag, def); }

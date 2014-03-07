@@ -53,27 +53,25 @@ class VideoDialog : public Dialog
     TabWidget* myTab;
 
     // General options
-    StaticTextWidget* myRenderer;
-    PopUpWidget*      myRendererPopup;
-    PopUpWidget*      myTIAFilterPopup;
-    PopUpWidget*      myTIAPalettePopup;
-    PopUpWidget*      myFSResPopup;
-    PopUpWidget*      myFrameTimingPopup;
-    PopUpWidget*      myGLFilterPopup;
-    SliderWidget*     myNAspectRatioSlider;
+    PopUpWidget*      myRenderer;
+    PopUpWidget*      myTIAFilter;
+    PopUpWidget*      myTIAPalette;
+    PopUpWidget*      myFrameTiming;
+    PopUpWidget*      myTIAInterpolate;
+    SliderWidget*     myNAspectRatio;
     StaticTextWidget* myNAspectRatioLabel;
-    SliderWidget*     myPAspectRatioSlider;
+    SliderWidget*     myPAspectRatio;
     StaticTextWidget* myPAspectRatioLabel;
 
-    SliderWidget*     myFrameRateSlider;
+    SliderWidget*     myFrameRate;
     StaticTextWidget* myFrameRateLabel;
-    PopUpWidget*      myFullscreenPopup;
-    CheckboxWidget*   myColorLossCheckbox;
-    CheckboxWidget*   myGLStretchCheckbox;
-    CheckboxWidget*   myUseVSyncCheckbox;
-    CheckboxWidget*   myUIMessagesCheckbox;
-    CheckboxWidget*   myCenterCheckbox;
-    CheckboxWidget*   myFastSCBiosCheckbox;
+    PopUpWidget*      myFullscreen;
+    CheckboxWidget*   myColorLoss;
+    CheckboxWidget*   myGLStretch;
+    CheckboxWidget*   myUseVSync;
+    CheckboxWidget*   myUIMessages;
+    CheckboxWidget*   myCenter;
+    CheckboxWidget*   myFastSCBios;
 
     // TV effects adjustables (custom mode)
     PopUpWidget*      myTVMode;
