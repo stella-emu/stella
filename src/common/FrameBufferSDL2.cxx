@@ -42,7 +42,8 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
     myRenderer(NULL),
     myWindowFlags(0),
     myTiaSurface(NULL),
-    myDirtyFlag(true)
+    myDirtyFlag(true),
+    myDblBufferedFlag(true)
 {
   // Initialize SDL2 context
   if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
@@ -211,7 +212,12 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
   }
   SDL_RendererInfo renderinfo;
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
+  {
     myOSystem->settings().setValue("video", renderinfo.name);
+    // For now, accelerated renderers imply double buffering
+    // Eventually, SDL may be updated to query this from the render backend
+    myDblBufferedFlag = renderinfo.flags & SDL_RENDERER_ACCELERATED;
+  }
 
   // The framebuffer only takes responsibility for TIA surfaces
   // Other surfaces (such as the ones used for dialogs) are allocated

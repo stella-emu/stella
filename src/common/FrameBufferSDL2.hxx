@@ -113,9 +113,9 @@ class FrameBufferSDL2 : public FrameBuffer
       { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
     /**
-      This method is called to query the type of the FrameBuffer.
+      This method is called to query the buffering type of the FrameBuffer.
     */
-    BufferType type() const { return kDoubleBuffer; }
+    bool isDoubleBuffered() const { return myDblBufferedFlag; }
 
     /**
       This method is called to query the TV effects in use by the FrameBuffer.
@@ -238,6 +238,9 @@ class FrameBufferSDL2 : public FrameBuffer
 
     // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
+
+    // Indicates whether the backend is using double buffering
+    bool myDblBufferedFlag;
 };
 
 #endif

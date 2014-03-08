@@ -37,10 +37,8 @@
 Settings::Settings(OSystem* osystem)
   : myOSystem(osystem)
 {
-  // Add options that are common to all versions of Stella
-  setInternal("video", "soft");
-
   // Video-related options
+  setInternal("video", "");
   setInternal("vsync", "true");
   setInternal("fullscreen", "0");
   setInternal("fullres", "auto");
@@ -275,21 +273,16 @@ void Settings::validate()
   string s;
   int i;
 
-  s = getString("video");
-  if(s != "soft" && s != "gl")  setInternal("video", "soft");
-
   s = getString("timing");
   if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
 
-//FIXSDL
   i = getInt("tia.aspectn");
-  if(i < 80 || i > 120)  setInternal("tia.aspectn", "100");
+  if(i < 80 || i > 120)  setInternal("tia.aspectn", "90");
   i = getInt("tia.aspectp");
   if(i < 80 || i > 120)  setInternal("tia.aspectp", "100");
 
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setInternal("tv.filter", "0");
-//////////////////
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");

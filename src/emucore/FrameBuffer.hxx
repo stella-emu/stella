@@ -39,12 +39,6 @@ namespace GUI {
 #include "Variant.hxx"
 #include "bspf.hxx"
 
-// Different types of framebuffer derived objects
-enum BufferType {
-  kSingleBuffer,
-  kDoubleBuffer
-};
-
 // Return values for initialization of framebuffer window
 enum FBInitStatus {
   kSuccess,
@@ -365,9 +359,9 @@ class FrameBuffer
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const = 0;
 
     /**
-      This method is called to query the type of the FrameBuffer.
+      This method is called to query the buffering type of the FrameBuffer.
     */
-    virtual BufferType type() const = 0;
+    virtual bool isDoubleBuffered() const = 0;
 
     /**
       This method is called to get the specified scanline data from the

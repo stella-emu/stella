@@ -317,7 +317,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->menu().draw(myMsg.enabled && type() == kDoubleBuffer);
+      myOSystem->menu().draw(myMsg.enabled && isDoubleBuffered());
       break;  // S_MENU
     }
 
@@ -325,7 +325,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->commandMenu().draw(myMsg.enabled && type() == kDoubleBuffer);
+      myOSystem->commandMenu().draw(myMsg.enabled && isDoubleBuffered());
       break;  // S_CMDMENU
     }
 
@@ -333,7 +333,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->launcher().draw(myMsg.enabled && type() == kDoubleBuffer);
+      myOSystem->launcher().draw(myMsg.enabled && isDoubleBuffered());
       break;  // S_LAUNCHER
     }
 
@@ -342,7 +342,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->debugger().draw(myMsg.enabled && type() == kDoubleBuffer);
+      myOSystem->debugger().draw(myMsg.enabled && isDoubleBuffered());
       break;  // S_DEBUGGER
     }
 #endif
@@ -510,14 +510,13 @@ void FrameBuffer::refresh()
   // This method is in essence a FULL refresh, putting all rendering
   // buffers in a known, fully redrawn state
 
-  bool doubleBuffered = (type() == kDoubleBuffer);
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_PAUSE:
       invalidate();
       drawTIA(true);
-      if(doubleBuffered)
+      if(isDoubleBuffered())
       {
         postFrameUpdate();
         invalidate();
@@ -529,7 +528,7 @@ void FrameBuffer::refresh()
       invalidate();
       drawTIA(true);
       myOSystem->menu().draw(true);
-      if(doubleBuffered)
+      if(isDoubleBuffered())
       {
         postFrameUpdate();
         invalidate();
@@ -542,7 +541,7 @@ void FrameBuffer::refresh()
       invalidate();
       drawTIA(true);
       myOSystem->commandMenu().draw(true);
-      if(doubleBuffered)
+      if(isDoubleBuffered())
       {
         postFrameUpdate();
         invalidate();
@@ -554,7 +553,7 @@ void FrameBuffer::refresh()
     case EventHandler::S_LAUNCHER:
       invalidate();
       myOSystem->launcher().draw(true);
-      if(doubleBuffered)
+      if(isDoubleBuffered())
       {
         postFrameUpdate();
         invalidate();
@@ -566,7 +565,7 @@ void FrameBuffer::refresh()
     case EventHandler::S_DEBUGGER:
       invalidate();
       myOSystem->debugger().draw(true);
-      if(doubleBuffered)
+      if(isDoubleBuffered())
       {
         postFrameUpdate();
         invalidate();
