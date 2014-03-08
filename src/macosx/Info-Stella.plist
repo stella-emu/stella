@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>Stella</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -32,8 +34,6 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>Stella</string>
-	<key>CFBundleDisplayName</key>
-	<string>Stella</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Stella</string>
 	<key>CFBundleHelpBookFolder</key>
@@ -54,20 +54,18 @@
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
 	<string>3.9.3</string>
+	<key>LSMinimumSystemVersionByArchitecture</key>
+	<dict>
+		<key>i386</key>
+		<string>10.4.0</string>
+		<key>x86_64</key>
+		<string>10.6.0</string>
+	</dict>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>«PROJECTNAMEASXML»</key>
 	<string>SDL Cocoa App</string>
-	<key>LSMinimumSystemVersionByArchitecture</key>
-	<dict>
-		<key>x86_64</key>
-		<string>10.6.0</string>
-		<key>i386</key>
-		<string>10.4.0</string>
-		<key>ppc</key>
-		<string>10.4.0</string>
-	</dict>
 </dict>
 </plist>

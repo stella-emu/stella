@@ -179,7 +179,7 @@ class EventHandler
   #ifndef BSPF_MAC_OSX
       return (mod & KMOD_ALT);
   #else
-      return (mod & KMOD_META);
+      return (mod & KMOD_MODE);
   #endif
     }
 
