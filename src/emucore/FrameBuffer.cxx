@@ -191,6 +191,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   setAvailableVidModes(width, height);
 
   // Initialize video subsystem (make sure we get a valid mode)
+  string pre_about = about();
   VideoMode mode = getSavedVidMode();
   if(width <= mode.screen_w && height <= mode.screen_h)
   {
@@ -240,10 +241,16 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Take care of some items that are only done once per framebuffer creation.
   if(myInitializedCount == 1)
   {
+    myOSystem->logMessage(about(), 1);
     setUIPalette();
     setWindowIcon();
   }
-  myOSystem->logMessage(about(), 1);
+  else
+  {
+    string post_about = about();
+    if(post_about != pre_about)
+      myOSystem->logMessage(post_about, 1);
+  }
 
   return kSuccess;
 }
@@ -503,7 +510,7 @@ void FrameBuffer::refresh()
   // This method is in essence a FULL refresh, putting all rendering
   // buffers in a known, fully redrawn state
 
-  bool doubleBuffered = false;//FIXSDL(type() == kDoubleBuffer);
+  bool doubleBuffered = (type() == kDoubleBuffer);
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
@@ -577,23 +584,18 @@ void FrameBuffer::refresh()
 void FrameBuffer::setNTSC(NTSCFilter::Preset preset, bool show)
 {
   ostringstream buf;
-  if(type() == kDoubleBuffer)
+  if(preset == NTSCFilter::PRESET_OFF)
   {
-    if(preset == NTSCFilter::PRESET_OFF)
-    {
-      enableNTSC(false);
-      buf << "TV filtering disabled";
-    }
-    else
-    {
-      enableNTSC(true);
-      const string& mode = myNTSCFilter.setPreset(preset);
-      buf << "TV filtering (" << mode << " mode)";
-    }
-    myOSystem->settings().setValue("tv.filter", (int)preset);
+    enableNTSC(false);
+    buf << "TV filtering disabled";
   }
   else
-    buf << "TV filtering not available in software mode";
+  {
+    enableNTSC(true);
+    const string& mode = myNTSCFilter.setPreset(preset);
+    buf << "TV filtering (" << mode << " mode)";
+  }
+  myOSystem->settings().setValue("tv.filter", (int)preset);
 
   if(show) showMessage(buf.str());
 }
@@ -602,19 +604,14 @@ void FrameBuffer::setNTSC(NTSCFilter::Preset preset, bool show)
 void FrameBuffer::setScanlineIntensity(int amount)
 {
   ostringstream buf;
-  if(type() == kDoubleBuffer)
+  if(ntscEnabled())
   {
-    if(ntscEnabled())
-    {
-      uInt32 intensity = enableScanlines(amount);
-      buf << "Scanline intensity at " << intensity  << "%";
-      myOSystem->settings().setValue("tv.scanlines", intensity);
-    }
-    else
-      buf << "Scanlines only available in TV filtering mode";
+    uInt32 intensity = enableScanlines(amount);
+    buf << "Scanline intensity at " << intensity  << "%";
+    myOSystem->settings().setValue("tv.scanlines", intensity);
   }
   else
-    buf << "Scanlines not available in software mode";
+    buf << "Scanlines only available in TV filtering mode";
 
   showMessage(buf.str());
 }
@@ -623,20 +620,15 @@ void FrameBuffer::setScanlineIntensity(int amount)
 void FrameBuffer::toggleScanlineInterpolation()
 {
   ostringstream buf;
-  if(type() == kDoubleBuffer)
+  if(ntscEnabled())
   {
-    if(ntscEnabled())
-    {
-      bool enable = !myOSystem->settings().getBool("tv.scaninter");
-      enableScanlineInterpolation(enable);
-      buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
-      myOSystem->settings().setValue("tv.scaninter", enable);
-    }
-    else
-      buf << "Scanlines only available in TV filtering mode";
+    bool enable = !myOSystem->settings().getBool("tv.scaninter");
+    enableScanlineInterpolation(enable);
+    buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
+    myOSystem->settings().setValue("tv.scaninter", enable);
   }
   else
-    buf << "Scanlines not available in software mode";
+    buf << "Scanlines only available in TV filtering mode";
 
   showMessage(buf.str());
 }

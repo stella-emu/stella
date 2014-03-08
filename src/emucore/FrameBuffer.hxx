@@ -41,7 +41,7 @@ namespace GUI {
 
 // Different types of framebuffer derived objects
 enum BufferType {
-  kSoftBuffer,
+  kSingleBuffer,
   kDoubleBuffer
 };
 
@@ -51,12 +51,6 @@ enum FBInitStatus {
   kFailComplete,
   kFailTooLarge,
   kFailNotSupported,
-};
-
-// Various hints that the FrameBuffer can pass to the underlying
-// video renderer (this will expand as required
-enum FBHint {
-  kFullScreen = 0x1
 };
 
 // Positions for onscreen/overlaid messages
