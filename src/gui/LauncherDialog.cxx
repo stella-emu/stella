@@ -457,7 +457,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Grab the key before passing it to the actual dialog and check for
   // Control-R (reload ROM listing)
-  if(instance().eventHandler().kbdControl(mod) && key == KBDK_r)
+  if(instance().eventHandler().kbdControl(mod) && key == KBDK_R)
     updateListing();
   else
     Dialog::handleKeyDown(key, mod, ascii);

@@ -404,7 +404,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
         }
         break;
 
-      case KBDK_n: // negate
+      case KBDK_N: // negate
         if(_editable)
           negateCell();
         break;

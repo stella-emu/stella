@@ -57,11 +57,11 @@ void EventHandlerSDL2::pollEvent()
       case SDL_KEYUP:
       case SDL_KEYDOWN:
       {
-        handleKeyEvent((StellaKey)event.key.keysym.sym,
-                       (StellaMod)event.key.keysym.mod,
-//FIXSDL                       event.key.keysym.unicode & 0x7f,
-                       event.key.keysym.scancode,
-                       event.key.type == SDL_KEYDOWN);
+        if(!event.key.repeat)
+          handleKeyEvent((StellaKey)event.key.keysym.scancode,
+                         (StellaMod)event.key.keysym.mod,
+                          'x', //FIXSDL event.key.keysym.scancode,
+                          event.key.type == SDL_KEYDOWN);
         break;
       }
 
@@ -133,17 +133,49 @@ void EventHandlerSDL2::pollEvent()
         handleEvent(Event::Quit, 1);
         break;  // SDL_QUIT
 
-#if 0 //FIXSDL
-      case SDL_ACTIVEEVENT:
-        if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
-          if(myState == S_EMULATE) enterMenuMode(S_MENU);
-        break; // SDL_ACTIVEEVENT
-
-      case SDL_VIDEOEXPOSE:
-        myOSystem->frameBuffer().refresh();
-        break;  // SDL_VIDEOEXPOSE
-#endif
-
+      case SDL_WINDOWEVENT:
+        switch(event.window.event)
+        {
+          case SDL_WINDOWEVENT_SHOWN:
+            handleSystemEvent(EVENT_WINDOW_SHOWN);
+            break;
+          case SDL_WINDOWEVENT_HIDDEN:
+            handleSystemEvent(EVENT_WINDOW_HIDDEN);
+            break;
+          case SDL_WINDOWEVENT_EXPOSED:
+            handleSystemEvent(EVENT_WINDOW_EXPOSED);
+            break;
+          case SDL_WINDOWEVENT_MOVED:
+            handleSystemEvent(EVENT_WINDOW_MOVED,
+                              event.window.data1, event.window.data1);
+            break;
+          case SDL_WINDOWEVENT_RESIZED:
+            handleSystemEvent(EVENT_WINDOW_RESIZED,
+                              event.window.data1, event.window.data1);
+            break;
+          case SDL_WINDOWEVENT_MINIMIZED:
+            handleSystemEvent(EVENT_WINDOW_MINIMIZED);
+            break;
+          case SDL_WINDOWEVENT_MAXIMIZED:
+            handleSystemEvent(EVENT_WINDOW_MAXIMIZED);
+            break;
+          case SDL_WINDOWEVENT_RESTORED:
+            handleSystemEvent(EVENT_WINDOW_RESTORED);
+            break;
+          case SDL_WINDOWEVENT_ENTER:
+            handleSystemEvent(EVENT_WINDOW_ENTER);
+            break;
+          case SDL_WINDOWEVENT_LEAVE:
+            handleSystemEvent(EVENT_WINDOW_LEAVE);
+            break;
+          case SDL_WINDOWEVENT_FOCUS_GAINED:
+            handleSystemEvent(EVENT_WINDOW_FOCUS_GAINED);
+            break;
+          case SDL_WINDOWEVENT_FOCUS_LOST:
+            handleSystemEvent(EVENT_WINDOW_FOCUS_LOST);
+            break;
+        }
+        break;
     }
   }
 }

@@ -256,40 +256,40 @@ bool EditableWidget::specialKeys(StellaKey key, char ascii)
 
   switch (key)
   {
-    case KBDK_a:
+    case KBDK_A:
       setCaretPos(0);
       break;
 
-    case KBDK_c:
+    case KBDK_C:
       copySelectedText();
       if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
-    case KBDK_e:
+    case KBDK_E:
       setCaretPos(_editString.size());
       break;
 
-    case KBDK_d:
+    case KBDK_D:
       handled = killChar(+1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
-    case KBDK_k:
+    case KBDK_K:
       handled = killLine(+1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
-    case KBDK_u:
+    case KBDK_U:
       handled = killLine(-1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
-    case KBDK_v:
+    case KBDK_V:
       pasteSelectedText();
       if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
-    case KBDK_w:
+    case KBDK_W:
       handled = killLastWord();
       if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;

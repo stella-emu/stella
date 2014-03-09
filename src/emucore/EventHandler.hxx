@@ -343,6 +343,23 @@ class EventHandler
     */
     virtual void pollEvent() = 0;
 
+    // Other events that can be received from the underlying event handler
+    enum SystemEvent {
+      EVENT_WINDOW_SHOWN,
+      EVENT_WINDOW_HIDDEN,
+      EVENT_WINDOW_EXPOSED,
+      EVENT_WINDOW_MOVED,
+      EVENT_WINDOW_RESIZED,
+      EVENT_WINDOW_MINIMIZED,
+      EVENT_WINDOW_MAXIMIZED,
+      EVENT_WINDOW_RESTORED,
+      EVENT_WINDOW_ENTER,
+      EVENT_WINDOW_LEAVE,
+      EVENT_WINDOW_FOCUS_GAINED,
+      EVENT_WINDOW_FOCUS_LOST
+    };
+    void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
+
     // An abstraction of joystick in Stella.
     // A StellaJoystick holds its own event mapping information, space for
     // which is dynamically allocated based on the actual number of buttons,

@@ -351,7 +351,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
   {
 #ifdef BSPF_MAC_OSX
     // These keys work in all states
-    if(key == KBDK_q)
+    if(key == KBDK_Q)
     {
       handleEvent(Event::Quit, 1);
     }
@@ -449,49 +449,49 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
           }
           break;
 
-        case KBDK_z:
+        case KBDK_Z:
           if(mod & KMOD_SHIFT)
             myOSystem->console().toggleP0Collision();
           else
             myOSystem->console().toggleP0Bit();
           break;
 
-        case KBDK_x:
+        case KBDK_X:
           if(mod & KMOD_SHIFT)
             myOSystem->console().toggleP1Collision();
           else
               myOSystem->console().toggleP1Bit();
           break;
 
-        case KBDK_c:
+        case KBDK_C:
           if(mod & KMOD_SHIFT)
             myOSystem->console().toggleM0Collision();
           else
             myOSystem->console().toggleM0Bit();
           break;
 
-        case KBDK_v:
+        case KBDK_V:
           if(mod & KMOD_SHIFT)
             myOSystem->console().toggleM1Collision();
           else
             myOSystem->console().toggleM1Bit();
           break;
 
-        case KBDK_b:
+        case KBDK_B:
           if(mod & KMOD_SHIFT)
             myOSystem->console().toggleBLCollision();
           else
             myOSystem->console().toggleBLBit();
           break;
 
-        case KBDK_n:
+        case KBDK_N:
           if(mod & KMOD_SHIFT)
             myOSystem->console().togglePFCollision();
           else
             myOSystem->console().togglePFBit();
           break;
 
-        case KBDK_m:
+        case KBDK_M:
           myOSystem->console().toggleHMOVE();
           break;
 
@@ -506,15 +506,15 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
             myOSystem->console().toggleBits();
           break;
 
-        case KBDK_p:  // Alt-p toggles phosphor effect
+        case KBDK_P:  // Alt-p toggles phosphor effect
           myOSystem->console().togglePhosphor();
           break;
 
-        case KBDK_l:
+        case KBDK_L:
           myOSystem->frameBuffer().toggleFrameStats();
           break;
 
-        case KBDK_s:
+        case KBDK_S:
           if(myContSnapshotInterval == 0)
           {
             ostringstream buf;
@@ -545,7 +545,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
   else if(kbdControl(mod) && state && myUseCtrlKeyFlag)
   {
     // These keys work in all states
-    if(key == KBDK_q)
+    if(key == KBDK_Q)
     {
       handleEvent(Event::Quit, 1);
     }
@@ -563,24 +563,24 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
           toggleSAPortOrder();
           break;
 
-        case KBDK_f:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
+        case KBDK_F:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
           myOSystem->console().toggleFormat(mod & KMOD_SHIFT ? -1 : 1);
           break;
 
-        case KBDK_g:  // Ctrl-g (un)grabs mouse
+        case KBDK_G:  // Ctrl-g (un)grabs mouse
           if(!myOSystem->frameBuffer().fullScreen())
             myOSystem->frameBuffer().toggleGrabMouse();
           break;
 
-        case KBDK_l:  // Ctrl-l toggles PAL color-loss effect
+        case KBDK_L:  // Ctrl-l toggles PAL color-loss effect
           myOSystem->console().toggleColorLoss();
           break;
 
-        case KBDK_p:  // Ctrl-p toggles different palettes
+        case KBDK_P:  // Ctrl-p toggles different palettes
           myOSystem->console().togglePalette();
           break;
 
-        case KBDK_r:  // Ctrl-r reloads the currently loaded ROM
+        case KBDK_R:  // Ctrl-r reloads the currently loaded ROM
           myOSystem->reloadConsole();
           break;
 
@@ -592,7 +592,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
           myOSystem->console().changeHeight(-1);
           break;
 
-        case KBDK_s:         // Ctrl-s saves properties to a file
+        case KBDK_S:         // Ctrl-s saves properties to a file
         {
           string filename = myOSystem->baseDir() +
               myOSystem->console().properties().get(Cartridge_Name) + ".pro";
@@ -887,6 +887,26 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
         myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
+{
+  switch(e)
+  {
+    case EVENT_WINDOW_EXPOSED:
+        myOSystem->frameBuffer().refresh();
+        break;
+    default:  // handle other events as testing requires
+      // cerr << "handleSystemEvent: " << e << endl;
+      break;
+  }
+#if 0 //FIXSDL
+      case SDL_ACTIVEEVENT:
+        if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
+          if(myState == S_EMULATE) enterMenuMode(S_MENU);
+        break; // SDL_ACTIVEEVENT
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1505,24 +1525,24 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       SET_DEFAULT_KEY(KBDK_1,         mode, Event::KeyboardZero1,     event);
       SET_DEFAULT_KEY(KBDK_2,         mode, Event::KeyboardZero2,     event);
       SET_DEFAULT_KEY(KBDK_3,         mode, Event::KeyboardZero3,     event);
-      SET_DEFAULT_KEY(KBDK_q,         mode, Event::KeyboardZero4,     event);
-      SET_DEFAULT_KEY(KBDK_w,         mode, Event::KeyboardZero5,     event);
-      SET_DEFAULT_KEY(KBDK_e,         mode, Event::KeyboardZero6,     event);
-      SET_DEFAULT_KEY(KBDK_a,         mode, Event::KeyboardZero7,     event);
-      SET_DEFAULT_KEY(KBDK_s,         mode, Event::KeyboardZero8,     event);
-      SET_DEFAULT_KEY(KBDK_d,         mode, Event::KeyboardZero9,     event);
-      SET_DEFAULT_KEY(KBDK_z,         mode, Event::KeyboardZeroStar,  event);
-      SET_DEFAULT_KEY(KBDK_x,         mode, Event::KeyboardZero0,     event);
-      SET_DEFAULT_KEY(KBDK_c,         mode, Event::KeyboardZeroPound, event);
+      SET_DEFAULT_KEY(KBDK_Q,         mode, Event::KeyboardZero4,     event);
+      SET_DEFAULT_KEY(KBDK_W,         mode, Event::KeyboardZero5,     event);
+      SET_DEFAULT_KEY(KBDK_E,         mode, Event::KeyboardZero6,     event);
+      SET_DEFAULT_KEY(KBDK_A,         mode, Event::KeyboardZero7,     event);
+      SET_DEFAULT_KEY(KBDK_S,         mode, Event::KeyboardZero8,     event);
+      SET_DEFAULT_KEY(KBDK_S,         mode, Event::KeyboardZero9,     event);
+      SET_DEFAULT_KEY(KBDK_Z,         mode, Event::KeyboardZeroStar,  event);
+      SET_DEFAULT_KEY(KBDK_X,         mode, Event::KeyboardZero0,     event);
+      SET_DEFAULT_KEY(KBDK_C,         mode, Event::KeyboardZeroPound, event);
 
       SET_DEFAULT_KEY(KBDK_8,         mode, Event::KeyboardOne1,      event);
       SET_DEFAULT_KEY(KBDK_9,         mode, Event::KeyboardOne2,      event);
       SET_DEFAULT_KEY(KBDK_0,         mode, Event::KeyboardOne3,      event);
-      SET_DEFAULT_KEY(KBDK_i,         mode, Event::KeyboardOne4,      event);
-      SET_DEFAULT_KEY(KBDK_o,         mode, Event::KeyboardOne5,      event);
-      SET_DEFAULT_KEY(KBDK_p,         mode, Event::KeyboardOne6,      event);
-      SET_DEFAULT_KEY(KBDK_k,         mode, Event::KeyboardOne7,      event);
-      SET_DEFAULT_KEY(KBDK_l,         mode, Event::KeyboardOne8,      event);
+      SET_DEFAULT_KEY(KBDK_I,         mode, Event::KeyboardOne4,      event);
+      SET_DEFAULT_KEY(KBDK_O,         mode, Event::KeyboardOne5,      event);
+      SET_DEFAULT_KEY(KBDK_P,         mode, Event::KeyboardOne6,      event);
+      SET_DEFAULT_KEY(KBDK_K,         mode, Event::KeyboardOne7,      event);
+      SET_DEFAULT_KEY(KBDK_L,         mode, Event::KeyboardOne8,      event);
       SET_DEFAULT_KEY(KBDK_SEMICOLON, mode, Event::KeyboardOne9,      event);
       SET_DEFAULT_KEY(KBDK_COMMA,     mode, Event::KeyboardOneStar,   event);
       SET_DEFAULT_KEY(KBDK_PERIOD,    mode, Event::KeyboardOne0,      event);
@@ -1537,11 +1557,11 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       SET_DEFAULT_KEY(KBDK_4,         mode, Event::JoystickZeroFire5, event);
       SET_DEFAULT_KEY(KBDK_5,         mode, Event::JoystickZeroFire9, event);
 
-      SET_DEFAULT_KEY(KBDK_y,         mode, Event::JoystickOneUp,     event);
-      SET_DEFAULT_KEY(KBDK_h,         mode, Event::JoystickOneDown,   event);
-      SET_DEFAULT_KEY(KBDK_g,         mode, Event::JoystickOneLeft,   event);
-      SET_DEFAULT_KEY(KBDK_j,         mode, Event::JoystickOneRight,  event);
-      SET_DEFAULT_KEY(KBDK_f,         mode, Event::JoystickOneFire,   event);
+      SET_DEFAULT_KEY(KBDK_Y,         mode, Event::JoystickOneUp,     event);
+      SET_DEFAULT_KEY(KBDK_H,         mode, Event::JoystickOneDown,   event);
+      SET_DEFAULT_KEY(KBDK_G,         mode, Event::JoystickOneLeft,   event);
+      SET_DEFAULT_KEY(KBDK_J,         mode, Event::JoystickOneRight,  event);
+      SET_DEFAULT_KEY(KBDK_F,         mode, Event::JoystickOneFire,   event);
       SET_DEFAULT_KEY(KBDK_6,         mode, Event::JoystickOneFire5,  event);
       SET_DEFAULT_KEY(KBDK_7,         mode, Event::JoystickOneFire9,  event);
 
@@ -1562,7 +1582,7 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       SET_DEFAULT_KEY(KBDK_PAUSE,     mode, Event::PauseMode,         event);
       SET_DEFAULT_KEY(KBDK_TAB,       mode, Event::MenuMode,          event);
       SET_DEFAULT_KEY(KBDK_BACKSLASH, mode, Event::CmdMenuMode,       event);
-      SET_DEFAULT_KEY(KBDK_BACKQUOTE, mode, Event::DebuggerMode,      event);
+      SET_DEFAULT_KEY(KBDK_GRAVE,     mode, Event::DebuggerMode,      event);
       SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::LauncherMode,      event);
       break;
 
@@ -2115,6 +2135,7 @@ uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setKeyNames()
 {
+#if 0//FIXSDL
   ourKBDKNames[ KBDK_BACKSPACE ]    = "BACKSPACE";
   ourKBDKNames[ KBDK_TAB ]          = "TAB";
   ourKBDKNames[ KBDK_CLEAR ]        = "CLEAR";
@@ -2159,32 +2180,32 @@ void EventHandler::setKeyNames()
   ourKBDKNames[ KBDK_CARET ]        = "^";
   ourKBDKNames[ KBDK_UNDERSCORE ]   = "_";
   ourKBDKNames[ KBDK_BACKQUOTE ]    = "`";
-  ourKBDKNames[ KBDK_a ]            = "A";
-  ourKBDKNames[ KBDK_b ]            = "B";
-  ourKBDKNames[ KBDK_c ]            = "C";
-  ourKBDKNames[ KBDK_d ]            = "D";
-  ourKBDKNames[ KBDK_e ]            = "E";
-  ourKBDKNames[ KBDK_f ]            = "F";
-  ourKBDKNames[ KBDK_g ]            = "G";
-  ourKBDKNames[ KBDK_h ]            = "H";
-  ourKBDKNames[ KBDK_i ]            = "I";
-  ourKBDKNames[ KBDK_j ]            = "J";
-  ourKBDKNames[ KBDK_k ]            = "K";
-  ourKBDKNames[ KBDK_l ]            = "L";
-  ourKBDKNames[ KBDK_m ]            = "M";
-  ourKBDKNames[ KBDK_n ]            = "N";
-  ourKBDKNames[ KBDK_o ]            = "O";
-  ourKBDKNames[ KBDK_p ]            = "P";
-  ourKBDKNames[ KBDK_q ]            = "Q";
-  ourKBDKNames[ KBDK_r ]            = "R";
-  ourKBDKNames[ KBDK_s ]            = "S";
-  ourKBDKNames[ KBDK_t ]            = "T";
-  ourKBDKNames[ KBDK_u ]            = "U";
-  ourKBDKNames[ KBDK_v ]            = "V";
-  ourKBDKNames[ KBDK_w ]            = "W";
-  ourKBDKNames[ KBDK_x ]            = "X";
-  ourKBDKNames[ KBDK_y ]            = "Y";
-  ourKBDKNames[ KBDK_z ]            = "Z";
+  ourKBDKNames[ KBDK_A ]            = "A";
+  ourKBDKNames[ KBDK_B ]            = "B";
+  ourKBDKNames[ KBDK_C ]            = "C";
+  ourKBDKNames[ KBDK_D ]            = "D";
+  ourKBDKNames[ KBDK_E ]            = "E";
+  ourKBDKNames[ KBDK_F ]            = "F";
+  ourKBDKNames[ KBDK_G ]            = "G";
+  ourKBDKNames[ KBDK_H ]            = "H";
+  ourKBDKNames[ KBDK_I ]            = "I";
+  ourKBDKNames[ KBDK_J ]            = "J";
+  ourKBDKNames[ KBDK_K ]            = "K";
+  ourKBDKNames[ KBDK_L ]            = "L";
+  ourKBDKNames[ KBDK_M ]            = "M";
+  ourKBDKNames[ KBDK_N ]            = "N";
+  ourKBDKNames[ KBDK_O ]            = "O";
+  ourKBDKNames[ KBDK_P ]            = "P";
+  ourKBDKNames[ KBDK_Q ]            = "Q";
+  ourKBDKNames[ KBDK_R ]            = "R";
+  ourKBDKNames[ KBDK_S ]            = "S";
+  ourKBDKNames[ KBDK_T ]            = "T";
+  ourKBDKNames[ KBDK_U ]            = "U";
+  ourKBDKNames[ KBDK_V ]            = "V";
+  ourKBDKNames[ KBDK_W ]            = "W";
+  ourKBDKNames[ KBDK_X ]            = "X";
+  ourKBDKNames[ KBDK_Y ]            = "Y";
+  ourKBDKNames[ KBDK_Z ]            = "Z";
   ourKBDKNames[ KBDK_DELETE ]       = "DELETE";
   ourKBDKNames[ KBDK_WORLD_0 ]      = "WORLD_0";
   ourKBDKNames[ KBDK_WORLD_1 ]      = "WORLD_1";
@@ -2346,6 +2367,7 @@ void EventHandler::setKeyNames()
   ourKBDKNames[ KBDK_POWER ]        = "POWER";
   ourKBDKNames[ KBDK_EURO ]         = "EURO";
   ourKBDKNames[ KBDK_UNDO ]         = "UNDO";
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -90,9 +90,9 @@ void CompuMate::update()
   {
     case 0:
       if (myKeyTable[KBDK_7]) lp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_u]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_j]) rp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_m]) rp.myDigitalPinState[Controller::Four] = false;
+      if (myKeyTable[KBDK_U]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_J]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_M]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 1:
       if (myKeyTable[KBDK_6]) lp.myDigitalPinState[Controller::Six] = false;
@@ -102,9 +102,9 @@ void CompuMate::update()
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_y]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_h]) rp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_n]) rp.myDigitalPinState[Controller::Four] = false;
+      if (myKeyTable[KBDK_Y]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_H]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_N]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 2:
       if (myKeyTable[KBDK_8]) lp.myDigitalPinState[Controller::Six] = false;
@@ -114,8 +114,8 @@ void CompuMate::update()
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_i]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_k]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_I]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_K]) rp.myDigitalPinState[Controller::Six] = false;
       if (myKeyTable[KBDK_COMMA]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 3:
@@ -126,25 +126,25 @@ void CompuMate::update()
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_w]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_s]) rp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_x]) rp.myDigitalPinState[Controller::Four] = false;
+      if (myKeyTable[KBDK_W]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_S]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_X]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 4:
       if (myKeyTable[KBDK_3]) lp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_e]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_d]) rp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_c]) rp.myDigitalPinState[Controller::Four] = false;
+      if (myKeyTable[KBDK_E]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_D]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_C]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 5:
       if (myKeyTable[KBDK_0]) lp.myDigitalPinState[Controller::Six] = false;
       // Emulate the quote character (Shift-0) with the actual quote key
-      if (myKeyTable[KBDK_QUOTE] && (myKeyTable[KBDK_LSHIFT] || myKeyTable[KBDK_RSHIFT]))
+      if (myKeyTable[KBDK_APOSTROPHE] && (myKeyTable[KBDK_LSHIFT] || myKeyTable[KBDK_RSHIFT]))
       {
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_p]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_P]) rp.myDigitalPinState[Controller::Three] = false;
       if (myKeyTable[KBDK_RETURN] || myKeyTable[KBDK_KP_ENTER])
         rp.myDigitalPinState[Controller::Six] = false;
       if (myKeyTable[KBDK_SPACE]) rp.myDigitalPinState[Controller::Four] = false;
@@ -163,8 +163,8 @@ void CompuMate::update()
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_o]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_l]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_O]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_L]) rp.myDigitalPinState[Controller::Six] = false;
       if (myKeyTable[KBDK_PERIOD]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 7:
@@ -175,9 +175,9 @@ void CompuMate::update()
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_t]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_g]) rp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_b]) rp.myDigitalPinState[Controller::Four] = false;
+      if (myKeyTable[KBDK_T]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_G]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_B]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 8:
       if (myKeyTable[KBDK_1]) lp.myDigitalPinState[Controller::Six] = false;
@@ -187,9 +187,9 @@ void CompuMate::update()
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_q]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_a]) rp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_z]) rp.myDigitalPinState[Controller::Four] = false;
+      if (myKeyTable[KBDK_Q]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_A]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_Z]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 9:
       if (myKeyTable[KBDK_4]) lp.myDigitalPinState[Controller::Six] = false;
@@ -199,9 +199,9 @@ void CompuMate::update()
         rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
         lp.myDigitalPinState[Controller::Six] = false;
       }
-      if (myKeyTable[KBDK_r]) rp.myDigitalPinState[Controller::Three] = false;
-      if (myKeyTable[KBDK_f]) rp.myDigitalPinState[Controller::Six] = false;
-      if (myKeyTable[KBDK_v]) rp.myDigitalPinState[Controller::Four] = false;
+      if (myKeyTable[KBDK_R]) rp.myDigitalPinState[Controller::Three] = false;
+      if (myKeyTable[KBDK_F]) rp.myDigitalPinState[Controller::Six] = false;
+      if (myKeyTable[KBDK_V]) rp.myDigitalPinState[Controller::Four] = false;
       break;
     default:
       break;
