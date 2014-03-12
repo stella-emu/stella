@@ -22,7 +22,7 @@
 
 class OSystem;
 
-#include "bspf.hxx"
+#include "Settings.hxx"
 
 /**
   This class defines UNIX-like OS's (Linux) system specific settings.

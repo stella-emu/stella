@@ -44,16 +44,15 @@ class SettingsMACOSX : public Settings
     virtual ~SettingsMACOSX();
 
   public:
-	
     /**
       This method should be called to load the current settings from the 
-	  standard Mac preferences.
+      standard Mac preferences.
     */
     void loadConfig();
 
     /**
       This method should be called to save the current settings to the
-	  standard Mac preferences.
+      standard Mac preferences.
     */
     void saveConfig();
 };

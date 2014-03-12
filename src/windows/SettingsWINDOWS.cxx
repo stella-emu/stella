@@ -17,15 +17,13 @@
 // $Id$
 //============================================================================
 
-#include "bspf.hxx"
-#include "Settings.hxx"
 #include "SettingsWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsWINDOWS::SettingsWINDOWS(OSystem* osystem)
   : Settings(osystem)
 {
-  setInternal("fragsize", "512");
+  setInternal("fragsize", "1024");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

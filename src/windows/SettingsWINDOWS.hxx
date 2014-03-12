@@ -22,7 +22,7 @@
 
 class OSystem;
 
-#include "bspf.hxx"
+#include "Settings.hxx"
 
 class SettingsWINDOWS : public Settings
 {
