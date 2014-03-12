@@ -346,8 +346,7 @@
     <li>MacOSX 10.7 (Lion) or above</li>
     <li>Intel processor</li>
     <li>OpenGL capable video card</li>
-    <li>FIXSDL Xcode 3.1 and SDL 1.2.14 required to compile a 10.4 compatible Universal Binary version;
-      Xcode 3.2 and SDL 1.2.15 required to compile the Intel/64-bit version</li>
+    <li>Xcode 5.0 is required to compile the Stella source code</li>
   </ul>
 
   <p>
@@ -360,7 +359,7 @@
     <li>Direct3D or OpenGL capable video card</li>
     <li>64-bit port has been tested on Windows Vista and above only; it may work on
       WinXP64 as well, but isn't a priority</li>
-    <li>Visual C++ 2013 (or Express version) is required to compile the Stella source code</li>
+    <li>Visual C++ 2012 (or Express version) is required to compile the Stella source code</li>
   </ul>
 
   <p>
@@ -1736,8 +1735,9 @@
     </tr>
 
     <tr>
-      <td><pre>-video &lt;soft|gl&gt;</pre></td>
-      <td>FIXSDL Use software or OpenGL rendering mode.</td>
+      <td><pre>-video &lt;direct3d|opengl|opengles2|opengles|software&gt;</pre></td>
+      <td>Use the given rendering backend (where applicable); default is the best available
+          mode detected.</td>
     </tr>
 
     <tr>
@@ -1747,13 +1747,12 @@
     </tr>
 
     <tr>
-      <td><pre>-fullscreen &lt;1|0|-1&gt;</pre></td>
-      <td>Play the game in fullscreen mode (1 or 0), or completely disable
-        fullscreen mode (-1).</td>
+      <td><pre>-fullscreen &lt;1|0&gt;</pre></td>
+      <td>Enable fullscreen mode.</td>
     </tr>
 
     <tr>
-      <td><pre>-fullres &lt;auto|WxH&gt;</pre></td>
+      <td><pre>FIXSDL-fullres &lt;auto|WxH&gt;</pre></td>
       <td>Use the given resolution in fullscreen mode.  If 'auto', let Stella decide
         which resolution to use.</td>
     </tr>
@@ -1800,6 +1799,29 @@
     </tr>
 
     <tr>
+      <td><pre>-sound &lt;1|0&gt;</pre></td>
+      <td>Enable or disable sound generation.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-fragsize &lt;number&gt;</pre></td>
+      <td>Specify the sound fragment size to use.  Linux/Mac seems to work
+        with 512, Windows usually needs 1024.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-freq &lt;number&gt;</pre></td>
+      <td>Set sound sample output frequency (11025,22050,31400,44100,48000)
+        Default is 31400.  Do not change unless you experience sound
+        issues.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-volume &lt;number&gt;</pre></td>
+      <td>Set the volume (0 - 100).</td>
+    </tr>
+
+    <tr>
       <td><pre>-tia.filter &lt;filter&gt;</pre></td>
       <td>Use the specified filter while in TIA/emulation mode.  Currently,
         this can be zoomZx, where Z={2..10}.</td>
@@ -1821,8 +1843,8 @@
     </tr>
 
     <tr>
-      <td><pre>-gl_fsscale &lt;1|0&gt;</pre></td>
-      <td>FIXSDL OpenGL mode only. Stretch TIA image completely while in fullscreen mode
+      <td><pre>FIXSDL-gl_fsscale &lt;1|0&gt;</pre></td>
+      <td>OpenGL mode only. Stretch TIA image completely while in fullscreen mode
         (vs. an integral stretch which won't necessarily completely fill the screen).</td>
     </tr>
 
@@ -1906,30 +1928,6 @@
     </tr>
 
     <tr>
-      <td><pre>-sound &lt;1|0&gt;</pre></td>
-      <td>Enable or disable sound generation.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-fragsize &lt;number&gt;</pre></td>
-      <td>Specify the sound fragment size to use.  Linux/Mac seems to work
-        with 512, Windows may need 2048 (but newer versions work with
-        512 as well).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-freq &lt;number&gt;</pre></td>
-      <td>Set sound sample output frequency (11025,22050,31400,44100,48000)
-        Default is 31400.  Do not change unless you experience sound
-        issues.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-volume &lt;number&gt;</pre></td>
-      <td>Set the volume (0 - 100).</td>
-    </tr>
-
-    <tr>
       <td><pre>-cheat &lt;code&gt;</pre></td>
       <td>Use the specified cheatcode (see Cheat section for description).</td>
     </tr>
@@ -1962,7 +1960,7 @@
     </tr>
 
     <tr>
-      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>	 
+      <td><pre>FIXSDL-grabmouse &lt;1|0&gt;</pre></td>	 
       <td>Keeps the mouse in the game window in emulation mode.</td>	 
     </tr>
 
@@ -2240,6 +2238,11 @@
       <td><pre>-tiadriven &lt;1|0&gt;</pre></td>
       <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
           If disabled, use the last databus value for those pins instead.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-cpurandom &lt;1|0&gt;</pre></td>
+      <td>On reset, randomize the content CPU registers.</td>
     </tr>
 
     <tr>

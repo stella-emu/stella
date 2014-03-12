@@ -341,10 +341,33 @@ void Settings::usage()
     << "Valid options are:" << endl
     << endl
     << "  -video        <type>         Type is one of the following:\n"
-    << "                 soft            SDL software mode\n"
-// FIXSDL
-    << "                 gl              SDL OpenGL mode\n"
+  #ifdef BSPF_WINDOWS
+    << "                 direct3d        Direct3D 9/11 acceleration\n"
+  #endif
+    << "                 opengl          OpenGL acceleration\n"
+    << "                 opengles2       OpenGLES 2 acceleration\n"
+    << "                 opengles        OpenGLES 1 acceleration\n"
+    << "                 software        Software mode (no acceleration)\n"
     << endl
+    << "  -vsync        <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
+    << "  -fullscreen   <1|0>          Enable fullscreen mode\n"
+    << "FIXSDL  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
+    << "  -center       <1|0>          Centers game window (if possible)\n"
+    << "  -palette      <standard|     Use the specified color palette\n"
+    << "                 z26|\n"
+    << "                 user>\n"
+    << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
+    << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
+    << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
+    << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
+    << endl
+  #ifdef SOUND_SUPPORT
+    << "  -sound        <1|0>          Enable sound generation\n"
+    << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
+    << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
+    << "  -volume       <number>       Set the volume (0 - 100)\n"
+    << endl
+  #endif
     << "  -tia.filter   <filter>       Use the specified filter for TIA image\n"
     << "  -tia.inter    <1|0>          Enable interpolated (smooth) scaling for TIA image\n"
     << "  -tia.aspectn  <number>       Scale the TIA width by the given percentage in NTSC mode\n"
@@ -365,31 +388,12 @@ void Settings::usage()
     << "  -tv.fringing    <value>      Set TV effects custom fringing to value 1.0 - 1.0\n"
     << "  -tv.bleed       <value>      Set TV effects custom bleed to value 1.0 - 1.0\n"
     << endl
-    << "  -vsync        <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
-    << "  -fullscreen   <1|0|-1>       Use fullscreen mode (1 or 0), or disable switching to fullscreen entirely\n"
-    << "  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
-    << "  -center       <1|0>          Centers game window (if possible)\n"
-    << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
-    << "  -palette      <standard|     Use the specified color palette\n"
-    << "                 z26|\n"
-    << "                 user>\n"
-    << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
-    << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
-    << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
-    << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
-    << endl
-  #ifdef SOUND_SUPPORT
-    << "  -sound        <1|0>          Enable sound generation\n"
-    << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
-    << "  -volume       <number>       Set the volume (0 - 100)\n"
-    << endl
-  #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
     << "  -loglevel     <0|1|2>        Set level of logging during application run\n"
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
+    << "FIXSDL  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -usemouse     <always|\n"
     << "                 analog|\n"
     << "                 never>        Use mouse as a controller as specified by ROM properties in given mode(see manual)\n"
@@ -419,6 +423,7 @@ void Settings::usage()
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
+    << "  -romdir       <dir>          Directory in which to load ROM files\n"
     << "  -statedir     <dir>          Directory in which to save/load state files\n"
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
@@ -426,7 +431,6 @@ void Settings::usage()
     << "  -nvramdir     <dir>          Directory in which to save/load flash/EEPROM files\n"
     << "  -cfgdir       <dir>          Directory in which to save Distella config files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
-    << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch held down\n"
     << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
     << "  -holdjoy0     <U,D,L,R,F>    Start the emulator with the left joystick direction/fire button held down\n"
@@ -434,6 +438,7 @@ void Settings::usage()
     << "  -tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
     << "  -cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
     << "  -ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
+    << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
