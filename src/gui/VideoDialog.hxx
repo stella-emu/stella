@@ -54,7 +54,7 @@ class VideoDialog : public Dialog
 
     // General options
     PopUpWidget*      myRenderer;
-    PopUpWidget*      myTIAFilter;
+    PopUpWidget*      myTIAZoom;
     PopUpWidget*      myTIAPalette;
     PopUpWidget*      myFrameTiming;
     PopUpWidget*      myTIAInterpolate;
@@ -65,10 +65,10 @@ class VideoDialog : public Dialog
 
     SliderWidget*     myFrameRate;
     StaticTextWidget* myFrameRateLabel;
-    PopUpWidget*      myFullscreen;
-    CheckboxWidget*   myColorLoss;
-    CheckboxWidget*   myGLStretch;
+    CheckboxWidget*   myFullscreen;
+    CheckboxWidget*   myUseStretch;
     CheckboxWidget*   myUseVSync;
+    CheckboxWidget*   myColorLoss;
     CheckboxWidget*   myUIMessages;
     CheckboxWidget*   myCenter;
     CheckboxWidget*   myFastSCBios;
@@ -113,7 +113,6 @@ class VideoDialog : public Dialog
       kNAspectRatioChanged = 'VDan',
       kPAspectRatioChanged = 'VDap',
       kFrameRateChanged    = 'VDfr',
-      kFullScrChanged      = 'VDfs',
 
       kTVModeChanged       = 'VDtv',
       kTVSharpChanged      = 'TVsh',

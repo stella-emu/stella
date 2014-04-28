@@ -76,9 +76,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // TIA filters (will be dynamically filled later)
   items.clear();
-  myTIAFilter = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                lineHeight, items, "TIA Filter: ", lwidth);
-  wid.push_back(myTIAFilter);
+  myTIAZoom = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
+                              lineHeight, items, "TIA Zoom: ", lwidth);
+  wid.push_back(myTIAZoom);
   ypos += lineHeight + 4;
 
   // TIA Palette
@@ -109,7 +109,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myFrameTiming);
   ypos += lineHeight + 4;
 
-  // GL aspect ratio (NTSC mode)
+  // Aspect ratio (NTSC mode)
   myNAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                      "NTSC Aspect: ", lwidth, kNAspectRatioChanged);
@@ -121,7 +121,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myNAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
-  // GL aspect ratio (PAL mode)
+  // Aspect ratio (PAL mode)
   myPAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                      "PAL Aspect: ", lwidth, kPAspectRatioChanged);
@@ -157,24 +157,16 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   ypos = 10;
 
   // Fullscreen
-  items.clear();
-  items.push_back("On", "1");
-  items.push_back("Off", "0");
-  items.push_back("Never", "-1");
-  lwidth = font.getStringWidth("Fullscreen: ");
-  pwidth = font.getStringWidth("Never"),
-  myFullscreen =
-    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                    items, "Fullscreen: ", lwidth, kFullScrChanged);
+  myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen");
   wid.push_back(myFullscreen);
   ypos += lineHeight + 4;
 
-  // GL FS stretch
-  myGLStretch = new CheckboxWidget(myTab, font, xpos, ypos, "GL FS Stretch");
-  wid.push_back(myGLStretch);
+  // FS stretch
+  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos, "FS Stretch");
+  wid.push_back(myUseStretch);
   ypos += lineHeight + 4;
 
-  // Use sync to vblank in OpenGL
+  // Use sync to vblank
   myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos, "VSync");
   wid.push_back(myUseVSync);
   ypos += lineHeight + 4;
@@ -328,10 +320,10 @@ void VideoDialog::loadConfig()
   // TIA Filter
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
-  const VariantList& items = instance().frameBuffer().supportedTIAFilters();
-  myTIAFilter->addItems(items);
-  myTIAFilter->setSelected(instance().settings().getString("tia.filter"),
-    instance().desktopWidth() < 640 ? "zoom1x" : "zoom2x");
+  const VariantList& items = instance().frameBuffer().supportedTIAZoomLevels();
+  myTIAZoom->addItems(items);
+  myTIAZoom->setSelected(instance().settings().getString("tia.zoom"),
+    instance().desktopWidth() < 640 ? "1" : "2");
 
   // TIA Palette
   myTIAPalette->setSelected(
@@ -359,18 +351,16 @@ void VideoDialog::loadConfig()
     instance().settings().getString("framerate"));
 
   // Fullscreen
-  const string& fullscreen = instance().settings().getString("fullscreen");
-  myFullscreen->setSelected(fullscreen, "0");
-  handleFullscreenChange(fullscreen == "0" || fullscreen == "1");
+  myFullscreen->setState(instance().settings().getBool("fullscreen"));
 
-  // PAL color-loss effect
-  myColorLoss->setState(instance().settings().getBool("colorloss"));
-
-  // GL stretch setting (GL mode only)
-  myGLStretch->setState(instance().settings().getBool("gl_fsscale"));
+  // Fullscreen stretch setting
+  myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
 
   // Use sync to vertical blank
   myUseVSync->setState(instance().settings().getBool("vsync"));
+
+  // PAL color-loss effect
+  myColorLoss->setState(instance().settings().getBool("colorloss"));
 
   // Show UI messages
   myUIMessages->setState(instance().settings().getBool("uimessages"));
@@ -406,8 +396,8 @@ void VideoDialog::saveConfig()
     myRenderer->getSelectedTag().toString());
 
   // TIA Filter
-  instance().settings().setValue("tia.filter",
-    myTIAFilter->getSelectedTag().toString());
+  instance().settings().setValue("tia.zoom",
+    myTIAZoom->getSelectedTag().toString());
 
   // TIA Palette
   instance().settings().setValue("palette",
@@ -417,11 +407,11 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("timing",
     myFrameTiming->getSelectedTag().toString());
 
-  // GL Filter setting
+  // TIA interpolation
   instance().settings().setValue("tia.inter",
     myTIAInterpolate->getSelectedTag().toString() == "linear" ? true : false);
 
-  // GL aspect ratio setting (NTSC and PAL)
+  // Aspect ratio setting (NTSC and PAL)
   instance().settings().setValue("tia.aspectn", myNAspectRatioLabel->getLabel());
   instance().settings().setValue("tia.aspectp", myPAspectRatioLabel->getLabel());
 
@@ -436,18 +426,17 @@ void VideoDialog::saveConfig()
   }
 
   // Fullscreen
-  instance().settings().setValue("fullscreen",
-    myFullscreen->getSelectedTag().toString());
+  instance().settings().setValue("fullscreen", myFullscreen->getState());
 
   // PAL color-loss effect
   instance().settings().setValue("colorloss", myColorLoss->getState());
   if(&instance().console())
     instance().console().toggleColorLoss(myColorLoss->getState());
 
-  // GL stretch setting
-  instance().settings().setValue("gl_fsscale", myGLStretch->getState());
+  // Fullscreen stretch setting
+  instance().settings().setValue("tia,fs_stretch", myUseStretch->getState());
 
-  // Use sync to vertical blank (GL mode only)
+  // Use sync to vertical blank
   instance().settings().setValue("vsync", myUseVSync->getState());
 
   // Show UI messages
@@ -493,8 +482,8 @@ void VideoDialog::setDefaults()
     case 0:  // General
     {
       myRenderer->setSelected("soft", "");
-      myTIAFilter->setSelected(
-        instance().desktopWidth() < 640 ? "zoom1x" : "zoom2x", "");
+      myTIAZoom->setSelected(
+        instance().desktopWidth() < 640 ? "1" : "2", "");
       myTIAPalette->setSelected("standard", "");
       myFrameTiming->setSelected("sleep", "");
       myTIAInterpolate->setSelected("nearest", "");
@@ -505,10 +494,10 @@ void VideoDialog::setDefaults()
       myFrameRate->setValue(0);
       myFrameRateLabel->setLabel("Auto");
 
-      myFullscreen->setSelected("0", "");
-      myColorLoss->setState(true);
-      myGLStretch->setState(true);
+      myFullscreen->setState(false);
+      myUseStretch->setState(true);
       myUseVSync->setState(true);
+      myColorLoss->setState(true);
       myUIMessages->setState(true);
       myCenter->setState(false);
       myFastSCBios->setState(false);
@@ -525,7 +514,6 @@ void VideoDialog::setDefaults()
       myTVScanInterpolate->setState(true);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
-      handleFullscreenChange(true);
       handleTVModeChange(NTSCFilter::PRESET_OFF);
       loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
       break;
@@ -533,12 +521,6 @@ void VideoDialog::setDefaults()
   }
 
   _dirty = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleFullscreenChange(bool enable)
-{
-//FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -636,10 +618,6 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
         myFrameRateLabel->setLabel("Auto");
       else
         myFrameRateLabel->setValue(myFrameRate->getValue());
-      break;
-
-    case kFullScrChanged:
-      handleFullscreenChange(myFullscreen->getSelectedTag().toString() != "-1");
       break;
 
     case kTVModeChanged:

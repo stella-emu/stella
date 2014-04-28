@@ -1752,12 +1752,6 @@
     </tr>
 
     <tr>
-      <td><pre>FIXSDL-fullres &lt;auto|WxH&gt;</pre></td>
-      <td>Use the given resolution in fullscreen mode.  If 'auto', let Stella decide
-        which resolution to use.</td>
-    </tr>
-
-    <tr>
       <td><pre>-center &lt;1|0&gt;</pre></td>
       <td>Centers game window (if possible).</td>
     </tr>
@@ -1822,9 +1816,9 @@
     </tr>
 
     <tr>
-      <td><pre>-tia.filter &lt;filter&gt;</pre></td>
-      <td>Use the specified filter while in TIA/emulation mode.  Currently,
-        this can be zoomZx, where Z={2..10}.</td>
+      <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
+      <td>Use the specified zoom level (integer) while in TIA/emulation mode.
+      </td>
     </tr>
 
     <tr>
@@ -2373,9 +2367,8 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer (*)</td><td>use specified rendering mode (requires restart)</td><td>-video</td></tr>
-          <tr><td>TIA Filter</td><td>filter for emulation mode </td><td>-tia.filter</td></tr>
+          <tr><td>TIA Zoom</td><td>filter for emulation mode </td><td>-tia.zoom</td></tr>
           <tr><td>TIA Palette</td><td>palette for emulation mode</td><td>-palette</td></tr>
-          <tr><td>Fullscrn Res</td><td>resolution for fullscreen mode</td><td>-fullres</td></tr>
           <tr><td>Timing (*)</td><td>how to wait between frames (requires restart)</td><td>-timing</td></tr>
           <tr><td>GL Filter</td><td>OpenGL filter mode</td><td>-gl_filter</td></tr>
           <tr><td>Aspect (N)</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>

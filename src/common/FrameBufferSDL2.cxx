@@ -102,7 +102,8 @@ void FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, VariantList& renderers
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool full)
+bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
+                                   bool full)
 {
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
@@ -114,61 +115,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
 
   // Grab the initial height before it's updated below
   // We need it for the creating the TIA surface
-  uInt32 baseHeight = mode.image_h / mode.gfxmode.zoom;
-
-  // Aspect ratio and fullscreen stretching only applies to the TIA
-  if(inTIAMode)
-  {
-    // Aspect ratio (depends on whether NTSC or PAL is detected)
-    // Not available in 'small' resolutions
-    if(myOSystem->desktopWidth() >= 640)
-    {
-      const string& frate = myOSystem->console().about().InitialFrameRate;
-      int aspect =
-        myOSystem->settings().getInt(frate == "60" ? "tia.aspectn" : "tia.aspectp");
-      mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
-    }
-
-    // Fullscreen mode stretching
-    if(fullScreen() &&
-       (mode.image_w < mode.screen_w) && (mode.image_h < mode.screen_h))
-    {
-      float stretchFactor = 1.0;
-      float scaleX = float(mode.image_w) / mode.screen_w;
-      float scaleY = float(mode.image_h) / mode.screen_h;
-
-      // Scale to actual or integral factors
-      if(myOSystem->settings().getBool("gl_fsscale"))
-      {
-        // Scale to full (non-integral) available space
-        if(scaleX > scaleY)
-          stretchFactor = float(mode.screen_w) / mode.image_w;
-        else
-          stretchFactor = float(mode.screen_h) / mode.image_h;
-      }
-      else
-      {
-        // Only scale to an integral amount
-        if(scaleX > scaleY)
-        {
-          int bw = mode.image_w / mode.gfxmode.zoom;
-          stretchFactor = float(int(mode.screen_w / bw) * bw) / mode.image_w;
-        }
-        else
-        {
-          int bh = mode.image_h / mode.gfxmode.zoom;
-          stretchFactor = float(int(mode.screen_h / bh) * bh) / mode.image_h;
-        }
-      }
-      mode.image_w = (Uint16) (stretchFactor * mode.image_w);
-      mode.image_h = (Uint16) (stretchFactor * mode.image_h);
-    }
-  }
-
-  // Now re-calculate the dimensions
-  if(!fullScreen()) mode.screen_w = mode.image_w;
-  mode.image_x = (mode.screen_w - mode.image_w) >> 1;
-  mode.image_y = (mode.screen_h - mode.image_h) >> 1;
+  uInt32 baseHeight = mode.image.height() / mode.zoom;
 
   // (Re)create window and renderer
   if(myRenderer)
@@ -186,7 +133,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
   int pos = myOSystem->settings().getBool("center")
               ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
   myWindow = SDL_CreateWindow(title.c_str(),
-                 pos, pos, mode.image_w, mode.image_h,
+                 pos, pos, mode.image.width(), mode.image.height(),
                  0);
   if(myWindow == NULL)
   {
@@ -230,8 +177,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, VideoMode& mode, bool fu
     if(!myTiaSurface)
       myTiaSurface = new FBSurfaceTIA(*this);
 
-    myTiaSurface->updateCoords(baseHeight, mode.image_x, mode.image_y,
-                               mode.image_w, mode.image_h);
+    myTiaSurface->updateCoords(baseHeight, mode.image.x(), mode.image.y(),
+                               mode.image.width(), mode.image.height());
 
     myTiaSurface->enableScanlines(ntscEnabled());
     myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("tia.inter"));
@@ -289,16 +236,21 @@ void FrameBufferSDL2::grabMouse(bool grab)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSDL2::enableFullscreen(bool enable)
+{
+  uInt32 flags = enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+  if(SDL_SetWindowFullscreen(myWindow, flags))
+    myOSystem->settings().setValue("fullscreen", enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::fullScreen() const
 {
-#if 0//FIXSDL
 #ifdef WINDOWED_SUPPORT
-  return myWindowFlags & SDL_FULLSCREEN;
+  return SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP;
 #else
   return true;
 #endif
-#endif
-return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

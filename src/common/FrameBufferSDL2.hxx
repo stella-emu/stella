@@ -150,7 +150,12 @@ class FrameBufferSDL2 : public FrameBuffer
 
       @return  False on any errors, else true
     */
-    bool setVideoMode(const string& title, VideoMode& mode, bool full);
+    bool setVideoMode(const string& title, const VideoMode& mode, bool full);
+
+    /**
+      Enables/disables fullscreen mode.
+    */
+    void enableFullscreen(bool enable);
 
     /**
       This method is called to invalidate the contents of the entire

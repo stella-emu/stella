@@ -29,7 +29,6 @@ class Settings;
 
 namespace GUI {
   class Font;
-  struct Rect;
 }
 
 #include "EventHandler.hxx"
@@ -101,6 +100,11 @@ enum {
 class FrameBuffer
 {
   public:
+    enum {
+      kTIAMinW = 320u, kTIAMinH = 210u,
+      kFBMinW  = 640u, kFBMinH  = 480u
+    };
+
     /**
       Creates a new Frame Buffer
     */
@@ -193,7 +197,7 @@ class FrameBuffer
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
     */
-    const GUI::Rect& screenRect() const { return myScreenRect; }
+    const GUI::Size& screenSize() const { return myScreenSize; }
 
     /**
       Get the maximum dimensions of a window for the framebuffer hardware.
@@ -223,18 +227,14 @@ class FrameBuffer
     void refresh();
 
     /**
-      Toggles between fullscreen and window mode.
-      Grabmouse activated when in fullscreen mode.
-    */
-    void toggleFullscreen();
-
-    /**
       Enables/disables fullscreen mode.
-      Grabmouse activated when in fullscreen mode.  
-
-      @param enable  Set the fullscreen mode to this value
     */
     void setFullscreen(bool enable);
+
+    /**
+      Toggles between fullscreen and window mode.
+    */
+    void toggleFullscreen();
 
     /**
       This method is called when the user wants to switch to the next available
@@ -260,9 +260,9 @@ class FrameBuffer
     void toggleGrabMouse();
 
     /**
-      Get the supported TIA filters for the framebuffer.
+      Get the supported TIA zoom levels (windowed mode) for the framebuffer.
     */
-    const VariantList& supportedTIAFilters();
+    const VariantList& supportedTIAZoomLevels() { return myTIAZoomLevels; }
 
     /**
       Get the TIA pixel associated with the given TIA buffer index,
@@ -375,47 +375,35 @@ class FrameBuffer
     virtual void scanline(uInt32 row, uInt8* data) const = 0;
 
   protected:
-    // Different types of graphic filters to apply to the TIA image
-    enum GfxID {
-      GFX_Zoom1x,
-      GFX_Zoom2x,
-      GFX_Zoom3x,
-      GFX_Zoom4x,
-      GFX_Zoom5x,
-      GFX_Zoom6x,
-      GFX_Zoom7x,
-      GFX_Zoom8x,
-      GFX_Zoom9x,
-      GFX_Zoom10x,
-      GFX_NumModes
-    };
-
-    struct GraphicsMode {
-      GfxID type;
-      const char* name;
-      const char* description;
-      uInt32 zoom;
-    };
-
     // Contains all relevant info for the dimensions of a video screen
     // Also takes care of the case when the image should be 'centered'
-    // within the given screen
-    //   image_XXX are the image offsets into the screen
-    //   screen_XXX are the dimensions of the screen itself
-    // Also contains relevant info for the graphics mode/filter to use
-    // when rendering the image
-    struct VideoMode {
-      uInt32 image_x, image_y, image_w, image_h;
-      uInt32 screen_w, screen_h;
-      GraphicsMode gfxmode;
+    // within the given screen:
+    //   'image' is the image dimensions into the screen
+    //   'screen' are the dimensions of the screen itself
+    class VideoMode {
+      friend class FrameBuffer;
 
+      public:
+        GUI::Rect image;
+        GUI::Size screen;
+        bool fullscreen;
+        uInt32 zoom;
+        string description;
+
+      public:
+        VideoMode();
+        VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, bool full,
+                  uInt32 z = 1, const string& desc = "");
+ 
       friend ostream& operator<<(ostream& os, const VideoMode& vm)
       {
-        os << "image_x=" << vm.image_x << "  image_y=" << vm.image_y
-           << "  image_w=" << vm.image_w << "  image_h=" << vm.image_h << endl
-           << "screen_w=" << vm.screen_w << "  screen_h=" << vm.screen_h; 
+        os << "image=" << vm.image << "  screen=" << vm.screen << endl
+           << "desc=" << vm.description << "  zoom=" << vm.zoom;
         return os;
       }
+
+      private:
+        void applyAspectCorrection(uInt32 aspect, uInt32 stretch = false);
     };
 
     /**
@@ -434,7 +422,14 @@ class FrameBuffer
 
       @return  False on any errors, else true
     */
-    virtual bool setVideoMode(const string& title, VideoMode& mode, bool full) = 0;
+    virtual bool setVideoMode(const string& title, const VideoMode& mode, bool full) = 0;
+
+    /**
+      Enables/disables fullscreen mode.
+
+      @param enable  Set the fullscreen mode to this value
+    */
+    virtual void enableFullscreen(bool enable) = 0;
 
     /**
       This method is called to invalidate the contents of the entire
@@ -515,8 +510,8 @@ class FrameBuffer
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
 
-    // Names of the TIA filters that can be used for this framebuffer
-    VariantList myTIAFilters;
+    // Names of the TIA zoom levels that can be used for this framebuffer
+    VariantList myTIAZoomLevels;
 
   private:
     /**
@@ -532,24 +527,25 @@ class FrameBuffer
                                   uInt32 screenWidth, uInt32 screenHeight);
 
     /**
+      Determine all supported (windowed) TIA zoom levels for the current
+      framebuffer.  This will take into account any aspect ratio correction.
+    */
+    void setTIAZoomLevels(uInt32 basewidth, uInt32 baseheight);
+
+    /**
       Set all possible video modes (both windowed and fullscreen) available for
       this framebuffer based on given image dimensions and maximum window size.
     */
     void setAvailableVidModes(uInt32 basewidth, uInt32 baseheight);
 
     /**
-      Adds the given video mode to both windowed and fullscreen lists.
-      In the case of fullscreen, we make sure a valid resolution exists.
-    */
-    void addVidMode(VideoMode& mode);
-
-    /**
       Returns an appropriate video mode based on the current eventhandler
       state, taking into account the maximum size of the window.
 
-      @return  A valid VideoMode for this framebuffer
+      @param full  Whether to use a windowed or fullscreen mode
+      @return      A valid VideoMode for this framebuffer
     */
-    VideoMode getSavedVidMode();
+    const VideoMode& getSavedVidMode(bool fullscreen);
 
     /**
       Set up the user interface palette for a screen of any depth > 8.
@@ -566,24 +562,25 @@ class FrameBuffer
         VideoModeList();
         ~VideoModeList();
 
-        void add(VideoMode mode);
+        void add(const VideoMode& mode);
         void clear();
 
         bool isEmpty() const;
         uInt32 size() const;
 
         void previous();
-        const FrameBuffer::VideoMode current(const Settings& settings,
-                                             bool isFullscreen) const;
+        const FrameBuffer::VideoMode& current() const;
         void next();
 
-        void setByGfxMode(GfxID id);
-        void setByGfxMode(const string& name);
-        void print();
-        static void print(const VideoMode& mode);
+        void setZoom(uInt32 zoom);
 
-      private:
-        void set(const GraphicsMode& gfxmode);
+        friend ostream& operator<<(ostream& os, const VideoModeList& l)
+        {
+          for(Common::Array<VideoMode>::const_iterator i = l.myModeList.begin();
+              i != l.myModeList.end(); ++i)
+            os << "-----\n" << *i << endl << "-----\n";
+          return os;
+        }
 
       private:
         Common::Array<VideoMode> myModeList;
@@ -602,7 +599,7 @@ class FrameBuffer
     GUI::Rect myImageRect;
 
     // Dimensions of the main window (not always the same as the image)
-    GUI::Rect myScreenRect;
+    GUI::Size myScreenSize;
 
     // Maximum dimensions of the desktop area
     uInt32 myDesktopWidth, myDesktopHeight;
@@ -643,9 +640,6 @@ class FrameBuffer
 
     // Holds a reference to all the surfaces that have been created
     map<uInt32,FBSurface*> mySurfaceList;
-
-    // Holds static strings for the remap menu (emulation and menu events)
-    static GraphicsMode ourGraphicsModes[GFX_NumModes];
 
     // Holds UI palette data
     static uInt32 ourGUIColors[kNumColors-256];

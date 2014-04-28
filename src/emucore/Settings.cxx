@@ -40,8 +40,7 @@ Settings::Settings(OSystem* osystem)
   // Video-related options
   setInternal("video", "");
   setInternal("vsync", "true");
-  setInternal("fullscreen", "0");
-  setInternal("fullres", "auto");
+  setInternal("fullscreen", "false");
   setInternal("center", "false");
   setInternal("grabmouse", "true");
   setInternal("palette", "standard");
@@ -50,7 +49,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("uimessages", "true");
 
   // TIA specific options
-  setInternal("tia.filter", "zoom2x");
+  setInternal("tia.zoom", "2");
   setInternal("tia.inter", "false");
   setInternal("tia.aspectn", "90");
   setInternal("tia.aspectp", "100");
@@ -351,7 +350,6 @@ void Settings::usage()
     << endl
     << "  -vsync        <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -fullscreen   <1|0>          Enable fullscreen mode\n"
-    << "FIXSDL  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
@@ -368,7 +366,7 @@ void Settings::usage()
     << "  -volume       <number>       Set the volume (0 - 100)\n"
     << endl
   #endif
-    << "  -tia.filter   <filter>       Use the specified filter for TIA image\n"
+    << "  -tia.zoom     <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"
     << "  -tia.inter    <1|0>          Enable interpolated (smooth) scaling for TIA image\n"
     << "  -tia.aspectn  <number>       Scale the TIA width by the given percentage in NTSC mode\n"
     << "  -tia.aspectp  <number>       Scale the TIA width by the given percentage in PAL mode\n"

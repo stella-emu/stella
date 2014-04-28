@@ -108,6 +108,7 @@ struct Rect
 
   Rect() : top(0), left(0), bottom(0), right(0) {}
   Rect(int w, int h) : top(0), left(0), bottom(h), right(w) {}
+  Rect(const Point& p, int w, int h) : top(p.y), left(p.x), bottom(h), right(w) {}
   Rect(int x1, int y1, int x2, int y2) : top(y1), left(x1), bottom(y2), right(x2)
   {
     assert(isValidRect());
@@ -121,7 +122,7 @@ struct Rect
   int height() const { return bottom - top; }
   Size size() const  { return Size(width(), height()); }
 
-  void setWidth(int aWidth)   { right = left + aWidth; }
+  void setWidth(int aWidth)   { right = left + aWidth;  }
   void setHeight(int aHeight) { bottom = top + aHeight; }
   void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
 
@@ -210,7 +211,7 @@ struct Rect
   }
 
   friend ostream& operator<<(ostream& os, const Rect& r) {
-    os << "Point: " << r.point() << ", Size: " << r.size();
+    os << r.point() << "," << r.size();
     return os;
   }
 };

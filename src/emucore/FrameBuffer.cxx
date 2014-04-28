@@ -89,16 +89,9 @@ bool FrameBuffer::initialize()
     myDesktopWidth  = s.w;
     myDesktopHeight = s.h;
   }
-
-  // Various parts of the codebase assume a minimum screen size of 320x240
-  myDesktopWidth = BSPF_max(myDesktopWidth, 320u);
-  myDesktopHeight = BSPF_max(myDesktopHeight, 240u);
-  if(!(myDesktopWidth >= 320 && myDesktopHeight >= 240))
-  {
-    myOSystem->logMessage("ERROR: video init failed, "
-                          "window 320x240 or larger required", 0);
-    return false;
-  }
+  // Various parts of the codebase assume a minimum screen size
+  myDesktopWidth = BSPF_max(myDesktopWidth, (uInt32)kFBMinW);
+  myDesktopHeight = BSPF_max(myDesktopHeight, (uInt32)kFBMinH);
 
   ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
@@ -110,7 +103,8 @@ bool FrameBuffer::initialize()
   //       We can probably add ifdefs to take care of corner cases,
   //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopWidth < 640 || myDesktopHeight < 480;
+  bool smallScreen = myDesktopWidth < (uInt32)kFBMinW ||
+                     myDesktopHeight < (uInt32)kFBMinH;
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
@@ -141,6 +135,19 @@ bool FrameBuffer::initialize()
   else
     myLauncherFont = new GUI::Font(GUI::stellaDesc);
 
+  // Determine possible TIA windowed zoom levels
+  uInt32 maxZoom = maxWindowSizeForScreen((uInt32)kTIAMinW, (uInt32)kTIAMinH,
+                     myDesktopWidth, myDesktopHeight);
+
+  // Figure our the smallest zoom level we can use
+  uInt32 firstZoom = smallScreen ? 1 : 2;
+  for(uInt32 zoom = firstZoom; zoom <= maxZoom; ++zoom)
+  {
+    ostringstream desc;
+    desc << "Zoom " << zoom << "x";
+    myTIAZoomLevels.push_back(desc.str(), zoom);
+  }
+
   return true;
 }
 
@@ -162,12 +169,13 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   bool useFullscreen = false;
 #ifdef WINDOWED_SUPPORT
-  // We assume that a desktop size of at least 640x480 means that we're
-  // running on a 'large' system, and the window size requirements can
-  // be relaxed
+  // We assume that a desktop of at least minimum acceptable size means that
+  // we're running on a 'large' system, and the window size requirements
+  // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
-  if(myOSystem->desktopWidth() < 640 && myOSystem->desktopHeight() < 480 &&
-      (myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height))
+  if(myOSystem->desktopWidth() < (uInt32)kFBMinW &&
+     myOSystem->desktopHeight() < (uInt32)kFBMinH &&
+     (myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height))
     return kFailTooLarge;
 
   if(myOSystem->settings().getString("fullscreen") == "1")
@@ -192,22 +200,15 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   // Initialize video subsystem (make sure we get a valid mode)
   string pre_about = about();
-  VideoMode mode = getSavedVidMode();
-  if(width <= mode.screen_w && height <= mode.screen_h)
+  const VideoMode& mode = getSavedVidMode(useFullscreen);
+  myImageRect = mode.image;
+  myScreenSize = mode.screen;
+  if(width <= myScreenSize.w && height <= myScreenSize.h)
   {
     if(setVideoMode(title, mode, useFullscreen))
     {
-      myImageRect.setWidth(mode.image_w);
-      myImageRect.setHeight(mode.image_h);
-      myImageRect.moveTo(mode.image_x, mode.image_y);
-
-      myScreenRect.setWidth(mode.screen_w);
-      myScreenRect.setHeight(mode.screen_h);
-
       // Did we get the requested fullscreen state?
-      const string& fullscreen = myOSystem->settings().getString("fullscreen");
-      if(fullscreen != "-1")
-        myOSystem->settings().setValue("fullscreen", fullScreen() ? "1" : "0");
+      myOSystem->settings().setValue("fullscreen", fullScreen());
       setCursorState();
     }
     else
@@ -234,7 +235,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   }
   if(myMsg.surface == NULL)
   {
-    uInt32 surfaceID = allocateSurface(640, font().getFontHeight()+10);
+    uInt32 surfaceID = allocateSurface((uInt32)kFBMinW, font().getFontHeight()+10);
     myMsg.surface = surface(surfaceID);
   }
 
@@ -744,14 +745,13 @@ void FrameBuffer::stateChanged(EventHandler::State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFullscreen()
-{
-  setFullscreen(!fullScreen());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
+cerr << "setFullscreen: " << enable << endl;
+enableFullscreen(enable);
+
+
+
 #if 0 //FIXSDL
 #ifdef WINDOWED_SUPPORT
   // '-1' means fullscreen mode is completely disabled
@@ -770,8 +770,15 @@ void FrameBuffer::setFullscreen(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleFullscreen()
+{
+  setFullscreen(!fullScreen());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::changeVidMode(int direction)
 {
+cerr << "changeVidMode: " << direction << endl;
 #if 0 //FIXSDL
   EventHandler::State state = myOSystem->eventHandler().state();
   bool inUIMode = (state == EventHandler::S_DEBUGGER ||
@@ -863,28 +870,6 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const VariantList& FrameBuffer::supportedTIAFilters()
-{
-  uInt32 max_zoom = maxWindowSizeForScreen(320, 210,
-                    myOSystem->desktopWidth(), myOSystem->desktopHeight());
-
-  uInt32 firstmode = 1;
-  if(myOSystem->desktopWidth() < 640 || myOSystem->desktopHeight() < 480)
-    firstmode = 0;
-
-  myTIAFilters.clear();
-  for(uInt32 i = firstmode; i < GFX_NumModes; ++i)
-  {
-    if(ourGraphicsModes[i].zoom <= max_zoom)
-    {
-      myTIAFilters.push_back(ourGraphicsModes[i].description,
-                             ourGraphicsModes[i].name);
-    }
-  }
-  return myTIAFilters;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
                     uInt32 screenWidth, uInt32 screenHeight)
 {
@@ -906,101 +891,74 @@ uInt32 FrameBuffer::maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 {
-  // Modelists are different depending on what state we're in
-  EventHandler::State state = myOSystem->eventHandler().state();
-  bool inUIMode = (state == EventHandler::S_DEBUGGER ||
-                   state == EventHandler::S_LAUNCHER);
-
   myWindowedModeList.clear();
   myFullscreenModeList.clear();
 
-  // In UI/windowed mode, there's only one valid video mode we can use
-  // We don't use maxWindowSizeForScreen here, since UI mode has to open its
-  // window at the requested size
-  if(inUIMode)
-  {
-    VideoMode m;
-    m.image_x = m.image_y = 0;
-    m.image_w = m.screen_w = baseWidth;
-    m.image_h = m.screen_h = baseHeight;
-    m.gfxmode = ourGraphicsModes[0];  // this should be zoom1x
+  // Check if zooming is allowed for this state (currently only allowed
+  // for TIA screens)
+  EventHandler::State state = myOSystem->eventHandler().state();
+  bool tiaMode = (state != EventHandler::S_DEBUGGER &&
+                  state != EventHandler::S_LAUNCHER);
 
-    addVidMode(m);
-  }
-  else
+  // TIA mode allows zooming at integral factors in windowed modes,
+  // and also non-integral factors in fullscreen mode
+  if(tiaMode)
   {
-    // Scan list of filters, adding only those which are appropriate
-    // for the given dimensions
-    uInt32 max_zoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                      myOSystem->desktopWidth(), myOSystem->desktopHeight());
+    // TIA windowed modes
+    uInt32 maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
+                     myDesktopWidth, myDesktopHeight);
+
+    // Aspect ratio
+    bool ntsc = myOSystem->console().about().InitialFrameRate == "60";
+    uInt32 aspect = myOSystem->settings().getInt(ntsc ?
+                      "tia.aspectn" : "tia.aspectp");
 
     // Figure our the smallest zoom level we can use
-    uInt32 firstmode = 1;
-    if(myOSystem->desktopWidth() < 640 || myOSystem->desktopHeight() < 480)
-      firstmode = 0;
-
-    for(uInt32 i = firstmode; i < GFX_NumModes; ++i)
+    uInt32 firstZoom = 2;
+    if(myDesktopWidth < 640 || myDesktopHeight < 480)
+      firstZoom = 1;
+    for(uInt32 zoom = firstZoom; zoom <= maxZoom; ++zoom)
     {
-      uInt32 zoom = ourGraphicsModes[i].zoom;
-      if(zoom <= max_zoom)
-      {
-        VideoMode m;
-        m.image_x = m.image_y = 0;
-        m.image_w = m.screen_w = baseWidth * zoom;
-        m.image_h = m.screen_h = baseHeight * zoom;
-        m.gfxmode = ourGraphicsModes[i];
-
-        addVidMode(m);
-      }
+      ostringstream desc;
+      desc << "Zoom " << zoom << "x";
+      
+      VideoMode mode(baseWidth*zoom, baseHeight*zoom,
+              baseWidth*zoom, baseHeight*zoom, false, zoom, desc.str());
+      mode.applyAspectCorrection(aspect);
+      myWindowedModeList.add(mode);
     }
+
+    // TIA fullscreen mode
+    //  GUI::Size screen(myDesktopWidth, myDesktopHeight);
+    myFullscreenModeList.add(
+        VideoMode(baseWidth, baseHeight, myDesktopWidth, myDesktopHeight, true)
+    );
+
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::addVidMode(VideoMode& mode)
-{
-  // The are minimum size requirements on a screen, no matter is in fullscreen
-  // or windowed mode
-  // Various part of the UI system depend on having at least 320x240 pixels
-  // available, so we must enforce it here
-
-  // Windowed modes can be sized exactly as required, since there's normally
-  // no restriction on window size (between the minimum and maximum size)
-  mode.screen_w = BSPF_max(mode.screen_w, 320u);
-  mode.screen_h = BSPF_max(mode.screen_h, 240u);
-  mode.image_x = (mode.screen_w - mode.image_w) >> 1;
-  mode.image_y = (mode.screen_h - mode.image_h) >> 1;
-  myWindowedModeList.add(mode);
-
-#if 0 //FIXSDL
-  // There are often stricter requirements on fullscreen modes, and they're
-  // normally different depending on the OSystem in use
-  // As well, we usually can't get fullscreen modes in the exact size
-  // we want, so we need to calculate image offsets
-  for(uInt32 i = 0; i < myResolutions.size(); ++i)
+  else  // UI mode
   {
-    if(mode.screen_w <= myResolutions[i].width &&
-       mode.screen_h <= myResolutions[i].height)
-    {
-      // Auto-calculate 'smart' centering; platform-specific framebuffers are
-      // free to ignore or augment it
-      mode.screen_w = BSPF_max(myResolutions[i].width, 320u);
-      mode.screen_h = BSPF_max(myResolutions[i].height, 240u);
-      mode.image_x = (mode.screen_w - mode.image_w) >> 1;
-      mode.image_y = (mode.screen_h - mode.image_h) >> 1;
-      break;
-    }
+    // Windowed and fullscreen mode differ only in screen size
+    myWindowedModeList.add(
+        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, false)
+    );
+    myFullscreenModeList.add(
+        VideoMode(baseWidth, baseHeight, myDesktopWidth, myDesktopHeight, true)
+    );
   }
-#endif
-  myFullscreenModeList.add(mode);
+
+cerr << "Windowed modes:\n" << myWindowedModeList << endl
+     << "Fullscreen modes:\n" << myFullscreenModeList << endl
+     << endl;
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
+const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 {
+cerr << "getSavedVidMode(full=" << fullscreen << ")\n";
   EventHandler::State state = myOSystem->eventHandler().state();
 
-  if(fullScreen())
+  if(fullscreen)
     myCurrentModeList = &myFullscreenModeList;
   else
     myCurrentModeList = &myWindowedModeList;
@@ -1009,18 +967,108 @@ FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
   // UI modes (launcher and debugger) have only one supported resolution
   // so the 'current' one is the only valid one
   if(state == EventHandler::S_DEBUGGER || state == EventHandler::S_LAUNCHER)
+    myCurrentModeList->setZoom(1);
+  else
+    myCurrentModeList->setZoom(myOSystem->settings().getInt("tia.zoom"));
+
+  return myCurrentModeList->current();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//
+// VideoMode implementation
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::VideoMode::VideoMode()
+  : fullscreen(false),
+    zoom(1),
+    description("")
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
+                                  bool full, uInt32 z, const string& desc)
+  : fullscreen(full),
+    zoom(z),
+    description(desc)
+{
+  sw = BSPF_max(sw, (uInt32)FrameBuffer::kTIAMinW);
+  sh = BSPF_max(sh, (uInt32)FrameBuffer::kTIAMinH);
+  iw = BSPF_min(iw, sw);
+  ih = BSPF_min(ih, sh);
+  int ix = (sw - iw) >> 1;
+  int iy = (sh - ih) >> 1;
+  image = GUI::Rect(ix, iy, ix+iw, iy+ih);
+  screen = GUI::Size(sw, sh);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoMode::applyAspectCorrection(uInt32 aspect, uInt32 stretch)
+{
+  // Width is modified by aspect ratio; other factors may be applied below
+  uInt32 iw = (uInt32)(float(image.width() * aspect) / 100.0);
+  uInt32 ih = image.height();
+
+  if(stretch)
   {
-    myCurrentModeList->setByGfxMode(GFX_Zoom1x);
+#if 0
+    // Fullscreen mode stretching
+    if(fullScreen() &&
+       (mode.image_w < mode.screen_w) && (mode.image_h < mode.screen_h))
+    {
+      float stretchFactor = 1.0;
+      float scaleX = float(mode.image_w) / mode.screen_w;
+      float scaleY = float(mode.image_h) / mode.screen_h;
+
+      // Scale to actual or integral factors
+      if(myOSystem->settings().getBool("gl_fsscale"))
+      {
+        // Scale to full (non-integral) available space
+        if(scaleX > scaleY)
+          stretchFactor = float(mode.screen_w) / mode.image_w;
+        else
+          stretchFactor = float(mode.screen_h) / mode.image_h;
+      }
+      else
+      {
+        // Only scale to an integral amount
+        if(scaleX > scaleY)
+        {
+          int bw = mode.image_w / mode.gfxmode.zoom;
+          stretchFactor = float(int(mode.screen_w / bw) * bw) / mode.image_w;
+        }
+        else
+        {
+          int bh = mode.image_h / mode.gfxmode.zoom;
+          stretchFactor = float(int(mode.screen_h / bh) * bh) / mode.image_h;
+        }
+      }
+      mode.image_w = (Uint16) (stretchFactor * mode.image_w);
+      mode.image_h = (Uint16) (stretchFactor * mode.image_h);
+    }
+#endif
   }
   else
   {
-    const string& name = myOSystem->settings().getString("tia.filter");
-    myCurrentModeList->setByGfxMode(name);
+    // In non-stretch mode, the screen size changes to match the image width
+    // Height is never modified in this mode
+    screen.w = iw;
   }
 
-  return myCurrentModeList->current(myOSystem->settings(), fullScreen());
+  // Now re-calculate the dimensions
+  iw = BSPF_min(iw, (uInt32)screen.w);
+  ih = BSPF_min(ih, (uInt32)screen.h);
+
+  image.moveTo((screen.w - iw) >> 1, (screen.h - ih) >> 1);
+  image.setWidth(iw);
+  image.setHeight(ih);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//
+// VideoModeList implementation
+//
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::VideoModeList::VideoModeList()
   : myIdx(-1)
@@ -1034,7 +1082,7 @@ FrameBuffer::VideoModeList::~VideoModeList()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::add(VideoMode mode)
+void FrameBuffer::VideoModeList::add(const VideoMode& mode)
 {
   myModeList.push_back(mode);
 }
@@ -1065,32 +1113,8 @@ void FrameBuffer::VideoModeList::previous()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FrameBuffer::VideoMode FrameBuffer::
-  VideoModeList::current(const Settings& settings, bool isFullscreen) const
+const FrameBuffer::VideoMode& FrameBuffer::VideoModeList::current() const
 {
-  // Fullscreen modes are related to the 'fullres' setting
-  //   If it's 'auto', we just use the mode as already previously defined
-  //   If it's not 'auto', attempt to fit the mode into the resolution
-  //   specified by 'fullres' (if possible)
-  if(isFullscreen && !BSPF_equalsIgnoreCase(settings.getString("fullres"), "auto"))
-  {
-    // Only use 'fullres' if it's *bigger* than the requested mode
-    const GUI::Size& s = settings.getSize("fullres");
-
-    if(s.w != -1 && s.h != -1 && (uInt32)s.w >= myModeList[myIdx].screen_w &&
-      (uInt32)s.h >= myModeList[myIdx].screen_h)
-    {
-      VideoMode mode = myModeList[myIdx];
-      mode.screen_w = s.w;
-      mode.screen_h = s.h;
-      mode.image_x = (mode.screen_w - mode.image_w) >> 1;
-      mode.image_y = (mode.screen_h - mode.image_h) >> 1;
-
-      return mode;
-    }
-  }
-
-  // Otherwise, we just use the mode has it was defined in ::addVidMode()
   return myModeList[myIdx];
 }
 
@@ -1101,116 +1125,23 @@ void FrameBuffer::VideoModeList::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::setByGfxMode(GfxID id)
+void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
 {
-  // First we determine which graphics mode is being requested
-  bool found = false;
-  GraphicsMode gfxmode;
-  for(uInt32 i = 0; i < GFX_NumModes; ++i)
+  for(uInt32 i = 0; i < myModeList.size(); ++i)
   {
-    if(ourGraphicsModes[i].type == id)
-    {
-      gfxmode = ourGraphicsModes[i];
-      found = true;
-      break;
-    }
-  }
-  if(!found) gfxmode = ourGraphicsModes[0];
-
-  // Now we scan the list for the applicable video mode
-  set(gfxmode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::setByGfxMode(const string& name)
-{
-  // First we determine which graphics mode is being requested
-  bool found = false;
-  GraphicsMode gfxmode;
-  for(uInt32 i = 0; i < GFX_NumModes; ++i)
-  {
-    if(BSPF_equalsIgnoreCase(ourGraphicsModes[i].name, name) ||
-       BSPF_equalsIgnoreCase(ourGraphicsModes[i].description, name))
-    {
-      gfxmode = ourGraphicsModes[i];
-      found = true;
-      break;
-    }
-  }
-  if(!found) gfxmode = ourGraphicsModes[0];
-
-  // Now we scan the list for the applicable video mode
-  set(gfxmode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::set(const GraphicsMode& gfxmode)
-{
-  // Attempt to point the current mode to the one given
-  myIdx = -1;
-
-  // First search for the given gfx id
-  for(unsigned int i = 0; i < myModeList.size(); ++i)
-  {
-    if(myModeList[i].gfxmode.type == gfxmode.type)
+    if(myModeList[i].zoom == zoom)
     {
       myIdx = i;
       return;
     }
   }
-
-  // If we get here, then the gfx type couldn't be found, so we search
-  // for the first mode with the same zoomlevel (making sure that the
-  // requested mode can fit inside the current screen)
-  if(gfxmode.zoom > myModeList[myModeList.size()-1].gfxmode.zoom)
-  {
-    myIdx = myModeList.size()-1;
-    return;
-  }
-  else
-  {
-    for(unsigned int i = 0; i < myModeList.size(); ++i)
-    {
-      if(myModeList[i].gfxmode.zoom == gfxmode.zoom)
-      {
-        myIdx = i;
-        return;
-      }
-    }
-  }
-
-  // Finally, just pick the lowest video mode
   myIdx = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::print()
-{
-  cerr << "VideoModeList: " << endl << endl;
-  for(Common::Array<VideoMode>::const_iterator i = myModeList.begin();
-      i != myModeList.end(); ++i)
-  {
-    cerr << "  Mode " << i << endl;
-    print(*i);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::print(const VideoMode& mode)
-{
-  cerr << "    screen w = " << mode.screen_w << endl
-       << "    screen h = " << mode.screen_h << endl
-       << "    image x  = " << mode.image_x << endl
-       << "    image y  = " << mode.image_y << endl
-       << "    image w  = " << mode.image_w << endl
-       << "    image h  = " << mode.image_h << endl
-       << "    gfx id   = " << mode.gfxmode.type << endl
-       << "    gfx name = " << mode.gfxmode.name << endl
-       << "    gfx desc = " << mode.gfxmode.description << endl
-       << "    gfx zoom = " << mode.gfxmode.zoom << endl
-       << endl;
-}
-
+//
+// FBSurface implementation
+//
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                     uInt32 colorA, uInt32 colorB)
@@ -1337,20 +1268,6 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     x += w;
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::GraphicsMode FrameBuffer::ourGraphicsModes[GFX_NumModes] = {
-  { GFX_Zoom1x,  "zoom1x",  "Zoom 1x",  1  },
-  { GFX_Zoom2x,  "zoom2x",  "Zoom 2x",  2  },
-  { GFX_Zoom3x,  "zoom3x",  "Zoom 3x",  3  },
-  { GFX_Zoom4x,  "zoom4x",  "Zoom 4x",  4  },
-  { GFX_Zoom5x,  "zoom5x",  "Zoom 5x",  5  },
-  { GFX_Zoom6x,  "zoom6x",  "Zoom 6x",  6  },
-  { GFX_Zoom7x,  "zoom7x",  "Zoom 7x",  7  },
-  { GFX_Zoom8x,  "zoom8x",  "Zoom 8x",  8  },
-  { GFX_Zoom9x,  "zoom9x",  "Zoom 9x",  9  },
-  { GFX_Zoom10x, "zoom10x", "Zoom 10x", 10 }
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*
