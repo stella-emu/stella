@@ -322,8 +322,7 @@ void VideoDialog::loadConfig()
   // the desktop and which renderer we're using
   const VariantList& items = instance().frameBuffer().supportedTIAZoomLevels();
   myTIAZoom->addItems(items);
-  myTIAZoom->setSelected(instance().settings().getString("tia.zoom"),
-    instance().desktopWidth() < 640 ? "1" : "2");
+  myTIAZoom->setSelected(instance().settings().getString("tia.zoom"), "2");
 
   // TIA Palette
   myTIAPalette->setSelected(
@@ -482,8 +481,7 @@ void VideoDialog::setDefaults()
     case 0:  // General
     {
       myRenderer->setSelected("soft", "");
-      myTIAZoom->setSelected(
-        instance().desktopWidth() < 640 ? "1" : "2", "");
+      myTIAZoom->setSelected("2", "");
       myTIAPalette->setSelected("standard", "");
       myFrameTiming->setSelected("sleep", "");
       myTIAInterpolate->setSelected("nearest", "");

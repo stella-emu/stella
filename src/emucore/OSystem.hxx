@@ -232,13 +232,6 @@ class OSystem
     */
     float frameRate() const { return myDisplayFrameRate; }
 
-//FIXME - remove this code
-    /**
-      Get the maximum dimensions of a window for the video hardware.
-    */
-    uInt32 desktopWidth() const  { return myFrameBuffer->desktopWidth(); }
-    uInt32 desktopHeight() const { return myFrameBuffer->desktopHeight(); }
-/////////////////////////////////////////////////
     /**
       Return the default full/complete directory name for storing data.
     */

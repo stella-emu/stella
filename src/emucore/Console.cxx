@@ -524,11 +524,12 @@ void Console::changeYStart(int direction)
 void Console::changeHeight(int direction)
 {
   uInt32 height = myTIA->height();
+  uInt32 dheight = myOSystem->frameBuffer().desktopSize().h;
 
   if(direction == +1)       // increase Height
   {
     height++;
-    if(height > 256 || height > myOSystem->desktopHeight())
+    if(height > 256 || height > dheight)
     {
       myOSystem->frameBuffer().showMessage("Height at maximum");
       return;
@@ -585,11 +586,12 @@ void Console::setTIAProperties()
 
   // Make sure these values fit within the bounds of the desktop
   // If not, attempt to center vertically
-  if(height > myOSystem->desktopHeight())
+  uInt32 dheight = myOSystem->frameBuffer().desktopSize().h;
+  if(height > dheight)
   {
-    ystart += height - myOSystem->desktopHeight();
+    ystart += height - dheight;
     ystart = BSPF_min(ystart, 64u);
-    height = myOSystem->desktopHeight();
+    height = dheight;
   }
   myTIA->setYStart(ystart);
   myTIA->setHeight(height);

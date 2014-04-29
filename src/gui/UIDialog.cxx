@@ -53,6 +53,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   WidgetArray wid;
   VariantList items;
   ButtonWidget* b;
+  const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
@@ -73,16 +74,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                            lineHeight, "Launcher Width: ",
                                            lwidth, kLWidthChanged);
-  if(instance().desktopWidth() < 640)
-  {
-    myLauncherWidthSlider->setMinValue(320);
-    myLauncherWidthSlider->setMaxValue(instance().desktopWidth());
-  }
-  else
-  {
-    myLauncherWidthSlider->setMinValue(640);
-    myLauncherWidthSlider->setMaxValue(1920);
-  }
+  myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
+  myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
   myLauncherWidthLabel =
@@ -95,16 +88,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                             lineHeight, "Launcher Height: ",
                                             lwidth, kLHeightChanged);
-  if(instance().desktopHeight() < 480)
-  {
-    myLauncherHeightSlider->setMinValue(240);
-    myLauncherHeightSlider->setMaxValue(instance().desktopHeight());
-  }
-  else
-  {
-    myLauncherHeightSlider->setMinValue(480);
-    myLauncherHeightSlider->setMaxValue(1200);
-  }
+  myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
+  myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
   myLauncherHeightLabel =
@@ -171,7 +156,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                                            lineHeight, "Debugger Width: ",
                                            lwidth, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
-  myDebuggerWidthSlider->setMaxValue(osystem->desktopWidth());
+  myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
   wid.push_back(myDebuggerWidthSlider);
   myDebuggerWidthLabel =
@@ -185,7 +170,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                                             lineHeight, "Debugger Height: ",
                                             lwidth, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
-  myDebuggerHeightSlider->setMaxValue(osystem->desktopHeight());
+  myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
   myDebuggerHeightLabel =
@@ -228,7 +213,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   // (and when it's actually been compiled into the app)
   bool debuggerAvailable = 
 #if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
-    (instance().desktopWidth() >= 800 && instance().desktopHeight() >= 600);
+    (ds.w >= 800 && ds.h >= 600);  // TODO - maybe this logic can disappear?
 #else
   false;
 #endif
@@ -315,10 +300,10 @@ void UIDialog::loadConfig()
   const GUI::Size& ls = instance().settings().getSize("launcherres");
   int w = ls.w, h = ls.h;
 
-  w = BSPF_max(w, 320);
-  h = BSPF_max(h, 240);
-  w = BSPF_min(w, 1920);
-  h = BSPF_min(h, 1200);
+  w = BSPF_max(w, (int)FrameBuffer::kFBMinW);
+  h = BSPF_max(h, (int)FrameBuffer::kFBMinH);
+  w = BSPF_min(w, instance().frameBuffer().desktopSize().w);
+  h = BSPF_min(h, instance().frameBuffer().desktopSize().h);
 
   myLauncherWidthSlider->setValue(w);
   myLauncherWidthLabel->setValue(w);
@@ -343,8 +328,8 @@ void UIDialog::loadConfig()
   w = ds.w, h = ds.h;
   w = BSPF_max(w, (int)DebuggerDialog::kSmallFontMinW);
   h = BSPF_max(h, (int)DebuggerDialog::kSmallFontMinH);
-  w = BSPF_min(w, (int)instance().desktopWidth());
-  h = BSPF_min(h, (int)instance().desktopHeight());
+  w = BSPF_min(w, (int)ds.w);
+  h = BSPF_min(h, (int)ds.h);
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerWidthLabel->setValue(w);
@@ -414,8 +399,8 @@ void UIDialog::setDefaults()
   {
     case 0:  // Launcher options
     {
-      int w = BSPF_min(instance().desktopWidth(), 640u);
-      int h = BSPF_min(instance().desktopHeight(), 480u);
+      int w = BSPF_min(instance().frameBuffer().desktopSize().w, (int)FrameBuffer::kFBMinW);
+      int h = BSPF_min(instance().frameBuffer().desktopSize().h, (int)FrameBuffer::kFBMinH);
       myLauncherWidthSlider->setValue(w);
       myLauncherWidthLabel->setValue(w);
       myLauncherHeightSlider->setValue(h);
@@ -429,8 +414,8 @@ void UIDialog::setDefaults()
     case 1:  // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
-      int w = BSPF_min(instance().desktopWidth(), (uInt32)DebuggerDialog::kMediumFontMinW);
-      int h = BSPF_min(instance().desktopHeight(), (uInt32)DebuggerDialog::kMediumFontMinH);
+      int w = BSPF_min(instance().frameBuffer().desktopSize().w, (int)DebuggerDialog::kMediumFontMinW);
+      int h = BSPF_min(instance().frameBuffer().desktopSize().h, (int)DebuggerDialog::kMediumFontMinH);
       myDebuggerWidthSlider->setValue(w);
       myDebuggerWidthLabel->setValue(w);
       myDebuggerHeightSlider->setValue(h);

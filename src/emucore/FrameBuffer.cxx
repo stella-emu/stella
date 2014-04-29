@@ -79,19 +79,20 @@ FrameBuffer::~FrameBuffer(void)
 bool FrameBuffer::initialize()
 {
   // Get desktop resolution and supported renderers
-  queryHardware(myDesktopWidth, myDesktopHeight, myRenderers);
+  uInt32 query_w, query_h;
+  queryHardware(query_w, query_h, myRenderers);
 
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
   const GUI::Size& s = myOSystem->settings().getSize("maxres");
   if(s.w > 0 && s.h > 0)
   {
-    myDesktopWidth  = s.w;
-    myDesktopHeight = s.h;
+    query_w = s.w;
+    query_h = s.h;
   }
   // Various parts of the codebase assume a minimum screen size
-  myDesktopWidth = BSPF_max(myDesktopWidth, (uInt32)kFBMinW);
-  myDesktopHeight = BSPF_max(myDesktopHeight, (uInt32)kFBMinH);
+  myDesktopSize.w = BSPF_max(query_w, (uInt32)kFBMinW);
+  myDesktopSize.h = BSPF_max(query_h, (uInt32)kFBMinH);
 
   ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
@@ -103,8 +104,8 @@ bool FrameBuffer::initialize()
   //       We can probably add ifdefs to take care of corner cases,
   //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopWidth < (uInt32)kFBMinW ||
-                     myDesktopHeight < (uInt32)kFBMinH;
+  bool smallScreen = myDesktopSize.w < (uInt32)kFBMinW ||
+                     myDesktopSize.h < (uInt32)kFBMinH;
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
@@ -137,7 +138,7 @@ bool FrameBuffer::initialize()
 
   // Determine possible TIA windowed zoom levels
   uInt32 maxZoom = maxWindowSizeForScreen((uInt32)kTIAMinW, (uInt32)kTIAMinH,
-                     myDesktopWidth, myDesktopHeight);
+                     myDesktopSize.w, myDesktopSize.h);
 
   // Figure our the smallest zoom level we can use
   uInt32 firstZoom = smallScreen ? 1 : 2;
@@ -156,6 +157,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
                                         uInt32 width, uInt32 height)
 {
   myInitializedCount++;
+  myScreenTitle = title;
 
   // A 'windowed' system is defined as one where the window size can be
   // larger than the screen size, as there's some sort of window manager
@@ -173,14 +175,15 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // we're running on a 'large' system, and the window size requirements
   // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
-  if(myOSystem->desktopWidth() < (uInt32)kFBMinW &&
-     myOSystem->desktopHeight() < (uInt32)kFBMinH &&
-     (myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height))
+  if(myDesktopSize.w < (uInt32)kFBMinW &&
+     myDesktopSize.h < (uInt32)kFBMinH &&
+     (myDesktopSize.w < width || myDesktopSize.h < height))
     return kFailTooLarge;
 
+// FIXSDL - remove size limitations here?
   if(myOSystem->settings().getString("fullscreen") == "1")
   {
-    if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
+    if(myDesktopSize.w < width || myDesktopSize.h < height)
       return kFailTooLarge;
 
     useFullscreen = true;
@@ -191,7 +194,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Make sure this mode is even possible
   // We only really need to worry about it in non-windowed environments,
   // where requesting a window that's too large will probably cause a crash
-  if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
+  if(myDesktopSize.w < width || myDesktopSize.h < height)
     return kFailTooLarge;
 #endif
 
@@ -205,7 +208,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   myScreenSize = mode.screen;
   if(width <= myScreenSize.w && height <= myScreenSize.h)
   {
-    if(setVideoMode(title, mode, useFullscreen))
+    if(setVideoMode(myScreenTitle, mode, useFullscreen))
     {
       // Did we get the requested fullscreen state?
       myOSystem->settings().setValue("fullscreen", fullScreen());
@@ -776,68 +779,36 @@ void FrameBuffer::toggleFullscreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::changeVidMode(int direction)
+bool FrameBuffer::changeWindowedVidMode(int direction)
 {
-cerr << "changeVidMode: " << direction << endl;
-#if 0 //FIXSDL
+#ifdef WINDOWED_SUPPORT
   EventHandler::State state = myOSystem->eventHandler().state();
-  bool inUIMode = (state == EventHandler::S_DEBUGGER ||
-                   state == EventHandler::S_LAUNCHER);
+  bool tiaMode = (state != EventHandler::S_DEBUGGER &&
+                  state != EventHandler::S_LAUNCHER);
 
-  // Ignore any attempts to change video size while in UI mode
-  if(inUIMode && direction != 0)
+  // Ignore any attempts to change video size while in invalid modes
+  if(!tiaMode || fullScreen())
     return false;
-
-  // Only save mode changes in TIA mode with a valid selector
-  bool saveModeChange = !inUIMode && (direction == -1 || direction == +1);
 
   if(direction == +1)
     myCurrentModeList->next();
   else if(direction == -1)
     myCurrentModeList->previous();
-
-  VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
-  if(setVidMode(vidmode))
-  {
-    myImageRect.setWidth(vidmode.image_w);
-    myImageRect.setHeight(vidmode.image_h);
-    myImageRect.moveTo(vidmode.image_x, vidmode.image_y);
-
-    myScreenRect.setWidth(vidmode.screen_w);
-    myScreenRect.setHeight(vidmode.screen_h);
-
-    // Did we get the requested fullscreen state?
-    const string& fullscreen = myOSystem->settings().getString("fullscreen");
-    if(fullscreen != "-1")
-      myOSystem->settings().setValue("fullscreen", fullScreen() ? "1" : "0");
-    setCursorState();
-
-    if(!inUIMode)
-    {
-      if(direction != 0)  // only show message when mode actually changes
-        showMessage(vidmode.gfxmode.description);
-    }
-    if(saveModeChange)
-      myOSystem->settings().setValue("tia.filter", vidmode.gfxmode.name);
-
-    refresh();
-  }
   else
     return false;
+
+  const VideoMode& mode = myCurrentModeList->current();
+  myImageRect = mode.image;
+  myScreenSize = mode.screen;
+  if(setVideoMode(myScreenTitle, mode, false))
+  {
+    showMessage(mode.description);
+    myOSystem->settings().setValue("tia.zoom", mode.zoom);
+    refresh();
+    return true;
+  }
 #endif
-  return true;
-/*
-cerr << "New mode:" << endl
-	<< "    screen w = " << newmode.screen_w << endl
-	<< "    screen h = " << newmode.screen_h << endl
-	<< "    image x  = " << newmode.image_x << endl
-	<< "    image y  = " << newmode.image_y << endl
-	<< "    image w  = " << newmode.image_w << endl
-	<< "    image h  = " << newmode.image_h << endl
-	<< "    zoom     = " << newmode.zoom << endl
-	<< "    name     = " << newmode.name << endl
-	<< endl;
-*/
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -906,7 +877,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   {
     // TIA windowed modes
     uInt32 maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                     myDesktopWidth, myDesktopHeight);
+                     myDesktopSize.w, myDesktopSize.h);
 
     // Aspect ratio
     bool ntsc = myOSystem->console().about().InitialFrameRate == "60";
@@ -915,7 +886,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
     // Figure our the smallest zoom level we can use
     uInt32 firstZoom = 2;
-    if(myDesktopWidth < 640 || myDesktopHeight < 480)
+    if(myDesktopSize.w < 640 || myDesktopSize.h < 480)
       firstZoom = 1;
     for(uInt32 zoom = firstZoom; zoom <= maxZoom; ++zoom)
     {
@@ -931,7 +902,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     // TIA fullscreen mode
     //  GUI::Size screen(myDesktopWidth, myDesktopHeight);
     myFullscreenModeList.add(
-        VideoMode(baseWidth, baseHeight, myDesktopWidth, myDesktopHeight, true)
+        VideoMode(baseWidth, baseHeight, myDesktopSize.w, myDesktopSize.h, true)
     );
 
   }
@@ -942,7 +913,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
         VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, false)
     );
     myFullscreenModeList.add(
-        VideoMode(baseWidth, baseHeight, myDesktopWidth, myDesktopHeight, true)
+        VideoMode(baseWidth, baseHeight, myDesktopSize.w, myDesktopSize.h, true)
     );
   }
 
@@ -955,7 +926,6 @@ cerr << "Windowed modes:\n" << myWindowedModeList << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 {
-cerr << "getSavedVidMode(full=" << fullscreen << ")\n";
   EventHandler::State state = myOSystem->eventHandler().state();
 
   if(fullscreen)

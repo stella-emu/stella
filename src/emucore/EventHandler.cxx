@@ -367,11 +367,11 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
       switch(key)
       {
         case KBDK_EQUALS:
-          myOSystem->frameBuffer().changeVidMode(+1);
+          myOSystem->frameBuffer().changeWindowedVidMode(+1);
           break;
 
         case KBDK_MINUS:
-          myOSystem->frameBuffer().changeVidMode(-1);
+          myOSystem->frameBuffer().changeWindowedVidMode(-1);
           break;
 
         case KBDK_LEFTBRACKET:

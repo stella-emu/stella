@@ -200,10 +200,9 @@ class FrameBuffer
     const GUI::Size& screenSize() const { return myScreenSize; }
 
     /**
-      Get the maximum dimensions of a window for the framebuffer hardware.
+      Returns the current dimensions of the users' desktop.
     */
-    uInt32 desktopWidth() const  { return myDesktopWidth; }
-    uInt32 desktopHeight() const { return myDesktopHeight; }
+    const GUI::Size& desktopSize() const { return myDesktopSize; }
 
     /**
       Get the supported renderers for the video hardware.
@@ -238,14 +237,13 @@ class FrameBuffer
 
     /**
       This method is called when the user wants to switch to the next available
-      video mode (functionality depends on fullscreen or windowed mode).
-      direction = -1 means go to the next lower video mode
-      direction =  0 means to reload the current video mode
-      direction = +1 means go to the next higher video mode
+      windowed video mode.
+      direction = -1 means go to the next lower windowed video mode
+      direction = +1 means go to the next higher windowed video mode
 
       @param direction  Described above
     */
-    bool changeVidMode(int direction);
+    bool changeWindowedVidMode(int direction);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -601,8 +599,11 @@ class FrameBuffer
     // Dimensions of the main window (not always the same as the image)
     GUI::Size myScreenSize;
 
+    // Title of the main window/screen
+    string myScreenTitle;
+
     // Maximum dimensions of the desktop area
-    uInt32 myDesktopWidth, myDesktopHeight;
+    GUI::Size myDesktopSize;
 
     // Supported renderers
     VariantList myRenderers;
