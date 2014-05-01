@@ -753,6 +753,9 @@
     <ClCompile Include="..\common\EventHandlerSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\FBSurface.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1519,6 +1522,9 @@
     </ClInclude>
     <ClInclude Include="..\common\EventHandlerSDL2.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\FBSurface.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -309,6 +309,38 @@ class FrameBuffer
     */
     uInt8 getPhosphor(uInt8 c1, uInt8 c2) const;
 
+    // Contains all relevant info for the dimensions of a video screen
+    // Also takes care of the case when the image should be 'centered'
+    // within the given screen:
+    //   'image' is the image dimensions into the screen
+    //   'screen' are the dimensions of the screen itself
+    class VideoMode
+    {
+      friend class FrameBuffer;
+
+      public:
+        GUI::Rect image;
+        GUI::Size screen;
+        bool fullscreen;
+        uInt32 zoom;
+        string description;
+
+      public:
+        VideoMode();
+        VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, bool full,
+          uInt32 z = 1, const string& desc = "");
+
+        friend ostream& operator<<(ostream& os, const VideoMode& vm)
+        {
+          os << "image=" << vm.image << "  screen=" << vm.screen << endl
+             << "desc=" << vm.description << "  zoom=" << vm.zoom;
+          return os;
+        }
+
+      private:
+        void applyAspectCorrection(uInt32 aspect, uInt32 stretch = false);
+    };
+
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and can/must be
   // implemented in derived classes.
@@ -372,37 +404,6 @@ class FrameBuffer
     virtual void scanline(uInt32 row, uInt8* data) const = 0;
 
   protected:
-    // Contains all relevant info for the dimensions of a video screen
-    // Also takes care of the case when the image should be 'centered'
-    // within the given screen:
-    //   'image' is the image dimensions into the screen
-    //   'screen' are the dimensions of the screen itself
-    class VideoMode {
-      friend class FrameBuffer;
-
-      public:
-        GUI::Rect image;
-        GUI::Size screen;
-        bool fullscreen;
-        uInt32 zoom;
-        string description;
-
-      public:
-        VideoMode();
-        VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, bool full,
-                  uInt32 z = 1, const string& desc = "");
- 
-      friend ostream& operator<<(ostream& os, const VideoMode& vm)
-      {
-        os << "image=" << vm.image << "  screen=" << vm.screen << endl
-           << "desc=" << vm.description << "  zoom=" << vm.zoom;
-        return os;
-      }
-
-      private:
-        void applyAspectCorrection(uInt32 aspect, uInt32 stretch = false);
-    };
-
     /**
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.
