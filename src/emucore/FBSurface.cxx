@@ -17,7 +17,108 @@
 // $Id$
 //============================================================================
 
+#include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBSurface::FBSurface(const uInt32* palette)
+  : myPixels(NULL),
+    myPitch(0),
+    myPalette(palette)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
+{
+  uInt32* buffer = myPixels + y * myPitch + x;
+  while(x++ <= x2)
+    *buffer++ = (uInt32) myPalette[color];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
+{
+  uInt32* buffer = (uInt32*) myPixels + y * myPitch + x;
+  while(y++ <= y2)
+  {
+    *buffer = (uInt32) myPalette[color];
+    buffer += myPitch;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
+                         uInt32 tx, uInt32 ty, uInt32 color)
+{
+  const FontDesc& desc = font.desc();
+
+  // If this character is not included in the font, use the default char.
+  if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)
+  {
+    if (chr == ' ') return;
+    chr = desc.defaultchar;
+  }
+  chr -= desc.firstchar;
+
+  // Get the bounding box of the character
+  int bbw, bbh, bbx, bby;
+  if(!desc.bbx)
+  {
+    bbw = desc.fbbw;
+    bbh = desc.fbbh;
+    bbx = desc.fbbx;
+    bby = desc.fbby;
+  }
+  else
+  {
+    bbw = desc.bbx[chr].w;
+    bbh = desc.bbx[chr].h;
+    bbx = desc.bbx[chr].x;
+    bby = desc.bbx[chr].y;
+  }
+
+  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
+  uInt32* buffer = myPixels + (ty + desc.ascent - bby - bbh) * myPitch + tx + bbx;
+
+  for(int y = 0; y < bbh; y++)
+  {
+    const uInt16 ptr = *tmp++;
+    uInt16 mask = 0x8000;
+
+    for(int x = 0; x < bbw; x++, mask >>= 1)
+      if(ptr & mask)
+        buffer[x] = (uInt32) myPalette[color];
+
+    buffer += myPitch;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
+                           uInt32 color, uInt32 h)
+{
+  uInt32* buffer = myPixels + ty * myPitch + tx;
+
+  for(uInt32 y = 0; y < h; ++y)
+  {
+    uInt32 mask = 0xF0000000;
+    for(uInt32 x = 0; x < 8; ++x, mask >>= 4)
+      if(bitmap[y] & mask)
+        buffer[x] = (uInt32) myPalette[color];
+
+    buffer += myPitch;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
+{
+  uInt32* buffer = myPixels + ty * myPitch + tx;
+
+  for(uInt32 i = 0; i < numpixels; ++i)
+    *buffer++ = (uInt32) data[i];
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,

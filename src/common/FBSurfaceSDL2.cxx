@@ -18,11 +18,12 @@
 //============================================================================
 
 #include "Font.hxx"
-#include "FBSurfaceUI.hxx"
+#include "FBSurfaceSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceUI::FBSurfaceUI(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
-  : myFB(buffer),
+FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
+  : FBSurface(buffer.myDefPalette),
+    myFB(buffer),
     mySurface(NULL),
     myTexture(NULL),
     mySurfaceIsDirty(true)
@@ -37,6 +38,7 @@ FBSurfaceUI::FBSurfaceUI(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
   mySrc.w = myDst.w = width;
   mySrc.h = myDst.h = height;
 
+  myPixels = (uInt32*) mySurface->pixels;
   myPitch = mySurface->pitch / pf->BytesPerPixel;
 
   // To generate texture
@@ -44,7 +46,7 @@ FBSurfaceUI::FBSurfaceUI(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceUI::~FBSurfaceUI()
+FBSurfaceSDL2::~FBSurfaceSDL2()
 {
   if(mySurface)
     SDL_FreeSurface(mySurface);
@@ -53,26 +55,7 @@ FBSurfaceUI::~FBSurfaceUI()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
-{
-  uInt32* buffer = (uInt32*) mySurface->pixels + y * myPitch + x;
-  while(x++ <= x2)
-    *buffer++ = (uInt32) myFB.myDefPalette[color];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
-{
-  uInt32* buffer = (uInt32*) mySurface->pixels + y * myPitch + x;
-  while(y++ <= y2)
-  {
-    *buffer = (uInt32) myFB.myDefPalette[color];
-    buffer += myPitch;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
+void FBSurfaceSDL2::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 {
   // Fill the rectangle
   SDL_Rect tmp;
@@ -84,84 +67,9 @@ void FBSurfaceUI::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::drawChar(const GUI::Font& font, uInt8 chr,
-                           uInt32 tx, uInt32 ty, uInt32 color)
+void FBSurfaceSDL2::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
 {
-  const FontDesc& desc = font.desc();
-
-  // If this character is not included in the font, use the default char.
-  if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)
-  {
-    if (chr == ' ') return;
-    chr = desc.defaultchar;
-  }
-  chr -= desc.firstchar;
-
-  // Get the bounding box of the character
-  int bbw, bbh, bbx, bby;
-  if(!desc.bbx)
-  {
-    bbw = desc.fbbw;
-    bbh = desc.fbbh;
-    bbx = desc.fbbx;
-    bby = desc.fbby;
-  }
-  else
-  {
-    bbw = desc.bbx[chr].w;
-    bbh = desc.bbx[chr].h;
-    bbx = desc.bbx[chr].x;
-    bby = desc.bbx[chr].y;
-  }
-
-  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
-  uInt32* buffer = (uInt32*) mySurface->pixels +
-                   (ty + desc.ascent - bby - bbh) * myPitch +
-                   tx + bbx;
-
-  for(int y = 0; y < bbh; y++)
-  {
-    const uInt16 ptr = *tmp++;
-    uInt16 mask = 0x8000;
-
-    for(int x = 0; x < bbw; x++, mask >>= 1)
-      if(ptr & mask)
-        buffer[x] = (uInt32) myFB.myDefPalette[color];
-
-    buffer += myPitch;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
-                             uInt32 color, uInt32 h)
-{
-  uInt32* buffer = (uInt32*) mySurface->pixels + ty * myPitch + tx;
-
-  for(uInt32 y = 0; y < h; ++y)
-  {
-    uInt32 mask = 0xF0000000;
-    for(uInt32 x = 0; x < 8; ++x, mask >>= 4)
-      if(bitmap[y] & mask)
-        buffer[x] = (uInt32) myFB.myDefPalette[color];
-
-    buffer += myPitch;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
-{
-  uInt32* buffer = (uInt32*) mySurface->pixels + ty * myPitch + tx;
-
-  for(uInt32 i = 0; i < numpixels; ++i)
-    *buffer++ = (uInt32) data[i];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
-{
-  const FBSurfaceUI* s = (const FBSurfaceUI*) surface;
+  const FBSurfaceSDL2* s = (const FBSurfaceSDL2*) surface;
 
   SDL_Rect dst;
   dst.x = tx;
@@ -173,28 +81,28 @@ void FBSurfaceUI::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+void FBSurfaceSDL2::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
   // It's faster to just update the entire (hardware) surface
   mySurfaceIsDirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::getPos(uInt32& x, uInt32& y) const
+void FBSurfaceSDL2::getPos(uInt32& x, uInt32& y) const
 {
   x = myDst.x;
   y = myDst.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::setPos(uInt32 x, uInt32 y)
+void FBSurfaceSDL2::setPos(uInt32 x, uInt32 y)
 {
   myDst.x = x;
   myDst.y = y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::setWidth(uInt32 w)
+void FBSurfaceSDL2::setWidth(uInt32 w)
 {
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
@@ -204,7 +112,7 @@ void FBSurfaceUI::setWidth(uInt32 w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::setHeight(uInt32 h)
+void FBSurfaceSDL2::setHeight(uInt32 h)
 {
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
@@ -214,14 +122,14 @@ void FBSurfaceUI::setHeight(uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::translateCoords(Int32& x, Int32& y) const
+void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 {
   x -= myDst.x;
   y -= myDst.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::update()
+void FBSurfaceSDL2::update()
 {
   if(mySurfaceIsDirty)
   {
@@ -239,13 +147,13 @@ void FBSurfaceUI::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::invalidate()
+void FBSurfaceSDL2::invalidate()
 {
   SDL_FillRect(mySurface, NULL, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::free()
+void FBSurfaceSDL2::free()
 {
   if(myTexture)
   {
@@ -255,7 +163,7 @@ void FBSurfaceUI::free()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceUI::reload()
+void FBSurfaceSDL2::reload()
 {
   // Re-create texture; the underlying SDL_Surface is fine as-is
   myTexture = SDL_CreateTexture(myFB.myRenderer,

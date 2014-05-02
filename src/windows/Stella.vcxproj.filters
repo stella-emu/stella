@@ -564,7 +564,7 @@
     <ClCompile Include="..\gui\LoggerDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\FBSurfaceUI.cxx">
+    <ClCompile Include="..\common\FBSurfaceSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\FBSurfaceTIA.cxx">
@@ -1298,7 +1298,7 @@
     <ClInclude Include="..\gui\LoggerDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\FBSurfaceUI.hxx">
+    <ClInclude Include="..\common\FBSurfaceSDL2.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\FBSurfaceTIA.hxx">

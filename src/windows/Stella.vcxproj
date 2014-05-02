@@ -221,7 +221,7 @@
   <ItemGroup>
     <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
-    <ClCompile Include="..\common\FBSurfaceUI.cxx" />
+    <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
     <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
@@ -464,7 +464,7 @@
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
-    <ClInclude Include="..\common\FBSurfaceUI.hxx" />
+    <ClInclude Include="..\common\FBSurfaceSDL2.hxx" />
     <ClInclude Include="..\common\FBSurfaceTIA.hxx" />
     <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />

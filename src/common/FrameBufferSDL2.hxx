@@ -24,7 +24,7 @@
 #include <SDL_opengl.h>
 
 class OSystem;
-class FBSurfaceUI;
+class FBSurfaceSDL2;
 class FBSurfaceTIA;
 class TIA;
 
@@ -40,7 +40,7 @@ class TIA;
 */
 class FrameBufferSDL2 : public FrameBuffer
 {
-  friend class FBSurfaceUI;
+  friend class FBSurfaceSDL2;
   friend class FBSurfaceTIA;
 
   public:

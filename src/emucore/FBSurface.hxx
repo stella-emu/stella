@@ -20,6 +20,8 @@
 #ifndef FBSURFACE_HXX
 #define FBSURFACE_HXX
 
+class FrameBuffer;
+
 #include "bspf.hxx"
 #include "Font.hxx"
 
@@ -52,7 +54,7 @@ class FBSurface
     /**
       Creates a new FBSurface object
     */
-    FBSurface() { }
+    FBSurface(const uInt32* palette);
 
     /**
       Destructor
@@ -67,7 +69,7 @@ class FBSurface
       @param x2    The second x coordinate
       @param color The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color) { }
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
 
     /**
       This method should be called to draw a vertical line.
@@ -77,7 +79,7 @@ class FBSurface
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color) { }
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color);
 
     /**
       This method should be called to draw a filled rectangle.
@@ -101,7 +103,7 @@ class FBSurface
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
-                          uInt32 color) { }
+                          uInt32 color);
 
     /**
       This method should be called to draw the bitmap image.
@@ -113,7 +115,7 @@ class FBSurface
       @param h      The height of the data image
     */
     virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
-                            uInt32 h = 8) { }
+                            uInt32 h = 8);
 
     /**
       This method should be called to convert and copy a given row of pixel
@@ -124,7 +126,7 @@ class FBSurface
       @param row      The row of the surface the data should be placed in
       @param rowbytes The number of bytes in row of 'data'
     */
-    virtual void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels) { }
+    virtual void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
 
     /**
       This method should be called copy the contents of the given
@@ -252,11 +254,12 @@ class FBSurface
         int deltax = 0, bool useEllipsis = true);
 
   protected:
-    /**
-      This method answers the current position of the surface.
-    */
-//    virtual void getBufferPtr(uInt32& x, uInt32& y) const = 0;
+    // These are also used by any derived FBSurface classes
+    uInt32* myPixels;
+    uInt32 myPitch;
 
+  private:
+    const uInt32* myPalette;
 };
 
 #endif

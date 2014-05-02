@@ -17,8 +17,8 @@
 // $Id$
 //============================================================================
 
-#ifndef FB_SURFACE_UI_HXX
-#define FB_SURFACE_UI_HXX
+#ifndef FBSURFACE_SDL2_HXX
+#define FBSURFACE_SDL2_HXX
 
 #include "bspf.hxx"
 #include "FrameBufferSDL2.hxx"
@@ -29,21 +29,19 @@
 
   @author  Stephen Anthony
 */
-class FBSurfaceUI : public FBSurface
+class FBSurfaceSDL2 : public FBSurface
 {
   friend class FrameBufferSDL2;
 
   public:
-    FBSurfaceUI(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
-    virtual ~FBSurfaceUI();
+    FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
+    virtual ~FBSurfaceSDL2();
 
     // Normal surfaces need all drawing primitives
-    void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
-    void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color);
+    //   Only some of them use SDL-specific code; the rest are defined
+    //   in the parent FBSurface class
+    //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
-    void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y, uInt32 color);
-    void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color, uInt32 h = 8);
-    void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
     void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
     void getPos(uInt32& x, uInt32& y) const;
@@ -66,7 +64,6 @@ class FBSurfaceUI : public FBSurface
     SDL_Rect mySrc, myDst;
 
     bool mySurfaceIsDirty;
-    uInt32 myPitch;
 };
 
 #endif

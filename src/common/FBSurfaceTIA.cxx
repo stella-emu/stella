@@ -26,7 +26,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceTIA::FBSurfaceTIA(FrameBufferSDL2& buffer)
-  : myFB(buffer),
+  : FBSurface(buffer.myDefPalette),
+    myFB(buffer),
     mySurface(NULL),
     myTexture(NULL),
     myScanlines(NULL),

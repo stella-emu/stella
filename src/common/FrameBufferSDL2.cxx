@@ -30,7 +30,7 @@
 #include "Settings.hxx"
 #include "TIA.hxx"
 
-#include "FBSurfaceUI.hxx"
+#include "FBSurfaceSDL2.hxx"
 #include "FBSurfaceTIA.hxx"
 #include "FrameBufferSDL2.hxx"
 
@@ -55,7 +55,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
   }
 
   // We need a pixel format for palette value calculations
-  // It's done this way (vs directly accessing a FBSurfaceUI object)
+  // It's done this way (vs directly accessing a FBSurfaceSDL2 object)
   // since the structure may be needed before any FBSurface's have
   // been created
   myPixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
@@ -338,7 +338,7 @@ void FrameBufferSDL2::setTIAPalette(const uInt32* palette)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurface* FrameBufferSDL2::createSurface(int w, int h) const
 {
-  return new FBSurfaceUI((FrameBufferSDL2&)*this, w, h);
+  return new FBSurfaceSDL2((FrameBufferSDL2&)*this, w, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
