@@ -595,5 +595,5 @@ void ContextMenu::drawDialog()
   }
 
   // Commit surface changes to screen
-  s.update();
+  s.render();
 }

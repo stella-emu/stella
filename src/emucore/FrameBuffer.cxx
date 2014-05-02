@@ -298,7 +298,7 @@ void FrameBuffer::update()
           info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
         myStatsMsg.surface->setPos(myImageRect.x() + 1, myImageRect.y() + 1);
-        myStatsMsg.surface->update();
+        myStatsMsg.surface->render();
       }
       break;  // S_EMULATE
     }
@@ -499,7 +499,7 @@ inline void FrameBuffer::drawMessage()
   else
   {
     myMsg.surface->addDirtyRect(0, 0, 0, 0);
-    myMsg.surface->update();
+    myMsg.surface->render();
   }
 }
 

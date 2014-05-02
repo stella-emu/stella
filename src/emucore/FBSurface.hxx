@@ -64,20 +64,20 @@ class FBSurface
     /**
       This method should be called to draw a horizontal line.
 
-      @param x     The first x coordinate
-      @param y     The y coordinate
-      @param x2    The second x coordinate
-      @param color The color of the line
+      @param x      The first x coordinate
+      @param y      The y coordinate
+      @param x2     The second x coordinate
+      @param color  The color of the line
     */
     virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
 
     /**
       This method should be called to draw a vertical line.
 
-      @param x     The x coordinate
-      @param y     The first y coordinate
-      @param y2    The second y coordinate
-      @param color The color of the line
+      @param x      The x coordinate
+      @param y      The first y coordinate
+      @param y2     The second y coordinate
+      @param color  The color of the line
     */
     virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color);
 
@@ -88,7 +88,7 @@ class FBSurface
       @param y      The y coordinate
       @param w      The width of the area
       @param h      The height of the area
-      @param color  
+      @param color  The fill color of the rectangle
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                           uInt32 color) { }
@@ -111,7 +111,7 @@ class FBSurface
       @param bitmap The data to draw
       @param x      The x coordinate
       @param y      The y coordinate
-      @param color  The color of the character
+      @param color  The color of the bitmap
       @param h      The height of the data image
     */
     virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
@@ -187,7 +187,7 @@ class FBSurface
     /**
       This method should be called to draw the surface to the screen.
     */
-    virtual void update() { }
+    virtual void render() { }
 
     /**
       This method should be called to reset the surface to empty

@@ -26,6 +26,8 @@ FBSurface::FBSurface(const uInt32* palette)
     myPitch(0),
     myPalette(palette)
 {
+  // NOTE: myPixels and myPitch will be set in child classes that inherit
+  // from this class
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

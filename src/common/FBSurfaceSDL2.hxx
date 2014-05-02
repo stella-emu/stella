@@ -24,8 +24,9 @@
 #include "FrameBufferSDL2.hxx"
 
 /**
-  A surface suitable for SDL Render2D API, used for various UI dialogs.
-  This class extends FrameBuffer::FBSurface.
+  A surface suitable for SDL Render2D API, making use of hardware
+  acceleration behind the scenes.  This class extends
+  FrameBuffer::FBSurface.
 
   @author  Stephen Anthony
 */
@@ -37,9 +38,8 @@ class FBSurfaceSDL2 : public FBSurface
     FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
     virtual ~FBSurfaceSDL2();
 
-    // Normal surfaces need all drawing primitives
-    //   Only some of them use SDL-specific code; the rest are defined
-    //   in the parent FBSurface class
+    // Most of the surface drawing primitives are defined in FBSurface;
+    // the ones defined here use SDL-specific code
     //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
     void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
@@ -51,7 +51,7 @@ class FBSurfaceSDL2 : public FBSurface
     void setWidth(uInt32 w);
     void setHeight(uInt32 h);
     void translateCoords(Int32& x, Int32& y) const;
-    void update();
+    void render();
     void invalidate();
     void free();
     void reload();

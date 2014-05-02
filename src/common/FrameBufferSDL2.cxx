@@ -257,7 +257,7 @@ bool FrameBufferSDL2::fullScreen() const
 void FrameBufferSDL2::drawTIA(bool fullRedraw)
 {
   // The TIA surface takes all responsibility for drawing
-  myTiaSurface->update();
+  myTiaSurface->render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -46,7 +46,7 @@ class FBSurfaceTIA : public FBSurface
     uInt32 getWidth()  const { return mySrcR.w; }
     uInt32 getHeight() const { return mySrcR.h; }
     void translateCoords(Int32& x, Int32& y) const;
-    void update();
+    void render();
     void invalidate();
     void free();
     void reload();

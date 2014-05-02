@@ -18,7 +18,7 @@
 //============================================================================
 
 #ifndef SETTINGS_MAC_OSX_HXX
-#define SETTINGS_MAX_OSX_HXX
+#define SETTINGS_MAC_OSX_HXX
 
 class OSystem;
 

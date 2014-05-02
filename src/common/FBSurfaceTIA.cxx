@@ -89,7 +89,7 @@ void FBSurfaceTIA::translateCoords(Int32& x, Int32& y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceTIA::update()
+void FBSurfaceTIA::render()
 {
   // Copy the mediasource framebuffer to the RGB texture
   // In hardware rendering mode, it's faster to just assume that the screen

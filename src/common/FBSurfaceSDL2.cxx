@@ -129,7 +129,7 @@ void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::update()
+void FBSurfaceSDL2::render()
 {
   if(mySurfaceIsDirty)
   {
