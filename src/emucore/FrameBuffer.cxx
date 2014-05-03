@@ -105,8 +105,8 @@ bool FrameBuffer::initialize()
   //       We can probably add ifdefs to take care of corner cases,
   //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopSize.w < (uInt32)kFBMinW ||
-                     myDesktopSize.h < (uInt32)kFBMinH;
+  bool smallScreen = myDesktopSize.w < kFBMinW ||
+                     myDesktopSize.h < kFBMinH;
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
@@ -176,8 +176,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // we're running on a 'large' system, and the window size requirements
   // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
-  if(myDesktopSize.w < (uInt32)kFBMinW &&
-     myDesktopSize.h < (uInt32)kFBMinH &&
+  if(myDesktopSize.w < kFBMinW && myDesktopSize.h < kFBMinH &&
      (myDesktopSize.w < width || myDesktopSize.h < height))
     return kFailTooLarge;
 
@@ -207,7 +206,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   const VideoMode& mode = getSavedVidMode(useFullscreen);
   myImageRect = mode.image;
   myScreenSize = mode.screen;
-  if(width <= myScreenSize.w && height <= myScreenSize.h)
+  if(width <= (uInt32)myScreenSize.w && height <= (uInt32)myScreenSize.h)
   {
     if(setVideoMode(myScreenTitle, mode, useFullscreen))
     {

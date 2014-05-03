@@ -3,7 +3,7 @@ Section: games
 Priority: optional
 Maintainer: Stephen Anthony <stephena@users.sourceforge.net>
 Standards-Version: 3.7.2
-Build-Depends: debhelper (>= 5.0.0), libsdl1.2-dev, zlib1g-dev
+Build-Depends: debhelper (>= 5.0.0), libsdl2-dev
 
 Package: stella
 Architecture: any
