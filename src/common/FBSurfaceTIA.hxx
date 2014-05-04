@@ -48,7 +48,9 @@ class FBSurfaceTIA : public FBSurface
     void free();
     void reload();
 
-    void basePtr(uInt32*& pixels, uInt32& pitch) { }
+    void setStaticContents(const uInt32* pixels, uInt32 pitch) { }
+    void setInterpolationAndBlending(bool smoothScale, bool useBlend,
+                                     uInt32 blendAlpha) { }
 
     GUI::Rect srcRect() { return GUI::Rect(); }
     GUI::Rect dstRect() { return GUI::Rect(); }

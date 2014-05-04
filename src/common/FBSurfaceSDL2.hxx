@@ -33,6 +33,7 @@ class FBSurfaceSDL2 : public FBSurface
 {
   public:
     FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
+
     virtual ~FBSurfaceSDL2();
 
     // Most of the surface drawing primitives are implemented in FBSurface;
@@ -42,7 +43,9 @@ class FBSurfaceSDL2 : public FBSurface
     void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
 
-    void basePtr(uInt32*& pixels, uInt32& pitch);
+    void setStaticContents(const uInt32* pixels, uInt32 pitch);
+    void setInterpolationAndBlending(bool smoothScale, bool useBlend,
+                                     uInt32 blendAlpha);
 
     GUI::Rect srcRect();
     GUI::Rect dstRect();
@@ -65,6 +68,14 @@ class FBSurfaceSDL2 : public FBSurface
     SDL_Rect mySrcR, myDstR;
 
     bool mySurfaceIsDirty;
+
+    bool myDataIsStatic;  // Is pixel data constant or can it change?
+    bool myInterpolate;   // Scaling is smoothed or blocky
+    bool myBlendEnabled;  // Blending is enabled
+    uInt8 myBlendAlpha;   // Alpha to use in blending mode
+
+    uInt32* myStaticData; // The data to use when the buffer contents are static
+    uInt32 myStaticPitch; // The number of bytes in a row of static data
 };
 
 #endif

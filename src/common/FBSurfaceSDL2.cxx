@@ -25,7 +25,12 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 heigh
     myFB(buffer),
     mySurface(NULL),
     myTexture(NULL),
-    mySurfaceIsDirty(true)
+    mySurfaceIsDirty(true),
+    myDataIsStatic(false),
+    myInterpolate(false),
+    myBlendEnabled(false),
+    myBlendAlpha(255),
+    myStaticData(NULL)
 {
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormat* pf = myFB.myPixelFormat;
@@ -56,6 +61,12 @@ FBSurfaceSDL2::~FBSurfaceSDL2()
     SDL_FreeSurface(mySurface);
 
   free();
+
+  if(myStaticData)
+  {
+    delete[] myStaticData;
+    myStaticData = NULL;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,8 +103,31 @@ void FBSurfaceSDL2::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::basePtr(uInt32*& pixels, uInt32& pitch)
+void FBSurfaceSDL2::setStaticContents(const uInt32* pixels, uInt32 pitch)
 {
+  myDataIsStatic = true;
+  myStaticPitch = pitch * 4;  // we need pitch in 'bytes'
+
+  if(!myStaticData)
+    myStaticData = new uInt32[mySurface->w * mySurface->h];
+  SDL_memcpy(myStaticData, pixels, mySurface->w * mySurface->h);
+
+  // Re-create the texture with the new settings
+  free();
+  reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setInterpolationAndBlending(
+    bool smoothScale, bool useBlend, uInt32 blendAlpha)
+{
+  myInterpolate = smoothScale;
+  myBlendEnabled = useBlend;
+  myBlendAlpha = blendAlpha * 2.55;
+
+  // Re-create the texture with the new settings
+  free();
+  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -147,7 +181,8 @@ void FBSurfaceSDL2::render()
 //cerr << "src: x=" << mySrcR.x << ", y=" << mySrcR.y << ", w=" << mySrcR.w << ", h=" << mySrcR.h << endl;
 //cerr << "dst: x=" << myDstR.x << ", y=" << myDstR.y << ", w=" << myDstR.w << ", h=" << myDstR.h << endl;
 
-    SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
+    if(!myDataIsStatic)
+      SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
     SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrcR, &myDstR);
 
     mySurfaceIsDirty = false;
@@ -177,7 +212,19 @@ void FBSurfaceSDL2::free()
 void FBSurfaceSDL2::reload()
 {
   // Re-create texture; the underlying SDL_Surface is fine as-is
-  myTexture = SDL_CreateTexture(myFB.myRenderer,
-      SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myInterpolate ? "1" : "0");
+  myTexture = SDL_CreateTexture(myFB.myRenderer, myFB.myPixelFormat->format,
+      myDataIsStatic ? SDL_TEXTUREACCESS_STATIC : SDL_TEXTUREACCESS_STREAMING,
       mySurface->w, mySurface->h);
+
+  // If the data is static, we only upload it once
+  if(myDataIsStatic)
+    SDL_UpdateTexture(myTexture, NULL, myStaticData, myStaticPitch);
+
+  // Blending enabled?
+  if(myBlendEnabled)
+  {
+    SDL_SetTextureBlendMode(myTexture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(myTexture, myBlendAlpha);
+  }
 }

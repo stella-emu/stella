@@ -336,7 +336,7 @@ void FrameBufferSDL2::setTIAPalette(const uInt32* palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface* FrameBufferSDL2::createSurface(int w, int h) const
+FBSurface* FrameBufferSDL2::createSurface(uInt32 w, uInt32 h) const
 {
   return new FBSurfaceSDL2((FrameBufferSDL2&)*this, w, h);
 }

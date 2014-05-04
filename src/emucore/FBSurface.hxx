@@ -219,7 +219,7 @@ class FBSurface
     //        implemented in child classes.
     //
     //  For the following, 'src' indicates the actual data buffer area
-    // (non-scaled) and 'dst' indicates the rendered area (possibly scaled).
+    //  (non-scaled) and 'dst' indicates the rendered area (possibly scaled).
     //////////////////////////////////////////////////////////////////////////
 
     /**
@@ -237,6 +237,30 @@ class FBSurface
     virtual void setSrcSize(uInt32 w, uInt32 h) = 0;
     virtual void setDstPos(uInt32 x, uInt32 y)  = 0;
     virtual void setDstSize(uInt32 w, uInt32 h) = 0;
+
+    /**
+      This method should be called to indicate that the surface contains
+      static data that will never change.  Some rendering toolkits can
+      use this information to optimize how the data is rendered.
+
+      Note that once this method is called, all other drawing primitives
+      will not work.
+
+      @param pixels  The static data to use
+      @param pitch   The number of pixels in a row
+    */
+    virtual void setStaticContents(const uInt32* pixels, uInt32 pitch) = 0;
+
+    /**
+      This method should be called to modify the interpolation and
+      blending effects to be applied to this surface.
+
+      @param smoothScale  Whether to use interpolation during scaling
+      @param useBlend     Whether the surface should use alpha blending
+      @param blendAlpha   The alpha to use during blending (if used)
+    */
+    virtual void setInterpolationAndBlending(bool smoothScale,
+        bool useBlend, uInt32 blendAlpha) = 0;
 
     /**
       This method should be called to translate the given coordinates

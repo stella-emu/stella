@@ -437,13 +437,12 @@ class FrameBuffer
     virtual void invalidate() = 0;
 
     /**
-      This method is called to create a surface compatible with the one
-      currently in use, but having the given dimensions.
+      This method is called to create a surface with the given attributes.
 
       @param w  The requested width of the new surface.
       @param h  The requested height of the new surface.
     */
-    virtual FBSurface* createSurface(int w, int h) const = 0;
+    virtual FBSurface* createSurface(uInt32 w, uInt32 h) const = 0;
 
     /**
       Change scanline intensity and interpolation.
