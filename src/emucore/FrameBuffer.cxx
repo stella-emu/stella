@@ -231,7 +231,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
   myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
- if(myStatsMsg.surface == NULL)
+  if(myStatsMsg.surface == NULL)
   {
     uInt32 surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface = surface(surfaceID);
@@ -296,7 +296,7 @@ void FrameBuffer::update()
         myStatsMsg.surface->drawString(infoFont(),
           info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
-        myStatsMsg.surface->setPos(myImageRect.x() + 1, myImageRect.y() + 1);
+        myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->render();
       }
       break;  // S_EMULATE
@@ -388,8 +388,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 
   myMsg.w = font().getStringWidth(myMsg.text) + 10;
   myMsg.h = font().getFontHeight() + 8;
-  myMsg.surface->setWidth(myMsg.w);
-  myMsg.surface->setHeight(myMsg.h);
+  myMsg.surface->setDstSize(myMsg.w, myMsg.h);
   myMsg.position = position;
   myMsg.enabled = true;
 }
@@ -481,7 +480,7 @@ inline void FrameBuffer::drawMessage()
       break;
   }
 
-  myMsg.surface->setPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
+  myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
   myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
   myMsg.surface->drawString(font(), myMsg.text, 4, 4,

@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include "Font.hxx"
 #include "FBSurfaceSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,12 +33,17 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 heigh
   mySurface = SDL_CreateRGBSurface(0, width, height,
       pf->BitsPerPixel, pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
 
-  mySrc.x = mySrc.y = myDst.x = myDst.y = 0;
-  mySrc.w = myDst.w = width;
-  mySrc.h = myDst.h = height;
+  // We start out with the src and dst rectangles containing the same
+  // dimensions, indicating no scaling or re-positioning
+  mySrcR.x = mySrcR.y = myDstR.x = myDstR.y = 0;
+  mySrcR.w = myDstR.w = width;
+  mySrcR.h = myDstR.h = height;
 
+  ////////////////////////////////////////////////////
+  // These *must* be set for the parent class
   myPixels = (uInt32*) mySurface->pixels;
   myPitch = mySurface->pitch / pf->BytesPerPixel;
+  ////////////////////////////////////////////////////
 
   // To generate texture
   reload();
@@ -63,7 +67,7 @@ void FBSurfaceSDL2::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 colo
   tmp.y = y;
   tmp.w = w;
   tmp.h = h;
-  SDL_FillRect(mySurface, &tmp, myFB.myDefPalette[color]);
+  SDL_FillRect(mySurface, &tmp, myPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,10 +78,10 @@ void FBSurfaceSDL2::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
   SDL_Rect dst;
   dst.x = tx;
   dst.y = ty;
-  dst.w = s->mySrc.w;
-  dst.h = s->mySrc.h;
+  dst.w = s->mySrcR.w;
+  dst.h = s->mySrcR.h;
 
-  SDL_BlitSurface(s->mySurface, &(s->mySrc), mySurface, &dst);
+  SDL_BlitSurface(s->mySurface, &(s->mySrcR), mySurface, &dst);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,44 +92,51 @@ void FBSurfaceSDL2::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::getPos(uInt32& x, uInt32& y) const
+void FBSurfaceSDL2::basePtr(uInt32*& pixels, uInt32& pitch)
 {
-  x = myDst.x;
-  y = myDst.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setPos(uInt32 x, uInt32 y)
+GUI::Rect FBSurfaceSDL2::srcRect()
 {
-  myDst.x = x;
-  myDst.y = y;
+  return GUI::Rect(mySrcR.x, mySrcR.y, mySrcR.x+mySrcR.w, mySrcR.y+mySrcR.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setWidth(uInt32 w)
+GUI::Rect FBSurfaceSDL2::dstRect()
 {
-  // This method can't be used with 'scaled' surface (aka TIA surfaces)
-  // That shouldn't really matter, though, as all the UI stuff isn't scaled,
-  // and it's the only thing that uses it
-  mySrc.w = w;
-  myDst.w = w;
+  return GUI::Rect(myDstR.x, myDstR.y, myDstR.x+myDstR.w, myDstR.y+myDstR.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setHeight(uInt32 h)
+void FBSurfaceSDL2::setSrcPos(uInt32 x, uInt32 y)
 {
-  // This method can't be used with 'scaled' surface (aka TIA surfaces)
-  // That shouldn't really matter, though, as all the UI stuff isn't scaled,
-  // and it's the only thing that uses it
-  mySrc.h = h;
-  myDst.h = h;
+  mySrcR.x = x;  mySrcR.y = y;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setSrcSize(uInt32 w, uInt32 h)
+{
+  mySrcR.w = w;  mySrcR.h = h;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setDstPos(uInt32 x, uInt32 y)
+{
+  myDstR.x = x;  myDstR.y = y;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
+{
+  myDstR.w = w;  myDstR.w = w;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 {
-  x -= myDst.x;
-  y -= myDst.y;
+  x -= myDstR.x;
+  y -= myDstR.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,11 +144,11 @@ void FBSurfaceSDL2::render()
 {
   if(mySurfaceIsDirty)
   {
-//cerr << "src: x=" << mySrc.x << ", y=" << mySrc.y << ", w=" << mySrc.w << ", h=" << mySrc.h << endl;
-//cerr << "dst: x=" << myDst.x << ", y=" << myDst.y << ", w=" << myDst.w << ", h=" << myDst.h << endl;
+//cerr << "src: x=" << mySrcR.x << ", y=" << mySrcR.y << ", w=" << mySrcR.w << ", h=" << mySrcR.h << endl;
+//cerr << "dst: x=" << myDstR.x << ", y=" << myDstR.y << ", w=" << myDstR.w << ", h=" << myDstR.h << endl;
 
-    SDL_UpdateTexture(myTexture, &mySrc, mySurface->pixels, mySurface->pitch);
-    SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrc, &myDst);
+    SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
+    SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrcR, &myDstR);
 
     mySurfaceIsDirty = false;
 

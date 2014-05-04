@@ -113,7 +113,7 @@ void RomListSettings::center()
   if(x + _w > tx) x -= (x + _w - tx);
   if(y + _h > ty) y -= (y + _h - ty);
 
-  surface().setPos(x, y);
+  surface().setDstPos(x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -24,6 +24,7 @@ class FrameBuffer;
 
 #include "bspf.hxx"
 #include "Font.hxx"
+#include "Rect.hxx"
 
 /**
   This class is basically a thin wrapper around the video toolkit 'surface'
@@ -62,6 +63,23 @@ class FBSurface
     virtual ~FBSurface() { }
 
     /**
+      This method returns the surface pixel pointer and pitch, which are
+      used when one wishes to modify the surface pixels directly.
+    */
+    inline void basePtr(uInt32*& pixels, uInt32& pitch)
+    {
+      pixels = myPixels;
+      pitch = myPitch;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Note:  The drawing primitives below will work, but do not take
+    //        advantage of any acceleration whatsoever.  The methods are
+    //        marked as 'virtual' so that child classes can choose to
+    //        implement them more efficiently.
+    //////////////////////////////////////////////////////////////////////////
+
+    /**
       This method should be called to draw a horizontal line.
 
       @param x      The first x coordinate
@@ -91,7 +109,7 @@ class FBSurface
       @param color  The fill color of the rectangle
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          uInt32 color) { }
+                          uInt32 color);
 
     /**
       This method should be called to draw the specified character.
@@ -129,85 +147,6 @@ class FBSurface
     virtual void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
 
     /**
-      This method should be called copy the contents of the given
-      surface into the FrameBuffer surface.
-
-      @param surface The data to draw
-      @param x       The x coordinate
-      @param y       The y coordinate
-    */
-    virtual void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y) { }
-
-    /**
-      This method should be called to add a dirty rectangle
-      (ie, an area of the screen that has changed)
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-    */
-    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { }
-
-    /**
-      This method answers the current position of the surface.
-    */
-    virtual void getPos(uInt32& x, uInt32& y) const { }
-
-    /**
-      This method should be called to set the position of the surface.
-    */
-    virtual void setPos(uInt32 x, uInt32 y) { }
-
-    /**
-      This method answers the current dimensions of the surface.
-    */
-    virtual uInt32 getWidth() const { return 0; }
-    virtual uInt32 getHeight() const { return 0; }
-
-    /**
-      This method sets the width of the drawable area of the surface.
-    */
-    virtual void setWidth(uInt32 w) { }
-
-    /**
-      This method sets the width of the drawable area of the surface.
-    */
-    virtual void setHeight(uInt32 h) { }
-
-    /**
-      This method should be called to translate the given coordinates
-      to the surface coordinates.
-
-      @param x  X coordinate to translate
-      @param y  Y coordinate to translate
-    */
-    virtual void translateCoords(Int32& x, Int32& y) const { }
-
-    /**
-      This method should be called to draw the surface to the screen.
-    */
-    virtual void render() { }
-
-    /**
-      This method should be called to reset the surface to empty
-      pixels / colour black.
-    */
-    virtual void invalidate() { }
-
-    /**
-      This method should be called to free any resources being used by
-      the surface.
-    */
-    virtual void free() { }
-
-    /**
-      This method should be called to reload the surface data/state.
-      It will normally be called after free().
-    */
-    virtual void reload() { }
-
-    /**
       This method should be called to draw a rectangular box with sides
       at the specified coordinates.
 
@@ -222,14 +161,15 @@ class FBSurface
                      uInt32 colorA, uInt32 colorB);
 
     /**
-      This method should be called to draw a framed rectangle.
-      I'm not exactly sure what it is, so I can't explain it :)
+      This method should be called to draw a framed rectangle with
+      several different possible styles.
 
       @param x      The x coordinate
       @param y      The y coordinate
       @param w      The width of the area
       @param h      The height of the area
       @param color  The color of the surrounding frame
+      @param style  The 'FrameStyle' to use for the surrounding frame
     */
     virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                            uInt32 color, FrameStyle style = kSolidLine);
@@ -253,13 +193,87 @@ class FBSurface
         uInt32 color, TextAlignment align = kTextAlignLeft,
         int deltax = 0, bool useEllipsis = true);
 
+    /**
+      This method should be called copy the contents of the given
+      surface into the FrameBuffer surface.
+
+      @param surface The data to draw
+      @param x       The x coordinate
+      @param y       The y coordinate
+    */
+    virtual void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y) { }
+
+    /**
+      This method should be called to add a dirty rectangle
+      (ie, an area of the screen that has changed)
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+    */
+    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+
+    //////////////////////////////////////////////////////////////////////////
+    // Note:  The following methods are FBSurface-specific, and must be
+    //        implemented in child classes.
+    //
+    //  For the following, 'src' indicates the actual data buffer area
+    // (non-scaled) and 'dst' indicates the rendered area (possibly scaled).
+    //////////////////////////////////////////////////////////////////////////
+
+    /**
+      These methods answer the current dimensions of the specified surface.
+    */
+    virtual GUI::Rect srcRect() = 0;
+    virtual GUI::Rect dstRect() = 0;
+
+    /**
+      These methods set the origin point and width/height for the
+      specified service.  They are defined as separate x/y and w/h
+      methods since these items are sometimes set separately.
+    */
+    virtual void setSrcPos(uInt32 x, uInt32 y)  = 0;
+    virtual void setSrcSize(uInt32 w, uInt32 h) = 0;
+    virtual void setDstPos(uInt32 x, uInt32 y)  = 0;
+    virtual void setDstSize(uInt32 w, uInt32 h) = 0;
+
+    /**
+      This method should be called to translate the given coordinates
+      to the (destination) surface coordinates.
+
+      @param x  X coordinate to translate
+      @param y  Y coordinate to translate
+    */
+    virtual void translateCoords(Int32& x, Int32& y) const = 0;
+
+    /**
+      This method should be called to draw the surface to the screen.
+    */
+    virtual void render() = 0;
+
+    /**
+      This method should be called to reset the surface to empty
+      pixels / colour black.
+    */
+    virtual void invalidate() = 0;
+
+    /**
+      This method should be called to free any resources being used by
+      the surface.
+    */
+    virtual void free() = 0;
+
+    /**
+      This method should be called to reload the surface data/state.
+      It will normally be called after free().
+    */
+    virtual void reload() = 0;
+
   protected:
-    // These are also used by any derived FBSurface classes
+    const uInt32* myPalette;
     uInt32* myPixels;
     uInt32 myPitch;
-
-  private:
-    const uInt32* myPalette;
 };
 
 #endif

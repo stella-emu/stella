@@ -24,32 +24,33 @@
 #include "FrameBufferSDL2.hxx"
 
 /**
-  A surface suitable for SDL Render2D API, making use of hardware
-  acceleration behind the scenes.  This class extends
-  FrameBuffer::FBSurface.
+  An FBSurface suitable for the SDL2 Render2D API, making use of hardware
+  acceleration behind the scenes.
 
   @author  Stephen Anthony
 */
 class FBSurfaceSDL2 : public FBSurface
 {
-  friend class FrameBufferSDL2;
-
   public:
     FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
     virtual ~FBSurfaceSDL2();
 
-    // Most of the surface drawing primitives are defined in FBSurface;
-    // the ones defined here use SDL-specific code
+    // Most of the surface drawing primitives are implemented in FBSurface;
+    // the ones implemented here use SDL-specific code for extra performance
     //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
     void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-    void getPos(uInt32& x, uInt32& y) const;
-    void setPos(uInt32 x, uInt32 y);
-    uInt32 getWidth()  const { return mySrc.w; }
-    uInt32 getHeight() const { return mySrc.h; }
-    void setWidth(uInt32 w);
-    void setHeight(uInt32 h);
+
+    void basePtr(uInt32*& pixels, uInt32& pitch);
+
+    GUI::Rect srcRect();
+    GUI::Rect dstRect();
+    void setSrcPos(uInt32 x, uInt32 y);
+    void setSrcSize(uInt32 w, uInt32 h);
+    void setDstPos(uInt32 x, uInt32 y);
+    void setDstSize(uInt32 w, uInt32 h);
+
     void translateCoords(Int32& x, Int32& y) const;
     void render();
     void invalidate();
@@ -61,7 +62,7 @@ class FBSurfaceSDL2 : public FBSurface
 
     SDL_Surface* mySurface;
     SDL_Texture* myTexture;
-    SDL_Rect mySrc, myDst;
+    SDL_Rect mySrcR, myDstR;
 
     bool mySurfaceIsDirty;
 };

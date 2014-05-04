@@ -22,11 +22,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurface::FBSurface(const uInt32* palette)
-  : myPixels(NULL),
-    myPitch(0),
-    myPalette(palette)
+  : myPalette(palette),
+    myPixels(NULL),
+    myPitch(0)
 {
-  // NOTE: myPixels and myPitch will be set in child classes that inherit
+  // NOTE: myPixels and myPitch MUST be set in child classes that inherit
   // from this class
 }
 
@@ -47,6 +47,13 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
     *buffer = (uInt32) myPalette[color];
     buffer += myPitch;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
+{
+  while(h--)
+    hLine(x, y+h, x+w-1, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,6 +127,11 @@ void FBSurface::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
 
   for(uInt32 i = 0; i < numpixels; ++i)
     *buffer++ = (uInt32) data[i];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -122,7 +122,7 @@ void Dialog::center()
     const GUI::Size& screen = instance().frameBuffer().screenSize();
     uInt32 x = (screen.w - getWidth()) >> 1;
     uInt32 y = (screen.h - getHeight()) >> 1;
-    _surface->setPos(x, y);
+    _surface->setDstPos(x, y);
   }
 }
 

@@ -42,14 +42,32 @@ class FBSurfaceTIA : public FBSurface
     // TIA surfaces don't implement most of the drawing primitives,
     // only the methods absolutely necessary for dealing with drawing
     // a TIA image
-    void getPos(uInt32& x, uInt32& y) const;
-    uInt32 getWidth()  const { return mySrcR.w; }
-    uInt32 getHeight() const { return mySrcR.h; }
     void translateCoords(Int32& x, Int32& y) const;
     void render();
     void invalidate();
     void free();
     void reload();
+
+    void basePtr(uInt32*& pixels, uInt32& pitch) { }
+
+    GUI::Rect srcRect() { return GUI::Rect(); }
+    GUI::Rect dstRect() { return GUI::Rect(); }
+///////////////////////////////////////////////////////
+    void getPos(uInt32& x, uInt32& y) const;
+    uInt32 getWidth()  const { return myDstR.w; }
+    uInt32 getHeight() const { return myDstR.h; }
+///////////////////////////////////////////////////////
+
+    void setSrcPos(uInt32 x, uInt32 y) { }
+    void setSrcSize(uInt32 w, uInt32 h) { }
+    void setDstPos(uInt32 x, uInt32 y) { }
+    void setDstSize(uInt32 w, uInt32 h) { }
+///////////////////////////////////////////////////////
+    void setPos(uInt32 x, uInt32 y) { }
+    void setWidth(uInt32 w) { }
+    void setHeight(uInt32 h) { }
+///////////////////////////////////////////////////////
+
 
   private:
     void setTIA(const TIA& tia) { myTIA = &tia; }
