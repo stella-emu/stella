@@ -225,8 +225,8 @@ class FBSurface
     /**
       These methods answer the current dimensions of the specified surface.
     */
-    virtual GUI::Rect srcRect() = 0;
-    virtual GUI::Rect dstRect() = 0;
+    virtual const GUI::Rect& srcRect() = 0;
+    virtual const GUI::Rect& dstRect() = 0;
 
     /**
       These methods set the origin point and width/height for the

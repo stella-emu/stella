@@ -126,6 +126,13 @@ struct Rect
   void setHeight(int aHeight) { bottom = top + aHeight; }
   void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
 
+  void setBounds(int x1, int y1, int x2, int y2) {
+    top = y1;
+    left = x1;
+    bottom = y2;
+    right = x2;
+  }
+
   /*
     @param x the horizontal position to check
     @param y the vertical position to check	
@@ -206,7 +213,7 @@ struct Rect
     left = x;
   }
 
-  void moveTo(const Point & p) {
+  void moveTo(const Point& p) {
     moveTo(p.x, p.y);
   }
 

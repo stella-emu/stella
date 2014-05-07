@@ -47,8 +47,8 @@ class FBSurfaceSDL2 : public FBSurface
     void setInterpolationAndBlending(bool smoothScale, bool useBlend,
                                      uInt32 blendAlpha);
 
-    GUI::Rect srcRect();
-    GUI::Rect dstRect();
+    const GUI::Rect& srcRect();
+    const GUI::Rect& dstRect();
     void setSrcPos(uInt32 x, uInt32 y);
     void setSrcSize(uInt32 w, uInt32 h);
     void setDstPos(uInt32 x, uInt32 y);
@@ -76,6 +76,8 @@ class FBSurfaceSDL2 : public FBSurface
 
     uInt32* myStaticData; // The data to use when the buffer contents are static
     uInt32 myStaticPitch; // The number of bytes in a row of static data
+
+    GUI::Rect mySrcGUIR, myDstGUIR;
 };
 
 #endif

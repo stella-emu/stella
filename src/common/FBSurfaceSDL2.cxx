@@ -131,15 +131,17 @@ void FBSurfaceSDL2::setInterpolationAndBlending(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect FBSurfaceSDL2::srcRect()
+const GUI::Rect& FBSurfaceSDL2::srcRect()
 {
-  return GUI::Rect(mySrcR.x, mySrcR.y, mySrcR.x+mySrcR.w, mySrcR.y+mySrcR.h);
+  mySrcGUIR.setBounds(mySrcR.x, mySrcR.y, mySrcR.x+mySrcR.w, mySrcR.y+mySrcR.h);
+  return mySrcGUIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect FBSurfaceSDL2::dstRect()
+const GUI::Rect& FBSurfaceSDL2::dstRect()
 {
-  return GUI::Rect(myDstR.x, myDstR.y, myDstR.x+myDstR.w, myDstR.y+myDstR.h);
+  myDstGUIR.setBounds(myDstR.x, myDstR.y, myDstR.x+myDstR.w, myDstR.y+myDstR.h);
+  return myDstGUIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

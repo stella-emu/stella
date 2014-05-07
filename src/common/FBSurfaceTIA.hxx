@@ -52,8 +52,8 @@ class FBSurfaceTIA : public FBSurface
     void setInterpolationAndBlending(bool smoothScale, bool useBlend,
                                      uInt32 blendAlpha) { }
 
-    GUI::Rect srcRect() { return GUI::Rect(); }
-    GUI::Rect dstRect() { return GUI::Rect(); }
+    const GUI::Rect& srcRect() { return GUI::Rect(); }
+    const GUI::Rect& dstRect() { return GUI::Rect(); }
 ///////////////////////////////////////////////////////
     void getPos(uInt32& x, uInt32& y) const;
     uInt32 getWidth()  const { return myDstR.w; }
