@@ -388,6 +388,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 
   myMsg.w = font().getStringWidth(myMsg.text) + 10;
   myMsg.h = font().getFontHeight() + 8;
+  myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w, myMsg.h);
   myMsg.position = position;
   myMsg.enabled = true;

@@ -123,7 +123,7 @@ void FBSurfaceSDL2::setInterpolationAndBlending(
 {
   myInterpolate = smoothScale;
   myBlendEnabled = useBlend;
-  myBlendAlpha = blendAlpha * 2.55;
+  myBlendAlpha = uInt8(blendAlpha * 2.55);
 
   // Re-create the texture with the new settings
   free();
