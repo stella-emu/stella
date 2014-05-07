@@ -541,14 +541,10 @@ class OSystem
 
   private:
     /**
-      Creates the various framebuffers/renderers available in this system
-      (for now, that means either 'software' or 'opengl').  Note that
-      it will only create one type per run of Stella.
+      Creates the various framebuffers/renderers available in this system.
+      Note that it will only create one type per run of Stella.
 
       @return  Success or failure of the framebuffer creation
-               Note that if OpenGL mode fails because OpenGL is not
-               available, rendering will attempt to fall back to
-               software mode
     */
     FBInitStatus createFrameBuffer();
 

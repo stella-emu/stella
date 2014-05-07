@@ -21,7 +21,6 @@
 #define FRAMEBUFFER_SDL2_HXX
 
 #include <SDL.h>
-#include <SDL_opengl.h>
 
 class OSystem;
 class FBSurfaceSDL2;
@@ -45,7 +44,7 @@ class FrameBufferSDL2 : public FrameBuffer
 
   public:
     /**
-      Creates a new OpenGL framebuffer
+      Creates a new SDL2 framebuffer
     */
     FrameBufferSDL2(OSystem* osystem);
 
