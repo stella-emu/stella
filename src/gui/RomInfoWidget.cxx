@@ -86,7 +86,6 @@ void RomInfoWidget::clearProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::parseProperties()
 {
-#if 0 //FIXSDL
   // Check if a surface has ever been created; if so, we use it
   // The surface will always be the maximum size, but sometimes we'll
   // only draw certain parts of it
@@ -96,11 +95,6 @@ void RomInfoWidget::parseProperties()
     mySurfaceID = instance().frameBuffer().allocateSurface(
                     320*myZoomLevel, 256*myZoomLevel);
     mySurface   = instance().frameBuffer().surface(mySurfaceID);
-  }
-  else
-  {
-    mySurface->setWidth(320*myZoomLevel);
-    mySurface->setHeight(256*myZoomLevel);
   }
 
   // Initialize to empty properties entry
@@ -132,7 +126,6 @@ void RomInfoWidget::parseProperties()
   myRomInfo.push_back("Note:  " + myProperties.get(Cartridge_Note));
   myRomInfo.push_back("Controllers:  " + myProperties.get(Controller_Left) +
                       " (left), " + myProperties.get(Controller_Right) + " (right)");
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,10 +143,11 @@ void RomInfoWidget::drawWidget(bool hilite)
 
   if(mySurfaceIsValid)
   {
-    const GUI::Rect& r = mySurface->dstRect();
-    uInt32 x = _x + ((_w - r.width()) >> 1);
-    uInt32 y = _y + ((yoff - r.height()) >> 1);
-    s.drawSurface(mySurface, x, y);
+    const GUI::Rect& src = mySurface->srcRect();
+    uInt32 x = _x + ((_w - src.width()) >> 1);
+    uInt32 y = _y + ((yoff - src.height()) >> 1);
+    mySurface->setDstPos(x, y);
+    s.drawSurface(mySurface);
   }
   else if(mySurfaceErrorMsg != "")
   {

@@ -40,12 +40,15 @@ class FBSurfaceSDL2 : public FBSurface
     // the ones implemented here use SDL-specific code for extra performance
     //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
-    void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
+    void drawSurface(const FBSurface* surface);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
 
     void setStaticContents(const uInt32* pixels, uInt32 pitch);
     void setInterpolationAndBlending(bool smoothScale, bool useBlend,
                                      uInt32 blendAlpha);
+
+    uInt32 width() const;
+    uInt32 height() const;
 
     const GUI::Rect& srcRect();
     const GUI::Rect& dstRect();

@@ -82,16 +82,10 @@ void FBSurfaceSDL2::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 colo
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
+void FBSurfaceSDL2::drawSurface(const FBSurface* surface)
 {
   const FBSurfaceSDL2* s = (const FBSurfaceSDL2*) surface;
-
-  SDL_Rect dst;
-  dst.x = tx;
-  dst.y = ty;
-  dst.w = s->mySrcR.w;
-  dst.h = s->mySrcR.h;
-
+  SDL_Rect dst = s->myDstR;
   SDL_BlitSurface(s->mySurface, &(s->mySrcR), mySurface, &dst);
 }
 
@@ -128,6 +122,18 @@ void FBSurfaceSDL2::setInterpolationAndBlending(
   // Re-create the texture with the new settings
   free();
   reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FBSurfaceSDL2::width() const
+{
+  return mySurface->w;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FBSurfaceSDL2::height() const
+{
+  return mySurface->h;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

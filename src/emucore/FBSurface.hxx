@@ -195,13 +195,13 @@ class FBSurface
 
     /**
       This method should be called copy the contents of the given
-      surface into the FrameBuffer surface.
+      surface into the FrameBuffer surface.  No scaling is done; that is,
+      a straight-forward copy of the surface pixels is done at the specified
+      destination.
 
       @param surface The data to draw
-      @param x       The x coordinate
-      @param y       The y coordinate
     */
-    virtual void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y) { }
+    virtual void drawSurface(const FBSurface* surface);
 
     /**
       This method should be called to add a dirty rectangle
@@ -223,7 +223,15 @@ class FBSurface
     //////////////////////////////////////////////////////////////////////////
 
     /**
-      These methods answer the current dimensions of the specified surface.
+      These methods answer the current *real* dimensions of the specified
+      surface.
+    */
+    virtual uInt32 width() const = 0;
+    virtual uInt32 height() const = 0;
+
+    /**
+      These methods answer the current *rendering* dimensions of the
+      specified surface.
     */
     virtual const GUI::Rect& srcRect() = 0;
     virtual const GUI::Rect& dstRect() = 0;

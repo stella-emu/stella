@@ -260,3 +260,21 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     x += w;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawSurface(const FBSurface* surface)
+{
+  const GUI::Rect& srcR = ((FBSurface*)surface)->srcRect();
+  const GUI::Rect& dstR = ((FBSurface*)surface)->dstRect();
+
+  const uInt32* src = surface->myPixels + srcR.y() * surface->myPitch + srcR.x();
+  uInt32* dst = myPixels + dstR.y() * myPitch + dstR.x();
+
+  uInt32 h = srcR.height(), w = srcR.width() * 4;
+  while(h--)
+  {
+    memcpy(dst, src, w);
+    src += surface->myPitch;
+    dst += myPitch;
+  }
+}
