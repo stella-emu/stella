@@ -74,7 +74,7 @@ class MediaFactory
     #endif
     }
 
-    static Settings* createSettings(OSystem* osystem)
+    static Settings* createSettings(OSystem& osystem)
     {
     #if defined(BSPF_UNIX)
       return new SettingsUNIX(osystem);
@@ -87,12 +87,12 @@ class MediaFactory
     #endif
     }
 
-    static FrameBuffer* createVideo(OSystem* osystem)
+    static FrameBuffer* createVideo(OSystem& osystem)
     {
       return new FrameBufferSDL2(osystem);
     }
 
-    static Sound* createAudio(OSystem* osystem)
+    static Sound* createAudio(OSystem& osystem)
     {
     #ifdef SOUND_SUPPORT
       return new SoundSDL2(osystem);
@@ -101,7 +101,7 @@ class MediaFactory
     #endif
     }
 
-    static EventHandler* createEventHandler(OSystem* osystem)
+    static EventHandler* createEventHandler(OSystem& osystem)
     {
       return new EventHandlerSDL2(osystem);
     }

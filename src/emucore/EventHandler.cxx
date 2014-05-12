@@ -55,7 +55,7 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::EventHandler(OSystem* osystem)
+EventHandler::EventHandler(OSystem& osystem)
   : myOSystem(osystem),
     myOverlay(NULL),
     myMouseControl(NULL),
@@ -102,27 +102,27 @@ void EventHandler::initialize()
   setActionMappings(kEmulationMode);
   setActionMappings(kMenuMode);
 
-  myUseCtrlKeyFlag = myOSystem->settings().getBool("ctrlcombo");
+  myUseCtrlKeyFlag = myOSystem.settings().getBool("ctrlcombo");
 
-  Joystick::setDeadZone(myOSystem->settings().getInt("joydeadzone"));
-  Paddles::setDigitalSensitivity(myOSystem->settings().getInt("dsense"));
-  Paddles::setMouseSensitivity(myOSystem->settings().getInt("msense"));
+  Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
+  Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
+  Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
 
   // Set quick select delay when typing characters in listwidgets
-  ListWidget::setQuickSelectDelay(myOSystem->settings().getInt("listdelay"));
+  ListWidget::setQuickSelectDelay(myOSystem.settings().getInt("listdelay"));
 
   // Set number of lines a mousewheel will scroll
-  ScrollBarWidget::setWheelLines(myOSystem->settings().getInt("mwheel"));
+  ScrollBarWidget::setWheelLines(myOSystem.settings().getInt("mwheel"));
 
   // Integer to string conversions (for HEX) use upper or lower-case
-  Common::Base::setHexUppercase(myOSystem->settings().getBool("dbg.uhex"));
+  Common::Base::setHexUppercase(myOSystem.settings().getBool("dbg.uhex"));
 
   // Joystick stuff
 #ifdef JOYSTICK_SUPPORT
   initializeJoysticks();
 
   // Map the stelladaptors we've found according to the specified ports
-  mapStelladaptors(myOSystem->settings().getString("saport"));
+  mapStelladaptors(myOSystem.settings().getString("saport"));
 
   setJoymap();
   setActionMappings(kEmulationMode);
@@ -137,9 +137,9 @@ void EventHandler::initialize()
     for(uInt32 i = 0; i < myJoysticks.size(); ++i)
       buf << "  " << i << ": " << myJoysticks[i]->about() << endl;
   }
-  myOSystem->logMessage(buf.str(), 1);
+  myOSystem.logMessage(buf.str(), 1);
 #else
-  myOSystem->logMessage("Joystick support disabled.", 1);
+  myOSystem.logMessage("Joystick support disabled.", 1);
 #endif
 }
 
@@ -147,7 +147,7 @@ void EventHandler::initialize()
 void EventHandler::reset(State state)
 {
   setEventState(state);
-  myOSystem->state().reset();
+  myOSystem.state().reset();
 
   setContinuousSnapshots(0);
 
@@ -256,7 +256,7 @@ void EventHandler::mapStelladaptors(const string& saport)
       }
     }
   }
-  myOSystem->settings().setValue("saport", saport);
+  myOSystem.settings().setValue("saport", saport);
 
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
@@ -276,16 +276,16 @@ void EventHandler::mapStelladaptors(const string& saport)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::toggleSAPortOrder()
 {
-  const string& saport = myOSystem->settings().getString("saport");
+  const string& saport = myOSystem.settings().getString("saport");
   if(saport == "lr")
   {
     mapStelladaptors("rl");
-    myOSystem->frameBuffer().showMessage("Stelladaptor ports right/left");
+    myOSystem.frameBuffer().showMessage("Stelladaptor ports right/left");
   }
   else
   {
     mapStelladaptors("lr");
-    myOSystem->frameBuffer().showMessage("Stelladaptor ports left/right");
+    myOSystem.frameBuffer().showMessage("Stelladaptor ports left/right");
   }
 }
 
@@ -299,21 +299,21 @@ void EventHandler::poll(uInt64 time)
   // related to emulation
   if(myState == S_EMULATE)
   {
-    myOSystem->console().riot().update();
+    myOSystem.console().riot().update();
 
 #if 0
     // Now check if the StateManager should be saving or loading state
     // Per-frame cheats are disabled if the StateManager is active, since
     // it would interfere with proper playback
-    if(myOSystem->state().isActive())
+    if(myOSystem.state().isActive())
     {
-      myOSystem->state().update();
+      myOSystem.state().update();
     }
     else
 #endif
     {
     #ifdef CHEATCODE_SUPPORT
-      const CheatList& cheats = myOSystem->cheat().perFrame();
+      const CheatList& cheats = myOSystem.cheat().perFrame();
       for(uInt32 i = 0; i < cheats.size(); i++)
         cheats[i]->evaluate();
     #endif
@@ -359,7 +359,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
 #endif
     if(key == KBDK_RETURN)
     {
-      myOSystem->frameBuffer().toggleFullscreen();
+      myOSystem.frameBuffer().toggleFullscreen();
     }
     // These only work when in emulation mode
     else if(myState == S_EMULATE)
@@ -367,160 +367,160 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
       switch(key)
       {
         case KBDK_EQUALS:
-          myOSystem->frameBuffer().changeWindowedVidMode(+1);
+          myOSystem.frameBuffer().changeWindowedVidMode(+1);
           break;
 
         case KBDK_MINUS:
-          myOSystem->frameBuffer().changeWindowedVidMode(-1);
+          myOSystem.frameBuffer().changeWindowedVidMode(-1);
           break;
 
         case KBDK_LEFTBRACKET:
-          myOSystem->sound().adjustVolume(-1);
+          myOSystem.sound().adjustVolume(-1);
           break;
 
         case KBDK_RIGHTBRACKET:
-          myOSystem->sound().adjustVolume(+1);
+          myOSystem.sound().adjustVolume(+1);
           break;
 
         case KBDK_PAGEUP:    // Alt-PageUp increases YStart
-          myOSystem->console().changeYStart(+1);
+          myOSystem.console().changeYStart(+1);
           break;
 
         case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
-          myOSystem->console().changeYStart(-1);
+          myOSystem.console().changeYStart(-1);
           break;
 
         case KBDK_1:  // Alt-1 turns off NTSC filtering
-          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_OFF);
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_OFF);
           break;
 
         case KBDK_2:  // Alt-2 turns on 'composite' NTSC filtering
-          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_COMPOSITE);
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_COMPOSITE);
           break;
 
         case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
-          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_SVIDEO);
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_SVIDEO);
           break;
 
         case KBDK_4:  // Alt-4 turns on 'rgb' NTSC filtering
-          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_RGB);
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_RGB);
           break;
 
         case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering
-          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_BAD);
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_BAD);
           break;
 
         case KBDK_6:  // Alt-6 turns on 'custom' NTSC filtering
-          myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_CUSTOM);
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_CUSTOM);
           break;
 
         case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
           if(mod & KMOD_SHIFT)
-            myOSystem->frameBuffer().setScanlineIntensity(-5);
+            myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-5);
           else
-            myOSystem->frameBuffer().setScanlineIntensity(+5);
+            myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+5);
           break;
 
         case KBDK_8:  // Alt-8 turns toggles scanline interpolation
-          myOSystem->frameBuffer().toggleScanlineInterpolation();
+          myOSystem.frameBuffer().tiaSurface().toggleScanlineInterpolation();
           break;
 
         case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
-          if(myOSystem->frameBuffer().ntscEnabled())
+          if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
           {
             if(mod & KMOD_SHIFT)
-              myOSystem->frameBuffer().showMessage(
-                  myOSystem->frameBuffer().ntsc().setPreviousAdjustable());
+              myOSystem.frameBuffer().showMessage(
+                  myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
             else
-              myOSystem->frameBuffer().showMessage(
-                  myOSystem->frameBuffer().ntsc().setNextAdjustable());
+              myOSystem.frameBuffer().showMessage(
+                  myOSystem.frameBuffer().tiaSurface().ntsc().setNextAdjustable());
           }
           break;
 
         case KBDK_0:  // Alt-0 changes custom adjustables for NTSC filtering
-          if(myOSystem->frameBuffer().ntscEnabled())
+          if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
           {
             if(mod & KMOD_SHIFT)
-              myOSystem->frameBuffer().showMessage(
-                  myOSystem->frameBuffer().ntsc().decreaseAdjustable());
+              myOSystem.frameBuffer().showMessage(
+                  myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
             else
-              myOSystem->frameBuffer().showMessage(
-                  myOSystem->frameBuffer().ntsc().increaseAdjustable());
+              myOSystem.frameBuffer().showMessage(
+                  myOSystem.frameBuffer().tiaSurface().ntsc().increaseAdjustable());
           }
           break;
 
         case KBDK_Z:
           if(mod & KMOD_SHIFT)
-            myOSystem->console().toggleP0Collision();
+            myOSystem.console().toggleP0Collision();
           else
-            myOSystem->console().toggleP0Bit();
+            myOSystem.console().toggleP0Bit();
           break;
 
         case KBDK_X:
           if(mod & KMOD_SHIFT)
-            myOSystem->console().toggleP1Collision();
+            myOSystem.console().toggleP1Collision();
           else
-              myOSystem->console().toggleP1Bit();
+              myOSystem.console().toggleP1Bit();
           break;
 
         case KBDK_C:
           if(mod & KMOD_SHIFT)
-            myOSystem->console().toggleM0Collision();
+            myOSystem.console().toggleM0Collision();
           else
-            myOSystem->console().toggleM0Bit();
+            myOSystem.console().toggleM0Bit();
           break;
 
         case KBDK_V:
           if(mod & KMOD_SHIFT)
-            myOSystem->console().toggleM1Collision();
+            myOSystem.console().toggleM1Collision();
           else
-            myOSystem->console().toggleM1Bit();
+            myOSystem.console().toggleM1Bit();
           break;
 
         case KBDK_B:
           if(mod & KMOD_SHIFT)
-            myOSystem->console().toggleBLCollision();
+            myOSystem.console().toggleBLCollision();
           else
-            myOSystem->console().toggleBLBit();
+            myOSystem.console().toggleBLBit();
           break;
 
         case KBDK_N:
           if(mod & KMOD_SHIFT)
-            myOSystem->console().togglePFCollision();
+            myOSystem.console().togglePFCollision();
           else
-            myOSystem->console().togglePFBit();
+            myOSystem.console().togglePFBit();
           break;
 
         case KBDK_M:
-          myOSystem->console().toggleHMOVE();
+          myOSystem.console().toggleHMOVE();
           break;
 
         case KBDK_COMMA:
-          myOSystem->console().toggleFixedColors();
+          myOSystem.console().toggleFixedColors();
           break;
 
         case KBDK_PERIOD:
           if(mod & KMOD_SHIFT)
-            myOSystem->console().toggleCollisions();
+            myOSystem.console().toggleCollisions();
           else
-            myOSystem->console().toggleBits();
+            myOSystem.console().toggleBits();
           break;
 
         case KBDK_P:  // Alt-p toggles phosphor effect
-          myOSystem->console().togglePhosphor();
+          myOSystem.console().togglePhosphor();
           break;
 
         case KBDK_L:
-          myOSystem->frameBuffer().toggleFrameStats();
+          myOSystem.frameBuffer().toggleFrameStats();
           break;
 
         case KBDK_S:
           if(myContSnapshotInterval == 0)
           {
             ostringstream buf;
-            uInt32 interval = myOSystem->settings().getInt("ssinterval");
+            uInt32 interval = myOSystem.settings().getInt("ssinterval");
             buf << "Enabling shotshots in " << interval << " second intervals";
-            myOSystem->frameBuffer().showMessage(buf.str());
+            myOSystem.frameBuffer().showMessage(buf.str());
             setContinuousSnapshots(interval);
           }
           else
@@ -529,7 +529,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
             buf << "Disabling snapshots, generated "
                 << (myContSnapshotCounter / myContSnapshotInterval)
                 << " files";
-            myOSystem->frameBuffer().showMessage(buf.str());
+            myOSystem.frameBuffer().showMessage(buf.str());
             setContinuousSnapshots(0);
           }
           break;
@@ -556,7 +556,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
       {
         case KBDK_0:  // Ctrl-0 switches between mouse control modes
           if(myMouseControl)
-            myOSystem->frameBuffer().showMessage(myMouseControl->next());
+            myOSystem.frameBuffer().showMessage(myMouseControl->next());
           break;
 
         case KBDK_1:  // Ctrl-1 swaps Stelladaptor/2600-daptor ports
@@ -564,47 +564,47 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
           break;
 
         case KBDK_F:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
-          myOSystem->console().toggleFormat(mod & KMOD_SHIFT ? -1 : 1);
+          myOSystem.console().toggleFormat(mod & KMOD_SHIFT ? -1 : 1);
           break;
 
         case KBDK_G:  // Ctrl-g (un)grabs mouse
-          if(!myOSystem->frameBuffer().fullScreen())
-            myOSystem->frameBuffer().toggleGrabMouse();
+          if(!myOSystem.frameBuffer().fullScreen())
+            myOSystem.frameBuffer().toggleGrabMouse();
           break;
 
         case KBDK_L:  // Ctrl-l toggles PAL color-loss effect
-          myOSystem->console().toggleColorLoss();
+          myOSystem.console().toggleColorLoss();
           break;
 
         case KBDK_P:  // Ctrl-p toggles different palettes
-          myOSystem->console().togglePalette();
+          myOSystem.console().togglePalette();
           break;
 
         case KBDK_R:  // Ctrl-r reloads the currently loaded ROM
-          myOSystem->reloadConsole();
+          myOSystem.reloadConsole();
           break;
 
         case KBDK_PAGEUP:    // Ctrl-PageUp increases Height
-          myOSystem->console().changeHeight(+1);
+          myOSystem.console().changeHeight(+1);
           break;
 
         case KBDK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-          myOSystem->console().changeHeight(-1);
+          myOSystem.console().changeHeight(-1);
           break;
 
         case KBDK_S:         // Ctrl-s saves properties to a file
         {
-          string filename = myOSystem->baseDir() +
-              myOSystem->console().properties().get(Cartridge_Name) + ".pro";
+          string filename = myOSystem.baseDir() +
+              myOSystem.console().properties().get(Cartridge_Name) + ".pro";
           ofstream out(filename.c_str(), ios::out);
           if(out)
           {
-            myOSystem->console().properties().save(out);
+            myOSystem.console().properties().save(out);
             out.close();
-            myOSystem->frameBuffer().showMessage("Properties saved");
+            myOSystem.frameBuffer().showMessage("Properties saved");
           }
           else
-            myOSystem->frameBuffer().showMessage("Error saving properties");
+            myOSystem.frameBuffer().showMessage("Error saving properties");
           break;
         }
 
@@ -718,7 +718,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
       // enum; subtracting four gives us Controller 0 and 1
       if(myState == S_EMULATE)
       {
-        switch(myOSystem->console().controller(Controller::Left).type())
+        switch(myOSystem.console().controller(Controller::Left).type())
         {
           case Controller::Keyboard:
             if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
@@ -726,7 +726,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
           default:
             if(button < 4) myEvent.set(SA_Button[joy.type-4][button], state);
         }
-        switch(myOSystem->console().controller(Controller::Right).type())
+        switch(myOSystem.console().controller(Controller::Right).type())
         {
           case Controller::Keyboard:
             if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
@@ -895,7 +895,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
   switch(e)
   {
     case EVENT_WINDOW_EXPOSED:
-        myOSystem->frameBuffer().refresh();
+        myOSystem.frameBuffer().refresh();
         break;
     default:  // handle other events as testing requires
       // cerr << "handleSystemEvent: " << e << endl;
@@ -964,23 +964,23 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
 
     case Event::VolumeDecrease:
-      if(state) myOSystem->sound().adjustVolume(-1);
+      if(state) myOSystem.sound().adjustVolume(-1);
       return;
 
     case Event::VolumeIncrease:
-      if(state) myOSystem->sound().adjustVolume(+1);
+      if(state) myOSystem.sound().adjustVolume(+1);
       return;
 
     case Event::SaveState:
-      if(state) myOSystem->state().saveState();
+      if(state) myOSystem.state().saveState();
       return;
 
     case Event::ChangeState:
-      if(state) myOSystem->state().changeState();
+      if(state) myOSystem.state().changeState();
       return;
 
     case Event::LoadState:
-      if(state) myOSystem->state().loadState();
+      if(state) myOSystem.state().loadState();
       return;
 
     case Event::TakeSnapshot:
@@ -992,11 +992,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myState == S_DEBUGGER) && state)
       {
         // Go back to the launcher, or immediately quit
-        if(myOSystem->settings().getBool("exitlauncher") ||
-           myOSystem->launcherUsed())
+        if(myOSystem.settings().getBool("exitlauncher") ||
+           myOSystem.launcherUsed())
         {
-          myOSystem->deleteConsole();
-          myOSystem->createLauncher();
+          myOSystem.deleteConsole();
+          myOSystem.createLauncher();
         }
         else
           handleEvent(Event::Quit, 1);
@@ -1008,7 +1008,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
       {
         saveKeyMapping();
         saveJoyMapping();
-        myOSystem->quit();
+        myOSystem.quit();
       }
       return;
 
@@ -1039,22 +1039,22 @@ void EventHandler::handleEvent(Event::Type event, int state)
 
     // Events which generate messages
     case Event::ConsoleColor:
-      if(state) myOSystem->frameBuffer().showMessage("Color Mode");
+      if(state) myOSystem.frameBuffer().showMessage("Color Mode");
       break;
     case Event::ConsoleBlackWhite:
-      if(state) myOSystem->frameBuffer().showMessage("BW Mode");
+      if(state) myOSystem.frameBuffer().showMessage("BW Mode");
       break;
     case Event::ConsoleLeftDiffA:
-      if(state) myOSystem->frameBuffer().showMessage("Left Difficulty A");
+      if(state) myOSystem.frameBuffer().showMessage("Left Difficulty A");
       break;
     case Event::ConsoleLeftDiffB:
-      if(state) myOSystem->frameBuffer().showMessage("Left Difficulty B");
+      if(state) myOSystem.frameBuffer().showMessage("Left Difficulty B");
       break;
     case Event::ConsoleRightDiffA:
-      if(state) myOSystem->frameBuffer().showMessage("Right Difficulty A");
+      if(state) myOSystem.frameBuffer().showMessage("Right Difficulty A");
       break;
     case Event::ConsoleRightDiffB:
-      if(state) myOSystem->frameBuffer().showMessage("Right Difficulty B");
+      if(state) myOSystem.frameBuffer().showMessage("Right Difficulty B");
       break;
 
     case Event::NoType:  // Ignore unmapped events
@@ -1261,7 +1261,7 @@ void EventHandler::setKeymap()
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  string list = myOSystem->settings().getString("keymap");
+  string list = myOSystem.settings().getString("keymap");
   replace(list.begin(), list.end(), ':', ' ');
   istringstream buf(list);
 
@@ -1300,7 +1300,7 @@ void EventHandler::setJoymap()
   setDefaultJoymap(Event::NoType, kMenuMode);
 
   // Get all mappings from the settings
-  istringstream buf(myOSystem->settings().getString("joymap"));
+  istringstream buf(myOSystem.settings().getString("joymap"));
   string joymap;
 
   // First check the event type, and disregard the entire mapping if it's invalid
@@ -1339,7 +1339,7 @@ void EventHandler::setComboMap()
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
-  string list = myOSystem->settings().getString("combomap");
+  string list = myOSystem.settings().getString("combomap");
   replace(list.begin(), list.end(), ':', ' ');
   istringstream buf(list);
 
@@ -1623,7 +1623,7 @@ void EventHandler::setDefaultJoymap(Event::Type event, EventMode mode)
     else
       myJoysticks[i]->eraseEvent(event, mode);  // only reset the specific event
   }
-  myOSystem->setDefaultJoymap(event, mode);
+  myOSystem.setDefaultJoymap(event, mode);
   setActionMappings(mode);
 #endif
 }
@@ -1639,7 +1639,7 @@ void EventHandler::saveKeyMapping()
     for(int i = 0; i < KBDK_LAST; ++i)
       keybuf << ":" << myKeyTable[i][mode];
 
-  myOSystem->settings().setValue("keymap", keybuf.str());
+  myOSystem.settings().setValue("keymap", keybuf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1674,7 +1674,7 @@ void EventHandler::saveJoyMapping()
   for(iter = myJoystickMap.begin(); iter != myJoystickMap.end(); ++iter)
     joybuf << "^" << iter->second;
 
-  myOSystem->settings().setValue("joymap", joybuf.str());
+  myOSystem.settings().setValue("joymap", joybuf.str());
 #endif
 }
 
@@ -1692,7 +1692,7 @@ void EventHandler::saveComboMapping()
     for(int j = 1; j < kEventsPerCombo; ++j)
       buf << "," << myComboTable[i][j];
   }
-  myOSystem->settings().setValue("combomap", buf.str());
+  myOSystem.settings().setValue("combomap", buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1866,10 +1866,10 @@ void EventHandler::takeSnapshot(uInt32 number)
   // Figure out the correct snapshot name
   string filename;
   bool showmessage = number == 0;
-  string sspath = myOSystem->snapshotSaveDir() +
-      (myOSystem->settings().getString("snapname") != "int" ?
-          myOSystem->romFile().getNameWithExt("")
-        : myOSystem->console().properties().get(Cartridge_Name));
+  string sspath = myOSystem.snapshotSaveDir() +
+      (myOSystem.settings().getString("snapname") != "int" ?
+          myOSystem.romFile().getNameWithExt("")
+        : myOSystem.console().properties().get(Cartridge_Name));
 
   // Check whether we want multiple snapshots created
   if(number > 0)
@@ -1878,7 +1878,7 @@ void EventHandler::takeSnapshot(uInt32 number)
     buf << sspath << "_" << hex << setw(8) << setfill('0') << number << ".png";
     filename = buf.str();
   }
-  else if(!myOSystem->settings().getBool("sssingle"))
+  else if(!myOSystem.settings().getBool("sssingle"))
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
@@ -1902,35 +1902,35 @@ void EventHandler::takeSnapshot(uInt32 number)
     filename = sspath + ".png";
 
   // Now create a PNG snapshot
-  if(myOSystem->settings().getBool("ss1x"))
+  if(myOSystem.settings().getBool("ss1x"))
   {
     string msg =
-      myOSystem->png().saveImage(filename, myOSystem->frameBuffer(),
-                                 myOSystem->console().tia(),
-                                 myOSystem->console().properties());
+      myOSystem.png().saveImage(filename, myOSystem.frameBuffer(),
+                                 myOSystem.console().tia(),
+                                 myOSystem.console().properties());
     if(showmessage)
-      myOSystem->frameBuffer().showMessage(msg);
+      myOSystem.frameBuffer().showMessage(msg);
   }
   else
   {
     // Make sure we have a 'clean' image, with no onscreen messages
-    myOSystem->frameBuffer().enableMessages(false);
+    myOSystem.frameBuffer().enableMessages(false);
 
     string msg =
-      myOSystem->png().saveImage(filename, myOSystem->frameBuffer(),
-                                 myOSystem->console().properties());
+      myOSystem.png().saveImage(filename, myOSystem.frameBuffer(),
+                                 myOSystem.console().properties());
 
     // Re-enable old messages
-    myOSystem->frameBuffer().enableMessages(true);
+    myOSystem.frameBuffer().enableMessages(true);
     if(showmessage)
-      myOSystem->frameBuffer().showMessage(msg);
+      myOSystem.frameBuffer().showMessage(msg);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setMouseControllerMode(const string& enable)
 {
-  if(&myOSystem->console())
+  if(&myOSystem.console())
   {
     delete myMouseControl;  myMouseControl = NULL;
 
@@ -1941,7 +1941,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
       usemouse = false;
     else  // 'analog'
     {
-      switch(myOSystem->console().controller(Controller::Left).type())
+      switch(myOSystem.console().controller(Controller::Left).type())
       {
         case Controller::Paddles:
         case Controller::Driving:
@@ -1954,7 +1954,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
         default:
           break;
       }
-      switch(myOSystem->console().controller(Controller::Right).type())
+      switch(myOSystem.console().controller(Controller::Right).type())
       {
         case Controller::Paddles:
         case Controller::Driving:
@@ -1970,9 +1970,9 @@ void EventHandler::setMouseControllerMode(const string& enable)
     }
 
     const string& control = usemouse ?
-      myOSystem->console().properties().get(Controller_MouseAxis) : "none";
+      myOSystem.console().properties().get(Controller_MouseAxis) : "none";
 
-    myMouseControl = new MouseControl(myOSystem->console(), control);
+    myMouseControl = new MouseControl(myOSystem.console(), control);
     myMouseControl->next();  // set first available mode
   }
 }
@@ -1980,7 +1980,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setContinuousSnapshots(uInt32 interval)
 {
-  myContSnapshotInterval = (uInt32) myOSystem->frameRate() * interval;
+  myContSnapshotInterval = (uInt32) myOSystem.frameRate() * interval;
   myContSnapshotCounter = 0;
 }
 
@@ -1989,44 +1989,44 @@ void EventHandler::enterMenuMode(State state)
 {
   setEventState(state);
   myOverlay->reStack();
-  myOSystem->sound().mute(true);
+  myOSystem.sound().mute(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
 {
   setEventState(S_EMULATE);
-  myOSystem->sound().mute(false);
+  myOSystem.sound().mute(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::enterDebugMode()
 {
 #ifdef DEBUGGER_SUPPORT
-  if(myState == S_DEBUGGER || !(&myOSystem->console()))
+  if(myState == S_DEBUGGER || !(&myOSystem.console()))
     return false;
 
   // Make sure debugger starts in a consistent state
   // This absolutely *has* to come before we actually change to debugger
   // mode, since it takes care of locking the debugger state, which will
   // probably be modified below
-  myOSystem->debugger().setStartState();
+  myOSystem.debugger().setStartState();
   setEventState(S_DEBUGGER);
 
-  FBInitStatus fbstatus = myOSystem->createFrameBuffer();
+  FBInitStatus fbstatus = myOSystem.createFrameBuffer();
   if(fbstatus != kSuccess)
   {
-    myOSystem->debugger().setQuitState();
+    myOSystem.debugger().setQuitState();
     setEventState(S_EMULATE);
     if(fbstatus == kFailTooLarge)
-      myOSystem->frameBuffer().showMessage("Debugger window too large for screen",
+      myOSystem.frameBuffer().showMessage("Debugger window too large for screen",
                                            kBottomCenter, true);
     return false;
   }
   myOverlay->reStack();
-  myOSystem->sound().mute(true);
+  myOSystem.sound().mute(true);
 #else
-  myOSystem->frameBuffer().showMessage("Debugger support not included",
+  myOSystem.frameBuffer().showMessage("Debugger support not included",
                                        kBottomCenter, true);
 #endif
 
@@ -2042,11 +2042,11 @@ void EventHandler::leaveDebugMode()
     return;
 
   // Make sure debugger quits in a consistent state
-  myOSystem->debugger().setQuitState();
+  myOSystem.debugger().setQuitState();
 
   setEventState(S_EMULATE);
-  myOSystem->createFrameBuffer();
-  myOSystem->sound().mute(false);
+  myOSystem.createFrameBuffer();
+  myOSystem.sound().mute(false);
 #endif
 }
 
@@ -2057,7 +2057,7 @@ void EventHandler::setEventState(State state)
 
   // Normally, the usage of Control key is determined by 'ctrlcombo'
   // For certain ROMs it may be forced off, whatever the setting
-  myUseCtrlKeyFlag = myOSystem->settings().getBool("ctrlcombo");
+  myUseCtrlKeyFlag = myOSystem.settings().getBool("ctrlcombo");
 
   // Only enable Unicode in GUI modes, since there we need it for ascii data
   // Otherwise, it causes a performance hit, so leave it off
@@ -2065,37 +2065,37 @@ void EventHandler::setEventState(State state)
   {
     case S_EMULATE:
       myOverlay = NULL;
-      myOSystem->sound().mute(false);
+      myOSystem.sound().mute(false);
 //FIXME      SDL_EnableUNICODE(0);
-      if(myOSystem->console().controller(Controller::Left).type() ==
+      if(myOSystem.console().controller(Controller::Left).type() ==
             Controller::CompuMate)
         myUseCtrlKeyFlag = false;
       break;
 
     case S_PAUSE:
       myOverlay = NULL;
-      myOSystem->sound().mute(true);
+      myOSystem.sound().mute(true);
 //FIXME      SDL_EnableUNICODE(0);
       break;
 
     case S_MENU:
-      myOverlay = &myOSystem->menu();
+      myOverlay = &myOSystem.menu();
 //FIXME      SDL_EnableUNICODE(1);
       break;
 
     case S_CMDMENU:
-      myOverlay = &myOSystem->commandMenu();
+      myOverlay = &myOSystem.commandMenu();
 //FIXME      SDL_EnableUNICODE(1);
       break;
 
     case S_LAUNCHER:
-      myOverlay = &myOSystem->launcher();
+      myOverlay = &myOSystem.launcher();
 //FIXME      SDL_EnableUNICODE(1);
       break;
 
 #ifdef DEBUGGER_SUPPORT
     case S_DEBUGGER:
-      myOverlay = &myOSystem->debugger();
+      myOverlay = &myOSystem.debugger();
 //FIXME      SDL_EnableUNICODE(1);
       break;
 #endif
@@ -2106,15 +2106,15 @@ void EventHandler::setEventState(State state)
   }
 
   // Inform various subsystems about the new state
-  myOSystem->stateChanged(myState);
-  if(&myOSystem->frameBuffer())
+  myOSystem.stateChanged(myState);
+  if(&myOSystem.frameBuffer())
   {
-    myOSystem->frameBuffer().stateChanged(myState);
-    myOSystem->frameBuffer().setCursorState();
+    myOSystem.frameBuffer().stateChanged(myState);
+    myOSystem.frameBuffer().setCursorState();
   }
-  if(&myOSystem->console())
+  if(&myOSystem.console())
   {
-    myOSystem->console().stateChanged(myState);
+    myOSystem.console().stateChanged(myState);
   }
 
   // Always clear any pending events when changing states

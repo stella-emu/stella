@@ -31,17 +31,14 @@
 #include "TIA.hxx"
 
 #include "FBSurfaceSDL2.hxx"
-#include "FBSurfaceTIA.hxx"
 #include "FrameBufferSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
+FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
-    myFilterType(kNormal),
     myWindow(NULL),
     myRenderer(NULL),
     myWindowFlags(0),
-    myTiaSurface(NULL),
     myDirtyFlag(true),
     myDblBufferedFlag(true)
 {
@@ -50,7 +47,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem* osystem)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
-    myOSystem->logMessage(buf.str(), 0);
+    myOSystem.logMessage(buf.str(), 0);
     return;
   }
 
@@ -76,9 +73,6 @@ FrameBufferSDL2::~FrameBufferSDL2()
     SDL_DestroyWindow(myWindow);
     myWindow = NULL;
   }
-
-  // We're taking responsibility for this surface
-  delete myTiaSurface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,20 +96,11 @@ void FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, VariantList& renderers
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
-                                   bool full)
+bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 {
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
-
-  bool inTIAMode =
-    myOSystem->eventHandler().state() != EventHandler::S_LAUNCHER &&
-    myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER;
-
-  // Grab the initial height before it's updated below
-  // We need it for the creating the TIA surface
-  uInt32 baseHeight = mode.image.height() / mode.zoom;
 
   // (Re)create window and renderer
   if(myRenderer)
@@ -130,7 +115,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
   }
 
   // Window centering option
-  int pos = myOSystem->settings().getBool("center")
+  int pos = myOSystem.settings().getBool("center")
               ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
   myWindow = SDL_CreateWindow(title.c_str(),
                  pos, pos, mode.image.width(), mode.image.height(),
@@ -138,59 +123,33 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
   if(myWindow == NULL)
   {
     string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
-    myOSystem->logMessage(msg, 0);
+    myOSystem.logMessage(msg, 0);
     return false;
   }
 
   // V'synced blits option
   Uint32 renderFlags = SDL_RENDERER_ACCELERATED;
-  if(myOSystem->settings().getBool("vsync"))
+  if(myOSystem.settings().getBool("vsync"))
     renderFlags |= SDL_RENDERER_PRESENTVSYNC;
   // Render hint
-  const string& video = myOSystem->settings().getString("video");
+  const string& video = myOSystem.settings().getString("video");
   if(video != "")
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
   myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
   if(myWindow == NULL)
   {
     string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
-    myOSystem->logMessage(msg, 0);
+    myOSystem.logMessage(msg, 0);
     return false;
   }
   SDL_RendererInfo renderinfo;
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
   {
-    myOSystem->settings().setValue("video", renderinfo.name);
+    myOSystem.settings().setValue("video", renderinfo.name);
     // For now, accelerated renderers imply double buffering
     // Eventually, SDL may be updated to query this from the render backend
     myDblBufferedFlag = renderinfo.flags & SDL_RENDERER_ACCELERATED;
   }
-
-  // The framebuffer only takes responsibility for TIA surfaces
-  // Other surfaces (such as the ones used for dialogs) are allocated
-  // in the Dialog class
-  if(inTIAMode)
-  {
-    // Since we have free hardware stretching, the base TIA surface is created
-    // only once, and its texture coordinates changed when we want to draw a
-    // smaller or larger image
-    if(!myTiaSurface)
-      myTiaSurface = new FBSurfaceTIA(*this);
-
-    myTiaSurface->updateCoords(baseHeight, mode.image.x(), mode.image.y(),
-                               mode.image.width(), mode.image.height());
-
-    myTiaSurface->enableScanlines(ntscEnabled());
-    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("tia.inter"));
-    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv.scanlines"));
-    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv.scaninter"));
-    myTiaSurface->setTIA(myOSystem->console().tia());
-  }
-
-  // Any previously allocated textures currently in use by various UI items
-  // need to be refreshed as well
-  // This *must* come after the TIA settings have been updated
-  resetSurfaces(myTiaSurface);
 
   return true;
 }
@@ -218,9 +177,8 @@ string FrameBufferSDL2::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::invalidate()
 {
-  SDL_RenderClear(myRenderer);
-  if(myTiaSurface)
-    myTiaSurface->invalidate();
+  myDirtyFlag = true;
+//  SDL_RenderClear(myRenderer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -240,7 +198,7 @@ void FrameBufferSDL2::enableFullscreen(bool enable)
 {
   uInt32 flags = enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
   if(SDL_SetWindowFullscreen(myWindow, flags))
-    myOSystem->settings().setValue("fullscreen", enable);
+    myOSystem.settings().setValue("fullscreen", enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -254,13 +212,6 @@ bool FrameBufferSDL2::fullScreen() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::drawTIA(bool fullRedraw)
-{
-  // The TIA surface takes all responsibility for drawing
-  myTiaSurface->render();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::postFrameUpdate()
 {
   if(myDirtyFlag)
@@ -269,70 +220,6 @@ void FrameBufferSDL2::postFrameUpdate()
     SDL_RenderPresent(myRenderer);
     myDirtyFlag = false;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::enablePhosphor(bool enable, int blend)
-{
-  if(myTiaSurface)
-  {
-    myUsePhosphor   = enable;
-    myPhosphorBlend = blend;
-    myFilterType = FilterType(enable ? myFilterType | 0x01 : myFilterType & 0x10);
-    myRedrawEntireFrame = true;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::enableNTSC(bool enable)
-{
-  if(myTiaSurface)
-  {
-    myFilterType = FilterType(enable ? myFilterType | 0x10 : myFilterType & 0x01);
-    myTiaSurface->updateCoords();
-
-    myTiaSurface->enableScanlines(ntscEnabled());
-    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv.scanlines"));
-    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("tia.inter"));
-    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv.scaninter"));
-
-    myRedrawEntireFrame = true;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBufferSDL2::enableScanlines(int relative, int absolute)
-{
-  if(myTiaSurface)
-  {
-    int intensity = myTiaSurface->myScanlineIntensity;
-    if(relative == 0)  intensity = absolute;
-    else               intensity += relative;
-    intensity = BSPF_max(0, intensity);
-    intensity = BSPF_min(100, intensity);
-
-    myTiaSurface->setScanIntensity(intensity);
-    myRedrawEntireFrame = true;
-    return intensity;
-  }
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::enableScanlineInterpolation(bool enable)
-{
-  if(myTiaSurface)
-  {
-    myTiaSurface->setScanInterpolation(enable);
-    myRedrawEntireFrame = true;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::setTIAPalette(const uInt32* palette)
-{
-  FrameBuffer::setTIAPalette(palette);
-  myTiaSurface->setTIAPalette(palette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -353,30 +240,4 @@ void FrameBufferSDL2::scanline(uInt32 row, uInt8* data) const
   p_gl.PixelStorei(GL_PACK_ALIGNMENT, 1);
   p_gl.ReadPixels(image.x(), row, image.width(), 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBufferSDL2::effectsInfo() const
-{
-  ostringstream buf;
-  switch(myFilterType)
-  {
-    case kNormal:
-      buf << "Disabled, normal mode";
-      break;
-    case kPhosphor:
-      buf << "Disabled, phosphor mode";
-      break;
-    case kBlarggNormal:
-      buf << myNTSCFilter.getPreset() << ", scanlines="
-          << myTiaSurface->myScanlineIntensity << "/"
-          << (myTiaSurface->myTexFilter[1] ? "inter" : "nointer");
-      break;
-    case kBlarggPhosphor:
-      buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
-          << myTiaSurface->myScanlineIntensity << "/"
-          << (myTiaSurface->myTexFilter[1] ? "inter" : "nointer");
-      break;
-  }
-  return buf.str();
 }

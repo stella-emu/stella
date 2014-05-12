@@ -6,7 +6,6 @@ MODULE_OBJS := \
 	src/common/EventHandlerSDL2.o \
 	src/common/FrameBufferSDL2.o \
 	src/common/FBSurfaceSDL2.o \
-	src/common/FBSurfaceTIA.o \
 	src/common/SoundSDL2.o \
 	src/common/FSNodeZIP.o \
 	src/common/PNGLibrary.o \

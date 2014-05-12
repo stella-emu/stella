@@ -33,7 +33,6 @@ class FBSurfaceSDL2 : public FBSurface
 {
   public:
     FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
-
     virtual ~FBSurfaceSDL2();
 
     // Most of the surface drawing primitives are implemented in FBSurface;
@@ -44,8 +43,6 @@ class FBSurfaceSDL2 : public FBSurface
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
 
     void setStaticContents(const uInt32* pixels, uInt32 pitch);
-    void setInterpolationAndBlending(bool smoothScale, bool useBlend,
-                                     uInt32 blendAlpha);
 
     uInt32 width() const;
     uInt32 height() const;
@@ -62,6 +59,9 @@ class FBSurfaceSDL2 : public FBSurface
     void invalidate();
     void free();
     void reload();
+
+  protected:
+    void applyAttributes(bool immediate);
 
   private:
     FrameBufferSDL2& myFB;

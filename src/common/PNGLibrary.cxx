@@ -156,8 +156,8 @@ string PNGLibrary::saveImage(const string& filename,
     buf_ptr += pitch;                    // add pitch
   }
 
-  return saveBufferToPNG(out, buffer, width, height,
-                         props, framebuffer.effectsInfo());
+  return saveBufferToPNG(out, buffer, width, height, props,
+                         framebuffer.tiaSurface().effectsInfo());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,7 +180,7 @@ string PNGLibrary::saveImage(const string& filename,
     *buf_ptr++ = 0;   // first byte of row is filter type
     for(uInt32 x = 0; x < width; ++x)
     {
-      uInt32 pixel = framebuffer.tiaPixel(y*width+x);
+      uInt32 pixel = framebuffer.tiaSurface().pixel(y*width+x);
       framebuffer.getRGB(pixel, &r, &g, &b);
       *buf_ptr++ = r;
       *buf_ptr++ = g;
@@ -191,8 +191,8 @@ string PNGLibrary::saveImage(const string& filename,
     }
   }
 
-  return saveBufferToPNG(out, buffer, width << 1, height,
-                         props, framebuffer.effectsInfo());
+  return saveBufferToPNG(out, buffer, width << 1, height, props,
+                         framebuffer.tiaSurface().effectsInfo());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

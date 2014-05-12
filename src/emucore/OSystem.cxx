@@ -115,7 +115,7 @@ OSystem::OSystem()
        << " [" << BSPF_ARCH << "]";
   myBuildInfo = info.str();
 
-  mySettings = MediaFactory::createSettings(this);
+  mySettings = MediaFactory::createSettings(*this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,12 +174,12 @@ bool OSystem::create()
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
-  myFrameBuffer = MediaFactory::createVideo(this);
+  myFrameBuffer = MediaFactory::createVideo(*this);
   if(!myFrameBuffer->initialize())
     return false;
 
   // Create the event handler for the system
-  myEventHandler = MediaFactory::createEventHandler(this);
+  myEventHandler = MediaFactory::createEventHandler(*this);
   myEventHandler->initialize();
 
   // Create a properties set for us to use and set it up
@@ -238,7 +238,7 @@ void OSystem::saveConfig()
 {
   // Ask all subsystems to save their settings
   if(myFrameBuffer)
-    myFrameBuffer->ntsc().saveConfig(*mySettings);
+    myFrameBuffer->tiaSurface().ntsc().saveConfig(*mySettings);
 
   mySettings->saveConfig();
 }
@@ -352,7 +352,7 @@ FBInitStatus OSystem::createFrameBuffer()
 void OSystem::createSound()
 {
   if(!mySound)
-    mySound = MediaFactory::createAudio(this);
+    mySound = MediaFactory::createAudio(*this);
 #ifndef SOUND_SUPPORT
   mySettings->setValue("sound", false);
 #endif
@@ -626,7 +626,7 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = new Console(this, cart, props);
+      console = new Console(*this, *cart, props);
   }
 
   // Free the image since we don't need it any longer

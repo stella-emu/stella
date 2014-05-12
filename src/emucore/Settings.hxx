@@ -40,7 +40,7 @@ class Settings
     /**
       Create a new settings abstract class
     */
-    Settings(OSystem* osystem);
+    Settings(OSystem& osystem);
 
     /**
       Destructor
@@ -122,7 +122,7 @@ class Settings
 
   protected:
     // The parent OSystem object
-    OSystem* myOSystem;
+    OSystem& myOSystem;
 
     // Structure used for storing settings
     struct Setting

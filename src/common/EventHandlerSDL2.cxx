@@ -21,7 +21,7 @@
 #include "EventHandlerSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandlerSDL2::EventHandlerSDL2(OSystem* osystem)
+EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   : EventHandler(osystem)
 {
 }

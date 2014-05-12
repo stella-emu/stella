@@ -39,7 +39,7 @@ class Sound : public Serializable
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    Sound(OSystem* osystem) { myOSystem = osystem; }
+    Sound(OSystem& osystem) : myOSystem(osystem) { }
 
     /**
       Destructor
@@ -129,7 +129,7 @@ class Sound : public Serializable
 
   protected:
     // The OSystem for this sound object
-    OSystem* myOSystem;
+    OSystem& myOSystem;
 };
 
 #endif

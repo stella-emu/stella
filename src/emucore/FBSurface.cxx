@@ -21,9 +21,8 @@
 #include "FBSurface.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface::FBSurface(const uInt32* palette)
-  : myPalette(palette),
-    myPixels(NULL),
+FBSurface::FBSurface()
+  : myPixels(NULL),
     myPitch(0)
 {
   // NOTE: myPixels and myPitch MUST be set in child classes that inherit
@@ -278,3 +277,6 @@ void FBSurface::drawSurface(const FBSurface* surface)
     dst += myPitch;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32* FBSurface::myPalette = 0;

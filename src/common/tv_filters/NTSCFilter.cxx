@@ -17,7 +17,7 @@
 // $Id$
 //============================================================================
 
-#include "FrameBuffer.hxx"
+#include "TIASurface.hxx"
 #include "Settings.hxx"
 
 #include "NTSCFilter.hxx"
@@ -36,7 +36,7 @@ NTSCFilter::~NTSCFilter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::setTIAPalette(const FrameBuffer& fb, const uInt32* palette)
+void NTSCFilter::setTIAPalette(const TIASurface& tiaSurface, const uInt32* palette)
 {
   // Normal TIA palette contains 256 colours, where every odd indexed colour
   // is used for PAL colour-loss effect
@@ -58,9 +58,9 @@ void NTSCFilter::setTIAPalette(const FrameBuffer& fb, const uInt32* palette)
       uInt8 gj = (palette[j] >> 8) & 0xff;
       uInt8 bj = palette[j] & 0xff;
 
-      *ptr++ = fb.getPhosphor(ri, rj);
-      *ptr++ = fb.getPhosphor(gi, gj);
-      *ptr++ = fb.getPhosphor(bi, bj);
+      *ptr++ = tiaSurface.getPhosphor(ri, rj);
+      *ptr++ = tiaSurface.getPhosphor(gi, gj);
+      *ptr++ = tiaSurface.getPhosphor(bi, bj);
     }
   }
   // Set palette for normal fill

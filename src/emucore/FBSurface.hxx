@@ -21,6 +21,7 @@
 #define FBSURFACE_HXX
 
 class FrameBuffer;
+class TIASurface;
 
 #include "bspf.hxx"
 #include "Font.hxx"
@@ -51,11 +52,13 @@ enum FrameStyle {
 
 class FBSurface
 {
+  friend class TIASurface;
+
   public:
     /**
       Creates a new FBSurface object
     */
-    FBSurface(const uInt32* palette);
+    FBSurface();
 
     /**
       Destructor
@@ -260,17 +263,6 @@ class FBSurface
     virtual void setStaticContents(const uInt32* pixels, uInt32 pitch) = 0;
 
     /**
-      This method should be called to modify the interpolation and
-      blending effects to be applied to this surface.
-
-      @param smoothScale  Whether to use interpolation during scaling
-      @param useBlend     Whether the surface should use alpha blending
-      @param blendAlpha   The alpha to use during blending (if used)
-    */
-    virtual void setInterpolationAndBlending(bool smoothScale,
-        bool useBlend, uInt32 blendAlpha) = 0;
-
-    /**
       This method should be called to translate the given coordinates
       to the (destination) surface coordinates.
 
@@ -302,10 +294,35 @@ class FBSurface
     */
     virtual void reload() = 0;
 
+    static void setPalette(const uInt32* palette) { myPalette = palette; }
+
   protected:
-    const uInt32* myPalette;
+    /**
+      The rendering attributes that can be modified for this texture.
+      These probably can only be implemented in child FBSurfaces where
+      the specific functionality actually exists.
+    */
+    struct Attributes {
+      bool smoothing;    // Scaling is smoothed or blocky
+      bool blending;     // Blending is enabled
+      uInt32 blendalpha; // Alpha to use in blending mode (0-100%)
+    };
+    /**
+      The child class chooses which (if any) of the actual attributes
+      can be applied.
+
+      @param immediate  Whether to re-initialize the surface immediately
+                        with the new attributes, or wait until manually
+                        reloaded
+    */
+    virtual void applyAttributes(bool immediate = true) = 0;
+
+  protected:
+    static const uInt32* myPalette;
     uInt32* myPixels;
     uInt32 myPitch;
+
+    Attributes myAttributes;
 };
 
 #endif

@@ -463,7 +463,7 @@ void VideoDialog::saveConfig()
   adj.artifacts   = myTVArtifacts->getValue();
   adj.fringing    = myTVFringe->getValue();
   adj.bleed       = myTVBleed->getValue();
-  instance().frameBuffer().ntsc().setCustomAdjustables(adj);
+  instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(adj);
 
   // TV scanline intensity and interpolation
   instance().settings().setValue("tv.scanlines", myTVScanIntenseLabel->getLabel());
@@ -565,7 +565,8 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 {
   NTSCFilter::Adjustable adj;
-  instance().frameBuffer().ntsc().getAdjustables(adj, (NTSCFilter::Preset)preset);
+  instance().frameBuffer().tiaSurface().ntsc().getAdjustables(
+      adj, (NTSCFilter::Preset)preset);
   myTVSharp->setValue(adj.sharpness);
   myTVSharpLabel->setValue(adj.sharpness);
   myTVHue->setValue(adj.hue);

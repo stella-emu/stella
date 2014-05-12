@@ -20,7 +20,7 @@
 #include "SettingsUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsUNIX::SettingsUNIX(OSystem* osystem)
+SettingsUNIX::SettingsUNIX(OSystem& osystem)
   : Settings(osystem)
 {
 }

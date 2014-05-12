@@ -66,14 +66,14 @@
 #include "Console.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
+Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
   : myOSystem(osystem),
-    myEvent(osystem->eventHandler().event()),
+    myCart(cart),
+    myEvent(osystem.eventHandler().event()),
     myProperties(props),
     myTIA(0),
     mySwitches(0),
     mySystem(0),
-    myCart(cart),
     myCMHandler(0),
     myDisplayFormat(""),  // Unknown TV format @ start
     myFramerate(0.0),     // Unknown framerate @ start
@@ -99,27 +99,27 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myControllers[0] = new Joystick(Controller::Left, myEvent, *mySystem);
   myControllers[1] = new Joystick(Controller::Right, myEvent, *mySystem);
 
-  M6502* m6502 = new M6502(1, myOSystem->settings());
+  M6502* m6502 = new M6502(1, myOSystem.settings());
 
-  myRiot = new M6532(*this, myOSystem->settings());
-  myTIA  = new TIA(*this, myOSystem->sound(), myOSystem->settings());
+  myRiot = new M6532(*this, myOSystem.settings());
+  myTIA  = new TIA(*this, myOSystem.sound(), myOSystem.settings());
 
   mySystem->attach(m6502);
   mySystem->attach(myRiot);
   mySystem->attach(myTIA);
-  mySystem->attach(myCart);
+  mySystem->attach(&myCart);
 
   // Auto-detect NTSC/PAL mode if it's requested
   string autodetected = "";
   myDisplayFormat = myProperties.get(Display_Format);
-  if(myDisplayFormat == "AUTO" || myOSystem->settings().getBool("rominfo"))
+  if(myDisplayFormat == "AUTO" || myOSystem.settings().getBool("rominfo"))
   {
     // Run the TIA, looking for PAL scanline patterns
     // We turn off the SuperCharger progress bars, otherwise the SC BIOS
     // will take over 250 frames!
     // The 'fastscbios' option must be changed before the system is reset
-    bool fastscbios = myOSystem->settings().getBool("fastscbios");
-    myOSystem->settings().setValue("fastscbios", true);
+    bool fastscbios = myOSystem.settings().getBool("fastscbios");
+    myOSystem.settings().setValue("fastscbios", true);
     mySystem->reset(true);  // autodetect in reset enabled
     for(int i = 0; i < 60; ++i)
       myTIA->update();
@@ -131,7 +131,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     }
 
     // Don't forget to reset the SC progress bars again
-    myOSystem->settings().setValue("fastscbios", fastscbios);
+    myOSystem.settings().setValue("fastscbios", fastscbios);
   }
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
@@ -157,8 +157,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Other ROMs can use it if the setting is enabled
   bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
                    md5 == "1bf503c724001b09be79c515ecfcbd03" ||
-                   myOSystem->settings().getBool("joyallow4");
-  myOSystem->eventHandler().allowAllDirections(joyallow4);
+                   myOSystem.settings().getBool("joyallow4");
+  myOSystem.eventHandler().allowAllDirections(joyallow4);
 
   // Reset the system to its power-on state
   mySystem->reset();
@@ -168,9 +168,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myConsoleInfo.CartMD5    = myProperties.get(Cartridge_MD5);
   myConsoleInfo.Control0   = myControllers[0]->about();
   myConsoleInfo.Control1   = myControllers[1]->about();
-  myConsoleInfo.BankSwitch = cart->about();
+  myConsoleInfo.BankSwitch = myCart.about();
 
-  myCart->setRomName(myConsoleInfo.CartName);
+  myCart.setRomName(myConsoleInfo.CartName);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,24 +274,24 @@ void Console::toggleFormat(int direction)
   }
   myProperties.set(Display_Format, saveformat);
 
-  setPalette(myOSystem->settings().getString("palette"));
+  setPalette(myOSystem.settings().getString("palette"));
   setTIAProperties();
   myTIA->frameReset();
   initializeVideo();  // takes care of refreshing the screen
 
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleColorLoss()
 {
-  bool colorloss = !myOSystem->settings().getBool("colorloss");
-  myOSystem->settings().setValue("colorloss", colorloss);
+  bool colorloss = !myOSystem.settings().getBool("colorloss");
+  myOSystem.settings().setValue("colorloss", colorloss);
   myTIA->enableColorLoss(colorloss);
 
   string message = string("PAL color-loss ") +
                    (colorloss ? "enabled" : "disabled");
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -304,7 +304,7 @@ void Console::toggleColorLoss(bool state)
 void Console::togglePalette()
 {
   string palette, message;
-  palette = myOSystem->settings().getString("palette");
+  palette = myOSystem.settings().getString("palette");
  
   if(palette == "standard")       // switch to z26
   {
@@ -337,8 +337,8 @@ void Console::togglePalette()
     message = "Standard Stella palette";
   }
 
-  myOSystem->settings().setValue("palette", palette);
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.settings().setValue("palette", palette);
+  myOSystem.frameBuffer().showMessage(message);
 
   setPalette(palette);
 }
@@ -369,7 +369,7 @@ void Console::setPalette(const string& type)
     (myDisplayFormat.compare(0, 5, "SECAM") == 0) ? palettes[paletteNum][2] :
      palettes[paletteNum][0];
 
-  myOSystem->frameBuffer().setTIAPalette(palette);
+  myOSystem.frameBuffer().setPalette(palette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -382,16 +382,16 @@ void Console::togglePhosphor()
   {
     myProperties.set(Display_Phosphor, "No");
     enable = false;
-    myOSystem->frameBuffer().showMessage("Phosphor effect disabled");
+    myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
   }
   else
   {
     myProperties.set(Display_Phosphor, "Yes");
     enable = true;
-    myOSystem->frameBuffer().showMessage("Phosphor effect enabled");
+    myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
   }
 
-  myOSystem->frameBuffer().enablePhosphor(enable, blend);
+  myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable, blend);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -403,35 +403,30 @@ void Console::setProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Console::initializeVideo(bool full)
 {
+  setPalette(myOSystem.settings().getString("palette"));
+
   FBInitStatus fbstatus = kSuccess;
 
   if(full)
   {
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
-    fbstatus = myOSystem->frameBuffer().createDisplay(title,
+    fbstatus = myOSystem.frameBuffer().createDisplay(title,
                  myTIA->width() << 1, myTIA->height());
     if(fbstatus != kSuccess)
       return fbstatus;
 
-    myOSystem->frameBuffer().showFrameStats(myOSystem->settings().getBool("stats"));
-    setColorLossPalette();
+    myOSystem.frameBuffer().showFrameStats(myOSystem.settings().getBool("stats"));
+    generateColorLossPalette();
   }
-
-  bool enable = myProperties.get(Display_Phosphor) == "YES";
-  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
-  myOSystem->frameBuffer().enablePhosphor(enable, blend);
-  myOSystem->frameBuffer().setNTSC(
-    (NTSCFilter::Preset)myOSystem->settings().getInt("tv.filter"), false);
-  setPalette(myOSystem->settings().getString("palette"));
 
   // Set the correct framerate based on the format of the ROM
   // This can be overridden by changing the framerate in the
   // VideoDialog box or on the commandline, but it can't be saved
   // (ie, framerate is now determined based on number of scanlines).
-  int framerate = myOSystem->settings().getInt("framerate");
+  int framerate = myOSystem.settings().getInt("framerate");
   if(framerate > 0) myFramerate = float(framerate);
-  myOSystem->setFramerate(myFramerate);
+  myOSystem.setFramerate(myFramerate);
 
   // Make sure auto-frame calculation is only enabled when necessary
   myTIA->enableAutoFrame(framerate <= 0);
@@ -445,20 +440,19 @@ void Console::initializeAudio()
   // Initialize the sound interface.
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
-  int framerate = myOSystem->settings().getInt("framerate");
+  int framerate = myOSystem.settings().getInt("framerate");
   if(framerate > 0) myFramerate = float(framerate);
   const string& sound = myProperties.get(Cartridge_Sound);
 
-  myOSystem->sound().close();
-  myOSystem->sound().setChannels(sound == "STEREO" ? 2 : 1);
-  myOSystem->sound().setFrameRate(myFramerate);
-  myOSystem->sound().open();
+  myOSystem.sound().close();
+  myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
+  myOSystem.sound().setFrameRate(myFramerate);
+  myOSystem.sound().open();
 
   // Make sure auto-frame calculation is only enabled when necessary
   myTIA->enableAutoFrame(framerate <= 0);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* Original frying research and code by Fred Quimby.
    I've tried the following variations on this code:
    - Both OR and Exclusive OR instead of AND. This generally crashes the game
@@ -478,6 +472,7 @@ void Console::initializeAudio()
    Until someone comes up with a more accurate way to emulate frying, I'm
    leaving this as Fred posted it.   -- B.
 */
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::fry() const
 {
   for (int ZPmem=0; ZPmem<0x100; ZPmem += rand() % 4)
@@ -493,7 +488,7 @@ void Console::changeYStart(int direction)
   {
     if(ystart >= 64)
     {
-      myOSystem->frameBuffer().showMessage("YStart at maximum");
+      myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
     }
     ystart++;
@@ -502,7 +497,7 @@ void Console::changeYStart(int direction)
   {
     if(ystart == 0)
     {
-      myOSystem->frameBuffer().showMessage("YStart at minimum");
+      myOSystem.frameBuffer().showMessage("YStart at minimum");
       return;
     }
     ystart--;
@@ -512,11 +507,11 @@ void Console::changeYStart(int direction)
 
   myTIA->setYStart(ystart);
   myTIA->frameReset();
-  myOSystem->frameBuffer().refresh();
+  myOSystem.frameBuffer().refresh();
 
   ostringstream val;
   val << ystart;
-  myOSystem->frameBuffer().showMessage("YStart " + val.str());
+  myOSystem.frameBuffer().showMessage("YStart " + val.str());
   myProperties.set(Display_YStart, val.str());
 }
 
@@ -524,14 +519,14 @@ void Console::changeYStart(int direction)
 void Console::changeHeight(int direction)
 {
   uInt32 height = myTIA->height();
-  uInt32 dheight = myOSystem->frameBuffer().desktopSize().h;
+  uInt32 dheight = myOSystem.frameBuffer().desktopSize().h;
 
   if(direction == +1)       // increase Height
   {
     height++;
     if(height > 256 || height > dheight)
     {
-      myOSystem->frameBuffer().showMessage("Height at maximum");
+      myOSystem.frameBuffer().showMessage("Height at maximum");
       return;
     }
   }
@@ -540,7 +535,7 @@ void Console::changeHeight(int direction)
     height--;
     if(height < 210)
     {
-      myOSystem->frameBuffer().showMessage("Height at minimum");
+      myOSystem.frameBuffer().showMessage("Height at minimum");
       return;
     }
   }
@@ -553,7 +548,7 @@ void Console::changeHeight(int direction)
 
   ostringstream val;
   val << height;
-  myOSystem->frameBuffer().showMessage("Height " + val.str());
+  myOSystem.frameBuffer().showMessage("Height " + val.str());
   myProperties.set(Display_Height, val.str());
 }
 
@@ -586,7 +581,7 @@ void Console::setTIAProperties()
 
   // Make sure these values fit within the bounds of the desktop
   // If not, attempt to center vertically
-  uInt32 dheight = myOSystem->frameBuffer().desktopSize().h;
+  uInt32 dheight = myOSystem.frameBuffer().desktopSize().h;
   if(height > dheight)
   {
     ystart += height - dheight;
@@ -612,7 +607,7 @@ void Console::setControllers(const string& rommd5)
   if(left == "COMPUMATE" || right == "COMPUMATE")
   {
     delete myCMHandler;
-    myCMHandler = new CompuMate(*((CartridgeCM*)myCart), myEvent, *mySystem);
+    myCMHandler = new CompuMate(*((CartridgeCM*)&myCart), myEvent, *mySystem);
     myControllers[0] = myCMHandler->leftController();
     myControllers[1] = myCMHandler->rightController();
     return;
@@ -729,14 +724,14 @@ void Console::setControllers(const string& rommd5)
   }
   else if(right == "ATARIVOX")
   {
-    const string& nvramfile = myOSystem->nvramDir() + "atarivox_eeprom.dat";
+    const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
     myControllers[rightPort] = new AtariVox(Controller::Right, myEvent,
-                   *mySystem, myOSystem->serialPort(),
-                   myOSystem->settings().getString("avoxport"), nvramfile);
+                   *mySystem, myOSystem.serialPort(),
+                   myOSystem.settings().getString("avoxport"), nvramfile);
   }
   else if(right == "SAVEKEY")
   {
-    const string& nvramfile = myOSystem->nvramDir() + "savekey_eeprom.dat";
+    const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
     myControllers[rightPort] = new SaveKey(Controller::Right, myEvent, *mySystem,
                                            nvramfile);
   }
@@ -761,7 +756,7 @@ void Console::setControllers(const string& rommd5)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::loadUserPalette()
 {
-  const string& palette = myOSystem->paletteFile();
+  const string& palette = myOSystem.paletteFile();
   ifstream in(palette.c_str(), ios::binary);
   if(!in)
     return;
@@ -816,7 +811,7 @@ void Console::loadUserPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setColorLossPalette()
+void Console::generateColorLossPalette()
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
@@ -857,8 +852,8 @@ void Console::setColorLossPalette()
 void Console::setFramerate(float framerate)
 {
   myFramerate = framerate;
-  myOSystem->setFramerate(framerate);
-  myOSystem->sound().setFrameRate(framerate);
+  myOSystem.setFramerate(framerate);
+  myOSystem.sound().setFrameRate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -866,7 +861,7 @@ void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
 {
   bool result = myTIA->toggleBit(bit);
   string message = bitname + (result ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -874,7 +869,7 @@ void Console::toggleBits() const
 {
   bool enabled = myTIA->toggleBits();
   string message = string("TIA bits") + (enabled ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -882,7 +877,7 @@ void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show) c
 {
   bool result = myTIA->toggleCollision(bit);
   string message = bitname + (result ? " collision enabled" : " collision disabled");
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -890,33 +885,33 @@ void Console::toggleCollisions() const
 {
   bool enabled = myTIA->toggleCollisions();
   string message = string("TIA collisions") + (enabled ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleHMOVE() const
 {
   if(myTIA->toggleHMOVEBlank())
-    myOSystem->frameBuffer().showMessage("HMOVE blanking enabled");
+    myOSystem.frameBuffer().showMessage("HMOVE blanking enabled");
   else
-    myOSystem->frameBuffer().showMessage("HMOVE blanking disabled");
+    myOSystem.frameBuffer().showMessage("HMOVE blanking disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFixedColors() const
 {
   if(myTIA->toggleFixedColors())
-    myOSystem->frameBuffer().showMessage("Fixed debug colors enabled");
+    myOSystem.frameBuffer().showMessage("Fixed debug colors enabled");
   else
-    myOSystem->frameBuffer().showMessage("Fixed debug colors disabled");
+    myOSystem.frameBuffer().showMessage("Fixed debug colors disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::addDebugger()
 {
 #ifdef DEBUGGER_SUPPORT
-  myOSystem->createDebugger(*this);
-  mySystem->m6502().attach(myOSystem->debugger());
+  myOSystem.createDebugger(*this);
+  mySystem->m6502().attach(myOSystem.debugger());
 #endif
 }
 
@@ -1156,6 +1151,7 @@ uInt32 Console::ourUserSECAMPalette[256] = { 0 }; // filled from external file
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const Console& console)
   : myOSystem(console.myOSystem),
+    myCart(console.myCart),
     myEvent(console.myEvent)
 {
   assert(false);

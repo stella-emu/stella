@@ -34,7 +34,7 @@
 #include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Settings::Settings(OSystem* osystem)
+Settings::Settings(OSystem& osystem)
   : myOSystem(osystem)
 {
   // Video-related options
@@ -165,10 +165,10 @@ void Settings::loadConfig()
   string line, key, value;
   string::size_type equalPos, garbage;
 
-  ifstream in(myOSystem->configFile().c_str());
+  ifstream in(myOSystem.configFile().c_str());
   if(!in || !in.is_open())
   {
-    myOSystem->logMessage("ERROR: Couldn't load settings file", 0);
+    myOSystem.logMessage("ERROR: Couldn't load settings file", 0);
     return;
   }
 
@@ -236,7 +236,7 @@ string Settings::loadCommandLine(int argc, char** argv)
       if(++i >= argc)
       {
         buf << "Missing argument for '" << key << "'" << endl;
-        myOSystem->logMessage(buf.str(), 0);
+        myOSystem.logMessage(buf.str(), 0);
         return "";
       }
       string value = argv[i];
@@ -257,7 +257,7 @@ string Settings::loadCommandLine(int argc, char** argv)
         buf << "(E)\n";
       }
 
-      myOSystem->logMessage(buf.str(), 2);
+      myOSystem.logMessage(buf.str(), 2);
     }
     else
       return key;
@@ -513,10 +513,10 @@ void Settings::saveConfig()
   if(!settingsChanged)
     return;
 
-  ofstream out(myOSystem->configFile().c_str());
+  ofstream out(myOSystem.configFile().c_str());
   if(!out || !out.is_open())
   {
-    myOSystem->logMessage("ERROR: Couldn't save settings file", 0);
+    myOSystem.logMessage("ERROR: Couldn't save settings file", 0);
     return;
   }
 
@@ -674,7 +674,8 @@ int Settings::setExternal(const string& key, const Variant& value,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Settings::Settings(const Settings&)
+Settings::Settings(const Settings& s)
+  : myOSystem(s.myOSystem)
 {
 }
 

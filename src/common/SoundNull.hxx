@@ -40,7 +40,7 @@ class SoundNull : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundNull(OSystem* osystem) : Sound(osystem)
+    SoundNull(OSystem& osystem) : Sound(osystem)
     {
       myOSystem->logMessage("Sound disabled.\n", 1);
     }

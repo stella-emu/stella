@@ -36,7 +36,7 @@ class SettingsUNIX : public Settings
     /**
       Create a new UNIX settings object
     */
-    SettingsUNIX(OSystem* osystem);
+    SettingsUNIX(OSystem& osystem);
 
     /**
       Destructor

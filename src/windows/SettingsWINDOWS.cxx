@@ -20,7 +20,7 @@
 #include "SettingsWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsWINDOWS::SettingsWINDOWS(OSystem* osystem)
+SettingsWINDOWS::SettingsWINDOWS(OSystem& osystem)
   : Settings(osystem)
 {
   setInternal("fragsize", "1024");

@@ -71,6 +71,7 @@ MODULE_OBJS := \
 	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \
 	src/emucore/TIATables.o \
+	src/emucore/TIASurface.o \
 	src/emucore/TrackBall.o \
 	src/emucore/Thumbulator.o
 

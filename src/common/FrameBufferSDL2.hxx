@@ -24,8 +24,6 @@
 
 class OSystem;
 class FBSurfaceSDL2;
-class FBSurfaceTIA;
-class TIA;
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
@@ -40,13 +38,12 @@ class TIA;
 class FrameBufferSDL2 : public FrameBuffer
 {
   friend class FBSurfaceSDL2;
-  friend class FBSurfaceTIA;
 
   public:
     /**
       Creates a new SDL2 framebuffer
     */
-    FrameBufferSDL2(OSystem* osystem);
+    FrameBufferSDL2(OSystem& osystem);
 
     /**
       Destructor
@@ -71,24 +68,6 @@ class FrameBufferSDL2 : public FrameBuffer
       Answers if the display is currently in fullscreen mode.
     */
     bool fullScreen() const;
-
-    /**
-      Enable/disable phosphor effect.
-    */
-    void enablePhosphor(bool enable, int blend);
-
-    /**
-      Enable/disable NTSC filtering effects.
-    */
-    void enableNTSC(bool enable);
-    bool ntscEnabled() const { return myFilterType & 0x10; }
-
-    /**
-      Set up the TIA/emulation palette for a screen of any depth > 8.
-
-      @param palette  The array of colors
-    */
-    void setTIAPalette(const uInt32* palette);
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.
@@ -117,11 +96,6 @@ class FrameBufferSDL2 : public FrameBuffer
     bool isDoubleBuffered() const { return myDblBufferedFlag; }
 
     /**
-      This method is called to query the TV effects in use by the FrameBuffer.
-    */
-    string effectsInfo() const;
-
-    /**
       This method is called to get the specified scanline data.
 
       @param row  The row we are looking for
@@ -140,16 +114,14 @@ class FrameBufferSDL2 : public FrameBuffer
     void queryHardware(uInt32& w, uInt32& h, VariantList& renderers);
 
     /**
-      This method is called to change to the given video mode.  If the mode
-      is successfully changed, 'mode' holds the actual dimensions used.
+      This method is called to change to the given video mode.
 
       @param title The title for the created window
       @param mode  The video mode to use
-      @param full  Whether this is a fullscreen or windowed mode
 
       @return  False on any errors, else true
     */
-    bool setVideoMode(const string& title, const VideoMode& mode, bool full);
+    bool setVideoMode(const string& title, const VideoMode& mode);
 
     /**
       Enables/disables fullscreen mode.
@@ -182,12 +154,6 @@ class FrameBufferSDL2 : public FrameBuffer
     void setWindowIcon() { }  // Not currently needed on any supported systems
 
     /**
-      This method should be called anytime the TIA needs to be redrawn
-      to the screen (full indicating that a full redraw is required).
-    */
-    void drawTIA(bool full);
-
-    /**
       This method is called to provide information about the FrameBuffer.
     */
     string about() const;
@@ -196,27 +162,6 @@ class FrameBufferSDL2 : public FrameBuffer
       This method is called after any drawing is done (per-frame).
     */
     void postFrameUpdate();
-
-    /**
-      Change scanline intensity and interpolation.
-
-      @param relative  If non-zero, change current intensity by
-                       'relative' amount, otherwise set to 'absolute'
-      @return  New current intensity
-    */
-    uInt32 enableScanlines(int relative, int absolute = 50);
-    void enableScanlineInterpolation(bool enable);
-
-  private:
-    // Enumeration created such that phosphor off/on is in LSB,
-    // and Blargg off/on is in MSB
-    enum FilterType {
-      kNormal         = 0x00,
-      kPhosphor       = 0x01,
-      kBlarggNormal   = 0x10,
-      kBlarggPhosphor = 0x11
-    };
-    FilterType myFilterType;
 
   private:
     // The SDL video buffer
@@ -228,10 +173,6 @@ class FrameBufferSDL2 : public FrameBuffer
     // If a FrameBuffer is successfully created, the derived classes must modify
     // it to point to the actual flags used by the SDL_Surface
     uInt32 myWindowFlags;
-
-    // The lower-most base surface (will always be a TIA surface,
-    // since Dialog surfaces are allocated by the Dialog class directly).
-    FBSurfaceTIA* myTiaSurface;
 
     // Used by mapRGB (when palettes are created)
     SDL_PixelFormat* myPixelFormat;

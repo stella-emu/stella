@@ -30,7 +30,7 @@ class SettingsWINDOWS : public Settings
     /**
       Create a new UNIX settings object
     */
-    SettingsWINDOWS(OSystem* osystem);
+    SettingsWINDOWS(OSystem& osystem);
 
     /**
       Destructor

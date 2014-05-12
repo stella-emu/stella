@@ -43,7 +43,7 @@ class SoundSDL2 : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundSDL2(OSystem* osystem);
+    SoundSDL2(OSystem& osystem);
  
     /**
       Destructor

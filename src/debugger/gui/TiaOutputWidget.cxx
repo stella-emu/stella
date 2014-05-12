@@ -28,6 +28,7 @@
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 #include "TIADebug.hxx"
+#include "TIASurface.hxx"
 #include "TIA.hxx"
 
 #include "TiaOutputWidget.hxx"
@@ -150,7 +151,7 @@ void TiaOutputWidget::renderToSurface(FBSurface& s)
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
       uInt8 shift = i > scanoffset ? 1 : 0;
-      uInt32 pixel = instance().frameBuffer().tiaPixel(i, shift);
+      uInt32 pixel = instance().frameBuffer().tiaSurface().pixel(i, shift);
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;
     }

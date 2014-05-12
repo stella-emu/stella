@@ -26,7 +26,7 @@ extern "C" {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsMACOSX::SettingsMACOSX(OSystem* osystem)
+SettingsMACOSX::SettingsMACOSX(OSystem& osystem)
   : Settings(osystem)
 {
 }

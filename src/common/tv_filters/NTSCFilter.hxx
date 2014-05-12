@@ -20,7 +20,7 @@
 #ifndef NTSC_FILTER_HXX
 #define NTSC_FILTER_HXX
 
-class FrameBuffer;
+class TIASurface;
 class Settings;
 
 #include "bspf.hxx"
@@ -67,7 +67,7 @@ class NTSCFilter
        uses this as a baseline for calculating its own internal palette
        in YIQ format.
     */
-    void setTIAPalette(const FrameBuffer& fb, const uInt32* palette);
+    void setTIAPalette(const TIASurface& tiaSurface, const uInt32* palette);
 
     // The following are meant to be used strictly for toggling from the GUI
     string setPreset(Preset preset);

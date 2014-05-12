@@ -33,7 +33,7 @@
 #include "SoundSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL2::SoundSDL2(OSystem* osystem)
+SoundSDL2::SoundSDL2(OSystem& osystem)
   : Sound(osystem),
     myIsEnabled(false),
     myIsInitializedFlag(false),
@@ -43,17 +43,17 @@ SoundSDL2::SoundSDL2(OSystem* osystem)
     myIsMuted(true),
     myVolume(100)
 {
-  myOSystem->logMessage("SoundSDL2::SoundSDL2 started ...", 2);
+  myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
   // The sound system is opened only once per program run, to eliminate
   // issues with opening and closing it multiple times
   // This fixes a bug most prevalent with ATI video cards in Windows,
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
-  desired.freq   = myOSystem->settings().getInt("freq");
+  desired.freq   = myOSystem.settings().getInt("freq");
   desired.format = AUDIO_S16SYS;
   desired.channels = 2;
-  desired.samples  = myOSystem->settings().getInt("fragsize");
+  desired.samples  = myOSystem.settings().getInt("fragsize");
   desired.callback = callback;
   desired.userdata = (void*)this;
 
@@ -62,7 +62,7 @@ SoundSDL2::SoundSDL2(OSystem* osystem)
   {
     buf << "WARNING: Couldn't open SDL audio system! " << endl
         << "         " << SDL_GetError() << endl;
-    myOSystem->logMessage(buf.str(), 0);
+    myOSystem.logMessage(buf.str(), 0);
     return;
   }
 
@@ -73,7 +73,7 @@ SoundSDL2::SoundSDL2(OSystem* osystem)
     buf << "WARNING: Sound device doesn't support realtime audio! Make "
         << "sure a sound" << endl
         << "         server isn't running.  Audio is disabled." << endl;
-    myOSystem->logMessage(buf.str(), 0);
+    myOSystem.logMessage(buf.str(), 0);
 
     SDL_CloseAudio();
     return;
@@ -87,7 +87,7 @@ SoundSDL2::SoundSDL2(OSystem* osystem)
   myIsInitializedFlag = true;
   SDL_PauseAudio(1);
 
-  myOSystem->logMessage("SoundSDL2::SoundSDL2 initialized", 2);
+  myOSystem.logMessage("SoundSDL2::SoundSDL2 initialized", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,27 +100,27 @@ SoundSDL2::~SoundSDL2()
     myIsEnabled = myIsInitializedFlag = false;
   }
 
-  myOSystem->logMessage("SoundSDL2 destroyed", 2);
+  myOSystem.logMessage("SoundSDL2 destroyed", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setEnabled(bool state)
 {
-  myOSystem->settings().setValue("sound", state);
+  myOSystem.settings().setValue("sound", state);
 
-  myOSystem->logMessage(state ? "SoundSDL2::setEnabled(true)" : 
+  myOSystem.logMessage(state ? "SoundSDL2::setEnabled(true)" : 
                                 "SoundSDL2::setEnabled(false)", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::open()
 {
-  myOSystem->logMessage("SoundSDL2::open started ...", 2);
+  myOSystem.logMessage("SoundSDL2::open started ...", 2);
   myIsEnabled = false;
   mute(true);
-  if(!myIsInitializedFlag || !myOSystem->settings().getBool("sound"))
+  if(!myIsInitializedFlag || !myOSystem.settings().getBool("sound"))
   {
-    myOSystem->logMessage("Sound disabled\n", 1);
+    myOSystem.logMessage("Sound disabled\n", 1);
     return;
   }
 
@@ -130,7 +130,7 @@ void SoundSDL2::open()
       myTIASound.channels(myHardwareSpec.channels, myNumChannels == 2);
 
   // Adjust volume to that defined in settings
-  myVolume = myOSystem->settings().getInt("volume");
+  myVolume = myOSystem.settings().getInt("volume");
   setVolume(myVolume);
 
   // Show some info
@@ -142,13 +142,13 @@ void SoundSDL2::open()
       << "  Channels:    " << (int)myHardwareSpec.channels
                            << " (" << chanResult << ")" << endl
       << endl;
-  myOSystem->logMessage(buf.str(), 1);
+  myOSystem.logMessage(buf.str(), 1);
 
   // And start the SDL sound subsystem ...
   myIsEnabled = true;
   mute(false);
 
-  myOSystem->logMessage("SoundSDL2::open finished", 2);
+  myOSystem.logMessage("SoundSDL2::open finished", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,7 +161,7 @@ void SoundSDL2::close()
     myLastRegisterSetCycle = 0;
     myTIASound.reset();
     myRegWriteQueue.clear();
-    myOSystem->logMessage("SoundSDL2::close", 2);
+    myOSystem.logMessage("SoundSDL2::close", 2);
   }
 }
 
@@ -193,7 +193,7 @@ void SoundSDL2::setVolume(Int32 percent)
 {
   if(myIsInitializedFlag && (percent >= 0) && (percent <= 100))
   {
-    myOSystem->settings().setValue("volume", percent);
+    myOSystem.settings().setValue("volume", percent);
     SDL_LockAudio();
     myVolume = percent;
     myTIASound.volume(percent);
@@ -224,7 +224,7 @@ void SoundSDL2::adjustVolume(Int8 direction)
   message = "Volume set to ";
   message += strval.str();
 
-  myOSystem->frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -400,7 +400,7 @@ bool SoundSDL2::save(Serializer& out) const
   }
   catch(...)
   {
-    myOSystem->logMessage("ERROR: SoundSDL2::save", 0);
+    myOSystem.logMessage("ERROR: SoundSDL2::save", 0);
     return false;
   }
 
@@ -441,7 +441,7 @@ bool SoundSDL2::load(Serializer& in)
   }
   catch(...)
   {
-    myOSystem->logMessage("ERROR: SoundSDL2::load", 0);
+    myOSystem.logMessage("ERROR: SoundSDL2::load", 0);
     return false;
   }
 

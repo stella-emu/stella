@@ -21,8 +21,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
-  : FBSurface(buffer.myDefPalette),
-    myFB(buffer),
+  : myFB(buffer),
     mySurface(NULL),
     myTexture(NULL),
     mySurfaceIsDirty(true),
@@ -105,19 +104,6 @@ void FBSurfaceSDL2::setStaticContents(const uInt32* pixels, uInt32 pitch)
   if(!myStaticData)
     myStaticData = new uInt32[mySurface->w * mySurface->h];
   SDL_memcpy(myStaticData, pixels, mySurface->w * mySurface->h);
-
-  // Re-create the texture with the new settings
-  free();
-  reload();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setInterpolationAndBlending(
-    bool smoothScale, bool useBlend, uInt32 blendAlpha)
-{
-  myInterpolate = smoothScale;
-  myBlendEnabled = useBlend;
-  myBlendAlpha = uInt8(blendAlpha * 2.55);
 
   // Re-create the texture with the new settings
   free();
@@ -234,5 +220,20 @@ void FBSurfaceSDL2::reload()
   {
     SDL_SetTextureBlendMode(myTexture, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(myTexture, myBlendAlpha);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::applyAttributes(bool immediate)
+{
+  myInterpolate  = myAttributes.smoothing;
+  myBlendEnabled = myAttributes.blending;
+  myBlendAlpha   = uInt8(myAttributes.blendalpha * 2.55);
+
+  if(immediate)
+  {
+    // Re-create the texture with the new settings
+    free();
+    reload();
   }
 }

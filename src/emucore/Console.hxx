@@ -68,7 +68,7 @@ class Console : public Serializable
       @param cart     The cartridge to use with this console
       @param props    The properties for the cartridge  
     */
-    Console(OSystem* osystem, Cartridge* cart, const Properties& props);
+    Console(OSystem& osystem, Cartridge& cart, const Properties& props);
 
     /**
       Create a new console object by copying another one
@@ -126,7 +126,7 @@ class Console : public Serializable
 
       @return The cartridge for this console
     */
-    Cartridge& cartridge() const { return *myCart; }
+    Cartridge& cartridge() const { return myCart; }
 
     /**
       Get the 6532 used by the console
@@ -327,7 +327,7 @@ class Console : public Serializable
       normally can't have it enabled (NTSC), since it's also used for
       'greying out' the frame in the debugger.
     */
-    void setColorLossPalette();
+    void generateColorLossPalette();
 
     /**
       Returns a pointer to the palette data for the palette currently defined
@@ -339,8 +339,11 @@ class Console : public Serializable
     void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;
 
   private:
-    // Pointer to the osystem object
-    OSystem* myOSystem;
+    // Reference to the osystem object
+    OSystem& myOSystem;
+
+    // Pointer to the Cartridge (the debugger needs it)
+    Cartridge& myCart;
 
     // Reference to the event object to use
     Event& myEvent;
@@ -359,9 +362,6 @@ class Console : public Serializable
  
     // Pointer to the 6502 based system being emulated 
     System* mySystem;
-
-    // Pointer to the Cartridge (the debugger needs it)
-    Cartridge* myCart;
 
     // Pointer to the 6532 (aka RIOT) (the debugger needs it)
     // A RIOT of my own! (...with apologies to The Clash...)

@@ -86,7 +86,7 @@ class EventHandler
     /**
       Create a new event handler object
     */
-    EventHandler(OSystem* osystem);
+    EventHandler(OSystem& osystem);
  
     /**
       Destructor
@@ -319,7 +319,7 @@ class EventHandler
 
   protected:
     // Global OSystem object
-    OSystem* myOSystem;
+    OSystem& myOSystem;
 
     /**
       Methods which are called by derived classes to handle specific types

@@ -30,12 +30,12 @@ namespace GUI {
   class Font;
 }
 
-#include "FBSurface.hxx"
 #include "EventHandler.hxx"
 #include "Rect.hxx"
 #include "StringList.hxx"
-#include "NTSCFilter.hxx"
 #include "Variant.hxx"
+#include "FBSurface.hxx"
+#include "TIASurface.hxx"
 #include "bspf.hxx"
 
 // Return values for initialization of framebuffer window
@@ -85,6 +85,39 @@ enum {
   kNumColors
 };
 
+// Contains all relevant info for the dimensions of a video screen
+// Also takes care of the case when the image should be 'centered'
+// within the given screen:
+//   'image' is the image dimensions into the screen
+//   'screen' are the dimensions of the screen itself
+class VideoMode
+{
+  friend class FrameBuffer;
+
+  public:
+    GUI::Rect image;
+    GUI::Size screen;
+    bool fullscreen;
+    uInt32 zoom;
+    string description;
+
+  public:
+    VideoMode();
+    VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, bool full,
+      uInt32 z = 1, const string& desc = "");
+
+    friend ostream& operator<<(ostream& os, const VideoMode& vm)
+    {
+      os << "image=" << vm.image << "  screen=" << vm.screen << endl
+         << "full= " << vm.fullscreen << "  zoom=" << vm.zoom
+         << "  desc=" << vm.description;
+      return os;
+    }
+
+  private:
+    void applyAspectCorrection(uInt32 aspect, uInt32 stretch = false);
+};
+
 /**
   This class encapsulates all video buffers and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
@@ -107,7 +140,7 @@ class FrameBuffer
     /**
       Creates a new Frame Buffer
     */
-    FrameBuffer(OSystem* osystem);
+    FrameBuffer(OSystem& osystem);
 
     /**
       Destructor
@@ -211,12 +244,22 @@ class FrameBuffer
     const VariantList& supportedRenderers() const { return myRenderers; }
 
     /**
+      Get the supported TIA zoom levels (windowed mode) for the framebuffer.
+    */
+    const VariantList& supportedTIAZoomLevels() const { return myTIAZoomLevels; }
+
+    /**
       Get the font object(s) of the framebuffer
     */
     const GUI::Font& font() const { return *myFont; }
     const GUI::Font& infoFont() const { return *myInfoFont; }
     const GUI::Font& smallFont() const { return *mySmallFont; }
     const GUI::Font& launcherFont() const { return *myLauncherFont; }
+
+    /**
+      Get the TIA surface associated with the framebuffer.
+    */
+    TIASurface& tiaSurface() const { return *myTIASurface; }
 
     /**
       Refresh display according to the current state, taking single vs.
@@ -257,89 +300,16 @@ class FrameBuffer
     void toggleGrabMouse();
 
     /**
-      Get the supported TIA zoom levels (windowed mode) for the framebuffer.
-    */
-    const VariantList& supportedTIAZoomLevels() { return myTIAZoomLevels; }
-
-    /**
-      Get the TIA pixel associated with the given TIA buffer index,
-      shifting by the given offset (for greyscale values).
-    */
-    uInt32 tiaPixel(uInt32 idx, uInt8 shift = 0) const;
-
-    /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
 
       @param palette  The array of colors
     */
-    virtual void setTIAPalette(const uInt32* palette);
+    void setPalette(const uInt32* palette);
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
     */
     void stateChanged(EventHandler::State state);
-
-    /**
-      Get the NTSCFilter object associated with the framebuffer
-    */
-    NTSCFilter& ntsc() { return myNTSCFilter; }
-
-    /**
-      Use NTSC filtering effects specified by the given preset.
-    */
-    void setNTSC(NTSCFilter::Preset preset, bool show = true);
-
-    /**
-      Increase/decrease current scanline intensity by given relative amount.
-    */
-    void setScanlineIntensity(int relative);
-
-    /**
-      Toggles interpolation/smoothing of scanlines in TV modes.
-    */
-    void toggleScanlineInterpolation();
-
-    /**
-      Used to calculate an averaged color for the 'phosphor' effect.
-
-      @param c1  Color 1
-      @param c2  Color 2
-
-      @return  Averaged value of the two colors
-    */
-    uInt8 getPhosphor(uInt8 c1, uInt8 c2) const;
-
-    // Contains all relevant info for the dimensions of a video screen
-    // Also takes care of the case when the image should be 'centered'
-    // within the given screen:
-    //   'image' is the image dimensions into the screen
-    //   'screen' are the dimensions of the screen itself
-    class VideoMode
-    {
-      friend class FrameBuffer;
-
-      public:
-        GUI::Rect image;
-        GUI::Size screen;
-        bool fullscreen;
-        uInt32 zoom;
-        string description;
-
-      public:
-        VideoMode();
-        VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, bool full,
-          uInt32 z = 1, const string& desc = "");
-
-        friend ostream& operator<<(ostream& os, const VideoMode& vm)
-        {
-          os << "image=" << vm.image << "  screen=" << vm.screen << endl
-             << "desc=" << vm.description << "  zoom=" << vm.zoom;
-          return os;
-        }
-
-      private:
-        void applyAspectCorrection(uInt32 aspect, uInt32 stretch = false);
-    };
 
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and can/must be
@@ -355,18 +325,6 @@ class FrameBuffer
       Answers if the display is currently in fullscreen mode.
     */
     virtual bool fullScreen() const = 0;
-
-    /**
-      Enable/disable/query NTSC filtering effects.
-    */
-    virtual void enableNTSC(bool enable) { }
-    virtual bool ntscEnabled() const { return false; }
-    virtual string effectsInfo() const { return "None / not available"; }
-
-    /**
-      Enable/disable phosphor effect.
-    */
-    virtual void enablePhosphor(bool enable, int blend) = 0;
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.
@@ -411,16 +369,14 @@ class FrameBuffer
     virtual void queryHardware(uInt32& w, uInt32& h, VariantList& ren) = 0;
 
     /**
-      This method is called to change to the given video mode.  If the mode
-      is successfully changed, 'mode' holds the actual dimensions used.
+      This method is called to change to the given video mode.
 
       @param title The title for the created window
       @param mode  The video mode to use
-      @param full  Whether this is a fullscreen or windowed mode
 
       @return  False on any errors, else true
     */
-    virtual bool setVideoMode(const string& title, const VideoMode& mode, bool full) = 0;
+    virtual bool setVideoMode(const string& title, const VideoMode& mode) = 0;
 
     /**
       Enables/disables fullscreen mode.
@@ -445,16 +401,6 @@ class FrameBuffer
     virtual FBSurface* createSurface(uInt32 w, uInt32 h) const = 0;
 
     /**
-      Change scanline intensity and interpolation.
-
-      @param relative  If non-zero, change current intensity by
-                       'relative' amount, otherwise set to 'absolute'
-      @return  New current intensity
-    */
-    virtual uInt32 enableScanlines(int relative, int absolute = 50) { return absolute; }
-    virtual void enableScanlineInterpolation(bool enable) { }
-
-    /**
       Grabs or ungrabs the mouse based on the given boolean value.
     */
     virtual void grabMouse(bool grab) = 0;
@@ -463,12 +409,6 @@ class FrameBuffer
       Set the icon for the main window.
     */
     virtual void setWindowIcon() = 0;
-
-    /**
-      This method should be called anytime the TIA needs to be redrawn
-      to the screen (full indicating that a full redraw is required).
-    */
-    virtual void drawTIA(bool full) = 0;
 
     /**	 
       This method is called after any drawing is done (per-frame).	 
@@ -480,41 +420,33 @@ class FrameBuffer
     */
     virtual string about() const = 0;
 
-    /**
-      Issues a 'free' and 'reload' instruction to all surfaces that the
-      framebuffer knows about.
-    */
-    void resetSurfaces(FBSurface* tiasurface = (FBSurface*)0);
-
   protected:
     // The parent system for the framebuffer
-    OSystem* myOSystem;
+    OSystem& myOSystem;
 
     // Indicates if the entire frame need to redrawn
     bool myRedrawEntireFrame;
 
-    // NTSC object to use in TIA rendering mode
-    NTSCFilter myNTSCFilter;
-
-    // Use phosphor effect (aka no flicker on 30Hz screens)
-    bool myUsePhosphor;
-
-    // Amount to blend when using phosphor effect
-    int myPhosphorBlend;
-
-    // TIA palettes for normal and phosphor modes
-    // 'myDefPalette' also contains the UI palette
-    Uint32 myDefPalette[256+kNumColors];
-    Uint32 myAvgPalette[256][256];
-
-    // Names of the TIA zoom levels that can be used for this framebuffer
-    VariantList myTIAZoomLevels;
+    // Color palette for TIA and UI modes
+    Uint32 myPalette[256+kNumColors];
 
   private:
     /**
       Draw pending messages.
     */
     void drawMessage();
+
+    /**
+      This method should be called anytime the TIA needs to be redrawn
+      to the screen.
+    */
+    void drawTIA();
+
+    /**
+      Issues a 'free' and 'reload' instruction to all surfaces that the
+      framebuffer knows about.
+    */
+    void resetSurfaces();
 
     /**
       Calculate the maximum level by which the base window can be zoomed and
@@ -544,11 +476,6 @@ class FrameBuffer
     */
     const VideoMode& getSavedVidMode(bool fullscreen);
 
-    /**
-      Set up the user interface palette for a screen of any depth > 8.
-    */
-    void setUIPalette();
-
   private:
     /**
       This class implements an iterator around an array of VideoMode objects.
@@ -566,7 +493,7 @@ class FrameBuffer
         uInt32 size() const;
 
         void previous();
-        const FrameBuffer::VideoMode& current() const;
+        const VideoMode& current() const;
         void next();
 
         void setZoom(uInt32 zoom);
@@ -619,6 +546,9 @@ class FrameBuffer
     // The font object to use for the ROM launcher
     GUI::Font* myLauncherFont;
 
+    // The TIASurface class takes responsibility for TIA rendering
+    TIASurface* myTIASurface;
+
     // Used for onscreen messages and frame statistics
     // (scanline count and framerate)
     struct Message {
@@ -637,6 +567,9 @@ class FrameBuffer
     VideoModeList myWindowedModeList;
     VideoModeList myFullscreenModeList;
     VideoModeList* myCurrentModeList;
+
+    // Names of the TIA zoom levels that can be used for this framebuffer
+    VariantList myTIAZoomLevels;
 
     // Holds a reference to all the surfaces that have been created
     map<uInt32,FBSurface*> mySurfaceList;
