@@ -222,7 +222,6 @@
     <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
-    <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
     <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
@@ -282,6 +281,7 @@
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
+    <ClCompile Include="..\emucore\TIASurface.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
@@ -465,7 +465,6 @@
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
     <ClInclude Include="..\common\FBSurfaceSDL2.hxx" />
-    <ClInclude Include="..\common\FBSurfaceTIA.hxx" />
     <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
@@ -535,6 +534,7 @@
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
+    <ClInclude Include="..\emucore\TIASurface.hxx" />
     <ClInclude Include="..\gui\ConsoleBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
