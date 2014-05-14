@@ -32,7 +32,8 @@
 class FBSurfaceSDL2 : public FBSurface
 {
   public:
-    FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height);
+    FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height,
+                  const uInt32* data);
     virtual ~FBSurfaceSDL2();
 
     // Most of the surface drawing primitives are implemented in FBSurface;
@@ -40,9 +41,9 @@ class FBSurfaceSDL2 : public FBSurface
     //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
     void drawSurface(const FBSurface* surface);
-    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-
-    void setStaticContents(const uInt32* pixels, uInt32 pitch);
+    // With hardware surfaces, it's faster to just update the entire surface
+    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { mySurfaceIsDirty = true; }
+    void addDirtyRect() { mySurfaceIsDirty = true; }
 
     uInt32 width() const;
     uInt32 height() const;
@@ -72,7 +73,7 @@ class FBSurfaceSDL2 : public FBSurface
 
     bool mySurfaceIsDirty;
 
-    bool myDataIsStatic;  // Is pixel data constant or can it change?
+    SDL_TextureAccess myTexAccess;  // Is pixel data constant or can it change?
     bool myInterpolate;   // Scaling is smoothed or blocky
     bool myBlendEnabled;  // Blending is enabled
     uInt8 myBlendAlpha;   // Alpha to use in blending mode

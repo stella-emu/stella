@@ -223,9 +223,10 @@ void FrameBufferSDL2::postFrameUpdate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface* FrameBufferSDL2::createSurface(uInt32 w, uInt32 h) const
+FBSurface* FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
+                                          const uInt32* data) const
 {
-  return new FBSurfaceSDL2((FrameBufferSDL2&)*this, w, h);
+  return new FBSurfaceSDL2((FrameBufferSDL2&)*this, w, h, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

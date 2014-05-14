@@ -129,11 +129,6 @@ void FBSurface::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
                     uInt32 colorA, uInt32 colorB)
 {

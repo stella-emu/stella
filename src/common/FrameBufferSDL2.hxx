@@ -138,10 +138,11 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       This method is called to create a surface with the given attributes.
 
-      @param w  The requested width of the new surface.
-      @param h  The requested height of the new surface.
+      @param w     The requested width of the new surface.
+      @param h     The requested height of the new surface.
+      @param data  If non-null, use the given data values as a static surface
     */
-    FBSurface* createSurface(uInt32 w, uInt32 h) const;
+    FBSurface* createSurface(uInt32 w, uInt32 h, const uInt32* data) const;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.

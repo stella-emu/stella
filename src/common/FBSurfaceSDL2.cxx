@@ -20,12 +20,13 @@
 #include "FBSurfaceSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height)
+FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
+                             uInt32 width, uInt32 height, const uInt32* data)
   : myFB(buffer),
     mySurface(NULL),
     myTexture(NULL),
     mySurfaceIsDirty(true),
-    myDataIsStatic(false),
+    myTexAccess(SDL_TEXTUREACCESS_STREAMING),
     myInterpolate(false),
     myBlendEnabled(false),
     myBlendAlpha(255),
@@ -48,6 +49,14 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 heigh
   myPixels = (uInt32*) mySurface->pixels;
   myPitch = mySurface->pitch / pf->BytesPerPixel;
   ////////////////////////////////////////////////////
+
+  if(data)
+  {
+    myTexAccess = SDL_TEXTUREACCESS_STATIC;
+    myStaticPitch = mySurface->w * 4;  // we need pitch in 'bytes'
+    myStaticData = new uInt32[mySurface->w * mySurface->h];
+    SDL_memcpy(myStaticData, data, mySurface->w * mySurface->h * 4);
+  }
 
   // To generate texture
   reload();
@@ -86,28 +95,6 @@ void FBSurfaceSDL2::drawSurface(const FBSurface* surface)
   const FBSurfaceSDL2* s = (const FBSurfaceSDL2*) surface;
   SDL_Rect dst = s->myDstR;
   SDL_BlitSurface(s->mySurface, &(s->mySrcR), mySurface, &dst);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
-{
-  // It's faster to just update the entire (hardware) surface
-  mySurfaceIsDirty = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setStaticContents(const uInt32* pixels, uInt32 pitch)
-{
-  myDataIsStatic = true;
-  myStaticPitch = pitch * 4;  // we need pitch in 'bytes'
-
-  if(!myStaticData)
-    myStaticData = new uInt32[mySurface->w * mySurface->h];
-  SDL_memcpy(myStaticData, pixels, mySurface->w * mySurface->h);
-
-  // Re-create the texture with the new settings
-  free();
-  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,7 +144,7 @@ void FBSurfaceSDL2::setDstPos(uInt32 x, uInt32 y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
 {
-  myDstR.w = w;  myDstR.w = w;
+  myDstR.w = w;  myDstR.h = h;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,7 +162,7 @@ void FBSurfaceSDL2::render()
 //cerr << "src: x=" << mySrcR.x << ", y=" << mySrcR.y << ", w=" << mySrcR.w << ", h=" << mySrcR.h << endl;
 //cerr << "dst: x=" << myDstR.x << ", y=" << myDstR.y << ", w=" << myDstR.w << ", h=" << myDstR.h << endl;
 
-    if(!myDataIsStatic)
+    if(myTexAccess == SDL_TEXTUREACCESS_STREAMING)
       SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
     SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrcR, &myDstR);
 
@@ -208,11 +195,10 @@ void FBSurfaceSDL2::reload()
   // Re-create texture; the underlying SDL_Surface is fine as-is
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myInterpolate ? "1" : "0");
   myTexture = SDL_CreateTexture(myFB.myRenderer, myFB.myPixelFormat->format,
-      myDataIsStatic ? SDL_TEXTUREACCESS_STATIC : SDL_TEXTUREACCESS_STREAMING,
-      mySurface->w, mySurface->h);
+      myTexAccess, mySurface->w, mySurface->h);
 
   // If the data is static, we only upload it once
-  if(myDataIsStatic)
+  if(myTexAccess == SDL_TEXTUREACCESS_STATIC)
     SDL_UpdateTexture(myTexture, NULL, myStaticData, myStaticPitch);
 
   // Blending enabled?

@@ -202,12 +202,13 @@ class FrameBuffer
       all responsibility for freeing this surface (ie, other classes must not
       delete it directly).
 
-      @param w  The requested width of the new surface.
-      @param h  The requested height of the new surface.
+      @param w     The requested width of the new surface.
+      @param h     The requested height of the new surface.
+      @param data  If non-null, use the given data values as a static surface
 
       @return  A unique ID used to identify this surface
     */
-    uInt32 allocateSurface(int w, int h);
+    uInt32 allocateSurface(int w, int h, const uInt32* data = 0);
 
     /**
       Retrieve the surface associated with the given ID.
@@ -395,10 +396,11 @@ class FrameBuffer
     /**
       This method is called to create a surface with the given attributes.
 
-      @param w  The requested width of the new surface.
-      @param h  The requested height of the new surface.
+      @param w     The requested width of the new surface.
+      @param h     The requested height of the new surface.
+      @param data  If non-null, use the given data values as a static surface
     */
-    virtual FBSurface* createSurface(uInt32 w, uInt32 h) const = 0;
+    virtual FBSurface* createSurface(uInt32 w, uInt32 h, const uInt32* data) const = 0;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.

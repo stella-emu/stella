@@ -152,6 +152,12 @@ class TIASurface
     };
     FilterType myFilterType;
 
+    enum TIAConstants {
+      kTIAW  = 160,
+      kTIAH  = 320,
+      kScanH = kTIAH*2
+    };
+
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;
 

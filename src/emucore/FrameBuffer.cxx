@@ -312,7 +312,7 @@ void FrameBuffer::update()
           msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->drawString(infoFont(),
           info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
+        myStatsMsg.surface->addDirtyRect();  // force a full draw
         myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->render();
       }
@@ -514,7 +514,7 @@ inline void FrameBuffer::drawMessage()
   }
   else
   {
-    myMsg.surface->addDirtyRect(0, 0, 0, 0);
+    myMsg.surface->addDirtyRect();
     myMsg.surface->render();
   }
 }
@@ -610,10 +610,10 @@ void FrameBuffer::refresh()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::allocateSurface(int w, int h)
+uInt32 FrameBuffer::allocateSurface(int w, int h, const uInt32* data)
 {
   // Create a new surface
-  FBSurface* surface = createSurface(w, h);
+  FBSurface* surface = createSurface(w, h, data);
 
   // Add it to the list
   mySurfaceList.insert(make_pair((uInt32)mySurfaceList.size(), surface));
@@ -648,7 +648,6 @@ void FrameBuffer::resetSurfaces()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setPalette(const uInt32* palette)
 {
-cerr << "FrameBuffer::setPalette\n";
   // Set palette for normal fill
   for(int i = 0; i < 256; ++i)
   {
@@ -730,6 +729,11 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
   myScreenSize = mode.screen;
   if(setVideoMode(myScreenTitle, mode))
   {
+    // Inform TIA surface about new mode
+    if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
+       myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
+      myTIASurface->initialize(myOSystem.console(), mode);
+
     resetSurfaces();
     showMessage(mode.description);
     myOSystem.settings().setValue("tia.zoom", mode.zoom);

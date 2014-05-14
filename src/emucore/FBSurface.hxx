@@ -57,6 +57,8 @@ class FBSurface
   public:
     /**
       Creates a new FBSurface object
+
+      @param data  If non-null, the data values to use as a static surface
     */
     FBSurface();
 
@@ -215,7 +217,8 @@ class FBSurface
       @param w      The width of the area
       @param h      The height of the area
     */
-    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { }
+    virtual void addDirtyRect() { }
 
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be
@@ -248,19 +251,6 @@ class FBSurface
     virtual void setSrcSize(uInt32 w, uInt32 h) = 0;
     virtual void setDstPos(uInt32 x, uInt32 y)  = 0;
     virtual void setDstSize(uInt32 w, uInt32 h) = 0;
-
-    /**
-      This method should be called to indicate that the surface contains
-      static data that will never change.  Some rendering toolkits can
-      use this information to optimize how the data is rendered.
-
-      Note that once this method is called, all other drawing primitives
-      will not work.
-
-      @param pixels  The static data to use
-      @param pitch   The number of pixels in a row
-    */
-    virtual void setStaticContents(const uInt32* pixels, uInt32 pitch) = 0;
 
     /**
       This method should be called to translate the given coordinates

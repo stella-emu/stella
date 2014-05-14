@@ -41,9 +41,17 @@ TIASurface::TIASurface(FrameBuffer& buffer, OSystem& system)
   myNTSCFilter.loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
-  uInt32 tiaID = myFB.allocateSurface(ATARI_NTSC_OUT_WIDTH(160), 320);
+  uInt32 tiaID = myFB.allocateSurface(ATARI_NTSC_OUT_WIDTH(kTIAW), kTIAH);
   myTiaSurface = myFB.surface(tiaID);
-  uInt32 scanID = myFB.allocateSurface(1, 320);
+
+  // Generate scanline data, and a pre-defined scanline surface
+  uInt32 scanData[kScanH];
+  for(int i = 0; i < kScanH; i+=2)
+  {
+    scanData[i]   = 0x00000000;
+    scanData[i+1] = 0xff000000;
+  }
+  uInt32 scanID = myFB.allocateSurface(1, kScanH, scanData);
   mySLineSurface = myFB.surface(scanID);
 }
 
@@ -57,50 +65,33 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
 {
   myTIA = &(console.tia());
 
+  myTiaSurface->setDstPos(mode.image.x(), mode.image.y());
+  myTiaSurface->setDstSize(mode.image.width(), mode.image.height());
+  mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
+  mySLineSurface->setDstSize(mode.image.width(), mode.image.height());
+
+  bool p_enable = console.properties().get(Display_Phosphor) == "YES";
+  int p_blend = atoi(console.properties().get(Display_PPBlend).c_str());
+  enablePhosphor(p_enable, p_blend);
+  setNTSC((NTSCFilter::Preset)myOSystem.settings().getInt("tv.filter"), false);
+
+  // Scanline repeating is sensitive to non-integral vertical resolution,
+  // so rounding is performed to eliminate it
+  // This won't be 100% accurate, but non-integral scaling isn't 100%
+  // accurate anyway
+  mySLineSurface->setSrcSize(1, int(2 * float(mode.image.height()) /
+    floor(((float)mode.image.height() / myTIA->height()) + 0.5)));
 
 #if 0
-// FIX HERE ///////////////////////////////////
-
-
-
-
-#if 0
-  bool enable = myProperties.get(Display_Phosphor) == "YES";
-  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
-  myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable, blend);
-  myOSystem.frameBuffer().tiaSurface().setNTSC(
-    (NTSCFilter::Preset)myOSystem.settings().getInt("tv.filter"), false);
-#endif
-
-
-
-
-
-  // Grab the initial height before it's updated below
-  // We need it for the creating the TIA surface
-  uInt32 baseHeight = mode.image.height() / mode.zoom;
-
-  // The framebuffer only takes responsibility for TIA surfaces
-  // Other surfaces (such as the ones used for dialogs) are allocated
-  // in the Dialog class
-  if(inTIAMode)
-  {
-    // Since we have free hardware stretching, the base TIA surface is created
-    // only once, and its texture coordinates changed when we want to draw a
-    // smaller or larger image
-    if(!myTiaSurface)
-      myTiaSurface = new FBSurfaceTIA(*this);
-
-    myTiaSurface->updateCoords(baseHeight, mode.image.x(), mode.image.y(),
-                               mode.image.width(), mode.image.height());
-
-    myTiaSurface->enableScanlines(ntscEnabled());
-    myTiaSurface->setTexInterpolation(myOSystem.settings().getBool("tia.inter"));
-    myTiaSurface->setScanIntensity(myOSystem.settings().getInt("tv.scanlines"));
-    myTiaSurface->setScanInterpolation(myOSystem.settings().getBool("tv.scaninter"));
-    myTiaSurface->setTIA(myOSystem.console().tia());
-  }
-/////////////////////////////////////////////
+cerr << "INITIALIZE:\n"
+     << "TIA:\n"
+     << "src: " << myTiaSurface->srcRect() << endl
+     << "dst: " << myTiaSurface->dstRect() << endl
+     << endl;
+cerr << "SLine:\n"
+     << "src: " << mySLineSurface->srcRect() << endl
+     << "dst: " << mySLineSurface->dstRect() << endl
+     << endl;
 #endif
 }
 
@@ -108,11 +99,6 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
 void TIASurface::setPalette(const uInt32* tia_palette, const uInt32* rgb_palette)
 {
   myPalette = tia_palette;
-
-cerr << "TIASurface::setPalette\n";
-  for(int i = 0; i < 256; ++i)
-    cerr << myPalette[i] << " ";
-  cerr << endl;
 
   // Set palette for phosphor effect
   for(int i = 0; i < 256; ++i)
@@ -211,7 +197,8 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
   intensity = BSPF_min(100u, intensity);
 
   mySLineSurface->applyAttributes();
-//FIXSDL  myRedrawEntireFrame = true;
+  mySLineSurface->addDirtyRect();
+
   return intensity;
 }
 
@@ -220,7 +207,7 @@ void TIASurface::enableScanlineInterpolation(bool enable)
 {
   mySLineSurface->myAttributes.smoothing = enable;
   mySLineSurface->applyAttributes();
-//FIXSDL  myRedrawEntireFrame = true;
+  mySLineSurface->addDirtyRect();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,7 +216,8 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
   myFilterType = FilterType(enable ? myFilterType | 0x01 : myFilterType & 0x10);
-//FIXSDL  myRedrawEntireFrame = true;
+  myTiaSurface->addDirtyRect();
+  mySLineSurface->addDirtyRect();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,8 +235,7 @@ void TIASurface::enableNTSC(bool enable)
   myFilterType = FilterType(enable ? myFilterType | 0x10 : myFilterType & 0x01);
 
   // Normal vs NTSC mode uses different source widths
-  const GUI::Rect& src = myTiaSurface->srcRect();
-  myTiaSurface->setSrcSize(enable ? ATARI_NTSC_OUT_WIDTH(160) : 160, src.height());
+  myTiaSurface->setSrcSize(enable ? ATARI_NTSC_OUT_WIDTH(160) : 160, myTIA->height());
 
   myTiaSurface->myAttributes.smoothing =
       myOSystem.settings().getBool("tia.inter");
@@ -257,11 +244,13 @@ void TIASurface::enableNTSC(bool enable)
   myScanlinesEnabled = enable;
   mySLineSurface->myAttributes.smoothing =
       myOSystem.settings().getBool("tv.scaninter");
+  mySLineSurface->myAttributes.blending = myScanlinesEnabled;
   mySLineSurface->myAttributes.blendalpha =
       myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
 
-//FIXSDL  myRedrawEntireFrame = true;
+  myTiaSurface->addDirtyRect();
+  mySLineSurface->addDirtyRect();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -293,11 +282,6 @@ string TIASurface::effectsInfo() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::render()
 {
-#if 0
-cerr << "src: " << myTiaSurface->srcRect() << endl
-     << "dst: " << myTiaSurface->dstRect() << endl
-     << endl;
-#endif
   // Copy the mediasource framebuffer to the RGB texture
   // In hardware rendering mode, it's faster to just assume that the screen
   // is dirty and always do an update
@@ -309,7 +293,6 @@ cerr << "src: " << myTiaSurface->srcRect() << endl
 
   uInt32 *buffer, pitch;
   myTiaSurface->basePtr(buffer, pitch);
-//cerr << "buffer=" << buffer << ", pitch=" << pitch << endl;
 
   // TODO - Eventually 'phosphor' won't be a separate mode, and will become
   //        a post-processing filter by blending several frames.
@@ -351,21 +334,25 @@ cerr << "src: " << myTiaSurface->srcRect() << endl
     case kBlarggNormal:
     {
       myNTSCFilter.blit_single(currentFrame, width, height,
-                               buffer, pitch);
+                               buffer, pitch << 2);
       break;
     }
     case kBlarggPhosphor:
     {
       myNTSCFilter.blit_double(currentFrame, previousFrame, width, height,
-                               buffer, pitch);
+                               buffer, pitch << 2);
       break;
     }
   }
 
   // Draw TIA image
+  myTiaSurface->addDirtyRect();
   myTiaSurface->render();
 
   // Draw overlaying scanlines
   if(myScanlinesEnabled)
+  {
+    mySLineSurface->addDirtyRect();
     mySLineSurface->render();
+  }
 }
