@@ -58,6 +58,8 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
     SDL_memcpy(myStaticData, data, mySurface->w * mySurface->h * 4);
   }
 
+  applyAttributes(false);
+
   // To generate texture
   reload();
 }

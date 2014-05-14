@@ -27,6 +27,11 @@ FBSurface::FBSurface()
 {
   // NOTE: myPixels and myPitch MUST be set in child classes that inherit
   // from this class
+
+  // Set default attributes
+  myAttributes.smoothing = false;
+  myAttributes.blending = false;
+  myAttributes.blendalpha = 100;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
