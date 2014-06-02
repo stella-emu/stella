@@ -353,7 +353,7 @@ void VideoDialog::loadConfig()
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
 
   // Fullscreen stretch setting
-  myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
+  myUseStretch->setState(instance().settings().getBool("tia.fsfill"));
 
   // Use sync to vertical blank
   myUseVSync->setState(instance().settings().getBool("vsync"));
@@ -433,7 +433,7 @@ void VideoDialog::saveConfig()
     instance().console().toggleColorLoss(myColorLoss->getState());
 
   // Fullscreen stretch setting
-  instance().settings().setValue("tia,fs_stretch", myUseStretch->getState());
+  instance().settings().setValue("tia.fsfill", myUseStretch->getState());
 
   // Use sync to vertical blank
   instance().settings().setValue("vsync", myUseVSync->getState());

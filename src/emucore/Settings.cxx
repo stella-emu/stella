@@ -53,7 +53,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("tia.inter", "false");
   setInternal("tia.aspectn", "90");
   setInternal("tia.aspectp", "100");
-  setInternal("gl_fsscale", "false");  //FIXSDL - deprecated
+  setInternal("tia.fsfill", "false");
 
   // TV filtering options
   setInternal("tv.filter", "0");
@@ -341,7 +341,7 @@ void Settings::usage()
     << endl
     << "  -video        <type>         Type is one of the following:\n"
   #ifdef BSPF_WINDOWS
-    << "                 direct3d        Direct3D 9/11 acceleration\n"
+    << "                 direct3d        Direct3D acceleration\n"
   #endif
     << "                 opengl          OpenGL acceleration\n"
     << "                 opengles2       OpenGLES 2 acceleration\n"
@@ -368,9 +368,9 @@ void Settings::usage()
   #endif
     << "  -tia.zoom     <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"
     << "  -tia.inter    <1|0>          Enable interpolated (smooth) scaling for TIA image\n"
-    << "  -tia.aspectn  <number>       Scale the TIA width by the given percentage in NTSC mode\n"
-    << "  -tia.aspectp  <number>       Scale the TIA width by the given percentage in PAL mode\n"
-    << "  -gl_fsscale   <1|0>          Stretch GL image in fullscreen emulation mode to max/integer scale\n"
+    << "  -tia.aspectn  <number>       Scale TIA width by the given percentage in NTSC mode\n"
+    << "  -tia.aspectp  <number>       Scale TIA width by the given percentage in PAL mode\n"
+    << "  -tia.fsfill   <1|0>          Stretch TIA image to fill fullscreen mode\n"
     << endl
     << "  -tv.filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
     << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"

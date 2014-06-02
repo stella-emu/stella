@@ -108,14 +108,14 @@ class VideoMode
 
     friend ostream& operator<<(ostream& os, const VideoMode& vm)
     {
-      os << "image=" << vm.image << "  screen=" << vm.screen << endl
-         << "full= " << vm.fullscreen << "  zoom=" << vm.zoom
+      os << "image=" << vm.image << "  screen=" << vm.screen
+         << " full= " << vm.fullscreen << "  zoom=" << vm.zoom
          << "  desc=" << vm.description;
       return os;
     }
 
   private:
-    void applyAspectCorrection(uInt32 aspect, uInt32 stretch = false);
+    void applyAspectCorrection(uInt32 aspect, bool stretch = false);
 };
 
 /**
@@ -303,9 +303,9 @@ class FrameBuffer
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
 
-      @param palette  The array of colors
+      @param palette  The array of colors in R/G/B format
     */
-    void setPalette(const uInt32* palette);
+    void setPalette(const uInt32* raw_palette);
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
@@ -375,16 +375,15 @@ class FrameBuffer
       @param title The title for the created window
       @param mode  The video mode to use
 
+      @param fullscreen_toggle  Indicate whether this video mode change is
+                due to a fullscreen/windowed toggle or not; some backends
+                can use this information to perform a more optimized mode
+                change
+
       @return  False on any errors, else true
     */
-    virtual bool setVideoMode(const string& title, const VideoMode& mode) = 0;
-
-    /**
-      Enables/disables fullscreen mode.
-
-      @param enable  Set the fullscreen mode to this value
-    */
-    virtual void enableFullscreen(bool enable) = 0;
+    virtual bool setVideoMode(const string& title, const VideoMode& mode,
+                              bool fullscreen_toggle = false) = 0;
 
     /**
       This method is called to invalidate the contents of the entire

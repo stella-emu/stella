@@ -96,8 +96,16 @@ void FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, VariantList& renderers
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
+bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
+                                   bool fullscreen_toggle)
 {
+cerr << "fullscreen_toggle=" << fullscreen_toggle << endl;
+#if 0
+  uInt32 flags = enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+  if(SDL_SetWindowFullscreen(myWindow, flags))
+    myOSystem.settings().setValue("fullscreen", enable);
+#endif
+
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
@@ -118,7 +126,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   int pos = myOSystem.settings().getBool("center")
               ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
   myWindow = SDL_CreateWindow(title.c_str(),
-                 pos, pos, mode.image.width(), mode.image.height(),
+                 pos, pos, mode.screen.w, mode.screen.h,
                  0);
   if(myWindow == NULL)
   {
@@ -191,14 +199,6 @@ void FrameBufferSDL2::showCursor(bool show)
 void FrameBufferSDL2::grabMouse(bool grab)
 {
 //FIXSDL  SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::enableFullscreen(bool enable)
-{
-  uInt32 flags = enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
-  if(SDL_SetWindowFullscreen(myWindow, flags))
-    myOSystem.settings().setValue("fullscreen", enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

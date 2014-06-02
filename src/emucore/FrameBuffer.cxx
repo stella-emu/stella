@@ -193,7 +193,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     return kFailTooLarge;
 
 // FIXSDL - remove size limitations here?
-  if(myOSystem.settings().getString("fullscreen") == "1")
+  if(myOSystem.settings().getBool("fullscreen"))
   {
     if(myDesktopSize.w < width || myDesktopSize.h < height)
       return kFailTooLarge;
@@ -216,12 +216,13 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Initialize video subsystem (make sure we get a valid mode)
   string pre_about = about();
   const VideoMode& mode = getSavedVidMode(useFullscreen);
-  myImageRect = mode.image;
-  myScreenSize = mode.screen;
-  if(width <= (uInt32)myScreenSize.w && height <= (uInt32)myScreenSize.h)
+  if(width <= (uInt32)mode.screen.w && height <= (uInt32)mode.screen.h)
   {
     if(setVideoMode(myScreenTitle, mode))
     {
+      myImageRect = mode.image;
+      myScreenSize = mode.screen;
+
       // Inform TIA surface about new mode
       if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
          myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
@@ -523,9 +524,6 @@ inline void FrameBuffer::drawMessage()
 inline void FrameBuffer::drawTIA()
 {
   myTIASurface->render();
-
-  // Let postFrameUpdate() know that a change has been made
-//FIXSDL  invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -646,20 +644,20 @@ void FrameBuffer::resetSurfaces()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setPalette(const uInt32* palette)
+void FrameBuffer::setPalette(const uInt32* raw_palette)
 {
   // Set palette for normal fill
   for(int i = 0; i < 256; ++i)
   {
-    Uint8 r = (palette[i] >> 16) & 0xff;
-    Uint8 g = (palette[i] >> 8) & 0xff;
-    Uint8 b = palette[i] & 0xff;
+    Uint8 r = (raw_palette[i] >> 16) & 0xff;
+    Uint8 g = (raw_palette[i] >> 8) & 0xff;
+    Uint8 b = raw_palette[i] & 0xff;
 
     myPalette[i] = mapRGB(r, g, b);
   }
 
   // Let the TIA surface know about the new palette
-  myTIASurface->setPalette(myPalette, palette);
+  myTIASurface->setPalette(myPalette, raw_palette);
 
   myRedrawEntireFrame = true;
 }
@@ -677,26 +675,24 @@ void FrameBuffer::stateChanged(EventHandler::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
-cerr << "setFullscreen: " << enable << endl;
-enableFullscreen(enable);
+  const VideoMode& mode = getSavedVidMode(enable);
+cerr << "setFullscreen: " << enable << " " << mode << endl;
 
+  if(setVideoMode(myScreenTitle, mode, true))
+  {
+    myImageRect = mode.image;
+    myScreenSize = mode.screen;
 
+    // Inform TIA surface about new mode
+    if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
+       myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
+      myTIASurface->initialize(myOSystem.console(), mode);
 
-#if 0 //FIXSDL
-#ifdef WINDOWED_SUPPORT
-  // '-1' means fullscreen mode is completely disabled
-  bool full = enable && myOSystem.settings().getString("fullscreen") != "-1";
-  setHint(kFullScreen, full);
-
-  // Do a dummy call to getSavedVidMode to set up the modelists
-  // and have it point to the correct 'current' mode
-  getSavedVidMode();
-
-  // Do a mode change to the 'current' mode by not passing a '+1' or '-1'
-  // to changeVidMode()
-  changeVidMode(0);
-#endif
-#endif
+    // Did we get the requested fullscreen state?
+    myOSystem.settings().setValue("fullscreen", fullScreen());
+    resetSurfaces();
+    setCursorState();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -725,14 +721,13 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
     return false;
 
   const VideoMode& mode = myCurrentModeList->current();
-  myImageRect = mode.image;
-  myScreenSize = mode.screen;
   if(setVideoMode(myScreenTitle, mode))
   {
+    myImageRect = mode.image;
+    myScreenSize = mode.screen;
+
     // Inform TIA surface about new mode
-    if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
-       myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
-      myTIASurface->initialize(myOSystem.console(), mode);
+    myTIASurface->initialize(myOSystem.console(), mode);
 
     resetSurfaces();
     showMessage(mode.description);
@@ -824,11 +819,10 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     }
 
     // TIA fullscreen mode
-    //  GUI::Size screen(myDesktopWidth, myDesktopHeight);
-    myFullscreenModeList.add(
-        VideoMode(baseWidth, baseHeight, myDesktopSize.w, myDesktopSize.h, true)
-    );
-
+    VideoMode mode(baseWidth*maxZoom, baseHeight*maxZoom,
+                   myDesktopSize.w, myDesktopSize.h, true);
+    mode.applyAspectCorrection(aspect, myOSystem.settings().getBool("tia.fsfill"));
+    myFullscreenModeList.add(mode);
   }
   else  // UI mode
   {
@@ -840,12 +834,6 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
         VideoMode(baseWidth, baseHeight, myDesktopSize.w, myDesktopSize.h, true)
     );
   }
-
-#if 0 //FIXSDL
-cerr << "Windowed modes:\n" << myWindowedModeList << endl
-     << "Fullscreen modes:\n" << myFullscreenModeList << endl
-     << endl;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -899,54 +887,48 @@ VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoMode::applyAspectCorrection(uInt32 aspect, uInt32 stretch)
+void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
 {
   // Width is modified by aspect ratio; other factors may be applied below
   uInt32 iw = (uInt32)(float(image.width() * aspect) / 100.0);
   uInt32 ih = image.height();
 
-  if(stretch)
+  if(fullscreen)
   {
-#if 0
     // Fullscreen mode stretching
-    if(fullScreen() &&
-       (mode.image_w < mode.screen_w) && (mode.image_h < mode.screen_h))
-    {
-      float stretchFactor = 1.0;
-      float scaleX = float(mode.image_w) / mode.screen_w;
-      float scaleY = float(mode.image_h) / mode.screen_h;
+    float stretchFactor = 1.0;
+    float scaleX = float(image.width()) / screen.w;
+    float scaleY = float(image.height()) / screen.h;
 
-      // Scale to actual or integral factors
-      if(myOSystem.settings().getBool("gl_fsscale"))
+    // Scale to actual or integral factors
+    if(stretch)
+    {
+      // Scale to full (non-integral) available space
+      if(scaleX > scaleY)
+        stretchFactor = float(screen.w) / image.width();
+      else
+        stretchFactor = float(screen.h) / image.height();
+    }
+    else
+    {
+      // Only scale to an integral amount
+      if(scaleX > scaleY)
       {
-        // Scale to full (non-integral) available space
-        if(scaleX > scaleY)
-          stretchFactor = float(mode.screen_w) / mode.image_w;
-        else
-          stretchFactor = float(mode.screen_h) / mode.image_h;
+        int bw = image.width() / zoom;
+        stretchFactor = float(int(screen.w / bw) * bw) / image.width();
       }
       else
       {
-        // Only scale to an integral amount
-        if(scaleX > scaleY)
-        {
-          int bw = mode.image_w / mode.gfxmode.zoom;
-          stretchFactor = float(int(mode.screen_w / bw) * bw) / mode.image_w;
-        }
-        else
-        {
-          int bh = mode.image_h / mode.gfxmode.zoom;
-          stretchFactor = float(int(mode.screen_h / bh) * bh) / mode.image_h;
-        }
+        int bh = image.height() / zoom;
+        stretchFactor = float(int(screen.h / bh) * bh) / image.height();
       }
-      mode.image_w = (Uint16) (stretchFactor * mode.image_w);
-      mode.image_h = (Uint16) (stretchFactor * mode.image_h);
     }
-#endif
+    iw = (uInt32) (stretchFactor * image.width());
+    ih = (uInt32) (stretchFactor * image.height());
   }
   else
   {
-    // In non-stretch mode, the screen size changes to match the image width
+    // In windowed mode, the screen size changes to match the image width
     // Height is never modified in this mode
     screen.w = iw;
   }
