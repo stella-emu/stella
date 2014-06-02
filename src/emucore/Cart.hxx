@@ -324,6 +324,11 @@ class Cartridge : public Device
     static bool isProbablyCV(const uInt8* image, uInt32 size);
 
     /**
+      Returns true if the image is probably a DASH bankswitching cartridge
+    */
+    static bool isProbablyDASH(const uInt8* image, uInt32 size);
+
+    /**
       Returns true if the image is probably a DPC+ bankswitching cartridge
     */
     static bool isProbablyDPCplus(const uInt8* image, uInt32 size);

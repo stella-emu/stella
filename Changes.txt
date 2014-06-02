@@ -14,6 +14,8 @@
 
 3.9.3 to 4.0: (xxxx xx, 2014)
 
+  * Added preliminary support for 'DASH' bankswitching scheme by A. Davie.
+
   * Added 'savesnap' debugger prompt command, and also associated
     context menu item to the debugger TIA output area.  This saves the
     current TIA image to a PNG file.

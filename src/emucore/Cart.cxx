@@ -34,6 +34,7 @@
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
 #include "CartCV.hxx"
+#include "CartDASH.hxx"
 #include "CartDPC.hxx"
 #include "CartDPCPlus.hxx"
 #include "CartE0.hxx"
@@ -199,6 +200,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeCTY(image, size, osystem);
   else if(type == "CV")
     cartridge = new CartridgeCV(image, size, settings);
+  else if(type == "DASH")
+    cartridge = new CartridgeDASH(image, size, settings);
   else if(type == "DPC")
     cartridge = new CartridgeDPC(image, size, settings);
   else if(type == "DPC+")
@@ -579,6 +582,7 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
   return true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably4KSC(const uInt8* image, uInt32 size)
 {
   // We check if the first 256 bytes are identical *and* if there's
@@ -594,7 +598,6 @@ bool Cartridge::isProbably4KSC(const uInt8* image, uInt32 size)
 
   return false;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyARM(const uInt8* image, uInt32 size)
@@ -694,6 +697,12 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
     return true;
   else
     return searchForBytes(image, size, signature[1], 3, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyDASH(const uInt8* image, uInt32 size)
+{
+  return false;  // TODO - add autodetection
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

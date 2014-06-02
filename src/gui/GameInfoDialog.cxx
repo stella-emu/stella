@@ -152,6 +152,7 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("BFSC (CPUWIZ 256K + ram)",    "BFSC"  );
   items.push_back("CV (Commavid extra ram)",     "CV"    );
   items.push_back("CM (SpectraVideo CompuMate)", "CM"    );
+  items.push_back("DASH (Boulder Dash 2)",       "DASH"  );
   items.push_back("DF (CPUWIZ 128K)",            "DF"    );
   items.push_back("DFSC (CPUWIZ 128K + ram)",    "DFSC"  );
   items.push_back("DPC (Pitfall II)",            "DPC"   );
