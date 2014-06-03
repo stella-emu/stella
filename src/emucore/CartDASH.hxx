@@ -279,26 +279,24 @@ class CartridgeDASH: public Cartridge
 
     // RAM contents. RAM banks are 512 bytes, and there are a maximum of 64 of them
 
-    enum {
-      BANK_BITS = 5,                                // # bits for bank
-      BIT_BANK_MASK = (1 << BANK_BITS) - 1,         // mask for those bits
-      ROMRAM = 0x80,      // flags ROM or RAM bank switching (1==RAM)
+    static const uInt8 BANK_BITS = 5;                         // # bits for bank
+    static const uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
+    static const uInt8 ROMRAM = 0x80;   // flags ROM or RAM bank switching (1==RAM)
 
-      RAM_BANK_COUNT = 32,
-      RAM_BANK_TO_POWER = 9,                        // 2^n = 512
-      RAM_BANK_SIZE = (1 << RAM_BANK_TO_POWER),
-      RAM_TOTAL_SIZE = RAM_BANK_COUNT * RAM_BANK_SIZE,
+    static const uInt16 RAM_BANK_COUNT = 32;
+    static const uInt16 RAM_BANK_TO_POWER = 9;    // 2^n = 512
+    static const uInt16 RAM_BANK_SIZE = (1 << RAM_BANK_TO_POWER);
+    static const uInt32 RAM_TOTAL_SIZE = RAM_BANK_COUNT * RAM_BANK_SIZE;
 
-      ROM_BANK_TO_POWER = 10,                       // 2^n = 1024
-      ROM_BANK_SIZE = (1 << ROM_BANK_TO_POWER),
+    static const uInt16 ROM_BANK_TO_POWER = 10;   // 2^n = 1024
+    static const uInt16 ROM_BANK_SIZE = (1 << ROM_BANK_TO_POWER);
 
-      ROM_BANK_COUNT = 32,
-      ROM_BANK_MASK = (ROM_BANK_COUNT - 1),
+    static const uInt16 ROM_BANK_COUNT = 32;
+    static const uInt16 ROM_BANK_MASK = (ROM_BANK_COUNT - 1);
 
-      RAM_WRITE_OFFSET = 0x800,
+    static const uInt16 RAM_WRITE_OFFSET = 0x800;
 
-      BANK_UNDEFINED = -1     // bank is undefined and inaccessible
-    };
+    static const Int16 BANK_UNDEFINED = -1;       // bank is undefined and inaccessible
 
     uInt8 myRAM[RAM_TOTAL_SIZE];
 };
