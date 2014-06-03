@@ -104,7 +104,7 @@ void CartridgeDASH::install(System& system) {
 
   // Initialise bank values for the 4x 1K bank areas
   // This is used to reverse-lookup from address to bank location
-  for (uInt32 b = 0; b < 3; b++)
+  for (uInt32 b = 0; b < 4; b++)
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
 
   // Install pages for the startup bank into the first segment
