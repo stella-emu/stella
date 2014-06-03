@@ -32,19 +32,15 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);
-  createCodeAccessBase(mySize + RAM_TOTAL_SIZE);
+  createCodeAccessBase(mySize + RAM_TOTAL_SIZE);    // TODO: how does the RAM write offset affect the size we need?
 
   // This cart can address 4 banks of RAM, each 512 bytes @ 1000, 1200, 1400, 1600
   // However, it may not be addressable all the time (it may be swapped out)
-
-  // TODO: Stephen -- is this correct for defining 4 separate RAM areas, or can it be done as one block?
 
   registerRamArea(0x1000, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1000
   registerRamArea(0x1200, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1200
   registerRamArea(0x1400, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1400
   registerRamArea(0x1600, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1600
-
-  myCurrentBank = -1;   // nothing switched
 
   // Remember startup bank (0 per spec, rather than last per 3E scheme).
   // Set this to go to 3rd 1K Bank.
@@ -98,7 +94,7 @@ void CartridgeDASH::install(System& system) {
     access.codeAccessBase = &myCodeAccessBase[byte];
     mySystem->setPageAccess(address >> shift, access);
 
-    // TODO: Stephen: in this and other implementations we appear to be using "shift" as a system-dependant mangle for
+    // TODO: In this and other implementations we appear to be using "shift" as a system-dependant mangle for
     // different access types (byte/int/32bit) on different architectures. I think I understand that much. However,
     // I have an issue with how these loops are encoded in all the bank schemes I've seen. The issue being that
     // the loop inits set some address (e.g., 0x1800) and then add a shifted value to it every loop. But when
@@ -124,9 +120,6 @@ uInt8 CartridgeDASH::peek(uInt16 address) {
   if (imageBank == BANK_UNDEFINED) {						// an uninitialised bank?
 
     // accessing invalid bank, so return should be... random?
-    // TODO: Stephen -- throw some sort of error; looking at undefined data
-
-    assert(false);
     value = mySystem->randGenerator().next();
 
   } else if (imageBank & BITMASK_ROMRAM) { // a RAM bank
@@ -166,8 +159,9 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDASH::bank(uInt16 bank) {
+
   if (bankLocked())
-    return false;   // TODO: Stephen -- ? no idea
+    return false;   // debugger has locked the bank
 
   uInt16 shift = mySystem->pageShift();
 
@@ -176,12 +170,9 @@ bool CartridgeDASH::bank(uInt16 bank) {
 
   if (bank & BITMASK_ROMRAM) {   // switching to a 512 byte RAM bank
 
-    // Wrap around/restrict to valid range
-    uInt16 currentBank = bank & BIT_BANK_MASK;
-    // Record which bank switched in (marked as RAM)
-    myCurrentBank = bankInUse[bankNumber] = (Int16) (BITMASK_ROMRAM | currentBank);
-    // Effectively * 512 bytes
-    uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;
+    uInt16 currentBank = bank & BIT_BANK_MASK;                        // Wrap around/restrict to valid range
+    bankInUse[bankNumber] = (Int16) (BITMASK_ROMRAM | currentBank);   // Record which bank switched in (marked as RAM)
+    uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;       // Effectively * 512 bytes
 
     // Setup the page access methods for the current bank
     System::PageAccess access(0, 0, 0, this, System::PA_READ);
@@ -189,10 +180,7 @@ bool CartridgeDASH::bank(uInt16 bank) {
     // Map read-port RAM image into the system
     for (uInt32 byte = 0; byte < RAM_BANK_SIZE; byte += (1 << shift)) {
       access.directPeekBase = &myRAM[startCurrentBank + byte];
-
-      // TODO: Stephen please explain/review the use of mySize as an offset for RAM access here....
-      access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + byte];  //?eh
-
+      access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + byte];
       mySystem->setPageAccess((startCurrentBank + byte) >> shift, access);
     }
 
@@ -210,10 +198,8 @@ bool CartridgeDASH::bank(uInt16 bank) {
     // Map ROM bank image into the system into the correct slot
     // Memory map is 1K slots at 0x1000, 0x1400, 0x1800, 0x1C00
 
-    // Record which bank switched in (as ROM)
-    myCurrentBank = bankInUse[bankNumber] = (Int16) bankID;
-    // Effectively *1K
-    uInt32 startCurrentBank = bankID << ROM_BANK_TO_POWER;
+    bankInUse[bankNumber] = (Int16) bankID;                   // Record which bank switched in (as ROM)
+    uInt32 startCurrentBank = bankID << ROM_BANK_TO_POWER;    // Effectively *1K
 
     // Setup the page access methods for the current bank
     System::PageAccess access(0, 0, 0, this, System::PA_READ);
@@ -232,40 +218,32 @@ bool CartridgeDASH::bank(uInt16 bank) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDASH::bank() const {
-  // TODO: Stephen -- what to do here?  We don't really HAVE a "current bank"; we have 4 banks
-  // and they are defined in bankInUse[...].
-  // What I've done is kept track of the last switched bank, and return that. But that doesn't tell us WHERE. :(
 
-  return myCurrentBank;
+  // Doesn't support bankswitching in the normal sense
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDASH::bankCount() const {
 
-  // We have a constant # banks for this scheme; 32 ROM and 32 RAM (or, at least, RAM_BANK_COUNT and ROM_BANK_COUNT)
-  // See usage of bank bits.
-  // TODO: Stephen -- What should this return, given the mangled bank value?
-  return ROM_BANK_COUNT + RAM_BANK_COUNT;
+  // Doesn't support bankswitching in the normal sense
+  // There is are 4 'virtual' ROM banks that can change in many different ways, and 4 virtual RAM banks...
+  return 8;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDASH::patch(uInt16 address, uInt8 value) {
-  // Patch the cartridge ROM
-  // TODO: Stephen... I assume this is for some sort of debugger support....?
+
+  // Patch the cartridge ROM (for debugger)
 
   myBankChanged = true;
 
-  uInt32 bankNumber = (address >> ROM_BANK_TO_POWER) & 3;        // now 1K bank # (ie: 0-3)
-  Int32 whichBankIsThere = bankInUse[bankNumber]; // ROM or RAM bank reference
+  uInt32 bankNumber = (address >> ROM_BANK_TO_POWER) & 3;   // now 1K bank # (ie: 0-3)
+  Int32 whichBankIsThere = bankInUse[bankNumber];           // ROM or RAM bank reference
 
   if (whichBankIsThere == BANK_UNDEFINED) {
 
-    // We're trying to access undefined memory (no bank here yet)
-
-    // TODO: Stephen -- what to do here? Fail silently?
-    // want to throw some sort of Stella error -- trying to patch an unswitched in bank!
-
-    assert(false);
+    // We're trying to access undefined memory (no bank here yet). Fail!
     myBankChanged = false;
 
   } else if (whichBankIsThere & BITMASK_ROMRAM) { // patching RAM (512 byte banks)
@@ -294,9 +272,8 @@ const uInt8* CartridgeDASH::getImage(int& size) const {
 bool CartridgeDASH::save(Serializer& out) const {
   try {
     out.putString(name());
-    out.putShort(myCurrentBank);
-    for (uInt32 bank = 0; bank < 4; bank++)
-      out.putShort(bankInUse[bank]);
+    for (uInt32 b = 0; b < 4; b++)
+      out.putShort(bankInUse[b]);
     out.putByteArray(myRAM, RAM_TOTAL_SIZE);
   } catch (...) {
     cerr << "ERROR: CartridgeDASH::save" << endl;
@@ -314,17 +291,13 @@ bool CartridgeDASH::load(Serializer& in) {
   try {
     if (in.getString() != name())
       return false;
-    myCurrentBank = in.getShort();
-    for (uInt32 bank = 0; bank < 4; bank++)
-      bankInUse[bank] = in.getShort();
+    for (uInt32 b = 0; b < 4; b++) {
+      bank(bankInUse[b] = in.getShort());     // read, and switch it in
+    }
     in.getByteArray(myRAM, RAM_TOTAL_SIZE);
   } catch (...) {
     cerr << "ERROR: CartridgeDASH::load" << endl;
     return false;
   }
-
-  // Now, go to the current bank
-  bank(myCurrentBank);
-
   return true;
 }

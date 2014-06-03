@@ -244,7 +244,6 @@ public:
   bool poke(uInt16 address, uInt8 value);
 
 private:
-  Int16 myCurrentBank;   // whatever the LAST switched bank was...
 
   uInt32 mySize;        // Size of the ROM image
   uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge
