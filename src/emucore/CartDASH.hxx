@@ -33,15 +33,17 @@ class System;
 /**
   Cartridge class for new tiling engine "Boulder Dash" format games with RAM.
   Kind of a combination of 3F and 3E, with better switchability.
-  This code is B.Watson's Cart3E modified to new specs by Andrew Davie.
+  B.Watson's Cart3E was used as a template for building this implementation.
 
-  Note: because a single bank number is used to define both the destination (0-3)
+  Because a single bank number is used to define both the destination (0-3)
   AND the type (ROM/RAM) there are only 5 bits left to indicate the actual bank
   number. This sets the limits of 32K ROM and 16K RAM.
 
-  D7   is that RAM/ROM flag (1=RAM)
-  D6D5 indciates the bank number (0-3)
-  D4D0 indicate the actual # (0-31) from the image/ram
+  D7			RAM/ROM flag (1=RAM)
+  D6D5			indicate the bank number (0-3)
+  D4D3D2D1D0	indicate the actual # (0-31) from the image/ram
+
+  Hotspot 0x3F is used for bank-switching, with the encoded bank # as above.
 
   ROM:
 
@@ -61,40 +63,29 @@ class System;
   into the last bank area.  Currently the latter (programmer onus) is required,
   but it would be nice for the cartridge hardware to auto-switch on reset.
 
-  For both ROM (write to 0x3F) and RAM (write to 0x3E) bank switching, the
-  top two bits indicate the physical address segment which is being switched,
-  and the low 6 bits indicate the bank number, as per the following ...
+  ROM switching (write of block+bank number to $3F) D7=0 and D6D5 upper 2 bits of bank #
+  indicates the destination segment (0-3, corresponding to $F000, $F400, $F800, $FC00),
+  and lower 5 bits indicate the 1K bank to switch in.  Can handle 32 x 1K ROM banks (32K total).
 
-  ROM switching (write of block+bank number to $3F) upper 2 bits of bank #
-  indicates the destination segment (0-3, corresponding to $F000, $F400,
-  $F800, $FC00), and lower 6 bits indicate the 1K bank to switch in.  Can
-  handle 64 x 1K ROM banks (64K total).
+    D7 D6 D5   D4D3D2D1D0
+ 	 0  0  0	x x x x x		switch a 1K ROM bank xxxxx to $F000
+     0  0  1					switch a 1K ROM bank xxxxx to $F400
+   	 0  1  0					switch a 1K ROM bank xxxxx to $F800
+     0  1  1					switch a 1K ROM bank xxxxx to $FC00
 
-  BITS    ACTION
-  D7D6 0xxxxx
-  0 0 -- switch a 1K ROM bank 0xxxxx to $F000
-  0 1 -- switch a 1K ROM bank 0xxxxx to $F400
-  1 0 -- switch 1K ROM bank 0xxxxx to $F800
-  1 1 -- switch 1K ROM bank 0xxxxx to $FC00
+  RAM switching (write of segment+bank number to $3F) with D7=1 and D6D5 upper 2 bits of bank #
+  indicates the destination RAM segment (0-3, corresponding to $F000, $F200, $F400, $F600).
+  Note that this allows contiguous 2K of RAM to be configured by setting 4 consecutive RAM segments
+  each 512 bytes with consecutive addresses.  However, as the write address of RAM is +0x800, this
+  invalidates ROM access as described below.
 
-  can handle 32K ROM maximum
-
-  RAM switching (write of segment+bank number to $3E) upper 2 bits of bank #
-  indicates the destination RAM segment (0-3, corresponding to $F000, $F200,
-  $F400, $F600).  Note that this allows contiguous 2K of RAM to be configured
-  by setting 4 consecutive RAM segments with consecutive addresses.  However,
-  as the write address of RAM is +0x800, this invalidates ROM access as
-  described below.
-
-  write access uses +$800
   can handle 32 x 512 byte RAM banks (16K total)
 
-  BITS    ACTION
-  D7D6 1xxxxx
-  0 0 -- switch a 512 byte RAM bank xxxxx to $F000 with write @ $F800
-  0 1 -- switch a 512 byte RAM bank xxxxx to $F200 with write @ $FA00
-  1 0 -- switch a 512 byte RAM bank xxxxx to $F400 with write @ $FC00
-  1 1 -- switch a 512 byte RAM bank xxxxx to $F600 with write @ $FE00
+    D7 D6 D5    D4D3D2D1D0
+     1  0  0     x x x x x		switch a 512 byte RAM bank xxxxx to $F000 with write @ $F800
+        0  1					switch a 512 byte RAM bank xxxxx to $F200 with write @ $FA00
+        1  0					switch a 512 byte RAM bank xxxxx to $F400 with write @ $FC00
+	    1  1					switch a 512 byte RAM bank xxxxx to $F600 with write @ $FE00
 
   It is possible to switch multiple RAM banks and ROM banks together
 
@@ -122,32 +113,14 @@ class System;
   Switching in RAM block 1 makes F200-F3FF ROM inaccessible, however F000-F1FF is
   still readable.  So, care must be paid.
 
+  TODO: THe partial reading of ROM blocks switched out by RAM is not yet implemented!!
+
   This crazy RAM layout is useful as it allows contiguous RAM to be switched in,
   up to 2K in one sequentially accessible block. This means you CAN have 2K of
   consecutive RAM. If you don't detect ROM write area, then you would have NO ROM
   switched in (don't forget to copy your reset vectors!)
 
-  NOTE:
-  We could consider the 4A50 method where the cart detects read/writes and we
-  use the same address for reading/writing. magic writes.  If we could avoid
-  the memory doubling for RAM, that would make it easier to code -- use the
-  same variables for read/write This would then mean that ROM banks 2,3 would
-  never be bothered by RAM.  I like this.
-
- ----------------------------------------------------------------------------------------------
-
-  This implementation of DASH bankswitching numbers the ROM banks 0 to 63, and
-  the RAM banks 64 to 127.  This is done because the public bankswitching
-  interface requires us to use one bank number, not one bank number plus the
-  knowledge of whether it's RAM or ROM.
-
-  All 32K of potential RAM is available to a game using this class, even though
-  real cartridges might not have the full 32K: We have no way to tell how much
-  RAM the game expects. This may change in the future (we may add a stella.pro
-  property for this), but for now it shouldn't cause any problems.
-  (Famous last words...)
-
-  @author  A. Davie
+  @author  Andrew Davie
 */
 
 class CartridgeDASH: public Cartridge
@@ -277,7 +250,7 @@ class CartridgeDASH: public Cartridge
 
     Int16 bankInUse[4];     // bank being used for ROM/RAM (-1 = undefined)
 
-    // RAM contents. RAM banks are 512 bytes, and there are a maximum of 64 of them
+    static const uInt16 BANK_SWITCH_HOTSPOT = 0x3F;			// writes to this address cause bankswitching
 
     static const uInt8 BANK_BITS = 5;                         // # bits for bank
     static const uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
