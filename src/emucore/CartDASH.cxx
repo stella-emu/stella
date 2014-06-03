@@ -123,10 +123,10 @@ void CartridgeDASH::install(System& system)
 uInt8 CartridgeDASH::peek(uInt16 address)
 {
   uInt8 value = 0;
-  uInt32 bank = (address >> 10) & 3;        // convert to 1K bank index (0-3)
-  Int16 imageBank = bankInUse[bank];        // the ROM/RAM bank that's here
+  uInt32 bank = (address >> ROM_BANK_TO_POWER) & 3;   	// convert to 1K bank index (0-3)
+  Int16 imageBank = bankInUse[bank];        			// the ROM/RAM bank that's here
 
-  if(imageBank <= BANK_UNDEFINED)
+  if(imageBank == BANK_UNDEFINED)						// an uninitialised bank?
   {
     // accessing invalid bank, so return should be... random?
     // TODO: Stephen -- throw some sort of error; looking at undefined data
@@ -134,21 +134,18 @@ uInt8 CartridgeDASH::peek(uInt16 address)
     assert(false);
     value = mySystem->randGenerator().next();
   }
-
-  else if(imageBank < ROM_BANK_COUNT)   // accessing ROM
+  else if (imageBank & ROMRAM) // a RAM bank
+  {
+	Int32 ramBank = imageBank & BIT_BANK_MASK;		// discard irrelevant bits
+	Int32 offset = ramBank << RAM_BANK_TO_POWER;  // base bank address in RAM
+	offset += (address & (RAM_BANK_SIZE-1));      // + byte offset in RAM bank
+	value = myRAM[offset];
+  }
+  else	// accessing ROM
   {
     Int32 offset = imageBank << ROM_BANK_TO_POWER;  // base bank address in image
     offset += (address & (ROM_BANK_SIZE-1));        // + byte offset in image bank
     value = myImage[offset];
-  }
-  else    // must be a RAM bank
-  {
-    Int32 ramBank = imageBank - ROM_BANK_COUNT;
-    assert(ramBank < RAM_BANK_COUNT);             // would be bad, otherwise
-
-    Int32 offset = ramBank << RAM_BANK_TO_POWER;  // base bank address in RAM
-    offset += (address & (RAM_BANK_SIZE-1));      // + byte offset in RAM bank
-    value = myRAM[offset];
   }
 
   return value;
