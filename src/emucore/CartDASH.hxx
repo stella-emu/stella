@@ -255,7 +255,7 @@ private:
 
   static const uInt8 BANK_BITS = 5;                         // # bits for bank
   static const uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
-  static const uInt8 BITMASK_ROMRAM = 0x80;   // flags ROM or RAM bank switching (1==RAM)
+  static const uInt8 BITMASK_ROMRAM = 0x80;   // flags ROM or RAM bank switching (D7--> 1==RAM)
 
   static const uInt16 RAM_BANK_COUNT = 32;
   static const uInt16 RAM_BANK_TO_POWER = 9;    // 2^n = 512
@@ -268,7 +268,6 @@ private:
   static const uInt16 BITMASK_ROM_BANK = (ROM_BANK_SIZE -1);
 
   static const uInt16 ROM_BANK_COUNT = 32;
-  static const uInt16 BITMASK_ROM_BANK = (ROM_BANK_COUNT - 1);
 
   static const uInt16 RAM_WRITE_OFFSET = 0x800;
 
