@@ -159,24 +159,11 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;    // restrict to 4K address range
 
-  // Check for write to 3E (RAM switching) or 3F (ROM switching) and switch
-  // banks if necessary.  There are NO mirrored hotspots.
+  // Check for write to the bank switch address. RAM/ROM and bank # are encoded in 'value'
+  // There are NO mirrored hotspots.
 
-  switch (address)
-  {
-    case 0x3F: // a ROM switch
-      assert(value < ROM_BANK_COUNT);
-      bank(value);
-      break;
-    case 0x3E: // a RAM switch
-      assert(value < RAM_BANK_COUNT);
-      bank(ROMRAM|value);
-      break;
-  }
-
-  // @THOMAS -- well, really we don't need to use 3E and 3F -- we can just use (say) 3E
-  // and the value determines if we're doing RAM(64+bank) or ROM(bank) writes.
-  // No need to have two addresses at all, right?
+  if ( address == BANK_SWITCH_HOTSPOT)
+	  bank(value);
 
   // Pass the poke through to the TIA. In a real Atari, both the cart and the
   // TIA see the address lines, and both react accordingly. In Stella, each
