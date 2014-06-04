@@ -535,12 +535,14 @@ void FrameBuffer::refresh()
     case EventHandler::S_PAUSE:
       invalidate();
       drawTIA();
+#if 0  // FIXME: eliminate stuttering in TIA mode; do we really need this?
       if(isDoubleBuffered())
       {
         postFrameUpdate();
         invalidate();
         drawTIA();
       }
+#endif
       break;
 
     case EventHandler::S_MENU:
@@ -731,13 +733,12 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setCursorState()
 {
-  // Always grab mouse in fullscreen or during emulation (if enabled),
-  // and don't show the cursor during emulation
+  // Always grab mouse in emulation (if enabled),
+  // and don't show the cursor during emulation (if enabled)
   bool emulation =
       myOSystem.eventHandler().state() == EventHandler::S_EMULATE;
-  grabMouse(fullScreen() ||
-    (emulation && myOSystem.settings().getBool("grabmouse")));
-  showCursor(!emulation);
+  grabMouse(emulation && myOSystem.settings().getBool("grabmouse"));
+  showCursor(!(emulation || myOSystem.settings().getBool("hidecursor")));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

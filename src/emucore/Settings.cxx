@@ -42,7 +42,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("vsync", "true");
   setInternal("fullscreen", "false");
   setInternal("center", "false");
-  setInternal("grabmouse", "true");
   setInternal("palette", "standard");
   setInternal("colorloss", "true");
   setInternal("timing", "sleep");
@@ -84,6 +83,8 @@ Settings::Settings(OSystem& osystem)
   setInternal("joydeadzone", "13");
   setInternal("joyallow4", "false");
   setInternal("usemouse", "analog");
+  setInternal("grabmouse", "true");
+  setInternal("hidecursor", "false");
   setInternal("dsense", "5");
   setInternal("msense", "7");
   setInternal("saport", "lr");
@@ -391,10 +392,11 @@ void Settings::usage()
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
-    << "FIXSDL  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -usemouse     <always|\n"
     << "                 analog|\n"
     << "                 never>        Use mouse as a controller as specified by ROM properties in given mode(see manual)\n"
+    << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
+    << "  -hidecursor   <1|0>          Always hide the cursor, or show it when appropriate\n"
     << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-10)\n"
     << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-15)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"

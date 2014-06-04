@@ -79,6 +79,7 @@ class InputDialog : public Dialog
     StaticTextWidget* myMPaddleLabel;
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
+    CheckboxWidget*   myHideCursor;
 };
 
 #endif

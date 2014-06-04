@@ -108,8 +108,9 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
     SDL_DestroyRenderer(myRenderer);
     myRenderer = NULL;
   }
-  // Don't re-create the window if its size hasn't changed, as it is
-  // wasteful, and causing flashing in fullscreen mode
+
+  // Don't re-create the window if its size hasn't changed, as it's not
+  // necessary, and causes flashing in fullscreen mode
   if(myWindow)
   {
     int w, h;
@@ -120,8 +121,12 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
       myWindow = NULL;
     }
   }
-
-  if(!myWindow)
+  if(myWindow)
+  {
+    // Even though window size stayed the same, the title may have changed
+    SDL_SetWindowTitle(myWindow, title.c_str());
+  }
+  else
   {
     int pos = myOSystem.settings().getBool("center")
                 ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
@@ -191,13 +196,13 @@ void FrameBufferSDL2::invalidate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::showCursor(bool show)
 {
-//FIXSDL  SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
+  SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::grabMouse(bool grab)
 {
-//FIXSDL  SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
+  SDL_SetRelativeMouseMode(grab ? SDL_TRUE : SDL_FALSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

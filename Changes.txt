@@ -20,6 +20,10 @@
     context menu item to the debugger TIA output area.  This saves the
     current TIA image to a PNG file.
 
+  * Added 'hidecursor' commandline option, which allows to completely
+    disable showing the mouse cursor (useful on systems that don't have
+    a mouse).
+
   * Removed 'uipalette' option, as the original palette is no longer
     supported.
 

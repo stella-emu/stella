@@ -198,6 +198,15 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myGrabMouse->clearFlags(WIDGET_ENABLED);
 #endif
 
+  // Hide mouse cursor
+  ypos += lineHeight + 4;
+  myHideCursor = new CheckboxWidget(myTab, font, xpos, ypos,
+	                 "Always hide mouse cursor");
+  wid.push_back(myHideCursor);
+#ifndef WINDOWED_SUPPORT
+  myHideCursor->clearFlags(WIDGET_ENABLED);
+#endif
+
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
 }
@@ -216,9 +225,6 @@ void InputDialog::loadConfig()
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
   myDeadzoneLabel->setValue(Joystick::deadzone());
 
-  // Grab mouse
-  myGrabMouse->setState(instance().settings().getBool("grabmouse"));
-
   // Paddle speed (digital and mouse)
   myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
   myDPaddleLabel->setLabel(instance().settings().getString("dsense"));
@@ -230,6 +236,12 @@ void InputDialog::loadConfig()
 
   // Allow all 4 joystick directions
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
+
+  // Grab mouse
+  myGrabMouse->setState(instance().settings().getBool("grabmouse"));
+
+  // Hide cursor
+  myHideCursor->setState(instance().settings().getBool("hidecursor"));
 
   myTab->loadConfig();
 }
@@ -250,10 +262,6 @@ void InputDialog::saveConfig()
   instance().settings().setValue("joydeadzone", deadzone);
   Joystick::setDeadZone(deadzone);
 
-  // Grab mouse	 
-  instance().settings().setValue("grabmouse", myGrabMouse->getState());	 
-  instance().frameBuffer().setCursorState();
-
   // Paddle speed (digital and mouse)
   int sensitivity = myDPaddleSpeed->getValue();
   instance().settings().setValue("dsense", sensitivity);
@@ -269,6 +277,11 @@ void InputDialog::saveConfig()
   bool allowall4 = myAllowAll4->getState();
   instance().settings().setValue("joyallow4", allowall4);
   instance().eventHandler().allowAllDirections(allowall4);
+
+  // Grab mouse and hide cursor
+  instance().settings().setValue("grabmouse", myGrabMouse->getState());	 
+  instance().settings().setValue("hidecursor", myHideCursor->getState());	 
+  instance().frameBuffer().setCursorState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -296,9 +309,6 @@ void InputDialog::setDefaults()
       myDeadzone->setValue(0);
       myDeadzoneLabel->setValue(3200);
 
-      // Grab mouse
-      myGrabMouse->setState(true);
-
       // Paddle speed (digital and mouse)
       myDPaddleSpeed->setValue(5);
       myDPaddleLabel->setLabel("5");
@@ -310,6 +320,12 @@ void InputDialog::setDefaults()
 
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
+
+      // Grab mouse
+      myGrabMouse->setState(true);
+
+      // Hide cursor
+      myHideCursor->setState(false);
 
       break;
     }
