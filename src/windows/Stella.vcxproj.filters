@@ -756,6 +756,9 @@
     <ClCompile Include="..\emucore\TIASurface.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\CartDASH.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1524,6 +1527,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\TIASurface.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartDASH.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>

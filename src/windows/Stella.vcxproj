@@ -275,6 +275,7 @@
     <ClCompile Include="..\emucore\CartBFSC.cxx" />
     <ClCompile Include="..\emucore\CartCM.cxx" />
     <ClCompile Include="..\emucore\CartCTY.cxx" />
+    <ClCompile Include="..\emucore\CartDASH.cxx" />
     <ClCompile Include="..\emucore\CartDF.cxx" />
     <ClCompile Include="..\emucore\CartDFSC.cxx" />
     <ClCompile Include="..\emucore\CartFA2.cxx" />
@@ -528,6 +529,7 @@
     <ClInclude Include="..\emucore\CartCM.hxx" />
     <ClInclude Include="..\emucore\CartCTY.hxx" />
     <ClInclude Include="..\emucore\CartCTYTunes.hxx" />
+    <ClInclude Include="..\emucore\CartDASH.hxx" />
     <ClInclude Include="..\emucore\CartDF.hxx" />
     <ClInclude Include="..\emucore\CartDFSC.hxx" />
     <ClInclude Include="..\emucore\CartFA2.hxx" />
