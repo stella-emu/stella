@@ -245,22 +245,33 @@ public:
 
 private:
 
+  bool bankRAM(uInt8 bank);      // switch a RAM bank
+  bool bankROM(uInt8 bank);      // switch a ROM bank
+
+
   uInt32 mySize;        // Size of the ROM image
   uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge
 
-  Int16 bankInUse[4];     // bank being used for ROM/RAM (-1 = undefined)
 
-  static const uInt16 BANK_SWITCH_HOTSPOT = 0x3F;			// writes to this address cause bankswitching
+  // We have an array that indicates for each of the 8 512 byte areas of the address space, which ROM/RAM
+  // bank is used in that area. ROM switches 1K so occupies 2 successive entries for each switch. RAM occupies
+  // two as well, one 512 byte for read and one for write. The RAM locations are +0x800 apart, and the ROM
+  // are consecutive. This allows us to determine on a read/write exactly where the data is.
 
-  static const uInt8 BANK_BITS = 5;                         // # bits for bank
+  Int16 bankInUse[8];     // bank being used for ROM/RAM (eight 512 byte areas) (-1 = undefined)
+
+  static const uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;			// writes to this address cause bankswitching
+  static const uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;     // writes to this address cause bankswitching
+
+  static const uInt8 BANK_BITS = 6;                         // # bits for bank
   static const uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
   static const uInt8 BITMASK_ROMRAM = 0x80;   // flags ROM or RAM bank switching (D7--> 1==RAM)
 
-  static const uInt16 RAM_BANK_COUNT = 32;
+  static const uInt16 MAXIMUM_BANK_COUNT = (1<<BANK_BITS);
   static const uInt16 RAM_BANK_TO_POWER = 9;    // 2^n = 512
   static const uInt16 RAM_BANK_SIZE = (1 << RAM_BANK_TO_POWER);
   static const uInt16 BITMASK_RAM_BANK = (RAM_BANK_SIZE - 1);
-  static const uInt32 RAM_TOTAL_SIZE = RAM_BANK_COUNT * RAM_BANK_SIZE;
+  static const uInt32 RAM_TOTAL_SIZE = MAXIMUM_BANK_COUNT * RAM_BANK_SIZE;
 
   static const uInt16 ROM_BANK_TO_POWER = 10;   // 2^n = 1024
   static const uInt16 ROM_BANK_SIZE = (1 << ROM_BANK_TO_POWER);
