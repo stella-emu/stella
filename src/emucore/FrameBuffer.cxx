@@ -192,16 +192,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
      (myDesktopSize.w < width || myDesktopSize.h < height))
     return kFailTooLarge;
 
-// FIXSDL - remove size limitations here?
-  if(myOSystem.settings().getBool("fullscreen"))
-  {
-    if(myDesktopSize.w < width || myDesktopSize.h < height)
-      return kFailTooLarge;
-
-    useFullscreen = true;
-  }
-  else
-    useFullscreen = false;
+  useFullscreen = myOSystem.settings().getBool("fullscreen");
 #else
   // Make sure this mode is even possible
   // We only really need to worry about it in non-windowed environments,
@@ -676,8 +667,6 @@ void FrameBuffer::stateChanged(EventHandler::State state)
 void FrameBuffer::setFullscreen(bool enable)
 {
   const VideoMode& mode = getSavedVidMode(enable);
-cerr << "setFullscreen: " << enable << " " << mode << endl;
-
   if(setVideoMode(myScreenTitle, mode, true))
   {
     myImageRect = mode.image;
@@ -897,34 +886,34 @@ void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
   {
     // Fullscreen mode stretching
     float stretchFactor = 1.0;
-    float scaleX = float(image.width()) / screen.w;
-    float scaleY = float(image.height()) / screen.h;
+    float scaleX = float(iw) / screen.w;
+    float scaleY = float(ih) / screen.h;
 
     // Scale to actual or integral factors
     if(stretch)
     {
       // Scale to full (non-integral) available space
       if(scaleX > scaleY)
-        stretchFactor = float(screen.w) / image.width();
+        stretchFactor = float(screen.w) / iw;
       else
-        stretchFactor = float(screen.h) / image.height();
+        stretchFactor = float(screen.h) / ih;
     }
     else
     {
       // Only scale to an integral amount
       if(scaleX > scaleY)
       {
-        int bw = image.width() / zoom;
-        stretchFactor = float(int(screen.w / bw) * bw) / image.width();
+        int bw = iw / zoom;
+        stretchFactor = float(int(screen.w / bw) * bw) / iw;
       }
       else
       {
-        int bh = image.height() / zoom;
-        stretchFactor = float(int(screen.h / bh) * bh) / image.height();
+        int bh = ih / zoom;
+        stretchFactor = float(int(screen.h / bh) * bh) / ih;
       }
     }
-    iw = (uInt32) (stretchFactor * image.width());
-    ih = (uInt32) (stretchFactor * image.height());
+    iw = (uInt32) (stretchFactor * iw);
+    ih = (uInt32) (stretchFactor * ih);
   }
   else
   {

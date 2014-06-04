@@ -38,7 +38,6 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
     myWindow(NULL),
     myRenderer(NULL),
-    myWindowFlags(0),
     myDirtyFlag(true),
     myDblBufferedFlag(true)
 {
@@ -97,54 +96,54 @@ void FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, VariantList& renderers
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
-                                   bool fullscreen_toggle)
+                                   bool /*fullscreen_toggle*/)
 {
-cerr << "fullscreen_toggle=" << fullscreen_toggle << endl;
-#if 0
-  uInt32 flags = enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
-  if(SDL_SetWindowFullscreen(myWindow, flags))
-    myOSystem.settings().setValue("fullscreen", enable);
-#endif
-
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
-  // (Re)create window and renderer
+  // Always recreate renderer (some systems need this)
   if(myRenderer)
   {
     SDL_DestroyRenderer(myRenderer);
     myRenderer = NULL;
   }
+  // Don't re-create the window if its size hasn't changed, as it is
+  // wasteful, and causing flashing in fullscreen mode
   if(myWindow)
   {
-    SDL_DestroyWindow(myWindow);
-    myWindow = NULL;
+    int w, h;
+    SDL_GetWindowSize(myWindow, &w, &h);
+    if(w != mode.screen.w || h != mode.screen.h)
+    {
+      SDL_DestroyWindow(myWindow);
+      myWindow = NULL;
+    }
   }
 
-  // Window centering option
-  int pos = myOSystem.settings().getBool("center")
-              ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
-  myWindow = SDL_CreateWindow(title.c_str(),
-                 pos, pos, mode.screen.w, mode.screen.h,
-                 0);
-  if(myWindow == NULL)
+  if(!myWindow)
   {
-    string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
-    myOSystem.logMessage(msg, 0);
-    return false;
+    int pos = myOSystem.settings().getBool("center")
+                ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
+    myWindow = SDL_CreateWindow(title.c_str(),
+                   pos, pos, mode.screen.w, mode.screen.h,
+                   mode.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    if(myWindow == NULL)
+    {
+      string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
+      myOSystem.logMessage(msg, 0);
+      return false;
+    }
   }
 
-  // V'synced blits option
   Uint32 renderFlags = SDL_RENDERER_ACCELERATED;
-  if(myOSystem.settings().getBool("vsync"))
+  if(myOSystem.settings().getBool("vsync"))  // V'synced blits option
     renderFlags |= SDL_RENDERER_PRESENTVSYNC;
-  // Render hint
-  const string& video = myOSystem.settings().getString("video");
+  const string& video = myOSystem.settings().getString("video");  // Render hint
   if(video != "")
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
   myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
-  if(myWindow == NULL)
+  if(myRenderer == NULL)
   {
     string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
     myOSystem.logMessage(msg, 0);
@@ -186,7 +185,7 @@ string FrameBufferSDL2::about() const
 void FrameBufferSDL2::invalidate()
 {
   myDirtyFlag = true;
-//  SDL_RenderClear(myRenderer);
+  SDL_RenderClear(myRenderer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,7 +215,7 @@ void FrameBufferSDL2::postFrameUpdate()
 {
   if(myDirtyFlag)
   {
-    // Now show all changes made to the texture(s)
+    // Now show all changes made to the renderer
     SDL_RenderPresent(myRenderer);
     myDirtyFlag = false;
   }

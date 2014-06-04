@@ -165,22 +165,16 @@ class FrameBufferSDL2 : public FrameBuffer
     SDL_Window* myWindow;
     SDL_Renderer* myRenderer;
 
-    // SDL initialization flags
-    // This is set by the base FrameBuffer class, and read by the derived classes
-    // If a FrameBuffer is successfully created, the derived classes must modify
-    // it to point to the actual flags used by the SDL_Surface
-    uInt32 myWindowFlags;
-
     // Used by mapRGB (when palettes are created)
     SDL_PixelFormat* myPixelFormat;
 
-    // The depth of the texture buffer
+    // The depth of the render buffer
     uInt32 myDepth;
 
-    // Indicates that the texture has been modified, and should be redrawn
+    // Indicates that the renderer has been modified, and should be redrawn
     bool myDirtyFlag;
 
-    // Indicates whether the backend is using double buffering
+    // Indicates whether the render backend is using double buffering
     bool myDblBufferedFlag;
 };
 
