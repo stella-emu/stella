@@ -229,7 +229,7 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
     // Setup the page access methods for the current bank
     System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-    uInt32 bankStart = 0x1000 + (bankNumber << ROM_BANK_TO_POWER); // *1K
+    uInt32 bankStart = 0x1000 + (bankNumber << (ROM_BANK_TO_POWER-1)); // *1K
 
     for (uInt32 byte = 0; byte < ROM_BANK_SIZE; byte += (1 << shift)) {
       access.directPeekBase = &myImage[startCurrentBank + byte];
