@@ -27,12 +27,13 @@
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& settings) :
     Cartridge(settings), mySize(size) {
+
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);
-  createCodeAccessBase(mySize + RAM_TOTAL_SIZE);    // TODO: how does the RAM write offset affect the size we need?
+  createCodeAccessBase(mySize + 65536); //RAM_TOTAL_SIZE);    // TODO: how does the RAM write offset affect the size we need?
 
   // This cart can address 4 banks of RAM, each 512 bytes @ 1000, 1200, 1400, 1600
   // However, it may not be addressable all the time (it may be swapped out)
@@ -44,7 +45,7 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
 
   // Remember startup bank (0 per spec, rather than last per 3E scheme).
   // Set this to go to 3rd 1K Bank.
-  myStartBank = (3 << BANK_BITS) | 0;
+  myStartBank = 0; //(3 << BANK_BITS) | 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,6 +55,7 @@ CartridgeDASH::~CartridgeDASH() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::reset() {
+
   // Initialize RAM
   if (mySettings.getBool("ramrandom"))
     for (uInt32 i = 0; i < RAM_TOTAL_SIZE; ++i)
@@ -89,10 +91,9 @@ void CartridgeDASH::install(System& system) {
   // Setup the last segment (of 4, each 1K) to point to the first ROM slice
   // Actually we DO NOT want "always". It's just on bootup, and can be out switched later
   access.type = System::PA_READ;
-  for (uInt32 byte = 0; byte < ROM_BANK_SIZE; byte++) {
-    uInt32 address = (0x1000 - ROM_BANK_SIZE) + (byte << shift);  // which byte in last bank of 2600 address space
-    access.directPeekBase = &myImage[byte];           // from base address 0x0000 in image, so just use 'byte'
-    access.codeAccessBase = &myCodeAccessBase[byte];
+  for (uInt32 address = (0x2000 - ROM_BANK_SIZE); address < 0x2000; address += (1 << shift)) {
+    access.directPeekBase = &myImage[address & (ROM_BANK_SIZE - 1)];           // from base address 0x0000 in image
+    access.codeAccessBase = &myCodeAccessBase[address & (ROM_BANK_SIZE - 1)];
     mySystem->setPageAccess(address >> shift, access);
 
     // TODO: In this and other implementations we appear to be using "shift" as a system-dependant mangle for
@@ -109,7 +110,7 @@ void CartridgeDASH::install(System& system) {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
 
   // Install pages for the startup bank into the first segment
-  bank(myStartBank);
+  bankROM(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,26 +182,28 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
   bankInUse[bankNumber] = (Int16) (BITMASK_ROMRAM | currentBank);   // Record which bank switched in (marked as RAM)
   bankInUse[bankNumber + 4] = (Int16) (BITMASK_ROMRAM | currentBank); // Record which (write) bank switched in (marked as RAM)
 
-  uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;       // Effectively * 512 bytes
 
   // Setup the page access methods for the current bank
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-  // Map read-port RAM image into the system
-  for (uInt32 byte = 0; byte < RAM_BANK_SIZE; byte += (1 << shift)) {
-    access.directPeekBase = &myRAM[startCurrentBank + byte];
-    access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + byte];  //TODO: check usage of 'mySize' here
-    mySystem->setPageAccess((startCurrentBank + byte) >> shift, access);
+  uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;       // Effectively * 512 bytes
+  uInt32 base = 0x1000 + startCurrentBank;
+
+  for (uInt32 address = base; address < base + RAM_BANK_SIZE; address += (1 << shift)) {
+    access.directPeekBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+    access.codeAccessBase = &myCodeAccessBase[65536 + startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+    mySystem->setPageAccess(address >> shift, access);
   }
 
   access.directPeekBase = 0;
   access.type = System::PA_WRITE;
 
-  // Map write-port RAM image into the system
-  for (uInt32 byte = 0; byte < RAM_BANK_SIZE; byte += (1 << shift)) {
-    access.directPokeBase = &myRAM[startCurrentBank + RAM_WRITE_OFFSET + byte];
-    access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + RAM_WRITE_OFFSET + byte]; // TODO: check usage of 'mySize' here
-    mySystem->setPageAccess((startCurrentBank + byte) >> shift, access);
+  base += RAM_WRITE_OFFSET;
+
+  for (uInt32 address = base; address < base + RAM_BANK_SIZE; address += (1 << shift)) {
+    access.directPeekBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+    access.codeAccessBase = &myCodeAccessBase[65536 + startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+    mySystem->setPageAccess(address >> shift, access);
   }
 
   return changed; // TODO: does RAM change banks or not????
@@ -229,12 +232,10 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
     // Setup the page access methods for the current bank
     System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-    uInt32 bankStart = 0x1000 + (bankNumber << (ROM_BANK_TO_POWER-1)); // *1K
-
-    for (uInt32 byte = 0; byte < ROM_BANK_SIZE; byte += (1 << shift)) {
-      access.directPeekBase = &myImage[startCurrentBank + byte];
-      access.codeAccessBase = &myCodeAccessBase[startCurrentBank + byte];
-      mySystem->setPageAccess((bankStart + byte) >> shift, access);
+    for (uInt32 address = 0x1000; address < 0x1000 + ROM_BANK_SIZE; address += (1 << shift)) {
+      access.directPeekBase = &myImage[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
+      access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
+      mySystem->setPageAccess(address >> shift, access);
     }
 
     changed = true;
