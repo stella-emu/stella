@@ -65,7 +65,7 @@ void CartridgeDASH::reset() {
 
   // We'll map the startup bank (0) from the image into the third 1K bank upon reset
 
-  bank(myStartBank);
+  bankROM(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,18 +90,12 @@ void CartridgeDASH::install(System& system) {
 
   // Setup the last segment (of 4, each 1K) to point to the first ROM slice
   // Actually we DO NOT want "always". It's just on bootup, and can be out switched later
+
   access.type = System::PA_READ;
   for (uInt32 address = (0x2000 - ROM_BANK_SIZE); address < 0x2000; address += (1 << shift)) {
     access.directPeekBase = &myImage[address & (ROM_BANK_SIZE - 1)];           // from base address 0x0000 in image
     access.codeAccessBase = &myCodeAccessBase[address & (ROM_BANK_SIZE - 1)];
     mySystem->setPageAccess(address >> shift, access);
-
-    // TODO: In this and other implementations we appear to be using "shift" as a system-dependant mangle for
-    // different access types (byte/int/32bit) on different architectures. I think I understand that much. However,
-    // I have an issue with how these loops are encoded in all the bank schemes I've seen. The issue being that
-    // the loop inits set some address (e.g., 0x1800) and then add a shifted value to it every loop. But when
-    // they want to get the downshifted value, they just shift down the whole value. Which will also shift down that base address
-    // and that makes no sense at all to me. I don't understand it.
   }
 
   // Initialise bank values for the 4x 1K bank areas
@@ -182,7 +176,6 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
   bankInUse[bankNumber] = (Int16) (BITMASK_ROMRAM | currentBank);   // Record which bank switched in (marked as RAM)
   bankInUse[bankNumber + 4] = (Int16) (BITMASK_ROMRAM | currentBank); // Record which (write) bank switched in (marked as RAM)
 
-
   // Setup the page access methods for the current bank
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
@@ -218,21 +211,22 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
 
     uInt16 shift = mySystem->pageShift();
 
-    uInt16 bankNumber = ((bank >> BANK_BITS) & 3) << 1;    // which bank # we are switching TO (BITS D6,D7)
+    uInt16 bankNumber = (bank >> BANK_BITS) & 3;    // which bank # we are switching TO (BITS D6,D7)
     uInt16 currentBank = bank & BIT_BANK_MASK;      // Wrap around/restrict to valid range
 
     // Map ROM bank image into the system into the correct slot
     // Memory map is 1K slots at 0x1000, 0x1400, 0x1800, 0x1C00
     // Each ROM uses 2 consecutive 512 byte slots
 
-    bankInUse[bankNumber] = bankInUse[bankNumber + 1] = (Int16) currentBank;   // Record which bank switched in (as ROM)
+    bankInUse[bankNumber * 2] = bankInUse[bankNumber * 2 + 1] = (Int16) currentBank; // Record which bank switched in (as ROM)
 
     uInt32 startCurrentBank = currentBank << ROM_BANK_TO_POWER;     // Effectively *1K
 
     // Setup the page access methods for the current bank
     System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-    for (uInt32 address = 0x1000; address < 0x1000 + ROM_BANK_SIZE; address += (1 << shift)) {
+    uInt32 base = 0x1000 + (bankNumber << ROM_BANK_TO_POWER);
+    for (uInt32 address = base; address < base + ROM_BANK_SIZE; address += (1 << shift)) {
       access.directPeekBase = &myImage[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
       access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
       mySystem->setPageAccess(address >> shift, access);

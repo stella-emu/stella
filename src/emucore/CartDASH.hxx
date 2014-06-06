@@ -283,8 +283,6 @@ private:
 
   static const Int16 BANK_UNDEFINED = -1;       // bank is undefined and inaccessible
 
-  uInt16 myCurrentBank;
-
   uInt8 myRAM[RAM_TOTAL_SIZE];
 };
 
