@@ -87,7 +87,7 @@ Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
   mySwitches = new Switches(myEvent, myProperties);
 
   // Construct the system and components
-  mySystem = new System(13, 6);
+  mySystem = new System();
 
   // The real controllers for this console will be added later
   // For now, we just add dummy joystick controllers, since autodetection

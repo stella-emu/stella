@@ -55,7 +55,7 @@ class System : public Serializable
       @param n Log base 2 of the addressing space size
       @param m Log base 2 of the page size
     */
-    System(uInt16 n, uInt16 m);
+    System(uInt16 n = 13, uInt16 m = 6);
 
     /**
       Destructor
