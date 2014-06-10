@@ -58,7 +58,7 @@ class PromptWidget : public Widget, public CommandSender
     void scrollToCurrent();
 
     // Line editing
-    void specialKeys(int keycode);
+    void specialKeys(StellaKey key);
     void nextLine();
     void killChar(int direction);
     void killLine(int direction);

@@ -139,14 +139,18 @@ void PromptWidget::printPrompt()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleText(char text)
 {
+  for(int i = _promptEndPos - 1; i >= _currentPos; i--)
+    buffer(i + 1) = buffer(i);
+  _promptEndPos++;
+  putchar(text);
+  scrollToCurrent();
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  int i;
   bool handled = true;
   bool dirty = false;
   
@@ -164,7 +168,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       {
         // Copy the user input to command
         string command;
-        for (i = 0; i < len; i++)
+        for (int i = 0; i < len; i++)
           command += buffer(_promptStartPos + i) & 0x7f;
 
         // Add the input to the history
@@ -207,7 +211,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       char delimiter = '\0';
 
       char str[256];
-      for (i = 0; i < len; i++)
+      for (int i = 0; i < len; i++)
       {
         str[i] = buffer(_promptStartPos + i) & 0x7f;
         if(strchr("{*@<> ", str[i]) != NULL )
@@ -279,7 +283,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
         _promptStartPos = _currentPos;
 
-        for(i=0; i<lastDelimPos; i++)
+        for(int i = 0; i < lastDelimPos; i++)
           putcharIntern(str[i]);
 
         if(lastDelimPos > 0)
@@ -416,16 +420,6 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       else if (instance().eventHandler().kbdAlt(mod))
       {
       }
-#if 0
-      else if (isprint(ascii))
-      {
-        for (i = _promptEndPos - 1; i >= _currentPos; i--)
-          buffer(i + 1) = buffer(i);
-        _promptEndPos++;
-        putchar(ascii);
-        scrollToCurrent();
-      }
-#endif
       else
         handled = false;
       break;
@@ -525,35 +519,32 @@ int PromptWidget::getWidth() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::specialKeys(int keycode)
+void PromptWidget::specialKeys(StellaKey key)
 {
-  bool handled = false;
+  bool handled = true;
 
-  switch (keycode)
+  switch(key)
   {
-    case 'a':
+    case KBDK_A:
       _currentPos = _promptStartPos;
-      handled = true;
       break;
-    case 'd':
+    case KBDK_D:
       killChar(+1);
-      handled = true;
       break;
-    case 'e':
+    case KBDK_E:
       _currentPos = _promptEndPos;
-      handled = true;
       break;
-    case 'k':
+    case KBDK_K:
       killLine(+1);
-      handled = true;
       break;
-    case 'u':
+    case KBDK_U:
       killLine(-1);
-      handled = true;
       break;
-    case 'w':
+    case KBDK_W:
       killLastWord();
-      handled = true;
+      break;
+    default:
+      handled = false;
       break;
   }
 
