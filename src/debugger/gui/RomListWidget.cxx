@@ -292,7 +292,12 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   bool handled = true;
   int oldSelectedItem = _selectedItem;
 
-  if(!_editMode)
+  if (_editMode)
+  {
+    // Class EditableWidget handles all single-key presses for us
+    handled = EditableWidget::handleKeyDown(key, mod);
+  }
+  else
   {
     switch (key)
     {

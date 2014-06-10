@@ -137,7 +137,14 @@ void PromptWidget::printPrompt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+bool PromptWidget::handleText(char text)
+{
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   int i;
   bool handled = true;
@@ -409,6 +416,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
       else if (instance().eventHandler().kbdAlt(mod))
       {
       }
+#if 0
       else if (isprint(ascii))
       {
         for (i = _promptEndPos - 1; i >= _currentPos; i--)
@@ -417,6 +425,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
         putchar(ascii);
         scrollToCurrent();
       }
+#endif
       else
         handled = false;
       break;

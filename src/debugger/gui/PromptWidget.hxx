@@ -70,7 +70,8 @@ class PromptWidget : public Widget, public CommandSender
 
     void handleMouseDown(int x, int y, int button, int clickCount);
     void handleMouseWheel(int x, int y, int direction);
-    bool handleKeyDown(StellaKey key, StellaMod mod, char ascii);
+    bool handleText(char text);
+    bool handleKeyDown(StellaKey key, StellaMod mod);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     // Account for the extra width of embedded scrollbar

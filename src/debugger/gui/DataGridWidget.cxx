@@ -282,14 +282,10 @@ int DataGridWidget::findItem(int x, int y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DataGridWidget::handleText(char text)
 {
-  if (_editMode)
+  if(_editMode)
   {
     // Class EditableWidget handles all text editing related key presses for us
-    if(EditableWidget::handleText(text))
-    {
-      setDirty(); draw();
-      return true;
-    }
+    return EditableWidget::handleText(text);
   }
   return false;
 }
@@ -305,7 +301,12 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
   bool handled = true;
   bool dirty = false;
 
-  if (!_editMode)
+  if (_editMode)
+  {
+    // Class EditableWidget handles all single-key presses for us
+    handled = EditableWidget::handleKeyDown(key, mod);
+  }
+  else
   {
     switch(key)
     {
