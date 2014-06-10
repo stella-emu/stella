@@ -65,14 +65,20 @@ class DialogContainer
     void updateTime(uInt64 time);
 
     /**
-      Handle a keyboard event.
+      Handle a keyboard Unicode text event.
 
-      @param key      Actual key symbol
-      @param mod      Modifiers
-      @param ascii    ASCII translation
-      @param state    Pressed (true) or released (false)
+      @param text   Unicode character string
     */
-    void handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool state);
+    void handleTextEvent(char text);
+
+    /**
+      Handle a keyboard single-key event.
+
+      @param key    Actual key symbol
+      @param mod    Modifiers
+      @param state  Pressed (true) or released (false)
+    */
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool state);
 
     /**
       Handle a mouse motion event.
@@ -166,7 +172,6 @@ class DialogContainer
     struct {
       StellaKey keycode;
       StellaMod flags;
-      char ascii;
     } myCurrentKeyDown;
     uInt64 myKeyRepeatTime;
 

@@ -80,9 +80,9 @@ class LauncherDialog : public Dialog
     void reload() { updateListing(); }
 
   protected:
-    virtual void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleKeyDown(StellaKey key, StellaMod mod);
+    void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void loadConfig();
     void updateListing(const string& nameToSelect = "");

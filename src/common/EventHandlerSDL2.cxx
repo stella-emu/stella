@@ -25,7 +25,6 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   : EventHandler(osystem)
 {
 }
-
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::~EventHandlerSDL2()
@@ -47,44 +46,58 @@ void EventHandlerSDL2::initializeJoysticks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandlerSDL2::enableTextEvents(bool enable)
+{
+  if(enable)
+    SDL_StartTextInput();
+  else
+    SDL_StopTextInput();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL2::pollEvent()
 {
-  while(SDL_PollEvent(&event))
+  while(SDL_PollEvent(&myEvent))
   {
-    switch(event.type)
+    switch(myEvent.type)
     {
       // keyboard events
       case SDL_KEYUP:
       case SDL_KEYDOWN:
       {
-        if(!event.key.repeat)
-          handleKeyEvent((StellaKey)event.key.keysym.scancode,
-                         (StellaMod)event.key.keysym.mod,
-                          'x', //FIXSDL event.key.keysym.scancode,
-                          event.key.type == SDL_KEYDOWN);
+        if(!myEvent.key.repeat)
+          handleKeyEvent((StellaKey)myEvent.key.keysym.scancode,
+                         (StellaMod)myEvent.key.keysym.mod,
+                          myEvent.key.type == SDL_KEYDOWN);
+        break;
+      }
+
+      case SDL_TEXTINPUT:
+      {
+        handleTextEvent(*(myEvent.text.text));
         break;
       }
 
       case SDL_MOUSEMOTION:
       {
-        handleMouseMotionEvent(event.motion.x, event.motion.y,
-                               event.motion.xrel, event.motion.yrel, 0);
+        handleMouseMotionEvent(myEvent.motion.x, myEvent.motion.y,
+                               myEvent.motion.xrel, myEvent.motion.yrel, 0);
         break;
       }
 
       case SDL_MOUSEBUTTONDOWN:
       case SDL_MOUSEBUTTONUP:
       {
-        bool pressed = event.button.type == SDL_MOUSEBUTTONDOWN;
-        switch(event.button.button)
+        bool pressed = myEvent.button.type == SDL_MOUSEBUTTONDOWN;
+        switch(myEvent.button.button)
         {
           case SDL_BUTTON_LEFT:
             handleMouseButtonEvent(pressed ? EVENT_LBUTTONDOWN : EVENT_LBUTTONUP,
-                                   event.button.x, event.button.y);
+                                   myEvent.button.x, myEvent.button.y);
             break;
           case SDL_BUTTON_RIGHT:
             handleMouseButtonEvent(pressed ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP,
-                                   event.button.x, event.button.y);
+                                   myEvent.button.x, myEvent.button.y);
             break;
         }
         break;
@@ -92,10 +105,10 @@ void EventHandlerSDL2::pollEvent()
 
       case SDL_MOUSEWHEEL:
       {
-        if(event.wheel.y < 0)
-          handleMouseButtonEvent(EVENT_WHEELDOWN, 0, event.wheel.y);
-        else if(event.wheel.y > 0)
-          handleMouseButtonEvent(EVENT_WHEELUP, 0, event.wheel.y);
+        if(myEvent.wheel.y < 0)
+          handleMouseButtonEvent(EVENT_WHEELDOWN, 0, myEvent.wheel.y);
+        else if(myEvent.wheel.y > 0)
+          handleMouseButtonEvent(EVENT_WHEELUP, 0, myEvent.wheel.y);
         break;
       }
 
@@ -103,38 +116,40 @@ void EventHandlerSDL2::pollEvent()
       case SDL_JOYBUTTONUP:
       case SDL_JOYBUTTONDOWN:
       {
-        handleJoyEvent(event.jbutton.which, event.jbutton.button,
-                       event.jbutton.state == SDL_PRESSED ? 1 : 0);
+        handleJoyEvent(myEvent.jbutton.which, myEvent.jbutton.button,
+                       myEvent.jbutton.state == SDL_PRESSED ? 1 : 0);
         break;
       }  
 
       case SDL_JOYAXISMOTION:
       {
-        handleJoyAxisEvent(event.jaxis.which, event.jaxis.axis,
-                           event.jaxis.value);
+        handleJoyAxisEvent(myEvent.jaxis.which, myEvent.jaxis.axis,
+                           myEvent.jaxis.value);
         break;
       }
 
       case SDL_JOYHATMOTION:
       {
-        int v = event.jhat.value, value = 0;
+        int v = myEvent.jhat.value, value = 0;
         if(v & SDL_HAT_UP)        value |= EVENT_HATUP_M;
         if(v & SDL_HAT_DOWN)      value |= EVENT_HATDOWN_M;
         if(v & SDL_HAT_LEFT)      value |= EVENT_HATLEFT_M;
         if(v & SDL_HAT_RIGHT)     value |= EVENT_HATRIGHT_M;
         if(v == SDL_HAT_CENTERED) value  = EVENT_HATCENTER_M;
 
-        handleJoyHatEvent(event.jhat.which, event.jhat.hat, value);
+        handleJoyHatEvent(myEvent.jhat.which, myEvent.jhat.hat, value);
         break;  // SDL_JOYHATMOTION
       }
   #endif
 
       case SDL_QUIT:
+      {
         handleEvent(Event::Quit, 1);
         break;  // SDL_QUIT
+      }
 
       case SDL_WINDOWEVENT:
-        switch(event.window.event)
+        switch(myEvent.window.event)
         {
           case SDL_WINDOWEVENT_SHOWN:
             handleSystemEvent(EVENT_WINDOW_SHOWN);
@@ -147,11 +162,11 @@ void EventHandlerSDL2::pollEvent()
             break;
           case SDL_WINDOWEVENT_MOVED:
             handleSystemEvent(EVENT_WINDOW_MOVED,
-                              event.window.data1, event.window.data1);
+                              myEvent.window.data1, myEvent.window.data1);
             break;
           case SDL_WINDOWEVENT_RESIZED:
             handleSystemEvent(EVENT_WINDOW_RESIZED,
-                              event.window.data1, event.window.data1);
+                              myEvent.window.data1, myEvent.window.data1);
             break;
           case SDL_WINDOWEVENT_MINIMIZED:
             handleSystemEvent(EVENT_WINDOW_MINIMIZED);
@@ -183,21 +198,22 @@ void EventHandlerSDL2::pollEvent()
 #ifdef JOYSTICK_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
-  : stick(NULL)
+  : myStick(NULL)
 {
-  stick = SDL_JoystickOpen(idx);
-  if(stick)
+  myStick = SDL_JoystickOpen(idx);
+  if(myStick)
   {
-    initialize(SDL_JoystickName(stick), SDL_JoystickNumAxes(stick),
-               SDL_JoystickNumButtons(stick), SDL_JoystickNumHats(stick));
+    initialize(SDL_JoystickName(myStick),
+        SDL_JoystickNumAxes(myStick), SDL_JoystickNumButtons(myStick),
+        SDL_JoystickNumHats(myStick), SDL_JoystickNumBalls(myStick));
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
 {
-  if(stick)
-    SDL_JoystickClose(stick);
-  stick = NULL;
+  if(myStick)
+    SDL_JoystickClose(myStick);
+  myStick = NULL;
 }
 #endif

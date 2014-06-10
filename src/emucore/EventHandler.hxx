@@ -325,8 +325,8 @@ class EventHandler
       Methods which are called by derived classes to handle specific types
       of input.
     */
-    // TODO - adapt these to SDL2
-    void handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool state);
+    void handleTextEvent(char text);
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool state);
     void handleMouseMotionEvent(int x, int y, int xrel, int yrel, int button);
     void handleMouseButtonEvent(MouseButton b, int x, int y);
     void handleJoyEvent(int stick, int button, uInt8 state);
@@ -337,6 +337,11 @@ class EventHandler
       Set up any joysticks on the system.
     */
     virtual void initializeJoysticks() = 0;
+
+    /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    virtual void enableTextEvents(bool enable) = 0;
 
     /**
       Collects and dispatches any pending events.
@@ -381,7 +386,7 @@ class EventHandler
         string about() const;
 
       protected:
-        void initialize(const string& desc, int axes, int buttons, int hats);
+        void initialize(const string& desc, int axes, int buttons, int hats, int balls);
 
       private:
         enum JoyType {
@@ -495,9 +500,8 @@ class EventHandler
     // a Ctrl combo when it isn't wanted)
     bool myUseCtrlKeyFlag;
 
-    // A bug in the SDL video handler creates an extraneous mouse motion
-    // event after a video state change
-    // We detect when this happens and discard the event
+    // Sometimes an extraneous mouse motion event occurs after a video
+    // state change; we detect when this happens and discard the event
     bool mySkipMouseMotion;
 
     // Used for continuous snapshot mode

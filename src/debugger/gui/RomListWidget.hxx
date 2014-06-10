@@ -68,8 +68,9 @@ class RomListWidget : public EditableWidget
     void handleMouseDown(int x, int y, int button, int clickCount);
     void handleMouseUp(int x, int y, int button, int clickCount);
     void handleMouseWheel(int x, int y, int direction);
-    bool handleKeyDown(StellaKey key, StellaMod mod, char ascii);
-    bool handleKeyUp(StellaKey key, StellaMod mod, char ascii);
+    bool handleText(char text);
+    bool handleKeyDown(StellaKey key, StellaMod mod);
+    bool handleKeyUp(StellaKey key, StellaMod mod);
     bool handleEvent(Event::Type e);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 

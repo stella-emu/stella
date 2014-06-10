@@ -51,12 +51,17 @@ class EventHandlerSDL2 : public EventHandler
     void initializeJoysticks();
 
     /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    void enableTextEvents(bool enable);
+
+    /**
       Collects and dispatches any pending SDL2 events.
     */
     void pollEvent();
 
   private:
-    SDL_Event event;
+    SDL_Event myEvent;
 
   #ifdef JOYSTICK_SUPPORT
     // A thin wrapper around a basic StellaJoystick, holding the pointer to
@@ -68,7 +73,7 @@ class EventHandlerSDL2 : public EventHandler
         virtual ~JoystickSDL2();
 
       private:
-        SDL_Joystick* stick;
+        SDL_Joystick* myStick;
     };
   #endif
 };

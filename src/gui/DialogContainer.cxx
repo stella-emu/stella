@@ -56,8 +56,7 @@ void DialogContainer::updateTime(uInt64 time)
   // Key still pressed
   if(myCurrentKeyDown.keycode != 0 && myKeyRepeatTime < myTime)
   {
-    activeDialog->handleKeyDown(myCurrentKeyDown.keycode, myCurrentKeyDown.flags,
-                                myCurrentKeyDown.ascii);
+    activeDialog->handleKeyDown(myCurrentKeyDown.keycode, myCurrentKeyDown.flags);
     myKeyRepeatTime = myTime + kRepeatSustainDelay;
   }
 
@@ -143,8 +142,18 @@ void DialogContainer::reStack()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod,
-                                     char ascii, bool state)
+void DialogContainer::handleTextEvent(char text)
+{
+  if(myDialogStack.empty())
+    return;
+
+  // Send the event to the dialog box on the top of the stack
+  Dialog* activeDialog = myDialogStack.top();
+  activeDialog->handleText(text);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 {
   if(myDialogStack.empty())
     return;
@@ -155,14 +164,13 @@ void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod,
   {
     myCurrentKeyDown.keycode = key;
     myCurrentKeyDown.flags   = mod;
-    myCurrentKeyDown.ascii   = ascii;
     myKeyRepeatTime = myTime + kRepeatInitialDelay;
 
-    activeDialog->handleKeyDown(key, mod, ascii);
+    activeDialog->handleKeyDown(key, mod);
   }
   else
   {
-    activeDialog->handleKeyUp(key, mod, ascii);
+    activeDialog->handleKeyUp(key, mod);
 
     // Only stop firing events if it's the current key
     if (key == myCurrentKeyDown.keycode)

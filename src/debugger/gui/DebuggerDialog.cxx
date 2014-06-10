@@ -86,26 +86,26 @@ void DebuggerDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
   bool handled = instance().eventHandler().kbdAlt(mod);
   if(handled)
   {
-    switch(ascii)
+    switch(key)
     {
-      case 's':
+      case KBDK_S:
         doStep();
         break;
-      case 't':
+      case KBDK_T:
         doTrace();
         break;
-      case 'f':
+      case KBDK_F:
         doAdvance();
         break;
-      case 'l':
+      case KBDK_L:
         doScanlineAdvance();
         break;
-      case 'r':
+      case KBDK_R:
         doRewind();
         break;
       default:
@@ -114,7 +114,7 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     }
   }
   if(!handled)
-    Dialog::handleKeyDown(key, mod, ascii);
+    Dialog::handleKeyDown(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

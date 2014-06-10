@@ -272,7 +272,18 @@ void RomListWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+bool RomListWidget::handleText(char text)
+{
+  if(_editMode)
+  {
+    // Class EditableWidget handles all text editing related key presses for us
+    return EditableWidget::handleText(text);
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all Alt-mod keys
   if(instance().eventHandler().kbdAlt(mod))
@@ -281,14 +292,8 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   bool handled = true;
   int oldSelectedItem = _selectedItem;
 
-  if (_editMode)
+  if(!_editMode)
   {
-    // Class EditableWidget handles all text editing related key presses for us
-    handled = EditableWidget::handleKeyDown(key, mod, ascii);
-  }
-  else
-  {
-    // not editmode
     switch (key)
     {
       case KBDK_SPACE:
@@ -316,7 +321,7 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomListWidget::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
+bool RomListWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   if (key == _currentKeyDown)
     _currentKeyDown = KBDK_UNKNOWN;

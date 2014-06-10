@@ -280,7 +280,22 @@ int DataGridWidget::findItem(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+bool DataGridWidget::handleText(char text)
+{
+  if (_editMode)
+  {
+    // Class EditableWidget handles all text editing related key presses for us
+    if(EditableWidget::handleText(text))
+    {
+      setDirty(); draw();
+      return true;
+    }
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all mod keys
   if(instance().eventHandler().kbdControl(mod) ||
@@ -290,16 +305,8 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   bool handled = true;
   bool dirty = false;
 
-  if (_editMode)
+  if (!_editMode)
   {
-    // Class EditableWidget handles all text editing related key presses for us
-    handled = EditableWidget::handleKeyDown(key, mod, ascii);
-    if(handled)
-      setDirty(); draw();
-  }
-  else
-  {
-    // not editmode
     switch(key)
     {
       case KBDK_RETURN:
@@ -409,52 +416,38 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
           negateCell();
         break;
 
+      case KBDK_I: // invert
+        if(_editable)
+          invertCell();
+        break;
+
+      case KBDK_MINUS: // decrement
+        if(_editable)
+          decrementCell();
+        break;
+
+      case KBDK_EQUALS: // increment
+        if(_editable)
+          incrementCell();
+        break;
+
+      case KBDK_COMMA: // shift left
+        if(_editable)
+          lshiftCell();
+        break;
+
+      case KBDK_PERIOD: // shift right
+        if(_editable)
+          rshiftCell();
+        break;
+
+      case KBDK_Z: // zero
+        if(_editable)
+          zeroCell();
+        break;
+
       default:
         handled = false;
-    }
-    if(!handled)
-    {
-      handled = true;
-
-      switch(ascii)
-      {
-        case 'i': // invert
-        case '!':
-          if(_editable)
-            invertCell();
-          break;
-
-        case '-': // decrement
-          if(_editable)
-            decrementCell();
-          break;
-
-        case '+': // increment
-        case '=':
-          if(_editable)
-            incrementCell();
-          break;
-
-        case '<': // shift left
-        case ',':
-          if(_editable)
-            lshiftCell();
-          break;
-
-        case '>': // shift right
-        case '.':
-          if(_editable)
-            rshiftCell();
-          break;
-
-        case 'z': // zero
-          if(_editable)
-            zeroCell();
-          break;
-
-        default:
-          handled = false;
-      }
     }
   }
 
@@ -474,7 +467,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DataGridWidget::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
+bool DataGridWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   if (key == _currentKeyDown)
     _currentKeyDown = KBDK_UNKNOWN;
@@ -506,7 +499,7 @@ void DataGridWidget::lostFocusWidget()
 void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case kSetPositionCmd:
       // Chain access; pass to parent

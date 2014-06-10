@@ -75,8 +75,9 @@ class DataGridWidget : public EditableWidget
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod, char ascii);
-    virtual bool handleKeyUp(StellaKey key, StellaMod mod, char ascii);
+    virtual bool handleText(char text);
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod);
+    virtual bool handleKeyUp(StellaKey key, StellaMod mod);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     virtual bool wantsFocus() { return true; }

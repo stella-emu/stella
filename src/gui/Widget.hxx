@@ -67,8 +67,9 @@ class Widget : public GuiObject
     virtual int getAbsX() const  { return _x + _boss->getChildX(); }
     virtual int getAbsY() const  { return _y + _boss->getChildY(); }
 
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod, char ascii) { return false; }
-    virtual bool handleKeyUp(StellaKey key, StellaMod mod, char ascii)   { return false; }
+    virtual bool handleText(char text)                       { return false; }
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod) { return false; }
+    virtual bool handleKeyUp(StellaKey key, StellaMod mod)   { return false; }
     virtual void handleMouseDown(int x, int y, int button, int clickCount) {}
     virtual void handleMouseUp(int x, int y, int button, int clickCount) {}
     virtual void handleMouseEntered(int button) {}

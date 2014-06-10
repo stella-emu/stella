@@ -41,7 +41,7 @@ class InputDialog : public Dialog
     ~InputDialog();
 
   protected:
-    virtual void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
+    virtual void handleKeyDown(StellaKey key, StellaMod mod);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);
     virtual bool handleJoyHat(int stick, int hat, int value);

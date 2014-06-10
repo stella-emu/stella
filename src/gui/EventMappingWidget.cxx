@@ -247,7 +247,7 @@ void EventMappingWidget::enableButtons(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Remap keys in remap mode
   if(myRemapStatus && myActionSelected >= 0)

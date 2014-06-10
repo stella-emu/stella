@@ -19,7 +19,6 @@
 
 #include <sstream>
 #include <map>
-#include <SDL.h>
 
 #include "bspf.hxx"
 
@@ -155,7 +154,7 @@ void EventHandler::reset(State state)
   // We wait a little while, since 'hold' events may be present, and we want
   // time for the ROM to process them
   if(state == S_EMULATE)
-    SDL_AddTimer(500, resetEventsCallback, (void*)this);
+    SDL_AddTimer(500, resetEventsCallback, (void*)this);  //FIXSDL
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -338,7 +337,15 @@ void EventHandler::poll(uInt64 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool state)
+void EventHandler::handleTextEvent(char text)
+{
+  // Text events are only used in GUI mode
+  if(myOverlay != NULL)
+    myOverlay->handleTextEvent(text);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 {
   bool handled = true;
 
@@ -632,7 +639,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool
   if(myState == S_EMULATE)
     handleEvent(myKeyTable[key][kEmulationMode], state);
   else if(myOverlay != NULL)
-    myOverlay->handleKeyEvent(key, mod, ascii, state);
+    myOverlay->handleKeyEvent(key, mod, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2059,14 +2066,14 @@ void EventHandler::setEventState(State state)
   // For certain ROMs it may be forced off, whatever the setting
   myUseCtrlKeyFlag = myOSystem.settings().getBool("ctrlcombo");
 
-  // Only enable Unicode in GUI modes, since there we need it for ascii data
-  // Otherwise, it causes a performance hit, so leave it off
+  // Only enable text input in GUI modes, since in emulation mode the
+  // keyboard acts as one large joystick with many (single) buttons
   switch(myState)
   {
     case S_EMULATE:
       myOverlay = NULL;
       myOSystem.sound().mute(false);
-//FIXME      SDL_EnableUNICODE(0);
+      enableTextEvents(false);
       if(myOSystem.console().controller(Controller::Left).type() ==
             Controller::CompuMate)
         myUseCtrlKeyFlag = false;
@@ -2075,28 +2082,28 @@ void EventHandler::setEventState(State state)
     case S_PAUSE:
       myOverlay = NULL;
       myOSystem.sound().mute(true);
-//FIXME      SDL_EnableUNICODE(0);
+      enableTextEvents(false);
       break;
 
     case S_MENU:
       myOverlay = &myOSystem.menu();
-//FIXME      SDL_EnableUNICODE(1);
+      enableTextEvents(true);
       break;
 
     case S_CMDMENU:
       myOverlay = &myOSystem.commandMenu();
-//FIXME      SDL_EnableUNICODE(1);
+      enableTextEvents(true);
       break;
 
     case S_LAUNCHER:
       myOverlay = &myOSystem.launcher();
-//FIXME      SDL_EnableUNICODE(1);
+      enableTextEvents(true);
       break;
 
 #ifdef DEBUGGER_SUPPORT
     case S_DEBUGGER:
       myOverlay = &myOSystem.debugger();
-//FIXME      SDL_EnableUNICODE(1);
+      enableTextEvents(true);
       break;
 #endif
 
@@ -2551,7 +2558,7 @@ EventHandler::StellaJoystick::~StellaJoystick()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::StellaJoystick::initialize(const string& desc,
-            int axes, int buttons, int hats)
+            int axes, int buttons, int hats, int /*balls*/)
 {
   name = desc;
 

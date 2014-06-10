@@ -240,17 +240,12 @@ int ListWidget::findItem(int x, int y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+bool ListWidget::handleText(char text)
 {
-  // Ignore all Alt-mod keys
-  if(instance().eventHandler().kbdAlt(mod))
-    return true;
-
   bool handled = true;
   int oldSelectedItem = _selectedItem;
 
-  if (!_editMode && _quickSelect &&
-      ((isalnum(ascii)) || isspace(ascii)))
+  if (!_editMode && _quickSelect)//FIXSDL && ((isalnum(ascii)) || isspace(ascii)))
   {
     // Quick selection mode: Go to first list item starting with this key
     // (or a substring accumulated from the last couple key presses).
@@ -259,9 +254,9 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     // method "enableQuickSelect()" or so ?
     uInt64 time = instance().getTicks() / 1000;
     if (_quickSelectTime < time)
-      _quickSelectStr = ascii;
+      _quickSelectStr = text;
     else
-      _quickSelectStr += ascii;
+      _quickSelectStr += text;
     _quickSelectTime = time + _QUICK_SELECT_DELAY;
 
     // FIXME: This is bad slow code (it scans the list linearly each time a
@@ -282,11 +277,30 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   else if (_editMode)
   {
     // Class EditableWidget handles all text editing related key presses for us
-    handled = EditableWidget::handleKeyDown(key, mod, ascii);
+    handled = EditableWidget::handleText(text);
   }
-  else
+
+  if (_selectedItem != oldSelectedItem)
   {
-    // not editmode
+    _scrollBar->draw();
+    scrollToSelected();
+
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
+  }
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
+{
+  // Ignore all Alt-mod keys
+  if(instance().eventHandler().kbdAlt(mod))
+    return true;
+
+  bool handled = true;
+  if (!_editMode)
+  {
     switch(key)
     {
       case KBDK_SPACE:
@@ -303,20 +317,12 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     }
   }
 
-  if (_selectedItem != oldSelectedItem)
-  {
-    _scrollBar->draw();
-    scrollToSelected();
-
-    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
-  }
-
   _currentKeyDown = key;
   return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
+bool ListWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   if (key == _currentKeyDown)
     _currentKeyDown = KBDK_UNKNOWN;

@@ -46,7 +46,7 @@ class EventMappingWidget : public Widget, public CommandSender
                        const StringList& actions, EventMode mode);
     ~EventMappingWidget();
 
-    bool handleKeyDown(StellaKey key, StellaMod mod, char ascii);
+    bool handleKeyDown(StellaKey key, StellaMod mod);
     void handleJoyDown(int stick, int button);
     void handleJoyAxis(int stick, int axis, int value);
     bool handleJoyHat(int stick, int hat, int value);

@@ -67,7 +67,7 @@ class DebuggerDialog : public Dialog
 
   private:
     void loadConfig();
-    void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
+    void handleKeyDown(StellaKey key, StellaMod mod);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void doStep();

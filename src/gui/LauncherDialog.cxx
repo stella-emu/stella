@@ -453,14 +453,14 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Grab the key before passing it to the actual dialog and check for
   // Control-R (reload ROM listing)
   if(instance().eventHandler().kbdControl(mod) && key == KBDK_R)
     updateListing();
   else
-    Dialog::handleKeyDown(key, mod, ascii);
+    Dialog::handleKeyDown(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

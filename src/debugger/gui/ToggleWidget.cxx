@@ -93,7 +93,7 @@ int ToggleWidget::findItem(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all mod keys
   if(instance().eventHandler().kbdControl(mod) ||

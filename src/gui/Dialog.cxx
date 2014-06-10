@@ -319,7 +319,15 @@ void Dialog::drawDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+void Dialog::handleText(char text)
+{
+  // Focused widget receives text events
+  if(_focusedWidget)
+    _focusedWidget->handleText(text);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Test for TAB character
   // Shift-left/shift-right cursor selects next tab
@@ -328,8 +336,6 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   Event::Type e = Event::NoType;
 
   // Detect selection of previous and next tab headers and objects
-  // For some strange reason, 'tab' needs to be interpreted as keycode,
-  // not ascii??
   if(instance().eventHandler().kbdShift(mod))
   {
     if(key == KBDK_LEFT && cycleTab(-1))
@@ -352,18 +358,18 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
-      _focusedWidget->handleKeyDown(key, mod, ascii);
+      _focusedWidget->handleKeyDown(key, mod);
     else
       _focusedWidget->handleEvent(e);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
+void Dialog::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Focused widget receives keyup events
   if(_focusedWidget)
-    _focusedWidget->handleKeyUp(key, mod, ascii);
+    _focusedWidget->handleKeyUp(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

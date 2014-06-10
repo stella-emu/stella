@@ -87,7 +87,23 @@ bool EditableWidget::tryInsertChar(char c, int pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
+bool EditableWidget::handleText(char text)
+{
+  if(!_editable)
+    return true;
+
+  if(tryInsertChar(text, _caretPos))
+  {
+    _caretPos++;
+    sendCommand(EditableWidget::kChangedCmd, 0, _id);
+    setDirty(); draw();
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   if(!_editable)
     return true;
@@ -117,24 +133,24 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 
     case KBDK_BACKSPACE:
       dirty = killChar(-1);
-      if(dirty)  sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(dirty)  sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_DELETE:
       dirty = killChar(+1);
-      if(dirty)  sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(dirty)  sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_LEFT:
       if(instance().eventHandler().kbdControl(mod))
-        dirty = specialKeys(key, ascii);
+        dirty = specialKeys(key);
       else if(_caretPos > 0)
         dirty = setCaretPos(_caretPos - 1);
       break;
 
     case KBDK_RIGHT:
       if(instance().eventHandler().kbdControl(mod))
-        dirty = specialKeys(key, ascii);
+        dirty = specialKeys(key);
       else if(_caretPos < (int)_editString.size())
         dirty = setCaretPos(_caretPos + 1);
       break;
@@ -150,13 +166,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     default:
       if (instance().eventHandler().kbdControl(mod))
       {
-        dirty = specialKeys(key, ascii);
-      }
-      else if (tryInsertChar(ascii, _caretPos))
-      {
-        _caretPos++;
-        sendCommand(EditableWidget::kChangedCmd, ascii, _id);
-        dirty = true;
+        dirty = specialKeys(key);
       }
       else
         handled = false;
@@ -250,7 +260,7 @@ bool EditableWidget::adjustOffset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::specialKeys(StellaKey key, char ascii)
+bool EditableWidget::specialKeys(StellaKey key)
 {
   bool handled = true;
 
@@ -262,7 +272,7 @@ bool EditableWidget::specialKeys(StellaKey key, char ascii)
 
     case KBDK_C:
       copySelectedText();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_E:
@@ -271,27 +281,27 @@ bool EditableWidget::specialKeys(StellaKey key, char ascii)
 
     case KBDK_D:
       handled = killChar(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_K:
       handled = killLine(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_U:
       handled = killLine(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_V:
       pasteSelectedText();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_W:
       handled = killLastWord();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_LEFT:

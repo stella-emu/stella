@@ -44,7 +44,7 @@ class ToggleWidget : public Widget, public CommandSender
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod, char ascii);
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     virtual bool wantsFocus() { return true; }
