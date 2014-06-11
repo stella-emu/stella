@@ -344,6 +344,11 @@ class EventHandler
     virtual void enableTextEvents(bool enable) = 0;
 
     /**
+      Returns the human-readable name for a StellaKey.
+    */
+    virtual const char* nameForKey(StellaKey key) { return EmptyString.c_str(); }
+
+    /**
       Collects and dispatches any pending events.
     */
     virtual void pollEvent() = 0;
@@ -481,9 +486,6 @@ class EventHandler
 
     // The event(s) assigned to each combination event
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
-
-    // Array of strings which correspond to the given StellaKey
-    string ourKBDKNames[KBDK_LAST];
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;

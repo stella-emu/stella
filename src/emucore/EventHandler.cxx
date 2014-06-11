@@ -95,7 +95,6 @@ void EventHandler::initialize()
 {
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
-  setKeyNames();
   setKeymap();
   setComboMap();
   setActionMappings(kEmulationMode);
@@ -904,16 +903,13 @@ void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
     case EVENT_WINDOW_EXPOSED:
         myOSystem.frameBuffer().refresh();
         break;
+    case EVENT_WINDOW_MINIMIZED:
+        if(myState == S_EMULATE) enterMenuMode(S_MENU);
+        break;
     default:  // handle other events as testing requires
       // cerr << "handleSystemEvent: " << e << endl;
       break;
   }
-#if 0 //FIXSDL
-      case SDL_ACTIVEEVENT:
-        if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
-          if(myState == S_EMULATE) enterMenuMode(S_MENU);
-        break; // SDL_ACTIVEEVENT
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1158,9 +1154,9 @@ void EventHandler::setActionMappings(EventMode mode)
       if(myKeyTable[j][mode] == event)
       {
         if(key == "")
-          key = key + ourKBDKNames[j];
+          key = key + nameForKey((StellaKey)j);
         else
-          key = key + ", " + ourKBDKNames[j];
+          key = key + ", " + nameForKey((StellaKey)j);
       }
     }
 
@@ -2137,244 +2133,6 @@ uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
 {
   ((EventHandler*)param)->myEvent.clear();
   return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setKeyNames()
-{
-#if 0//FIXSDL
-  ourKBDKNames[ KBDK_BACKSPACE ]    = "BACKSPACE";
-  ourKBDKNames[ KBDK_TAB ]          = "TAB";
-  ourKBDKNames[ KBDK_CLEAR ]        = "CLEAR";
-  ourKBDKNames[ KBDK_RETURN ]       = "RETURN";
-  ourKBDKNames[ KBDK_PAUSE ]        = "PAUSE";
-  ourKBDKNames[ KBDK_ESCAPE ]       = "ESCAPE";
-  ourKBDKNames[ KBDK_SPACE ]        = "SPACE";
-  ourKBDKNames[ KBDK_EXCLAIM ]      = "!";
-  ourKBDKNames[ KBDK_QUOTEDBL ]     = "\"";
-  ourKBDKNames[ KBDK_HASH ]         = "#";
-  ourKBDKNames[ KBDK_DOLLAR ]       = "$";
-  ourKBDKNames[ KBDK_AMPERSAND ]    = "&";
-  ourKBDKNames[ KBDK_QUOTE ]        = "\'";
-  ourKBDKNames[ KBDK_LEFTPAREN ]    = "(";
-  ourKBDKNames[ KBDK_RIGHTPAREN ]   = ")";
-  ourKBDKNames[ KBDK_ASTERISK ]     = "*";
-  ourKBDKNames[ KBDK_PLUS ]         = "+";
-  ourKBDKNames[ KBDK_COMMA ]        = "COMMA";
-  ourKBDKNames[ KBDK_MINUS ]        = "-";
-  ourKBDKNames[ KBDK_PERIOD ]       = ".";
-  ourKBDKNames[ KBDK_SLASH ]        = "/";
-  ourKBDKNames[ KBDK_0 ]            = "0";
-  ourKBDKNames[ KBDK_1 ]            = "1";
-  ourKBDKNames[ KBDK_2 ]            = "2";
-  ourKBDKNames[ KBDK_3 ]            = "3";
-  ourKBDKNames[ KBDK_4 ]            = "4";
-  ourKBDKNames[ KBDK_5 ]            = "5";
-  ourKBDKNames[ KBDK_6 ]            = "6";
-  ourKBDKNames[ KBDK_7 ]            = "7";
-  ourKBDKNames[ KBDK_8 ]            = "8";
-  ourKBDKNames[ KBDK_9 ]            = "9";
-  ourKBDKNames[ KBDK_COLON ]        = ":";
-  ourKBDKNames[ KBDK_SEMICOLON ]    = ";";
-  ourKBDKNames[ KBDK_LESS ]         = "<";
-  ourKBDKNames[ KBDK_EQUALS ]       = "=";
-  ourKBDKNames[ KBDK_GREATER ]      = ">";
-  ourKBDKNames[ KBDK_QUESTION ]     = "?";
-  ourKBDKNames[ KBDK_AT ]           = "@";
-  ourKBDKNames[ KBDK_LEFTBRACKET ]  = "[";
-  ourKBDKNames[ KBDK_BACKSLASH ]    = "\\";
-  ourKBDKNames[ KBDK_RIGHTBRACKET ] = "]";
-  ourKBDKNames[ KBDK_CARET ]        = "^";
-  ourKBDKNames[ KBDK_UNDERSCORE ]   = "_";
-  ourKBDKNames[ KBDK_BACKQUOTE ]    = "`";
-  ourKBDKNames[ KBDK_A ]            = "A";
-  ourKBDKNames[ KBDK_B ]            = "B";
-  ourKBDKNames[ KBDK_C ]            = "C";
-  ourKBDKNames[ KBDK_D ]            = "D";
-  ourKBDKNames[ KBDK_E ]            = "E";
-  ourKBDKNames[ KBDK_F ]            = "F";
-  ourKBDKNames[ KBDK_G ]            = "G";
-  ourKBDKNames[ KBDK_H ]            = "H";
-  ourKBDKNames[ KBDK_I ]            = "I";
-  ourKBDKNames[ KBDK_J ]            = "J";
-  ourKBDKNames[ KBDK_K ]            = "K";
-  ourKBDKNames[ KBDK_L ]            = "L";
-  ourKBDKNames[ KBDK_M ]            = "M";
-  ourKBDKNames[ KBDK_N ]            = "N";
-  ourKBDKNames[ KBDK_O ]            = "O";
-  ourKBDKNames[ KBDK_P ]            = "P";
-  ourKBDKNames[ KBDK_Q ]            = "Q";
-  ourKBDKNames[ KBDK_R ]            = "R";
-  ourKBDKNames[ KBDK_S ]            = "S";
-  ourKBDKNames[ KBDK_T ]            = "T";
-  ourKBDKNames[ KBDK_U ]            = "U";
-  ourKBDKNames[ KBDK_V ]            = "V";
-  ourKBDKNames[ KBDK_W ]            = "W";
-  ourKBDKNames[ KBDK_X ]            = "X";
-  ourKBDKNames[ KBDK_Y ]            = "Y";
-  ourKBDKNames[ KBDK_Z ]            = "Z";
-  ourKBDKNames[ KBDK_DELETE ]       = "DELETE";
-  ourKBDKNames[ KBDK_WORLD_0 ]      = "WORLD_0";
-  ourKBDKNames[ KBDK_WORLD_1 ]      = "WORLD_1";
-  ourKBDKNames[ KBDK_WORLD_2 ]      = "WORLD_2";
-  ourKBDKNames[ KBDK_WORLD_3 ]      = "WORLD_3";
-  ourKBDKNames[ KBDK_WORLD_4 ]      = "WORLD_4";
-  ourKBDKNames[ KBDK_WORLD_5 ]      = "WORLD_5";
-  ourKBDKNames[ KBDK_WORLD_6 ]      = "WORLD_6";
-  ourKBDKNames[ KBDK_WORLD_7 ]      = "WORLD_7";
-  ourKBDKNames[ KBDK_WORLD_8 ]      = "WORLD_8";
-  ourKBDKNames[ KBDK_WORLD_9 ]      = "WORLD_9";
-  ourKBDKNames[ KBDK_WORLD_10 ]     = "WORLD_10";
-  ourKBDKNames[ KBDK_WORLD_11 ]     = "WORLD_11";
-  ourKBDKNames[ KBDK_WORLD_12 ]     = "WORLD_12";
-  ourKBDKNames[ KBDK_WORLD_13 ]     = "WORLD_13";
-  ourKBDKNames[ KBDK_WORLD_14 ]     = "WORLD_14";
-  ourKBDKNames[ KBDK_WORLD_15 ]     = "WORLD_15";
-  ourKBDKNames[ KBDK_WORLD_16 ]     = "WORLD_16";
-  ourKBDKNames[ KBDK_WORLD_17 ]     = "WORLD_17";
-  ourKBDKNames[ KBDK_WORLD_18 ]     = "WORLD_18";
-  ourKBDKNames[ KBDK_WORLD_19 ]     = "WORLD_19";
-  ourKBDKNames[ KBDK_WORLD_20 ]     = "WORLD_20";
-  ourKBDKNames[ KBDK_WORLD_21 ]     = "WORLD_21";
-  ourKBDKNames[ KBDK_WORLD_22 ]     = "WORLD_22";
-  ourKBDKNames[ KBDK_WORLD_23 ]     = "WORLD_23";
-  ourKBDKNames[ KBDK_WORLD_24 ]     = "WORLD_24";
-  ourKBDKNames[ KBDK_WORLD_25 ]     = "WORLD_25";
-  ourKBDKNames[ KBDK_WORLD_26 ]     = "WORLD_26";
-  ourKBDKNames[ KBDK_WORLD_27 ]     = "WORLD_27";
-  ourKBDKNames[ KBDK_WORLD_28 ]     = "WORLD_28";
-  ourKBDKNames[ KBDK_WORLD_29 ]     = "WORLD_29";
-  ourKBDKNames[ KBDK_WORLD_30 ]     = "WORLD_30";
-  ourKBDKNames[ KBDK_WORLD_31 ]     = "WORLD_31";
-  ourKBDKNames[ KBDK_WORLD_32 ]     = "WORLD_32";
-  ourKBDKNames[ KBDK_WORLD_33 ]     = "WORLD_33";
-  ourKBDKNames[ KBDK_WORLD_34 ]     = "WORLD_34";
-  ourKBDKNames[ KBDK_WORLD_35 ]     = "WORLD_35";
-  ourKBDKNames[ KBDK_WORLD_36 ]     = "WORLD_36";
-  ourKBDKNames[ KBDK_WORLD_37 ]     = "WORLD_37";
-  ourKBDKNames[ KBDK_WORLD_38 ]     = "WORLD_38";
-  ourKBDKNames[ KBDK_WORLD_39 ]     = "WORLD_39";
-  ourKBDKNames[ KBDK_WORLD_40 ]     = "WORLD_40";
-  ourKBDKNames[ KBDK_WORLD_41 ]     = "WORLD_41";
-  ourKBDKNames[ KBDK_WORLD_42 ]     = "WORLD_42";
-  ourKBDKNames[ KBDK_WORLD_43 ]     = "WORLD_43";
-  ourKBDKNames[ KBDK_WORLD_44 ]     = "WORLD_44";
-  ourKBDKNames[ KBDK_WORLD_45 ]     = "WORLD_45";
-  ourKBDKNames[ KBDK_WORLD_46 ]     = "WORLD_46";
-  ourKBDKNames[ KBDK_WORLD_47 ]     = "WORLD_47";
-  ourKBDKNames[ KBDK_WORLD_48 ]     = "WORLD_48";
-  ourKBDKNames[ KBDK_WORLD_49 ]     = "WORLD_49";
-  ourKBDKNames[ KBDK_WORLD_50 ]     = "WORLD_50";
-  ourKBDKNames[ KBDK_WORLD_51 ]     = "WORLD_51";
-  ourKBDKNames[ KBDK_WORLD_52 ]     = "WORLD_52";
-  ourKBDKNames[ KBDK_WORLD_53 ]     = "WORLD_53";
-  ourKBDKNames[ KBDK_WORLD_54 ]     = "WORLD_54";
-  ourKBDKNames[ KBDK_WORLD_55 ]     = "WORLD_55";
-  ourKBDKNames[ KBDK_WORLD_56 ]     = "WORLD_56";
-  ourKBDKNames[ KBDK_WORLD_57 ]     = "WORLD_57";
-  ourKBDKNames[ KBDK_WORLD_58 ]     = "WORLD_58";
-  ourKBDKNames[ KBDK_WORLD_59 ]     = "WORLD_59";
-  ourKBDKNames[ KBDK_WORLD_60 ]     = "WORLD_60";
-  ourKBDKNames[ KBDK_WORLD_61 ]     = "WORLD_61";
-  ourKBDKNames[ KBDK_WORLD_62 ]     = "WORLD_62";
-  ourKBDKNames[ KBDK_WORLD_63 ]     = "WORLD_63";
-  ourKBDKNames[ KBDK_WORLD_64 ]     = "WORLD_64";
-  ourKBDKNames[ KBDK_WORLD_65 ]     = "WORLD_65";
-  ourKBDKNames[ KBDK_WORLD_66 ]     = "WORLD_66";
-  ourKBDKNames[ KBDK_WORLD_67 ]     = "WORLD_67";
-  ourKBDKNames[ KBDK_WORLD_68 ]     = "WORLD_68";
-  ourKBDKNames[ KBDK_WORLD_69 ]     = "WORLD_69";
-  ourKBDKNames[ KBDK_WORLD_70 ]     = "WORLD_70";
-  ourKBDKNames[ KBDK_WORLD_71 ]     = "WORLD_71";
-  ourKBDKNames[ KBDK_WORLD_72 ]     = "WORLD_72";
-  ourKBDKNames[ KBDK_WORLD_73 ]     = "WORLD_73";
-  ourKBDKNames[ KBDK_WORLD_74 ]     = "WORLD_74";
-  ourKBDKNames[ KBDK_WORLD_75 ]     = "WORLD_75";
-  ourKBDKNames[ KBDK_WORLD_76 ]     = "WORLD_76";
-  ourKBDKNames[ KBDK_WORLD_77 ]     = "WORLD_77";
-  ourKBDKNames[ KBDK_WORLD_78 ]     = "WORLD_78";
-  ourKBDKNames[ KBDK_WORLD_79 ]     = "WORLD_79";
-  ourKBDKNames[ KBDK_WORLD_80 ]     = "WORLD_80";
-  ourKBDKNames[ KBDK_WORLD_81 ]     = "WORLD_81";
-  ourKBDKNames[ KBDK_WORLD_82 ]     = "WORLD_82";
-  ourKBDKNames[ KBDK_WORLD_83 ]     = "WORLD_83";
-  ourKBDKNames[ KBDK_WORLD_84 ]     = "WORLD_84";
-  ourKBDKNames[ KBDK_WORLD_85 ]     = "WORLD_85";
-  ourKBDKNames[ KBDK_WORLD_86 ]     = "WORLD_86";
-  ourKBDKNames[ KBDK_WORLD_87 ]     = "WORLD_87";
-  ourKBDKNames[ KBDK_WORLD_88 ]     = "WORLD_88";
-  ourKBDKNames[ KBDK_WORLD_89 ]     = "WORLD_89";
-  ourKBDKNames[ KBDK_WORLD_90 ]     = "WORLD_90";
-  ourKBDKNames[ KBDK_WORLD_91 ]     = "WORLD_91";
-  ourKBDKNames[ KBDK_WORLD_92 ]     = "WORLD_92";
-  ourKBDKNames[ KBDK_WORLD_93 ]     = "WORLD_93";
-  ourKBDKNames[ KBDK_WORLD_94 ]     = "WORLD_94";
-  ourKBDKNames[ KBDK_WORLD_95 ]     = "WORLD_95";
-  ourKBDKNames[ KBDK_KP0 ]          = "KP0";
-  ourKBDKNames[ KBDK_KP1 ]          = "KP1";
-  ourKBDKNames[ KBDK_KP2 ]          = "KP2";
-  ourKBDKNames[ KBDK_KP3 ]          = "KP3";
-  ourKBDKNames[ KBDK_KP4 ]          = "KP4";
-  ourKBDKNames[ KBDK_KP5 ]          = "KP5";
-  ourKBDKNames[ KBDK_KP6 ]          = "KP6";
-  ourKBDKNames[ KBDK_KP7 ]          = "KP7";
-  ourKBDKNames[ KBDK_KP8 ]          = "KP8";
-  ourKBDKNames[ KBDK_KP9 ]          = "KP9";
-  ourKBDKNames[ KBDK_KP_PERIOD ]    = "KP .";
-  ourKBDKNames[ KBDK_KP_DIVIDE ]    = "KP /";
-  ourKBDKNames[ KBDK_KP_MULTIPLY ]  = "KP *";
-  ourKBDKNames[ KBDK_KP_MINUS ]     = "KP -";
-  ourKBDKNames[ KBDK_KP_PLUS ]      = "KP +";
-  ourKBDKNames[ KBDK_KP_ENTER ]     = "KP ENTER";
-  ourKBDKNames[ KBDK_KP_EQUALS ]    = "KP =";
-  ourKBDKNames[ KBDK_UP ]           = "UP";
-  ourKBDKNames[ KBDK_DOWN ]         = "DOWN";
-  ourKBDKNames[ KBDK_RIGHT ]        = "RIGHT";
-  ourKBDKNames[ KBDK_LEFT ]         = "LEFT";
-  ourKBDKNames[ KBDK_INSERT ]       = "INS";
-  ourKBDKNames[ KBDK_HOME ]         = "HOME";
-  ourKBDKNames[ KBDK_END ]          = "END";
-  ourKBDKNames[ KBDK_PAGEUP ]       = "PGUP";
-  ourKBDKNames[ KBDK_PAGEDOWN ]     = "PGDN";
-  ourKBDKNames[ KBDK_F1 ]           = "F1";
-  ourKBDKNames[ KBDK_F2 ]           = "F2";
-  ourKBDKNames[ KBDK_F3 ]           = "F3";
-  ourKBDKNames[ KBDK_F4 ]           = "F4";
-  ourKBDKNames[ KBDK_F5 ]           = "F5";
-  ourKBDKNames[ KBDK_F6 ]           = "F6";
-  ourKBDKNames[ KBDK_F7 ]           = "F7";
-  ourKBDKNames[ KBDK_F8 ]           = "F8";
-  ourKBDKNames[ KBDK_F9 ]           = "F9";
-  ourKBDKNames[ KBDK_F10 ]          = "F10";
-  ourKBDKNames[ KBDK_F11 ]          = "F11";
-  ourKBDKNames[ KBDK_F12 ]          = "F12";
-  ourKBDKNames[ KBDK_F13 ]          = "F13";
-  ourKBDKNames[ KBDK_F14 ]          = "F14";
-  ourKBDKNames[ KBDK_F15 ]          = "F15";
-  ourKBDKNames[ KBDK_NUMLOCK ]      = "NUMLOCK";
-  ourKBDKNames[ KBDK_CAPSLOCK ]     = "CAPSLOCK";
-  ourKBDKNames[ KBDK_SCROLLOCK ]    = "SCROLLOCK";
-  ourKBDKNames[ KBDK_RSHIFT ]       = "RSHIFT";
-  ourKBDKNames[ KBDK_LSHIFT ]       = "LSHIFT";
-  ourKBDKNames[ KBDK_RCTRL ]        = "RCTRL";
-  ourKBDKNames[ KBDK_LCTRL ]        = "LCTRL";
-  ourKBDKNames[ KBDK_RALT ]         = "RALT";
-  ourKBDKNames[ KBDK_LALT ]         = "LALT";
-  ourKBDKNames[ KBDK_RMETA ]        = "RMETA";
-  ourKBDKNames[ KBDK_LMETA ]        = "LMETA";
-  ourKBDKNames[ KBDK_LSUPER ]       = "LSUPER";
-  ourKBDKNames[ KBDK_RSUPER ]       = "RSUPER";
-  ourKBDKNames[ KBDK_MODE ]         = "MODE";
-  ourKBDKNames[ KBDK_COMPOSE ]      = "COMPOSE";
-  ourKBDKNames[ KBDK_HELP ]         = "HELP";
-  ourKBDKNames[ KBDK_PRINT ]        = "PRINT";
-  ourKBDKNames[ KBDK_SYSREQ ]       = "SYSREQ";
-  ourKBDKNames[ KBDK_BREAK ]        = "BREAK";
-  ourKBDKNames[ KBDK_MENU ]         = "MENU";
-  ourKBDKNames[ KBDK_POWER ]        = "POWER";
-  ourKBDKNames[ KBDK_EURO ]         = "EURO";
-  ourKBDKNames[ KBDK_UNDO ]         = "UNDO";
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

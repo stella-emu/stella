@@ -56,6 +56,11 @@ class EventHandlerSDL2 : public EventHandler
     void enableTextEvents(bool enable);
 
     /**
+      Returns the human-readable name for a StellaKey.
+    */
+    const char* nameForKey(StellaKey key);
+
+    /**
       Collects and dispatches any pending SDL2 events.
     */
     void pollEvent();

@@ -245,7 +245,7 @@ bool ListWidget::handleText(char text)
   bool handled = true;
   int oldSelectedItem = _selectedItem;
 
-  if (!_editMode && _quickSelect)//FIXSDL && ((isalnum(ascii)) || isspace(ascii)))
+  if (!_editMode && _quickSelect)
   {
     // Quick selection mode: Go to first list item starting with this key
     // (or a substring accumulated from the last couple key presses).
