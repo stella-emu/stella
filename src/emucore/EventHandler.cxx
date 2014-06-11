@@ -1533,7 +1533,7 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       SET_DEFAULT_KEY(KBDK_E,         mode, Event::KeyboardZero6,     event);
       SET_DEFAULT_KEY(KBDK_A,         mode, Event::KeyboardZero7,     event);
       SET_DEFAULT_KEY(KBDK_S,         mode, Event::KeyboardZero8,     event);
-      SET_DEFAULT_KEY(KBDK_S,         mode, Event::KeyboardZero9,     event);
+      SET_DEFAULT_KEY(KBDK_D,         mode, Event::KeyboardZero9,     event);
       SET_DEFAULT_KEY(KBDK_Z,         mode, Event::KeyboardZeroStar,  event);
       SET_DEFAULT_KEY(KBDK_X,         mode, Event::KeyboardZero0,     event);
       SET_DEFAULT_KEY(KBDK_C,         mode, Event::KeyboardZeroPound, event);
