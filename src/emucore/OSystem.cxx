@@ -219,7 +219,7 @@ bool OSystem::create()
   Random::setSystem(this);
 
   // Create PNG handler
-  myPNGLib = new PNGLibrary();
+  myPNGLib = new PNGLibrary(*myFrameBuffer);
 
   // Create ZIP handler
   myZipHandler = new ZipHandler();

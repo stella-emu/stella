@@ -153,7 +153,7 @@ void EventHandler::reset(State state)
   // We wait a little while, since 'hold' events may be present, and we want
   // time for the ROM to process them
   if(state == S_EMULATE)
-    SDL_AddTimer(500, resetEventsCallback, (void*)this);  //FIXSDL
+    SDL_AddTimer(500, resetEventsCallback, (void*)this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1907,26 +1907,39 @@ void EventHandler::takeSnapshot(uInt32 number)
   // Now create a PNG snapshot
   if(myOSystem.settings().getBool("ss1x"))
   {
-    string msg =
-      myOSystem.png().saveImage(filename, myOSystem.frameBuffer(),
-                                 myOSystem.console().tia(),
-                                 myOSystem.console().properties());
+    string message = "Snapshot saved";
+    try
+    {
+      myOSystem.png().saveImage(filename, myOSystem.console().tia(),
+                                myOSystem.console().properties());
+    }
+    catch(const char* msg)
+    {
+      message = msg;
+    }
+
     if(showmessage)
-      myOSystem.frameBuffer().showMessage(msg);
+      myOSystem.frameBuffer().showMessage(message);
   }
   else
   {
     // Make sure we have a 'clean' image, with no onscreen messages
     myOSystem.frameBuffer().enableMessages(false);
 
-    string msg =
-      myOSystem.png().saveImage(filename, myOSystem.frameBuffer(),
-                                 myOSystem.console().properties());
+    string message = "Snapshot saved";
+    try
+    {
+      myOSystem.png().saveImage(filename, myOSystem.console().properties());
+    }
+    catch(const char* msg)
+    {
+      message = msg;
+    }
 
     // Re-enable old messages
     myOSystem.frameBuffer().enableMessages(true);
     if(showmessage)
-      myOSystem.frameBuffer().showMessage(msg);
+      myOSystem.frameBuffer().showMessage(message);
   }
 }
 

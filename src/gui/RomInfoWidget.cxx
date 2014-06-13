@@ -99,7 +99,7 @@ void RomInfoWidget::parseProperties()
 
   // Initialize to empty properties entry
   mySurfaceErrorMsg = "";
-  mySurfaceIsValid = false;
+  mySurfaceIsValid = true;
   myRomInfo.clear();
 
   // Get a valid filename representing a snapshot file for this rom
@@ -109,8 +109,7 @@ void RomInfoWidget::parseProperties()
   // Read the PNG file
   try
   {
-    mySurfaceIsValid =
-      instance().png().loadImage(filename, instance().frameBuffer(), *mySurface);
+    instance().png().loadImage(filename, *mySurface);
   }
   catch(const char* msg)
   {

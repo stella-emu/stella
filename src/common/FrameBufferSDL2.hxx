@@ -96,12 +96,16 @@ class FrameBufferSDL2 : public FrameBuffer
     bool isDoubleBuffered() const { return myDblBufferedFlag; }
 
     /**
-      This method is called to get the specified scanline data.
+      This method is called to get the specified ARGB data from the viewable
+      FrameBuffer area.  Note that this isn't the same as any internal
+      surfaces that may be in use; it should return the actual data as it
+      is currently seen onscreen.
 
-      @param row  The row we are looking for
-      @param data The actual pixel data (in bytes)
+      @param rect    The bounding rectangle for the buffer
+      @param buffer  The actual pixel data in ARGB8888 format
+      @param pitch   The pitch (in bytes) for the pixel data
     */
-    void scanline(uInt32 row, uInt8* data) const;
+    void readPixels(const GUI::Rect& rect, uInt8* buffer, uInt32 pitch) const;
 
   protected:
     //////////////////////////////////////////////////////////////////////

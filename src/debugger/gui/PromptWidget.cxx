@@ -771,8 +771,7 @@ int PromptWidget::vprintf(const char *format, va_list argptr)
 void PromptWidget::putchar(int c)
 {
   putcharIntern(c);
-
-  setDirty(); draw();  // FIXME - not nice to redraw the full console just for one char!
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

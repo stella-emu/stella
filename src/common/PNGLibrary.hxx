@@ -40,7 +40,7 @@ class TIA;
 class PNGLibrary
 {
   public:
-    PNGLibrary();
+    PNGLibrary(const FrameBuffer& fb);
     virtual ~PNGLibrary();
 
     /**
@@ -48,39 +48,44 @@ class PNGLibrary
       scaling the image to the surface bounds.
 
       @param filename  The filename to load the PNG image
-      @param fb        The main framebuffer of the application
       @param surface   The FBSurface into which to place the PNG data
 
-      @return  On success, the FBSurface containing image data and a
-               result of true, otherwise a const char* exception is thrown
-               containing a more detailed error message.
+      @return  On success, the FBSurface containing image data, otherwise a
+               const char* exception is thrown containing a more detailed
+               error message.
     */
-    bool loadImage(const string& filename, const FrameBuffer& fb, FBSurface& surface);
+    void loadImage(const string& filename, FBSurface& surface);
 
     /**
-      Save the current TIA image to a PNG file using data from the Framebuffer.
-      Any postprocessing/filtering will be included.
+      Save the current FrameBuffer image to a PNG file.  Note that in most cases
+      this will be a TIA image, but it could actually be used for *any* mode.
 
-      @param filename    The filename to save the PNG image
-      @param framebuffer The framebuffer containing the image data
-      @param props       The properties object containing info about the ROM
+      @param filename  The filename to save the PNG image
+      @param props     The properties object containing info about the ROM
+
+      @return  On success, the PNG file has been saved to 'filename',
+               otherwise a const char* exception is thrown containing a
+               more detailed error message.
     */
-    string saveImage(const string& filename, const FrameBuffer& framebuffer,
-                     const Properties& props);
+    void saveImage(const string& filename, const Properties& props);
 
     /**
       Save the current TIA image to a PNG file using data directly from
-      the TIA framebuffer.  No filtering or scaling will be included.
+      the internal TIA buffer.  No filtering or scaling will be included.
 
-      @param filename    The filename to save the PNG image
-      @param framebuffer The framebuffer containing the image data
-      @param mediasrc    Source of the raw TIA data
-      @param props       The properties object containing info about the ROM
+      @param filename The filename to save the PNG image
+      @param tia      Source of the raw TIA data
+      @param props    The properties object containing info about the ROM
+
+      @return  On success, the PNG file has been saved to 'filename',
+               otherwise a const char* exception is thrown containing a
+               more detailed error message.
     */
-    string saveImage(const string& filename, const FrameBuffer& framebuffer,
-                     const TIA& tia, const Properties& props);
+    void saveImage(const string& filename, const TIA& tia, const Properties& props);
 
   private:
+    const FrameBuffer& myFB;
+
     // The following data remains between invocations of allocateStorage,
     // and is only changed when absolutely necessary.
     typedef struct {
@@ -100,6 +105,9 @@ class PNGLibrary
       The method fills the 'ReadInfo' struct with valid memory locations
       dependent on the given dimensions.  If memory has been previously
       allocated and it can accommodate the given dimensions, it is used directly.
+
+      @param iwidth  The width of the PNG image
+      @param iheight The height of the PNG image
     */
     bool allocateStorage(png_uint_32 iwidth, png_uint_32 iheight);
 
@@ -107,18 +115,17 @@ class PNGLibrary
       Scale the PNG data from 'ReadInfo' into the FBSurface.  For now, scaling
       is done on integer boundaries only (ie, 1x, 2x, etc up or down).
 
-      @param fb      The main framebuffer of the application
-      @param surface The FBSurface into which to place the PNG data
+      @param surface  The FBSurface into which to place the PNG data
     */
-    void scaleImagetoSurface(const FrameBuffer& fb, FBSurface& surface);
+    void scaleImagetoSurface(FBSurface& surface);
 
-    string saveBufferToPNG(ofstream& out, uInt8* buffer,
-                           uInt32 width, uInt32 height,
-                           const Properties& props,
-                           const string& effectsInfo);
-    void writePNGChunk(ofstream& out, const char* type, uInt8* data, int size);
-    void writePNGText(ofstream& out, const string& key, const string& text);
+    /**
+      Write PNG tEXt chunks to the image.
+    */
+    void writeComments(png_structp png_ptr, png_infop info_ptr,
+                       const Properties& props);
 
+    /** PNG library callback functions */
     static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
     static void png_io_flush(png_structp ctx);

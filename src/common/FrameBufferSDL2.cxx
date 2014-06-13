@@ -234,15 +234,12 @@ FBSurface* FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::scanline(uInt32 row, uInt8* data) const
+void FrameBufferSDL2::readPixels(const GUI::Rect& rect,
+                                 uInt8* pixels, uInt32 pitch) const
 {
-#if 0 //FIXSDL
-  // Invert the row, since OpenGL rows start at the bottom
-  // of the framebuffer
-  const GUI::Rect& image = imageRect();
-  row = image.height() + image.y() - row - 1;
+  SDL_Rect r;
+  r.x = rect.x();  r.y = rect.y();
+  r.w = rect.width();  r.h = rect.height();
 
-  p_gl.PixelStorei(GL_PACK_ALIGNMENT, 1);
-  p_gl.ReadPixels(image.x(), row, image.width(), 1, GL_RGB, GL_UNSIGNED_BYTE, data);
-#endif
+  SDL_RenderReadPixels(myRenderer, &r, SDL_PIXELFORMAT_ARGB8888, pixels, pitch);
 }

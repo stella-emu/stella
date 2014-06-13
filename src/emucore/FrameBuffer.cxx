@@ -535,14 +535,6 @@ void FrameBuffer::refresh()
     case EventHandler::S_PAUSE:
       invalidate();
       drawTIA();
-#if 0  // FIXME: eliminate stuttering in TIA mode; do we really need this?
-      if(isDoubleBuffered())
-      {
-        postFrameUpdate();
-        invalidate();
-        drawTIA();
-      }
-#endif
       break;
 
     case EventHandler::S_MENU:
