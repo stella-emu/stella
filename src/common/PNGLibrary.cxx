@@ -139,7 +139,7 @@ void PNGLibrary::saveImage(const string& filename, const Properties& props)
   const GUI::Rect& imageR = myFB.imageRect();
   png_uint_32 width = imageR.width(), height = imageR.height();
   png_bytep image = new png_byte[width * height * 4];
-  png_bytep row_pointers[height];
+  png_bytep* row_pointers = new png_bytep[height];
 
   ofstream out(filename.c_str(), ios_base::binary);
   if(!out.is_open())
@@ -187,7 +187,7 @@ void PNGLibrary::saveImage(const string& filename, const Properties& props)
 
   // Set up pointers into "image" byte array
   for(png_uint_32 k = 0; k < height; ++k)
-    row_pointers[k] = image + k*width*4;
+    row_pointers[k] = (png_bytep) (image + k*width*4);
 
   // Write the entire image in one go
   png_write_image(png_ptr, row_pointers);
@@ -201,6 +201,8 @@ done:
     png_destroy_write_struct(&png_ptr, &info_ptr);
   if(image)
     delete[] image;
+  if (row_pointers)
+    delete[] row_pointers;
   if(err_message)
     throw err_message;
 }
@@ -216,7 +218,7 @@ void PNGLibrary::saveImage(const string& filename, const TIA& tia,
   const char* err_message = NULL;
   png_uint_32 tiaw = tia.width(), width = tiaw*2, height = tia.height();
   png_bytep image = new png_byte[width * height * 3];
-  png_bytep row_pointers[height];
+  png_bytep* row_pointers = new png_bytep[height];
   uInt8 r, g, b;
   uInt8* buf_ptr = image;
 
@@ -279,7 +281,9 @@ done:
     png_destroy_write_struct(&png_ptr, &info_ptr);
   if(image)
     delete[] image;
-  if(err_message)
+  if (row_pointers)
+    delete[] row_pointers;
+  if (err_message)
     throw err_message;
 }
 
