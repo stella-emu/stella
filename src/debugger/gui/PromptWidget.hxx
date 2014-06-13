@@ -119,6 +119,8 @@ class PromptWidget : public Widget, public CommandSender
     bool _firstTime;
     bool _exitedEarly;
 
+    StellaMod _lastModPressed;
+
     int compareHistory(const char *histLine);
 };
 

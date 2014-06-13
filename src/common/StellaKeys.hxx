@@ -35,7 +35,6 @@
 */
 
 // This comes directly from SDL_scancode.h
-
 typedef enum
 {
     KBDK_UNKNOWN = 0,
@@ -392,8 +391,26 @@ typedef enum
                                  for array bounds */
 } StellaKey;
 
-// Just pass SDLMod directly as int (placeholder for now)
-// The underlying code doesn't need to know how it's implemented
-typedef SDL_Keymod StellaMod;
+// This comes directly from SDL_keycode.h
+typedef enum
+{
+    KBDM_NONE = 0x0000,
+    KBDM_LSHIFT = 0x0001,
+    KBDM_RSHIFT = 0x0002,
+    KBDM_LCTRL = 0x0040,
+    KBDM_RCTRL = 0x0080,
+    KBDM_LALT = 0x0100,
+    KBDM_RALT = 0x0200,
+    KBDM_LGUI = 0x0400,
+    KBDM_RGUI = 0x0800,
+    KBDM_NUM = 0x1000,
+    KBDM_CAPS = 0x2000,
+    KBDM_MODE = 0x4000,
+    KBDM_RESERVED = 0x8000,
+    KBDM_CTRL = (KBDM_LCTRL|KBDM_RCTRL),
+    KBDM_SHIFT = (KBDM_LSHIFT|KBDM_RSHIFT),
+    KBDM_ALT = (KBDM_LALT|KBDM_RALT),
+    KBDM_GUI = (KBDM_LGUI|KBDM_RGUI)
+} StellaMod;
 
 #endif /* StellaKeys */

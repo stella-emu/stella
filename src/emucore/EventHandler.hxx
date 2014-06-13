@@ -177,20 +177,20 @@ class EventHandler
     inline bool kbdAlt(int mod) const
     {
   #ifndef BSPF_MAC_OSX
-      return (mod & KMOD_ALT);
+      return (mod & KBDM_ALT);
   #else
-      return (mod & KMOD_MODE);
+      return (mod & KBDM_MODE);
   #endif
     }
 
     inline bool kbdControl(int mod) const
     {
-      return (mod & KMOD_CTRL) > 0;
+      return (mod & KBDM_CTRL);
     }
 
     inline bool kbdShift(int mod) const
     {
-      return (mod & KMOD_SHIFT);
+      return (mod & KBDM_SHIFT);
     }
 
     void enterMenuMode(State state);

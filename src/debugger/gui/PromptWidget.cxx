@@ -42,7 +42,8 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
     CommandSender(boss),
     _makeDirty(false),
     _firstTime(true),
-    _exitedEarly(false)
+    _exitedEarly(false),
+    _lastModPressed(KBDM_NONE)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
@@ -139,6 +140,11 @@ void PromptWidget::printPrompt()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleText(char text)
 {
+  // FIXME - convert this class to inherit from EditableWidget
+  // Huge hack to test if ALT key was pressed in the last handleKeyDown call
+  if(instance().eventHandler().kbdAlt(_lastModPressed))
+    return false;
+
   for(int i = _promptEndPos - 1; i >= _currentPos; i--)
     buffer(i + 1) = buffer(i);
   _promptEndPos++;
@@ -151,6 +157,11 @@ bool PromptWidget::handleText(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
+  // Ignore all alt-mod keys
+  _lastModPressed = mod;
+  if(instance().eventHandler().kbdAlt(mod))
+    return true;
+
   bool handled = true;
   bool dirty = false;
   
@@ -419,6 +430,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       else if (instance().eventHandler().kbdAlt(mod))
       {
+        // Placeholder only - this will never be reached
       }
       else
         handled = false;

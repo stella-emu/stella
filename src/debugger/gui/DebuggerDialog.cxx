@@ -89,8 +89,8 @@ void DebuggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  bool handled = instance().eventHandler().kbdAlt(mod);
-  if(handled)
+  bool alt = instance().eventHandler().kbdAlt(mod);
+  if(alt)
   {
     switch(key)
     {
@@ -110,12 +110,10 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
         doRewind();
         break;
       default:
-        handled = false;
         break;
     }
   }
-  if(!handled)
-    Dialog::handleKeyDown(key, mod);
+  Dialog::handleKeyDown(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

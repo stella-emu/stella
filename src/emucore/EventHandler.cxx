@@ -421,7 +421,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           break;
 
         case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-5);
           else
             myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+5);
@@ -434,7 +434,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
         case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
           if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
           {
-            if(mod & KMOD_SHIFT)
+            if(mod & KBDM_SHIFT)
               myOSystem.frameBuffer().showMessage(
                   myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
             else
@@ -446,7 +446,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
         case KBDK_0:  // Alt-0 changes custom adjustables for NTSC filtering
           if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
           {
-            if(mod & KMOD_SHIFT)
+            if(mod & KBDM_SHIFT)
               myOSystem.frameBuffer().showMessage(
                   myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
             else
@@ -456,42 +456,42 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           break;
 
         case KBDK_Z:
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.console().toggleP0Collision();
           else
             myOSystem.console().toggleP0Bit();
           break;
 
         case KBDK_X:
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.console().toggleP1Collision();
           else
               myOSystem.console().toggleP1Bit();
           break;
 
         case KBDK_C:
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.console().toggleM0Collision();
           else
             myOSystem.console().toggleM0Bit();
           break;
 
         case KBDK_V:
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.console().toggleM1Collision();
           else
             myOSystem.console().toggleM1Bit();
           break;
 
         case KBDK_B:
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.console().toggleBLCollision();
           else
             myOSystem.console().toggleBLBit();
           break;
 
         case KBDK_N:
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.console().togglePFCollision();
           else
             myOSystem.console().togglePFBit();
@@ -506,7 +506,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           break;
 
         case KBDK_PERIOD:
-          if(mod & KMOD_SHIFT)
+          if(mod & KBDM_SHIFT)
             myOSystem.console().toggleCollisions();
           else
             myOSystem.console().toggleBits();
@@ -570,7 +570,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           break;
 
         case KBDK_F:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
-          myOSystem.console().toggleFormat(mod & KMOD_SHIFT ? -1 : 1);
+          myOSystem.console().toggleFormat(mod & KBDM_SHIFT ? -1 : 1);
           break;
 
         case KBDK_G:  // Ctrl-g (un)grabs mouse
