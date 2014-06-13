@@ -115,7 +115,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
   {
     int w, h;
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(w != mode.screen.w || h != mode.screen.h)
+    if((uInt32)w != mode.screen.w || (uInt32)h != mode.screen.h)
     {
       SDL_DestroyWindow(myWindow);
       myWindow = NULL;

@@ -298,10 +298,10 @@ void UIDialog::loadConfig()
 {
   // Launcher size
   const GUI::Size& ls = instance().settings().getSize("launcherres");
-  int w = ls.w, h = ls.h;
+  uInt32 w = ls.w, h = ls.h;
 
-  w = BSPF_max(w, (int)FrameBuffer::kFBMinW);
-  h = BSPF_max(h, (int)FrameBuffer::kFBMinH);
+  w = BSPF_max(w, (uInt32)FrameBuffer::kFBMinW);
+   h = BSPF_max(h, (uInt32)FrameBuffer::kFBMinH);
   w = BSPF_min(w, instance().frameBuffer().desktopSize().w);
   h = BSPF_min(h, instance().frameBuffer().desktopSize().h);
 
@@ -326,10 +326,10 @@ void UIDialog::loadConfig()
   // Debugger size
   const GUI::Size& ds = instance().settings().getSize("dbg.res");
   w = ds.w, h = ds.h;
-  w = BSPF_max(w, (int)DebuggerDialog::kSmallFontMinW);
-  h = BSPF_max(h, (int)DebuggerDialog::kSmallFontMinH);
-  w = BSPF_min(w, (int)ds.w);
-  h = BSPF_min(h, (int)ds.h);
+  w = BSPF_max(w, (uInt32)DebuggerDialog::kSmallFontMinW);
+  h = BSPF_max(h, (uInt32)DebuggerDialog::kSmallFontMinH);
+  w = BSPF_min(w, ds.w);
+  h = BSPF_min(h, ds.h);
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerWidthLabel->setValue(w);
@@ -399,8 +399,8 @@ void UIDialog::setDefaults()
   {
     case 0:  // Launcher options
     {
-      int w = BSPF_min(instance().frameBuffer().desktopSize().w, (int)FrameBuffer::kFBMinW);
-      int h = BSPF_min(instance().frameBuffer().desktopSize().h, (int)FrameBuffer::kFBMinH);
+      uInt32 w = BSPF_min(instance().frameBuffer().desktopSize().w, (uInt32)FrameBuffer::kFBMinW);
+      uInt32 h = BSPF_min(instance().frameBuffer().desktopSize().h, (uInt32)FrameBuffer::kFBMinH);
       myLauncherWidthSlider->setValue(w);
       myLauncherWidthLabel->setValue(w);
       myLauncherHeightSlider->setValue(h);
@@ -414,8 +414,8 @@ void UIDialog::setDefaults()
     case 1:  // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
-      int w = BSPF_min(instance().frameBuffer().desktopSize().w, (int)DebuggerDialog::kMediumFontMinW);
-      int h = BSPF_min(instance().frameBuffer().desktopSize().h, (int)DebuggerDialog::kMediumFontMinH);
+      uInt32 w = BSPF_min(instance().frameBuffer().desktopSize().w, (uInt32)DebuggerDialog::kMediumFontMinW);
+      uInt32 h = BSPF_min(instance().frameBuffer().desktopSize().h, (uInt32)DebuggerDialog::kMediumFontMinH);
       myDebuggerWidthSlider->setValue(w);
       myDebuggerWidthLabel->setValue(w);
       myDebuggerHeightSlider->setValue(h);

@@ -110,8 +110,8 @@ void ContextMenu::recalc(const GUI::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  int maxentries = BSPF_min(18, (image.height() - 4) / _rowHeight);
-  if((int)_entries.size() > maxentries)
+  uInt32 maxentries = BSPF_min(18u, (image.height() - 4) / _rowHeight);
+  if(_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
     _numEntries = maxentries - 2;
