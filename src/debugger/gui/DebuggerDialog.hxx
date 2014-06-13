@@ -34,6 +34,7 @@ class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
 class CartDebugWidget;
+class CartRamWidget;
 
 #include "Dialog.hxx"
 #include "MessageBox.hxx"
@@ -60,6 +61,7 @@ class DebuggerDialog : public Dialog
     TiaZoomWidget& tiaZoom() const     { return *myTiaZoom;      }
     RomWidget& rom() const             { return *myRom;          }
     CartDebugWidget& cartDebug() const { return *myCartDebug;    }
+    CartRamWidget& cartRam() const     { return *myCartRam;      }
     EditTextWidget& message() const    { return *myMessageBox;   }
     ButtonWidget& rewindButton() const { return *myRewindButton; }
 
@@ -112,6 +114,7 @@ class DebuggerDialog : public Dialog
     RamWidget*       myRam;
     RomWidget*       myRom;
     CartDebugWidget* myCartDebug;
+    CartRamWidget*   myCartRam;
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
     GUI::MessageBox* myFatalError;

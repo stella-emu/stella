@@ -56,6 +56,17 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCTYWidget::saveOldState()
+{
+  myOldState.internalram.clear();
+  
+  for(uInt32 i = 0; i < this->internalRamSize();i++)
+  {
+    myOldState.internalram.push_back(myCart.myRAM[i]);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTYWidget::loadConfig()
 {
   myBank->setSelectedIndex(myCart.bank()-1);
@@ -88,4 +99,65 @@ string CartridgeCTYWidget::bankState()
   buf << "Bank = " << dec << bank << ", hotspot = " << spot[bank];
 
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCTYWidget::internalRam()
+{
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeCTYWidget::internalRamSize() 
+{
+  return 64;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCTYWidget::internalRamDescription() 
+{
+  ostringstream desc;
+  desc << "F000-F03F used for Write Access\n"
+  <<      "F040-F07F used for Read Access";
+  
+  return desc.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeCTYWidget::internalRamOld(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myOldState.internalram[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeCTYWidget::internalRamCurrent(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myCart.myRAM[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCTYWidget::internalRamSetValue(int addr, uInt8 value)
+{
+  myCart.myRAM[addr] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeCTYWidget::internalRamGetValue(int addr)
+{
+  return myCart.myRAM[addr];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCTYWidget::internalRamLabel(int addr) 
+{
+  CartDebug& dbg = instance().debugger().cartDebug();
+  return dbg.getLabel(addr + 0x1080, false);
 }

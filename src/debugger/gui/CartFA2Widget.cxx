@@ -98,6 +98,17 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFA2Widget::saveOldState()
+{
+  myOldState.internalram.clear();
+  
+  for(uInt32 i = 0; i < this->internalRamSize();i++)
+  {
+    myOldState.internalram.push_back(myCart.myRAM[i]);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2Widget::loadConfig()
 {
   myBank->setSelectedIndex(myCart.myCurrentBank);
@@ -144,4 +155,65 @@ string CartridgeFA2Widget::bankState()
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFA2Widget::internalRam()
+{
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeFA2Widget::internalRamSize() 
+{
+  return 256;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeFA2Widget::internalRamDescription() 
+{
+  ostringstream desc;
+  desc << "F000-F0FF used for Write Access\n"
+  <<      "F100-F1FF used for Read Access";
+  
+  return desc.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeFA2Widget::internalRamOld(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myOldState.internalram[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeFA2Widget::internalRamCurrent(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myCart.myRAM[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFA2Widget::internalRamSetValue(int addr, uInt8 value)
+{
+  myCart.myRAM[addr] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeFA2Widget::internalRamGetValue(int addr)
+{
+  return myCart.myRAM[addr];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeFA2Widget::internalRamLabel(int addr) 
+{
+  CartDebug& dbg = instance().debugger().cartDebug();
+  return dbg.getLabel(addr + 0x1080, false);
 }

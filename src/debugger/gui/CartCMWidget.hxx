@@ -44,11 +44,23 @@ class CartridgeCMWidget : public CartDebugWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     string bankState();
+  
+    // start of functions for Cartridge RAM tab
+    bool internalRam();
+    uInt32 internalRamSize();
+    string internalRamDescription(); 
+    ByteArray internalRamOld(int start, int count);
+    ByteArray internalRamCurrent(int start, int count);
+    void internalRamSetValue(int addr, uInt8 value);
+    uInt8 internalRamGetValue(int addr);
+    string internalRamLabel(int addr);
+    // end of functions for Cartridge RAM tab   
 
   private:
     struct CartState {
       uInt8 swcha;
       uInt8 column;
+      ByteArray internalram;
     };
 
   private:

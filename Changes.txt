@@ -14,6 +14,9 @@
 
 3.9.3 to 4.0: (xxxx xx, 2014)
 
+  * Added a much more detailed view of cart RAM to a new debugger tab.
+    Special thanks to SpiceWare for this implementation.
+
   * Added preliminary support for 'DASH' bankswitching scheme by A. Davie.
 
   * Added 'savesnap' debugger prompt command, and also associated

@@ -37,11 +37,6 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size,
   memcpy(myImage, image, mySize);
   createCodeAccessBase(mySize + 32768);
 
-  // This cart can address a 1024 byte bank of RAM @ 0x1000
-  // However, it may not be addressable all the time (it may be swapped out)
-  // so probably most of the time, the area will point to ROM instead
-  registerRamArea(0x1000, 1024, 0x00, 0x400);  // 1024 bytes RAM @ 0x1000
-
   // Remember startup bank
   myStartBank = 0;
 }

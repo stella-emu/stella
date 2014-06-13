@@ -112,6 +112,17 @@ class CartDebugWidget : public Widget, public CommandSender
 
     // Query internal state of the cart (usually just bankswitching info)
     virtual string bankState() { return "0 (non-bankswitched)"; }
+  
+  // to make the Cartridge RAM show up in the debugger, implement
+  // the following 8 functions for cartridges with internal RAM
+    virtual bool internalRam() { return false; }
+    virtual uInt32 internalRamSize() { return 0; }
+    virtual string internalRamDescription() { return ""; }
+    virtual ByteArray internalRamOld(int start, int count) { ByteArray ba; return ba; }
+    virtual ByteArray internalRamCurrent(int start, int count) { ByteArray ba; return ba; }
+    virtual void internalRamSetValue(int addr, uInt8 value) { };
+    virtual uInt8 internalRamGetValue(int addr) { return 0; };
+    virtual string internalRamLabel(int addr) { CartDebug& dbg = instance().debugger().cartDebug(); return dbg.getLabel(addr, false);}
 
   protected:
     // Font used for 'normal' text; _font is for 'label' text

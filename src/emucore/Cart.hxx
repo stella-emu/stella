@@ -26,6 +26,7 @@
 class Cartridge;
 class Properties;
 class CartDebugWidget;
+class CartRamWidget;
 class GuiObject;
 
 #include "bspf.hxx"
@@ -122,8 +123,6 @@ class Cartridge : public Device
     */
     virtual bool bankChanged();
 
-    const RamAreaList& ramAreas() { return myRamAreaList; }
-
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are cart-specific and must be implemented
@@ -212,16 +211,6 @@ class Cartridge : public Device
         const GUI::Font& nfont, int x, int y, int w, int h) { return NULL; }
 
   protected:
-    /**
-      Add the given area to the RamArea list for this cart.
-
-      @param start    The beginning of the RAM area (0x0000 - 0x2000)
-      @param size     Total number of bytes of area
-      @param roffset  Offset to use when reading from RAM (read port)
-      @param woffset  Offset to use when writing to RAM (write port)
-    */
-    void registerRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
-
     /**
       Indicate that an illegal read from a write port has occurred.
 
@@ -402,9 +391,6 @@ class Cartridge : public Device
     uInt8* myCodeAccessBase;
 
   private:
-    // Contains RamArea entries for those carts with accessible RAM.
-    RamAreaList myRamAreaList;
-
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.
     bool myBankLocked;

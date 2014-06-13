@@ -41,6 +41,7 @@
 
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"
+#include "CartRamWidget.hxx"
 #include "CpuDebug.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"

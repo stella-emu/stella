@@ -46,6 +46,7 @@ class Thumbulator;
 class CartridgeDPCPlus : public Cartridge
 {
   friend class CartridgeDPCPlusWidget;
+	friend class CartridgeRamDPCPlusWidget;
 
   public:
     /**
@@ -207,7 +208,10 @@ class CartridgeDPCPlus : public Cartridge
     // Pointer to the 4K display ROM image of the cartridge
     uInt8* myDisplayImage;
 
-    // The DPC 8k RAM image
+    // The DPC 8k RAM image, used as:
+    //   3K DPC+ driver
+    //   4K Display Data
+    //   1K Frequency Data
     uInt8 myDPCRAM[8192];
 
 #ifdef THUMB_SUPPORT

@@ -193,6 +193,7 @@ void CartridgeDPCPlusWidget::saveOldState()
   myOldState.mcounters.clear();
   myOldState.mfreqs.clear();
   myOldState.mwaves.clear();
+  myOldState.internalram.clear();
 
   for(int i = 0; i < 8; ++i)
   {
@@ -211,6 +212,11 @@ void CartridgeDPCPlusWidget::saveOldState()
   }
 
   myOldState.random = myCart.myRandomNumber;
+  
+  for(uInt32 i = 0; i < this->internalRamSize();i++)
+  {
+    myOldState.internalram.push_back(myCart.myDisplayImage[i]);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -329,4 +335,62 @@ string CartridgeDPCPlusWidget::bankState()
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeDPCPlusWidget::internalRam()
+{
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeDPCPlusWidget::internalRamSize() 
+{
+  return 5*1024;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeDPCPlusWidget::internalRamDescription() 
+{
+  ostringstream desc;
+  desc << "0000-0FFF - 4K display data\n"
+  <<      "            indirectly accessible to 6507\n"
+  <<      "            via DPC+'s Data Fetcher registers\n"
+  <<      "1000-13FF - 1K frequency table,\n"
+  <<      "            C variables and C stack\n"
+  <<      "            not accessible to 6507";
+  
+  return desc.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeDPCPlusWidget::internalRamOld(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myOldState.internalram[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeDPCPlusWidget::internalRamCurrent(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myCart.myDisplayImage[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeDPCPlusWidget::internalRamSetValue(int addr, uInt8 value)
+{
+    myCart.myDisplayImage[addr] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeDPCPlusWidget::internalRamGetValue(int addr)
+{
+  return myCart.myDisplayImage[addr];
 }

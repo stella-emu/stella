@@ -75,6 +75,17 @@ CartridgeEFSCWidget::CartridgeEFSCWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEFSCWidget::saveOldState()
+{
+  myOldState.internalram.clear();
+  
+  for(uInt32 i = 0; i < this->internalRamSize();i++)
+  {
+    myOldState.internalram.push_back(myCart.myRAM[i]);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEFSCWidget::loadConfig()
 {
   myBank->setSelectedIndex(myCart.myCurrentBank);
@@ -108,4 +119,65 @@ string CartridgeEFSCWidget::bankState()
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeEFSCWidget::internalRam()
+{
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeEFSCWidget::internalRamSize() 
+{
+  return 128;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeEFSCWidget::internalRamDescription() 
+{
+  ostringstream desc;
+  desc << "F000-F07F used for Write Access\n"
+  <<      "F080-F0FF used for Read Access";
+  
+  return desc.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeEFSCWidget::internalRamOld(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myOldState.internalram[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray CartridgeEFSCWidget::internalRamCurrent(int start, int count)
+{
+  ByteArray ram;
+  ram.clear();
+  for (int i = 0;i<count;i++)
+    ram.push_back(myCart.myRAM[start + i]);
+  return ram;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEFSCWidget::internalRamSetValue(int addr, uInt8 value)
+{
+  myCart.myRAM[addr] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeEFSCWidget::internalRamGetValue(int addr)
+{
+  return myCart.myRAM[addr];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeEFSCWidget::internalRamLabel(int addr) 
+{
+  CartDebug& dbg = instance().debugger().cartDebug();
+  return dbg.getLabel(addr + 0x1080, false);
 }

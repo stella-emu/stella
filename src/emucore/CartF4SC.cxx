@@ -31,9 +31,6 @@ CartridgeF4SC::CartridgeF4SC(const uInt8* image, uInt32 size, const Settings& se
   memcpy(myImage, image, BSPF_min(32768u, size));
   createCodeAccessBase(32768);
 
-  // This cart contains 128 bytes extended RAM @ 0x1000
-  registerRamArea(0x1000, 128, 0x80, 0x00);
-
   // Remember startup bank
   myStartBank = 0;
 }

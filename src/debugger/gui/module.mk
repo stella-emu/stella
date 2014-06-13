@@ -20,6 +20,7 @@ MODULE_OBJS := \
 	src/debugger/gui/ToggleBitWidget.o \
 	src/debugger/gui/TogglePixelWidget.o \
 	src/debugger/gui/ToggleWidget.o \
+	src/debugger/gui/CartRamWidget.o \
 	src/debugger/gui/Cart0840Widget.o \
 	src/debugger/gui/Cart2KWidget.o \
 	src/debugger/gui/Cart3EWidget.o \

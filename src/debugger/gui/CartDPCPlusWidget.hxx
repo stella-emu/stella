@@ -42,7 +42,16 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     string bankState();
-
+  
+    bool internalRam();
+    uInt32 internalRamSize();
+    string internalRamDescription(); 
+    ByteArray internalRamOld(int start, int count);
+    ByteArray internalRamCurrent(int start, int count);
+    void internalRamSetValue(int addr, uInt8 value);
+    uInt8 internalRamGetValue(int addr);
+    //string internalRamLabel(int addr); not needed for DPC+
+  
   private:
     struct CartState {
       ByteArray tops;
@@ -55,6 +64,7 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
       IntArray mfreqs;
       IntArray mwaves;
       uInt32 random;
+      ByteArray internalram;
     };
 
   private:

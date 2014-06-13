@@ -31,9 +31,6 @@ CartridgeFA::CartridgeFA(const uInt8* image, uInt32 size, const Settings& settin
   memcpy(myImage, image, BSPF_min(12288u, size));
   createCodeAccessBase(12288);
 
-  // This cart contains 256 bytes extended RAM @ 0x1000
-  registerRamArea(0x1000, 256, 0x100, 0x00);
-
   // Remember startup bank
   myStartBank = 2;
 }

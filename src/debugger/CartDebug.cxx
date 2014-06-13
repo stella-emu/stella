@@ -31,6 +31,7 @@
 #include "Version.hxx"
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"
+#include "CartRamWidget.hxx"
 using namespace Common;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,11 +44,6 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 {
   // Zero-page RAM is always present
   addRamArea(0x80, 128, 0, 0);
-
-  // Add extended RAM
-  const RamAreaList& areas = console.cartridge().ramAreas();
-  for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
-    addRamArea(i->start, i->size, i->roffset, i->woffset);
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
   // Banksizes greater than 4096 indicate multi-bank ROMs, but we handle only

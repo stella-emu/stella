@@ -48,9 +48,6 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
     memcpy(myInitialRAM, image, 1024);
   }
   createCodeAccessBase(2048+1024);
-
-  // This cart contains 1024 bytes extended RAM @ 0x1000
-  registerRamArea(0x1000, 1024, 0x00, 0x400);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

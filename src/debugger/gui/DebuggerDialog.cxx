@@ -31,6 +31,7 @@
 #include "RomWidget.hxx"
 #include "TiaWidget.hxx"
 #include "CartDebugWidget.hxx"
+#include "CartRamWidget.hxx"
 #include "DataGridOpsWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "MessageBox.hxx"
@@ -436,6 +437,19 @@ void DebuggerDialog::addRomArea()
   {
     myRomTab->setParentWidget(tabID, myCartDebug);
     addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
+    
+    // The cartridge RAM tab
+    if (myCartDebug->internalRam())
+    {
+      tabID = myRomTab->addTab(" Cartridge RAM ");
+      myCartRam = new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
+                                    tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);
+      if(myCartRam)  // TODO - make this always non-null
+      {
+        myRomTab->setParentWidget(tabID, myCartRam);
+        addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
+      }
+    }
   }
 
   myRomTab->setActiveTab(0);

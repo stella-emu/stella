@@ -46,9 +46,6 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
   memcpy(myImage, image, mySize);
   createCodeAccessBase(mySize);
 
-  // This cart contains 256 bytes extended RAM @ 0x1000
-  registerRamArea(0x1000, 256, 0x100, 0x00);
-
   // Remember startup bank
   myStartBank = 0;
 }

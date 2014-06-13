@@ -32,10 +32,6 @@ CartridgeCM::CartridgeCM(const uInt8* image, uInt32 size, const Settings& settin
   memcpy(myImage, image, BSPF_min(16384u, size));
   createCodeAccessBase(16384);
 
-  // This cart contains 2048 bytes extended RAM @ 0x1800
-  // This RAM scheme is unique in that it doesn't require separate read/write ports
-  registerRamArea(0x1800, 2048, 0x00, 0x00);
-
   // On powerup, portA is all 1's, so the last bank of ROM is enabled and
   // RAM is disabled
   mySWCHA = 0xff;
