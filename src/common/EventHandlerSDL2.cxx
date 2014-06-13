@@ -111,10 +111,12 @@ void EventHandlerSDL2::pollEvent()
 
       case SDL_MOUSEWHEEL:
       {
+        int x, y;
+        SDL_GetMouseState(&x, &y);  // we need mouse position too
         if(myEvent.wheel.y < 0)
-          handleMouseButtonEvent(EVENT_WHEELDOWN, 0, myEvent.wheel.y);
+          handleMouseButtonEvent(EVENT_WHEELDOWN, x, y);
         else if(myEvent.wheel.y > 0)
-          handleMouseButtonEvent(EVENT_WHEELUP, 0, myEvent.wheel.y);
+          handleMouseButtonEvent(EVENT_WHEELUP, x, y);
         break;
       }
 
