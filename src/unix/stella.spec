@@ -1,5 +1,5 @@
 %define name    stella
-%define version 3.9.3
+%define version 4.0
 %define rel     1
 
 %define enable_gl 1
@@ -35,11 +35,6 @@ on your PC.
 %build
 export CXXFLAGS=$RPM_OPT_FLAGS
 %configure \
-%if %enable_gl
-  --enable-gl \
-%else
-  --disable-gl \
-%endif
 %if %enable_sound
   --enable-sound \
 %else
@@ -107,6 +102,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* FIXME_DATE Stephen Anthony <stephena@users.sf.net> 4.0-1
+- Version 4.0 release
+
 * Mon Jan 20 2014 Stephen Anthony <stephena@users.sf.net> 3.9.3-1
 - Version 3.9.3 release
 

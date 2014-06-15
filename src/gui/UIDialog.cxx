@@ -301,7 +301,7 @@ void UIDialog::loadConfig()
   uInt32 w = ls.w, h = ls.h;
 
   w = BSPF_max(w, (uInt32)FrameBuffer::kFBMinW);
-   h = BSPF_max(h, (uInt32)FrameBuffer::kFBMinH);
+  h = BSPF_max(h, (uInt32)FrameBuffer::kFBMinH);
   w = BSPF_min(w, instance().frameBuffer().desktopSize().w);
   h = BSPF_min(h, instance().frameBuffer().desktopSize().h);
 

@@ -64,6 +64,11 @@ void TiaOutputWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaOutputWidget::saveSnapshot()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   // Grab right mouse button for command context menu
@@ -129,14 +134,9 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 void TiaOutputWidget::drawWidget(bool hilite)
 {
 //cerr << "TiaOutputWidget::drawWidget\n";
-  renderToSurface(dialog().surface());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::renderToSurface(FBSurface& s)
-{
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();
+  FBSurface& s = dialog().surface();
 
   // Get current scanline position
   // This determines where the frame greying should start, and where a

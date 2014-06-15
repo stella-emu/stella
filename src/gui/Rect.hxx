@@ -111,7 +111,7 @@ struct Rect
   Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) {}
   Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top(y1), left(x1), bottom(y2), right(x2)
   {
-    assert(isValidRect());
+    assert(isValid());
   }
 
   uInt32 x() const { return left; }
@@ -131,11 +131,15 @@ struct Rect
     left = x1;
     bottom = y2;
     right = x2;
-    assert(isValidRect());
+    assert(isValid());
   }
 
-  bool isValidRect() const {
+  bool isValid() const {
     return (left <= right && top <= bottom);
+  }
+
+  bool isEmpty() const {
+    return top == 0 && left == 0 && bottom == 0 && right == 0;
   }
 
   void moveTo(uInt32 x, uInt32 y) {

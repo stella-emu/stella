@@ -59,9 +59,6 @@ class TiaOutputWidget : public Widget, public CommandSender
     bool wantsFocus() { return false; }
 
   private:
-    void renderToSurface(FBSurface& s);
-
-  private:
     ContextMenu*   myMenu;
     TiaZoomWidget* myZoom;
 
@@ -70,9 +67,6 @@ class TiaOutputWidget : public Widget, public CommandSender
     // Create this buffer once, instead of allocating it each time the
     // TIA image is redrawn
     uInt32 myLineBuffer[320];
-
-    // Surface to use when taking snapshots
-    FBSurface* mySnapSurface;
 };
 
 #endif
