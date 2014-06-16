@@ -80,7 +80,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   {
     if(labels[i].length() > lwidth)
     {
-      lwidth = labels[i].length();
+      lwidth = (int)labels[i].length();
       maxIdx = i;
     }
   }

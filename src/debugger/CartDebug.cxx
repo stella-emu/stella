@@ -392,7 +392,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     else
       buffer << "       ";
 
-    buffer << tag.disasm << setw(length - tag.disasm.length() + 2)
+    buffer << tag.disasm << setw(int(length - tag.disasm.length() + 2))
            << setfill(' ') << " "
            << setw(4) << left << tag.ccount << "   " << tag.bytes << endl;
   }
@@ -768,7 +768,7 @@ string CartDebug::loadListFile()
       if(addr_s.length() == 0)
         continue;
       const char* p = addr_s[0] == 'U' ? addr_s.c_str() + 1 : addr_s.c_str();
-      addr = strtoul(p, NULL, 16);
+      addr = (int)strtoul(p, NULL, 16);
 
       // For now, completely ignore ROM addresses
       if(!(addr & 0x1000))

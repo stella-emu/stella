@@ -319,7 +319,7 @@ void EventHandler::poll(uInt64 time)
       // Handle continuous snapshots
       if(myContSnapshotInterval > 0 &&
         (++myContSnapshotCounter % myContSnapshotInterval == 0))
-        takeSnapshot(time >> 10);  // not quite milliseconds, but close enough
+        takeSnapshot((uInt32)time >> 10);  // not quite milliseconds, but close enough
     }
   }
   else if(myOverlay)

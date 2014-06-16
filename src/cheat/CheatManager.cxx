@@ -366,6 +366,6 @@ bool CheatManager::isValidCode(const string& code)
     if(!isxdigit(code[i]))
       return false;
 
-  int length = code.length();
+  uInt32 length = (uInt32)code.length();
   return (length == 4 || length == 6 || length == 8);
 }

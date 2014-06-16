@@ -31,10 +31,7 @@ Random::Random()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Random::initSeed()
 {
-  if(ourSystem)
-    myValue = ourSystem->getTicks();
-  else
-    myValue = (uInt32)time(0);
+  myValue = (uInt32) (ourSystem ? ourSystem->getTicks() : time(0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

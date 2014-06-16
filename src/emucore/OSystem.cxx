@@ -823,7 +823,7 @@ void OSystem::mainLoop()
       }
 
       if(myTimingInfo.current < myTimingInfo.virt)
-        SDL_Delay((myTimingInfo.virt - myTimingInfo.current) / 1000);
+        SDL_Delay(uInt32(myTimingInfo.virt - myTimingInfo.current) / 1000);
 
       myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
       myTimingInfo.totalFrames++;

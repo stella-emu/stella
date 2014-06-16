@@ -53,7 +53,7 @@ void EditableWidget::setText(const string& str, bool)
   // TODO: We probably should filter the input string here,
   // e.g. using tryInsertChar.
   _editString = str;
-  _caretPos = _editString.size();
+  _caretPos = (int)_editString.size();
 
   _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().width()));
   if (_editScrollOffset < 0)
@@ -160,7 +160,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_END:
-      dirty = setCaretPos(_editString.size());
+      dirty = setCaretPos((int)_editString.size());
       break;
 
     default:
@@ -276,7 +276,7 @@ bool EditableWidget::specialKeys(StellaKey key)
       break;
 
     case KBDK_E:
-      setCaretPos(_editString.size());
+      setCaretPos((int)_editString.size());
       break;
 
     case KBDK_D:
@@ -360,7 +360,7 @@ bool EditableWidget::killLine(int direction)
   }
   else if(direction == 1)  // erase from current position to end of line
   {
-    int count = _editString.size() - _caretPos;
+    int count = (int)_editString.size() - _caretPos;
     if(count > 0)
     {
       for (int i = 0; i < count; i++)

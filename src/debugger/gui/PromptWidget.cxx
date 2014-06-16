@@ -463,12 +463,12 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::insertIntoPrompt(const char* str)
 {
-  unsigned int l = strlen(str);
+  uInt32 l = (uInt32)strlen(str);
 
-  for (int i = _promptEndPos - 1; i >= _currentPos; i--)
+  for (uInt32 i = _promptEndPos - 1; i >= _currentPos; i--)
     buffer(i + l) = buffer(i);
 
-  for (unsigned int j = 0; j < l; ++j)
+  for (uInt32 j = 0; j < l; ++j)
   {
     _promptEndPos++;
     putcharIntern(str[j]);

@@ -326,7 +326,7 @@ string DebuggerParser::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::getArgs(const string& command, string& verb)
 {
-  int state = kIN_COMMAND, i = 0, length = command.length();
+  int state = kIN_COMMAND, i = 0, length = (int)command.length();
   string curArg = "";
   verb = "";
 

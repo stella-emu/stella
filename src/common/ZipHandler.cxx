@@ -168,7 +168,7 @@ bool ZipHandler::stream_read(fstream* stream, void* buffer, uInt64 offset,
     stream->seekg(offset);
     stream->read((char*)buffer, length);
 
-    actual = stream->gcount();
+    actual = (uInt32)stream->gcount();
     return true;
   }
   catch(...)
@@ -474,7 +474,7 @@ ZipHandler::zip_error ZipHandler::read_ecd(zip_file *zip)
 
     /* max out the buffer length at the size of the file */
     if (buflen > zip->length)
-      buflen = zip->length;
+      buflen = (uInt32)zip->length;
 
     /* allocate buffer */
     buffer = (uInt8 *)malloc(buflen + 1);

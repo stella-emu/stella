@@ -213,7 +213,7 @@ void Serializer::putIntArray(const uInt32* array, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putString(const string& str)
 {
-  int len = str.length();
+  int len = (int)str.length();
   putInt(len);
   myStream->write(str.data(), len);
 }

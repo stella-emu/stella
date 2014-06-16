@@ -52,7 +52,7 @@ static Preferences *sharedInstance = nil;
   return(self);
 }
 
-- (void)setString:(const char *)key:(const char *)value
+- (void)setString:(const char *)key : (const char *)value
 {
   NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
   NSString* theValue = [NSString stringWithCString:value encoding:NSASCIIStringEncoding];
@@ -62,7 +62,7 @@ static Preferences *sharedInstance = nil;
   [theValue release];
 }
 
-- (void)getString:(const char *)key:(char *)value:(int)size
+- (void)getString:(const char *)key : (char *)value : (int)size
 {
   NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
   NSString* theValue = [defaults objectForKey:theKey];

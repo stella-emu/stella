@@ -179,7 +179,7 @@ class EventHandler
   #ifndef BSPF_MAC_OSX
       return (mod & KBDM_ALT);
   #else
-      return (mod & KBDM_MODE);
+      return (mod & KBDM_GUI);
   #endif
     }
 
