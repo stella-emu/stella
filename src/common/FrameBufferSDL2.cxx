@@ -69,6 +69,8 @@ FrameBufferSDL2::~FrameBufferSDL2()
   }
   if(myWindow)
   {
+    SDL_SetWindowFullscreen(myWindow, 0); // on some systems, a crash occurs
+                                          // when destroying fullscreen window
     SDL_DestroyWindow(myWindow);
     myWindow = NULL;
   }
@@ -105,10 +107,24 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
   // Always recreate renderer (some systems need this)
   if(myRenderer)
   {
+    // Always clear the (double-buffered) renderer surface
+    SDL_RenderClear(myRenderer);
+    SDL_RenderPresent(myRenderer);
+    SDL_RenderClear(myRenderer);
     SDL_DestroyRenderer(myRenderer);
     myRenderer = NULL;
   }
 
+  uInt32 pos = myOSystem.settings().getBool("center")
+                 ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
+    uInt32 flags = mode.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+
+  // OSX seems to have issues with destroying the window, and wants to keep
+  // the same handle
+  // Problem is, doing so on other platforms results in flickering when
+  // toggling fullscreen windowed mode
+  // So we have a special case for OSX
+#ifndef BSPF_MAC_OSX
   // Don't re-create the window if its size hasn't changed, as it's not
   // necessary, and causes flashing in fullscreen mode
   if(myWindow)
@@ -126,13 +142,22 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
     // Even though window size stayed the same, the title may have changed
     SDL_SetWindowTitle(myWindow, title.c_str());
   }
+#else
+  // OSX wants to *never* re-create the window
+  // This sometimes results in the window being resized *after* it's displayed,
+  // but at least the code works and doesn't crash
+  if(myWindow)
+  {
+    SDL_SetWindowFullscreen(myWindow, flags);
+    SDL_SetWindowSize(myWindow, mode.screen.w, mode.screen.h);
+    SDL_SetWindowPosition(myWindow, pos, pos);
+    SDL_SetWindowTitle(myWindow, title.c_str());
+  }
+#endif
   else
   {
-    int pos = myOSystem.settings().getBool("center")
-                ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
-    myWindow = SDL_CreateWindow(title.c_str(),
-                   pos, pos, mode.screen.w, mode.screen.h,
-                   mode.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    myWindow = SDL_CreateWindow(title.c_str(), pos, pos,
+                                mode.screen.w, mode.screen.h, flags);
     if(myWindow == NULL)
     {
       string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
@@ -241,5 +266,5 @@ void FrameBufferSDL2::readPixels(const GUI::Rect& rect,
   r.x = rect.x();  r.y = rect.y();
   r.w = rect.width();  r.h = rect.height();
 
-  SDL_RenderReadPixels(myRenderer, &r, SDL_PIXELFORMAT_ARGB8888, pixels, pitch);
+  SDL_RenderReadPixels(myRenderer, &r, 0, pixels, pitch);
 }

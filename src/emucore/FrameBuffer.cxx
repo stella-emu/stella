@@ -675,6 +675,7 @@ void FrameBuffer::setFullscreen(bool enable)
     myOSystem.settings().setValue("fullscreen", fullScreen());
     resetSurfaces();
     setCursorState();
+    refresh();
   }
 }
 
