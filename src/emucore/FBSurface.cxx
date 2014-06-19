@@ -35,6 +35,29 @@ FBSurface::FBSurface()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const
+{
+  uInt8* src = (uInt8*) myPixels + rect.y() * myPitch + rect.x();
+
+  if(rect.isEmpty())
+    memcpy(buffer, src, width() * height() * 4);
+  else
+  {
+    uInt32 w = BSPF_min(rect.width(), width());
+    uInt32 h = BSPF_min(rect.height(), height());
+
+    // Copy 'height' lines of width 'pitch' (in bytes for both)
+    uInt8* dst = buffer;
+    while(h--)
+    {
+      memcpy(dst, src, w * 4);
+      src += myPitch * 4;
+      dst += pitch * 4;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 {
   uInt32* buffer = myPixels + y * myPitch + x;

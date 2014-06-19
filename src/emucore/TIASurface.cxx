@@ -26,12 +26,13 @@
 #include "TIASurface.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASurface::TIASurface(FrameBuffer& buffer, OSystem& system)
-  : myFB(buffer),
-    myOSystem(system),
+TIASurface::TIASurface(OSystem& system)
+  : myOSystem(system),
+    myFB(system.frameBuffer()),
     myTIA(NULL),
     myTiaSurface(NULL),
     mySLineSurface(NULL),
+    myBaseTiaSurface(NULL),
     myFilterType(kNormal),
     myUsePhosphor(false),
     myPhosphorBlend(77),
@@ -53,6 +54,10 @@ TIASurface::TIASurface(FrameBuffer& buffer, OSystem& system)
   }
   uInt32 scanID = myFB.allocateSurface(1, kScanH, scanData);
   mySLineSurface = myFB.surface(scanID);
+
+  // Base TIA surface for use in taking snapshots in 1x mode
+  uInt32 baseID = myFB.allocateSurface(kTIAW*2, kTIAH);
+  myBaseTiaSurface = myFB.surface(baseID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,6 +128,30 @@ void TIASurface::setPalette(const uInt32* tia_palette, const uInt32* rgb_palette
   // The NTSC filtering needs access to the raw RGB data, since it calculates
   // its own internal palette
   myNTSCFilter.setTIAPalette(*this, rgb_palette);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FBSurface& TIASurface::baseSurface(GUI::Rect& rect)
+{
+  uInt32 tiaw = myTIA->width(), width = tiaw*2, height = myTIA->height();
+  rect.setBounds(0, 0, width, height);
+
+  // Fill the surface with pixels from the TIA, scaled 2x horizontally
+  uInt32 *buffer, pitch;
+  myBaseTiaSurface->basePtr(buffer, pitch);
+  uInt32* buf_ptr = buffer;
+
+  for(uInt32 y = 0; y < height; ++y)
+  {
+    for(uInt32 x = 0; x < tiaw; ++x)
+    {
+      uInt32 pixel = myFB.tiaSurface().pixel(y*tiaw+x);
+      *buf_ptr++ = pixel;
+      *buf_ptr++ = pixel;
+    }
+  }
+
+  return *myBaseTiaSurface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

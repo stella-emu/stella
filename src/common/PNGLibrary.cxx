@@ -26,7 +26,6 @@
 #include "FrameBuffer.hxx"
 #include "Props.hxx"
 #include "TIA.hxx"
-#include "Version.hxx"
 #include "PNGLibrary.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,22 +128,67 @@ done:
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(const string& filename, const Properties& props)
+void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
+{
+  ofstream out(filename.c_str(), ios_base::binary);
+  if(!out.is_open())
+    throw "ERROR: Couldn't create snapshot file";
+
+  const GUI::Rect& rect = myFB.imageRect();
+  png_uint_32 width = rect.width(), height = rect.height();
+
+  // Get framebuffer pixel data (we get ABGR format)
+  png_bytep buffer = new png_byte[width * height * 4];
+  myFB.readPixels(buffer, width*4, rect);
+
+  // Set up pointers into "buffer" byte array
+  png_bytep* rows = new png_bytep[height];
+  for(png_uint_32 k = 0; k < height; ++k)
+    rows[k] = (png_bytep) (buffer + k*width*4);
+
+  // And save the image
+  saveImage(out, buffer, rows, width, height, comments);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
+                           const GUI::Rect& rect, const VariantList& comments)
+{
+  ofstream out(filename.c_str(), ios_base::binary);
+  if(!out.is_open())
+    throw "ERROR: Couldn't create snapshot file";
+
+  // Do we want the entire surface or just a section?
+  png_uint_32 width = rect.width(), height = rect.height();
+  if(rect.isEmpty())
+  {
+    width = surface.width();
+    height = surface.height();
+  }
+
+  // Get the surface pixel data (we get ABGR format)
+  png_bytep buffer = new png_byte[width * height * 4];
+  surface.readPixels(buffer, width, rect);
+
+  // Set up pointers into "buffer" byte array
+  png_bytep* rows = new png_bytep[height];
+  for(png_uint_32 k = 0; k < height; ++k)
+    rows[k] = (png_bytep) (buffer + k*width*4);
+
+  // And save the image
+  saveImage(out, buffer, rows, width, height, comments);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::saveImage(ofstream& out, png_bytep& buffer, png_bytep*& rows,
+    png_uint_32 width, png_uint_32 height, const VariantList& comments)
 {
   #define saveImageERROR(s) { err_message = s; goto done; }
 
   png_structp png_ptr = NULL;
   png_infop info_ptr = NULL;
   const char* err_message = NULL;
-  const GUI::Rect& imageR = myFB.imageRect();
-  png_uint_32 width = imageR.width(), height = imageR.height();
-  png_bytep image = new png_byte[width * height * 4];
-  png_bytep* row_pointers = new png_bytep[height];
 
-  ofstream out(filename.c_str(), ios_base::binary);
-  if(!out.is_open())
-    saveImageERROR("ERROR: Couldn't create snapshot file");
-    
   // Create the PNG saving context structure
   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL,
                  png_user_error, png_user_warn);
@@ -165,7 +209,7 @@ void PNGLibrary::saveImage(const string& filename, const Properties& props)
       PNG_FILTER_TYPE_DEFAULT);
 
   // Write comments
-  writeComments(png_ptr, info_ptr, props);
+  writeComments(png_ptr, info_ptr, comments);
 
   // Write the file header information.  REQUIRED
   png_write_info(png_ptr, info_ptr);
@@ -182,15 +226,8 @@ void PNGLibrary::saveImage(const string& filename, const Properties& props)
   // Flip BGR pixels to RGB
   png_set_bgr(png_ptr);
 
-  // Get framebuffer surface pixel data (we get ABGR format)
-  myFB.readPixels(imageR, image, width*4);
-
-  // Set up pointers into "image" byte array
-  for(png_uint_32 k = 0; k < height; ++k)
-    row_pointers[k] = (png_bytep) (image + k*width*4);
-
   // Write the entire image in one go
-  png_write_image(png_ptr, row_pointers);
+  png_write_image(png_ptr, rows);
 
   // We're finished writing
   png_write_end(png_ptr, info_ptr);
@@ -199,91 +236,11 @@ void PNGLibrary::saveImage(const string& filename, const Properties& props)
 done:
   if(png_ptr)
     png_destroy_write_struct(&png_ptr, &info_ptr);
-  if(image)
-    delete[] image;
-  if (row_pointers)
-    delete[] row_pointers;
+  if(buffer)
+    delete[] buffer;
+  if (rows)
+    delete[] rows;
   if(err_message)
-    throw err_message;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(const string& filename, const TIA& tia,
-                           const Properties& props)
-{
-  #define saveImageERROR(s) { err_message = s; goto done; }
-
-  png_structp png_ptr = NULL;
-  png_infop info_ptr = NULL;
-  const char* err_message = NULL;
-  png_uint_32 tiaw = tia.width(), width = tiaw*2, height = tia.height();
-  png_bytep image = new png_byte[width * height * 3];
-  png_bytep* row_pointers = new png_bytep[height];
-  uInt8 r, g, b;
-  uInt8* buf_ptr = image;
-
-  ofstream out(filename.c_str(), ios_base::binary);
-  if(!out.is_open())
-    saveImageERROR("ERROR: Couldn't create snapshot file");
-    
-  // Create the PNG saving context structure
-  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL,
-                 png_user_error, png_user_warn);
-  if(png_ptr == NULL)
-    saveImageERROR("Couldn't allocate memory for PNG file");
-
-  // Allocate/initialize the memory for image information.  REQUIRED.
-	info_ptr = png_create_info_struct(png_ptr);
-  if(info_ptr == NULL)
-    saveImageERROR("Couldn't create image information for PNG file");
-
-  // Set up the output control
-  png_set_write_fn(png_ptr, &out, png_write_data, png_io_flush);
-
-  // Write PNG header info
-  png_set_IHDR(png_ptr, info_ptr, width, height, 8,
-      PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
-      PNG_FILTER_TYPE_DEFAULT);
-
-  // Write comments
-  writeComments(png_ptr, info_ptr, props);
-
-  // Write the file header information.  REQUIRED
-  png_write_info(png_ptr, info_ptr);
-
-  // Fill the buffer with pixels from the tia, scaled 2x horizontally
-  for(uInt32 y = 0; y < height; ++y)
-  {
-    for(uInt32 x = 0; x < tiaw; ++x)
-    {
-      uInt32 pixel = myFB.tiaSurface().pixel(y*tiaw+x);
-      myFB.getRGB(pixel, &r, &g, &b);
-      *buf_ptr++ = r;
-      *buf_ptr++ = g;
-      *buf_ptr++ = b;
-      *buf_ptr++ = r;
-      *buf_ptr++ = g;
-      *buf_ptr++ = b;
-    }
-    // Set up pointers into "image" byte array
-    buf_ptr = row_pointers[y] = image + y*width*3;
-  }
-
-  // Write the entire image in one go
-  png_write_image(png_ptr, row_pointers);
-
-  // We're finished writing
-  png_write_end(png_ptr, info_ptr);
-
-  // Cleanup
-done:
-  if(png_ptr)
-    png_destroy_write_struct(&png_ptr, &info_ptr);
-  if(image)
-    delete[] image;
-  if (row_pointers)
-    delete[] row_pointers;
-  if (err_message)
     throw err_message;
 }
 
@@ -382,29 +339,21 @@ void PNGLibrary::scaleImagetoSurface(FBSurface& surface)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
-                               const Properties& props)
+                               const VariantList& comments)
 {
-  // Pre-processor voodoo to make the code shorter
-  #define CONVERT_TO_PNGTEXT(_idx, _key, _text) \
-      char key##_idx[] = _key;                  \
-      char text##_idx[256];                     \
-      strncpy(text##_idx, _text.c_str(), 255);  \
-      text_ptr[_idx].key = key##_idx;           \
-      text_ptr[_idx].text = text##_idx;         \
-      text_ptr[_idx].compression = PNG_TEXT_COMPRESSION_NONE; \
-      text_ptr[_idx].text_length = 0;
+  uInt32 numComments = comments.size();
+  if(numComments == 0)
+    return;
 
-  ostringstream version;
-  version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
-          << BSPF_ARCH << "]";
-
-  png_text text_ptr[4];
-  CONVERT_TO_PNGTEXT(0, "Software", version.str());
-  CONVERT_TO_PNGTEXT(1, "ROM Name", props.get(Cartridge_Name));
-  CONVERT_TO_PNGTEXT(2, "ROM MD5", props.get(Cartridge_MD5));
-  CONVERT_TO_PNGTEXT(3, "TV Effects", myFB.tiaSurface().effectsInfo());
-
-  png_set_text(png_ptr, info_ptr, text_ptr, 4);
+  png_text text_ptr[numComments];
+  for(uInt32 i = 0; i < numComments; ++i)
+  {
+    text_ptr[i].key = (char*) comments[i].first.c_str();
+    text_ptr[i].text = (char*) comments[i].second.toString().c_str();
+    text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
+    text_ptr[i].text_length = 0;
+  }
+  png_set_text(png_ptr, info_ptr, text_ptr, numComments);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

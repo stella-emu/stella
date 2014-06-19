@@ -71,11 +71,21 @@ class FBSurface
       This method returns the surface pixel pointer and pitch, which are
       used when one wishes to modify the surface pixels directly.
     */
-    inline void basePtr(uInt32*& pixels, uInt32& pitch)
+    inline void basePtr(uInt32*& pixels, uInt32& pitch) const
     {
       pixels = myPixels;
       pitch = myPitch;
     }
+
+    /**
+      This method is called to get a copy of the specified ARGB data from
+      the behind-the-scenes surface.
+
+      @param buffer  A copy of the pixel data in ARGB8888 format
+      @param pitch   The pitch (in bytes) for the pixel data
+      @param rect    The bounding rectangle for the buffer
+    */
+    void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const;
 
     //////////////////////////////////////////////////////////////////////////
     // Note:  The drawing primitives below will work, but do not take

@@ -117,7 +117,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
 
   uInt32 pos = myOSystem.settings().getBool("center")
                  ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
-    uInt32 flags = mode.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+  uInt32 flags = mode.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 
   // OSX seems to have issues with destroying the window, and wants to keep
   // the same handle
@@ -259,8 +259,8 @@ FBSurface* FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::readPixels(const GUI::Rect& rect,
-                                 uInt8* pixels, uInt32 pitch) const
+void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
+                                 const GUI::Rect& rect) const
 {
   SDL_Rect r;
   r.x = rect.x();  r.y = rect.y();

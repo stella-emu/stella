@@ -96,16 +96,16 @@ class FrameBufferSDL2 : public FrameBuffer
     bool isDoubleBuffered() const { return myDblBufferedFlag; }
 
     /**
-      This method is called to get the specified ARGB data from the viewable
-      FrameBuffer area.  Note that this isn't the same as any internal
-      surfaces that may be in use; it should return the actual data as it
-      is currently seen onscreen.
+      This method is called to get a copy of the specified ARGB data from the
+      viewable FrameBuffer area.  Note that this isn't the same as any
+      internal surfaces that may be in use; it should return the actual data
+      as it is currently seen onscreen.
 
-      @param rect    The bounding rectangle for the buffer
-      @param buffer  The actual pixel data in ARGB8888 format
+      @param buffer  A copy of the pixel data in ARGB8888 format
       @param pitch   The pitch (in bytes) for the pixel data
+      @param rect    The bounding rectangle for the buffer
     */
-    void readPixels(const GUI::Rect& rect, uInt8* buffer, uInt32 pitch) const;
+    void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const;
 
   protected:
     //////////////////////////////////////////////////////////////////////

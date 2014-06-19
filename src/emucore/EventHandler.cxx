@@ -42,6 +42,7 @@
 #include "StateManager.hxx"
 #include "M6532.hxx"
 #include "MouseControl.hxx"
+#include "Version.hxx"
 
 #include "EventHandler.hxx"
 
@@ -1904,20 +1905,30 @@ void EventHandler::takeSnapshot(uInt32 number)
   else
     filename = sspath + ".png";
 
+  // Some text fields to add to the PNG snapshot
+  VariantList comments;
+  ostringstream version;
+  version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
+          << BSPF_ARCH << "]";
+  comments.push_back("Software", version.str());
+  comments.push_back("ROM Name", myOSystem.console().properties().get(Cartridge_Name));
+  comments.push_back("ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
+  comments.push_back("TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
+
   // Now create a PNG snapshot
   if(myOSystem.settings().getBool("ss1x"))
   {
     string message = "Snapshot saved";
     try
     {
-      myOSystem.png().saveImage(filename, myOSystem.console().tia(),
-                                myOSystem.console().properties());
+      GUI::Rect rect;
+      const FBSurface& surface = myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
+      myOSystem.png().saveImage(filename, surface, rect, comments);
     }
     catch(const char* msg)
     {
       message = msg;
     }
-
     if(showmessage)
       myOSystem.frameBuffer().showMessage(message);
   }
@@ -1929,7 +1940,7 @@ void EventHandler::takeSnapshot(uInt32 number)
     string message = "Snapshot saved";
     try
     {
-      myOSystem.png().saveImage(filename, myOSystem.console().properties());
+      myOSystem.png().saveImage(filename, comments);
     }
     catch(const char* msg)
     {

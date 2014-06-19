@@ -159,6 +159,9 @@ struct Rect
   }
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Rect EmptyRect;
+
 }  // End of namespace GUI
 
 #endif

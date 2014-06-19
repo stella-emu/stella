@@ -27,6 +27,7 @@ class FrameBuffer;
 class FBSurface;
 class VideoMode;
 
+#include "Rect.hxx"
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
 
@@ -47,7 +48,7 @@ class TIASurface
     /**
       Creates a new TIASurface object
     */
-    TIASurface(FrameBuffer& buffer, OSystem& system);
+    TIASurface(OSystem& system);
 
     /**
       Destructor
@@ -71,6 +72,11 @@ class TIASurface
                           calculating a phosphor palette
     */
     void setPalette(const uInt32* tia_palette, const uInt32* rgb_palette);
+
+    /**
+      Get the TIA base surface for use in saving to a PNG image.
+    */
+    const FBSurface& baseSurface(GUI::Rect& rect);
 
     /**
       Get the TIA pixel associated with the given TIA buffer index,
@@ -136,11 +142,11 @@ class TIASurface
     void render();
 
   private:
-    FrameBuffer& myFB;
     OSystem& myOSystem;
+    FrameBuffer& myFB;
     TIA* myTIA;
 
-    FBSurface *myTiaSurface, *mySLineSurface;
+    FBSurface *myTiaSurface, *mySLineSurface, *myBaseTiaSurface;
 
     // Enumeration created such that phosphor off/on is in LSB,
     // and Blargg off/on is in MSB

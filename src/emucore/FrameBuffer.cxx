@@ -160,7 +160,7 @@ bool FrameBuffer::initialize()
   FBSurface::setPalette(myPalette);
 
   // Create a TIA surface; we need it for rendering TIA images
-  myTIASurface = new TIASurface(*this, myOSystem);
+  myTIASurface = new TIASurface(myOSystem);
 
   return true;
 }

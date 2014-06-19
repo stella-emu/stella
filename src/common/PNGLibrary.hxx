@@ -61,27 +61,30 @@ class PNGLibrary
       this will be a TIA image, but it could actually be used for *any* mode.
 
       @param filename  The filename to save the PNG image
-      @param props     The properties object containing info about the ROM
+      @param comments  The text comments to add to the PNG image
 
       @return  On success, the PNG file has been saved to 'filename',
                otherwise a const char* exception is thrown containing a
                more detailed error message.
     */
-    void saveImage(const string& filename, const Properties& props);
+    void saveImage(const string& filename,
+                   const VariantList& comments = EmptyVarList);
 
     /**
-      Save the current TIA image to a PNG file using data directly from
-      the internal TIA buffer.  No filtering or scaling will be included.
+      Save the given surface to a PNG file.
 
-      @param filename The filename to save the PNG image
-      @param tia      Source of the raw TIA data
-      @param props    The properties object containing info about the ROM
+      @param filename  The filename to save the PNG image
+      @param surface   The surface data for the PNG image
+      @param rect      The area of the surface to use
+      @param comments  The text comments to add to the PNG image
 
       @return  On success, the PNG file has been saved to 'filename',
                otherwise a const char* exception is thrown containing a
                more detailed error message.
     */
-    void saveImage(const string& filename, const TIA& tia, const Properties& props);
+    void saveImage(const string& filename, const FBSurface& surface,
+                   const GUI::Rect& rect = GUI::EmptyRect,
+                   const VariantList& comments = EmptyVarList);
 
   private:
     const FrameBuffer& myFB;
@@ -111,6 +114,19 @@ class PNGLibrary
     */
     bool allocateStorage(png_uint_32 iwidth, png_uint_32 iheight);
 
+    /** The actual method which saves a PNG image.
+
+      @param out      The output stream for writing PNG data
+      @param buffer   Actual PNG RGB data
+      @param rows     Pointer into 'buffer' for each row
+      @param width    The width of the PNG image
+      @param height   The height of the PNG image
+      @param comments The text comments to add to the PNG image
+    */
+    void saveImage(ofstream& out, png_bytep& buffer, png_bytep*& rows,
+                   png_uint_32 width, png_uint_32 height,
+                   const VariantList& comments);
+
     /**
       Scale the PNG data from 'ReadInfo' into the FBSurface.  For now, scaling
       is done on integer boundaries only (ie, 1x, 2x, etc up or down).
@@ -123,7 +139,7 @@ class PNGLibrary
       Write PNG tEXt chunks to the image.
     */
     void writeComments(png_structp png_ptr, png_infop info_ptr,
-                       const Properties& props);
+                       const VariantList& comments);
 
     /** PNG library callback functions */
     static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
