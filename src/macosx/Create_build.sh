@@ -26,7 +26,7 @@ echo "Copying documentation ..."
 ditto ../../Announce.txt ../../Changes.txt ../../Copyright.txt ../../License.txt ../../Readme.txt ../../Todo.txt "${DISK}"
 
 echo "Copying application ..."
-cp -r build/Deployment/Stella.app "${DISK}"
+cp -r DerivedData/Build/Products/Deployment/Stella.app "${DISK}"
 
 echo "Updating modification times ..."
 touch "${DISK}"/Stella.app "${DISK}"/*.txt
