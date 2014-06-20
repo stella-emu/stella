@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - xxx 2014</b></center>
+  <center><b>February 1999 - July 2014</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -260,17 +260,17 @@
       joysticks or mouse</li>
     <li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
       computer's mouse</li>
-    <li>Emulates Spectravideo CompuMate system using your computer's keyboard,
+    <li>Emulates <a href="http://en.wikipedia.org/wiki/CompuMate">Spectravideo CompuMate</a> system using your computer's keyboard,
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
       to the actual keys on your keyboard</li>
     <li>Emulates the Mindlink Controller using your computer's mouse</li>
     <li>Support for real Atari 2600 controllers using the
-      <a href="http://www.stelladaptor.com">Stelladaptor</a> and
+      <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
       <a href="http://2600-daptor.com">2600-adaptor/2600-daptor II</a></li>
     <li>Support for the speech portion of a real  
-      <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
+      <a href="http://atariage.com/store/index.php?l=product_list&c=98">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
-    <li>Supports EEPROM emulation for <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
+    <li>Supports EEPROM emulation for <a href="http://atariage.com/store/index.php?l=product_list&c=98">
       AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers,
       as well as FLASH support in various cartridge schemes</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
@@ -295,7 +295,7 @@
       Blargg filtering</a>, including presets for several common TV outputs
       (composite, S-video, RGB, etc), and ability to fully customize
       many attributes (contrast, brightness, saturation, gamma, etc).</li>
-    <li>Built-in ROM database with information compiled by RomHunter</li>
+    <li>Built-in ROM database with information partially compiled by RomHunter</li>
   </ul>
 
 
@@ -318,7 +318,7 @@
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>Enough RAM for the OS + 64MB RAM for the emulation; 128MB+ highly recommended</li>
     <li>Joysticks or gamepads are highly recommended</li>
-    <li>Mouse or <a href="http://www.stelladaptor.com">Stelladaptor</a> / 
+    <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> / 
     <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
     <li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
   </ul>
@@ -343,7 +343,7 @@
   <p>The Mac version of Stella is designed to work on an Apple Macintosh with
   the following:</p>
   <ul>
-    <li>MacOSX 10.7 (Lion) or above</li>
+    <li>MacOSX 10.5 (Leopard) or above</li>
     <li>Intel processor</li>
     <li>OpenGL capable video card</li>
     <li>Xcode 5.0 is required to compile the Stella source code</li>
@@ -359,7 +359,7 @@
     <li>Direct3D or OpenGL capable video card</li>
     <li>64-bit port has been tested on Windows Vista and above only; it may work on
       WinXP64 as well, but isn't a priority</li>
-    <li>Visual C++ 2012 (or Express version) is required to compile the Stella source code</li>
+    <li>Visual C++ 2012/2013 (or Express version) is required to compile the Stella source code</li>
   </ul>
 
   <p>
@@ -1228,7 +1228,7 @@
 
   </table>
 
-  <p><b>TV effects (only active in TIA mode)</b></p>
+  <p><b>TV effects (cannot be remapped, only active in TIA mode)</b></p>
 
   <table BORDER=2 cellpadding=5>
     <tr>
@@ -2342,7 +2342,7 @@
     </tr>
 
     <tr>
-      <td><pre>-thumb.trapfatal &lt;true|false&gt;</pre></td>
+      <td><pre>-thumb.trapfatal &lt;1|0&gt;</pre></td>
       <td>The default of true allows the Thumb ARM emulation to
       throw an exception and enter the debugger on fatal errors.  When disabled, such
       fatal errors are simply logged, and emulation continues.  Do not use this
@@ -2756,7 +2756,7 @@
   <blockquote>
 
   <p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
-  using the <a href="http://www.stelladaptor.com">Stelladaptor</a> and
+  using the <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
   <a href="http://2600-daptor.com">2600-adaptor</a> devices.</p>
 
   <p>Stella can use up to <b>two</b> adaptors; any extra ones are ignored.
