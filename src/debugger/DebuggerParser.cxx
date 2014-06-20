@@ -26,6 +26,7 @@
 #include "CpuDebug.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"
+#include "TiaOutputWidget.hxx"
 #include "DebuggerParser.hxx"
 #include "YaccParser.hxx"
 #include "M6502.hxx"
@@ -1432,12 +1433,7 @@ void DebuggerParser::executeSaveses()
 // "savesnap"
 void DebuggerParser::executeSavesnap()
 {
-  // FIXME - for now, temporarily enable 1x snapshot mode, and reset it
-  //         afterwards; this will change once we move to FBSurfaces
-  bool ss1x = settings.getBool("ss1x");
-  settings.setValue("ss1x", true);
-  debugger.myOSystem->eventHandler().takeSnapshot();
-  settings.setValue("ss1x", ss1x);
+  debugger.tiaOutput().saveSnapshot();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

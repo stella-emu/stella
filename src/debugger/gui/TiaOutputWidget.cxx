@@ -66,6 +66,27 @@ void TiaOutputWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::saveSnapshot()
 {
+  int number = instance().getTicks() / 1000;
+  ostringstream sspath;
+  sspath << instance().snapshotSaveDir()
+         << instance().console().properties().get(Cartridge_Name)
+         << "_dbg_" << hex << setw(8) << setfill('0') << number << ".png";
+
+  const uInt32 width  = instance().console().tia().width(),
+               height = instance().console().tia().height();
+  FBSurface& s = dialog().surface();
+
+  GUI::Rect rect(_x, _y, _x + width*2, _y + height);
+  string message = "Snapshot saved";
+  try
+  {
+    instance().png().saveImage(sspath.str(), s, rect);
+  }
+  catch(const char* msg)
+  {
+    message = msg;
+  }
+  instance().frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

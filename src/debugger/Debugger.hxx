@@ -156,14 +156,15 @@ class Debugger : public DialogContainer
     */
     TIADebug& tiaDebug() const { return *myTiaDebug; }
 
-    const GUI::Font& lfont() const      { return myDialog->lfont();  }
-    const GUI::Font& nlfont() const     { return myDialog->nfont();  }
-    DebuggerParser& parser() const      { return *myParser;          }
-    PackedBitArray& breakpoints() const { return *myBreakPoints;     }
-    PackedBitArray& readtraps() const   { return *myReadTraps;       }
-    PackedBitArray& writetraps() const  { return *myWriteTraps;      }
-    PromptWidget& prompt() const        { return myDialog->prompt(); }
-    RomWidget& rom() const              { return myDialog->rom();    }
+    const GUI::Font& lfont() const      { return myDialog->lfont();     }
+    const GUI::Font& nlfont() const     { return myDialog->nfont();     }
+    DebuggerParser& parser() const      { return *myParser;             }
+    PackedBitArray& breakpoints() const { return *myBreakPoints;        }
+    PackedBitArray& readtraps() const   { return *myReadTraps;          }
+    PackedBitArray& writetraps() const  { return *myWriteTraps;         }
+    PromptWidget& prompt() const        { return myDialog->prompt();    }
+    RomWidget& rom() const              { return myDialog->rom();       }
+    TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
     /**
       Run the debugger command and return the result.
