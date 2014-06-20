@@ -345,7 +345,7 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
   if(numComments == 0)
     return;
 
-  png_text text_ptr[numComments];
+  png_text* text_ptr = new png_text[numComments];
   for(uInt32 i = 0; i < numComments; ++i)
   {
     text_ptr[i].key = (char*) comments[i].first.c_str();
@@ -354,6 +354,7 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
     text_ptr[i].text_length = 0;
   }
   png_set_text(png_ptr, info_ptr, text_ptr, numComments);
+  delete[] text_ptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
