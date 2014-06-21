@@ -162,7 +162,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // FS stretch
-  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos, "FS Stretch");
+  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen Fill");
   wid.push_back(myUseStretch);
   ypos += lineHeight + 4;
 

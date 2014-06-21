@@ -2371,16 +2371,16 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Renderer (*)</td><td>use specified rendering mode (requires restart)</td><td>-video</td></tr>
-          <tr><td>TIA Zoom</td><td>filter for emulation mode </td><td>-tia.zoom</td></tr>
+          <tr><td>Renderer</td><td>use specified rendering mode</td><td>-video</td></tr>
+          <tr><td>TIA Zoom</td><td>(integral) zoom level for emulation mode </td><td>-tia.zoom</td></tr>
           <tr><td>TIA Palette</td><td>palette for emulation mode</td><td>-palette</td></tr>
+          <tr><td>TIA Inter</td><td>interpolation for TIA image</td><td>-tia.inter</td></tr>
           <tr><td>Timing (*)</td><td>how to wait between frames (requires restart)</td><td>-timing</td></tr>
-          <tr><td>GL Filter</td><td>OpenGL filter mode</td><td>-gl_filter</td></tr>
-          <tr><td>Aspect (N)</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
-          <tr><td>Aspect (P)</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
+          <tr><td>NTSC Aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
+          <tr><td>PAL Aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
           <tr><td>Framerate</td><td>frames per second in emulation mode</td><td>-framerate</td></tr>
-          <tr><td>Fullscreen mode</td><td>self-explanatory</td><td>-fullscreen</td></tr>
-          <tr><td>GL FS Stretch</td><td>stretch fullscreen OpenGL in emulation mode</td><td>-gl_fsmax</td></tr>
+          <tr><td>Fullscreen</td><td>self-explanatory</td><td>-fullscreen</td></tr>
+          <tr><td>Fullscreen Fill</td><td>completely fill TIA image in fullscreen</td><td>-tia.fsfill</td></tr>
           <tr><td>VSync</td><td>enable vertical sync'ed updates</td><td>-vsync</td></tr>
           <tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
           <tr><td>Fast SC/AR BIOS</td><td>skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
@@ -2474,7 +2474,6 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Interface Palette</td><td>palette to use for UI elements</td><td>-uipalette</td></tr>
           <tr><td>List quick delay</td><td>time to wait between keypresses in listwidget</td><td>-listdelay</td></tr>
           <tr><td>Mouse wheel scroll</td><td>number of lines mouse scroll will move in listwidget</td><td>-mscroll</td></tr>
         </table>
@@ -2605,6 +2604,7 @@
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode</td><td>-grabmouse</td></tr>
+          <tr><td>Always hide mouse ...</td><td>completely disable showing the mouse cursor</td><td>-hidemouse</td></tr>
         </table>
       </td>
     </tr>
@@ -2790,8 +2790,7 @@
   <blockquote>
 
   <p>Stella supports a real AtariVox device for the speech/SpeakJet portion
-  of the controller.  You will need a real AtariVox device, located
-  <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">here</a>,
+  of the controller.  You will need a real AtariVox device
   as well as some means of connecting it to your computer (some sort of
   serial port/USB adaptor).  There should be drivers for your serial convertor,
   which allow your particular operating system to 'see' the device (configuring
@@ -2915,8 +2914,8 @@
     </tr>
 
     <tr>
-      <td>-video gl</td>
-      <td>video = gl</td>
+      <td>-video opengl</td>
+      <td>video = opengl</td>
     </tr>
 
     <tr>
@@ -3196,7 +3195,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>2K </td><td>64-2048 byte Atari </td></tr>
         <tr><td>3E </td><td>32K Tigervision </td></tr>
         <tr><td>3F </td><td>512K Tigervision </td></tr>
-        <tr><td>4A50 </td><td>64K 4A50 + ram </td></tr>
+        <tr><td>4A50 &#178;</td><td>64K 4A50 + ram </td></tr>
         <tr><td>4K </td><td>4K Atari </td></tr>
         <tr><td>4KSC </td><td>CPUWIZ 4K + ram </td></tr>
         <tr><td>AR </td><td>Supercharger </td></tr>
@@ -3204,7 +3203,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>BFSC </td><td>CPUWIZ 256K + ram</td></tr>
         <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td></tr>
         <tr><td>CV </td><td>Commavid extra ram </td></tr>
-        <tr><td>DASH </td><td>Boulder Dash 2 </td></tr>
+        <tr><td>DASH &#185;&#178;</td><td>Boulder Dash 2 </td></tr>
         <tr><td>DF </td><td>CPUWIZ 128K </td></tr>
         <tr><td>DFSC </td><td>CPUWIZ 128K + ram</td></tr>
         <tr><td>DPC </td><td>Pitfall II </td></tr>
@@ -3273,7 +3272,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Trackball22 </td><td>Standard Atari 2600 CX-22 trackball controller.</td></tr>
         <tr><td>Trackball80 </td><td>Atari ST CX-80 trackball controller.</td></tr>
         <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
-        <tr><td><a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
+        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">
       AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech / sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td><a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a></td><td>A 32K EEPROM for saving high scores, etc (the EEPROM portion of an AtariVox).</td></tr>
         <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
