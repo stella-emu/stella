@@ -426,9 +426,6 @@ class FrameBuffer
     // The parent system for the framebuffer
     OSystem& myOSystem;
 
-    // Indicates if the entire frame need to redrawn
-    bool myRedrawEntireFrame;
-
     // Color palette for TIA and UI modes
     Uint32 myPalette[256+kNumColors];
 

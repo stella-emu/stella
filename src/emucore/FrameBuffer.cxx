@@ -48,7 +48,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem(osystem),
-    myRedrawEntireFrame(true),
     myInitializedCount(0),
     myPausedCount(0),
     myTIASurface(NULL)
@@ -313,9 +312,7 @@ void FrameBuffer::update()
 
     case EventHandler::S_PAUSE:
     {
-      // Only update the screen if it's been invalidated
-      if(myRedrawEntireFrame)
-        drawTIA();
+      drawTIA();
 
       // Show a pause message every 5 seconds
       if(myPausedCount++ >= 7*myOSystem.frameRate())
@@ -328,34 +325,28 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:
     {
-      // When onscreen messages are enabled in double-buffer mode,
-      // a full redraw is required
-      myOSystem.menu().draw(myMsg.enabled && isDoubleBuffered());
+      drawTIA();
+      myOSystem.menu().draw(isDoubleBuffered());
       break;  // S_MENU
     }
 
     case EventHandler::S_CMDMENU:
     {
-      // When onscreen messages are enabled in double-buffer mode,
-      // a full redraw is required
-      myOSystem.commandMenu().draw(myMsg.enabled && isDoubleBuffered());
+      drawTIA();
+      myOSystem.commandMenu().draw(isDoubleBuffered());
       break;  // S_CMDMENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
-      // When onscreen messages are enabled in double-buffer mode,
-      // a full redraw is required
-      myOSystem.launcher().draw(myMsg.enabled && isDoubleBuffered());
+      myOSystem.launcher().draw(isDoubleBuffered());
       break;  // S_LAUNCHER
     }
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
     {
-      // When onscreen messages are enabled in double-buffer mode,
-      // a full redraw is required
-      myOSystem.debugger().draw(myMsg.enabled && isDoubleBuffered());
+      myOSystem.debugger().draw(isDoubleBuffered());
       break;  // S_DEBUGGER
     }
 #endif
@@ -370,9 +361,6 @@ void FrameBuffer::update()
 
   // Do any post-frame stuff
   postFrameUpdate();
-
-  // The frame doesn't need to be completely redrawn anymore
-  myRedrawEntireFrame = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -385,10 +373,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 
   // Erase old messages on the screen
   if(myMsg.counter > 0)
-  {
-    myRedrawEntireFrame = true;
     refresh();
-  }
 
   // Precompute the message coordinates
   myMsg.text    = message;
@@ -643,8 +628,6 @@ void FrameBuffer::setPalette(const uInt32* raw_palette)
 
   // Let the TIA surface know about the new palette
   myTIASurface->setPalette(myPalette, raw_palette);
-
-  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -653,8 +636,6 @@ void FrameBuffer::stateChanged(EventHandler::State state)
   // Make sure any onscreen messages are removed
   myMsg.enabled = false;
   myMsg.counter = 0;
-
-  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
