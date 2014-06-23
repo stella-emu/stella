@@ -312,8 +312,6 @@ void FrameBuffer::update()
 
     case EventHandler::S_PAUSE:
     {
-      drawTIA();
-
       // Show a pause message every 5 seconds
       if(myPausedCount++ >= 7*myOSystem.frameRate())
       {
@@ -325,28 +323,26 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:
     {
-      drawTIA();
-      myOSystem.menu().draw(isDoubleBuffered());
+      myOSystem.menu().draw();
       break;  // S_MENU
     }
 
     case EventHandler::S_CMDMENU:
     {
-      drawTIA();
-      myOSystem.commandMenu().draw(isDoubleBuffered());
+      myOSystem.commandMenu().draw();
       break;  // S_CMDMENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
-      myOSystem.launcher().draw(isDoubleBuffered());
+      myOSystem.launcher().draw();
       break;  // S_LAUNCHER
     }
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
     {
-      myOSystem.debugger().draw(isDoubleBuffered());
+      myOSystem.debugger().draw();
       break;  // S_DEBUGGER
     }
 #endif
