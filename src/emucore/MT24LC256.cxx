@@ -149,6 +149,13 @@ void MT24LC256::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MT24LC256::erase()
+{
+  memset(myData, 0xff, 32768);
+  myDataChanged = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::systemCyclesReset()
 {
   // System cycles are being reset to zero so we need to adjust

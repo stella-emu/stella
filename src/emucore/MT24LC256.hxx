@@ -57,6 +57,9 @@ class MT24LC256
     void writeSDA(bool state);
     void writeSCL(bool state);
 
+    /** Erase entire EEPROM to known state ($FF) */
+    void erase();
+
     /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary 

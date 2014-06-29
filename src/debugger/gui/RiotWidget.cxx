@@ -35,6 +35,8 @@
 #include "DrivingWidget.hxx"
 #include "GenesisWidget.hxx"
 #include "KeyboardWidget.hxx"
+#include "AtariVoxWidget.hxx"
+#include "SaveKeyWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -440,6 +442,10 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new GenesisWidget(boss, font, x, y, controller);
     case Controller::Keyboard:
       return new KeyboardWidget(boss, font, x, y, controller);
+    case Controller::AtariVox:
+      return new AtariVoxWidget(boss, font, x, y, controller);
+    case Controller::SaveKey:
+      return new SaveKeyWidget(boss, font, x, y, controller);
     default:
       return new NullControlWidget(boss, font, x, y, controller);
   }

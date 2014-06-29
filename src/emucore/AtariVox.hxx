@@ -37,6 +37,8 @@ class MT24LC256;
 */
 class AtariVox : public Controller
 {
+  friend class AtariVoxWidget;
+
   public:
     /**
       Create a new AtariVox controller plugged into the specified jack

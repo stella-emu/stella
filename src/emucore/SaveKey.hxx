@@ -36,6 +36,8 @@ class MT24LC256;
 */
 class SaveKey : public Controller
 {
+  friend class SaveKeyWidget;
+
   public:
     /**
       Create a new SaveKey controller plugged into the specified jack
