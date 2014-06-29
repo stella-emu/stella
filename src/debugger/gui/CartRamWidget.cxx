@@ -79,11 +79,11 @@ CartRamWidget::CartRamWidget(
   
   // Add RAM grid
   xpos = _font.getStringWidth("xxxx");
-  int maxrow = myRamSize / 16;
-  if (maxrow > 16) maxrow = 16;
-  myPageSize = maxrow * 16;
+  myNumRows = myRamSize / 16;
+  if (myNumRows > 16) myNumRows = 16;
+  myPageSize = myNumRows * 16;
   myRamGrid = new DataGridWidget(_boss, _nfont, xpos, ypos,
-                                16, maxrow, 2, 8, Common::Base::F_16, true);
+                                 16, myNumRows, 2, 8, Common::Base::F_16, true);
   myRamGrid->setTarget(this);
   addFocusWidget(myRamGrid);
   
@@ -123,28 +123,26 @@ CartRamWidget::CartRamWidget(
                          Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
   }
-  
-//  xpos = 02 + lwidth - _font.getStringWidth("xxxx  ");
+
   myRamStart =
   new StaticTextWidget(_boss, _font, xpos - _font.getStringWidth("xxxx"), ypos - myLineHeight,
                        _font.getStringWidth("xxxx"), myFontHeight,
-                       "00xx", kTextAlignLeft);
-  
-//  xpos = 2 + lwidth - _font.getStringWidth("xxx  ");
-  int row;
-  for(row = 0; row < maxrow; ++row)
+                       "F0xx", kTextAlignLeft);
+
+  uInt32 row;
+  for(row = 0; row < myNumRows; ++row)
   {
-    new StaticTextWidget(_boss, _font, xpos - _font.getStringWidth("x "), ypos + row*myLineHeight + 2,
-                         3*myFontWidth, myFontHeight, 
-                         Common::Base::toString(row*16, Common::Base::F_16_1),
-                         kTextAlignLeft);
+    myRamLabels[row] =
+      new StaticTextWidget(_boss, _font, xpos - _font.getStringWidth("x "),
+                           ypos + row*myLineHeight + 2,
+                           myFontWidth, myFontHeight, "", kTextAlignLeft);
   }     
-  
+
   // for smaller grids, make sure RAM cell detail fields are below the RESET button
-  if (maxrow < 8)
+  if (myNumRows < 8)
     row = 8 + 1;  
   else
-    row = maxrow + 1;
+    row = myNumRows + 1;
 
   ypos += myLineHeight * row; 
   // We need to define these widgets from right to left since the leftmost
@@ -157,7 +155,7 @@ CartRamWidget::CartRamWidget(
   myBinValue = new EditTextWidget(boss, nfont, xpos + 4*myFontWidth + 5,
                                   ypos-2, 9*myFontWidth, myLineHeight, "");
   myBinValue->setEditable(false);
-  
+
   // Add Decimal display of selected RAM cell
   xpos -= 8*myFontWidth + 5 + 20;
   new StaticTextWidget(boss, lfont, xpos, ypos, 4*myFontWidth, myFontHeight,
@@ -165,7 +163,7 @@ CartRamWidget::CartRamWidget(
   myDecValue = new EditTextWidget(boss, nfont, xpos + 4*myFontWidth + 5, ypos-2,
                                   4*myFontWidth, myLineHeight, "");
   myDecValue->setEditable(false);
-  
+
   // Add Label of selected RAM cell
   int xpos_r = xpos - 20;
   xpos = x + 10;
@@ -200,22 +198,22 @@ void CartRamWidget::fillGrid(bool updateOld)
   IntArray vlist;
   BoolArray changed;
   uInt32 start = myCurrentRamBank * myPageSize;
-  ByteArray oldRam = myCart.internalRamOld(start, myPageSize);
-  ByteArray currentRam = myCart.internalRamCurrent(start, myPageSize);
-  
-  for(uInt32 i=0; i<myPageSize;i++)
+  const ByteArray& oldRam = myCart.internalRamOld(start, myPageSize);
+  const ByteArray& currentRam = myCart.internalRamCurrent(start, myPageSize);
+
+  for(uInt32 i = 0; i < myPageSize; i++)
   {
     alist.push_back(i+start);
     vlist.push_back(currentRam[i]);
     changed.push_back(currentRam[i] != oldRam[i]);
   }
-  
+
   if(updateOld) 
   {
     myOldValueList.clear();
     myOldValueList = myCart.internalRamCurrent(start, myCart.internalRamSize());
   }
-  
+
   myRamGrid->setNumRows(myRamSize / myPageSize);
   myRamGrid->setList(alist, vlist, changed);
   if(updateOld)
@@ -223,12 +221,16 @@ void CartRamWidget::fillGrid(bool updateOld)
     myRevertButton->setEnabled(false);
     myUndoButton->setEnabled(false);
   }
-  
+
   // Update RAM labels
+  uInt32 rport = myCart.internalRamRPort(start);
+  uInt32 page = rport & 0xf0;
   char buf[5];
-  BSPF_snprintf(buf, 5, "%04X", start);
+  BSPF_snprintf(buf, 5, "%04X", rport);
   buf[2] = buf[3] = 'x';
-  myRamStart->setLabel(buf);  
+  myRamStart->setLabel(buf);
+  for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
+    myRamLabels[row]->setLabel(Common::Base::toString(page, Common::Base::F_16_1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,15 +268,14 @@ string CartRamWidget::doSearch(const string& str)
   mySearchAddr.clear();
   mySearchValue.clear();
   mySearchState.clear();
-  
+
   // Now, search all memory locations for this value, and add it to the
   // search array
   bool hitfound = false;
 //  CartDebug& dbg = instance().debugger().cartDebug();
 //  const CartState& state = (CartState&) dbg.getState();
   
-  ByteArray currentRam = myCart.internalRamCurrent(0, myCart.internalRamSize());
-  
+  const ByteArray& currentRam = myCart.internalRamCurrent(0, myCart.internalRamSize());
   for(uInt32 addr = 0; addr < myCart.internalRamSize(); ++addr)
   {
     int value = currentRam[addr];
@@ -290,8 +291,7 @@ string CartRamWidget::doSearch(const string& str)
       hitfound = true;
     }
   }
-  
-  
+
   // If we have some hits, enable the comparison methods
   if(hitfound)
   {
@@ -303,7 +303,7 @@ string CartRamWidget::doSearch(const string& str)
   // Finally, show the search results in the list
   showSearchResults();
   
-  return "";
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,14 +343,14 @@ string CartRamWidget::doCompare(const string& str)
   
   // Now, search all memory locations previously 'found' for this value
   bool hitfound = false;  
-  ByteArray currentRam = myCart.internalRamCurrent(0, myCart.internalRamSize());
+  const ByteArray& currentRam = myCart.internalRamCurrent(0, myCart.internalRamSize());
 
   IntArray tempAddrList, tempValueList;
   mySearchState.clear();
   for(uInt32 i = 0; i < myCart.internalRamSize(); ++i)
     mySearchState.push_back(false);
   
-  for(unsigned int i = 0; i < mySearchAddr.size(); ++i)
+  for(uInt32 i = 0; i < mySearchAddr.size(); ++i)
   {
     if(comparitiveSearch)
     {
@@ -382,7 +382,7 @@ string CartRamWidget::doCompare(const string& str)
   // Finally, show the search results in the list
   showSearchResults();
   
-  return "";
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

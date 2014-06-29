@@ -41,28 +41,21 @@ class CartRamWidget : public Widget, public CommandSender
 {
   public:
     CartRamWidget(GuiObject* boss, const GUI::Font& lfont,
-                    const GUI::Font& nfont,
+                  const GUI::Font& nfont,
                   int x, int y, int w, int h, CartDebugWidget& cartDebug);
 
     virtual ~CartRamWidget() { };
 
-  public:
-
-    // Inform the ROM Widget that the underlying cart has somehow changed
-    void invalidate()
-    {
-      sendCommand(RomWidget::kInvalidateListing, -1, -1);
-    }
-
-  void loadConfig();
+  private:
+    void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
-  void fillGrid(bool updateOld);
+    void fillGrid(bool updateOld);
   
-  void showInputBox(int cmd);
-  string doSearch(const string& str);
-  string doCompare(const string& str);
-  void doRestart(); 
-  void showSearchResults();
+    void showInputBox(int cmd);
+    string doSearch(const string& str);
+    string doCompare(const string& str);
+    void doRestart(); 
+    void showSearchResults();
 
   protected:
     // Font used for 'normal' text; _font is for 'label' text
@@ -72,47 +65,47 @@ class CartRamWidget : public Widget, public CommandSender
     // we may as well make them protected variables
     int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;
 
-    ostringstream& buffer() { myBuffer.str(""); return myBuffer; }
-    DataGridWidget*   myRamGrid;
-    StaticTextWidget* myRamStart;
-
   private:
-  enum {
-    kUndoCmd     = 'RWud',
-    kRevertCmd   = 'RWrv',
-    kSearchCmd   = 'RWse',
-    kCmpCmd      = 'RWcp',
-    kRestartCmd  = 'RWrs',
-    kSValEntered = 'RWsv',
-    kCValEntered = 'RWcv'
-  };
-  
-  int myUndoAddress;
-  int myUndoValue;
-  
-  CartDebugWidget& myCart;
-  StringListWidget* myDesc;
-  ostringstream myBuffer;
-  EditTextWidget* myBinValue;
-  EditTextWidget* myDecValue;
-  EditTextWidget* myLabel;
-  int myCurrentRamBank;
-  uInt32 myRamSize;
-  uInt32 myPageSize;
-  
-  ButtonWidget* myRevertButton;
-  ButtonWidget* myUndoButton;
-  ButtonWidget* mySearchButton;
-  ButtonWidget* myCompareButton;
-  ButtonWidget* myRestartButton;
-  
-  InputTextDialog* myInputBox;  
-  
-  ByteArray myOldValueList;
-  IntArray mySearchAddr;
-  IntArray mySearchValue;
-  BoolArray mySearchState;  
-  
+    enum {
+      kUndoCmd     = 'RWud',
+      kRevertCmd   = 'RWrv',
+      kSearchCmd   = 'RWse',
+      kCmpCmd      = 'RWcp',
+      kRestartCmd  = 'RWrs',
+      kSValEntered = 'RWsv',
+      kCValEntered = 'RWcv'
+    };
+
+    int myUndoAddress;
+    int myUndoValue;
+
+    CartDebugWidget& myCart;
+    StringListWidget* myDesc;
+
+    DataGridWidget* myRamGrid;
+    StaticTextWidget* myRamStart;
+    StaticTextWidget* myRamLabels[16];
+    EditTextWidget* myBinValue;
+    EditTextWidget* myDecValue;
+    EditTextWidget* myLabel;
+
+    uInt32 myCurrentRamBank;
+    uInt32 myRamSize;
+    uInt32 myPageSize;
+    uInt32 myNumRows;
+
+    ButtonWidget* myRevertButton;
+    ButtonWidget* myUndoButton;
+    ButtonWidget* mySearchButton;
+    ButtonWidget* myCompareButton;
+    ButtonWidget* myRestartButton;
+
+    InputTextDialog* myInputBox;  
+
+    ByteArray myOldValueList;
+    IntArray mySearchAddr;
+    IntArray mySearchValue;
+    BoolArray mySearchState;  
 };
 
 #endif

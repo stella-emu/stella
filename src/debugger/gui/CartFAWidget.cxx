@@ -105,45 +105,43 @@ string CartridgeFAWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFAWidget::internalRam()
-{
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeFAWidget::internalRamSize() 
 {
   return 256;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeFAWidget::internalRamRPort(int start)
+{
+  return 0xF100 + start;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeFAWidget::internalRamDescription() 
 {
   ostringstream desc;
-  desc << "F000-F0FF used for Write Access\n"
-  <<      "F100-F1FF used for Read Access";
+  desc << "$F000 - $F0FF used for Write Access\n"
+       << "$F100 - $F1FF used for Read Access";
   
   return desc.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeFAWidget::internalRamOld(int start, int count)
+const ByteArray& CartridgeFAWidget::internalRamOld(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myOldState.internalram[start + i]);
-  return ram;
+  myRamOld.clear();
+  for(int i = 0; i < count; i++)
+    myRamOld.push_back(myOldState.internalram[start + i]);
+  return myRamOld;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeFAWidget::internalRamCurrent(int start, int count)
+const ByteArray& CartridgeFAWidget::internalRamCurrent(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myCart.myRAM[start + i]);
-  return ram;
+  myRamCurrent.clear();
+  for(int i = 0; i < count; i++)
+    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  return myRamCurrent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,5 +160,5 @@ uInt8 CartridgeFAWidget::internalRamGetValue(int addr)
 string CartridgeFAWidget::internalRamLabel(int addr) 
 {
   CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0x1080, false);
+  return dbg.getLabel(addr + 0xF100, false);
 }

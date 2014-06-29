@@ -136,15 +136,15 @@ string CartridgeE7Widget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeE7Widget::internalRam()
-{
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeE7Widget::internalRamSize() 
 {
   return 2048;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeE7Widget::internalRamRPort(int start)
+{
+  return 0x0000 + start;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,33 +152,31 @@ string CartridgeE7Widget::internalRamDescription()
 {
   ostringstream desc;
   desc << "First 1K accessible via:\n"
-  <<      "    F000-F3FF used for Write Access\n"
-  <<      "    F400-F7FF used for Read Access\n"
-  <<      "256K of second 1K accessible via:\n"
-  <<      "    F800-F8FF used for Write Access\n"
-  <<      "    F900-F9FF used for Read Access"  ;
+       << "  $F000 - $F3FF used for Write Access\n"
+       << "  $F400 - $F7FF used for Read Access\n"
+       << "256K of second 1K accessible via:\n"
+       << "  $F800 - $F8FF used for Write Access\n"
+       << "  $F900 - $F9FF used for Read Access"  ;
   
   return desc.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeE7Widget::internalRamOld(int start, int count)
+const ByteArray& CartridgeE7Widget::internalRamOld(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myOldState.internalram[start + i]);
-  return ram;
+  myRamOld.clear();
+  for(int i = 0; i < count; i++)
+    myRamOld.push_back(myOldState.internalram[start + i]);
+  return myRamOld;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeE7Widget::internalRamCurrent(int start, int count)
+const ByteArray& CartridgeE7Widget::internalRamCurrent(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myCart.myRAM[start + i]);
-  return ram;
+  myRamCurrent.clear();
+  for(int i = 0; i < count; i++)
+    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  return myRamCurrent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,11 +189,4 @@ void CartridgeE7Widget::internalRamSetValue(int addr, uInt8 value)
 uInt8 CartridgeE7Widget::internalRamGetValue(int addr)
 {
   return myCart.myRAM[addr];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeE7Widget::internalRamLabel(int addr) 
-{
-  CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0x1080, false);
 }

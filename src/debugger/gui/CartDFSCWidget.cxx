@@ -140,45 +140,43 @@ string CartridgeDFSCWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDFSCWidget::internalRam()
-{
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeDFSCWidget::internalRamSize() 
 {
   return 128;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeDFSCWidget::internalRamRPort(int start)
+{
+  return 0xF080 + start;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeDFSCWidget::internalRamDescription() 
 {
   ostringstream desc;
-  desc << "F000-F07F used for Write Access\n"
-  <<      "F080-F0FF used for Read Access";
+  desc << "$F000 - $F07F used for Write Access\n"
+       << "$F080 - $F0FF used for Read Access";
   
   return desc.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeDFSCWidget::internalRamOld(int start, int count)
+const ByteArray& CartridgeDFSCWidget::internalRamOld(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myOldState.internalram[start + i]);
-  return ram;
+  myRamOld.clear();
+  for(int i = 0; i < count; i++)
+    myRamOld.push_back(myOldState.internalram[start + i]);
+  return myRamOld;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeDFSCWidget::internalRamCurrent(int start, int count)
+const ByteArray& CartridgeDFSCWidget::internalRamCurrent(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myCart.myRAM[start + i]);
-  return ram;
+  myRamCurrent.clear();
+  for(int i = 0; i < count; i++)
+    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  return myRamCurrent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,5 +195,5 @@ uInt8 CartridgeDFSCWidget::internalRamGetValue(int addr)
 string CartridgeDFSCWidget::internalRamLabel(int addr) 
 {
   CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0x1080, false);
+  return dbg.getLabel(addr + 0xF080, false);
 }

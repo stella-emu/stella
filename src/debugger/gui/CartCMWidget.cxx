@@ -233,45 +233,43 @@ string CartridgeCMWidget::bankState()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCMWidget::internalRam()
-{
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCMWidget::internalRamSize() 
 {
   return 2048;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeCMWidget::internalRamRPort(int start)
+{
+  return 0xF800 + start;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeCMWidget::internalRamDescription() 
 {
   ostringstream desc;
-  desc << "F800-FFFF used for Exclusive Read\n"
-  <<      "          or Exclusive Write Access";
+  desc << "$F800 - $FFFF used for Exclusive Read\n"
+       << "              or Exclusive Write Access";
   
   return desc.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeCMWidget::internalRamOld(int start, int count)
+const ByteArray& CartridgeCMWidget::internalRamOld(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myOldState.internalram[start + i]);
-  return ram;
+  myRamOld.clear();
+  for(int i = 0; i < count; i++)
+    myRamOld.push_back(myOldState.internalram[start + i]);
+  return myRamOld;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteArray CartridgeCMWidget::internalRamCurrent(int start, int count)
+const ByteArray& CartridgeCMWidget::internalRamCurrent(int start, int count)
 {
-  ByteArray ram;
-  ram.clear();
-  for (int i = 0;i<count;i++)
-    ram.push_back(myCart.myRAM[start + i]);
-  return ram;
+  myRamCurrent.clear();
+  for(int i = 0; i < count; i++)
+    myRamCurrent.push_back(myCart.myRAM[start + i]);
+  return myRamCurrent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,5 +288,5 @@ uInt8 CartridgeCMWidget::internalRamGetValue(int addr)
 string CartridgeCMWidget::internalRamLabel(int addr) 
 {
   CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0x1080, false);
+  return dbg.getLabel(addr + 0xF800, false);
 }

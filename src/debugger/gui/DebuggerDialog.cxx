@@ -437,7 +437,7 @@ void DebuggerDialog::addRomArea()
     addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
     
     // The cartridge RAM tab
-    if (myCartDebug->internalRam())
+    if (myCartDebug->internalRamSize() > 0)
     {
       tabID = myRomTab->addTab(" Cartridge RAM ");
       myCartRam = new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,

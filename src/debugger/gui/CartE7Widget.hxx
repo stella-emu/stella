@@ -41,14 +41,13 @@ class CartridgeE7Widget : public CartDebugWidget
     string bankState();
   
     // start of functions for Cartridge RAM tab
-    bool internalRam();
     uInt32 internalRamSize();
+    uInt32 internalRamRPort(int start);
     string internalRamDescription(); 
-    ByteArray internalRamOld(int start, int count);
-    ByteArray internalRamCurrent(int start, int count);
+    const ByteArray& internalRamOld(int start, int count);
+    const ByteArray& internalRamCurrent(int start, int count);
     void internalRamSetValue(int addr, uInt8 value);
     uInt8 internalRamGetValue(int addr);
-    string internalRamLabel(int addr);
     // end of functions for Cartridge RAM tab   
 
   private:

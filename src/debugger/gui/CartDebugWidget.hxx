@@ -112,19 +112,22 @@ class CartDebugWidget : public Widget, public CommandSender
 
     // Query internal state of the cart (usually just bankswitching info)
     virtual string bankState() { return "0 (non-bankswitched)"; }
-  
-  // to make the Cartridge RAM show up in the debugger, implement
-  // the following 8 functions for cartridges with internal RAM
-    virtual bool internalRam() { return false; }
+
+    // To make the Cartridge RAM show up in the debugger, implement
+    // the following 8 functions for cartridges with internal RAM
     virtual uInt32 internalRamSize() { return 0; }
-    virtual string internalRamDescription() { return ""; }
-    virtual ByteArray internalRamOld(int start, int count) { ByteArray ba; return ba; }
-    virtual ByteArray internalRamCurrent(int start, int count) { ByteArray ba; return ba; }
+    virtual uInt32 internalRamRPort(int start) { return 0; }
+    virtual string internalRamDescription() { return EmptyString; }
+    virtual const ByteArray& internalRamOld(int start, int count) { return myRamOld; }
+    virtual const ByteArray& internalRamCurrent(int start, int count) { return myRamCurrent; }
     virtual void internalRamSetValue(int addr, uInt8 value) { };
     virtual uInt8 internalRamGetValue(int addr) { return 0; };
-    virtual string internalRamLabel(int addr) { CartDebug& dbg = instance().debugger().cartDebug(); return dbg.getLabel(addr, false);}
+    virtual string internalRamLabel(int addr) { return "Not available/applicable"; }
 
   protected:
+    // Arrays used to hold current and previous internal RAM values
+    ByteArray myRamOld, myRamCurrent;
+
     // Font used for 'normal' text; _font is for 'label' text
     const GUI::Font& _nfont;
 
