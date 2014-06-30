@@ -251,11 +251,10 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     myMsg.surface = surface(surfaceID);
   }
 
-  // Take care of some items that are only done once per framebuffer creation.
-  if(myInitializedCount == 1)
+  // Print initial usage message, but only print it later if the status has changed
+  if (myInitializedCount == 1)
   {
     myOSystem.logMessage(about(), 1);
-    setWindowIcon();
   }
   else
   {

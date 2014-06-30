@@ -152,7 +152,7 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       Set the icon for the main SDL window.
     */
-    void setWindowIcon() { }  // Not currently needed on any supported systems
+    void setWindowIcon();
 
     /**
       This method is called to provide information about the FrameBuffer.

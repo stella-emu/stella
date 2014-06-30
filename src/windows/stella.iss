@@ -22,11 +22,11 @@ ArchitecturesAllowed=x64
 Name: "eng"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
 Source: "{#STELLA_PATH}\Stella.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#STELLA_PATH}\SDL2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#STELLA_PATH}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#STELLA_DOCPATH}\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
