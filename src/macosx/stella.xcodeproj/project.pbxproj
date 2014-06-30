@@ -281,6 +281,10 @@
 		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
 		DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */; };
 		DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */; };
+		DC62E6471960E87B007AEF05 /* AtariVoxWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */; };
+		DC62E6481960E87B007AEF05 /* AtariVoxWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */; };
+		DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC62E6451960E87B007AEF05 /* SaveKeyWidget.cxx */; };
+		DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */; };
 		DC67270B1556F4860023653B /* CartCTY.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6727081556F4860023653B /* CartCTY.cxx */; };
 		DC67270C1556F4860023653B /* CartCTY.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6727091556F4860023653B /* CartCTY.hxx */; };
 		DC67270D1556F4860023653B /* CartCTYTunes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC67270A1556F4860023653B /* CartCTYTunes.hxx */; };
@@ -822,6 +826,10 @@
 		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LauncherFilterDialog.hxx; path = ../gui/LauncherFilterDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NTSCFilter.cxx; path = ../common/tv_filters/NTSCFilter.cxx; sourceTree = SOURCE_ROOT; };
 		DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NTSCFilter.hxx; path = ../common/tv_filters/NTSCFilter.hxx; sourceTree = SOURCE_ROOT; };
+		DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AtariVoxWidget.cxx; path = ../debugger/gui/AtariVoxWidget.cxx; sourceTree = "<group>"; };
+		DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AtariVoxWidget.hxx; path = ../debugger/gui/AtariVoxWidget.hxx; sourceTree = "<group>"; };
+		DC62E6451960E87B007AEF05 /* SaveKeyWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SaveKeyWidget.cxx; path = ../debugger/gui/SaveKeyWidget.cxx; sourceTree = "<group>"; };
+		DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SaveKeyWidget.hxx; path = ../debugger/gui/SaveKeyWidget.hxx; sourceTree = "<group>"; };
 		DC6727081556F4860023653B /* CartCTY.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCTY.cxx; path = ../emucore/CartCTY.cxx; sourceTree = SOURCE_ROOT; };
 		DC6727091556F4860023653B /* CartCTY.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCTY.hxx; path = ../emucore/CartCTY.hxx; sourceTree = SOURCE_ROOT; };
 		DC67270A1556F4860023653B /* CartCTYTunes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCTYTunes.hxx; path = ../emucore/CartCTYTunes.hxx; sourceTree = SOURCE_ROOT; };
@@ -1156,6 +1164,8 @@
 		2D20F9E308C603C500A73076 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */,
+				DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */,
 				2D23318F0900B5EF00613B1F /* AudioWidget.cxx */,
 				2D2331900900B5EF00613B1F /* AudioWidget.hxx */,
 				DCCF4ACE14B7E6C300814FAB /* BoosterWidget.cxx */,
@@ -1267,6 +1277,8 @@
 				2D20F9F308C603EC00A73076 /* RomListWidget.hxx */,
 				2D20F9F408C603EC00A73076 /* RomWidget.cxx */,
 				2D20F9F508C603EC00A73076 /* RomWidget.hxx */,
+				DC62E6451960E87B007AEF05 /* SaveKeyWidget.cxx */,
+				DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */,
 				2D20F9F608C603EC00A73076 /* TiaInfoWidget.cxx */,
 				2D20F9F708C603EC00A73076 /* TiaInfoWidget.hxx */,
 				2D20F9F808C603EC00A73076 /* TiaOutputWidget.cxx */,
@@ -1731,6 +1743,7 @@
 				2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */,
 				2D9173DD09BA90380026E9FF /* CartFE.hxx in Headers */,
 				2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */,
+				DC62E6481960E87B007AEF05 /* AtariVoxWidget.hxx in Headers */,
 				2D9173E009BA90380026E9FF /* Console.hxx in Headers */,
 				2D9173E109BA90380026E9FF /* Control.hxx in Headers */,
 				2D9173E309BA90380026E9FF /* Driving.hxx in Headers */,
@@ -1796,6 +1809,7 @@
 				2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */,
 				2D91745009BA90380026E9FF /* CheckListWidget.hxx in Headers */,
 				2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */,
+				DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */,
 				2D91745209BA90380026E9FF /* CommandDialog.hxx in Headers */,
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
 				2D91745409BA90380026E9FF /* ColorWidget.hxx in Headers */,
@@ -2132,6 +2146,7 @@
 				2D9174CB09BA90380026E9FF /* PackedBitArray.cxx in Sources */,
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
+				DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */,
@@ -2167,6 +2182,7 @@
 				DC47455809C34BFA00EDDA3A /* CheatCodeDialog.cxx in Sources */,
 				DC47455A09C34BFA00EDDA3A /* CheatManager.cxx in Sources */,
 				DC47455C09C34BFA00EDDA3A /* CheetahCheat.cxx in Sources */,
+				DC62E6471960E87B007AEF05 /* AtariVoxWidget.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
 				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,

@@ -66,7 +66,7 @@ void TiaOutputWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::saveSnapshot()
 {
-  int number = instance().getTicks() / 1000;
+  int number = (int)(instance().getTicks() / 1000);
   ostringstream sspath;
   sspath << instance().snapshotSaveDir()
          << instance().console().properties().get(Cartridge_Name)
