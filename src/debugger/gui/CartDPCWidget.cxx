@@ -147,11 +147,12 @@ void CartridgeDPCWidget::saveOldState()
     myOldState.flags.push_back(myCart.myFlags[i]);
   }
   for(int i = 0; i < 3; ++i)
-  {
     myOldState.music.push_back(myCart.myMusicMode[i]);
-  }
 
   myOldState.random = myCart.myRandomNumber;
+
+  for(int i = 0; i < internalRamSize(); ++i)
+    myOldState.internalram.push_back(myCart.myDisplayImage[i]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,4 +234,57 @@ string CartridgeDPCWidget::bankState()
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeDPCWidget::internalRamSize() 
+{
+  return 2*1024;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeDPCWidget::internalRamRPort(int start)
+{
+  return 0x0000 + start;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeDPCWidget::internalRamDescription() 
+{
+  ostringstream desc;
+  desc << "$0000 - $07FF - 2K display data\n"
+       << "                indirectly accessible to 6507\n"
+       << "                via DPC+'s Data Fetcher registers\n";
+  
+  return desc.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const ByteArray& CartridgeDPCWidget::internalRamOld(int start, int count)
+{
+  myRamOld.clear();
+  for(int i = 0; i < count; i++)
+    myRamOld.push_back(myOldState.internalram[start + i]);
+  return myRamOld;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const ByteArray& CartridgeDPCWidget::internalRamCurrent(int start, int count)
+{
+  myRamCurrent.clear();
+  for(int i = 0; i < count; i++)
+    myRamCurrent.push_back(myCart.myDisplayImage[start + i]);
+  return myRamCurrent;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeDPCWidget::internalRamSetValue(int addr, uInt8 value)
+{
+  myCart.myDisplayImage[addr] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeDPCWidget::internalRamGetValue(int addr)
+{
+  return myCart.myDisplayImage[addr];
 }

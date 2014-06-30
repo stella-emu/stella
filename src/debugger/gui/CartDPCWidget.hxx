@@ -42,6 +42,16 @@ class CartridgeDPCWidget : public CartDebugWidget
 
     string bankState();
 
+    // start of functions for Cartridge RAM tab
+    uInt32 internalRamSize();
+    uInt32 internalRamRPort(int start);
+    string internalRamDescription(); 
+    const ByteArray& internalRamOld(int start, int count);
+    const ByteArray& internalRamCurrent(int start, int count);
+    void internalRamSetValue(int addr, uInt8 value);
+    uInt8 internalRamGetValue(int addr);
+    // end of functions for Cartridge RAM tab   
+
   private:
     struct CartState {
       ByteArray tops;
@@ -50,6 +60,7 @@ class CartridgeDPCWidget : public CartDebugWidget
       ByteArray flags;
       BoolArray music;
       uInt8 random;
+      ByteArray internalram;
     };
 
   private:

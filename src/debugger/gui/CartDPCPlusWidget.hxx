@@ -85,7 +85,7 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
     CheckboxWidget* myIMLDA;
     DataGridWidget* myRandom;
 
-    CartState myState, myOldState;
+    CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };
 };
