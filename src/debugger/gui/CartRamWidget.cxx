@@ -230,7 +230,7 @@ void CartRamWidget::fillGrid(bool updateOld)
   buf[2] = buf[3] = 'x';
   myRamStart->setLabel(buf);
   for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
-    myRamLabels[row]->setLabel(Common::Base::toString(page, Common::Base::F_16_1));
+    myRamLabels[row]->setLabel(Common::Base::toString(page>>4, Common::Base::F_16_1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

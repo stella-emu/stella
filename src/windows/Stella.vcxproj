@@ -228,6 +228,7 @@
     <ClCompile Include="..\common\tv_filters\atari_ntsc.c" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
+    <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx" />
     <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart0840Widget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart2KWidget.cxx" />
@@ -271,6 +272,7 @@
     <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
     <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
+    <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
     <ClCompile Include="..\emucore\CartBFSC.cxx" />
@@ -479,6 +481,7 @@
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
+    <ClInclude Include="..\debugger\gui\AtariVoxWidget.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart2KWidget.hxx" />
@@ -525,6 +528,7 @@
     <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
     <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
+    <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
     <ClInclude Include="..\emucore\CartBFSC.hxx" />
