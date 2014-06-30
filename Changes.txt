@@ -19,7 +19,8 @@
     Windows (Direct3D) and Linux/OSX (OpenGL).  It is also now possible
     to port Stella to iOS and Android devices using OpenGLES.
     Hardware acceleration is now required, which means up-to-date drivers
-    are needed.  Software rendering is no longer supported.
+    are needed.  Software rendering is still present, but is somewhat
+    unoptimized and unsupported going forward.
 
   * Fullscreen video modes now use the desktop resolution.  Switching
     to fullscreen and back to windowed mode no longer rearranges icons
@@ -28,10 +29,13 @@
   * TIA TV effects are now available in all video modes, since hardware
     acceleration is a requirement.
 
-  * Added a much more detailed view of cart RAM to a new debugger tab.
-    Special thanks to SpiceWare for this implementation.
+  * Added a much more detailed view of cart extended RAM to a new
+    debugger tab.  Special thanks to SpiceWare for this implementation.
 
   * Added preliminary support for 'DASH' bankswitching scheme by A. Davie.
+
+  * The AtariVox and SaveKey controllers now have the ability in the
+    debugger to completely erase the virtual EEPROM data.
 
   * Added 'savesnap' debugger prompt command, and also associated
     context menu item to the debugger TIA output area.  This saves the
