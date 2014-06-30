@@ -89,7 +89,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Support for bank switching. You can see how many banks a cart has and the
     currently selected bank, and manually change banks.</li>
 	<li>Registers/memory that get changed by the CPU during debugging are
-		highlighted when they're displayed.<li>
+		highlighted when they're displayed.</li>
   <li>Data sources for the CPU SP/A/X/Y registers, showing the resolved/source
     address of of load operands.</li>
 	<li>Scanline advance (like frame advance, break at beginning
@@ -676,6 +676,7 @@ listfunctions - List user-defined functions
       savedis - Save Distella disassembly
       saverom - Save (possibly patched) ROM
       saveses - Save console session to file xx
+     savesnap - Save current TIA image to PNG file
     savestate - Save emulator state xx (valid args 0-9)
      scanline - Advance emulation by xx scanlines (default=1)
          step - Single step CPU [with count xx]
@@ -789,6 +790,9 @@ as illustrated:</p>
 	zoom area (further described in part (G).  The zoom area will
 	contain the area centered at the position where the mouse was
 	clicked.</li>
+	<li><b>Save snapshot</b>: Saves the TIA image currently shown,
+	including any current 'effects' (fixed debug colors, partial fill, etc).
+  </li>
 	<li><b>Toggle fixed debug colors</b>: Toggles fixed debug color mode.
   Note that after this is toggled, the framebuffer must be updated in some way
   (step/trace/frame advance) before the new colors are shown.</li>
@@ -899,14 +903,9 @@ respond to these same keyboard shortcuts.  If in doubt, give them a try.</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
-<h2><u>(K)</u> M6532/RIOT and extended RAM</h2>
+<h2><u>(K)</u> M6532/RIOT RAM</h2>
 <p>This is a spreadsheet-like GUI for inspecting and changing the contents
-of the 2600's RAM. You can view 128 bytes of RAM at a time, starting with
-the RAM built in to the console (zero-page RAM).  If a cartridge contains
-extended RAM, a scrollbar will be activated, allowing to scroll in
-sequence through each 128 byte 'bank' of RAM.  The address in the upper left
-corner indicates the offset (in terms of the read port) for the bank
-currently being displayed.</p>
+of the 2600's zero-page RAM.</p>
 <p>You can navigate with either the mouse or the keyboard arrow keys.
 To change a RAM location, either double-click on it or press Enter while
 it's highlighted. Enter the new value (hex only for now, sorry), then
@@ -914,13 +913,6 @@ press Enter to make the change. If you change your mind, press Escape
 and the original value will be restored.  The currently selected RAM cell
 can also be changed by using the Data operations buttons/associated
 shortcut keys (J).</p>
-<p><b>Note:</b> Many extended RAM schemes involve different addresses for
-reading versus writing RAM (read port vs. write port).  The UI takes care
-of this for you; although the addresses shown are for the read port,
-modifying a cell will use the write port.  Also, some bankswitching
-schemes can swap RAM and ROM dynamically during program execution.  In
-these cases, the values shown may not always be for RAM, and may point
-to ROM instead.  In the latter case, the data cannot be modified.</p>
 <p><img src="graphics/debugger_ram.png"></p>
 <p>The 'Undo' button in the upper right should be self-explanatory; it will
 undo the most previous operation to one cell only.  The 'Revert' button is
@@ -934,7 +926,7 @@ The remaining buttons to the right are further explained in section (L).</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
-<h2><u>(L)</u> M6532/RIOT and extended RAM (search/compare mode)</h2>
+<h2><u>(L)</u> M6532/RIOT RAM (search/compare mode)</h2>
 <p>The RAM widget also lets you search memory for values such as lives or remaining
 energy, but it's also very useful when debugging to determine which
 memory location holds which quantity.</p>
@@ -1140,6 +1132,30 @@ An example of both 4K (non-bankswitched) and DPC (Pitfall II) is as follows:</p>
 
 <p>In many cases, quite a bit of the scheme functionality can be modified.
 Go ahead and try to change something!</p>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+<br>
+<h2><u>(O)</u> Detailed Cartridge extended RAM Information</h2>
+
+<p>If applicable, this area shows a detailed breakdown of any extra RAM supported by
+the bankswitching scheme.  Since the bankswitch schemes can greatly vary in operation,
+this tab will be different for each scheme, but its specific functionality should be
+self-explanatory.  An example of both F8SC (8K Atari + ram) and DPC (Pitfall II) is
+as follows:</p>
+
+<p><img src="graphics/debugger_ram-f8sc.png"></p>
+<p><img src="graphics/debugger_ram-dpc.png"></p>
+
+<p>The RAM is shown in a grid similar to how zero-page RAM is shown in M6532/RIOT RAM
+(K) and (L).  See those sections for a description of usage.
+
+<p>In the cases where RAM is always mapped into the same place in the cartridge
+address space (such as Sara-chip), the RAM addresses are labeled as such.  In other
+cases, such as when the RAM is either quiescent (and mapped in at different places),
+or not viewable by the 6507 at all, the RAM addresses are labeled as the cart sees them.
+In the examples above, F8SC RAM is labeled starting at its read port, or $F080.  However,
+the RAM in the DPC scheme is not viewable by the 6507, so its addresses start from $0.
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
