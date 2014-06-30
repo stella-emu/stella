@@ -399,14 +399,14 @@ void UIDialog::setDefaults()
   {
     case 0:  // Launcher options
     {
-      uInt32 w = BSPF_min(instance().frameBuffer().desktopSize().w, (uInt32)FrameBuffer::kFBMinW);
-      uInt32 h = BSPF_min(instance().frameBuffer().desktopSize().h, (uInt32)FrameBuffer::kFBMinH);
+      uInt32 w = BSPF_min(instance().frameBuffer().desktopSize().w, 1000u);
+      uInt32 h = BSPF_min(instance().frameBuffer().desktopSize().h, 600u);
       myLauncherWidthSlider->setValue(w);
       myLauncherWidthLabel->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherHeightLabel->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
-      myRomViewerPopup->setSelected("0", "");
+      myRomViewerPopup->setSelected("1", "");
       myLauncherExitPopup->setSelected("0", "");
       break;
     }
