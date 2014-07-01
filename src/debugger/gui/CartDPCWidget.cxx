@@ -139,19 +139,19 @@ void CartridgeDPCWidget::saveOldState()
   myOldState.flags.clear();
   myOldState.music.clear();
 
-  for(int i = 0; i < 8; ++i)
+  for(uInt32 i = 0; i < 8; ++i)
   {
     myOldState.tops.push_back(myCart.myTops[i]);
     myOldState.bottoms.push_back(myCart.myBottoms[i]);
     myOldState.counters.push_back(myCart.myCounters[i]);
     myOldState.flags.push_back(myCart.myFlags[i]);
   }
-  for(int i = 0; i < 3; ++i)
+  for(uInt32 i = 0; i < 3; ++i)
     myOldState.music.push_back(myCart.myMusicMode[i]);
 
   myOldState.random = myCart.myRandomNumber;
 
-  for(int i = 0; i < internalRamSize(); ++i)
+  for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myDisplayImage[i]);
 }
 
@@ -213,7 +213,7 @@ void CartridgeDPCWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)
   {
