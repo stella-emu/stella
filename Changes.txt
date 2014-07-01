@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.9.3 to 4.0: (FIXME_DATE)
+3.9.3 to 4.0: (July 1, 2014)
 
   * Ported Stella to SDL2, which brings many new features.  Among the
     largest improvements is native hardware acceleration support for
