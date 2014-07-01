@@ -195,7 +195,7 @@ void CartridgeDPCPlusWidget::saveOldState()
   myOldState.mwaves.clear();
   myOldState.internalram.clear();
 
-  for(int i = 0; i < 8; ++i)
+  for(uInt32 i = 0; i < 8; ++i)
   {
     myOldState.tops.push_back(myCart.myTops[i]);
     myOldState.bottoms.push_back(myCart.myBottoms[i]);
@@ -204,7 +204,7 @@ void CartridgeDPCPlusWidget::saveOldState()
     myOldState.fracinc.push_back(myCart.myFractionalIncrements[i]);
     myOldState.param.push_back(myCart.myParameter[i]);
   }
-  for(int i = 0; i < 3; ++i)
+  for(uInt32 i = 0; i < 3; ++i)
   {
     myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
     myOldState.mfreqs.push_back(myCart.myMusicFrequencies[i]);
@@ -213,7 +213,7 @@ void CartridgeDPCPlusWidget::saveOldState()
 
   myOldState.random = myCart.myRandomNumber;
   
-  for(int i = 0; i < internalRamSize(); ++i)
+  for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myDisplayImage[i]);
 }
 
@@ -310,7 +310,7 @@ void CartridgeDPCPlusWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlusWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+                                           int cmd, int data, int id)
 {
   if(cmd == kBankChanged)
   {
