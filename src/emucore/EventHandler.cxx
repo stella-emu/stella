@@ -897,16 +897,18 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleSystemEvent(SystemEvent e, int data1, int data2)
+void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 {
   switch(e)
   {
     case EVENT_WINDOW_EXPOSED:
         myOSystem.frameBuffer().refresh();
         break;
+#if 0
     case EVENT_WINDOW_MINIMIZED:
         if(myState == S_EMULATE) enterMenuMode(S_MENU);
         break;
+#endif
     default:  // handle other events as testing requires
       // cerr << "handleSystemEvent: " << e << endl;
       break;
