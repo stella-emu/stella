@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+4.0 to 4.1: (xxx xx, 2014)
+
+  * The UNIX configure script now supports newer versions of Hurd.
+    Special thanks to Stephen Kitt for the patch.
+
+-Have fun!
+
+
 3.9.3 to 4.0: (July 1, 2014)
 
   * Ported Stella to SDL2, which brings many new features.  Among the
@@ -49,8 +57,6 @@
     supported.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 3.9.2 to 3.9.3: (January 20, 2014)
