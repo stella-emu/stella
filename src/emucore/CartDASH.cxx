@@ -29,7 +29,7 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
     Cartridge(settings), mySize(size) {
 
   // Allocate array for the ROM image
-  myImage = new uInt8[mySize];
+  myImage = new uInt8[mySize+65536];
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);
@@ -112,6 +112,8 @@ void CartridgeDASH::install(System& system) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeDASH::peek(uInt16 address) {
 
+  address &= 0x0FFF;    // restrict to 4K address range
+
   uInt8 value = 0;
   uInt32 bank = (address >> (ROM_BANK_TO_POWER - 1)) & 7;   	// convert to 512 byte bank index (0-7)
   Int16 imageBank = bankInUse[bank];        			          // the ROM/RAM bank that's here
@@ -144,7 +146,7 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value) {
 
   bool myBankChanged = false;
 
-  address &= 0x0FFF;    // restrict to 4K address range
+  //address &= 0x0FFF;    // restrict to 4K address range
 
   // Check for write to the bank switch address. RAM/ROM and bank # are encoded in 'value'
   // There are NO mirrored hotspots.
@@ -171,37 +173,38 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
 
   uInt16 shift = mySystem->pageShift();
 
-  uInt16 bankNumber = ((bank >> BANK_BITS) & 3) << 1;  // which bank # we are switching TO (BITS D6,D7) to 512byte block
+  uInt16 bankNumber = (bank >> BANK_BITS) & 3; // which bank # we are switching TO (BITS D6,D7) to 512 byte block
   uInt16 currentBank = bank & BIT_BANK_MASK;          // Wrap around/restrict to valid range
 
   // Each RAM bank uses two slots, separated by 0x800 in memory -- one read, one write.
-  bankInUse[bankNumber] = (Int16) (BITMASK_ROMRAM | currentBank);   // Record which bank switched in (marked as RAM)
-  bankInUse[bankNumber + 4] = (Int16) (BITMASK_ROMRAM | currentBank); // Record which (write) bank switched in (marked as RAM)
+  bankInUse[bankNumber] = bankInUse[bankNumber + 4] = (Int16) (BITMASK_ROMRAM | currentBank); // Record which bank switched in (marked as RAM)
 
   // Setup the page access methods for the current bank
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;       // Effectively * 512 bytes
   uInt32 base = 0x1000 + startCurrentBank;
+  uInt32 blockSize = 1 << shift;
+  uInt32 blockMask = blockSize - 1;
 
-  for (uInt32 address = base; address < base + RAM_BANK_SIZE; address += (1 << shift)) {
-    access.directPeekBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
-    access.codeAccessBase = &myCodeAccessBase[65536 + startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+  /*for (uInt32 address = base; address < base + RAM_BANK_SIZE; address += blockSize) {
+    access.directPeekBase = &myRAM[startCurrentBank + (address & blockMask)];
+    access.codeAccessBase = &myCodeAccessBase[65536 + startCurrentBank + (address & blockMask)];
     mySystem->setPageAccess(address >> shift, access);
-  }
+  }*/
 
   access.directPeekBase = 0;
   access.type = System::PA_WRITE;
 
   base += RAM_WRITE_OFFSET;
 
-  for (uInt32 address = base; address < base + RAM_BANK_SIZE; address += (1 << shift)) {
-    access.directPeekBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
-    access.codeAccessBase = &myCodeAccessBase[65536 + startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+  /*for (uInt32 address = base; address < base + RAM_BANK_SIZE; address += blockSize) {
+    access.directPokeBase = &myRAM[startCurrentBank + (address&blockMask)];
+    access.codeAccessBase = &myCodeAccessBase[65536 + startCurrentBank + (address & blockMask)];
     mySystem->setPageAccess(address >> shift, access);
-  }
+  }*/
 
-  return changed; // TODO: does RAM change banks or not????
+  return changed = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
