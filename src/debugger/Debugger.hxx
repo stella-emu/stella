@@ -238,7 +238,6 @@ class Debugger : public DialogContainer
 
     void setBreakPoint(int bp, bool set);
 
-    bool setBank(int bank);
     bool patchROM(int addr, int value);
 
     /**

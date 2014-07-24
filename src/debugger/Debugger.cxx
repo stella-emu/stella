@@ -498,19 +498,6 @@ string Debugger::showWatches()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setBank(int bank)
-{
-  if(myConsole.cartridge().bankCount() > 1)
-  {
-    myConsole.cartridge().unlockBank();
-    bool status = myConsole.cartridge().bank(bank);
-    myConsole.cartridge().lockBank();
-    return status;
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::patchROM(int addr, int value)
 {
   return myConsole.cartridge().patch(addr, value);

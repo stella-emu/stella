@@ -337,28 +337,6 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4A50::bank(uInt16)
-{
-  // Doesn't support bankswitching in the normal sense
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge4A50::bank() const
-{
-  // Doesn't support bankswitching in the normal sense
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge4A50::bankCount() const
-{
-  // Doesn't support bankswitching in the normal sense
-  // There is one 'virtual' bank that can change in many different ways
-  return 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 {
   if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff

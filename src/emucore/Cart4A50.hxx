@@ -83,23 +83,6 @@ class Cartridge4A50 : public Cartridge
     void install(System& system);
 
     /**
-      Install pages for the specified bank in the system.
-
-      @param bank The bank that should be installed in the system
-    */
-    bool bank(uInt16 bank);
-
-    /**
-      Get the current bank.
-    */
-    uInt16 bank() const;
-
-    /**
-      Query the number of banks supported by the cartridge.
-    */
-    uInt16 bankCount() const;
-
-    /**
       Patch the cartridge ROM.
 
       @param address  The ROM address to patch

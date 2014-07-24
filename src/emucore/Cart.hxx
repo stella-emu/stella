@@ -35,11 +35,6 @@ class GuiObject;
 #include "Settings.hxx"
 #include "Font.hxx"
 
-struct RamArea {
-  uInt16 start;  uInt16 size;  uInt16 roffset;  uInt16 woffset;
-};
-typedef Common::Array<RamArea> RamAreaList;
-
 /**
   A cartridge is a device which contains the machine code for a 
   game and handles any bankswitching performed by the cartridge.
@@ -125,18 +120,24 @@ class Cartridge : public Device
 
   public:
     //////////////////////////////////////////////////////////////////////
-    // The following methods are cart-specific and must be implemented
-    // in derived classes.
+    // The following methods are cart-specific and will usually be
+    // implemented in derived classes.  Carts which don't support
+    // bankswitching (for any reason) do not have to provide an
+    // implementation for bankswitch-related methods.
     //////////////////////////////////////////////////////////////////////
     /**
-      Set the specified bank.
+      Set the specified bank.  This is used only when the bankswitching
+      scheme defines banks in a standard format (ie, 0 for first bank,
+      1 for second, etc).  Carts which will handle their own bankswitching
+      completely or non-bankswitched carts can ignore this method.
     */
-    virtual bool bank(uInt16 bank) = 0;
+    virtual bool bank(uInt16) { return false; }
 
     /**
-      Get the current bank.
+      Get the current bank.  Carts which have only one bank (either real
+      or virtual) always report that bank as zero.
     */
-    virtual uInt16 bank() const = 0;
+    virtual uInt16 bank() const { return 0; }
 
     /**
       Query the number of 'banks' supported by the cartridge.  Note that
@@ -151,7 +152,7 @@ class Cartridge : public Device
       RAM slices at multiple access points) is so complicated that the
       cart will report having only one 'virtual' bank.
     */
-    virtual uInt16 bankCount() const = 0;
+    virtual uInt16 bankCount() const { return 1; }
 
     /**
       Patch the cartridge ROM.

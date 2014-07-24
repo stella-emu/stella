@@ -42,8 +42,14 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     myRWPortAddress(0),
     myLabelLength(8)   // longest pre-defined label
 {
-  // Zero-page RAM is always present
-  addRamArea(0x80, 128, 0, 0);
+  // Add Zero-page RAM addresses
+  for(uInt32 i = 0x80; i <= 0xFF; ++i)
+  {
+    myState.rport.push_back(i);
+    myState.wport.push_back(i);
+    myOldState.rport.push_back(i);
+    myOldState.wport.push_back(i);
+  }
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
   // Banksizes greater than 4096 indicate multi-bank ROMs, but we handle only
@@ -120,27 +126,6 @@ CartDebug::~CartDebug()
     myBankInfo[i].directiveList.clear();
   }
   myBankInfo.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::addRamArea(uInt16 start, uInt16 size,
-                           uInt16 roffset, uInt16 woffset)
-{
-  // First make sure this area isn't already present
-  for(uInt32 i = 0; i < myState.rport.size(); ++i)
-    if(myState.rport[i] == start + roffset ||
-       myState.wport[i] == start + woffset)
-      return;
-
-  // Otherwise, add a new area
-  for(uInt32 i = 0; i < size; ++i)
-  {
-    myState.rport.push_back(i + start + roffset);
-    myState.wport.push_back(i + start + woffset);
-
-    myOldState.rport.push_back(i + start + roffset);
-    myOldState.wport.push_back(i + start + woffset);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

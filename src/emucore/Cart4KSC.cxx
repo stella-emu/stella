@@ -122,25 +122,6 @@ bool Cartridge4KSC::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4KSC::bank(uInt16 bank)
-{ 
-  // Doesn't support bankswitching
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge4KSC::bank() const
-{
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge4KSC::bankCount() const
-{
-  return 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4KSC::patch(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;

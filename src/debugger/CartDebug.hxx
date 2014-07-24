@@ -121,16 +121,6 @@ class CartDebug : public DebuggerSystem
     // write port area.
     int readFromWritePort();
 
-    /**
-      Let the Cart debugger subsystem treat this area as addressable memory.
-
-      @param start    The beginning of the RAM area (0x0000 - 0x2000)
-      @param size     Total number of bytes of area
-      @param roffset  Offset to use when reading from RAM (read port)
-      @param woffset  Offset to use when writing to RAM (write port)
-    */
-    void addRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
-
     // The following two methods are meant to be used together
     // First, a call is made to disassemble(), which updates the disassembly
     // list; it will figure out when an actual complete disassembly is

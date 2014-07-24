@@ -38,13 +38,6 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
   // This cart can address 4 banks of RAM, each 512 bytes @ 1000, 1200, 1400, 1600
   // However, it may not be addressable all the time (it may be swapped out)
 
-#if 0
-  registerRamArea(0x1000, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1000
-  registerRamArea(0x1200, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1200
-  registerRamArea(0x1400, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1400
-  registerRamArea(0x1600, RAM_BANK_SIZE, 0x00, RAM_WRITE_OFFSET); // 512 bytes RAM @ 0x1600
-#endif
-
   // Remember startup bank (0 per spec, rather than last per 3E scheme).
   // Set this to go to 3rd 1K Bank.
   myStartBank = 0; //(3 << BANK_BITS) | 0;
@@ -241,27 +234,6 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
   }
 
   return changed;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDASH::bank(uInt16 bank) {
-
-  // Doesn't support bankswitching in the normal sense
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDASH::bank() const {
-
-  // Doesn't support bankswitching in the normal sense
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDASH::bankCount() const {
-
-  // Doesn't support bankswitching in the normal sense
-  return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
