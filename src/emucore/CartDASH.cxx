@@ -81,7 +81,7 @@ void CartridgeDASH::install(System& system) {
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1800 & mask) == 0);
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PA_READWRITE);
 
   // Set the page accessing methods for the hot spots (for 100% emulation
   // we need to chain any accesses below 0x40 to the TIA. Our poke() method
@@ -180,7 +180,7 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
   bankInUse[bankNumber] = bankInUse[bankNumber + 4] = (Int16) (BITMASK_ROMRAM | currentBank); // Record which bank switched in (marked as RAM)
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;       // Effectively * 512 bytes
   uInt32 base = 0x1000 + startCurrentBank;
@@ -228,7 +228,7 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
     uInt32 startCurrentBank = currentBank << ROM_BANK_TO_POWER;     // Effectively *1K
 
     // Setup the page access methods for the current bank
-    System::PageAccess access(0, 0, 0, this, System::PA_READ);
+    System::PageAccess access(this, System::PA_READ);
 
     uInt32 base = 0x1000 + (bankNumber << ROM_BANK_TO_POWER);
     for (uInt32 address = base; address < base + ROM_BANK_SIZE; address += (1 << shift)) {

@@ -94,7 +94,7 @@ bool CartridgeDF::bank(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt32 i = (0x1FC0 & ~mask); i < 0x2000; i += (1 << shift))

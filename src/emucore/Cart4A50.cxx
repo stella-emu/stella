@@ -84,7 +84,7 @@ void Cartridge4A50::install(System& system)
   assert((0x1000 & mask) == 0);
 
   // Map all of the accesses to call peek and poke (We don't yet indicate RAM areas)
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);

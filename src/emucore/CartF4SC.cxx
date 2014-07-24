@@ -64,7 +64,7 @@ void CartridgeF4SC::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing method for the RAM writing pages
   access.type = System::PA_WRITE;
@@ -145,7 +145,7 @@ bool CartridgeF4SC::bank(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt32 i = (0x1FF4 & ~mask); i < 0x2000; i += (1 << shift))

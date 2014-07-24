@@ -134,7 +134,7 @@ void CartridgeDPCPlus::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Map all of the accesses to call peek and poke
   for(uInt32 i = 0x1000; i < 0x1080; i += (1 << shift))
@@ -610,7 +610,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Map Program ROM image into the system
   for(uInt32 address = 0x1080; address < 0x2000; address += (1 << shift))

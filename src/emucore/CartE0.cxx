@@ -59,7 +59,7 @@ void CartridgeE0::install(System& system)
   assert(((0x1000 & mask) == 0) && ((0x1400 & mask) == 0) &&
       ((0x1800 & mask) == 0) && ((0x1C00 & mask) == 0));
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Set the page acessing methods for the first part of the last segment
   for(uInt32 i = 0x1C00; i < (0x1FE0U & ~mask); i += (1 << shift))
@@ -137,7 +137,7 @@ void CartridgeE0::segmentZero(uInt16 slice)
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   for(uInt32 address = 0x1000; address < 0x1400; address += (1 << shift))
   {
@@ -159,7 +159,7 @@ void CartridgeE0::segmentOne(uInt16 slice)
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   for(uInt32 address = 0x1400; address < 0x1800; address += (1 << shift))
   {
@@ -181,7 +181,7 @@ void CartridgeE0::segmentTwo(uInt16 slice)
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   for(uInt32 address = 0x1800; address < 0x1C00; address += (1 << shift))
   {

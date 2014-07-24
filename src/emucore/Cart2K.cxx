@@ -77,7 +77,7 @@ void Cartridge2K::install(System& system)
   assert((0x1000 & mask) == 0);
 
   // Map ROM image into the system
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
   {

@@ -87,7 +87,7 @@ void CartridgeCV::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1800 & mask) == 0);
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Map ROM image into the system
   for(uInt32 address = 0x1800; address < 0x2000; address += (1 << shift))

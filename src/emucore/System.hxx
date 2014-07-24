@@ -115,7 +115,7 @@ class System : public Serializable
 
       @return The attached 6502 microprocessor
     */
-    M6502& m6502() { return *myM6502; }
+    M6502& m6502() const { return *myM6502; }
 
     /**
       Answer the 6532 processor attached to the system.  If a
@@ -123,21 +123,21 @@ class System : public Serializable
 
       @return The attached 6532 microprocessor
     */
-    M6532& m6532() { return *myM6532; }
+    M6532& m6532() const { return *myM6532; }
 
     /**
       Answer the TIA device attached to the system.
 
       @return The attached TIA device
     */
-    TIA& tia() { return *myTIA; }
+    TIA& tia() const { return *myTIA; }
 
     /**
       Answer the random generator attached to the system.
 
       @return The random generator
     */
-    Random& randGenerator() { return *myRandom; }
+    Random& randGenerator() const { return *myRandom; }
 
     /**
       Get the null device associated with the system.  Every system 
@@ -337,11 +337,10 @@ class System : public Serializable
           device(0),
           type(System::PA_READ) { }
 
-      PageAccess(uInt8* peek, uInt8* poke, uInt8* code, Device* dev,
-                 PageAccessType access)
-        : directPeekBase(peek),
-          directPokeBase(poke),
-          codeAccessBase(code),
+      PageAccess(Device* dev, PageAccessType access)
+        : directPeekBase(0),
+          directPokeBase(0),
+          codeAccessBase(0),
           device(dev),
           type(access) { }
     };

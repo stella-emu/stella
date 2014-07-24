@@ -92,7 +92,7 @@ void CartridgeCTY::install(System& system)
   assert(((0x1000 & mask) == 0) && ((0x1080 & mask) == 0));
 
   // Map all RAM accesses to call peek and poke
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
   for(uInt32 i = 0x1000; i < 0x1080; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -255,7 +255,7 @@ bool CartridgeCTY::bank(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
   for(uInt32 address = 0x1080; address < 0x2000; address += (1 << shift))
   {
     access.codeAccessBase = &myCodeAccessBase[myCurrentBank + (address & 0x0FFF)];

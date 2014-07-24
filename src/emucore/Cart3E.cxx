@@ -71,7 +71,7 @@ void Cartridge3E::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1800 & mask) == 0);
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PA_READWRITE);
 
   // Set the page accessing methods for the hot spots (for 100% emulation
   // we need to chain any accesses below 0x40 to the TIA. Our poke() method
@@ -176,7 +176,7 @@ bool Cartridge3E::bank(uInt16 bank)
     uInt16 shift = mySystem->pageShift();
   
     // Setup the page access methods for the current bank
-    System::PageAccess access(0, 0, 0, this, System::PA_READ);
+    System::PageAccess access(this, System::PA_READ);
 
     // Map ROM image into the system
     for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
@@ -197,7 +197,7 @@ bool Cartridge3E::bank(uInt16 bank)
     uInt32 address;
   
     // Setup the page access methods for the current bank
-    System::PageAccess access(0, 0, 0, this, System::PA_READ);
+    System::PageAccess access(this, System::PA_READ);
 
     // Map read-port RAM image into the system
     for(address = 0x1000; address < 0x1400; address += (1 << shift))

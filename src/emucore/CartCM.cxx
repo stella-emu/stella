@@ -121,7 +121,7 @@ bool CartridgeCM::bank(uInt16 bank)
   // The upper 2K of cart address space can point to either the 2K of RAM or
   // the upper 2K of the current ROM bank
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Lower 2K (always ROM)
   for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))

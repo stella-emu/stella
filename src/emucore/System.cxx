@@ -51,10 +51,7 @@ System::System(uInt16 n, uInt16 m)
   myPageIsDirtyTable = new bool[myNumberOfPages];
 
   // Initialize page access table
-  PageAccess access;
-  access.directPeekBase = 0;
-  access.directPokeBase = 0;
-  access.device = &myNullDevice;
+  PageAccess access(&myNullDevice, System::PA_READ);
   for(int page = 0; page < myNumberOfPages; ++page)
   {
     setPageAccess(page, access);

@@ -68,7 +68,7 @@ void CartridgeE7::install(System& system)
   assert(((0x1400 & mask) == 0) && ((0x1800 & mask) == 0) &&
       ((0x1900 & mask) == 0) && ((0x1A00 & mask) == 0));
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt32 i = (0x1FE0 & ~mask); i < 0x2000; i += (1 << shift))
@@ -169,7 +169,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, 0, this, System::PA_WRITE);
+  System::PageAccess access(this, System::PA_WRITE);
 
   // Set the page accessing method for the 256 bytes of RAM writing pages
   for(uInt32 j = 0x1800; j < 0x1900; j += (1 << shift))
@@ -204,7 +204,7 @@ bool CartridgeE7::bank(uInt16 slice)
   // Setup the page access methods for the current bank
   if(slice != 7)
   {
-    System::PageAccess access(0, 0, 0, this, System::PA_READ);
+    System::PageAccess access(this, System::PA_READ);
 
     // Map ROM image into first segment
     for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
@@ -216,7 +216,7 @@ bool CartridgeE7::bank(uInt16 slice)
   }
   else
   {
-    System::PageAccess access(0, 0, 0, this, System::PA_WRITE);
+    System::PageAccess access(this, System::PA_WRITE);
 
     // Set the page accessing method for the 1K slice of RAM writing pages
     for(uInt32 j = 0x1000; j < 0x1400; j += (1 << shift))
