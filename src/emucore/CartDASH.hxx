@@ -35,26 +35,29 @@ class CartridgeDASHWidget;
  Kind of a combination of 3F and 3E, with better switchability.
  B.Watson's Cart3E was used as a template for building this implementation.
 
- Because a single bank number is used to define both the destination (0-3)
- AND the type (ROM/RAM) there are only 5 bits left to indicate the actual bank
- number. This sets the limits of 32K ROM and 16K RAM.
+ The destination bank (0-3) is held in the top bits of the value written to
+ $3E (for RAM switching) or $3F (for ROM switching). The low 6 bits give
+ the actual bank number (0-63) corresponding to 512 byte blocks for RAM and
+ 1024 byte blocks for ROM. The maximum size is therefore 32K RAM and 64K ROM.
 
- D7			RAM/ROM flag (1=RAM)
- D6D5			indicate the bank number (0-3)
- D4D3D2D1D0	indicate the actual # (0-31) from the image/ram
-
- Hotspot 0x3F is used for bank-switching, with the encoded bank # as above.
+  D7D6			indicate the bank number (0-3)
+ D5D4D3D2D1D0	indicate the actual # (0-63) from the image/ram
 
  ROM:
+
+ Note: in descriptions $F000 is equivalent to $1000 -- that is, we only deal
+ with the low 13 bits of addressing. Stella code uses $1000, I'm used to $F000
+ So, mask with top bits clear :) when reading this document.
 
  In this scheme, the 4K address space is broken into four 1K ROM segments.
  living at 0x1000, 0x1400, 0x1800, 0x1C00 (or, same thing, 0xF000... etc.),
  and four 512 byte RAM segments, living at 0x1000, 0x1200, 0x1400, 0x1600
  with write-mirrors +0x800 of these.  The last 1K ROM ($FC00-$FFFF) segment
- is initialised to point to the FIRST 1K of the ROM image, but it may be
- switched out at any time.  Note, this is DIFFERENT to 3E which switches in
- the UPPER bank and this bank is fixed.  This allows variable sized ROM
- without having to detect size. First bank (0) in ROM is the default fixed
+ in the 6502 address space (ie: $1C00-$1FFF) is initialised to point to the
+ FIRST 1K of the ROM image, so the reset vectors must be placed at the
+ end of the first 1K in the ROM image. Note, this is DIFFERENT to 3E which
+ switches in the UPPER bank and this bank is fixed.  This allows variable sized
+ ROM without having to detect size. First bank (0) in ROM is the default fixed
  bank mapped to $FC00.
 
  The system requires the reset vectors to be valid on a reset, so either the
@@ -63,29 +66,31 @@ class CartridgeDASHWidget;
  into the last bank area.  Currently the latter (programmer onus) is required,
  but it would be nice for the cartridge hardware to auto-switch on reset.
 
- ROM switching (write of block+bank number to $3F) D7=0 and D6D5 upper 2 bits of bank #
- indicates the destination segment (0-3, corresponding to $F000, $F400, $F800, $FC00),
- and lower 5 bits indicate the 1K bank to switch in.  Can handle 32 x 1K ROM banks (32K total).
+ ROM switching (write of block+bank number to $3F) D7D6 upper 2 bits of bank #
+ indicates the destination segment (0-3, corresponding to $F000, $F400, $F800,
+ $FC00), and lower 6 bits indicate the 1K bank to switch in.  Can handle 64
+ x 1K ROM banks (64K total).
 
- D7 D6 D5   D4D3D2D1D0
- 0  0  0	x x x x x		switch a 1K ROM bank xxxxx to $F000
- 0  0  1					switch a 1K ROM bank xxxxx to $F400
- 0  1  0					switch a 1K ROM bank xxxxx to $F800
- 0  1  1					switch a 1K ROM bank xxxxx to $FC00
+ D7 D6 D5D4D3D2D1D0
+ 0  0	  x x x x x x		switch a 1K ROM bank xxxxx to $F000
+ 0  1					        switch a 1K ROM bank xxxxx to $F400
+ 1  0					        switch a 1K ROM bank xxxxx to $F800
+ 1  1					        switch a 1K ROM bank xxxxx to $FC00
 
- RAM switching (write of segment+bank number to $3F) with D7=1 and D6D5 upper 2 bits of bank #
- indicates the destination RAM segment (0-3, corresponding to $F000, $F200, $F400, $F600).
- Note that this allows contiguous 2K of RAM to be configured by setting 4 consecutive RAM segments
- each 512 bytes with consecutive addresses.  However, as the write address of RAM is +0x800, this
+ RAM switching (write of segment+bank number to $3E) with D7D6 upper 2 bits of
+ bank # indicates the destination RAM segment (0-3, corresponding to $F000,
+ $F200, $F400, $F600). Note that this allows contiguous 2K of RAM to be
+ configured by setting 4 consecutive RAM segments each 512 bytes with
+ consecutive addresses.  However, as the write address of RAM is +0x800, this
  invalidates ROM access as described below.
 
- can handle 32 x 512 byte RAM banks (16K total)
+ can handle 64 x 512 byte RAM banks (32K total)
 
- D7 D6 D5    D4D3D2D1D0
- 1  0  0     x x x x x		switch a 512 byte RAM bank xxxxx to $F000 with write @ $F800
- 0  1					switch a 512 byte RAM bank xxxxx to $F200 with write @ $FA00
- 1  0					switch a 512 byte RAM bank xxxxx to $F400 with write @ $FC00
- 1  1					switch a 512 byte RAM bank xxxxx to $F600 with write @ $FE00
+ D7 D6 D5D4D3D2D1D0
+ 0  0   x x x x x x		switch a 512 byte RAM bank xxxxx to $F000 with write @ $F800
+ 0  1					        switch a 512 byte RAM bank xxxxx to $F200 with write @ $FA00
+ 1  0					        switch a 512 byte RAM bank xxxxx to $F400 with write @ $FC00
+ 1  1					        switch a 512 byte RAM bank xxxxx to $F600 with write @ $FE00
 
  It is possible to switch multiple RAM banks and ROM banks together
 
@@ -113,12 +118,9 @@ class CartridgeDASHWidget;
  Switching in RAM block 1 makes F200-F3FF ROM inaccessible, however F000-F1FF is
  still readable.  So, care must be paid.
 
- TODO: THe partial reading of ROM blocks switched out by RAM is not yet implemented!!
-
  This crazy RAM layout is useful as it allows contiguous RAM to be switched in,
  up to 2K in one sequentially accessible block. This means you CAN have 2K of
- consecutive RAM. If you don't detect ROM write area, then you would have NO ROM
- switched in (don't forget to copy your reset vectors!)
+ consecutive RAM (don't forget to copy your reset vectors!)
 
  @author  Andrew Davie
  */
@@ -232,8 +234,6 @@ private:
   bool bankROM(uInt8 bank);      // switch a ROM bank
 
 
-  uInt32 mySize;        // Size of the ROM image
-  uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge
 
 
   // We have an array that indicates for each of the 8 512 byte areas of the address space, which ROM/RAM
@@ -266,7 +266,9 @@ private:
 
   static const Int16 BANK_UNDEFINED = -1;       // bank is undefined and inaccessible
 
-  uInt8 myRAM[RAM_TOTAL_SIZE];
+  uInt32 mySize;        // Size of the ROM image
+  uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge
+  uInt8* myRAM;         // on the heap, not stack :)
 };
 
 #endif
