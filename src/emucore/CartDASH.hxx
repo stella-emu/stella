@@ -233,8 +233,10 @@ private:
   bool bankRAM(uInt8 bank);      // switch a RAM bank
   bool bankROM(uInt8 bank);      // switch a ROM bank
 
+  void bankRAMSlot(uInt16 bank); // switch in a 512b RAM slot (lower or upper 1/2 bank)
+  void bankROMSlot(uInt16 bank); // switch in a 512b RAM slot (read or write port)
 
-
+  void initializeBankState();    // set all banks according to current bankInUse state
 
   // We have an array that indicates for each of the 8 512 byte areas of the address space, which ROM/RAM
   // bank is used in that area. ROM switches 1K so occupies 2 successive entries for each switch. RAM occupies
@@ -248,7 +250,8 @@ private:
 
   static const uInt8 BANK_BITS = 6;                         // # bits for bank
   static const uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
-  static const uInt8 BITMASK_ROMRAM = 0x80;   // flags ROM or RAM bank switching (D7--> 1==RAM)
+  static const uInt16 BITMASK_LOWERUPPER = 0x100;   // flags lower or upper section of bank (1==upper)
+  static const uInt16 BITMASK_ROMRAM     = 0x200;   // flags ROM or RAM bank switching (1==RAM)
 
   static const uInt16 MAXIMUM_BANK_COUNT = (1<<BANK_BITS);
   static const uInt16 RAM_BANK_TO_POWER = 9;    // 2^n = 512
@@ -268,7 +271,7 @@ private:
 
   uInt32 mySize;        // Size of the ROM image
   uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge
-  uInt8* myRAM;         // on the heap, not stack :)
+  uInt8 myRAM[RAM_TOTAL_SIZE];
 };
 
 #endif
