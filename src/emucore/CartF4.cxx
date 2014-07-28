@@ -120,7 +120,7 @@ bool CartridgeF4::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeF4::bank() const
+uInt16 CartridgeF4::getBank() const
 {
   return myCurrentBank;
 }

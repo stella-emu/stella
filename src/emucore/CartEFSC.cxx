@@ -163,7 +163,7 @@ bool CartridgeEFSC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEFSC::bank() const
+uInt16 CartridgeEFSC::getBank() const
 {
   return myCurrentBank;
 }

@@ -155,7 +155,7 @@ bool Cartridge3F::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge3F::bank() const
+uInt16 Cartridge3F::getBank() const
 {
   return myCurrentBank;
 }

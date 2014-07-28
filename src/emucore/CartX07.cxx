@@ -139,7 +139,7 @@ bool CartridgeX07::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeX07::bank() const
+uInt16 CartridgeX07::getBank() const
 {
   return myCurrentBank;
 }

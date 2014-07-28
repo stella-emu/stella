@@ -155,7 +155,7 @@ bool CartridgeUA::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeUA::bank() const
+uInt16 CartridgeUA::getBank() const
 {
   return myCurrentBank;
 }

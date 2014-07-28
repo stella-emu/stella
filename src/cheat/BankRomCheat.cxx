@@ -54,7 +54,7 @@ bool BankRomCheat::enable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool BankRomCheat::disable()
 {
-  int oldBank = myOSystem->console().cartridge().bank();
+  int oldBank = myOSystem->console().cartridge().getBank();
   myOSystem->console().cartridge().bank(bank);
 
   for(int i = 0; i < count; ++i)
@@ -70,7 +70,7 @@ void BankRomCheat::evaluate()
 {
   if(!myEnabled)
   {
-    int oldBank = myOSystem->console().cartridge().bank();
+    int oldBank = myOSystem->console().cartridge().getBank();
     myOSystem->console().cartridge().bank(bank);
 
     for(int i = 0; i < count; ++i)

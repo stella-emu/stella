@@ -209,7 +209,7 @@ bool CartridgeF6SC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeF6SC::bank() const
+uInt16 CartridgeF6SC::getBank() const
 {
   return myCurrentBank;
 }

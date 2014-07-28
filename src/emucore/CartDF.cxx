@@ -115,7 +115,7 @@ bool CartridgeDF::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDF::bank() const
+uInt16 CartridgeDF::getBank() const
 {
   return myCurrentBank;
 }

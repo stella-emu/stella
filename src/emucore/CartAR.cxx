@@ -439,7 +439,7 @@ bool CartridgeAR::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeAR::bank() const
+uInt16 CartridgeAR::getBank() const
 {
   return myCurrentBank;
 }

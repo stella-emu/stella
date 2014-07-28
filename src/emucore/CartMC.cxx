@@ -210,7 +210,7 @@ bool CartridgeMC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMC::bank() const
+uInt16 CartridgeMC::getBank() const
 {
   // TODO - add support for debugger
   return 0;

@@ -137,7 +137,7 @@ class Cartridge : public Device
       Get the current bank.  Carts which have only one bank (either real
       or virtual) always report that bank as zero.
     */
-    virtual uInt16 bank() const { return 0; }
+    virtual uInt16 getBank() const { return 0; }
 
     /**
       Query the number of 'banks' supported by the cartridge.  Note that

@@ -527,7 +527,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::getBank()
 {
-  return myConsole.cartridge().bank();
+  return myConsole.cartridge().getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

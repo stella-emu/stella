@@ -439,7 +439,7 @@ bool CartridgeDPC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDPC::bank() const
+uInt16 CartridgeDPC::getBank() const
 {
   return myCurrentBank;
 }

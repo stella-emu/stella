@@ -159,7 +159,7 @@ bool CartridgeCM::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCM::bank() const
+uInt16 CartridgeCM::getBank() const
 {
   return myCurrentBank;
 }

@@ -104,7 +104,7 @@ void CartridgeFE::setAccessFlags(uInt16 address, uInt8 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeFE::bank() const
+uInt16 CartridgeFE::getBank() const
 {
   // The current bank depends on the last address accessed
   return ((myLastAddress1 & 0x2000) == 0) ? 1 : 0;

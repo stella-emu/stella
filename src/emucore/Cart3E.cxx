@@ -222,7 +222,7 @@ bool Cartridge3E::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge3E::bank() const
+uInt16 Cartridge3E::getBank() const
 {
   return myCurrentBank;
 }

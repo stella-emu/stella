@@ -243,10 +243,11 @@ private:
   // two as well, one 512 byte for read and one for write. The RAM locations are +0x800 apart, and the ROM
   // are consecutive. This allows us to determine on a read/write exactly where the data is.
 
-  Int16 bankInUse[8];     // bank being used for ROM/RAM (eight 512 byte areas) (-1 = undefined)
+  static const uInt16 BANK_UNDEFINED = 0x8000;   // bank is undefined and inaccessible
+  uInt16 bankInUse[8];     // bank being used for ROM/RAM (eight 512 byte areas)
 
-  static const uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;			// writes to this address cause bankswitching
-  static const uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;     // writes to this address cause bankswitching
+  static const uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;   // writes to this address cause bankswitching
+  static const uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;   // writes to this address cause bankswitching
 
   static const uInt8 BANK_BITS = 6;                         // # bits for bank
   static const uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
@@ -266,8 +267,6 @@ private:
   static const uInt16 ROM_BANK_COUNT = 32;
 
   static const uInt16 RAM_WRITE_OFFSET = 0x800;
-
-  static const Int16 BANK_UNDEFINED = -1;       // bank is undefined and inaccessible
 
   uInt32 mySize;        // Size of the ROM image
   uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge

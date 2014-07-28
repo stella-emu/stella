@@ -269,7 +269,7 @@ bool CartridgeFA2::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeFA2::bank() const
+uInt16 CartridgeFA2::getBank() const
 {
   return myCurrentBank;
 }

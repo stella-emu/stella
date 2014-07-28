@@ -240,7 +240,7 @@ bool CartridgeE7::bank(uInt16 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeE7::bank() const
+uInt16 CartridgeE7::getBank() const
 {
   return myCurrentSlice[0];
 }

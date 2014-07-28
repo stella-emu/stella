@@ -115,7 +115,7 @@ bool CartridgeEF::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEF::bank() const
+uInt16 CartridgeEF::getBank() const
 {
   return myCurrentBank;
 }

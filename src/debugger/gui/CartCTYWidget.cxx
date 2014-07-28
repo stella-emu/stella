@@ -69,7 +69,7 @@ void CartridgeCTYWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTYWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.bank()-1);
+  myBank->setSelectedIndex(myCart.getBank()-1);
 
   CartDebugWidget::loadConfig();
 }
@@ -95,7 +95,7 @@ string CartridgeCTYWidget::bankState()
   static const char* spot[] = {
     "", "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
   };
-  uInt16 bank = myCart.bank();
+  uInt16 bank = myCart.getBank();
   buf << "Bank = " << dec << bank << ", hotspot = " << spot[bank];
 
   return buf.str();

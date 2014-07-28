@@ -106,7 +106,7 @@ uInt8 CartridgeDASH::peek(uInt16 address) {
 
   uInt8 value = 0;
   uInt32 bank = (address >> (ROM_BANK_TO_POWER - 1)) & 7;   // convert to 512 byte bank index (0-7)
-  Int16 imageBank = bankInUse[bank];        			          // the ROM/RAM bank that's here
+  uInt16 imageBank = bankInUse[bank];        			          // the ROM/RAM bank that's here
 
   if (imageBank == BANK_UNDEFINED) {						// an uninitialised bank?
 
@@ -261,7 +261,7 @@ void CartridgeDASH::initializeBankState() {
   for (uInt32 b = 0; b < 8; b++) {
     if (bankInUse[b] == BANK_UNDEFINED) {
 
-      // Setup the page access methods for the current bank
+      // All accesses point to peek/poke above
       System::PageAccess access(this, System::PA_READ);
       uInt32 start = 0x1000 + (b << RAM_BANK_TO_POWER);
       uInt32 end = start + RAM_BANK_SIZE - 1;
@@ -323,7 +323,7 @@ bool CartridgeDASH::save(Serializer& out) const {
 
   try {
     out.putString(name());
-    out.putShortArray((uInt16*)bankInUse, 8);
+    out.putShortArray(bankInUse, 8);
     out.putByteArray(myRAM, RAM_TOTAL_SIZE);
   } catch (...) {
     cerr << "ERROR: CartridgeDASH::save" << endl;
@@ -338,7 +338,7 @@ bool CartridgeDASH::load(Serializer& in) {
   try {
     if (in.getString() != name())
       return false;
-    in.getShortArray((uInt16*)bankInUse, 8);
+    in.getShortArray(bankInUse, 8);
     in.getByteArray(myRAM, RAM_TOTAL_SIZE);
   } catch (...) {
     cerr << "ERROR: CartridgeDASH::load" << endl;

@@ -148,7 +148,7 @@ bool CartridgeF8::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeF8::bank() const
+uInt16 CartridgeF8::getBank() const
 {
   return myCurrentBank;
 }

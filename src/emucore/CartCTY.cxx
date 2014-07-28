@@ -265,7 +265,7 @@ bool CartridgeCTY::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCTY::bank() const
+uInt16 CartridgeCTY::getBank() const
 {
   return myCurrentBank >> 12;
 }
@@ -307,7 +307,7 @@ bool CartridgeCTY::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(bank());
+    out.putShort(getBank());
     out.putByteArray(myRAM, 64);
 
     out.putByte(myOperationType);
