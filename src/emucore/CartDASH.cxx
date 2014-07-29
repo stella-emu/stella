@@ -58,7 +58,10 @@ void CartridgeDASH::reset() {
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
   for (uInt32 b = 0; b < 8; b++)
+  {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
+    segmentInUse[b/2] = BANK_UNDEFINED;
+  }
   initializeBankState();
 
   // We'll map the startup banks 0 and 3 from the image into the third 1K bank upon reset
@@ -89,7 +92,10 @@ void CartridgeDASH::install(System& system) {
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
   for (uInt32 b = 0; b < 8; b++)
+  {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
+    segmentInUse[b/2] = BANK_UNDEFINED;
+  }
   initializeBankState();
 
   // Setup the last segment (of 4, each 1K) to point to the first ROM slice
@@ -167,7 +173,9 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
   bankRAMSlot(bank | BITMASK_ROMRAM | 0);
   bankRAMSlot(bank | BITMASK_ROMRAM | BITMASK_LOWERUPPER);
 
-
+  // Remember that this hotspot was accessed for RAM
+  uInt8 bankNumber = (bank >> BANK_BITS) & 3;
+  segmentInUse[bankNumber] = bank | BITMASK_ROMRAM;
 
   cerr << "\nBANK CONTENTS: -------------------------------------\n";
   for (uInt32 b = 0; b < 8; b++)
@@ -245,6 +253,9 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
   bankROMSlot(bank | 0);
   bankROMSlot(bank | BITMASK_LOWERUPPER);
 
+  // Remember that this hotspot was accessed for ROM
+  uInt8 bankNumber = (bank >> BANK_BITS) & 3;
+  segmentInUse[bankNumber] = bank;
 
 
   cerr << "\nBANK CONTENTS: -------------------------------------\n";
@@ -368,6 +379,7 @@ bool CartridgeDASH::save(Serializer& out) const {
   try {
     out.putString(name());
     out.putShortArray(bankInUse, 8);
+    out.putShortArray(segmentInUse, 4);
     out.putByteArray(myRAM, RAM_TOTAL_SIZE);
   } catch (...) {
     cerr << "ERROR: CartridgeDASH::save" << endl;
@@ -383,6 +395,7 @@ bool CartridgeDASH::load(Serializer& in) {
     if (in.getString() != name())
       return false;
     in.getShortArray(bankInUse, 8);
+    in.getShortArray(segmentInUse, 4);
     in.getByteArray(myRAM, RAM_TOTAL_SIZE);
   } catch (...) {
     cerr << "ERROR: CartridgeDASH::load" << endl;

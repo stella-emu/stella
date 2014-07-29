@@ -32,7 +32,7 @@ CartridgeDASHWidget::CartridgeDASHWidget(
 
   ostringstream info;
   info << "DASH cartridge - (64K ROM + RAM)\n"
-       << "  4-64K ROM (1K banks), 32 1K RAM (512b banks)\n"
+       << "  4-64K ROM (1K banks), 32K RAM (512b banks)\n"
        << "Each 1K ROM selected by writing to $3F\n"
           "Each 512b RAM selected by writing to $3E\n"
           "  First 512B of bank x (R)\n"
@@ -45,11 +45,12 @@ CartridgeDASHWidget::CartridgeDASHWidget(
   info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
 
   int xpos = 10,
-      ypos = addBaseInformation(size, "A. Davie", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "A. Davie & T. Jentzsch", info.str()) +
+                                myLineHeight;
 
   VariantList bankno;
   for(uInt32 i = 0; i < myCart.ROM_BANK_COUNT; ++i)
-    bankno.push_back(i);
+    bankno.push_back(i, i);
 
   VariantList banktype;
   banktype.push_back("ROM", "ROM");
@@ -60,10 +61,7 @@ CartridgeDASHWidget::CartridgeDASHWidget(
     int xpos_s = xpos, ypos_s = ypos;
 
     ostringstream label;
-    uInt32 addr1 = start + (i*0x400),
-           addr2 = addr1 + 0x3FF;
-    label << "Set bank " << i << " ($" << Common::Base::HEX4 << addr1 << " - $"
-          << addr2 << ") as: ";
+    label << "Set segment " << i << " as: ";
 
     ypos_s = ypos;
 
@@ -96,12 +94,27 @@ CartridgeDASHWidget::CartridgeDASHWidget(
 
     xpos_s = xpos + myBankCommit[i]->getWidth() + 20;
 
-    myBankState[2*i] = new EditTextWidget(boss, _font, xpos_s, ypos_s,
-              w - xpos_s - 10, myLineHeight, "");
+    StaticTextWidget* t;
+    int addr1 = start + (i*0x400), addr2 = addr1 + 0x1FF;
+
+    label.str("");
+    label << Common::Base::HEX4 << addr1 << "-" << Common::Base::HEX4 << addr2;
+    t = new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
+          _font.getStringWidth(label.str()), myFontHeight, label.str(), kTextAlignLeft);
+
+    int xoffset = xpos_s+t->getWidth() + 10;
+    myBankState[2*i] = new EditTextWidget(boss, _font, xoffset, ypos_s,
+              w - xoffset - 10, myLineHeight, "");
     myBankState[2*i]->setEditable(false);
     ypos_s += myLineHeight + 4;
-    myBankState[2*i+1] = new EditTextWidget(boss, _font, xpos_s, ypos_s,
-              w - xpos_s - 10, myLineHeight, "");
+
+    label.str("");
+    label << Common::Base::HEX4 << (addr2 + 1) << "-" << Common::Base::HEX4 << (addr2 + 1 + 0x1FF);
+    t = new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
+          _font.getStringWidth(label.str()), myFontHeight, label.str(), kTextAlignLeft);
+
+    myBankState[2*i+1] = new EditTextWidget(boss, _font, xoffset, ypos_s,
+              w - xoffset - 10, myLineHeight, "");
     myBankState[2*i+1]->setEditable(false);
 
     xpos = 10;
@@ -115,9 +128,7 @@ void CartridgeDASHWidget::saveOldState()
   myOldState.internalram.clear();
   
   for(uInt32 i = 0; i < this->internalRamSize();i++)
-  {
     myOldState.internalram.push_back(myCart.myRAM[i]);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,21 +142,21 @@ void CartridgeDASHWidget::loadConfig()
 void CartridgeDASHWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
-  uInt8 bank = 0x00;
+//  uInt8 bank = 0x00;
 
   switch(cmd)
   {
     case kBank0Changed:
-cerr << " 0\n";
+cerr << " 0" << endl;
       break;
     case kBank1Changed:
-cerr << " 1\n";
+cerr << " 1" << endl;
       break;
     case kBank2Changed:
-cerr << " 2\n";
+cerr << " 2" << endl;
       break;
     case kBank3Changed:
-cerr << " 3\n";
+cerr << " 3" << endl;
       break;
   }
 
@@ -190,13 +201,24 @@ string CartridgeDASHWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-#if 0
-  uInt16& bank = myCart.myCurrentBank;
-  if(bank < 256)
-    buf << "ROM bank " << dec << bank % myNumRomBanks << ", RAM inactive";
-  else
-    buf << "ROM inactive, RAM bank " << bank % myNumRomBanks;
-#endif
+  for(int i = 0; i < 4; ++i)
+  {
+    uInt16 segment = myCart.segmentInUse[i];
+
+    if(segment == myCart.BANK_UNDEFINED)
+    {
+      buf << "undefined";
+    }
+    else
+    {
+      int number = segment & myCart.BIT_BANK_MASK;
+      const char* type = segment & myCart.BITMASK_ROMRAM ? "RAM" : "ROM";
+
+      buf << type << " " << number;
+    }
+    if(i < 3)
+      buf << " / ";
+  }
 
   return buf.str();
 }
@@ -204,53 +226,72 @@ string CartridgeDASHWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASHWidget::updateUIState()
 {
-  for(int i = 0; i < 8; i+=2)
+  // Set contents for actual banks number and type
+  for(int i = 0; i < 4; ++i)
   {
-    // We need to determine whether each 1K area is all ROM,
-    // or a mixture of ROM and RAM
-    uInt16 bank0 = myCart.bankInUse[i], bank1 = myCart.bankInUse[i+1];
+    uInt16 segment = myCart.segmentInUse[i];
 
-    uInt8 vBank0 = (bank0 >> myCart.BANK_BITS) & 3;
-    uInt8 pBank0 = bank0 & myCart.BIT_BANK_MASK;
-    uInt8 vBank1 = (bank1 >> myCart.BANK_BITS) & 3;
-    uInt8 pBank1 = bank1 & myCart.BIT_BANK_MASK;
-
-cerr << "Bank " << i << ": " << Common::Base::HEX4 << (int)bank0 << " : "
-     << "v = " << Common::Base::HEX2 << (int)vBank0 << ", "
-     << "p = " << Common::Base::HEX2 << (int)pBank0 << endl
-     << "Bank " << (i+1) << ": " << Common::Base::HEX4 << (int)bank1 << " : "
-     << "v = " << Common::Base::HEX2 << (int)vBank1 << ", "
-     << "p = " << Common::Base::HEX2 << (int)pBank1 << endl;
-
-    if(bank0 == myCart.BANK_UNDEFINED)  // never accessed
+    if(segment == myCart.BANK_UNDEFINED)
     {
-      // If lower bank is undefined, upper bank will be too
-      myBankNumber[i/2]->clearSelection();
-      myBankType[i/2]->clearSelection();
-      myBankState[i]->setText("Undefined");
-      myBankState[i+1]->setText("Undefined");
-    }
-    else if(bank0 & myCart.BITMASK_ROMRAM)  // was RAM mapped here?
-    {
-      if(bank0 & myCart.BITMASK_LOWERUPPER)
-      {
-        myBankState[i]->setText("RAM write");
-      }
-      else
-      {
-        myBankNumber[i/2]->setSelected(pBank0);
-        myBankType[i/2]->setSelected("RAM");
-        myBankState[i]->setText("RAM read");
-      }
+      myBankNumber[i]->clearSelection();
+      myBankType[i]->clearSelection();
     }
     else
     {
-      myBankType[i/2]->setSelected("ROM");
-      myBankState[i]->setText("ROM x lower 1K");
-      myBankState[i+1]->setText("ROM x upper 1K");
+      int bankno = segment & myCart.BIT_BANK_MASK;
+      const char* banktype = segment & myCart.BITMASK_ROMRAM ? "RAM" : "ROM";
+
+      myBankNumber[i]->setSelected(bankno);
+      myBankType[i]->setSelected(banktype);
     }
   }
-cerr << "--------------------------------------------------\n";
+
+  // Set description for each 512b bank state
+  for(int i = 0; i < 8; ++i)
+  {
+    uInt16 bank = myCart.bankInUse[i];
+
+    if(bank == myCart.BANK_UNDEFINED)  // never accessed
+    {
+      myBankState[i]->setText("Undefined");
+    }
+    else
+    {
+      ostringstream buf;
+      int bankno = bank & myCart.BIT_BANK_MASK;
+
+      if(bank & myCart.BITMASK_ROMRAM)  // was RAM mapped here?
+      {
+        if(bank & myCart.BITMASK_LOWERUPPER)  // upper is write port
+        {
+          buf << "RAM " << bankno << " @ $" << Common::Base::HEX4
+              << (bankno << myCart.RAM_BANK_TO_POWER) << " (W)";
+          myBankState[i]->setText(buf.str());
+        }
+        else
+        {
+          buf << "RAM " << bankno << " @ $" << Common::Base::HEX4
+              << (bankno << myCart.RAM_BANK_TO_POWER) << " (R)";
+          myBankState[i]->setText(buf.str());
+        }
+      }
+      else
+      {
+        if(bank & myCart.BITMASK_LOWERUPPER)  // upper is high 512b
+        {
+          buf << "ROM " << bankno << " @ $" << Common::Base::HEX4
+              << ((bankno << myCart.RAM_BANK_TO_POWER) + myCart.RAM_BANK_SIZE);
+          myBankState[i]->setText(buf.str());
+        }
+        else
+        {
+          buf << "ROM " << bankno << " @ $" << Common::Base::HEX4
+              << (bankno << myCart.RAM_BANK_TO_POWER);
+          myBankState[i]->setText(buf.str());
+        }
+      }
+    }
+  }
 
 #if 0
   if(myCart.myCurrentBank < 256)
