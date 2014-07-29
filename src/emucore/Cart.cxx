@@ -518,6 +518,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "4K";  // Most common bankswitching type
   }
 
+  // Because it's a variable size ROM format, DASH check is independent of image size and comes last
+  if(isProbablyDASH(image, size))
+    type = "DASH";
+
   return type;
 }
 
@@ -688,7 +692,9 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyDASH(const uInt8* image, uInt32 size)
 {
-  return false;  // TODO - add autodetection
+  // DASH cart is identified key 'TJAD' in the ROM
+  uInt8 signature[] = { 0x54, 0x4a, 0x41, 0x44 };
+  return searchForBytes(image, size, signature, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
