@@ -32,6 +32,7 @@ MODULE_OBJS := \
 	src/debugger/gui/CartCMWidget.o \
 	src/debugger/gui/CartCTYWidget.o \
 	src/debugger/gui/CartCVWidget.o \
+	src/debugger/gui/CartDASHWidget.o \
 	src/debugger/gui/CartDPCWidget.o \
 	src/debugger/gui/CartDPCPlusWidget.o \
 	src/debugger/gui/CartE0Widget.o \

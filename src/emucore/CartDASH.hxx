@@ -27,7 +27,7 @@ class System;
 
 #ifdef DEBUGGER_SUPPORT
 class CartridgeDASHWidget;
-//  #include "CartDASHWidget.hxx"
+  #include "CartDASHWidget.hxx"
 #endif
 
 /**
@@ -40,8 +40,8 @@ class CartridgeDASHWidget;
  the actual bank number (0-63) corresponding to 512 byte blocks for RAM and
  1024 byte blocks for ROM. The maximum size is therefore 32K RAM and 64K ROM.
 
-  D7D6			indicate the bank number (0-3)
- D5D4D3D2D1D0	indicate the actual # (0-63) from the image/ram
+ D7D6         indicate the bank number (0-3)
+ D5D4D3D2D1D0 indicate the actual # (0-63) from the image/ram
 
  ROM:
 
@@ -207,7 +207,7 @@ public:
   CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
       const GUI::Font& nfont, int x, int y, int w, int h)
   {
-    return 0; //new CartridgeDASHWidget(boss, lfont, nfont, x, y, w, h, *this);
+    return new CartridgeDASHWidget(boss, lfont, nfont, x, y, w, h, *this);
   }
 #endif
 
@@ -264,7 +264,7 @@ private:
   static const uInt16 ROM_BANK_SIZE = (1 << ROM_BANK_TO_POWER);
   static const uInt16 BITMASK_ROM_BANK = (ROM_BANK_SIZE -1);
 
-  static const uInt16 ROM_BANK_COUNT = 32;
+  static const uInt16 ROM_BANK_COUNT = 64;
 
   static const uInt16 RAM_WRITE_OFFSET = 0x800;
 

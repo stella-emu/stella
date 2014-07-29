@@ -167,6 +167,28 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
   bankRAMSlot(bank | BITMASK_ROMRAM | 0);
   bankRAMSlot(bank | BITMASK_ROMRAM | BITMASK_LOWERUPPER);
 
+
+
+  cerr << "\nBANK CONTENTS: -------------------------------------\n";
+  for (uInt32 b = 0; b < 8; b++)
+  {
+//cerr << (int)bankInUse[b] << endl;
+    if(bankInUse[b] == BANK_UNDEFINED)
+      cerr << "bankInUse[" << b << "] -> " << dec << (int)BANK_UNDEFINED << endl;
+    else
+    {
+      cerr << "bankInUse[" << b << "] -> " << Common::Base::HEX4 << (int)bankInUse[b] << " "
+           << Common::Base::toString(bankInUse[b], Common::Base::F_2_16);
+      if(bankInUse[b] & BITMASK_ROMRAM)
+        cerr << " (RAM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(write)" : "(read)") << endl;
+      else
+        cerr << " (ROM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(upper)" : "(lower)") << endl;
+    }
+  }
+  cerr << "----------------------------------------------------\n\n";
+
+
+
   return true;
 }
 
@@ -222,6 +244,28 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
   // Each ROM uses 2 consecutive 512 byte slots
   bankROMSlot(bank | 0);
   bankROMSlot(bank | BITMASK_LOWERUPPER);
+
+
+
+  cerr << "\nBANK CONTENTS: -------------------------------------\n";
+  for (uInt32 b = 0; b < 8; b++)
+  {
+//cerr << (int)bankInUse[b] << endl;
+    if(bankInUse[b] == BANK_UNDEFINED)
+      cerr << "bankInUse[" << b << "] -> " << dec << (int)BANK_UNDEFINED << endl;
+    else
+    {
+      cerr << "bankInUse[" << b << "] -> " << Common::Base::HEX4 << (int)bankInUse[b] << " "
+           << Common::Base::toString(bankInUse[b], Common::Base::F_2_16);
+      if(bankInUse[b] & BITMASK_ROMRAM)
+        cerr << " (RAM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(write)" : "(read)") << endl;
+      else
+        cerr << " (ROM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(upper)" : "(lower)") << endl;
+    }
+  }
+  cerr << "----------------------------------------------------\n\n";
+
+
 
   return true;
 }
