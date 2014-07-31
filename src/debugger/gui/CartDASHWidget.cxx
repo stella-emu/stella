@@ -74,14 +74,12 @@ CartridgeDASHWidget::CartridgeDASHWidget(
       new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("Slot "),
                       myLineHeight, bankno, "Slot ",
                       6*_font.getMaxCharWidth());
-    myBankNumber[i]->setTarget(this);
     addFocusWidget(myBankNumber[i]);
 
     xpos += myBankNumber[i]->getWidth();
     myBankType[i] =
       new PopUpWidget(boss, _font, xpos, ypos-2, 5*_font.getMaxCharWidth(),
                       myLineHeight, banktype, " of ", _font.getStringWidth(" of "));
-    myBankType[i]->setTarget(this);
     addFocusWidget(myBankType[i]);
 
     xpos += myBankType[i]->getWidth() + 10;
@@ -142,58 +140,41 @@ void CartridgeDASHWidget::loadConfig()
 void CartridgeDASHWidget::handleCommand(CommandSender* sender,
                                         int cmd, int data, int id)
 {
-  uInt8 bank = 0x00;
-
+  uInt16 segment = 0;
   switch(cmd)
   {
     case kBank0Changed:
-cerr << " 0" << endl;
+      segment = 0;
       break;
     case kBank1Changed:
-cerr << " 1" << endl;
+      segment = 1;
       break;
     case kBank2Changed:
-cerr << " 2" << endl;
+      segment = 2;
       break;
     case kBank3Changed:
-cerr << " 3" << endl;
+      segment = 3;
       break;
   }
 
-#if 0
-  if(cmd == kROMBankChanged)
-  {
-    if(myROMBank->getSelected() < (int)myNumRomBanks)
-    {
-      bank = myROMBank->getSelected();
-      myRAMBank->setSelectedMax();
-    }
-    else
-    {
-      bank = 256;  // default to first RAM bank
-      myRAMBank->setSelectedIndex(0);
-    }
-  }
-  else if(cmd == kRAMBankChanged)
-  {
-    if(myRAMBank->getSelected() < (int)myNumRamBanks)
-    {
-      myROMBank->setSelectedMax();
-      bank = myRAMBank->getSelected() + 256;
-    }
-    else
-    {
-      bank = 0;  // default to first ROM bank
-      myROMBank->setSelectedIndex(0);
-    }
-  }
+  // Ignore bank if either number or type hasn't been selected
+  if(myBankNumber[segment]->getSelected() < 0 ||
+     myBankType[segment]->getSelected() < 0)
+    return;
+
+  uInt8 bank = (segment << myCart.BANK_BITS) |
+               (myBankNumber[segment]->getSelected() & myCart.BIT_BANK_MASK);
 
   myCart.unlockBank();
-  myCart.bank(bank);
+
+  if(myBankType[segment]->getSelectedTag() == "ROM")
+    myCart.bankROM(bank);
+  else
+    myCart.bankRAM(bank);
+
   myCart.lockBank();
   invalidate();
   updateUIState();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

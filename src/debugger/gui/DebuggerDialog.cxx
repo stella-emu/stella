@@ -153,7 +153,8 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case RomWidget::kInvalidateListing:
-      myRom->invalidate();
+      // Only do a full redraw if the disassembly tab is actually showing
+      myRom->invalidate(myRomTab->getActiveTab() == 0);
       break;
 
     default:

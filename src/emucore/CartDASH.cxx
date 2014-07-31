@@ -143,14 +143,16 @@ uInt8 CartridgeDASH::peek(uInt16 address) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDASH::poke(uInt16 address, uInt8 value) {
 
+  bool changed = false;
+
   // Check for write to the bank switch address. RAM/ROM and bank # are encoded in 'value'
   // There are NO mirrored hotspots.
 
   if (address == BANK_SWITCH_HOTSPOT_RAM)
-    myBankChanged = bankRAM(value);
+    changed = bankRAM(value);
 
   else if (address == BANK_SWITCH_HOTSPOT_ROM)
-    myBankChanged = bankROM(value);
+    changed = bankROM(value);
 
   // Pass the poke through to the TIA. In a real Atari, both the cart and the
   // TIA see the address lines, and both react accordingly. In Stella, each
@@ -158,7 +160,7 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value) {
   // don't chain the poke to the TIA, then the TIA can't see it...
   mySystem->tia().poke(address, value);
 
-  return myBankChanged;
+  return changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,28 +176,7 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
   // Remember that this hotspot was accessed for RAM
   segmentInUse[(bank >> BANK_BITS) & 3] = bank | BITMASK_ROMRAM;
 
-#if 0
-  cerr << "\nBANK CONTENTS: -------------------------------------\n";
-  for (uInt32 b = 0; b < 8; b++)
-  {
-//cerr << (int)bankInUse[b] << endl;
-    if(bankInUse[b] == BANK_UNDEFINED)
-      cerr << "bankInUse[" << b << "] -> " << dec << (int)BANK_UNDEFINED << endl;
-    else
-    {
-      cerr << "bankInUse[" << b << "] -> " << Common::Base::HEX4 << (int)bankInUse[b] << " "
-           << Common::Base::toString(bankInUse[b], Common::Base::F_2_16);
-      if(bankInUse[b] & BITMASK_ROMRAM)
-        cerr << " (RAM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(write)" : "(read)") << endl;
-      else
-        cerr << " (ROM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(upper)" : "(lower)") << endl;
-    }
-  }
-  cerr << "----------------------------------------------------\n\n";
-#endif
-
-
-  return true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -253,29 +234,7 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
   // Remember that this hotspot was accessed for ROM
   segmentInUse[(bank >> BANK_BITS) & 3] = bank;
 
-
-#if 0
-  cerr << "\nBANK CONTENTS: -------------------------------------\n";
-  for (uInt32 b = 0; b < 8; b++)
-  {
-//cerr << (int)bankInUse[b] << endl;
-    if(bankInUse[b] == BANK_UNDEFINED)
-      cerr << "bankInUse[" << b << "] -> " << dec << (int)BANK_UNDEFINED << endl;
-    else
-    {
-      cerr << "bankInUse[" << b << "] -> " << Common::Base::HEX4 << (int)bankInUse[b] << " "
-           << Common::Base::toString(bankInUse[b], Common::Base::F_2_16);
-      if(bankInUse[b] & BITMASK_ROMRAM)
-        cerr << " (RAM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(write)" : "(read)") << endl;
-      else
-        cerr << " (ROM) " << ((bankInUse[b] & BITMASK_LOWERUPPER) ? "(upper)" : "(lower)") << endl;
-    }
-  }
-  cerr << "----------------------------------------------------\n\n";
-#endif
-
-
-  return true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
