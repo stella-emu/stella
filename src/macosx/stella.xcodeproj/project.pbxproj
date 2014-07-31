@@ -332,6 +332,8 @@
 		DC73BD8A1915E5E3003FAFAD /* FBSurface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC73BD881915E5E3003FAFAD /* FBSurface.hxx */; };
 		DC74D6A1138D4D7E00F05C5C /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D69F138D4D7E00F05C5C /* StringList.hxx */; };
 		DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */; };
+		DC74E5C6198AF12700F37E36 /* CartDASHWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC74E5C4198AF12700F37E36 /* CartDASHWidget.cxx */; };
+		DC74E5C7198AF12700F37E36 /* CartDASHWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74E5C5198AF12700F37E36 /* CartDASHWidget.hxx */; };
 		DC79F81217A88D9E00288B91 /* Base.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC79F81017A88D9E00288B91 /* Base.cxx */; };
 		DC79F81317A88D9E00288B91 /* Base.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC79F81117A88D9E00288B91 /* Base.hxx */; };
 		DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24D4173B1CF600B20FE9 /* Variant.hxx */; };
@@ -877,6 +879,8 @@
 		DC73BD881915E5E3003FAFAD /* FBSurface.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurface.hxx; path = ../emucore/FBSurface.hxx; sourceTree = "<group>"; };
 		DC74D69F138D4D7E00F05C5C /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../common/StringList.hxx; sourceTree = SOURCE_ROOT; };
 		DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringParser.hxx; path = ../common/StringParser.hxx; sourceTree = SOURCE_ROOT; };
+		DC74E5C4198AF12700F37E36 /* CartDASHWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDASHWidget.cxx; path = ../debugger/gui/CartDASHWidget.cxx; sourceTree = "<group>"; };
+		DC74E5C5198AF12700F37E36 /* CartDASHWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDASHWidget.hxx; path = ../debugger/gui/CartDASHWidget.hxx; sourceTree = "<group>"; };
 		DC79F81017A88D9E00288B91 /* Base.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Base.cxx; path = ../common/Base.cxx; sourceTree = SOURCE_ROOT; };
 		DC79F81117A88D9E00288B91 /* Base.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Base.hxx; path = ../common/Base.hxx; sourceTree = SOURCE_ROOT; };
 		DC7A24D4173B1CF600B20FE9 /* Variant.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Variant.hxx; path = ../common/Variant.hxx; sourceTree = SOURCE_ROOT; };
@@ -1196,6 +1200,8 @@
 				DC676A2E1729A0B000E4E73D /* CartCTYWidget.hxx */,
 				DCAAE5BA1715887B0080BB82 /* CartCVWidget.cxx */,
 				DCAAE5BB1715887B0080BB82 /* CartCVWidget.hxx */,
+				DC74E5C4198AF12700F37E36 /* CartDASHWidget.cxx */,
+				DC74E5C5198AF12700F37E36 /* CartDASHWidget.hxx */,
 				DCAAE5BC1715887B0080BB82 /* CartDebugWidget.hxx */,
 				DCAACB0A188D636F00A4D282 /* CartDFSCWidget.cxx */,
 				DCAACB0B188D636F00A4D282 /* CartDFSCWidget.hxx */,
@@ -1889,6 +1895,7 @@
 				DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */,
 				DCD6FC7111C281ED005DA767 /* png.h in Headers */,
 				DCD6FC7211C281ED005DA767 /* pngconf.h in Headers */,
+				DC74E5C7198AF12700F37E36 /* CartDASHWidget.hxx in Headers */,
 				DCD6FC7711C281ED005DA767 /* pngpriv.h in Headers */,
 				DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */,
 				DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */,
@@ -2151,6 +2158,7 @@
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
+				DC74E5C6198AF12700F37E36 /* CartDASHWidget.cxx in Sources */,
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
 				2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */,
