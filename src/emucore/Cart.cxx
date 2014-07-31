@@ -323,8 +323,7 @@ bool Cartridge::save(ofstream& out)
     return false;
   }
 
-  for(int i=0; i<size; i++)
-    out << image[i];
+  out.write((const char*)image, size);
 
   return true;
 }

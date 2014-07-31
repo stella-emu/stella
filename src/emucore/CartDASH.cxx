@@ -143,8 +143,6 @@ uInt8 CartridgeDASH::peek(uInt16 address) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDASH::poke(uInt16 address, uInt8 value) {
 
-  bool myBankChanged = false;
-
   // Check for write to the bank switch address. RAM/ROM and bank # are encoded in 'value'
   // There are NO mirrored hotspots.
 
@@ -174,9 +172,9 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
   bankRAMSlot(bank | BITMASK_ROMRAM | BITMASK_LOWERUPPER);
 
   // Remember that this hotspot was accessed for RAM
-  uInt8 bankNumber = (bank >> BANK_BITS) & 3;
-  segmentInUse[bankNumber] = bank | BITMASK_ROMRAM;
+  segmentInUse[(bank >> BANK_BITS) & 3] = bank | BITMASK_ROMRAM;
 
+#if 0
   cerr << "\nBANK CONTENTS: -------------------------------------\n";
   for (uInt32 b = 0; b < 8; b++)
   {
@@ -194,7 +192,7 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
     }
   }
   cerr << "----------------------------------------------------\n\n";
-
+#endif
 
 
   return true;
@@ -209,8 +207,7 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank) {
   uInt16 currentBank = bank & BIT_BANK_MASK;    // Wrap around/restrict to valid range
   bool upper = bank & BITMASK_LOWERUPPER;       // is this the read or write port
 
-  uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;       // Effectively * 512 bytes
-  uInt32 blockSize = 1 << shift;
+  uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;  // Effectively * 512 bytes
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
@@ -230,7 +227,7 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank) {
   uInt32 start = 0x1000 + (bankNumber << RAM_BANK_TO_POWER) + (upper ? RAM_WRITE_OFFSET : 0);
   uInt32 end = start + RAM_BANK_SIZE - 1;
 
-  for (uInt32 address = start; address <= end; address += blockSize) {
+  for (uInt32 address = start; address <= end; address += (1 << shift)) {
     if(upper)
       access.directPokeBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
     else
@@ -254,10 +251,10 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
   bankROMSlot(bank | BITMASK_LOWERUPPER);
 
   // Remember that this hotspot was accessed for ROM
-  uInt8 bankNumber = (bank >> BANK_BITS) & 3;
-  segmentInUse[bankNumber] = bank;
+  segmentInUse[(bank >> BANK_BITS) & 3] = bank;
 
 
+#if 0
   cerr << "\nBANK CONTENTS: -------------------------------------\n";
   for (uInt32 b = 0; b < 8; b++)
   {
@@ -275,7 +272,7 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
     }
   }
   cerr << "----------------------------------------------------\n\n";
-
+#endif
 
 
   return true;

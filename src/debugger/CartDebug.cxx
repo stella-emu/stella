@@ -316,8 +316,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
     const DisassemblyTag& tag = myDisassembly.list[i];
     const uInt16 address = tag.address & 0xFFF;
 
-    // Addresses marked as 'ROW' normally won't have an address
-    if(address)
+    // Exclude 'ROW'; they don't have a valid address
+    if(tag.type != CartDebug::ROW)
     {
       // Create a mapping from addresses to line numbers
       myAddrToLineList.insert(make_pair(address, i));

@@ -18,6 +18,9 @@
     with certain bankswitch types.  The bankswitch UI should now be used
     to query/set bank state.
 
+  * Fixed bug in disassembly output; instructions at $F000 were never
+    being highlighted during execution.
+
   * The UNIX configure script now supports newer versions of Hurd.
     Special thanks to Stephen Kitt for the patch.
 

@@ -140,9 +140,9 @@ void CartridgeDASHWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASHWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+                                        int cmd, int data, int id)
 {
-//  uInt8 bank = 0x00;
+  uInt8 bank = 0x00;
 
   switch(cmd)
   {
