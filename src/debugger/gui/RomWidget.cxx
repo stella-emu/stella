@@ -46,9 +46,9 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Show current bank state
   xpos = x;  ypos = y + 7;
   t = new StaticTextWidget(boss, lfont, xpos, ypos,
-                           lfont.getStringWidth("Bank state: "),
+                           lfont.getStringWidth("Bank:"),
                            lfont.getFontHeight(),
-                           "Bank state: ", kTextAlignLeft);
+                           "Bank:", kTextAlignLeft);
 
   xpos += t->getWidth() + 5;
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-1,

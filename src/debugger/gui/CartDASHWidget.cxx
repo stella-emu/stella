@@ -181,24 +181,62 @@ void CartridgeDASHWidget::handleCommand(CommandSender* sender,
 string CartridgeDASHWidget::bankState()
 {
   ostringstream& buf = buffer();
+  int lastROMBank = -1;
+  bool lastSlotRAM = false;
 
-  for(int i = 0; i < 4; ++i)
+  for(int i = 0; i < 8; ++i)
   {
-    uInt16 segment = myCart.segmentInUse[i];
+    uInt16 bank = myCart.bankInUse[i];
 
-    if(segment == myCart.BANK_UNDEFINED)
+    if(bank == myCart.BANK_UNDEFINED)  // never accessed
     {
-      buf << "undefined";
+      buf << " U!";
     }
     else
     {
-      int number = segment & myCart.BIT_BANK_MASK;
-      const char* type = segment & myCart.BITMASK_ROMRAM ? "RAM" : "ROM";
+      int bankno = bank & myCart.BIT_BANK_MASK;
 
-      buf << type << " " << number;
+      if(bank & myCart.BITMASK_ROMRAM)  // was RAM mapped here?
+      {
+        // RAM will always need a '+' placed somewhere, since it always
+        // consists of 512B segments
+        bool inFirstSlot = (i % 2 == 0);
+        if(!(inFirstSlot || lastSlotRAM))
+        {
+          lastSlotRAM = false;
+          buf << " +";
+        }
+
+        if(bank & myCart.BITMASK_LOWERUPPER)  // upper is write port
+          buf << " RAM " << bankno << "W";
+        else
+          buf << " RAM " << bankno << "R";
+
+        if(inFirstSlot)
+        {
+          buf << " +";
+          lastSlotRAM = true;
+        }
+      }
+      else
+      {
+        // ROM can be contiguous, since 2 512B segments can form a single
+        // 1K bank; in this case we only show the info once
+        bool highBankSame = (i % 2 == 1) && (bankno == lastROMBank);
+        if(!highBankSame)
+        {
+          buf << " ROM " << bankno;
+          lastROMBank = bankno;
+        }
+        else
+          lastROMBank = -1;
+
+        lastSlotRAM = false;
+      }
     }
-    if(i < 3)
-      buf << " / ";
+
+    if((i+1) % 2 == 0 && i < 7)
+      buf << " /";
   }
 
   return buf.str();
@@ -273,19 +311,6 @@ void CartridgeDASHWidget::updateUIState()
       }
     }
   }
-
-#if 0
-  if(myCart.myCurrentBank < 256)
-  {
-    myROMBank->setSelectedIndex(myCart.myCurrentBank % myNumRomBanks);
-    myRAMBank->setSelectedMax();
-  }
-  else
-  {
-    myROMBank->setSelectedMax();
-    myRAMBank->setSelectedIndex(myCart.myCurrentBank - 256);
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
