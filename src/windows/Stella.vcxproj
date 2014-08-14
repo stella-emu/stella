@@ -283,6 +283,7 @@
     <ClCompile Include="..\emucore\CartDF.cxx" />
     <ClCompile Include="..\emucore\CartDFSC.cxx" />
     <ClCompile Include="..\emucore\CartFA2.cxx" />
+    <ClCompile Include="..\emucore\CartMDM.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
@@ -541,6 +542,7 @@
     <ClInclude Include="..\emucore\CartDF.hxx" />
     <ClInclude Include="..\emucore\CartDFSC.hxx" />
     <ClInclude Include="..\emucore\CartFA2.hxx" />
+    <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />

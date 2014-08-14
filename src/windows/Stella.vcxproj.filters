@@ -771,6 +771,9 @@
     <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\CartMDM.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1555,6 +1558,9 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartDASHWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartMDM.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
