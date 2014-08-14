@@ -17,25 +17,35 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGE0840_HXX
-#define CARTRIDGE0840_HXX
+#ifndef CARTRIDGEMDM_HXX
+#define CARTRIDGEMDM_HXX
 
 #include "bspf.hxx"
 #include "Cart.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
-  #include "Cart0840Widget.hxx"
+//  #include "CartMDMWidget.hxx"
 #endif
 
 /**
-  Cartridge class used for 0840 "Econobanking" 8K bankswitched games.  There
-  are two 4K banks.
+  Cartridge class used for "Menu Driven Megacart" as described at the
+  following link and developed by Edwin Blink:
 
-  @author  Fred X. Quimby
+    http://atariage.com/forums/topic/56073-cheap-2k4k-x-in-1-menu-driven-multicart-for-atari-2600
+
+  The hotspots in this scheme read from addresses $800 to $FFF, where the
+  lower byte determines the actual 4K bank switch to.  In the current
+  implementation, only 128 banks are supported, so selecting bank 128+ results
+  in further bankswitching being locked.  A reset line is used to reset to
+  bank 0 and re-enable bankswitching.
+
+  Therefore, there are 128 banks / 512K possible in total.
+
+  @author  Stephen Anthony, based on 0840 scheme by Fred X. Quimby
 */
-class Cartridge0840 : public Cartridge
+class CartridgeMDM : public Cartridge
 {
-  friend class Cartridge0840Widget;
+  friend class CartridgeMDMWidget;
 
   public:
     /**
@@ -45,12 +55,12 @@ class Cartridge0840 : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge0840(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeMDM(const uInt8* image, uInt32 size, const Settings& settings);
  
     /**
       Destructor
     */
-    virtual ~Cartridge0840();
+    virtual ~CartridgeMDM();
 
   public:
     /**
@@ -121,7 +131,7 @@ class Cartridge0840 : public Cartridge
 
       @return The name of the object
     */
-    string name() const { return "Cartridge0840"; }
+    string name() const { return "CartridgeMDM"; }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -131,7 +141,7 @@ class Cartridge0840 : public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h)
     {
-      return new Cartridge0840Widget(boss, lfont, nfont, x, y, w, h, *this);
+      return 0;//new CartridgeMDMWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 
@@ -153,14 +163,21 @@ class Cartridge0840 : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
-    // The 8K ROM image of the cartridge
-    uInt8 myImage[8192];
+    // Pointer to a dynamically allocated ROM image of the cartridge
+    uInt8* myImage;
+
+    // Size of the ROM image
+    uInt32 mySize;
 
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
    
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess[8];
+
+    // Indicates whether banking has been disabled due to a bankswitch
+    // above bank 127
+    bool myBankingDisabled;
 };
 
 #endif

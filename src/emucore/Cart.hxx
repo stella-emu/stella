@@ -211,6 +211,15 @@ class Cartridge : public Device
     virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h) { return NULL; }
 
+    // Info about the various bankswitch schemes, useful for displaying
+    // in GUI dropdown boxes, etc
+    struct BankswitchType {
+      const char* type;
+      const char* desc;
+    };
+    enum { ourNumBSTypes = 44 };
+    static BankswitchType ourBSList[ourNumBSTypes];
+
   protected:
     /**
       Indicate that an illegal read from a write port has occurred.
@@ -304,6 +313,11 @@ class Cartridge : public Device
     static bool isProbably4A50(const uInt8* image, uInt32 size);
 
     /**
+      Returns true if the image is probably a BF/BFSC bankswitching cartridge
+    */
+    static bool isProbablyBF(const uInt8* image, uInt32 size, const char*& type);
+
+    /**
       Returns true if the image is probably a CTY bankswitching cartridge
     */
     static bool isProbablyCTY(const uInt8* image, uInt32 size);
@@ -317,6 +331,11 @@ class Cartridge : public Device
       Returns true if the image is probably a DASH bankswitching cartridge
     */
     static bool isProbablyDASH(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a DF/DFSC bankswitching cartridge
+    */
+    static bool isProbablyDF(const uInt8* image, uInt32 size, const char*& type);
 
     /**
       Returns true if the image is probably a DPC+ bankswitching cartridge
@@ -339,15 +358,6 @@ class Cartridge : public Device
     static bool isProbablyEF(const uInt8* image, uInt32 size, const char*& type);
 
     /**
-      Returns true if the image is probably a BF/BFSC bankswitching cartridge
-    */
-    static bool isProbablyBF(const uInt8* image, uInt32 size, const char*& type);
-    /**
-      Returns true if the image is probably a DF/DFSC bankswitching cartridge
-    */
-    static bool isProbablyDF(const uInt8* image, uInt32 size, const char*& type);
-
-    /**
       Returns true if the image is probably an F6 bankswitching cartridge
     */
     static bool isProbablyF6(const uInt8* image, uInt32 size);
@@ -361,6 +371,11 @@ class Cartridge : public Device
       Returns true if the image is probably an FE bankswitching cartridge
     */
     static bool isProbablyFE(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a MDM bankswitching cartridge
+    */
+    static bool isProbablyMDM(const uInt8* image, uInt32 size);
 
     /**
       Returns true if the image is probably a SB bankswitching cartridge

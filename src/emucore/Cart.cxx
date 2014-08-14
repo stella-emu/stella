@@ -56,6 +56,7 @@
 #include "CartFA2.hxx"
 #include "CartFE.hxx"
 #include "CartMC.hxx"
+#include "CartMDM.hxx"
 #include "CartSB.hxx"
 #include "CartUA.hxx"
 #include "CartX07.hxx"
@@ -244,6 +245,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeFE(image, size, settings);
   else if(type == "MC")
     cartridge = new CartridgeMC(image, size, settings);
+  else if(type == "MDM")
+    cartridge = new CartridgeMDM(image, size, settings);
   else if(type == "UA")
     cartridge = new CartridgeUA(image, size, settings);
   else if(type == "SB")
@@ -517,9 +520,11 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "4K";  // Most common bankswitching type
   }
 
-  // Because it's a variable size ROM format, DASH check is independent of image size and comes last
+  // Variable sized ROM formats are independent of image size and comes last
   if(isProbablyDASH(image, size))
     type = "DASH";
+  else if(isProbablyMDM(image, size))
+    type = "MDM";
 
   return type;
 }
@@ -882,6 +887,14 @@ bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyMDM(const uInt8* image, uInt32 size)
+{
+  // MDM cart is identified key 'MDMC' in the first 4K of ROM
+  uInt8 signature[] = { 0x4D, 0x44, 0x4D, 0x43 };
+  return searchForBytes(image, 4096, signature, 4, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablySB(const uInt8* image, uInt32 size)
 {
   // SB cart bankswitching switches banks by accessing address 0x0800
@@ -947,3 +960,51 @@ Cartridge& Cartridge::operator = (const Cartridge&)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge::myAboutString= "";
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cartridge::BankswitchType Cartridge::ourBSList[] = {
+  { "AUTO",     "Auto-detect"                   },
+  { "0840",     "0840 (8K ECONObank)"           },
+  { "2IN1",     "2IN1 Multicart (4-32K)"        },
+  { "4IN1",     "4IN1 Multicart (8-32K)"        },
+  { "8IN1",     "8IN1 Multicart (16-64K)"       },
+  { "16IN1",    "16IN1 Multicart (32-128K)"     },
+  { "32IN1",    "32IN1 Multicart (64/128K)"     },
+  { "64IN1",    "64IN1 Multicart (128/256K)"    },
+  { "128IN1",   "128IN1 Multicart (256/512K)"   },
+  { "2K",       "2K (64-2048 bytes Atari)"      },
+  { "3E",       "3E (32K Tigervision)"          },
+  { "3F",       "3F (512K Tigervision)"         },
+  { "4A50",     "4A50 (64K 4A50 + ram)"         },
+  { "4K",       "4K (4K Atari)"                 },
+  { "4KSC",     "4KSC (CPUWIZ 4K + ram)"        },
+  { "AR",       "AR (Supercharger)"             },
+  { "BF",       "BF (CPUWIZ 256K)"              },
+  { "BFSC",     "BFSC (CPUWIZ 256K + ram)"      },
+  { "CV",       "CV (Commavid extra ram)"       },
+  { "CM",       "CM (SpectraVideo CompuMate)"   },
+  { "DASH",     "Experimental"                  },
+  { "DF",       "DF (CPUWIZ 128K)"              },
+  { "DFSC",     "DFSC (CPUWIZ 128K + ram)"      },
+  { "DPC",      "DPC (Pitfall II)"              },
+  { "DPC+",     "DPC+ (Enhanced DPC)"           },
+  { "E0",       "E0 (8K Parker Bros)"           },
+  { "E7",       "E7 (16K M-network)"            },
+  { "EF",       "EF (64K H. Runner)"            },
+  { "EFSC",     "EFSC (64K H. Runner + ram)"    },
+  { "F0",       "F0 (Dynacom Megaboy)"          },
+  { "F4",       "F4 (32K Atari)"                },
+  { "F4SC",     "F4SC (32K Atari + ram)"        },
+  { "F6",       "F6 (16K Atari)"                },
+  { "F6SC",     "F6SC (16K Atari + ram)"        },
+  { "F8",       "F8 (8K Atari)"                 },
+  { "F8SC",     "F8SC (8K Atari + ram)"         },
+  { "FA",       "FA (CBS RAM Plus)"             },
+  { "FA2",      "FA2 (CBS RAM Plus 24/28K)"     },
+  { "FE",       "FE (8K Decathlon)"             },
+  { "MC",       "MC (C. Wilkson Megacart)"      },
+  { "MDM",      "MDM (Menu Driven Megacart)"    },
+  { "SB",       "SB (128-256K SUPERbank)"       },
+  { "UA",       "UA (8K UA Ltd.)"               },
+  { "X07",      "X07 (64K AtariAge)"            }
+};

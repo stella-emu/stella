@@ -17,6 +17,7 @@
 // $Id$
 //============================================================================
 
+#include "Cart.hxx"
 #include "Console.hxx"
 #include "MouseControl.hxx"
 #include "Dialog.hxx"
@@ -55,12 +56,6 @@ GameInfoDialog::GameInfoDialog(
   // Set real dimensions
   _w = 52 * fontWidth + 8;
   _h = 12 * (lineHeight + 4) + 10;
-
-  ////////////////////////////////////////////////////////////////////
-  // Some of the following items are also present in GlobalPropsDialog
-  // If any changes are ever made here, GlobalPropsDialog should also
-  // be updated accordingly
-  ////////////////////////////////////////////////////////////////////
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -132,49 +127,8 @@ GameInfoDialog::GameInfoDialog(
                        "Type:", kTextAlignLeft);
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  items.push_back("Auto-detect",                 "AUTO"  );
-  items.push_back("0840 (8K ECONObank)",         "0840"  );
-  items.push_back("2IN1 Multicart (4-32K)",      "2IN1"  );
-  items.push_back("4IN1 Multicart (8-32K)",      "4IN1"  );
-  items.push_back("8IN1 Multicart (16-64K)",     "8IN1"  );
-  items.push_back("16IN1 Multicart (32-128K)",   "16IN1" );
-  items.push_back("32IN1 Multicart (64/128K)",   "32IN1" );
-  items.push_back("64IN1 Multicart (128/256K)",  "64IN1" );
-  items.push_back("128IN1 Multicart (256/512K)", "128IN1");
-  items.push_back("2K (64-2048 bytes Atari)",    "2K"    );
-  items.push_back("3E (32K Tigervision)",        "3E"    );
-  items.push_back("3F (512K Tigervision)",       "3F"    );
-  items.push_back("4A50 (64K 4A50 + ram)",       "4A50"  );
-  items.push_back("4K (4K Atari)",               "4K"    );
-  items.push_back("4KSC (CPUWIZ 4K + ram)",      "4KSC"  );
-  items.push_back("AR (Supercharger)",           "AR"    );
-  items.push_back("BF (CPUWIZ 256K)",            "BF"    );
-  items.push_back("BFSC (CPUWIZ 256K + ram)",    "BFSC"  );
-  items.push_back("CV (Commavid extra ram)",     "CV"    );
-  items.push_back("CM (SpectraVideo CompuMate)", "CM"    );
-  items.push_back("Experimental",                "DASH"  );
-  items.push_back("DF (CPUWIZ 128K)",            "DF"    );
-  items.push_back("DFSC (CPUWIZ 128K + ram)",    "DFSC"  );
-  items.push_back("DPC (Pitfall II)",            "DPC"   );
-  items.push_back("DPC+ (Enhanced DPC)",         "DPC+"  );
-  items.push_back("E0 (8K Parker Bros)",         "E0"    );
-  items.push_back("E7 (16K M-network)",          "E7"    );
-  items.push_back("EF (64K H. Runner)",          "EF"    );
-  items.push_back("EFSC (64K H. Runner + ram)",  "EFSC"  );
-  items.push_back("F0 (Dynacom Megaboy)",        "F0"    );
-  items.push_back("F4 (32K Atari)",              "F4"    );
-  items.push_back("F4SC (32K Atari + ram)",      "F4SC"  );
-  items.push_back("F6 (16K Atari)",              "F6"    );
-  items.push_back("F6SC (16K Atari + ram)",      "F6SC"  );
-  items.push_back("F8 (8K Atari)",               "F8"    );
-  items.push_back("F8SC (8K Atari + ram)",       "F8SC"  );
-  items.push_back("FA (CBS RAM Plus)",           "FA"    );
-  items.push_back("FA2 (CBS RAM Plus 24/28K)",   "FA2"   );
-  items.push_back("FE (8K Decathlon)",           "FE"    );
-  items.push_back("MC (C. Wilkson Megacart)",    "MC"    );
-  items.push_back("SB (128-256K SUPERbank)",     "SB"    );
-  items.push_back("UA (8K UA Ltd.)",             "UA"    );
-  items.push_back("X07 (64K AtariAge)",          "X07"   );
+  for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
+    items.push_back(Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myType);

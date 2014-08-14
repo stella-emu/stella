@@ -21,34 +21,41 @@
 #include <cstring>
 
 #include "System.hxx"
-#include "Cart0840.hxx"
+#include "CartMDM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0840::Cartridge0840(const uInt8* image, uInt32 size, const Settings& settings)
-  : Cartridge(settings)
+CartridgeMDM::CartridgeMDM(const uInt8* image, uInt32 size, const Settings& settings)
+  : Cartridge(settings),
+    myImage(NULL),
+    mySize(size),
+    myBankingDisabled(false)
 {
+  // Allocate array for the ROM image
+  myImage = new uInt8[mySize];
+
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(8192u, size));
-  createCodeAccessBase(8192);
+  memcpy(myImage, image, mySize);
+  createCodeAccessBase(mySize);
 
   // Remember startup bank
   myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0840::~Cartridge0840()
+CartridgeMDM::~CartridgeMDM()
 {
+  delete[] myImage;  myImage = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge0840::reset()
+void CartridgeMDM::reset()
 {
   // Upon reset we switch to the startup bank
   bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge0840::install(System& system)
+void CartridgeMDM::install(System& system)
 {
   mySystem = &system;
   uInt16 shift = mySystem->pageShift();
@@ -78,77 +85,46 @@ void Cartridge0840::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge0840::peek(uInt16 address)
+uInt8 CartridgeMDM::peek(uInt16 address)
 {
-  address &= 0x1840;
+  // Because of the way we've set up accessing above, we can only
+  // get here when the addresses are from 0x800 - 0xFFF
+  bank(address & 0x0FF);
 
-  // Switch banks if necessary
-  switch(address)
-  {
-    case 0x0800:
-      // Set the current bank to the lower 4k bank
-      bank(0);
-      break;
-
-    case 0x0840:
-      // Set the current bank to the upper 4k bank
-      bank(1);
-      break;
-
-    default:
-      break;
-  }
-
-  if(!(address & 0x1000))
-  {
-    // Because of the way we've set up accessing above, we can only
-    // get here when the addresses are from 0x800 - 0xFFF
-    int hotspot = ((address & 0x0F00) >> 8) - 8;
-    return myHotSpotPageAccess[hotspot].device->peek(address);
-  }
-
-  return 0;
+  int hotspot = ((address & 0x0F00) >> 8) - 8;
+  return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge0840::poke(uInt16 address, uInt8 value)
+bool CartridgeMDM::poke(uInt16 address, uInt8 value)
 {
-  address &= 0x1840;
-
-  // Switch banks if necessary
-  switch(address)
-  {
-    case 0x0800:
-      // Set the current bank to the lower 4k bank
-      bank(0);
-      break;
-
-    case 0x0840:
-      // Set the current bank to the upper 4k bank
-      bank(1);
-      break;
-
-    default:
-      break;
-  }
-
+  // Currently, writing to the hotspots is disabled, so we don't need to
+  // worry about bankswitching
+  // However, all possible addresses can appear here, and we only care
+  // about those below $1000
   if(!(address & 0x1000))
   {
-    // Because of the way we've set up accessing above, we can only
-    // get here when the addresses are from 0x800 - 0xFFF
     int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
+
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge0840::bank(uInt16 bank)
+bool CartridgeMDM::bank(uInt16 bank)
 { 
   if(bankLocked()) return false;
 
+  // Accesses above bank 127 disable further bankswitching; we're only
+  // concerned with the lower byte
+  myBankingDisabled = myBankingDisabled || bank > 127;
+  if(myBankingDisabled)
+    return false;
+
   // Remember what bank we're in
-  myCurrentBank = bank;
+  // Wrap around to a valid bank number if necessary
+  myCurrentBank = bank % bankCount();
   uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
 
@@ -166,33 +142,33 @@ bool Cartridge0840::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge0840::getBank() const
+uInt16 CartridgeMDM::getBank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge0840::bankCount() const
+uInt16 CartridgeMDM::bankCount() const
 {
-  return 2;
+  return mySize >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge0840::patch(uInt16 address, uInt8 value)
+bool CartridgeMDM::patch(uInt16 address, uInt8 value)
 {
-  myImage[(myCurrentBank << 12) + (address & 0x0fff)] = value;
+  myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge0840::getImage(int& size) const
+const uInt8* CartridgeMDM::getImage(int& size) const
 {
-  size = 8192;
+  size = mySize;
   return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge0840::save(Serializer& out) const
+bool CartridgeMDM::save(Serializer& out) const
 {
   try
   {
@@ -201,7 +177,7 @@ bool Cartridge0840::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: Cartridge0840::save" << endl;
+    cerr << "ERROR: CartridgeMDM::save" << endl;
     return false;
   }
 
@@ -209,7 +185,7 @@ bool Cartridge0840::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge0840::load(Serializer& in)
+bool CartridgeMDM::load(Serializer& in)
 {
   try
   {
@@ -220,7 +196,7 @@ bool Cartridge0840::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: Cartridge0840::load" << endl;
+    cerr << "ERROR: CartridgeMDM::load" << endl;
     return false;
   }
 
