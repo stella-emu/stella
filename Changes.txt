@@ -18,6 +18,9 @@
     tab for changing banks and viewing internal cart RAM, and
     autodetection is now implemented.
 
+  * Added 'MDM' (Menu Driven Megacart) bankswitch scheme as described on
+    AtariAge and originally developed by Edwin Blink.
+
   * Removed the 'bank' command from the debugger prompt, as it only worked
     with certain bankswitch types.  The bankswitch UI should now be used
     to query/set bank state.
