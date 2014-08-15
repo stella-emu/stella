@@ -105,7 +105,6 @@ class MediaFactory
     {
       return new EventHandlerSDL2(osystem);
     }
-
 };
 
 #endif

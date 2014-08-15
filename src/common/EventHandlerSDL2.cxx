@@ -36,12 +36,21 @@ void EventHandlerSDL2::initializeJoysticks()
 {
 #ifdef JOYSTICK_SUPPORT
   // Initialize the joystick subsystem
-  if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) >= 0) && (SDL_NumJoysticks() > 0))
+  if(SDL_WasInit(SDL_INIT_JOYSTICK) != 0)
   {
-    int numSticks = SDL_NumJoysticks();
-    for(int i = 0; i < numSticks; ++i)
-      addJoystick(new JoystickSDL2(i), i);
+    if(SDL_NumJoysticks() > 0)
+    {
+      int numSticks = SDL_NumJoysticks();
+      for(int i = 0; i < numSticks; ++i)
+        addJoystick(new JoystickSDL2(i), i);
+
+      myOSystem.logMessage("EventHandlerSDL2::initializeJoysticks() +sticks", 2);
+    }
+    else
+      myOSystem.logMessage("EventHandlerSDL2::initializeJoysticks() -sticks", 2);
   }
+  else
+    myOSystem.logMessage("EventHandlerSDL2::initializeJoysticks() failed!", 2);
 #endif
 }
 
@@ -198,16 +207,16 @@ void EventHandlerSDL2::pollEvent()
             handleSystemEvent(EVENT_WINDOW_FOCUS_LOST);
             break;
         }
-        break;
+        break;  // SDL_WINDOWEVENT
     }
   }
 }
 
-#ifdef JOYSTICK_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
   : myStick(NULL)
 {
+#ifdef JOYSTICK_SUPPORT
   myStick = SDL_JoystickOpen(idx);
   if(myStick)
   {
@@ -215,13 +224,15 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
         SDL_JoystickNumAxes(myStick), SDL_JoystickNumButtons(myStick),
         SDL_JoystickNumHats(myStick), SDL_JoystickNumBalls(myStick));
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
 {
+#ifdef JOYSTICK_SUPPORT
   if(myStick)
     SDL_JoystickClose(myStick);
   myStick = NULL;
-}
 #endif
+}

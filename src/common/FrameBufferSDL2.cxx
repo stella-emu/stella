@@ -42,13 +42,14 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
     myDblBufferedFlag(true)
 {
   // Initialize SDL2 context
-  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
     myOSystem.logMessage(buf.str(), 0);
     return;
   }
+  myOSystem.logMessage("FrameBufferSDL2::FrameBufferSDL2 SDL_Init()", 2);
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceSDL2 object)
