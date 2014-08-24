@@ -26,6 +26,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
     mySurface(NULL),
     myTexture(NULL),
     mySurfaceIsDirty(true),
+    myIsVisible(true),
     myTexAccess(SDL_TEXTUREACCESS_STREAMING),
     myInterpolate(false),
     myBlendEnabled(false),
@@ -150,6 +151,12 @@ void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setVisible(bool visible)
+{
+  myIsVisible = visible;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 {
   x -= myDstR.x;
@@ -157,13 +164,14 @@ void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::render()
+bool FBSurfaceSDL2::render()
 {
-  if(mySurfaceIsDirty)
+  if(mySurfaceIsDirty && myIsVisible)
   {
 //cerr << "src: x=" << mySrcR.x << ", y=" << mySrcR.y << ", w=" << mySrcR.w << ", h=" << mySrcR.h << endl;
 //cerr << "dst: x=" << myDstR.x << ", y=" << myDstR.y << ", w=" << myDstR.w << ", h=" << myDstR.h << endl;
 
+//cerr << "render()\n";
     if(myTexAccess == SDL_TEXTUREACCESS_STREAMING)
       SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
     SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrcR, &myDstR);
@@ -171,8 +179,9 @@ void FBSurfaceSDL2::render()
     mySurfaceIsDirty = false;
 
     // Let postFrameUpdate() know that a change has been made
-    myFB.myDirtyFlag = true;
+    return myFB.myDirtyFlag = true;
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

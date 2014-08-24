@@ -69,12 +69,6 @@ void Dialog::open(bool refresh)
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
-  // Base surfaces are typically large, and will probably cause slow
-  // performance if we update the whole area each frame
-  // Instead, dirty rectangle updates should be performed
-  // However, this policy is left entirely to the framebuffer
-  // We suggest the hint here, but specific framebuffers are free to
-  // ignore it
   if(_surface == NULL)
   {
     uInt32 surfaceID = instance().frameBuffer().allocateSurface(_w, _h);
@@ -275,6 +269,12 @@ void Dialog::redrawFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addSurface(FBSurface* surface)
+{
+  mySurfaceStack.push(surface);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::draw()
 {
 }
@@ -290,7 +290,6 @@ void Dialog::drawDialog()
   if(_dirty)
   {
 //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-
     s.fillRect(_x, _y, _w, _h, kDlgColor);
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
@@ -309,13 +308,22 @@ void Dialog::drawDialog()
     // Draw outlines for focused widgets
     redrawFocus();
 
-    // Tell the surface this area is dirty
-    s.addDirtyRect(_x, _y, _w, _h);
+    // Tell the surface(s) this area is dirty
+    s.setDirty();
+
     _dirty = false;
   }
 
-  // Commit surface changes to screen
-  s.render();
+  // Commit surface changes to screen; also render any extra surfaces
+  // Extra surfaces must be rendered afterwards, so they are drawn on top
+  if(s.render())
+  {
+    for(int i = 0; i < mySurfaceStack.size(); ++i)
+    {
+      mySurfaceStack[i]->setDirty();
+      mySurfaceStack[i]->render();
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

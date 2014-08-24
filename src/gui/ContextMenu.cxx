@@ -590,7 +590,7 @@ void ContextMenu::drawDialog()
       s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
     }
 
-    s.addDirtyRect(_x, _y, _w, _h);
+    s.setDirty();
     _dirty = false;
   }
 

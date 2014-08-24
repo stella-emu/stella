@@ -75,7 +75,7 @@ void Widget::draw()
   FBSurface& s = _boss->dialog().surface();
 
   bool hasBorder = _flags & WIDGET_BORDER;
-  int oldX = _x, oldY = _y, oldW = _w, oldH = _h;
+  int oldX = _x, oldY = _y;
 
   // Account for our relative position in the dialog
   _x = getAbsX();
@@ -93,7 +93,8 @@ void Widget::draw()
   }
 
   // Draw border
-  if(hasBorder) {
+  if(hasBorder)
+  {
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
     _x += 4;
     _y += 4;
@@ -105,7 +106,8 @@ void Widget::draw()
   drawWidget((_flags & WIDGET_HILITED) ? true : false);
 
   // Restore x/y
-  if (hasBorder) {
+  if (hasBorder)
+  {
     _x -= 4;
     _y -= 4;
     _w += 8;
@@ -124,7 +126,7 @@ void Widget::draw()
   }
 
   // Tell the framebuffer this area is dirty
-  s.addDirtyRect(getAbsX(), getAbsY(), oldW, oldH);
+  s.setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,7 +228,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       s.frameRect(x, y, w, h, kDlgColor);
 
       tmp->setDirty(); tmp->draw();
-      s.addDirtyRect(x, y, w, h);
+      s.setDirty();
     }
   }
 
@@ -269,7 +271,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   s.frameRect(x, y, w, h, kWidFrameColor, kDashLine);
 
   tmp->setDirty(); tmp->draw();
-  s.addDirtyRect(x, y, w, h);
+  s.setDirty();
 
   return tmp;
 }

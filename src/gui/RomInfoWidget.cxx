@@ -29,7 +29,6 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
     mySurface(NULL),
-    mySurfaceID(-1),
     myZoomLevel(w > 400 ? 2 : 1),
     mySurfaceIsValid(false),
     myHaveProperties(false)
@@ -75,6 +74,8 @@ void RomInfoWidget::setProperties(const Properties& props)
 void RomInfoWidget::clearProperties()
 {
   myHaveProperties = mySurfaceIsValid = false;
+  if(mySurface)
+    mySurface->setVisible(mySurfaceIsValid);
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandler::S_LAUNCHER)
@@ -89,12 +90,12 @@ void RomInfoWidget::parseProperties()
   // Check if a surface has ever been created; if so, we use it
   // The surface will always be the maximum size, but sometimes we'll
   // only draw certain parts of it
-  mySurface = instance().frameBuffer().surface(mySurfaceID);
   if(mySurface == NULL)
   {
-    mySurfaceID = instance().frameBuffer().allocateSurface(
-                    320*myZoomLevel, 256*myZoomLevel);
-    mySurface   = instance().frameBuffer().surface(mySurfaceID);
+    uInt32 ID = instance().frameBuffer().allocateSurface(
+                  320*myZoomLevel, 256*myZoomLevel);
+    mySurface = instance().frameBuffer().surface(ID);
+    dialog().addSurface(mySurface);
   }
 
   // Initialize to empty properties entry
@@ -116,6 +117,8 @@ void RomInfoWidget::parseProperties()
     mySurfaceIsValid = false;
     mySurfaceErrorMsg = msg;
   }
+  if(mySurface)
+    mySurface->setVisible(mySurfaceIsValid);
 
   // Now add some info for the message box below the image
   myRomInfo.push_back("Name:  " + myProperties.get(Cartridge_Name));
@@ -145,8 +148,11 @@ void RomInfoWidget::drawWidget(bool hilite)
     const GUI::Rect& src = mySurface->srcRect();
     uInt32 x = _x + ((_w - src.width()) >> 1);
     uInt32 y = _y + ((yoff - src.height()) >> 1);
-    mySurface->setDstPos(x, y);
-    s.drawSurface(mySurface);
+
+    // Make sure when positioning the snapshot surface that we take
+    // the dialog surface position into account
+    const GUI::Rect& s_dst = s.dstRect();
+    mySurface->setDstPos(x + s_dst.x(), y + s_dst.y());
   }
   else if(mySurfaceErrorMsg != "")
   {

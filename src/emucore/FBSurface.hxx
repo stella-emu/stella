@@ -219,16 +219,10 @@ class FBSurface
     virtual void drawSurface(const FBSurface* surface);
 
     /**
-      This method should be called to add a dirty rectangle
-      (ie, an area of the screen that has changed)
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
+      This method should be called to indicate that the surface has been
+      modified, and should be redrawn at the next interval.
     */
-    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { }
-    virtual void addDirtyRect() { }
+    virtual void setDirty() { }
 
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be
@@ -263,6 +257,12 @@ class FBSurface
     virtual void setDstSize(uInt32 w, uInt32 h) = 0;
 
     /**
+      This method should be called to enable/disable showing the surface
+      (ie, if hidden it will not be drawn under any circumstances.
+    */
+    virtual void setVisible(bool visible) = 0;
+
+    /**
       This method should be called to translate the given coordinates
       to the (destination) surface coordinates.
 
@@ -273,8 +273,9 @@ class FBSurface
 
     /**
       This method should be called to draw the surface to the screen.
+      It will return true if rendering actually occurred.
     */
-    virtual void render() = 0;
+    virtual bool render() = 0;
 
     /**
       This method should be called to reset the surface to empty

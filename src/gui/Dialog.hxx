@@ -29,6 +29,7 @@ class DialogContainer;
 class TabWidget;
 
 #include "Command.hxx"
+#include "Stack.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "StellaKeys.hxx"
@@ -72,7 +73,15 @@ class Dialog : public GuiObject
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
 
+    /** Returns the base surface associated with this dialog. */
     FBSurface& surface() const { return *_surface; }
+
+    /** Adds a surface to this dialog, which is rendered on top of the
+        base surface whenever the base surface is re-rendered.  Since
+        the surface render() call will always occur in such a case, the
+        surface should call setVisible() to enable/disable its output.
+    */
+    void addSurface(FBSurface* surface);
 
   protected:
     virtual void draw();
@@ -114,6 +123,8 @@ class Dialog : public GuiObject
     Widget* _cancelWidget;
     bool    _visible;
     bool    _processCancel;
+
+    Common::FixedStack<FBSurface*> mySurfaceStack;
 
   private:
     struct Focus {

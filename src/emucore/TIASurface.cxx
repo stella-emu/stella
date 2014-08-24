@@ -226,7 +226,7 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
   intensity = BSPF_min(100u, intensity);
 
   mySLineSurface->applyAttributes();
-  mySLineSurface->addDirtyRect();
+  mySLineSurface->setDirty();
 
   return intensity;
 }
@@ -236,7 +236,7 @@ void TIASurface::enableScanlineInterpolation(bool enable)
 {
   mySLineSurface->myAttributes.smoothing = enable;
   mySLineSurface->applyAttributes();
-  mySLineSurface->addDirtyRect();
+  mySLineSurface->setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,8 +245,8 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
   myFilterType = FilterType(enable ? myFilterType | 0x01 : myFilterType & 0x10);
-  myTiaSurface->addDirtyRect();
-  mySLineSurface->addDirtyRect();
+  myTiaSurface->setDirty();
+  mySLineSurface->setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,8 +278,8 @@ void TIASurface::enableNTSC(bool enable)
       myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
 
-  myTiaSurface->addDirtyRect();
-  mySLineSurface->addDirtyRect();
+  myTiaSurface->setDirty();
+  mySLineSurface->setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -375,13 +375,13 @@ void TIASurface::render()
   }
 
   // Draw TIA image
-  myTiaSurface->addDirtyRect();
+  myTiaSurface->setDirty();
   myTiaSurface->render();
 
   // Draw overlaying scanlines
   if(myScanlinesEnabled)
   {
-    mySLineSurface->addDirtyRect();
+    mySLineSurface->setDirty();
     mySLineSurface->render();
   }
 }

@@ -47,9 +47,8 @@ class RomInfoWidget : public Widget
     void parseProperties();
 
   private:
-    // Surface id and pointer holding the scaled PNG image
+    // Surface pointer holding the PNG image
     FBSurface* mySurface;
-    int mySurfaceID;
 
     // How much to zoom the PNG image
     int myZoomLevel;

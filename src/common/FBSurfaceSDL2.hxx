@@ -42,8 +42,7 @@ class FBSurfaceSDL2 : public FBSurface
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
     void drawSurface(const FBSurface* surface);
     // With hardware surfaces, it's faster to just update the entire surface
-    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { mySurfaceIsDirty = true; }
-    void addDirtyRect() { mySurfaceIsDirty = true; }
+    void setDirty() { mySurfaceIsDirty = true; }
 
     uInt32 width() const;
     uInt32 height() const;
@@ -54,9 +53,10 @@ class FBSurfaceSDL2 : public FBSurface
     void setSrcSize(uInt32 w, uInt32 h);
     void setDstPos(uInt32 x, uInt32 y);
     void setDstSize(uInt32 w, uInt32 h);
+    void setVisible(bool visible);
 
     void translateCoords(Int32& x, Int32& y) const;
-    void render();
+    bool render();
     void invalidate();
     void free();
     void reload();
@@ -72,6 +72,7 @@ class FBSurfaceSDL2 : public FBSurface
     SDL_Rect mySrcR, myDstR;
 
     bool mySurfaceIsDirty;
+    bool myIsVisible;
 
     SDL_TextureAccess myTexAccess;  // Is pixel data constant or can it change?
     bool myInterpolate;   // Scaling is smoothed or blocky
