@@ -29,12 +29,13 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
     mySurface(NULL),
-    myZoomLevel(w > 400 ? 2 : 1),
     mySurfaceIsValid(false),
     myHaveProperties(false)
 {
   _flags = WIDGET_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
+
+  myAvail = w > 400 ? GUI::Size(640, 512) : GUI::Size(320, 256);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,8 +117,7 @@ void RomInfoWidget::parseProperties()
 
     // Scale surface to available image area
     const GUI::Rect& src = mySurface->srcRect();
-    uInt32 avail_w = 320 * myZoomLevel, avail_h = 256 * myZoomLevel;
-    float scale = BSPF_min(float(avail_w) / src.width(), float(avail_h) / src.height());
+    float scale = BSPF_min(float(myAvail.w) / src.width(), float(myAvail.h) / src.height());
     mySurface->setDstSize(src.width() * scale, src.height() * scale);
   }
   catch(const char* msg)
@@ -143,7 +143,7 @@ void RomInfoWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
 
-  const int yoff = myZoomLevel > 1 ? 260*2 + 10 : 275;
+  const int yoff = myAvail.h + 10;
 
   s.fillRect(_x+2, _y+2, _w-4, _h-4, kWidColor);
   s.box(_x, _y, _w, _h, kColor, kShadowColor);
@@ -169,6 +169,7 @@ void RomInfoWidget::drawWidget(bool hilite)
     uInt32 y = _y + ((yoff - font.getLineHeight()) >> 1);
     s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
+
   int xpos = _x + 5, ypos = _y + yoff + 10;
   for(unsigned int i = 0; i < myRomInfo.size(); ++i)
   {

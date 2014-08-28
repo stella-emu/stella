@@ -26,6 +26,7 @@
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "StringList.hxx"
+#include "Rect.hxx"
 #include "bspf.hxx"
 
 
@@ -50,8 +51,8 @@ class RomInfoWidget : public Widget
     // Surface pointer holding the PNG image
     FBSurface* mySurface;
 
-    // How much to zoom the PNG image
-    int myZoomLevel;
+    // How much space available for the PNG image
+    GUI::Size myAvail;
 
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid;
