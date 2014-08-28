@@ -33,36 +33,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
     myBlendAlpha(255),
     myStaticData(NULL)
 {
-  // Create a surface in the same format as the parent GL class
-  const SDL_PixelFormat* pf = myFB.myPixelFormat;
-
-  mySurface = SDL_CreateRGBSurface(0, width, height,
-      pf->BitsPerPixel, pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
-
-  // We start out with the src and dst rectangles containing the same
-  // dimensions, indicating no scaling or re-positioning
-  mySrcR.x = mySrcR.y = myDstR.x = myDstR.y = 0;
-  mySrcR.w = myDstR.w = width;
-  mySrcR.h = myDstR.h = height;
-
-  ////////////////////////////////////////////////////
-  // These *must* be set for the parent class
-  myPixels = (uInt32*) mySurface->pixels;
-  myPitch = mySurface->pitch / pf->BytesPerPixel;
-  ////////////////////////////////////////////////////
-
-  if(data)
-  {
-    myTexAccess = SDL_TEXTUREACCESS_STATIC;
-    myStaticPitch = mySurface->w * 4;  // we need pitch in 'bytes'
-    myStaticData = new uInt32[mySurface->w * mySurface->h];
-    SDL_memcpy(myStaticData, data, mySurface->w * mySurface->h * 4);
-  }
-
-  applyAttributes(false);
-
-  // To generate texture
-  reload();
+  createSurface(width, height, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,14 +64,6 @@ void FBSurfaceSDL2::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 colo
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::drawSurface(const FBSurface* surface)
-{
-  const FBSurfaceSDL2* s = (const FBSurfaceSDL2*) surface;
-  SDL_Rect dst = s->myDstR;
-  SDL_BlitSurface(s->mySurface, &(s->mySrcR), mySurface, &dst);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FBSurfaceSDL2::width() const
 {
   return mySurface->w;
@@ -113,16 +76,14 @@ uInt32 FBSurfaceSDL2::height() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GUI::Rect& FBSurfaceSDL2::srcRect()
+const GUI::Rect& FBSurfaceSDL2::srcRect() const
 {
-  mySrcGUIR.setBounds(mySrcR.x, mySrcR.y, mySrcR.x+mySrcR.w, mySrcR.y+mySrcR.h);
   return mySrcGUIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GUI::Rect& FBSurfaceSDL2::dstRect()
+const GUI::Rect& FBSurfaceSDL2::dstRect() const
 {
-  myDstGUIR.setBounds(myDstR.x, myDstR.y, myDstR.x+myDstR.w, myDstR.y+myDstR.h);
   return myDstGUIR;
 }
 
@@ -130,24 +91,28 @@ const GUI::Rect& FBSurfaceSDL2::dstRect()
 void FBSurfaceSDL2::setSrcPos(uInt32 x, uInt32 y)
 {
   mySrcR.x = x;  mySrcR.y = y;
+  mySrcGUIR.moveTo(x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setSrcSize(uInt32 w, uInt32 h)
 {
   mySrcR.w = w;  mySrcR.h = h;
+  mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setDstPos(uInt32 x, uInt32 y)
 {
   myDstR.x = x;  myDstR.y = y;
+  myDstGUIR.moveTo(x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
 {
   myDstR.w = w;  myDstR.h = h;
+  myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -218,6 +183,57 @@ void FBSurfaceSDL2::reload()
     SDL_SetTextureBlendMode(myTexture, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(myTexture, myBlendAlpha);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
+{
+  // We will only resize when necessary, and not using static textures
+  if((myTexAccess == SDL_TEXTUREACCESS_STATIC) ||
+     (width <= mySurface->w && height <= mySurface->h))
+    return;  // don't need to resize at all
+
+  if(mySurface)
+    SDL_FreeSurface(mySurface);
+  free();
+
+  createSurface(width, height, NULL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
+                                  const uInt32* data)
+{
+  // Create a surface in the same format as the parent GL class
+  const SDL_PixelFormat* pf = myFB.myPixelFormat;
+
+  mySurface = SDL_CreateRGBSurface(0, width, height,
+      pf->BitsPerPixel, pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
+
+  // We start out with the src and dst rectangles containing the same
+  // dimensions, indicating no scaling or re-positioning
+  mySrcR.x = mySrcR.y = myDstR.x = myDstR.y = 0;
+  mySrcR.w = myDstR.w = width;
+  mySrcR.h = myDstR.h = height;
+
+  ////////////////////////////////////////////////////
+  // These *must* be set for the parent class
+  myPixels = (uInt32*) mySurface->pixels;
+  myPitch = mySurface->pitch / pf->BytesPerPixel;
+  ////////////////////////////////////////////////////
+
+  if(data)
+  {
+    myTexAccess = SDL_TEXTUREACCESS_STATIC;
+    myStaticPitch = mySurface->w * 4;  // we need pitch in 'bytes'
+    myStaticData = new uInt32[mySurface->w * mySurface->h];
+    SDL_memcpy(myStaticData, data, mySurface->w * mySurface->h * 4);
+  }
+
+  applyAttributes(false);
+
+  // To generate texture
+  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

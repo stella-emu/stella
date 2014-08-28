@@ -137,9 +137,8 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect)
   rect.setBounds(0, 0, width, height);
 
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
-  uInt32 *buffer, pitch;
-  myBaseTiaSurface->basePtr(buffer, pitch);
-  uInt32* buf_ptr = buffer;
+  uInt32 *buf_ptr, pitch;
+  myBaseTiaSurface->basePtr(buf_ptr, pitch);
 
   for(uInt32 y = 0; y < height; ++y)
   {
@@ -219,22 +218,23 @@ void TIASurface::toggleScanlineInterpolation()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TIASurface::enableScanlines(int relative, int absolute)
 {
-  uInt32& intensity = mySLineSurface->myAttributes.blendalpha;
-  if(relative == 0)  intensity = absolute;
-  else               intensity += relative;
-  intensity = BSPF_max(0u, intensity);
-  intensity = BSPF_min(100u, intensity);
+  FBSurface::Attributes& attr = mySLineSurface->attributes();
+  if(relative == 0)  attr.blendalpha = absolute;
+  else               attr.blendalpha += relative;
+  attr.blendalpha = BSPF_max(0u, attr.blendalpha);
+  attr.blendalpha = BSPF_min(100u, attr.blendalpha);
 
   mySLineSurface->applyAttributes();
   mySLineSurface->setDirty();
 
-  return intensity;
+  return attr.blendalpha;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enableScanlineInterpolation(bool enable)
 {
-  mySLineSurface->myAttributes.smoothing = enable;
+  FBSurface::Attributes& attr = mySLineSurface->attributes();
+  attr.smoothing = enable;
   mySLineSurface->applyAttributes();
   mySLineSurface->setDirty();
 }
@@ -266,16 +266,15 @@ void TIASurface::enableNTSC(bool enable)
   // Normal vs NTSC mode uses different source widths
   myTiaSurface->setSrcSize(enable ? ATARI_NTSC_OUT_WIDTH(160) : 160, myTIA->height());
 
-  myTiaSurface->myAttributes.smoothing =
-      myOSystem.settings().getBool("tia.inter");
+  FBSurface::Attributes& tia_attr = myTiaSurface->attributes();
+  tia_attr.smoothing = myOSystem.settings().getBool("tia.inter");
   myTiaSurface->applyAttributes();
 
   myScanlinesEnabled = enable;
-  mySLineSurface->myAttributes.smoothing =
-      myOSystem.settings().getBool("tv.scaninter");
-  mySLineSurface->myAttributes.blending = myScanlinesEnabled;
-  mySLineSurface->myAttributes.blendalpha =
-      myOSystem.settings().getInt("tv.scanlines");
+  FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
+  sl_attr.smoothing  = myOSystem.settings().getBool("tv.scaninter");
+  sl_attr.blending   = myScanlinesEnabled;
+  sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
 
   myTiaSurface->setDirty();
@@ -285,6 +284,8 @@ void TIASurface::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIASurface::effectsInfo() const
 {
+  const FBSurface::Attributes& attr = mySLineSurface->attributes();
+
   ostringstream buf;
   switch(myFilterType)
   {
@@ -295,14 +296,12 @@ string TIASurface::effectsInfo() const
       buf << "Disabled, phosphor mode";
       break;
     case kBlarggNormal:
-      buf << myNTSCFilter.getPreset() << ", scanlines="
-          << mySLineSurface->myAttributes.blendalpha << "/"
-          << (mySLineSurface->myAttributes.smoothing ? "inter" : "nointer");
+      buf << myNTSCFilter.getPreset() << ", scanlines=" << attr.blendalpha << "/"
+          << (attr.smoothing ? "inter" : "nointer");
       break;
     case kBlarggPhosphor:
       buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
-          << mySLineSurface->myAttributes.blendalpha << "/"
-          << (mySLineSurface->myAttributes.smoothing ? "inter" : "nointer");
+          << attr.blendalpha << "/" << (attr.smoothing ? "inter" : "nointer");
       break;
   }
   return buf.str();

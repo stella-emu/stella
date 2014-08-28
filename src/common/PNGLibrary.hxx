@@ -95,8 +95,7 @@ class PNGLibrary
       uInt8* buffer;
       png_bytep* row_pointers;
       png_uint_32 width, height, pitch;
-      uInt32* line;
-      uInt32 buffer_size, line_size, row_size;
+      uInt32 buffer_size, row_size;
     } ReadInfoType;
     static ReadInfoType ReadInfo;
 
@@ -128,12 +127,12 @@ class PNGLibrary
                    const VariantList& comments);
 
     /**
-      Scale the PNG data from 'ReadInfo' into the FBSurface.  For now, scaling
-      is done on integer boundaries only (ie, 1x, 2x, etc up or down).
+      Load the PNG data from 'ReadInfo' into the FBSurface.  The surface
+      is resized as necessary to accommodate the data.
 
       @param surface  The FBSurface into which to place the PNG data
     */
-    void scaleImagetoSurface(FBSurface& surface);
+    void loadImagetoSurface(FBSurface& surface);
 
     /**
       Write PNG tEXt chunks to the image.

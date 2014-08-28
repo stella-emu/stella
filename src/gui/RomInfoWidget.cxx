@@ -92,9 +92,11 @@ void RomInfoWidget::parseProperties()
   // only draw certain parts of it
   if(mySurface == NULL)
   {
-    uInt32 ID = instance().frameBuffer().allocateSurface(
-                  320*myZoomLevel, 256*myZoomLevel);
+    uInt32 ID = instance().frameBuffer().allocateSurface(320*2, 256*2);
     mySurface = instance().frameBuffer().surface(ID);
+    mySurface->attributes().smoothing = true;
+    mySurface->applyAttributes();
+
     dialog().addSurface(mySurface);
   }
 
@@ -111,6 +113,12 @@ void RomInfoWidget::parseProperties()
   try
   {
     instance().png().loadImage(filename, *mySurface);
+
+    // Scale surface to available image area
+    const GUI::Rect& src = mySurface->srcRect();
+    uInt32 avail_w = 320 * myZoomLevel, avail_h = 256 * myZoomLevel;
+    float scale = BSPF_min(float(avail_w) / src.width(), float(avail_h) / src.height());
+    mySurface->setDstSize(src.width() * scale, src.height() * scale);
   }
   catch(const char* msg)
   {
@@ -145,9 +153,9 @@ void RomInfoWidget::drawWidget(bool hilite)
 
   if(mySurfaceIsValid)
   {
-    const GUI::Rect& src = mySurface->srcRect();
-    uInt32 x = _x + ((_w - src.width()) >> 1);
-    uInt32 y = _y + ((yoff - src.height()) >> 1);
+    const GUI::Rect& dst = mySurface->dstRect();
+    uInt32 x = _x + ((_w - dst.width()) >> 1);
+    uInt32 y = _y + ((yoff - dst.height()) >> 1);
 
     // Make sure when positioning the snapshot surface that we take
     // the dialog surface position into account

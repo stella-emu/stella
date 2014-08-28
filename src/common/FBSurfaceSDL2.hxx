@@ -40,15 +40,14 @@ class FBSurfaceSDL2 : public FBSurface
     // the ones implemented here use SDL-specific code for extra performance
     //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
-    void drawSurface(const FBSurface* surface);
     // With hardware surfaces, it's faster to just update the entire surface
     void setDirty() { mySurfaceIsDirty = true; }
 
     uInt32 width() const;
     uInt32 height() const;
 
-    const GUI::Rect& srcRect();
-    const GUI::Rect& dstRect();
+    const GUI::Rect& srcRect() const;
+    const GUI::Rect& dstRect() const;
     void setSrcPos(uInt32 x, uInt32 y);
     void setSrcSize(uInt32 w, uInt32 h);
     void setDstPos(uInt32 x, uInt32 y);
@@ -60,9 +59,13 @@ class FBSurfaceSDL2 : public FBSurface
     void invalidate();
     void free();
     void reload();
+    void resize(uInt32 width, uInt32 height);
 
   protected:
     void applyAttributes(bool immediate);
+
+  private:
+    void createSurface(uInt32 width, uInt32 height, const uInt32* data);
 
   private:
     FrameBufferSDL2& myFB;

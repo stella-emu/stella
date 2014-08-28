@@ -52,7 +52,7 @@ enum FrameStyle {
 
 class FBSurface
 {
-  friend class TIASurface;
+//  friend class TIASurface;
 
   public:
     /**
@@ -209,16 +209,6 @@ class FBSurface
         int deltax = 0, bool useEllipsis = true);
 
     /**
-      This method should be called copy the contents of the given
-      surface into the FrameBuffer surface.  No scaling is done; that is,
-      a straight-forward copy of the surface pixels is done at the specified
-      destination.
-
-      @param surface The data to draw
-    */
-    virtual void drawSurface(const FBSurface* surface);
-
-    /**
       This method should be called to indicate that the surface has been
       modified, and should be redrawn at the next interval.
     */
@@ -243,8 +233,8 @@ class FBSurface
       These methods answer the current *rendering* dimensions of the
       specified surface.
     */
-    virtual const GUI::Rect& srcRect() = 0;
-    virtual const GUI::Rect& dstRect() = 0;
+    virtual const GUI::Rect& srcRect() const = 0;
+    virtual const GUI::Rect& dstRect() const = 0;
 
     /**
       These methods set the origin point and width/height for the
@@ -295,9 +285,13 @@ class FBSurface
     */
     virtual void reload() = 0;
 
-    static void setPalette(const uInt32* palette) { myPalette = palette; }
+    /**
+      This method should be called to resize the surface to the
+      given dimensions and reload data/state.  The surface is not
+      modified if it is larger than the given dimensions.
+    */
+    virtual void resize(uInt32 width, uInt32 height) = 0;
 
-  protected:
     /**
       The rendering attributes that can be modified for this texture.
       These probably can only be implemented in child FBSurfaces where
@@ -308,6 +302,12 @@ class FBSurface
       bool blending;     // Blending is enabled
       uInt32 blendalpha; // Alpha to use in blending mode (0-100%)
     };
+
+    /**
+      Get the currently applied attributes.
+    */
+    Attributes& attributes() { return myAttributes; }
+
     /**
       The child class chooses which (if any) of the actual attributes
       can be applied.
@@ -317,6 +317,8 @@ class FBSurface
                         reloaded
     */
     virtual void applyAttributes(bool immediate = true) = 0;
+
+    static void setPalette(const uInt32* palette) { myPalette = palette; }
 
   protected:
     static const uInt32* myPalette;

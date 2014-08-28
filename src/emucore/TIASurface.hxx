@@ -42,8 +42,6 @@ class VideoMode;
 
 class TIASurface
 {
-  friend class FrameBuffer;
-
   public:
     /**
       Creates a new TIASurface object
