@@ -114,13 +114,7 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMDM::bank(uInt16 bank)
 { 
-  if(bankLocked()) return false;
-
-  // Accesses above bank 127 disable further bankswitching; we're only
-  // concerned with the lower byte
-  myBankingDisabled = myBankingDisabled || bank > 127;
-  if(myBankingDisabled)
-    return false;
+  if(bankLocked() || myBankingDisabled) return false;
 
   // Remember what bank we're in
   // Wrap around to a valid bank number if necessary
@@ -138,6 +132,10 @@ bool CartridgeMDM::bank(uInt16 bank)
     access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+
+  // Accesses above bank 127 disable further bankswitching; we're only
+  // concerned with the lower byte
+  myBankingDisabled = myBankingDisabled || bank > 127;
   return myBankChanged = true;
 }
 

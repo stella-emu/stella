@@ -24,7 +24,7 @@
 #include "Cart.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
-//  #include "CartMDMWidget.hxx"
+  #include "CartMDMWidget.hxx"
 #endif
 
 /**
@@ -141,7 +141,7 @@ class CartridgeMDM : public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h)
     {
-      return 0;//new CartridgeMDMWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new CartridgeMDMWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 
