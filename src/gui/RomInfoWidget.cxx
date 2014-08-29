@@ -118,7 +118,7 @@ void RomInfoWidget::parseProperties()
     // Scale surface to available image area
     const GUI::Rect& src = mySurface->srcRect();
     float scale = BSPF_min(float(myAvail.w) / src.width(), float(myAvail.h) / src.height());
-    mySurface->setDstSize(src.width() * scale, src.height() * scale);
+    mySurface->setDstSize(uInt32(src.width() * scale), uInt32(src.height() * scale));
   }
   catch(const char* msg)
   {
