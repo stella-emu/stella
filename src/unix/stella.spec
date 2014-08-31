@@ -1,5 +1,5 @@
 %define name    stella
-%define version 4.0
+%define version 4.1
 %define rel     1
 
 %define enable_gl 1

@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.0 to 4.1: (xxx xx, 2014)
+4.0 to 4.1: (September xx, 2014)
 
   * Improved 'DASH' bankswitching scheme support; there is now a debugger
     tab for changing banks and viewing internal cart RAM, and

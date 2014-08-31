@@ -74,7 +74,7 @@ void CartridgeMDMWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDMWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)
   {
@@ -87,4 +87,16 @@ void CartridgeMDMWidget::handleCommand(CommandSender* sender,
   {
     myCart.myBankingDisabled = myBankDisabled->getState();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeMDMWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Bank = " << dec << myCart.myCurrentBank
+      << ", hotspot = " << "$" << Common::Base::HEX4
+      << (myCart.myCurrentBank+0x800);
+
+  return buf.str();
 }
