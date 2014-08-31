@@ -320,6 +320,10 @@
 		DC69670C1361FD0A0036499D /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967081361FD0A0036499D /* pnginfo.h */; };
 		DC69670D1361FD0A0036499D /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967091361FD0A0036499D /* pnglibconf.h */; };
 		DC69670E1361FD0A0036499D /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = DC69670A1361FD0A0036499D /* pngstruct.h */; };
+		DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6A18F619B3E65500DEB242 /* CartMDMWidget.cxx */; };
+		DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6A18F719B3E65500DEB242 /* CartMDMWidget.hxx */; };
+		DC6A18FC19B3E67A00DEB242 /* CartMDM.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6A18FA19B3E67A00DEB242 /* CartMDM.cxx */; };
+		DC6A18FD19B3E67A00DEB242 /* CartMDM.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6A18FB19B3E67A00DEB242 /* CartMDM.hxx */; };
 		DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6B2BA011037FF200F199A7 /* CartDebug.cxx */; };
 		DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA111037FF200F199A7 /* CartDebug.hxx */; };
 		DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6B2BA211037FF200F199A7 /* DiStella.cxx */; };
@@ -867,6 +871,10 @@
 		DC6967081361FD0A0036499D /* pnginfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnginfo.h; path = ../libpng/pnginfo.h; sourceTree = SOURCE_ROOT; };
 		DC6967091361FD0A0036499D /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnglibconf.h; path = ../libpng/pnglibconf.h; sourceTree = SOURCE_ROOT; };
 		DC69670A1361FD0A0036499D /* pngstruct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngstruct.h; path = ../libpng/pngstruct.h; sourceTree = SOURCE_ROOT; };
+		DC6A18F619B3E65500DEB242 /* CartMDMWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartMDMWidget.cxx; path = ../debugger/gui/CartMDMWidget.cxx; sourceTree = "<group>"; };
+		DC6A18F719B3E65500DEB242 /* CartMDMWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartMDMWidget.hxx; path = ../debugger/gui/CartMDMWidget.hxx; sourceTree = "<group>"; };
+		DC6A18FA19B3E67A00DEB242 /* CartMDM.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartMDM.cxx; path = ../emucore/CartMDM.cxx; sourceTree = "<group>"; };
+		DC6A18FB19B3E67A00DEB242 /* CartMDM.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartMDM.hxx; path = ../emucore/CartMDM.hxx; sourceTree = "<group>"; };
 		DC6B2BA011037FF200F199A7 /* CartDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDebug.cxx; path = ../debugger/CartDebug.cxx; sourceTree = SOURCE_ROOT; };
 		DC6B2BA111037FF200F199A7 /* CartDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDebug.hxx; path = ../debugger/CartDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DC6B2BA211037FF200F199A7 /* DiStella.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiStella.cxx; path = ../debugger/DiStella.cxx; sourceTree = SOURCE_ROOT; };
@@ -1241,6 +1249,8 @@
 				DC676A3A1729A0B000E4E73D /* CartFEWidget.hxx */,
 				DC676A3B1729A0B000E4E73D /* CartMCWidget.cxx */,
 				DC676A3C1729A0B000E4E73D /* CartMCWidget.hxx */,
+				DC6A18F619B3E65500DEB242 /* CartMDMWidget.cxx */,
+				DC6A18F719B3E65500DEB242 /* CartMDMWidget.hxx */,
 				DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */,
 				DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */,
 				DC676A3D1729A0B000E4E73D /* CartSBWidget.cxx */,
@@ -1438,6 +1448,8 @@
 				2DE2DF330627AE07006BEC99 /* CartFE.hxx */,
 				2DE2DF360627AE07006BEC99 /* CartMC.cxx */,
 				2DE2DF370627AE07006BEC99 /* CartMC.hxx */,
+				DC6A18FA19B3E67A00DEB242 /* CartMDM.cxx */,
+				DC6A18FB19B3E67A00DEB242 /* CartMDM.hxx */,
 				DC0984830D3985160073C852 /* CartSB.cxx */,
 				DC0984840D3985160073C852 /* CartSB.hxx */,
 				2DDBEB7008457B7D00812C11 /* CartUA.cxx */,
@@ -1798,6 +1810,7 @@
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				2D91741D09BA90380026E9FF /* Preferences.h in Headers */,
+				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
 				2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */,
 				2D91742109BA90380026E9FF /* Font.hxx in Headers */,
@@ -1979,6 +1992,7 @@
 				DCAACAFF188D631500A4D282 /* CartDFSC.hxx in Headers */,
 				DCAACB0F188D636F00A4D282 /* Cart4KSCWidget.hxx in Headers */,
 				DCAACB11188D636F00A4D282 /* CartBFSCWidget.hxx in Headers */,
+				DC6A18FD19B3E67A00DEB242 /* CartMDM.hxx in Headers */,
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
@@ -2139,6 +2153,7 @@
 				2D9174BA09BA90380026E9FF /* ScrollBarWidget.cxx in Sources */,
 				2D9174BB09BA90380026E9FF /* TabWidget.cxx in Sources */,
 				2D9174BC09BA90380026E9FF /* VideoDialog.cxx in Sources */,
+				DC6A18FC19B3E67A00DEB242 /* CartMDM.cxx in Sources */,
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
@@ -2153,6 +2168,7 @@
 				2D9174CB09BA90380026E9FF /* PackedBitArray.cxx in Sources */,
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
+				DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */,
 				DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
