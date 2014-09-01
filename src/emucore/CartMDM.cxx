@@ -119,7 +119,7 @@ bool CartridgeMDM::bank(uInt16 bank)
   // Remember what bank we're in
   // Wrap around to a valid bank number if necessary
   myCurrentBank = bank % bankCount();
-  uInt16 offset = myCurrentBank << 12;
+  uInt32 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
