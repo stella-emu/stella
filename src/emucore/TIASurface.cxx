@@ -17,6 +17,8 @@
 // $Id$
 //============================================================================
 
+#include <cmath>
+
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"

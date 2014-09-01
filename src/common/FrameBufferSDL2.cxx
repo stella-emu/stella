@@ -78,13 +78,17 @@ FrameBufferSDL2::~FrameBufferSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, VariantList& renderers)
+void FrameBufferSDL2::queryHardware(Common::Array<GUI::Size>& displays,
+                                    VariantList& renderers)
 {
   // First get the maximum windowed desktop resolution
-  SDL_DisplayMode desktop;
-  SDL_GetDesktopDisplayMode(0, &desktop);
-  w = desktop.w;
-  h = desktop.h;
+  SDL_DisplayMode display;
+  int maxDisplays = SDL_GetNumVideoDisplays();
+  for(int i = 0; i < maxDisplays; ++i)
+  {
+    SDL_GetDesktopDisplayMode(i, &display);
+    displays.push_back(GUI::Size(display.w, display.h));
+  }
 
   // For now, supported render types are hardcoded; eventually, SDL may
   // provide a method to query this
@@ -95,6 +99,12 @@ void FrameBufferSDL2::queryHardware(uInt32& w, uInt32& h, VariantList& renderers
   renderers.push_back("OpenGLES2", "opengles2");
   renderers.push_back("OpenGLES", "opengles");
   renderers.push_back("Software", "software");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 FrameBufferSDL2::getCurrentDisplayIndex()
+{
+  return SDL_GetWindowDisplayIndex(myWindow);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,9 +126,26 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
     myRenderer = NULL;
   }
 
+  Int32 displayIndex = mode.fsIndex;
+  if(displayIndex == -1)
+  {
+    // windowed mode
+    if (myWindow)
+    {
+      // Show it on same screen as the previous window
+      displayIndex = SDL_GetWindowDisplayIndex(myWindow);
+    }
+    if(displayIndex < 0)
+    {
+      // fallback to the first screen
+      displayIndex = 0;
+    }
+  }
+
   uInt32 pos = myOSystem.settings().getBool("center")
-                 ? SDL_WINDOWPOS_CENTERED : SDL_WINDOWPOS_UNDEFINED;
-  uInt32 flags = mode.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+                 ? SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex)
+                 : SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex);
+  uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 
   // OSX seems to have issues with destroying the window, and wants to keep
   // the same handle

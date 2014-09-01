@@ -97,19 +97,19 @@ class VideoMode
   public:
     GUI::Rect image;
     GUI::Size screen;
-    bool fullscreen;
+    Int32 fsIndex;
     uInt32 zoom;
     string description;
 
   public:
     VideoMode();
-    VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, bool full,
+    VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Int32 full,
       uInt32 z = 1, const string& desc = "");
 
     friend ostream& operator<<(ostream& os, const VideoMode& vm)
     {
       os << "image=" << vm.image << "  screen=" << vm.screen
-         << " full= " << vm.fullscreen << "  zoom=" << vm.zoom
+         << " full= " << vm.fsIndex << "  zoom=" << vm.zoom
          << "  desc=" << vm.description;
       return os;
     }
@@ -368,7 +368,9 @@ class FrameBuffer
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.
     */
-    virtual void queryHardware(uInt32& w, uInt32& h, VariantList& ren) = 0;
+    virtual void queryHardware(Common::Array<GUI::Size>& mons, VariantList& ren) = 0;
+
+    virtual Int32 getCurrentDisplayIndex() = 0;
 
     /**
       This method is called to change to the given video mode.
@@ -530,6 +532,10 @@ class FrameBuffer
     // Maximum dimensions of the desktop area
     GUI::Size myDesktopSize;
 
+    // The resolution of the attached displays
+    // The primary display is first in the array
+    Common::Array<GUI::Size> myDisplays;
+
     // Supported renderers
     VariantList myRenderers;
 
@@ -563,9 +569,9 @@ class FrameBuffer
     Message myStatsMsg;
 
     // The list of all available video modes for this framebuffer
-    VideoModeList myWindowedModeList;
-    VideoModeList myFullscreenModeList;
     VideoModeList* myCurrentModeList;
+    VideoModeList myWindowedModeList;
+    Common::Array<VideoModeList> myFullscreenModeLists;
 
     // Names of the TIA zoom levels that can be used for this framebuffer
     VariantList myTIAZoomLevels;

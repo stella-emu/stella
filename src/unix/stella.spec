@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Min Sep 1 2014 Stephen Anthony <stephena@users.sf.net> 4.1-1
+- Version 4.1 release
+
 * Tue Jul 1 2014 Stephen Anthony <stephena@users.sf.net> 4.0-1
 - Version 4.0 release
 

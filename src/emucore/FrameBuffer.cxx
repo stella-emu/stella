@@ -78,7 +78,9 @@ bool FrameBuffer::initialize()
 {
   // Get desktop resolution and supported renderers
   uInt32 query_w, query_h;
-  queryHardware(query_w, query_h, myRenderers);
+  queryHardware(myDisplays, myRenderers);
+  query_w = myDisplays[0].w;
+  query_h = myDisplays[0].h;
 
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
@@ -741,7 +743,11 @@ uInt32 FrameBuffer::maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
 void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 {
   myWindowedModeList.clear();
-  myFullscreenModeList.clear();
+
+  for(uInt32 i = 0; i < myFullscreenModeLists.size(); ++i)
+    myFullscreenModeLists[i].clear();
+  for(uInt32 i = myFullscreenModeLists.size(); i < myDisplays.size(); ++i)
+    myFullscreenModeLists.push_back(VideoModeList());
 
   // Check if zooming is allowed for this state (currently only allowed
   // for TIA screens)
@@ -772,26 +778,34 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
       desc << "Zoom " << zoom << "x";
       
       VideoMode mode(baseWidth*zoom, baseHeight*zoom,
-              baseWidth*zoom, baseHeight*zoom, false, zoom, desc.str());
+              baseWidth*zoom, baseHeight*zoom, -1, zoom, desc.str());
       mode.applyAspectCorrection(aspect);
       myWindowedModeList.add(mode);
     }
 
     // TIA fullscreen mode
-    VideoMode mode(baseWidth*maxZoom, baseHeight*maxZoom,
-                   myDesktopSize.w, myDesktopSize.h, true);
-    mode.applyAspectCorrection(aspect, myOSystem.settings().getBool("tia.fsfill"));
-    myFullscreenModeList.add(mode);
+    for(uInt32 i = 0; i < myDisplays.size(); ++i)
+    {
+      maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
+                                       myDisplays[i].w, myDisplays[i].h);
+      VideoMode mode(baseWidth*maxZoom, baseHeight*maxZoom,
+                     myDisplays[i].w, myDisplays[i].h, i);
+      mode.applyAspectCorrection(aspect, myOSystem.settings().getBool("tia.fsfill"));
+      myFullscreenModeLists[i].add(mode);
+    }
   }
   else  // UI mode
   {
     // Windowed and fullscreen mode differ only in screen size
     myWindowedModeList.add(
-        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, false)
+        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, -1)
     );
-    myFullscreenModeList.add(
-        VideoMode(baseWidth, baseHeight, myDesktopSize.w, myDesktopSize.h, true)
-    );
+    for(uInt32 i = 0; i < myDisplays.size(); ++i)
+    {
+      myFullscreenModeLists[i].add(
+          VideoMode(baseWidth, baseHeight, myDisplays[i].w, myDisplays[i].h, i)
+      );
+    }
   }
 }
 
@@ -801,7 +815,15 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   EventHandler::State state = myOSystem.eventHandler().state();
 
   if(fullscreen)
-    myCurrentModeList = &myFullscreenModeList;
+  {
+    Int32 i = getCurrentDisplayIndex();
+    if(i < 0)
+    {
+      // default to the first display
+      i = 0;
+    }
+    myCurrentModeList = &myFullscreenModeLists[i];
+  }
   else
     myCurrentModeList = &myWindowedModeList;
 
@@ -822,7 +844,7 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoMode::VideoMode()
-  : fullscreen(false),
+  : fsIndex(-1),
     zoom(1),
     description("")
 {
@@ -830,8 +852,8 @@ VideoMode::VideoMode()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                                  bool full, uInt32 z, const string& desc)
-  : fullscreen(full),
+                     Int32 full, uInt32 z, const string& desc)
+  : fsIndex(full),
     zoom(z),
     description(desc)
 {
@@ -852,7 +874,7 @@ void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
   uInt32 iw = (uInt32)(float(image.width() * aspect) / 100.0);
   uInt32 ih = image.height();
 
-  if(fullscreen)
+  if(fsIndex != -1)
   {
     // Fullscreen mode stretching
     float stretchFactor = 1.0;

@@ -115,7 +115,16 @@ class FrameBufferSDL2 : public FrameBuffer
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.
     */
-    void queryHardware(uInt32& w, uInt32& h, VariantList& renderers);
+    void queryHardware(Common::Array<GUI::Size>& displays, VariantList& renderers);
+
+    /**
+      This method is called to query the video hardware for the index
+      of the display the current window is displayed on
+
+      @return  the current display index or a negative value if no
+               window is displayed
+    */
+    Int32 getCurrentDisplayIndex();
 
     /**
       This method is called to change to the given video mode.
