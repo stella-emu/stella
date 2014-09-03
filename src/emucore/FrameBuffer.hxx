@@ -579,8 +579,8 @@ class FrameBuffer
     // Holds a reference to all the surfaces that have been created
     map<uInt32,FBSurface*> mySurfaceList;
 
-    // Holds UI palette data
-    static uInt32 ourGUIColors[kNumColors-256];
+    // Holds UI palette data (standard and classic colours)
+    static uInt32 ourGUIColors[2][kNumColors-256];
 };
 
 #endif

@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+4.1 to 4.2: (September x, 2014)
+
+  * Re-added 'uipalette' option due to popular demand (of at least one
+    person :)).
+
+-Have fun!
+
+
 4.0 to 4.1: (September 1, 2014)
 
   * Improved 'DASH' bankswitching scheme support; there is now a debugger
@@ -38,8 +46,6 @@
 
   * The UNIX configure script now supports newer versions of Hurd.
     Special thanks to Stephen Kitt for the patch.
-
--Have fun!
 
 
 3.9.3 to 4.0: (July 1, 2014)

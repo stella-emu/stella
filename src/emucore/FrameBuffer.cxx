@@ -77,10 +77,8 @@ FrameBuffer::~FrameBuffer(void)
 bool FrameBuffer::initialize()
 {
   // Get desktop resolution and supported renderers
-  uInt32 query_w, query_h;
   queryHardware(myDisplays, myRenderers);
-  query_w = myDisplays[0].w;
-  query_h = myDisplays[0].h;
+  uInt32 query_w = myDisplays[0].w, query_h = myDisplays[0].h;
 
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
@@ -104,8 +102,7 @@ bool FrameBuffer::initialize()
   //       We can probably add ifdefs to take care of corner cases,
   //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopSize.w < kFBMinW ||
-                     myDesktopSize.h < kFBMinH;
+  bool smallScreen = myDesktopSize.w < kFBMinW || myDesktopSize.h < kFBMinH;
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
@@ -150,11 +147,13 @@ bool FrameBuffer::initialize()
   }
 
   // Set palette for GUI (upper area of array, doesn't change during execution)
+  int palID = myOSystem.settings().getString("uipalette") == "classic" ? 1 : 0;
+
   for(int i = 0, j = 256; i < kNumColors-256; ++i, ++j)
   {
-    Uint8 r = (ourGUIColors[i] >> 16) & 0xff;
-    Uint8 g = (ourGUIColors[i] >> 8) & 0xff;
-    Uint8 b = ourGUIColors[i] & 0xff;
+    Uint8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
+    Uint8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
+    Uint8 b = ourGUIColors[palID][i] & 0xff;
 
     myPalette[j] = mapRGB(r, g, b);
   }
@@ -1030,12 +1029,24 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     kDbgChangedTextColor  Text color for changed cells
     kDbgColorHi           Highlighted color in debugger data cells
 */
-uInt32 FrameBuffer::ourGUIColors[kNumColors-256] = {
-  0x686868, 0x000000, 0x404040, 0x000000, 0x62a108, 0x9f0000,
-  0xc9af7c, 0xf0f0cf, 0xc80000,
-  0xac3410, 0xd55941, 0xffffff, 0xffd652,
-  0xac3410,
-  0xac3410, 0xd55941,
-  0xac3410, 0xd55941,
-  0xc80000, 0x00ff00, 0xc8c8ff
+uInt32 FrameBuffer::ourGUIColors[2][kNumColors-256] = {
+  // Standard
+  { 0x686868, 0x000000, 0x404040, 0x000000, 0x62a108, 0x9f0000,
+    0xc9af7c, 0xf0f0cf, 0xc80000,
+    0xac3410, 0xd55941, 0xffffff, 0xffd652,
+    0xac3410,
+    0xac3410, 0xd55941,
+    0xac3410, 0xd55941,
+    0xc80000, 0x00ff00, 0xc8c8ff
+  },
+
+  // Classic
+  { 0x686868, 0x000000, 0x404040, 0x20a020, 0x00ff00, 0xc80000,
+    0x000000, 0x000000, 0xc80000,
+    0x000000, 0x000000, 0x20a020, 0x00ff00,
+    0x20a020,
+    0x20a020, 0x00ff00,
+    0x20a020, 0x00ff00,
+    0xc80000, 0x00ff00, 0xc8c8ff
+  }
 };

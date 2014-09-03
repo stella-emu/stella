@@ -121,6 +121,7 @@ Settings::Settings(OSystem& osystem)
     GUI::Size(DebuggerDialog::kMediumFontMinW,
               DebuggerDialog::kMediumFontMinH));
 #endif
+  setInternal("uipalette", "standard");
   setInternal("listdelay", "300");
   setInternal("mwheel", "4");
 

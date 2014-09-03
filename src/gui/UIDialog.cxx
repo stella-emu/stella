@@ -236,10 +236,19 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   // 3) Misc. options
   wid.clear();
   tabID = myTab->addTab(" Misc. ");
-  lwidth = font.getStringWidth("Mouse wheel scroll: ");
+  lwidth = font.getStringWidth("Interface Palette (*): ");
   pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
+
+  // UI Palette
   ypos += 1;
+  items.clear();
+  items.push_back("Standard", "standard");
+  items.push_back("Classic", "classic");
+  myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                   items, "Interface Palette (*): ", lwidth);
+  wid.push_back(myPalettePopup);
+  ypos += lineHeight + 4;
 
   // Delay between quick-selecting characters in ListWidget
   items.clear();
@@ -272,6 +281,13 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                                       items, "Mouse wheel scroll: ", lwidth);
   wid.push_back(myWheelLinesPopup);
   ypos += lineHeight + 4;
+
+  // Add message concerning usage
+  xpos = vBorder; ypos += 1*(lineHeight + 4);
+  lwidth = ifont.getStringWidth("(*) Requires application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos, BSPF_min(lwidth, _w-20), fontHeight,
+                       "(*) Requires application restart",
+                       kTextAlignLeft);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -341,6 +357,10 @@ void UIDialog::loadConfig()
   myDebuggerFontStyle->setSelected(style, "0");
 #endif
 
+  // UI palette
+  const string& pal = instance().settings().getString("uipalette");
+  myPalettePopup->setSelected(pal, "standard");
+
   // Listwidget quick delay
   const string& delay = instance().settings().getString("listdelay");
   myListDelayPopup->setSelected(delay, "300");
@@ -380,6 +400,10 @@ void UIDialog::saveConfig()
   // Debugger font style
   instance().settings().setValue("dbg.fontstyle",
     myDebuggerFontStyle->getSelectedTag().toString());
+
+  // UI palette
+  instance().settings().setValue("uipalette",
+    myPalettePopup->getSelectedTag().toString());
 
   // Listwidget quick delay
   instance().settings().setValue("listdelay",
@@ -426,6 +450,7 @@ void UIDialog::setDefaults()
     }
 
     case 2:  // Misc. options
+      myPalettePopup->setSelected("standard");
       myListDelayPopup->setSelected("300");
       myWheelLinesPopup->setSelected("4");
       break;
