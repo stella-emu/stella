@@ -190,7 +190,7 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 {
   // We will only resize when necessary, and not using static textures
   if((myTexAccess == SDL_TEXTUREACCESS_STATIC) ||
-     (width <= mySurface->w && height <= mySurface->h))
+     (int(width) <= mySurface->w && int(height) <= mySurface->h))
     return;  // don't need to resize at all
 
   if(mySurface)
