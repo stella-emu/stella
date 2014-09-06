@@ -307,10 +307,8 @@ void DiStella::disasm(uInt32 distart, int pass)
           if(referenced)        // start a new line with a label
           {
             if(!line_empty)
-            {
               addEntry(CartDebug::ROW);
-              line_empty = true;
-            }
+
             myDisasmBuf << Base::HEX4 << myPC+myOffset << "'L" << Base::HEX4
                         << myPC+myOffset << "'.byte " << "$" << Base::HEX2
                         << (int)Debugger::debugger().peek(myPC+myOffset);

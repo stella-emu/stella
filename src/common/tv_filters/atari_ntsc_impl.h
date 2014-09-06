@@ -263,7 +263,7 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
       float* out = impl->to_rgb;
       int n;
       
-      n = burst_count;
+      //n = burst_count; FIXME: dead code detected by llvm scan-build
       do
       {
         float const* in = decoder;

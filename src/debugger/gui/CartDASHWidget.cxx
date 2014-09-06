@@ -58,12 +58,10 @@ CartridgeDASHWidget::CartridgeDASHWidget(
 
   for(uInt32 i = 0; i < 4; ++i)
   {
-    int xpos_s = xpos, ypos_s = ypos;
+    int xpos_s, ypos_s = ypos;
 
     ostringstream label;
     label << "Set segment " << i << " as: ";
-
-    ypos_s = ypos;
 
     new StaticTextWidget(boss, _font, xpos, ypos, _font.getStringWidth(label.str()),
       myFontHeight, label.str(), kTextAlignLeft);
@@ -108,8 +106,8 @@ CartridgeDASHWidget::CartridgeDASHWidget(
 
     label.str("");
     label << Common::Base::HEX4 << (addr2 + 1) << "-" << Common::Base::HEX4 << (addr2 + 1 + 0x1FF);
-    t = new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
-          _font.getStringWidth(label.str()), myFontHeight, label.str(), kTextAlignLeft);
+    new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
+        _font.getStringWidth(label.str()), myFontHeight, label.str(), kTextAlignLeft);
 
     myBankState[2*i+1] = new EditTextWidget(boss, _font, xoffset, ypos_s,
               w - xoffset - 10, myLineHeight, "");

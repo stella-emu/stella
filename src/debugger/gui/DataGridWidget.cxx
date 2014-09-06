@@ -542,7 +542,7 @@ void DataGridWidget::drawWidget(bool hilite)
 {
 //cerr << "DataGridWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  int row, col, deltax;
+  int row, col;
 
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
@@ -569,15 +569,12 @@ void DataGridWidget::drawWidget(bool hilite)
       if (_selectedItem == pos && _editMode)
       {
         adjustOffset();
-        deltax = -_editScrollOffset;
 
         s.drawString(_font, _editString, x, y, _colWidth, kTextColor,
-                     kTextAlignLeft, deltax, false);
+                     kTextAlignLeft, -_editScrollOffset, false);
       }
       else
       {
-        deltax = 0;
-
         uInt32 color = kTextColor;
         if(_changedList[pos])
         {

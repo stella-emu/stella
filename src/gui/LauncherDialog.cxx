@@ -150,7 +150,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                   "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
-    xpos += bwidth + 8;
 #else
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                   "Quit", kQuitCmd);
@@ -167,7 +166,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                    "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
-    xpos += bwidth + 8;
 #endif
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 

@@ -111,8 +111,7 @@ uInt32 ZipHandler::decompress(uInt8*& image)
       return length;
     else
     {
-      delete[] image;  image = 0;
-      length = 0;
+      delete[] image;  image = NULL;
 
       throw zip_error_s[err];
     }

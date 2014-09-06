@@ -228,31 +228,31 @@ void EventHandler::mapStelladaptors(const string& saport)
   {
     if(BSPF_startsWithIgnoreCase(myJoysticks[i]->name, "Stelladaptor"))
     {
-      saCount++;
-      if(saOrder[saCount-1] == 1)
+      if(saOrder[saCount] == 1)
       {
         myJoysticks[i]->name += " (emulates left joystick port)";
         myJoysticks[i]->type = StellaJoystick::JT_STELLADAPTOR_LEFT;
       }
-      else if(saOrder[saCount-1] == 2)
+      else if(saOrder[saCount] == 2)
       {
         myJoysticks[i]->name += " (emulates right joystick port)";
         myJoysticks[i]->type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
       }
+      saCount++;
     }
     else if(BSPF_startsWithIgnoreCase(myJoysticks[i]->name, "2600-daptor"))
     {
-      saCount++;
-      if(saOrder[saCount-1] == 1)
+      if(saOrder[saCount] == 1)
       {
         myJoysticks[i]->name += " (emulates left joystick port)";
         myJoysticks[i]->type = StellaJoystick::JT_2600DAPTOR_LEFT;
       }
-      else if(saOrder[saCount-1] == 2)
+      else if(saOrder[saCount] == 2)
       {
         myJoysticks[i]->name += " (emulates right joystick port)";
         myJoysticks[i]->type = StellaJoystick::JT_2600DAPTOR_RIGHT;
       }
+      saCount++;
     }
   }
   myOSystem.settings().setValue("saport", saport);

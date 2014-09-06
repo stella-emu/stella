@@ -437,7 +437,6 @@ void RomListWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
   int i, pos, xpos, ypos, len = dlist.size();
-  int deltax;
 
   const GUI::Rect& r = getEditRect();
   const GUI::Rect& l = getLineRect();
@@ -509,16 +508,13 @@ void RomListWidget::drawWidget(bool hilite)
         if (_selectedItem == pos && _editMode)
         {
           adjustOffset();
-          deltax = -_editScrollOffset;
-
           s.drawString(_font, _editString, _x + r.x(), ypos, r.width(), kTextColor,
-                       kTextAlignLeft, deltax, false);
+                       kTextAlignLeft, -_editScrollOffset, false);
 
           drawCaret();
         }
         else
         {
-          deltax = 0;
           s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.width(), kTextColor);
         }
       }

@@ -50,7 +50,6 @@ void StringListWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
   int i, pos, len = _list.size();
   string buffer;
-  int deltax;
 
   // Draw a thin frame around the list.
   s.hLine(_x, _y, _x + _w - 1, kColor);
@@ -76,15 +75,13 @@ void StringListWidget::drawWidget(bool hilite)
     {
       buffer = _editString;
       adjustOffset();
-      deltax = -_editScrollOffset;
 
       s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
-                   kTextAlignLeft, deltax, false);
+                   kTextAlignLeft, -_editScrollOffset, false);
     }
     else
     {
       buffer = _list[pos];
-      deltax = 0;
       s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
     }
   }

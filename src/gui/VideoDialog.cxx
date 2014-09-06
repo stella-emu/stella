@@ -192,7 +192,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Center window (in windowed mode)
   myCenter = new CheckboxWidget(myTab, font, xpos, ypos, "Center window");
   wid.push_back(myCenter);
-  ypos += lineHeight + 4;
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
