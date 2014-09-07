@@ -17,6 +17,10 @@
   * Re-added 'uipalette' option due to popular demand (of at least one
     person :)).
 
+  * Fixed bug in Windows port where pressing 'Alt' key combos resulted in
+    an annoying system beep.  Currently this is fixed by patching the SDL2
+    library and including a modified version with Stella.
+
 -Have fun!
 
 
