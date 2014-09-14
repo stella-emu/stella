@@ -1,5 +1,5 @@
 %define name    stella
-%define version 4.1
+%define version 4.1.1
 %define rel     1
 
 %define enable_gl 1
@@ -102,7 +102,10 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
-* Min Sep 1 2014 Stephen Anthony <stephena@users.sf.net> 4.1-1
+* Sun Sep 14 2014 Stephen Anthony <stephena@users.sf.net> 4.1.1-1
+- Version 4.1.1 release
+
+* Mon Sep 1 2014 Stephen Anthony <stephena@users.sf.net> 4.1-1
 - Version 4.1 release
 
 * Tue Jul 1 2014 Stephen Anthony <stephena@users.sf.net> 4.0-1
