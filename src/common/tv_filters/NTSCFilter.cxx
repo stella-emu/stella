@@ -31,11 +31,6 @@ NTSCFilter::NTSCFilter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-NTSCFilter::~NTSCFilter()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::setTIAPalette(const TIASurface& tiaSurface, const uInt32* palette)
 {
   // Normal TIA palette contains 256 colours, where every odd indexed colour

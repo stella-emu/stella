@@ -61,12 +61,6 @@ class MouseControl
     MouseControl(Console& console, const string& mode);
 
     /**
-      Destructor
-    */
-    virtual ~MouseControl();
-
-  public:
-    /**
       Cycle through each available mouse control mode
 
       @return  A message explaining the current mouse mode

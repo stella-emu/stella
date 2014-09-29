@@ -43,7 +43,7 @@ class CheatManager
 {
   public:
     CheatManager(OSystem* osystem);
-    virtual ~CheatManager();
+    ~CheatManager();
 
     /**
       Adds the specified cheat to an internal list.

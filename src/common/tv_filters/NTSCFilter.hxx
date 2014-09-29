@@ -42,7 +42,6 @@ class NTSCFilter
 {
   public:
     NTSCFilter();
-    virtual ~NTSCFilter();
 
   public:
     // Set one of the available preset adjustments (Composite, S-Video, RGB, etc)

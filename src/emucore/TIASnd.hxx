@@ -40,11 +40,6 @@ class TIASound
     */
     TIASound(Int32 outputFrequency = 31400);
 
-    /**
-      Destructor
-    */
-    virtual ~TIASound();
-
   public:
     /**
       Reset the sound emulation to its power-on state

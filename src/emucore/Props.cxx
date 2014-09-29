@@ -37,11 +37,6 @@ Properties::Properties(const Properties& properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Properties::~Properties()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Properties::get(PropertyType key) const
 {
   if(key >= 0 && key < LastPropType)

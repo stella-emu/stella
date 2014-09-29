@@ -76,11 +76,6 @@ class Properties
     */
     Properties(const Properties& properties);
 
-    /**
-      Destructor
-    */
-    virtual ~Properties();
-
   public:
     /**
       Get the value assigned to the specified key.  If the key does

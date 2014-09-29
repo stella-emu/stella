@@ -38,7 +38,7 @@ class CheatCodeDialog : public Dialog
   public:
     CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
                    const GUI::Font& font);
-    ~CheatCodeDialog();
+    virtual ~CheatCodeDialog();
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);

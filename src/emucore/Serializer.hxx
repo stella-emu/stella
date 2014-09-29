@@ -54,31 +54,31 @@ class Serializer
       was correctly initialized.
     */
     Serializer(const string& filename, bool readonly = false);
-    Serializer(void);
+    Serializer();
 
     /**
       Destructor
     */
-    virtual ~Serializer(void);
+    ~Serializer();
 
   public:
     /**
       Answers whether the serializer is currently initialized for reading
       and writing.
     */
-    bool isValid(void);
+    bool isValid();
 
     /**
       Resets the read/write location to the beginning of the stream.
     */
-    void reset(void);
+    void reset();
 
     /**
       Reads a byte value (unsigned 8-bit) from the current input stream.
 
       @result The byte value which has been read from the stream.
     */
-    uInt8 getByte(void);
+    uInt8 getByte();
 
     /**
       Reads a byte array (unsigned 8-bit) from the current input stream.
@@ -94,7 +94,7 @@ class Serializer
 
       @result The short value which has been read from the stream.
     */
-    uInt16 getShort(void);
+    uInt16 getShort();
 
     /**
       Reads a short array (unsigned 16-bit) from the current input stream.
@@ -109,7 +109,7 @@ class Serializer
 
       @result The int value which has been read from the stream.
     */
-    uInt32 getInt(void);
+    uInt32 getInt();
 
     /**
       Reads an integer array (unsigned 32-bit) from the current input stream.
@@ -124,14 +124,14 @@ class Serializer
 
       @result The string which has been read from the stream.
     */
-    string getString(void);
+    string getString();
 
     /**
       Reads a boolean value from the current input stream.
 
       @result The boolean value which has been read from the stream.
     */
-    bool getBool(void);
+    bool getBool();
 
     /**
       Writes an byte value (unsigned 8-bit) to the current output stream.

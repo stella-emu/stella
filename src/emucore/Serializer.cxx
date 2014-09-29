@@ -69,7 +69,7 @@ Serializer::Serializer(const string& filename, bool readonly)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::Serializer(void)
+Serializer::Serializer()
   : myStream(NULL),
     myUseFilestream(false)
 {
@@ -86,7 +86,7 @@ Serializer::Serializer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::~Serializer(void)
+Serializer::~Serializer()
 {
   if(myStream != NULL)
   {
@@ -99,13 +99,13 @@ Serializer::~Serializer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::isValid(void)
+bool Serializer::isValid()
 {
   return myStream != NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::reset(void)
+void Serializer::reset()
 {
   myStream->clear();
   myStream->seekg(ios_base::beg);
@@ -113,7 +113,7 @@ void Serializer::reset(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Serializer::getByte(void)
+uInt8 Serializer::getByte()
 {
   char buf;
   myStream->read(&buf, 1);
@@ -128,7 +128,7 @@ void Serializer::getByteArray(uInt8* array, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Serializer::getShort(void)
+uInt16 Serializer::getShort()
 {
   uInt16 val = 0;
   myStream->read((char*)&val, sizeof(uInt16));
@@ -143,7 +143,7 @@ void Serializer::getShortArray(uInt16* array, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Serializer::getInt(void)
+uInt32 Serializer::getInt()
 {
   uInt32 val = 0;
   myStream->read((char*)&val, sizeof(uInt32));
@@ -158,7 +158,7 @@ void Serializer::getIntArray(uInt32* array, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Serializer::getString(void)
+string Serializer::getString()
 {
   int len = getInt();
   string str;
@@ -169,7 +169,7 @@ string Serializer::getString(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::getBool(void)
+bool Serializer::getBool()
 {
   return getByte() == TruePattern;
 }

@@ -49,11 +49,6 @@ class TIASurface
     TIASurface(OSystem& system);
 
     /**
-      Destructor
-    */
-    virtual ~TIASurface();
-
-    /**
       Set the TIA object, which is needed for actually rendering the TIA image.
     */
     void initialize(const Console& console, const VideoMode& mode);

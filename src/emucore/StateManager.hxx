@@ -40,11 +40,6 @@ class StateManager
     */
     StateManager(OSystem* osystem);
 
-    /**
-      Destructor
-    */
-    virtual ~StateManager();
-
   public:
     /**
       Answers whether the manager is in record or playback mode

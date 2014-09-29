@@ -41,7 +41,7 @@ class PNGLibrary
 {
   public:
     PNGLibrary(const FrameBuffer& fb);
-    virtual ~PNGLibrary();
+    ~PNGLibrary();
 
     /**
       Read a PNG image from the specified file into a FBSurface structure,

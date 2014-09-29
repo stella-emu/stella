@@ -47,7 +47,7 @@ class MT24LC256
     /**
       Destructor
     */
-    virtual ~MT24LC256();
+    ~MT24LC256();
 
   public:
     /** Read boolean data from the SDA line */

@@ -168,11 +168,6 @@ MouseControl::MouseControl(Console& console, const string& mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MouseControl::~MouseControl()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& MouseControl::next()
 {
   const MouseMode& mode = myModeList[myCurrentModeNum];

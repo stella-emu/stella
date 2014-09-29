@@ -69,7 +69,7 @@ class ZipHandler
 {
   public:
     ZipHandler();
-    virtual ~ZipHandler();
+    ~ZipHandler();
 
     // Open ZIP file for processing
     void open(const string& filename);

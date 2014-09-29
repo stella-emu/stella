@@ -31,11 +31,6 @@ TIASound::TIASound(Int32 outputFrequency)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASound::~TIASound()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASound::reset()
 {
   // Fill the polynomials

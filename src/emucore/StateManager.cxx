@@ -43,11 +43,6 @@ StateManager::StateManager(OSystem* osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StateManager::~StateManager()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::isActive()
 {
   return myActiveMode != kOffMode;

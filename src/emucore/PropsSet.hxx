@@ -50,7 +50,7 @@ class PropertiesSet
     /**
       Destructor
     */
-    virtual ~PropertiesSet();
+    ~PropertiesSet();
 
   public:
     /** 
