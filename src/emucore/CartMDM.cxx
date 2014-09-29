@@ -76,7 +76,7 @@ void CartridgeMDM::install(System& system)
   myHotSpotPageAccess[7] = mySystem->getPageAccess(0x0F00 >> shift);
 
   // Set the page accessing methods for the hot spots
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PA_READWRITE);
   for(uInt32 i = 0x0800; i < 0x0FFF; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -98,12 +98,12 @@ uInt8 CartridgeMDM::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMDM::poke(uInt16 address, uInt8 value)
 {
-  // Currently, writing to the hotspots is disabled, so we don't need to
-  // worry about bankswitching
-  // However, all possible addresses can appear here, and we only care
+  // All possible addresses can appear here, but we only care
   // about those below $1000
   if(!(address & 0x1000))
   {
+    bank(address & 0x0FF);
+
     int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }

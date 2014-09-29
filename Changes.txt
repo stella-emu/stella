@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+4.1.1 to 4.2: (xxx xx, 2014)
+
+  * Fixed 'MDM' scheme to trigger bankswitching on writes to hotspots
+    (previously it only triggered on reads).
+
+-Have fun!
+
+
 4.1 to 4.1.1: (September 14, 2014)
 
   * Re-added 'uipalette' option due to popular demand (of at least one
@@ -20,8 +28,6 @@
   * Fixed bug in Windows port where pressing 'Alt' key combos resulted in
     an annoying system beep.  Currently this is fixed by patching the SDL2
     library and including a modified version with Stella.
-
--Have fun!
 
 
 4.0 to 4.1: (September 1, 2014)
