@@ -33,7 +33,10 @@
 
     http://atariage.com/forums/topic/56073-cheap-2k4k-x-in-1-menu-driven-multicart-for-atari-2600
 
-  The hotspots in this scheme are read/write at addresses $800 to $FFF, where
+  Note that this code implements a modified scheme (as designed by E. Blink).
+  In this version, the hotspots are from $800 to $BFF instead of $800 to $FFF.
+
+  The hotspots in this scheme are read/write at addresses $800 to $BFF, where
   the lower byte determines the actual 4K bank switch to.  In the current
   implementation, only 128 banks are supported, so selecting bank 128+ results
   in further bankswitching being locked.  A reset line is used to reset to

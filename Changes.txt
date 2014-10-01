@@ -15,7 +15,9 @@
 4.1.1 to 4.2: (xxx xx, 2014)
 
   * Fixed 'MDM' scheme to trigger bankswitching on writes to hotspots
-    (previously it only triggered on reads).
+    (previously it only triggered on reads).  Also, the scheme has been
+    modified as originally designed by E. Blink; hotspots are now in the
+    range $800-$BFF instead of $800-$FFF.
 
 -Have fun!
 
