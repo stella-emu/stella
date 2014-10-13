@@ -48,8 +48,8 @@ LoggerDialog::LoggerDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   // This is one dialog that can take as much space as is available
-  _w = BSPF_min(max_w, 480);
-  _h = BSPF_min(max_h, 380);
+  _w = max_w;
+  _h = max_h;
 
   // Test listing of the log output
   xpos = 10;  ypos = 10;

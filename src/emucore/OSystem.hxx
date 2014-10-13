@@ -420,15 +420,6 @@ class OSystem
     virtual void mainLoop();
 
     /**
-      This method determines the default mapping of joystick actions to
-      Stella events for a specific system/platform.
-
-      @param event  The event which to (re)set (Event::NoType resets all)
-      @param mode   The mode for which the defaults are set
-    */
-    virtual void setDefaultJoymap(Event::Type event, EventMode mode);
-
-    /**
       Informs the OSystem of a change in EventHandler state.
     */
     virtual void stateChanged(EventHandler::State state) { }

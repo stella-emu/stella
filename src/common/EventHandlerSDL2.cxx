@@ -25,33 +25,10 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   : EventHandler(osystem)
 {
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::~EventHandlerSDL2()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandlerSDL2::initializeJoysticks()
-{
-#ifdef JOYSTICK_SUPPORT
-  // Initialize the joystick subsystem
-  if(SDL_WasInit(SDL_INIT_JOYSTICK) != 0)
-  {
-    if(SDL_NumJoysticks() > 0)
-    {
-      int numSticks = SDL_NumJoysticks();
-      for(int i = 0; i < numSticks; ++i)
-        addJoystick(new JoystickSDL2(i), i);
-
-      myOSystem.logMessage("EventHandlerSDL2::initializeJoysticks() +sticks", 2);
-    }
-    else
-      myOSystem.logMessage("EventHandlerSDL2::initializeJoysticks() -sticks", 2);
-  }
-  else
-    myOSystem.logMessage("EventHandlerSDL2::initializeJoysticks() failed!", 2);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,6 +134,17 @@ void EventHandlerSDL2::pollEvent()
         handleJoyHatEvent(myEvent.jhat.which, myEvent.jhat.hat, value);
         break;  // SDL_JOYHATMOTION
       }
+
+      case SDL_JOYDEVICEADDED:
+      {
+        addJoystick(new JoystickSDL2(myEvent.jdevice.which));
+        break;  // SDL_JOYDEVICEADDED
+      }
+      case SDL_JOYDEVICEREMOVED:
+      {
+        removeJoystick(myEvent.jdevice.which);
+        break;  // SDL_JOYDEVICEREMOVED
+      }
   #endif
 
       case SDL_QUIT:
@@ -216,23 +204,19 @@ void EventHandlerSDL2::pollEvent()
 EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
   : myStick(NULL)
 {
-#ifdef JOYSTICK_SUPPORT
   myStick = SDL_JoystickOpen(idx);
   if(myStick)
   {
-    initialize(SDL_JoystickName(myStick),
+    initialize(idx, SDL_JoystickName(myStick),
         SDL_JoystickNumAxes(myStick), SDL_JoystickNumButtons(myStick),
         SDL_JoystickNumHats(myStick), SDL_JoystickNumBalls(myStick));
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
 {
-#ifdef JOYSTICK_SUPPORT
   if(myStick)
     SDL_JoystickClose(myStick);
   myStick = NULL;
-#endif
 }

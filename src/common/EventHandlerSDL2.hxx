@@ -46,11 +46,6 @@ class EventHandlerSDL2 : public EventHandler
 
   private:
     /**
-      Set up any joysticks on the system.
-    */
-    void initializeJoysticks();
-
-    /**
       Enable/disable text events (distinct from single-key events).
     */
     void enableTextEvents(bool enable);

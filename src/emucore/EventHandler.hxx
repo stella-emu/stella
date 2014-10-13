@@ -219,12 +219,18 @@ class EventHandler
 
     Event::Type eventForKey(StellaKey key, EventMode mode) const
       { return myKeyTable[key][mode]; }
-    Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const
-      { return myJoysticks[stick]->axisTable[axis][(value > 0)][mode]; }
-    Event::Type eventForJoyButton(int stick, int button, EventMode mode) const
-      { return myJoysticks[stick]->btnTable[button][mode]; }
-    Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const
-      { return myJoysticks[stick]->hatTable[hat][value][mode]; }
+    Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const {
+      const StellaJoystick* joy = myJoyHandler->joy(stick);
+      return joy ? joy->axisTable[axis][(value > 0)][mode] : Event::NoType;
+    }
+    Event::Type eventForJoyButton(int stick, int button, EventMode mode) const {
+      const StellaJoystick* joy = myJoyHandler->joy(stick);
+      return joy ? joy->btnTable[button][mode] : Event::NoType;
+    }
+    Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const {
+      const StellaJoystick* joy = myJoyHandler->joy(stick);
+      return joy ? joy->hatTable[hat][value][mode] : Event::NoType;
+    }
 
     Event::Type eventAtIndex(int idx, EventMode mode) const;
     string actionAtIndex(int idx, EventMode mode) const;
@@ -334,11 +340,6 @@ class EventHandler
     void handleJoyHatEvent(int stick, int hat, int value);
 
     /**
-      Set up any joysticks on the system.
-    */
-    virtual void initializeJoysticks() = 0;
-
-    /**
       Enable/disable text events (distinct from single-key events).
     */
     virtual void enableTextEvents(bool enable) = 0;
@@ -391,7 +392,8 @@ class EventHandler
         string about() const;
 
       protected:
-        void initialize(const string& desc, int axes, int buttons, int hats, int balls);
+        void initialize(int index, const string& desc,
+                        int axes, int buttons, int hats, int balls);
 
       private:
         enum JoyType {
@@ -404,6 +406,7 @@ class EventHandler
         };
 
         JoyType type;
+        int ID;
         string name;
         int numAxes, numButtons, numHats;
         Event::Type (*axisTable)[2][kNumModes];
@@ -413,12 +416,67 @@ class EventHandler
 
       private:
         void getValues(const string& list, IntArray& map);
+
+        friend ostream& operator<<(ostream& os, const StellaJoystick& s) {
+          os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes
+             << ", numbtns: " << s.numButtons << ", numhats: " << s.numHats;
+          return os;
+        }
+    };
+
+    class JoystickHandler
+    {
+      public:
+        JoystickHandler(OSystem& system);
+        ~JoystickHandler();
+
+        int add(StellaJoystick* stick);
+        int remove(int id);
+        uInt32 numSticks() const { return mySticks.size(); }
+        void mapStelladaptors(const string& saport);
+        void setDefaultMapping(Event::Type type, EventMode mode);
+        void eraseMapping(Event::Type event, EventMode mode);
+        void saveMapping();
+
+        const StellaJoystick* joy(int id) const {
+          return id < mySticks.size() ? mySticks[id] : NULL;
+        }
+
+      private:
+        OSystem& myOSystem;
+
+        struct StickInfo
+        {
+          StickInfo(const string& map = EmptyString, StellaJoystick* stick = NULL)
+            : mapping(map), joy(stick) {}
+
+          string mapping;
+          StellaJoystick* joy;
+
+          friend ostream& operator<<(ostream& os, const StickInfo& si) {
+            os << "  joy: " << si.joy << endl << "  map: " << si.mapping;
+            return os;
+          }
+        };
+        // Contains all joysticks that Stella knows about, indexed by name
+        map<string,StickInfo> myDatabase;
+
+        // Contains only joysticks that are currently available, indexed by id
+        Common::Array<StellaJoystick*> mySticks;
+
+        void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
+        void printDatabase();
     };
 
     /**
       Add the given joystick to the list of sticks available to the handler.
     */
-    void addJoystick(StellaJoystick* stick, int idx);
+    void addJoystick(StellaJoystick* stick);
+
+    /**
+      Remove joystick at the current index.
+    */
+    void removeJoystick(int index);
 
   private:
     enum {
@@ -442,7 +500,6 @@ class EventHandler
     void setActionMappings(EventMode mode);
     void setKeyNames();
     void setKeymap();
-    void setJoymap();
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);
     void saveKeyMapping();
@@ -519,8 +576,8 @@ class EventHandler
     static const Event::Type SA_Button[2][4];
     static const Event::Type SA_Key[2][12];
 
-    Common::Array<StellaJoystick*> myJoysticks;
-    map<string,string> myJoystickMap;
+    // Handler for all joystick addition/removal/mapping
+    JoystickHandler* myJoyHandler;
 };
 
 #endif

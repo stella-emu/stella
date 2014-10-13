@@ -14,6 +14,11 @@
 
 4.1.1 to 4.2: (xxx xx, 2014)
 
+  * Controllers are now detected dynamically by Stella.  This means that
+    you can plug/unplug joysticks/paddles/etc while Stella is running,
+    and they will be added and removed automatically.  Also fixed is
+    a bug whereby sometimes custom joystick mappings weren't being saved.
+
   * Fixed 'MDM' scheme to trigger bankswitching on writes to hotspots
     (previously it only triggered on reads).  Also, the scheme has been
     modified as originally designed by E. Blink; hotspots are now in the
