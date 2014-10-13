@@ -279,6 +279,7 @@
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
 		DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */; };
 		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
+		DC5E473B19EC9A14000E45DF /* EventJoyHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5E473A19EC9A14000E45DF /* EventJoyHandler.cxx */; };
 		DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */; };
 		DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */; };
 		DC62E6471960E87B007AEF05 /* AtariVoxWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */; };
@@ -830,6 +831,7 @@
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaMediumFont.hxx; path = ../gui/StellaMediumFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LauncherFilterDialog.cxx; path = ../gui/LauncherFilterDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LauncherFilterDialog.hxx; path = ../gui/LauncherFilterDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC5E473A19EC9A14000E45DF /* EventJoyHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EventJoyHandler.cxx; path = ../emucore/EventJoyHandler.cxx; sourceTree = "<group>"; };
 		DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NTSCFilter.cxx; path = ../common/tv_filters/NTSCFilter.cxx; sourceTree = SOURCE_ROOT; };
 		DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NTSCFilter.hxx; path = ../common/tv_filters/NTSCFilter.hxx; sourceTree = SOURCE_ROOT; };
 		DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AtariVoxWidget.cxx; path = ../debugger/gui/AtariVoxWidget.cxx; sourceTree = "<group>"; };
@@ -1381,8 +1383,6 @@
 				2DE2DF110627AE07006BEC99 /* Booster.hxx */,
 				2DE2DF120627AE07006BEC99 /* Cart.cxx */,
 				2DE2DF130627AE07006BEC99 /* Cart.hxx */,
-				DCEECE540B5E5E540021D754 /* Cart0840.cxx */,
-				DCEECE550B5E5E540021D754 /* Cart0840.hxx */,
 				2DE2DF140627AE07006BEC99 /* Cart2K.cxx */,
 				2DE2DF150627AE07006BEC99 /* Cart2K.hxx */,
 				2D9555D90880E78000466554 /* Cart3E.cxx */,
@@ -1395,6 +1395,8 @@
 				2DE2DF190627AE07006BEC99 /* Cart4K.hxx */,
 				DCAACAEC188D631500A4D282 /* Cart4KSC.cxx */,
 				DCAACAED188D631500A4D282 /* Cart4KSC.hxx */,
+				DCEECE540B5E5E540021D754 /* Cart0840.cxx */,
+				DCEECE550B5E5E540021D754 /* Cart0840.hxx */,
 				2DE2DF1A0627AE07006BEC99 /* CartAR.cxx */,
 				2DE2DF1B0627AE07006BEC99 /* CartAR.hxx */,
 				DCAACAEE188D631500A4D282 /* CartBF.cxx */,
@@ -1469,6 +1471,7 @@
 				2DE2DF410627AE07006BEC99 /* Event.hxx */,
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
+				DC5E473A19EC9A14000E45DF /* EventJoyHandler.cxx */,
 				DC73BD871915E5E3003FAFAD /* FBSurface.cxx */,
 				DC73BD881915E5E3003FAFAD /* FBSurface.hxx */,
 				2D733D70062895B2006265D9 /* FrameBuffer.cxx */,
@@ -2147,6 +2150,7 @@
 				2D9174B309BA90380026E9FF /* LauncherDialog.cxx in Sources */,
 				2D9174B509BA90380026E9FF /* ListWidget.cxx in Sources */,
 				2D9174B609BA90380026E9FF /* Menu.cxx in Sources */,
+				DC5E473B19EC9A14000E45DF /* EventJoyHandler.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
 				2D9174B909BA90380026E9FF /* ProgressDialog.cxx in Sources */,
