@@ -113,13 +113,15 @@ void M6502::reset()
   SP = 0xff;
   if(mySettings.getBool("cpurandom"))
   {
-    A = mySystem->randGenerator().next();
-    X = mySystem->randGenerator().next();
-    Y = mySystem->randGenerator().next();
+    SP = mySystem->randGenerator().next();
+    A  = mySystem->randGenerator().next();
+    X  = mySystem->randGenerator().next();
+    Y  = mySystem->randGenerator().next();
     PS(mySystem->randGenerator().next());
   }
   else
   {
+    SP = 0xff;
     A = X = Y = 0;
     PS(0x20);
   }

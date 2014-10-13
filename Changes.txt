@@ -19,6 +19,9 @@
     and they will be added and removed automatically.  Also fixed is
     a bug whereby sometimes custom joystick mappings weren't being saved.
 
+  * The 'cpurandom' option now also randomizes the SP register, and the
+    randomization is now disabled by default.
+
   * Fixed 'MDM' scheme to trigger bankswitching on writes to hotspots
     (previously it only triggered on reads).  Also, the scheme has been
     modified as originally designed by E. Blink; hotspots are now in the

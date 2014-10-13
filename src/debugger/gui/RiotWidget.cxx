@@ -221,7 +221,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // Randomize CPU
   xpos += 30;  ypos += lineHeight + 4;
   myRandomizeCPU = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-      "Randomize CPU registers (A/X/Y/PS)", kCheckActionCmd);
+      "Randomize CPU registers (SP/A/X/Y/PS)", kCheckActionCmd);
   myRandomizeCPU->setID(kRandCPUID);
   myRandomizeCPU->setTarget(this);
   addFocusWidget(myRandomizeCPU);
