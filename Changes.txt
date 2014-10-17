@@ -37,6 +37,9 @@
     modified as originally designed by E. Blink; hotspots are now in the
     range $800-$BFF instead of $800-$FFF.
 
+  * The OSX app icon now includes 32x32 and 16x16 versions, so 'small'
+    icons will be viewable in Finder, Get Info, etc.
+
 -Have fun!
 
 
