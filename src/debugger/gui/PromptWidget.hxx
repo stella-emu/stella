@@ -53,7 +53,7 @@ class PromptWidget : public Widget, public CommandSender
     void drawWidget(bool hilite);
     void drawCaret();
     void putcharIntern(int c);
-    void insertIntoPrompt(const char *str);
+//    void insertIntoPrompt(const char *str);
     void updateScrollBuffer();
     void scrollToCurrent();
 
@@ -118,8 +118,6 @@ class PromptWidget : public Widget, public CommandSender
     bool _makeDirty;
     bool _firstTime;
     bool _exitedEarly;
-
-    StellaMod _lastModPressed;
 
     int compareHistory(const char *histLine);
 };

@@ -14,13 +14,23 @@
 
 4.1.1 to 4.2: (xxx xx, 2014)
 
+  * Text input from non-US keyboard layouts is now supported.  Note that
+    all text in Stella is still ASCII-only, but at least it can now be
+    entered using a native layout.
+
+  * Related to the text input changes, the debugger Alt-combo shortcuts
+    have been changed.  These are now mapped to F4 - F8 (see documentation
+    for more information).
+
   * Controllers are now detected dynamically by Stella.  This means that
     you can plug/unplug joysticks/paddles/etc while Stella is running,
     and they will be added and removed automatically.  Also fixed is
     a bug whereby sometimes custom joystick mappings weren't being saved.
 
   * The 'cpurandom' option now also randomizes the SP register, and the
-    randomization is now disabled by default.
+    randomization is now disabled by default.  If you are experiencing
+    weird graphics corruption, display problems, etc, consider disabling
+    this option.
 
   * Fixed 'MDM' scheme to trigger bankswitching on writes to hotspots
     (previously it only triggered on reads).  Also, the scheme has been

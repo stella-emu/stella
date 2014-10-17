@@ -42,8 +42,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
     CommandSender(boss),
     _makeDirty(false),
     _firstTime(true),
-    _exitedEarly(false),
-    _lastModPressed(KBDM_NONE)
+    _exitedEarly(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
@@ -140,28 +139,21 @@ void PromptWidget::printPrompt()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleText(char text)
 {
-  // FIXME - convert this class to inherit from EditableWidget
-  // Huge hack to test if ALT key was pressed in the last handleKeyDown call
-  if(instance().eventHandler().kbdAlt(_lastModPressed))
-    return false;
-
-  for(int i = _promptEndPos - 1; i >= _currentPos; i--)
-    buffer(i + 1) = buffer(i);
-  _promptEndPos++;
-  putchar(text);
-  scrollToCurrent();
-
+  if(text >= 0)
+  {
+    // FIXME - convert this class to inherit from EditableWidget
+    for(int i = _promptEndPos - 1; i >= _currentPos; i--)
+      buffer(i + 1) = buffer(i);
+    _promptEndPos++;
+    putchar(text);
+    scrollToCurrent();
+  }
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  // Ignore all alt-mod keys
-  _lastModPressed = mod;
-  if(instance().eventHandler().kbdAlt(mod))
-    return true;
-
   bool handled = true;
   bool dirty = false;
   
@@ -460,6 +452,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   return handled;
 }
 
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::insertIntoPrompt(const char* str)
 {
@@ -473,6 +466,7 @@ void PromptWidget::insertIntoPrompt(const char* str)
     putcharIntern(str[j]);
   }
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::handleCommand(CommandSender* sender, int cmd,
@@ -758,7 +752,7 @@ void PromptWidget::updateScrollBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::printf(const char *format, ...)
+int PromptWidget::printf(const char* format, ...)
 {
   va_list argptr;
 
@@ -769,7 +763,7 @@ int PromptWidget::printf(const char *format, ...)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::vprintf(const char *format, va_list argptr)
+int PromptWidget::vprintf(const char* format, va_list argptr)
 {
   char buf[2048];
   int count = BSPF_vsnprintf(buf, sizeof(buf), format, argptr);
@@ -796,14 +790,14 @@ void PromptWidget::putcharIntern(int c)
                       // OverlayColor contains 256 of them
     _textcolor = (c & 0x7f) << 1;
   }
-  else if(c < 0x1e) { // first actual character is large dash
+  else if(c && c < 0x1e) { // first actual character is large dash
     // More colors (the regular GUI ones)
     _textcolor = c + 0x100;
   }
   else if(c == 0x7f) { // toggle inverse video (DEL char)
     _inverse = !_inverse;
   }
-  else
+  else if(isprint(c))
   {
     buffer(_currentPos) = c | (_textcolor << 8) | (_inverse << 17);
     _currentPos++;
