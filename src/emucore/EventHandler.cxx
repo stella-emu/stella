@@ -1778,7 +1778,7 @@ void EventHandler::takeSnapshot(uInt32 number)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setMouseControllerMode(const string& enable)
 {
-  if(&myOSystem.console())
+  if(myOSystem.hasConsole())
   {
     delete myMouseControl;  myMouseControl = NULL;
 
@@ -1851,7 +1851,7 @@ void EventHandler::leaveMenuMode()
 bool EventHandler::enterDebugMode()
 {
 #ifdef DEBUGGER_SUPPORT
-  if(myState == S_DEBUGGER || !(&myOSystem.console()))
+  if(myState == S_DEBUGGER || !myOSystem.hasConsole())
     return false;
 
   // Make sure debugger starts in a consistent state
@@ -1955,15 +1955,10 @@ void EventHandler::setEventState(State state)
 
   // Inform various subsystems about the new state
   myOSystem.stateChanged(myState);
-  if(&myOSystem.frameBuffer())
-  {
-    myOSystem.frameBuffer().stateChanged(myState);
-    myOSystem.frameBuffer().setCursorState();
-  }
-  if(&myOSystem.console())
-  {
+  myOSystem.frameBuffer().stateChanged(myState);
+  myOSystem.frameBuffer().setCursorState();
+  if(myOSystem.hasConsole())
     myOSystem.console().stateChanged(myState);
-  }
 
   // Always clear any pending events when changing states
   myEvent.clear();

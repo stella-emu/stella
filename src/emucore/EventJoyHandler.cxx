@@ -360,7 +360,7 @@ int EventHandler::JoystickHandler::remove(int index)
 
   // Sticks that are removed must have initially been added
   // So we use the 'active' joystick list to access them
-  if(index >= 0 && index < mySticks.size() && mySticks[index] != NULL)
+  if(index >= 0 && index < (int)mySticks.size() && mySticks[index] != NULL)
   {
     StellaJoystick* stick = mySticks[index];
 

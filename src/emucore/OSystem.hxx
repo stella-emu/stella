@@ -81,46 +81,48 @@ class OSystem
 
   public:
     /**
-      Get the event handler of the system
+      Get the event handler of the system.
 
       @return The event handler
     */
     EventHandler& eventHandler() const { return *myEventHandler; }
 
     /**
-      Get the frame buffer of the system
+      Get the frame buffer of the system.
 
       @return The frame buffer
     */
     FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
 
     /**
-      Get the sound object of the system
+      Get the sound object of the system.
 
       @return The sound object
     */
     Sound& sound() const { return *mySound; }
 
     /**
-      Get the settings object of the system
+      Get the settings object of the system.
 
       @return The settings object
     */
     Settings& settings() const { return *mySettings; }
 
     /**
-      Get the set of game properties for the system
+      Get the set of game properties for the system.
 
       @return The properties set object
     */
     PropertiesSet& propSet() const { return *myPropSet; }
 
     /**
-      Get the console of the system.
+      Get the console of the system.  The console won't always exist,
+      so we should test if it's available.
 
       @return The console object
     */
     Console& console() const { return *myConsole; }
+    bool hasConsole() const { return myConsole != NULL; }
 
     /**
       Get the serial port of the system.

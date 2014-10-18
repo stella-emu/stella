@@ -416,7 +416,7 @@ void VideoDialog::saveConfig()
   // Framerate
   int i = myFrameRate->getValue();
   instance().settings().setValue("framerate", i);
-  if(&instance().console())
+  if(instance().hasConsole())
   {
     // Make sure auto-frame calculation is only enabled when necessary
     instance().console().tia().enableAutoFrame(i <= 0);
@@ -428,7 +428,7 @@ void VideoDialog::saveConfig()
 
   // PAL color-loss effect
   instance().settings().setValue("colorloss", myColorLoss->getState());
-  if(&instance().console())
+  if(instance().hasConsole())
     instance().console().toggleColorLoss(myColorLoss->getState());
 
   // Fullscreen stretch setting

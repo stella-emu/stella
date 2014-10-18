@@ -166,7 +166,7 @@ void AudioDialog::saveConfig()
 
   // Only force a re-initialization when necessary, since it can
   // be a time-consuming operation
-  if(&instance().console())
+  if(instance().hasConsole())
     instance().console().initializeAudio();
 }
 

@@ -379,13 +379,13 @@ void GameInfoDialog::loadConfig()
   myPropertiesLoaded = false;
   myDefaultsSelected = false;
 
-  if(&instance().console())
+  if(instance().hasConsole())
   {
     myGameProperties = instance().console().properties();
     myPropertiesLoaded = true;
     loadView();
   }
-  else if(&instance().launcher())
+  else
   {
     const string& md5 = instance().launcher().selectedRomMD5();
     if(md5 != "")
@@ -506,7 +506,7 @@ void GameInfoDialog::saveConfig()
     instance().propSet().insert(myGameProperties);
 
   // In any event, inform the Console and save the properties
-  if(&instance().console())
+  if(instance().hasConsole())
     instance().console().setProperties(myGameProperties);
   instance().propSet().save(instance().propertiesFile());
 }

@@ -168,7 +168,7 @@ void StateManager::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::loadState(int slot)
 {
-  if(&myOSystem->console())
+  if(myOSystem->hasConsole())
   {
     if(slot < 0) slot = myCurrentSlot;
 
@@ -212,7 +212,7 @@ void StateManager::loadState(int slot)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::saveState(int slot)
 {
-  if(&myOSystem->console())
+  if(myOSystem->hasConsole())
   {
     if(slot < 0) slot = myCurrentSlot;
 
@@ -270,7 +270,7 @@ void StateManager::changeState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::loadState(Serializer& in)
 {
-  if(&myOSystem->console())
+  if(myOSystem->hasConsole())
   {
     // Make sure the file can be opened for reading
     if(in.isValid())
@@ -290,7 +290,7 @@ bool StateManager::saveState(Serializer& out)
 {
   try
   {
-    if(&myOSystem->console())
+    if(myOSystem->hasConsole())
     {
       // Make sure the file can be opened for writing
       if(out.isValid())

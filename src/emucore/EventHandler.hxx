@@ -439,7 +439,7 @@ class EventHandler
         void saveMapping();
 
         const StellaJoystick* joy(int id) const {
-          return id < mySticks.size() ? mySticks[id] : NULL;
+          return id < (int)mySticks.size() ? mySticks[id] : NULL;
         }
 
       private:
