@@ -19,8 +19,8 @@
     entered using a native layout.
 
   * Related to the text input changes, the debugger Alt-combo shortcuts
-    have been changed.  These are now mapped to F4 - F8 (see documentation
-    for more information).
+    have been changed; they now use the same key but with Control instead
+    of Alt (Control-F for frame advance, etc).
 
   * Controllers are now detected dynamically by Stella.  This means that
     you can plug/unplug joysticks/paddles/etc while Stella is running,

@@ -89,26 +89,30 @@ void DebuggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  switch(key)
+  if(instance().eventHandler().kbdControl(mod))
   {
-    case KBDK_F4:
-      doRewind();
-      break;
-    case KBDK_F5:
-      doStep();
-      break;
-    case KBDK_F6:
-      doTrace();
-      break;
-    case KBDK_F7:
-      doScanlineAdvance();
-      break;
-    case KBDK_F8:
-      doAdvance();
-      break;
-    default:
-      Dialog::handleKeyDown(key, mod);
+    switch(key)
+    {
+      case KBDK_R:
+        doRewind();
+        break;
+      case KBDK_S:
+        doStep();
+        break;
+      case KBDK_T:
+        doTrace();
+        break;
+      case KBDK_L:
+        doScanlineAdvance();
+        break;
+      case KBDK_F:
+        doAdvance();
+        break;
+      default:
+        break;
+    }
   }
+  Dialog::handleKeyDown(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

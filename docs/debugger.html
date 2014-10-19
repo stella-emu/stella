@@ -771,7 +771,7 @@ system would alternate between drawing frames (and hence produce
 flicker).</p>
 
 <p>You can use the "Scan+1" button, the prompt "scan" command, or the
-F7 key to watch the TIA draw the frame one scanline at a time.</p>
+Control-L key to watch the TIA draw the frame one scanline at a time.</p>
 
 <p>You can also right-click anywhere in this window to show a context menu,
 as illustrated:</p>
@@ -1163,17 +1163,18 @@ the RAM in the DPC scheme is not viewable by the 6507, so its addresses start fr
 <h2>Global Buttons</h2>
 
 <p>There are also buttons on the right that always show up no matter which
-tab you're looking at. These are always active.  The larger button to the left (labeled '&lt;') performs the rewind operation, which will undo the previous Step/Trace/Scan/Frame
-advance.  The rewind buffer is currently 100 levels deep.  The others are Step, Trace,
-Scan+1, Frame+1 and Exit.</p>
+tab you're looking at. These are always active.  The larger button to the left
+(labeled '&lt;') performs the rewind operation, which will undo the previous
+Step/Trace/Scan/Frame advance.  The rewind buffer is currently 100 levels deep.
+The others are Step, Trace, Scan+1, Frame+1 and Exit.</p>
 <p><img src="graphics/debugger_globalbuttons.png"></p>
 
 <p>When you use these buttons, the prompt doesn't change. This means the
 status lines with the registers and disassembly will be "stale". You
 can update them just by re-running the relevant commands in the prompt.</p>
 
-<p>You can also use the Rewind, Step, Trace, Scan+1, Frame+1 and Rewind buttons from
-anywhere in the GUI via the keyboard, with F4 to F8, respectively.</p>
+<p>You can also use the Step, Trace, Scan+1, Frame+1 and Rewind buttons from anywhere
+in the GUI via the keyboard, with Control-S, Control-T, Control-L, Control-F and Control-R.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
