@@ -41,7 +41,7 @@ void EventHandlerSDL2::enableTextEvents(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* EventHandlerSDL2::nameForKey(StellaKey key)
+const char* EventHandlerSDL2::nameForKey(StellaKey key) const
 {
   return SDL_GetScancodeName(SDL_Scancode(key));
 }

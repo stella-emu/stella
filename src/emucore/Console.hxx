@@ -346,7 +346,7 @@ class Console : public Serializable
     Cartridge& myCart;
 
     // Reference to the event object to use
-    Event& myEvent;
+    const Event& myEvent;
 
     // Properties for the game
     Properties myProperties;

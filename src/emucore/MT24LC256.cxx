@@ -99,7 +99,7 @@ MT24LC256::~MT24LC256()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool MT24LC256::readSDA()
+bool MT24LC256::readSDA() const
 {
   return jpee_mdat && jpee_sdat;
 }

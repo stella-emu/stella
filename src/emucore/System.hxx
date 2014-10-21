@@ -146,7 +146,7 @@ class System : public Serializable
 
       @return The null device associated with the system
     */
-    NullDevice& nullDevice() { return myNullDevice; }
+    const NullDevice& nullDevice() const { return myNullDevice; }
 
     /**
       Get the total number of pages available in the system.

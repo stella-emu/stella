@@ -64,7 +64,7 @@ class Settings
     /**
       This method should be called to display usage information.
     */
-    void usage();
+    void usage() const;
 
     /**
       Get the value assigned to the specified key.

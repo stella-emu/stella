@@ -220,7 +220,7 @@ class TIA : public Device
       Answers whether this TIA runs at NTSC or PAL scanrates,
       based on how many frames of out the total count are PAL frames.
     */
-    bool isPAL()
+    bool isPAL() const
       { return float(myPALFrameCounter) / myFrameCounter >= (25.0/60.0); }
 
     /**

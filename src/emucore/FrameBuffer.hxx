@@ -454,13 +454,7 @@ class FrameBuffer
       still fit in the given screen dimensions.
     */
     uInt32 maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
-                                  uInt32 screenWidth, uInt32 screenHeight);
-
-    /**
-      Determine all supported (windowed) TIA zoom levels for the current
-      framebuffer.  This will take into account any aspect ratio correction.
-    */
-    void setTIAZoomLevels(uInt32 basewidth, uInt32 baseheight);
+               uInt32 screenWidth, uInt32 screenHeight) const;
 
     /**
       Set all possible video modes (both windowed and fullscreen) available for

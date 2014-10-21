@@ -66,7 +66,7 @@ class Serializer
       Answers whether the serializer is currently initialized for reading
       and writing.
     */
-    bool isValid();
+    bool isValid() const;
 
     /**
       Resets the read/write location to the beginning of the stream.
@@ -78,7 +78,7 @@ class Serializer
 
       @result The byte value which has been read from the stream.
     */
-    uInt8 getByte();
+    uInt8 getByte() const;
 
     /**
       Reads a byte array (unsigned 8-bit) from the current input stream.
@@ -86,15 +86,14 @@ class Serializer
       @param array  The location to store the bytes read
       @param size   The size of the array (number of bytes to read)
     */
-    void getByteArray(uInt8* array, uInt32 size);
-
+    void getByteArray(uInt8* array, uInt32 size) const;
 
     /**
       Reads a short value (unsigned 16-bit) from the current input stream.
 
       @result The short value which has been read from the stream.
     */
-    uInt16 getShort();
+    uInt16 getShort() const;
 
     /**
       Reads a short array (unsigned 16-bit) from the current input stream.
@@ -102,14 +101,14 @@ class Serializer
       @param array  The location to store the shorts read
       @param size   The size of the array (number of shorts to read)
     */
-    void getShortArray(uInt16* array, uInt32 size);
+    void getShortArray(uInt16* array, uInt32 size) const;
 
     /**
       Reads an int value (unsigned 32-bit) from the current input stream.
 
       @result The int value which has been read from the stream.
     */
-    uInt32 getInt();
+    uInt32 getInt() const;
 
     /**
       Reads an integer array (unsigned 32-bit) from the current input stream.
@@ -117,21 +116,21 @@ class Serializer
       @param array  The location to store the integers read
       @param size   The size of the array (number of integers to read)
     */
-    void getIntArray(uInt32* array, uInt32 size);
+    void getIntArray(uInt32* array, uInt32 size) const;
 
     /**
       Reads a string from the current input stream.
 
       @result The string which has been read from the stream.
     */
-    string getString();
+    string getString() const;
 
     /**
       Reads a boolean value from the current input stream.
 
       @result The boolean value which has been read from the stream.
     */
-    bool getBool();
+    bool getBool() const;
 
     /**
       Writes an byte value (unsigned 8-bit) to the current output stream.

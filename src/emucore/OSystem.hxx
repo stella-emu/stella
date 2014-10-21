@@ -341,7 +341,7 @@ class OSystem
       Answers whether the ROM launcher was actually successfully used
       at some point since the app started.
 
-      @return  True on success, otherwise false
+      @return  True if launcher was ever used, otherwise false
     */
     bool launcherUsed() const { return myLauncherUsed; }
 

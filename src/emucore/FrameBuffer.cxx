@@ -721,7 +721,7 @@ void FrameBuffer::toggleGrabMouse()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
-                    uInt32 screenWidth, uInt32 screenHeight)
+                    uInt32 screenWidth, uInt32 screenHeight) const
 {
   uInt32 multiplier = 1;
   for(;;)

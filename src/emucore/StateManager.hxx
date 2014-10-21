@@ -44,7 +44,7 @@ class StateManager
     /**
       Answers whether the manager is in record or playback mode
     */
-    bool isActive();
+    bool isActive() const { return myActiveMode != kOffMode; }
 
     bool toggleRecordMode();
     bool toggleRewindMode();

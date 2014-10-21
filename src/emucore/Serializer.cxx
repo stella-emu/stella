@@ -99,7 +99,7 @@ Serializer::~Serializer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::isValid()
+bool Serializer::isValid() const
 {
   return myStream != NULL;
 }
@@ -113,7 +113,7 @@ void Serializer::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Serializer::getByte()
+uInt8 Serializer::getByte() const
 {
   char buf;
   myStream->read(&buf, 1);
@@ -122,13 +122,13 @@ uInt8 Serializer::getByte()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getByteArray(uInt8* array, uInt32 size)
+void Serializer::getByteArray(uInt8* array, uInt32 size) const
 {
   myStream->read((char*)array, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Serializer::getShort()
+uInt16 Serializer::getShort() const
 {
   uInt16 val = 0;
   myStream->read((char*)&val, sizeof(uInt16));
@@ -137,13 +137,13 @@ uInt16 Serializer::getShort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getShortArray(uInt16* array, uInt32 size)
+void Serializer::getShortArray(uInt16* array, uInt32 size) const
 {
   myStream->read((char*)array, sizeof(uInt16)*size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Serializer::getInt()
+uInt32 Serializer::getInt() const
 {
   uInt32 val = 0;
   myStream->read((char*)&val, sizeof(uInt32));
@@ -152,13 +152,13 @@ uInt32 Serializer::getInt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getIntArray(uInt32* array, uInt32 size)
+void Serializer::getIntArray(uInt32* array, uInt32 size) const
 {
   myStream->read((char*)array, sizeof(uInt32)*size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Serializer::getString()
+string Serializer::getString() const
 {
   int len = getInt();
   string str;
@@ -169,7 +169,7 @@ string Serializer::getString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::getBool()
+bool Serializer::getBool() const
 {
   return getByte() == TruePattern;
 }

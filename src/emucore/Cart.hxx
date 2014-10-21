@@ -96,7 +96,7 @@ class Cartridge : public Device
     */
     void lockBank()   { myBankLocked = true;  }
     void unlockBank() { myBankLocked = false; }
-    bool bankLocked() { return myBankLocked;  }
+    bool bankLocked() const { return myBankLocked; }
 
     /**
       Get the default startup bank for a cart.  This is the bank where

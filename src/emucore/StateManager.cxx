@@ -43,12 +43,6 @@ StateManager::StateManager(OSystem* osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::isActive()
-{
-  return myActiveMode != kOffMode;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::toggleRecordMode()
 {
 #if 0

@@ -53,7 +53,7 @@ class EventHandlerSDL2 : public EventHandler
     /**
       Returns the human-readable name for a StellaKey.
     */
-    const char* nameForKey(StellaKey key);
+    const char* nameForKey(StellaKey key) const;
 
     /**
       Collects and dispatches any pending SDL2 events.

@@ -51,7 +51,7 @@ class MT24LC256
 
   public:
     /** Read boolean data from the SDA line */
-    bool readSDA();
+    bool readSDA() const;
 
     /** Write boolean data to the SDA and SCL lines */
     void writeSDA(bool state);

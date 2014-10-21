@@ -330,7 +330,7 @@ void Settings::validate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::usage()
+void Settings::usage() const
 {
   cout << endl
     << "Stella version " << STELLA_VERSION << endl

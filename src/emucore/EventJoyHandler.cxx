@@ -208,7 +208,7 @@ void EventHandler::StellaJoystick::eraseEvent(Event::Type event, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::StellaJoystick::getValues(const string& list, IntArray& map)
+void EventHandler::StellaJoystick::getValues(const string& list, IntArray& map) const
 {
   map.clear();
   istringstream buf(list);
@@ -266,7 +266,7 @@ EventHandler::JoystickHandler::~JoystickHandler()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::JoystickHandler::printDatabase()
+void EventHandler::JoystickHandler::printDatabase() const
 {
   cerr << "---------------------------------------------------------" << endl
        << "joy database:"  << endl;

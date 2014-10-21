@@ -101,8 +101,8 @@ class Controller : public Serializable
 
       @param jack   The jack the controller is plugged into
       @param event  The event object to use for events
-      @param type   The type for this controller
       @param system The system using this controller
+      @param type   The type for this controller
     */
     Controller(Jack jack, const Event& event, const System& system,
                Type type);
@@ -201,12 +201,13 @@ class Controller : public Serializable
     /**
       Returns the name of this controller.
     */
-    virtual string name() const;
+    virtual string name() const { return myName; }
 
     /**
       Returns more detailed information about this controller.
     */
-    virtual string about() const;
+    virtual string about() const
+    { return name() + " in " + (myJack == Left ? "left port" : "right port"); }
 
     /**
       The following two functions are used by the debugger to set

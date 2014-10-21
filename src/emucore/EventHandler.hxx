@@ -109,7 +109,7 @@ class EventHandler
 
       @return The event object
     */
-    Event& event() { return myEvent; }
+    const Event& event() const { return myEvent; }
 
     /**
       Initialize state of this eventhandler.
@@ -347,7 +347,7 @@ class EventHandler
     /**
       Returns the human-readable name for a StellaKey.
     */
-    virtual const char* nameForKey(StellaKey key) { return EmptyString.c_str(); }
+    virtual const char* nameForKey(StellaKey key) const { return EmptyString.c_str(); }
 
     /**
       Collects and dispatches any pending events.
@@ -371,7 +371,7 @@ class EventHandler
     };
     void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
 
-    // An abstraction of joystick in Stella.
+    // An abstraction of a joystick in Stella.
     // A StellaJoystick holds its own event mapping information, space for
     // which is dynamically allocated based on the actual number of buttons,
     // axes, etc that the device contains.
@@ -415,7 +415,7 @@ class EventHandler
         int* axisLastValue;
 
       private:
-        void getValues(const string& list, IntArray& map);
+        void getValues(const string& list, IntArray& map) const;
 
         friend ostream& operator<<(ostream& os, const StellaJoystick& s) {
           os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes
@@ -465,7 +465,7 @@ class EventHandler
         Common::Array<StellaJoystick*> mySticks;
 
         void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
-        void printDatabase();
+        void printDatabase() const;
     };
 
     /**
