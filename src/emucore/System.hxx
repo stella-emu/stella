@@ -266,15 +266,15 @@ class System : public Serializable
       use System.peek() to examine memory/registers without changing
       the state of the system.
     */
-    void lockDataBus();
-    void unlockDataBus();
+    void lockDataBus()   { myDataBusLocked = true;  }
+    void unlockDataBus() { myDataBusLocked = false; }
 
     /**
       Access and modify the disassembly type flags for the given
       address.  Note that while any flag can be used, the disassembly
       only really acts on CODE/GFX/PGFX/DATA/ROW.
     */
-    uInt8 getAccessFlags(uInt16 address);
+    uInt8 getAccessFlags(uInt16 address) const;
     void setAccessFlags(uInt16 address, uInt8 flags);
 
   public:

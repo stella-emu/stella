@@ -166,12 +166,17 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-  // Get the dialog size
-  const GUI::Size& size = myOSystem->settings().getSize("dbg.res");
-  myWidth = BSPF_max(size.w, 0u);
-  myHeight = BSPF_max(size.h, 0u);
-  myWidth = BSPF_max(myWidth, (uInt32)DebuggerDialog::kSmallFontMinW);
+  const GUI::Size& s = myOSystem->settings().getSize("dbg.res");
+  const GUI::Size& d = myOSystem->frameBuffer().desktopSize();
+  myWidth = s.w;  myHeight = s.h;
+
+  // The debugger dialog is resizable, within certain bounds
+  // We check those bounds now
+  myWidth  = BSPF_max(myWidth, (uInt32)DebuggerDialog::kSmallFontMinW);
   myHeight = BSPF_max(myHeight, (uInt32)DebuggerDialog::kSmallFontMinH);
+  myWidth  = BSPF_min(myWidth, (uInt32)d.w);
+  myHeight = BSPF_min(myHeight, (uInt32)d.h);
+
   myOSystem->settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
 
   delete myBaseDialog;  myBaseDialog = myDialog = NULL;

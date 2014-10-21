@@ -90,7 +90,7 @@ bool CartridgeFE::poke(uInt16, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeFE::getAccessFlags(uInt16 address)
+uInt8 CartridgeFE::getAccessFlags(uInt16 address) const
 {
   return myCodeAccessBase[(address & 0x0FFF) +
             (((address & 0x2000) == 0) ? 4096 : 0)];

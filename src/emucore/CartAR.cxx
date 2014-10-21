@@ -223,7 +223,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeAR::getAccessFlags(uInt16 address)
+uInt8 CartridgeAR::getAccessFlags(uInt16 address) const
 {
   return myCodeAccessBase[(address & 0x07FF) +
            myImageOffset[(address & 0x0800) ? 1 : 0]];

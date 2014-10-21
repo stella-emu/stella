@@ -38,7 +38,7 @@ struct Point
   int y;  //!< The vertical part of the point
 
   Point() : x(0), y(0) {};
-  Point(const Point & p) : x(p.x), y(p.y) {};
+  Point(const Point& p) : x(p.x), y(p.y) {};
   explicit Point(int x1, int y1) : x(x1), y(y1) {};
   Point(const string& p) {
     char c = '\0';
@@ -64,7 +64,7 @@ struct Size
   uInt32 h;  //!< The height part of the size
 
   Size() : w(0), h(0) {};
-  Size(const Size & s) : w(s.w), h(s.h) {};
+  Size(const Size& s) : w(s.w), h(s.h) {};
   explicit Size(uInt32 w1, uInt32 h1) : w(w1), h(h1) {};
   Size(const string& s) {
     char c = '\0';
@@ -74,9 +74,15 @@ struct Size
     if(c != 'x')
       w = h = 0;
   }
-  Size & operator=(const Size & s) { w = s.w; h = s.h; return *this; };
-  bool operator==(const Size & s) const { return w == s.w && h == s.h; };
-  bool operator!=(const Size & s) const { return w != s.w || h != s.h; };
+  bool isValid() const { return w > 0 && h > 0; }
+
+  Size& operator=(const Size& s) { w = s.w; h = s.h; return *this; };
+  bool operator==(const Size& s) const { return w == s.w && h == s.h; };
+  bool operator!=(const Size& s) const { return w != s.w || h != s.h; };
+  bool operator<(const Size& s)  const { return w < s.w && h < s.h;   };
+  bool operator<=(const Size& s) const { return w <= s.w && h <= s.h; };
+  bool operator>(const Size& s)  const { return w > s.w && h > s.h;   };
+  bool operator>=(const Size& s) const { return w >= s.w && h >= s.h; };
 
   friend ostream& operator<<(ostream& os, const Size& s) {
     os << s.w << "x" << s.h;
@@ -107,6 +113,7 @@ struct Rect
   uInt32 bottom, right;    //!< The point at the bottom right of the rectangle (not part of the rect).
 
   Rect() : top(0), left(0), bottom(0), right(0) {}
+  Rect(const Rect& s) : top(s.top), left(s.left), bottom(s.bottom), right(s.right) {}
   Rect(uInt32 w, uInt32 h) : top(0), left(0), bottom(h), right(w) {}
   Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) {}
   Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top(y1), left(x1), bottom(y2), right(x2)

@@ -117,7 +117,7 @@ class Device : public Serializable
       @param address The address to modify
       @param flags A bitfield of DisasmType directives for the given address
     */
-    virtual uInt8 getAccessFlags(uInt16 address) { return 0; }
+    virtual uInt8 getAccessFlags(uInt16 address) const { return 0; }
     virtual void setAccessFlags(uInt16 address, uInt8 flags) { }
 
   protected:

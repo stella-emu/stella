@@ -177,7 +177,7 @@ class CartridgeFE : public Cartridge
       @param address The address to modify
       @param flags A bitfield of DisasmType directives for the given address
     */
-    uInt8 getAccessFlags(uInt16 address);
+    uInt8 getAccessFlags(uInt16 address) const;
     void setAccessFlags(uInt16 address, uInt8 flags);
 
   private:

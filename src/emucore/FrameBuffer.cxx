@@ -83,7 +83,7 @@ bool FrameBuffer::initialize()
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
   const GUI::Size& s = myOSystem.settings().getSize("maxres");
-  if(s.w > 0 && s.h > 0)
+  if(s.isValid())
   {
     query_w = s.w;
     query_h = s.h;

@@ -241,7 +241,7 @@ void System::poke(uInt16 addr, uInt8 value)
 {
   uInt16 page = (addr & myAddressMask) >> myPageShift;
   PageAccess& access = myPageAccessTable[page];
-  
+
   // See if this page uses direct accessing or not 
   if(access.directPokeBase)
   {
@@ -262,7 +262,7 @@ void System::poke(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 System::getAccessFlags(uInt16 addr)
+uInt8 System::getAccessFlags(uInt16 addr) const
 {
 #ifdef DEBUGGER_SUPPORT
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
@@ -287,18 +287,6 @@ void System::setAccessFlags(uInt16 addr, uInt8 flags)
   else
     access.device->setAccessFlags(addr, flags);
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::lockDataBus()
-{
-  myDataBusLocked = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::unlockDataBus()
-{
-  myDataBusLocked = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
