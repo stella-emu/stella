@@ -283,7 +283,7 @@ void FrameBufferSDL2::postFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setWindowIcon()
 {
-#if defined(BSPF_WINDOWS) // Currently only needed for Windows
+#if !defined(BSPF_MACOSX) // Currently not needed for OSX
   #include "stella.xpm"   // The Stella icon
 
   // Set the window icon
