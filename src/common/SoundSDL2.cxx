@@ -482,7 +482,7 @@ void SoundSDL2::RegWriteQueue::dequeue()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-double SoundSDL2::RegWriteQueue::duration()
+double SoundSDL2::RegWriteQueue::duration() const
 {
   double duration = 0.0;
   for(uInt32 i = 0; i < mySize; ++i)
@@ -506,7 +506,7 @@ void SoundSDL2::RegWriteQueue::enqueue(const RegWrite& info)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL2::RegWrite& SoundSDL2::RegWriteQueue::front()
+SoundSDL2::RegWrite& SoundSDL2::RegWriteQueue::front() const
 {
   assert(mySize != 0);
   return myBuffer[myHead];

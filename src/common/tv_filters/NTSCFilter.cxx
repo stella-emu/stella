@@ -215,7 +215,7 @@ void NTSCFilter::saveConfig(Settings& settings) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset)
+void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset) const
 {
   switch(preset)
   {

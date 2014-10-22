@@ -431,12 +431,6 @@ bool Debugger::writeTrap(int t)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::cycles()
-{
-  return mySystem.cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)
 {
   saveOldState();

@@ -84,7 +84,7 @@ class NTSCFilter
     // Get adjustables for the given preset
     // Values will be scaled to 0 - 100 range, independent of how
     // they're actually stored internally
-    void getAdjustables(Adjustable& adjustable, Preset preset);
+    void getAdjustables(Adjustable& adjustable, Preset preset) const;
 
     // Set custom adjustables to given values
     // Values will be scaled to 0 - 100 range, independent of how

@@ -28,8 +28,9 @@
   the codebase.  The keycodes are exactly the same, but from the POV of the
   rest of the code, they are *KBD* (keyboard) keys, not *SDL* keys.
 
-  Once the codebase is ported to SDL2, the intent is to simply change this
-  file without having to modify all other classes that use StellaKey.
+  If the codebase is ported to future SDL versions or to some other toolkit,
+  the intent is to simply change this file without having to modify all
+  other classes that use StellaKey.
 
   @author  Stephen Anthony
 */

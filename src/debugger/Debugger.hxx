@@ -174,7 +174,7 @@ class Debugger : public DialogContainer
     /**
       The current cycle count of the System.
     */
-    int cycles();
+    int cycles() const { return mySystem.cycles(); }
 
     string autoExec();
 

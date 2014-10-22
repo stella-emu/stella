@@ -212,7 +212,7 @@ class SoundSDL2 : public Sound
         /**
           Return the duration of all the items in the queue.
         */
-        double duration();
+        double duration() const;
 
         /**
           Enqueue the specified object.
@@ -224,7 +224,7 @@ class SoundSDL2 : public Sound
 
           @return  The item at the front of the queue.
         */
-        RegWrite& front();
+        RegWrite& front() const;
 
         /**
           Answers the number of items currently in the queue.

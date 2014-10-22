@@ -53,7 +53,7 @@ class CpuDebug : public DebuggerSystem
     string toString() { return ""; } // Not needed, since CPU stuff is always visible
 
     // I know, we ain't supposed to do this...
-    M6502& m6502() { return mySystem.m6502(); }
+    M6502& m6502() const { return mySystem.m6502(); }
 
     int pc() { return mySystem.m6502().PC; }
     int sp() { return mySystem.m6502().SP; }

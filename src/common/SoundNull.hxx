@@ -48,7 +48,7 @@ class SoundNull : public Sound
     /**
       Destructor
     */
-    virtual ~SoundNull();
+    virtual ~SoundNull() { }
 
   public: 
     /**
