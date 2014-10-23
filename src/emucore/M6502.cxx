@@ -109,22 +109,18 @@ void M6502::reset()
   // Clear the execution status flags
   myExecutionStatus = 0;
 
-  // Set registers to default values
-  SP = 0xff;
-  if(mySettings.getBool("cpurandom"))
-  {
-    SP = mySystem->randGenerator().next();
-    A  = mySystem->randGenerator().next();
-    X  = mySystem->randGenerator().next();
-    Y  = mySystem->randGenerator().next();
-    PS(mySystem->randGenerator().next());
-  }
-  else
-  {
-    SP = 0xff;
-    A = X = Y = 0;
-    PS(0x20);
-  }
+  // Set registers to random or default values
+  const string& cpurandom = mySettings.getString("cpurandom");
+  SP = BSPF_containsIgnoreCase(cpurandom, "S") ?
+          mySystem->randGenerator().next() : 0xff;
+  A  = BSPF_containsIgnoreCase(cpurandom, "A") ?
+          mySystem->randGenerator().next() : 0x00;
+  X  = BSPF_containsIgnoreCase(cpurandom, "X") ?
+          mySystem->randGenerator().next() : 0x00;
+  Y  = BSPF_containsIgnoreCase(cpurandom, "Y") ?
+          mySystem->randGenerator().next() : 0x00;
+  PS(BSPF_containsIgnoreCase(cpurandom, "P") ?
+          mySystem->randGenerator().next() : 0x20);
 
   // Reset access flag
   myLastAccessWasRead = true;

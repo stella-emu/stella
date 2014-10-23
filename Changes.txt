@@ -27,18 +27,20 @@
     and they will be added and removed automatically.  Also fixed is
     a bug whereby sometimes custom joystick mappings weren't being saved.
 
-  * The 'cpurandom' option now also randomizes the SP register, and the
-    randomization is now disabled by default.  If you are experiencing
-    weird graphics corruption, display problems, etc, consider disabling
-    this option.
+  * The 'cpurandom' option is now broken down by register type, so you
+    can selectively enable/disable randomization for each one.  The
+    default is to disable randomization for all registers.
 
   * Fixed 'MDM' scheme to trigger bankswitching on writes to hotspots
     (previously it only triggered on reads).  Also, the scheme has been
     modified as originally designed by E. Blink; hotspots are now in the
     range $800-$BFF instead of $800-$FFF.
 
-  * The OSX app icon now includes 32x32 and 16x16 versions, so 'small'
-    icons will be viewable in Finder, Get Info, etc.
+  * The OSX app-icon now includes 32x32 and 16x16 versions, so 'small'
+    icons will be viewable in 'Finder', 'Get Info', etc.
+
+  * The Linux port now uses an app-icon; this seems to be needed for
+    some window managers.
 
 -Have fun!
 

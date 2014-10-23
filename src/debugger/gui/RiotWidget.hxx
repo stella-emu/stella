@@ -45,6 +45,8 @@ class RiotWidget : public Widget, public CommandSender
     ControllerWidget* addControlWidget(GuiObject* boss, const GUI::Font& font,
         int x, int y, Controller& controller);
 
+    void handleRandomCPU();
+
   private:
     ToggleBitWidget* mySWCHAReadBits;
     ToggleBitWidget* mySWCHAWriteBits;
@@ -67,7 +69,7 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* mySelect;
     CheckboxWidget* myReset;
 
-    CheckboxWidget* myRandomizeCPU;
+    CheckboxWidget* myRandomizeCPU[5];
     CheckboxWidget* myRandomizeRAM;
 
     // ID's for the various widgets
