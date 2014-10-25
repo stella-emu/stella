@@ -657,31 +657,31 @@ uInt8 TIADebug::hmBL(int newVal)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TIADebug::frameCount()
+int TIADebug::frameCount() const
 {
   return myTIA.myFrameCounter;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TIADebug::scanlines()
+int TIADebug::scanlines() const
 {
   return myTIA.scanlines();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TIADebug::clocksThisLine()
+int TIADebug::clocksThisLine() const
 {
   return myTIA.clocksThisLine();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIADebug::vsync()
+bool TIADebug::vsync() const
 {
   return (myTIA.myVSYNC & 2) == 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIADebug::vblank()
+bool TIADebug::vblank() const
 {
   return (myTIA.myVBLANK & 2) == 2;
 }

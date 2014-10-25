@@ -30,7 +30,7 @@ class TIA;
 // pointer types for TIADebug instance methods
 // (used by TiaMethodExpression)
 class TIADebug;
-typedef int (TIADebug::*TIADEBUG_INT_METHOD)();
+typedef int (TIADebug::*TIADEBUG_INT_METHOD)() const;
 
 // call the pointed-to method on the (global) debugger object.
 #define CALL_TIADEBUG_METHOD(method) ( ( Debugger::debugger().tiaDebug().*method)() )
@@ -155,13 +155,13 @@ class TIADebug : public DebuggerSystem
     void strobeCxclr() { mySystem.poke(CXCLR, 0); }
 
     // Read-only internal TIA state
-    int scanlines();
-    int frameCount();
-    int clocksThisLine();
-    bool vsync();
-    bool vblank();
-    int vsyncAsInt()  { return int(vsync());  } // so we can use _vsync pseudo-register
-    int vblankAsInt() { return int(vblank()); } // so we can use _vblank pseudo-register
+    int scanlines() const;
+    int frameCount() const;
+    int clocksThisLine() const;
+    bool vsync() const;
+    bool vblank() const;
+    int vsyncAsInt() const  { return int(vsync());  } // so we can use _vsync pseudo-register
+    int vblankAsInt() const { return int(vblank()); } // so we can use _vblank pseudo-register
 
   private:
     /** Display a color patch for color at given index in the palette */
