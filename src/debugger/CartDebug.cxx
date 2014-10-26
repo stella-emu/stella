@@ -568,14 +568,14 @@ bool CartDebug::removeLabel(const string& label)
   LabelToAddr::iterator iter = myUserAddresses.find(label);
   if(iter != myUserAddresses.end())
   {
-    // Erase the label
-    myUserAddresses.erase(iter);
-    mySystem.setDirtyPage(iter->second);
-
-    // And also erase the address assigned to it
+    // Erase the address assigned to the label
     AddrToLabel::iterator iter2 = myUserLabels.find(iter->second);
     if(iter2 != myUserLabels.end())
       myUserLabels.erase(iter2);
+
+    // Erase the label itself
+    mySystem.setDirtyPage(iter->second);
+    myUserAddresses.erase(iter);
 
     return true;
   }
@@ -737,7 +737,6 @@ string CartDebug::loadListFile()
   while(!in.eof())
   {
     string line, addr_s;
-    int addr = -1;
 
     getline(in, line);
 
@@ -749,6 +748,7 @@ string CartDebug::loadListFile()
 
       // Swallow first value, then get actual numerical value for address
       // We need to read the address as a string, since it may contain 'U'
+      int addr = -1;
       buf >> addr >> addr_s;
       if(addr_s.length() == 0)
         continue;

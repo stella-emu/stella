@@ -208,7 +208,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
       scrollToCurrent();
       int len = _promptEndPos - _promptStartPos;
-      if(len > 256) len = 256;
+      if(len > 255) len = 255;
 
       int lastDelimPos = -1;
       char delimiter = '\0';
