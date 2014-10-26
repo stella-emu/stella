@@ -437,18 +437,3 @@ Int32 M6532::intimClocks() const
   else
     return timer & 0xff;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6532::M6532(const M6532& c)
-  : myConsole(c.myConsole),
-    mySettings(c.mySettings)
-{
-  assert(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6532& M6532::operator = (const M6532&)
-{
-  assert(false);
-  return *this;
-}

@@ -334,17 +334,3 @@ bool System::load(Serializer& in)
 
   return true;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::System(const System& s)
-  : myOSystem(s.myOSystem)
-{
-  assert(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System& System::operator = (const System&)
-{
-  assert(false);
-  return *this;
-}

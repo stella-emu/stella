@@ -99,10 +99,8 @@ class StateManager
     void reset();
 
   private:
-    // Copy constructor isn't supported by this class so make it private
+    // Copy constructor and assignment operator not supported
     StateManager(const StateManager&);
-
-    // Assignment operator isn't supported by this class so make it private
     StateManager& operator = (const StateManager&);
 
   private:

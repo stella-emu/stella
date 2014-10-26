@@ -414,10 +414,8 @@ class Cartridge : public Device
     // Contains info about this cartridge in string format
     static string myAboutString;
 
-    // Copy constructor isn't supported by cartridges so make it private
+    // Copy constructor and assignment operator not supported
     Cartridge(const Cartridge&);
-
-    // Assignment operator isn't supported by cartridges so make it private
     Cartridge& operator = (const Cartridge&);
 };
 

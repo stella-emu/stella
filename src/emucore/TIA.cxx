@@ -2418,19 +2418,3 @@ inline void TIA::applyPreviousHMOVEMotion(int hpos, Int16& pos, uInt8 motion)
     }
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(const TIA& c)
-  : myConsole(c.myConsole),
-    mySound(c.mySound),
-    mySettings(c.mySettings)
-{
-  assert(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA& TIA::operator = (const TIA&)
-{
-  assert(false);
-  return *this;
-}

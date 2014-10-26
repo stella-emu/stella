@@ -22,8 +22,6 @@
 
 #include "bspf.hxx"
 
-#define wordSize ( (sizeof(unsigned int)) * 8)
-
 class PackedBitArray
 {
   public:
@@ -38,11 +36,17 @@ class PackedBitArray
     void toggle(uInt32 bit);
 
   private:
+    // Copy constructor and assignment operator not supported
+    PackedBitArray(const PackedBitArray&);
+    PackedBitArray& operator = (const PackedBitArray&);
+
     // number of unsigned ints (size/wordSize):
     uInt32 words;
 
     // the array itself:
     uInt32* bits;
+
+    static const uInt32 WORD_SIZE = sizeof(uInt32) * 8;
 };
 
 #endif

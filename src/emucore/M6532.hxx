@@ -206,10 +206,8 @@ class M6532 : public Device
     uInt8 myOutTimer[4];
 
   private:
-    // Copy constructor isn't supported by this class so make it private
+    // Copy constructor and assignment operator not supported
     M6532(const M6532&);
- 
-    // Assignment operator isn't supported by this class so make it private
     M6532& operator = (const M6532&);
 };
 

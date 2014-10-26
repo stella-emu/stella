@@ -266,11 +266,9 @@ class Controller : public Serializable
     /// The analog value on each analog pin
     Int32 myAnalogPinValue[2];
 
-  protected:
-    // Copy constructor isn't supported by controllers so make it private
+  private:
+    // Copy constructor and assignment operator not supported
     Controller(const Controller&);
-
-    // Assignment operator isn't supported by controllers so make it private
     Controller& operator = (const Controller&);
 };
 

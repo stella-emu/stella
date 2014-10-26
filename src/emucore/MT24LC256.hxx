@@ -114,10 +114,8 @@ class MT24LC256
     uInt8 jpee_packet[70];
 
   private:
-    // Copy constructor isn't supported by this class so make it private
+    // Copy constructor and assignment operator not supported
     MT24LC256(const MT24LC256&);
- 
-    // Assignment operator isn't supported by this class so make it private
     MT24LC256& operator = (const MT24LC256&);
 };
 

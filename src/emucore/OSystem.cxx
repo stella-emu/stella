@@ -777,16 +777,4 @@ void OSystem::mainLoop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystem::OSystem(const OSystem& osystem)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystem& OSystem::operator = (const OSystem&)
-{
-  assert(false);
-  return *this;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler* OSystem::myZipHandler = 0;

@@ -200,6 +200,11 @@ class Serializer
       TruePattern  = 0xfe,
       FalsePattern = 0x01
     };
+
+  private:
+    // Copy constructor and assignment operator not supported
+    Serializer(const Serializer&);
+    Serializer& operator = (const Serializer&);
 };
 
 #endif

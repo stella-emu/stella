@@ -88,7 +88,6 @@ class LauncherDialog : public Dialog
     void updateListing(const string& nameToSelect = "");
 
   private:
-    void enableButtons(bool enable);
     void loadDirListing();
     void loadRomInfo();
     void handleContextMenu();

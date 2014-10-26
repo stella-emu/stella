@@ -331,16 +331,3 @@ void StateManager::reset()
   myActiveMode = kOffMode;
 #endif
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StateManager::StateManager(const StateManager& sm)
-  : myOSystem(sm.myOSystem)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StateManager& StateManager::operator = (const StateManager&)
-{
-  assert(false);
-  return *this;
-}

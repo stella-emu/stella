@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PackedBitArray::PackedBitArray(uInt32 length)
-  : words(length / wordSize + 1)
+  : words(length / WORD_SIZE + 1)
 {
   bits = new uInt32[ words ];
 
@@ -39,8 +39,8 @@ PackedBitArray::~PackedBitArray()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 PackedBitArray::isSet(uInt32 bit) const
 {
-  uInt32 word = bit / wordSize;
-  bit %= wordSize;
+  uInt32 word = bit / WORD_SIZE;
+  bit %= WORD_SIZE;
 
   return (bits[word] & (1 << bit));
 }
@@ -48,8 +48,8 @@ uInt32 PackedBitArray::isSet(uInt32 bit) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 PackedBitArray::isClear(uInt32 bit) const
 {
-  uInt32 word = bit / wordSize;
-  bit %= wordSize;
+  uInt32 word = bit / WORD_SIZE;
+  bit %= WORD_SIZE;
 
   return !(bits[word] & (1 << bit));
 }
@@ -57,8 +57,8 @@ uInt32 PackedBitArray::isClear(uInt32 bit) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PackedBitArray::toggle(uInt32 bit)
 {
-  uInt32 word = bit / wordSize;
-  bit %= wordSize;
+  uInt32 word = bit / WORD_SIZE;
+  bit %= WORD_SIZE;
 
   bits[word] ^= (1 << bit);
 }
@@ -66,8 +66,8 @@ void PackedBitArray::toggle(uInt32 bit)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PackedBitArray::set(uInt32 bit)
 {
-  uInt32 word = bit / wordSize;
-  bit %= wordSize;
+  uInt32 word = bit / WORD_SIZE;
+  bit %= WORD_SIZE;
 
   bits[word] |= (1 << bit);
 }
@@ -75,8 +75,8 @@ void PackedBitArray::set(uInt32 bit)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PackedBitArray::clear(uInt32 bit)
 {
-  uInt32 word = bit / wordSize;
-  bit %= wordSize;
+  uInt32 word = bit / WORD_SIZE;
+  bit %= WORD_SIZE;
 
   bits[word] &= (~(1 << bit));
 }

@@ -612,10 +612,8 @@ class OSystem
     void validatePath(string& path, const string& setting,
                       const string& defaultpath);
 
-    // Copy constructor isn't supported by this class so make it private
+    // Copy constructor and assignment operator not supported
     OSystem(const OSystem&);
-
-    // Assignment operator isn't supported by this class so make it private
     OSystem& operator = (const OSystem&);
 };
 

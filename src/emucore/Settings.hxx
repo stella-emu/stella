@@ -106,10 +106,8 @@ class Settings
     virtual void saveConfig();
 
   private:
-    // Copy constructor isn't supported by this class so make it private
+    // Copy constructor and assignment operator not supported
     Settings(const Settings&);
-
-    // Assignment operator isn't supported by this class so make it private
     Settings& operator = (const Settings&);
 
     // Trim leading and following whitespace from a string

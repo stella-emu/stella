@@ -270,15 +270,6 @@ void LauncherDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::enableButtons(bool enable)
-{
-  myStartButton->setEnabled(enable);
-  myPrevDirButton->setEnabled(enable);
-  myOptionsButton->setEnabled(enable);
-  myQuitButton->setEnabled(enable);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateListing(const string& nameToSelect)
 {
   // Start with empty list
