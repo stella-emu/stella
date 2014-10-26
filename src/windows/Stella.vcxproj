@@ -353,7 +353,6 @@
     <ClCompile Include="..\emucore\Paddles.cxx" />
     <ClCompile Include="..\emucore\Props.cxx" />
     <ClCompile Include="..\emucore\PropsSet.cxx" />
-    <ClCompile Include="..\emucore\Random.cxx" />
     <ClCompile Include="..\emucore\SaveKey.cxx" />
     <ClCompile Include="..\emucore\Serializer.cxx" />
     <ClCompile Include="..\emucore\Settings.cxx" />
