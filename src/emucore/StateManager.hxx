@@ -38,7 +38,7 @@ class StateManager
     /**
       Create a new statemananger class
     */
-    StateManager(OSystem* osystem);
+    StateManager(OSystem& osystem);
 
   public:
     /**
@@ -119,7 +119,7 @@ class StateManager
     };
 
     // The parent OSystem object
-    OSystem* myOSystem;
+    OSystem& myOSystem;
 
     // The current slot for load/save states
     int myCurrentSlot;

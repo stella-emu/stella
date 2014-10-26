@@ -196,7 +196,7 @@ bool OSystem::create()
   myMenu = new Menu(this);
   myCommandMenu = new CommandMenu(this);
   myLauncher = new Launcher(this);
-  myStateManager = new StateManager(this);
+  myStateManager = new StateManager(*this);
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
@@ -217,7 +217,7 @@ bool OSystem::create()
   mySerialPort = new SerialPort();
 #endif
 
-  // Let the random class know about us; it needs access to getTicks()
+  // Re-initialize random seed
   myRandom->initSeed();
 
   // Create PNG handler
