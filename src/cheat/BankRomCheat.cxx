@@ -23,7 +23,7 @@
 #include "BankRomCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BankRomCheat::BankRomCheat(OSystem* os, const string& name, const string& code)
+BankRomCheat::BankRomCheat(OSystem& os, const string& name, const string& code)
   : Cheat(os, name, code)
 {
   if(myCode.length() == 7)
@@ -36,7 +36,7 @@ BankRomCheat::BankRomCheat(OSystem* os, const string& name, const string& code)
 
   // Back up original data; we need this if the cheat is ever disabled
   for(int i = 0; i < count; ++i)
-    savedRom[i] = myOSystem->console().cartridge().peek(address + i);
+    savedRom[i] = myOSystem.console().cartridge().peek(address + i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,13 +54,13 @@ bool BankRomCheat::enable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool BankRomCheat::disable()
 {
-  int oldBank = myOSystem->console().cartridge().getBank();
-  myOSystem->console().cartridge().bank(bank);
+  int oldBank = myOSystem.console().cartridge().getBank();
+  myOSystem.console().cartridge().bank(bank);
 
   for(int i = 0; i < count; ++i)
-		myOSystem->console().cartridge().patch(address + i, savedRom[i]);
+		myOSystem.console().cartridge().patch(address + i, savedRom[i]);
 
-  myOSystem->console().cartridge().bank(oldBank);
+  myOSystem.console().cartridge().bank(oldBank);
 
   return myEnabled = false;
 }
@@ -70,13 +70,13 @@ void BankRomCheat::evaluate()
 {
   if(!myEnabled)
   {
-    int oldBank = myOSystem->console().cartridge().getBank();
-    myOSystem->console().cartridge().bank(bank);
+    int oldBank = myOSystem.console().cartridge().getBank();
+    myOSystem.console().cartridge().bank(bank);
 
     for(int i = 0; i < count; ++i)
-      myOSystem->console().cartridge().patch(address + i, value);
+      myOSystem.console().cartridge().patch(address + i, value);
 
-    myOSystem->console().cartridge().bank(oldBank);
+    myOSystem.console().cartridge().bank(oldBank);
 
     myEnabled = true;
   }

@@ -25,13 +25,12 @@
 class CheetahCheat : public Cheat
 {
   public:
-    CheetahCheat(OSystem* os, const string& name, const string& code);
+    CheetahCheat(OSystem& os, const string& name, const string& code);
     ~CheetahCheat();
 
-    virtual bool enable();
-    virtual bool disable();
-
-    virtual void evaluate();
+    bool enable();
+    bool disable();
+    void evaluate();
 
   private:
     uInt8  savedRom[16];

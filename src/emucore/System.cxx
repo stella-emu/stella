@@ -27,8 +27,9 @@
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::System()
-  : myNumberOfDevices(0),
+System::System(const OSystem& osystem)
+  : myOSystem(osystem),
+    myNumberOfDevices(0),
     myM6502(0),
     myTIA(0),
     myCycles(0),
@@ -36,8 +37,8 @@ System::System()
     myDataBusLocked(false),
     mySystemInAutodetect(false)
 {
-  // Create a new random number generator
-  myRandom = new Random();
+  // Re-initialize random generator
+  randGenerator().initSeed();
 
   // Allocate page table and dirty list
   myPageAccessTable = new PageAccess[NUM_PAGES];
@@ -70,9 +71,6 @@ System::~System()
   // Free my page access table and dirty list
   delete[] myPageAccessTable;
   delete[] myPageIsDirtyTable;
-
-  // Free the random number generator
-  delete myRandom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,6 +337,7 @@ bool System::load(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(const System& s)
+  : myOSystem(s.myOSystem)
 {
   assert(false);
 }

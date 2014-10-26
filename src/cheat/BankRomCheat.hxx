@@ -25,13 +25,12 @@
 class BankRomCheat : public Cheat
 {
   public:
-    BankRomCheat(OSystem* os, const string& name, const string& code);
+    BankRomCheat(OSystem& os, const string& name, const string& code);
     ~BankRomCheat();
 
-    virtual bool enable();
-    virtual bool disable();
-
-    virtual void evaluate();
+    bool enable();
+    bool disable();
+    void evaluate();
 
   private:
     uInt8  savedRom[16];

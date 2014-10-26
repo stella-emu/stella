@@ -25,7 +25,7 @@
 #include "RamCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamCheat::RamCheat(OSystem* os, const string& name, const string& code)
+RamCheat::RamCheat(OSystem& os, const string& name, const string& code)
   : Cheat(os, name, code)
 {
   address = (uInt16) unhex(myCode.substr(0, 2));
@@ -43,7 +43,7 @@ bool RamCheat::enable()
   if(!myEnabled)
   {
     myEnabled = true;
-    myOSystem->cheat().addPerFrame(this, myEnabled);
+    myOSystem.cheat().addPerFrame(this, myEnabled);
   }
   return myEnabled;
 }
@@ -54,7 +54,7 @@ bool RamCheat::disable()
   if(myEnabled)
   {
     myEnabled = false;
-    myOSystem->cheat().addPerFrame(this, myEnabled);
+    myOSystem.cheat().addPerFrame(this, myEnabled);
   }
   return myEnabled;
 }
@@ -62,5 +62,5 @@ bool RamCheat::disable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamCheat::evaluate()
 {
-  myOSystem->console().system().poke(address, value);
+  myOSystem.console().system().poke(address, value);
 }

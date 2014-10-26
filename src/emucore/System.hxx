@@ -52,7 +52,7 @@ class System : public Serializable
       Create a new system with an addressing space of 2^13 bytes and
       pages of 2^6 bytes.
     */
-    System();
+    System(const OSystem& osystem);
 
     /**
       Destructor
@@ -146,7 +146,7 @@ class System : public Serializable
 
       @return The random generator
     */
-    Random& randGenerator() const { return *myRandom; }
+    Random& randGenerator() const { return myOSystem.random(); }
 
     /**
       Get the null device associated with the system.  Every system 
@@ -214,7 +214,7 @@ class System : public Serializable
     {
       // For the pins that are floating, randomly decide which are high or low
       // Otherwise, they're specifically driven high
-      return (myDataBusState | (myRandom->next() | hmask)) & zmask;
+      return (myDataBusState | (randGenerator().next() | hmask)) & zmask;
     }
 
     /**
@@ -402,6 +402,8 @@ class System : public Serializable
     string name() const { return "System"; }
 
   private:
+    const OSystem& myOSystem;
+
     // Pointer to a dynamically allocated array of PageAccess structures
     PageAccess* myPageAccessTable;
 
@@ -422,10 +424,6 @@ class System : public Serializable
 
     // TIA device attached to the system or the null pointer
     TIA* myTIA;
-
-    // Many devices need a source of random numbers, usually for emulating
-    // unknown/undefined behaviour
-    Random* myRandom;
 
     // Number of system cycles executed since the last reset
     uInt32 myCycles;

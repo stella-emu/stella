@@ -25,13 +25,12 @@
 class RamCheat : public Cheat
 {
   public:
-    RamCheat(OSystem* os, const string& name, const string& code);
+    RamCheat(OSystem& os, const string& name, const string& code);
     virtual ~RamCheat();
 
-    virtual bool enable();
-    virtual bool disable();
-
-    virtual void evaluate();
+    bool enable();
+    bool disable();
+    void evaluate();
 
   private:
     uInt16 address;

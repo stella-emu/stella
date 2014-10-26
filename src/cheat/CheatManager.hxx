@@ -42,7 +42,7 @@ typedef map<string,string> CheatCodeMap;
 class CheatManager
 {
   public:
-    CheatManager(OSystem* osystem);
+    CheatManager(OSystem& osystem);
     ~CheatManager();
 
     /**
@@ -152,7 +152,7 @@ class CheatManager
     void clear();
 
   private:
-    OSystem* myOSystem;
+    OSystem& myOSystem;
 
     CheatList myCheatList;
     CheatList myPerFrameList;

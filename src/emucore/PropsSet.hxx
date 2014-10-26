@@ -42,10 +42,9 @@ class PropertiesSet
 {
   public:
     /**
-      Create an empty properties set object using the md5 as the
-      key to the BST.
+      Create a properties set object from the specified properties file.
     */
-    PropertiesSet(OSystem* osystem);
+    PropertiesSet(const string& propsfile);
 
     /**
       Destructor
@@ -124,9 +123,6 @@ class PropertiesSet
 
   private:
     typedef map<string, Properties> PropsList;
-
-    // The parent system for this object
-    OSystem* myOSystem;
 
     // The properties read from an external 'stella.pro' file
     PropsList myExternalProps;

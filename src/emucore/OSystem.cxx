@@ -116,6 +116,7 @@ OSystem::OSystem()
   myBuildInfo = info.str();
 
   mySettings = MediaFactory::createSettings(*this);
+  myRandom = new Random(*this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,6 +151,7 @@ OSystem::~OSystem()
   delete myFrameBuffer;
   delete mySound;
   delete myEventHandler;
+  delete myRandom;
   delete mySettings;
 }
 
@@ -183,10 +185,10 @@ bool OSystem::create()
   myEventHandler->initialize();
 
   // Create a properties set for us to use and set it up
-  myPropSet = new PropertiesSet(this);
+  myPropSet = new PropertiesSet(propertiesFile());
 
 #ifdef CHEATCODE_SUPPORT
-  myCheatManager = new CheatManager(this);
+  myCheatManager = new CheatManager(*this);
   myCheatManager->loadCheatDatabase();
 #endif
 
@@ -216,7 +218,7 @@ bool OSystem::create()
 #endif
 
   // Let the random class know about us; it needs access to getTicks()
-  Random::setSystem(this);
+  myRandom->initSeed();
 
   // Create PNG handler
   myPNGLib = new PNGLibrary(*myFrameBuffer);

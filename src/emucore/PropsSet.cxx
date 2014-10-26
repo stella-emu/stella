@@ -24,17 +24,14 @@
 #include "bspf.hxx"
 
 #include "DefProps.hxx"
-#include "OSystem.hxx"
 #include "Props.hxx"
-#include "Settings.hxx"
 
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet::PropertiesSet(OSystem* osystem)
-  : myOSystem(osystem)
+PropertiesSet::PropertiesSet(const string& propsfile)
 {
-  load(myOSystem->propertiesFile());
+  load(propsfile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

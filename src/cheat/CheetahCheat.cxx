@@ -23,7 +23,7 @@
 #include "CheetahCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheetahCheat::CheetahCheat(OSystem* os, const string& name, const string& code)
+CheetahCheat::CheetahCheat(OSystem& os, const string& name, const string& code)
   : Cheat(os, name, code)
 {
   address = 0xf000 + unhex(code.substr(0, 3));
@@ -32,7 +32,7 @@ CheetahCheat::CheetahCheat(OSystem* os, const string& name, const string& code)
 
   // Back up original data; we need this if the cheat is ever disabled
   for(int i = 0; i < count; ++i)
-    savedRom[i] = myOSystem->console().cartridge().peek(address + i);
+    savedRom[i] = myOSystem.console().cartridge().peek(address + i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,7 +51,7 @@ bool CheetahCheat::enable()
 bool CheetahCheat::disable()
 {
   for(int i = 0; i < count; ++i)
-    myOSystem->console().cartridge().patch(address + i, savedRom[i]);
+    myOSystem.console().cartridge().patch(address + i, savedRom[i]);
 
   return myEnabled = false;
 }
@@ -62,7 +62,7 @@ void CheetahCheat::evaluate()
   if(!myEnabled)
   {
     for(int i = 0; i < count; ++i)
-      myOSystem->console().cartridge().patch(address + i, value);
+      myOSystem.console().cartridge().patch(address + i, value);
 
     myEnabled = true;
   }

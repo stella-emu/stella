@@ -31,7 +31,7 @@
 #include "CheatManager.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheatManager::CheatManager(OSystem* osystem)
+CheatManager::CheatManager(OSystem& osystem)
   : myOSystem(osystem),
     myCurrentCheat(""),
     myListIsDirty(false)
@@ -235,7 +235,7 @@ void CheatManager::enable(const string& code, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::loadCheatDatabase()
 {
-  const string& cheatfile = myOSystem->cheatFile();
+  const string& cheatfile = myOSystem.cheatFile();
   ifstream in(cheatfile.c_str(), ios::in);
   if(!in)
     return;
@@ -276,7 +276,7 @@ void CheatManager::saveCheatDatabase()
   if(!myListIsDirty)
     return;
 
-  const string& cheatfile = myOSystem->cheatFile();
+  const string& cheatfile = myOSystem.cheatFile();
   ofstream out(cheatfile.c_str(), ios::out);
   if(!out)
     return;
@@ -298,9 +298,9 @@ void CheatManager::loadCheats(const string& md5sum)
 
   // Set up any cheatcodes that was on the command line
   // (and remove the key from the settings, so they won't get set again)
-  const string& cheats = myOSystem->settings().getString("cheat");
+  const string& cheats = myOSystem.settings().getString("cheat");
   if(cheats != "")
-    myOSystem->settings().setValue("cheat", "");
+    myOSystem.settings().setValue("cheat", "");
 
   CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
   if(iter == myCheatMap.end() && cheats == "")

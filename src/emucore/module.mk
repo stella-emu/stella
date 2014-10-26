@@ -64,7 +64,6 @@ MODULE_OBJS := \
 	src/emucore/Paddles.o \
 	src/emucore/Props.o \
 	src/emucore/PropsSet.o \
-	src/emucore/Random.o \
 	src/emucore/SaveKey.o \
 	src/emucore/Serializer.o \
 	src/emucore/Settings.o \

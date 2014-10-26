@@ -28,7 +28,7 @@ class OSystem;
 class Cheat
 {
   public:
-    Cheat(OSystem* osystem, const string& name, const string& code)
+    Cheat(OSystem& osystem, const string& name, const string& code)
       : myOSystem(osystem),
         myName(name),
         myCode(code),
@@ -68,7 +68,7 @@ class Cheat
     }
 
   protected:
-    OSystem* myOSystem;
+    OSystem& myOSystem;
 
     string myName;
     string myCode;

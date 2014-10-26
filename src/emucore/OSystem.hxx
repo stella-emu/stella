@@ -29,6 +29,7 @@ class Launcher;
 class Menu;
 class Properties;
 class PropertiesSet;
+class Random;
 class SerialPort;
 class Settings;
 class Sound;
@@ -107,6 +108,13 @@ class OSystem
       @return The settings object
     */
     Settings& settings() const { return *mySettings; }
+
+    /**
+      Get the random object of the system.
+
+      @return The random object
+    */
+    Random& random() const { return *myRandom; }
 
     /**
       Get the set of game properties for the system.
@@ -460,6 +468,9 @@ class OSystem
 
     // Pointer to the Settings object
     Settings* mySettings;
+
+    // Pointer to the Random object
+    Random* myRandom;
 
     // Pointer to the PropertiesSet object
     PropertiesSet* myPropSet;
