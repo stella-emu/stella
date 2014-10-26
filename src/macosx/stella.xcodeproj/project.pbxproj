@@ -147,7 +147,6 @@
 		2D91749309BA90380026E9FF /* Paddles.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF820627AE34006BEC99 /* Paddles.cxx */; };
 		2D91749409BA90380026E9FF /* Props.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF840627AE34006BEC99 /* Props.cxx */; };
 		2D91749509BA90380026E9FF /* PropsSet.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF860627AE34006BEC99 /* PropsSet.cxx */; };
-		2D91749609BA90380026E9FF /* Random.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF880627AE34006BEC99 /* Random.cxx */; };
 		2D91749709BA90380026E9FF /* Serializer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF8A0627AE34006BEC99 /* Serializer.cxx */; };
 		2D91749809BA90380026E9FF /* Switches.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF8E0627AE34006BEC99 /* Switches.cxx */; };
 		2D91749909BA90380026E9FF /* TIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF900627AE34006BEC99 /* TIA.cxx */; };
@@ -753,7 +752,6 @@
 		2DE2DF850627AE34006BEC99 /* Props.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Props.hxx; path = ../emucore/Props.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF860627AE34006BEC99 /* PropsSet.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PropsSet.cxx; path = ../emucore/PropsSet.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF870627AE34006BEC99 /* PropsSet.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = PropsSet.hxx; path = ../emucore/PropsSet.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF880627AE34006BEC99 /* Random.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Random.cxx; path = ../emucore/Random.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF890627AE34006BEC99 /* Random.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Random.hxx; path = ../emucore/Random.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF8A0627AE34006BEC99 /* Serializer.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Serializer.cxx; path = ../emucore/Serializer.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF8B0627AE34006BEC99 /* Serializer.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Serializer.hxx; path = ../emucore/Serializer.hxx; sourceTree = SOURCE_ROOT; };
@@ -1507,7 +1505,6 @@
 				2DE2DF850627AE34006BEC99 /* Props.hxx */,
 				2DE2DF860627AE34006BEC99 /* PropsSet.cxx */,
 				2DE2DF870627AE34006BEC99 /* PropsSet.hxx */,
-				2DE2DF880627AE34006BEC99 /* Random.cxx */,
 				2DE2DF890627AE34006BEC99 /* Random.hxx */,
 				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
 				DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */,
@@ -2127,7 +2124,6 @@
 				2D91749309BA90380026E9FF /* Paddles.cxx in Sources */,
 				2D91749409BA90380026E9FF /* Props.cxx in Sources */,
 				2D91749509BA90380026E9FF /* PropsSet.cxx in Sources */,
-				2D91749609BA90380026E9FF /* Random.cxx in Sources */,
 				2D91749709BA90380026E9FF /* Serializer.cxx in Sources */,
 				2D91749809BA90380026E9FF /* Switches.cxx in Sources */,
 				2D91749909BA90380026E9FF /* TIA.cxx in Sources */,
