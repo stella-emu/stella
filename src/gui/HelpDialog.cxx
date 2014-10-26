@@ -26,7 +26,7 @@
 #include "HelpDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
+HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     myPage(1),

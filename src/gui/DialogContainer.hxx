@@ -48,7 +48,7 @@ class DialogContainer
     /**
       Create a new DialogContainer stack
     */
-    DialogContainer(OSystem* osystem);
+    DialogContainer(OSystem& osystem);
 
     /**
       Destructor
@@ -154,9 +154,9 @@ class DialogContainer
     void removeDialog();
 
   protected:
-    OSystem* myOSystem;
+    OSystem& myOSystem;
     Dialog*  myBaseDialog;
-    Common::FixedStack<Dialog *> myDialogStack;
+    Common::FixedStack<Dialog*> myDialogStack;
 
   private:
     enum {

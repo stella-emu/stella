@@ -36,10 +36,10 @@ class StaticTextWidget;
 class ConfigPathDialog : public Dialog, public CommandSender
 {
   public:
-    ConfigPathDialog(OSystem* osystem, DialogContainer* parent,
+    ConfigPathDialog(OSystem& osystem, DialogContainer& parent,
                      const GUI::Font& font, GuiObject* boss,
                      int max_w, int max_h);
-    ~ConfigPathDialog();
+    virtual ~ConfigPathDialog();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 

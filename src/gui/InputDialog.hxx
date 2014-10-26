@@ -36,16 +36,16 @@ class StaticTextWidget;
 class InputDialog : public Dialog
 {
   public:
-    InputDialog(OSystem* osystem, DialogContainer* parent,
+    InputDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font, int max_w, int max_h);
-    ~InputDialog();
+    virtual ~InputDialog();
 
   protected:
-    virtual void handleKeyDown(StellaKey key, StellaMod mod);
-    virtual void handleJoyDown(int stick, int button);
-    virtual void handleJoyAxis(int stick, int axis, int value);
-    virtual bool handleJoyHat(int stick, int hat, int value);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleKeyDown(StellaKey key, StellaMod mod);
+    void handleJoyDown(int stick, int button);
+    void handleJoyAxis(int stick, int axis, int value);
+    bool handleJoyHat(int stick, int hat, int value);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void loadConfig();
     void saveConfig();

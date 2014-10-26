@@ -46,7 +46,7 @@
   new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight, label, cmd); yoffset += rowHeight
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
+OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, bool global)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     myVideoDialog(NULL),

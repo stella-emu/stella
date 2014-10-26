@@ -52,7 +52,7 @@ class BrowserDialog : public Dialog, public CommandSender
     const FilesystemNode& getResult() const;
 
   protected:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void updateUI();
 
   private:

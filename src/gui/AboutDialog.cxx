@@ -25,7 +25,7 @@
 #include "AboutDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
+AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     myPage(1),

@@ -35,7 +35,7 @@ class SliderWidget;
 class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
-    GameInfoDialog(OSystem* osystem, DialogContainer* parent,
+    GameInfoDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss);
     virtual ~GameInfoDialog();
 

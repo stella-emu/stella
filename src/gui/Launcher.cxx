@@ -28,11 +28,11 @@
 #include "Launcher.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Launcher::Launcher(OSystem* osystem)
+Launcher::Launcher(OSystem& osystem)
   : DialogContainer(osystem)
 {
-  const GUI::Size& s = myOSystem->settings().getSize("launcherres");
-  const GUI::Size& d = myOSystem->frameBuffer().desktopSize();
+  const GUI::Size& s = myOSystem.settings().getSize("launcherres");
+  const GUI::Size& d = myOSystem.frameBuffer().desktopSize();
   myWidth = s.w;  myHeight = s.h;
 
   // The launcher dialog is resizable, within certain bounds
@@ -42,10 +42,10 @@ Launcher::Launcher(OSystem* osystem)
   myWidth  = BSPF_min(myWidth, (uInt32)d.w);
   myHeight = BSPF_min(myHeight, (uInt32)d.h);
 
-  myOSystem->settings().setValue("launcherres",
-                                 GUI::Size(myWidth, myHeight));
+  myOSystem.settings().setValue("launcherres",
+                                GUI::Size(myWidth, myHeight));
 
-  myBaseDialog = new LauncherDialog(myOSystem, this, 0, 0, myWidth, myHeight);
+  myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,7 +57,7 @@ Launcher::~Launcher()
 FBInitStatus Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
-  return myOSystem->frameBuffer().createDisplay(title, myWidth, myHeight);
+  return myOSystem.frameBuffer().createDisplay(title, myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

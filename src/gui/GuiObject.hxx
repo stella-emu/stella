@@ -73,9 +73,9 @@ class GuiObject : public CommandReceiver
 
     virtual ~GuiObject() {}
 
-    OSystem& instance()       { return myOSystem; }
-    DialogContainer& parent() { return myParent;  }
-    Dialog& dialog()          { return myDialog;  }
+    OSystem& instance() const       { return myOSystem; }
+    DialogContainer& parent() const { return myParent;  }
+    Dialog& dialog() const          { return myDialog;  }
 
     virtual int getAbsX() const     { return _x; }
     virtual int getAbsY() const     { return _y; }

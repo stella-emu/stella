@@ -32,8 +32,8 @@ class OSystem;
 class HelpDialog : public Dialog
 {
   public:
-    HelpDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font);
-    ~HelpDialog();
+    HelpDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
+    virtual ~HelpDialog();
 
   protected:
     enum { kLINES_PER_PAGE = 10 };
@@ -50,8 +50,8 @@ class HelpDialog : public Dialog
     uInt8 myNumPages;
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    virtual void updateStrings(uInt8 page, uInt8 lines, string& title);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void updateStrings(uInt8 page, uInt8 lines, string& title);
     void displayInfo();
     void loadConfig() { displayInfo(); }
 };

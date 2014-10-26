@@ -46,7 +46,7 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
+LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     myStartButton(NULL),
@@ -183,14 +183,14 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   l.push_back("Power-on options", "override");
   l.push_back("Filter listing", "filter");
   l.push_back("Reload listing", "reload");
-  myMenu = new ContextMenu(this, osystem->frameBuffer().font(), l);
+  myMenu = new ContextMenu(this, osystem.frameBuffer().font(), l);
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
-  myGlobalProps = new GlobalPropsDialog(this, osystem->frameBuffer().font());
+  myGlobalProps = new GlobalPropsDialog(this, osystem.frameBuffer().font());
 
   // Create dialog whereby the files shown in the ROM listing can be customized
-  myFilters = new LauncherFilterDialog(this, osystem->frameBuffer().font());
+  myFilters = new LauncherFilterDialog(this, osystem.frameBuffer().font());
 
   // Figure out which filters are needed for the ROM listing
   setListFilters();

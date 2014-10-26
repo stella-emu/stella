@@ -36,10 +36,10 @@ class StaticTextWidget;
 class SnapshotDialog : public Dialog
 {
   public:
-    SnapshotDialog(OSystem* osystem, DialogContainer* parent,
+    SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss,
                    int max_w, int max_h);
-    ~SnapshotDialog();
+    virtual ~SnapshotDialog();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 

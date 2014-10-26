@@ -31,7 +31,7 @@ namespace GUI {
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const StringList& text, int max_w, int max_h, int cmd,
                        const string& okText, const string& cancelText)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, max_w, max_h),
+  : Dialog(boss->instance(), boss->parent(), 0, 0, max_w, max_h),
     CommandSender(boss),
     myCmd(cmd)
 {
@@ -46,7 +46,7 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const string& text, int max_w, int max_h, int cmd,
                        const string& okText, const string& cancelText)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, max_w, max_h),
+  : Dialog(boss->instance(), boss->parent(), 0, 0, max_w, max_h),
     CommandSender(boss),
     myCmd(cmd)
 {

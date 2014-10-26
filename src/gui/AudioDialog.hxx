@@ -34,8 +34,8 @@ class OSystem;
 class AudioDialog : public Dialog
 {
   public:
-    AudioDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font);
-    ~AudioDialog();
+    AudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
+    virtual ~AudioDialog();
 
   protected:
     SliderWidget*     myVolumeSlider;
@@ -50,7 +50,7 @@ class AudioDialog : public Dialog
     void setDefaults();
 
     void handleSoundEnableChange(bool active);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     enum {
       kVolumeChanged      = 'ADvc',

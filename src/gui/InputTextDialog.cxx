@@ -31,7 +31,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  const StringList& labels)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
+  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
     myEnableCenter(false),
     myErrorFlag(false),
@@ -45,7 +45,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont,
                                  const StringList& labels)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
+  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
     myEnableCenter(false),
     myErrorFlag(false),

@@ -49,7 +49,7 @@ class DebuggerDialog : public Dialog
       kLargeFontMinW  = 1300, kLargeFontMinH  = 940
     };
 
-    DebuggerDialog(OSystem* osystem, DialogContainer* parent,
+    DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
     ~DebuggerDialog();
 

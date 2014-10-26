@@ -47,7 +47,7 @@ class Dialog : public GuiObject
   friend class DialogContainer;
 
   public:
-    Dialog(OSystem* instance, DialogContainer* parent,
+    Dialog(OSystem& instance, DialogContainer& parent,
            int x, int y, int w, int h);
 
     virtual ~Dialog();
@@ -101,7 +101,7 @@ class Dialog : public GuiObject
     virtual bool handleJoyHat(int stick, int hat, int value);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-    Widget* findWidget(int x, int y); // Find the widget at pos x,y if any
+    Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
 
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                            const string& okText = "",

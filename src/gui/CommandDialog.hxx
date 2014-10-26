@@ -30,11 +30,11 @@ class OSystem;
 class CommandDialog : public Dialog
 {
   public:
-    CommandDialog(OSystem* osystem, DialogContainer* parent);
+    CommandDialog(OSystem& osystem, DialogContainer& parent);
     ~CommandDialog();
 
   protected:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     enum {
       kSelectCmd     = 'Csel',

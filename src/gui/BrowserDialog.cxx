@@ -39,7 +39,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                              int max_w, int max_h)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
+  : Dialog(boss->instance(), boss->parent(), 0, 0, 0, 0),
     CommandSender(boss)
 {
   // Set real dimensions

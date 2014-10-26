@@ -35,7 +35,7 @@
 #include "CheatCodeDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
+CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0)
 {

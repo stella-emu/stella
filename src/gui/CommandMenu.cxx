@@ -22,10 +22,10 @@
 #include "CommandMenu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CommandMenu::CommandMenu(OSystem* osystem)
+CommandMenu::CommandMenu(OSystem& osystem)
   : DialogContainer(osystem)
 {
-  myBaseDialog = new CommandDialog(myOSystem, this);
+  myBaseDialog = new CommandDialog(myOSystem, *this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

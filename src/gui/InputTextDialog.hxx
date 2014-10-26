@@ -56,7 +56,7 @@ class InputTextDialog : public Dialog, public CommandSender
   protected:
     void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                     const StringList& labels);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     typedef Common::Array<EditTextWidget*> InputWidget;

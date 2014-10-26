@@ -43,13 +43,13 @@ class OSystem;
 class OptionsDialog : public Dialog
 {
   public:
-    OptionsDialog(OSystem* osystem, DialogContainer* parent, GuiObject* boss,
+    OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
                   int max_w, int max_h, bool global);
     virtual ~OptionsDialog();
 
   private:
     void loadConfig();
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     VideoDialog*      myVideoDialog;

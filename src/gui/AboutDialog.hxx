@@ -32,9 +32,9 @@ class StaticTextWidget;
 class AboutDialog : public Dialog
 {
   public:
-    AboutDialog(OSystem* osystem, DialogContainer* parent,
+    AboutDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font);
-    ~AboutDialog();
+    virtual ~AboutDialog();
 
   protected:
     ButtonWidget* myNextButton;
@@ -49,8 +49,8 @@ class AboutDialog : public Dialog
     int myLinesPerPage;
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    virtual void updateStrings(int page, int lines, string& title);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void updateStrings(int page, int lines, string& title);
     void displayInfo();
 
     void loadConfig() { displayInfo(); }

@@ -36,7 +36,7 @@ class OSystem;
 class CheatCodeDialog : public Dialog
 {
   public:
-    CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
+    CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font);
     virtual ~CheatCodeDialog();
 

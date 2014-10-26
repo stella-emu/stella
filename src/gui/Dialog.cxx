@@ -36,9 +36,9 @@
  * ...
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::Dialog(OSystem* instance, DialogContainer* parent,
+Dialog::Dialog(OSystem& instance, DialogContainer& parent,
                int x, int y, int w, int h)
-  : GuiObject(*instance, *parent, *this, x, y, w, h),
+  : GuiObject(instance, parent, *this, x, y, w, h),
     _mouseWidget(0),
     _focusedWidget(0),
     _dragWidget(0),
@@ -656,7 +656,7 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
  * in the local coordinate system, i.e. relative to the top left of the dialog.
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Dialog::findWidget(int x, int y)
+Widget* Dialog::findWidget(int x, int y) const
 {
   return Widget::findWidgetInChain(_firstWidget, x, y);
 }

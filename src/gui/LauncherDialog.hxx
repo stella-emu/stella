@@ -56,9 +56,9 @@ class LauncherDialog : public Dialog
     };
 
   public:
-    LauncherDialog(OSystem* osystem, DialogContainer* parent,
+    LauncherDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
-    ~LauncherDialog();
+    virtual ~LauncherDialog();
 
     /**
       Get MD5sum for the currently selected file

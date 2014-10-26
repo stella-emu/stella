@@ -37,7 +37,7 @@ class CommandMenu : public DialogContainer
     /**
       Create a new menu stack
     */
-    CommandMenu(OSystem* osystem);
+    CommandMenu(OSystem& osystem);
 
     /**
       Destructor

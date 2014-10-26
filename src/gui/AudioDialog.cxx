@@ -35,7 +35,7 @@
 #include "AudioDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
+AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0)
 {

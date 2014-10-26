@@ -26,10 +26,10 @@
 class Properties;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Menu::Menu(OSystem* osystem)
+Menu::Menu(OSystem& osystem)
   : DialogContainer(osystem)
 {
-  myBaseDialog = new OptionsDialog(myOSystem, this, 0,
+  myBaseDialog = new OptionsDialog(myOSystem, *this, 0,
       FrameBuffer::kFBMinW, FrameBuffer::kFBMinH, false);
 }
 

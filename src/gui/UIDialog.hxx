@@ -35,8 +35,8 @@ class OSystem;
 class UIDialog : public Dialog
 {
   public:
-    UIDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font);
-    ~UIDialog();
+    UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
+    virtual ~UIDialog();
 
   protected:
     TabWidget* myTab;
@@ -67,7 +67,7 @@ class UIDialog : public Dialog
     void saveConfig();
     void setDefaults();
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     enum {
       kLWidthChanged  = 'UIlw',

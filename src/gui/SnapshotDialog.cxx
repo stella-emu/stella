@@ -30,7 +30,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SnapshotDialog::SnapshotDialog(
-      OSystem* osystem, DialogContainer* parent,
+      OSystem& osystem, DialogContainer& parent,
       const GUI::Font& font, GuiObject* boss,
       int max_w, int max_h)
   : Dialog(osystem, parent, 0, 0, 0, 0),

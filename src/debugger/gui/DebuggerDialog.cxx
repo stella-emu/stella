@@ -45,7 +45,7 @@
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
+DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     myTab(NULL),

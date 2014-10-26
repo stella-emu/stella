@@ -42,7 +42,7 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     void saveConfig();
     void setDefaults();
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     enum {

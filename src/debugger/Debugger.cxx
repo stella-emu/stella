@@ -111,7 +111,7 @@ static const char* pseudo_registers[][2] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem& osystem, Console& console)
-  : DialogContainer(&osystem),
+  : DialogContainer(osystem),
     myConsole(console),
     mySystem(console.system()),
     myDialog(NULL),
@@ -166,8 +166,8 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-  const GUI::Size& s = myOSystem->settings().getSize("dbg.res");
-  const GUI::Size& d = myOSystem->frameBuffer().desktopSize();
+  const GUI::Size& s = myOSystem.settings().getSize("dbg.res");
+  const GUI::Size& d = myOSystem.frameBuffer().desktopSize();
   myWidth = s.w;  myHeight = s.h;
 
   // The debugger dialog is resizable, within certain bounds
@@ -177,13 +177,13 @@ void Debugger::initialize()
   myWidth  = BSPF_min(myWidth, (uInt32)d.w);
   myHeight = BSPF_min(myHeight, (uInt32)d.h);
 
-  myOSystem->settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
+  myOSystem.settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
 
   delete myBaseDialog;  myBaseDialog = myDialog = NULL;
-  myDialog = new DebuggerDialog(myOSystem, this, 0, 0, myWidth, myHeight);
+  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
   myBaseDialog = myDialog;
 
-  myRewindManager = new RewindManager(*myOSystem, myDialog->rewindButton());
+  myRewindManager = new RewindManager(myOSystem, myDialog->rewindButton());
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 }
 
@@ -191,13 +191,13 @@ void Debugger::initialize()
 FBInitStatus Debugger::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  return myOSystem->frameBuffer().createDisplay(title, myWidth, myHeight);
+  return myOSystem.frameBuffer().createDisplay(title, myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::start(const string& message, int address)
 {
-  if(myOSystem->eventHandler().enterDebugMode())
+  if(myOSystem.eventHandler().enterDebugMode())
   {
     // This must be done *after* we enter debug mode,
     // so the message isn't erased
@@ -215,7 +215,7 @@ bool Debugger::start(const string& message, int address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::startWithFatalError(const string& message)
 {
-  if(myOSystem->eventHandler().enterDebugMode())
+  if(myOSystem.eventHandler().enterDebugMode())
   {
     // This must be done *after* we enter debug mode,
     // so the dialog is properly shown
@@ -229,9 +229,9 @@ bool Debugger::startWithFatalError(const string& message)
 void Debugger::quit(bool exitrom)
 {
   if(exitrom)
-    myOSystem->eventHandler().handleEvent(Event::LauncherMode, 1);
+    myOSystem.eventHandler().handleEvent(Event::LauncherMode, 1);
   else
-    myOSystem->eventHandler().leaveDebugMode();
+    myOSystem.eventHandler().leaveDebugMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -240,12 +240,12 @@ string Debugger::autoExec()
   ostringstream buf;
 
   // autoexec.stella is always run
-  FilesystemNode autoexec(myOSystem->baseDir() + "autoexec.stella");
+  FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.stella");
   buf << "autoExec():" << endl
       << myParser->exec(autoexec) << endl;
 
   // Also, "romname.stella" if present
-  FilesystemNode romname(myOSystem->romFile().getPathWithExt(".stella"));
+  FilesystemNode romname(myOSystem.romFile().getPathWithExt(".stella"));
   buf << myParser->exec(romname) << endl;
 
   // Init builtins
@@ -310,7 +310,7 @@ void Debugger::saveState(int state)
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  myOSystem->state().saveState(state);
+  myOSystem.state().saveState(state);
   lockBankswitchState();
 }
 
@@ -320,7 +320,7 @@ void Debugger::loadState(int state)
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  myOSystem->state().loadState(state);
+  myOSystem.state().loadState(state);
   lockBankswitchState();
 }
 
@@ -333,7 +333,7 @@ int Debugger::step()
   int cyc = mySystem.cycles();
 
   unlockBankswitchState();
-  myOSystem->console().tia().updateScanlineByStep();
+  myOSystem.console().tia().updateScanlineByStep();
   lockBankswitchState();
 
   return mySystem.cycles() - cyc;
@@ -362,7 +362,7 @@ int Debugger::trace()
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     unlockBankswitchState();
-    myOSystem->console().tia().updateScanlineByTrace(targetPC);
+    myOSystem.console().tia().updateScanlineByTrace(targetPC);
     lockBankswitchState();
 
     return mySystem.cycles() - cyc;
@@ -439,7 +439,7 @@ void Debugger::nextScanline(int lines)
   unlockBankswitchState();
   while(lines)
   {
-    myOSystem->console().tia().updateScanline();
+    myOSystem.console().tia().updateScanline();
     --lines;
   }
   lockBankswitchState();
@@ -454,7 +454,7 @@ void Debugger::nextFrame(int frames)
   unlockBankswitchState();
   while(frames)
   {
-    myOSystem->console().tia().update();
+    myOSystem.console().tia().update();
     --frames;
   }
   lockBankswitchState();

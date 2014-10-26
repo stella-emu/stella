@@ -31,7 +31,7 @@
   new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight, label, cmd); xoffset += buttonWidth + 6
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
+CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, 0, 0, 16, 16)
 {
   const GUI::Font& font = instance().frameBuffer().font();

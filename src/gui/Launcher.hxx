@@ -39,7 +39,7 @@ class Launcher : public DialogContainer
     /**
       Create a new menu stack
     */
-    Launcher(OSystem* osystem);
+    Launcher(OSystem& osystem);
 
     /**
       Destructor

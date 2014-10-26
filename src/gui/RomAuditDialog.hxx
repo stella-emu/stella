@@ -35,9 +35,9 @@ class StaticTextWidget;
 class RomAuditDialog : public Dialog
 {
   public:
-    RomAuditDialog(OSystem* osystem, DialogContainer* parent,
+    RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, int max_w, int max_h);
-    ~RomAuditDialog();
+    virtual ~RomAuditDialog();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 

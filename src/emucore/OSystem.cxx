@@ -193,9 +193,9 @@ bool OSystem::create()
 #endif
 
   // Create menu and launcher GUI objects
-  myMenu = new Menu(this);
-  myCommandMenu = new CommandMenu(this);
-  myLauncher = new Launcher(this);
+  myMenu = new Menu(*this);
+  myCommandMenu = new CommandMenu(*this);
+  myLauncher = new Launcher(*this);
   myStateManager = new StateManager(*this);
 
   // Create the sound object; the sound subsystem isn't actually

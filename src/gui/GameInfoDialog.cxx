@@ -35,7 +35,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::GameInfoDialog(
-      OSystem* osystem, DialogContainer* parent, const GUI::Font& font,
+      OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
       GuiObject* boss)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     CommandSender(boss),

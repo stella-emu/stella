@@ -37,7 +37,7 @@
 #include "UIDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
+UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0)
 {

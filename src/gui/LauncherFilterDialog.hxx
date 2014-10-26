@@ -64,7 +64,7 @@ class LauncherFilterDialog : public Dialog, public CommandSender
     void setDefaults();
 
     void handleFileTypeChange(const string& type);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     PopUpWidget*    myFileType;

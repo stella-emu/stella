@@ -32,7 +32,7 @@ class StringListWidget;
 class LoggerDialog : public Dialog
 {
   public:
-    LoggerDialog(OSystem* osystem, DialogContainer* parent,
+    LoggerDialog(OSystem& osystem, DialogContainer& parent,
                  const GUI::Font& font, int max_w, int max_h);
     virtual ~LoggerDialog();
 
@@ -41,7 +41,7 @@ class LoggerDialog : public Dialog
     void saveConfig();
     void saveLogFile();
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     StringListWidget* myLogInfo;

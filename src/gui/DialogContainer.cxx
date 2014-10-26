@@ -26,7 +26,7 @@
 #include "DialogContainer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DialogContainer::DialogContainer(OSystem* osystem)
+DialogContainer::DialogContainer(OSystem& osystem)
   : myOSystem(osystem),
     myBaseDialog(NULL),
     myTime(0)
@@ -132,7 +132,7 @@ void DialogContainer::reStack()
 
   myBaseDialog->open(false);  // don't force a refresh
 
-  myOSystem->frameBuffer().refresh();
+  myOSystem.frameBuffer().refresh();
 
   // Reset all continuous events
   reset();
