@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -70,20 +69,14 @@ void Cartridge2K::reset()
 void Cartridge2K::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1000 & mask) == 0);
 
   // Map ROM image into the system
   System::PageAccess access(this, System::PA_READ);
-
-  for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
+  for(uInt32 address = 0x1000; address < 0x2000; address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[address & myMask];
     access.codeAccessBase = &myCodeAccessBase[address & myMask];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
 }
 

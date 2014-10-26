@@ -68,12 +68,12 @@ void CartridgeMC::reset()
 void CartridgeMC::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
 
+/*
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1000 & mask) == 0) && ((0x1400 & mask) == 0) &&
       ((0x1800 & mask) == 0) && ((0x1C00 & mask) == 0));
+*/
 
   // Set the page accessing methods for the hot spots in the TIA.  For 
   // correct emulation I would need to chain any accesses below 0x40 to 
@@ -84,13 +84,13 @@ void CartridgeMC::install(System& system)
   //
   System::PageAccess access(this, System::PA_READWRITE);
 
-  for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
+  for(uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   // Map the cartridge into the system
   access.type = System::PA_READ;  // We don't yet indicate RAM areas
-  for(uInt32 j = 0x1000; j < 0x2000; j += (1 << shift))
-    mySystem->setPageAccess(j >> shift, access);
+  for(uInt32 j = 0x1000; j < 0x2000; j += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

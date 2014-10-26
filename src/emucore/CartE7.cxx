@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -61,28 +60,24 @@ void CartridgeE7::reset()
 void CartridgeE7::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert(((0x1400 & mask) == 0) && ((0x1800 & mask) == 0) &&
-      ((0x1900 & mask) == 0) && ((0x1A00 & mask) == 0));
 
   System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
-  for(uInt32 i = (0x1FE0 & ~mask); i < 0x2000; i += (1 << shift))
+  for(uInt32 i = (0x1FE0 & ~System::PAGE_MASK); i < 0x2000;
+      i += (1 << System::PAGE_SHIFT))
   {
     access.codeAccessBase = &myCodeAccessBase[8128];
-    mySystem->setPageAccess(i >> shift, access);
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
   }
 
   // Setup the second segment to always point to the last ROM slice
-  for(uInt32 j = 0x1A00; j < (0x1FE0U & ~mask); j += (1 << shift))
+  for(uInt32 j = 0x1A00; j < (0x1FE0U & ~System::PAGE_MASK);
+      j += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[7 * 2048 + (j & 0x07FF)];
     access.codeAccessBase = &myCodeAccessBase[7 * 2048 + (j & 0x07FF)];
-    mySystem->setPageAccess(j >> shift, access);
+    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
   }
   myCurrentSlice[1] = 7;
 
@@ -166,7 +161,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
   // Remember what bank we're in
   myCurrentRAM = bank;
   uInt16 offset = bank << 8;
-  uInt16 shift = mySystem->pageShift();
+  uInt16 shift = System::PAGE_SHIFT;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_WRITE);
@@ -199,7 +194,6 @@ bool CartridgeE7::bank(uInt16 slice)
   // Remember what bank we're in
   myCurrentSlice[0] = slice;
   uInt16 offset = slice << 11;
-  uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
   if(slice != 7)
@@ -207,11 +201,12 @@ bool CartridgeE7::bank(uInt16 slice)
     System::PageAccess access(this, System::PA_READ);
 
     // Map ROM image into first segment
-    for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
+    for(uInt32 address = 0x1000; address < 0x1800;
+        address += (1 << System::PAGE_SHIFT))
     {
       access.directPeekBase = &myImage[offset + (address & 0x07FF)];
       access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x07FF)];
-      mySystem->setPageAccess(address >> shift, access);
+      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
     }
   }
   else
@@ -219,21 +214,21 @@ bool CartridgeE7::bank(uInt16 slice)
     System::PageAccess access(this, System::PA_WRITE);
 
     // Set the page accessing method for the 1K slice of RAM writing pages
-    for(uInt32 j = 0x1000; j < 0x1400; j += (1 << shift))
+    for(uInt32 j = 0x1000; j < 0x1400; j += (1 << System::PAGE_SHIFT))
     {
       access.directPokeBase = &myRAM[j & 0x03FF];
       access.codeAccessBase = &myCodeAccessBase[8192 + (j & 0x03FF)];
-      mySystem->setPageAccess(j >> shift, access);
+      mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
     }
 
     // Set the page accessing method for the 1K slice of RAM reading pages
     access.directPokeBase = 0;
     access.type = System::PA_READ;
-    for(uInt32 k = 0x1400; k < 0x1800; k += (1 << shift))
+    for(uInt32 k = 0x1400; k < 0x1800; k += (1 << System::PAGE_SHIFT))
     {
       access.directPeekBase = &myRAM[k & 0x03FF];
       access.codeAccessBase = &myCodeAccessBase[8192 + (k & 0x03FF)];
-      mySystem->setPageAccess(k >> shift, access);
+      mySystem->setPageAccess(k >> System::PAGE_SHIFT, access);
     }
   }
   return myBankChanged = true;

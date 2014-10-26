@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -58,11 +57,6 @@ void Cartridge3F::reset()
 void Cartridge3F::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1800 & mask) == 0);
 
   System::PageAccess access(this, System::PA_READWRITE);
 
@@ -70,16 +64,16 @@ void Cartridge3F::install(System& system)
   // we need to chain any accesses below 0x40 to the TIA. Our poke() method
   // does this via mySystem->tiaPoke(...), at least until we come up with a
   // cleaner way to do it).
-  for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
+  for(uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   // Setup the second segment to always point to the last ROM slice
   access.type = System::PA_READ;
-  for(uInt32 j = 0x1800; j < 0x2000; j += (1 << shift))
+  for(uInt32 j = 0x1800; j < 0x2000; j += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[(mySize - 2048) + (j & 0x07FF)];
     access.codeAccessBase = &myCodeAccessBase[(mySize - 2048) + (j & 0x07FF)];
-    mySystem->setPageAccess(j >> shift, access);
+    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
   }
 
   // Install pages for startup bank into the first segment
@@ -139,17 +133,17 @@ bool Cartridge3F::bank(uInt16 bank)
   }
 
   uInt32 offset = myCurrentBank << 11;
-  uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
 
   // Map ROM image into the system
-  for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
+  for(uInt32 address = 0x1000; address < 0x1800;
+      address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[offset + (address & 0x07FF)];
     access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x07FF)];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
 }

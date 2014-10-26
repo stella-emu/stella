@@ -115,20 +115,14 @@ void M6532::install(System& system, Device& device)
 {
   // Remember which system I'm installed in
   mySystem = &system;
-
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1080 & mask) == 0);
   
   // All accesses are to the given device
   System::PageAccess access(&device, System::PA_READWRITE);
 
   // We're installing in a 2600 system
-  for(int address = 0; address < 8192; address += (1 << shift))
+  for(int address = 0; address < 8192; address += (1 << System::PAGE_SHIFT))
     if((address & 0x1080) == 0x0080)
-      mySystem->setPageAccess(address >> shift, access);
+      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

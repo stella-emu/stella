@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "OSystem.hxx"
@@ -85,16 +84,11 @@ void CartridgeCTY::systemCyclesReset()
 void CartridgeCTY::install(System& system)
 {
   mySystem = &system;
-  uInt16 mask = mySystem->pageMask();
-  uInt16 shift = mySystem->pageShift();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert(((0x1000 & mask) == 0) && ((0x1080 & mask) == 0));
 
   // Map all RAM accesses to call peek and poke
   System::PageAccess access(this, System::PA_READ);
-  for(uInt32 i = 0x1000; i < 0x1080; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
+  for(uInt32 i = 0x1000; i < 0x1080; i += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   // Install pages for the startup bank
   bank(myStartBank);
@@ -252,14 +246,14 @@ bool CartridgeCTY::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank << 12;
-  uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
-  for(uInt32 address = 0x1080; address < 0x2000; address += (1 << shift))
+  for(uInt32 address = 0x1080; address < 0x2000;
+      address += (1 << System::PAGE_SHIFT))
   {
     access.codeAccessBase = &myCodeAccessBase[myCurrentBank + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
 }

@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -65,11 +64,6 @@ void Cartridge3E::reset()
 void Cartridge3E::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1800 & mask) == 0);
 
   System::PageAccess access(this, System::PA_READWRITE);
 
@@ -77,16 +71,16 @@ void Cartridge3E::install(System& system)
   // we need to chain any accesses below 0x40 to the TIA. Our poke() method
   // does this via mySystem->tiaPoke(...), at least until we come up with a
   // cleaner way to do it).
-  for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
+  for(uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   // Setup the second segment to always point to the last ROM slice
   access.type = System::PA_READ;
-  for(uInt32 j = 0x1800; j < 0x2000; j += (1 << shift))
+  for(uInt32 j = 0x1800; j < 0x2000; j += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[(mySize - 2048) + (j & 0x07FF)];
     access.codeAccessBase = &myCodeAccessBase[(mySize - 2048) + (j & 0x07FF)];
-    mySystem->setPageAccess(j >> shift, access);
+    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
   }
 
   // Install pages for the startup bank into the first segment
@@ -173,17 +167,17 @@ bool Cartridge3E::bank(uInt16 bank)
     }
   
     uInt32 offset = myCurrentBank << 11;
-    uInt16 shift = mySystem->pageShift();
   
     // Setup the page access methods for the current bank
     System::PageAccess access(this, System::PA_READ);
 
     // Map ROM image into the system
-    for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
+    for(uInt32 address = 0x1000; address < 0x1800;
+        address += (1 << System::PAGE_SHIFT))
     {
       access.directPeekBase = &myImage[offset + (address & 0x07FF)];
       access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x07FF)];
-      mySystem->setPageAccess(address >> shift, access);
+      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
     }
   }
   else
@@ -193,29 +187,28 @@ bool Cartridge3E::bank(uInt16 bank)
     myCurrentBank = bank + 256;
 
     uInt32 offset = bank << 10;
-    uInt16 shift = mySystem->pageShift();
     uInt32 address;
   
     // Setup the page access methods for the current bank
     System::PageAccess access(this, System::PA_READ);
 
     // Map read-port RAM image into the system
-    for(address = 0x1000; address < 0x1400; address += (1 << shift))
+    for(address = 0x1000; address < 0x1400; address += (1 << System::PAGE_SHIFT))
     {
       access.directPeekBase = &myRAM[offset + (address & 0x03FF)];
       access.codeAccessBase = &myCodeAccessBase[mySize + offset + (address & 0x03FF)];
-      mySystem->setPageAccess(address >> shift, access);
+      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
     }
 
     access.directPeekBase = 0;
     access.type = System::PA_WRITE;
 
     // Map write-port RAM image into the system
-    for(address = 0x1400; address < 0x1800; address += (1 << shift))
+    for(address = 0x1400; address < 0x1800; address += (1 << System::PAGE_SHIFT))
     {
       access.directPokeBase = &myRAM[offset + (address & 0x03FF)];
       access.codeAccessBase = &myCodeAccessBase[mySize + offset + (address & 0x03FF)];
-      mySystem->setPageAccess(address >> shift, access);
+      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
     }
   }
   return myBankChanged = true;

@@ -49,18 +49,27 @@ class System : public Serializable
 {
   public:
     /**
-      Create a new system with an addressing space of 2^n bytes and
-      pages of 2^m bytes.
-
-      @param n Log base 2 of the addressing space size
-      @param m Log base 2 of the page size
+      Create a new system with an addressing space of 2^13 bytes and
+      pages of 2^6 bytes.
     */
-    System(uInt16 n = 13, uInt16 m = 6);
+    System();
 
     /**
       Destructor
     */
     virtual ~System();
+
+    // Mask to apply to an address before accessing memory
+    static const uInt16 ADDRESS_MASK = (1 << 13) - 1;
+
+    // Amount to shift an address by to determine what page it's on
+    static const uInt16 PAGE_SHIFT = 6;
+
+    // Mask to apply to an address to obtain its page offset
+    static const uInt16 PAGE_MASK = (1 << PAGE_SHIFT) - 1;
+ 
+    // Number of pages in the system
+    static const uInt16 NUM_PAGES = 1 << (13 - PAGE_SHIFT);
 
   public:
     /**
@@ -148,27 +157,6 @@ class System : public Serializable
     */
     const NullDevice& nullDevice() const { return myNullDevice; }
 
-    /**
-      Get the total number of pages available in the system.
-
-      @return The total number of pages available
-    */
-    uInt16 numberOfPages() const { return myNumberOfPages; }
-
-    /**
-      Get the amount to right shift an address by to obtain its page.
-
-      @return The amount to right shift an address by to get its page
-    */
-    uInt16 pageShift() const { return myPageShift; }
-
-    /**
-      Get the mask to apply to an address to obtain its page offset.
-
-      @return The mask to apply to an address to obtain its page offset
-    */
-    uInt16 pageMask() const { return myPageMask; }
- 
   public:
     /**
       Get the number of system cycles which have passed since the last
@@ -414,18 +402,6 @@ class System : public Serializable
     string name() const { return "System"; }
 
   private:
-    // Mask to apply to an address before accessing memory
-    const uInt16 myAddressMask;
-
-    // Amount to shift an address by to determine what page it's on
-    const uInt16 myPageShift;
-
-    // Mask to apply to an address to obtain its page offset
-    const uInt16 myPageMask;
- 
-    // Number of pages in the system
-    const uInt16 myNumberOfPages;
-
     // Pointer to a dynamically allocated array of PageAccess structures
     PageAccess* myPageAccessTable;
 

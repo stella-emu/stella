@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -81,40 +80,36 @@ void CartridgeCV::reset()
 void CartridgeCV::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1800 & mask) == 0);
 
   System::PageAccess access(this, System::PA_READ);
 
   // Map ROM image into the system
-  for(uInt32 address = 0x1800; address < 0x2000; address += (1 << shift))
+  for(uInt32 address = 0x1800; address < 0x2000;
+      address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[address & 0x07FF];
     access.codeAccessBase = &myCodeAccessBase[address & 0x07FF];
-    mySystem->setPageAccess(address >> mySystem->pageShift(), access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
 
   // Set the page accessing method for the RAM writing pages
   access.directPeekBase = 0;
   access.codeAccessBase = 0;
   access.type = System::PA_WRITE;
-  for(uInt32 j = 0x1400; j < 0x1800; j += (1 << shift))
+  for(uInt32 j = 0x1400; j < 0x1800; j += (1 << System::PAGE_SHIFT))
   {
     access.directPokeBase = &myRAM[j & 0x03FF];
-    mySystem->setPageAccess(j >> shift, access);
+    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
   }
 
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
   access.type = System::PA_READ;
-  for(uInt32 k = 0x1000; k < 0x1400; k += (1 << shift))
+  for(uInt32 k = 0x1000; k < 0x1400; k += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myRAM[k & 0x03FF];
     access.codeAccessBase = &myCodeAccessBase[2048 + (k & 0x03FF)];
-    mySystem->setPageAccess(k >> shift, access);
+    mySystem->setPageAccess(k >> System::PAGE_SHIFT, access);
   }
 }
 

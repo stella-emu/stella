@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -85,17 +84,11 @@ void CartridgeDPC::systemCyclesReset()
 void CartridgeDPC::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
-
-  System::PageAccess access(this, System::PA_READWRITE);
 
   // Set the page accessing method for the DPC reading & writing pages
-  for(uInt32 j = 0x1000; j < 0x1080; j += (1 << shift))
-    mySystem->setPageAccess(j >> shift, access);
+  System::PageAccess access(this, System::PA_READWRITE);
+  for(uInt32 j = 0x1000; j < 0x1080; j += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
 
   // Install pages for the startup bank
   bank(myStartBank);
@@ -415,25 +408,24 @@ bool CartridgeDPC::bank(uInt16 bank)
   // Remember what bank we're in
   myCurrentBank = bank;
   uInt16 offset = myCurrentBank << 12;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
 
   System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
-  for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
+  for(uInt32 i = (0x1FF8 & ~System::PAGE_MASK); i < 0x2000;
+      i += (1 << System::PAGE_SHIFT))
   {
     access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
-    mySystem->setPageAccess(i >> shift, access);
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
   }
 
   // Setup the page access methods for the current bank
-  for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);
-      address += (1 << shift))
+  for(uInt32 address = 0x1080; address < (0x1FF8U & ~System::PAGE_MASK);
+      address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myProgramImage[offset + (address & 0x0FFF)];
     access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
 }

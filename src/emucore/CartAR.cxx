@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "M6502.hxx"
@@ -96,19 +95,13 @@ void CartridgeAR::systemCyclesReset()
 void CartridgeAR::install(System& system)
 {
   mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
 
   my6502 = &(mySystem->m6502());
 
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1000 & mask) == 0);
-
   // Map all of the accesses to call peek and poke (we don't yet indicate RAM areas)
   System::PageAccess access(this, System::PA_READ);
-
-  for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
+  for(uInt32 i = 0x1000; i < 0x2000; i += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   bankConfiguration(0);
 }

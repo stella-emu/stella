@@ -27,12 +27,8 @@
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::System(uInt16 n, uInt16 m)
-  : myAddressMask((1 << n) - 1),
-    myPageShift(m),
-    myPageMask((1 << m) - 1),
-    myNumberOfPages(1 << (n - m)),
-    myNumberOfDevices(0),
+System::System()
+  : myNumberOfDevices(0),
     myM6502(0),
     myTIA(0),
     myCycles(0),
@@ -40,19 +36,16 @@ System::System(uInt16 n, uInt16 m)
     myDataBusLocked(false),
     mySystemInAutodetect(false)
 {
-  // Make sure the arguments are reasonable
-  assert((1 <= m) && (m <= n) && (n <= 16));
-
   // Create a new random number generator
   myRandom = new Random();
 
   // Allocate page table and dirty list
-  myPageAccessTable = new PageAccess[myNumberOfPages];
-  myPageIsDirtyTable = new bool[myNumberOfPages];
+  myPageAccessTable = new PageAccess[NUM_PAGES];
+  myPageIsDirtyTable = new bool[NUM_PAGES];
 
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PA_READ);
-  for(int page = 0; page < myNumberOfPages; ++page)
+  for(int page = 0; page < NUM_PAGES; ++page)
   {
     setPageAccess(page, access);
     myPageIsDirtyTable[page] = false;
@@ -159,7 +152,7 @@ void System::resetCycles()
 void System::setPageAccess(uInt16 page, const PageAccess& access)
 {
   // Make sure the page is within range
-  assert(page < myNumberOfPages);
+  assert(page < NUM_PAGES);
 
   // Make sure the access methods make sense
   assert(access.device != 0);
@@ -171,7 +164,7 @@ void System::setPageAccess(uInt16 page, const PageAccess& access)
 const System::PageAccess& System::getPageAccess(uInt16 page) const
 {
   // Make sure the page is within range
-  assert(page < myNumberOfPages);
+  assert(page < NUM_PAGES);
 
   return myPageAccessTable[page];
 }
@@ -179,20 +172,20 @@ const System::PageAccess& System::getPageAccess(uInt16 page) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::PageAccessType System::getPageAccessType(uInt16 addr) const
 {
-  return myPageAccessTable[(addr & myAddressMask) >> myPageShift].type;
+  return myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT].type;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::setDirtyPage(uInt16 addr)
 {
-  myPageIsDirtyTable[(addr & myAddressMask) >> myPageShift] = true;
+  myPageIsDirtyTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT] = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 {
-  uInt16 start_page = (start_addr & myAddressMask) >> myPageShift;
-  uInt16 end_page = (end_addr & myAddressMask) >> myPageShift;
+  uInt16 start_page = (start_addr & ADDRESS_MASK) >> PAGE_SHIFT;
+  uInt16 end_page = (end_addr & ADDRESS_MASK) >> PAGE_SHIFT;
 
   for(uInt16 page = start_page; page <= end_page; ++page)
     if(myPageIsDirtyTable[page])
@@ -204,19 +197,19 @@ bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::clearDirtyPages()
 {
-  for(uInt32 i = 0; i < myNumberOfPages; ++i)
+  for(uInt32 i = 0; i < NUM_PAGES; ++i)
     myPageIsDirtyTable[i] = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 System::peek(uInt16 addr, uInt8 flags)
 {
-  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
 
 #ifdef DEBUGGER_SUPPORT
   // Set access type
   if(access.codeAccessBase)
-    *(access.codeAccessBase + (addr & myPageMask)) |= flags;
+    *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
   else
     access.device->setAccessFlags(addr, flags);
 #endif
@@ -224,7 +217,7 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
   // See if this page uses direct accessing or not 
   uInt8 result;
   if(access.directPeekBase)
-    result = *(access.directPeekBase + (addr & myPageMask));
+    result = *(access.directPeekBase + (addr & PAGE_MASK));
   else
     result = access.device->peek(addr);
 
@@ -239,14 +232,14 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::poke(uInt16 addr, uInt8 value)
 {
-  uInt16 page = (addr & myAddressMask) >> myPageShift;
+  uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
   PageAccess& access = myPageAccessTable[page];
 
   // See if this page uses direct accessing or not 
   if(access.directPokeBase)
   {
     // Since we have direct access to this poke, we can dirty its page
-    *(access.directPokeBase + (addr & myPageMask)) = value;
+    *(access.directPokeBase + (addr & PAGE_MASK)) = value;
     myPageIsDirtyTable[page] = true;
   }
   else
@@ -265,10 +258,10 @@ void System::poke(uInt16 addr, uInt8 value)
 uInt8 System::getAccessFlags(uInt16 addr) const
 {
 #ifdef DEBUGGER_SUPPORT
-  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
 
   if(access.codeAccessBase)
-    return *(access.codeAccessBase + (addr & myPageMask));
+    return *(access.codeAccessBase + (addr & PAGE_MASK));
   else
     return access.device->getAccessFlags(addr);
 #else
@@ -280,10 +273,10 @@ uInt8 System::getAccessFlags(uInt16 addr) const
 void System::setAccessFlags(uInt16 addr, uInt8 flags)
 {
 #ifdef DEBUGGER_SUPPORT
-  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
 
   if(access.codeAccessBase)
-    *(access.codeAccessBase + (addr & myPageMask)) |= flags;
+    *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
   else
     access.device->setAccessFlags(addr, flags);
 #endif
@@ -346,10 +339,6 @@ bool System::load(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(const System& s)
-  : myAddressMask(s.myAddressMask),
-    myPageShift(s.myPageShift),
-    myPageMask(s.myPageMask),
-    myNumberOfPages(s.myNumberOfPages)
 {
   assert(false);
 }

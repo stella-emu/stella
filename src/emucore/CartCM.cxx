@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -61,10 +60,6 @@ void CartridgeCM::reset()
 void CartridgeCM::install(System& system)
 {
   mySystem = &system;
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1000 & mask) == 0);
 
   // Mirror all access in RIOT; by doing so we're taking responsibility
   // for that address space in peek and poke below.
@@ -111,7 +106,6 @@ bool CartridgeCM::bank(uInt16 bank)
   // Remember what bank we're in
   myCurrentBank = bank;
   uInt16 offset = myCurrentBank << 12;
-  uInt16 shift = mySystem->pageShift();
 
   // Although this scheme contains four 4K ROM banks and one 2K RAM bank,
   // it's easier to think of things in terms of 2K slices, as follows:
@@ -124,15 +118,17 @@ bool CartridgeCM::bank(uInt16 bank)
   System::PageAccess access(this, System::PA_READ);
 
   // Lower 2K (always ROM)
-  for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
+  for(uInt32 address = 0x1000; address < 0x1800;
+      address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
 
   // Upper 2K (RAM or ROM)
-  for(uInt32 address = 0x1800; address < 0x2000; address += (1 << shift))
+  for(uInt32 address = 0x1800; address < 0x2000;
+      address += (1 << System::PAGE_SHIFT))
   {
     access.type = System::PA_READWRITE;
 
@@ -152,7 +148,7 @@ bool CartridgeCM::bank(uInt16 bank)
     else
       access.directPokeBase = 0;
 
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
 
   return myBankChanged = true;

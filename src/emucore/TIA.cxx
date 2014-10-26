@@ -252,16 +252,15 @@ void TIA::install(System& system, Device& device)
   // Remember which system I'm installed in
   mySystem = &system;
 
-  uInt16 shift = mySystem->pageShift();
   mySystem->resetCycles();
 
   // All accesses are to the given device
   System::PageAccess access(&device, System::PA_READWRITE);
 
   // We're installing in a 2600 system
-  for(uInt32 i = 0; i < 8192; i += (1 << shift))
+  for(uInt32 i = 0; i < 8192; i += (1 << System::PAGE_SHIFT))
     if((i & 0x1080) == 0x0000)
-      mySystem->setPageAccess(i >> shift, access);
+      mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

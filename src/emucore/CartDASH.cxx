@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 
 #include "System.hxx"
@@ -74,20 +73,14 @@ void CartridgeDASH::install(System& system) {
 
   mySystem = &system;
 
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1800 & mask) == 0);
-
   System::PageAccess access(this, System::PA_READWRITE);
 
   // Set the page accessing methods for the hot spots (for 100% emulation
   // we need to chain any accesses below 0x40 to the TIA. Our poke() method
   // does this via mySystem->tiaPoke(...), at least until we come up with a
   // cleaner way to do it).
-  for (uInt32 i = 0x00; i < 0x40; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
+  for (uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
@@ -182,7 +175,7 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::bankRAMSlot(uInt16 bank) {
 
-  uInt16 shift = mySystem->pageShift();
+  uInt16 shift = System::PAGE_SHIFT;
 
   uInt16 bankNumber = (bank >> BANK_BITS) & 3;  // which bank # we are switching TO (BITS D6,D7) to 512 byte block
   uInt16 currentBank = bank & BIT_BANK_MASK;    // Wrap around/restrict to valid range
@@ -240,8 +233,6 @@ bool CartridgeDASH::bankROM(uInt8 bank) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::bankROMSlot(uInt16 bank) {
 
-  uInt16 shift = mySystem->pageShift();
-
   uInt16 bankNumber = (bank >> BANK_BITS) & 3;    // which bank # we are switching TO (BITS D6,D7)
   uInt16 currentBank = bank & BIT_BANK_MASK;      // Wrap around/restrict to valid range
   bool upper = bank & BITMASK_LOWERUPPER;         // is this the lower or upper 512b
@@ -256,17 +247,15 @@ void CartridgeDASH::bankROMSlot(uInt16 bank) {
   uInt32 start = 0x1000 + (bankNumber << ROM_BANK_TO_POWER) + (upper ? ROM_BANK_SIZE / 2 : 0);
   uInt32 end = start + ROM_BANK_SIZE / 2 - 1;
 
-  for (uInt32 address = start; address <= end; address += (1 << shift)) {
+  for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT)) {
     access.directPeekBase = &myImage[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
     access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::initializeBankState() {
-
-  const uInt16& shift = mySystem->pageShift();
 
   // Switch in each 512b slot
   for (uInt32 b = 0; b < 8; b++) {
@@ -276,8 +265,8 @@ void CartridgeDASH::initializeBankState() {
       System::PageAccess access(this, System::PA_READ);
       uInt32 start = 0x1000 + (b << RAM_BANK_TO_POWER);
       uInt32 end = start + RAM_BANK_SIZE - 1;
-      for (uInt32 address = start; address <= end; address += (1 << shift))
-        mySystem->setPageAccess(address >> shift, access);
+      for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
+        mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
 
     }
     else if (bankInUse[b] & BITMASK_ROMRAM)
