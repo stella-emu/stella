@@ -291,7 +291,7 @@ void FrameBufferSDL2::setWindowIcon()
   uInt32 rgba[256], icon[32 * 32];
   uInt8  mask[32][4];
 
-  sscanf(stella_icon[0], "%u %u %u %u", &w, &h, &ncols, &nbytes);
+  sscanf(stella_icon[0], "%2u %2u %2u %2u", &w, &h, &ncols, &nbytes);
   if((w != 32) || (h != 32) || (ncols > 255) || (nbytes > 1))
   {
     myOSystem.logMessage("ERROR: Couldn't load the application icon.", 0);

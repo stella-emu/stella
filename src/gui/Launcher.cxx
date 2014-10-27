@@ -63,17 +63,17 @@ FBInitStatus Launcher::initializeVideo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Launcher::selectedRomMD5()
 {
-  return ((LauncherDialog*)myBaseDialog)->selectedRomMD5();
+  return (static_cast<LauncherDialog*>(myBaseDialog))->selectedRomMD5();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FilesystemNode& Launcher::currentNode() const
 {
-  return ((LauncherDialog*)myBaseDialog)->currentNode();
+  return (static_cast<LauncherDialog*>(myBaseDialog))->currentNode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Launcher::reload()
 {
-  ((LauncherDialog*)myBaseDialog)->reload();
+  (static_cast<LauncherDialog*>(myBaseDialog))->reload();
 }

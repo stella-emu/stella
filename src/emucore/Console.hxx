@@ -69,13 +69,6 @@ class Console : public Serializable
       @param props    The properties for the cartridge  
     */
     Console(OSystem& osystem, Cartridge& cart, const Properties& props);
-
-    /**
-      Create a new console object by copying another one
-
-      @param console The object to copy
-    */
-    Console(const Console& console);
  
     /**
       Destructor
@@ -187,15 +180,6 @@ class Console : public Serializable
       Informs the Console of a change in EventHandler state.
     */
     void stateChanged(EventHandler::State state);
-
-  public:
-    /**
-      Overloaded assignment operator
-
-      @param console The console object to set myself equal to
-      @return Myself after assignment has taken place
-    */
-    Console& operator = (const Console& console);
 
   public:
     /**
@@ -337,6 +321,10 @@ class Console : public Serializable
 
     void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
     void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;
+
+    // Copy constructor and assignment operator not supported
+    Console(const Console&);
+    Console& operator = (const Console&);
 
   private:
     // Reference to the osystem object

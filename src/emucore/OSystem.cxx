@@ -586,7 +586,7 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
     // For initial creation of the Cart, we're only concerned with the BS type
     Properties props;
     myPropSet->getMD5(md5, props);
-    string s = "";
+    string s;
     CMDLINE_PROPS_UPDATE("bs", Cartridge_Type);
     CMDLINE_PROPS_UPDATE("type", Cartridge_Type);
 

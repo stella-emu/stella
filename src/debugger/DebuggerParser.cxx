@@ -56,7 +56,8 @@ using namespace Common;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger(d),
-    settings(s)
+    settings(s),
+    argCount(0)
 {
 }
 

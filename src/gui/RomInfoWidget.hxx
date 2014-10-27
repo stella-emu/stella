@@ -51,9 +51,6 @@ class RomInfoWidget : public Widget
     // Surface pointer holding the PNG image
     FBSurface* mySurface;
 
-    // How much space available for the PNG image
-    GUI::Size myAvail;
-
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid;
 
@@ -68,6 +65,9 @@ class RomInfoWidget : public Widget
 
     // Indicates if an error occurred in creating/displaying the surface
     string mySurfaceErrorMsg;
+
+    // How much space available for the PNG image
+    GUI::Size myAvail;
 };
 
 #endif

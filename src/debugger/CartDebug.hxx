@@ -194,7 +194,7 @@ class CartDebug : public DebuggerSystem
     /**
       Get the name/type of the cartridge.
     */
-    string getCartType() const;
+    string getCartType() const;  // FIXME - dead code
 
     /**
       Add a label and associated address.

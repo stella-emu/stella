@@ -47,7 +47,6 @@ class EditTextWidget : public EditableWidget
 
   protected:
     string _backupString;
-    int    _editable;
     bool   _changed;
 };
 

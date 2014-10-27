@@ -29,7 +29,6 @@
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& text)
   : EditableWidget(boss, font, x, y, w, h + 2, text),
-    _editable(true),
     _changed(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;

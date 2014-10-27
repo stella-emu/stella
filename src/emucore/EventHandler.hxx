@@ -479,6 +479,10 @@ class EventHandler
     void removeJoystick(int index);
 
   private:
+    // Copy constructor and assignment operator not supported
+    EventHandler(const EventHandler&);
+    EventHandler& operator = (const EventHandler&);
+
     enum {
       kComboSize          = 16,
       kEventsPerCombo     = 8,

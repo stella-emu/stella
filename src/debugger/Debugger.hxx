@@ -121,7 +121,7 @@ class Debugger : public DialogContainer
     bool delFunction(const string& name);
     const Expression* getFunction(const string& name) const;
 
-    const string& getFunctionDef(const string& name) const;
+    const string& getFunctionDef(const string& name) const; // FIXME - dead code
     const FunctionDefMap getFunctionDefMap() const;
     string builtinHelp() const;
 

@@ -30,7 +30,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const Console& console, const Settings& settings)
   : myConsole(console),
-    mySettings(settings)
+    mySettings(settings),
+    myTimerFlagValid(false),
+    myEdgeDetectPositive(false)
 {
 }
  

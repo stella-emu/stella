@@ -30,12 +30,11 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     mySurface(NULL),
     mySurfaceIsValid(false),
-    myHaveProperties(false)
+    myHaveProperties(false),
+    myAvail(w > 400 ? GUI::Size(640, 512) : GUI::Size(320, 256))
 {
   _flags = WIDGET_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
-
-  myAvail = w > 400 ? GUI::Size(640, 512) : GUI::Size(320, 256);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

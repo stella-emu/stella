@@ -24,22 +24,19 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP()
+  : _error(ZIPERR_NOT_A_FILE),
+    _numFiles(0)
 {
   // We need a name, else the node is invalid
-  _path = _shortPath = _virtualFile = "";
-  _error = ZIPERR_NOT_A_FILE;
-  _numFiles = 0;
-
   AbstractFSNode* tmp = 0;
   _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
+  : _error(ZIPERR_NONE),
+    _numFiles(0)
 {
-  _path = _shortPath = _virtualFile = "";
-  _error = ZIPERR_NOT_A_FILE;
-
   // Extract ZIP file and virtual file (if specified)
   size_t pos = BSPF_findIgnoreCase(p, ".zip");
   if(pos == string::npos)

@@ -26,6 +26,8 @@
 Driving::Driving(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Driving),
     myCounter(0),
+    myGrayIndex(0),
+    myLastYaxis(0),
     myControlID(-1),
     myControlIDX(-1),
     myControlIDY(-1)

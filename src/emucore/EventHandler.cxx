@@ -62,6 +62,7 @@ EventHandler::EventHandler(OSystem& osystem)
     myState(S_NONE),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
+    myUseCtrlKeyFlag(true),
     mySkipMouseMotion(true),
     myJoyHandler(NULL)
 {
@@ -1971,7 +1972,7 @@ void EventHandler::setEventState(State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
 {
-  ((EventHandler*)param)->myEvent.clear();
+  (static_cast<EventHandler*>(param))->myEvent.clear();
   return 0;
 }
 

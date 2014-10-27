@@ -63,8 +63,8 @@ class CompuMate
     /**
       Return the left and right CompuMate controllers
     */
-    Controller* leftController() { return myLeftController; }
-    Controller* rightController() { return myRightController; }
+    Controller* leftController() const  { return myLeftController;  }
+    Controller* rightController() const { return myRightController; }
 
     /**
       In normal key-handling mode, the update handler receives key events

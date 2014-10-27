@@ -119,7 +119,7 @@ class PromptWidget : public Widget, public CommandSender
     bool _firstTime;
     bool _exitedEarly;
 
-    int compareHistory(const char *histLine);
+//    int compareHistory(const char *histLine);
 };
 
 #endif

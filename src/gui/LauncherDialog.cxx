@@ -69,7 +69,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight = font.getFontHeight(),
             bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4,
             bheight = font.getLineHeight() + 4;
-  int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0, fwidth = 0;
+  int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
   WidgetArray wid;
 
   // Show game name
@@ -88,7 +88,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // It has to fit between both labels
   if(w >= 640)
   {
-    fwidth = BSPF_min(15 * fontWidth, xpos - 20 - lwidth);
+    int fwidth = BSPF_min(15 * fontWidth, xpos - 20 - lwidth);
     xpos -= fwidth + 5;
     myPattern = new EditTextWidget(this, font, xpos, ypos,
                                    fwidth, fontHeight, "");

@@ -33,7 +33,8 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
     mySlider(NULL),
     myStart(0),
     myFinish(0),
-    myStep(0)
+    myStep(0),
+    myCurrentStep(0)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),

@@ -162,6 +162,7 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
   return fatalError("fetch16", addr, "abort");
 }
 
+#if 0  // Currently not used anywhere in this class
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::fetch32 ( uInt32 addr )
 {
@@ -187,6 +188,7 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
   }
   return fatalError("fetch32", addr, "abort");
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::write16 ( uInt32 addr, uInt32 data )

@@ -30,6 +30,8 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
     _cols(cols),
     _currentRow(0),
     _currentCol(0),
+    _rowHeight(0),
+    _colWidth(0),
     _selectedItem(0),
     _editable(true)
 {

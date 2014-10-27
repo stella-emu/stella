@@ -45,7 +45,8 @@ class CartDebugWidget : public Widget, public CommandSender
         myFontWidth(lfont.getMaxCharWidth()),
         myFontHeight(lfont.getFontHeight()),
         myLineHeight(lfont.getLineHeight()),
-        myButtonHeight(myLineHeight + 4)    { }
+        myButtonHeight(myLineHeight + 4),
+        myDesc(NULL)   { }
 
     virtual ~CartDebugWidget() { };
 

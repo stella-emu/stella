@@ -300,6 +300,7 @@ StaticTextWidget::StaticTextWidget(GuiObject *boss, const GUI::Font& font,
   _textcolorhi = kTextColor;
 
   _label = text;
+  _editable = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

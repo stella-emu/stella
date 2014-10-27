@@ -411,7 +411,7 @@ class System : public Serializable
     bool* myPageIsDirtyTable;
 
     // Array of all the devices attached to the system
-    Device* myDevices[100];
+    Device* myDevices[5];
 
     // Number of devices attached to the system
     uInt32 myNumberOfDevices;

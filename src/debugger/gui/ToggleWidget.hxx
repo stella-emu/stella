@@ -61,8 +61,8 @@ class ToggleWidget : public Widget, public CommandSender
     int  _cols;
     int  _currentRow;
     int  _currentCol;
-    int  _rowHeight;
-    int  _colWidth;
+    int  _rowHeight;   // explicitly set in child classes
+    int  _colWidth;    // explicitly set in child classes
     int  _selectedItem;
     bool _editable;
 

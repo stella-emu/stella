@@ -31,6 +31,7 @@ System::System(const OSystem& osystem)
   : myOSystem(osystem),
     myNumberOfDevices(0),
     myM6502(0),
+    myM6532(0),
     myTIA(0),
     myCycles(0),
     myDataBusState(0),
@@ -97,7 +98,7 @@ void System::reset(bool autodetect)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::attach(Device* device)
 {
-  assert(myNumberOfDevices < 100);
+  assert(myNumberOfDevices < 5);
 
   // Add device to my collection of devices
   myDevices[myNumberOfDevices++] = device;
@@ -123,14 +124,14 @@ void System::attach(M6532* m6532)
   myM6532 = m6532;
 
   // Attach it as a normal device
-  attach((Device*) m6532);
+  attach(static_cast<Device*>(m6532));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::attach(TIA* tia)
 {
   myTIA = tia;
-  attach((Device*) tia);
+  attach(static_cast<Device*>(tia));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

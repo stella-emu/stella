@@ -647,10 +647,13 @@ void PromptWidget::addToHistory(const char *str)
     _historySize++;
 }
 
+#if 0 // FIXME
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::compareHistory(const char *histLine) {
+int PromptWidget::compareHistory(const char *histLine)
+{
   return 1;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::historyScroll(int direction)

@@ -39,12 +39,11 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   x += 5;
   const int lineHeight = lfont.getLineHeight();
-  int xpos = x, ypos = y;
+  int xpos = x, ypos = y + 10;
   int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle:" : "F. Cycle:");
   int fwidth = 5 * lfont.getMaxCharWidth() + 4;
 
   // Add frame info
-  xpos = x;  ypos = y + 10;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Frame Count:" : "Frame:",
                        kTextAlignLeft);

@@ -1147,20 +1147,3 @@ uInt32 Console::ourUserPALPalette[256]   = { 0 }; // filled from external file
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Console::ourUserSECAMPalette[256] = { 0 }; // filled from external file
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console::Console(const Console& console)
-  : myOSystem(console.myOSystem),
-    myCart(console.myCart),
-    myEvent(console.myEvent)
-{
-  assert(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console& Console::operator = (const Console&)
-{
-  assert(false);
-
-  return *this;
-}

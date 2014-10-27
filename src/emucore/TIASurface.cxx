@@ -38,7 +38,8 @@ TIASurface::TIASurface(OSystem& system)
     myFilterType(kNormal),
     myUsePhosphor(false),
     myPhosphorBlend(77),
-    myScanlinesEnabled(false)
+    myScanlinesEnabled(false),
+    myPalette(NULL)
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());

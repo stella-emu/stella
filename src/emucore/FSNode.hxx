@@ -247,7 +247,7 @@ class FilesystemNode
      */
     string getNameWithExt(const string& ext) const;
     string getPathWithExt(const string& ext) const;
-    string getShortPathWithExt(const string& ext) const;
+    string getShortPathWithExt(const string& ext) const; // FIXME - dead code
 
   private:
     Common::SharedPtr<AbstractFSNode> _realNode;

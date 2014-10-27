@@ -55,8 +55,8 @@ class CheatManager
 
       @return  The cheat (if was created), else NULL.
     */
-    const Cheat* add(const string& name, const string& code,
-                     bool enable = true, int idx = -1);
+    Cheat* add(const string& name, const string& code,
+               bool enable = true, int idx = -1);
 
     /**
       Remove the cheat at 'idx' from the cheat list(s).
@@ -126,7 +126,7 @@ class CheatManager
     /**
       Checks if a code is valid.
     */
-    bool isValidCode(const string& code);
+    bool isValidCode(const string& code) const;
 
   private:
     /**
@@ -137,7 +137,7 @@ class CheatManager
 
       @return  The cheat (if was created), else NULL.
     */
-    const Cheat* createCheat(const string& name, const string& code);
+    Cheat* createCheat(const string& name, const string& code) const;
 
     /**
       Parses a list of cheats and adds/enables each one.

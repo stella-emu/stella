@@ -77,7 +77,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list
-  CheckboxWidget* t;
+  CheckboxWidget* t = NULL;
   for(int i = 0; i < _rows; ++i)
   {
     t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "", kCheckActionCmd);

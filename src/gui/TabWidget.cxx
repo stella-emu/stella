@@ -106,6 +106,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
     sendCommand(kTabChangedCmd, _activeTab, _id);
 }
 
+#if 0 // FIXME
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::disableTab(int tabID)
 {
@@ -114,6 +115,7 @@ void TabWidget::disableTab(int tabID)
   _tabs[tabID].enabled = false;
   // TODO - also disable all widgets belonging to this tab
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::updateActiveTab()

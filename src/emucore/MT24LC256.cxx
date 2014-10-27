@@ -58,7 +58,19 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
     myCyclesWhenSCLSet(0),
     myDataFile(filename),
     myDataFileExists(false),
-    myDataChanged(false)
+    myDataChanged(false),
+    jpee_mdat(0),
+    jpee_sdat(0),
+    jpee_mclk(0),
+    jpee_sizemask(0),
+    jpee_pagemask(0),
+    jpee_smallmode(0),
+    jpee_logmode(0),
+    jpee_pptr(0),
+    jpee_state(0),
+    jpee_nb(0),
+    jpee_address(0),
+    jpee_ad_known(0)
 {
   // Load the data from an external file (if it exists)
   ifstream in;
@@ -211,8 +223,6 @@ void MT24LC256::jpee_data_start()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_data_stop()
 {
-  int i;
-
   if (jpee_state == 1 && jpee_nb != 1)
   {
     JPEE_LOG0("I2C_WARNING ABANDON_WRITE");
@@ -233,7 +243,7 @@ void MT24LC256::jpee_data_stop()
       jpee_pptr = 4+jpee_pagemask-(jpee_address & jpee_pagemask);
       JPEE_LOG1("I2C_WARNING PAGECROSSING!(Truncate to %d bytes)",jpee_pptr-3);
     }
-    for (i=3; i<jpee_pptr; i++)
+    for (int i=3; i<jpee_pptr; i++)
     {
       myDataChanged = true;
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
