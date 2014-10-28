@@ -39,6 +39,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
     myOSystem(osystem),
     myDebugWidget(0),
+    myAddrToLineIsROM(true),
     myRWPortAddress(0),
     myLabelLength(8)   // longest pre-defined label
 {

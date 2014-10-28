@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.1.1 to 4.2: (xxx xx, 2014)
+4.1.1 to 4.2: (October 28, 2014)
 
   * Text input from non-US keyboard layouts is now supported.  Note that
     all text in Stella is still ASCII-only, but at least it can now be
