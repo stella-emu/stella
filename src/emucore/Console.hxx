@@ -346,10 +346,10 @@ class Console : public Serializable
     TIA* myTIA;
 
     // Pointer to the switches on the front of the console
-    Switches* mySwitches;
+    unique_ptr<Switches> mySwitches;
  
     // Pointer to the 6502 based system being emulated 
-    System* mySystem;
+    unique_ptr<System> mySystem;
 
     // Pointer to the 6532 (aka RIOT) (the debugger needs it)
     // A RIOT of my own! (...with apologies to The Clash...)

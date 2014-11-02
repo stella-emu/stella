@@ -182,19 +182,20 @@ class CartDebug : public DebuggerSystem
     // The following are convenience methods that query the cartridge object
     // for the desired information.
     /**
-      Get the current bank in use by the cartridge.
+      Get the current bank in use by the cartridge
+      (non-const because of use in YaccParser)
     */
-    int getBank();  // non-const because of use in YaccParser
+    int getBank() { return myConsole.cartridge().getBank(); }
 
     /**
       Get the total number of banks supported by the cartridge.
     */
-    int bankCount() const;
+    int bankCount() const { return myConsole.cartridge().bankCount(); }
 
     /**
-      Get the name/type of the cartridge.
+      Get the name/type of the cartridge.   // FIXME - dead code
     */
-    string getCartType() const;  // FIXME - dead code
+    string getCartType() const { return myConsole.cartridge().name(); }
 
     /**
       Add a label and associated address.
@@ -303,8 +304,8 @@ class CartDebug : public DebuggerSystem
            << endl
            << "addrlist: ";
         AddressList::const_iterator i;
-        for(i = b.addressList.begin(); i != b.addressList.end(); ++i)
-          os << HEX4 << *i << " ";
+        for(const auto& i: addressList)
+          os << HEX4 << i << " ";
         return os;
       }
 #endif

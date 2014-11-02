@@ -99,8 +99,6 @@ SoundSDL2::~SoundSDL2()
     SDL_CloseAudio();
     myIsEnabled = myIsInitializedFlag = false;
   }
-
-  myOSystem.logMessage("SoundSDL2 destroyed", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

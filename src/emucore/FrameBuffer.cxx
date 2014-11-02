@@ -49,22 +49,15 @@
 FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem(osystem),
     myInitializedCount(0),
-    myPausedCount(0),
-    myTIASurface(NULL)
+    myPausedCount(0)
 {
-  myMsg.surface = myStatsMsg.surface = NULL;
+  myMsg.surface = myStatsMsg.surface = nullptr;
   myMsg.enabled = myStatsMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::~FrameBuffer(void)
+FrameBuffer::~FrameBuffer()
 {
-  delete myFont;
-  delete myInfoFont;
-  delete mySmallFont;
-  delete myLauncherFont;
-  delete myTIASurface;
-
   // Free all allocated surfaces
   while(!mySurfaceList.empty())
   {
@@ -107,15 +100,15 @@ bool FrameBuffer::initialize()
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
   // use it
-  mySmallFont = new GUI::Font(GUI::stellaDesc);
+  mySmallFont = make_ptr<GUI::Font>(GUI::stellaDesc);
 
   // The general font used in all UI elements
   // This is determined by the size of the framebuffer
-  myFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
+  myFont = make_ptr<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
 
   // The info font used in all UI elements
   // This is determined by the size of the framebuffer
-  myInfoFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
+  myInfoFont = make_ptr<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
 
   // The font used by the ROM launcher
   // Normally, this is configurable by the user, except in the case of
@@ -124,14 +117,14 @@ bool FrameBuffer::initialize()
   {    
     const string& lf = myOSystem.settings().getString("launcherfont");
     if(lf == "small")
-      myLauncherFont = new GUI::Font(GUI::consoleDesc);
+      myLauncherFont = make_ptr<GUI::Font>(GUI::consoleDesc);
     else if(lf == "medium")
-      myLauncherFont = new GUI::Font(GUI::stellaMediumDesc);
+      myLauncherFont = make_ptr<GUI::Font>(GUI::stellaMediumDesc);
     else
-      myLauncherFont = new GUI::Font(GUI::stellaLargeDesc);
+      myLauncherFont = make_ptr<GUI::Font>(GUI::stellaLargeDesc);
   }
   else
-    myLauncherFont = new GUI::Font(GUI::stellaDesc);
+    myLauncherFont = make_ptr<GUI::Font>(GUI::stellaDesc);
 
   // Determine possible TIA windowed zoom levels
   uInt32 maxZoom = maxWindowSizeForScreen((uInt32)kTIAMinW, (uInt32)kTIAMinH,
@@ -160,7 +153,7 @@ bool FrameBuffer::initialize()
   FBSurface::setPalette(myPalette);
 
   // Create a TIA surface; we need it for rendering TIA images
-  myTIASurface = new TIASurface(myOSystem);
+  myTIASurface = make_ptr<TIASurface>(myOSystem);
 
   return true;
 }
@@ -241,12 +234,12 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
   myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
-  if(myStatsMsg.surface == NULL)
+  if(myStatsMsg.surface == nullptr)
   {
     uInt32 surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface = surface(surfaceID);
   }
-  if(myMsg.surface == NULL)
+  if(myMsg.surface == nullptr)
   {
     uInt32 surfaceID = allocateSurface((uInt32)kFBMinW, font().getFontHeight()+10);
     myMsg.surface = surface(surfaceID);
@@ -589,8 +582,8 @@ uInt32 FrameBuffer::allocateSurface(int w, int h, const uInt32* data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurface* FrameBuffer::surface(uInt32 id) const
 {
-  map<uInt32,FBSurface*>::const_iterator iter = mySurfaceList.find(id);
-  return iter != mySurfaceList.end() ? iter->second : NULL;
+  const auto& iter = mySurfaceList.find(id);
+  return iter != mySurfaceList.end() ? iter->second : nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -602,11 +595,10 @@ void FrameBuffer::resetSurfaces()
   // Any derived FrameBuffer classes that call this method should be
   // aware of these restrictions, and act accordingly
 
-  map<uInt32,FBSurface*>::iterator iter;
-  for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
-    iter->second->free();
-  for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
-    iter->second->reload();
+  for(auto& s: mySurfaceList)
+    s.second->free();
+  for(auto& s: mySurfaceList)
+    s.second->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -743,8 +735,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 {
   myWindowedModeList.clear();
 
-  for(uInt32 i = 0; i < myFullscreenModeLists.size(); ++i)
-    myFullscreenModeLists[i].clear();
+  for(auto& mode: myFullscreenModeLists)
+    mode.clear();
   for(uInt32 i = myFullscreenModeLists.size(); i < myDisplays.size(); ++i)
     myFullscreenModeLists.push_back(VideoModeList());
 

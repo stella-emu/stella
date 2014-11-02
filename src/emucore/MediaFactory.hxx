@@ -20,15 +20,21 @@
 #ifndef MEDIA_FACTORY_HXX
 #define MEDIA_FACTORY_HXX
 
+#include "bspf.hxx"
+
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#include "SerialPort.hxx"
 #if defined(BSPF_UNIX)
+  #include "SerialPortUNIX.hxx"
   #include "SettingsUNIX.hxx"
   #include "OSystemUNIX.hxx"
 #elif defined(BSPF_WINDOWS)
+  #include "SerialPortWINDOWS.hxx"
   #include "SettingsWINDOWS.hxx"
   #include "OSystemWINDOWS.hxx"
 #elif defined(BSPF_MAC_OSX)
+  #include "SerialPortMACOSX.hxx"
   #include "SettingsMACOSX.hxx"
   #include "OSystemMACOSX.hxx"
   extern "C" {
@@ -61,49 +67,62 @@
 class MediaFactory
 {
   public:
-    static OSystem* createOSystem()
+    static unique_ptr<OSystem> createOSystem()
     {
     #if defined(BSPF_UNIX)
-      return new OSystemUNIX();
+      return make_ptr<OSystemUNIX>();
     #elif defined(BSPF_WINDOWS)
-      return new OSystemWINDOWS();
+      return make_ptr<OSystemWINDOWS>();
     #elif defined(BSPF_MAC_OSX)
-      return new OSystemMACOSX();
+      return make_ptr<OSystemMACOSX>();
     #else
       #error Unsupported platform for OSystem!
     #endif
     }
 
-    static Settings* createSettings(OSystem& osystem)
+    static unique_ptr<Settings> createSettings(OSystem& osystem)
     {
     #if defined(BSPF_UNIX)
-      return new SettingsUNIX(osystem);
+      return make_ptr<SettingsUNIX>(osystem);
     #elif defined(BSPF_WINDOWS)
-      return new SettingsWINDOWS(osystem);
+      return make_ptr<SettingsWINDOWS>(osystem);
     #elif defined(BSPF_MAC_OSX)
-      return new SettingsMACOSX(osystem);
+      return make_ptr<SettingsMACOSX>(osystem);
     #else
       #error Unsupported platform for Settings!
     #endif
     }
 
-    static FrameBuffer* createVideo(OSystem& osystem)
+    static unique_ptr<SerialPort> createSerialPort()
     {
-      return new FrameBufferSDL2(osystem);
-    }
-
-    static Sound* createAudio(OSystem& osystem)
-    {
-    #ifdef SOUND_SUPPORT
-      return new SoundSDL2(osystem);
+    #if defined(BSPF_UNIX)
+      return make_ptr<SerialPortUNIX>();
+    #elif defined(BSPF_WINDOWS)
+      return make_ptr<SerialPortWINDOWS>();
+    #elif defined(BSPF_MAC_OSX)
+      return make_ptr<SerialPortMACOSX>();
     #else
-      return new SoundNull(osystem);
+      return make_ptr<SerialPort>();
     #endif
     }
 
-    static EventHandler* createEventHandler(OSystem& osystem)
+    static unique_ptr<FrameBuffer> createVideo(OSystem& osystem)
     {
-      return new EventHandlerSDL2(osystem);
+      return make_ptr<FrameBufferSDL2>(osystem);
+    }
+
+    static unique_ptr<Sound> createAudio(OSystem& osystem)
+    {
+    #ifdef SOUND_SUPPORT
+      return make_ptr<SoundSDL2>(osystem);
+    #else
+      return make_ptr<SoundNull>(osystem);
+    #endif
+    }
+
+    static unique_ptr<EventHandler> createEventHandler(OSystem& osystem)
+    {
+      return make_ptr<EventHandlerSDL2>(osystem);
     }
 };
 

@@ -260,15 +260,15 @@ bool CartDebug::disassemble(bool force)
     // $bxxx, it must be changed
     uInt16 offset = (PC - (PC % 0x1000));
     AddressList& addresses = info.addressList;
-    for(list<uInt16>::iterator i = addresses.begin(); i != addresses.end(); ++i)
-      *i = (*i & 0xFFF) + offset;
+    for(auto& i: addresses)
+      i = (i & 0xFFF) + offset;
 
     // Only add addresses when absolutely necessary, to cut down on the
     // work that Distella has to do
     // Distella expects the addresses to be unique and in sorted order
     if(bankChanged || !pcfound)
     {
-      AddressList::iterator i;
+      AddressList::const_iterator i;
       for(i = addresses.begin(); i != addresses.end(); ++i)
       {
         if(PC < *i)
@@ -339,7 +339,7 @@ int CartDebug::addressToLine(uInt16 address) const
   if(!myAddrToLineIsROM != !(address & 0x1000))
     return -1;
 
-  map<uInt16, int>::const_iterator iter = myAddrToLineList.find(address & 0xFFF);
+  const auto& iter = myAddrToLineList.find(address & 0xFFF);
   return iter != myAddrToLineList.end() ? iter->second : -1;
 }
 
@@ -390,16 +390,6 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 bool CartDebug::addDirective(CartDebug::DisasmType type,
                              uInt16 start, uInt16 end, int bank)
 {
-#define PRINT_TAG(tag) \
-  disasmTypeAsString(cerr, tag.type); \
-  cerr << ": start = " << tag.start << ", end = " << tag.end << endl;
-
-#define PRINT_LIST(header) \
-  cerr << header << endl; \
-  for(DirectiveList::const_iterator d = list.begin(); d != list.end(); ++d) { \
-    PRINT_TAG((*d)); } \
-  cerr << endl;
-
   if(end < start || start == 0 || end == 0)
     return false;
 
@@ -523,24 +513,6 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     list.push_back(tag);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::getBank()
-{
-  return myConsole.cartridge().getBank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::bankCount() const
-{
-  return myConsole.cartridge().bankCount();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::getCartType() const
-{
-  return myConsole.cartridge().name();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -814,7 +786,7 @@ string CartDebug::loadSymbolFile()
     {
       // Make sure the value doesn't represent a constant
       // For now, we simply ignore constants completely
-      AddrToLabel::const_iterator iter = myUserCLabels.find(value);
+      const auto& iter = myUserCLabels.find(value);
       if(iter == myUserCLabels.end() || !BSPF_equalsIgnoreCase(label, iter->second))
       { 
         // Check for period, and strip leading number
@@ -865,11 +837,8 @@ string CartDebug::loadConfigFile()
     return "Unable to load directives from " + node.getPath();
 
   // Erase all previous directives
-  for(Common::Array<BankInfo>::iterator bi = myBankInfo.begin();
-      bi != myBankInfo.end(); ++bi)
-  {
-    bi->directiveList.clear();
-  }
+  for(auto& bi: myBankInfo)
+    bi.directiveList.clear();
 
   int currentbank = 0;
   while(!in.eof())
@@ -1167,14 +1136,13 @@ string CartDebug::saveDisassembly()
     }
   }
 
-  AddrToLabel::const_iterator iter;
   if(myReserved.Label.size() > 0)
   {
     out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
         << ";      NON LOCATABLE\n"
         << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
-    for(iter = myReserved.Label.begin(); iter != myReserved.Label.end(); ++iter)
-        out << ALIGN(10) << iter->second << "  =  $" << iter->first << "\n";
+    for(const auto& iter: myReserved.Label)
+        out << ALIGN(10) << iter.second << "  =  $" << iter.first << "\n";
   }
 
   if(myUserLabels.size() > 0)
@@ -1183,10 +1151,10 @@ string CartDebug::saveDisassembly()
         << ";      USER DEFINED\n"
         << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
     int max_len = 0;
-    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
-      max_len = BSPF_max(max_len, (int)iter->second.size());
-    for(iter = myUserLabels.begin(); iter != myUserLabels.end(); ++iter)
-        out << ALIGN(max_len) << iter->second << "  =  $" << iter->first << "\n";
+    for(const auto& iter: myUserLabels)
+      max_len = BSPF_max(max_len, (int)iter.second.size());
+    for(const auto& iter: myUserLabels)
+        out << ALIGN(max_len) << iter.second << "  =  $" << iter.first << "\n";
   }
 
   // And finally, output the disassembly
@@ -1230,14 +1198,13 @@ string CartDebug::listConfig(int bank)
   {
     BankInfo& info = myBankInfo[b];
     buf << "[" << b << "]" << endl;
-    for(DirectiveList::const_iterator i = info.directiveList.begin();
-        i != info.directiveList.end(); ++i)
+    for(const auto& i: info.directiveList)
     {
-      if(i->type != CartDebug::NONE)
+      if(i.type != CartDebug::NONE)
       {
         buf << "(*) ";
-        disasmTypeAsString(buf, i->type);
-        buf << " " << Base::HEX4 << i->start << " " << Base::HEX4 << i->end << endl;
+        disasmTypeAsString(buf, i.type);
+        buf << " " << Base::HEX4 << i.start << " " << Base::HEX4 << i.end << endl;
       }
     }
     getBankDirectives(buf, info);
@@ -1291,9 +1258,9 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
 
   // Now scan user-defined labels
   LabelToAddr::const_iterator iter;
-  for(iter = myUserAddresses.begin(); iter != myUserAddresses.end(); ++iter)
+  for(const auto& iter: myUserAddresses)
   {
-    const char* l = iter->first.c_str();
+    const char* l = iter.first.c_str();
     if(BSPF_startsWithIgnoreCase(l, in))
       completions.push_back(l);
   }

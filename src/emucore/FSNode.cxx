@@ -70,8 +70,8 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
   if (!_realNode->getChildren(tmp, mode, hidden))
     return false;
 
-  for (AbstractFSList::iterator i = tmp.begin(); i != tmp.end(); ++i)
-    fslist.push_back(FilesystemNode(*i));
+  for (const auto& i: tmp)
+    fslist.push_back(FilesystemNode(i));
 
   return true;
 }

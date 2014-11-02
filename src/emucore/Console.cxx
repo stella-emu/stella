@@ -72,8 +72,6 @@ Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
     myEvent(osystem.eventHandler().event()),
     myProperties(props),
     myTIA(0),
-    mySwitches(0),
-    mySystem(0),
     myCMHandler(0),
     myDisplayFormat(""),  // Unknown TV format @ start
     myFramerate(0.0),     // Unknown framerate @ start
@@ -84,10 +82,10 @@ Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
   loadUserPalette();
 
   // Create switches for the console
-  mySwitches = new Switches(myEvent, myProperties);
+  mySwitches = make_ptr<Switches>(myEvent, myProperties);
 
   // Construct the system and components
-  mySystem = new System(osystem);
+  mySystem = make_ptr<System>(osystem);
 
   // The real controllers for this console will be added later
   // For now, we just add dummy joystick controllers, since autodetection
@@ -176,8 +174,6 @@ Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::~Console()
 {
-  delete mySystem;
-  delete mySwitches;
   delete myCMHandler;
   delete myControllers[0];
   delete myControllers[1];

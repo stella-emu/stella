@@ -139,7 +139,7 @@ bool EventHandler::StellaJoystick::setMap(const string& m)
   if((int)map.size() == numAxes * 2 * kNumModes)
   {
     // Fill the axes table with events
-    IntArray::const_iterator event = map.begin();
+    auto event = map.begin();
     for(int m = 0; m < kNumModes; ++m)
       for(int a = 0; a < numAxes; ++a)
         for(int k = 0; k < 2; ++k)
@@ -148,7 +148,7 @@ bool EventHandler::StellaJoystick::setMap(const string& m)
   getValues(items[2], map);
   if((int)map.size() == numButtons * kNumModes)
   {
-    IntArray::const_iterator event = map.begin();
+    auto event = map.begin();
     for(int m = 0; m < kNumModes; ++m)
       for(int b = 0; b < numButtons; ++b)
         btnTable[b][m] = (Event::Type) *event++;
@@ -156,7 +156,7 @@ bool EventHandler::StellaJoystick::setMap(const string& m)
   getValues(items[3], map);
   if((int)map.size() == numHats * 4 * kNumModes)
   {
-    IntArray::const_iterator event = map.begin();
+    auto event = map.begin();
     for(int m = 0; m < kNumModes; ++m)
       for(int h = 0; h < numHats; ++h)
         for(int k = 0; k < 4; ++k)
@@ -260,9 +260,8 @@ EventHandler::JoystickHandler::JoystickHandler(OSystem& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::JoystickHandler::~JoystickHandler()
 {
-  map<string,StickInfo>::const_iterator it;
-  for(it = myDatabase.begin(); it != myDatabase.end(); ++it)
-    delete it->second.joy;
+  for(const auto& i: myDatabase)
+    delete i.second.joy;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,14 +269,13 @@ void EventHandler::JoystickHandler::printDatabase() const
 {
   cerr << "---------------------------------------------------------" << endl
        << "joy database:"  << endl;
-  map<string,StickInfo>::const_iterator it;
-  for(it = myDatabase.begin(); it != myDatabase.end(); ++it)
-    cerr << it->first << endl << it->second << endl << endl;
+  for(const auto& i: myDatabase)
+    cerr << i.first << endl << i.second << endl << endl;
 
   cerr << "---------------------------------------------------------" << endl
        << "joy active:"  << endl;
-  for(uInt32 i = 0; i < mySticks.size(); ++i)
-    cerr << *mySticks[i] << endl;
+  for(const auto& i: mySticks)
+    cerr << i << endl;
   cerr << endl;
 }
 
@@ -291,7 +289,7 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
   // Figure out what type of joystick this is
   bool specialAdaptor = false;
 
-  if(stick->name.find("2600-daptor", 0) != string::npos)
+  if(BSPF_containsIgnoreCase(stick->name, "2600-daptor"))
   {
     // 2600-daptorII devices have 3 axes and 12 buttons, and the value of the z-axis
     // determines how those 12 buttons are used (not all buttons are used in all modes)
@@ -306,7 +304,7 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
 
     specialAdaptor = true;
   }
-  else if(stick->name.find("Stelladaptor", 0) != string::npos)
+  else if(BSPF_containsIgnoreCase(stick->name, "Stelladaptor"))
   {
     stick->name = "Stelladaptor";
     specialAdaptor = true;
@@ -315,9 +313,8 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
   {
     // We need unique names for mappable devices
     int count = 0;
-    map<string,StickInfo>::const_iterator c_it;
-    for(c_it = myDatabase.begin(); c_it != myDatabase.end(); ++c_it)
-      if(BSPF_startsWithIgnoreCase(c_it->first, stick->name))
+    for(const auto& i: myDatabase)
+      if(BSPF_startsWithIgnoreCase(i.first, stick->name))
         ++count;
 
     if(count > 1)
@@ -335,7 +332,7 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
     mapStelladaptors(myOSystem.settings().getString("saport"));
 
   // Add stick to database
-  map<string,StickInfo>::iterator it = myDatabase.find(stick->name);
+  auto it = myDatabase.find(stick->name);
   if(it != myDatabase.end())    // already present
   {
     it->second.joy = stick;
@@ -364,7 +361,7 @@ int EventHandler::JoystickHandler::remove(int index)
   {
     StellaJoystick* stick = mySticks[index];
 
-    map<string,StickInfo>::iterator it = myDatabase.find(stick->name);
+    auto it = myDatabase.find(stick->name);
     if(it != myDatabase.end() && it->second.joy == stick)
     {
       ostringstream buf;
@@ -398,33 +395,33 @@ void EventHandler::JoystickHandler::mapStelladaptors(const string& saport)
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
-  for(uInt32 i = 0; i < mySticks.size(); ++i)
+  for(auto stick: mySticks)
   {
-    if(BSPF_startsWithIgnoreCase(mySticks[i]->name, "Stelladaptor"))
+    if(BSPF_startsWithIgnoreCase(stick->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        mySticks[i]->name += " (emulates left joystick port)";
-        mySticks[i]->type = StellaJoystick::JT_STELLADAPTOR_LEFT;
+        stick->name += " (emulates left joystick port)";
+        stick->type = StellaJoystick::JT_STELLADAPTOR_LEFT;
       }
       else if(saOrder[saCount] == 2)
       {
-        mySticks[i]->name += " (emulates right joystick port)";
-        mySticks[i]->type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
+        stick->name += " (emulates right joystick port)";
+        stick->type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
       }
       saCount++;
     }
-    else if(BSPF_startsWithIgnoreCase(mySticks[i]->name, "2600-daptor"))
+    else if(BSPF_startsWithIgnoreCase(stick->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        mySticks[i]->name += " (emulates left joystick port)";
-        mySticks[i]->type = StellaJoystick::JT_2600DAPTOR_LEFT;
+        stick->name += " (emulates left joystick port)";
+        stick->type = StellaJoystick::JT_2600DAPTOR_LEFT;
       }
       else if(saOrder[saCount] == 2)
       {
-        mySticks[i]->name += " (emulates right joystick port)";
-        mySticks[i]->type = StellaJoystick::JT_2600DAPTOR_RIGHT;
+        stick->name += " (emulates right joystick port)";
+        stick->type = StellaJoystick::JT_2600DAPTOR_RIGHT;
       }
       saCount++;
     }
@@ -531,13 +528,13 @@ void EventHandler::JoystickHandler::eraseMapping(Event::Type event, EventMode mo
   // Otherwise, only reset the given event
   if(event == Event::NoType)
   {
-    for(uInt32 i = 0; i < mySticks.size(); ++i)
-      mySticks[i]->eraseMap(mode);          // erase all events
+    for(auto stick: mySticks)
+      stick->eraseMap(mode);          // erase all events
   }
   else
   {
-    for(uInt32 i = 0; i < mySticks.size(); ++i)
-      mySticks[i]->eraseEvent(event, mode); // only reset the specific event
+    for(auto stick: mySticks)
+      stick->eraseEvent(event, mode); // only reset the specific event
   }
 }
 
@@ -549,12 +546,9 @@ void EventHandler::JoystickHandler::saveMapping()
   ostringstream joybuf;
   joybuf << Event::LastType;
 
-  map<string,StickInfo>::const_iterator it;
-  for(it = myDatabase.begin(); it != myDatabase.end(); ++it)
+  for(const auto& i: myDatabase)
   {
-    const string& map = it->second.joy ?
-        it->second.joy->getMap() : it->second.mapping;
-
+    const string& map = i.second.joy ? i.second.joy->getMap() : i.second.mapping;
     if(map != "")
       joybuf << "^" << map;
   }

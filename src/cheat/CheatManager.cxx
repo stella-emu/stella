@@ -281,11 +281,8 @@ void CheatManager::saveCheatDatabase()
   if(!out)
     return;
 
-  CheatCodeMap::iterator iter;
-  for(iter = myCheatMap.begin(); iter != myCheatMap.end(); ++iter)
-    out << "\"" << iter->first << "\" "
-        << "\"" << iter->second << "\""
-        << endl;
+  for(const auto& iter: myCheatMap)
+    out << "\"" << iter.first << "\" " << "\"" << iter.second << "\"" << endl;
 
   out.close();
 }
@@ -302,7 +299,7 @@ void CheatManager::loadCheats(const string& md5sum)
   if(cheats != "")
     myOSystem.settings().setValue("cheat", "");
 
-  CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
+  const auto& iter = myCheatMap.find(md5sum);
   if(iter == myCheatMap.end() && cheats == "")
     return;
 

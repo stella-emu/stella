@@ -534,19 +534,19 @@ class FrameBuffer
     VariantList myRenderers;
 
     // The font object to use for the normal in-game GUI
-    GUI::Font* myFont;
+    unique_ptr<GUI::Font> myFont;
 
     // The info font object to use for the normal in-game GUI
-    GUI::Font* myInfoFont;
+    unique_ptr<GUI::Font> myInfoFont;
 
     // The font object to use when space is very limited
-    GUI::Font* mySmallFont;
+    unique_ptr<GUI::Font> mySmallFont;
 
     // The font object to use for the ROM launcher
-    GUI::Font* myLauncherFont;
+    unique_ptr<GUI::Font> myLauncherFont;
 
     // The TIASurface class takes responsibility for TIA rendering
-    TIASurface* myTIASurface;
+    unique_ptr<TIASurface> myTIASurface;
 
     // Used for onscreen messages and frame statistics
     // (scanline count and framerate)

@@ -76,8 +76,8 @@ int main(int ac, char* av[])
   if(result > 0)
   {
     cout << setw(3) << result << " hits:  \'" << av[2] << "\' - \"" << av[1] << "\" @";
-    for(list<int>::iterator it = locations.begin(); it != locations.end(); ++it)
-      cout << ' ' << hex << ((int)*it + offset);
+    for(const auto& it: locations)
+      cout << ' ' << hex << (it + offset);
     cout << endl;
   }
 

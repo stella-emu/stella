@@ -39,15 +39,6 @@
   #include "CheatManager.hxx"
 #endif
 
-#include "SerialPort.hxx"
-#if defined(BSPF_UNIX)
-  #include "SerialPortUNIX.hxx"
-#elif defined(BSPF_WINDOWS)
-  #include "SerialPortWINDOWS.hxx"
-#elif defined(BSPF_MAC_OSX)
-  #include "SerialPortMACOSX.hxx"
-#endif
-
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
@@ -60,6 +51,7 @@
 #include "Widget.hxx"
 #include "Console.hxx"
 #include "Random.hxx"
+#include "SerialPort.hxx"
 #include "StateManager.hxx"
 #include "Version.hxx"
 
@@ -67,21 +59,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
-  : myEventHandler(NULL),
-    myFrameBuffer(NULL),
-    mySound(NULL),
-    mySettings(NULL),
-    myPropSet(NULL),
-    myConsole(NULL),
-    mySerialPort(NULL),
-    myMenu(NULL),
-    myCommandMenu(NULL),
-    myLauncher(NULL),
+  : myConsole(nullptr),
     myLauncherUsed(false),
-    myDebugger(NULL),
-    myCheatManager(NULL),
-    myStateManager(NULL),
-    myPNGLib(NULL),
+    myDebugger(nullptr),
     myQuitLoop(false),
     myRomFile(""),
     myRomMD5(""),
@@ -116,43 +96,17 @@ OSystem::OSystem()
   myBuildInfo = info.str();
 
   mySettings = MediaFactory::createSettings(*this);
-  myRandom = new Random(*this);
+  myRandom = make_ptr<Random>(*this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
-  delete myMenu;
-  delete myCommandMenu;
-  delete myLauncher;
-
   // Remove any game console that is currently attached
   deleteConsole();
-
-  // These must be deleted after all the others
-  // This is a bit hacky, since it depends on ordering
-  // of d'tor calls
 #ifdef DEBUGGER_SUPPORT
   delete myDebugger;
 #endif
-#ifdef CHEATCODE_SUPPORT
-  delete myCheatManager;
-#endif
-
-  delete myStateManager;
-  delete myPropSet;
-
-  delete mySerialPort;
-  delete myPNGLib;
-  delete myZipHandler;
-
-  // OSystem takes responsibility for these, since it called MediaFactory
-  // to create them
-  delete myFrameBuffer;
-  delete mySound;
-  delete myEventHandler;
-  delete myRandom;
-  delete mySettings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,18 +139,18 @@ bool OSystem::create()
   myEventHandler->initialize();
 
   // Create a properties set for us to use and set it up
-  myPropSet = new PropertiesSet(propertiesFile());
+  myPropSet = make_ptr<PropertiesSet>(propertiesFile());
 
 #ifdef CHEATCODE_SUPPORT
-  myCheatManager = new CheatManager(*this);
+  myCheatManager = make_ptr<CheatManager>(*this);
   myCheatManager->loadCheatDatabase();
 #endif
 
   // Create menu and launcher GUI objects
-  myMenu = new Menu(*this);
-  myCommandMenu = new CommandMenu(*this);
-  myLauncher = new Launcher(*this);
-  myStateManager = new StateManager(*this);
+  myMenu = make_ptr<Menu>(*this);
+  myCommandMenu = make_ptr<CommandMenu>(*this);
+  myLauncher = make_ptr<Launcher>(*this);
+  myStateManager = make_ptr<StateManager>(*this);
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
@@ -206,25 +160,16 @@ bool OSystem::create()
   // Create the serial port object
   // This is used by any controller that wants to directly access
   // a real serial port on the system
-#if defined(BSPF_UNIX)
-  mySerialPort = new SerialPortUNIX();
-#elif defined(BSPF_WINDOWS)
-  mySerialPort = new SerialPortWINDOWS();
-#elif defined(BSPF_MAC_OSX)
-  mySerialPort = new SerialPortMACOSX();
-#else
-  // Create an 'empty' serial port
-  mySerialPort = new SerialPort();
-#endif
+  mySerialPort = MediaFactory::createSerialPort();
 
   // Re-initialize random seed
   myRandom->initSeed();
 
   // Create PNG handler
-  myPNGLib = new PNGLibrary(*myFrameBuffer);
+  myPNGLib = make_ptr<PNGLibrary>(*myFrameBuffer);
 
   // Create ZIP handler
-  myZipHandler = new ZipHandler();
+  myZipHandler = make_ptr<ZipHandler>();
 
   return true;
 }
@@ -777,4 +722,4 @@ void OSystem::mainLoop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ZipHandler* OSystem::myZipHandler = 0;
+unique_ptr<ZipHandler> OSystem::myZipHandler = unique_ptr<ZipHandler>();

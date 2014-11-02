@@ -602,17 +602,18 @@ bool DebuggerParser::saveScriptFile(string file)
   ofstream out(file.c_str());
 
   FunctionDefMap funcs = debugger.getFunctionDefMap();
-  for(FunctionDefMap::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
-    out << "function " << i->first << " { " << i->second << " }" << endl;
+  for(const auto& i: funcs)
+    out << "function " << i.first << " { " << i.second << " }" << endl;
 
-  for(unsigned int i=0; i<watches.size(); i++)
-    out << "watch " << watches[i] << endl;
+  for(const auto& i: watches)
+    out << "watch " << i << endl;
 
-  for(unsigned int i=0; i<0x10000; i++)
+  for(uInt32 i = 0; i < 0x10000; ++i)
     if(debugger.breakPoint(i))
       out << "break #" << i << endl;
 
-  for(unsigned int i=0; i<0x10000; i++) {
+  for(uInt32 i = 0; i < 0x10000; ++i)
+  {
     bool r = debugger.readTrap(i);
     bool w = debugger.writeTrap(i);
 
@@ -625,8 +626,8 @@ bool DebuggerParser::saveScriptFile(string file)
   }
 
   StringList conds = debugger.cpuDebug().m6502().getCondBreakNames();
-  for(unsigned int i=0; i<conds.size(); i++)
-    out << "breakif {" << conds[i] << "}" << endl;
+  for(const auto& cond: conds)
+    out << "breakif {" << cond << "}" << endl;
 
   bool ok = out.good();
   out.close();
@@ -917,11 +918,11 @@ void DebuggerParser::executeDisasm()
 // "dump"
 void DebuggerParser::executeDump()
 {
-  for(int i=0; i<8; i++)
+  for(int i = 0; i < 8; ++i)
   {
     int start = args[0] + i*16;
     commandResult << Base::toString(start) << ": ";
-    for(int j = 0; j < 16; j++)
+    for(int j = 0; j < 16; ++j)
     {
       commandResult << Base::toString(debugger.peek(start+j)) << " ";
       if(j == 7) commandResult << "- ";
@@ -1046,7 +1047,7 @@ void DebuggerParser::executeListbreaks()
   ostringstream buf;
   int count = 0;
 
-  for(unsigned int i = 0; i < 0x10000; i++)
+  for(uInt32 i = 0; i < 0x10000; i++)
   {
     if(debugger.breakpoints().isSet(i))
     {
@@ -1068,7 +1069,7 @@ void DebuggerParser::executeListbreaks()
   if(conds.size() > 0)
   {
     commandResult << "\nbreakifs:\n";
-    for(unsigned int i = 0; i < conds.size(); i++)
+    for(uInt32 i = 0; i < conds.size(); i++)
     {
       commandResult << i << ": " << conds[i];
       if(i != (conds.size() - 1)) commandResult << endl;
@@ -1097,9 +1098,8 @@ void DebuggerParser::executeListfunctions()
 
   if(functions.size() > 0)
   {
-    FunctionDefMap::const_iterator iter;
-    for(iter = functions.begin(); iter != functions.end(); ++iter)
-      commandResult << iter->first << " -> " << iter->second << endl;
+    for(const auto& iter: functions)
+      commandResult << iter.first << " -> " << iter.second << endl;
   }
   else
     commandResult << "no user-defined functions";
@@ -1111,7 +1111,7 @@ void DebuggerParser::executeListtraps()
 {
   int count = 0;
 
-  for(unsigned int i=0; i<0x10000; i++)
+  for(uInt32 i = 0; i < 0x10000; ++i)
   {
     if(debugger.readTrap(i) || debugger.writeTrap(i))
     {
@@ -1231,7 +1231,7 @@ void DebuggerParser::executeRiot()
 void DebuggerParser::executeRom()
 {
   int addr = args[0];
-  for(int i=1; i<argCount; i++)
+  for(int i = 1; i < argCount; ++i)
   {
     if( !(debugger.patchROM(addr++, args[i])) )
     {

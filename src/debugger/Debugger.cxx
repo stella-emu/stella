@@ -557,14 +557,14 @@ bool Debugger::addFunction(const string& name, const string& definition,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::delFunction(const string& name)
 {
-  FunctionMap::iterator iter = functions.find(name);
+  const auto& iter = functions.find(name);
   if(iter == functions.end())
     return false;
 
   functions.erase(name);
   delete iter->second;
 
-  FunctionDefMap::iterator def_iter = functionDefs.find(name);
+  const auto& def_iter = functionDefs.find(name);
   if(def_iter == functionDefs.end())
     return false;
 
@@ -575,21 +575,15 @@ bool Debugger::delFunction(const string& name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Expression* Debugger::getFunction(const string& name) const
 {
-  FunctionMap::const_iterator iter = functions.find(name);
-  if(iter == functions.end())
-    return 0;
-  else
-    return iter->second;
+  const auto& iter = functions.find(name);
+  return iter != functions.end() ? iter->second : nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Debugger::getFunctionDef(const string& name) const
 {
-  FunctionDefMap::const_iterator iter = functionDefs.find(name);
-  if(iter == functionDefs.end())
-    return EmptyString;
-  else
-    return iter->second;
+  const auto& iter = functionDefs.find(name);
+  return iter != functionDefs.end() ? iter->second : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -647,10 +641,9 @@ string Debugger::builtinHelp() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::getCompletions(const char* in, StringList& list) const
 {
-  FunctionMap::const_iterator iter;
-  for(iter = functions.begin(); iter != functions.end(); ++iter)
+  for(const auto& iter: functions)
   {
-    const char* l = iter->first.c_str();
+    const char* l = iter.first.c_str();
     if(BSPF_equalsIgnoreCase(l, in))
       list.push_back(l);
   }

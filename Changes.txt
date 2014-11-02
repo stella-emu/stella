@@ -12,6 +12,16 @@
                                Release History
 ===========================================================================
 
+4.2 to 4.3: (December xx, 2014)
+
+  * The conversion to C++11 has begun :)  From this point on, to build
+    Stella you will need a C++11 compatible compiler (Visual Studio 2013,
+    Clang 3.5, gcc 4.9, etc).  Eventually, this will bring more bug-free
+    and (hopefully) faster code.
+
+-Have fun!
+
+
 4.1.1 to 4.2: (October 28, 2014)
 
   * Text input from non-US keyboard layouts is now supported.  Note that
@@ -41,8 +51,6 @@
 
   * The Linux port now uses an app-icon; this seems to be needed for
     some window managers.
-
--Have fun!
 
 
 4.1 to 4.1.1: (September 14, 2014)

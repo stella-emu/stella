@@ -73,9 +73,8 @@ bool PropertiesSet::save(const string& filename) const
     return false;
 
   // Only save those entries in the external list
-  for(PropsList::const_iterator i = myExternalProps.begin();
-      i != myExternalProps.end(); ++i)
-    i->second.save(out);
+  for(const auto& i: myExternalProps)
+    i.second.save(out);
 
   return true;
 }
@@ -99,18 +98,18 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
   if(!useDefaults)
   {
     // Check external list
-    PropsList::const_iterator iter = myExternalProps.find(md5);
-    if(iter != myExternalProps.end())
+    const auto ext = myExternalProps.find(md5);
+    if(ext != myExternalProps.end())
     {
-      properties = iter->second;
+      properties = ext->second;
       found = true;
     }
     else  // Search temp list
     {
-      iter = myTempProps.find(md5);
-      if(iter != myTempProps.end())
+      const auto tmp = myTempProps.find(md5);
+      if(tmp != myTempProps.end())
       {
-        properties = iter->second;
+        properties = tmp->second;
         found = true;
       }
     }
@@ -178,8 +177,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
   // The status of 'save' determines which list to save to
   PropsList& list = save ? myExternalProps : myTempProps;
 
-  pair<PropsList::iterator,bool> ret;
-  ret = list.insert(make_pair(md5, properties));
+  auto ret = list.insert(make_pair(md5, properties));
   if(ret.second == false)
   {
     // Remove old item and insert again
@@ -227,6 +225,6 @@ void PropertiesSet::print() const
 
   // Now, print the resulting list
   Properties::printHeader();
-  for(PropsList::const_iterator i = list.begin(); i != list.end(); ++i)
-    i->second.print();
+  for(const auto& i: list)
+    i.second.print();
 }

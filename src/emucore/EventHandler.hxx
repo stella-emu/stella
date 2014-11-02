@@ -540,7 +540,7 @@ class EventHandler
 
     // MouseControl object, which takes care of switching the mouse between
     // all possible controller modes
-    MouseControl* myMouseControl;
+    unique_ptr<MouseControl> myMouseControl;
 
     // Array of key events, indexed by StellaKey
     Event::Type myKeyTable[KBDK_LAST][kNumModes];
@@ -581,7 +581,7 @@ class EventHandler
     static const Event::Type SA_Key[2][12];
 
     // Handler for all joystick addition/removal/mapping
-    JoystickHandler* myJoyHandler;
+    unique_ptr<JoystickHandler> myJoyHandler;
 };
 
 #endif

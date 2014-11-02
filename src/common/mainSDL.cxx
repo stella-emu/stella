@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <SDL.h>
 #include <cstdlib>
 
 #include "bspf.hxx"
@@ -42,7 +41,7 @@
 #endif
 
 // Pointer to the main parent osystem object or the null pointer
-OSystem* theOSystem = (OSystem*) NULL;
+unique_ptr<OSystem> theOSystem;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Does general Cleanup in case any operation failed (or at end of program)
@@ -50,12 +49,6 @@ int Cleanup()
 {
   theOSystem->logMessage("Cleanup from mainSDL", 2);
   theOSystem->saveConfig();
-
-  if(theOSystem)
-    delete theOSystem;
-
-  if(SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO)
-    SDL_Quit();
 
   return 0;
 }
@@ -163,13 +156,6 @@ int main(int argc, char* argv[])
     }
 #endif
   }
-
-#if 0
-  // Swallow any spurious events in the queue
-  // These are normally caused by joystick/mouse jitter
-  SDL_Event event;
-  while(SDL_PollEvent(&event)) /* swallow event */ ;
-#endif
 
   // Start the main loop, and don't exit until the user issues a QUIT command
   theOSystem->logMessage("Starting main loop ...", 2);

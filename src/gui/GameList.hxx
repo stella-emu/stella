@@ -65,8 +65,6 @@ class GameList
       {
         _name = name;  _path = path;  _md5 = md5;  _isdir = isdir;
       }
-
-      bool operator < (const Entry& a) const;
     };
     vector<Entry> myArray;
 };

@@ -58,13 +58,11 @@
 EventHandler::EventHandler(OSystem& osystem)
   : myOSystem(osystem),
     myOverlay(NULL),
-    myMouseControl(NULL),
     myState(S_NONE),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
     myUseCtrlKeyFlag(true),
-    mySkipMouseMotion(true),
-    myJoyHandler(NULL)
+    mySkipMouseMotion(true)
 {
   // Erase the key mapping array
   for(int i = 0; i < KBDK_LAST; ++i)
@@ -77,7 +75,7 @@ EventHandler::EventHandler(OSystem& osystem)
       myComboTable[i][j] = Event::NoType;
 
   // Create joystick handler (to handle all joystick functionality)
-  myJoyHandler = new JoystickHandler(osystem);
+  myJoyHandler = make_ptr<JoystickHandler>(osystem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,9 +88,6 @@ EventHandler::~EventHandler()
   for(uInt32 i = 0; i < kMenuActionListSize; ++i)
     if(ourMenuActionList[i].key)
       free(ourMenuActionList[i].key);
-
-  delete myMouseControl;  myMouseControl = NULL;
-  delete myJoyHandler;  myJoyHandler = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1196,7 +1191,7 @@ void EventHandler::setKeymap()
   if(event == Event::LastType && map.size() == KBDK_LAST * kNumModes)
   {
     // Fill the keymap table with events
-    IntArray::const_iterator event = map.begin();
+    auto event = map.begin();
     for(int mode = 0; mode < kNumModes; ++mode)
       for(int i = 0; i < KBDK_LAST; ++i)
         myKeyTable[i][mode] = (Event::Type) *event++;
@@ -1781,8 +1776,6 @@ void EventHandler::setMouseControllerMode(const string& enable)
 {
   if(myOSystem.hasConsole())
   {
-    delete myMouseControl;  myMouseControl = NULL;
-
     bool usemouse = false;
     if(BSPF_equalsIgnoreCase(enable, "always"))
       usemouse = true;
@@ -1821,7 +1814,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
     const string& control = usemouse ?
       myOSystem.console().properties().get(Controller_MouseAxis) : "none";
 
-    myMouseControl = new MouseControl(myOSystem.console(), control);
+    myMouseControl = make_ptr<MouseControl>(myOSystem.console(), control);
     myMouseControl->next();  // set first available mode
   }
 }

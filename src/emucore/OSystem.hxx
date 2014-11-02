@@ -458,50 +458,50 @@ class OSystem
 
   protected:
     // Pointer to the EventHandler object
-    EventHandler* myEventHandler;
+    unique_ptr<EventHandler> myEventHandler;
 
     // Pointer to the FrameBuffer object
-    FrameBuffer* myFrameBuffer;
+    unique_ptr<FrameBuffer> myFrameBuffer;
 
     // Pointer to the Sound object
-    Sound* mySound;
+    unique_ptr<Sound> mySound;
 
     // Pointer to the Settings object
-    Settings* mySettings;
+    unique_ptr<Settings> mySettings;
 
     // Pointer to the Random object
-    Random* myRandom;
+    unique_ptr<Random> myRandom;
 
     // Pointer to the PropertiesSet object
-    PropertiesSet* myPropSet;
+    unique_ptr<PropertiesSet> myPropSet;
 
     // Pointer to the (currently defined) Console object
     Console* myConsole;
 
     // Pointer to the serial port object
-    SerialPort* mySerialPort;
+    unique_ptr<SerialPort> mySerialPort;
 
     // Pointer to the Menu object
-    Menu* myMenu;
+    unique_ptr<Menu> myMenu;
 
     // Pointer to the CommandMenu object
-    CommandMenu* myCommandMenu;
+    unique_ptr<CommandMenu> myCommandMenu;
 
     // Pointer to the Launcher object
-    Launcher* myLauncher;
+    unique_ptr<Launcher> myLauncher;
     bool myLauncherUsed;
 
     // Pointer to the Debugger object
     Debugger* myDebugger;
 
     // Pointer to the CheatManager object
-    CheatManager* myCheatManager;
+    unique_ptr<CheatManager> myCheatManager;
 
     // Pointer to the StateManager object
-    StateManager* myStateManager;
+    unique_ptr<StateManager> myStateManager;
 
     // PNG object responsible for loading/saving PNG images
-    PNGLibrary* myPNGLib;
+    unique_ptr<PNGLibrary> myPNGLib;
 
     // The list of log messages
     string myLogMessages;
@@ -519,7 +519,7 @@ class OSystem
     bool myQuitLoop;
 
     // ZIP static reference variable responsible for accessing ZIP files
-    static ZipHandler* myZipHandler;
+    static unique_ptr<ZipHandler> myZipHandler;
 
   private:
     string myBaseDir;

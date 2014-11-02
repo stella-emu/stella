@@ -66,6 +66,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <memory>
 #include <string>
 #include <sstream>
 #include <cstring>
@@ -110,17 +111,21 @@ static const string EmptyString("");
 //////////////////////////////////////////////////////////////////////
 // Some convenience functions
 
+// Initialize C++11 unique_ptr, at least until std::make_unique()
+// becomes part of the standard (C++14)
+template <typename Value, typename ... Arguments>
+std::unique_ptr<Value> make_ptr(Arguments && ... arguments_for_constructor)
+{
+  return std::unique_ptr<Value>(
+      new Value(std::forward<Arguments>(arguments_for_constructor)...)
+  );
+}
+
 template<typename T> inline void BSPF_swap(T& a, T& b) { T tmp = a; a = b; b = tmp; }
 template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }
 template<typename T> inline T BSPF_min (T a, T b) { return (a<b) ? a : b; }
 template<typename T> inline T BSPF_max (T a, T b) { return (a>b) ? a : b; }
 template<typename T> inline T BSPF_clamp (T a, T l, T u) { return (a<l) ? l : (a>u) ? u : a; }
-
-// Test whether two characters are equal (case insensitive)
-static bool BSPF_equalsIgnoreCaseChar(char ch1, char ch2)
-{
-  return toupper((unsigned char)ch1) == toupper((unsigned char)ch2);
-}
 
 // Compare two strings, ignoring case
 inline int BSPF_compareIgnoreCase(const string& s1, const string& s2)
@@ -168,8 +173,10 @@ inline bool BSPF_equalsIgnoreCase(const string& s1, const string& s2)
 // starting from 'startpos' in the first string
 inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2, int startpos = 0)
 {
-  string::const_iterator pos = std::search(s1.begin()+startpos, s1.end(),
-    s2.begin(), s2.end(), BSPF_equalsIgnoreCaseChar);
+  auto pos = std::search(s1.begin()+startpos, s1.end(),
+    s2.begin(), s2.end(), [](char ch1, char ch2) {
+      return toupper((unsigned char)ch1) == toupper((unsigned char)ch2);
+    });
   return pos == s1.end() ? string::npos : pos - (s1.begin()+startpos);
 }
 

@@ -95,14 +95,14 @@ void ListWidget::setSelected(const string& item)
     else
     {
       uInt32 itemToSelect = 0;
-      StringList::const_iterator iter;
-      for(iter = _list.begin(); iter != _list.end(); ++iter, ++itemToSelect)
+      for(const auto& iter: _list)
       {
-        if(item == *iter)
+        if(item == iter)
         {
           selected = itemToSelect;
           break;
         }
+        ++itemToSelect;
       }
       if(itemToSelect > _list.size() || selected == -1)
         selected = 0;
@@ -264,9 +264,9 @@ bool ListWidget::handleText(char text)
     // quite big lists to deal with -- so for now we can live with this lazy
     // implementation :-)
     int newSelectedItem = 0;
-    for (StringList::const_iterator i = _list.begin(); i != _list.end(); ++i)
+    for(const auto& i: _list)
     {
-      if(BSPF_startsWithIgnoreCase(*i, _quickSelectStr))
+      if(BSPF_startsWithIgnoreCase(i, _quickSelectStr))
       {
         _selectedItem = newSelectedItem;
         break;
