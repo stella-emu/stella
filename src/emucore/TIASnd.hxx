@@ -105,7 +105,7 @@ class TIASound
       POLY4       = 0x01,  // 0001
       DIV31_POLY4 = 0x02,  // 0010
       POLY5_POLY4 = 0x03,  // 0011
-      PURE        = 0x04,  // 0100
+      PURE1       = 0x04,  // 0100
       PURE2       = 0x05,  // 0101
       DIV31_PURE  = 0x06,  // 0110
       POLY5_2     = 0x07,  // 0111
