@@ -31,15 +31,15 @@
 TIASurface::TIASurface(OSystem& system)
   : myOSystem(system),
     myFB(system.frameBuffer()),
-    myTIA(NULL),
-    myTiaSurface(NULL),
-    mySLineSurface(NULL),
-    myBaseTiaSurface(NULL),
+    myTIA(nullptr),
+    myTiaSurface(nullptr),
+    mySLineSurface(nullptr),
+    myBaseTiaSurface(nullptr),
     myFilterType(kNormal),
     myUsePhosphor(false),
     myPhosphorBlend(77),
     myScanlinesEnabled(false),
-    myPalette(NULL)
+    myPalette(nullptr)
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());

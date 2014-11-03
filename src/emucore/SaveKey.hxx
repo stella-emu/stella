@@ -91,7 +91,7 @@ class SaveKey : public Controller
 
   private:
     // The EEPROM used in the SaveKey
-    MT24LC256* myEEPROM;
+    unique_ptr<MT24LC256> myEEPROM;
 };
 
 #endif

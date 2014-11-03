@@ -24,10 +24,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
                  const string& eepromfile)
-  : Controller(jack, event, system, Controller::SaveKey),
-    myEEPROM(NULL)
+  : Controller(jack, event, system, Controller::SaveKey)
 {
-  myEEPROM = new MT24LC256(eepromfile, system);
+  myEEPROM = make_ptr<MT24LC256>(eepromfile, system);
 
   myDigitalPinState[One] = myDigitalPinState[Two] = true;
   myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
@@ -36,7 +35,6 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::~SaveKey()
 {
-  delete myEEPROM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
