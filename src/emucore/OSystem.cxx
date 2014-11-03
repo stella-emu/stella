@@ -573,7 +573,7 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = new Console(*this, *cart, props);
+      console = new Console(*this, cart, props);
   }
 
   // Free the image since we don't need it any longer

@@ -252,8 +252,6 @@ void TIA::install(System& system, Device& device)
   // Remember which system I'm installed in
   mySystem = &system;
 
-  mySystem->resetCycles();
-
   // All accesses are to the given device
   System::PageAccess access(&device, System::PA_READWRITE);
 

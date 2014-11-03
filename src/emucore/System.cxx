@@ -24,15 +24,17 @@
 #include "M6502.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"
+#include "Cart.hxx"
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::System(const OSystem& osystem)
+System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
+               TIA& mTIA, Cartridge& mCart)
   : myOSystem(osystem),
-    myNumberOfDevices(0),
-    myM6502(0),
-    myM6532(0),
-    myTIA(0),
+    myM6502(m6502),
+    myM6532(m6532),
+    myTIA(mTIA),
+    myCart(mCart),
     myCycles(0),
     myDataBusState(0),
     myDataBusLocked(false),
@@ -60,18 +62,19 @@ System::System(const OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::~System()
 {
-  // Free the devices attached to me, since I own them
-  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-  {
-    delete myDevices[i];
-  }
-
-  // Free the M6502 that I own
-  delete myM6502;
-
   // Free my page access table and dirty list
   delete[] myPageAccessTable;
   delete[] myPageIsDirtyTable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::initialize()
+{
+  // Install all devices
+  myM6532.install(*this);
+  myTIA.install(*this);
+  myCart.install(*this);
+  myM6502.install(*this);  // Must always be installed last
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,65 +86,23 @@ void System::reset(bool autodetect)
   // Reset system cycle counter
   resetCycles();
 
-  // First we reset the devices attached to myself
-  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-    myDevices[i]->reset();
-
-  // Now we reset the processor if it exists
-  if(myM6502 != 0)
-    myM6502->reset();
+  // Reset all devices
+  myM6532.reset();
+  myTIA.reset();
+  myCart.reset();
+  myM6502.reset();  // Must always be reset last
 
   // There are no dirty pages upon startup
   clearDirtyPages();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::attach(Device* device)
-{
-  assert(myNumberOfDevices < 5);
-
-  // Add device to my collection of devices
-  myDevices[myNumberOfDevices++] = device;
-
-  // Ask the device to install itself
-  device->install(*this);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::attach(M6502* m6502)
-{
-  // Remember the processor
-  myM6502 = m6502;
-
-  // Ask the processor to install itself
-  myM6502->install(*this);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::attach(M6532* m6532)
-{
-  // Remember the processor
-  myM6532 = m6532;
-
-  // Attach it as a normal device
-  attach(static_cast<Device*>(m6532));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::attach(TIA* tia)
-{
-  myTIA = tia;
-  attach(static_cast<Device*>(tia));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::resetCycles()
 {
   // First we let all of the device attached to me know about the reset
-  for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-  {
-    myDevices[i]->systemCyclesReset();
-  }
+  myM6532.systemCyclesReset();
+  myTIA.systemCyclesReset();
+  myCart.systemCyclesReset();
 
   // Now, we reset cycle count to zero
   myCycles = 0;
@@ -290,13 +251,15 @@ bool System::save(Serializer& out) const
     out.putInt(myCycles);
     out.putByte(myDataBusState);
 
-    if(!myM6502->save(out))
+    // Save the state of each device
+    if(!myM6502.save(out))
       return false;
-
-    // Now save the state of each device
-    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-      if(!myDevices[i]->save(out))
-        return false;
+    if(!myM6532.save(out))
+      return false;
+    if(!myTIA.save(out))
+      return false;
+    if(!myCart.save(out))
+      return false;
   }
   catch(...)
   {
@@ -318,14 +281,15 @@ bool System::load(Serializer& in)
     myCycles = in.getInt();
     myDataBusState = in.getByte();
 
-    // Next, load state for the CPU
-    if(!myM6502->load(in))
+    // Load the state of each device
+    if(!myM6502.load(in))
       return false;
-
-    // Now load the state of each device
-    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-      if(!myDevices[i]->load(in))
-        return false;
+    if(!myM6532.load(in))
+      return false;
+    if(!myTIA.load(in))
+      return false;
+    if(!myCart.load(in))
+      return false;
   }
   catch(...)
   {

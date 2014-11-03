@@ -52,7 +52,8 @@ class System : public Serializable
       Create a new system with an addressing space of 2^13 bytes and
       pages of 2^6 bytes.
     */
-    System(const OSystem& osystem);
+    System(const OSystem& osystem, M6502& m6502, M6532& m6532,
+           TIA& mTIA, Cartridge& mCart);
 
     /**
       Destructor
@@ -73,6 +74,11 @@ class System : public Serializable
 
   public:
     /**
+      Initialize system and all attached devices to known state.
+    */
+    void initialize();
+
+    /**
       Reset the system cycle counter, the attached devices, and the
       attached processor of the system.
 
@@ -85,38 +91,6 @@ class System : public Serializable
     */
     void reset(bool autodetect = false);
 
-    /**
-      Attach the specified device and claim ownership of it.  The device 
-      will be asked to install itself.
-
-      @param device The device to attach to the system
-    */
-    void attach(Device* device);
-
-    /**
-      Attach the specified processor and claim ownership of it.  The
-      processor will be asked to install itself.
-
-      @param m6502 The 6502 microprocessor to attach to the system
-    */
-    void attach(M6502* m6502);
-
-    /**
-      Attach the specified processor and claim ownership of it.  The
-      processor will be asked to install itself.
-
-      @param m6532 The 6532 microprocessor to attach to the system
-    */
-    void attach(M6532* m6532);
-
-    /**
-      Attach the specified TIA device and claim ownership of it.  The device 
-      will be asked to install itself.
-
-      @param tia The TIA device to attach to the system
-    */
-    void attach(TIA* tia);
-
   public:
     /**
       Answer the 6502 microprocessor attached to the system.  If a
@@ -124,7 +98,7 @@ class System : public Serializable
 
       @return The attached 6502 microprocessor
     */
-    M6502& m6502() const { return *myM6502; }
+    M6502& m6502() const { return myM6502; }
 
     /**
       Answer the 6532 processor attached to the system.  If a
@@ -132,14 +106,14 @@ class System : public Serializable
 
       @return The attached 6532 microprocessor
     */
-    M6532& m6532() const { return *myM6532; }
+    M6532& m6532() const { return myM6532; }
 
     /**
       Answer the TIA device attached to the system.
 
       @return The attached TIA device
     */
-    TIA& tia() const { return *myTIA; }
+    TIA& tia() const { return myTIA; }
 
     /**
       Answer the random generator attached to the system.
@@ -404,32 +378,29 @@ class System : public Serializable
   private:
     const OSystem& myOSystem;
 
-    // Pointer to a dynamically allocated array of PageAccess structures
-    PageAccess* myPageAccessTable;
+    // 6502 processor attached to the system
+    M6502& myM6502;
 
-    // Pointer to a dynamically allocated array for dirty pages
-    bool* myPageIsDirtyTable;
+    // 6532 processor attached to the system
+    M6532& myM6532;
 
-    // Array of all the devices attached to the system
-    Device* myDevices[5];
+    // TIA device attached to the system
+    TIA& myTIA;
 
-    // Number of devices attached to the system
-    uInt32 myNumberOfDevices;
-
-    // 6502 processor attached to the system or the null pointer
-    M6502* myM6502;
-
-    // 6532 processor attached to the system or the null pointer
-    M6532* myM6532;
-
-    // TIA device attached to the system or the null pointer
-    TIA* myTIA;
+    // Cartridge device attached to the system
+    Cartridge& myCart;
 
     // Number of system cycles executed since the last reset
     uInt32 myCycles;
 
     // Null device to use for page which are not installed
     NullDevice myNullDevice; 
+
+    // Pointer to a dynamically allocated array of PageAccess structures
+    PageAccess* myPageAccessTable;
+
+    // Pointer to a dynamically allocated array for dirty pages
+    bool* myPageIsDirtyTable;
 
     // The current state of the Data Bus
     uInt8 myDataBusState;

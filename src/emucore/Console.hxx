@@ -25,6 +25,7 @@ class Event;
 class Switches;
 class System;
 class TIA;
+class M6502;
 class M6532;
 class Cartridge;
 class CompuMate;
@@ -68,7 +69,7 @@ class Console : public Serializable
       @param cart     The cartridge to use with this console
       @param props    The properties for the cartridge  
     */
-    Console(OSystem& osystem, Cartridge& cart, const Properties& props);
+    Console(OSystem& osystem, Cartridge* cart, const Properties& props);
  
     /**
       Destructor
@@ -119,7 +120,7 @@ class Console : public Serializable
 
       @return The cartridge for this console
     */
-    Cartridge& cartridge() const { return myCart; }
+    Cartridge& cartridge() const { return *myCart; }
 
     /**
       Get the 6532 used by the console
@@ -330,30 +331,33 @@ class Console : public Serializable
     // Reference to the osystem object
     OSystem& myOSystem;
 
-    // Pointer to the Cartridge (the debugger needs it)
-    Cartridge& myCart;
-
     // Reference to the event object to use
     const Event& myEvent;
 
     // Properties for the game
     Properties myProperties;
 
-    // Pointers to the left and right controllers
-    Controller* myControllers[2];
-
-    // Pointer to the TIA object 
-    TIA* myTIA;
-
-    // Pointer to the switches on the front of the console
-    unique_ptr<Switches> mySwitches;
- 
     // Pointer to the 6502 based system being emulated 
     unique_ptr<System> mySystem;
 
+    // Pointer to the M6502 CPU
+    unique_ptr<M6502> my6502;
+
     // Pointer to the 6532 (aka RIOT) (the debugger needs it)
     // A RIOT of my own! (...with apologies to The Clash...)
-    M6532* myRiot;
+    unique_ptr<M6532> myRiot;
+
+    // Pointer to the TIA object 
+    unique_ptr<TIA> myTIA;
+
+    // Pointer to the Cartridge (the debugger needs it)
+    unique_ptr<Cartridge> myCart;
+
+    // Pointer to the switches on the front of the console
+    unique_ptr<Switches> mySwitches;
+
+    // Pointers to the left and right controllers
+    Controller* myControllers[2];
 
     // Pointer to CompuMate handler (only used in CompuMate ROMs)
     CompuMate* myCMHandler;

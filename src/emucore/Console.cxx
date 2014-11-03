@@ -66,13 +66,11 @@
 #include "Console.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
+Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
-    myCart(cart),
     myEvent(osystem.eventHandler().event()),
     myProperties(props),
-    myTIA(0),
-    myCMHandler(0),
+    myCMHandler(nullptr),
     myDisplayFormat(""),  // Unknown TV format @ start
     myFramerate(0.0),     // Unknown framerate @ start
     myCurrentFormat(0),   // Unknown format @ start
@@ -81,31 +79,25 @@ Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
   // Load user-defined palette for this ROM
   loadUserPalette();
 
-  // Create switches for the console
+  // Create subsystems for the console
+  my6502 = make_ptr<M6502>(myOSystem.settings());
+  myRiot = make_ptr<M6532>(*this, myOSystem.settings());
+  myTIA  = make_ptr<TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  myCart = unique_ptr<Cartridge>(cart);
   mySwitches = make_ptr<Switches>(myEvent, myProperties);
 
   // Construct the system and components
-  mySystem = make_ptr<System>(osystem);
+  mySystem = make_ptr<System>(osystem, *my6502, *myRiot, *myTIA, *myCart);
 
   // The real controllers for this console will be added later
   // For now, we just add dummy joystick controllers, since autodetection
   // runs the emulation for a while, and this may interfere with 'smart'
   // controllers such as the AVox and SaveKey
-  // Note that the controllers must be added directly after the system
-  // has been created, and before any other device is added
-  // (particularly the M6532)
   myControllers[0] = new Joystick(Controller::Left, myEvent, *mySystem);
   myControllers[1] = new Joystick(Controller::Right, myEvent, *mySystem);
 
-  M6502* m6502 = new M6502(myOSystem.settings());
-
-  myRiot = new M6532(*this, myOSystem.settings());
-  myTIA  = new TIA(*this, myOSystem.sound(), myOSystem.settings());
-
-  mySystem->attach(m6502);
-  mySystem->attach(myRiot);
-  mySystem->attach(myTIA);
-  mySystem->attach(&myCart);
+  // We can only initialize after all the devices/components have been created
+  mySystem->initialize();
 
   // Auto-detect NTSC/PAL mode if it's requested
   string autodetected = "";
@@ -166,9 +158,9 @@ Console::Console(OSystem& osystem, Cartridge& cart, const Properties& props)
   myConsoleInfo.CartMD5    = myProperties.get(Cartridge_MD5);
   myConsoleInfo.Control0   = myControllers[0]->about();
   myConsoleInfo.Control1   = myControllers[1]->about();
-  myConsoleInfo.BankSwitch = myCart.about();
+  myConsoleInfo.BankSwitch = myCart->about();
 
-  myCart.setRomName(myConsoleInfo.CartName);
+  myCart->setRomName(myConsoleInfo.CartName);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -471,7 +463,7 @@ void Console::initializeAudio()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::fry() const
 {
-  for (int ZPmem=0; ZPmem<0x100; ZPmem += rand() % 4)
+  for(int ZPmem = 0; ZPmem < 0x100; ZPmem += rand() % 4)
     mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
 }
 
