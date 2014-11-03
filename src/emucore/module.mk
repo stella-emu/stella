@@ -58,7 +58,6 @@ MODULE_OBJS := \
 	src/emucore/M6502.o \
 	src/emucore/M6532.o \
 	src/emucore/MT24LC256.o \
-	src/emucore/NullDev.o \
 	src/emucore/MD5.o \
 	src/emucore/OSystem.o \
 	src/emucore/Paddles.o \
