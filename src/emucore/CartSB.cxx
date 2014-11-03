@@ -26,6 +26,7 @@
 CartridgeSB::CartridgeSB(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
+    myImage(nullptr),
     mySize(size)
 {
   // Allocate array for the ROM image

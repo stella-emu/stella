@@ -26,7 +26,7 @@
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    myInitialRAM(0),
+    myInitialRAM(nullptr),
     mySize(size)
 {
   if(mySize == 2048)

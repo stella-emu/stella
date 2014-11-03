@@ -30,8 +30,8 @@ class System;
 
 /**
   Update of EF cartridge class used for Homestar Runner by Paul Slocum.
-  There are 32 4K banks (total of 128K ROM).
-  Accessing $1FC0 - $1FDF switches to each bank.
+  There are 64 4K banks (total of 256K ROM).
+  Accessing $1F80 - $1FBF switches to each bank.
 
   @author  Mike Saarna
   @version $Id$
@@ -159,8 +159,8 @@ class CartridgeBF : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // The 64K ROM image of the cartridge
-    uInt8 myImage[262144];
+    // The 256K ROM image of the cartridge
+    uInt8 myImage[64 * 4096];
 };
 
 #endif

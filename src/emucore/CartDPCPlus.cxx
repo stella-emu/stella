@@ -30,6 +30,7 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
                                    const Settings& settings)
   : Cartridge(settings),
+    myImage(nullptr),
     myFastFetch(false),
     myLDAimmediate(false),
     myParameterPointer(0),
@@ -59,9 +60,9 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
-  myThumbEmulator = new Thumbulator((uInt16*)(myProgramImage-0xC00),
-                                    (uInt16*)myDPCRAM,
-                                     settings.getBool("thumb.trapfatal"));
+  myThumbEmulator = make_ptr<Thumbulator>
+      ((uInt16*)(myProgramImage-0xC00), (uInt16*)myDPCRAM,
+       settings.getBool("thumb.trapfatal"));
 #endif
   setInitialState();
 
@@ -73,10 +74,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 CartridgeDPCPlus::~CartridgeDPCPlus()
 {
   delete[] myImage;
-
-#ifdef THUMB_SUPPORT
-  delete myThumbEmulator;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

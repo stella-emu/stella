@@ -28,7 +28,8 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     my6502(0),
-    mySize(BSPF_max(size, 8448u))
+    mySize(BSPF_max(size, 8448u)),
+    myLoadImages(nullptr)
 {
   // Create a load image buffer and copy the given image
   myLoadImages = new uInt8[mySize];

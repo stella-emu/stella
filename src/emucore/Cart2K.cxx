@@ -24,7 +24,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size, const Settings& settings)
-  : Cartridge(settings)
+  : Cartridge(settings),
+    myImage(nullptr)
 {
   // Size can be a maximum of 2K
   if(size > 2048) size = 2048;

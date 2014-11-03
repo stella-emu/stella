@@ -197,7 +197,7 @@ class CartridgeFA2 : public Cartridge
     uInt16 myCurrentBank;
 
     // The 24K/28K ROM image of the cartridge
-    uInt8* myImage;
+    uInt8 myImage[28 * 1024];
 
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];

@@ -28,7 +28,6 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
                    const string& eepromfile)
   : Controller(jack, event, system, Controller::AtariVox),
     mySerialPort((SerialPort&)port),
-    myEEPROM(NULL),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)
@@ -38,7 +37,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
 
-  myEEPROM = new MT24LC256(eepromfile, system);
+  myEEPROM = make_ptr<MT24LC256>(eepromfile, system);
 
   myDigitalPinState[One] = myDigitalPinState[Two] =
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;
@@ -50,7 +49,6 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 AtariVox::~AtariVox()
 {
   mySerialPort.closePort();
-  delete myEEPROM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

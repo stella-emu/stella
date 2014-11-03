@@ -29,8 +29,8 @@ class System;
 #endif
 
 /**
-  There are 32 4K banks (total of 128K ROM) with 128 bytes of RAM.
-  Accessing $1FD0 - $1FEF switches to each bank.
+  There are 64 4K banks (total of 256K ROM) with 128 bytes of RAM.
+  Accessing $1F80 - $1FBF switches to each bank.
 
   @author  Stephen Anthony
   @version $Id$
@@ -158,8 +158,8 @@ class CartridgeBFSC : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // The 64K ROM image of the cartridge
-    uInt8 myImage[131072*2];
+    // The 256K ROM image of the cartridge
+    uInt8 myImage[64 * 4096];
 
     // The 128 bytes of RAM
     uInt8 myRAM[128];

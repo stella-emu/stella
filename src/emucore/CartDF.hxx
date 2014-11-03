@@ -159,8 +159,8 @@ class CartridgeDF : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // The 64K ROM image of the cartridge
-    uInt8 myImage[131072];
+    // The 128K ROM image of the cartridge
+    uInt8 myImage[32 * 4096];
 };
 
 #endif

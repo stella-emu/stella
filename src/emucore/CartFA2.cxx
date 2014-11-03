@@ -38,9 +38,6 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
     mySize = 28 * 1024; 
   }
 
-  // Allocate array for the ROM image
-  myImage = new uInt8[mySize];
-
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);
   createCodeAccessBase(mySize);
@@ -52,7 +49,6 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2::~CartridgeFA2()
 {
-  delete[] myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -216,7 +216,7 @@ class CartridgeDPCPlus : public Cartridge
 
 #ifdef THUMB_SUPPORT
     // Pointer to the Thumb ARM emulator object
-    Thumbulator* myThumbEmulator;
+    unique_ptr<Thumbulator> myThumbEmulator;
 #endif
 
     // Pointer to the 1K frequency table

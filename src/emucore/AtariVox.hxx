@@ -106,7 +106,7 @@ class AtariVox : public Controller
     SerialPort& mySerialPort;
 
     // The EEPROM used in the AtariVox
-    MT24LC256* myEEPROM;
+    unique_ptr<MT24LC256> myEEPROM;
 
     // How many bits have been shifted into the shift register?
     uInt8 myShiftCount;

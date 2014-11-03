@@ -25,7 +25,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDM::CartridgeMDM(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings),
-    myImage(NULL),
+    myImage(nullptr),
     mySize(size),
     myBankingDisabled(false)
 {
@@ -43,7 +43,7 @@ CartridgeMDM::CartridgeMDM(const uInt8* image, uInt32 size, const Settings& sett
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDM::~CartridgeMDM()
 {
-  delete[] myImage;  myImage = NULL;
+  delete[] myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

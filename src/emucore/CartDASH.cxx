@@ -24,9 +24,11 @@
 #include "CartDASH.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& settings) :
-    Cartridge(settings), mySize(size) {
-
+CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& settings)
+  : Cartridge(settings),
+    mySize(size),
+    myImage(nullptr)
+{
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
 
@@ -40,7 +42,8 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDASH::~CartridgeDASH() {
+CartridgeDASH::~CartridgeDASH()
+{
   delete[] myImage;
 }
 
