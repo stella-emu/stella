@@ -47,11 +47,10 @@
 #include "M6502.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6502::M6502(uInt32 systemCyclesPerProcessorCycle, const Settings& settings)
+M6502::M6502(const Settings& settings)
   : myExecutionStatus(0),
     mySystem(0),
     mySettings(settings),
-    mySystemCyclesPerProcessorCycle(systemCyclesPerProcessorCycle),
     myLastAccessWasRead(true),
     myTotalInstructionCount(0),
     myNumberOfDistinctAccesses(0),
@@ -77,7 +76,7 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle, const Settings& settings)
   for(uInt32 t = 0; t < 256; ++t)
   {
     myInstructionSystemCycleTable[t] = ourInstructionCycleTable[t] *
-        mySystemCyclesPerProcessorCycle;
+        SYSTEM_CYCLES_PER_CPU;
   }
 
 #ifdef DEBUG_OUTPUT
@@ -147,7 +146,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
-  mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
+  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
 
 #ifdef DEBUGGER_SUPPORT
   if(myReadTraps != NULL && myReadTraps->isSet(address))
@@ -176,7 +175,7 @@ inline void M6502::poke(uInt16 address, uInt8 value)
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
-  mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
+  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
 
 #ifdef DEBUGGER_SUPPORT
   if(myWriteTraps != NULL && myWriteTraps->isSet(address))
@@ -306,7 +305,7 @@ void M6502::interruptHandler()
   // Handle the interrupt
   if((myExecutionStatus & MaskableInterruptBit) && !I)
   {
-    mySystem->incrementCycles(7 * mySystemCyclesPerProcessorCycle);
+    mySystem->incrementCycles(7 * SYSTEM_CYCLES_PER_CPU);
     mySystem->poke(0x0100 + SP--, (PC - 1) >> 8);
     mySystem->poke(0x0100 + SP--, (PC - 1) & 0x00ff);
     mySystem->poke(0x0100 + SP--, PS() & (~0x10));
@@ -316,7 +315,7 @@ void M6502::interruptHandler()
   }
   else if(myExecutionStatus & NonmaskableInterruptBit)
   {
-    mySystem->incrementCycles(7 * mySystemCyclesPerProcessorCycle);
+    mySystem->incrementCycles(7 * SYSTEM_CYCLES_PER_CPU);
     mySystem->poke(0x0100 + SP--, (PC - 1) >> 8);
     mySystem->poke(0x0100 + SP--, (PC - 1) & 0x00ff);
     mySystem->poke(0x0100 + SP--, PS() & (~0x10));

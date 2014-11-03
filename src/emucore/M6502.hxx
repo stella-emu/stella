@@ -56,13 +56,9 @@ class M6502 : public Serializable
 
   public:
     /**
-      Create a new 6502 microprocessor with the specified cycle 
-      multiplier.  The cycle multiplier is the number of system cycles 
-      per processor cycle.
-
-      @param systemCyclesPerProcessorCycle The cycle multiplier
+      Create a new 6502 microprocessor.
     */
-    M6502(uInt32 systemCyclesPerProcessorCycle, const Settings& settings);
+    M6502(const Settings& settings);
 
     /**
       Destructor
@@ -324,9 +320,6 @@ class M6502 : public Serializable
     /// Reference to the settings
     const Settings& mySettings;
 
-    /// Indicates the number of system cycles per processor cycle 
-    const uInt32 mySystemCyclesPerProcessorCycle;
-
     /// Table of system cycles for each instruction
     uInt32 myInstructionSystemCycleTable[256]; 
 
@@ -356,6 +349,9 @@ class M6502 : public Serializable
     /// If an address wasn't used (ie, as in immediate mode), the address
     /// is set to zero
     uInt16 myDataAddressForPoke;
+
+    /// Indicates the number of system cycles per processor cycle 
+    static const uInt32 SYSTEM_CYCLES_PER_CPU = 1;
 
 #ifdef DEBUGGER_SUPPORT
     /// Pointer to the debugger for this processor or the null pointer
