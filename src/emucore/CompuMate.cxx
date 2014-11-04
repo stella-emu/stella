@@ -25,14 +25,12 @@
 CompuMate::CompuMate(const Console& console, const Event& event,
                      const System& system)
   : myConsole(console),
-    myEvent(event),
-    myLeftController(nullptr),
-    myRightController(nullptr)
+    myEvent(event)
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them
-  myLeftController  = new CMControl(*this, Controller::Left, event, system);
-  myRightController = new CMControl(*this, Controller::Right, event, system);
+  myLeftController  = make_ptr<CMControl>(*this, Controller::Left, event, system);
+  myRightController = make_ptr<CMControl>(*this, Controller::Right, event, system);
 
   myLeftController->myAnalogPinValue[Controller::Nine] = Controller::maximumResistance;
   myLeftController->myAnalogPinValue[Controller::Five] = Controller::minimumResistance;

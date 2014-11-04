@@ -587,17 +587,17 @@ void Console::setControllers(const string& rommd5)
   // creates them for us, and also that they must be used in both ports
   if(left == "COMPUMATE" || right == "COMPUMATE")
   {
-    myCMHandler = make_ptr<CompuMate>(*this, myEvent, *mySystem);
+    myCMHandler = make_shared<CompuMate>(*this, myEvent, *mySystem);
 
     // A somewhat ugly bit of code that casts to CartridgeCM to
     // add the CompuMate, and then back again for the actual
     // Cartridge
     unique_ptr<CartridgeCM> cartcm(static_cast<CartridgeCM*>(myCart.release()));
-    cartcm->setCompuMate(myCMHandler.get());
+    cartcm->setCompuMate(myCMHandler);
     myCart = std::move(cartcm);
 
-    myLeftControl  = unique_ptr<Controller>(myCMHandler->leftController());
-    myRightControl = unique_ptr<Controller>(myCMHandler->rightController());
+    myLeftControl  = std::move(myCMHandler->leftController());
+    myRightControl = std::move(myCMHandler->rightController());
     return;
   }
 

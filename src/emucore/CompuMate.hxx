@@ -65,8 +65,8 @@ class CompuMate
     /**
       Return the left and right CompuMate controllers
     */
-    Controller* leftController() const  { return myLeftController;  }
-    Controller* rightController() const { return myRightController; }
+    unique_ptr<Controller>& leftController()  { return myLeftController;  }
+    unique_ptr<Controller>& rightController() { return myRightController; }
 
     /**
       In normal key-handling mode, the update handler receives key events
@@ -140,7 +140,7 @@ class CompuMate
     const Event& myEvent;
 
     // Left and right controllers
-    CMControl *myLeftController, *myRightController;
+    unique_ptr<Controller> myLeftController, myRightController;
 
     // Column currently active
     uInt8 myColumn;

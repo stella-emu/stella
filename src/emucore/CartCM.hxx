@@ -229,7 +229,7 @@ class CartridgeCM : public Cartridge
     /**
       Inform the cartridge about the parent CompuMate controller
     */
-    void setCompuMate(CompuMate* cmate) { myCompuMate = cmate; }
+    void setCompuMate(shared_ptr<CompuMate> cmate) { myCompuMate = cmate; }
 
     /**
       Get the current keyboard column
@@ -240,7 +240,7 @@ class CartridgeCM : public Cartridge
 
   private:
     // The CompuMate device which interacts with this cartridge
-    CompuMate* myCompuMate;
+    shared_ptr<CompuMate> myCompuMate;
 
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
