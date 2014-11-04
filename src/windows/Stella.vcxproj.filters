@@ -207,9 +207,6 @@
     <ClCompile Include="..\emucore\MT24LC256.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\NullDev.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\OSystem.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>

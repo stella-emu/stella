@@ -350,7 +350,6 @@
     <ClCompile Include="..\emucore\M6532.cxx" />
     <ClCompile Include="..\emucore\MD5.cxx" />
     <ClCompile Include="..\emucore\MT24LC256.cxx" />
-    <ClCompile Include="..\emucore\NullDev.cxx" />
     <ClCompile Include="..\emucore\OSystem.cxx" />
     <ClCompile Include="..\emucore\Paddles.cxx" />
     <ClCompile Include="..\emucore\Props.cxx" />
