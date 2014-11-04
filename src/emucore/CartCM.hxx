@@ -20,6 +20,7 @@
 #ifndef CARTRIDGECM_HXX
 #define CARTRIDGECM_HXX
 
+class CompuMate;
 class System;
 
 #include "bspf.hxx"
@@ -226,13 +227,21 @@ class CartridgeCM : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
     /**
-      Get the current keybord column
+      Inform the cartridge about the parent CompuMate controller
+    */
+    void setCompuMate(CompuMate* cmate) { myCompuMate = cmate; }
+
+    /**
+      Get the current keyboard column
 
       @return The column referenced by SWCHA D6 and D5
     */
-    uInt8 column() const { return myColumn; }
+    uInt8 column() const;
 
   private:
+    // The CompuMate device which interacts with this cartridge
+    CompuMate* myCompuMate;
+
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
@@ -244,9 +253,6 @@ class CartridgeCM : public Cartridge
 
     // Current copy of SWCHA (controls ROM/RAM accesses)
     uInt8 mySWCHA;
-
-    // Column currently active
-    uInt8 myColumn;
 };
 
 #endif

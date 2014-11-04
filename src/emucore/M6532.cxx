@@ -79,15 +79,15 @@ void M6532::systemCyclesReset()
   myCyclesWhenTimerSet -= mySystem->cycles();
 
   // We should also inform any 'smart' controllers as well
-  myConsole.controller(Controller::Left).systemCyclesReset();
-  myConsole.controller(Controller::Right).systemCyclesReset();
+  myConsole.leftController().systemCyclesReset();
+  myConsole.rightController().systemCyclesReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::update()
 {
-  Controller& port0 = myConsole.controller(Controller::Left);
-  Controller& port1 = myConsole.controller(Controller::Right);
+  Controller& port0 = myConsole.leftController();
+  Controller& port1 = myConsole.rightController();
 
   // Get current PA7 state
   bool prevPA7 = port0.myDigitalPinState[Controller::Four];
@@ -143,8 +143,8 @@ uInt8 M6532::peek(uInt16 addr)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
-      uInt8 value = (myConsole.controller(Controller::Left).read() << 4) |
-                     myConsole.controller(Controller::Right).read();
+      uInt8 value = (myConsole.leftController().read() << 4) |
+                     myConsole.rightController().read();
 
       // Each pin is high (1) by default and will only go low (0) if either
       //  (a) External device drives the pin low
@@ -311,8 +311,8 @@ void M6532::setPinState(bool swcha)
       if(DDR bit is input)       set output as 1
       else if(DDR bit is output) set output as bit in ORA
   */
-  Controller& port0 = myConsole.controller(Controller::Left);
-  Controller& port1 = myConsole.controller(Controller::Right);
+  Controller& port0 = myConsole.leftController();
+  Controller& port1 = myConsole.rightController();
 
   uInt8 ioport = myOutA | ~myDDRA;
 

@@ -632,7 +632,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
       // enum; subtracting four gives us Controller 0 and 1
       if(myState == S_EMULATE)
       {
-        switch(myOSystem.console().controller(Controller::Left).type())
+        switch(myOSystem.console().leftController().type())
         {
           case Controller::Keyboard:
             if(button < 12) myEvent.set(SA_Key[joy->type-4][button], state);
@@ -640,7 +640,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
           default:
             if(button < 4) myEvent.set(SA_Button[joy->type-4][button], state);
         }
-        switch(myOSystem.console().controller(Controller::Right).type())
+        switch(myOSystem.console().rightController().type())
         {
           case Controller::Keyboard:
             if(button < 12) myEvent.set(SA_Key[joy->type-4][button], state);
@@ -1783,7 +1783,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
       usemouse = false;
     else  // 'analog'
     {
-      switch(myOSystem.console().controller(Controller::Left).type())
+      switch(myOSystem.console().leftController().type())
       {
         case Controller::Paddles:
         case Controller::Driving:
@@ -1796,7 +1796,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
         default:
           break;
       }
-      switch(myOSystem.console().controller(Controller::Right).type())
+      switch(myOSystem.console().rightController().type())
       {
         case Controller::Paddles:
         case Controller::Driving:
@@ -1909,8 +1909,7 @@ void EventHandler::setEventState(State state)
       myOverlay = NULL;
       myOSystem.sound().mute(false);
       enableTextEvents(false);
-      if(myOSystem.console().controller(Controller::Left).type() ==
-            Controller::CompuMate)
+      if(myOSystem.console().leftController().type() == Controller::CompuMate)
         myUseCtrlKeyFlag = false;
       break;
 

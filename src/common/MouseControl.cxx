@@ -26,8 +26,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MouseControl::MouseControl(Console& console, const string& mode)
   : myProps(console.properties()),
-    myLeftController(console.controller(Controller::Left)),
-    myRightController(console.controller(Controller::Right)),
+    myLeftController(console.leftController()),
+    myRightController(console.rightController()),
     myCurrentModeNum(0)
 {
   if(BSPF_equalsIgnoreCase(mode, "none"))

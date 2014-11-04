@@ -19,6 +19,7 @@
 
 #include <cstring>
 
+#include "CompuMate.hxx"
 #include "System.hxx"
 #include "M6532.hxx"
 #include "CartCM.hxx"
@@ -90,12 +91,19 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
     {
       mySWCHA = value;
       bank(mySWCHA & 0x3);
-      if(value & 0x20) myColumn = 0;
-      if(value & 0x40) myColumn = (myColumn + 1) % 10;
+      uInt8& column = myCompuMate->myColumn;
+      if(value & 0x20) column = 0;
+      if(value & 0x40) column = (column + 1) % 10;
     }
     mySystem->m6532().poke(address, value);
   }
   return myBankChanged;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeCM::column() const
+{
+  return myCompuMate->myColumn;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,7 +204,7 @@ bool CartridgeCM::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
     out.putByte(mySWCHA);
-    out.putByte(myColumn);
+    out.putByte(myCompuMate->myColumn);
     out.putByteArray(myRAM, 2048);
   }
   catch(...)
@@ -218,7 +226,7 @@ bool CartridgeCM::load(Serializer& in)
 
     myCurrentBank = in.getShort();
     mySWCHA = in.getByte();
-    myColumn = in.getByte();
+    myCompuMate->myColumn = in.getByte();
     in.getByteArray(myRAM, 2048);
   }
   catch(...)

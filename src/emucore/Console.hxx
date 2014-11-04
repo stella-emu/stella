@@ -20,7 +20,6 @@
 #ifndef CONSOLE_HXX
 #define CONSOLE_HXX
 
-class Controller;
 class Event;
 class Switches;
 class System;
@@ -82,10 +81,8 @@ class Console : public Serializable
 
       @return The specified controller
     */
-    Controller& controller(Controller::Jack jack) const
-    {
-      return *myControllers[jack];
-    }
+    Controller& leftController() const  { return *myLeftControl;  }
+    Controller& rightController() const { return *myRightControl; }
 
     /**
       Get the TIA for this console
@@ -128,14 +125,6 @@ class Console : public Serializable
       @return The 6532 for this console
     */
     M6532& riot() const { return *myRiot; }
-
-    /**
-      Get the CompuMate handler used by the console
-      (only valid for CompuMate ROMs)
-
-      @return The CompuMate handler for this console (if it exists), otherwise 0
-    */
-    CompuMate* compumate() const { return myCMHandler; }
 
     /**
       Saves the current state of this console class to the given Serializer.
@@ -357,7 +346,7 @@ class Console : public Serializable
     unique_ptr<Switches> mySwitches;
 
     // Pointers to the left and right controllers
-    Controller* myControllers[2];
+    unique_ptr<Controller> myLeftControl, myRightControl;
 
     // Pointer to CompuMate handler (only used in CompuMate ROMs)
     CompuMate* myCMHandler;

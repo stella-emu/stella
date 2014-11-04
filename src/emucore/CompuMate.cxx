@@ -18,21 +18,20 @@
 //============================================================================
 
 #include "Control.hxx"
-#include "System.hxx"
 #include "StellaKeys.hxx"
 #include "CompuMate.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompuMate::CompuMate(CartridgeCM& cart, const Event& event,
+CompuMate::CompuMate(const Console& console, const Event& event,
                      const System& system)
-  : myCart(cart),
+  : myConsole(console),
     myEvent(event),
-    mySystem(system),
-    myLeftController(0),
-    myRightController(0),
-    myCycleAtLastUpdate(0)
+    myLeftController(nullptr),
+    myRightController(nullptr)
 {
-  myLeftController = new CMControl(*this, Controller::Left, event, system);
+  // These controller pointers will be retrieved by the Console, which will
+  // also take ownership of them
+  myLeftController  = new CMControl(*this, Controller::Left, event, system);
   myRightController = new CMControl(*this, Controller::Right, event, system);
 
   myLeftController->myAnalogPinValue[Controller::Nine] = Controller::maximumResistance;
@@ -58,19 +57,9 @@ void CompuMate::enableKeyHandling(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CompuMate::update()
 {
-  uInt32 cycle = mySystem.cycles();
-
-  // Only perform update once for both ports in the same cycle
-  if(myCycleAtLastUpdate != cycle)
-  {
-    myCycleAtLastUpdate = cycle;
-    return;
-  }
-  myCycleAtLastUpdate = cycle;
-
   // Handle SWCHA changes - the following comes almost directly from z26
-  Controller& lp = *myLeftController;
-  Controller& rp = *myRightController;
+  Controller& lp = myConsole.leftController();
+  Controller& rp = myConsole.rightController();
 
   lp.myAnalogPinValue[Controller::Nine] = Controller::maximumResistance;
   lp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
@@ -86,7 +75,8 @@ void CompuMate::update()
 
   rp.myDigitalPinState[Controller::Three] = true;
   rp.myDigitalPinState[Controller::Four] = true;
-  switch(myCart.column())
+
+  switch(myColumn)
   {
     case 0:
       if (myKeyTable[KBDK_7]) lp.myDigitalPinState[Controller::Six] = false;

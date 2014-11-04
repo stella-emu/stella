@@ -1321,27 +1321,27 @@ uInt8 TIA::peek(uInt16 addr)
 
     case INPT0:
       value = (value & 0x7F) |
-        dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Nine));
+        dumpedInputPort(myConsole.leftController().read(Controller::Nine));
       break;
 
     case INPT1:
       value = (value & 0x7F) |
-        dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Five));
+        dumpedInputPort(myConsole.leftController().read(Controller::Five));
       break;
 
     case INPT2:
       value = (value & 0x7F) |
-        dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Nine));
+        dumpedInputPort(myConsole.rightController().read(Controller::Nine));
       break;
 
     case INPT3:
       value = (value & 0x7F) |
-        dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Five));
+        dumpedInputPort(myConsole.rightController().read(Controller::Five));
       break;
 
     case INPT4:
     {
-      uInt8 button = (myConsole.controller(Controller::Left).read(Controller::Six) ? 0x80 : 0x00);
+      uInt8 button = (myConsole.leftController().read(Controller::Six) ? 0x80 : 0x00);
       myINPT4 = (myVBLANK & 0x40) ? (myINPT4 & button) : button;
 
       value = (value & 0x7F) | myINPT4;
@@ -1350,7 +1350,7 @@ uInt8 TIA::peek(uInt16 addr)
 
     case INPT5:
     {
-      uInt8 button = (myConsole.controller(Controller::Right).read(Controller::Six) ? 0x80 : 0x00);
+      uInt8 button = (myConsole.rightController().read(Controller::Six) ? 0x80 : 0x00);
       myINPT5 = (myVBLANK & 0x40) ? (myINPT5 & button) : button;
 
       value = (value & 0x7F) | myINPT5;

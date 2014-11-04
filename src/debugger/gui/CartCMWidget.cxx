@@ -150,7 +150,7 @@ CartridgeCMWidget::CartridgeCMWidget(
 void CartridgeCMWidget::saveOldState()
 {
   myOldState.swcha = myCart.mySWCHA;
-  myOldState.column = myCart.myColumn;
+  myOldState.column = myCart.column();
   
   myOldState.internalram.clear();
   
@@ -180,7 +180,7 @@ void CartridgeCMWidget::loadConfig()
   mySWCHA->setState(newbits, changed);
 
   // Column
-  myColumn->setList(0, myCart.myColumn, myCart.myColumn != myOldState.column);
+  myColumn->setList(0, myCart.column(), myCart.column() != myOldState.column);
 
   // Various bits from SWCHA and INPTx
   myIncrease->setState(swcha & 0x40);

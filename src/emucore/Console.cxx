@@ -93,8 +93,8 @@ Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
   // For now, we just add dummy joystick controllers, since autodetection
   // runs the emulation for a while, and this may interfere with 'smart'
   // controllers such as the AVox and SaveKey
-  myControllers[0] = new Joystick(Controller::Left, myEvent, *mySystem);
-  myControllers[1] = new Joystick(Controller::Right, myEvent, *mySystem);
+  myLeftControl  = make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
+  myRightControl = make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
 
   // We can only initialize after all the devices/components have been created
   mySystem->initialize();
@@ -156,8 +156,8 @@ Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
   // Finally, add remaining info about the console
   myConsoleInfo.CartName   = myProperties.get(Cartridge_Name);
   myConsoleInfo.CartMD5    = myProperties.get(Cartridge_MD5);
-  myConsoleInfo.Control0   = myControllers[0]->about();
-  myConsoleInfo.Control1   = myControllers[1]->about();
+  myConsoleInfo.Control0   = myLeftControl->about();
+  myConsoleInfo.Control1   = myRightControl->about();
   myConsoleInfo.BankSwitch = myCart->about();
 
   myCart->setRomName(myConsoleInfo.CartName);
@@ -167,8 +167,6 @@ Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
 Console::~Console()
 {
   delete myCMHandler;
-  delete myControllers[0];
-  delete myControllers[1];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,7 +179,7 @@ bool Console::save(Serializer& out) const
       return false;
 
     // Now save the console controllers and switches
-    if(!(myControllers[0]->save(out) && myControllers[1]->save(out) &&
+    if(!(myLeftControl->save(out) && myRightControl->save(out) &&
          mySwitches->save(out)))
       return false;
   }
@@ -204,7 +202,7 @@ bool Console::load(Serializer& in)
       return false;
 
     // Then load the console controllers and switches
-    if(!(myControllers[0]->load(in) && myControllers[1]->load(in) &&
+    if(!(myLeftControl->load(in) && myRightControl->load(in) &&
          mySwitches->load(in)))
       return false;
   }
@@ -583,9 +581,6 @@ void Console::setTIAProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setControllers(const string& rommd5)
 {
-  delete myControllers[0];
-  delete myControllers[1];
-
   // Setup the controllers based on properties
   const string& left  = myProperties.get(Controller_Left);
   const string& right = myProperties.get(Controller_Right);
@@ -595,22 +590,21 @@ void Console::setControllers(const string& rommd5)
   if(left == "COMPUMATE" || right == "COMPUMATE")
   {
     delete myCMHandler;
-    myCMHandler = new CompuMate(*((CartridgeCM*)&myCart), myEvent, *mySystem);
-    myControllers[0] = myCMHandler->leftController();
-    myControllers[1] = myCMHandler->rightController();
+    myCMHandler = new CompuMate(*this, myEvent, *mySystem);
+
+    // A somewhat ugly bit of code that casts to CartridgeCM to
+    // add the CompuMate, and then back again for the actual
+    // Cartridge
+    unique_ptr<CartridgeCM> cartcm(static_cast<CartridgeCM*>(myCart.release()));
+    cartcm->setCompuMate(myCMHandler);
+    myCart = std::move(cartcm);
+
+    myLeftControl  = unique_ptr<Controller>(myCMHandler->leftController());
+    myRightControl = unique_ptr<Controller>(myCMHandler->rightController());
     return;
   }
 
-  // Swap the ports if necessary
-  int leftPort, rightPort;
-  if(myProperties.get(Console_SwapPorts) == "NO")
-  {
-    leftPort = 0; rightPort = 1;
-  }
-  else
-  {
-    leftPort = 1; rightPort = 0;
-  }
+  unique_ptr<Controller> leftC, rightC;
 
   // Also check if we should swap the paddles plugged into a jack
   bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
@@ -618,15 +612,15 @@ void Console::setControllers(const string& rommd5)
   // Construct left controller
   if(left == "BOOSTERGRIP")
   {
-    myControllers[leftPort] = new BoosterGrip(Controller::Left, myEvent, *mySystem);
+    leftC = make_ptr<BoosterGrip>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "DRIVING")
   {
-    myControllers[leftPort] = new Driving(Controller::Left, myEvent, *mySystem);
+    leftC = make_ptr<Driving>(Controller::Left, myEvent, *mySystem);
   }
   else if((left == "KEYBOARD") || (left == "KEYPAD"))
   {
-    myControllers[leftPort] = new Keyboard(Controller::Left, myEvent, *mySystem);
+    leftC = make_ptr<Keyboard>(Controller::Left, myEvent, *mySystem);
   }
   else if(BSPF_startsWithIgnoreCase(left, "PADDLES"))
   {
@@ -637,50 +631,49 @@ void Console::setControllers(const string& rommd5)
       swapDir = true;
     else if(left == "PADDLES_IAXDR")
       swapAxis = swapDir = true;
-    myControllers[leftPort] =
-      new Paddles(Controller::Left, myEvent, *mySystem,
-                  swapPaddles, swapAxis, swapDir);
+    leftC = make_ptr<Paddles>(Controller::Left, myEvent, *mySystem,
+                              swapPaddles, swapAxis, swapDir);
   }
   else if(left == "TRACKBALL22")
   {
-    myControllers[leftPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
-                                            Controller::TrackBall22);
+    leftC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
+                                Controller::TrackBall22);
   }
   else if(left == "TRACKBALL80")
   {
-    myControllers[leftPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
-                                            Controller::TrackBall80);
+    leftC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
+                                Controller::TrackBall80);
   }
   else if(left == "AMIGAMOUSE")
   {
-    myControllers[leftPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
-                                            Controller::AmigaMouse);
+    leftC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
+                                Controller::AmigaMouse);
   }
   else if(left == "GENESIS")
   {
-    myControllers[leftPort] = new Genesis(Controller::Left, myEvent, *mySystem);
+    leftC = make_ptr<Genesis>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "MINDLINK")
   {
-    myControllers[leftPort] = new MindLink(Controller::Left, myEvent, *mySystem);
+    leftC = make_ptr<MindLink>(Controller::Left, myEvent, *mySystem);
   }
   else
   {
-    myControllers[leftPort] = new Joystick(Controller::Left, myEvent, *mySystem);
+    leftC = make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
   }
  
   // Construct right controller
   if(right == "BOOSTERGRIP")
   {
-    myControllers[rightPort] = new BoosterGrip(Controller::Right, myEvent, *mySystem);
+    rightC = make_ptr<BoosterGrip>(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "DRIVING")
   {
-    myControllers[rightPort] = new Driving(Controller::Right, myEvent, *mySystem);
+    rightC = make_ptr<Driving>(Controller::Right, myEvent, *mySystem);
   }
   else if((right == "KEYBOARD") || (right == "KEYPAD"))
   {
-    myControllers[rightPort] = new Keyboard(Controller::Right, myEvent, *mySystem);
+    rightC = make_ptr<Keyboard>(Controller::Right, myEvent, *mySystem);
   }
   else if(BSPF_startsWithIgnoreCase(right, "PADDLES"))
   {
@@ -691,53 +684,64 @@ void Console::setControllers(const string& rommd5)
       swapDir = true;
     else if(right == "PADDLES_IAXDR")
       swapAxis = swapDir = true;
-    myControllers[rightPort] =
-      new Paddles(Controller::Right, myEvent, *mySystem,
-                  swapPaddles, swapAxis, swapDir);
+    rightC = make_ptr<Paddles>(Controller::Right, myEvent, *mySystem,
+                               swapPaddles, swapAxis, swapDir);
   }
   else if(right == "TRACKBALL22")
   {
-    myControllers[rightPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
-                                             Controller::TrackBall22);
+    rightC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
+                                 Controller::TrackBall22);
   }
   else if(right == "TRACKBALL80")
   {
-    myControllers[rightPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
-                                             Controller::TrackBall80);
+    rightC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
+                                 Controller::TrackBall80);
   }
   else if(right == "AMIGAMOUSE")
   {
-    myControllers[rightPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
-                                             Controller::AmigaMouse);
+    rightC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
+                                 Controller::AmigaMouse);
   }
   else if(right == "ATARIVOX")
   {
     const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
-    myControllers[rightPort] = new AtariVox(Controller::Right, myEvent,
+    rightC = make_ptr<AtariVox>(Controller::Right, myEvent,
                    *mySystem, myOSystem.serialPort(),
                    myOSystem.settings().getString("avoxport"), nvramfile);
   }
   else if(right == "SAVEKEY")
   {
     const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
-    myControllers[rightPort] = new SaveKey(Controller::Right, myEvent, *mySystem,
-                                           nvramfile);
+    rightC = make_ptr<SaveKey>(Controller::Right, myEvent, *mySystem,
+                               nvramfile);
   }
   else if(right == "GENESIS")
   {
-    myControllers[rightPort] = new Genesis(Controller::Right, myEvent, *mySystem);
+    rightC = make_ptr<Genesis>(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "KIDVID")
   {
-    myControllers[rightPort] = new KidVid(Controller::Right, myEvent, *mySystem, rommd5);
+    rightC = make_ptr<KidVid>(Controller::Right, myEvent, *mySystem, rommd5);
   }
   else if(right == "MINDLINK")
   {
-    myControllers[rightPort] = new MindLink(Controller::Right, myEvent, *mySystem);
+    rightC = make_ptr<MindLink>(Controller::Right, myEvent, *mySystem);
   }
   else
   {
-    myControllers[rightPort] = new Joystick(Controller::Right, myEvent, *mySystem);
+    rightC = make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
+  }
+
+  // Swap the ports if necessary
+  if(myProperties.get(Console_SwapPorts) == "NO")
+  {
+    myLeftControl  = std::move(leftC);
+    myRightControl = std::move(rightC);
+  }
+  else
+  {
+    myLeftControl  = std::move(rightC);
+    myRightControl = std::move(leftC);
   }
 }
 

@@ -42,17 +42,19 @@
 */
 class CompuMate
 {
+  friend class CartridgeCM;
+
   public:
     /**
       Create a new CompuMate handler for both left and right ports.
       Note that this class creates CMControl controllers for both ports,
       but does not take responsibility for their deletion.
 
-      @param cart   The CompuMate cartridge
-      @param event  The event object to use for events
-      @param system The system using this controller
+      @param console  The console that owns the controller
+      @param event    The event object to use for events
+      @param system   The system using this controller
     */
-    CompuMate(CartridgeCM& cart, const Event& event, const System& system);
+    CompuMate(const Console& console, const Event& event, const System& system);
 
     /**
       Destructor
@@ -105,8 +107,7 @@ class CompuMate
         CMControl(class CompuMate& handler, Controller::Jack jack, const Event& event,
                   const System& system)
           : Controller(jack, event, system, Controller::CompuMate),
-            myHandler(handler)
-        { }
+            myHandler(handler) { }
 
         /**
           Destructor
@@ -116,10 +117,12 @@ class CompuMate
       public:
         /**
           Called after *all* digital pins have been written on Port A.
+          Only update on the left controller; the right controller will
+          happen at the same cycle and is redundant.
 
           @param value  The entire contents of the SWCHA register
         */
-        void controlWrite(uInt8) { myHandler.update(); }
+        void controlWrite(uInt8) { if(myJack == Controller::Left) myHandler.update(); }
 
         /**
           Update the entire digital and analog pin state according to the
@@ -133,12 +136,14 @@ class CompuMate
 
   private:
     // Cart, Event and System objects
-    CartridgeCM& myCart;
+    const Console& myConsole;
     const Event& myEvent;
-    const System& mySystem;
 
     // Left and right controllers
     CMControl *myLeftController, *myRightController;
+
+    // Column currently active
+    uInt8 myColumn;
 
     // The keyboard state array (tells us the current state of the keyboard)
     const bool* myKeyTable;
@@ -146,10 +151,6 @@ class CompuMate
     // Array of keyboard key states when in the debugger (the normal keyboard
     // keys are ignored in such a case)
     bool myInternalKeyTable[KBDK_LAST];
-
-    // System cycle at which the update() method is called
-    // Multiple calls at the same cycle should be ignored
-    uInt32 myCycleAtLastUpdate;
 };
 
 #endif

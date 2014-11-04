@@ -200,7 +200,8 @@ uInt8 RiotDebug::tim1024T(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller& RiotDebug::controller(Controller::Jack jack) const
 {
-  return myConsole.controller(jack);
+  return jack == Controller::Left ? myConsole.leftController() :
+                                    myConsole.rightController();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
