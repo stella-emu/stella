@@ -70,7 +70,6 @@ Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
     myEvent(osystem.eventHandler().event()),
     myProperties(props),
-    myCMHandler(nullptr),
     myDisplayFormat(""),  // Unknown TV format @ start
     myFramerate(0.0),     // Unknown framerate @ start
     myCurrentFormat(0),   // Unknown format @ start
@@ -166,7 +165,6 @@ Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::~Console()
 {
-  delete myCMHandler;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -589,14 +587,13 @@ void Console::setControllers(const string& rommd5)
   // creates them for us, and also that they must be used in both ports
   if(left == "COMPUMATE" || right == "COMPUMATE")
   {
-    delete myCMHandler;
-    myCMHandler = new CompuMate(*this, myEvent, *mySystem);
+    myCMHandler = make_shared<CompuMate>(*this, myEvent, *mySystem);
 
     // A somewhat ugly bit of code that casts to CartridgeCM to
     // add the CompuMate, and then back again for the actual
     // Cartridge
     unique_ptr<CartridgeCM> cartcm(static_cast<CartridgeCM*>(myCart.release()));
-    cartcm->setCompuMate(myCMHandler);
+    cartcm->setCompuMate(myCMHandler.get());
     myCart = std::move(cartcm);
 
     myLeftControl  = unique_ptr<Controller>(myCMHandler->leftController());
