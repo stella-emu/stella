@@ -349,7 +349,7 @@ class Console : public Serializable
     unique_ptr<Controller> myLeftControl, myRightControl;
 
     // Pointer to CompuMate handler (only used in CompuMate ROMs)
-    shared_ptr<CompuMate> myCMHandler;
+    unique_ptr<CompuMate> myCMHandler;
 
     // The currently defined display format (NTSC/PAL/SECAM)
     string myDisplayFormat;

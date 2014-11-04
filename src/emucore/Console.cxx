@@ -587,7 +587,7 @@ void Console::setControllers(const string& rommd5)
   // creates them for us, and also that they must be used in both ports
   if(left == "COMPUMATE" || right == "COMPUMATE")
   {
-    myCMHandler = make_shared<CompuMate>(*this, myEvent, *mySystem);
+    myCMHandler = make_ptr<CompuMate>(*this, myEvent, *mySystem);
 
     // A somewhat ugly bit of code that casts to CartridgeCM to
     // add the CompuMate, and then back again for the actual
