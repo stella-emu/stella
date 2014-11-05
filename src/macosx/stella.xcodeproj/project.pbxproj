@@ -427,7 +427,6 @@
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
 		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
 		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
-		DCC527D410B9DA19005E1287 /* NullDev.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CC10B9DA19005E1287 /* NullDev.cxx */; };
 		DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CD10B9DA19005E1287 /* NullDev.hxx */; };
 		DCC527D610B9DA19005E1287 /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CE10B9DA19005E1287 /* System.cxx */; };
 		DCC527D710B9DA19005E1287 /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CF10B9DA19005E1287 /* System.hxx */; };
@@ -980,7 +979,6 @@
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527CB10B9DA19005E1287 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/M6502.hxx; sourceTree = SOURCE_ROOT; };
-		DCC527CC10B9DA19005E1287 /* NullDev.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NullDev.cxx; path = ../emucore/NullDev.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527CD10B9DA19005E1287 /* NullDev.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NullDev.hxx; path = ../emucore/NullDev.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527CE10B9DA19005E1287 /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = System.cxx; path = ../emucore/System.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527CF10B9DA19005E1287 /* System.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = System.hxx; path = ../emucore/System.hxx; sourceTree = SOURCE_ROOT; };
@@ -1495,7 +1493,6 @@
 				DC8C1BAC14B25DE7006440EE /* MindLink.hxx */,
 				DC11F78B0DB36933003B505E /* MT24LC256.cxx */,
 				DC11F78C0DB36933003B505E /* MT24LC256.hxx */,
-				DCC527CC10B9DA19005E1287 /* NullDev.cxx */,
 				DCC527CD10B9DA19005E1287 /* NullDev.hxx */,
 				2DDBEB7408457B7D00812C11 /* OSystem.cxx */,
 				2DDBEB7508457B7D00812C11 /* OSystem.hxx */,
@@ -2234,7 +2231,6 @@
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
-				DCC527D410B9DA19005E1287 /* NullDev.cxx in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
@@ -2490,7 +2486,7 @@
 		2D91752209BA903B0026E9FF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2517,14 +2513,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 			};
 			name = Development;
 		};
 		2D91752309BA903B0026E9FF /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2550,14 +2546,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 			};
 			name = Deployment;
 		};
 		2D91752409BA903B0026E9FF /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2579,7 +2575,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 			};
 			name = Default;
 		};
