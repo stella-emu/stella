@@ -23,7 +23,6 @@
 #include <zlib.h>
 
 #include "bspf.hxx"
-#include "SharedPtr.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
 
@@ -49,7 +48,7 @@ FilesystemNode::FilesystemNode(const string& p)
   else
     tmp = FilesystemNodeFactory::create(p, FilesystemNodeFactory::SYSTEM);
 
-  _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
+  _realNode = shared_ptr<AbstractFSNode>(tmp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -566,7 +566,6 @@
     <ClInclude Include="..\common\PNGLibrary.hxx" />
     <ClInclude Include="SerialPortWINDOWS.hxx" />
     <ClInclude Include="SettingsWINDOWS.hxx" />
-    <ClInclude Include="..\common\SharedPtr.hxx" />
     <ClInclude Include="..\common\SoundSDL2.hxx" />
     <ClInclude Include="..\common\Stack.hxx" />
     <ClInclude Include="..\common\Version.hxx" />

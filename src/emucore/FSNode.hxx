@@ -47,8 +47,8 @@
  * we can build upon this.
  */
 
+#include "bspf.hxx"
 #include "Array.hxx"
-#include "SharedPtr.hxx"
 
 class FilesystemNode;
 class AbstractFSNode;
@@ -94,7 +94,7 @@ class FilesystemNode
      */
     explicit FilesystemNode(const string& path);
 
-    virtual ~FilesystemNode() {}
+    virtual ~FilesystemNode() { }
 
     /**
      * Compare the name of this node to the name of another. Directories
@@ -250,7 +250,7 @@ class FilesystemNode
     string getShortPathWithExt(const string& ext) const; // FIXME - dead code
 
   private:
-    Common::SharedPtr<AbstractFSNode> _realNode;
+    shared_ptr<AbstractFSNode> _realNode;
     FilesystemNode(AbstractFSNode* realNode);
 };
 
@@ -276,7 +276,7 @@ class AbstractFSNode
     /**
      * Destructor.
      */
-    virtual ~AbstractFSNode() {}
+    virtual ~AbstractFSNode() { }
 
     /*
      * Indicates whether the object referred by this path exists in the

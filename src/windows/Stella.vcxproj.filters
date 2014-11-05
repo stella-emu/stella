@@ -800,9 +800,6 @@
     <ClInclude Include="SettingsWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\SharedPtr.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\SoundSDL2.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>

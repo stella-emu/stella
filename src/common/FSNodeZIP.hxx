@@ -70,10 +70,10 @@ class FilesystemNodeZIP : public AbstractFSNode
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualfile,
-        Common::SharedPtr<AbstractFSNode> realnode);
+        shared_ptr<AbstractFSNode> realnode);
 
     void setFlags(const string& zipfile, const string& virtualfile,
-        Common::SharedPtr<AbstractFSNode> realnode);
+        shared_ptr<AbstractFSNode> realnode);
 
   private:
     /* Error types */
@@ -85,7 +85,7 @@ class FilesystemNodeZIP : public AbstractFSNode
       ZIPERR_NO_ROMS
     };
 
-    Common::SharedPtr<AbstractFSNode> _realNode;
+    shared_ptr<AbstractFSNode> _realNode;
     string _zipFile, _virtualFile;
     string _path, _shortPath;
     zip_error _error;

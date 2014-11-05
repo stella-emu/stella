@@ -29,7 +29,7 @@ FilesystemNodeZIP::FilesystemNodeZIP()
 {
   // We need a name, else the node is invalid
   AbstractFSNode* tmp = 0;
-  _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
+  _realNode = shared_ptr<AbstractFSNode>(tmp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,14 +77,14 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 
   AbstractFSNode* tmp =
     FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::SYSTEM);
-  _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
+  _realNode = shared_ptr<AbstractFSNode>(tmp);
 
   setFlags(_zipFile, _virtualFile, _realNode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(const string& zipfile, const string& virtualfile,
-    Common::SharedPtr<AbstractFSNode> realnode)
+    shared_ptr<AbstractFSNode> realnode)
 {
   setFlags(zipfile, virtualfile, realnode);
 }
@@ -92,7 +92,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& zipfile, const string& virtua
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FilesystemNodeZIP::setFlags(const string& zipfile,
                                  const string& virtualfile,
-                                 Common::SharedPtr<AbstractFSNode> realnode)
+                                 shared_ptr<AbstractFSNode> realnode)
 {
   _zipFile = zipfile;
   _virtualFile = virtualfile;
