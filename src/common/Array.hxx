@@ -35,34 +35,84 @@ class Array
   protected:
     uInt32 _capacity;
     uInt32 _size;
-    T *_data;
+    T* _data;
 
   public:
-    typedef T *iterator;
-    typedef const T *const_iterator;
+    typedef T* iterator;
+    typedef const T* const_iterator;
 
   public:
-    Array<T>() : _capacity(0), _size(0), _data(0) {}
-    Array<T>(const Array<T>& array) : _capacity(0), _size(0), _data(0)
+    // Standard c'tor
+    Array<T>() : _capacity(0), _size(0), _data(nullptr) { }
+
+    // Copy c'tor
+    Array<T>(const Array<T>& array)
+      : _capacity(array._size+128), _size(array._size), _data(nullptr)
     {
+      _data = new T[_capacity];
+      for(uInt32 i = 0; i < _size; i++)
+        _data[i] = array._data[i];
+    }
+    // Copy assignment
+    Array<T>& operator =(const Array<T>& array)
+    {
+      delete [] _data;
       _size = array._size;
       _capacity = _size + 128;
       _data = new T[_capacity];
       for(uInt32 i = 0; i < _size; i++)
         _data[i] = array._data[i];
+
+      return *this;
     }
 
+    // Move c'tor
+    Array<T>(Array<T>&& array)
+      : _capacity(array._capacity), _size(array._size), _data(array._data)
+    {
+      array._size = 0;
+      array._capacity = 0;
+      array._data = nullptr;
+    }
+    // Move assignment
+    Array<T>& operator =(Array<T>&& array)
+    {
+      if(this != &array)
+      {
+        delete[] _data;
+        _capacity = array._size;
+        _size = array._size;
+        _data = array._data;
+        array._capacity = 0;
+        array._size = 0;
+        array._data = nullptr;
+
+      }
+      return *this;
+    }
+
+    // Initializer list c'tor
+    Array<T>(std::initializer_list<T> il) : _capacity(0), _size(0), _data(nullptr)
+    {
+      ensureCapacity(il.size());
+      for(int e: il)
+        _data[_size++] = e;
+    }
+
+    // D'tor
     ~Array<T>()
     {
-      if (_data)
-        delete [] _data;
+      if(_data)
+      {
+        delete[] _data;
+        _data = nullptr;
+      }
     }
 
     void reserve(uInt32 capacity)
     {
-      if(capacity <= _capacity)
-        return;
-      ensureCapacity(capacity - 128);
+      if(capacity > _capacity)
+        ensureCapacity(capacity - 128);
     }
 
     void push_back(const T& element)
@@ -116,19 +166,6 @@ class Array
       return _data[idx];
     }
 
-    Array<T>& operator =(const Array<T>& array)
-    {
-      if (_data)
-        delete [] _data;
-      _size = array._size;
-      _capacity = _size + 128;
-      _data = new T[_capacity];
-      for(uInt32 i = 0; i < _size; i++)
-        _data[i] = array._data[i];
-
-      return *this;
-    }
-
     uInt32 size() const     { return _size;     }
     uInt32 capacity() const { return _capacity; }
 
@@ -139,7 +176,7 @@ class Array
         if(_data)
         {
           delete [] _data;
-          _data = 0;
+          _data = nullptr;
         }
         _capacity = 0;
       }
@@ -177,23 +214,23 @@ class Array
       if (new_len <= _capacity)
         return;
 
-      T *old_data = _data;
+      T* old_data = _data;
       _capacity = new_len + 128;
       _data = new T[_capacity];
 
-      if (old_data)
+      if(old_data)
       {
         // Copy old data
-        for (uInt32 i = 0; i < _size; i++)
+        for(uInt32 i = 0; i < _size; i++)
           _data[i] = old_data[i];
-        delete [] old_data;
+        delete[] old_data;
       }
     }
 };
 
 }  // Namespace Common
 
-typedef Common::Array<int>   IntArray;
+typedef Common::Array<Int32> IntArray;
 typedef Common::Array<bool>  BoolArray;
 typedef Common::Array<uInt8> ByteArray;
 
