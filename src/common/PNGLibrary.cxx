@@ -46,25 +46,25 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 {
   #define loadImageERROR(s) { err_message = s; goto done; }
 
-  png_structp png_ptr = NULL;
-  png_infop info_ptr = NULL;
+  png_structp png_ptr = nullptr;
+  png_infop info_ptr = nullptr;
   png_uint_32 iwidth, iheight;
   int bit_depth, color_type, interlace_type;
-  const char* err_message = NULL;
+  const char* err_message = nullptr;
 
   ifstream in(filename.c_str(), ios_base::binary);
   if(!in.is_open())
     loadImageERROR("No image found");
 
   // Create the PNG loading context structure
-  png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL,
+  png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr,
                  png_user_error, png_user_warn);
-  if(png_ptr == NULL)
+  if(png_ptr == nullptr)
     loadImageERROR("Couldn't allocate memory for PNG file");
 
   // Allocate/initialize the memory for image information.  REQUIRED.
 	info_ptr = png_create_info_struct(png_ptr);
-  if(info_ptr == NULL)
+  if(info_ptr == nullptr)
     loadImageERROR("Couldn't create image information for PNG file");
 
   // Set up the input control
@@ -73,7 +73,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
   // Read PNG header info
   png_read_info(png_ptr, info_ptr);
   png_get_IHDR(png_ptr, info_ptr, &iwidth, &iheight, &bit_depth,
-    &color_type, &interlace_type, NULL, NULL);
+    &color_type, &interlace_type, nullptr, nullptr);
 
   // Tell libpng to strip 16 bit/color files down to 8 bits/color
   png_set_strip_16(png_ptr);
@@ -184,19 +184,19 @@ void PNGLibrary::saveImage(ofstream& out, png_bytep& buffer, png_bytep*& rows,
 {
   #define saveImageERROR(s) { err_message = s; goto done; }
 
-  png_structp png_ptr = NULL;
-  png_infop info_ptr = NULL;
-  const char* err_message = NULL;
+  png_structp png_ptr = nullptr;
+  png_infop info_ptr = nullptr;
+  const char* err_message = nullptr;
 
   // Create the PNG saving context structure
-  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL,
+  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr,
                  png_user_error, png_user_warn);
-  if(png_ptr == NULL)
+  if(png_ptr == nullptr)
     saveImageERROR("Couldn't allocate memory for PNG file");
 
   // Allocate/initialize the memory for image information.  REQUIRED.
 	info_ptr = png_create_info_struct(png_ptr);
-  if(info_ptr == NULL)
+  if(info_ptr == nullptr)
     saveImageERROR("Couldn't create image information for PNG file");
 
   // Set up the output control
@@ -252,7 +252,7 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
   {
     delete[] ReadInfo.buffer;
     ReadInfo.buffer = new uInt8[req_buffer_size];
-    if(ReadInfo.buffer == NULL)
+    if(ReadInfo.buffer == nullptr)
       return false;
 
     ReadInfo.buffer_size = req_buffer_size;
@@ -262,7 +262,7 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
   {
     delete[] ReadInfo.row_pointers;
     ReadInfo.row_pointers = new png_bytep[req_row_size];
-    if(ReadInfo.row_pointers == NULL)
+    if(ReadInfo.row_pointers == nullptr)
       return false;
 
     ReadInfo.row_size = req_row_size;
@@ -360,5 +360,5 @@ void PNGLibrary::png_user_error(png_structp ctx, png_const_charp str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PNGLibrary::ReadInfoType PNGLibrary::ReadInfo = {
-  NULL, NULL, 0, 0, 0, 0, 0
+  nullptr, nullptr, 0, 0, 0, 0, 0
 };

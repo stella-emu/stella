@@ -79,7 +79,7 @@ class Variant
 static const Variant EmptyVariant("");
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class VariantList : public Common::Array< pair<string,Variant> >
+class VariantList : public Common::Array<pair<string,Variant>>
 {
   public:
     VariantList() { }

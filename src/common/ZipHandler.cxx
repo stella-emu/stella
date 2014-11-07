@@ -25,10 +25,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler::ZipHandler()
-  : myZip(NULL)
+  : myZip(nullptr)
 {
-  for (int cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
-    myZipCache[cachenum] = NULL;
+  for(int cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
+    myZipCache[cachenum] = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,7 +70,7 @@ string ZipHandler::next()
   if(myZip)
   {
     bool valid = false;
-    const zip_file_header* header = NULL;
+    const zip_file_header* header = nullptr;
     do {
       header = zip_file_next_file(myZip);
 
@@ -111,7 +111,7 @@ uInt32 ZipHandler::decompress(uInt8*& image)
       return length;
     else
     {
-      delete[] image;  image = NULL;
+      delete[] image;  image = nullptr;
 
       throw zip_error_s[err];
     }
@@ -131,7 +131,7 @@ bool ZipHandler::stream_open(const char* filename, fstream** stream,
   fstream* in = new fstream(filename, fstream::in | fstream::binary);
   if(!in || !in->is_open())
   {
-    *stream = NULL;
+    *stream = nullptr;
     length = 0;
     return false;
   }
@@ -154,7 +154,7 @@ void ZipHandler::stream_close(fstream** stream)
     if((*stream)->is_open())
       (*stream)->close();
     delete *stream;
-    *stream = NULL;
+    *stream = nullptr;
   }
 }
 
@@ -193,27 +193,27 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
   bool success;
 
   /* ensure we start with a NULL result */
-  *zip = NULL;
+  *zip = nullptr;
 
   /* see if we are in the cache, and reopen if so */
-  for (cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
+  for(cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
   {
     zip_file *cached = myZipCache[cachenum];
 
     /* if we have a valid entry and it matches our filename, use it and remove
        from the cache */
-    if (cached != NULL && cached->filename != NULL &&
-        strcmp(filename, cached->filename) == 0)
+    if(cached != nullptr && cached->filename != nullptr &&
+       strcmp(filename, cached->filename) == 0)
     {
       *zip = cached;
-      myZipCache[cachenum] = NULL;
+      myZipCache[cachenum] = nullptr;
       return ZIPERR_NONE;
     }
   }
 
   /* allocate memory for the zip_file structure */
   newzip = (zip_file *)malloc(sizeof(*newzip));
-  if (newzip == NULL)
+  if (newzip == nullptr)
     return ZIPERR_OUT_OF_MEMORY;
   memset(newzip, 0, sizeof(*newzip));
 
@@ -226,7 +226,7 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
 
   /* read ecd data */
   ziperr = read_ecd(newzip);
-  if (ziperr != ZIPERR_NONE)
+  if(ziperr != ZIPERR_NONE)
     goto error;
 
   /* verify that we can work with this zipfile (no disk spanning allowed) */
@@ -239,7 +239,7 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
 
   /* allocate memory for the central directory */
   newzip->cd = (uInt8 *)malloc(newzip->ecd.cd_size + 1);
-  if (newzip->cd == NULL)
+  if(newzip->cd == nullptr)
   {
     ziperr = ZIPERR_OUT_OF_MEMORY;
     goto error;
@@ -248,7 +248,7 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
   /* read the central directory */
   success = stream_read(newzip->file, newzip->cd, newzip->ecd.cd_start_disk_offset,
                         newzip->ecd.cd_size, read_length);
-  if (!success || read_length != newzip->ecd.cd_size)
+  if(!success || read_length != newzip->ecd.cd_size)
   {
     ziperr = success ? ZIPERR_FILE_TRUNCATED : ZIPERR_FILE_ERROR;
     goto error;
@@ -256,7 +256,7 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
 
   /* make a copy of the filename for caching purposes */
   string = (char *)malloc(strlen(filename) + 1);
-  if (string == NULL)
+  if (string == nullptr)
   {
     ziperr = ZIPERR_OUT_OF_MEMORY;
     goto error;
@@ -293,20 +293,20 @@ void ZipHandler::zip_file_close(zip_file *zip)
   int cachenum;
 
   /* close the open files */
-  if (zip->file)
+  if(zip->file)
     stream_close(&zip->file);
 
   /* find the first NULL entry in the cache */
-  for (cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
-    if (myZipCache[cachenum] == NULL)
+  for(cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
+    if (myZipCache[cachenum] == nullptr)
       break;
 
   /* if no room left in the cache, free the bottommost entry */
-  if (cachenum == ZIP_CACHE_SIZE)
+  if(cachenum == ZIP_CACHE_SIZE)
     free_zip_file(myZipCache[--cachenum]);
 
   /* move everyone else down and place us at the top */
-  if (cachenum != 0)
+  if(cachenum != 0)
     memmove(&myZipCache[1], &myZipCache[0], cachenum * sizeof(myZipCache[0]));
   myZipCache[0] = zip;
 }
@@ -319,11 +319,11 @@ void ZipHandler::zip_file_close(zip_file *zip)
 void ZipHandler::zip_file_cache_clear(void)
 {
   /* clear call cache entries */
-  for (int cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
-    if (myZipCache[cachenum] != NULL)
+  for(int cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
+    if(myZipCache[cachenum] != nullptr)
     {
       free_zip_file(myZipCache[cachenum]);
-      myZipCache[cachenum] = NULL;
+      myZipCache[cachenum] = nullptr;
     }
 }
 
@@ -339,15 +339,15 @@ void ZipHandler::zip_file_cache_clear(void)
 const ZipHandler::zip_file_header* ZipHandler::zip_file_next_file(zip_file *zip)
 {
   /* fix up any modified data */
-  if (zip->header.raw != NULL)
+  if(zip->header.raw != nullptr)
   {
     zip->header.raw[ZIPCFN + zip->header.filename_length] = zip->header.saved;
-    zip->header.raw = NULL;
+    zip->header.raw = nullptr;
   }
 
   /* if we're at or past the end, we're done */
-  if (zip->cd_pos >= zip->ecd.cd_size)
-    return NULL;
+  if(zip->cd_pos >= zip->ecd.cd_size)
+    return nullptr;
 
   /* extract file header info */
   zip->header.raw                 = zip->cd + zip->cd_pos;
@@ -375,8 +375,8 @@ const ZipHandler::zip_file_header* ZipHandler::zip_file_next_file(zip_file *zip)
   zip->header.rawlength += zip->header.filename_length;
   zip->header.rawlength += zip->header.extra_field_length;
   zip->header.rawlength += zip->header.file_comment_length;
-  if (zip->cd_pos + zip->header.rawlength > zip->ecd.cd_size)
-    return NULL;
+  if(zip->cd_pos + zip->header.rawlength > zip->ecd.cd_size)
+    return nullptr;
 
   /* NULL terminate the filename */
   zip->header.saved = zip->header.raw[ZIPCFN + zip->header.filename_length];
@@ -398,20 +398,20 @@ ZipHandler::zip_error
   uInt64 offset;
 
   /* if we don't have enough buffer, error */
-  if (length < zip->header.uncompressed_length)
+  if(length < zip->header.uncompressed_length)
     return ZIPERR_BUFFER_TOO_SMALL;
 
   /* make sure the info in the header aligns with what we know */
-  if (zip->header.start_disk_number != zip->ecd.disk_number)
+  if(zip->header.start_disk_number != zip->ecd.disk_number)
     return ZIPERR_UNSUPPORTED;
 
   /* get the compressed data offset */
   ziperr = get_compressed_data_offset(zip, &offset);
-  if (ziperr != ZIPERR_NONE)
+  if(ziperr != ZIPERR_NONE)
     return ziperr;
 
   /* handle compression types */
-  switch (zip->header.compression)
+  switch(zip->header.compression)
   {
     case 0:
       ziperr = decompress_data_type_0(zip, offset, buffer, length);
@@ -438,15 +438,15 @@ ZipHandler::zip_error
 -------------------------------------------------*/
 void ZipHandler::free_zip_file(zip_file *zip)
 {
-  if (zip != NULL)
+  if(zip != nullptr)
   {
-    if (zip->file)
+    if(zip->file)
       stream_close(&zip->file);
-    if (zip->filename != NULL)
+    if(zip->filename != nullptr)
       free((void *)zip->filename);
-    if (zip->ecd.raw != NULL)
+    if(zip->ecd.raw != nullptr)
       free(zip->ecd.raw);
-    if (zip->cd != NULL)
+    if(zip->cd != nullptr)
       free(zip->cd);
     free(zip);
   }
@@ -466,37 +466,37 @@ ZipHandler::zip_error ZipHandler::read_ecd(zip_file *zip)
   uInt8 *buffer;
 
   /* we may need multiple tries */
-  while (buflen < 65536)
+  while(buflen < 65536)
   {
     uInt32 read_length;
     Int32 offset;
 
     /* max out the buffer length at the size of the file */
-    if (buflen > zip->length)
+    if(buflen > zip->length)
       buflen = (uInt32)zip->length;
 
     /* allocate buffer */
     buffer = (uInt8 *)malloc(buflen + 1);
-    if (buffer == NULL)
+    if(buffer == nullptr)
       return ZIPERR_OUT_OF_MEMORY;
 
     /* read in one buffers' worth of data */
     bool success = stream_read(zip->file, buffer, zip->length - buflen,
                                buflen, read_length);
-    if (!success || read_length != buflen)
+    if(!success || read_length != buflen)
     {
       free(buffer);
       return ZIPERR_FILE_ERROR;
     }
 
     /* find the ECD signature */
-    for (offset = buflen - 22; offset >= 0; offset--)
-      if (buffer[offset + 0] == 'P' && buffer[offset + 1] == 'K' &&
-          buffer[offset + 2] == 0x05 && buffer[offset + 3] == 0x06)
+    for(offset = buflen - 22; offset >= 0; offset--)
+      if(buffer[offset + 0] == 'P' && buffer[offset + 1] == 'K' &&
+         buffer[offset + 2] == 0x05 && buffer[offset + 3] == 0x06)
         break;
 
     /* if we found it, fill out the data */
-    if (offset >= 0)
+    if(offset >= 0)
     {
       /* reuse the buffer as our ECD buffer */
       zip->ecd.raw = buffer;
@@ -521,7 +521,7 @@ ZipHandler::zip_error ZipHandler::read_ecd(zip_file *zip)
 
     /* didn't find it; free this buffer and expand our search */
     free(buffer);
-    if (buflen < zip->length)
+    if(buflen < zip->length)
       buflen *= 2;
     else
       return ZIPERR_BAD_SIGNATURE;
@@ -539,13 +539,13 @@ ZipHandler::zip_error
   uInt32 read_length;
 
   /* make sure the file handle is open */
-  if (zip->file == NULL && !stream_open(zip->filename, &zip->file, zip->length))
+  if(zip->file == nullptr && !stream_open(zip->filename, &zip->file, zip->length))
     return ZIPERR_FILE_ERROR;
 
   /* now go read the fixed-sized part of the local file header */
   bool success = stream_read(zip->file, zip->buffer, zip->header.local_header_offset,
                              ZIPNAME, read_length);
-  if (!success || read_length != ZIPNAME)
+  if(!success || read_length != ZIPNAME)
     return success ? ZIPERR_FILE_TRUNCATED : ZIPERR_FILE_ERROR;
 
   /* compute the final offset */
@@ -573,9 +573,9 @@ ZipHandler::zip_error
   /* the data is uncompressed; just read it */
   bool success = stream_read(zip->file, buffer, offset, zip->header.compressed_length,
                              read_length);
-  if (!success)
+  if(!success)
     return ZIPERR_FILE_ERROR;
-  else if (read_length != zip->header.compressed_length)
+  else if(read_length != zip->header.compressed_length)
     return ZIPERR_FILE_TRUNCATED;
   else
     return ZIPERR_NONE;
@@ -609,17 +609,17 @@ ZipHandler::zip_error
 
   /* initialize the decompressor */
   zerr = inflateInit2(&stream, -MAX_WBITS);
-  if (zerr != Z_OK)
+  if(zerr != Z_OK)
     return ZIPERR_DECOMPRESS_ERROR;
 
   /* loop until we're done */
-  while (1)
+  while(1)
   {
     /* read in the next chunk of data */
     bool success = stream_read(zip->file, zip->buffer, offset,
                       BSPF_min(input_remaining, (uInt32)sizeof(zip->buffer)),
                       read_length);
-    if (!success)
+    if(!success)
     {
       inflateEnd(&stream);
       return ZIPERR_FILE_ERROR;
@@ -627,7 +627,7 @@ ZipHandler::zip_error
     offset += read_length;
 
     /* if we read nothing, but still have data left, the file is truncated */
-    if (read_length == 0 && input_remaining > 0)
+    if(read_length == 0 && input_remaining > 0)
     {
       inflateEnd(&stream);
       return ZIPERR_FILE_TRUNCATED;
@@ -639,14 +639,14 @@ ZipHandler::zip_error
     input_remaining -= read_length;
 
     /* add a dummy byte at end of compressed data */
-    if (input_remaining == 0)
+    if(input_remaining == 0)
       stream.avail_in++;
 
     /* now inflate */
     zerr = inflate(&stream, Z_NO_FLUSH);
-    if (zerr == Z_STREAM_END)
+    if(zerr == Z_STREAM_END)
       break;
-    if (zerr != Z_OK)
+    if(zerr != Z_OK)
     {
       inflateEnd(&stream);
       return ZIPERR_DECOMPRESS_ERROR;
@@ -655,11 +655,11 @@ ZipHandler::zip_error
 
   /* finish decompression */
   zerr = inflateEnd(&stream);
-  if (zerr != Z_OK)
+  if(zerr != Z_OK)
     return ZIPERR_DECOMPRESS_ERROR;
 
   /* if anything looks funny, report an error */
-  if (stream.avail_out > 0 || input_remaining > 0)
+  if(stream.avail_out > 0 || input_remaining > 0)
     return ZIPERR_DECOMPRESS_ERROR;
 
   return ZIPERR_NONE;

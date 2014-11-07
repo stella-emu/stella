@@ -36,8 +36,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
-    myWindow(NULL),
-    myRenderer(NULL),
+    myWindow(nullptr),
+    myRenderer(nullptr),
     myDirtyFlag(true),
     myDblBufferedFlag(true)
 {
@@ -66,14 +66,14 @@ FrameBufferSDL2::~FrameBufferSDL2()
   if(myRenderer)
   {
     SDL_DestroyRenderer(myRenderer);
-    myRenderer = NULL;
+    myRenderer = nullptr;
   }
   if(myWindow)
   {
     SDL_SetWindowFullscreen(myWindow, 0); // on some systems, a crash occurs
                                           // when destroying fullscreen window
     SDL_DestroyWindow(myWindow);
-    myWindow = NULL;
+    myWindow = nullptr;
   }
 }
 
@@ -123,7 +123,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
     SDL_RenderPresent(myRenderer);
     SDL_RenderClear(myRenderer);
     SDL_DestroyRenderer(myRenderer);
-    myRenderer = NULL;
+    myRenderer = nullptr;
   }
 
   Int32 displayIndex = mode.fsIndex;
@@ -162,7 +162,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
     if((uInt32)w != mode.screen.w || (uInt32)h != mode.screen.h)
     {
       SDL_DestroyWindow(myWindow);
-      myWindow = NULL;
+      myWindow = nullptr;
     }
   }
   if(myWindow)
@@ -186,7 +186,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
   {
     myWindow = SDL_CreateWindow(title.c_str(), pos, pos,
                                 mode.screen.w, mode.screen.h, flags);
-    if(myWindow == NULL)
+    if(myWindow == nullptr)
     {
       string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
       myOSystem.logMessage(msg, 0);
@@ -202,7 +202,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
   if(video != "")
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
   myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
-  if(myRenderer == NULL)
+  if(myRenderer == nullptr)
   {
     string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
     myOSystem.logMessage(msg, 0);

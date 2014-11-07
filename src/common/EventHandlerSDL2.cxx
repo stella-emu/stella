@@ -202,7 +202,7 @@ void EventHandlerSDL2::pollEvent()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
-  : myStick(NULL)
+  : myStick(nullptr)
 {
   myStick = SDL_JoystickOpen(idx);
   if(myStick)
@@ -218,5 +218,5 @@ EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
 {
   if(myStick)
     SDL_JoystickClose(myStick);
-  myStick = NULL;
+  myStick = nullptr;
 }

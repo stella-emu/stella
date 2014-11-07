@@ -23,15 +23,15 @@
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
                              uInt32 width, uInt32 height, const uInt32* data)
   : myFB(buffer),
-    mySurface(NULL),
-    myTexture(NULL),
+    mySurface(nullptr),
+    myTexture(nullptr),
     mySurfaceIsDirty(true),
     myIsVisible(true),
     myTexAccess(SDL_TEXTUREACCESS_STREAMING),
     myInterpolate(false),
     myBlendEnabled(false),
     myBlendAlpha(255),
-    myStaticData(NULL)
+    myStaticData(nullptr)
 {
   createSurface(width, height, data);
 }
@@ -47,7 +47,7 @@ FBSurfaceSDL2::~FBSurfaceSDL2()
   if(myStaticData)
   {
     delete[] myStaticData;
-    myStaticData = NULL;
+    myStaticData = nullptr;
   }
 }
 
@@ -152,7 +152,7 @@ bool FBSurfaceSDL2::render()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::invalidate()
 {
-  SDL_FillRect(mySurface, NULL, 0);
+  SDL_FillRect(mySurface, nullptr, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,7 +161,7 @@ void FBSurfaceSDL2::free()
   if(myTexture)
   {
     SDL_DestroyTexture(myTexture);
-    myTexture = NULL;
+    myTexture = nullptr;
   }
 }
 
@@ -175,7 +175,7 @@ void FBSurfaceSDL2::reload()
 
   // If the data is static, we only upload it once
   if(myTexAccess == SDL_TEXTUREACCESS_STATIC)
-    SDL_UpdateTexture(myTexture, NULL, myStaticData, myStaticPitch);
+    SDL_UpdateTexture(myTexture, nullptr, myStaticData, myStaticPitch);
 
   // Blending enabled?
   if(myBlendEnabled)
@@ -197,7 +197,7 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
     SDL_FreeSurface(mySurface);
   free();
 
-  createSurface(width, height, NULL);
+  createSurface(width, height, nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -26,7 +26,7 @@
 class StringList : public Common::Array<string>
 {
   public:
-    void push_back(const char *str)
+    void push_back(const char* str)
     {
       ensureCapacity(_size + 1);
       _data[_size++] = str;

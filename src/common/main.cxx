@@ -47,7 +47,7 @@ unique_ptr<OSystem> theOSystem;
 // Does general Cleanup in case any operation failed (or at end of program)
 int Cleanup()
 {
-  theOSystem->logMessage("Cleanup from mainSDL", 2);
+  theOSystem->logMessage("Cleanup from main", 2);
   theOSystem->saveConfig();
 
   return 0;

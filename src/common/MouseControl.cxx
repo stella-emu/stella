@@ -162,8 +162,8 @@ MouseControl::MouseControl(Console& console, const string& mode)
     myModeList.push_back(MouseMode("Mouse not used for current controllers"));
 
 #if 0
-  for(unsigned int i = 0; i < myModeList.size(); ++i)
-    cerr << myModeList[i] << endl;
+  for(MouseMode m: myModeList)
+    cerr << mode << endl;
 #endif
 }
 

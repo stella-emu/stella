@@ -91,12 +91,12 @@ class PNGLibrary
 
     // The following data remains between invocations of allocateStorage,
     // and is only changed when absolutely necessary.
-    typedef struct {
+    struct ReadInfoType {
       uInt8* buffer;
       png_bytep* row_pointers;
       png_uint_32 width, height, pitch;
       uInt32 buffer_size, row_size;
-    } ReadInfoType;
+    };
     static ReadInfoType ReadInfo;
 
     /**

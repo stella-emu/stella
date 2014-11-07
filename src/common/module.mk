@@ -1,7 +1,7 @@
 MODULE := src/common
 
 MODULE_OBJS := \
-	src/common/mainSDL.o \
+	src/common/main.o \
 	src/common/Base.o \
 	src/common/EventHandlerSDL2.o \
 	src/common/FrameBufferSDL2.o \
