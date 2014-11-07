@@ -24,7 +24,7 @@ class TIASurface;
 class Settings;
 
 #include "bspf.hxx"
-#include "atari_ntsc.h"
+#include "atari_ntsc.hxx"
 
 #define SCALE_FROM_100(x) ((x/50.0)-1.0)
 #define SCALE_TO_100(x) (uInt32)(50*(x+1.0))

@@ -17,7 +17,7 @@
 // $Id$
 //============================================================================
 
-#include "atari_ntsc.h"
+#include "atari_ntsc.hxx"
 
 /* Copyright (C) 2006-2009 Shay Green. This module is free software; you
    can redistribute it and/or modify it under the terms of the GNU Lesser
@@ -48,7 +48,7 @@ atari_ntsc_setup_t const atari_ntsc_bad       = {  0.1, -0.3, 0.3, 0.25, 0.2, 0.
 
 #define gamma_size 256
 
-#include "atari_ntsc_impl.h"
+#include "atari_ntsc_impl.hxx"
 
 /* 2 input pixels -> 8 composite samples */
 pixel_info_t const atari_ntsc_pixels [alignment_count] = {
