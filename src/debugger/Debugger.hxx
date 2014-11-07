@@ -297,11 +297,11 @@ class Debugger : public DialogContainer
     System&  mySystem;
 
     DebuggerDialog* myDialog;
-    DebuggerParser* myParser;
-    CartDebug*      myCartDebug;
-    CpuDebug*       myCpuDebug;
-    RiotDebug*      myRiotDebug;
-    TIADebug*       myTiaDebug;
+    unique_ptr<DebuggerParser> myParser;
+    unique_ptr<CartDebug>      myCartDebug;
+    unique_ptr<CpuDebug>       myCpuDebug;
+    unique_ptr<RiotDebug>      myRiotDebug;
+    unique_ptr<TIADebug>       myTiaDebug;
 
     PackedBitArray* myBreakPoints;
     PackedBitArray* myReadTraps;
@@ -338,7 +338,7 @@ class Debugger : public DialogContainer
         Serializer* myStateList[MAX_SIZE];
         uInt32 mySize, myTop;
     };
-    RewindManager* myRewindManager;
+    unique_ptr<RewindManager> myRewindManager;
 };
 
 #endif

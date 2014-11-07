@@ -48,7 +48,7 @@ class DebuggerParser
     void getCompletions(const char* in, StringList& list) const;
 
     /** Evaluate the given expression using operators, current base, etc */
-    int decipher_arg(const string &str);
+    int decipher_arg(const string& str);
 
     /** String representation of all watches currently defined */
     string showWatches();
@@ -84,7 +84,7 @@ class DebuggerParser
       kIN_ARG
     };
 
-    typedef enum {
+    enum parameters {
       kARG_WORD,        // single 16-bit value
       kARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
       kARG_BYTE,        // single 8-bit value
@@ -94,7 +94,7 @@ class DebuggerParser
       kARG_FILE,        // filename
       kARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
       kARG_END_ARGS     // sentinel, occurs at end of list
-    } parameters;
+    };
 
     // Pointer to DebuggerParser instance method, no args, returns void.
     typedef void (DebuggerParser::*METHOD)();

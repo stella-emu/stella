@@ -114,31 +114,25 @@ Debugger::Debugger(OSystem& osystem, Console& console)
   : DialogContainer(osystem),
     myConsole(console),
     mySystem(console.system()),
-    myDialog(NULL),
-    myParser(NULL),
-    myCartDebug(NULL),
-    myCpuDebug(NULL),
-    myRiotDebug(NULL),
-    myTiaDebug(NULL),
-    myBreakPoints(NULL),
-    myReadTraps(NULL),
-    myWriteTraps(NULL),
+    myDialog(nullptr),
+    myBreakPoints(nullptr),
+    myReadTraps(nullptr),
+    myWriteTraps(nullptr),
     myWidth(DebuggerDialog::kSmallFontMinW),
-    myHeight(DebuggerDialog::kSmallFontMinH),
-    myRewindManager(NULL)
+    myHeight(DebuggerDialog::kSmallFontMinH)
 {
   // Init parser
-  myParser = new DebuggerParser(*this, osystem.settings());
+  myParser = make_ptr<DebuggerParser>(*this, osystem.settings());
 
   // Create debugger subsystems
-  myCpuDebug  = new CpuDebug(*this, myConsole);
-  myCartDebug = new CartDebug(*this, myConsole, osystem);
-  myRiotDebug = new RiotDebug(*this, myConsole);
-  myTiaDebug  = new TIADebug(*this, myConsole);
+  myCpuDebug  = make_ptr<CpuDebug>(*this, myConsole);
+  myCartDebug = make_ptr<CartDebug>(*this, myConsole, osystem);
+  myRiotDebug = make_ptr<RiotDebug>(*this, myConsole);
+  myTiaDebug  = make_ptr<TIADebug>(*this, myConsole);
 
   myBreakPoints = new PackedBitArray(0x10000);
-  myReadTraps = new PackedBitArray(0x10000);
-  myWriteTraps = new PackedBitArray(0x10000);
+  myReadTraps   = new PackedBitArray(0x10000);
+  myWriteTraps  = new PackedBitArray(0x10000);
 
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
@@ -150,17 +144,11 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
-  delete myParser;
-  delete myCartDebug;
-  delete myCpuDebug;
-  delete myRiotDebug;
-  delete myTiaDebug;
   delete myBreakPoints;
   delete myReadTraps;
   delete myWriteTraps;
-  delete myRewindManager;
 
-  myStaticDebugger = 0;
+  myStaticDebugger = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,11 +167,11 @@ void Debugger::initialize()
 
   myOSystem.settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
 
-  delete myBaseDialog;  myBaseDialog = myDialog = NULL;
+  delete myBaseDialog;  myBaseDialog = myDialog = nullptr;
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
   myBaseDialog = myDialog;
 
-  myRewindManager = new RewindManager(myOSystem, myDialog->rewindButton());
+  myRewindManager = make_ptr<RewindManager>(myOSystem, myDialog->rewindButton());
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 }
 
@@ -477,7 +465,7 @@ void Debugger::clearAllBreakPoints()
 {
   delete myBreakPoints;
   myBreakPoints = new PackedBitArray(0x10000);
-  mySystem.m6502().setBreakPoints(NULL);
+  mySystem.m6502().setBreakPoints(nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -487,7 +475,7 @@ void Debugger::clearAllTraps()
   delete myWriteTraps;
   myReadTraps = new PackedBitArray(0x10000);
   myWriteTraps = new PackedBitArray(0x10000);
-  mySystem.m6502().setTraps(NULL, NULL);
+  mySystem.m6502().setTraps(nullptr, nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -675,7 +663,7 @@ Debugger::RewindManager::RewindManager(OSystem& system, ButtonWidget& button)
     myTop(0)
 {
   for(int i = 0; i < MAX_SIZE; ++i)
-    myStateList[i] = (Serializer*) NULL;
+    myStateList[i] = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -689,7 +677,7 @@ Debugger::RewindManager::~RewindManager()
 bool Debugger::RewindManager::addState()
 {
   // Create a new Serializer object if we need one
-  if(myStateList[myTop] == NULL)
+  if(myStateList[myTop] == nullptr)
     myStateList[myTop] = new Serializer();
   Serializer& s = *(myStateList[myTop]);
 
@@ -741,7 +729,7 @@ bool Debugger::RewindManager::isEmpty()
 void Debugger::RewindManager::clear()
 {
   for(int i = 0; i < MAX_SIZE; ++i)
-    if(myStateList[i] != NULL)
+    if(myStateList[i] != nullptr)
       myStateList[i]->reset();
 
   myTop = mySize = 0;
