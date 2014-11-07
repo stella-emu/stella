@@ -52,7 +52,7 @@ Cheat* CheatManager::add(const string& name, const string& code,
 {
   Cheat* cheat = createCheat(name, code);
   if(!cheat)
-    return NULL;
+    return nullptr;
 
   // Delete duplicate entries
   for(unsigned int i = 0; i < myCheatList.size(); i++)
@@ -129,7 +129,7 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::addOneShot(const string& name, const string& code)
 {
-  Cheat* cheat = (Cheat*) createCheat(name, code);
+  Cheat* cheat = createCheat(name, code);
   if(!cheat)
     return;
 
@@ -142,7 +142,7 @@ void CheatManager::addOneShot(const string& name, const string& code)
 Cheat* CheatManager::createCheat(const string& name, const string& code) const
 {
   if(!isValidCode(code))
-    return NULL;
+    return nullptr;
 
   // Create new cheat based on string length
   switch(code.size())
@@ -160,7 +160,7 @@ Cheat* CheatManager::createCheat(const string& name, const string& code) const
       break;
 
     default:
-      return NULL;
+      return nullptr;
   }
 }
 

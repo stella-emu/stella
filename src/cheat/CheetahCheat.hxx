@@ -26,7 +26,7 @@ class CheetahCheat : public Cheat
 {
   public:
     CheetahCheat(OSystem& os, const string& name, const string& code);
-    ~CheetahCheat();
+    virtual ~CheetahCheat();
 
     bool enable();
     bool disable();

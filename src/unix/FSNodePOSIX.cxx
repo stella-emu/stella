@@ -121,8 +121,8 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
 {
   assert(_isDirectory);
 
-  DIR *dirp = opendir(_path.c_str());
-  struct dirent *dp;
+  DIR* dirp = opendir(_path.c_str());
+  struct dirent* dp;
 
   if (dirp == NULL)
     return false;
@@ -254,7 +254,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
 AbstractFSNode* FilesystemNodePOSIX::getParent() const
 {
   if (_path == "/")
-    return 0;
+    return nullptr;
 
   const char *start = _path.c_str();
   const char *end = lastPathComponent(_path);

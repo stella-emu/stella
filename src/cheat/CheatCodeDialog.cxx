@@ -86,7 +86,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   StringList labels;
   labels.push_back("Name: ");
   labels.push_back("Code: ");
-  myCheatInput = new InputTextDialog(this, font, labels);
+  myCheatInput = make_ptr<InputTextDialog>(this, font, labels);
   myCheatInput->setTarget(this);
 
   addToFocusList(wid);
@@ -100,7 +100,6 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::~CheatCodeDialog()
 {
-  delete myCheatInput;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

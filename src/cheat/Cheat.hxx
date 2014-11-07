@@ -53,7 +53,7 @@ class Cheat
     {
       int ret = 0;
 
-      for(unsigned int i=0; i<hex.size(); i++) {
+      for(unsigned int i = 0; i < hex.size(); ++i) {
         char c = hex[i];
 
         ret *= 16;

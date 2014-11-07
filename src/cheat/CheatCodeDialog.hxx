@@ -41,7 +41,7 @@ class CheatCodeDialog : public Dialog
     virtual ~CheatCodeDialog();
 
   protected:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
     void saveConfig();
 
@@ -53,7 +53,7 @@ class CheatCodeDialog : public Dialog
 
   private:
     CheckListWidget* myCheatList;
-    InputTextDialog* myCheatInput;
+    unique_ptr<InputTextDialog> myCheatInput;
 
     ButtonWidget* myEditButton;
     ButtonWidget* myRemoveButton;

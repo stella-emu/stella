@@ -63,10 +63,10 @@ const char* lastPathComponent(const string& str)
   if(str.empty())
     return "";
 
-  const char *start = str.c_str();
-  const char *cur = start + str.size() - 2;
+  const char* start = str.c_str();
+  const char* cur = start + str.size() - 2;
 
-  while (cur >= start && *cur != '\\')
+  while(cur >= start && *cur != '\\')
     --cur;
 
   return cur + 1;
@@ -103,7 +103,7 @@ void FilesystemNodeWINDOWS::setFlags()
   // Check whether it is a directory, and whether the file actually exists
   DWORD fileAttribs = GetFileAttributes(toUnicode(_path.c_str()));
 
-  if (fileAttribs == INVALID_FILE_ATTRIBUTES)
+  if(fileAttribs == INVALID_FILE_ATTRIBUTES)
   {
     _isDirectory = _isFile = _isValid = false;
   }
@@ -129,14 +129,14 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   bool isDirectory, isFile;
 
   // Skip local directory (.) and parent (..)
-  if (!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
+  if(!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
     return;
 
   isDirectory = (find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? true : false);
   isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
-  if ((isFile && mode == FilesystemNode::kListDirectoriesOnly) ||
-      (isDirectory && mode == FilesystemNode::kListFilesOnly))
+  if((isFile && mode == FilesystemNode::kListDirectoriesOnly) ||
+     (isDirectory && mode == FilesystemNode::kListFilesOnly))
     return;
 
   entry._isDirectory = isDirectory;
@@ -144,7 +144,7 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   entry._displayName = asciiName;
   entry._path = base;
   entry._path += asciiName;
-  if (entry._isDirectory)
+  if(entry._isDirectory)
     entry._path += "\\";
   entry._isValid = true;
   entry._isPseudoRoot = false;
@@ -224,14 +224,14 @@ bool FilesystemNodeWINDOWS::
 
   //TODO: honor the hidden flag
 
-  if (_isPseudoRoot)
+  if(_isPseudoRoot)
   {
     // Drives enumeration
     TCHAR drive_buffer[100];
     GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
 
-    for (TCHAR *current_drive = drive_buffer; *current_drive;
-         current_drive += _tcslen(current_drive) + 1)
+    for(TCHAR *current_drive = drive_buffer; *current_drive;
+        current_drive += _tcslen(current_drive) + 1)
     {
       FilesystemNodeWINDOWS entry;
       char drive_name[2];
@@ -258,12 +258,12 @@ bool FilesystemNodeWINDOWS::
 
     handle = FindFirstFile(toUnicode(searchPath), &desc);
 
-    if (handle == INVALID_HANDLE_VALUE)
+    if(handle == INVALID_HANDLE_VALUE)
       return false;
 
     addFile(myList, mode, _path.c_str(), &desc);
 
-    while (FindNextFile(handle, &desc))
+    while(FindNextFile(handle, &desc))
       addFile(myList, mode, _path.c_str(), &desc);
 
     FindClose(handle);
@@ -299,14 +299,14 @@ bool FilesystemNodeWINDOWS::rename(const string& newfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNode* FilesystemNodeWINDOWS::getParent() const
 {
-  if (!_isValid || _isPseudoRoot)
-    return 0;
+  if(!_isValid || _isPseudoRoot)
+    return nullptr;
 
   FilesystemNodeWINDOWS* p = new FilesystemNodeWINDOWS();
-  if (_path.size() > 3)
+  if(_path.size() > 3)
   {
-    const char *start = _path.c_str();
-    const char *end = lastPathComponent(_path);
+    const char* start = _path.c_str();
+    const char* end = lastPathComponent(_path);
 
     p->_path = string(start, end - start);
     p->_isValid = true;
