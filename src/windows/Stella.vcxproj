@@ -226,8 +226,9 @@
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
+    <ClCompile Include="..\common\main.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
-    <ClCompile Include="..\common\tv_filters\atari_ntsc.c" />
+    <ClCompile Include="..\common\tv_filters\atari_ntsc.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
     <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx" />
@@ -296,11 +297,6 @@
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
-    <ClCompile Include="..\common\mainSDL.cxx">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Full</Optimization>
-      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</WholeProgramOptimization>
-      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</WholeProgramOptimization>
-    </ClCompile>
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
     <ClCompile Include="SerialPortWINDOWS.cxx" />
@@ -480,8 +476,8 @@
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
-    <ClInclude Include="..\common\tv_filters\atari_ntsc.h" />
-    <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.h" />
+    <ClInclude Include="..\common\tv_filters\atari_ntsc.hxx" />
+    <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.hxx" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />

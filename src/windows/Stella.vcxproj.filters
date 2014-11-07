@@ -57,9 +57,6 @@
     <ClCompile Include="FSNodeWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\mainSDL.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OSystemWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -594,9 +591,6 @@
     <ClCompile Include="..\common\MouseControl.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\tv_filters\atari_ntsc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -773,6 +767,12 @@
     </ClCompile>
     <ClCompile Include="..\emucore\EventJoyHandler.cxx">
       <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\main.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tv_filters\atari_ntsc.cxx">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1358,12 +1358,6 @@
     <ClInclude Include="..\common\MouseControl.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\tv_filters\atari_ntsc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1561,6 +1555,12 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartMDMWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tv_filters\atari_ntsc.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
