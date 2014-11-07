@@ -74,7 +74,7 @@ struct Size
     if(c != 'x')
       w = h = 0;
   }
-  bool isValid() const { return w > 0 && h > 0; }
+  bool valid() const { return w > 0 && h > 0; }
 
   Size& operator=(const Size& s) { w = s.w; h = s.h; return *this; };
   bool operator==(const Size& s) const { return w == s.w && h == s.h; };
@@ -118,7 +118,7 @@ struct Rect
   Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) {}
   Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top(y1), left(x1), bottom(y2), right(x2)
   {
-    assert(isValid());
+    assert(valid());
   }
 
   uInt32 x() const { return left; }
@@ -138,14 +138,14 @@ struct Rect
     left = x1;
     bottom = y2;
     right = x2;
-    assert(isValid());
+    assert(valid());
   }
 
-  bool isValid() const {
+  bool valid() const {
     return (left <= right && top <= bottom);
   }
 
-  bool isEmpty() const {
+  bool empty() const {
     return top == 0 && left == 0 && bottom == 0 && right == 0;
   }
 

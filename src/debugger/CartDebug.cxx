@@ -302,7 +302,7 @@ bool CartDebug::disassemble(bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
 {
-  myDisassembly.list.clear(false);
+  myDisassembly.list.clear();
   myDisassembly.fieldwidth = 14 + myLabelLength;
   DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, myReserved);
@@ -1010,7 +1010,7 @@ string CartDebug::saveDisassembly()
   {
     BankInfo& info = myBankInfo[bank];
     // Disassemble bank
-    disasm.list.clear(false);  // don't fully de-allocate space
+    disasm.list.clear();
     DiStella distella(*this, disasm.list, info, settings,
                       myDisLabels, myDisDirectives, myReserved);
 

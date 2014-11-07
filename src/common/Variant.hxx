@@ -76,22 +76,19 @@ class Variant
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const Variant EmptyVariant("");
+static const Variant EmptyVariant = Variant();
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class VariantList : public Common::Array<pair<string,Variant>>
 {
   public:
-    VariantList() { }
-
     void push_back(const Variant& name, const Variant& tag = EmptyVariant)
     {
-      ensureCapacity(_size + 1);
-      _data[_size++] = make_pair(name.toString(), tag);
+      emplace_back(name.toString(), tag);
     }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const VariantList EmptyVarList;
+static const VariantList EmptyVarList = VariantList();
 
 #endif

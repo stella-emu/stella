@@ -684,7 +684,7 @@ bool Debugger::RewindManager::addState()
     myStateList[myTop] = new Serializer();
   Serializer& s = *(myStateList[myTop]);
 
-  if(s.isValid())
+  if(s.valid())
   {
     s.reset();
     if(myOSystem.state().saveState(s) && myOSystem.console().tia().saveDisplay(s))
@@ -723,7 +723,7 @@ bool Debugger::RewindManager::rewindState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::RewindManager::isEmpty()
+bool Debugger::RewindManager::empty()
 {
   return mySize == 0;
 }

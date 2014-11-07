@@ -27,12 +27,12 @@ class OSystem;
 class DialogContainer;
 class EventMappingWidget;
 class MouseControl;
-class StringList;
 class VariantList;
 
 #include "Array.hxx"
 #include "Event.hxx"
 #include "StellaKeys.hxx"
+#include "StringList.hxx"
 #include "bspf.hxx"
 
 enum MouseButton {

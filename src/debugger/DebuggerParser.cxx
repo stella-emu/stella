@@ -886,7 +886,7 @@ void DebuggerParser::executeDelwatch()
   int which = args[0] - 1;
   if(which >= 0 && which < (int)watches.size())
   {
-    watches.remove_at(which);
+    watches.removeAt(which);
     commandResult << "removed watch";
   }
   else

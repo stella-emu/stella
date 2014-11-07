@@ -325,7 +325,7 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
     }
     stick->type = StellaJoystick::JT_REGULAR;
   }
-  mySticks.insert_at(stick->ID, stick);
+  mySticks.insertAt(stick->ID, stick);
 
   // Map the stelladaptors we've found according to the specified ports
   if(specialAdaptor)

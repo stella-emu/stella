@@ -114,7 +114,7 @@ void ComboDialog::loadConfig()
   StringList events;
   instance().eventHandler().getComboListForEvent(myComboEvent, events);
 
-  int size = BSPF_min(events.size(), 8u);
+  int size = BSPF_min((int)events.size(), 8);
   for(int i = 0; i < size; ++i)
     myEvents[i]->setSelected("", events[i]);
 

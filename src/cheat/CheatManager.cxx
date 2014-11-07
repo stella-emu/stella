@@ -59,7 +59,7 @@ Cheat* CheatManager::add(const string& name, const string& code,
   {
     if(myCheatList[i]->name() == name || myCheatList[i]->code() == code)
     {
-      myCheatList.remove_at(i);
+      myCheatList.removeAt(i);
       break;
     }
   }
@@ -68,7 +68,7 @@ Cheat* CheatManager::add(const string& name, const string& code,
   if(idx == -1)
     myCheatList.push_back(cheat);
   else
-    myCheatList.insert_at(idx, cheat);
+    myCheatList.insertAt(idx, cheat);
 
   // And enable/disable it (the cheat knows how to enable or disable itself)
   if(enable)
@@ -91,7 +91,7 @@ void CheatManager::remove(int idx)
   addPerFrame(c, false);
 
   // Then remove it from the cheatlist entirely
-  myCheatList.remove_at(idx);
+  myCheatList.removeAt(idx);
   c->disable();
   delete c;
 }
@@ -122,7 +122,7 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
   else
   {
     if(found)
-      myPerFrameList.remove_at(i);
+      myPerFrameList.removeAt(i);
   }
 }
 

@@ -159,7 +159,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
 
   // Do we want the entire surface or just a section?
   png_uint_32 width = rect.width(), height = rect.height();
-  if(rect.isEmpty())
+  if(rect.empty())
   {
     width = surface.width();
     height = surface.height();

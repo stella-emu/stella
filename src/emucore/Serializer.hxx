@@ -50,7 +50,7 @@ class Serializer
 
       If a file is opened readonly, we can never write to it.
 
-      The isValid() method must immediately be called to verify the stream
+      The valid() method must immediately be called to verify the stream
       was correctly initialized.
     */
     Serializer(const string& filename, bool readonly = false);
@@ -66,7 +66,7 @@ class Serializer
       Answers whether the serializer is currently initialized for reading
       and writing.
     */
-    bool isValid() const;
+    bool valid() const;
 
     /**
       Resets the read/write location to the beginning of the stream.

@@ -39,7 +39,7 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) c
 {
   uInt8* src = (uInt8*) myPixels + rect.y() * myPitch + rect.x();
 
-  if(rect.isEmpty())
+  if(rect.empty())
     memcpy(buffer, src, width() * height() * 4);
   else
   {

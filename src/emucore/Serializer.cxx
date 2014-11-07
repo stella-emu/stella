@@ -99,7 +99,7 @@ Serializer::~Serializer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::isValid() const
+bool Serializer::valid() const
 {
   return myStream != NULL;
 }

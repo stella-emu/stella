@@ -150,7 +150,7 @@ void Dialog::addToFocusList(WidgetArray& list)
   for(uInt32 i = 0; i < list.size(); ++i)
     list[i]->setFlags(WIDGET_RETAIN_FOCUS);
 
-  _myFocus.list.push_back(list);
+  _myFocus.list.append(list);
   _focusList = _myFocus.list;
 
   if(list.size() > 0)
@@ -176,14 +176,14 @@ void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
   // Now insert in the correct place in that focus list
   uInt32 id = tabId;
   if(id < focus.size())
-    focus[id].list.push_back(list);
+    focus[id].list.append(list);
   else
   {
     // Make sure the array is large enough
     while(focus.size() <= id)
       focus.push_back(Focus());
 
-    focus[id].list.push_back(list);
+    focus[id].list.append(list);
   }
 
   if(list.size() > 0)
@@ -245,13 +245,13 @@ void Dialog::buildCurrentFocusList(int tabID)
     _myTabList[id].appendFocusList(_focusList);
 
   // Add remaining items from main focus list
-  _focusList.push_back(_myFocus.list);
+  _focusList.append(_myFocus.list);
 
   // Add button group at end of current focus list
   // We do it this way for TabWidget, so that buttons are scanned
   // *after* the widgets in the current tab
   if(_buttonGroup.size() > 0)
-    _focusList.push_back(_buttonGroup);
+    _focusList.append(_buttonGroup);
 
   // Finally, the moment we've all been waiting for :)
   // Set the actual focus widget
@@ -727,7 +727,7 @@ void Dialog::TabFocus::appendFocusList(WidgetArray& list)
   int active = widget->getActiveTab();
 
   if(active >= 0 && active < (int)focus.size())
-    list.push_back(focus[active].list);
+    list.append(focus[active].list);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

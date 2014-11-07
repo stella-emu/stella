@@ -32,7 +32,6 @@ namespace GUI {
 
 #include "EventHandler.hxx"
 #include "Rect.hxx"
-#include "StringList.hxx"
 #include "Variant.hxx"
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
@@ -484,7 +483,7 @@ class FrameBuffer
         void add(const VideoMode& mode);
         void clear();
 
-        bool isEmpty() const;
+        bool empty() const;
         uInt32 size() const;
 
         void previous();

@@ -76,7 +76,7 @@ bool FrameBuffer::initialize()
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
   const GUI::Size& s = myOSystem.settings().getSize("maxres");
-  if(s.isValid())
+  if(s.valid())
   {
     query_w = s.w;
     query_h = s.h;
@@ -943,9 +943,9 @@ void FrameBuffer::VideoModeList::clear()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::VideoModeList::isEmpty() const
+bool FrameBuffer::VideoModeList::empty() const
 {
-  return myModeList.isEmpty();
+  return myModeList.empty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

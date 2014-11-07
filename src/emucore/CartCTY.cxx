@@ -450,7 +450,7 @@ void CartridgeCTY::loadTune(uInt8 index)
 void CartridgeCTY::loadScore(uInt8 index)
 {
   Serializer serializer(myEEPROMFile, true);
-  if(serializer.isValid())
+  if(serializer.valid())
   {
     uInt8 scoreRAM[256];
     try
@@ -470,7 +470,7 @@ void CartridgeCTY::loadScore(uInt8 index)
 void CartridgeCTY::saveScore(uInt8 index)
 {
   Serializer serializer(myEEPROMFile);
-  if(serializer.isValid())
+  if(serializer.valid())
   {
     // Load score RAM
     uInt8 scoreRAM[256];
@@ -504,7 +504,7 @@ void CartridgeCTY::saveScore(uInt8 index)
 void CartridgeCTY::wipeAllScores()
 {
   Serializer serializer(myEEPROMFile);
-  if(serializer.isValid())
+  if(serializer.valid())
   {
     // Erase score RAM
     uInt8 scoreRAM[256];

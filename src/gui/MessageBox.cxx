@@ -76,7 +76,7 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   for(uInt32 i = 0; i < text.size(); ++i)
     str_w = BSPF_max((int)text[i].length(), str_w);
   _w = BSPF_min(str_w * fontWidth + 20, _w);
-  _h = BSPF_min(((text.size() + 2) * lineHeight + 20), (uInt32)_h);
+  _h = BSPF_min((uInt32)((text.size() + 2) * lineHeight + 20), (uInt32)_h);
 
   xpos = 10;  ypos = 10;
   for(uInt32 i = 0; i < text.size(); ++i)

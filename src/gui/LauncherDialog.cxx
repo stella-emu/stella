@@ -254,7 +254,7 @@ void LauncherDialog::loadConfig()
 
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list)
-  if(myList->getList().isEmpty())
+  if(myList->getList().empty())
   {
     myPrevDirButton->setEnabled(false);
     myCurrentNode = FilesystemNode(romdir == "" ? "~" : romdir);

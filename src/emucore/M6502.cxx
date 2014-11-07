@@ -444,8 +444,8 @@ void M6502::delCondBreak(uInt32 brk)
   if(brk < myBreakConds.size())
   {
     delete myBreakConds[brk];
-    myBreakConds.remove_at(brk);
-    myBreakCondNames.remove_at(brk);
+    myBreakConds.removeAt(brk);
+    myBreakCondNames.removeAt(brk);
   }
 }
 

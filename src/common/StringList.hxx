@@ -21,23 +21,10 @@
 #define STRING_LIST_HXX
 
 #include "Array.hxx"
-#include "bspf.hxx"
 
 class StringList : public Common::Array<string>
 {
   public:
-    void push_back(const char* str)
-    {
-      ensureCapacity(_size + 1);
-      _data[_size++] = str;
-    }
-
-    void push_back(const string& str)
-    {
-      ensureCapacity(_size + 1);
-      _data[_size++] = str;
-    }
-
     static string removePattern(const string& str, const string& pattern)
     {
       // This can probably be made more efficient ...

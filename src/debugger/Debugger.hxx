@@ -328,7 +328,7 @@ class Debugger : public DialogContainer
       public:
         bool addState();
         bool rewindState();
-        bool isEmpty();
+        bool empty();
         void clear();
 
       private:

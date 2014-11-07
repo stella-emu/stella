@@ -173,7 +173,7 @@ void StateManager::loadState(int slot)
 
     // Make sure the file can be opened in read-only mode
     Serializer in(buf.str(), true);
-    if(!in.isValid())
+    if(!in.valid())
     {
       buf.str("");
       buf << "Can't open/load from state file " << slot;
@@ -217,7 +217,7 @@ void StateManager::saveState(int slot)
 
     // Make sure the file can be opened for writing
     Serializer out(buf.str());
-    if(!out.isValid())
+    if(!out.valid())
     {
       buf.str("");
       buf << "Can't open/save to state file " << slot;
@@ -267,7 +267,7 @@ bool StateManager::loadState(Serializer& in)
   if(myOSystem.hasConsole())
   {
     // Make sure the file can be opened for reading
-    if(in.isValid())
+    if(in.valid())
     {
       // First test if we have a valid header and cart type
       // If so, do a complete state load using the Console
@@ -287,7 +287,7 @@ bool StateManager::saveState(Serializer& out)
     if(myOSystem.hasConsole())
     {
       // Make sure the file can be opened for writing
-      if(out.isValid())
+      if(out.valid())
       {
         // Add header so that if the state format changes in the future,
         // we'll know right away, without having to parse the rest of the file
