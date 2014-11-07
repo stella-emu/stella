@@ -36,7 +36,7 @@ namespace YaccParser {
 #include <ctype.h>
 
 #include "y.tab.h"
-yystype result;
+YYSTYPE result;
 string errMsg;
 #include "y.tab.c"
 

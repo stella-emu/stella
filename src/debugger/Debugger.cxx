@@ -144,6 +144,9 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
+  for(auto& f: myFunctions)
+    delete f.second;
+
   delete myBreakPoints;
   delete myReadTraps;
   delete myWriteTraps;
@@ -535,9 +538,9 @@ void Debugger::setQuitState()
 bool Debugger::addFunction(const string& name, const string& definition,
                            Expression* exp, bool builtin)
 {
-  functions.insert(make_pair(name, exp));
+  myFunctions.insert(make_pair(name, exp));
   if(!builtin)
-    functionDefs.insert(make_pair(name, definition));
+    myFunctionDefs.insert(make_pair(name, definition));
 
   return true;
 }
@@ -545,39 +548,39 @@ bool Debugger::addFunction(const string& name, const string& definition,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::delFunction(const string& name)
 {
-  const auto& iter = functions.find(name);
-  if(iter == functions.end())
+  const auto& iter = myFunctions.find(name);
+  if(iter == myFunctions.end())
     return false;
 
-  functions.erase(name);
+  myFunctions.erase(name);
   delete iter->second;
 
-  const auto& def_iter = functionDefs.find(name);
-  if(def_iter == functionDefs.end())
+  const auto& def_iter = myFunctionDefs.find(name);
+  if(def_iter == myFunctionDefs.end())
     return false;
 
-  functionDefs.erase(name);
+  myFunctionDefs.erase(name);
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Expression* Debugger::getFunction(const string& name) const
 {
-  const auto& iter = functions.find(name);
-  return iter != functions.end() ? iter->second : nullptr;
+  const auto& iter = myFunctions.find(name);
+  return iter != myFunctions.end() ? iter->second : nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Debugger::getFunctionDef(const string& name) const
 {
-  const auto& iter = functionDefs.find(name);
-  return iter != functionDefs.end() ? iter->second : EmptyString;
+  const auto& iter = myFunctionDefs.find(name);
+  return iter != myFunctionDefs.end() ? iter->second : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FunctionDefMap Debugger::getFunctionDefMap() const
 {
-  return functionDefs;
+  return myFunctionDefs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -629,7 +632,7 @@ string Debugger::builtinHelp() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::getCompletions(const char* in, StringList& list) const
 {
-  for(const auto& iter: functions)
+  for(const auto& iter: myFunctions)
   {
     const char* l = iter.first.c_str();
     if(BSPF_equalsIgnoreCase(l, in))

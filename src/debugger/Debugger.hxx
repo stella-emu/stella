@@ -309,8 +309,8 @@ class Debugger : public DialogContainer
 
     static Debugger* myStaticDebugger;
 
-    FunctionMap functions;
-    FunctionDefMap functionDefs;
+    FunctionMap myFunctions;
+    FunctionDefMap myFunctionDefs;
 
     // Dimensions of the entire debugger window
     uInt32 myWidth;
