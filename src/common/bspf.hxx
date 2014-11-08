@@ -72,6 +72,7 @@
 #include <cstring>
 #include <cctype>
 #include <cstdio>
+#include <utility>
 #include <vector>
 using namespace std;
 
@@ -128,7 +129,7 @@ std::unique_ptr<Value> make_ptr(Arguments && ... arguments_for_constructor)
   );
 }
 
-template<typename T> inline void BSPF_swap(T& a, T& b) { T tmp = a; a = b; b = tmp; }
+template<typename T> inline void BSPF_swap(T& a, T& b) { std::swap(a, b); }
 template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }
 template<typename T> inline T BSPF_min (T a, T b) { return (a<b) ? a : b; }
 template<typename T> inline T BSPF_max (T a, T b) { return (a>b) ? a : b; }

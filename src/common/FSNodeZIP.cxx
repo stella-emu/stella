@@ -156,5 +156,5 @@ uInt32 FilesystemNodeZIP::read(uInt8*& image) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNode* FilesystemNodeZIP::getParent() const
 {
-  return _realNode ? _realNode->getParent() : 0;
+  return _realNode ? _realNode->getParent() : nullptr;
 }

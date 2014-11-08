@@ -30,14 +30,14 @@
  */
 namespace Common {
 
-template <class T, int MAX_SIZE = 10>
+template <class T, int MAX_SIZE = 50>
 class FixedStack
 {
   public:
     FixedStack<T, MAX_SIZE>() : _size(0) {}
-	
+
     bool empty() const { return _size <= 0; }
-    bool full() const {return _size >= MAX_SIZE; }
+    bool full() const  { return _size >= MAX_SIZE; }
     void clear() { _size = 0; }
     void push(const T& x)
     {
@@ -53,10 +53,8 @@ class FixedStack
     }
     T pop()
     {
-      T tmp;
       assert(_size > 0);
-      tmp = _stack[--_size];
-      return tmp;
+      return std::move(_stack[--_size]);
     }
     int size() const { return _size; }
     T operator [](int i) const

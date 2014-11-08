@@ -737,7 +737,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
   for(auto& mode: myFullscreenModeLists)
     mode.clear();
-  for(int i = (int)myFullscreenModeLists.size(); i < myDisplays.size(); ++i)
+  for(size_t i = myFullscreenModeLists.size(); i < myDisplays.size(); ++i)
     myFullscreenModeLists.push_back(VideoModeList());
 
   // Check if zooming is allowed for this state (currently only allowed
