@@ -464,7 +464,6 @@
     <ClCompile Include="..\libpng\pngwutil.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\Array.hxx" />
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
@@ -474,12 +473,12 @@
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
-    <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
     <ClInclude Include="..\common\tv_filters\atari_ntsc.hxx" />
     <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.hxx" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\common\Variant.hxx" />
+    <ClInclude Include="..\common\Vec.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
     <ClInclude Include="..\debugger\gui\AtariVoxWidget.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />

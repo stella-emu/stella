@@ -776,9 +776,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\Array.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\bspf.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1304,9 +1301,6 @@
     <ClInclude Include="..\libpng\pngstruct.h">
       <Filter>Header Files\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\StringList.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\StringParser.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1560,6 +1554,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\Vec.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
