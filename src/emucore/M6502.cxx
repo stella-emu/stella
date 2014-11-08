@@ -436,7 +436,7 @@ uInt32 M6502::addCondBreak(Expression *e, const string& name)
 {
   myBreakConds.push_back(e);
   myBreakCondNames.push_back(name);
-  return myBreakConds.size() - 1;
+  return (uInt32)myBreakConds.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

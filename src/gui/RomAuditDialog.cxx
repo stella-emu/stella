@@ -131,7 +131,7 @@ void RomAuditDialog::auditRoms()
   // the ROMs, since this is usually a time-consuming operation
   ProgressDialog progress(this, instance().frameBuffer().font(),
                           "Auditing ROM files ...");
-  progress.setRange(0, files.size() - 1, 5);
+  progress.setRange(0, (int)files.size() - 1, 5);
 
   // Create a entry for the GameList for each file
   Properties props;

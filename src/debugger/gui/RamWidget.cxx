@@ -294,7 +294,7 @@ void RamWidget::fillGrid(bool updateOld)
     changed.push_back(state.ram[i] != oldstate.ram[i]);
   }
 
-  myRamGrid->setNumRows(state.ram.size() / 128);
+  myRamGrid->setNumRows((int)state.ram.size() / 128);
   myRamGrid->setList(alist, vlist, changed);
   if(updateOld)
   {

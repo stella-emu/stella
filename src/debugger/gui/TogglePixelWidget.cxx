@@ -92,7 +92,7 @@ void TogglePixelWidget::setIntState(int value, bool swap)
 int TogglePixelWidget::getIntState()
 {
   // Construct int based on current state and swap
-  unsigned int value = 0, size = _stateList.size();
+  unsigned int value = 0, size = (int)_stateList.size();
 
   for(unsigned int i = 0; i < size; ++i)
   {

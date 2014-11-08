@@ -430,7 +430,7 @@ class EventHandler
 
         int add(StellaJoystick* stick);
         int remove(int id);
-        uInt32 numSticks() const { return mySticks.size(); }
+        uInt32 numSticks() const { return (uInt32)mySticks.size(); }
         void mapStelladaptors(const string& saport);
         void setDefaultMapping(Event::Type type, EventMode mode);
         void eraseMapping(Event::Type event, EventMode mode);

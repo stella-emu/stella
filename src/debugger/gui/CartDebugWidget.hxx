@@ -82,7 +82,7 @@ class CartDebugWidget : public Widget, public CommandSender
 
       StringParser bs(desc, (fwidth - kScrollBarWidth) / myFontWidth);
       const StringList& sl = bs.stringList();
-      uInt32 lines = sl.size();
+      uInt32 lines = (uInt32)sl.size();
       if(lines < 3) lines = 3;
       if(lines > maxlines) lines = maxlines;
 

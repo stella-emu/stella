@@ -204,7 +204,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
                                  Widget* wid, int direction)
 {
   FBSurface& s = boss->dialog().surface();
-  int size = arr.size(), pos = -1;
+  int size = (int)arr.size(), pos = -1;
   Widget* tmp;
   for(int i = 0; i < size; ++i)
   {

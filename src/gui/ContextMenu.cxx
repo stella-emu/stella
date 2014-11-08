@@ -120,8 +120,8 @@ void ContextMenu::recalc(const GUI::Rect& image)
   }
   else
   {
-    _numEntries = _entries.size();
-    _h = _entries.size() * _rowHeight + 4;
+    _numEntries = (int)_entries.size();
+    _h = (int)_entries.size() * _rowHeight + 4;
     _showScroll = false;
   }
   _isScrolling = false;
@@ -165,7 +165,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedMax()
 {
-  setSelectedIndex(_entries.size() - 1);
+  setSelectedIndex((int)_entries.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,7 +231,7 @@ bool ContextMenu::sendSelectionLast()
   if(isVisible())
     return false;
 
-  _selectedItem = _entries.size() - 1;
+  _selectedItem = (int)_entries.size() - 1;
   sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
   return true;
 }
@@ -467,7 +467,7 @@ void ContextMenu::moveToFirst()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveToLast()
 {
-  _firstEntry = _entries.size() - _numEntries;
+  _firstEntry = (int)_entries.size() - _numEntries;
   _scrollUpColor = kScrollColor;
   _scrollDnColor = kColor;
 
@@ -486,7 +486,7 @@ void ContextMenu::moveToSelected()
 
   // Now check if we've gone past the current 'window' size, and scale
   // back accordingly
-  int max_offset = _entries.size() - _numEntries;
+  int max_offset = (int)_entries.size() - _numEntries;
   if(_firstEntry > max_offset)
   {
     offset = _firstEntry - max_offset;
@@ -515,7 +515,7 @@ void ContextMenu::scrollUp(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::scrollDown(int distance)
 {
-  int max_offset = _entries.size() - _numEntries;
+  int max_offset = (int)_entries.size() - _numEntries;
   if(_firstEntry == max_offset)
     return;
 

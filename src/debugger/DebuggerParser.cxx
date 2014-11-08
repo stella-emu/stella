@@ -386,7 +386,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   if(curArg != "")
     argStrings.push_back(curArg);
 
-  argCount = argStrings.size();
+  argCount = (int)argStrings.size();
   /*
   cerr << "verb = " << verb << endl;
   cerr << "arguments (" << argCount << "):\n";
@@ -1289,7 +1289,7 @@ void DebuggerParser::executeRunTo()
   const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
-  uInt32 count = 0, max_iterations = list.size();
+  uInt32 count = 0, max_iterations = (uInt32)list.size();
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation

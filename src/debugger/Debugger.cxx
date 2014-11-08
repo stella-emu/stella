@@ -284,7 +284,7 @@ string Debugger::setRAM(IntArray& args)
 {
   ostringstream buf;
 
-  int count = args.size();
+  int count = (int)args.size();
   int address = args[0];
   for(int i = 1; i < count; ++i)
     mySystem.poke(address++, args[i]);

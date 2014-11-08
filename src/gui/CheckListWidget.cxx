@@ -65,7 +65,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 
   // Then turn off any extras
   if((int)_stateList.size() < _rows)
-    for(int i = _stateList.size(); i < _rows; ++i)
+    for(int i = (int)_stateList.size(); i < _rows; ++i)
       _checkList[i]->clearFlags(WIDGET_ENABLED);
 
   ListWidget::recalc();
@@ -86,7 +86,7 @@ void CheckListWidget::drawWidget(bool hilite)
 {
 //cerr << "CheckListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  int i, pos, len = _list.size();
+  int i, pos, len = (int)_list.size();
   string buffer;
 
   // Draw a thin frame around the list and to separate columns

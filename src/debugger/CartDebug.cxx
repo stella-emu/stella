@@ -350,7 +350,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   ostringstream buffer;
 
   // First find the lines in the range, and determine the longest string
-  uInt32 list_size = myDisassembly.list.size();
+  uInt32 list_size = (int)myDisassembly.list.size();
   uInt32 begin = list_size, end = 0, length = 0;
   for(end = 0; end < list_size && lines > 0; ++end)
   {
@@ -393,7 +393,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     return false;
 
   if(bank < 0)  // Do we want the current bank or ZP RAM?
-    bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : myBankInfo.size()-1;
+    bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : (int)myBankInfo.size()-1;
 
   bank = BSPF_min(bank, bankCount());
   BankInfo& info = myBankInfo[bank];

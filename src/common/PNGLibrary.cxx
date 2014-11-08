@@ -307,7 +307,7 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
 void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
                                const VariantList& comments)
 {
-  uInt32 numComments = comments.size();
+  uInt32 numComments = (int)comments.size();
   if(numComments == 0)
     return;
 

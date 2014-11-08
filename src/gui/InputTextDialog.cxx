@@ -73,7 +73,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
   // Calculate real dimensions
   _w = fontWidth * 30;
-  _h = lineHeight * 4 + labels.size() * (lineHeight + 5);
+  _h = lineHeight * 4 + (int)labels.size() * (lineHeight + 5);
 
   // Determine longest label
   for(i = 0; i < labels.size(); ++i)

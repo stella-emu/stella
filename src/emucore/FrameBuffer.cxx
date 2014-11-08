@@ -737,7 +737,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
   for(auto& mode: myFullscreenModeLists)
     mode.clear();
-  for(uInt32 i = myFullscreenModeLists.size(); i < myDisplays.size(); ++i)
+  for(int i = (int)myFullscreenModeLists.size(); i < myDisplays.size(); ++i)
     myFullscreenModeLists.push_back(VideoModeList());
 
   // Check if zooming is allowed for this state (currently only allowed
@@ -951,14 +951,14 @@ bool FrameBuffer::VideoModeList::empty() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::VideoModeList::size() const
 {
-  return myModeList.size();
+  return (uInt32)myModeList.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::VideoModeList::previous()
 {
   --myIdx;
-  if(myIdx < 0) myIdx = myModeList.size() - 1;
+  if(myIdx < 0) myIdx = (int)myModeList.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

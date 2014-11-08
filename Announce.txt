@@ -29,8 +29,8 @@ distributions currently available are:
       Stella-4.2-x64.exe     (64-bit EXE installer)
       Stella-4.2-windows.zip (32/64 bit versions)
 
-  * Binary distribution for MacOS X 10.5 and above :
-      Stella-4.2-macosx.dmg (32/64-bit Intel Universal Binary)
+  * Binary distribution for MacOS X 10.7 and above :
+      Stella-4.2-macosx.dmg (64-bit Intel)
 
   * Binary distribution in 32-bit & 64-bit Ubuntu DEB format :
       stella_4.2-1_i386.deb

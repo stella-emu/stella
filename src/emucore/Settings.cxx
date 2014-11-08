@@ -611,7 +611,7 @@ int Settings::setInternal(const string& key, const Variant& value,
     if(useAsInitial) setting.initialValue = value;
 
     myInternalSettings.push_back(setting);
-    idx = myInternalSettings.size() - 1;
+    idx = int(myInternalSettings.size()) - 1;
 
     /*cerr << "insert internal: key = " << key
          << ", value  = " << value
@@ -665,7 +665,7 @@ int Settings::setExternal(const string& key, const Variant& value,
     if(useAsInitial) setting.initialValue = value;
 
     myExternalSettings.push_back(setting);
-    idx = myExternalSettings.size() - 1;
+    idx = int(myExternalSettings.size()) - 1;
 
     /*cerr << "insert external: key = " << key
          << ", value = " << value

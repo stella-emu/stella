@@ -99,7 +99,7 @@ cerr << "alist.size() = "     << alist.size()
      << ", changed.size() = " << changed.size()
      << ", _rows*_cols = "    << _rows * _cols << endl << endl;
 */
-  int size = vlist.size();  // assume the alist is the same size
+  int size = (int)vlist.size();  // assume the alist is the same size
   assert(size == _rows * _cols);
 
   _addrList.clear();
