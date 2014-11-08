@@ -27,7 +27,6 @@
 #include "PopUpWidget.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
-#include "StringList.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 
@@ -116,8 +115,8 @@ GameInfoDialog::GameInfoDialog(
                        "Sound:", kTextAlignLeft);
   pwidth = font.getStringWidth("Stereo");
   items.clear();
-  items.push_back("Mono", "MONO");
-  items.push_back("Stereo", "STEREO");
+  VList::push_back(items, "Mono", "MONO");
+  VList::push_back(items, "Stereo", "STEREO");
   mySound = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                             pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(mySound);
@@ -128,7 +127,7 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
   for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
-    items.push_back(Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
+    VList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myType);
@@ -147,8 +146,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
   items.clear();
-  items.push_back("B", "B");
-  items.push_back("A", "A");
+  VList::push_back(items, "B", "B");
+  VList::push_back(items, "A", "A");
   myLeftDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myLeftDiff);
@@ -165,8 +164,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "TV Type:", kTextAlignLeft);
   items.clear();
-  items.push_back("Color", "COLOR");
-  items.push_back("B & W", "BW");
+  VList::push_back(items, "Color", "COLOR");
+  VList::push_back(items, "B & W", "BW");
   myTVType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
@@ -185,23 +184,23 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P0 Controller:", kTextAlignLeft);
   ctrls.clear();
-  ctrls.push_back("Joystick",       "JOYSTICK"     );
-  ctrls.push_back("Paddles",        "PADDLES"      );
-  ctrls.push_back("Paddles_IAxis",  "PADDLES_IAXIS");
-  ctrls.push_back("Paddles_IDir",   "PADDLES_IDIR" );
-  ctrls.push_back("Paddles_IAxDr",  "PADDLES_IAXDR");
-  ctrls.push_back("BoosterGrip",    "BOOSTERGRIP"  );
-  ctrls.push_back("Driving",        "DRIVING"      );
-  ctrls.push_back("Keyboard",       "KEYBOARD"     );
-  ctrls.push_back("CX-22 Trakball", "TRACKBALL22"  );
-  ctrls.push_back("CX-80 Mouse",    "TRACKBALL80"  );
-  ctrls.push_back("AmigaMouse",     "AMIGAMOUSE"   );
-  ctrls.push_back("AtariVox",       "ATARIVOX"     );
-  ctrls.push_back("SaveKey",        "SAVEKEY"      );
-  ctrls.push_back("Sega Genesis",   "GENESIS"      );
-  ctrls.push_back("CompuMate",      "COMPUMATE"    );
-//  ctrls.push_back("KidVid",         "KIDVID"      );
-  ctrls.push_back("MindLink",       "MINDLINK"     );
+  VList::push_back(ctrls, "Joystick",       "JOYSTICK"     );
+  VList::push_back(ctrls, "Paddles",        "PADDLES"      );
+  VList::push_back(ctrls, "Paddles_IAxis",  "PADDLES_IAXIS");
+  VList::push_back(ctrls, "Paddles_IDir",   "PADDLES_IDIR" );
+  VList::push_back(ctrls, "Paddles_IAxDr",  "PADDLES_IAXDR");
+  VList::push_back(ctrls, "BoosterGrip",    "BOOSTERGRIP"  );
+  VList::push_back(ctrls, "Driving",        "DRIVING"      );
+  VList::push_back(ctrls, "Keyboard",       "KEYBOARD"     );
+  VList::push_back(ctrls, "CX-22 Trakball", "TRACKBALL22"  );
+  VList::push_back(ctrls, "CX-80 Mouse",    "TRACKBALL80"  );
+  VList::push_back(ctrls, "AmigaMouse",     "AMIGAMOUSE"   );
+  VList::push_back(ctrls, "AtariVox",       "ATARIVOX"     );
+  VList::push_back(ctrls, "SaveKey",        "SAVEKEY"      );
+  VList::push_back(ctrls, "Sega Genesis",   "GENESIS"      );
+  VList::push_back(ctrls, "CompuMate",      "COMPUMATE"    );
+//  VList::push_back(ctrls, "KidVid",         "KIDVID"      );
+  VList::push_back(ctrls, "MindLink",       "MINDLINK"     );
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, ctrls, "", 0, 0);
   wid.push_back(myP0Controller);
@@ -212,8 +211,8 @@ GameInfoDialog::GameInfoDialog(
   xpos += font.getStringWidth("in ");
   pwidth = font.getStringWidth("right port");
   ports.clear();
-  ports.push_back("left port", "L");
-  ports.push_back("right port", "R");
+  VList::push_back(ports, "left port", "L");
+  VList::push_back(ports, "right port", "R");
   myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                ports, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
@@ -240,8 +239,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Swap Paddles:", kTextAlignLeft);
   items.clear();
-  items.push_back("Yes", "YES");
-  items.push_back("No", "NO");
+  VList::push_back(items, "Yes", "YES");
+  VList::push_back(items, "No", "NO");
   mySwapPaddles = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                   pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(mySwapPaddles);
@@ -250,8 +249,8 @@ GameInfoDialog::GameInfoDialog(
   lwidth = font.getStringWidth("Mouse axis mode: ");
   pwidth = font.getStringWidth("Specific axis");
   items.clear();
-  items.push_back("Automatic", "auto");
-  items.push_back("Specific axis", "specific");
+  VList::push_back(items, "Automatic", "auto");
+  VList::push_back(items, "Specific axis", "specific");
   myMouseControl =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                    "Mouse axis mode: ", lwidth, kMCtrlChanged);
@@ -261,15 +260,15 @@ GameInfoDialog::GameInfoDialog(
   lwidth = font.getStringWidth("X-Axis is: ");
   pwidth = font.getStringWidth("MindLink 0");
   items.clear();
-  items.push_back("None",       MouseControl::NoControl);
-  items.push_back("Paddle 0",   MouseControl::Paddle0);
-  items.push_back("Paddle 1",   MouseControl::Paddle1);
-  items.push_back("Paddle 2",   MouseControl::Paddle2);
-  items.push_back("Paddle 3",   MouseControl::Paddle3);
-  items.push_back("Driving 0",  MouseControl::Driving0);
-  items.push_back("Driving 1",  MouseControl::Driving1);
-  items.push_back("MindLink 0", MouseControl::MindLink0);
-  items.push_back("MindLink 1", MouseControl::MindLink1);
+  VList::push_back(items, "None",       MouseControl::NoControl);
+  VList::push_back(items, "Paddle 0",   MouseControl::Paddle0);
+  VList::push_back(items, "Paddle 1",   MouseControl::Paddle1);
+  VList::push_back(items, "Paddle 2",   MouseControl::Paddle2);
+  VList::push_back(items, "Paddle 3",   MouseControl::Paddle3);
+  VList::push_back(items, "Driving 0",  MouseControl::Driving0);
+  VList::push_back(items, "Driving 1",  MouseControl::Driving1);
+  VList::push_back(items, "MindLink 0", MouseControl::MindLink0);
+  VList::push_back(items, "MindLink 1", MouseControl::MindLink1);
 
   xpos = 45;  ypos += lineHeight + 4;
   myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
@@ -295,13 +294,13 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Format:", kTextAlignLeft);
   items.clear();
-  items.push_back("Auto-detect", "AUTO");
-  items.push_back("NTSC",    "NTSC");
-  items.push_back("PAL",     "PAL");
-  items.push_back("SECAM",   "SECAM");
-  items.push_back("NTSC50",  "NTSC50");
-  items.push_back("PAL60",   "PAL60");
-  items.push_back("SECAM60", "SECAM60");
+  VList::push_back(items, "Auto-detect", "AUTO");
+  VList::push_back(items, "NTSC",    "NTSC");
+  VList::push_back(items, "PAL",     "PAL");
+  VList::push_back(items, "SECAM",   "SECAM");
+  VList::push_back(items, "NTSC50",  "NTSC50");
+  VList::push_back(items, "PAL60",   "PAL60");
+  VList::push_back(items, "SECAM60", "SECAM60");
   myFormat = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
@@ -325,8 +324,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use Phosphor:", kTextAlignLeft);
   items.clear();
-  items.push_back("Yes", "YES");
-  items.push_back("No", "NO");
+  VList::push_back(items, "Yes", "YES");
+  VList::push_back(items, "No", "NO");
   myPhosphor = new PopUpWidget(myTab, font, xpos+lwidth, ypos, pwidth,
                                lineHeight, items, "", 0, kPhosphorChanged);
   wid.push_back(myPhosphor);

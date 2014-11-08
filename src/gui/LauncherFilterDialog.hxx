@@ -25,7 +25,6 @@ class DialogContainer;
 class CheckboxWidget;
 class PopUpWidget;
 class OSystem;
-class StringList;
 
 #include "Dialog.hxx"
 #include "FSNode.hxx"

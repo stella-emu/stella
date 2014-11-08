@@ -29,7 +29,6 @@
 
 #include "bspf.hxx"
 
-#include "Array.hxx"
 #include "Event.hxx"
 #include "Font.hxx"
 #include "FrameBuffer.hxx"

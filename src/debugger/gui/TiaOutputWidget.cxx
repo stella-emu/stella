@@ -45,11 +45,11 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
 {
   // Create context menu for commands
   VariantList l;
-  l.push_back("Fill to scanline", "scanline");
-  l.push_back("Set breakpoint", "bp");
-  l.push_back("Set zoom position", "zoom");
-  l.push_back("Save snapshot", "snap");
-  l.push_back("Toggle fixed debug colors (from beam pos)", "fixed");
+  VList::push_back(l, "Fill to scanline", "scanline");
+  VList::push_back(l, "Set breakpoint", "bp");
+  VList::push_back(l, "Set zoom position", "zoom");
+  VList::push_back(l, "Save snapshot", "snap");
+  VList::push_back(l, "Toggle fixed debug colors (from beam pos)", "fixed");
   myMenu = new ContextMenu(this, font, l);
 }
 

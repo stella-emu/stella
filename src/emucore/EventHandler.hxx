@@ -27,12 +27,10 @@ class OSystem;
 class DialogContainer;
 class EventMappingWidget;
 class MouseControl;
-class VariantList;
 
-#include "Array.hxx"
 #include "Event.hxx"
 #include "StellaKeys.hxx"
-#include "StringList.hxx"
+#include "Variant.hxx"
 #include "bspf.hxx"
 
 enum MouseButton {
@@ -210,11 +208,11 @@ class EventHandler
 
     bool frying() const { return myFryingFlag; }
 
-    void getActionList(EventMode mode, StringList& list) const;
-    void getComboList(EventMode mode, VariantList& map) const;
+    StringList getActionList(EventMode mode) const;
+    VariantList getComboList(EventMode mode) const;
 
     /** Used to access the list of events assigned to a specific combo event. */
-    void getComboListForEvent(Event::Type event, StringList& list) const;
+    StringList getComboListForEvent(Event::Type event) const;
     void setComboListForEvent(Event::Type event, const StringList& events);
 
     Event::Type eventForKey(StellaKey key, EventMode mode) const
@@ -462,7 +460,7 @@ class EventHandler
         map<string,StickInfo> myDatabase;
 
         // Contains only joysticks that are currently available, indexed by id
-        Common::Array<StellaJoystick*> mySticks;
+        vector<StellaJoystick*> mySticks;
 
         void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
         void printDatabase() const;

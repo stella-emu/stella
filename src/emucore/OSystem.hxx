@@ -36,7 +36,6 @@ class Sound;
 class StateManager;
 class VideoDialog;
 
-#include "Array.hxx"
 #include "FSNode.hxx"
 #include "FrameBuffer.hxx"
 #include "PNGLibrary.hxx"

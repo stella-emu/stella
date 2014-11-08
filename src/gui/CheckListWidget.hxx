@@ -24,7 +24,7 @@ class CheckboxWidget;
 
 #include "ListWidget.hxx"
 
-typedef Common::Array<CheckboxWidget*> CheckboxArray;
+typedef vector<CheckboxWidget*> CheckboxArray;
 
 
 /** CheckListWidget */

@@ -29,11 +29,9 @@ class Settings;
 
 #include "bspf.hxx"
 #include "System.hxx"
-#include "Array.hxx"
-#include "StringList.hxx"
 #include "Serializable.hxx"
 
-typedef Common::Array<Expression*> ExpressionList;
+typedef vector<Expression*> ExpressionList;
 
 /**
   The 6502 is an 8-bit microprocessor that has a 64K addressing space.

@@ -22,7 +22,6 @@
 
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "Array.hxx"
 
 /* ToggleWidget */
 class ToggleWidget : public Widget, public CommandSender

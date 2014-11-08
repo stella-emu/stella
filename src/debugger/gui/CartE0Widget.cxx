@@ -67,9 +67,9 @@ CartridgeE0Widget::CartridgeE0Widget(
   VariantList items0, items1, items2;
   for(int i = 0; i < 8; ++i)
   {
-    items0.push_back(seg0[i]);
-    items1.push_back(seg1[i]);
-    items2.push_back(seg2[i]);
+    VList::push_back(items0, seg0[i]);
+    VList::push_back(items1, seg1[i]);
+    VList::push_back(items2, seg2[i]);
   }
 
   const int lwidth = _font.getStringWidth("Set slice for segment X: ");

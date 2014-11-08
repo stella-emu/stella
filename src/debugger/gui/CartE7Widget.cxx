@@ -63,9 +63,9 @@ CartridgeE7Widget::CartridgeE7Widget(
 
   VariantList items0, items1;
   for(int i = 0; i < 8; ++i)
-    items0.push_back(spot_lower[i]);
+    VList::push_back(items0, spot_lower[i]);
   for(int i = 0; i < 4; ++i)
-    items1.push_back(spot_upper[i]);
+    VList::push_back(items1, spot_upper[i]);
 
   const int lwidth = _font.getStringWidth("Set slice for upper 256B: "),
             fwidth = _font.getStringWidth("3 - RAM ($FEB)");

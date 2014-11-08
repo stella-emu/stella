@@ -26,9 +26,8 @@ class Cheat;
 class OSystem;
 
 #include "bspf.hxx"
-#include "Array.hxx"
 
-typedef Common::Array<Cheat*> CheatList;
+typedef vector<Cheat*> CheatList;
 typedef map<string,string> CheatCodeMap;
 
 /**

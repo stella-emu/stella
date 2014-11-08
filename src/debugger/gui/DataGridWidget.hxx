@@ -27,7 +27,6 @@ class ScrollBarWidget;
 #include "Command.hxx"
 #include "Debugger.hxx"
 #include "EditableWidget.hxx"
-#include "Array.hxx"
 #include "Base.hxx"
 #include "Rect.hxx"
 

@@ -72,7 +72,14 @@
 #include <cstring>
 #include <cctype>
 #include <cstdio>
+#include <vector>
 using namespace std;
+
+// Common array types
+typedef vector<Int32> IntArray;
+typedef vector<bool>  BoolArray;
+typedef vector<uInt8> ByteArray;
+typedef vector<string> StringList;
 
 // Defines to help with path handling
 #if (defined(BSPF_UNIX) || defined(BSPF_MAC_OSX))

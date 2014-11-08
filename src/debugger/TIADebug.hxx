@@ -24,7 +24,6 @@ class Debugger;
 class TiaDebug;
 class TIA;
 
-#include "Array.hxx"
 #include "DebuggerSystem.hxx"
 
 // pointer types for TIADebug instance methods

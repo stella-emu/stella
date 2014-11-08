@@ -28,7 +28,6 @@ class CartDebugWidget;
 #include <list>
 
 #include "bspf.hxx"
-#include "Array.hxx"
 #include "Base.hxx"
 #include "Cart.hxx"
 #include "DebuggerSystem.hxx"
@@ -85,7 +84,7 @@ class CartDebug : public DebuggerSystem
       string bytes;
       bool hllabel;
     };
-    typedef Common::Array<DisassemblyTag> DisassemblyList;
+    typedef vector<DisassemblyTag> DisassemblyList;
     struct Disassembly {
       DisassemblyList list;
       int fieldwidth;
@@ -351,7 +350,7 @@ class CartDebug : public DebuggerSystem
     CartDebugWidget* myDebugWidget;
 
     // A complete record of relevant diassembly information for each bank
-    Common::Array<BankInfo> myBankInfo;
+    vector<BankInfo> myBankInfo;
 
     // Used for the disassembly display, and mapping from addresses
     // to corresponding lines of text in that display

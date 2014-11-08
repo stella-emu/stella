@@ -23,7 +23,6 @@
 class Debugger;
 class RiotDebug;
 
-#include "Array.hxx"
 #include "M6532.hxx"
 #include "DebuggerSystem.hxx"
 

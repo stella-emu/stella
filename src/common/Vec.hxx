@@ -17,33 +17,31 @@
 // $Id$
 //============================================================================
 
-#ifndef STRING_LIST_HXX
-#define STRING_LIST_HXX
+#ifndef VECTOR_OPS_HXX
+#define VECTOR_OPS_HXX
 
-#include "Array.hxx"
+#include "bspf.hxx"
 
-class StringList : public Common::Array<string>
+namespace Vec {
+
+template <class T>
+void append(vector<T>& dst, const vector<T>& src)
 {
-  public:
-    static string removePattern(const string& str, const string& pattern)
-    {
-      // This can probably be made more efficient ...
-      string tmp;
-      for(unsigned int i = 0; i < str.length(); ++i)
-      {
-        bool match = false;
-        for(unsigned int j = 0; j < pattern.length(); ++j)
-        {
-          if(str[i] == pattern[j])
-          {
-            match = true;
-            break;
-          }
-        }
-        if(!match) tmp += str[i];
-      }
-      return tmp;
-    }
-};
+  dst.insert(dst.end(), src.begin(), src.end());
+}
+
+template <class T>
+void insertAt(vector<T>& dst, uInt32 idx, const T& element)
+{
+  dst.insert(dst.cbegin()+idx, element);
+}
+
+template <class T>
+void removeAt(vector<T>& dst, uInt32 idx)
+{
+  dst.erase(dst.cbegin()+idx);
+}
+
+}  // Namespace Vec
 
 #endif

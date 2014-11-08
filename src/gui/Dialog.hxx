@@ -134,7 +134,7 @@ class Dialog : public GuiObject
       Focus(Widget* w = 0);
       virtual ~Focus();
     };
-    typedef Common::Array<Focus> FocusList;
+    typedef vector<Focus> FocusList;
 
     struct TabFocus {
       TabWidget* widget;
@@ -148,7 +148,7 @@ class Dialog : public GuiObject
       void saveCurrentFocus(Widget* w);
       Widget* getNewFocus();
     };
-    typedef Common::Array<TabFocus> TabFocusList;
+    typedef vector<TabFocus> TabFocusList;
 
     Focus        _myFocus;    // focus for base dialog
     TabFocusList _myTabList;  // focus for each tab (if any)

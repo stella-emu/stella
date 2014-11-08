@@ -22,7 +22,6 @@
 #include "Dialog.hxx"
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
-#include "StringList.hxx"
 #include "ToggleBitWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

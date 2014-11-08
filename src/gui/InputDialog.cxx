@@ -19,12 +19,10 @@
 
 #include "bspf.hxx"
 
-#include "Array.hxx"
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "Settings.hxx"
-#include "StringList.hxx"
 #include "EventMappingWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
@@ -59,7 +57,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab("Emul. Events");
-  instance().eventHandler().getActionList(kEmulationMode, actions);
+  actions = instance().eventHandler().getActionList(kEmulationMode);
   myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - ypos,
@@ -69,8 +67,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // 2) Event mapper for UI actions
   tabID = myTab->addTab("UI Events");
-  actions.clear();
-  instance().eventHandler().getActionList(kMenuMode, actions);
+  actions = instance().eventHandler().getActionList(kMenuMode);
   myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - ypos,
@@ -119,8 +116,8 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   pwidth = font.getStringWidth("Analog devices");
 
   items.clear();
-  items.push_back("Left / Right", "lr");
-  items.push_back("Right / Left", "rl");
+  VList::push_back(items, "Left / Right", "lr");
+  VList::push_back(items, "Right / Left", "rl");
   mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                              "Stelladaptor port order: ", lwidth);
   wid.push_back(mySAPort);
@@ -128,9 +125,9 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Use mouse as controller
   ypos += lineHeight + 5;
   items.clear();
-  items.push_back("Always", "always");
-  items.push_back("Analog devices", "analog");
-  items.push_back("Never", "never");
+  VList::push_back(items, "Always", "always");
+  VList::push_back(items, "Analog devices", "analog");
+  VList::push_back(items, "Never", "never");
   myMouseControl = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                              "Use mouse as a controller: ", lwidth);
   wid.push_back(myMouseControl);

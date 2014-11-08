@@ -30,7 +30,6 @@ class CartRamWidget;
 class GuiObject;
 
 #include "bspf.hxx"
-#include "Array.hxx"
 #include "Device.hxx"
 #include "Settings.hxx"
 #include "Font.hxx"

@@ -40,7 +40,6 @@ class StringListWidget;
 
 #include "Dialog.hxx"
 #include "FSNode.hxx"
-#include "StringList.hxx"
 #include "Stack.hxx"
 #include "MessageBox.hxx"
 

@@ -22,6 +22,7 @@
 
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#include "Vec.hxx"
 #include "bspf.hxx"
 
 #include "EventHandler.hxx"
@@ -325,7 +326,7 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
     }
     stick->type = StellaJoystick::JT_REGULAR;
   }
-  mySticks.insertAt(stick->ID, stick);
+  Vec::insertAt(mySticks, stick->ID, stick);
 
   // Map the stelladaptors we've found according to the specified ports
   if(specialAdaptor)

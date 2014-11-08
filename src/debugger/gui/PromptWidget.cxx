@@ -28,7 +28,6 @@
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
-#include "StringList.hxx"
 
 #include "PromptWidget.hxx"
 #include "CartDebug.hxx"

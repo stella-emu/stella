@@ -48,7 +48,6 @@
  */
 
 #include "bspf.hxx"
-#include "Array.hxx"
 
 class FilesystemNode;
 class AbstractFSNode;
@@ -58,7 +57,7 @@ class AbstractFSNode;
  * This is subclass instead of just a typedef so that we can use forward
  * declarations of it in other places.
  */
-class FSList : public Common::Array<FilesystemNode> { };
+class FSList : public vector<FilesystemNode> { };
 
 /**
  * This class acts as a wrapper around the AbstractFSNode class defined
@@ -264,7 +263,7 @@ class FilesystemNode
  * the semantics.
  */
 
-typedef Common::Array<AbstractFSNode *>	AbstractFSList;
+typedef vector<AbstractFSNode*> AbstractFSList;
 
 class AbstractFSNode
 {

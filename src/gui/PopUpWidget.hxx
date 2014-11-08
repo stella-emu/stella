@@ -24,10 +24,8 @@ class GUIObject;
 
 #include "bspf.hxx"
 
-#include "Array.hxx"
 #include "Command.hxx"
 #include "ContextMenu.hxx"
-#include "StringList.hxx"
 #include "Widget.hxx"
 
 

@@ -27,7 +27,6 @@ class DataGridOpsWidget;
 class EditTextWidget;
 class StaticTextWidget;
 
-#include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 

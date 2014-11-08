@@ -50,11 +50,11 @@ CartridgeDASHWidget::CartridgeDASHWidget(
 
   VariantList bankno;
   for(uInt32 i = 0; i < myCart.ROM_BANK_COUNT; ++i)
-    bankno.push_back(i, i);
+    VList::push_back(bankno, i, i);
 
   VariantList banktype;
-  banktype.push_back("ROM", "ROM");
-  banktype.push_back("RAM", "RAM");
+  VList::push_back(banktype, "ROM", "ROM");
+  VList::push_back(banktype, "RAM", "RAM");
 
   for(uInt32 i = 0; i < 4; ++i)
   {

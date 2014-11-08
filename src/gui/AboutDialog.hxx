@@ -20,8 +20,6 @@
 #ifndef ABOUT_DIALOG_HXX
 #define ABOUT_DIALOG_HXX
 
-#include "Array.hxx"
-
 class OSystem;
 class DialogContainer;
 class CommandSender;
@@ -41,8 +39,8 @@ class AboutDialog : public Dialog
     ButtonWidget* myPrevButton;
 
     StaticTextWidget* myTitle;
-    Common::Array<StaticTextWidget*> myDesc;
-    Common::Array<string> myDescStr;
+    vector<StaticTextWidget*> myDesc;
+    vector<string> myDescStr;
 
     int myPage;
     int myNumPages;

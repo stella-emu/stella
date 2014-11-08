@@ -367,7 +367,7 @@ class FrameBuffer
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.
     */
-    virtual void queryHardware(Common::Array<GUI::Size>& mons, VariantList& ren) = 0;
+    virtual void queryHardware(vector<GUI::Size>& mons, VariantList& ren) = 0;
 
     virtual Int32 getCurrentDisplayIndex() = 0;
 
@@ -494,14 +494,14 @@ class FrameBuffer
 
         friend ostream& operator<<(ostream& os, const VideoModeList& l)
         {
-          for(Common::Array<VideoMode>::const_iterator i = l.myModeList.begin();
+          for(vector<VideoMode>::const_iterator i = l.myModeList.begin();
               i != l.myModeList.end(); ++i)
             os << "-----\n" << *i << endl << "-----\n";
           return os;
         }
 
       private:
-        Common::Array<VideoMode> myModeList;
+        vector<VideoMode> myModeList;
         int myIdx;
     };
 
@@ -527,7 +527,7 @@ class FrameBuffer
 
     // The resolution of the attached displays
     // The primary display is first in the array
-    Common::Array<GUI::Size> myDisplays;
+    vector<GUI::Size> myDisplays;
 
     // Supported renderers
     VariantList myRenderers;
@@ -564,7 +564,7 @@ class FrameBuffer
     // The list of all available video modes for this framebuffer
     VideoModeList* myCurrentModeList;
     VideoModeList myWindowedModeList;
-    Common::Array<VideoModeList> myFullscreenModeLists;
+    vector<VideoModeList> myFullscreenModeLists;
 
     // Names of the TIA zoom levels that can be used for this framebuffer
     VariantList myTIAZoomLevels;

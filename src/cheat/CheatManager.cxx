@@ -27,6 +27,7 @@
 #include "CheetahCheat.hxx"
 #include "BankRomCheat.hxx"
 #include "RamCheat.hxx"
+#include "Vec.hxx"
 
 #include "CheatManager.hxx"
 
@@ -59,7 +60,7 @@ Cheat* CheatManager::add(const string& name, const string& code,
   {
     if(myCheatList[i]->name() == name || myCheatList[i]->code() == code)
     {
-      myCheatList.removeAt(i);
+      Vec::removeAt(myCheatList, i);
       break;
     }
   }
@@ -68,7 +69,7 @@ Cheat* CheatManager::add(const string& name, const string& code,
   if(idx == -1)
     myCheatList.push_back(cheat);
   else
-    myCheatList.insertAt(idx, cheat);
+    Vec::insertAt(myCheatList, idx, cheat);
 
   // And enable/disable it (the cheat knows how to enable or disable itself)
   if(enable)
@@ -91,7 +92,7 @@ void CheatManager::remove(int idx)
   addPerFrame(c, false);
 
   // Then remove it from the cheatlist entirely
-  myCheatList.removeAt(idx);
+  Vec::removeAt(myCheatList, idx);
   c->disable();
   delete c;
 }
@@ -122,7 +123,7 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
   else
   {
     if(found)
-      myPerFrameList.removeAt(i);
+      Vec::removeAt(myPerFrameList, i);
   }
 }
 

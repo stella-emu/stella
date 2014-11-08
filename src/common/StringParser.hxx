@@ -20,7 +20,6 @@
 #ifndef STRING_PARSER_HXX
 #define STRING_PARSER_HXX
 
-#include "StringList.hxx"
 #include "bspf.hxx"
 
 /**

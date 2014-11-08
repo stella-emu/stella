@@ -36,6 +36,7 @@
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
 #include "PackedBitArray.hxx"
+#include "Vec.hxx"
 
 #include "Base.hxx"
 using namespace Common;
@@ -886,7 +887,7 @@ void DebuggerParser::executeDelwatch()
   int which = args[0] - 1;
   if(which >= 0 && which < (int)watches.size())
   {
-    watches.removeAt(which);
+    Vec::removeAt(watches, which);
     commandResult << "removed watch";
   }
   else

@@ -22,7 +22,6 @@
 
 class OSystem;
 
-#include "Array.hxx"
 #include "Variant.hxx"
 #include "bspf.hxx"
 
@@ -129,7 +128,7 @@ class Settings
       Variant value;
       Variant initialValue;
     };
-    typedef Common::Array<Setting> SettingsArray;
+    typedef vector<Setting> SettingsArray;
 
     const SettingsArray& getInternalSettings() const
       { return myInternalSettings; }

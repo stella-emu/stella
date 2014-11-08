@@ -49,7 +49,7 @@ CartridgeSBWidget::CartridgeSBWidget(
 
     bank << dec << setw(2) << setfill(' ') << i << " ($" << Common::Base::HEX2
          << spot << ")";
-    items.push_back(bank.str());
+    VList::push_back(items, bank.str());
     bank.str("");
   }
 

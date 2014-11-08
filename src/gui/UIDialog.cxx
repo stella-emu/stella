@@ -27,7 +27,6 @@
 #include "PopUpWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
-#include "StringList.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #ifdef DEBUGGER_SUPPORT
@@ -102,9 +101,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Launcher font
   pwidth = font.getStringWidth("2x (1000x760)");
   items.clear();
-  items.push_back("Small",  "small");
-  items.push_back("Medium", "medium");
-  items.push_back("Large",  "large");
+  VList::push_back(items, "Small",  "small");
+  VList::push_back(items, "Medium", "medium");
+  VList::push_back(items, "Large",  "large");
   myLauncherFontPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "Launcher Font: ", lwidth);
@@ -113,9 +112,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // ROM launcher info/snapshot viewer
   items.clear();
-  items.push_back("Off", "0");
-  items.push_back("1x (640x480) ", "1");
-  items.push_back("2x (1000x760)", "2");
+  VList::push_back(items, "Off", "0");
+  VList::push_back(items, "1x (640x480) ", "1");
+  VList::push_back(items, "2x (1000x760)", "2");
   myRomViewerPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "ROM Info viewer: ", lwidth);
@@ -125,8 +124,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Exit to Launcher
   pwidth = font.getStringWidth("If in use");
   items.clear();
-  items.push_back("If in use", "0");
-  items.push_back("Always", "1");
+  VList::push_back(items, "If in use", "0");
+  VList::push_back(items, "Always", "1");
   myLauncherExitPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "Exit to Launcher: ", lwidth);
@@ -200,10 +199,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   pwidth = font.getStringWidth("Bold non-labels only");
   xpos = vBorder;
   items.clear();
-  items.push_back("All Normal font", "0");
-  items.push_back("Bold labels only", "1");
-  items.push_back("Bold non-labels only", "2");
-  items.push_back("All Bold font", "3");
+  VList::push_back(items, "All Normal font", "0");
+  VList::push_back(items, "Bold labels only", "1");
+  VList::push_back(items, "Bold non-labels only", "2");
+  VList::push_back(items, "All Bold font", "3");
   myDebuggerFontStyle =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "Font Style: ", lwidth);
@@ -243,8 +242,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // UI Palette
   ypos += 1;
   items.clear();
-  items.push_back("Standard", "standard");
-  items.push_back("Classic", "classic");
+  VList::push_back(items, "Standard", "standard");
+  VList::push_back(items, "Classic", "classic");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Interface Palette (*): ", lwidth);
   wid.push_back(myPalettePopup);
@@ -252,14 +251,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Delay between quick-selecting characters in ListWidget
   items.clear();
-  items.push_back("300 ms", "300");
-  items.push_back("400 ms", "400");
-  items.push_back("500 ms", "500");
-  items.push_back("600 ms", "600");
-  items.push_back("700 ms", "700");
-  items.push_back("800 ms", "800");
-  items.push_back("900 ms", "900");
-  items.push_back("1 sec", "1000");
+  VList::push_back(items, "300 ms", "300");
+  VList::push_back(items, "400 ms", "400");
+  VList::push_back(items, "500 ms", "500");
+  VList::push_back(items, "600 ms", "600");
+  VList::push_back(items, "700 ms", "700");
+  VList::push_back(items, "800 ms", "800");
+  VList::push_back(items, "900 ms", "900");
+  VList::push_back(items, "1 sec", "1000");
   myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                      items, "List quick delay: ", lwidth);
   wid.push_back(myListDelayPopup);
@@ -267,16 +266,16 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Number of lines a mouse wheel will scroll
   items.clear();
-  items.push_back("1 line", "1");
-  items.push_back("2 lines", "2");
-  items.push_back("3 lines", "3");
-  items.push_back("4 lines", "4");
-  items.push_back("5 lines", "5");
-  items.push_back("6 lines", "6");
-  items.push_back("7 lines", "7");
-  items.push_back("8 lines", "8");
-  items.push_back("9 lines", "9");
-  items.push_back("10 lines", "10");
+  VList::push_back(items, "1 line", "1");
+  VList::push_back(items, "2 lines", "2");
+  VList::push_back(items, "3 lines", "3");
+  VList::push_back(items, "4 lines", "4");
+  VList::push_back(items, "5 lines", "5");
+  VList::push_back(items, "6 lines", "6");
+  VList::push_back(items, "7 lines", "7");
+  VList::push_back(items, "8 lines", "8");
+  VList::push_back(items, "9 lines", "9");
+  VList::push_back(items, "10 lines", "10");
   myWheelLinesPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                       items, "Mouse wheel scroll: ", lwidth);
   wid.push_back(myWheelLinesPopup);

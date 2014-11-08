@@ -46,10 +46,10 @@ CartridgeCMWidget::CartridgeCMWidget(
       ypos = addBaseInformation(size, "CompuMate", info) + myLineHeight;
 
   VariantList items;
-  items.push_back(" 0 ");
-  items.push_back(" 1 ");
-  items.push_back(" 2 ");
-  items.push_back(" 3 ");
+  VList::push_back(items, " 0 ");
+  VList::push_back(items, " 1 ");
+  VList::push_back(items, " 2 ");
+  VList::push_back(items, " 3 ");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 0 "),
                     myLineHeight, items, "Set bank: ",

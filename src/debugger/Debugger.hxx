@@ -40,7 +40,6 @@ class ButtonWidget;
 
 #include <map>
 
-#include "Array.hxx"
 #include "Base.hxx"
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"

@@ -27,7 +27,6 @@
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
-#include "StringList.hxx"
 #include "Widget.hxx"
 #include "LauncherDialog.hxx"
 
@@ -53,10 +52,9 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   xpos = 10;  ypos = 10;
 
   // Types of files to show
-  items.clear();
-  items.push_back("All files", "allfiles");
-  items.push_back("All roms", "allroms");
-  items.push_back("ROMs ending with", "__EXTS");
+  VList::push_back(items, "All files", "allfiles");
+  VList::push_back(items, "All roms", "allroms");
+  VList::push_back(items, "ROMs ending with", "__EXTS");
   myFileType =
     new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items,
                     "Show: ", lwidth, kFileTypeChanged);

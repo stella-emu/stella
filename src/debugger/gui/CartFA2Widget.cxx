@@ -52,14 +52,14 @@ CartridgeFA2Widget::CartridgeFA2Widget(
                 info.str(), 15) + myLineHeight;
 
   VariantList items;
-  items.push_back("0 ($FF5)");
-  items.push_back("1 ($FF6)");
-  items.push_back("2 ($FF7)");
-  items.push_back("3 ($FF8)");
-  items.push_back("4 ($FF9)");
-  items.push_back("5 ($FFA)");
+  VList::push_back(items, "0 ($FF5)");
+  VList::push_back(items, "1 ($FF6)");
+  VList::push_back(items, "2 ($FF7)");
+  VList::push_back(items, "3 ($FF8)");
+  VList::push_back(items, "4 ($FF9)");
+  VList::push_back(items, "5 ($FFA)");
   if(cart.bankCount() == 7)
-    items.push_back("6 ($FFB)");
+    VList::push_back(items, "6 ($FFB)");
 
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),

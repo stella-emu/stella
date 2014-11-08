@@ -74,8 +74,8 @@ SnapshotDialog::SnapshotDialog(
   lwidth = font.getStringWidth("Continuous snapshot interval: ");
   fwidth = font.getStringWidth("internal database");
   VariantList items;
-  items.push_back("actual ROM name", "rom");
-  items.push_back("internal database", "int");
+  VList::push_back(items, "actual ROM name", "rom");
+  VList::push_back(items, "internal database", "int");
   xpos = vBorder+10;  ypos += buttonHeight + 8;
   mySnapName =
     new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
@@ -84,16 +84,16 @@ SnapshotDialog::SnapshotDialog(
 
   // Snapshot interval (continuous mode)
   items.clear();
-  items.push_back("1 second", "1");
-  items.push_back("2 seconds", "2");
-  items.push_back("3 seconds", "3");
-  items.push_back("4 seconds", "4");
-  items.push_back("5 seconds", "5");
-  items.push_back("6 seconds", "6");
-  items.push_back("7 seconds", "7");
-  items.push_back("8 seconds", "8");
-  items.push_back("9 seconds", "9");
-  items.push_back("10 seconds", "10");
+  VList::push_back(items, "1 second", "1");
+  VList::push_back(items, "2 seconds", "2");
+  VList::push_back(items, "3 seconds", "3");
+  VList::push_back(items, "4 seconds", "4");
+  VList::push_back(items, "5 seconds", "5");
+  VList::push_back(items, "6 seconds", "6");
+  VList::push_back(items, "7 seconds", "7");
+  VList::push_back(items, "8 seconds", "8");
+  VList::push_back(items, "9 seconds", "9");
+  VList::push_back(items, "10 seconds", "10");
   ypos += buttonHeight;
   mySnapInterval =
     new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,

@@ -43,6 +43,7 @@
   #define DISASM_NONE  0
 #endif
 #include "Settings.hxx"
+#include "Vec.hxx"
 
 #include "M6502.hxx"
 
@@ -444,8 +445,8 @@ void M6502::delCondBreak(uInt32 brk)
   if(brk < myBreakConds.size())
   {
     delete myBreakConds[brk];
-    myBreakConds.removeAt(brk);
-    myBreakCondNames.removeAt(brk);
+    Vec::removeAt(myBreakConds, brk);
+    Vec::removeAt(myBreakCondNames, brk);
   }
 }
 

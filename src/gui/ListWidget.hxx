@@ -21,7 +21,6 @@
 #define LIST_WIDGET_HXX
 
 class GuiObject;
-class StringList;
 
 #include "Widget.hxx"
 #include "Command.hxx"

@@ -49,8 +49,8 @@ CartridgeF8SCWidget::CartridgeF8SCWidget(
       ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
 
   VariantList items;
-  items.push_back("0 ($FF8)");
-  items.push_back("1 ($FF9)");
+  VList::push_back(items, "0 ($FF8)");
+  VList::push_back(items, "1 ($FF9)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",

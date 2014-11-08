@@ -25,7 +25,6 @@ class ScrollBarWidget;
 class PackedBitArray;
 class CheckListWidget;
 
-#include "Array.hxx"
 #include "Base.hxx"
 #include "CartDebug.hxx"
 #include "EditableWidget.hxx"
@@ -108,7 +107,7 @@ class RomListWidget : public EditableWidget
 
     const CartDebug::Disassembly* myDisasm;
     const PackedBitArray* myBPState;
-    Common::Array<CheckboxWidget*> myCheckList;
+    vector<CheckboxWidget*> myCheckList;
 };
 
 #endif

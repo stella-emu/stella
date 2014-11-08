@@ -23,7 +23,6 @@
 #include <queue>
 #include <sstream>
 
-#include "Array.hxx"
 #include "Base.hxx"
 #include "CartDebug.hxx"
 #include "bspf.hxx"

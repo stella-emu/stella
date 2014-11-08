@@ -25,7 +25,6 @@
 #include "Props.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "StringList.hxx"
 #include "Rect.hxx"
 #include "bspf.hxx"
 

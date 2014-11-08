@@ -23,7 +23,6 @@
 class PopUpWidget;
 class EditTextWidget;
 class StaticTextWidget;
-class VariantList;
 class OSystem;
 
 #include "Dialog.hxx"

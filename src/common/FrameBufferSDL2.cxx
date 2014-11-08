@@ -78,7 +78,7 @@ FrameBufferSDL2::~FrameBufferSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::queryHardware(Common::Array<GUI::Size>& displays,
+void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
                                     VariantList& renderers)
 {
   // First get the maximum windowed desktop resolution
@@ -93,12 +93,12 @@ void FrameBufferSDL2::queryHardware(Common::Array<GUI::Size>& displays,
   // For now, supported render types are hardcoded; eventually, SDL may
   // provide a method to query this
 #if defined(BSPF_WINDOWS)
-  renderers.push_back("Direct3D", "direct3d");
+  VList::push_back(renderers, "Direct3D", "direct3d");
 #endif
-  renderers.push_back("OpenGL", "opengl");
-  renderers.push_back("OpenGLES2", "opengles2");
-  renderers.push_back("OpenGLES", "opengles");
-  renderers.push_back("Software", "software");
+  VList::push_back(renderers, "OpenGL", "opengl");
+  VList::push_back(renderers, "OpenGLES2", "opengles2");
+  VList::push_back(renderers, "OpenGLES", "opengles");
+  VList::push_back(renderers, "Software", "software");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

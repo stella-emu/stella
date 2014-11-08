@@ -29,7 +29,6 @@
 #include "InputTextDialog.hxx"
 #include "OSystem.hxx"
 #include "Props.hxx"
-#include "StringList.hxx"
 #include "Widget.hxx"
 
 #include "CheatCodeDialog.hxx"

@@ -64,10 +64,9 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   // Level of logging (how much info to print)
   xpos += 20;
   VariantList items;
-  items.clear();
-  items.push_back("None", "0");
-  items.push_back("Basic", "1");
-  items.push_back("Verbose", "2");
+  VList::push_back(items, "None", "0");
+  VList::push_back(items, "Basic", "1");
+  VList::push_back(items, "Verbose", "2");
   myLogLevel =
     new PopUpWidget(this, font, xpos, ypos, font.getStringWidth("Verbose"),
                     lineHeight, items, "Log level: ",

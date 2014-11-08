@@ -25,7 +25,6 @@
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
-#include "StringList.hxx"
 #include "Widget.hxx"
 #include "LauncherDialog.hxx"
 
@@ -59,7 +58,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
                        "Bankswitch type:", kTextAlignLeft);
   items.clear();
   for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
-    items.push_back(Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
+    VList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myBSType);
@@ -70,9 +69,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
   items.clear();
-  items.push_back("Default", "DEFAULT");
-  items.push_back("B", "B");
-  items.push_back("A", "A");
+  VList::push_back(items, "Default", "DEFAULT");
+  VList::push_back(items, "B", "B");
+  VList::push_back(items, "A", "A");
   myLeftDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myLeftDiff);
@@ -91,9 +90,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "TV Type:", kTextAlignLeft);
   items.clear();
-  items.push_back("Default", "DEFAULT");
-  items.push_back("Color", "COLOR");
-  items.push_back("B & W", "BW");
+  VList::push_back(items, "Default", "DEFAULT");
+  VList::push_back(items, "Color", "COLOR");
+  VList::push_back(items, "B & W", "BW");
   myTVType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
@@ -103,8 +102,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Startup Mode:", kTextAlignLeft);
   items.clear();
-  items.push_back("Console", "false");
-  items.push_back("Debugger", "true");
+  VList::push_back(items, "Console", "false");
+  VList::push_back(items, "Debugger", "true");
   myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
                             pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myDebug);

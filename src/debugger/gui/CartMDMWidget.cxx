@@ -45,7 +45,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   {
     info.str("");
     info << dec << (i & 0xFF) << " ($" << Common::Base::HEX4 << i << ")";
-    items.push_back(info.str());
+    VList::push_back(items, info.str());
   }
 
   myBank =

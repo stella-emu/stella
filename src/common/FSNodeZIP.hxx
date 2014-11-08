@@ -20,7 +20,6 @@
 #ifndef FS_NODE_ZIP_HXX
 #define FS_NODE_ZIP_HXX
 
-#include "StringList.hxx"
 #include "FSNode.hxx"
 
 /*

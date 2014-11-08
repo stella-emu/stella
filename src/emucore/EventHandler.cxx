@@ -1532,8 +1532,9 @@ inline bool EventHandler::eventIsAnalog(Event::Type event) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getActionList(EventMode mode, StringList& l) const
+StringList EventHandler::getActionList(EventMode mode) const
 {
+  StringList l;
   switch(mode)
   {
     case kEmulationMode:
@@ -1547,28 +1548,33 @@ void EventHandler::getActionList(EventMode mode, StringList& l) const
     default:
       break;
   }
+  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getComboList(EventMode, VariantList& l) const
+VariantList EventHandler::getComboList(EventMode /**/) const
 {
   // For now, this only works in emulation mode
-
+  VariantList l;
   ostringstream buf;
 
-  l.push_back("None", "-1");
+  VList::push_back(l, "None", "-1");
   for(uInt32 i = 0; i < kEmulActionListSize; ++i)
+  {
     if(EventHandler::ourEmulActionList[i].allow_combo)
     {
       buf << i;
-      l.push_back(EventHandler::ourEmulActionList[i].action, buf.str());
+      VList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.str());
       buf.str("");
     }
+  }
+  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getComboListForEvent(Event::Type event, StringList& l) const
+StringList EventHandler::getComboListForEvent(Event::Type event) const
 {
+  StringList l;
   ostringstream buf;
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
@@ -1591,6 +1597,7 @@ void EventHandler::getComboListForEvent(Event::Type event, StringList& l) const
         l.push_back("-1");
     }
   }
+  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1727,10 +1734,10 @@ void EventHandler::takeSnapshot(uInt32 number)
   ostringstream version;
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF_ARCH << "]";
-  comments.push_back("Software", version.str());
-  comments.push_back("ROM Name", myOSystem.console().properties().get(Cartridge_Name));
-  comments.push_back("ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
-  comments.push_back("TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
+  VList::push_back(comments, "Software", version.str());
+  VList::push_back(comments, "ROM Name", myOSystem.console().properties().get(Cartridge_Name));
+  VList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
+  VList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
 
   // Now create a PNG snapshot
   if(myOSystem.settings().getBool("ss1x"))

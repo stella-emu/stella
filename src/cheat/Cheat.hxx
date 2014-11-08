@@ -22,7 +22,8 @@
 
 class OSystem;
 
-#include "StringList.hxx"
+#include <regex>
+
 #include "bspf.hxx"
 
 class Cheat
@@ -30,13 +31,10 @@ class Cheat
   public:
     Cheat(OSystem& osystem, const string& name, const string& code)
       : myOSystem(osystem),
-        myName(name),
+        myName(name == "" ? code : regex_replace(name, regex(":|\""), "")),
         myCode(code),
         myEnabled(false)
-    {
-      if(name == "") myName = code;
-      myName = StringList::removePattern(myName, "\":");
-    }
+    { }
     virtual ~Cheat() { }
 
     bool enabled() const { return myEnabled; }

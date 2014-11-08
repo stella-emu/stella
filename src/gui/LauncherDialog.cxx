@@ -38,7 +38,6 @@
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
 #include "Settings.hxx"
-#include "StringList.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 
@@ -180,9 +179,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Create context menu for ROM list options
   VariantList l;
-  l.push_back("Power-on options", "override");
-  l.push_back("Filter listing", "filter");
-  l.push_back("Reload listing", "reload");
+  VList::push_back(l, "Power-on options", "override");
+  VList::push_back(l, "Filter listing", "filter");
+  VList::push_back(l, "Reload listing", "reload");
   myMenu = new ContextMenu(this, osystem.frameBuffer().font(), l);
 
   // Create global props dialog, which is used to temporarily overrride

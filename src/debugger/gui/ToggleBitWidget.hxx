@@ -20,8 +20,6 @@
 #ifndef TOGGLE_BIT_WIDGET_HXX
 #define TOGGLE_BIT_WIDGET_HXX
 
-class StringList;
-
 #include "ToggleWidget.hxx"
 
 /* ToggleBitWidget */

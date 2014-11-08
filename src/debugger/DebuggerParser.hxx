@@ -27,8 +27,6 @@ class FilesystemNode;
 struct Command;
 
 #include "bspf.hxx"
-#include "Array.hxx"
-#include "StringList.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 

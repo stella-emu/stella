@@ -22,7 +22,6 @@
 
 #include "bspf.hxx"
 
-#include "Array.hxx"
 #include "Command.hxx"
 #include "Widget.hxx"
 
@@ -76,7 +75,7 @@ class TabWidget : public Widget, public CommandSender
       Tab(const string& t = "", Widget* first = 0, Widget* parent = 0, bool e = true)
         : title(t), firstWidget(first), parentWidget(parent), enabled(e) { }
     };
-    typedef Common::Array<Tab> TabList;
+    typedef vector<Tab> TabList;
 
     TabList _tabs;
     int     _tabWidth;

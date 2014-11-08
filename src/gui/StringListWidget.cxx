@@ -17,10 +17,9 @@
 // $Id$
 //============================================================================
 
+#include "bspf.hxx"
 #include "ScrollBarWidget.hxx"
 #include "StringListWidget.hxx"
-
-#include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,

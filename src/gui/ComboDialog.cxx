@@ -28,7 +28,6 @@
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
-#include "StringList.hxx"
 #include "Widget.hxx"
 
 #include "ComboDialog.hxx"
@@ -111,8 +110,7 @@ void ComboDialog::show(Event::Type event, const string& name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ComboDialog::loadConfig()
 {
-  StringList events;
-  instance().eventHandler().getComboListForEvent(myComboEvent, events);
+  StringList events = instance().eventHandler().getComboListForEvent(myComboEvent);
 
   int size = BSPF_min((int)events.size(), 8);
   for(int i = 0; i < size; ++i)

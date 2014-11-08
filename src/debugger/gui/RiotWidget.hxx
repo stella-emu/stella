@@ -27,7 +27,6 @@ class PopUpWidget;
 class ToggleBitWidget;
 class ControllerWidget;
 
-#include "Array.hxx"
 #include "Control.hxx"
 #include "Command.hxx"
 

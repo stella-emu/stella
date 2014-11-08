@@ -24,7 +24,6 @@ class Console;
 class Properties;
 
 #include "bspf.hxx"
-#include "Array.hxx"
 #include "Control.hxx"
 
 /**
@@ -108,7 +107,7 @@ class MouseControl
     };
 
     int myCurrentModeNum;
-    Common::Array<MouseMode> myModeList;
+    vector<MouseMode> myModeList;
 };
 
 #endif

@@ -20,7 +20,6 @@
 #include <time.h>
 
 #include "bspf.hxx"
-#include "Array.hxx"
 #include "System.hxx"
 #include "FSNode.hxx"
 #include "DiStella.hxx"

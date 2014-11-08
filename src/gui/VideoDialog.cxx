@@ -30,7 +30,6 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "Settings.hxx"
-#include "StringList.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
 #include "NTSCFilter.hxx"
@@ -83,9 +82,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // TIA Palette
   items.clear();
-  items.push_back("Standard", "standard");
-  items.push_back("Z26", "z26");
-  items.push_back("User", "user");
+  VList::push_back(items, "Standard", "standard");
+  VList::push_back(items, "Z26", "z26");
+  VList::push_back(items, "User", "user");
   myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                  lineHeight, items, "TIA Palette: ", lwidth);
   wid.push_back(myTIAPalette);
@@ -93,8 +92,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // TIA interpolation
   items.clear();
-  items.push_back("Linear", "linear");
-  items.push_back("Nearest", "nearest");
+  VList::push_back(items, "Linear", "linear");
+  VList::push_back(items, "Nearest", "nearest");
   myTIAInterpolate = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                      items, "TIA Inter: ", lwidth);
   wid.push_back(myTIAInterpolate);
@@ -102,8 +101,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Timing to use between frames
   items.clear();
-  items.push_back("Sleep", "sleep");
-  items.push_back("Busy-wait", "busy");
+  VList::push_back(items, "Sleep", "sleep");
+  VList::push_back(items, "Busy-wait", "busy");
   myFrameTiming = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                   items, "Timing (*): ", lwidth);
   wid.push_back(myFrameTiming);
@@ -204,12 +203,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // TV Mode
   items.clear();
-  items.push_back("Disabled", NTSCFilter::PRESET_OFF);
-  items.push_back("Composite", NTSCFilter::PRESET_COMPOSITE);
-  items.push_back("S-Video", NTSCFilter::PRESET_SVIDEO);
-  items.push_back("RGB", NTSCFilter::PRESET_RGB);
-  items.push_back("Bad adjust", NTSCFilter::PRESET_BAD);
-  items.push_back("Custom", NTSCFilter::PRESET_CUSTOM);
+  VList::push_back(items, "Disabled", NTSCFilter::PRESET_OFF);
+  VList::push_back(items, "Composite", NTSCFilter::PRESET_COMPOSITE);
+  VList::push_back(items, "S-Video", NTSCFilter::PRESET_SVIDEO);
+  VList::push_back(items, "RGB", NTSCFilter::PRESET_RGB);
+  VList::push_back(items, "Bad adjust", NTSCFilter::PRESET_BAD);
+  VList::push_back(items, "Custom", NTSCFilter::PRESET_CUSTOM);
   lwidth = font.getStringWidth("TV Mode: ");
   pwidth = font.getStringWidth("Bad adjust"),
   myTVMode =

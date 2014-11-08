@@ -20,7 +20,6 @@
 #ifndef VARIANT_HXX
 #define VARIANT_HXX
 
-#include "Array.hxx"
 #include "Rect.hxx"
 #include "bspf.hxx"
 
@@ -76,19 +75,20 @@ class Variant
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const Variant EmptyVariant = Variant();
+static const Variant EmptyVariant;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class VariantList : public Common::Array<pair<string,Variant>>
-{
-  public:
-    void push_back(const Variant& name, const Variant& tag = EmptyVariant)
-    {
-      emplace_back(name.toString(), tag);
-    }
+typedef vector<pair<string,Variant>> VariantList;
+
+namespace VList {
+  inline void push_back(VariantList& list, const Variant& name,
+                        const Variant& tag = EmptyVariant)
+  {
+    list.emplace_back(name.toString(), tag);
+  }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const VariantList EmptyVarList = VariantList();
+static const VariantList EmptyVarList;
 
 #endif

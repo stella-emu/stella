@@ -46,7 +46,7 @@ Cartridge3FWidget::Cartridge3FWidget(
 
   VariantList items;
   for(uInt16 i = 0; i < cart.bankCount(); ++i)
-    items.push_back(Variant(i).toString() + " ($3F)");
+      VList::push_back(items, Variant(i).toString() + " ($3F)");
 
   ostringstream label;
   label << "Set bank ($" << Common::Base::HEX4 << start << " - $" <<

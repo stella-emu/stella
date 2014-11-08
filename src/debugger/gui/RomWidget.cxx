@@ -27,7 +27,6 @@
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
-#include "StringList.hxx"
 #include "ContextMenu.hxx"
 #include "RomListWidget.hxx"
 #include "RomWidget.hxx"

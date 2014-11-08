@@ -48,22 +48,22 @@ CartridgeEFWidget::CartridgeEFWidget(
                                 info.str()) + myLineHeight;
 
   VariantList items;
-  items.push_back(" 0 ($FE0)");
-  items.push_back(" 1 ($FE1)");
-  items.push_back(" 2 ($FE2)");
-  items.push_back(" 3 ($FE3)");
-  items.push_back(" 4 ($FE4)");
-  items.push_back(" 5 ($FE5)");
-  items.push_back(" 6 ($FE6)");
-  items.push_back(" 7 ($FE7)");
-  items.push_back(" 8 ($FE8)");
-  items.push_back(" 9 ($FE9)");
-  items.push_back("10 ($FEA)");
-  items.push_back("11 ($FEB)");
-  items.push_back("12 ($FEC)");
-  items.push_back("13 ($FED)");
-  items.push_back("14 ($FEE)");
-  items.push_back("15 ($FEF)");
+  VList::push_back(items, " 0 ($FE0)");
+  VList::push_back(items, " 1 ($FE1)");
+  VList::push_back(items, " 2 ($FE2)");
+  VList::push_back(items, " 3 ($FE3)");
+  VList::push_back(items, " 4 ($FE4)");
+  VList::push_back(items, " 5 ($FE5)");
+  VList::push_back(items, " 6 ($FE6)");
+  VList::push_back(items, " 7 ($FE7)");
+  VList::push_back(items, " 8 ($FE8)");
+  VList::push_back(items, " 9 ($FE9)");
+  VList::push_back(items, "10 ($FEA)");
+  VList::push_back(items, "11 ($FEB)");
+  VList::push_back(items, "12 ($FEC)");
+  VList::push_back(items, "13 ($FED)");
+  VList::push_back(items, "14 ($FEE)");
+  VList::push_back(items, "15 ($FEF)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("15 ($FE0) "),
                     myLineHeight, items, "Set bank: ",

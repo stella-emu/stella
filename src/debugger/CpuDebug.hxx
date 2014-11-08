@@ -20,7 +20,6 @@
 #ifndef CPU_DEBUG_HXX
 #define CPU_DEBUG_HXX
 
-#include "Array.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
 #include "DebuggerSystem.hxx"
