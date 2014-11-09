@@ -45,8 +45,7 @@ TIASurface::TIASurface(OSystem& system)
   myNTSCFilter.loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
-  uInt32 tiaID = myFB.allocateSurface(ATARI_NTSC_OUT_WIDTH(kTIAW), kTIAH);
-  myTiaSurface = myFB.surface(tiaID);
+  myTiaSurface = myFB.allocateSurface(ATARI_NTSC_OUT_WIDTH(kTIAW), kTIAH);
 
   // Generate scanline data, and a pre-defined scanline surface
   uInt32 scanData[kScanH];
@@ -55,12 +54,10 @@ TIASurface::TIASurface(OSystem& system)
     scanData[i]   = 0x00000000;
     scanData[i+1] = 0xff000000;
   }
-  uInt32 scanID = myFB.allocateSurface(1, kScanH, scanData);
-  mySLineSurface = myFB.surface(scanID);
+  mySLineSurface = myFB.allocateSurface(1, kScanH, scanData);
 
   // Base TIA surface for use in taking snapshots in 1x mode
-  uInt32 baseID = myFB.allocateSurface(kTIAW*2, kTIAH);
-  myBaseTiaSurface = myFB.surface(baseID);
+  myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

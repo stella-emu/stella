@@ -92,8 +92,7 @@ void RomInfoWidget::parseProperties()
   // only draw certain parts of it
   if(mySurface == nullptr)
   {
-    uInt32 ID = instance().frameBuffer().allocateSurface(320*2, 256*2);
-    mySurface = instance().frameBuffer().surface(ID);
+    mySurface = instance().frameBuffer().allocateSurface(320*2, 256*2);
     mySurface->attributes().smoothing = true;
     mySurface->applyAttributes();
 

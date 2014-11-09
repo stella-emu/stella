@@ -342,10 +342,10 @@ void FrameBufferSDL2::setWindowIcon()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface* FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
+unique_ptr<FBSurface> FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
                                           const uInt32* data) const
 {
-  return new FBSurfaceSDL2((FrameBufferSDL2&)*this, w, h, data);
+  return make_ptr<FBSurfaceSDL2>((FrameBufferSDL2&)*this, w, h, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

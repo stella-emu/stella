@@ -197,25 +197,16 @@ class FrameBuffer
     void enableMessages(bool enable);
 
     /**
-      Allocate a new surface with a unique ID.  The FrameBuffer class takes
-      all responsibility for freeing this surface (ie, other classes must not
-      delete it directly).
+      Allocate a new surface.  The FrameBuffer class takes all responsibility
+      for freeing this surface (ie, other classes must not delete it directly).
 
       @param w     The requested width of the new surface.
       @param h     The requested height of the new surface.
       @param data  If non-null, use the given data values as a static surface
 
-      @return  A unique ID used to identify this surface
+      @return  A pointer to a valid surface object, or nullptr.
     */
-    uInt32 allocateSurface(int w, int h, const uInt32* data = 0);
-
-    /**
-      Retrieve the surface associated with the given ID.
-
-      @param id  The ID for the surface to retrieve.
-      @return    A pointer to a valid surface object, or nullptr.
-    */
-    FBSurface* surface(uInt32 id) const;
+    FBSurface* allocateSurface(int w, int h, const uInt32* data = 0);
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -401,7 +392,8 @@ class FrameBuffer
       @param h     The requested height of the new surface.
       @param data  If non-null, use the given data values as a static surface
     */
-    virtual FBSurface* createSurface(uInt32 w, uInt32 h, const uInt32* data) const = 0;
+    virtual unique_ptr<FBSurface> createSurface(uInt32 w, uInt32 h,
+                                      const uInt32* data) const = 0;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.
@@ -569,7 +561,7 @@ class FrameBuffer
     VariantList myTIAZoomLevels;
 
     // Holds a reference to all the surfaces that have been created
-    map<uInt32,FBSurface*> mySurfaceList;
+    vector<unique_ptr<FBSurface>> mySurfaceList;
 
     // Holds UI palette data (standard and classic colours)
     static uInt32 ourGUIColors[2][kNumColors-256];

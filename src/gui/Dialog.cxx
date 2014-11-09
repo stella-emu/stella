@@ -40,14 +40,14 @@
 Dialog::Dialog(OSystem& instance, DialogContainer& parent,
                int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
-    _mouseWidget(0),
-    _focusedWidget(0),
-    _dragWidget(0),
-    _okWidget(0),
-    _cancelWidget(0),
+    _mouseWidget(nullptr),
+    _focusedWidget(nullptr),
+    _dragWidget(nullptr),
+    _okWidget(nullptr),
+    _cancelWidget(nullptr),
     _visible(false),
     _processCancel(false),
-    _surface(0),
+    _surface(nullptr),
     _tabID(0)
 {
 }
@@ -71,10 +71,7 @@ void Dialog::open(bool refresh)
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
   if(_surface == nullptr)
-  {
-    uInt32 surfaceID = instance().frameBuffer().allocateSurface(_w, _h);
-    _surface = instance().frameBuffer().surface(surfaceID);
-  }
+    _surface = instance().frameBuffer().allocateSurface(_w, _h);
   parent().addDialog(this);
 
   center();

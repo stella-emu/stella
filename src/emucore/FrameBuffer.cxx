@@ -58,12 +58,6 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
 {
-  // Free all allocated surfaces
-  while(!mySurfaceList.empty())
-  {
-    delete (*mySurfaceList.begin()).second;
-    mySurfaceList.erase(mySurfaceList.begin());
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,19 +228,14 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
   myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
-  if(myStatsMsg.surface == nullptr)
-  {
-    uInt32 surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
-    myStatsMsg.surface = surface(surfaceID);
-  }
-  if(myMsg.surface == nullptr)
-  {
-    uInt32 surfaceID = allocateSurface((uInt32)kFBMinW, font().getFontHeight()+10);
-    myMsg.surface = surface(surfaceID);
-  }
+  if(!myStatsMsg.surface)
+    myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
+
+  if(!myMsg.surface)
+    myMsg.surface = allocateSurface((uInt32)kFBMinW, font().getFontHeight()+10);
 
   // Print initial usage message, but only print it later if the status has changed
-  if (myInitializedCount == 1)
+  if(myInitializedCount == 1)
   {
     myOSystem.logMessage(about(), 1);
   }
@@ -567,23 +556,13 @@ void FrameBuffer::refresh()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::allocateSurface(int w, int h, const uInt32* data)
+FBSurface* FrameBuffer::allocateSurface(int w, int h, const uInt32* data)
 {
-  // Create a new surface
-  FBSurface* surface = createSurface(w, h, data);
+  // Add new surface to the list
+  mySurfaceList.push_back(createSurface(w, h, data));
 
-  // Add it to the list
-  mySurfaceList.insert(make_pair((uInt32)mySurfaceList.size(), surface));
-
-  // Return a reference to it
-  return (uInt32)mySurfaceList.size() - 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface* FrameBuffer::surface(uInt32 id) const
-{
-  const auto& iter = mySurfaceList.find(id);
-  return iter != mySurfaceList.end() ? iter->second : nullptr;
+  // And return a pointer to it (pointer should be treated read-only)
+  return mySurfaceList.at(mySurfaceList.size() - 1).get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -596,9 +575,9 @@ void FrameBuffer::resetSurfaces()
   // aware of these restrictions, and act accordingly
 
   for(auto& s: mySurfaceList)
-    s.second->free();
+    s->free();
   for(auto& s: mySurfaceList)
-    s.second->reload();
+    s->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
