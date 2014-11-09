@@ -28,7 +28,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem& osystem)
   : myOSystem(osystem),
-    myBaseDialog(NULL),
+    myBaseDialog(nullptr),
     myTime(0)
 {
   reset();
@@ -37,8 +37,7 @@ DialogContainer::DialogContainer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::~DialogContainer()
 {
-  if(myBaseDialog)
-    delete myBaseDialog;
+  delete myBaseDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

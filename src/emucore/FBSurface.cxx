@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurface::FBSurface()
-  : myPixels(NULL),
+  : myPixels(nullptr),
     myPitch(0)
 {
   // NOTE: myPixels and myPitch MUST be set in child classes that inherit
@@ -284,4 +284,4 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32* FBSurface::myPalette = 0;
+const uInt32* FBSurface::myPalette = nullptr;

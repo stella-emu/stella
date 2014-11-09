@@ -46,8 +46,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _base(base),
     _selectedItem(0),
     _currentKeyDown(KBDK_UNKNOWN),
-    _opsWidget(NULL),
-    _scrollBar(NULL)
+    _opsWidget(nullptr),
+    _scrollBar(nullptr)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_RAWDATA;

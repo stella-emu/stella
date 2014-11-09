@@ -65,10 +65,10 @@ M6502::M6502(const Settings& settings)
     myDataAddressForPoke(0)
 {
 #ifdef DEBUGGER_SUPPORT
-  myDebugger    = NULL;
-  myBreakPoints = NULL;
-  myReadTraps   = NULL;
-  myWriteTraps  = NULL;
+  myDebugger    = nullptr;
+  myBreakPoints = nullptr;
+  myReadTraps   = nullptr;
+  myWriteTraps  = nullptr;
 
   myJustHitTrapFlag = false;
 #endif
@@ -150,7 +150,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
 
 #ifdef DEBUGGER_SUPPORT
-  if(myReadTraps != NULL && myReadTraps->isSet(address))
+  if(myReadTraps != nullptr && myReadTraps->isSet(address))
   {
     myJustHitTrapFlag = true;
     myHitTrapInfo.message = "RTrap: ";
@@ -179,7 +179,7 @@ inline void M6502::poke(uInt16 address, uInt8 value)
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
 
 #ifdef DEBUGGER_SUPPORT
-  if(myWriteTraps != NULL && myWriteTraps->isSet(address))
+  if(myWriteTraps != nullptr && myWriteTraps->isSet(address))
   {
     myJustHitTrapFlag = true;
     myHitTrapInfo.message = "WTrap: ";
@@ -213,7 +213,7 @@ bool M6502::execute(uInt32 number)
         }
       }
 
-      if(myBreakPoints != NULL)
+      if(myBreakPoints != nullptr)
       {
         if(myBreakPoints->isSet(PC))
         {

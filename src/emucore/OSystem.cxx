@@ -194,7 +194,7 @@ void OSystem::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createDebugger(Console& console)
 {
-  delete myDebugger;  myDebugger = NULL;
+  delete myDebugger;  myDebugger = nullptr;
   myDebugger = new Debugger(*this, console);
   myDebugger->initialize();
 }
@@ -437,9 +437,9 @@ void OSystem::deleteConsole()
         << endl;
     logMessage(buf.str(), 1);
 
-    delete myConsole;  myConsole = NULL;
+    delete myConsole;  myConsole = nullptr;
   #ifdef DEBUGGER_SUPPORT
-    delete myDebugger; myDebugger = NULL;
+    delete myDebugger; myDebugger = nullptr;
   #endif
   }
 }
@@ -520,7 +520,7 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
   s = mySettings->getString(cl_name);            \
   if(s != "") props.set(prop_name, s);
 
-  Console* console = (Console*) NULL;
+  Console* console = nullptr;
 
   // Open the cartridge image and read it in
   uInt8* image = 0;

@@ -35,20 +35,20 @@ EventHandler::StellaJoystick::StellaJoystick()
     numAxes(0),
     numButtons(0),
     numHats(0),
-    axisTable(NULL),
-    btnTable(NULL),
-    hatTable(NULL),
-    axisLastValue(NULL)
+    axisTable(nullptr),
+    btnTable(nullptr),
+    hatTable(nullptr),
+    axisLastValue(nullptr)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::StellaJoystick::~StellaJoystick()
 {
-  delete[] axisTable;      axisTable = NULL;
-  delete[] btnTable;       btnTable = NULL;
-  delete[] hatTable;       hatTable = NULL;
-  delete[] axisLastValue;  axisLastValue = NULL;
+  delete[] axisTable;      axisTable = nullptr;
+  delete[] btnTable;       btnTable = nullptr;
+  delete[] hatTable;       hatTable = nullptr;
+  delete[] axisLastValue;  axisLastValue = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -358,7 +358,7 @@ int EventHandler::JoystickHandler::remove(int index)
 
   // Sticks that are removed must have initially been added
   // So we use the 'active' joystick list to access them
-  if(index >= 0 && index < (int)mySticks.size() && mySticks[index] != NULL)
+  if(index >= 0 && index < (int)mySticks.size() && mySticks[index] != nullptr)
   {
     StellaJoystick* stick = mySticks[index];
 
@@ -372,8 +372,8 @@ int EventHandler::JoystickHandler::remove(int index)
 
       // Remove joystick, but remember mapping
       it->second.mapping = stick->getMap();
-      delete it->second.joy;  it->second.joy = NULL;
-      mySticks[index] = NULL;
+      delete it->second.joy;  it->second.joy = nullptr;
+      mySticks[index] = nullptr;
 
       return index;
     }

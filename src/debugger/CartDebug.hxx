@@ -302,7 +302,6 @@ class CartDebug : public DebuggerSystem
            << ", offset=$" << HEX4 << b.offset << ", size=" << dec << b.size
            << endl
            << "addrlist: ";
-        AddressList::const_iterator i;
         for(const auto& i: addressList)
           os << HEX4 << i << " ";
         return os;

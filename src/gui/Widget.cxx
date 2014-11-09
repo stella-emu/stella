@@ -59,7 +59,7 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
 Widget::~Widget()
 {
   delete _next;
-  _next = NULL;
+  _next = nullptr;
 
   _focusList.clear();
 }

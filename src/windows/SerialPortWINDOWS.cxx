@@ -24,7 +24,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortWINDOWS::SerialPortWINDOWS()
   : SerialPort(),
-    myHandle(NULL)
+    myHandle(0)
 {
 }
 
@@ -73,7 +73,7 @@ void SerialPortWINDOWS::closePort()
   if(myHandle)
   {
     CloseHandle(myHandle);
-    myHandle = NULL;
+    myHandle = 0;
   }
 }
 

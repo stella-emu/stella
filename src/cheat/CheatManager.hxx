@@ -52,7 +52,7 @@ class CheatManager
       @param enable  Whether to enable this cheat right away
       @param idx     Index at which to insert the cheat
 
-      @return  The cheat (if was created), else NULL.
+      @return  The cheat (if was created), else nullptr.
     */
     Cheat* add(const string& name, const string& code,
                bool enable = true, int idx = -1);
@@ -134,7 +134,7 @@ class CheatManager
       @param name  Name of the cheat (not absolutely required)
       @param code  The actual cheatcode (in hex)
 
-      @return  The cheat (if was created), else NULL.
+      @return  The cheat (if was created), else nullptr.
     */
     Cheat* createCheat(const string& name, const string& code) const;
 

@@ -28,7 +28,7 @@
 RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    mySurface(NULL),
+    mySurface(nullptr),
     mySurfaceIsValid(false),
     myHaveProperties(false),
     myAvail(w > 400 ? GUI::Size(640, 512) : GUI::Size(320, 256))
@@ -90,7 +90,7 @@ void RomInfoWidget::parseProperties()
   // Check if a surface has ever been created; if so, we use it
   // The surface will always be the maximum size, but sometimes we'll
   // only draw certain parts of it
-  if(mySurface == NULL)
+  if(mySurface == nullptr)
   {
     uInt32 ID = instance().frameBuffer().allocateSurface(320*2, 256*2);
     mySurface = instance().frameBuffer().surface(ID);

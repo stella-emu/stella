@@ -29,8 +29,8 @@
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                const string& message)
   : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
-    myMessage(NULL),
-    mySlider(NULL),
+    myMessage(nullptr),
+    mySlider(nullptr),
     myStart(0),
     myFinish(0),
     myStep(0),

@@ -36,9 +36,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, 0, 0, 0, 0),
-    myBrowser(NULL),
-    myConfirmMsg(NULL),
+  : Dialog(osystem, parent),
+    myBrowser(nullptr),
+    myConfirmMsg(nullptr),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {

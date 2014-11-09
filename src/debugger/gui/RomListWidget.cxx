@@ -31,7 +31,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont,
                              int x, int y, int w, int h)
   : EditableWidget(boss, nfont, x, y, 16, 16),
-    myMenu(NULL),
+    myMenu(nullptr),
     _rows(0),
     _cols(0),
     _currentPos(0),
@@ -77,7 +77,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list
-  CheckboxWidget* t = NULL;
+  CheckboxWidget* t = nullptr;
   for(int i = 0; i < _rows; ++i)
   {
     t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "", kCheckActionCmd);

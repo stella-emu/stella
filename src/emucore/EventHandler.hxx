@@ -437,7 +437,7 @@ class EventHandler
         void saveMapping();
 
         const StellaJoystick* joy(int id) const {
-          return id < (int)mySticks.size() ? mySticks[id] : NULL;
+          return id < (int)mySticks.size() ? mySticks[id] : nullptr;
         }
 
       private:
@@ -445,7 +445,7 @@ class EventHandler
 
         struct StickInfo
         {
-          StickInfo(const string& map = EmptyString, StellaJoystick* stick = NULL)
+          StickInfo(const string& map = EmptyString, StellaJoystick* stick = nullptr)
             : mapping(map), joy(stick) {}
 
           string mapping;

@@ -129,7 +129,7 @@ class OSystem
       @return The console object
     */
     Console& console() const { return *myConsole; }
-    bool hasConsole() const { return myConsole != NULL; }
+    bool hasConsole() const { return myConsole != nullptr; }
 
     /**
       Get the serial port of the system.
@@ -564,7 +564,7 @@ class OSystem
       @param type     The bankswitch type of the ROM
       @param id       The additional id (if any) used by the ROM
 
-      @return  The actual Console object, otherwise NULL
+      @return  The actual Console object, otherwise nullptr
                (calling method is responsible for deleting it)
     */
     Console* openConsole(const FilesystemNode& romfile, string& md5,

@@ -25,7 +25,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer(const string& filename, bool readonly)
-  : myStream(NULL),
+  : myStream(nullptr),
     myUseFilestream(true)
 {
   if(readonly)
@@ -70,7 +70,7 @@ Serializer::Serializer(const string& filename, bool readonly)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer()
-  : myStream(NULL),
+  : myStream(nullptr),
     myUseFilestream(false)
 {
   myStream = new stringstream(ios::in | ios::out | ios::binary);
@@ -88,20 +88,20 @@ Serializer::Serializer()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::~Serializer()
 {
-  if(myStream != NULL)
+  if(myStream != nullptr)
   {
     if(myUseFilestream)
       ((fstream*)myStream)->close();
 
     delete myStream;
-    myStream = NULL;
+    myStream = nullptr;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Serializer::valid() const
 {
-  return myStream != NULL;
+  return myStream != nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

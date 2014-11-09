@@ -213,7 +213,7 @@ class FrameBuffer
       Retrieve the surface associated with the given ID.
 
       @param id  The ID for the surface to retrieve.
-      @return    A pointer to a valid surface object, or NULL.
+      @return    A pointer to a valid surface object, or nullptr.
     */
     FBSurface* surface(uInt32 id) const;
 
@@ -494,9 +494,8 @@ class FrameBuffer
 
         friend ostream& operator<<(ostream& os, const VideoModeList& l)
         {
-          for(vector<VideoMode>::const_iterator i = l.myModeList.begin();
-              i != l.myModeList.end(); ++i)
-            os << "-----\n" << *i << endl << "-----\n";
+          for(const auto& vm: l.myModeList)
+            os << "-----\n" << vm << endl << "-----\n";
           return os;
         }
 

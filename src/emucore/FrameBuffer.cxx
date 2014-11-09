@@ -933,7 +933,7 @@ FrameBuffer::VideoModeList::~VideoModeList()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::VideoModeList::add(const VideoMode& mode)
 {
-  myModeList.push_back(mode);
+  myModeList.emplace_back(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

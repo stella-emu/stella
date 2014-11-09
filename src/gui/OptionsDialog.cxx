@@ -48,18 +48,18 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, bool global)
-  : Dialog(osystem, parent, 0, 0, 0, 0),
-    myVideoDialog(NULL),
-    myAudioDialog(NULL),
-    myInputDialog(NULL),
-    myUIDialog(NULL),
-    mySnapshotDialog(NULL),
-    myConfigPathDialog(NULL),
-    myGameInfoDialog(NULL),
-    myCheatCodeDialog(NULL),
-    myLoggerDialog(NULL),
-    myHelpDialog(NULL),
-    myAboutDialog(NULL),
+  : Dialog(osystem, parent),
+    myVideoDialog(nullptr),
+    myAudioDialog(nullptr),
+    myInputDialog(nullptr),
+    myUIDialog(nullptr),
+    mySnapshotDialog(nullptr),
+    myConfigPathDialog(nullptr),
+    myGameInfoDialog(nullptr),
+    myCheatCodeDialog(nullptr),
+    myLoggerDialog(nullptr),
+    myHelpDialog(nullptr),
+    myAboutDialog(nullptr),
     myIsGlobal(global)
 {
   const GUI::Font& font = instance().frameBuffer().font();
@@ -72,7 +72,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   int xoffset = 10, yoffset = 10;
   WidgetArray wid;
-  ButtonWidget* b = NULL;
+  ButtonWidget* b = nullptr;
 
   b = addODButton("Video Settings", kVidCmd);
   wid.push_back(b);

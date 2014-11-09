@@ -32,7 +32,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
-    myMenu(NULL)
+    myMenu(nullptr)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG |
            WIDGET_RETAIN_FOCUS | WIDGET_TRACK_MOUSE;

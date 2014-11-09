@@ -57,7 +57,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem& osystem)
   : myOSystem(osystem),
-    myOverlay(NULL),
+    myOverlay(nullptr),
     myState(S_NONE),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
@@ -248,7 +248,7 @@ void EventHandler::poll(uInt64 time)
 void EventHandler::handleTextEvent(char text)
 {
   // Text events are only used in GUI mode
-  if(myOverlay != NULL)
+  if(myOverlay != nullptr)
     myOverlay->handleTextEvent(text);
 }
 
@@ -546,7 +546,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
   // Otherwise, let the event handler deal with it
   if(myState == S_EMULATE)
     handleEvent(myKeyTable[key][kEmulationMode], state);
-  else if(myOverlay != NULL)
+  else if(myOverlay != nullptr)
     myOverlay->handleKeyEvent(key, mod, state);
 }
 
@@ -612,7 +612,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
       // Determine which mode we're in, then send the event to the appropriate place
       if(myState == S_EMULATE)
         handleEvent(joy->btnTable[button][kEmulationMode], state);
-      else if(myOverlay != NULL)
+      else if(myOverlay != nullptr)
         myOverlay->handleJoyEvent(stick, button, state);
       break;  // Regular button
 
@@ -715,7 +715,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
           }
         }
       }
-      else if(myOverlay != NULL)
+      else if(myOverlay != nullptr)
       {
         // First, clamp the values to simulate digital input
         // (the only thing that the underlying code understands)
@@ -782,7 +782,7 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
     handleEvent(joy->hatTable[hat][EVENT_HATLEFT][kEmulationMode],
                 value & EVENT_HATLEFT_M);
   }
-  else if(myOverlay != NULL)
+  else if(myOverlay != nullptr)
   {
     if(value == EVENT_HATCENTER_M)
       myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
@@ -1030,7 +1030,7 @@ bool EventHandler::eventStateChange(Event::Type type)
 void EventHandler::setActionMappings(EventMode mode)
 {
   int listsize = 0;
-  ActionList* list = NULL;
+  ActionList* list = nullptr;
 
   switch(mode)
   {
@@ -1053,7 +1053,7 @@ void EventHandler::setActionMappings(EventMode mode)
   for(int i = 0; i < listsize; ++i)
   {
     Event::Type event = list[i].event;
-    free(list[i].key);  list[i].key = NULL;
+    free(list[i].key);  list[i].key = nullptr;
     list[i].key = strdup("None");
     string key = "";
     for(int j = 0; j < KBDK_LAST; ++j)   // key mapping
@@ -1161,7 +1161,7 @@ void EventHandler::setActionMappings(EventMode mode)
 
     if(key != "")
     {
-      free(list[i].key);  list[i].key = NULL;
+      free(list[i].key);  list[i].key = nullptr;
       list[i].key = strdup(key.c_str());
     }
   }
@@ -1913,7 +1913,7 @@ void EventHandler::setEventState(State state)
   switch(myState)
   {
     case S_EMULATE:
-      myOverlay = NULL;
+      myOverlay = nullptr;
       myOSystem.sound().mute(false);
       enableTextEvents(false);
       if(myOSystem.console().leftController().type() == Controller::CompuMate)
@@ -1921,7 +1921,7 @@ void EventHandler::setEventState(State state)
       break;
 
     case S_PAUSE:
-      myOverlay = NULL;
+      myOverlay = nullptr;
       myOSystem.sound().mute(true);
       enableTextEvents(false);
       break;
@@ -1949,7 +1949,7 @@ void EventHandler::setEventState(State state)
 #endif
 
     default:
-      myOverlay = NULL;
+      myOverlay = nullptr;
       break;
   }
 

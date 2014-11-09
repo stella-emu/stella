@@ -208,7 +208,7 @@ class Cartridge : public Device
       of each cart type can be very different from each other.
     */
     virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h) { return NULL; }
+        const GUI::Font& nfont, int x, int y, int w, int h) { return nullptr; }
 
     // Info about the various bankswitch schemes, useful for displaying
     // in GUI dropdown boxes, etc

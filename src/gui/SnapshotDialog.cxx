@@ -33,8 +33,8 @@ SnapshotDialog::SnapshotDialog(
       OSystem& osystem, DialogContainer& parent,
       const GUI::Font& font, GuiObject* boss,
       int max_w, int max_h)
-  : Dialog(osystem, parent, 0, 0, 0, 0),
-    myBrowser(NULL)
+  : Dialog(osystem, parent),
+    myBrowser(nullptr)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -128,13 +128,12 @@ SnapshotDialog::SnapshotDialog(
   addToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, max_w, max_h);
+  myBrowser = make_ptr<BrowserDialog>(this, font, max_w, max_h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SnapshotDialog::~SnapshotDialog()
 {
-  delete myBrowser;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

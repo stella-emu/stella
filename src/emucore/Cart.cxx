@@ -302,7 +302,7 @@ Cartridge::Cartridge(const Settings& settings)
   : mySettings(settings),
     myStartBank(0),
     myBankChanged(true),
-    myCodeAccessBase(NULL),
+    myCodeAccessBase(nullptr),
     myBankLocked(false)
 {
 }
@@ -361,7 +361,7 @@ void Cartridge::createCodeAccessBase(uInt32 size)
   myCodeAccessBase = new uInt8[size];
   memset(myCodeAccessBase, CartDebug::ROW, size);
 #else
-  myCodeAccessBase = NULL;
+  myCodeAccessBase = nullptr;
 #endif
 }
 

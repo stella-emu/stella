@@ -59,7 +59,7 @@ Dialog::~Dialog()
   _myTabList.clear();
 
   delete _firstWidget;
-  _firstWidget = NULL;
+  _firstWidget = nullptr;
 
   _buttonGroup.clear();
 }
@@ -70,7 +70,7 @@ void Dialog::open(bool refresh)
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
-  if(_surface == NULL)
+  if(_surface == nullptr)
   {
     uInt32 surfaceID = instance().frameBuffer().allocateSurface(_w, _h);
     _surface = instance().frameBuffer().surface(surfaceID);

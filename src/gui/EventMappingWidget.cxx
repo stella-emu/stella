@@ -98,7 +98,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myComboDialog = new ComboDialog(boss, font, combolist);
   }
   else
-    myComboButton = NULL;
+    myComboButton = nullptr;
 
   // Show message for currently selected event
   xpos = 10;  ypos = 5 + myActionsList->getHeight() + 5;

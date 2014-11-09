@@ -46,8 +46,8 @@ typedef struct
   int           size;                   /* font size in glyphs */
   const uInt16* bits;                   /* 16-bit right-padded bitmap data */
   const uInt32* offset;                 /* offsets into bitmap data*/
-  const uInt8*  width;                  /* character widths or NULL if fixed */
-  const BBX*    bbx;                    /* character bounding box or NULL if fixed */
+  const uInt8*  width;                  /* character widths or nullptr if fixed */
+  const BBX*    bbx;                    /* character bounding box or nullptr if fixed */
   int           defaultchar;            /* default char (not glyph index) */
   long          bits_size;              /* # words of bitmap_t bits */
 } FontDesc;

@@ -56,7 +56,7 @@ class SnapshotDialog : public Dialog
       kSnapLoadDirChosenCmd = 'snlc'  // snap chosen (load files)
     };
 
-    BrowserDialog* myBrowser;
+    unique_ptr<BrowserDialog> myBrowser;
 
     // Config paths
     EditTextWidget* mySnapSavePath;

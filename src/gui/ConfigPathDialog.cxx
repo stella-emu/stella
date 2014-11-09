@@ -33,10 +33,10 @@ ConfigPathDialog::ConfigPathDialog(
       OSystem& osystem, DialogContainer& parent,
       const GUI::Font& font, GuiObject* boss,
       int max_w, int max_h)
-  : Dialog(osystem, parent, 0, 0, 0, 0),
+  : Dialog(osystem, parent),
     CommandSender(boss),
-    myBrowser(NULL),
-    myIsGlobal(boss != 0)
+    myBrowser(nullptr),
+    myIsGlobal(boss != nullptr)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),

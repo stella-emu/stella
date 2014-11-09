@@ -1256,7 +1256,6 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
       completions.push_back(ourZPMnemonic[addr]);
 
   // Now scan user-defined labels
-  LabelToAddr::const_iterator iter;
   for(const auto& iter: myUserAddresses)
   {
     const char* l = iter.first.c_str();

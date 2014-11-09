@@ -48,7 +48,7 @@ class Dialog : public GuiObject
 
   public:
     Dialog(OSystem& instance, DialogContainer& parent,
-           int x, int y, int w, int h);
+           int x = 0, int y = 0, int w = 0, int h = 0);
 
     virtual ~Dialog();
 

@@ -38,8 +38,8 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    myMenu(NULL),
-    myZoom(NULL),
+    myMenu(nullptr),
+    myZoom(nullptr),
     myClickX(0),
     myClickY(0)
 {
