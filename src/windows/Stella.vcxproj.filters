@@ -297,9 +297,6 @@
     <ClCompile Include="..\debugger\DiStella.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\Expression.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\PackedBitArray.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -947,9 +944,6 @@
     <ClInclude Include="..\emucore\MD5.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\MediaFactory.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
     <ClInclude Include="..\emucore\MT24LC256.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -1557,6 +1551,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Vec.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\MediaFactory.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

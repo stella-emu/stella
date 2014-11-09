@@ -377,7 +377,6 @@
     <ClCompile Include="..\debugger\gui\DebuggerDialog.cxx" />
     <ClCompile Include="..\debugger\DebuggerParser.cxx" />
     <ClCompile Include="..\debugger\DiStella.cxx" />
-    <ClCompile Include="..\debugger\Expression.cxx" />
     <ClCompile Include="..\debugger\PackedBitArray.cxx" />
     <ClCompile Include="..\debugger\gui\PromptWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RamWidget.cxx" />
@@ -471,6 +470,7 @@
     <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
+    <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
@@ -611,7 +611,6 @@
     <ClInclude Include="..\emucore\M6502.hxx" />
     <ClInclude Include="..\emucore\M6532.hxx" />
     <ClInclude Include="..\emucore\MD5.hxx" />
-    <ClInclude Include="..\emucore\MediaFactory.hxx" />
     <ClInclude Include="..\emucore\MT24LC256.hxx" />
     <ClInclude Include="..\emucore\NullDev.hxx" />
     <ClInclude Include="..\emucore\OSystem.hxx" />
