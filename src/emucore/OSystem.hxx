@@ -200,11 +200,6 @@ class OSystem
 
 #ifdef DEBUGGER_SUPPORT
     /**
-      Create all child objects which belong to this OSystem
-    */
-    void createDebugger(Console& console);
-
-    /**
       Get the ROM debugger of the system.
 
       @return The debugger object
@@ -319,12 +314,6 @@ class OSystem
     */
     string createConsole(const FilesystemNode& rom, const string& md5 = "",
                          bool newrom = true);
-
-    /**
-      Deletes the currently defined console, if it exists.
-      Also prints some statistics (fps, total frames, etc).
-    */
-    void deleteConsole();
 
     /**
       Reloads the current console (essentially deletes and re-creates it).
@@ -475,7 +464,7 @@ class OSystem
     unique_ptr<PropertiesSet> myPropSet;
 
     // Pointer to the (currently defined) Console object
-    Console* myConsole;
+    unique_ptr<Console> myConsole;
 
     // Pointer to the serial port object
     unique_ptr<SerialPort> mySerialPort;
@@ -491,7 +480,7 @@ class OSystem
     bool myLauncherUsed;
 
     // Pointer to the Debugger object
-    Debugger* myDebugger;
+    unique_ptr<Debugger> myDebugger;
 
     // Pointer to the CheatManager object
     unique_ptr<CheatManager> myCheatManager;
@@ -564,11 +553,10 @@ class OSystem
       @param type     The bankswitch type of the ROM
       @param id       The additional id (if any) used by the ROM
 
-      @return  The actual Console object, otherwise nullptr
-               (calling method is responsible for deleting it)
+      @return  The actual Console object, otherwise nullptr.
     */
-    Console* openConsole(const FilesystemNode& romfile, string& md5,
-                         string& type, string& id);
+    unique_ptr<Console> openConsole(const FilesystemNode& romfile, string& md5,
+                                    string& type, string& id);
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -591,7 +579,7 @@ class OSystem
       @param console  The console to use
       @return  Some information about this console
     */
-    string getROMInfo(const Console* console);
+    string getROMInfo(const Console& console);
 
     /**
       Initializes the timing so that the mainloop is reset to its

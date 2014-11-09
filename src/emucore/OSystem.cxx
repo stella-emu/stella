@@ -61,12 +61,7 @@
 OSystem::OSystem()
   : myConsole(nullptr),
     myLauncherUsed(false),
-    myDebugger(nullptr),
-    myQuitLoop(false),
-    myRomFile(""),
-    myRomMD5(""),
-    myFeatures(""),
-    myBuildInfo("")
+    myQuitLoop(false)
 {
   // Calculate startup time
   myMillisAtStart = (uInt32)(time(NULL) * 1000);
@@ -102,11 +97,6 @@ OSystem::OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
-  // Remove any game console that is currently attached
-  deleteConsole();
-#ifdef DEBUGGER_SUPPORT
-  delete myDebugger;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -184,21 +174,10 @@ void OSystem::loadConfig()
 void OSystem::saveConfig()
 {
   // Ask all subsystems to save their settings
-  if(myFrameBuffer)
-    myFrameBuffer->tiaSurface().ntsc().saveConfig(*mySettings);
+  myFrameBuffer->tiaSurface().ntsc().saveConfig(*mySettings);
 
   mySettings->saveConfig();
 }
-
-#ifdef DEBUGGER_SUPPORT
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::createDebugger(Console& console)
-{
-  delete myDebugger;  myDebugger = nullptr;
-  myDebugger = new Debugger(*this, console);
-  myDebugger->initialize();
-}
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setConfigPaths()
@@ -309,9 +288,6 @@ void OSystem::createSound()
 string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
                               bool newrom)
 {
-  // Do a little error checking; it shouldn't be necessary
-  if(myConsole) deleteConsole();
-
   bool showmessage = false;
 
   // If same ROM has been given, we reload the current one (assuming one exists)
@@ -335,11 +311,15 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   string type, id;
   try
   {
+  #ifdef CHEATCODE_SUPPORT
+    // If a previous console existed, save cheats before creating a new one
+    if(myConsole)
+      myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
+  #endif
     myConsole = openConsole(myRomFile, myRomMD5, type, id);
   }
   catch(const char* err_msg)
   {
-    myConsole = 0;
     buf << "ERROR: Couldn't create console (" << err_msg << ")";
     logMessage(buf.str(), 0);
     return buf.str();
@@ -348,7 +328,9 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   if(myConsole)
   {
   #ifdef DEBUGGER_SUPPORT
-    myConsole->addDebugger();
+    myDebugger = make_ptr<Debugger>(*this, *myConsole);
+    myDebugger->initialize();
+    myConsole->attachDebugger(*myDebugger);
   #endif
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
@@ -372,7 +354,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl << endl
-        << getROMInfo(myConsole) << endl;
+        << getROMInfo(*myConsole) << endl;
     logMessage(buf.str(), 1);
 
     // Update the timing info for a new console run
@@ -419,41 +401,17 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::deleteConsole()
-{
-  if(myConsole)
-  {
-    mySound->close();
-  #ifdef CHEATCODE_SUPPORT
-    myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
-  #endif
-    ostringstream buf;
-    double executionTime   = (double) myTimingInfo.totalTime / 1000000.0;
-    double framesPerSecond = (double) myTimingInfo.totalFrames / executionTime;
-    buf << "Game console stats:" << endl
-        << "  Total frames drawn: " << myTimingInfo.totalFrames << endl
-        << "  Total time (sec):   " << executionTime << endl
-        << "  Frames per second:  " << framesPerSecond << endl
-        << endl;
-    logMessage(buf.str(), 1);
-
-    delete myConsole;  myConsole = nullptr;
-  #ifdef DEBUGGER_SUPPORT
-    delete myDebugger; myDebugger = nullptr;
-  #endif
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::reloadConsole()
 {
-  deleteConsole();
   return createConsole(myRomFile, myRomMD5, false) == EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createLauncher(const string& startdir)
 {
+  if(mySound)
+    mySound->close();
+
   mySettings->setValue("tmpromdir", startdir);
   bool status = false;
 
@@ -479,7 +437,7 @@ bool OSystem::createLauncher(const string& startdir)
 string OSystem::getROMInfo(const FilesystemNode& romfile)
 {
   string md5, type, id, result = "";
-  Console* console = 0;
+  unique_ptr<Console> console;
   try
   {
     console = openConsole(romfile, md5, type, id);
@@ -491,8 +449,7 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
     return buf.str();
   }
 
-  result = getROMInfo(console);
-  delete console;
+  result = getROMInfo(*console);
   return result;
 }
 
@@ -513,14 +470,14 @@ void OSystem::logMessage(const string& message, uInt8 level)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
-                              string& type, string& id)
+unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
+                                         string& md5, string& type, string& id)
 {
 #define CMDLINE_PROPS_UPDATE(cl_name, prop_name) \
   s = mySettings->getString(cl_name);            \
   if(s != "") props.set(prop_name, s);
 
-  Console* console = nullptr;
+  unique_ptr<Console> console;
 
   // Open the cartridge image and read it in
   uInt8* image = 0;
@@ -573,7 +530,7 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = new Console(*this, cart, props);
+      console = make_ptr<Console>(*this, cart, props);
   }
 
   // Free the image since we don't need it any longer
@@ -591,11 +548,11 @@ uInt8* OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
   // but also adds a properties entry if the one for the ROM doesn't
   // contain a valid name
 
-  uInt8* image = 0;
+  uInt8* image = nullptr;
   if((size = rom.read(image)) == 0)
   {
     delete[] image;
-    return (uInt8*) 0;
+    return nullptr;
   }
 
   // If we get to this point, we know we have a valid file to open
@@ -614,9 +571,9 @@ uInt8* OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::getROMInfo(const Console* console)
+string OSystem::getROMInfo(const Console& console)
 {
-  const ConsoleInfo& info = console->about();
+  const ConsoleInfo& info = console.about();
   ostringstream buf;
 
   buf << "  Cart Name:       " << info.CartName << endl
@@ -719,6 +676,14 @@ void OSystem::mainLoop()
       myTimingInfo.totalFrames++;
     }
   }
+
+  // Cleanup time
+#ifdef CHEATCODE_SUPPORT
+  if(myConsole)
+    myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
+
+  myCheatManager->saveCheatDatabase();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

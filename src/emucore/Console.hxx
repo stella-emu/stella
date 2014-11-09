@@ -28,6 +28,7 @@ class M6502;
 class M6532;
 class Cartridge;
 class CompuMate;
+class Debugger;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -164,7 +165,7 @@ class Console : public Serializable
     /**
       Set up the console to use the debugger.
     */
-    void addDebugger();
+    void attachDebugger(Debugger& dbg);
 
     /**
       Informs the Console of a change in EventHandler state.

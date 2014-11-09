@@ -150,8 +150,6 @@ Debugger::~Debugger()
   delete myBreakPoints;
   delete myReadTraps;
   delete myWriteTraps;
-
-  myStaticDebugger = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

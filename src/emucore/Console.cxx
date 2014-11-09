@@ -896,11 +896,11 @@ void Console::toggleFixedColors() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::addDebugger()
+void Console::attachDebugger(Debugger& dbg)
 {
 #ifdef DEBUGGER_SUPPORT
-  myOSystem.createDebugger(*this);
-  mySystem->m6502().attach(myOSystem.debugger());
+//  myOSystem.createDebugger(*this);
+  mySystem->m6502().attach(dbg);
 #endif
 }
 

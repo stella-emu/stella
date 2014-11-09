@@ -904,10 +904,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
         // Go back to the launcher, or immediately quit
         if(myOSystem.settings().getBool("exitlauncher") ||
            myOSystem.launcherUsed())
-        {
-          myOSystem.deleteConsole();
           myOSystem.createLauncher();
-        }
         else
           handleEvent(Event::Quit, 1);
       }

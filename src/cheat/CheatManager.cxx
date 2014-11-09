@@ -42,8 +42,6 @@ CheatManager::CheatManager(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::~CheatManager()
 {
-  saveCheatDatabase();
-  myCheatMap.clear();
   clear();
 }
 
