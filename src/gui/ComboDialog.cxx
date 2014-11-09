@@ -35,7 +35,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
                          const VariantList& combolist)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, 0, 0),
+  : Dialog(boss->instance(), boss->parent()),
     myComboEvent(Event::NoType)
 {
 #define ADD_EVENT_POPUP(IDX, LABEL) \

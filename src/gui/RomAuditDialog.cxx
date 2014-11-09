@@ -37,7 +37,6 @@
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent),
-    myBrowser(nullptr),
     myConfirmMsg(nullptr),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
@@ -93,13 +92,12 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, myMaxWidth, myMaxHeight);
+  myBrowser = make_ptr<BrowserDialog>(this, font, myMaxWidth, myMaxHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::~RomAuditDialog()
 {
-  delete myBrowser;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -63,13 +63,12 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   myTextY   = (_h - _font.getFontHeight()) / 2;
   myArrowsY = (_h - 8) / 2;
 
-  myMenu = new ContextMenu(this, font, list, cmd);
+  myMenu = make_ptr<ContextMenu>(this, font, list, cmd);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::~PopUpWidget()
 {
-  delete myMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

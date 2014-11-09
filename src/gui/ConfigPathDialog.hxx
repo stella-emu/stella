@@ -63,7 +63,7 @@ class ConfigPathDialog : public Dialog, public CommandSender
       kNVRamDirChosenCmd    = 'LOnc'  // nvram (flash/eeprom) dir changed
     };
 
-    BrowserDialog* myBrowser;
+    unique_ptr<BrowserDialog> myBrowser;
 
     // Config paths
     EditTextWidget* myRomPath;

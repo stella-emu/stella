@@ -22,10 +22,6 @@
 
 #include "bspf.hxx"
 
-// define this to count Expression instances. Only useful for debugging
-// Stella itself.
-//#define EXPR_REF_COUNT
-
 /**
   This class provides an implementation of an expression node, which
   is a construct that is given two other expressions and evaluates and
@@ -38,14 +34,13 @@
 class Expression
 {
   public:
-    Expression(Expression* lhs, Expression* rhs);
-    virtual ~Expression();
+    Expression(Expression* lhs, Expression* rhs) : myLHS(lhs), myRHS(rhs) { }
+    virtual ~Expression() { }
 
     virtual uInt16 evaluate() const = 0;
 
   protected:
-    Expression* myLHS;
-    Expression* myRHS;
+    unique_ptr<Expression> myLHS, myRHS;
 };
 
 #endif

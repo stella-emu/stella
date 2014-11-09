@@ -54,7 +54,7 @@ class TiaZoomWidget : public Widget, public CommandSender
     void recalc();
 
   private:
-    ContextMenu* myMenu;
+    unique_ptr<ContextMenu> myMenu;
 
     int myZoomLevel;
     int myNumCols, myNumRows;

@@ -50,8 +50,6 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, x, y, w, h),
     myTab(nullptr),
     myRomTab(nullptr),
-    myLFont(nullptr),
-    myNFont(nullptr),
     myFatalError(nullptr)
 {
   createFont();  // Font is sized according to available space
@@ -68,8 +66,6 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::~DebuggerDialog()
 {
-  delete myLFont;
-  delete myNFont;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,53 +208,53 @@ void DebuggerDialog::createFont()
   if(_w >= kLargeFontMinW && _h >= kLargeFontMinH)
   {
     // Large font doesn't use fontstyle at all
-    myLFont = new GUI::Font(GUI::stellaMediumDesc);
-    myNFont = new GUI::Font(GUI::stellaMediumDesc);
+    myLFont = make_ptr<GUI::Font>(GUI::stellaMediumDesc);
+    myNFont = make_ptr<GUI::Font>(GUI::stellaMediumDesc);
   }
   else if(_w >= kMediumFontMinW && _h >= kMediumFontMinH)
   {
     if(fontstyle == 1)
     {
-      myLFont = new GUI::Font(GUI::consoleMediumBDesc);
-      myNFont = new GUI::Font(GUI::consoleMediumDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
     }
     else if(fontstyle == 2)
     {
-      myLFont = new GUI::Font(GUI::consoleMediumDesc);
-      myNFont = new GUI::Font(GUI::consoleMediumBDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
     }
     else if(fontstyle == 3)
     {
-      myLFont = new GUI::Font(GUI::consoleMediumBDesc);
-      myNFont = new GUI::Font(GUI::consoleMediumBDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
     }
     else  // default to zero
     {
-      myLFont = new GUI::Font(GUI::consoleMediumDesc);
-      myNFont = new GUI::Font(GUI::consoleMediumDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
     }
   }
   else
   {
     if(fontstyle == 1)
     {
-      myLFont = new GUI::Font(GUI::consoleBDesc);
-      myNFont = new GUI::Font(GUI::consoleDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleDesc);
     }
     else if(fontstyle == 2)
     {
-      myLFont = new GUI::Font(GUI::consoleDesc);
-      myNFont = new GUI::Font(GUI::consoleBDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
     }
     else if(fontstyle == 3)
     {
-      myLFont = new GUI::Font(GUI::consoleBDesc);
-      myNFont = new GUI::Font(GUI::consoleBDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
     }
     else  // default to zero
     {
-      myLFont = new GUI::Font(GUI::consoleDesc);
-      myNFont = new GUI::Font(GUI::consoleDesc);
+      myLFont = make_ptr<GUI::Font>(GUI::consoleDesc);
+      myNFont = make_ptr<GUI::Font>(GUI::consoleDesc);
     }
   }
 }

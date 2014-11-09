@@ -34,7 +34,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& font)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, 0, 0),
+  : Dialog(boss->instance(), boss->parent()),
     CommandSender(boss)
 {
   const int lineHeight   = font.getLineHeight(),

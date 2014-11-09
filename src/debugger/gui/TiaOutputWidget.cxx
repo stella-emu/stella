@@ -38,7 +38,6 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    myMenu(nullptr),
     myZoom(nullptr),
     myClickX(0),
     myClickY(0)
@@ -50,13 +49,12 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   VList::push_back(l, "Set zoom position", "zoom");
   VList::push_back(l, "Save snapshot", "snap");
   VList::push_back(l, "Toggle fixed debug colors (from beam pos)", "fixed");
-  myMenu = new ContextMenu(this, font, l);
+  myMenu = make_ptr<ContextMenu>(this, font, l);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaOutputWidget::~TiaOutputWidget()
 {
-  delete myMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

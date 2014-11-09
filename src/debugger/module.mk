@@ -3,7 +3,6 @@ MODULE := src/debugger
 MODULE_OBJS := \
 	src/debugger/Debugger.o \
 	src/debugger/DebuggerParser.o \
-	src/debugger/Expression.o \
 	src/debugger/PackedBitArray.o \
 	src/debugger/CartDebug.o \
 	src/debugger/CpuDebug.o \

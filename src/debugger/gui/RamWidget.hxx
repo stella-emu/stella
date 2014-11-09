@@ -66,6 +66,8 @@ class RamWidget : public Widget, public CommandSender
     int myUndoValue;
     int myCurrentRamBank;
 
+    unique_ptr<InputTextDialog> myInputBox;
+
     StaticTextWidget* myRamStart;
     StaticTextWidget* myRamLabels[8];
     DataGridWidget*   myRamGrid;
@@ -79,8 +81,6 @@ class RamWidget : public Widget, public CommandSender
     ButtonWidget* mySearchButton;
     ButtonWidget* myCompareButton;
     ButtonWidget* myRestartButton;
-
-    InputTextDialog* myInputBox;
 
     IntArray myOldValueList;
     IntArray mySearchAddr;

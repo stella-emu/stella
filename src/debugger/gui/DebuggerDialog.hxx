@@ -104,8 +104,6 @@ class DebuggerDialog : public Dialog
 
     TabWidget *myTab, *myRomTab;
 
-    GUI::Font*       myLFont;    // used for labels
-    GUI::Font*       myNFont;    // used for normal text
     PromptWidget*    myPrompt;
     TiaInfoWidget*   myTiaInfo;
     TiaOutputWidget* myTiaOutput;
@@ -118,6 +116,9 @@ class DebuggerDialog : public Dialog
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
     GUI::MessageBox* myFatalError;
+
+    unique_ptr<GUI::Font> myLFont;  // used for labels
+    unique_ptr<GUI::Font> myNFont;  // used for normal text
 };
 
 #endif

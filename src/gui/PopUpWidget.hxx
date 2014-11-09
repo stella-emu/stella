@@ -70,7 +70,7 @@ class PopUpWidget : public Widget, public CommandSender
     void drawWidget(bool hilite);
 
   private:
-    ContextMenu* myMenu;
+    unique_ptr<ContextMenu> myMenu;
     int myArrowsY;
     int myTextY;
 

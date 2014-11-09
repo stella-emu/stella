@@ -59,7 +59,7 @@ class TiaOutputWidget : public Widget, public CommandSender
     bool wantsFocus() { return false; }
 
   private:
-    ContextMenu*   myMenu;
+    unique_ptr<ContextMenu> myMenu;
     TiaZoomWidget* myZoom;
 
     int myClickX, myClickY;

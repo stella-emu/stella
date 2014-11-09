@@ -31,8 +31,7 @@
 TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, 16, 16),
-    CommandSender(boss),
-    myMenu(nullptr)
+    CommandSender(boss)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG |
            WIDGET_RETAIN_FOCUS | WIDGET_TRACK_MOUSE;
@@ -58,13 +57,12 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   VList::push_back(l, "2x zoom", "2");
   VList::push_back(l, "4x zoom", "4");
   VList::push_back(l, "8x zoom", "8");
-  myMenu = new ContextMenu(this, font, l);
+  myMenu = make_ptr<ContextMenu>(this, font, l);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaZoomWidget::~TiaZoomWidget()
 {
-  delete myMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

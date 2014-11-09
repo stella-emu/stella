@@ -52,18 +52,18 @@ class OptionsDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    VideoDialog*      myVideoDialog;
-    AudioDialog*      myAudioDialog;
-    InputDialog*      myInputDialog;
-    UIDialog*         myUIDialog;
-    SnapshotDialog*   mySnapshotDialog;
-    ConfigPathDialog* myConfigPathDialog;
-    RomAuditDialog*   myRomAuditDialog;
-    GameInfoDialog*   myGameInfoDialog;
-    CheatCodeDialog*  myCheatCodeDialog;
-    LoggerDialog*     myLoggerDialog;
-    HelpDialog*       myHelpDialog;
-    AboutDialog*      myAboutDialog;
+    unique_ptr<VideoDialog>      myVideoDialog;
+    unique_ptr<AudioDialog>      myAudioDialog;
+    unique_ptr<InputDialog>      myInputDialog;
+    unique_ptr<UIDialog>         myUIDialog;
+    unique_ptr<SnapshotDialog>   mySnapshotDialog;
+    unique_ptr<ConfigPathDialog> myConfigPathDialog;
+    unique_ptr<RomAuditDialog>   myRomAuditDialog;
+    unique_ptr<GameInfoDialog>   myGameInfoDialog;
+    unique_ptr<CheatCodeDialog>  myCheatCodeDialog;
+    unique_ptr<LoggerDialog>     myLoggerDialog;
+    unique_ptr<HelpDialog>       myHelpDialog;
+    unique_ptr<AboutDialog>      myAboutDialog;
 
     ButtonWidget* myRomAuditButton;
     ButtonWidget* myGameInfoButton;

@@ -139,7 +139,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Inputbox which will pop up when searching RAM
   StringList labels;
   labels.push_back("Search: ");
-  myInputBox = new InputTextDialog(boss, lfont, nfont, labels);
+  myInputBox = make_ptr<InputTextDialog>(boss, lfont, nfont, labels);
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled
@@ -150,7 +150,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::~RamWidget()
 {
-  delete myInputBox;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

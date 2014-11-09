@@ -28,7 +28,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
-  : Dialog(osystem, parent, 0, 0, 0, 0),
+  : Dialog(osystem, parent),
     myPage(1),
     myNumPages(5)
 {

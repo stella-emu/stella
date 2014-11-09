@@ -91,7 +91,7 @@ class RomListWidget : public EditableWidget
     void scrollToCurrent(int item);
 
   private:
-    RomListSettings* myMenu;
+    unique_ptr<RomListSettings> myMenu;
     ScrollBarWidget* myScrollBar;
 
     int  _labelWidth;

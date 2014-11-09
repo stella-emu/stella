@@ -54,15 +54,15 @@ class RomAuditDialog : public Dialog
       kConfirmAuditCmd   = 'RAcf'  // confirm rom audit
     };
 
+    // Select a new ROM audit path
+    unique_ptr<BrowserDialog> myBrowser;
+
     // ROM audit path
     EditTextWidget* myRomPath;
 
     // Show the results of the ROM audit
     StaticTextWidget* myResults1;
     StaticTextWidget* myResults2;
-
-    // Select a new ROM audit path
-    BrowserDialog* myBrowser;
 
     // Show a message about the dangers of using this function
     GUI::MessageBox* myConfirmMsg;

@@ -49,17 +49,6 @@
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, bool global)
   : Dialog(osystem, parent),
-    myVideoDialog(nullptr),
-    myAudioDialog(nullptr),
-    myInputDialog(nullptr),
-    myUIDialog(nullptr),
-    mySnapshotDialog(nullptr),
-    myConfigPathDialog(nullptr),
-    myGameInfoDialog(nullptr),
-    myCheatCodeDialog(nullptr),
-    myLoggerDialog(nullptr),
-    myHelpDialog(nullptr),
-    myAboutDialog(nullptr),
     myIsGlobal(global)
 {
   const GUI::Font& font = instance().frameBuffer().font();
@@ -124,20 +113,20 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = new VideoDialog(osystem, parent, font, max_w, max_h);
-  myAudioDialog    = new AudioDialog(osystem, parent, font);
-  myInputDialog    = new InputDialog(osystem, parent, font, max_w, max_h);
-  myUIDialog       = new UIDialog(osystem, parent, font);
-  mySnapshotDialog = new SnapshotDialog(osystem, parent, font, boss, max_w, max_h);
-  myConfigPathDialog = new ConfigPathDialog(osystem, parent, font, boss, max_w, max_h);
-  myRomAuditDialog = new RomAuditDialog(osystem, parent, font, max_w, max_h);
-  myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this);
+  myVideoDialog    = make_ptr<VideoDialog>(osystem, parent, font, max_w, max_h);
+  myAudioDialog    = make_ptr<AudioDialog>(osystem, parent, font);
+  myInputDialog    = make_ptr<InputDialog>(osystem, parent, font, max_w, max_h);
+  myUIDialog       = make_ptr<UIDialog>(osystem, parent, font);
+  mySnapshotDialog = make_ptr<SnapshotDialog>(osystem, parent, font, boss, max_w, max_h);
+  myConfigPathDialog = make_ptr<ConfigPathDialog>(osystem, parent, font, boss, max_w, max_h);
+  myRomAuditDialog = make_ptr<RomAuditDialog>(osystem, parent, font, max_w, max_h);
+  myGameInfoDialog = make_ptr<GameInfoDialog>(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
-  myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font);
+  myCheatCodeDialog = make_ptr<CheatCodeDialog>(osystem, parent, font);
 #endif
-  myLoggerDialog    = new LoggerDialog(osystem, parent, font, max_w, max_h);
-  myHelpDialog      = new HelpDialog(osystem, parent, font);
-  myAboutDialog     = new AboutDialog(osystem, parent, font);
+  myLoggerDialog    = make_ptr<LoggerDialog>(osystem, parent, font, max_w, max_h);
+  myHelpDialog      = make_ptr<HelpDialog>(osystem, parent, font);
+  myAboutDialog     = make_ptr<AboutDialog>(osystem, parent, font);
 
   addToFocusList(wid);
 
@@ -155,20 +144,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::~OptionsDialog()
 {
-  delete myVideoDialog;
-  delete myAudioDialog;
-  delete myInputDialog;
-  delete myUIDialog;
-  delete mySnapshotDialog;
-  delete myConfigPathDialog;
-  delete myRomAuditDialog;
-  delete myGameInfoDialog;
-#ifdef CHEATCODE_SUPPORT
-  delete myCheatCodeDialog;
-#endif
-  delete myLoggerDialog;
-  delete myHelpDialog;
-  delete myAboutDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

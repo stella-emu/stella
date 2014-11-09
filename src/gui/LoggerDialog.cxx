@@ -37,7 +37,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
                            const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, 0, 0, 0, 0),
+  : Dialog(osystem, parent),
     myLogInfo(nullptr)
 {
   const int lineHeight   = font.getLineHeight(),

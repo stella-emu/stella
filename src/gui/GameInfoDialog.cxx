@@ -36,7 +36,7 @@
 GameInfoDialog::GameInfoDialog(
       OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
       GuiObject* boss)
-  : Dialog(osystem, parent, 0, 0, 0, 0),
+  : Dialog(osystem, parent),
     CommandSender(boss),
     myPropertiesLoaded(false),
     myDefaultsSelected(false)

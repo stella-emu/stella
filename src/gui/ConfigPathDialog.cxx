@@ -130,13 +130,12 @@ ConfigPathDialog::ConfigPathDialog(
   }
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, max_w, max_h);
+  myBrowser = make_ptr<BrowserDialog>(this, font, max_w, max_h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ConfigPathDialog::~ConfigPathDialog()
 {
-  delete myBrowser;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

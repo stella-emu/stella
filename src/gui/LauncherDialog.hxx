@@ -94,6 +94,13 @@ class LauncherDialog : public Dialog
     bool matchPattern(const string& s, const string& pattern) const;
 
   private:
+    unique_ptr<OptionsDialog> myOptions;
+    unique_ptr<GameList> myGameList;
+    unique_ptr<ContextMenu> myMenu;
+    unique_ptr<GlobalPropsDialog> myGlobalProps;
+    unique_ptr<LauncherFilterDialog> myFilters;
+    unique_ptr<BrowserDialog> myRomDir;
+
     ButtonWidget* myStartButton;
     ButtonWidget* myPrevDirButton;
     ButtonWidget* myOptionsButton;
@@ -104,17 +111,9 @@ class LauncherDialog : public Dialog
     StaticTextWidget* myDir;
     StaticTextWidget* myRomCount;
     EditTextWidget*   myPattern;
-    GameList*         myGameList;
 
-    OptionsDialog* myOptions;
     RomInfoWidget* myRomInfoWidget;
-
-    ContextMenu*          myMenu;
-    GlobalPropsDialog*    myGlobalProps;
-    LauncherFilterDialog* myFilters;
-
     GUI::MessageBox* myFirstRunMsg;
-    BrowserDialog*   myRomDir;
 
     int mySelectedItem;
     FilesystemNode myCurrentNode;

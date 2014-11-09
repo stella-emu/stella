@@ -31,7 +31,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont,
                              int x, int y, int w, int h)
   : EditableWidget(boss, nfont, x, y, 16, 16),
-    myMenu(nullptr),
     _rows(0),
     _cols(0),
     _currentPos(0),
@@ -58,7 +57,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   myScrollBar->setTarget(this);
 
   // Add settings menu
-  myMenu = new RomListSettings(this, lfont);
+  myMenu = make_ptr<RomListSettings>(this, lfont);
 
   // Take advantage of a wide debugger window when possible
   const int fontWidth = lfont.getMaxCharWidth(),
@@ -94,7 +93,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListWidget::~RomListWidget()
 {
-  delete myMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
