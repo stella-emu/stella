@@ -262,10 +262,8 @@ void DebuggerDialog::createFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(const string& msg)
 {
-  delete myFatalError;
-  myFatalError =
-    new GUI::MessageBox(this, *myLFont, msg, _w/2, _h/2, kDDExitFatalCmd,
-                        "Exit ROM", "Continue");
+  myFatalError = make_ptr<GUI::MessageBox>(this, *myLFont, msg, _w/2, _h/2,
+                          kDDExitFatalCmd, "Exit ROM", "Continue");
   myFatalError->show();
 }
 

@@ -184,10 +184,9 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("");
         msg.push_back("If you're sure you want to proceed with the");
         msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
-        myConfirmMsg =
-          new GUI::MessageBox(this, instance().frameBuffer().font(), msg,
-                              myMaxWidth, myMaxHeight,
-                              kConfirmAuditCmd);
+        myConfirmMsg = make_ptr<GUI::MessageBox>
+                          (this, instance().frameBuffer().font(), msg,
+                          myMaxWidth, myMaxHeight, kConfirmAuditCmd);
       }
       myConfirmMsg->show();
       break;

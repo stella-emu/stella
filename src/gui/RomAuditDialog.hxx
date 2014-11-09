@@ -65,7 +65,7 @@ class RomAuditDialog : public Dialog
     StaticTextWidget* myResults2;
 
     // Show a message about the dangers of using this function
-    GUI::MessageBox* myConfirmMsg;
+    unique_ptr<GUI::MessageBox> myConfirmMsg;
 
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;

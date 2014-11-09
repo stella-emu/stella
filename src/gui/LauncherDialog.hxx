@@ -100,6 +100,7 @@ class LauncherDialog : public Dialog
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<LauncherFilterDialog> myFilters;
     unique_ptr<BrowserDialog> myRomDir;
+    unique_ptr<GUI::MessageBox> myFirstRunMsg;
 
     ButtonWidget* myStartButton;
     ButtonWidget* myPrevDirButton;
@@ -113,7 +114,6 @@ class LauncherDialog : public Dialog
     EditTextWidget*   myPattern;
 
     RomInfoWidget* myRomInfoWidget;
-    GUI::MessageBox* myFirstRunMsg;
 
     int mySelectedItem;
     FilesystemNode myCurrentNode;

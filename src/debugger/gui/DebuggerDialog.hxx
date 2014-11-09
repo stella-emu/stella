@@ -115,7 +115,7 @@ class DebuggerDialog : public Dialog
     CartRamWidget*   myCartRam;
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
-    GUI::MessageBox* myFatalError;
+    unique_ptr<GUI::MessageBox> myFatalError;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text

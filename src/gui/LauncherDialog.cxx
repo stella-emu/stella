@@ -54,7 +54,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myQuitButton(nullptr),
     myList(nullptr),
     myRomInfoWidget(nullptr),
-    myFirstRunMsg(nullptr),
     mySelectedItem(0)
 {
   const GUI::Font& font = instance().frameBuffer().launcherFont();
@@ -235,8 +234,9 @@ void LauncherDialog::loadConfig()
       msg.push_back("");
       msg.push_back("Click 'OK' to select a default ROM directory,");
       msg.push_back("or 'Cancel' to browse the filesystem manually.");
-      myFirstRunMsg = new GUI::MessageBox(this, instance().frameBuffer().font(),
-                                          msg, _w, _h, kFirstRunMsgChosenCmd);
+      myFirstRunMsg = make_ptr<GUI::MessageBox>
+                          (this, instance().frameBuffer().font(),
+                          msg, _w, _h, kFirstRunMsgChosenCmd);
     }
     myFirstRunMsg->show();
   }
