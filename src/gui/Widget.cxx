@@ -192,8 +192,8 @@ bool Widget::isWidgetInChain(Widget* w, Widget* find)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Widget::isWidgetInChain(WidgetArray& list, Widget* find)
 {
-  for(int i = 0; i < (int)list.size(); ++i)
-    if(list[i] == find)
+  for(const auto& w: list)
+    if(w == find)
       return true;
 
   return false;

@@ -50,10 +50,8 @@ class Cheat
     static uInt16 unhex(const string& hex)
     {
       int ret = 0;
-
-      for(unsigned int i = 0; i < hex.size(); ++i) {
-        char c = hex[i];
-
+      for(char c: hex)
+      {
         ret *= 16;
         if(c >= '0' && c <= '9')
           ret += c - '0';

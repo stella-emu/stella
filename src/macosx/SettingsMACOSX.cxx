@@ -56,9 +56,8 @@ void SettingsMACOSX::loadConfig()
 void SettingsMACOSX::saveConfig()
 {
   // Write out each of the key and value pairs
-  const SettingsArray& settings = getInternalSettings();
-  for(unsigned int i = 0; i < settings.size(); ++i)
-    prefsSetString(settings[i].key.c_str(), settings[i].value.toCString());
+  for(const auto& s: getInternalSettings())
+    prefsSetString(s.key.c_str(), s.value.toCString());
 
   prefsSave();
 }

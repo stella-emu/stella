@@ -57,9 +57,8 @@ int Font::getStringWidth(const string& str) const
   else
   {
     int space = 0;
-
-    for(unsigned int i = 0; i < str.size(); ++i)
-      space += getCharWidth(str[i]);
+    for(auto c: str)
+      space += getCharWidth(c);
 
     return space;
   }

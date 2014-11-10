@@ -307,11 +307,10 @@ void LauncherDialog::loadDirListing()
 
   // Now add the directory entries
   bool domatch = myPattern && myPattern->getText() != "";
-  for(unsigned int idx = 0; idx < files.size(); idx++)
+  for(const auto& f: files)
   {
-    bool isDir = files[idx].isDirectory();
-    const string& name = isDir ? (" [" + files[idx].getName() + "]")
-                               : files[idx].getName();
+    bool isDir = f.isDirectory();
+    const string& name = isDir ? (" [" + f.getName() + "]") : f.getName();
 
     // Honour the filtering settings
     // Showing only certain ROM extensions is determined by the extension
@@ -328,7 +327,7 @@ void LauncherDialog::loadDirListing()
     if(domatch && !isDir && !matchPattern(name, myPattern->getText()))
       continue;
 
-    myGameList->appendGame(name, files[idx].getPath(), "", isDir);
+    myGameList->appendGame(name, f.getPath(), "", isDir);
   }
 
   // Sort the list by rom name (since that's what we see in the listview)

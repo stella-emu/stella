@@ -59,8 +59,8 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 
   // Get maximum width of popupwidget
   int pwidth = 0;
-  for(uInt32 i = 0; i < combolist.size(); ++i)
-    pwidth = BSPF_max(font.getStringWidth(combolist[i].first), pwidth);
+  for(const auto& s: combolist)
+    pwidth = BSPF_max(font.getStringWidth(s.first), pwidth);
 
   // Label for dialog, indicating which combo is being changed
   myComboName = new StaticTextWidget(this, font, xpos, ypos, _w - xpos - 10,

@@ -73,16 +73,16 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
 
   // Set real dimensions
   int str_w = 0;
-  for(uInt32 i = 0; i < text.size(); ++i)
-    str_w = BSPF_max((int)text[i].length(), str_w);
+  for(const auto& s: text)
+    str_w = BSPF_max((int)s.length(), str_w);
   _w = BSPF_min(str_w * fontWidth + 20, _w);
   _h = BSPF_min((uInt32)((text.size() + 2) * lineHeight + 20), (uInt32)_h);
 
   xpos = 10;  ypos = 10;
-  for(uInt32 i = 0; i < text.size(); ++i)
+  for(const auto& s: text)
   {
     new StaticTextWidget(this, font, xpos, ypos, _w - 20,
-                         fontHeight, text[i], kTextAlignLeft);
+                         fontHeight, s, kTextAlignLeft);
     ypos += fontHeight;
   }
 }

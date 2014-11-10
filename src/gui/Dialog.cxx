@@ -145,8 +145,8 @@ void Dialog::addFocusWidget(Widget* w)
 void Dialog::addToFocusList(WidgetArray& list)
 {
   // All focusable widgets should retain focus
-  for(uInt32 i = 0; i < list.size(); ++i)
-    list[i]->setFlags(WIDGET_RETAIN_FOCUS);
+  for(const auto& w: list)
+    w->setFlags(WIDGET_RETAIN_FOCUS);
 
   Vec::append(_myFocus.list, list);
   _focusList = _myFocus.list;
@@ -165,8 +165,8 @@ void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
   assert(w == _myTabList[w->getID()].widget);
 
   // All focusable widgets should retain focus
-  for(uInt32 i = 0; i < list.size(); ++i)
-    list[i]->setFlags(WIDGET_RETAIN_FOCUS);
+  for(const auto& w: list)
+    w->setFlags(WIDGET_RETAIN_FOCUS);
 
   // First get the appropriate focus list
   FocusList& focus = _myTabList[w->getID()].focus;

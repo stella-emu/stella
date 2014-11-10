@@ -63,22 +63,22 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
     _gameList.appendGame(" [..]", _node.getParent().getPath(), "", true);
 
   // Now add the directory entries
-  for(unsigned int idx = 0; idx < content.size(); idx++)
+  for(const auto& file: content)
   {
-    string name = content[idx].getName();
-    bool isDir = content[idx].isDirectory();
+    string name = file.getName();
+    bool isDir = file.isDirectory();
     if(isDir)
       name = " [" + name + "]";
     else if(!BSPF_endsWithIgnoreCase(name, _extension))
       continue;
 
-    _gameList.appendGame(name, content[idx].getPath(), "", isDir);
+    _gameList.appendGame(name, file.getPath(), "", isDir);
   }
   _gameList.sortByName();
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
-  for (int i = 0; i < (int) _gameList.size(); ++i)
+  for(int i = 0; i < (int) _gameList.size(); ++i)
     l.push_back(_gameList.name(i));
 
   setList(l);

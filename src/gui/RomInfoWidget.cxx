@@ -169,9 +169,9 @@ void RomInfoWidget::drawWidget(bool hilite)
   }
 
   int xpos = _x + 5, ypos = _y + yoff + 10;
-  for(unsigned int i = 0; i < myRomInfo.size(); ++i)
+  for(const auto& info: myRomInfo)
   {
-    s.drawString(_font, myRomInfo[i], xpos, ypos, _w - 10, _textcolor);
+    s.drawString(_font, info, xpos, ypos, _w - 10, _textcolor);
     ypos += _font.getLineHeight();
   }
 }

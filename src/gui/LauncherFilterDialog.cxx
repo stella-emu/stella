@@ -130,8 +130,8 @@ bool LauncherFilterDialog::isValidRomName(const string& name,
   {
     const char* ext = name.c_str() + idx + 1;
 
-    for(uInt32 i = 0; i < exts.size(); ++i)
-      if(BSPF_equalsIgnoreCase(ext, exts[i]))
+    for(const auto& s: exts)
+      if(BSPF_equalsIgnoreCase(ext, s))
         return true;
   }
 

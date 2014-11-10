@@ -504,9 +504,9 @@ void Settings::saveConfig()
   // Do a quick scan of the internal settings to see if any have
   // changed.  If not, we don't need to save them at all.
   bool settingsChanged = false;
-  for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
+  for(const auto& s: myInternalSettings)
   {
-    if(myInternalSettings[i].value != myInternalSettings[i].initialValue)
+    if(s.value != s.initialValue)
     {
       settingsChanged = true;
       break;
@@ -539,11 +539,8 @@ void Settings::saveConfig()
       << ";" << endl;
 
   // Write out each of the key and value pairs
-  for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
-  {
-    out << myInternalSettings[i].key << " = " <<
-           myInternalSettings[i].value << endl;
-  }
+  for(const auto& s: myInternalSettings)
+    out << s.key << " = " << s.value << endl;
 
   out.close();
 }

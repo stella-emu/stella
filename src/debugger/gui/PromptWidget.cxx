@@ -892,9 +892,8 @@ string PromptWidget::getCompletionPrefix(const StringList& completions, string p
   // of the strings we're dealing with, it's probably not worth it
   for(;;)
   {
-    for(uInt32 i = 0; i < completions.size(); ++i)
+    for(const auto& s: completions)
     {
-      const string& s = completions[i];
       if(s.length() < prefix.length())
         return prefix;  // current prefix is the best we're going to get
       else if(!BSPF_startsWithIgnoreCase(s, prefix))

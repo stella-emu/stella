@@ -111,10 +111,10 @@ void CheatCodeDialog::loadConfig()
   BoolArray b;
 
   const CheatList& list = instance().cheat().list();
-  for(unsigned int i = 0; i < list.size(); ++i)
+  for(const auto& c: list)
   {
-    l.push_back(list[i]->name());
-    b.push_back(bool(list[i]->enabled()));
+    l.push_back(c->name());
+    b.push_back(bool(c->enabled()));
   }
   myCheatList->setList(l, b);
 

@@ -60,12 +60,8 @@ void ContextMenu::addItems(const VariantList& items)
 
   // Resize to largest string
   int maxwidth = 0;
-  for(unsigned int i = 0; i < _entries.size(); ++i)
-  {
-    int length = _font.getStringWidth(_entries[i].first);
-    if(length > maxwidth)
-      maxwidth = length;
-  }
+  for(const auto& e: _entries)
+    maxwidth = BSPF_max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
   _w = maxwidth + 10;

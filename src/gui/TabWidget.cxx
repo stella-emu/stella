@@ -50,10 +50,10 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TabWidget::~TabWidget()
 {
-  for (unsigned int i = 0; i < _tabs.size(); ++i)
+  for(auto& tab: _tabs)
   {
-    delete _tabs[i].firstWidget;
-    _tabs[i].firstWidget = 0;
+    delete tab.firstWidget;
+    tab.firstWidget = nullptr;
     // _tabs[i].parentWidget is deleted elsewhere
   }
   _tabs.clear();
