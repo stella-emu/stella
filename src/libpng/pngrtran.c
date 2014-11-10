@@ -1,7 +1,7 @@
 
 /* pngrtran.c - transforms the data in a row for PNG readers
  *
- * Last changed in libpng 1.6.11 [June 12, 2014]
+ * Last changed in libpng 1.6.11 [June 5, 2014]
  * Copyright (c) 1998-2014 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
@@ -959,7 +959,7 @@ png_set_rgb_to_gray_fixed(png_structrp png_ptr, int error_action,
    if (!png_rtran_ok(png_ptr, 1))
       return;
 
-   switch(error_action)
+   switch (error_action)
    {
       case PNG_ERROR_ACTION_NONE:
          png_ptr->transformations |= PNG_RGB_TO_GRAY;

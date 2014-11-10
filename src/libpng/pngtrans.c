@@ -1,7 +1,7 @@
 
 /* pngtrans.c - transforms the data in a row (used by both readers and writers)
  *
- * Last changed in libpng 1.6.11 [June 12, 2014]
+ * Last changed in libpng 1.6.11 [June 5, 2014]
  * Copyright (c) 1998-2014 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
@@ -828,7 +828,7 @@ png_get_user_transform_ptr(png_const_structrp png_ptr)
 png_uint_32 PNGAPI
 png_get_current_row_number(png_const_structrp png_ptr)
 {
-   /* See the comments in png.h - this is the sub-image row when reading and
+   /* See the comments in png.h - this is the sub-image row when reading an
     * interlaced image.
     */
    if (png_ptr != NULL)

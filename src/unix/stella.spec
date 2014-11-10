@@ -1,5 +1,5 @@
 %define name    stella
-%define version 4.2
+%define version 4.5
 %define rel     1
 
 %define enable_sound 1
@@ -101,6 +101,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* xxx Dec xx 2014 Stephen Anthony <stephena@users.sf.net> 4.5-1
+- Version 4.5 release
+
 * Tue Oct 28 2014 Stephen Anthony <stephena@users.sf.net> 4.2-1
 - Version 4.2 release
 

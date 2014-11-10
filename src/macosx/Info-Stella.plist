@@ -53,7 +53,7 @@
 	<key>CFBundleSignature</key>
 	<string>StLa</string>
 	<key>CFBundleVersion</key>
-	<string>4.2</string>
+	<string>4.5</string>
 	<key>LSMinimumSystemVersionByArchitecture</key>
 	<dict>
 		<key>i386</key>

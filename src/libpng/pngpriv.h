@@ -119,8 +119,12 @@
     * PNG_ARM_NEON_OPT is set in CPPFLAGS (to >0) then arm/arm_init.c will fail
     * to compile with an appropriate #error if ALIGNED_MEMORY has been turned
     * off.
+    *
+    * Note that gcc-4.9 defines __ARM_NEON instead of __ARM_NEON__, so we
+    * check both variants.
     */
-#  if defined(__ARM_NEON__) && defined(PNG_ALIGNED_MEMORY_SUPPORTED)
+#  if (defined(__ARM_NEON__) || defined(__ARM_NEON)) && \
+   defined(PNG_ALIGNED_MEMORY_SUPPORTED)
 #     define PNG_ARM_NEON_OPT 2
 #  else
 #     define PNG_ARM_NEON_OPT 0
@@ -148,7 +152,7 @@
     * libpng implementation list for incorporation in the next minor release.
     */
 #  ifndef PNG_ARM_NEON_IMPLEMENTATION
-#     ifdef __ARM_NEON__
+#     if defined(__ARM_NEON__) || defined(__ARM_NEON)
 #        if defined(__clang__)
             /* At present it is unknown by the libpng developers which versions
              * of clang support the intrinsics, however some or perhaps all
@@ -1086,7 +1090,7 @@ PNG_INTERNAL_FUNCTION(void,png_write_tEXt,(png_structrp png_ptr,
 
 #ifdef PNG_WRITE_zTXt_SUPPORTED
 PNG_INTERNAL_FUNCTION(void,png_write_zTXt,(png_structrp png_ptr, png_const_charp
-    key, png_const_charp text, png_size_t text_len, int compression),PNG_EMPTY);
+    key, png_const_charp text, int compression),PNG_EMPTY);
 #endif
 
 #ifdef PNG_WRITE_iTXt_SUPPORTED
