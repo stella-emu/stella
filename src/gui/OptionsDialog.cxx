@@ -42,9 +42,6 @@
 
 #include "bspf.hxx"
 
-#define addODButton(label, cmd) \
-  new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight, label, cmd); yoffset += rowHeight
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, bool global)
@@ -63,52 +60,60 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
   ButtonWidget* b = nullptr;
 
-  b = addODButton("Video Settings", kVidCmd);
+  auto ADD_OD_BUTTON = [&](const string& label, int cmd)
+  {
+    ButtonWidget* b = new ButtonWidget(this, font, xoffset, yoffset,
+            buttonWidth, buttonHeight, label, cmd);
+    yoffset += rowHeight;
+    return b;
+  };
+
+  b = ADD_OD_BUTTON("Video Settings", kVidCmd);
   wid.push_back(b);
 
-  b = addODButton("Audio Settings", kAudCmd);
+  b = ADD_OD_BUTTON("Audio Settings", kAudCmd);
 #ifndef SOUND_SUPPORT
   b->clearFlags(WIDGET_ENABLED);
 #endif
   wid.push_back(b);
 
-  b = addODButton("Input Settings", kInptCmd);
+  b = ADD_OD_BUTTON("Input Settings", kInptCmd);
   wid.push_back(b);
 
-  b = addODButton("UI Settings", kUsrIfaceCmd);
+  b = ADD_OD_BUTTON("UI Settings", kUsrIfaceCmd);
   wid.push_back(b);
 
-  b = addODButton("Snapshot Settings", kSnapCmd);
+  b = ADD_OD_BUTTON("Snapshot Settings", kSnapCmd);
   wid.push_back(b);
 
-  b = addODButton("Config Paths", kCfgPathsCmd);
+  b = ADD_OD_BUTTON("Config Paths", kCfgPathsCmd);
   wid.push_back(b);
 
-  myRomAuditButton = addODButton("Audit ROMs", kAuditCmd);
+  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs", kAuditCmd);
   wid.push_back(myRomAuditButton);
 
   // Move to second column
   xoffset += buttonWidth + 10;  yoffset = 10;
 
-  myGameInfoButton = addODButton("Game Properties", kInfoCmd);
+  myGameInfoButton = ADD_OD_BUTTON("Game Properties", kInfoCmd);
   wid.push_back(myGameInfoButton);
 
-  myCheatCodeButton = addODButton("Cheat Code", kCheatCmd);
+  myCheatCodeButton = ADD_OD_BUTTON("Cheat Code", kCheatCmd);
 #ifndef CHEATCODE_SUPPORT
   myCheatCodeButton->clearFlags(WIDGET_ENABLED);
 #endif
   wid.push_back(myCheatCodeButton);
 
-  b = addODButton("System Logs", kLoggerCmd);
+  b = ADD_OD_BUTTON("System Logs", kLoggerCmd);
   wid.push_back(b);
 
-  b = addODButton("Help", kHelpCmd);
+  b = ADD_OD_BUTTON("Help", kHelpCmd);
   wid.push_back(b);
 
-  b = addODButton("About", kAboutCmd);
+  b = ADD_OD_BUTTON("About", kAboutCmd);
   wid.push_back(b);
 
-  b = addODButton("Exit Menu", kExitCmd);
+  b = ADD_OD_BUTTON("Exit Menu", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
 

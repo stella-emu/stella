@@ -93,16 +93,20 @@ HelpDialog::~HelpDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
-#define ADD_BIND(k,d) do { myKeyStr[i] = k; myDescStr[i] = d; i++; } while(0)
-#define ADD_TEXT(d) ADD_BIND("",d)
-#define ADD_LINE ADD_BIND("","")
 #ifdef BSPF_MAC_OSX
   #define ALT_ "Cmd"
 #else
   #define ALT_ "Alt"
 #endif
 
-  uInt8 i = 0;
+  int i = 0;
+  auto ADD_BIND = [&](const string& k, const string& d)
+  {
+    myKeyStr[i] = k;  myDescStr[i] = d;  i++;
+  };
+  auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
+  auto ADD_LINE = [&]() { ADD_BIND("", ""); };
+
   switch(page)
   {
     case 1:
@@ -129,7 +133,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Ctrl f", "Switch between NTSC/PAL/SECAM");
       ADD_BIND("Ctrl s", "Save game properties");
       ADD_BIND("",       "  to a new file");
-      ADD_LINE;
+      ADD_LINE();
       ADD_BIND("Ctrl 0", "Toggle controller for Mouse");
       ADD_BIND("Ctrl 1", "Toggle Stelladaptor left/right");
       break;
@@ -151,7 +155,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
     case 4:
       title = "Developer commands:";
       ADD_BIND("~",         "Enter/exit debugger");
-      ADD_LINE;
+      ADD_LINE();
       ADD_BIND(ALT_" PgUp", "Increase Display.YStart");
       ADD_BIND(ALT_" PgDn", "Decrease Display.YStart");
       ADD_BIND("Ctrl PgUp", "Increase Display.Height");
@@ -160,7 +164,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 
     case 5:
       title = "All other commands:";
-      ADD_LINE;
+      ADD_LINE();
       ADD_BIND("Remapped Events", "");
       ADD_TEXT("Most other commands can be");
       ADD_TEXT("remapped.  Please consult the");
@@ -170,7 +174,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   }
 
   while(i < lines)
-    ADD_LINE;
+    ADD_LINE();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

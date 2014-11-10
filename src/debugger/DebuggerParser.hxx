@@ -34,7 +34,6 @@ class DebuggerParser
 {
   public:
     DebuggerParser(Debugger& debugger, Settings& settings);
-    ~DebuggerParser();
 
     /** Run the given command, and return the result */
     string run(const string& command);

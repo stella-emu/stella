@@ -473,10 +473,6 @@ void OSystem::logMessage(const string& message, uInt8 level)
 unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
                                          string& md5, string& type, string& id)
 {
-#define CMDLINE_PROPS_UPDATE(cl_name, prop_name) \
-  s = mySettings->getString(cl_name);            \
-  if(s != "") props.set(prop_name, s);
-
   unique_ptr<Console> console;
 
   // Open the cartridge image and read it in
@@ -488,7 +484,13 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
     // For initial creation of the Cart, we're only concerned with the BS type
     Properties props;
     myPropSet->getMD5(md5, props);
-    string s;
+
+    auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropertyType prop)
+    {
+      const string& s = mySettings->getString(name);
+      if(s != "") props.set(prop, s);
+    };
+
     CMDLINE_PROPS_UPDATE("bs", Cartridge_Type);
     CMDLINE_PROPS_UPDATE("type", Cartridge_Type);
 
@@ -518,7 +520,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
     CMDLINE_PROPS_UPDATE("sp", Console_SwapPorts);
     CMDLINE_PROPS_UPDATE("lc", Controller_Left);
     CMDLINE_PROPS_UPDATE("rc", Controller_Right);
-    s = mySettings->getString("bc");
+    const string& s = mySettings->getString("bc");
     if(s != "") { props.set(Controller_Left, s); props.set(Controller_Right, s); }
     CMDLINE_PROPS_UPDATE("cp", Controller_SwapPaddles);
     CMDLINE_PROPS_UPDATE("ma", Controller_MouseAxis);

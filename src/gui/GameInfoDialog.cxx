@@ -63,7 +63,6 @@ GameInfoDialog::GameInfoDialog(
   addTabWidget(myTab);
 
   // 1) Cartridge properties
-  wid.clear();
   tabID = myTab->addTab("Cartridge");
 
   xpos = 10;

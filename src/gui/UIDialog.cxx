@@ -65,7 +65,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   //////////////////////////////////////////////////////////
   // 1) Launcher options
-  wid.clear();
   tabID = myTab->addTab(" Launcher ");
   lwidth = font.getStringWidth("Exit to Launcher: ");
 

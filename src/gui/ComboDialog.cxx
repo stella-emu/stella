@@ -38,12 +38,6 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent()),
     myComboEvent(Event::NoType)
 {
-#define ADD_EVENT_POPUP(IDX, LABEL) \
-  myEvents[IDX] = new PopUpWidget(this, font, xpos, ypos,  \
-                    pwidth, lineHeight, combolist, LABEL); \
-  wid.push_back(myEvents[IDX]); \
-  ypos += lineHeight + 4;
-
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
@@ -68,6 +62,14 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   ypos += (lineHeight + 4) + 5;
 
   // Add event popup for 8 events
+  auto ADD_EVENT_POPUP = [&](int idx, const string& label)
+  {
+    myEvents[idx] = new PopUpWidget(this, font, xpos, ypos,
+                        pwidth, lineHeight, combolist, label);
+    wid.push_back(myEvents[idx]);
+    ypos += lineHeight + 4;
+  };
+
   xpos = 10;
   ADD_EVENT_POPUP(0, "Event 1: ");
   ADD_EVENT_POPUP(1, "Event 2: ");

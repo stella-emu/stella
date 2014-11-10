@@ -63,14 +63,6 @@ DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerParser::~DebuggerParser()
-{
-  args.clear();
-  argStrings.clear();
-  watches.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // main entry point: PromptWidget calls this method.
 string DebuggerParser::run(const string& command)
 {

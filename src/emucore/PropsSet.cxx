@@ -35,13 +35,6 @@ PropertiesSet::PropertiesSet(const string& propsfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet::~PropertiesSet()
-{
-  myExternalProps.clear();
-  myTempProps.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::load(const string& filename)
 {
   ifstream in(filename.c_str(), ios::in);
@@ -98,7 +91,7 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
   if(!useDefaults)
   {
     // Check external list
-    const auto ext = myExternalProps.find(md5);
+    auto ext = myExternalProps.find(md5);
     if(ext != myExternalProps.end())
     {
       properties = ext->second;
@@ -106,7 +99,7 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
     }
     else  // Search temp list
     {
-      const auto tmp = myTempProps.find(md5);
+      auto tmp = myTempProps.find(md5);
       if(tmp != myTempProps.end())
       {
         properties = tmp->second;

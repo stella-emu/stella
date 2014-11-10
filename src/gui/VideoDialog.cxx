@@ -63,7 +63,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   //////////////////////////////////////////////////////////
   // 1) General options
-  wid.clear();
   tabID = myTab->addTab(" General ");
 
   // Video renderer
@@ -74,7 +73,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // TIA filters (will be dynamically filled later)
-  items.clear();
   myTIAZoom = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                               lineHeight, items, "TIA Zoom: ", lwidth);
   wid.push_back(myTIAZoom);

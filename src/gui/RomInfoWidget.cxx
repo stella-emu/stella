@@ -40,7 +40,6 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomInfoWidget::~RomInfoWidget()
 {
-  myRomInfo.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

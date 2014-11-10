@@ -86,7 +86,6 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 AboutDialog::~AboutDialog()
 {
   myDesc.clear();
-  myDescStr.clear();
 }
 
 // The following commands can be put at the start of a line (all subject to change):
@@ -101,10 +100,10 @@ AboutDialog::~AboutDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AboutDialog::updateStrings(int page, int lines, string& title)
 {
-#define ADD_ATEXT(d) do { myDescStr[i] = d; i++; } while(0)
-#define ADD_ALINE ADD_ATEXT("")
-
   int i = 0;
+  auto ADD_ATEXT = [&](const string& d) { myDescStr[i] = d; i++; };
+  auto ADD_ALINE = [&]() { ADD_ATEXT(""); };
+
   switch(page)
   {
     case 1:
@@ -112,13 +111,13 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
       ADD_ATEXT(string("\\C\\c2Features: ") + instance().features());
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
-      ADD_ALINE;
+      ADD_ALINE();
       ADD_ATEXT("\\CCopyright (C) 1995-2014 The Stella Team");
       ADD_ATEXT("\\C(http://stella.sf.net)");
-      ADD_ALINE;
+      ADD_ALINE();
       ADD_ATEXT("\\CStella is now DonationWare!");
       ADD_ATEXT("\\C(http://stella.sf.net/donations.php)");
-      ADD_ALINE;
+      ADD_ALINE();
       ADD_ATEXT("\\CStella is free software released under the GNU GPL");
       ADD_ATEXT("\\CSee manual for further details");
       break;
@@ -139,9 +138,9 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       title = "Contributors";
       ADD_ATEXT("\\L\\c0""  See http://stella.sf.net/credits.php for");
       ADD_ATEXT("\\L\\c0""  people that have contributed to Stella");
-      ADD_ALINE;
+      ADD_ALINE();
       ADD_ATEXT("\\L\\c0""  Thanks to the ScummVM project for the GUI code");
-      ADD_ALINE;
+      ADD_ALINE();
       ADD_ATEXT("\\L\\c0""  Thanks to Ian Bogost and the Georgia Tech");
       ADD_ATEXT("\\L\\c0""  Atari Team for the CRT Simulation effects");
       break;
@@ -151,7 +150,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\L\\c0""Special thanks to AtariAge for introducing the");
       ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation");
       ADD_ATEXT("\\L\\c2""  http://www.atariage.com");
-      ADD_ALINE;
+      ADD_ALINE();
       ADD_ATEXT("\\L\\c0""Finally, a huge thanks to the original Atari 2600");
       ADD_ATEXT("\\L\\c0""VCS team for giving us the magic, and to the");
       ADD_ATEXT("\\L\\c0""homebrew developers for keeping the magic alive");
@@ -159,7 +158,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
   }
 
   while(i < lines)
-    ADD_ALINE;
+    ADD_ALINE();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

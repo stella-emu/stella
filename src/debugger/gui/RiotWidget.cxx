@@ -40,17 +40,6 @@
 
 #include "RiotWidget.hxx"
 
-#define CREATE_IO_REGS(desc, bits, bitsID, editable)                     \
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,\
-                           desc, kTextAlignLeft);                        \
-  xpos += t->getWidth() + 5;                                             \
-  bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1);             \
-  bits->setTarget(this);                                                 \
-  bits->setID(bitsID);                                                   \
-  if(editable) addFocusWidget(bits); else bits->setEditable(false);      \
-  xpos += bits->getWidth() + 5;                                          \
-  bits->setList(off, on);
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
                        const GUI::Font& nfont,
@@ -73,6 +62,17 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     off.push_back("0");
     on.push_back("1");
   }
+
+#define CREATE_IO_REGS(desc, bits, bitsID, editable)                     \
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,\
+                           desc, kTextAlignLeft);                        \
+  xpos += t->getWidth() + 5;                                             \
+  bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1);             \
+  bits->setTarget(this);                                                 \
+  bits->setID(bitsID);                                                   \
+  if(editable) addFocusWidget(bits); else bits->setEditable(false);      \
+  xpos += bits->getWidth() + 5;                                          \
+  bits->setList(off, on);
 
   // SWCHA bits in 'poke' mode
   CREATE_IO_REGS("SWCHA(W):", mySWCHAWriteBits, kSWCHABitsID, true);

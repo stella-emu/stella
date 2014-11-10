@@ -27,9 +27,6 @@
 #include "Widget.hxx"
 #include "CommandDialog.hxx"
 
-#define addCDButton(label, cmd) \
-  new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight, label, cmd); xoffset += buttonWidth + 6
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, 0, 0, 16, 16)
@@ -45,42 +42,50 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 
   WidgetArray wid;
   ButtonWidget* b[16];
+  int xoffset = 10, yoffset = 10;
+
+  auto ADD_CD_BUTTON = [&](const string& label, int cmd)
+  {
+    ButtonWidget* b = new ButtonWidget(this, font, xoffset, yoffset,
+            buttonWidth, buttonHeight, label, cmd);
+    xoffset += buttonWidth + 6;
+    return b;
+  };
 
   // Row 1
-  int xoffset = 10, yoffset = 10;
-  b[0] = addCDButton("Select", kSelectCmd);
-  b[4] = addCDButton("Left Diff A", kLeftDiffACmd);
-  b[8] = addCDButton("Save State", kSaveStateCmd);
+  b[0] = ADD_CD_BUTTON("Select", kSelectCmd);
+  b[4] = ADD_CD_BUTTON("Left Diff A", kLeftDiffACmd);
+  b[8] = ADD_CD_BUTTON("Save State", kSaveStateCmd);
 
   // Row 2
   xoffset = 10;  yoffset += buttonHeight + 3;
-  b[1] = addCDButton("Reset", kResetCmd);
-  b[5] = addCDButton("Left Diff B", kLeftDiffBCmd);
-  b[9] = addCDButton("State Slot", kStateSlotCmd);
+  b[1] = ADD_CD_BUTTON("Reset", kResetCmd);
+  b[5] = ADD_CD_BUTTON("Left Diff B", kLeftDiffBCmd);
+  b[9] = ADD_CD_BUTTON("State Slot", kStateSlotCmd);
 
   // Row 3
   xoffset = 10;  yoffset += buttonHeight + 3;
-  b[2]  = addCDButton("Color TV", kColorCmd);
-  b[6]  = addCDButton("Right Diff A", kRightDiffACmd);
-  b[10] = addCDButton("Load State", kLoadStateCmd);
+  b[2]  = ADD_CD_BUTTON("Color TV", kColorCmd);
+  b[6]  = ADD_CD_BUTTON("Right Diff A", kRightDiffACmd);
+  b[10] = ADD_CD_BUTTON("Load State", kLoadStateCmd);
 
   // Row 4
   xoffset = 10;  yoffset += buttonHeight + 3;
-  b[3]  = addCDButton("B/W TV", kBWCmd);
-  b[7]  = addCDButton("Right Diff B", kRightDiffBCmd);
-  b[11] = addCDButton("Snapshot", kSnapshotCmd);
+  b[3]  = ADD_CD_BUTTON("B/W TV", kBWCmd);
+  b[7]  = ADD_CD_BUTTON("Right Diff B", kRightDiffBCmd);
+  b[11] = ADD_CD_BUTTON("Snapshot", kSnapshotCmd);
 
   // Row 5
   xoffset = 10;  yoffset += buttonHeight + 3;
-  b[12] = addCDButton("NTSC/PAL", kFormatCmd);
-  b[13] = addCDButton("Palette", kPaletteCmd);
-  b[14] = addCDButton("Reload ROM", kReloadRomCmd);
+  b[12] = ADD_CD_BUTTON("NTSC/PAL", kFormatCmd);
+  b[13] = ADD_CD_BUTTON("Palette", kPaletteCmd);
+  b[14] = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd);
 
   // Row 6
   xoffset = 10 + buttonWidth + 6;  yoffset += buttonHeight + 3;
-  b[15] = addCDButton("Exit Game", kExitCmd);
+  b[15] = ADD_CD_BUTTON("Exit Game", kExitCmd);
 
-  for(uInt8 i = 0; i < 16; ++i)
+  for(int i = 0; i < 16; ++i)
     wid.push_back(b[i]);
 
   addToFocusList(wid);

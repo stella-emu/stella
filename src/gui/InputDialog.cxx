@@ -43,7 +43,6 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, tabID;
-  WidgetArray wid;
   StringList actions;
 
   // Set real dimensions
@@ -83,7 +82,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
-  wid.clear();
+  WidgetArray wid;
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
@@ -115,7 +114,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   lwidth = font.getStringWidth("Use mouse as a controller: ");
   pwidth = font.getStringWidth("Analog devices");
 
-  items.clear();
   VList::push_back(items, "Left / Right", "lr");
   VList::push_back(items, "Right / Left", "rl");
   mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,

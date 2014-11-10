@@ -56,7 +56,6 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Bankswitch type:", kTextAlignLeft);
-  items.clear();
   for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
     VList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,

@@ -46,11 +46,6 @@ class PropertiesSet
     */
     PropertiesSet(const string& propsfile);
 
-    /**
-      Destructor
-    */
-    ~PropertiesSet();
-
   public:
     /** 
       Load properties from the specified file, and create an internal

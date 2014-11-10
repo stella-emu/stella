@@ -39,13 +39,12 @@ class RomAuditDialog : public Dialog
                    const GUI::Font& font, int max_w, int max_h);
     virtual ~RomAuditDialog();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
     void loadConfig();
     void auditRoms();
     void openBrowser(const string& title, const string& startpath,
                      FilesystemNode::ListMode mode, int cmd);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     enum {

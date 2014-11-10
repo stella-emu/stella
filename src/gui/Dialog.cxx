@@ -703,7 +703,6 @@ Dialog::Focus::Focus(Widget* w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Focus::~Focus()
 {
-  list.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -716,7 +715,6 @@ Dialog::TabFocus::TabFocus(TabWidget* w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::TabFocus::~TabFocus()
 {
-  focus.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -741,5 +739,5 @@ Widget* Dialog::TabFocus::getNewFocus()
 {
   currentTab = widget->getActiveTab();
 
-  return (currentTab < focus.size()) ? focus[currentTab].widget : 0;
+  return (currentTab < focus.size()) ? focus[currentTab].widget : nullptr;
 }

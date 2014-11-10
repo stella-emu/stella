@@ -114,18 +114,6 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::~CartDebug()
 {
-  myUserLabels.clear();
-  myUserAddresses.clear();
-  myUserCLabels.clear();
-  // myUserCAddresses.clear();
-  mySystemAddresses.clear();
-
-  for(uInt32 i = 0; i < myBankInfo.size(); ++i)
-  {
-    myBankInfo[i].addressList.clear();
-    myBankInfo[i].directiveList.clear();
-  }
-  myBankInfo.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -69,7 +69,6 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Fragment size
-  items.clear();
   VList::push_back(items, "128 bytes", "128");
   VList::push_back(items, "256 bytes", "256");
   VList::push_back(items, "512 bytes", "512");

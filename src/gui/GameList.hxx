@@ -23,7 +23,6 @@
 #ifndef GAME_LIST_HXX
 #define GAME_LIST_HXX
 
-#include <vector>
 #include "bspf.hxx"
 
 /**

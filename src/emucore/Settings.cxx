@@ -157,8 +157,6 @@ Settings::Settings(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::~Settings()
 {
-  myInternalSettings.clear();
-  myExternalSettings.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
