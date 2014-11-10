@@ -110,7 +110,6 @@
 		2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */; };
 		2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE7242E08CE910900C889A8 /* TIASnd.hxx */; };
 		2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D2331900900B5EF00613B1F /* AudioWidget.hxx */; };
-		2D91746809BA90380026E9FF /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5B096E261E00A518FE /* MediaFactory.hxx */; };
 		2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */; };
 		2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF61096E269100A518FE /* InputDialog.hxx */; };
 		2D91746E09BA90380026E9FF /* SDLMain.nib in Resources */ = {isa = PBXBuildFile; fileRef = B2F367C504C7ADC700A80002 /* SDLMain.nib */; };
@@ -190,7 +189,6 @@
 		2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D313F0A0879C4C0005BD3E5 /* YaccParser.cxx */; };
 		2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555D90880E78000466554 /* Cart3E.cxx */; };
 		2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555DD0880E79600466554 /* CpuDebug.cxx */; };
-		2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971DE0892CEA400F64D23 /* Expression.cxx */; };
 		2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D02207F08A301F200B9C76B /* InputTextDialog.cxx */; };
 		2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */; };
 		2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */; };
@@ -423,6 +421,7 @@
 		DCB20ECB1A0C50930048F595 /* atari_ntsc_impl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB20EC81A0C50930048F595 /* atari_ntsc_impl.hxx */; };
 		DCB20ECC1A0C50930048F595 /* atari_ntsc.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC91A0C50930048F595 /* atari_ntsc.cxx */; };
 		DCB20ECD1A0C50930048F595 /* atari_ntsc.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB20ECA1A0C50930048F595 /* atari_ntsc.hxx */; };
+		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
 		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
 		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
@@ -560,7 +559,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2D02207F08A301F200B9C76B /* InputTextDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = InputTextDialog.cxx; path = ../gui/InputTextDialog.cxx; sourceTree = SOURCE_ROOT; };
 		2D02208008A301F200B9C76B /* InputTextDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = InputTextDialog.hxx; path = ../gui/InputTextDialog.hxx; sourceTree = SOURCE_ROOT; };
-		2D05FF5B096E261E00A518FE /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MediaFactory.hxx; path = ../emucore/MediaFactory.hxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EventMappingWidget.cxx; path = ../gui/EventMappingWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EventMappingWidget.hxx; path = ../gui/EventMappingWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2D05FF60096E269100A518FE /* InputDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = InputDialog.cxx; path = ../gui/InputDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -765,7 +763,6 @@
 		2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StringListWidget.hxx; path = ../gui/StringListWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2DEFB40B09C3386F00754289 /* Cart.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Cart.icns; sourceTree = SOURCE_ROOT; };
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerSystem.hxx; path = ../debugger/DebuggerSystem.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971DE0892CEA400F64D23 /* Expression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Expression.cxx; path = ../debugger/Expression.cxx; sourceTree = SOURCE_ROOT; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Expression.hxx; path = ../debugger/Expression.hxx; sourceTree = SOURCE_ROOT; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
 		DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StateManager.cxx; path = ../emucore/StateManager.cxx; sourceTree = SOURCE_ROOT; };
@@ -972,6 +969,7 @@
 		DCB20EC81A0C50930048F595 /* atari_ntsc_impl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = atari_ntsc_impl.hxx; path = ../common/tv_filters/atari_ntsc_impl.hxx; sourceTree = "<group>"; };
 		DCB20EC91A0C50930048F595 /* atari_ntsc.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = atari_ntsc.cxx; path = ../common/tv_filters/atari_ntsc.cxx; sourceTree = "<group>"; };
 		DCB20ECA1A0C50930048F595 /* atari_ntsc.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = atari_ntsc.hxx; path = ../common/tv_filters/atari_ntsc.hxx; sourceTree = "<group>"; };
+		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MediaFactory.hxx; path = ../common/MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
@@ -1321,6 +1319,7 @@
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
 				DCB20EC61A0C506C0048F595 /* main.cxx */,
+				DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */,
 				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
@@ -1482,7 +1481,6 @@
 				2DE2DF7D0627AE33006BEC99 /* M6532.hxx */,
 				2DE2DF7E0627AE33006BEC99 /* MD5.cxx */,
 				2DE2DF7F0627AE34006BEC99 /* MD5.hxx */,
-				2D05FF5B096E261E00A518FE /* MediaFactory.hxx */,
 				DC8C1BAB14B25DE7006440EE /* MindLink.cxx */,
 				DC8C1BAC14B25DE7006440EE /* MindLink.hxx */,
 				DC11F78B0DB36933003B505E /* MT24LC256.cxx */,
@@ -1643,7 +1641,6 @@
 				2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */,
 				DC6B2BA211037FF200F199A7 /* DiStella.cxx */,
 				DC6B2BA311037FF200F199A7 /* DiStella.hxx */,
-				2DF971DE0892CEA400F64D23 /* Expression.cxx */,
 				2DF971DF0892CEA400F64D23 /* Expression.hxx */,
 				2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */,
 				2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */,
@@ -1810,6 +1807,7 @@
 				2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */,
 				2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */,
 				2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */,
+				DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */,
 				2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */,
 				2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */,
 				2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */,
@@ -1842,7 +1840,6 @@
 				2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */,
 				2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */,
 				2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */,
-				2D91746809BA90380026E9FF /* MediaFactory.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
 				DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */,
@@ -2160,7 +2157,6 @@
 				DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
-				2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
 				DC74E5C6198AF12700F37E36 /* CartDASHWidget.cxx in Sources */,
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
