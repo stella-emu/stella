@@ -326,15 +326,13 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_read_data(png_structp ctx, png_bytep area, png_size_t size)
 {
-  ifstream* stream = (ifstream *) png_get_io_ptr(ctx);
-  stream->read((char *)area, size);
+  ((ifstream *) png_get_io_ptr(ctx))->read((char *)area, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_write_data(png_structp ctx, png_bytep area, png_size_t size)
 {
-  ofstream* stream = (ofstream *) png_get_io_ptr(ctx);
-  stream->write((const char *)area, size);
+  ((ofstream *) png_get_io_ptr(ctx))->write((const char *)area, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

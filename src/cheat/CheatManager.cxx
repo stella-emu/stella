@@ -128,13 +128,11 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::addOneShot(const string& name, const string& code)
 {
-  Cheat* cheat = createCheat(name, code);
-  if(!cheat)
-    return;
+  unique_ptr<Cheat> cheat(createCheat(name, code));
 
   // Evaluate this cheat once, and then immediately delete it
-  cheat->evaluate();
-  delete cheat;
+  if(cheat)
+    cheat->evaluate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -218,14 +216,14 @@ void CheatManager::parse(const string& cheats)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::enable(const string& code, bool enable)
 {
-  for(unsigned int i = 0; i < myCheatList.size(); i++)
+  for(const auto& cheat: myCheatList)
   {
-    if(myCheatList[i]->code() == code)
+    if(cheat->code() == code)
     {
       if(enable)
-        myCheatList[i]->enable();
+        cheat->enable();
       else
-        myCheatList[i]->disable();
+        cheat->disable();
       break;
     }
   }
@@ -327,7 +325,7 @@ void CheatManager::saveCheats(const string& md5sum)
   // Only update the list if absolutely necessary
   if(changed)
   {
-    CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
+    auto iter = myCheatMap.find(md5sum);
 
     // Erase old entry and add a new one only if it's changed
     if(iter != myCheatMap.end())
@@ -350,16 +348,16 @@ void CheatManager::clear()
   // the following loop
   myPerFrameList.clear();
 
-  for(unsigned int i = 0; i < myCheatList.size(); i++)
-    delete myCheatList[i];
+  for(auto cheat: myCheatList)
+    delete cheat;
   myCheatList.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheatManager::isValidCode(const string& code) const
 {
-  for(unsigned int i = 0; i < code.size(); i++)
-    if(!isxdigit(code[i]))
+  for(auto c: code)
+    if(!isxdigit(c))
       return false;
 
   uInt32 length = (uInt32)code.length();

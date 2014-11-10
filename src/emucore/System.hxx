@@ -396,11 +396,11 @@ class System : public Serializable
     // Null device to use for page which are not installed
     NullDevice myNullDevice; 
 
-    // Pointer to a dynamically allocated array of PageAccess structures
-    PageAccess* myPageAccessTable;
+    // The list of PageAccess structures
+    PageAccess myPageAccessTable[NUM_PAGES];
 
-    // Pointer to a dynamically allocated array for dirty pages
-    bool* myPageIsDirtyTable;
+    // The list of dirty pages
+    bool myPageIsDirtyTable[NUM_PAGES];
 
     // The current state of the Data Bus
     uInt8 myDataBusState;

@@ -403,15 +403,15 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   }
   */
 
-  for(int i = 0; i < argCount; i++) {
-    int err = YaccParser::parse(argStrings[i].c_str());
-    if(err) {
-      args.push_back(-1);
-    } else {
-      Expression* e = YaccParser::getResult();
-      args.push_back( e->evaluate() );
-      delete e;
+  for(int i = 0; i < argCount; i++)
+  {
+    if(!YaccParser::parse(argStrings[i].c_str()))
+    {
+      unique_ptr<Expression> expr(YaccParser::getResult());
+      args.push_back(expr->evaluate());
     }
+    else
+      args.push_back(-1);
   }
 
   return true;
@@ -422,7 +422,7 @@ bool DebuggerParser::validateArgs(int cmd)
 {
   // cerr << "entering validateArgs(" << cmd << ")" << endl;
   bool required = commands[cmd].parmsRequired;
-  parameters *p = commands[cmd].parms;
+  parameters* p = commands[cmd].parms;
 
   if(argCount == 0)
   {

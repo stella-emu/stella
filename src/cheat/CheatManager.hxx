@@ -28,7 +28,6 @@ class OSystem;
 #include "bspf.hxx"
 
 typedef vector<Cheat*> CheatList;
-typedef map<string,string> CheatCodeMap;
 
 /**
   This class provides an interface for performing all cheat operations
@@ -156,7 +155,7 @@ class CheatManager
     CheatList myCheatList;
     CheatList myPerFrameList;
 
-    CheatCodeMap myCheatMap;
+    map<string,string> myCheatMap;
     string myCheatFile;
 
     // This is set each time a new cheat/ROM is loaded, for later

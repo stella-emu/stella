@@ -43,10 +43,6 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
   // Re-initialize random generator
   randGenerator().initSeed();
 
-  // Allocate page table and dirty list
-  myPageAccessTable = new PageAccess[NUM_PAGES];
-  myPageIsDirtyTable = new bool[NUM_PAGES];
-
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PA_READ);
   for(int page = 0; page < NUM_PAGES; ++page)
@@ -62,9 +58,6 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::~System()
 {
-  // Free my page access table and dirty list
-  delete[] myPageAccessTable;
-  delete[] myPageIsDirtyTable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -218,7 +211,7 @@ void System::poke(uInt16 addr, uInt8 value)
 uInt8 System::getAccessFlags(uInt16 addr) const
 {
 #ifdef DEBUGGER_SUPPORT
-  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
+  const PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
 
   if(access.codeAccessBase)
     return *(access.codeAccessBase + (addr & PAGE_MASK));

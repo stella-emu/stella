@@ -220,9 +220,8 @@ void EventHandler::poll(uInt64 time)
 #endif
     {
     #ifdef CHEATCODE_SUPPORT
-      const CheatList& cheats = myOSystem.cheat().perFrame();
-      for(uInt32 i = 0; i < cheats.size(); i++)
-        cheats[i]->evaluate();
+      for(auto& cheat: myOSystem.cheat().perFrame())
+        cheat->evaluate();
     #endif
 
       // Handle continuous snapshots

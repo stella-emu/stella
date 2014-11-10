@@ -268,7 +268,7 @@ bool CartDebug::disassemble(bool force)
     if(bankChanged || !pcfound)
     {
       AddressList::const_iterator i;
-      for(i = addresses.begin(); i != addresses.end(); ++i)
+      for(auto i = addresses.begin(); i != addresses.end(); ++i)
       {
         if(PC < *i)
         {
@@ -537,11 +537,11 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
 bool CartDebug::removeLabel(const string& label)
 {
   // Only user-defined labels can be removed
-  LabelToAddr::iterator iter = myUserAddresses.find(label);
+  const auto& iter = myUserAddresses.find(label);
   if(iter != myUserAddresses.end())
   {
     // Erase the address assigned to the label
-    AddrToLabel::iterator iter2 = myUserLabels.find(iter->second);
+    const auto& iter2 = myUserLabels.find(iter->second);
     if(iter2 != myUserLabels.end())
       myUserLabels.erase(iter2);
 
@@ -612,8 +612,8 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
     {
       // RAM can use user-defined labels; otherwise we default to
       // standard mnemonics
-      AddrToLabel::const_iterator iter;
-      if((iter = myUserLabels.find(addr)) != myUserLabels.end())
+      auto iter = myUserLabels.find(addr);
+      if(iter != myUserLabels.end())
       {
         buf << iter->second;
       }
@@ -634,8 +634,8 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
     case ADDR_ROM:
     {
       // These addresses can never be in the system labels list
-      AddrToLabel::const_iterator iter;
-      if((iter = myUserLabels.find(addr)) != myUserLabels.end())
+      const auto& iter = myUserLabels.find(addr);
+      if(iter != myUserLabels.end())
       {
         buf << iter->second;
         return true;
