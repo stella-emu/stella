@@ -34,13 +34,16 @@
 class Expression
 {
   public:
-    Expression(Expression* lhs, Expression* rhs) : myLHS(lhs), myRHS(rhs) { }
+    Expression(Expression* lhs = nullptr, Expression* rhs = nullptr)
+      : myLHS(lhs), myRHS(rhs) { }
     virtual ~Expression() { }
 
-    virtual uInt16 evaluate() const = 0;
+    virtual uInt16 evaluate() const { return 0; }
 
   protected:
     unique_ptr<Expression> myLHS, myRHS;
 };
+
+static const Expression EmptyExpression;
 
 #endif

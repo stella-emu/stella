@@ -144,9 +144,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
-  for(auto& f: myFunctions)
-    delete f.second;
-
   delete myBreakPoints;
   delete myReadTraps;
   delete myWriteTraps;
@@ -242,9 +239,11 @@ string Debugger::autoExec()
   {
     // TODO - check this for memory leaks
     int res = YaccParser::parse(builtin_functions[i][1]);
-    if(res != 0) cerr << "ERROR in builtin function!" << endl;
-    Expression* exp = YaccParser::getResult();
-    addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
+    if(res == 0)
+      addFunction(builtin_functions[i][0], builtin_functions[i][1],
+                  YaccParser::getResult(), true);
+    else
+      cerr << "ERROR in builtin function!" << endl;
   }
   return buf.str();
 }
@@ -536,9 +535,8 @@ void Debugger::setQuitState()
 bool Debugger::addFunction(const string& name, const string& definition,
                            Expression* exp, bool builtin)
 {
-  myFunctions.insert(make_pair(name, exp));
-  if(!builtin)
-    myFunctionDefs.insert(make_pair(name, definition));
+  myFunctions.insert(make_pair(name, unique_ptr<Expression>(exp)));
+  myFunctionDefs.insert(make_pair(name, definition));
 
   return true;
 }
@@ -551,7 +549,6 @@ bool Debugger::delFunction(const string& name)
     return false;
 
   myFunctions.erase(name);
-  delete iter->second;
 
   const auto& def_iter = myFunctionDefs.find(name);
   if(def_iter == myFunctionDefs.end())
@@ -562,10 +559,10 @@ bool Debugger::delFunction(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Expression* Debugger::getFunction(const string& name) const
+const Expression& Debugger::getFunction(const string& name) const
 {
   const auto& iter = myFunctions.find(name);
-  return iter != myFunctions.end() ? iter->second : nullptr;
+  return iter != myFunctions.end() ? *(iter->second.get()) : EmptyExpression;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

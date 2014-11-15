@@ -48,7 +48,7 @@ class ButtonWidget;
 #include "Stack.hxx"
 #include "bspf.hxx"
 
-typedef map<string,Expression*> FunctionMap;
+typedef map<string,unique_ptr<Expression>> FunctionMap;
 typedef map<string,string> FunctionDefMap;
 
 /*
@@ -118,9 +118,9 @@ class Debugger : public DialogContainer
     bool addFunction(const string& name, const string& def,
                      Expression* exp, bool builtin = false);
     bool delFunction(const string& name);
-    const Expression* getFunction(const string& name) const;
+    const Expression& getFunction(const string& name) const;
 
-    const string& getFunctionDef(const string& name) const; // FIXME - dead code
+    const string& getFunctionDef(const string& name) const;
     const FunctionDefMap getFunctionDefMap() const;
     string builtinHelp() const;
 
