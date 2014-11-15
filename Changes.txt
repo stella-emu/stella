@@ -16,7 +16,7 @@
 
   * The conversion to C++11 has begun :)  From this point on, to build
     Stella you will need a C++11 compatible compiler (Visual Studio 2013,
-    Clang 3.5, gcc 4.9, Xcode 5, etc).  Eventually, this will bring more
+    Clang 3.3, gcc 4.7, Xcode 5, etc).  Eventually, this will bring more
     bug-free and (hopefully) faster code.
 
   * The minimum supported version for the OSX port is now OSX 10.7.

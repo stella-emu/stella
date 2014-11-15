@@ -81,7 +81,7 @@ class Dialog : public GuiObject
         the surface render() call will always occur in such a case, the
         surface should call setVisible() to enable/disable its output.
     */
-    void addSurface(FBSurface* surface);
+    void addSurface(shared_ptr<FBSurface> surface);
 
   protected:
     virtual void draw();
@@ -124,7 +124,7 @@ class Dialog : public GuiObject
     bool    _visible;
     bool    _processCancel;
 
-    Common::FixedStack<FBSurface*> mySurfaceStack;
+    Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 
   private:
     struct Focus {
@@ -154,7 +154,7 @@ class Dialog : public GuiObject
     TabFocusList _myTabList;  // focus for each tab (if any)
 
     WidgetArray _buttonGroup;
-    FBSurface*  _surface;
+    shared_ptr<FBSurface> _surface;
 
     int _tabID;
 };

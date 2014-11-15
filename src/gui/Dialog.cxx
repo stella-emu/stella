@@ -267,7 +267,7 @@ void Dialog::redrawFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addSurface(FBSurface* surface)
+void Dialog::addSurface(shared_ptr<FBSurface> surface)
 {
   mySurfaceStack.push(surface);
 }

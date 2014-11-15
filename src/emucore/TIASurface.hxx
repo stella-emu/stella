@@ -139,7 +139,7 @@ class TIASurface
     FrameBuffer& myFB;
     TIA* myTIA;
 
-    FBSurface *myTiaSurface, *mySLineSurface, *myBaseTiaSurface;
+    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
 
     // Enumeration created such that phosphor off/on is in LSB,
     // and Blargg off/on is in MSB

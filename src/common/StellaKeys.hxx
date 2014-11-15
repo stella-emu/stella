@@ -36,7 +36,7 @@
 */
 
 // This comes directly from SDL_scancode.h
-typedef enum
+enum StellaKey
 {
     KBDK_UNKNOWN = 0,
 
@@ -390,10 +390,10 @@ typedef enum
 
     KBDK_LAST = 512 /**< not a key, just marks the number of scancodes
                                  for array bounds */
-} StellaKey;
+};
 
 // This comes directly from SDL_keycode.h
-typedef enum
+enum StellaMod
 {
     KBDM_NONE = 0x0000,
     KBDM_LSHIFT = 0x0001,
@@ -412,6 +412,6 @@ typedef enum
     KBDM_SHIFT = (KBDM_LSHIFT|KBDM_RSHIFT),
     KBDM_ALT = (KBDM_LALT|KBDM_RALT),
     KBDM_GUI = (KBDM_LGUI|KBDM_RGUI)
-} StellaMod;
+};
 
 #endif /* StellaKeys */

@@ -206,7 +206,7 @@ class FrameBuffer
 
       @return  A pointer to a valid surface object, or nullptr.
     */
-    FBSurface* allocateSurface(int w, int h, const uInt32* data = 0);
+    shared_ptr<FBSurface> allocateSurface(int w, int h, const uInt32* data = 0);
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -546,7 +546,7 @@ class FrameBuffer
       int x, y, w, h;
       MessagePosition position;
       uInt32 color;
-      FBSurface* surface;
+      shared_ptr<FBSurface> surface;
       bool enabled;
     };
     Message myMsg;
@@ -561,7 +561,7 @@ class FrameBuffer
     VariantList myTIAZoomLevels;
 
     // Holds a reference to all the surfaces that have been created
-    vector<unique_ptr<FBSurface>> mySurfaceList;
+    vector<shared_ptr<FBSurface>> mySurfaceList;
 
     // Holds UI palette data (standard and classic colours)
     static uInt32 ourGUIColors[2][kNumColors-256];

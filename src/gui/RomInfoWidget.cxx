@@ -28,7 +28,6 @@
 RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    mySurface(nullptr),
     mySurfaceIsValid(false),
     myHaveProperties(false),
     myAvail(w > 400 ? GUI::Size(640, 512) : GUI::Size(320, 256))
@@ -174,22 +173,3 @@ void RomInfoWidget::drawWidget(bool hilite)
     ypos += _font.getLineHeight();
   }
 }
-
-/*
-cerr << "surface:" << endl
-	<< "  w = " << sw << endl
-	<< "  h = " << sh << endl
-	<< "  szoom = " << myZoomLevel << endl
-	<< "  spitch = " << spitch << endl
-	<< endl;
-
-cerr << "image:" << endl
-	<< "  width  = " << width << endl
-	<< "  height = " << height << endl
-	<< "  izoom = " << izoom << endl
-	<< "  ipitch = " << ipitch << endl
-	<< "  bufsize = " << bufsize << endl
-	<< "  buf_offset = " << buf_offset << endl
-	<< "  i_offset = " << i_offset << endl
-	<< endl;
-*/
