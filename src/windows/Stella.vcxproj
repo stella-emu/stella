@@ -377,7 +377,6 @@
     <ClCompile Include="..\debugger\gui\DebuggerDialog.cxx" />
     <ClCompile Include="..\debugger\DebuggerParser.cxx" />
     <ClCompile Include="..\debugger\DiStella.cxx" />
-    <ClCompile Include="..\debugger\PackedBitArray.cxx" />
     <ClCompile Include="..\debugger\gui\PromptWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RamWidget.cxx" />
     <ClCompile Include="..\debugger\RiotDebug.cxx" />

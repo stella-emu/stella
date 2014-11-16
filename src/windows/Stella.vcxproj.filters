@@ -297,9 +297,6 @@
     <ClCompile Include="..\debugger\DiStella.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\PackedBitArray.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\PromptWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
