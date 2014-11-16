@@ -26,7 +26,6 @@ class CartDebug;
 class CpuDebug;
 class RiotDebug;
 class TIADebug;
-class M6502;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
@@ -44,6 +43,7 @@ class ButtonWidget;
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
+#include "M6502.hxx"
 #include "System.hxx"
 #include "Stack.hxx"
 #include "bspf.hxx"
@@ -158,12 +158,13 @@ class Debugger : public DialogContainer
     const GUI::Font& lfont() const      { return myDialog->lfont();     }
     const GUI::Font& nlfont() const     { return myDialog->nfont();     }
     DebuggerParser& parser() const      { return *myParser;             }
-    PackedBitArray& breakpoints() const { return *myBreakPoints;        }
-    PackedBitArray& readtraps() const   { return *myReadTraps;          }
-    PackedBitArray& writetraps() const  { return *myWriteTraps;         }
     PromptWidget& prompt() const        { return myDialog->prompt();    }
     RomWidget& rom() const              { return myDialog->rom();       }
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
+
+    PackedBitArray& breakPoints() const { return mySystem.m6502().breakPoints(); }
+    PackedBitArray& readTraps() const   { return mySystem.m6502().readTraps();   }
+    PackedBitArray& writeTraps() const  { return mySystem.m6502().writeTraps();  }
 
     /**
       Run the debugger command and return the result.
@@ -301,10 +302,6 @@ class Debugger : public DialogContainer
     unique_ptr<CpuDebug>       myCpuDebug;
     unique_ptr<RiotDebug>      myRiotDebug;
     unique_ptr<TIADebug>       myTiaDebug;
-
-    PackedBitArray* myBreakPoints;
-    PackedBitArray* myReadTraps;
-    PackedBitArray* myWriteTraps;
 
     static Debugger* myStaticDebugger;
 

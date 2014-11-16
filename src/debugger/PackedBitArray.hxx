@@ -17,36 +17,40 @@
 // $Id$
 //============================================================================
 
-#ifndef PACKEDBITARRAY_HXX
-#define PACKEDBITARRAY_HXX
+#ifndef PACKED_BIT_ARRAY_HXX
+#define PACKED_BIT_ARRAY_HXX
+
+#include <bitset>
 
 #include "bspf.hxx"
 
 class PackedBitArray
 {
   public:
-    PackedBitArray(uInt32 length);
-    ~PackedBitArray();
+    PackedBitArray() : myInitialized(false) { }
 
-    uInt32 isSet(uInt32 bit) const;
-    uInt32 isClear(uInt32 bit) const;
+    bool isSet(uInt32 bit) const   { return myBits[bit];  }
+    bool isClear(uInt32 bit) const { return !myBits[bit]; }
 
-    void set(uInt32 bit);
-    void clear(uInt32 bit);
-    void toggle(uInt32 bit);
+    void set(uInt32 bit)    { myBits[bit] = true;  }
+    void clear(uInt32 bit)  { myBits[bit] = false; }
+    void toggle(uInt32 bit) { myBits.flip(bit);    }
+
+    void initialize() { myInitialized = true; }
+    void clearAll() { myInitialized = false; myBits.reset(); }
+
+    bool isInitialized() const { return myInitialized; }
 
   private:
     // Copy constructor and assignment operator not supported
     PackedBitArray(const PackedBitArray&);
     PackedBitArray& operator = (const PackedBitArray&);
 
-    // number of unsigned ints (size/wordSize):
-    uInt32 words;
+    // The actual bits
+    bitset<0x10000> myBits;
 
-    // the array itself:
-    uInt32* bits;
-
-    static const uInt32 WORD_SIZE = sizeof(uInt32) * 8;
+    // Indicates whether we should treat this bitset as initialized
+    bool myInitialized;
 };
 
 #endif

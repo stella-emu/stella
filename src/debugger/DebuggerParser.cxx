@@ -869,7 +869,7 @@ void DebuggerParser::executeDelfunction()
   if(debugger.delFunction(argStrings[0]))
     commandResult << "removed function " << argStrings[0];
   else
-    commandResult << "function " << argStrings[0] << " not found";
+    commandResult << "function " << argStrings[0] << " built-in or not found";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1042,7 +1042,7 @@ void DebuggerParser::executeListbreaks()
 
   for(uInt32 i = 0; i < 0x10000; i++)
   {
-    if(debugger.breakpoints().isSet(i))
+    if(debugger.breakPoints().isSet(i))
     {
       buf << debugger.cartDebug().getLabel(i, true, 4) << " ";
       if(! (++count % 8) ) buf << "\n";

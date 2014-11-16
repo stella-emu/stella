@@ -20,18 +20,19 @@
 #ifndef M6502_HXX
 #define M6502_HXX
 
-class M6502;
-class Debugger;
-class CpuDebug;
-class Expression;
-class PackedBitArray;
+#ifdef DEBUGGER_SUPPORT
+  class Debugger;
+  class CpuDebug;
+
+  #include "Expression.hxx"
+  #include "PackedBitArray.hxx"
+#endif
+
 class Settings;
 
 #include "bspf.hxx"
 #include "System.hxx"
 #include "Serializable.hxx"
-
-typedef vector<unique_ptr<Expression>> ExpressionList;
 
 /**
   The 6502 is an 8-bit microprocessor that has a 64K addressing space.
@@ -202,22 +203,18 @@ class M6502 : public Serializable
 
 #ifdef DEBUGGER_SUPPORT
   public:
-    /**
-      Attach the specified debugger.
-
-      @param debugger The debugger to attach to the microprocessor.
-    */
+    // Attach the specified debugger.
     void attach(Debugger& debugger);
 
-    void setBreakPoints(PackedBitArray* bp);
-    void setTraps(PackedBitArray* read, PackedBitArray* write);
+    PackedBitArray& breakPoints() { return myBreakPoints; }
+    PackedBitArray& readTraps()   { return myReadTraps;   }
+    PackedBitArray& writeTraps()  { return myWriteTraps;  }
 
     uInt32 addCondBreak(Expression* e, const string& name);
     void delCondBreak(uInt32 brk);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
-    Int32 evalCondBreaks();
-#endif
+#endif  // DEBUGGER_SUPPORT
 
   private:
     /**
@@ -349,12 +346,19 @@ class M6502 : public Serializable
     static constexpr uInt32 SYSTEM_CYCLES_PER_CPU = 1;
 
 #ifdef DEBUGGER_SUPPORT
+    Int32 evalCondBreaks() {
+      for(uInt32 i = 0; i < myBreakConds.size(); i++)
+        if(myBreakConds[i]->evaluate())
+          return i;
+
+      return -1; // no break hit
+    };
+
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;
 
-    PackedBitArray* myBreakPoints;
-    PackedBitArray* myReadTraps;
-    PackedBitArray* myWriteTraps;
+    // Addresses for which the specified action should occur
+    PackedBitArray myBreakPoints, myReadTraps, myWriteTraps;
 
     // Did we just now hit a trap?
     bool myJustHitTrapFlag;
@@ -364,9 +368,9 @@ class M6502 : public Serializable
     };
     HitTrapInfo myHitTrapInfo;
 
+    vector<unique_ptr<Expression>> myBreakConds;
     StringList myBreakCondNames;
-    ExpressionList myBreakConds;
-#endif
+#endif  // DEBUGGER_SUPPORT
 };
 
 #endif

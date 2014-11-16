@@ -62,11 +62,7 @@ M6502::M6502(const Settings& settings)
     myDataAddressForPoke(0)
 {
 #ifdef DEBUGGER_SUPPORT
-  myDebugger    = nullptr;
-  myBreakPoints = nullptr;
-  myReadTraps   = nullptr;
-  myWriteTraps  = nullptr;
-
+  myDebugger = nullptr;
   myJustHitTrapFlag = false;
 #endif
 }
@@ -130,14 +126,13 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
 
 #ifdef DEBUGGER_SUPPORT
-  if(myReadTraps != nullptr && myReadTraps->isSet(address))
+  if(myReadTraps.isInitialized() && myReadTraps.isSet(address))
   {
     myJustHitTrapFlag = true;
     myHitTrapInfo.message = "RTrap: ";
     myHitTrapInfo.address = address;
   }
-//cerr << "addr = " << HEX4 << address << ", flags = " << Debugger::to_bin_8(flags) << endl;
-#endif
+#endif  // DEBUGGER_SUPPORT
 
   uInt8 result = mySystem->peek(address, flags);
   myLastAccessWasRead = true;
@@ -159,13 +154,13 @@ inline void M6502::poke(uInt16 address, uInt8 value)
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
 
 #ifdef DEBUGGER_SUPPORT
-  if(myWriteTraps != nullptr && myWriteTraps->isSet(address))
+  if(myWriteTraps.isInitialized() && myWriteTraps.isSet(address))
   {
     myJustHitTrapFlag = true;
     myHitTrapInfo.message = "WTrap: ";
     myHitTrapInfo.address = address;
   }
-#endif
+#endif  // DEBUGGER_SUPPORT
 
   mySystem->poke(address, value);
   myLastAccessWasRead = false;
@@ -193,10 +188,9 @@ bool M6502::execute(uInt32 number)
         }
       }
 
-      if(myBreakPoints)
-        if(myBreakPoints->isSet(PC))
-          if(myDebugger && myDebugger->start("BP: ", PC))
-            return true;
+      if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC))
+        if(myDebugger && myDebugger->start("BP: ", PC))
+          return true;
 
       int cond = evalCondBreaks();
       if(cond > -1)
@@ -392,7 +386,7 @@ void M6502::attach(Debugger& debugger)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addCondBreak(Expression *e, const string& name)
+uInt32 M6502::addCondBreak(Expression* e, const string& name)
 {
   myBreakConds.emplace_back(unique_ptr<Expression>(e));
   myBreakCondNames.push_back(name);
@@ -420,28 +414,5 @@ void M6502::clearCondBreaks()
 const StringList& M6502::getCondBreakNames() const
 {
   return myBreakCondNames;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 M6502::evalCondBreaks()
-{
-  for(uInt32 i = 0; i < myBreakConds.size(); i++)
-    if(myBreakConds[i]->evaluate())
-      return i;
-
-  return -1; // no break hit
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::setBreakPoints(PackedBitArray *bp)
-{
-  myBreakPoints = bp;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::setTraps(PackedBitArray *read, PackedBitArray *write)
-{
-  myReadTraps = read;
-  myWriteTraps = write;
 }
 #endif  // DEBUGGER_SUPPORT

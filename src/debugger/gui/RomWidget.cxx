@@ -78,7 +78,7 @@ void RomWidget::loadConfig()
   myListIsDirty |= cart.disassemble(myListIsDirty);
   if(myListIsDirty)
   {
-    myRomList->setList(cart.disassembly(), dbg.breakpoints());
+    myRomList->setList(cart.disassembly(), dbg.breakPoints());
     myListIsDirty = false;
   }
 

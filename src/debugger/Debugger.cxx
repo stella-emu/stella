@@ -115,9 +115,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     myConsole(console),
     mySystem(console.system()),
     myDialog(nullptr),
-    myBreakPoints(nullptr),
-    myReadTraps(nullptr),
-    myWriteTraps(nullptr),
     myWidth(DebuggerDialog::kSmallFontMinW),
     myHeight(DebuggerDialog::kSmallFontMinH)
 {
@@ -130,10 +127,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
   myRiotDebug = make_ptr<RiotDebug>(*this, myConsole);
   myTiaDebug  = make_ptr<TIADebug>(*this, myConsole);
 
-  myBreakPoints = new PackedBitArray(0x10000);
-  myReadTraps   = new PackedBitArray(0x10000);
-  myWriteTraps  = new PackedBitArray(0x10000);
-
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
   // there will only be ever one instance of debugger in Stella,
@@ -144,9 +137,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
-  delete myBreakPoints;
-  delete myReadTraps;
-  delete myWriteTraps;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -362,41 +352,39 @@ int Debugger::trace()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleBreakPoint(int bp)
 {
-  mySystem.m6502().setBreakPoints(myBreakPoints);
+  breakPoints().initialize();
   if(bp < 0) bp = myCpuDebug->pc();
-  myBreakPoints->toggle(bp);
+  breakPoints().toggle(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setBreakPoint(int bp, bool set)
 {
-  mySystem.m6502().setBreakPoints(myBreakPoints);
+  breakPoints().initialize();
   if(bp < 0) bp = myCpuDebug->pc();
-  if(set)
-    myBreakPoints->set(bp);
-  else
-    myBreakPoints->clear(bp);
+  if(set) breakPoints().set(bp);
+  else    breakPoints().clear(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::breakPoint(int bp)
 {
   if(bp < 0) bp = myCpuDebug->pc();
-  return myBreakPoints->isSet(bp) != 0;
+  return breakPoints().isSet(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleReadTrap(int t)
 {
-  mySystem.m6502().setTraps(myReadTraps, myWriteTraps);
-  myReadTraps->toggle(t);
+  readTraps().initialize();
+  readTraps().toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleWriteTrap(int t)
 {
-  mySystem.m6502().setTraps(myReadTraps, myWriteTraps);
-  myWriteTraps->toggle(t);
+  writeTraps().initialize();
+  writeTraps().toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,13 +397,13 @@ void Debugger::toggleTrap(int t)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::readTrap(int t)
 {
-  return myReadTraps->isSet(t) != 0;
+  return readTraps().isInitialized() && readTraps().isSet(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::writeTrap(int t)
 {
-  return myWriteTraps->isSet(t) != 0;
+  return writeTraps().isInitialized() && writeTraps().isSet(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -463,19 +451,14 @@ bool Debugger::rewindState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::clearAllBreakPoints()
 {
-  delete myBreakPoints;
-  myBreakPoints = new PackedBitArray(0x10000);
-  mySystem.m6502().setBreakPoints(nullptr);
+  breakPoints().clearAll();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::clearAllTraps() 
 {
-  delete myReadTraps;
-  delete myWriteTraps;
-  myReadTraps = new PackedBitArray(0x10000);
-  myWriteTraps = new PackedBitArray(0x10000);
-  mySystem.m6502().setTraps(nullptr, nullptr);
+  readTraps().clearAll();
+  writeTraps().clearAll();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -527,7 +510,7 @@ void Debugger::setQuitState()
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
-  //	if(myBreakPoints->isSet(myCpuDebug->pc()))
+  //	if(breakPoints().isSet(myCpuDebug->pc()))
   mySystem.m6502().execute(1);
 }
 
@@ -547,6 +530,11 @@ bool Debugger::delFunction(const string& name)
   const auto& iter = myFunctions.find(name);
   if(iter == myFunctions.end())
     return false;
+
+  // We never want to delete built-in functions
+  for(int i = 0; builtin_functions[i][0] != 0; ++i)
+    if(name == builtin_functions[i][0])
+      return false;
 
   myFunctions.erase(name);
 
