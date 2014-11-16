@@ -33,17 +33,12 @@ RamCheat::RamCheat(OSystem& os, const string& name, const string& code)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamCheat::~RamCheat()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RamCheat::enable()
 {
   if(!myEnabled)
   {
     myEnabled = true;
-    myOSystem.cheat().addPerFrame(this, myEnabled);
+    myOSystem.cheat().addPerFrame(name(), code(), myEnabled);
   }
   return myEnabled;
 }
@@ -54,7 +49,7 @@ bool RamCheat::disable()
   if(myEnabled)
   {
     myEnabled = false;
-    myOSystem.cheat().addPerFrame(this, myEnabled);
+    myOSystem.cheat().addPerFrame(name(), code(), myEnabled);
   }
   return myEnabled;
 }

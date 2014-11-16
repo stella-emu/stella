@@ -36,11 +36,6 @@ CheetahCheat::CheetahCheat(OSystem& os, const string& name, const string& code)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheetahCheat::~CheetahCheat()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheetahCheat::enable()
 {
   evaluate();

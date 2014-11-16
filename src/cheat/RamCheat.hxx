@@ -26,7 +26,7 @@ class RamCheat : public Cheat
 {
   public:
     RamCheat(OSystem& os, const string& name, const string& code);
-    virtual ~RamCheat();
+    virtual ~RamCheat() { }
 
     bool enable();
     bool disable();

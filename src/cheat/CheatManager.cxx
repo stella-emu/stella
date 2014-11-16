@@ -34,24 +34,17 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::CheatManager(OSystem& osystem)
   : myOSystem(osystem),
-    myCurrentCheat(""),
     myListIsDirty(false)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheatManager::~CheatManager()
+bool CheatManager::add(const string& name, const string& code,
+                       bool enable, int idx)
 {
-  clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cheat* CheatManager::add(const string& name, const string& code,
-                         bool enable, int idx)
-{
-  Cheat* cheat = createCheat(name, code);
+  shared_ptr<Cheat> cheat = createCheat(name, code);
   if(!cheat)
-    return nullptr;
+    return false;
 
   // Delete duplicate entries
   for(unsigned int i = 0; i < myCheatList.size(); i++)
@@ -75,32 +68,36 @@ Cheat* CheatManager::add(const string& name, const string& code,
   else
     cheat->disable();
 
-  return cheat;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::remove(int idx)
 {
-  if((unsigned int)idx >= myCheatList.size())
-    return;
+  if((unsigned int)idx < myCheatList.size())
+  {
+    // This will also remove it from the per-frame list (if applicable)
+    myCheatList[idx]->disable();
 
-  Cheat* c = myCheatList[idx];
-
-  // First remove it from the per-frame list
-  addPerFrame(c, false);
-
-  // Then remove it from the cheatlist entirely
-  Vec::removeAt(myCheatList, idx);
-  c->disable();
-  delete c;
+    // Then remove it from the cheatlist entirely
+    Vec::removeAt(myCheatList, idx);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::addPerFrame(Cheat* cheat, bool enable)
+void CheatManager::addPerFrame(const string& name, const string& code, bool enable)
 {
-  if(!cheat)
-    return;
-
+  // The actual cheat will always be in the main list; we look there first
+  shared_ptr<Cheat> cheat;
+  for(unsigned int i = 0; i < myCheatList.size(); i++)
+  {
+    if(myCheatList[i]->name() == name || myCheatList[i]->code() == code)
+    {
+      cheat = myCheatList[i];
+      break;
+    }
+  }
+  
   // Make sure there are no duplicates
   bool found = false;
   unsigned int i;
@@ -128,7 +125,7 @@ void CheatManager::addPerFrame(Cheat* cheat, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::addOneShot(const string& name, const string& code)
 {
-  unique_ptr<Cheat> cheat(createCheat(name, code));
+  shared_ptr<Cheat> cheat = createCheat(name, code);
 
   // Evaluate this cheat once, and then immediately delete it
   if(cheat)
@@ -136,7 +133,7 @@ void CheatManager::addOneShot(const string& name, const string& code)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cheat* CheatManager::createCheat(const string& name, const string& code) const
+shared_ptr<Cheat> CheatManager::createCheat(const string& name, const string& code) const
 {
   if(!isValidCode(code))
     return nullptr;
@@ -145,15 +142,15 @@ Cheat* CheatManager::createCheat(const string& name, const string& code) const
   switch(code.size())
   {
     case 4:
-      return new RamCheat(myOSystem, name, code);
+      return make_shared<RamCheat>(myOSystem, name, code);
       break;
 
     case 6:
-      return new CheetahCheat(myOSystem, name, code);
+      return make_shared<CheetahCheat>(myOSystem, name, code);
       break;
 
     case 8:
-      return new BankRomCheat(myOSystem, name, code);
+      return make_shared<BankRomCheat>(myOSystem, name, code);
       break;
 
     default:
@@ -287,7 +284,8 @@ void CheatManager::saveCheatDatabase()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::loadCheats(const string& md5sum)
 {
-  clear();
+  myPerFrameList.clear();
+  myCheatList.clear();
   myCurrentCheat = "";
 
   // Set up any cheatcodes that was on the command line
@@ -338,25 +336,14 @@ void CheatManager::saveCheats(const string& md5sum)
 
   // Update the dirty flag
   myListIsDirty = myListIsDirty || changed;
-  clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::clear()
-{
-  // Don't delete the items from per-frame list, since it will be done in
-  // the following loop
   myPerFrameList.clear();
-
-  for(auto cheat: myCheatList)
-    delete cheat;
   myCheatList.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheatManager::isValidCode(const string& code) const
 {
-  for(auto c: code)
+  for(char c: code)
     if(!isxdigit(c))
       return false;
 

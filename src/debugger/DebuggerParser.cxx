@@ -729,8 +729,7 @@ void DebuggerParser::executeCheat()
   for(int arg = 0; arg < argCount; arg++)
   {
     const string& cheat = argStrings[arg];
-    const Cheat* c = debugger.myOSystem.cheat().add("DBG", cheat);
-    if(c && c->enabled())
+    if(debugger.myOSystem.cheat().add("DBG", cheat))
       commandResult << "Cheat code " << cheat << " enabled" << endl;
     else
       commandResult << red("Invalid cheat code ") << cheat << endl;

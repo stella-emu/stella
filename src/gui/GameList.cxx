@@ -26,23 +26,6 @@
 #include "GameList.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameList::GameList()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameList::~GameList()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameList::appendGame(const string& name, const string& path,
-                          const string& md5, bool isDir)
-{
-  myArray.emplace_back(name, path, md5, isDir);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameList::sortByName()
 {
   if(myArray.size() < 2)

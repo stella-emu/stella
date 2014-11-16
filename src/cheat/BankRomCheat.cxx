@@ -40,11 +40,6 @@ BankRomCheat::BankRomCheat(OSystem& os, const string& name, const string& code)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BankRomCheat::~BankRomCheat()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool BankRomCheat::enable()
 {
   evaluate();

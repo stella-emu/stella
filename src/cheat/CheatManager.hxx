@@ -27,7 +27,7 @@ class OSystem;
 
 #include "bspf.hxx"
 
-typedef vector<Cheat*> CheatList;
+typedef vector<shared_ptr<Cheat>> CheatList;
 
 /**
   This class provides an interface for performing all cheat operations
@@ -41,7 +41,6 @@ class CheatManager
 {
   public:
     CheatManager(OSystem& osystem);
-    ~CheatManager();
 
     /**
       Adds the specified cheat to an internal list.
@@ -51,10 +50,10 @@ class CheatManager
       @param enable  Whether to enable this cheat right away
       @param idx     Index at which to insert the cheat
 
-      @return  The cheat (if was created), else nullptr.
+      @return  Whether the cheat was created and enabled.
     */
-    Cheat* add(const string& name, const string& code,
-               bool enable = true, int idx = -1);
+    bool add(const string& name, const string& code,
+             bool enable = true, int idx = -1);
 
     /**
       Remove the cheat at 'idx' from the cheat list(s).
@@ -68,10 +67,11 @@ class CheatManager
       This method doesn't create a new cheat; it just adds/removes
       an already created cheat to the per-frame list.
 
-      @param cheat   The actual cheat object
+      @param name    Name of the cheat
+      @param code    The actual cheatcode
       @param enable  Add or remove the cheat to the per-frame list
     */
-    void addPerFrame(Cheat* cheat, bool enable);
+    void addPerFrame(const string& name, const string& code, bool enable);
 
     /**
       Creates and enables a one-shot cheat.  One-shot cheats are the
@@ -135,7 +135,7 @@ class CheatManager
 
       @return  The cheat (if was created), else nullptr.
     */
-    Cheat* createCheat(const string& name, const string& code) const;
+    shared_ptr<Cheat> createCheat(const string& name, const string& code) const;
 
     /**
       Parses a list of cheats and adds/enables each one.
@@ -143,11 +143,6 @@ class CheatManager
       @param cheats  Comma-separated list of cheats (without any names)
     */
     void parse(const string& cheats);
-
-    /**
-      Clear all per-ROM cheats lists.
-    */
-    void clear();
 
   private:
     OSystem& myOSystem;

@@ -31,8 +31,7 @@
 class GameList
 {
   public:
-    GameList();
-    ~GameList();
+    GameList() { }
 
     const string& name(uInt32 i) const
       { return i < myArray.size() ? myArray[i]._name : EmptyString; }
@@ -50,7 +49,9 @@ class GameList
     void clear() { myArray.clear(); }
 
     void appendGame(const string& name, const string& path, const string& md5,
-                    bool isDir = false);
+                    bool isDir = false) {
+      myArray.emplace_back(name, path, md5, isDir);
+    };
     void sortByName();
 
   private:
@@ -61,9 +62,7 @@ class GameList
       bool   _isdir;
 
       Entry(string name, string path, string md5, bool isdir)
-      {
-        _name = name;  _path = path;  _md5 = md5;  _isdir = isdir;
-      }
+        : _name(name), _path(path), _md5(md5), _isdir(isdir) { }
     };
     vector<Entry> myArray;
 };
