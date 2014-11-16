@@ -17,9 +17,6 @@
 // $Id$
 //============================================================================
 
-//#define DEBUG_OUTPUT
-#define debugStream cout
-
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "Expression.hxx"
@@ -50,7 +47,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::M6502(const Settings& settings)
   : myExecutionStatus(0),
-    mySystem(0),
+    mySystem(nullptr),
     mySettings(settings),
     myLastAccessWasRead(true),
     myTotalInstructionCount(0),
@@ -72,28 +69,11 @@ M6502::M6502(const Settings& settings)
 
   myJustHitTrapFlag = false;
 #endif
-
-  // Compute the System Cycle table
-  for(uInt32 t = 0; t < 256; ++t)
-  {
-    myInstructionSystemCycleTable[t] = ourInstructionCycleTable[t] *
-        SYSTEM_CYCLES_PER_CPU;
-  }
-
-#ifdef DEBUG_OUTPUT
-debugStream << "( Fm  Ln Cyc Clk) ( P0  P1  M0  M1  BL)  "
-            << "flags   A  X  Y SP  Code           Disasm" << endl
-            << endl;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::~M6502()
 {
-#ifdef DEBUGGER_SUPPORT
-  myBreakConds.clear();
-  myBreakCondNames.clear();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,14 +193,10 @@ bool M6502::execute(uInt32 number)
         }
       }
 
-      if(myBreakPoints != nullptr)
-      {
+      if(myBreakPoints)
         if(myBreakPoints->isSet(PC))
-        {
           if(myDebugger && myDebugger->start("BP: ", PC))
             return true;
-        }
-      }
 
       int cond = evalCondBreaks();
       if(cond > -1)
@@ -229,7 +205,8 @@ bool M6502::execute(uInt32 number)
         if(myDebugger && myDebugger->start(buf))
           return true;
       }
-#endif
+#endif  // DEBUGGER_SUPPORT
+
       uInt16 operandAddress = 0, intermediateAddress = 0;
       uInt8 operand = 0;
 
@@ -238,23 +215,6 @@ bool M6502::execute(uInt32 number)
 
       // Fetch instruction at the program counter
       IR = peek(PC++, DISASM_CODE);  // This address represents a code section
-
-#ifdef DEBUG_OUTPUT
-      debugStream << ::hex << setw(2) << (int)A << " "
-                  << ::hex << setw(2) << (int)X << " "
-                  << ::hex << setw(2) << (int)Y << " "
-                  << ::hex << setw(2) << (int)SP << "  "
-                  << setw(4) << (PC-1) << ": "
-                  << setw(2) << (int)IR << "       "
-//      << "<" << ourAddressingModeTable[IR] << " ";
-//      debugStream << hex << setw(4) << operandAddress << " ";
-//                  << setw(3) << ourInstructionMnemonicTable[IR]
-
-//      debugStream << "PS=" << ::hex << setw(2) << (int)PS() << " ";
-
-//      debugStream << "Cyc=" << dec << mySystem->cycles();
-                  << endl;
-#endif
 
       // Call code to execute the instruction
       switch(IR)
@@ -434,7 +394,7 @@ void M6502::attach(Debugger& debugger)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 M6502::addCondBreak(Expression *e, const string& name)
 {
-  myBreakConds.push_back(e);
+  myBreakConds.emplace_back(unique_ptr<Expression>(e));
   myBreakCondNames.push_back(name);
   return (uInt32)myBreakConds.size() - 1;
 }
@@ -444,7 +404,6 @@ void M6502::delCondBreak(uInt32 brk)
 {
   if(brk < myBreakConds.size())
   {
-    delete myBreakConds[brk];
     Vec::removeAt(myBreakConds, brk);
     Vec::removeAt(myBreakCondNames, brk);
   }
@@ -453,9 +412,6 @@ void M6502::delCondBreak(uInt32 brk)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::clearCondBreaks()
 {
-  for(uInt32 i = 0; i < myBreakConds.size(); i++)
-    delete myBreakConds[i];
-
   myBreakConds.clear();
   myBreakCondNames.clear();
 }
@@ -488,25 +444,4 @@ void M6502::setTraps(PackedBitArray *read, PackedBitArray *write)
   myReadTraps = read;
   myWriteTraps = write;
 }
-#endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::ourInstructionCycleTable[256] = {
-//  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-    7, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 4, 4, 6, 6,  // 0
-    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 1
-    6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 4, 4, 6, 6,  // 2
-    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 3
-    6, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 3, 4, 6, 6,  // 4
-    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 5
-    6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 5, 4, 6, 6,  // 6
-    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 7
-    2, 6, 2, 6, 3, 3, 3, 3, 2, 2, 2, 2, 4, 4, 4, 4,  // 8
-    2, 6, 2, 6, 4, 4, 4, 4, 2, 5, 2, 5, 5, 5, 5, 5,  // 9
-    2, 6, 2, 6, 3, 3, 3, 4, 2, 2, 2, 2, 4, 4, 4, 4,  // a
-    2, 5, 2, 5, 4, 4, 4, 4, 2, 4, 2, 4, 4, 4, 4, 4,  // b
-    2, 6, 2, 8, 3, 3, 5, 5, 2, 2, 2, 2, 4, 4, 6, 6,  // c
-    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // d
-    2, 6, 2, 8, 3, 3, 5, 5, 2, 2, 2, 2, 4, 4, 6, 6,  // e
-    2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7   // f
-};
+#endif  // DEBUGGER_SUPPORT

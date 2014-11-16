@@ -31,7 +31,7 @@ class Settings;
 #include "System.hxx"
 #include "Serializable.hxx"
 
-typedef vector<Expression*> ExpressionList;
+typedef vector<unique_ptr<Expression>> ExpressionList;
 
 /**
   The 6502 is an 8-bit microprocessor that has a 64K addressing space.
@@ -318,9 +318,6 @@ class M6502 : public Serializable
     /// Reference to the settings
     const Settings& mySettings;
 
-    /// Table of system cycles for each instruction
-    uInt32 myInstructionSystemCycleTable[256]; 
-
     /// Indicates if the last memory access was a read or not
     bool myLastAccessWasRead;
 
@@ -349,7 +346,7 @@ class M6502 : public Serializable
     uInt16 myDataAddressForPoke;
 
     /// Indicates the number of system cycles per processor cycle 
-    static const uInt32 SYSTEM_CYCLES_PER_CPU = 1;
+    static constexpr uInt32 SYSTEM_CYCLES_PER_CPU = 1;
 
 #ifdef DEBUGGER_SUPPORT
     /// Pointer to the debugger for this processor or the null pointer
@@ -370,13 +367,6 @@ class M6502 : public Serializable
     StringList myBreakCondNames;
     ExpressionList myBreakConds;
 #endif
-
-  private:
-    /**
-      Table of instruction processor cycle times.  In some cases additional 
-      cycles will be added during the execution of an instruction.
-    */
-    static uInt32 ourInstructionCycleTable[256];
 };
 
 #endif
