@@ -184,7 +184,6 @@
 		2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */; };
 		2D9174C809BA90380026E9FF /* EditableWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D403BA0086116D1001E31A1 /* EditableWidget.cxx */; };
 		2D9174C909BA90380026E9FF /* EditTextWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D403BA4086116D1001E31A1 /* EditTextWidget.cxx */; };
-		2D9174CB09BA90380026E9FF /* PackedBitArray.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */; };
 		2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D30F8750868A4DB00938B9D /* TIADebug.cxx */; };
 		2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D313F0A0879C4C0005BD3E5 /* YaccParser.cxx */; };
 		2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555D90880E78000466554 /* Cart3E.cxx */; };
@@ -610,7 +609,6 @@
 		2D403BA1086116D1001E31A1 /* EditableWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EditableWidget.hxx; path = ../gui/EditableWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2D403BA4086116D1001E31A1 /* EditTextWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EditTextWidget.cxx; path = ../gui/EditTextWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EditTextWidget.hxx; path = ../gui/EditTextWidget.hxx; sourceTree = SOURCE_ROOT; };
-		2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PackedBitArray.cxx; path = ../debugger/PackedBitArray.cxx; sourceTree = SOURCE_ROOT; };
 		2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = PackedBitArray.hxx; path = ../debugger/PackedBitArray.hxx; sourceTree = SOURCE_ROOT; };
 		2D659E2D085D3DD6005D96C8 /* Debugger.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Debugger.cxx; path = ../debugger/Debugger.cxx; sourceTree = SOURCE_ROOT; };
 		2D659E2E085D3DD6005D96C8 /* Debugger.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Debugger.hxx; path = ../debugger/Debugger.hxx; sourceTree = SOURCE_ROOT; };
@@ -1642,7 +1640,6 @@
 				DC6B2BA211037FF200F199A7 /* DiStella.cxx */,
 				DC6B2BA311037FF200F199A7 /* DiStella.hxx */,
 				2DF971DF0892CEA400F64D23 /* Expression.hxx */,
-				2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */,
 				2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */,
 				DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */,
 				DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */,
@@ -2150,7 +2147,6 @@
 				2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */,
 				2D9174C809BA90380026E9FF /* EditableWidget.cxx in Sources */,
 				2D9174C909BA90380026E9FF /* EditTextWidget.cxx in Sources */,
-				2D9174CB09BA90380026E9FF /* PackedBitArray.cxx in Sources */,
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
 				DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */,
