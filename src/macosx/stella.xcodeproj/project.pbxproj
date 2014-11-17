@@ -469,7 +469,7 @@
 		DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */; };
 		DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */; };
 		DCDAF4D918CA9AAB00D3865D /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCDAF4D818CA9AAB00D3865D /* SDL2.framework */; };
-		DCDAF4DB18CA9AF000D3865D /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DCDAF4DA18CA9AF000D3865D /* SDL2.framework */; };
+		DCDAF4DB18CA9AF000D3865D /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DCDAF4DA18CA9AF000D3865D /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */; };
 		DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */; };
 		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
@@ -2019,7 +2019,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = net.sourceforge.stella;
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
@@ -2467,7 +2467,6 @@
 		2D91752209BA903B0026E9FF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2501,7 +2500,6 @@
 		2D91752309BA903B0026E9FF /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2534,7 +2532,6 @@
 		2D91752409BA903B0026E9FF /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
