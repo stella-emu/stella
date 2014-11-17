@@ -20,6 +20,8 @@
 #ifndef DEBUGGER_EXPRESSIONS_HXX
 #define DEBUGGER_EXPRESSIONS_HXX
 
+#include <functional>
+
 #include "bspf.hxx"
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
@@ -104,10 +106,10 @@ class CpuMethodExpression : public Expression
   public:
     CpuMethodExpression(CpuMethod method) : Expression(), myMethod(method) { }
     uInt16 evaluate() const
-      { return (Debugger::debugger().cpuDebug().*myMethod)(); }
+      { return myMethod(Debugger::debugger().cpuDebug()); }
 
   private:
-    CpuMethod myMethod;
+    std::function<int(const CpuDebug&)> myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -286,10 +288,10 @@ class CartMethodExpression : public Expression
   public:
     CartMethodExpression(CartMethod method) : Expression(), myMethod(method) { }
     uInt16 evaluate() const
-      { return (Debugger::debugger().cartDebug().*myMethod)(); }
+      { return myMethod(Debugger::debugger().cartDebug()); }
 
   private:
-    CartMethod myMethod;
+    std::function<int(CartDebug&)> myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,10 +318,10 @@ class TiaMethodExpression : public Expression
   public:
     TiaMethodExpression(TiaMethod method) : Expression(), myMethod(method) { }
     uInt16 evaluate() const
-      { return (Debugger::debugger().tiaDebug().*myMethod)(); }
+      { return myMethod(Debugger::debugger().tiaDebug()); }
 
   private:
-    TiaMethod myMethod;
+    std::function<int(const TIADebug&)> myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
