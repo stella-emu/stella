@@ -171,7 +171,7 @@ int const_to_int(char *c) {
 }
 
 // special methods that get e.g. CPU registers
-CPUDEBUG_INT_METHOD getCpuSpecial(char *c)
+CpuMethod getCpuSpecial(char* c)
 {
   if(BSPF_equalsIgnoreCase(c, "a"))
     return &CpuDebug::a;
@@ -202,7 +202,7 @@ CPUDEBUG_INT_METHOD getCpuSpecial(char *c)
 }
 
 // special methods that get Cart RAM/ROM internal state
-CARTDEBUG_INT_METHOD getCartSpecial(char *c)
+CartMethod getCartSpecial(char* c)
 {
   if(BSPF_equalsIgnoreCase(c, "_bank"))
     return &CartDebug::getBank;
@@ -213,7 +213,7 @@ CARTDEBUG_INT_METHOD getCartSpecial(char *c)
 }
 
 // special methods that get TIA internal state
-TIADEBUG_INT_METHOD getTiaSpecial(char *c)
+TiaMethod getTiaSpecial(char* c)
 {
   if(BSPF_equalsIgnoreCase(c, "_scan"))
     return &TIADebug::scanlines;
@@ -252,9 +252,9 @@ int yylex() {
 
       case ST_IDENTIFIER:
         {
-          CARTDEBUG_INT_METHOD cartMeth;
-          CPUDEBUG_INT_METHOD  cpuMeth;
-          TIADEBUG_INT_METHOD  tiaMeth;
+          CartMethod cartMeth;
+          CpuMethod  cpuMeth;
+          TiaMethod  tiaMeth;
 
           char *bufp = idbuf;
           *bufp++ = *c++; // might be a base prefix
@@ -275,7 +275,7 @@ int yylex() {
           // the specials. Who would do that, though?
 
           if(Debugger::debugger().cartDebug().getAddress(idbuf) > -1) {
-            yylval.equate = idbuf;
+            yylval.Equate = idbuf;
             return EQUATE;
           } else if( (cpuMeth = getCpuSpecial(idbuf)) ) {
             yylval.cpuMethod = cpuMeth;
@@ -287,7 +287,7 @@ int yylex() {
             yylval.tiaMethod = tiaMeth;
             return TIA_METHOD;
           } else if( Debugger::debugger().getFunctionDef(idbuf) != EmptyString ) {
-            yylval.function = idbuf;
+            yylval.DefinedFunction = idbuf;
             return FUNCTION;
           } else {
             yylval.val = const_to_int(idbuf);

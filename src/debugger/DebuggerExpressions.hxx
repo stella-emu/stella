@@ -102,12 +102,12 @@ class ConstExpression : public Expression
 class CpuMethodExpression : public Expression
 {
   public:
-    CpuMethodExpression(CPUDEBUG_INT_METHOD method) : Expression(), myMethod(method) { }
+    CpuMethodExpression(CpuMethod method) : Expression(), myMethod(method) { }
     uInt16 evaluate() const
-      { return CALL_CPUDEBUG_METHOD(myMethod); }
+      { return (Debugger::debugger().cpuDebug().*myMethod)(); }
 
   private:
-    CPUDEBUG_INT_METHOD myMethod;
+    CpuMethod myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -284,12 +284,12 @@ class PlusExpression : public Expression
 class CartMethodExpression : public Expression
 {
   public:
-    CartMethodExpression(CARTDEBUG_INT_METHOD method) : Expression(), myMethod(method) { }
+    CartMethodExpression(CartMethod method) : Expression(), myMethod(method) { }
     uInt16 evaluate() const
-      { return CALL_CARTDEBUG_METHOD(myMethod); }
+      { return (Debugger::debugger().cartDebug().*myMethod)(); }
 
   private:
-    CARTDEBUG_INT_METHOD myMethod;
+    CartMethod myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -314,12 +314,12 @@ class ShiftRightExpression : public Expression
 class TiaMethodExpression : public Expression
 {
   public:
-    TiaMethodExpression(TIADEBUG_INT_METHOD method) : Expression(), myMethod(method) { }
+    TiaMethodExpression(TiaMethod method) : Expression(), myMethod(method) { }
     uInt16 evaluate() const
-      { return CALL_TIADEBUG_METHOD(myMethod); }
+      { return (Debugger::debugger().tiaDebug().*myMethod)(); }
 
   private:
-    TIADEBUG_INT_METHOD myMethod;
+    TiaMethod myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

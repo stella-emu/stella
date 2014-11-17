@@ -27,7 +27,7 @@ class Expression;
 //#endif
 
 namespace YaccParser {
-	int parse(const char *);
+	int parse(const char*);
 	Expression* getResult();
 	const string& errorMessage();
 }

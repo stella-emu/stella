@@ -24,11 +24,8 @@
 #include "System.hxx"
 #include "DebuggerSystem.hxx"
 
-// pointer types for CpuDebug instance methods
-typedef int (CpuDebug::*CPUDEBUG_INT_METHOD)() const;
-
-// call the pointed-to method on the (global) CPU debugger object.
-#define CALL_CPUDEBUG_METHOD(method) ( ( Debugger::debugger().cpuDebug().*method)() )
+// Pointer type for CpuDebug instance methods
+typedef int (CpuDebug::*CpuMethod)() const;
 
 class CpuState : public DebuggerState
 {

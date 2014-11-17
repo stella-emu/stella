@@ -33,12 +33,9 @@ class CartDebugWidget;
 #include "DebuggerSystem.hxx"
 #include "System.hxx"
 
-// pointer types for CartDebug instance methods
+// Pointer type for CartDebug instance methods
 class CartDebug;
-typedef int (CartDebug::*CARTDEBUG_INT_METHOD)();
-
-// call the pointed-to method on the (global) CPU debugger object.
-#define CALL_CARTDEBUG_METHOD(method) ( ( Debugger::debugger().cartDebug().*method)() )
+typedef int (CartDebug::*CartMethod)();
 
 class CartState : public DebuggerState
 {

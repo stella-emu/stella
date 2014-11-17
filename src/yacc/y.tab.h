@@ -93,12 +93,12 @@ union YYSTYPE
 #line 28 "stella.y" /* yacc.c:1909  */
 
 	int val;
-	char *equate;
-	CARTDEBUG_INT_METHOD cartMethod;
-	CPUDEBUG_INT_METHOD  cpuMethod;
-	TIADEBUG_INT_METHOD  tiaMethod;
-	Expression *exp;
-	char *function;
+	char* Equate;
+	CartMethod cartMethod;
+	CpuMethod cpuMethod;
+	TiaMethod tiaMethod;
+	Expression* exp;
+	char* DefinedFunction;
 
 #line 104 "y.tab.h" /* yacc.c:1909  */
 };

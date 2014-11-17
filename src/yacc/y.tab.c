@@ -172,12 +172,12 @@ union YYSTYPE
 #line 28 "stella.y" /* yacc.c:355  */
 
 	int val;
-	char *equate;
-	CARTDEBUG_INT_METHOD cartMethod;
-	CPUDEBUG_INT_METHOD  cpuMethod;
-	TIADEBUG_INT_METHOD  tiaMethod;
-	Expression *exp;
-	char *function;
+	char* Equate;
+	CartMethod cartMethod;
+	CpuMethod cpuMethod;
+	TiaMethod tiaMethod;
+	Expression* exp;
+	char* DefinedFunction;
 
 #line 183 "y.tab.c" /* yacc.c:355  */
 };
@@ -1511,7 +1511,7 @@ yyreduce:
 
   case 31:
 #line 97 "stella.y" /* yacc.c:1646  */
-    { if(DEBUG_EXP) fprintf(stderr, " %s", (yyvsp[0].equate)); (yyval.exp) = new EquateExpression((yyvsp[0].equate)); lastExp = (yyval.exp); }
+    { if(DEBUG_EXP) fprintf(stderr, " %s", (yyvsp[0].Equate)); (yyval.exp) = new EquateExpression((yyvsp[0].Equate)); lastExp = (yyval.exp); }
 #line 1516 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1535,7 +1535,7 @@ yyreduce:
 
   case 35:
 #line 101 "stella.y" /* yacc.c:1646  */
-    { if(DEBUG_EXP) fprintf(stderr, " (function)"); (yyval.exp) = new FunctionExpression((yyvsp[0].function)); lastExp = (yyval.exp); }
+    { if(DEBUG_EXP) fprintf(stderr, " (DefinedFunction)"); (yyval.exp) = new FunctionExpression((yyvsp[0].DefinedFunction)); lastExp = (yyval.exp); }
 #line 1540 "y.tab.c" /* yacc.c:1646  */
     break;
 
