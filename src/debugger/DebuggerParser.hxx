@@ -20,6 +20,7 @@
 #ifndef DEBUGGER_PARSER_HXX
 #define DEBUGGER_PARSER_HXX
 
+#include <functional>
 #include <sstream>
 
 class Debugger;
@@ -71,7 +72,6 @@ class DebuggerParser
   private:
     enum {
       kNumCommands   = 70,
-      kMAX_ARG_TYPES = 10
     };
 
     // Constants for argument processing
@@ -94,16 +94,13 @@ class DebuggerParser
       kARG_END_ARGS     // sentinel, occurs at end of list
     };
 
-    // Pointer to DebuggerParser instance method, no args, returns void.
-    typedef void (DebuggerParser::*METHOD)();
-
     struct Command {
       string cmdString;
       string description;
       bool parmsRequired;
       bool refreshRequired;
-      parameters parms[kMAX_ARG_TYPES];
-      METHOD executor;
+      parameters parms[10];
+      std::function<void(DebuggerParser*)> executor;
     };
 
     // Reference to our debugger object

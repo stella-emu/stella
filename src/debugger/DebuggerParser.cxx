@@ -48,9 +48,6 @@ using namespace Common;
 
 #include "DebuggerParser.hxx"
 
-// Call the pointed-to method on the this object. Whew.
-#define CALL_METHOD(method) ( (this->*method)() )
-
 
 // TODO - use C++ streams instead of nasty C-strings and pointers
 
@@ -114,7 +111,7 @@ string DebuggerParser::run(const string& command)
     if(BSPF_equalsIgnoreCase(verb, commands[i].cmdString))
     {
       if(validateArgs(i))
-        CALL_METHOD(commands[i].executor);
+        commands[i].executor(this);
 
       if(commands[i].refreshRequired)
         debugger.myBaseDialog->loadConfig();
