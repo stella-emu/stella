@@ -8,10 +8,6 @@
 #ifndef ZCONF_H
 #define ZCONF_H
 
-/**  Added by SA  *********/
-#ifdef HAVE_INTTYPES
-  #define Z_HAVE_UNISTD_H
-#endif
 #define ZLIB_CONST
 /**************************/
 

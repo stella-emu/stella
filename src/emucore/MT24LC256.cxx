@@ -270,7 +270,7 @@ void MT24LC256::jpee_clock_fall()
       {
         if (!jpee_pptr)
         {
-          jpee_packet[0] = (unsigned char)jpee_nb;
+          jpee_packet[0] = (uInt8)jpee_nb;
           if (jpee_smallmode && ((jpee_nb & 0xF0) == 0xA0))
           {
             jpee_packet[1] = (jpee_nb >> 1) & 7;
@@ -312,7 +312,7 @@ void MT24LC256::jpee_clock_fall()
       {
         if (!jpee_pptr)
         {
-          jpee_packet[0] = (unsigned char)jpee_nb;
+          jpee_packet[0] = (uInt8)jpee_nb;
           if (jpee_smallmode)
             jpee_pptr=2;
           else
@@ -321,7 +321,7 @@ void MT24LC256::jpee_clock_fall()
         else if (jpee_pptr < 70)
         {
           JPEE_LOG1("I2C_SENT(%02X)",jpee_nb & 0xFF);
-          jpee_packet[jpee_pptr++] = (unsigned char)jpee_nb;
+          jpee_packet[jpee_pptr++] = (uInt8)jpee_nb;
           jpee_address = (jpee_packet[1] << 8) | jpee_packet[2];
           if (jpee_pptr > 2)
             jpee_ad_known = 1;

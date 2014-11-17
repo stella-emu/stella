@@ -28,38 +28,19 @@
   @version $Id$
 */
 
-#ifdef HAVE_INTTYPES
-  #include <inttypes.h>
-
-  // Types for 8-bit signed and unsigned integers
-  typedef int8_t Int8;
-  typedef uint8_t uInt8;
-  // Types for 16-bit signed and unsigned integers
-  typedef int16_t Int16;
-  typedef uint16_t uInt16;
-  // Types for 32-bit signed and unsigned integers
-  typedef int32_t Int32;
-  typedef uint32_t uInt32;
-  // Types for 64-bit signed and unsigned integers
-  typedef int64_t Int64;
-  typedef uint64_t uInt64;
-#elif defined BSPF_WINDOWS
-  // Types for 8-bit signed and unsigned integers
-  typedef signed char Int8;
-  typedef unsigned char uInt8;
-  // Types for 16-bit signed and unsigned integers
-  typedef signed short Int16;
-  typedef unsigned short uInt16;
-  // Types for 32-bit signed and unsigned integers
-  typedef signed int Int32;
-  typedef unsigned int uInt32;
-  // Types for 64-bit signed and unsigned integers
-  typedef __int64 Int64;
-  typedef unsigned __int64 uInt64;
-#else
-  #error Update src/common/bspf.hxx for datatypes
-#endif
-
+#include <cstdint>
+// Types for 8-bit signed and unsigned integers
+typedef int8_t Int8;
+typedef uint8_t uInt8;
+// Types for 16-bit signed and unsigned integers
+typedef int16_t Int16;
+typedef uint16_t uInt16;
+// Types for 32-bit signed and unsigned integers
+typedef int32_t Int32;
+typedef uint32_t uInt32;
+// Types for 64-bit signed and unsigned integers
+typedef int64_t Int64;
+typedef uint64_t uInt64;
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
@@ -183,7 +164,7 @@ inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2, int startp
 {
   auto pos = std::search(s1.begin()+startpos, s1.end(),
     s2.begin(), s2.end(), [](char ch1, char ch2) {
-      return toupper((unsigned char)ch1) == toupper((unsigned char)ch2);
+      return toupper((uInt8)ch1) == toupper((uInt8)ch2);
     });
   return pos == s1.end() ? string::npos : pos - (s1.begin()+startpos);
 }

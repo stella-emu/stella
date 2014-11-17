@@ -398,7 +398,7 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
   const char* haystack = s.c_str();
   const char* needle = pattern.c_str();
 
-  unsigned char b = tolower((unsigned char) *needle);
+  uInt8 b = tolower((uInt8) *needle);
 
   needle++;
   for (;; haystack++)
@@ -407,7 +407,7 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
       return false;
 
     /* The first character matches */
-    if (tolower ((unsigned char) *haystack) == b)
+    if (tolower ((uInt8) *haystack) == b)
     {
       const char* rhaystack = haystack + 1;
       const char* rneedle = needle;
@@ -420,8 +420,8 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
           return false;
 
         /* Nothing in this round */
-        if (tolower ((unsigned char) *rhaystack)
-            != tolower ((unsigned char) *rneedle))
+        if (tolower ((uInt8) *rhaystack)
+            != tolower ((uInt8) *rneedle))
           break;
       }
     }
