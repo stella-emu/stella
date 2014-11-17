@@ -100,7 +100,7 @@ class DebuggerParser
       bool parmsRequired;
       bool refreshRequired;
       parameters parms[10];
-      std::function<void(DebuggerParser*)> executor;
+      std::function<void (DebuggerParser*)> executor;
     };
 
     // Reference to our debugger object

@@ -104,7 +104,7 @@ class ConstExpression : public Expression
 class CpuMethodExpression : public Expression
 {
   public:
-    CpuMethodExpression(CpuMethod method) : Expression(), myMethod(method) { }
+    CpuMethodExpression(CpuMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
     uInt16 evaluate() const
       { return myMethod(Debugger::debugger().cpuDebug()); }
 
@@ -286,7 +286,7 @@ class PlusExpression : public Expression
 class CartMethodExpression : public Expression
 {
   public:
-    CartMethodExpression(CartMethod method) : Expression(), myMethod(method) { }
+    CartMethodExpression(CartMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
     uInt16 evaluate() const
       { return myMethod(Debugger::debugger().cartDebug()); }
 
@@ -316,7 +316,7 @@ class ShiftRightExpression : public Expression
 class TiaMethodExpression : public Expression
 {
   public:
-    TiaMethodExpression(TiaMethod method) : Expression(), myMethod(method) { }
+    TiaMethodExpression(TiaMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
     uInt16 evaluate() const
       { return myMethod(Debugger::debugger().tiaDebug()); }
 
