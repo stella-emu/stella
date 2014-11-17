@@ -260,7 +260,7 @@ const string Debugger::invIfChanged(int reg, int oldReg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::reset()
 {
-  myCpuDebug->setPC(dpeek(0xfffc));
+  mySystem.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

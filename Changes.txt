@@ -23,6 +23,9 @@
     Because of this, the 32-bit version is also discontinued, as 10.7
     is 64-bit Intel only.
 
+  * The debugger 'reset' command now does a complete system reset,
+    instead of simply setting the PC to the reset vector address.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!

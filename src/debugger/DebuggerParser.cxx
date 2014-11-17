@@ -1192,7 +1192,7 @@ void DebuggerParser::executeReset()
 {
   debugger.reset();
   debugger.rom().invalidate();
-  commandResult << "reset CPU";
+  commandResult << "reset system";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
