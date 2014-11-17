@@ -185,7 +185,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
       break;
 
     case kDashLine:
-      unsigned int i, skip, lwidth = 1;
+      uInt32 i, skip, lwidth = 1;
 
       for(i = x, skip = 1; i < x+w-1; i=i+lwidth+1, ++skip)
       {
@@ -214,7 +214,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int deltax, bool useEllipsis)
 {
   const int leftX = x, rightX = x + w;
-  unsigned int i;
+  uInt32 i;
   int width = font.getStringWidth(s);
   string str;
 	

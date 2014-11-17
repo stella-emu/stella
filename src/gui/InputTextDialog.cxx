@@ -67,7 +67,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
-  unsigned int xpos, ypos, i, lwidth = 0, maxIdx = 0;
+  uInt32 xpos, ypos, i, lwidth = 0, maxIdx = 0;
   WidgetArray wid;
 
   // Calculate real dimensions
@@ -163,7 +163,7 @@ void InputTextDialog::setTitle(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& InputTextDialog::getResult(int idx)
 {
-  if((unsigned int)idx < myInput.size())
+  if((uInt32)idx < myInput.size())
     return myInput[idx]->getText();
   else
     return EmptyString;
@@ -172,14 +172,14 @@ const string& InputTextDialog::getResult(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setText(const string& str, int idx)
 {
-  if((unsigned int)idx < myInput.size())
+  if((uInt32)idx < myInput.size())
     myInput[idx]->setText(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setFocus(int idx)
 {
-  if((unsigned int)idx < myInput.size())
+  if((uInt32)idx < myInput.size())
     Dialog::setFocus(getFocusList()[idx]);
 }
 

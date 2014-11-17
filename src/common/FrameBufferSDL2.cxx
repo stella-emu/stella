@@ -300,7 +300,7 @@ void FrameBufferSDL2::setWindowIcon()
 
   for(uInt32 i = 0; i < ncols; i++)
   {
-    unsigned char code;
+    uInt8 code;
     char color[32];
     uInt32 col;
 

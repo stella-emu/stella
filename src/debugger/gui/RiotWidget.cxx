@@ -254,7 +254,7 @@ void RiotWidget::loadConfig()
 {
 #define IO_REGS_UPDATE(bits, s_bits)                          \
   changed.clear();                                            \
-  for(unsigned int i = 0; i < state.s_bits.size(); ++i)       \
+  for(uInt32 i = 0; i < state.s_bits.size(); ++i)             \
     changed.push_back(state.s_bits[i] != oldstate.s_bits[i]); \
   bits->setState(state.s_bits, changed);
 

@@ -135,7 +135,7 @@ void TabWidget::updateActiveTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::activateTabs()
 {
-  for(unsigned int i = 0; i <_tabs.size(); ++i)
+  for(uInt32 i = 0; i <_tabs.size(); ++i)
     sendCommand(kTabChangedCmd, i-1, _id);
 }
 

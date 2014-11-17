@@ -49,8 +49,8 @@ class Variant
     Variant(const string& s) : data(s) { }
     Variant(const char* s) : data(s) { }
 
-    Variant(int i) { buf().str(""); buf() << i; data = buf().str(); }
-    Variant(unsigned int i) { buf().str(""); buf() << i; data = buf().str(); }
+    Variant(Int32 i) { buf().str(""); buf() << i; data = buf().str(); }
+    Variant(uInt32 i) { buf().str(""); buf() << i; data = buf().str(); }
     Variant(float f) { buf().str(""); buf() << f; data = buf().str(); }
     Variant(double d) { buf().str(""); buf() << d; data = buf().str(); }
     Variant(bool b) { buf().str(""); buf() << b; data = buf().str(); }
@@ -59,7 +59,7 @@ class Variant
     // Conversion methods
     const string& toString() const { return data; }
     const char* toCString() const { return data.c_str(); }
-    const int toInt() const { return atoi(data.c_str()); }
+    const Int32 toInt() const { return atoi(data.c_str()); }
     const float toFloat() const { return atof(data.c_str()); }
     const bool toBool() const { return data == "1" || data == "true"; }
     const GUI::Size toSize() const { return GUI::Size(data); }

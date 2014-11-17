@@ -28,7 +28,7 @@
 #define UP_DOWN_BOX_HEIGHT	10
 
 // Little up/down arrow
-static unsigned int up_down_arrows[8] = {
+static uInt32 up_down_arrows[8] = {
   0x00000000,
   0x00001000,
   0x00011100,

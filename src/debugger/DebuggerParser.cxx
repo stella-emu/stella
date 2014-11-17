@@ -290,7 +290,7 @@ int DebuggerParser::decipher_arg(const string& str)
 string DebuggerParser::showWatches()
 {
   ostringstream buf;
-  for(unsigned int i = 0; i < watches.size(); i++)
+  for(uInt32 i = 0; i < watches.size(); i++)
   {
     if(watches[i] != "")
     {

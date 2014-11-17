@@ -326,7 +326,7 @@ bool TIADebug::priorityPF(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::collision(int collID, int newVal)
 {
-  unsigned int mask = 1 << collID;
+  uInt32 mask = 1 << collID;
 
   if(newVal > -1)
   {

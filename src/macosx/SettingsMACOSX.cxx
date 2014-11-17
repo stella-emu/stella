@@ -44,7 +44,7 @@ void SettingsMACOSX::loadConfig()
   
   // Read key/value pairs from the plist file
   const SettingsArray& settings = getInternalSettings();
-  for(unsigned int i = 0; i < settings.size(); ++i)
+  for(uInt32 i = 0; i < settings.size(); ++i)
   {
     prefsGetString(settings[i].key.c_str(), cvalue, 4090);
     if(cvalue[0] != 0)

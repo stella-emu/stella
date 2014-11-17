@@ -299,7 +299,7 @@ void CpuWidget::loadConfig()
 
   // Update the PS register booleans
   changed.clear();
-  for(unsigned int i = 0; i < state.PSbits.size(); ++i)
+  for(uInt32 i = 0; i < state.PSbits.size(); ++i)
     changed.push_back(state.PSbits[i] != oldstate.PSbits[i]);
 
   myPSRegister->setState(state.PSbits, changed);

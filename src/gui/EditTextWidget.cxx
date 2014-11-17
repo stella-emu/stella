@@ -55,7 +55,7 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
   x += _editScrollOffset;
 
   int width = 0;
-  unsigned int i;
+  uInt32 i;
 
   for (i = 0; i < _editString.size(); ++i)
   {

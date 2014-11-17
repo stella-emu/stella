@@ -99,10 +99,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Finally, add all 15 collision bits
   xpos += 2 * fontWidth + 5;
-  unsigned int collX = xpos, collY = ypos, idx = 0;
-  for(unsigned int row = 0; row < 5; ++row)
+  uInt32 collX = xpos, collY = ypos, idx = 0;
+  for(uInt32 row = 0; row < 5; ++row)
   {
-    for(unsigned int col = 0; col < 5 - row; ++col)
+    for(uInt32 col = 0; col < 5 - row; ++col)
     {
       myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY,
                                             "", kCheckActionCmd);
@@ -124,7 +124,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // Strobe buttons
   ////////////////////////////
   ButtonWidget* b;
-  unsigned int buttonX, buttonY, buttonW;
+  uInt32 buttonX, buttonY, buttonW;
   buttonX = collX + 20*fontWidth;  buttonY = ypos;
   buttonW = 7 * fontWidth;
   b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
@@ -814,7 +814,7 @@ void TiaWidget::loadConfig()
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();
-  for(unsigned int i = 0; i < 4; i++)
+  for(uInt32 i = 0; i < 4; i++)
   {
     alist.push_back(i);
     vlist.push_back(state.coluRegs[i]);

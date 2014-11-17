@@ -546,7 +546,7 @@ void Settings::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Settings::getInternalPos(const string& key) const
 {
-  for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
+  for(uInt32 i = 0; i < myInternalSettings.size(); ++i)
     if(myInternalSettings[i].key == key)
       return i;
 
@@ -556,7 +556,7 @@ int Settings::getInternalPos(const string& key) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Settings::getExternalPos(const string& key) const
 {
-  for(unsigned int i = 0; i < myExternalSettings.size(); ++i)
+  for(uInt32 i = 0; i < myExternalSettings.size(); ++i)
     if(myExternalSettings[i].key == key)
       return i;
 
@@ -576,7 +576,7 @@ int Settings::setInternal(const string& key, const Variant& value,
   }
   else
   {
-    for(unsigned int i = 0; i < myInternalSettings.size(); ++i)
+    for(uInt32 i = 0; i < myInternalSettings.size(); ++i)
     {
       if(myInternalSettings[i].key == key)
       {
@@ -631,7 +631,7 @@ int Settings::setExternal(const string& key, const Variant& value,
   }
   else
   {
-    for(unsigned int i = 0; i < myExternalSettings.size(); ++i)
+    for(uInt32 i = 0; i < myExternalSettings.size(); ++i)
     {
       if(myExternalSettings[i].key == key)
       {

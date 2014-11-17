@@ -33,7 +33,7 @@
 #define UP_DOWN_BOX_HEIGHT	18
 
 // Up arrow
-static unsigned int up_arrow[8] = {
+static uInt32 up_arrow[8] = {
   0x00011000,
   0x00011000,
   0x00111100,
@@ -45,7 +45,7 @@ static unsigned int up_arrow[8] = {
 };
 
 // Down arrow
-static unsigned int down_arrow[8] = {
+static uInt32 down_arrow[8] = {
   0x11111111,
   0x11111111,
   0x01111110,

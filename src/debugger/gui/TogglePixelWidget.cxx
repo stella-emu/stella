@@ -60,7 +60,7 @@ void TogglePixelWidget::setState(const BoolArray& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TogglePixelWidget::setIntState(int value, bool swap)
 {
-  unsigned int size = _rows * _cols;
+  uInt32 size = _rows * _cols;
   _swapBits = swap;
 
   // Create array of required size
@@ -76,7 +76,7 @@ void TogglePixelWidget::setIntState(int value, bool swap)
   //
   //   Swap on means reverse of swap off!  Sorry if this is
   //   confusing.
-  for(unsigned int i = 0; i < size; ++i)
+  for(uInt32 i = 0; i < size; ++i)
   {
     bool bitIsSet = value & (1 << i);
     if(_swapBits)
@@ -92,9 +92,9 @@ void TogglePixelWidget::setIntState(int value, bool swap)
 int TogglePixelWidget::getIntState()
 {
   // Construct int based on current state and swap
-  unsigned int value = 0, size = (int)_stateList.size();
+  uInt32 value = 0, size = (int)_stateList.size();
 
-  for(unsigned int i = 0; i < size; ++i)
+  for(uInt32 i = 0; i < size; ++i)
   {
     if(_stateList[i])
     {

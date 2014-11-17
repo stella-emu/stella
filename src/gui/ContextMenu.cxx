@@ -136,7 +136,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 {
   if(tag != "")  // indicates that the defaultTag should be used instead
   {
-    for(unsigned int item = 0; item < _entries.size(); ++item)
+    for(uInt32 item = 0; item < _entries.size(); ++item)
     { 
       if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
       {
@@ -147,7 +147,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
   }
 
   // If we get this far, the value wasn't found; use the default value
-  for(unsigned int item = 0; item < _entries.size(); ++item)
+  for(uInt32 item = 0; item < _entries.size(); ++item)
   {
     if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
     {

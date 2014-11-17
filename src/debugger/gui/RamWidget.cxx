@@ -428,7 +428,7 @@ string RamWidget::doCompare(const string& str)
   for(uInt32 i = 0; i < state.rport.size(); ++i)
     mySearchState.push_back(false);
 
-  for(unsigned int i = 0; i < mySearchAddr.size(); ++i)
+  for(uInt32 i = 0; i < mySearchAddr.size(); ++i)
   {
     if(comparitiveSearch)
     {

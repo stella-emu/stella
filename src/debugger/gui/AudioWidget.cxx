@@ -108,7 +108,7 @@ void AudioWidget::loadConfig()
 
   // AUDF0/1
   alist.clear();  vlist.clear();  changed.clear();
-  for(unsigned int i = 0; i < 2; i++)
+  for(uInt32 i = 0; i < 2; i++)
   {
     alist.push_back(i);
     vlist.push_back(state.aud[i]);
@@ -118,7 +118,7 @@ void AudioWidget::loadConfig()
 
   // AUDC0/1
   alist.clear();  vlist.clear();  changed.clear();
-  for(unsigned int i = 2; i < 4; i++)
+  for(uInt32 i = 2; i < 4; i++)
   {
     alist.push_back(i-2);
     vlist.push_back(state.aud[i]);
@@ -128,7 +128,7 @@ void AudioWidget::loadConfig()
 
   // AUDV0/1
   alist.clear();  vlist.clear();  changed.clear();
-  for(unsigned int i = 4; i < 6; i++)
+  for(uInt32 i = 4; i < 6; i++)
   {
     alist.push_back(i-4);
     vlist.push_back(state.aud[i]);

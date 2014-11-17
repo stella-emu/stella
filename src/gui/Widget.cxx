@@ -397,7 +397,7 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
-static unsigned int checked_img_active[8] =
+static uInt32 checked_img_active[8] =
 {
 	0x11111111,
 	0x11111111,
@@ -409,7 +409,7 @@ static unsigned int checked_img_active[8] =
 	0x11111111
 };
 
-static unsigned int checked_img_inactive[8] =
+static uInt32 checked_img_inactive[8] =
 {
 	0x11111111,
 	0x11111111,
@@ -421,7 +421,7 @@ static unsigned int checked_img_inactive[8] =
 	0x11111111
 };
 
-static unsigned int checked_img_circle[8] =
+static uInt32 checked_img_circle[8] =
 {
 	0x00011000,
 	0x01111110,

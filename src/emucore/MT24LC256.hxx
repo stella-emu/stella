@@ -107,10 +107,10 @@ class MT24LC256
     bool myDataChanged;
 
     // Required for I2C functionality
-    int jpee_mdat, jpee_sdat, jpee_mclk;
-    int jpee_sizemask, jpee_pagemask, jpee_smallmode, jpee_logmode;
-    int jpee_pptr, jpee_state, jpee_nb;
-    unsigned int jpee_address, jpee_ad_known;
+    Int32 jpee_mdat, jpee_sdat, jpee_mclk;
+    Int32 jpee_sizemask, jpee_pagemask, jpee_smallmode, jpee_logmode;
+    Int32 jpee_pptr, jpee_state, jpee_nb;
+    uInt32 jpee_address, jpee_ad_known;
     uInt8 jpee_packet[70];
 
   private:
