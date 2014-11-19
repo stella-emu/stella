@@ -24,8 +24,8 @@
 #include "System.hxx"
 #include "DebuggerSystem.hxx"
 
-// Pointer type for CpuDebug instance methods
-typedef int (CpuDebug::*CpuMethod)() const;
+// Function type for CpuDebug instance methods
+using CpuMethod = int (CpuDebug::*)() const;
 
 class CpuState : public DebuggerState
 {

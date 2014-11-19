@@ -35,7 +35,7 @@ struct BBX
 
 /* builtin C-based proportional/fixed font structure */
 /* based on The Microwindows Project http://microwindows.org */
-typedef struct
+struct FontDesc
 {
   const char*   name;                   /* font name */
   int           maxwidth;               /* max width in pixels */
@@ -50,7 +50,7 @@ typedef struct
   const BBX*    bbx;                    /* character bounding box or nullptr if fixed */
   int           defaultchar;            /* default char (not glyph index) */
   long          bits_size;              /* # words of bitmap_t bits */
-} FontDesc;
+};
 
 namespace GUI {
 

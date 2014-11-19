@@ -46,15 +46,15 @@
 */
 
 // Setup the types used by the MD5 routines
-typedef uInt8* POINTER;
+using POINTER = uInt8*;
 
 // MD5 context.
-typedef struct 
+struct MD5_CTX
 {
-  uInt32 state[4];                                   /* state (ABCD) */
-  uInt32 count[2];        /* number of bits, modulo 2^64 (lsb first) */
-  uInt8 buffer[64];                         /* input buffer */
-} MD5_CTX;
+  uInt32 state[4];    /* state (ABCD) */
+  uInt32 count[2];    /* number of bits, modulo 2^64 (lsb first) */
+  uInt8 buffer[64];   /* input buffer */
+};
 
 // Constants for MD5Transform routine.
 #define S11 7

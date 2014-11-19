@@ -48,18 +48,8 @@ class ButtonWidget;
 #include "Stack.hxx"
 #include "bspf.hxx"
 
-typedef map<string,unique_ptr<Expression>> FunctionMap;
-typedef map<string,string> FunctionDefMap;
-
-/*
-// These will probably turn out to be unneeded, left for reference for now
-// pointer types for Debugger instance methods
-typedef uInt8 (Debugger::*DEBUGGER_BYTE_METHOD)();
-typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
-
-// call the pointed-to method on the (static) debugger object.
-#define CALL_DEBUGGER_METHOD(method) ( ( Debugger::debugger().*method)() )
-*/
+using FunctionMap = map<string,unique_ptr<Expression>>;
+using FunctionDefMap = map<string,string>;
 
 
 /**

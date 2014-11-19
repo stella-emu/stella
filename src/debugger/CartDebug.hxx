@@ -33,9 +33,9 @@ class CartDebugWidget;
 #include "DebuggerSystem.hxx"
 #include "System.hxx"
 
-// Pointer type for CartDebug instance methods
+// Function type for CartDebug instance methods
 class CartDebug;
-typedef int (CartDebug::*CartMethod)();
+using CartMethod = int (CartDebug::*)();
 
 class CartState : public DebuggerState
 {
@@ -81,7 +81,7 @@ class CartDebug : public DebuggerSystem
       string bytes;
       bool hllabel;
     };
-    typedef vector<DisassemblyTag> DisassemblyList;
+    using DisassemblyList = vector<DisassemblyTag>;
     struct Disassembly {
       DisassemblyList list;
       int fieldwidth;
@@ -263,8 +263,8 @@ class CartDebug : public DebuggerSystem
     void addressTypeAsString(ostream& buf, uInt16 addr) const;
 
   private:
-    typedef map<uInt16, string> AddrToLabel;
-    typedef map<string, uInt16> LabelToAddr;
+    using AddrToLabel = map<uInt16, string>;
+    using LabelToAddr = map<string, uInt16>;
 
     // Determine 'type' of address (ie, what part of the system accessed)
     enum AddrType {
@@ -280,8 +280,8 @@ class CartDebug : public DebuggerSystem
       uInt16 start;
       uInt16 end;
     };
-    typedef list<uInt16> AddressList;
-    typedef list<DirectiveTag> DirectiveList;
+    using AddressList = list<uInt16>;
+    using DirectiveList = list<DirectiveTag>;
 
     struct BankInfo {
       uInt16 start;                // start of address space

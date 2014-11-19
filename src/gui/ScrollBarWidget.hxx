@@ -62,14 +62,14 @@ class ScrollBarWidget : public Widget, public CommandSender
     int _wheel_lines;
 
   private:
-    typedef enum {
+    enum Part {
       kNoPart,
       kUpArrowPart,
       kDownArrowPart,
       kSliderPart,
       kPageUpPart,
       kPageDownPart
-    } Part;
+    };
 
     Part _part;
     Part _draggingPart;

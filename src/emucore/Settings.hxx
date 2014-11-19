@@ -128,7 +128,7 @@ class Settings
       Variant value;
       Variant initialValue;
     };
-    typedef vector<Setting> SettingsArray;
+    using SettingsArray = vector<Setting>;
 
     const SettingsArray& getInternalSettings() const
       { return myInternalSettings; }

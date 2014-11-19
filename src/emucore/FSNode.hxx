@@ -263,13 +263,13 @@ class FilesystemNode
  * the semantics.
  */
 
-typedef vector<AbstractFSNode*> AbstractFSList;
+using AbstractFSList = vector<AbstractFSNode*>;
 
 class AbstractFSNode
 {
   protected:
     friend class FilesystemNode;
-    typedef FilesystemNode::ListMode ListMode;
+    using ListMode = FilesystemNode::ListMode;
 
   public:
     /**

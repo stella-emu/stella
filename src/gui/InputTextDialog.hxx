@@ -59,7 +59,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    typedef vector<EditTextWidget*> InputWidget;
+    using InputWidget = vector<EditTextWidget*>;
 
     InputWidget       myInput;
     StaticTextWidget* myTitle;

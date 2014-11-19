@@ -78,7 +78,7 @@ class Variant
 static const Variant EmptyVariant;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-typedef vector<pair<string,Variant>> VariantList;
+using VariantList = vector<pair<string,Variant>>;
 
 namespace VList {
   inline void push_back(VariantList& list, const Variant& name,

@@ -27,7 +27,7 @@ class OSystem;
 
 #include "bspf.hxx"
 
-typedef vector<shared_ptr<Cheat>> CheatList;
+using CheatList = vector<shared_ptr<Cheat>>;
 
 /**
   This class provides an interface for performing all cheat operations

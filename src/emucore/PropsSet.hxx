@@ -117,7 +117,7 @@ class PropertiesSet
     void print() const;
 
   private:
-    typedef map<string, Properties> PropsList;
+    using PropsList = map<string, Properties>;
 
     // The properties read from an external 'stella.pro' file
     PropsList myExternalProps;

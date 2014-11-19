@@ -75,7 +75,7 @@ class TabWidget : public Widget, public CommandSender
       Tab(const string& t = "", Widget* first = 0, Widget* parent = 0, bool e = true)
         : title(t), firstWidget(first), parentWidget(parent), enabled(e) { }
     };
-    typedef vector<Tab> TabList;
+    using TabList = vector<Tab>;
 
     TabList _tabs;
     int     _tabWidth;

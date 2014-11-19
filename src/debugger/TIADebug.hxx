@@ -26,9 +26,9 @@ class TIA;
 
 #include "DebuggerSystem.hxx"
 
-// Pointer type for TIADebug instance methods
+// Function type for TIADebug instance methods
 class TIADebug;
-typedef int (TIADebug::*TiaMethod)() const;
+using TiaMethod = int (TIADebug::*)() const;
 
 // Indices for various IntArray in TiaState
 enum {

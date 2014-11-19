@@ -30,17 +30,17 @@
 
 #include <cstdint>
 // Types for 8-bit signed and unsigned integers
-typedef int8_t Int8;
-typedef uint8_t uInt8;
+using Int8  = int8_t;
+using uInt8 = uint8_t;
 // Types for 16-bit signed and unsigned integers
-typedef int16_t Int16;
-typedef uint16_t uInt16;
+using Int16  = int16_t;
+using uInt16 = uint16_t;
 // Types for 32-bit signed and unsigned integers
-typedef int32_t Int32;
-typedef uint32_t uInt32;
+using Int32  = int32_t;
+using uInt32 = uint32_t;
 // Types for 64-bit signed and unsigned integers
-typedef int64_t Int64;
-typedef uint64_t uInt64;
+using Int64  = int64_t;
+using uInt64 = uint64_t;
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
@@ -58,10 +58,10 @@ typedef uint64_t uInt64;
 using namespace std;
 
 // Common array types
-typedef vector<Int32> IntArray;
-typedef vector<bool>  BoolArray;
-typedef vector<uInt8> ByteArray;
-typedef vector<string> StringList;
+using IntArray = vector<Int32>;
+using BoolArray = vector<bool>;
+using ByteArray = vector<uInt8>;
+using StringList = vector<string>;
 
 // Defines to help with path handling
 #if (defined(BSPF_UNIX) || defined(BSPF_MAC_OSX))
