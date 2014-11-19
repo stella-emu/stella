@@ -174,9 +174,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Create context menu for ROM list options
   VariantList l;
-  VList::push_back(l, "Power-on options", "override");
-  VList::push_back(l, "Filter listing", "filter");
-  VList::push_back(l, "Reload listing", "reload");
+  VarList::push_back(l, "Power-on options", "override");
+  VarList::push_back(l, "Filter listing", "filter");
+  VarList::push_back(l, "Reload listing", "reload");
   myMenu = make_ptr<ContextMenu>(this, osystem.frameBuffer().font(), l);
 
   // Create global props dialog, which is used to temporarily overrride

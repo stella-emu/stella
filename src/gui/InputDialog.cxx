@@ -114,8 +114,8 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   lwidth = font.getStringWidth("Use mouse as a controller: ");
   pwidth = font.getStringWidth("Analog devices");
 
-  VList::push_back(items, "Left / Right", "lr");
-  VList::push_back(items, "Right / Left", "rl");
+  VarList::push_back(items, "Left / Right", "lr");
+  VarList::push_back(items, "Right / Left", "rl");
   mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                              "Stelladaptor port order: ", lwidth);
   wid.push_back(mySAPort);
@@ -123,9 +123,9 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Use mouse as controller
   ypos += lineHeight + 5;
   items.clear();
-  VList::push_back(items, "Always", "always");
-  VList::push_back(items, "Analog devices", "analog");
-  VList::push_back(items, "Never", "never");
+  VarList::push_back(items, "Always", "always");
+  VarList::push_back(items, "Analog devices", "analog");
+  VarList::push_back(items, "Never", "never");
   myMouseControl = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                              "Use mouse as a controller: ", lwidth);
   wid.push_back(myMouseControl);

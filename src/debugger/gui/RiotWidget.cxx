@@ -176,8 +176,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos = col;  ypos += 2 * lineHeight;
   int col2_ypos = ypos;
   items.clear();
-  VList::push_back(items, "B/easy", "b");
-  VList::push_back(items, "A/hard", "a");
+  VarList::push_back(items, "B/easy", "b");
+  VarList::push_back(items, "A/hard", "a");
   myP0Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
                              "P0 Diff: ", lwidth, kP0DiffChanged);
   myP0Diff->setTarget(this);
@@ -191,8 +191,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // TV Type
   ypos += myP1Diff->getHeight() + 5;
   items.clear();
-  VList::push_back(items, "B&W", "bw");
-  VList::push_back(items, "Color", "color");
+  VarList::push_back(items, "B&W", "bw");
+  VarList::push_back(items, "Color", "color");
   myTVType = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
                              "TV Type: ", lwidth, kTVTypeChanged);
   myTVType->setTarget(this);

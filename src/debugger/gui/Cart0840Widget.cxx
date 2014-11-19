@@ -48,8 +48,8 @@ Cartridge0840Widget::Cartridge0840Widget(
       ypos = addBaseInformation(size, "Fred X. Quimby", info.str()) + myLineHeight;
 
   VariantList items;
-  VList::push_back(items, "0 ($800)");
-  VList::push_back(items, "1 ($840)");
+  VarList::push_back(items, "0 ($800)");
+  VarList::push_back(items, "1 ($840)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($800) "),
                     myLineHeight, items, "Set bank: ",

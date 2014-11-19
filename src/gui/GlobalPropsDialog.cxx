@@ -57,7 +57,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Bankswitch type:", kTextAlignLeft);
   for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
-    VList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
+    VarList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myBSType);
@@ -68,9 +68,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
   items.clear();
-  VList::push_back(items, "Default", "DEFAULT");
-  VList::push_back(items, "B", "B");
-  VList::push_back(items, "A", "A");
+  VarList::push_back(items, "Default", "DEFAULT");
+  VarList::push_back(items, "B", "B");
+  VarList::push_back(items, "A", "A");
   myLeftDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myLeftDiff);
@@ -89,9 +89,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "TV Type:", kTextAlignLeft);
   items.clear();
-  VList::push_back(items, "Default", "DEFAULT");
-  VList::push_back(items, "Color", "COLOR");
-  VList::push_back(items, "B & W", "BW");
+  VarList::push_back(items, "Default", "DEFAULT");
+  VarList::push_back(items, "Color", "COLOR");
+  VarList::push_back(items, "B & W", "BW");
   myTVType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
@@ -101,8 +101,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Startup Mode:", kTextAlignLeft);
   items.clear();
-  VList::push_back(items, "Console", "false");
-  VList::push_back(items, "Debugger", "true");
+  VarList::push_back(items, "Console", "false");
+  VarList::push_back(items, "Debugger", "true");
   myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
                             pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myDebug);

@@ -54,9 +54,9 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
 
   // Create context menu for zoom levels
   VariantList l;
-  VList::push_back(l, "2x zoom", "2");
-  VList::push_back(l, "4x zoom", "4");
-  VList::push_back(l, "8x zoom", "8");
+  VarList::push_back(l, "2x zoom", "2");
+  VarList::push_back(l, "4x zoom", "4");
+  VarList::push_back(l, "8x zoom", "8");
   myMenu = make_ptr<ContextMenu>(this, font, l);
 }
 

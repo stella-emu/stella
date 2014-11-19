@@ -1925,7 +1925,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "reset",
-    "Reset 6507 to init vector (excluding TIA/RIOT)",
+    "Reset system to power-on state",
     false,
     true,
     { kARG_END_ARGS },

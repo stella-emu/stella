@@ -69,12 +69,12 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Fragment size
-  VList::push_back(items, "128 bytes", "128");
-  VList::push_back(items, "256 bytes", "256");
-  VList::push_back(items, "512 bytes", "512");
-  VList::push_back(items, "1 KB", "1024");
-  VList::push_back(items, "2 KB", "2048");
-  VList::push_back(items, "4 KB", "4096");
+  VarList::push_back(items, "128 bytes", "128");
+  VarList::push_back(items, "256 bytes", "256");
+  VarList::push_back(items, "512 bytes", "512");
+  VarList::push_back(items, "1 KB", "1024");
+  VarList::push_back(items, "2 KB", "2048");
+  VarList::push_back(items, "4 KB", "4096");
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
                                     items, "Sample size (*): ", lwidth);
@@ -83,11 +83,11 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Output frequency
   items.clear();
-  VList::push_back(items, "11025 Hz", "11025");
-  VList::push_back(items, "22050 Hz", "22050");
-  VList::push_back(items, "31400 Hz", "31400");
-  VList::push_back(items, "44100 Hz", "44100");
-  VList::push_back(items, "48000 Hz", "48000");
+  VarList::push_back(items, "11025 Hz", "11025");
+  VarList::push_back(items, "22050 Hz", "22050");
+  VarList::push_back(items, "31400 Hz", "31400");
+  VarList::push_back(items, "44100 Hz", "44100");
+  VarList::push_back(items, "48000 Hz", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
                                 items, "Frequency (*): ", lwidth);

@@ -80,7 +80,7 @@ static const Variant EmptyVariant;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 using VariantList = vector<pair<string,Variant>>;
 
-namespace VList {
+namespace VarList {
   inline void push_back(VariantList& list, const Variant& name,
                         const Variant& tag = EmptyVariant)
   {

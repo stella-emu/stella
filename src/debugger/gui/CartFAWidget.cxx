@@ -49,9 +49,9 @@ CartridgeFAWidget::CartridgeFAWidget(
       ypos = addBaseInformation(size, "CBS", info.str()) + myLineHeight;
 
   VariantList items;
-  VList::push_back(items, "0 ($FF8)");
-  VList::push_back(items, "1 ($FF9)");
-  VList::push_back(items, "2 ($FFA)");
+  VarList::push_back(items, "0 ($FF8)");
+  VarList::push_back(items, "1 ($FF9)");
+  VarList::push_back(items, "2 ($FFA)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",

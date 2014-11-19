@@ -130,7 +130,7 @@ bool FrameBuffer::initialize()
   {
     ostringstream desc;
     desc << "Zoom " << zoom << "x";
-    VList::push_back(myTIAZoomLevels, desc.str(), zoom);
+    VarList::push_back(myTIAZoomLevels, desc.str(), zoom);
   }
 
   // Set palette for GUI (upper area of array, doesn't change during execution)

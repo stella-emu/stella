@@ -54,13 +54,13 @@ Cartridge3EWidget::Cartridge3EWidget(
 
   VariantList romitems;
   for(uInt32 i = 0; i < myNumRomBanks; ++i)
-    VList::push_back(romitems, i);
-  VList::push_back(romitems, "Inactive", "");
+    VarList::push_back(romitems, i);
+  VarList::push_back(romitems, "Inactive", "");
 
   VariantList ramitems;
   for(uInt32 i = 0; i < myNumRamBanks; ++i)
-    VList::push_back(ramitems, i);
-  VList::push_back(ramitems, "Inactive", "");
+    VarList::push_back(ramitems, i);
+  VarList::push_back(ramitems, "Inactive", "");
 
   ostringstream label;
   label << "Set bank ($" << Common::Base::HEX4 << start << " - $"

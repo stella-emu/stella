@@ -1563,13 +1563,13 @@ VariantList EventHandler::getComboList(EventMode /**/) const
   VariantList l;
   ostringstream buf;
 
-  VList::push_back(l, "None", "-1");
+  VarList::push_back(l, "None", "-1");
   for(uInt32 i = 0; i < kEmulActionListSize; ++i)
   {
     if(EventHandler::ourEmulActionList[i].allow_combo)
     {
       buf << i;
-      VList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.str());
+      VarList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.str());
       buf.str("");
     }
   }
@@ -1739,10 +1739,10 @@ void EventHandler::takeSnapshot(uInt32 number)
   ostringstream version;
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF_ARCH << "]";
-  VList::push_back(comments, "Software", version.str());
-  VList::push_back(comments, "ROM Name", myOSystem.console().properties().get(Cartridge_Name));
-  VList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
-  VList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
+  VarList::push_back(comments, "Software", version.str());
+  VarList::push_back(comments, "ROM Name", myOSystem.console().properties().get(Cartridge_Name));
+  VarList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
+  VarList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
 
   // Now create a PNG snapshot
   if(myOSystem.settings().getBool("ss1x"))

@@ -42,20 +42,20 @@ Cartridge4A50Widget::Cartridge4A50Widget(
 
   VariantList items16, items32, items128, items256;
   for(uInt32 i = 0; i < 16; ++i)
-    VList::push_back(items16, i);
-  VList::push_back(items16, "Inactive", "");
+    VarList::push_back(items16, i);
+  VarList::push_back(items16, "Inactive", "");
 
   for(uInt32 i = 0; i < 32; ++i)
-    VList::push_back(items32, i);
-  VList::push_back(items32, "Inactive", "");
+    VarList::push_back(items32, i);
+  VarList::push_back(items32, "Inactive", "");
 
   for(uInt32 i = 0; i < 128; ++i)
-    VList::push_back(items128, i);
-  VList::push_back(items128, "Inactive", "");
+    VarList::push_back(items128, i);
+  VarList::push_back(items128, "Inactive", "");
 
   for(uInt32 i = 0; i < 256; ++i)
-    VList::push_back(items256, i);
-  VList::push_back(items256, "Inactive", "");
+    VarList::push_back(items256, i);
+  VarList::push_back(items256, "Inactive", "");
 
   string lowerlabel  = "Set lower 2K region ($F000 - $F7FF): ";
   string middlelabel = "Set middle 1.5K region ($F800 - $FDFF): ";

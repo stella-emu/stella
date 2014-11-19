@@ -40,13 +40,13 @@ CartridgeCTYWidget::CartridgeCTYWidget(
       ypos = addBaseInformation(size, "Chris D. Walton", info) + myLineHeight;
 
   VariantList items;
-  VList::push_back(items, "1 ($FF5)");
-  VList::push_back(items, "2 ($FF6)");
-  VList::push_back(items, "3 ($FF7)");
-  VList::push_back(items, "4 ($FF8)");
-  VList::push_back(items, "5 ($FF9)");
-  VList::push_back(items, "6 ($FFA)");
-  VList::push_back(items, "7 ($FFB)");
+  VarList::push_back(items, "1 ($FF5)");
+  VarList::push_back(items, "2 ($FF6)");
+  VarList::push_back(items, "3 ($FF7)");
+  VarList::push_back(items, "4 ($FF8)");
+  VarList::push_back(items, "5 ($FF9)");
+  VarList::push_back(items, "6 ($FFA)");
+  VarList::push_back(items, "7 ($FFB)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",

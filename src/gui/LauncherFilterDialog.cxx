@@ -52,9 +52,9 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   xpos = 10;  ypos = 10;
 
   // Types of files to show
-  VList::push_back(items, "All files", "allfiles");
-  VList::push_back(items, "All roms", "allroms");
-  VList::push_back(items, "ROMs ending with", "__EXTS");
+  VarList::push_back(items, "All files", "allfiles");
+  VarList::push_back(items, "All roms", "allroms");
+  VarList::push_back(items, "ROMs ending with", "__EXTS");
   myFileType =
     new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items,
                     "Show: ", lwidth, kFileTypeChanged);

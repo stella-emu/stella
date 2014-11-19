@@ -93,12 +93,12 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
   // For now, supported render types are hardcoded; eventually, SDL may
   // provide a method to query this
 #if defined(BSPF_WINDOWS)
-  VList::push_back(renderers, "Direct3D", "direct3d");
+  VarList::push_back(renderers, "Direct3D", "direct3d");
 #endif
-  VList::push_back(renderers, "OpenGL", "opengl");
-  VList::push_back(renderers, "OpenGLES2", "opengles2");
-  VList::push_back(renderers, "OpenGLES", "opengles");
-  VList::push_back(renderers, "Software", "software");
+  VarList::push_back(renderers, "OpenGL", "opengl");
+  VarList::push_back(renderers, "OpenGLES2", "opengles2");
+  VarList::push_back(renderers, "OpenGLES", "opengles");
+  VarList::push_back(renderers, "Software", "software");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
