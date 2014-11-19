@@ -215,6 +215,6 @@ src/emucore/M6502.ins: src/emucore/M6502.m4
 
 # Special rule for windows icon stuff (there's probably a better way to do this ...)
 src/windows/stella_icon.o: src/windows/stella.ico src/windows/stella.rc
-	$(WINDRES) --include-dir src/windows src/windows/stella.rc src/windows/stella_icon.o 
+	windres --include-dir src/windows src/windows/stella.rc src/windows/stella_icon.o 
 		
 .PHONY: deb bundle test install uninstall

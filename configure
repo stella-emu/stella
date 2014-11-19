@@ -41,7 +41,6 @@ _rm_rec="$_rm -r"
 _zip="zip -q"
 _cp=cp
 _windowspath=""
-_windres=windres
 _sdlconfig=sdl2-config
 _sdlpath="$PATH"
 _prefix=/usr/local
@@ -175,11 +174,6 @@ echo "Configure run on" `date` > $TMPLOG
 
 #
 # Check any parameters we received
-#
-# TODO:
-# * Change --disable-mad / --enable-mad to the way it's done in autoconf:
-#  That is, --without-mad / --with-mad=/prefix/to/mad. Useful for people
-#  who have Mad/Vorbis/ALSA installed in a non-standard locations.
 #
 
 for parm in "$@" ; do
@@ -485,26 +479,6 @@ fi
 if test -n "$_host"; then
 	# Cross-compiling mode - add your target here if needed
 	case "$_host" in
-#		linupy|arm-riscos-aof)
-#			echo "Cross-compiling to $_host, forcing endianness, alignment and type sizes"
-#			DEFINES="$DEFINES -DUNIX"
-#			_def_endianness='#define SCUMM_LITTLE_ENDIAN'
-#			_def_align='#define SCUMM_NEED_ALIGNMENT'
-#			_def_linupy="#define DLINUPY"
-#			type_1_byte='char'
-#			type_2_byte='short'
-#			type_4_byte='int'
-#			;;
-#		ppc-amigaos)
-#			echo "Cross-compiling to $_host, forcing endianness, alignment and type sizes"
-#			_def_endianness='#define SCUMM_BIG_ENDIAN'
-#			_def_align='#define	SCUMM_NEED_ALIGNMENT'
-#			type_1_byte='char'
-#			type_2_byte='short'
-#			type_4_byte='long'
-#			CXXFLAGS="$CFLAGS -newlib -mstrict-align -mcpu=750 -mtune=7400"
-#			LDFLAGS="$LDFLAGS -newlib"
-#			;;
 		mingw32-cross)
 			echo "Cross-compiling for Windows using MinGW."
 			DEFINES="$DEFINES -DWIN32"
@@ -557,7 +531,6 @@ fi
 # Cross-compilers use their own commands for the following functions
 if test -n "$_host_prefix"; then
 	_strip="$_host_prefix-$_strip"
-	_windres="$_host_prefix-$_windres"
 fi
 
 #
@@ -801,7 +774,6 @@ ZIP := $_zip
 CP := $_cp
 WINDOWSPATH=$_windowspath
 STRIP := $_strip
-WINDRES := $_windres
 
 MODULES += $MODULES
 MODULE_DIRS += $MODULE_DIRS
