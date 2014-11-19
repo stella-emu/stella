@@ -33,13 +33,13 @@ void append(vector<T>& dst, const vector<T>& src)
 template <class T>
 void insertAt(vector<T>& dst, uInt32 idx, const T& element)
 {
-  dst.insert(dst.cbegin()+idx, element);
+  dst.insert(dst.begin()+idx, element);
 }
 
 template <class T>
 void removeAt(vector<T>& dst, uInt32 idx)
 {
-  dst.erase(dst.cbegin()+idx);
+  dst.erase(dst.begin()+idx);
 }
 
 }  // Namespace Vec
