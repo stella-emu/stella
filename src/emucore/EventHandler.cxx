@@ -433,7 +433,16 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           {
             ostringstream buf;
             uInt32 interval = myOSystem.settings().getInt("ssinterval");
-            buf << "Enabling shotshots in " << interval << " second intervals";
+            if(mod & KBDM_SHIFT)
+            {
+              buf << "Enabling shotshots every frame";
+              interval = 1;
+            }
+            else
+            {
+              buf << "Enabling shotshots in " << interval << " second intervals";
+              interval *= (uInt32) myOSystem.frameRate();
+            }
             myOSystem.frameBuffer().showMessage(buf.str());
             setContinuousSnapshots(interval);
           }
@@ -1825,7 +1834,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setContinuousSnapshots(uInt32 interval)
 {
-  myContSnapshotInterval = (uInt32) myOSystem.frameRate() * interval;
+  myContSnapshotInterval = interval;
   myContSnapshotCounter = 0;
 }
 

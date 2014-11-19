@@ -26,6 +26,11 @@
   * The debugger 'reset' command now does a complete system reset,
     instead of simply setting the PC to the reset vector address.
 
+  * Added 'Shift-Alt/Shift-Cmd s' keyboard shortcut, to enable continuous
+    snapshot mode for each frame.  This is really only useful if you
+    save snapshots in 1x mode; using it in high-resolution mode is
+    not recommended.  Special thanks to SvOlli for the idea and code.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!
