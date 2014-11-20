@@ -120,7 +120,8 @@ bool OSystem::create()
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
-  myFrameBuffer = MediaFactory::createVideo(*this);
+  try        { myFrameBuffer = MediaFactory::createVideo(*this); }
+  catch(...) { return false; }
   if(!myFrameBuffer->initialize())
     return false;
 
@@ -174,9 +175,11 @@ void OSystem::loadConfig()
 void OSystem::saveConfig()
 {
   // Ask all subsystems to save their settings
-  myFrameBuffer->tiaSurface().ntsc().saveConfig(*mySettings);
+  if(myFrameBuffer)
+    myFrameBuffer->tiaSurface().ntsc().saveConfig(*mySettings);
 
-  mySettings->saveConfig();
+  if(mySettings)
+    mySettings->saveConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
