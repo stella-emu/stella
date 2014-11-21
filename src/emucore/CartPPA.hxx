@@ -98,6 +98,23 @@ class CartridgePPA : public Cartridge
     void install(System& system);
 
     /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    bool bank(uInt16 bank);
+
+    /**
+      Get the current bank.
+    */
+    uInt16 getBank() const;
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    uInt16 bankCount() const;
+
+    /**
       Patch the cartridge ROM.
 
       @param address  The ROM address to patch
@@ -168,15 +185,7 @@ class CartridgePPA : public Cartridge
 
   private:
     /**
-      Install slices for all four segments according to the bank index.
-
-      @param bank  Index into BankOrg structure
-    */
-    bool bank(uInt16 bank);
-
-    /**
       Install the specified slice for segment zero.
-      Note that this method also takes care of mapping RAM.
 
       @param slice  The slice to map into the segment
     */
@@ -206,11 +215,11 @@ class CartridgePPA : public Cartridge
     void segmentThree(uInt8 slice, bool map3bytes);
 
   private:
-    // Indicates the slice mapped into each of the four segments
-    uInt8 myCurrentSlice[4];
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
     // The 8K ROM image of the cartridge
-    uInt8 myImage[8192];
+    uInt8 myImage[8195];
 
     // The 64 bytes RAM of the cartridge
     uInt8 myRAM[64];

@@ -129,16 +129,16 @@ void CartridgeE0::segmentZero(uInt16 slice)
   // Remember the new slice
   myCurrentSlice[0] = slice;
   uInt16 offset = slice << 10;
-  uInt16 shift = System::PAGE_SHIFT;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
 
-  for(uInt32 address = 0x1000; address < 0x1400; address += (1 << shift))
+  for(uInt32 address = 0x1000; address < 0x1400;
+      address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[offset + (address & 0x03FF)];
     access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x03FF)];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   myBankChanged = true;
 }
@@ -151,16 +151,15 @@ void CartridgeE0::segmentOne(uInt16 slice)
   // Remember the new slice
   myCurrentSlice[1] = slice;
   uInt16 offset = slice << 10;
-  uInt16 shift = System::PAGE_SHIFT;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
 
-  for(uInt32 address = 0x1400; address < 0x1800; address += (1 << shift))
+  for(uInt32 address = 0x1400; address < 0x1800; address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[offset + (address & 0x03FF)];
     access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x03FF)];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   myBankChanged = true;
 }

@@ -178,8 +178,6 @@ bool CartridgeDASH::bankRAM(uInt8 bank) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::bankRAMSlot(uInt16 bank) {
 
-  uInt16 shift = System::PAGE_SHIFT;
-
   uInt16 bankNumber = (bank >> BANK_BITS) & 3;  // which bank # we are switching TO (BITS D6,D7) to 512 byte block
   uInt16 currentBank = bank & BIT_BANK_MASK;    // Wrap around/restrict to valid range
   bool upper = bank & BITMASK_LOWERUPPER;       // is this the read or write port
@@ -204,13 +202,13 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank) {
   uInt32 start = 0x1000 + (bankNumber << RAM_BANK_TO_POWER) + (upper ? RAM_WRITE_OFFSET : 0);
   uInt32 end = start + RAM_BANK_SIZE - 1;
 
-  for (uInt32 address = start; address <= end; address += (1 << shift)) {
+  for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT)) {
     if(upper)
       access.directPokeBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
     else
       access.directPeekBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
     access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
-    mySystem->setPageAccess(address >> shift, access);
+    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
 }
 

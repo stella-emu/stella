@@ -147,7 +147,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8)
     bankRAM(address & 0x0003);
   }
 
-  // NOTE: This does not handle writing to RAM, however, this 
+  // NOTE: This does not handle writing to RAM, however, this
   // function should never be called for RAM because of the
   // way page accessing has been setup
   return false;
@@ -161,27 +161,26 @@ void CartridgeE7::bankRAM(uInt16 bank)
   // Remember what bank we're in
   myCurrentRAM = bank;
   uInt16 offset = bank << 8;
-  uInt16 shift = System::PAGE_SHIFT;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_WRITE);
 
   // Set the page accessing method for the 256 bytes of RAM writing pages
-  for(uInt32 j = 0x1800; j < 0x1900; j += (1 << shift))
+  for(uInt32 j = 0x1800; j < 0x1900; j += (1 << System::PAGE_SHIFT))
   {
     access.directPokeBase = &myRAM[1024 + offset + (j & 0x00FF)];
     access.codeAccessBase = &myCodeAccessBase[8192 + 1024 + offset + (j & 0x00FF)];
-    mySystem->setPageAccess(j >> shift, access);
+    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
   }
 
   // Set the page accessing method for the 256 bytes of RAM reading pages
   access.directPokeBase = 0;
   access.type = System::PA_READ;
-  for(uInt32 k = 0x1900; k < 0x1A00; k += (1 << shift))
+  for(uInt32 k = 0x1900; k < 0x1A00; k += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myRAM[1024 + offset + (k & 0x00FF)];
     access.codeAccessBase = &myCodeAccessBase[8192 + 1024 + offset + (k & 0x00FF)];
-    mySystem->setPageAccess(k >> shift, access);
+    mySystem->setPageAccess(k >> System::PAGE_SHIFT, access);
   }
   myBankChanged = true;
 }
