@@ -67,6 +67,10 @@ class FBSurfaceSDL2 : public FBSurface
   private:
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);
 
+    // Copy constructor and assignment operator not supported
+    FBSurfaceSDL2(const FBSurfaceSDL2&);
+    FBSurfaceSDL2& operator = (const FBSurfaceSDL2&);
+
   private:
     FrameBufferSDL2& myFB;
 

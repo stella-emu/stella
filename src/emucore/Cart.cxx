@@ -57,6 +57,7 @@
 #include "CartFE.hxx"
 #include "CartMC.hxx"
 #include "CartMDM.hxx"
+#include "CartPPA.hxx"
 #include "CartSB.hxx"
 #include "CartUA.hxx"
 #include "CartX07.hxx"
@@ -247,6 +248,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeMC(image, size, settings);
   else if(type == "MDM")
     cartridge = new CartridgeMDM(image, size, settings);
+  else if(type == "PPA")
+    cartridge = new CartridgePPA(image, size, settings);
   else if(type == "UA")
     cartridge = new CartridgeUA(image, size, settings);
   else if(type == "SB")
@@ -417,6 +420,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "0840";
     else
       type = "F8";
+  }
+  else if(size == 8*1024 + 3)  // 8195 byte  - Pink Panther Prototype
+  {
+    type = "PPA";
   }
   else if(size >= 10240 && size <= 10496)  // ~10K - Pitfall2
   {
@@ -697,7 +704,7 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
 bool Cartridge::isProbablyDASH(const uInt8* image, uInt32 size)
 {
   // DASH cart is identified key 'TJAD' in the ROM
-  uInt8 signature[] = { 0x54, 0x4a, 0x41, 0x44 };
+  uInt8 signature[] = { 'T', 'J', 'A', 'D' };
   return searchForBytes(image, size, signature, 4, 1);
 }
 
@@ -890,7 +897,7 @@ bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
 bool Cartridge::isProbablyMDM(const uInt8* image, uInt32 size)
 {
   // MDM cart is identified key 'MDMC' in the first 4K of ROM
-  uInt8 signature[] = { 0x4D, 0x44, 0x4D, 0x43 };
+  uInt8 signature[] = { 'M', 'D', 'M', 'C' };
   return searchForBytes(image, 4096, signature, 4, 1);
 }
 
@@ -990,6 +997,7 @@ Cartridge::BankswitchType Cartridge::ourBSList[] = {
   { "FE",       "FE (8K Decathlon)"             },
   { "MC",       "MC (C. Wilkson Megacart)"      },
   { "MDM",      "MDM (Menu Driven Megacart)"    },
+  { "PPA",      "PPA (Pink Panther Prototype)"  },
   { "SB",       "SB (128-256K SUPERbank)"       },
   { "UA",       "UA (8K UA Ltd.)"               },
   { "X07",      "X07 (64K AtariAge)"            }

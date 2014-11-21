@@ -216,7 +216,7 @@ class Cartridge : public Device
       const char* type;
       const char* desc;
     };
-    enum { ourNumBSTypes = 44 };
+    enum { ourNumBSTypes = 45 };
     static BankswitchType ourBSList[ourNumBSTypes];
 
   protected:
