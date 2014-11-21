@@ -976,7 +976,7 @@ Cartridge::BankswitchType Cartridge::ourBSList[] = {
   { "BFSC",     "BFSC (CPUWIZ 256K + ram)"      },
   { "CV",       "CV (Commavid extra ram)"       },
   { "CM",       "CM (SpectraVideo CompuMate)"   },
-  { "DASH",     "Experimental"                  },
+  { "DASH",     "DASH (Experimental)"           },
   { "DF",       "DF (CPUWIZ 128K)"              },
   { "DFSC",     "DFSC (CPUWIZ 128K + ram)"      },
   { "DPC",      "DPC (Pitfall II)"              },
@@ -999,6 +999,6 @@ Cartridge::BankswitchType Cartridge::ourBSList[] = {
   { "MDM",      "MDM (Menu Driven Megacart)"    },
   { "SB",       "SB (128-256K SUPERbank)"       },
   { "UA",       "UA (8K UA Ltd.)"               },
-  { "WD",       "Experimental"                  },
+  { "WD",       "WD (Experimental)"             },
   { "X07",      "X07 (64K AtariAge)"            }
 };
