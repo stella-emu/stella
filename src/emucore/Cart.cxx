@@ -57,9 +57,9 @@
 #include "CartFE.hxx"
 #include "CartMC.hxx"
 #include "CartMDM.hxx"
-#include "CartPPA.hxx"
 #include "CartSB.hxx"
 #include "CartUA.hxx"
+#include "CartWD.hxx"
 #include "CartX07.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
@@ -248,12 +248,12 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeMC(image, size, settings);
   else if(type == "MDM")
     cartridge = new CartridgeMDM(image, size, settings);
-  else if(type == "PPA")
-    cartridge = new CartridgePPA(image, size, settings);
   else if(type == "UA")
     cartridge = new CartridgeUA(image, size, settings);
   else if(type == "SB")
     cartridge = new CartridgeSB(image, size, settings);
+  else if(type == "WD")
+    cartridge = new CartridgeWD(image, size, settings);
   else if(type == "X07")
     cartridge = new CartridgeX07(image, size, settings);
   else if(dtype == "WRONG_SIZE")
@@ -421,9 +421,9 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "F8";
   }
-  else if(size == 8*1024 + 3)  // 8195 byte  - Pink Panther Prototype
+  else if(size == 8*1024 + 3)  // 8195 bytes (Experimental)
   {
-    type = "PPA";
+    type = "WD";
   }
   else if(size >= 10240 && size <= 10496)  // ~10K - Pitfall2
   {
@@ -997,8 +997,8 @@ Cartridge::BankswitchType Cartridge::ourBSList[] = {
   { "FE",       "FE (8K Decathlon)"             },
   { "MC",       "MC (C. Wilkson Megacart)"      },
   { "MDM",      "MDM (Menu Driven Megacart)"    },
-  { "PPA",      "PPA (Pink Panther Prototype)"  },
   { "SB",       "SB (128-256K SUPERbank)"       },
   { "UA",       "UA (8K UA Ltd.)"               },
+  { "WD",       "Experimental"                  },
   { "X07",      "X07 (64K AtariAge)"            }
 };

@@ -17,19 +17,19 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGEPPA_HXX
-#define CARTRIDGEPPA_HXX
+#ifndef CARTRIDGEWD_HXX
+#define CARTRIDGEWD_HXX
 
 class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
 #ifdef DEBUGGER_SUPPORT
-//  #include "CartPPAWidget.hxx"
+//  #include "CartWDWidget.hxx"
 #endif
 
 /**
-  This is the cartridge class for the "Pink Panther" prototype cart.
+  This is the cartridge class for a "Wickstead Design" prototype cart.
   The ROM is normally 8K, but sometimes has an extra 3 bytes appended,
   to be mapped as described below.  There is also 64 bytes of RAM.
   In this bankswitching scheme the 2600's 4K cartridge address space 
@@ -64,9 +64,9 @@ class System;
 
   @author  Stephen Anthony
 */
-class CartridgePPA : public Cartridge
+class CartridgeWD : public Cartridge
 {
-  friend class CartridgePPAWidget;
+  friend class CartridgeWDWidget;
 
   public:
     /**
@@ -76,12 +76,12 @@ class CartridgePPA : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgePPA(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeWD(const uInt8* image, uInt32 size, const Settings& settings);
  
     /**
       Destructor
     */
-    virtual ~CartridgePPA();
+    virtual ~CartridgeWD();
 
   public:
     /**
@@ -152,7 +152,7 @@ class CartridgePPA : public Cartridge
 
       @return The name of the object
     */
-    string name() const { return "CartridgePPA"; }
+    string name() const { return "CartridgeWD"; }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -162,7 +162,7 @@ class CartridgePPA : public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h)
     {
-      return nullptr;//new CartridgePPAWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return nullptr;//new CartridgeWDWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 

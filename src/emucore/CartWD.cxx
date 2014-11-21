@@ -20,11 +20,11 @@
 #include <cstring>
 
 #include "System.hxx"
-#include "CartPPA.hxx"
+#include "CartWD.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgePPA::CartridgePPA(const uInt8* image, uInt32 size,
-                           const Settings& settings)
+CartridgeWD::CartridgeWD(const uInt8* image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
@@ -36,12 +36,12 @@ CartridgePPA::CartridgePPA(const uInt8* image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgePPA::~CartridgePPA()
+CartridgeWD::~CartridgeWD()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgePPA::reset()
+void CartridgeWD::reset()
 {
   // Initialize RAM
   if(mySettings.getBool("ramrandom"))
@@ -55,7 +55,7 @@ void CartridgePPA::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgePPA::install(System& system)
+void CartridgeWD::install(System& system)
 {
   mySystem = &system;
 
@@ -93,7 +93,7 @@ void CartridgePPA::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgePPA::peek(uInt16 address)
+uInt8 CartridgeWD::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
   address &= 0x0FFF;
@@ -120,14 +120,14 @@ uInt8 CartridgePPA::peek(uInt16 address)
     }
   }
 
-  // NOTE: This does not handle reading from RAM, however, this 
+  // NOTE: This does not handle reading from ROM, however, this 
   // function should never be called for ROM because of the
   // way page accessing has been setup
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgePPA::poke(uInt16 address, uInt8)
+bool CartridgeWD::poke(uInt16 address, uInt8)
 {
   // NOTE: This does not handle writing to RAM, however, this 
   // function should never be called for RAM because of the
@@ -136,7 +136,7 @@ bool CartridgePPA::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgePPA::bank(uInt16 bank)
+bool CartridgeWD::bank(uInt16 bank)
 {
   if(bankLocked() || bank > 15) return false;
 
@@ -151,7 +151,7 @@ bool CartridgePPA::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgePPA::segmentZero(uInt8 slice)
+void CartridgeWD::segmentZero(uInt8 slice)
 {
 cerr << __func__ << " : slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
@@ -168,7 +168,7 @@ cerr << __func__ << " : slice " << (int)slice << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgePPA::segmentOne(uInt8 slice)
+void CartridgeWD::segmentOne(uInt8 slice)
 {
 cerr << __func__ << "  : slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
@@ -184,7 +184,7 @@ cerr << __func__ << "  : slice " << (int)slice << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgePPA::segmentTwo(uInt8 slice)
+void CartridgeWD::segmentTwo(uInt8 slice)
 {
 cerr << __func__ << "  : slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
@@ -200,7 +200,7 @@ cerr << __func__ << "  : slice " << (int)slice << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgePPA::segmentThree(uInt8 slice, bool map3bytes)
+void CartridgeWD::segmentThree(uInt8 slice, bool map3bytes)
 {
 cerr << __func__ << ": slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
@@ -227,32 +227,32 @@ cerr << __func__ << ": slice " << (int)slice << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgePPA::getBank() const
+uInt16 CartridgeWD::getBank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgePPA::bankCount() const
+uInt16 CartridgeWD::bankCount() const
 {
   return 8;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgePPA::patch(uInt16 address, uInt8 value)
+bool CartridgeWD::patch(uInt16 address, uInt8 value)
 {
   return false;  // TODO
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgePPA::getImage(int& size) const
+const uInt8* CartridgeWD::getImage(int& size) const
 {
   size = 8195;
   return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgePPA::save(Serializer& out) const
+bool CartridgeWD::save(Serializer& out) const
 {
   try
   {
@@ -262,7 +262,7 @@ bool CartridgePPA::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgePPA::save" << endl;
+    cerr << "ERROR: CartridgeWD::save" << endl;
     return false;
   }
 
@@ -270,7 +270,7 @@ bool CartridgePPA::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgePPA::load(Serializer& in)
+bool CartridgeWD::load(Serializer& in)
 {
   try
   {
@@ -284,7 +284,7 @@ bool CartridgePPA::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgePPA::load" << endl;
+    cerr << "ERROR: CartridgeWD::load" << endl;
     return false;
   }
 
@@ -292,7 +292,7 @@ bool CartridgePPA::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgePPA::BankOrg CartridgePPA::ourBankOrg[16] = {
+CartridgeWD::BankOrg CartridgeWD::ourBankOrg[16] = {
   { 0, 0, 1, 2, false },
   { 0, 1, 3, 2, false },
   { 4, 5, 6, 7, false },
