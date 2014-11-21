@@ -768,6 +768,9 @@
     <ClCompile Include="..\common\tv_filters\atari_ntsc.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\CartWD.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1552,6 +1555,9 @@
     </ClInclude>
     <ClInclude Include="..\common\MediaFactory.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartWD.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

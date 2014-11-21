@@ -288,6 +288,7 @@
     <ClCompile Include="..\emucore\CartDFSC.cxx" />
     <ClCompile Include="..\emucore\CartFA2.cxx" />
     <ClCompile Include="..\emucore\CartMDM.cxx" />
+    <ClCompile Include="..\emucore\CartWD.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\EventJoyHandler.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
@@ -540,6 +541,7 @@
     <ClInclude Include="..\emucore\CartDFSC.hxx" />
     <ClInclude Include="..\emucore\CartFA2.hxx" />
     <ClInclude Include="..\emucore\CartMDM.hxx" />
+    <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />

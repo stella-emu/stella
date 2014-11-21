@@ -153,7 +153,7 @@ bool CartridgeWD::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeWD::segmentZero(uInt8 slice)
 {
-cerr << __func__ << " : slice " << (int)slice << endl;
+cerr << "segmentZero : slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
   System::PageAccess access(this, System::PA_READ);
 
@@ -170,7 +170,7 @@ cerr << __func__ << " : slice " << (int)slice << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeWD::segmentOne(uInt8 slice)
 {
-cerr << __func__ << "  : slice " << (int)slice << endl;
+cerr << "segmentOne  : slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
   System::PageAccess access(this, System::PA_READ);
 
@@ -186,7 +186,7 @@ cerr << __func__ << "  : slice " << (int)slice << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeWD::segmentTwo(uInt8 slice)
 {
-cerr << __func__ << "  : slice " << (int)slice << endl;
+cerr << "segmentTwo  : slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
   System::PageAccess access(this, System::PA_READ);
 
@@ -202,7 +202,7 @@ cerr << __func__ << "  : slice " << (int)slice << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeWD::segmentThree(uInt8 slice, bool map3bytes)
 {
-cerr << __func__ << ": slice " << (int)slice << endl;
+cerr << "segmentThree: slice " << (int)slice << endl;
   uInt16 offset = slice << 10;
 
   // Make a copy of the address space pointed to by the slice
