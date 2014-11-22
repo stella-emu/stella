@@ -468,6 +468,8 @@
 		DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6F11C281ED005DA767 /* pngwutil.c */; };
 		DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */; };
 		DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */; };
+		DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDA03AE1A2009BA00711920 /* CartWD.cxx */; };
+		DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDA03AF1A2009BB00711920 /* CartWD.hxx */; };
 		DCDAF4D918CA9AAB00D3865D /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCDAF4D818CA9AAB00D3865D /* SDL2.framework */; };
 		DCDAF4DB18CA9AF000D3865D /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DCDAF4DA18CA9AF000D3865D /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */; };
@@ -1016,6 +1018,8 @@
 		DCD6FC6F11C281ED005DA767 /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwutil.c; path = ../libpng/pngwutil.c; sourceTree = SOURCE_ROOT; };
 		DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PNGLibrary.cxx; path = ../common/PNGLibrary.cxx; sourceTree = SOURCE_ROOT; };
 		DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PNGLibrary.hxx; path = ../common/PNGLibrary.hxx; sourceTree = SOURCE_ROOT; };
+		DCDA03AE1A2009BA00711920 /* CartWD.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartWD.cxx; path = ../emucore/CartWD.cxx; sourceTree = "<group>"; };
+		DCDA03AF1A2009BB00711920 /* CartWD.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartWD.hxx; path = ../emucore/CartWD.hxx; sourceTree = "<group>"; };
 		DCDAF4D818CA9AAB00D3865D /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		DCDAF4DA18CA9AF000D3865D /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConfigPathDialog.cxx; path = ../gui/ConfigPathDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -1443,6 +1447,8 @@
 				DC0984840D3985160073C852 /* CartSB.hxx */,
 				2DDBEB7008457B7D00812C11 /* CartUA.cxx */,
 				2DDBEB7108457B7D00812C11 /* CartUA.hxx */,
+				DCDA03AE1A2009BA00711920 /* CartWD.cxx */,
+				DCDA03AF1A2009BB00711920 /* CartWD.hxx */,
 				DCA23AE70D75B22500F77B33 /* CartX07.cxx */,
 				DCA23AE80D75B22500F77B33 /* CartX07.hxx */,
 				DC8C1BA914B25DE7006440EE /* CompuMate.cxx */,
@@ -1823,6 +1829,7 @@
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
 				2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */,
 				2D91745809BA90380026E9FF /* DebuggerDialog.hxx in Headers */,
+				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
 				2D91745909BA90380026E9FF /* PromptWidget.hxx in Headers */,
 				DC2AADAF194F389C0026C7A4 /* CartDASH.hxx in Headers */,
 				2D91745A09BA90380026E9FF /* RamWidget.hxx in Headers */,
@@ -2258,6 +2265,7 @@
 				DCAAE5D31715887B0080BB82 /* Cart2KWidget.cxx in Sources */,
 				DCAAE5D51715887B0080BB82 /* Cart3FWidget.cxx in Sources */,
 				DCAAE5D71715887B0080BB82 /* Cart4KWidget.cxx in Sources */,
+				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
 				DCAAE5DB1715887B0080BB82 /* CartCVWidget.cxx in Sources */,
 				DCAAE5DE1715887B0080BB82 /* CartEFSCWidget.cxx in Sources */,
