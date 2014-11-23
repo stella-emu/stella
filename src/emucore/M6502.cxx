@@ -50,7 +50,6 @@ M6502::M6502(const Settings& settings)
     mySystem(nullptr),
     mySettings(settings),
     myLastAccessWasRead(true),
-    myTotalInstructionCount(0),
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),
     myLastPeekAddress(0),
@@ -103,8 +102,6 @@ void M6502::reset()
 
   // Load PC from the reset vector
   PC = (uInt16)mySystem->peek(0xfffc) | ((uInt16)mySystem->peek(0xfffd) << 8);
-
-  myTotalInstructionCount = 0;
 
   myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
   myLastSrcAddressS = myLastSrcAddressA =
@@ -220,7 +217,6 @@ bool M6502::execute(uInt32 number)
           // Oops, illegal instruction executed so set fatal error flag
           myExecutionStatus |= FatalErrorBit;
       }
-      myTotalInstructionCount++;
     }
 
     // See if we need to handle an interrupt

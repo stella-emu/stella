@@ -27,7 +27,6 @@
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    my6502(0),
     mySize(BSPF_max(size, 8448u)),
     myLoadImages(nullptr)
 {
@@ -85,19 +84,14 @@ void CartridgeAR::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::systemCyclesReset()
 {
-  // Get the current system cycle
-  uInt32 cycles = mySystem->cycles();
-
   // Adjust cycle values
-  myPowerRomCycle -= cycles;
+  myPowerRomCycle -= mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::install(System& system)
 {
   mySystem = &system;
-
-  my6502 = &(mySystem->m6502());
 
   // Map all of the accesses to call peek and poke (we don't yet indicate RAM areas)
   System::PageAccess access(this, System::PA_READ);
@@ -130,7 +124,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   // Cancel any pending write if more than 5 distinct accesses have occurred
   // TODO: Modify to handle when the distinct counter wraps around...
   if(myWritePending && 
-      (my6502->distinctAccesses() > myNumberOfDistinctAccesses + 5))
+      (mySystem->m6502().distinctAccesses() > myNumberOfDistinctAccesses + 5))
   {
     myWritePending = false;
   }
@@ -139,7 +133,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
   {
     myDataHoldRegister = addr;
-    myNumberOfDistinctAccesses = my6502->distinctAccesses();
+    myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
   // Is the bank configuration hotspot being accessed?
@@ -151,7 +145,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   }
   // Handle poke if writing enabled
   else if(myWriteEnabled && myWritePending && 
-      (my6502->distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
+      (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
     if((addr & 0x0800) == 0)
     {
@@ -177,7 +171,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   // Cancel any pending write if more than 5 distinct accesses have occurred
   // TODO: Modify to handle when the distinct counter wraps around...
   if(myWritePending && 
-      (my6502->distinctAccesses() > myNumberOfDistinctAccesses + 5))
+      (mySystem->m6502().distinctAccesses() > myNumberOfDistinctAccesses + 5))
   {
     myWritePending = false;
   }
@@ -186,7 +180,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
   {
     myDataHoldRegister = addr;
-    myNumberOfDistinctAccesses = my6502->distinctAccesses();
+    myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
   // Is the bank configuration hotspot being accessed?
@@ -198,7 +192,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   }
   // Handle poke if writing enabled
   else if(myWriteEnabled && myWritePending && 
-      (my6502->distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
+      (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
     if((addr & 0x0800) == 0)
     {

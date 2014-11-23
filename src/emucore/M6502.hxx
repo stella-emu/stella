@@ -165,13 +165,6 @@ class M6502 : public Serializable
     Int32 lastSrcAddressY() const { return myLastSrcAddressY; }
 
     /**
-      Get the total number of instructions executed so far.
-
-      @return The number of executed instructions
-    */
-    int totalInstructionCount() const { return myTotalInstructionCount; }
-
-    /**
       Get the number of memory accesses to distinct memory locations
 
       @return The number of memory accesses to distinct memory locations
@@ -317,9 +310,6 @@ class M6502 : public Serializable
 
     /// Indicates if the last memory access was a read or not
     bool myLastAccessWasRead;
-
-    /// The total number of instructions executed so far
-    int myTotalInstructionCount;
 
     /// Indicates the numer of distinct memory accesses
     uInt32 myNumberOfDistinctAccesses;
