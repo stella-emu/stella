@@ -235,7 +235,8 @@ bool CartDebug::disassemble(bool force)
   bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
                                    mySystem.isPageDirty(0x80, 0xFF);
 
-  bool changed = (force || bankChanged || !pcfound || pagedirty);
+  bool changed = !mySystem.autodetectMode() &&
+                 (force || bankChanged || !pcfound || pagedirty);
   if(changed)
   {
     // Are we disassembling from ROM or ZP RAM?
