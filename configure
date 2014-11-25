@@ -21,7 +21,6 @@ _zlib=auto
 _build_windowed=yes
 _build_sound=yes
 _build_debugger=yes
-_build_snapshot=yes
 _build_joystick=yes
 _build_cheats=yes
 _build_thumb=yes
@@ -598,14 +597,6 @@ else
 	echo
 fi
 
-if test "$_build_snapshot" = "yes" ; then
-	echo_n "   Snapshot support enabled"
-	echo
-else
-	echo_n "   Snapshot support disabled"
-	echo
-fi
-
 if test "$_build_joystick" = yes ; then
 	echo_n "   Joystick support enabled"
 	echo
@@ -729,10 +720,6 @@ if test "$_build_debugger" = yes ; then
 	DEFINES="$DEFINES -DDEBUGGER_SUPPORT"
 	MODULES="$MODULES $DBG $DBGGUI $YACC"
 	INCLUDES="$INCLUDES -I$DBG -I$DBGGUI -I$YACC"
-fi
-
-if test "$_build_snapshot" = yes ; then
-	DEFINES="$DEFINES -DSNAPSHOT_SUPPORT"
 fi
 
 if test "$_build_joystick" = yes ; then
