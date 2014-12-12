@@ -257,7 +257,7 @@ bool CartDebug::disassemble(bool force)
     if(bankChanged || !pcfound)
     {
       AddressList::const_iterator i;
-      for(auto i = addresses.begin(); i != addresses.end(); ++i)
+      for(i = addresses.cbegin(); i != addresses.cend(); ++i)
       {
         if(PC < *i)
         {

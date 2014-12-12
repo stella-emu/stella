@@ -295,12 +295,13 @@ class CartDebug : public DebuggerSystem
 #if 0
       friend ostream& operator<<(ostream& os, const BankInfo& b)
       {
-        os << "start=$" << HEX4 << b.start << ", end=$" << HEX4 << b.end
-           << ", offset=$" << HEX4 << b.offset << ", size=" << dec << b.size
-           << endl
+        os << "start=$" << Common::Base::HEX4 << b.start
+           << ", end=$" << Common::Base::HEX4 << b.end
+           << ", offset=$" << Common::Base::HEX4 << b.offset
+           << ", size=" << dec << b.size << endl
            << "addrlist: ";
-        for(const auto& i: addressList)
-          os << HEX4 << i << " ";
+        for(const auto& i: b.addressList)
+          os << Common::Base::HEX4 << i << " ";
         return os;
       }
 #endif
