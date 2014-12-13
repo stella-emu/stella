@@ -29,7 +29,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
-  : Dialog(osystem, parent, 0, 0, 16, 16)
+  : Dialog(osystem, parent)
 {
   const GUI::Font& font = instance().frameBuffer().font();
   const int buttonWidth = font.getStringWidth("Right Diff B") + 20,

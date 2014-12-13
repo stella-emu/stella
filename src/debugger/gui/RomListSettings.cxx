@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
+  : Dialog(boss->instance(), boss->parent()),
     CommandSender(boss),
     _xorig(0),
     _yorig(0),

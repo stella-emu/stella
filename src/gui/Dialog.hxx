@@ -131,7 +131,7 @@ class Dialog : public GuiObject
       Widget* widget;
       WidgetArray list;
 
-      Focus(Widget* w = 0);
+      Focus(Widget* w = nullptr);
       virtual ~Focus();
     };
     using FocusList = vector<Focus>;
@@ -141,7 +141,7 @@ class Dialog : public GuiObject
       FocusList focus;
       uInt32 currentTab;
 
-      TabFocus(TabWidget* w = 0);
+      TabFocus(TabWidget* w = nullptr);
       virtual ~TabFocus();
 
       void appendFocusList(WidgetArray& list);

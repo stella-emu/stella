@@ -72,7 +72,8 @@ class TabWidget : public Widget, public CommandSender
       Widget* parentWidget;
       bool enabled;
 
-      Tab(const string& t = "", Widget* first = 0, Widget* parent = 0, bool e = true)
+      Tab(const string& t = "", Widget* first = nullptr, Widget* parent = nullptr,
+          bool e = true)
         : title(t), firstWidget(first), parentWidget(parent), enabled(e) { }
     };
     using TabList = vector<Tab>;

@@ -73,7 +73,7 @@
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
      string& dtype, string& id, const OSystem& osystem, Settings& settings)
 {
-  Cartridge* cartridge = 0;
+  Cartridge* cartridge = nullptr;
   string type = dtype;
 
   // Collect some info about the ROM
@@ -313,8 +313,7 @@ Cartridge::Cartridge(const Settings& settings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge::~Cartridge()
 {
-  if(myCodeAccessBase)
-    delete[] myCodeAccessBase;
+  delete[] myCodeAccessBase;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -372,7 +371,7 @@ void Cartridge::createCodeAccessBase(uInt32 size)
 string Cartridge::autodetectType(const uInt8* image, uInt32 size)
 {
   // Guess type based on size
-  const char* type = 0;
+  const char* type = nullptr;
 
   if((size % 8448) == 0 || size == 6144)
   {

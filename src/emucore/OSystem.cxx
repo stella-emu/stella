@@ -479,7 +479,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
   unique_ptr<Console> console;
 
   // Open the cartridge image and read it in
-  uInt8* image = 0;
+  uInt8* image = nullptr;
   uInt32 size  = 0;
   if((image = openROM(romfile, md5, size)) != 0)
   {

@@ -66,7 +66,7 @@
 
 #include <stdio.h>
 
-Expression* lastExp = 0;
+Expression* lastExp = nullptr;
 
 #define YYERROR_VERBOSE 1
 
@@ -85,7 +85,7 @@ void yyerror(const char *e) {
 	if(lastExp && dynamic_cast<Expression*>(lastExp))
 		delete lastExp;
 
-	lastExp = 0;
+	lastExp = nullptr;
 }
 
 

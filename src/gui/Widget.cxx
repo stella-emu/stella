@@ -161,7 +161,7 @@ void Widget::setEnabled(bool e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
+Widget* Widget::findWidgetInChain(Widget* w, int x, int y)
 {
   while(w)
   {
@@ -287,7 +287,7 @@ void Widget::setDirtyInChain(Widget* start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaticTextWidget::StaticTextWidget(GuiObject *boss, const GUI::Font& font,
+StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h,
                                    const string& text, TextAlignment align)
   : Widget(boss, font, x, y, w, h),
@@ -330,7 +330,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int cmd)
   : StaticTextWidget(boss, font, x, y, w, h, label, kTextAlignCenter),
@@ -434,7 +434,7 @@ static uInt32 checked_img_circle[8] =
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
+CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, const string& label,
                                int cmd)
   : ButtonWidget(boss, font, x, y, 16, 16, label, cmd),
@@ -542,7 +542,7 @@ void CheckboxWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
+SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int labelWidth, int cmd)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),

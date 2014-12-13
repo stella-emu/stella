@@ -28,7 +28,7 @@ FilesystemNodeZIP::FilesystemNodeZIP()
     _numFiles(0)
 {
   // We need a name, else the node is invalid
-  AbstractFSNode* tmp = 0;
+  AbstractFSNode* tmp = nullptr;
   _realNode = shared_ptr<AbstractFSNode>(tmp);
 }
 

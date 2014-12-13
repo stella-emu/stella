@@ -226,7 +226,7 @@ void Dialog::buildCurrentFocusList(int tabID)
 
   // Remember which tab item previously had focus, if applicable
   // This only applies if this method was called for a tab change
-  Widget* tabFocusWidget = 0;
+  Widget* tabFocusWidget = nullptr;
   if(tabID >= 0 && tabID < (int)_myTabList.size())
   {
     // Save focus in previously selected tab column,

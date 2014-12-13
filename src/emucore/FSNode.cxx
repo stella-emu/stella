@@ -40,7 +40,7 @@ FilesystemNode::FilesystemNode(AbstractFSNode *realNode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const string& p)
 {
-  AbstractFSNode* tmp = 0;
+  AbstractFSNode* tmp = nullptr;
 
   // Is this potentially a ZIP archive?
   if(BSPF_containsIgnoreCase(p, ".zip"))

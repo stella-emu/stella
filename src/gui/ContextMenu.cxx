@@ -27,7 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
                          const VariantList& items, int cmd)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
+  : Dialog(boss->instance(), boss->parent()),
     CommandSender(boss),
     _rowHeight(font.getLineHeight()),
     _firstEntry(0),

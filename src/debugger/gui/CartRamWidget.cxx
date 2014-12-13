@@ -40,7 +40,7 @@ CartRamWidget::CartRamWidget(
   const int bwidth  = lfont.getStringWidth("Compare "),
             bheight = myLineHeight + 2;
 
-  EditTextWidget* etw = 0;
+  EditTextWidget* etw = nullptr;
   ostringstream buf;
   int xpos = 2, ypos = 5;
   

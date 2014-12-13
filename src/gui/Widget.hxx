@@ -251,7 +251,7 @@ class CheckboxWidget : public ButtonWidget
 class SliderWidget : public ButtonWidget
 {
   public:
-    SliderWidget(GuiObject *boss, const GUI::Font& font,
+    SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h, const string& label = "",
                  int labelWidth = 0, int cmd = 0);
 

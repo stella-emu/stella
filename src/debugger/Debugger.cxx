@@ -58,7 +58,7 @@
 
 #include "Debugger.hxx"
 
-Debugger* Debugger::myStaticDebugger = 0;
+Debugger* Debugger::myStaticDebugger = nullptr;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const char* builtin_functions[][3] = {

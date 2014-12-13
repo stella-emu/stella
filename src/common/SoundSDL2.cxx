@@ -449,7 +449,7 @@ bool SoundSDL2::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::RegWriteQueue::RegWriteQueue(uInt32 capacity)
   : myCapacity(capacity),
-    myBuffer(0),
+    myBuffer(nullptr),
     mySize(0),
     myHead(0),
     myTail(0)

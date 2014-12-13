@@ -206,7 +206,7 @@ class FrameBuffer
 
       @return  A pointer to a valid surface object, or nullptr.
     */
-    shared_ptr<FBSurface> allocateSurface(int w, int h, const uInt32* data = 0);
+    shared_ptr<FBSurface> allocateSurface(int w, int h, const uInt32* data = nullptr);
 
     /**
       Returns the current dimensions of the framebuffer image.

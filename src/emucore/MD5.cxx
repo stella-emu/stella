@@ -347,7 +347,7 @@ string MD5(const uInt8* buffer, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string MD5(const FilesystemNode& node)
 {
-  uInt8* image = 0;
+  uInt8* image = nullptr;
   uInt32 size = 0;
   try
   {
