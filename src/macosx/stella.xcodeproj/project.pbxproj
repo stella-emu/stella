@@ -326,6 +326,8 @@
 		DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA311037FF200F199A7 /* DiStella.hxx */; };
 		DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */; };
 		DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */; };
+		DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */; };
+		DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */; };
 		DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */; };
 		DC73BD861915E5B1003FAFAD /* FBSurfaceSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */; };
 		DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD871915E5E3003FAFAD /* FBSurface.cxx */; };
@@ -874,6 +876,8 @@
 		DC6B2BA311037FF200F199A7 /* DiStella.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DiStella.hxx; path = ../debugger/DiStella.hxx; sourceTree = SOURCE_ROOT; };
 		DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LoggerDialog.cxx; path = ../gui/LoggerDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LoggerDialog.hxx; path = ../gui/LoggerDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartWDWidget.cxx; path = ../debugger/gui/CartWDWidget.cxx; sourceTree = "<group>"; };
+		DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartWDWidget.hxx; path = ../debugger/gui/CartWDWidget.hxx; sourceTree = "<group>"; };
 		DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceSDL2.cxx; path = ../common/FBSurfaceSDL2.cxx; sourceTree = "<group>"; };
 		DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceSDL2.hxx; path = ../common/FBSurfaceSDL2.hxx; sourceTree = "<group>"; };
 		DC73BD871915E5E3003FAFAD /* FBSurface.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurface.cxx; path = ../emucore/FBSurface.cxx; sourceTree = "<group>"; };
@@ -1176,8 +1180,6 @@
 				2D2331900900B5EF00613B1F /* AudioWidget.hxx */,
 				DCCF4ACE14B7E6C300814FAB /* BoosterWidget.cxx */,
 				DCCF4ACF14B7E6C300814FAB /* BoosterWidget.hxx */,
-				DCAAE5B81715887B0080BB82 /* Cart0840Widget.cxx */,
-				DCAAE5B91715887B0080BB82 /* Cart0840Widget.hxx */,
 				DCAAE5B21715887B0080BB82 /* Cart2KWidget.cxx */,
 				DCAAE5B31715887B0080BB82 /* Cart2KWidget.hxx */,
 				DC676A251729A0B000E4E73D /* Cart3EWidget.cxx */,
@@ -1190,6 +1192,8 @@
 				DCAACB05188D636F00A4D282 /* Cart4KSCWidget.hxx */,
 				DCAAE5B61715887B0080BB82 /* Cart4KWidget.cxx */,
 				DCAAE5B71715887B0080BB82 /* Cart4KWidget.hxx */,
+				DCAAE5B81715887B0080BB82 /* Cart0840Widget.cxx */,
+				DCAAE5B91715887B0080BB82 /* Cart0840Widget.hxx */,
 				DC676A291729A0B000E4E73D /* CartARWidget.cxx */,
 				DC676A2A1729A0B000E4E73D /* CartARWidget.hxx */,
 				DCAACB06188D636F00A4D282 /* CartBFSCWidget.cxx */,
@@ -1251,6 +1255,8 @@
 				DC676A3E1729A0B000E4E73D /* CartSBWidget.hxx */,
 				DCAAE5D11715887B0080BB82 /* CartUAWidget.cxx */,
 				DCAAE5D21715887B0080BB82 /* CartUAWidget.hxx */,
+				DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */,
+				DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */,
 				DC676A3F1729A0B000E4E73D /* CartX07Widget.cxx */,
 				DC676A401729A0B000E4E73D /* CartX07Widget.hxx */,
 				2D20F9E408C603EC00A73076 /* ColorWidget.cxx */,
@@ -1781,6 +1787,7 @@
 				2D91740309BA90380026E9FF /* Command.hxx in Headers */,
 				2D91740409BA90380026E9FF /* Dialog.hxx in Headers */,
 				2D91740509BA90380026E9FF /* DialogContainer.hxx in Headers */,
+				DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */,
 				2D91740609BA90380026E9FF /* GameInfoDialog.hxx in Headers */,
 				2D91740709BA90380026E9FF /* GameList.hxx in Headers */,
 				2D91740809BA90380026E9FF /* GuiObject.hxx in Headers */,
@@ -2201,6 +2208,7 @@
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
 				DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
+				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
 				DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */,
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
