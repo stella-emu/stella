@@ -25,7 +25,7 @@ class System;
 #include "bspf.hxx"
 #include "Cart.hxx"
 #ifdef DEBUGGER_SUPPORT
-//  #include "CartWDWidget.hxx"
+  #include "CartWDWidget.hxx"
 #endif
 
 /**
@@ -34,7 +34,7 @@ class System;
   to be mapped as described below.  There is also 64 bytes of RAM.
   In this bankswitching scheme the 2600's 4K cartridge address space 
   is broken into four 1K segments.  The desired arrangement of 1K slices
-  is selected by accessing $30 - $FF of the first segment.  The slices
+  is selected by accessing $30 - $3F of TIA address space.  The slices
   are mapped into all 4 segments at once as follows:
 
     $0030: 0,0,1,2
@@ -47,7 +47,7 @@ class System;
     $0037: 6,0,5,1
     $0038: 0,0,1,2
     $0039: 0,1,3,2
-    $003A: 4,5,6,8
+    $003A: 4,5,6,7
     $003B: 7,4,3,2
     $003C: 0,0,6,7*
     $003D: 0,1,7,6*
@@ -58,9 +58,8 @@ class System;
   mapped into $3FC - $3FE of the uppermost (third) segment.
 
   The 64 bytes of RAM are accessible at $1000 - $103F (read port) and
-  $1040 - $107F (write port).  Note that all the hotspots are in the
-  read port of RAM.  Because the RAM takes 128 bytes of address space,
-  the range $1000 - $107F of segment 0 ROM will never be available.
+  $1040 - $107F (write port).  Because the RAM takes 128 bytes of address
+  space, the range $1000 - $107F of segment 0 ROM will never be available.
 
   @author  Stephen Anthony
 */
@@ -162,7 +161,7 @@ class CartridgeWD : public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h)
     {
-      return nullptr;//new CartridgeWDWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new CartridgeWDWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 
@@ -218,6 +217,9 @@ class CartridgeWD : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
+    // Indicates the actual size of the ROM image (either 8K or 8K + 3)
+    uInt32 mySize;
+
     // The 8K ROM image of the cartridge
     uInt8 myImage[8195];
 
@@ -226,6 +228,15 @@ class CartridgeWD : public Cartridge
 
     // The 1K ROM mirror of segment 3 (sometimes contains extra 3 bytes)
     uInt8 mySegment3[1024];
+
+    // Indicates the offset for each of the four segments
+    uInt16 myOffset[4];
+
+    // Indicates the cycle at which a bankswitch was initiated
+    uInt32 myCyclesAtBankswitchInit;
+
+    // Indicates the bank we wish to switch to in the future
+    uInt16 myPendingBank;
 
     // The arrangement of banks to use on each hotspot read
     struct BankOrg {
