@@ -270,6 +270,7 @@
     <ClCompile Include="..\debugger\gui\CartRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartSBWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartUAWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\CartWDWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartX07Widget.cxx" />
     <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
@@ -520,6 +521,7 @@
     <ClInclude Include="..\debugger\gui\CartRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartSBWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartUAWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\CartWDWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartX07Widget.hxx" />
     <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />

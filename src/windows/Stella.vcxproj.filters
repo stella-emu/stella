@@ -771,6 +771,9 @@
     <ClCompile Include="..\emucore\CartWD.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartWDWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1558,6 +1561,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\CartWD.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartWDWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
