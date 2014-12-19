@@ -1372,10 +1372,6 @@ void EventHandler::setDefaultMapping(Event::Type event, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
 {
-#define SET_DEFAULT_KEY(sdk_key, sdk_mode, sdk_event, sdk_cmp_event) \
-  if(eraseAll || sdk_cmp_event == sdk_event)  \
-    myKeyTable[sdk_key][sdk_mode] = sdk_event;
-
   // If event is 'NoType', erase and reset all mappings
   // Otherwise, only reset the given event
   bool eraseAll = (event == Event::NoType);
@@ -1386,88 +1382,94 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       myKeyTable[i][mode] = Event::NoType;
   }
 
+  auto setDefaultKey = [&](StellaKey key, Event::Type k_event)
+  {
+    if(eraseAll || k_event == event)
+      myKeyTable[key][mode] = k_event;
+  };
+
   switch(mode)
   {
     case kEmulationMode:
-      SET_DEFAULT_KEY(KBDK_1,         mode, Event::KeyboardZero1,     event);
-      SET_DEFAULT_KEY(KBDK_2,         mode, Event::KeyboardZero2,     event);
-      SET_DEFAULT_KEY(KBDK_3,         mode, Event::KeyboardZero3,     event);
-      SET_DEFAULT_KEY(KBDK_Q,         mode, Event::KeyboardZero4,     event);
-      SET_DEFAULT_KEY(KBDK_W,         mode, Event::KeyboardZero5,     event);
-      SET_DEFAULT_KEY(KBDK_E,         mode, Event::KeyboardZero6,     event);
-      SET_DEFAULT_KEY(KBDK_A,         mode, Event::KeyboardZero7,     event);
-      SET_DEFAULT_KEY(KBDK_S,         mode, Event::KeyboardZero8,     event);
-      SET_DEFAULT_KEY(KBDK_D,         mode, Event::KeyboardZero9,     event);
-      SET_DEFAULT_KEY(KBDK_Z,         mode, Event::KeyboardZeroStar,  event);
-      SET_DEFAULT_KEY(KBDK_X,         mode, Event::KeyboardZero0,     event);
-      SET_DEFAULT_KEY(KBDK_C,         mode, Event::KeyboardZeroPound, event);
+      setDefaultKey( KBDK_1,         Event::KeyboardZero1     );
+      setDefaultKey( KBDK_2,         Event::KeyboardZero2     );
+      setDefaultKey( KBDK_3,         Event::KeyboardZero3     );
+      setDefaultKey( KBDK_Q,         Event::KeyboardZero4     );
+      setDefaultKey( KBDK_W,         Event::KeyboardZero5     );
+      setDefaultKey( KBDK_E,         Event::KeyboardZero6     );
+      setDefaultKey( KBDK_A,         Event::KeyboardZero7     );
+      setDefaultKey( KBDK_S,         Event::KeyboardZero8     );
+      setDefaultKey( KBDK_D,         Event::KeyboardZero9     );
+      setDefaultKey( KBDK_Z,         Event::KeyboardZeroStar  );
+      setDefaultKey( KBDK_X,         Event::KeyboardZero0     );
+      setDefaultKey( KBDK_C,         Event::KeyboardZeroPound );
 
-      SET_DEFAULT_KEY(KBDK_8,         mode, Event::KeyboardOne1,      event);
-      SET_DEFAULT_KEY(KBDK_9,         mode, Event::KeyboardOne2,      event);
-      SET_DEFAULT_KEY(KBDK_0,         mode, Event::KeyboardOne3,      event);
-      SET_DEFAULT_KEY(KBDK_I,         mode, Event::KeyboardOne4,      event);
-      SET_DEFAULT_KEY(KBDK_O,         mode, Event::KeyboardOne5,      event);
-      SET_DEFAULT_KEY(KBDK_P,         mode, Event::KeyboardOne6,      event);
-      SET_DEFAULT_KEY(KBDK_K,         mode, Event::KeyboardOne7,      event);
-      SET_DEFAULT_KEY(KBDK_L,         mode, Event::KeyboardOne8,      event);
-      SET_DEFAULT_KEY(KBDK_SEMICOLON, mode, Event::KeyboardOne9,      event);
-      SET_DEFAULT_KEY(KBDK_COMMA,     mode, Event::KeyboardOneStar,   event);
-      SET_DEFAULT_KEY(KBDK_PERIOD,    mode, Event::KeyboardOne0,      event);
-      SET_DEFAULT_KEY(KBDK_SLASH,     mode, Event::KeyboardOnePound,  event);
+      setDefaultKey( KBDK_8,         Event::KeyboardOne1      );
+      setDefaultKey( KBDK_9,         Event::KeyboardOne2      );
+      setDefaultKey( KBDK_0,         Event::KeyboardOne3      );
+      setDefaultKey( KBDK_I,         Event::KeyboardOne4      );
+      setDefaultKey( KBDK_O,         Event::KeyboardOne5      );
+      setDefaultKey( KBDK_P,         Event::KeyboardOne6      );
+      setDefaultKey( KBDK_K,         Event::KeyboardOne7      );
+      setDefaultKey( KBDK_L,         Event::KeyboardOne8      );
+      setDefaultKey( KBDK_SEMICOLON, Event::KeyboardOne9      );
+      setDefaultKey( KBDK_COMMA,     Event::KeyboardOneStar   );
+      setDefaultKey( KBDK_PERIOD,    Event::KeyboardOne0      );
+      setDefaultKey( KBDK_SLASH,     Event::KeyboardOnePound  );
 
-      SET_DEFAULT_KEY(KBDK_UP,        mode, Event::JoystickZeroUp,    event);
-      SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::JoystickZeroDown,  event);
-      SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::JoystickZeroLeft,  event);
-      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::JoystickZeroRight, event);
-      SET_DEFAULT_KEY(KBDK_SPACE,     mode, Event::JoystickZeroFire,  event);
-      SET_DEFAULT_KEY(KBDK_LCTRL,     mode, Event::JoystickZeroFire,  event);
-      SET_DEFAULT_KEY(KBDK_4,         mode, Event::JoystickZeroFire5, event);
-      SET_DEFAULT_KEY(KBDK_5,         mode, Event::JoystickZeroFire9, event);
+      setDefaultKey( KBDK_UP,        Event::JoystickZeroUp    );
+      setDefaultKey( KBDK_DOWN,      Event::JoystickZeroDown  );
+      setDefaultKey( KBDK_LEFT,      Event::JoystickZeroLeft  );
+      setDefaultKey( KBDK_RIGHT,     Event::JoystickZeroRight );
+      setDefaultKey( KBDK_SPACE,     Event::JoystickZeroFire  );
+      setDefaultKey( KBDK_LCTRL,     Event::JoystickZeroFire  );
+      setDefaultKey( KBDK_4,         Event::JoystickZeroFire5 );
+      setDefaultKey( KBDK_5,         Event::JoystickZeroFire9 );
 
-      SET_DEFAULT_KEY(KBDK_Y,         mode, Event::JoystickOneUp,     event);
-      SET_DEFAULT_KEY(KBDK_H,         mode, Event::JoystickOneDown,   event);
-      SET_DEFAULT_KEY(KBDK_G,         mode, Event::JoystickOneLeft,   event);
-      SET_DEFAULT_KEY(KBDK_J,         mode, Event::JoystickOneRight,  event);
-      SET_DEFAULT_KEY(KBDK_F,         mode, Event::JoystickOneFire,   event);
-      SET_DEFAULT_KEY(KBDK_6,         mode, Event::JoystickOneFire5,  event);
-      SET_DEFAULT_KEY(KBDK_7,         mode, Event::JoystickOneFire9,  event);
+      setDefaultKey( KBDK_Y,         Event::JoystickOneUp     );
+      setDefaultKey( KBDK_H,         Event::JoystickOneDown   );
+      setDefaultKey( KBDK_G,         Event::JoystickOneLeft   );
+      setDefaultKey( KBDK_J,         Event::JoystickOneRight  );
+      setDefaultKey( KBDK_F,         Event::JoystickOneFire   );
+      setDefaultKey( KBDK_6,         Event::JoystickOneFire5  );
+      setDefaultKey( KBDK_7,         Event::JoystickOneFire9  );
 
 
-      SET_DEFAULT_KEY(KBDK_F1,        mode, Event::ConsoleSelect,     event);
-      SET_DEFAULT_KEY(KBDK_F2,        mode, Event::ConsoleReset,      event);
-      SET_DEFAULT_KEY(KBDK_F3,        mode, Event::ConsoleColor,      event);
-      SET_DEFAULT_KEY(KBDK_F4,        mode, Event::ConsoleBlackWhite, event);
-      SET_DEFAULT_KEY(KBDK_F5,        mode, Event::ConsoleLeftDiffA,  event);
-      SET_DEFAULT_KEY(KBDK_F6,        mode, Event::ConsoleLeftDiffB,  event);
-      SET_DEFAULT_KEY(KBDK_F7,        mode, Event::ConsoleRightDiffA, event);
-      SET_DEFAULT_KEY(KBDK_F8,        mode, Event::ConsoleRightDiffB, event);
-      SET_DEFAULT_KEY(KBDK_F9,        mode, Event::SaveState,         event);
-      SET_DEFAULT_KEY(KBDK_F10,       mode, Event::ChangeState,       event);
-      SET_DEFAULT_KEY(KBDK_F11,       mode, Event::LoadState,         event);
-      SET_DEFAULT_KEY(KBDK_F12,       mode, Event::TakeSnapshot,      event);
-      SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::Fry,               event);
-      SET_DEFAULT_KEY(KBDK_PAUSE,     mode, Event::PauseMode,         event);
-      SET_DEFAULT_KEY(KBDK_TAB,       mode, Event::MenuMode,          event);
-      SET_DEFAULT_KEY(KBDK_BACKSLASH, mode, Event::CmdMenuMode,       event);
-      SET_DEFAULT_KEY(KBDK_GRAVE,     mode, Event::DebuggerMode,      event);
-      SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::LauncherMode,      event);
+      setDefaultKey( KBDK_F1,        Event::ConsoleSelect     );
+      setDefaultKey( KBDK_F2,        Event::ConsoleReset      );
+      setDefaultKey( KBDK_F3,        Event::ConsoleColor      );
+      setDefaultKey( KBDK_F4,        Event::ConsoleBlackWhite );
+      setDefaultKey( KBDK_F5,        Event::ConsoleLeftDiffA  );
+      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffB  );
+      setDefaultKey( KBDK_F7,        Event::ConsoleRightDiffA );
+      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffB );
+      setDefaultKey( KBDK_F9,        Event::SaveState         );
+      setDefaultKey( KBDK_F10,       Event::ChangeState       );
+      setDefaultKey( KBDK_F11,       Event::LoadState         );
+      setDefaultKey( KBDK_F12,       Event::TakeSnapshot      );
+      setDefaultKey( KBDK_BACKSPACE, Event::Fry               );
+      setDefaultKey( KBDK_PAUSE,     Event::PauseMode         );
+      setDefaultKey( KBDK_TAB,       Event::MenuMode          );
+      setDefaultKey( KBDK_BACKSLASH, Event::CmdMenuMode       );
+      setDefaultKey( KBDK_GRAVE,     Event::DebuggerMode      );
+      setDefaultKey( KBDK_ESCAPE,    Event::LauncherMode      );
       break;
 
     case kMenuMode:
-      SET_DEFAULT_KEY(KBDK_UP,        mode, Event::UIUp,      event);
-      SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::UIDown,    event);
-      SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::UILeft,    event);
-      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::UIRight,   event);
+      setDefaultKey( KBDK_UP,        Event::UIUp      );
+      setDefaultKey( KBDK_DOWN,      Event::UIDown    );
+      setDefaultKey( KBDK_LEFT,      Event::UILeft    );
+      setDefaultKey( KBDK_RIGHT,     Event::UIRight   );
 
-      SET_DEFAULT_KEY(KBDK_HOME,      mode, Event::UIHome,    event);
-      SET_DEFAULT_KEY(KBDK_END,       mode, Event::UIEnd,     event);
-      SET_DEFAULT_KEY(KBDK_PAGEUP,    mode, Event::UIPgUp,    event);
-      SET_DEFAULT_KEY(KBDK_PAGEDOWN,  mode, Event::UIPgDown,  event);
+      setDefaultKey( KBDK_HOME,      Event::UIHome    );
+      setDefaultKey( KBDK_END,       Event::UIEnd     );
+      setDefaultKey( KBDK_PAGEUP,    Event::UIPgUp    );
+      setDefaultKey( KBDK_PAGEDOWN,  Event::UIPgDown  );
 
-      SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::UISelect,  event);
-      SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::UICancel,  event);
+      setDefaultKey( KBDK_RETURN,    Event::UISelect  );
+      setDefaultKey( KBDK_ESCAPE,    Event::UICancel  );
 
-      SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::UIPrevDir, event);
+      setDefaultKey( KBDK_BACKSPACE, Event::UIPrevDir );
       break;
 
     default:

@@ -445,23 +445,20 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
   EventHandler& handler = myOSystem.eventHandler();
   bool eraseAll = (event == Event::NoType);
 
-  auto setDefaultAxis = [&](Event::Type event, EventMode mode,
-       int stick, int axis, int value, Event::Type cmp_event)
+  auto setDefaultAxis = [&](int stick, int axis, int value, Event::Type a_event)
   {
-    if(eraseAll || cmp_event == event)
-      handler.addJoyAxisMapping(event, mode, stick, axis, value, false);
+    if(eraseAll || a_event == event)
+      handler.addJoyAxisMapping(a_event, mode, stick, axis, value, false);
   };
-  auto setDefaultBtn = [&](Event::Type event, EventMode mode,
-       int stick, int button, Event::Type cmp_event)
+  auto setDefaultBtn = [&](int stick, int button, Event::Type b_event)
   {
-    if(eraseAll || cmp_event == event)
-      handler.addJoyButtonMapping(event, mode, stick, button, false);
+    if(eraseAll || b_event == event)
+      handler.addJoyButtonMapping(b_event, mode, stick, button, false);
   };
-  auto setDefaultHat = [&](Event::Type event, EventMode mode,
-       int stick, int hat, int dir, Event::Type cmp_event)
+  auto setDefaultHat = [&](int stick, int hat, int dir, Event::Type h_event)
   {
-    if(eraseAll || cmp_event == event)
-      handler.addJoyHatMapping(event, mode, stick, hat, dir, false);
+    if(eraseAll || h_event == event)
+      handler.addJoyHatMapping(h_event, mode, stick, hat, dir, false);
   };
 
   switch(mode)
@@ -470,56 +467,56 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
       if(stick == 0)
       {
         // Left joystick left/right directions (assume joystick zero)
-        setDefaultAxis(Event::JoystickZeroLeft, mode, 0, 0, 0, event);
-        setDefaultAxis(Event::JoystickZeroRight, mode, 0, 0, 1, event);
+        setDefaultAxis( 0, 0, 0, Event::JoystickZeroLeft  );
+        setDefaultAxis( 0, 0, 1, Event::JoystickZeroRight );
         // Left joystick up/down directions (assume joystick zero)
-        setDefaultAxis(Event::JoystickZeroUp, mode, 0, 1, 0, event);
-        setDefaultAxis(Event::JoystickZeroDown, mode, 0, 1, 1, event);
+        setDefaultAxis( 0, 1, 0, Event::JoystickZeroUp    );
+        setDefaultAxis( 0, 1, 1, Event::JoystickZeroDown  );
         // Left joystick (assume joystick zero, button zero)
-        setDefaultBtn(Event::JoystickZeroFire, mode, 0, 0, event);
+        setDefaultBtn( 0, 0, Event::JoystickZeroFire );
         // Left joystick left/right directions (assume joystick zero and hat 0)
-        setDefaultHat(Event::JoystickZeroLeft, mode, 0, 0, EVENT_HATLEFT, event);
-        setDefaultHat(Event::JoystickZeroRight, mode, 0, 0, EVENT_HATRIGHT, event);
+        setDefaultHat( 0, 0, EVENT_HATLEFT,  Event::JoystickZeroLeft  );
+        setDefaultHat( 0, 0, EVENT_HATRIGHT, Event::JoystickZeroRight );
         // Left joystick up/down directions (assume joystick zero and hat 0)
-        setDefaultHat(Event::JoystickZeroUp, mode, 0, 0, EVENT_HATUP, event);
-        setDefaultHat(Event::JoystickZeroDown, mode, 0, 0, EVENT_HATDOWN, event);
+        setDefaultHat( 0, 0, EVENT_HATUP,    Event::JoystickZeroUp    );
+        setDefaultHat( 0, 0, EVENT_HATDOWN,  Event::JoystickZeroDown  );
       }
       else if(stick == 1)
       {
         // Right joystick left/right directions (assume joystick one)
-        setDefaultAxis(Event::JoystickOneLeft, mode, 1, 0, 0, event);
-        setDefaultAxis(Event::JoystickOneRight, mode, 1, 0, 1, event);
+        setDefaultAxis( 1, 0, 0, Event::JoystickOneLeft  );
+        setDefaultAxis( 1, 0, 1, Event::JoystickOneRight );
         // Right joystick left/right directions (assume joystick one)
-        setDefaultAxis(Event::JoystickOneUp, mode, 1, 1, 0, event);
-        setDefaultAxis(Event::JoystickOneDown, mode, 1, 1, 1, event);
+        setDefaultAxis( 1, 1, 0, Event::JoystickOneUp    );
+        setDefaultAxis( 1, 1, 1, Event::JoystickOneDown  );
         // Right joystick (assume joystick one, button zero)
-        setDefaultBtn(Event::JoystickOneFire, mode, 1, 0, event);
+        setDefaultBtn( 1, 0, Event::JoystickOneFire );
         // Right joystick left/right directions (assume joystick one and hat 0)
-        setDefaultHat(Event::JoystickOneLeft, mode, 1, 0, EVENT_HATLEFT, event);
-        setDefaultHat(Event::JoystickOneRight, mode, 1, 0, EVENT_HATRIGHT, event);
+        setDefaultHat( 1, 0, EVENT_HATLEFT,  Event::JoystickOneLeft  );
+        setDefaultHat( 1, 0, EVENT_HATRIGHT, Event::JoystickOneRight );
         // Right joystick up/down directions (assume joystick one and hat 0)
-        setDefaultHat(Event::JoystickOneUp, mode, 1, 0, EVENT_HATUP, event);
-        setDefaultHat(Event::JoystickOneDown, mode, 1, 0, EVENT_HATDOWN, event);
+        setDefaultHat( 1, 0, EVENT_HATUP,    Event::JoystickOneUp    );
+        setDefaultHat( 1, 0, EVENT_HATDOWN,  Event::JoystickOneDown  );
       }
       break;
 
     case kMenuMode:  // Default menu/UI events
       if(stick == 0)
       {
-        setDefaultAxis(Event::UILeft, mode, 0, 0, 0, event);
-        setDefaultAxis(Event::UIRight, mode, 0, 0, 1, event);
-        setDefaultAxis(Event::UIUp, mode, 0, 1, 0, event);
-        setDefaultAxis(Event::UIDown, mode, 0, 1, 1, event);
+        setDefaultAxis( 0, 0, 0, Event::UILeft  );
+        setDefaultAxis( 0, 0, 1, Event::UIRight );
+        setDefaultAxis( 0, 1, 0, Event::UIUp    );
+        setDefaultAxis( 0, 1, 1, Event::UIDown  );
 
         // Left joystick (assume joystick zero, button zero)
-        setDefaultBtn(Event::UISelect, mode, 0, 0, event);
+        setDefaultBtn( 0, 0, Event::UISelect );
         // Right joystick (assume joystick one, button zero)
-        setDefaultBtn(Event::UISelect, mode, 1, 0, event);
+        setDefaultBtn( 1, 0, Event::UISelect );
 
-        setDefaultHat(Event::UILeft, mode, 0, 0, EVENT_HATLEFT, event);
-        setDefaultHat(Event::UIRight, mode, 0, 0, EVENT_HATRIGHT, event);
-        setDefaultHat(Event::UIUp, mode, 0, 0, EVENT_HATUP, event);
-        setDefaultHat(Event::UIDown, mode, 0, 0, EVENT_HATDOWN, event);
+        setDefaultHat( 0, 0, EVENT_HATLEFT,  Event::UILeft  );
+        setDefaultHat( 0, 0, EVENT_HATRIGHT, Event::UIRight );
+        setDefaultHat( 0, 0, EVENT_HATUP,    Event::UIUp    );
+        setDefaultHat( 0, 0, EVENT_HATDOWN,  Event::UIDown  );
       }
       break;
 

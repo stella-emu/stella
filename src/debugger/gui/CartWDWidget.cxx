@@ -38,7 +38,7 @@ CartridgeWDWidget::CartridgeWDWidget(
     "  $F000 - $F03F (R), $F040 - $F07F (W)\n";
 
   int xpos = 10,
-      ypos = addBaseInformation(myCart.mySize, "Wickstead Design", info) + myLineHeight;
+      ypos = addBaseInformation(myCart.mySize, "Wickstead Design", info, 12) + myLineHeight;
 
   VariantList items;
   VarList::push_back(items, "0  ($30) [0,0,1,2]", 0);
