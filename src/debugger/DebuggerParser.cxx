@@ -392,9 +392,9 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   }
   */
 
-  for(int i = 0; i < argCount; i++)
+  for(int arg = 0; arg < argCount; ++arg)
   {
-    if(!YaccParser::parse(argStrings[i].c_str()))
+    if(!YaccParser::parse(argStrings[arg].c_str()))
     {
       unique_ptr<Expression> expr(YaccParser::getResult());
       args.push_back(expr->evaluate());

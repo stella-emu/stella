@@ -165,8 +165,8 @@ void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
   assert(w == _myTabList[w->getID()].widget);
 
   // All focusable widgets should retain focus
-  for(const auto& w: list)
-    w->setFlags(WIDGET_RETAIN_FOCUS);
+  for(const auto& fw: list)
+    fw->setFlags(WIDGET_RETAIN_FOCUS);
 
   // First get the appropriate focus list
   FocusList& focus = _myTabList[w->getID()].focus;

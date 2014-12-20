@@ -88,13 +88,13 @@ class MouseControl
           xid(-1),
           yid(-1),
           message(msg)  { }
-      MouseMode(Controller::Type xtype, int xid,
-                Controller::Type ytype, int yid,
+      MouseMode(Controller::Type xt, int xi,
+                Controller::Type yt, int yi,
                 const string& msg)
-        : xtype(xtype),
-          ytype(ytype),
-          xid(xid),
-          yid(yid),
+        : xtype(xt),
+          ytype(yt),
+          xid(xi),
+          yid(yi),
           message(msg)  { }
 
       friend ostream& operator<<(ostream& os, const MouseMode& mm)

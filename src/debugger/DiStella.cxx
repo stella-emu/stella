@@ -24,12 +24,12 @@ using namespace Common;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   CartDebug::BankInfo& info, const DiStella::Settings& settings,
+                   CartDebug::BankInfo& info, const DiStella::Settings& s,
                    uInt8* labels, uInt8* directives,
                    CartDebug::ReservedEquates& reserved)
   : myDbg(dbg),
     myList(list),
-    mySettings(settings),
+    mySettings(s),
     myReserved(reserved),
     myLabels(labels),
     myDirectives(directives)

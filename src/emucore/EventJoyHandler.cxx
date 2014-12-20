@@ -121,9 +121,9 @@ string EventHandler::StellaJoystick::getMap() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::StellaJoystick::setMap(const string& m)
+bool EventHandler::StellaJoystick::setMap(const string& mapString)
 {
-  istringstream buf(m);
+  istringstream buf(mapString);
   StringList items;
   string item;
   while(getline(buf, item, '|'))
@@ -445,20 +445,20 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
   EventHandler& handler = myOSystem.eventHandler();
   bool eraseAll = (event == Event::NoType);
 
-  auto setDefaultAxis = [&](int stick, int axis, int value, Event::Type a_event)
+  auto setDefaultAxis = [&](int a_stick, int a_axis, int a_value, Event::Type a_event)
   {
     if(eraseAll || a_event == event)
-      handler.addJoyAxisMapping(a_event, mode, stick, axis, value, false);
+      handler.addJoyAxisMapping(a_event, mode, a_stick, a_axis, a_value, false);
   };
-  auto setDefaultBtn = [&](int stick, int button, Event::Type b_event)
+  auto setDefaultBtn = [&](int b_stick, int b_button, Event::Type b_event)
   {
     if(eraseAll || b_event == event)
-      handler.addJoyButtonMapping(b_event, mode, stick, button, false);
+      handler.addJoyButtonMapping(b_event, mode, b_stick, b_button, false);
   };
-  auto setDefaultHat = [&](int stick, int hat, int dir, Event::Type h_event)
+  auto setDefaultHat = [&](int h_stick, int h_hat, int h_dir, Event::Type h_event)
   {
     if(eraseAll || h_event == event)
-      handler.addJoyHatMapping(h_event, mode, stick, hat, dir, false);
+      handler.addJoyHatMapping(h_event, mode, h_stick, h_hat, h_dir, false);
   };
 
   switch(mode)

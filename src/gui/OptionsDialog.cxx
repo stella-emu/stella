@@ -62,10 +62,10 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   auto ADD_OD_BUTTON = [&](const string& label, int cmd)
   {
-    ButtonWidget* b = new ButtonWidget(this, font, xoffset, yoffset,
+    ButtonWidget* bw = new ButtonWidget(this, font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
     yoffset += rowHeight;
-    return b;
+    return bw;
   };
 
   b = ADD_OD_BUTTON("Video Settings", kVidCmd);

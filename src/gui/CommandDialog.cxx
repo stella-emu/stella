@@ -46,10 +46,10 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 
   auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
-    ButtonWidget* b = new ButtonWidget(this, font, xoffset, yoffset,
+    ButtonWidget* bw = new ButtonWidget(this, font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
     xoffset += buttonWidth + 6;
-    return b;
+    return bw;
   };
 
   // Row 1

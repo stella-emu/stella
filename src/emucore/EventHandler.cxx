@@ -1196,10 +1196,10 @@ void EventHandler::setKeymap()
   if(event == Event::LastType && map.size() == KBDK_LAST * kNumModes)
   {
     // Fill the keymap table with events
-    auto event = map.begin();
+    auto e = map.begin();
     for(int mode = 0; mode < kNumModes; ++mode)
       for(int i = 0; i < KBDK_LAST; ++i)
-        myKeyTable[i][mode] = (Event::Type) *event++;
+        myKeyTable[i][mode] = (Event::Type) *e++;
   }
   else
   {

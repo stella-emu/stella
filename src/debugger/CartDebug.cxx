@@ -1036,8 +1036,8 @@ string CartDebug::saveDisassembly()
         {
           buf << ".byte " << (settings.gfx_format == Base::F_2 ? "%" : "$")
               << tag.bytes << " ; |";
-          for(int i = 12; i < 20; ++i)
-            buf << ((tag.disasm[i] == '\x1e') ? "#" : " ");
+          for(int c = 12; c < 20; ++c)
+            buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
           buf << "| $" << Base::HEX4 << tag.address << " (G)\n";
           break;
         }
@@ -1045,8 +1045,8 @@ string CartDebug::saveDisassembly()
         {
           buf << ".byte " << (settings.gfx_format == Base::F_2 ? "%" : "$")
               << tag.bytes << " ; |";
-          for(int i = 12; i < 20; ++i)
-            buf << ((tag.disasm[i] == '\x1f') ? "*" : " ");
+          for(int c = 12; c < 20; ++c)
+            buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
           buf << "| $" << Base::HEX4 << tag.address << " (P)\n";
           break;
         }
