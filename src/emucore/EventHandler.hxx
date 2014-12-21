@@ -424,21 +424,23 @@ class EventHandler
 
     class JoystickHandler
     {
+      using StickList = map<int, StellaJoystick*>;
       public:
         JoystickHandler(OSystem& system);
         ~JoystickHandler();
 
         int add(StellaJoystick* stick);
         int remove(int id);
-        uInt32 numSticks() const { return (uInt32)mySticks.size(); }
         void mapStelladaptors(const string& saport);
         void setDefaultMapping(Event::Type type, EventMode mode);
         void eraseMapping(Event::Type event, EventMode mode);
         void saveMapping();
 
         const StellaJoystick* joy(int id) const {
-          return id < (int)mySticks.size() ? mySticks[id] : nullptr;
+          const auto& i = mySticks.find(id);
+          return i != mySticks.cend() ? i->second : nullptr;
         }
+        const StickList& sticks() const { return mySticks; }
 
       private:
         OSystem& myOSystem;
@@ -460,7 +462,7 @@ class EventHandler
         map<string,StickInfo> myDatabase;
 
         // Contains only joysticks that are currently available, indexed by id
-        vector<StellaJoystick*> mySticks;
+        StickList mySticks;
 
         void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
         void printDatabase() const;

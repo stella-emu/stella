@@ -273,11 +273,11 @@ void EventHandler::JoystickHandler::printDatabase() const
   for(const auto& i: myDatabase)
     cerr << i.first << endl << i.second << endl << endl;
 
-  cerr << "---------------------------------------------------------" << endl
+  cerr << "---------------------" << endl
        << "joy active:"  << endl;
   for(const auto& i: mySticks)
-    cerr << i << endl;
-  cerr << endl;
+    cerr << i.first << ": " << *i.second << endl;
+  cerr << "---------------------------------------------------------" << endl << endl << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,7 +326,8 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
     }
     stick->type = StellaJoystick::JT_REGULAR;
   }
-  Vec::insertAt(mySticks, stick->ID, stick);
+  // The stick *must* be inserted here, since it may be used below
+  mySticks[stick->ID] = stick;
 
   // Map the stelladaptors we've found according to the specified ports
   if(specialAdaptor)
@@ -358,9 +359,9 @@ int EventHandler::JoystickHandler::remove(int index)
 
   // Sticks that are removed must have initially been added
   // So we use the 'active' joystick list to access them
-  if(index >= 0 && index < (int)mySticks.size() && mySticks[index] != nullptr)
+  try
   {
-    StellaJoystick* stick = mySticks[index];
+    StellaJoystick* stick = mySticks.at(index);
 
     auto it = myDatabase.find(stick->name);
     if(it != myDatabase.end() && it->second.joy == stick)
@@ -373,11 +374,15 @@ int EventHandler::JoystickHandler::remove(int index)
       // Remove joystick, but remember mapping
       it->second.mapping = stick->getMap();
       delete it->second.joy;  it->second.joy = nullptr;
-      mySticks[index] = nullptr;
+      mySticks.erase(index);
 
       return index;
     }
   }
+  catch(std::out_of_range)
+  {
+  }
+
   return -1;
 }
 
@@ -396,33 +401,33 @@ void EventHandler::JoystickHandler::mapStelladaptors(const string& saport)
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
-  for(auto stick: mySticks)
+  for(auto& stick: mySticks)
   {
-    if(BSPF_startsWithIgnoreCase(stick->name, "Stelladaptor"))
+    if(BSPF_startsWithIgnoreCase(stick.second->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        stick->name += " (emulates left joystick port)";
-        stick->type = StellaJoystick::JT_STELLADAPTOR_LEFT;
+        stick.second->name += " (emulates left joystick port)";
+        stick.second->type = StellaJoystick::JT_STELLADAPTOR_LEFT;
       }
       else if(saOrder[saCount] == 2)
       {
-        stick->name += " (emulates right joystick port)";
-        stick->type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
+        stick.second->name += " (emulates right joystick port)";
+        stick.second->type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
       }
       saCount++;
     }
-    else if(BSPF_startsWithIgnoreCase(stick->name, "2600-daptor"))
+    else if(BSPF_startsWithIgnoreCase(stick.second->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        stick->name += " (emulates left joystick port)";
-        stick->type = StellaJoystick::JT_2600DAPTOR_LEFT;
+        stick.second->name += " (emulates left joystick port)";
+        stick.second->type = StellaJoystick::JT_2600DAPTOR_LEFT;
       }
       else if(saOrder[saCount] == 2)
       {
-        stick->name += " (emulates right joystick port)";
-        stick->type = StellaJoystick::JT_2600DAPTOR_RIGHT;
+        stick.second->name += " (emulates right joystick port)";
+        stick.second->type = StellaJoystick::JT_2600DAPTOR_RIGHT;
       }
       saCount++;
     }
@@ -434,8 +439,8 @@ void EventHandler::JoystickHandler::mapStelladaptors(const string& saport)
 void EventHandler::JoystickHandler::setDefaultMapping(Event::Type event, EventMode mode)
 {
   eraseMapping(event, mode);
-  setStickDefaultMapping(0, event, mode);
-  setStickDefaultMapping(1, event, mode);
+  for(auto& i: mySticks)
+    setStickDefaultMapping(i.first, event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -510,8 +515,6 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
 
         // Left joystick (assume joystick zero, button zero)
         setDefaultBtn( 0, 0, Event::UISelect );
-        // Right joystick (assume joystick one, button zero)
-        setDefaultBtn( 1, 0, Event::UISelect );
 
         setDefaultHat( 0, 0, EVENT_HATLEFT,  Event::UILeft  );
         setDefaultHat( 0, 0, EVENT_HATRIGHT, Event::UIRight );
@@ -533,13 +536,13 @@ void EventHandler::JoystickHandler::eraseMapping(Event::Type event, EventMode mo
   // Otherwise, only reset the given event
   if(event == Event::NoType)
   {
-    for(auto stick: mySticks)
-      stick->eraseMap(mode);          // erase all events
+    for(auto& stick: mySticks)
+      stick.second->eraseMap(mode);          // erase all events
   }
   else
   {
-    for(auto stick: mySticks)
-      stick->eraseEvent(event, mode); // only reset the specific event
+    for(auto& stick: mySticks)
+      stick.second->eraseEvent(event, mode); // only reset the specific event
   }
 }
 

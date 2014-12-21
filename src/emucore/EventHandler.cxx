@@ -1073,9 +1073,10 @@ void EventHandler::setActionMappings(EventMode mode)
     }
 
 #ifdef JOYSTICK_SUPPORT
-    for(uInt32 stick = 0; stick < myJoyHandler->numSticks(); ++stick)
+    for(const auto& i: myJoyHandler->sticks())
     {
-      const StellaJoystick* joy = myJoyHandler->joy(stick);
+      uInt32 stick = i.first;
+      const StellaJoystick* joy = i.second;
       if(!joy)  continue;
 
       // Joystick button mapping/labeling
