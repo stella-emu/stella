@@ -281,11 +281,11 @@ void EventHandler::JoystickHandler::printDatabase() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EventHandler::JoystickHandler::add(StellaJoystick* stick)
+bool EventHandler::JoystickHandler::add(StellaJoystick* stick)
 {
   // Skip if we couldn't open it for any reason
   if(stick->ID < 0)
-    return stick->ID;
+    return false;
 
   // Figure out what type of joystick this is
   bool specialAdaptor = false;
@@ -313,15 +313,21 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
   else
   {
     // We need unique names for mappable devices
+    // For non-unique names that already have a database entry,
+    // we append ' #x', where 'x' increases consecutively
     int count = 0;
     for(const auto& i: myDatabase)
-      if(BSPF_startsWithIgnoreCase(i.first, stick->name))
+    {
+      if(BSPF_startsWithIgnoreCase(i.first, stick->name) && i.second.joy)
+      {
         ++count;
-
-    if(count > 1)
+        break;
+      }
+    }
+    if(count > 0)
     {
       ostringstream name;
-      name << stick->name << " " << count;
+      name << stick->name << " #" << count+1;
       stick->name = name.str();
     }
     stick->type = StellaJoystick::JT_REGULAR;
@@ -348,11 +354,11 @@ int EventHandler::JoystickHandler::add(StellaJoystick* stick)
     setStickDefaultMapping(stick->ID, Event::NoType, kMenuMode);
   }
 
-  return stick->ID;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EventHandler::JoystickHandler::remove(int index)
+bool EventHandler::JoystickHandler::remove(int id)
 {
   // When a joystick is removed, we delete the actual joystick object but
   // remember its mapping, since it will eventually be saved to settings
@@ -361,29 +367,30 @@ int EventHandler::JoystickHandler::remove(int index)
   // So we use the 'active' joystick list to access them
   try
   {
-    StellaJoystick* stick = mySticks.at(index);
+    StellaJoystick* stick = mySticks.at(id);
 
     auto it = myDatabase.find(stick->name);
     if(it != myDatabase.end() && it->second.joy == stick)
     {
       ostringstream buf;
-      buf << "Removed joystick " << mySticks[index]->ID << ":" << endl
-          << "  " << mySticks[index]->about() << endl;
+      buf << "Removed joystick " << mySticks[id]->ID << ":" << endl
+          << "  " << mySticks[id]->about() << endl;
       myOSystem.logMessage(buf.str(), 1);
 
       // Remove joystick, but remember mapping
       it->second.mapping = stick->getMap();
       delete it->second.joy;  it->second.joy = nullptr;
-      mySticks.erase(index);
+      mySticks.erase(id);
 
-      return index;
+      return true;
     }
   }
   catch(std::out_of_range)
   {
+    // fall through to indicate remove failed
   }
 
-  return -1;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

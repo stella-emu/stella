@@ -135,8 +135,7 @@ void EventHandler::reset(State state)
 void EventHandler::addJoystick(StellaJoystick* stick)
 {
 #ifdef JOYSTICK_SUPPORT
-  int idx = myJoyHandler->add(stick);
-  if(idx < 0)
+  if(!myJoyHandler->add(stick))
     return;
 
   setActionMappings(kEmulationMode);
@@ -163,10 +162,10 @@ void EventHandler::addJoystick(StellaJoystick* stick)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::removeJoystick(int idx)
+void EventHandler::removeJoystick(int id)
 {
 #ifdef JOYSTICK_SUPPORT
-  myJoyHandler->remove(idx);
+  myJoyHandler->remove(id);
 #endif
 }
 

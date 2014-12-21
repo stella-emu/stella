@@ -429,8 +429,8 @@ class EventHandler
         JoystickHandler(OSystem& system);
         ~JoystickHandler();
 
-        int add(StellaJoystick* stick);
-        int remove(int id);
+        bool add(StellaJoystick* stick);
+        bool remove(int id);
         void mapStelladaptors(const string& saport);
         void setDefaultMapping(Event::Type type, EventMode mode);
         void eraseMapping(Event::Type event, EventMode mode);
