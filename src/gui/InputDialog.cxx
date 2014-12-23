@@ -202,6 +202,12 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myHideCursor->clearFlags(WIDGET_ENABLED);
 #endif
 
+  // Show joystick database
+  xpos += 20;  ypos += lineHeight + 8;
+  myJoyDlgButton = new ButtonWidget(myTab, font, xpos, ypos,
+    font.getStringWidth("Show Joystick Database") + 20, font.getLineHeight() + 4,
+    "Show Joystick Database", kDBButtonPressed);
+
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
 }
@@ -410,6 +416,13 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMPSpeedChanged:
       myMPaddleLabel->setValue(myMPaddleSpeed->getValue());
+      break;
+
+    case kDBButtonPressed:
+      if(!myJoyDialog)
+        myJoyDialog = make_ptr<JoystickDialog>
+                          (this, instance().frameBuffer().font(), _w-60, _h-60);
+      myJoyDialog->show();
       break;
 
     default:

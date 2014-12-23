@@ -235,7 +235,7 @@ class EventHandler
     string keyAtIndex(int idx, EventMode mode) const;
 
     /**
-      Bind a key to an event/action and regenerate the mapping array(s)
+      Bind a key to an event/action and regenerate the mapping array(s).
 
       @param event  The event we are remapping
       @param mode   The mode where this event is active
@@ -245,7 +245,7 @@ class EventHandler
 
     /**
       Bind a joystick axis direction to an event/action and regenerate
-      the mapping array(s)
+      the mapping array(s).
 
       @param event  The event we are remapping
       @param mode   The mode where this event is active
@@ -262,7 +262,7 @@ class EventHandler
 
     /**
       Bind a joystick button to an event/action and regenerate the
-      mapping array(s)
+      mapping array(s).
 
       @param event  The event we are remapping
       @param mode   The mode where this event is active
@@ -277,7 +277,7 @@ class EventHandler
 
     /**
       Bind a joystick hat direction to an event/action and regenerate
-      the mapping array(s)
+      the mapping array(s).
 
       @param event  The event we are remapping
       @param mode   The mode where this event is active
@@ -293,7 +293,7 @@ class EventHandler
                           bool updateMenus = true);
 
     /**
-      Erase the specified mapping
+      Erase the specified mapping.
 
       @param event  The event for which we erase all mappings
       @param mode   The mode where this event is active
@@ -301,7 +301,7 @@ class EventHandler
     void eraseMapping(Event::Type event, EventMode mode);
 
     /**
-      Resets the event mappings to default values
+      Resets the event mappings to default values.
 
       @param event  The event which to (re)set (Event::NoType resets all)
       @param mode   The mode for which the defaults are set
@@ -315,11 +315,23 @@ class EventHandler
 
     /**
       Joystick emulates 'impossible' directions (ie, left & right
-      at the same time)
+      at the same time).
 
       @param allow  Whether or not to allow impossible directions
     */
     void allowAllDirections(bool allow) { myAllowAllDirectionsFlag = allow; }
+
+    /**
+      Return a list of all joysticks currently in the internal database
+      (first part of variant) and its internal ID (second part of variant).
+    */
+    VariantList joystickDatabase() const;
+
+    /**
+      Remove the joystick identified by 'name' from the joystick database,
+      only if it is not currently active.
+    */
+    void removeJoystickFromDatabase(const string& name);
 
   protected:
     // Global OSystem object
@@ -424,27 +436,7 @@ class EventHandler
 
     class JoystickHandler
     {
-      using StickList = map<int, StellaJoystick*>;
-      public:
-        JoystickHandler(OSystem& system);
-        ~JoystickHandler();
-
-        bool add(StellaJoystick* stick);
-        bool remove(int id);
-        void mapStelladaptors(const string& saport);
-        void setDefaultMapping(Event::Type type, EventMode mode);
-        void eraseMapping(Event::Type event, EventMode mode);
-        void saveMapping();
-
-        const StellaJoystick* joy(int id) const {
-          const auto& i = mySticks.find(id);
-          return i != mySticks.cend() ? i->second : nullptr;
-        }
-        const StickList& sticks() const { return mySticks; }
-
       private:
-        OSystem& myOSystem;
-
         struct StickInfo
         {
           StickInfo(const string& map = EmptyString, StellaJoystick* stick = nullptr)
@@ -458,8 +450,34 @@ class EventHandler
             return os;
           }
         };
+
+      public:
+        using StickDatabase = map<string,StickInfo>;
+        using StickList = map<int, StellaJoystick*>;
+
+        JoystickHandler(OSystem& system);
+        ~JoystickHandler();
+
+        bool add(StellaJoystick* stick);
+        bool remove(int id);
+        bool remove(const string& name);
+        void mapStelladaptors(const string& saport);
+        void setDefaultMapping(Event::Type type, EventMode mode);
+        void eraseMapping(Event::Type event, EventMode mode);
+        void saveMapping();
+
+        const StellaJoystick* joy(int id) const {
+          const auto& i = mySticks.find(id);
+          return i != mySticks.cend() ? i->second : nullptr;
+        }
+        const StickDatabase& database() const { return myDatabase; }
+        const StickList& sticks() const { return mySticks; }
+
+      private:
+        OSystem& myOSystem;
+
         // Contains all joysticks that Stella knows about, indexed by name
-        map<string,StickInfo> myDatabase;
+        StickDatabase myDatabase;
 
         // Contains only joysticks that are currently available, indexed by id
         StickList mySticks;

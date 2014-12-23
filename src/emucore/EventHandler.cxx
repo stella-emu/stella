@@ -1252,6 +1252,22 @@ void EventHandler::setComboMap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+VariantList EventHandler::joystickDatabase() const
+{
+  VariantList db;
+  for(const auto& i: myJoyHandler->database())
+    VarList::push_back(db, i.first, i.second.joy ? i.second.joy->ID : -1);
+
+  return db;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::removeJoystickFromDatabase(const string& name)
+{
+  myJoyHandler->remove(name);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey key)
 {
   // These keys cannot be remapped

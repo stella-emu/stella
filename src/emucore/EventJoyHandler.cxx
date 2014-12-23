@@ -394,6 +394,18 @@ bool EventHandler::JoystickHandler::remove(int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::JoystickHandler::remove(const string& name)
+{
+  auto it = myDatabase.find(name);
+  if(it != myDatabase.end() && it->second.joy == nullptr)
+  {
+    myDatabase.erase(it);
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::JoystickHandler::mapStelladaptors(const string& saport)
 {
   // saport will have two values:

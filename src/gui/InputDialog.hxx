@@ -31,6 +31,7 @@ class SliderWidget;
 class StaticTextWidget;
 
 #include "Dialog.hxx"
+#include "JoystickDialog.hxx"
 #include "bspf.hxx"
 
 class InputDialog : public Dialog
@@ -58,7 +59,8 @@ class InputDialog : public Dialog
     enum {
       kDeadzoneChanged = 'DZch',
       kDPSpeedChanged  = 'PDch',
-      kMPSpeedChanged  = 'PMch'
+      kMPSpeedChanged  = 'PMch',
+      kDBButtonPressed = 'DBbp'
     };
 
     TabWidget* myTab;
@@ -80,6 +82,11 @@ class InputDialog : public Dialog
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
     CheckboxWidget*   myHideCursor;
+
+    ButtonWidget*     myJoyDlgButton;
+
+    // Show the list of joysticks that the eventhandler knows about
+    unique_ptr<JoystickDialog> myJoyDialog;
 };
 
 #endif

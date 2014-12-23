@@ -23,6 +23,7 @@ MODULE_OBJS := \
 	src/gui/HelpDialog.o \
 	src/gui/InputDialog.o \
 	src/gui/InputTextDialog.o \
+	src/gui/JoystickDialog.o \
 	src/gui/Launcher.o \
 	src/gui/LauncherDialog.o \
 	src/gui/LauncherFilterDialog.o \
