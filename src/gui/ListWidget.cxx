@@ -68,8 +68,11 @@ ListWidget::~ListWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setSelected(int item)
 {
-  if(item < -1 || item >= (int)_list.size())
+  if(item < 0 || item >= (int)_list.size())
+  {
+    setDirty(); draw();  // Simply redraw and exit
     return;
+  }
 
   if(isEnabled())
   {

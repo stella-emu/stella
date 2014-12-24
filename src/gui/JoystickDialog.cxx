@@ -88,8 +88,12 @@ void JoystickDialog::loadConfig()
     myJoyIDs.push_back(i.second.toInt());
   }
   myJoyList->setList(sticks);
-  if(sticks.size() > 0)
-    myJoyList->setSelected(0);
+  myJoyList->setSelected(0);
+  if(sticks.size() == 0)
+  {
+    myRemoveBtn->setEnabled(false);
+    myJoyText->setText("");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

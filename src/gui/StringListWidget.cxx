@@ -45,7 +45,6 @@ void StringListWidget::setList(const StringList& list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StringListWidget::drawWidget(bool hilite)
 {
-//cerr << "StringListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
   int i, pos, len = (int)_list.size();
   string buffer;
