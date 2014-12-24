@@ -774,6 +774,9 @@
     <ClCompile Include="..\debugger\gui\CartWDWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\JoystickDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1564,6 +1567,9 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartWDWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\JoystickDialog.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

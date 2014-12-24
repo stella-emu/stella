@@ -296,6 +296,7 @@
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\TIASurface.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
+    <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
@@ -552,6 +553,7 @@
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
     <ClInclude Include="..\gui\FileListWidget.hxx" />
+    <ClInclude Include="..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
