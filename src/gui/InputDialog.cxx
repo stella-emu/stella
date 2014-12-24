@@ -47,7 +47,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = BSPF_min(50 * fontWidth + 10, max_w);
-  _h = BSPF_min(14 * (lineHeight + 4) + 14, max_h);
+  _h = BSPF_min(15 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -202,11 +202,18 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myHideCursor->clearFlags(WIDGET_ENABLED);
 #endif
 
+  // Enable/disable control key-combos
+  ypos += lineHeight + 4;
+  myCtrlCombo = new CheckboxWidget(myTab, font, xpos, ypos,
+	                "Use Control key combos");
+  wid.push_back(myCtrlCombo);
+
   // Show joystick database
   xpos += 20;  ypos += lineHeight + 8;
   myJoyDlgButton = new ButtonWidget(myTab, font, xpos, ypos,
     font.getStringWidth("Show Joystick Database") + 20, font.getLineHeight() + 4,
     "Show Joystick Database", kDBButtonPressed);
+  wid.push_back(myJoyDlgButton);
 
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
@@ -243,6 +250,9 @@ void InputDialog::loadConfig()
 
   // Hide cursor
   myHideCursor->setState(instance().settings().getBool("hidecursor"));
+
+  // Enable/disable control key-combos
+  myCtrlCombo->setState(instance().settings().getBool("ctrlcombo"));
 
   myTab->loadConfig();
 }
@@ -283,6 +293,9 @@ void InputDialog::saveConfig()
   instance().settings().setValue("grabmouse", myGrabMouse->getState());	 
   instance().settings().setValue("hidecursor", myHideCursor->getState());	 
   instance().frameBuffer().setCursorState();
+
+  // Enable/disable control key-combos
+  instance().settings().setValue("ctrlcombo", myCtrlCombo->getState());	 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -327,6 +340,9 @@ void InputDialog::setDefaults()
 
       // Hide cursor
       myHideCursor->setState(false);
+
+      // Enable/disable control key-combos
+      myCtrlCombo->setState(true);
 
       break;
     }

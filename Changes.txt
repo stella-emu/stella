@@ -35,6 +35,9 @@
   * The 'listdelay' command now accepts a value of zero, indicating that
     list-skipping (jumping to a line in a list by keypress) is disabled.
 
+  * The 'ctrlcombo' command now has a GUI item, allowing it to be changed
+    from within the application.
+
   * Added 'Shift-Alt/Shift-Cmd s' keyboard shortcut, to enable continuous
     snapshot mode for each frame.  This is really only useful if you
     save snapshots in 1x mode; using it in high-resolution mode is

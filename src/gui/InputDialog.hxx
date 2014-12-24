@@ -82,6 +82,7 @@ class InputDialog : public Dialog
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
     CheckboxWidget*   myHideCursor;
+    CheckboxWidget*   myCtrlCombo;
 
     ButtonWidget*     myJoyDlgButton;
 
