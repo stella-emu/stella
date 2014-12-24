@@ -22,23 +22,27 @@
   * Fixed major bug with joysticks, where mapping was being lost on reset,
     the app would crash when plugging/unplugging certain sticks, etc.
 
-  * Added dialog which shows the joystick database, and the ability to
-    remove (currently unplugged) joysticks from this database.
+  * Added dialog which shows the internal joystick database (all the
+    joysticks that Stella knows about) and the ability to remove
+    (currently unplugged) joysticks from this database.
 
   * Added preliminary support for 'WD' (Wickstead Design) bankswitching
     scheme.
 
-  * The minimum supported version for the OSX port is now OSX 10.7.
-    Because of this, the 32-bit version is also discontinued, as 10.7
-    supports 64-bit Intel only apps.
-
   * The debugger 'reset' command now does a complete system reset,
     instead of simply setting the PC to the reset vector address.
+
+  * The 'listdelay' command now accepts a value of zero, indicating that
+    list-skipping (jumping to a line in a list by keypress) is disabled.
 
   * Added 'Shift-Alt/Shift-Cmd s' keyboard shortcut, to enable continuous
     snapshot mode for each frame.  This is really only useful if you
     save snapshots in 1x mode; using it in high-resolution mode is
     not recommended.  Special thanks to SvOlli for the idea and code.
+
+  * The minimum supported version for the OSX port is now OSX 10.7.
+    Because of this, the 32-bit version is also discontinued, as 10.7
+    supports 64-bit Intel only apps.
 
   * Updated included PNG library to latest stable version.
 

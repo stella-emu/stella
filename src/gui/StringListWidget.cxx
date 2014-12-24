@@ -18,13 +18,15 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "Settings.hxx"
 #include "ScrollBarWidget.hxx"
 #include "StringListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h, bool hilite)
-  : ListWidget(boss, font, x, y, w, h),
+  : ListWidget(boss, font, x, y, w, h,
+               boss->instance().settings().getInt("listdelay") >= 300),
     _hilite(hilite)
 {
 }

@@ -250,6 +250,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Delay between quick-selecting characters in ListWidget
   items.clear();
+  VarList::push_back(items, "Disabled", "0");
   VarList::push_back(items, "300 ms", "300");
   VarList::push_back(items, "400 ms", "400");
   VarList::push_back(items, "500 ms", "500");
@@ -257,9 +258,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "700 ms", "700");
   VarList::push_back(items, "800 ms", "800");
   VarList::push_back(items, "900 ms", "900");
-  VarList::push_back(items, "1 sec", "1000");
+  VarList::push_back(items, "1 second", "1000");
   myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "List quick delay: ", lwidth);
+                                     items, "List quick delay (*): ", lwidth);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 

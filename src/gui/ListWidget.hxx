@@ -44,7 +44,7 @@ class ListWidget : public EditableWidget
 
   public:
     ListWidget(GuiObject* boss, const GUI::Font& font,
-               int x, int y, int w, int h, bool quickSelect = true);
+               int x, int y, int w, int h, bool quickSelect);
     virtual ~ListWidget();
 
     int rows() const        { return _rows; }
