@@ -217,6 +217,8 @@
 		2D91751009BA90380026E9FF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DEB3D4C0629BD24007EBBD3 /* OpenGL.framework */; };
 		2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D17D98E08BC398400E47F69 /* ApplicationServices.framework */; };
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
+		DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */; };
+		DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */; };
 		DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */; };
 		DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */; };
 		DC0984850D3985160073C852 /* CartSB.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984830D3985160073C852 /* CartSB.cxx */; };
@@ -767,6 +769,8 @@
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerSystem.hxx; path = ../debugger/DebuggerSystem.hxx; sourceTree = SOURCE_ROOT; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Expression.hxx; path = ../debugger/Expression.hxx; sourceTree = SOURCE_ROOT; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
+		DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JoystickDialog.cxx; path = ../gui/JoystickDialog.cxx; sourceTree = "<group>"; };
+		DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JoystickDialog.hxx; path = ../gui/JoystickDialog.hxx; sourceTree = "<group>"; };
 		DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StateManager.cxx; path = ../emucore/StateManager.cxx; sourceTree = SOURCE_ROOT; };
 		DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StateManager.hxx; path = ../emucore/StateManager.hxx; sourceTree = SOURCE_ROOT; };
 		DC0984830D3985160073C852 /* CartSB.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartSB.cxx; path = ../emucore/CartSB.cxx; sourceTree = SOURCE_ROOT; };
@@ -1589,6 +1593,8 @@
 				2D05FF61096E269100A518FE /* InputDialog.hxx */,
 				2D02207F08A301F200B9C76B /* InputTextDialog.cxx */,
 				2D02208008A301F200B9C76B /* InputTextDialog.hxx */,
+				DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */,
+				DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */,
 				2DDBEABA084578BF00812C11 /* Launcher.cxx */,
 				2DDBEABB084578BF00812C11 /* Launcher.hxx */,
 				2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */,
@@ -1996,6 +2002,7 @@
 				DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */,
 				DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */,
 				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
+				DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2215,6 +2222,7 @@
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
 				DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */,
 				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
+				DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */,
 				DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */,
 				DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */,
 				DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */,
