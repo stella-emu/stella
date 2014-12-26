@@ -159,9 +159,6 @@ bool OSystem::create()
   // Create PNG handler
   myPNGLib = make_ptr<PNGLibrary>(*myFrameBuffer);
 
-  // Create ZIP handler
-  myZipHandler = make_ptr<ZipHandler>();
-
   return true;
 }
 
@@ -690,6 +687,3 @@ void OSystem::mainLoop()
   myCheatManager->saveCheatDatabase();
 #endif
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<ZipHandler> OSystem::myZipHandler = unique_ptr<ZipHandler>();

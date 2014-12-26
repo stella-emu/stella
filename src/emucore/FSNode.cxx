@@ -70,7 +70,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
     return false;
 
   for (const auto& i: tmp)
-    fslist.push_back(FilesystemNode(i));
+    fslist.emplace_back(FilesystemNode(i));
 
   return true;
 }

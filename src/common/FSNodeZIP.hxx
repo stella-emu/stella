@@ -20,6 +20,7 @@
 #ifndef FS_NODE_ZIP_HXX
 #define FS_NODE_ZIP_HXX
 
+#include "ZipHandler.hxx"
 #include "FSNode.hxx"
 
 /*
@@ -74,6 +75,15 @@ class FilesystemNodeZIP : public AbstractFSNode
     void setFlags(const string& zipfile, const string& virtualfile,
         shared_ptr<AbstractFSNode> realnode);
 
+    friend ostream& operator<<(ostream& os, const FilesystemNodeZIP& node)
+    {
+      os << "_zipFile:     " << node._zipFile << endl
+         << "_virtualFile: " << node._virtualFile << endl
+         << "_path:        " << node._path << endl
+         << "_shortPath:   " << node._shortPath << endl;
+      return os;
+    }
+
   private:
     /* Error types */
     enum zip_error
@@ -89,6 +99,14 @@ class FilesystemNodeZIP : public AbstractFSNode
     string _path, _shortPath;
     zip_error _error;
     uInt32 _numFiles;
+
+    // ZIP static reference variable responsible for accessing ZIP files
+    static unique_ptr<ZipHandler> myZipHandler;
+    static ZipHandler& open(const string& file)
+    {
+      myZipHandler->open(file);
+      return *myZipHandler;
+    }
 };
 
 #endif

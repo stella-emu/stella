@@ -45,7 +45,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   _zipFile = p.substr(0, pos+4);
 
   // Open file at least once to initialize the virtual file count
-  ZipHandler& zip = OSystem::zip(_zipFile);
+  ZipHandler& zip = open(_zipFile);
   _numFiles = zip.romFiles();
   if(_numFiles == 0)
   {
@@ -123,11 +123,11 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
   if(!isDirectory() || _error != ZIPERR_NONE)
     return false;
 
-  ZipHandler& zip = OSystem::zip(_zipFile);
+  ZipHandler& zip = open(_zipFile);
   while(zip.hasNext())
   {
     FilesystemNodeZIP entry(_path, zip.next(), _realNode);
-    myList.push_back(new FilesystemNodeZIP(entry));
+    myList.emplace_back(new FilesystemNodeZIP(entry));
   }
 
   return true;
@@ -144,7 +144,7 @@ uInt32 FilesystemNodeZIP::read(uInt8*& image) const
     case ZIPERR_NO_ROMS:      throw "ZIP file doesn't contain any ROMs";
   }
 
-  ZipHandler& zip = OSystem::zip(_zipFile);
+  ZipHandler& zip = open(_zipFile);
 
   bool found = false;
   while(zip.hasNext() && !found)
@@ -158,3 +158,6 @@ AbstractFSNode* FilesystemNodeZIP::getParent() const
 {
   return _realNode ? _realNode->getParent() : nullptr;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<ZipHandler> FilesystemNodeZIP::myZipHandler = make_ptr<ZipHandler>();

@@ -195,7 +195,7 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
         (mode == FilesystemNode::kListDirectoriesOnly && !entry._isDirectory))
       continue;
 
-    myList.push_back(new FilesystemNodePOSIX(entry));
+    myList.emplace_back(new FilesystemNodePOSIX(entry));
   }
   closedir(dirp);
 
@@ -256,8 +256,8 @@ AbstractFSNode* FilesystemNodePOSIX::getParent() const
   if (_path == "/")
     return nullptr;
 
-  const char *start = _path.c_str();
-  const char *end = lastPathComponent(_path);
+  const char* start = _path.c_str();
+  const char* end = lastPathComponent(_path);
 
   return new FilesystemNodePOSIX(string(start, end - start));
 }

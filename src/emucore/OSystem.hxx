@@ -39,7 +39,6 @@ class VideoDialog;
 #include "FSNode.hxx"
 #include "FrameBuffer.hxx"
 #include "PNGLibrary.hxx"
-#include "ZipHandler.hxx"
 #include "bspf.hxx"
 
 struct TimingInfo {
@@ -172,17 +171,6 @@ class OSystem
       @return The PNGlib object
     */
     PNGLibrary& png() const { return *myPNGLib; }
-
-    /**
-      Get the ZIP handler of the system.
-
-      @return The ZIP object, using the given file
-    */
-    static ZipHandler& zip(const string& file)
-    {
-      myZipHandler->open(file);
-      return *myZipHandler;
-    }
 
     /**
       This method should be called to load the current settings from an rc file.
@@ -505,9 +493,6 @@ class OSystem
 
     // Indicates whether to stop the main loop
     bool myQuitLoop;
-
-    // ZIP static reference variable responsible for accessing ZIP files
-    static unique_ptr<ZipHandler> myZipHandler;
 
   private:
     string myBaseDir;
