@@ -15265,7 +15265,7 @@
 
 "Cartridge.MD5" "fa73f3c77ba76763e00e12d5458b6c5d"
 "Cartridge.Manufacturer" "Wickstead Design"
-"Cartridge.Name" "Pursuit of the Pink Panther"
+"Cartridge.Name" "Pursuit of the Pink Panther (WD) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
