@@ -111,10 +111,6 @@ uInt8 CartridgeWD::peek(uInt16 address)
     {
       myCyclesAtBankswitchInit = mySystem->cycles();
       myPendingBank = address & 0x000F;
-
-if(!mySystem->autodetectMode())
-  cerr << "BS init: " << dec << myPendingBank << " (" << hex << address << ") @ " << dec << mySystem->cycles() << endl;
-
     }
     return mySystem->tia().peek(address);
   }
@@ -172,9 +168,6 @@ bool CartridgeWD::bank(uInt16 bank)
   segmentOne(ourBankOrg[bank].one);
   segmentTwo(ourBankOrg[bank].two);
   segmentThree(ourBankOrg[bank].three, ourBankOrg[bank].map3bytes);
-
-if(!mySystem->autodetectMode())
-  cerr << "BS done: " << dec << myCurrentBank << " @ " << dec << mySystem->cycles() << endl;
 
   return myBankChanged = true;
 }

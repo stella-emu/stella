@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3250
+#define DEF_PROPS_SIZE 3251
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2170,7 +2170,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "a995b6cbdb1f0433abc74050808590e6", "Imagic, Rob Fulop, Bob Smith", "720106-1A, IA3600", "Riddle of the Sphinx (1982) (Imagic)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "a9cb638cd2cb2e8e0643d7a67db4281c", "M Network, Larry Zwick - INTV", "MT5861", "Air Raiders (1982) (M Network)", "AKA Air Battle", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "a9e3c23599c0d77151602f8e31daf879", "", "", "Kung Fu Master (Genesis)", "Genesis controller (C is extra kick modes)", "Hack of Kung Fu Master", "", "", "", "", "", "", "GENESIS", "", "", "", "", "", "", "", "" }, 
-  { "aa1c41f86ec44c0a44eb64c332ce08af", "Spectravideo, David Lubar", "SA-218", "Bumper Bash (1983) (Spectravideo)", "", "", "", "", "", "", "", "", "PADDLES_IAXIS", "", "", "", "", "20", "", "", "" }, 
+  { "aa1c41f86ec44c0a44eb64c332ce08af", "Spectravideo, David Lubar", "SA-218", "Bumper Bash (1983) (Spectravideo)", "", "", "", "", "", "", "", "", "", "", "", "", "", "20", "", "", "" }, 
   { "aa2c4b32656bde9a75042a4d158583e1", "", "", "Oystron X (Piero Cavina) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "aa5cfe3b20395aba1d479135943ad85c", "", "", "Defender (Hack) (Unknown)", "", "Hack of Defender", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "aa7bb54d2c189a31bb1fa20099e42859", "CBS Electronics, Ed English", "4L4478", "Mr. Do! (1983) (CBS Electronics) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
@@ -3207,6 +3207,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "fa4404fabc094e3a31fcd7b559cdd029", "Atari, Alan J. Murphy, Robert C. Polaro", "CX26100", "Bugs Bunny (1983) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fa529ec88eca679f6d5fd0ccb2120e46", "", "", "20 Sprites at Once Demo 1 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fa6fe97a10efb9e74c0b5a816e6e1958", "ZiMAG - Emag - Vidco", "707-111 - GN-030", "Tanks But No Tanks (1983) (ZiMAG)", "AKA Phantom Tank", "", "", "", "", "", "", "", "", "", "", "", "", "30", "", "", "" }, 
+  { "fa73f3c77ba76763e00e12d5458b6c5d", "Wickstead Design", "", "Pursuit of the Pink Panther", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fa7ce62e7fd77e02b3e2198d70742f80", "Atari, Peter C. Niday", "CX26108", "Donald Duck's Speedboat (04-18-1983) (Atari) (Prototype) (PAL)", "AKA Donald Duck's Regatta", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fa7e11a3dbea4365975cd2f094e61d25", "Tim Snider", "", "Mystery Science Theater 2600 (1999) (Tim Snider) (Hack)", "Hack of Megamania", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fa98d48cd609c9babc819e0a1bd8d598", "AtariAge (Chris Walton)", "", "Juno First (2009) (PAL60)", "AtariVox supported", "Homebrew", "", "", "", "", "", "", "", "ATARIVOX", "", "", "PAL60", "", "", "YES", "" }, 
