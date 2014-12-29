@@ -83,11 +83,9 @@ void CartridgeWD::install(System& system)
     mySystem->setPageAccess(j >> System::PAGE_SHIFT, write);
   }
 
-  // Set the page accessing methods for the hot spots
-  // These mirror the TIA addresses, so accesses must be chained
-  System::PageAccess hotspot(this, System::PA_READWRITE);
-  for(uInt32 i = 0x30; i < 0x40; i += (1 << System::PAGE_SHIFT))
-    mySystem->setPageAccess(i >> System::PAGE_SHIFT, hotspot);
+  // Mirror all access in TIA; by doing so we're taking responsibility
+  // for that address space in peek and poke below.
+  mySystem->tia().install(system, *this);
 
   // Setup segments to some default slices
   bank(myStartBank);
@@ -109,13 +107,13 @@ uInt8 CartridgeWD::peek(uInt16 address)
     // Hotspots at $30 - $3F
     // Note that a hotspot read triggers a bankswitch after at least 3 cycles
     // have passed, so we only initiate the switch here
-    if(!bankLocked())
+    if(!bankLocked() && (address & 0x00FF) >= 0x30 && (address & 0x00FF) <= 0x3F)
     {
       myCyclesAtBankswitchInit = mySystem->cycles();
       myPendingBank = address & 0x000F;
 
 if(!mySystem->autodetectMode())
-  cerr << "BS init: " << dec << myPendingBank << " @ " << dec << mySystem->cycles() << endl;
+  cerr << "BS init: " << dec << myPendingBank << " (" << hex << address << ") @ " << dec << mySystem->cycles() << endl;
 
     }
     return mySystem->tia().peek(address);
