@@ -197,7 +197,7 @@ uInt32 FilesystemNode::read(uInt8*& image) const
 
     if(size == 0)
     {
-      delete[] image;  image = 0;
+      delete[] image;  image = nullptr;
       throw "Zero-byte file";
     }
     return size;
