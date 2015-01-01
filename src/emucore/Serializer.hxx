@@ -56,11 +56,6 @@ class Serializer
     Serializer(const string& filename, bool readonly = false);
     Serializer();
 
-    /**
-      Destructor
-    */
-    ~Serializer();
-
   public:
     /**
       Answers whether the serializer is currently initialized for reading
@@ -193,7 +188,7 @@ class Serializer
 
   private:
     // The stream to send the serialized data to.
-    iostream* myStream;
+    unique_ptr<iostream> myStream;
     bool myUseFilestream;
 
     enum {

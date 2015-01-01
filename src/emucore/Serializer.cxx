@@ -33,15 +33,13 @@ Serializer::Serializer(const string& filename, bool readonly)
     FilesystemNode node(filename);
     if(node.isFile() && node.isReadable())
     {
-      fstream* str = new fstream(filename.c_str(), ios::in | ios::binary);
+      unique_ptr<fstream> str = make_ptr<fstream>(filename.c_str(), ios::in | ios::binary);
       if(str && str->is_open())
       {
-        myStream = str;
+        myStream = std::move(str);
         myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
         reset();
       }
-      else
-        delete str;
     }
   }
   else
@@ -56,15 +54,13 @@ Serializer::Serializer(const string& filename, bool readonly)
     fstream temp(filename.c_str(), ios::out | ios::app);
     temp.close();
 
-    fstream* str = new fstream(filename.c_str(), ios::in | ios::out | ios::binary);
+    unique_ptr<fstream> str = make_ptr<fstream>(filename.c_str(), ios::in | ios::out | ios::binary);
     if(str && str->is_open())
     {
-      myStream = str;
+      myStream = std::move(str);
       myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
       reset();
     }
-    else
-      delete str;
   }
 }
 
@@ -73,7 +69,7 @@ Serializer::Serializer()
   : myStream(nullptr),
     myUseFilestream(false)
 {
-  myStream = new stringstream(ios::in | ios::out | ios::binary);
+  myStream = make_ptr<stringstream>(ios::in | ios::out | ios::binary);
   
   // For some reason, Windows and possibly OSX needs to store something in
   // the stream before it is used for the first time
@@ -82,19 +78,6 @@ Serializer::Serializer()
     myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
     putBool(true);
     reset();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::~Serializer()
-{
-  if(myStream != nullptr)
-  {
-    if(myUseFilestream)
-      ((fstream*)myStream)->close();
-
-    delete myStream;
-    myStream = nullptr;
   }
 }
 

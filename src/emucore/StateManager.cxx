@@ -184,20 +184,19 @@ void StateManager::loadState(int slot)
     // First test if we have a valid header
     // If so, do a complete state load using the Console
     buf.str("");
-    if(in.getString() != STATE_HEADER)
-      buf << "Incompatible state " << slot << " file";
-    else
+    try
     {
-      if(in.getString() == myOSystem.console().cartridge().name())
-      {
-        if(myOSystem.console().load(in))
-          buf << "State " << slot << " loaded";
-        else
-          buf << "Invalid data in state " << slot << " file";
-      }
-      else
+      if(in.getString() != STATE_HEADER)
+        buf << "Incompatible state " << slot << " file";
+      else if(in.getString() != myOSystem.console().cartridge().name())
         buf << "State " << slot << " file doesn't match current ROM";
     }
+    catch(...) { /* fall through to logic below */ }
+
+    if(myOSystem.console().load(in))
+      buf << "State " << slot << " loaded";
+    else
+      buf << "Invalid data in state " << slot << " file";
 
     myOSystem.frameBuffer().showMessage(buf.str());
   }
@@ -225,12 +224,21 @@ void StateManager::saveState(int slot)
       return;
     }
 
-    // Add header so that if the state format changes in the future,
-    // we'll know right away, without having to parse the rest of the file
-    out.putString(STATE_HEADER);
+    try
+    {
+      // Add header so that if the state format changes in the future,
+      // we'll know right away, without having to parse the rest of the file
+      out.putString(STATE_HEADER);
 
-    // Sanity check; prepend the cart type/name
-    out.putString(myOSystem.console().cartridge().name());
+      // Sanity check; prepend the cart type/name
+      out.putString(myOSystem.console().cartridge().name());
+    }
+    catch(...)
+    {
+      buf << "Error saving state " << slot;
+      myOSystem.frameBuffer().showMessage(buf.str());
+      return;
+    }
 
     // Do a complete state save using the Console
     buf.str("");
@@ -264,17 +272,24 @@ void StateManager::changeState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::loadState(Serializer& in)
 {
-  if(myOSystem.hasConsole())
+  try
   {
-    // Make sure the file can be opened for reading
-    if(in.valid())
+    if(myOSystem.hasConsole())
     {
-      // First test if we have a valid header and cart type
-      // If so, do a complete state load using the Console
-      return in.getString() == STATE_HEADER &&
-             in.getString() == myOSystem.console().cartridge().name() &&
-             myOSystem.console().load(in);
+      // Make sure the file can be opened for reading
+      if(in.valid())
+      {
+        // First test if we have a valid header and cart type
+        // If so, do a complete state load using the Console
+        return in.getString() == STATE_HEADER &&
+               in.getString() == myOSystem.console().cartridge().name() &&
+               myOSystem.console().load(in);
+      }
     }
+  }
+  catch(...)
+  {
+    cerr << "ERROR: StateManager::loadState(Serializer&)" << endl;
   }
   return false;
 }

@@ -22,6 +22,9 @@
   * Fixed major bug with joysticks, where mapping was being lost on reset,
     the app would crash when plugging/unplugging certain sticks, etc.
 
+  * Fixed major (but rare) crash that could occur when state files were
+    zero'ed or corrupted.
+
   * Added dialog which shows the internal joystick database (all the
     joysticks that Stella knows about) and the ability to remove
     (currently unplugged) joysticks from this database.
