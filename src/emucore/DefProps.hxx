@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3266
+#define DEF_PROPS_SIZE 3267
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -1959,6 +1959,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "96e798995af6ed9d8601166d4350f276", "20th Century Fox Video Games - Videa, David Ross", "11029", "Meltdown (1983) (20th Century Fox) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "96eccc2277043508a6c481ea432d7dd9", "Thomas Jentzsch", "", "Missile Command (CX-80 Trackball) (2002) (TJ) (PAL)", "Uses CX-80 Trackball Controller", "Homebrew", "", "", "", "", "", "", "TRACKBALL80", "", "", "", "", "", "", "YES", "" }, 
   { "96f806fc62005205d851e758d050dfca", "", "", "Push (V0.05) (2001) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "97184b263722748757cfdc41107ca5c0", "Parker Brothers", "PB5820", "Mr. Do!'s Castle (1984) (Parker Bros)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "9718b85ac5a55cbc7348963c63ffa35a", "Robby", "", "Demon Attack (Robby)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "972486110933623039a3581db308fda6", "", "", "Xeno Plus (Hack)", "Hack of Xenophobe", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "97327d6962f8c64e6f926f79cd01c6b9", "", "", "Jawbreaker (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2332,7 +2333,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "b77468d586957d1b7fb4cccda2684f47", "Atari", "CX26163P", "Boxing (32 in 1) (1988) (Atari) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "b7903268e235310dc346a164af4c7022", "Thomas Jentzsch", "", "Cat Trax (Thomas Jentzsch) (PAL60)", "NTSC Conversion", "Hack", "", "", "", "", "", "", "", "", "", "", "PAL60", "30", "", "YES", "" }, 
   { "b79fe32320388a197ac3a0b932cc2189", "Imagic, Bob Smith", "13207, EIZ-001-04I", "Moonsweeper (1983) (Imagic) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
-  { "b7a7e34e304e4b7bc565ec01ba33ea27", "Parker Brothers", "PB5820", "Mr. Do!'s Castle (1984) (Parker Bros)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
+  { "b7a7e34e304e4b7bc565ec01ba33ea27", "Parker Brothers", "PB5820", "Mr. Do!'s Castle (1984) (Parker Bros) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "b7b1d3ce07e75976c43a2dca3866237e", "Atari", "CX26163P", "Freeway Chicken (32 in 1) (1988) (Atari) (PAL) (4K)", "AKA Freeway", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "b7e459d5416eeb196aaa8e092db14463", "", "", "Push (V0.02) (1998) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "b7f184013991823fc02a6557341d2a7a", "", "", "Blue Rod Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

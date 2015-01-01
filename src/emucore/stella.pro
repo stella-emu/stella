@@ -11905,6 +11905,13 @@
 "Cartridge.Name" "Push (V0.05) (2001) (AD)"
 ""
 
+"Cartridge.MD5" "97184b263722748757cfdc41107ca5c0"
+"Cartridge.Manufacturer" "Parker Brothers"
+"Cartridge.ModelNo" "PB5820"
+"Cartridge.Name" "Mr. Do!'s Castle (1984) (Parker Bros)"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "9718b85ac5a55cbc7348963c63ffa35a"
 "Cartridge.Manufacturer" "Robby"
 "Cartridge.Name" "Demon Attack (Robby)"
@@ -14202,7 +14209,7 @@
 "Cartridge.MD5" "b7a7e34e304e4b7bc565ec01ba33ea27"
 "Cartridge.Manufacturer" "Parker Brothers"
 "Cartridge.ModelNo" "PB5820"
-"Cartridge.Name" "Mr. Do!'s Castle (1984) (Parker Bros)"
+"Cartridge.Name" "Mr. Do!'s Castle (1984) (Parker Bros) [a]"
 "Display.Phosphor" "YES"
 ""
 
