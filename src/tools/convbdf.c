@@ -769,7 +769,7 @@ int gen_c_source(struct font* pf, char *path)
     "//  SS  SS   tt   ee      ll   ll  aa  aa\n"
     "//   SSSS     ttt  eeeee llll llll  aaaaa\n"
     "//\n"
-    "// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony\n"
+    "// Copyright (c) 1995-2015 by Bradford W. Mott, Stephen Anthony\n"
     "// and the Stella Team\n"
     "//\n"
     "// See the file \"License.txt\" for information on usage and redistribution of\n"

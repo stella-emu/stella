@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2015 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -112,7 +112,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT(string("\\C\\c2Features: ") + instance().features());
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
       ADD_ALINE();
-      ADD_ATEXT("\\CCopyright (C) 1995-2014 The Stella Team");
+      ADD_ATEXT("\\CCopyright (C) 1995-2015 The Stella Team");
       ADD_ATEXT("\\C(http://stella.sf.net)");
       ADD_ALINE();
       ADD_ATEXT("\\CStella is now DonationWare!");
