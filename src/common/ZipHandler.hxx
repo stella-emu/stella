@@ -225,22 +225,22 @@ class ZipHandler
     /* ----- ZIP file access ----- */
 
     /* open a ZIP file and parse its central directory */
-    zip_error zip_file_open(const char *filename, zip_file **zip);
+    zip_error zip_file_open(const char* filename, zip_file** zip);
 
     /* close a ZIP file (may actually be left open due to caching) */
-    void zip_file_close(zip_file *zip);
+    void zip_file_close(zip_file* zip);
 
     /* clear out all open ZIP files from the cache */
-    void zip_file_cache_clear(void);
+    void zip_file_cache_clear();
 
 
     /* ----- contained file access ----- */
 
     /* find the next file in the ZIP */
-    const zip_file_header *zip_file_next_file(zip_file *zip);
+    const zip_file_header* zip_file_next_file(zip_file* zip);
 
     /* decompress the most recently found file in the ZIP */
-    zip_error zip_file_decompress(zip_file *zip, void *buffer, uInt32 length);
+    zip_error zip_file_decompress(zip_file* zip, void* buffer, uInt32 length);
 
     inline static uInt16 read_word(uInt8* buf)
     {
@@ -253,17 +253,17 @@ class ZipHandler
     }
 
     /* cache management */
-    static void free_zip_file(zip_file *zip);
+    static void free_zip_file(zip_file* zip);
 
     /* ZIP file parsing */
-    static zip_error read_ecd(zip_file *zip);
-    static zip_error get_compressed_data_offset(zip_file *zip, uInt64 *offset);
+    static zip_error read_ecd(zip_file* zip);
+    static zip_error get_compressed_data_offset(zip_file* zip, uInt64& offset);
 
     /* decompression interfaces */
-    static zip_error decompress_data_type_0(zip_file *zip, uInt64 offset,
-                                            void *buffer, uInt32 length);
-    static zip_error decompress_data_type_8(zip_file *zip, uInt64 offset,
-                                            void *buffer, uInt32 length);
+    static zip_error decompress_data_type_0(zip_file* zip, uInt64 offset,
+                                            void* buffer, uInt32 length);
+    static zip_error decompress_data_type_8(zip_file* zip, uInt64 offset,
+                                            void* buffer, uInt32 length);
 
   private:
     zip_file* myZip;

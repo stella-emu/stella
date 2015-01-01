@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.2 to 4.5: (December xx, 2014)
+4.2 to 4.5: (January 1, 2015)
 
   * The conversion to C++11 has begun :)  From this point on, to build
     Stella you will need a C++11 compatible compiler (Visual Studio 2013,
@@ -27,7 +27,10 @@
     (currently unplugged) joysticks from this database.
 
   * Added preliminary support for 'WD' (Wickstead Design) bankswitching
-    scheme.
+    scheme, used for a previously unreleased prototype ROM.
+
+  * Improved ZIP file handling, so that it now works as a normal
+    filesystem does (it properly shows nested files and directories).
 
   * The debugger 'reset' command now does a complete system reset,
     instead of simply setting the PC to the reset vector address.

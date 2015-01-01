@@ -49,11 +49,11 @@ class FilesystemNodeZIP : public AbstractFSNode
     FilesystemNodeZIP(const string& path);
 
     bool exists() const      { return _realNode && _realNode->exists(); }
-    const string& getName() const { return _virtualFile; }
-    const string& getPath() const { return _path;        }
-    string getShortPath() const   { return _shortPath;   }
-    bool isDirectory() const { return _numFiles > 1;  }
-    bool isFile() const      { return _numFiles == 1; }
+    const string& getName() const { return _name;      }
+    const string& getPath() const { return _path;      }
+    string getShortPath() const   { return _shortPath; }
+    bool isDirectory() const { return _isDirectory; }
+    bool isFile() const      { return _isFile;      }
     bool isReadable() const  { return _realNode && _realNode->isReadable(); }
     bool isWritable() const  { return false; }
 
@@ -69,16 +69,16 @@ class FilesystemNodeZIP : public AbstractFSNode
     uInt32 read(uInt8*& image) const;
 
   private:
-    FilesystemNodeZIP(const string& zipfile, const string& virtualfile,
-        shared_ptr<AbstractFSNode> realnode);
+    FilesystemNodeZIP(const string& zipfile, const string& virtualpath,
+        shared_ptr<AbstractFSNode> realnode, bool isdir);
 
-    void setFlags(const string& zipfile, const string& virtualfile,
+    void setFlags(const string& zipfile, const string& virtualpath,
         shared_ptr<AbstractFSNode> realnode);
 
     friend ostream& operator<<(ostream& os, const FilesystemNodeZIP& node)
     {
       os << "_zipFile:     " << node._zipFile << endl
-         << "_virtualFile: " << node._virtualFile << endl
+         << "_virtualPath: " << node._virtualPath << endl
          << "_path:        " << node._path << endl
          << "_shortPath:   " << node._shortPath << endl;
       return os;
@@ -95,17 +95,34 @@ class FilesystemNodeZIP : public AbstractFSNode
     };
 
     shared_ptr<AbstractFSNode> _realNode;
-    string _zipFile, _virtualFile;
-    string _path, _shortPath;
+    string _zipFile, _virtualPath;
+    string _name, _path, _shortPath;
     zip_error _error;
     uInt32 _numFiles;
 
-    // ZIP static reference variable responsible for accessing ZIP files
+    bool _isDirectory, _isFile;
+
+    // ZipHandler static reference variable responsible for accessing ZIP files
     static unique_ptr<ZipHandler> myZipHandler;
-    static ZipHandler& open(const string& file)
+    inline static ZipHandler& open(const string& file)
     {
       myZipHandler->open(file);
       return *myZipHandler;
+    }
+
+    // Get last component of path
+    static const char* lastPathComponent(const string& str)
+    {
+      if(str.empty())
+        return "";
+
+      const char* start = str.c_str();
+      const char* cur = start + str.size() - 2;
+
+      while (cur >= start && !(*cur == '/' || *cur == '\\'))
+        --cur;
+
+      return cur + 1;
     }
 };
 
