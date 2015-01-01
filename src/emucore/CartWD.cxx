@@ -259,7 +259,16 @@ uInt16 CartridgeWD::bankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeWD::patch(uInt16 address, uInt8 value)
 {
-  return false;  // TODO
+  address &= 0x0FFF;
+
+  uInt16 idx = address >> 10;
+  myImage[myOffset[idx] + (address & 0x03FF)] = value;
+
+  // The upper segment is mirrored, so we need to patch its buffer too
+  if(idx == 3)
+    mySegment3[(address & 0x03FF)] = value;
+
+  return true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
