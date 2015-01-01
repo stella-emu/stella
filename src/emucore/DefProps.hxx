@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3265
+#define DEF_PROPS_SIZE 3266
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -1856,6 +1856,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "8e48ea6ea53709b98e6f4bd8aa018908", "CBS Electronics, Stuart Ross", "", "Wings (06-03-1983) (CBS Electronics) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "8e4cd60d93fcde8065c1a2b972a26377", "Imagic, Dan Oliver", "720118-2A, 13208, EIX-007-04I", "Laser Gates (1983) (Imagic) (PAL)", "AKA Innerspace", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "8e4fa8c6ad8d8dce0db8c991c166cdaa", "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel", "CX26114", "Pigs in Space (1983) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "8e512ad4506800458f99dec084fc2c64", "Bob Montgomery, Nathan Strum", "", "Reindeer Rescue (2005)", "2005 AtariAge Holiday Cart", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "8e7241bfc8380aac3c0ef1b6881cdded", "Atari, Howard Scott Warshaw - Sears", "CX2655 - 49-75167", "Yars' Revenge (09-01-81) (Atari) (Prototype)", "Time Freeze", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "8e737a88a566cc94bd50174c2d019593", "Quelle", "343.173 1", "Feuerwehr im Einsatz (1983) (Quelle) (PAL)", "AKA Fire Fighter", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "8e822b39a71c84ac875f0107fb61d6f0", "", "", "Hangman Ghost Original Words (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

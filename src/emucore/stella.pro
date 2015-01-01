@@ -11279,6 +11279,13 @@
 "Cartridge.Name" "Pigs in Space (1983) (Atari)"
 ""
 
+"Cartridge.MD5" "8e512ad4506800458f99dec084fc2c64"
+"Cartridge.Manufacturer" "Bob Montgomery, Nathan Strum"
+"Cartridge.Name" "Reindeer Rescue (2005)"
+"Cartridge.Note" "2005 AtariAge Holiday Cart"
+"Cartridge.Rarity" "Homebrew"
+""
+
 "Cartridge.MD5" "8e7241bfc8380aac3c0ef1b6881cdded"
 "Cartridge.Manufacturer" "Atari, Howard Scott Warshaw - Sears"
 "Cartridge.ModelNo" "CX2655 - 49-75167"
