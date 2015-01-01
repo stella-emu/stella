@@ -544,6 +544,11 @@ class OSystem
                                     string& type, string& id);
 
     /**
+      Close and finalize any currently open console.
+    */
+    void closeConsole();
+
+    /**
       Open the given ROM and return an array containing its contents.
       Also, the properties database is updated with a valid ROM name
       for this ROM (if necessary).

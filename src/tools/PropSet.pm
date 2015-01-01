@@ -126,7 +126,8 @@ sub save_prop_set {
   print "Saving " . keys(%$hashref) . " properties to file: $file\n";
 
   open(OUTFILE, ">$file");
-  while (($md5, $props) = each(%$hashref)) {
+  foreach my $md5 (sort keys %$hashref) {
+    my $props = %$hashref{$md5};
     my @array = @$props;
     for (my $i = 0; $i < @array; $i++) {
       if ($array[$i] ne "") {

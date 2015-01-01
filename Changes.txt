@@ -53,6 +53,10 @@
     Because of this, the 32-bit version is also discontinued, as 10.7
     supports 64-bit Intel only apps.
 
+  * Updated internal ROM properties database to ROM-Hunter version 10
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!

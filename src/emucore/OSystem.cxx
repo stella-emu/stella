@@ -311,11 +311,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   string type, id;
   try
   {
-  #ifdef CHEATCODE_SUPPORT
-    // If a previous console existed, save cheats before creating a new one
-    if(myConsole)
-      myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
-  #endif
+    closeConsole();
     myConsole = openConsole(myRomFile, myRomMD5, type, id);
   }
   catch(const char* err_msg)
@@ -409,6 +405,8 @@ bool OSystem::reloadConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createLauncher(const string& startdir)
 {
+  closeConsole();
+
   if(mySound)
     mySound->close();
 
@@ -540,6 +538,19 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
     delete[] image;
 
   return console;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::closeConsole()
+{
+  if(myConsole)
+  {
+  #ifdef CHEATCODE_SUPPORT
+    // If a previous console existed, save cheats before creating a new one
+    myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
+  #endif
+    myConsole.release();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
