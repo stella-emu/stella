@@ -12,7 +12,16 @@
                                Release History
 ===========================================================================
 
-4.5 to 4.6: (January 1, 2015)
+4.5 to 4.6: (February xx, 2015)
+
+  * Reverted some minor C++11 features (std::regex and cbegin/cend
+    iterators) in a few places, since otherwise GCC 4.9 is required to
+    compile Stella, and it isn't available on many systems yet.  These
+    changes allow Stella to be built with GCC 4.8, which is present in
+    the latest 'long term release' of Ubuntu.
+
+  * Fixed error messages on state loading; sometimes multiple messages
+    were being added together and displayed.
 
   * Fixed bug when running ROMs using AtariVox controllers; the app would
     crash upon exiting the ROM.

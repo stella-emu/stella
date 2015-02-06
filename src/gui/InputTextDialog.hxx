@@ -59,9 +59,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    using InputWidget = vector<EditTextWidget*>;
-
-    InputWidget       myInput;
+    vector<EditTextWidget*> myInput;
     StaticTextWidget* myTitle;
 
     bool myEnableCenter;

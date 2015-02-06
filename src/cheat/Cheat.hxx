@@ -31,7 +31,7 @@ class Cheat
   public:
     Cheat(OSystem& osystem, const string& name, const string& code)
       : myOSystem(osystem),
-        myName(name == "" ? code : regex_replace(name, regex(":|\""), "")),
+        myName(name == "" ? code : name),
         myCode(code),
         myEnabled(false)
     { }

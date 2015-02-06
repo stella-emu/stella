@@ -256,8 +256,8 @@ bool CartDebug::disassemble(bool force)
     // Distella expects the addresses to be unique and in sorted order
     if(bankChanged || !pcfound)
     {
-      AddressList::const_iterator i;
-      for(i = addresses.cbegin(); i != addresses.cend(); ++i)
+      AddressList::iterator i;  // TODO - change to C++11 const when available
+      for(i = addresses.begin(); i != addresses.end(); ++i)
       {
         if(PC < *i)
         {

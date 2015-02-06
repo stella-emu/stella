@@ -366,7 +366,7 @@ bool M6502::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: M6502::laod" << endl;
+    cerr << "ERROR: M6502::load" << endl;
     return false;
   }
 

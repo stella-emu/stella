@@ -190,13 +190,18 @@ void StateManager::loadState(int slot)
         buf << "Incompatible state " << slot << " file";
       else if(in.getString() != myOSystem.console().cartridge().name())
         buf << "State " << slot << " file doesn't match current ROM";
+      else
+      {
+        if(myOSystem.console().load(in))
+          buf << "State " << slot << " loaded";
+        else
+          buf << "Invalid data in state " << slot << " file";
+      }
     }
-    catch(...) { /* fall through to logic below */ }
-
-    if(myOSystem.console().load(in))
-      buf << "State " << slot << " loaded";
-    else
+    catch(...)
+    {
       buf << "Invalid data in state " << slot << " file";
+    }
 
     myOSystem.frameBuffer().showMessage(buf.str());
   }
