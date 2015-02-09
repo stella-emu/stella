@@ -423,11 +423,13 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_MINUS: // decrement
+      case KBDK_KP_MINUS:
         if(_editable)
           decrementCell();
         break;
 
       case KBDK_EQUALS: // increment
+      case KBDK_KP_PLUS:
         if(_editable)
           incrementCell();
         break;

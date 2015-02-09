@@ -30,6 +30,8 @@
     insertion of illegal characters.  This will be extended throughout
     the code in future releases.
 
+  * DataGridWidgets in the debugger now respond to keypad '+' and '-'.
+
 -Have fun!
 
 
