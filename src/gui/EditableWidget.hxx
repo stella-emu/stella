@@ -30,6 +30,9 @@
 class EditableWidget : public Widget, public CommandSender
 {
   public:
+    /** Function used by 'tryInsertChar' to test validity of a character */
+    using TextFilter = std::function<bool(char)>;
+
     enum {
       kAcceptCmd  = 'EDac',
       kCancelCmd  = 'EDcl',
@@ -53,6 +56,9 @@ class EditableWidget : public Widget, public CommandSender
     // We only want to focus this widget when we can edit its contents
     virtual bool wantsFocus() { return _editable; }
 
+    // Set filter used by 'tryInsertChar'
+    void setTextFilter(TextFilter& filter) { _filter = filter; }
+
   protected:
     virtual void startEditMode() { setFlags(WIDGET_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(WIDGET_WANTS_RAWDATA); }
@@ -64,6 +70,9 @@ class EditableWidget : public Widget, public CommandSender
     bool setCaretPos(int newPos);
     bool adjustOffset();
 	
+    // This method will use the current TextFilter to insert a character
+    // Note that classes which override this method will no longer use the
+    // current TextFilter, and will assume all responsibility for filtering
     virtual bool tryInsertChar(char c, int pos);
 
   private:
@@ -91,6 +100,9 @@ class EditableWidget : public Widget, public CommandSender
     int   _editScrollOffset;
 
     static string _clippedText;
+
+  private:
+    TextFilter _filter;
 };
 
 #endif

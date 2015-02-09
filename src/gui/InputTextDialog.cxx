@@ -71,7 +71,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   WidgetArray wid;
 
   // Calculate real dimensions
-  _w = fontWidth * 30;
+  _w = fontWidth * 35;
   _h = lineHeight * 4 + (int)labels.size() * (lineHeight + 5);
 
   // Determine longest label
@@ -174,6 +174,13 @@ void InputTextDialog::setText(const string& str, int idx)
 {
   if((uInt32)idx < myInput.size())
     myInput[idx]->setText(str);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::setTextFilter(EditableWidget::TextFilter& f, int idx)
+{
+  if((uInt32)idx < myInput.size())
+    myInput[idx]->setTextFilter(f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

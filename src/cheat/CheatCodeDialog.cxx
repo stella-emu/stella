@@ -83,10 +83,21 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
 
   // Inputbox which will pop up when adding/editing a cheat
   StringList labels;
-  labels.push_back("Name: ");
-  labels.push_back("Code: ");
+  labels.push_back("Name:       ");
+  labels.push_back("Code (hex): ");
   myCheatInput = make_ptr<InputTextDialog>(this, font, labels);
   myCheatInput->setTarget(this);
+
+  // Add filtering for each textfield
+  EditableWidget::TextFilter f0 = [](char c) {
+    return isprint(c) && c != '\"' && c != ':';
+  };
+  myCheatInput->setTextFilter(f0, 0);
+
+  EditableWidget::TextFilter f1 = [](char c) {
+    return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
+  };
+  myCheatInput->setTextFilter(f1, 1);
 
   addToFocusList(wid);
 

@@ -40,6 +40,9 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
+
+  // By default, include all printable chars except quotes
+  _filter = [](char c) { return isprint(c) && c != '\"'; };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,9 +53,12 @@ EditableWidget::~EditableWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::setText(const string& str, bool)
 {
-  // TODO: We probably should filter the input string here,
-  // e.g. using tryInsertChar.
-  _editString = str;
+  // Filter input string
+  _editString = "";
+  for(int i = 0; i < str.size(); ++i)
+    if(_filter(tolower(str[i])))
+      _editString.push_back(str[i]);
+
   _caretPos = (int)_editString.size();
 
   _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().width()));
@@ -70,15 +76,15 @@ void EditableWidget::setEditable(bool editable)
 {
   _editable = editable;
   if(_editable)
-    setFlags(WIDGET_WANTS_RAWDATA|WIDGET_RETAIN_FOCUS);
+    setFlags(WIDGET_WANTS_RAWDATA | WIDGET_RETAIN_FOCUS);
   else
-    clearFlags(WIDGET_WANTS_RAWDATA|WIDGET_RETAIN_FOCUS);
+    clearFlags(WIDGET_WANTS_RAWDATA | WIDGET_RETAIN_FOCUS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::tryInsertChar(char c, int pos)
 {
-  if(isprint(c) && c != '\"')
+  if(_filter(tolower(c)))
   {
     _editString.insert(pos, 1, c);
     return true;

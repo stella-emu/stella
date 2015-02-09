@@ -26,6 +26,10 @@
   * Fixed bug when running ROMs using AtariVox controllers; the app would
     crash upon exiting the ROM.
 
+  * Certain textfields in the UI now have filtering enabled, preventing
+    insertion of illegal characters.  This will be extended throughout
+    the code in future releases.
+
 -Have fun!
 
 
