@@ -32,6 +32,8 @@
   * Fixed bug when running ROMs using AtariVox controllers; the app would
     crash upon exiting the ROM.
 
+  * Snapshot functionality now works while the emulation is paused.
+
   * Certain textfields in the UI now have filtering enabled, preventing
     insertion of illegal characters.  This will be extended throughout
     the code in future releases.

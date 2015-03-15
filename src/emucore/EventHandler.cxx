@@ -551,10 +551,20 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     return;
 
   // Otherwise, let the event handler deal with it
-  if(myState == S_EMULATE)
-    handleEvent(myKeyTable[key][kEmulationMode], state);
-  else if(myOverlay != nullptr)
-    myOverlay->handleKeyEvent(key, mod, state);
+  switch(myState)
+  {
+    case S_EMULATE:
+      handleEvent(myKeyTable[key][kEmulationMode], state);
+      break;
+    case S_PAUSE:
+      if(myKeyTable[key][kEmulationMode] == Event::TakeSnapshot)
+        handleEvent(myKeyTable[key][kEmulationMode], state);
+      break;
+    default:
+      if(myOverlay != nullptr)
+        myOverlay->handleKeyEvent(key, mod, state);
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -812,10 +822,10 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 {
   switch(e)
   {
-#if 0
     case EVENT_WINDOW_EXPOSED:
-        myOSystem.frameBuffer().refresh();
+        myOSystem.frameBuffer().update();
         break;
+#if 0
     case EVENT_WINDOW_MINIMIZED:
         if(myState == S_EMULATE) enterMenuMode(S_MENU);
         break;
