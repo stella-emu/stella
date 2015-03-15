@@ -82,9 +82,6 @@ void Dialog::open(bool refresh)
   buildCurrentFocusList();
 
   _visible = true;
-
-  if(refresh)
-    instance().frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,9 +98,6 @@ void Dialog::close(bool refresh)
   _visible = false;
 
   parent().removeDialog();
-
-  if(refresh)
-    instance().frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

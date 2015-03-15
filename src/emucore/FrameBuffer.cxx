@@ -255,6 +255,8 @@ void FrameBuffer::update()
   // Determine which mode we are in (from the EventHandler)
   // Take care of S_EMULATE mode here, otherwise let the GUI
   // figure out what to draw
+
+  invalidate();
   switch(myOSystem.eventHandler().state())
   {
     case EventHandler::S_EMULATE:
@@ -294,6 +296,8 @@ void FrameBuffer::update()
 
     case EventHandler::S_PAUSE:
     {
+      drawTIA();
+
       // Show a pause message every 5 seconds
       if(myPausedCount++ >= 7*myOSystem.frameRate())
       {
@@ -305,26 +309,28 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:
     {
-      myOSystem.menu().draw();
+      drawTIA();
+      myOSystem.menu().draw(true);
       break;  // S_MENU
     }
 
     case EventHandler::S_CMDMENU:
     {
-      myOSystem.commandMenu().draw();
+      drawTIA();
+      myOSystem.commandMenu().draw(true);
       break;  // S_CMDMENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
-      myOSystem.launcher().draw();
+      myOSystem.launcher().draw(true);
       break;  // S_LAUNCHER
     }
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
     {
-      myOSystem.debugger().draw();
+      myOSystem.debugger().draw(true);
       break;  // S_DEBUGGER
     }
 #endif
@@ -348,10 +354,6 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   // Only show messages if they've been enabled
   if(!(force || myOSystem.settings().getBool("uimessages")))
     return;
-
-  // Erase old messages on the screen
-  if(myMsg.counter > 0)
-    refresh();
 
   // Precompute the message coordinates
   myMsg.text    = message;
@@ -377,7 +379,6 @@ void FrameBuffer::showFrameStats(bool enable)
 {
   myOSystem.settings().setValue("stats", enable);
   myStatsMsg.enabled = enable;
-  refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,8 +397,7 @@ void FrameBuffer::enableMessages(bool enable)
     // Erase old messages on the screen
     myMsg.enabled = false;
     myMsg.counter = 0;
-
-    refresh();
+    update();  // Force update immediately
   }
 }
 
@@ -458,101 +458,22 @@ inline void FrameBuffer::drawMessage()
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
   myMsg.surface->drawString(font(), myMsg.text, 4, 4,
                             myMsg.w, myMsg.color, kTextAlignLeft);
-  myMsg.counter--;
 
   // Either erase the entire message (when time is reached),
   // or show again this frame
-  if(myMsg.counter == 0)  // Force an immediate update
-  {
-    myMsg.enabled = false;
-    refresh();
-  }
-  else
+  if(myMsg.counter-- > 0)
   {
     myMsg.surface->setDirty();
     myMsg.surface->render();
   }
+  else
+    myMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void FrameBuffer::drawTIA()
 {
   myTIASurface->render();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::refresh()
-{
-  // This method partly duplicates the behaviour in ::update()
-  // Here, however, make sure to redraw *all* surfaces applicable to the
-  // current EventHandler state
-  // We also check for double-buffered modes, and when present
-  // update both buffers accordingly
-  //
-  // This method is in essence a FULL refresh, putting all rendering
-  // buffers in a known, fully redrawn state
-
-  switch(myOSystem.eventHandler().state())
-  {
-    case EventHandler::S_EMULATE:
-    case EventHandler::S_PAUSE:
-      invalidate();
-      drawTIA();
-      break;
-
-    case EventHandler::S_MENU:
-      invalidate();
-      drawTIA();
-      myOSystem.menu().draw(true);
-      if(isDoubleBuffered())
-      {
-        postFrameUpdate();
-        invalidate();
-        drawTIA();
-        myOSystem.menu().draw(true);
-      }
-      break;
-
-    case EventHandler::S_CMDMENU:
-      invalidate();
-      drawTIA();
-      myOSystem.commandMenu().draw(true);
-      if(isDoubleBuffered())
-      {
-        postFrameUpdate();
-        invalidate();
-        drawTIA();
-        myOSystem.commandMenu().draw(true);
-      }
-      break;
-
-    case EventHandler::S_LAUNCHER:
-      invalidate();
-      myOSystem.launcher().draw(true);
-      if(isDoubleBuffered())
-      {
-        postFrameUpdate();
-        invalidate();
-        myOSystem.launcher().draw(true);
-      }
-      break;
-
-  #ifdef DEBUGGER_SUPPORT
-    case EventHandler::S_DEBUGGER:
-      invalidate();
-      myOSystem.debugger().draw(true);
-      if(isDoubleBuffered())
-      {
-        postFrameUpdate();
-        invalidate();
-        myOSystem.debugger().draw(true);
-      }
-      break;
-  #endif
-
-    default:
-      break;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -623,7 +544,6 @@ void FrameBuffer::setFullscreen(bool enable)
     myOSystem.settings().setValue("fullscreen", fullScreen());
     resetSurfaces();
     setCursorState();
-    refresh();
   }
 }
 
@@ -664,7 +584,6 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
     resetSurfaces();
     showMessage(mode.description);
     myOSystem.settings().setValue("tia.zoom", mode.zoom);
-    refresh();
     return true;
   }
 #endif

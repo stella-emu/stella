@@ -253,12 +253,6 @@ class FrameBuffer
     TIASurface& tiaSurface() const { return *myTIASurface; }
 
     /**
-      Refresh display according to the current state, taking single vs.
-      double-buffered modes into account, and redrawing accordingly.
-    */
-    void refresh();
-
-    /**
       Enables/disables fullscreen mode.
     */
     void setFullscreen(bool enable);
@@ -335,11 +329,6 @@ class FrameBuffer
       @param b  The blue component of the color.
     */
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const = 0;
-
-    /**
-      This method is called to query the buffering type of the FrameBuffer.
-    */
-    virtual bool isDoubleBuffered() const = 0;
 
     /**
       This method is called to get the specified ARGB data from the viewable

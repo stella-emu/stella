@@ -162,7 +162,6 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSnapshotCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().frameBuffer().refresh();
       instance().eventHandler().handleEvent(Event::TakeSnapshot, 1);
       break;
 
@@ -195,10 +194,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
     instance().console().switches().update();
     instance().console().tia().update();
     instance().eventHandler().handleEvent(event, 0);
-    instance().frameBuffer().refresh();
   }
   else if(stateCmd)
-  {
     instance().eventHandler().handleEvent(event, 1);
-  }
 }

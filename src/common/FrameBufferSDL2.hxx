@@ -91,11 +91,6 @@ class FrameBufferSDL2 : public FrameBuffer
       { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
     /**
-      This method is called to query the buffering type of the FrameBuffer.
-    */
-    bool isDoubleBuffered() const { return myDblBufferedFlag; }
-
-    /**
       This method is called to get a copy of the specified ARGB data from the
       viewable FrameBuffer area.  Note that this isn't the same as any
       internal surfaces that may be in use; it should return the actual data

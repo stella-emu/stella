@@ -20,6 +20,8 @@
 #ifndef EDITABLE_WIDGET_HXX
 #define EDITABLE_WIDGET_HXX
 
+#include <functional>
+
 #include "Widget.hxx"
 #include "Rect.hxx"
 

@@ -131,8 +131,6 @@ void DialogContainer::reStack()
 
   myBaseDialog->open(false);  // don't force a refresh
 
-  myOSystem.frameBuffer().refresh();
-
   // Reset all continuous events
   reset();
 }

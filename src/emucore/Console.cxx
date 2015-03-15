@@ -491,7 +491,6 @@ void Console::changeYStart(int direction)
 
   myTIA->setYStart(ystart);
   myTIA->frameReset();
-  myOSystem.frameBuffer().refresh();
 
   ostringstream val;
   val << ystart;

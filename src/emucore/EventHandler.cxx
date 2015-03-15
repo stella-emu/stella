@@ -812,10 +812,10 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 {
   switch(e)
   {
+#if 0
     case EVENT_WINDOW_EXPOSED:
         myOSystem.frameBuffer().refresh();
         break;
-#if 0
     case EVENT_WINDOW_MINIMIZED:
         if(myState == S_EMULATE) enterMenuMode(S_MENU);
         break;
