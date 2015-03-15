@@ -14,17 +14,17 @@
 
 4.5 to 4.6: (March xx, 2015)
 
+  * Finally fixed fullscreen rendering issues on some OpenGL
+    implementations in Linux (mostly Intel-specific).  Basically, the
+    concept of 'dirty updates' has been removed; the window is now
+    updated continuously.  This may also fix issues some people were
+    having with triple-buffering in Windows Direct3D, etc.
+
   * Reverted some minor C++11 features (std::regex and cbegin/cend
     iterators) in a few places, since otherwise GCC 4.9 is required to
     compile Stella, and it isn't available on many systems yet.  These
     changes allow Stella to be built with GCC 4.8, which is present in
     the latest 'long term release' of Ubuntu.
-
-  * Finally fixed fullscreen rendering issues on some OpenGL
-    implementations in Linux (mostly Intel-specific).  Basically, the
-    concept of 'dirty updates' as been removed; the window is now
-    updated continuously.  This may also fix issues some people were
-    having with triple-buffering, etc.
 
   * Fixed error messages on state loading; sometimes multiple messages
     were being added together and displayed.
@@ -37,6 +37,8 @@
     the code in future releases.
 
   * DataGridWidgets in the debugger now respond to keypad '+' and '-'.
+
+  * Updated included PNG library to latest stable version.
 
 -Have fun!
 
