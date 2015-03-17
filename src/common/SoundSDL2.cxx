@@ -365,6 +365,8 @@ void SoundSDL2::callback(void* udata, uInt8* stream, int len)
     // So, we need to convert the pointer and half the length
     sound->processFragment((Int16*)stream, (uInt32)len >> 1);
   }
+  else
+    SDL_memset(stream, 0, len);  // Write 'silence'
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

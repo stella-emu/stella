@@ -20,6 +20,10 @@
     updated continuously.  This may also fix issues some people were
     having with triple-buffering in Windows Direct3D, etc.
 
+  * Fixed sound corruption that happened when running a ROM for the
+    first time.  This was most obvious under OSX, but occasionally
+    happened on other systems too.
+
   * Reverted some minor C++11 features (std::regex and cbegin/cend
     iterators) in a few places, since otherwise GCC 4.9 is required to
     compile Stella, and it isn't available on many systems yet.  These
