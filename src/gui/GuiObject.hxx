@@ -63,18 +63,17 @@ class GuiObject : public CommandReceiver
       : myOSystem(osystem),
         myParent(parent),
         myDialog(dialog),
-        _x(x),
-        _y(y),
-        _w(w),
-        _h(h),
+        _x(x), _y(y), _w(w), _h(h),
         _dirty(false),
-        _firstWidget(0) {}
+        _firstWidget(0) { }
 
-    virtual ~GuiObject() {}
+    virtual ~GuiObject() { }
 
     OSystem& instance() const       { return myOSystem; }
     DialogContainer& parent() const { return myParent;  }
     Dialog& dialog() const          { return myDialog;  }
+
+    void setDirty() { _dirty = true; }
 
     virtual int getAbsX() const     { return _x; }
     virtual int getAbsY() const     { return _y; }
@@ -86,10 +85,7 @@ class GuiObject : public CommandReceiver
     virtual void setWidth(int w)    { _w = w; }
     virtual void setHeight(int h)   { _h = h; }
 
-    virtual void setDirty() { _dirty = true; }
-
     virtual bool isVisible() const = 0;
-    virtual void draw() = 0;
 
     /** Add given widget to the focus list */
     virtual void addFocusWidget(Widget* w) = 0;
@@ -98,10 +94,11 @@ class GuiObject : public CommandReceiver
     WidgetArray& getFocusList() { return _focusList; }
 
     /** Redraw the focus list */
-    virtual void redrawFocus() {}
+    virtual void redrawFocus() { }
 
   protected:
     virtual void releaseFocus() = 0;
+    virtual void draw() = 0;
 
   private:
     OSystem&         myOSystem;
@@ -109,8 +106,7 @@ class GuiObject : public CommandReceiver
     Dialog&          myDialog;
 
   protected:
-    int _x, _y;
-    int _w, _h;
+    int _x, _y, _w, _h;
     bool _dirty;
 
     Widget* _firstWidget;

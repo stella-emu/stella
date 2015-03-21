@@ -54,7 +54,7 @@ void TogglePixelWidget::setState(const BoolArray& state)
   _stateList.clear();
   _stateList = state;
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

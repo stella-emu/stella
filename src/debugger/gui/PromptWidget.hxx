@@ -38,8 +38,6 @@ class PromptWidget : public Widget, public CommandSender
   public:
     int printf(const char *format, ...);
     int vprintf(const char *format, va_list argptr);
-#undef putchar
-    void putchar(int c);
     void print(const string& str);
     void printPrompt();
     bool saveBuffer(string& filename);

@@ -128,7 +128,7 @@ cerr << "_addrList.size() = "     << _addrList.size()
   // Send item selected signal for starting with cell 0
   sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,7 +165,7 @@ void DataGridWidget::setHiliteList(const BoolArray& hilitelist)
   _hiliteList.clear();
   _hiliteList = hilitelist;
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -201,7 +201,7 @@ void DataGridWidget::setValue(int position, int value, bool changed)
 
     sendCommand(DataGridWidget::kItemDataChangedCmd, position, _id);
 
-    setDirty(); draw();
+    setDirty();
   }
 }
 
@@ -234,7 +234,7 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _currentCol = _selectedItem - (_currentRow * _cols);
 
     sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
-    setDirty(); draw();
+    setDirty();
   }
 }
 
@@ -462,7 +462,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
     if(_selectedItem != oldItem)
       sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
-    setDirty(); draw();
+    setDirty();
   }
 
   _currentKeyDown = key;

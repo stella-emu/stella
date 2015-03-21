@@ -152,12 +152,8 @@ void Widget::lostFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setEnabled(bool e)
 {
-  if(e)
-    setFlags(WIDGET_ENABLED);
-  else
-    clearFlags(WIDGET_ENABLED);
-
-  setDirty(); draw();
+  if(e) setFlags(WIDGET_ENABLED);
+  else  clearFlags(WIDGET_ENABLED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -227,7 +223,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       tmp->lostFocus();
       s.frameRect(x, y, w, h, kDlgColor);
 
-      tmp->setDirty(); tmp->draw();
+      tmp->setDirty();
       s.setDirty();
     }
   }
@@ -270,7 +266,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   tmp->receivedFocus();
   s.frameRect(x, y, w, h, kWidFrameColor, kDashLine);
 
-  tmp->setDirty(); tmp->draw();
+  tmp->setDirty();
   s.setDirty();
 
   return tmp;
@@ -310,7 +306,7 @@ void StaticTextWidget::setValue(int value)
   BSPF_snprintf(buf, 255, "%d", value);
   _label = buf;
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -318,7 +314,7 @@ void StaticTextWidget::setLabel(const string& label)
 {
   _label = label;
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -350,14 +346,14 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 void ButtonWidget::handleMouseEntered(int button)
 {
   setFlags(WIDGET_HILITED);
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseLeft(int button)
 {
   clearFlags(WIDGET_HILITED);
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -513,7 +509,7 @@ void CheckboxWidget::setState(bool state)
   if(_state != state)
   {
     _state = state;
-    setDirty(); draw();
+    setDirty();
   }
 }
 
@@ -572,7 +568,7 @@ void SliderWidget::setValue(int value)
   if(value != _value)
   {
     _value = value; 
-    setDirty(); draw();
+    setDirty();
     sendCommand(_cmd, _value, _id);
   }
 }

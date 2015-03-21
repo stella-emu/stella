@@ -55,9 +55,9 @@ void EditableWidget::setText(const string& str, bool)
 {
   // Filter input string
   _editString = "";
-  for(int i = 0; i < str.size(); ++i)
-    if(_filter(tolower(str[i])))
-      _editString.push_back(str[i]);
+  for(char c: str)
+    if(_filter(tolower(c)))
+      _editString.push_back(c);
 
   _caretPos = (int)_editString.size();
 
@@ -68,8 +68,7 @@ void EditableWidget::setText(const string& str, bool)
   if(_editable)
     startEditMode();
 
-  // Make sure the new string is seen onscreen
-  setDirty(); draw();
+  setDirty();
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::setEditable(bool editable)
@@ -102,7 +101,7 @@ bool EditableWidget::handleText(char text)
   {
     _caretPos++;
     sendCommand(EditableWidget::kChangedCmd, 0, _id);
-    setDirty(); draw();
+    setDirty();
     return true;
   }
   return false;
@@ -179,9 +178,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
   }
 
   if (dirty)
-  {
-    setDirty(); draw();
-  }
+    setDirty();
 
   return handled;
 }

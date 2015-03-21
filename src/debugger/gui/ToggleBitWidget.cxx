@@ -72,7 +72,7 @@ void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
   _changedList.clear();
   _changedList = changed;
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -68,7 +68,7 @@ TiaZoomWidget::~TiaZoomWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::loadConfig()
 {
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,7 +104,7 @@ void TiaZoomWidget::recalc()
   myXOff = BSPF_clamp(myXOff, 0, tw - myNumCols);
   myYOff = BSPF_clamp(myYOff, 0, th - myNumRows);
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

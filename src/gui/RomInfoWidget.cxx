@@ -48,10 +48,7 @@ void RomInfoWidget::loadConfig()
   // by saving a different image or through a change in video renderer,
   // so we reload the properties
   if(myHaveProperties)
-  {
     parseProperties();
-    setDirty(); draw();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -62,10 +59,7 @@ void RomInfoWidget::setProperties(const Properties& props)
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandler::S_LAUNCHER)
-  {
     parseProperties();
-    setDirty(); draw();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,9 +71,7 @@ void RomInfoWidget::clearProperties()
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandler::S_LAUNCHER)
-  {
-    setDirty(); draw();
-  }
+    setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,6 +124,8 @@ void RomInfoWidget::parseProperties()
   myRomInfo.push_back("Note:  " + myProperties.get(Cartridge_Note));
   myRomInfo.push_back("Controllers:  " + myProperties.get(Controller_Left) +
                       " (left), " + myProperties.get(Controller_Right) + " (right)");
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

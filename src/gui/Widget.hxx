@@ -87,12 +87,12 @@ class Widget : public GuiObject
     void lostFocus();
     void addFocusWidget(Widget* w) { _focusList.push_back(w); }
 
-    /** Set/clear WIDGET_ENABLED flag and immediately redraw */
+    /** Set/clear WIDGET_ENABLED flag */
     void setEnabled(bool e);
 
-    void setFlags(int flags)    { _flags |= flags;  }
-    void clearFlags(int flags)  { _flags &= ~flags; }
-    int  getFlags() const       { return _flags;    }
+    void setFlags(int flags)    { _flags |= flags;  setDirty(); }
+    void clearFlags(int flags)  { _flags &= ~flags; setDirty(); }
+    int  getFlags() const       { return _flags; }
 
     bool isEnabled() const   { return _flags & WIDGET_ENABLED;         }
     bool isVisible() const   { return !(_flags & WIDGET_INVISIBLE);    }

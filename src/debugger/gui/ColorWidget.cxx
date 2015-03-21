@@ -46,7 +46,7 @@ ColorWidget::~ColorWidget()
 void ColorWidget::setColor(int color)
 {
   _color = color;
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -86,19 +86,21 @@ void PromptWidget::drawWidget(bool hilite)
   int start = _scrollLine - _linesPerPage + 1;
   int y = _y + 2;
 
-  for (int line = 0; line < _linesPerPage; line++)
+  for (int line = 0; line < _linesPerPage; ++line)
   {
     int x = _x + 1;
-    for (int column = 0; column < _lineWidth; column++) {
+    for (int column = 0; column < _lineWidth; ++column) {
       int c = buffer((start + line) * _lineWidth + column);
 
-      if(c & (1 << 17)) { // inverse video flag
+      if(c & (1 << 17))  // inverse video flag
+      {
         fgcolor = _bgcolor;
         bgcolor = (c & 0x1ffff) >> 8;
         s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
-      } else {
-        fgcolor = c >> 8;
       }
+      else
+        fgcolor = c >> 8;
+
       s.drawChar(_font, c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
     }
@@ -144,7 +146,7 @@ bool PromptWidget::handleText(char text)
     for(int i = _promptEndPos - 1; i >= _currentPos; i--)
       buffer(i + 1) = buffer(i);
     _promptEndPos++;
-    putchar(text);
+    putcharIntern(text);
     scrollToCurrent();
   }
   return true;
@@ -430,9 +432,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
   // Take care of changes made above
   if(dirty)
-  {
-    setDirty(); draw();
-  }
+    setDirty();
 
   // There are times when we want the prompt and scrollbar to be marked
   // as dirty *after* they've been drawn above.  One such occurrence is
@@ -478,7 +478,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
       if (newPos != _scrollLine)
       {
         _scrollLine = newPos;
-        setDirty(); draw();
+        setDirty();
       }
       break;
   }
@@ -553,9 +553,7 @@ void PromptWidget::specialKeys(StellaKey key)
   }
 
   if(handled)
-  {
-    setDirty(); draw();
-  }
+    setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -709,7 +707,7 @@ void PromptWidget::historyScroll(int direction)
   // Ensure once more the caret is visible (in case of very long history entries)
   scrollToCurrent();
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -775,13 +773,6 @@ int PromptWidget::vprintf(const char* format, va_list argptr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::putchar(int c)
-{
-  putcharIntern(c);
-  setDirty(); draw();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::putcharIntern(int c)
 {
   if (c == '\n')
@@ -809,14 +800,14 @@ void PromptWidget::putcharIntern(int c)
       updateScrollBuffer();
     }
   }
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::print(const string& str)
 {
-  const char* c = str.c_str();
-  while(*c)
-    putcharIntern(*c++);
+  for(char c: str)
+    putcharIntern(c);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

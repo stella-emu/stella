@@ -89,11 +89,11 @@ void CheatManager::addPerFrame(const string& name, const string& code, bool enab
 {
   // The actual cheat will always be in the main list; we look there first
   shared_ptr<Cheat> cheat;
-  for(uInt32 i = 0; i < myCheatList.size(); i++)
+  for(auto& c: myCheatList)
   {
-    if(myCheatList[i]->name() == name || myCheatList[i]->code() == code)
+    if(c->name() == name || c->code() == code)
     {
-      cheat = myCheatList[i];
+      cheat = c;
       break;
     }
   }

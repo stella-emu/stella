@@ -70,7 +70,7 @@ void ListWidget::setSelected(int item)
 {
   if(item < 0 || item >= (int)_list.size())
   {
-    setDirty(); draw();  // Simply redraw and exit
+    setDirty();  // Simply redraw and exit
     return;
   }
 
@@ -208,7 +208,7 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
       abortEditMode();
     _selectedItem = newSelectedItem;
     sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
-    setDirty(); draw();
+    setDirty();
   }
 	
   // TODO: Determine where inside the string the user clicked and place the
@@ -420,7 +420,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if (_currentPos != (int)data)
       {
         _currentPos = data;
-        setDirty(); draw();
+        setDirty();
 
         // Let boss know the list has scrolled
         sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
@@ -453,7 +453,7 @@ void ListWidget::scrollToCurrent(int item)
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
 
-  setDirty(); draw();
+  setDirty();
 
   if(oldScrollPos != _currentPos)
     sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);

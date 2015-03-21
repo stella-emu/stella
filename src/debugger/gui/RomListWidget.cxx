@@ -112,8 +112,6 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm,
       myCheckList[i]->clearFlags(WIDGET_ENABLED);
 
   recalc();
-
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,6 +188,8 @@ void RomListWidget::recalc()
 
   // Reset to normal data entry
   abortEditMode();
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,7 +215,7 @@ void RomListWidget::scrollToCurrent(int item)
   myScrollBar->_currentPos = _currentPos;
   myScrollBar->recalc();
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,7 +245,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
       if (_editMode)
         abortEditMode();
       _selectedItem = newSelectedItem;
-      setDirty(); draw();
+      setDirty();
     }
   }
 }
@@ -409,7 +409,7 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       if (_currentPos != (int)data)
       {
         _currentPos = data;
-        setDirty(); draw();
+        setDirty();
       }
       break;
 

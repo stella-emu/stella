@@ -126,7 +126,7 @@ void TabWidget::updateActiveTab()
   if(_tabs[_activeTab].parentWidget)
     _tabs[_activeTab].parentWidget->loadConfig();
 
-  setDirty(); draw();
+  setDirty();
 
   // Redraw focused areas
   _boss->redrawFocus();

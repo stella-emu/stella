@@ -181,9 +181,7 @@ void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
       _part = kSliderPart;
 
     if (old_part != _part)
-    {
-      setDirty(); draw();
-    }
+      setDirty();
   }
 }
 
@@ -204,8 +202,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
 
   if (old_pos != _currentPos)
   {
-    recalc();  // This takes care of the required refresh
-    setDirty(); draw();
+    recalc();
     sendCommand(kSetPositionCmd, _currentPos, _id);
   }
 }
@@ -214,7 +211,6 @@ void ScrollBarWidget::checkBounds(int old_pos)
 void ScrollBarWidget::handleMouseEntered(int button)
 {
   setFlags(WIDGET_HILITED);
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,7 +218,6 @@ void ScrollBarWidget::handleMouseLeft(int button)
 {
   _part = kNoPart;
   clearFlags(WIDGET_HILITED);
-  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,7 +241,7 @@ void ScrollBarWidget::recalc()
     _sliderPos = UP_DOWN_BOX_HEIGHT;
   }
 
-  setDirty(); draw();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

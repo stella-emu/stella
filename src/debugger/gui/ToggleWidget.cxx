@@ -61,7 +61,7 @@ void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _selectedItem = newSelectedItem;
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
-    setDirty(); draw();
+    setDirty();
   }
 }
 
@@ -78,7 +78,7 @@ void ToggleWidget::handleMouseUp(int x, int y, int button, int clickCount)
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];
     sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
-    setDirty(); draw();
+    setDirty();
   }
 }
 
@@ -195,7 +195,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
     }
 
-    setDirty(); draw();
+    setDirty();
   }
 
   return handled;
@@ -211,7 +211,7 @@ void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
       if (_selectedItem != (int)data)
       {
         _selectedItem = data;
-        setDirty(); draw();
+        setDirty();
       }
       break;
   }

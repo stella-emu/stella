@@ -233,8 +233,8 @@ void Dialog::buildCurrentFocusList(int tabID)
   }
 
   // Add appropriate items from tablist (if present)
-  for(uInt32 id = 0; id < _myTabList.size(); ++id)
-    _myTabList[id].appendFocusList(_focusList);
+  for(auto& tabfocus: _myTabList)
+    tabfocus.appendFocusList(_focusList);
 
   // Add remaining items from main focus list
   Vec::append(_focusList, _myFocus.list);
