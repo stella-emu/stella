@@ -38,8 +38,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
     myWindow(nullptr),
     myRenderer(nullptr),
-    myDirtyFlag(true),
-    myDblBufferedFlag(true)
+    myDirtyFlag(true)
 {
   // Initialize SDL2 context
   if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0)
@@ -210,12 +209,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
   }
   SDL_RendererInfo renderinfo;
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
-  {
     myOSystem.settings().setValue("video", renderinfo.name);
-    // For now, accelerated renderers imply double buffering
-    // Eventually, SDL may be updated to query this from the render backend
-    myDblBufferedFlag = renderinfo.flags & SDL_RENDERER_ACCELERATED;
-  }
 
   return true;
 }

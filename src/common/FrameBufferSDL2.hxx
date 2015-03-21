@@ -181,9 +181,6 @@ class FrameBufferSDL2 : public FrameBuffer
 
     // Indicates that the renderer has been modified, and should be redrawn
     bool myDirtyFlag;
-
-    // Indicates whether the render backend is using double buffering
-    bool myDblBufferedFlag;
 };
 
 #endif
