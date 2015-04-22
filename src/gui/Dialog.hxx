@@ -59,17 +59,16 @@ class Dialog : public GuiObject
 
     virtual void center();
     virtual void drawDialog();
-    virtual void loadConfig() {}
-    virtual void saveConfig() {}
-    virtual void setDefaults() {}
+    virtual void loadConfig()  { }
+    virtual void saveConfig()  { }
+    virtual void setDefaults() { }
 
     void addFocusWidget(Widget* w);
     void addToFocusList(WidgetArray& list);
     void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
     void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
-    void redrawFocus();
     void addTabWidget(TabWidget* w);
-    void addOKWidget(Widget* w)     { _okWidget = w; }
+    void addOKWidget(Widget* w)     { _okWidget = w;     }
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
 
@@ -84,7 +83,7 @@ class Dialog : public GuiObject
     void addSurface(shared_ptr<FBSurface> surface);
 
   protected:
-    virtual void draw();
+    virtual void draw() { };
     void releaseFocus();
 
     virtual void handleText(char text);

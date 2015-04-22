@@ -65,9 +65,6 @@ void EditableWidget::setText(const string& str, bool)
   if (_editScrollOffset < 0)
     _editScrollOffset = 0;
 
-  if(_editable)
-    startEditMode();
-
   setDirty();
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,7 +195,6 @@ int EditableWidget::getCaretOffset() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::drawCaret()
 {
-//cerr << "EditableWidget::drawCaret()\n";
   // Only draw if item is visible
   if (!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus)
     return;

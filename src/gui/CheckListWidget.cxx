@@ -87,7 +87,6 @@ void CheckListWidget::drawWidget(bool hilite)
 //cerr << "CheckListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
   int i, pos, len = (int)_list.size();
-  string buffer;
 
   // Draw a thin frame around the list and to separate columns
   s.hLine(_x, _y, _x + _w - 1, kColor);
@@ -121,17 +120,12 @@ void CheckListWidget::drawWidget(bool hilite)
 
     if (_selectedItem == pos && _editMode)
     {
-      buffer = _editString;
       adjustOffset();
-
-      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
+      s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
                    kTextAlignLeft, -_editScrollOffset, false);
     }
     else
-    {
-      buffer = _list[pos];
-      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
-    }
+      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), kTextColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport

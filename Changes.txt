@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+4.6 to 4.6.1: (April xx, 2015)
+
+  * Fixed bug whereby text input could not be entered in certain widgets
+    in the debugger.
+
+-Have fun!
+
+
 4.5 to 4.6: (March 21, 2015)
 
   * Finally fixed fullscreen rendering issues on some OpenGL
@@ -45,8 +53,6 @@
   * DataGridWidgets in the debugger now respond to keypad '+' and '-'.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 4.2 to 4.5: (January 1, 2015)

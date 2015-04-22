@@ -51,7 +51,7 @@ else
 endif
 CXXFLAGS+= -Wall 
 ifdef HAVE_GCC
-  CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -std=c++11
+  CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++11
 endif
 
 ifdef PROFILE

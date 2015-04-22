@@ -152,7 +152,8 @@ class Widget : public GuiObject
     /** Select either previous, current, or next widget in chain to have
         focus, and deselects all others */
     static Widget* setFocusForChain(GuiObject* boss, WidgetArray& arr,
-                                    Widget* w, int direction);
+                                    Widget* w, int direction,
+                                    bool emitFocusEvents = true);
 
     /** Sets all widgets in this chain to be dirty (must be redrawn) */
     static void setDirtyInChain(Widget* start);

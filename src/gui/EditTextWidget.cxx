@@ -47,7 +47,7 @@ void EditTextWidget::setText(const string& str, bool changed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  if(!_editable)
+  if(!isEditable())
     return;
 
   x += _editScrollOffset;
@@ -55,9 +55,9 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
   int width = 0;
   uInt32 i;
 
-  for (i = 0; i < _editString.size(); ++i)
+  for (i = 0; i < editString().size(); ++i)
   {
-    width += _font.getCharWidth(_editString[i]);
+    width += _font.getCharWidth(editString()[i]);
     if (width >= x)
       break;
   }
@@ -69,7 +69,6 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::drawWidget(bool hilite)
 {
-//cerr << "EditTextWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
 
   // Highlight changes
@@ -84,7 +83,7 @@ void EditTextWidget::drawWidget(bool hilite)
 
   // Draw the text
   adjustOffset();
-  s.drawString(_font, _editString, _x + 2, _y + 2, getEditRect().width(),
+  s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().width(),
                !_changed ? _textcolor : kDbgChangedTextColor,
                kTextAlignLeft, -_editScrollOffset, false);
 
@@ -103,7 +102,7 @@ GUI::Rect EditTextWidget::getEditRect() const
 void EditTextWidget::lostFocusWidget()
 {
   // If we loose focus, 'commit' the user changes
-  _backupString = _editString;
+  _backupString = editString();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

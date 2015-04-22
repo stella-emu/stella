@@ -90,7 +90,7 @@ void Dialog::close(bool refresh)
   if (_mouseWidget)
   {
     _mouseWidget->handleMouseLeft(0);
-    _mouseWidget = 0;
+    _mouseWidget = nullptr;
   }
 
   releaseFocus();
@@ -118,7 +118,7 @@ void Dialog::releaseFocus()
   if(_focusedWidget)
   {
     _focusedWidget->lostFocus();
-    _focusedWidget = 0;
+    _focusedWidget = nullptr;
   }
 }
 
@@ -254,21 +254,9 @@ void Dialog::buildCurrentFocusList(int tabID)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::redrawFocus()
-{
-  if(_focusedWidget)
-    _focusedWidget = Widget::setFocusForChain(this, getFocusList(), _focusedWidget, 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addSurface(shared_ptr<FBSurface> surface)
 {
   mySurfaceStack.push(surface);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::draw()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -298,7 +286,11 @@ void Dialog::drawDialog()
     }
 
     // Draw outlines for focused widgets
-    redrawFocus();
+    // Don't change focus, since this will trigger lost and received
+    // focus events
+    if(_focusedWidget)
+      _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+                          _focusedWidget, 0, false);
 
     // Tell the surface(s) this area is dirty
     s.setDirty();

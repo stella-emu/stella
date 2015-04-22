@@ -71,21 +71,10 @@ class DataGridWidget : public EditableWidget
 
     void setRange(int lower, int upper);
 
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual void handleMouseWheel(int x, int y, int direction);
-    virtual bool handleText(char text);
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod);
-    virtual bool handleKeyUp(StellaKey key, StellaMod mod);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    virtual bool wantsFocus() { return true; }
+    bool wantsFocus() { return true; }
 
     // Account for the extra width of embedded scrollbar
-    virtual int getWidth() const;
-
-    void startEditMode();
-    void endEditMode();
+    int getWidth() const;
 
     int colWidth() { return _colWidth; }
 
@@ -96,6 +85,8 @@ class DataGridWidget : public EditableWidget
 
     int findItem(int x, int y);
 
+    void startEditMode();
+    void endEditMode();
     void abortEditMode();
 
     GUI::Rect getEditRect() const;
@@ -103,7 +94,13 @@ class DataGridWidget : public EditableWidget
     void receivedFocusWidget();
     void lostFocusWidget();
 
-    bool tryInsertChar(char c, int pos);
+    void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseUp(int x, int y, int button, int clickCount);
+    void handleMouseWheel(int x, int y, int direction);
+    bool handleText(char text);
+    bool handleKeyDown(StellaKey key, StellaMod mod);
+    bool handleKeyUp(StellaKey key, StellaMod mod);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   protected:
     int  _rows;
@@ -141,6 +138,8 @@ class DataGridWidget : public EditableWidget
     void lshiftCell();
     void rshiftCell();
     void zeroCell();
+
+    void enableEditMode(bool state) { _editMode = state; }
 };
 
 #endif

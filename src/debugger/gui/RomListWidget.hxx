@@ -59,10 +59,6 @@ class RomListWidget : public EditableWidget
     void setSelected(int item);
     void setHighlighted(int item);
 
-    const string& getText() const;
-    void startEditMode();
-    void endEditMode();
-
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
     void handleMouseUp(int x, int y, int button, int clickCount);
@@ -80,8 +76,8 @@ class RomListWidget : public EditableWidget
     int findItem(int x, int y) const;
     void recalc();
 
-    bool tryInsertChar(char c, int pos);
-
+    void startEditMode();
+    void endEditMode();
     void abortEditMode();
     void lostFocusWidget();
     void scrollToSelected()    { scrollToCurrent(_selectedItem);    }

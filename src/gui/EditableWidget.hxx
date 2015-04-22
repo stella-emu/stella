@@ -28,11 +28,15 @@
 /**
  * Base class for widgets which need to edit text, like ListWidget and
  * EditTextWidget.
+ *
+ * Widgets wishing to enforce their own editing restrictions are able
+ * to use a 'TextFilter' as described below.
  */
 class EditableWidget : public Widget, public CommandSender
 {
   public:
-    /** Function used by 'tryInsertChar' to test validity of a character */
+    /** Function used to test if a specified character can be inserted
+        into the internal buffer */
     using TextFilter = std::function<bool(char)>;
 
     enum {
@@ -47,7 +51,7 @@ class EditableWidget : public Widget, public CommandSender
     virtual ~EditableWidget();
 
     virtual void setText(const string& str, bool changed = false);
-    virtual const string& getText() const { return _editString; }
+    const string& getText() const { return _editString; }
 
     bool isEditable() const	 { return _editable; }
     void setEditable(bool editable);
@@ -58,7 +62,7 @@ class EditableWidget : public Widget, public CommandSender
     // We only want to focus this widget when we can edit its contents
     virtual bool wantsFocus() { return _editable; }
 
-    // Set filter used by 'tryInsertChar'
+    // Set filter used to test whether a character can be inserted
     void setTextFilter(TextFilter& filter) { _filter = filter; }
 
   protected:
@@ -71,11 +75,10 @@ class EditableWidget : public Widget, public CommandSender
     void drawCaret();
     bool setCaretPos(int newPos);
     bool adjustOffset();
-	
-    // This method will use the current TextFilter to insert a character
-    // Note that classes which override this method will no longer use the
-    // current TextFilter, and will assume all responsibility for filtering
-    virtual bool tryInsertChar(char c, int pos);
+
+    // This method is used internally by child classes wanting to
+    // access/edit the internal buffer
+    string& editString() { return _editString; }
 
   private:
     // Line editing
@@ -89,7 +92,11 @@ class EditableWidget : public Widget, public CommandSender
     void copySelectedText();
     void pasteSelectedText();
 
-  protected:
+    // Use the current TextFilter to insert a character into the
+    // internal buffer
+    bool tryInsertChar(char c, int pos);
+
+  private:
     bool   _editable;
     string _editString;
 
@@ -97,6 +104,7 @@ class EditableWidget : public Widget, public CommandSender
     int   _caretTime;
     int   _caretPos;
 
+  protected:
     bool  _caretInverse;
 
     int   _editScrollOffset;

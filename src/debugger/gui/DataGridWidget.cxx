@@ -82,6 +82,24 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _scrollBar->_entriesPerPage = 1;
     _scrollBar->_wheel_lines = 1;
   }
+
+  // Add filtering
+  EditableWidget::TextFilter f = [&](char c) {
+    bool isBin = c == '0' || c == '1',
+         isDec = c >= '0' && c <= '9',
+         isHex = isDec || (c >= 'a' && c <= 'f'),
+         isOp = c == '$' || c == '#' || c == '\\';
+
+    if(BSPF_startsWithIgnoreCase(editString(), "$"))
+      return isHex;
+    else if(BSPF_startsWithIgnoreCase(editString(), "#"))
+      return isDec;
+    else if(BSPF_startsWithIgnoreCase(editString(), "\\"))
+      return isBin;
+    else 
+      return isHex || isDec || isBin || isOp;
+  };
+  setTextFilter(f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,7 +141,7 @@ cerr << "_addrList.size() = "     << _addrList.size()
      << ", _valueStringList.size() = " << _valueStringList.size()
      << ", _rows*_cols = "    << _rows * _cols << endl << endl;
 */
-  _editMode = false;
+  enableEditMode(false);
 
   // Send item selected signal for starting with cell 0
   sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
@@ -193,9 +211,9 @@ void DataGridWidget::setValue(int position, int value, bool changed)
   if(position >= 0 && uInt32(position) < _valueList.size())
   {
     // Correctly format the data for viewing
-    _editString = Common::Base::toString(value, _base);
+    editString() = Common::Base::toString(value, _base);
 
-    _valueStringList[position] = _editString;
+    _valueStringList[position] = editString();
     _changedList[position] = changed;
     _valueList[position] = value;
 
@@ -248,7 +266,7 @@ void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
     sendCommand(DataGridWidget::kItemDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
-    if(_editable && !_editMode)
+    if(isEditable() && !_editMode)
       startEditMode();
   }
 }
@@ -258,7 +276,7 @@ void DataGridWidget::handleMouseWheel(int x, int y, int direction)
 {
   if(_scrollBar)
     _scrollBar->handleMouseWheel(x, y, direction);
-  else if(_editable)
+  else if(isEditable())
   {
     if(direction > 0)
       decrementCell();
@@ -413,39 +431,39 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_N: // negate
-        if(_editable)
+        if(isEditable())
           negateCell();
         break;
 
       case KBDK_I: // invert
-        if(_editable)
+        if(isEditable())
           invertCell();
         break;
 
       case KBDK_MINUS: // decrement
       case KBDK_KP_MINUS:
-        if(_editable)
+        if(isEditable())
           decrementCell();
         break;
 
       case KBDK_EQUALS: // increment
       case KBDK_KP_PLUS:
-        if(_editable)
+        if(isEditable())
           incrementCell();
         break;
 
       case KBDK_COMMA: // shift left
-        if(_editable)
+        if(isEditable())
           lshiftCell();
         break;
 
       case KBDK_PERIOD: // shift right
-        if(_editable)
+        if(isEditable())
           rshiftCell();
         break;
 
       case KBDK_Z: // zero
-        if(_editable)
+        if(isEditable())
           zeroCell();
         break;
 
@@ -491,7 +509,7 @@ void DataGridWidget::receivedFocusWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::lostFocusWidget()
 {
-  _editMode = false;
+  enableEditMode(false);
 
   // Disable the operations widget
   if(_opsWidget)
@@ -542,7 +560,6 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::drawWidget(bool hilite)
 {
-//cerr << "DataGridWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
   int row, col;
 
@@ -571,8 +588,7 @@ void DataGridWidget::drawWidget(bool hilite)
       if (_selectedItem == pos && _editMode)
       {
         adjustOffset();
-
-        s.drawString(_font, _editString, x, y, _colWidth, kTextColor,
+        s.drawString(_font, editString(), x, y, _colWidth, kTextColor,
                      kTextAlignLeft, -_editScrollOffset, false);
       }
       else
@@ -627,10 +643,10 @@ int DataGridWidget::getWidth() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::startEditMode()
 {
-  if (_editable && !_editMode && _selectedItem >= 0)
+  if (isEditable() && !_editMode && _selectedItem >= 0)
   {
-    _editMode = true;
-    setText("", true );  // Erase current entry when starting editing
+    enableEditMode(true);
+    setText("", true);  // Erase current entry when starting editing
   }
 }
 
@@ -640,11 +656,11 @@ void DataGridWidget::endEditMode()
   if (!_editMode)
     return;
 
-  _editMode = false;
+  enableEditMode(false);
 
   // Update the both the string representation and the real data
-  if(_editString.size() > 0 && !(_editString[0] == '$' ||
-        _editString[0] == '#' || _editString[0] == '\\'))
+  if(editString().size() > 0 && !(editString()[0] == '$' ||
+        editString()[0] == '#' || editString()[0] == '\\'))
   {
     switch(_base)
     {
@@ -653,21 +669,21 @@ void DataGridWidget::endEditMode()
       case Common::Base::F_16_2:
       case Common::Base::F_16_4:
       case Common::Base::F_16_8:
-        _editString.insert(0, 1, '$');
+        editString().insert(0, 1, '$');
         break;
       case Common::Base::F_2:
       case Common::Base::F_2_8:
       case Common::Base::F_2_16:
-        _editString.insert(0, 1, '\\');
+        editString().insert(0, 1, '\\');
         break;
       case Common::Base::F_10:
-        _editString.insert(0, 1, '#');
+        editString().insert(0, 1, '#');
         break;
       case Common::Base::F_DEFAULT:
         break;
     }
   }
-  int value = instance().debugger().stringToValue(_editString);
+  int value = instance().debugger().stringToValue(editString());
   if(value < _lowerBound || value >= _upperBound)
   {
     abortEditMode();
@@ -680,42 +696,12 @@ void DataGridWidget::endEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::abortEditMode()
 {
-  // undo any changes made
-  assert(_selectedItem >= 0);
-  _editMode = false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DataGridWidget::tryInsertChar(char c, int pos)
-{
-  // Input is very strict here, to eliminate time-consuming error checking
-  // elsewhere, and includes the following restrictions:
-  //    Cannot contain spaces
-  //    Starts with leading specifier ($, #, \), or with a base character
-  //    Only one specifier is allowed
-  //    If starting with a specifier, only allow numbers applicable to that
-  //    base to follow
-
-  c = tolower(c);
-  bool isBin = c == '0' || c == '1',
-       isDec = c >= '0' && c <= '9',
-       isHex = isDec || (c >= 'a' && c <= 'f'),
-       isOp = c == '$' || c == '#' || c == '\\',
-       insert = false;
-
-  if(BSPF_startsWithIgnoreCase(_editString, "$"))
-    insert = isHex && pos > 0;
-  else if(BSPF_startsWithIgnoreCase(_editString, "#"))
-    insert = isDec && pos > 0;
-  else if(BSPF_startsWithIgnoreCase(_editString, "\\"))
-    insert = isBin && pos > 0;
-  else 
-    insert = isHex || isDec || isBin || isOp;
-
-  if(insert)
-    _editString.insert(pos, 1, c);
-
-  return insert;
+  if(_editMode)
+  {
+    // Undo any changes made
+    assert(_selectedItem >= 0);
+    enableEditMode(false);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

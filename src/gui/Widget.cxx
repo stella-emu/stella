@@ -197,7 +197,8 @@ bool Widget::isWidgetInChain(WidgetArray& list, Widget* find)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
-                                 Widget* wid, int direction)
+                                 Widget* wid, int direction,
+                                 bool emitFocusEvents)
 {
   FBSurface& s = boss->dialog().surface();
   int size = (int)arr.size(), pos = -1;
@@ -220,7 +221,11 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     // First clear area surrounding all widgets
     if(tmp->_hasFocus)
     {
-      tmp->lostFocus();
+      if(emitFocusEvents)
+        tmp->lostFocus();
+      else
+        tmp->_hasFocus = false;
+
       s.frameRect(x, y, w, h, kDlgColor);
 
       tmp->setDirty();
@@ -230,7 +235,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
 
   // Figure out which which should be active
   if(pos == -1)
-    return 0;
+    return nullptr;
   else
   {
     switch(direction)
@@ -263,7 +268,11 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
       w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
 
-  tmp->receivedFocus();
+  if(emitFocusEvents)
+    tmp->receivedFocus();
+  else
+    tmp->_hasFocus = true;
+
   s.frameRect(x, y, w, h, kWidFrameColor, kDashLine);
 
   tmp->setDirty();

@@ -225,7 +225,7 @@ void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
     sendCommand(ListWidget::kDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
-    if(_editable && !_editMode)
+    if(isEditable() && !_editMode)
       startEditMode();
   }
 }
@@ -346,7 +346,7 @@ bool ListWidget::handleEvent(Event::Type e)
     case Event::UISelect:
       if (_selectedItem >= 0)
       {
-        if (_editable)
+        if (isEditable())
           startEditMode();
         else
           sendCommand(ListWidget::kActivatedCmd, _selectedItem, _id);
@@ -462,7 +462,7 @@ void ListWidget::scrollToCurrent(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::startEditMode()
 {
-  if (_editable && !_editMode && _selectedItem >= 0)
+  if (isEditable() && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
     setText(_list[_selectedItem]);
@@ -480,7 +480,7 @@ void ListWidget::endEditMode()
 
   // Send a message that editing finished with a return/enter key press
   _editMode = false;
-  _list[_selectedItem] = _editString;
+  _list[_selectedItem] = editString();
   sendCommand(ListWidget::kDataChangedCmd, _selectedItem, _id);
 
   // Reset to normal data entry

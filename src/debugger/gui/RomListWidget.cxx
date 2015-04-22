@@ -88,6 +88,33 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 
     myCheckList.push_back(t);
   }
+
+  // Add filtering
+  EditableWidget::TextFilter f = [&](char c)
+  {
+    switch(_base)
+    {
+      case Common::Base::F_16:
+      case Common::Base::F_16_1:
+      case Common::Base::F_16_2:
+      case Common::Base::F_16_4:
+      case Common::Base::F_16_8:
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == ' ';
+
+      case Common::Base::F_2:
+      case Common::Base::F_2_8:
+      case Common::Base::F_2_16:
+        return c == '0' || c == '1' || c == ' ';
+
+      case Common::Base::F_10:
+        return (c >= '0' && c <= '9') || c == ' ';
+
+      case Common::Base::F_DEFAULT:
+        return false;
+    }
+    return false;
+  };
+  setTextFilter(f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,15 +178,6 @@ void RomListWidget::setHighlighted(int item)
 
     scrollToHighlighted();
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& RomListWidget::getText() const
-{
-  if(_selectedItem < -1 || _selectedItem >= (int)myDisasm->list.size())
-    return EmptyString;
-  else
-    return _editString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,7 +276,7 @@ void RomListWidget::handleMouseUp(int x, int y, int button, int clickCount)
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
     // Start edit mode
-    if(_editable && !_editMode)
+    if(isEditable() && !_editMode)
       startEditMode();
   }
 }
@@ -345,7 +363,7 @@ bool RomListWidget::handleEvent(Event::Type e)
     case Event::UISelect:
       if (_selectedItem >= 0)
       {
-        if (_editable)
+        if (isEditable())
           startEditMode();
       }
       break;
@@ -431,7 +449,6 @@ void RomListWidget::lostFocusWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::drawWidget(bool hilite)
 {
-//cerr << "RomListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
   int i, pos, xpos, ypos, len = (int)dlist.size();
@@ -506,7 +523,7 @@ void RomListWidget::drawWidget(bool hilite)
         if (_selectedItem == pos && _editMode)
         {
           adjustOffset();
-          s.drawString(_font, _editString, _x + r.x(), ypos, r.width(), kTextColor,
+          s.drawString(_font, editString(), _x + r.x(), ypos, r.width(), kTextColor,
                        kTextAlignLeft, -_editScrollOffset, false);
 
           drawCaret();
@@ -554,43 +571,9 @@ GUI::Rect RomListWidget::getEditRect() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomListWidget::tryInsertChar(char c, int pos)
-{
-  // Not sure how efficient this is, or should we even care?
-  bool insert = false;
-  c = tolower(c);
-  switch(_base)
-  {
-    case Common::Base::F_16:
-    case Common::Base::F_16_1:
-    case Common::Base::F_16_2:
-    case Common::Base::F_16_4:
-    case Common::Base::F_16_8:
-      insert = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == ' ';
-      break;
-    case Common::Base::F_2:
-    case Common::Base::F_2_8:
-    case Common::Base::F_2_16:
-      insert = c == '0' || c == '1' || c == ' ';
-      break;
-    case Common::Base::F_10:
-      if((c >= '0' && c <= '9') || c == ' ')
-        insert = true;
-      break;
-    case Common::Base::F_DEFAULT:
-      break;
-  }
-
-  if(insert)
-    _editString.insert(pos, 1, c);
-
-  return insert;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::startEditMode()
 {
-  if (_editable && !_editMode && _selectedItem >= 0)
+  if (isEditable() && !_editMode && _selectedItem >= 0)
   {
     // Does this line represent an editable area?
     if(myDisasm->list[_selectedItem].bytes == "")
