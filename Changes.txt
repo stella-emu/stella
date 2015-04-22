@@ -17,6 +17,8 @@
   * Fixed bug whereby text input could not be entered in certain widgets
     in the debugger.
 
+  * Updated UNIX configure script to work with GCC 5.x compilers.
+
 -Have fun!
 
 
