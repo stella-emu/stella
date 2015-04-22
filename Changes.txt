@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.6 to 4.6.1: (April xx, 2015)
+4.6 to 4.6.1: (April 22, 2015)
 
   * Fixed bug whereby text input could not be entered in certain widgets
     in the debugger.
