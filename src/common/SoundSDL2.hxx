@@ -243,6 +243,13 @@ class SoundSDL2 : public Sound
         uInt32 mySize;
         uInt32 myHead;
         uInt32 myTail;
+
+      private:
+        // Following constructors and assignment operators not supported
+        RegWriteQueue(const RegWriteQueue&) = delete;
+        RegWriteQueue(RegWriteQueue&&) = delete;
+        RegWriteQueue& operator=(const RegWriteQueue&) = delete;
+        RegWriteQueue& operator=(RegWriteQueue&&) = delete;
     };
 
   private:
@@ -285,6 +292,13 @@ class SoundSDL2 : public Sound
   private:
     // Callback function invoked by the SDL Audio library when it needs data
     static void callback(void* udata, uInt8* stream, int len);
+
+    // Following constructors and assignment operators not supported
+    SoundSDL2() = delete;
+    SoundSDL2(const SoundSDL2&) = delete;
+    SoundSDL2(SoundSDL2&&) = delete;
+    SoundSDL2& operator=(const SoundSDL2&) = delete;
+    SoundSDL2& operator=(SoundSDL2&&) = delete;
 };
 
 #endif

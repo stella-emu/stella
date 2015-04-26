@@ -127,6 +127,14 @@ class ContextMenu : public Dialog, public CommandSender
     int _cmd;
 
     uInt32 _xorig, _yorig;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ContextMenu() = delete;
+    ContextMenu(const ContextMenu&) = delete;
+    ContextMenu(ContextMenu&&) = delete;
+    ContextMenu& operator=(const ContextMenu&) = delete;
+    ContextMenu& operator=(ContextMenu&&) = delete;
 };
 
 #endif

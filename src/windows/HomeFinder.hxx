@@ -107,13 +107,19 @@ class HomeFinder
       return ourDesktopPath;
     }
 
-    private:
-      typedef HRESULT (__stdcall * function_pointer)(HWND, int, HANDLE, DWORD, LPCSTR);
+  private:
+    typedef HRESULT (__stdcall * function_pointer)(HWND, int, HANDLE, DWORD, LPCSTR);
 
-      HMODULE myFolderModule;
-      function_pointer myFolderPathFunc;
+    HMODULE myFolderModule;
+    function_pointer myFolderPathFunc;
 
-      static string ourHomePath, ourAppDataPath, ourDesktopPath;
+    static string ourHomePath, ourAppDataPath, ourDesktopPath;
+
+    // Following constructors and assignment operators not supported
+    HomeFinder(const HomeFinder&) = delete;
+    HomeFinder(HomeFinder&&) = delete;
+    HomeFinder& operator=(const HomeFinder&) = delete;
+    HomeFinder& operator=(HomeFinder&&) = delete;
 };
 
 __declspec(selectany) string HomeFinder::ourHomePath = "";

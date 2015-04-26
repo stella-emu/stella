@@ -125,6 +125,14 @@ class AtariVox : public Controller
 
     // Holds information concerning serial port usage
     string myAboutString;
+
+  private:
+    // Following constructors and assignment operators not supported
+    AtariVox() = delete;
+    AtariVox(const AtariVox&) = delete;
+    AtariVox(AtariVox&&) = delete;
+    AtariVox& operator=(const AtariVox&) = delete;
+    AtariVox& operator=(AtariVox&&) = delete;
 };
 
 #endif

@@ -416,9 +416,12 @@ class System : public Serializable
     bool mySystemInAutodetect;
 
   private:
-    // Copy constructor and assignment operator not supported
-    System(const System&);
-    System& operator = (const System&);
+    // Following constructors and assignment operators not supported
+    System() = delete;
+    System(const System&) = delete;
+    System(System&&) = delete;
+    System& operator=(const System&) = delete;
+    System& operator=(System&&) = delete;
 };
 
 #endif

@@ -361,6 +361,14 @@ class M6502 : public Serializable
     vector<unique_ptr<Expression>> myBreakConds;
     StringList myBreakCondNames;
 #endif  // DEBUGGER_SUPPORT
+
+  private:
+    // Following constructors and assignment operators not supported
+    M6502() = delete;
+    M6502(const M6502&) = delete;
+    M6502(M6502&&) = delete;
+    M6502& operator=(const M6502&) = delete;
+    M6502& operator=(M6502&&) = delete;
 };
 
 #endif

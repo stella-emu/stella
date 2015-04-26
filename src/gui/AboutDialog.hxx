@@ -52,6 +52,14 @@ class AboutDialog : public Dialog
     void displayInfo();
 
     void loadConfig() { displayInfo(); }
+
+  private:
+    // Following constructors and assignment operators not supported
+    AboutDialog() = delete;
+    AboutDialog(const AboutDialog&) = delete;
+    AboutDialog(AboutDialog&&) = delete;
+    AboutDialog& operator=(const AboutDialog&) = delete;
+    AboutDialog& operator=(AboutDialog&&) = delete;
 };
 
 #endif

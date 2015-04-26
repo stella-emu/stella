@@ -38,6 +38,14 @@ class BankRomCheat : public Cheat
     uInt8  value;
     uInt8  count;
     int    bank;
+
+  private:
+    // Following constructors and assignment operators not supported
+    BankRomCheat() = delete;
+    BankRomCheat(const BankRomCheat&) = delete;
+    BankRomCheat(BankRomCheat&&) = delete;
+    BankRomCheat& operator=(const BankRomCheat&) = delete;
+    BankRomCheat& operator=(BankRomCheat&&) = delete;
 };
 
 #endif

@@ -181,6 +181,14 @@ class CartridgeMDM : public Cartridge
     // Indicates whether banking has been disabled due to a bankswitch
     // above bank 127
     bool myBankingDisabled;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeMDM() = delete;
+    CartridgeMDM(const CartridgeMDM&) = delete;
+    CartridgeMDM(CartridgeMDM&&) = delete;
+    CartridgeMDM& operator=(const CartridgeMDM&) = delete;
+    CartridgeMDM& operator=(CartridgeMDM&&) = delete;
 };
 
 #endif

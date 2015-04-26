@@ -160,6 +160,14 @@ class CartridgeF4 : public Cartridge
 
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeF4() = delete;
+    CartridgeF4(const CartridgeF4&) = delete;
+    CartridgeF4(CartridgeF4&&) = delete;
+    CartridgeF4& operator=(const CartridgeF4&) = delete;
+    CartridgeF4& operator=(CartridgeF4&&) = delete;
 };
 
 #endif

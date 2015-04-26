@@ -50,6 +50,14 @@ class AudioWidget : public Widget, public CommandSender
     DataGridWidget* myAudF;
     DataGridWidget* myAudC;
     DataGridWidget* myAudV;
+
+  private:
+    // Following constructors and assignment operators not supported
+    AudioWidget() = delete;
+    AudioWidget(const AudioWidget&) = delete;
+    AudioWidget(AudioWidget&&) = delete;
+    AudioWidget& operator=(const AudioWidget&) = delete;
+    AudioWidget& operator=(AudioWidget&&) = delete;
 };
 
 #endif

@@ -87,6 +87,14 @@ class OptionsDialog : public Dialog
       kAboutCmd    = 'ABOU',
       kExitCmd     = 'EXIM'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    OptionsDialog() = delete;
+    OptionsDialog(const OptionsDialog&) = delete;
+    OptionsDialog(OptionsDialog&&) = delete;
+    OptionsDialog& operator=(const OptionsDialog&) = delete;
+    OptionsDialog& operator=(OptionsDialog&&) = delete;
 };
 
 #endif

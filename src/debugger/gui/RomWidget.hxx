@@ -59,6 +59,14 @@ class RomWidget : public Widget, public CommandSender
     EditTextWidget*  myBank;
 
     bool myListIsDirty;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RomWidget() = delete;
+    RomWidget(const RomWidget&) = delete;
+    RomWidget(RomWidget&&) = delete;
+    RomWidget& operator=(const RomWidget&) = delete;
+    RomWidget& operator=(RomWidget&&) = delete;
 };
 
 #endif

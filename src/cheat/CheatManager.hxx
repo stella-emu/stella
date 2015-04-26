@@ -159,6 +159,14 @@ class CheatManager
 
     // Indicates that the list has been modified, and should be saved to disk
     bool myListIsDirty;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CheatManager() = delete;
+    CheatManager(const CheatManager&) = delete;
+    CheatManager(CheatManager&&) = delete;
+    CheatManager& operator=(const CheatManager&) = delete;
+    CheatManager& operator=(CheatManager&&) = delete;
 };
 
 #endif

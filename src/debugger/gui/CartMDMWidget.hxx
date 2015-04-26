@@ -46,6 +46,14 @@ class CartridgeMDMWidget : public CartDebugWidget
     CheckboxWidget* myBankDisabled;
 
     enum { kBankChanged = 'bkCH', kBankDisabled = 'bkDI' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeMDMWidget() = delete;
+    CartridgeMDMWidget(const CartridgeMDMWidget&) = delete;
+    CartridgeMDMWidget(CartridgeMDMWidget&&) = delete;
+    CartridgeMDMWidget& operator=(const CartridgeMDMWidget&) = delete;
+    CartridgeMDMWidget& operator=(CartridgeMDMWidget&&) = delete;
 };
 
 #endif

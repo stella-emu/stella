@@ -76,6 +76,14 @@ class CpuWidget : public Widget, public CommandSender
     EditTextWidget*  myCpuDataSrc[4];
     ToggleBitWidget* myPSRegister;
     EditTextWidget*  myPCLabel;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CpuWidget() = delete;
+    CpuWidget(const CpuWidget&) = delete;
+    CpuWidget(CpuWidget&&) = delete;
+    CpuWidget& operator=(const CpuWidget&) = delete;
+    CpuWidget& operator=(CpuWidget&&) = delete;
 };
 
 #endif

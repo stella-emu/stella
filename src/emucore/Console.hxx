@@ -313,10 +313,6 @@ class Console : public Serializable
     void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
     void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;
 
-    // Copy constructor and assignment operator not supported
-    Console(const Console&);
-    Console& operator = (const Console&);
-
   private:
     // Reference to the osystem object
     OSystem& myOSystem;
@@ -382,6 +378,14 @@ class Console : public Serializable
     static uInt32 ourUserNTSCPalette[256];
     static uInt32 ourUserPALPalette[256];
     static uInt32 ourUserSECAMPalette[256];
+
+  private:
+    // Following constructors and assignment operators not supported
+    Console() = delete;
+    Console(const Console&) = delete;
+    Console(Console&&) = delete;
+    Console& operator=(const Console&) = delete;
+    Console& operator=(Console&&) = delete;
 };
 
 #endif

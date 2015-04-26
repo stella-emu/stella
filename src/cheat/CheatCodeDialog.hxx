@@ -67,6 +67,14 @@ class CheatCodeDialog : public Dialog
       kOneShotCheatAdded = 'CHoa',
       kRemCheatCmd       = 'CHTr'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CheatCodeDialog() = delete;
+    CheatCodeDialog(const CheatCodeDialog&) = delete;
+    CheatCodeDialog(CheatCodeDialog&&) = delete;
+    CheatCodeDialog& operator=(const CheatCodeDialog&) = delete;
+    CheatCodeDialog& operator=(CheatCodeDialog&&) = delete;
 };
 
 #endif

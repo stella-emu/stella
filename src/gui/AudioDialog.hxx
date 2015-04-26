@@ -56,6 +56,14 @@ class AudioDialog : public Dialog
       kVolumeChanged      = 'ADvc',
       kSoundEnableChanged = 'ADse'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    AudioDialog() = delete;
+    AudioDialog(const AudioDialog&) = delete;
+    AudioDialog(AudioDialog&&) = delete;
+    AudioDialog& operator=(const AudioDialog&) = delete;
+    AudioDialog& operator=(AudioDialog&&) = delete;
 };
 
 #endif

@@ -39,6 +39,14 @@ class BoosterWidget : public ControllerWidget
 
     CheckboxWidget* myPins[7];
     static Controller::DigitalPin ourPinNo[5];
+
+  private:
+    // Following constructors and assignment operators not supported
+    BoosterWidget() = delete;
+    BoosterWidget(const BoosterWidget&) = delete;
+    BoosterWidget(BoosterWidget&&) = delete;
+    BoosterWidget& operator=(const BoosterWidget&) = delete;
+    BoosterWidget& operator=(BoosterWidget&&) = delete;
 };
 
 #endif

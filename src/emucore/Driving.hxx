@@ -95,6 +95,14 @@ class Driving : public Controller
 
     // Controllers to emulate in 'specific' mouse axis mode
     int myControlIDX, myControlIDY;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Driving() = delete;
+    Driving(const Driving&) = delete;
+    Driving(Driving&&) = delete;
+    Driving& operator=(const Driving&) = delete;
+    Driving& operator=(Driving&&) = delete;
 };
 
 #endif

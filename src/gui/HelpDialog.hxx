@@ -54,6 +54,14 @@ class HelpDialog : public Dialog
     void updateStrings(uInt8 page, uInt8 lines, string& title);
     void displayInfo();
     void loadConfig() { displayInfo(); }
+
+  private:
+    // Following constructors and assignment operators not supported
+    HelpDialog() = delete;
+    HelpDialog(const HelpDialog&) = delete;
+    HelpDialog(HelpDialog&&) = delete;
+    HelpDialog& operator=(const HelpDialog&) = delete;
+    HelpDialog& operator=(HelpDialog&&) = delete;
 };
 
 #endif

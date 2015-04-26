@@ -163,6 +163,14 @@ class CartridgeFA : public Cartridge
 
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeFA() = delete;
+    CartridgeFA(const CartridgeFA&) = delete;
+    CartridgeFA(CartridgeFA&&) = delete;
+    CartridgeFA& operator=(const CartridgeFA&) = delete;
+    CartridgeFA& operator=(CartridgeFA&&) = delete;
 };
 
 #endif

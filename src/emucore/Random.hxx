@@ -66,6 +66,14 @@ class Random
 
     // Indicates the next random number
     uInt32 myValue;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Random() = delete;
+    Random(const Random&) = delete;
+    Random(Random&&) = delete;
+    Random& operator=(const Random&) = delete;
+    Random& operator=(Random&&) = delete;
 };
 
 #endif

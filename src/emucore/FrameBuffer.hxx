@@ -554,6 +554,14 @@ class FrameBuffer
 
     // Holds UI palette data (standard and classic colours)
     static uInt32 ourGUIColors[2][kNumColors-256];
+
+  private:
+    // Following constructors and assignment operators not supported
+    FrameBuffer() = delete;
+    FrameBuffer(const FrameBuffer&) = delete;
+    FrameBuffer(FrameBuffer&&) = delete;
+    FrameBuffer& operator=(const FrameBuffer&) = delete;
+    FrameBuffer& operator=(FrameBuffer&&) = delete;
 };
 
 #endif

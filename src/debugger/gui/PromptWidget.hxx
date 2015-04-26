@@ -118,6 +118,14 @@ class PromptWidget : public Widget, public CommandSender
     bool _exitedEarly;
 
 //    int compareHistory(const char *histLine);
+
+  private:
+    // Following constructors and assignment operators not supported
+    PromptWidget() = delete;
+    PromptWidget(const PromptWidget&) = delete;
+    PromptWidget(PromptWidget&&) = delete;
+    PromptWidget& operator=(const PromptWidget&) = delete;
+    PromptWidget& operator=(PromptWidget&&) = delete;
 };
 
 #endif

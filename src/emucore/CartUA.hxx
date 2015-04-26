@@ -163,6 +163,14 @@ class CartridgeUA : public Cartridge
    
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeUA() = delete;
+    CartridgeUA(const CartridgeUA&) = delete;
+    CartridgeUA(CartridgeUA&&) = delete;
+    CartridgeUA& operator=(const CartridgeUA&) = delete;
+    CartridgeUA& operator=(CartridgeUA&&) = delete;
 };
 
 #endif

@@ -23,6 +23,8 @@
 #include "FSNode.hxx"
 #include "bspf.hxx"
 
+namespace MD5 {
+
 /**
   Get the MD5 Message-Digest of the specified message with the 
   given length.  The digest consists of 32 hexadecimal digits.
@@ -31,7 +33,7 @@
   @param length The length of the message
   @return The message-digest
 */
-string MD5(const uInt8* buffer, uInt32 length);
+string hash(const uInt8* buffer, uInt32 length);
 
 /**
   Get the MD5 Message-Digest of the file contained in 'node'.
@@ -40,6 +42,8 @@ string MD5(const uInt8* buffer, uInt32 length);
   @param node The file node to compute the digest of
   @return The message-digest
 */
-string MD5(const FilesystemNode& node);
+string hash(const FilesystemNode& node);
+
+}  // Namespace MD5
 
 #endif

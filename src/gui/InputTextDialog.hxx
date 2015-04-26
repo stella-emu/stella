@@ -70,6 +70,14 @@ class InputTextDialog : public Dialog, public CommandSender
     int	 myCmd;
 
     uInt32 myXOrig, myYOrig;
+
+  private:
+    // Following constructors and assignment operators not supported
+    InputTextDialog() = delete;
+    InputTextDialog(const InputTextDialog&) = delete;
+    InputTextDialog(InputTextDialog&&) = delete;
+    InputTextDialog& operator=(const InputTextDialog&) = delete;
+    InputTextDialog& operator=(InputTextDialog&&) = delete;
 };
 
 #endif

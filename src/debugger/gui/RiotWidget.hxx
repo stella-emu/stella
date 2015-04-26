@@ -79,6 +79,14 @@ class RiotWidget : public Widget, public CommandSender
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
       kRandCPUID, kRandRAMID
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    RiotWidget() = delete;
+    RiotWidget(const RiotWidget&) = delete;
+    RiotWidget(RiotWidget&&) = delete;
+    RiotWidget& operator=(const RiotWidget&) = delete;
+    RiotWidget& operator=(RiotWidget&&) = delete;
 };
 
 #endif

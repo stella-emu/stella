@@ -99,11 +99,6 @@ class StateManager
     void reset();
 
   private:
-    // Copy constructor and assignment operator not supported
-    StateManager(const StateManager&);
-    StateManager& operator = (const StateManager&);
-
-  private:
     enum Mode {
       kOffMode,
       kMoviePlaybackMode,
@@ -131,6 +126,14 @@ class StateManager
     // Serializer classes used to save/load the eventstream
     Serializer myMovieWriter;
     Serializer myMovieReader;
+
+  private:
+    // Following constructors and assignment operators not supported
+    StateManager() = delete;
+    StateManager(const StateManager&) = delete;
+    StateManager(StateManager&&) = delete;
+    StateManager& operator=(const StateManager&) = delete;
+    StateManager& operator=(StateManager&&) = delete;
 };
 
 #endif

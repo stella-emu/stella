@@ -62,6 +62,14 @@ class CheckListWidget : public ListWidget
   protected:
     BoolArray     _stateList;
     CheckboxArray _checkList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CheckListWidget() = delete;
+    CheckListWidget(const CheckListWidget&) = delete;
+    CheckListWidget(CheckListWidget&&) = delete;
+    CheckListWidget& operator=(const CheckListWidget&) = delete;
+    CheckListWidget& operator=(CheckListWidget&&) = delete;
 };
 
 #endif

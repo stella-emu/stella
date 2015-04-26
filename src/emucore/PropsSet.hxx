@@ -125,6 +125,14 @@ class PropertiesSet
     // The properties temporarily inserted by the program, which should
     // be discarded when the program ends
     PropsList myTempProps;
+
+  private:
+    // Following constructors and assignment operators not supported
+    PropertiesSet() = delete;
+    PropertiesSet(const PropertiesSet&) = delete;
+    PropertiesSet(PropertiesSet&&) = delete;
+    PropertiesSet& operator=(const PropertiesSet&) = delete;
+    PropertiesSet& operator=(PropertiesSet&&) = delete;
 };
 
 #endif

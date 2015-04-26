@@ -214,6 +214,14 @@ class CartridgeFA2 : public Cartridge
 
     // Size of the ROM image
     uInt32 mySize;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeFA2() = delete;
+    CartridgeFA2(const CartridgeFA2&) = delete;
+    CartridgeFA2(CartridgeFA2&&) = delete;
+    CartridgeFA2& operator=(const CartridgeFA2&) = delete;
+    CartridgeFA2& operator=(CartridgeFA2&&) = delete;
 };
 
 #endif

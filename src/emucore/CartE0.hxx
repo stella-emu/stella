@@ -174,6 +174,14 @@ class CartridgeE0 : public Cartridge
 
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeE0() = delete;
+    CartridgeE0(const CartridgeE0&) = delete;
+    CartridgeE0(CartridgeE0&&) = delete;
+    CartridgeE0& operator=(const CartridgeE0&) = delete;
+    CartridgeE0& operator=(CartridgeE0&&) = delete;
 };
 
 #endif

@@ -67,6 +67,14 @@ class TiaOutputWidget : public Widget, public CommandSender
     // Create this buffer once, instead of allocating it each time the
     // TIA image is redrawn
     uInt32 myLineBuffer[320];
+
+  private:
+    // Following constructors and assignment operators not supported
+    TiaOutputWidget() = delete;
+    TiaOutputWidget(const TiaOutputWidget&) = delete;
+    TiaOutputWidget(TiaOutputWidget&&) = delete;
+    TiaOutputWidget& operator=(const TiaOutputWidget&) = delete;
+    TiaOutputWidget& operator=(TiaOutputWidget&&) = delete;
 };
 
 #endif

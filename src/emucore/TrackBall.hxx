@@ -124,6 +124,14 @@ class TrackBall : public Controller
     // Amiga mouse
     static const uInt32 ourTrakBallTableAM_H[4];
     static const uInt32 ourTrakBallTableAM_V[4];
+
+  private:
+    // Following constructors and assignment operators not supported
+    TrackBall() = delete;
+    TrackBall(const TrackBall&) = delete;
+    TrackBall(TrackBall&&) = delete;
+    TrackBall& operator=(const TrackBall&) = delete;
+    TrackBall& operator=(TrackBall&&) = delete;
 };
 
 #endif

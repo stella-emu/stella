@@ -59,6 +59,14 @@ class FilesystemNodeFactory
       }
       return 0;
     }
+
+  private:
+    // Following constructors and assignment operators not supported
+    FilesystemNodeFactory() = delete;
+    FilesystemNodeFactory(const FilesystemNodeFactory&) = delete;
+    FilesystemNodeFactory(FilesystemNodeFactory&&) = delete;
+    FilesystemNodeFactory& operator=(const FilesystemNodeFactory&) = delete;
+    FilesystemNodeFactory& operator=(FilesystemNodeFactory&&) = delete;
 };
 
 #endif

@@ -42,15 +42,18 @@ class PackedBitArray
     bool isInitialized() const { return myInitialized; }
 
   private:
-    // Copy constructor and assignment operator not supported
-    PackedBitArray(const PackedBitArray&);
-    PackedBitArray& operator = (const PackedBitArray&);
-
     // The actual bits
     bitset<0x10000> myBits;
 
     // Indicates whether we should treat this bitset as initialized
     bool myInitialized;
+
+  private:
+    // Following constructors and assignment operators not supported
+    PackedBitArray(const PackedBitArray&) = delete;
+    PackedBitArray(PackedBitArray&&) = delete;
+    PackedBitArray& operator=(const PackedBitArray&) = delete;
+    PackedBitArray& operator=(PackedBitArray&&) = delete;
 };
 
 #endif

@@ -497,10 +497,6 @@ class EventHandler
     void removeJoystick(int index);
 
   private:
-    // Copy constructor and assignment operator not supported
-    EventHandler(const EventHandler&);
-    EventHandler& operator = (const EventHandler&);
-
     enum {
       kComboSize          = 16,
       kEventsPerCombo     = 8,
@@ -600,6 +596,13 @@ class EventHandler
 
     // Handler for all joystick addition/removal/mapping
     unique_ptr<JoystickHandler> myJoyHandler;
+
+    // Following constructors and assignment operators not supported
+    EventHandler() = delete;
+    EventHandler(const EventHandler&) = delete;
+    EventHandler(EventHandler&&) = delete;
+    EventHandler& operator=(const EventHandler&) = delete;
+    EventHandler& operator=(EventHandler&&) = delete;
 };
 
 #endif

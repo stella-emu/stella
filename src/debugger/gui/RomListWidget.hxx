@@ -104,6 +104,14 @@ class RomListWidget : public EditableWidget
     const CartDebug::Disassembly* myDisasm;
     const PackedBitArray* myBPState;
     vector<CheckboxWidget*> myCheckList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RomListWidget() = delete;
+    RomListWidget(const RomListWidget&) = delete;
+    RomListWidget(RomListWidget&&) = delete;
+    RomListWidget& operator=(const RomListWidget&) = delete;
+    RomListWidget& operator=(RomListWidget&&) = delete;
 };
 
 #endif

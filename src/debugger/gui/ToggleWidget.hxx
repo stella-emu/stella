@@ -67,6 +67,14 @@ class ToggleWidget : public Widget, public CommandSender
 
     BoolArray  _stateList;
     BoolArray  _changedList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ToggleWidget() = delete;
+    ToggleWidget(const ToggleWidget&) = delete;
+    ToggleWidget(ToggleWidget&&) = delete;
+    ToggleWidget& operator=(const ToggleWidget&) = delete;
+    ToggleWidget& operator=(ToggleWidget&&) = delete;
 };
 
 #endif

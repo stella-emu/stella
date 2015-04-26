@@ -51,6 +51,14 @@ class ColorWidget : public Widget, public CommandSender
   protected:
     int _color;
     int	_cmd;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ColorWidget() = delete;
+    ColorWidget(const ColorWidget&) = delete;
+    ColorWidget(ColorWidget&&) = delete;
+    ColorWidget& operator=(const ColorWidget&) = delete;
+    ColorWidget& operator=(ColorWidget&&) = delete;
 };
 
 #endif

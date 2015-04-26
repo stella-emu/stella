@@ -142,6 +142,14 @@ class Thumbulator
     ostringstream statusMsg;
 
     static bool trapOnFatal;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Thumbulator() = delete;
+    Thumbulator(const Thumbulator&) = delete;
+    Thumbulator(Thumbulator&&) = delete;
+    Thumbulator& operator=(const Thumbulator&) = delete;
+    Thumbulator& operator=(Thumbulator&&) = delete;
 };
 
 #endif

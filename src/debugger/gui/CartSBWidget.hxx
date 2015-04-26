@@ -44,6 +44,14 @@ class CartridgeSBWidget : public CartDebugWidget
     PopUpWidget* myBank;
 
     enum { kBankChanged = 'bkCH' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeSBWidget() = delete;
+    CartridgeSBWidget(const CartridgeSBWidget&) = delete;
+    CartridgeSBWidget(CartridgeSBWidget&&) = delete;
+    CartridgeSBWidget& operator=(const CartridgeSBWidget&) = delete;
+    CartridgeSBWidget& operator=(CartridgeSBWidget&&) = delete;
 };
 
 #endif

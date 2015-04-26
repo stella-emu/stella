@@ -571,7 +571,7 @@ uInt8* OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
   // Now we make sure that the file has a valid properties entry
   // To save time, only generate an MD5 if we really need one
   if(md5 == "")
-    md5 = MD5(image, size);
+    md5 = MD5::hash(image, size);
 
   // Some games may not have a name, since there may not
   // be an entry in stella.pro.  In that case, we use the rom name

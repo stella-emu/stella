@@ -84,6 +84,14 @@ class StringParser
 
   private:
     StringList myStringList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    StringParser() = delete;
+    StringParser(const StringParser&) = delete;
+    StringParser(StringParser&&) = delete;
+    StringParser& operator=(const StringParser&) = delete;
+    StringParser& operator=(StringParser&&) = delete;
 };
 
 #endif

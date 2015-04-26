@@ -59,6 +59,14 @@ class CommandDialog : public Dialog
       kNumRows = 4,
       kNumCols = 4
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CommandDialog() = delete;
+    CommandDialog(const CommandDialog&) = delete;
+    CommandDialog(CommandDialog&&) = delete;
+    CommandDialog& operator=(const CommandDialog&) = delete;
+    CommandDialog& operator=(CommandDialog&&) = delete;
 };
 
 #endif

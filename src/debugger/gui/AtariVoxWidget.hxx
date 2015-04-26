@@ -38,6 +38,14 @@ class AtariVoxWidget : public ControllerWidget
   private:
     ButtonWidget* myEEPROMErase;
     enum { kEEPROMErase  = 'eeER' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    AtariVoxWidget() = delete;
+    AtariVoxWidget(const AtariVoxWidget&) = delete;
+    AtariVoxWidget(AtariVoxWidget&&) = delete;
+    AtariVoxWidget& operator=(const AtariVoxWidget&) = delete;
+    AtariVoxWidget& operator=(AtariVoxWidget&&) = delete;
 };
 
 #endif

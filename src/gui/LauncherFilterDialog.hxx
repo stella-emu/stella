@@ -75,6 +75,14 @@ class LauncherFilterDialog : public Dialog, public CommandSender
 
     // Holds static strings representing ROM types
     static const char* ourRomTypes[2][5];
+
+  private:
+    // Following constructors and assignment operators not supported
+    LauncherFilterDialog() = delete;
+    LauncherFilterDialog(const LauncherFilterDialog&) = delete;
+    LauncherFilterDialog(LauncherFilterDialog&&) = delete;
+    LauncherFilterDialog& operator=(const LauncherFilterDialog&) = delete;
+    LauncherFilterDialog& operator=(LauncherFilterDialog&&) = delete;
 };
 
 #endif

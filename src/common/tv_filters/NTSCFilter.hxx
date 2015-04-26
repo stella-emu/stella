@@ -162,6 +162,13 @@ class NTSCFilter
     };
     uInt32 myCurrentAdjustable;
     static const AdjustableTag ourCustomAdjustables[10];
+
+  private:
+    // Following constructors and assignment operators not supported
+    NTSCFilter(const NTSCFilter&) = delete;
+    NTSCFilter(NTSCFilter&&) = delete;
+    NTSCFilter& operator=(const NTSCFilter&) = delete;
+    NTSCFilter& operator=(NTSCFilter&&) = delete;
 };
 
 #endif

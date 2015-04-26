@@ -32,8 +32,6 @@ enum {
 
 class ScrollBarWidget : public Widget, public CommandSender
 {
-  protected:
-
   public:
     ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
@@ -78,6 +76,14 @@ class ScrollBarWidget : public Widget, public CommandSender
     int _sliderDeltaMouseDownPos;
 
     static int _WHEEL_LINES;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ScrollBarWidget() = delete;
+    ScrollBarWidget(const ScrollBarWidget&) = delete;
+    ScrollBarWidget(ScrollBarWidget&&) = delete;
+    ScrollBarWidget& operator=(const ScrollBarWidget&) = delete;
+    ScrollBarWidget& operator=(ScrollBarWidget&&) = delete;
 };
 
 #endif

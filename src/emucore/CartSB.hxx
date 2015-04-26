@@ -164,6 +164,14 @@ class CartridgeSB : public Cartridge
 
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess[8];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeSB() = delete;
+    CartridgeSB(const CartridgeSB&) = delete;
+    CartridgeSB(CartridgeSB&&) = delete;
+    CartridgeSB& operator=(const CartridgeSB&) = delete;
+    CartridgeSB& operator=(CartridgeSB&&) = delete;
 };
 
 #endif

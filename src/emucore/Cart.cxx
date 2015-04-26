@@ -286,7 +286,7 @@ string Cartridge::createFromMultiCart(const uInt8*& image, uInt32& size,
   image += i*size;
 
   // We need a new md5 and name
-  md5 = MD5(image, size);
+  md5 = MD5::hash(image, size);
   ostringstream buf;
   buf << " [G" << (i+1) << "]";
   id = buf.str();

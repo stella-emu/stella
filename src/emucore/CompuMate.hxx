@@ -132,10 +132,17 @@ class CompuMate
 
       private:
         class CompuMate& myHandler;
+
+        // Following constructors and assignment operators not supported
+        CMControl() = delete;
+        CMControl(const CMControl&) = delete;
+        CMControl(CMControl&&) = delete;
+        CMControl& operator=(const CMControl&) = delete;
+        CMControl& operator=(CMControl&&) = delete;
     };
 
   private:
-    // Cart, Event and System objects
+    // Console and Event objects
     const Console& myConsole;
     const Event& myEvent;
 
@@ -151,6 +158,14 @@ class CompuMate
     // Array of keyboard key states when in the debugger (the normal keyboard
     // keys are ignored in such a case)
     bool myInternalKeyTable[KBDK_LAST];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CompuMate() = delete;
+    CompuMate(const CompuMate&) = delete;
+    CompuMate(CompuMate&&) = delete;
+    CompuMate& operator=(const CompuMate&) = delete;
+    CompuMate& operator=(CompuMate&&) = delete;
 };
 
 #endif

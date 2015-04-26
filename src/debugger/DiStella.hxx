@@ -185,6 +185,14 @@ class DiStella
       uInt8          cycles;
     };
     static const Instruction_tag ourLookup[256];
+
+  private:
+    // Following constructors and assignment operators not supported
+    DiStella() = delete;
+    DiStella(const DiStella&) = delete;
+    DiStella(DiStella&&) = delete;
+    DiStella& operator=(const DiStella&) = delete;
+    DiStella& operator=(DiStella&&) = delete;
 };
 
 #endif

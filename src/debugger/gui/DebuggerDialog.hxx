@@ -119,6 +119,14 @@ class DebuggerDialog : public Dialog
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text
+
+  private:
+    // Following constructors and assignment operators not supported
+    DebuggerDialog() = delete;
+    DebuggerDialog(const DebuggerDialog&) = delete;
+    DebuggerDialog(DebuggerDialog&&) = delete;
+    DebuggerDialog& operator=(const DebuggerDialog&) = delete;
+    DebuggerDialog& operator=(DebuggerDialog&&) = delete;
 };
 
 #endif

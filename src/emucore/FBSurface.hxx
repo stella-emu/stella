@@ -320,17 +320,19 @@ class FBSurface
 
     static void setPalette(const uInt32* palette) { myPalette = palette; }
 
-  private:
-    // Copy constructor and assignment operator not supported
-    FBSurface(const FBSurface&);
-    FBSurface& operator = (const FBSurface&);
-
   protected:
     static const uInt32* myPalette;
     uInt32* myPixels;
     uInt32 myPitch;
 
     Attributes myAttributes;
+
+  private:
+    // Following constructors and assignment operators not supported
+    FBSurface(const FBSurface&) = delete;
+    FBSurface(FBSurface&&) = delete;
+    FBSurface& operator=(const FBSurface&) = delete;
+    FBSurface& operator=(FBSurface&&) = delete;
 };
 
 #endif

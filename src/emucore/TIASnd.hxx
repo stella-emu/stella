@@ -174,6 +174,13 @@ class TIASound
       implemented by using counters.
     */
     static const uInt8 Div31[POLY5_SIZE];
+
+  private:
+    // Following constructors and assignment operators not supported
+    TIASound(const TIASound&) = delete;
+    TIASound(TIASound&&) = delete;
+    TIASound& operator=(const TIASound&) = delete;
+    TIASound& operator=(TIASound&&) = delete;
 };
 
 #endif

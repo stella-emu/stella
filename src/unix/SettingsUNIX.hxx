@@ -42,6 +42,14 @@ class SettingsUNIX : public Settings
       Destructor
     */
     virtual ~SettingsUNIX();
+
+  private:
+    // Following constructors and assignment operators not supported
+    SettingsUNIX() = delete;
+    SettingsUNIX(const SettingsUNIX&) = delete;
+    SettingsUNIX(SettingsUNIX&&) = delete;
+    SettingsUNIX& operator=(const SettingsUNIX&) = delete;
+    SettingsUNIX& operator=(SettingsUNIX&&) = delete;
 };
 
 #endif

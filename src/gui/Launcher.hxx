@@ -70,6 +70,14 @@ class Launcher : public DialogContainer
     // The width and height of this dialog
     uInt32 myWidth;
     uInt32 myHeight;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Launcher() = delete;
+    Launcher(const Launcher&) = delete;
+    Launcher(Launcher&&) = delete;
+    Launcher& operator=(const Launcher&) = delete;
+    Launcher& operator=(Launcher&&) = delete;
 };
 
 #endif

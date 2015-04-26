@@ -312,6 +312,14 @@ class CartridgeCTY : public Cartridge
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeCTY() = delete;
+    CartridgeCTY(const CartridgeCTY&) = delete;
+    CartridgeCTY(CartridgeCTY&&) = delete;
+    CartridgeCTY& operator=(const CartridgeCTY&) = delete;
+    CartridgeCTY& operator=(CartridgeCTY&&) = delete;
 };
 
 #endif

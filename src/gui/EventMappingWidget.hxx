@@ -106,6 +106,14 @@ class EventMappingWidget : public Widget, public CommandSender
     int myLastStick, myLastAxis, myLastHat, myLastValue;
 
     bool myFirstTime;
+
+  private:
+    // Following constructors and assignment operators not supported
+    EventMappingWidget() = delete;
+    EventMappingWidget(const EventMappingWidget&) = delete;
+    EventMappingWidget(EventMappingWidget&&) = delete;
+    EventMappingWidget& operator=(const EventMappingWidget&) = delete;
+    EventMappingWidget& operator=(EventMappingWidget&&) = delete;
 };
 
 #endif

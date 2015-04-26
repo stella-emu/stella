@@ -147,6 +147,14 @@ class Cartridge2K : public Cartridge
 
     // Mask to use for mirroring
     uInt32 myMask;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge2K() = delete;
+    Cartridge2K(const Cartridge2K&) = delete;
+    Cartridge2K(Cartridge2K&&) = delete;
+    Cartridge2K& operator=(const Cartridge2K&) = delete;
+    Cartridge2K& operator=(Cartridge2K&&) = delete;
 };
 
 #endif

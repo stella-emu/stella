@@ -163,6 +163,14 @@ class CartridgeF4SC : public Cartridge
 
     // The 128 bytes of RAM
     uInt8 myRAM[128];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeF4SC() = delete;
+    CartridgeF4SC(const CartridgeF4SC&) = delete;
+    CartridgeF4SC(CartridgeF4SC&&) = delete;
+    CartridgeF4SC& operator=(const CartridgeF4SC&) = delete;
+    CartridgeF4SC& operator=(CartridgeF4SC&&) = delete;
 };
 
 #endif

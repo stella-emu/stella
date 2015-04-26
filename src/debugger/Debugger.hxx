@@ -323,8 +323,24 @@ class Debugger : public DialogContainer
         ButtonWidget& myRewindButton;
         Serializer* myStateList[MAX_SIZE];
         uInt32 mySize, myTop;
+
+      private:
+        // Following constructors and assignment operators not supported
+        RewindManager() = delete;
+        RewindManager(const RewindManager&) = delete;
+        RewindManager(RewindManager&&) = delete;
+        RewindManager& operator=(const RewindManager&) = delete;
+        RewindManager& operator=(RewindManager&&) = delete;
     };
     unique_ptr<RewindManager> myRewindManager;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Debugger() = delete;
+    Debugger(const Debugger&) = delete;
+    Debugger(Debugger&&) = delete;
+    Debugger& operator=(const Debugger&) = delete;
+    Debugger& operator=(Debugger&&) = delete;
 };
 
 #endif

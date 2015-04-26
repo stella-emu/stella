@@ -25,8 +25,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer(const string& filename, bool readonly)
-  : myStream(nullptr),
-    myUseFilestream(true)
+  : myStream(nullptr)
 {
   if(readonly)
   {
@@ -66,8 +65,7 @@ Serializer::Serializer(const string& filename, bool readonly)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer()
-  : myStream(nullptr),
-    myUseFilestream(false)
+  : myStream(nullptr)
 {
   myStream = make_ptr<stringstream>(ios::in | ios::out | ios::binary);
   

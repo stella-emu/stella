@@ -35,6 +35,14 @@ class RamCheat : public Cheat
   private:
     uInt16 address;
     uInt8  value;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RamCheat() = delete;
+    RamCheat(const RamCheat&) = delete;
+    RamCheat(RamCheat&&) = delete;
+    RamCheat& operator=(const RamCheat&) = delete;
+    RamCheat& operator=(RamCheat&&) = delete;
 };
 
 #endif

@@ -74,6 +74,14 @@ class CartridgeDASHWidget : public CartDebugWidget
       kBank3Changed = 'b3CH'
     };
     static const BankID bankEnum[4];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeDASHWidget() = delete;
+    CartridgeDASHWidget(const CartridgeDASHWidget&) = delete;
+    CartridgeDASHWidget(CartridgeDASHWidget&&) = delete;
+    CartridgeDASHWidget& operator=(const CartridgeDASHWidget&) = delete;
+    CartridgeDASHWidget& operator=(CartridgeDASHWidget&&) = delete;
 };
 
 #endif

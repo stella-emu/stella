@@ -268,6 +268,13 @@ class ZipHandler
   private:
     zip_file* myZip;
     zip_file* myZipCache[ZIP_CACHE_SIZE];
+
+  private:
+    // Following constructors and assignment operators not supported
+    ZipHandler(const ZipHandler&) = delete;
+    ZipHandler(ZipHandler&&) = delete;
+    ZipHandler& operator=(const ZipHandler&) = delete;
+    ZipHandler& operator=(ZipHandler&&) = delete;
 };
 
 #endif  /* ZIP_HANDLER_HXX */

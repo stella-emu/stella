@@ -55,6 +55,14 @@ class SettingsMACOSX : public Settings
       standard Mac preferences.
     */
     void saveConfig();
+
+  private:
+    // Following constructors and assignment operators not supported
+    SettingsMACOSX() = delete;
+    SettingsMACOSX(const SettingsMACOSX&) = delete;
+    SettingsMACOSX(SettingsMACOSX&&) = delete;
+    SettingsMACOSX& operator=(const SettingsMACOSX&) = delete;
+    SettingsMACOSX& operator=(SettingsMACOSX&&) = delete;
 };
 
 #endif

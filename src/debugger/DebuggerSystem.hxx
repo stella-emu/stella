@@ -58,6 +58,14 @@ class DebuggerSystem
     Debugger& myDebugger;
     Console& myConsole;
     System& mySystem;
+
+  private:
+    // Following constructors and assignment operators not supported
+    DebuggerSystem() = delete;
+    DebuggerSystem(const DebuggerSystem&) = delete;
+    DebuggerSystem(DebuggerSystem&&) = delete;
+    DebuggerSystem& operator=(const DebuggerSystem&) = delete;
+    DebuggerSystem& operator=(DebuggerSystem&&) = delete;
 };
 
 #endif

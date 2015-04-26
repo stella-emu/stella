@@ -244,6 +244,14 @@ class CartridgeWD : public Cartridge
       bool map3bytes;
     };
     static BankOrg ourBankOrg[16];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeWD() = delete;
+    CartridgeWD(const CartridgeWD&) = delete;
+    CartridgeWD(CartridgeWD&&) = delete;
+    CartridgeWD& operator=(const CartridgeWD&) = delete;
+    CartridgeWD& operator=(CartridgeWD&&) = delete;
 };
 
 #endif

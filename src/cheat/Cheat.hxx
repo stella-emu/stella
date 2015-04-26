@@ -70,6 +70,14 @@ class Cheat
     string myCode;
 
     bool myEnabled;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cheat() = delete;
+    Cheat(const Cheat&) = delete;
+    Cheat(Cheat&&) = delete;
+    Cheat& operator=(const Cheat&) = delete;
+    Cheat& operator=(Cheat&&) = delete;
 };
 
 #endif

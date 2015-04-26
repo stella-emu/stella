@@ -92,6 +92,14 @@ class CpuDebug : public DebuggerSystem
 
     CpuState myState;
     CpuState myOldState;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CpuDebug() = delete;
+    CpuDebug(const CpuDebug&) = delete;
+    CpuDebug(CpuDebug&&) = delete;
+    CpuDebug& operator=(const CpuDebug&) = delete;
+    CpuDebug& operator=(CpuDebug&&) = delete;
 };
 
 #endif

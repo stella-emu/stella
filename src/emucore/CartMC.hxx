@@ -265,6 +265,14 @@ class CartridgeMC : public Cartridge
 
     // Indicates if slot 3 is locked to block $FF or not
     bool mySlot3Locked;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeMC() = delete;
+    CartridgeMC(const CartridgeMC&) = delete;
+    CartridgeMC(CartridgeMC&&) = delete;
+    CartridgeMC& operator=(const CartridgeMC&) = delete;
+    CartridgeMC& operator=(CartridgeMC&&) = delete;
 };
 
 #endif

@@ -209,7 +209,7 @@ const string& LauncherDialog::selectedRomMD5()
 
   // Make sure we have a valid md5 for this ROM
   if(myGameList->md5(item) == "")
-    myGameList->setMd5(item, MD5(node));
+    myGameList->setMd5(item, MD5::hash(node));
 
   return myGameList->md5(item);
 }
@@ -347,7 +347,7 @@ void LauncherDialog::loadRomInfo()
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")
-      myGameList->setMd5(item, MD5(node));
+      myGameList->setMd5(item, MD5::hash(node));
 
     // Get the properties for this entry
     Properties props;

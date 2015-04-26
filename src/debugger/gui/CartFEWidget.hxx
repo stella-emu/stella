@@ -40,6 +40,14 @@ class CartridgeFEWidget : public CartDebugWidget
 
   private:
     CartridgeFE& myCart;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeFEWidget() = delete;
+    CartridgeFEWidget(const CartridgeFEWidget&) = delete;
+    CartridgeFEWidget(CartridgeFEWidget&&) = delete;
+    CartridgeFEWidget& operator=(const CartridgeFEWidget&) = delete;
+    CartridgeFEWidget& operator=(CartridgeFEWidget&&) = delete;
 };
 
 #endif

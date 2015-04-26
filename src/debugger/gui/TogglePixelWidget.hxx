@@ -47,6 +47,14 @@ class TogglePixelWidget : public ToggleWidget
   private:
     int  _pixelColor, _backgroundColor;
     bool _swapBits;
+
+  private:
+    // Following constructors and assignment operators not supported
+    TogglePixelWidget() = delete;
+    TogglePixelWidget(const TogglePixelWidget&) = delete;
+    TogglePixelWidget(TogglePixelWidget&&) = delete;
+    TogglePixelWidget& operator=(const TogglePixelWidget&) = delete;
+    TogglePixelWidget& operator=(TogglePixelWidget&&) = delete;
 };
 
 #endif

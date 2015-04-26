@@ -147,6 +147,14 @@ class TiaWidget : public Widget, public CommandSender
       kCOLUPFAddr,
       kCOLUBKAddr
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    TiaWidget() = delete;
+    TiaWidget(const TiaWidget&) = delete;
+    TiaWidget(TiaWidget&&) = delete;
+    TiaWidget& operator=(const TiaWidget&) = delete;
+    TiaWidget& operator=(TiaWidget&&) = delete;
 };
 
 #endif

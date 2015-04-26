@@ -208,6 +208,14 @@ class TIATables
 
     // Compute the player position reset when table
     static void buildPxPosResetWhenTable();
+
+  private:
+    // Following constructors and assignment operators not supported
+    TIATables() = delete;
+    TIATables(const TIATables&) = delete;
+    TIATables(TIATables&&) = delete;
+    TIATables& operator=(const TIATables&) = delete;
+    TIATables& operator=(TIATables&&) = delete;
 };
 
 #endif

@@ -74,6 +74,14 @@ class EventHandlerSDL2 : public EventHandler
       private:
         SDL_Joystick* myStick;
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    EventHandlerSDL2() = delete;
+    EventHandlerSDL2(const EventHandlerSDL2&) = delete;
+    EventHandlerSDL2(EventHandlerSDL2&&) = delete;
+    EventHandlerSDL2& operator=(const EventHandlerSDL2&) = delete;
+    EventHandlerSDL2& operator=(EventHandlerSDL2&&) = delete;
 };
 
 #endif

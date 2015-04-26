@@ -58,6 +58,13 @@ class Serializable
       @return The name of the object
     */
     virtual string name() const = 0;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Serializable(const Serializable&) = delete;
+    Serializable(Serializable&&) = delete;
+    Serializable& operator=(const Serializable&) = delete;
+    Serializable& operator=(Serializable&&) = delete;
 };
 
 #endif

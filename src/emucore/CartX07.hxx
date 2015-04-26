@@ -170,6 +170,14 @@ class CartridgeX07 : public Cartridge
 
     // The 64K ROM image of the cartridge
     uInt8 myImage[65536];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeX07() = delete;
+    CartridgeX07(const CartridgeX07&) = delete;
+    CartridgeX07(CartridgeX07&&) = delete;
+    CartridgeX07& operator=(const CartridgeX07&) = delete;
+    CartridgeX07& operator=(CartridgeX07&&) = delete;
 };
 
 #endif

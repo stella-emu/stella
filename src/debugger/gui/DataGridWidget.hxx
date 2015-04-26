@@ -140,6 +140,14 @@ class DataGridWidget : public EditableWidget
     void zeroCell();
 
     void enableEditMode(bool state) { _editMode = state; }
+
+  private:
+    // Following constructors and assignment operators not supported
+    DataGridWidget() = delete;
+    DataGridWidget(const DataGridWidget&) = delete;
+    DataGridWidget(DataGridWidget&&) = delete;
+    DataGridWidget& operator=(const DataGridWidget&) = delete;
+    DataGridWidget& operator=(DataGridWidget&&) = delete;
 };
 
 #endif

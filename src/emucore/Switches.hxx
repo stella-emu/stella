@@ -95,6 +95,14 @@ class Switches : public Serializable
 
     // State of the console switches
     uInt8 mySwitches;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Switches() = delete;
+    Switches(const Switches&) = delete;
+    Switches(Switches&&) = delete;
+    Switches& operator=(const Switches&) = delete;
+    Switches& operator=(Switches&&) = delete;
 };
 
 #endif

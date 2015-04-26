@@ -57,6 +57,14 @@ class JoystickDialog : public Dialog
     IntArray myJoyIDs;
 
     enum { kRemoveCmd = 'JDrm' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    JoystickDialog() = delete;
+    JoystickDialog(const JoystickDialog&) = delete;
+    JoystickDialog(JoystickDialog&&) = delete;
+    JoystickDialog& operator=(const JoystickDialog&) = delete;
+    JoystickDialog& operator=(JoystickDialog&&) = delete;
 };
 
 #endif

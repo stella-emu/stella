@@ -140,6 +140,14 @@ class Cartridge4K : public Cartridge
   private:
     // The 4K ROM image for the cartridge
     uInt8 myImage[4096];
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge4K() = delete;
+    Cartridge4K(const Cartridge4K&) = delete;
+    Cartridge4K(Cartridge4K&&) = delete;
+    Cartridge4K& operator=(const Cartridge4K&) = delete;
+    Cartridge4K& operator=(Cartridge4K&&) = delete;
 };
 
 #endif

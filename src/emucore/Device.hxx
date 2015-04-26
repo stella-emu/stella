@@ -123,6 +123,13 @@ class Device : public Serializable
   protected:
     /// Pointer to the system the device is installed in or the null pointer
     System* mySystem;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Device(const Device&) = delete;
+    Device(Device&&) = delete;
+    Device& operator=(const Device&) = delete;
+    Device& operator=(Device&&) = delete;
 };
 
 #endif

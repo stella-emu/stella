@@ -115,6 +115,14 @@ class ListWidget : public EditableWidget
 
   private:
     static uInt64 _QUICK_SELECT_DELAY;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ListWidget() = delete;
+    ListWidget(const ListWidget&) = delete;
+    ListWidget(ListWidget&&) = delete;
+    ListWidget& operator=(const ListWidget&) = delete;
+    ListWidget& operator=(ListWidget&&) = delete;
 };
 
 #endif

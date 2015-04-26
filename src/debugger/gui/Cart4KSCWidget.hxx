@@ -55,6 +55,14 @@ class Cartridge4KSCWidget : public CartDebugWidget
       ByteArray internalram;
     };  
     CartState myOldState; 
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge4KSCWidget() = delete;
+    Cartridge4KSCWidget(const Cartridge4KSCWidget&) = delete;
+    Cartridge4KSCWidget(Cartridge4KSCWidget&&) = delete;
+    Cartridge4KSCWidget& operator=(const Cartridge4KSCWidget&) = delete;
+    Cartridge4KSCWidget& operator=(Cartridge4KSCWidget&&) = delete;
 };
 
 #endif

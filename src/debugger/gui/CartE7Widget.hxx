@@ -63,6 +63,14 @@ class CartridgeE7Widget : public CartDebugWidget
       kLowerChanged = 'lwCH',
       kUpperChanged = 'upCH'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeE7Widget() = delete;
+    CartridgeE7Widget(const CartridgeE7Widget&) = delete;
+    CartridgeE7Widget(CartridgeE7Widget&&) = delete;
+    CartridgeE7Widget& operator=(const CartridgeE7Widget&) = delete;
+    CartridgeE7Widget& operator=(CartridgeE7Widget&&) = delete;
 };
 
 #endif

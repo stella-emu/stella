@@ -75,6 +75,14 @@ class ConfigPathDialog : public Dialog, public CommandSender
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ConfigPathDialog() = delete;
+    ConfigPathDialog(const ConfigPathDialog&) = delete;
+    ConfigPathDialog(ConfigPathDialog&&) = delete;
+    ConfigPathDialog& operator=(const ConfigPathDialog&) = delete;
+    ConfigPathDialog& operator=(ConfigPathDialog&&) = delete;
 };
 
 #endif

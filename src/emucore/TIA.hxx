@@ -617,9 +617,12 @@ class TIA : public Device
     bool myBitsEnabled, myCollisionsEnabled;
 
   private:
-    // Copy constructor and assignment operator not supported
-    TIA(const TIA&);
-    TIA& operator = (const TIA&);
+    // Following constructors and assignment operators not supported
+    TIA() = delete;
+    TIA(const TIA&) = delete;
+    TIA(TIA&&) = delete;
+    TIA& operator=(const TIA&) = delete;
+    TIA& operator=(TIA&&) = delete;
 };
 
 #endif

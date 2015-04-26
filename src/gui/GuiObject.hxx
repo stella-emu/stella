@@ -111,6 +111,14 @@ class GuiObject : public CommandReceiver
 
     Widget* _firstWidget;
     WidgetArray _focusList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    GuiObject() = delete;
+    GuiObject(const GuiObject&) = delete;
+    GuiObject(GuiObject&&) = delete;
+    GuiObject& operator=(const GuiObject&) = delete;
+    GuiObject& operator=(GuiObject&&) = delete;
 };
 
 #endif

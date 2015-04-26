@@ -161,6 +161,14 @@ class Cartridge0840 : public Cartridge
    
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess[8];
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge0840() = delete;
+    Cartridge0840(const Cartridge0840&) = delete;
+    Cartridge0840(Cartridge0840&&) = delete;
+    Cartridge0840& operator=(const Cartridge0840&) = delete;
+    Cartridge0840& operator=(Cartridge0840&&) = delete;
 };
 
 #endif

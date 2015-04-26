@@ -153,6 +153,14 @@ class CartridgeCV : public Cartridge
 
     // The 1024 bytes of RAM
     uInt8 myRAM[1024];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeCV() = delete;
+    CartridgeCV(const CartridgeCV&) = delete;
+    CartridgeCV(CartridgeCV&&) = delete;
+    CartridgeCV& operator=(const CartridgeCV&) = delete;
+    CartridgeCV& operator=(CartridgeCV&&) = delete;
 };
 
 #endif

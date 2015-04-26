@@ -189,7 +189,6 @@ class Serializer
   private:
     // The stream to send the serialized data to.
     unique_ptr<iostream> myStream;
-    bool myUseFilestream;
 
     enum {
       TruePattern  = 0xfe,
@@ -197,9 +196,11 @@ class Serializer
     };
 
   private:
-    // Copy constructor and assignment operator not supported
-    Serializer(const Serializer&);
-    Serializer& operator = (const Serializer&);
+    // Following constructors and assignment operators not supported
+    Serializer(const Serializer&) = delete;
+    Serializer(Serializer&&) = delete;
+    Serializer& operator=(const Serializer&) = delete;
+    Serializer& operator=(Serializer&&) = delete;
 };
 
 #endif

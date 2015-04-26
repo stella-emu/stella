@@ -51,6 +51,14 @@ class TiaInfoWidget : public Widget, public CommandSender
 
     CheckboxWidget* myVSync;
     CheckboxWidget* myVBlank;
+
+  private:
+    // Following constructors and assignment operators not supported
+    TiaInfoWidget() = delete;
+    TiaInfoWidget(const TiaInfoWidget&) = delete;
+    TiaInfoWidget(TiaInfoWidget&&) = delete;
+    TiaInfoWidget& operator=(const TiaInfoWidget&) = delete;
+    TiaInfoWidget& operator=(TiaInfoWidget&&) = delete;
 };
 
 #endif

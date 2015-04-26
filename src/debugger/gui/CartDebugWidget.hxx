@@ -141,6 +141,14 @@ class CartDebugWidget : public Widget, public CommandSender
   private:
     StringListWidget* myDesc;
     ostringstream myBuffer;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartDebugWidget() = delete;
+    CartDebugWidget(const CartDebugWidget&) = delete;
+    CartDebugWidget(CartDebugWidget&&) = delete;
+    CartDebugWidget& operator=(const CartDebugWidget&) = delete;
+    CartDebugWidget& operator=(CartDebugWidget&&) = delete;
 };
 
 #endif

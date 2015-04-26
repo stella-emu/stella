@@ -56,6 +56,14 @@ class RomListSettings : public Dialog, public CommandSender
     CheckboxWidget* myShowAddresses;
     CheckboxWidget* myShowGFXBinary;
     CheckboxWidget* myUseRelocation;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RomListSettings() = delete;
+    RomListSettings(const RomListSettings&) = delete;
+    RomListSettings(RomListSettings&&) = delete;
+    RomListSettings& operator=(const RomListSettings&) = delete;
+    RomListSettings& operator=(RomListSettings&&) = delete;
 };
 
 #endif

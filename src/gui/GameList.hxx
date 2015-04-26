@@ -65,6 +65,13 @@ class GameList
         : _name(name), _path(path), _md5(md5), _isdir(isdir) { }
     };
     vector<Entry> myArray;
+
+  private:
+    // Following constructors and assignment operators not supported
+    GameList(const GameList&) = delete;
+    GameList(GameList&&) = delete;
+    GameList& operator=(const GameList&) = delete;
+    GameList& operator=(GameList&&) = delete;
 };
 
 #endif

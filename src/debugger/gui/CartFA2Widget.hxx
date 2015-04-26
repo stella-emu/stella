@@ -68,6 +68,14 @@ class CartridgeFA2Widget : public CartDebugWidget
       kFlashLoad   = 'flLD',
       kFlashSave   = 'flSV'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeFA2Widget() = delete;
+    CartridgeFA2Widget(const CartridgeFA2Widget&) = delete;
+    CartridgeFA2Widget(CartridgeFA2Widget&&) = delete;
+    CartridgeFA2Widget& operator=(const CartridgeFA2Widget&) = delete;
+    CartridgeFA2Widget& operator=(CartridgeFA2Widget&&) = delete;
 };
 
 #endif

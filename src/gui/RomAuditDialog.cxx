@@ -142,7 +142,7 @@ void RomAuditDialog::auditRoms()
     {
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
-      const string& md5 = MD5(files[idx]);
+      const string& md5 = MD5::hash(files[idx]);
       instance().propSet().getMD5(md5, props);
       const string& name = props.get(Cartridge_Name);
 

@@ -130,6 +130,14 @@ class Sound : public Serializable
   protected:
     // The OSystem for this sound object
     OSystem& myOSystem;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Sound() = delete;
+    Sound(const Sound&) = delete;
+    Sound(Sound&&) = delete;
+    Sound& operator=(const Sound&) = delete;
+    Sound& operator=(Sound&&) = delete;
 };
 
 #endif

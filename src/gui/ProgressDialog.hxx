@@ -42,6 +42,14 @@ class ProgressDialog : public Dialog
     SliderWidget*     mySlider;
 
     int myStart, myFinish, myStep, myCurrentStep;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ProgressDialog() = delete;
+    ProgressDialog(const ProgressDialog&) = delete;
+    ProgressDialog(ProgressDialog&&) = delete;
+    ProgressDialog& operator=(const ProgressDialog&) = delete;
+    ProgressDialog& operator=(ProgressDialog&&) = delete;
 };
 
 #endif

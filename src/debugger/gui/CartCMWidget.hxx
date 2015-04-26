@@ -77,6 +77,14 @@ class CartridgeCMWidget : public CartDebugWidget
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeCMWidget() = delete;
+    CartridgeCMWidget(const CartridgeCMWidget&) = delete;
+    CartridgeCMWidget(CartridgeCMWidget&&) = delete;
+    CartridgeCMWidget& operator=(const CartridgeCMWidget&) = delete;
+    CartridgeCMWidget& operator=(CartridgeCMWidget&&) = delete;
 };
 
 #endif

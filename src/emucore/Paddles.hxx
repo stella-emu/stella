@@ -133,6 +133,14 @@ class Paddles : public Controller
     // Lookup table for associating paddle buttons with controller pins
     // Yes, this is hideously complex
     static const Controller::DigitalPin ourButtonPin[2];
+
+  private:
+    // Following constructors and assignment operators not supported
+    Paddles() = delete;
+    Paddles(const Paddles&) = delete;
+    Paddles(Paddles&&) = delete;
+    Paddles& operator=(const Paddles&) = delete;
+    Paddles& operator=(Paddles&&) = delete;
 };
 
 #endif

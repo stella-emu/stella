@@ -74,6 +74,14 @@ class FileListWidget : public StringListWidget
     string _extension;
 
     GameList _gameList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    FileListWidget() = delete;
+    FileListWidget(const FileListWidget&) = delete;
+    FileListWidget(FileListWidget&&) = delete;
+    FileListWidget& operator=(const FileListWidget&) = delete;
+    FileListWidget& operator=(FileListWidget&&) = delete;
 };
 
 #endif

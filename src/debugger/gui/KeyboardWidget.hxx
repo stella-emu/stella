@@ -39,6 +39,14 @@ class KeyboardWidget : public ControllerWidget
     Event::Type* myEvent;
 
     static Event::Type ourLeftEvents[12], ourRightEvents[12];
+
+  private:
+    // Following constructors and assignment operators not supported
+    KeyboardWidget() = delete;
+    KeyboardWidget(const KeyboardWidget&) = delete;
+    KeyboardWidget(KeyboardWidget&&) = delete;
+    KeyboardWidget& operator=(const KeyboardWidget&) = delete;
+    KeyboardWidget& operator=(KeyboardWidget&&) = delete;
 };
 
 #endif

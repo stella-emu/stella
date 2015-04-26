@@ -47,6 +47,13 @@ class OSystemWINDOWS : public OSystem
     */
     string defaultSnapSaveDir();
     string defaultSnapLoadDir();
+
+  private:
+    // Following constructors and assignment operators not supported
+    OSystemWINDOWS(const OSystemWINDOWS&) = delete;
+    OSystemWINDOWS(OSystemWINDOWS&&) = delete;
+    OSystemWINDOWS& operator=(const OSystemWINDOWS&) = delete;
+    OSystemWINDOWS& operator=(OSystemWINDOWS&&) = delete;
 };
 
 #endif

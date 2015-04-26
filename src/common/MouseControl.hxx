@@ -108,6 +108,14 @@ class MouseControl
 
     int myCurrentModeNum;
     vector<MouseMode> myModeList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    MouseControl() = delete;
+    MouseControl(const MouseControl&) = delete;
+    MouseControl(MouseControl&&) = delete;
+    MouseControl& operator=(const MouseControl&) = delete;
+    MouseControl& operator=(MouseControl&&) = delete;
 };
 
 #endif

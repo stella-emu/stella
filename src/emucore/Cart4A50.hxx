@@ -234,6 +234,14 @@ class Cartridge4A50 : public Cartridge
     // The previous address and data values (from peek and poke)
     uInt16 myLastAddress;
     uInt8 myLastData;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge4A50() = delete;
+    Cartridge4A50(const Cartridge4A50&) = delete;
+    Cartridge4A50(Cartridge4A50&&) = delete;
+    Cartridge4A50& operator=(const Cartridge4A50&) = delete;
+    Cartridge4A50& operator=(Cartridge4A50&&) = delete;
 };
 
 #endif

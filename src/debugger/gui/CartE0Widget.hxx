@@ -48,6 +48,14 @@ class CartridgeE0Widget : public CartDebugWidget
       kSlice1Changed = 's1CH',
       kSlice2Changed = 's2CH'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeE0Widget() = delete;
+    CartridgeE0Widget(const CartridgeE0Widget&) = delete;
+    CartridgeE0Widget(CartridgeE0Widget&&) = delete;
+    CartridgeE0Widget& operator=(const CartridgeE0Widget&) = delete;
+    CartridgeE0Widget& operator=(CartridgeE0Widget&&) = delete;
 };
 
 #endif

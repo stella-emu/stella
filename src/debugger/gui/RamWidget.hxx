@@ -86,6 +86,14 @@ class RamWidget : public Widget, public CommandSender
     IntArray mySearchAddr;
     IntArray mySearchValue;
     BoolArray mySearchState;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RamWidget() = delete;
+    RamWidget(const RamWidget&) = delete;
+    RamWidget(RamWidget&&) = delete;
+    RamWidget& operator=(const RamWidget&) = delete;
+    RamWidget& operator=(RamWidget&&) = delete;
 };
 
 #endif

@@ -76,6 +76,14 @@ class PopUpWidget : public Widget, public CommandSender
 
     string _label;
     int    _labelWidth;
+
+  private:
+    // Following constructors and assignment operators not supported
+    PopUpWidget() = delete;
+    PopUpWidget(const PopUpWidget&) = delete;
+    PopUpWidget(PopUpWidget&&) = delete;
+    PopUpWidget& operator=(const PopUpWidget&) = delete;
+    PopUpWidget& operator=(PopUpWidget&&) = delete;
 };
 
 #endif

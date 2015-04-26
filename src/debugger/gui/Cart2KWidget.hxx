@@ -35,6 +35,14 @@ class Cartridge2KWidget : public CartDebugWidget
     // No implementation for non-bankswitched ROMs
     void loadConfig() { }
     void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge2KWidget() = delete;
+    Cartridge2KWidget(const Cartridge2KWidget&) = delete;
+    Cartridge2KWidget(Cartridge2KWidget&&) = delete;
+    Cartridge2KWidget& operator=(const Cartridge2KWidget&) = delete;
+    Cartridge2KWidget& operator=(Cartridge2KWidget&&) = delete;
 };
 
 #endif

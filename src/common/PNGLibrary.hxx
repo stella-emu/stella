@@ -146,6 +146,13 @@ class PNGLibrary
     static void png_io_flush(png_structp ctx);
     static void png_user_warn(png_structp ctx, png_const_charp str);
     static void png_user_error(png_structp ctx, png_const_charp str);
+
+  private:
+    // Following constructors and assignment operators not supported
+    PNGLibrary(const PNGLibrary&) = delete;
+    PNGLibrary(PNGLibrary&&) = delete;
+    PNGLibrary& operator=(const PNGLibrary&) = delete;
+    PNGLibrary& operator=(PNGLibrary&&) = delete;
 };
 
 #endif

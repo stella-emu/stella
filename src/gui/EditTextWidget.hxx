@@ -48,6 +48,14 @@ class EditTextWidget : public EditableWidget
   protected:
     string _backupString;
     bool   _changed;
+
+  private:
+    // Following constructors and assignment operators not supported
+    EditTextWidget() = delete;
+    EditTextWidget(const EditTextWidget&) = delete;
+    EditTextWidget(EditTextWidget&&) = delete;
+    EditTextWidget& operator=(const EditTextWidget&) = delete;
+    EditTextWidget& operator=(EditTextWidget&&) = delete;
 };
 
 #endif

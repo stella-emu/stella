@@ -181,6 +181,14 @@ class FrameBufferSDL2 : public FrameBuffer
 
     // Indicates that the renderer has been modified, and should be redrawn
     bool myDirtyFlag;
+
+  private:
+    // Following constructors and assignment operators not supported
+    FrameBufferSDL2() = delete;
+    FrameBufferSDL2(const FrameBufferSDL2&) = delete;
+    FrameBufferSDL2(FrameBufferSDL2&&) = delete;
+    FrameBufferSDL2& operator=(const FrameBufferSDL2&) = delete;
+    FrameBufferSDL2& operator=(FrameBufferSDL2&&) = delete;
 };
 
 #endif

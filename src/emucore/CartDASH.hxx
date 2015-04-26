@@ -272,6 +272,14 @@ private:
   uInt32 mySize;        // Size of the ROM image
   uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge
   uInt8 myRAM[RAM_TOTAL_SIZE];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeDASH() = delete;
+    CartridgeDASH(const CartridgeDASH&) = delete;
+    CartridgeDASH(CartridgeDASH&&) = delete;
+    CartridgeDASH& operator=(const CartridgeDASH&) = delete;
+    CartridgeDASH& operator=(CartridgeDASH&&) = delete;
 };
 
 #endif

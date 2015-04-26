@@ -40,6 +40,14 @@ class PaddleWidget : public ControllerWidget
 
     SliderWidget *myP0Resistance, *myP1Resistance;
     CheckboxWidget *myP0Fire, *myP1Fire;
+
+  private:
+    // Following constructors and assignment operators not supported
+    PaddleWidget() = delete;
+    PaddleWidget(const PaddleWidget&) = delete;
+    PaddleWidget(PaddleWidget&&) = delete;
+    PaddleWidget& operator=(const PaddleWidget&) = delete;
+    PaddleWidget& operator=(PaddleWidget&&) = delete;
 };
 
 #endif

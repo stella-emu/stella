@@ -43,6 +43,14 @@ class CommandMenu : public DialogContainer
       Destructor
     */
     virtual ~CommandMenu();
+
+  private:
+    // Following constructors and assignment operators not supported
+    CommandMenu() = delete;
+    CommandMenu(const CommandMenu&) = delete;
+    CommandMenu(CommandMenu&&) = delete;
+    CommandMenu& operator=(const CommandMenu&) = delete;
+    CommandMenu& operator=(CommandMenu&&) = delete;
 };
 
 #endif

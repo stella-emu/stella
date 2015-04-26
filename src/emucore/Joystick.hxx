@@ -91,6 +91,14 @@ class Joystick : public Controller
     int myControlID;  
 
     static int _DEAD_ZONE;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Joystick() = delete;
+    Joystick(const Joystick&) = delete;
+    Joystick(Joystick&&) = delete;
+    Joystick& operator=(const Joystick&) = delete;
+    Joystick& operator=(Joystick&&) = delete;
 };
 
 #endif

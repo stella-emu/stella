@@ -46,6 +46,14 @@ class ControllerWidget : public Widget, public CommandSender
 
   protected:
     Controller& myController;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ControllerWidget() = delete;
+    ControllerWidget(const ControllerWidget&) = delete;
+    ControllerWidget(ControllerWidget&&) = delete;
+    ControllerWidget& operator=(const ControllerWidget&) = delete;
+    ControllerWidget& operator=(ControllerWidget&&) = delete;
 };
 
 #endif

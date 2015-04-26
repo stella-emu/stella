@@ -106,6 +106,13 @@ class NullDevice : public Device
       cerr << hex << "NullDevice: poke(" << address << "," << value << ")\n";
       return false;
     }
+
+  private:
+    // Following constructors and assignment operators not supported
+    NullDevice(const NullDevice&) = delete;
+    NullDevice(NullDevice&&) = delete;
+    NullDevice& operator=(const NullDevice&) = delete;
+    NullDevice& operator=(NullDevice&&) = delete;
 };
 
 #endif

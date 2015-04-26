@@ -267,9 +267,12 @@ class Controller : public Serializable
     Int32 myAnalogPinValue[2];
 
   private:
-    // Copy constructor and assignment operator not supported
-    Controller(const Controller&);
-    Controller& operator = (const Controller&);
+    // Following constructors and assignment operators not supported
+    Controller() = delete;
+    Controller(const Controller&) = delete;
+    Controller(Controller&&) = delete;
+    Controller& operator=(const Controller&) = delete;
+    Controller& operator=(Controller&&) = delete;
 };
 
 #endif

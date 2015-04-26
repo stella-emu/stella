@@ -167,6 +167,14 @@ class CartridgeEFSC : public Cartridge
 
     // The 128 bytes of RAM
     uInt8 myRAM[128];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeEFSC() = delete;
+    CartridgeEFSC(const CartridgeEFSC&) = delete;
+    CartridgeEFSC(CartridgeEFSC&&) = delete;
+    CartridgeEFSC& operator=(const CartridgeEFSC&) = delete;
+    CartridgeEFSC& operator=(CartridgeEFSC&&) = delete;
 };
 
 #endif

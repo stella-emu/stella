@@ -54,6 +54,14 @@ class MessageBox : public Dialog, public CommandSender
 
   private:
     int myCmd;
+
+  private:
+    // Following constructors and assignment operators not supported
+    MessageBox() = delete;
+    MessageBox(const MessageBox&) = delete;
+    MessageBox(MessageBox&&) = delete;
+    MessageBox& operator=(const MessageBox&) = delete;
+    MessageBox& operator=(MessageBox&&) = delete;
 };
 
 }  // namespace GUI

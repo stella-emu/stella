@@ -67,6 +67,14 @@ class SnapshotDialog : public Dialog
 
     CheckboxWidget* mySnapSingle;
     CheckboxWidget* mySnap1x;
+
+  private:
+    // Following constructors and assignment operators not supported
+    SnapshotDialog() = delete;
+    SnapshotDialog(const SnapshotDialog&) = delete;
+    SnapshotDialog(SnapshotDialog&&) = delete;
+    SnapshotDialog& operator=(const SnapshotDialog&) = delete;
+    SnapshotDialog& operator=(SnapshotDialog&&) = delete;
 };
 
 #endif

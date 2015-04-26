@@ -113,6 +113,14 @@ class MindLink : public Controller
 
     // Whether to use the mouse to emulate this controller
     int myMouseEnabled;  
+
+  private:
+    // Following constructors and assignment operators not supported
+    MindLink() = delete;
+    MindLink(const MindLink&) = delete;
+    MindLink(MindLink&&) = delete;
+    MindLink& operator=(const MindLink&) = delete;
+    MindLink& operator=(MindLink&&) = delete;
 };
 
 #endif

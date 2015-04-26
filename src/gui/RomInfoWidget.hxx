@@ -67,6 +67,14 @@ class RomInfoWidget : public Widget
 
     // How much space available for the PNG image
     GUI::Size myAvail;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RomInfoWidget() = delete;
+    RomInfoWidget(const RomInfoWidget&) = delete;
+    RomInfoWidget(RomInfoWidget&&) = delete;
+    RomInfoWidget& operator=(const RomInfoWidget&) = delete;
+    RomInfoWidget& operator=(RomInfoWidget&&) = delete;
 };
 
 #endif

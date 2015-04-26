@@ -79,6 +79,14 @@ class UIDialog : public Dialog
       kDMediumSize = 'UIdm',
       kDLargeSize  = 'UIdl'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    UIDialog() = delete;
+    UIDialog(const UIDialog&) = delete;
+    UIDialog(UIDialog&&) = delete;
+    UIDialog& operator=(const UIDialog&) = delete;
+    UIDialog& operator=(UIDialog&&) = delete;
 };
 
 #endif

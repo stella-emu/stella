@@ -161,6 +161,14 @@ class CartridgeDF : public Cartridge
 
     // The 128K ROM image of the cartridge
     uInt8 myImage[32 * 4096];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeDF() = delete;
+    CartridgeDF(const CartridgeDF&) = delete;
+    CartridgeDF(CartridgeDF&&) = delete;
+    CartridgeDF& operator=(const CartridgeDF&) = delete;
+    CartridgeDF& operator=(CartridgeDF&&) = delete;
 };
 
 #endif

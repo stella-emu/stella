@@ -46,6 +46,13 @@ class OSystemMACOSX : public OSystem
     */
     string defaultSnapSaveDir();
     string defaultSnapLoadDir();
+
+  private:
+    // Following constructors and assignment operators not supported
+    OSystemMACOSX(const OSystemMACOSX&) = delete;
+    OSystemMACOSX(OSystemMACOSX&&) = delete;
+    OSystemMACOSX& operator=(const OSystemMACOSX&) = delete;
+    OSystemMACOSX& operator=(OSystemMACOSX&&) = delete;
 };
 
 #endif

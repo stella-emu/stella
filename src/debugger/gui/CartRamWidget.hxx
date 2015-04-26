@@ -106,6 +106,14 @@ class CartRamWidget : public Widget, public CommandSender
     IntArray mySearchAddr;
     IntArray mySearchValue;
     BoolArray mySearchState;  
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartRamWidget() = delete;
+    CartRamWidget(const CartRamWidget&) = delete;
+    CartRamWidget(CartRamWidget&&) = delete;
+    CartRamWidget& operator=(const CartRamWidget&) = delete;
+    CartRamWidget& operator=(CartRamWidget&&) = delete;
 };
 
 #endif

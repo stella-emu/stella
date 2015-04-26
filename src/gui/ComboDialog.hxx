@@ -49,6 +49,14 @@ class ComboDialog : public Dialog
 
     StaticTextWidget* myComboName;
     PopUpWidget*      myEvents[8];
+
+  private:
+    // Following constructors and assignment operators not supported
+    ComboDialog() = delete;
+    ComboDialog(const ComboDialog&) = delete;
+    ComboDialog(ComboDialog&&) = delete;
+    ComboDialog& operator=(const ComboDialog&) = delete;
+    ComboDialog& operator=(ComboDialog&&) = delete;
 };
 
 #endif

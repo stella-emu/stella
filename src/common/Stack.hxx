@@ -34,7 +34,7 @@ template <class T, int MAX_SIZE = 50>
 class FixedStack
 {
   public:
-    FixedStack<T, MAX_SIZE>() : _size(0) {}
+    FixedStack<T, MAX_SIZE>() : _size(0) { }
 
     bool empty() const { return _size <= 0; }
     bool full() const  { return _size >= MAX_SIZE; }
@@ -66,6 +66,13 @@ class FixedStack
   protected:
     T   _stack[MAX_SIZE];
     int _size;
+
+  private:
+    // Following constructors and assignment operators not supported
+    FixedStack(const FixedStack&) = delete;
+    FixedStack(FixedStack&&) = delete;
+    FixedStack& operator=(const FixedStack&) = delete;
+    FixedStack& operator=(FixedStack&&) = delete;
 };
 
 }  // Namespace Common

@@ -62,6 +62,14 @@ class TiaZoomWidget : public Widget, public CommandSender
 
     bool myMouseMoving;
     int myXClick, myYClick;
+
+  private:
+    // Following constructors and assignment operators not supported
+    TiaZoomWidget() = delete;
+    TiaZoomWidget(const TiaZoomWidget&) = delete;
+    TiaZoomWidget(TiaZoomWidget&&) = delete;
+    TiaZoomWidget& operator=(const TiaZoomWidget&) = delete;
+    TiaZoomWidget& operator=(TiaZoomWidget&&) = delete;
 };
 
 #endif

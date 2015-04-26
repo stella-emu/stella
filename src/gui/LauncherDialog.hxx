@@ -129,6 +129,14 @@ class LauncherDialog : public Dialog
       kFirstRunMsgChosenCmd   = 'frmc',
       kStartupRomDirChosenCmd = 'rmsc'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    LauncherDialog() = delete;
+    LauncherDialog(const LauncherDialog&) = delete;
+    LauncherDialog(LauncherDialog&&) = delete;
+    LauncherDialog& operator=(const LauncherDialog&) = delete;
+    LauncherDialog& operator=(LauncherDialog&&) = delete;
 };
 
 #endif

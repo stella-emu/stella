@@ -175,6 +175,14 @@ class TIADebug : public DebuggerSystem
     TIA& myTIA;
 
     string nusizStrings[8];
+
+  private:
+    // Following constructors and assignment operators not supported
+    TIADebug() = delete;
+    TIADebug(const TIADebug&) = delete;
+    TIADebug(TIADebug&&) = delete;
+    TIADebug& operator=(const TIADebug&) = delete;
+    TIADebug& operator=(TIADebug&&) = delete;
 };
 
 #endif

@@ -193,6 +193,14 @@ class DebuggerParser
 
     // List of commands available
     static Command commands[kNumCommands];
+
+  private:
+    // Following constructors and assignment operators not supported
+    DebuggerParser() = delete;
+    DebuggerParser(const DebuggerParser&) = delete;
+    DebuggerParser(DebuggerParser&&) = delete;
+    DebuggerParser& operator=(const DebuggerParser&) = delete;
+    DebuggerParser& operator=(DebuggerParser&&) = delete;
 };
 
 #endif

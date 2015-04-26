@@ -179,6 +179,14 @@ class SoundNull : public Sound
       @return The name of the object
     */
     string name() const { return "TIASound"; }
+
+  private:
+    // Following constructors and assignment operators not supported
+    SoundNull() = delete;
+    SoundNull(const SoundNull&) = delete;
+    SoundNull(SoundNull&&) = delete;
+    SoundNull& operator=(const SoundNull&) = delete;
+    SoundNull& operator=(SoundNull&&) = delete;
 };
 
 #endif

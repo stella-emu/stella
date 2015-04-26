@@ -127,6 +127,13 @@ class Event
 
     // Array of keyboard key states
     bool myKeyTable[KBDK_LAST];
+
+  private:
+    // Following constructors and assignment operators not supported
+    Event(const Event&) = delete;
+    Event(Event&&) = delete;
+    Event& operator=(const Event&) = delete;
+    Event& operator=(Event&&) = delete;
 };
 
 #endif

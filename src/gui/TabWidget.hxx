@@ -29,7 +29,7 @@ class TabWidget : public Widget, public CommandSender
 {
   public:
     TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
-    ~TabWidget();
+    virtual ~TabWidget();
 
     virtual int getChildY() const;
 
@@ -95,6 +95,14 @@ class TabWidget : public Widget, public CommandSender
              uInt32 colorA, uInt32 colorB, bool omitBottom);
 
     void updateActiveTab();
+
+  private:
+    // Following constructors and assignment operators not supported
+    TabWidget() = delete;
+    TabWidget(const TabWidget&) = delete;
+    TabWidget(TabWidget&&) = delete;
+    TabWidget& operator=(const TabWidget&) = delete;
+    TabWidget& operator=(TabWidget&&) = delete;
 };
 
 #endif

@@ -589,9 +589,11 @@ class OSystem
     void validatePath(string& path, const string& setting,
                       const string& defaultpath);
 
-    // Copy constructor and assignment operator not supported
-    OSystem(const OSystem&);
-    OSystem& operator = (const OSystem&);
+    // Following constructors and assignment operators not supported
+    OSystem(const OSystem&) = delete;
+    OSystem(OSystem&&) = delete;
+    OSystem& operator=(const OSystem&) = delete;
+    OSystem& operator=(OSystem&&) = delete;
 };
 
 #endif

@@ -71,6 +71,14 @@ class Keyboard : public Controller
                 myFourEvent, myFiveEvent, mySixEvent,
                 mySevenEvent, myEightEvent, myNineEvent,
                 myStarEvent, myZeroEvent, myPoundEvent;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Keyboard() = delete;
+    Keyboard(const Keyboard&) = delete;
+    Keyboard(Keyboard&&) = delete;
+    Keyboard& operator=(const Keyboard&) = delete;
+    Keyboard& operator=(Keyboard&&) = delete;
 };
 
 #endif

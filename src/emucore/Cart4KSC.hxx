@@ -144,6 +144,14 @@ class Cartridge4KSC : public Cartridge
 
     // The 128 bytes of RAM
     uInt8 myRAM[128];
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge4KSC() = delete;
+    Cartridge4KSC(const Cartridge4KSC&) = delete;
+    Cartridge4KSC(Cartridge4KSC&&) = delete;
+    Cartridge4KSC& operator=(const Cartridge4KSC&) = delete;
+    Cartridge4KSC& operator=(Cartridge4KSC&&) = delete;
 };
 
 #endif

@@ -51,6 +51,14 @@ class DrivingWidget : public ControllerWidget
     int myGreyIndex;
 
     static uInt8 ourGreyTable[4];
+
+  private:
+    // Following constructors and assignment operators not supported
+    DrivingWidget() = delete;
+    DrivingWidget(const DrivingWidget&) = delete;
+    DrivingWidget(DrivingWidget&&) = delete;
+    DrivingWidget& operator=(const DrivingWidget&) = delete;
+    DrivingWidget& operator=(DrivingWidget&&) = delete;
 };
 
 #endif

@@ -212,6 +212,14 @@ class DialogContainer
       int count;   // How often was it already pressed?
       uInt64 time; // Time
     } myLastClick;
+
+  private:
+    // Following constructors and assignment operators not supported
+    DialogContainer() = delete;
+    DialogContainer(const DialogContainer&) = delete;
+    DialogContainer(DialogContainer&&) = delete;
+    DialogContainer& operator=(const DialogContainer&) = delete;
+    DialogContainer& operator=(DialogContainer&&) = delete;
 };
 
 #endif

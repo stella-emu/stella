@@ -92,6 +92,14 @@ class SaveKey : public Controller
   private:
     // The EEPROM used in the SaveKey
     unique_ptr<MT24LC256> myEEPROM;
+
+  private:
+    // Following constructors and assignment operators not supported
+    SaveKey() = delete;
+    SaveKey(const SaveKey&) = delete;
+    SaveKey(SaveKey&&) = delete;
+    SaveKey& operator=(const SaveKey&) = delete;
+    SaveKey& operator=(SaveKey&&) = delete;
 };
 
 #endif

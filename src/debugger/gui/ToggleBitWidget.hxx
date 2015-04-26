@@ -39,6 +39,14 @@ class ToggleBitWidget : public ToggleWidget
   protected:
     StringList  _offList;
     StringList  _onList;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ToggleBitWidget() = delete;
+    ToggleBitWidget(const ToggleBitWidget&) = delete;
+    ToggleBitWidget(ToggleBitWidget&&) = delete;
+    ToggleBitWidget& operator=(const ToggleBitWidget&) = delete;
+    ToggleBitWidget& operator=(ToggleBitWidget&&) = delete;
 };
 
 #endif

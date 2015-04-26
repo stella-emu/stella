@@ -156,6 +156,14 @@ class Dialog : public GuiObject
     shared_ptr<FBSurface> _surface;
 
     int _tabID;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Dialog() = delete;
+    Dialog(const Dialog&) = delete;
+    Dialog(Dialog&&) = delete;
+    Dialog& operator=(const Dialog&) = delete;
+    Dialog& operator=(Dialog&&) = delete;
 };
 
 #endif

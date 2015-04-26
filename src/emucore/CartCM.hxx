@@ -253,6 +253,14 @@ class CartridgeCM : public Cartridge
 
     // Current copy of SWCHA (controls ROM/RAM accesses)
     uInt8 mySWCHA;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeCM() = delete;
+    CartridgeCM(const CartridgeCM&) = delete;
+    CartridgeCM(CartridgeCM&&) = delete;
+    CartridgeCM& operator=(const CartridgeCM&) = delete;
+    CartridgeCM& operator=(CartridgeCM&&) = delete;
 };
 
 #endif

@@ -65,6 +65,13 @@ class SerialPort
       Close a previously opened serial port.
     */
     virtual void closePort() { }
+
+  private:
+    // Following constructors and assignment operators not supported
+    SerialPort(const SerialPort&) = delete;
+    SerialPort(SerialPort&&) = delete;
+    SerialPort& operator=(const SerialPort&) = delete;
+    SerialPort& operator=(SerialPort&&) = delete;
 };
 
 #endif

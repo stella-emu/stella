@@ -100,6 +100,14 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // Indicates that the default properties have been loaded
     bool myDefaultsSelected;
+
+  private:
+    // Following constructors and assignment operators not supported
+    GameInfoDialog() = delete;
+    GameInfoDialog(const GameInfoDialog&) = delete;
+    GameInfoDialog(GameInfoDialog&&) = delete;
+    GameInfoDialog& operator=(const GameInfoDialog&) = delete;
+    GameInfoDialog& operator=(GameInfoDialog&&) = delete;
 };
 
 #endif

@@ -38,6 +38,14 @@ class StringListWidget : public ListWidget
 
   protected:
     bool _hilite;
+
+  private:
+    // Following constructors and assignment operators not supported
+    StringListWidget() = delete;
+    StringListWidget(const StringListWidget&) = delete;
+    StringListWidget(StringListWidget&&) = delete;
+    StringListWidget& operator=(const StringListWidget&) = delete;
+    StringListWidget& operator=(StringListWidget&&) = delete;
 };
 
 #endif

@@ -36,6 +36,14 @@ class SettingsWINDOWS : public Settings
       Destructor
     */
     virtual ~SettingsWINDOWS();
+
+  private:
+    // Following constructors and assignment operators not supported
+    SettingsWINDOWS() = delete;
+    SettingsWINDOWS(const SettingsWINDOWS&) = delete;
+    SettingsWINDOWS(SettingsWINDOWS&&) = delete;
+    SettingsWINDOWS& operator=(const SettingsWINDOWS&) = delete;
+    SettingsWINDOWS& operator=(SettingsWINDOWS&&) = delete;
 };
 
 #endif

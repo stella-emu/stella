@@ -99,6 +99,14 @@ class RiotDebug : public DebuggerSystem
   private:
     RiotState myState;
     RiotState myOldState;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RiotDebug() = delete;
+    RiotDebug(const RiotDebug&) = delete;
+    RiotDebug(RiotDebug&&) = delete;
+    RiotDebug& operator=(const RiotDebug&) = delete;
+    RiotDebug& operator=(RiotDebug&&) = delete;
 };
 
 #endif

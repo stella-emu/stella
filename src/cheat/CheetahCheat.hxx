@@ -37,6 +37,14 @@ class CheetahCheat : public Cheat
     uInt16 address;
     uInt8  value;
     uInt8  count;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CheetahCheat() = delete;
+    CheetahCheat(const CheetahCheat&) = delete;
+    CheetahCheat(CheetahCheat&&) = delete;
+    CheetahCheat& operator=(const CheetahCheat&) = delete;
+    CheetahCheat& operator=(CheetahCheat&&) = delete;
 };
 
 #endif

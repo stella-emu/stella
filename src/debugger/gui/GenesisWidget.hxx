@@ -39,6 +39,14 @@ class GenesisWidget : public ControllerWidget
 
     CheckboxWidget* myPins[6];
     static Controller::DigitalPin ourPinNo[5];
+
+  private:
+    // Following constructors and assignment operators not supported
+    GenesisWidget() = delete;
+    GenesisWidget(const GenesisWidget&) = delete;
+    GenesisWidget(GenesisWidget&&) = delete;
+    GenesisWidget& operator=(const GenesisWidget&) = delete;
+    GenesisWidget& operator=(GenesisWidget&&) = delete;
 };
 
 #endif

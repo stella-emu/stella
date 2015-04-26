@@ -200,6 +200,14 @@ class CartridgeE7 : public Cartridge
 
     // The 2048 bytes of RAM
     uInt8 myRAM[2048];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeE7() = delete;
+    CartridgeE7(const CartridgeE7&) = delete;
+    CartridgeE7(CartridgeE7&&) = delete;
+    CartridgeE7& operator=(const CartridgeE7&) = delete;
+    CartridgeE7& operator=(CartridgeE7&&) = delete;
 };
 
 #endif

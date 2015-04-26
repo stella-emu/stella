@@ -162,6 +162,14 @@ class CartridgeF8 : public Cartridge
 
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeF8() = delete;
+    CartridgeF8(const CartridgeF8&) = delete;
+    CartridgeF8(CartridgeF8&&) = delete;
+    CartridgeF8& operator=(const CartridgeF8&) = delete;
+    CartridgeF8& operator=(CartridgeF8&&) = delete;
 };
 
 #endif

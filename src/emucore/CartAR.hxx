@@ -233,6 +233,14 @@ class CartridgeAR : public Cartridge
     // Default 256-byte header to use if one isn't included in the ROM
     // This data comes from z26
     static const uInt8 ourDefaultHeader[256];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeAR() = delete;
+    CartridgeAR(const CartridgeAR&) = delete;
+    CartridgeAR(CartridgeAR&&) = delete;
+    CartridgeAR& operator=(const CartridgeAR&) = delete;
+    CartridgeAR& operator=(CartridgeAR&&) = delete;
 };
 
 #endif

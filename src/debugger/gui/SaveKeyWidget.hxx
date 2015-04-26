@@ -38,6 +38,14 @@ class SaveKeyWidget : public ControllerWidget
   private:
     ButtonWidget* myEEPROMErase;
     enum { kEEPROMErase  = 'eeER' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    SaveKeyWidget() = delete;
+    SaveKeyWidget(const SaveKeyWidget&) = delete;
+    SaveKeyWidget(SaveKeyWidget&&) = delete;
+    SaveKeyWidget& operator=(const SaveKeyWidget&) = delete;
+    SaveKeyWidget& operator=(SaveKeyWidget&&) = delete;
 };
 
 #endif

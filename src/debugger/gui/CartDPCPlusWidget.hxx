@@ -88,6 +88,14 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeDPCPlusWidget() = delete;
+    CartridgeDPCPlusWidget(const CartridgeDPCPlusWidget&) = delete;
+    CartridgeDPCPlusWidget(CartridgeDPCPlusWidget&&) = delete;
+    CartridgeDPCPlusWidget& operator=(const CartridgeDPCPlusWidget&) = delete;
+    CartridgeDPCPlusWidget& operator=(CartridgeDPCPlusWidget&&) = delete;
 };
 
 #endif

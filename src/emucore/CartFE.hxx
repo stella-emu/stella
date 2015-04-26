@@ -189,6 +189,14 @@ class CartridgeFE : public Cartridge
 
     // Last two addresses have been modified by peek()
     bool myLastAddressChanged;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeFE() = delete;
+    CartridgeFE(const CartridgeFE&) = delete;
+    CartridgeFE(CartridgeFE&&) = delete;
+    CartridgeFE& operator=(const CartridgeFE&) = delete;
+    CartridgeFE& operator=(CartridgeFE&&) = delete;
 };
 
 #endif

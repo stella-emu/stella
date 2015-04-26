@@ -59,6 +59,13 @@ class SerialPortMACOSX : public SerialPort
   private:
     // File descriptor for serial connection
     int myHandle;
+
+  private:
+    // Following constructors and assignment operators not supported
+    SerialPortMACOSX(const SerialPortMACOSX&) = delete;
+    SerialPortMACOSX(SerialPortMACOSX&&) = delete;
+    SerialPortMACOSX& operator=(const SerialPortMACOSX&) = delete;
+    SerialPortMACOSX& operator=(SerialPortMACOSX&&) = delete;
 };
 
 #endif

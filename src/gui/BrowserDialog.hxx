@@ -73,6 +73,14 @@ class BrowserDialog : public Dialog, public CommandSender
     ButtonWidget*     _basedirButton;
 
     BrowserDialog::ListMode _mode;
+
+  private:
+    // Following constructors and assignment operators not supported
+    BrowserDialog() = delete;
+    BrowserDialog(const BrowserDialog&) = delete;
+    BrowserDialog(BrowserDialog&&) = delete;
+    BrowserDialog& operator=(const BrowserDialog&) = delete;
+    BrowserDialog& operator=(BrowserDialog&&) = delete;
 };
 
 #endif

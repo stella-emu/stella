@@ -39,6 +39,14 @@ class JoystickWidget : public ControllerWidget
 
     CheckboxWidget* myPins[5];
     static Controller::DigitalPin ourPinNo[5];
+
+  private:
+    // Following constructors and assignment operators not supported
+    JoystickWidget() = delete;
+    JoystickWidget(const JoystickWidget&) = delete;
+    JoystickWidget(JoystickWidget&&) = delete;
+    JoystickWidget& operator=(const JoystickWidget&) = delete;
+    JoystickWidget& operator=(JoystickWidget&&) = delete;
 };
 
 #endif

@@ -42,6 +42,13 @@ class Expression
 
   protected:
     unique_ptr<Expression> myLHS, myRHS;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Expression(const Expression&) = delete;
+    Expression(Expression&&) = delete;
+    Expression& operator=(const Expression&) = delete;
+    Expression& operator=(Expression&&) = delete;
 };
 
 static const Expression EmptyExpression;

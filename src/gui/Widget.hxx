@@ -157,6 +157,14 @@ class Widget : public GuiObject
 
     /** Sets all widgets in this chain to be dirty (must be redrawn) */
     static void setDirtyInChain(Widget* start);
+
+  private:
+    // Following constructors and assignment operators not supported
+    Widget() = delete;
+    Widget(const Widget&) = delete;
+    Widget(Widget&&) = delete;
+    Widget& operator=(const Widget&) = delete;
+    Widget& operator=(Widget&&) = delete;
 };
 
 
@@ -179,6 +187,14 @@ class StaticTextWidget : public Widget
     string        _label;
     bool          _editable;
     TextAlignment _align;
+
+  private:
+    // Following constructors and assignment operators not supported
+    StaticTextWidget() = delete;
+    StaticTextWidget(const StaticTextWidget&) = delete;
+    StaticTextWidget(StaticTextWidget&&) = delete;
+    StaticTextWidget& operator=(const StaticTextWidget&) = delete;
+    StaticTextWidget& operator=(StaticTextWidget&&) = delete;
 };
 
 
@@ -203,6 +219,14 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 
   protected:
     int    _cmd;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ButtonWidget() = delete;
+    ButtonWidget(const ButtonWidget&) = delete;
+    ButtonWidget(ButtonWidget&&) = delete;
+    ButtonWidget& operator=(const ButtonWidget&) = delete;
+    ButtonWidget& operator=(ButtonWidget&&) = delete;
 };
 
 
@@ -245,6 +269,14 @@ class CheckboxWidget : public ButtonWidget
   private:
     int _boxY;
     int _textY;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CheckboxWidget() = delete;
+    CheckboxWidget(const CheckboxWidget&) = delete;
+    CheckboxWidget(CheckboxWidget&&) = delete;
+    CheckboxWidget& operator=(const CheckboxWidget&) = delete;
+    CheckboxWidget& operator=(CheckboxWidget&&) = delete;
 };
 
 
@@ -283,6 +315,14 @@ class SliderWidget : public ButtonWidget
     int  _valueMin, _valueMax;
     bool _isDragging;
     int  _labelWidth;
+
+  private:
+    // Following constructors and assignment operators not supported
+    SliderWidget() = delete;
+    SliderWidget(const SliderWidget&) = delete;
+    SliderWidget(SliderWidget&&) = delete;
+    SliderWidget& operator=(const SliderWidget&) = delete;
+    SliderWidget& operator=(SliderWidget&&) = delete;
 };
 
 #endif

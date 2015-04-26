@@ -68,6 +68,14 @@ class RomAuditDialog : public Dialog
 
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;
+
+  private:
+    // Following constructors and assignment operators not supported
+    RomAuditDialog() = delete;
+    RomAuditDialog(const RomAuditDialog&) = delete;
+    RomAuditDialog(RomAuditDialog&&) = delete;
+    RomAuditDialog& operator=(const RomAuditDialog&) = delete;
+    RomAuditDialog& operator=(RomAuditDialog&&) = delete;
 };
 
 #endif

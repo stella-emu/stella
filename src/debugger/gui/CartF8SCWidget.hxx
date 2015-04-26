@@ -61,6 +61,14 @@ class CartridgeF8SCWidget : public CartDebugWidget
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeF8SCWidget() = delete;
+    CartridgeF8SCWidget(const CartridgeF8SCWidget&) = delete;
+    CartridgeF8SCWidget(CartridgeF8SCWidget&&) = delete;
+    CartridgeF8SCWidget& operator=(const CartridgeF8SCWidget&) = delete;
+    CartridgeF8SCWidget& operator=(CartridgeF8SCWidget&&) = delete;
 };
 
 #endif

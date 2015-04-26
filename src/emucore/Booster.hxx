@@ -83,6 +83,14 @@ class BoosterGrip : public Controller
 
     // Controller to emulate in normal mouse axis mode
     int myControlID;  
+
+  private:
+    // Following constructors and assignment operators not supported
+    BoosterGrip() = delete;
+    BoosterGrip(const BoosterGrip&) = delete;
+    BoosterGrip(BoosterGrip&&) = delete;
+    BoosterGrip& operator=(const BoosterGrip&) = delete;
+    BoosterGrip& operator=(BoosterGrip&&) = delete;
 };
 
 #endif

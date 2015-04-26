@@ -53,6 +53,14 @@ class Cartridge4A50Widget : public CartDebugWidget
       kROMHighChanged   = 'rmHI',
       kRAMHighChanged   = 'raHI'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge4A50Widget() = delete;
+    Cartridge4A50Widget(const Cartridge4A50Widget&) = delete;
+    Cartridge4A50Widget(Cartridge4A50Widget&&) = delete;
+    Cartridge4A50Widget& operator=(const Cartridge4A50Widget&) = delete;
+    Cartridge4A50Widget& operator=(Cartridge4A50Widget&&) = delete;
 };
 
 #endif

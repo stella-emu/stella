@@ -388,6 +388,14 @@ class CartDebug : public DebuggerSystem
     static const char* ourTIAMnemonicW[64]; // write mode
     static const char* ourIOMnemonic[24];
     static const char* ourZPMnemonic[128];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartDebug() = delete;
+    CartDebug(const CartDebug&) = delete;
+    CartDebug(CartDebug&&) = delete;
+    CartDebug& operator=(const CartDebug&) = delete;
+    CartDebug& operator=(CartDebug&&) = delete;
 };
 
 #endif

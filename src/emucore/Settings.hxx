@@ -104,11 +104,6 @@ class Settings
     */
     virtual void saveConfig();
 
-  private:
-    // Copy constructor and assignment operator not supported
-    Settings(const Settings&);
-    Settings& operator = (const Settings&);
-
     // Trim leading and following whitespace from a string
     static string trim(string& str)
     {
@@ -153,6 +148,14 @@ class Settings
     // Holds auxiliary key,value pairs that shouldn't be saved on
     // program exit.
     SettingsArray myExternalSettings;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Settings() = delete;
+    Settings(const Settings&) = delete;
+    Settings(Settings&&) = delete;
+    Settings& operator=(const Settings&) = delete;
+    Settings& operator=(Settings&&) = delete;
 };
 
 #endif

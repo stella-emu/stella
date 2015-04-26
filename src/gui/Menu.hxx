@@ -42,6 +42,14 @@ class Menu : public DialogContainer
       Destructor
     */
     virtual ~Menu();
+
+  private:
+    // Following constructors and assignment operators not supported
+    Menu() = delete;
+    Menu(const Menu&) = delete;
+    Menu(Menu&&) = delete;
+    Menu& operator=(const Menu&) = delete;
+    Menu& operator=(Menu&&) = delete;
 };
 
 #endif

@@ -45,6 +45,8 @@
  documentation and/or software.
 */
 
+namespace MD5 {
+
 // Setup the types used by the MD5 routines
 using POINTER = uInt8*;
 
@@ -324,7 +326,7 @@ static void MD5_memset(POINTER output, int value, uInt32 len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string MD5(const uInt8* buffer, uInt32 length)
+string hash(const uInt8* buffer, uInt32 length)
 {
   char hex[] = "0123456789abcdef";
   MD5_CTX context;
@@ -345,7 +347,7 @@ string MD5(const uInt8* buffer, uInt32 length)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string MD5(const FilesystemNode& node)
+string hash(const FilesystemNode& node)
 {
   uInt8* image = nullptr;
   uInt32 size = 0;
@@ -358,7 +360,9 @@ string MD5(const FilesystemNode& node)
     return EmptyString;
   }
 
-  const string& md5 = MD5(image, size);
+  const string& md5 = hash(image, size);
   delete[] image;
   return md5;
 }
+
+}  // Namespace MD5

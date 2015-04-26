@@ -195,6 +195,14 @@ class Cartridge3E : public Cartridge
 
     // Size of the ROM image
     uInt32 mySize;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge3E() = delete;
+    Cartridge3E(const Cartridge3E&) = delete;
+    Cartridge3E(Cartridge3E&&) = delete;
+    Cartridge3E& operator=(const Cartridge3E&) = delete;
+    Cartridge3E& operator=(Cartridge3E&&) = delete;
 };
 
 #endif

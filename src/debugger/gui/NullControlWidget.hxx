@@ -49,6 +49,14 @@ class NullControlWidget : public ControllerWidget
     }
 
     virtual ~NullControlWidget() { };
+
+  private:
+    // Following constructors and assignment operators not supported
+    NullControlWidget() = delete;
+    NullControlWidget(const NullControlWidget&) = delete;
+    NullControlWidget(NullControlWidget&&) = delete;
+    NullControlWidget& operator=(const NullControlWidget&) = delete;
+    NullControlWidget& operator=(NullControlWidget&&) = delete;
 };
 
 #endif

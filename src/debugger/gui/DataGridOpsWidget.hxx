@@ -51,6 +51,14 @@ class DataGridOpsWidget : public Widget, public CommandSender
     ButtonWidget* _decButton;
     ButtonWidget* _shiftLeftButton;
     ButtonWidget* _shiftRightButton;
+
+  private:
+    // Following constructors and assignment operators not supported
+    DataGridOpsWidget() = delete;
+    DataGridOpsWidget(const DataGridOpsWidget&) = delete;
+    DataGridOpsWidget(DataGridOpsWidget&&) = delete;
+    DataGridOpsWidget& operator=(const DataGridOpsWidget&) = delete;
+    DataGridOpsWidget& operator=(DataGridOpsWidget&&) = delete;
 };
 
 #endif

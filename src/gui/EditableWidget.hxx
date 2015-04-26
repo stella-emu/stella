@@ -113,6 +113,14 @@ class EditableWidget : public Widget, public CommandSender
 
   private:
     TextFilter _filter;
+
+  private:
+    // Following constructors and assignment operators not supported
+    EditableWidget() = delete;
+    EditableWidget(const EditableWidget&) = delete;
+    EditableWidget(EditableWidget&&) = delete;
+    EditableWidget& operator=(const EditableWidget&) = delete;
+    EditableWidget& operator=(EditableWidget&&) = delete;
 };
 
 #endif

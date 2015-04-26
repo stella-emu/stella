@@ -109,6 +109,14 @@ class KidVid : public Controller
 
     static const uInt8 ourSongPositions[44+38+42+62+80+62];
     static const uInt32 ourSongStart[104];
+
+  private:
+    // Following constructors and assignment operators not supported
+    KidVid() = delete;
+    KidVid(const KidVid&) = delete;
+    KidVid(KidVid&&) = delete;
+    KidVid& operator=(const KidVid&) = delete;
+    KidVid& operator=(KidVid&&) = delete;
 };
 
 #endif

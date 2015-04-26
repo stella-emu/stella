@@ -133,6 +133,14 @@ class VideoDialog : public Dialog
       kCloneBadCmd         = 'CLbd',
       kCloneCustomCmd      = 'CLcu'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    VideoDialog() = delete;
+    VideoDialog(const VideoDialog&) = delete;
+    VideoDialog(VideoDialog&&) = delete;
+    VideoDialog& operator=(const VideoDialog&) = delete;
+    VideoDialog& operator=(VideoDialog&&) = delete;
 };
 
 #endif

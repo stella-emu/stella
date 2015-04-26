@@ -55,7 +55,14 @@ class CartridgeCVWidget : public CartDebugWidget
       ByteArray internalram;
     };  
     CartState myOldState; 
-  
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeCVWidget() = delete;
+    CartridgeCVWidget(const CartridgeCVWidget&) = delete;
+    CartridgeCVWidget(CartridgeCVWidget&&) = delete;
+    CartridgeCVWidget& operator=(const CartridgeCVWidget&) = delete;
+    CartridgeCVWidget& operator=(CartridgeCVWidget&&) = delete;
 };
 
 #endif

@@ -61,6 +61,14 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     CheckboxWidget* myHoldReset;
 
     static const char* ourJoyState[10];
+
+  private:
+    // Following constructors and assignment operators not supported
+    GlobalPropsDialog() = delete;
+    GlobalPropsDialog(const GlobalPropsDialog&) = delete;
+    GlobalPropsDialog(GlobalPropsDialog&&) = delete;
+    GlobalPropsDialog& operator=(const GlobalPropsDialog&) = delete;
+    GlobalPropsDialog& operator=(GlobalPropsDialog&&) = delete;
 };
 
 #endif

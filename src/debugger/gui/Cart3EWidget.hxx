@@ -65,6 +65,14 @@ class Cartridge3EWidget : public CartDebugWidget
       kROMBankChanged = 'rmCH',
       kRAMBankChanged = 'raCH'
     };
+
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge3EWidget() = delete;
+    Cartridge3EWidget(const Cartridge3EWidget&) = delete;
+    Cartridge3EWidget(Cartridge3EWidget&&) = delete;
+    Cartridge3EWidget& operator=(const Cartridge3EWidget&) = delete;
+    Cartridge3EWidget& operator=(Cartridge3EWidget&&) = delete;
 };
 
 #endif

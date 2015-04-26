@@ -174,6 +174,14 @@ class TIASurface
 
     // Palette for phosphor rendering mode
     uInt32 myPhosphorPalette[256][256];
+
+  private:
+    // Following constructors and assignment operators not supported
+    TIASurface() = delete;
+    TIASurface(const TIASurface&) = delete;
+    TIASurface(TIASurface&&) = delete;
+    TIASurface& operator=(const TIASurface&) = delete;
+    TIASurface& operator=(TIASurface&&) = delete;
 };
 
 #endif

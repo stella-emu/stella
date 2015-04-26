@@ -161,6 +161,14 @@ class CartridgeBF : public Cartridge
 
     // The 256K ROM image of the cartridge
     uInt8 myImage[64 * 4096];
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeBF() = delete;
+    CartridgeBF(const CartridgeBF&) = delete;
+    CartridgeBF(CartridgeBF&&) = delete;
+    CartridgeBF& operator=(const CartridgeBF&) = delete;
+    CartridgeBF& operator=(CartridgeBF&&) = delete;
 };
 
 #endif

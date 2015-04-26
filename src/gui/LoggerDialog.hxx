@@ -47,6 +47,14 @@ class LoggerDialog : public Dialog
     StringListWidget* myLogInfo;
     PopUpWidget*      myLogLevel;
     CheckboxWidget*   myLogToConsole;
+
+  private:
+    // Following constructors and assignment operators not supported
+    LoggerDialog() = delete;
+    LoggerDialog(const LoggerDialog&) = delete;
+    LoggerDialog(LoggerDialog&&) = delete;
+    LoggerDialog& operator=(const LoggerDialog&) = delete;
+    LoggerDialog& operator=(LoggerDialog&&) = delete;
 };
 
 #endif

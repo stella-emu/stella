@@ -88,6 +88,14 @@ class InputDialog : public Dialog
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;
+
+  private:
+    // Following constructors and assignment operators not supported
+    InputDialog() = delete;
+    InputDialog(const InputDialog&) = delete;
+    InputDialog(InputDialog&&) = delete;
+    InputDialog& operator=(const InputDialog&) = delete;
+    InputDialog& operator=(InputDialog&&) = delete;
 };
 
 #endif

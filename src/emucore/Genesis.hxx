@@ -83,6 +83,14 @@ class Genesis : public Controller
 
     // Controller to emulate in normal mouse axis mode
     int myControlID;  
+
+  private:
+    // Following constructors and assignment operators not supported
+    Genesis() = delete;
+    Genesis(const Genesis&) = delete;
+    Genesis(Genesis&&) = delete;
+    Genesis& operator=(const Genesis&) = delete;
+    Genesis& operator=(Genesis&&) = delete;
 };
 
 #endif

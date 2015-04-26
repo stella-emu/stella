@@ -124,6 +124,14 @@ class MediaFactory
     {
       return make_ptr<EventHandlerSDL2>(osystem);
     }
+
+  private:
+    // Following constructors and assignment operators not supported
+    MediaFactory() = delete;
+    MediaFactory(const MediaFactory&) = delete;
+    MediaFactory(MediaFactory&&) = delete;
+    MediaFactory& operator=(const MediaFactory&) = delete;
+    MediaFactory& operator=(MediaFactory&&) = delete;
 };
 
 #endif
