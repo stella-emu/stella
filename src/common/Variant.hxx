@@ -49,28 +49,27 @@ class Variant
     Variant(const string& s) : data(s) { }
     Variant(const char* s) : data(s) { }
 
-    Variant(Int32 i) { buf().str(""); buf() << i; data = buf().str(); }
+    Variant(Int32 i)  { buf().str(""); buf() << i; data = buf().str(); }
     Variant(uInt32 i) { buf().str(""); buf() << i; data = buf().str(); }
-    Variant(float f) { buf().str(""); buf() << f; data = buf().str(); }
+    Variant(float f)  { buf().str(""); buf() << f; data = buf().str(); }
     Variant(double d) { buf().str(""); buf() << d; data = buf().str(); }
-    Variant(bool b) { buf().str(""); buf() << b; data = buf().str(); }
+    Variant(bool b)   { buf().str(""); buf() << b; data = buf().str(); }
     Variant(const GUI::Size& s) { buf().str(""); buf() << s; data = buf().str(); }
 
     // Conversion methods
-    const string& toString() const { return data; }
-    const char* toCString() const { return data.c_str(); }
-    const Int32 toInt() const { return atoi(data.c_str()); }
-    const float toFloat() const { return atof(data.c_str()); }
-    const bool toBool() const { return data == "1" || data == "true"; }
-    const GUI::Size toSize() const { return GUI::Size(data); }
+    const string& toString() const { return data;                          }
+    const char* toCString() const  { return data.c_str();                  }
+    const Int32 toInt() const      { return atoi(data.c_str());            }
+    const float toFloat() const    { return atof(data.c_str());            }
+    const bool toBool() const      { return data == "1" || data == "true"; }
+    const GUI::Size toSize() const { return GUI::Size(data);               }
 
     // Comparison
     bool operator==(const Variant& v) const { return data == v.data; };
     bool operator!=(const Variant& v) const { return data != v.data; };
 
     friend ostream& operator<<(ostream& os, const Variant& v) {
-      os << v.data;
-      return os;
+      return os << v.data;
     }
 };
 

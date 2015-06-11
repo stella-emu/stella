@@ -84,7 +84,9 @@ class Properties
       @param key  The key of the property to lookup
       @return     The value of the property 
     */
-    const string& get(PropertyType key) const;
+    const string& get(PropertyType key) const {
+      return key != LastPropType ? myProperties[key] : EmptyString;
+    }
 
     /**
       Set the value associated with key to the given value.
@@ -99,14 +101,14 @@ class Properties
 
       @param in The input stream to use
     */
-    void load(istream& in);
+    friend istream& operator>>(istream& is, Properties& p);
  
     /**
       Save properties to the specified output stream
 
       @param out The output stream to use
     */
-    void save(ostream& out) const;
+    friend ostream& operator<<(ostream& os, const Properties& p);
 
     /**
       Print the attributes of this properties object

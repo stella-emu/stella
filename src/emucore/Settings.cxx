@@ -200,8 +200,6 @@ void Settings::loadConfig()
     if(int idx = getInternalPos(key) != -1)
       setInternal(key, value, idx, true);
   }
-
-  in.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -263,7 +261,7 @@ string Settings::loadCommandLine(int argc, char** argv)
       return key;
   }
 
-  return "";
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -539,8 +537,6 @@ void Settings::saveConfig()
   // Write out each of the key and value pairs
   for(const auto& s: myInternalSettings)
     out << s.key << " = " << s.value << endl;
-
-  out.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

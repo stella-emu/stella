@@ -230,7 +230,7 @@ void CheatManager::enable(const string& code, bool enable)
 void CheatManager::loadCheatDatabase()
 {
   const string& cheatfile = myOSystem.cheatFile();
-  ifstream in(cheatfile.c_str(), ios::in);
+  ifstream in(cheatfile.c_str());
   if(!in)
     return;
 
@@ -260,7 +260,6 @@ void CheatManager::loadCheatDatabase()
     myCheatMap.insert(make_pair(md5, cheat));
   }
 
-  in.close();
   myListIsDirty = false;
 }
 
@@ -271,14 +270,12 @@ void CheatManager::saveCheatDatabase()
     return;
 
   const string& cheatfile = myOSystem.cheatFile();
-  ofstream out(cheatfile.c_str(), ios::out);
+  ofstream out(cheatfile.c_str());
   if(!out)
     return;
 
   for(const auto& iter: myCheatMap)
     out << "\"" << iter.first << "\" " << "\"" << iter.second << "\"" << endl;
-
-  out.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

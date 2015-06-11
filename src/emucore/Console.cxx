@@ -757,7 +757,6 @@ void Console::loadUserPalette()
   in.seekg(0, ios::beg);
   if(length < 128 * 3 * 2 + 8 * 3)
   {
-    in.close();
     cerr << "ERROR: invalid palette file " << palette << endl;
     return;
   }
@@ -794,7 +793,6 @@ void Console::loadUserPalette()
       *ptr++ = *s++;
   }
 
-  in.close();
   myUserPaletteDefined = true;
 }
 

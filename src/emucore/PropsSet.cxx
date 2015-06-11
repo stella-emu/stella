@@ -37,7 +37,7 @@ PropertiesSet::PropertiesSet(const string& propsfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::load(const string& filename)
 {
-  ifstream in(filename.c_str(), ios::in);
+  ifstream in(filename.c_str());
 
   // Loop reading properties
   for(;;)
@@ -48,26 +48,24 @@ void PropertiesSet::load(const string& filename)
 
     // Get the property list associated with this profile
     Properties prop;
-    prop.load(in);
+    in >> prop;
 
     // If the stream is still good then insert the properties
     if(in)
       insert(prop);
   }
-  if(in)
-    in.close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PropertiesSet::save(const string& filename) const
 {
-  ofstream out(filename.c_str(), ios::out);
+  ofstream out(filename.c_str());
   if(!out)
     return false;
 
   // Only save those entries in the external list
   for(const auto& i: myExternalProps)
-    i.second.save(out);
+    out << i.second;
 
   return true;
 }
@@ -196,10 +194,8 @@ void PropertiesSet::print() const
   // The easiest way to merge the lists is to create another temporary one
   // This isn't fast, but I suspect this method isn't used too often (or at all)
 
-  PropsList list;
-
   // First insert all external props
-  list = myExternalProps;
+  PropsList list = myExternalProps;
 
   // Now insert all the built-in ones
   // Note that if we try to insert a duplicate, the insertion will fail

@@ -619,9 +619,7 @@ bool DebuggerParser::saveScriptFile(string file)
   for(const auto& cond: conds)
     out << "breakif {" << cond << "}" << endl;
 
-  bool ok = out.good();
-  out.close();
-  return ok;
+  return out.good();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

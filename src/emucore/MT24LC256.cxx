@@ -85,7 +85,6 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
       in.read((char*)myData, 32768);
       myDataFileExists = true;
     }
-    in.close();
   }
   else
     myDataFileExists = false;
@@ -100,13 +99,9 @@ MT24LC256::~MT24LC256()
   // Save EEPROM data to external file only when necessary
   if(!myDataFileExists || myDataChanged)
   {
-    ofstream out;
-    out.open(myDataFile.c_str(), ios_base::binary);
+    ofstream out(myDataFile.c_str(), ios_base::binary);
     if(out.is_open())
-    {
       out.write((char*)myData, 32768);
-      out.close();
-    }
   }
 }
 

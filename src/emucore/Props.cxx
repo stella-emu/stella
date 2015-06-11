@@ -37,18 +37,9 @@ Properties::Properties(const Properties& properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& Properties::get(PropertyType key) const
-{
-  if(key >= 0 && key < LastPropType)
-    return myProperties[key];
-  else
-    return EmptyString;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::set(PropertyType key, const string& value)
 {
-  if(key >= 0 && key < LastPropType)
+  if(key != LastPropType)
   {
     myProperties[key] = value;
 
@@ -91,52 +82,54 @@ void Properties::set(PropertyType key, const string& value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::load(istream& in)
+istream& operator>>(istream& is, Properties& p)
 {
-  setDefaults();
+  p.setDefaults();
 
   // Loop reading properties
   string key, value;
   for(;;)
   {
     // Get the key associated with this property
-    key = readQuotedString(in);
+    key = p.readQuotedString(is);
 
     // Make sure the stream is still okay
-    if(!in)
-      return;
+    if(!is)
+      return is;
 
     // A null key signifies the end of the property list
     if(key == "")
       break;
 
     // Get the value associated with this property
-    value = readQuotedString(in);
+    value = p.readQuotedString(is);
 
     // Make sure the stream is still okay
-    if(!in)
-      return;
+    if(!is)
+      return is;
 
     // Set the property 
-    PropertyType type = getPropertyType(key);
-    set(type, value);
+    PropertyType type = Properties::getPropertyType(key);
+    p.set(type, value);
   }
+
+  return is;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::save(ostream& out) const
+ostream& operator<<(ostream& os, const Properties& p)
 {
   // Write out each of the key and value pairs
   bool changed = false;
   for(int i = 0; i < LastPropType; ++i)
   {
     // Try to save some space by only saving the items that differ from default
-    if(myProperties[i] != ourDefaultProperties[i])
+    if(p.myProperties[i] != Properties::ourDefaultProperties[i])
     {
-      writeQuotedString(out, ourPropertyNames[i]);
-      out.put(' ');
-      writeQuotedString(out, myProperties[i]);
-      out.put('\n');
+      p.writeQuotedString(os, Properties::ourPropertyNames[i]);
+      os.put(' ');
+      p.writeQuotedString(os, p.myProperties[i]);
+      os.put('\n');
       changed = true;
     }
   }
@@ -144,23 +137,22 @@ void Properties::save(ostream& out) const
   if(changed)
   {
     // Put a trailing null string so we know when to stop reading
-    writeQuotedString(out, "");
-    out.put('\n');
-    out.put('\n');
+    p.writeQuotedString(os, "");
+    os.put('\n');
+    os.put('\n');
   }
+
+  return os;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Properties::readQuotedString(istream& in)
 {
-  char c;
-
   // Read characters until we see a quote
+  char c;
   while(in.get(c))
-  {
     if(c == '"')
       break;
-  }
 
   // Read characters until we see the close quote
   string s;

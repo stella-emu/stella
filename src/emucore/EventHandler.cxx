@@ -518,11 +518,10 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
         {
           string filename = myOSystem.baseDir() +
               myOSystem.console().properties().get(Cartridge_Name) + ".pro";
-          ofstream out(filename.c_str(), ios::out);
+          ofstream out(filename.c_str());
           if(out)
           {
-            myOSystem.console().properties().save(out);
-            out.close();
+            out << myOSystem.console().properties();
             myOSystem.frameBuffer().showMessage("Properties saved");
           }
           else

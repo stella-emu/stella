@@ -729,7 +729,6 @@ string CartDebug::loadListFile()
       }
     }
   }
-  in.close();
   myDebugger.rom().invalidate();
 
   return "loaded " + node.getShortPath() + " OK";
@@ -785,7 +784,6 @@ string CartDebug::loadSymbolFile()
       }
     }
   }
-  in.close();
   myDebugger.rom().invalidate();
 
   return "loaded " + node.getShortPath() + " OK";
@@ -895,7 +893,6 @@ string CartDebug::loadConfigFile()
       }
     }
   }
-  in.close();
   myDebugger.rom().invalidate();
 
   return "loaded " + node.getShortPath() + " OK";
@@ -940,7 +937,6 @@ string CartDebug::saveConfigFile()
     out << "[" << b << "]" << endl;
     getBankDirectives(out, myBankInfo[b]);
   }
-  out.close();
 
   return "saved " + node.getShortPath() + " OK";
 }
@@ -1148,8 +1144,6 @@ string CartDebug::saveDisassembly()
   // And finally, output the disassembly
   out << buf.str();
 
-  out.close();
-
   return "saved " + node.getShortPath() + " OK";
 }
 
@@ -1160,7 +1154,7 @@ string CartDebug::saveRom()
     myConsole.properties().get(Cartridge_Name) + ".a26";
 
   FilesystemNode node(path);
-  ofstream out(node.getPath().c_str(), ios::out | ios::binary);
+  ofstream out(node.getPath().c_str(), ios::binary);
   if(out.is_open() && myConsole.cartridge().save(out))
     return "saved ROM as " + node.getShortPath();
   else

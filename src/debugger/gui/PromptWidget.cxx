@@ -854,7 +854,8 @@ bool PromptWidget::saveBuffer(string& filename)
   if(!out.is_open())
     return false;
 
-  for(int start=0; start<_promptStartPos; start+=_lineWidth) {
+  for(int start=0; start<_promptStartPos; start+=_lineWidth)
+  {
     int end = start+_lineWidth-1;
 
     // look for first non-space, printing char from end of line
@@ -863,14 +864,13 @@ bool PromptWidget::saveBuffer(string& filename)
 
     // spit out the line minus its trailing junk.
     // Strip off any color/inverse bits
-    for(int j=start; j<=end; j++)
+    for(int j = start; j <= end; ++j)
       out << char(_buffer[j] & 0xff);
 
     // add a \n
     out << endl;
   }
 
-  out.close();
   return true;
 }
 

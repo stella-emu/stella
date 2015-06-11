@@ -119,12 +119,9 @@ void LoggerDialog::saveLogFile()
   path << "~" << BSPF_PATH_SEPARATOR << "stella.log";
   FilesystemNode node(path.str());
 
-  ofstream out(node.getPath().c_str(), ios::out);
+  ofstream out(node.getPath().c_str());
   if(out.is_open())
-  {
     out << instance().logMessages();
-    out.close();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

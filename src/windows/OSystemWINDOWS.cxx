@@ -52,7 +52,6 @@ OSystemWINDOWS::OSystemWINDOWS()
     if(in && in.is_open())
     {
       getline(in, basedir);
-      in.close();
 
       // trim leading and trailing spaces
       size_t spos = basedir.find_first_not_of(" \t");
