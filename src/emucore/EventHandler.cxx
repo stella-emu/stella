@@ -1781,9 +1781,9 @@ void EventHandler::takeSnapshot(uInt32 number)
       const FBSurface& surface = myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
       myOSystem.png().saveImage(filename, surface, rect, comments);
     }
-    catch(const char* msg)
+    catch(const runtime_error& e)
     {
-      message = msg;
+      message = e.what();
     }
     if(showmessage)
       myOSystem.frameBuffer().showMessage(message);
@@ -1798,9 +1798,9 @@ void EventHandler::takeSnapshot(uInt32 number)
     {
       myOSystem.png().saveImage(filename, comments);
     }
-    catch(const char* msg)
+    catch(const runtime_error& e)
     {
-      message = msg;
+      message = e.what();
     }
 
     // Re-enable old messages

@@ -66,7 +66,7 @@ class Thumbulator
     ~Thumbulator();
 
     /**
-      Run the ARM code, and return when finished.  A string exception is
+      Run the ARM code, and return when finished.  A runtime_error exception is
       thrown in case of any fatal errors/aborts (if enabled), containing the
       actual error, and the contents of the registers at that point in time.
 
@@ -107,8 +107,8 @@ class Thumbulator
     void do_cflag_bit ( uInt32 x );
     void do_vflag_bit ( uInt32 x );
 
-    // Throw a string exception containing an error referencing the given
-    // message and variables
+    // Throw a runtime_error exception containing an error referencing the
+    // given message and variables
     // Note that the return value is never used in these methods
     int fatalError(const char* opcode, uInt32 v1, const char* msg);
     int fatalError(const char* opcode, uInt32 v1, uInt32 v2, const char* msg);

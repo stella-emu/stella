@@ -113,11 +113,11 @@ uInt32 ZipHandler::decompress(uInt8*& image)
     {
       delete[] image;  image = nullptr;
 
-      throw zip_error_s[err];
+      throw runtime_error(zip_error_s[err]);
     }
   }
   else
-    throw "Invalid ZIP archive";
+    throw runtime_error("Invalid ZIP archive");
 }
 
 /*-------------------------------------------------

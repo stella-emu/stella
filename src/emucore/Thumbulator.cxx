@@ -68,7 +68,7 @@ string Thumbulator::run( void )
   {
     if (execute()) break;
     if (instructions > 500000) // way more than would otherwise be possible
-      throw "instructions > 500000";
+      throw runtime_error("instructions > 500000");
   }
 #if defined(THUMB_DISS) || defined(THUMB_DBUG)
   dump_counters();
@@ -84,7 +84,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* ms
             << opcode << "(" << Base::HEX8 << v1 << "), " << msg << endl;
   dump_regs();
   if(trapOnFatal)
-    throw statusMsg.str();
+    throw runtime_error(statusMsg.str());
   return 0;
 }
 
@@ -96,7 +96,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
             << opcode << "(" << Base::HEX8 << v1 << "," << v2 << "), " << msg << endl;
   dump_regs();
   if(trapOnFatal)
-    throw statusMsg.str();
+    throw runtime_error(statusMsg.str());
   return 0;
 }
 
@@ -239,7 +239,7 @@ void Thumbulator::write32 ( uInt32 addr, uInt32 data )
   {
     case 0xF0000000: //halt
       dump_counters();
-      throw "HALT";// exit(0);
+      throw runtime_error("HALT");// exit(0);
 
     case 0xE0000000: //periph
       switch(addr)

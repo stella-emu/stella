@@ -82,9 +82,9 @@ void TiaOutputWidget::saveSnapshot()
   {
     instance().png().saveImage(sspath.str(), s, rect);
   }
-  catch(const char* msg)
+  catch(const runtime_error& e)
   {
-    message = msg;
+    message = e.what();
   }
   instance().frameBuffer().showMessage(message);
 }

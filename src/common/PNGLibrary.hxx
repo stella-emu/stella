@@ -51,20 +51,21 @@ class PNGLibrary
       @param surface   The FBSurface into which to place the PNG data
 
       @return  On success, the FBSurface containing image data, otherwise a
-               const char* exception is thrown containing a more detailed
+               runtime_error is thrown containing a more detailed
                error message.
     */
     void loadImage(const string& filename, FBSurface& surface);
 
     /**
-      Save the current FrameBuffer image to a PNG file.  Note that in most cases
-      this will be a TIA image, but it could actually be used for *any* mode.
+      Save the current FrameBuffer image to a PNG file.  Note that in most
+      cases this will be a TIA image, but it could actually be used for
+      *any* mode.
 
       @param filename  The filename to save the PNG image
       @param comments  The text comments to add to the PNG image
 
       @return  On success, the PNG file has been saved to 'filename',
-               otherwise a const char* exception is thrown containing a
+               otherwise a runtime_error is thrown containing a
                more detailed error message.
     */
     void saveImage(const string& filename,
@@ -79,7 +80,7 @@ class PNGLibrary
       @param comments  The text comments to add to the PNG image
 
       @return  On success, the PNG file has been saved to 'filename',
-               otherwise a const char* exception is thrown containing a
+               otherwise a runtime_error is thrown containing a
                more detailed error message.
     */
     void saveImage(const string& filename, const FBSurface& surface,

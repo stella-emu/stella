@@ -185,7 +185,7 @@ uInt32 FilesystemNode::read(uInt8*& image) const
 
   // File must actually exist
   if(!(exists() && isReadable()))
-    throw "File not found/readable";
+    throw runtime_error("File not found/readable");
 
   // Otherwise, assume the file is either gzip'ed or not compressed at all
   gzFile f = gzopen(getPath().c_str(), "rb");
@@ -198,10 +198,10 @@ uInt32 FilesystemNode::read(uInt8*& image) const
     if(size == 0)
     {
       delete[] image;  image = nullptr;
-      throw "Zero-byte file";
+      throw runtime_error("Zero-byte file");
     }
     return size;
   }
   else
-    throw "ZLIB open/read error";
+    throw runtime_error("ZLIB open/read error");
 }

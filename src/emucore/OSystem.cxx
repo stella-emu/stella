@@ -314,9 +314,9 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     closeConsole();
     myConsole = openConsole(myRomFile, myRomMD5, type, id);
   }
-  catch(const char* err_msg)
+  catch(const runtime_error& e)
   {
-    buf << "ERROR: Couldn't create console (" << err_msg << ")";
+    buf << "ERROR: Couldn't create console (" << e.what() << ")";
     logMessage(buf.str(), 0);
     return buf.str();
   }
@@ -439,10 +439,10 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
   {
     console = openConsole(romfile, md5, type, id);
   }
-  catch(const char* err_msg)
+  catch(const runtime_error& e)
   {
     ostringstream buf;
-    buf << "ERROR: Couldn't get ROM info (" << err_msg << ")";
+    buf << "ERROR: Couldn't get ROM info (" << e.what() << ")";
     return buf.str();
   }
 

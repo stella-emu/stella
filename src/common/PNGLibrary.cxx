@@ -123,7 +123,7 @@ done:
     png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : (png_infopp)0, (png_infopp)0);
 
   if(err_message)
-    throw err_message;
+    throw runtime_error(err_message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,7 +131,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
 {
   ofstream out(filename, ios_base::binary);
   if(!out.is_open())
-    throw "ERROR: Couldn't create snapshot file";
+    throw runtime_error("ERROR: Couldn't create snapshot file");
 
   const GUI::Rect& rect = myFB.imageRect();
   png_uint_32 width = rect.width(), height = rect.height();
@@ -155,7 +155,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
 {
   ofstream out(filename, ios_base::binary);
   if(!out.is_open())
-    throw "ERROR: Couldn't create snapshot file";
+    throw runtime_error("ERROR: Couldn't create snapshot file");
 
   // Do we want the entire surface or just a section?
   png_uint_32 width = rect.width(), height = rect.height();
@@ -240,7 +240,7 @@ done:
   if (rows)
     delete[] rows;
   if(err_message)
-    throw err_message;
+    throw runtime_error(err_message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -338,22 +338,19 @@ void PNGLibrary::png_write_data(png_structp ctx, png_bytep area, png_size_t size
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_io_flush(png_structp ctx)
 {
-  ofstream* stream = (ofstream *) png_get_io_ptr(ctx);
-  stream->flush();
+  ((ofstream *) png_get_io_ptr(ctx))->flush();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_user_warn(png_structp ctx, png_const_charp str)
 {
-  const string& msg = string("PNGLibrary warning: ") + str;
-  throw msg.c_str();
+  throw runtime_error(string("PNGLibrary warning: ") + str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_user_error(png_structp ctx, png_const_charp str)
 {
-  const string& msg = string("PNGLibrary error: ") + str;
-  throw msg.c_str();
+  throw runtime_error(string("PNGLibrary error: ") + str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

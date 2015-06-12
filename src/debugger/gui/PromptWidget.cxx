@@ -495,11 +495,11 @@ void PromptWidget::loadConfig()
   {
     // Display greetings & prompt
     string version = string("Stella ") + STELLA_VERSION + "\n";
-    print(version.c_str());
+    print(version);
     print(PROMPT);
 
     // Take care of one-time debugger stuff
-    print(instance().debugger().autoExec().c_str());
+    print(instance().debugger().autoExec());
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
     print(instance().debugger().cartDebug().loadListFile() + "\n");
     print(instance().debugger().cartDebug().loadSymbolFile() + "\n");

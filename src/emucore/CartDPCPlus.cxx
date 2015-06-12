@@ -199,13 +199,13 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       try {
         myThumbEmulator->run();
       }
-      catch(const string& error) {
+      catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
         {
       #ifdef DEBUGGER_SUPPORT
-          Debugger::debugger().startWithFatalError(error);
+          Debugger::debugger().startWithFatalError(e.what());
       #else
-          cout << error << endl;
+          cout << e.what() << endl;
       #endif
         }
       }

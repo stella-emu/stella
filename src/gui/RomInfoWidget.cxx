@@ -108,10 +108,10 @@ void RomInfoWidget::parseProperties()
     float scale = BSPF_min(float(myAvail.w) / src.width(), float(myAvail.h) / src.height());
     mySurface->setDstSize(uInt32(src.width() * scale), uInt32(src.height() * scale));
   }
-  catch(const char* msg)
+  catch(const runtime_error& e)
   {
     mySurfaceIsValid = false;
-    mySurfaceErrorMsg = msg;
+    mySurfaceErrorMsg = e.what();
   }
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);

@@ -46,7 +46,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
     myOSystem.logMessage(buf.str(), 0);
-    throw "FATAL ERROR";
+    throw runtime_error("FATAL ERROR");
   }
   myOSystem.logMessage("FrameBufferSDL2::FrameBufferSDL2 SDL_Init()", 2);
 

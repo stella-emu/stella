@@ -180,9 +180,9 @@ uInt32 FilesystemNodeZIP::read(uInt8*& image) const
   switch(_error)
   {
     case ZIPERR_NONE:         break;
-    case ZIPERR_NOT_A_FILE:   throw "ZIP file contains errors/not found";
-    case ZIPERR_NOT_READABLE: throw "ZIP file not readable";
-    case ZIPERR_NO_ROMS:      throw "ZIP file doesn't contain any ROMs";
+    case ZIPERR_NOT_A_FILE:   throw runtime_error("ZIP file contains errors/not found");
+    case ZIPERR_NOT_READABLE: throw runtime_error("ZIP file not readable");
+    case ZIPERR_NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
   }
 
   ZipHandler& zip = open(_zipFile);
