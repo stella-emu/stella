@@ -52,7 +52,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
   int bit_depth, color_type, interlace_type;
   const char* err_message = nullptr;
 
-  ifstream in(filename.c_str(), ios_base::binary);
+  ifstream in(filename, ios_base::binary);
   if(!in.is_open())
     loadImageERROR("No image found");
 
@@ -129,7 +129,7 @@ done:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
 {
-  ofstream out(filename.c_str(), ios_base::binary);
+  ofstream out(filename, ios_base::binary);
   if(!out.is_open())
     throw "ERROR: Couldn't create snapshot file";
 
@@ -153,7 +153,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
 void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
                            const GUI::Rect& rect, const VariantList& comments)
 {
-  ofstream out(filename.c_str(), ios_base::binary);
+  ofstream out(filename, ios_base::binary);
   if(!out.is_open())
     throw "ERROR: Couldn't create snapshot file";
 

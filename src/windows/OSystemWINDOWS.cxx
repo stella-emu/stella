@@ -48,7 +48,7 @@ OSystemWINDOWS::OSystemWINDOWS()
   FilesystemNode basedirfile("basedir.txt");
   if(basedirfile.exists())
   {
-    ifstream in(basedirfile.getPath().c_str());
+    ifstream in(basedirfile.getPath());
     if(in && in.is_open())
     {
       getline(in, basedir);

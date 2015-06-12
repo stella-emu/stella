@@ -165,7 +165,7 @@ void Settings::loadConfig()
   string line, key, value;
   string::size_type equalPos, garbage;
 
-  ifstream in(myOSystem.configFile().c_str());
+  ifstream in(myOSystem.configFile());
   if(!in || !in.is_open())
   {
     myOSystem.logMessage("ERROR: Couldn't load settings file", 0);
@@ -512,7 +512,7 @@ void Settings::saveConfig()
   if(!settingsChanged)
     return;
 
-  ofstream out(myOSystem.configFile().c_str());
+  ofstream out(myOSystem.configFile());
   if(!out || !out.is_open())
   {
     myOSystem.logMessage("ERROR: Couldn't save settings file", 0);

@@ -230,7 +230,7 @@ void CheatManager::enable(const string& code, bool enable)
 void CheatManager::loadCheatDatabase()
 {
   const string& cheatfile = myOSystem.cheatFile();
-  ifstream in(cheatfile.c_str());
+  ifstream in(cheatfile);
   if(!in)
     return;
 
@@ -270,7 +270,7 @@ void CheatManager::saveCheatDatabase()
     return;
 
   const string& cheatfile = myOSystem.cheatFile();
-  ofstream out(cheatfile.c_str());
+  ofstream out(cheatfile);
   if(!out)
     return;
 

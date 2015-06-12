@@ -745,7 +745,7 @@ void Console::setControllers(const string& rommd5)
 void Console::loadUserPalette()
 {
   const string& palette = myOSystem.paletteFile();
-  ifstream in(palette.c_str(), ios::binary);
+  ifstream in(palette, ios::binary);
   if(!in)
     return;
 

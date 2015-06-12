@@ -32,7 +32,7 @@ Serializer::Serializer(const string& filename, bool readonly)
     FilesystemNode node(filename);
     if(node.isFile() && node.isReadable())
     {
-      unique_ptr<fstream> str = make_ptr<fstream>(filename.c_str(), ios::in | ios::binary);
+      unique_ptr<fstream> str = make_ptr<fstream>(filename, ios::in | ios::binary);
       if(str && str->is_open())
       {
         myStream = std::move(str);
@@ -50,10 +50,10 @@ Serializer::Serializer(const string& filename, bool readonly)
     // So we open in write and append mode - the write creates the file
     // when necessary, and the append doesn't delete any data if it
     // already exists
-    fstream temp(filename.c_str(), ios::out | ios::app);
+    fstream temp(filename, ios::out | ios::app);
     temp.close();
 
-    unique_ptr<fstream> str = make_ptr<fstream>(filename.c_str(), ios::in | ios::out | ios::binary);
+    unique_ptr<fstream> str = make_ptr<fstream>(filename, ios::in | ios::out | ios::binary);
     if(str && str->is_open())
     {
       myStream = std::move(str);

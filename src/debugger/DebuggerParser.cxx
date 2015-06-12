@@ -128,7 +128,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
 {
   if(file.exists())
   {
-    ifstream in(file.getPath().c_str());
+    ifstream in(file.getPath());
     if(!in.is_open())
       return red("autoexec file \'" + file.getShortPath() + "\' not found");
 
@@ -589,7 +589,7 @@ bool DebuggerParser::saveScriptFile(string file)
     file += ".stella";
   }
 
-  ofstream out(file.c_str());
+  ofstream out(file);
 
   FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& i: funcs)

@@ -37,7 +37,7 @@ PropertiesSet::PropertiesSet(const string& propsfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::load(const string& filename)
 {
-  ifstream in(filename.c_str());
+  ifstream in(filename);
 
   // Loop reading properties
   for(;;)
@@ -59,7 +59,7 @@ void PropertiesSet::load(const string& filename)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PropertiesSet::save(const string& filename) const
 {
-  ofstream out(filename.c_str());
+  ofstream out(filename);
   if(!out)
     return false;
 

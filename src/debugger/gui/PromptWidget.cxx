@@ -850,7 +850,7 @@ void PromptWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::saveBuffer(string& filename)
 {
-  ofstream out(filename.c_str());
+  ofstream out(filename);
   if(!out.is_open())
     return false;
 

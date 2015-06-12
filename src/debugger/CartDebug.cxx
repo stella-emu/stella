@@ -689,7 +689,7 @@ string CartDebug::loadListFile()
   }
 
   FilesystemNode node(myListFile);
-  ifstream in(node.getPath().c_str());
+  ifstream in(node.getPath());
   if(!in.is_open())
     return DebuggerParser::red("list file '" + node.getShortPath() + "' not readable");
 
@@ -753,7 +753,7 @@ string CartDebug::loadSymbolFile()
   }
 
   FilesystemNode node(mySymbolFile);
-  ifstream in(node.getPath().c_str());
+  ifstream in(node.getPath());
   if(!in.is_open())
     return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not readable");
 
@@ -818,7 +818,7 @@ string CartDebug::loadConfigFile()
   }
 
   FilesystemNode node(myCfgFile);
-  ifstream in(node.getPath().c_str());
+  ifstream in(node.getPath());
   if(!in.is_open())
     return "Unable to load directives from " + node.getPath();
 
@@ -924,7 +924,7 @@ string CartDebug::saveConfigFile()
   const string& name = myConsole.properties().get(Cartridge_Name);
   const string& md5 = myConsole.properties().get(Cartridge_MD5);
 
-  ofstream out(node.getPath().c_str());
+  ofstream out(node.getPath());
   if(!out.is_open())
     return "Unable to save directives to " + node.getShortPath();
 
@@ -964,7 +964,7 @@ string CartDebug::saveDisassembly()
   }
 
   FilesystemNode node(myDisasmFile);
-  ofstream out(node.getPath().c_str());
+  ofstream out(node.getPath());
   if(!out.is_open())
     return "Unable to save disassembly to " + node.getShortPath();
 
@@ -1154,7 +1154,7 @@ string CartDebug::saveRom()
     myConsole.properties().get(Cartridge_Name) + ".a26";
 
   FilesystemNode node(path);
-  ofstream out(node.getPath().c_str(), ios::binary);
+  ofstream out(node.getPath(), ios::binary);
   if(out.is_open() && myConsole.cartridge().save(out))
     return "saved ROM as " + node.getShortPath();
   else
