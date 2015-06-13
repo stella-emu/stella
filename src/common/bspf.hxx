@@ -55,6 +55,7 @@ using uInt64 = uint64_t;
 #include <cstdio>
 #include <utility>
 #include <vector>
+#include "UniquePtr.hxx"  // only until C++14 compilers are more common
 using namespace std;
 
 // Common array types
@@ -99,17 +100,6 @@ static const string EmptyString("");
 
 //////////////////////////////////////////////////////////////////////
 // Some convenience functions
-
-// Initialize C++11 unique_ptr, at least until std::make_unique()
-// becomes part of the standard (C++14)
-template <typename Value, typename ... Arguments>
-std::unique_ptr<Value> make_ptr(Arguments && ... arguments_for_constructor)
-{
-  return std::unique_ptr<Value>(
-      new Value(std::forward<Arguments>(arguments_for_constructor)...)
-  );
-}
-
 template<typename T> inline void BSPF_swap(T& a, T& b) { std::swap(a, b); }
 template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }
 template<typename T> inline T BSPF_min (T a, T b) { return (a<b) ? a : b; }

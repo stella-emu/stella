@@ -22,8 +22,6 @@
 
 class OSystem;
 
-#include <regex>
-
 #include "bspf.hxx"
 
 class Cheat

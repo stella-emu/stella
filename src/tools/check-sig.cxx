@@ -8,8 +8,8 @@
 
 using namespace std;
 
-typedef unsigned char uInt8;
-typedef unsigned int uInt32;
+using uInt8 = unsigned char;
+using uInt32 = unsigned int;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int searchForBytes(const uInt8* image, uInt32 imagesize,

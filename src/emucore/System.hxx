@@ -293,16 +293,16 @@ class System : public Serializable
 
       // Constructors
       PageAccess()
-        : directPeekBase(0),
-          directPokeBase(0),
-          codeAccessBase(0),
-          device(0),
+        : directPeekBase(nullptr),
+          directPokeBase(nullptr),
+          codeAccessBase(nullptr),
+          device(nullptr),
           type(System::PA_READ) { }
 
       PageAccess(Device* dev, PageAccessType access)
-        : directPeekBase(0),
-          directPokeBase(0),
-          codeAccessBase(0),
+        : directPeekBase(nullptr),
+          directPokeBase(nullptr),
+          codeAccessBase(nullptr),
           device(dev),
           type(access) { }
     };

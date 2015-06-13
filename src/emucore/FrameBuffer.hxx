@@ -357,15 +357,9 @@ class FrameBuffer
       @param title The title for the created window
       @param mode  The video mode to use
 
-      @param fullscreen_toggle  Indicate whether this video mode change is
-                due to a fullscreen/windowed toggle or not; some backends
-                can use this information to perform a more optimized mode
-                change
-
       @return  False on any errors, else true
     */
-    virtual bool setVideoMode(const string& title, const VideoMode& mode,
-                              bool fullscreen_toggle = false) = 0;
+    virtual bool setVideoMode(const string& title, const VideoMode& mode) = 0;
 
     /**
       This method is called to invalidate the contents of the entire

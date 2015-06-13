@@ -107,8 +107,7 @@ Int32 FrameBufferSDL2::getCurrentDisplayIndex()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode,
-                                   bool /*fullscreen_toggle*/)
+bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 {
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)

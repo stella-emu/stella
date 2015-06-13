@@ -26,8 +26,7 @@ int main(int ac, char* av[])
   int values_per_line = ac >= 3 ? atoi(av[2]) : 8;
   int offset = ac >= 4 ? atoi(av[3]) : 0;
 
-  ifstream in;
-  in.open(av[1]);
+  ifstream in(av[1]);
   if(in.is_open())
   {
     in.seekg(0, ios::end);

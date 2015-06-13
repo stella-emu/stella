@@ -530,7 +530,7 @@ void FrameBuffer::stateChanged(EventHandler::State state)
 void FrameBuffer::setFullscreen(bool enable)
 {
   const VideoMode& mode = getSavedVidMode(enable);
-  if(setVideoMode(myScreenTitle, mode, true))
+  if(setVideoMode(myScreenTitle, mode))
   {
     myImageRect = mode.image;
     myScreenSize = mode.screen;

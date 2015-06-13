@@ -35,13 +35,6 @@ PNGLibrary::PNGLibrary(const FrameBuffer& fb)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PNGLibrary::~PNGLibrary()
-{
-  delete[] ReadInfo.buffer;
-  delete[] ReadInfo.row_pointers;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 {
   #define loadImageERROR(s) { err_message = s; goto done; }
@@ -311,7 +304,7 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
   if(numComments == 0)
     return;
 
-  png_text* text_ptr = new png_text[numComments];
+  png_text text_ptr[numComments];
   for(uInt32 i = 0; i < numComments; ++i)
   {
     text_ptr[i].key = (char*) comments[i].first.c_str();
@@ -320,7 +313,6 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
     text_ptr[i].text_length = 0;
   }
   png_set_text(png_ptr, info_ptr, text_ptr, numComments);
-  delete[] text_ptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

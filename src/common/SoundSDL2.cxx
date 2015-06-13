@@ -450,19 +450,13 @@ bool SoundSDL2::load(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::RegWriteQueue::RegWriteQueue(uInt32 capacity)
-  : myCapacity(capacity),
-    myBuffer(nullptr),
+  : myBuffer(nullptr),
+    myCapacity(capacity),
     mySize(0),
     myHead(0),
     myTail(0)
 {
-  myBuffer = new RegWrite[myCapacity];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL2::RegWriteQueue::~RegWriteQueue()
-{
-  delete[] myBuffer;
+  myBuffer = make_ptr<RegWrite[]>(myCapacity);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -521,16 +515,15 @@ uInt32 SoundSDL2::RegWriteQueue::size() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::RegWriteQueue::grow()
 {
-  RegWrite* buffer = new RegWrite[myCapacity * 2];
+  unique_ptr<RegWrite[]> buffer = make_ptr<RegWrite[]>(myCapacity*2);
   for(uInt32 i = 0; i < mySize; ++i)
-  {
     buffer[i] = myBuffer[(myHead + i) % myCapacity];
-  }
+
   myHead = 0;
   myTail = mySize;
-  myCapacity = myCapacity * 2;
-  delete[] myBuffer;
-  myBuffer = buffer;
+  myCapacity *= 2;
+
+  myBuffer = std::move(buffer);
 }
 
 #endif  // SOUND_SUPPORT

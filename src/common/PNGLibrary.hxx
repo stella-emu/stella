@@ -41,7 +41,6 @@ class PNGLibrary
 {
   public:
     PNGLibrary(const FrameBuffer& fb);
-    ~PNGLibrary();
 
     /**
       Read a PNG image from the specified file into a FBSurface structure,
@@ -93,6 +92,8 @@ class PNGLibrary
     // The following data remains between invocations of allocateStorage,
     // and is only changed when absolutely necessary.
     struct ReadInfoType {
+      ~ReadInfoType() { delete[] buffer;  delete[] row_pointers; }
+
       uInt8* buffer;
       png_bytep* row_pointers;
       png_uint_32 width, height, pitch;

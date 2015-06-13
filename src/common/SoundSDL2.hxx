@@ -193,11 +193,6 @@ class SoundSDL2 : public Sound
         */
         RegWriteQueue(uInt32 capacity = 512);
 
-        /**
-          Destroy this queue instance.
-        */
-        virtual ~RegWriteQueue();
-
       public:
         /**
           Clear any items stored in the queue.
@@ -238,8 +233,8 @@ class SoundSDL2 : public Sound
         void grow();
 
       private:
+        unique_ptr<RegWrite[]> myBuffer;
         uInt32 myCapacity;
-        RegWrite* myBuffer;
         uInt32 mySize;
         uInt32 myHead;
         uInt32 myTail;

@@ -38,7 +38,7 @@ class Device : public Serializable
     /**
       Create a new device
     */
-    Device() : mySystem(0) { }
+    Device() : mySystem(nullptr) { }
 
     /**
       Destructor

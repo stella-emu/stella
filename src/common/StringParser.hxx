@@ -38,7 +38,7 @@ class StringParser
     */
     StringParser(const string& str)
     {
-      stringstream buf(str);
+      istringstream buf(str);
       string line;
 
       while(std::getline(buf, line, '\n'))
@@ -54,7 +54,7 @@ class StringParser
     */
     StringParser(const string& str, uInt16 maxlen)
     {
-      stringstream buf(str);
+      istringstream buf(str);
       string line;
 
       while(std::getline(buf, line, '\n'))
