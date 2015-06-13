@@ -12,14 +12,19 @@
                                Release History
 ===========================================================================
 
+4.6.1 to 4.7: (mmm dd, 2015)
+
+  * Updated included PNG library to latest stable version.
+
+-Have fun!
+
+
 4.6 to 4.6.1: (April 22, 2015)
 
   * Fixed bug whereby text input could not be entered in certain widgets
     in the debugger.
 
   * Updated UNIX configure script to work with GCC 5.x compilers.
-
--Have fun!
 
 
 4.5 to 4.6: (March 21, 2015)
