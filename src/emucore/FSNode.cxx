@@ -175,7 +175,7 @@ bool FilesystemNode::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FilesystemNode::read(uInt8*& image) const
+uInt32 FilesystemNode::read(BytePtr& image) const
 {
   uInt32 size = 0;
 
@@ -191,15 +191,13 @@ uInt32 FilesystemNode::read(uInt8*& image) const
   gzFile f = gzopen(getPath().c_str(), "rb");
   if(f)
   {
-    image = new uInt8[512 * 1024];
-    size = gzread(f, image, 512 * 1024);
+    image = make_ptr<uInt8[]>(512 * 1024);
+    size = gzread(f, image.get(), 512 * 1024);
     gzclose(f);
 
     if(size == 0)
-    {
-      delete[] image;  image = nullptr;
       throw runtime_error("Zero-byte file");
-    }
+
     return size;
   }
   else

@@ -473,9 +473,9 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
   unique_ptr<Console> console;
 
   // Open the cartridge image and read it in
-  uInt8* image = nullptr;
+  BytePtr image;
   uInt32 size  = 0;
-  if((image = openROM(romfile, md5, size)) != 0)
+  if((image = openROM(romfile, md5, size)) != nullptr)
   {
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
@@ -494,7 +494,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
     // Now create the cartridge
     string cartmd5 = md5;
     type = props.get(Cartridge_Type);
-    Cartridge* cart =
+    unique_ptr<Cartridge> cart =
       Cartridge::create(image, size, cartmd5, type, id, *this, *mySettings);
 
     // It's possible that the cart created was from a piece of the image,
@@ -532,10 +532,6 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
       console = make_ptr<Console>(*this, cart, props);
   }
 
-  // Free the image since we don't need it any longer
-  if(image != 0 && size > 0)
-    delete[] image;
-
   return console;
 }
 
@@ -548,24 +544,20 @@ void OSystem::closeConsole()
     // If a previous console existed, save cheats before creating a new one
     myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
   #endif
-    myConsole.release();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
+BytePtr OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,
   // but also adds a properties entry if the one for the ROM doesn't
   // contain a valid name
 
-  uInt8* image = nullptr;
+  BytePtr image;
   if((size = rom.read(image)) == 0)
-  {
-    delete[] image;
     return nullptr;
-  }
 
   // If we get to this point, we know we have a valid file to open
   // Now we make sure that the file has a valid properties entry

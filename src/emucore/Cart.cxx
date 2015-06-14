@@ -70,11 +70,16 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
-     string& dtype, string& id, const OSystem& osystem, Settings& settings)
+unique_ptr<Cartridge> Cartridge::create(const BytePtr& img, uInt32 size,
+    string& md5, string& dtype, string& id,
+    const OSystem& osystem, Settings& settings)
 {
-  Cartridge* cartridge = nullptr;
+  unique_ptr<Cartridge> cartridge;
   string type = dtype;
+
+  // For now, we convert from BytePtr to the raw pointer
+  // Eventually, the Cartridge hierarchy should probably use BytePtr directly
+  const uInt8* image = img.get();
 
   // Collect some info about the ROM
   ostringstream buf;
@@ -181,81 +186,81 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
 
   // We should know the cart's type by now so let's create it
   if(type == "0840")
-    cartridge = new Cartridge0840(image, size, settings);
+    cartridge = make_ptr<Cartridge0840>(image, size, settings);
   else if(type == "2K")
-    cartridge = new Cartridge2K(image, size, settings);
+    cartridge = make_ptr<Cartridge2K>(image, size, settings);
   else if(type == "3E")
-    cartridge = new Cartridge3E(image, size, settings);
+    cartridge = make_ptr<Cartridge3E>(image, size, settings);
   else if(type == "3F")
-    cartridge = new Cartridge3F(image, size, settings);
+    cartridge = make_ptr<Cartridge3F>(image, size, settings);
   else if(type == "4A50")
-    cartridge = new Cartridge4A50(image, size, settings);
+    cartridge = make_ptr<Cartridge4A50>(image, size, settings);
   else if(type == "4K")
-    cartridge = new Cartridge4K(image, size, settings);
+    cartridge = make_ptr<Cartridge4K>(image, size, settings);
   else if(type == "4KSC")
-    cartridge = new Cartridge4KSC(image, size, settings);
+    cartridge = make_ptr<Cartridge4KSC>(image, size, settings);
   else if(type == "AR")
-    cartridge = new CartridgeAR(image, size, settings);
+    cartridge = make_ptr<CartridgeAR>(image, size, settings);
   else if(type == "CM")
-    cartridge = new CartridgeCM(image, size, settings);
+    cartridge = make_ptr<CartridgeCM>(image, size, settings);
   else if(type == "CTY")
-    cartridge = new CartridgeCTY(image, size, osystem);
+    cartridge = make_ptr<CartridgeCTY>(image, size, osystem);
   else if(type == "CV")
-    cartridge = new CartridgeCV(image, size, settings);
+    cartridge = make_ptr<CartridgeCV>(image, size, settings);
   else if(type == "DASH")
-    cartridge = new CartridgeDASH(image, size, settings);
+    cartridge = make_ptr<CartridgeDASH>(image, size, settings);
   else if(type == "DPC")
-    cartridge = new CartridgeDPC(image, size, settings);
+    cartridge = make_ptr<CartridgeDPC>(image, size, settings);
   else if(type == "DPC+")
-    cartridge = new CartridgeDPCPlus(image, size, settings);
+    cartridge = make_ptr<CartridgeDPCPlus>(image, size, settings);
   else if(type == "E0")
-    cartridge = new CartridgeE0(image, size, settings);
+    cartridge = make_ptr<CartridgeE0>(image, size, settings);
   else if(type == "E7")
-    cartridge = new CartridgeE7(image, size, settings);
+    cartridge = make_ptr<CartridgeE7>(image, size, settings);
   else if(type == "EF")
-    cartridge = new CartridgeEF(image, size, settings);
+    cartridge = make_ptr<CartridgeEF>(image, size, settings);
   else if(type == "EFSC")
-    cartridge = new CartridgeEFSC(image, size, settings);
+    cartridge = make_ptr<CartridgeEFSC>(image, size, settings);
   else if(type == "BF")
-    cartridge = new CartridgeBF(image, size, settings);
+    cartridge = make_ptr<CartridgeBF>(image, size, settings);
   else if(type == "BFSC")
-    cartridge = new CartridgeBFSC(image, size, settings);
+    cartridge = make_ptr<CartridgeBFSC>(image, size, settings);
   else if(type == "DF")
-    cartridge = new CartridgeDF(image, size, settings);
+    cartridge = make_ptr<CartridgeDF>(image, size, settings);
   else if(type == "DFSC")
-    cartridge = new CartridgeDFSC(image, size, settings);
+    cartridge = make_ptr<CartridgeDFSC>(image, size, settings);
   else if(type == "F0" || type == "MB")
-    cartridge = new CartridgeF0(image, size, settings);
+    cartridge = make_ptr<CartridgeF0>(image, size, settings);
   else if(type == "F4")
-    cartridge = new CartridgeF4(image, size, settings);
+    cartridge = make_ptr<CartridgeF4>(image, size, settings);
   else if(type == "F4SC")
-    cartridge = new CartridgeF4SC(image, size, settings);
+    cartridge = make_ptr<CartridgeF4SC>(image, size, settings);
   else if(type == "F6")
-    cartridge = new CartridgeF6(image, size, settings);
+    cartridge = make_ptr<CartridgeF6>(image, size, settings);
   else if(type == "F6SC")
-    cartridge = new CartridgeF6SC(image, size, settings);
+    cartridge = make_ptr<CartridgeF6SC>(image, size, settings);
   else if(type == "F8")
-    cartridge = new CartridgeF8(image, size, md5, settings);
+    cartridge = make_ptr<CartridgeF8>(image, size, md5, settings);
   else if(type == "F8SC")
-    cartridge = new CartridgeF8SC(image, size, settings);
+    cartridge = make_ptr<CartridgeF8SC>(image, size, settings);
   else if(type == "FA" || type == "FASC")
-    cartridge = new CartridgeFA(image, size, settings);
+    cartridge = make_ptr<CartridgeFA>(image, size, settings);
   else if(type == "FA2")
-    cartridge = new CartridgeFA2(image, size, osystem);
+    cartridge = make_ptr<CartridgeFA2>(image, size, osystem);
   else if(type == "FE")
-    cartridge = new CartridgeFE(image, size, settings);
+    cartridge = make_ptr<CartridgeFE>(image, size, settings);
   else if(type == "MC")
-    cartridge = new CartridgeMC(image, size, settings);
+    cartridge = make_ptr<CartridgeMC>(image, size, settings);
   else if(type == "MDM")
-    cartridge = new CartridgeMDM(image, size, settings);
+    cartridge = make_ptr<CartridgeMDM>(image, size, settings);
   else if(type == "UA")
-    cartridge = new CartridgeUA(image, size, settings);
+    cartridge = make_ptr<CartridgeUA>(image, size, settings);
   else if(type == "SB")
-    cartridge = new CartridgeSB(image, size, settings);
+    cartridge = make_ptr<CartridgeSB>(image, size, settings);
   else if(type == "WD")
-    cartridge = new CartridgeWD(image, size, settings);
+    cartridge = make_ptr<CartridgeWD>(image, size, settings);
   else if(type == "X07")
-    cartridge = new CartridgeX07(image, size, settings);
+    cartridge = make_ptr<CartridgeX07>(image, size, settings);
   else if(dtype == "WRONG_SIZE")
     throw runtime_error("Invalid cart size for type '" + type + "'");
   else

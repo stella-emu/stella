@@ -20,7 +20,6 @@
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
-class Cartridge;
 class CheatManager;
 class CommandMenu;
 class Console;
@@ -36,6 +35,7 @@ class Sound;
 class StateManager;
 class VideoDialog;
 
+#include "Cart.hxx"
 #include "FSNode.hxx"
 #include "FrameBuffer.hxx"
 #include "PNGLibrary.hxx"
@@ -558,10 +558,9 @@ class OSystem
                     (will be recalculated if necessary)
       @param size   The amount of data read into the image array
 
-      @return  Pointer to the array, with size >=0 indicating valid data
-               (calling method is responsible for deleting it)
+      @return  Unique pointer to the array
     */
-    uInt8* openROM(const FilesystemNode& rom, string& md5, uInt32& size);
+    BytePtr openROM(const FilesystemNode& rom, string& md5, uInt32& size);
 
     /**
       Gets all possible info about the given console.

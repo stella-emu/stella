@@ -63,6 +63,7 @@ using IntArray = vector<Int32>;
 using BoolArray = vector<bool>;
 using ByteArray = vector<uInt8>;
 using StringList = vector<string>;
+using BytePtr = unique_ptr<uInt8[]>;
 
 // Defines to help with path handling
 #if (defined(BSPF_UNIX) || defined(BSPF_MAC_OSX))

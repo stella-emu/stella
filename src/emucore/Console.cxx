@@ -66,10 +66,12 @@
 #include "Console.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
+Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
+                 const Properties& props)
   : myOSystem(osystem),
     myEvent(osystem.eventHandler().event()),
     myProperties(props),
+    myCart(std::move(cart)),
     myDisplayFormat(""),  // Unknown TV format @ start
     myFramerate(0.0),     // Unknown framerate @ start
     myCurrentFormat(0),   // Unknown format @ start
@@ -82,7 +84,6 @@ Console::Console(OSystem& osystem, Cartridge* cart, const Properties& props)
   my6502 = make_ptr<M6502>(myOSystem.settings());
   myRiot = make_ptr<M6532>(*this, myOSystem.settings());
   myTIA  = make_ptr<TIA>(*this, myOSystem.sound(), myOSystem.settings());
-  myCart = unique_ptr<Cartridge>(cart);
   mySwitches = make_ptr<Switches>(myEvent, myProperties);
 
   // Construct the system and components

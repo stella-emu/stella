@@ -81,7 +81,7 @@ class ZipHandler
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
-    uInt32 decompress(uInt8*& image);
+    uInt32 decompress(BytePtr& image);
 
     // Answer the number of ROM files found in the archive
     // Currently, this means files with extension a26/bin/rom

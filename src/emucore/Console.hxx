@@ -69,7 +69,8 @@ class Console : public Serializable
       @param cart     The cartridge to use with this console
       @param props    The properties for the cartridge  
     */
-    Console(OSystem& osystem, Cartridge* cart, const Properties& props);
+    Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
+            const Properties& props);
  
     /**
       Destructor

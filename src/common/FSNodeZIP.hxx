@@ -66,7 +66,7 @@ class FilesystemNodeZIP : public AbstractFSNode
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
     AbstractFSNode* getParent() const;
 
-    uInt32 read(uInt8*& image) const;
+    uInt32 read(BytePtr& image) const;
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,

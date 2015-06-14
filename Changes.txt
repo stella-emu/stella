@@ -14,6 +14,9 @@
 
 4.6.1 to 4.7: (mmm dd, 2015)
 
+  * Fixed memory leak; the game console wasn't being closed after exiting
+    a ROM.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!

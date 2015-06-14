@@ -326,6 +326,12 @@ static void MD5_memset(POINTER output, int value, uInt32 len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string hash(const BytePtr& buffer, uInt32 length)
+{
+  return hash(buffer.get(), length);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string hash(const uInt8* buffer, uInt32 length)
 {
   char hex[] = "0123456789abcdef";
@@ -349,7 +355,7 @@ string hash(const uInt8* buffer, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string hash(const FilesystemNode& node)
 {
-  uInt8* image = nullptr;
+  BytePtr image;
   uInt32 size = 0;
   try
   {
@@ -361,7 +367,6 @@ string hash(const FilesystemNode& node)
   }
 
   const string& md5 = hash(image, size);
-  delete[] image;
   return md5;
 }
 

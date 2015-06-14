@@ -87,7 +87,7 @@ string ZipHandler::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 ZipHandler::decompress(uInt8*& image)
+uInt32 ZipHandler::decompress(BytePtr& image)
 {
   static const char* zip_error_s[] = {
     "ZIPERR_NONE",
@@ -104,17 +104,13 @@ uInt32 ZipHandler::decompress(uInt8*& image)
   if(myZip)
   {
     uInt32 length = myZip->header.uncompressed_length;
-    image = new uInt8[length];
+    image = make_ptr<uInt8[]>(length);
 
-    ZipHandler::zip_error err = zip_file_decompress(myZip, image, length);
+    ZipHandler::zip_error err = zip_file_decompress(myZip, image.get(), length);
     if(err == ZIPERR_NONE)
       return length;
     else
-    {
-      delete[] image;  image = nullptr;
-
       throw runtime_error(zip_error_s[err]);
-    }
   }
   else
     throw runtime_error("Invalid ZIP archive");

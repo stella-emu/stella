@@ -60,9 +60,10 @@ class Cartridge : public Device
       @param settings The settings associated with the system
       @return   Pointer to the new cartridge object allocated on the heap
     */
-    static Cartridge* create(const uInt8* image, uInt32 size, string& md5,
-                             string& dtype, string& id,
-                             const OSystem& system, Settings& settings);
+    static unique_ptr<Cartridge>
+        create(const BytePtr& image, uInt32 size,
+               string& md5, string& dtype, string& id,
+               const OSystem& system, Settings& settings);
 
     /**
       Create a new cartridge
@@ -257,6 +258,7 @@ class Cartridge : public Device
 
       @param image  A pointer to the ROM image
       @param size   The size of the ROM image 
+
       @return The "best guess" for the cartridge type
     */
     static string autodetectType(const uInt8* image, uInt32 size);
