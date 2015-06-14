@@ -125,9 +125,8 @@ void CheatManager::addPerFrame(const string& name, const string& code, bool enab
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::addOneShot(const string& name, const string& code)
 {
+  // Evaluate this cheat once, and then immediately discard it
   shared_ptr<Cheat> cheat = createCheat(name, code);
-
-  // Evaluate this cheat once, and then immediately delete it
   if(cheat)
     cheat->evaluate();
 }

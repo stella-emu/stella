@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <list>
 
+#include "../common/UniquePtr.hxx"
 using namespace std;
 
 using uInt8 = unsigned char;
@@ -55,12 +56,12 @@ int main(int ac, char* av[])
   int i_size = (int) in.tellg();
   in.seekg(0, ios::beg);
 
-  uInt8* image = new uInt8[i_size];
-  in.read((char*)(image), i_size);
+  unique_ptr<uInt8[]> image = make_ptr<uInt8[]>(i_size);
+  in.read((char*)(image.get()), i_size);
   in.close();
 
   int s_size = 0;
-  uInt8* sig = new uInt8[strlen(av[2])/2];
+  unique_ptr<uInt8[]> sig = make_ptr<uInt8[]>(strlen(av[2])/2);
   istringstream buf(av[2]);
 
   uInt32 c;
@@ -72,7 +73,7 @@ int main(int ac, char* av[])
 //  cerr << "sig size = " << hex << s_size << endl;
 
   list<int> locations;
-  int result = searchForBytes(image+offset, i_size-offset, sig, s_size, locations);
+  int result = searchForBytes(image.get()+offset, i_size-offset, sig.get(), s_size, locations);
   if(result > 0)
   {
     cout << setw(3) << result << " hits:  \'" << av[2] << "\' - \"" << av[1] << "\" @";
@@ -80,9 +81,6 @@ int main(int ac, char* av[])
       cout << ' ' << hex << (it + offset);
     cout << endl;
   }
-
-  delete[] image;
-  delete[] sig;
 
   return 0;
 }
