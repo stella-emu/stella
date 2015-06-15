@@ -479,6 +479,7 @@
     <ClInclude Include="..\common\tv_filters\atari_ntsc.hxx" />
     <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.hxx" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
+    <ClInclude Include="..\common\UniquePtr.hxx" />
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\Vec.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
