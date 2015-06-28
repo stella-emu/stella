@@ -89,6 +89,27 @@ class Switches : public Serializable
     */
     string name() const { return "Switches"; }
 
+    /**
+      Query the 'Console_TelevisionType' switches bit.
+
+      @return  True if 'Color', false if 'BlackWhite'
+    */
+    bool tvColor() const { return mySwitches & 0x08; }
+
+    /**
+      Query the 'Console_LeftDifficulty' switches bit.
+
+      @return  True if 'A', false if 'B'
+    */
+    bool leftDifficultyA() const { return mySwitches & 0x40; }
+
+    /**
+      Query the 'Console_RightDifficulty' switches bit.
+
+      @return  True if 'A', false if 'B'
+    */
+    bool rightDifficultyA() const { return mySwitches & 0x80; }
+
   private:
     // Reference to the event object to use
     const Event& myEvent;

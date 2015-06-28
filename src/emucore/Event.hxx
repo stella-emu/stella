@@ -42,6 +42,7 @@ class Event
       ConsoleLeftDiffA, ConsoleLeftDiffB,
       ConsoleRightDiffA, ConsoleRightDiffB,
       ConsoleSelect, ConsoleReset,
+      ConsoleLeftDiffSwap, ConsoleRightDiffSwap, ConsoleColorSwap,
 
       JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,
         JoystickZeroFire, JoystickZeroFire5, JoystickZeroFire9,

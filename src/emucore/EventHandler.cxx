@@ -40,6 +40,7 @@
 #include "Settings.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
+#include "Switches.hxx"
 #include "M6532.hxx"
 #include "MouseControl.hxx"
 #include "Version.hxx"
@@ -960,25 +961,107 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
     ////////////////////////////////////////////////////////////////////////
 
-    // Events which generate messages
+    ////////////////////////////////////////////////////////////////////////
+    // Events which relate to switches()
     case Event::ConsoleColor:
-      if(state) myOSystem.frameBuffer().showMessage("Color Mode");
+      if(state)
+      {
+        myEvent.set(Event::ConsoleBlackWhite, 0);
+        myOSystem.frameBuffer().showMessage("Color Mode");
+      }
       break;
     case Event::ConsoleBlackWhite:
-      if(state) myOSystem.frameBuffer().showMessage("BW Mode");
+      if(state)
+      {
+        myEvent.set(Event::ConsoleColor, 0);
+        myOSystem.frameBuffer().showMessage("BW Mode");
+      }
       break;
+    case Event::ConsoleColorSwap:
+      if(state)
+      {
+        if(myOSystem.console().switches().tvColor())
+        {
+          myEvent.set(Event::ConsoleBlackWhite, 1);
+          myEvent.set(Event::ConsoleColor, 0);
+          myOSystem.frameBuffer().showMessage("BW Mode");
+        }
+        else
+        {
+          myEvent.set(Event::ConsoleBlackWhite, 0);
+          myEvent.set(Event::ConsoleColor, 1);
+          myOSystem.frameBuffer().showMessage("Color Mode");
+        }
+        myOSystem.console().switches().update();
+      }
+      return;
+
     case Event::ConsoleLeftDiffA:
-      if(state) myOSystem.frameBuffer().showMessage("Left Difficulty A");
+      if(state)
+      {
+        myEvent.set(Event::ConsoleLeftDiffB, 0);
+        myOSystem.frameBuffer().showMessage("Left Difficulty A");
+      }
       break;
     case Event::ConsoleLeftDiffB:
-      if(state) myOSystem.frameBuffer().showMessage("Left Difficulty B");
+      if(state)
+      {
+        myEvent.set(Event::ConsoleLeftDiffA, 0);
+        myOSystem.frameBuffer().showMessage("Left Difficulty B");
+      }
       break;
+    case Event::ConsoleLeftDiffSwap:
+      if(state)
+      {
+        if(myOSystem.console().switches().leftDifficultyA())
+        {
+          myEvent.set(Event::ConsoleLeftDiffA, 0);
+          myEvent.set(Event::ConsoleLeftDiffB, 1);
+          myOSystem.frameBuffer().showMessage("Left Difficulty B");
+        }
+        else
+        {
+          myEvent.set(Event::ConsoleLeftDiffA, 1);
+          myEvent.set(Event::ConsoleLeftDiffB, 0);
+          myOSystem.frameBuffer().showMessage("Left Difficulty A");
+        }
+        myOSystem.console().switches().update();
+      }
+      return;
+
     case Event::ConsoleRightDiffA:
-      if(state) myOSystem.frameBuffer().showMessage("Right Difficulty A");
+      if(state)
+      {
+        myEvent.set(Event::ConsoleRightDiffB, 0);
+        myOSystem.frameBuffer().showMessage("Right Difficulty A");
+      }
       break;
     case Event::ConsoleRightDiffB:
-      if(state) myOSystem.frameBuffer().showMessage("Right Difficulty B");
+      if(state)
+      {
+        myEvent.set(Event::ConsoleRightDiffA, 0);
+        myOSystem.frameBuffer().showMessage("Right Difficulty B");
+      }
       break;
+    case Event::ConsoleRightDiffSwap:
+      if(state)
+      {
+        if(myOSystem.console().switches().rightDifficultyA())
+        {
+          myEvent.set(Event::ConsoleRightDiffA, 0);
+          myEvent.set(Event::ConsoleRightDiffB, 1);
+          myOSystem.frameBuffer().showMessage("Right Difficulty B");
+        }
+        else
+        {
+          myEvent.set(Event::ConsoleRightDiffA, 1);
+          myEvent.set(Event::ConsoleRightDiffB, 0);
+          myOSystem.frameBuffer().showMessage("Right Difficulty A");
+        }
+        myOSystem.console().switches().update();
+      }
+      return;
+    ////////////////////////////////////////////////////////////////////////
 
     case Event::NoType:  // Ignore unmapped events
       return;
@@ -2013,10 +2096,13 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::ConsoleReset,        "Reset",                       0, true  },
   { Event::ConsoleColor,        "Color TV",                    0, true  },
   { Event::ConsoleBlackWhite,   "Black & White TV",            0, true  },
+  { Event::ConsoleColorSwap,    "Swap Color / B&W TV",         0, true  },
   { Event::ConsoleLeftDiffA,    "P0 Difficulty A",             0, true  },
   { Event::ConsoleLeftDiffB,    "P0 Difficulty B",             0, true  },
+  { Event::ConsoleLeftDiffSwap, "P0 Swap Difficulty",          0, true  },
   { Event::ConsoleRightDiffA,   "P1 Difficulty A",             0, true  },
   { Event::ConsoleRightDiffB,   "P1 Difficulty B",             0, true  },
+  { Event::ConsoleRightDiffSwap,"P1 Swap Difficulty",          0, true  },
   { Event::SaveState,           "Save State",                  0, false },
   { Event::ChangeState,         "Change State",                0, false },
   { Event::LoadState,           "Load State",                  0, false },
