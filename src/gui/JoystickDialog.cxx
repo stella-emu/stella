@@ -41,6 +41,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   int w = _w - 2 * xpos;
   int h = _h - buttonHeight - ypos - 20;
   myJoyList = new StringListWidget(this, font, xpos, ypos, w, h);
+  myJoyList->setEditable(false);
   wid.push_back(myJoyList);
 
   // Joystick ID

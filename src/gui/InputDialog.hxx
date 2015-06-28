@@ -70,6 +70,7 @@ class InputDialog : public Dialog
 
     PopUpWidget* mySAPort;
     PopUpWidget* myMouseControl;
+    PopUpWidget* myCursorState;
 
     EditTextWidget*   myAVoxPort;
 
@@ -81,7 +82,6 @@ class InputDialog : public Dialog
     StaticTextWidget* myMPaddleLabel;
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
-    CheckboxWidget*   myHideCursor;
     CheckboxWidget*   myCtrlCombo;
 
     ButtonWidget*     myJoyDlgButton;

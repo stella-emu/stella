@@ -14,6 +14,10 @@
 
 4.6.1 to 4.7: (mmm dd, 2015)
 
+  * Changed 'hidecursor' commandline argument (and associated UI item) to
+    'cursor'.  The new argument allows to set mouse cursor visibility
+    separately for both UI and emulation modes.
+
   * Fixed memory leak; the game console wasn't being closed after exiting
     a ROM.
 

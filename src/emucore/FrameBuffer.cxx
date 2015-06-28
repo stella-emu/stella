@@ -593,12 +593,19 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setCursorState()
 {
-  // Always grab mouse in emulation (if enabled),
-  // and don't show the cursor during emulation (if enabled)
+  // Always grab mouse in emulation (if enabled)
   bool emulation =
       myOSystem.eventHandler().state() == EventHandler::S_EMULATE;
   grabMouse(emulation && myOSystem.settings().getBool("grabmouse"));
-  showCursor(!(emulation || myOSystem.settings().getBool("hidecursor")));
+
+  // Show/hide cursor in UI/emulation mode based on 'cursor' setting
+  switch(myOSystem.settings().getInt("cursor"))
+  {
+    case 0: showCursor(false);      break;
+    case 1: showCursor(emulation);  break;
+    case 2: showCursor(!emulation); break;
+    case 3: showCursor(true);       break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

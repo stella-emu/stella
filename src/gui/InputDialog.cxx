@@ -112,7 +112,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Stelladaptor mappings
   xpos = 5;  ypos = 5;
   lwidth = font.getStringWidth("Use mouse as a controller: ");
-  pwidth = font.getStringWidth("Analog devices");
+  pwidth = font.getStringWidth("-UI, -Emulation");
 
   VarList::push_back(items, "Left / Right", "lr");
   VarList::push_back(items, "Right / Left", "rl");
@@ -129,6 +129,20 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myMouseControl = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                              "Use mouse as a controller: ", lwidth);
   wid.push_back(myMouseControl);
+
+  // Mouse cursor state
+  ypos += lineHeight + 5;
+  items.clear();
+  VarList::push_back(items, "-UI, -Emulation", "0");
+  VarList::push_back(items, "-UI, +Emulation", "1");
+  VarList::push_back(items, "+UI, -Emulation", "2");
+  VarList::push_back(items, "+UI, +Emulation", "3");
+  myCursorState = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                             "Mouse cursor visibility: ", lwidth);
+  wid.push_back(myCursorState);
+#ifndef WINDOWED_SUPPORT
+  myCursorState->clearFlags(WIDGET_ENABLED);
+#endif
 
   // Add AtariVox serial port
   ypos += lineHeight + 5;
@@ -193,15 +207,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myGrabMouse->clearFlags(WIDGET_ENABLED);
 #endif
 
-  // Hide mouse cursor
-  ypos += lineHeight + 4;
-  myHideCursor = new CheckboxWidget(myTab, font, xpos, ypos,
-	                 "Always hide mouse cursor");
-  wid.push_back(myHideCursor);
-#ifndef WINDOWED_SUPPORT
-  myHideCursor->clearFlags(WIDGET_ENABLED);
-#endif
-
   // Enable/disable control key-combos
   ypos += lineHeight + 4;
   myCtrlCombo = new CheckboxWidget(myTab, font, xpos, ypos,
@@ -229,6 +234,9 @@ void InputDialog::loadConfig()
   myMouseControl->setSelected(
     instance().settings().getString("usemouse"), "analog");
 
+  // Mouse cursor state
+  myCursorState->setSelected(instance().settings().getString("cursor"), "2");
+
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
   myDeadzoneLabel->setValue(Joystick::deadzone());
@@ -247,9 +255,6 @@ void InputDialog::loadConfig()
 
   // Grab mouse
   myGrabMouse->setState(instance().settings().getBool("grabmouse"));
-
-  // Hide cursor
-  myHideCursor->setState(instance().settings().getBool("hidecursor"));
 
   // Enable/disable control key-combos
   myCtrlCombo->setState(instance().settings().getBool("ctrlcombo"));
@@ -290,8 +295,9 @@ void InputDialog::saveConfig()
   instance().eventHandler().allowAllDirections(allowall4);
 
   // Grab mouse and hide cursor
+  const string& cursor = myCursorState->getSelectedTag().toString();
+  instance().settings().setValue("cursor", cursor);
   instance().settings().setValue("grabmouse", myGrabMouse->getState());	 
-  instance().settings().setValue("hidecursor", myHideCursor->getState());	 
   instance().frameBuffer().setCursorState();
 
   // Enable/disable control key-combos
@@ -319,6 +325,9 @@ void InputDialog::setDefaults()
       // Use mouse as a controller
       myMouseControl->setSelected("analog");
 
+      // Mouse cursor state
+      myCursorState->setSelected("2");
+
       // Joystick deadzone
       myDeadzone->setValue(0);
       myDeadzoneLabel->setValue(3200);
@@ -337,9 +346,6 @@ void InputDialog::setDefaults()
 
       // Grab mouse
       myGrabMouse->setState(true);
-
-      // Hide cursor
-      myHideCursor->setState(false);
 
       // Enable/disable control key-combos
       myCtrlCombo->setState(true);

@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 4.6.1</b></h4></center>
+  <center><h4><b>Release 4.7</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - April 2015</b></center>
+  <center><b>February 1999 - July 2015</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -1972,8 +1972,8 @@
     </tr>
 
     <tr>
-      <td><pre>-hidecursor &lt;1|0&gt;</pre></td>
-      <td>Always hide the mouse cursor, or show it when appropriate.</td>
+      <td><pre>-cursor &lt;0|1|2|3&gt;</pre></td>
+      <td>Set mouse cursor state in UI/emulation modes.</td>
     </tr>
 
     <tr>
@@ -2610,13 +2610,13 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Stelladaptor port order</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
           <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
+          <tr><td>Mouse cursor visibility</td><td>Show/hide cursor depending on current state</td><td>-cursor</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
           <tr><td>Joy deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode</td><td>-grabmouse</td></tr>
-          <tr><td>Always hide mouse ...</td><td>Completely disable showing the mouse cursor</td><td>-hidemouse</td></tr>
           <tr><td>Use Control key combos</td><td>Enable using Control key in keyboard actions</td><td>-ctrlcombo</td></tr>
           <tr><td>Show Joystick Database</td><td>Show all joysticks that Stella knows about, with the option to remove them</td><td>&nbsp;</td></tr>
         </table>

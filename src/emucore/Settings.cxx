@@ -84,7 +84,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("joyallow4", "false");
   setInternal("usemouse", "analog");
   setInternal("grabmouse", "true");
-  setInternal("hidecursor", "false");
+  setInternal("cursor", "2");
   setInternal("dsense", "5");
   setInternal("msense", "7");
   setInternal("saport", "lr");
@@ -296,6 +296,10 @@ void Settings::validate()
   if(i < 1)        setInternal("dsense", "1");
   else if(i > 10)  setInternal("dsense", "10");
 
+  i = getInt("cursor");
+  if(i < 0 || i > 3)
+    setInternal("cursor", "2");
+
   i = getInt("dsense");
   if(i < 1)        setInternal("dsense", "1");
   else if(i > 10)  setInternal("dsense", "10");
@@ -393,7 +397,7 @@ void Settings::usage() const
     << "                 analog|\n"
     << "                 never>        Use mouse as a controller as specified by ROM properties in given mode(see manual)\n"
     << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
-    << "  -hidecursor   <1|0>          Always hide the cursor, or show it when appropriate\n"
+    << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
     << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-10)\n"
     << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-15)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"
