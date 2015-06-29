@@ -977,7 +977,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem.frameBuffer().showMessage("BW Mode");
       }
       break;
-    case Event::ConsoleColorSwap:
+    case Event::ConsoleColorToggle:
       if(state)
       {
         if(myOSystem.console().switches().tvColor())
@@ -1010,7 +1010,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem.frameBuffer().showMessage("Left Difficulty B");
       }
       break;
-    case Event::ConsoleLeftDiffSwap:
+    case Event::ConsoleLeftDiffToggle:
       if(state)
       {
         if(myOSystem.console().switches().leftDifficultyA())
@@ -1043,7 +1043,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem.frameBuffer().showMessage("Right Difficulty B");
       }
       break;
-    case Event::ConsoleRightDiffSwap:
+    case Event::ConsoleRightDiffToggle:
       if(state)
       {
         if(myOSystem.console().switches().rightDifficultyA())
@@ -2092,30 +2092,30 @@ uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
-  { Event::ConsoleSelect,       "Select",                      0, true  },
-  { Event::ConsoleReset,        "Reset",                       0, true  },
-  { Event::ConsoleColor,        "Color TV",                    0, true  },
-  { Event::ConsoleBlackWhite,   "Black & White TV",            0, true  },
-  { Event::ConsoleColorSwap,    "Swap Color / B&W TV",         0, true  },
-  { Event::ConsoleLeftDiffA,    "P0 Difficulty A",             0, true  },
-  { Event::ConsoleLeftDiffB,    "P0 Difficulty B",             0, true  },
-  { Event::ConsoleLeftDiffSwap, "P0 Swap Difficulty",          0, true  },
-  { Event::ConsoleRightDiffA,   "P1 Difficulty A",             0, true  },
-  { Event::ConsoleRightDiffB,   "P1 Difficulty B",             0, true  },
-  { Event::ConsoleRightDiffSwap,"P1 Swap Difficulty",          0, true  },
-  { Event::SaveState,           "Save State",                  0, false },
-  { Event::ChangeState,         "Change State",                0, false },
-  { Event::LoadState,           "Load State",                  0, false },
-  { Event::TakeSnapshot,        "Snapshot",                    0, false },
-  { Event::Fry,                 "Fry cartridge",               0, false },
-  { Event::VolumeDecrease,      "Decrease volume",             0, false },
-  { Event::VolumeIncrease,      "Increase volume",             0, false },
-  { Event::PauseMode,           "Pause",                       0, false },
-  { Event::MenuMode,            "Enter options menu mode",     0, false },
-  { Event::CmdMenuMode,         "Toggle command menu mode",    0, false },
-  { Event::DebuggerMode,        "Toggle debugger mode",        0, false },
-  { Event::LauncherMode,        "Enter ROM launcher",          0, false },
-  { Event::Quit,                "Quit",                        0, false },
+  { Event::ConsoleSelect,          "Select",                   0, true  },
+  { Event::ConsoleReset,           "Reset",                    0, true  },
+  { Event::ConsoleColor,           "Color TV",                 0, true  },
+  { Event::ConsoleBlackWhite,      "Black & White TV",         0, true  },
+  { Event::ConsoleColorToggle,     "Swap Color / B&W TV",      0, true  },
+  { Event::ConsoleLeftDiffA,       "P0 Difficulty A",          0, true  },
+  { Event::ConsoleLeftDiffB,       "P0 Difficulty B",          0, true  },
+  { Event::ConsoleLeftDiffToggle,  "P0 Swap Difficulty",       0, true  },
+  { Event::ConsoleRightDiffA,      "P1 Difficulty A",          0, true  },
+  { Event::ConsoleRightDiffB,      "P1 Difficulty B",          0, true  },
+  { Event::ConsoleRightDiffToggle, "P1 Swap Difficulty",       0, true  },
+  { Event::SaveState,              "Save State",               0, false },
+  { Event::ChangeState,            "Change State",             0, false },
+  { Event::LoadState,              "Load State",               0, false },
+  { Event::TakeSnapshot,           "Snapshot",                 0, false },
+  { Event::Fry,                    "Fry cartridge",            0, false },
+  { Event::VolumeDecrease,         "Decrease volume",          0, false },
+  { Event::VolumeIncrease,         "Increase volume",          0, false },
+  { Event::PauseMode,              "Pause",                    0, false },
+  { Event::MenuMode,               "Enter options menu mode",  0, false },
+  { Event::CmdMenuMode,            "Toggle command menu mode", 0, false },
+  { Event::DebuggerMode,           "Toggle debugger mode",     0, false },
+  { Event::LauncherMode,           "Enter ROM launcher",       0, false },
+  { Event::Quit,                   "Quit",                     0, false },
 
   { Event::JoystickZeroUp,      "P0 Joystick Up",              0, true  },
   { Event::JoystickZeroDown,    "P0 Joystick Down",            0, true  },

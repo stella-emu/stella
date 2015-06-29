@@ -12,10 +12,10 @@
                                Release History
 ===========================================================================
 
-4.6.1 to 4.7: (mmm dd, 2015)
+4.6.1 to 4.7: (July dd, 2015)
 
-  * Added mappable events for swapping TV color/BW, left difficulty A/B
-    and right difficulty A/B.  This means that one key. joystick button,
+  * Added mappable events for toggling TV color/BW, left difficulty A/B
+    and right difficulty A/B.  This means that one key, joystick button,
     etc can be used to toggle each event.  Thanks to Buzbard of AtariAge
     for the suggestion.
 
