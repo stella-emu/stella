@@ -36,7 +36,7 @@ class TiaOutputWidget : public Widget, public CommandSender
                     int x, int y, int w, int h);
     virtual ~TiaOutputWidget();
 
-    void loadConfig();
+    void loadConfig() override;
     void setZoomWidget(TiaZoomWidget* w) { myZoom = w; }
 
     void saveSnapshot();
@@ -45,19 +45,11 @@ class TiaOutputWidget : public Widget, public CommandSender
 // For example, clicking an area may cause an action
 // (fill to this scanline, etc).
 /*
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual void handleMouseWheel(int x, int y, int direction);
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod);
-    virtual bool handleKeyUp(StellaKey key, StellaMod mod);
+    virtual void handleMouseUp(int x, int y, int button, int clickCount) override;
+    virtual void handleMouseWheel(int x, int y, int direction) override;
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    virtual bool handleKeyUp(StellaKey key, StellaMod mod) override;
 */
-
-  protected:
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    void drawWidget(bool hilite);
-    bool wantsFocus() { return false; }
-
   private:
     unique_ptr<ContextMenu> myMenu;
     TiaZoomWidget* myZoom;
@@ -69,6 +61,12 @@ class TiaOutputWidget : public Widget, public CommandSender
     uInt32 myLineBuffer[320];
 
   private:
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void drawWidget(bool hilite) override;
+    bool wantsFocus() { return false; }
+
     // Following constructors and assignment operators not supported
     TiaOutputWidget() = delete;
     TiaOutputWidget(const TiaOutputWidget&) = delete;

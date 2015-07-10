@@ -60,26 +60,26 @@ class RomListWidget : public EditableWidget
     void setHighlighted(int item);
 
   protected:
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseUp(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction);
-    bool handleText(char text);
-    bool handleKeyDown(StellaKey key, StellaMod mod);
-    bool handleKeyUp(StellaKey key, StellaMod mod);
-    bool handleEvent(Event::Type e);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleText(char text) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    bool handleKeyUp(StellaKey key, StellaMod mod) override;
+    bool handleEvent(Event::Type e) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
     GUI::Rect getLineRect() const;
-    GUI::Rect getEditRect() const;
+    GUI::Rect getEditRect() const override;
 
     int findItem(int x, int y) const;
     void recalc();
 
-    void startEditMode();
-    void endEditMode();
-    void abortEditMode();
-    void lostFocusWidget();
+    void startEditMode() override;
+    void endEditMode() override;
+    void abortEditMode() override;
+    void lostFocusWidget() override;
     void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
     void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
 

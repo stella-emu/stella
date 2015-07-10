@@ -33,8 +33,8 @@ class StringListWidget : public ListWidget
     void setList(const StringList& list);
 
   protected:
-    void drawWidget(bool hilite);
-    GUI::Rect getEditRect() const;
+    void drawWidget(bool hilite) override;
+    GUI::Rect getEditRect() const override;
 
   protected:
     bool _hilite;

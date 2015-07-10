@@ -28,9 +28,9 @@ class BankRomCheat : public Cheat
     BankRomCheat(OSystem& os, const string& name, const string& code);
     virtual ~BankRomCheat() { }
 
-    bool enable();
-    bool disable();
-    void evaluate();
+    bool enable() override;
+    bool disable() override;
+    void evaluate() override;
 
   private:
     uInt8  savedRom[16];

@@ -87,7 +87,7 @@ class Cartridge : public Device
 
       @param out  The output file stream to save the image
     */
-    bool save(ofstream& out);
+    bool saveROM(ofstream& out);
 
     /**
       Lock/unlock bankswitching capability.  The debugger will lock
@@ -170,29 +170,6 @@ class Cartridge : public Device
       @return  A pointer to the internal ROM image data
     */
     virtual const uInt8* getImage(int& size) const = 0;
-
-    /**
-      Save the current state of this device to the given Serializer.
-
-      @param out  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    virtual bool save(Serializer& out) const = 0;
-
-    /**
-      Load the current state of this device from the given Serializer.
-
-      @param in  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    virtual bool load(Serializer& in) = 0;
-
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    virtual string name() const = 0;
 
     /**
       Informs the cartridge about the name of the ROM file used when

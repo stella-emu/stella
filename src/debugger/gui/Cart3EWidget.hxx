@@ -34,22 +34,6 @@ class Cartridge3EWidget : public CartDebugWidget
                       Cartridge3E& cart);
     virtual ~Cartridge3EWidget() { }
 
-    void saveOldState();
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    string bankState();
-  
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize();
-    uInt32 internalRamRPort(int start);
-    string internalRamDescription(); 
-    const ByteArray& internalRamOld(int start, int count);
-    const ByteArray& internalRamCurrent(int start, int count);
-    void internalRamSetValue(int addr, uInt8 value);
-    uInt8 internalRamGetValue(int addr);
-    // end of functions for Cartridge RAM tab   
-
   private:
     Cartridge3E& myCart;
     const uInt32 myNumRomBanks;
@@ -67,6 +51,22 @@ class Cartridge3EWidget : public CartDebugWidget
     };
 
   private:
+    void saveOldState() override;
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    string bankState() override;
+  
+    // start of functions for Cartridge RAM tab
+    uInt32 internalRamSize() override;
+    uInt32 internalRamRPort(int start) override;
+    string internalRamDescription() override;
+    const ByteArray& internalRamOld(int start, int count) override;
+    const ByteArray& internalRamCurrent(int start, int count) override;
+    void internalRamSetValue(int addr, uInt8 value) override;
+    uInt8 internalRamGetValue(int addr) override;
+    // end of functions for Cartridge RAM tab
+
     // Following constructors and assignment operators not supported
     Cartridge3EWidget() = delete;
     Cartridge3EWidget(const Cartridge3EWidget&) = delete;

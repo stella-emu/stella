@@ -40,11 +40,11 @@ class CpuDebug : public DebuggerSystem
   public:
     CpuDebug(Debugger& dbg, Console& console);
 
-    const DebuggerState& getState();
-    const DebuggerState& getOldState() { return myOldState; }
+    const DebuggerState& getState() override;
+    const DebuggerState& getOldState() override { return myOldState; }
 
-    void saveOldState();
-    string toString() { return EmptyString; } // Not needed, since CPU stuff is always visible
+    void saveOldState() override;
+    string toString() override { return EmptyString; } // Not needed, since CPU stuff is always visible
 
     // I know, we ain't supposed to do this...
     M6502& m6502() const { return mySystem.m6502(); }

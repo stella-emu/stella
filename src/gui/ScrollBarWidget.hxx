@@ -36,22 +36,22 @@ class ScrollBarWidget : public Widget, public CommandSender
     ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
 
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual void handleMouseWheel(int x, int y, int direction);
-    virtual void handleMouseMoved(int x, int y, int button);
-    virtual bool handleMouseClicks(int x, int y, int button);
-    virtual void handleMouseEntered(int button);
-    virtual void handleMouseLeft(int button);
-
     void recalc();
+    void handleMouseWheel(int x, int y, int direction) override;
 
     static void setWheelLines(int lines) { _WHEEL_LINES = lines; }
     static int  getWheelLines()          { return _WHEEL_LINES;  }
 
   private:
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
     void checkBounds(int old_pos);
+
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseMoved(int x, int y, int button) override;
+    bool handleMouseClicks(int x, int y, int button) override;
+    void handleMouseEntered(int button) override;
+    void handleMouseLeft(int button) override;
 
   public:
     int _numEntries;

@@ -38,11 +38,11 @@ class GlobalPropsDialog : public Dialog, public CommandSender
   private:
     int addHoldWidgets(const GUI::Font& font, int x, int y, WidgetArray& wid);
 
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum {

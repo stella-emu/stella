@@ -31,19 +31,19 @@ class EditTextWidget : public EditableWidget
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& text = "");
 
-    void setText(const string& str, bool changed = false);
-
-    void handleMouseDown(int x, int y, int button, int clickCount);
+    void setText(const string& str, bool changed = false) override;
 
   protected:
-    void drawWidget(bool hilite);
-    void lostFocusWidget();
+    void drawWidget(bool hilite) override;
+    void lostFocusWidget() override;
 
-    void startEditMode();
-    void endEditMode();
-    void abortEditMode();
+    void startEditMode() override;
+    void endEditMode() override;
+    void abortEditMode() override;
 
-    GUI::Rect getEditRect() const;
+    GUI::Rect getEditRect() const override;
+
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
 
   protected:
     string _backupString;

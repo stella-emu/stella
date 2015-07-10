@@ -64,19 +64,19 @@ class FilesystemNodePOSIX : public AbstractFSNode
      */
     FilesystemNodePOSIX(const string& path, bool verify = true);
 
-    bool exists() const { return access(_path.c_str(), F_OK) == 0; }
-    const string& getName() const   { return _displayName; }
-    const string& getPath() const   { return _path; }
-    string getShortPath() const;
-    bool isDirectory() const { return _isDirectory; }
-    bool isFile() const      { return _isFile;      }
-    bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
-    bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
-    bool makeDir();
-    bool rename(const string& newfile);
+    bool exists() const override { return access(_path.c_str(), F_OK) == 0; }
+    const string& getName() const override { return _displayName; }
+    const string& getPath() const override { return _path; }
+    string getShortPath() const override;
+    bool isDirectory() const override { return _isDirectory; }
+    bool isFile() const override      { return _isFile;      }
+    bool isReadable() const override  { return access(_path.c_str(), R_OK) == 0; }
+    bool isWritable() const override  { return access(_path.c_str(), W_OK) == 0; }
+    bool makeDir() override;
+    bool rename(const string& newfile) override;
 
-    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
-    AbstractFSNode* getParent() const;
+    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
+    AbstractFSNode* getParent() const override;
 
   protected:
     string _displayName;

@@ -58,12 +58,12 @@ class LauncherFilterDialog : public Dialog, public CommandSender
     static bool isValidRomName(const FilesystemNode& name, string& ext);
 
   private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
 
     void handleFileTypeChange(const string& type);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     PopUpWidget*    myFileType;

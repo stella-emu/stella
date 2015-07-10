@@ -66,20 +66,20 @@ class MindLink : public Controller
       @param pin The pin of the controller jack to write to
       @param value The value to write to the pin
     */
-    void write(DigitalPin pin, bool value) { myDigitalPinState[pin] = value; }
+    void write(DigitalPin pin, bool value) override { myDigitalPinState[pin] = value; }
 
     /**
       Called after *all* digital pins have been written on Port A.
 
       @param value  The entire contents of the SWCHA register
     */
-    void controlWrite(uInt8) { nextMindlinkBit(); }
+    void controlWrite(uInt8) override { nextMindlinkBit(); }
 
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    void update();
+    void update() override;
 
     /**
       Determines how this controller will treat values received from the
@@ -98,7 +98,7 @@ class MindLink : public Controller
       @return  Whether the controller supports using the mouse
     */
     bool setMouseControl(
-      Controller::Type xtype, int xid, Controller::Type ytype, int yid);
+      Controller::Type xtype, int xid, Controller::Type ytype, int yid) override;
 
   private:
     void nextMindlinkBit();

@@ -63,11 +63,11 @@ class PopUpWidget : public Widget, public CommandSender
     bool wantsFocus()  { return true; }
 
   protected:
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction);
-    bool handleEvent(Event::Type e);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void drawWidget(bool hilite);
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleEvent(Event::Type e) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void drawWidget(bool hilite) override;
 
   private:
     unique_ptr<ContextMenu> myMenu;

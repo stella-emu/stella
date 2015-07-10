@@ -59,7 +59,7 @@ class Paddles : public Controller
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    void update();
+    void update() override;
 
     /**
       Determines how this controller will treat values received from the
@@ -78,7 +78,7 @@ class Paddles : public Controller
       @return  Whether the controller supports using the mouse
     */
     bool setMouseControl(
-      Controller::Type xtype, int xid, Controller::Type ytype, int yid);
+      Controller::Type xtype, int xid, Controller::Type ytype, int yid) override;
 
     /**
       Sets the sensitivity for digital emulation of paddle movement.

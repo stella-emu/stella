@@ -34,7 +34,7 @@ class CommandDialog : public Dialog
     virtual ~CommandDialog();
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     enum {
       kSelectCmd     = 'Csel',

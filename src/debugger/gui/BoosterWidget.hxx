@@ -31,9 +31,6 @@ class BoosterWidget : public ControllerWidget
                    Controller& controller);
     virtual ~BoosterWidget();
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire, kJBooster, kJTrigger };
 
@@ -41,6 +38,9 @@ class BoosterWidget : public ControllerWidget
     static Controller::DigitalPin ourPinNo[5];
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     BoosterWidget() = delete;
     BoosterWidget(const BoosterWidget&) = delete;

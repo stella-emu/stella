@@ -55,7 +55,7 @@ class Dialog : public GuiObject
     void open(bool refresh = true);
     void close(bool refresh = true);
 
-    bool isVisible() const { return _visible; }
+    bool isVisible() const override { return _visible; }
 
     virtual void center();
     virtual void drawDialog();
@@ -63,7 +63,7 @@ class Dialog : public GuiObject
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
 
-    void addFocusWidget(Widget* w);
+    void addFocusWidget(Widget* w) override;
     void addToFocusList(WidgetArray& list);
     void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
     void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
@@ -83,8 +83,8 @@ class Dialog : public GuiObject
     void addSurface(shared_ptr<FBSurface> surface);
 
   protected:
-    virtual void draw() { };
-    void releaseFocus();
+    virtual void draw() override { };
+    void releaseFocus() override;
 
     virtual void handleText(char text);
     virtual void handleKeyDown(StellaKey key, StellaMod modifiers);
@@ -98,7 +98,7 @@ class Dialog : public GuiObject
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);
     virtual bool handleJoyHat(int stick, int hat, int value);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
 

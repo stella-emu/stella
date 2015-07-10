@@ -50,7 +50,7 @@ class MessageBox : public Dialog, public CommandSender
 
   private:
     void addText(const GUI::Font& font, const StringList& text);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     int myCmd;

@@ -41,12 +41,7 @@ class RomListSettings : public Dialog, public CommandSender
     void show(uInt32 x, uInt32 y, int data = -1);
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center();
-
-  private:
-    void loadConfig();
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void center() override;
 
   private:
     uInt32 _xorig, _yorig;
@@ -58,6 +53,10 @@ class RomListSettings : public Dialog, public CommandSender
     CheckboxWidget* myUseRelocation;
 
   private:
+    void loadConfig() override;
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     RomListSettings() = delete;
     RomListSettings(const RomListSettings&) = delete;

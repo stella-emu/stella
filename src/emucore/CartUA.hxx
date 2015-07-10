@@ -58,7 +58,7 @@ class CartridgeUA : public Cartridge
     /**
       Reset device to its power-on state
     */
-    void reset();
+    void reset() override;
 
     /**
       Install cartridge in the specified system.  Invoked by the system
@@ -66,24 +66,24 @@ class CartridgeUA : public Cartridge
 
       @param system The system the device should install itself in
     */
-    void install(System& system);
+    void install(System& system) override;
 
     /**
       Install pages for the specified bank in the system.
 
       @param bank The bank that should be installed in the system
     */
-    bool bank(uInt16 bank);
+    bool bank(uInt16 bank) override;
 
     /**
       Get the current bank.
     */
-    uInt16 getBank() const;
+    uInt16 getBank() const override;
 
     /**
       Query the number of banks supported by the cartridge.
     */
-    uInt16 bankCount() const;
+    uInt16 bankCount() const override;
 
     /**
       Patch the cartridge ROM.
@@ -92,7 +92,7 @@ class CartridgeUA : public Cartridge
       @param value    The value to place into the address
       @return    Success or failure of the patch operation
     */
-    bool patch(uInt16 address, uInt8 value);
+    bool patch(uInt16 address, uInt8 value) override;
 
     /**
       Access the internal ROM image for this cartridge.
@@ -100,7 +100,7 @@ class CartridgeUA : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const;
+    const uInt8* getImage(int& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -108,7 +108,7 @@ class CartridgeUA : public Cartridge
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const override;
 
     /**
       Load the current state of this cart from the given Serializer.
@@ -116,14 +116,14 @@ class CartridgeUA : public Cartridge
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in) override;
 
     /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    string name() const { return "CartridgeUA"; }
+    string name() const override { return "CartridgeUA"; }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -131,7 +131,7 @@ class CartridgeUA : public Cartridge
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h)
+        const GUI::Font& nfont, int x, int y, int w, int h) override
     {
       return new CartridgeUAWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
@@ -143,7 +143,7 @@ class CartridgeUA : public Cartridge
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address);
+    uInt8 peek(uInt16 address) override;
 
     /**
       Change the byte at the specified address to the given value
@@ -152,7 +152,7 @@ class CartridgeUA : public Cartridge
       @param value The value to be stored at the address
       @return  True if the poke changed the device address space, else false
     */
-    bool poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value) override;
 
   private:
     // Indicates which bank is currently active

@@ -38,10 +38,10 @@ class CpuWidget : public Widget, public CommandSender
     virtual ~CpuWidget();
 
     void setOpsWidget(DataGridOpsWidget* w);
-    void loadConfig();
+    void loadConfig() override;
 
   private:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     // ID's for the various widgets

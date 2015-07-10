@@ -56,8 +56,8 @@ class EditableWidget : public Widget, public CommandSender
     bool isEditable() const	 { return _editable; }
     void setEditable(bool editable);
 
-    virtual bool handleText(char text);
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod);
+    bool handleText(char text) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
 
     // We only want to focus this widget when we can edit its contents
     virtual bool wantsFocus() { return _editable; }

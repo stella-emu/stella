@@ -44,10 +44,11 @@ class RomWidget : public Widget, public CommandSender
     { myListIsDirty = true; if(forcereload) loadConfig(); }
 
     void scrollTo(int line) { myRomList->setSelected(line); }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void loadConfig();
 
   private:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void loadConfig() override;
+
     void setBreak(int disasm_line, bool state);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);

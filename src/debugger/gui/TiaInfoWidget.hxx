@@ -34,11 +34,7 @@ class TiaInfoWidget : public Widget, public CommandSender
                   int x, int y, int max_w);
     virtual ~TiaInfoWidget();
 
-    void loadConfig();
-
-  protected:
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig() override;
 
   private:
     EditTextWidget* myFrameCount;
@@ -53,6 +49,9 @@ class TiaInfoWidget : public Widget, public CommandSender
     CheckboxWidget* myVBlank;
 
   private:
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     TiaInfoWidget() = delete;
     TiaInfoWidget(const TiaInfoWidget&) = delete;

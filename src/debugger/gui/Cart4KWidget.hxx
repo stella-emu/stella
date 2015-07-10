@@ -32,11 +32,11 @@ class Cartridge4KWidget : public CartDebugWidget
                       Cartridge4K& cart);
     virtual ~Cartridge4KWidget() { }
 
-    // No implementation for non-bankswitched ROMs
-    void loadConfig() { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
-
   private:
+    // No implementation for non-bankswitched ROMs
+    void loadConfig() override { }
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+
     // Following constructors and assignment operators not supported
     Cartridge4KWidget() = delete;
     Cartridge4KWidget(const Cartridge4KWidget&) = delete;

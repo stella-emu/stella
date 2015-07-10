@@ -34,7 +34,7 @@ class ToggleBitWidget : public ToggleWidget
     void setState(const BoolArray& state, const BoolArray& changed);
 
   protected:
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
 
   protected:
     StringList  _offList;

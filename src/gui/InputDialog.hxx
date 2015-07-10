@@ -41,18 +41,17 @@ class InputDialog : public Dialog
                 const GUI::Font& font, int max_w, int max_h);
     virtual ~InputDialog();
 
-  protected:
-    void handleKeyDown(StellaKey key, StellaMod mod);
-    void handleJoyDown(int stick, int button);
-    void handleJoyAxis(int stick, int axis, int value);
-    bool handleJoyHat(int stick, int hat, int value);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
-
   private:
+    void handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleJoyDown(int stick, int button) override;
+    void handleJoyAxis(int stick, int axis, int value) override;
+    bool handleJoyHat(int stick, int hat, int value) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
+
     void addDevicePortTab(const GUI::Font& font);
 
   private:

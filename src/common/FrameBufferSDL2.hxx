@@ -62,12 +62,12 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       Shows or hides the cursor based on the given boolean value.
     */
-    void showCursor(bool show);
+    void showCursor(bool show) override;
 
     /**
       Answers if the display is currently in fullscreen mode.
     */
-    bool fullScreen() const;
+    bool fullScreen() const override;
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.
@@ -77,7 +77,7 @@ class FrameBufferSDL2 : public FrameBuffer
       @param g      The green component of the color
       @param b      The blue component of the color
     */
-    inline void getRGB(Uint32 pixel, Uint8* r, Uint8* g, Uint8* b) const
+    inline void getRGB(Uint32 pixel, Uint8* r, Uint8* g, Uint8* b) const override
       { SDL_GetRGB(pixel, myPixelFormat, r, g, b); }
 
     /**
@@ -87,7 +87,7 @@ class FrameBufferSDL2 : public FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    inline Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
+    inline Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const override
       { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
     /**
@@ -100,7 +100,7 @@ class FrameBufferSDL2 : public FrameBuffer
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const;
+    void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const override;
 
   protected:
     //////////////////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ class FrameBufferSDL2 : public FrameBuffer
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.
     */
-    void queryHardware(vector<GUI::Size>& displays, VariantList& renderers);
+    void queryHardware(vector<GUI::Size>& displays, VariantList& renderers) override;
 
     /**
       This method is called to query the video hardware for the index
@@ -119,7 +119,7 @@ class FrameBufferSDL2 : public FrameBuffer
       @return  the current display index or a negative value if no
                window is displayed
     */
-    Int32 getCurrentDisplayIndex();
+    Int32 getCurrentDisplayIndex() override;
 
     /**
       This method is called to change to the given video mode.
@@ -129,14 +129,14 @@ class FrameBufferSDL2 : public FrameBuffer
 
       @return  False on any errors, else true
     */
-    bool setVideoMode(const string& title, const VideoMode& mode);
+    bool setVideoMode(const string& title, const VideoMode& mode) override;
 
     /**
       This method is called to invalidate the contents of the entire
       framebuffer (ie, mark the current content as invalid, and erase it on
       the next drawing pass).
     */
-    void invalidate();
+    void invalidate() override;
 
     /**
       This method is called to create a surface with the given attributes.
@@ -145,27 +145,27 @@ class FrameBufferSDL2 : public FrameBuffer
       @param h     The requested height of the new surface.
       @param data  If non-null, use the given data values as a static surface
     */
-    unique_ptr<FBSurface> createSurface(uInt32 w, uInt32 h, const uInt32* data) const;
+    unique_ptr<FBSurface> createSurface(uInt32 w, uInt32 h, const uInt32* data) const override;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.
     */
-    void grabMouse(bool grab);
+    void grabMouse(bool grab) override;
 
     /**
       Set the icon for the main SDL window.
     */
-    void setWindowIcon();
+    void setWindowIcon() override;
 
     /**
       This method is called to provide information about the FrameBuffer.
     */
-    string about() const;
+    string about() const override;
 
     /**
       This method is called after any drawing is done (per-frame).
     */
-    void postFrameUpdate();
+    void postFrameUpdate() override;
 
   private:
     // The SDL video buffer

@@ -36,12 +36,12 @@ class LoggerDialog : public Dialog
                  const GUI::Font& font, int max_w, int max_h);
     virtual ~LoggerDialog();
 
-  protected:
-    void loadConfig();
-    void saveConfig();
+  private:
+    void loadConfig() override;
+    void saveConfig() override;
     void saveLogFile();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     StringListWidget* myLogInfo;

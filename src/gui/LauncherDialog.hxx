@@ -78,15 +78,14 @@ class LauncherDialog : public Dialog
     */
     void reload() { updateListing(); }
 
-  protected:
-    void handleKeyDown(StellaKey key, StellaMod mod);
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+  private:
+    void handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    void loadConfig();
+    void loadConfig() override;
     void updateListing(const string& nameToSelect = "");
 
-  private:
     void loadDirListing();
     void loadRomInfo();
     void handleContextMenu();

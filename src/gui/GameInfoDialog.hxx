@@ -39,13 +39,12 @@ class GameInfoDialog : public Dialog, public CommandSender
                    const GUI::Font& font, GuiObject* boss);
     virtual ~GameInfoDialog();
 
-  protected:
-    void loadConfig();
-    void saveConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
-    void setDefaults();
+    void loadConfig() override;
+    void saveConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void setDefaults() override;
     void loadView();
 
   private:

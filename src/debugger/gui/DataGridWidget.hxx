@@ -71,36 +71,36 @@ class DataGridWidget : public EditableWidget
 
     void setRange(int lower, int upper);
 
-    bool wantsFocus() { return true; }
+    bool wantsFocus() override { return true; }
 
     // Account for the extra width of embedded scrollbar
-    int getWidth() const;
+    int getWidth() const override;
 
     int colWidth() { return _colWidth; }
 
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
 
   protected:
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
 
     int findItem(int x, int y);
 
-    void startEditMode();
-    void endEditMode();
-    void abortEditMode();
+    void startEditMode() override;
+    void endEditMode() override;
+    void abortEditMode() override;
 
-    GUI::Rect getEditRect() const;
+    GUI::Rect getEditRect() const override;
 
-    void receivedFocusWidget();
-    void lostFocusWidget();
+    void receivedFocusWidget() override;
+    void lostFocusWidget() override;
 
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseUp(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction);
-    bool handleText(char text);
-    bool handleKeyDown(StellaKey key, StellaMod mod);
-    bool handleKeyUp(StellaKey key, StellaMod mod);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleText(char text) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    bool handleKeyUp(StellaKey key, StellaMod mod) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   protected:
     int  _rows;

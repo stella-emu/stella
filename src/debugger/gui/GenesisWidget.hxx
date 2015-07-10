@@ -31,9 +31,6 @@ class GenesisWidget : public ControllerWidget
                   Controller& controller);
     virtual ~GenesisWidget();
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJBbtn, kJCbtn };
 
@@ -41,6 +38,9 @@ class GenesisWidget : public ControllerWidget
     static Controller::DigitalPin ourPinNo[5];
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     GenesisWidget() = delete;
     GenesisWidget(const GenesisWidget&) = delete;

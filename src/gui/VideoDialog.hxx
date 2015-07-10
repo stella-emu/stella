@@ -40,14 +40,14 @@ class VideoDialog : public Dialog
     virtual ~VideoDialog();
 
   private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
 
     void handleFullscreenChange(bool enable);
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     TabWidget* myTab;

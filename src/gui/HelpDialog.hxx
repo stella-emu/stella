@@ -35,7 +35,13 @@ class HelpDialog : public Dialog
     HelpDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     virtual ~HelpDialog();
 
-  protected:
+  private:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void updateStrings(uInt8 page, uInt8 lines, string& title);
+    void displayInfo();
+    void loadConfig() override { displayInfo(); }
+
+  private:
     enum { kLINES_PER_PAGE = 10 };
     ButtonWidget* myNextButton;
     ButtonWidget* myPrevButton;
@@ -48,12 +54,6 @@ class HelpDialog : public Dialog
 
     uInt8 myPage;
     uInt8 myNumPages;
-
-  private:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void updateStrings(uInt8 page, uInt8 lines, string& title);
-    void displayInfo();
-    void loadConfig() { displayInfo(); }
 
   private:
     // Following constructors and assignment operators not supported

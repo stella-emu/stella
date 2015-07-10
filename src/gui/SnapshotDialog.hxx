@@ -41,12 +41,12 @@ class SnapshotDialog : public Dialog
                    int max_w, int max_h);
     virtual ~SnapshotDialog();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum {

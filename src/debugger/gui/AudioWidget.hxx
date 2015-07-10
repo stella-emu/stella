@@ -43,15 +43,14 @@ class AudioWidget : public Widget, public CommandSender
       kAUDVID
     };
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void loadConfig();
-
-  private:
     DataGridWidget* myAudF;
     DataGridWidget* myAudC;
     DataGridWidget* myAudV;
 
   private:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void loadConfig() override;
+
     // Following constructors and assignment operators not supported
     AudioWidget() = delete;
     AudioWidget(const AudioWidget&) = delete;

@@ -35,9 +35,6 @@ class DrivingWidget : public ControllerWidget
                   Controller& controller);
     virtual ~DrivingWidget();
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
     enum {
       kGreyUpCmd   = 'DWup',
@@ -53,6 +50,9 @@ class DrivingWidget : public ControllerWidget
     static uInt8 ourGreyTable[4];
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     DrivingWidget() = delete;
     DrivingWidget(const DrivingWidget&) = delete;

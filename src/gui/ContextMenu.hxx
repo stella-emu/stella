@@ -71,7 +71,7 @@ class ContextMenu : public Dialog, public CommandSender
     const Variant& getSelectedTag() const;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center();
+    void center() override;
 
     /** The following methods are used when we want to select *and*
         send a command for the new selection.  They are only to be used
@@ -83,20 +83,19 @@ class ContextMenu : public Dialog, public CommandSender
     bool sendSelectionFirst();
     bool sendSelectionLast();
 
-  protected:
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseMoved(int x, int y, int button);
-    bool handleMouseClicks(int x, int y, int button);
-    void handleMouseWheel(int x, int y, int direction);
-    void handleKeyDown(StellaKey key, StellaMod mod);
-    void handleJoyDown(int stick, int button);
-    void handleJoyAxis(int stick, int axis, int value);
-    bool handleJoyHat(int stick, int hat, int value);
+  private:
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseMoved(int x, int y, int button) override;
+    bool handleMouseClicks(int x, int y, int button) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    void handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleJoyDown(int stick, int button) override;
+    void handleJoyAxis(int stick, int axis, int value) override;
+    bool handleJoyHat(int stick, int hat, int value) override;
     void handleEvent(Event::Type e);
 
-    void drawDialog();
+    void drawDialog() override;
 
-  private:
     void recalc(const GUI::Rect& image);
 	
     int findItem(int x, int y) const;

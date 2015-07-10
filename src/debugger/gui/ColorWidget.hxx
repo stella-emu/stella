@@ -43,10 +43,10 @@ class ColorWidget : public Widget, public CommandSender
     ~ColorWidget();
 
     void setColor(int color);
-    int  getColor() const    { return _color;  }
+    int  getColor() const { return _color;  }
 	
   protected:
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
 
   protected:
     int _color;

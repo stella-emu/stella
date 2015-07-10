@@ -37,25 +37,25 @@ class AudioDialog : public Dialog
     AudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     virtual ~AudioDialog();
 
-  protected:
+  private:
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
+
+    void handleSoundEnableChange(bool active);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    enum {
+      kVolumeChanged      = 'ADvc',
+      kSoundEnableChanged = 'ADse'
+    };
+
     SliderWidget*     myVolumeSlider;
     StaticTextWidget* myVolumeLabel;
     PopUpWidget*      myFragsizePopup;
     PopUpWidget*      myFreqPopup;
     CheckboxWidget*   mySoundEnableCheckbox;
-
-  private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
-
-    void handleSoundEnableChange(bool active);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    enum {
-      kVolumeChanged      = 'ADvc',
-      kSoundEnableChanged = 'ADse'
-    };
 
   private:
     // Following constructors and assignment operators not supported

@@ -41,9 +41,9 @@ class CheatCodeDialog : public Dialog
     virtual ~CheatCodeDialog();
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void loadConfig();
-    void saveConfig();
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void loadConfig() override;
+    void saveConfig() override;
 
   private:
     void addCheat();

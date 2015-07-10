@@ -31,9 +31,6 @@ class KeyboardWidget : public ControllerWidget
                    Controller& controller);
     virtual ~KeyboardWidget();
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
     CheckboxWidget* myBox[12];
     Event::Type* myEvent;
@@ -41,6 +38,9 @@ class KeyboardWidget : public ControllerWidget
     static Event::Type ourLeftEvents[12], ourRightEvents[12];
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     KeyboardWidget() = delete;
     KeyboardWidget(const KeyboardWidget&) = delete;

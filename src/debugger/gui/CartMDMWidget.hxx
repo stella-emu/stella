@@ -35,11 +35,6 @@ class CartridgeMDMWidget : public CartDebugWidget
                        CartridgeMDM& cart);
     virtual ~CartridgeMDMWidget() { }
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    string bankState();
-
   private:
     CartridgeMDM& myCart;
     PopUpWidget* myBank;
@@ -48,6 +43,11 @@ class CartridgeMDMWidget : public CartDebugWidget
     enum { kBankChanged = 'bkCH', kBankDisabled = 'bkDI' };
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    string bankState() override;
+
     // Following constructors and assignment operators not supported
     CartridgeMDMWidget() = delete;
     CartridgeMDMWidget(const CartridgeMDMWidget&) = delete;

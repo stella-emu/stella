@@ -51,8 +51,8 @@ class BrowserDialog : public Dialog, public CommandSender
     /** Get resulting file node (called after receiving kChooseCmd) */
     const FilesystemNode& getResult() const;
 
-  protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+  private:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateUI();
 
   private:

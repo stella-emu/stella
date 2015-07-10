@@ -134,7 +134,7 @@ class Console : public Serializable
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const override;
 
     /**
       Loads the current state of this console class from the given Serializer.
@@ -142,14 +142,14 @@ class Console : public Serializable
       @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in) override;
 
     /**
       Get a descriptor for this console class (used in error checking).
 
       @return The name of the object
     */
-    string name() const { return "Console"; }
+    string name() const override { return "Console"; }
 
     /**
       Set the properties to those given

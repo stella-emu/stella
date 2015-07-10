@@ -44,8 +44,8 @@ class JoystickDialog : public Dialog
     void show() { open(); }
 
   private:
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     StringListWidget* myJoyList;

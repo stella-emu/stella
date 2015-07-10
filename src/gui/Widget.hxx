@@ -63,29 +63,29 @@ class Widget : public GuiObject
     Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     virtual ~Widget();
 
-    virtual int getAbsX() const  { return _x + _boss->getChildX(); }
-    virtual int getAbsY() const  { return _y + _boss->getChildY(); }
+    virtual int getAbsX() const override { return _x + _boss->getChildX(); }
+    virtual int getAbsY() const override { return _y + _boss->getChildY(); }
 
-    virtual bool handleText(char text)                       { return false; }
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod) { return false; }
-    virtual bool handleKeyUp(StellaKey key, StellaMod mod)   { return false; }
-    virtual void handleMouseDown(int x, int y, int button, int clickCount) {}
-    virtual void handleMouseUp(int x, int y, int button, int clickCount) {}
-    virtual void handleMouseEntered(int button) {}
-    virtual void handleMouseLeft(int button) {}
-    virtual void handleMouseMoved(int x, int y, int button) {}
-    virtual void handleMouseWheel(int x, int y, int direction) {}
+    virtual bool handleText(char text)                        { return false; }
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }
+    virtual bool handleKeyUp(StellaKey key, StellaMod mod)    { return false; }
+    virtual void handleMouseDown(int x, int y, int button, int clickCount) { }
+    virtual void handleMouseUp(int x, int y, int button, int clickCount) { }
+    virtual void handleMouseEntered(int button) { }
+    virtual void handleMouseLeft(int button) { }
+    virtual void handleMouseMoved(int x, int y, int button) { }
+    virtual void handleMouseWheel(int x, int y, int direction) { }
     virtual bool handleMouseClicks(int x, int y, int button) { return false; }
-    virtual void handleJoyDown(int stick, int button) {}
-    virtual void handleJoyUp(int stick, int button) {}
-    virtual void handleJoyAxis(int stick, int axis, int value) {}
+    virtual void handleJoyDown(int stick, int button) { }
+    virtual void handleJoyUp(int stick, int button) { }
+    virtual void handleJoyAxis(int stick, int axis, int value) { }
     virtual bool handleJoyHat(int stick, int hat, int value) { return false; }
     virtual bool handleEvent(Event::Type event) { return false; }
 
-    void draw();
+    void draw() override;
     void receivedFocus();
     void lostFocus();
-    void addFocusWidget(Widget* w) { _focusList.push_back(w); }
+    void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
 
     /** Set/clear WIDGET_ENABLED flag */
     void setEnabled(bool e);
@@ -94,11 +94,11 @@ class Widget : public GuiObject
     void clearFlags(int flags)  { _flags &= ~flags; setDirty(); }
     int  getFlags() const       { return _flags; }
 
-    bool isEnabled() const   { return _flags & WIDGET_ENABLED;         }
-    bool isVisible() const   { return !(_flags & WIDGET_INVISIBLE);    }
-    bool wantsFocus() const  { return _flags & WIDGET_RETAIN_FOCUS;    }
-    bool wantsTab() const    { return _flags & WIDGET_WANTS_TAB;       }
-    bool wantsRaw() const    { return _flags & WIDGET_WANTS_RAWDATA;   }
+    bool isEnabled() const          { return _flags & WIDGET_ENABLED;         }
+    bool isVisible() const override { return !(_flags & WIDGET_INVISIBLE);    }
+    bool wantsFocus() const         { return _flags & WIDGET_RETAIN_FOCUS;    }
+    bool wantsTab() const           { return _flags & WIDGET_WANTS_TAB;       }
+    bool wantsRaw() const           { return _flags & WIDGET_WANTS_RAWDATA;   }
 
     void setID(int id)  { _id = id;   }
     int  getID() const  { return _id; }
@@ -110,20 +110,20 @@ class Widget : public GuiObject
     void setBGColor(uInt32 color)     { _bgcolor = color;     }
     void setBGColorHi(uInt32 color)   { _bgcolorhi = color;   }
 
-    virtual void loadConfig() {}
+    virtual void loadConfig() { }
 
   protected:
-    virtual void drawWidget(bool hilite) {}
+    virtual void drawWidget(bool hilite) { }
 
-    virtual void receivedFocusWidget() {}
-    virtual void lostFocusWidget() {}
+    virtual void receivedFocusWidget() { }
+    virtual void lostFocusWidget() { }
 
     virtual Widget* findWidget(int x, int y) { return this; }
 
-    void releaseFocus() { assert(_boss); _boss->releaseFocus(); }
+    void releaseFocus() override { assert(_boss); _boss->releaseFocus(); }
 
     // By default, delegate unhandled commands to the boss
-    void handleCommand(CommandSender* sender, int cmd, int data, int id)
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
   protected:
@@ -181,7 +181,7 @@ class StaticTextWidget : public Widget
     const string& getLabel() const      { return _label; }
 
   protected:
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
 
   protected:
     string        _label;
@@ -209,13 +209,13 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
 
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual void handleMouseEntered(int button);
-    virtual void handleMouseLeft(int button);
-    virtual bool handleEvent(Event::Type event);
-
   protected:
-    void drawWidget(bool hilite);
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseEntered(int button) override;
+    void handleMouseLeft(int button) override;
+    bool handleEvent(Event::Type event) override;
+
+    void drawWidget(bool hilite) override;
 
   protected:
     int    _cmd;
@@ -234,17 +234,11 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 class CheckboxWidget : public ButtonWidget
 {
   public:
-    enum FillType {
-      Normal, Inactive, Circle
-    };
+    enum FillType { Normal, Inactive, Circle };
 
   public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    const string& label, int cmd = 0);
-
-    void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual void handleMouseEntered(int button)	{}
-    virtual void handleMouseLeft(int button)	{}
 
     void setEditable(bool editable);
     void setFill(FillType type);
@@ -253,10 +247,14 @@ class CheckboxWidget : public ButtonWidget
     void toggleState()     { setState(!_state); }
     bool getState() const  { return _state;     }
 
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseEntered(int button) override	{ }
+    void handleMouseLeft(int button) override	{ }
+
     static int boxSize() { return 14; }  // box is square
 
   protected:
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
 
   protected:
     bool _state;
@@ -298,14 +296,14 @@ class SliderWidget : public ButtonWidget
     void setStepValue(int value);
     int  getStepValue() const     { return _stepValue; }
 
-    virtual void handleMouseMoved(int x, int y, int button);
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual void handleMouseWheel(int x, int y, int direction);
-    virtual bool handleEvent(Event::Type event);
-
   protected:
-    void drawWidget(bool hilite);
+    void handleMouseMoved(int x, int y, int button) override;
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleEvent(Event::Type event) override;
+
+    void drawWidget(bool hilite) override;
 
     int valueToPos(int value);
     int posToValue(int pos);

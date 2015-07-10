@@ -41,13 +41,14 @@ class ControllerWidget : public Widget, public CommandSender
 
     virtual ~ControllerWidget() { };
 
-    virtual void loadConfig() { };
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { };
+    virtual void loadConfig() override { };
 
   protected:
     Controller& myController;
 
   private:
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { };
+
     // Following constructors and assignment operators not supported
     ControllerWidget() = delete;
     ControllerWidget(const ControllerWidget&) = delete;

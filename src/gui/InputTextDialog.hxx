@@ -53,13 +53,13 @@ class InputTextDialog : public Dialog, public CommandSender
 
     void setFocus(int idx = 0);
 
-    /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center();
-
   protected:
     void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                     const StringList& labels);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    /** This dialog uses its own positioning, so we override Dialog::center() */
+    void center() override;
 
   private:
     vector<EditTextWidget*> myInput;

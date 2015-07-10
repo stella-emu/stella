@@ -48,8 +48,8 @@ class OptionsDialog : public Dialog
     virtual ~OptionsDialog();
 
   private:
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     unique_ptr<VideoDialog>      myVideoDialog;

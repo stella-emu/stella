@@ -47,8 +47,8 @@ class CartRamWidget : public Widget, public CommandSender
     virtual ~CartRamWidget() { };
 
   private:
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void fillGrid(bool updateOld);
   
     void showInputBox(int cmd);

@@ -41,19 +41,12 @@ class ToggleWidget : public Widget, public CommandSender
     const BoolArray& getState()    { return _stateList; }
     bool getSelectedState() const  { return _stateList[_selectedItem]; }
 
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
     virtual bool wantsFocus() { return true; }
 
     int colWidth() const { return _colWidth; }
     void setEditable(bool editable) { _editable = editable; }
 
   protected:
-    void drawWidget(bool hilite) = 0;
-    int findItem(int x, int y);
 
   protected:
     int  _rows;
@@ -69,6 +62,14 @@ class ToggleWidget : public Widget, public CommandSender
     BoolArray  _changedList;
 
   private:
+    void drawWidget(bool hilite) override = 0;
+    int findItem(int x, int y);
+
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     ToggleWidget() = delete;
     ToggleWidget(const ToggleWidget&) = delete;

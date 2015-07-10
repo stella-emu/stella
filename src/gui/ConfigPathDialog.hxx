@@ -41,12 +41,12 @@ class ConfigPathDialog : public Dialog, public CommandSender
                      int max_w, int max_h);
     virtual ~ConfigPathDialog();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
 
   private:
     enum {

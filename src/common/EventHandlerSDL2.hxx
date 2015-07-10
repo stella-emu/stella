@@ -48,19 +48,19 @@ class EventHandlerSDL2 : public EventHandler
     /**
       Enable/disable text events (distinct from single-key events).
     */
-    void enableTextEvents(bool enable);
+    void enableTextEvents(bool enable) override;
 
     /**
       Returns the human-readable name for a StellaKey.
     */
-    const char* nameForKey(StellaKey key) const {
+    const char* nameForKey(StellaKey key) const override {
       return SDL_GetScancodeName(SDL_Scancode(key));
     }
 
     /**
       Collects and dispatches any pending SDL2 events.
     */
-    void pollEvent();
+    void pollEvent() override;
 
   private:
     SDL_Event myEvent;

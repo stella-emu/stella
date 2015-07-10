@@ -28,9 +28,9 @@ class RamCheat : public Cheat
     RamCheat(OSystem& os, const string& name, const string& code);
     virtual ~RamCheat() { }
 
-    bool enable();
-    bool disable();
-    void evaluate();
+    bool enable() override;
+    bool disable() override;
+    void evaluate() override;
 
   private:
     uInt16 address;

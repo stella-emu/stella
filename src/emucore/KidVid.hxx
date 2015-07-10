@@ -62,7 +62,7 @@ class KidVid : public Controller
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    void update();
+    void update() override;
 
   private:
     // Open/close a WAV sample file

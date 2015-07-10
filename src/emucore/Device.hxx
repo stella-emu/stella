@@ -76,7 +76,7 @@ class Device : public Serializable
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool save(Serializer& out) const = 0;
+    virtual bool save(Serializer& out) const override = 0;
 
     /**
       Load the current state of this device from the given Serializer.
@@ -84,14 +84,14 @@ class Device : public Serializable
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool load(Serializer& in) = 0;
+    virtual bool load(Serializer& in) override = 0;
 
     /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    virtual string name() const = 0;
+    virtual string name() const override = 0;
 
   public:
     /**

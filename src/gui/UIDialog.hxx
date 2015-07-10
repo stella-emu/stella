@@ -38,7 +38,14 @@ class UIDialog : public Dialog
     UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     virtual ~UIDialog();
 
-  protected:
+  private:
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
     TabWidget* myTab;
 
     // Launcher options
@@ -62,13 +69,6 @@ class UIDialog : public Dialog
     PopUpWidget*      myListDelayPopup;
     PopUpWidget*      myWheelLinesPopup;
     
-  private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
-
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
     enum {
       kLWidthChanged  = 'UIlw',
       kLHeightChanged = 'UIlh',

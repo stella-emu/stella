@@ -31,8 +31,6 @@ class TabWidget : public Widget, public CommandSender
     TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     virtual ~TabWidget();
 
-    virtual int getChildY() const;
-
 // use Dialog::releaseFocus() when changing to another tab
 
 // Problem: how to add items to a tab?
@@ -55,15 +53,16 @@ class TabWidget : public Widget, public CommandSender
     int getTabHeight() { return _tabHeight; }
     int getActiveTab() { return _activeTab; }
 
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    virtual bool handleEvent(Event::Type event);
-
-    virtual void loadConfig();
+    void loadConfig() override;
 
   protected:
-    virtual void drawWidget(bool hilite);
-    virtual Widget* findWidget(int x, int y);
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    bool handleEvent(Event::Type event) override;
+
+    void drawWidget(bool hilite) override;
+    Widget* findWidget(int x, int y) override;
+    int getChildY() const override;
 
   private:
     struct Tab {

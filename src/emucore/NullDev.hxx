@@ -53,12 +53,12 @@ class NullDevice : public Device
 
       @param system The system the device should install itself in
     */
-    void install(System& system) { mySystem = &system; }
+    void install(System& system) override { mySystem = &system; }
 
     /**
       Reset device to its power-on state
     */
-    void reset() { }
+    void reset() override { }
 
     /**
       Save the current state of this device to the given Serializer.
@@ -66,7 +66,7 @@ class NullDevice : public Device
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool save(Serializer& out) const { return true; }
+    bool save(Serializer& out) const override { return true; }
 
     /**
       Load the current state of this device from the given Serializer.
@@ -74,14 +74,14 @@ class NullDevice : public Device
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Serializer& in) { return true; }
+    bool load(Serializer& in) override { return true; }
 
     /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    string name() const { return "NullDevice"; }
+    string name() const override { return "NullDevice"; }
 
   public:
     /**
@@ -89,7 +89,7 @@ class NullDevice : public Device
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address) { 
+    uInt8 peek(uInt16 address) override { 
       cerr << hex << "NullDevice: peek(" << address << ")\n";
       return 0;
     }
@@ -102,7 +102,7 @@ class NullDevice : public Device
 
       @return  True if the poke changed the device address space, else false
     */
-    bool poke(uInt16 address, uInt8 value) {
+    bool poke(uInt16 address, uInt8 value) override {
       cerr << hex << "NullDevice: poke(" << address << "," << value << ")\n";
       return false;
     }

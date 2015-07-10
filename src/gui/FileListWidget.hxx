@@ -66,7 +66,7 @@ class FileListWidget : public StringListWidget
     const FilesystemNode& currentDir() const { return _node;      }
 
   protected:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     FilesystemNode::ListMode _fsmode;

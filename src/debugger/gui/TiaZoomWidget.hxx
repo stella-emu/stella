@@ -34,24 +34,23 @@ class TiaZoomWidget : public Widget, public CommandSender
                   int x, int y, int w, int h);
     virtual ~TiaZoomWidget();
 
-    void loadConfig();
+    void loadConfig() override;
     void setPos(int x, int y);
-
-  protected:
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseUp(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction);
-    void handleMouseMoved(int x, int y, int button);
-    void handleMouseLeft(int button);
-    bool handleEvent(Event::Type event);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    void drawWidget(bool hilite);
-    bool wantsFocus() { return true; }
 
   private:
     void zoom(int level);
     void recalc();
+
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    void handleMouseMoved(int x, int y, int button) override;
+    void handleMouseLeft(int button) override;
+    bool handleEvent(Event::Type event) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void drawWidget(bool hilite) override;
+    bool wantsFocus() { return true; }
 
   private:
     unique_ptr<ContextMenu> myMenu;

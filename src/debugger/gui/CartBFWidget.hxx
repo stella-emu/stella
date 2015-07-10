@@ -34,11 +34,6 @@ class CartridgeBFWidget : public CartDebugWidget
                       CartridgeBF& cart);
     virtual ~CartridgeBFWidget() { }
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    string bankState();
-
   private:
     CartridgeBF& myCart;
     PopUpWidget* myBank;
@@ -46,6 +41,11 @@ class CartridgeBFWidget : public CartDebugWidget
     enum { kBankChanged = 'bkCH' };
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    string bankState() override;
+
     // Following constructors and assignment operators not supported
     CartridgeBFWidget() = delete;
     CartridgeBFWidget(const CartridgeBFWidget&) = delete;

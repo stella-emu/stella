@@ -46,10 +46,6 @@ class EventMappingWidget : public Widget, public CommandSender
                        const StringList& actions, EventMode mode);
     ~EventMappingWidget();
 
-    bool handleKeyDown(StellaKey key, StellaMod mod);
-    void handleJoyDown(int stick, int button);
-    void handleJoyAxis(int stick, int axis, int value);
-    bool handleJoyHat(int stick, int hat, int value);
  
     bool remapMode() { return myRemapStatus; }
 
@@ -64,14 +60,20 @@ class EventMappingWidget : public Widget, public CommandSender
       kComboCmd    = 'cmbo'
     };
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleJoyDown(int stick, int button) override;
+    void handleJoyAxis(int stick, int axis, int value) override;
+    bool handleJoyHat(int stick, int hat, int value) override;
+
+    void loadConfig() override;
+    void saveConfig();
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void startRemapping();
     void eraseRemapping();
     void resetRemapping();
     void stopRemapping();
-    void loadConfig();
-    void saveConfig();
 
     void drawKeyMapping();
     void enableButtons(bool state);

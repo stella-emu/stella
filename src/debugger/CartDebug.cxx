@@ -1155,7 +1155,7 @@ string CartDebug::saveRom()
 
   FilesystemNode node(path);
   ofstream out(node.getPath(), ios::binary);
-  if(out.is_open() && myConsole.cartridge().save(out))
+  if(out && myConsole.cartridge().saveROM(out))
     return "saved ROM as " + node.getShortPath();
   else
     return DebuggerParser::red("failed to save ROM");

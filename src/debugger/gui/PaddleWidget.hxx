@@ -31,9 +31,6 @@ class PaddleWidget : public ControllerWidget
                  Controller& controller);
     virtual ~PaddleWidget();
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
     enum { kP0Changed = 'P0ch', kP1Changed = 'P1ch',
            kP0Fire = 'P0fr', kP1Fire = 'P1fr' };
@@ -42,6 +39,9 @@ class PaddleWidget : public ControllerWidget
     CheckboxWidget *myP0Fire, *myP1Fire;
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     PaddleWidget() = delete;
     PaddleWidget(const PaddleWidget&) = delete;

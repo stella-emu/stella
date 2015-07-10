@@ -38,10 +38,10 @@ class RomInfoWidget : public Widget
 
     void setProperties(const Properties& props);
     void clearProperties();
-    void loadConfig();
+    void loadConfig() override;
 
   protected:
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
 
   private:
     void parseProperties();

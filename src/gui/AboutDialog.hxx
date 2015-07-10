@@ -34,7 +34,14 @@ class AboutDialog : public Dialog
                 const GUI::Font& font);
     virtual ~AboutDialog();
 
-  protected:
+  private:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void updateStrings(int page, int lines, string& title);
+    void displayInfo();
+
+    void loadConfig() override { displayInfo(); }
+
+  private:
     ButtonWidget* myNextButton;
     ButtonWidget* myPrevButton;
 
@@ -45,13 +52,6 @@ class AboutDialog : public Dialog
     int myPage;
     int myNumPages;
     int myLinesPerPage;
-
-  private:
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void updateStrings(int page, int lines, string& title);
-    void displayInfo();
-
-    void loadConfig() { displayInfo(); }
 
   private:
     // Following constructors and assignment operators not supported

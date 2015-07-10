@@ -31,14 +31,8 @@ using CheckboxArray = vector<CheckboxWidget*>;
 class CheckListWidget : public ListWidget
 {
   public:
-    enum {
-      kListItemChecked = 'LIct'  // checkbox toggled on current line
-  };
-
-  enum CheckStyle {
-    XFill,
-    SolidFill
-  };
+    enum {  kListItemChecked = 'LIct' /* checkbox toggled on current line*/ };
+    enum CheckStyle { XFill, SolidFill };
 
   public:
     CheckListWidget(GuiObject* boss, const GUI::Font& font,
@@ -52,12 +46,12 @@ class CheckListWidget : public ListWidget
     bool getState(int line);
     bool getSelectedState() { return getState(_selectedItem); }
 
-    bool handleEvent(Event::Type e);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+  private:
+    bool handleEvent(Event::Type e) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-  protected:
-    void drawWidget(bool hilite);
-    GUI::Rect getEditRect() const;
+    void drawWidget(bool hilite) override;
+    GUI::Rect getEditRect() const override;
 
   protected:
     BoolArray     _stateList;

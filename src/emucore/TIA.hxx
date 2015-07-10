@@ -67,7 +67,7 @@ class TIA : public Device
     /**
       Reset device to its power-on state
     */
-    void reset();
+    void reset() override;
 
     /**
       Reset frame to current YStart/Height properties
@@ -79,7 +79,7 @@ class TIA : public Device
       system resets its cycle counter to zero.  It may be necessary
       to override this method for devices that remember cycle counts.
     */
-    void systemCyclesReset();
+    void systemCyclesReset() override;
 
     /**
       Install TIA in the specified system.  Invoked by the system
@@ -87,7 +87,7 @@ class TIA : public Device
 
       @param system The system the device should install itself in
     */
-    void install(System& system);
+    void install(System& system) override;
 
     /**
       Install TIA in the specified system and device.  Invoked by
@@ -106,7 +106,7 @@ class TIA : public Device
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const override;
 
     /**
       Load the current state of this device from the given Serializer.
@@ -114,7 +114,7 @@ class TIA : public Device
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in) override;
 
     /**
       The following are very similar to save() and load(), except they
@@ -143,14 +143,14 @@ class TIA : public Device
 
       @return The name of the object
     */
-    string name() const { return "TIA"; }
+    string name() const override { return "TIA"; }
 
     /**
       Get the byte at the specified address
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address);
+    uInt8 peek(uInt16 address) override;
 
     /**
       Change the byte at the specified address to the given value
@@ -160,7 +160,7 @@ class TIA : public Device
 
       @return  True if the poke changed the device address space, else false
     */
-    bool poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value) override;
 
     /**
       This method should be called at an interval corresponding to the 

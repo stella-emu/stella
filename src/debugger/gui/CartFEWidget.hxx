@@ -32,16 +32,16 @@ class CartridgeFEWidget : public CartDebugWidget
                       CartridgeFE& cart);
     virtual ~CartridgeFEWidget() { }
 
-    // No implementation for non-bankswitched ROMs
-    void loadConfig() { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
-
-    string bankState();
-
   private:
     CartridgeFE& myCart;
 
   private:
+    // No implementation for non-bankswitched ROMs
+    void loadConfig() override { }
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+
+    string bankState() override;
+
     // Following constructors and assignment operators not supported
     CartridgeFEWidget() = delete;
     CartridgeFEWidget(const CartridgeFEWidget&) = delete;

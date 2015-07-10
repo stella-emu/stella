@@ -48,7 +48,7 @@ class PromptWidget : public Widget, public CommandSender
   protected:
     int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
-    void drawWidget(bool hilite);
+    void drawWidget(bool hilite) override;
     void drawCaret();
     void putcharIntern(int c);
 //    void insertIntoPrompt(const char *str);
@@ -66,18 +66,18 @@ class PromptWidget : public Widget, public CommandSender
     void addToHistory(const char *str);
     void historyScroll(int direction);
 
-    void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction);
-    bool handleText(char text);
-    bool handleKeyDown(StellaKey key, StellaMod mod);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleText(char text) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     // Account for the extra width of embedded scrollbar
-    virtual int getWidth() const;
+    virtual int getWidth() const override;
 
     virtual bool wantsFocus() { return true; }
 
-    void loadConfig();
+    void loadConfig() override;
 
   private:
     // Get the longest prefix (initially 's') that is in every string in the list

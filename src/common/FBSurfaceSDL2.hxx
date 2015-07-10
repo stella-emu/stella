@@ -39,30 +39,30 @@ class FBSurfaceSDL2 : public FBSurface
     // Most of the surface drawing primitives are implemented in FBSurface;
     // the ones implemented here use SDL-specific code for extra performance
     //
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
+    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color) override;
     // With hardware surfaces, it's faster to just update the entire surface
-    void setDirty() { mySurfaceIsDirty = true; }
+    void setDirty() override { mySurfaceIsDirty = true; }
 
-    uInt32 width() const;
-    uInt32 height() const;
+    uInt32 width() const override;
+    uInt32 height() const override;
 
-    const GUI::Rect& srcRect() const;
-    const GUI::Rect& dstRect() const;
-    void setSrcPos(uInt32 x, uInt32 y);
-    void setSrcSize(uInt32 w, uInt32 h);
-    void setDstPos(uInt32 x, uInt32 y);
-    void setDstSize(uInt32 w, uInt32 h);
-    void setVisible(bool visible);
+    const GUI::Rect& srcRect() const override;
+    const GUI::Rect& dstRect() const override;
+    void setSrcPos(uInt32 x, uInt32 y) override;
+    void setSrcSize(uInt32 w, uInt32 h) override;
+    void setDstPos(uInt32 x, uInt32 y) override;
+    void setDstSize(uInt32 w, uInt32 h) override;
+    void setVisible(bool visible) override;
 
-    void translateCoords(Int32& x, Int32& y) const;
-    bool render();
-    void invalidate();
-    void free();
-    void reload();
-    void resize(uInt32 width, uInt32 height);
+    void translateCoords(Int32& x, Int32& y) const override;
+    bool render() override;
+    void invalidate() override;
+    void free() override;
+    void reload() override;
+    void resize(uInt32 width, uInt32 height) override;
 
   protected:
-    void applyAttributes(bool immediate);
+    void applyAttributes(bool immediate) override;
 
   private:
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);

@@ -34,11 +34,6 @@ class CartridgeMCWidget : public CartDebugWidget
                       CartridgeMC& cart);
     virtual ~CartridgeMCWidget() { }
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    string bankState();
-
   private:
     CartridgeMC& myCart;
     PopUpWidget *mySlice0, *mySlice1, *mySlice2, *mySlice3;
@@ -51,6 +46,11 @@ class CartridgeMCWidget : public CartDebugWidget
     };
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    string bankState() override;
+
     // Following constructors and assignment operators not supported
     CartridgeMCWidget() = delete;
     CartridgeMCWidget(const CartridgeMCWidget&) = delete;

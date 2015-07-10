@@ -62,34 +62,33 @@ class ListWidget : public EditableWidget
 
     void scrollTo(int item);
 
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
-    virtual void handleMouseWheel(int x, int y, int direction);
-    virtual bool handleText(char text);
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod);
-    virtual bool handleKeyUp(StellaKey key, StellaMod mod);
-    virtual bool handleEvent(Event::Type e);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
     // Account for the extra width of embedded scrollbar
-    virtual int getWidth() const { return _w + kScrollBarWidth; }
-
-    void startEditMode();
-    void endEditMode();
+    int getWidth() const override { return _w + kScrollBarWidth; }
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
 
   protected:
-    virtual void drawWidget(bool hilite)  = 0;
-    virtual GUI::Rect getEditRect() const = 0;
+    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleText(char text) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    bool handleKeyUp(StellaKey key, StellaMod mod) override;
+    bool handleEvent(Event::Type e) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    virtual void drawWidget(bool hilite) override  = 0;
+    virtual GUI::Rect getEditRect() const override = 0;
 
     int findItem(int x, int y) const;
     void recalc();
     void scrollBarRecalc();
 
-    void abortEditMode();
+    void startEditMode() override;
+    void endEditMode() override;
+    void abortEditMode() override;
 
-    void lostFocusWidget();
+    void lostFocusWidget() override;
     void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
     void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
 

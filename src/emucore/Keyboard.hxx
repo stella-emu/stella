@@ -56,13 +56,13 @@ class Keyboard : public Controller
       @param pin The pin of the controller jack to write to
       @param value The value to write to the pin
     */
-    void write(DigitalPin pin, bool value);
+    void write(DigitalPin pin, bool value) override;
 
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    void update() { }
+    void update() override { }
 
   private:
     // Pre-compute the events we care about based on given port

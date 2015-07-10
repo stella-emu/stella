@@ -41,14 +41,13 @@ class TogglePixelWidget : public ToggleWidget
     void setIntState(int value, bool swap);
     int  getIntState();
 
-  protected:
-    void drawWidget(bool hilite);
-
   private:
     int  _pixelColor, _backgroundColor;
     bool _swapBits;
 
   private:
+    void drawWidget(bool hilite) override;
+
     // Following constructors and assignment operators not supported
     TogglePixelWidget() = delete;
     TogglePixelWidget(const TogglePixelWidget&) = delete;

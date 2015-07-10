@@ -54,11 +54,11 @@ class TIADebug : public DebuggerSystem
     TIADebug(Debugger& dbg, Console& console);
     TIA& tia() const { return myTIA; }
 
-    const DebuggerState& getState();
-    const DebuggerState& getOldState() { return myOldState; }
+    const DebuggerState& getState() override;
+    const DebuggerState& getOldState() override { return myOldState; }
 
-    void saveOldState();
-    string toString();
+    void saveOldState() override;
+    string toString() override;
 
     // TIA byte (or part of a byte) registers
     uInt8 nusiz0(int newVal = -1);

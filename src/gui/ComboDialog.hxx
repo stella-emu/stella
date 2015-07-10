@@ -38,11 +38,11 @@ class ComboDialog : public Dialog
     void show(Event::Type event, const string& name);
 
   private:
-    void loadConfig();
-    void saveConfig();
-    void setDefaults();
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     Event::Type myComboEvent;

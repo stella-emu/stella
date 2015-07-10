@@ -37,11 +37,11 @@ class ProgressDialog : public Dialog
     void setRange(int begin, int end, int step);
     void setProgress(int progress);
 
-  protected:
+  private:
     StaticTextWidget* myMessage;
     SliderWidget*     mySlider;
 
-    int myStart, myFinish, myStep, myCurrentStep;
+    int myStart, myFinish, myStep;
 
   private:
     // Following constructors and assignment operators not supported

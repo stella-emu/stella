@@ -72,7 +72,7 @@ class Switches : public Serializable
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const override;
 
     /**
       Load the current state of the switches from the given Serializer.
@@ -80,14 +80,14 @@ class Switches : public Serializable
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in) override;
 
     /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    string name() const { return "Switches"; }
+    string name() const override { return "Switches"; }
 
     /**
       Query the 'Console_TelevisionType' switches bit.

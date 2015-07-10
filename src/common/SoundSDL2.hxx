@@ -56,7 +56,7 @@ class SoundSDL2 : public Sound
 
       @param state  True or false, to enable or disable the sound system
     */
-    void setEnabled(bool state);
+    void setEnabled(bool state) override;
 
     /**
       The system cycle counter is being adjusting by the specified amount. Any
@@ -64,7 +64,7 @@ class SoundSDL2 : public Sound
 
       @param amount  The amount the cycle counter is being adjusted by
     */
-    void adjustCycleCounter(Int32 amount);
+    void adjustCycleCounter(Int32 amount) override;
 
     /**
       Sets the number of channels (mono or stereo sound).  Note that this
@@ -75,7 +75,7 @@ class SoundSDL2 : public Sound
 
       @param channels  The number of channels
     */
-    void setChannels(uInt32 channels);
+    void setChannels(uInt32 channels) override;
 
     /**
       Sets the display framerate.  Sound generation for NTSC and PAL games
@@ -83,31 +83,31 @@ class SoundSDL2 : public Sound
 
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    void setFrameRate(float framerate);
+    void setFrameRate(float framerate) override;
 
     /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
-    void open();
+    void open() override;
 
     /**
       Should be called to close the sound device.  Once called the sound
       device can be started again using the open method.
     */
-    void close();
+    void close() override;
 
     /**
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state  Mutes sound if true, unmute if false
     */
-    void mute(bool state);
+    void mute(bool state) override;
 
     /**
       Reset the sound device.
     */
-    void reset();
+    void reset() override;
 
     /**
       Sets the sound register to a given value.
@@ -116,7 +116,7 @@ class SoundSDL2 : public Sound
       @param value  The value to save into the register
       @param cycle  The system cycle at which the register is being updated
     */
-    void set(uInt16 addr, uInt8 value, Int32 cycle);
+    void set(uInt16 addr, uInt8 value, Int32 cycle) override;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -125,7 +125,7 @@ class SoundSDL2 : public Sound
 
       @param percent  The new volume percentage level for the sound device
     */
-    void setVolume(Int32 percent);
+    void setVolume(Int32 percent) override;
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -133,7 +133,7 @@ class SoundSDL2 : public Sound
       @param direction  Increase or decrease the current volume by a predefined
                         amount based on the direction (1 = increase, -1 = decrease)
     */
-    void adjustVolume(Int8 direction);
+    void adjustVolume(Int8 direction) override;
 
   public:
     /**
@@ -142,7 +142,7 @@ class SoundSDL2 : public Sound
       @param out  The serializer device to save to.
       @return  The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const override;
 
     /**
       Loads the current state of this device from the given Serializer.
@@ -150,14 +150,14 @@ class SoundSDL2 : public Sound
       @param in  The Serializer device to load from.
       @return  The result of the load.  True on success, false on failure.
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in) override;
 
     /**
       Get a descriptor for this console class (used in error checking).
 
       @return  The name of the object
     */
-    string name() const { return "TIASound"; }
+    string name() const override { return "TIASound"; }
 
   protected:
     /**

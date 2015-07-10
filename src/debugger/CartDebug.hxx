@@ -91,11 +91,11 @@ class CartDebug : public DebuggerSystem
     CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
     virtual ~CartDebug();
 
-    const DebuggerState& getState();
-    const DebuggerState& getOldState() { return myOldState; }
+    const DebuggerState& getState() override;
+    const DebuggerState& getOldState() override { return myOldState; }
 
-    void saveOldState();
-    string toString();
+    void saveOldState() override;
+    string toString() override;
 
     // Used to get/set the debug widget, which contains cart-specific
     // functionality

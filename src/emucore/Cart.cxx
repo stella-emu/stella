@@ -316,7 +316,7 @@ Cartridge::~Cartridge()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::save(ofstream& out)
+bool Cartridge::saveROM(ofstream& out)
 {
   int size = -1;
 

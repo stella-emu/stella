@@ -65,13 +65,13 @@ class TrackBall : public Controller
 
       @return The state of all digital pins
     */
-    uInt8 read();
+    uInt8 read() override;
 
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    void update();
+    void update() override;
 
     /**
       Determines how this controller will treat values received from the
@@ -89,8 +89,8 @@ class TrackBall : public Controller
 
       @return  Whether the controller supports using the mouse
     */
-    bool setMouseControl(
-      Controller::Type xtype, int xid, Controller::Type ytype, int yid);
+    bool setMouseControl(Controller::Type xtype, int xid,
+                         Controller::Type ytype, int yid) override;
 
   private:
     // Counter to iterate through the gray codes

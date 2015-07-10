@@ -34,11 +34,6 @@ class Cartridge4A50Widget : public CartDebugWidget
                         Cartridge4A50& cart);
     virtual ~Cartridge4A50Widget() { }
 
-    void loadConfig();
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    string bankState();
-
   private:
     Cartridge4A50& myCart;
     PopUpWidget *myROMLower, *myRAMLower;
@@ -55,6 +50,11 @@ class Cartridge4A50Widget : public CartDebugWidget
     };
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    string bankState() override;
+
     // Following constructors and assignment operators not supported
     Cartridge4A50Widget() = delete;
     Cartridge4A50Widget(const Cartridge4A50Widget&) = delete;

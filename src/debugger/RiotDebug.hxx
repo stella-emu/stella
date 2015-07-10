@@ -49,11 +49,11 @@ class RiotDebug : public DebuggerSystem
   public:
     RiotDebug(Debugger& dbg, Console& console);
 
-    const DebuggerState& getState();
-    const DebuggerState& getOldState() { return myOldState; }
+    const DebuggerState& getState() override;
+    const DebuggerState& getOldState() override { return myOldState; }
 
-    void saveOldState();
-    string toString();
+    void saveOldState() override;
+    string toString() override;
 
     /* Port A and B registers */
     uInt8 swcha(int newVal = -1);

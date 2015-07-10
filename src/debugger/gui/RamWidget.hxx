@@ -37,9 +37,7 @@ class RamWidget : public Widget, public CommandSender
               int x, int y);
     virtual ~RamWidget();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
-    void loadConfig();
+    void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
 
   private:
@@ -50,6 +48,8 @@ class RamWidget : public Widget, public CommandSender
     string doCompare(const string& str);
     void doRestart();
     void showSearchResults();
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum {

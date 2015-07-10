@@ -32,14 +32,14 @@ class AtariVoxWidget : public ControllerWidget
                    Controller& controller);
     virtual ~AtariVoxWidget() { }
 
-    void loadConfig() { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
-
   private:
     ButtonWidget* myEEPROMErase;
     enum { kEEPROMErase  = 'eeER' };
 
   private:
+    void loadConfig() override { }
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     // Following constructors and assignment operators not supported
     AtariVoxWidget() = delete;
     AtariVoxWidget(const AtariVoxWidget&) = delete;

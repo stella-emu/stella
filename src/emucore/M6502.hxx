@@ -177,7 +177,7 @@ class M6502 : public Serializable
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const override;
 
     /**
       Loads the current state of this device from the given Serializer.
@@ -185,14 +185,14 @@ class M6502 : public Serializable
       @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in) override;
 
     /**
       Get a null terminated string which is the processor's name (i.e. "M6532")
 
       @return The name of the device
     */
-    string name() const { return "M6502"; }
+    string name() const override { return "M6502"; }
 
 #ifdef DEBUGGER_SUPPORT
   public:

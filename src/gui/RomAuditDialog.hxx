@@ -40,11 +40,11 @@ class RomAuditDialog : public Dialog
     virtual ~RomAuditDialog();
 
   private:
-    void loadConfig();
+    void loadConfig() override;
     void auditRoms();
     void openBrowser(const string& title, const string& startpath,
                      FilesystemNode::ListMode mode, int cmd);
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum {
