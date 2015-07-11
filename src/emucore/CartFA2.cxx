@@ -371,7 +371,7 @@ uInt8 CartridgeFA2::ramReadWrite()
     // We go ahead and do the access now, and only return when a sufficient
     // amount of time has passed
     Serializer serializer(myFlashFile);
-    if(serializer.valid())
+    if(serializer)
     {
       if(myRAM[255] == 1)       // read
       {
@@ -423,7 +423,7 @@ uInt8 CartridgeFA2::ramReadWrite()
 void CartridgeFA2::flash(uInt8 operation)
 {
   Serializer serializer(myFlashFile);
-  if(serializer.valid())
+  if(serializer)
   {
     if(operation == 0)       // erase
     {

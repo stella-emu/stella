@@ -66,9 +66,9 @@ using StringList = vector<string>;
 using BytePtr = unique_ptr<uInt8[]>;
 
 // Defines to help with path handling
-#if (defined(BSPF_UNIX) || defined(BSPF_MAC_OSX))
+#if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
   #define BSPF_PATH_SEPARATOR  "/"
-#elif (defined(BSPF_DOS) || defined(BSPF_WINDOWS) || defined(BSPF_OS2))
+#elif defined(BSPF_WINDOWS)
   #define BSPF_PATH_SEPARATOR  "\\"
 #else
   #error Update src/common/bspf.hxx for path separator

@@ -61,7 +61,7 @@ class Serializer
       Answers whether the serializer is currently initialized for reading
       and writing.
     */
-    bool valid() const;
+    explicit operator bool() const { return myStream != nullptr; }
 
     /**
       Resets the read/write location to the beginning of the stream.

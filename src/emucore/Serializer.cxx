@@ -80,12 +80,6 @@ Serializer::Serializer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::valid() const
-{
-  return myStream != nullptr;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::reset()
 {
   myStream->clear();

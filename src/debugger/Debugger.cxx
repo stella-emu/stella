@@ -667,7 +667,7 @@ bool Debugger::RewindManager::addState()
     myStateList[myTop] = new Serializer();
   Serializer& s = *(myStateList[myTop]);
 
-  if(s.valid())
+  if(s)
   {
     s.reset();
     if(myOSystem.state().saveState(s) && myOSystem.console().tia().saveDisplay(s))
