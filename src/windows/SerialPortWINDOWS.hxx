@@ -42,12 +42,12 @@ class SerialPortWINDOWS : public SerialPort
       @param device  The name of the port
       @return  False on any errors, else true
     */
-    bool openPort(const string& device);
+    bool openPort(const string& device) override;
 
     /**
       Close a previously opened serial port.
     */
-    void closePort();
+    void closePort() override;
 
     /**
       Write a byte to the serial port.
@@ -55,7 +55,7 @@ class SerialPortWINDOWS : public SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    bool writeByte(const uInt8* data);
+    bool writeByte(const uInt8* data) override;
 
   private:
     // Handle to serial port

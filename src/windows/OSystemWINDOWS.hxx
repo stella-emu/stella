@@ -45,8 +45,8 @@ class OSystemWINDOWS : public OSystem
     /**
       Returns the default paths for the snapshot directory.
     */
-    string defaultSnapSaveDir();
-    string defaultSnapLoadDir();
+    string defaultSnapSaveDir() override;
+    string defaultSnapLoadDir() override;
 
   private:
     // Following constructors and assignment operators not supported

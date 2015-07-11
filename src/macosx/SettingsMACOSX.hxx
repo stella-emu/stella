@@ -48,13 +48,13 @@ class SettingsMACOSX : public Settings
       This method should be called to load the current settings from the 
       standard Mac preferences.
     */
-    void loadConfig();
+    void loadConfig() override;
 
     /**
       This method should be called to save the current settings to the
       standard Mac preferences.
     */
-    void saveConfig();
+    void saveConfig() override;
 
   private:
     // Following constructors and assignment operators not supported

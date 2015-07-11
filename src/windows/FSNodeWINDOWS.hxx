@@ -59,19 +59,19 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
      */
     FilesystemNodeWINDOWS(const string& path);
 
-    bool exists() const;
-    const string& getName() const   { return _displayName; }
-    const string& getPath() const   { return _path; }
-    string getShortPath() const;
-    bool isDirectory() const { return _isDirectory; }
-    bool isFile() const      { return _isFile;      }
-    bool isReadable() const;
-    bool isWritable() const;
-    bool makeDir();
-    bool rename(const string& newfile);
+    bool exists() const override;
+    const string& getName() const override   { return _displayName; }
+    const string& getPath() const override   { return _path; }
+    string getShortPath() const override;
+    bool isDirectory() const override { return _isDirectory; }
+    bool isFile() const override      { return _isFile;      }
+    bool isReadable() const override;
+    bool isWritable() const override;
+    bool makeDir() override;
+    bool rename(const string& newfile) override;
 
-    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
-    AbstractFSNode* getParent() const;
+    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
+    AbstractFSNode* getParent() const override;
 
   protected:
     string _displayName;

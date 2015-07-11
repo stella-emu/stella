@@ -59,6 +59,13 @@ class SerialPortUNIX : public SerialPort
   private:
     // File descriptor for serial connection
     int myHandle;
+
+  private:
+    // Following constructors and assignment operators not supported
+    SerialPortUNIX(const SerialPortUNIX&) = delete;
+    SerialPortUNIX(SerialPortUNIX&&) = delete;
+    SerialPortUNIX& operator=(const SerialPortUNIX&) = delete;
+    SerialPortUNIX& operator=(SerialPortUNIX&&) = delete;
 };
 
 #endif
