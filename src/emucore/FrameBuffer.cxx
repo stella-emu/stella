@@ -272,7 +272,7 @@ void FrameBuffer::update()
         myOSystem.console().fry();
 
       // And update the screen
-      drawTIA();
+      myTIASurface->render();
 
       // Show frame statistics
       if(myStatsMsg.enabled)
@@ -296,7 +296,7 @@ void FrameBuffer::update()
 
     case EventHandler::S_PAUSE:
     {
-      drawTIA();
+      myTIASurface->render();
 
       // Show a pause message every 5 seconds
       if(myPausedCount++ >= 7*myOSystem.frameRate())
@@ -309,14 +309,14 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:
     {
-      drawTIA();
+      myTIASurface->render();
       myOSystem.menu().draw(true);
       break;  // S_MENU
     }
 
     case EventHandler::S_CMDMENU:
     {
-      drawTIA();
+      myTIASurface->render();
       myOSystem.commandMenu().draw(true);
       break;  // S_CMDMENU
     }
@@ -468,12 +468,6 @@ inline void FrameBuffer::drawMessage()
   }
   else
     myMsg.enabled = false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void FrameBuffer::drawTIA()
-{
-  myTIASurface->render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

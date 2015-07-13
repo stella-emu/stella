@@ -412,12 +412,6 @@ class FrameBuffer
     void drawMessage();
 
     /**
-      This method should be called anytime the TIA needs to be redrawn
-      to the screen.
-    */
-    void drawTIA();
-
-    /**
       Issues a 'free' and 'reload' instruction to all surfaces that the
       framebuffer knows about.
     */
