@@ -23,6 +23,10 @@
     'cursor'.  The new argument allows to set mouse cursor visibility
     separately for both UI and emulation modes.
 
+  * Fixed snapshot bug most noticeable in MacOSX, where taking a snapshot
+    of a TIA image sometimes left parts of the UI onscreen (and in the
+    resulting picture).
+
   * Fixed memory leak; the game console wasn't being closed after exiting
     a ROM.
 

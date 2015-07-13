@@ -1875,6 +1875,7 @@ void EventHandler::takeSnapshot(uInt32 number)
   {
     // Make sure we have a 'clean' image, with no onscreen messages
     myOSystem.frameBuffer().enableMessages(false);
+    myOSystem.frameBuffer().tiaSurface().render();
 
     string message = "Snapshot saved";
     try
