@@ -46,24 +46,24 @@ class EditableWidget : public Widget, public CommandSender
     };
 
   public:
-    EditableWidget(GuiObject *boss, const GUI::Font& font,
+    EditableWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& str = "");
     virtual ~EditableWidget();
 
     virtual void setText(const string& str, bool changed = false);
     const string& getText() const { return _editString; }
 
-    bool isEditable() const	 { return _editable; }
+    bool isEditable() const	{ return _editable; }
     void setEditable(bool editable);
 
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
 
     // We only want to focus this widget when we can edit its contents
-    virtual bool wantsFocus() { return _editable; }
+    virtual bool wantsFocus() const { return _editable; }
 
     // Set filter used to test whether a character can be inserted
-    void setTextFilter(TextFilter& filter) { _filter = filter; }
+    void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
   protected:
     virtual void startEditMode() { setFlags(WIDGET_WANTS_RAWDATA);   }

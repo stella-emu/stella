@@ -84,22 +84,31 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   }
 
   // Add filtering
-  EditableWidget::TextFilter f = [&](char c) {
-    bool isBin = c == '0' || c == '1',
-         isDec = c >= '0' && c <= '9',
-         isHex = isDec || (c >= 'a' && c <= 'f'),
-         isOp = c == '$' || c == '#' || c == '\\';
-
-    if(BSPF_startsWithIgnoreCase(editString(), "$"))
-      return isHex;
-    else if(BSPF_startsWithIgnoreCase(editString(), "#"))
-      return isDec;
-    else if(BSPF_startsWithIgnoreCase(editString(), "\\"))
-      return isBin;
-    else 
-      return isHex || isDec || isBin || isOp;
-  };
-  setTextFilter(f);
+  EditableWidget::TextFilter f;
+  switch(base)
+  {
+    case Common::Base::F_16:
+    case Common::Base::F_16_1:
+    case Common::Base::F_16_2:
+    case Common::Base::F_16_4:
+    case Common::Base::F_16_8:
+      setTextFilter([](char c) {
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+      });
+      break;
+    case Common::Base::F_10:
+      setTextFilter([](char c) {
+        return (c >= '0' && c <= '9');
+      });
+      break;
+    case Common::Base::F_2:
+    case Common::Base::F_2_8:
+    case Common::Base::F_2_16:
+      setTextFilter([](char c) { return (c >= '0' && c <= '1'); });
+      break;
+    default:
+      break;  // no filtering for now
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,7 +215,14 @@ void DataGridWidget::setValue(int position, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setValue(int position, int value, bool changed)
+void DataGridWidget::setValueInternal(int position, int value)
+{
+  setValue(position, value, true, false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setValue(int position, int value, bool changed,
+                              bool emitSignal)
 {
   if(position >= 0 && uInt32(position) < _valueList.size())
   {
@@ -217,7 +233,8 @@ void DataGridWidget::setValue(int position, int value, bool changed)
     _changedList[position] = changed;
     _valueList[position] = value;
 
-    sendCommand(DataGridWidget::kItemDataChangedCmd, position, _id);
+    if(emitSignal)
+      sendCommand(DataGridWidget::kItemDataChangedCmd, position, _id);
 
     setDirty();
   }

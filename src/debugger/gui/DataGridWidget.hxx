@@ -63,15 +63,17 @@ class DataGridWidget : public EditableWidget
     void setSelectedValue(int value);
     /** Set value at given position */
     void setValue(int position, int value);
+    /** Set value at given position, do not emit any signals */
+    void setValueInternal(int position, int value);
     /** Set value at given position, manually specifying if the value changed */
-    void setValue(int position, int value, bool changed);
+    void setValue(int position, int value, bool changed, bool emitSignal = true);
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
 
     void setRange(int lower, int upper);
 
-    bool wantsFocus() override { return true; }
+    bool wantsFocus() const override { return true; }
 
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;

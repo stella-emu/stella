@@ -19,6 +19,10 @@
     etc can be used to toggle each event.  Thanks to Buzbard of AtariAge
     for the suggestion.
 
+  * Added ability to edit values in more widgets in the debugger.  For
+    now, this applies mainly to the various decimal and binary fields.
+    More widgets will be made editable in future releases.
+
   * Changed 'hidecursor' commandline argument (and associated UI item) to
     'cursor'.  The new argument allows to set mouse cursor visibility
     separately for both UI and emulation modes.

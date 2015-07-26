@@ -70,11 +70,16 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos = x + lwidth + myPCGrid->getWidth() + 10;
   myCpuGridDecValue = 
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::F_10);
-  myCpuGridDecValue->setEditable(false);
+  myCpuGridDecValue->setTarget(this);
+  myCpuGridDecValue->setID(kCpuRegDecID);
+  addFocusWidget(myCpuGridDecValue);
+
   xpos += myCpuGridDecValue->getWidth() + 5;
   myCpuGridBinValue = 
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::F_2);
-  myCpuGridBinValue->setEditable(false);
+  myCpuGridBinValue->setTarget(this);
+  myCpuGridBinValue->setID(kCpuRegBinID);
+  addFocusWidget(myCpuGridBinValue);
 
   // Calculate real dimensions (_y will be calculated at the end)
   _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
@@ -137,6 +142,8 @@ void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
 {
   myPCGrid->setOpsWidget(w);
   myCpuGrid->setOpsWidget(w);
+  myCpuGridDecValue->setOpsWidget(w);
+  myCpuGridBinValue->setOpsWidget(w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,6 +166,16 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           addr  = myCpuGrid->getSelectedAddr();
           value = myCpuGrid->getSelectedValue();
           break;
+
+        case kCpuRegDecID:
+          addr  = myCpuGridDecValue->getSelectedAddr();
+          value = myCpuGridDecValue->getSelectedValue();
+          break;
+
+        case kCpuRegBinID:
+          addr  = myCpuGridBinValue->getSelectedAddr();
+          value = myCpuGridBinValue->getSelectedValue();
+          break;
       }
 
       switch(addr)
@@ -175,26 +192,30 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
         case kSPRegAddr:
           dbg.setSP(value);
-          myCpuGridDecValue->setValue(0, value);
-          myCpuGridBinValue->setValue(0, value);
+          myCpuGrid->setValueInternal(0, value);
+          myCpuGridDecValue->setValueInternal(0, value);
+          myCpuGridBinValue->setValueInternal(0, value);
           break;
 
         case kARegAddr:
           dbg.setA(value);
-          myCpuGridDecValue->setValue(1, value);
-          myCpuGridBinValue->setValue(1, value);
+          myCpuGrid->setValueInternal(1, value);
+          myCpuGridDecValue->setValueInternal(1, value);
+          myCpuGridBinValue->setValueInternal(1, value);
           break;
 
         case kXRegAddr:
           dbg.setX(value);
-          myCpuGridDecValue->setValue(2, value);
-          myCpuGridBinValue->setValue(2, value);
+          myCpuGrid->setValueInternal(2, value);
+          myCpuGridDecValue->setValueInternal(2, value);
+          myCpuGridBinValue->setValueInternal(2, value);
           break;
 
         case kYRegAddr:
           dbg.setY(value);
-          myCpuGridDecValue->setValue(3, value);
-          myCpuGridBinValue->setValue(3, value);
+          myCpuGrid->setValueInternal(3, value);
+          myCpuGridDecValue->setValueInternal(3, value);
+          myCpuGridBinValue->setValueInternal(3, value);
           break;
       }
       break;

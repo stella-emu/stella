@@ -48,7 +48,9 @@ class CpuWidget : public Widget, public CommandSender
     // We need ID's, since there are more than one of several types of widgets
     enum {
       kPCRegID,
-      kCpuRegID
+      kCpuRegID,
+      kCpuRegDecID,
+      kCpuRegBinID
     };
 
     enum {

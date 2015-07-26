@@ -177,7 +177,7 @@ void InputTextDialog::setText(const string& str, int idx)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::setTextFilter(EditableWidget::TextFilter& f, int idx)
+void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx)
 {
   if((uInt32)idx < myInput.size())
     myInput[idx]->setTextFilter(f);

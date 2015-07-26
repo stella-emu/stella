@@ -46,7 +46,7 @@ class InputTextDialog : public Dialog, public CommandSender
     const string& getResult(int idx = 0);
 
     void setText(const string& str, int idx = 0);
-    void setTextFilter(EditableWidget::TextFilter& f, int idx = 0);
+    void setTextFilter(const EditableWidget::TextFilter& f, int idx = 0);
 
     void setEmitSignal(int cmd) { myCmd = cmd; }
     void setTitle(const string& title);
