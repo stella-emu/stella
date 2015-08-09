@@ -25,6 +25,7 @@
 #include <SDL.h>
 
 #include "TIASnd.hxx"
+#include "TIATables.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
@@ -376,25 +377,19 @@ bool SoundSDL2::save(Serializer& out) const
   {
     out.putString(name());
 
-    uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
-
     // Only get the TIA sound registers if sound is enabled
     if(myIsInitializedFlag)
     {
-      reg1 = myTIASound.get(0x15);
-      reg2 = myTIASound.get(0x16);
-      reg3 = myTIASound.get(0x17);
-      reg4 = myTIASound.get(0x18);
-      reg5 = myTIASound.get(0x19);
-      reg6 = myTIASound.get(0x1a);
+      out.putByte(myTIASound.get(TIARegister::AUDC0));
+      out.putByte(myTIASound.get(TIARegister::AUDC1));
+      out.putByte(myTIASound.get(TIARegister::AUDF0));
+      out.putByte(myTIASound.get(TIARegister::AUDF1));
+      out.putByte(myTIASound.get(TIARegister::AUDV0));
+      out.putByte(myTIASound.get(TIARegister::AUDV1));
     }
-
-    out.putByte(reg1);
-    out.putByte(reg2);
-    out.putByte(reg3);
-    out.putByte(reg4);
-    out.putByte(reg5);
-    out.putByte(reg6);
+    else
+      for(int i = 0; i < 6; ++i)
+        out.putByte(0);
 
     out.putInt(myLastRegisterSetCycle);
   }
@@ -415,29 +410,25 @@ bool SoundSDL2::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    uInt8 reg1 = in.getByte(),
-          reg2 = in.getByte(),
-          reg3 = in.getByte(),
-          reg4 = in.getByte(),
-          reg5 = in.getByte(),
-          reg6 = in.getByte();
-
-    myLastRegisterSetCycle = (Int32) in.getInt();
-
     // Only update the TIA sound registers if sound is enabled
     // Make sure to empty the queue of previous sound fragments
     if(myIsInitializedFlag)
     {
       SDL_PauseAudio(1);
       myRegWriteQueue.clear();
-      myTIASound.set(0x15, reg1);
-      myTIASound.set(0x16, reg2);
-      myTIASound.set(0x17, reg3);
-      myTIASound.set(0x18, reg4);
-      myTIASound.set(0x19, reg5);
-      myTIASound.set(0x1a, reg6);
+      myTIASound.set(TIARegister::AUDC0, in.getByte());
+      myTIASound.set(TIARegister::AUDC1, in.getByte());
+      myTIASound.set(TIARegister::AUDF0, in.getByte());
+      myTIASound.set(TIARegister::AUDF1, in.getByte());
+      myTIASound.set(TIARegister::AUDV0, in.getByte());
+      myTIASound.set(TIARegister::AUDV1, in.getByte());
       if(!myIsMuted) SDL_PauseAudio(0);
     }
+    else
+      for(int i = 0; i < 6; ++i)
+        in.getByte();
+
+    myLastRegisterSetCycle = (Int32) in.getInt();
   }
   catch(...)
   {
@@ -450,13 +441,12 @@ bool SoundSDL2::load(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::RegWriteQueue::RegWriteQueue(uInt32 capacity)
-  : myBuffer(nullptr),
+  : myBuffer(make_ptr<RegWrite[]>(capacity)),
     myCapacity(capacity),
     mySize(0),
     myHead(0),
     myTail(0)
 {
-  myBuffer = make_ptr<RegWrite[]>(myCapacity);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

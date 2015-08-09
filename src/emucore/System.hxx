@@ -313,7 +313,9 @@ class System : public Serializable
       @param page The page accessing methods should be set for
       @param access The accessing methods to be used by the page
     */
-    void setPageAccess(uInt16 page, const PageAccess& access);
+    void setPageAccess(uInt16 page, const PageAccess& access) {
+      myPageAccessTable[page] = access;
+    }
 
     /**
       Get the page accessing method for the specified page.
@@ -321,7 +323,9 @@ class System : public Serializable
       @param page The page to get accessing methods for
       @return The accessing methods used by the page
     */
-    const PageAccess& getPageAccess(uInt16 page) const;
+    const PageAccess& getPageAccess(uInt16 page) const {
+      return myPageAccessTable[page];
+    }
  
     /**
       Get the page type for the given address.
@@ -329,14 +333,18 @@ class System : public Serializable
       @param addr  The address contained in the page in questions
       @return  The type of page that contains the given address
     */
-    System::PageAccessType getPageAccessType(uInt16 addr) const;
+    System::PageAccessType getPageAccessType(uInt16 addr) const {
+      return myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT].type;
+    }
 
     /**
       Mark the page containing this address as being dirty.
 
       @param addr  Determines the page that is dirty
     */
-    void setDirtyPage(uInt16 addr);
+    void setDirtyPage(uInt16 addr) {
+      myPageIsDirtyTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT] = true;
+    }
 
     /**
       Answer whether any pages in given range of addresses have been

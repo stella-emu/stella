@@ -525,7 +525,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "4K";  // Most common bankswitching type
   }
 
-  // Variable sized ROM formats are independent of image size and comes last
+  // Variable sized ROM formats are independent of image size and come last
   if(isProbablyDASH(image, size))
     type = "DASH";
   else if(isProbablyMDM(image, size))
@@ -724,14 +724,14 @@ bool Cartridge::isProbablyE0(const uInt8* image, uInt32 size)
   // Thanks to "stella@casperkitty.com" for this advice
   // These signatures are attributed to the MESS project
   uInt8 signature[8][3] = {
-   { 0x8D, 0xE0, 0x1F },  // STA $1FE0
-   { 0x8D, 0xE0, 0x5F },  // STA $5FE0
-   { 0x8D, 0xE9, 0xFF },  // STA $FFE9
-   { 0x0C, 0xE0, 0x1F },  // NOP $1FE0
-   { 0xAD, 0xE0, 0x1F },  // LDA $1FE0
-   { 0xAD, 0xE9, 0xFF },  // LDA $FFE9
-   { 0xAD, 0xED, 0xFF },  // LDA $FFED
-   { 0xAD, 0xF3, 0xBF }   // LDA $BFF3
+    { 0x8D, 0xE0, 0x1F },  // STA $1FE0
+    { 0x8D, 0xE0, 0x5F },  // STA $5FE0
+    { 0x8D, 0xE9, 0xFF },  // STA $FFE9
+    { 0x0C, 0xE0, 0x1F },  // NOP $1FE0
+    { 0xAD, 0xE0, 0x1F },  // LDA $1FE0
+    { 0xAD, 0xE9, 0xFF },  // LDA $FFE9
+    { 0xAD, 0xED, 0xFF },  // LDA $FFED
+    { 0xAD, 0xF3, 0xBF }   // LDA $BFF3
   };
   for(uInt32 i = 0; i < 8; ++i)
     if(searchForBytes(image, size, signature[i], 3, 1))
@@ -750,13 +750,13 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
   // Thanks to "stella@casperkitty.com" for this advice
   // These signatures are attributed to the MESS project
   uInt8 signature[7][3] = {
-   { 0xAD, 0xE2, 0xFF },  // LDA $FFE2
-   { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
-   { 0xAD, 0xE5, 0x1F },  // LDA $1FE5
-   { 0xAD, 0xE7, 0x1F },  // LDA $1FE7
-   { 0x0C, 0xE7, 0x1F },  // NOP $1FE7
-   { 0x8D, 0xE7, 0xFF },  // STA $FFE7
-   { 0x8D, 0xE7, 0x1F }   // STA $1FE7
+    { 0xAD, 0xE2, 0xFF },  // LDA $FFE2
+    { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
+    { 0xAD, 0xE5, 0x1F },  // LDA $1FE5
+    { 0xAD, 0xE7, 0x1F },  // LDA $1FE7
+    { 0x0C, 0xE7, 0x1F },  // NOP $1FE7
+    { 0x8D, 0xE7, 0xFF },  // STA $FFE7
+    { 0x8D, 0xE7, 0x1F }   // STA $1FE7
   };
   for(uInt32 i = 0; i < 7; ++i)
     if(searchForBytes(image, size, signature[i], 3, 1))
@@ -818,7 +818,7 @@ bool Cartridge::isProbablyBF(const uInt8* image, uInt32 size, const char*& type)
 {
   // BF carts store strings 'BFBF' and 'BFSC' starting at address $FFF8
   // This signature is attributed to "RevEng" of AtariAge
-  uInt8 bf[] = { 'B', 'F', 'B', 'F' };
+  uInt8 bf[]   = { 'B', 'F', 'B', 'F' };
   uInt8 bfsc[] = { 'B', 'F', 'S', 'C' };
   if(searchForBytes(image+size-8, 8, bf, 4, 1))
   {
@@ -840,7 +840,7 @@ bool Cartridge::isProbablyDF(const uInt8* image, uInt32 size, const char*& type)
 
   // BF carts store strings 'DFDF' and 'DFSC' starting at address $FFF8
   // This signature is attributed to "RevEng" of AtariAge
-  uInt8 df[] = { 'D', 'F', 'D', 'F' };
+  uInt8 df[]   = { 'D', 'F', 'D', 'F' };
   uInt8 dfsc[] = { 'D', 'F', 'S', 'C' };
   if(searchForBytes(image+size-8, 8, df, 4, 1))
   {

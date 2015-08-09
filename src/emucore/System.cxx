@@ -102,39 +102,6 @@ void System::resetCycles()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setPageAccess(uInt16 page, const PageAccess& access)
-{
-  // Make sure the page is within range
-  assert(page < NUM_PAGES);
-
-  // Make sure the access methods make sense
-  assert(access.device != 0);
-
-  myPageAccessTable[page] = access;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const System::PageAccess& System::getPageAccess(uInt16 page) const
-{
-  // Make sure the page is within range
-  assert(page < NUM_PAGES);
-
-  return myPageAccessTable[page];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::PageAccessType System::getPageAccessType(uInt16 addr) const
-{
-  return myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT].type;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setDirtyPage(uInt16 addr)
-{
-  myPageIsDirtyTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT] = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 {
   uInt16 start_page = (start_addr & ADDRESS_MASK) >> PAGE_SHIFT;

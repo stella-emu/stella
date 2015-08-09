@@ -86,7 +86,7 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
   for(int i = 0; i < maxDisplays; ++i)
   {
     SDL_GetDesktopDisplayMode(i, &display);
-    displays.push_back(GUI::Size(display.w, display.h));
+    displays.emplace_back(display.w, display.h);
   }
 
   // For now, supported render types are hardcoded; eventually, SDL may

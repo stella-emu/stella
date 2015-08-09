@@ -115,12 +115,7 @@ void AtariVox::clockDataIn(bool value)
 
   // If this is the first write this frame, or if it's been a long time
   // since the last write, start a new data byte.
-  if(cycle < myLastDataWriteCycle)
-  {
-    myShiftRegister = 0;
-    myShiftCount = 0;
-  }
-  else if(cycle > myLastDataWriteCycle + 1000)
+  if((cycle < myLastDataWriteCycle) || (cycle > myLastDataWriteCycle + 1000))
   {
     myShiftRegister = 0;
     myShiftCount = 0;
@@ -128,7 +123,7 @@ void AtariVox::clockDataIn(bool value)
 
   // If this is the first write this frame, or if it's been 62 cycles
   // since the last write, shift this bit into the current byte.
-  if(cycle < myLastDataWriteCycle || cycle >= myLastDataWriteCycle + 62)
+  if((cycle < myLastDataWriteCycle) || (cycle >= myLastDataWriteCycle + 62))
   {
     myShiftRegister >>= 1;
     myShiftRegister |= (value << 15);
