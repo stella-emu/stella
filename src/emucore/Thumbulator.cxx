@@ -47,6 +47,14 @@ using namespace Common;
   #define DO_DBUG(statement)
 #endif
 
+#ifdef __BIG_ENDIAN__
+  #define CONV_DATA(d)   (((d & 0xFFFF)>>8) | ((d & 0xffff)<<8)) & 0xffff;
+  #define CONV_RAMROM(d) ((d>>8) | (d<<8)) & 0xffff;
+#else
+  #define CONV_DATA(d)   (d & 0xFFFF);
+  #define CONV_RAMROM(d) (d);
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal)
   : rom(rom_ptr),
@@ -140,22 +148,14 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
         fatalError("fetch16", addr, "abort");
 
       addr>>=1;
-    #ifdef __BIG_ENDIAN__
-      data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
-    #else
-      data=rom[addr];
-    #endif
+      data=CONV_RAMROM(rom[addr]);
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return(data);
 
     case 0x40000000: //RAM
       addr &= RAMADDMASK;
       addr>>=1;
-    #ifdef __BIG_ENDIAN__
-      data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
-    #else
-      data=ram[addr];
-    #endif
+      data=CONV_RAMROM(ram[addr]);
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return(data);
   }
@@ -209,11 +209,7 @@ void Thumbulator::write16 ( uInt32 addr, uInt32 data )
     case 0x40000000: //RAM
       addr&=RAMADDMASK;
       addr>>=1;
-    #ifdef __BIG_ENDIAN__
-      ram[addr]=(((data&0xFFFF)>>8)|((data&0xffff)<<8))&0xffff;
-    #else
-      ram[addr]=data&0xFFFF;
-    #endif
+      ram[addr]=CONV_DATA(data);
       return;
 
     case 0xE0000000: //MAMCR
@@ -282,22 +278,14 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
     case 0x00000000: //ROM
       addr&=ROMADDMASK;
       addr>>=1;
-    #ifdef __BIG_ENDIAN__
-      data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
-    #else
-      data=rom[addr];
-    #endif
+      data=CONV_RAMROM(rom[addr]);
       DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return(data);
 
     case 0x40000000: //RAM
       addr&=RAMADDMASK;
       addr>>=1;
-    #ifdef __BIG_ENDIAN__
-      data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
-    #else
-      data=ram[addr];
-    #endif
+      data=CONV_RAMROM(ram[addr]);
       DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return(data);
 
@@ -689,7 +677,7 @@ int Thumbulator::execute ( void )
   {
     rb=(inst>>0)&0xFF;
     if(rb&0x80)
-      rb|=(~0)<<8;
+      rb|=(~0)<<8;  // FIXME - shifting a negative signed value is undefined
     op=(inst>>8)&0xF;
     rb<<=1;
     rb+=pc;
@@ -837,7 +825,7 @@ int Thumbulator::execute ( void )
   {
     rb=(inst>>0)&0x7FF;
     if(rb&(1<<10))
-      rb|=(~0)<<11;
+      rb|=(~0)<<11; // FIXME - shifting a negative signed value is undefined
     rb<<=1;
     rb+=pc;
     rb+=2;
@@ -1233,7 +1221,8 @@ int Thumbulator::execute ( void )
     {
     }
     rc&=0xFF;
-    if(rc&0x80) rc|=((~0)<<8);
+    if(rc&0x80)
+      rc|=((~0)<<8);  // FIXME - shifting a negative signed value is undefined
     write_register(rd,rc);
     return(0);
   }
@@ -1248,7 +1237,8 @@ int Thumbulator::execute ( void )
     rb=read_register(rn)+read_register(rm);
     rc=read16(rb);
     rc&=0xFFFF;
-    if(rc&0x8000) rc|=((~0)<<16);
+    if(rc&0x8000)
+      rc|=((~0)<<16);  // FIXME - shifting a negative signed value is undefined
     write_register(rd,rc);
     return(0);
   }
@@ -1893,7 +1883,8 @@ int Thumbulator::execute ( void )
     DO_DISS(statusMsg << "sxtb r" << dec << rd << ",r" << dec << rm << endl);
     ra=read_register(rm);
     rc=ra&0xFF;
-    if(rc&0x80) rc|=(~0)<<8;
+    if(rc&0x80)
+      rc|=(~0)<<8;  // FIXME - shifting a negative signed value is undefined
     write_register(rd,rc);
     return(0);
   }
@@ -1906,7 +1897,8 @@ int Thumbulator::execute ( void )
     DO_DISS(statusMsg << "sxth r" << dec << rd << ",r" << dec << rm << endl);
     ra=read_register(rm);
     rc=ra&0xFFFF;
-    if(rc&0x8000) rc|=(~0)<<16;
+    if(rc&0x8000)
+      rc|=(~0)<<16;  // FIXME - shifting a negative signed value is undefined
     write_register(rd,rc);
     return(0);
   }
