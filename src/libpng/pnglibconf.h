@@ -1,6 +1,6 @@
 /* pnglibconf.h - library build configuration */
 
-/* libpng version 1.6.17, March 26, 2015 */
+/* libpng version 1.6.18, July 23, 2015 */
 
 /* Copyright (c) 1998-2014 Glenn Randers-Pehrson */
 
@@ -188,6 +188,10 @@
 #define PNG_GAMMA_THRESHOLD_FIXED 5000
 #define PNG_IDAT_READ_SIZE PNG_ZBUF_SIZE
 #define PNG_INFLATE_BUF_SIZE 1024
+#define PNG_LINKAGE_API extern
+#define PNG_LINKAGE_CALLBACK extern
+#define PNG_LINKAGE_DATA extern
+#define PNG_LINKAGE_FUNCTION extern
 #define PNG_MAX_GAMMA_8 11
 #define PNG_QUANTIZE_BLUE_BITS 5
 #define PNG_QUANTIZE_GREEN_BITS 5
