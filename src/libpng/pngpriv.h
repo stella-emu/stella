@@ -798,6 +798,7 @@
 #include "pngstruct.h"
 #include "pnginfo.h"
 
+#if 0  // Added by SA
 /* Validate the include paths - the include path used to generate pnglibconf.h
  * must match that used in the build, or we must be using pnglibconf.h.prebuilt:
  */
@@ -814,6 +815,7 @@
     * not work; all the preprocessor directories and in particular all the -I
     * directives must be in CPPFLAGS.
     */
+#endif
 #endif
 
 /* This is used for 16 bit gamma tables -- only the top level pointers are
