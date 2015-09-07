@@ -26,7 +26,7 @@
 #include "AudioWidget.hxx"
 #include "PromptWidget.hxx"
 #include "CpuWidget.hxx"
-#include "RamWidget.hxx"
+#include "RiotRamWidget.hxx"
 #include "RiotWidget.hxx"
 #include "RomWidget.hxx"
 #include "TiaWidget.hxx"
@@ -390,7 +390,7 @@ void DebuggerDialog::addRomArea()
   addToFocusList(myCpu->getFocusList());
 
   xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
-  myRam = new RamWidget(this, *myLFont, *myNFont, xpos, ypos);
+  myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.width() - 10);
   addToFocusList(myRam->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a
@@ -434,12 +434,14 @@ void DebuggerDialog::addRomArea()
     if (myCartDebug->internalRamSize() > 0)
     {
       tabID = myRomTab->addTab(" Cartridge RAM ");
-      myCartRam = new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
-                                    tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);
+      myCartRam =
+        new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
+                tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);
       if(myCartRam)  // TODO - make this always non-null
       {
         myRomTab->setParentWidget(tabID, myCartRam);
         addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
+        myCartRam->setOpsWidget(ops);
       }
     }
   }

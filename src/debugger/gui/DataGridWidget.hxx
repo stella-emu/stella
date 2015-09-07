@@ -64,7 +64,7 @@ class DataGridWidget : public EditableWidget
     /** Set value at given position */
     void setValue(int position, int value);
     /** Set value at given position, do not emit any signals */
-    void setValueInternal(int position, int value);
+    void setValueInternal(int position, int value, bool changed = true);
     /** Set value at given position, manually specifying if the value changed */
     void setValue(int position, int value, bool changed, bool emitSignal = true);
 

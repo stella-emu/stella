@@ -17,11 +17,8 @@
 // $Id$
 //============================================================================
 
-#include <sstream>
-
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
-#include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
 #include "OSystem.hxx"
@@ -32,119 +29,135 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                     int x, int y)
-  : Widget(boss, lfont, x, y, 16, 16),
+                     int x, int y, int w, int h,
+                     uInt32 ramsize, uInt32 numrows, uInt32 pagesize)
+  : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
-    myUndoAddress(-1),
-    myUndoValue(-1),
-    myCurrentRamBank(0)
+    _nfont(nfont),
+    myFontWidth(lfont.getMaxCharWidth()),
+    myFontHeight(lfont.getFontHeight()),
+    myLineHeight(lfont.getLineHeight()),
+    myButtonHeight(myLineHeight + 4),
+    myCurrentRamBank(0),
+    myRamSize(ramsize),
+    myNumRows(numrows),
+    myPageSize(pagesize)
 {
-  const int fontWidth  = lfont.getMaxCharWidth(),
-            fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight(),
-            bwidth  = lfont.getStringWidth("Compare "),
-            bheight = lineHeight + 2;
   int xpos, ypos, lwidth;
+  const int bwidth  = lfont.getStringWidth("Compare "),
+            bheight = myLineHeight + 2;
 
-  // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
-  // Add a scrollbar, since there may be more than 128 bytes of RAM available
-  xpos = x;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
-  myRamGrid = new DataGridWidget(boss, nfont, xpos + lwidth, ypos,
-                                 16, 8, 2, 8, Common::Base::F_16, true);
+  ypos = y + myLineHeight;  lwidth = 4 * myFontWidth;
+
+  // Add RAM grid (with scrollbar)
+  xpos = x + _font.getStringWidth("xxxx");
+  myRamGrid = new DataGridWidget(_boss, _nfont, xpos, ypos,
+                                 16, myNumRows, 2, 8, Common::Base::F_16, true);
   myRamGrid->setTarget(this);
+  myRamGrid->setID(kRamHexID);
   addFocusWidget(myRamGrid);
 
   // Create actions buttons to the left of the RAM grid
-  xpos += lwidth + myRamGrid->getWidth() + 4;
-  myUndoButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+  int bx = xpos + myRamGrid->getWidth() + 4;
+  int by = ypos;
+  myUndoButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                   "Undo", kUndoCmd);
   myUndoButton->setTarget(this);
 
-  ypos += bheight + 4;
-  myRevertButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+  by += bheight + 4;
+  myRevertButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Revert", kRevertCmd);
   myRevertButton->setTarget(this);
 
-  ypos += 2 * bheight + 2;
-  mySearchButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+  by += 2 * bheight + 2;
+  mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Search", kSearchCmd);
   mySearchButton->setTarget(this);
 
-  ypos += bheight + 4;
-  myCompareButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+  by += bheight + 4;
+  myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Compare", kCmpCmd);
   myCompareButton->setTarget(this);
 
-  ypos += bheight + 4;
-  myRestartButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+  by += bheight + 4;
+  myRestartButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Reset", kRestartCmd);
   myRestartButton->setTarget(this);
 
-  // Remember position of right side of buttons
-  int xpos_r = xpos + bwidth ;
-
   // Labels for RAM grid
-  xpos = x;  ypos = y + lineHeight;
   myRamStart =
-    new StaticTextWidget(boss, lfont, xpos, ypos - lineHeight,
-                         lfont.getStringWidth("xxxx"), fontHeight,
-                         "00xx", kTextAlignLeft);
+    new StaticTextWidget(_boss, lfont, xpos - _font.getStringWidth("xxxx"),
+                         ypos - myLineHeight,
+                         lfont.getStringWidth("xxxx"), myFontHeight,
+                        "00xx", kTextAlignLeft);
 
   for(int col = 0; col < 16; ++col)
   {
-    new StaticTextWidget(boss, lfont, xpos + col*myRamGrid->colWidth() + lwidth + 8,
-                         ypos - lineHeight,
-                         fontWidth, fontHeight,
+    new StaticTextWidget(_boss, lfont, xpos + col*myRamGrid->colWidth() + 8,
+                         ypos - myLineHeight,
+                         myFontWidth, myFontHeight,
                          Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
   }
-  for(int row = 0; row < 8; ++row)
+
+  uInt32 row;
+  for(row = 0; row < myNumRows; ++row)
   {
     myRamLabels[row] =
-      new StaticTextWidget(boss, lfont, xpos + 8, ypos + row*lineHeight + 2,
-                           3*fontWidth, fontHeight, "", kTextAlignLeft);
+      new StaticTextWidget(_boss, _font, xpos - _font.getStringWidth("x "),
+                           ypos + row*myLineHeight + 2,
+                           myFontWidth, myFontHeight, "", kTextAlignLeft);
   }
 
-  ypos += 9 * lineHeight;
+  // For smaller grids, make sure RAM cell detail fields are below the RESET button
+  row = myNumRows < 8 ? 9 : myNumRows + 1;
+  ypos += row * myLineHeight;
 
   // We need to define these widgets from right to left since the leftmost
   // one resizes as much as possible
-  xpos = xpos_r - 13*fontWidth - 5;
-  new StaticTextWidget(boss, lfont, xpos, ypos, 4*fontWidth, fontHeight,
+
+  // Add Binary display of selected RAM cell
+  xpos = x + w - 13*myFontWidth - 20;
+  new StaticTextWidget(boss, lfont, xpos, ypos, 4*myFontWidth, myFontHeight,
                        "Bin:", kTextAlignLeft);
-  myBinValue = new EditTextWidget(boss, nfont, xpos + 4*fontWidth + 5,
-                                  ypos-2, 9*fontWidth, lineHeight, "");
-  myBinValue->setEditable(false);
+  myBinValue = new DataGridWidget(boss, nfont, xpos + 4*myFontWidth + 5, ypos-2,
+                                  1, 1, 8, 8, Common::Base::F_2);
+  myBinValue->setTarget(this);
+  myBinValue->setID(kRamBinID);
 
-  xpos -= 8*fontWidth + 5 + 20;
-  new StaticTextWidget(boss, lfont, xpos, ypos, 4*fontWidth, fontHeight,
+  // Add Decimal display of selected RAM cell
+  xpos -= 8*myFontWidth + 5 + 20;
+  new StaticTextWidget(boss, lfont, xpos, ypos, 4*myFontWidth, myFontHeight,
                        "Dec:", kTextAlignLeft);
-  myDecValue = new EditTextWidget(boss, nfont, xpos + 4*fontWidth + 5, ypos-2,
-                                  4*fontWidth, lineHeight, "");
-  myDecValue->setEditable(false);
+  myDecValue = new DataGridWidget(boss, nfont, xpos + 4*myFontWidth + 5, ypos-2,
+                                  1, 1, 3, 8, Common::Base::F_10);
+  myDecValue->setTarget(this);
+  myDecValue->setID(kRamDecID);
 
-  xpos_r = xpos - 20;
+  addFocusWidget(myDecValue);
+  addFocusWidget(myBinValue);
+
+  // Add Label of selected RAM cell
+  int xpos_r = xpos - 20;
   xpos = x + 10;
-  new StaticTextWidget(boss, lfont, xpos, ypos, 6*fontWidth, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, 6*myFontWidth, myFontHeight,
                        "Label:", kTextAlignLeft);
-  xpos += 6*fontWidth + 5;
+  xpos += 6*myFontWidth + 5;
   myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
-                               lineHeight, "");
+                               myLineHeight);
   myLabel->setEditable(false);
 
-  // Calculate real dimensions
-  _w = lwidth + myRamGrid->getWidth();
-  _h = ypos + lineHeight - y;
-
   // Inputbox which will pop up when searching RAM
-  StringList labels;
-  labels.push_back("Search: ");
+  StringList labels = { "Search: " };
   myInputBox = make_ptr<InputTextDialog>(boss, lfont, nfont, labels);
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled
   myCompareButton->clearFlags(WIDGET_ENABLED);
   myRestartButton->clearFlags(WIDGET_ENABLED);
+
+  // Calculate final height
+  if(_h == 0)  _h = ypos + myLineHeight - y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,30 +173,38 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   // memory location
   int addr, value;
 
-  CartDebug& dbg = instance().debugger().cartDebug();
-  const CartState& state = (CartState&) dbg.getState();
   switch(cmd)
   {
     case DataGridWidget::kItemDataChangedCmd:
     {
-      addr  = myRamGrid->getSelectedAddr();
-      value = myRamGrid->getSelectedValue();
-
-      // Attempt the write, and revert if it didn't succeed
-      uInt8 oldval = dbg.peek(state.rport[addr]);
-      dbg.poke(state.wport[addr], value);
-      uInt8 newval = dbg.peek(state.rport[addr]);
-      if(value != newval)
+      switch(id)
       {
-        myRamGrid->setValue(addr - myCurrentRamBank*128, newval, false);
-        break;
+        case kRamHexID:
+          addr  = myRamGrid->getSelectedAddr();
+          value = myRamGrid->getSelectedValue();
+          break;
+
+        case kRamDecID:
+          addr  = myRamGrid->getSelectedAddr();
+          value = myDecValue->getSelectedValue();
+          break;
+
+        case kRamBinID:
+          addr  = myRamGrid->getSelectedAddr();
+          value = myBinValue->getSelectedValue();
+          break;
       }
+
+      uInt8 oldval = getValue(addr);
+      setValue(addr, value);
 
       myUndoAddress = addr;
       myUndoValue = oldval;
 
-      myDecValue->setText(Common::Base::toString(value, Common::Base::F_10));
-      myBinValue->setText(Common::Base::toString(value, Common::Base::F_2));
+      myRamGrid->setValueInternal(addr - myCurrentRamBank*myPageSize, value, true);
+      myDecValue->setValueInternal(0, value, true);
+      myBinValue->setValueInternal(0, value, true);
+
       myRevertButton->setEnabled(true);
       myUndoButton->setEnabled(true);
       break;
@@ -194,20 +215,20 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
-      myLabel->setText(dbg.getLabel(state.rport[addr], true));
-      myDecValue->setText(Common::Base::toString(value, Common::Base::F_10));
-      myBinValue->setText(Common::Base::toString(value, Common::Base::F_2));
+      myLabel->setText(getLabel(addr));
+      myDecValue->setValueInternal(0, value, false);
+      myBinValue->setValueInternal(0, value, false);
       break;
     }
 
     case kRevertCmd:
       for(uInt32 i = 0; i < myOldValueList.size(); ++i)
-        dbg.poke(state.wport[i], myOldValueList[i]);
+        setValue(i, myOldValueList[i]);
       fillGrid(true);
       break;
 
     case kUndoCmd:
-      dbg.poke(state.wport[myUndoAddress], myUndoValue);
+      setValue(myUndoAddress, myUndoValue);
       myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
@@ -256,6 +277,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 void RamWidget::setOpsWidget(DataGridOpsWidget* w)
 {
   myRamGrid->setOpsWidget(w);
+  myBinValue->setOpsWidget(w);
+  myDecValue->setOpsWidget(w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -271,29 +294,13 @@ void RamWidget::fillGrid(bool updateOld)
   IntArray vlist;
   BoolArray changed;
 
-  if(updateOld) myOldValueList.clear();
+  uInt32 start = myCurrentRamBank * myPageSize;
+  fillList(start, myPageSize, alist, vlist, changed);
 
-  CartDebug& dbg = instance().debugger().cartDebug();
+  if(updateOld)
+    myOldValueList = currentRam(start);
 
-  const CartState& state    = (CartState&) dbg.getState();
-  const CartState& oldstate = (CartState&) dbg.getOldState();
-
-  // Jump to the correct 128 byte 'window' in the RAM area
-  // This assumes that the RAM areas are aligned on 128 byte boundaries
-  // TODO - the boundary restriction may not always apply ...
-  uInt32 start = myCurrentRamBank * 128;
-  assert(start+128 <= state.ram.size());
-
-  if(updateOld) myOldValueList = state.ram;
-
-  for(uInt32 i = start; i < start + 16*8; ++i)
-  {
-    alist.push_back(i);
-    vlist.push_back(state.ram[i]);
-    changed.push_back(state.ram[i] != oldstate.ram[i]);
-  }
-
-  myRamGrid->setNumRows((int)state.ram.size() / 128);
+  myRamGrid->setNumRows(myRamSize / myPageSize);
   myRamGrid->setList(alist, vlist, changed);
   if(updateOld)
   {
@@ -302,15 +309,13 @@ void RamWidget::fillGrid(bool updateOld)
   }
 
   // Update RAM labels
+  uInt32 rport = readPort(start), page = rport & 0xf0;
   char buf[5];
-  BSPF_snprintf(buf, 5, "%04X", state.rport[start] & 0xff00);
+  BSPF_snprintf(buf, 5, "%04X", rport);
   buf[2] = buf[3] = 'x';
   myRamStart->setLabel(buf);
-  for(uInt32 i = start, row = 0; i < start + 16*8; i += 16, ++row)
-  {
-    BSPF_snprintf(buf, 3, "%02X", state.rport[i] & 0x00ff);
-    myRamLabels[row]->setLabel(buf);
-  }
+  for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
+    myRamLabels[row]->setLabel(Common::Base::toString(page>>4, Common::Base::F_16_1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -351,12 +356,11 @@ string RamWidget::doSearch(const string& str)
 
   // Now, search all memory locations for this value, and add it to the
   // search array
+  const ByteArray& ram = currentRam(0);
   bool hitfound = false;
-  CartDebug& dbg = instance().debugger().cartDebug();
-  const CartState& state = (CartState&) dbg.getState();
-  for(uInt32 addr = 0; addr < state.ram.size(); ++addr)
+  for(uInt32 addr = 0; addr < ram.size(); ++addr)
   {
-    int value = state.ram[addr];
+    int value = ram[addr];
     if(comparisonSearch && searchVal != value)
     {
       mySearchState.push_back(false);
@@ -381,7 +385,7 @@ string RamWidget::doSearch(const string& str)
   // Finally, show the search results in the list
   showSearchResults();
 
-  return "";
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -420,12 +424,11 @@ string RamWidget::doCompare(const string& str)
     searchVal = instance().debugger().stringToValue(str);
 
   // Now, search all memory locations previously 'found' for this value
+  const ByteArray& ram = currentRam(0);
   bool hitfound = false;
-  CartDebug& dbg = instance().debugger().cartDebug();
-  const CartState& state = (CartState&) dbg.getState();
   IntArray tempAddrList, tempValueList;
   mySearchState.clear();
-  for(uInt32 i = 0; i < state.rport.size(); ++i)
+  for(uInt32 i = 0; i < ram.size(); ++i)
     mySearchState.push_back(false);
 
   for(uInt32 i = 0; i < mySearchAddr.size(); ++i)
@@ -438,7 +441,7 @@ string RamWidget::doCompare(const string& str)
     }
 
     int addr = mySearchAddr[i];
-    if(dbg.peek(state.rport[addr]) == searchVal)
+    if(ram[addr] == searchVal)
     {
       tempAddrList.push_back(addr);
       tempValueList.push_back(searchVal);
@@ -460,7 +463,7 @@ string RamWidget::doCompare(const string& str)
   // Finally, show the search results in the list
   showSearchResults();
 
-  return "";
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -482,15 +485,15 @@ void RamWidget::showSearchResults()
 {
   // Only update the search results for the bank currently being shown
   BoolArray temp;
-  uInt32 start = myCurrentRamBank * 128;
+  uInt32 start = myCurrentRamBank * myPageSize;
   if(mySearchState.size() == 0 || start > mySearchState.size())
   {
-    for(uInt32 i = 0; i < 128; ++i)
+    for(uInt32 i = 0; i < myPageSize; ++i)
       temp.push_back(false);
   }
   else
   {
-    for(uInt32 i = start; i < start + 128; ++i)
+    for(uInt32 i = start; i < start + myPageSize; ++i)
       temp.push_back(mySearchState[i]);
   }
   myRamGrid->setHiliteList(temp);

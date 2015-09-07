@@ -40,7 +40,7 @@ using CartMethod = int (CartDebug::*)();
 class CartState : public DebuggerState
 {
   public:
-    IntArray ram;    // The actual data values
+    ByteArray ram;   // The actual data values
     IntArray rport;  // Address for reading from RAM
     IntArray wport;  // Address for writing to RAM
     string bank;     // Current banking layout

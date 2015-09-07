@@ -64,7 +64,7 @@ class Dialog : public GuiObject
     virtual void setDefaults() { }
 
     void addFocusWidget(Widget* w) override;
-    void addToFocusList(WidgetArray& list);
+    void addToFocusList(WidgetArray& list) override;
     void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
     void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);

@@ -6,6 +6,7 @@ MODULE_OBJS := \
 	src/debugger/gui/PromptWidget.o \
 	src/debugger/gui/RamWidget.o \
 	src/debugger/gui/RiotWidget.o \
+	src/debugger/gui/RiotRamWidget.o \
 	src/debugger/gui/RomWidget.o \
 	src/debugger/gui/RomListWidget.o \
 	src/debugger/gui/RomListSettings.o \

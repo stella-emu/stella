@@ -29,6 +29,7 @@ class Widget;
 
 #include "Command.hxx"
 #include "OSystem.hxx"
+#include "Vec.hxx"
 
 using WidgetArray = vector<Widget*>;
 
@@ -87,8 +88,9 @@ class GuiObject : public CommandReceiver
 
     virtual bool isVisible() const = 0;
 
-    /** Add given widget to the focus list */
+    /** Add given widget(s) to the focus list */
     virtual void addFocusWidget(Widget* w) = 0;
+    virtual void addToFocusList(WidgetArray& list) = 0;
 
     /** Return focus list for this object */
     WidgetArray& getFocusList() { return _focusList; }

@@ -215,9 +215,9 @@ void DataGridWidget::setValue(int position, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setValueInternal(int position, int value)
+void DataGridWidget::setValueInternal(int position, int value, bool changed)
 {
-  setValue(position, value, true, false);
+  setValue(position, value, changed, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

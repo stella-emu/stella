@@ -23,6 +23,7 @@
 class GuiObject;
 class InputTextDialog;
 class ButtonWidget;
+class DataGridWidget;
 class DataGridOpsWidget;
 class EditTextWidget;
 class StaticTextWidget;
@@ -34,11 +35,24 @@ class RamWidget : public Widget, public CommandSender
 {
   public:
     RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-              int x, int y);
+              int x, int y, int w, int h,
+              uInt32 ramsize, uInt32 numrows, uInt32 pagesize);
     virtual ~RamWidget();
 
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    // To be implemented by derived classes
+    virtual uInt8 getValue(int addr) const = 0;
+    virtual void setValue(int addr, uInt8 value) = 0;
+    virtual string getLabel(int addr) const = 0;
+
+    virtual void fillList(uInt32 start, uInt32 size,
+              IntArray& alist, IntArray& vlist, BoolArray& changed) const = 0;
+    virtual uInt32 readPort(uInt32 start) const = 0;
+    virtual const ByteArray& currentRam(uInt32 start) const = 0;
 
   private:
     void fillGrid(bool updateOld);
@@ -49,7 +63,13 @@ class RamWidget : public Widget, public CommandSender
     void doRestart();
     void showSearchResults();
 
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+  protected:
+    // Font used for 'normal' text; _font is for 'label' text
+    const GUI::Font& _nfont;
+
+    // These will be needed by most of the child classes;
+    // we may as well make them protected variables
+    int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;
 
   private:
     enum {
@@ -59,21 +79,26 @@ class RamWidget : public Widget, public CommandSender
       kCmpCmd      = 'RWcp',
       kRestartCmd  = 'RWrs',
       kSValEntered = 'RWsv',
-      kCValEntered = 'RWcv'
+      kCValEntered = 'RWcv',
+      kRamHexID,
+      kRamDecID,
+      kRamBinID
     };
 
-    int myUndoAddress;
-    int myUndoValue;
-    int myCurrentRamBank;
+    uInt32 myUndoAddress, myUndoValue;
+    uInt32 myCurrentRamBank;
+    uInt32 myRamSize;
+    uInt32 myNumRows;
+    uInt32 myPageSize;
 
     unique_ptr<InputTextDialog> myInputBox;
 
     StaticTextWidget* myRamStart;
-    StaticTextWidget* myRamLabels[8];
-    DataGridWidget*   myRamGrid;
+    StaticTextWidget* myRamLabels[16];
 
-    EditTextWidget* myBinValue;
-    EditTextWidget* myDecValue;
+    DataGridWidget* myRamGrid;
+    DataGridWidget* myDecValue;
+    DataGridWidget* myBinValue;
     EditTextWidget* myLabel;
 
     ButtonWidget* myRevertButton;
@@ -82,7 +107,7 @@ class RamWidget : public Widget, public CommandSender
     ButtonWidget* myCompareButton;
     ButtonWidget* myRestartButton;
 
-    IntArray myOldValueList;
+    ByteArray myOldValueList;
     IntArray mySearchAddr;
     IntArray mySearchValue;
     BoolArray mySearchState;

@@ -86,6 +86,9 @@ class Widget : public GuiObject
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
+    void addToFocusList(WidgetArray& list) override {
+      Vec::append(_focusList, list);
+    };
 
     /** Set/clear WIDGET_ENABLED flag */
     void setEnabled(bool e);
