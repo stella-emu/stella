@@ -34,7 +34,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   ostringstream info;
   info << "Menu Driven Megacart, containing up to 128 4K banks\n"
        << "Startup bank = " << cart.myStartBank << "\n"
-       << "\nBanks are selected by reading from $800 - $FFF, where the lower "
+       << "\nBanks are selected by reading from $800 - $BFF, where the lower "
           "byte determines the 4K bank to use.";
 
   int xpos = 10,

@@ -308,7 +308,7 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
   for(uInt32 i = 0; i < numComments; ++i)
   {
     text_ptr[i].key = (char*) comments[i].first.c_str();
-    text_ptr[i].text = (char*) comments[i].second.toString().c_str();
+    text_ptr[i].text = (char*) comments[i].second.toCString();
     text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
     text_ptr[i].text_length = 0;
   }

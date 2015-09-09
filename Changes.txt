@@ -16,7 +16,7 @@
 
   * Added mappable events for toggling TV color/BW, left difficulty A/B
     and right difficulty A/B.  This means that one key, joystick button,
-    etc can be used to toggle each event.  Thanks to Buzbard of AtariAge
+    etc. can be used to toggle each event.  Thanks to Buzbard of AtariAge
     for the suggestion.
 
   * Added ability to edit values in more widgets in the debugger.  For
