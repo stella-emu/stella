@@ -489,6 +489,8 @@
 		DCE395F316CB0B5F008DB1E5 /* ZipHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */; };
 		DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */; };
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
+		DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */; };
+		DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */; };
 		DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */; };
 		DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
@@ -1044,6 +1046,8 @@
 		DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ZipHandler.hxx; path = ../common/ZipHandler.hxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomInfoWidget.cxx; path = ../gui/RomInfoWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotRamWidget.cxx; path = ../debugger/gui/RiotRamWidget.cxx; sourceTree = "<group>"; };
+		DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotRamWidget.hxx; path = ../debugger/gui/RiotRamWidget.hxx; sourceTree = "<group>"; };
 		DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall.cxx; path = ../emucore/TrackBall.cxx; sourceTree = SOURCE_ROOT; };
 		DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TrackBall.hxx; path = ../emucore/TrackBall.hxx; sourceTree = SOURCE_ROOT; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
@@ -1291,6 +1295,8 @@
 				2D20F9EF08C603EC00A73076 /* PromptWidget.hxx */,
 				2D20F9F008C603EC00A73076 /* RamWidget.cxx */,
 				2D20F9F108C603EC00A73076 /* RamWidget.hxx */,
+				DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */,
+				DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */,
 				DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */,
 				DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */,
 				DC13B53D176FF2F500B8B4BB /* RomListSettings.cxx */,
@@ -1845,6 +1851,7 @@
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
 				2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */,
 				2D91745809BA90380026E9FF /* DebuggerDialog.hxx in Headers */,
+				DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
 				2D91745909BA90380026E9FF /* PromptWidget.hxx in Headers */,
 				DC2AADAF194F389C0026C7A4 /* CartDASH.hxx in Headers */,
@@ -2156,6 +2163,7 @@
 				DC5E473B19EC9A14000E45DF /* EventJoyHandler.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
+				DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */,
 				2D9174B909BA90380026E9FF /* ProgressDialog.cxx in Sources */,
 				2D9174BA09BA90380026E9FF /* ScrollBarWidget.cxx in Sources */,
 				2D9174BB09BA90380026E9FF /* TabWidget.cxx in Sources */,
