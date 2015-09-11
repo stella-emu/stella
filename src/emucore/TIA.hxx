@@ -175,7 +175,7 @@ class TIA : public Device
       @return Pointer to the current frame buffer
     */
     uInt8* currentFrameBuffer() const
-      { return myCurrentFrameBuffer + myFramePointerOffset; }
+      { return myCurrentFrameBuffer + myFramePointerOffset + myCurrentFrameJitter; }
 
     /**
       Answers the previous frame buffer
@@ -615,7 +615,14 @@ class TIA : public Device
 
     // Whether TIA bits/collisions are currently enabled/disabled
     bool myBitsEnabled, myCollisionsEnabled;
-
+  
+    // Derived from the difference between the scanline counts of the
+    // current and prior frames.  If non-zero the next frame should jitter.
+    Int32 myNextFrameJitter;
+  
+    // Jitter amount for the current frame
+    Int32 myCurrentFrameJitter;
+  
   private:
     // Following constructors and assignment operators not supported
     TIA() = delete;

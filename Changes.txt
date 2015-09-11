@@ -23,6 +23,15 @@
     now, this applies mainly to the various decimal and binary fields.
     More widgets will be made editable in future releases.
 
+  * The TIA now emulates the jitter that occurs when scanline counts
+    are not consistent frame-over-frame.  Also, the DPC+ scheme now
+    emulates jitter that can occur when using its Fractional Datafetchers
+    if the DFxFRACINC registers are not re-initialized every frame.
+    Special thanks to SpiceWare for this implementation.
+
+  * Tweaked 'MDM' scheme autodetection to detect that the identification
+    string can be in either bank 0 or bank 1.
+
   * Changed 'hidecursor' commandline argument (and associated UI item) to
     'cursor'.  The new argument allows to set mouse cursor visibility
     separately for both UI and emulation modes.

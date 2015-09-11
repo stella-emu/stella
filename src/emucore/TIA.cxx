@@ -57,8 +57,10 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myFrameCounter(0),
     myPALFrameCounter(0),
     myBitsEnabled(true),
-    myCollisionsEnabled(true)
-   
+    myCollisionsEnabled(true),
+    myNextFrameJitter(0),
+    myCurrentFrameJitter(0)
+
 {
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 320];
@@ -141,6 +143,7 @@ void TIA::reset()
 
   myFrameCounter = myPALFrameCounter = 0;
   myScanlineCountForLastFrame = 0;
+  myNextFrameJitter = myCurrentFrameJitter = 0;
 
   myP0Mask = &TIATables::PxMask[0][0][0];
   myP1Mask = &TIATables::PxMask[0][0][0];
@@ -651,6 +654,39 @@ inline void TIA::endFrame()
            stride = (previousCount - myScanlineCountForLastFrame) * 160;
     memset(myCurrentFrameBuffer + offset, 0, stride);
     memset(myPreviousFrameBuffer + offset, 1, stride);
+  }
+
+  // Account for frame jitter, skipping the first few frames
+  if(myFrameCounter > 3)
+  {
+    // Set the jitter amount for the current frame
+    myCurrentFrameJitter = myNextFrameJitter * 160;
+
+    // Calculate the jitter amount for the next frame.
+    // Jitter amount of a frame depends upon the difference
+    // between the scanline counts of the prior two frames.
+    myNextFrameJitter = myScanlineCountForLastFrame - previousCount;
+
+    if(myNextFrameJitter < 0)
+    {
+      myNextFrameJitter = --myNextFrameJitter >> 1;
+
+      // Make sure currentFrameBuffer() doesn't return a pointer that
+      // results in memory being accessed outside of the 160*320 bytes
+      // allocated for the frame buffer
+      if(myNextFrameJitter < -myFrameYStart)
+        myNextFrameJitter = myFrameYStart;
+    }
+    else if(myNextFrameJitter > 0)
+    {
+      myNextFrameJitter = ++myNextFrameJitter >> 1;
+
+      // Make sure currentFrameBuffer() doesn't return a pointer that
+      // results in memory being accessed outside of the 160*320 bytes
+      // allocated for the frame buffer
+      if(myNextFrameJitter > 320 - myFrameYStart - myFrameHeight)
+        myNextFrameJitter = 320 - myFrameYStart - myFrameHeight;
+    }
   }
 
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'

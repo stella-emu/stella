@@ -412,7 +412,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
     {
       //DFxFRACLOW - fractional data pointer low byte
       case 0x00:
-        myFractionalCounters[index] = (myFractionalCounters[index] & 0x0F0000) | ((uInt16)value << 8);
+        myFractionalCounters[index] = (myFractionalCounters[index] & 0x0F00FF) | ((uInt16)value << 8);
         break;
 
       // DFxFRACHI - fractional data pointer high byte

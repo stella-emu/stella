@@ -894,9 +894,9 @@ bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyMDM(const uInt8* image, uInt32 size)
 {
-  // MDM cart is identified key 'MDMC' in the first 4K of ROM
+  // MDM cart is identified key 'MDMC' in the first 8K of ROM
   uInt8 signature[] = { 'M', 'D', 'M', 'C' };
-  return searchForBytes(image, 4096, signature, 4, 1);
+  return searchForBytes(image, 8192, signature, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
