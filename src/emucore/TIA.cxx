@@ -667,26 +667,28 @@ inline void TIA::endFrame()
     // between the scanline counts of the prior two frames.
     myNextFrameJitter = myScanlineCountForLastFrame - previousCount;
 
-    if(myNextFrameJitter < 0)
+    if(myNextFrameJitter < -1)
     {
-      myNextFrameJitter = --myNextFrameJitter >> 1;
+      myNextFrameJitter = (myNextFrameJitter-1) / 2;
 
       // Make sure currentFrameBuffer() doesn't return a pointer that
       // results in memory being accessed outside of the 160*320 bytes
       // allocated for the frame buffer
-      if(myNextFrameJitter < -myFrameYStart)
+      if(myNextFrameJitter < -(Int32)(myFrameYStart))
         myNextFrameJitter = myFrameYStart;
     }
-    else if(myNextFrameJitter > 0)
+    else if(myNextFrameJitter > 1)
     {
-      myNextFrameJitter = ++myNextFrameJitter >> 1;
+      myNextFrameJitter = (myNextFrameJitter+1) / 2;
 
       // Make sure currentFrameBuffer() doesn't return a pointer that
       // results in memory being accessed outside of the 160*320 bytes
       // allocated for the frame buffer
-      if(myNextFrameJitter > 320 - myFrameYStart - myFrameHeight)
+      if(myNextFrameJitter > 320 - (Int32)myFrameYStart - (Int32)myFrameHeight)
         myNextFrameJitter = 320 - myFrameYStart - myFrameHeight;
     }
+    else
+      myNextFrameJitter = 0;
   }
 
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'

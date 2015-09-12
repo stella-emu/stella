@@ -43,14 +43,13 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myNumRows(numrows),
     myPageSize(pagesize)
 {
-  int xpos, ypos, lwidth;
   const int bwidth  = lfont.getStringWidth("Compare "),
             bheight = myLineHeight + 2;
 
-  ypos = y + myLineHeight;  lwidth = 4 * myFontWidth;
+  int ypos = y + myLineHeight;
 
   // Add RAM grid (with scrollbar)
-  xpos = x + _font.getStringWidth("xxxx");
+  int xpos = x + _font.getStringWidth("xxxx");
   myRamGrid = new DataGridWidget(_boss, _nfont, xpos, ypos,
                                  16, myNumRows, 2, 8, Common::Base::F_16, true);
   myRamGrid->setTarget(this);
