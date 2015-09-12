@@ -277,6 +277,7 @@
     <ClCompile Include="..\debugger\gui\JoystickWidget.cxx" />
     <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
     <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
@@ -532,6 +533,7 @@
     <ClInclude Include="..\debugger\gui\KeyboardWidget.hxx" />
     <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
     <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
