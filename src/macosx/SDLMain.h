@@ -14,3 +14,9 @@
 + (SDLMain *)sharedInstance;
 
 @end
+
+@interface SDLApplication : NSApplication {
+
+}
+
+@end

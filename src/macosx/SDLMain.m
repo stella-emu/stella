@@ -79,11 +79,7 @@ static NSString *getApplicationName(void)
 #endif
 
 // --------------------------------------------------------------------------------
-@interface NSApplication (SDLApplication)
-@end
-
-// --------------------------------------------------------------------------------
-@implementation NSApplication (SDLApplication)
+@implementation SDLApplication
 /* Invoked from the Quit menu item */
 - (void)terminate:(id)sender
 {
@@ -91,6 +87,7 @@ static NSString *getApplicationName(void)
     SDL_Event event;
     event.type = SDL_QUIT;
     SDL_PushEvent(&event);
+    [super terminate:sender];
 }
 @end
 

@@ -64,7 +64,7 @@
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
+	<string>SDLApplication</string>
 	<key>«PROJECTNAMEASXML»</key>
 	<string>SDL Cocoa App</string>
 </dict>
