@@ -342,7 +342,7 @@ class M6502 : public Serializable
           return i;
 
       return -1; // no break hit
-    };
+    }
 
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;

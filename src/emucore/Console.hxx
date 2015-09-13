@@ -154,7 +154,7 @@ class Console : public Serializable
     /**
       Set the properties to those given
 
-      @param The properties to use for the current game
+      @param props The properties to use for the current game
     */
     void setProperties(const Properties& props);
 

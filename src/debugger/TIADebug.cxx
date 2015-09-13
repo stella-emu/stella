@@ -189,7 +189,7 @@ void TIADebug::saveOldState()
 bool TIADebug::vdelP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELP0, ((bool)newVal));
+    mySystem.poke(VDELP0, bool(newVal));
 
   return myTIA.myVDELP0;
 }
@@ -198,7 +198,7 @@ bool TIADebug::vdelP0(int newVal)
 bool TIADebug::vdelP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELP1, ((bool)newVal));
+    mySystem.poke(VDELP1, bool(newVal));
 
   return myTIA.myVDELP1;
 }
@@ -207,7 +207,7 @@ bool TIADebug::vdelP1(int newVal)
 bool TIADebug::vdelBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELBL, ((bool)newVal));
+    mySystem.poke(VDELBL, bool(newVal));
 
   return myTIA.myVDELBL;
 }
@@ -216,7 +216,7 @@ bool TIADebug::vdelBL(int newVal)
 bool TIADebug::enaM0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENAM0, ((bool)newVal) << 1);
+    mySystem.poke(ENAM0, bool(newVal) << 1);
 
   return myTIA.myENAM0;
 }
@@ -225,7 +225,7 @@ bool TIADebug::enaM0(int newVal)
 bool TIADebug::enaM1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENAM1, ((bool)newVal) << 1);
+    mySystem.poke(ENAM1, bool(newVal) << 1);
 
   return myTIA.myENAM1;
 }
@@ -234,7 +234,7 @@ bool TIADebug::enaM1(int newVal)
 bool TIADebug::enaBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENABL, ((bool)newVal) << 1);
+    mySystem.poke(ENABL, bool(newVal) << 1);
 
   return myTIA.myENABL;
 }
@@ -243,7 +243,7 @@ bool TIADebug::enaBL(int newVal)
 bool TIADebug::resMP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(RESMP0, ((bool)newVal) << 1);
+    mySystem.poke(RESMP0, bool(newVal) << 1);
 
   return myTIA.myRESMP0;
 }
@@ -252,7 +252,7 @@ bool TIADebug::resMP0(int newVal)
 bool TIADebug::resMP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(RESMP1, ((bool)newVal) << 1);
+    mySystem.poke(RESMP1, bool(newVal) << 1);
 
   return myTIA.myRESMP1;
 }
@@ -261,7 +261,7 @@ bool TIADebug::resMP1(int newVal)
 bool TIADebug::refP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(REFP0, ((bool)newVal) << 3);
+    mySystem.poke(REFP0, bool(newVal) << 3);
 
   return myTIA.myREFP0;
 }
@@ -270,7 +270,7 @@ bool TIADebug::refP0(int newVal)
 bool TIADebug::refP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(REFP1, ((bool)newVal) << 3);
+    mySystem.poke(REFP1, bool(newVal) << 3);
 
   return myTIA.myREFP1;
 }
@@ -741,7 +741,7 @@ string TIADebug::toString()
   buf << "00: ";
   for (uInt8 j = 0; j < 0x010; j++)
   {
-    buf << Common::Base::HEX2 << (int)mySystem.peek(j) << " ";
+    buf << Common::Base::HEX2 << int(mySystem.peek(j)) << " ";
     if(j == 0x07) buf << "- ";
   }
   buf << endl;
@@ -837,15 +837,15 @@ string TIADebug::toString()
       << endl << "            "
       << booleanWithLabel("m0_m1 ", collM0_M1())
       << endl
-      << "AUDF0: $" << Common::Base::HEX2 << (int)myTIA.myAUDF0
+      << "AUDF0: $" << Common::Base::HEX2 << int(myTIA.myAUDF0)
       << "/" << audFreq(myTIA.myAUDF0) << " "
-      << "AUDC0: $" << Common::Base::HEX2 << (int)myTIA.myAUDC0 << " "
-      << "AUDV0: $" << Common::Base::HEX2 << (int)myTIA.myAUDV0
+      << "AUDC0: $" << Common::Base::HEX2 << int(myTIA.myAUDC0) << " "
+      << "AUDV0: $" << Common::Base::HEX2 << int(myTIA.myAUDV0)
       << endl
-      << "AUDF1: $" << Common::Base::HEX2 << (int)myTIA.myAUDF1
+      << "AUDF1: $" << Common::Base::HEX2 << int(myTIA.myAUDF1)
       << "/" << audFreq(myTIA.myAUDF1) << " "
-      << "AUDC1: $" << Common::Base::HEX2 << (int)myTIA.myAUDC1 << " "
-      << "AUDV1: $" << Common::Base::HEX2 << (int)myTIA.myAUDV1
+      << "AUDC1: $" << Common::Base::HEX2 << int(myTIA.myAUDC1) << " "
+      << "AUDV1: $" << Common::Base::HEX2 << int(myTIA.myAUDV1)
       ;
   // note: last line should not contain \n, caller will add.
   return buf.str();

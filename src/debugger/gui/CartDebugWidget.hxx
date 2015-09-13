@@ -48,7 +48,7 @@ class CartDebugWidget : public Widget, public CommandSender
         myButtonHeight(myLineHeight + 4),
         myDesc(nullptr)   { }
 
-    virtual ~CartDebugWidget() { };
+    virtual ~CartDebugWidget() { }
 
   public:
     int addBaseInformation(int bytes, const string& manufacturer,
@@ -82,7 +82,7 @@ class CartDebugWidget : public Widget, public CommandSender
 
       StringParser bs(desc, (fwidth - kScrollBarWidth) / myFontWidth - 4);
       const StringList& sl = bs.stringList();
-      uInt32 lines = (uInt32)sl.size();
+      uInt32 lines = uInt32(sl.size());
       if(lines < 3) lines = 3;
       if(lines > maxlines) lines = maxlines;
 
@@ -109,7 +109,7 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual void saveOldState() { }
 
     virtual void loadConfig() override { myDesc->setSelected(0); }
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { };
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
     // Query internal state of the cart (usually just bankswitching info)
     virtual string bankState() { return "0 (non-bankswitched)"; }
@@ -121,8 +121,8 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual string internalRamDescription() { return EmptyString; }
     virtual const ByteArray& internalRamOld(int start, int count) { return myRamOld; }
     virtual const ByteArray& internalRamCurrent(int start, int count) { return myRamCurrent; }
-    virtual void internalRamSetValue(int addr, uInt8 value) { };
-    virtual uInt8 internalRamGetValue(int addr) { return 0; };
+    virtual void internalRamSetValue(int addr, uInt8 value) { }
+    virtual uInt8 internalRamGetValue(int addr) { return 0; }
     virtual string internalRamLabel(int addr) { return "Not available/applicable"; }
 
   protected:

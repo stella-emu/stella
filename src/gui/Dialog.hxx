@@ -83,7 +83,7 @@ class Dialog : public GuiObject
     void addSurface(shared_ptr<FBSurface> surface);
 
   protected:
-    virtual void draw() override { };
+    virtual void draw() override { }
     void releaseFocus() override;
 
     virtual void handleText(char text);

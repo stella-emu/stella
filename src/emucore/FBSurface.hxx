@@ -57,8 +57,6 @@ class FBSurface
   public:
     /**
       Creates a new FBSurface object
-
-      @param data  If non-null, the data values to use as a static surface
     */
     FBSurface();
 
@@ -155,9 +153,10 @@ class FBSurface
       data into a FrameBuffer surface.  The pixels must already be in the
       format used by the surface.
 
-      @param data     The data in uInt8 R/G/B format
-      @param row      The row of the surface the data should be placed in
-      @param rowbytes The number of bytes in row of 'data'
+      @param data      The data in uInt8 R/G/B format
+      @param x         The destination x-location to start drawing pixels
+      @param y         The destination y-location to start drawing pixels
+      @param numpixels The number of pixels to draw
     */
     virtual void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
 
@@ -193,14 +192,13 @@ class FBSurface
       This method should be called to draw the specified string.
 
       @param font   The font to draw the string with
-      @param str    The string to draw
+      @param s      The string to draw
       @param x      The x coordinate
       @param y      The y coordinate
       @param w      The width of the string area
-      @param h      The height of the string area
       @param color  The color of the text
       @param align  The alignment of the text in the string width area
-      @param deltax 
+      @param deltax FIXME
       @param useEllipsis  Whether to use '...' when the string is too long
     */
     virtual void drawString(

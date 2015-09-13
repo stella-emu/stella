@@ -99,14 +99,16 @@ class Properties
     /**
       Load properties from the specified input stream
 
-      @param in The input stream to use
+      @param is  The input stream to use
+      @param p   The Properties object to write to
     */
     friend istream& operator>>(istream& is, Properties& p);
  
     /**
       Save properties to the specified output stream
 
-      @param out The output stream to use
+      @param os  The output stream to use
+      @param p   The Properties object to read from
     */
     friend ostream& operator<<(ostream& os, const Properties& p);
 

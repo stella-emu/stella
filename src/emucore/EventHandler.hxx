@@ -282,7 +282,7 @@ class EventHandler
       @param event  The event we are remapping
       @param mode   The mode where this event is active
       @param stick  The joystick number
-      @param axis   The joystick hat
+      @param hat    The joystick hat
       @param value  The value on the given hat
       @param updateMenus  Whether to update the action mappings (normally
                           we want to do this, unless there are a batch of

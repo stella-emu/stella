@@ -546,7 +546,7 @@ string DebuggerParser::eval()
       buf << "$" << Base::toString(args[i], Base::F_16_4)
           << " %" << Base::toString(args[i], Base::F_2_16);
 
-    buf << " #" << (int) args[i]; 
+    buf << " #" << int(args[i]); 
     if(i != argCount - 1)
       buf << endl;
   }

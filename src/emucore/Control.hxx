@@ -155,7 +155,7 @@ class Controller : public Serializable
       @param pin The pin of the controller jack to write to
       @param value The value to write to the pin
     */
-    virtual void write(DigitalPin pin, bool value) { };
+    virtual void write(DigitalPin pin, bool value) { }
 
     /**
       Called after *all* digital pins have been written on Port A.
@@ -163,7 +163,7 @@ class Controller : public Serializable
 
       @param value  The entire contents of the SWCHA register
     */
-    virtual void controlWrite(uInt8 value) { };
+    virtual void controlWrite(uInt8 value) { }
 
     /**
       Update the entire digital and analog pin state according to the
@@ -176,7 +176,7 @@ class Controller : public Serializable
       system resets its cycle counter to zero.  It may be necessary 
       to override this method for controllers that remember cycle counts.
     */
-    virtual void systemCyclesReset() { };
+    virtual void systemCyclesReset() { }
 
     /**
       Determines how this controller will treat values received from the

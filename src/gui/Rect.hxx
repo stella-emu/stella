@@ -37,9 +37,9 @@ struct Point
   int x;  //!< The horizontal part of the point
   int y;  //!< The vertical part of the point
 
-  Point() : x(0), y(0) { };
-  Point(const Point& p) : x(p.x), y(p.y) { };
-  explicit Point(int x1, int y1) : x(x1), y(y1) { };
+  Point() : x(0), y(0) { }
+  Point(const Point& p) : x(p.x), y(p.y) { }
+  explicit Point(int x1, int y1) : x(x1), y(y1) { }
   Point(const string& p) {
     char c = '\0';
     x = y = -1;
@@ -48,9 +48,9 @@ struct Point
     if(c != 'x')
       x = y = 0;
   }
-  Point& operator=(const Point & p) { x = p.x; y = p.y; return *this; };
-  bool operator==(const Point & p) const { return x == p.x && y == p.y; };
-  bool operator!=(const Point & p) const { return x != p.x || y != p.y; };
+  Point& operator=(const Point & p) { x = p.x; y = p.y; return *this; }
+  bool operator==(const Point & p) const { return x == p.x && y == p.y; }
+  bool operator!=(const Point & p) const { return x != p.x || y != p.y; }
 
   friend ostream& operator<<(ostream& os, const Point& p) {
     os << p.x << "x" << p.y;
@@ -63,9 +63,9 @@ struct Size
   uInt32 w;  //!< The width part of the size
   uInt32 h;  //!< The height part of the size
 
-  Size() : w(0), h(0) { };
-  Size(const Size& s) : w(s.w), h(s.h) { };
-  explicit Size(uInt32 w1, uInt32 h1) : w(w1), h(h1) { };
+  Size() : w(0), h(0) { }
+  Size(const Size& s) : w(s.w), h(s.h) { }
+  explicit Size(uInt32 w1, uInt32 h1) : w(w1), h(h1) { }
   Size(const string& s) {
     char c = '\0';
     w = h = 0;
@@ -76,13 +76,13 @@ struct Size
   }
   bool valid() const { return w > 0 && h > 0; }
 
-  Size& operator=(const Size& s) { w = s.w; h = s.h; return *this; };
-  bool operator==(const Size& s) const { return w == s.w && h == s.h; };
-  bool operator!=(const Size& s) const { return w != s.w || h != s.h; };
-  bool operator<(const Size& s)  const { return w < s.w && h < s.h;   };
-  bool operator<=(const Size& s) const { return w <= s.w && h <= s.h; };
-  bool operator>(const Size& s)  const { return w > s.w && h > s.h;   };
-  bool operator>=(const Size& s) const { return w >= s.w && h >= s.h; };
+  Size& operator=(const Size& s) { w = s.w; h = s.h; return *this; }
+  bool operator==(const Size& s) const { return w == s.w && h == s.h; }
+  bool operator!=(const Size& s) const { return w != s.w || h != s.h; }
+  bool operator<(const Size& s)  const { return w < s.w && h < s.h;   }
+  bool operator<=(const Size& s) const { return w <= s.w && h <= s.h; }
+  bool operator>(const Size& s)  const { return w > s.w && h > s.h;   }
+  bool operator>=(const Size& s) const { return w >= s.w && h >= s.h; }
 
   friend ostream& operator<<(ostream& os, const Size& s) {
     os << s.w << "x" << s.h;

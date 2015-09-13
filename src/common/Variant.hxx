@@ -60,13 +60,13 @@ class Variant
     const string& toString() const { return data;                          }
     const char* toCString() const  { return data.c_str();                  }
     const Int32 toInt() const      { return atoi(data.c_str());            }
-    const float toFloat() const    { return atof(data.c_str());            }
+    const float toFloat() const    { return float(atof(data.c_str()));     }
     const bool toBool() const      { return data == "1" || data == "true"; }
     const GUI::Size toSize() const { return GUI::Size(data);               }
 
     // Comparison
-    bool operator==(const Variant& v) const { return data == v.data; };
-    bool operator!=(const Variant& v) const { return data != v.data; };
+    bool operator==(const Variant& v) const { return data == v.data; }
+    bool operator!=(const Variant& v) const { return data != v.data; }
 
     friend ostream& operator<<(ostream& os, const Variant& v) {
       return os << v.data;
@@ -85,7 +85,7 @@ namespace VarList {
   {
     list.emplace_back(name.toString(), tag);
   }
-};
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const VariantList EmptyVarList;

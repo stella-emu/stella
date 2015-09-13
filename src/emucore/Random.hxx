@@ -47,7 +47,7 @@ class Random
     */
     void initSeed()
     {
-      myValue = (uInt32) myOSystem.getTicks();
+      myValue = uInt32(myOSystem.getTicks());
     }
 
     /**

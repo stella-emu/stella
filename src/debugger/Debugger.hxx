@@ -94,7 +94,7 @@ class Debugger : public DialogContainer
       that don't have access to EventHandler.
 
       @param message  Message to display when entering debugger
-      @param data     An address associated with the message
+      @param address  An address associated with the message
     */
     bool start(const string& message = "", int address = -1);
     bool startWithFatalError(const string& message = "");
@@ -164,7 +164,7 @@ class Debugger : public DialogContainer
     /**
       The current cycle count of the System.
     */
-    int cycles() const { return mySystem.cycles(); }
+    int cycles() const { return int(mySystem.cycles()); }
 
     string autoExec();
 

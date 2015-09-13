@@ -58,7 +58,7 @@ class CheatManager
     /**
       Remove the cheat at 'idx' from the cheat list(s).
 
-      @param index  Location in myCheatList of the cheat to remove
+      @param idx  Location in myCheatList of the cheat to remove
     */
     void remove(int idx);
 

@@ -120,7 +120,7 @@ class DialogContainer
       Handle a joystick hat event.
 
       @param stick  The joystick number
-      @param axis   The joystick hat
+      @param hat    The joystick hat
       @param value  Value associated with given hat
     */
     void handleJoyHatEvent(int stick, int hat, JoyHat value);

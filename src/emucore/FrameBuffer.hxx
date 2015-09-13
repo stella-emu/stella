@@ -42,7 +42,7 @@ enum FBInitStatus {
   kSuccess,
   kFailComplete,
   kFailTooLarge,
-  kFailNotSupported,
+  kFailNotSupported
 };
 
 // Positions for onscreen/overlaid messages
@@ -287,7 +287,7 @@ class FrameBuffer
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
 
-      @param palette  The array of colors in R/G/B format
+      @param raw_palette  The array of colors in R/G/B format
     */
     void setPalette(const uInt32* raw_palette);
 
@@ -434,8 +434,8 @@ class FrameBuffer
       Returns an appropriate video mode based on the current eventhandler
       state, taking into account the maximum size of the window.
 
-      @param full  Whether to use a windowed or fullscreen mode
-      @return      A valid VideoMode for this framebuffer
+      @param fullscreen  Whether to use a windowed or fullscreen mode
+      @return  A valid VideoMode for this framebuffer
     */
     const VideoMode& getSavedVidMode(bool fullscreen);
 

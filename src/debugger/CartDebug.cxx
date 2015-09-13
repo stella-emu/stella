@@ -230,7 +230,7 @@ bool CartDebug::disassemble(bool force)
   bool bankChanged = myConsole.cartridge().bankChanged();
   uInt16 PC = myDebugger.cpuDebug().pc();
   int pcline = addressToLine(PC);
-  bool pcfound = (pcline != -1) && ((uInt32)pcline < myDisassembly.list.size()) &&
+  bool pcfound = (pcline != -1) && (uInt32(pcline) < myDisassembly.list.size()) &&
                   (myDisassembly.list[pcline].disasm[0] != '.');
   bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
                                    mySystem.isPageDirty(0x80, 0xFF);
@@ -339,7 +339,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   ostringstream buffer;
 
   // First find the lines in the range, and determine the longest string
-  uInt32 list_size = (int)myDisassembly.list.size();
+  uInt32 list_size = uInt32(myDisassembly.list.size());
   uInt32 begin = list_size, end = 0, length = 0;
   for(end = 0; end < list_size && lines > 0; ++end)
   {
@@ -348,7 +348,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     {
       if(begin == list_size) begin = end;
       if(tag.type != CartDebug::ROW)
-        length = BSPF_max(length, (uInt32)tag.disasm.length());
+        length = BSPF_max(length, uInt32(tag.disasm.length()));
 
       --lines;
     }
@@ -382,7 +382,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     return false;
 
   if(bank < 0)  // Do we want the current bank or ZP RAM?
-    bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : (int)myBankInfo.size()-1;
+    bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : int(myBankInfo.size())-1;
 
   bank = BSPF_min(bank, bankCount());
   BankInfo& info = myBankInfo[bank];
@@ -516,7 +516,7 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
       removeLabel(label);
       myUserAddresses.insert(make_pair(label, address));
       myUserLabels.insert(make_pair(address, label));
-      myLabelLength = BSPF_max(myLabelLength, (uInt16)label.size());
+      myLabelLength = BSPF_max(myLabelLength, uInt16(label.size()));
       mySystem.setDirtyPage(address);
       return true;
   }
@@ -714,7 +714,7 @@ string CartDebug::loadListFile()
       if(addr_s.length() == 0)
         continue;
       const char* p = addr_s[0] == 'U' ? addr_s.c_str() + 1 : addr_s.c_str();
-      addr = (int)strtoul(p, NULL, 16);
+      addr = int(strtoul(p, NULL, 16));
 
       // For now, completely ignore ROM addresses
       if(!(addr & 0x1000))
@@ -1136,7 +1136,7 @@ string CartDebug::saveDisassembly()
         << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
     int max_len = 0;
     for(const auto& iter: myUserLabels)
-      max_len = BSPF_max(max_len, (int)iter.second.size());
+      max_len = BSPF_max(max_len, int(iter.second.size()));
     for(const auto& iter: myUserLabels)
         out << ALIGN(max_len) << iter.second << "  =  $" << iter.first << "\n";
   }

@@ -71,7 +71,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 70,
+      kNumCommands   = 70
     };
 
     // Constants for argument processing
