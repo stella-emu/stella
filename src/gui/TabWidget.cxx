@@ -70,7 +70,7 @@ int TabWidget::addTab(const string& title)
 {
   // Add a new tab page
   _tabs.push_back(Tab(title));
-  int numTabs = _tabs.size();
+  int numTabs = int(_tabs.size());
 
   // Determine the new tab width
   int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;

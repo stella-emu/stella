@@ -147,7 +147,7 @@ const string& ListWidget::getSelectedString() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollTo(int item)
 {
-  int size = _list.size();
+  int size = int(_list.size());
   if (item >= size)
     item = size - 1;
   if (item < 0)
@@ -163,7 +163,7 @@ void ListWidget::scrollTo(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::recalc()
 {
-  int size = _list.size();
+  int size = int(_list.size());
 
   if (_currentPos >= size)
     _currentPos = size - 1;
@@ -175,7 +175,7 @@ void ListWidget::recalc()
 
   _editMode = false;
 
-  _scrollBar->_numEntries     = _list.size();
+  _scrollBar->_numEntries     = int(_list.size());
   _scrollBar->_entriesPerPage = _rows;
 
   // Reset to normal data entry
@@ -340,7 +340,7 @@ bool ListWidget::handleEvent(Event::Type e)
 
   bool handled = true;
   int oldSelectedItem = _selectedItem;
-  int size = _list.size();
+  int size = int(_list.size());
 
   switch(e)
   {

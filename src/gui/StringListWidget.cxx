@@ -48,7 +48,7 @@ void StringListWidget::setList(const StringList& list)
 void StringListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  int i, pos, len = _list.size();
+  int i, pos, len = int(_list.size());
 
   // Draw a thin frame around the list.
   s.hLine(_x, _y, _x + _w - 1, kColor);

@@ -850,7 +850,7 @@ bool FrameBuffer::VideoModeList::empty() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::VideoModeList::size() const
 {
-  return myModeList.size();
+  return uInt32(myModeList.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

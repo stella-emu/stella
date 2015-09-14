@@ -45,7 +45,7 @@ class GameList
     void setMd5(uInt32 i, const string& md5)
       { myArray[i]._md5 = md5; }
 
-    uInt32 size() const { return myArray.size(); }
+    uInt32 size() const { return uInt32(myArray.size()); }
     void clear() { myArray.clear(); }
 
     void appendGame(const string& name, const string& path, const string& md5,

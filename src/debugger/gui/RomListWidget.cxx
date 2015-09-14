@@ -225,7 +225,7 @@ void RomListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  int size = myDisasm->list.size();
+  int size = int(myDisasm->list.size());
   if (_currentPos < 0 || _rows > size)
     _currentPos = 0;
   else if (_currentPos + _rows > size)
