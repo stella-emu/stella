@@ -78,10 +78,10 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
   {
     // Get length of file; it must be 32768
     in.seekg(0, ios::end);
-    if((int)in.tellg() == 32768)
+    if(in.tellg() == 32768)
     {
       in.seekg(0, ios::beg);
-      in.read((char*)myData, 32768);
+      in.read(reinterpret_cast<char*>(myData), 32768);
       myDataFileExists = true;
     }
   }
@@ -100,7 +100,7 @@ MT24LC256::~MT24LC256()
   {
     ofstream out(myDataFile, ios_base::binary);
     if(out.is_open())
-      out.write((char*)myData, 32768);
+      out.write(reinterpret_cast<char*>(myData), 32768);
   }
 }
 
@@ -258,7 +258,7 @@ void MT24LC256::jpee_clock_fall()
       {
         if (!jpee_pptr)
         {
-          jpee_packet[0] = (uInt8)jpee_nb;
+          jpee_packet[0] = uInt8(jpee_nb);
           if (jpee_smallmode && ((jpee_nb & 0xF0) == 0xA0))
           {
             jpee_packet[1] = (jpee_nb >> 1) & 7;
@@ -300,7 +300,7 @@ void MT24LC256::jpee_clock_fall()
       {
         if (!jpee_pptr)
         {
-          jpee_packet[0] = (uInt8)jpee_nb;
+          jpee_packet[0] = uInt8(jpee_nb);
           if (jpee_smallmode)
             jpee_pptr=2;
           else
@@ -309,7 +309,7 @@ void MT24LC256::jpee_clock_fall()
         else if (jpee_pptr < 70)
         {
           JPEE_LOG1("I2C_SENT(%02X)",jpee_nb & 0xFF);
-          jpee_packet[jpee_pptr++] = (uInt8)jpee_nb;
+          jpee_packet[jpee_pptr++] = uInt8(jpee_nb);
           jpee_address = (jpee_packet[1] << 8) | jpee_packet[2];
           if (jpee_pptr > 2)
             jpee_ad_known = 1;
@@ -370,7 +370,7 @@ bool MT24LC256::jpee_timercheck(int mode)
     if(myTimerActive)
     {
       uInt32 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
-      myTimerActive = elapsed < (uInt32)(5000000.0 / 838.0);
+      myTimerActive = elapsed < uInt32(5000000.0 / 838.0);
     }
     return myTimerActive;
   }

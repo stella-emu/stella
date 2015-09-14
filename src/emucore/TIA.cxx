@@ -377,13 +377,13 @@ bool TIA::load(Serializer& in)
     if(in.getString() != device)
       return false;
 
-    myClockWhenFrameStarted = (Int32) in.getInt();
-    myClockStartDisplay = (Int32) in.getInt();
-    myClockStopDisplay = (Int32) in.getInt();
-    myClockAtLastUpdate = (Int32) in.getInt();
-    myClocksToEndOfScanLine = (Int32) in.getInt();
+    myClockWhenFrameStarted = in.getInt();
+    myClockStartDisplay = in.getInt();
+    myClockStopDisplay = in.getInt();
+    myClockAtLastUpdate = in.getInt();
+    myClocksToEndOfScanLine = in.getInt();
     myScanlineCountForLastFrame = in.getInt();
-    myVSYNCFinishClock = (Int32) in.getInt();
+    myVSYNCFinishClock = in.getInt();
 
     myEnabledObjects = in.getByte();
     myDisabledObjects = in.getByte();
@@ -424,24 +424,24 @@ bool TIA::load(Serializer& in)
     myCurrentGRP1 = in.getByte();
 
     myDumpEnabled = in.getBool();
-    myDumpDisabledCycle = (Int32) in.getInt();
+    myDumpDisabledCycle = in.getInt();
 
-    myPOSP0 = (Int16) in.getShort();
-    myPOSP1 = (Int16) in.getShort();
-    myPOSM0 = (Int16) in.getShort();
-    myPOSM1 = (Int16) in.getShort();
-    myPOSBL = (Int16) in.getShort();
+    myPOSP0 = in.getShort();
+    myPOSP1 = in.getShort();
+    myPOSM0 = in.getShort();
+    myPOSM1 = in.getShort();
+    myPOSBL = in.getShort();
 
-    myMotionClockP0 = (Int32) in.getInt();
-    myMotionClockP1 = (Int32) in.getInt();
-    myMotionClockM0 = (Int32) in.getInt();
-    myMotionClockM1 = (Int32) in.getInt();
-    myMotionClockBL = (Int32) in.getInt();
+    myMotionClockP0 = in.getInt();
+    myMotionClockP1 = in.getInt();
+    myMotionClockM0 = in.getInt();
+    myMotionClockM1 = in.getInt();
+    myMotionClockBL = in.getInt();
 
-    myStartP0 = (Int32) in.getInt();
-    myStartP1 = (Int32) in.getInt();
-    myStartM0 = (Int32) in.getInt();
-    myStartM1 = (Int32) in.getInt();
+    myStartP0 = in.getInt();
+    myStartP1 = in.getInt();
+    myStartM0 = in.getInt();
+    myStartM1 = in.getInt();
 
     mySuppressP0 = in.getByte();
     mySuppressP1 = in.getByte();
@@ -452,8 +452,8 @@ bool TIA::load(Serializer& in)
     myHMM1mmr = in.getBool();
     myHMBLmmr = in.getBool();
 
-    myCurrentHMOVEPos = (Int32) in.getInt();
-    myPreviousHMOVEPos = (Int32) in.getInt();
+    myCurrentHMOVEPos = in.getInt();
+    myPreviousHMOVEPos = in.getInt();
     myHMOVEBlankEnabled = in.getBool();
 
     myFrameCounter = in.getInt();
@@ -674,7 +674,7 @@ inline void TIA::endFrame()
       // Make sure currentFrameBuffer() doesn't return a pointer that
       // results in memory being accessed outside of the 160*320 bytes
       // allocated for the frame buffer
-      if(myNextFrameJitter < -(Int32)(myFrameYStart))
+      if(myNextFrameJitter < -Int32(myFrameYStart))
         myNextFrameJitter = myFrameYStart;
     }
     else if(myNextFrameJitter > 1)
@@ -684,7 +684,7 @@ inline void TIA::endFrame()
       // Make sure currentFrameBuffer() doesn't return a pointer that
       // results in memory being accessed outside of the 160*320 bytes
       // allocated for the frame buffer
-      if(myNextFrameJitter > 320 - (Int32)myFrameYStart - (Int32)myFrameHeight)
+      if(myNextFrameJitter > 320 - Int32(myFrameYStart) - Int32(myFrameHeight))
         myNextFrameJitter = 320 - myFrameYStart - myFrameHeight;
     }
     else
@@ -1292,7 +1292,7 @@ inline uInt8 TIA::dumpedInputPort(int resistance)
   else
   {
     // Constant here is derived from '1.6 * 0.01e-6 * 228 / 3'
-    uInt32 needed = (uInt32)
+    uInt32 needed = uInt32
       (1.216e-6 * resistance * myScanlineCountForLastFrame * myFramerate);
     if((mySystem->cycles() - myDumpDisabledCycle) > needed)
       return 0x80;
@@ -1314,7 +1314,7 @@ uInt8 TIA::peek(uInt16 addr)
   // valid bits in a TIA read), and selectively enable them
   uInt8 value = 0x3F & (!myTIAPinsDriven ? mySystem->getDataBusState() :
                         mySystem->getDataBusState(0xFF));
-  uInt16 collision = myCollision & (uInt16)myCollisionEnabledMask;
+  uInt16 collision = myCollision & uInt16(myCollisionEnabledMask);
 
   switch(addr & 0x000f)
   {
@@ -1423,7 +1423,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
   updateFrame(clock + delay);
 
   // If a VSYNC hasn't been generated in time go ahead and end the frame
-  if(((clock - myClockWhenFrameStarted) / 228) >= (Int32)myMaximumNumberOfScanlines)
+  if(((clock - myClockWhenFrameStarted) / 228) >= Int32(myMaximumNumberOfScanlines))
   {
     mySystem->m6502().stop();
     myPartialFrameFlag = false;
@@ -1624,7 +1624,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
 
     case PF1:     // Playfield register byte 1
     {
-      myPF = (myPF & 0x000FF00F) | ((uInt32)value << 4);
+      myPF = (myPF & 0x000FF00F) | (uInt32(value) << 4);
 
       if(myPF == 0)
         myEnabledObjects &= ~PFBit;
@@ -1641,7 +1641,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
 
     case PF2:     // Playfield register byte 2
     {
-      myPF = (myPF & 0x00000FFF) | ((uInt32)value << 12);
+      myPF = (myPF & 0x00000FFF) | (uInt32(value) << 12);
 
       if(myPF == 0)
         myEnabledObjects &= ~PFBit;

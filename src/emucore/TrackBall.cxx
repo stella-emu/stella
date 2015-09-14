@@ -54,7 +54,7 @@ TrackBall::~TrackBall()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TrackBall::read()
 {
-  int scanline = ((System&)mySystem).tia().scanlines();
+  int scanline = mySystem.tia().scanlines();
 
   if(myScanCountV > scanline) myScanCountV = 0;
   if(myScanCountH > scanline) myScanCountH = 0;

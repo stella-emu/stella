@@ -101,7 +101,7 @@ void M6502::reset()
   myLastAccessWasRead = true;
 
   // Load PC from the reset vector
-  PC = (uInt16)mySystem->peek(0xfffc) | ((uInt16)mySystem->peek(0xfffd) << 8);
+  PC = uInt16(mySystem->peek(0xfffc)) | (uInt16(mySystem->peek(0xfffd)) << 8);
 
   myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
   myLastSrcAddressS = myLastSrcAddressA =
@@ -262,7 +262,7 @@ void M6502::interruptHandler()
     mySystem->poke(0x0100 + SP--, PS() & (~0x10));
     D = false;
     I = true;
-    PC = (uInt16)mySystem->peek(0xFFFE) | ((uInt16)mySystem->peek(0xFFFF) << 8);
+    PC = uInt16(mySystem->peek(0xFFFE)) | (uInt16(mySystem->peek(0xFFFF)) << 8);
   }
   else if(myExecutionStatus & NonmaskableInterruptBit)
   {
@@ -271,7 +271,7 @@ void M6502::interruptHandler()
     mySystem->poke(0x0100 + SP--, (PC - 1) & 0x00ff);
     mySystem->poke(0x0100 + SP--, PS() & (~0x10));
     D = false;
-    PC = (uInt16)mySystem->peek(0xFFFA) | ((uInt16)mySystem->peek(0xFFFB) << 8);
+    PC = uInt16(mySystem->peek(0xFFFA)) | (uInt16(mySystem->peek(0xFFFB)) << 8);
   }
 
   // Clear the interrupt bits in myExecutionStatus
@@ -386,7 +386,7 @@ uInt32 M6502::addCondBreak(Expression* e, const string& name)
 {
   myBreakConds.emplace_back(unique_ptr<Expression>(e));
   myBreakCondNames.push_back(name);
-  return (uInt32)myBreakConds.size() - 1;
+  return myBreakConds.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

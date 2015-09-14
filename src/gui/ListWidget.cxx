@@ -68,7 +68,7 @@ ListWidget::~ListWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setSelected(int item)
 {
-  if(item < 0 || item >= (int)_list.size())
+  if(item < 0 || item >= int(_list.size()))
   {
     setDirty();  // Simply redraw and exit
     return;
@@ -117,7 +117,7 @@ void ListWidget::setSelected(const string& item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setHighlighted(int item)
 {
-  if(item < -1 || item >= (int)_list.size())
+  if(item < -1 || item >= int(_list.size()))
     return;
 
   if(isEnabled())
@@ -140,14 +140,14 @@ void ListWidget::setHighlighted(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& ListWidget::getSelectedString() const
 {
-  return (_selectedItem >= 0 && _selectedItem < (int)_list.size())
+  return (_selectedItem >= 0 && _selectedItem < int(_list.size()))
             ? _list[_selectedItem] : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollTo(int item)
 {
-  int size = (int)_list.size();
+  int size = _list.size();
   if (item >= size)
     item = size - 1;
   if (item < 0)
@@ -163,7 +163,7 @@ void ListWidget::scrollTo(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::recalc()
 {
-  int size = (int)_list.size();
+  int size = _list.size();
 
   if (_currentPos >= size)
     _currentPos = size - 1;
@@ -175,7 +175,7 @@ void ListWidget::recalc()
 
   _editMode = false;
 
-  _scrollBar->_numEntries     = (int)_list.size();
+  _scrollBar->_numEntries     = _list.size();
   _scrollBar->_entriesPerPage = _rows;
 
   // Reset to normal data entry
@@ -199,7 +199,7 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem >= (int)_list.size())
+  if (newSelectedItem >= int(_list.size()))
     return;
 
   if (_selectedItem != newSelectedItem)
@@ -340,6 +340,7 @@ bool ListWidget::handleEvent(Event::Type e)
 
   bool handled = true;
   int oldSelectedItem = _selectedItem;
+  int size = _list.size();
 
   switch(e)
   {
@@ -359,7 +360,7 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIDown:
-      if (_selectedItem < (int)_list.size() - 1)
+      if (_selectedItem < size - 1)
         _selectedItem++;
       break;
 
@@ -371,8 +372,8 @@ bool ListWidget::handleEvent(Event::Type e)
 
     case Event::UIPgDown:
       _selectedItem += _rows - 1;
-      if (_selectedItem >= (int)_list.size() )
-        _selectedItem = (int)_list.size() - 1;
+      if (_selectedItem >= size)
+        _selectedItem = size - 1;
       break;
 
     case Event::UIHome:
@@ -380,7 +381,7 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIEnd:
-      _selectedItem = (int)_list.size() - 1;
+      _selectedItem = size - 1;
       break;
 
     case Event::UIPrevDir:
@@ -417,7 +418,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch (cmd)
   {
     case kSetPositionCmd:
-      if (_currentPos != (int)data)
+      if (_currentPos != data)
       {
         _currentPos = data;
         setDirty();
@@ -444,10 +445,10 @@ void ListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  if (_currentPos < 0 || _rows > (int)_list.size())
+  if (_currentPos < 0 || _rows > int(_list.size()))
     _currentPos = 0;
-  else if (_currentPos + _rows > (int)_list.size())
-    _currentPos = (int)_list.size() - _rows;
+  else if (_currentPos + _rows > int(_list.size()))
+    _currentPos = int(_list.size()) - _rows;
 
   int oldScrollPos = _scrollBar->_currentPos;
   _scrollBar->_currentPos = _currentPos;

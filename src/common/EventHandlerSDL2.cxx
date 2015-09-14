@@ -52,9 +52,9 @@ void EventHandlerSDL2::pollEvent()
       case SDL_KEYDOWN:
       {
         if(!myEvent.key.repeat)
-          handleKeyEvent((StellaKey)myEvent.key.keysym.scancode,
-                         (StellaMod)myEvent.key.keysym.mod,
-                          myEvent.key.type == SDL_KEYDOWN);
+          handleKeyEvent(StellaKey(myEvent.key.keysym.scancode),
+                         StellaMod(myEvent.key.keysym.mod),
+                         myEvent.key.type == SDL_KEYDOWN);
         break;
       }
 

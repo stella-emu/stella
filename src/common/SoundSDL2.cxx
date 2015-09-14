@@ -56,7 +56,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
   desired.channels = 2;
   desired.samples  = myOSystem.settings().getInt("fragsize");
   desired.callback = callback;
-  desired.userdata = (void*)this;
+  desired.userdata = static_cast<void*>(this);
 
   ostringstream buf;
   if(SDL_OpenAudio(&desired, &myHardwareSpec) < 0)
@@ -69,7 +69,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
 
   // Make sure the sample buffer isn't to big (if it is the sound code
   // will not work so we'll need to disable the audio support)
-  if(((float)myHardwareSpec.samples / (float)myHardwareSpec.freq) >= 0.25)
+  if((float(myHardwareSpec.samples) / float(myHardwareSpec.freq)) >= 0.25)
   {
     buf << "WARNING: Sound device doesn't support realtime audio! Make "
         << "sure a sound" << endl
@@ -81,7 +81,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
   }
 
   // Pre-compute fragment-related variables as much as possible
-  myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
+  myFragmentSizeLogBase2 = log(myHardwareSpec.samples) / log(2.0);
   myFragmentSizeLogDiv1 = myFragmentSizeLogBase2 / 60.0;
   myFragmentSizeLogDiv2 = (myFragmentSizeLogBase2 - 1) / 60.0;
 
@@ -135,10 +135,10 @@ void SoundSDL2::open()
   // Show some info
   ostringstream buf;
   buf << "Sound enabled:"  << endl
-      << "  Volume:      " << (int)myVolume << endl
-      << "  Frag size:   " << (int)myHardwareSpec.samples << endl
-      << "  Frequency:   " << (int)myHardwareSpec.freq << endl
-      << "  Channels:    " << (int)myHardwareSpec.channels
+      << "  Volume:      " << myVolume << endl
+      << "  Frag size:   " << uInt32(myHardwareSpec.samples) << endl
+      << "  Frequency:   " << uInt32(myHardwareSpec.freq) << endl
+      << "  Channels:    " << uInt32(myHardwareSpec.channels)
                            << " (" << chanResult << ")" << endl
       << endl;
   myOSystem.logMessage(buf.str(), 1);
@@ -255,8 +255,7 @@ void SoundSDL2::set(uInt16 addr, uInt8 value, Int32 cycle)
 
   // First, calculate how many seconds would have past since the last
   // register write on a real 2600
-  double delta = (((double)(cycle - myLastRegisterSetCycle)) / 
-      (1193191.66666667));
+  double delta = double(cycle - myLastRegisterSetCycle) / 1193191.66666667;
 
   // Now, adjust the time based on the frame rate the user has selected. For
   // the sound to "scale" correctly, we have to know the games real frame 
@@ -302,8 +301,8 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
     {
       // There are no more pending TIA sound register updates so we'll
       // use the current settings to finish filling the sound fragment
-      myTIASound.process(stream + ((uInt32)position * channels),
-          length - (uInt32)position);
+      myTIASound.process(stream + (uInt32(position) * channels),
+          length - uInt32(position));
 
       // Since we had to fill the fragment we'll reset the cycle counter
       // to zero.  NOTE: This isn't 100% correct, however, it'll do for
@@ -319,7 +318,7 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
       RegWrite& info = myRegWriteQueue.front();
 
       // How long will the remaining samples in the fragment take to play
-      double duration = remaining / (double)myHardwareSpec.freq;
+      double duration = remaining / myHardwareSpec.freq;
 
       // Does the register update occur before the end of the fragment?
       if(info.delta <= duration)
@@ -331,9 +330,9 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
           // Process the fragment upto the next TIA register write.  We
           // round the count passed to process up if needed.
           double samples = (myHardwareSpec.freq * info.delta);
-          myTIASound.process(stream + ((uInt32)position * channels),
-              (uInt32)samples + (uInt32)(position + samples) - 
-              ((uInt32)position + (uInt32)samples));
+          myTIASound.process(stream + (uInt32(position) * channels),
+              uInt32(samples) + uInt32(position + samples) - 
+              (uInt32(position) + uInt32(samples)));
 
           position += samples;
           remaining -= samples;
@@ -346,8 +345,8 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
         // The next register update occurs in the next fragment so finish
         // this fragment with the current TIA settings and reduce the register
         // update delay by the corresponding amount of time
-        myTIASound.process(stream + ((uInt32)position * channels),
-            length - (uInt32)position);
+        myTIASound.process(stream + (uInt32(position) * channels),
+            length - uInt32(position));
         info.delta -= duration;
         break;
       }
@@ -358,13 +357,13 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 {
-  SoundSDL2* sound = (SoundSDL2*)udata;
+  SoundSDL2* sound = static_cast<SoundSDL2*>(udata);
   if(sound->myIsEnabled)
   {
     // The callback is requesting 8-bit (unsigned) data, but the TIA sound
     // emulator deals in 16-bit (signed) data
     // So, we need to convert the pointer and half the length
-    sound->processFragment((Int16*)stream, (uInt32)len >> 1);
+    sound->processFragment(reinterpret_cast<Int16*>(stream), uInt32(len) >> 1);
   }
   else
     SDL_memset(stream, 0, len);  // Write 'silence'
@@ -428,7 +427,7 @@ bool SoundSDL2::load(Serializer& in)
       for(int i = 0; i < 6; ++i)
         in.getByte();
 
-    myLastRegisterSetCycle = (Int32) in.getInt();
+    myLastRegisterSetCycle = in.getInt();
   }
   catch(...)
   {

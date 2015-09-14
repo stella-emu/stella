@@ -17,7 +17,7 @@ void yyerror(const char *e) {
 	errMsg = e;
 
 	// be extra paranoid about deletion
-	if(lastExp && dynamic_cast<Expression*>(lastExp))
+	if(lastExp && reinterpret_cast<Expression*>(lastExp))
 		delete lastExp;
 
 	lastExp = nullptr;

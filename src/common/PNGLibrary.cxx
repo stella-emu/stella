@@ -99,7 +99,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 
   // The PNG read function expects an array of rows, not a single 1-D array
   for(uInt32 irow = 0, offset = 0; irow < ReadInfo.height; ++irow, offset += ReadInfo.pitch)
-    ReadInfo.row_pointers[irow] = (png_bytep) (uInt8*)ReadInfo.buffer + offset;
+    ReadInfo.row_pointers[irow] = png_bytep(ReadInfo.buffer + offset);
 
   // Read the entire image in one go
   png_read_image(png_ptr, ReadInfo.row_pointers);
@@ -113,7 +113,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
   // Cleanup
 done:
   if(png_ptr)
-    png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : (png_infopp)0, (png_infopp)0);
+    png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : 0, 0);
 
   if(err_message)
     throw runtime_error(err_message);
@@ -136,7 +136,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
   // Set up pointers into "buffer" byte array
   png_bytep* rows = new png_bytep[height];
   for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = (png_bytep) (buffer + k*width*4);
+    rows[k] = png_bytep(buffer + k*width*4);
 
   // And save the image
   saveImage(out, buffer, rows, width, height, comments);
@@ -165,7 +165,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
   // Set up pointers into "buffer" byte array
   png_bytep* rows = new png_bytep[height];
   for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = (png_bytep) (buffer + k*width*4);
+    rows[k] = png_bytep(buffer + k*width*4);
 
   // And save the image
   saveImage(out, buffer, rows, width, height, comments);
@@ -300,15 +300,15 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
 void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
                                const VariantList& comments)
 {
-  uInt32 numComments = (int)comments.size();
+  uInt32 numComments = comments.size();
   if(numComments == 0)
     return;
 
   unique_ptr<png_text[]> text_ptr = make_ptr<png_text[]>(numComments);
   for(uInt32 i = 0; i < numComments; ++i)
   {
-    text_ptr[i].key = (char*) comments[i].first.c_str();
-    text_ptr[i].text = (char*) comments[i].second.toCString();
+    text_ptr[i].key = const_cast<char*>(comments[i].first.c_str());
+    text_ptr[i].text = const_cast<char*>(comments[i].second.toCString());
     text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
     text_ptr[i].text_length = 0;
   }
@@ -318,19 +318,21 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_read_data(png_structp ctx, png_bytep area, png_size_t size)
 {
-  ((ifstream *) png_get_io_ptr(ctx))->read((char *)area, size);
+  (static_cast<ifstream*>(png_get_io_ptr(ctx)))->read(
+    reinterpret_cast<char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_write_data(png_structp ctx, png_bytep area, png_size_t size)
 {
-  ((ofstream *) png_get_io_ptr(ctx))->write((const char *)area, size);
+  (static_cast<ofstream*>(png_get_io_ptr(ctx)))->write(
+    reinterpret_cast<const char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_io_flush(png_structp ctx)
 {
-  ((ofstream *) png_get_io_ptr(ctx))->flush();
+  (static_cast<ofstream*>(png_get_io_ptr(ctx)))->flush();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

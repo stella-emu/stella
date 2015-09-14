@@ -255,7 +255,7 @@ PropertyType Properties::getPropertyType(const string& name)
 {
   for(int i = 0; i < LastPropType; ++i)
     if(ourPropertyNames[i] == name)
-      return (PropertyType)i;
+      return PropertyType(i);
 
   // Otherwise, indicate that the item wasn't found
   return LastPropType;

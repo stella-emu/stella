@@ -74,7 +74,7 @@ void ProgressDialog::setRange(int start, int finish, int step)
 {
   myStart = start;
   myFinish = finish;
-  myStep = (int)((step / 100.0) * (myFinish - myStart + 1));
+  myStep = int((step / 100.0) * (myFinish - myStart + 1));
 
   mySlider->setMinValue(myStart);
   mySlider->setMaxValue(myFinish);

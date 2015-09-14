@@ -201,7 +201,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
                                  bool emitFocusEvents)
 {
   FBSurface& s = boss->dialog().surface();
-  int size = (int)arr.size(), pos = -1;
+  int size = arr.size(), pos = -1;
   Widget* tmp;
   for(int i = 0; i < size; ++i)
   {
@@ -605,7 +605,7 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
 {
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
-  if(isEnabled() && _isDragging && x >= (int)_labelWidth)
+  if(isEnabled() && _isDragging && x >= int(_labelWidth))
     setValue(posToValue(x - _labelWidth));
 }
 

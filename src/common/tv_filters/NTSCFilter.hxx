@@ -27,7 +27,7 @@ class Settings;
 #include "atari_ntsc.hxx"
 
 #define SCALE_FROM_100(x) ((x/50.0)-1.0)
-#define SCALE_TO_100(x) (uInt32)(50*(x+1.0))
+#define SCALE_TO_100(x) uInt32(50*(x+1.0))
 
 /**
   This class is based on the Blargg NTSC filter code from Atari800,

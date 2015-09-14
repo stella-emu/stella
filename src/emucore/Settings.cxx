@@ -569,7 +569,7 @@ int Settings::setInternal(const string& key, const Variant& value,
 {
   int idx = -1;
 
-  if(pos >= 0 && pos < (int)myInternalSettings.size() &&
+  if(pos >= 0 && pos < int(myInternalSettings.size()) &&
      myInternalSettings[pos].key == key)
   {
     idx = pos;
@@ -624,7 +624,7 @@ int Settings::setExternal(const string& key, const Variant& value,
 {
   int idx = -1;
 
-  if(pos >= 0 && pos < (int)myExternalSettings.size() &&
+  if(pos >= 0 && pos < int(myExternalSettings.size()) &&
      myExternalSettings[pos].key == key)
   {
     idx = pos;

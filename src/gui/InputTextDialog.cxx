@@ -72,14 +72,14 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
   // Calculate real dimensions
   _w = fontWidth * 35;
-  _h = lineHeight * 4 + (int)labels.size() * (lineHeight + 5);
+  _h = lineHeight * 4 + labels.size() * (lineHeight + 5);
 
   // Determine longest label
   for(i = 0; i < labels.size(); ++i)
   {
     if(labels[i].length() > lwidth)
     {
-      lwidth = (int)labels[i].length();
+      lwidth = labels[i].length();
       maxIdx = i;
     }
   }
@@ -163,7 +163,7 @@ void InputTextDialog::setTitle(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& InputTextDialog::getResult(int idx)
 {
-  if((uInt32)idx < myInput.size())
+  if(uInt32(idx) < myInput.size())
     return myInput[idx]->getText();
   else
     return EmptyString;
@@ -172,21 +172,21 @@ const string& InputTextDialog::getResult(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setText(const string& str, int idx)
 {
-  if((uInt32)idx < myInput.size())
+  if(uInt32(idx) < myInput.size())
     myInput[idx]->setText(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx)
 {
-  if((uInt32)idx < myInput.size())
+  if(uInt32(idx) < myInput.size())
     myInput[idx]->setTextFilter(f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setFocus(int idx)
 {
-  if((uInt32)idx < myInput.size())
+  if(uInt32(idx) < myInput.size())
     Dialog::setFocus(getFocusList()[idx]);
 }
 

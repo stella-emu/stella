@@ -129,7 +129,7 @@ void EventHandler::reset(State state)
   // We wait a little while, since 'hold' events may be present, and we want
   // time for the ROM to process them
   if(state == S_EMULATE)
-    SDL_AddTimer(500, resetEventsCallback, (void*)this);
+    SDL_AddTimer(500, resetEventsCallback, static_cast<void*>(this));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

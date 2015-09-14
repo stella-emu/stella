@@ -370,7 +370,7 @@ void VideoDialog::loadConfig()
   myTVMode->setSelected(
     instance().settings().getString("tv.filter"), "0");
   int preset = instance().settings().getInt("tv.filter");
-  handleTVModeChange((NTSCFilter::Preset)preset);
+  handleTVModeChange(NTSCFilter::Preset(preset));
 
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
@@ -562,7 +562,7 @@ void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 {
   NTSCFilter::Adjustable adj;
   instance().frameBuffer().tiaSurface().ntsc().getAdjustables(
-      adj, (NTSCFilter::Preset)preset);
+      adj, NTSCFilter::Preset(preset));
   myTVSharp->setValue(adj.sharpness);
   myTVSharpLabel->setValue(adj.sharpness);
   myTVHue->setValue(adj.hue);
@@ -616,7 +616,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kTVModeChanged:
-      handleTVModeChange((NTSCFilter::Preset)myTVMode->getSelectedTag().toInt());
+      handleTVModeChange(NTSCFilter::Preset(myTVMode->getSelectedTag().toInt()));
 
     case kTVSharpChanged:  myTVSharpLabel->setValue(myTVSharp->getValue());
       break;

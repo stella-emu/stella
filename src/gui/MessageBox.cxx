@@ -74,9 +74,9 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   // Set real dimensions
   int str_w = 0;
   for(const auto& s: text)
-    str_w = BSPF_max((int)s.length(), str_w);
+    str_w = BSPF_max(int(s.length()), str_w);
   _w = BSPF_min(str_w * fontWidth + 20, _w);
-  _h = BSPF_min((uInt32)((text.size() + 2) * lineHeight + 20), (uInt32)_h);
+  _h = BSPF_min(uInt32((text.size() + 2) * lineHeight + 20), uInt32(_h));
 
   xpos = 10;  ypos = 10;
   for(const auto& s: text)

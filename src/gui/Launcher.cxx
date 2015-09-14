@@ -37,10 +37,10 @@ Launcher::Launcher(OSystem& osystem)
 
   // The launcher dialog is resizable, within certain bounds
   // We check those bounds now
-  myWidth  = BSPF_max(myWidth, (uInt32)FrameBuffer::kFBMinW);
-  myHeight = BSPF_max(myHeight, (uInt32)FrameBuffer::kFBMinH);
-  myWidth  = BSPF_min(myWidth, (uInt32)d.w);
-  myHeight = BSPF_min(myHeight, (uInt32)d.h);
+  myWidth  = BSPF_max(myWidth,  uInt32(FrameBuffer::kFBMinW));
+  myHeight = BSPF_max(myHeight, uInt32(FrameBuffer::kFBMinH));
+  myWidth  = BSPF_min(myWidth,  uInt32(d.w));
+  myHeight = BSPF_min(myHeight, uInt32(d.h));
 
   myOSystem.settings().setValue("launcherres",
                                 GUI::Size(myWidth, myHeight));

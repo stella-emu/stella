@@ -70,7 +70,7 @@ int TabWidget::addTab(const string& title)
 {
   // Add a new tab page
   _tabs.push_back(Tab(title));
-  int numTabs = (int)_tabs.size();
+  int numTabs = _tabs.size();
 
   // Determine the new tab width
   int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
@@ -90,7 +90,7 @@ int TabWidget::addTab(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::setActiveTab(int tabID, bool show)
 {
-  assert(0 <= tabID && tabID < (int)_tabs.size());
+  assert(0 <= tabID && tabID < int(_tabs.size()));
 
   if (_activeTab != -1)
   {
@@ -110,7 +110,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::disableTab(int tabID)
 {
-  assert(0 <= tabID && tabID < (int)_tabs.size());
+  assert(0 <= tabID && tabID < int(_tabs.size()));
 
   _tabs[tabID].enabled = false;
   // TODO - also disable all widgets belonging to this tab
@@ -152,12 +152,12 @@ void TabWidget::cycleTab(int direction)
   {
     tabID--;
     if(tabID == -1)
-      tabID = (int)_tabs.size() - 1;
+      tabID = int(_tabs.size()) - 1;
   }
   else if(direction == 1)  // Go to the next tab, wrap around at end
   {
     tabID++;
-    if(tabID == (int)_tabs.size())
+    if(tabID == int(_tabs.size()))
       tabID = 0;
   }
 
@@ -169,7 +169,7 @@ void TabWidget::cycleTab(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::setParentWidget(int tabID, Widget* parent)
 {
-  assert(0 <= tabID && tabID < (int)_tabs.size());
+  assert(0 <= tabID && tabID < int(_tabs.size()));
   _tabs[tabID].parentWidget = parent;
 }
 
@@ -184,7 +184,7 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if (x >= 0 && x % (_tabWidth + kTabSpacing) < _tabWidth)
   {
     tabID = x / (_tabWidth + kTabSpacing);
-    if (tabID >= (int)_tabs.size())
+    if (tabID >= int(_tabs.size()))
       tabID = -1;
   }
 
@@ -284,7 +284,7 @@ void TabWidget::drawWidget(bool hilite)
 
   // Iterate over all tabs and draw them
   int i, x = _x + kTabLeftOffset;
-  for (i = 0; i < (int)_tabs.size(); ++i)
+  for (i = 0; i < int(_tabs.size()); ++i)
   {
     uInt32 fontcolor = _tabs[i].enabled ? kTextColor : kColor;
     uInt32 boxcolor = (i == _activeTab) ? kColor : kShadowColor;

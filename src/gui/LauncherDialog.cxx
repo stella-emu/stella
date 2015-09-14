@@ -275,7 +275,7 @@ void LauncherDialog::updateListing(const string& nameToSelect)
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
-  for (int i = 0; i < (int) myGameList->size(); ++i)
+  for(uInt32 i = 0; i < myGameList->size(); ++i)
     l.push_back(myGameList->name(i));
 
   myList->setList(l);
@@ -398,30 +398,29 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
   const char* haystack = s.c_str();
   const char* needle = pattern.c_str();
 
-  uInt8 b = tolower((uInt8) *needle);
+  uInt8 b = tolower(*needle);
 
   needle++;
-  for (;; haystack++)
+  for(;; haystack++)
   {
-    if (*haystack == '\0')  /* No match */
+    if(*haystack == '\0')  /* No match */
       return false;
 
     /* The first character matches */
-    if (tolower ((uInt8) *haystack) == b)
+    if(tolower(*haystack) == b)
     {
       const char* rhaystack = haystack + 1;
       const char* rneedle = needle;
 
-      for (;; rhaystack++, rneedle++)
+      for(;; rhaystack++, rneedle++)
       {
-        if (*rneedle == '\0')   /* Found a match */
+        if(*rneedle == '\0')   /* Found a match */
           return true;
-        if (*rhaystack == '\0') /* No match */
+        if(*rhaystack == '\0') /* No match */
           return false;
 
         /* Nothing in this round */
-        if (tolower ((uInt8) *rhaystack)
-            != tolower ((uInt8) *rneedle))
+        if(tolower(*rhaystack) != tolower(*rneedle))
           break;
       }
     }

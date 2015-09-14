@@ -157,7 +157,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   {
     int w, h;
     SDL_GetWindowSize(myWindow, &w, &h);
-    if((uInt32)w != mode.screen.w || (uInt32)h != mode.screen.h)
+    if(uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h)
     {
       SDL_DestroyWindow(myWindow);
       myWindow = nullptr;
@@ -321,8 +321,8 @@ void FrameBufferSDL2::setWindowIcon()
     const char* line = stella_icon[1 + ncols + h];
     for(w = 0; w < 32; w++)
     {
-      icon[w + 32 * h] = rgba[(int)line[w]];
-      if(rgba[(int)line[w]] & 0xFF000000)
+      icon[w + 32 * h] = rgba[int(line[w])];
+      if(rgba[int(line[w])] & 0xFF000000)
         mask[h][w >> 3] |= 1 << (7 - (w & 0x07));
     }
   }
@@ -338,7 +338,7 @@ void FrameBufferSDL2::setWindowIcon()
 unique_ptr<FBSurface> FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
                                           const uInt32* data) const
 {
-  return make_ptr<FBSurfaceSDL2>((FrameBufferSDL2&)*this, w, h, data);
+  return make_ptr<FBSurfaceSDL2>(const_cast<FrameBufferSDL2&>(*this), w, h, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

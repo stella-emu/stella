@@ -64,8 +64,8 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
     _checkList[i]->setFlags(WIDGET_ENABLED);
 
   // Then turn off any extras
-  if((int)_stateList.size() < _rows)
-    for(int i = (int)_stateList.size(); i < _rows; ++i)
+  if(int(_stateList.size()) < _rows)
+    for(int i = int(_stateList.size()); i < _rows; ++i)
       _checkList[i]->clearFlags(WIDGET_ENABLED);
 
   ListWidget::recalc();
@@ -74,7 +74,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::setLine(int line, const string& str, const bool& state)
 {
-  if(line >= (int)_list.size())
+  if(line >= int(_list.size()))
     return;
 
   _list[line]      = str;
@@ -86,7 +86,7 @@ void CheckListWidget::drawWidget(bool hilite)
 {
 //cerr << "CheckListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  int i, pos, len = (int)_list.size();
+  int i, pos, len = _list.size();
 
   // Draw a thin frame around the list and to separate columns
   s.hLine(_x, _y, _x + _w - 1, kColor);
@@ -151,7 +151,7 @@ GUI::Rect CheckListWidget::getEditRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheckListWidget::getState(int line)
 {
-  if(line >= 0 && line < (int)_stateList.size())
+  if(line >= 0 && line < int(_stateList.size()))
     return _stateList[line];
   else
     return false;

@@ -39,8 +39,8 @@ MouseControl::MouseControl(Console& console, const string& mode)
           mode[0] >= '0' && mode[0] <= '8' &&
           mode[1] >= '0' && mode[1] <= '8')
   {
-    Axis xaxis = (Axis) ((int)mode[0] - '0');
-    Axis yaxis = (Axis) ((int)mode[1] - '0');
+    Axis xaxis = Axis(int(mode[0]) - '0');
+    Axis yaxis = Axis(int(mode[1]) - '0');
     ostringstream msg;
     msg << "Mouse X-axis is ";
     Controller::Type xtype = Controller::Joystick, ytype = Controller::Joystick;
