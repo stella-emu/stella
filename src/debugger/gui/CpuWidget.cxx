@@ -270,8 +270,8 @@ void CpuWidget::loadConfig()
   Debugger& dbg = instance().debugger();
   CartDebug& cart = dbg.cartDebug();
   CpuDebug& cpu = dbg.cpuDebug();
-  const CpuState& state    = (CpuState&) cpu.getState();
-  const CpuState& oldstate = (CpuState&) cpu.getOldState();
+  const CpuState& state    = static_cast<const CpuState&>(cpu.getState());
+  const CpuState& oldstate = static_cast<const CpuState&>(cpu.getOldState());
 
   // Add PC to its own DataGridWidget
   alist.push_back(kPCRegAddr);

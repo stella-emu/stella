@@ -166,7 +166,7 @@ void CartridgeCMWidget::loadConfig()
   myBank->setSelectedIndex(myCart.myCurrentBank);
 
   RiotDebug& riot = Debugger::debugger().riotDebug();
-  const RiotState& state = (RiotState&) riot.getState();
+  const RiotState& state = static_cast<const RiotState&>(riot.getState());
 
   uInt8 swcha = myCart.mySWCHA;
 

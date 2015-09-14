@@ -78,7 +78,7 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
-  for(int i = 0; i < (int) _gameList.size(); ++i)
+  for(uInt32 i = 0; i < _gameList.size(); ++i)
     l.push_back(_gameList.name(i));
 
   setList(l);

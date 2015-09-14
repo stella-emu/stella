@@ -309,7 +309,7 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putBool(myLDAimmediate);
     out.putInt(myRandomNumber);
     out.putInt(mySystemCycles);
-    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
+    out.putInt(uInt32(myFractionalClocks * 100000000.0));
 
   }
   catch(...)
@@ -337,8 +337,8 @@ bool CartridgeCTY::load(Serializer& in)
     myCounter = in.getShort();
     myLDAimmediate = in.getBool();
     myRandomNumber = in.getInt();
-    mySystemCycles = (Int32)in.getInt();
-    myFractionalClocks = (double)in.getInt() / 100000000.0;
+    mySystemCycles = in.getInt();
+    myFractionalClocks = double(in.getInt()) / 100000000.0;
   }
   catch(...)
   {
@@ -495,7 +495,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     catch(...)
     {
       // Maybe add logging here that save failed?
-      cerr << name() << ": ERROR saving score table " << (int)index << endl;
+      cerr << name() << ": ERROR saving score table " << int(index) << endl;
     }
   }
 }
@@ -530,8 +530,8 @@ inline void CartridgeCTY::updateMusicModeDataFetchers()
 
   // Calculate the number of DPC OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = (Int32)clocks;
-  myFractionalClocks = clocks - (double)wholeClocks;
+  Int32 wholeClocks = Int32(clocks);
+  myFractionalClocks = clocks - double(wholeClocks);
 
   if(wholeClocks <= 0)
     return;

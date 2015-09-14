@@ -53,7 +53,7 @@ void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem > (int)_stateList.size() - 1)
+  if (newSelectedItem > int(_stateList.size()) - 1)
     newSelectedItem = -1;
 
   if (_selectedItem != newSelectedItem)
@@ -125,7 +125,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_DOWN:
-      if (_currentRow < (int) _rows - 1)
+      if (_currentRow < int(_rows) - 1)
       {
         _currentRow++;
         dirty = true;
@@ -141,7 +141,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_RIGHT:
-      if (_currentCol < (int) _cols - 1)
+      if (_currentCol < int(_cols) - 1)
       {
         _currentCol++;
         dirty = true;
@@ -157,7 +157,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_PAGEDOWN:
-      if (_currentRow < (int) _rows - 1)
+      if (_currentRow < int(_rows) - 1)
       {
         _currentRow = _rows - 1;
         dirty = true;
@@ -173,7 +173,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_END:
-      if (_currentCol < (int) _cols - 1)
+      if (_currentCol < int(_cols) - 1)
       {
         _currentCol = _cols - 1;
         dirty = true;
@@ -208,7 +208,7 @@ void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kSetPositionCmd:
-      if (_selectedItem != (int)data)
+      if (_selectedItem != data)
       {
         _selectedItem = data;
         setDirty();

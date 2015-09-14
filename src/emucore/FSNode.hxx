@@ -96,6 +96,14 @@ class FilesystemNode
     virtual ~FilesystemNode() { }
 
     /**
+     * Assignment operators.
+     */
+    FilesystemNode(const FilesystemNode&) = default;
+    FilesystemNode(FilesystemNode&&) = default;
+    FilesystemNode& operator=(const FilesystemNode&) = default;
+    FilesystemNode& operator=(FilesystemNode&&) = default;
+
+    /**
      * Compare the name of this node to the name of another. Directories
      * go before normal files.
      */
@@ -271,6 +279,15 @@ class AbstractFSNode
     using ListMode = FilesystemNode::ListMode;
 
   public:
+    /**
+     * Assignment operators.
+     */
+    AbstractFSNode() = default;
+    AbstractFSNode(const AbstractFSNode&) = default;
+    AbstractFSNode(AbstractFSNode&&) = default;
+    AbstractFSNode& operator=(const AbstractFSNode&) = default;
+    AbstractFSNode& operator=(AbstractFSNode&&) = default;
+
     /**
      * Destructor.
      */

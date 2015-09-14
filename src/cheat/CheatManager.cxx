@@ -74,7 +74,7 @@ bool CheatManager::add(const string& name, const string& code,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::remove(int idx)
 {
-  if((uInt32)idx < myCheatList.size())
+  if(uInt32(idx) < myCheatList.size())
   {
     // This will also remove it from the per-frame list (if applicable)
     myCheatList[idx]->disable();
@@ -343,6 +343,6 @@ bool CheatManager::isValidCode(const string& code) const
     if(!isxdigit(c))
       return false;
 
-  uInt32 length = (uInt32)code.length();
+  uInt32 length = uInt32(code.length());
   return (length == 4 || length == 6 || length == 8);
 }

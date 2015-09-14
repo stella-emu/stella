@@ -71,8 +71,8 @@ void RomWidget::loadConfig()
 {
   Debugger& dbg = instance().debugger();
   CartDebug& cart = dbg.cartDebug();
-  const CartState& state = (CartState&) cart.getState();
-  const CartState& oldstate = (CartState&) cart.getOldState();
+  const CartState& state = static_cast<const CartState&>(cart.getState());
+  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
 
   // Fill romlist the current bank of source or disassembly
   myListIsDirty |= cart.disassemble(myListIsDirty);
@@ -109,7 +109,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
-      patchROM(data, myRomList->getText(), (Common::Base::Format)id);
+      patchROM(data, myRomList->getText(), Common::Base::Format(id));
       break;
 
     case RomListWidget::kSetPCCmd:
@@ -174,7 +174,7 @@ void RomWidget::setBreak(int disasm_line, bool state)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
-  if(disasm_line >= (int)list.size())  return;
+  if(disasm_line >= int(list.size()))  return;
 
   if(list[disasm_line].address != 0 && list[disasm_line].bytes != "")
     instance().debugger().setBreakPoint(list[disasm_line].address, state);
@@ -185,7 +185,7 @@ void RomWidget::setPC(int disasm_line)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
-  if(disasm_line >= (int)list.size())  return;
+  if(disasm_line >= int(list.size()))  return;
 
   if(list[disasm_line].address != 0)
   {
@@ -200,7 +200,7 @@ void RomWidget::runtoPC(int disasm_line)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
-  if(disasm_line >= (int)list.size())  return;
+  if(disasm_line >= int(list.size()))  return;
 
   if(list[disasm_line].address != 0)
   {
@@ -216,7 +216,7 @@ void RomWidget::patchROM(int disasm_line, const string& bytes,
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
-  if(disasm_line >= (int)list.size())  return;
+  if(disasm_line >= int(list.size()))  return;
 
   if(list[disasm_line].address != 0)
   {

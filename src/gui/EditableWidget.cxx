@@ -59,7 +59,7 @@ void EditableWidget::setText(const string& str, bool)
     if(_filter(tolower(c)))
       _editString.push_back(c);
 
-  _caretPos = (int)_editString.size();
+  _caretPos = _editString.size();
 
   _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().width()));
   if (_editScrollOffset < 0)
@@ -153,7 +153,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case KBDK_RIGHT:
       if(instance().eventHandler().kbdControl(mod))
         dirty = specialKeys(key);
-      else if(_caretPos < (int)_editString.size())
+      else if(_caretPos < int(_editString.size()))
         dirty = setCaretPos(_caretPos + 1);
       break;
 
@@ -162,7 +162,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_END:
-      dirty = setCaretPos((int)_editString.size());
+      dirty = setCaretPos(int(_editString.size()));
       break;
 
     default:
@@ -215,7 +215,7 @@ void EditableWidget::drawCaret()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::setCaretPos(int newPos)
 {
-  assert(newPos >= 0 && newPos <= (int)_editString.size());
+  assert(newPos >= 0 && newPos <= int(_editString.size()));
   _caretPos = newPos;
 
   return adjustOffset();
@@ -275,7 +275,7 @@ bool EditableWidget::specialKeys(StellaKey key)
       break;
 
     case KBDK_E:
-      setCaretPos((int)_editString.size());
+      setCaretPos(_editString.size());
       break;
 
     case KBDK_D:
@@ -359,7 +359,7 @@ bool EditableWidget::killLine(int direction)
   }
   else if(direction == 1)  // erase from current position to end of line
   {
-    int count = (int)_editString.size() - _caretPos;
+    int count = int(_editString.size()) - _caretPos;
     if(count > 0)
     {
       for (int i = 0; i < count; i++)
@@ -429,7 +429,7 @@ bool EditableWidget::moveWord(int direction)
   }
   else if(direction == +1)  // move to first character of next word
   {
-    while (currentPos < (int)_editString.size())
+    while (currentPos < int(_editString.size()))
     {
       if (_editString[currentPos - 1] == ' ')
       {

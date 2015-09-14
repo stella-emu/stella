@@ -60,8 +60,7 @@ void ToggleBitWidget::setList(const StringList& off, const StringList& on)
   _onList.clear();
   _onList = on;
 
-  int size = (int)_offList.size();  // assume _onList is the same size
-  assert(size == _rows * _cols);
+  assert(int(_offList.size()) == _rows * _cols);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -27,7 +27,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
                    const SerialPort& port, const string& portname,
                    const string& eepromfile)
   : Controller(jack, event, system, Controller::AtariVox),
-    mySerialPort((SerialPort&)port),
+    mySerialPort(const_cast<SerialPort&>(port)),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)

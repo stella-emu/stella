@@ -66,7 +66,7 @@ void AtariVoxWidget::handleCommand(CommandSender*, int cmd, int, int)
 {
   if(cmd == kEEPROMErase)
   {
-    AtariVox& avox = (AtariVox&)myController;
+    AtariVox& avox = static_cast<AtariVox&>(myController);
     avox.myEEPROM->erase();
   }
 }

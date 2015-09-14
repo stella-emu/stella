@@ -123,7 +123,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
 
   if(cmd == kROMBankChanged)
   {
-    if(myROMBank->getSelected() < (int)myNumRomBanks)
+    if(myROMBank->getSelected() < int(myNumRomBanks))
     {
       bank = myROMBank->getSelected();
       myRAMBank->setSelectedMax();
@@ -136,7 +136,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
   }
   else if(cmd == kRAMBankChanged)
   {
-    if(myRAMBank->getSelected() < (int)myNumRamBanks)
+    if(myRAMBank->getSelected() < int(myNumRamBanks))
     {
       myROMBank->setSelectedMax();
       bank = myRAMBank->getSelected() + 256;

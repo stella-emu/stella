@@ -67,7 +67,7 @@ void ContextMenu::addItems(const VariantList& items)
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
-  _scrollDnColor = (_firstEntry + _numEntries < (int)_entries.size()) ?
+  _scrollDnColor = (_firstEntry + _numEntries < int(_entries.size())) ?
       kScrollColor : kColor;
 }
 
@@ -115,8 +115,8 @@ void ContextMenu::recalc(const GUI::Rect& image)
   }
   else
   {
-    _numEntries = (int)_entries.size();
-    _h = (int)_entries.size() * _rowHeight + 4;
+    _numEntries = int(_entries.size());
+    _h = int(_entries.size()) * _rowHeight + 4;
     _showScroll = false;
   }
   _isScrolling = false;
@@ -125,7 +125,7 @@ void ContextMenu::recalc(const GUI::Rect& image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedIndex(int idx)
 {
-  if(idx >= 0 && idx < (int)_entries.size())
+  if(idx >= 0 && idx < int(_entries.size()))
     _selectedItem = idx;
   else
     _selectedItem = -1;
@@ -160,7 +160,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedMax()
 {
-  setSelectedIndex((int)_entries.size() - 1);
+  setSelectedIndex(int(_entries.size()) - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -201,7 +201,7 @@ bool ContextMenu::sendSelectionUp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ContextMenu::sendSelectionDown()
 {
-  if(isVisible() || _selectedItem >= (int)_entries.size() - 1)
+  if(isVisible() || _selectedItem >= int(_entries.size()) - 1)
     return false;
 
   _selectedItem++;
@@ -226,7 +226,7 @@ bool ContextMenu::sendSelectionLast()
   if(isVisible())
     return false;
 
-  _selectedItem = (int)_entries.size() - 1;
+  _selectedItem = int(_entries.size()) - 1;
   sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
   return true;
 }
@@ -421,12 +421,12 @@ void ContextMenu::moveDown()
     // Otherwise, the offset should increase by 1
     if(_selectedOffset == _numEntries)
       scrollDown();
-    else if(_selectedOffset < (int)_entries.size())
+    else if(_selectedOffset < int(_entries.size()))
       drawCurrentSelection(_selectedOffset+1);    
   }
   else
   {
-    if(_selectedOffset < (int)_entries.size() - 1)
+    if(_selectedOffset < int(_entries.size()) - 1)
       drawCurrentSelection(_selectedOffset+1);
   }
 }
@@ -443,7 +443,7 @@ void ContextMenu::movePgUp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::movePgDown()
 {
-  if(_firstEntry == (int)(_entries.size() - _numEntries))
+  if(_firstEntry == int(_entries.size() - _numEntries))
     moveToLast();
   else
     scrollDown(_numEntries);
@@ -462,7 +462,7 @@ void ContextMenu::moveToFirst()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveToLast()
 {
-  _firstEntry = (int)_entries.size() - _numEntries;
+  _firstEntry = int(_entries.size()) - _numEntries;
   _scrollUpColor = kScrollColor;
   _scrollDnColor = kColor;
 
@@ -472,7 +472,7 @@ void ContextMenu::moveToLast()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveToSelected()
 {
-  if(_selectedItem < 0 || _selectedItem >= (int)_entries.size())
+  if(_selectedItem < 0 || _selectedItem >= int(_entries.size()))
     return;
 
   // First jump immediately to the item
@@ -481,7 +481,7 @@ void ContextMenu::moveToSelected()
 
   // Now check if we've gone past the current 'window' size, and scale
   // back accordingly
-  int max_offset = (int)_entries.size() - _numEntries;
+  int max_offset = int(_entries.size()) - _numEntries;
   if(_firstEntry > max_offset)
   {
     offset = _firstEntry - max_offset;
@@ -510,7 +510,7 @@ void ContextMenu::scrollUp(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::scrollDown(int distance)
 {
-  int max_offset = (int)_entries.size() - _numEntries;
+  int max_offset = int(_entries.size()) - _numEntries;
   if(_firstEntry == max_offset)
     return;
 

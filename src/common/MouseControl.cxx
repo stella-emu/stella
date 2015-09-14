@@ -90,7 +90,6 @@ MouseControl::MouseControl(Console& console, const string& mode)
         xid = 1;
         msg << "MindLink 1";
         break;
-      default:  break;
     }
     msg << ", Y-axis is ";
     switch(yaxis)
@@ -138,7 +137,6 @@ MouseControl::MouseControl(Console& console, const string& mode)
         yid = 1;
         msg << "MindLink 1";
         break;
-      default:  break;
     }
     myModeList.push_back(MouseMode(xtype, xid, ytype, yid, msg.str()));
   }

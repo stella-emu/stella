@@ -119,7 +119,7 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
       {
         for(int p = 0; p < LastPropType; ++p)
           if(DefProps[i][p][0] != 0)
-            properties.set((PropertyType)p, DefProps[i][p]);
+            properties.set(PropertyType(p), DefProps[i][p]);
 
         found = true;
         break;
@@ -207,7 +207,7 @@ void PropertiesSet::print() const
     properties.setDefaults();
     for(int p = 0; p < LastPropType; ++p)
       if(DefProps[i][p][0] != 0)
-        properties.set((PropertyType)p, DefProps[i][p]);
+        properties.set(PropertyType(p), DefProps[i][p]);
 
     list.insert(make_pair(DefProps[i][Cartridge_MD5], properties));
   }

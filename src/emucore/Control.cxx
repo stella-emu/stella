@@ -163,8 +163,8 @@ bool Controller::load(Serializer& in)
     myDigitalPinState[Six]   = in.getBool();
 
     // Input the analog pins
-    myAnalogPinValue[Five] = (Int32) in.getInt();
-    myAnalogPinValue[Nine] = (Int32) in.getInt();
+    myAnalogPinValue[Five] = in.getInt();
+    myAnalogPinValue[Nine] = in.getInt();
   }
   catch(...)
   {

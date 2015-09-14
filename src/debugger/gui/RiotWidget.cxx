@@ -266,8 +266,8 @@ void RiotWidget::loadConfig()
   // address in the callback (handleCommand)
   Debugger& dbg   = instance().debugger();
   RiotDebug& riot = dbg.riotDebug();
-  const RiotState& state    = (RiotState&) riot.getState();
-  const RiotState& oldstate = (RiotState&) riot.getOldState();
+  const RiotState& state    = static_cast<const RiotState&>(riot.getState());
+  const RiotState& oldstate = static_cast<const RiotState&>(riot.getOldState());
 
   // Update the SWCHA register booleans (poke mode)
   IO_REGS_UPDATE(mySWCHAWriteBits, swchaWriteBits);
@@ -335,9 +335,9 @@ void RiotWidget::loadConfig()
 
   // Console switches (inverted, since 'selected' in the UI
   // means 'grounded' in the system)
-  myP0Diff->setSelectedIndex((int)riot.diffP0());
-  myP1Diff->setSelectedIndex((int)riot.diffP1());
-  myTVType->setSelectedIndex((int)riot.tvType());
+  myP0Diff->setSelectedIndex(riot.diffP0());
+  myP1Diff->setSelectedIndex(riot.diffP1());
+  myTVType->setSelectedIndex(riot.tvType());
   mySelect->setState(!riot.select());
   myReset->setState(!riot.reset());
 
@@ -387,19 +387,19 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       switch(id)
       {
         case kSWCHABitsID:
-          value = Debugger::get_bits((BoolArray&)mySWCHAWriteBits->getState());
+          value = Debugger::get_bits(mySWCHAWriteBits->getState());
           riot.swcha(value & 0xff);
           break;
         case kSWACNTBitsID:
-          value = Debugger::get_bits((BoolArray&)mySWACNTBits->getState());
+          value = Debugger::get_bits(mySWACNTBits->getState());
           riot.swacnt(value & 0xff);
           break;
         case kSWCHBBitsID:
-          value = Debugger::get_bits((BoolArray&)mySWCHBWriteBits->getState());
+          value = Debugger::get_bits(mySWCHBWriteBits->getState());
           riot.swchb(value & 0xff);
           break;
         case kSWBCNTBitsID:
-          value = Debugger::get_bits((BoolArray&)mySWBCNTBits->getState());
+          value = Debugger::get_bits(mySWBCNTBits->getState());
           riot.swbcnt(value & 0xff);
           break;
       }
@@ -432,7 +432,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kTVTypeChanged:
-      riot.tvType((bool)myTVType->getSelected());
+      riot.tvType(myTVType->getSelected());
       break;
   }
 }

@@ -189,12 +189,12 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank) {
 
   if (upper) {  // We're mapping the write port
 
-    bankInUse[bankNumber + 4] = (Int16) bank;
+    bankInUse[bankNumber + 4] = Int16(bank);
     access.type = System::PA_WRITE;
 
   } else {      // We're mapping the read port
 
-    bankInUse[bankNumber] = (Int16) bank;
+    bankInUse[bankNumber] = Int16(bank);
     access.type = System::PA_READ;
 
   }
@@ -238,7 +238,7 @@ void CartridgeDASH::bankROMSlot(uInt16 bank) {
   uInt16 currentBank = bank & BIT_BANK_MASK;      // Wrap around/restrict to valid range
   bool upper = bank & BITMASK_LOWERUPPER;         // is this the lower or upper 512b
 
-  bankInUse[bankNumber * 2 + (upper ? 1 : 0)] = (Int16) bank; // Record which bank switched in (as ROM)
+  bankInUse[bankNumber * 2 + (upper ? 1 : 0)] = Int16(bank); // Record which bank switched in (as ROM)
 
   uInt32 startCurrentBank = currentBank << ROM_BANK_TO_POWER;     // Effectively *1K
 

@@ -222,7 +222,7 @@ int DebuggerParser::decipher_arg(const string& str)
   if(bin && dec) return -1;
 
   // Special cases (registers):
-  CpuState& state = (CpuState&) debugger.cpuDebug().getState();
+  const CpuState& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
   if(arg == "a") result = state.A;
   else if(arg == "x") result = state.X;
   else if(arg == "y") result = state.Y;
@@ -318,7 +318,7 @@ string DebuggerParser::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::getArgs(const string& command, string& verb)
 {
-  int state = kIN_COMMAND, i = 0, length = (int)command.length();
+  int state = kIN_COMMAND, i = 0, length = int(command.length());
   string curArg = "";
   verb = "";
 
@@ -375,7 +375,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   if(curArg != "")
     argStrings.push_back(curArg);
 
-  argCount = (int)argStrings.size();
+  argCount = int(argStrings.size());
   /*
   cerr << "verb = " << verb << endl;
   cerr << "arguments (" << argCount << "):\n";
@@ -630,7 +630,7 @@ bool DebuggerParser::saveScriptFile(string file)
 // "a"
 void DebuggerParser::executeA()
 {
-  debugger.cpuDebug().setA((uInt8)args[0]);
+  debugger.cpuDebug().setA(uInt8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -871,7 +871,7 @@ void DebuggerParser::executeDelfunction()
 void DebuggerParser::executeDelwatch()
 {
   int which = args[0] - 1;
-  if(which >= 0 && which < (int)watches.size())
+  if(which >= 0 && which < int(watches.size()))
   {
     Vec::removeAt(watches, which);
     commandResult << "removed watch";
@@ -1275,7 +1275,7 @@ void DebuggerParser::executeRunTo()
   const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
-  uInt32 count = 0, max_iterations = (uInt32)list.size();
+  uInt32 count = 0, max_iterations = list.size();
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
@@ -1343,7 +1343,7 @@ void DebuggerParser::executeRunToPc()
 // "s"
 void DebuggerParser::executeS()
 {
-  debugger.cpuDebug().setSP((uInt8)args[0]);
+  debugger.cpuDebug().setSP(uInt8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1546,14 +1546,14 @@ void DebuggerParser::executeWatch()
 // "x"
 void DebuggerParser::executeX()
 {
-  debugger.cpuDebug().setX((uInt8)args[0]);
+  debugger.cpuDebug().setX(uInt8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "y"
 void DebuggerParser::executeY()
 {
-  debugger.cpuDebug().setY((uInt8)args[0]);
+  debugger.cpuDebug().setY(uInt8(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

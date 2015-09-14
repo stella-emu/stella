@@ -114,13 +114,13 @@ void ComboDialog::loadConfig()
 {
   StringList events = instance().eventHandler().getComboListForEvent(myComboEvent);
 
-  int size = BSPF_min((int)events.size(), 8);
-  for(int i = 0; i < size; ++i)
+  uInt32 size = BSPF_min(uInt32(events.size()), 8u);
+  for(uInt32 i = 0; i < size; ++i)
     myEvents[i]->setSelected("", events[i]);
 
   // Fill any remaining items to 'None'
   if(size < 8)
-    for(int i = size; i < 8; ++i)
+    for(uInt32 i = size; i < 8; ++i)
       myEvents[i]->setSelected("None", "-1");
 }
 

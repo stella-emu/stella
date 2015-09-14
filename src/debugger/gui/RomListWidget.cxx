@@ -134,8 +134,8 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm,
     myCheckList[i]->setFlags(WIDGET_ENABLED);
 
   // Then turn off any extras
-  if((int)myDisasm->list.size() < _rows)
-    for(int i = (int)myDisasm->list.size(); i < _rows; ++i)
+  if(int(myDisasm->list.size()) < _rows)
+    for(int i = int(myDisasm->list.size()); i < _rows; ++i)
       myCheckList[i]->clearFlags(WIDGET_ENABLED);
 
   recalc();
@@ -144,7 +144,7 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setSelected(int item)
 {
-  if(item < -1 || item >= (int)myDisasm->list.size())
+  if(item < -1 || item >= int(myDisasm->list.size()))
     return;
 
   if(isEnabled())
@@ -160,7 +160,7 @@ void RomListWidget::setSelected(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setHighlighted(int item)
 {
-  if(item < -1 || item >= (int)myDisasm->list.size())
+  if(item < -1 || item >= int(myDisasm->list.size()))
     return;
 
   if(isEnabled())
@@ -189,7 +189,7 @@ int RomListWidget::findItem(int x, int y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::recalc()
 {
-  int size = (int)myDisasm->list.size();
+  int size = int(myDisasm->list.size());
 
   if (_currentPos >= size)
     _currentPos = size - 1;
@@ -201,7 +201,7 @@ void RomListWidget::recalc()
 
   _editMode = false;
 
-  myScrollBar->_numEntries     = (int)myDisasm->list.size();
+  myScrollBar->_numEntries     = int(myDisasm->list.size());
   myScrollBar->_entriesPerPage = _rows;
 
   // Reset to normal data entry
@@ -225,10 +225,11 @@ void RomListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  if (_currentPos < 0 || _rows > (int)myDisasm->list.size())
+  int size = myDisasm->list.size();
+  if (_currentPos < 0 || _rows > size)
     _currentPos = 0;
-  else if (_currentPos + _rows > (int)myDisasm->list.size())
-    _currentPos = (int)myDisasm->list.size() - _rows;
+  else if (_currentPos + _rows > size)
+    _currentPos = size - _rows;
 
   myScrollBar->_currentPos = _currentPos;
   myScrollBar->recalc();
@@ -255,7 +256,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     // First check whether the selection changed
     int newSelectedItem;
     newSelectedItem = findItem(x, y);
-    if (newSelectedItem > (int)myDisasm->list.size() - 1)
+    if (newSelectedItem > int(myDisasm->list.size()) - 1)
       newSelectedItem = -1;
 
     if (_selectedItem != newSelectedItem)
@@ -374,7 +375,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIDown:
-      if (_selectedItem < (int)myDisasm->list.size() - 1)
+      if (_selectedItem < int(myDisasm->list.size()) - 1)
         _selectedItem++;
       break;
 
@@ -386,8 +387,8 @@ bool RomListWidget::handleEvent(Event::Type e)
 
     case Event::UIPgDown:
       _selectedItem += _rows - 1;
-      if (_selectedItem >= (int)myDisasm->list.size())
-        _selectedItem = (int)myDisasm->list.size() - 1;
+      if (_selectedItem >= int(myDisasm->list.size()))
+        _selectedItem = int(myDisasm->list.size()) - 1;
       break;
 
     case Event::UIHome:
@@ -395,7 +396,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIEnd:
-      _selectedItem = (int)myDisasm->list.size() - 1;
+      _selectedItem = int(myDisasm->list.size()) - 1;
       break;
 
     default:
@@ -424,7 +425,7 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       break;
 
     case kSetPositionCmd:
-      if (_currentPos != (int)data)
+      if (_currentPos != data)
       {
         _currentPos = data;
         setDirty();
@@ -451,7 +452,7 @@ void RomListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
-  int i, pos, xpos, ypos, len = (int)dlist.size();
+  int i, pos, xpos, ypos, len = int(dlist.size());
 
   const GUI::Rect& r = getEditRect();
   const GUI::Rect& l = getLineRect();

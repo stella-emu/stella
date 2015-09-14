@@ -21,7 +21,6 @@
 
 /* Common implementation of NTSC filters */
 
-#include <assert.h>
 #include <math.h>
 
 /* Copyright (C) 2006-2009 Shay Green. This module is free software; you
@@ -140,7 +139,6 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
     {
       int x = kernel_size * 3 / 2 - kernel_half + i;
       kernels [x] *= sum;
-      assert( kernels [x] == kernels [x] ); /* catch numerical instability */
     }
   }
 
@@ -175,7 +173,6 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
       for ( x = i; x < kernel_size; x += 2 )
       {
         kernels [x] *= sum;
-        assert( kernels [x] == kernels [x] ); /* catch numerical instability */
       }
     }
   }

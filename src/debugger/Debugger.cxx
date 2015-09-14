@@ -148,10 +148,10 @@ void Debugger::initialize()
 
   // The debugger dialog is resizable, within certain bounds
   // We check those bounds now
-  myWidth  = BSPF_max(myWidth, (uInt32)DebuggerDialog::kSmallFontMinW);
-  myHeight = BSPF_max(myHeight, (uInt32)DebuggerDialog::kSmallFontMinH);
-  myWidth  = BSPF_min(myWidth, (uInt32)d.w);
-  myHeight = BSPF_min(myHeight, (uInt32)d.h);
+  myWidth  = BSPF_max(myWidth,  uInt32(DebuggerDialog::kSmallFontMinW));
+  myHeight = BSPF_max(myHeight, uInt32(DebuggerDialog::kSmallFontMinH));
+  myWidth  = BSPF_min(myWidth,  uInt32(d.w));
+  myHeight = BSPF_min(myHeight, uInt32(d.h));
 
   myOSystem.settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
 
@@ -271,7 +271,7 @@ string Debugger::setRAM(IntArray& args)
 {
   ostringstream buf;
 
-  int count = (int)args.size();
+  int count = int(args.size());
   int address = args[0];
   for(int i = 1; i < count; ++i)
     mySystem.poke(address++, args[i]);

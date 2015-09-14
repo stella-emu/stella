@@ -327,7 +327,7 @@ bool Cartridge::saveROM(ofstream& out)
     return false;
   }
 
-  out.write((const char*)image, size);
+  out.write(reinterpret_cast<const char*>(image), size);
 
   return true;
 }

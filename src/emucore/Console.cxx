@@ -461,7 +461,7 @@ void Console::initializeAudio()
 void Console::fry() const
 {
   for(int ZPmem = 0; ZPmem < 0x100; ZPmem += rand() % 4)
-    mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
+    mySystem->poke(ZPmem, mySystem->peek(ZPmem) & uInt8(rand()) % 256);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -767,22 +767,22 @@ void Console::loadUserPalette()
 
   for(int i = 0; i < 128; i++)  // NTSC palette
   {
-    in.read((char*)pixbuf, 3);
-    uInt32 pixel = ((int)pixbuf[0] << 16) + ((int)pixbuf[1] << 8) + (int)pixbuf[2];
+    in.read(reinterpret_cast<char*>(pixbuf), 3);
+    uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserNTSCPalette[(i<<1)] = pixel;
   }
   for(int i = 0; i < 128; i++)  // PAL palette
   {
-    in.read((char*)pixbuf, 3);
-    uInt32 pixel = ((int)pixbuf[0] << 16) + ((int)pixbuf[1] << 8) + (int)pixbuf[2];
+    in.read(reinterpret_cast<char*>(pixbuf), 3);
+    uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserPALPalette[(i<<1)] = pixel;
   }
 
   uInt32 secam[16];  // All 8 24-bit pixels, plus 8 colorloss pixels
   for(int i = 0; i < 8; i++)    // SECAM palette
   {
-    in.read((char*)pixbuf, 3);
-    uInt32 pixel = ((int)pixbuf[0] << 16) + ((int)pixbuf[1] << 8) + (int)pixbuf[2];
+    in.read(reinterpret_cast<char*>(pixbuf), 3);
+    uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     secam[(i<<1)]   = pixel;
     secam[(i<<1)+1] = 0;
   }
@@ -827,9 +827,7 @@ void Console::generateColorLossPalette()
       uInt8 r = (pixel >> 16) & 0xff;
       uInt8 g = (pixel >> 8)  & 0xff;
       uInt8 b = (pixel >> 0)  & 0xff;
-      uInt8 sum = (uInt8) (((float)r * 0.2989) +
-                           ((float)g * 0.5870) +
-                           ((float)b * 0.1140));
+      uInt8 sum = uInt8((r * 0.2989) + (g * 0.5870) + (b * 0.1140));
       palette[i][(j<<1)+1] = (sum << 16) + (sum << 8) + sum;
     }
   }

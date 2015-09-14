@@ -269,14 +269,12 @@ void Paddles::update()
   int sa_yaxis = myEvent.get(myP1AxisValue);
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
-    myAnalogPinValue[Nine] = (Int32)(1400000 *
-        (float)(32767 - (Int16)sa_xaxis) / 65536.0);
+    myAnalogPinValue[Nine] = Int32(1400000 * (32767 - Int16(sa_xaxis)) / 65536.0);
     sa_changed = true;
   }
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
-    myAnalogPinValue[Five] = (Int32)(1400000 *
-        (float)(32767 - (Int16)sa_yaxis) / 65536.0);
+    myAnalogPinValue[Five] = Int32(1400000 * (32767 - Int16(sa_yaxis)) / 65536.0);
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
@@ -373,10 +371,10 @@ void Paddles::update()
   // Only change state if the charge has actually changed
   if(myCharge[1] != myLastCharge[1])
     myAnalogPinValue[Five] =
-        (Int32)(1400000 * (myCharge[1] / float(TRIGRANGE)));
+        Int32(1400000 * (myCharge[1] / float(TRIGRANGE)));
   if(myCharge[0] != myLastCharge[0])
     myAnalogPinValue[Nine] =
-        (Int32)(1400000 * (myCharge[0] / float(TRIGRANGE)));
+        Int32(1400000 * (myCharge[0] / float(TRIGRANGE)));
 
   myLastCharge[1] = myCharge[1];
   myLastCharge[0] = myCharge[0];

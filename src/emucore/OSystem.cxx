@@ -64,7 +64,7 @@ OSystem::OSystem()
     myQuitLoop(false)
 {
   // Calculate startup time
-  myMillisAtStart = (uInt32)(time(NULL) * 1000);
+  myMillisAtStart = uInt32(time(NULL) * 1000);
 
   // Get built-in features
   #ifdef SOUND_SUPPORT
@@ -85,8 +85,8 @@ OSystem::OSystem()
   SDL_version ver;
   SDL_GetVersion(&ver);
 
-  info << "Build " << STELLA_BUILD << ", using SDL " << (int)ver.major
-       << "." << (int)ver.minor << "."<< (int)ver.patch
+  info << "Build " << STELLA_BUILD << ", using SDL " << int(ver.major)
+       << "." << int(ver.minor) << "."<< int(ver.patch)
        << " [" << BSPF_ARCH << "]";
   myBuildInfo = info.str();
 
@@ -236,7 +236,7 @@ void OSystem::setFramerate(float framerate)
   if(framerate > 0.0)
   {
     myDisplayFrameRate = framerate;
-    myTimePerFrame = (uInt32)(1000000.0 / myDisplayFrameRate);
+    myTimePerFrame = uInt32(1000000.0 / myDisplayFrameRate);
   }
 }
 
@@ -458,7 +458,7 @@ void OSystem::logMessage(const string& message, uInt8 level)
     cout << message << endl << flush;
     myLogMessages += message + "\n";
   }
-  else if(level <= (uInt8)mySettings->getInt("loglevel"))
+  else if(level <= uInt8(mySettings->getInt("loglevel")))
   {
     if(mySettings->getBool("logtoconsole"))
       cout << message << endl << flush;

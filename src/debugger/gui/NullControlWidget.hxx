@@ -48,7 +48,7 @@ class NullControlWidget : public ControllerWidget
                            kTextAlignCenter);
     }
 
-    virtual ~NullControlWidget() { };
+    virtual ~NullControlWidget() { }
 
   private:
     // Following constructors and assignment operators not supported

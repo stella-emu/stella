@@ -196,7 +196,7 @@ class Debugger : public DialogContainer
           bits.push_back(false);
       }
     }
-    static uInt8 get_bits(BoolArray& bits)
+    static uInt8 get_bits(const BoolArray& bits)
     {
       uInt8 result = 0x0;
       for(int i = 0; i < 8; ++i)

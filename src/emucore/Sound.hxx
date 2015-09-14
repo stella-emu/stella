@@ -44,7 +44,7 @@ class Sound : public Serializable
     /**
       Destructor
     */
-    virtual ~Sound() { };
+    virtual ~Sound() { }
 
   public: 
     /**

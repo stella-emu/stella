@@ -61,7 +61,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = make_ptr<Thumbulator>
-      ((uInt16*)(myProgramImage-0xC00), (uInt16*)myDPCRAM,
+      (reinterpret_cast<uInt16*>(myProgramImage-0xC00),
+       reinterpret_cast<uInt16*>(myDPCRAM),
        settings.getBool("thumb.trapfatal"));
 #endif
   setInitialState();
@@ -157,8 +158,8 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 
   // Calculate the number of DPC OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = (Int32)clocks;
-  myFractionalClocks = clocks - (double)wholeClocks;
+  Int32 wholeClocks = Int32(clocks);
+  myFractionalClocks = clocks - double(wholeClocks);
 
   if(wholeClocks <= 0)
   {
@@ -287,7 +288,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
                        myDisplayImage[(myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
                        myDisplayImage[(myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
 
-            result = (uInt8)i;
+            result = uInt8(i);
             break;
           }
 
@@ -412,12 +413,12 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
     {
       //DFxFRACLOW - fractional data pointer low byte
       case 0x00:
-        myFractionalCounters[index] = (myFractionalCounters[index] & 0x0F00FF) | ((uInt16)value << 8);
+        myFractionalCounters[index] = (myFractionalCounters[index] & 0x0F00FF) | (uInt16(value) << 8);
         break;
 
       // DFxFRACHI - fractional data pointer high byte
       case 0x01:
-        myFractionalCounters[index] = (((uInt16)value & 0x0F) << 16) | (myFractionalCounters[index] & 0x00ffff);
+        myFractionalCounters[index] = ((uInt16(value) & 0x0F) << 16) | (myFractionalCounters[index] & 0x00ffff);
         break;
 
       //DFxFRACINC - Fractional Increment amount
@@ -481,7 +482,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       // DFxHI - data pointer high byte
       case 0x08:
       {
-        myCounters[index] = (((uInt16)value & 0x0F) << 8) | (myCounters[index] & 0x00ff);
+        myCounters[index] = ((uInt16(value) & 0x0F) << 8) | (myCounters[index] & 0x00ff);
         break;
       }
 
@@ -690,7 +691,7 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putInt(myRandomNumber);
 
     out.putInt(mySystemCycles);
-    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
+    out.putInt(uInt32(myFractionalClocks * 100000000.0));
   }
   catch(...)
   {
@@ -750,8 +751,8 @@ bool CartridgeDPCPlus::load(Serializer& in)
     myRandomNumber = in.getInt();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = (Int32)in.getInt();
-    myFractionalClocks = (double)in.getInt() / 100000000.0;
+    mySystemCycles = in.getInt();
+    myFractionalClocks = double(in.getInt()) / 100000000.0;
   }
   catch(...)
   {

@@ -156,7 +156,7 @@ bool Cartridge3E::bank(uInt16 bank)
   if(bank < 256)
   {
     // Make sure the bank they're asking for is reasonable
-    if(((uInt32)bank << 11) < uInt32(mySize))
+    if((uInt32(bank) << 11) < mySize)
     {
       myCurrentBank = bank;
     }

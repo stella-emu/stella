@@ -132,6 +132,11 @@ class Dialog : public GuiObject
 
       Focus(Widget* w = nullptr);
       virtual ~Focus();
+
+      Focus(const Focus&) = default;
+      Focus(Focus&&) = default;
+      Focus& operator=(const Focus&) = default;
+      Focus& operator=(Focus&&) = default;
     };
     using FocusList = vector<Focus>;
 
@@ -142,6 +147,11 @@ class Dialog : public GuiObject
 
       TabFocus(TabWidget* w = nullptr);
       virtual ~TabFocus();
+
+      TabFocus(const TabFocus&) = default;
+      TabFocus(TabFocus&&) = default;
+      TabFocus& operator=(const TabFocus&) = default;
+      TabFocus& operator=(TabFocus&&) = default;
 
       void appendFocusList(WidgetArray& list);
       void saveCurrentFocus(Widget* w);

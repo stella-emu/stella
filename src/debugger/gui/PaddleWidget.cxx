@@ -75,8 +75,8 @@ PaddleWidget::~PaddleWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleWidget::loadConfig()
 {
-  myP0Resistance->setValue(1400000 - (Int32)myController.read(Controller::Nine));
-  myP1Resistance->setValue(1400000 - (Int32)myController.read(Controller::Five));
+  myP0Resistance->setValue(1400000 - Int32(myController.read(Controller::Nine)));
+  myP1Resistance->setValue(1400000 - Int32(myController.read(Controller::Five)));
   myP0Fire->setState(!myController.read(Controller::Four));
   myP1Fire->setState(!myController.read(Controller::Three));
 }

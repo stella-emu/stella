@@ -227,7 +227,7 @@ void EventHandler::poll(uInt64 time)
       // Handle continuous snapshots
       if(myContSnapshotInterval > 0 &&
         (++myContSnapshotCounter % myContSnapshotInterval == 0))
-        takeSnapshot((uInt32)time >> 10);  // not quite milliseconds, but close enough
+        takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
     }
   }
   else if(myOverlay)
@@ -441,7 +441,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
             else
             {
               buf << "Enabling shotshots in " << interval << " second intervals";
-              interval *= (uInt32) myOSystem.frameRate();
+              interval *= uInt32(myOSystem.frameRate());
             }
             myOSystem.frameBuffer().showMessage(buf.str());
             setContinuousSnapshots(interval);
@@ -691,7 +691,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
         // Check for analog events, which are handled differently
         // We'll pass them off as Stelladaptor events, and let the controllers
         // handle it
-        switch((int)eventAxisNeg)
+        switch(int(eventAxisNeg))
         {
           case Event::PaddleZeroAnalog:
             myEvent.set(Event::SALeftAxis0Value, value);
@@ -1157,9 +1157,9 @@ void EventHandler::setActionMappings(EventMode mode)
       if(myKeyTable[j][mode] == event)
       {
         if(key == "")
-          key = key + nameForKey((StellaKey)j);
+          key = key + nameForKey(StellaKey(j));
         else
-          key = key + ", " + nameForKey((StellaKey)j);
+          key = key + ", " + nameForKey(StellaKey(j));
       }
     }
 
@@ -1279,7 +1279,7 @@ void EventHandler::setKeymap()
 
   // Get event count, which should be the first int in the list
   buf >> value;
-  event = (Event::Type) value;
+  event = Event::Type(value);
   if(event == Event::LastType)
     while(buf >> value)
       map.push_back(value);
@@ -1291,7 +1291,7 @@ void EventHandler::setKeymap()
     auto e = map.begin();
     for(int mode = 0; mode < kNumModes; ++mode)
       for(int i = 0; i < KBDK_LAST; ++i)
-        myKeyTable[i][mode] = (Event::Type) *e++;
+        myKeyTable[i][mode] = Event::Type(*e++);
   }
   else
   {
@@ -1326,7 +1326,7 @@ void EventHandler::setComboMap()
       int eventcount = 0;
       while(buf2 >> key && eventcount < kEventsPerCombo)
       {
-        myComboTable[combocount][eventcount] = (Event::Type) atoi(key.c_str());
+        myComboTable[combocount][eventcount] = Event::Type(atoi(key.c_str()));
         ++eventcount;
       }
       ++combocount;

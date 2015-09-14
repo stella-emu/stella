@@ -118,8 +118,8 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
 
   // Calculate the number of DPC OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = (Int32)clocks;
-  myFractionalClocks = clocks - (double)wholeClocks;
+  Int32 wholeClocks = Int32(clocks);
+  myFractionalClocks = clocks - double(wholeClocks);
 
   if(wholeClocks <= 0)
   {
@@ -133,7 +133,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
     if(myMusicMode[x - 5])
     {
       Int32 top = myTops[x] + 1;
-      Int32 newLow = (Int32)(myCounters[x] & 0x00ff);
+      Int32 newLow = Int32(myCounters[x] & 0x00ff);
 
       if(myTops[x] != 0)
       {
@@ -158,7 +158,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
         myFlags[x] = 0xff;
       }
 
-      myCounters[x] = (myCounters[x] & 0x0700) | (uInt16)newLow;
+      myCounters[x] = (myCounters[x] & 0x0700) | uInt16(newLow);
     }
   }
 }
@@ -332,14 +332,14 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
           // Data fetcher is in music mode so its low counter value
           // should be loaded from the top register not the poked value
           myCounters[index] = (myCounters[index] & 0x0700) |
-              (uInt16)myTops[index];
+              uInt16(myTops[index]);
         }
         else
         {
           // Data fetcher is either not a music mode data fetcher or it
           // isn't in music mode so it's low counter value should be loaded
           // with the poked value
-          myCounters[index] = (myCounters[index] & 0x0700) | (uInt16)value;
+          myCounters[index] = (myCounters[index] & 0x0700) | uInt16(value);
         }
         break;
       }
@@ -347,7 +347,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
       // DFx counter high
       case 0x03:
       {
-        myCounters[index] = (((uInt16)value & 0x07) << 8) |
+        myCounters[index] = ((uInt16(value) & 0x07) << 8) |
             (myCounters[index] & 0x00ff);
 
         // Execute special code for music mode data fetchers
@@ -491,7 +491,7 @@ bool CartridgeDPC::save(Serializer& out) const
     out.putByte(myRandomNumber);
 
     out.putInt(mySystemCycles);
-    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
+    out.putInt(uInt32(myFractionalClocks * 100000000.0));
   }
   catch(...)
   {
@@ -533,8 +533,8 @@ bool CartridgeDPC::load(Serializer& in)
     myRandomNumber = in.getByte();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = (Int32)in.getInt();
-    myFractionalClocks = (double)in.getInt() / 100000000.0;
+    mySystemCycles = Int32(in.getInt());
+    myFractionalClocks = double(in.getInt()) / 100000000.0;
   }
   catch(...)
   {

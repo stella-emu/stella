@@ -39,7 +39,7 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   _h = _rowHeight * rows + 1;
 
   // Changed state isn't used, but we still need to fill it
-  while((int)_changedList.size() < rows * cols)
+  while(int(_changedList.size()) < rows * cols)
     _changedList.push_back(false);
 }
 
@@ -92,7 +92,7 @@ void TogglePixelWidget::setIntState(int value, bool swap)
 int TogglePixelWidget::getIntState()
 {
   // Construct int based on current state and swap
-  uInt32 value = 0, size = (int)_stateList.size();
+  uInt32 value = 0, size = _stateList.size();
 
   for(uInt32 i = 0; i < size; ++i)
   {

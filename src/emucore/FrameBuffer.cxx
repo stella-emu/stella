@@ -76,8 +76,8 @@ bool FrameBuffer::initialize()
     query_h = s.h;
   }
   // Various parts of the codebase assume a minimum screen size
-  myDesktopSize.w = BSPF_max(query_w, (uInt32)kFBMinW);
-  myDesktopSize.h = BSPF_max(query_h, (uInt32)kFBMinH);
+  myDesktopSize.w = BSPF_max(query_w, uInt32(kFBMinW));
+  myDesktopSize.h = BSPF_max(query_h, uInt32(kFBMinH));
 
   ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
@@ -121,7 +121,7 @@ bool FrameBuffer::initialize()
     myLauncherFont = make_ptr<GUI::Font>(GUI::stellaDesc);
 
   // Determine possible TIA windowed zoom levels
-  uInt32 maxZoom = maxWindowSizeForScreen((uInt32)kTIAMinW, (uInt32)kTIAMinH,
+  uInt32 maxZoom = maxWindowSizeForScreen(uInt32(kTIAMinW), uInt32(kTIAMinH),
                      myDesktopSize.w, myDesktopSize.h);
 
   // Figure our the smallest zoom level we can use
@@ -194,7 +194,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Initialize video subsystem (make sure we get a valid mode)
   string pre_about = about();
   const VideoMode& mode = getSavedVidMode(useFullscreen);
-  if(width <= (uInt32)mode.screen.w && height <= (uInt32)mode.screen.h)
+  if(width <= mode.screen.w && height <= mode.screen.h)
   {
     if(setVideoMode(myScreenTitle, mode))
     {
@@ -232,7 +232,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
 
   if(!myMsg.surface)
-    myMsg.surface = allocateSurface((uInt32)kFBMinW, font().getFontHeight()+10);
+    myMsg.surface = allocateSurface(kFBMinW, font().getFontHeight()+10);
 
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
@@ -747,8 +747,8 @@ VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     zoom(z),
     description(desc)
 {
-  sw = BSPF_max(sw, (uInt32)FrameBuffer::kTIAMinW);
-  sh = BSPF_max(sh, (uInt32)FrameBuffer::kTIAMinH);
+  sw = BSPF_max(sw, uInt32(FrameBuffer::kTIAMinW));
+  sh = BSPF_max(sh, uInt32(FrameBuffer::kTIAMinH));
   iw = BSPF_min(iw, sw);
   ih = BSPF_min(ih, sh);
   int ix = (sw - iw) >> 1;
@@ -761,7 +761,7 @@ VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
 {
   // Width is modified by aspect ratio; other factors may be applied below
-  uInt32 iw = (uInt32)(float(image.width() * aspect) / 100.0);
+  uInt32 iw = uInt32(float(image.width() * aspect) / 100.0);
   uInt32 ih = image.height();
 
   if(fsIndex != -1)
@@ -794,8 +794,8 @@ void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
         stretchFactor = float(int(screen.h / bh) * bh) / ih;
       }
     }
-    iw = (uInt32) (stretchFactor * iw);
-    ih = (uInt32) (stretchFactor * ih);
+    iw = uInt32(stretchFactor * iw);
+    ih = uInt32(stretchFactor * ih);
   }
   else
   {
@@ -805,8 +805,8 @@ void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
   }
 
   // Now re-calculate the dimensions
-  iw = BSPF_min(iw, (uInt32)screen.w);
-  ih = BSPF_min(ih, (uInt32)screen.h);
+  iw = BSPF_min(iw, screen.w);
+  ih = BSPF_min(ih, screen.h);
 
   image.moveTo((screen.w - iw) >> 1, (screen.h - ih) >> 1);
   image.setWidth(iw);
@@ -850,14 +850,14 @@ bool FrameBuffer::VideoModeList::empty() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::VideoModeList::size() const
 {
-  return (uInt32)myModeList.size();
+  return myModeList.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::VideoModeList::previous()
 {
   --myIdx;
-  if(myIdx < 0) myIdx = (int)myModeList.size() - 1;
+  if(myIdx < 0) myIdx = int(myModeList.size()) - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -53,7 +53,7 @@ int Font::getStringWidth(const string& str) const
 {
   // If no width table is specified, use the maximum width
   if(!myFontDesc.width)
-    return (int)(myFontDesc.maxwidth * str.size());
+    return myFontDesc.maxwidth * str.size();
   else
   {
     int space = 0;

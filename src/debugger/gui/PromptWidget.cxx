@@ -474,7 +474,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kSetPositionCmd:
-      int newPos = (int)data + _linesPerPage - 1 + _firstLineInBuffer;
+      int newPos = int(data) + _linesPerPage - 1 + _firstLineInBuffer;
       if (newPos != _scrollLine)
       {
         _scrollLine = newPos;
@@ -765,7 +765,7 @@ int PromptWidget::printf(const char* format, ...)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int PromptWidget::vprintf(const char* format, va_list argptr)
 {
-  char buf[2048];
+  char buf[2048];  // Note: generates warnings about 'nonliteral' format
   int count = BSPF_vsnprintf(buf, sizeof(buf), format, argptr);
 
   print(buf);

@@ -44,6 +44,7 @@ string Base::toString(int value, Common::Base::Format outputBase)
   if(outputBase == Base::F_DEFAULT)
     outputBase = myDefaultBase;
 
+  // Note: generates warnings about 'nonliteral' format
   switch(outputBase)
   {
     case Base::F_2:     // base 2:  8 or 16 bits (depending on value)

@@ -34,6 +34,11 @@ class DebuggerState
   public:
     DebuggerState()  { }
     ~DebuggerState() { }
+
+    DebuggerState(const DebuggerState&) = default;
+    DebuggerState(DebuggerState&&) = delete;
+    DebuggerState& operator=(const DebuggerState&) = default;
+    DebuggerState& operator=(DebuggerState&&) = delete;
 };
 
 /**

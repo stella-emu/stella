@@ -533,7 +533,7 @@ bool CartridgeAR::load(Serializer& in)
     myPower = in.getBool();
 
     // Indicates when the power was last turned on
-    myPowerRomCycle = (Int32) in.getInt();
+    myPowerRomCycle = in.getInt();
 
     // Data hold register used for writing
     myDataHoldRegister = in.getByte();

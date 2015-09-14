@@ -134,7 +134,7 @@ uInt8 CartridgeMC::peek(uInt16 address)
     if(block & 0x80)
     {
       // ROM access
-      return myImage[(uInt32)((block & 0x7F) << 10) + (address & 0x03FF)];
+      return myImage[uInt32((block & 0x7F) << 10) + (address & 0x03FF)];
     }
     else
     {
@@ -142,7 +142,7 @@ uInt8 CartridgeMC::peek(uInt16 address)
       if(address & 0x0200)
       {
         // Reading from the read port of the RAM block
-        return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)];
+        return myRAM[uInt32((block & 0x3F) << 9) + (address & 0x01FF)];
       }
       else
       {
@@ -155,7 +155,7 @@ uInt8 CartridgeMC::peek(uInt16 address)
         else
         {
           triggerReadFromWritePort(peekAddress);
-          return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
+          return myRAM[uInt32((block & 0x3F) << 9) + (address & 0x01FF)] = value;
         }
       }
     }
@@ -202,7 +202,7 @@ bool CartridgeMC::poke(uInt16 address, uInt8 value)
     if(!(block & 0x80) && !(address & 0x0200))
     {
       // Handle the write to RAM
-      myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
+      myRAM[uInt32((block & 0x3F) << 9) + (address & 0x01FF)] = value;
       return true;
     }
   }  

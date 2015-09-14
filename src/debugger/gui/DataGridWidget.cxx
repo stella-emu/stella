@@ -126,7 +126,7 @@ cerr << "alist.size() = "     << alist.size()
      << ", changed.size() = " << changed.size()
      << ", _rows*_cols = "    << _rows * _cols << endl << endl;
 */
-  int size = (int)vlist.size();  // assume the alist is the same size
+  int size = int(vlist.size());  // assume the alist is the same size
   assert(size == _rows * _cols);
 
   _addrList.clear();
@@ -256,7 +256,7 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem > (int)_valueList.size() - 1)
+  if (newSelectedItem > int(_valueList.size()) - 1)
     newSelectedItem = -1;
 
   if (_selectedItem != newSelectedItem)
@@ -370,12 +370,12 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_DOWN:
-        if (_currentRow < (int) _rows - 1)
+        if (_currentRow < int(_rows) - 1)
         {
           _currentRow++;
           dirty = true;
         }
-        else if(_currentCol < (int) _cols - 1)
+        else if(_currentCol < int(_cols) - 1)
         {
           _currentRow = 0;
           _currentCol++;
@@ -398,12 +398,12 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_RIGHT:
-        if (_currentCol < (int) _cols - 1)
+        if (_currentCol < int(_cols) - 1)
         {
           _currentCol++;
           dirty = true;
         }
-        else if(_currentRow < (int) _rows - 1)
+        else if(_currentRow < int(_rows) - 1)
         {
           _currentCol = 0;
           _currentRow++;
@@ -424,7 +424,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
       case KBDK_PAGEDOWN:
         if(instance().eventHandler().kbdShift(mod) && _scrollBar)
           handleMouseWheel(0, 0, +1);
-        else if (_currentRow < (int) _rows - 1)
+        else if (_currentRow < int(_rows) - 1)
         {
           _currentRow = _rows - 1;
           dirty = true;
@@ -440,7 +440,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_END:
-        if (_currentCol < (int) _cols - 1)
+        if (_currentCol < int(_cols) - 1)
         {
           _currentCol = _cols - 1;
           dirty = true;

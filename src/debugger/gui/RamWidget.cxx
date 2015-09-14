@@ -170,7 +170,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   // We simply change the values in the DataGridWidget
   // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
   // memory location
-  int addr, value;
+  int addr = 0, value = 0;
 
   switch(cmd)
   {

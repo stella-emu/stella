@@ -39,15 +39,15 @@ class ControllerWidget : public Widget, public CommandSender
       _h = 8 * font.getLineHeight();
     }
 
-    virtual ~ControllerWidget() { };
+    virtual ~ControllerWidget() { }
 
-    virtual void loadConfig() override { };
+    virtual void loadConfig() override { }
 
   protected:
     Controller& myController;
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { };
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
     // Following constructors and assignment operators not supported
     ControllerWidget() = delete;

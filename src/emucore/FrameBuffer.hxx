@@ -449,6 +449,11 @@ class FrameBuffer
         VideoModeList();
         ~VideoModeList();
 
+        VideoModeList(const VideoModeList&) = default;
+        VideoModeList(VideoModeList&&) = default;
+        VideoModeList& operator=(const VideoModeList&) = default;
+        VideoModeList& operator=(VideoModeList&&) = default;
+
         void add(const VideoMode& mode);
         void clear();
 

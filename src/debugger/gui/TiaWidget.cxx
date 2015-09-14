@@ -809,8 +809,8 @@ void TiaWidget::loadConfig()
 
   Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
-  TiaState& state    = (TiaState&) tia.getState();
-  TiaState& oldstate = (TiaState&) tia.getOldState();
+  const TiaState& state    = static_cast<const TiaState&>(tia.getState());
+  const TiaState& oldstate = static_cast<const TiaState&>(tia.getOldState());
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();

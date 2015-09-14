@@ -733,7 +733,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           // where wraparound occurred on a 32-bit int, and subsequent
           // indexing into the labels array caused a crash
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-          ad = ((myPC + (Int8)d1) & 0xfff) + myOffset;
+          ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
 
           labfound = mark(ad, CartDebug::REFERENCED);
           if (pass == 1)

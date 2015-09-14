@@ -66,7 +66,7 @@ void SaveKeyWidget::handleCommand(CommandSender*, int cmd, int, int)
 {
   if(cmd == kEEPROMErase)
   {
-    SaveKey& skey = (SaveKey&)myController;
+    SaveKey& skey = static_cast<SaveKey&>(myController);
     skey.myEEPROM->erase();
   }
 }

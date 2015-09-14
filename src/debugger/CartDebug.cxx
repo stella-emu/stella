@@ -189,8 +189,8 @@ string CartDebug::toString()
       return DebuggerParser::red("invalid base, this is a BUG");
   }
 
-  const CartState& state    = (CartState&) getState();
-  const CartState& oldstate = (CartState&) getOldState();
+  const CartState& state    = static_cast<const CartState&>(getState());
+  const CartState& oldstate = static_cast<const CartState&>(getOldState());
 
   uInt32 curraddr = 0, bytesSoFar = 0;
   for(uInt32 i = 0; i < state.ram.size(); i += bytesPerLine, bytesSoFar += bytesPerLine)

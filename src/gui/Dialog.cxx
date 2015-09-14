@@ -153,7 +153,7 @@ void Dialog::addToFocusList(WidgetArray& list)
 void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
 {
   // Only add the list if the tab actually exists
-  if(!w || w->getID() < 0 || (uInt32)w->getID() >= _myTabList.size())
+  if(!w || w->getID() < 0 || uInt32(w->getID()) >= _myTabList.size())
     return;
 
   assert(w == _myTabList[w->getID()].widget);
@@ -221,7 +221,7 @@ void Dialog::buildCurrentFocusList(int tabID)
   // Remember which tab item previously had focus, if applicable
   // This only applies if this method was called for a tab change
   Widget* tabFocusWidget = nullptr;
-  if(tabID >= 0 && tabID < (int)_myTabList.size())
+  if(tabID >= 0 && tabID < int(_myTabList.size()))
   {
     // Save focus in previously selected tab column,
     // and get focus for new tab column
@@ -611,7 +611,7 @@ void Dialog::getTabIdForWidget(Widget* w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::cycleTab(int direction)
 {
-  if(_tabID >= 0 && _tabID < (int)_myTabList.size())
+  if(_tabID >= 0 && _tabID < int(_myTabList.size()))
   {
     _myTabList[_tabID].widget->cycleTab(direction);
     return true;
@@ -708,7 +708,7 @@ void Dialog::TabFocus::appendFocusList(WidgetArray& list)
 {
   int active = widget->getActiveTab();
 
-  if(active >= 0 && active < (int)focus.size())
+  if(active >= 0 && active < int(focus.size()))
     Vec::append(list, focus[active].list);
 }
 

@@ -749,8 +749,7 @@ string TIADebug::toString()
   // TODO: inverse video for changed regs. Core needs to track this.
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
-  const TiaState& state    = (TiaState&) getState();
-//  const TiaState& oldstate = (TiaState&) getOldState();
+  const TiaState& state = static_cast<const TiaState&>(getState());
 
   // build up output, then return it.
   buf << "scanline " << dec << myTIA.scanlines() << " "

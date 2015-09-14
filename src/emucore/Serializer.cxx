@@ -99,14 +99,14 @@ uInt8 Serializer::getByte() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::getByteArray(uInt8* array, uInt32 size) const
 {
-  myStream->read((char*)array, size);
+  myStream->read(reinterpret_cast<char*>(array), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Serializer::getShort() const
 {
   uInt16 val = 0;
-  myStream->read((char*)&val, sizeof(uInt16));
+  myStream->read(reinterpret_cast<char*>(&val), sizeof(uInt16));
 
   return val;
 }
@@ -114,14 +114,14 @@ uInt16 Serializer::getShort() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::getShortArray(uInt16* array, uInt32 size) const
 {
-  myStream->read((char*)array, sizeof(uInt16)*size);
+  myStream->read(reinterpret_cast<char*>(array), sizeof(uInt16)*size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Serializer::getInt() const
 {
   uInt32 val = 0;
-  myStream->read((char*)&val, sizeof(uInt32));
+  myStream->read(reinterpret_cast<char*>(&val), sizeof(uInt32));
 
   return val;
 }
@@ -129,7 +129,7 @@ uInt32 Serializer::getInt() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::getIntArray(uInt32* array, uInt32 size) const
 {
-  myStream->read((char*)array, sizeof(uInt32)*size);
+  myStream->read(reinterpret_cast<char*>(array), sizeof(uInt32)*size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,43 +152,43 @@ bool Serializer::getBool() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putByte(uInt8 value)
 {
-  myStream->write((char*)&value, 1);
+  myStream->write(reinterpret_cast<char*>(&value), 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putByteArray(const uInt8* array, uInt32 size)
 {
-  myStream->write((char*)array, size);
+  myStream->write(reinterpret_cast<const char*>(array), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putShort(uInt16 value)
 {
-  myStream->write((char*)&value, sizeof(uInt16));
+  myStream->write(reinterpret_cast<char*>(&value), sizeof(uInt16));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putShortArray(const uInt16* array, uInt32 size)
 {
-  myStream->write((char*)array, sizeof(uInt16)*size);
+  myStream->write(reinterpret_cast<const char*>(array), sizeof(uInt16)*size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putInt(uInt32 value)
 {
-  myStream->write((char*)&value, sizeof(uInt32));
+  myStream->write(reinterpret_cast<char*>(&value), sizeof(uInt32));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putIntArray(const uInt32* array, uInt32 size)
 {
-  myStream->write((char*)array, sizeof(uInt32)*size);
+  myStream->write(reinterpret_cast<const char*>(array), sizeof(uInt32)*size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putString(const string& str)
 {
-  int len = (int)str.length();
+  int len = int(str.length());
   putInt(len);
   myStream->write(str.data(), len);
 }
