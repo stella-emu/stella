@@ -146,8 +146,8 @@ class PNGLibrary
     static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
     static void png_io_flush(png_structp ctx);
-    static void png_user_warn[[noreturn]] (png_structp ctx, png_const_charp str);
-    static void png_user_error[[noreturn]] (png_structp ctx, png_const_charp str);
+    static void png_user_warn(png_structp ctx, png_const_charp str);
+    static void png_user_error(png_structp ctx, png_const_charp str);
 
   private:
     // Following constructors and assignment operators not supported

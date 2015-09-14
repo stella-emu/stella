@@ -78,7 +78,7 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
   {
     // Get length of file; it must be 32768
     in.seekg(0, ios::end);
-    if(in.tellg() == 32768)
+    if(uInt32(in.tellg()) == 32768u)
     {
       in.seekg(0, ios::beg);
       in.read(reinterpret_cast<char*>(myData), 32768);
