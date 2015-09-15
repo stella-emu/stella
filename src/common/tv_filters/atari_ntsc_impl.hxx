@@ -97,14 +97,14 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
   /* generate luma (y) filter using sinc kernel */
   {
     /* sinc with rolloff (dsf) */
-    float const rolloff = 1 + (float) setup->sharpness * (float) 0.032;
+    float const rolloff = 1 + float(setup->sharpness) * 0.032;
     float const maxh = 32;
-    float const pow_a_n = (float) pow( rolloff, maxh );
+    float const pow_a_n = float(pow( rolloff, maxh ));
     float sum;
     int i;
     /* quadratic mapping to reduce negative (blurring) range */
-    float to_angle = (float) setup->resolution + 1;
-    to_angle = PI / maxh * (float) LUMA_CUTOFF * (to_angle * to_angle + 1);
+    float to_angle = float(setup->resolution) + 1;
+    to_angle = PI / maxh * float(LUMA_CUTOFF) * (to_angle * to_angle + 1);
     
     kernels [kernel_size * 3 / 2] = maxh; /* default center value */
     for ( i = 0; i < kernel_half * 2 + 1; i++ )
@@ -112,15 +112,15 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
       int x = i - kernel_half;
       float angle = x * to_angle;
       /* instability occurs at center point with rolloff very close to 1.0 */
-      if ( x || pow_a_n > (float) 1.056 || pow_a_n < (float) 0.981 )
+      if ( x || pow_a_n > 1.056 || pow_a_n < 0.981 )
       {
-        float rolloff_cos_a = rolloff * (float) cos( angle );
+        float rolloff_cos_a = rolloff * float(cos( angle ));
         float num = 1 - rolloff_cos_a -
-            pow_a_n * (float) cos( maxh * angle ) +
-            pow_a_n * rolloff * (float) cos( (maxh - 1) * angle );
+            pow_a_n * float(cos( maxh * angle )) +
+            pow_a_n * rolloff * float(cos( (maxh - 1) * angle ));
         float den = 1 - rolloff_cos_a - rolloff_cos_a + rolloff * rolloff;
         float dsf = num / den;
-        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - (float) 0.5;
+        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5;
       }
     }
     
@@ -129,7 +129,7 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
     for ( i = 0; i < kernel_half * 2 + 1; i++ )
     {
       float x = PI * 2 / (kernel_half * 2) * i;
-      float blackman = 0.42f - 0.5f * (float) cos( x ) + 0.08f * (float) cos( x * 2 );
+      float blackman = 0.42f - 0.5f * float(cos( x )) + 0.08f * float(cos( x * 2 ));
       sum += (kernels [kernel_size * 3 / 2 - kernel_half + i] *= blackman);
     }
     
@@ -145,7 +145,7 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
   /* generate chroma (iq) filter using gaussian kernel */
   {
     float const cutoff_factor = -0.03125f;
-    float cutoff = (float) setup->bleed;
+    float cutoff = float(setup->bleed);
     int i;
     
     if ( cutoff < 0 )
@@ -159,7 +159,7 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
     cutoff = cutoff_factor - 0.65f * cutoff_factor * cutoff;
     
     for ( i = -kernel_half; i <= kernel_half; i++ )
-      kernels [kernel_size / 2 + i] = (float) exp( i * i * cutoff );
+      kernels [kernel_size / 2 + i] = float(exp( i * i * cutoff ));
     
     /* normalize even and odd phases separately */
     for ( i = 0; i < 2; i++ )
@@ -215,15 +215,15 @@ static float const default_decoder [6] =
 
 static void init( init_t* impl, atari_ntsc_setup_t const* setup )
 {
-  impl->brightness = (float) setup->brightness * (0.5f * rgb_unit) + rgb_offset;
-  impl->contrast   = (float) setup->contrast   * (0.5f * rgb_unit) + rgb_unit;
+  impl->brightness = float(setup->brightness) * (0.5f * rgb_unit) + rgb_offset;
+  impl->contrast   = float(setup->contrast)   * (0.5f * rgb_unit) + rgb_unit;
   
-  impl->artifacts = (float) setup->artifacts;
+  impl->artifacts = float(setup->artifacts);
   if ( impl->artifacts > 0 )
     impl->artifacts *= artifacts_max - artifacts_mid;
   impl->artifacts = impl->artifacts * artifacts_mid + artifacts_mid;
 
-  impl->fringing = (float) setup->fringing;
+  impl->fringing = float(setup->fringing);
   if ( impl->fringing > 0 )
     impl->fringing *= fringing_max - fringing_mid;
   impl->fringing = impl->fringing * fringing_mid + fringing_mid;
@@ -234,18 +234,18 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
   if ( gamma_size > 1 )
   {
     float const to_float = 1.0f / (gamma_size - (gamma_size > 1));
-    float const gamma = 1.1333f - (float) setup->gamma * 0.5f;
+    float const gamma = 1.1333f - float(setup->gamma) * 0.5f;
     /* match common PC's 2.2 gamma to TV's 2.65 gamma */
     int i;
     for ( i = 0; i < gamma_size; i++ )
       impl->to_float [i] =
-          (float) pow( i * to_float, gamma ) * impl->contrast + impl->brightness;
+          float(pow( i * to_float, gamma )) * impl->contrast + impl->brightness;
   }
   
   /* setup decoder matricies */
   {
-    float hue = (float) setup->hue * PI + PI / 180 * ext_decoder_hue;
-    float sat = (float) setup->saturation + 1;
+    float hue = float(setup->hue) * PI + PI / 180 * ext_decoder_hue;
+    float sat = float(setup->saturation) + 1;
     float const* decoder = setup->decoder_matrix;
     if ( !decoder )
     {
@@ -255,8 +255,8 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
     }
     
     {
-      float s = (float) sin( hue ) * sat;
-      float c = (float) cos( hue ) * sat;
+      float s = float(sin( hue )) * sat;
+      float c = float(cos( hue )) * sat;
       float* out = impl->to_rgb;
       int n;
       
@@ -290,9 +290,9 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
   ((r) * 0.211456f - (g) * 0.522591f + (b) * 0.311135f)\
 )
 #define YIQ_TO_RGB( y, i, q, to_rgb, type, r, g ) (\
-  r = (type) (y + to_rgb [0] * i + to_rgb [1] * q),\
-  g = (type) (y + to_rgb [2] * i + to_rgb [3] * q),\
-  (type) (y + to_rgb [4] * i + to_rgb [5] * q)\
+  r = type(y + to_rgb [0] * i + to_rgb [1] * q),\
+  g = type(y + to_rgb [2] * i + to_rgb [3] * q),\
+  type(y + to_rgb [4] * i + to_rgb [5] * q)\
 )
 
 #ifndef PACK_RGB

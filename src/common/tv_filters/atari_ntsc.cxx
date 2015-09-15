@@ -111,7 +111,7 @@ void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
   {
     atari_ntsc_in_t const* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW( ntsc, TO_SINGLE(atari_ntsc_black), TO_SINGLE(line_in[0]) );
-    atari_ntsc_out_t* restrict line_out = (atari_ntsc_out_t*) rgb_out;
+    atari_ntsc_out_t* restrict line_out = static_cast<atari_ntsc_out_t*>(rgb_out);
     int n;
     ++line_in;
     
@@ -146,7 +146,7 @@ void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
     ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
     
     atari_in += in_row_width;
-    rgb_out = (char*) rgb_out + out_pitch;
+    rgb_out = static_cast<char*>(rgb_out) + out_pitch;
   }
 }
 
@@ -165,7 +165,7 @@ void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
     ATARI_NTSC_BEGIN_ROW( ntsc,
         TO_DOUBLE(atari_ntsc_black, atari_ntsc_black),
         TO_DOUBLE(line_in1[0], line_in2[0]) );
-    atari_ntsc_out_t* restrict line_out = (atari_ntsc_out_t*) rgb_out;
+    atari_ntsc_out_t* restrict line_out = static_cast<atari_ntsc_out_t*>(rgb_out);
     int n;
     ++line_in1;
     ++line_in2;
@@ -207,6 +207,6 @@ void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
     
     atari_in1 += in_row_width;
     atari_in2 += in_row_width;
-    rgb_out = (char*) rgb_out + out_pitch;
+    rgb_out = static_cast<char*>(rgb_out) + out_pitch;
   }
 }
