@@ -61,7 +61,7 @@ void Properties::set(PropertyType key, const string& value)
       case Display_Phosphor:
       {
         transform(myProperties[key].begin(), myProperties[key].end(),
-                  myProperties[key].begin(), (int(*)(int)) toupper);
+                  myProperties[key].begin(), ::toupper);
         break;
       }
 

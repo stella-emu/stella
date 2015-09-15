@@ -140,20 +140,10 @@ shared_ptr<Cheat> CheatManager::createCheat(const string& name, const string& co
   // Create new cheat based on string length
   switch(code.size())
   {
-    case 4:
-      return make_shared<RamCheat>(myOSystem, name, code);
-      break;
-
-    case 6:
-      return make_shared<CheetahCheat>(myOSystem, name, code);
-      break;
-
-    case 8:
-      return make_shared<BankRomCheat>(myOSystem, name, code);
-      break;
-
-    default:
-      return nullptr;
+    case 4:  return make_shared<RamCheat>(myOSystem, name, code);
+    case 6:  return make_shared<CheetahCheat>(myOSystem, name, code);
+    case 8:  return make_shared<BankRomCheat>(myOSystem, name, code);
+    default: return nullptr;
   }
 }
 

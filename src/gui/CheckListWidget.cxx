@@ -166,11 +166,9 @@ bool CheckListWidget::handleEvent(Event::Type e)
       // Simulate a mouse button click
       _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, 1, 0);
       return true;
-      break;
 
     default:
       return ListWidget::handleEvent(e);
-      break;
   }
 }
 

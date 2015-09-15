@@ -144,7 +144,7 @@ inline void CartridgeDPCPlus::clockRandomNumberGenerator()
 inline void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR, reversed)
-  myRandomNumber = ((myRandomNumber & (1<<31)) ?
+  myRandomNumber = ((myRandomNumber & (1u<<31)) ?
     ((0x10adab1e^myRandomNumber) << 11) | ((0x10adab1e^myRandomNumber) >> 21) :
     (myRandomNumber << 11) | (myRandomNumber >> 21));
 }

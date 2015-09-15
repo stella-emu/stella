@@ -25,8 +25,6 @@
 
 #include "PopUpWidget.hxx"
 
-#define UP_DOWN_BOX_HEIGHT	10
-
 // Little up/down arrow
 static uInt32 up_down_arrows[8] = {
   0x00000000,

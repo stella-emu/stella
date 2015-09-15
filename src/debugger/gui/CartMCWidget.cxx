@@ -28,8 +28,6 @@ CartridgeMCWidget::CartridgeMCWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-#define ROM_BLOCKS
-
   uInt32 size = 128 * 1024;
 
   string info =

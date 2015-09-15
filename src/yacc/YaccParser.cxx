@@ -332,8 +332,7 @@ int yylex() {
             return o;
           }
         }
-
-        break;
+        // break;  Never executed
 
       case ST_DEFAULT:
       default:

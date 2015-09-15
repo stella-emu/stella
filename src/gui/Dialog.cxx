@@ -587,7 +587,6 @@ bool Dialog::handleNavEvent(Event::Type e)
 
     default:
       return false;
-      break;
   }
   return false;
 }

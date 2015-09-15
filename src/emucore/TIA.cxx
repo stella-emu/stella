@@ -1299,7 +1299,7 @@ inline uInt8 TIA::dumpedInputPort(int resistance)
     else
       return 0x00;
   }
-  return 0x00;
+  return 0x00;  // Make the compiler happy; we'll never reach this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -264,7 +264,7 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
       do
       {
         float const* in = decoder;
-        int n = 3;
+        int n2 = 3;
         do
         {
           float i = *in++;
@@ -272,7 +272,7 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
           *out++ = i * c - q * s;
           *out++ = i * s + q * c;
         }
-        while ( --n );
+        while ( --n2 );
         if ( burst_count <= 1 )
           break;
         ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
@@ -364,9 +364,9 @@ static void gen_kernel( init_t* impl, float y, float i, float q, atari_ntsc_rgb_
       ++pixel;
       for ( n = rgb_kernel_size; n; --n )
       {
-        float i = k[0]*ic0 + k[2]*ic2;
-        float q = k[1]*qc1 + k[3]*qc3;
-        float y = k[kernel_size+0]*yc0 + k[kernel_size+1]*yc1 +
+        float fi = k[0]*ic0 + k[2]*ic2;
+        float fq = k[1]*qc1 + k[3]*qc3;
+        float fy = k[kernel_size+0]*yc0 + k[kernel_size+1]*yc1 +
                   k[kernel_size+2]*yc2 + k[kernel_size+3]*yc3 + rgb_offset;
         if ( rescale_out <= 1 )
           k--;
@@ -375,7 +375,7 @@ static void gen_kernel( init_t* impl, float y, float i, float q, atari_ntsc_rgb_
         else
           k -= kernel_size * 2 * (rescale_out - 1) + 2;
         {
-          int r, g, b = YIQ_TO_RGB( y, i, q, to_rgb, int, r, g );
+          int r, g, b = YIQ_TO_RGB( fy, fi, fq, to_rgb, int, r, g );
           *out++ = PACK_RGB( r, g, b ) - rgb_bias;
         }
       }

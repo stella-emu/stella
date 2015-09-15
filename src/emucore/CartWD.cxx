@@ -144,7 +144,7 @@ uInt8 CartridgeWD::peek(uInt16 address)
       return mySegment3[address & 0x03FF];
   }
 
-  return 0;  // We'll never reach this
+  return 0;  // Make the compiler happy; we'll never reach this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

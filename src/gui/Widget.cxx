@@ -670,7 +670,6 @@ bool SliderWidget::handleEvent(Event::Type e)
 
     default:
       return false;
-      break;
   }
   return true;
 }

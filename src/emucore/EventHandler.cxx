@@ -1140,7 +1140,6 @@ void EventHandler::setActionMappings(EventMode mode)
       break;
     default:
       return;
-      break;
   }
 
   ostringstream buf;
@@ -1582,7 +1581,6 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
 
     default:
       return;
-      break;
   }
   setActionMappings(mode);
 }
@@ -1744,16 +1742,13 @@ Event::Type EventHandler::eventAtIndex(int idx, EventMode mode) const
         return Event::NoType;
       else
         return ourEmulActionList[idx].event;
-      break;
     case kMenuMode:
       if(idx < 0 || idx >= kMenuActionListSize)
         return Event::NoType;
       else
         return ourMenuActionList[idx].event;
-      break;
     default:
       return Event::NoType;
-      break;
   }
 }  
 
@@ -1767,16 +1762,13 @@ string EventHandler::actionAtIndex(int idx, EventMode mode) const
         return EmptyString;
       else
         return ourEmulActionList[idx].action;
-      break;
     case kMenuMode:
       if(idx < 0 || idx >= kMenuActionListSize)
         return EmptyString;
       else
         return ourMenuActionList[idx].action;
-      break;
     default:
       return EmptyString;
-      break;
   }
 }
 
@@ -1790,16 +1782,13 @@ string EventHandler::keyAtIndex(int idx, EventMode mode) const
         return EmptyString;
       else
         return ourEmulActionList[idx].key;
-      break;
     case kMenuMode:
       if(idx < 0 || idx >= kMenuActionListSize)
         return EmptyString;
       else
         return ourMenuActionList[idx].key;
-      break;
     default:
       return EmptyString;
-      break;
   }
 }
 
