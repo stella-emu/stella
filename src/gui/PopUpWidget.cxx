@@ -147,7 +147,7 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if (_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
-                 isEnabled() ? _textcolor : kColor, kTextAlignRight);
+                 isEnabled() ? _textcolor : uInt32(kColor), kTextAlignRight);
 
   // Draw a thin frame around us.
   s.hLine(x, _y, x + w - 1, kColor);

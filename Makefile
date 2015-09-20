@@ -49,7 +49,7 @@ ifdef CXXFLAGS
 else
   CXXFLAGS:= -O2
 endif
-CXXFLAGS+= -Wall 
+CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++11
 endif

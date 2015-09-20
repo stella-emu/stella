@@ -84,7 +84,7 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().width(),
-               !_changed ? _textcolor : kDbgChangedTextColor,
+               !_changed ? _textcolor : uInt32(kDbgChangedTextColor),
                kTextAlignLeft, -_editScrollOffset, false);
 
   // Draw the caret 

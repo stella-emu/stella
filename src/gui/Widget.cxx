@@ -331,7 +331,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
   s.drawString(_font, _label, _x, _y, _w,
-               isEnabled() ? _textcolor : kColor, _align);
+               isEnabled() ? _textcolor : uInt32(kColor), _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -397,7 +397,7 @@ void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
   s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-               !isEnabled() ? kColor : hilite ? _textcolorhi : _textcolor, _align);
+               !isEnabled() ? uInt32(kColor) : hilite ? _textcolorhi : _textcolor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
