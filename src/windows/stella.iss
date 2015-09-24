@@ -13,6 +13,7 @@ DefaultGroupName=Stella
 OutputBaseFilename="Stella-{#STELLA_VER}-{#STELLA_ARCH}"
 Compression=lzma
 SolidCompression=yes
+UninstallDisplayIcon={app}\Stella.exe
 #if STELLA_ARCH == "x64"
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
