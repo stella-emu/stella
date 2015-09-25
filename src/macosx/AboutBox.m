@@ -89,7 +89,7 @@ static AboutBox *sharedInstance = nil;
     [creditsField replaceCharactersInRange:NSMakeRange( 0, 0 ) 
                     withRTF:[creditsString RTFFromRange:
                     NSMakeRange( 0, [creditsString length] ) 
-                    documentAttributes:nil]];
+                    documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType}]];
 
     // Prepare some scroll info
     creditsBounds = [creditsField bounds];
