@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.6.1 to 4.6.5: (September 25, 2015)
+4.6.1 to 4.6.5: (September 26, 2015)
 
   * Added mappable events for toggling TV color/BW, left difficulty A/B
     and right difficulty A/B.  This means that one key, joystick button,
@@ -42,6 +42,11 @@
 
   * Fixed memory leak; the game console wasn't being closed after exiting
     a ROM.
+
+  * For the Windows port: added an application icon for Stella in the
+    Control Panel "Add/Remove Programs" list.
+
+  * For the OSX port: Updated build scripts to be compatible with Xcode 7.
 
   * Updated included PNG library to latest stable version.
 
