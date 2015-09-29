@@ -892,6 +892,14 @@ void Console::toggleFixedColors() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleJitter() const
+{
+  bool enabled = myTIA->toggleJitter();
+  string message = string("TV scanline jitter") + (enabled ? " enabled" : " disabled");
+  myOSystem.frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::attachDebugger(Debugger& dbg)
 {
 #ifdef DEBUGGER_SUPPORT

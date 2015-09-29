@@ -317,6 +317,16 @@ class TIA : public Device
     */
     bool driveUnusedPinsRandom(uInt8 mode = 2);
 
+    /**
+      Enables/disable/toggle 'scanline jittering' mode.
+
+      @param mode  1/0 indicates on/off, otherwise flip from
+                   its current state
+
+      @return  Whether the mode was enabled or disabled
+    */
+    bool toggleJitter(uInt8 mode = 2);
+
 #ifdef DEBUGGER_SUPPORT
     /**
       This method should be called to update the TIA with a new scanline.
@@ -616,6 +626,9 @@ class TIA : public Device
     // Whether TIA bits/collisions are currently enabled/disabled
     bool myBitsEnabled, myCollisionsEnabled;
   
+    // Whether to enable jitter emulation
+    bool myJitterEnabled;
+
     // Derived from the difference between the scanline counts of the
     // current and prior frames.  If non-zero the next frame should jitter.
     Int32 myNextFrameJitter;

@@ -424,6 +424,10 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           myOSystem.console().togglePhosphor();
           break;
 
+        case KBDK_J:  // Alt-j toggles scanline jitter
+          myOSystem.console().toggleJitter();
+          break;
+
         case KBDK_L:
           myOSystem.frameBuffer().toggleFrameStats();
           break;

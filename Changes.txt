@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+4.6.5 to 4.6.6: (October xx, 2015)
+
+  * Added 'Alt/Cmd + j' shortcut key and 'tv.jitter' commandline argument
+    to toggle the TV scanline jittering emulation added in the last
+    release.  Also, this jittering now defaults to off.
+
+-Have fun!
+
+
 4.6.1 to 4.6.5: (September 26, 2015)
 
   * Added mappable events for toggling TV color/BW, left difficulty A/B
@@ -49,8 +58,6 @@
   * For the OSX port: Updated build scripts to be compatible with Xcode 7.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 4.6 to 4.6.1: (April 22, 2015)

@@ -58,6 +58,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myPALFrameCounter(0),
     myBitsEnabled(true),
     myCollisionsEnabled(true),
+    myJitterEnabled(false),
     myNextFrameJitter(0),
     myCurrentFrameJitter(0)
 
@@ -80,6 +81,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 
   // Should undriven pins be randomly pulled high or low?
   myTIAPinsDriven = mySettings.getBool("tiadriven");
+
+  // Enable scanline jittering
+  myJitterEnabled = mySettings.getBool("tv.jitter");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -657,7 +661,7 @@ inline void TIA::endFrame()
   }
 
   // Account for frame jitter, skipping the first few frames
-  if(myFrameCounter > 3)
+  if(myJitterEnabled && myFrameCounter > 3)
   {
     // Set the jitter amount for the current frame
     myCurrentFrameJitter = myNextFrameJitter * 160;
@@ -901,6 +905,19 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
   return myTIAPinsDriven;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::toggleJitter(uInt8 mode)
+{
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, flip the state
+  bool on = (mode == 0 || mode == 1) ? bool(mode) :
+            myJitterEnabled = !myJitterEnabled;
+  myJitterEnabled = on;
+  mySettings.setValue("tv.jitter", myJitterEnabled);
+
+  return myJitterEnabled;
+}
+
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
@@ -909,8 +926,7 @@ void TIA::updateScanline()
   if(!myPartialFrameFlag)
     startFrame();
 
-  // true either way:
-  myPartialFrameFlag = true;
+  myPartialFrameFlag = true;  // true either way
 
   int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   int endClock = ((totalClocks + 228) / 228) * 228;

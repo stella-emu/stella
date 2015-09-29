@@ -58,6 +58,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("tv.filter", "0");
   setInternal("tv.scanlines", "25");
   setInternal("tv.scaninter", "true");
+  setInternal("tv.jitter", "false");
   // TV options when using 'custom' mode
   setInternal("tv.contrast", "0.0");
   setInternal("tv.brightness", "0.0");

@@ -280,6 +280,11 @@ class Console : public Serializable
     */
     void toggleFixedColors() const;
 
+    /**
+      Toggles the TIA 'scanline jitter' mode.
+    */
+    void toggleJitter() const;
+
   private:
     /**
       Sets various properties of the TIA (YStart, Height, etc) based on
