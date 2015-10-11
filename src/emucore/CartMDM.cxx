@@ -71,7 +71,7 @@ void CartridgeMDM::install(System& system)
 
   // Set the page accessing methods for the hot spots
   System::PageAccess access(this, System::PA_READWRITE);
-  for(uInt32 i = 0x0800; i < 0x0FFF; i += (1 << System::PAGE_SHIFT))
+  for(uInt32 i = 0x0800; i < 0x0BFF; i += (1 << System::PAGE_SHIFT))
     mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   // Install pages for bank 0
@@ -82,8 +82,8 @@ void CartridgeMDM::install(System& system)
 uInt8 CartridgeMDM::peek(uInt16 address)
 {
   // Because of the way we've set up accessing above, we can only
-  // get here when the addresses are from 0x800 - 0xFFF
-  if(address < 0xC00)
+  // get here when the addresses are from 0x800 - 0xBFF
+  if((address & 0xBFF) < 0xC00)
     bank(address & 0x0FF);
 
   int hotspot = ((address & 0x0F00) >> 8) - 8;
@@ -97,7 +97,7 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
   // about those below $1000
   if(!(address & 0x1000))
   {
-    if(address < 0xC00)
+    if((address & 0xBFF) < 0xC00)
       bank(address & 0x0FF);
 
     int hotspot = ((address & 0x0F00) >> 8) - 8;
