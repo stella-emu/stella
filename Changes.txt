@@ -12,11 +12,14 @@
                                Release History
 ===========================================================================
 
-4.6.5 to 4.6.6: (October xx, 2015)
+4.6.5 to 4.6.6: (October 11, 2015)
 
   * Added 'Alt/Cmd + j' shortcut key and 'tv.jitter' commandline argument
     to toggle the TV scanline jittering emulation added in the last
     release.  Also, this jittering now defaults to off.
+
+  * Fixed bug in 'MDM' bankswitch scheme; bankswitching wasn't being
+    done under certain circumstances.
 
 -Have fun!
 
