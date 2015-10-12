@@ -83,7 +83,7 @@ uInt8 CartridgeMDM::peek(uInt16 address)
 {
   // Because of the way we've set up accessing above, we can only
   // get here when the addresses are from 0x800 - 0xBFF
-  if((address & 0xBFF) < 0xC00)
+  if((address & 0x1C00) == 0x0800)
     bank(address & 0x0FF);
 
   int hotspot = ((address & 0x0F00) >> 8) - 8;
@@ -97,7 +97,7 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
   // about those below $1000
   if(!(address & 0x1000))
   {
-    if((address & 0xBFF) < 0xC00)
+    if((address & 0x1C00) == 0x0800)
       bank(address & 0x0FF);
 
     int hotspot = ((address & 0x0F00) >> 8) - 8;
