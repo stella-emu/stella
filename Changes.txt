@@ -12,6 +12,16 @@
                                Release History
 ===========================================================================
 
+4.6.6 to 4.6.7: (October xx, 2015)
+
+  * Fixed bug introduced in version 4.6.5, whereby real paddles plugged
+    into a Stelladaptor/2600-daptor weren't working correctly.
+
+  * Fixed small logic error in 'MDM' bankswitching scheme.
+
+-Have fun!
+
+
 4.6.5 to 4.6.6: (October 11, 2015)
 
   * Added 'Alt/Cmd + j' shortcut key and 'tv.jitter' commandline argument
@@ -20,8 +30,6 @@
 
   * Fixed bug in 'MDM' bankswitch scheme; bankswitching wasn't being
     done under certain circumstances.
-
--Have fun!
 
 
 4.6.1 to 4.6.5: (September 26, 2015)

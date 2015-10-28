@@ -269,12 +269,12 @@ void Paddles::update()
   int sa_yaxis = myEvent.get(myP1AxisValue);
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
-    myAnalogPinValue[Nine] = Int32(1400000 * (32767 - Int16(sa_xaxis)) / 65536.0);
+    myAnalogPinValue[Nine] = Int32(1400000 * ((32767 - Int16(sa_xaxis)) / 65536.0));
     sa_changed = true;
   }
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
-    myAnalogPinValue[Five] = Int32(1400000 * (32767 - Int16(sa_yaxis)) / 65536.0);
+    myAnalogPinValue[Five] = Int32(1400000 * ((32767 - Int16(sa_yaxis)) / 65536.0));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
