@@ -38,7 +38,7 @@ class EventHandlerSDL2 : public EventHandler
       Create a new SDL2 event handler object
     */
     EventHandlerSDL2(OSystem& osystem);
- 
+
     /**
       Destructor
     */

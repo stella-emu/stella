@@ -170,7 +170,7 @@ void SnapshotDialog::setDefaults()
 {
   mySnapSavePath->setText(instance().defaultSnapSaveDir());
   mySnapLoadPath->setText(instance().defaultSnapLoadDir());
- 
+
   mySnapSingle->setState(false);
   mySnap1x->setState(false);
   mySnapInterval->setSelected("2", "2");

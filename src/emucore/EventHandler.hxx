@@ -85,7 +85,7 @@ class EventHandler
       Create a new event handler object
     */
     EventHandler(OSystem& osystem);
- 
+
     /**
       Destructor
     */

@@ -44,7 +44,7 @@ class SoundSDL2 : public Sound
       using the object.
     */
     SoundSDL2(OSystem& osystem);
- 
+
     /**
       Destructor
     */

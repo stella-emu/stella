@@ -120,7 +120,7 @@ class CartridgeCM : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeCM(const uInt8* image, uInt32 size, const Settings& settings);
- 
+
     /**
       Destructor
     */

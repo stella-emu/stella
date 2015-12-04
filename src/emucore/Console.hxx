@@ -71,7 +71,7 @@ class Console : public Serializable
     */
     Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
             const Properties& props);
- 
+
     /**
       Destructor
     */

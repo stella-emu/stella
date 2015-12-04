@@ -47,7 +47,7 @@ ENABL   equ  $1f
 HMP0    equ  $20
 HMP1    equ  $21
 HMOVE   equ  $2a
- 
+
 ;;
 ;; Entry point for multi-load reading
 ;;

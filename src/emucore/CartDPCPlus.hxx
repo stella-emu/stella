@@ -57,7 +57,7 @@ class CartridgeDPCPlus : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeDPCPlus(const uInt8* image, uInt32 size, const Settings& settings);
- 
+
     /**
       Destructor
     */

@@ -106,7 +106,7 @@ class Controller : public Serializable
     */
     Controller(Jack jack, const Event& event, const System& system,
                Type type);
- 
+
     /**
       Destructor
     */

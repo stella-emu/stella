@@ -29,7 +29,7 @@ class System;
   Class that represents a "null" device.  The basic idea is that a
   null device is installed in a 6502 based system anywhere there are
   holes in the address space (i.e. no real device attached). 
- 
+
   @author  Bradford W. Mott
   @version $Id$
 */

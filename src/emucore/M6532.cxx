@@ -35,12 +35,12 @@ M6532::M6532(const Console& console, const Settings& settings)
     myEdgeDetectPositive(false)
 {
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::~M6532()
 {
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {

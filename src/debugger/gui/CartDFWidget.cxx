@@ -79,7 +79,7 @@ CartridgeDFWidget::CartridgeDFWidget(
   VarList::push_back(items, "29 ($FDD)");
   VarList::push_back(items, "30 ($FDE)");
   VarList::push_back(items, "31 ($FDF)");
- 
+
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("31 ($FDF) "),
                     myLineHeight, items, "Set bank: ",

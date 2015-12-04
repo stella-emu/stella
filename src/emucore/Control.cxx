@@ -85,7 +85,7 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
       break;
   }
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::~Controller()
 {

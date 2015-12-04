@@ -39,7 +39,7 @@ class System;
   0 1xxx nnnn 1101 -- Switch to bank nnnn
   0 0xxx 0nxx xxxx -- If in bank 111x, switch to bank 111n.
                       In any other bank, do not switch.
- 
+
   Note that the latter will hit on almost any TIA access.
 
   @author  Eckhard Stolberg
@@ -58,7 +58,7 @@ class CartridgeX07 : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeX07(const uInt8* image, uInt32 size, const Settings& settings);
- 
+
     /**
       Destructor
     */

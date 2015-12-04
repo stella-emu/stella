@@ -44,7 +44,7 @@ class SoundNull : public Sound
     {
       myOSystem->logMessage("Sound disabled.\n", 1);
     }
- 
+
     /**
       Destructor
     */
@@ -143,7 +143,7 @@ class SoundNull : public Sound
     {
       out.putString("TIASound");
 
-      for(int = 0; i < 6; ++i)
+      for(int i = 0; i < 6; ++i)
         out.putByte(0);
 
       // myLastRegisterSetCycle
@@ -164,7 +164,7 @@ class SoundNull : public Sound
         return false;
 
       // Read sound registers and discard
-      for(int = 0; i < 6; ++i)
+      for(int i = 0; i < 6; ++i)
         in.getByte();
 
       // myLastRegisterSetCycle

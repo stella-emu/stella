@@ -43,7 +43,7 @@ class MT24LC256
       @param system   The system using the controller of this device
     */
     MT24LC256(const string& filename, const System& system);
- 
+
     /**
       Destructor
     */

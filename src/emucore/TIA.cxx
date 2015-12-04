@@ -246,7 +246,7 @@ void TIA::systemCyclesReset()
   myClockAtLastUpdate -= clocks;
   myVSYNCFinishClock -= clocks;
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::install(System& system)
 {

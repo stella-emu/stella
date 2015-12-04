@@ -33,7 +33,7 @@ CartridgeFA::CartridgeFA(const uInt8* image, uInt32 size, const Settings& settin
   // Remember startup bank
   myStartBank = 2;
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA::~CartridgeFA()
 {
@@ -68,7 +68,7 @@ void CartridgeFA::install(System& system)
     access.codeAccessBase = &myCodeAccessBase[j & 0x00FF];
     mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
   }
- 
+
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
   access.type = System::PA_READ;

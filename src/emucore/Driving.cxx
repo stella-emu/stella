@@ -109,7 +109,7 @@ void Driving::update()
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
   myCounter &= 0x0f;
   myGrayIndex = myCounter >> 2;
- 
+
   // Stelladaptor is the only controller that should set this
   int yaxis = myEvent.get(myYAxisValue);
 

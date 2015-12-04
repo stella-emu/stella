@@ -57,7 +57,7 @@ class TIA : public Device
       @param settings The settings object for this TIA device
     */
     TIA(Console& console, Sound& sound, Settings& settings);
- 
+
     /**
       Destructor
     */

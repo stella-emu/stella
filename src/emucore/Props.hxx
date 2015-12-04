@@ -103,7 +103,7 @@ class Properties
       @param p   The Properties object to write to
     */
     friend istream& operator>>(istream& is, Properties& p);
- 
+
     /**
       Save properties to the specified output stream
 

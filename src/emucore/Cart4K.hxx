@@ -48,7 +48,7 @@ class Cartridge4K : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     Cartridge4K(const uInt8* image, uInt32 size, const Settings& settings);
- 
+
     /**
       Destructor
     */

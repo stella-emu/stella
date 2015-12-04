@@ -91,7 +91,7 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
   // Then initialize the I2C state
   jpee_init();
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::~MT24LC256()
 {

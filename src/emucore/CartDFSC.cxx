@@ -68,7 +68,7 @@ void CartridgeDFSC::install(System& system)
     access.codeAccessBase = &myCodeAccessBase[j & 0x007F];
     mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
   }
- 
+
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
   access.type = System::PA_READ;

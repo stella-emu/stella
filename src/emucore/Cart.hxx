@@ -39,7 +39,7 @@ class GuiObject;
   game and handles any bankswitching performed by the cartridge.
   A 'bank' is defined as a 4K block that is visible in the
   0x1000-0x2000 area (or its mirrors).
- 
+
   @author  Bradford W. Mott
   @version $Id$
 */
@@ -71,7 +71,7 @@ class Cartridge : public Device
       @param settings  A reference to the various settings (read-only)
     */
     Cartridge(const Settings& settings);
- 
+
     /**
       Destructor
     */

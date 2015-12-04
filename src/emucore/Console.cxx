@@ -290,7 +290,7 @@ void Console::togglePalette()
 {
   string palette, message;
   palette = myOSystem.settings().getString("palette");
- 
+
   if(palette == "standard")       // switch to z26
   {
     palette = "z26";
@@ -658,7 +658,7 @@ void Console::setControllers(const string& rommd5)
   {
     leftC = make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
   }
- 
+
   // Construct right controller
   if(right == "BOOSTERGRIP")
   {

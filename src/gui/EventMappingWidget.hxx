@@ -46,7 +46,6 @@ class EventMappingWidget : public Widget, public CommandSender
                        const StringList& actions, EventMode mode);
     ~EventMappingWidget();
 
- 
     bool remapMode() { return myRemapStatus; }
 
     void setDefaults();

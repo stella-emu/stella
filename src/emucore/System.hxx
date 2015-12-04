@@ -68,7 +68,7 @@ class System : public Serializable
 
     // Mask to apply to an address to obtain its page offset
     static const uInt16 PAGE_MASK = (1 << PAGE_SHIFT) - 1;
- 
+
     // Number of pages in the system
     static const uInt16 NUM_PAGES = 1 << (13 - PAGE_SHIFT);
 
@@ -326,7 +326,7 @@ class System : public Serializable
     const PageAccess& getPageAccess(uInt16 page) const {
       return myPageAccessTable[page];
     }
- 
+
     /**
       Get the page type for the given address.
 

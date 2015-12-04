@@ -62,7 +62,7 @@ class Cartridge4A50 : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     Cartridge4A50(const uInt8* image, uInt32 size, const Settings& settings);
- 
+
     /**
       Destructor
     */
