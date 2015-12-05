@@ -25,7 +25,9 @@
 CompuMate::CompuMate(const Console& console, const Event& event,
                      const System& system)
   : myConsole(console),
-    myEvent(event)
+    myEvent(event),
+    myColumn(0),
+    myKeyTable(nullptr)
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them
@@ -74,7 +76,7 @@ void CompuMate::update()
   rp.myDigitalPinState[Controller::Three] = true;
   rp.myDigitalPinState[Controller::Four] = true;
 
-  switch(myColumn)
+  switch(myColumn)  // This is updated outside the class
   {
     case 0:
       if (myKeyTable[KBDK_7]) lp.myDigitalPinState[Controller::Six] = false;

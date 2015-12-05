@@ -26,15 +26,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCM::CartridgeCM(const uInt8* image, uInt32 size, const Settings& settings)
-  : Cartridge(settings)
+  : Cartridge(settings),
+    mySWCHA(0xFF),   // portA is all 1's
+    myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, BSPF_min(16384u, size));
   createCodeAccessBase(16384);
 
-  // On powerup, portA is all 1's, so the last bank of ROM is enabled and
-  // RAM is disabled
-  mySWCHA = 0xff;
+  // On powerup, the last bank of ROM is enabled and RAM is disabled
   myStartBank = mySWCHA & 0x3;
 }
 

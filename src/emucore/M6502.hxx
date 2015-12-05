@@ -273,21 +273,6 @@ class M6502 : public Serializable
     void interruptHandler();
 
   private:
-    uInt8 A;    // Accumulator
-    uInt8 X;    // X index register
-    uInt8 Y;    // Y index register
-    uInt8 SP;   // Stack Pointer
-    uInt8 IR;   // Instruction register
-    uInt16 PC;  // Program Counter
-
-    bool N;     // N flag for processor status register
-    bool V;     // V flag for processor status register
-    bool B;     // B flag for processor status register
-    bool D;     // D flag for processor status register
-    bool I;     // I flag for processor status register
-    bool notZ;  // Z flag complement for processor status register
-    bool C;     // C flag for processor status register
-
     /** 
       Bit fields used to indicate that certain conditions need to be 
       handled such as stopping execution, fatal errors, maskable interrupts 
@@ -307,6 +292,21 @@ class M6502 : public Serializable
 
     /// Reference to the settings
     const Settings& mySettings;
+
+    uInt8 A;    // Accumulator
+    uInt8 X;    // X index register
+    uInt8 Y;    // Y index register
+    uInt8 SP;   // Stack Pointer
+    uInt8 IR;   // Instruction register
+    uInt16 PC;  // Program Counter
+
+    bool N;     // N flag for processor status register
+    bool V;     // V flag for processor status register
+    bool B;     // B flag for processor status register
+    bool D;     // D flag for processor status register
+    bool I;     // I flag for processor status register
+    bool notZ;  // Z flag complement for processor status register
+    bool C;     // C flag for processor status register
 
     /// Indicates if the last memory access was a read or not
     bool myLastAccessWasRead;

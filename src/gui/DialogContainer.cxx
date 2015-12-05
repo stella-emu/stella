@@ -29,7 +29,12 @@
 DialogContainer::DialogContainer(OSystem& osystem)
   : myOSystem(osystem),
     myBaseDialog(nullptr),
-    myTime(0)
+    myTime(0),
+    myKeyRepeatTime(0),
+    myClickRepeatTime(0),
+    myButtonRepeatTime(0),
+    myAxisRepeatTime(0),
+    myHatRepeatTime(0)
 {
   reset();
 }

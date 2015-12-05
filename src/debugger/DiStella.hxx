@@ -118,7 +118,7 @@ class DiStella
     CartDebug::ReservedEquates& myReserved;
     stringstream myDisasmBuf;
     queue<uInt16> myAddressQueue;
-    uInt16 myOffset, myPC, myPCBeg, myPCEnd;
+    uInt16 myOffset, myPC, myPCEnd;
 
     struct resource {
       uInt16 start;

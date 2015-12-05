@@ -162,11 +162,11 @@ class CartridgeF0 : public Cartridge
     void incbank();
 
   private:
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 64K ROM image of the cartridge
     uInt8 myImage[65536];
+
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported

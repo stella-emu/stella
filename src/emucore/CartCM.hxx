@@ -242,9 +242,6 @@ class CartridgeCM : public Cartridge
     // The CompuMate device which interacts with this cartridge
     shared_ptr<CompuMate> myCompuMate;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 16K ROM image of the cartridge
     uInt8 myImage[16384];
 
@@ -254,7 +251,10 @@ class CartridgeCM : public Cartridge
     // Current copy of SWCHA (controls ROM/RAM accesses)
     uInt8 mySWCHA;
 
-  private:
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
+
+private:
     // Following constructors and assignment operators not supported
     CartridgeCM() = delete;
     CartridgeCM(const CartridgeCM&) = delete;

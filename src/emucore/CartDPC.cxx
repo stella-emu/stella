@@ -28,7 +28,8 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
   : Cartridge(settings),
     mySize(size),
     mySystemCycles(0),
-    myFractionalClocks(0.0)
+    myFractionalClocks(0.0),
+    myCurrentBank(0)
 {
   // Make a copy of the entire image
   memcpy(myImage, image, BSPF_min(size, 8192u + 2048u + 256u));

@@ -40,17 +40,19 @@ void FilesystemNodePOSIX::setFlags()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX()
+  : _path("/"),          // The root dir.
+    _displayName(_path),
+    _isValid(true),
+    _isFile(false),
+    _isDirectory(true)
 {
-  // The root dir.
-  _path = "/";
-  _displayName = _path;
-  _isValid = true;
-  _isDirectory = true;
-  _isFile = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX(const string& p, bool verify)
+  : _isValid(true),
+    _isFile(false),
+    _isDirectory(true)
 {
   // Default to home directory
   _path = p.length() > 0 ? p : "~";

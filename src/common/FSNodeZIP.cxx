@@ -105,7 +105,9 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 FilesystemNodeZIP::FilesystemNodeZIP(
     const string& zipfile, const string& virtualpath,
     shared_ptr<AbstractFSNode> realnode, bool isdir)
-  : _isDirectory(isdir),
+  : _error(ZIPERR_NONE),
+    _numFiles(0),
+    _isDirectory(isdir),
     _isFile(!isdir)
 {
   setFlags(zipfile, virtualpath, realnode);

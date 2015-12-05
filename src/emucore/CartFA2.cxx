@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "OSystem.hxx"
 #include "Serializer.hxx"
 #include "System.hxx"
@@ -29,7 +27,7 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
   : Cartridge(osystem.settings()),
     myOSystem(osystem),
     myRamAccessTimeout(0),
-    mySize(size)
+    myCurrentBank(0)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
   if(size >= 29 * 1024)
@@ -37,6 +35,8 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
     image += 1024;
     mySize = 28 * 1024; 
   }
+  else
+    mySize = BSPF_min(28 * 1024u, size);
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);

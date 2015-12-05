@@ -63,7 +63,9 @@ EventHandler::EventHandler(OSystem& osystem)
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
     myUseCtrlKeyFlag(true),
-    mySkipMouseMotion(true)
+    mySkipMouseMotion(true),
+    myContSnapshotInterval(0),
+    myContSnapshotCounter(0)
 {
   // Erase the key mapping array
   for(int i = 0; i < KBDK_LAST; ++i)

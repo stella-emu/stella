@@ -172,12 +172,12 @@ class CartridgeMDM : public Cartridge
     // Size of the ROM image
     uInt32 mySize;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-   
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess[8];
 
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
+   
     // Indicates whether banking has been disabled due to a bankswitch
     // above bank 127
     bool myBankingDisabled;

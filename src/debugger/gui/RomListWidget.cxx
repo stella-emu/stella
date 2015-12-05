@@ -37,7 +37,10 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
     _selectedItem(-1),
     _highlightedItem(-1),
     _editMode(false),
-    _currentKeyDown(KBDK_UNKNOWN)
+    _currentKeyDown(KBDK_UNKNOWN),
+    _base(Common::Base::F_DEFAULT),
+    myDisasm(nullptr),
+    myBPState(nullptr)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _bgcolor = kWidColor;

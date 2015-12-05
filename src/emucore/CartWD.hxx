@@ -214,14 +214,11 @@ class CartridgeWD : public Cartridge
     void segmentThree(uInt8 slice, bool map3bytes);
 
   private:
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // The 8K ROM image of the cartridge
+    uInt8 myImage[8195];
 
     // Indicates the actual size of the ROM image (either 8K or 8K + 3)
     uInt32 mySize;
-
-    // The 8K ROM image of the cartridge
-    uInt8 myImage[8195];
 
     // The 64 bytes RAM of the cartridge
     uInt8 myRAM[64];
@@ -237,6 +234,9 @@ class CartridgeWD : public Cartridge
 
     // Indicates the bank we wish to switch to in the future
     uInt16 myPendingBank;
+
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
     // The arrangement of banks to use on each hotspot read
     struct BankOrg {

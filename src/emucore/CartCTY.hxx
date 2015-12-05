@@ -272,9 +272,6 @@ class CartridgeCTY : public Cartridge
     // OSsytem currently in use
     const OSystem& myOSystem;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
 
@@ -312,6 +309,9 @@ class CartridgeCTY : public Cartridge
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
+
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported

@@ -27,6 +27,7 @@ CartridgeMDM::CartridgeMDM(const uInt8* image, uInt32 size, const Settings& sett
   : Cartridge(settings),
     myImage(nullptr),
     mySize(size),
+    myCurrentBank(0),
     myBankingDisabled(false)
 {
   // Allocate array for the ROM image

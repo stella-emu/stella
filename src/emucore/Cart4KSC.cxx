@@ -146,7 +146,6 @@ bool Cartridge4KSC::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 128);
   }
   catch(...)
@@ -166,7 +165,6 @@ bool Cartridge4KSC::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 128);
   }
   catch(...)
@@ -174,9 +172,6 @@ bool Cartridge4KSC::load(Serializer& in)
     cerr << "ERROR: Cartridge4KSC::load" << endl;
     return false;
   }
-
-  // Remember what bank we were in
-  bank(myCurrentBank);
 
   return true;
 }

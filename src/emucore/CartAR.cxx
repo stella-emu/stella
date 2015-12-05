@@ -28,7 +28,14 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(BSPF_max(size, 8448u)),
-    myLoadImages(nullptr)
+    myLoadImages(nullptr),
+    myWriteEnabled(false),
+    myPower(true),
+    myPowerRomCycle(0),
+    myDataHoldRegister(0),
+    myNumberOfDistinctAccesses(0),
+    myWritePending(false),
+    myCurrentBank(0)
 {
   // Create a load image buffer and copy the given image
   myLoadImages = new uInt8[mySize];
@@ -69,9 +76,9 @@ void CartridgeAR::reset()
   // Initialize SC BIOS ROM
   initializeROM();
 
+  myWriteEnabled = false;
   myPower = true;
   myPowerRomCycle = mySystem->cycles();
-  myWriteEnabled = false;
 
   myDataHoldRegister = 0;
   myNumberOfDistinctAccesses = 0;

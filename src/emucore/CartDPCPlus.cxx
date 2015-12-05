@@ -35,7 +35,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
     myLDAimmediate(false),
     myParameterPointer(0),
     mySystemCycles(0),
-    myFractionalClocks(0.0)
+    myFractionalClocks(0.0),
+    myCurrentBank(0)
 {
   // Store image, making sure it's at least 29KB
   uInt32 minsize = 4096 * 6 + 4096 + 1024 + 255;

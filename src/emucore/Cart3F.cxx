@@ -28,7 +28,8 @@ Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     myImage(nullptr),
-    mySize(size)
+    mySize(size),
+    myCurrentBank(0)
 {
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];

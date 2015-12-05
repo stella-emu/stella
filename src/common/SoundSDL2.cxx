@@ -41,6 +41,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
     myLastRegisterSetCycle(0),
     myNumChannels(0),
     myFragmentSizeLogBase2(0),
+    myFragmentSizeLogDiv1(0),
+    myFragmentSizeLogDiv2(0),
     myIsMuted(true),
     myVolume(100)
 {

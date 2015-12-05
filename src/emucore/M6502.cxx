@@ -49,6 +49,8 @@ M6502::M6502(const Settings& settings)
   : myExecutionStatus(0),
     mySystem(nullptr),
     mySettings(settings),
+    A(0), X(0), Y(0), SP(0), IR(0), PC(0),
+    N(false), V(false), B(false), D(false), I(false), notZ(false), C(false),
     myLastAccessWasRead(true),
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),

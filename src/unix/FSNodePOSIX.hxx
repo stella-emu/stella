@@ -79,11 +79,11 @@ class FilesystemNodePOSIX : public AbstractFSNode
     AbstractFSNode* getParent() const override;
 
   protected:
-    string _displayName;
     string _path;
-    bool _isDirectory;
-    bool _isFile;
+    string _displayName;
     bool _isValid;
+    bool _isFile;
+    bool _isDirectory;
 
   private:
     /**

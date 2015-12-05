@@ -175,9 +175,6 @@ class FrameBufferSDL2 : public FrameBuffer
     // Used by mapRGB (when palettes are created)
     SDL_PixelFormat* myPixelFormat;
 
-    // The depth of the render buffer
-    uInt32 myDepth;
-
     // Indicates that the renderer has been modified, and should be redrawn
     bool myDirtyFlag;
 

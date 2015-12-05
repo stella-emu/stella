@@ -193,11 +193,11 @@ class CartridgeFA2 : public Cartridge
     // OSsytem currently in use
     const OSystem& myOSystem;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 24K/28K ROM image of the cartridge
     uInt8 myImage[28 * 1024];
+
+    // Actual usable size of the ROM image
+    uInt32 mySize;
 
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
@@ -212,8 +212,8 @@ class CartridgeFA2 : public Cartridge
     // of internal RAM to Harmony cart flash
     string myFlashFile;
 
-    // Size of the ROM image
-    uInt32 mySize;
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported

@@ -26,7 +26,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeX07::CartridgeX07(const uInt8* image, uInt32 size, const Settings& settings)
-  : Cartridge(settings)
+  : Cartridge(settings),
+    myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, BSPF_min(65536u, size));

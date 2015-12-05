@@ -155,14 +155,14 @@ class CartridgeFA : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 12K ROM image of the cartridge
     uInt8 myImage[12288];
 
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
+
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported

@@ -33,6 +33,10 @@ namespace Common {
 template <class T, int MAX_SIZE = 50>
 class FixedStack
 {
+  protected:
+    T   _stack[MAX_SIZE];
+    int _size;
+
   public:
     FixedStack<T, MAX_SIZE>() : _size(0) { }
 
@@ -62,10 +66,6 @@ class FixedStack
       assert(0 <= i && i < MAX_SIZE);
       return _stack[i];
     }
-
-  protected:
-    T   _stack[MAX_SIZE];
-    int _size;
 
   private:
     // Following constructors and assignment operators not supported

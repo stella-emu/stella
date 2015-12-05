@@ -184,9 +184,6 @@ class Cartridge3E : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    // Indicates which bank is currently active for the first segment
-    uInt16 myCurrentBank;
-
     // Pointer to a dynamically allocated ROM image of the cartridge
     uInt8* myImage;
 
@@ -195,6 +192,9 @@ class Cartridge3E : public Cartridge
 
     // Size of the ROM image
     uInt32 mySize;
+
+    // Indicates which bank is currently active for the first segment
+    uInt16 myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported

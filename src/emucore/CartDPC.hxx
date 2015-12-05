@@ -191,9 +191,6 @@ class CartridgeDPC : public Cartridge
     // Pointer to the 2K display ROM image of the cartridge
     uInt8* myDisplayImage;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The top registers for the data fetchers
     uInt8 myTops[8];
 
@@ -217,6 +214,9 @@ class CartridgeDPC : public Cartridge
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
+
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported

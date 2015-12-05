@@ -107,10 +107,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     while(!myAddressQueue.empty())
     {
       myPC = myAddressQueue.front();
-      myPCBeg = myPC;
+      uInt16 pcBeg = myPC;
       myAddressQueue.pop();
       disasm(myPC, 1);
-      if(myPCBeg <= myPCEnd)
+      if(pcBeg <= myPCEnd)
       {
         // Tentatively mark all addresses in the range as CODE
         // Note that this is a 'best-effort' approach, since
@@ -119,7 +119,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         // However, addresses *specifically* marked as DATA/GFX/PGFX
         // in the emulation core indicate that the CODE range has finished
         // Therefore, we stop at the first such address encountered
-        for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
+        for (uInt32 k = pcBeg; k <= myPCEnd; k++)
         {
           if(Debugger::debugger().getAccessFlags(k) &
              (CartDebug::DATA|CartDebug::GFX|CartDebug::PGFX))

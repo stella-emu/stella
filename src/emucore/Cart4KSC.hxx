@@ -29,8 +29,7 @@ class System;
 #endif
 
 /**
-  Cartridge class used for 4KSC games with
-  128 bytes of RAM.  There are two 4K banks.
+  Cartridge class used for 4K games with 128 bytes of RAM.
 */
 
 class Cartridge4KSC : public Cartridge
@@ -130,15 +129,12 @@ class Cartridge4KSC : public Cartridge
       Change the byte at the specified address to the given value
 
       @param address The address where the value should be stored
-      @param value The value to be stored at the address
+      @param value   The value to be stored at the address
       @return  True if the poke changed the device address space, else false
     */
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 8K ROM image of the cartridge
     uInt8 myImage[4096];
 

@@ -25,7 +25,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF8::CartridgeF8(const uInt8* image, uInt32 size, const string& md5,
                          const Settings& settings)
-  : Cartridge(settings)
+  : Cartridge(settings),
+    myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, BSPF_min(8192u, size));

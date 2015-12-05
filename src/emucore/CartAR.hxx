@@ -225,6 +225,7 @@ class CartridgeAR : public Cartridge
     // Indicates if a write is pending or not
     bool myWritePending;
 
+    // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
     // Fake SC-BIOS code to simulate the Supercharger load bars

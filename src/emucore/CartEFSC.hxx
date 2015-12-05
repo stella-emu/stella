@@ -159,14 +159,14 @@ class CartridgeEFSC : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 64K ROM image of the cartridge
     uInt8 myImage[65536];
 
     // The 128 bytes of RAM
     uInt8 myRAM[128];
+
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported

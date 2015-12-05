@@ -189,17 +189,17 @@ class CartridgeE7 : public Cartridge
     void bankRAM(uInt16 bank);
 
   private:
-    // Indicates which slice is in the segment
-    uInt16 myCurrentSlice[2];
-
-    // Indicates which 256 byte bank of RAM is being used
-    uInt16 myCurrentRAM;
-
     // The 16K ROM image of the cartridge
     uInt8 myImage[16384];
 
     // The 2048 bytes of RAM
     uInt8 myRAM[2048];
+
+    // Indicates which slice is in the segment
+    uInt16 myCurrentSlice[2];
+
+    // Indicates which 256 byte bank of RAM is being used
+    uInt16 myCurrentRAM;
 
   private:
     // Following constructors and assignment operators not supported

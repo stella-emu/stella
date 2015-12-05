@@ -49,7 +49,8 @@
 FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem(osystem),
     myInitializedCount(0),
-    myPausedCount(0)
+    myPausedCount(0),
+    myCurrentModeList(nullptr)
 {
   myMsg.surface = myStatsMsg.surface = nullptr;
   myMsg.enabled = myStatsMsg.enabled = false;

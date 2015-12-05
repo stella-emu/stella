@@ -31,6 +31,9 @@
 M6532::M6532(const Console& console, const Settings& settings)
   : myConsole(console),
     mySettings(settings),
+    myTimer(0), myIntervalShift(0), myCyclesWhenTimerSet(0),
+    myDDRA(0), myDDRB(0), myOutA(0), myOutB(0),
+    myInterruptFlag(false),
     myTimerFlagValid(false),
     myEdgeDetectPositive(false)
 {

@@ -40,6 +40,10 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myEventMode(mode),
     myActionSelected(-1),
     myRemapStatus(false),
+    myLastStick(0),
+    myLastAxis(0),
+    myLastHat(0),
+    myLastValue(0),
     myFirstTime(true)
 {
   const int fontHeight   = font.getFontHeight(),

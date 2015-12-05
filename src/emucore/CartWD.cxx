@@ -28,7 +28,10 @@
 CartridgeWD::CartridgeWD(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    mySize(BSPF_min(8195u, size))
+    mySize(BSPF_min(8195u, size)),
+    myCyclesAtBankswitchInit(0),
+    myPendingBank(0),
+    myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);

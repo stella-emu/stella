@@ -222,9 +222,6 @@ class CartridgeDPCPlus : public Cartridge
     // Pointer to the 1K frequency table
     uInt8* myFrequencyImage;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-  
     // The top registers for the data fetchers
     uInt8 myTops[8];
 
@@ -270,6 +267,9 @@ class CartridgeDPCPlus : public Cartridge
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
 
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
+  
   private:
     // Following constructors and assignment operators not supported
     CartridgeDPCPlus() = delete;

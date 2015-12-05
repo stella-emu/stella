@@ -53,6 +53,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myOptionsButton(nullptr),
     myQuitButton(nullptr),
     myList(nullptr),
+    myPattern(nullptr),
     myRomInfoWidget(nullptr),
     mySelectedItem(0)
 {
