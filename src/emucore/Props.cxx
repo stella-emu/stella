@@ -42,13 +42,13 @@ void Properties::set(PropertyType key, const string& value)
   if(key != LastPropType)
   {
     myProperties[key] = value;
+    if(BSPF_equalsIgnoreCase(myProperties[key], "AUTO-DETECT"))
+      myProperties[key] = "AUTO";
 
     switch(key)
     {
       case Cartridge_Type:
       case Display_Format:
-        if(BSPF_equalsIgnoreCase(myProperties[key], "AUTO-DETECT"))
-          myProperties[key] = "AUTO";
       case Cartridge_Sound:
       case Console_LeftDifficulty:
       case Console_RightDifficulty:

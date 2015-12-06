@@ -831,7 +831,7 @@ string CartDebug::loadConfigFile()
   {
     // Skip leading space
     int c = in.peek();
-    while(c == ' ' && c == '\t')
+    while(c == ' ' || c == '\t')
     {
       in.get();
       c = in.peek();

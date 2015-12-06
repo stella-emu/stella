@@ -58,7 +58,14 @@ using namespace Common;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal)
   : rom(rom_ptr),
-    ram(ram_ptr)
+    ram(ram_ptr),
+    halfadd(0),
+    cpsr(0),
+    mamcr(0),
+    instructions(0),
+    fetches(0),
+    reads(0),
+    writes(0)
 {
   trapFatalErrors(traponfatal);
 }

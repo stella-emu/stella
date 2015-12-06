@@ -362,6 +362,9 @@ class TIA : public Device
     */
     void enableCollisions(bool mode);
 
+    // Reset all instance variables to the initial state
+    void initialize();
+
     // Update the current frame buffer to the specified color clock
     void updateFrame(Int32 clock);
 

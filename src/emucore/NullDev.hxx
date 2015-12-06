@@ -90,7 +90,7 @@ class NullDevice : public Device
       @return The byte at the specified address
     */
     uInt8 peek(uInt16 address) override { 
-      cerr << hex << "NullDevice: peek(" << address << ")\n";
+      cerr << "NullDevice: peek(" << address << ")\n";
       return 0;
     }
 
@@ -103,7 +103,7 @@ class NullDevice : public Device
       @return  True if the poke changed the device address space, else false
     */
     bool poke(uInt16 address, uInt8 value) override {
-      cerr << hex << "NullDevice: poke(" << address << "," << value << ")\n";
+      cerr << "NullDevice: poke(" << address << "," << value << ")\n";
       return false;
     }
 

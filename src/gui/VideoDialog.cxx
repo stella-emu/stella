@@ -617,7 +617,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kTVModeChanged:
       handleTVModeChange(NTSCFilter::Preset(myTVMode->getSelectedTag().toInt()));
-
+      break;
     case kTVSharpChanged:  myTVSharpLabel->setValue(myTVSharp->getValue());
       break;
     case kTVHueChanged:  myTVHueLabel->setValue(myTVHue->getValue());

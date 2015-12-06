@@ -145,7 +145,8 @@ class FrameBufferSDL2 : public FrameBuffer
       @param h     The requested height of the new surface.
       @param data  If non-null, use the given data values as a static surface
     */
-    unique_ptr<FBSurface> createSurface(uInt32 w, uInt32 h, const uInt32* data) const override;
+    unique_ptr<FBSurface> createSurface(uInt32 w, uInt32 h, const uInt32* data)
+        const override;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.

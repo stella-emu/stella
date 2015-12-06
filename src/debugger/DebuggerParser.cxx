@@ -203,8 +203,8 @@ int DebuggerParser::decipher_arg(const string& str)
   }
 
   if(arg.substr(0, 1) == "\\") {
-    bin = true;
     dec = false;
+    bin = true;
     arg.erase(0, 1);
   } else if(arg.substr(0, 1) == "#") {
     dec = true;
@@ -215,11 +215,6 @@ int DebuggerParser::decipher_arg(const string& str)
     bin = false;
     arg.erase(0, 1);
   }
-
-  // sanity check mutually exclusive options:
-  if(derefByte && derefWord) return -1;
-  if(lobyte && hibyte) return -1;
-  if(bin && dec) return -1;
 
   // Special cases (registers):
   const CpuState& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
@@ -1015,7 +1010,7 @@ void DebuggerParser::executeJump()
   // The specific address we want may not exist (it may be part of a data section)
   // If so, scroll backward a little until we find it
   while(((line = debugger.cartDebug().addressToLine(address)) == -1) &&
-        ((address & 0xFFF) >= 0))
+        (address >= 0))
     address--;
 
   if(line >= 0 && address >= 0)

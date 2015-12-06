@@ -276,58 +276,10 @@ void FrameBufferSDL2::postFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setWindowIcon()
 {
-#ifndef BSPF_MAC_OSX     // Currently not needed for OSX
-  #include "stella.xpm"  // The Stella icon
+#ifndef BSPF_MAC_OSX        // Currently not needed for OSX
+#include "stella_icon.hxx"  // The Stella icon
 
-  // Set the window icon
-  uInt32 w, h, ncols, nbytes;
-  uInt32 rgba[256], icon[32 * 32];
-  uInt8  mask[32][4];
-
-  sscanf(stella_icon[0], "%2u %2u %2u %2u", &w, &h, &ncols, &nbytes);
-  if((w != 32) || (h != 32) || (ncols > 255) || (nbytes > 1))
-  {
-    myOSystem.logMessage("ERROR: Couldn't load the application icon.", 0);
-    return;
-  }
-
-  for(uInt32 i = 0; i < ncols; i++)
-  {
-    uInt8 code;
-    char color[32];
-    uInt32 col;
-
-    sscanf(stella_icon[1 + i], "%c c %s", &code, color);
-    if(!strcmp(color, "None"))
-      col = 0x00000000;
-    else if(!strcmp(color, "black"))
-      col = 0xFF000000;
-    else if (color[0] == '#')
-    {
-      sscanf(color + 1, "%06x", &col);
-      col |= 0xFF000000;
-    }
-    else
-    {
-      myOSystem.logMessage("ERROR: Couldn't load the application icon.", 0);
-      return;
-    }
-    rgba[code] = col;
-  }
-
-  memset(mask, 0, sizeof(mask));
-  for(h = 0; h < 32; h++)
-  {
-    const char* line = stella_icon[1 + ncols + h];
-    for(w = 0; w < 32; w++)
-    {
-      icon[w + 32 * h] = rgba[int(line[w])];
-      if(rgba[int(line[w])] & 0xFF000000)
-        mask[h][w >> 3] |= 1 << (7 - (w & 0x07));
-    }
-  }
-
-  SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(icon, 32, 32, 32,
+  SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(stella_icon, 32, 32, 32,
                          32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
   SDL_SetWindowIcon(myWindow, surface);
   SDL_FreeSurface(surface);

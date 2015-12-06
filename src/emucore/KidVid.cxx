@@ -196,7 +196,7 @@ cerr << "opened file: " << kvNameTable[i] << endl;
       else
       {
 cerr << "opened file: " << "kvshared.wav" << endl;
-        fseek(mySampleFile, 45, SEEK_SET);
+//         fseek(mySampleFile, 45, SEEK_SET);
         myFileOpened = true;
       }
     }
@@ -232,9 +232,9 @@ void KidVid::setNextSong()
     mySongCounter = ourSongStart[temp+1] - ourSongStart[temp];
 
     if(mySharedData)
-      fseek(mySharedSampleFile, ourSongStart[temp], SEEK_SET);
+      ; // fseek(mySharedSampleFile, ourSongStart[temp], SEEK_SET);
     else
-      fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
+      ; // fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
 
     myFilePointer++;
     myTapeBusy = true;
@@ -250,10 +250,10 @@ void KidVid::setNextSong()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::getNextSampleByte()
 {
-#if 1
-  static int oddeven = 0;
+//  static int oddeven = 0;
   if(mySongCounter == 0)
     mySampleByte = 0x80;
+#if 0
   else
   {
     oddeven = oddeven^1;

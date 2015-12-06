@@ -50,40 +50,17 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myFrameYStart(34),
     myFrameHeight(210),
     myMaximumNumberOfScanlines(262),
-    myStartScanline(0),
-    myColorLossEnabled(false),
-    myPartialFrameFlag(false),
-    myAutoFrameEnabled(false),
-    myFrameCounter(0),
-    myPALFrameCounter(0),
-    myBitsEnabled(true),
-    myCollisionsEnabled(true),
-    myJitterEnabled(false),
-    myNextFrameJitter(0),
-    myCurrentFrameJitter(0)
-
+    myStartScanline(0)
 {
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 320];
   myPreviousFrameBuffer = new uInt8[160 * 320];
 
-  // Make sure all TIA bits are enabled
-  enableBits(true);
-
-  // Turn off debug colours (this also sets up the PriorityEncoder)
-  toggleFixedColors(0);
-
   // Compute all of the mask tables
   TIATables::computeAllTables();
 
-  // Zero audio registers
-  myAUDV0 = myAUDV1 = myAUDF0 = myAUDF1 = myAUDC0 = myAUDC1 = 0;
-
-  // Should undriven pins be randomly pulled high or low?
-  myTIAPinsDriven = mySettings.getBool("tiadriven");
-
-  // Enable scanline jittering
-  myJitterEnabled = mySettings.getBool("tv.jitter");
+  // Set initial state
+  initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,60 +71,40 @@ TIA::~TIA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::reset()
+void TIA::initialize()
 {
-  // Reset the sound device
-  mySound.reset();
+  myFramePointer = nullptr;
+  myFramePointerOffset = myFramePointerClocks = myStopDisplayOffset = 0;
 
-  // Currently no objects are enabled or selectively disabled
-  myEnabledObjects = 0;
-  myDisabledObjects = 0xFF;
-  myAllowHMOVEBlanks = true;
+  myClockWhenFrameStarted = myClockStartDisplay = myClockStopDisplay =
+    myClockAtLastUpdate = myClocksToEndOfScanLine = myVSYNCFinishClock = 0;
 
-  // Some default values for the registers
-  myVSYNC = myVBLANK = 0;
-  myNUSIZ0 = myNUSIZ1 = 0;
+  myScanlineCountForLastFrame = myStartScanline = 0;
+
+  myVSYNC = myVBLANK = myNUSIZ0 = myNUSIZ1 = 0;
+
+  myPlayfieldPriorityAndScore = myCTRLPF = 0;
   myColor[P0Color] = myColor[P1Color] = myColor[PFColor] = myColor[BKColor] = 0;
   myColor[M0Color] = myColor[M1Color] = myColor[BLColor] = myColor[HBLANKColor] = 0;
+  myColorPtr = nullptr;
 
-  myPlayfieldPriorityAndScore = 0;
-  myCTRLPF = 0;
   myREFP0 = myREFP1 = false;
   myPF = 0;
-  myGRP0 = myGRP1 = myDGRP0 = myDGRP1 = 0;
+  myGRP0 = myGRP1 = myDGRP0 = myDGRP1 = myCurrentGRP0 = myCurrentGRP1 = 0;
   myENAM0 = myENAM1 = myENABL = myDENABL = false;
   myHMP0 = myHMP1 = myHMM0 = myHMM1 = myHMBL = 0;
   myVDELP0 = myVDELP1 = myVDELBL = myRESMP0 = myRESMP1 = false;
+
   myCollision = 0;
   myCollisionEnabledMask = 0xFFFFFFFF;
   myPOSP0 = myPOSP1 = myPOSM0 = myPOSM1 = myPOSBL = 0;
 
-  // Some default values for the "current" variables
-  myCurrentGRP0 = 0;
-  myCurrentGRP1 = 0;
+  myMotionClockP0 = myMotionClockP1 = myMotionClockM0 =
+    myMotionClockM1 = myMotionClockBL = 0;
 
-  myMotionClockP0 = 0;
-  myMotionClockP1 = 0;
-  myMotionClockM0 = 0;
-  myMotionClockM1 = 0;
-  myMotionClockBL = 0;
-
+  myStartP0 = myStartP1 = myStartM0 = myStartM1 = 0;
   mySuppressP0 = mySuppressP1 = 0;
-
   myHMP0mmr = myHMP1mmr = myHMM0mmr = myHMM1mmr = myHMBLmmr = false;
-
-  myCurrentHMOVEPos = myPreviousHMOVEPos = 0x7FFFFFFF;
-  myHMOVEBlankEnabled = false;
-
-  enableBits(true);
-
-  myDumpEnabled = false;
-  myDumpDisabledCycle = 0;
-  myINPT4 = myINPT5 = 0x80;
-
-  myFrameCounter = myPALFrameCounter = 0;
-  myScanlineCountForLastFrame = 0;
-  myNextFrameJitter = myCurrentFrameJitter = 0;
 
   myP0Mask = &TIATables::PxMask[0][0][0];
   myP1Mask = &TIATables::PxMask[0][0][0];
@@ -156,9 +113,43 @@ void TIA::reset()
   myBLMask = &TIATables::BLMask[0][0];
   myPFMask = TIATables::PFMask[0];
 
-  // Recalculate the size of the display
+  myAUDV0 = myAUDV1 = myAUDF0 = myAUDF1 = myAUDC0 = myAUDC1 = 0;
+
+  myDumpEnabled = false;
+  myDumpDisabledCycle = 0;
+  myINPT4 = myINPT5 = 0x80;
+
+  myCurrentHMOVEPos = myPreviousHMOVEPos = 0x7FFFFFFF;
+  myHMOVEBlankEnabled = false;
+  myAllowHMOVEBlanks = true;
+
+  myTIAPinsDriven = mySettings.getBool("tiadriven");
+
+  myEnabledObjects = 0;
+  myDisabledObjects = 0xFF;
+
+  myColorLossEnabled = myPartialFrameFlag = myAutoFrameEnabled = false;
+
+  myFrameCounter = myPALFrameCounter = 0;
+  myFramerate = 60.0;
+
+  myBitsEnabled = myCollisionsEnabled = true;
+  myJitterEnabled = mySettings.getBool("tv.jitter");
+  myNextFrameJitter = myCurrentFrameJitter = 0;
+  
+  // Make sure all TIA bits are enabled
+  enableBits(true);
+
+  // Turn off debug colours (this also sets up the PriorityEncoder)
   toggleFixedColors(0);
-  frameReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::reset()
+{
+  initialize();     // Set initial state
+  mySound.reset();  // Reset the sound device
+  frameReset();     // Recalculate the size of the display
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

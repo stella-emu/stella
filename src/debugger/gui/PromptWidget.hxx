@@ -36,8 +36,8 @@ class PromptWidget : public Widget, public CommandSender
     virtual ~PromptWidget();
 
   public:
-    int printf(const char *format, ...);
-    int vprintf(const char *format, va_list argptr);
+    int printf(const char* format, ...);
+    int vprintf(const char* format, va_list argptr);
     void print(const string& str);
     void printPrompt();
     bool saveBuffer(string& filename);
