@@ -31,12 +31,13 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     myList(list),
     mySettings(s),
     myReserved(reserved),
+    myOffset(0),
+    myPC(0),
+    myPCEnd(0),
     myLabels(labels),
     myDirectives(directives)
 {
   CartDebug::AddressList& addresses = info.addressList;
-  if(addresses.size() == 0)
-    return;
 
   while(!myAddressQueue.empty())
     myAddressQueue.pop();

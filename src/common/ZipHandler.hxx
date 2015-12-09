@@ -62,6 +62,9 @@
   This class implements a thin wrapper around the zip file management code
   from the MAME project.
 
+  NOTE: This code generates many errors in Coverity, and is due to be
+        replaced in an upcoming release.
+
   @author  Wrapper class by Stephen Anthony, with main functionality
            by Aaron Giles
 */

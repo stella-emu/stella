@@ -290,6 +290,10 @@ bool CartDebug::disassemble(bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
 {
+  // An empty address list means that DiStella can't do a disassembly
+  if(info.addressList.size() == 0)
+    return false;
+
   myDisassembly.list.clear();
   myDisassembly.fieldwidth = 14 + myLabelLength;
   DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
@@ -993,6 +997,10 @@ string CartDebug::saveDisassembly()
   for(int bank = 0; bank < myConsole.cartridge().bankCount(); ++bank)
   {
     BankInfo& info = myBankInfo[bank];
+    // An empty address list means that DiStella can't do a disassembly
+    if(info.addressList.size() == 0)
+      continue;
+
     // Disassemble bank
     disasm.list.clear();
     DiStella distella(*this, disasm.list, info, settings,

@@ -37,6 +37,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                        const StringList& actions, EventMode mode)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
+    myComboDialog(nullptr),
     myEventMode(mode),
     myActionSelected(-1),
     myRemapStatus(false),

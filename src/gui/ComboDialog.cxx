@@ -88,6 +88,9 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
+
+  // NOTE: Coverity doesn't yet support lambdas, so it complains that 'myEvents'
+  // isn't initialized (when it obviously is with ADD_EVENT_POPUP)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

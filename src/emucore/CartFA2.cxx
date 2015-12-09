@@ -26,17 +26,15 @@
 CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osystem)
   : Cartridge(osystem.settings()),
     myOSystem(osystem),
+    mySize(28 * 1024),
     myRamAccessTimeout(0),
     myCurrentBank(0)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
   if(size >= 29 * 1024)
-  {
     image += 1024;
-    mySize = 28 * 1024; 
-  }
-  else
-    mySize = BSPF_min(28 * 1024u, size);
+  else if(size < mySize)
+    mySize = size;
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);

@@ -17,6 +17,9 @@
 // $Id$
 //============================================================================
 
+//  NOTE: This code generates many errors in Coverity, and is due to be
+//        replaced in an upcoming release.
+
 #include <cctype>
 #include <cstdlib>
 #include <zlib.h>
