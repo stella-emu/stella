@@ -460,8 +460,8 @@ void Console::initializeAudio()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::fry() const
 {
-  for(int ZPmem = 0; ZPmem < 0x100; ZPmem += rand() % 4)
-    mySystem->poke(ZPmem, mySystem->peek(ZPmem) & uInt8(rand()) % 256);
+  for(int i = 0; i < 0x100; i += mySystem->randGenerator().next() % 4)
+    mySystem->poke(i, mySystem->peek(i) & mySystem->randGenerator().next());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -62,9 +62,6 @@
   This class implements a thin wrapper around the zip file management code
   from the MAME project.
 
-  NOTE: This code generates many errors in Coverity, and is due to be
-        replaced in an upcoming release.
-
   @author  Wrapper class by Stephen Anthony, with main functionality
            by Aaron Giles
 */
@@ -247,7 +244,8 @@ class ZipHandler
 
     inline static uInt16 read_word(uInt8* buf)
     {
-      return (buf[1] << 8) | buf[0];
+      uInt16 p0 = uInt16(buf[0]), p1 = uInt16(buf[1]);
+      return (p1 << 8) | p0;
     }
 
     inline static uInt32 read_dword(uInt8* buf)

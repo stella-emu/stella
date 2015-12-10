@@ -17,9 +17,6 @@
 // $Id$
 //============================================================================
 
-//  NOTE: This code generates many errors in Coverity, and is due to be
-//        replaced in an upcoming release.
-
 #include <cctype>
 #include <cstdlib>
 #include <zlib.h>
@@ -380,8 +377,9 @@ const ZipHandler::zip_file_header* ZipHandler::zip_file_next_file(zip_file* zip)
     return nullptr;
 
   // NULL terminate the filename
-  zip->header.saved = zip->header.raw[ZIPCFN + zip->header.filename_length];
-  zip->header.raw[ZIPCFN + zip->header.filename_length] = 0;
+  uInt32 size = ZIPCFN + zip->header.filename_length;
+  zip->header.saved = zip->header.raw[size];
+  zip->header.raw[size] = 0;
 
   // Advance the position
   zip->cd_pos += zip->header.rawlength;
