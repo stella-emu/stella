@@ -71,14 +71,14 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   };
 
   xpos = 10;
-  ADD_EVENT_POPUP(0, "Event 1: ");
-  ADD_EVENT_POPUP(1, "Event 2: ");
-  ADD_EVENT_POPUP(2, "Event 3: ");
-  ADD_EVENT_POPUP(3, "Event 4: ");
-  ADD_EVENT_POPUP(4, "Event 5: ");
-  ADD_EVENT_POPUP(5, "Event 6: ");
-  ADD_EVENT_POPUP(6, "Event 7: ");
-  ADD_EVENT_POPUP(7, "Event 8: ");
+  myEvents[0] = nullptr;  ADD_EVENT_POPUP(0, "Event 1: ");
+  myEvents[1] = nullptr;  ADD_EVENT_POPUP(1, "Event 2: ");
+  myEvents[2] = nullptr;  ADD_EVENT_POPUP(2, "Event 3: ");
+  myEvents[3] = nullptr;  ADD_EVENT_POPUP(3, "Event 4: ");
+  myEvents[4] = nullptr;  ADD_EVENT_POPUP(4, "Event 5: ");
+  myEvents[5] = nullptr;  ADD_EVENT_POPUP(5, "Event 6: ");
+  myEvents[6] = nullptr;  ADD_EVENT_POPUP(6, "Event 7: ");
+  myEvents[7] = nullptr;  ADD_EVENT_POPUP(7, "Event 8: ");
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
@@ -88,9 +88,6 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
-
-  // NOTE: Coverity doesn't yet support lambdas, so it complains that 'myEvents'
-  // isn't initialized (when it obviously is with ADD_EVENT_POPUP)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

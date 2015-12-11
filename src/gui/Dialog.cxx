@@ -302,10 +302,10 @@ void Dialog::drawDialog()
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(s.render())
   {
-    for(int i = 0; i < mySurfaceStack.size(); ++i)
+    for(auto& surface: mySurfaceStack)
     {
-      mySurfaceStack[i]->setDirty();
-      mySurfaceStack[i]->render();
+      surface->setDirty();
+      surface->render();
     }
   }
 }
