@@ -42,7 +42,7 @@ class EventHandlerSDL2 : public EventHandler
     /**
       Destructor
     */
-    virtual ~EventHandlerSDL2();
+    virtual ~EventHandlerSDL2() = default;
 
   private:
     /**

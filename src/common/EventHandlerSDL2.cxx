@@ -27,11 +27,6 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandlerSDL2::~EventHandlerSDL2()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL2::enableTextEvents(bool enable)
 {
   if(enable)

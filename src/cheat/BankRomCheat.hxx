@@ -26,7 +26,7 @@ class BankRomCheat : public Cheat
 {
   public:
     BankRomCheat(OSystem& os, const string& name, const string& code);
-    virtual ~BankRomCheat() { }
+    virtual ~BankRomCheat() = default;
 
     bool enable() override;
     bool disable() override;

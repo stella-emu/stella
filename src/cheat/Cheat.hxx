@@ -33,7 +33,7 @@ class Cheat
         myCode(code),
         myEnabled(false)
     { }
-    virtual ~Cheat() { }
+    virtual ~Cheat() = default;
 
     bool enabled() const { return myEnabled; }
     const string& name() const { return myName; }
