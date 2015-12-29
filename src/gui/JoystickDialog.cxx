@@ -73,11 +73,6 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoystickDialog::~JoystickDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoystickDialog::loadConfig()
 {
   myJoyIDs.clear();

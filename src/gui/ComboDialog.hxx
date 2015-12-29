@@ -32,7 +32,7 @@ class ComboDialog : public Dialog
 {
   public:
     ComboDialog(GuiObject* boss, const GUI::Font& font, const VariantList& combolist);
-    virtual ~ComboDialog();
+    virtual ~ComboDialog() = default;
 
     /** Place the dialog onscreen and center it */
     void show(Event::Type event, const string& name);

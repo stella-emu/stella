@@ -32,8 +32,3 @@ Menu::Menu(OSystem& osystem)
   myBaseDialog = new OptionsDialog(myOSystem, *this, 0,
       FrameBuffer::kFBMinW, FrameBuffer::kFBMinH, false);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Menu::~Menu()
-{
-}

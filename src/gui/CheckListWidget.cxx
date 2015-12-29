@@ -47,11 +47,6 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheckListWidget::~CheckListWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 {
   _list = list;

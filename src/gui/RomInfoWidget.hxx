@@ -34,7 +34,7 @@ class RomInfoWidget : public Widget
   public:
     RomInfoWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h);
-    virtual ~RomInfoWidget();
+    virtual ~RomInfoWidget() = default;
 
     void setProperties(const Properties& props);
     void clearProperties();

@@ -119,11 +119,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMappingWidget::~EventMappingWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::loadConfig()
 {
   if(myFirstTime)

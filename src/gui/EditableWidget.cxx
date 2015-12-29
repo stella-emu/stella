@@ -46,11 +46,6 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EditableWidget::~EditableWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::setText(const string& str, bool)
 {
   // Filter input string

@@ -47,11 +47,6 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ContextMenu::~ContextMenu()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::addItems(const VariantList& items)
 {
   _entries.clear();

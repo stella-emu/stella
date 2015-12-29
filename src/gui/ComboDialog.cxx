@@ -91,11 +91,6 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ComboDialog::~ComboDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ComboDialog::show(Event::Type event, const string& name)
 {
   // Make sure the event is allowed

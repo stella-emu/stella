@@ -31,7 +31,7 @@ class CommandDialog : public Dialog
 {
   public:
     CommandDialog(OSystem& osystem, DialogContainer& parent);
-    virtual ~CommandDialog();
+    virtual ~CommandDialog() = default;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

@@ -23,21 +23,21 @@
 class CommandSender;
 class DialogContainer;
 class GuiObject;
-class VideoDialog;
-class AudioDialog;
-class InputDialog;
-class UIDialog;
-class SnapshotDialog;
-class ConfigPathDialog;
-class RomAuditDialog;
-class GameInfoDialog;
-class CheatCodeDialog;
-class HelpDialog;
-class AboutDialog;
-class LoggerDialog;
 class OSystem;
 
 #include "Dialog.hxx"
+#include "VideoDialog.hxx"
+#include "AudioDialog.hxx"
+#include "InputDialog.hxx"
+#include "UIDialog.hxx"
+#include "SnapshotDialog.hxx"
+#include "ConfigPathDialog.hxx"
+#include "RomAuditDialog.hxx"
+#include "GameInfoDialog.hxx"
+#include "CheatCodeDialog.hxx"
+#include "HelpDialog.hxx"
+#include "AboutDialog.hxx"
+#include "LoggerDialog.hxx"
 #include "bspf.hxx"
 
 class OptionsDialog : public Dialog
@@ -45,7 +45,7 @@ class OptionsDialog : public Dialog
   public:
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
                   int max_w, int max_h, bool global);
-    virtual ~OptionsDialog();
+    virtual ~OptionsDialog() = default;
 
   private:
     void loadConfig() override;

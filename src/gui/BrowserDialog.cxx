@@ -116,11 +116,6 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BrowserDialog::~BrowserDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::show(const string& title, const string& startpath,
                          BrowserDialog::ListMode mode, int cmd,
                          const string& ext)

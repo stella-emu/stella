@@ -44,7 +44,7 @@ class Launcher : public DialogContainer
     /**
       Destructor
     */
-    virtual ~Launcher();
+    virtual ~Launcher() = default;
 
     /**
       Initialize the video subsystem wrt this class.

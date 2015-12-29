@@ -37,7 +37,7 @@ class GameInfoDialog : public Dialog, public CommandSender
   public:
     GameInfoDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss);
-    virtual ~GameInfoDialog();
+    virtual ~GameInfoDialog() = default;
 
   private:
     void loadConfig() override;

@@ -37,7 +37,7 @@ class CheckListWidget : public ListWidget
   public:
     CheckListWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
-    virtual ~CheckListWidget();
+    virtual ~CheckListWidget() = default;
 
     void setStyle(CheckStyle style);
     void setList(const StringList& list, const BoolArray& state);

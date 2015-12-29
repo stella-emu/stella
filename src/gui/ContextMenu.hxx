@@ -45,7 +45,7 @@ class ContextMenu : public Dialog, public CommandSender
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
                 const VariantList& items, int cmd = 0);
-    virtual ~ContextMenu();
+    virtual ~ContextMenu() = default;
 
     /** Add the given items to the widget. */
     void addItems(const VariantList& items);

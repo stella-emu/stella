@@ -59,11 +59,6 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ProgressDialog::~ProgressDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setMessage(const string& message)
 {
   myMessage->setLabel(message);

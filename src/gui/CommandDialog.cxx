@@ -92,11 +92,6 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CommandDialog::~CommandDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CommandDialog::handleCommand(CommandSender* sender, int cmd,
                                   int data, int id)
 {

@@ -27,8 +27,3 @@ CommandMenu::CommandMenu(OSystem& osystem)
 {
   myBaseDialog = new CommandDialog(myOSystem, *this);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CommandMenu::~CommandMenu()
-{
-}

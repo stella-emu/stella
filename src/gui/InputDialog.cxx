@@ -92,11 +92,6 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputDialog::~InputDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addDevicePortTab(const GUI::Font& font)
 {
   const int lineHeight = font.getLineHeight(),

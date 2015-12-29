@@ -23,7 +23,6 @@
 class OSystem;
 class GuiObject;
 class DialogContainer;
-class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
 class EditTextWidget;
@@ -32,6 +31,7 @@ class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
+#include "BrowserDialog.hxx"
 
 class ConfigPathDialog : public Dialog, public CommandSender
 {
@@ -39,7 +39,7 @@ class ConfigPathDialog : public Dialog, public CommandSender
     ConfigPathDialog(OSystem& osystem, DialogContainer& parent,
                      const GUI::Font& font, GuiObject* boss,
                      int max_w, int max_h);
-    virtual ~ConfigPathDialog();
+    virtual ~ConfigPathDialog() = default;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

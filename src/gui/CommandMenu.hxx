@@ -42,7 +42,7 @@ class CommandMenu : public DialogContainer
     /**
       Destructor
     */
-    virtual ~CommandMenu();
+    virtual ~CommandMenu() = default;
 
   private:
     // Following constructors and assignment operators not supported

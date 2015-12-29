@@ -49,11 +49,6 @@ Launcher::Launcher(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Launcher::~Launcher()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;

@@ -39,7 +39,7 @@ class InputDialog : public Dialog
   public:
     InputDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font, int max_w, int max_h);
-    virtual ~InputDialog();
+    virtual ~InputDialog() = default;
 
   private:
     void handleKeyDown(StellaKey key, StellaMod mod) override;

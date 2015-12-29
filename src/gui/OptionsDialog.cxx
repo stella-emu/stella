@@ -147,11 +147,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OptionsDialog::~OptionsDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OptionsDialog::loadConfig()
 {
   // Determine whether we should show the 'Game Information' button

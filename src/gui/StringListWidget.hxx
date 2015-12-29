@@ -28,7 +28,7 @@ class StringListWidget : public ListWidget
   public:
     StringListWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h, bool hilite = true);
-    virtual ~StringListWidget();
+    virtual ~StringListWidget() = default;
 
     void setList(const StringList& list);
 

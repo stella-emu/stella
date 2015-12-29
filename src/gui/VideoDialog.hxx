@@ -37,7 +37,7 @@ class VideoDialog : public Dialog
   public:
     VideoDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
                 int max_w, int max_h);
-    virtual ~VideoDialog();
+    virtual ~VideoDialog() = default;
 
   private:
     void loadConfig() override;

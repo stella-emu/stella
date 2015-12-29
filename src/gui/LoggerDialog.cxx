@@ -89,11 +89,6 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LoggerDialog::~LoggerDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::loadConfig()
 {
   StringParser parser(instance().logMessages());

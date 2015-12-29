@@ -68,7 +68,7 @@ class GuiObject : public CommandReceiver
         _dirty(false),
         _firstWidget(0) { }
 
-    virtual ~GuiObject() { }
+    virtual ~GuiObject() = default;
 
     OSystem& instance() const       { return myOSystem; }
     DialogContainer& parent() const { return myParent;  }

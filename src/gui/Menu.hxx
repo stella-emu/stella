@@ -41,7 +41,7 @@ class Menu : public DialogContainer
     /**
       Destructor
     */
-    virtual ~Menu();
+    virtual ~Menu() = default;
 
   private:
     // Following constructors and assignment operators not supported

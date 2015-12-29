@@ -86,11 +86,6 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HelpDialog::~HelpDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
 #ifdef BSPF_MAC_OSX

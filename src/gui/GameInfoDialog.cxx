@@ -367,11 +367,6 @@ GameInfoDialog::GameInfoDialog(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::~GameInfoDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
   myPropertiesLoaded = false;

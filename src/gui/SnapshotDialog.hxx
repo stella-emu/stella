@@ -23,7 +23,6 @@
 class OSystem;
 class GuiObject;
 class DialogContainer;
-class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
 class EditTextWidget;
@@ -32,6 +31,7 @@ class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
+#include "BrowserDialog.hxx"
 
 class SnapshotDialog : public Dialog
 {
@@ -39,7 +39,7 @@ class SnapshotDialog : public Dialog
     SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss,
                    int max_w, int max_h);
-    virtual ~SnapshotDialog();
+    virtual ~SnapshotDialog() = default;
 
   private:
     void loadConfig() override;

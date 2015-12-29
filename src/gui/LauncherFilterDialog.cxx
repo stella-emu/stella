@@ -86,11 +86,6 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LauncherFilterDialog::~LauncherFilterDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFilterDialog::parseExts(StringList& list, const string& type)
 {
   // Assume the list is empty before this method is called

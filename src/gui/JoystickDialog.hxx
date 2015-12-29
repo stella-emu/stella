@@ -38,7 +38,7 @@ class JoystickDialog : public Dialog
   public:
     JoystickDialog(GuiObject* boss, const GUI::Font& font,
                    int max_w, int max_h);
-    virtual ~JoystickDialog();
+    virtual ~JoystickDialog() = default;
 
     /** Place the dialog onscreen and center it */
     void show() { open(); }

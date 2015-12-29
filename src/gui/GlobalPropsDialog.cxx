@@ -145,11 +145,6 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GlobalPropsDialog::~GlobalPropsDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
                                       WidgetArray& wid)
 {

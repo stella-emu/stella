@@ -59,11 +59,6 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MessageBox::~MessageBox()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::addText(const GUI::Font& font, const StringList& text)
 {
   const int lineHeight = font.getLineHeight(),

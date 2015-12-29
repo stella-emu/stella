@@ -37,11 +37,6 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomInfoWidget::~RomInfoWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::loadConfig()
 {
   // The ROM may have changed since we were last in the browser, either

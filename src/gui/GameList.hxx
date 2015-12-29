@@ -31,7 +31,7 @@
 class GameList
 {
   public:
-    GameList() { }
+    GameList() = default;
 
     const string& name(uInt32 i) const
       { return i < myArray.size() ? myArray[i]._name : EmptyString; }

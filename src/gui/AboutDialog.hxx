@@ -32,7 +32,7 @@ class AboutDialog : public Dialog
   public:
     AboutDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font);
-    virtual ~AboutDialog();
+    virtual ~AboutDialog() = default;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

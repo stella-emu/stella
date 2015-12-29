@@ -35,7 +35,7 @@ class LauncherFilterDialog : public Dialog, public CommandSender
 {
   public:
     LauncherFilterDialog(GuiObject* boss, const GUI::Font& font);
-    virtual ~LauncherFilterDialog();
+    virtual ~LauncherFilterDialog() = default;
 
     /** Add valid extensions from 'exts' to the given StringList */
     static void parseExts(StringList& list, const string& exts);

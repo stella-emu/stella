@@ -56,11 +56,6 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputTextDialog::~InputTextDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                                  const StringList& labels)
 {

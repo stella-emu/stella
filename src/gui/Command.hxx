@@ -39,10 +39,10 @@ class CommandReceiver
   friend class CommandSender;
 
   public:
-    virtual ~CommandReceiver() {}
+    virtual ~CommandReceiver() = default;
 
   protected:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) {}
+    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
 };
 
 class CommandSender
@@ -51,9 +51,9 @@ class CommandSender
   // and add methods addTarget/removeTarget.
   public:
     CommandSender(CommandReceiver* target)
-        : _target(target) {}
+        : _target(target) { }
 
-    virtual ~CommandSender() {}
+    virtual ~CommandSender() = default;
 
     void setTarget(CommandReceiver* target) { _target = target; }
     CommandReceiver* getTarget() const { return _target; }

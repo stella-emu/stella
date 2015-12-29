@@ -42,7 +42,7 @@ class PopUpWidget : public Widget, public CommandSender
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
                 int x, int y, int w, int h, const VariantList& items,
                 const string& label, int labelWidth = 0, int cmd = 0);
-    ~PopUpWidget();
+    virtual ~PopUpWidget() = default;
 
     /** Add the given items to the widget. */
     void addItems(const VariantList& items) { myMenu->addItems(items);     }

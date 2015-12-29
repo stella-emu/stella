@@ -35,7 +35,7 @@ class AudioDialog : public Dialog
 {
   public:
     AudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
-    virtual ~AudioDialog();
+    virtual ~AudioDialog() = default;
 
   private:
     void loadConfig() override;

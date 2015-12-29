@@ -49,7 +49,7 @@ class FileListWidget : public StringListWidget
   public:
     FileListWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h);
-    virtual ~FileListWidget();
+    virtual ~FileListWidget() = default;
 
     /** Determines how to display files/folders */
     void setFileListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }

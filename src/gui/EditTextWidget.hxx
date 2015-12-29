@@ -30,6 +30,7 @@ class EditTextWidget : public EditableWidget
   public:
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& text = "");
+    virtual ~EditTextWidget() = default;
 
     void setText(const string& str, bool changed = false) override;
 
