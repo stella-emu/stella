@@ -56,11 +56,6 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPC::~CartridgeDPC()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPC::reset()
 {
   // Update cycles to the current system cycles

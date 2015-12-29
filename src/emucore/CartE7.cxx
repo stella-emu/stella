@@ -36,11 +36,6 @@ CartridgeE7::CartridgeE7(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE7::~CartridgeE7()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::reset()
 {
   // Initialize RAM

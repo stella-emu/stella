@@ -61,7 +61,7 @@ class CartridgeE0 : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeE0();
+    virtual ~CartridgeE0() = default;
 
   public:
     /**

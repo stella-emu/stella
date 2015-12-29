@@ -36,11 +36,6 @@ CartridgeUA::CartridgeUA(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeUA::~CartridgeUA()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeUA::reset()
 {
   // Upon reset we switch to the startup bank

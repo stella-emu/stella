@@ -51,11 +51,6 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Genesis::~Genesis()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Genesis::update()
 {
   // Digital events (from keyboard or joystick hats & buttons)

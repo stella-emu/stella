@@ -63,7 +63,6 @@ class Thumbulator
 {
   public:
     Thumbulator(const uInt16* rom, uInt16* ram, bool traponfatal);
-    ~Thumbulator();
 
     /**
       Run the ARM code, and return when finished.  A runtime_error exception is

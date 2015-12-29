@@ -45,7 +45,7 @@ class Joystick : public Controller
     /**
       Destructor
     */
-    virtual ~Joystick();
+    virtual ~Joystick() = default;
 
   public:
     /**

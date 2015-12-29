@@ -110,7 +110,7 @@ class Controller : public Serializable
     /**
       Destructor
     */
-    virtual ~Controller();
+    virtual ~Controller() = default;
 
     /**
       Returns the jack that this controller is plugged into.

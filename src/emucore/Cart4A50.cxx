@@ -57,11 +57,6 @@ Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4A50::~Cartridge4A50()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::reset()
 {
   // Initialize RAM

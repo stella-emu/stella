@@ -156,11 +156,6 @@ Settings::Settings(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Settings::~Settings()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::loadConfig()
 {
   string line, key, value;

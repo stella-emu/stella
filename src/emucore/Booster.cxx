@@ -52,11 +52,6 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BoosterGrip::~BoosterGrip()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BoosterGrip::update()
 {
   // Digital events (from keyboard or joystick hats & buttons)

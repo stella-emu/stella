@@ -57,7 +57,7 @@ class CartridgeDPC : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeDPC();
+    virtual ~CartridgeDPC() = default;
 
   public:
     /**

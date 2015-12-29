@@ -43,11 +43,6 @@ CartridgeFE::CartridgeFE(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFE::~CartridgeFE()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFE::reset()
 {
 }

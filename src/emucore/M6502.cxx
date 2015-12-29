@@ -69,11 +69,6 @@ M6502::M6502(const Settings& settings)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6502::~M6502()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::install(System& system)
 {
   // Remember which system I'm installed in

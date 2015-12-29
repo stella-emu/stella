@@ -71,11 +71,6 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, bool traponfata
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::~Thumbulator()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Thumbulator::run( void )
 {
   reset();

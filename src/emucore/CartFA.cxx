@@ -36,11 +36,6 @@ CartridgeFA::CartridgeFA(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA::~CartridgeFA()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA::reset()
 {
   // Initialize RAM

@@ -36,11 +36,6 @@ CartridgeDFSC::CartridgeDFSC(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDFSC::~CartridgeDFSC()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDFSC::reset()
 {
   // Initialize RAM

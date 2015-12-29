@@ -43,7 +43,7 @@ class Device : public Serializable
     /**
       Destructor
     */
-    virtual ~Device() { }
+    virtual ~Device() = default;
 
   public:
     /**

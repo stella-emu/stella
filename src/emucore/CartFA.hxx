@@ -52,7 +52,7 @@ class CartridgeFA : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeFA();
+    virtual ~CartridgeFA() = default;
 
   public:
     /**

@@ -59,7 +59,7 @@ class M6532 : public Device
     /**
       Destructor
     */
-    virtual ~M6532();
+    virtual ~M6532() = default;
 
    public:
     /**

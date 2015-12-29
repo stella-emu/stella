@@ -144,7 +144,7 @@ class FrameBuffer
     /**
       Destructor
     */
-    virtual ~FrameBuffer();
+    virtual ~FrameBuffer() = default;
 
     /**
       Initialize the framebuffer object (set up the underlying hardware)

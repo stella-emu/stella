@@ -36,11 +36,6 @@ CartridgeF6::CartridgeF6(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6::~CartridgeF6()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6::reset()
 {
   // Upon reset we switch to the startup bank

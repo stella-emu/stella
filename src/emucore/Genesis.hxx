@@ -47,7 +47,7 @@ class Genesis : public Controller
     /**
       Destructor
     */
-    virtual ~Genesis();
+    virtual ~Genesis() = default;
 
   public:
     /**

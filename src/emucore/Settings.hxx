@@ -44,7 +44,7 @@ class Settings
     /**
       Destructor
     */
-    virtual ~Settings();
+    virtual ~Settings() = default;
 
   public:
     /**

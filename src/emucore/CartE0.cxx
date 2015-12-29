@@ -32,11 +32,6 @@ CartridgeE0::CartridgeE0(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE0::~CartridgeE0()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::reset()
 {
   // Setup segments to some default slices

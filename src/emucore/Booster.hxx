@@ -46,7 +46,7 @@ class BoosterGrip : public Controller
     /**
       Destructor
     */
-    virtual ~BoosterGrip();
+    virtual ~BoosterGrip() = default;
 
   public:
     /**

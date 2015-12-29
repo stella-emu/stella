@@ -37,11 +37,6 @@ MindLink::MindLink(Jack jack, const Event& event, const System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MindLink::~MindLink()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MindLink::update()
 {
   myDigitalPinState[One]   =

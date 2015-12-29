@@ -40,11 +40,6 @@ M6532::M6532(const Console& console, const Settings& settings)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6532::~M6532()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {
   // Initialize the 128 bytes of memory

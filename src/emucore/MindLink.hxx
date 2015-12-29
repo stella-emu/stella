@@ -55,7 +55,7 @@ class MindLink : public Controller
     /**
       Destructor
     */
-    virtual ~MindLink();
+    virtual ~MindLink() = default;
 
   public:
     /**

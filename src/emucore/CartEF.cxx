@@ -36,11 +36,6 @@ CartridgeEF::CartridgeEF(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeEF::~CartridgeEF()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEF::reset()
 {
   // Upon reset we switch to the startup bank

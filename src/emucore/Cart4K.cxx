@@ -32,11 +32,6 @@ Cartridge4K::Cartridge4K(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4K::~Cartridge4K()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4K::reset()
 {
   myBankChanged = true;

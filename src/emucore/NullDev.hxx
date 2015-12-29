@@ -39,12 +39,12 @@ class NullDevice : public Device
     /**
       Create a new null device
     */
-    NullDevice() { }
+    NullDevice() = default;
 
     /**
       Destructor
     */
-    virtual ~NullDevice() { }
+    virtual ~NullDevice() = default;
 
   public:
     /**

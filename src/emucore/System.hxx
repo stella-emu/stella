@@ -58,7 +58,7 @@ class System : public Serializable
     /**
       Destructor
     */
-    virtual ~System();
+    virtual ~System() = default;
 
     // Mask to apply to an address before accessing memory
     static const uInt16 ADDRESS_MASK = (1 << 13) - 1;

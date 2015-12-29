@@ -62,7 +62,7 @@ class M6502 : public Serializable
     /**
       Destructor
     */
-    virtual ~M6502();
+    virtual ~M6502() = default;
 
   public:
     /**

@@ -47,11 +47,6 @@ CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMC::~CartridgeMC()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::reset()
 {
   // Initialize RAM

@@ -36,11 +36,6 @@ CartridgeF0::CartridgeF0(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF0::~CartridgeF0()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF0::reset()
 {
   // Upon reset we switch to bank 15

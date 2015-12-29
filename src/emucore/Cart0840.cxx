@@ -36,11 +36,6 @@ Cartridge0840::Cartridge0840(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0840::~Cartridge0840()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge0840::reset()
 {
   // Upon reset we switch to the startup bank

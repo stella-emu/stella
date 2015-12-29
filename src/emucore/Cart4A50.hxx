@@ -66,7 +66,7 @@ class Cartridge4A50 : public Cartridge
     /**
       Destructor
     */
-    virtual ~Cartridge4A50();
+    virtual ~Cartridge4A50() = default;
 
   public:
     /**

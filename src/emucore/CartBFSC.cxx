@@ -36,11 +36,6 @@ CartridgeBFSC::CartridgeBFSC(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBFSC::~CartridgeBFSC()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBFSC::reset()
 {
   // Initialize RAM

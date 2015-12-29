@@ -52,7 +52,7 @@ class CartridgeF4SC : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeF4SC();
+    virtual ~CartridgeF4SC() = default;
 
   public:
     /**

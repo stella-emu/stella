@@ -87,11 +87,6 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::~Controller()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Controller::read()
 {
   uInt8 ioport = 0x00;

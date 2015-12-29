@@ -49,7 +49,7 @@ class Cartridge4KSC : public Cartridge
     /**
       Destructor
     */
-    virtual ~Cartridge4KSC();
+    virtual ~Cartridge4KSC() = default;
 
   public:
     /**

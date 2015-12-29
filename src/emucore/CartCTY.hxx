@@ -127,7 +127,7 @@ class CartridgeCTY : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeCTY();
+    virtual ~CartridgeCTY() = default;
 
   public:
     /**

@@ -56,11 +56,6 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::~System()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::initialize()
 {
   // Install all devices

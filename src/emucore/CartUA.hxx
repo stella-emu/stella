@@ -52,7 +52,7 @@ class CartridgeUA : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeUA();
+    virtual ~CartridgeUA() = default;
 
   public:
     /**

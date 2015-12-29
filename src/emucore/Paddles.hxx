@@ -52,7 +52,7 @@ class Paddles : public Controller
     /**
       Destructor
     */
-    virtual ~Paddles();
+    virtual ~Paddles() = default;
 
   public:
     /**

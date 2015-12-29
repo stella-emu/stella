@@ -45,7 +45,7 @@ class Keyboard : public Controller
     /**
       Destructor
     */
-    virtual ~Keyboard();
+    virtual ~Keyboard() = default;
 
   public:
     /**

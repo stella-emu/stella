@@ -55,11 +55,6 @@ Switches::Switches(const Event& event, const Properties& properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-Switches::~Switches()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void Switches::update()
 {
   if(myEvent.get(Event::ConsoleColor) != 0)

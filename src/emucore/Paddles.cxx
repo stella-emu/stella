@@ -231,11 +231,6 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Paddles::~Paddles()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::update()
 {
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;

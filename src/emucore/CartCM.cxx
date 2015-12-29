@@ -39,11 +39,6 @@ CartridgeCM::CartridgeCM(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCM::~CartridgeCM()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCM::reset()
 {
   // Initialize RAM

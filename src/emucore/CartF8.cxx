@@ -44,11 +44,6 @@ CartridgeF8::CartridgeF8(const uInt8* image, uInt32 size, const string& md5,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8::~CartridgeF8()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::reset()
 {
   // Upon reset we switch to the reset bank

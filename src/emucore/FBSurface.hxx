@@ -63,7 +63,7 @@ class FBSurface
     /**
       Destructor
     */
-    virtual ~FBSurface() { }
+    virtual ~FBSurface() = default;
 
     /**
       This method returns the surface pixel pointer and pitch, which are

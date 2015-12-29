@@ -80,7 +80,7 @@ class CartridgeWD : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeWD();
+    virtual ~CartridgeWD() = default;
 
   public:
     /**

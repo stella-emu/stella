@@ -47,11 +47,6 @@ TrackBall::TrackBall(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TrackBall::~TrackBall()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TrackBall::read()
 {
   int scanline = mySystem.tia().scanlines();

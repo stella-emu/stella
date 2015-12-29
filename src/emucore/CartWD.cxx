@@ -42,11 +42,6 @@ CartridgeWD::CartridgeWD(const uInt8* image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeWD::~CartridgeWD()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeWD::reset()
 {
   // Initialize RAM

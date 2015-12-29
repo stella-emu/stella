@@ -45,11 +45,6 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA2::~CartridgeFA2()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2::reset()
 {
   // Initialize RAM

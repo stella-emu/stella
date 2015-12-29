@@ -36,11 +36,6 @@ CartridgeBF::CartridgeBF(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBF::~CartridgeBF()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBF::reset()
 {
   // Upon reset we switch to the startup bank

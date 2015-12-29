@@ -54,7 +54,7 @@ class TrackBall : public Controller
     /**
       Destructor
     */
-    virtual ~TrackBall();
+    virtual ~TrackBall() = default;
 
   public:
     using Controller::read;

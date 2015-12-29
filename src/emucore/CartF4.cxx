@@ -37,11 +37,6 @@ CartridgeF4::CartridgeF4(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF4::~CartridgeF4()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4::reset()
 {
   // Upon reset we switch to the startup bank

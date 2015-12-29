@@ -50,11 +50,6 @@ CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osyst
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCTY::~CartridgeCTY()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::reset()
 {
   // Initialize RAM

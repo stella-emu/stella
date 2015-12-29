@@ -51,11 +51,6 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Joystick::~Joystick()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joystick::update()
 {
   // Digital events (from keyboard or joystick hats & buttons)

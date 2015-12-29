@@ -38,11 +38,6 @@ CartridgeX07::CartridgeX07(const uInt8* image, uInt32 size, const Settings& sett
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeX07::~CartridgeX07()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeX07::reset()
 {
   // Upon reset we switch to the startup bank

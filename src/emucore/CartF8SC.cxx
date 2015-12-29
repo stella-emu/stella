@@ -36,11 +36,6 @@ CartridgeF8SC::CartridgeF8SC(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8SC::~CartridgeF8SC()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8SC::reset()
 {
   // Initialize RAM

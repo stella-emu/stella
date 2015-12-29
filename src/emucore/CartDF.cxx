@@ -36,11 +36,6 @@ CartridgeDF::CartridgeDF(const uInt8* image, uInt32 size, const Settings& settin
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDF::~CartridgeDF()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDF::reset()
 {
   // Upon reset we switch to the startup bank

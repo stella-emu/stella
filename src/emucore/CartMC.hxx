@@ -158,7 +158,7 @@ class CartridgeMC : public Cartridge
     /**
       Destructor
     */
-    virtual ~CartridgeMC();
+    virtual ~CartridgeMC() = default;
 
   public:
     /**

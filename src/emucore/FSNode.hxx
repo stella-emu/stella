@@ -93,7 +93,7 @@ class FilesystemNode
      */
     explicit FilesystemNode(const string& path);
 
-    virtual ~FilesystemNode() { }
+    virtual ~FilesystemNode() = default;
 
     /**
      * Assignment operators.

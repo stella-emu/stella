@@ -60,7 +60,7 @@ class CompuMate
       Destructor
       Controllers are deleted outside this class
     */
-    virtual ~CompuMate() { }
+    virtual ~CompuMate() = default;
 
     /**
       Return the left and right CompuMate controllers
@@ -112,7 +112,7 @@ class CompuMate
         /**
           Destructor
         */
-        virtual ~CMControl() { }
+        virtual ~CMControl() = default;
 
       public:
         /**
@@ -122,7 +122,9 @@ class CompuMate
 
           @param value  The entire contents of the SWCHA register
         */
-        void controlWrite(uInt8) override { if(myJack == Controller::Left) myHandler.update(); }
+        void controlWrite(uInt8) override {
+          if(myJack == Controller::Left) myHandler.update();
+        }
 
         /**
           Update the entire digital and analog pin state according to the

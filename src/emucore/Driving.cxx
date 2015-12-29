@@ -57,11 +57,6 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Driving::~Driving()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Driving::update()
 {
   // Make sure direct gray codes from Stelladaptor stay in sync with

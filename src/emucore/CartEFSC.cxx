@@ -34,11 +34,6 @@ CartridgeEFSC::CartridgeEFSC(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeEFSC::~CartridgeEFSC()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEFSC::reset()
 {
   // Initialize RAM

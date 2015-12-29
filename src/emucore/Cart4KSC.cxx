@@ -32,11 +32,6 @@ Cartridge4KSC::Cartridge4KSC(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4KSC::~Cartridge4KSC()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4KSC::reset()
 {
   // Initialize RAM

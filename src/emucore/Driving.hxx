@@ -46,7 +46,7 @@ class Driving : public Controller
     /**
       Destructor
     */
-    virtual ~Driving();
+    virtual ~Driving() = default;
 
   public:
     /**

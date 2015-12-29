@@ -51,7 +51,7 @@ class Switches : public Serializable
     /**
       Destructor
     */
-    virtual ~Switches();
+    virtual ~Switches() = default;
 
   public:
     /**
