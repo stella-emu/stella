@@ -30,7 +30,7 @@ class AtariVoxWidget : public ControllerWidget
   public:
     AtariVoxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    Controller& controller);
-    virtual ~AtariVoxWidget() { }
+    virtual ~AtariVoxWidget() = default;
 
   private:
     ButtonWidget* myEEPROMErase;

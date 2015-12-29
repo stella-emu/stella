@@ -33,7 +33,7 @@ class CartridgeDASHWidget : public CartDebugWidget
                         const GUI::Font& nfont,
                         int x, int y, int w, int h,
                         CartridgeDASH& cart);
-    virtual ~CartridgeDASHWidget() { }
+    virtual ~CartridgeDASHWidget() = default;
 
   private:
     void updateUIState();

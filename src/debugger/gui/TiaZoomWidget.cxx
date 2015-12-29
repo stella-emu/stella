@@ -61,11 +61,6 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaZoomWidget::~TiaZoomWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::loadConfig()
 {
   setDirty();

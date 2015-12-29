@@ -53,11 +53,6 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaOutputWidget::~TiaOutputWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::loadConfig()
 {
   setDirty();

@@ -74,11 +74,6 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BoosterWidget::~BoosterWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BoosterWidget::loadConfig()
 {
   myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));

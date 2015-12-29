@@ -38,11 +38,6 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ColorWidget::~ColorWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ColorWidget::setColor(int color)
 {
   _color = color;

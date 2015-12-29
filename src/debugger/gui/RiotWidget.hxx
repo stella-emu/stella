@@ -35,7 +35,7 @@ class RiotWidget : public Widget, public CommandSender
   public:
     RiotWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                int x, int y, int w, int h);
-    virtual ~RiotWidget();
+    virtual ~RiotWidget() = default;
 
   private:
     ControllerWidget* addControlWidget(GuiObject* boss, const GUI::Font& font,

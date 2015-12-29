@@ -64,11 +64,6 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerDialog::~DebuggerDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
   myTab->loadConfig();

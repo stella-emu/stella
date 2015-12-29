@@ -40,7 +40,7 @@ class ColorWidget : public Widget, public CommandSender
   public:
     ColorWidget(GuiObject* boss, const GUI::Font& font,
                 int x, int y, int w, int h, int cmd = 0);
-    ~ColorWidget();
+    virtual ~ColorWidget() = default;
 
     void setColor(int color);
     int  getColor() const { return _color;  }

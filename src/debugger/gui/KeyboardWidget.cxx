@@ -54,11 +54,6 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyboardWidget::~KeyboardWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyboardWidget::loadConfig()
 {
   const Event& event = instance().eventHandler().event();

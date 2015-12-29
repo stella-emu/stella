@@ -31,11 +31,6 @@ RiotRamWidget::RiotRamWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RiotRamWidget::~RiotRamWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotRamWidget::getValue(int addr) const
 {
   const CartState& state = static_cast<const CartState&>(myDbg.getState());

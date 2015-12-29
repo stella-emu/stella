@@ -36,7 +36,7 @@ class Expression
   public:
     Expression(Expression* lhs = nullptr, Expression* rhs = nullptr)
       : myLHS(lhs), myRHS(rhs) { }
-    virtual ~Expression() { }
+    virtual ~Expression() = default;
 
     virtual uInt16 evaluate() const { return 0; }
 

@@ -32,8 +32,8 @@ class Debugger;
 class DebuggerState
 {
   public:
-    DebuggerState()  { }
-    ~DebuggerState() { }
+    DebuggerState()  = default;
+    ~DebuggerState() = default;
 
     DebuggerState(const DebuggerState&) = default;
     DebuggerState(DebuggerState&&) = delete;
@@ -51,7 +51,7 @@ class DebuggerSystem
   public:
     DebuggerSystem(Debugger& dbg, Console& console) :
       myDebugger(dbg), myConsole(console), mySystem(console.system()) { }
-    virtual ~DebuggerSystem() { }
+    virtual ~DebuggerSystem() = default;
 
     virtual const DebuggerState& getState() = 0;
     virtual const DebuggerState& getOldState() = 0;

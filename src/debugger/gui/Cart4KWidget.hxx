@@ -30,7 +30,7 @@ class Cartridge4KWidget : public CartDebugWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       Cartridge4K& cart);
-    virtual ~Cartridge4KWidget() { }
+    virtual ~Cartridge4KWidget() = default;
 
   private:
     // No implementation for non-bankswitched ROMs

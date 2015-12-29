@@ -36,7 +36,7 @@ class ToggleWidget : public Widget, public CommandSender
   public:
     ToggleWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int cols, int rows);
-    virtual ~ToggleWidget();
+    virtual ~ToggleWidget() = default;
 
     const BoolArray& getState()    { return _stateList; }
     bool getSelectedState() const  { return _stateList[_selectedItem]; }

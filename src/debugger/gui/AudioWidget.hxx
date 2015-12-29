@@ -32,7 +32,7 @@ class AudioWidget : public Widget, public CommandSender
   public:
     AudioWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                 int x, int y, int w, int h);
-    virtual ~AudioWidget();
+    virtual ~AudioWidget() = default;
 
   private:
     // ID's for the various widgets

@@ -48,7 +48,7 @@ class CartDebugWidget : public Widget, public CommandSender
         myButtonHeight(myLineHeight + 4),
         myDesc(nullptr)   { }
 
-    virtual ~CartDebugWidget() { }
+    virtual ~CartDebugWidget() = default;
 
   public:
     int addBaseInformation(int bytes, const string& manufacturer,

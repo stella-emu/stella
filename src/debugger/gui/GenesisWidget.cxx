@@ -69,11 +69,6 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GenesisWidget::~GenesisWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GenesisWidget::loadConfig()
 {
   myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));

@@ -39,7 +39,7 @@ class ControllerWidget : public Widget, public CommandSender
       _h = 8 * font.getLineHeight();
     }
 
-    virtual ~ControllerWidget() { }
+    virtual ~ControllerWidget() = default;
 
     virtual void loadConfig() override { }
 

@@ -60,11 +60,6 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DrivingWidget::~DrivingWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DrivingWidget::loadConfig()
 {
   uInt8 grey = 0;

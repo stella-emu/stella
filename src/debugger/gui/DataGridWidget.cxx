@@ -112,11 +112,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DataGridWidget::~DataGridWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
                              const BoolArray& changed)
 {

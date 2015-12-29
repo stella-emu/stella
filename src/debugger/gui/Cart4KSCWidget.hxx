@@ -30,7 +30,7 @@ class Cartridge4KSCWidget : public CartDebugWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       Cartridge4KSC& cart);
-    virtual ~Cartridge4KSCWidget() { }
+    virtual ~Cartridge4KSCWidget() = default;
 
   private:
     Cartridge4KSC& myCart;

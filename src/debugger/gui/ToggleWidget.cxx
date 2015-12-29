@@ -40,11 +40,6 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ToggleWidget::~ToggleWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if (!isEnabled())

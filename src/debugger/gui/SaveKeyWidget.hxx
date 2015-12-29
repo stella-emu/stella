@@ -30,7 +30,7 @@ class SaveKeyWidget : public ControllerWidget
   public:
     SaveKeyWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                   Controller& controller);
-    virtual ~SaveKeyWidget() { }
+    virtual ~SaveKeyWidget() = default;
 
   private:
     ButtonWidget* myEEPROMErase;

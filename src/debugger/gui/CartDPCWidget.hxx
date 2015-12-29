@@ -33,7 +33,7 @@ class CartridgeDPCWidget : public CartDebugWidget
                        const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeDPC& cart);
-    virtual ~CartridgeDPCWidget() { }
+    virtual ~CartridgeDPCWidget() = default;
 
   private:
     struct CartState {

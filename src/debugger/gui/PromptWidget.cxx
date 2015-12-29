@@ -70,11 +70,6 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PromptWidget::~PromptWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::drawWidget(bool hilite)
 {
 //cerr << "PromptWidget::drawWidget\n";

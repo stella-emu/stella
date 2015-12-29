@@ -38,7 +38,7 @@ class DataGridOpsWidget : public Widget, public CommandSender
 {
   public:
     DataGridOpsWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
-    virtual ~DataGridOpsWidget() {}
+    virtual ~DataGridOpsWidget() = default;
 
     void setTarget(CommandReceiver* target);
     void setEnabled(bool e);

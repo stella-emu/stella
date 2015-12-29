@@ -48,11 +48,6 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ToggleBitWidget::~ToggleBitWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleBitWidget::setList(const StringList& off, const StringList& on)
 {
   _offList.clear();

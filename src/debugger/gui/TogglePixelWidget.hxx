@@ -28,7 +28,7 @@ class TogglePixelWidget : public ToggleWidget
   public:
     TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
                       int x, int y, int cols, int rows);
-    virtual ~TogglePixelWidget();
+    virtual ~TogglePixelWidget() = default;
 
     void setColor(int color) {
       _pixelColor = (color >= 0 && color <= 255) ? color : kDlgColor;

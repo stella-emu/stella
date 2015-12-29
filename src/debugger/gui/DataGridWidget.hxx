@@ -48,7 +48,7 @@ class DataGridWidget : public EditableWidget
                    int colchars, int bits,
                    Common::Base::Format format = Common::Base::F_DEFAULT,
                    bool useScrollbar = false);
-    virtual ~DataGridWidget();
+    virtual ~DataGridWidget() = default;
 
     void setList(const IntArray& alist, const IntArray& vlist,
                  const BoolArray& changed);

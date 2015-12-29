@@ -245,11 +245,6 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RiotWidget::~RiotWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotWidget::loadConfig()
 {
 #define IO_REGS_UPDATE(bits, s_bits)                          \

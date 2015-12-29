@@ -71,8 +71,6 @@ class DiStella
              uInt8* labels, uInt8* directives,
              CartDebug::ReservedEquates& reserved);
 
-    ~DiStella();
-
   private:
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed

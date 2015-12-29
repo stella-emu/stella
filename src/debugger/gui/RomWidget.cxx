@@ -62,11 +62,6 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomWidget::~RomWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
   Debugger& dbg = instance().debugger();

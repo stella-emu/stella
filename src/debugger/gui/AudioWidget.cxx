@@ -84,11 +84,6 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioWidget::~AudioWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   // TODO - implement this

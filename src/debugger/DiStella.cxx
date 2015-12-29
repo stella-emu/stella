@@ -223,11 +223,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::~DiStella()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::disasm(uInt32 distart, int pass)
 {
 #define LABEL_A12_HIGH(address) labelA12High(nextline, op, address, labfound)

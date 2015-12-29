@@ -89,7 +89,7 @@ class CartDebug : public DebuggerSystem
 
   public:
     CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
-    virtual ~CartDebug();
+    virtual ~CartDebug() = default;
 
     const DebuggerState& getState() override;
     const DebuggerState& getOldState() override { return myOldState; }

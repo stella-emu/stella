@@ -112,11 +112,6 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::~CartDebug()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const DebuggerState& CartDebug::getState()
 {
   myState.ram.clear();

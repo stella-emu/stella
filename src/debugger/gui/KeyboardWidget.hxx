@@ -29,7 +29,7 @@ class KeyboardWidget : public ControllerWidget
   public:
     KeyboardWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    Controller& controller);
-    virtual ~KeyboardWidget();
+    virtual ~KeyboardWidget() = default;
 
   private:
     CheckboxWidget* myBox[12];

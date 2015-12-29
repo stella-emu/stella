@@ -33,7 +33,7 @@ class PromptWidget : public Widget, public CommandSender
   public:
     PromptWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h);
-    virtual ~PromptWidget();
+    virtual ~PromptWidget() = default;
 
   public:
     int printf(const char* format, ...);

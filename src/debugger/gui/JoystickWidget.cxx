@@ -64,11 +64,6 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoystickWidget::~JoystickWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoystickWidget::loadConfig()
 {
   myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));

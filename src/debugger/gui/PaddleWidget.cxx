@@ -68,11 +68,6 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaddleWidget::~PaddleWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleWidget::loadConfig()
 {
   myP0Resistance->setValue(1400000 - Int32(myController.read(Controller::Nine)));

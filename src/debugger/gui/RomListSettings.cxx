@@ -87,11 +87,6 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomListSettings::~RomListSettings()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListSettings::show(uInt32 x, uInt32 y, int data)
 {
   _xorig = x;

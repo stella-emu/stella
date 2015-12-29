@@ -44,11 +44,6 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TogglePixelWidget::~TogglePixelWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TogglePixelWidget::setState(const BoolArray& state)
 {
   _stateList.clear();

@@ -133,11 +133,6 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CpuWidget::~CpuWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
 {
   myPCGrid->setOpsWidget(w);

@@ -32,7 +32,7 @@ class TiaInfoWidget : public Widget, public CommandSender
   public:
     TiaInfoWidget(GuiObject *boss, const GUI::Font& lfont, const GUI::Font& nfont,
                   int x, int y, int max_w);
-    virtual ~TiaInfoWidget();
+    virtual ~TiaInfoWidget() = default;
 
     void loadConfig() override;
 

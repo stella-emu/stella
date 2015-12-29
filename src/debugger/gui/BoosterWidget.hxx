@@ -29,7 +29,7 @@ class BoosterWidget : public ControllerWidget
   public:
     BoosterWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    Controller& controller);
-    virtual ~BoosterWidget();
+    virtual ~BoosterWidget() = default;
 
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire, kJBooster, kJTrigger };

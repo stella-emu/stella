@@ -84,11 +84,6 @@ CartRamWidget::CartRamWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartRamWidget::~CartRamWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartRamWidget::loadConfig()
 {
   myRam->loadConfig();

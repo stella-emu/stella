@@ -537,11 +537,6 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaWidget::~TiaWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   Debugger& dbg = instance().debugger();

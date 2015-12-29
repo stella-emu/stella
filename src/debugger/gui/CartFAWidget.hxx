@@ -32,7 +32,7 @@ class CartridgeFAWidget : public CartDebugWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeFA& cart);
-    virtual ~CartridgeFAWidget() { }
+    virtual ~CartridgeFAWidget() = default;
 
   private:
     CartridgeFA& myCart;

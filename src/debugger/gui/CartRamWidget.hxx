@@ -36,7 +36,7 @@ class CartRamWidget : public Widget, public CommandSender
     CartRamWidget(GuiObject* boss, const GUI::Font& lfont,
                   const GUI::Font& nfont,
                   int x, int y, int w, int h, CartDebugWidget& cartDebug);
-    virtual ~CartRamWidget();
+    virtual ~CartRamWidget() = default;
 
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);

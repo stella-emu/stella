@@ -121,11 +121,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomListWidget::~RomListWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setList(const CartDebug::Disassembly& disasm,
                             const PackedBitArray& state)
 {
