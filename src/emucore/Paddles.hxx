@@ -77,8 +77,8 @@ class Paddles : public Controller
 
       @return  Whether the controller supports using the mouse
     */
-    bool setMouseControl(
-      Controller::Type xtype, int xid, Controller::Type ytype, int yid) override;
+    bool setMouseControl(Controller::Type xtype, int xid,
+                         Controller::Type ytype, int yid) override;
 
     /**
       Sets the sensitivity for digital emulation of paddle movement.
@@ -86,8 +86,8 @@ class Paddles : public Controller
       or digital joystick axis events); Stelladaptors or the mouse are
       not modified.
 
-      @param sensitivity  Value from 1 to 10, with larger values
-                          causing more movement
+      @param sensitivity  Value from 1 to MAX_DIGITAL_SENSE, with larger
+                          values causing more movement
     */
     static void setDigitalSensitivity(int sensitivity);
 
@@ -95,20 +95,23 @@ class Paddles : public Controller
       Sets the sensitivity for analog emulation of paddle movement
       using a mouse.
 
-      @param sensitivity  Value from 1 to 10, with larger values
-                          causing more movement
+      @param sensitivity  Value from 1 to MAX_MOUSE_SENSE, with larger
+                          values causing more movement
     */
     static void setMouseSensitivity(int sensitivity);
 
-  private:
-    // Range of values over which digital and mouse movement is scaled
-    // to paddle resistance
-    enum {
-      TRIGRANGE = 4096,
-      TRIGMAX   = 3856,
-      TRIGMIN   = 1
-    };
+    /**
+      Sets the maximum upper range for digital/mouse emulation of paddle
+      movement (ie, a value of 50 means to only use 50% of the possible
+      range of movement).  Note that this specfically does not apply to
+      Stelladaptor-like devices, which uses an absolute value range.
 
+      @param sensitivity  Value from 1 to 100, representing the percentage
+                          of the range to use
+    */
+    static void setPaddleRange(int range);
+
+  private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myP0AxisValue, myP1AxisValue,
@@ -127,8 +130,16 @@ class Paddles : public Controller
     int myLastAxisX, myLastAxisY;
     int myAxisDigitalZero, myAxisDigitalOne;
 
-    static int _DIGITAL_SENSITIVITY, _DIGITAL_DISTANCE;
-    static int _MOUSE_SENSITIVITY;
+    // Range of values over which digital and mouse movement is scaled
+    // to paddle resistance
+    static const int TRIGMIN = 1;
+    static const int TRIGMAX = 4096;
+    static int TRIGRANGE;  // This one is variable for the upper range
+
+    static const int MAX_DIGITAL_SENSE = 20;
+    static const int MAX_MOUSE_SENSE = 20;
+    static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
+    static int MOUSE_SENSITIVITY;
 
     // Lookup table for associating paddle buttons with controller pins
     // Yes, this is hideously complex

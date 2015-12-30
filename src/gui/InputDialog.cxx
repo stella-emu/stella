@@ -168,7 +168,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myDPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    "Digital paddle sensitivity: ",
                                    lwidth, kDPSpeedChanged);
-  myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(10);
+  myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   xpos += myDPaddleSpeed->getWidth() + 5;
   myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", kTextAlignLeft);
@@ -180,7 +180,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myMPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    "Mouse paddle sensitivity: ",
                                    lwidth, kMPSpeedChanged);
-  myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(15);
+  myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   xpos += myMPaddleSpeed->getWidth() + 5;
   myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", kTextAlignLeft);
@@ -328,10 +328,10 @@ void InputDialog::setDefaults()
       myDeadzoneLabel->setValue(3200);
 
       // Paddle speed (digital and mouse)
-      myDPaddleSpeed->setValue(5);
-      myDPaddleLabel->setLabel("5");
-      myMPaddleSpeed->setValue(6);
-      myMPaddleLabel->setLabel("6");
+      myDPaddleSpeed->setValue(10);
+      myDPaddleLabel->setLabel("10");
+      myMPaddleSpeed->setValue(10);
+      myMPaddleLabel->setLabel("10");
 
       // AtariVox serial port
       myAVoxPort->setText("");

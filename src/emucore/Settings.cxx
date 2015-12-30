@@ -86,8 +86,8 @@ Settings::Settings(OSystem& osystem)
   setInternal("usemouse", "analog");
   setInternal("grabmouse", "true");
   setInternal("cursor", "2");
-  setInternal("dsense", "5");
-  setInternal("msense", "7");
+  setInternal("dsense", "10");
+  setInternal("msense", "10");
   setInternal("saport", "lr");
   setInternal("ctrlcombo", "true");
 
@@ -289,20 +289,17 @@ void Settings::validate()
   if(i < 0)        setInternal("joydeadzone", "0");
   else if(i > 29)  setInternal("joydeadzone", "29");
 
-  if(i < 1)        setInternal("dsense", "1");
-  else if(i > 10)  setInternal("dsense", "10");
-
   i = getInt("cursor");
   if(i < 0 || i > 3)
     setInternal("cursor", "2");
 
   i = getInt("dsense");
   if(i < 1)        setInternal("dsense", "1");
-  else if(i > 10)  setInternal("dsense", "10");
+  else if(i > 20)  setInternal("dsense", "10");
 
   i = getInt("msense");
   if(i < 1)        setInternal("msense", "1");
-  else if(i > 15)  setInternal("msense", "15");
+  else if(i > 20)  setInternal("msense", "15");
 
   i = getInt("ssinterval");
   if(i < 1)        setInternal("ssinterval", "2");
@@ -394,8 +391,8 @@ void Settings::usage() const
     << "                 never>        Use mouse as a controller as specified by ROM properties in given mode(see manual)\n"
     << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
     << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
-    << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-10)\n"
-    << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-15)\n"
+    << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-20)\n"
+    << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-20)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
