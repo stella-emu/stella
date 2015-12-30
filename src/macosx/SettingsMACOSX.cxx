@@ -32,11 +32,6 @@ SettingsMACOSX::SettingsMACOSX(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsMACOSX::~SettingsMACOSX()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SettingsMACOSX::loadConfig()
 {
   string key, value;

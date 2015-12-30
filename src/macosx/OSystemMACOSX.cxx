@@ -41,11 +41,6 @@ OSystemMACOSX::OSystemMACOSX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemMACOSX::~OSystemMACOSX()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystemMACOSX::defaultSnapSaveDir()
 {
   FilesystemNode desktop("~/Desktop");

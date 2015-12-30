@@ -33,11 +33,6 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SaveKey::~SaveKey()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SaveKey::read(DigitalPin pin)
 {
   // We need to override the Controller::read() method, since the timing

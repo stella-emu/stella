@@ -231,10 +231,12 @@ void KidVid::setNextSong()
     mySharedData = (temp < 10);
     mySongCounter = ourSongStart[temp+1] - ourSongStart[temp];
 
+#if 0
     if(mySharedData)
       ; // fseek(mySharedSampleFile, ourSongStart[temp], SEEK_SET);
     else
       ; // fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
+#endif
 
     myFilePointer++;
     myTapeBusy = true;

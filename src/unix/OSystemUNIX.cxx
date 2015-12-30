@@ -36,8 +36,3 @@ OSystemUNIX::OSystemUNIX()
   setBaseDir("~/.stella");
   setConfigFile("~/.stella/stellarc");
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemUNIX::~OSystemUNIX()
-{
-}

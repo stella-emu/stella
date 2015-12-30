@@ -41,7 +41,7 @@ class SettingsMACOSX : public Settings
     /**
       Destructor
     */
-    virtual ~SettingsMACOSX();
+    virtual ~SettingsMACOSX() = default;
 
   public:
     /**

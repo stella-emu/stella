@@ -22,10 +22,6 @@
 
 class OSystem;
 class Console;
-class CartDebug;
-class CpuDebug;
-class RiotDebug;
-class TIADebug;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
@@ -46,6 +42,10 @@ class ButtonWidget;
 #include "M6502.hxx"
 #include "System.hxx"
 #include "Stack.hxx"
+#include "CartDebug.hxx"
+#include "CpuDebug.hxx"
+#include "RiotDebug.hxx"
+#include "TIADebug.hxx"
 #include "bspf.hxx"
 
 using FunctionMap = map<string,unique_ptr<Expression>>;
@@ -76,7 +76,7 @@ class Debugger : public DialogContainer
     /**
       Destructor
     */
-    virtual ~Debugger();
+    virtual ~Debugger() = default;
 
   public:
     /**

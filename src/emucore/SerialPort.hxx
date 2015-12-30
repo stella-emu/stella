@@ -33,8 +33,8 @@
 class SerialPort
 {
   public:
-    SerialPort() { }
-    virtual ~SerialPort() { }
+    SerialPort() = default;
+    virtual ~SerialPort() = default;
 
     /**
       Open the given serial port with the specified attributes.

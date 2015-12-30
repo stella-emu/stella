@@ -39,7 +39,7 @@ class OSystemUNIX : public OSystem
     /**
       Destructor
     */
-    virtual ~OSystemUNIX();
+    virtual ~OSystemUNIX() = default;
 
   private:
     // Following constructors and assignment operators not supported

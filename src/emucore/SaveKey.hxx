@@ -20,9 +20,8 @@
 #ifndef SAVEKEY_HXX
 #define SAVEKEY_HXX
 
-class MT24LC256;
-
 #include "Control.hxx"
+#include "MT24LC256.hxx"
 
 /**
   Richard Hutchinson's SaveKey "controller", consisting of a 32KB EEPROM
@@ -53,7 +52,7 @@ class SaveKey : public Controller
     /**
       Destructor
     */
-    virtual ~SaveKey();
+    virtual ~SaveKey() = default;
 
   public:
     using Controller::read;

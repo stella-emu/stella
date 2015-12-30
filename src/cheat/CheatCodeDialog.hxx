@@ -27,18 +27,18 @@ class ButtonWidget;
 class StaticTextWidget;
 class CheckListWidget;
 class EditTextWidget;
-class InputTextDialog;
 class OptionsDialog;
 class OSystem;
 
 #include "Dialog.hxx"
+#include "InputTextDialog.hxx"
 
 class CheatCodeDialog : public Dialog
 {
   public:
     CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font);
-    virtual ~CheatCodeDialog();
+    virtual ~CheatCodeDialog() = default;
 
   protected:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

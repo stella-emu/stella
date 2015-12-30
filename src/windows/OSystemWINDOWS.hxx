@@ -39,7 +39,7 @@ class OSystemWINDOWS : public OSystem
     /**
       Destructor
     */
-    virtual ~OSystemWINDOWS();
+    virtual ~OSystemWINDOWS() = default;
 
   public:
     /**

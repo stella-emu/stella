@@ -33,8 +33,8 @@
 class Serializable
 {
   public:
-    Serializable() { }
-    virtual ~Serializable() { }
+    Serializable() = default;
+    virtual ~Serializable() = default;
 
     /**
       Save the current state of the object to the given Serializer.

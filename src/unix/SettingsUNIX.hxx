@@ -41,7 +41,7 @@ class SettingsUNIX : public Settings
     /**
       Destructor
     */
-    virtual ~SettingsUNIX();
+    virtual ~SettingsUNIX() = default;
 
   private:
     // Following constructors and assignment operators not supported

@@ -35,7 +35,7 @@ class SettingsWINDOWS : public Settings
     /**
       Destructor
     */
-    virtual ~SettingsWINDOWS();
+    virtual ~SettingsWINDOWS() = default;
 
   private:
     // Following constructors and assignment operators not supported

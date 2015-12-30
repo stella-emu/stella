@@ -84,11 +84,6 @@ OSystemWINDOWS::OSystemWINDOWS()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemWINDOWS::~OSystemWINDOWS()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystemWINDOWS::defaultSnapSaveDir()
 {
   HomeFinder homefinder;

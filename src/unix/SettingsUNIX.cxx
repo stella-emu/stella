@@ -24,8 +24,3 @@ SettingsUNIX::SettingsUNIX(OSystem& osystem)
   : Settings(osystem)
 {
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsUNIX::~SettingsUNIX()
-{
-}

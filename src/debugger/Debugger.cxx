@@ -135,11 +135,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::~Debugger()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
   const GUI::Size& s = myOSystem.settings().getSize("dbg.res");

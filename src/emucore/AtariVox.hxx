@@ -21,9 +21,9 @@
 #define ATARIVOX_HXX
 
 class SerialPort;
-class MT24LC256;
 
 #include "Control.hxx"
+#include "MT24LC256.hxx"
 
 /**
   Richard Hutchinson's AtariVox "controller": A speech synthesizer and
@@ -57,7 +57,7 @@ class AtariVox : public Controller
     /**
       Destructor
     */
-    virtual ~AtariVox();
+    virtual ~AtariVox() = default;
 
   public:
     using Controller::read;
