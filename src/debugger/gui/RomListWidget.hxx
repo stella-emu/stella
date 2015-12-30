@@ -20,7 +20,6 @@
 #ifndef ROM_LIST_WIDGET_HXX
 #define ROM_LIST_WIDGET_HXX
 
-class RomListSettings;
 class ScrollBarWidget;
 class PackedBitArray;
 class CheckListWidget;
@@ -28,6 +27,7 @@ class CheckListWidget;
 #include "Base.hxx"
 #include "CartDebug.hxx"
 #include "EditableWidget.hxx"
+#include "RomListSettings.hxx"
 
 /** RomListWidget */
 class RomListWidget : public EditableWidget

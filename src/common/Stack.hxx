@@ -21,6 +21,7 @@
 #define STACK_HXX
 
 #include <array>
+#include <functional>
 
 /**
  * Simple fixed size stack class.
@@ -35,6 +36,8 @@ class FixedStack
     uInt32 _size;
 
   public:
+    using StackFunction = std::function<void(T&)>;
+
     FixedStack<T, CAPACITY>() : _size(0) { }
 
     bool empty() const { return _size <= 0; }
@@ -45,11 +48,14 @@ class FixedStack
     T pop() { return std::move(_stack[--_size]); }
     uInt32 size() const { return _size; }
 
-    T* begin() { return _stack.begin();         }
-    T* end()   { return _stack.begin() + _size; }
-
-    const T* cbegin() const { return _stack.begin();         }
-    const T* cend() const   { return _stack.begin() + _size; }
+    // Apply the given function to every item in the stack
+    // We do it this way so the stack API can be preserved,
+    // and no access to individual elements is allowed outside
+    // the class.
+    void applyAll(const StackFunction& func) {
+      for(uInt32 i = 0; i < _size; ++i)
+        func(_stack[i]);
+    }
 
   private:
     // Following constructors and assignment operators not supported

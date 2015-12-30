@@ -103,12 +103,11 @@ void DialogContainer::draw(bool full)
   // Draw all the dialogs on the stack when we want a full refresh
   if(full)
   {
-    for(auto& dialog: myDialogStack)
-    {
-      dialog->center();
-      dialog->setDirty();
-      dialog->drawDialog();
-    }
+    myDialogStack.applyAll([](Dialog*& d){
+      d->center();
+      d->setDirty();
+      d->drawDialog();
+    });
   }
   else if(!myDialogStack.empty())
     myDialogStack.top()->drawDialog();

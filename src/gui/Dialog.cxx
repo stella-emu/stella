@@ -302,11 +302,10 @@ void Dialog::drawDialog()
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(s.render())
   {
-    for(auto& surface: mySurfaceStack)
-    {
+    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface){
       surface->setDirty();
       surface->render();
-    }
+    });
   }
 }
 
