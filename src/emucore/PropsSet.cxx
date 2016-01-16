@@ -39,21 +39,9 @@ void PropertiesSet::load(const string& filename)
 {
   ifstream in(filename);
 
-  // Loop reading properties
-  for(;;)
-  {
-    // Make sure the stream is still good or we're done 
-    if(!in)
-      break;
-
-    // Get the property list associated with this profile
-    Properties prop;
-    in >> prop;
-
-    // If the stream is still good then insert the properties
-    if(in)
-      insert(prop);
-  }
+  Properties prop;
+  while(in >> prop)
+    insert(prop);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,10 +153,20 @@ void PropertiesSet::insert(const Properties& properties, bool save)
   if(md5 == "")
     return;
 
+  // Make sure the exact entry isn't already in any list
+  Properties defaultProps;
+  if(getMD5(md5, defaultProps, false) && defaultProps == properties)
+    return;
+  else if(getMD5(md5, defaultProps, true) && defaultProps == properties)
+  {
+    myExternalProps.erase(md5);
+    return;
+  }
+
   // The status of 'save' determines which list to save to
   PropsList& list = save ? myExternalProps : myTempProps;
 
-  auto ret = list.insert(make_pair(md5, properties));
+  auto ret = list.emplace(md5, properties);
   if(ret.second == false)
   {
     // Remove old item and insert again

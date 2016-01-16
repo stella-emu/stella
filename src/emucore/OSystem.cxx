@@ -177,6 +177,9 @@ void OSystem::saveConfig()
 
   if(mySettings)
     mySettings->saveConfig();
+
+  if(myPropSet)
+    myPropSet->save(myPropertiesFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

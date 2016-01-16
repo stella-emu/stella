@@ -122,7 +122,15 @@ class Properties
     */
     void setDefaults();
 
-  public:
+    /**
+      Overloaded equality operator(s)
+
+      @param properties The properties object to compare to
+      @return True if the properties are equal, else false
+    */
+    bool operator == (const Properties& properties) const;
+    bool operator != (const Properties& properties) const;
+
     /**
       Overloaded assignment operator
 
