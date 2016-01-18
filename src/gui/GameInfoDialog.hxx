@@ -66,14 +66,16 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget* myTVType;
 
     // Controller properties
-    PopUpWidget* myP0Controller;
-    PopUpWidget* myP1Controller;
-    PopUpWidget* mySwapPaddles;
-    PopUpWidget* myLeftPort;
-    PopUpWidget* myRightPort;
-    PopUpWidget* myMouseControl;
-    PopUpWidget* myMouseX;
-    PopUpWidget* myMouseY;
+    PopUpWidget*      myP0Controller;
+    PopUpWidget*      myP1Controller;
+    PopUpWidget*      mySwapPaddles;
+    PopUpWidget*      myLeftPort;
+    PopUpWidget*      myRightPort;
+    PopUpWidget*      myMouseControl;
+    PopUpWidget*      myMouseX;
+    PopUpWidget*      myMouseY;
+    SliderWidget*     myMouseRange;
+    StaticTextWidget* myMouseRangeLabel;
 
     // Display properties
     PopUpWidget*      myFormat;
@@ -86,6 +88,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     enum {
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
+      kMRangeChanged   = 'MRch',
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',
       kMCtrlChanged    = 'MCch'

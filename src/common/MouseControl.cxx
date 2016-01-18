@@ -19,6 +19,7 @@
 
 #include "Console.hxx"
 #include "Control.hxx"
+#include "Paddles.hxx"
 #include "Props.hxx"
 
 #include "MouseControl.hxx"
@@ -30,17 +31,21 @@ MouseControl::MouseControl(Console& console, const string& mode)
     myRightController(console.rightController()),
     myCurrentModeNum(0)
 {
-  if(BSPF_equalsIgnoreCase(mode, "none"))
+  istringstream m_axis(mode);
+  string m_mode;
+  m_axis >> m_mode;
+
+  if(BSPF_equalsIgnoreCase(m_mode, "none"))
   {
     myModeList.push_back(MouseMode("Mouse input is disabled"));
     return;
   }
-  else if(!BSPF_equalsIgnoreCase(mode, "auto") && mode.length() == 2 &&
-          mode[0] >= '0' && mode[0] <= '8' &&
-          mode[1] >= '0' && mode[1] <= '8')
+  else if(!BSPF_equalsIgnoreCase(m_mode, "auto") && m_mode.length() == 2 &&
+          m_mode[0] >= '0' && m_mode[0] <= '8' &&
+          m_mode[1] >= '0' && m_mode[1] <= '8')
   {
-    Axis xaxis = Axis(int(mode[0]) - '0');
-    Axis yaxis = Axis(int(mode[1]) - '0');
+    Axis xaxis = Axis(int(m_mode[0]) - '0');
+    Axis yaxis = Axis(int(m_mode[1]) - '0');
     ostringstream msg;
     msg << "Mouse X-axis is ";
     Controller::Type xtype = Controller::Joystick, ytype = Controller::Joystick;
@@ -154,6 +159,13 @@ MouseControl::MouseControl(Console& console, const string& mode)
     addRightControllerModes(noswap);
     addLeftControllerModes(noswap);
   }
+
+  // Set range information (currently only for paddles, but may be used
+  // for other controllers in the future)
+  int m_range = 100;
+  if(!(m_axis >> m_range))
+    m_range = 100;
+  Paddles::setPaddleRange(m_range);
 
   // If the mouse isn't used at all, we still need one item in the list
   if(myModeList.size() == 0)

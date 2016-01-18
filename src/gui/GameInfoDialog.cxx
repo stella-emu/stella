@@ -248,7 +248,7 @@ GameInfoDialog::GameInfoDialog(
   lwidth = font.getStringWidth("Mouse axis mode: ");
   pwidth = font.getStringWidth("Specific axis");
   items.clear();
-  VarList::push_back(items, "Automatic", "auto");
+  VarList::push_back(items, "Automatic", "AUTO");
   VarList::push_back(items, "Specific axis", "specific");
   myMouseControl =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
@@ -278,6 +278,18 @@ GameInfoDialog::GameInfoDialog(
   myMouseY = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                "Y-Axis is: ", lwidth);
   wid.push_back(myMouseY);
+
+  xpos = 10;  ypos += lineHeight + 8;
+  lwidth = font.getStringWidth("Mouse axis range: ");
+  myMouseRange = new SliderWidget(myTab, font, xpos, ypos, 8*fontWidth, lineHeight,
+                                  "Mouse axis range: ", lwidth, kMRangeChanged);
+  myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
+  wid.push_back(myMouseRange);
+
+  myMouseRangeLabel = new StaticTextWidget(myTab, font,
+                            xpos + myMouseRange->getWidth() + 4, ypos+1,
+                            3*fontWidth, fontHeight, "", kTextAlignLeft);
+  myMouseRangeLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -337,7 +349,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myPPBlend);
 
   myPPBlendLabel = new StaticTextWidget(myTab, font,
-                                        xpos + lwidth + myPhosphor->getWidth() + 10 + \
+                                        xpos + lwidth + myPhosphor->getWidth() + 10 +
                                         myPPBlend->getWidth() + 4, ypos+1,
                                         3*fontWidth, fontHeight, "", kTextAlignLeft);
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
@@ -419,8 +431,12 @@ void GameInfoDialog::loadView()
   myP0Controller->setSelected(myGameProperties.get(Controller_Left), "JOYSTICK");
   myP1Controller->setSelected(myGameProperties.get(Controller_Right), "JOYSTICK");
   mySwapPaddles->setSelected(myGameProperties.get(Controller_SwapPaddles), "NO");
-  const string& mcontrol = myGameProperties.get(Controller_MouseAxis);
-  bool autoAxis = BSPF_equalsIgnoreCase(mcontrol, "auto");
+
+  // MouseAxis property (potentially contains 'range' information)
+  istringstream m_axis(myGameProperties.get(Controller_MouseAxis));
+  string m_control, m_range;
+  m_axis >> m_control;
+  bool autoAxis = BSPF_equalsIgnoreCase(m_control, "AUTO");
   if(autoAxis)
   {
     myMouseControl->setSelectedIndex(0);
@@ -430,11 +446,21 @@ void GameInfoDialog::loadView()
   else
   {
     myMouseControl->setSelectedIndex(1);
-    myMouseX->setSelected(mcontrol[0] - '0');
-    myMouseY->setSelected(mcontrol[1] - '0');
+    myMouseX->setSelected(m_control[0] - '0');
+    myMouseY->setSelected(m_control[1] - '0');
   }
   myMouseX->setEnabled(!autoAxis);
   myMouseY->setEnabled(!autoAxis);
+  if(m_axis >> m_range)
+  {
+    myMouseRange->setValue(atoi(m_range.c_str()));
+    myMouseRangeLabel->setLabel(m_range);
+  }
+  else
+  {
+    myMouseRange->setValue(100);
+    myMouseRangeLabel->setLabel("100");
+  }
 
   // Display properties
   myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO");
@@ -479,10 +505,15 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Console_SwapPorts,
     myLeftPort->getSelectedTag().toString() == "L" ? "NO" : "YES");
   myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag().toString());
+
+  // MouseAxis property (potentially contains 'range' information)
   string mcontrol = myMouseControl->getSelectedTag().toString();
-  if(mcontrol != "auto")
+  if(mcontrol != "AUTO")
     mcontrol = myMouseX->getSelectedTag().toString() +
                myMouseY->getSelectedTag().toString();
+  string range = myMouseRangeLabel->getLabel();
+  if(range != "100")
+    mcontrol += " " + range;
   myGameProperties.set(Controller_MouseAxis, mcontrol);
 
   // Display properties
@@ -498,10 +529,9 @@ void GameInfoDialog::saveConfig()
   else
     instance().propSet().insert(myGameProperties);
 
-  // In any event, inform the Console and save the properties
+  // In any event, inform the Console
   if(instance().hasConsole())
     instance().console().setProperties(myGameProperties);
-  instance().propSet().save(instance().propertiesFile());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -551,6 +581,10 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPPBlendChanged:
       myPPBlendLabel->setValue(myPPBlend->getValue());
+      break;
+
+    case kMRangeChanged:
+      myMouseRangeLabel->setValue(myMouseRange->getValue());
       break;
 
     case kMCtrlChanged:

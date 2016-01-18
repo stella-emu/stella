@@ -27,6 +27,10 @@
     loading a ROM would always point to the last opened ROM, not to the one
     currently selected.
 
+  * Fixed bug in storing ROM properties; in some cases, a copy of the
+    ROM properties was being stored in the external file when it was
+    exactly the same as the internal entry.
+
   * Added more C++11 updates all over the codebase, and ran Stella
     through Coverity for the first time.  I'm proud to say that Stella
     now has a 0.00 defect rate!
