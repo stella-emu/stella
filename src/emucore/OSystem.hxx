@@ -128,7 +128,7 @@ class OSystem
       @return The console object
     */
     Console& console() const { return *myConsole; }
-    bool hasConsole() const { return myConsole != nullptr; }
+    bool hasConsole() const;
 
     /**
       Get the serial port of the system.

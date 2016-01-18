@@ -406,6 +406,13 @@ bool OSystem::reloadConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::hasConsole() const
+{
+  return myConsole != nullptr &&
+         myEventHandler->state() != EventHandler::S_LAUNCHER;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createLauncher(const string& startdir)
 {
   closeConsole();
