@@ -14,14 +14,22 @@
 
 4.6.7 to 4.7: (January xx, 2016)
 
-  * Added ability to specify the maximum range of movement for paddles when
-    using a mouse or digital device to emulate the paddle.  This is needed,
-    since on a real console most paddle games use very little of the
-    paddle range, and could result in moving the mouse onscreen with
-    nothing appearing to happen (when in effect it was as if you turned
-    a real paddle all the way to the end of the range).  This eliminates
-    issues in (for example) Kaboom, where there was a huge 'deadzone'
-    when moving to the left.
+  * Improved paddle emulation in several ways:
+
+    - Added ability to specify the maximum range of movement for paddles
+      when using a mouse or digital device to emulate the paddle.  This is
+      needed, since on a real console most paddle games use very little of
+      the paddle range, and could result in moving the mouse onscreen with
+      nothing appearing to happen (when in effect it was as if you turned
+      a real paddle all the way to the end of the range).  This eliminates
+      issues in (for example) Kaboom, where there was a huge 'deadzone'
+      when moving to the left.  All applicable ROMS in the internal
+      database have been updated.
+
+    - The range for paddle emulation now takes an integer from 1 - 20,
+      indicating how much to scale movement (ie, how fast the onscreen
+      paddle will move when you move the mouse).  The movement itself
+      is now also smoother than before.
 
   * Fixed bug in ROM launcher; selecting 'Options -> Game Properties' after
     loading a ROM would always point to the last opened ROM, not to the one

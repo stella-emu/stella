@@ -100,7 +100,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 56"
 "Display.YStart" "24"
 ""
 
@@ -417,7 +417,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 50"
 ""
 
 "Cartridge.MD5" "05c60458ec69e7fe8b1be973852d84f1"
@@ -868,7 +868,7 @@
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cartridge.MD5" "0adb21206de92e8aec5ef295805ebb90"
@@ -1027,7 +1027,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "0cb7af80fd0ddef84844481d85e5d29b"
@@ -1173,7 +1173,7 @@
 "Cartridge.Name" "Party Mix - Down on the Line (3 of 3) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 70"
 ""
 
 "Cartridge.MD5" "0ec93f519bb769e0d9f80e61f6cc8023"
@@ -1824,6 +1824,7 @@
 "Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cartridge.MD5" "171cd6b55267573e6a9c2921fb720794"
@@ -1902,6 +1903,7 @@
 "Cartridge.Name" "Picnic (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cartridge.MD5" "17d000a2882f9fdaa8b4a391ad367f00"
@@ -2784,6 +2786,7 @@
 "Cartridge.Name" "Picnic (1983) (Carrere Video) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cartridge.MD5" "245f07c8603077a0caf5f83ee6cf8b43"
@@ -3025,6 +3028,7 @@
 "Cartridge.Note" "AKA Bachelor Party, Uses the paddle controllers"
 "Cartridge.Rarity" "Extremely Rare"
 "Controller.Left" "PADDLES_IAXIS"
+"Controller.MouseAxis" "AUTO 65"
 "Display.YStart" "22"
 "Display.Height" "222"
 "Display.Phosphor" "YES"
@@ -3270,6 +3274,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "29949f893ef6cb9e8ecb368b9e99eee4"
@@ -3375,6 +3380,7 @@
 "Cartridge.Name" "Eggomania (1983) (Carrere Video) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "2b27eb194e13f3b38d23c879cc1e3abf"
@@ -3846,7 +3852,7 @@
 "Cartridge.Name" "Circus Atari (1980) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cartridge.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
@@ -4337,7 +4343,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 56"
 "Display.YStart" "30"
 ""
 
@@ -4538,6 +4544,7 @@
 "Cartridge.Name" "Night Driver (1980) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -4568,7 +4575,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 60"
 ""
 
 "Cartridge.MD5" "39790a2e9030751d7db414e13f1b6960"
@@ -5335,6 +5342,7 @@
 "Cartridge.Name" "Eggomania (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "42b3ab3cf661929bdc77b621a8c37574"
@@ -5611,6 +5619,7 @@
 "Cartridge.Note" "Can also use left joystick"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cartridge.MD5" "4702d8d9b48a332724af198aeac9e469"
@@ -6172,7 +6181,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cartridge.MD5" "4df9d7352a56a458abb7961bf10aba4e"
@@ -6438,6 +6447,7 @@
 "Cartridge.Name" "Encounter at L-5 (1983) (Gameworld) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 50"
 ""
 
 "Cartridge.MD5" "519f007c0e14fb90208dbb5199dfb604"
@@ -6496,6 +6506,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 65"
 ""
 
 "Cartridge.MD5" "524693b337f7ecc9e8b9126e04a232af"
@@ -6651,7 +6662,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "542c6dd5f7280179b51917a4cba4faff"
@@ -6715,6 +6726,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "54f7efa6428f14b9f610ad0ca757e26c"
@@ -7000,6 +7012,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Extremely Rare"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cartridge.MD5" "59f596285d174233c84597dee6f34f1f"
@@ -7112,6 +7125,7 @@
 "Cartridge.Note" "Uses the paddle controllers"
 "Cartridge.Rarity" "Extremely Rare"
 "Controller.Left" "PADDLES_IAXIS"
+"Controller.MouseAxis" "AUTO 65"
 "Display.YStart" "22"
 "Display.Height" "222"
 "Display.Phosphor" "YES"
@@ -7574,7 +7588,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 45"
 "Display.YStart" "38"
 ""
 
@@ -7617,6 +7631,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "613abf596c304ef6dbd8f3351920c37a"
@@ -7709,6 +7724,7 @@
 "Cartridge.MD5" "62921652f6634eb1a0940ed5489c7e18"
 "Cartridge.Name" "SCSIcide (V1.09) (2001) (Joe Grand)"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 65"
 ""
 
 "Cartridge.MD5" "62992392ea651a16aa724a92e4596ed6"
@@ -7939,6 +7955,7 @@
 "Cartridge.Name" "SCSIcide (v1.2) (2001) (Joe Grand)"
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 65"
 ""
 
 "Cartridge.MD5" "65490d61922f3e3883ee1d583ce10855"
@@ -7962,6 +7979,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "65917ae29a8c9785bb1f2acb0d6aafd0"
@@ -7985,6 +8003,7 @@
 "Cartridge.Name" "Music Machine, The (1983) (Sparrow)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cartridge.MD5" "65ba1a4c643d1ab44481bdddeb403827"
@@ -8164,7 +8183,7 @@
 "Cartridge.Name" "Warplock (1982) (Data Age)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 40"
 "Display.Phosphor" "YES"
 ""
 
@@ -8256,6 +8275,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 50"
 ""
 
 "Cartridge.MD5" "685e9668dc270b6deeb9cfbfd4d633c3"
@@ -8585,6 +8605,7 @@
 "Cartridge.Name" "Beat 'Em & Eat 'Em (1983) (Dynacom)"
 "Cartridge.Note" "Uses the Paddle Controller (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cartridge.MD5" "6c449db9bbbd90972ad1932d6af87330"
@@ -8604,7 +8625,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cartridge.MD5" "6c85098518d3f94f7622c42fd1d819ac"
@@ -8767,7 +8788,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 70"
 "Display.YStart" "30"
 ""
 
@@ -8858,7 +8879,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 60"
 ""
 
 "Cartridge.MD5" "6ffc95108e5add6f9b8abcaf330be835"
@@ -9269,6 +9290,7 @@
 "Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cartridge.MD5" "753375d183c713cfa0aa7298d1f3067b"
@@ -9492,6 +9514,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "78297db7f416af3052dd793b53ff014e"
@@ -9597,6 +9620,7 @@
 "Cartridge.Name" "SCSIcide (v1.1) (2001) (Joe Grand)"
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 65"
 ""
 
 "Cartridge.MD5" "7996b8d07462a19259baa4c811c2b4b4"
@@ -9693,6 +9717,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "7ab210f448de518fa61a5924120ba872"
@@ -9705,7 +9730,7 @@
 "Cartridge.Name" "Guardian (1982) (Apollo)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 65"
 ""
 
 "Cartridge.MD5" "7ac4f4fb425db38288fa07fb8ff4b21d"
@@ -10290,6 +10315,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01 50"
 "Display.Format" "PAL60"
 ""
 
@@ -10524,6 +10550,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 65"
 ""
 
 "Cartridge.MD5" "84535afb9a69712ec0af4947329e08b8"
@@ -10634,6 +10661,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Extremely Rare"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 80"
 ""
 
 "Cartridge.MD5" "855a42078b14714bcfd490d2cf57e68d"
@@ -10657,6 +10685,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Extremely Rare"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 80"
 ""
 
 "Cartridge.MD5" "85bbefb90e16bf386b304c1e9a1f6084"
@@ -10843,7 +10872,7 @@
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cartridge.MD5" "888debb162d7d1ae71025b4ab794257f"
@@ -11004,7 +11033,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 75"
 ""
 
 "Cartridge.MD5" "8a8e401369e2b63a13e18a4d685387c6"
@@ -11939,7 +11968,7 @@
 "Cartridge.Name" "Solar Storm (1983) (Imagic)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cartridge.MD5" "97933c9f20873446e4c1f8a4da21575f"
@@ -12131,7 +12160,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cartridge.MD5" "9a4274409216ff09ecde799f2a56ac73"
@@ -12367,6 +12396,7 @@
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.Name" "Tac Scan (1983) (Sega) [h1]"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 60"
 "Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
@@ -12416,6 +12446,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "AUTO 65"
 ""
 
 "Cartridge.MD5" "9efb4e1a15a6cdd286e4bcd7cd94b7b8"
@@ -13057,7 +13088,7 @@
 "Cartridge.Name" "Circus Atari (1980) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cartridge.MD5" "a7cf2b9afdbb3a161bf418dbcf0321dc"
@@ -13191,7 +13222,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "a94528ae05dd051894e945d4d2349b3b"
@@ -13618,7 +13649,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "afb3bc45c6a82739cc82582127cd96e6"
@@ -13725,7 +13756,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "b0ba51723b9330797985808db598fc31"
@@ -14032,6 +14063,7 @@
 "Cartridge.Name" "Beat 'Em & Eat 'Em (1982) (Mystique) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controller (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cartridge.MD5" "b4f87ce75f7329c18301a2505fe59cd3"
@@ -14356,7 +14388,7 @@
 "Cartridge.Name" "Action Force (1983) (Parker Bros) (PAL)"
 "Cartridge.Note" "AKA G.I. Joe - Cobra Strike"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cartridge.MD5" "b9f9c0fed0db08c34346317f3957a945"
@@ -14661,7 +14693,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 57"
 ""
 
 "Cartridge.MD5" "bf976cf80bcf52c5f164c1d45f2b316b"
@@ -14706,6 +14738,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "c02e1afa0671e438fd526055c556d231"
@@ -15117,6 +15150,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "c52d9bbdc5530e1ef8e8ba7be692b01e"
@@ -15319,7 +15353,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cartridge.MD5" "c73ae5ba5a0a3f3ac77f0a9e14770e73"
@@ -15478,7 +15512,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 50"
 "Display.YStart" "30"
 ""
 
@@ -15516,6 +15550,7 @@
 "Cartridge.Name" "Philly Flasher (1982) (PlayAround)"
 "Cartridge.Note" "Uses the Paddle Controllers, AKA Beat 'Em & Eat 'Em"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cartridge.MD5" "ca7aaebd861a9ef47967d31c5a6c4555"
@@ -15639,6 +15674,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "AUTO 50"
 ""
 
 "Cartridge.MD5" "cbeafd37f15e0dddb0540dbe15c545a4"
@@ -16079,7 +16115,7 @@
 "Cartridge.Sound" "STEREO"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "d010e3dfe7366e47561c088079a59439"
@@ -16375,6 +16411,7 @@
 "Cartridge.Name" "Piece o' Cake (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "d3456b4cf1bd1a7b8fb907af1a80ee15"
@@ -16429,6 +16466,7 @@
 "Console.SwapPorts" "YES"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 60"
 "Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
@@ -16506,7 +16544,7 @@
 "Cartridge.Name" "Action Force (1983) (Parker Bros) (PAL) [a]"
 "Cartridge.Note" "AKA G.I. Joe - Cobra Strike"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cartridge.MD5" "d57913088e0c49ac3a716bf9837b284f"
@@ -16573,7 +16611,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 57"
 ""
 
 "Cartridge.MD5" "d62d7d1a974c31c5803f96a8c1552510"
@@ -16835,6 +16873,7 @@
 "Cartridge.Name" "Night Driver (1980) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -17021,6 +17060,7 @@
 "Cartridge.Name" "Encounter at L-5 (1982) (Data Age)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 50"
 ""
 
 "Cartridge.MD5" "dbdaf82f4f0c415a94d1030271a9ef44"
@@ -17028,7 +17068,7 @@
 "Cartridge.Name" "Kaboom! (CCE)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "dbdd21e1ee3d72119e8cd14d943c585b"
@@ -17482,7 +17522,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 75"
 ""
 
 "Cartridge.MD5" "e13818a5c0cb2f84dd84368070e9f099"
@@ -17514,7 +17554,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "e14feddeb82f5160ed5cf9ca4078e58d"
@@ -17785,7 +17825,7 @@
 "Cartridge.Name" "Kaboom! (CCE) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "e4a0b28befaaa2915df1fa01238b1e29"
@@ -17959,6 +17999,7 @@
 "Cartridge.Name" "Bugs (1983) (Gameworld) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 50"
 ""
 
 "Cartridge.MD5" "e62e60a3e6cb5563f72982fcd83de25a"
@@ -18018,7 +18059,7 @@
 "Cartridge.Name" "Solar Storm (1983) (Imagic) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cartridge.MD5" "e6e5bb0e4f4350da573023256268313d"
@@ -18038,6 +18079,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "e72eb8d4410152bdcb69e7fba327b420"
@@ -18529,7 +18571,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "ed9999911b406dc5f75c850dcc17bdf4"
@@ -18574,7 +18616,7 @@
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cartridge.MD5" "ee659ae50e9df886ac4f8d7ad10d046a"
@@ -19025,7 +19067,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cartridge.MD5" "f367e58667a30e7482175809e3cec4d4"
@@ -19115,6 +19157,7 @@
 "Cartridge.Name" "Night Driver (1980) (Atari) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -19447,7 +19490,7 @@
 "Cartridge.Sound" "STEREO"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "f802fa61011dd9eb6f80b271bac479d0"
@@ -19531,7 +19574,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
+"Controller.MouseAxis" "10 57"
 ""
 
 "Cartridge.MD5" "f93d7fee92717e161e6763a88a293ffa"
@@ -19635,7 +19678,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cartridge.MD5" "fa0570561aa80896f0ead05c46351389"
@@ -20066,6 +20109,7 @@
 "Cartridge.Name" "Night Driver (1980) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -20110,7 +20154,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 56"
 ""
 
 "Cartridge.MD5" "ff87d58125ae517eb7b09a0475a1ccdc"
