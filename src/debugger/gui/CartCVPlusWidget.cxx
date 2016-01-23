@@ -17,33 +17,77 @@
 // $Id$
 //============================================================================
 
-#include "CartCV.hxx"
-#include "CartCVWidget.hxx"
+#include "CartCVPlus.hxx"
+#include "PopUpWidget.hxx"
+#include "CartCVPlusWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCVWidget::CartridgeCVWidget(
+CartridgeCVPlusWidget::CartridgeCVPlusWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeCV& cart)
+      int x, int y, int w, int h, CartridgeCVPlus& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 size = 2048;
-  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
-  start -= start % size;
+  uInt32 size = cart.mySize;
 
   ostringstream info;
-  info << "CV 2K ROM + 1K RAM , non-bankswitched\n"
+  info << "LS_Dracon CV+ cartridge, 1K RAM, 2-256 2K ROM\n"
        << "1024 bytes RAM @ $F000 - $F7FF\n"
        << "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
-       << "ROM accessible @ $" << Common::Base::HEX4 << start << " - "
-       << "$" << (start + size - 1);
+       << "2048 bytes ROM @ $F800 - $FFFF, by writing to $3D\n"
+       << "Startup bank = " << cart.myStartBank << "\n";
 
-  addBaseInformation(cart.mySize, "CommaVid", info.str());
+  int xpos = 10,
+      ypos = addBaseInformation(size, "LS_Dracon / Stephen Anthony",
+                                info.str()) + myLineHeight;
+
+  VariantList items;
+  for(uInt16 i = 0; i < cart.bankCount(); ++i)
+      VarList::push_back(items, Variant(i).toString() + " ($3D)");
+
+  ostringstream label;
+  label << "Set bank ($F800 - $FFFF): ";
+  myBank =
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("xxx ($3D) "),
+                    myLineHeight, items, label.str(),
+                    _font.getStringWidth(label.str()), kBankChanged);
+  myBank->setTarget(this);
+  addFocusWidget(myBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCVWidget::saveOldState()
+void CartridgeCVPlusWidget::loadConfig()
+{
+  myBank->setSelectedIndex(myCart.myCurrentBank);
+
+  CartDebugWidget::loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCVPlusWidget::handleCommand(CommandSender* sender,
+                                          int cmd, int data, int id)
+{
+  if(cmd == kBankChanged)
+  {
+    myCart.unlockBank();
+    myCart.bank(myBank->getSelected());
+    myCart.lockBank();
+    invalidate();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCVPlusWidget::bankState()
+{
+  ostringstream& buf = buffer();
+
+  buf << "Bank = " << dec << myCart.myCurrentBank << ", hotspot = $3D";
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCVPlusWidget::saveOldState()
 {
   myOldState.internalram.clear();
   for(uInt32 i = 0; i < this->internalRamSize();i++)
@@ -51,19 +95,19 @@ void CartridgeCVWidget::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeCVWidget::internalRamSize() 
+uInt32 CartridgeCVPlusWidget::internalRamSize() 
 {
   return 1024;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeCVWidget::internalRamRPort(int start)
+uInt32 CartridgeCVPlusWidget::internalRamRPort(int start)
 {
   return 0xF000 + start;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCVWidget::internalRamDescription() 
+string CartridgeCVPlusWidget::internalRamDescription() 
 {
   ostringstream desc;
   desc << "$F000 - $F3FF used for Read Access\n"
@@ -73,7 +117,7 @@ string CartridgeCVWidget::internalRamDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeCVWidget::internalRamOld(int start, int count)
+const ByteArray& CartridgeCVPlusWidget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
   for(int i = 0; i < count; i++)
@@ -82,7 +126,7 @@ const ByteArray& CartridgeCVWidget::internalRamOld(int start, int count)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeCVWidget::internalRamCurrent(int start, int count)
+const ByteArray& CartridgeCVPlusWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
   for(int i = 0; i < count; i++)
@@ -91,19 +135,19 @@ const ByteArray& CartridgeCVWidget::internalRamCurrent(int start, int count)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCVWidget::internalRamSetValue(int addr, uInt8 value)
+void CartridgeCVPlusWidget::internalRamSetValue(int addr, uInt8 value)
 {
   myCart.myRAM[addr] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeCVWidget::internalRamGetValue(int addr)
+uInt8 CartridgeCVPlusWidget::internalRamGetValue(int addr)
 {
   return myCart.myRAM[addr];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCVWidget::internalRamLabel(int addr) 
+string CartridgeCVPlusWidget::internalRamLabel(int addr) 
 {
   CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + 0xF000, false);

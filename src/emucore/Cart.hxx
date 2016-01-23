@@ -194,7 +194,7 @@ class Cartridge : public Device
       const char* type;
       const char* desc;
     };
-    enum { ourNumBSTypes = 45 };
+    enum { ourNumBSTypes = 46 };
     static BankswitchType ourBSList[ourNumBSTypes];
 
   protected:
@@ -304,6 +304,11 @@ class Cartridge : public Device
       Returns true if the image is probably a CV bankswitching cartridge
     */
     static bool isProbablyCV(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a CV+ bankswitching cartridge
+    */
+    static bool isProbablyCVPlus(const uInt8* image, uInt32 size);
 
     /**
       Returns true if the image is probably a DASH bankswitching cartridge

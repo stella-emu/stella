@@ -18,7 +18,7 @@
 
     - Added ability to specify the maximum range of movement for paddles
       when using a mouse or digital device to emulate the paddle.  This is
-      needed, since on a real console most paddle games use very little of
+      useful since on a real console most paddle games use very little of
       the paddle range, and could result in moving the mouse onscreen with
       nothing appearing to happen (when in effect it was as if you turned
       a real paddle all the way to the end of the range).  This eliminates
@@ -38,6 +38,10 @@
   * Fixed bug in storing ROM properties; in some cases, a copy of the
     ROM properties was being stored in the external file when it was
     exactly the same as the internal entry.
+
+  * Added 'CV+' bankswitching scheme, developed by myself and LS_Dracon
+    (of AtariAge).  This scheme contains RAM like the CV scheme, and
+    also switchable 2K ROM segments by writing to $3D.
 
   * Added more C++11 updates all over the codebase, and ran Stella
     through Coverity for the first time.  I'm proud to say that Stella

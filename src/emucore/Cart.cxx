@@ -34,6 +34,7 @@
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
 #include "CartCV.hxx"
+#include "CartCVPlus.hxx"
 #include "CartDASH.hxx"
 #include "CartDPC.hxx"
 #include "CartDPCPlus.hxx"
@@ -207,6 +208,8 @@ unique_ptr<Cartridge> Cartridge::create(const BytePtr& img, uInt32 size,
     cartridge = make_ptr<CartridgeCTY>(image, size, osystem);
   else if(type == "CV")
     cartridge = make_ptr<CartridgeCV>(image, size, settings);
+  else if(type == "CV+")
+    cartridge = make_ptr<CartridgeCVPlus>(image, size, settings);
   else if(type == "DASH")
     cartridge = make_ptr<CartridgeDASH>(image, size, settings);
   else if(type == "DPC")
@@ -372,7 +375,11 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   // Guess type based on size
   const char* type = nullptr;
 
-  if((size % 8448) == 0 || size == 6144)
+  if(isProbablyCVPlus(image,size))
+  {
+    type = "CV+";
+  }
+  else if((size % 8448) == 0 || size == 6144)
   {
     type = "AR";
   }
@@ -699,6 +706,16 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyCVPlus(const uInt8* image, uInt32)
+{
+  // CV+ cart is identified key 'commavidplus' @ $04 in the ROM
+  // We inspect only this area to speed up the search
+  uInt8 signature[12] = { 'c', 'o', 'm', 'm', 'a', 'v', 'i', 'd',
+                          'p', 'l', 'u', 's' };
+  return searchForBytes(image+4, 24, signature, 12, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyDASH(const uInt8* image, uInt32 size)
 {
   // DASH cart is identified key 'TJAD' in the ROM
@@ -973,6 +990,7 @@ Cartridge::BankswitchType Cartridge::ourBSList[] = {
   { "BF",       "BF (CPUWIZ 256K)"              },
   { "BFSC",     "BFSC (CPUWIZ 256K + ram)"      },
   { "CV",       "CV (Commavid extra ram)"       },
+  { "CV+",      "CV+ (Extended Commavid)"       },
   { "CM",       "CM (SpectraVideo CompuMate)"   },
   { "DASH",     "DASH (Experimental)"           },
   { "DF",       "DF (CPUWIZ 128K)"              },
