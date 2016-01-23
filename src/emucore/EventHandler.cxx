@@ -1756,7 +1756,7 @@ Event::Type EventHandler::eventAtIndex(int idx, EventMode mode) const
     default:
       return Event::NoType;
   }
-}  
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string EventHandler::actionAtIndex(int idx, EventMode mode) const

@@ -96,7 +96,7 @@ uInt8 Cartridge4KSC::peek(uInt16 address)
       triggerReadFromWritePort(peekAddress);
       return myRAM[address] = value;
     }
-  }  
+  }
   else
     return myImage[address & 0x0FFF];
 }
@@ -126,7 +126,7 @@ bool Cartridge4KSC::patch(uInt16 address, uInt8 value)
     myImage[address & 0xFFF] = value;
 
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* Cartridge4KSC::getImage(int& size) const

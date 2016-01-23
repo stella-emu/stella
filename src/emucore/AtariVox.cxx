@@ -97,7 +97,7 @@ void AtariVox::write(DigitalPin pin, bool value)
 
     default:
       break;
-  } 
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

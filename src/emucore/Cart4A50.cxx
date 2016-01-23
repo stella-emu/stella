@@ -196,7 +196,7 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
   myLastAddress = address & 0x1fff;
 
   return myBankChanged;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge4A50::getAccessFlags(uInt16 address) const
@@ -362,7 +362,7 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
     myImage[(address & 0xff) + 0x1ff00] = value;
   }
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* Cartridge4A50::getImage(int& size) const

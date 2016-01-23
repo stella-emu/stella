@@ -101,7 +101,7 @@ uInt8 CartridgeF4SC::peek(uInt16 address)
       triggerReadFromWritePort(peekAddress);
       return myRAM[address] = value;
     }
-  }  
+  }
 
   // NOTE: This does not handle accessing RAM, however, this function 
   // should never be called for RAM because of the way page accessing 
@@ -126,7 +126,7 @@ bool CartridgeF4SC::poke(uInt16 address, uInt8)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::bank(uInt16 bank)
-{ 
+{
   if(bankLocked()) return false;
 
   // Remember what bank we're in
@@ -182,7 +182,7 @@ bool CartridgeF4SC::patch(uInt16 address, uInt8 value)
     myImage[(myCurrentBank << 12) + address] = value;
 
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeF4SC::getImage(int& size) const

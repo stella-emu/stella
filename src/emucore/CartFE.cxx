@@ -127,7 +127,7 @@ bool CartridgeFE::patch(uInt16 address, uInt8 value)
 {
   myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)] = value;
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeFE::getImage(int& size) const

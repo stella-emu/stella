@@ -267,7 +267,7 @@ bool CartridgeWD::patch(uInt16 address, uInt8 value)
     mySegment3[(address & 0x03FF)] = value;
 
   return true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeWD::getImage(int& size) const

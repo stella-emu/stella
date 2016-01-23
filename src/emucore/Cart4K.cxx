@@ -64,14 +64,14 @@ bool Cartridge4K::poke(uInt16, uInt8)
 {
   // This is ROM so poking has no effect :-)
   return false;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4K::patch(uInt16 address, uInt8 value)
 {
   myImage[address & 0x0FFF] = value;
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* Cartridge4K::getImage(int& size) const

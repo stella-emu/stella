@@ -110,7 +110,7 @@ uInt8 CartridgeCVPlus::peek(uInt16 address)
       triggerReadFromWritePort(address);
       return myRAM[address & 0x03FF] = value;
     }
-  }  
+  }
   else
     return myImage[(address & 0x07FF) + (myCurrentBank << 11)];
 }
@@ -197,7 +197,7 @@ bool CartridgeCVPlus::patch(uInt16 address, uInt8 value)
     myImage[(address & 0x07FF) + (myCurrentBank << 11)] = value;
 
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeCVPlus::getImage(int& size) const

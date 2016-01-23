@@ -337,7 +337,7 @@ bool TIADebug::collision(int collID, int newVal)
   }
 
   return myTIA.myCollision & mask;
-}  
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audC0(int newVal)

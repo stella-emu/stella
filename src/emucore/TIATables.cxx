@@ -412,7 +412,7 @@ void TIATables::buildGRPReflectTable()
       r = (r << 1) | ((i & t) ? 0x01 : 0x00);
 
     GRPReflect[i] = r;
-  } 
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

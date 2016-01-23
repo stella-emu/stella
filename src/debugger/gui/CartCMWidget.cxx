@@ -153,11 +153,8 @@ void CartridgeCMWidget::saveOldState()
   myOldState.column = myCart.column();
   
   myOldState.internalram.clear();
-  
   for(uInt32 i = 0; i < this->internalRamSize();i++)
-  {
     myOldState.internalram.push_back(myCart.myRAM[i]);
-  } 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

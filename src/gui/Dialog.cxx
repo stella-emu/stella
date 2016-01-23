@@ -452,7 +452,7 @@ void Dialog::handleMouseMoved(int x, int y, int button)
     if (w)
       w->handleMouseEntered(button);
     _mouseWidget = w;
-  } 
+  }
 
   if (w && (w->getFlags() & WIDGET_TRACK_MOUSE))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);

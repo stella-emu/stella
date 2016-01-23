@@ -27,7 +27,7 @@ void prefsSetString(const char* key, const char* value)
 }
 
 void prefsGetString(const char* key, char* value, int size)
-{   
+{
   [[Preferences sharedInstance] getString:key:value:size];
 }
 

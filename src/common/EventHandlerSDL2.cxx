@@ -102,7 +102,7 @@ void EventHandlerSDL2::pollEvent()
         handleJoyEvent(myEvent.jbutton.which, myEvent.jbutton.button,
                        myEvent.jbutton.state == SDL_PRESSED ? 1 : 0);
         break;
-      }  
+      }
 
       case SDL_JOYAXISMOTION:
       {

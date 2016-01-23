@@ -154,7 +154,7 @@ uInt8 CartridgeMC::peek(uInt16 address)
         }
       }
     }
-  }  
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -200,7 +200,7 @@ bool CartridgeMC::poke(uInt16 address, uInt8 value)
       myRAM[uInt32((block & 0x3F) << 9) + (address & 0x01FF)] = value;
       return true;
     }
-  }  
+  }
   return false;
 }
 
@@ -223,7 +223,7 @@ bool CartridgeMC::patch(uInt16 address, uInt8 value)
 {
   // TODO - add support for debugger
   return false;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeMC::getImage(int& size) const

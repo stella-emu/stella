@@ -151,7 +151,7 @@ bool Cartridge3E::poke(uInt16 address, uInt8 value)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::bank(uInt16 bank)
-{ 
+{
   if(bankLocked()) return false;
 
   if(bank < 256)
@@ -249,7 +249,7 @@ bool Cartridge3E::patch(uInt16 address, uInt8 value)
     myImage[(address & 0x07FF) + mySize - 2048] = value;
 
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* Cartridge3E::getImage(int& size) const

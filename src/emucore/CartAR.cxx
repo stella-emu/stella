@@ -450,7 +450,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 {
   // TODO - add support for debugger
   return false;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeAR::getImage(int& size) const

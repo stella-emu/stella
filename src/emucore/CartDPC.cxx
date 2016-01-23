@@ -242,7 +242,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
       {
         result = myDisplayImage[2047 - myCounters[index]] & myFlags[index];
         break;
-      } 
+      }
 
       // DFx flag
       case 0x07:
@@ -369,7 +369,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
       {
         break;
       }
-    } 
+    }
   }
   else
   {
@@ -395,7 +395,7 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::bank(uInt16 bank)
-{ 
+{
   if(bankLocked()) return false;
 
   // Remember what bank we're in
@@ -448,7 +448,7 @@ bool CartridgeDPC::patch(uInt16 address, uInt8 value)
   }
   else
     return false;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeDPC::getImage(int& size) const

@@ -183,7 +183,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::bank(uInt16 slice)
-{ 
+{
   if(bankLocked()) return false;
 
   // Remember what bank we're in
@@ -269,7 +269,7 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
     myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
 
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeE7::getImage(int& size) const

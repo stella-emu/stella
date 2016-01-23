@@ -72,7 +72,7 @@ void SaveKey::write(DigitalPin pin, bool value)
 
     default:
       break;
-  } 
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
