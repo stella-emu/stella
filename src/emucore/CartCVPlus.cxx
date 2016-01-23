@@ -149,7 +149,6 @@ bool CartridgeCVPlus::bank(uInt16 bank)
     // around to a valid bank number
     myCurrentBank = bank % (mySize >> 11);
   }
-cerr << "bank: " << myCurrentBank << endl;
   
   uInt32 offset = myCurrentBank << 11;
   
