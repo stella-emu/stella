@@ -71,11 +71,7 @@ class Cartridge : public Device
       @param settings  A reference to the various settings (read-only)
     */
     Cartridge(const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~Cartridge();
+    virtual ~Cartridge() = default;
 
     /**
       Query some information about this cartridge.
@@ -387,7 +383,7 @@ class Cartridge : public Device
 
     // The array containing information about every byte of ROM indicating
     // whether it is used as code.
-    uInt8* myCodeAccessBase;
+    unique_ptr<uInt8[]> myCodeAccessBase;
 
   private:
     // If myBankLocked is true, ignore attempts at bankswitching. This is used

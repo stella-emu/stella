@@ -56,10 +56,6 @@ class CartridgeFA2 : public Cartridge
       @param osystem   A reference to the OSystem currently in use
     */
     CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~CartridgeFA2() = default;
 
   public:

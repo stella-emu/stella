@@ -40,10 +40,6 @@ class Sound : public Serializable
       using the object.
     */
     Sound(OSystem& osystem) : myOSystem(osystem) { }
-
-    /**
-      Destructor
-    */
     virtual ~Sound() = default;
 
   public: 

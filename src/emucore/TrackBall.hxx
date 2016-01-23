@@ -50,10 +50,6 @@ class TrackBall : public Controller
       @param type   The type of trackball controller
     */
     TrackBall(Jack jack, const Event& event, const System& system, Type type);
-
-    /**
-      Destructor
-    */
     virtual ~TrackBall() = default;
 
   public:

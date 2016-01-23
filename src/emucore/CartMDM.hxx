@@ -59,11 +59,7 @@ class CartridgeMDM : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeMDM(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~CartridgeMDM();
+    virtual ~CartridgeMDM() = default;
 
   public:
     /**
@@ -167,7 +163,7 @@ class CartridgeMDM : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    uInt8* myImage;
+    unique_ptr<uInt8[]> myImage;
 
     // Size of the ROM image
     uInt32 mySize;

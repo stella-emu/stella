@@ -42,10 +42,6 @@ class Driving : public Controller
       @param system The system using this controller
     */
     Driving(Jack jack, const Event& event, const System& system);
-
-    /**
-      Destructor
-    */
     virtual ~Driving() = default;
 
   public:

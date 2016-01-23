@@ -48,10 +48,6 @@ class CartridgeF6 : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeF6(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
     virtual ~CartridgeF6() = default;
 
   public:

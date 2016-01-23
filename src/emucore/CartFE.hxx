@@ -63,10 +63,6 @@ class CartridgeFE : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeFE(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
     virtual ~CartridgeFE() = default;
 
   public:

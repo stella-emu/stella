@@ -52,17 +52,8 @@ enum FrameStyle {
 
 class FBSurface
 {
-//  friend class TIASurface;
-
   public:
-    /**
-      Creates a new FBSurface object
-    */
     FBSurface();
-
-    /**
-      Destructor
-    */
     virtual ~FBSurface() = default;
 
     /**

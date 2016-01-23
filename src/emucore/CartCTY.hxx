@@ -123,10 +123,6 @@ class CartridgeCTY : public Cartridge
       @param osystem   A reference to the OSystem currently in use
     */
     CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~CartridgeCTY() = default;
 
   public:

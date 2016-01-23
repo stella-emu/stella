@@ -38,13 +38,13 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
     myCurrentBank(0)
 {
   // Create a load image buffer and copy the given image
-  myLoadImages = new uInt8[mySize];
+  myLoadImages = make_ptr<uInt8[]>(mySize);
   myNumberOfLoadImages = mySize / 8448;
-  memcpy(myLoadImages, image, size);
+  memcpy(myLoadImages.get(), image, size);
 
   // Add header if image doesn't include it
   if(size < 8448)
-    memcpy(myLoadImages+8192, ourDefaultHeader, 256);
+    memcpy(myLoadImages.get()+8192, ourDefaultHeader, 256);
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the AR scheme doesn't support bankswitching
@@ -53,12 +53,6 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
   createCodeAccessBase(mySize);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeAR::~CartridgeAR()
-{
-  delete[] myLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -378,7 +372,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
     if(myLoadImages[(image * 8448) + 8192 + 5] == load)
     {
       // Copy the load's header
-      memcpy(myHeader, myLoadImages + (image * 8448) + 8192, 256);
+      memcpy(myHeader, myLoadImages.get() + (image * 8448) + 8192, 256);
 
       // Verify the load's header 
       if(checksum(myHeader, 8) != 0x55)
@@ -392,7 +386,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       {
         uInt32 bank = myHeader[16 + j] & 0x03;
         uInt32 page = (myHeader[16 + j] >> 2) & 0x07;
-        uInt8* src = myLoadImages + (image * 8448) + (j * 256);
+        uInt8* src = myLoadImages.get() + (image * 8448) + (j * 256);
         uInt8 sum = checksum(src, 256) + myHeader[16 + j] + myHeader[64 + j];
 
         if(!invalidPageChecksumSeen && (sum != 0x55))
@@ -456,7 +450,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeAR::getImage(int& size) const
 {
   size = mySize;
-  return myLoadImages;
+  return myLoadImages.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -477,7 +471,7 @@ bool CartridgeAR::save(Serializer& out) const
 
     // All of the 8448 byte loads associated with the game 
     // Note that the size of this array is myNumberOfLoadImages * 8448
-    out.putByteArray(myLoadImages, myNumberOfLoadImages * 8448);
+    out.putByteArray(myLoadImages.get(), myNumberOfLoadImages * 8448);
 
     // Indicates how many 8448 loads there are
     out.putByte(myNumberOfLoadImages);
@@ -528,7 +522,7 @@ bool CartridgeAR::load(Serializer& in)
 
     // All of the 8448 byte loads associated with the game 
     // Note that the size of this array is myNumberOfLoadImages * 8448
-    in.getByteArray(myLoadImages, myNumberOfLoadImages * 8448);
+    in.getByteArray(myLoadImages.get(), myNumberOfLoadImages * 8448);
 
     // Indicates how many 8448 loads there are
     myNumberOfLoadImages = in.getByte();

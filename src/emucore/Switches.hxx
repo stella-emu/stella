@@ -47,10 +47,6 @@ class Switches : public Serializable
       @param event The event object to use for events
     */
     Switches(const Event& event, const Properties& properties);
-
-    /**
-      Destructor
-    */
     virtual ~Switches() = default;
 
   public:

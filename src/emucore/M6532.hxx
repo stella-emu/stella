@@ -55,10 +55,6 @@ class M6532 : public Device
       @param settings The settings used by the system
     */
     M6532(const Console& console, const Settings& settings);
-
-    /**
-      Destructor
-    */
     virtual ~M6532() = default;
 
    public:

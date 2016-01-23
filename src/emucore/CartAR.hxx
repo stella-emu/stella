@@ -53,11 +53,7 @@ class CartridgeAR : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeAR(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~CartridgeAR();
+    virtual ~CartridgeAR() = default;
 
   public:
     /**
@@ -202,7 +198,7 @@ class CartridgeAR : public Cartridge
     uInt32 mySize;
 
     // All of the 8448 byte loads associated with the game 
-    uInt8* myLoadImages;
+    unique_ptr<uInt8[]> myLoadImages;
 
     // Indicates how many 8448 loads there are
     uInt8 myNumberOfLoadImages;

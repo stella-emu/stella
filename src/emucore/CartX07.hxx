@@ -58,10 +58,6 @@ class CartridgeX07 : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeX07(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
     virtual ~CartridgeX07() = default;
 
   public:

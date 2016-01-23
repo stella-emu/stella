@@ -40,10 +40,6 @@ class Settings
       Create a new settings abstract class
     */
     Settings(OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~Settings() = default;
 
   public:

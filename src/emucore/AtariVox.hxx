@@ -53,10 +53,6 @@ class AtariVox : public Controller
     AtariVox(Jack jack, const Event& event, const System& system,
              const SerialPort& port, const string& portname,
              const string& eepromfile);
-
-    /**
-      Destructor
-    */
     virtual ~AtariVox() = default;
 
   public:

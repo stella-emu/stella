@@ -22,7 +22,7 @@
 
 class System;
 #ifdef THUMB_SUPPORT
-class Thumbulator;
+  #include "Thumbulator.hxx"
 #endif
 #ifdef DEBUGGER_SUPPORT
   #include "CartDPCPlusWidget.hxx"
@@ -57,11 +57,7 @@ class CartridgeDPCPlus : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeDPCPlus(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~CartridgeDPCPlus();
+    virtual ~CartridgeDPCPlus() = default;
 
   public:
     /**
@@ -199,7 +195,7 @@ class CartridgeDPCPlus : public Cartridge
 
   private:
     // The ROM image and size
-    uInt8* myImage;
+    unique_ptr<uInt8[]> myImage;
     uInt32 mySize;
 
     // Pointer to the 24K program ROM image of the cartridge

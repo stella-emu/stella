@@ -53,21 +53,14 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myStartScanline(0)
 {
   // Allocate buffers for two frame buffers
-  myCurrentFrameBuffer = new uInt8[160 * 320];
-  myPreviousFrameBuffer = new uInt8[160 * 320];
+  myCurrentFrameBuffer  = make_ptr<uInt8[]>(160 * 320);
+  myPreviousFrameBuffer = make_ptr<uInt8[]>(160 * 320);
 
   // Compute all of the mask tables
   TIATables::computeAllTables();
 
   // Set initial state
   initialize();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::~TIA()
-{
-  delete[] myCurrentFrameBuffer;
-  delete[] myPreviousFrameBuffer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,7 +152,7 @@ void TIA::frameReset()
   clearBuffers();
 
   // Reset pixel pointer and drawing flag
-  myFramePointer = myCurrentFrameBuffer;
+  myFramePointer = myCurrentFrameBuffer.get();
 
   // Calculate color clock offsets for starting and stopping frame drawing
   // Note that although we always start drawing at scanline zero, the
@@ -478,7 +471,7 @@ bool TIA::saveDisplay(Serializer& out) const
   {
     out.putBool(myPartialFrameFlag);
     out.putInt(myFramePointerClocks);
-    out.putByteArray(myCurrentFrameBuffer, 160*320);
+    out.putByteArray(myCurrentFrameBuffer.get(), 160*320);
   }
   catch(...)
   {
@@ -499,9 +492,9 @@ bool TIA::loadDisplay(Serializer& in)
 
     // Reset frame buffer pointer and data
     clearBuffers();
-    myFramePointer = myCurrentFrameBuffer;
-    in.getByteArray(myCurrentFrameBuffer, 160*320);
-    memcpy(myPreviousFrameBuffer, myCurrentFrameBuffer, 160*320);
+    myFramePointer = myCurrentFrameBuffer.get();
+    in.getByteArray(myCurrentFrameBuffer.get(), 160*320);
+    memcpy(myPreviousFrameBuffer.get(), myCurrentFrameBuffer.get(), 160*320);
 
     // If we're in partial frame mode, make sure to re-create the screen
     // as it existed when the state was saved
@@ -541,9 +534,7 @@ void TIA::update()
 inline void TIA::startFrame()
 {
   // This stuff should only happen at the beginning of a new frame.
-  uInt8* tmp = myCurrentFrameBuffer;
-  myCurrentFrameBuffer = myPreviousFrameBuffer;
-  myPreviousFrameBuffer = tmp;
+  myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
 
   // Remember the number of clocks which have passed on the current scanline
   // so that we can adjust the frame's starting clock by this amount.  This
@@ -562,7 +553,7 @@ inline void TIA::startFrame()
   myClocksToEndOfScanLine = 228;
 
   // Reset frame buffer pointer
-  myFramePointer = myCurrentFrameBuffer;
+  myFramePointer = myCurrentFrameBuffer.get();
   myFramePointerClocks = 0;
 
   // If color loss is enabled then update the color registers based on
@@ -636,8 +627,8 @@ inline void TIA::endFrame()
     myScanlineCountForLastFrame = myMaximumNumberOfScanlines;
     if(previousCount < myMaximumNumberOfScanlines)
     {
-      memset(myCurrentFrameBuffer, 0, 160 * 320);
-      memset(myPreviousFrameBuffer, 1, 160 * 320);
+      memset(myCurrentFrameBuffer.get(), 0, 160 * 320);
+      memset(myPreviousFrameBuffer.get(), 1, 160 * 320);
     }
   }
   // Did the number of scanlines decrease?
@@ -647,8 +638,8 @@ inline void TIA::endFrame()
   {
     uInt32 offset = myScanlineCountForLastFrame * 160,
            stride = (previousCount - myScanlineCountForLastFrame) * 160;
-    memset(myCurrentFrameBuffer + offset, 0, stride);
-    memset(myPreviousFrameBuffer + offset, 1, stride);
+    memset(myCurrentFrameBuffer.get() + offset, 0, stride);
+    memset(myPreviousFrameBuffer.get() + offset, 1, stride);
   }
 
   // Account for frame jitter, skipping the first few frames
@@ -1281,8 +1272,8 @@ inline void TIA::waitHorizontalRSync()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearBuffers()
 {
-  memset(myCurrentFrameBuffer, 0, 160 * 320);
-  memset(myPreviousFrameBuffer, 0, 160 * 320);
+  memset(myCurrentFrameBuffer.get(), 0, 160 * 320);
+  memset(myPreviousFrameBuffer.get(), 0, 160 * 320);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

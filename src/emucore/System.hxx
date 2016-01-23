@@ -54,10 +54,6 @@ class System : public Serializable
     */
     System(const OSystem& osystem, M6502& m6502, M6532& m6532,
            TIA& mTIA, Cartridge& mCart);
-
-    /**
-      Destructor
-    */
     virtual ~System() = default;
 
     // Mask to apply to an address before accessing memory

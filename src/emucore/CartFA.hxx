@@ -48,10 +48,6 @@ class CartridgeFA : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeFA(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
     virtual ~CartridgeFA() = default;
 
   public:

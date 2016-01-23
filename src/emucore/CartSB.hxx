@@ -48,11 +48,7 @@ class CartridgeSB : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeSB(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~CartridgeSB();
+    virtual ~CartridgeSB() = default;
 
   public:
     /**
@@ -156,7 +152,7 @@ class CartridgeSB : public Cartridge
 
   private:
     // The 128-256K ROM image and size of the cartridge
-    uInt8* myImage;
+    unique_ptr<uInt8[]> myImage;
     uInt32 mySize;
 
     // Indicates which bank is currently active

@@ -51,11 +51,7 @@ class CartridgeCV : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeCV(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~CartridgeCV();
+    virtual ~CartridgeCV() = default;
 
   public:
     /**
@@ -143,7 +139,7 @@ class CartridgeCV : public Cartridge
   private:
     // Pointer to the initial RAM data from the cart
     // This doesn't always exist, so we don't pre-allocate it
-    uInt8* myInitialRAM;
+    unique_ptr<uInt8[]> myInitialRAM;
 
     // Initial size of the cart data
     uInt32 mySize;

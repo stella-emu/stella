@@ -57,11 +57,7 @@ class TIA : public Device
       @param settings The settings object for this TIA device
     */
     TIA(Console& console, Sound& sound, Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~TIA();
+    virtual ~TIA() = default;
 
   public:
     /**
@@ -175,7 +171,7 @@ class TIA : public Device
       @return Pointer to the current frame buffer
     */
     uInt8* currentFrameBuffer() const
-      { return myCurrentFrameBuffer + myFramePointerOffset + myCurrentFrameJitter; }
+      { return myCurrentFrameBuffer.get() + myFramePointerOffset + myCurrentFrameJitter; }
 
     /**
       Answers the previous frame buffer
@@ -183,7 +179,7 @@ class TIA : public Device
       @return Pointer to the previous frame buffer
     */
     uInt8* previousFrameBuffer() const
-      { return myPreviousFrameBuffer + myFramePointerOffset; }
+      { return myPreviousFrameBuffer.get() + myFramePointerOffset; }
 
     /**
       Answers the width and height of the frame buffer
@@ -410,10 +406,10 @@ class TIA : public Device
     Settings& mySettings;
 
     // Pointer to the current frame buffer
-    uInt8* myCurrentFrameBuffer;
+    unique_ptr<uInt8[]> myCurrentFrameBuffer;
 
     // Pointer to the previous frame buffer
-    uInt8* myPreviousFrameBuffer;
+    unique_ptr<uInt8[]> myPreviousFrameBuffer;
 
     // Pointer to the next pixel that will be drawn in the current frame buffer
     uInt8* myFramePointer;

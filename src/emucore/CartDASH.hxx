@@ -137,11 +137,7 @@ public:
    @param settings  A reference to the various settings (read-only)
    */
   CartridgeDASH(const uInt8* image, uInt32 size, const Settings& settings);
-
-  /**
-   Destructor
-   */
-  virtual ~CartridgeDASH();
+  virtual ~CartridgeDASH() = default;
 
 public:
   /**
@@ -267,8 +263,8 @@ private:
 
   static const uInt16 RAM_WRITE_OFFSET = 0x800;
 
-  uInt32 mySize;        // Size of the ROM image
-  uInt8* myImage;       // Pointer to a dynamically allocated ROM image of the cartridge
+  uInt32 mySize;                // Size of the ROM image
+  unique_ptr<uInt8[]> myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
   uInt8 myRAM[RAM_TOTAL_SIZE];
 
   private:

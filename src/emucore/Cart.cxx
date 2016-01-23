@@ -313,12 +313,6 @@ Cartridge::Cartridge(const Settings& settings)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::~Cartridge()
-{
-  delete[] myCodeAccessBase;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::saveROM(ofstream& out)
 {
   int size = -1;
@@ -362,8 +356,8 @@ void Cartridge::triggerReadFromWritePort(uInt16 address)
 void Cartridge::createCodeAccessBase(uInt32 size)
 {
 #ifdef DEBUGGER_SUPPORT
-  myCodeAccessBase = new uInt8[size];
-  memset(myCodeAccessBase, CartDebug::ROW, size);
+  myCodeAccessBase = make_ptr<uInt8[]>(size);
+  memset(myCodeAccessBase.get(), CartDebug::ROW, size);
 #else
   myCodeAccessBase = nullptr;
 #endif

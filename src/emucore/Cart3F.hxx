@@ -54,11 +54,7 @@ class Cartridge3F : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     Cartridge3F(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~Cartridge3F();
+    virtual ~Cartridge3F() = default;
 
   public:
     /**
@@ -162,7 +158,7 @@ class Cartridge3F : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    uInt8* myImage;
+    unique_ptr<uInt8[]> myImage;
 
     // Size of the ROM image
     uInt32 mySize;

@@ -50,10 +50,6 @@ class CartridgeF8 : public Cartridge
     */
     CartridgeF8(const uInt8* image, uInt32 size, const string& md5,
                 const Settings& settings);
-
-    /**
-      Destructor
-    */
     virtual ~CartridgeF8() = default;
 
   public:

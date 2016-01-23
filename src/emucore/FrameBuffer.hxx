@@ -140,10 +140,6 @@ class FrameBuffer
       Creates a new Frame Buffer
     */
     FrameBuffer(OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~FrameBuffer() = default;
 
     /**

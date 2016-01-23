@@ -48,10 +48,6 @@ class SaveKey : public Controller
     */
     SaveKey(Jack jack, const Event& event, const System& system,
             const string& eepromfile);
-
-    /**
-      Destructor
-    */
     virtual ~SaveKey() = default;
 
   public:

@@ -26,6 +26,9 @@
 
 #ifdef THUMB_SUPPORT
 
+#ifndef THUMBULATOR_HXX
+#define THUMBULATOR_HXX
+
 #include "bspf.hxx"
 
 #define ROMADDMASK 0x7FFF
@@ -150,5 +153,7 @@ class Thumbulator
     Thumbulator& operator=(const Thumbulator&) = delete;
     Thumbulator& operator=(Thumbulator&&) = delete;
 };
+
+#endif  // THUMBULATOR_HXX
 
 #endif

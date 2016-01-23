@@ -77,11 +77,7 @@ class Cartridge3E : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     Cartridge3E(const uInt8* image, uInt32 size, const Settings& settings);
-
-    /**
-      Destructor
-    */
-    virtual ~Cartridge3E();
+    virtual ~Cartridge3E() = default;
 
   public:
     /**
@@ -185,7 +181,7 @@ class Cartridge3E : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    uInt8* myImage;
+    unique_ptr<uInt8[]> myImage;
 
     // RAM contents. For now every ROM gets all 32K of potential RAM
     uInt8 myRAM[32 * 1024];

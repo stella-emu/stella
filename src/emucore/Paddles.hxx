@@ -48,10 +48,6 @@ class Paddles : public Controller
     */
     Paddles(Jack jack, const Event& event, const System& system,
             bool swappaddle, bool swapaxis, bool swapdir);
-
-    /**
-      Destructor
-    */
     virtual ~Paddles() = default;
 
   public:

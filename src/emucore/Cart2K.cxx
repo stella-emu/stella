@@ -42,22 +42,16 @@ Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size, const Settings& settin
     mySize = 64;
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
-  myImage = new uInt8[mySize];
-  memset(myImage, 0x02, mySize);
+  myImage = make_ptr<uInt8[]>(mySize);
+  memset(myImage.get(), 0x02, mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, size);
+  memcpy(myImage.get(), image, size);
   createCodeAccessBase(mySize);
 
   // Set mask for accessing the image buffer
   // This is guaranteed to work, as mySize is a power of two
   myMask = mySize - 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2K::~Cartridge2K()
-{
-  delete[] myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,7 +99,7 @@ bool Cartridge2K::patch(uInt16 address, uInt8 value)
 const uInt8* Cartridge2K::getImage(int& size) const
 {
   size = mySize;
-  return myImage;
+  return myImage.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

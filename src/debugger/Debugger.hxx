@@ -72,10 +72,6 @@ class Debugger : public DialogContainer
       Create a new debugger parent object
     */
     Debugger(OSystem& osystem, Console& console);
-
-    /**
-      Destructor
-    */
     virtual ~Debugger() = default;
 
   public:

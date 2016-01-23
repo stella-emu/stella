@@ -41,12 +41,12 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   // Store image, making sure it's at least 29KB
   uInt32 minsize = 4096 * 6 + 4096 + 1024 + 255;
   mySize = BSPF_max(minsize, size);
-  myImage = new uInt8[mySize];
-  memcpy(myImage, image, size);
+  myImage = make_ptr<uInt8[]>(mySize);
+  memcpy(myImage.get(), image, size);
   createCodeAccessBase(4096 * 6);
 
   // Pointer to the program ROM (24K @ 0 byte offset)
-  myProgramImage = myImage;
+  myProgramImage = myImage.get();
 
   // Pointer to the display RAM
   myDisplayImage = myDPCRAM + 0xC00;
@@ -70,12 +70,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 
   // DPC+ always starts in bank 5
   myStartBank = 5;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPCPlus::~CartridgeDPCPlus()
-{
-  delete[] myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -641,7 +635,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeDPCPlus::getImage(int& size) const
 {
   size = mySize;
-  return myImage;
+  return myImage.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
