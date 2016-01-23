@@ -247,6 +247,7 @@
     <ClCompile Include="..\debugger\gui\CartBFWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartCMWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartCTYWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\CartCVPlusWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartCVWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartDFSCWidget.cxx" />
@@ -287,6 +288,7 @@
     <ClCompile Include="..\emucore\CartBFSC.cxx" />
     <ClCompile Include="..\emucore\CartCM.cxx" />
     <ClCompile Include="..\emucore\CartCTY.cxx" />
+    <ClCompile Include="..\emucore\CartCVPlus.cxx" />
     <ClCompile Include="..\emucore\CartDASH.cxx" />
     <ClCompile Include="..\emucore\CartDF.cxx" />
     <ClCompile Include="..\emucore\CartDFSC.cxx" />
@@ -500,6 +502,7 @@
     <ClInclude Include="..\debugger\gui\CartBFWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartCMWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartCTYWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\CartCVPlusWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartCVWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartDASHWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartDebugWidget.hxx" />
@@ -544,6 +547,7 @@
     <ClInclude Include="..\emucore\CartCM.hxx" />
     <ClInclude Include="..\emucore\CartCTY.hxx" />
     <ClInclude Include="..\emucore\CartCTYTunes.hxx" />
+    <ClInclude Include="..\emucore\CartCVPlus.hxx" />
     <ClInclude Include="..\emucore\CartDASH.hxx" />
     <ClInclude Include="..\emucore\CartDF.hxx" />
     <ClInclude Include="..\emucore\CartDFSC.hxx" />
