@@ -411,7 +411,7 @@ void Paddles::setMouseSensitivity(int sensitivity)
 void Paddles::setPaddleRange(int range)
 {
   range = BSPF_clamp(range, 1, 100);
-  TRIGRANGE = TRIGMAX * (range / 100.0);
+  TRIGRANGE = int(TRIGMAX * (range / 100.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
