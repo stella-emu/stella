@@ -99,10 +99,10 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 
   // The PNG read function expects an array of rows, not a single 1-D array
   for(uInt32 irow = 0, offset = 0; irow < ReadInfo.height; ++irow, offset += ReadInfo.pitch)
-    ReadInfo.row_pointers[irow] = png_bytep(ReadInfo.buffer + offset);
+    ReadInfo.row_pointers[irow] = png_bytep(ReadInfo.buffer.get() + offset);
 
   // Read the entire image in one go
-  png_read_image(png_ptr, ReadInfo.row_pointers);
+  png_read_image(png_ptr, ReadInfo.row_pointers.get());
 
   // We're finished reading
   png_read_end(png_ptr, info_ptr);
@@ -130,16 +130,16 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
   png_uint_32 width = rect.width(), height = rect.height();
 
   // Get framebuffer pixel data (we get ABGR format)
-  png_bytep buffer = new png_byte[width * height * 4];
-  myFB.readPixels(buffer, width*4, rect);
+  unique_ptr<png_byte[]> buffer = make_ptr<png_byte[]>(width * height * 4);
+  myFB.readPixels(buffer.get(), width*4, rect);
 
   // Set up pointers into "buffer" byte array
-  png_bytep* rows = new png_bytep[height];
+  unique_ptr<png_bytep[]> rows = make_ptr<png_bytep[]>(height);
   for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = png_bytep(buffer + k*width*4);
+    rows[k] = png_bytep(buffer.get() + k*width*4);
 
   // And save the image
-  saveImage(out, buffer, rows, width, height, comments);
+  saveImage(out, rows, width, height, comments);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,20 +159,20 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
   }
 
   // Get the surface pixel data (we get ABGR format)
-  png_bytep buffer = new png_byte[width * height * 4];
-  surface.readPixels(buffer, width, rect);
+  unique_ptr<png_byte[]> buffer = make_ptr<png_byte[]>(width * height * 4);
+  surface.readPixels(buffer.get(), width, rect);
 
   // Set up pointers into "buffer" byte array
-  png_bytep* rows = new png_bytep[height];
+  unique_ptr<png_bytep[]> rows = make_ptr<png_bytep[]>(height);
   for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = png_bytep(buffer + k*width*4);
+    rows[k] = png_bytep(buffer.get() + k*width*4);
 
   // And save the image
-  saveImage(out, buffer, rows, width, height, comments);
+  saveImage(out, rows, width, height, comments);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(ofstream& out, png_bytep& buffer, png_bytep*& rows,
+void PNGLibrary::saveImage(ofstream& out, const unique_ptr<png_bytep[]>& rows,
     png_uint_32 width, png_uint_32 height, const VariantList& comments)
 {
   #define saveImageERROR(s) { err_message = s; goto done; }
@@ -219,7 +219,7 @@ void PNGLibrary::saveImage(ofstream& out, png_bytep& buffer, png_bytep*& rows,
   png_set_bgr(png_ptr);
 
   // Write the entire image in one go
-  png_write_image(png_ptr, rows);
+  png_write_image(png_ptr, rows.get());
 
   // We're finished writing
   png_write_end(png_ptr, info_ptr);
@@ -228,10 +228,6 @@ void PNGLibrary::saveImage(ofstream& out, png_bytep& buffer, png_bytep*& rows,
 done:
   if(png_ptr)
     png_destroy_write_struct(&png_ptr, &info_ptr);
-  if(buffer)
-    delete[] buffer;
-  if (rows)
-    delete[] rows;
   if(err_message)
     throw runtime_error(err_message);
 }
@@ -243,8 +239,7 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
   uInt32 req_buffer_size = w * h * 3;
   if(req_buffer_size > ReadInfo.buffer_size)
   {
-    delete[] ReadInfo.buffer;
-    ReadInfo.buffer = new uInt8[req_buffer_size];
+    ReadInfo.buffer = make_ptr<png_byte[]>(req_buffer_size);
     if(ReadInfo.buffer == nullptr)
       return false;
 
@@ -253,8 +248,7 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
   uInt32 req_row_size = h;
   if(req_row_size > ReadInfo.row_size)
   {
-    delete[] ReadInfo.row_pointers;
-    ReadInfo.row_pointers = new png_bytep[req_row_size];
+    ReadInfo.row_pointers = make_ptr<png_bytep[]>(req_row_size);
     if(ReadInfo.row_pointers == nullptr)
       return false;
 
@@ -284,7 +278,7 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
   // Convert RGB triples into pixels and store in the surface
   uInt32 *s_buf, s_pitch;
   surface.basePtr(s_buf, s_pitch);
-  uInt8* i_buf = ReadInfo.buffer;
+  uInt8* i_buf = ReadInfo.buffer.get();
   uInt32 i_pitch = ReadInfo.pitch;
 
   for(uInt32 irow = 0; irow < ih; ++irow, i_buf += i_pitch, s_buf += s_pitch)
