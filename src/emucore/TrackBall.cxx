@@ -146,3 +146,33 @@ bool TrackBall::setMouseControl(
                    (xid != -1 || yid != -1);
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 TrackBall::ourTrakBallTableTB_H[2][2] = {
+  { 0x40, 0x00 }, { 0xc0, 0x80 }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 TrackBall::ourTrakBallTableTB_V[2][2] = {
+  { 0x00, 0x10 }, { 0x20, 0x30 }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 TrackBall::ourTrakBallTableST_H[4] = {
+  0x00, 0x80, 0xc0, 0x40
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 TrackBall::ourTrakBallTableST_V[4] = {
+  0x00, 0x10, 0x30, 0x20
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 TrackBall::ourTrakBallTableAM_H[4] = {
+  0x00, 0x10, 0x50, 0x40
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 TrackBall::ourTrakBallTableAM_V[4] = {
+  0x00, 0x80, 0xa0, 0x20
+};

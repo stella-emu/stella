@@ -107,19 +107,19 @@ class TrackBall : public Controller
     int myScanCountH, myScanCountV, myCountH, myCountV;
 
     // Whether to use the mouse to emulate this controller
-    int myMouseEnabled;  
+    int myMouseEnabled;
 
     // CX-22
-    const uInt32 ourTrakBallTableTB_H[2][2] = {{ 0x40, 0x00 }, { 0xc0, 0x80 }};
-    const uInt32 ourTrakBallTableTB_V[2][2] = {{ 0x00, 0x10 }, { 0x20, 0x30 }};
+    static const uInt32 ourTrakBallTableTB_H[2][2];
+    static const uInt32 ourTrakBallTableTB_V[2][2];
 
     // ST mouse / CX-80
-    const uInt32 ourTrakBallTableST_H[4] = { 0x00, 0x80, 0xc0, 0x40 };
-    const uInt32 ourTrakBallTableST_V[4] = { 0x00, 0x10, 0x30, 0x20 };
+    static const uInt32 ourTrakBallTableST_H[4];
+    static const uInt32 ourTrakBallTableST_V[4];
 
     // Amiga mouse
-    const uInt32 ourTrakBallTableAM_H[4] = { 0x00, 0x10, 0x50, 0x40 };
-    const uInt32 ourTrakBallTableAM_V[4] = { 0x00, 0x80, 0xa0, 0x20 };
+    static const uInt32 ourTrakBallTableAM_H[4];
+    static const uInt32 ourTrakBallTableAM_V[4];
 
   private:
     // Following constructors and assignment operators not supported
