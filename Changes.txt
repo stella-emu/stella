@@ -31,6 +31,9 @@
       paddle will move when you move the mouse).  The movement itself
       is now also smoother than before.
 
+  * Fixed bug in 'Score mode' in TIA emulation; the TIA object colours
+    were correct, but the associated priority was sometimes incorrect.
+
   * Fixed bug in ROM launcher; selecting 'Options -> Game Properties' after
     loading a ROM would always point to the last opened ROM, not to the one
     currently selected.

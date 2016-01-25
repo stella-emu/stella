@@ -775,18 +775,12 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
 
   // Assume all collisions are on, then selectively turn the desired ones off
   uInt16 mask = 0xffff;
-  if(!(enabled & P0Bit))
-    mask &= ~(Cx_M0P0 | Cx_M1P0 | Cx_P0PF | Cx_P0BL | Cx_P0P1);
-  if(!(enabled & P1Bit))
-    mask &= ~(Cx_M0P1 | Cx_M1P1 | Cx_P1PF | Cx_P1BL | Cx_P0P1);
-  if(!(enabled & M0Bit))
-    mask &= ~(Cx_M0P0 | Cx_M0P1 | Cx_M0PF | Cx_M0BL | Cx_M0M1);
-  if(!(enabled & M1Bit))
-    mask &= ~(Cx_M1P0 | Cx_M1P1 | Cx_M1PF | Cx_M1BL | Cx_M0M1);
-  if(!(enabled & BLBit))
-    mask &= ~(Cx_P0BL | Cx_P1BL | Cx_M0BL | Cx_M1BL | Cx_BLPF);
-  if(!(enabled & PFBit))
-    mask &= ~(Cx_P0PF | Cx_P1PF | Cx_M0PF | Cx_M1PF | Cx_BLPF);
+  if(!(enabled & P0Bit))  mask &= ~(Cx_M0P0 | Cx_M1P0 | Cx_P0PF | Cx_P0BL | Cx_P0P1);
+  if(!(enabled & P1Bit))  mask &= ~(Cx_M0P1 | Cx_M1P1 | Cx_P1PF | Cx_P1BL | Cx_P0P1);
+  if(!(enabled & M0Bit))  mask &= ~(Cx_M0P0 | Cx_M0P1 | Cx_M0PF | Cx_M0BL | Cx_M0M1);
+  if(!(enabled & M1Bit))  mask &= ~(Cx_M1P0 | Cx_M1P1 | Cx_M1PF | Cx_M1BL | Cx_M0M1);
+  if(!(enabled & BLBit))  mask &= ~(Cx_P0BL | Cx_P1BL | Cx_M0BL | Cx_M1BL | Cx_BLPF);
+  if(!(enabled & PFBit))  mask &= ~(Cx_P0PF | Cx_P1PF | Cx_M0PF | Cx_M1PF | Cx_BLPF);
 
   // Now combine the masks
   myCollisionEnabledMask = (enabled << 16) | mask;
@@ -826,48 +820,59 @@ bool TIA::toggleFixedColors(uInt8 mode)
   {
     for(uInt16 enabled = 0; enabled < 256; ++enabled)
     {
+      uInt8 color = BKColor;
       if(enabled & PriorityBit)
       {
-        // Priority from highest to lowest:
+        // NOTE: Playfield has priority so ScoreBit isn't used
+        // Priority from highest to lowest:  CTRLPF D2=1, D1=ignored
         //   PF/BL => P0/M0 => P1/M1 => BK
-        uInt8 color = BKColor;
-
-        if((enabled & M1Bit) != 0)
-          color = M1Color;
-        if((enabled & P1Bit) != 0)
-          color = P1Color;
-        if((enabled & M0Bit) != 0)
-          color = M0Color;
-        if((enabled & P0Bit) != 0)
-          color = P0Color;
-        if((enabled & BLBit) != 0)
-          color = BLColor;
-        if((enabled & PFBit) != 0)
-          color = PFColor;  // NOTE: Playfield has priority so ScoreBit isn't used
-
-        myPriorityEncoder[x][enabled] = color;
+        if((enabled & M1Bit) != 0)  color = M1Color;
+        if((enabled & P1Bit) != 0)  color = P1Color;
+        if((enabled & M0Bit) != 0)  color = M0Color;
+        if((enabled & P0Bit) != 0)  color = P0Color;
+        if((enabled & BLBit) != 0)  color = BLColor;
+        if((enabled & PFBit) != 0)  color = PFColor;
       }
       else
       {
-        // Priority from highest to lowest:
-        //   P0/M0 => P1/M1 => PF/BL => BK
-        uInt8 color = BKColor;
-
-        if((enabled & BLBit) != 0)
-          color = BLColor;
-        if((enabled & PFBit) != 0)
-          color = (!on && (enabled & ScoreBit)) ? ((x == 0) ? P0Color : P1Color) : PFColor;
-        if((enabled & M1Bit) != 0)
-          color = M1Color;
-        if((enabled & P1Bit) != 0)
-          color = P1Color;
-        if((enabled & M0Bit) != 0)
-          color = M0Color;
-        if((enabled & P0Bit) != 0)
-          color = P0Color;
-
-        myPriorityEncoder[x][enabled] = color;
+        if(enabled & ScoreBit)  // CTRLPF D2=0, D1=1
+        {
+          if(x == 0)  // Score mode left half
+          {
+            // Priority from highest to lowest:
+            //   PF/P0/M0 => P1/M1 => BL => BK
+            if((enabled & BLBit) != 0)  color = BLColor;
+            if((enabled & M1Bit) != 0)  color = M1Color;
+            if((enabled & P1Bit) != 0)  color = P1Color;
+            if((enabled & M0Bit) != 0)  color = M0Color;
+            if((enabled & P0Bit) != 0)  color = P0Color;
+            if((enabled & PFBit) != 0)  color = !on ? P0Color : PFColor;
+          }
+          else        // Score mode right half
+          {
+            // Priority from highest to lowest:  
+            //   P0/M0 => PF/P1/M1 => BL => BK
+            if((enabled & BLBit) != 0)  color = BLColor;
+            if((enabled & M1Bit) != 0)  color = M1Color;
+            if((enabled & P1Bit) != 0)  color = P1Color;
+            if((enabled & PFBit) != 0)  color = !on ? P1Color : PFColor;
+            if((enabled & M0Bit) != 0)  color = M0Color;
+            if((enabled & P0Bit) != 0)  color = P0Color;
+          }
+        }
+        else
+        {
+          // Priority from highest to lowest:  CTRLPF D2=0, D1=0
+          //   P0/M0 => P1/M1 => PF/BL => BK
+          if((enabled & BLBit) != 0)  color = BLColor;
+          if((enabled & PFBit) != 0)  color = PFColor;
+          if((enabled & M1Bit) != 0)  color = M1Color;
+          if((enabled & P1Bit) != 0)  color = P1Color;
+          if((enabled & M0Bit) != 0)  color = M0Color;
+          if((enabled & P0Bit) != 0)  color = P0Color;
+        }
       }
+      myPriorityEncoder[x][enabled] = color;
     }
   }
 
