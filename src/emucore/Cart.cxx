@@ -17,7 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstring>
 #include <sstream>
 
@@ -78,8 +77,7 @@ unique_ptr<Cartridge> Cartridge::create(const BytePtr& img, uInt32 size,
   unique_ptr<Cartridge> cartridge;
   string type = dtype;
 
-  // For now, we convert from BytePtr to the raw pointer
-  // Eventually, the Cartridge hierarchy should probably use BytePtr directly
+  // The cartridge hierarchy uses raw pointers ...
   const uInt8* image = img.get();
 
   // Collect some info about the ROM
@@ -964,7 +962,7 @@ bool Cartridge::isProbablyX07(const uInt8* image, uInt32 size)
 string Cartridge::myAboutString= "";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::BankswitchType Cartridge::ourBSList[] = {
+Cartridge::BankswitchType Cartridge::ourBSList[ourNumBSTypes] = {
   { "AUTO",     "Auto-detect"                   },
   { "0840",     "0840 (8K ECONObank)"           },
   { "2IN1",     "2IN1 Multicart (4-32K)"        },

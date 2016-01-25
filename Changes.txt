@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.6.7 to 4.7: (January xx, 2016)
+4.6.7 to 4.7: (January 25, 2016)
 
   * Improved paddle emulation in several ways:
 
