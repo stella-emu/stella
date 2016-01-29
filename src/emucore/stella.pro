@@ -938,6 +938,7 @@
 "Cartridge.Manufacturer" "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Rob Fulop"
 "Cartridge.ModelNo" "720111-1A, 03205"
 "Cartridge.Name" "Fathom (1983) (Imagic)"
+"Cartridge.Note" "AKA Scuba"
 "Display.Phosphor" "YES"
 ""
 
@@ -1372,6 +1373,12 @@
 "Cartridge.Name" "Seaquest (Dinatronic)"
 ""
 
+"Cartridge.MD5" "10c8cfd8c37522f11d47540ff024e5f9"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.ModelNo" "C 3016"
+"Cartridge.Name" "Demon Attack (Canal 3)"
+""
+
 "Cartridge.MD5" "10eae73a07b3da044b72473d8d366267"
 "Cartridge.Manufacturer" "Funvision - Fund. Int'l Co."
 "Cartridge.Name" "Karate (1982) (Funvision) (PAL)"
@@ -1500,6 +1507,11 @@
 "Cartridge.Name" "World End (1983) (Home Vision) (PAL)"
 ""
 
+"Cartridge.MD5" "1323c45d660f5a5b6d5ea45c6c4cbe4a"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Enduro (Canal 3)"
+""
+
 "Cartridge.MD5" "133456269a03e3fdae6cddd65754c50d"
 "Cartridge.Manufacturer" "Tigervision - Teldec"
 "Cartridge.ModelNo" "7-006 - 3.60008 VG"
@@ -1590,6 +1602,11 @@
 "Cartridge.Name" "E.T. The Extra-Testical (Christian Samuel) (Hack)"
 "Cartridge.Note" "Hack of E.T. The Extra-Terrestrial"
 "Cartridge.Rarity" "Hack"
+""
+
+"Cartridge.MD5" "13ccc692f111d52fec75d83df16192e2"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Fishing Derby (Canal 3)"
 ""
 
 "Cartridge.MD5" "13d8326bf5648db4dafce45d25e62ddd"
@@ -2531,7 +2548,6 @@
 "Cartridge.Manufacturer" "Atari, Eric Manghise, Joseph Tung"
 "Cartridge.ModelNo" "CX2640"
 "Cartridge.Name" "RealSports Baseball (1982) (Atari) (Prototype)"
-"Cartridge.Note" "AKA Foxbat"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "30"
 ""
@@ -4361,7 +4377,7 @@
 ""
 
 "Cartridge.MD5" "36edef446ab4c2395666efc672b92ed0"
-"Cartridge.Manufacturer" "Atari - Axlon"
+"Cartridge.Manufacturer" "Atari - Axlon, John Vifian"
 "Cartridge.ModelNo" "CX26168"
 "Cartridge.Name" "Off the Wall (1989) (Atari) (PAL)"
 ""
@@ -4803,6 +4819,12 @@
 "Cartridge.Note" "AKA Chopper Command"
 ""
 
+"Cartridge.MD5" "3c7a7b3a0a7e6319b2fa0f923ef6c9af"
+"Cartridge.Manufacturer" "Atari, Joe Gaucher"
+"Cartridge.Name" "Racer (1982) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "3c7a96978f52b2b15426cdd50f2c4048"
 "Cartridge.Name" "Overhead Adventure Demo 3 (PD)"
 ""
@@ -4817,6 +4839,7 @@
 "Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn"
 "Cartridge.ModelNo" "1002"
 "Cartridge.Name" "Cosmic Creeps (1982) (Telesys)"
+"Cartridge.Note" "AKA Space Maze, Spaze Maze"
 "Display.Phosphor" "YES"
 ""
 
@@ -5707,6 +5730,7 @@
 "Cartridge.Manufacturer" "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Rob Fulop"
 "Cartridge.ModelNo" "720111-2A, 13205"
 "Cartridge.Name" "Fathom (1983) (Imagic) (PAL)"
+"Cartridge.Note" "AKA Scuba"
 "Display.Phosphor" "YES"
 ""
 
@@ -5753,6 +5777,17 @@
 "Cartridge.ModelNo" "CX26178"
 "Cartridge.Name" "Save Mary! (10-24-1991) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "4892b85c248131d6a42c66a4163a40d0"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Tac-Scan (Canal 3)"
+"Cartridge.Note" "Uses the Paddle Controllers"
+"Console.SwapPorts" "YES"
+"Controller.Left" "PADDLES"
+"Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 60"
+"Display.Height" "215"
 ""
 
 "Cartridge.MD5" "48bcf2c5a8c80f18b24c55db96845472"
@@ -6268,6 +6303,12 @@
 "Cartridge.Name" "Super Action Pak - Pitfall, Barnstorming, Grand Prix, Laser Blast (1988) (HES) (PAL)"
 ""
 
+"Cartridge.MD5" "4f32b24869d8c1310fecf039c6424db6"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Todd Marshall"
+"Cartridge.Name" "3-D Zapper (12-15-82) (U.S. Games) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "4f618c2429138e0280969193ed6c107e"
 "Cartridge.Manufacturer" "Activision, Alan Miller"
 "Cartridge.ModelNo" "AZ-028, AG-028-04"
@@ -6392,6 +6433,12 @@
 "Cartridge.Manufacturer" "Activision, Bob Whitehead - Ariola"
 "Cartridge.ModelNo" "EAG-019, EAG-019-04I - 711 019-715"
 "Cartridge.Name" "Sky Jinks (1982) (Activision) (PAL)"
+""
+
+"Cartridge.MD5" "50c7edc9f9dc0369abcdab3b4efeb5e9"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Todd Marshall"
+"Cartridge.Name" "3-D Zapper (U.S. Games) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "50ef88f9a5e0e1e6b86e175362a27fdb"
@@ -7237,6 +7284,11 @@
 "Cartridge.Note" "AKA Chopper Command"
 ""
 
+"Cartridge.MD5" "5c19f6da638c4c7c1f98d09e63df43e4"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Cosmic Ark (Canal 3)"
+""
+
 "Cartridge.MD5" "5c1b1aa78b7609d43c5144c3b3b60adf"
 "Cartridge.Name" "Demo Image Series #8 - Two Marios (Different Interlacing) (27-02-2003) (AD)"
 ""
@@ -7335,6 +7387,11 @@
 "Cartridge.MD5" "5da8fd0b5ed33a360bff37f8b5d0cd58"
 "Cartridge.Manufacturer" "Tron"
 "Cartridge.Name" "Pole Position (Tron)"
+""
+
+"Cartridge.MD5" "5dae540347cf0a559962d62604ecf750"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Freeway (Canal 3)"
 ""
 
 "Cartridge.MD5" "5db9e5bf663cad6bf159bc395f6ead53"
@@ -7463,6 +7520,14 @@
 "Cartridge.Name" "Fun with Numbers (1980) (Atari) (PAL)"
 "Cartridge.Note" "AKA Basic Math"
 "Cartridge.Rarity" "Uncommon"
+""
+
+"Cartridge.MD5" "5f560837396387455c9dcb05cdd4b053"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Eggomania (Canal 3)"
+"Cartridge.Note" "Uses the Paddle Controllers"
+"Controller.Left" "PADDLES"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cartridge.MD5" "5f681403b1051a0822344f467b05a94d"
@@ -8790,6 +8855,11 @@
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 70"
 "Display.YStart" "30"
+""
+
+"Cartridge.MD5" "6ed6bda5c42b2eb7a21c54e5b3ace3e3"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Ice Hockey (Canal 3)"
 ""
 
 "Cartridge.MD5" "6efe876168e2d45d4719b6a61355e5fe"
@@ -10257,6 +10327,13 @@
 "Cartridge.Manufacturer" "Epyx, Steven A. Baker, Peter Engelbrite"
 "Cartridge.ModelNo" "80561-00286"
 "Cartridge.Name" "California Games (1988) (Epyx) (PAL)"
+""
+
+"Cartridge.MD5" "807841df228ee8aab0a06ee639ce5a8a"
+"Cartridge.Manufacturer" "Coleco, Michael Green, Anthony R. Henderson, Gary Littleton"
+"Cartridge.ModelNo" "2455"
+"Cartridge.Name" "Turbo (1982) (Coleco) (Prototype)"
+"Cartridge.Note" "Prototype"
 ""
 
 "Cartridge.MD5" "807a8ff6216b00d52aba2dfea5d8d860"
@@ -12074,7 +12151,7 @@
 ""
 
 "Cartridge.MD5" "98f63949e656ff309cefa672146dc1b8"
-"Cartridge.Manufacturer" "Atari - Axlon"
+"Cartridge.Manufacturer" "Atari - Axlon, John Vifian"
 "Cartridge.ModelNo" "CX26168"
 "Cartridge.Name" "Off the Wall (1989) (Atari)"
 ""
@@ -12976,6 +13053,7 @@
 "Cartridge.Manufacturer" "Carrere Video, Sylvia Day, Henry Will IV - Teldec"
 "Cartridge.ModelNo" "USC2001"
 "Cartridge.Name" "Gopher (1983) (Carrere Video) (PAL)"
+"Cartridge.Note" "AKA Vossicht Whlmaus!"
 ""
 
 "Cartridge.MD5" "a5855d73d304d83ef07dde03e379619f"
@@ -13650,6 +13728,13 @@
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
+""
+
+"Cartridge.MD5" "af6f3e9718bccfcd8afb421f96561a34"
+"Cartridge.Manufacturer" "Atari, Tod Frye"
+"Cartridge.ModelNo" "CX2695"
+"Cartridge.Name" "Xevious (11-08-1984) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "afb3bc45c6a82739cc82582127cd96e6"
@@ -14539,6 +14624,11 @@
 "Cartridge.Name" "Sky Demo (PD)"
 ""
 
+"Cartridge.MD5" "bcb31f22856b0028c00d12f0e4c0a952"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Thunderground (Canal 3)"
+""
+
 "Cartridge.MD5" "bccb4e2cfad5efc93f6d55dc992118ce"
 "Cartridge.Manufacturer" "Activision, Carol Shaw"
 "Cartridge.ModelNo" "AX-020, AX-020-04"
@@ -15341,7 +15431,6 @@
 "Cartridge.Manufacturer" "Atari, Eric Manghise, Joseph Tung"
 "Cartridge.ModelNo" "CX2640"
 "Cartridge.Name" "RealSports Baseball (07-09-1982) (Atari) (Prototype)"
-"Cartridge.Note" "AKA Foxbat"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "30"
 ""
@@ -15413,6 +15502,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PGP210"
 "Cartridge.Name" "Ice Hockey (4 Game in One Light Green) (1983) (BitCorp) (PAL)"
+"Cartridge.Note" "AKA Hockey, Hockey"
 ""
 
 "Cartridge.MD5" "c7e43ad79c5e5c029d9f5ffde23e32cf"
@@ -16045,6 +16135,11 @@
 "Cartridge.ModelNo" "CX26159"
 "Cartridge.Name" "Double Dunk (1989) (Atari) (PAL)"
 "Cartridge.Note" "AKA Super Basketball"
+""
+
+"Cartridge.MD5" "cfce5596a7e8ca13529e9804cad693ef"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Tennis (Canal 3)"
 ""
 
 "Cartridge.MD5" "cfd6a8b23d12b0462baf6a05ef347cd8"
@@ -17710,6 +17805,7 @@
 "Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn"
 "Cartridge.ModelNo" "1002"
 "Cartridge.Name" "Cosmic Creeps (1982) (Telesys) (PAL)"
+"Cartridge.Note" "AKA Space Maze, Spaze Maze"
 "Display.Phosphor" "YES"
 ""
 
@@ -18649,6 +18745,12 @@
 "Cartridge.Name" "My Golf (CCE) (PAL)"
 ""
 
+"Cartridge.MD5" "ee8027d554d14c8d0b86f94737d2fdcc"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "Yars' Revenge (Canal 3)"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "ee84bdc5dae268e227e407c7b5e6b6b7"
 "Cartridge.Name" "Marilyn Monroe Demo (PD)"
 ""
@@ -18864,6 +18966,11 @@
 "Cartridge.Name" "Escape from the Mindmaster (Preview) (1982) (Arcadia)"
 ""
 
+"Cartridge.MD5" "f11cfab087fcbd930ab8b0becc5b2e5a"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.Name" "River Raid (Canal 3)"
+""
+
 "Cartridge.MD5" "f12afbffa080dd3b2801dd14d4837cf6"
 "Cartridge.Manufacturer" "Atari, Michael Kosaka, Peter C. Niday, Robert Vieira"
 "Cartridge.ModelNo" "CX26110"
@@ -18997,6 +19104,12 @@
 "Cartridge.Rarity" "Rare"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
+""
+
+"Cartridge.MD5" "f28c07767b3e90a2689ade5b5e305874"
+"Cartridge.Manufacturer" "Canal 3 - Intellivision"
+"Cartridge.ModelNo" "C 3014"
+"Cartridge.Name" "Keystone Kapers (Canal 3)"
 ""
 
 "Cartridge.MD5" "f2d40c70cf3e1d03bc112796315888d9"

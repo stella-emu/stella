@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+4.7 to 4.7.1: (xxx xx, 2016)
+
+  * Updated internal ROM properties database to ROM-Hunter version 11
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
+
+-Have fun!
+
+
 4.6.7 to 4.7: (January 25, 2016)
 
   * Improved paddle emulation in several ways:
@@ -49,8 +58,6 @@
   * Added more C++11 updates all over the codebase, and ran Stella
     through Coverity for the first time.  I'm proud to say that Stella
     now has a 0.00 defect rate!
-
--Have fun!
 
 
 4.6.6 to 4.6.7: (October 28, 2015)
