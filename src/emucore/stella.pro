@@ -16214,7 +16214,7 @@
 "Cartridge.Sound" "STEREO"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01 50"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cartridge.MD5" "d010e3dfe7366e47561c088079a59439"
@@ -19607,7 +19607,7 @@
 "Cartridge.Sound" "STEREO"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01 50"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cartridge.MD5" "f802fa61011dd9eb6f80b271bac479d0"
