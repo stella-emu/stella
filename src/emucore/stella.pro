@@ -4822,6 +4822,7 @@
 "Cartridge.MD5" "3c7a7b3a0a7e6319b2fa0f923ef6c9af"
 "Cartridge.Manufacturer" "Atari, Joe Gaucher"
 "Cartridge.Name" "Racer (1982) (Atari) (Prototype)"
+"Cartridge.Note" "ROM must be started in bank 0"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -9446,6 +9447,7 @@
 "Cartridge.Manufacturer" "Atari, Howard Scott Warshaw - Sears"
 "Cartridge.ModelNo" "CX2655 - 49-75167"
 "Cartridge.Name" "Yars' Revenge (1982) (Atari) (PAL) [a]"
+"Cartridge.Note" "ROM must be started in bank 0"
 "Display.Phosphor" "YES"
 ""
 
@@ -9453,6 +9455,7 @@
 "Cartridge.Manufacturer" "Atari, Greg Easter, Mimi Nyden"
 "Cartridge.ModelNo" "CX26107"
 "Cartridge.Name" "Snow White and the Seven Dwarfs (11-09-1982) (Atari) (Prototype)"
+"Cartridge.Note" "ROM must be started in bank 0"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -12163,6 +12166,7 @@
 "Cartridge.MD5" "9905f9f4706223dadee84f6867ede8e3"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.Name" "Challenge (HES) (PAL)"
+"Cartridge.Note" "ROM must be started in bank 0"
 ""
 
 "Cartridge.MD5" "9912d06eea42200a198dd3e2be18c601"
