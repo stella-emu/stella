@@ -443,8 +443,6 @@ class FrameBuffer
     {
       public:
         VideoModeList();
-        ~VideoModeList();
-
         VideoModeList(const VideoModeList&) = default;
         VideoModeList& operator=(const VideoModeList&) = default;
 
