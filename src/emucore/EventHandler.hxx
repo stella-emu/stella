@@ -26,10 +26,10 @@ class Console;
 class OSystem;
 class DialogContainer;
 class EventMappingWidget;
-class MouseControl;
 
 #include "Event.hxx"
 #include "StellaKeys.hxx"
+#include "MouseControl.hxx"
 #include "Variant.hxx"
 #include "bspf.hxx"
 
@@ -85,11 +85,7 @@ class EventHandler
       Create a new event handler object
     */
     EventHandler(OSystem& osystem);
-
-    /**
-      Destructor
-    */
-    virtual ~EventHandler();
+    virtual ~EventHandler() = default;
 
     // Enumeration representing the different states of operation
     enum State {
@@ -541,8 +537,8 @@ class EventHandler
     // Structure used for action menu items
     struct ActionList {
       Event::Type event;
-      const char* action;
-      char* key;
+      string action;
+      string key;
       bool allow_combo;
     };
 
