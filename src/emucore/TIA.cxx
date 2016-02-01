@@ -39,6 +39,7 @@
 #include "TIA.hxx"
 
 #define HBLANK 68
+#define JITTER_RECOVERY 10
 
 #define CLAMP_POS(reg) if(reg < 0) { reg += 160; }  reg %= 160;
 
@@ -128,7 +129,7 @@ void TIA::initialize()
 
   myBitsEnabled = myCollisionsEnabled = true;
   myJitterEnabled = mySettings.getBool("tv.jitter");
-  myNextFrameJitter = myCurrentFrameJitter = 0;
+  myNextFrameJitter = myCurrentFrameJitter = myJitterRecovery = 0;
   
   // Make sure all TIA bits are enabled
   enableBits(true);
@@ -646,7 +647,10 @@ inline void TIA::endFrame()
   if(myJitterEnabled && myFrameCounter > 3)
   {
     // Set the jitter amount for the current frame
-    myCurrentFrameJitter = myNextFrameJitter * 160;
+    myCurrentFrameJitter = (myNextFrameJitter + myJitterRecovery*JITTER_RECOVERY)* 160;
+
+    if(myJitterRecovery < 0)       myJitterRecovery++;
+    else if (myJitterRecovery > 0) myJitterRecovery--;
 
     // Calculate the jitter amount for the next frame.
     // Jitter amount of a frame depends upon the difference
@@ -655,23 +659,51 @@ inline void TIA::endFrame()
 
     if(myNextFrameJitter < -1)
     {
-      myNextFrameJitter = (myNextFrameJitter-1) / 2;
+      if(myNextFrameJitter/JITTER_RECOVERY < myJitterRecovery)
+      {
+        myJitterRecovery = myNextFrameJitter/JITTER_RECOVERY;
+        myNextFrameJitter = 0;
 
-      // Make sure currentFrameBuffer() doesn't return a pointer that
-      // results in memory being accessed outside of the 160*320 bytes
-      // allocated for the frame buffer
-      if(myNextFrameJitter < -Int32(myFrameYStart))
-        myNextFrameJitter = myFrameYStart;
+        // Make sure currentFrameBuffer() doesn't return a pointer that
+        // results in memory being accessed outside of the 160*320 bytes
+        // allocated for the frame buffer
+        if(myJitterRecovery*JITTER_RECOVERY < -Int32(myFrameYStart))
+          myJitterRecovery = myFrameYStart / JITTER_RECOVERY;
+      }
+      else
+      {
+        myNextFrameJitter = (myNextFrameJitter-1) / 2;
+
+        // Make sure currentFrameBuffer() doesn't return a pointer that
+        // results in memory being accessed outside of the 160*320 bytes
+        // allocated for the frame buffer
+        if(myNextFrameJitter + myJitterRecovery*JITTER_RECOVERY < -Int32(myFrameYStart))
+          myNextFrameJitter = myFrameYStart;
+      }
     }
     else if(myNextFrameJitter > 1)
     {
-      myNextFrameJitter = (myNextFrameJitter+1) / 2;
+      if (myNextFrameJitter/JITTER_RECOVERY > myJitterRecovery)
+      {
+        myJitterRecovery = myNextFrameJitter / JITTER_RECOVERY;
+        myNextFrameJitter = 0;
 
-      // Make sure currentFrameBuffer() doesn't return a pointer that
-      // results in memory being accessed outside of the 160*320 bytes
-      // allocated for the frame buffer
-      if(myNextFrameJitter > 320 - Int32(myFrameYStart) - Int32(myFrameHeight))
-        myNextFrameJitter = 320 - myFrameYStart - myFrameHeight;
+        // Make sure currentFrameBuffer() doesn't return a pointer that
+        // results in memory being accessed outside of the 160*320 bytes
+        // allocated for the frame buffer
+        if(myJitterRecovery*JITTER_RECOVERY > 320 - Int32(myFrameYStart) - Int32(myFrameHeight))
+          myJitterRecovery = (320 - myFrameYStart - myFrameHeight)/JITTER_RECOVERY;
+      }
+      else
+      {
+        myNextFrameJitter = (myNextFrameJitter+1) / 2;
+
+        // Make sure currentFrameBuffer() doesn't return a pointer that
+        // results in memory being accessed outside of the 160*320 bytes
+        // allocated for the frame buffer
+        if(myNextFrameJitter + myJitterRecovery*JITTER_RECOVERY > 320 - Int32(myFrameYStart) - Int32(myFrameHeight))
+          myNextFrameJitter = 320 - myFrameYStart - myFrameHeight;
+      }
     }
     else
       myNextFrameJitter = 0;

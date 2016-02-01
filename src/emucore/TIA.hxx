@@ -634,6 +634,9 @@ class TIA : public Device
   
     // Jitter amount for the current frame
     Int32 myCurrentFrameJitter;
+
+    // Large jitter values will take multiple frames to recover from
+    Int32 myJitterRecovery;
   
   private:
     // Following constructors and assignment operators not supported

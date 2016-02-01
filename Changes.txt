@@ -14,6 +14,11 @@
 
 4.7 to 4.7.1: (xxx xx, 2016)
 
+  * Improved TV 'jitter' emulation; the recovery time can now be spread
+    over multiple frame, to simulate a real TV taking multiple frames to
+    recover.  Special thanks to SpiceWare of AtariAge for the initial idea
+    and implementation.
+
   * Fixed bug with 'Medieval Mayhem' ROMs; the paddle range was set too
     low, and as a result the number of players couldn't be selected.
 
