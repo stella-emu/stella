@@ -22,6 +22,11 @@
   * Fixed bug with 'Medieval Mayhem' ROMs; the paddle range was set too
     low, and as a result the number of players couldn't be selected.
 
+  * Fixed bug when using more than two input controllers with the same
+    name; each controller after the second one was named the same as the
+    second one.  This caused the joystick mappings to be lost, since there
+    was only information about two controllers being saved.
+
   * Updated internal ROM properties database to ROM-Hunter version 11
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.

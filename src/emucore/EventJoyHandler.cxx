@@ -317,13 +317,9 @@ bool EventHandler::JoystickHandler::add(StellaJoystick* stick)
     // we append ' #x', where 'x' increases consecutively
     int count = 0;
     for(const auto& i: myDatabase)
-    {
       if(BSPF_startsWithIgnoreCase(i.first, stick->name) && i.second.joy)
-      {
         ++count;
-        break;
-      }
-    }
+
     if(count > 0)
     {
       ostringstream name;

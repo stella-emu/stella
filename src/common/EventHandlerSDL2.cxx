@@ -196,11 +196,11 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
   myStick = SDL_JoystickOpen(idx);
   if(myStick)
   {
-    // There still seems to be some issue with certain controllers not being
-    // recognized.  In this case, SDL names the controller as "XInput Controller".
-    // This would be fine except it also appends " #x", where x seems to vary.
-    // Obviously this wreaks havoc with the idea that a joystick will always
-    // have the same name.  So we truncate the number.
+    // In Windows, all XBox controllers using the XInput API seem to name
+    // the controller as "XInput Controller".  This would be fine, except
+    // it also appends " #x", where x seems to vary. Obviously this wreaks
+    // havoc with the idea that a joystick will always have the same name.
+    // So we truncate the number.
     const char* sdlname = SDL_JoystickName(myStick);
     const string& desc = BSPF_startsWithIgnoreCase(sdlname, "XInput Controller")
                          ? "XInput Controller" : sdlname;
