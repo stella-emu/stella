@@ -59,6 +59,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("tv.scanlines", "25");
   setInternal("tv.scaninter", "true");
   setInternal("tv.jitter", "false");
+  setInternal("tv.jitter_recovery", "10");
   // TV options when using 'custom' mode
   setInternal("tv.contrast", "0.0");
   setInternal("tv.brightness", "0.0");
@@ -277,6 +278,9 @@ void Settings::validate()
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setInternal("tv.filter", "0");
 
+  i = getInt("tv.jitter_recovery");
+  if(i < 1 || i > 20)  setInternal("tv.jitter_recovery", "10");
+
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
   if(i < 0 || i > 100)    setInternal("volume", "100");
@@ -370,6 +374,8 @@ void Settings::usage() const
     << "  -tv.filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
     << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
     << "  -tv.scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
+    << "  -tv.jitter    <1|0>          Enable scanline jitter effect\n"
+    << "  -tv.jitter_recovery <number> Set recovery time for scanline jitter effect\n"
     << "  -tv.contrast    <value>      Set TV effects custom contrast to value 1.0 - 1.0\n"
     << "  -tv.brightness  <value>      Set TV effects custom brightness to value 1.0 - 1.0\n"
     << "  -tv.hue         <value>      Set TV effects custom hue to value 1.0 - 1.0\n"

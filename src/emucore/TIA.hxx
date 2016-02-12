@@ -314,7 +314,8 @@ class TIA : public Device
     bool driveUnusedPinsRandom(uInt8 mode = 2);
 
     /**
-      Enables/disable/toggle 'scanline jittering' mode.
+      Enables/disable/toggle 'scanline jittering' mode, and set the
+      recovery 'factor'.
 
       @param mode  1/0 indicates on/off, otherwise flip from
                    its current state
@@ -322,6 +323,7 @@ class TIA : public Device
       @return  Whether the mode was enabled or disabled
     */
     bool toggleJitter(uInt8 mode = 2);
+    void setJitterRecoveryFactor(Int32 f) { myJitterRecoveryFactor = f; }
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -636,7 +638,7 @@ class TIA : public Device
     Int32 myCurrentFrameJitter;
 
     // Large jitter values will take multiple frames to recover from
-    Int32 myJitterRecovery;
+    Int32 myJitterRecovery, myJitterRecoveryFactor;
   
   private:
     // Following constructors and assignment operators not supported
