@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3285
+#define DEF_PROPS_SIZE 3286
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2320,6 +2320,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "b4f05e544834d0238a0c263491775edf", "Arcadia Corporation, Steve Hales, Stephen Harland Landrum", "AR-4102", "Suicide Mission (Preview) (1982) (Arcadia) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "b4f31ea8a6cc9f1fd4d5585a87c3b487", "Mystique - American Multiple Industries, Joel H. Martin", "", "Beat 'Em & Eat 'Em (1982) (Mystique) (PAL)", "Uses the Paddle Controller (left only)", "", "", "", "", "", "", "", "PADDLES", "", "", "AUTO 45", "", "", "", "", "" }, 
   { "b4f87ce75f7329c18301a2505fe59cd3", "Videospielkassett - Ariola", "PGP232", "Autorennen (Ariola) (PAL)", "AKA Grand Prix", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "b50ae55aac93fbed258bc5a873edd2cb", "Recompile", "", "E.T. The Extra-Terrestrial (Recompile) (Hack)", "www.neocomputer.org/projects/et", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "b5110f55ed99d5279f18266d001a8cd5", "Eckhard Stolberg", "", "Auto-mobile Demo (2001) (Eckhard Stolberg)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "b56264f738b2eb2c8f7cf5a2a75e5fdc", "Atari - GCC, Betty Ryan Tylko, Douglas B. Macrae", "CX2694, CX2694P", "Pole Position (1983) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "b5657d4c1c732fbb6af150668464247f", "Arcadia Corporation, Stephen Harland Landrum", "6 AR-4400", "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

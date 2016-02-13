@@ -18,7 +18,7 @@
     over multiple frame, to simulate a real TV taking multiple frames to
     recover.  Related to this, added new commandline argument
     'tv.jitter_recovery' to set the recovery time.  Finally, enabling
-    the jitter effect and the recovery time are not accessible through
+    the jitter effect and the recovery time are now accessible through
     the UI.  Special thanks to SpiceWare of AtariAge for the initial idea
     and implementation.
 

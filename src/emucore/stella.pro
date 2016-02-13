@@ -20309,3 +20309,10 @@
 "Display.YStart" "28"
 ""
 
+"Cartridge.MD5" "b50ae55aac93fbed258bc5a873edd2cb"
+"Cartridge.Manufacturer" "Recompile"
+"Cartridge.Name" "E.T. The Extra-Terrestrial (Recompile) (Hack)"
+"Cartridge.Note" "www.neocomputer.org/projects/et"
+"Cartridge.Rarity" "Hack"
+""
+
