@@ -217,7 +217,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Custom adjustables (using macro voodoo)
   xpos += 8; ypos += 4;
-  int orig_ypos = ypos;
   pwidth = lwidth;
   lwidth = font.getStringWidth("Saturation: ");
 
@@ -245,7 +244,18 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding: ");
 
   xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 20;
-  ypos = orig_ypos;
+  ypos = 8;
+
+  // TV jitter effect
+  myTVJitter = new CheckboxWidget(myTab, font, xpos, ypos,
+                                  "Jitter/Roll effect", kTVJitterChanged);
+  wid.push_back(myTVJitter);
+  ypos += lineHeight;
+  lwidth = font.getStringWidth("Intensity: ");
+  pwidth = font.getMaxCharWidth() * 6;
+  CREATE_CUSTOM_SLIDERS(JitterRec, "Recovery: ");
+  myTVJitterRec->setMinValue(1); myTVJitterRec->setMaxValue(20);
+  ypos += 4;
 
   // Scanline intensity and interpolation
   myTVScanLabel = 
@@ -254,8 +264,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight;
 
   xpos += 20;
-  lwidth = font.getStringWidth("Intensity: ");
-  pwidth = font.getMaxCharWidth() * 6;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity: ");
 
   myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos,
@@ -273,7 +281,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myClone ## obj);                                       \
   ypos += lineHeight + 10
 
-  ypos += lineHeight;
+  ypos += 4;
   CREATE_CLONE_BUTTON(Composite, "Clone Composite");
   CREATE_CLONE_BUTTON(Svideo, "Clone S-Video");
   CREATE_CLONE_BUTTON(RGB, "Clone RGB");
@@ -370,6 +378,11 @@ void VideoDialog::loadConfig()
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
 
+  // TV jitter
+  myTVJitterRec->setValue(instance().settings().getInt("tv.jitter_recovery"));
+  myTVJitterRecLabel->setLabel(instance().settings().getString("tv.jitter_recovery"));
+  handleTVJitterChange(instance().settings().getBool("tv.jitter"));
+
   // TV scanline intensity and interpolation
   myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
   myTVScanIntenseLabel->setLabel(instance().settings().getString("tv.scanlines"));
@@ -456,6 +469,15 @@ void VideoDialog::saveConfig()
   adj.bleed       = myTVBleed->getValue();
   instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(adj);
 
+  // TV jitter
+  instance().settings().setValue("tv.jitter", myTVJitter->getState());
+  instance().settings().setValue("tv.jitter_recovery", myTVJitterRecLabel->getLabel());
+  if(instance().hasConsole())
+  {
+    instance().console().tia().toggleJitter(myTVJitter->getState() ? 1 : 0);
+    instance().console().tia().setJitterRecoveryFactor(myTVJitterRec->getValue());
+  }
+
   // TV scanline intensity and interpolation
   instance().settings().setValue("tv.scanlines", myTVScanIntenseLabel->getLabel());
   instance().settings().setValue("tv.scaninter", myTVScanInterpolate->getState());
@@ -505,6 +527,11 @@ void VideoDialog::setDefaults()
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(NTSCFilter::PRESET_OFF);
       loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+
+      // TV jitter
+      myTVJitterRec->setValue(10);
+      myTVJitterRecLabel->setLabel("10");
+      handleTVJitterChange(false);
       break;
     }
   }
@@ -550,6 +577,14 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
   myTVScanInterpolate->setEnabled(scanenable);
 
   _dirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleTVJitterChange(bool enable)
+{
+  myTVJitter->setState(enable);
+  myTVJitterRec->setEnabled(enable);
+  myTVJitterRecLabel->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -635,7 +670,10 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     case kTVScanIntenseChanged:  myTVScanIntenseLabel->setValue(myTVScanIntense->getValue());
       break;
-
+    case kTVJitterChanged:  handleTVJitterChange(myTVJitter->getState());
+      break;
+    case kTVJitterRecChanged:  myTVJitterRecLabel->setValue(myTVJitterRec->getValue());
+      break;
     case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::PRESET_COMPOSITE);
       break;
     case kCloneSvideoCmd: loadTVAdjustables(NTSCFilter::PRESET_SVIDEO);

@@ -46,6 +46,7 @@ class VideoDialog : public Dialog
 
     void handleFullscreenChange(bool enable);
     void handleTVModeChange(NTSCFilter::Preset);
+    void handleTVJitterChange(bool enable);
     void loadTVAdjustables(NTSCFilter::Preset preset);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -109,6 +110,11 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneBad;
     ButtonWidget*     myCloneCustom;
 
+    // TV jitter effects
+    CheckboxWidget*   myTVJitter;
+    SliderWidget*     myTVJitterRec;
+    StaticTextWidget* myTVJitterRecLabel;
+
     enum {
       kNAspectRatioChanged = 'VDan',
       kPAspectRatioChanged = 'VDap',
@@ -126,6 +132,9 @@ class VideoDialog : public Dialog
       kTVSaturChanged      = 'TVsa',
       kTVGammaChanged      = 'TVga',
       kTVScanIntenseChanged= 'TVsc',
+
+      kTVJitterChanged     = 'TVjt',
+      kTVJitterRecChanged  = 'TVjr',
 
       kCloneCompositeCmd   = 'CLcp',
       kCloneSvideoCmd      = 'CLsv',

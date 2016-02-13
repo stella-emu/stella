@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 4.7</b></h4></center>
+  <center><h4><b>Release 4.7.1</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - January 2016</b></center>
+  <center><b>February 1999 - February 2016</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -1855,6 +1855,17 @@
         (vs. an integral stretch which won't necessarily completely fill the screen).</td>
     </tr>
 
+    <tr>
+      <td><pre>-tv.jitter &lt;1|0&gt;</pre></td>
+      <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
+        per frame.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.jitter_recovery &lt;1 - 20&gt;</pre></td>
+      <td>When TV jitter/roll effect is enabled, determines how long to delay recovery
+        time (recovery spread over multiple frames).</td>
+    </tr>
 
     <tr>
       <td><pre>-tv.filter &lt;1 - 6&gt;</pre></td>
@@ -2418,6 +2429,8 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Jitter/Roll effect</td><td>emulate screen roll with inconsistent scanline count</td><td>-tv.jitter</td></tr>
+          <tr><td>Jitter/Roll recovery</td><td>determines recovery time for screen rolling</td><td>-tv.jitter_recovery</td></tr>
           <tr><td>TV Mode</td><td>disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
           <tr><td>Scanline Intensity</td><td>sets scanline black-level intensity</td><td>-tv.scanlines</td></tr>
           <tr><td>Scanline Interpolation</td><td>smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>

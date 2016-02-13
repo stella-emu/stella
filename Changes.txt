@@ -12,13 +12,15 @@
                                Release History
 ===========================================================================
 
-4.7 to 4.7.1: (xxx xx, 2016)
+4.7 to 4.7.1: (Feb. 13, 2016)
 
   * Improved TV 'jitter' emulation; the recovery time can now be spread
     over multiple frame, to simulate a real TV taking multiple frames to
     recover.  Related to this, added new commandline argument
-    'tv.jitter_recovery' to set the recovery time.  Special thanks to
-    SpiceWare of AtariAge for the initial idea and implementation.
+    'tv.jitter_recovery' to set the recovery time.  Finally, enabling
+    the jitter effect and the recovery time are not accessible through
+    the UI.  Special thanks to SpiceWare of AtariAge for the initial idea
+    and implementation.
 
   * Fixed bug with 'Medieval Mayhem' ROMs; the paddle range was set too
     low, and as a result the number of players couldn't be selected.
@@ -31,7 +33,7 @@
   * Indirectly fixed issues with Stelladaptor/2600-daptor devices and
     paddles having too large of a deadzone in Linux.  Currently, this
     involves running an external application to set the deadzone,
-    since SDL does not yet expose this information.  The program is
+    since SDL2 does not yet expose this information.  The program is
     called 'evdev-joystick', and will be released separately from Stella.
 
   * Updated internal ROM properties database to ROM-Hunter version 11
