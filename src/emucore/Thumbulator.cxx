@@ -679,7 +679,7 @@ int Thumbulator::execute ( void )
   {
     rb=(inst>>0)&0xFF;
     if(rb&0x80)
-      rb|=(~0)<<8;  // FIXME - shifting a negative signed value is undefined
+      rb|=(~0u)<<8;
     op=(inst>>8)&0xF;
     rb<<=1;
     rb+=pc;
@@ -827,7 +827,7 @@ int Thumbulator::execute ( void )
   {
     rb=(inst>>0)&0x7FF;
     if(rb&(1<<10))
-      rb|=(~0)<<11; // FIXME - shifting a negative signed value is undefined
+      rb|=(~0u)<<11;
     rb<<=1;
     rb+=pc;
     rb+=2;
@@ -1224,7 +1224,7 @@ int Thumbulator::execute ( void )
     }
     rc&=0xFF;
     if(rc&0x80)
-      rc|=((~0)<<8);  // FIXME - shifting a negative signed value is undefined
+      rc|=((~0u)<<8);
     write_register(rd,rc);
     return(0);
   }
@@ -1240,7 +1240,7 @@ int Thumbulator::execute ( void )
     rc=read16(rb);
     rc&=0xFFFF;
     if(rc&0x8000)
-      rc|=((~0)<<16);  // FIXME - shifting a negative signed value is undefined
+      rc|=((~0u)<<16);
     write_register(rd,rc);
     return(0);
   }
@@ -1886,7 +1886,7 @@ int Thumbulator::execute ( void )
     ra=read_register(rm);
     rc=ra&0xFF;
     if(rc&0x80)
-      rc|=(~0)<<8;  // FIXME - shifting a negative signed value is undefined
+      rc|=(~0u)<<8;
     write_register(rd,rc);
     return(0);
   }
@@ -1900,7 +1900,7 @@ int Thumbulator::execute ( void )
     ra=read_register(rm);
     rc=ra&0xFFFF;
     if(rc&0x8000)
-      rc|=(~0)<<16;  // FIXME - shifting a negative signed value is undefined
+      rc|=(~0u)<<16;
     write_register(rd,rc);
     return(0);
   }
