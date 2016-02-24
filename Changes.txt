@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+4.7.1 to 4.7.2: (xxx. xx, 2016)
+
+  * Fixed bug when entering and exiting the debugger; sometimes the
+    character corresponding to the '`' key would be output in the
+    prompt area.
+
+-Have fun!
+
+
 4.7 to 4.7.1: (Feb. 13, 2016)
 
   * Improved TV 'jitter' emulation; the recovery time can now be spread
@@ -39,8 +48,6 @@
   * Updated internal ROM properties database to ROM-Hunter version 11
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
-
--Have fun!
 
 
 4.6.7 to 4.7: (January 25, 2016)

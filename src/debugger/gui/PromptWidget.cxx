@@ -411,6 +411,11 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       dirty = true;
       break;
 
+    case KBDK_GRAVE:
+      // Swallow backtick, so we don't see it when exiting the debugger
+      instance().eventHandler().enableTextEvents(false);
+      break;
+
     default:
       if (instance().eventHandler().kbdControl(mod))
       {
@@ -524,14 +529,8 @@ void PromptWidget::specialKeys(StellaKey key)
 
   switch(key)
   {
-    case KBDK_A:
-      _currentPos = _promptStartPos;
-      break;
     case KBDK_D:
       killChar(+1);
-      break;
-    case KBDK_E:
-      _currentPos = _promptEndPos;
       break;
     case KBDK_K:
       killLine(+1);
@@ -541,6 +540,18 @@ void PromptWidget::specialKeys(StellaKey key)
       break;
     case KBDK_W:
       killLastWord();
+      break;
+    case KBDK_A:
+      textSelectAll();
+      break;
+    case KBDK_X:
+      textCut();
+      break;
+    case KBDK_C:
+      textCopy();
+      break;
+    case KBDK_V:
+      textPaste();
       break;
     default:
       handled = false;
@@ -626,6 +637,30 @@ void PromptWidget::killLastWord()
 
   buffer(_promptEndPos) = ' ';
   _promptEndPos -= cnt;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::textSelectAll()
+{
+  cerr << __func__ << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::textCut()
+{
+  cerr << __func__ << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::textCopy()
+{
+  cerr << __func__ << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::textPaste()
+{
+  cerr << __func__ << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -541,7 +541,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
   // Handle keys which switch eventhandler state
   // Arrange the logic to take advantage of short-circuit evaluation
   if(!(kbdControl(mod) || kbdShift(mod) || kbdAlt(mod)) &&
-      state && eventStateChange(myKeyTable[key][kEmulationMode]))
+      !state && eventStateChange(myKeyTable[key][kEmulationMode]))
     return;
 
   // Otherwise, let the event handler deal with it

@@ -329,6 +329,11 @@ class EventHandler
     */
     void removeJoystickFromDatabase(const string& name);
 
+    /**
+      Enable/disable text events (distinct from single-key events).
+    */
+    virtual void enableTextEvents(bool enable) = 0;
+
   protected:
     // Global OSystem object
     OSystem& myOSystem;
@@ -344,11 +349,6 @@ class EventHandler
     void handleJoyEvent(int stick, int button, uInt8 state);
     void handleJoyAxisEvent(int stick, int axis, int value);
     void handleJoyHatEvent(int stick, int hat, int value);
-
-    /**
-      Enable/disable text events (distinct from single-key events).
-    */
-    virtual void enableTextEvents(bool enable) = 0;
 
     /**
       Returns the human-readable name for a StellaKey.

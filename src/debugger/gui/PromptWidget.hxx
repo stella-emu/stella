@@ -62,6 +62,12 @@ class PromptWidget : public Widget, public CommandSender
     void killLine(int direction);
     void killLastWord();
 
+    // Clipboard
+    void textSelectAll();
+    void textCut();
+    void textCopy();
+    void textPaste();
+
     // History
     void addToHistory(const char *str);
     void historyScroll(int direction);
