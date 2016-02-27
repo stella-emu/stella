@@ -18,6 +18,11 @@
     character corresponding to the '`' key would be output in the
     prompt area.
 
+  * Updated DPC+ Thumb ARM emulation code to latest from David Welch.
+    In particular, this fixes incorrect handling of the V flag when
+    adding and subtracting, but also fixes compile-time warnings that
+    I couldn't get rid of before.
+
 -Have fun!
 
 
