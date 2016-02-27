@@ -217,7 +217,7 @@ class TIA : public Device
       based on how many frames of out the total count are PAL frames.
     */
     bool isPAL() const
-      { return float(myPALFrameCounter) / myFrameCounter >= (25.0/60.0); }
+      { return double(myPALFrameCounter) / myFrameCounter >= (25.0/60.0); }
 
     /**
       Answers the current color clock we've gotten to on this scanline.

@@ -34,15 +34,15 @@ namespace GUI {
 */
 struct Point
 {
-  int x;  //!< The horizontal part of the point
-  int y;  //!< The vertical part of the point
+  uInt32 x;  //!< The horizontal part of the point
+  uInt32 y;  //!< The vertical part of the point
 
   Point() : x(0), y(0) { }
   Point(const Point& p) : x(p.x), y(p.y) { }
-  explicit Point(int x1, int y1) : x(x1), y(y1) { }
+  explicit Point(uInt32 x1, uInt32 y1) : x(x1), y(y1) { }
   Point(const string& p) {
     char c = '\0';
-    x = y = -1;
+    x = y = 0;
     istringstream buf(p);
     buf >> x >> c >> y;
     if(c != 'x')

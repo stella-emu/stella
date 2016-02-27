@@ -112,12 +112,17 @@ class Device : public Serializable
     virtual bool poke(uInt16 address, uInt8 value) = 0;
 
     /**
-      Query/change the given address type to use the given disassembly flags
+      Query the given address for its disassembly flags
 
       @param address The address to modify
-      @param flags A bitfield of DisasmType directives for the given address
     */
     virtual uInt8 getAccessFlags(uInt16 address) const { return 0; }
+    /**
+      Change the given address type to use the given disassembly flags
+
+      @param address The address to modify
+      @param flags   A bitfield of DisasmType directives for the given address
+    */
     virtual void setAccessFlags(uInt16 address, uInt8 flags) { }
 
   protected:

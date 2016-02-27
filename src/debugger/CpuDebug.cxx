@@ -74,13 +74,13 @@ void CpuDebug::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPC(int pc)
 {
-  my6502.PC = pc;
+  my6502.PC = uInt16(pc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setSP(int sp)
 {
-  my6502.SP = sp;
+  my6502.SP = uInt8(sp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,19 +92,19 @@ void CpuDebug::setPS(int ps)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setA(int a)
 {
-  my6502.A = a;
+  my6502.A = uInt8(a);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setX(int x)
 {
-  my6502.X = x;
+  my6502.X = uInt8(x);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setY(int y)
 {
-  my6502.Y = y;
+  my6502.Y = uInt8(y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,7 +120,7 @@ void CpuDebug::setV(bool on)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuDebug::setB(bool on)
+void CpuDebug::setB(bool)
 {
   // nop - B is always true
 }
