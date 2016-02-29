@@ -23,6 +23,10 @@
     adding and subtracting, but also fixes compile-time warnings that
     I couldn't get rid of before.
 
+  * Updated UNIX configure script to work with GCC 6.x compilers, and to
+    remove references to obsolete compiler versions that can no longer
+    be used to compile Stella.
+
 -Have fun!
 
 
