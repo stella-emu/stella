@@ -236,5 +236,5 @@ AbstractFSNode* FilesystemNodePOSIX::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return new FilesystemNodePOSIX(string(start, end - start));
+  return new FilesystemNodePOSIX(string(start, size_t(end - start)));
 }

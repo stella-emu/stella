@@ -160,7 +160,7 @@ inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2, int startp
     s2.begin(), s2.end(), [](char ch1, char ch2) {
       return toupper(uInt8(ch1)) == toupper(uInt8(ch2));
     });
-  return pos == s1.end() ? string::npos : pos - (s1.begin()+startpos);
+  return pos == s1.end() ? string::npos : size_t(pos - (s1.begin()+startpos));
 }
 
 // Test whether the first string ends with the second one (case insensitive)
