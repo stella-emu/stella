@@ -80,7 +80,12 @@ void DebuggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  if(instance().eventHandler().kbdControl(mod))
+  if(key == KBDK_GRAVE && !instance().eventHandler().kbdShift(mod))
+  {
+    // Swallow backtick, so we don't see it when exiting the debugger
+    instance().eventHandler().enableTextEvents(false);
+  }
+  else if(instance().eventHandler().kbdControl(mod))
   {
     switch(key)
     {

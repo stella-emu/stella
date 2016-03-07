@@ -411,11 +411,6 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       dirty = true;
       break;
 
-    case KBDK_GRAVE:
-      // Swallow backtick, so we don't see it when exiting the debugger
-      instance().eventHandler().enableTextEvents(false);
-      break;
-
     default:
       if (instance().eventHandler().kbdControl(mod))
       {
