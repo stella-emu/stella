@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.7.1 to 4.7.2: (xxx. xx, 2016)
+4.7.1 to 4.7.2: (Mar. 25, 2016)
 
   * Fixed bug when entering and exiting the debugger; sometimes the
     character corresponding to the '`' key would be output in the
