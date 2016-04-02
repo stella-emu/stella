@@ -44,10 +44,6 @@ class SoundNull : public Sound
     {
       myOSystem->logMessage("Sound disabled.\n", 1);
     }
-
-    /**
-      Destructor
-    */
     virtual ~SoundNull() = default;
 
   public: 

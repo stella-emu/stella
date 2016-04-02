@@ -37,10 +37,6 @@ class SettingsUNIX : public Settings
       Create a new UNIX settings object
     */
     SettingsUNIX(OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~SettingsUNIX() = default;
 
   private:

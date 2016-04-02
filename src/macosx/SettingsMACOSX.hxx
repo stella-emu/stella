@@ -37,10 +37,6 @@ class SettingsMACOSX : public Settings
       Create a new UNIX settings object
     */
     SettingsMACOSX(OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~SettingsMACOSX() = default;
 
   public:

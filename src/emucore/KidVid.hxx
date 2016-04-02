@@ -51,10 +51,6 @@ class KidVid : public Controller
     */
     KidVid(Jack jack, const Event& event, const System& system, 
            const string& md5sum);
-
-    /**
-      Destructor
-    */
     virtual ~KidVid();
 
   public:

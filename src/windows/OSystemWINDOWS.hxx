@@ -35,10 +35,6 @@ class OSystemWINDOWS : public OSystem
       Create a new WINDOWS operating system object
     */
     OSystemWINDOWS();
-
-    /**
-      Destructor
-    */
     virtual ~OSystemWINDOWS() = default;
 
   public:

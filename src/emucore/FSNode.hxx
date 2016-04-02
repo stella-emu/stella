@@ -285,10 +285,6 @@ class AbstractFSNode
 //    AbstractFSNode(AbstractFSNode&&) = default;
     AbstractFSNode& operator=(const AbstractFSNode&) = default;
 //    AbstractFSNode& operator=(AbstractFSNode&&) = default;
-
-    /**
-     * Destructor.
-     */
     virtual ~AbstractFSNode() { }
 
     /*

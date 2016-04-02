@@ -38,10 +38,6 @@ class CommandMenu : public DialogContainer
       Create a new menu stack
     */
     CommandMenu(OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~CommandMenu() = default;
 
   private:

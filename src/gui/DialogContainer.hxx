@@ -49,10 +49,6 @@ class DialogContainer
       Create a new DialogContainer stack
     */
     DialogContainer(OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~DialogContainer();
 
   public:

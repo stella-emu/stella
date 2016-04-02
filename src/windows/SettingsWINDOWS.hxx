@@ -31,10 +31,6 @@ class SettingsWINDOWS : public Settings
       Create a new UNIX settings object
     */
     SettingsWINDOWS(OSystem& osystem);
-
-    /**
-      Destructor
-    */
     virtual ~SettingsWINDOWS() = default;
 
   private:

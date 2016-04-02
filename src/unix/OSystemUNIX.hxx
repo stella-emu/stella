@@ -35,10 +35,6 @@ class OSystemUNIX : public OSystem
       Create a new UNIX-specific operating system object
     */
     OSystemUNIX();
-
-    /**
-      Destructor
-    */
     virtual ~OSystemUNIX() = default;
 
   private:

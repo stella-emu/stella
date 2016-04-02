@@ -36,14 +36,7 @@ class System;
 class NullDevice : public Device
 {
   public:
-    /**
-      Create a new null device
-    */
     NullDevice() = default;
-
-    /**
-      Destructor
-    */
     virtual ~NullDevice() = default;
 
   public:

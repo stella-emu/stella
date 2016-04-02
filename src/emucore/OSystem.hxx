@@ -63,14 +63,7 @@ class OSystem
   friend class VideoDialog;
 
   public:
-    /**
-      Create a new OSystem abstract class
-    */
     OSystem();
-
-    /**
-      Destructor
-    */
     virtual ~OSystem();
 
     /**

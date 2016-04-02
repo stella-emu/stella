@@ -35,14 +35,7 @@ class System;
 class Device : public Serializable
 {
   public:
-    /**
-      Create a new device
-    */
     Device() : mySystem(nullptr) { }
-
-    /**
-      Destructor
-    */
     virtual ~Device() = default;
 
   public:

@@ -35,10 +35,6 @@ class OSystemMACOSX : public OSystem
       Create a new MACOSX-specific operating system object
     */
     OSystemMACOSX();
-
-    /**
-      Destructor
-    */
     virtual ~OSystemMACOSX() = default;
 
     /**
