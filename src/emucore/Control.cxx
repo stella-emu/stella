@@ -168,9 +168,3 @@ bool Controller::load(Serializer& in)
   }
   return true;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Int32 Controller::maximumResistance = 0x7FFFFFFF;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Int32 Controller::minimumResistance = 0x00000000;

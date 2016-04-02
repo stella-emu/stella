@@ -249,9 +249,3 @@ void LauncherFilterDialog::handleCommand(CommandSender* sender, int cmd,
       break;
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* LauncherFilterDialog::ourRomTypes[2][5] = {
-  { ".a26", ".bin", ".rom", ".zip", ".gz" },
-  { "a26", "bin", "rom", "zip", "gz" }
-};

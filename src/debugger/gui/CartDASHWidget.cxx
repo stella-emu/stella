@@ -363,8 +363,3 @@ uInt8 CartridgeDASHWidget::internalRamGetValue(int addr)
 {
   return myCart.myRAM[addr];
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const CartridgeDASHWidget::BankID CartridgeDASHWidget::bankEnum[4] = {
-  kBank0Changed, kBank1Changed, kBank2Changed, kBank3Changed
-};

@@ -57,16 +57,16 @@ class System : public Serializable
     virtual ~System() = default;
 
     // Mask to apply to an address before accessing memory
-    static const uInt16 ADDRESS_MASK = (1 << 13) - 1;
+    static constexpr uInt16 ADDRESS_MASK = (1 << 13) - 1;
 
     // Amount to shift an address by to determine what page it's on
-    static const uInt16 PAGE_SHIFT = 6;
+    static constexpr uInt16 PAGE_SHIFT = 6;
 
     // Mask to apply to an address to obtain its page offset
-    static const uInt16 PAGE_MASK = (1 << PAGE_SHIFT) - 1;
+    static constexpr uInt16 PAGE_MASK = (1 << PAGE_SHIFT) - 1;
 
     // Number of pages in the system
-    static const uInt16 NUM_PAGES = 1 << (13 - PAGE_SHIFT);
+    static constexpr uInt16 NUM_PAGES = 1 << (13 - PAGE_SHIFT);
 
   public:
     /**

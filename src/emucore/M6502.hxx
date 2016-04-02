@@ -329,7 +329,7 @@ class M6502 : public Serializable
     uInt16 myDataAddressForPoke;
 
     /// Indicates the number of system cycles per processor cycle 
-    static const uInt32 SYSTEM_CYCLES_PER_CPU = 1;
+    static constexpr uInt32 SYSTEM_CYCLES_PER_CPU = 1;
 
 #ifdef DEBUGGER_SUPPORT
     Int32 evalCondBreaks() {

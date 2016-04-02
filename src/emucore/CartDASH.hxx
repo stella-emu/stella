@@ -237,31 +237,31 @@ private:
   // two as well, one 512 byte for read and one for write. The RAM locations are +0x800 apart, and the ROM
   // are consecutive. This allows us to determine on a read/write exactly where the data is.
 
-  static const uInt16 BANK_UNDEFINED = 0x8000;   // bank is undefined and inaccessible
+  static constexpr uInt16 BANK_UNDEFINED = 0x8000;   // bank is undefined and inaccessible
   uInt16 bankInUse[8];     // bank being used for ROM/RAM (eight 512 byte areas)
   uInt16 segmentInUse[4];  // set by bank methods, to know which hotspot was accessed
 
-  static const uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;   // writes to this address cause bankswitching
-  static const uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;   // writes to this address cause bankswitching
+  static constexpr uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;   // writes to this address cause bankswitching
+  static constexpr uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;   // writes to this address cause bankswitching
 
-  static const uInt8 BANK_BITS = 6;                         // # bits for bank
-  static const uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
-  static const uInt16 BITMASK_LOWERUPPER = 0x100;   // flags lower or upper section of bank (1==upper)
-  static const uInt16 BITMASK_ROMRAM     = 0x200;   // flags ROM or RAM bank switching (1==RAM)
+  static constexpr uInt8 BANK_BITS = 6;                         // # bits for bank
+  static constexpr uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
+  static constexpr uInt16 BITMASK_LOWERUPPER = 0x100;   // flags lower or upper section of bank (1==upper)
+  static constexpr uInt16 BITMASK_ROMRAM     = 0x200;   // flags ROM or RAM bank switching (1==RAM)
 
-  static const uInt16 MAXIMUM_BANK_COUNT = (1<<BANK_BITS);
-  static const uInt16 RAM_BANK_TO_POWER = 9;    // 2^n = 512
-  static const uInt16 RAM_BANK_SIZE = (1 << RAM_BANK_TO_POWER);
-  static const uInt16 BITMASK_RAM_BANK = (RAM_BANK_SIZE - 1);
-  static const uInt32 RAM_TOTAL_SIZE = MAXIMUM_BANK_COUNT * RAM_BANK_SIZE;
+  static constexpr uInt16 MAXIMUM_BANK_COUNT = (1<<BANK_BITS);
+  static constexpr uInt16 RAM_BANK_TO_POWER = 9;    // 2^n = 512
+  static constexpr uInt16 RAM_BANK_SIZE = (1 << RAM_BANK_TO_POWER);
+  static constexpr uInt16 BITMASK_RAM_BANK = (RAM_BANK_SIZE - 1);
+  static constexpr uInt32 RAM_TOTAL_SIZE = MAXIMUM_BANK_COUNT * RAM_BANK_SIZE;
 
-  static const uInt16 ROM_BANK_TO_POWER = 10;   // 2^n = 1024
-  static const uInt16 ROM_BANK_SIZE = (1 << ROM_BANK_TO_POWER);
-  static const uInt16 BITMASK_ROM_BANK = (ROM_BANK_SIZE -1);
+  static constexpr uInt16 ROM_BANK_TO_POWER = 10;   // 2^n = 1024
+  static constexpr uInt16 ROM_BANK_SIZE = (1 << ROM_BANK_TO_POWER);
+  static constexpr uInt16 BITMASK_ROM_BANK = (ROM_BANK_SIZE -1);
 
-  static const uInt16 ROM_BANK_COUNT = 64;
+  static constexpr uInt16 ROM_BANK_COUNT = 64;
 
-  static const uInt16 RAM_WRITE_OFFSET = 0x800;
+  static constexpr uInt16 RAM_WRITE_OFFSET = 0x800;
 
   uInt32 mySize;                // Size of the ROM image
   unique_ptr<uInt8[]> myImage;  // Pointer to a dynamically allocated ROM image of the cartridge

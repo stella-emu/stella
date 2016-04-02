@@ -235,10 +235,10 @@ class Controller : public Serializable
 
   public:
     /// Constant which represents maximum resistance for analog pins
-    static const Int32 maximumResistance;
+    static constexpr Int32 maximumResistance = 0x7FFFFFFF;
 
     /// Constant which represents minimum resistance for analog pins
-    static const Int32 minimumResistance;
+    static constexpr Int32 minimumResistance = 0x00000000;
 
   protected:
     /// Specifies which jack the controller is plugged in

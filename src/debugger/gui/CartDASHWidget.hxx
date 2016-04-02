@@ -57,7 +57,10 @@ class CartridgeDASHWidget : public CartDebugWidget
       kBank2Changed = 'b2CH',
       kBank3Changed = 'b3CH'
     };
-    static const BankID bankEnum[4];
+    static constexpr BankID bankEnum[4] = {
+      kBank0Changed, kBank1Changed, kBank2Changed, kBank3Changed
+    };
+
 
   private:
     void saveOldState() override;

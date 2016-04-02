@@ -76,7 +76,7 @@ class Cartridge : public Device
     /**
       Query some information about this cartridge.
     */
-    static const string& about() { return myAboutString; }
+    static constexpr string& about() { return myAboutString; }
 
     /**
       Save the internal (patched) ROM image.

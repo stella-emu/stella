@@ -18,6 +18,7 @@
 //============================================================================
 
 #include <cassert>
+#pragma warning( disable : 4091 )
 #include <shlobj.h>
 
 #ifdef ARRAYSIZE

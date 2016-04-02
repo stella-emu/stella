@@ -419,6 +419,3 @@ int Paddles::TRIGRANGE = Paddles::TRIGMAX;
 int Paddles::DIGITAL_SENSITIVITY = -1;
 int Paddles::DIGITAL_DISTANCE = -1;
 int Paddles::MOUSE_SENSITIVITY = -1;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Controller::DigitalPin Paddles::ourButtonPin[2] = { Four, Three };
