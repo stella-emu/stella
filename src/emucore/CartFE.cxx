@@ -30,7 +30,7 @@ CartridgeFE::CartridgeFE(const uInt8* image, uInt32 size, const Settings& settin
     myLastAddressChanged(false)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(8192u, size));
+  memcpy(myImage, image, BSPF::min(8192u, size));
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the address space of FE carts can change

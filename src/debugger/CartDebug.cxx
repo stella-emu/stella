@@ -59,7 +59,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   myConsole.cartridge().getImage(banksize);
 
   BankInfo info;
-  info.size = BSPF_min(banksize, 4096);
+  info.size = BSPF::min(banksize, 4096);
   for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
     myBankInfo.push_back(info);
 
@@ -196,7 +196,7 @@ string CartDebug::toString()
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
       char port[37];
-      BSPF_snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
+      BSPF::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
       port[2] = port[3] = 'x';
       buf << DebuggerParser::red(port);
@@ -347,7 +347,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     {
       if(begin == list_size) begin = end;
       if(tag.type != CartDebug::ROW)
-        length = BSPF_max(length, uInt32(tag.disasm.length()));
+        length = BSPF::max(length, uInt32(tag.disasm.length()));
 
       --lines;
     }
@@ -383,7 +383,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
   if(bank < 0)  // Do we want the current bank or ZP RAM?
     bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : int(myBankInfo.size())-1;
 
-  bank = BSPF_min(bank, bankCount());
+  bank = BSPF::min(bank, bankCount());
   BankInfo& info = myBankInfo[bank];
   DirectiveList& list = info.directiveList;
 
@@ -515,7 +515,7 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
       removeLabel(label);
       myUserAddresses.insert(make_pair(label, address));
       myUserLabels.insert(make_pair(address, label));
-      myLabelLength = BSPF_max(myLabelLength, uInt16(label.size()));
+      myLabelLength = BSPF::max(myLabelLength, uInt16(label.size()));
       mySystem.setDirtyPage(address);
       return true;
   }
@@ -773,7 +773,7 @@ string CartDebug::loadSymbolFile()
       // Make sure the value doesn't represent a constant
       // For now, we simply ignore constants completely
       const auto& iter = myUserCLabels.find(value);
-      if(iter == myUserCLabels.end() || !BSPF_equalsIgnoreCase(label, iter->second))
+      if(iter == myUserCLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
       { 
         // Check for period, and strip leading number
         if(string::size_type pos = label.find_first_of(".", 0) != string::npos)
@@ -859,32 +859,32 @@ string CartDebug::loadConfigFile()
       string directive;
       uInt16 start = 0, end = 0;
       buf >> directive;
-      if(BSPF_startsWithIgnoreCase(directive, "ORG"))
+      if(BSPF::startsWithIgnoreCase(directive, "ORG"))
       {
         // TODO - figure out what to do with this
         buf >> hex >> start;
       }
-      else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
+      else if(BSPF::startsWithIgnoreCase(directive, "CODE"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(CartDebug::CODE, start, end, currentbank);
       }
-      else if(BSPF_startsWithIgnoreCase(directive, "GFX"))
+      else if(BSPF::startsWithIgnoreCase(directive, "GFX"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(CartDebug::GFX, start, end, currentbank);
       }
-      else if(BSPF_startsWithIgnoreCase(directive, "PGFX"))
+      else if(BSPF::startsWithIgnoreCase(directive, "PGFX"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(CartDebug::PGFX, start, end, currentbank);
       }
-      else if(BSPF_startsWithIgnoreCase(directive, "DATA"))
+      else if(BSPF::startsWithIgnoreCase(directive, "DATA"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(CartDebug::DATA, start, end, currentbank);
       }
-      else if(BSPF_startsWithIgnoreCase(directive, "ROW"))
+      else if(BSPF::startsWithIgnoreCase(directive, "ROW"))
       {
         buf >> hex >> start;
         buf >> hex >> end;
@@ -1139,7 +1139,7 @@ string CartDebug::saveDisassembly()
         << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
     int max_len = 0;
     for(const auto& iter: myUserLabels)
-      max_len = BSPF_max(max_len, int(iter.second.size()));
+      max_len = BSPF::max(max_len, int(iter.second.size()));
     for(const auto& iter: myUserLabels)
         out << ALIGN(max_len) << iter.second << "  =  $" << iter.first << "\n";
   }
@@ -1153,7 +1153,7 @@ string CartDebug::saveDisassembly()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveRom()
 {
-  const string& path = "~" BSPF_PATH_SEPARATOR + 
+  const string& path = string("~") + BSPF::PATH_SEPARATOR + 
     myConsole.properties().get(Cartridge_Name) + ".a26";
 
   FilesystemNode node(path);
@@ -1229,23 +1229,23 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    if(ourTIAMnemonicR[addr] && BSPF_startsWithIgnoreCase(ourTIAMnemonicR[addr], in))
+    if(ourTIAMnemonicR[addr] && BSPF::startsWithIgnoreCase(ourTIAMnemonicR[addr], in))
       completions.push_back(ourTIAMnemonicR[addr]);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(ourTIAMnemonicW[addr] && BSPF_startsWithIgnoreCase(ourTIAMnemonicW[addr], in))
+    if(ourTIAMnemonicW[addr] && BSPF::startsWithIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.push_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
-    if(ourIOMnemonic[addr] && BSPF_startsWithIgnoreCase(ourIOMnemonic[addr], in))
+    if(ourIOMnemonic[addr] && BSPF::startsWithIgnoreCase(ourIOMnemonic[addr], in))
       completions.push_back(ourIOMnemonic[addr]);
   for(uInt16 addr = 0; addr <= 0x7F; ++addr)
-    if(ourZPMnemonic[addr] && BSPF_startsWithIgnoreCase(ourZPMnemonic[addr], in))
+    if(ourZPMnemonic[addr] && BSPF::startsWithIgnoreCase(ourZPMnemonic[addr], in))
       completions.push_back(ourZPMnemonic[addr]);
 
   // Now scan user-defined labels
   for(const auto& iter: myUserAddresses)
   {
     const char* l = iter.first.c_str();
-    if(BSPF_startsWithIgnoreCase(l, in))
+    if(BSPF::startsWithIgnoreCase(l, in))
       completions.push_back(l);
   }
 }

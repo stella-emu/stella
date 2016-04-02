@@ -186,16 +186,16 @@ string NTSCFilter::decreaseAdjustable()
 void NTSCFilter::loadConfig(const Settings& settings)
 {
   // Load adjustables for custom mode
-  myCustomSetup.hue = BSPF_clamp(settings.getFloat("tv.hue"), -1.0f, 1.0f);
-  myCustomSetup.saturation = BSPF_clamp(settings.getFloat("tv.saturation"), -1.0f, 1.0f);
-  myCustomSetup.contrast = BSPF_clamp(settings.getFloat("tv.contrast"), -1.0f, 1.0f);
-  myCustomSetup.brightness = BSPF_clamp(settings.getFloat("tv.brightness"), -1.0f, 1.0f);
-  myCustomSetup.sharpness = BSPF_clamp(settings.getFloat("tv.sharpness"), -1.0f, 1.0f);
-  myCustomSetup.gamma = BSPF_clamp(settings.getFloat("tv.gamma"), -1.0f, 1.0f);
-  myCustomSetup.resolution = BSPF_clamp(settings.getFloat("tv.resolution"), -1.0f, 1.0f);
-  myCustomSetup.artifacts = BSPF_clamp(settings.getFloat("tv.artifacts"), -1.0f, 1.0f);
-  myCustomSetup.fringing = BSPF_clamp(settings.getFloat("tv.fringing"), -1.0f, 1.0f);
-  myCustomSetup.bleed = BSPF_clamp(settings.getFloat("tv.bleed"), -1.0f, 1.0f);
+  myCustomSetup.hue = BSPF::clamp(settings.getFloat("tv.hue"), -1.0f, 1.0f);
+  myCustomSetup.saturation = BSPF::clamp(settings.getFloat("tv.saturation"), -1.0f, 1.0f);
+  myCustomSetup.contrast = BSPF::clamp(settings.getFloat("tv.contrast"), -1.0f, 1.0f);
+  myCustomSetup.brightness = BSPF::clamp(settings.getFloat("tv.brightness"), -1.0f, 1.0f);
+  myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("tv.sharpness"), -1.0f, 1.0f);
+  myCustomSetup.gamma = BSPF::clamp(settings.getFloat("tv.gamma"), -1.0f, 1.0f);
+  myCustomSetup.resolution = BSPF::clamp(settings.getFloat("tv.resolution"), -1.0f, 1.0f);
+  myCustomSetup.artifacts = BSPF::clamp(settings.getFloat("tv.artifacts"), -1.0f, 1.0f);
+  myCustomSetup.fringing = BSPF::clamp(settings.getFloat("tv.fringing"), -1.0f, 1.0f);
+  myCustomSetup.bleed = BSPF::clamp(settings.getFloat("tv.bleed"), -1.0f, 1.0f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

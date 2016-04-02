@@ -194,10 +194,10 @@ void TIA::frameReset()
   // In any event, at most 320 lines can be processed
   uInt32 scanlines = myFrameYStart + myFrameHeight;
   if(myMaximumNumberOfScanlines == 290)
-    scanlines = BSPF_max(scanlines, 262u);  // NTSC
+    scanlines = BSPF::max(scanlines, 262u);  // NTSC
   else
-    scanlines = BSPF_max(scanlines, 312u);  // PAL
-  myStopDisplayOffset = 228 * BSPF_min(scanlines, 320u);
+    scanlines = BSPF::max(scanlines, 312u);  // PAL
+  myStopDisplayOffset = 228 * BSPF::min(scanlines, 320u);
 
   // Reasonable values to start and stop the current frame drawing
   myClockWhenFrameStarted = mySystem->cycles() * 3;
@@ -2294,12 +2294,12 @@ void TIA::pokeHMP0(uInt8 value, Int32 clock)
 
   // Check if HMOVE is currently active
   if(myCurrentHMOVEPos != 0x7FFFFFFF &&
-     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockP0 * 4, 7))
+     hpos < BSPF::min(myCurrentHMOVEPos + 6 + myMotionClockP0 * 4, 7))
   {
     Int32 newMotion = (value ^ 0x80) >> 4;
     // Check if new horizontal move can still be applied normally
     if(newMotion > myMotionClockP0 ||
-       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+       hpos <= BSPF::min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
     {
       myPOSP0 -= (newMotion - myMotionClockP0);
       myMotionClockP0 = newMotion;
@@ -2328,12 +2328,12 @@ void TIA::pokeHMP1(uInt8 value, Int32 clock)
 
   // Check if HMOVE is currently active
   if(myCurrentHMOVEPos != 0x7FFFFFFF &&
-     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockP1 * 4, 7))
+     hpos < BSPF::min(myCurrentHMOVEPos + 6 + myMotionClockP1 * 4, 7))
   {
     Int32 newMotion = (value ^ 0x80) >> 4;
     // Check if new horizontal move can still be applied normally
     if(newMotion > myMotionClockP1 ||
-       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+       hpos <= BSPF::min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
     {
       myPOSP1 -= (newMotion - myMotionClockP1);
       myMotionClockP1 = newMotion;
@@ -2362,12 +2362,12 @@ void TIA::pokeHMM0(uInt8 value, Int32 clock)
 
   // Check if HMOVE is currently active
   if(myCurrentHMOVEPos != 0x7FFFFFFF &&
-     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockM0 * 4, 7))
+     hpos < BSPF::min(myCurrentHMOVEPos + 6 + myMotionClockM0 * 4, 7))
   {
     Int32 newMotion = (value ^ 0x80) >> 4;
     // Check if new horizontal move can still be applied normally
     if(newMotion > myMotionClockM0 ||
-       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+       hpos <= BSPF::min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
     {
       myPOSM0 -= (newMotion - myMotionClockM0);
       myMotionClockM0 = newMotion;
@@ -2395,12 +2395,12 @@ void TIA::pokeHMM1(uInt8 value, Int32 clock)
 
   // Check if HMOVE is currently active
   if(myCurrentHMOVEPos != 0x7FFFFFFF &&
-     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockM1 * 4, 7))
+     hpos < BSPF::min(myCurrentHMOVEPos + 6 + myMotionClockM1 * 4, 7))
   {
     Int32 newMotion = (value ^ 0x80) >> 4;
     // Check if new horizontal move can still be applied normally
     if(newMotion > myMotionClockM1 ||
-       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+       hpos <= BSPF::min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
     {
       myPOSM1 -= (newMotion - myMotionClockM1);
       myMotionClockM1 = newMotion;
@@ -2428,12 +2428,12 @@ void TIA::pokeHMBL(uInt8 value, Int32 clock)
 
   // Check if HMOVE is currently active
   if(myCurrentHMOVEPos != 0x7FFFFFFF &&
-     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockBL * 4, 7))
+     hpos < BSPF::min(myCurrentHMOVEPos + 6 + myMotionClockBL * 4, 7))
   {
     Int32 newMotion = (value ^ 0x80) >> 4;
     // Check if new horizontal move can still be applied normally
     if(newMotion > myMotionClockBL ||
-       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+       hpos <= BSPF::min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
     {
       myPOSBL -= (newMotion - myMotionClockBL);
       myMotionClockBL = newMotion;
@@ -2468,7 +2468,7 @@ void TIA::pokeHMBL(uInt8 value, Int32 clock)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void TIA::applyActiveHMOVEMotion(int hpos, Int16& pos, Int32 motionClock)
 {
-  if(hpos < BSPF_min(myCurrentHMOVEPos + 6 + 16 * 4, 7))
+  if(hpos < BSPF::min(myCurrentHMOVEPos + 6 + 16 * 4, 7))
   {
     Int32 decrements_passed = (hpos - (myCurrentHMOVEPos + 4)) >> 2;
     pos += 8;

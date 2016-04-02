@@ -111,7 +111,7 @@ void LoggerDialog::saveConfig()
 void LoggerDialog::saveLogFile()
 {
   ostringstream path;
-  path << "~" << BSPF_PATH_SEPARATOR << "stella.log";
+  path << "~" << BSPF::PATH_SEPARATOR << "stella.log";
   FilesystemNode node(path.str());
 
   ofstream out(node.getPath());

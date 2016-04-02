@@ -136,8 +136,7 @@ bool Joystick::setMouseControl(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joystick::setDeadZone(int deadzone)
 {
-  if(deadzone < 0)  deadzone = 0;
-  if(deadzone > 29) deadzone = 29;
+  deadzone = BSPF::clamp(deadzone, 0, 29);
 
   _DEAD_ZONE = 3200 + deadzone * 1000;
 }

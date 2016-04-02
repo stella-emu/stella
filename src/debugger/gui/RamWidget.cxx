@@ -305,7 +305,7 @@ void RamWidget::fillGrid(bool updateOld)
   // Update RAM labels
   uInt32 rport = readPort(start), page = rport & 0xf0;
   char buf[5];
-  BSPF_snprintf(buf, 5, "%04X", rport);
+  BSPF::snprintf(buf, 5, "%04X", rport);
   buf[2] = buf[3] = 'x';
   myRamStart->setLabel(buf);
   for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)

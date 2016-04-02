@@ -290,7 +290,7 @@ bool EventHandler::JoystickHandler::add(StellaJoystick* stick)
   // Figure out what type of joystick this is
   bool specialAdaptor = false;
 
-  if(BSPF_containsIgnoreCase(stick->name, "2600-daptor"))
+  if(BSPF::containsIgnoreCase(stick->name, "2600-daptor"))
   {
     // 2600-daptorII devices have 3 axes and 12 buttons, and the value of the z-axis
     // determines how those 12 buttons are used (not all buttons are used in all modes)
@@ -305,7 +305,7 @@ bool EventHandler::JoystickHandler::add(StellaJoystick* stick)
 
     specialAdaptor = true;
   }
-  else if(BSPF_containsIgnoreCase(stick->name, "Stelladaptor"))
+  else if(BSPF::containsIgnoreCase(stick->name, "Stelladaptor"))
   {
     stick->name = "Stelladaptor";
     specialAdaptor = true;
@@ -317,7 +317,7 @@ bool EventHandler::JoystickHandler::add(StellaJoystick* stick)
     // we append ' #x', where 'x' increases consecutively
     int count = 0;
     for(const auto& i: myDatabase)
-      if(BSPF_startsWithIgnoreCase(i.first, stick->name) && i.second.joy)
+      if(BSPF::startsWithIgnoreCase(i.first, stick->name) && i.second.joy)
         ++count;
 
     if(count > 0)
@@ -411,14 +411,14 @@ void EventHandler::JoystickHandler::mapStelladaptors(const string& saport)
   // in setupJoysticks take care of that
   int saCount = 0;
   int saOrder[2] = { 1, 2 };
-  if(BSPF_equalsIgnoreCase(saport, "rl"))
+  if(BSPF::equalsIgnoreCase(saport, "rl"))
   {
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
   for(auto& stick: mySticks)
   {
-    if(BSPF_startsWithIgnoreCase(stick.second->name, "Stelladaptor"))
+    if(BSPF::startsWithIgnoreCase(stick.second->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
       {
@@ -432,7 +432,7 @@ void EventHandler::JoystickHandler::mapStelladaptors(const string& saport)
       }
       saCount++;
     }
-    else if(BSPF_startsWithIgnoreCase(stick.second->name, "2600-daptor"))
+    else if(BSPF::startsWithIgnoreCase(stick.second->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
       {

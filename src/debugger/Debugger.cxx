@@ -143,10 +143,10 @@ void Debugger::initialize()
 
   // The debugger dialog is resizable, within certain bounds
   // We check those bounds now
-  myWidth  = BSPF_max(myWidth,  uInt32(DebuggerDialog::kSmallFontMinW));
-  myHeight = BSPF_max(myHeight, uInt32(DebuggerDialog::kSmallFontMinH));
-  myWidth  = BSPF_min(myWidth,  uInt32(d.w));
-  myHeight = BSPF_min(myHeight, uInt32(d.h));
+  myWidth  = BSPF::max(myWidth,  uInt32(DebuggerDialog::kSmallFontMinW));
+  myHeight = BSPF::max(myHeight, uInt32(DebuggerDialog::kSmallFontMinH));
+  myWidth  = BSPF::min(myWidth,  uInt32(d.w));
+  myHeight = BSPF::min(myHeight, uInt32(d.h));
 
   myOSystem.settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
 
@@ -613,12 +613,12 @@ void Debugger::getCompletions(const char* in, StringList& list) const
   for(const auto& iter: myFunctions)
   {
     const char* l = iter.first.c_str();
-    if(BSPF_equalsIgnoreCase(l, in))
+    if(BSPF::equalsIgnoreCase(l, in))
       list.push_back(l);
   }
 
   for(int i = 0; pseudo_registers[i][0] != 0; ++i)
-    if(BSPF_equalsIgnoreCase(pseudo_registers[i][0], in))
+    if(BSPF::equalsIgnoreCase(pseudo_registers[i][0], in))
       list.push_back(pseudo_registers[i][0]);
 }
 

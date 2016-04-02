@@ -213,8 +213,8 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
   FBSurface::Attributes& attr = mySLineSurface->attributes();
   if(relative == 0)  attr.blendalpha = absolute;
   else               attr.blendalpha += relative;
-  attr.blendalpha = BSPF_max(0u, attr.blendalpha);
-  attr.blendalpha = BSPF_min(100u, attr.blendalpha);
+  attr.blendalpha = BSPF::max(0u, attr.blendalpha);
+  attr.blendalpha = BSPF::min(100u, attr.blendalpha);
 
   mySLineSurface->applyAttributes();
   mySLineSurface->setDirty();
@@ -245,7 +245,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 uInt8 TIASurface::getPhosphor(uInt8 c1, uInt8 c2) const
 {
   if(c2 > c1)
-    BSPF_swap(c1, c2);
+    BSPF::swap(c1, c2);
 
   return ((c1 - c2) * myPhosphorBlend)/100 + c2;
 }

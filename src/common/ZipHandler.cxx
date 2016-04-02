@@ -76,7 +76,7 @@ string ZipHandler::next()
 
       // Ignore zero-length files and '__MACOSX' virtual directories
       valid = header && (header->uncompressed_length > 0) &&
-              !BSPF_startsWithIgnoreCase(header->filename, "__MACOSX");
+              !BSPF::startsWithIgnoreCase(header->filename, "__MACOSX");
     }
     while(!valid && myZip->cd_pos < myZip->ecd.cd_size);
 
@@ -266,9 +266,9 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char* filename, zip_file**
   while(hasNext())
   {
     const std::string& file = next();
-    if(BSPF_endsWithIgnoreCase(file, ".a26") ||
-       BSPF_endsWithIgnoreCase(file, ".bin") ||
-       BSPF_endsWithIgnoreCase(file, ".rom"))
+    if(BSPF::endsWithIgnoreCase(file, ".a26") ||
+       BSPF::endsWithIgnoreCase(file, ".bin") ||
+       BSPF::endsWithIgnoreCase(file, ".rom"))
       (*zip)->romfiles++;
   }
 
@@ -616,7 +616,7 @@ ZipHandler::zip_error
   {
     // Read in the next chunk of data
     bool success = stream_read(zip->file, zip->buffer, offset,
-                      BSPF_min(input_remaining, (uInt32)sizeof(zip->buffer)),
+                      BSPF::min(input_remaining, (uInt32)sizeof(zip->buffer)),
                       read_length);
     if(!success)
     {

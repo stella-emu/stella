@@ -560,7 +560,7 @@ void Console::setTIAProperties()
     myConsoleInfo.InitialFrameRate = "50";
 
     // PAL ROMs normally need at least 250 lines
-    height = BSPF_max(height, 250u);
+    height = BSPF::max(height, 250u);
   }
 
   // Make sure these values fit within the bounds of the desktop
@@ -569,7 +569,7 @@ void Console::setTIAProperties()
   if(height > dheight)
   {
     ystart += height - dheight;
-    ystart = BSPF_min(ystart, 64u);
+    ystart = BSPF::min(ystart, 64u);
     height = dheight;
   }
   myTIA->setYStart(ystart);
@@ -619,7 +619,7 @@ void Console::setControllers(const string& rommd5)
   {
     leftC = make_ptr<Keyboard>(Controller::Left, myEvent, *mySystem);
   }
-  else if(BSPF_startsWithIgnoreCase(left, "PADDLES"))
+  else if(BSPF::startsWithIgnoreCase(left, "PADDLES"))
   {
     bool swapAxis = false, swapDir = false;
     if(left == "PADDLES_IAXIS")
@@ -672,7 +672,7 @@ void Console::setControllers(const string& rommd5)
   {
     rightC = make_ptr<Keyboard>(Controller::Right, myEvent, *mySystem);
   }
-  else if(BSPF_startsWithIgnoreCase(right, "PADDLES"))
+  else if(BSPF::startsWithIgnoreCase(right, "PADDLES"))
   {
     bool swapAxis = false, swapDir = false;
     if(right == "PADDLES_IAXIS")

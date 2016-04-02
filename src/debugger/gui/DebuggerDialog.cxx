@@ -453,7 +453,7 @@ void DebuggerDialog::addRomArea()
 GUI::Rect DebuggerDialog::getTiaBounds() const
 {
   // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
-  GUI::Rect r(0, 0, 320, BSPF_max(260, int(_h * 0.35)));
+  GUI::Rect r(0, 0, 320, BSPF::max(260, int(_h * 0.35)));
   return r;
 }
 

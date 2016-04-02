@@ -436,7 +436,7 @@ void GameInfoDialog::loadView()
   istringstream m_axis(myGameProperties.get(Controller_MouseAxis));
   string m_control, m_range;
   m_axis >> m_control;
-  bool autoAxis = BSPF_equalsIgnoreCase(m_control, "AUTO");
+  bool autoAxis = BSPF::equalsIgnoreCase(m_control, "AUTO");
   if(autoAxis)
   {
     myMouseControl->setSelectedIndex(0);

@@ -221,10 +221,10 @@ void GlobalPropsDialog::loadConfig()
 
   const string& holdjoy0 = settings.getString("holdjoy0");
   for(int i = kJ0Up; i <= kJ0Fire; ++i)
-    myJoy[i]->setState(BSPF_containsIgnoreCase(holdjoy0, ourJoyState[i]));
+    myJoy[i]->setState(BSPF::containsIgnoreCase(holdjoy0, ourJoyState[i]));
   const string& holdjoy1 = settings.getString("holdjoy1");
   for(int i = kJ1Up; i <= kJ1Fire; ++i)
-    myJoy[i]->setState(BSPF_containsIgnoreCase(holdjoy1, ourJoyState[i]));
+    myJoy[i]->setState(BSPF::containsIgnoreCase(holdjoy1, ourJoyState[i]));
 
   myHoldSelect->setState(settings.getBool("holdselect"));
   myHoldReset->setState(settings.getBool("holdreset"));

@@ -752,7 +752,7 @@ void PromptWidget::nextLine()
 // Call this (at least) when the current line changes or when a new line is added
 void PromptWidget::updateScrollBuffer()
 {
-  int lastchar = BSPF_max(_promptEndPos, _currentPos);
+  int lastchar = BSPF::max(_promptEndPos, _currentPos);
   int line = lastchar / _lineWidth;
   int numlines = (line < _linesInBuffer) ? line + 1 : _linesInBuffer;
   int firstline = line - numlines + 1;
@@ -787,7 +787,7 @@ int PromptWidget::printf(const char* format, ...)
 int PromptWidget::vprintf(const char* format, va_list argptr)
 {
   char buf[2048];  // Note: generates warnings about 'nonliteral' format
-  int count = BSPF_vsnprintf(buf, sizeof(buf), format, argptr);
+  int count = BSPF::vsnprintf(buf, sizeof(buf), format, argptr);
 
   print(buf);
   return count;
@@ -908,7 +908,7 @@ string PromptWidget::getCompletionPrefix(const StringList& completions, string p
     {
       if(s.length() < prefix.length())
         return prefix;  // current prefix is the best we're going to get
-      else if(!BSPF_startsWithIgnoreCase(s, prefix))
+      else if(!BSPF::startsWithIgnoreCase(s, prefix))
       {
         prefix.erase(prefix.length()-1);
         return prefix;

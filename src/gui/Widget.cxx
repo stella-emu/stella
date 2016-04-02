@@ -312,7 +312,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 void StaticTextWidget::setValue(int value)
 {
   char buf[256];
-  BSPF_snprintf(buf, 255, "%d", value);
+  BSPF::snprintf(buf, 255, "%d", value);
   _label = buf;
 
   setDirty();
@@ -701,7 +701,7 @@ int SliderWidget::valueToPos(int value)
 {
   if(value < _valueMin)      value = _valueMin;
   else if(value > _valueMax) value = _valueMax;
-  int range = BSPF_max(_valueMax - _valueMin, 1);  // don't divide by zero
+  int range = BSPF::max(_valueMax - _valueMin, 1);  // don't divide by zero
   
   return ((_w - _labelWidth - 4) * (value - _valueMin) / range);
 }

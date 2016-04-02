@@ -43,8 +43,8 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) c
     memcpy(buffer, src, width() * height() * 4);
   else
   {
-    uInt32 w = BSPF_min(rect.width(), width());
-    uInt32 h = BSPF_min(rect.height(), height());
+    uInt32 w = BSPF::min(rect.width(), width());
+    uInt32 h = BSPF::min(rect.height(), height());
 
     // Copy 'height' lines of width 'pitch' (in bytes for both)
     uInt8* dst = buffer;

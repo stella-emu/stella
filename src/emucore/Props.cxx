@@ -42,7 +42,7 @@ void Properties::set(PropertyType key, const string& value)
   if(key != LastPropType)
   {
     myProperties[key] = value;
-    if(BSPF_equalsIgnoreCase(myProperties[key], "AUTO-DETECT"))
+    if(BSPF::equalsIgnoreCase(myProperties[key], "AUTO-DETECT"))
       myProperties[key] = "AUTO";
 
     switch(key)

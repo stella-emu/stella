@@ -264,7 +264,7 @@ bool ListWidget::handleText(char text)
     int newSelectedItem = 0;
     for(const auto& i: _list)
     {
-      if(BSPF_startsWithIgnoreCase(i, _quickSelectStr))
+      if(BSPF::startsWithIgnoreCase(i, _quickSelectStr))
       {
         _selectedItem = newSelectedItem;
         break;

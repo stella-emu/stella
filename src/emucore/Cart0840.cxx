@@ -28,7 +28,7 @@ Cartridge0840::Cartridge0840(const uInt8* image, uInt32 size, const Settings& se
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(8192u, size));
+  memcpy(myImage, image, BSPF::min(8192u, size));
   createCodeAccessBase(8192);
 
   // Remember startup bank

@@ -410,8 +410,8 @@ class OSystem
       that usually isn't user-modifiable), we create a special method
       for it.
     */
-    virtual string defaultSnapSaveDir() { return "~" BSPF_PATH_SEPARATOR; }
-    virtual string defaultSnapLoadDir() { return "~" BSPF_PATH_SEPARATOR; }
+    virtual string defaultSnapSaveDir() { return string("~") + BSPF::PATH_SEPARATOR; }
+    virtual string defaultSnapLoadDir() { return string("~") + BSPF::PATH_SEPARATOR; }
 
   protected:
     /**

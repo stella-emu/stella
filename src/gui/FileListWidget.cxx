@@ -64,7 +64,7 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
     bool isDir = file.isDirectory();
     if(isDir)
       name = " [" + name + "]";
-    else if(!BSPF_endsWithIgnoreCase(name, _extension))
+    else if(!BSPF::endsWithIgnoreCase(name, _extension))
       continue;
 
     _gameList.appendGame(name, file.getPath(), "", isDir);

@@ -38,8 +38,8 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolor = _bgcolorhi = kDlgColor;
 
   // Use all available space, up to the maximum bounds of the TIA image
-  _w = BSPF_min(w, 320);
-  _h = BSPF_min(h, 260);
+  _w = BSPF::min(w, 320);
+  _h = BSPF::min(h, 260);
 
   addFocusWidget(this);
 
@@ -96,8 +96,8 @@ void TiaZoomWidget::recalc()
             th = instance().console().tia().height();
 
   // Don't go past end of framebuffer
-  myXOff = BSPF_clamp(myXOff, 0, tw - myNumCols);
-  myYOff = BSPF_clamp(myYOff, 0, th - myNumRows);
+  myXOff = BSPF::clamp(myXOff, 0, tw - myNumCols);
+  myYOff = BSPF::clamp(myYOff, 0, th - myNumRows);
 
   setDirty();
 }

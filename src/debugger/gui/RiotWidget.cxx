@@ -344,7 +344,7 @@ void RiotWidget::loadConfig()
   const string& cpurandom = instance().settings().getString("cpurandom");
   const char* cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
-    myRandomizeCPU[i]->setState(BSPF_containsIgnoreCase(cpurandom, cpuregs[i]));
+    myRandomizeCPU[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

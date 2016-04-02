@@ -31,7 +31,7 @@ CartridgeCM::CartridgeCM(const uInt8* image, uInt32 size, const Settings& settin
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(16384u, size));
+  memcpy(myImage, image, BSPF::min(16384u, size));
   createCodeAccessBase(16384);
 
   // On powerup, the last bank of ROM is enabled and RAM is disabled

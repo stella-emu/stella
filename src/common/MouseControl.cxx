@@ -35,12 +35,12 @@ MouseControl::MouseControl(Console& console, const string& mode)
   string m_mode;
   m_axis >> m_mode;
 
-  if(BSPF_equalsIgnoreCase(m_mode, "none"))
+  if(BSPF::equalsIgnoreCase(m_mode, "none"))
   {
     myModeList.push_back(MouseMode("Mouse input is disabled"));
     return;
   }
-  else if(!BSPF_equalsIgnoreCase(m_mode, "auto") && m_mode.length() == 2 &&
+  else if(!BSPF::equalsIgnoreCase(m_mode, "auto") && m_mode.length() == 2 &&
           m_mode[0] >= '0' && m_mode[0] <= '8' &&
           m_mode[1] >= '0' && m_mode[1] <= '8')
   {
@@ -148,7 +148,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
 
   // Now consider the possible modes for the mouse based on the left
   // and right controllers
-  bool noswap = BSPF_equalsIgnoreCase(myProps.get(Console_SwapPorts), "NO");
+  bool noswap = BSPF::equalsIgnoreCase(myProps.get(Console_SwapPorts), "NO");
   if(noswap)
   {
     addLeftControllerModes(noswap);
@@ -243,7 +243,7 @@ void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
   msg << "Mouse is Paddle " << rname << " controller";
   MouseMode mode1(type, rport, type, rport, msg.str());
 
-  if(BSPF_equalsIgnoreCase(myProps.get(Controller_SwapPaddles), "NO"))
+  if(BSPF::equalsIgnoreCase(myProps.get(Controller_SwapPaddles), "NO"))
   {
     myModeList.push_back(mode0);
     myModeList.push_back(mode1);

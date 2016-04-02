@@ -173,29 +173,29 @@ int const_to_int(char* ch) {
 // special methods that get e.g. CPU registers
 CpuMethod getCpuSpecial(char* ch)
 {
-  if(BSPF_equalsIgnoreCase(ch, "a"))
+  if(BSPF::equalsIgnoreCase(ch, "a"))
     return &CpuDebug::a;
-  else if(BSPF_equalsIgnoreCase(ch, "x"))
+  else if(BSPF::equalsIgnoreCase(ch, "x"))
     return &CpuDebug::x;
-  else if(BSPF_equalsIgnoreCase(ch, "y"))
+  else if(BSPF::equalsIgnoreCase(ch, "y"))
     return &CpuDebug::y;
-  else if(BSPF_equalsIgnoreCase(ch, "pc"))
+  else if(BSPF::equalsIgnoreCase(ch, "pc"))
     return &CpuDebug::pc;
-  else if(BSPF_equalsIgnoreCase(ch, "sp"))
+  else if(BSPF::equalsIgnoreCase(ch, "sp"))
     return &CpuDebug::sp;
-  else if(BSPF_equalsIgnoreCase(ch, "c"))
+  else if(BSPF::equalsIgnoreCase(ch, "c"))
     return &CpuDebug::c;
-  else if(BSPF_equalsIgnoreCase(ch, "z"))
+  else if(BSPF::equalsIgnoreCase(ch, "z"))
     return &CpuDebug::z;
-  else if(BSPF_equalsIgnoreCase(ch, "n"))
+  else if(BSPF::equalsIgnoreCase(ch, "n"))
     return &CpuDebug::n;
-  else if(BSPF_equalsIgnoreCase(ch, "v"))
+  else if(BSPF::equalsIgnoreCase(ch, "v"))
     return &CpuDebug::v;
-  else if(BSPF_equalsIgnoreCase(ch, "d"))
+  else if(BSPF::equalsIgnoreCase(ch, "d"))
     return &CpuDebug::d;
-  else if(BSPF_equalsIgnoreCase(ch, "i"))
+  else if(BSPF::equalsIgnoreCase(ch, "i"))
     return &CpuDebug::i;
-  else if(BSPF_equalsIgnoreCase(ch, "b"))
+  else if(BSPF::equalsIgnoreCase(ch, "b"))
     return &CpuDebug::b;
   else
     return 0;
@@ -204,9 +204,9 @@ CpuMethod getCpuSpecial(char* ch)
 // special methods that get Cart RAM/ROM internal state
 CartMethod getCartSpecial(char* ch)
 {
-  if(BSPF_equalsIgnoreCase(ch, "_bank"))
+  if(BSPF::equalsIgnoreCase(ch, "_bank"))
     return &CartDebug::getBank;
-  else if(BSPF_equalsIgnoreCase(ch, "_rwport"))
+  else if(BSPF::equalsIgnoreCase(ch, "_rwport"))
     return &CartDebug::readFromWritePort;
   else
     return 0;
@@ -215,15 +215,15 @@ CartMethod getCartSpecial(char* ch)
 // special methods that get TIA internal state
 TiaMethod getTiaSpecial(char* ch)
 {
-  if(BSPF_equalsIgnoreCase(ch, "_scan"))
+  if(BSPF::equalsIgnoreCase(ch, "_scan"))
     return &TIADebug::scanlines;
-  else if(BSPF_equalsIgnoreCase(ch, "_fcount"))
+  else if(BSPF::equalsIgnoreCase(ch, "_fcount"))
     return &TIADebug::frameCount;
-  else if(BSPF_equalsIgnoreCase(ch, "_cclocks"))
+  else if(BSPF::equalsIgnoreCase(ch, "_cclocks"))
     return &TIADebug::clocksThisLine;
-  else if(BSPF_equalsIgnoreCase(ch, "_vsync"))
+  else if(BSPF::equalsIgnoreCase(ch, "_vsync"))
     return &TIADebug::vsyncAsInt;
-  else if(BSPF_equalsIgnoreCase(ch, "_vblank"))
+  else if(BSPF::equalsIgnoreCase(ch, "_vblank"))
     return &TIADebug::vblankAsInt;
   else
     return 0;

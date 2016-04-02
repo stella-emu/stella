@@ -27,7 +27,7 @@
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    mySize(BSPF_max(size, 8448u)),
+    mySize(BSPF::max(size, 8448u)),
     myLoadImages(nullptr),
     myWriteEnabled(false),
     myPower(true),

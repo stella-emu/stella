@@ -276,7 +276,7 @@ void Paddles::update()
   if(myMPaddleID > -1)
   {
     // We're in auto mode, where a single axis is used for one paddle only
-    myCharge[myMPaddleID] = BSPF_clamp(myCharge[myMPaddleID] -
+    myCharge[myMPaddleID] = BSPF::clamp(myCharge[myMPaddleID] -
         (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
         TRIGMIN, TRIGRANGE);
     if(myEvent.get(Event::MouseButtonLeftValue) ||
@@ -289,7 +289,7 @@ void Paddles::update()
     // mapped to a separate paddle
     if(myMPaddleIDX > -1)
     {
-      myCharge[myMPaddleIDX] = BSPF_clamp(myCharge[myMPaddleIDX] -
+      myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
           (myEvent.get(Event::MouseAxisXValue) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
       if(myEvent.get(Event::MouseButtonLeftValue))
@@ -297,7 +297,7 @@ void Paddles::update()
     }
     if(myMPaddleIDY > -1)
     {
-      myCharge[myMPaddleIDY] = BSPF_clamp(myCharge[myMPaddleIDY] -
+      myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
           (myEvent.get(Event::MouseAxisYValue) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
       if(myEvent.get(Event::MouseButtonRightValue))
@@ -397,20 +397,20 @@ bool Paddles::setMouseControl(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDigitalSensitivity(int sensitivity)
 {
-  DIGITAL_SENSITIVITY = BSPF_clamp(sensitivity, 1, MAX_DIGITAL_SENSE);
+  DIGITAL_SENSITIVITY = BSPF::clamp(sensitivity, 1, MAX_DIGITAL_SENSE);
   DIGITAL_DISTANCE = 20 + (DIGITAL_SENSITIVITY << 3);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setMouseSensitivity(int sensitivity)
 {
-  MOUSE_SENSITIVITY = BSPF_clamp(sensitivity, 1, MAX_MOUSE_SENSE);
+  MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, 1, MAX_MOUSE_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setPaddleRange(int range)
 {
-  range = BSPF_clamp(range, 1, 100);
+  range = BSPF::clamp(range, 1, 100);
   TRIGRANGE = int(TRIGMAX * (range / 100.0));
 }
 

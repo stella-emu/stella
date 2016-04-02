@@ -65,11 +65,15 @@ using ByteArray = vector<uInt8>;
 using StringList = vector<string>;
 using BytePtr = unique_ptr<uInt8[]>;
 
+static const string EmptyString("");
+
+namespace BSPF
+{
 // Defines to help with path handling
 #if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
-  #define BSPF_PATH_SEPARATOR  "/"
+  static const string PATH_SEPARATOR = "/";
 #elif defined(BSPF_WINDOWS)
-  #define BSPF_PATH_SEPARATOR  "\\"
+  static const string PATH_SEPARATOR = "\\";
   #pragma warning(2:4264)  // no override available for virtual member function from base 'class'; function is hidden
   #pragma warning(2:4265)  // class has virtual functions, but destructor is not virtual
   #pragma warning(2:4266)  // no override available for virtual member function from base 'type'; function is hidden
@@ -80,38 +84,36 @@ using BytePtr = unique_ptr<uInt8[]>;
 // CPU architecture type
 // This isn't complete yet, but takes care of all the major platforms
 #if defined(__i386__) || defined(_M_IX86)
-  #define BSPF_ARCH "i386"
+  static const string ARCH = "i386";
 #elif defined(__x86_64__) || defined(_WIN64)
-  #define BSPF_ARCH "x86_64"
+  static const string ARCH = "x86_64";
 #elif defined(__powerpc__) || defined(__ppc__)
-  #define BSPF_ARCH "ppc"
+  static const string ARCH = "ppc";
 #else
-  #define BSPF_ARCH "NOARCH"
+  static const string ARCH = "NOARCH";
 #endif
 
 // I wish Windows had a complete POSIX layer
 #if defined BSPF_WINDOWS && !defined __GNUG__
-  #define BSPF_snprintf _snprintf
-  #define BSPF_vsnprintf _vsnprintf
+  #define snprintf _snprintf
+  #define vsnprintf _vsnprintf
 #else
   #define HAVE_UNISTD_H   // needed for building zlib
   #include <strings.h>
-  #define BSPF_snprintf snprintf
-  #define BSPF_vsnprintf vsnprintf
+  using std::snprintf;
+  using std::vsnprintf;
 #endif
-
-static const string EmptyString("");
 
 //////////////////////////////////////////////////////////////////////
 // Some convenience functions
-template<typename T> inline void BSPF_swap(T& a, T& b) { std::swap(a, b); }
-template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }
-template<typename T> inline T BSPF_min (T a, T b) { return (a<b) ? a : b; }
-template<typename T> inline T BSPF_max (T a, T b) { return (a>b) ? a : b; }
-template<typename T> inline T BSPF_clamp (T a, T l, T u) { return (a<l) ? l : (a>u) ? u : a; }
+template<typename T> inline void swap(T& a, T& b) { std::swap(a, b); }
+template<typename T> inline T abs (T x) { return (x>=0) ? x : -x; }
+template<typename T> inline T min (T a, T b) { return (a<b) ? a : b; }
+template<typename T> inline T max (T a, T b) { return (a>b) ? a : b; }
+template<typename T> inline T clamp (T a, T l, T u) { return (a<l) ? l : (a>u) ? u : a; }
 
 // Compare two strings, ignoring case
-inline int BSPF_compareIgnoreCase(const string& s1, const string& s2)
+inline int compareIgnoreCase(const string& s1, const string& s2)
 {
 #if defined BSPF_WINDOWS && !defined __GNUG__
   return _stricmp(s1.c_str(), s2.c_str());
@@ -119,7 +121,7 @@ inline int BSPF_compareIgnoreCase(const string& s1, const string& s2)
   return strcasecmp(s1.c_str(), s2.c_str());
 #endif
 }
-inline int BSPF_compareIgnoreCase(const char* s1, const char* s2)
+inline int compareIgnoreCase(const char* s1, const char* s2)
 {
 #if defined BSPF_WINDOWS && !defined __GNUG__
   return _stricmp(s1, s2);
@@ -129,7 +131,7 @@ inline int BSPF_compareIgnoreCase(const char* s1, const char* s2)
 }
 
 // Test whether the first string starts with the second one (case insensitive)
-inline bool BSPF_startsWithIgnoreCase(const string& s1, const string& s2)
+inline bool startsWithIgnoreCase(const string& s1, const string& s2)
 {
 #if defined BSPF_WINDOWS && !defined __GNUG__
   return _strnicmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
@@ -137,7 +139,7 @@ inline bool BSPF_startsWithIgnoreCase(const string& s1, const string& s2)
   return strncasecmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
 #endif
 }
-inline bool BSPF_startsWithIgnoreCase(const char* s1, const char* s2)
+inline bool startsWithIgnoreCase(const char* s1, const char* s2)
 {
 #if defined BSPF_WINDOWS && !defined __GNUG__
   return _strnicmp(s1, s2, strlen(s2)) == 0;
@@ -147,14 +149,14 @@ inline bool BSPF_startsWithIgnoreCase(const char* s1, const char* s2)
 }
 
 // Test whether two strings are equal (case insensitive)
-inline bool BSPF_equalsIgnoreCase(const string& s1, const string& s2)
+inline bool equalsIgnoreCase(const string& s1, const string& s2)
 {
-  return BSPF_compareIgnoreCase(s1, s2) == 0;
+  return compareIgnoreCase(s1, s2) == 0;
 }
 
 // Find location (if any) of the second string within the first,
 // starting from 'startpos' in the first string
-inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2, int startpos = 0)
+inline size_t findIgnoreCase(const string& s1, const string& s2, int startpos = 0)
 {
   auto pos = std::search(s1.begin()+startpos, s1.end(),
     s2.begin(), s2.end(), [](char ch1, char ch2) {
@@ -164,20 +166,22 @@ inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2, int startp
 }
 
 // Test whether the first string ends with the second one (case insensitive)
-inline bool BSPF_endsWithIgnoreCase(const string& s1, const string& s2)
+inline bool endsWithIgnoreCase(const string& s1, const string& s2)
 {
   if(s1.length() >= s2.length())
   {
     const char* end = s1.c_str() + s1.length() - s2.length();
-    return BSPF_compareIgnoreCase(end, s2.c_str()) == 0;
+    return compareIgnoreCase(end, s2.c_str()) == 0;
   }
   return false;
 }
 
 // Test whether the first string contains the second one (case insensitive)
-inline bool BSPF_containsIgnoreCase(const string& s1, const string& s2)
+inline bool containsIgnoreCase(const string& s1, const string& s2)
 {
-  return BSPF_findIgnoreCase(s1, s2) != string::npos;
+  return findIgnoreCase(s1, s2) != string::npos;
 }
+
+} // namespace BSPF
 
 #endif

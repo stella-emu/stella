@@ -81,7 +81,7 @@ string FilesystemNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const char* home = getenv("HOME");
-  if(home != NULL && BSPF_startsWithIgnoreCase(_path, home))
+  if(home != NULL && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* offset = _path.c_str() + strlen(home);

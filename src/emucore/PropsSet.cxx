@@ -101,7 +101,7 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
     while(low <= high)
     {
       int i = (low + high) / 2;
-      int cmp = BSPF_compareIgnoreCase(md5, DefProps[i][Cartridge_MD5]);
+      int cmp = BSPF::compareIgnoreCase(md5, DefProps[i][Cartridge_MD5]);
 
       if(cmp == 0)  // found it
       {

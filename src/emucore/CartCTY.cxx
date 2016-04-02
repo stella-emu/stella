@@ -39,7 +39,7 @@ CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osyst
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(32768u, size));
+  memcpy(myImage, image, BSPF::min(32768u, size));
   createCodeAccessBase(32768);
 
   // Point to the first tune

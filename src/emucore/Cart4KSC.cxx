@@ -27,7 +27,7 @@ Cartridge4KSC::Cartridge4KSC(const uInt8* image, uInt32 size, const Settings& se
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(4096u, size));
+  memcpy(myImage, image, BSPF::min(4096u, size));
   createCodeAccessBase(4096);
 }
 

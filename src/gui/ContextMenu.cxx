@@ -55,7 +55,7 @@ void ContextMenu::addItems(const VariantList& items)
   // Resize to largest string
   int maxwidth = 0;
   for(const auto& e: _entries)
-    maxwidth = BSPF_max(maxwidth, _font.getStringWidth(e.first));
+    maxwidth = BSPF::max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
   _w = maxwidth + 10;
@@ -100,7 +100,7 @@ void ContextMenu::recalc(const GUI::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  uInt32 maxentries = BSPF_min(18u, (image.height() - 4) / _rowHeight);
+  uInt32 maxentries = BSPF::min(18u, (image.height() - 4) / _rowHeight);
   if(_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
@@ -133,7 +133,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
   {
     for(uInt32 item = 0; item < _entries.size(); ++item)
     { 
-      if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
+      if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
       {
         setSelectedIndex(item);
         return;
@@ -144,7 +144,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
   // If we get this far, the value wasn't found; use the default value
   for(uInt32 item = 0; item < _entries.size(); ++item)
   {
-    if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
+    if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
     {
       setSelectedIndex(item);
       return;
@@ -495,7 +495,7 @@ void ContextMenu::scrollUp(int distance)
   if(_firstEntry == 0)
     return;
 
-  _firstEntry = BSPF_max(_firstEntry - distance, 0);
+  _firstEntry = BSPF::max(_firstEntry - distance, 0);
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
   _scrollDnColor = kScrollColor;
 
@@ -509,7 +509,7 @@ void ContextMenu::scrollDown(int distance)
   if(_firstEntry == max_offset)
     return;
 
-  _firstEntry = BSPF_min(_firstEntry + distance, max_offset);
+  _firstEntry = BSPF::min(_firstEntry + distance, max_offset);
   _scrollUpColor = kScrollColor;
   _scrollDnColor = _firstEntry < max_offset ? kScrollColor : kColor;
 

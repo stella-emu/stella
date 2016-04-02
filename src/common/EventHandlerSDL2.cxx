@@ -202,7 +202,7 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
     // havoc with the idea that a joystick will always have the same name.
     // So we truncate the number.
     const char* sdlname = SDL_JoystickName(myStick);
-    const string& desc = BSPF_startsWithIgnoreCase(sdlname, "XInput Controller")
+    const string& desc = BSPF::startsWithIgnoreCase(sdlname, "XInput Controller")
                          ? "XInput Controller" : sdlname;
 
     initialize(SDL_JoystickInstanceID(myStick), desc,

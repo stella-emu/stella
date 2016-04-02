@@ -648,9 +648,9 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                const string& okText, const string& cancelText)
 {
 
-  int buttonWidth  = BSPF_max(font.getStringWidth("Cancel"),
-                      BSPF_max(font.getStringWidth(okText),
-                      font.getStringWidth(okText))) + 15;
+  int buttonWidth = BSPF::max(font.getStringWidth("Cancel"),
+                    BSPF::max(font.getStringWidth(okText),
+                    font.getStringWidth(okText))) + 15;
   int buttonHeight = font.getLineHeight() + 4;
   ButtonWidget* b;
 #ifndef BSPF_MAC_OSX

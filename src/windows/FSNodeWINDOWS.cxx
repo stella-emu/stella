@@ -206,7 +206,7 @@ string FilesystemNodeWINDOWS::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = myHomeFinder.getHomePath();
-  if(home != "" && BSPF_startsWithIgnoreCase(_path, home))
+  if(home != "" && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* offset = _path.c_str() + home.length();

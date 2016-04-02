@@ -110,7 +110,7 @@ class FilesystemNode
       if (isDirectory() != node.isDirectory())
         return isDirectory();
 
-      return BSPF_compareIgnoreCase(getName(), node.getName()) < 0;
+      return BSPF::compareIgnoreCase(getName(), node.getName()) < 0;
     }
 
     /**
@@ -119,7 +119,7 @@ class FilesystemNode
      */
     inline bool operator==(const FilesystemNode& node) const
     {
-      return BSPF_compareIgnoreCase(getName(), node.getName()) == 0;
+      return BSPF::compareIgnoreCase(getName(), node.getName()) == 0;
     }
 
     /**

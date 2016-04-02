@@ -43,7 +43,7 @@ FilesystemNode::FilesystemNode(const string& p)
   AbstractFSNode* tmp = nullptr;
 
   // Is this potentially a ZIP archive?
-  if(BSPF_containsIgnoreCase(p, ".zip"))
+  if(BSPF::containsIgnoreCase(p, ".zip"))
     tmp = FilesystemNodeFactory::create(p, FilesystemNodeFactory::ZIP);
   else
     tmp = FilesystemNodeFactory::create(p, FilesystemNodeFactory::SYSTEM);

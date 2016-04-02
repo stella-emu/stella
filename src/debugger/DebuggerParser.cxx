@@ -108,7 +108,7 @@ string DebuggerParser::run(const string& command)
 
   for(int i = 0; i < kNumCommands; ++i)
   {
-    if(BSPF_equalsIgnoreCase(verb, commands[i].cmdString))
+    if(BSPF::equalsIgnoreCase(verb, commands[i].cmdString))
     {
       if(validateArgs(i))
         commands[i].executor(this);
@@ -160,7 +160,7 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions) con
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(int i = 0; i < kNumCommands; ++i)
   {
-    if(BSPF_startsWithIgnoreCase(commands[i].cmdString.c_str(), in))
+    if(BSPF::startsWithIgnoreCase(commands[i].cmdString.c_str(), in))
       completions.push_back(commands[i].cmdString);
   }
 }
@@ -1288,7 +1288,7 @@ void DebuggerParser::executeRunTo()
     if(pcline >= 0)
     {
       const string& next = list[pcline].disasm;
-      done = (BSPF_findIgnoreCase(next, argStrings[0]) != string::npos);
+      done = (BSPF::findIgnoreCase(next, argStrings[0]) != string::npos);
     }
     // Update the progress bar
     progress.setProgress(count);
@@ -1437,7 +1437,7 @@ void DebuggerParser::executeTrap()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF_swap(beg, end);
+  if(beg > end)  BSPF::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {
@@ -1453,7 +1453,7 @@ void DebuggerParser::executeTrapread()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF_swap(beg, end);
+  if(beg > end)  BSPF::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {
@@ -1468,7 +1468,7 @@ void DebuggerParser::executeTrapwrite()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF_swap(beg, end);
+  if(beg > end)  BSPF::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {
@@ -1483,7 +1483,7 @@ void DebuggerParser::executeType()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF_swap(beg, end);
+  if(beg > end)  BSPF::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {

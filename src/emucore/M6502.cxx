@@ -83,15 +83,15 @@ void M6502::reset()
 
   // Set registers to random or default values
   const string& cpurandom = mySettings.getString("cpurandom");
-  SP = BSPF_containsIgnoreCase(cpurandom, "S") ?
+  SP = BSPF::containsIgnoreCase(cpurandom, "S") ?
           mySystem->randGenerator().next() : 0xff;
-  A  = BSPF_containsIgnoreCase(cpurandom, "A") ?
+  A  = BSPF::containsIgnoreCase(cpurandom, "A") ?
           mySystem->randGenerator().next() : 0x00;
-  X  = BSPF_containsIgnoreCase(cpurandom, "X") ?
+  X  = BSPF::containsIgnoreCase(cpurandom, "X") ?
           mySystem->randGenerator().next() : 0x00;
-  Y  = BSPF_containsIgnoreCase(cpurandom, "Y") ?
+  Y  = BSPF::containsIgnoreCase(cpurandom, "Y") ?
           mySystem->randGenerator().next() : 0x00;
-  PS(BSPF_containsIgnoreCase(cpurandom, "P") ?
+  PS(BSPF::containsIgnoreCase(cpurandom, "P") ?
           mySystem->randGenerator().next() : 0x20);
 
   // Reset access flag

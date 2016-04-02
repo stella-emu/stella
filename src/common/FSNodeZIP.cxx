@@ -45,13 +45,13 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   // Is this a valid file?
   auto isFile = [](const string& file)
   {
-    return BSPF_endsWithIgnoreCase(file, ".a26") ||
-           BSPF_endsWithIgnoreCase(file, ".bin") ||
-           BSPF_endsWithIgnoreCase(file, ".rom");
+    return BSPF::endsWithIgnoreCase(file, ".a26") ||
+           BSPF::endsWithIgnoreCase(file, ".bin") ||
+           BSPF::endsWithIgnoreCase(file, ".rom");
   };
 
   // Extract ZIP file and virtual file (if specified)
-  size_t pos = BSPF_findIgnoreCase(p, ".zip");
+  size_t pos = BSPF::findIgnoreCase(p, ".zip");
   if(pos == string::npos)
     return;
 
@@ -154,7 +154,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
   {
     // Only consider entries that start with '_virtualPath'
     const string& next = zip.next();
-    if(BSPF_startsWithIgnoreCase(next, _virtualPath))
+    if(BSPF::startsWithIgnoreCase(next, _virtualPath))
     {
       // First strip off the leading directory
       const string& curr = next.substr(_virtualPath == "" ? 0 : _virtualPath.size()+1);
