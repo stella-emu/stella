@@ -284,7 +284,7 @@ bool M6532::poke(uInt16 addr, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 {
-  static const uInt8 shift[] = { 0, 3, 6, 10 };
+  static constexpr uInt8 shift[] = { 0, 3, 6, 10 };
 
   myIntervalShift = shift[interval];
   myOutTimer[interval] = value;

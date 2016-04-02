@@ -60,10 +60,7 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     CheckboxWidget* myHoldSelect;
     CheckboxWidget* myHoldReset;
 
-    static constexpr char* ourJoyState[10] = {
-      "U", "D", "L", "R", "F", "U", "D", "L", "R", "F"
-    };
-
+    static const char* ourJoyState[10];
 
   private:
     // Following constructors and assignment operators not supported

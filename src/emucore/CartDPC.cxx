@@ -92,7 +92,7 @@ inline void CartridgeDPC::clockRandomNumberGenerator()
 {
   // Table for computing the input bit of the random number generator's
   // shift register (it's the NOT of the EOR of four bits)
-  static const uInt8 f[16] = {
+  static constexpr uInt8 f[16] = {
     1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1
   };
 
@@ -204,7 +204,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
         // No, it's a music read
         else
         {
-          static const uInt8 musicAmplitudes[8] = {
+          static constexpr uInt8 musicAmplitudes[8] = {
               0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
           };
 

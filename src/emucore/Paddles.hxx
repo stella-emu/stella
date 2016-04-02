@@ -128,17 +128,18 @@ class Paddles : public Controller
 
     // Range of values over which digital and mouse movement is scaled
     // to paddle resistance
-    static constexpr int TRIGMIN = 1;
-    static constexpr int TRIGMAX = 4096;
+    static const int TRIGMIN = 1;
+    static const int TRIGMAX = 4096;
     static int TRIGRANGE;  // This one is variable for the upper range
 
-    static constexpr int MAX_DIGITAL_SENSE = 20;
-    static constexpr int MAX_MOUSE_SENSE = 20;
+    static const int MAX_DIGITAL_SENSE = 20;
+    static const int MAX_MOUSE_SENSE = 20;
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
     static int MOUSE_SENSITIVITY;
 
     // Lookup table for associating paddle buttons with controller pins
-    static constexpr Controller::DigitalPin ourButtonPin[2] = { Four, Three };
+    // Yes, this is hideously complex
+    static const Controller::DigitalPin ourButtonPin[2];
 
   private:
     // Following constructors and assignment operators not supported

@@ -74,11 +74,7 @@ class LauncherFilterDialog : public Dialog, public CommandSender
     };
 
     // Holds static strings representing ROM types
-    static constexpr char* ourRomTypes[2][5] = {
-      { ".a26", ".bin", ".rom", ".zip", ".gz" },
-      { "a26", "bin", "rom", "zip", "gz" }
-    };
-
+    static const char* ourRomTypes[2][5];
 
   private:
     // Following constructors and assignment operators not supported
