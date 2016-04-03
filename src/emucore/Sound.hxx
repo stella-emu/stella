@@ -22,7 +22,6 @@
 
 class OSystem;
 
-#include "Serializable.hxx"
 #include "bspf.hxx"
 
 /**
@@ -32,11 +31,11 @@ class OSystem;
   @author Stephen Anthony
   @version $Id$
 */
-class Sound : public Serializable
+class Sound
 {
   public:
     /**
-      Create a new sound object.  The init method must be invoked before
+      Create a new sound object.  The open method must be invoked before
       using the object.
     */
     Sound(OSystem& osystem) : myOSystem(osystem) { }
@@ -51,33 +50,12 @@ class Sound : public Serializable
     virtual void setEnabled(bool enable) = 0;
 
     /**
-      The system cycle counter is being adjusting by the specified amount.  Any
-      members using the system cycle counter should be adjusted as needed.
-
-      @param amount The amount the cycle counter is being adjusted by
-    */
-    virtual void adjustCycleCounter(Int32 amount) = 0;
-
-    /**
-      Sets the number of channels (mono or stereo sound).
-
-      @param channels The number of channels
-    */
-    virtual void setChannels(uInt32 channels) = 0;
-
-    /**
-      Sets the display framerate.  Sound generation for NTSC and PAL games
-      depends on the framerate, so we need to set it here.
-
-      @param framerate The base framerate depending on NTSC or PAL ROM
-    */
-    virtual void setFrameRate(float framerate) = 0;
-
-    /**
       Start the sound system, initializing it if necessary.  This must be
       called before any calls are made to derived methods.
+
+      @param stereo  The number of channels (mono -> 1, stereo -> 2)
     */
-    virtual void open() = 0;
+    virtual void open(bool stereo) = 0;
 
     /**
       Should be called to stop the sound system.  Once called the sound
@@ -98,22 +76,13 @@ class Sound : public Serializable
     virtual void reset() = 0;
 
     /**
-      Sets the sound register to a given value.
-
-      @param addr  The register address
-      @param value The value to save into the register
-      @param cycle The system cycle at which the register is being updated
-    */
-    virtual void set(uInt16 addr, uInt8 value, Int32 cycle) = 0;
-
-    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.
 
-      @param percent The new volume percentage level for the sound device
+      @param volume  The new volume percentage level for the sound device
     */
-    virtual void setVolume(Int32 percent) = 0;
+    virtual void setVolume(uInt32 volume) = 0;
 
     /**
       Adjusts the volume of the sound device based on the given direction.

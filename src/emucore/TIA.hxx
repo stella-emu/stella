@@ -28,6 +28,7 @@ class Sound;
 #include "Device.hxx"
 #include "System.hxx"
 #include "TIATables.hxx"
+#include "TIASnd.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor 
@@ -95,6 +96,14 @@ class TIA : public Device
       @param device The device responsible for this address space
     */
     void install(System& system, Device& device);
+
+    /**
+      Get the TIA sound object associated with the TIA.
+
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    TIASound& sound() { return myTIASound; }
 
     /**
       Save the current state of this device to the given Serializer.
@@ -406,6 +415,9 @@ class TIA : public Device
 
     // Settings object the TIA is associated with
     Settings& mySettings;
+
+    // TIASound emulation object
+    TIASound myTIASound;
 
     // Pointer to the current frame buffer
     unique_ptr<uInt8[]> myCurrentFrameBuffer;

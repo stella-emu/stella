@@ -21,25 +21,22 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "bspf.hxx"
-
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
 #endif
 
 #include "Console.hxx"
 #include "Control.hxx"
-#include "Device.hxx"
 #include "M6502.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
-#include "System.hxx"
-#include "TIATables.hxx"
 
 #include "TIA.hxx"
 
 #define HBLANK 68
 #define CLAMP_POS(reg) if(reg < 0) { reg += 160; }  reg %= 160;
+
+static Int32 START_SLINE = -1;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
@@ -65,6 +62,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::initialize()
 {
+  START_SLINE = -1;
   myFramePointer = nullptr;
   myFramePointerOffset = myFramePointerClocks = myStopDisplayOffset = 0;
 
@@ -214,9 +212,6 @@ void TIA::systemCyclesReset()
   // Get the current system cycle
   uInt32 cycles = mySystem->cycles();
 
-  // Adjust the sound cycle indicator
-  mySound.adjustCycleCounter(-1 * cycles);
-
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
 
@@ -344,7 +339,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myPALFrameCounter);
 
     // Save the sound sample stuff ...
-    mySound.save(out);
+    myTIASound.save(out);
   }
   catch(...)
   {
@@ -448,7 +443,7 @@ bool TIA::load(Serializer& in)
     myPALFrameCounter = in.getInt();
 
     // Load the sound sample stuff ...
-    mySound.load(in);
+    myTIASound.load(in);
 
     // Reset TIA bits to be on
     enableBits(true);
@@ -540,7 +535,7 @@ inline void TIA::startFrame()
   // so that we can adjust the frame's starting clock by this amount.  This
   // is necessary since some games position objects during VSYNC and the
   // TIA's internal counters are not reset by VSYNC.
-  uInt32 clocks = ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228;
+  uInt32 clocks = clocksThisLine();
 
   // Ask the system to reset the cycle count so it doesn't overflow
   mySystem->resetCycles();
@@ -587,6 +582,8 @@ inline void TIA::startFrame()
   myFrameCounter++;
   if(myScanlineCountForLastFrame >= 287)
     myPALFrameCounter++;
+
+  START_SLINE = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1230,6 +1227,16 @@ void TIA::updateFrame(Int32 clock)
         myHMOVEBlankEnabled = false;
     }
 
+#if 0
+    if(START_SLINE != scanlines())
+    {
+      cerr << " => scanline: " << scanlines() << endl;
+//      cerr << "scanline: " << (line-1) << endl;
+      myTIASound.queueSamples();
+      START_SLINE = scanlines();
+    }
+#endif
+
 // TODO - this needs to be updated to actually do as the comment suggests
 #if 1
     // See if we're at the end of a scanline
@@ -1239,8 +1246,17 @@ void TIA::updateFrame(Int32 clock)
       // of the player has passed.  However, for now we'll just reset at the
       // end of the scanline since the other way would be too slow.
       mySuppressP0 = mySuppressP1 = 0;
+
+#if 1
+    if(START_SLINE != scanlines())
+    {
+      cerr << " => scanline: " << scanlines() << endl;
+      myTIASound.queueSamples();
     }
 #endif
+    }
+#endif
+
   }
 }
 
@@ -1252,6 +1268,14 @@ inline void TIA::waitHorizontalSync()
 
   if(cyclesToEndOfLine < 76)
     mySystem->incrementCycles(cyclesToEndOfLine);
+
+#if 1
+{
+  cerr << " => scanline(W): " << scanlines() << endl;
+  myTIASound.queueSamples();
+  START_SLINE = scanlines();
+}
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1865,42 +1889,48 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     case AUDC0:   // Audio control 0
     {
       myAUDC0 = value & 0x0f;
-      mySound.set(addr, value, mySystem->cycles());
+cerr << scanlines() << ": C0, " << hex << int(myAUDC0) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+      myTIASound.writeAudC0(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
   
     case AUDC1:   // Audio control 1
     {
       myAUDC1 = value & 0x0f;
-      mySound.set(addr, value, mySystem->cycles());
+cerr << scanlines() << ": C1, " << hex << int(myAUDC1) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+      myTIASound.writeAudC1(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
   
     case AUDF0:   // Audio frequency 0
     {
       myAUDF0 = value & 0x1f;
-      mySound.set(addr, value, mySystem->cycles());
+cerr << scanlines() << ": F0, " << hex << int(myAUDF0) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+      myTIASound.writeAudF0(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
   
     case AUDF1:   // Audio frequency 1
     {
       myAUDF1 = value & 0x1f;
-      mySound.set(addr, value, mySystem->cycles());
+cerr << scanlines() << ": F1, " << hex << int(myAUDF1) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+      myTIASound.writeAudF1(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
   
     case AUDV0:   // Audio volume 0
     {
       myAUDV0 = value & 0x0f;
-      mySound.set(addr, value, mySystem->cycles());
+cerr << scanlines() << ": V0, " << hex << int(myAUDV0) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+      myTIASound.writeAudV0(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
   
     case AUDV1:   // Audio volume 1
     {
       myAUDV1 = value & 0x0f;
-      mySound.set(addr, value, mySystem->cycles());
+cerr << scanlines() << ": V1, " << hex << int(myAUDV1) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+      myTIASound.writeAudV1(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
 
