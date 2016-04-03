@@ -706,7 +706,7 @@ string TIADebug::audFreq(uInt8 div)
 
   double hz = 30000.0;
   if(div) hz /= div;
-  BSPF::snprintf(buf, 9, "%5.1f", hz);
+  std::snprintf(buf, 9, "%5.1f", hz);
   ret += buf;
   ret += "Hz";
 

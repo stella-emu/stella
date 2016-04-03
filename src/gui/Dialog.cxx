@@ -648,8 +648,8 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                const string& okText, const string& cancelText)
 {
 
-  int buttonWidth = BSPF::max(font.getStringWidth("Cancel"),
-                    BSPF::max(font.getStringWidth(okText),
+  int buttonWidth = std::max(font.getStringWidth("Cancel"),
+                    std::max(font.getStringWidth(okText),
                     font.getStringWidth(okText))) + 15;
   int buttonHeight = font.getLineHeight() + 4;
   ButtonWidget* b;

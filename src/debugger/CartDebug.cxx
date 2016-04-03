@@ -59,7 +59,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   myConsole.cartridge().getImage(banksize);
 
   BankInfo info;
-  info.size = BSPF::min(banksize, 4096);
+  info.size = std::min(banksize, 4096);
   for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
     myBankInfo.push_back(info);
 
@@ -196,7 +196,7 @@ string CartDebug::toString()
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
       char port[37];
-      BSPF::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
+      std::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
       port[2] = port[3] = 'x';
       buf << DebuggerParser::red(port);
@@ -347,7 +347,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     {
       if(begin == list_size) begin = end;
       if(tag.type != CartDebug::ROW)
-        length = BSPF::max(length, uInt32(tag.disasm.length()));
+        length = std::max(length, uInt32(tag.disasm.length()));
 
       --lines;
     }
@@ -383,7 +383,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
   if(bank < 0)  // Do we want the current bank or ZP RAM?
     bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : int(myBankInfo.size())-1;
 
-  bank = BSPF::min(bank, bankCount());
+  bank = std::min(bank, bankCount());
   BankInfo& info = myBankInfo[bank];
   DirectiveList& list = info.directiveList;
 
@@ -515,7 +515,7 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
       removeLabel(label);
       myUserAddresses.insert(make_pair(label, address));
       myUserLabels.insert(make_pair(address, label));
-      myLabelLength = BSPF::max(myLabelLength, uInt16(label.size()));
+      myLabelLength = std::max(myLabelLength, uInt16(label.size()));
       mySystem.setDirtyPage(address);
       return true;
   }
@@ -1139,7 +1139,7 @@ string CartDebug::saveDisassembly()
         << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
     int max_len = 0;
     for(const auto& iter: myUserLabels)
-      max_len = BSPF::max(max_len, int(iter.second.size()));
+      max_len = std::max(max_len, int(iter.second.size()));
     for(const auto& iter: myUserLabels)
         out << ALIGN(max_len) << iter.second << "  =  $" << iter.first << "\n";
   }

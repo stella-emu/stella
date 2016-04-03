@@ -65,32 +65,32 @@ string Base::toString(int value, Common::Base::Format outputBase)
 
     case Base::F_10:    // base 10: 3 or 5 bytes (depending on value)
       if(value < 0x100)
-        BSPF::snprintf(vToS_buf, 4, "%3d", value);
+        std::snprintf(vToS_buf, 4, "%3d", value);
       else
-        BSPF::snprintf(vToS_buf, 6, "%5d", value);
+        std::snprintf(vToS_buf, 6, "%5d", value);
       break;
 
     case Base::F_16_1:  // base 16: 1 byte wide
-      BSPF::snprintf(vToS_buf, 2, myFmt[0], value);
+      std::snprintf(vToS_buf, 2, myFmt[0], value);
       break;
     case Base::F_16_2:  // base 16: 2 bytes wide
-      BSPF::snprintf(vToS_buf, 3, myFmt[1], value);
+      std::snprintf(vToS_buf, 3, myFmt[1], value);
       break;
     case Base::F_16_4:  // base 16: 4 bytes wide
-      BSPF::snprintf(vToS_buf, 5, myFmt[2], value);
+      std::snprintf(vToS_buf, 5, myFmt[2], value);
       break;
     case Base::F_16_8:  // base 16: 8 bytes wide
-      BSPF::snprintf(vToS_buf, 9, myFmt[3], value);
+      std::snprintf(vToS_buf, 9, myFmt[3], value);
       break;
 
     case Base::F_16:    // base 16: 2, 4, 8 bytes (depending on value)
     default:
       if(value < 0x100)
-        BSPF::snprintf(vToS_buf, 3, myFmt[1], value);
+        std::snprintf(vToS_buf, 3, myFmt[1], value);
       else if(value < 0x10000)
-        BSPF::snprintf(vToS_buf, 5, myFmt[2], value);
+        std::snprintf(vToS_buf, 5, myFmt[2], value);
       else
-        BSPF::snprintf(vToS_buf, 9, myFmt[3], value);
+        std::snprintf(vToS_buf, 9, myFmt[3], value);
       break;
   }
 

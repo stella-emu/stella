@@ -238,8 +238,8 @@ void DataGridWidget::setValue(int position, int value, bool changed,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setRange(int lower, int upper)
 {
-  _lowerBound = BSPF::max(0, lower);
-  _upperBound = BSPF::min(1 << _bits, upper);
+  _lowerBound = std::max(0, lower);
+  _upperBound = std::min(1 << _bits, upper);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

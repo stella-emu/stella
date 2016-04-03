@@ -29,7 +29,7 @@ CartridgeF8::CartridgeF8(const uInt8* image, uInt32 size, const string& md5,
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF::min(8192u, size));
+  memcpy(myImage, image, std::min(8192u, size));
   createCodeAccessBase(8192);
 
   // Normally bank 1 is the reset bank, unless we're dealing with ROMs

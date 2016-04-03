@@ -214,8 +214,8 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y)
       }
 
       if(myLastClick.count && (myTime < myLastClick.time + kDoubleClickDelay)
-         && BSPF::abs(myLastClick.x - x) < 3
-         && BSPF::abs(myLastClick.y - y) < 3)
+         && std::abs(myLastClick.x - x) < 3
+         && std::abs(myLastClick.y - y) < 3)
       {
         myLastClick.count++;
       }

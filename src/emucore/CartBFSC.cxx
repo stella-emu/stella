@@ -28,7 +28,7 @@ CartridgeBFSC::CartridgeBFSC(const uInt8* image, uInt32 size, const Settings& se
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF::min(262144u, size));
+  memcpy(myImage, image, std::min(262144u, size));
   createCodeAccessBase(262144);
 
   // Remember startup bank

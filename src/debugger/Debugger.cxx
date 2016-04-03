@@ -143,10 +143,10 @@ void Debugger::initialize()
 
   // The debugger dialog is resizable, within certain bounds
   // We check those bounds now
-  myWidth  = BSPF::max(myWidth,  uInt32(DebuggerDialog::kSmallFontMinW));
-  myHeight = BSPF::max(myHeight, uInt32(DebuggerDialog::kSmallFontMinH));
-  myWidth  = BSPF::min(myWidth,  uInt32(d.w));
-  myHeight = BSPF::min(myHeight, uInt32(d.h));
+  myWidth  = std::max(myWidth,  uInt32(DebuggerDialog::kSmallFontMinW));
+  myHeight = std::max(myHeight, uInt32(DebuggerDialog::kSmallFontMinH));
+  myWidth  = std::min(myWidth,  uInt32(d.w));
+  myHeight = std::min(myHeight, uInt32(d.h));
 
   myOSystem.settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
 

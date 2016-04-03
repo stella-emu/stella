@@ -82,7 +82,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // It has to fit between both labels
   if(w >= 640)
   {
-    int fwidth = BSPF::min(15 * fontWidth, xpos - 20 - lwidth);
+    int fwidth = std::min(15 * fontWidth, xpos - 20 - lwidth);
     xpos -= fwidth + 5;
     myPattern = new EditTextWidget(this, font, xpos, ypos,
                                    fwidth, fontHeight, "");

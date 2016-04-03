@@ -72,8 +72,8 @@ bool FrameBuffer::initialize()
     query_h = s.h;
   }
   // Various parts of the codebase assume a minimum screen size
-  myDesktopSize.w = BSPF::max(query_w, uInt32(kFBMinW));
-  myDesktopSize.h = BSPF::max(query_h, uInt32(kFBMinH));
+  myDesktopSize.w = std::max(query_w, uInt32(kFBMinW));
+  myDesktopSize.h = std::max(query_h, uInt32(kFBMinH));
 
   ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
@@ -275,7 +275,7 @@ void FrameBuffer::update()
       {
         const ConsoleInfo& info = myOSystem.console().about();
         char msg[30];
-        BSPF::snprintf(msg, 30, "%3u @ %3.2ffps => %s",
+        std::snprintf(msg, 30, "%3u @ %3.2ffps => %s",
                 myOSystem.console().tia().scanlines(),
                 myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
@@ -743,10 +743,10 @@ VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     zoom(z),
     description(desc)
 {
-  sw = BSPF::max(sw, uInt32(FrameBuffer::kTIAMinW));
-  sh = BSPF::max(sh, uInt32(FrameBuffer::kTIAMinH));
-  iw = BSPF::min(iw, sw);
-  ih = BSPF::min(ih, sh);
+  sw = std::max(sw, uInt32(FrameBuffer::kTIAMinW));
+  sh = std::max(sh, uInt32(FrameBuffer::kTIAMinH));
+  iw = std::min(iw, sw);
+  ih = std::min(ih, sh);
   int ix = (sw - iw) >> 1;
   int iy = (sh - ih) >> 1;
   image = GUI::Rect(ix, iy, ix+iw, iy+ih);
@@ -801,8 +801,8 @@ void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
   }
 
   // Now re-calculate the dimensions
-  iw = BSPF::min(iw, screen.w);
-  ih = BSPF::min(ih, screen.h);
+  iw = std::min(iw, screen.w);
+  ih = std::min(ih, screen.h);
 
   image.moveTo((screen.w - iw) >> 1, (screen.h - ih) >> 1);
   image.setWidth(iw);

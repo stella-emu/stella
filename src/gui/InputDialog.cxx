@@ -46,8 +46,8 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   StringList actions;
 
   // Set real dimensions
-  _w = BSPF::min(50 * fontWidth + 10, max_w);
-  _h = BSPF::min(15 * (lineHeight + 4) + 14, max_h);
+  _w = std::min(50 * fontWidth + 10, max_w);
+  _h = std::min(15 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
   xpos = 2; ypos = vBorder;

@@ -97,13 +97,6 @@ namespace BSPF
 // Some convenience functions
 template<typename T> inline T clamp(T a, T l, T u) { return (a<l) ? l : (a>u) ? u : a; }
 
-using std::swap;
-using std::min;
-using std::max;
-using std::abs;
-using std::snprintf;
-using std::vsnprintf;
-
 // Compare two strings, ignoring case
 inline int compareIgnoreCase(const string& s1, const string& s2)
 {

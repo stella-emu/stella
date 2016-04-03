@@ -29,7 +29,7 @@ CartridgeF4::CartridgeF4(const uInt8* image, uInt32 size, const Settings& settin
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF::min(32768u, size));
+  memcpy(myImage, image, std::min(32768u, size));
   createCodeAccessBase(32768);
 
   // Remember startup bank

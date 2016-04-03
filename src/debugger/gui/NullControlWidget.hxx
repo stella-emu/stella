@@ -37,7 +37,7 @@ class NullControlWidget : public ControllerWidget
           << controller.name() << "):";
       const int fontHeight = font.getFontHeight(),
                 lineHeight = font.getLineHeight(),
-                lwidth = BSPF::max(font.getStringWidth(buf.str()),
+                lwidth = std::max(font.getStringWidth(buf.str()),
                 font.getStringWidth("Controller input"));
       new StaticTextWidget(boss, font, x, y+2, lwidth,
                            fontHeight, buf.str(), kTextAlignLeft);

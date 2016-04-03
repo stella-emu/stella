@@ -66,7 +66,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = BSPF::max(16, int(0.20 * (numchars - 12))) * fontWidth - 1;
+  _labelWidth = std::max(16, int(0.20 * (numchars - 12))) * fontWidth - 1;
   _bytesWidth = 12 * fontWidth;
 
   //////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _fontHeight = BSPF::max(_fontHeight, CheckboxWidget::boxSize());
+  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize());
   _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list

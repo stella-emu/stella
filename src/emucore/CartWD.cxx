@@ -28,7 +28,7 @@
 CartridgeWD::CartridgeWD(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    mySize(BSPF::min(8195u, size)),
+    mySize(std::min(8195u, size)),
     myCyclesAtBankswitchInit(0),
     myPendingBank(0),
     myCurrentBank(0)

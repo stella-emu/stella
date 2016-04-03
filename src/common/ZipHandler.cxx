@@ -616,7 +616,7 @@ ZipHandler::zip_error
   {
     // Read in the next chunk of data
     bool success = stream_read(zip->file, zip->buffer, offset,
-                      BSPF::min(input_remaining, (uInt32)sizeof(zip->buffer)),
+                      std::min(input_remaining, (uInt32)sizeof(zip->buffer)),
                       read_length);
     if(!success)
     {

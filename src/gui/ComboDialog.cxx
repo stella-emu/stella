@@ -54,7 +54,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   // Get maximum width of popupwidget
   int pwidth = 0;
   for(const auto& s: combolist)
-    pwidth = BSPF::max(font.getStringWidth(s.first), pwidth);
+    pwidth = std::max(font.getStringWidth(s.first), pwidth);
 
   // Label for dialog, indicating which combo is being changed
   myComboName = new StaticTextWidget(this, font, xpos, ypos, _w - xpos - 10,
@@ -109,7 +109,7 @@ void ComboDialog::loadConfig()
 {
   StringList events = instance().eventHandler().getComboListForEvent(myComboEvent);
 
-  uInt32 size = BSPF::min(uInt32(events.size()), 8u);
+  uInt32 size = std::min(uInt32(events.size()), 8u);
   for(uInt32 i = 0; i < size; ++i)
     myEvents[i]->setSelected("", events[i]);
 

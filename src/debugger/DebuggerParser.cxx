@@ -1437,7 +1437,7 @@ void DebuggerParser::executeTrap()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF::swap(beg, end);
+  if(beg > end)  std::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {
@@ -1453,7 +1453,7 @@ void DebuggerParser::executeTrapread()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF::swap(beg, end);
+  if(beg > end)  std::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {
@@ -1468,7 +1468,7 @@ void DebuggerParser::executeTrapwrite()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF::swap(beg, end);
+  if(beg > end)  std::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {
@@ -1483,7 +1483,7 @@ void DebuggerParser::executeType()
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  BSPF::swap(beg, end);
+  if(beg > end)  std::swap(beg, end);
 
   for(uInt32 i = beg; i <= end; ++i)
   {

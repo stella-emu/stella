@@ -134,7 +134,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Add message concerning usage
   xpos = vBorder; ypos += 1*(lineHeight + 4);
   lwidth = ifont.getStringWidth("(*) Changes require application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, BSPF::min(lwidth, _w-20), fontHeight,
+  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Changes require application restart",
                        kTextAlignLeft);
 
@@ -284,7 +284,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Add message concerning usage
   xpos = vBorder; ypos += 1*(lineHeight + 4);
   lwidth = ifont.getStringWidth("(*) Requires application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, BSPF::min(lwidth, _w-20), fontHeight,
+  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Requires application restart",
                        kTextAlignLeft);
 
@@ -310,10 +310,10 @@ void UIDialog::loadConfig()
   const GUI::Size& ls = instance().settings().getSize("launcherres");
   uInt32 w = ls.w, h = ls.h;
 
-  w = BSPF::max(w, uInt32(FrameBuffer::kFBMinW));
-  h = BSPF::max(h, uInt32(FrameBuffer::kFBMinH));
-  w = BSPF::min(w, instance().frameBuffer().desktopSize().w);
-  h = BSPF::min(h, instance().frameBuffer().desktopSize().h);
+  w = std::max(w, uInt32(FrameBuffer::kFBMinW));
+  h = std::max(h, uInt32(FrameBuffer::kFBMinH));
+  w = std::min(w, instance().frameBuffer().desktopSize().w);
+  h = std::min(h, instance().frameBuffer().desktopSize().h);
 
   myLauncherWidthSlider->setValue(w);
   myLauncherWidthLabel->setValue(w);
@@ -336,10 +336,10 @@ void UIDialog::loadConfig()
   // Debugger size
   const GUI::Size& ds = instance().settings().getSize("dbg.res");
   w = ds.w, h = ds.h;
-  w = BSPF::max(w, uInt32(DebuggerDialog::kSmallFontMinW));
-  h = BSPF::max(h, uInt32(DebuggerDialog::kSmallFontMinH));
-  w = BSPF::min(w, ds.w);
-  h = BSPF::min(h, ds.h);
+  w = std::max(w, uInt32(DebuggerDialog::kSmallFontMinW));
+  h = std::max(h, uInt32(DebuggerDialog::kSmallFontMinH));
+  w = std::min(w, ds.w);
+  h = std::min(h, ds.h);
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerWidthLabel->setValue(w);
@@ -417,8 +417,8 @@ void UIDialog::setDefaults()
   {
     case 0:  // Launcher options
     {
-      uInt32 w = BSPF::min(instance().frameBuffer().desktopSize().w, 1000u);
-      uInt32 h = BSPF::min(instance().frameBuffer().desktopSize().h, 600u);
+      uInt32 w = std::min(instance().frameBuffer().desktopSize().w, 1000u);
+      uInt32 h = std::min(instance().frameBuffer().desktopSize().h, 600u);
       myLauncherWidthSlider->setValue(w);
       myLauncherWidthLabel->setValue(w);
       myLauncherHeightSlider->setValue(h);
@@ -432,8 +432,8 @@ void UIDialog::setDefaults()
     case 1:  // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
-      uInt32 w = BSPF::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
-      uInt32 h = BSPF::min(instance().frameBuffer().desktopSize().h, uInt32(DebuggerDialog::kMediumFontMinH));
+      uInt32 w = std::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
+      uInt32 h = std::min(instance().frameBuffer().desktopSize().h, uInt32(DebuggerDialog::kMediumFontMinH));
       myDebuggerWidthSlider->setValue(w);
       myDebuggerWidthLabel->setValue(w);
       myDebuggerHeightSlider->setValue(h);

@@ -29,7 +29,7 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _fontHeight = BSPF::max(_fontHeight, CheckboxWidget::boxSize());
+  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize());
   _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list
