@@ -93,24 +93,16 @@ namespace BSPF
   static const string ARCH = "NOARCH";
 #endif
 
-// I wish Windows had a complete POSIX layer
-#if defined BSPF_WINDOWS && !defined __GNUG__
-  #define snprintf _snprintf
-  #define vsnprintf _vsnprintf
-#else
-  #define HAVE_UNISTD_H   // needed for building zlib
-  #include <strings.h>
-  using std::snprintf;
-  using std::vsnprintf;
-#endif
-
 //////////////////////////////////////////////////////////////////////
 // Some convenience functions
-template<typename T> inline void swap(T& a, T& b) { std::swap(a, b); }
-template<typename T> inline T abs (T x) { return (x>=0) ? x : -x; }
-template<typename T> inline T min (T a, T b) { return (a<b) ? a : b; }
-template<typename T> inline T max (T a, T b) { return (a>b) ? a : b; }
-template<typename T> inline T clamp (T a, T l, T u) { return (a<l) ? l : (a>u) ? u : a; }
+template<typename T> inline T clamp(T a, T l, T u) { return (a<l) ? l : (a>u) ? u : a; }
+
+using std::swap;
+using std::min;
+using std::max;
+using std::abs;
+using std::snprintf;
+using std::vsnprintf;
 
 // Compare two strings, ignoring case
 inline int compareIgnoreCase(const string& s1, const string& s2)
