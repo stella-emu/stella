@@ -1765,6 +1765,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
             break;
         }
         myPOSP0 = newx;
+        CLAMP_POS(myPOSP0);
       }
       break;
     }
@@ -1815,6 +1816,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
             break;
         }
         myPOSP1 = newx;
+        CLAMP_POS(myPOSP1);
       }
       break;
     }
@@ -1839,6 +1841,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       if(newx != myPOSM0)
       {
         myPOSM0 = newx;
+        CLAMP_POS(myPOSM0);
       }
       break;
     }
@@ -1863,6 +1866,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       if(newx != myPOSM1)
       {
         myPOSM1 = newx;
+        CLAMP_POS(myPOSM1);
       }
       break;
     }

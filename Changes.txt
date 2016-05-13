@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+4.7.2 to 4.8: (xxx. xx, 2016)
+
+  * Fixed HMOVE positioning bug that occurred under certain circumstances.
+    Thanks to Omegamatrix of AtariAge for the bug report and patch to fix
+    the issue.
+
+-Have fun!
+
+
 4.7.1 to 4.7.2: (Mar. 25, 2016)
 
   * Fixed bug when entering and exiting the debugger; sometimes the
@@ -26,8 +35,6 @@
   * Updated UNIX configure script to work with GCC 6.x compilers, and to
     remove references to obsolete compiler versions that can no longer
     be used to compile Stella.
-
--Have fun!
 
 
 4.7 to 4.7.1: (Feb. 13, 2016)
