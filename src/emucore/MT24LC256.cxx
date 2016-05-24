@@ -73,14 +73,14 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
     jpee_ad_known(0)
 {
   // Load the data from an external file (if it exists)
-  ifstream in(myDataFile, ios_base::binary);
+  ifstream in(myDataFile, std::ios_base::binary);
   if(in.is_open())
   {
     // Get length of file; it must be 32768
-    in.seekg(0, ios::end);
+    in.seekg(0, std::ios::end);
     if(uInt32(in.tellg()) == 32768u)
     {
-      in.seekg(0, ios::beg);
+      in.seekg(0, std::ios::beg);
       in.read(reinterpret_cast<char*>(myData), 32768);
       myDataFileExists = true;
     }
@@ -98,7 +98,7 @@ MT24LC256::~MT24LC256()
   // Save EEPROM data to external file only when necessary
   if(!myDataFileExists || myDataChanged)
   {
-    ofstream out(myDataFile, ios_base::binary);
+    ofstream out(myDataFile, std::ios_base::binary);
     if(out.is_open())
       out.write(reinterpret_cast<char*>(myData), 32768);
   }

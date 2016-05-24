@@ -115,7 +115,7 @@ class DiStella
     const Settings& mySettings;
     CartDebug::ReservedEquates& myReserved;
     stringstream myDisasmBuf;
-    queue<uInt16> myAddressQueue;
+    std::queue<uInt16> myAddressQueue;
     uInt16 myOffset, myPC, myPCEnd;
 
     struct resource {

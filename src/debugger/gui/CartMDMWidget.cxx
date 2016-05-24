@@ -44,7 +44,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   for(uInt32 i = 0x800; i < (0x800u + myCart.bankCount()); ++i)
   {
     info.str("");
-    info << dec << (i & 0xFF) << " ($" << Common::Base::HEX4 << i << ")";
+    info << std::dec << (i & 0xFF) << " ($" << Common::Base::HEX4 << i << ")";
     VarList::push_back(items, info.str());
   }
 
@@ -94,7 +94,7 @@ string CartridgeMDMWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << "$" << Common::Base::HEX4
       << (myCart.myCurrentBank+0x800);
 

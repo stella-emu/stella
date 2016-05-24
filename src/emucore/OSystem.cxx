@@ -465,13 +465,13 @@ void OSystem::logMessage(const string& message, uInt8 level)
 {
   if(level == 0)
   {
-    cout << message << endl << flush;
+    cout << message << endl << std::flush;
     myLogMessages += message + "\n";
   }
   else if(level <= uInt8(mySettings->getInt("loglevel")))
   {
     if(mySettings->getBool("logtoconsole"))
-      cout << message << endl << flush;
+      cout << message << endl << std::flush;
     myLogMessages += message + "\n";
   }
 }

@@ -53,14 +53,36 @@ using uInt64 = uint64_t;
 #include <utility>
 #include <vector>
 #include "UniquePtr.hxx"  // only until C++14 compilers are more common
-using namespace std;
+
+using std::cin;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::string;
+using std::istream;
+using std::ostream;
+using std::fstream;
+using std::iostream;
+using std::ifstream;
+using std::ofstream;
+using std::ostringstream;
+using std::istringstream;
+using std::stringstream;
+using std::unique_ptr;
+using std::shared_ptr;
+using std::make_ptr;
+using std::make_shared;
+using std::array;
+using std::vector;
+using std::make_pair;
+using std::runtime_error;
 
 // Common array types
-using IntArray = vector<Int32>;
-using BoolArray = vector<bool>;
-using ByteArray = vector<uInt8>;
-using StringList = vector<string>;
-using BytePtr = unique_ptr<uInt8[]>;
+using IntArray = std::vector<Int32>;
+using BoolArray = std::vector<bool>;
+using ByteArray = std::vector<uInt8>;
+using StringList = std::vector<std::string>;
+using BytePtr = std::unique_ptr<uInt8[]>;
 
 static const string EmptyString("");
 

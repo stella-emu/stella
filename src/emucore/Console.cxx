@@ -744,16 +744,16 @@ void Console::setControllers(const string& rommd5)
 void Console::loadUserPalette()
 {
   const string& palette = myOSystem.paletteFile();
-  ifstream in(palette, ios::binary);
+  ifstream in(palette, std::ios::binary);
   if(!in)
     return;
 
   // Make sure the contains enough data for the NTSC, PAL and SECAM palettes
   // This means 128 colours each for NTSC and PAL, at 3 bytes per pixel
   // and 8 colours for SECAM at 3 bytes per pixel
-  in.seekg(0, ios::end);
-  streampos length = in.tellg();
-  in.seekg(0, ios::beg);
+  in.seekg(0, std::ios::end);
+  std::streampos length = in.tellg();
+  in.seekg(0, std::ios::beg);
   if(length < 128 * 3 * 2 + 8 * 3)
   {
     cerr << "ERROR: invalid palette file " << palette << endl;

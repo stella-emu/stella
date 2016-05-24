@@ -23,6 +23,9 @@
 #include "FSNode.hxx"
 #include "Serializer.hxx"
 
+using std::ios;
+using std::ios_base;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer(const string& filename, bool readonly)
   : myStream(nullptr)

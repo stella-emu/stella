@@ -117,7 +117,7 @@ class PropertiesSet
     void print() const;
 
   private:
-    using PropsList = map<string, Properties>;
+    using PropsList = std::map<string, Properties>;
 
     // The properties read from an external 'stella.pro' file
     PropsList myExternalProps;

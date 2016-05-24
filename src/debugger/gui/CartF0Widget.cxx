@@ -40,8 +40,8 @@ CartridgeF0Widget::CartridgeF0Widget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << dec << i << " @ $" << Common::Base::HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << "\n";
+    info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << start
+         << " - " << "$" << (start + 0xFFF) << "\n";
   }
 
   int xpos = 10,
@@ -99,7 +99,7 @@ string CartridgeF0Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << dec << myCart.myCurrentBank << ", hotspot = $FF0";
+  buf << "Bank = " << std::dec << myCart.myCurrentBank << ", hotspot = $FF0";
 
   return buf.str();
 }

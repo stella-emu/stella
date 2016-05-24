@@ -135,7 +135,7 @@ string CartridgeMCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Slices: " << dec
+  buf << "Slices: " << std::dec
       << myCart.myCurrentBlock[0] << " / "
       << myCart.myCurrentBlock[1] << " / "
       << myCart.myCurrentBlock[2] << " / "

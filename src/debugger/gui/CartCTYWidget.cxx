@@ -96,7 +96,7 @@ string CartridgeCTYWidget::bankState()
     "", "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
   };
   uInt16 bank = myCart.getBank();
-  buf << "Bank = " << dec << bank << ", hotspot = " << spot[bank];
+  buf << "Bank = " << std::dec << bank << ", hotspot = " << spot[bank];
 
   return buf.str();
 }

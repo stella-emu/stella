@@ -77,7 +77,7 @@ class Variant
 static const Variant EmptyVariant;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-using VariantList = vector<pair<string,Variant>>;
+using VariantList = vector<std::pair<string,Variant>>;
 
 namespace VarList {
   inline void push_back(VariantList& list, const Variant& name,

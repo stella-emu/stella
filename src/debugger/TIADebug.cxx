@@ -752,7 +752,7 @@ string TIADebug::toString()
   const TiaState& state = static_cast<const TiaState&>(getState());
 
   // build up output, then return it.
-  buf << "scanline " << dec << myTIA.scanlines() << " "
+  buf << "scanline " << std::dec << myTIA.scanlines() << " "
       << booleanWithLabel("vsync", vsync()) << " "
       << booleanWithLabel("vblank", vblank())
       << endl
@@ -775,35 +775,35 @@ string TIADebug::toString()
       << colorSwatch(state.coluRegs[3])
       << endl
       << "P0: GR=%" << Common::Base::toString(state.gr[P0], Common::Base::F_2_8)
-      << " pos=#" << dec << state.pos[P0]
+      << " pos=#" << std::dec << state.pos[P0]
       << " HM=$" << Common::Base::HEX2 << state.hm[P0] << " "
       << nusizP0String() << " "
       << booleanWithLabel("refl", refP0()) << " "
       << booleanWithLabel("delay", vdelP0())
       << endl
       << "P1: GR=%" << Common::Base::toString(state.gr[P1], Common::Base::F_2_8)
-      << " pos=#" << dec << state.pos[P1]
+      << " pos=#" << std::dec << state.pos[P1]
       << " HM=$" << Common::Base::HEX2 << state.hm[P1] << " "
       << nusizP1String() << " "
       << booleanWithLabel("refl", refP1()) << " "
       << booleanWithLabel("delay", vdelP1())
       << endl
       << "M0: " << (myTIA.myENAM0 ? " ENABLED" : "disabled")
-      << " pos=#" << dec << state.pos[M0]
+      << " pos=#" << std::dec << state.pos[M0]
       << " HM=$" << Common::Base::HEX2 << state.hm[M0]
-      << " size=" << dec << state.size[M0] << " "
+      << " size=" << std::dec << state.size[M0] << " "
       << booleanWithLabel("reset", resMP0())
       << endl
       << "M1: " << (myTIA.myENAM1 ? " ENABLED" : "disabled")
-      << " pos=#" << dec << state.pos[M1]
+      << " pos=#" << std::dec << state.pos[M1]
       << " HM=$" << Common::Base::HEX2 << state.hm[M1]
-      << " size=" << dec << state.size[M1] << " "
+      << " size=" << std::dec << state.size[M1] << " "
       << booleanWithLabel("reset", resMP0())
       << endl
       << "BL: " << (myTIA.myENABL ? " ENABLED" : "disabled")
-      << " pos=#" << dec << state.pos[BL]
+      << " pos=#" << std::dec << state.pos[BL]
       << " HM=$" << Common::Base::HEX2 << state.hm[BL]
-      << " size=" << dec << state.size[BL] << " "
+      << " size=" << std::dec << state.size[BL] << " "
       << booleanWithLabel("delay", vdelBL())
       << endl
       << "PF0: %" << Common::Base::toString(state.pf[0], Common::Base::F_2_8) << "/$"

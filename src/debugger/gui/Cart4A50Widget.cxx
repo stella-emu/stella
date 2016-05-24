@@ -269,7 +269,7 @@ string Cartridge4A50Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "L/M/H = " << dec;
+  buf << "L/M/H = " << std::dec;
   if(myCart.myIsRomLow)
     buf << "ROM bank " << ((myCart.mySliceLow >> 11) & 0x1F) << " / ";
   else

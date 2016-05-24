@@ -472,7 +472,7 @@ void Settings::usage() const
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
   #endif
-    << endl << flush;
+    << endl << std::flush;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

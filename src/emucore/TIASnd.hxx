@@ -225,7 +225,7 @@ class TIASound : public Serializable
 
     // Contains the samples previously created by queueSamples()
     // This will be periodically emptied by getSamples()
-    queue<uInt16> mySamples;
+    std::queue<uInt16> mySamples;
 
     // The colour clock at which each cycle/phase ends
     // Any writes to sound registers that occur after a respective

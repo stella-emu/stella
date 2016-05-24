@@ -20,7 +20,7 @@
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "DiStella.hxx"
-using namespace Common;
+using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
@@ -812,7 +812,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       {
         // A complete line of disassembly (text, cycle count, and bytes)
         myDisasmBuf << nextline.str() << "'"
-                    << ";" << dec << int(ourLookup[op].cycles) << "'"
+                    << ";" << std::dec << int(ourLookup[op].cycles) << "'"
                     << nextlinebytes.str();
         addEntry(CartDebug::CODE);
         if (op == 0x40 || op == 0x60)
@@ -941,20 +941,20 @@ bool DiStella::check_range(uInt16 beg, uInt16 end) const
 {
   if(beg > end)
   {
-    cerr << "Beginning of range greater than end: start = " << hex << beg
-         << ", end = " << hex << end << endl;
+    cerr << "Beginning of range greater than end: start = " << std::hex << beg
+         << ", end = " << std::hex << end << endl;
     return false;
   }
   else if(beg > myAppData.end + myOffset)
   {
-    cerr << "Beginning of range out of range: start = " << hex << beg
-         << ", range = " << hex << (myAppData.end + myOffset) << endl;
+    cerr << "Beginning of range out of range: start = " << std::hex << beg
+         << ", range = " << std::hex << (myAppData.end + myOffset) << endl;
     return false;
   }
   else if(beg < myOffset)
   {
-    cerr << "Beginning of range out of range: start = " << hex << beg
-         << ", offset = " << hex << myOffset << endl;
+    cerr << "Beginning of range out of range: start = " << std::hex << beg
+         << ", offset = " << std::hex << myOffset << endl;
     return false;
   }
   return true;
@@ -969,18 +969,18 @@ void DiStella::addEntry(CartDebug::DisasmType type)
   tag.type = type;
 
   // Address
-  myDisasmBuf.seekg(0, ios::beg);
+  myDisasmBuf.seekg(0, std::ios::beg);
   if(myDisasmBuf.peek() == ' ')
     tag.address = 0;
   else
-    myDisasmBuf >> setw(4) >> hex >> tag.address;
+    myDisasmBuf >> std::setw(4) >> std::hex >> tag.address;
 
   // Only include addresses within the requested range
   if(tag.address < myAppData.start)
     goto DONE_WITH_ADD;
 
   // Label (a user-defined label always overrides any auto-generated one)
-  myDisasmBuf.seekg(5, ios::beg);
+  myDisasmBuf.seekg(5, std::ios::beg);
   if(tag.address)
   {
     tag.label = myDbg.getLabel(tag.address, true);
@@ -1001,7 +1001,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
   // Disassembly
   // Up to this point the field sizes are fixed, until we get to
   // variable length labels, cycle counts, etc
-  myDisasmBuf.seekg(11, ios::beg);
+  myDisasmBuf.seekg(11, std::ios::beg);
   switch(tag.type)
   {
     case CartDebug::CODE:

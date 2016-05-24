@@ -85,7 +85,7 @@ string Cartridge0840Widget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = { "$800", "$840" };
-  buf << "Bank = " << dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();

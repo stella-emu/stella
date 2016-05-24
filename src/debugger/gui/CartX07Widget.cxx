@@ -41,7 +41,7 @@ CartridgeX07Widget::CartridgeX07Widget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << dec << i << " @ $" << Common::Base::HEX4 << start
+    info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << start
          << " - " << "$" << (start + 0xFFF) << "\n";
   }
 
@@ -100,7 +100,7 @@ string CartridgeX07Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << dec << myCart.myCurrentBank;
+  buf << "Bank = " << std::dec << myCart.myCurrentBank;
 
   return buf.str();
 }

@@ -107,7 +107,7 @@ string CartridgeWDWidget::bankState()
     "[0,0,6,7*]", "[0,1,7,6*]", "[3,2,4,5*]", "[6,0,5,1*]"
   };
   uInt16 bank = myCart.getBank();
-  buf << "Bank = " << dec << bank << ", segments = " << segments[bank];
+  buf << "Bank = " << std::dec << bank << ", segments = " << segments[bank];
 
   return buf.str();
 }

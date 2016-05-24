@@ -104,7 +104,7 @@ string CartridgeARWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << dec << myCart.myCurrentBank;
+  buf << "Bank = " << std::dec << myCart.myCurrentBank;
 
   return buf.str();
 }

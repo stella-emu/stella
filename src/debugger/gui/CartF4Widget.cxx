@@ -92,7 +92,7 @@ string CartridgeF4Widget::bankState()
   static const char* spot[] = {
     "$FF4", "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
   };
-  buf << "Bank = " << dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();

@@ -133,11 +133,11 @@ bool ZipHandler::stream_open(const char* filename, fstream** stream,
   }
   else
   {
-    in->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
+    in->exceptions( std::ios_base::failbit | std::ios_base::badbit | std::ios_base::eofbit );
     *stream = in;
-    in->seekg(0, ios::end);
+    in->seekg(0, std::ios::end);
     length = in->tellg();
-    in->seekg(0, ios::beg);
+    in->seekg(0, std::ios::beg);
     return true;
   }
 }

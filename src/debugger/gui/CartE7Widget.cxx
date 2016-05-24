@@ -128,7 +128,7 @@ string CartridgeE7Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Slices: " << dec
+  buf << "Slices: " << std::dec
       << spot_lower[myCart.myCurrentSlice[0]] << " / "
       << spot_upper[myCart.myCurrentRAM];
 

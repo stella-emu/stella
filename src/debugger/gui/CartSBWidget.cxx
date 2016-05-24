@@ -36,7 +36,7 @@ CartridgeSBWidget::CartridgeSBWidget(
        << "Hotspots are from $800 to $"
        << Common::Base::HEX2 << (0x800 + myCart.bankCount() - 1) << ", including\n"
        << "mirrors ($900, $A00, $B00, ...)\n"
-       << "Startup bank = " << dec << cart.myStartBank << "\n";
+       << "Startup bank = " << std::dec << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < myCart.bankCount();
@@ -44,11 +44,11 @@ CartridgeSBWidget::CartridgeSBWidget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << dec << i << " @ $" << Common::Base::HEX4 << start << " - "
+    info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << start << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
 
-    bank << dec << setw(2) << setfill(' ') << i << " ($" << Common::Base::HEX2
-         << spot << ")";
+    bank << std::dec << std::setw(2) << std::setfill(' ') << i << " ($"
+         << Common::Base::HEX2 << spot << ")";
     VarList::push_back(items, bank.str());
     bank.str("");
   }
@@ -90,7 +90,7 @@ string CartridgeSBWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = $" << Common::Base::HEX2 << (myCart.myCurrentBank + 0x800);
 
   return buf.str();

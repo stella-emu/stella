@@ -81,7 +81,7 @@ string CartridgeCVPlusWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << dec << myCart.myCurrentBank << ", hotspot = $3D";
+  buf << "Bank = " << std::dec << myCart.myCurrentBank << ", hotspot = $3D";
 
   return buf.str();
 }

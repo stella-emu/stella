@@ -65,7 +65,7 @@ void TiaOutputWidget::saveSnapshot()
   ostringstream sspath;
   sspath << instance().snapshotSaveDir()
          << instance().console().properties().get(Cartridge_Name)
-         << "_dbg_" << hex << setw(8) << setfill('0') << number << ".png";
+         << "_dbg_" << std::hex << std::setw(8) << std::setfill('0') << number << ".png";
 
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();

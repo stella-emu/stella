@@ -43,7 +43,7 @@ class PackedBitArray
 
   private:
     // The actual bits
-    bitset<0x10000> myBits;
+    std::bitset<0x10000> myBits;
 
     // Indicates whether we should treat this bitset as initialized
     bool myInitialized;

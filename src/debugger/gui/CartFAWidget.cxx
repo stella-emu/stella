@@ -98,7 +98,7 @@ string CartridgeFAWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = { "$FF8", "$FF9", "$FFA" };
-  buf << "Bank = " << dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();

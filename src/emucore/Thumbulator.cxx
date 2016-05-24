@@ -29,7 +29,7 @@
 #include "bspf.hxx"
 #include "Base.hxx"
 #include "Thumbulator.hxx"
-using namespace Common;
+using Common::Base;
 
 // Uncomment the following to enable specific functionality
 // WARNING!!! This slows the runtime to a crawl

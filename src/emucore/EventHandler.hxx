@@ -448,8 +448,8 @@ class EventHandler
         };
 
       public:
-        using StickDatabase = map<string,StickInfo>;
-        using StickList = map<int, StellaJoystick*>;
+        using StickDatabase = std::map<string,StickInfo>;
+        using StickList = std::map<int, StellaJoystick*>;
 
         JoystickHandler(OSystem& system);
         ~JoystickHandler();

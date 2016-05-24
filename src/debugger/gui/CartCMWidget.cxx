@@ -221,7 +221,7 @@ string CartridgeCMWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", RAM is" << (myCart.mySWCHA & 0x10 ? " Inactive" :
          myCart.mySWCHA & 0x20 ? " Read-only" : " Write-only");
 

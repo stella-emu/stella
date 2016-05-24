@@ -135,7 +135,7 @@ string CartridgeE0Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Slices: " << dec
+  buf << "Slices: " << std::dec
       << seg0[myCart.myCurrentSlice[0]] << " / "
       << seg1[myCart.myCurrentSlice[1]] << " / "
       << seg2[myCart.myCurrentSlice[2]];

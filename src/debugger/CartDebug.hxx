@@ -263,8 +263,8 @@ class CartDebug : public DebuggerSystem
     void addressTypeAsString(ostream& buf, uInt16 addr) const;
 
   private:
-    using AddrToLabel = map<uInt16, string>;
-    using LabelToAddr = map<string, uInt16>;
+    using AddrToLabel = std::map<uInt16, string>;
+    using LabelToAddr = std::map<string, uInt16>;
 
     // Determine 'type' of address (ie, what part of the system accessed)
     enum AddrType {
@@ -280,8 +280,8 @@ class CartDebug : public DebuggerSystem
       uInt16 start;
       uInt16 end;
     };
-    using AddressList = list<uInt16>;
-    using DirectiveList = list<DirectiveTag>;
+    using AddressList = std::list<uInt16>;
+    using DirectiveList = std::list<DirectiveTag>;
 
     struct BankInfo {
       uInt16 start;                // start of address space
@@ -352,7 +352,7 @@ class CartDebug : public DebuggerSystem
     // Used for the disassembly display, and mapping from addresses
     // to corresponding lines of text in that display
     Disassembly myDisassembly;
-    map<uInt16, int> myAddrToLineList;
+    std::map<uInt16, int> myAddrToLineList;
     bool myAddrToLineIsROM;
 
     // Mappings from label to address (and vice versa) for items

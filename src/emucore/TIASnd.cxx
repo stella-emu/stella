@@ -280,7 +280,7 @@ void TIASound::volume(uInt32 percent)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIASound::updateAudioState(AudioState& state, uInt32 audf, uInt32* audc)
 {
-  bool pulse_fb;  // pulse counter LFSR feedback
+  bool pulse_fb = false;  // pulse counter LFSR feedback
 
   // -- Logic updated on phase 1 of the audio clock --
   if(state.clk_en)

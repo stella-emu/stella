@@ -1797,7 +1797,8 @@ void EventHandler::takeSnapshot(uInt32 number)
   if(number > 0)
   {
     ostringstream buf;
-    buf << sspath << "_" << hex << setw(8) << setfill('0') << number << ".png";
+    buf << sspath << "_" << std::hex << std::setw(8) << std::setfill('0')
+        << number << ".png";
     filename = buf.str();
   }
   else if(!myOSystem.settings().getBool("sssingle"))

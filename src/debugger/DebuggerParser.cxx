@@ -39,7 +39,12 @@
 #include "Vec.hxx"
 
 #include "Base.hxx"
-using namespace Common;
+using Common::Base;
+using std::hex;
+using std::dec;
+using std::setfill;
+using std::setw;
+using std::right;
 
 #ifdef CHEATCODE_SUPPORT
   #include "Cheat.hxx"

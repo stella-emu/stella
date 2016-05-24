@@ -576,13 +576,13 @@ string Debugger::builtinHelp() const
     if(len > i_maxlen)  i_maxlen = len;
   }
 
-  buf << setfill(' ') << endl << "Built-in functions:" << endl;
+  buf << std::setfill(' ') << endl << "Built-in functions:" << endl;
   for(int i = 0; builtin_functions[i][0] != 0; ++i)
   {
-    buf << setw(c_maxlen) << left << builtin_functions[i][0]
-        << setw(2) << right << "{"
-        << setw(i_maxlen) << left << builtin_functions[i][1]
-        << setw(4) << "}"
+    buf << std::setw(c_maxlen) << std::left << builtin_functions[i][0]
+        << std::setw(2) << std::right << "{"
+        << std::setw(i_maxlen) << std::left << builtin_functions[i][1]
+        << std::setw(4) << "}"
         << builtin_functions[i][2]
         << endl;
   }
@@ -598,9 +598,9 @@ string Debugger::builtinHelp() const
   buf << endl << "Pseudo-registers:" << endl;
   for(int i = 0; pseudo_registers[i][0] != 0; ++i)
   {
-    buf << setw(c_maxlen) << left << pseudo_registers[i][0]
-        << setw(2) << " "
-        << setw(i_maxlen) << left << pseudo_registers[i][1]
+    buf << std::setw(c_maxlen) << std::left << pseudo_registers[i][0]
+        << std::setw(2) << " "
+        << std::setw(i_maxlen) << std::left << pseudo_registers[i][1]
         << endl;
   }
 

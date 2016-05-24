@@ -148,7 +148,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
   if(!isDirectory() || _error != ZIPERR_NONE)
     return false;
 
-  set<string> dirs;
+  std::set<string> dirs;
   ZipHandler& zip = open(_zipFile);
   while(zip.hasNext())
   {

@@ -1893,7 +1893,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     case AUDC0:   // Audio control 0
     {
       myAUDC0 = value & 0x0f;
-cerr << scanlines() << ": C0, " << hex << int(myAUDC0) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+cerr << scanlines() << ": C0, " << std::hex << int(myAUDC0) << ", " << std::dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
       myTIASound.writeAudC0(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
@@ -1901,7 +1901,7 @@ cerr << scanlines() << ": C0, " << hex << int(myAUDC0) << ", " << dec << ((clock
     case AUDC1:   // Audio control 1
     {
       myAUDC1 = value & 0x0f;
-cerr << scanlines() << ": C1, " << hex << int(myAUDC1) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+cerr << scanlines() << ": C1, " << std::hex << int(myAUDC1) << ", " << std::dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
       myTIASound.writeAudC1(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
@@ -1909,7 +1909,7 @@ cerr << scanlines() << ": C1, " << hex << int(myAUDC1) << ", " << dec << ((clock
     case AUDF0:   // Audio frequency 0
     {
       myAUDF0 = value & 0x1f;
-cerr << scanlines() << ": F0, " << hex << int(myAUDF0) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+cerr << scanlines() << ": F0, " << std::hex << int(myAUDF0) << ", " << std::dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
       myTIASound.writeAudF0(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
@@ -1917,7 +1917,7 @@ cerr << scanlines() << ": F0, " << hex << int(myAUDF0) << ", " << dec << ((clock
     case AUDF1:   // Audio frequency 1
     {
       myAUDF1 = value & 0x1f;
-cerr << scanlines() << ": F1, " << hex << int(myAUDF1) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+cerr << scanlines() << ": F1, " << std::hex << int(myAUDF1) << ", " << std::dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
       myTIASound.writeAudF1(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
@@ -1925,7 +1925,7 @@ cerr << scanlines() << ": F1, " << hex << int(myAUDF1) << ", " << dec << ((clock
     case AUDV0:   // Audio volume 0
     {
       myAUDV0 = value & 0x0f;
-cerr << scanlines() << ": V0, " << hex << int(myAUDV0) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+cerr << scanlines() << ": V0, " << std::hex << int(myAUDV0) << ", " << std::dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
       myTIASound.writeAudV0(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
@@ -1933,7 +1933,7 @@ cerr << scanlines() << ": V0, " << hex << int(myAUDV0) << ", " << dec << ((clock
     case AUDV1:   // Audio volume 1
     {
       myAUDV1 = value & 0x0f;
-cerr << scanlines() << ": V1, " << hex << int(myAUDV1) << ", " << dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
+cerr << scanlines() << ": V1, " << std::hex << int(myAUDV1) << ", " << std::dec << ((clock - myClockWhenFrameStarted) % 228) << endl;
       myTIASound.writeAudV1(value, (clock - myClockWhenFrameStarted) % 228);
       break;
     }
@@ -2284,7 +2284,7 @@ cerr << scanlines() << ": V1, " << hex << int(myAUDV1) << ", " << dec << ((clock
     default:
     {
 #ifdef DEBUG_ACCESSES
-      cerr << "BAD TIA Poke: " << hex << addr << endl;
+      cerr << "BAD TIA Poke: " << std::hex << addr << endl;
 #endif
       break;
     }

@@ -150,7 +150,7 @@ class CheatManager
     CheatList myCheatList;
     CheatList myPerFrameList;
 
-    map<string,string> myCheatMap;
+    std::map<string,string> myCheatMap;
     string myCheatFile;
 
     // This is set each time a new cheat/ROM is loaded, for later

@@ -48,8 +48,8 @@ class ButtonWidget;
 #include "TIADebug.hxx"
 #include "bspf.hxx"
 
-using FunctionMap = map<string,unique_ptr<Expression>>;
-using FunctionDefMap = map<string,string>;
+using FunctionMap = std::map<string, unique_ptr<Expression>>;
+using FunctionDefMap = std::map<string, string>;
 
 
 /**

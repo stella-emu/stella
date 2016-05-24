@@ -31,7 +31,13 @@
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"
 #include "CartRamWidget.hxx"
-using namespace Common;
+using Common::Base;
+using std::hex;
+using std::dec;
+using std::setfill;
+using std::setw;
+using std::left;
+using std::right;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
@@ -360,14 +366,14 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     if(tag.type == CartDebug::NONE)
       continue;
     else if(tag.address)
-      buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
-           << ":  ";
+      buffer << std::uppercase << std::hex << std::setw(4)
+             << std::setfill('0') << tag.address << ":  ";
     else
       buffer << "       ";
 
-    buffer << tag.disasm << setw(int(length - tag.disasm.length() + 2))
-           << setfill(' ') << " "
-           << setw(4) << left << tag.ccount << "   " << tag.bytes << endl;
+    buffer << tag.disasm << std::setw(int(length - tag.disasm.length() + 2))
+           << std::setfill(' ') << " "
+           << std::setw(4) << std::left << tag.ccount << "   " << tag.bytes << endl;
   }
 
   return buffer.str();
@@ -1157,7 +1163,7 @@ string CartDebug::saveRom()
     myConsole.properties().get(Cartridge_Name) + ".a26";
 
   FilesystemNode node(path);
-  ofstream out(node.getPath(), ios::binary);
+  ofstream out(node.getPath(), std::ios::binary);
   if(out && myConsole.cartridge().saveROM(out))
     return "saved ROM as " + node.getShortPath();
   else

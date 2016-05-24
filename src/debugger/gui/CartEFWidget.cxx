@@ -39,7 +39,7 @@ CartridgeEFWidget::CartridgeEFWidget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << dec << i << " @ $" << Common::Base::HEX4 << start << " - "
+    info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << start << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 
@@ -102,7 +102,7 @@ string CartridgeEFWidget::bankState()
     "$FE0", "$FE1", "$FE2", "$FE3", "$FE4", "$FE5", "$FE6", "$FE7",
     "$FE8", "$FE9", "$FEA", "$FEB", "$FEC", "$FED", "$FEE", "$FEF"
   };
-  buf << "Bank = " << dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 
   return buf.str();
