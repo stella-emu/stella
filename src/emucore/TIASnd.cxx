@@ -22,58 +22,45 @@
 #include "TIASnd.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASound::TIASound()
-  : myChannelMode(Hardware2Mono),
-    myHWVol(100)
+TIASound::TIASound(Int32 outputFrequency)
+  : myChannelMode(Hardware2Stereo),
+    myOutputFrequency(outputFrequency),
+    myOutputCounter(0),
+    myVolumePercentage(100)
 {
-  // Build volume lookup table
-  constexpr double ra = 1.0 / 30.0;
-  constexpr double rb = 1.0 / 15.0;
-  constexpr double rc = 1.0 / 7.5;
-  constexpr double rd = 1.0 / 3.75;
-
-  memset(myVolLUT, 0, sizeof(uInt16)*256*101);
-  for(int i = 1; i < 256; ++i)
-  {
-    double r2 = 0.0;
-
-    if(i & 0x01)  r2 += ra;
-    if(i & 0x02)  r2 += rb;
-    if(i & 0x04)  r2 += rc;
-    if(i & 0x08)  r2 += rd;
-    if(i & 0x10)  r2 += ra;
-    if(i & 0x20)  r2 += rb;
-    if(i & 0x40)  r2 += rc;
-    if(i & 0x80)  r2 += rd;
-
-    r2 = 1.0 / r2;
-    uInt16 vol = uInt16(32768.0 * (1.0 - r2 / (1.0 + r2)) + 0.5);
-
-    // Pre-calculate all possible volume levels
-    for(int j = 0; j <= 100; ++j)
-      myVolLUT[i][j] = vol * j / 100;
-  }
-
   reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASound::reset()
 {
-  myAud0State.reset();
-  myAud1State.reset();
-  while(!mySamples.empty()) mySamples.pop();
+  // Fill the polynomials
+  polyInit(Bit4, 4, 4, 3);
+  polyInit(Bit5, 5, 5, 3);
+  polyInit(Bit9, 9, 9, 5);
 
-  for(int i = 0; i < 2; ++i)
+  // Initialize instance variables
+  for(int chan = 0; chan <= 1; ++chan)
   {
-    myAudC0[i][0] = myAudC0[i][1] = 0;
-    myAudC1[i][0] = myAudC1[i][1] = 0;
-    myAudF0[i] = myAudF1[i] = 0;
-    myAudV0[i] = myAudV1[i] = 0;
+    myVolume[chan] = 0;
+    myDivNCnt[chan] = 0;
+    myDivNMax[chan] = 0;
+    myDiv3Cnt[chan] = 3;
+    myAUDC[chan] = 0;
+    myAUDF[chan] = 0;
+    myAUDV[chan] = 0;
+    myP4[chan] = 0;
+    myP5[chan] = 0;
+    myP9[chan] = 0;
   }
 
-  myDeferredC0 = myDeferredC1 = myDeferredF0 = myDeferredF1 =
-    myDeferredV0 = myDeferredV1 = 0xff;
+  myOutputCounter = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASound::outputFrequency(Int32 freq)
+{
+  myOutputFrequency = freq;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,397 +73,318 @@ string TIASound::channels(uInt32 hardware, bool stereo)
 
   switch(myChannelMode)
   {
+    case Hardware1:       return "Hardware1";
     case Hardware2Mono:   return "Hardware2Mono";
     case Hardware2Stereo: return "Hardware2Stereo";
-    case Hardware1:       return "Hardware1";
     default:              return EmptyString;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::writeAudC0(uInt8 value, uInt32 clock)
+void TIASound::set(uInt16 address, uInt8 value)
 {
-  value &= 0x0F;
-  if(clock <= Cycle1Phase1)  myAudC0[0][0] = value;
-  if(clock <= Cycle1Phase2)  myAudC0[0][1] = value;
-  if(clock <= Cycle2Phase1)  myAudC0[1][0] = value;
-  if(clock <= Cycle2Phase2)  myAudC0[1][1] = value;
-  else  // We missed both cycles, so defer write until next line
-    myDeferredC0 = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::writeAudC1(uInt8 value, uInt32 clock)
-{
-  value &= 0x0F;
-  if(clock <= Cycle1Phase1)  myAudC1[0][0] = value;
-  if(clock <= Cycle1Phase2)  myAudC1[0][1] = value;
-  if(clock <= Cycle2Phase1)  myAudC1[1][0] = value;
-  if(clock <= Cycle2Phase2)  myAudC1[1][1] = value;
-  else  // We missed both cycles, so defer write until next line
-    myDeferredC1 = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::writeAudF0(uInt8 value, uInt32 clock)
-{
-  value &= 0x1F;
-  if(clock <= Cycle1Phase1)  myAudF0[0] = value;
-  if(clock <= Cycle2Phase1)  myAudF0[1] = value;
-  else  // We missed both cycles, so defer write until next line
-    myDeferredF0 = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::writeAudF1(uInt8 value, uInt32 clock)
-{
-  value &= 0x1F;
-  if(clock <= Cycle1Phase1)  myAudF1[0] = value;
-  if(clock <= Cycle2Phase1)  myAudF1[1] = value;
-  else  // We missed both cycles, so defer write until next line
-    myDeferredF1 = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::writeAudV0(uInt8 value, uInt32 clock)
-{
-  value &= 0x0F;
-  if(clock <= Cycle1Phase2)  myAudV0[0] = value;
-  if(clock <= Cycle2Phase2)  myAudV0[1] = value;
-  else  // We missed both cycles, so defer write until next line
-    myDeferredV0 = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::writeAudV1(uInt8 value, uInt32 clock)
-{
-  value &= 0x0F;
-  if(clock <= Cycle1Phase2)  myAudV1[0] = value;
-  if(clock <= Cycle2Phase2)  myAudV1[1] = value;
-  else  // We missed both cycles, so defer write until next line
-    myDeferredV1 = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::queueSamples()
-{
-  // Cycle 1
-  bool aud0_c1 = updateAudioState(myAud0State, myAudF0[0], myAudC0[0]);
-  bool aud1_c1 = updateAudioState(myAud1State, myAudF1[0], myAudC1[0]);
-
-  // Cycle 2
-  bool aud0_c2 = updateAudioState(myAud0State, myAudF0[1], myAudC0[1]);
-  bool aud1_c2 = updateAudioState(myAud1State, myAudF1[1], myAudC1[1]);
-
-  switch(myChannelMode)
+  int chan = ~address & 0x1;
+  switch(address)
   {
-    case Hardware2Mono:   // mono sampling with 2 hardware channels
-    {
-      uInt32 idx1 = 0;
-      if(aud0_c1) idx1 |= myAudV0[0];
-      if(aud1_c1) idx1 |= (myAudV1[0] << 4);
-      uInt16 vol1 = myVolLUT[idx1][myHWVol];
-      mySamples.push(vol1);
-      mySamples.push(vol1);
-
-      uInt32 idx2 = 0;
-      if(aud0_c2) idx2 |= myAudV0[1];
-      if(aud1_c2) idx2 |= (myAudV1[1] << 4);
-      uInt16 vol2 = myVolLUT[idx2][myHWVol];
-      mySamples.push(vol2);
-      mySamples.push(vol2);
+    case TIARegister::AUDC0:
+    case TIARegister::AUDC1:
+      myAUDC[chan] = value & 0x0f;
       break;
-    }
-    case Hardware2Stereo: // stereo sampling with 2 hardware channels
-    {
-      mySamples.push(myVolLUT[aud0_c1 ? myAudV0[0] : 0][myHWVol]);
-      mySamples.push(myVolLUT[aud1_c1 ? myAudV1[0] : 0][myHWVol]);
 
-      mySamples.push(myVolLUT[aud0_c2 ? myAudV0[1] : 0][myHWVol]);
-      mySamples.push(myVolLUT[aud1_c2 ? myAudV1[1] : 0][myHWVol]);
-
+    case TIARegister::AUDF0:
+    case TIARegister::AUDF1:
+      myAUDF[chan] = value & 0x1f;
       break;
-    }
-    case Hardware1:       // mono/stereo sampling with only 1 hardware channel
-    {
-      uInt32 idx1 = 0;
-      if(aud0_c1) idx1 |= myAudV0[0];
-      if(aud1_c1) idx1 |= (myAudV1[0] << 4);
-      mySamples.push(myVolLUT[idx1][myHWVol]);
 
-      uInt32 idx2 = 0;
-      if(aud0_c2) idx2 |= myAudV0[1];
-      if(aud1_c2) idx2 |= (myAudV1[1] << 4);
-      mySamples.push(myVolLUT[idx2][myHWVol]);
+    case TIARegister::AUDV0:
+    case TIARegister::AUDV1:
+      myAUDV[chan] = (value & 0x0f) << AUDV_SHIFT;
       break;
-    }
+
+    default:
+      return;
   }
 
-  /////////////////////////////////////////////////
-  // End of line, allow deferred updates
-  /////////////////////////////////////////////////
+  uInt16 newVal = 0;
 
-  // AUDC0
-  if(myDeferredC0 != 0xff)  // write occurred after cycle2:phase2
+  // An AUDC value of 0 is a special case
+  if (myAUDC[chan] == SET_TO_1 || myAUDC[chan] == POLY5_POLY5)
   {
-    myAudC0[0][0] = myAudC0[0][1] = myAudC0[1][0] = myAudC0[1][1] = myDeferredC0;
-    myDeferredC0 = 0xff;
+    // Indicate the clock is zero so no processing will occur,
+    // and set the output to the selected volume
+    newVal = 0;
+    myVolume[chan] = (myAUDV[chan] * myVolumePercentage) / 100;
   }
-  else                      // write occurred after cycle1:phase1
-    myAudC0[0][0] = myAudC0[1][1];
-
-  // AUDC1
-  if(myDeferredC1 != 0xff)  // write occurred after cycle2:phase2
+  else
   {
-    myAudC1[0][0] = myAudC1[0][1] = myAudC1[1][0] = myAudC1[1][1] = myDeferredC1;
-    myDeferredC1 = 0xff;
-  }
-  else                      // write occurred after cycle1:phase1
-    myAudC1[0][0] = myAudC1[1][1];
+    // Otherwise calculate the 'divide by N' value
+    newVal = myAUDF[chan] + 1;
 
-  // AUDF0
-  if(myDeferredF0 != 0xff)  // write occurred after cycle2:phase2
-  {
-    myAudF0[0] = myAudF0[1] = myDeferredF0;
-    myDeferredF0 = 0xff;
+    // If bits 2 & 3 are set, then multiply the 'div by n' count by 3
+    if((myAUDC[chan] & DIV3_MASK) == DIV3_MASK && myAUDC[chan] != POLY5_DIV3)
+      newVal *= 3;
   }
-  else                      // write occurred after cycle1:phase1
-    myAudF0[0] = myAudF0[1];
 
-  // AUDF1
-  if(myDeferredF1 != 0xff)  // write occurred after cycle2:phase2
+  // Only reset those channels that have changed
+  if(newVal != myDivNMax[chan])
   {
-    myAudF1[0] = myAudF1[1] = myDeferredF1;
-    myDeferredF1 = 0xff;
-  }
-  else                      // write occurred after cycle1:phase1
-    myAudF1[0] = myAudF1[1];
+    // Reset the divide by n counters
+    myDivNMax[chan] = newVal;
 
-  // AUDV0
-  if(myDeferredV0 != 0xff)  // write occurred after cycle2:phase2
-  {
-    myAudV0[0] = myAudV0[1] = myDeferredV0;
-    myDeferredV0 = 0xff;
+    // If the channel is now volume only or was volume only,
+    // reset the counter (otherwise let it complete the previous)
+    if ((myDivNCnt[chan] == 0) || (newVal == 0))
+      myDivNCnt[chan] = newVal;
   }
-  else                      // write occurred after cycle1:phase1
-    myAudV0[0] = myAudV0[1];
+}
 
-  // AUDV1
-  if(myDeferredV1 != 0xff)  // write occurred after cycle2:phase2
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIASound::get(uInt16 address) const
+{
+  switch(address)
   {
-    myAudV1[0] = myAudV1[1] = myDeferredV1;
-    myDeferredV1 = 0xff;
+    case TIARegister::AUDC0:  return myAUDC[0];
+    case TIARegister::AUDC1:  return myAUDC[1];
+    case TIARegister::AUDF0:  return myAUDF[0];
+    case TIARegister::AUDF1:  return myAUDF[1];
+    case TIARegister::AUDV0:  return myAUDV[0] >> AUDV_SHIFT;
+    case TIARegister::AUDV1:  return myAUDV[1] >> AUDV_SHIFT;
+    default:                  return 0;
   }
-  else                      // write occurred after cycle1:phase1
-    myAudV1[0] = myAudV1[1];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASound::volume(uInt32 percent)
 {
-  myHWVol = std::min(percent, 100u);
+  if(percent <= 100)
+    myVolumePercentage = percent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASound::updateAudioState(AudioState& state, uInt32 audf, uInt32* audc)
+void TIASound::process(Int16* buffer, uInt32 samples)
 {
-  bool pulse_fb = false;  // pulse counter LFSR feedback
+  // Make temporary local copy
+  uInt8 audc0 = myAUDC[0], audc1 = myAUDC[1];
+  uInt8 p5_0 = myP5[0], p5_1 = myP5[1];
+  uInt8 div_n_cnt0 = myDivNCnt[0], div_n_cnt1 = myDivNCnt[1];
+  Int16 v0 = myVolume[0], v1 = myVolume[1];
 
-  // -- Logic updated on phase 1 of the audio clock --
-  if(state.clk_en)
+  // Take external volume into account
+  Int16 audv0 = (myAUDV[0] * myVolumePercentage) / 100,
+        audv1 = (myAUDV[1] * myVolumePercentage) / 100;
+
+  // Loop until the sample buffer is full
+  while(samples > 0)
   {
-    // Latch bit 4 of noise counter
-    state.noise_cnt_4 = state.noise_cnt & 0x01;
-
-    // Latch pulse counter hold condition
-    switch(audc[0] & 0x03)
+    // Process channel 0
+    if (div_n_cnt0 > 1)
     {
-      case 0x00:
-        state.pulse_cnt_hold = false;
-        break;
-      case 0x01:
-        state.pulse_cnt_hold = false;
-        break;
-      case 0x02:
-        state.pulse_cnt_hold = ((state.noise_cnt & 0x1e) != 0x02);
-        break;
-      case 0x03:
-        state.pulse_cnt_hold = !state.noise_cnt_4;
-        break;
+      div_n_cnt0--;
+    }
+    else if (div_n_cnt0 == 1)
+    {
+      int prev_bit5 = Bit5[p5_0];
+      div_n_cnt0 = myDivNMax[0];
+
+      // The P5 counter has multiple uses, so we increment it here
+      p5_0++;
+      if (p5_0 == POLY5_SIZE)
+        p5_0 = 0;
+
+      // Check clock modifier for clock tick
+      if ((audc0 & 0x02) == 0 ||
+         ((audc0 & 0x01) == 0 && Div31[p5_0]) ||
+         ((audc0 & 0x01) == 1 && Bit5[p5_0]) ||
+         ((audc0 & 0x0f) == POLY5_DIV3 && Bit5[p5_0] != prev_bit5))
+      {
+        if (audc0 & 0x04)       // Pure modified clock selected
+        {
+          if ((audc0 & 0x0f) == POLY5_DIV3) // POLY5 -> DIV3 mode
+          {
+            if ( Bit5[p5_0] != prev_bit5 )
+            {
+              myDiv3Cnt[0]--;
+              if ( !myDiv3Cnt[0] )
+              {
+                myDiv3Cnt[0] = 3;
+                v0 = v0 ? 0 : audv0;
+              }
+            }
+          }
+          else
+          {
+            // If the output was set turn it off, else turn it on
+            v0 = v0 ? 0 : audv0;
+          }
+        }
+        else if (audc0 & 0x08)  // Check for p5/p9
+        {
+          if (audc0 == POLY9)   // Check for poly9
+          {
+            // Increase the poly9 counter
+            myP9[0]++;
+            if (myP9[0] == POLY9_SIZE)
+              myP9[0] = 0;
+
+            v0 = Bit9[myP9[0]] ? audv0 : 0;
+          }
+          else if ( audc0 & 0x02 )
+          {
+            v0 = (v0 || audc0 & 0x01) ? 0 : audv0;
+          }
+          else  // Must be poly5
+          {
+            v0 = Bit5[p5_0] ? audv0 : 0;
+          }
+        }
+        else  // Poly4 is the only remaining option
+        {
+          // Increase the poly4 counter
+          myP4[0]++;
+          if (myP4[0] == POLY4_SIZE)
+            myP4[0] = 0;
+
+          v0 = Bit4[myP4[0]] ? audv0 : 0;
+        }
+      }
     }
 
-    // Latch noise counter LFSR feedback
-    switch(audc[0] & 0x03)
+    // Process channel 1
+    if (div_n_cnt1 > 1)
     {
-      case 0x00:
-        state.noise_fb = ((state.pulse_cnt & 0x01) ^ (state.noise_cnt & 0x01)) |
-                         !((state.noise_cnt ? 1 : 0) | (state.pulse_cnt != 0x0a)) |
-                         !(audc[0] & 0x0c);
+      div_n_cnt1--;
+    }
+    else if (div_n_cnt1 == 1)
+    {
+      int prev_bit5 = Bit5[p5_1];
+
+      div_n_cnt1 = myDivNMax[1];
+
+      // The P5 counter has multiple uses, so we increment it here
+      p5_1++;
+      if (p5_1 == POLY5_SIZE)
+        p5_1 = 0;
+
+      // Check clock modifier for clock tick
+      if ((audc1 & 0x02) == 0 ||
+         ((audc1 & 0x01) == 0 && Div31[p5_1]) ||
+         ((audc1 & 0x01) == 1 && Bit5[p5_1]) ||
+         ((audc1 & 0x0f) == POLY5_DIV3 && Bit5[p5_1] != prev_bit5))
+      {
+        if (audc1 & 0x04)       // Pure modified clock selected
+        {
+          if ((audc1 & 0x0f) == POLY5_DIV3)   // POLY5 -> DIV3 mode
+          {
+            if ( Bit5[p5_1] != prev_bit5 )
+            {
+              myDiv3Cnt[1]--;
+              if ( ! myDiv3Cnt[1] )
+              {
+                myDiv3Cnt[1] = 3;
+                v1 = v1 ? 0 : audv1;
+              }
+            }
+          }
+          else
+          {
+            // If the output was set turn it off, else turn it on
+            v1 = v1 ? 0 : audv1;
+          }
+        }
+        else if (audc1 & 0x08)  // Check for p5/p9
+        {
+          if (audc1 == POLY9)   // Check for poly9
+          {
+            // Increase the poly9 counter
+            myP9[1]++;
+            if (myP9[1] == POLY9_SIZE)
+              myP9[1] = 0;
+
+            v1 = Bit9[myP9[1]] ? audv1 : 0;
+          }
+          else if ( audc1 & 0x02 )
+          {
+            v1 = (v1 || audc1 & 0x01) ? 0 : audv1;
+          }
+          else  // Must be poly5
+          {
+            v1 = Bit5[p5_1] ? audv1 : 0;
+          }
+        }
+        else  // Poly4 is the only remaining option
+        {
+          // Increase the poly4 counter
+          myP4[1]++;
+          if (myP4[1] == POLY4_SIZE)
+            myP4[1] = 0;
+
+          v1 = Bit4[myP4[1]] ? audv1 : 0;
+        }
+      }
+    }
+
+    myOutputCounter += myOutputFrequency;
+
+    switch(myChannelMode)
+    {
+      case Hardware2Mono:  // mono sampling with 2 hardware channels
+        while((samples > 0) && (myOutputCounter >= 31400))
+        {
+          Int16 byte = v0 + v1;
+          *(buffer++) = byte;
+          *(buffer++) = byte;
+          myOutputCounter -= 31400;
+          samples--;
+        }
         break;
-      default:
-        state.noise_fb = (((state.noise_cnt & 0x04) ? 1 : 0) ^ (state.noise_cnt & 0x01)) |
-                         !state.noise_cnt;
+
+      case Hardware2Stereo:  // stereo sampling with 2 hardware channels
+        while((samples > 0) && (myOutputCounter >= 31400))
+        {
+          *(buffer++) = v0;
+          *(buffer++) = v1;
+          myOutputCounter -= 31400;
+          samples--;
+        }
+        break;
+
+      case Hardware1:  // mono/stereo sampling with only 1 hardware channel
+        while((samples > 0) && (myOutputCounter >= 31400))
+        {
+          *(buffer++) = v0 + v1;
+          myOutputCounter -= 31400;
+          samples--;
+        }
         break;
     }
   }
 
-  // Set (or clear) audio clock enable
-  state.clk_en = (state.div_cnt == audf);
-
-  // Increment clock divider counter
-  if((state.div_cnt == audf) || (state.div_cnt == 31))
-    state.div_cnt = 0;
-  else
-    state.div_cnt++;
-
-  // -- Logic updated on phase 2 of the audio clock --
-  if(state.clk_en)
-  {
-    // Evaluate pulse counter combinatorial logic
-    switch(audc[1] >> 2)
-    {
-      case 0x00:
-        pulse_fb = (((state.pulse_cnt & 0x02) ? 1 : 0) ^ (state.pulse_cnt & 0x01)) &
-                   (state.pulse_cnt != 0x0a) && (audc[1] & 0x03);
-        break;
-      case 0x01:
-        pulse_fb = !(state.pulse_cnt & 0x08);
-        break;
-      case 0x02:
-        pulse_fb = !state.noise_cnt_4;
-        break;
-      case 0x03:
-        pulse_fb = !((state.pulse_cnt & 0x02) || !(state.pulse_cnt & 0x0e));
-        break;
-    }
-
-    // Increment noise counter
-    state.noise_cnt >>= 1;
-    if(state.noise_fb)
-      state.noise_cnt |= 0x10;
-
-    // Increment pulse counter
-    if(!state.pulse_cnt_hold)
-    {
-      state.pulse_cnt = (~(state.pulse_cnt >> 1) & 0x07);
-      if(pulse_fb)
-        state.pulse_cnt |= 0x08;
-    }
-  }
-
-  // Pulse generator output
-  return (state.pulse_cnt & 0x01);
+  // Save for next round
+  myP5[0] = p5_0;
+  myP5[1] = p5_1;
+  myVolume[0] = v0;
+  myVolume[1] = v1;
+  myDivNCnt[0] = div_n_cnt0;
+  myDivNCnt[1] = div_n_cnt1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASound::save(Serializer& out) const
+void TIASound::polyInit(uInt8* poly, int size, int f0, int f1)
 {
-#if 0
-  try
-  {
-    out.putString(name());
+  int mask = (1 << size) - 1, x = mask;
 
-    // Only get the TIA sound registers if sound is enabled
-    if(myIsInitializedFlag)
-    {
-      out.putByte(myTIASound.get(TIARegister::AUDC0));
-      out.putByte(myTIASound.get(TIARegister::AUDC1));
-      out.putByte(myTIASound.get(TIARegister::AUDF0));
-      out.putByte(myTIASound.get(TIARegister::AUDF1));
-      out.putByte(myTIASound.get(TIARegister::AUDV0));
-      out.putByte(myTIASound.get(TIARegister::AUDV1));
-    }
-    else
-      for(int i = 0; i < 6; ++i)
-        out.putByte(0);
-
-    out.putInt(myLastRegisterSetCycle);
-  }
-  catch(...)
+  for(int i = 0; i < mask; i++)
   {
-    myOSystem.logMessage("ERROR: SoundSDL2::save", 0);
-    return false;
+    int bit0 = ( ( size - f0 ) ? ( x >> ( size - f0 ) ) : x ) & 0x01;
+    int bit1 = ( ( size - f1 ) ? ( x >> ( size - f1 ) ) : x ) & 0x01;
+    poly[i] = x & 1;
+    // calculate next bit
+    x = ( x >> 1 ) | ( ( bit0 ^ bit1 ) << ( size - 1) );
   }
-#endif
-  return true;  // TODO
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASound::load(Serializer& in)
-{
-#if 0
-  try
-  {
-    if(in.getString() != name())
-      return false;
-
-    // Only update the TIA sound registers if sound is enabled
-    // Make sure to empty the queue of previous sound fragments
-    if(myIsInitializedFlag)
-    {
-      SDL_PauseAudio(1);
-      myRegWriteQueue.clear();
-      myTIASound.set(TIARegister::AUDC0, in.getByte());
-      myTIASound.set(TIARegister::AUDC1, in.getByte());
-      myTIASound.set(TIARegister::AUDF0, in.getByte());
-      myTIASound.set(TIARegister::AUDF1, in.getByte());
-      myTIASound.set(TIARegister::AUDV0, in.getByte());
-      myTIASound.set(TIARegister::AUDV1, in.getByte());
-      if(!myIsMuted) SDL_PauseAudio(0);
-    }
-    else
-      for(int i = 0; i < 6; ++i)
-        in.getByte();
-
-    myLastRegisterSetCycle = in.getInt();
-  }
-  catch(...)
-  {
-    myOSystem.logMessage("ERROR: SoundSDL2::load", 0);
-    return false;
-  }
-#endif
-  return true;  // TODO
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASound::AudioState::save(Serializer& out) const
-{
-  try
-  {
-    out.putBool(clk_en);
-    out.putBool(noise_fb);
-    out.putBool(noise_cnt_4);
-    out.putBool(pulse_cnt_hold);
-    out.putInt(div_cnt);
-    out.putInt(noise_cnt);
-    out.putInt(pulse_cnt);
-  }
-  catch(...)
-  {
-    // FIXME myOSystem.logMessage("ERROR: TIASnd_state::save", 0);
-    return false;
-  }
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASound::AudioState::load(Serializer& in)
-{
-  try
-  {
-    clk_en = in.getBool();
-    noise_fb = in.getBool();
-    noise_cnt_4 = in.getBool();
-    pulse_cnt_hold = in.getBool();
-    div_cnt = in.getInt();
-    noise_cnt = in.getInt();
-    pulse_cnt = in.getInt();
-  }
-  catch(...)
-  {
-    // FIXME myOSystem.logMessage("ERROR: TIASnd_state::load", 0);
-    return false;
-  }
-  return true;
-}
+const uInt8 TIASound::Div31[POLY5_SIZE] = {
+  0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};

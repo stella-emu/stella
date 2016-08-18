@@ -430,7 +430,9 @@ void Console::initializeAudio()
   const string& sound = myProperties.get(Cartridge_Sound);
 
   myOSystem.sound().close();
-  myOSystem.sound().open(sound == "STEREO");
+  myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
+  myOSystem.sound().setFrameRate(myFramerate);
+  myOSystem.sound().open();
 
   // Make sure auto-frame calculation is only enabled when necessary
   myTIA->enableAutoFrame(framerate <= 0);
@@ -836,6 +838,7 @@ void Console::setFramerate(float framerate)
 {
   myFramerate = framerate;
   myOSystem.setFramerate(framerate);
+  myOSystem.sound().setFrameRate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

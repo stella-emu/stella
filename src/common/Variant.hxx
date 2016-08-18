@@ -44,7 +44,7 @@ class Variant
     }
 
   public:
-    Variant() : data("") { }
+    Variant() { }
 
     Variant(const string& s) : data(s) { }
     Variant(const char* s) : data(s) { }

@@ -17,81 +17,39 @@
 // $Id$
 //============================================================================
 
-//-----------------------------------------------------------------------------
-//
-//  Title: TIA Audio Generator
-//
-//  Project - MMDC
-//  Version - _VERSION
-//  Author - Chris Brenner
-//  Description - This code is translated more or less verbatim from my Verilog
-//  code for my FPGA project. It provides core logic that can be used to achieve
-//  cycle accurate emulation of the Atari 2600 TIA audio blocks.
-//
-//  The core logic is broken up into two functions. The updateAudioState()
-//  function contains the logic for the clock divider and pulse generator. It is
-//  used to update the state of the audio logic, and should be called once for
-//  every audio clock cycle for each channel.
-//
-//  The queueSamples() function implements the volume control, and generates
-//  audio samples. It depends on the state of the pulse generator of both audio
-//  channels, so it internally calls the updateAudioState() function.
-//
-//  The constructor is called on startup in order to initialize  the audio logic
-//  and volume control LUT.
-//
-//  The accuracy of the emulation is dependent upon the accuracy of the data
-//  contained in the AUDCx, AUDFx, and AUDVx registers. It is important that these
-//  registers contain the most recent value written prior to the current clock
-//  cycle and phase.
-//
-//  The TIA audio clock is a 31.4 KHz two phase clock that occurs twice every
-//  horizontal scan line. The mapping of the cycles and phases are as follows.
-//  Cycle 1 - Phase 1: color clock 8
-//  Cycle 1 - Phase 2: color clock 36
-//  Cycle 2 - Phase 1: color clock 80
-//  Cycle 2 - Phase 2: color clock 148
-//
-//  Since software can change the value of the registers in between clock cycles
-//  and phases, it's necessary to develop a mechanism for keeping these registers
-//  up to date when doing bulk processing. One method would be to time stamp the
-//  register writes, and queue them into a FIFO, but I leave this design decision
-//  to the emulator developer. The phase requirements are listed here.
-//  AUDC0, AUDC1: used by the pulse generator at both phases
-//  AUDF0, AUDF1: used by the clock divider at phase 1
-//  AUDV0, AUDV1: used by the volume control at phase 2
-//
-//  In a real 2600, the volume control is analog, and is affected the instant when
-//  AUDVx is written. However, since we generate audio samples at phase 2 of the
-//  clock, the granularity of volume control updates is limited to our sample rate,
-//  and changes that occur in between clocks result in only the last change prior
-//  to phase 2 having an affect on the volume.
-//
-//  @author  Chris Brenner (original C implementation) and
-//           Stephen Anthony (C++ conversion, integration into Stella)
-//-----------------------------------------------------------------------------
-
 #ifndef TIASOUND_HXX
 #define TIASOUND_HXX
 
-#include <queue>
-
 #include "bspf.hxx"
-#include "Serializable.hxx"
 
-class TIASound : public Serializable
+/**
+  This class implements a fairly accurate emulation of the TIA sound
+  hardware.  This class uses code/ideas from z26 and MESS.
+
+  Currently, the sound generation routines work at 31400Hz only.
+  Resampling can be done by passing in a different output frequency.
+
+  @author  Bradford W. Mott, Stephen Anthony, z26 and MESS teams
+  @version $Id$
+*/
+class TIASound
 {
   public:
     /**
-      Create a new TIA Sound object.
+      Create a new TIA Sound object using the specified output frequency
     */
-    TIASound();
+    TIASound(Int32 outputFrequency = 31400);
 
   public:
     /**
-      Reset the sound emulation to its power-on state.
+      Reset the sound emulation to its power-on state
     */
     void reset();
+
+    /**
+      Set the frequency output samples should be generated at
+    */
+    void outputFrequency(Int32 freq);
 
     /**
       Selects the number of audio channels per sample.  There are two factors
@@ -105,133 +63,117 @@ class TIASound : public Serializable
     */
     string channels(uInt32 hardware, bool stereo);
 
+  public:
     /**
-      Sets the specified sound register to the given value.
+      Sets the specified sound register to the given value
 
-      @param value  Value to store in the register
-      @param clock  Colour clock at which the write occurred
+      @param address Register address
+      @param value Value to store in the register
     */
-    void writeAudC0(uInt8 value, uInt32 clock);
-    void writeAudC1(uInt8 value, uInt32 clock);
-    void writeAudF0(uInt8 value, uInt32 clock);
-    void writeAudF1(uInt8 value, uInt32 clock);
-    void writeAudV0(uInt8 value, uInt32 clock);
-    void writeAudV1(uInt8 value, uInt32 clock);
+    void set(uInt16 address, uInt8 value);
+
+    /**
+      Gets the specified sound register's value
+
+      @param address Register address
+    */
+    uInt8 get(uInt16 address) const;
 
     /**
       Create sound samples based on the current sound register settings
       in the specified buffer. NOTE: If channels is set to stereo then
       the buffer will need to be twice as long as the number of samples.
-      The samples are stored in an internal queue, to be removed as
-      necessary by getSamples() (invoked by the sound hardware callback).
 
-      This method must be called once per scanline from the TIA class.
+      @param buffer The location to store generated samples
+      @param samples The number of samples to generate
     */
-    void queueSamples();
-
-    /**
-      Move specified number of samples from the internal queue into the
-      given buffer.
-
-      @param buffer   The location to move generated samples
-      @param samples  The number of samples to move
-
-      @return  The number of samples left to fill the buffer
-               Should normally be 0, since we want to fill it completely
-    */
-    Int32 getSamples(uInt16* buffer, uInt32 samples)
-    {
-      while(mySamples.size() > 0 && samples--)
-      {
-        *buffer++ = mySamples.front();
-        mySamples.pop();
-      }
-      return samples;
-    }
+    void process(Int16* buffer, uInt32 samples);
 
     /**
       Set the volume of the samples created (0-100)
     */
     void volume(uInt32 percent);
 
-    /**
-      Saves the current state of this device to the given Serializer.
-
-      @param out  The serializer device to save to.
-      @return  The result of the save.  True on success, false on failure.
-    */
-    bool save(Serializer& out) const override;
-
-    /**
-      Loads the current state of this device from the given Serializer.
-
-      @param in  The Serializer device to load from.
-      @return  The result of the load.  True on success, false on failure.
-    */
-    bool load(Serializer& in) override;
-
-    /**
-      Get a descriptor for this console class (used in error checking).
-
-      @return  The name of the object
-    */
-    string name() const override { return "TIASound"; }
+  private:
+    void polyInit(uInt8* poly, int size, int f0, int f1);
 
   private:
-    struct AudioState : public Serializable
+    // Definitions for AUDCx (15, 16)
+    enum AUDCxRegister
     {
-      AudioState() { reset(); }
-      void reset()
-      {
-        clk_en = noise_fb = noise_cnt_4 = pulse_cnt_hold = false;
-        div_cnt = 0;  noise_cnt = pulse_cnt = 0;
-      }
-      bool save(Serializer& out) const override;
-      bool load(Serializer& in) override;
-      string name() const override { return "TIASound_AudioState"; }
-
-      bool clk_en, noise_fb, noise_cnt_4, pulse_cnt_hold;
-      uInt32 div_cnt, noise_cnt, pulse_cnt;
+      SET_TO_1    = 0x00,  // 0000
+      POLY4       = 0x01,  // 0001
+      DIV31_POLY4 = 0x02,  // 0010
+      POLY5_POLY4 = 0x03,  // 0011
+      PURE1       = 0x04,  // 0100
+      PURE2       = 0x05,  // 0101
+      DIV31_PURE  = 0x06,  // 0110
+      POLY5_2     = 0x07,  // 0111
+      POLY9       = 0x08,  // 1000
+      POLY5       = 0x09,  // 1001
+      DIV31_POLY5 = 0x0a,  // 1010
+      POLY5_POLY5 = 0x0b,  // 1011
+      DIV3_PURE   = 0x0c,  // 1100
+      DIV3_PURE2  = 0x0d,  // 1101
+      DIV93_PURE  = 0x0e,  // 1110
+      POLY5_DIV3  = 0x0f   // 1111
     };
-    bool updateAudioState(AudioState& state, uInt32 audf, uInt32* audc);
+
+    enum {
+      POLY4_SIZE = 0x000f,
+      POLY5_SIZE = 0x001f,
+      POLY9_SIZE = 0x01ff,
+      DIV3_MASK  = 0x0c,
+      AUDV_SHIFT = 10     // shift 2 positions for AUDV,
+                          // then another 8 for 16-bit sound
+    };
 
     enum ChannelMode {
       Hardware2Mono,    // mono sampling with 2 hardware channels
       Hardware2Stereo,  // stereo sampling with 2 hardware channels
       Hardware1         // mono/stereo sampling with only 1 hardware channel
     };
+
+  private:
+    // Structures to hold the 6 tia sound control bytes
+    uInt8 myAUDC[2];    // AUDCx (15, 16)
+    uInt8 myAUDF[2];    // AUDFx (17, 18)
+    Int16 myAUDV[2];    // AUDVx (19, 1A)
+
+    Int16 myVolume[2];  // Last output volume for each channel
+
+    uInt8 myP4[2];      // Position pointer for the 4-bit POLY array
+    uInt8 myP5[2];      // Position pointer for the 5-bit POLY array
+    uInt16 myP9[2];     // Position pointer for the 9-bit POLY array
+
+    uInt8 myDivNCnt[2]; // Divide by n counter. one for each channel
+    uInt8 myDivNMax[2]; // Divide by n maximum, one for each channel
+    uInt8 myDiv3Cnt[2]; // Div 3 counter, used for POLY5_DIV3 mode
+
     ChannelMode myChannelMode;
+    Int32  myOutputFrequency;
+    Int32  myOutputCounter;
+    uInt32 myVolumePercentage;
 
-    AudioState myAud0State; // storage for AUD0 state
-    AudioState myAud1State; // storage for AUD1 state
+    /*
+      Initialize the bit patterns for the polynomials (at runtime).
 
-    uInt16 myVolLUT[256][101]; // storage for volume look-up table
-    uInt32 myHWVol;            // actual output volume to use
+      The 4bit and 5bit patterns are the identical ones used in the tia chip.
+      Though the patterns could be packed with 8 bits per byte, using only a
+      single bit per byte keeps the math simple, which is important for
+      efficient processing.
+    */
+    uInt8 Bit4[POLY4_SIZE];
+    uInt8 Bit5[POLY5_SIZE];
+    uInt8 Bit9[POLY9_SIZE];
 
-    uInt32 myAudF0[2];      // audfx[0]: value at clock1-phase1
-    uInt32 myAudF1[2];      // audfx[1]: value at clock2-phase1
-    uInt32 myAudV0[2];      // audvx[0]: value at clock1-phase2 
-    uInt32 myAudV1[2];      // audvx[1]: value at clock2-phase2
-    uInt32 myAudC0[2][2];   // audcx[0][0]: value at clock1-phase1,
-                            // audcx[0][1]: value at clock1:phase2
-    uInt32 myAudC1[2][2];   // audcx[1][0]: value at clock2-phase1,
-                            // audcx[1][1]: value at clock2:phase2
-
-    // A value not equal to 0xff indicates that *both* cycles were missed
-    // on the previous line, and must be updated on the next line
-    uInt32 myDeferredC0, myDeferredC1;
-    uInt32 myDeferredF0, myDeferredF1;
-    uInt32 myDeferredV0, myDeferredV1;
-
-    // Contains the samples previously created by queueSamples()
-    // This will be periodically emptied by getSamples()
-    std::queue<uInt16> mySamples;
-
-    // The colour clock at which each cycle/phase ends
-    // Any writes to sound registers that occur after a respective
-    // cycle/phase are deferred until the next update interval
-    static constexpr uInt32
-      Cycle1Phase1 = 8, Cycle1Phase2 = 36, Cycle2Phase1 = 80, Cycle2Phase2 = 148;
+    /*
+      The 'Div by 31' counter is treated as another polynomial because of
+      the way it operates.  It does not have a 50% duty cycle, but instead
+      has a 13:18 ratio (of course, 13+18 = 31).  This could also be
+      implemented by using counters.
+    */
+    static const uInt8 Div31[POLY5_SIZE];
 
   private:
     // Following constructors and assignment operators not supported

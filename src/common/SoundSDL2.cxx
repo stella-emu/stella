@@ -24,7 +24,8 @@
 #include <cmath>
 #include <SDL.h>
 
-#include "TIA.hxx"
+#include "TIASnd.hxx"
+#include "TIATables.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
@@ -37,6 +38,11 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
   : Sound(osystem),
     myIsEnabled(false),
     myIsInitializedFlag(false),
+    myLastRegisterSetCycle(0),
+    myNumChannels(0),
+    myFragmentSizeLogBase2(0),
+    myFragmentSizeLogDiv1(0),
+    myFragmentSizeLogDiv2(0),
     myIsMuted(true),
     myVolume(100)
 {
@@ -47,12 +53,11 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
   // This fixes a bug most prevalent with ATI video cards in Windows,
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
-  SDL_memset(&desired, 0, sizeof(desired));
   desired.freq   = myOSystem.settings().getInt("freq");
   desired.format = AUDIO_S16SYS;
   desired.channels = 2;
   desired.samples  = myOSystem.settings().getInt("fragsize");
-  desired.callback = getSamples;
+  desired.callback = callback;
   desired.userdata = static_cast<void*>(this);
 
   ostringstream buf;
@@ -63,6 +68,24 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
     myOSystem.logMessage(buf.str(), 0);
     return;
   }
+
+  // Make sure the sample buffer isn't to big (if it is the sound code
+  // will not work so we'll need to disable the audio support)
+  if((float(myHardwareSpec.samples) / float(myHardwareSpec.freq)) >= 0.25)
+  {
+    buf << "WARNING: Sound device doesn't support realtime audio! Make "
+        << "sure a sound" << endl
+        << "         server isn't running.  Audio is disabled." << endl;
+    myOSystem.logMessage(buf.str(), 0);
+
+    SDL_CloseAudio();
+    return;
+  }
+
+  // Pre-compute fragment-related variables as much as possible
+  myFragmentSizeLogBase2 = log(myHardwareSpec.samples) / log(2.0);
+  myFragmentSizeLogDiv1 = myFragmentSizeLogBase2 / 60.0;
+  myFragmentSizeLogDiv2 = (myFragmentSizeLogBase2 - 1) / 60.0;
 
   myIsInitializedFlag = true;
   SDL_PauseAudio(1);
@@ -76,7 +99,6 @@ SoundSDL2::~SoundSDL2()
   // Close the SDL audio system if it's initialized
   if(myIsInitializedFlag)
   {
-//FIXME    SDL_PauseAudio(1);
     SDL_CloseAudio();
     myIsEnabled = myIsInitializedFlag = false;
   }
@@ -92,7 +114,7 @@ void SoundSDL2::setEnabled(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::open(bool stereo)
+void SoundSDL2::open()
 {
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
   myIsEnabled = false;
@@ -104,8 +126,9 @@ void SoundSDL2::open(bool stereo)
   }
 
   // Now initialize the TIASound object which will actually generate sound
+  myTIASound.outputFrequency(myHardwareSpec.freq);
   const string& chanResult =
-      myOSystem.console().tia().sound().channels(myHardwareSpec.channels, stereo);
+      myTIASound.channels(myHardwareSpec.channels, myNumChannels == 2);
 
   // Adjust volume to that defined in settings
   myVolume = myOSystem.settings().getInt("volume");
@@ -124,7 +147,7 @@ void SoundSDL2::open(bool stereo)
 
   // And start the SDL sound subsystem ...
   myIsEnabled = true;
-  SDL_PauseAudio(0);//myIsMuted ? 1 : 0);
+  mute(false);
 
   myOSystem.logMessage("SoundSDL2::open finished", 2);
 }
@@ -136,8 +159,9 @@ void SoundSDL2::close()
   {
     myIsEnabled = false;
     SDL_PauseAudio(1);
-    if(myOSystem.hasConsole())
-      myOSystem.console().tia().sound().reset();
+    myLastRegisterSetCycle = 0;
+    myTIASound.reset();
+    myRegWriteQueue.clear();
     myOSystem.logMessage("SoundSDL2::close", 2);
   }
 }
@@ -148,10 +172,7 @@ void SoundSDL2::mute(bool state)
   if(myIsInitializedFlag)
   {
     myIsMuted = state;
-    if(myOSystem.hasConsole())
-      myOSystem.console().tia().sound().volume(myIsMuted ? 0 : myVolume);
-
-    //    SDL_PauseAudio(myIsMuted ? 1 : 0);
+    SDL_PauseAudio(myIsMuted ? 1 : 0);
   }
 }
 
@@ -161,21 +182,23 @@ void SoundSDL2::reset()
   if(myIsInitializedFlag)
   {
     SDL_PauseAudio(1);
-    if(myOSystem.hasConsole())
-      myOSystem.console().tia().sound().reset();
-//    mute(myIsMuted);
+    myLastRegisterSetCycle = 0;
+    myTIASound.reset();
+    myRegWriteQueue.clear();
+    mute(myIsMuted);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::setVolume(uInt32 volume)
+void SoundSDL2::setVolume(Int32 percent)
 {
-  if(myIsInitializedFlag && (volume <= 100))
+  if(myIsInitializedFlag && (percent >= 0) && (percent <= 100))
   {
-    myOSystem.settings().setValue("volume", volume);
-    myVolume = volume;
-    if(myOSystem.hasConsole())
-      myOSystem.console().tia().sound().volume(volume);
+    myOSystem.settings().setValue("volume", percent);
+    SDL_LockAudio();
+    myVolume = percent;
+    myTIASound.volume(percent);
+    SDL_UnlockAudio();
   }
 }
 
@@ -206,25 +229,52 @@ void SoundSDL2::adjustVolume(Int8 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::getSamples(void* udata, uInt8* stream, int len)
+void SoundSDL2::adjustCycleCounter(Int32 amount)
 {
-  SoundSDL2* sound = static_cast<SoundSDL2*>(udata);
-  if(sound->myIsEnabled)
-  {
-    // The callback is requesting 8-bit data, but the TIA sound emulator
-    // deals in 16-bit data
-    // So, we need to convert the pointer and half the length
-    uInt16* buffer = reinterpret_cast<uInt16*>(stream);
-    Int32 left =
-      sound->myOSystem.console().tia().sound().getSamples(buffer, uInt32(len) >> 1);
-    if(left > 0)  // Is silence required?
-      SDL_memset(buffer, 0, uInt32(left) << 1);
-  }
-  else
-    SDL_memset(stream, 0, len);  // Write 'silence'
+  myLastRegisterSetCycle += amount;
 }
 
-#if 0
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::setChannels(uInt32 channels)
+{
+  if(channels == 1 || channels == 2)
+    myNumChannels = channels;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::setFrameRate(float framerate)
+{
+  // Recalculate since frame rate has changed
+  // FIXME - should we clear out the queue or adjust the values in it?
+  myFragmentSizeLogDiv1 = myFragmentSizeLogBase2 / framerate;
+  myFragmentSizeLogDiv2 = (myFragmentSizeLogBase2 - 1) / framerate;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::set(uInt16 addr, uInt8 value, Int32 cycle)
+{
+  SDL_LockAudio();
+
+  // First, calculate how many seconds would have past since the last
+  // register write on a real 2600
+  double delta = double(cycle - myLastRegisterSetCycle) / 1193191.66666667;
+
+  // Now, adjust the time based on the frame rate the user has selected. For
+  // the sound to "scale" correctly, we have to know the games real frame 
+  // rate (e.g., 50 or 60) and the currently emulated frame rate. We use these
+  // values to "scale" the time before the register change occurs.
+  RegWrite info;
+  info.addr = addr;
+  info.value = value;
+  info.delta = delta;
+  myRegWriteQueue.enqueue(info);
+
+  // Update last cycle counter to the current cycle
+  myLastRegisterSetCycle = cycle;
+
+  SDL_UnlockAudio();
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 {
@@ -305,6 +355,166 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
     }
   }
 }
-#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::callback(void* udata, uInt8* stream, int len)
+{
+  SoundSDL2* sound = static_cast<SoundSDL2*>(udata);
+  if(sound->myIsEnabled)
+  {
+    // The callback is requesting 8-bit (unsigned) data, but the TIA sound
+    // emulator deals in 16-bit (signed) data
+    // So, we need to convert the pointer and half the length
+    sound->processFragment(reinterpret_cast<Int16*>(stream), uInt32(len) >> 1);
+  }
+  else
+    SDL_memset(stream, 0, len);  // Write 'silence'
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL2::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    // Only get the TIA sound registers if sound is enabled
+    if(myIsInitializedFlag)
+    {
+      out.putByte(myTIASound.get(TIARegister::AUDC0));
+      out.putByte(myTIASound.get(TIARegister::AUDC1));
+      out.putByte(myTIASound.get(TIARegister::AUDF0));
+      out.putByte(myTIASound.get(TIARegister::AUDF1));
+      out.putByte(myTIASound.get(TIARegister::AUDV0));
+      out.putByte(myTIASound.get(TIARegister::AUDV1));
+    }
+    else
+      for(int i = 0; i < 6; ++i)
+        out.putByte(0);
+
+    out.putInt(myLastRegisterSetCycle);
+  }
+  catch(...)
+  {
+    myOSystem.logMessage("ERROR: SoundSDL2::save", 0);
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL2::load(Serializer& in)
+{
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    // Only update the TIA sound registers if sound is enabled
+    // Make sure to empty the queue of previous sound fragments
+    if(myIsInitializedFlag)
+    {
+      SDL_PauseAudio(1);
+      myRegWriteQueue.clear();
+      myTIASound.set(TIARegister::AUDC0, in.getByte());
+      myTIASound.set(TIARegister::AUDC1, in.getByte());
+      myTIASound.set(TIARegister::AUDF0, in.getByte());
+      myTIASound.set(TIARegister::AUDF1, in.getByte());
+      myTIASound.set(TIARegister::AUDV0, in.getByte());
+      myTIASound.set(TIARegister::AUDV1, in.getByte());
+      if(!myIsMuted) SDL_PauseAudio(0);
+    }
+    else
+      for(int i = 0; i < 6; ++i)
+        in.getByte();
+
+    myLastRegisterSetCycle = in.getInt();
+  }
+  catch(...)
+  {
+    myOSystem.logMessage("ERROR: SoundSDL2::load", 0);
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SoundSDL2::RegWriteQueue::RegWriteQueue(uInt32 capacity)
+  : myBuffer(make_ptr<RegWrite[]>(capacity)),
+    myCapacity(capacity),
+    mySize(0),
+    myHead(0),
+    myTail(0)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::RegWriteQueue::clear()
+{
+  myHead = myTail = mySize = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::RegWriteQueue::dequeue()
+{
+  if(mySize > 0)
+  {
+    myHead = (myHead + 1) % myCapacity;
+    --mySize;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+double SoundSDL2::RegWriteQueue::duration() const
+{
+  double duration = 0.0;
+  for(uInt32 i = 0; i < mySize; ++i)
+  {
+    duration += myBuffer[(myHead + i) % myCapacity].delta;
+  }
+  return duration;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::RegWriteQueue::enqueue(const RegWrite& info)
+{
+  // If an attempt is made to enqueue more than the queue can hold then
+  // we'll enlarge the queue's capacity.
+  if(mySize == myCapacity)
+    grow();
+
+  myBuffer[myTail] = info;
+  myTail = (myTail + 1) % myCapacity;
+  ++mySize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SoundSDL2::RegWrite& SoundSDL2::RegWriteQueue::front() const
+{
+  assert(mySize != 0);
+  return myBuffer[myHead];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 SoundSDL2::RegWriteQueue::size() const
+{
+  return mySize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::RegWriteQueue::grow()
+{
+  unique_ptr<RegWrite[]> buffer = make_ptr<RegWrite[]>(myCapacity*2);
+  for(uInt32 i = 0; i < mySize; ++i)
+    buffer[i] = myBuffer[(myHead + i) % myCapacity];
+
+  myHead = 0;
+  myTail = mySize;
+  myCapacity *= 2;
+
+  myBuffer = std::move(buffer);
+}
 
 #endif  // SOUND_SUPPORT
