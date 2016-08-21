@@ -237,6 +237,7 @@
     <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart0840Widget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart2KWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\Cart3EPlusWidget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart3EWidget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart3FWidget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart4A50Widget.cxx" />
@@ -283,6 +284,7 @@
     <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
+    <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
     <ClCompile Include="..\emucore\CartBFSC.cxx" />
@@ -492,6 +494,7 @@
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart2KWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\Cart3EPlusWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart3EWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart3FWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart4A50Widget.hxx" />
@@ -541,6 +544,7 @@
     <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
+    <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
     <ClInclude Include="..\emucore\CartBFSC.hxx" />
