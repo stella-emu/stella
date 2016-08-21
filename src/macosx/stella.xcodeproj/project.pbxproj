@@ -429,6 +429,10 @@
 		DCB20ECC1A0C50930048F595 /* atari_ntsc.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC91A0C50930048F595 /* atari_ntsc.cxx */; };
 		DCB20ECD1A0C50930048F595 /* atari_ntsc.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB20ECA1A0C50930048F595 /* atari_ntsc.hxx */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
+		DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */; };
+		DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */; };
+		DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */; };
+		DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */; };
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
 		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
 		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
@@ -989,6 +993,10 @@
 		DCB20ECA1A0C50930048F595 /* atari_ntsc.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = atari_ntsc.hxx; path = ../common/tv_filters/atari_ntsc.hxx; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MediaFactory.hxx; path = ../common/MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart3EPlusWidget.cxx; path = ../debugger/gui/Cart3EPlusWidget.cxx; sourceTree = "<group>"; };
+		DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart3EPlusWidget.hxx; path = ../debugger/gui/Cart3EPlusWidget.hxx; sourceTree = "<group>"; };
+		DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart3EPlus.cxx; path = ../emucore/Cart3EPlus.cxx; sourceTree = "<group>"; };
+		DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart3EPlus.hxx; path = ../emucore/Cart3EPlus.hxx; sourceTree = "<group>"; };
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527CB10B9DA19005E1287 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/M6502.hxx; sourceTree = SOURCE_ROOT; };
@@ -1198,6 +1206,8 @@
 				DCCF4ACF14B7E6C300814FAB /* BoosterWidget.hxx */,
 				DCAAE5B21715887B0080BB82 /* Cart2KWidget.cxx */,
 				DCAAE5B31715887B0080BB82 /* Cart2KWidget.hxx */,
+				DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */,
+				DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */,
 				DC676A251729A0B000E4E73D /* Cart3EWidget.cxx */,
 				DC676A261729A0B000E4E73D /* Cart3EWidget.hxx */,
 				DCAAE5B41715887B0080BB82 /* Cart3FWidget.cxx */,
@@ -1404,6 +1414,8 @@
 				2DE2DF150627AE07006BEC99 /* Cart2K.hxx */,
 				2D9555D90880E78000466554 /* Cart3E.cxx */,
 				2D9555DA0880E78000466554 /* Cart3E.hxx */,
+				DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */,
+				DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */,
 				2DE2DF160627AE07006BEC99 /* Cart3F.cxx */,
 				2DE2DF170627AE07006BEC99 /* Cart3F.hxx */,
 				DCD56D360B247D920092F9F8 /* Cart4A50.cxx */,
@@ -1916,6 +1928,7 @@
 				DC932D480F278A5200FEFEFC /* TIATables.hxx in Headers */,
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
+				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
@@ -1955,6 +1968,7 @@
 				DCCF4AD214B7E6C300814FAB /* BoosterWidget.hxx in Headers */,
 				DCCF4AD314B7E6C300814FAB /* NullControlWidget.hxx in Headers */,
 				DCCF4ADD14B9433100814FAB /* GenesisWidget.hxx in Headers */,
+				DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */,
 				DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */,
 				DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */,
 				DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */,
@@ -2173,6 +2187,7 @@
 				DC5E473B19EC9A14000E45DF /* EventJoyHandler.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
+				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
 				DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */,
 				2D9174B909BA90380026E9FF /* ProgressDialog.cxx in Sources */,
 				2D9174BA09BA90380026E9FF /* ScrollBarWidget.cxx in Sources */,
@@ -2312,6 +2327,7 @@
 				DCAAE5E21715887B0080BB82 /* CartF0Widget.cxx in Sources */,
 				DCAAE5E41715887B0080BB82 /* CartF4SCWidget.cxx in Sources */,
 				DC2AADB0194F389C0026C7A4 /* TIASurface.cxx in Sources */,
+				DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */,
 				DCAAE5E61715887B0080BB82 /* CartF4Widget.cxx in Sources */,
 				DCAAE5E81715887B0080BB82 /* CartF6SCWidget.cxx in Sources */,
 				DCAAE5EA1715887B0080BB82 /* CartF6Widget.cxx in Sources */,
