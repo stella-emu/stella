@@ -14,6 +14,9 @@
 
 4.7.2 to 4.8: (xxx. xx, 2016)
 
+  * Added preliminary support for the 3E+ bankswitching scheme, developed
+    by Thomas Jentzsch.
+
   * Fixed HMOVE positioning bug that occurred under certain circumstances.
     Thanks to Omegamatrix of AtariAge for the bug report and patch to fix
     the issue.

@@ -17,8 +17,8 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGEDASH_HXX
-#define CARTRIDGEDASH_HXX
+#ifndef CARTRIDGE_3EPLUS_HXX
+#define CARTRIDGE_3EPLUS_HXX
 
 class System;
 
@@ -26,108 +26,26 @@ class System;
 #include "Cart.hxx"
 
 #ifdef DEBUGGER_SUPPORT
-class CartridgeDASHWidget;
-  #include "CartDASHWidget.hxx"
+class Cartridge3EPlusWidget;
+  #include "Cart3EPlusWidget.hxx"
 #endif
 
 /**
- Cartridge class for new tiling engine "Boulder Dash" format games with RAM.
- Kind of a combination of 3F and 3E, with better switchability.
- B.Watson's Cart3E was used as a template for building this implementation.
+  Cartridge class from Thomas Jentzsch, mostly based on the 'DASH' scheme
+  with the following changes:
 
- The destination bank (0-3) is held in the top bits of the value written to
- $3E (for RAM switching) or $3F (for ROM switching). The low 6 bits give
- the actual bank number (0-63) corresponding to 512 byte blocks for RAM and
- 1024 byte blocks for ROM. The maximum size is therefore 32K RAM and 64K ROM.
+  RAM areas:
+    - read $x000, write $x200
+    - read $x400, write $x600
+    - read $x800, write $xa00
+    - read $xc00, write $xe00
 
- D7D6         indicate the bank number (0-3)
- D5D4D3D2D1D0 indicate the actual # (0-63) from the image/ram
+ @author  Thomas Jentzsch and Stephen Anthony
+*/
 
- ROM:
-
- Note: in descriptions $F000 is equivalent to $1000 -- that is, we only deal
- with the low 13 bits of addressing. Stella code uses $1000, I'm used to $F000
- So, mask with top bits clear :) when reading this document.
-
- In this scheme, the 4K address space is broken into four 1K ROM segments.
- living at 0x1000, 0x1400, 0x1800, 0x1C00 (or, same thing, 0xF000... etc.),
- and four 512 byte RAM segments, living at 0x1000, 0x1200, 0x1400, 0x1600
- with write-mirrors +0x800 of these.  The last 1K ROM ($FC00-$FFFF) segment
- in the 6502 address space (ie: $1C00-$1FFF) is initialised to point to the
- FIRST 1K of the ROM image, so the reset vectors must be placed at the
- end of the first 1K in the ROM image. Note, this is DIFFERENT to 3E which
- switches in the UPPER bank and this bank is fixed.  This allows variable sized
- ROM without having to detect size. First bank (0) in ROM is the default fixed
- bank mapped to $FC00.
-
- The system requires the reset vectors to be valid on a reset, so either the
- hardware first switches in the first bank, or the programmer must ensure
- that the reset vector is present in ALL ROM banks which might be switched
- into the last bank area.  Currently the latter (programmer onus) is required,
- but it would be nice for the cartridge hardware to auto-switch on reset.
-
- ROM switching (write of block+bank number to $3F) D7D6 upper 2 bits of bank #
- indicates the destination segment (0-3, corresponding to $F000, $F400, $F800,
- $FC00), and lower 6 bits indicate the 1K bank to switch in.  Can handle 64
- x 1K ROM banks (64K total).
-
- D7 D6 D5D4D3D2D1D0
- 0  0	  x x x x x x		switch a 1K ROM bank xxxxx to $F000
- 0  1					        switch a 1K ROM bank xxxxx to $F400
- 1  0					        switch a 1K ROM bank xxxxx to $F800
- 1  1					        switch a 1K ROM bank xxxxx to $FC00
-
- RAM switching (write of segment+bank number to $3E) with D7D6 upper 2 bits of
- bank # indicates the destination RAM segment (0-3, corresponding to $F000,
- $F200, $F400, $F600). Note that this allows contiguous 2K of RAM to be
- configured by setting 4 consecutive RAM segments each 512 bytes with
- consecutive addresses.  However, as the write address of RAM is +0x800, this
- invalidates ROM access as described below.
-
- can handle 64 x 512 byte RAM banks (32K total)
-
- D7 D6 D5D4D3D2D1D0
- 0  0   x x x x x x		switch a 512 byte RAM bank xxxxx to $F000 with write @ $F800
- 0  1					        switch a 512 byte RAM bank xxxxx to $F200 with write @ $FA00
- 1  0					        switch a 512 byte RAM bank xxxxx to $F400 with write @ $FC00
- 1  1					        switch a 512 byte RAM bank xxxxx to $F600 with write @ $FE00
-
- It is possible to switch multiple RAM banks and ROM banks together
-
- For example,
- F000-F1FF   RAM bank A (512 byte READ)
- F200-F3FF   high 512 bytes of ROM bank previously loaded at F000
- F400        ROM bank 0 (1K)
- F800        RAM bank A (512 byte WRITE)
- FA00-FBFF   high 512 bytes of ROM bank previously loaded at F400
- FC00        ROM bank 1
-
- This example shows 512 bytes of RAM, and 2 1K ROM banks and two 512 byte ROM
- bank halves.
-
- Switching RAM blocks (D7D6 of $3E) partially invalidates ROM blocks, as below...
-
- RAM block    Invalidates ROM block
- 0        0 (lower half), 2 (lower half)
- 1        0 (upper half), 2 (upper half)
- 2        1 (lower half), 3 (upper half)
- 3        1 (upper half), 3 (lower half)
-
- For example, RAM block 1 uses address $F200-$F3FF and $FA00-$FBFF
- ROM block 0 uses address $F000-$F3FF, and ROM block 2 uses address $F800-$FBFF
- Switching in RAM block 1 makes F200-F3FF ROM inaccessible, however F000-F1FF is
- still readable.  So, care must be paid.
-
- This crazy RAM layout is useful as it allows contiguous RAM to be switched in,
- up to 2K in one sequentially accessible block. This means you CAN have 2K of
- consecutive RAM (don't forget to copy your reset vectors!)
-
- @author  Andrew Davie
- */
-
-class CartridgeDASH: public Cartridge
+class Cartridge3EPlus: public Cartridge
 {
-  friend class CartridgeDASHWidget;
+  friend class Cartridge3EPlusWidget;
 
   public:
     /**
@@ -137,8 +55,8 @@ class CartridgeDASH: public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeDASH(const uInt8* image, uInt32 size, const Settings& settings);
-    virtual ~CartridgeDASH() = default;
+    Cartridge3EPlus(const uInt8* image, uInt32 size, const Settings& settings);
+    virtual ~Cartridge3EPlus() = default;
 
   public:
     /** Reset device to its power-on state */
@@ -190,7 +108,7 @@ class CartridgeDASH: public Cartridge
 
       @return The name of the object
     */
-    string name() const override { return "CartridgeDASH"; }
+    string name() const override { return "Cartridge3E+"; }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -200,7 +118,7 @@ class CartridgeDASH: public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h) override
     {
-      return new CartridgeDASHWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new Cartridge3EPlusWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 
@@ -259,7 +177,7 @@ class CartridgeDASH: public Cartridge
 
     static constexpr uInt16 ROM_BANK_COUNT = 64;
 
-    static constexpr uInt16 RAM_WRITE_OFFSET = 0x800;
+    static constexpr uInt16 RAM_WRITE_OFFSET = 0x200;
 
     BytePtr myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
     uInt32  mySize;   // Size of the ROM image
@@ -267,11 +185,11 @@ class CartridgeDASH: public Cartridge
 
   private:
     // Following constructors and assignment operators not supported
-    CartridgeDASH() = delete;
-    CartridgeDASH(const CartridgeDASH&) = delete;
-    CartridgeDASH(CartridgeDASH&&) = delete;
-    CartridgeDASH& operator=(const CartridgeDASH&) = delete;
-    CartridgeDASH& operator=(CartridgeDASH&&) = delete;
+    Cartridge3EPlus() = delete;
+    Cartridge3EPlus(const Cartridge3EPlus&) = delete;
+    Cartridge3EPlus(Cartridge3EPlus&&) = delete;
+    Cartridge3EPlus& operator=(const Cartridge3EPlus&) = delete;
+    Cartridge3EPlus& operator=(Cartridge3EPlus&&) = delete;
 };
 
 #endif

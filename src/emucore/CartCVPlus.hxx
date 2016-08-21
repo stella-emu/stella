@@ -165,7 +165,7 @@ class CartridgeCVPlus : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    unique_ptr<uInt8[]> myImage;
+    BytePtr myImage;
 
     // The 1024 bytes of RAM
     uInt8 myRAM[1024];

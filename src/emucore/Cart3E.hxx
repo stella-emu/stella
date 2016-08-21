@@ -181,7 +181,7 @@ class Cartridge3E : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    unique_ptr<uInt8[]> myImage;
+    BytePtr myImage;
 
     // RAM contents. For now every ROM gets all 32K of potential RAM
     uInt8 myRAM[32 * 1024];

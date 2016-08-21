@@ -139,7 +139,7 @@ class CartridgeCV : public Cartridge
   private:
     // Pointer to the initial RAM data from the cart
     // This doesn't always exist, so we don't pre-allocate it
-    unique_ptr<uInt8[]> myInitialRAM;
+    BytePtr myInitialRAM;
 
     // Initial size of the cart data
     uInt32 mySize;

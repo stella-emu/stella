@@ -21,10 +21,10 @@
 
 #include "System.hxx"
 #include "TIA.hxx"
-#include "CartDASH.hxx"
+#include "Cart3EPlus.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& settings)
+Cartridge3EPlus::Cartridge3EPlus(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings),
     mySize(size)
 {
@@ -41,7 +41,7 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDASH::reset()
+void Cartridge3EPlus::reset()
 {
   // Initialize RAM
   if (mySettings.getBool("ramrandom"))
@@ -65,7 +65,7 @@ void CartridgeDASH::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDASH::install(System& system)
+void Cartridge3EPlus::install(System& system)
 {
   mySystem = &system;
 
@@ -94,7 +94,7 @@ void CartridgeDASH::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeDASH::peek(uInt16 address)
+uInt8 Cartridge3EPlus::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
   address &= 0x0FFF;    // restrict to 4K address range
@@ -131,7 +131,7 @@ uInt8 CartridgeDASH::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDASH::poke(uInt16 address, uInt8 value)
+bool Cartridge3EPlus::poke(uInt16 address, uInt8 value)
 {
   bool changed = false;
 
@@ -154,12 +154,12 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDASH::bankRAM(uInt8 bank)
+bool Cartridge3EPlus::bankRAM(uInt8 bank)
 {
   if (bankLocked())  // debugger can lock RAM
     return false;
 
-  // Each RAM bank uses two slots, separated by 0x800 in memory -- one read, one write.
+  // Each RAM bank uses two slots, separated by 0x200 in memory -- one read, one write.
   bankRAMSlot(bank | BITMASK_ROMRAM | 0);
   bankRAMSlot(bank | BITMASK_ROMRAM | BITMASK_LOWERUPPER);
 
@@ -170,31 +170,34 @@ bool CartridgeDASH::bankRAM(uInt8 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDASH::bankRAMSlot(uInt16 bank)
+void Cartridge3EPlus::bankRAMSlot(uInt16 bank)
 {
   uInt16 bankNumber = (bank >> BANK_BITS) & 3;  // which bank # we are switching TO (BITS D6,D7) to 512 byte block
   uInt16 currentBank = bank & BIT_BANK_MASK;    // Wrap around/restrict to valid range
   bool upper = bank & BITMASK_LOWERUPPER;       // is this the read or write port
 
   uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;  // Effectively * 512 bytes
-
+cerr << "raw bank=" << std::dec << currentBank << endl
+     << "startCurrentBank=$" << std::hex << startCurrentBank << endl;
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
 
   if(upper)    // We're mapping the write port
   {
-    bankInUse[bankNumber + 4] = Int16(bank);
+    bankInUse[bankNumber * 2 + 1] = Int16(bank);
     access.type = System::PA_WRITE;
   }
   else         // We're mapping the read port
   {
-    bankInUse[bankNumber] = Int16(bank);
+    bankInUse[bankNumber * 2] = Int16(bank);
     access.type = System::PA_READ;
   }
 
-  uInt32 start = 0x1000 + (bankNumber << RAM_BANK_TO_POWER) + (upper ? RAM_WRITE_OFFSET : 0);
+  uInt32 start = 0x1000 + (bankNumber << (RAM_BANK_TO_POWER+1)) + (upper ? RAM_WRITE_OFFSET : 0);
   uInt32 end = start + RAM_BANK_SIZE - 1;
 
+cerr << "bank RAM: " << bankNumber << " -> " << (bankNumber * 2 + (upper ? 1 : 0)) << (upper ? " (W)" : " (R)") << endl
+     << "start=" << std::hex << start << ", end=" << end << endl << endl;
   for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
   {
     if(upper)
@@ -208,7 +211,7 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDASH::bankROM(uInt8 bank)
+bool Cartridge3EPlus::bankROM(uInt8 bank)
 {
   if (bankLocked())  // debugger can lock ROM
     return false;
@@ -226,7 +229,7 @@ bool CartridgeDASH::bankROM(uInt8 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDASH::bankROMSlot(uInt16 bank)
+void Cartridge3EPlus::bankROMSlot(uInt16 bank)
 {
   uInt16 bankNumber = (bank >> BANK_BITS) & 3;    // which bank # we are switching TO (BITS D6,D7)
   uInt16 currentBank = bank & BIT_BANK_MASK;      // Wrap around/restrict to valid range
@@ -251,7 +254,7 @@ void CartridgeDASH::bankROMSlot(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDASH::initializeBankState()
+void Cartridge3EPlus::initializeBankState()
 {
   // Switch in each 512b slot
   for(uInt32 b = 0; b < 8; b++)
@@ -273,7 +276,7 @@ void CartridgeDASH::initializeBankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDASH::patch(uInt16 address, uInt8 value)
+bool Cartridge3EPlus::patch(uInt16 address, uInt8 value)
 {
 #if 0
   // Patch the cartridge ROM (for debugger)
@@ -310,14 +313,14 @@ bool CartridgeDASH::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeDASH::getImage(int& size) const
+const uInt8* Cartridge3EPlus::getImage(int& size) const
 {
   size = mySize;
   return myImage.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDASH::save(Serializer& out) const
+bool Cartridge3EPlus::save(Serializer& out) const
 {
   try
   {
@@ -328,14 +331,14 @@ bool CartridgeDASH::save(Serializer& out) const
   }
   catch (...)
   {
-    cerr << "ERROR: CartridgeDASH::save" << endl;
+    cerr << "ERROR: Cartridge3EPlus::save" << endl;
     return false;
   }
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDASH::load(Serializer& in)
+bool Cartridge3EPlus::load(Serializer& in)
 {
   try
   {
@@ -347,7 +350,7 @@ bool CartridgeDASH::load(Serializer& in)
   }
   catch (...)
   {
-    cerr << "ERROR: CartridgeDASH::load" << endl;
+    cerr << "ERROR: Cartridge3EPlus::load" << endl;
     return false;
   }
 

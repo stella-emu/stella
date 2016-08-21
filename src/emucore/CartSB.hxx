@@ -152,7 +152,7 @@ class CartridgeSB : public Cartridge
 
   private:
     // The 128-256K ROM image and size of the cartridge
-    unique_ptr<uInt8[]> myImage;
+    BytePtr myImage;
     uInt32 mySize;
 
     // Indicates which bank is currently active

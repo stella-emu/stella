@@ -408,10 +408,10 @@ class TIA : public Device
     Settings& mySettings;
 
     // Pointer to the current frame buffer
-    unique_ptr<uInt8[]> myCurrentFrameBuffer;
+    BytePtr myCurrentFrameBuffer;
 
     // Pointer to the previous frame buffer
-    unique_ptr<uInt8[]> myPreviousFrameBuffer;
+    BytePtr myPreviousFrameBuffer;
 
     // Pointer to the next pixel that will be drawn in the current frame buffer
     uInt8* myFramePointer;

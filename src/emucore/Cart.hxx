@@ -190,7 +190,7 @@ class Cartridge : public Device
       const char* type;
       const char* desc;
     };
-    enum { ourNumBSTypes = 47 };
+    enum { ourNumBSTypes = 48 };
     static BankswitchType ourBSList[ourNumBSTypes];
 
   protected:
@@ -275,6 +275,11 @@ class Cartridge : public Device
       Returns true if the image is probably a 3E bankswitching cartridge
     */
     static bool isProbably3E(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a 3E+ bankswitching cartridge
+    */
+    static bool isProbably3EPlus(const uInt8* image, uInt32 size);
 
     /**
       Returns true if the image is probably a 3F bankswitching cartridge
@@ -383,7 +388,7 @@ class Cartridge : public Device
 
     // The array containing information about every byte of ROM indicating
     // whether it is used as code.
-    unique_ptr<uInt8[]> myCodeAccessBase;
+    BytePtr myCodeAccessBase;
 
   private:
     // If myBankLocked is true, ignore attempts at bankswitching. This is used

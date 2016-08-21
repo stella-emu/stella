@@ -25,6 +25,7 @@
 #include "Cart0840.hxx"
 #include "Cart2K.hxx"
 #include "Cart3E.hxx"
+#include "Cart3EPlus.hxx"
 #include "Cart3F.hxx"
 #include "Cart4A50.hxx"
 #include "Cart4K.hxx"
@@ -190,6 +191,8 @@ unique_ptr<Cartridge> Cartridge::create(const BytePtr& img, uInt32 size,
     cartridge = make_ptr<Cartridge2K>(image, size, settings);
   else if(type == "3E")
     cartridge = make_ptr<Cartridge3E>(image, size, settings);
+  else if(type == "3E+")
+    cartridge = make_ptr<Cartridge3EPlus>(image, size, settings);
   else if(type == "3F")
     cartridge = make_ptr<Cartridge3F>(image, size, settings);
   else if(type == "4A50")
@@ -527,6 +530,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   // Variable sized ROM formats are independent of image size and come last
   if(isProbablyDASH(image, size))
     type = "DASH";
+  else if(isProbably3EPlus(image, size))
+    type = "3E+";
   else if(isProbablyMDM(image, size))
     type = "MDM";
 
@@ -644,6 +649,14 @@ bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
   // in address 3E using 'STA $3E', commonly followed by an
   // immediate mode LDA
   uInt8 signature[] = { 0x85, 0x3E, 0xA9, 0x00 };  // STA $3E; LDA #$00
+  return searchForBytes(image, size, signature, 4, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably3EPlus(const uInt8* image, uInt32 size)
+{
+  // 3E+ cart is identified key 'TJ3E' in the ROM
+  uInt8 signature[] = { 'T', 'J', '3', 'E' };
   return searchForBytes(image, size, signature, 4, 1);
 }
 
@@ -974,6 +987,7 @@ Cartridge::BankswitchType Cartridge::ourBSList[ourNumBSTypes] = {
   { "128IN1",   "128IN1 Multicart (256/512K)"   },
   { "2K",       "2K (64-2048 bytes Atari)"      },
   { "3E",       "3E (32K Tigervision)"          },
+  { "3E+",      "3E+ (TJ modified DASH)"        },
   { "3F",       "3F (512K Tigervision)"         },
   { "4A50",     "4A50 (64K 4A50 + ram)"         },
   { "4K",       "4K (4K Atari)"                 },

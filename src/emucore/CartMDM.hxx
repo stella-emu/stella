@@ -163,7 +163,7 @@ class CartridgeMDM : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    unique_ptr<uInt8[]> myImage;
+    BytePtr myImage;
 
     // Size of the ROM image
     uInt32 mySize;

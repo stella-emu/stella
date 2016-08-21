@@ -198,7 +198,7 @@ class CartridgeAR : public Cartridge
     uInt32 mySize;
 
     // All of the 8448 byte loads associated with the game 
-    unique_ptr<uInt8[]> myLoadImages;
+    BytePtr myLoadImages;
 
     // Indicates how many 8448 loads there are
     uInt8 myNumberOfLoadImages;

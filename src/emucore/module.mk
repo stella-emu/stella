@@ -7,6 +7,7 @@ MODULE_OBJS := \
 	src/emucore/Cart0840.o \
 	src/emucore/Cart2K.o \
 	src/emucore/Cart3E.o \
+	src/emucore/Cart3EPlus.o \
 	src/emucore/Cart3F.o \
 	src/emucore/Cart4A50.o \
 	src/emucore/Cart4K.o \
