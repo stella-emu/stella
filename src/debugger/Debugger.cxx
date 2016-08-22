@@ -255,7 +255,9 @@ const string Debugger::invIfChanged(int reg, int oldReg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::reset()
 {
+  unlockBankswitchState();
   mySystem.reset();
+  lockBankswitchState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
