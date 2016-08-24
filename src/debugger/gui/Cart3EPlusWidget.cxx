@@ -209,27 +209,8 @@ string Cartridge3EPlusWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlusWidget::updateUIState()
 {
-  // Set contents for actual banks number and type
-  for(int i = 0; i < 4; ++i)
-  {
-    uInt16 segment = myCart.segmentInUse[i];
-
-    if(segment == myCart.BANK_UNDEFINED)
-    {
-      myBankNumber[i]->clearSelection();
-      myBankType[i]->clearSelection();
-    }
-    else
-    {
-      int bankno = segment & myCart.BIT_BANK_MASK;
-      const char* banktype = segment & myCart.BITMASK_ROMRAM ? "RAM" : "ROM";
-
-      myBankNumber[i]->setSelected(bankno);
-      myBankType[i]->setSelected(banktype);
-    }
-  }
-
-  // Set description for each 512b bank state
+  // Set description for each 512b bank state (@ each index)
+  // Set contents for actual banks number and type (@ each even index)
   for(int i = 0; i < 8; ++i)
   {
     uInt16 bank = myCart.bankInUse[i];
@@ -237,6 +218,11 @@ void Cartridge3EPlusWidget::updateUIState()
     if(bank == myCart.BANK_UNDEFINED)  // never accessed
     {
       myBankState[i]->setText("Undefined");
+      if(i % 2 == 0)
+      {
+        myBankNumber[i/2]->clearSelection();
+        myBankType[i/2]->clearSelection();
+      }
     }
     else
     {
@@ -257,6 +243,12 @@ void Cartridge3EPlusWidget::updateUIState()
               << (bankno << myCart.RAM_BANK_TO_POWER) << " (R)";
           myBankState[i]->setText(buf.str());
         }
+
+        if(i % 2 == 0)
+        {
+          myBankNumber[i/2]->setSelected(bankno);
+          myBankType[i/2]->setSelected("RAM");
+        }
       }
       else
       {
@@ -271,6 +263,12 @@ void Cartridge3EPlusWidget::updateUIState()
           buf << "ROM " << bankno << " @ $" << Common::Base::HEX4
               << (bankno << myCart.RAM_BANK_TO_POWER);
           myBankState[i]->setText(buf.str());
+        }
+
+        if(i % 2 == 0)
+        {
+          myBankNumber[i/2]->setSelected(bankno);
+          myBankType[i/2]->setSelected("ROM");
         }
       }
     }

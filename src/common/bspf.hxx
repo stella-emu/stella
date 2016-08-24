@@ -76,6 +76,7 @@ using std::array;
 using std::vector;
 using std::make_pair;
 using std::runtime_error;
+using std::memcpy;
 
 // Common array types
 using IntArray = std::vector<Int32>;

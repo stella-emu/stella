@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "CartE7.hxx"
 
@@ -38,12 +36,7 @@ CartridgeE7::CartridgeE7(const uInt8* image, uInt32 size, const Settings& settin
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 2048; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 2048);
+  initializeRAM(myRAM, 2048);
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);

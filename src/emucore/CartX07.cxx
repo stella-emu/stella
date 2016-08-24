@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"

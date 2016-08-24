@@ -17,15 +17,12 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "Cart2K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size, const Settings& settings)
-  : Cartridge(settings),
-    myImage(nullptr)
+  : Cartridge(settings)
 {
   // Size can be a maximum of 2K
   if(size > 2048) size = 2048;

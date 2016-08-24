@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "TIA.hxx"
 #include "CartDASH.hxx"
@@ -43,16 +41,11 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::reset()
 {
-  // Initialize RAM
-  if (mySettings.getBool("ramrandom"))
-    for (uInt32 i = 0; i < RAM_TOTAL_SIZE; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, RAM_TOTAL_SIZE);
+  initializeRAM(myRAM, RAM_TOTAL_SIZE);
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for (uInt32 b = 0; b < 8; b++)
+  for(uInt32 b = 0; b < 8; b++)
   {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
     segmentInUse[b/2] = BANK_UNDEFINED;

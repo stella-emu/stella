@@ -210,6 +210,15 @@ class Cartridge : public Device
     */
     void createCodeAccessBase(uInt32 size);
 
+    /**
+      Fill the given RAM array with (possibly random) data.
+
+      @param arr  Pointer to the RAM array
+      @param size The size of the RAM array
+      @param val  If provided, the value to store in the RAM array
+    */
+    void initializeRAM(uInt8* arr, uInt32 size, uInt8 val = 0) const;
+
   private:
     /**
       Get an image pointer and size for a ROM that is part of a larger,

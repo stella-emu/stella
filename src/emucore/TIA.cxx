@@ -17,10 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-
 #include "bspf.hxx"
 
 #ifdef DEBUGGER_SUPPORT

@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
@@ -30,7 +28,6 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
                                    const Settings& settings)
   : Cartridge(settings),
-    myImage(nullptr),
     myFastFetch(false),
     myLDAimmediate(false),
     myParameterPointer(0),

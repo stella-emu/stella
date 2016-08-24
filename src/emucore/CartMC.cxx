@@ -18,7 +18,6 @@
 //============================================================================
 
 #include <cassert>
-#include <cstring>
 
 #include "System.hxx"
 #include "CartMC.hxx"
@@ -49,12 +48,7 @@ CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 32768; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 32768);
+  initializeRAM(myRAM, 32768);
 
   myBankChanged = true;
 }

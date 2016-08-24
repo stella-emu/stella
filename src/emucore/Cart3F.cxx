@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "TIA.hxx"
 #include "Cart3F.hxx"
@@ -27,7 +25,6 @@
 Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    myImage(nullptr),
     mySize(size),
     myCurrentBank(0)
 {
@@ -98,9 +95,7 @@ bool Cartridge3F::poke(uInt16 address, uInt8 value)
 
   // Switch banks if necessary
   if(address <= 0x003F)
-  {
     bank(value);
-  }
 
   // Pass the poke through to the TIA. In a real Atari, both the cart and the
   // TIA see the address lines, and both react accordingly. In Stella, each
@@ -114,7 +109,8 @@ bool Cartridge3F::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3F::bank(uInt16 bank)
 {
-  if(bankLocked()) return false;
+  if(bankLocked())
+    return false;
 
   // Make sure the bank they're asking for is reasonable
   if((uInt32(bank) << 11) < mySize)

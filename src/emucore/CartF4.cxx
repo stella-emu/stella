@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "Random.hxx"
 #include "System.hxx"
 #include "CartF4.hxx"

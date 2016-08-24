@@ -18,8 +18,6 @@
 //============================================================================
 
 #include <fstream>
-#include <cstring>
-#include <sstream>
 #include <cmath>
 
 #include "bspf.hxx"

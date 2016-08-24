@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "TIA.hxx"
 #include "Cart3E.hxx"
@@ -27,7 +25,6 @@
 Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    myImage(nullptr),
     mySize(size),
     myCurrentBank(0)
 {
@@ -45,12 +42,7 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 32768; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 32768);
+  initializeRAM(myRAM, 32768);
 
   // We'll map the startup bank into the first segment upon reset
   bank(myStartBank);

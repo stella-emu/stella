@@ -17,15 +17,12 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "CartMDM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDM::CartridgeMDM(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings),
-    myImage(nullptr),
     mySize(size),
     myCurrentBank(0),
     myBankingDisabled(false)

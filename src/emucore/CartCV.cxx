@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "CartCV.hxx"
 
@@ -26,7 +24,6 @@
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    myInitialRAM(nullptr),
     mySize(size)
 {
   if(mySize == 2048)
@@ -58,14 +55,7 @@ void CartridgeCV::reset()
     memcpy(myRAM, myInitialRAM.get(), 1024);
   }
   else
-  {
-    // Initialize RAM
-    if(mySettings.getBool("ramrandom"))
-      for(uInt32 i = 0; i < 1024; ++i)
-        myRAM[i] = mySystem->randGenerator().next();
-    else
-      memset(myRAM, 0, 1024);
-  }
+    initializeRAM(myRAM, 1024);
 
   myBankChanged = true;
 }

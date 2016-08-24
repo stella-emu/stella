@@ -17,9 +17,7 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
 #include <cstdio>
-#include <cstring>
 #include <fstream>
 
 #include "System.hxx"

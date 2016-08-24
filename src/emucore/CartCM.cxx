@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "CompuMate.hxx"
 #include "System.hxx"
 #include "M6532.hxx"
@@ -41,12 +39,7 @@ CartridgeCM::CartridgeCM(const uInt8* image, uInt32 size, const Settings& settin
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCM::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 2048; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 2048);
+  initializeRAM(myRAM, 2048);
 
   // Upon reset we switch to the startup bank
   bank(myStartBank);

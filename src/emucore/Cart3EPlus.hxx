@@ -155,7 +155,6 @@ class Cartridge3EPlus: public Cartridge
 
     static constexpr uInt16 BANK_UNDEFINED = 0x8000;   // bank is undefined and inaccessible
     uInt16 bankInUse[8];     // bank being used for ROM/RAM (eight 512 byte areas)
-    uInt16 segmentInUse[4];  // set by bank methods, to know which hotspot was accessed
 
     static constexpr uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;   // writes to this address cause bankswitching
     static constexpr uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;   // writes to this address cause bankswitching

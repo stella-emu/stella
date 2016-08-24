@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "TIA.hxx"
 #include "Cart3EPlus.hxx"
@@ -43,20 +41,13 @@ Cartridge3EPlus::Cartridge3EPlus(const uInt8* image, uInt32 size, const Settings
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlus::reset()
 {
-  // Initialize RAM
-  if (mySettings.getBool("ramrandom"))
-    for (uInt32 i = 0; i < RAM_TOTAL_SIZE; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, RAM_TOTAL_SIZE);
+  initializeRAM(myRAM, RAM_TOTAL_SIZE);
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for (uInt32 b = 0; b < 8; b++)
-  {
+  for(uInt32 b = 0; b < 8; ++b)
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
-    segmentInUse[b/2] = BANK_UNDEFINED;
-  }
+
   initializeBankState();
 
   // We'll map the startup banks 0 and 3 from the image into the third 1K bank upon reset
@@ -75,16 +66,14 @@ void Cartridge3EPlus::install(System& system)
   // we need to chain any accesses below 0x40 to the TIA. Our poke() method
   // does this via mySystem->tiaPoke(...), at least until we come up with a
   // cleaner way to do it).
-  for (uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
+  for(uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
     mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for (uInt32 b = 0; b < 8; b++)
-  {
+  for(uInt32 b = 0; b < 8; ++b)
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
-    segmentInUse[b/2] = BANK_UNDEFINED;
-  }
+
   initializeBankState();
 
   // Setup the last segment (of 4, each 1K) to point to the first ROM slice
@@ -103,13 +92,13 @@ uInt8 Cartridge3EPlus::peek(uInt16 address)
   uInt32 bank = (address >> (ROM_BANK_TO_POWER - 1)) & 7;   // convert to 512 byte bank index (0-7)
   uInt16 imageBank = bankInUse[bank];                       // the ROM/RAM bank that's here
 
-  if (imageBank == BANK_UNDEFINED)            // an uninitialised bank?
+  if(imageBank == BANK_UNDEFINED)            // an uninitialised bank?
   {
     // accessing invalid bank, so return should be... random?
     value = mySystem->randGenerator().next();
 
   }
-  else if (imageBank & BITMASK_ROMRAM)        // a RAM bank
+  else if(imageBank & BITMASK_ROMRAM)        // a RAM bank
   {
     // Reading from the write port triggers an unwanted write
     value = mySystem->getDataBusState(0xFF);
@@ -138,10 +127,10 @@ bool Cartridge3EPlus::poke(uInt16 address, uInt8 value)
   // Check for write to the bank switch address. RAM/ROM and bank # are encoded in 'value'
   // There are NO mirrored hotspots.
 
-  if (address == BANK_SWITCH_HOTSPOT_RAM)
+  if(address == BANK_SWITCH_HOTSPOT_RAM)
     changed = bankRAM(value);
 
-  else if (address == BANK_SWITCH_HOTSPOT_ROM)
+  else if(address == BANK_SWITCH_HOTSPOT_ROM)
     changed = bankROM(value);
 
   // Pass the poke through to the TIA. In a real Atari, both the cart and the
@@ -156,15 +145,14 @@ bool Cartridge3EPlus::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3EPlus::bankRAM(uInt8 bank)
 {
-  if (bankLocked())  // debugger can lock RAM
+  if(bankLocked())  // debugger can lock RAM
     return false;
+
+//cerr << "bankRAM " << int(bank) << endl;
 
   // Each RAM bank uses two slots, separated by 0x200 in memory -- one read, one write.
   bankRAMSlot(bank | BITMASK_ROMRAM | 0);
   bankRAMSlot(bank | BITMASK_ROMRAM | BITMASK_LOWERUPPER);
-
-  // Remember that this hotspot was accessed for RAM
-  segmentInUse[(bank >> BANK_BITS) & 3] = bank | BITMASK_ROMRAM;
 
   return myBankChanged = true;
 }
@@ -177,8 +165,8 @@ void Cartridge3EPlus::bankRAMSlot(uInt16 bank)
   bool upper = bank & BITMASK_LOWERUPPER;       // is this the read or write port
 
   uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;  // Effectively * 512 bytes
-cerr << "raw bank=" << std::dec << currentBank << endl
-     << "startCurrentBank=$" << std::hex << startCurrentBank << endl;
+//cerr << "raw bank=" << std::dec << currentBank << endl
+//     << "startCurrentBank=$" << std::hex << startCurrentBank << endl;
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
 
@@ -196,9 +184,9 @@ cerr << "raw bank=" << std::dec << currentBank << endl
   uInt32 start = 0x1000 + (bankNumber << (RAM_BANK_TO_POWER+1)) + (upper ? RAM_WRITE_OFFSET : 0);
   uInt32 end = start + RAM_BANK_SIZE - 1;
 
-cerr << "bank RAM: " << bankNumber << " -> " << (bankNumber * 2 + (upper ? 1 : 0)) << (upper ? " (W)" : " (R)") << endl
-     << "start=" << std::hex << start << ", end=" << end << endl << endl;
-  for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
+//cerr << "bank RAM: " << bankNumber << " -> " << (bankNumber * 2 + (upper ? 1 : 0)) << (upper ? " (W)" : " (R)") << endl
+//     << "start=" << std::hex << start << ", end=" << end << endl << endl;
+  for(uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
   {
     if(upper)
       access.directPokeBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
@@ -213,7 +201,7 @@ cerr << "bank RAM: " << bankNumber << " -> " << (bankNumber * 2 + (upper ? 1 : 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3EPlus::bankROM(uInt8 bank)
 {
-  if (bankLocked())  // debugger can lock ROM
+  if(bankLocked())  // debugger can lock ROM
     return false;
 
   // Map ROM bank image into the system into the correct slot
@@ -221,9 +209,6 @@ bool Cartridge3EPlus::bankROM(uInt8 bank)
   // Each ROM uses 2 consecutive 512 byte slots
   bankROMSlot(bank | 0);
   bankROMSlot(bank | BITMASK_LOWERUPPER);
-
-  // Remember that this hotspot was accessed for ROM
-  segmentInUse[(bank >> BANK_BITS) & 3] = bank;
 
   return myBankChanged = true;
 }
@@ -245,7 +230,7 @@ void Cartridge3EPlus::bankROMSlot(uInt16 bank)
   uInt32 start = 0x1000 + (bankNumber << ROM_BANK_TO_POWER) + (upper ? ROM_BANK_SIZE / 2 : 0);
   uInt32 end = start + ROM_BANK_SIZE / 2 - 1;
 
-  for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
+  for(uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
   {
     access.directPeekBase = &myImage[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
     access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
@@ -326,7 +311,6 @@ bool Cartridge3EPlus::save(Serializer& out) const
   {
     out.putString(name());
     out.putShortArray(bankInUse, 8);
-    out.putShortArray(segmentInUse, 4);
     out.putByteArray(myRAM, RAM_TOTAL_SIZE);
   }
   catch (...)
@@ -345,7 +329,6 @@ bool Cartridge3EPlus::load(Serializer& in)
     if (in.getString() != name())
       return false;
     in.getShortArray(bankInUse, 8);
-    in.getShortArray(segmentInUse, 4);
     in.getByteArray(myRAM, RAM_TOTAL_SIZE);
   }
   catch (...)

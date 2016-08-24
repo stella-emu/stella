@@ -17,9 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-#include <sstream>
-
 #include "bspf.hxx"
 #include "Cart.hxx"
 #include "Cart0840.hxx"
@@ -362,6 +359,16 @@ void Cartridge::createCodeAccessBase(uInt32 size)
 #else
   myCodeAccessBase = nullptr;
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::initializeRAM(uInt8* arr, uInt32 size, uInt8 val) const
+{
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 i = 0; i < size; ++i)
+      arr[i] = mySystem->randGenerator().next();
+  else
+    memset(arr, val, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

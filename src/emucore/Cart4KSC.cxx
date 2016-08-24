@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "Cart4KSC.hxx"
 
@@ -34,12 +32,8 @@ Cartridge4KSC::Cartridge4KSC(const uInt8* image, uInt32 size, const Settings& se
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4KSC::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 128; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 128);
+  initializeRAM(myRAM, 128);
+
   myBankChanged = true;
 }
 

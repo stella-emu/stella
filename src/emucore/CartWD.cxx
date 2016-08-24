@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "TIA.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
@@ -44,12 +42,7 @@ CartridgeWD::CartridgeWD(const uInt8* image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeWD::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 64; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 64);
+  initializeRAM(myRAM, 64);
 
   myCyclesAtBankswitchInit = 0;
   myPendingBank = 0xF0;  // one more than the allowable bank #

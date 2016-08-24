@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "M6502.hxx"
 #include "System.hxx"
 #include "CartAR.hxx"
@@ -28,7 +26,6 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(std::max(size, 8448u)),
-    myLoadImages(nullptr),
     myWriteEnabled(false),
     myPower(true),
     myPowerRomCycle(0),
@@ -60,10 +57,7 @@ void CartridgeAR::reset()
 {
   // Initialize RAM
 #if 0  // TODO - figure out actual behaviour of the real cart
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 6 * 1024; ++i)
-      myImage[i] = mySystem->randGenerator().next();
-  else
+  initializeRAM(myImage, 6*1024);
 #endif
     memset(myImage, 0, 6 * 1024);
 

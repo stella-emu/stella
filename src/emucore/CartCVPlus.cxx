@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "TIA.hxx"
 #include "CartCVPlus.hxx"
@@ -27,7 +25,6 @@
 CartridgeCVPlus::CartridgeCVPlus(const uInt8* image, uInt32 size,
                                  const Settings& settings)
   : Cartridge(settings),
-    myImage(nullptr),
     mySize(size),
     myCurrentBank(0)
 {
@@ -45,12 +42,7 @@ CartridgeCVPlus::CartridgeCVPlus(const uInt8* image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCVPlus::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 1024; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 1024);
+  initializeRAM(myRAM, 1024);
 
   // We'll map the startup bank into the first segment upon reset
   bank(myStartBank);

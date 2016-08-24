@@ -17,8 +17,6 @@
 // $Id: CartSB.cxx,v 1.0 2007/10/11
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "CartSB.hxx"
 
@@ -26,7 +24,6 @@
 CartridgeSB::CartridgeSB(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    myImage(nullptr),
     mySize(size),
     myCurrentBank(0)
 {

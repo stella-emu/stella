@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#include <cstring>
-
 #include "System.hxx"
 #include "CartFA.hxx"
 
@@ -38,12 +36,7 @@ CartridgeFA::CartridgeFA(const uInt8* image, uInt32 size, const Settings& settin
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    for(uInt32 i = 0; i < 256; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
-  else
-    memset(myRAM, 0, 256);
+  initializeRAM(myRAM, 256);
 
   // Upon reset we switch to the startup bank
   bank(myStartBank);
