@@ -21,6 +21,13 @@
     Thanks to Omegamatrix of AtariAge for the bug report and patch to fix
     the issue.
 
+  * Fixed bug in debugger 'reset' command; it wasn't resetting the
+    bankswitching, so after a reset the banks were in an undefined state.
+
+  * Updated UNIX configure script to fix a bug where it fails in
+    cross-compilation under certain circumstances.  Thanks to Vlad
+    Zakharov for providing a patch to fix this issue.
+
 -Have fun!
 
 
