@@ -21,6 +21,10 @@
     Thanks to Omegamatrix of AtariAge for the bug report and patch to fix
     the issue.
 
+  * Added 'trapm', 'trapreadm', 'trapwritem' commands to debugger prompt.
+    These are similar to the non-'m' versions, except that they also trap
+    on all mirrors of the given address.
+
   * Fixed bug in debugger 'reset' command; it wasn't resetting the
     bankswitching, so after a reset the banks were in an undefined state.
 

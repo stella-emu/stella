@@ -87,6 +87,15 @@ class CartDebug : public DebuggerSystem
       int fieldwidth;
     };
 
+    // Determine 'type' of address (ie, what part of the system accessed)
+    enum AddrType {
+      ADDR_TIA,
+      ADDR_IO,
+      ADDR_ZPRAM,
+      ADDR_ROM
+    };
+    AddrType addressType(uInt16 addr) const;
+
   public:
     CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
     virtual ~CartDebug() = default;
@@ -265,15 +274,6 @@ class CartDebug : public DebuggerSystem
   private:
     using AddrToLabel = std::map<uInt16, string>;
     using LabelToAddr = std::map<string, uInt16>;
-
-    // Determine 'type' of address (ie, what part of the system accessed)
-    enum AddrType {
-      ADDR_TIA,
-      ADDR_IO,
-      ADDR_ZPRAM,
-      ADDR_ROM
-    };
-    AddrType addressType(uInt16 addr) const;
 
     struct DirectiveTag {
       DisasmType type;

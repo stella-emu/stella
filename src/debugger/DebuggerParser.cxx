@@ -567,9 +567,9 @@ string DebuggerParser::trapStatus(int addr)
   else if(r)
     result += "read";
   else if(w)
-    result += "     write";
+    result += "write";
   else
-    result += "   none   ";
+    result += "none";
 
   // TODO - technically, we should determine if the label is read or write
   const string& l = debugger.cartDebug().getLabel(addr, true);
@@ -585,9 +585,8 @@ string DebuggerParser::trapStatus(int addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::saveScriptFile(string file)
 {
-  if( file.find_last_of('.') == string::npos ) {
+  if( file.find_last_of('.') == string::npos )
     file += ".stella";
-  }
 
   ofstream out(file);
 
@@ -1440,36 +1439,26 @@ void DebuggerParser::executeTrace()
 // "trap"
 void DebuggerParser::executeTrap()
 {
-  uInt32 beg = args[0];
-  uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  std::swap(beg, end);
-
-  for(uInt32 i = beg; i <= end; ++i)
-  {
-    debugger.toggleReadTrap(i);
-    debugger.toggleWriteTrap(i);
-    commandResult << trapStatus(i) << endl;
-  }
+  executeTrapRW(true, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapread"
 void DebuggerParser::executeTrapread()
 {
-  uInt32 beg = args[0];
-  uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  std::swap(beg, end);
-
-  for(uInt32 i = beg; i <= end; ++i)
-  {
-    debugger.toggleReadTrap(i);
-    commandResult << trapStatus(i) << endl;
-  }
+  executeTrapRW(true, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapwrite"
 void DebuggerParser::executeTrapwrite()
+{
+  executeTrapRW(false, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// wrapper function for trap/trapread/trapwrite commands
+void DebuggerParser::executeTrapRW(bool read, bool write)
 {
   uInt32 beg = args[0];
   uInt32 end = argCount >= 2 ? args[1] : beg;
@@ -1477,9 +1466,114 @@ void DebuggerParser::executeTrapwrite()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    debugger.toggleWriteTrap(i);
+    if(read)  debugger.toggleReadTrap(i);
+    if(write) debugger.toggleWriteTrap(i);
     commandResult << trapStatus(i) << endl;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapm"
+void DebuggerParser::executeTrapM()
+{
+  executeTrapMRW(true, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapreadm"
+void DebuggerParser::executeTrapreadM()
+{
+  executeTrapMRW(true, false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapwritem"
+void DebuggerParser::executeTrapwriteM()
+{
+  executeTrapMRW(false, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// wrapper function for trapm/trapreadm/trapwritem commands
+void DebuggerParser::executeTrapMRW(bool read, bool write)
+{
+  uInt32 addr = args[0];
+  uInt32 beg = argCount > 1 ? args[1] : 0;
+  uInt32 end = argCount > 2 ? args[2] : 0xFFFF;
+  if(beg > end)  std::swap(beg, end);
+
+  switch(debugger.cartDebug().addressType(addr))
+  {
+    case CartDebug::ADDR_TIA:
+    {
+      for(uInt32 i = beg; i <= end; ++i)
+      {
+        if((i & 0x1080) == 0x0000 && (i & 0x003F) == addr)
+        {
+          if(read)  debugger.toggleReadTrap(i);
+          if(write) debugger.toggleWriteTrap(i);
+        }
+      }
+      break;
+    }
+    case CartDebug::ADDR_IO:
+    {
+      for(uInt32 i = beg; i <= end; ++i)
+      {
+        if((i & 0x1080) == 0x0080 && (i & 0x0200) != 0x0000 && (i & 0x02FF) == addr)
+        {
+          if(read)  debugger.toggleReadTrap(i);
+          if(write) debugger.toggleWriteTrap(i);
+        }
+      }
+      break;
+    }
+    case CartDebug::ADDR_ZPRAM:
+    {
+      for(uInt32 i = beg; i <= end; ++i)
+      {
+        if((i & 0x1080) == 0x0080 && (i & 0x0200) == 0x0000 && (i & 0x00FF) == addr)
+        {
+          if(read)  debugger.toggleReadTrap(i);
+          if(write) debugger.toggleWriteTrap(i);
+        }
+      }
+      break;
+    }
+    case CartDebug::ADDR_ROM:
+    {
+      // Enforce range?
+      if(argCount > 1)
+      {
+        if(beg < addr) beg = addr & 0xF000;
+        if(end < beg)  beg = end;
+      }
+      else
+      {
+        beg = 0x1000;
+        end = 0xFFFF;
+      }
+
+      // Are we in range?
+      if(!(addr >= beg && addr <= end))
+      {
+        commandResult << "Address " << addr << " is outside range" << endl;
+        return;
+      }
+      for(uInt32 i = beg; i <= end; ++i)
+      {
+        if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
+        {
+          if(read)  debugger.toggleReadTrap(i);
+          if(write) debugger.toggleWriteTrap(i);
+        }
+      }
+      break;
+    }
+  }
+
+  commandResult << trapStatus(addr) << " + mirrors from $"
+                << Base::HEX4 << beg << " - $" << end << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2126,6 +2220,33 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTrapwrite)
+  },
+
+  {
+    "trapm",
+    "Trap read/write access to address xx (+mirrors)",
+    true,
+    false,
+    { kARG_WORD, kARG_MULTI_WORD },
+    std::mem_fn(&DebuggerParser::executeTrapM)
+  },
+
+  {
+    "trapreadm",
+    "Trap read access to address xx (+mirrors)",
+    true,
+    false,
+    { kARG_WORD, kARG_MULTI_WORD },
+    std::mem_fn(&DebuggerParser::executeTrapreadM)
+  },
+
+  {
+    "trapwritem",
+    "Trap write access to address xx (+mirrors)",
+    true,
+    false,
+    { kARG_WORD, kARG_MULTI_WORD },
+    std::mem_fn(&DebuggerParser::executeTrapwriteM)
   },
 
   {

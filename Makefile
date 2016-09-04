@@ -26,7 +26,7 @@
 
 srcdir      ?= .
 
-DEFINES     :=
+DEFINES     := -D_GLIBCXX_USE_CXX11_ABI=1
 LDFLAGS     :=
 INCLUDES    :=
 LIBS	    :=

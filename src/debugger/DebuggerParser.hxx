@@ -70,9 +70,7 @@ class DebuggerParser
     bool saveScriptFile(string file);
 
   private:
-    enum {
-      kNumCommands   = 70
-    };
+    enum { kNumCommands = 73 };
 
     // Constants for argument processing
     enum {
@@ -182,6 +180,11 @@ class DebuggerParser
     void executeTrap();
     void executeTrapread();
     void executeTrapwrite();
+    void executeTrapRW(bool read, bool write);  // not exposed by debugger
+    void executeTrapM();
+    void executeTrapreadM();
+    void executeTrapwriteM();
+    void executeTrapMRW(bool read, bool write); // not exposed by debugger
     void executeType();
     void executeUHex();
     void executeUndef();
