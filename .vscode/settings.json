@@ -1,0 +1,9 @@
+// Platzieren Sie Ihre Einstellungen in dieser Datei, um Standard- und Benutzereinstellungen zu überschreiben.
+{
+        "clang.cxxflags": [
+            "-std=c++11",
+            "-I/home/cnspeckn/git/stella/src/common"
+        ],
+        "editor.tabSize": 2,
+        "files.trimTrailingWhitespace": false
+}
