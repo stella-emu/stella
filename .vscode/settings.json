@@ -5,5 +5,12 @@
             "-I/home/cnspeckn/git/stella/src/common"
         ],
         "editor.tabSize": 2,
-        "files.trimTrailingWhitespace": false
+        "files.trimTrailingWhitespace": false,
+        "files.exclude": {
+            "**/.git": true,
+            "**/.svn": true,
+            "**/.hg": true,
+            "**/.DS_Store": true,
+            "src/**/*.o": true
+        }
 }
