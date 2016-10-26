@@ -24,8 +24,8 @@ class Console;
 class Settings;
 class Sound;
 
+#include "AbstractTIA.hxx"
 #include "bspf.hxx"
-#include "Device.hxx"
 #include "System.hxx"
 #include "TIATables.hxx"
 
@@ -43,7 +43,7 @@ class Sound;
   @author  Bradford W. Mott
   @version $Id$
 */
-class TIA : public Device
+class TIA : public AbstractTIA
 {
   public:
     friend class TIADebug;
@@ -68,7 +68,7 @@ class TIA : public Device
     /**
       Reset frame to current YStart/Height properties
     */
-    void frameReset();
+    void frameReset() override;
 
     /**
       Notification method invoked by the system right before the
@@ -131,8 +131,8 @@ class TIA : public Device
       more information.  The methods below save/load this extra info,
       and eliminate having to save approx. 50K to normal state files.
     */
-    bool saveDisplay(Serializer& out) const;
-    bool loadDisplay(Serializer& in);
+    bool saveDisplay(Serializer& out) const override;
+    bool loadDisplay(Serializer& in) override;
 
     /**
       Get a descriptor for the device name (used in error checking).
@@ -163,14 +163,14 @@ class TIA : public Device
       desired frame rate to update the TIA.  Invoking this method will update
       the graphics buffer and generate the corresponding audio samples.
     */
-    void update();
+    void update() override;
 
     /**
       Answers the current frame buffer
 
       @return Pointer to the current frame buffer
     */
-    uInt8* currentFrameBuffer() const
+    uInt8* currentFrameBuffer() const override
       { return myCurrentFrameBuffer.get() + myFramePointerOffset + myCurrentFrameJitter; }
 
     /**
@@ -178,23 +178,22 @@ class TIA : public Device
 
       @return Pointer to the previous frame buffer
     */
-    uInt8* previousFrameBuffer() const
+    uInt8* previousFrameBuffer() const override
       { return myPreviousFrameBuffer.get() + myFramePointerOffset; }
 
     /**
-      Answers the width and height of the frame buffer
+      Answers the height of the frame buffer
     */
-    inline uInt32 width() const  { return 160;           }
-    inline uInt32 height() const { return myFrameHeight; }
-    inline uInt32 ystart() const { return myFrameYStart; }
+    inline uInt32 height() const override { return myFrameHeight; }
+    inline uInt32 ystart() const override { return myFrameYStart; }
 
     /**
       Changes the current Height/YStart properties.
       Note that calls to these method(s) must be eventually followed by
       ::frameReset() for the changes to take effect.
     */
-    void setHeight(uInt32 height) { myFrameHeight = height; }
-    void setYStart(uInt32 ystart) { myFrameYStart = ystart; }
+    void setHeight(uInt32 height) override { myFrameHeight = height; }
+    void setYStart(uInt32 ystart) override { myFrameYStart = ystart; }
 
     /**
       Enables/disables auto-frame calculation.  If enabled, the TIA
@@ -202,21 +201,21 @@ class TIA : public Device
 
       @param mode  Whether to enable or disable all auto-frame calculation
     */
-    void enableAutoFrame(bool mode) { myAutoFrameEnabled = mode; }
+    void enableAutoFrame(bool mode) override { myAutoFrameEnabled = mode; }
 
     /**
       Enables/disables color-loss for PAL modes only.
 
       @param mode  Whether to enable or disable PAL color-loss mode
     */
-    void enableColorLoss(bool mode)
+    void enableColorLoss(bool mode) override
       { myColorLossEnabled = myFramerate <= 55 ? mode : false; }
 
     /**
       Answers whether this TIA runs at NTSC or PAL scanrates,
       based on how many frames of out the total count are PAL frames.
     */
-    bool isPAL() const
+    bool isPAL() const override
       { return double(myPALFrameCounter) / myFrameCounter >= (25.0/60.0); }
 
     /**
@@ -224,7 +223,7 @@ class TIA : public Device
 
       @return The current color clock
     */
-    uInt32 clocksThisLine() const
+    uInt32 clocksThisLine() const override
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228; }
 
     /**
@@ -234,7 +233,7 @@ class TIA : public Device
 
       @return The total number of scanlines generated
     */
-    uInt32 scanlines() const
+    uInt32 scanlines() const override
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) / 228; }
 
     /**
@@ -243,14 +242,14 @@ class TIA : public Device
 
       @return If we're in partial frame mode
     */
-    bool partialFrame() const { return myPartialFrameFlag; }
+    bool partialFrame() const override { return myPartialFrameFlag; }
 
     /**
       Answers the first scanline at which drawing occured in the last frame.
 
       @return The starting scanline
     */
-    uInt32 startScanline() const { return myStartScanline; }
+    uInt32 startScanline() const override { return myStartScanline; }
 
     /**
       Answers the current position of the virtual 'electron beam' used to
@@ -262,7 +261,7 @@ class TIA : public Device
       @return The x/y coordinates of the scanline electron beam, and whether
               it is in the visible/viewable area of the screen
     */
-    bool scanlinePos(uInt16& x, uInt16& y) const;
+    bool scanlinePos(uInt16& x, uInt16& y) const override;
 
     /**
       Enables/disable/toggle the specified (or all) TIA bit(s).  Note that
@@ -273,8 +272,8 @@ class TIA : public Device
 
       @return  Whether the bit was enabled or disabled
     */
-    bool toggleBit(TIABit b, uInt8 mode = 2);
-    bool toggleBits();
+    bool toggleBit(TIABit b, uInt8 mode = 2) override;
+    bool toggleBits() override;
 
     /**
       Enables/disable/toggle the specified (or all) TIA bit collision(s).
@@ -284,15 +283,15 @@ class TIA : public Device
 
       @return  Whether the collision was enabled or disabled
     */
-    bool toggleCollision(TIABit b, uInt8 mode = 2);
-    bool toggleCollisions();
+    bool toggleCollision(TIABit b, uInt8 mode = 2) override;
+    bool toggleCollisions() override;
 
     /**
       Toggle the display of HMOVE blanks.
 
       @return  Whether the HMOVE blanking was enabled or disabled
     */
-    bool toggleHMOVEBlank();
+    bool toggleHMOVEBlank() override;
 
     /**
       Enables/disable/toggle 'fixed debug colors' mode.
@@ -302,7 +301,7 @@ class TIA : public Device
 
       @return  Whether the mode was enabled or disabled
     */
-    bool toggleFixedColors(uInt8 mode = 2);
+    bool toggleFixedColors(uInt8 mode = 2) override;
 
     /**
       Enable/disable/query state of 'undriven/floating TIA pins'.
@@ -311,7 +310,7 @@ class TIA : public Device
 
       @return  Whether the mode was enabled or disabled
     */
-    bool driveUnusedPinsRandom(uInt8 mode = 2);
+    bool driveUnusedPinsRandom(uInt8 mode = 2) override;
 
     /**
       Enables/disable/toggle 'scanline jittering' mode, and set the
@@ -322,26 +321,26 @@ class TIA : public Device
 
       @return  Whether the mode was enabled or disabled
     */
-    bool toggleJitter(uInt8 mode = 2);
-    void setJitterRecoveryFactor(Int32 f) { myJitterRecoveryFactor = f; }
+    bool toggleJitter(uInt8 mode = 2) override;
+    void setJitterRecoveryFactor(Int32 f) override { myJitterRecoveryFactor = f; }
 
 #ifdef DEBUGGER_SUPPORT
     /**
       This method should be called to update the TIA with a new scanline.
     */
-    void updateScanline();
+    void updateScanline() override;
 
     /**
       This method should be called to update the TIA with a new partial
       scanline by stepping one CPU instruction.
     */
-    void updateScanlineByStep();
+    void updateScanlineByStep() override;
 
     /**
       This method should be called to update the TIA with a new partial
       scanline by tracing to target address.
     */
-    void updateScanlineByTrace(int target);
+    void updateScanlineByTrace(int target) override;
 #endif
 
   private:

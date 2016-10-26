@@ -39,9 +39,9 @@ class AbstractTIA: public Device
 
     virtual void update() = 0;
 
-    virtual const uInt8* currenFrameBuffer() const = 0;
+    virtual uInt8* currentFrameBuffer() const = 0;
 
-    virtual const uInt8 previousFrameBuffer() const = 0;
+    virtual uInt8* previousFrameBuffer() const = 0;
 
     virtual uInt32 width() const {
       return 160;
@@ -53,7 +53,7 @@ class AbstractTIA: public Device
 
     virtual void setHeight(uInt32 height) = 0;
 
-    virtual void setWidth(uInt32 width) = 0;
+    virtual void setYStart(uInt32 ystart) = 0;
 
     virtual void enableAutoFrame(bool enabled) = 0;
 
@@ -69,7 +69,7 @@ class AbstractTIA: public Device
 
     virtual uInt32 startScanline() const = 0;
 
-    virtual bool scanlinePos(uInt16& x, uInt16& y) = 0;
+    virtual bool scanlinePos(uInt16& x, uInt16& y) const = 0;
 
     virtual bool toggleBit(TIABit b, uInt8 mode = 2) = 0;
 
@@ -77,11 +77,11 @@ class AbstractTIA: public Device
 
     virtual bool toggleCollision(TIABit b, uInt8 mode = 2) = 0;
 
-    virtual bool toogleCollisions() = 0;
+    virtual bool toggleCollisions() = 0;
 
     virtual bool toggleHMOVEBlank() = 0;
 
-    virtual bool toggleFixedColor(uInt8 mode = 2) = 0;
+    virtual bool toggleFixedColors(uInt8 mode = 2) = 0;
 
     virtual bool driveUnusedPinsRandom(uInt8 mode = 2) = 0;
 
