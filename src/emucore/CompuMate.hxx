@@ -24,6 +24,7 @@
 #include "CartCM.hxx"
 #include "Control.hxx"
 #include "Event.hxx"
+#include "Console.hxx"
 
 /**
   Handler for SpectraVideo CompuMate bankswitched games.

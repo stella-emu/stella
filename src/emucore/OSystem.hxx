@@ -460,8 +460,10 @@ class OSystem
     unique_ptr<Launcher> myLauncher;
     bool myLauncherUsed;
 
+  #ifdef DEBUGGER_SUPPORT
     // Pointer to the Debugger object
     unique_ptr<Debugger> myDebugger;
+  #endif
 
     // Pointer to the CheatManager object
     unique_ptr<CheatManager> myCheatManager;
