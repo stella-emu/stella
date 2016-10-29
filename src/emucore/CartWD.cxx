@@ -17,7 +17,7 @@
 // $Id$
 //============================================================================
 
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
 #include "CartWD.hxx"
@@ -76,7 +76,7 @@ void CartridgeWD::install(System& system)
 
   // Mirror all access in TIA; by doing so we're taking responsibility
   // for that address space in peek and poke below.
-  mySystem->tia().install(system, *this);
+  mySystem->tia().installDelegate(system, *this);
 
   // Setup segments to some default slices
   bank(myStartBank);

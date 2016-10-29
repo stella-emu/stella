@@ -23,6 +23,7 @@
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "Serializer.hxx"
+#include "System.hxx"
 #include "TIATypes.hxx"
 
 class AbstractTIA: public Device
@@ -30,6 +31,8 @@ class AbstractTIA: public Device
   public:
 
     virtual ~AbstractTIA() = default;
+
+    virtual void installDelegate(System& system, Device& device) = 0;
 
     virtual void frameReset() = 0;
 

@@ -18,7 +18,7 @@
 //============================================================================
 
 #include "System.hxx"
-#include "TIATables.hxx"
+#include "TIATypes.hxx"
 #include "TIASnd.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

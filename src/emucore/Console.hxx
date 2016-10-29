@@ -23,7 +23,7 @@
 class Event;
 class Switches;
 class System;
-class TIA;
+class AbstractTIA;
 class M6502;
 class M6532;
 class Cartridge;
@@ -33,7 +33,7 @@ class Debugger;
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
-#include "TIATables.hxx"
+#include "TIATypes.hxx"
 #include "FrameBuffer.hxx"
 #include "Serializable.hxx"
 #include "NTSCFilter.hxx"
@@ -91,7 +91,7 @@ class Console : public Serializable
 
       @return The TIA
     */
-    TIA& tia() const { return *myTIA; }
+    AbstractTIA& tia() const { return *myTIA; }
 
     /**
       Get the properties being used by the game
@@ -340,7 +340,7 @@ class Console : public Serializable
     unique_ptr<M6532> myRiot;
 
     // Pointer to the TIA object 
-    unique_ptr<TIA> myTIA;
+    unique_ptr<AbstractTIA> myTIA;
 
     // Pointer to the Cartridge (the debugger needs it)
     unique_ptr<Cartridge> myCart;

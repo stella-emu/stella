@@ -107,11 +107,11 @@ void M6532::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::install(System& system)
 {
-  install(system, *this);
+  installDelegate(system, *this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::install(System& system, Device& device)
+void M6532::installDelegate(System& system, Device& device)
 {
   // Remember which system I'm installed in
   mySystem = &system;

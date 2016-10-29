@@ -230,11 +230,11 @@ void TIA::systemCyclesReset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::install(System& system)
 {
-  install(system, *this);
+  installDelegate(system, *this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::install(System& system, Device& device)
+void TIA::installDelegate(System& system, Device& device)
 {
   // Remember which system I'm installed in
   mySystem = &system;

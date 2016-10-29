@@ -23,13 +23,13 @@
 #include "Device.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 #include "Cart.hxx"
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
-               TIA& mTIA, Cartridge& mCart)
+               AbstractTIA& mTIA, Cartridge& mCart)
   : myOSystem(osystem),
     myM6502(m6502),
     myM6532(m6532),

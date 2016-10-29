@@ -52,7 +52,7 @@ void CartridgeCM::install(System& system)
 
   // Mirror all access in RIOT; by doing so we're taking responsibility
   // for that address space in peek and poke below.
-  mySystem->m6532().install(system, *this);
+  mySystem->m6532().installDelegate(system, *this);
 
   // Install pages for the startup bank
   bank(myStartBank);

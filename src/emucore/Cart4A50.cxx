@@ -19,7 +19,7 @@
 
 #include "System.hxx"
 #include "M6532.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 #include "Cart4A50.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,8 +80,8 @@ void Cartridge4A50::install(System& system)
 
   // Mirror all access in TIA and RIOT; by doing so we're taking responsibility
   // for that address space in peek and poke below.
-  mySystem->tia().install(system, *this);
-  mySystem->m6532().install(system, *this);
+  mySystem->tia().installDelegate(system, *this);
+  mySystem->m6532().installDelegate(system, *this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

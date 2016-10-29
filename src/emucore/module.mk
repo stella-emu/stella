@@ -72,9 +72,7 @@ MODULE_OBJS := \
 	src/emucore/Switches.o \
 	src/emucore/StateManager.o \
 	src/emucore/System.o \
-	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \
-	src/emucore/TIATables.o \
 	src/emucore/TIASurface.o \
 	src/emucore/TrackBall.o \
 	src/emucore/Thumbulator.o

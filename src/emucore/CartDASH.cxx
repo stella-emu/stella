@@ -18,7 +18,7 @@
 //============================================================================
 
 #include "System.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 #include "CartDASH.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

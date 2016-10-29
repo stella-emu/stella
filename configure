@@ -672,6 +672,7 @@ find_sdlconfig
 
 SRC="src"
 CORE="$SRC/emucore"
+TIA_CORE_DEFAULT="$SRC/emucore/tia/core_default"
 COMMON="$SRC/common"
 TV="$SRC/common/tv_filters"
 GUI="$SRC/gui"
@@ -682,7 +683,7 @@ CHEAT="$SRC/cheat"
 LIBPNG="$SRC/libpng"
 ZLIB="$SRC/zlib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI -I$TIA_CORE_DEFAULT"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then

@@ -92,7 +92,7 @@ class M6532 : public Device
       @param system The system the device should install itself in
       @param device The device responsible for this address space
     */
-    void install(System& system, Device& device);
+    void installDelegate(System& system, Device& device);
 
     /**
       Save the current state of this device to the given Serializer.

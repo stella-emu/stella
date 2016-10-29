@@ -20,7 +20,7 @@
 #ifndef TIASURFACE_HXX
 #define TIASURFACE_HXX
 
-class TIA;
+class AbstractTIA;
 class Console;
 class OSystem;
 class FrameBuffer;
@@ -137,7 +137,7 @@ class TIASurface
   private:
     OSystem& myOSystem;
     FrameBuffer& myFB;
-    TIA* myTIA;
+    AbstractTIA* myTIA;
 
     shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
 
