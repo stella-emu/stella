@@ -286,6 +286,12 @@ class Console : public Serializable
     void toggleJitter() const;
 
   private:
+
+    /**
+      Create the TIA
+    */
+    AbstractTIA* createTIA();
+
     /**
       Sets various properties of the TIA (YStart, Height, etc) based on
       the current display format.

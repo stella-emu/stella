@@ -48,6 +48,9 @@ Settings::Settings(OSystem& osystem)
   setInternal("uimessages", "true");
 
   // TIA specific options
+#ifdef SUPPORT_6502TS_TIA
+  setInternal("tia.core", "default");
+#endif
   setInternal("tia.zoom", "2");
   setInternal("tia.inter", "false");
   setInternal("tia.aspectn", "90");
@@ -324,6 +327,12 @@ void Settings::validate()
   i = getInt("loglevel");
   if(i < 0 || i > 2)
     setInternal("loglevel", "1");
+
+#ifdef SUPPORT_6502TS_TIA
+  s = getString("tia.core");
+  if (s != "6502ts" && s != "default") setInternal("tia.core", "default");
+#endif
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -364,6 +373,10 @@ void Settings::usage() const
     << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
     << endl
+  #endif
+  #ifdef SUPPORT_6502TS_TIA
+    << "  -tia.core     <default|\n"
+    << "                 6502ts>       Select the TIA core\n"
   #endif
     << "  -tia.zoom     <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"
     << "  -tia.inter    <1|0>          Enable interpolated (smooth) scaling for TIA image\n"

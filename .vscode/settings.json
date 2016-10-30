@@ -15,5 +15,7 @@
             "**/.hg": true,
             "**/.DS_Store": true,
             "src/**/*.o": true
-        }
+        },
+        "editor.trimAutoWhitespace": true,
+        "editor.useTabStops": false
 }

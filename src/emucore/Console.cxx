@@ -20,6 +20,7 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <fstream>
 
 #include "AtariVox.hxx"
@@ -83,7 +84,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Create subsystems for the console
   my6502 = make_ptr<M6502>(myOSystem.settings());
   myRiot = make_ptr<M6532>(*this, myOSystem.settings());
-  myTIA  = make_ptr<TIADefaultCore::TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  myTIA  = unique_ptr<AbstractTIA>(createTIA());
   mySwitches = make_ptr<Switches>(myEvent, myProperties);
 
   // Construct the system and components
@@ -537,6 +538,31 @@ void Console::changeHeight(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+AbstractTIA* Console::createTIA()
+{
+  string coreType = "default";
+
+#ifdef SUPPORT_6502TS_TIA
+  coreType = myOSystem.settings().getString("tia.core");
+#endif
+
+  if (coreType == "default") {
+    myOSystem.logMessage("using default TIA core", 1);
+    return new TIADefaultCore::TIA(*this, myOSystem.sound(), myOSystem.settings());
+  }
+
+  if (coreType == "6502ts") {
+    myOSystem.logMessage("using 6502.ts TIA core", 1);
+    return 0;
+  }
+
+  ostringstream buffer;
+
+  buffer << "invalid TIA core type " << coreType;
+  throw new runtime_error(buffer.str());
+}
+
 void Console::setTIAProperties()
 {
   // TODO - query these values directly from the TIA if value is 'AUTO'
