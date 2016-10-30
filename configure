@@ -238,8 +238,8 @@ for ac_option in $@; do
       --disable-sound)          _build_sound=no      ;;
       --enable-debugger)        _build_debugger=yes  ;;
       --disable-debugger)       _build_debugger=no   ;;
-			--enable-6502ts-tia)   	  _build_6502ts_tia=yes;;
-			--disable-6502ts-tia)     _build_6502ts_tia=no ;;
+      --enable-6502ts-tia)   	  _build_6502ts_tia=yes;;
+      --disable-6502ts-tia)     _build_6502ts_tia=no ;;
       --enable-joystick)        _build_joystick=yes  ;;
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;
