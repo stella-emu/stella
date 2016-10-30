@@ -23,7 +23,6 @@
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
 #include "Props.hxx"
-#include "TIA.hxx"
 #include "PNGLibrary.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

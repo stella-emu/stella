@@ -37,6 +37,8 @@
 #define HBLANK 68
 #define CLAMP_POS(reg) if(reg < 0) { reg += 160; }  reg %= 160;
 
+namespace TIADefaultCore {
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
@@ -2489,3 +2491,5 @@ inline void TIA::applyPreviousHMOVEMotion(int hpos, Int16& pos, uInt8 motion)
     }
   }
 }
+
+} // namespace TIADefaultCore

@@ -25,7 +25,6 @@
 class FrameBuffer;
 class FBSurface;
 class Properties;
-class TIA;
 
 #include <fstream>
 #include "bspf.hxx"

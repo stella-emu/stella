@@ -31,6 +31,9 @@
   @author  Stephen Anthony
   @version $Id$
 */
+
+namespace TIADefaultCore {
+
 class TIATables
 {
   public:
@@ -113,5 +116,7 @@ class TIATables
     TIATables& operator=(const TIATables&) = delete;
     TIATables& operator=(TIATables&&) = delete;
 };
+
+} // namespace TIADefaultCore
 
 #endif

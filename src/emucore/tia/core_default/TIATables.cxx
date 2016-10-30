@@ -22,6 +22,8 @@
 #include "bspf.hxx"
 #include "TIATables.hxx"
 
+namespace TIADefaultCore {
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIATables::computeAllTables()
 {
@@ -724,3 +726,5 @@ uInt8 TIATables::DisabledMask[640];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int8 TIATables::PxPosResetWhen[8][160][160];
+
+} // namespace TIADefaultCore

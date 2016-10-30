@@ -83,7 +83,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Create subsystems for the console
   my6502 = make_ptr<M6502>(myOSystem.settings());
   myRiot = make_ptr<M6532>(*this, myOSystem.settings());
-  myTIA  = make_ptr<TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  myTIA  = make_ptr<TIADefaultCore::TIA>(*this, myOSystem.sound(), myOSystem.settings());
   mySwitches = make_ptr<Switches>(myEvent, myProperties);
 
   // Construct the system and components

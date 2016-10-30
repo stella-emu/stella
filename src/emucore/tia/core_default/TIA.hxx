@@ -29,6 +29,8 @@ class Sound;
 #include "System.hxx"
 #include "TIATables.hxx"
 
+namespace TIADefaultCore {
+
 /**
   This class is a device that emulates the Television Interface Adaptor 
   found in the Atari 2600 and 7800 consoles.  The Television Interface 
@@ -647,5 +649,7 @@ class TIA : public AbstractTIA
     TIA& operator=(const TIA&) = delete;
     TIA& operator=(TIA&&) = delete;
 };
+
+} // namespace TIADefaultCore
 
 #endif
