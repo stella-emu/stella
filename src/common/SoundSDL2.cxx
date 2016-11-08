@@ -25,7 +25,7 @@
 #include <SDL.h>
 
 #include "TIASnd.hxx"
-#include "TIATables.hxx"
+#include "TIATypes.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"

@@ -28,7 +28,6 @@
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
-#include "TIA.hxx"
 
 #include "FBSurfaceSDL2.hxx"
 #include "FrameBufferSDL2.hxx"

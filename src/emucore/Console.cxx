@@ -47,7 +47,6 @@
 #include "Sound.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
-#include "TIA.hxx"
 #include "TrackBall.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
@@ -55,6 +54,12 @@
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
 #include "Version.hxx"
+
+#include "tia/core_default/TIA.hxx"
+
+#ifdef SUPPORT_6502TS_TIA
+  #include "tia/core_6502ts/TIA.hxx"
+#endif
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -554,7 +559,7 @@ AbstractTIA* Console::createTIA()
 
   if (coreType == "6502ts") {
     myOSystem.logMessage("using 6502.ts TIA core", 1);
-    return 0;
+    return new TIA6502tsCore::TIA(*this, myOSystem.sound(), myOSystem.settings());
   }
 
   ostringstream buffer;

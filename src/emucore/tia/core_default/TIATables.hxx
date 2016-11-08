@@ -17,8 +17,8 @@
 // $Id$
 //============================================================================
 
-#ifndef TIA_TABLES_HXX
-#define TIA_TABLES_HXX
+#ifndef TIA_DEFAULT_CORE_TABLES_HXX
+#define TIA_DEFAULT_CORE_TABLES_HXX
 
 #include "bspf.hxx"
 #include "TIATypes.hxx"

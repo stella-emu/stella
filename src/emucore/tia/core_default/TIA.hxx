@@ -17,8 +17,8 @@
 // $Id$
 //============================================================================
 
-#ifndef TIA_HXX
-#define TIA_HXX
+#ifndef TIA_DEFAULT_CORE_HXX
+#define TIA_DEFAULT_CORE_HXX
 
 class Console;
 class Settings;
@@ -48,8 +48,6 @@ namespace TIADefaultCore {
 class TIA : public AbstractTIA
 {
   public:
-    friend class TIADebug;
-    friend class RiotDebug;
 
     /**
       Create a new TIA for the specified console

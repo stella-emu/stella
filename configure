@@ -697,7 +697,7 @@ CHEAT="$SRC/cheat"
 LIBPNG="$SRC/libpng"
 ZLIB="$SRC/zlib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI -I$TIA_CORE_DEFAULT"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then
@@ -758,7 +758,6 @@ fi
 if test "$_build_6502ts_tia" = yes ; then
   DEFINES="$DEFINES -DSUPPORT_6502TS_TIA"
 	MODULES="$MODULES $TIA_6502TS"
-	INCLUDES="$INCLUDES -I$TIA_6502TS"
 fi
 
 if test "$_build_joystick" = yes ; then

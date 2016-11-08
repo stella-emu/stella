@@ -18,7 +18,7 @@
 //============================================================================
 
 #include "Console.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 #include "Switches.hxx"
 #include "DialogContainer.hxx"
 #include "Dialog.hxx"
