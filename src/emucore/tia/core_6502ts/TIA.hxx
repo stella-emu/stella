@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -25,6 +25,7 @@
 #include "Sound.hxx"
 #include "Settings.hxx"
 #include "TIATypes.hxx"
+#include "DelayQueue.hxx"
 
 class Console;
 
@@ -56,7 +57,7 @@ class TIA : public AbstractTIA {
 
     uInt8 peek(uInt16 address) override;
 
-    bool poke(uInt16 address, uInt8 value) override;    
+    bool poke(uInt16 address, uInt8 value) override;
 
     void installDelegate(System& system, Device& device) override;
 
@@ -116,12 +117,19 @@ class TIA : public AbstractTIA {
 
   private:
 
+    void delayedWrite(uInt8 address, uInt8 value);
+
+  private:
+
     Console& myConsole;
 
     Sound& mySound;
 
     Settings& mySettings;
-   
+
+    DelayQueue myDelayQueue;
+    unique_ptr<DelayQueue::Executor> myDelayQueueExecutor;
+
    private:
 
     TIA() = delete;

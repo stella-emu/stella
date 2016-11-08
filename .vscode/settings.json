@@ -8,7 +8,7 @@
             "-I/home/cnspeckn/git/stella/src/emucore/tia/6502ts_core"
         ],
         "editor.tabSize": 2,
-        "files.trimTrailingWhitespace": false,
+        "files.trimTrailingWhitespace": true,
         "files.exclude": {
             "**/.git": true,
             "**/.svn": true,
