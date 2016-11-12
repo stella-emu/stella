@@ -51,17 +51,4 @@ namespace TIA6502tsCore {
     myIndices[address] = index;
   }
 
-  void DelayQueue::execute(Executor& executor) {
-    DelayQueueMember& currentMember = myMembers.at(myIndex);
-
-    for (auto&& entry : currentMember) {
-      executor(entry.address, entry.value);
-      myIndices[entry.address] = 0xFF;
-    }
-
-    currentMember.clear();
-
-    myIndex = (myIndex + 1) & myMembers.size();
-  }
-
 } // namespace TIA6502tsCore

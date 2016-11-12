@@ -128,7 +128,6 @@ class TIA : public AbstractTIA {
     Settings& mySettings;
 
     DelayQueue myDelayQueue;
-    unique_ptr<DelayQueue::Executor> myDelayQueueExecutor;
 
    private:
 

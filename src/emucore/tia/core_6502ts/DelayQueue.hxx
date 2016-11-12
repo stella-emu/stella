@@ -29,25 +29,13 @@ class DelayQueue {
 
   public:
 
-    class Executor {
-
-      public:
-
-        virtual void operator()(uInt8 address, uInt8 value) = 0;
-
-        virtual ~Executor() = default;
-
-    };
-
-  public:
-
     DelayQueue(uInt8 length, uInt8 size);
 
   public:
 
     void push(uInt8 address, uInt8 value, uInt8 delay);
 
-    void execute(Executor& executor);
+    template<class T> void execute(T executor);
 
   private:
 
@@ -66,6 +54,23 @@ class DelayQueue {
     DelayQueue& operator=(DelayQueue&&) = delete;
 
 };
+
+// ############################################################################
+// Implementation
+// ############################################################################
+
+template<class T> void DelayQueue::execute(T executor) {
+  DelayQueueMember& currentMember = myMembers.at(myIndex);
+
+  for (auto&& entry : currentMember) {
+    executor(entry.address, entry.value);
+    myIndices[entry.address] = 0xFF;
+  }
+
+  currentMember.clear();
+
+  myIndex = (myIndex + 1) & myMembers.size();
+}
 
 } // namespace TIA6502tsCore
 

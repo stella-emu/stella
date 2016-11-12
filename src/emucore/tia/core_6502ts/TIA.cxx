@@ -28,27 +28,7 @@ namespace TIA6502tsCore {
       mySound(sound),
       mySettings(settings),
       myDelayQueue(10, 20)
-  {
-    class DelayedWriteExecutor : public DelayQueue::Executor {
-
-      public:
-
-        DelayedWriteExecutor(TIA& tia) : myTia(tia)
-        {}
-
-        void operator()(uInt8 address, uInt8 value) override
-        {
-          myTia.delayedWrite(address, value);
-        }
-
-      private:
-
-        TIA& myTia;
-
-    };
-
-    myDelayQueueExecutor.reset(new DelayedWriteExecutor(*this));
-  }
+  {}
 
   // TODO: stub
   void TIA::reset()
