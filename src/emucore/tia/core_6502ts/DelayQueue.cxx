@@ -21,40 +21,40 @@
 
 namespace TIA6502tsCore {
 
-  DelayQueue::DelayQueue(uInt8 length, uInt8 size)
-    : myIndex(0)
-  {
-    myMembers.reserve(length);
+DelayQueue::DelayQueue(uInt8 length, uInt8 size)
+  : myIndex(0)
+{
+  myMembers.reserve(length);
 
-    for (uInt16 i = 0; i < length; i++)
-      myMembers.emplace_back(size);
+  for (uInt16 i = 0; i < length; i++)
+    myMembers.emplace_back(size);
 
-    for (uInt8& i : myIndices)
-      i = 0xFF;
-  }
+  for (uInt8& i : myIndices)
+    i = 0xFF;
+}
 
-  void DelayQueue::push(uInt8 address, uInt8 value, uInt8 delay)
-  {
-    uInt8 length = myMembers.size();
+void DelayQueue::push(uInt8 address, uInt8 value, uInt8 delay)
+{
+  uInt8 length = myMembers.size();
 
-    if (delay >= length)
-      throw new runtime_error("delay exceeds queue length");
+  if (delay >= length)
+    throw new runtime_error("delay exceeds queue length");
 
-    uInt8 currentIndex = myIndices[address];
+  uInt8 currentIndex = myIndices[address];
 
-    if (currentIndex < 0xFF)
-      myMembers.at(currentIndex).remove(address);
+  if (currentIndex < 0xFF)
+    myMembers.at(currentIndex).remove(address);
 
-    uInt8 index = (myIndex + delay) % length;
-    myMembers.at(index).push(address, value);
+  uInt8 index = (myIndex + delay) % length;
+  myMembers.at(index).push(address, value);
 
-    myIndices[address] = index;
-  }
+  myIndices[address] = index;
+}
 
-  void DelayQueue::reset()
-  {
-    for (DelayQueueMember& member : myMembers)
-      member.clear();
-  }
+void DelayQueue::reset()
+{
+  for (DelayQueueMember& member : myMembers)
+    member.clear();
+}
 
 } // namespace TIA6502tsCore

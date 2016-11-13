@@ -39,182 +39,182 @@ static constexpr uInt32
 
 namespace TIA6502tsCore {
 
-  FrameManager::FrameManager()
-  {
-    reset();
-  }
+FrameManager::FrameManager()
+{
+  reset();
+}
 
-  void FrameManager::setOnFrameCompleteHandler(FrameManager::frameCompletionHandler handler)
-  {
-    myOnFrameComplete = handler;
-  }
+void FrameManager::setOnFrameCompleteHandler(FrameManager::frameCompletionHandler handler)
+{
+  myOnFrameComplete = handler;
+}
 
-  void FrameManager::reset()
-  {
-    setTvMode(TvMode::ntsc);
-    setState(State::waitForVsyncStart);
+void FrameManager::reset()
+{
+  setTvMode(TvMode::ntsc);
+  setState(State::waitForVsyncStart);
 
-    myLineInState = 0;
-    myLinesWithoutVsync = 0;
-    myWaitForVsync = true;
-    myVsync = false;
-    myVblank = false;
-  }
+  myLineInState = 0;
+  myLinesWithoutVsync = 0;
+  myWaitForVsync = true;
+  myVsync = false;
+  myVblank = false;
+}
 
-  void FrameManager::nextLine()
-  {
-    myCurrentFrameTotalLines++;
-    myLineInState++;
+void FrameManager::nextLine()
+{
+  myCurrentFrameTotalLines++;
+  myLineInState++;
 
-    switch (myState) {
-      case State::waitForVsyncStart:
-      case State::waitForVsyncEnd:
-        if (myLinesWithoutVsync > myMaxLinesWithoutVsync) {
-          myWaitForVsync = false;
-          setState(State::waitForFrameStart);
+  switch (myState) {
+    case State::waitForVsyncStart:
+    case State::waitForVsyncEnd:
+      if (myLinesWithoutVsync > myMaxLinesWithoutVsync) {
+        myWaitForVsync = false;
+        setState(State::waitForFrameStart);
+      }
+
+      break;
+
+    case State::waitForFrameStart:
+      if (myWaitForVsync) {
+        if (myLineInState >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan))
+          setState(State::frame);
+      } else {
+        if (!myVblank) {
+          setState(State::frame);
         }
+      }
 
-        break;
+      break;
 
-      case State::waitForFrameStart:
-        if (myWaitForVsync) {
-          if (myLineInState >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan))
-            setState(State::frame);
-        } else {
-          if (!myVblank) {
-            setState(State::frame);
-          }
-        }
+    case State::frame:
+      if (myLineInState >= myFrameLines + Metrics::visibleOverscan) {
+        finalizeFrame();
+      }
 
-        break;
+      break;
 
-      case State::frame:
-        if (myLineInState >= myFrameLines + Metrics::visibleOverscan) {
-          finalizeFrame();
-        }
+    case State::overscan:
+      if (myLineInState >= myOverscanLines - Metrics::visibleOverscan) {
+        setState(myWaitForVsync ? State::waitForVsyncStart : State::waitForFrameStart);
+      }
 
-        break;
+      break;
 
-      case State::overscan:
-        if (myLineInState >= myOverscanLines - Metrics::visibleOverscan) {
-          setState(myWaitForVsync ? State::waitForVsyncStart : State::waitForFrameStart);
-        }
+    default:
+      throw runtime_error("frame manager: invalid state");
+  }
+}
 
-        break;
+void FrameManager::setVblank(bool vblank)
+{
+  myVblank = vblank;
+}
 
-      default:
-        throw runtime_error("frame manager: invalid state");
-    }
+void FrameManager::setVsync(bool vsync)
+{
+  if (!myWaitForVsync || vsync == myVsync) return;
+
+  myVsync = vsync;
+
+  switch (myState) {
+    case State::waitForVsyncStart:
+    case State::waitForFrameStart:
+    case State::overscan:
+      if (myVsync) setState(State::waitForVsyncEnd);
+
+      break;
+
+    case State::waitForVsyncEnd:
+      if (!myVsync) {
+        setState(State::waitForFrameStart);
+        myLinesWithoutVsync = 0;
+      }
+
+      break;
+
+    case State::frame:
+      if (myVsync) finalizeFrame();
+
+      break;
+
+    default:
+      throw runtime_error("frame manager: invalid state");
+  }
+}
+
+bool FrameManager::isRendering() const {
+  return myState == State::frame;
+}
+
+FrameManager::TvMode FrameManager::tvMode() const {
+  return myMode;
+}
+
+bool FrameManager::vblank() const {
+  return myVblank;
+}
+
+uInt32 FrameManager::height() const {
+  return myKernelLines + Metrics::visibleOverscan;
+}
+
+uInt32 FrameManager::currentLine() const {
+  return myState == State::frame ? myLineInState : 0;
+}
+
+void FrameManager::setTvMode(FrameManager::TvMode mode)
+{
+  if (mode == myMode) return;
+
+  myMode = mode;
+
+  switch (myMode) {
+    case TvMode::ntsc:
+      myVblankLines     = Metrics::vblankNTSC;
+      myKernelLines     = Metrics::kernelNTSC;
+      myOverscanLines   = Metrics::overscanNTSC;
+
+      break;
+
+    case TvMode::pal:
+      myVblankLines     = Metrics::vblankPAL;
+      myKernelLines     = Metrics::kernelPAL;
+      myOverscanLines   = Metrics::overscanPAL;
+
+      break;
+
+    default:
+      throw runtime_error("frame manager: invalid TV mode");
   }
 
-  void FrameManager::setVblank(bool vblank)
-  {
-    myVblank = vblank;
+  myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
+  myMaxLinesWithoutVsync = myFrameLines * Metrics::maxFramesWithoutVsync;
+}
+
+void FrameManager::setState(FrameManager::State state)
+{
+  myState = state;
+  myLineInState = 0;
+}
+
+void FrameManager::finalizeFrame()
+{
+  const uInt32
+    deltaNTSC = abs(Int32(myCurrentFrameTotalLines) - Int32(frameLinesNTSC)),
+    deltaPAL =  abs(Int32(myCurrentFrameTotalLines) - Int32(frameLinesPAL));
+
+  if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance) {
+    setTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
   }
 
-  void FrameManager::setVsync(bool vsync)
-  {
-    if (!myWaitForVsync || vsync == myVsync) return;
-
-    myVsync = vsync;
-
-    switch (myState) {
-      case State::waitForVsyncStart:
-      case State::waitForFrameStart:
-      case State::overscan:
-        if (myVsync) setState(State::waitForVsyncEnd);
-
-        break;
-
-      case State::waitForVsyncEnd:
-        if (!myVsync) {
-          setState(State::waitForFrameStart);
-          myLinesWithoutVsync = 0;
-        }
-
-        break;
-
-      case State::frame:
-        if (myVsync) finalizeFrame();
-
-        break;
-
-      default:
-        throw runtime_error("frame manager: invalid state");
-    }
+  if (myOnFrameComplete) {
+    myOnFrameComplete();
   }
 
-  bool FrameManager::isRendering() const {
-    return myState == State::frame;
-  }
-
-  FrameManager::TvMode FrameManager::tvMode() const {
-    return myMode;
-  }
-
-  bool FrameManager::vblank() const {
-    return myVblank;
-  }
-
-  uInt32 FrameManager::height() const {
-    return myKernelLines + Metrics::visibleOverscan;
-  }
-
-  uInt32 FrameManager::currentLine() const {
-    return myState == State::frame ? myLineInState : 0;
-  }
-
-  void FrameManager::setTvMode(FrameManager::TvMode mode)
-  {
-    if (mode == myMode) return;
-
-    myMode = mode;
-
-    switch (myMode) {
-      case TvMode::ntsc:
-        myVblankLines     = Metrics::vblankNTSC;
-        myKernelLines     = Metrics::kernelNTSC;
-        myOverscanLines   = Metrics::overscanNTSC;
-
-        break;
-
-      case TvMode::pal:
-        myVblankLines     = Metrics::vblankPAL;
-        myKernelLines     = Metrics::kernelPAL;
-        myOverscanLines   = Metrics::overscanPAL;
-
-        break;
-
-      default:
-        throw runtime_error("frame manager: invalid TV mode");
-    }
-
-    myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
-    myMaxLinesWithoutVsync = myFrameLines * Metrics::maxFramesWithoutVsync;
-  }
-
-  void FrameManager::setState(FrameManager::State state)
-  {
-    myState = state;
-    myLineInState = 0;
-  }
-
-  void FrameManager::finalizeFrame()
-  {
-    const uInt32
-      deltaNTSC = abs(Int32(myCurrentFrameTotalLines) - Int32(frameLinesNTSC)),
-      deltaPAL =  abs(Int32(myCurrentFrameTotalLines) - Int32(frameLinesPAL));
-
-    if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance) {
-      setTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
-    }
-
-    if (myOnFrameComplete) {
-      myOnFrameComplete();
-    }
-
-    myCurrentFrameTotalLines = 0;
-    setState(State::overscan);
-  }
+  myCurrentFrameTotalLines = 0;
+  setState(State::overscan);
+}
 
 } // namespace TIA6502tsCore
