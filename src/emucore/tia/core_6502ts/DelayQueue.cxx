@@ -51,4 +51,10 @@ namespace TIA6502tsCore {
     myIndices[address] = index;
   }
 
+  void DelayQueue::reset()
+  {
+    for (DelayQueueMember& member : myMembers)
+      member.clear();
+  }
+
 } // namespace TIA6502tsCore

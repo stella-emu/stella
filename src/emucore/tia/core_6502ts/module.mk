@@ -3,7 +3,8 @@ MODULE := src/emucore/tia/core_6502ts
 MODULE_OBJS := \
 	src/emucore/tia/core_6502ts/TIA.o \
 	src/emucore/tia/core_6502ts/DelayQueueMember.o \
-	src/emucore/tia/core_6502ts/DelayQueue.o
+	src/emucore/tia/core_6502ts/DelayQueue.o \
+	src/emucore/tia/core_6502ts/FrameManager.o
 
 
 MODULE_DIRS += \

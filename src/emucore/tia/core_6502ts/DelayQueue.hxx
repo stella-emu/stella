@@ -35,6 +35,8 @@ class DelayQueue {
 
     void push(uInt8 address, uInt8 value, uInt8 delay);
 
+    void reset();
+
     template<class T> void execute(T executor);
 
   private:

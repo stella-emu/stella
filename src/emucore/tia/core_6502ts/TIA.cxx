@@ -28,11 +28,19 @@ namespace TIA6502tsCore {
       mySound(sound),
       mySettings(settings),
       myDelayQueue(10, 20)
-  {}
+  {
+    myFrameManager.setOnFrameCompleteHandler(
+      [this] () {onFrameComplete();}
+    );
+
+    reset();
+  }
 
   // TODO: stub
   void TIA::reset()
-  {}
+  {
+    myDelayQueue.reset();
+  }
 
   // TODO: stub
   void TIA::systemCyclesReset()
@@ -216,6 +224,10 @@ namespace TIA6502tsCore {
 
   // TODO: stub
   void TIA::setJitterRecoveryFactor(Int32 f)
+  {}
+
+  // TODO: stub
+  void TIA::onFrameComplete()
   {}
 
   // TODO: stub

@@ -26,6 +26,7 @@
 #include "Settings.hxx"
 #include "TIATypes.hxx"
 #include "DelayQueue.hxx"
+#include "FrameManager.hxx"
 
 class Console;
 
@@ -117,6 +118,8 @@ class TIA : public AbstractTIA {
 
   private:
 
+    void onFrameComplete();
+
     void delayedWrite(uInt8 address, uInt8 value);
 
   private:
@@ -128,6 +131,8 @@ class TIA : public AbstractTIA {
     Settings& mySettings;
 
     DelayQueue myDelayQueue;
+
+    FrameManager myFrameManager;
 
    private:
 
