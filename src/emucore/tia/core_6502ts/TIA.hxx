@@ -118,6 +118,26 @@ class TIA : public AbstractTIA {
 
   private:
 
+    enum HState {blank, frame};
+
+    enum Priority {normal, inverted};
+
+  private:
+
+    void cycle(uInt32 colorClocks);
+
+    void tickMovement();
+
+    void tickHblank();
+
+    void tickHframe();
+
+    void updateCollision();
+
+    void renderPixel(uInt32 x, uInt32 y, bool lineNotCached);
+
+    void nextLine();
+
     void onFrameComplete();
 
     void delayedWrite(uInt8 address, uInt8 value);
@@ -125,14 +145,33 @@ class TIA : public AbstractTIA {
   private:
 
     Console& myConsole;
-
     Sound& mySound;
-
     Settings& mySettings;
 
     DelayQueue myDelayQueue;
-
     FrameManager myFrameManager;
+
+    HState myHstate;
+    bool myIsFreshLine;
+
+    uInt32 myHblankCtr;
+    uInt32 myHctr;
+
+    bool myCollisionUpdateRequired;
+    uInt32 myCollisionMask;
+
+    uInt32 myMovementClock;
+    bool myMovementInProgress;
+    bool myExtendedHblank;
+
+    uInt32 myLinesSinceChange;
+
+    Priority myPriority;
+
+    uInt32 myLastCycle;
+
+    BytePtr myCurrentFrameBuffer;
+    BytePtr myPreviousFrameBuffer;
 
    private:
 
