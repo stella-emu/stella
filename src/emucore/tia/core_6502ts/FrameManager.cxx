@@ -44,16 +44,21 @@ FrameManager::FrameManager()
   reset();
 }
 
-void FrameManager::setOnFrameCompleteHandler(FrameManager::frameCompletionHandler handler)
-{
-  myOnFrameComplete = handler;
+void FrameManager::setHandlers(
+  FrameManager::callback frameStartCallback,
+  FrameManager::callback frameCompleteCallback
+) {
+  myOnFrameStart = frameStartCallback;
+  myOnFrameComplete = frameCompleteCallback;
 }
 
 void FrameManager::reset()
 {
+  myMode = TvMode::pal;
   setTvMode(TvMode::ntsc);
-  setState(State::waitForVsyncStart);
 
+  myState = State::waitForVsyncStart;
+  myCurrentFrameTotalLines = 0;
   myLineInState = 0;
   myLinesWithoutVsync = 0;
   myWaitForVsync = true;
@@ -89,7 +94,7 @@ void FrameManager::nextLine()
       break;
 
     case State::frame:
-      if (myLineInState >= myFrameLines + Metrics::visibleOverscan) {
+      if (myLineInState >= myKernelLines + Metrics::visibleOverscan) {
         finalizeFrame();
       }
 
@@ -105,6 +110,8 @@ void FrameManager::nextLine()
     default:
       throw runtime_error("frame manager: invalid state");
   }
+
+  if (myWaitForVsync) myLinesWithoutVsync++;
 }
 
 void FrameManager::setVblank(bool vblank)
@@ -195,8 +202,12 @@ void FrameManager::setTvMode(FrameManager::TvMode mode)
 
 void FrameManager::setState(FrameManager::State state)
 {
+  if (myState == state) return;
+
   myState = state;
   myLineInState = 0;
+
+  if (myState == State::frame && myOnFrameStart) myOnFrameStart();
 }
 
 void FrameManager::finalizeFrame()

@@ -124,6 +124,8 @@ class TIA : public AbstractTIA {
 
   private:
 
+    void updateEmulation();
+
     void cycle(uInt32 colorClocks);
 
     void tickMovement();
@@ -139,6 +141,8 @@ class TIA : public AbstractTIA {
     void nextLine();
 
     void onFrameComplete();
+
+    void onFrameStart();
 
     void delayedWrite(uInt8 address, uInt8 value);
 

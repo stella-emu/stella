@@ -29,7 +29,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySettings(settings),
     myDelayQueue(10, 20)
 {
-  myFrameManager.setOnFrameCompleteHandler(
+  myFrameManager.setHandlers(
+    [this] () {onFrameStart();},
     [this] () {onFrameComplete();}
   );
 
@@ -62,7 +63,7 @@ void TIA::reset()
 
 void TIA::systemCyclesReset()
 {
-  uInt32 cycles = mySystem->cycles();
+  const uInt32 cycles = mySystem->cycles();
 
   myLastCycle -= cycles;
   mySound.adjustCycleCounter(-cycles);
@@ -100,16 +101,32 @@ bool TIA::load(Serializer& in)
   return true;
 }
 
-// TODO: stub
 uInt8 TIA::peek(uInt16 address)
 {
+  updateEmulation();
+
   return 0;
 }
 
-// TODO: stub
 bool TIA::poke(uInt16 address, uInt8 value)
 {
-  return false;
+  updateEmulation();
+
+  switch (address & 0x3F) {
+    case WSYNC:
+      mySystem->incrementCycles((227 - myHctr) / 3);
+      break;
+
+    case VSYNC:
+      myFrameManager.setVsync(value & 0x02);
+      break;
+
+    case VBLANK:
+      myFrameManager.setVblank(value & 0x02);
+      break;
+  }
+
+  return true;
 }
 
 // TODO: stub
@@ -130,7 +147,9 @@ bool TIA::loadDisplay(Serializer& in)
 
 // TODO: stub
 void TIA::update()
-{}
+{
+  mySystem->m6502().execute(25000);
+}
 
 uInt8* TIA::currentFrameBuffer() const
 {
@@ -256,6 +275,14 @@ bool TIA::toggleJitter(uInt8 mode)
 void TIA::setJitterRecoveryFactor(Int32 f)
 {}
 
+void TIA::updateEmulation() {
+  const uInt32 cycles = mySystem->cycles();
+
+  cycle(3 * (cycles - myLastCycle));
+
+  myLastCycle = cycles;
+}
+
 void TIA::cycle(uInt32 colorClocks)
 {
   for (uInt32 i = 0; i < colorClocks; i++) {
@@ -304,6 +331,8 @@ void TIA::tickHblank()
   }
 
   if (++myHblankCtr >= 68) myHstate = HState::frame;
+
+  myHctr++;
 }
 
 void TIA::tickHframe()
@@ -358,6 +387,11 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
 void TIA::onFrameComplete()
 {
   mySystem->m6502().stop();
+}
+
+void TIA::onFrameStart()
+{
+  myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
 }
 
 // TODO: stub

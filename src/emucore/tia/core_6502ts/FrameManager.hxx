@@ -33,7 +33,7 @@ class FrameManager {
       pal, ntsc
     };
 
-    typedef std::function<void()> frameCompletionHandler;
+    typedef std::function<void()> callback;
 
   public:
 
@@ -41,7 +41,7 @@ class FrameManager {
 
   public:
 
-    void setOnFrameCompleteHandler(frameCompletionHandler);
+    void setHandlers(callback frameStartCallback, callback frameCompletionCallback);
 
     void reset();
 
@@ -81,7 +81,8 @@ class FrameManager {
 
   private:
 
-    frameCompletionHandler myOnFrameComplete;
+    callback myOnFrameStart;
+    callback myOnFrameComplete;
 
     TvMode myMode;
     State myState;

@@ -55,7 +55,7 @@ vector<DelayQueueMember::Entry>::const_iterator DelayQueueMember::begin() const
 
 vector<DelayQueueMember::Entry>::const_iterator DelayQueueMember::end() const
 {
-  return myEntries.end();
+  return (mySize < myEntries.size() - 1) ? (myEntries.begin() + mySize) : myEntries.end();
 }
 
 void DelayQueueMember::clear()
