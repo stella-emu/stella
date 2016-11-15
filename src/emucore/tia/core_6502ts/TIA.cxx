@@ -112,7 +112,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
 {
   updateEmulation();
 
-  switch (address & 0x3F) {
+  address &= 0x3F;
+
+  switch (address) {
     case WSYNC:
       mySystem->incrementCycles((227 - myHctr) / 3);
       break;
@@ -123,6 +125,15 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case VBLANK:
       myFrameManager.setVblank(value & 0x02);
+      break;
+
+    case AUDV0:
+    case AUDV1:
+    case AUDF0:
+    case AUDF1:
+    case AUDC0:
+    case AUDC1:
+      mySound.set(address, value, mySystem->cycles());
       break;
   }
 
