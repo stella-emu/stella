@@ -17,8 +17,8 @@
 // $Id$
 //============================================================================
 
-#ifndef TIA_6502TS_CORE
-#define TIA_6502TS_CORE
+#ifndef TIA_6502TS_CORE_TIA
+#define TIA_6502TS_CORE_TIA
 
 #include "bspf.hxx"
 #include "AbstractTIA.hxx"
@@ -27,6 +27,7 @@
 #include "TIATypes.hxx"
 #include "DelayQueue.hxx"
 #include "FrameManager.hxx"
+#include "Playfield.hxx"
 
 class Console;
 
@@ -177,6 +178,8 @@ class TIA : public AbstractTIA {
     BytePtr myCurrentFrameBuffer;
     BytePtr myPreviousFrameBuffer;
 
+    Playfield myPlayfield;
+
    private:
 
     TIA() = delete;
@@ -189,4 +192,4 @@ class TIA : public AbstractTIA {
 
 } // namespace TIA6502tsCore
 
-#endif // TIA_6502TS_CORE
+#endif // TIA_6502TS_CORE_TIA
