@@ -21,8 +21,8 @@
 
 namespace TIA6502tsCore {
 
-DelayQueueMember::DelayQueueMember(uInt8 capacity)
-  : myEntries(capacity),
+DelayQueueMember::DelayQueueMember(uInt8 size)
+  : myEntries(size),
     mySize(0)
 {}
 

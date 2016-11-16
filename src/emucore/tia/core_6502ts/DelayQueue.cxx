@@ -29,8 +29,7 @@ DelayQueue::DelayQueue(uInt8 length, uInt8 size)
   for (uInt16 i = 0; i < length; i++)
     myMembers.emplace_back(size);
 
-  for (uInt8& i : myIndices)
-    i = 0xFF;
+  memset(myIndices, 0xFF, 0xFF);
 }
 
 void DelayQueue::push(uInt8 address, uInt8 value, uInt8 delay)

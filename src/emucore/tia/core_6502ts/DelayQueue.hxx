@@ -71,7 +71,7 @@ template<class T> void DelayQueue::execute(T executor) {
 
   currentMember.clear();
 
-  myIndex = (myIndex + 1) & myMembers.size();
+  myIndex = (myIndex + 1) % myMembers.size();
 }
 
 } // namespace TIA6502tsCore

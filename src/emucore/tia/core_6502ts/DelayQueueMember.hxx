@@ -35,7 +35,7 @@ class DelayQueueMember {
 
   public:
 
-    DelayQueueMember(uInt8 capacity);
+    DelayQueueMember(uInt8 size);
 
     DelayQueueMember(DelayQueueMember&&) = default;
 

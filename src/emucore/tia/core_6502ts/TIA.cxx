@@ -22,12 +22,23 @@
 #include "M6502.hxx"
 
 enum CollisionMask : uInt32 {
-    player0 =       0b0111110000000000,
-    player1 =       0b0100001111000000,
-    missile0 =      0b0010001000111000,
-    missile1 =      0b0001000100100110,
-    ball =          0b0000100010010101,
-    playfield =     0b0000010001001011
+  player0 =       0b0111110000000000,
+  player1 =       0b0100001111000000,
+  missile0 =      0b0010001000111000,
+  missile1 =      0b0001000100100110,
+  ball =          0b0000100010010101,
+  playfield =     0b0000010001001011
+};
+
+enum Delay: uInt8 {
+  hmove = 6,
+  pf = 2,
+  grp = 1,
+  shufflePlayer = 1,
+  hmp = 2,
+  hmm = 2,
+  hmbl = 2,
+  hmclr = 2
 };
 
 namespace TIA6502tsCore {
@@ -174,20 +185,17 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case PF0:
-      myLinesSinceChange = 0;
-      myPlayfield.pf0(value);
+      myDelayQueue.push(PF0, value, Delay::pf);
 
       break;
 
     case PF1:
-      myLinesSinceChange = 0;
-      myPlayfield.pf1(value);
+      myDelayQueue.push(PF1, value, Delay::pf);
 
       break;
 
     case PF2:
-      myLinesSinceChange = 0;
-      myPlayfield.pf2(value);
+      myDelayQueue.push(PF2, value, Delay::pf);
 
       break;
   }
@@ -464,8 +472,27 @@ void TIA::onFrameStart()
   myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
 }
 
-// TODO: stub
 void TIA::delayedWrite(uInt8 address, uInt8 value)
-{}
+{
+  switch (address) {
+    case PF0:
+      myLinesSinceChange = 0;
+      myPlayfield.pf0(value);
+
+      break;
+
+    case PF1:
+      myLinesSinceChange = 0;
+      myPlayfield.pf1(value);
+
+      break;
+
+    case PF2:
+      myLinesSinceChange = 0;
+      myPlayfield.pf2(value);
+
+      break;
+  }
+}
 
 } // namespace TIA6502tsCore
