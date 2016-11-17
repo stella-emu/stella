@@ -148,6 +148,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
   switch (address) {
     case WSYNC:
+      // TODO: Make sure that we understand the +1... :)
       mySystem->incrementCycles((227 - myHctr) / 3 + 1);
       break;
 
