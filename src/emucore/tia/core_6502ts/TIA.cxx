@@ -572,9 +572,9 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       myMovementInProgress = true;
 
       if (!myExtendedHblank) {
-          myHblankCtr -= 8;
-          clearHmoveComb();
-          myExtendedHblank = true;
+        myHblankCtr -= 8;
+        clearHmoveComb();
+        myExtendedHblank = true;
       }
 
       myMissile0.startMovement();
