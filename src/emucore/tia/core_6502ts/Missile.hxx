@@ -68,7 +68,7 @@ namespace TIA6502tsCore {
       bool myEnam;
       uInt8 myResmp;
 
-      uInt32 myHmmClocks;
+      uInt8 myHmmClocks;
       uInt8 myCounter;
       bool myIsMoving;
       uInt8 myWidth;

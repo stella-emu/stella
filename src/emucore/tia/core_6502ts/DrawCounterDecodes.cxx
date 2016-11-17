@@ -23,11 +23,13 @@
 
 namespace TIA6502tsCore {
 
-const uInt8* const* DrawCounterDecodes::playerDecodes() const {
+const uInt8* const* DrawCounterDecodes::playerDecodes() const
+{
   return myPlayerDecodes;
 }
 
-const uInt8* const* DrawCounterDecodes::missileDecodes() const {
+const uInt8* const* DrawCounterDecodes::missileDecodes() const
+{
   return myMissileDecodes;
 }
 
