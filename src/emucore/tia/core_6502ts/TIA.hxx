@@ -28,6 +28,7 @@
 #include "DelayQueue.hxx"
 #include "FrameManager.hxx"
 #include "Playfield.hxx"
+#include "Missile.hxx"
 
 class Console;
 
@@ -137,7 +138,13 @@ class TIA : public AbstractTIA {
 
     void updateCollision();
 
+    void renderSprites(uInt32 x);
+
+    void tickSprites();
+
     void renderPixel(uInt32 x, uInt32 y, bool lineNotCached);
+
+    void clearHmoveComb();
 
     void nextLine();
 
@@ -159,8 +166,8 @@ class TIA : public AbstractTIA {
     HState myHstate;
     bool myIsFreshLine;
 
-    uInt32 myHblankCtr;
-    uInt32 myHctr;
+    Int32 myHblankCtr;
+    Int32 myHctr;
 
     bool myCollisionUpdateRequired;
     uInt32 myCollisionMask;
@@ -175,10 +182,14 @@ class TIA : public AbstractTIA {
 
     uInt32 myLastCycle;
 
+    uInt8 myColorBk;
+
     BytePtr myCurrentFrameBuffer;
     BytePtr myPreviousFrameBuffer;
 
     Playfield myPlayfield;
+    Missile myMissile0;
+    Missile myMissile1;
 
    private:
 

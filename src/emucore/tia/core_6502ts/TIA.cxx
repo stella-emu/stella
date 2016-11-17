@@ -48,11 +48,17 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySound(sound),
     mySettings(settings),
     myDelayQueue(10, 20),
-    myPlayfield(CollisionMask::playfield)
+    myPlayfield(CollisionMask::playfield),
+    myMissile0(CollisionMask::missile0),
+    myMissile1(CollisionMask::missile1)
 {
   myFrameManager.setHandlers(
-    [this] () {onFrameStart();},
-    [this] () {onFrameComplete();}
+    [this] () {
+      myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
+    },
+    [this] () {
+      mySystem->m6502().stop();
+    }
   );
 
   myCurrentFrameBuffer  = make_ptr<uInt8[]>(160 * 320);
@@ -74,10 +80,13 @@ void TIA::reset()
   myCollisionMask = 0;
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = false;
+  myColorBk = 0;
 
   myLastCycle = 0;
 
   myPlayfield.reset();
+  myMissile0.reset();
+  myMissile1.reset();
 
   mySound.reset();
   myDelayQueue.reset();
@@ -139,7 +148,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
   switch (address) {
     case WSYNC:
-      mySystem->incrementCycles((227 - myHctr) / 3);
+      mySystem->incrementCycles((227 - myHctr) / 3 + 1);
       break;
 
     case VSYNC:
@@ -157,17 +166,32 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case AUDC0:
     case AUDC1:
       mySound.set(address, value, mySystem->cycles());
+
+      break;
+
+    case HMOVE:
+      myDelayQueue.push(HMOVE, value, Delay::hmove);
+
+      break;
+
+    case COLUBK:
+      myColorBk = value & 0xFE;
+
       break;
 
     case COLUP0:
       myLinesSinceChange = 0;
-      myPlayfield.setColorP0(value & 0xFE);
+      value &= 0xFE;
+      myPlayfield.setColorP0(value);
+      myMissile0.setColor(value);
 
       break;
 
     case COLUP1:
       myLinesSinceChange = 0;
-      myPlayfield.setColorP1(value & 0xFE);
+      value &= 0xFE;
+      myPlayfield.setColorP1(value);
+      myMissile1.setColor(value);
 
       break;
 
@@ -196,6 +220,57 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case PF2:
       myDelayQueue.push(PF2, value, Delay::pf);
+
+      break;
+
+    case ENAM0:
+      myLinesSinceChange = 0;
+      myMissile0.enam(value);
+
+      break;
+
+    case ENAM1:
+      myLinesSinceChange = 0;
+      myMissile1.enam(value);
+
+      break;
+
+    case RESM0:
+      myLinesSinceChange = 0;
+      myMissile0.resm(myHstate == HState::blank);
+
+      break;
+
+    case RESM1:
+      myLinesSinceChange = 0;
+      myMissile1.resm(myHstate == HState::blank);
+
+      break;
+
+    case NUSIZ0:
+      myLinesSinceChange = 0;
+      myMissile0.nusiz(value);
+
+      break;
+
+    case NUSIZ1:
+      myLinesSinceChange = 0;
+      myMissile1.nusiz(value);
+
+      break;
+
+    case HMM0:
+      myDelayQueue.push(HMM0, value, Delay::hmm);
+
+      break;
+
+    case HMM1:
+      myDelayQueue.push(HMM1, value, Delay::hmm);
+
+      break;
+
+    case HMCLR:
+      myDelayQueue.push(HMCLR, value, Delay::hmclr);
 
       break;
   }
@@ -379,7 +454,7 @@ void TIA::cycle(uInt32 colorClocks)
 
 void TIA::tickMovement()
 {
-  if (myMovementInProgress) return;
+  if (!myMovementInProgress) return;
 
   if ((myHctr & 0x03) == 0) {
     myLinesSinceChange = 0;
@@ -388,7 +463,8 @@ void TIA::tickMovement()
 
     bool m = false;
 
-    // TODO: propagate movement to sprites
+    m = myMissile0.movementTick(myMovementClock, apply) || m;
+    m = myMissile1.movementTick(myMovementClock, apply) || m;
 
     myMovementInProgress = m;
     myCollisionUpdateRequired = m;
@@ -419,13 +495,26 @@ void TIA::tickHframe()
 
   myPlayfield.tick(x);
 
-  // TODO: render sprites
+  if (lineNotCached)
+    renderSprites(x);
 
-  // TODO: tick sprites
+  tickSprites();
 
   if (myFrameManager.isRendering()) renderPixel(x, y, lineNotCached);
 
   if (++myHctr >= 228) nextLine();
+}
+
+void TIA::renderSprites(uInt32 x)
+{
+  myMissile0.render();
+  myMissile1.render();
+}
+
+void TIA::tickSprites()
+{
+  myMissile0.tick();
+  myMissile1.tick();
 }
 
 void TIA::nextLine()
@@ -448,11 +537,15 @@ void TIA::updateCollision()
 void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
 {
   if (lineNotCached) {
-    uInt8 color = 0;
+    uInt8 color = myColorBk;
 
     if (myPriority == Priority::normal) {
       color = myPlayfield.getPixel(color);
+      color = myMissile1.getPixel(color);
+      color = myMissile0.getPixel(color);
     } else {
+      color = myMissile1.getPixel(color);
+      color = myMissile0.getPixel(color);
       color = myPlayfield.getPixel(color);
     }
 
@@ -462,19 +555,32 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
   }
 }
 
-void TIA::onFrameComplete()
+void TIA::clearHmoveComb()
 {
-  mySystem->m6502().stop();
-}
-
-void TIA::onFrameStart()
-{
-  myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
+  if (myFrameManager.isRendering() && myHstate == HState::blank)
+    memset(myCurrentFrameBuffer.get() + myFrameManager.currentLine() * 160, 0, 8);
 }
 
 void TIA::delayedWrite(uInt8 address, uInt8 value)
 {
   switch (address) {
+    case HMOVE:
+      myLinesSinceChange = 0;
+
+      myMovementClock = 0;
+      myMovementInProgress = true;
+
+      if (!myExtendedHblank) {
+          myHblankCtr -= 8;
+          clearHmoveComb();
+          myExtendedHblank = true;
+      }
+
+      myMissile0.startMovement();
+      myMissile1.startMovement();
+
+      break;
+
     case PF0:
       myLinesSinceChange = 0;
       myPlayfield.pf0(value);
@@ -490,6 +596,25 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
     case PF2:
       myLinesSinceChange = 0;
       myPlayfield.pf2(value);
+
+      break;
+
+    case HMM0:
+      myLinesSinceChange = 0;
+      myMissile0.hmm(value);
+
+      break;
+
+    case HMM1:
+      myLinesSinceChange = 0;
+      myMissile1.hmm(value);
+
+      break;
+
+    case HMCLR:
+      myLinesSinceChange = 0;
+      myMissile0.hmm(0);
+      myMissile1.hmm(0);
 
       break;
   }
