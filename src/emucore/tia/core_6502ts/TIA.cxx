@@ -286,15 +286,17 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case HMCLR:
       myDelayQueue.push(HMCLR, value, Delay::hmclr);
 
+      break;
+
     case GRP0:
       myDelayQueue.push(GRP0, value, Delay::grp);
-      myDelayQueue.push(DummyRegisters::shuffleP1, value, Delay::shufflePlayer);
+      myDelayQueue.push(DummyRegisters::shuffleP1, 0, Delay::shufflePlayer);
 
       break;
 
     case GRP1:
       myDelayQueue.push(GRP1, value, Delay::grp);
-      myDelayQueue.push(DummyRegisters::shuffleP0, value, Delay::shufflePlayer);
+      myDelayQueue.push(DummyRegisters::shuffleP0, 0, Delay::shufflePlayer);
 
       break;
 
