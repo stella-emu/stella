@@ -29,6 +29,7 @@
 #include "FrameManager.hxx"
 #include "Playfield.hxx"
 #include "Missile.hxx"
+#include "Player.hxx"
 
 class Console;
 
@@ -138,7 +139,7 @@ class TIA : public AbstractTIA {
 
     void updateCollision();
 
-    void renderSprites(uInt32 x);
+    void renderSprites();
 
     void tickSprites();
 
@@ -190,6 +191,8 @@ class TIA : public AbstractTIA {
     Playfield myPlayfield;
     Missile myMissile0;
     Missile myMissile1;
+    Player myPlayer0;
+    Player myPlayer1;
 
    private:
 

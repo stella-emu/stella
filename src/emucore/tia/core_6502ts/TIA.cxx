@@ -41,6 +41,11 @@ enum Delay: uInt8 {
   hmclr = 2
 };
 
+enum DummyRegisters: uInt8 {
+  shuffleP0 = 0xF0,
+  shuffleP1 = 0xF1
+};
+
 namespace TIA6502tsCore {
 
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
@@ -50,7 +55,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myDelayQueue(10, 20),
     myPlayfield(CollisionMask::playfield),
     myMissile0(CollisionMask::missile0),
-    myMissile1(CollisionMask::missile1)
+    myMissile1(CollisionMask::missile1),
+    myPlayer0(CollisionMask::player0),
+    myPlayer1(CollisionMask::player1)
 {
   myFrameManager.setHandlers(
     [this] () {
@@ -87,6 +94,8 @@ void TIA::reset()
   myPlayfield.reset();
   myMissile0.reset();
   myMissile1.reset();
+  myPlayer0.reset();
+  myPlayer1.reset();
 
   mySound.reset();
   myDelayQueue.reset();
@@ -185,6 +194,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       value &= 0xFE;
       myPlayfield.setColorP0(value);
       myMissile0.setColor(value);
+      myPlayer0.setColor(value);
 
       break;
 
@@ -193,6 +203,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       value &= 0xFE;
       myPlayfield.setColorP1(value);
       myMissile1.setColor(value);
+      myPlayer1.setColor(value);
 
       break;
 
@@ -251,12 +262,14 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case NUSIZ0:
       myLinesSinceChange = 0;
       myMissile0.nusiz(value);
+      myPlayer0.nusiz(value);
 
       break;
 
     case NUSIZ1:
       myLinesSinceChange = 0;
       myMissile1.nusiz(value);
+      myPlayer1.nusiz(value);
 
       break;
 
@@ -272,6 +285,62 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case HMCLR:
       myDelayQueue.push(HMCLR, value, Delay::hmclr);
+
+    case GRP0:
+      myDelayQueue.push(GRP0, value, Delay::grp);
+      myDelayQueue.push(DummyRegisters::shuffleP1, value, Delay::shufflePlayer);
+
+      break;
+
+    case GRP1:
+      myDelayQueue.push(GRP1, value, Delay::grp);
+      myDelayQueue.push(DummyRegisters::shuffleP0, value, Delay::shufflePlayer);
+
+      break;
+
+    case RESP0:
+      myLinesSinceChange = 0;
+      myPlayer0.resp(myHstate == HState::blank);
+
+      break;
+
+    case RESP1:
+      myLinesSinceChange = 0;
+      myPlayer1.resp(myHstate == HState::blank);
+
+      break;
+
+    case REFP0:
+      myLinesSinceChange = 0;
+      myPlayer0.refp(value);
+
+      break;
+
+    case REFP1:
+      myLinesSinceChange = 0;
+      myPlayer1.refp(value);
+
+      break;
+
+    case VDELP0:
+      myLinesSinceChange = 0;
+      myPlayer0.vdelp(value);
+
+      break;
+
+    case VDELP1:
+      myLinesSinceChange = 0;
+      myPlayer1.vdelp(value);
+
+      break;
+
+    case HMP0:
+      myDelayQueue.push(HMP0, value, Delay::hmp);
+
+      break;
+
+    case HMP1:
+      myDelayQueue.push(HMP1, value, Delay::hmp);
 
       break;
   }
@@ -466,6 +535,8 @@ void TIA::tickMovement()
 
     m = myMissile0.movementTick(myMovementClock, apply) || m;
     m = myMissile1.movementTick(myMovementClock, apply) || m;
+    m = myPlayer0.movementTick(myMovementClock, apply) || m;
+    m = myPlayer1.movementTick(myMovementClock, apply) || m;
 
     myMovementInProgress = m;
     myCollisionUpdateRequired = m;
@@ -497,7 +568,7 @@ void TIA::tickHframe()
   myPlayfield.tick(x);
 
   if (lineNotCached)
-    renderSprites(x);
+    renderSprites();
 
   tickSprites();
 
@@ -506,16 +577,21 @@ void TIA::tickHframe()
   if (++myHctr >= 228) nextLine();
 }
 
-void TIA::renderSprites(uInt32 x)
+void TIA::renderSprites()
 {
+  myPlayer0.render();
+  myPlayer1.render();
   myMissile0.render();
   myMissile1.render();
+
 }
 
 void TIA::tickSprites()
 {
   myMissile0.tick();
   myMissile1.tick();
+  myPlayer0.tick();
+  myPlayer1.tick();
 }
 
 void TIA::nextLine()
@@ -543,10 +619,14 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
     if (myPriority == Priority::normal) {
       color = myPlayfield.getPixel(color);
       color = myMissile1.getPixel(color);
+      color = myPlayer1.getPixel(color);
       color = myMissile0.getPixel(color);
+      color = myPlayer0.getPixel(color);
     } else {
       color = myMissile1.getPixel(color);
+      color = myPlayer1.getPixel(color);
       color = myMissile0.getPixel(color);
+      color = myPlayer0.getPixel(color);
       color = myPlayfield.getPixel(color);
     }
 
@@ -579,6 +659,8 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 
       myMissile0.startMovement();
       myMissile1.startMovement();
+      myPlayer0.startMovement();
+      myPlayer1.startMovement();
 
       break;
 
@@ -616,6 +698,44 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       myLinesSinceChange = 0;
       myMissile0.hmm(0);
       myMissile1.hmm(0);
+      myPlayer0.hmp(0);
+      myPlayer1.hmp(0);
+
+      break;
+
+    case GRP0:
+      myLinesSinceChange = 0;
+      myPlayer0.grp(value);
+
+      break;
+
+    case GRP1:
+      myLinesSinceChange = 0;
+      myPlayer1.grp(value);
+
+      break;
+
+    case DummyRegisters::shuffleP0:
+      myLinesSinceChange = 0;
+      myPlayer0.shufflePatterns();
+
+      break;
+
+    case DummyRegisters::shuffleP1:
+      myLinesSinceChange = 0;
+      myPlayer1.shufflePatterns();
+
+      break;
+
+    case HMP0:
+      myLinesSinceChange = 0;
+      myPlayer0.hmp(value);
+
+      break;
+
+    case HMP1:
+      myLinesSinceChange = 0;
+      myPlayer1.hmp(value);
 
       break;
   }

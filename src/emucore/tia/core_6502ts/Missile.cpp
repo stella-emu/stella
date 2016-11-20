@@ -20,7 +20,7 @@
 #include "Missile.hxx"
 #include "DrawCounterDecodes.hxx"
 
-enum Count {
+enum Count : Int8 {
   renderCounterOffset = -4
 };
 

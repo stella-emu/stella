@@ -7,7 +7,8 @@ MODULE_OBJS := \
 	src/emucore/tia/core_6502ts/FrameManager.o \
 	src/emucore/tia/core_6502ts/Playfield.o \
 	src/emucore/tia/core_6502ts/DrawCounterDecodes.o \
-	src/emucore/tia/core_6502ts/Missile.o
+	src/emucore/tia/core_6502ts/Missile.o \
+	src/emucore/tia/core_6502ts/Player.o
 
 
 MODULE_DIRS += \
