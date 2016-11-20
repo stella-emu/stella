@@ -41,6 +41,9 @@ namespace TIA6502tsCore {
 
 FrameManager::FrameManager()
 {
+  myMode = TvMode::pal;
+  setTvMode(TvMode::ntsc);
+
   reset();
 }
 
@@ -54,9 +57,6 @@ void FrameManager::setHandlers(
 
 void FrameManager::reset()
 {
-  myMode = TvMode::pal;
-  setTvMode(TvMode::ntsc);
-
   myState = State::waitForVsyncStart;
   myCurrentFrameTotalLines = 0;
   myLineInState = 0;
