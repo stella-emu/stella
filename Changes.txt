@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.7.2 to 4.8: (xxx. xx, 2016)
+4.7.2 to 4.7.3: (Nov. 21, 2016)
 
   * Added preliminary support for the 3E+ bankswitching scheme, developed
     by Thomas Jentzsch.
