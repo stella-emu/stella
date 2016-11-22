@@ -193,7 +193,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUBK:
-    myLinesSinceChange = 0;
+      myLinesSinceChange = 0;
       myColorBk = value & 0xFE;
       break;
 
