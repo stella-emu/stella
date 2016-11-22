@@ -175,6 +175,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VBLANK:
+      myLinesSinceChange = 0;
       myFrameManager.setVblank(value & 0x02);
       break;
 
@@ -192,6 +193,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUBK:
+    myLinesSinceChange = 0;
       myColorBk = value & 0xFE;
       break;
 
