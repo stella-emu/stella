@@ -48,6 +48,7 @@ void Player::reset()
   myPattern = 0;
   myIsReflected = 0;
   myIsDelaying = false;
+  collision = myCollisionMask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

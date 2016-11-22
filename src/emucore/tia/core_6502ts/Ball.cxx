@@ -1,4 +1,3 @@
-//============================================================================
 //
 //   SSSS    tt          lll  lll
 //  SS  SS   tt           ll   ll
@@ -17,8 +16,7 @@
 // $Id$
 //============================================================================
 
-#include "Missile.hxx"
-#include "DrawCounterDecodes.hxx"
+#include "Ball.hxx"
 
 enum Count: Int8 {
   renderCounterOffset = -4
@@ -27,68 +25,81 @@ enum Count: Int8 {
 namespace TIA6502tsCore {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Missile::Missile(uInt32 collisionMask)
+Ball::Ball(uInt32 collisionMask)
   : myCollisionMask(collisionMask)
 {
   reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::reset()
+void Ball::reset()
 {
-  myDecodes = DrawCounterDecodes::get().missileDecodes()[0];
+  myColor = 0;
+  collision = myCollisionMask;
+  myEnabledOld = false;
+  myEnabledNew = false;
   myEnabled = false;
-  myEnam = false;
-  myResmp = 0;
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
   myWidth = 1;
   myIsRendering = false;
   myRenderCounter = 0;
-  myColor = 0;
-  collision = myCollisionMask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::enam(uInt8 value)
+void Ball::enabl(uInt8 value)
 {
-  myEnam = (value & 0x02) > 0;
-  myEnabled = myEnam && (myResmp == 0);
+  myEnabledNew = (value & 0x02) > 0;
+  updateEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::hmm(uInt8 value)
+void Ball::hmbl(uInt8 value)
 {
   myHmmClocks = (value >> 4) ^ 0x08;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::resm(bool hblank)
+void Ball::resbl(bool hblank)
 {
   myCounter = hblank ? 159 : 157;
+
+  if (!hblank) {
+    myIsRendering = true;
+    myRenderCounter = Count::renderCounterOffset;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::nusiz(uInt8 value)
+void Ball::ctrlpf(uInt8 value)
 {
-  static constexpr uInt8 ourWidths[] = { 1, 2, 4, 8 };
+  static constexpr uInt8 ourWidths[] = {1, 2, 4, 8};
 
   myWidth = ourWidths[(value & 0x30) >> 4];
-  myDecodes = DrawCounterDecodes::get().missileDecodes()[value & 0x07];
-
-  if (myIsRendering && myRenderCounter >= myWidth)
-    myIsRendering = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::startMovement()
+void Ball::vdelbl(uInt8 value)
+{
+  myIsDelaying = (value & 0x01) > 0;
+  updateEnabled();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::setColor(uInt8 color)
+{
+  myColor = color;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::startMovement()
 {
   myIsMoving = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Missile::movementTick(uInt32 clock, bool apply)
+bool Ball::movementTick(uInt32 clock, bool apply)
 {
   if (clock == myHmmClocks) myIsMoving = false;
 
@@ -101,34 +112,42 @@ bool Missile::movementTick(uInt32 clock, bool apply)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::render()
+void Ball::render()
 {
   collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ? 0 : myCollisionMask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::tick()
+void Ball::tick()
 {
-  if (myDecodes[myCounter]) {
+  if (myCounter == 156) {
     myIsRendering = true;
     myRenderCounter = Count::renderCounterOffset;
-  } else if (myIsRendering && ++myRenderCounter >= myWidth) {
-    myIsRendering = false;
   }
+  else if (myIsRendering && ++myRenderCounter >= myWidth)
+    myIsRendering = false;
 
-  if (++myCounter >= 160) myCounter = 0;
+  if (++myCounter >= 160)
+      myCounter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::setColor(uInt8 color)
+uInt8 Ball::getPixel(uInt8 colorIn) const
 {
-  myColor = color;
+  return collision > 0 ? colorIn : myColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Missile::getPixel(uInt8 colorIn) const
+void Ball::shuffleStatus()
 {
-  return collision ? colorIn : myColor;
+  myEnabledOld = myEnabledNew;
+  updateEnabled();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::updateEnabled()
+{
+  myEnabled = myIsDelaying ? myEnabledOld : myEnabledNew;
 }
 
 } // namespace TIA6502tsCore

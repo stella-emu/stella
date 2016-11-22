@@ -58,7 +58,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myMissile0(CollisionMask::missile0),
     myMissile1(CollisionMask::missile1),
     myPlayer0(CollisionMask::player0),
-    myPlayer1(CollisionMask::player1)
+    myPlayer1(CollisionMask::player1),
+    myBall(CollisionMask::ball)
 {
   myFrameManager.setHandlers(
     [this] () {
@@ -98,6 +99,7 @@ void TIA::reset()
   myMissile1.reset();
   myPlayer0.reset();
   myPlayer1.reset();
+  myBall.reset();
 
   mySound.reset();
   myDelayQueue.reset();
@@ -217,11 +219,14 @@ bool TIA::poke(uInt16 address, uInt8 value)
       myLinesSinceChange = 0;
       myPriority = (value & 0x04) ? Priority::inverted : Priority::normal;
       myPlayfield.ctrlpf(value);
+      myBall.ctrlpf(value);
       break;
 
     case COLUPF:
       myLinesSinceChange = 0;
-      myPlayfield.setColor(value & 0xFE);
+      value &= 0xFE;
+      myPlayfield.setColor(value);
+      myBall.setColor(value);
       break;
 
     case PF0:
@@ -286,8 +291,10 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case GRP1:
+      myLinesSinceChange = 0;
       myDelayQueue.push(GRP1, value, Delay::grp);
       myDelayQueue.push(DummyRegisters::shuffleP0, 0, Delay::shufflePlayer);
+      myBall.shuffleStatus();
       break;
 
     case RESP0:
@@ -326,6 +333,25 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case HMP1:
       myDelayQueue.push(HMP1, value, Delay::hmp);
+      break;
+
+    case ENABL:
+      myLinesSinceChange = 0;
+      myBall.enabl(value);
+      break;
+
+    case RESBL:
+      myLinesSinceChange = 0;
+      myBall.resbl(myHstate == HState::blank);
+      break;
+
+    case VDELBL:
+      myLinesSinceChange = 0;
+      myBall.vdelbl(value);
+      break;
+
+    case HMBL:
+      myDelayQueue.push(HMBL, value, Delay::hmbl);
       break;
   }
 
@@ -556,6 +582,7 @@ void TIA::tickMovement()
     m = myMissile1.movementTick(myMovementClock, apply) || m;
     m = myPlayer0.movementTick(myMovementClock, apply) || m;
     m = myPlayer1.movementTick(myMovementClock, apply) || m;
+    m = myBall.movementTick(myMovementClock, apply) || m;
 
     myMovementInProgress = m;
     myCollisionUpdateRequired = m;
@@ -605,7 +632,7 @@ void TIA::renderSprites()
   myPlayer1.render();
   myMissile0.render();
   myMissile1.render();
-
+  myBall.render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -615,6 +642,7 @@ void TIA::tickSprites()
   myMissile1.tick();
   myPlayer0.tick();
   myPlayer1.tick();
+  myBall.tick();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -644,6 +672,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
 
     if (myPriority == Priority::normal) {
       color = myPlayfield.getPixel(color);
+      color = myBall.getPixel(color);
       color = myMissile1.getPixel(color);
       color = myPlayer1.getPixel(color);
       color = myMissile0.getPixel(color);
@@ -654,6 +683,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
       color = myMissile0.getPixel(color);
       color = myPlayer0.getPixel(color);
       color = myPlayfield.getPixel(color);
+      color = myBall.getPixel(color);
     }
 
     myCurrentFrameBuffer.get()[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
@@ -690,6 +720,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       myMissile1.startMovement();
       myPlayer0.startMovement();
       myPlayer1.startMovement();
+      myBall.startMovement();
       break;
 
     case PF0:
@@ -723,6 +754,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       myMissile1.hmm(0);
       myPlayer0.hmp(0);
       myPlayer1.hmp(0);
+      myBall.hmbl(0);
       break;
 
     case GRP0:
@@ -753,6 +785,11 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
     case HMP1:
       myLinesSinceChange = 0;
       myPlayer1.hmp(value);
+      break;
+
+    case HMBL:
+      myLinesSinceChange = 0;
+      myBall.hmbl(value);
       break;
   }
 }

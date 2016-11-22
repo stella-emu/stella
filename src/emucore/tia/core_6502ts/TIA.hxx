@@ -30,6 +30,7 @@
 #include "Playfield.hxx"
 #include "Missile.hxx"
 #include "Player.hxx"
+#include "Ball.hxx"
 
 class Console;
 
@@ -192,6 +193,7 @@ class TIA : public AbstractTIA
     Missile myMissile1;
     Player myPlayer0;
     Player myPlayer1;
+    Ball myBall;
 
    private:
     TIA() = delete;
