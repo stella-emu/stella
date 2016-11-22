@@ -25,15 +25,15 @@
 
 namespace TIA6502tsCore {
 
-class FrameManager {
-
+class FrameManager
+{
   public:
 
     enum TvMode {
       pal, ntsc
     };
 
-    typedef std::function<void()> callback;
+    using callback = std::function<void()>;
 
   public:
 
@@ -101,12 +101,10 @@ class FrameManager {
     uInt32 myMaxLinesWithoutVsync;
 
   private:
-
     FrameManager(const FrameManager&) = delete;
     FrameManager(FrameManager&&) = delete;
     FrameManager& operator=(const FrameManager&) = delete;
     FrameManager& operator=(FrameManager&&) = delete;
-
 };
 
 } // namespace TIA6502tsCore

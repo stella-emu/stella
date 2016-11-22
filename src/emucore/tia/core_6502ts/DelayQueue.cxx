@@ -15,12 +15,13 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
-//======================================
+//============================================================================
 
 #include "DelayQueue.hxx"
 
 namespace TIA6502tsCore {
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DelayQueue::DelayQueue(uInt8 length, uInt8 size)
   : myIndex(0)
 {
@@ -32,12 +33,13 @@ DelayQueue::DelayQueue(uInt8 length, uInt8 size)
   memset(myIndices, 0xFF, 0xFF);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DelayQueue::push(uInt8 address, uInt8 value, uInt8 delay)
 {
   uInt8 length = myMembers.size();
 
   if (delay >= length)
-    throw new runtime_error("delay exceeds queue length");
+    throw runtime_error("delay exceeds queue length");
 
   uInt8 currentIndex = myIndices[address];
 
@@ -50,6 +52,7 @@ void DelayQueue::push(uInt8 address, uInt8 value, uInt8 delay)
   myIndices[address] = index;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DelayQueue::reset()
 {
   for (DelayQueueMember& member : myMembers)

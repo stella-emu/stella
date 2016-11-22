@@ -35,10 +35,9 @@ class Console;
 
 namespace TIA6502tsCore {
 
-class TIA : public AbstractTIA {
-
+class TIA : public AbstractTIA
+{
   public:
-
     TIA(Console& console, Sound& sound, Settings& settings);
     virtual ~TIA() = default;
 
@@ -195,13 +194,11 @@ class TIA : public AbstractTIA {
     Player myPlayer1;
 
    private:
-
     TIA() = delete;
     TIA(const TIA&) = delete;
     TIA(TIA&&) = delete;
     TIA& operator=(const TIA&) = delete;
     TIA& operator=(TIA&&) = delete;
-
 };
 
 } // namespace TIA6502tsCore

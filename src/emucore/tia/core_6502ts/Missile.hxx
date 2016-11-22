@@ -24,70 +24,67 @@
 
 namespace TIA6502tsCore {
 
-  class Missile {
+class Missile
+{
+  public:
+    Missile(uInt32 collisionMask);
 
-    public:
+  public:
 
-      Missile(uInt32 collisionMask);
+    void reset();
 
-    public:
+    void enam(uInt8 value);
 
-      void reset();
+    void hmm(uInt8 value);
 
-      void enam(uInt8 value);
+    void resm(bool hblank);
 
-      void hmm(uInt8 value);
+    // TODO: resmp
 
-      void resm(bool hblank);
+    void nusiz(uInt8 value);
 
-      // TODO: resmp
+    void startMovement();
 
-      void nusiz(uInt8 value);
+    bool movementTick(uInt32 clock, bool apply);
 
-      void startMovement();
+    void render();
 
-      bool movementTick(uInt32 clock, bool apply);
+    void tick();
 
-      void render();
+    void setColor(uInt8 color);
 
-      void tick();
+    uInt8 getPixel(uInt8 colorIn) const;
 
-      void setColor(uInt8 color);
+  public:
 
-      uInt8 getPixel(uInt8 colorIn) const;
+    uInt32 collision;
 
-    public:
+  private:
 
-      uInt32 collision;
+    uInt32 myCollisionMask;
 
-    private:
+    bool myEnabled;
+    bool myEnam;
+    uInt8 myResmp;
 
-      uInt32 myCollisionMask;
+    uInt8 myHmmClocks;
+    uInt8 myCounter;
+    bool myIsMoving;
+    uInt8 myWidth;
 
-      bool myEnabled;
-      bool myEnam;
-      uInt8 myResmp;
+    bool myIsRendering;
+    Int8 myRenderCounter;
 
-      uInt8 myHmmClocks;
-      uInt8 myCounter;
-      bool myIsMoving;
-      uInt8 myWidth;
+    const uInt8* myDecodes;
 
-      bool myIsRendering;
-      Int8 myRenderCounter;
+    uInt8 myColor;
 
-      const uInt8 *myDecodes;
-      static uInt8 myWidths[4];
-
-      uInt8 myColor;
-
-    private:
-
-      Missile(const Missile&) = delete;
-      Missile(Missile&&) = delete;
-      Missile& operator=(const Missile&) = delete;
-      Missile& operator=(Missile&&) = delete;
-  };
+  private:
+    Missile(const Missile&) = delete;
+    Missile(Missile&&) = delete;
+    Missile& operator=(const Missile&) = delete;
+    Missile& operator=(Missile&&) = delete;
+};
 
 } // namespace TIA6502tsCore
 

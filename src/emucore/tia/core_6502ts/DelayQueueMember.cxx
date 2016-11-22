@@ -21,11 +21,14 @@
 
 namespace TIA6502tsCore {
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DelayQueueMember::DelayQueueMember(uInt8 size)
   : myEntries(size),
     mySize(0)
-{}
+{
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DelayQueueMember::push(uInt8 address, uInt8 value)
 {
   Entry& entry = myEntries.at(mySize++);
@@ -34,6 +37,7 @@ void DelayQueueMember::push(uInt8 address, uInt8 value)
   entry.value = value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DelayQueueMember::remove(uInt8 address)
 {
   size_t index;
@@ -46,21 +50,6 @@ void DelayQueueMember::remove(uInt8 address)
     myEntries.at(index) = myEntries.at(mySize - 1);
     mySize--;
   }
-}
-
-vector<DelayQueueMember::Entry>::const_iterator DelayQueueMember::begin() const
-{
-  return myEntries.begin();
-}
-
-vector<DelayQueueMember::Entry>::const_iterator DelayQueueMember::end() const
-{
-  return (mySize < myEntries.size() - 1) ? (myEntries.begin() + mySize) : myEntries.end();
-}
-
-void DelayQueueMember::clear()
-{
-  mySize = 0;
 }
 
 } // namespace TIA6502tsCore

@@ -24,10 +24,9 @@
 
 namespace TIA6502tsCore {
 
-class Playfield {
-
+class Playfield
+{
   public:
-
     Playfield(uInt32 collisionMask);
 
   public:
@@ -86,7 +85,6 @@ class Playfield {
     uInt32 myCollisionMask;
 
   private:
-
     Playfield() = delete;
     Playfield(const Playfield&) = delete;
     Playfield(Playfield&&) = delete;

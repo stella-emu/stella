@@ -24,8 +24,8 @@
 
 namespace TIA6502tsCore {
 
-class DrawCounterDecodes {
-
+class DrawCounterDecodes
+{
   public:
 
     const uInt8* const* playerDecodes() const;
@@ -34,24 +34,22 @@ class DrawCounterDecodes {
 
     static DrawCounterDecodes& get();
 
-    ~DrawCounterDecodes();
-
   protected:
 
     DrawCounterDecodes();
 
   private:
 
-    uInt8 *myPlayerDecodes[8];
+    uInt8* myPlayerDecodes[8];
 
-    uInt8 *myMissileDecodes[8];
+    uInt8* myMissileDecodes[8];
 
-    uInt8 *myDecodes0, *myDecodes1, *myDecodes2, *myDecodes3, *myDecodes4, *myDecodes6, *myDecodesWide;
+    uInt8 myDecodes0[160], myDecodes1[160], myDecodes2[160], myDecodes3[160],
+          myDecodes4[160], myDecodes6[160], myDecodesWide[160];
 
     static DrawCounterDecodes myInstance;
 
   private:
-
     DrawCounterDecodes(const DrawCounterDecodes&) = delete;
     DrawCounterDecodes(DrawCounterDecodes&&) = delete;
     DrawCounterDecodes& operator=(const DrawCounterDecodes&) = delete;

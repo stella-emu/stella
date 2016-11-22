@@ -23,34 +23,30 @@
 
 namespace TIA6502tsCore {
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* const* DrawCounterDecodes::playerDecodes() const
 {
   return myPlayerDecodes;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* const* DrawCounterDecodes::missileDecodes() const
 {
   return myMissileDecodes;
 }
 
-DrawCounterDecodes DrawCounterDecodes::myInstance;
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrawCounterDecodes& DrawCounterDecodes::DrawCounterDecodes::get()
 {
   return myInstance;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrawCounterDecodes::DrawCounterDecodes()
 {
-  myDecodes0 = new uInt8[160];
-  myDecodes1 = new uInt8[160];
-  myDecodes2 = new uInt8[160];
-  myDecodes3 = new uInt8[160];
-  myDecodes4 = new uInt8[160];
-  myDecodes6 = new uInt8[160];
-  myDecodesWide = new uInt8[160];
-
-  for (uInt8 *decodes : {myDecodes0, myDecodes1, myDecodes2, myDecodes3, myDecodes4, myDecodes6}) {
+  for (uInt8 *decodes : {myDecodes0, myDecodes1, myDecodes2, myDecodes3,
+                         myDecodes4, myDecodes6})
+  {
     memset(decodes, 0, 160);
     decodes[156] = 1;
   }
@@ -83,11 +79,7 @@ DrawCounterDecodes::DrawCounterDecodes()
   myMissileDecodes[7] = myDecodes0;
 }
 
-DrawCounterDecodes::~DrawCounterDecodes()
-{
-  for (uInt8 *decodes : {myDecodes0, myDecodes1, myDecodes2, myDecodes3, myDecodes4, myDecodes6, myDecodesWide}) {
-    delete[] decodes;
-  }
-}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DrawCounterDecodes DrawCounterDecodes::myInstance;
 
-}
+} // namespace TIA6502tsCore

@@ -21,12 +21,14 @@
 
 namespace TIA6502tsCore {
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Playfield::Playfield(uInt32 collisionMask)
   : myCollisionMask(collisionMask)
 {
   reset();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::reset()
 {
   myPattern = 0;
@@ -47,11 +49,13 @@ void Playfield::reset()
   applyColors();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf0(uInt8 value)
 {
   myPattern = (myPattern & 0x000FFFF0) | ((value & 0xF0) >> 4);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf1(uInt8 value)
 {
   myPattern = (myPattern & 0x000FF00F)
@@ -65,11 +69,13 @@ void Playfield::pf1(uInt8 value)
     | ((value & 0x01) <<  11);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf2(uInt8 value)
 {
   myPattern = (myPattern & 0x00000FFF) | ((value & 0xFF) << 12);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::ctrlpf(uInt8 value)
 {
   myReflected = (value & 0x01) > 0;
@@ -77,24 +83,28 @@ void Playfield::ctrlpf(uInt8 value)
   applyColors();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColor(uInt8 color)
 {
   myColor = color;
   applyColors();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColorP0(uInt8 color)
 {
   myColorP0 = color;
   applyColors();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColorP1(uInt8 color)
 {
   myColorP1 = color;
   applyColors();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::tick(uInt32 x)
 {
   myX = x;
@@ -118,6 +128,7 @@ void Playfield::tick(uInt32 x)
   collision = currentPixel ? 0 : myCollisionMask;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Playfield::getPixel(uInt8 colorIn) const
 {
   if (!collision) return myX < 80 ? myColorLeft : myColorRight;
@@ -125,9 +136,11 @@ uInt8 Playfield::getPixel(uInt8 colorIn) const
   return colorIn;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::applyColors()
 {
-  switch (myColorMode) {
+  switch (myColorMode)
+  {
     case ColorMode::normal:
       myColorLeft = myColorRight = myColor;
       break;

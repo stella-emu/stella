@@ -25,10 +25,9 @@
 
 namespace TIA6502tsCore {
 
-class DelayQueue {
-
+class DelayQueue
+{
   public:
-
     DelayQueue(uInt8 length, uInt8 size);
 
   public:
@@ -48,20 +47,19 @@ class DelayQueue {
     uInt8 myIndices[0xFF];
 
   private:
-
     DelayQueue() = delete;
     DelayQueue(const DelayQueue&) = delete;
     DelayQueue(DelayQueue&&) = delete;
     DelayQueue& operator=(const DelayQueue&) = delete;
     DelayQueue& operator=(DelayQueue&&) = delete;
-
 };
 
 // ############################################################################
 // Implementation
 // ############################################################################
 
-template<class T> void DelayQueue::execute(T executor) {
+template<class T> void DelayQueue::execute(T executor)
+{
   DelayQueueMember& currentMember = myMembers.at(myIndex);
 
   for (auto&& entry : currentMember) {

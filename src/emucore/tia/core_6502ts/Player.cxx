@@ -20,18 +20,20 @@
 #include "Player.hxx"
 #include "DrawCounterDecodes.hxx"
 
-enum Count : Int8 {
+enum Count: Int8 {
   renderCounterOffset = -5
 };
 
 namespace TIA6502tsCore {
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Player::Player(uInt32 collisionMask)
   : myCollisionMask(collisionMask)
 {
   reset();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::reset()
 {
   myDecodes = DrawCounterDecodes::get().playerDecodes()[0];
@@ -48,6 +50,7 @@ void Player::reset()
   myIsDelaying = false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::grp(uInt8 pattern)
 {
   myPatternNew = pattern;
@@ -55,23 +58,24 @@ void Player::grp(uInt8 pattern)
   if (!myIsDelaying) updatePattern();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::hmp(uInt8 value)
 {
-  myHmmClocks = (value >> 4) ^ 0x8;
+  myHmmClocks = (value >> 4) ^ 0x08;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::nusiz(uInt8 value)
 {
   const uInt8 masked = value & 0x07;
   const uInt8 oldWidth = myWidth;
 
-  if (masked == 5) {
+  if (masked == 5)
     myWidth = 16;
-  } else if (masked == 7) {
+  else if (masked == 7)
     myWidth = 32;
-  } else {
+  else
     myWidth = 8;
-  }
 
   myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
 
@@ -81,11 +85,13 @@ void Player::nusiz(uInt8 value)
   if (oldWidth != myWidth) updatePattern();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::resp(bool hblank)
 {
   myCounter = hblank ? 159 : 157;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::refp(uInt8 value)
 {
   const bool oldIsReflected = myIsReflected;
@@ -95,6 +101,7 @@ void Player::refp(uInt8 value)
   if (myIsReflected != oldIsReflected) updatePattern();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::vdelp(uInt8 value)
 {
   const bool oldIsDelaying = myIsDelaying;
@@ -104,16 +111,19 @@ void Player::vdelp(uInt8 value)
   if (myIsDelaying != oldIsDelaying) updatePattern();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setColor(uInt8 color)
 {
   myColor = color;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::startMovement()
 {
   myIsMoving = true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Player::movementTick(uInt32 clock, bool apply)
 {
   if (clock == myHmmClocks) {
@@ -128,6 +138,7 @@ bool Player::movementTick(uInt32 clock, bool apply)
   return myIsMoving;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::render()
 {
   collision = (
@@ -137,6 +148,7 @@ void Player::render()
   ) ? 0 : myCollisionMask;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::tick()
 {
   if (myDecodes[myCounter]) {
@@ -149,23 +161,27 @@ void Player::tick()
   if (++myCounter >= 160) myCounter = 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Player::getPixel(uInt8 colorIn) const
 {
   return collision ? colorIn : myColor;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::shufflePatterns()
 {
-    const uInt8 oldPatternOld = myPatternOld;
+  const uInt8 oldPatternOld = myPatternOld;
 
-    myPatternOld = myPatternNew;
+  myPatternOld = myPatternNew;
 
-    if (myIsDelaying && oldPatternOld != myPatternOld) updatePattern();
+  if (myIsDelaying && oldPatternOld != myPatternOld) updatePattern();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Player::getRespClock() const
 {
-  switch (myWidth) {
+  switch (myWidth)
+  {
     case 8:
       return myCounter - 3;
 
@@ -180,27 +196,28 @@ uInt8 Player::getRespClock() const
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::updatePattern()
 {
-const uInt32 pattern = myIsDelaying ? myPatternOld : myPatternNew;
+  const uInt32 pattern = myIsDelaying ? myPatternOld : myPatternNew;
 
-switch (myWidth) {
-  case 8:
-    if (myIsReflected) {
-      myPattern =
-        ((pattern & 0x01) << 7) |
-        ((pattern & 0x02) << 5) |
-        ((pattern & 0x04) << 3) |
-        ((pattern & 0x08) << 1) |
-        ((pattern & 0x10) >> 1) |
-        ((pattern & 0x20) >> 3) |
-        ((pattern & 0x40) >> 5) |
-        ((pattern & 0x80) >> 7);
-    } else {
-      myPattern = pattern;
-    }
-
-    break;
+  switch (myWidth)
+  {
+    case 8:
+      if (myIsReflected) {
+        myPattern =
+          ((pattern & 0x01) << 7) |
+          ((pattern & 0x02) << 5) |
+          ((pattern & 0x04) << 3) |
+          ((pattern & 0x08) << 1) |
+          ((pattern & 0x10) >> 1) |
+          ((pattern & 0x20) >> 3) |
+          ((pattern & 0x40) >> 5) |
+          ((pattern & 0x80) >> 7);
+      } else {
+        myPattern = pattern;
+      }
+      break;
 
     case 16:
       if (myIsReflected) {
@@ -224,7 +241,6 @@ switch (myWidth) {
           ((3 * (pattern & 0x40)) << 6)  |
           ((3 * (pattern & 0x80)) << 7);
       }
-
       break;
 
     case 32:
@@ -240,19 +256,17 @@ switch (myWidth) {
           ((0xF * (pattern & 0x80)) >> 7);
       } else {
         myPattern =
-          ((0xF * (pattern & 0x01)))        |
-          ((0xF * (pattern & 0x02)) << 3)   |
-          ((0xF * (pattern & 0x04)) << 6)   |
-          ((0xF * (pattern & 0x08)) << 9)   |
-          ((0xF * (pattern & 0x10)) << 12)  |
-          ((0xF * (pattern & 0x20)) << 15)  |
-          ((0xF * (pattern & 0x40)) << 18)  |
+          ((0xF * (pattern & 0x01)))       |
+          ((0xF * (pattern & 0x02)) << 3)  |
+          ((0xF * (pattern & 0x04)) << 6)  |
+          ((0xF * (pattern & 0x08)) << 9)  |
+          ((0xF * (pattern & 0x10)) << 12) |
+          ((0xF * (pattern & 0x20)) << 15) |
+          ((0xF * (pattern & 0x40)) << 18) |
           ((0xF * (pattern & 0x80)) << 21);
       }
-
       break;
   }
 }
-
 
 } // namespace TIA6502tsCore

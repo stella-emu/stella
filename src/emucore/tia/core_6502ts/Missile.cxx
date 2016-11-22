@@ -20,20 +20,20 @@
 #include "Missile.hxx"
 #include "DrawCounterDecodes.hxx"
 
-enum Count : Int8 {
+enum Count: Int8 {
   renderCounterOffset = -4
 };
 
 namespace TIA6502tsCore {
 
-uInt8 Missile::myWidths[4] = {1, 2, 4, 8};
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Missile::Missile(uInt32 collisionMask)
   : myCollisionMask(collisionMask)
 {
   reset();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::reset()
 {
   myDecodes = DrawCounterDecodes::get().missileDecodes()[0];
@@ -49,36 +49,44 @@ void Missile::reset()
   myColor = 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::enam(uInt8 value)
 {
   myEnam = (value & 0x02) > 0;
   myEnabled = myEnam && (myResmp == 0);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::hmm(uInt8 value)
 {
   myHmmClocks = (value >> 4) ^ 0x08;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::resm(bool hblank)
 {
   myCounter = hblank ? 159 : 157;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::nusiz(uInt8 value)
 {
-  myWidth = myWidths[(value & 0x30) >> 4];
+  static constexpr uInt8 ourWidths[] = { 1, 2, 4, 8 };
+
+  myWidth = ourWidths[(value & 0x30) >> 4];
   myDecodes = DrawCounterDecodes::get().missileDecodes()[value & 0x07];
 
   if (myIsRendering && myRenderCounter >= myWidth)
     myIsRendering = false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::startMovement()
 {
   myIsMoving = true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Missile::movementTick(uInt32 clock, bool apply)
 {
   if (clock == myHmmClocks) myIsMoving = false;
@@ -91,11 +99,13 @@ bool Missile::movementTick(uInt32 clock, bool apply)
   return myIsMoving;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::render()
 {
   collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ? 0 : myCollisionMask;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::tick()
 {
   if (myDecodes[myCounter]) {
@@ -108,11 +118,13 @@ void Missile::tick()
   if (++myCounter >= 160) myCounter = 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::setColor(uInt8 color)
 {
   myColor = color;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Missile::getPixel(uInt8 colorIn) const
 {
   return collision ? colorIn : myColor;

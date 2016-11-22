@@ -24,10 +24,9 @@
 
 namespace TIA6502tsCore {
 
-class Player {
-
+class Player
+{
   public:
-
     Player(uInt32 collisionMask);
 
   public:
@@ -89,17 +88,14 @@ class Player {
     uInt8 myPatternNew;
     uInt32 myPattern;
 
-
     bool myIsReflected;
     bool myIsDelaying;
 
   private:
-
     Player(const Player&) = delete;
     Player(Player&&) = delete;
     Player& operator=(const Player&) = delete;
     Player& operator=(Player&&) = delete;
-
 };
 
 } // namespace TIA6502tsCore

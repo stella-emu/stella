@@ -24,8 +24,8 @@
 
 namespace TIA6502tsCore {
 
-class DelayQueueMember {
-
+class DelayQueueMember
+{
   public:
 
     struct Entry {
@@ -47,11 +47,17 @@ class DelayQueueMember {
 
     void remove(uInt8 address);
 
-    vector<Entry>::const_iterator begin() const;
+    vector<Entry>::const_iterator begin() const {
+      return myEntries.begin();
+    }
 
-    vector<Entry>::const_iterator end() const;
+    vector<Entry>::const_iterator end() const {
+      return (mySize < myEntries.size() - 1) ? (myEntries.begin() + mySize) : myEntries.end();
+    }
 
-    void clear();
+    void clear() {
+      mySize = 0;
+    }
 
   private:
 
@@ -60,7 +66,6 @@ class DelayQueueMember {
     size_t mySize;
 
   private:
-
     DelayQueueMember() = delete;
     DelayQueueMember(const DelayQueueMember&) = delete;
     DelayQueueMember& operator=(const DelayQueueMember&) = delete;
