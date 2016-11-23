@@ -57,6 +57,8 @@ void DelayQueue::reset()
 {
   for (DelayQueueMember& member : myMembers)
     member.clear();
+
+  memset(myIndices, 0xFF, 0xFF);
 }
 
 } // namespace TIA6502tsCore

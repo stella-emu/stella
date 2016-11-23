@@ -52,7 +52,7 @@ class DelayQueueMember
     }
 
     vector<Entry>::const_iterator end() const {
-      return (mySize < myEntries.size() - 1) ? (myEntries.begin() + mySize) : myEntries.end();
+      return (mySize < myEntries.size()) ? (myEntries.begin() + mySize) : myEntries.end();
     }
 
     void clear() {
