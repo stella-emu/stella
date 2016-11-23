@@ -181,6 +181,7 @@ class TIA : public AbstractTIA
 
     Priority myPriority;
 
+    uInt8 mySubClock;
     uInt32 myLastCycle;
 
     uInt8 myColorBk;

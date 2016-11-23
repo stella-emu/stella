@@ -93,6 +93,7 @@ void TIA::reset()
   myColorBk = 0;
 
   myLastCycle = 0;
+  mySubClock = 2;
 
   myPlayfield.reset();
   myMissile0.reset();
@@ -168,8 +169,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
   switch (address)
   {
     case WSYNC:
-      // TODO: Make sure that we understand the +1... :)
-      mySystem->incrementCycles((227 - myHctr) / 3 + 1);
+      mySubClock += (228 - myHctr) % 228;
+      mySystem->incrementCycles(mySubClock / 3);
+      mySubClock %= 3;
       break;
 
     case VSYNC:
@@ -539,8 +541,12 @@ void TIA::updateEmulation()
 {
   const uInt32 cycles = mySystem->cycles();
 
-  cycle(3 * (cycles - myLastCycle));
+  if (mySubClock > 2)
+    throw runtime_error("subclock exceeds range");
 
+  cycle(3 * (cycles - myLastCycle) + mySubClock);
+
+  mySubClock = 0;
   myLastCycle = cycles;
 }
 
