@@ -22,6 +22,7 @@
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
+#include "Player.hxx"
 
 namespace TIA6502tsCore {
 
@@ -40,7 +41,7 @@ class Missile : public Serializable
 
     void resm(bool hblank);
 
-    // TODO: resmp
+    void resmp(uInt8 value, const Player& player);
 
     void nusiz(uInt8 value);
 

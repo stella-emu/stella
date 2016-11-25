@@ -70,6 +70,23 @@ void Missile::resm(bool hblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::resmp(uInt8 value, const Player& player)
+{
+  const uInt8 resmp = value & 0x02;
+
+  if (resmp == myResmp) return;
+
+  myResmp = resmp;
+
+  if (myResmp) {
+      myEnabled = false;
+  } else {
+      myEnabled = myEnam;
+      myCounter = player.getRespClock();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::nusiz(uInt8 value)
 {
   static constexpr uInt8 ourWidths[] = { 1, 2, 4, 8 };

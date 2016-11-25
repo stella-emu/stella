@@ -52,7 +52,7 @@ void Playfield::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf0(uInt8 value)
 {
-  myPattern = (myPattern & 0x000FFFF0) | ((value & 0xF0) >> 4);
+  myPattern = (myPattern & 0x000FFFF0) | (value >> 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,7 +72,7 @@ void Playfield::pf1(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf2(uInt8 value)
 {
-  myPattern = (myPattern & 0x00000FFF) | ((value & 0xFF) << 12);
+  myPattern = (myPattern & 0x00000FFF) | (value << 12);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

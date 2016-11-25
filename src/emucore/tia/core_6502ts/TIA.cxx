@@ -383,6 +383,16 @@ bool TIA::poke(uInt16 address, uInt8 value)
       myMissile1.resm(myHstate == HState::blank);
       break;
 
+    case RESMP0:
+      myLinesSinceChange = 0;
+      myMissile0.resmp(value, myPlayer0);
+      break;
+
+    case RESMP1:
+      myLinesSinceChange = 0;
+      myMissile1.resmp(value, myPlayer1);
+      break;
+
     case NUSIZ0:
       myLinesSinceChange = 0;
       myMissile0.nusiz(value);
