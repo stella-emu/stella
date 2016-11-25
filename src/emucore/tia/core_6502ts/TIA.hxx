@@ -31,6 +31,7 @@
 #include "Missile.hxx"
 #include "Player.hxx"
 #include "Ball.hxx"
+#include "LatchedInput.hxx"
 
 class Console;
 
@@ -217,6 +218,9 @@ class TIA : public AbstractTIA
     Player myPlayer0;
     Player myPlayer1;
     Ball myBall;
+
+    LatchedInput myInput0;
+    LatchedInput myInput1;
 
    private:
     TIA() = delete;

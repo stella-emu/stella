@@ -105,6 +105,9 @@ void TIA::reset()
   myPlayer1.reset();
   myBall.reset();
 
+  myInput0.reset();
+  myInput1.reset();
+
   mySound.reset();
   myDelayQueue.reset();
   myFrameManager.reset();
@@ -265,11 +268,11 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     case INPT4:
-      result = myConsole.leftController().read(Controller::Six) ? 0x80 : 0x00;
+      result = myInput0.inpt(!myConsole.leftController().read(Controller::Six));
       break;
 
     case INPT5:
-      result = myConsole.rightController().read(Controller::Six) ? 0x80 : 0x00;
+      result = myInput0.inpt(!myConsole.rightController().read(Controller::Six));
       break;
 
     default:
@@ -300,6 +303,10 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case VBLANK:
       myLinesSinceChange = 0;
+
+      myInput0.vblank(value);
+      myInput1.vblank(value);
+
       myFrameManager.setVblank(value & 0x02);
       break;
 
