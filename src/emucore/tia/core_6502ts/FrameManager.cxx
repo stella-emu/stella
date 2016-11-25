@@ -241,4 +241,43 @@ void FrameManager::finalizeFrame()
   setState(State::overscan);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool FrameManager::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    // TODO - save instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_FrameManager::save" << endl;
+    return false;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool FrameManager::load(Serializer& in)
+{
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    // TODO - load instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_FrameManager::load" << endl;
+    return false;
+  }
+
+  return false;
+}
+
 } // namespace TIA6502tsCore

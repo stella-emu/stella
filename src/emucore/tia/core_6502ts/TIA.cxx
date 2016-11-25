@@ -141,17 +141,59 @@ void TIA::installDelegate(System& system, Device& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::save(Serializer& out) const
 {
-  return false;
+  try
+  {
+    out.putString(name());
+
+    // TODO - save instance variables
+
+    // Save the state of each graphics object
+    if(!myPlayfield.save(out)) return false;
+    if(!myMissile0.save(out))  return false;
+    if(!myMissile1.save(out))  return false;
+    if(!myPlayer0.save(out))   return false;
+    if(!myPlayer1.save(out))   return false;
+    if(!myBall.save(out))      return false;
+
+    // Save the sound sample stuff ...
+    mySound.save(out);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA::save" << endl;
+    return false;
+  }
+
+  return false;  // for now, until class is finalized
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::load(Serializer& in)
 {
-  return false;
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    // TODO - load instance variables
+
+    // Load the state of each graphics object
+    if(!myPlayfield.load(in)) return false;
+    if(!myMissile0.load(in))  return false;
+    if(!myMissile1.load(in))  return false;
+    if(!myPlayer0.load(in))   return false;
+    if(!myPlayer1.load(in))   return false;
+    if(!myBall.load(in))      return false;
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA::load" << endl;
+    return false;
+  }
+
+  return false;  // for now, until class is finalized
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -463,19 +505,21 @@ bool TIA::loadDisplay(Serializer& in)
   return false;
 }
 
-// TODO: stub
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::update()
 {
   mySystem->m6502().execute(25000);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: add yoffset
 uInt8* TIA::currentFrameBuffer() const
 {
   return myCurrentFrameBuffer.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
+// TODO: add yoffset
 uInt8* TIA::previousFrameBuffer() const
 {
   return myPreviousFrameBuffer.get();
@@ -530,6 +574,7 @@ uInt32 TIA::clocksThisLine() const
   return 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: stub
 uInt32 TIA::scanlines() const
 {

@@ -20,11 +20,12 @@
 #ifndef TIA_6502TS_CORE_PLAYER
 #define TIA_6502TS_CORE_PLAYER
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 namespace TIA6502tsCore {
 
-class Player
+class Player : public Serializable
 {
   public:
     Player(uInt32 collisionMask);
@@ -60,6 +61,13 @@ class Player
     void shufflePatterns();
 
     uInt8 getRespClock() const;
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_Player"; }
 
   public:
 

@@ -150,4 +150,43 @@ void Ball::updateEnabled()
   myEnabled = myIsDelaying ? myEnabledOld : myEnabledNew;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool Ball::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    // TODO - save instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Ball::save" << endl;
+    return false;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool Ball::load(Serializer& in)
+{
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    // TODO - load instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Ball::load" << endl;
+    return false;
+  }
+
+  return false;
+}
+
 } // namespace TIA6502tsCore

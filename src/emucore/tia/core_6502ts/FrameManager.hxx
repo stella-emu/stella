@@ -21,11 +21,13 @@
 #define TIA_6502TS_CORE_FRAME_MANAGER
 
 #include <functional>
+
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 namespace TIA6502tsCore {
 
-class FrameManager
+class FrameManager : public Serializable
 {
   public:
 
@@ -40,7 +42,6 @@ class FrameManager
     FrameManager();
 
   public:
-
     void setHandlers(callback frameStartCallback, callback frameCompletionCallback);
 
     void reset();
@@ -60,6 +61,13 @@ class FrameManager
     uInt32 height() const;
 
     uInt32 currentLine() const;
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_FrameManager"; }
 
   private:
 

@@ -20,11 +20,12 @@
 #ifndef TIA_6502TS_CORE_PLAYFIELD
 #define TIA_6502TS_CORE_PLAYFIELD
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 namespace TIA6502tsCore {
 
-class Playfield
+class Playfield : public Serializable
 {
   public:
     Playfield(uInt32 collisionMask);
@@ -50,6 +51,13 @@ class Playfield
     void tick(uInt32 x);
 
     uInt8 getPixel(uInt8 colorIn) const;
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_Playfield"; }
 
   public:
 

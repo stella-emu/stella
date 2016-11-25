@@ -20,11 +20,12 @@
 #ifndef TIA_6502TS_CORE_MISSILE
 #define TIA_6502TS_CORE_MISSILE
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 namespace TIA6502tsCore {
 
-class Missile
+class Missile : public Serializable
 {
   public:
     Missile(uInt32 collisionMask);
@@ -54,6 +55,13 @@ class Missile
     void setColor(uInt8 color);
 
     uInt8 getPixel(uInt8 colorIn) const;
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_Missile"; }
 
   public:
 

@@ -270,4 +270,43 @@ void Player::updatePattern()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool Player::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    // TODO - save instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Player::save" << endl;
+    return false;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool Player::load(Serializer& in)
+{
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    // TODO - load instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Player::load" << endl;
+    return false;
+  }
+
+  return false;
+}
+
 } // namespace TIA6502tsCore

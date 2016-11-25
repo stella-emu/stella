@@ -20,11 +20,12 @@
 #ifndef TIA_6502TS_CORE_BALL
 #define TIA_6502TS_CORE_BALL
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 namespace TIA6502tsCore {
 
-class Ball
+class Ball : public Serializable
 {
   public:
 
@@ -57,6 +58,13 @@ class Ball
     uInt8 getPixel(uInt8 colorIn) const;
 
     void shuffleStatus();
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_Ball"; }
 
   public:
 

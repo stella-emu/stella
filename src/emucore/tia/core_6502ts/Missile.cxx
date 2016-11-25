@@ -131,4 +131,43 @@ uInt8 Missile::getPixel(uInt8 colorIn) const
   return collision ? colorIn : myColor;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool Missile::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    // TODO - save instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Missile::save" << endl;
+    return false;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool Missile::load(Serializer& in)
+{
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    // TODO - load instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Missile::load" << endl;
+    return false;
+  }
+
+  return false;
+}
+
 } // namespace TIA6502tsCore

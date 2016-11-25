@@ -50,15 +50,6 @@ class TIA : public AbstractTIA
 
     void install(System& system) override;
 
-    bool save(Serializer& out) const override;
-
-    bool load(Serializer& in) override;
-
-    string name() const override
-    {
-      return "TIA";
-    }
-
     uInt8 peek(uInt16 address) override;
 
     bool poke(uInt16 address, uInt8 value) override;
@@ -77,12 +68,18 @@ class TIA : public AbstractTIA
 
     uInt8* previousFrameBuffer() const override;
 
+    /**
+      Answers vertical info about the framebuffer (height and starting line)
+    */
     uInt32 height() const override;
-
     uInt32 ystart() const override;
 
+    /**
+      Changes the current Height/YStart properties.
+      Note that calls to these method(s) must be eventually followed by
+      ::frameReset() for the changes to take effect.
+    */
     void setHeight(uInt32 height) override;
-
     void setYStart(uInt32 ystart) override;
 
     void enableAutoFrame(bool enabled) override;
@@ -118,6 +115,29 @@ class TIA : public AbstractTIA
     bool toggleJitter(uInt8 mode = 2) override;
 
     void setJitterRecoveryFactor(Int32 f) override;
+
+    /**
+      Save the current state of this device to the given Serializer.
+
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    bool save(Serializer& out) const override;
+
+    /**
+      Load the current state of this device from the given Serializer.
+
+      @param in  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    bool load(Serializer& in) override;
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    string name() const override { return "TIA"; }
 
   private:
 
