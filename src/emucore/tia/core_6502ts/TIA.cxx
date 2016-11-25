@@ -20,6 +20,7 @@
 #include "TIA.hxx"
 #include "TIATypes.hxx"
 #include "M6502.hxx"
+#include "Console.hxx"
 
 enum CollisionMask: uInt32 {
   player0 =       0b0111110000000000,
@@ -72,6 +73,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 
   myCurrentFrameBuffer  = make_ptr<uInt8[]>(160 * 320);
   myPreviousFrameBuffer = make_ptr<uInt8[]>(160 * 320);
+
+  myTIAPinsDriven = mySettings.getBool("tiadriven");
 
   reset();
 }
@@ -156,7 +159,82 @@ uInt8 TIA::peek(uInt16 address)
 {
   updateEmulation();
 
-  return 0;
+  // If pins are undriven, we start with the last databus value
+  // Otherwise, there is some randomness injected into the mix
+  // In either case, we start out with D7 and D6 disabled (the only
+  // valid bits in a TIA read), and selectively enable them
+  uInt8 lastDataBusValue =
+    !myTIAPinsDriven ? mySystem->getDataBusState() : mySystem->getDataBusState(0xFF);
+
+  uInt8 result;
+
+  switch (address & 0x0F) {
+    case CXM0P:
+      result = (
+        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player0) ? 0x40 : 0) |
+        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player1) ? 0x80 : 0)
+      );
+      break;
+
+    case CXM1P:
+      result = (
+        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player1) ? 0x40 : 0) |
+        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player0) ? 0x80 : 0)
+      );
+      break;
+
+    case CXP0FB:
+      result = (
+        ((myCollisionMask & CollisionMask::player0 & CollisionMask::ball) ? 0x40 : 0) |
+        ((myCollisionMask & CollisionMask::player0 & CollisionMask::playfield) ? 0x80 : 0)
+      );
+      break;
+
+    case CXP1FB:
+      result = (
+        ((myCollisionMask & CollisionMask::player1 & CollisionMask::ball) ? 0x40 : 0) |
+        ((myCollisionMask & CollisionMask::player1 & CollisionMask::playfield) ? 0x80 : 0)
+      );
+      break;
+
+    case CXM0FB:
+      result = (
+        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::ball) ? 0x40 : 0) |
+        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::playfield) ? 0x80 : 0)
+      );
+      break;
+
+    case CXM1FB:
+      result = (
+        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::ball) ? 0x40 : 0) |
+        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::playfield) ? 0x80 : 0)
+      );
+      break;
+
+    case CXPPMM:
+      result = (
+        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::missile1) ? 0x40 : 0) |
+        ((myCollisionMask & CollisionMask::player0 & CollisionMask::player1) ? 0x80 : 0)
+      );
+      break;
+
+    case CXBLPF:
+      result = (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
+      break;
+
+    case INPT4:
+      result = myConsole.leftController().read(Controller::Six) ? 0x80 : 0x00;
+      break;
+
+    case INPT5:
+      result = myConsole.rightController().read(Controller::Six) ? 0x80 : 0x00;
+      break;
+
+    default:
+      result = lastDataBusValue;
+  }
+
+  return (result & 0xC0) | (lastDataBusValue & 0x3F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -355,6 +433,11 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case HMBL:
       myDelayQueue.push(HMBL, value, Delay::hmbl);
       break;
+
+    case CXCLR:
+      myLinesSinceChange = 0;
+      myCollisionMask = 0;
+      break;
   }
 
   return true;
@@ -517,10 +600,16 @@ bool TIA::toggleFixedColors(uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::driveUnusedPinsRandom(uInt8 mode)
 {
-  return false;
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, return the state
+  if(mode == 0 || mode == 1)
+  {
+    myTIAPinsDriven = bool(mode);
+    mySettings.setValue("tiadriven", myTIAPinsDriven);
+  }
+  return myTIAPinsDriven;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -667,7 +756,14 @@ void TIA::nextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateCollision()
 {
-  // TODO: update collision mask with sprite masks
+  myCollisionMask |= (
+    ~myPlayer0.collision &
+    ~myPlayer1.collision &
+    ~myMissile0.collision &
+    ~myMissile1.collision &
+    ~myBall.collision &
+    ~myPlayfield.collision
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

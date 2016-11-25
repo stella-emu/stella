@@ -161,6 +161,8 @@ class TIA : public AbstractTIA
     Sound& mySound;
     Settings& mySettings;
 
+    bool myTIAPinsDriven;
+
     DelayQueue myDelayQueue;
     FrameManager myFrameManager;
 
