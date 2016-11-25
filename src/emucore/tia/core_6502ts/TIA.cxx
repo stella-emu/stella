@@ -96,7 +96,7 @@ void TIA::reset()
   myColorBk = 0;
 
   myLastCycle = 0;
-  mySubClock = 2;
+  mySubClock = 0;
 
   myPlayfield.reset();
   myMissile0.reset();
