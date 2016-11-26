@@ -66,10 +66,8 @@ void Ball::resbl(bool hblank)
 {
   myCounter = hblank ? 159 : 157;
 
-  if (!hblank) {
-    myIsRendering = true;
-    myRenderCounter = Count::renderCounterOffset;
-  }
+  myIsRendering = true;
+  myRenderCounter = Count::renderCounterOffset;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
