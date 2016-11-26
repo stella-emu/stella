@@ -143,12 +143,6 @@ void Missile::setColor(uInt8 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Missile::getPixel(uInt8 colorIn) const
-{
-  return collision ? colorIn : myColor;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: implement this once the class is finalized
 bool Missile::save(Serializer& out) const
 {

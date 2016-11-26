@@ -132,12 +132,6 @@ void Ball::tick()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Ball::getPixel(uInt8 colorIn) const
-{
-  return collision > 0 ? colorIn : myColor;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::shuffleStatus()
 {
   myEnabledOld = myEnabledNew;

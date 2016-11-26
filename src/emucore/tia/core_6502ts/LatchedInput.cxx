@@ -37,7 +37,8 @@ void LatchedInput::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LatchedInput::vblank(uInt8 value)
 {
-  if (value & 0x40) myModeLatched = true;
+  if (value & 0x40)
+    myModeLatched = true;
   else {
     myModeLatched = false;
     myLatchedValue = 0x80;
@@ -57,4 +58,4 @@ uInt8 LatchedInput::inpt(bool pinState)
   return value;
 }
 
-} // namespace TIA6502tsCore {
+} // namespace TIA6502tsCore

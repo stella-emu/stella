@@ -144,7 +144,7 @@ class TIA : public AbstractTIA
 
     enum HState {blank, frame};
 
-    enum Priority {normal, inverted};
+    enum Priority {pfp, score, normal};
 
   private:
 

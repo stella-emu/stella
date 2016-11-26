@@ -346,7 +346,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case CTRLPF:
       myLinesSinceChange = 0;
-      myPriority = (value & 0x04) ? Priority::inverted : Priority::normal;
+      myPriority = (value & 0x04) ? Priority::pfp :
+                   (value & 0x02) ? Priority::score : Priority::normal;
       myPlayfield.ctrlpf(value);
       myBall.ctrlpf(value);
       break;
@@ -834,20 +835,55 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
   if (lineNotCached) {
     uInt8 color = myColorBk;
 
-    if (myPriority == Priority::normal) {
-      color = myPlayfield.getPixel(color);
-      color = myBall.getPixel(color);
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-    } else {
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-      color = myPlayfield.getPixel(color);
-      color = myBall.getPixel(color);
+    switch (myPriority)
+    {
+      // Playfield has priority so ScoreBit isn't used
+      // Priority from highest to lowest:  
+      //   BL/PF => P0/M0 => P1/M1 => BK
+      case Priority::pfp:  // CTRLPF D2=1, D1=ignored
+        color = myMissile1.getPixel(color);
+        color = myPlayer1.getPixel(color);
+        color = myMissile0.getPixel(color);
+        color = myPlayer0.getPixel(color);
+        color = myPlayfield.getPixel(color);
+        color = myBall.getPixel(color);
+        break;
+
+      case Priority::score:  // CTRLPF D2=0, D1=1
+        // Score mode left half
+        if (x < 80) {
+          // Priority from highest to lowest:
+          //   PF/P0/M0 => P1/M1 => BL => BK
+          color = myBall.getPixel(color);
+          color = myMissile1.getPixel(color);
+          color = myPlayer1.getPixel(color);
+          color = myMissile0.getPixel(color);
+          color = myPlayer0.getPixel(color);
+          color = myPlayfield.getPixel(color);
+        }
+        else  // Score mode right half
+        {
+          // Priority from highest to lowest:  
+          //   P0/M0 => PF/P1/M1 => BL => BK
+          color = myBall.getPixel(color);
+          color = myMissile1.getPixel(color);
+          color = myPlayer1.getPixel(color);
+          color = myPlayfield.getPixel(color);
+          color = myMissile0.getPixel(color);
+          color = myPlayer0.getPixel(color);
+        }
+        break;
+
+      // Priority from highest to lowest:  
+      //   P0/M0 => P1/M1 => BL/PF => BK
+      case Priority::normal:  // CTRLPF D2=0, D1=0
+        color = myPlayfield.getPixel(color);
+        color = myBall.getPixel(color);
+        color = myMissile1.getPixel(color);
+        color = myPlayer1.getPixel(color);
+        color = myMissile0.getPixel(color);
+        color = myPlayer0.getPixel(color);
+        break;
     }
 
     myCurrentFrameBuffer.get()[y * 160 + x] = myFrameManager.vblank() ? 0 : color;

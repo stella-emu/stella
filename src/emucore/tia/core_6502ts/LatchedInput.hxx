@@ -27,7 +27,6 @@ namespace TIA6502tsCore {
 class LatchedInput
 {
   public:
-
     LatchedInput();
 
   public:
@@ -45,7 +44,6 @@ class LatchedInput
     uInt8 myLatchedValue;
 
   private:
-
     LatchedInput(const LatchedInput&) = delete;
     LatchedInput(LatchedInput&&) = delete;
     LatchedInput& operator=(const LatchedInput&) = delete;

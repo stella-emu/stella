@@ -163,12 +163,6 @@ void Player::tick()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Player::getPixel(uInt8 colorIn) const
-{
-  return collision ? colorIn : myColor;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::shufflePatterns()
 {
   const uInt8 oldPatternOld = myPatternOld;

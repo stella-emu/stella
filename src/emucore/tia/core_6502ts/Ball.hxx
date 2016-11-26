@@ -55,7 +55,9 @@ class Ball : public Serializable
 
     void tick();
 
-    uInt8 getPixel(uInt8 colorIn) const;
+    uInt8 getPixel(uInt8 colorIn) const {
+      return collision > 0 ? colorIn : myColor;
+    }
 
     void shuffleStatus();
 

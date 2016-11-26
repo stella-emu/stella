@@ -50,7 +50,10 @@ class Playfield : public Serializable
 
     void tick(uInt32 x);
 
-    uInt8 getPixel(uInt8 colorIn) const;
+    uInt8 getPixel(uInt8 colorIn) const {
+      if (!collision) return myX < 80 ? myColorLeft : myColorRight;
+      return colorIn;
+    }
 
     /**
       Serializable methods (see that class for more information).

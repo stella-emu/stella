@@ -129,14 +129,6 @@ void Playfield::tick(uInt32 x)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Playfield::getPixel(uInt8 colorIn) const
-{
-  if (!collision) return myX < 80 ? myColorLeft : myColorRight;
-
-  return colorIn;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::applyColors()
 {
   switch (myColorMode)

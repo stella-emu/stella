@@ -55,7 +55,9 @@ class Missile : public Serializable
 
     void setColor(uInt8 color);
 
-    uInt8 getPixel(uInt8 colorIn) const;
+    uInt8 getPixel(uInt8 colorIn) const {
+      return collision ? colorIn : myColor;
+    }
 
     /**
       Serializable methods (see that class for more information).

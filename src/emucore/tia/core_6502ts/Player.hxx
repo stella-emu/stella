@@ -56,7 +56,9 @@ class Player : public Serializable
 
     void tick();
 
-    uInt8 getPixel(uInt8 colorIn) const;
+    uInt8 getPixel(uInt8 colorIn) const {
+      return collision ? colorIn : myColor;
+    }
 
     void shufflePatterns();
 
