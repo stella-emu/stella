@@ -39,6 +39,7 @@ void Ball::reset()
   myEnabledOld = false;
   myEnabledNew = false;
   myEnabled = false;
+  myIsDelaying = false;
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
