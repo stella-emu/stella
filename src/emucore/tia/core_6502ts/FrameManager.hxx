@@ -23,6 +23,7 @@
 #include <functional>
 
 #include "Serializable.hxx"
+#include "Types.hxx"
 #include "bspf.hxx"
 
 namespace TIA6502tsCore {
@@ -30,10 +31,6 @@ namespace TIA6502tsCore {
 class FrameManager : public Serializable
 {
   public:
-
-    enum TvMode {
-      pal, ntsc
-    };
 
     using callback = std::function<void()>;
 

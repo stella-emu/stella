@@ -159,7 +159,7 @@ bool FrameManager::isRendering() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameManager::TvMode FrameManager::tvMode() const
+TvMode FrameManager::tvMode() const
 {
   return myMode;
 }
@@ -183,7 +183,7 @@ uInt32 FrameManager::currentLine() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setTvMode(FrameManager::TvMode mode)
+void FrameManager::setTvMode(TvMode mode)
 {
   if (mode == myMode) return;
 

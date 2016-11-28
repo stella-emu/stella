@@ -32,6 +32,7 @@
 #include "Player.hxx"
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
+#include "PaddleReader.hxx"
 
 class Console;
 
@@ -176,6 +177,8 @@ class TIA : public AbstractTIA
 
     void delayedWrite(uInt8 address, uInt8 value);
 
+    void updatePaddles();
+
   private:
 
     Console& myConsole;
@@ -209,6 +212,8 @@ class TIA : public AbstractTIA
 
     uInt8 myColorBk;
 
+    double myTimestamp;
+
     BytePtr myCurrentFrameBuffer;
     BytePtr myPreviousFrameBuffer;
 
@@ -218,6 +223,7 @@ class TIA : public AbstractTIA
     Player myPlayer0;
     Player myPlayer1;
     Ball myBall;
+    PaddleReader myPaddleReaders[4];
 
     LatchedInput myInput0;
     LatchedInput myInput1;

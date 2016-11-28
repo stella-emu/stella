@@ -21,6 +21,7 @@
 #include "TIATypes.hxx"
 #include "M6502.hxx"
 #include "Console.hxx"
+#include "Types.hxx"
 
 enum CollisionMask: uInt32 {
   player0 =       0b0111110000000000,
@@ -65,6 +66,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myFrameManager.setHandlers(
     [this] () {
       myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
+      updatePaddles();
     },
     [this] () {
       mySystem->m6502().stop();
@@ -107,6 +109,10 @@ void TIA::reset()
 
   myInput0.reset();
   myInput1.reset();
+
+  myTimestamp = 0;
+  for (PaddleReader& paddleReader : myPaddleReaders)
+    paddleReader.reset(myTimestamp);
 
   mySound.reset();
   myDelayQueue.reset();
@@ -267,6 +273,22 @@ uInt8 TIA::peek(uInt16 address)
       result = (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
       break;
 
+    case INPT0:
+      result = myPaddleReaders[0].inpt(myTimestamp);
+      break;
+
+    case INPT1:
+      result = myPaddleReaders[1].inpt(myTimestamp);
+      break;
+
+    case INPT2:
+      result = myPaddleReaders[2].inpt(myTimestamp);
+      break;
+
+    case INPT3:
+      result = myPaddleReaders[3].inpt(myTimestamp);
+      break;
+
     case INPT4:
       result = myInput0.inpt(!myConsole.leftController().read(Controller::Six));
       break;
@@ -308,6 +330,10 @@ bool TIA::poke(uInt16 address, uInt8 value)
       myInput1.vblank(value);
 
       myFrameManager.setVblank(value & 0x02);
+
+      for (PaddleReader& paddleReader : myPaddleReaders)
+        paddleReader.vblank(value, myTimestamp);
+
       break;
 
     case AUDV0:
@@ -582,7 +608,7 @@ void TIA::enableColorLoss(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::isPAL() const
 {
-  return myFrameManager.tvMode() == FrameManager::TvMode::pal;
+  return myFrameManager.tvMode() == TvMode::pal;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -721,6 +747,8 @@ void TIA::cycle(uInt32 colorClocks)
       tickHframe();
 
     if (myCollisionUpdateRequired) updateCollision();
+
+    myTimestamp++;
   }
 }
 
@@ -983,6 +1011,23 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       myBall.hmbl(value);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::updatePaddles()
+{
+  static constexpr double MAX_RESISTANCE = 1400000;
+
+  TvMode tvMode = myFrameManager.tvMode();
+  Int32 resistances[] = {
+    myConsole.leftController().read(Controller::Nine),
+    myConsole.leftController().read(Controller::Five),
+    myConsole.rightController().read(Controller::Nine),
+    myConsole.rightController().read(Controller::Five),
+  };
+
+  for (uInt8 i = 0; i < 4; i++)
+    myPaddleReaders[i].update(double(resistances[i]) / MAX_RESISTANCE, myTimestamp, tvMode);
 }
 
 } // namespace TIA6502tsCore

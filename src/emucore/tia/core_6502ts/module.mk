@@ -10,7 +10,8 @@ MODULE_OBJS := \
 	src/emucore/tia/core_6502ts/Missile.o \
 	src/emucore/tia/core_6502ts/Player.o \
 	src/emucore/tia/core_6502ts/Ball.o \
-	src/emucore/tia/core_6502ts/LatchedInput.o
+	src/emucore/tia/core_6502ts/LatchedInput.o \
+	src/emucore/tia/core_6502ts/PaddleReader.o
 
 
 MODULE_DIRS += \
