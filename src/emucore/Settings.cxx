@@ -49,7 +49,7 @@ Settings::Settings(OSystem& osystem)
 
   // TIA specific options
 #ifdef SUPPORT_6502TS_TIA
-  setInternal("tia.core", "default");
+  setInternal("tia.core", "6502ts");
 #endif
   setInternal("tia.zoom", "2");
   setInternal("tia.inter", "false");
@@ -330,7 +330,7 @@ void Settings::validate()
 
 #ifdef SUPPORT_6502TS_TIA
   s = getString("tia.core");
-  if (s != "6502ts" && s != "default") setInternal("tia.core", "default");
+  if (s != "6502ts" && s != "default") setInternal("tia.core", "6502ts");
 #endif
 
 }

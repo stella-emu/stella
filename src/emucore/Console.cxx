@@ -545,10 +545,10 @@ void Console::changeHeight(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractTIA* Console::createTIA()
 {
-  string coreType = "default";
-
 #ifdef SUPPORT_6502TS_TIA
-  coreType = myOSystem.settings().getString("tia.core");
+  string coreType = myOSystem.settings().getString("tia.core");
+#else
+  string coreType = "default";
 #endif
 
   if (coreType == "default") {
