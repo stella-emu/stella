@@ -24,12 +24,12 @@
 #include "Types.hxx"
 
 enum CollisionMask: uInt32 {
-  player0 =       0b0111110000000000,
-  player1 =       0b0100001111000000,
-  missile0 =      0b0010001000111000,
-  missile1 =      0b0001000100100110,
-  ball =          0b0000100010010101,
-  playfield =     0b0000010001001011
+  player0   = 0b0111110000000000,
+  player1   = 0b0100001111000000,
+  missile0  = 0b0010001000111000,
+  missile1  = 0b0001000100100110,
+  ball      = 0b0000100010010101,
+  playfield = 0b0000010001001011
 };
 
 enum Delay: uInt8 {
@@ -119,6 +119,16 @@ void TIA::reset()
   mySound.reset();
   myDelayQueue.reset();
   myFrameManager.reset();
+  frameReset();  // Recalculate the size of the display
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::frameReset()
+{
+  // Clear frame buffers
+  clearBuffers();
+
+  // TODO - make use of ystart and height
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,6 +159,13 @@ void TIA::installDelegate(System& system, Device& device)
   for(uInt32 i = 0; i < 8192; i += (1 << System::PAGE_SHIFT))
     if((i & 0x1080) == 0x0000)
       mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::clearBuffers()
+{
+  memset(myCurrentFrameBuffer.get(), 0, 160 * 320);
+  memset(myPreviousFrameBuffer.get(), 0, 160 * 320);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,12 +550,6 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: stub
-void TIA::frameReset()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::saveDisplay(Serializer& out) const
 {
   return false;
@@ -558,26 +569,14 @@ void TIA::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: add yoffset
-uInt8* TIA::currentFrameBuffer() const
-{
-  return myCurrentFrameBuffer.get();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: add yoffset
-uInt8* TIA::previousFrameBuffer() const
-{
-  return myPreviousFrameBuffer.get();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: stub
 uInt32 TIA::height() const
 {
-  return myFrameManager.height();
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: stub
 uInt32 TIA::ystart() const
 {
   return 0;
@@ -621,14 +620,12 @@ uInt32 TIA::clocksThisLine() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 uInt32 TIA::scanlines() const
 {
-  return 0;
+  return myFrameManager.scanlines();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::partialFrame() const
 {
   return myFrameManager.isRendering();
@@ -858,9 +855,11 @@ void TIA::tickHframe()
 
   tickSprites();
 
-  if (myFrameManager.isRendering()) renderPixel(x, y, lineNotCached);
+  if (myFrameManager.isRendering())
+    renderPixel(x, y, lineNotCached);
 
-  if (++myHctr >= 228) nextLine();
+  if (++myHctr >= 228)
+    nextLine();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

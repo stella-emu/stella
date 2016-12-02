@@ -100,10 +100,10 @@ void PaddleReader::update(double value, double timestamp, TvMode tvMode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleReader::setTvMode(TvMode mode)
 {
-    myTvMode = mode;
+  myTvMode = mode;
 
-    myClockFreq = myTvMode == TvMode::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
-    myUThresh = USUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq  / (RPOT + R0) / C));
+  myClockFreq = myTvMode == TvMode::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
+  myUThresh = USUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq  / (RPOT + R0) / C));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

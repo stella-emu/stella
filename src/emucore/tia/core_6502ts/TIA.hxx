@@ -38,15 +38,41 @@ class Console;
 
 namespace TIA6502tsCore {
 
+/**
+  This class is a device that emulates the Television Interface Adaptor
+  found in the Atari 2600 and 7800 consoles.  The Television Interface
+  Adaptor is an integrated circuit designed to interface between an
+  eight bit microprocessor and a television video modulator. It converts
+  eight bit parallel data into serial outputs for the color, luminosity,
+  and composite sync required by a video modulator.
+
+  This class outputs the serial data into a frame buffer which can then
+  be displayed on screen.
+
+  @author  Christian Speckner (DirtyHairy) and Stephen Anthony
+  @version $Id$
+*/
 class TIA : public AbstractTIA
 {
   public:
+    /**
+      Create a new TIA for the specified console
+
+      @param console  The console the TIA is associated with
+      @param sound    The sound object the TIA is associated with
+      @param settings The settings object for this TIA device
+    */
     TIA(Console& console, Sound& sound, Settings& settings);
     virtual ~TIA() = default;
 
   public:
 
     void reset() override;
+
+    /**
+      Reset frame to current YStart/Height properties
+    */
+    void frameReset() override;
 
     void systemCyclesReset() override;
 
@@ -58,17 +84,21 @@ class TIA : public AbstractTIA
 
     void installDelegate(System& system, Device& device) override;
 
-    void frameReset() override;
-
     bool saveDisplay(Serializer& out) const override;
 
     bool loadDisplay(Serializer& in) override;
 
     void update() override;
 
-    uInt8* currentFrameBuffer() const override;
-
-    uInt8* previousFrameBuffer() const override;
+    /**
+      Answers the current and previous frame buffer pointers
+    */
+    uInt8* currentFrameBuffer() const override {
+      return myCurrentFrameBuffer.get();
+    }
+    uInt8* previousFrameBuffer() const override {
+      return myPreviousFrameBuffer.get();
+    }
 
     /**
       Answers vertical info about the framebuffer (height and starting line)
@@ -118,6 +148,9 @@ class TIA : public AbstractTIA
 
     void setJitterRecoveryFactor(Int32 f) override;
 
+    // Clear both internal TIA buffers to black (palette color 0)
+    void clearBuffers();
+
     /**
       Save the current state of this device to the given Serializer.
 
@@ -142,9 +175,7 @@ class TIA : public AbstractTIA
     string name() const override { return "TIA"; }
 
   private:
-
     enum HState {blank, frame};
-
     enum Priority {pfp, score, normal};
 
   private:
@@ -217,6 +248,7 @@ class TIA : public AbstractTIA
 
     double myTimestamp;
 
+    // Pointer to the current and previous frame buffers
     BytePtr myCurrentFrameBuffer;
     BytePtr myPreviousFrameBuffer;
 

@@ -543,7 +543,6 @@ void Console::changeHeight(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 AbstractTIA* Console::createTIA()
 {
   string coreType = "default";
@@ -568,6 +567,7 @@ AbstractTIA* Console::createTIA()
   throw new runtime_error(buffer.str());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setTIAProperties()
 {
   // TODO - query these values directly from the TIA if value is 'AUTO'

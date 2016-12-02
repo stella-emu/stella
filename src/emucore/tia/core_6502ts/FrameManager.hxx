@@ -59,6 +59,8 @@ class FrameManager : public Serializable
 
     uInt32 currentLine() const;
 
+    uInt32 scanlines() const;
+
     /**
       Serializable methods (see that class for more information).
     */
@@ -95,6 +97,7 @@ class FrameManager : public Serializable
     uInt32 myLineInState;
     uInt32 myLinesWithoutVsync;
     uInt32 myCurrentFrameTotalLines;
+    uInt32 myCurrentFrameFinalLines;
 
     bool myVsync;
     bool myVblank;

@@ -61,7 +61,7 @@ void FrameManager::setHandlers(
 void FrameManager::reset()
 {
   myState = State::waitForVsyncStart;
-  myCurrentFrameTotalLines = 0;
+  myCurrentFrameTotalLines = myCurrentFrameFinalLines = 0;
   myLineInState = 0;
   myLinesWithoutVsync = 0;
   myWaitForVsync = true;
@@ -183,6 +183,12 @@ uInt32 FrameManager::currentLine() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::scanlines() const
+{
+  return myState == State::frame ? myLineInState : myCurrentFrameFinalLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setTvMode(TvMode mode)
 {
   if (mode == myMode) return;
@@ -237,6 +243,7 @@ void FrameManager::finalizeFrame()
     myOnFrameComplete();
   }
 
+  myCurrentFrameFinalLines = myCurrentFrameTotalLines;
   myCurrentFrameTotalLines = 0;
   setState(State::overscan);
 }
