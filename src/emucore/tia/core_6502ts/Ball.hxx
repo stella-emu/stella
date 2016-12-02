@@ -45,6 +45,10 @@ class Ball : public Serializable
 
     void vdelbl(uInt8 value);
 
+    void toggleCollisions(bool enabled);
+
+    void toggleEnabled(bool enabled);
+
     void setColor(uInt8 color);
 
     void startMovement();
@@ -56,7 +60,7 @@ class Ball : public Serializable
     void tick();
 
     uInt8 getPixel(uInt8 colorIn) const {
-      return collision > 0 ? colorIn : myColor;
+      return (collision & 0x8000) ? myColor : colorIn;
     }
 
     void shuffleStatus();
@@ -78,13 +82,15 @@ class Ball : public Serializable
 
   private:
 
-    uInt32 myCollisionMask;
+    uInt32 myCollisionMaskDisabled;
+    uInt32 myCollisionMaskEnabled;
 
     uInt8 myColor;
 
     bool myEnabledOld;
     bool myEnabledNew;
     bool myEnabled;
+    bool mySupressed;
     bool myIsDelaying;
 
     uInt8 myHmmClocks;

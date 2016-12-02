@@ -649,7 +649,6 @@ bool TIA::scanlinePos(uInt16& x, uInt16& y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::toggleBit(TIABit b, uInt8 mode)
 {
   uInt8 mask;
@@ -672,12 +671,15 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 
   myMissile0.toggleEnabled(mySpriteEnabledBits & TIABit::M0Bit);
   myMissile1.toggleEnabled(mySpriteEnabledBits & TIABit::M1Bit);
+  myPlayer0.toggleEnabled(mySpriteEnabledBits & TIABit::P0Bit);
+  myPlayer1.toggleEnabled(mySpriteEnabledBits & TIABit::P1Bit);
+  myBall.toggleEnabled(mySpriteEnabledBits & TIABit::BLBit);
+  myPlayfield.toggleEnabled(mySpriteEnabledBits & TIABit::PFBit);
 
   return mask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::toggleBits()
 {
   toggleBit(TIABit(0xFF), mySpriteEnabledBits > 0 ? 0 : 1);
@@ -686,7 +688,6 @@ bool TIA::toggleBits()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::toggleCollision(TIABit b, uInt8 mode)
 {
   uInt8 mask;
@@ -709,12 +710,15 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
 
   myMissile0.toggleCollisions(myCollisionsEnabledBits & TIABit::M0Bit);
   myMissile1.toggleCollisions(myCollisionsEnabledBits & TIABit::M1Bit);
+  myPlayer0.toggleCollisions(myCollisionsEnabledBits & TIABit::P0Bit);
+  myPlayer1.toggleCollisions(myCollisionsEnabledBits & TIABit::P1Bit);
+  myBall.toggleCollisions(myCollisionsEnabledBits & TIABit::BLBit);
+  myPlayfield.toggleCollisions(myCollisionsEnabledBits & TIABit::PFBit);
 
   return mask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::toggleCollisions()
 {
   toggleCollision(TIABit(0xFF), myCollisionsEnabledBits > 0 ? 0 : 1);

@@ -28,7 +28,9 @@ namespace TIA6502tsCore {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Player::Player(uInt32 collisionMask)
-  : myCollisionMask(collisionMask)
+  : myCollisionMaskDisabled(collisionMask),
+    myCollisionMaskEnabled(0x8000),
+    mySupressed(false)
 {
   reset();
 }
@@ -48,7 +50,9 @@ void Player::reset()
   myPattern = 0;
   myIsReflected = 0;
   myIsDelaying = false;
-  collision = myCollisionMask;
+  collision = myCollisionMaskDisabled;
+
+  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,6 +117,19 @@ void Player::vdelp(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::toggleEnabled(bool enabled)
+{
+  mySupressed = !enabled;
+  updatePattern();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::toggleCollisions(bool enabled)
+{
+  myCollisionMaskEnabled = enabled ? 0x8000 : (0x8000 | myCollisionMaskDisabled);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setColor(uInt8 color)
 {
   myColor = color;
@@ -146,7 +163,7 @@ void Player::render()
     myIsRendering &&
     myRenderCounter >= 0 &&
     (myPattern & (1 << (myWidth - myRenderCounter - 1)))
-  ) ? 0 : myCollisionMask;
+  ) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,6 +211,11 @@ uInt8 Player::getRespClock() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::updatePattern()
 {
+  if (mySupressed) {
+    myPattern = 0;
+    return;
+}
+
   const uInt32 pattern = myIsDelaying ? myPatternOld : myPatternNew;
 
   switch (myWidth)

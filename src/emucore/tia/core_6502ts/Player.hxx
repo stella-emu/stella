@@ -46,6 +46,10 @@ class Player : public Serializable
 
     void vdelp(uInt8 value);
 
+    void toggleEnabled(bool enabled);
+
+    void toggleCollisions(bool enabled);
+
     void setColor(uInt8 color);
 
     void startMovement();
@@ -57,7 +61,7 @@ class Player : public Serializable
     void tick();
 
     uInt8 getPixel(uInt8 colorIn) const {
-      return collision ? colorIn : myColor;
+      return (collision & 0x8000) ? myColor : colorIn;
     }
 
     void shufflePatterns();
@@ -81,8 +85,11 @@ class Player : public Serializable
 
   private:
 
-    uInt32 myCollisionMask;
+    uInt32 myCollisionMaskDisabled;
+    uInt32 myCollisionMaskEnabled;
     uInt8 myColor;
+
+    bool mySupressed;
 
     uInt8 myHmmClocks;
     uInt8 myCounter;

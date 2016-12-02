@@ -42,6 +42,10 @@ class Playfield : public Serializable
 
     void ctrlpf(uInt8 value);
 
+    void toggleEnabled(bool enabled);
+
+    void toggleCollisions(bool enabled);
+
     void setColor(uInt8 color);
 
     void setColorP0(uInt8 color);
@@ -51,7 +55,7 @@ class Playfield : public Serializable
     void tick(uInt32 x);
 
     uInt8 getPixel(uInt8 colorIn) const {
-      if (!collision) return myX < 80 ? myColorLeft : myColorRight;
+      if (collision & 0x8000) return myX < 80 ? myColorLeft : myColorRight;
       return colorIn;
     }
 
@@ -73,8 +77,14 @@ class Playfield : public Serializable
   private:
 
     void applyColors();
+    void updatePattern();
 
   private:
+
+    uInt32 myCollisionMaskDisabled;
+    uInt32 myCollisionMaskEnabled;
+
+    bool mySupressed;
 
     uInt8 myColorLeft;
     uInt8 myColorRight;
@@ -84,6 +94,7 @@ class Playfield : public Serializable
     ColorMode myColorMode;
 
     uInt32 myPattern;
+    uInt32 myEffectivePattern;
     bool myRefp;
     bool myReflected;
 
@@ -92,8 +103,6 @@ class Playfield : public Serializable
     uInt8 myPf2;
 
     uInt32 myX;
-
-    uInt32 myCollisionMask;
 
   private:
     Playfield() = delete;

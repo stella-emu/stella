@@ -23,7 +23,9 @@ namespace TIA6502tsCore {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Playfield::Playfield(uInt32 collisionMask)
-  : myCollisionMask(collisionMask)
+  : myCollisionMaskDisabled(collisionMask),
+    myCollisionMaskEnabled(0x8000),
+    mySupressed(false)
 {
   reset();
 }
@@ -47,12 +49,15 @@ void Playfield::reset()
   collision = 0;
 
   applyColors();
+  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf0(uInt8 value)
 {
   myPattern = (myPattern & 0x000FFFF0) | (value >> 4);
+
+  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,12 +72,16 @@ void Playfield::pf1(uInt8 value)
     | ((value & 0x04) <<  7)
     | ((value & 0x02) <<  9)
     | ((value & 0x01) <<  11);
+
+  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf2(uInt8 value)
 {
   myPattern = (myPattern & 0x00000FFF) | (value << 12);
+
+  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -81,6 +90,20 @@ void Playfield::ctrlpf(uInt8 value)
   myReflected = (value & 0x01) > 0;
   myColorMode = (value & 0x06) == 0x02 ? ColorMode::score : ColorMode::normal;
   applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::toggleEnabled(bool enabled)
+{
+  mySupressed = !enabled;
+
+  updatePattern();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::toggleCollisions(bool enabled)
+{
+  myCollisionMaskEnabled = enabled ? 0x8000 : (0x8000 | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,17 +138,17 @@ void Playfield::tick(uInt32 x)
 
   uInt32 currentPixel;
 
-  if (myPattern == 0) {
+  if (myEffectivePattern == 0) {
       currentPixel = 0;
   } else if (x < 80) {
-      currentPixel = myPattern & (1 << (x >> 2));
+      currentPixel = myEffectivePattern & (1 << (x >> 2));
   } else if (myRefp) {
-      currentPixel = myPattern & (1 << (39 - (x >> 2)));
+      currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
   } else {
-      currentPixel = myPattern & (1 << ((x >> 2) - 20));
+      currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
   }
 
-  collision = currentPixel ? 0 : myCollisionMask;
+  collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,6 +165,12 @@ void Playfield::applyColors()
       myColorRight = myColorP1;
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::updatePattern()
+{
+  myEffectivePattern = mySupressed ? 0 : myPattern;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

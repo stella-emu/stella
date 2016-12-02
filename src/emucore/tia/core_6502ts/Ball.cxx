@@ -26,7 +26,9 @@ namespace TIA6502tsCore {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Ball::Ball(uInt32 collisionMask)
-  : myCollisionMask(collisionMask)
+  : myCollisionMaskDisabled(collisionMask),
+    myCollisionMaskEnabled(0x8000),
+    mySupressed(false)
 {
   reset();
 }
@@ -35,7 +37,7 @@ Ball::Ball(uInt32 collisionMask)
 void Ball::reset()
 {
   myColor = 0;
-  collision = myCollisionMask;
+  collision = myCollisionMaskDisabled;
   myEnabledOld = false;
   myEnabledNew = false;
   myEnabled = false;
@@ -46,6 +48,8 @@ void Ball::reset()
   myWidth = 1;
   myIsRendering = false;
   myRenderCounter = 0;
+
+  updateEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,6 +90,20 @@ void Ball::vdelbl(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::toggleCollisions(bool enabled)
+{
+  myCollisionMaskEnabled = enabled ? 0x8000 : (0x8000 | myCollisionMaskDisabled);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::toggleEnabled(bool enabled)
+{
+  mySupressed = !enabled;
+
+  updateEnabled();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setColor(uInt8 color)
 {
   myColor = color;
@@ -113,7 +131,9 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::render()
 {
-  collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ? 0 : myCollisionMask;
+  collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ?
+    myCollisionMaskEnabled :
+    myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,7 +160,7 @@ void Ball::shuffleStatus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::updateEnabled()
 {
-  myEnabled = myIsDelaying ? myEnabledOld : myEnabledNew;
+  myEnabled = !mySupressed && (myIsDelaying ? myEnabledOld : myEnabledNew);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

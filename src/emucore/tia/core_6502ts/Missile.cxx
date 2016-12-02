@@ -50,6 +50,8 @@ void Missile::reset()
   myRenderCounter = 0;
   myColor = 0;
   collision = myCollisionMaskDisabled;
+
+  updateEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,6 +93,7 @@ void Missile::toggleCollisions(bool enabled)
   myCollisionMaskEnabled = enabled ? 0x8000 : (0x8000 | myCollisionMaskDisabled);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::toggleEnabled(bool enabled)
 {
   mySupressed = !enabled;
