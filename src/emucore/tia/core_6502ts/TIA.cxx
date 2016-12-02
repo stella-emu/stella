@@ -56,6 +56,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySound(sound),
     mySettings(settings),
     myDelayQueue(10, 20),
+    mySpriteEnabledBits(0xFF),
+    myCollisionsEnabledBits(0xFF),
     myPlayfield(CollisionMask::playfield),
     myMissile0(CollisionMask::missile0),
     myMissile1(CollisionMask::missile1),
@@ -650,28 +652,74 @@ bool TIA::scanlinePos(uInt16& x, uInt16& y) const
 // TODO: stub
 bool TIA::toggleBit(TIABit b, uInt8 mode)
 {
-  return false;
+  uInt8 mask;
+
+  switch (mode) {
+    case 0:
+      mask = 0;
+      break;
+
+    case 1:
+      mask = b;
+      break;
+
+    default:
+      mask = (~mySpriteEnabledBits & b);
+      break;
+  }
+
+  mySpriteEnabledBits = (mySpriteEnabledBits & ~b) | mask;
+
+  myMissile0.toggleEnabled(mySpriteEnabledBits & TIABit::M0Bit);
+  myMissile1.toggleEnabled(mySpriteEnabledBits & TIABit::M1Bit);
+
+  return mask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: stub
 bool TIA::toggleBits()
 {
-  return false;
+  toggleBit(TIABit(0xFF), mySpriteEnabledBits > 0 ? 0 : 1);
+
+  return mySpriteEnabledBits;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: stub
 bool TIA::toggleCollision(TIABit b, uInt8 mode)
 {
-  return false;
+  uInt8 mask;
+
+  switch (mode) {
+    case 0:
+      mask = 0;
+      break;
+
+    case 1:
+      mask = b;
+      break;
+
+    default:
+      mask = (~myCollisionsEnabledBits & b);
+      break;
+  }
+
+  myCollisionsEnabledBits = (myCollisionsEnabledBits & ~b) | mask;
+
+  myMissile0.toggleCollisions(myCollisionsEnabledBits & TIABit::M0Bit);
+  myMissile1.toggleCollisions(myCollisionsEnabledBits & TIABit::M1Bit);
+
+  return mask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: stub
 bool TIA::toggleCollisions()
 {
-  return false;
+  toggleCollision(TIABit(0xFF), myCollisionsEnabledBits > 0 ? 0 : 1);
+
+  return myCollisionsEnabledBits;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

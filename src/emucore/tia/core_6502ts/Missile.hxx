@@ -55,8 +55,12 @@ class Missile : public Serializable
 
     void setColor(uInt8 color);
 
+    void toggleCollisions(bool enabled);
+
+    void toggleEnabled(bool enabled);
+
     uInt8 getPixel(uInt8 colorIn) const {
-      return collision ? colorIn : myColor;
+      return (collision & 0x8000) ? myColor : colorIn;
     }
 
     /**
@@ -72,9 +76,15 @@ class Missile : public Serializable
 
   private:
 
-    uInt32 myCollisionMask;
+    void updateEnabled();
+
+  private:
+
+    uInt32 myCollisionMaskDisabled;
+    uInt32 myCollisionMaskEnabled;
 
     bool myEnabled;
+    bool mySupressed;
     bool myEnam;
     uInt8 myResmp;
 

@@ -28,7 +28,9 @@ namespace TIA6502tsCore {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Missile::Missile(uInt32 collisionMask)
-  : myCollisionMask(collisionMask)
+  : myCollisionMaskDisabled(collisionMask),
+    myCollisionMaskEnabled(0x8000),
+    mySupressed(false)
 {
   reset();
 }
@@ -47,14 +49,14 @@ void Missile::reset()
   myIsRendering = false;
   myRenderCounter = 0;
   myColor = 0;
-  collision = myCollisionMask;
+  collision = myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::enam(uInt8 value)
 {
   myEnam = (value & 0x02) > 0;
-  myEnabled = myEnam && (myResmp == 0);
+  updateEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,12 +80,21 @@ void Missile::resmp(uInt8 value, const Player& player)
 
   myResmp = resmp;
 
-  if (myResmp) {
-      myEnabled = false;
-  } else {
-      myEnabled = myEnam;
-      myCounter = player.getRespClock();
-  }
+  if (!myResmp) myCounter = player.getRespClock();
+
+  updateEnabled();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::toggleCollisions(bool enabled)
+{
+  myCollisionMaskEnabled = enabled ? 0x8000 : (0x8000 | myCollisionMaskDisabled);
+}
+
+void Missile::toggleEnabled(bool enabled)
+{
+  mySupressed = !enabled;
+  updateEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,7 +131,9 @@ bool Missile::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::render()
 {
-  collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ? 0 : myCollisionMask;
+  collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ?
+    myCollisionMaskEnabled :
+    myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,6 +153,12 @@ void Missile::tick()
 void Missile::setColor(uInt8 color)
 {
   myColor = color;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::updateEnabled()
+{
+    myEnabled = !mySupressed && myEnam && !myResmp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

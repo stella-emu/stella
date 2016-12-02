@@ -210,6 +210,9 @@ class TIA : public AbstractTIA
     uInt8 mySubClock;
     uInt32 myLastCycle;
 
+    uInt8 mySpriteEnabledBits;
+    uInt8 myCollisionsEnabledBits;
+
     uInt8 myColorBk;
 
     double myTimestamp;
