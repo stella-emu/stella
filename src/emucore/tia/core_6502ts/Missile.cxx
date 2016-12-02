@@ -29,7 +29,7 @@ namespace TIA6502tsCore {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Missile::Missile(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
-    myCollisionMaskEnabled(0x8000),
+    myCollisionMaskEnabled(0xFFFF),
     mySupressed(false)
 {
   reset();
@@ -90,7 +90,7 @@ void Missile::resmp(uInt8 value, const Player& player)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::toggleCollisions(bool enabled)
 {
-  myCollisionMaskEnabled = enabled ? 0x8000 : (0x8000 | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000 | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

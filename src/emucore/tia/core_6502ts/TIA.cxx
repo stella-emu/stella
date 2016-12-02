@@ -58,12 +58,12 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myDelayQueue(10, 20),
     mySpriteEnabledBits(0xFF),
     myCollisionsEnabledBits(0xFF),
-    myPlayfield(CollisionMask::playfield),
-    myMissile0(CollisionMask::missile0),
-    myMissile1(CollisionMask::missile1),
-    myPlayer0(CollisionMask::player0),
-    myPlayer1(CollisionMask::player1),
-    myBall(CollisionMask::ball)
+    myPlayfield(~CollisionMask::playfield & 0x7FFF),
+    myMissile0(~CollisionMask::missile0 & 0x7FFF),
+    myMissile1(~CollisionMask::missile1 & 0x7FFF),
+    myPlayer0(~CollisionMask::player0 & 0x7FFF),
+    myPlayer1(~CollisionMask::player1 & 0x7FFF),
+    myBall(~CollisionMask::ball & 0x7FFF)
 {
   myFrameManager.setHandlers(
     [this] () {
@@ -900,12 +900,12 @@ void TIA::nextLine()
 void TIA::updateCollision()
 {
   myCollisionMask |= (
-    ~myPlayer0.collision &
-    ~myPlayer1.collision &
-    ~myMissile0.collision &
-    ~myMissile1.collision &
-    ~myBall.collision &
-    ~myPlayfield.collision
+    myPlayer0.collision &
+    myPlayer1.collision &
+    myMissile0.collision &
+    myMissile1.collision &
+    myBall.collision &
+    myPlayfield.collision
   );
 }
 

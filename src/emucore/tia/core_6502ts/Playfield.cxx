@@ -24,7 +24,7 @@ namespace TIA6502tsCore {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Playfield::Playfield(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
-    myCollisionMaskEnabled(0x8000),
+    myCollisionMaskEnabled(0xFFFF),
     mySupressed(false)
 {
   reset();
@@ -103,7 +103,7 @@ void Playfield::toggleEnabled(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::toggleCollisions(bool enabled)
 {
-  myCollisionMaskEnabled = enabled ? 0x8000 : (0x8000 | myCollisionMaskDisabled);
+  myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000 | myCollisionMaskDisabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
