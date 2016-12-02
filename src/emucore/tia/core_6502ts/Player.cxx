@@ -30,7 +30,7 @@ namespace TIA6502tsCore {
 Player::Player(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    mySupressed(false)
+    myIsSuppressed(false)
 {
   reset();
 }
@@ -119,7 +119,7 @@ void Player::vdelp(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::toggleEnabled(bool enabled)
 {
-  mySupressed = !enabled;
+  myIsSuppressed = !enabled;
   updatePattern();
 }
 
@@ -211,7 +211,7 @@ uInt8 Player::getRespClock() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::updatePattern()
 {
-  if (mySupressed) {
+  if (myIsSuppressed) {
     myPattern = 0;
     return;
 }

@@ -25,7 +25,7 @@ namespace TIA6502tsCore {
 Playfield::Playfield(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    mySupressed(false)
+    myIsSuppressed(false)
 {
   reset();
 }
@@ -95,7 +95,7 @@ void Playfield::ctrlpf(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::toggleEnabled(bool enabled)
 {
-  mySupressed = !enabled;
+  myIsSuppressed = !enabled;
 
   updatePattern();
 }
@@ -170,7 +170,7 @@ void Playfield::applyColors()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::updatePattern()
 {
-  myEffectivePattern = mySupressed ? 0 : myPattern;
+  myEffectivePattern = myIsSuppressed ? 0 : myPattern;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

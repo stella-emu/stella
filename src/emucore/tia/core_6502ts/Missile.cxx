@@ -30,7 +30,7 @@ namespace TIA6502tsCore {
 Missile::Missile(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    mySupressed(false)
+    myIsSuppressed(false)
 {
   reset();
 }
@@ -39,7 +39,7 @@ Missile::Missile(uInt32 collisionMask)
 void Missile::reset()
 {
   myDecodes = DrawCounterDecodes::get().missileDecodes()[0];
-  myEnabled = false;
+  myIsEnabled = false;
   myEnam = false;
   myResmp = 0;
   myHmmClocks = 0;
@@ -96,7 +96,7 @@ void Missile::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::toggleEnabled(bool enabled)
 {
-  mySupressed = !enabled;
+  myIsSuppressed = !enabled;
   updateEnabled();
 }
 
@@ -134,7 +134,7 @@ bool Missile::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::render()
 {
-  collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ?
+  collision = (myIsRendering && myRenderCounter >= 0 && myIsEnabled) ?
     myCollisionMaskEnabled :
     myCollisionMaskDisabled;
 }
@@ -161,7 +161,7 @@ void Missile::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::updateEnabled()
 {
-    myEnabled = !mySupressed && myEnam && !myResmp;
+    myIsEnabled = !myIsSuppressed && myEnam && !myResmp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -83,8 +83,8 @@ class Missile : public Serializable
     uInt32 myCollisionMaskDisabled;
     uInt32 myCollisionMaskEnabled;
 
-    bool myEnabled;
-    bool mySupressed;
+    bool myIsEnabled;
+    bool myIsSuppressed;
     bool myEnam;
     uInt8 myResmp;
 

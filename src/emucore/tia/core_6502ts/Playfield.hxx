@@ -84,7 +84,7 @@ class Playfield : public Serializable
     uInt32 myCollisionMaskDisabled;
     uInt32 myCollisionMaskEnabled;
 
-    bool mySupressed;
+    bool myIsSuppressed;
 
     uInt8 myColorLeft;
     uInt8 myColorRight;

@@ -28,7 +28,7 @@ namespace TIA6502tsCore {
 Ball::Ball(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    mySupressed(false)
+    myIsSuppressed(false)
 {
   reset();
 }
@@ -38,9 +38,9 @@ void Ball::reset()
 {
   myColor = 0;
   collision = myCollisionMaskDisabled;
-  myEnabledOld = false;
-  myEnabledNew = false;
-  myEnabled = false;
+  myIsEnabledOld = false;
+  myIsEnabledNew = false;
+  myIsEnabled = false;
   myIsDelaying = false;
   myHmmClocks = 0;
   myCounter = 0;
@@ -55,7 +55,7 @@ void Ball::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::enabl(uInt8 value)
 {
-  myEnabledNew = (value & 0x02) > 0;
+  myIsEnabledNew = (value & 0x02) > 0;
   updateEnabled();
 }
 
@@ -98,7 +98,7 @@ void Ball::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::toggleEnabled(bool enabled)
 {
-  mySupressed = !enabled;
+  myIsSuppressed = !enabled;
 
   updateEnabled();
 }
@@ -131,7 +131,7 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::render()
 {
-  collision = (myIsRendering && myRenderCounter >= 0 && myEnabled) ?
+  collision = (myIsRendering && myRenderCounter >= 0 && myIsEnabled) ?
     myCollisionMaskEnabled :
     myCollisionMaskDisabled;
 }
@@ -153,14 +153,14 @@ void Ball::tick()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::shuffleStatus()
 {
-  myEnabledOld = myEnabledNew;
+  myIsEnabledOld = myIsEnabledNew;
   updateEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::updateEnabled()
 {
-  myEnabled = !mySupressed && (myIsDelaying ? myEnabledOld : myEnabledNew);
+  myIsEnabled = !myIsSuppressed && (myIsDelaying ? myIsEnabledOld : myIsEnabledNew);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

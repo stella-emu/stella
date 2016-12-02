@@ -87,10 +87,10 @@ class Ball : public Serializable
 
     uInt8 myColor;
 
-    bool myEnabledOld;
-    bool myEnabledNew;
-    bool myEnabled;
-    bool mySupressed;
+    bool myIsEnabledOld;
+    bool myIsEnabledNew;
+    bool myIsEnabled;
+    bool myIsSuppressed;
     bool myIsDelaying;
 
     uInt8 myHmmClocks;

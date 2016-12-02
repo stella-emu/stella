@@ -89,7 +89,7 @@ class Player : public Serializable
     uInt32 myCollisionMaskEnabled;
     uInt8 myColor;
 
-    bool mySupressed;
+    bool myIsSuppressed;
 
     uInt8 myHmmClocks;
     uInt8 myCounter;
