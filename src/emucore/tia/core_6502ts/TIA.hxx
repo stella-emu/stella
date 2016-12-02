@@ -138,7 +138,8 @@ class TIA : public AbstractTIA
 
     bool toggleCollisions() override;
 
-    bool toggleHMOVEBlank() override;
+    // TODO - remove this completely, as it doesn't work in the new core
+    bool toggleHMOVEBlank() override { return true; }
 
     bool toggleFixedColors(uInt8 mode = 2) override;
 

@@ -725,13 +725,6 @@ bool TIA::toggleCollisions()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: stub
-bool TIA::toggleHMOVEBlank()
-{
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::toggleFixedColors(uInt8 mode)
 {
   return false;
