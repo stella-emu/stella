@@ -572,7 +572,7 @@ void TIA::update()
 // TODO: stub
 uInt32 TIA::height() const
 {
-  return 0;
+  return myFrameManager.height();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
