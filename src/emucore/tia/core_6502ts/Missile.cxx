@@ -48,7 +48,8 @@ void Missile::reset()
   myWidth = 1;
   myIsRendering = false;
   myRenderCounter = 0;
-  myColor = 0;
+  myColor = myObjectColor = myDebugColor = 0;
+  myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
 
   updateEnabled();
@@ -78,11 +79,13 @@ void Missile::resmp(uInt8 value, const Player& player)
 {
   const uInt8 resmp = value & 0x02;
 
-  if (resmp == myResmp) return;
+  if (resmp == myResmp)
+    return;
 
   myResmp = resmp;
 
-  if (!myResmp) myCounter = player.getRespClock();
+  if (!myResmp)
+    myCounter = player.getRespClock();
 
   updateEnabled();
 }
@@ -155,13 +158,34 @@ void Missile::tick()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::setColor(uInt8 color)
 {
-  myColor = color;
+  myObjectColor = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::setDebugColor(uInt8 color)
+{
+  myDebugColor = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::enableDebugColors(bool enabled)
+{
+  myDebugEnabled = enabled;
+  applyColors();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::updateEnabled()
 {
-    myIsEnabled = !myIsSuppressed && myEnam && !myResmp;
+  myIsEnabled = !myIsSuppressed && myEnam && !myResmp;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::applyColors()
+{
+  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

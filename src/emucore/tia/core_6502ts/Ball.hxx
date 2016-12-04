@@ -51,6 +51,9 @@ class Ball : public Serializable
 
     void setColor(uInt8 color);
 
+    void setDebugColor(uInt8 color);
+    void enableDebugColors(bool enabled);
+
     void startMovement();
 
     bool movementTick(uInt32 clock, bool apply);
@@ -79,6 +82,7 @@ class Ball : public Serializable
   private:
 
     void updateEnabled();
+    void applyColors();
 
   private:
 
@@ -86,6 +90,8 @@ class Ball : public Serializable
     uInt32 myCollisionMaskEnabled;
 
     uInt8 myColor;
+    uInt8 myObjectColor, myDebugColor;
+    bool myDebugEnabled;
 
     bool myIsEnabledOld;
     bool myIsEnabledNew;
@@ -102,7 +108,6 @@ class Ball : public Serializable
     Int8 myRenderCounter;
 
   private:
-
     Ball() = delete;
     Ball(const Ball&) = delete;
     Ball(Ball&&) = delete;

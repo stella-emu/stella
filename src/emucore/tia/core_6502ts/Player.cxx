@@ -50,6 +50,8 @@ void Player::reset()
   myPattern = 0;
   myIsReflected = 0;
   myIsDelaying = false;
+  myColor = myObjectColor = myDebugColor = 0;
+  myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
 
   updatePattern();
@@ -132,7 +134,22 @@ void Player::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setColor(uInt8 color)
 {
-  myColor = color;
+  myObjectColor = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::setDebugColor(uInt8 color)
+{
+  myDebugColor = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::enableDebugColors(bool enabled)
+{
+  myDebugEnabled = enabled;
+  applyColors();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,7 +231,7 @@ void Player::updatePattern()
   if (myIsSuppressed) {
     myPattern = 0;
     return;
-}
+  }
 
   const uInt32 pattern = myIsDelaying ? myPatternOld : myPatternNew;
 
@@ -284,6 +301,12 @@ void Player::updatePattern()
       }
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::applyColors()
+{
+  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -36,7 +36,7 @@ Ball::Ball(uInt32 collisionMask)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::reset()
 {
-  myColor = 0;
+  myColor = myObjectColor = myDebugColor = 0;
   collision = myCollisionMaskDisabled;
   myIsEnabledOld = false;
   myIsEnabledNew = false;
@@ -47,9 +47,11 @@ void Ball::reset()
   myIsMoving = false;
   myWidth = 1;
   myIsRendering = false;
+  myDebugEnabled = false;
   myRenderCounter = 0;
 
   updateEnabled();
+  applyColors();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,14 +101,28 @@ void Ball::toggleCollisions(bool enabled)
 void Ball::toggleEnabled(bool enabled)
 {
   myIsSuppressed = !enabled;
-
   updateEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setColor(uInt8 color)
 {
-  myColor = color;
+  myObjectColor = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::setDebugColor(uInt8 color)
+{
+  myDebugColor = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::enableDebugColors(bool enabled)
+{
+  myDebugEnabled = enabled;
+  applyColors();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,6 +177,12 @@ void Ball::shuffleStatus()
 void Ball::updateEnabled()
 {
   myIsEnabled = !myIsSuppressed && (myIsDelaying ? myIsEnabledOld : myIsEnabledNew);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::applyColors()
+{
+  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

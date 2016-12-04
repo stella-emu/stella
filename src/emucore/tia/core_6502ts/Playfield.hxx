@@ -52,6 +52,9 @@ class Playfield : public Serializable
 
     void setColorP1(uInt8 color);
 
+    void setDebugColor(uInt8 color);
+    void enableDebugColors(bool enabled);
+
     void tick(uInt32 x);
 
     uInt8 getPixel(uInt8 colorIn) const {
@@ -90,7 +93,9 @@ class Playfield : public Serializable
     uInt8 myColorRight;
     uInt8 myColorP0;
     uInt8 myColorP1;
-    uInt8 myColor;
+    uInt8 myObjectColor, myDebugColor;
+    bool myDebugEnabled;
+
     ColorMode myColorMode;
 
     uInt32 myPattern;

@@ -52,6 +52,9 @@ class Player : public Serializable
 
     void setColor(uInt8 color);
 
+    void setDebugColor(uInt8 color);
+    void enableDebugColors(bool enabled);
+
     void startMovement();
 
     bool movementTick(uInt32 clock, bool apply);
@@ -82,12 +85,15 @@ class Player : public Serializable
   private:
 
     void updatePattern();
+    void applyColors();
 
   private:
 
     uInt32 myCollisionMaskDisabled;
     uInt32 myCollisionMaskEnabled;
     uInt8 myColor;
+    uInt8 myObjectColor, myDebugColor;
+    bool myDebugEnabled;
 
     bool myIsSuppressed;
 

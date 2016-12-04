@@ -17,102 +17,50 @@
 // $Id$
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_MISSILE
-#define TIA_6502TS_CORE_MISSILE
+#ifndef TIA_6502TS_CORE_BACKGROUND
+#define TIA_6502TS_CORE_BACKGROUND
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
-#include "Player.hxx"
 
 namespace TIA6502tsCore {
 
-class Missile : public Serializable
+class Background : public Serializable
 {
   public:
-    Missile(uInt32 collisionMask);
+    Background();
 
   public:
-
     void reset();
 
-    void enam(uInt8 value);
-
-    void hmm(uInt8 value);
-
-    void resm(bool hblank);
-
-    void resmp(uInt8 value, const Player& player);
-
-    void nusiz(uInt8 value);
-
-    void startMovement();
-
-    bool movementTick(uInt32 clock, bool apply);
-
-    void render();
-
-    void tick();
-
     void setColor(uInt8 color);
-
     void setDebugColor(uInt8 color);
     void enableDebugColors(bool enabled);
 
-    void toggleCollisions(bool enabled);
-
-    void toggleEnabled(bool enabled);
-
-    uInt8 getPixel(uInt8 colorIn) const {
-      return (collision & 0x8000) ? myColor : colorIn;
-    }
+    uInt8 getColor() const { return myColor; }
 
     /**
       Serializable methods (see that class for more information).
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override { return "TIA_Missile"; }
-
-  public:
-
-    uInt32 collision;
+    string name() const override { return "TIA_BK"; }
 
   private:
-
-    void updateEnabled();
     void applyColors();
 
   private:
-
-    uInt32 myCollisionMaskDisabled;
-    uInt32 myCollisionMaskEnabled;
-
-    bool myIsEnabled;
-    bool myIsSuppressed;
-    bool myEnam;
-    uInt8 myResmp;
-
-    uInt8 myHmmClocks;
-    uInt8 myCounter;
-    bool myIsMoving;
-    uInt8 myWidth;
-
-    bool myIsRendering;
-    Int8 myRenderCounter;
-
-    const uInt8* myDecodes;
-
     uInt8 myColor;
     uInt8 myObjectColor, myDebugColor;
     bool myDebugEnabled;
 
   private:
-    Missile(const Missile&) = delete;
-    Missile(Missile&&) = delete;
-    Missile& operator=(const Missile&) = delete;
-    Missile& operator=(Missile&&) = delete;
+    Background(const Background&) = delete;
+    Background(Background&&) = delete;
+    Background& operator=(const Background&) = delete;
+    Background& operator=(Background&&);
 };
 
 } // namespace TIA6502tsCore
 
-#endif // TIA_6502TS_CORE_MISSILE
+#endif // TIA_6502TS_CORE_BACKGROUND

@@ -27,6 +27,7 @@
 #include "TIATypes.hxx"
 #include "DelayQueue.hxx"
 #include "FrameManager.hxx"
+#include "Background.hxx"
 #include "Playfield.hxx"
 #include "Missile.hxx"
 #include "Player.hxx"
@@ -179,6 +180,24 @@ class TIA : public AbstractTIA
     enum HState {blank, frame};
     enum Priority {pfp, score, normal};
 
+    enum FixedColors {
+      P0ColorNTSC = 0x30,
+      P1ColorNTSC = 0x16,
+      M0ColorNTSC = 0x38,
+      M1ColorNTSC = 0x12,
+      BLColorNTSC = 0x7e,
+      PFColorNTSC = 0x76,
+      BKColorNTSC = 0x0a,
+      P0ColorPAL  = 0x62,
+      P1ColorPAL  = 0x26,
+      M0ColorPAL  = 0x68,
+      M1ColorPAL  = 0x2e,
+      BLColorPAL  = 0xde,
+      PFColorPAL  = 0xd8,
+      BKColorPAL  = 0x1c,
+      HBLANKColor = 0x0e
+    };
+
   private:
 
     void updateEmulation();
@@ -245,7 +264,7 @@ class TIA : public AbstractTIA
     uInt8 mySpriteEnabledBits;
     uInt8 myCollisionsEnabledBits;
 
-    uInt8 myColorBk;
+    uInt8 myColorHBlank;
 
     double myTimestamp;
 
@@ -253,6 +272,7 @@ class TIA : public AbstractTIA
     BytePtr myCurrentFrameBuffer;
     BytePtr myPreviousFrameBuffer;
 
+    Background myBackground;
     Playfield myPlayfield;
     Missile myMissile0;
     Missile myMissile1;

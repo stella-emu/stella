@@ -41,10 +41,11 @@ void Playfield::reset()
   myPf1 = 0;
   myPf2 = 0;
 
-  myColor = 0;
+  myObjectColor = myDebugColor = 0;
   myColorP0 = 0;
   myColorP1 = 0;
   myColorMode = ColorMode::normal;
+  myDebugEnabled = false;
 
   collision = 0;
 
@@ -66,12 +67,12 @@ void Playfield::pf1(uInt8 value)
   myPattern = (myPattern & 0x000FF00F)
     | ((value & 0x80) >> 3)
     | ((value & 0x40) >> 1)
-    | ((value & 0x20) <<  1)
-    | ((value & 0x10) <<  3)
-    | ((value & 0x08) <<  5)
-    | ((value & 0x04) <<  7)
-    | ((value & 0x02) <<  9)
-    | ((value & 0x01) <<  11);
+    | ((value & 0x20) << 1)
+    | ((value & 0x10) << 3)
+    | ((value & 0x08) << 5)
+    | ((value & 0x04) << 7)
+    | ((value & 0x02) << 9)
+    | ((value & 0x01) << 11);
 
   updatePattern();
 }
@@ -109,7 +110,7 @@ void Playfield::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColor(uInt8 color)
 {
-  myColor = color;
+  myObjectColor = color;
   applyColors();
 }
 
@@ -124,6 +125,20 @@ void Playfield::setColorP0(uInt8 color)
 void Playfield::setColorP1(uInt8 color)
 {
   myColorP1 = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::setDebugColor(uInt8 color)
+{
+  myDebugColor = color;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::enableDebugColors(bool enabled)
+{
+  myDebugEnabled = enabled;
   applyColors();
 }
 
@@ -154,16 +169,21 @@ void Playfield::tick(uInt32 x)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::applyColors()
 {
-  switch (myColorMode)
+  if (myDebugEnabled)
+    myColorLeft = myColorRight = myDebugColor;
+  else
   {
-    case ColorMode::normal:
-      myColorLeft = myColorRight = myColor;
-      break;
+    switch (myColorMode)
+    {
+      case ColorMode::normal:
+        myColorLeft = myColorRight = myObjectColor;
+        break;
 
-    case ColorMode::score:
-      myColorLeft = myColorP0;
-      myColorRight = myColorP1;
-      break;
+      case ColorMode::score:
+        myColorLeft = myColorP0;
+        myColorRight = myColorP1;
+        break;
+    }
   }
 }
 

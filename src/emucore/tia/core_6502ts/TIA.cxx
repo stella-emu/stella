@@ -97,11 +97,12 @@ void TIA::reset()
   myCollisionMask = 0;
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = false;
-  myColorBk = 0;
+  myColorHBlank = 0;
 
   myLastCycle = 0;
   mySubClock = 0;
 
+  myBackground.reset();
   myPlayfield.reset();
   myMissile0.reset();
   myMissile1.reset();
@@ -119,6 +120,8 @@ void TIA::reset()
   mySound.reset();
   myDelayQueue.reset();
   myFrameManager.reset();
+  toggleFixedColors(0);  // Turn off debug colours
+
   frameReset();  // Recalculate the size of the display
 }
 
@@ -128,7 +131,7 @@ void TIA::frameReset()
   // Clear frame buffers
   clearBuffers();
 
-  // TODO - make use of ystart and height
+  // TODO - make use of ystart and height, maybe move to FrameManager
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -370,7 +373,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case COLUBK:
       myLinesSinceChange = 0;
-      myColorBk = value & 0xFE;
+      myBackground.setColor(value & 0xFE);
       break;
 
     case COLUP0:
@@ -724,10 +727,31 @@ bool TIA::toggleCollisions()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::toggleFixedColors(uInt8 mode)
 {
-  return false;
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, flip the state
+  bool on = (mode == 0 || mode == 1) ? bool(mode) : myColorHBlank == 0;
+
+  bool pal = isPAL();
+  myMissile0.setDebugColor(pal ? M0ColorPAL : M0ColorNTSC);
+  myMissile1.setDebugColor(pal ? M1ColorPAL : M1ColorNTSC);
+  myPlayer0.setDebugColor(pal ? P0ColorPAL : P0ColorNTSC);
+  myPlayer1.setDebugColor(pal ? P1ColorPAL : P1ColorNTSC);
+  myBall.setDebugColor(pal ? BLColorPAL : BLColorNTSC);
+  myPlayfield.setDebugColor(pal ? PFColorPAL : PFColorNTSC);
+  myBackground.setDebugColor(pal ? BKColorPAL : BKColorNTSC);
+
+  myMissile0.enableDebugColors(on);
+  myMissile1.enableDebugColors(on);
+  myPlayer0.enableDebugColors(on);
+  myPlayer1.enableDebugColors(on);
+  myBall.enableDebugColors(on);
+  myPlayfield.enableDebugColors(on);
+  myBackground.enableDebugColors(on);
+  myColorHBlank = on ? HBLANKColor : 0x00;
+
+  return on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -735,7 +759,7 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
 {
   // If mode is 0 or 1, use it as a boolean (off or on)
   // Otherwise, return the state
-  if(mode == 0 || mode == 1)
+  if (mode == 0 || mode == 1)
   {
     myTIAPinsDriven = bool(mode);
     mySettings.setValue("tiadriven", myTIAPinsDriven);
@@ -905,7 +929,7 @@ void TIA::updateCollision()
 void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
 {
   if (lineNotCached) {
-    uInt8 color = myColorBk;
+    uInt8 color = myBackground.getColor();
 
     switch (myPriority)
     {
@@ -959,7 +983,8 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
 void TIA::clearHmoveComb()
 {
   if (myFrameManager.isRendering() && myHstate == HState::blank)
-    memset(myCurrentFrameBuffer.get() + myFrameManager.currentLine() * 160, 0, 8);
+    memset(myCurrentFrameBuffer.get() + myFrameManager.currentLine() * 160,
+           myColorHBlank, 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
