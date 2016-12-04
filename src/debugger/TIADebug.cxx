@@ -20,7 +20,7 @@
 #include "Base.hxx"
 #include "System.hxx"
 #include "Debugger.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 
 #include "TIADebug.hxx"
 
@@ -188,96 +188,127 @@ void TIADebug::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vdelP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(VDELP0, bool(newVal));
 
   return myTIA.myVDELP0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vdelP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(VDELP1, bool(newVal));
 
   return myTIA.myVDELP1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vdelBL(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(VDELBL, bool(newVal));
 
   return myTIA.myVDELBL;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaM0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(ENAM0, bool(newVal) << 1);
 
   return myTIA.myENAM0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaM1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(ENAM1, bool(newVal) << 1);
 
   return myTIA.myENAM1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaBL(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(ENABL, bool(newVal) << 1);
 
   return myTIA.myENABL;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::resMP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(RESMP0, bool(newVal) << 1);
 
   return myTIA.myRESMP0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::resMP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(RESMP1, bool(newVal) << 1);
 
   return myTIA.myRESMP1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(REFP0, bool(newVal) << 3);
 
   return myTIA.myREFP0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(REFP1, bool(newVal) << 3);
 
   return myTIA.myREFP1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refPF(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     int tmp = myTIA.myCTRLPF;
@@ -289,11 +320,14 @@ bool TIADebug::refPF(int newVal)
   }
 
   return myTIA.myCTRLPF & 0x01;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::scorePF(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     int tmp = myTIA.myCTRLPF;
@@ -305,11 +339,14 @@ bool TIADebug::scorePF(int newVal)
   }
 
   return myTIA.myCTRLPF & 0x02;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::priorityPF(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     int tmp = myTIA.myCTRLPF;
@@ -321,11 +358,14 @@ bool TIADebug::priorityPF(int newVal)
   }
 
   return myTIA.myCTRLPF & 0x04;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::collision(int collID, int newVal)
 {
+#if 0 // FIXME
   uInt32 mask = 1 << collID;
 
   if(newVal > -1)
@@ -337,146 +377,194 @@ bool TIADebug::collision(int collID, int newVal)
   }
 
   return myTIA.myCollision & mask;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audC0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDC0, newVal);
 
   return myTIA.myAUDC0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audC1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDC1, newVal);
 
   return myTIA.myAUDC1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audV0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDV0, newVal);
 
   return myTIA.myAUDV0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audV1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDV1, newVal);
 
   return myTIA.myAUDV1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audF0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDF0, newVal);
 
   return myTIA.myAUDF0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audF1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDF1, newVal);
 
   return myTIA.myAUDF1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::pf0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(PF0, newVal << 4);
 
   return myTIA.myPF & 0x0f;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::pf1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(PF1, newVal);
 
   return (myTIA.myPF & 0xff0) >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::pf2(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(PF2, newVal);
 
   return (myTIA.myPF & 0xff000) >> 12;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUP0, newVal);
 
   return myTIA.myColor[P0Color] & 0xff;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUP1, newVal);
 
   return myTIA.myColor[P1Color] & 0xff;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluPF(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUPF, newVal);
 
   return myTIA.myColor[PFColor] & 0xff;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluBK(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUBK, newVal);
 
   return myTIA.myColor[BKColor] & 0xff;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusiz0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(NUSIZ0, newVal);
 
   return myTIA.myNUSIZ0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusiz1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(NUSIZ1, newVal);
 
   return myTIA.myNUSIZ1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.myNUSIZ0 & ~0x07;
@@ -485,11 +573,14 @@ uInt8 TIADebug::nusizP0(int newVal)
   }
 
   return myTIA.myNUSIZ0 & 0x07;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.myNUSIZ1 & ~0x07;
@@ -498,11 +589,14 @@ uInt8 TIADebug::nusizP1(int newVal)
   }
 
   return myTIA.myNUSIZ1 & 0x07;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizM0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.myNUSIZ0 & ~0x30;
@@ -511,11 +605,14 @@ uInt8 TIADebug::nusizM0(int newVal)
   }
 
   return (myTIA.myNUSIZ0 & 0x30) >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizM1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.myNUSIZ1 & ~0x30;
@@ -524,83 +621,110 @@ uInt8 TIADebug::nusizM1(int newVal)
   }
 
   return (myTIA.myNUSIZ1 & 0x30) >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::grP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(GRP0, newVal);
 
   return myTIA.myGRP0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::grP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(GRP1, newVal);
 
   return myTIA.myGRP1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     myTIA.myPOSP0 = newVal;
 
   return myTIA.myPOSP0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     myTIA.myPOSP1 = newVal;
 
   return myTIA.myPOSP1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posM0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     myTIA.myPOSM0 = newVal;
 
   return myTIA.myPOSM0;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posM1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     myTIA.myPOSM1 = newVal;
 
   return myTIA.myPOSM1;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posBL(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     myTIA.myPOSBL = newVal;
 
   return myTIA.myPOSBL;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::ctrlPF(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(CTRLPF, newVal);
 
   return myTIA.myCTRLPF;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::sizeBL(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
   {
     uInt8 tmp = myTIA.myCTRLPF & ~0x30;
@@ -609,57 +733,74 @@ uInt8 TIADebug::sizeBL(int newVal)
   }
 
   return (myTIA.myCTRLPF & 0x30) >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmP0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMP0, newVal << 4);
 
   return myTIA.myHMP0 >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmP1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMP1, newVal << 4);
 
   return myTIA.myHMP1 >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmM0(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMM0, newVal << 4);
 
   return myTIA.myHMM0 >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmM1(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMM1, newVal << 4);
 
   return myTIA.myHMM1 >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmBL(int newVal)
 {
+#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMBL, newVal << 4);
 
   return myTIA.myHMBL >> 4;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::frameCount() const
 {
-  return myTIA.myFrameCounter;
+return 0;//  return myTIA.myFrameCounter;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -677,13 +818,19 @@ int TIADebug::clocksThisLine() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vsync() const
 {
+#if 0 // FIXME
   return (myTIA.myVSYNC & 2) == 2;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vblank() const
 {
+#if 0 // FIXME
   return (myTIA.myVBLANK & 2) == 2;
+#endif
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -736,6 +883,7 @@ string TIADebug::booleanWithLabel(string label, bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::toString()
 {
+#if 0 // FIXME
   ostringstream buf;
 
   buf << "00: ";
@@ -848,4 +996,6 @@ string TIADebug::toString()
       ;
   // note: last line should not contain \n, caller will add.
   return buf.str();
+#endif
+return "TODO";
 }

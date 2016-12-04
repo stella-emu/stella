@@ -37,7 +37,7 @@
 #include "System.hxx"
 #include "M6502.hxx"
 #include "Cart.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"

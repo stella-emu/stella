@@ -29,7 +29,7 @@
 #include "DebuggerParser.hxx"
 #include "TIADebug.hxx"
 #include "TIASurface.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 
 #include "TiaOutputWidget.hxx"
 

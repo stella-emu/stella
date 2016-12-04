@@ -153,6 +153,25 @@ class TIA : public AbstractTIA
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
 
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      This method should be called to update the TIA with a new scanline.
+    */
+    void updateScanline() override;
+
+    /**
+      This method should be called to update the TIA with a new partial
+      scanline by stepping one CPU instruction.
+    */
+    void updateScanlineByStep() override;
+
+    /**
+      This method should be called to update the TIA with a new partial
+      scanline by tracing to target address.
+    */
+    void updateScanlineByTrace(int target) override;
+  #endif
+
     /**
       Save the current state of this device to the given Serializer.
 

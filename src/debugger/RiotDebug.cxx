@@ -20,7 +20,7 @@
 #include <sstream>
 
 #include "System.hxx"
-#include "TIA.hxx"
+#include "AbstractTIA.hxx"
 #include "Debugger.hxx"
 #include "Switches.hxx"
 
@@ -153,9 +153,9 @@ uInt8 RiotDebug::inpt(int x)
 bool RiotDebug::vblank(int bit)
 {
   if(bit == 6)       // latches
-    return mySystem.tia().myVBLANK & 0x40;
+    return 0;//FIXME mySystem.tia().myVBLANK & 0x40;
   else if(bit == 7)  // dump to ground
-    return mySystem.tia().myDumpEnabled;
+    return 0;//FIXME mySystem.tia().myDumpEnabled;
   else
     return true;
 }

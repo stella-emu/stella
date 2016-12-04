@@ -22,7 +22,7 @@
 
 class Debugger;
 class TiaDebug;
-class TIA;
+class AbstractTIA;
 
 #include "DebuggerSystem.hxx"
 
@@ -52,7 +52,7 @@ class TIADebug : public DebuggerSystem
 {
   public:
     TIADebug(Debugger& dbg, Console& console);
-    TIA& tia() const { return myTIA; }
+    AbstractTIA& tia() const { return myTIA; }
 
     const DebuggerState& getState() override;
     const DebuggerState& getOldState() override { return myOldState; }
@@ -172,7 +172,7 @@ class TIADebug : public DebuggerSystem
     TiaState myState;
     TiaState myOldState;
 
-    TIA& myTIA;
+    AbstractTIA& myTIA;
 
     string nusizStrings[8];
 

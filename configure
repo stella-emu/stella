@@ -20,7 +20,7 @@ _zlib=auto
 # default option behaviour yes/no
 _build_windowed=yes
 _build_sound=yes
-_build_debugger=false
+_build_debugger=yes
 _build_joystick=yes
 _build_cheats=yes
 _build_thumb=yes
