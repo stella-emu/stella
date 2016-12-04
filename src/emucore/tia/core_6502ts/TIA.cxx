@@ -140,7 +140,7 @@ void TIA::systemCyclesReset()
   const uInt32 cycles = mySystem->cycles();
 
   myLastCycle -= cycles;
-  mySound.adjustCycleCounter(-cycles);
+  mySound.adjustCycleCounter(-1 * cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

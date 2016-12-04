@@ -110,7 +110,7 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;SUPPORT_6502TS_TIA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -118,6 +118,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level2</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -140,7 +141,7 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;SUPPORT_6502TS_TIA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -148,6 +149,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level2</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -168,13 +170,14 @@
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;SUPPORT_6502TS_TIA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level2</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -200,13 +203,14 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;SUPPORT_6502TS_TIA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level2</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -302,6 +306,20 @@
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\TIASurface.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\Background.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\Ball.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\DelayQueue.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\DelayQueueMember.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\DrawCounterDecodes.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\FrameManager.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\LatchedInput.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\Missile.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\PaddleReader.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\Player.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\Playfield.cxx" />
+    <ClCompile Include="..\emucore\tia\core_6502ts\TIA.cxx" />
+    <ClCompile Include="..\emucore\tia\core_default\TIA.cxx" />
+    <ClCompile Include="..\emucore\tia\core_default\TIATables.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -367,9 +385,7 @@
     <ClCompile Include="..\emucore\Switches.cxx" />
     <ClCompile Include="..\emucore\System.cxx" />
     <ClCompile Include="..\emucore\Thumbulator.cxx" />
-    <ClCompile Include="..\emucore\TIA.cxx" />
     <ClCompile Include="..\emucore\TIASnd.cxx" />
-    <ClCompile Include="..\emucore\TIATables.cxx" />
     <ClCompile Include="..\emucore\TrackBall.cxx" />
     <ClCompile Include="..\cheat\BankRomCheat.cxx" />
     <ClCompile Include="..\cheat\CheatCodeDialog.cxx" />
@@ -544,6 +560,7 @@
     <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
+    <ClInclude Include="..\emucore\AbstractTIA.hxx" />
     <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
@@ -562,6 +579,21 @@
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\emucore\TIASurface.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\Background.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\Ball.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\DelayQueue.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\DelayQueueMember.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\DrawCounterDecodes.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\FrameManager.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\LatchedInput.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\Missile.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\PaddleReader.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\Player.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\Playfield.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\TIA.hxx" />
+    <ClInclude Include="..\emucore\tia\core_6502ts\Types.hxx" />
+    <ClInclude Include="..\emucore\tia\core_default\TIA.hxx" />
+    <ClInclude Include="..\emucore\tia\core_default\TIATables.hxx" />
     <ClInclude Include="..\gui\ConsoleBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
@@ -645,9 +677,7 @@
     <ClInclude Include="..\emucore\Switches.hxx" />
     <ClInclude Include="..\emucore\System.hxx" />
     <ClInclude Include="..\emucore\Thumbulator.hxx" />
-    <ClInclude Include="..\emucore\TIA.hxx" />
     <ClInclude Include="..\emucore\TIASnd.hxx" />
-    <ClInclude Include="..\emucore\TIATables.hxx" />
     <ClInclude Include="..\emucore\TrackBall.hxx" />
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx" />
     <ClInclude Include="..\debugger\CartDebug.hxx" />
