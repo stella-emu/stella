@@ -23,6 +23,10 @@
 #include "Console.hxx"
 #include "Types.hxx"
 
+#ifdef DEBUGGER_SUPPORT
+  #include "CartDebug.hxx"
+#endif
+
 enum CollisionMask: uInt32 {
   player0   = 0b0111110000000000,
   player1   = 0b0100001111000000,
@@ -408,16 +412,37 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case PF0:
+    {
       myDelayQueue.push(PF0, value, Delay::pf);
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+    #endif
       break;
+    }
 
     case PF1:
+    {
       myDelayQueue.push(PF1, value, Delay::pf);
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+    #endif
       break;
+    }
 
     case PF2:
+    {
       myDelayQueue.push(PF2, value, Delay::pf);
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+    #endif
       break;
+    }
 
     case ENAM0:
       myLinesSinceChange = 0;
@@ -474,16 +499,30 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case GRP0:
+    {
       myDelayQueue.push(GRP0, value, Delay::grp);
       myDelayQueue.push(DummyRegisters::shuffleP1, 0, Delay::shufflePlayer);
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
+    #endif
       break;
+    }
 
     case GRP1:
+    {
       myLinesSinceChange = 0;
       myDelayQueue.push(GRP1, value, Delay::grp);
       myDelayQueue.push(DummyRegisters::shuffleP0, 0, Delay::shufflePlayer);
       myBall.shuffleStatus();
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
+    #endif
       break;
+    }
 
     case RESP0:
       myLinesSinceChange = 0;
