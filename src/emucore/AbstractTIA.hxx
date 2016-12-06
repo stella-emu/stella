@@ -46,9 +46,7 @@ class AbstractTIA: public Device
 
     virtual uInt8* previousFrameBuffer() const = 0;
 
-    virtual uInt32 width() const {
-      return 160;
-    }
+    virtual uInt32 width() const { return 160; }
 
     virtual uInt32 height() const = 0;
 
@@ -82,8 +80,6 @@ class AbstractTIA: public Device
 
     virtual bool toggleCollisions() = 0;
 
-    virtual bool toggleHMOVEBlank() = 0;
-
     virtual bool toggleFixedColors(uInt8 mode = 2) = 0;
 
     virtual bool driveUnusedPinsRandom(uInt8 mode = 2) = 0;
@@ -92,20 +88,18 @@ class AbstractTIA: public Device
 
     virtual void setJitterRecoveryFactor(Int32 f) = 0;
 
-    #ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
 
-      virtual void updateScanline() = 0;
+    virtual void updateScanline() = 0;
 
-      virtual void updateScanlineByStep() = 0;
+    virtual void updateScanlineByStep() = 0;
 
-      virtual void updateScanlineByTrace(int targetAddress) = 0; 
+    virtual void updateScanlineByTrace(int targetAddress) = 0; 
 
-    #endif
+  #endif
 
   protected:
-
     AbstractTIA() {}
-
 };
 
 #endif

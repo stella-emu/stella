@@ -395,10 +395,6 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
             myOSystem.console().togglePFBit();
           break;
 
-        case KBDK_M:
-          myOSystem.console().toggleHMOVE();
-          break;
-
         case KBDK_COMMA:
           myOSystem.console().toggleFixedColors();
           break;

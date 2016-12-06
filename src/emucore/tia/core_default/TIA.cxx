@@ -111,7 +111,6 @@ void TIA::initialize()
 
   myCurrentHMOVEPos = myPreviousHMOVEPos = 0x7FFFFFFF;
   myHMOVEBlankEnabled = false;
-  myAllowHMOVEBlanks = true;
 
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
@@ -451,7 +450,6 @@ bool TIA::load(Serializer& in)
     // Reset TIA bits to be on
     enableBits(true);
     toggleFixedColors(0);
-    myAllowHMOVEBlanks = true;
   }
   catch(...)
   {
@@ -828,13 +826,6 @@ bool TIA::toggleCollisions()
   myCollisionsEnabled = !myCollisionsEnabled;
   enableCollisions(myCollisionsEnabled);
   return myCollisionsEnabled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleHMOVEBlank()
-{
-  myAllowHMOVEBlanks = myAllowHMOVEBlanks ? false : true;
-  return myAllowHMOVEBlanks;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2146,8 +2137,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       myCurrentHMOVEPos = hpos;
 
       // See if we need to enable the HMOVE blank bug
-      myHMOVEBlankEnabled = myAllowHMOVEBlanks ? 
-        TIATables::HMOVEBlankEnableCycles[((clock - myClockWhenFrameStarted) % 228) / 3] : false;
+      myHMOVEBlankEnabled = TIATables::HMOVEBlankEnableCycles[((clock - myClockWhenFrameStarted) % 228) / 3];
 
       // Do we have to undo some of the already applied cycles from an
       // active graphics latch?

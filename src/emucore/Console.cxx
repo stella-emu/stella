@@ -905,15 +905,6 @@ void Console::toggleCollisions() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleHMOVE() const
-{
-  if(myTIA->toggleHMOVEBlank())
-    myOSystem.frameBuffer().showMessage("HMOVE blanking enabled");
-  else
-    myOSystem.frameBuffer().showMessage("HMOVE blanking disabled");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFixedColors() const
 {
   if(myTIA->toggleFixedColors())

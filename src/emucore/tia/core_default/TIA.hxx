@@ -287,13 +287,6 @@ class TIA : public AbstractTIA
     bool toggleCollisions() override;
 
     /**
-      Toggle the display of HMOVE blanks.
-
-      @return  Whether the HMOVE blanking was enabled or disabled
-    */
-    bool toggleHMOVEBlank() override;
-
-    /**
       Enables/disable/toggle 'fixed debug colors' mode.
 
       @param mode  1/0 indicates on/off, otherwise flip from
@@ -588,7 +581,6 @@ class TIA : public AbstractTIA
     Int32 myCurrentHMOVEPos;
     Int32 myPreviousHMOVEPos;
     bool myHMOVEBlankEnabled;
-    bool myAllowHMOVEBlanks;
 
     // Indicates if unused TIA pins are randomly driven high or low
     // Otherwise, they take on the value previously on the databus

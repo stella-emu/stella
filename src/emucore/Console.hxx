@@ -261,7 +261,6 @@ class Console : public Serializable
     void toggleM1Bit() const { toggleTIABit(M1Bit, "M1"); }
     void toggleBLBit() const { toggleTIABit(BLBit, "BL"); }
     void togglePFBit() const { toggleTIABit(PFBit, "PF"); }
-    void toggleHMOVE() const;
     void toggleBits() const;
 
     /**
