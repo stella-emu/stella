@@ -21,16 +21,6 @@
 
 #include "PaddleReader.hxx"
 
-
-static double expApprox(double x)
-{
-  double  x2 = x  * x / 2,
-          x3 = x2 * x / 3,
-          x4 = x3 * x / 4;
-
-  return 1 + x + x2 + x3 + x4;
-}
-
 static constexpr double
   C = 68e-9,
   RPOT = 1e6,
@@ -112,7 +102,7 @@ void PaddleReader::updateCharge(double timestamp)
   if (myIsDumped) return;
 
   myU = USUPP * (1 - (1 - myU / USUPP) *
-    expApprox(-(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
+    exp(-(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
 
   myTimestamp = timestamp;
 }

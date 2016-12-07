@@ -244,7 +244,7 @@ class TIA : public AbstractTIA
 
     void delayedWrite(uInt8 address, uInt8 value);
 
-    void updatePaddles();
+    void updatePaddle(uInt8 idx);
 
   private:
 

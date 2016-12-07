@@ -72,7 +72,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myFrameManager.setHandlers(
     [this] () {
       myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
-      updatePaddles();
+
+      for (uInt8 i = 0; i < 4; i++)
+        updatePaddle(i);
     },
     [this] () {
       mySystem->m6502().stop();
@@ -300,18 +302,22 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     case INPT0:
+      updatePaddle(0);
       result = myPaddleReaders[0].inpt(myTimestamp);
       break;
 
     case INPT1:
+      updatePaddle(1);
       result = myPaddleReaders[1].inpt(myTimestamp);
       break;
 
     case INPT2:
+      updatePaddle(2);
       result = myPaddleReaders[2].inpt(myTimestamp);
       break;
 
     case INPT3:
+      updatePaddle(3);
       result = myPaddleReaders[3].inpt(myTimestamp);
       break;
 
@@ -1194,20 +1200,33 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::updatePaddles()
+void TIA::updatePaddle(uInt8 idx)
 {
   static constexpr double MAX_RESISTANCE = 1400000;
 
-  TvMode tvMode = myFrameManager.tvMode();
-  Int32 resistances[] = {
-    myConsole.leftController().read(Controller::Nine),
-    myConsole.leftController().read(Controller::Five),
-    myConsole.rightController().read(Controller::Nine),
-    myConsole.rightController().read(Controller::Five),
-  };
+  Int32 resistance;
+  switch (idx) {
+    case 0:
+      resistance = myConsole.leftController().read(Controller::Nine);
+      break;
 
-  for (uInt8 i = 0; i < 4; i++)
-    myPaddleReaders[i].update(double(resistances[i]) / MAX_RESISTANCE, myTimestamp, tvMode);
+    case 1:
+      resistance = myConsole.leftController().read(Controller::Five);
+      break;
+
+    case 2:
+      resistance = myConsole.rightController().read(Controller::Nine);
+      break;
+
+    case 3:
+      resistance = myConsole.rightController().read(Controller::Five);
+      break;
+
+    default:
+      throw runtime_error("invalid paddle index");
+  }
+
+  myPaddleReaders[idx].update(double(resistance) / MAX_RESISTANCE, myTimestamp, myFrameManager.tvMode());
 }
 
 } // namespace TIA6502tsCore
