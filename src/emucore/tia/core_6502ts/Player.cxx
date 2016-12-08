@@ -218,10 +218,10 @@ uInt8 Player::getRespClock() const
       return myCounter - 3;
 
     case 16:
-      return myCounter - 6;
+      return myCounter - 9;
 
     case 32:
-      return myCounter - 10;
+      return myCounter - 13;
 
     default:
       throw runtime_error("invalid width");
