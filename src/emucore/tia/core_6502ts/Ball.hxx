@@ -60,7 +60,7 @@ class Ball : public Serializable
 
     void render();
 
-    void tick();
+    void tick(bool isReceivingMclock = true);
 
     uInt8 getPixel(uInt8 colorIn) const {
       return (collision & 0x8000) ? myColor : colorIn;
@@ -103,6 +103,8 @@ class Ball : public Serializable
     uInt8 myCounter;
     bool myIsMoving;
     uInt8 myWidth;
+    uInt8 myEffectiveWidth;
+    uInt8 myLastMovementTick;
 
     bool myIsRendering;
     Int8 myRenderCounter;

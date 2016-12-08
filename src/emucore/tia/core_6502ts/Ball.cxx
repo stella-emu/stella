@@ -46,6 +46,8 @@ void Ball::reset()
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
+  myEffectiveWidth = 1;
+  myLastMovementTick = 0;
   myWidth = 1;
   myIsRendering = false;
   myDebugEnabled = false;
@@ -135,11 +137,13 @@ void Ball::startMovement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Ball::movementTick(uInt32 clock, bool apply)
 {
+  myLastMovementTick = myCounter;
+
   if (clock == myHmmClocks) myIsMoving = false;
 
   if (myIsMoving && apply) {
     render();
-    tick();
+    tick(false);
   }
 
   return myIsMoving;
@@ -154,13 +158,32 @@ void Ball::render()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Ball::tick()
+void Ball::tick(bool isReceivingMclock)
 {
+  bool starfieldEffect = myIsMoving && isReceivingMclock;
+
   if (myCounter == 156) {
     myIsRendering = true;
     myRenderCounter = Count::renderCounterOffset;
-  }
-  else if (myIsRendering && ++myRenderCounter >= myWidth)
+
+    uInt8 starfieldDelta = (myCounter + 160 - myLastMovementTick) % 4;
+    if (starfieldEffect && starfieldDelta == 3) myRenderCounter++;
+
+    switch (starfieldDelta) {
+      case 3:
+        myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
+        break;
+
+      case 2:
+        myEffectiveWidth = 0;
+        break;
+
+      default:
+        myEffectiveWidth = myWidth;
+        break;
+    }
+
+  } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
     myIsRendering = false;
 
   if (++myCounter >= 160)

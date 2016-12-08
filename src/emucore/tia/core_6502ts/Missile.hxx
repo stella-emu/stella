@@ -51,7 +51,7 @@ class Missile : public Serializable
 
     void render();
 
-    void tick();
+    void tick(bool isReceivingMclock = true);
 
     void setColor(uInt8 color);
 
@@ -96,6 +96,8 @@ class Missile : public Serializable
     uInt8 myCounter;
     bool myIsMoving;
     uInt8 myWidth;
+    uInt8 myEffectiveWidth;
+    uInt8 myLastMovementTick;
 
     bool myIsRendering;
     Int8 myRenderCounter;
