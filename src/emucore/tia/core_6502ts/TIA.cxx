@@ -44,7 +44,8 @@ enum Delay: uInt8 {
   hmp = 2,
   hmm = 2,
   hmbl = 2,
-  hmclr = 2
+  hmclr = 2,
+  refp = 1
 };
 
 enum DummyRegisters: uInt8 {
@@ -541,13 +542,11 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case REFP0:
-      myLinesSinceChange = 0;
-      myPlayer0.refp(value);
+      myDelayQueue.push(REFP0, value, Delay::refp);
       break;
 
     case REFP1:
-      myLinesSinceChange = 0;
-      myPlayer1.refp(value);
+      myDelayQueue.push(REFP1, value, Delay::refp);
       break;
 
     case VDELP0:
@@ -1195,6 +1194,16 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
     case HMBL:
       myLinesSinceChange = 0;
       myBall.hmbl(value);
+      break;
+
+    case REFP0:
+      myLinesSinceChange = 0;
+      myPlayer0.refp(value);
+      break;
+
+    case REFP1:
+      myLinesSinceChange = 0;
+      myPlayer1.refp(value);
       break;
   }
 }
