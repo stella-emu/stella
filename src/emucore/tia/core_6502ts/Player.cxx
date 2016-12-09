@@ -42,7 +42,7 @@ void Player::reset()
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
-  myWidth = 1;
+  myWidth = 8;
   myIsRendering = false;
   myRenderCounter = 0;
   myPatternOld = 0;
