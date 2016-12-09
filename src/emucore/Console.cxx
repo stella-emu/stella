@@ -172,6 +172,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::~Console()
 {
+  // Some smart controllers need to be informed that the console is going away
+  myLeftControl->close();
+  myRightControl->close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -76,6 +76,13 @@ void SaveKey::write(DigitalPin pin, bool value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SaveKey::close()
+{
+  // Force the EEPROM object to cleanup
+  myEEPROM.reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SaveKey::systemCyclesReset()
 {
   // The EEPROM keeps track of cycle counts, and needs to know when the

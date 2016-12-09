@@ -554,6 +554,7 @@ void OSystem::closeConsole()
     // If a previous console existed, save cheats before creating a new one
     myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
   #endif
+    myConsole.reset();
   }
 }
 

@@ -143,6 +143,13 @@ void AtariVox::clockDataIn(bool value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariVox::close()
+{
+  // Force the EEPROM object to cleanup
+  myEEPROM.reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::systemCyclesReset()
 {
   myLastDataWriteCycle -= mySystem.cycles();
