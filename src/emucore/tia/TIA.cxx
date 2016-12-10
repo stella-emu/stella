@@ -407,6 +407,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
                    (value & 0x02) ? Priority::score : Priority::normal;
       myPlayfield.ctrlpf(value);
       myBall.ctrlpf(value);
+      myCtrlPF = value;
       break;
 
     case COLUPF:

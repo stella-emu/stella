@@ -34,12 +34,15 @@ class Missile : public Serializable
     void reset();
 
     void enam(uInt8 value);
+    bool enam() const { return myEnam; }
 
     void hmm(uInt8 value);
+    uInt32 hmm() const { return myHmmClocks; }
 
     void resm(bool hblank);
 
     void resmp(uInt8 value, const Player& player);
+    bool resmp() const { return bool(myResmp); }
 
     void nusiz(uInt8 value);
 

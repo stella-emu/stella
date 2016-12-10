@@ -418,6 +418,7 @@ class TIA : public Device
     uInt32 myLinesSinceChange;
 
     Priority myPriority;
+    uInt8 myCtrlPF;  // needed for the debugger
 
     uInt8 mySubClock;
     uInt32 myLastCycle;

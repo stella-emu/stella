@@ -55,6 +55,7 @@ void Playfield::reset()
 void Playfield::pf0(uInt8 value)
 {
   myPattern = (myPattern & 0x000FFFF0) | (value >> 4);
+  myPf0 = value;
 
   updatePattern();
 }
@@ -72,6 +73,7 @@ void Playfield::pf1(uInt8 value)
     | ((value & 0x02) << 9)
     | ((value & 0x01) << 11);
 
+  myPf1 = value;
   updatePattern();
 }
 
@@ -79,6 +81,7 @@ void Playfield::pf1(uInt8 value)
 void Playfield::pf2(uInt8 value)
 {
   myPattern = (myPattern & 0x00000FFF) | (value << 12);
+  myPf2 = value;
 
   updatePattern();
 }

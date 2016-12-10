@@ -181,137 +181,102 @@ void TIADebug::saveOldState()
    so the GUI and/or TIADebug don't have to duplicate logic from TIA::poke().
 */
 
-//   bool vdelP0(int newVal = -1);
-//   bool vdelP1(int newVal = -1);
-//   bool vdelBL(int newVal = -1);
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vdelP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(VDELP0, bool(newVal));
 
-  return myTIA.myVDELP0;
-#endif
-return 0;
+  return myTIA.myPlayer0.vdelp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vdelP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(VDELP1, bool(newVal));
 
-  return myTIA.myVDELP1;
-#endif
-return 0;
+  return myTIA.myPlayer1.vdelp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vdelBL(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(VDELBL, bool(newVal));
 
-  return myTIA.myVDELBL;
-#endif
-return 0;
+  return myTIA.myBall.vdelbl();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaM0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(ENAM0, bool(newVal) << 1);
 
-  return myTIA.myENAM0;
-#endif
-return 0;
+  return myTIA.myMissile0.enam();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaM1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(ENAM1, bool(newVal) << 1);
 
-  return myTIA.myENAM1;
-#endif
-return 0;
+  return myTIA.myMissile1.enam();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::enaBL(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(ENABL, bool(newVal) << 1);
 
-  return myTIA.myENABL;
-#endif
-return 0;
+  return myTIA.myBall.enabl();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::resMP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(RESMP0, bool(newVal) << 1);
 
-  return myTIA.myRESMP0;
-#endif
-return 0;
+  return myTIA.myMissile0.resmp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::resMP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(RESMP1, bool(newVal) << 1);
 
-  return myTIA.myRESMP1;
-#endif
-return 0;
+  return myTIA.myMissile1.resmp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(REFP0, bool(newVal) << 3);
 
-  return myTIA.myREFP0;
-#endif
-return 0;
+  return myTIA.myPlayer0.refp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(REFP1, bool(newVal) << 3);
 
-  return myTIA.myREFP1;
-#endif
-return 0;
+  return myTIA.myPlayer1.refp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::refPF(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    int tmp = myTIA.myCTRLPF;
+    int tmp = myTIA.myCtrlPF;
     if(newVal)
       tmp |= 0x01;
     else
@@ -319,18 +284,15 @@ bool TIADebug::refPF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.myCTRLPF & 0x01;
-#endif
-return 0;
+  return myTIA.myCtrlPF & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::scorePF(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    int tmp = myTIA.myCTRLPF;
+    int tmp = myTIA.myCtrlPF;
     if(newVal)
       tmp |= 0x02;
     else
@@ -338,18 +300,15 @@ bool TIADebug::scorePF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.myCTRLPF & 0x02;
-#endif
-return 0;
+  return myTIA.myCtrlPF & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::priorityPF(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    int tmp = myTIA.myCTRLPF;
+    int tmp = myTIA.myCtrlPF;
     if(newVal)
       tmp |= 0x04;
     else
@@ -357,9 +316,7 @@ bool TIADebug::priorityPF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.myCTRLPF & 0x04;
-#endif
-return 0;
+  return myTIA.myCtrlPF & 0x04;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -456,85 +413,64 @@ return 0;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::pf0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(PF0, newVal << 4);
 
-  return myTIA.myPF & 0x0f;
-#endif
-return 0;
+  return myTIA.myPlayfield.pf0() & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::pf1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(PF1, newVal);
 
-  return (myTIA.myPF & 0xff0) >> 4;
-#endif
-return 0;
+  return (myTIA.myPlayfield.pf1() & 0xff0) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::pf2(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(PF2, newVal);
 
-  return (myTIA.myPF & 0xff000) >> 12;
-#endif
-return 0;
+  return (myTIA.myPlayfield.pf2() & 0xff000) >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUP0, newVal);
 
-  return myTIA.myColor[P0Color] & 0xff;
-#endif
-return 0;
+  return myTIA.myPlayer0.getColor();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUP1, newVal);
 
-  return myTIA.myColor[P1Color] & 0xff;
-#endif
-return 0;
+  return myTIA.myPlayer1.getColor();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluPF(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUPF, newVal);
 
-  return myTIA.myColor[PFColor] & 0xff;
-#endif
-return 0;
+  return myTIA.myPlayfield.getColor();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::coluBK(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(COLUBK, newVal);
 
-  return myTIA.myColor[BKColor] & 0xff;
-#endif
-return 0;
+  return myTIA.myBackground.getColor();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -628,25 +564,19 @@ return 0;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::grP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(GRP0, newVal);
 
-  return myTIA.myGRP0;
-#endif
-return 0;
+  return myTIA.myPlayer0.grp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::grP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(GRP1, newVal);
 
-  return myTIA.myGRP1;
-#endif
-return 0;
+  return myTIA.myPlayer1.grp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -712,13 +642,10 @@ return 0;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::ctrlPF(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(CTRLPF, newVal);
 
-  return myTIA.myCTRLPF;
-#endif
-return 0;
+  return myTIA.myCtrlPF;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -740,61 +667,46 @@ return 0;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMP0, newVal << 4);
 
-  return myTIA.myHMP0 >> 4;
-#endif
-return 0;
+  return myTIA.myPlayer0.hmp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMP1, newVal << 4);
 
-  return myTIA.myHMP1 >> 4;
-#endif
-return 0;
+  return myTIA.myPlayer1.hmp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmM0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMM0, newVal << 4);
 
-  return myTIA.myHMM0 >> 4;
-#endif
-return 0;
+  return myTIA.myMissile0.hmm();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmM1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMM1, newVal << 4);
 
-  return myTIA.myHMM1 >> 4;
-#endif
-return 0;
+  return myTIA.myMissile1.hmm();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::hmBL(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(HMBL, newVal << 4);
 
-  return myTIA.myHMBL >> 4;
-#endif
-return 0;
+  return myTIA.myBall.hmbl();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
