@@ -21,7 +21,7 @@
 
 #include "Event.hxx"
 #include "System.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 #include "TrackBall.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

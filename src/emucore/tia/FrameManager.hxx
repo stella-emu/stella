@@ -26,8 +26,6 @@
 #include "Types.hxx"
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class FrameManager : public Serializable
 {
   public:
@@ -114,7 +112,5 @@ class FrameManager : public Serializable
     FrameManager& operator=(const FrameManager&) = delete;
     FrameManager& operator=(FrameManager&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_FRAME_MANAGER

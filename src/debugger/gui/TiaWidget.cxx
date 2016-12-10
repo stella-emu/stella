@@ -24,7 +24,7 @@
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "CartDebug.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 #include "TIADebug.hxx"
 #include "ToggleBitWidget.hxx"
 #include "TogglePixelWidget.hxx"

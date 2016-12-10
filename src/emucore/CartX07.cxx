@@ -19,7 +19,7 @@
 
 #include "System.hxx"
 #include "M6532.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 #include "CartX07.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

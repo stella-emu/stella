@@ -21,9 +21,10 @@
 #define TIA_6502TS_CORE_TIA
 
 #include "bspf.hxx"
-#include "AbstractTIA.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
+#include "Device.hxx"
+#include "Serializer.hxx"
 #include "TIATypes.hxx"
 #include "DelayQueue.hxx"
 #include "FrameManager.hxx"
@@ -36,8 +37,6 @@
 #include "PaddleReader.hxx"
 
 class Console;
-
-namespace TIA6502tsCore {
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -53,9 +52,12 @@ namespace TIA6502tsCore {
   @author  Christian Speckner (DirtyHairy) and Stephen Anthony
   @version $Id$
 */
-class TIA : public AbstractTIA
+class TIA : public Device
 {
   public:
+    friend class TIADebug;
+    friend class RiotDebug;
+
     /**
       Create a new TIA for the specified console
 
@@ -73,7 +75,7 @@ class TIA : public AbstractTIA
     /**
       Reset frame to current YStart/Height properties
     */
-    void frameReset() override;
+    void frameReset();
 
     void systemCyclesReset() override;
 
@@ -83,69 +85,70 @@ class TIA : public AbstractTIA
 
     bool poke(uInt16 address, uInt8 value) override;
 
-    void installDelegate(System& system, Device& device) override;
+    void installDelegate(System& system, Device& device);
 
-    bool saveDisplay(Serializer& out) const override;
+    bool saveDisplay(Serializer& out) const;
 
-    bool loadDisplay(Serializer& in) override;
+    bool loadDisplay(Serializer& in);
 
-    void update() override;
+    void update();
 
     /**
       Answers the current and previous frame buffer pointers
     */
-    uInt8* currentFrameBuffer() const override {
+    uInt8* currentFrameBuffer() const {
       return myCurrentFrameBuffer.get();
     }
-    uInt8* previousFrameBuffer() const override {
+    uInt8* previousFrameBuffer() const {
       return myPreviousFrameBuffer.get();
     }
 
     /**
-      Answers vertical info about the framebuffer (height and starting line)
+      Answers dimensional info about the framebuffer
     */
-    uInt32 height() const override;
-    uInt32 ystart() const override;
+    uInt32 width() const { return 160; }
+    uInt32 height() const;
+    uInt32 ystart() const;
 
     /**
       Changes the current Height/YStart properties.
       Note that calls to these method(s) must be eventually followed by
       ::frameReset() for the changes to take effect.
     */
-    void setHeight(uInt32 height) override;
-    void setYStart(uInt32 ystart) override;
+    void setHeight(uInt32 height);
+    void setYStart(uInt32 ystart);
 
-    void enableAutoFrame(bool enabled) override;
+    void enableAutoFrame(bool enabled);
 
-    void enableColorLoss(bool enabled) override;
+    void enableColorLoss(bool enabled);
 
-    bool isPAL() const override;
+    bool isPAL() const;
 
-    uInt32 clocksThisLine() const override;
+    uInt32 clocksThisLine() const;
 
-    uInt32 scanlines() const override;
+    uInt32 scanlines() const;
 
-    bool partialFrame() const override;
+    bool partialFrame() const;
 
-    uInt32 startScanline() const override;
+    uInt32 startScanline() const;
 
-    bool scanlinePos(uInt16& x, uInt16& y) const override;
+    bool scanlinePos(uInt16& x, uInt16& y) const;
 
-    bool toggleBit(TIABit b, uInt8 mode = 2) override;
+    bool toggleBit(TIABit b, uInt8 mode = 2);
 
-    bool toggleBits() override;
+    bool toggleBits();
 
-    bool toggleCollision(TIABit b, uInt8 mode = 2) override;
+    bool toggleCollision(TIABit b, uInt8 mode = 2);
 
-    bool toggleCollisions() override;
+    bool toggleCollisions();
 
-    bool toggleFixedColors(uInt8 mode = 2) override;
+    bool toggleFixedColors(uInt8 mode = 2);
 
-    bool driveUnusedPinsRandom(uInt8 mode = 2) override;
+    bool driveUnusedPinsRandom(uInt8 mode = 2);
 
-    bool toggleJitter(uInt8 mode = 2) override;
+    bool toggleJitter(uInt8 mode = 2);
 
-    void setJitterRecoveryFactor(Int32 f) override;
+    void setJitterRecoveryFactor(Int32 f);
 
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
@@ -154,19 +157,19 @@ class TIA : public AbstractTIA
     /**
       This method should be called to update the TIA with a new scanline.
     */
-    void updateScanline() override;
+    void updateScanline();
 
     /**
       This method should be called to update the TIA with a new partial
       scanline by stepping one CPU instruction.
     */
-    void updateScanlineByStep() override;
+    void updateScanlineByStep();
 
     /**
       This method should be called to update the TIA with a new partial
       scanline by tracing to target address.
     */
-    void updateScanlineByTrace(int target) override;
+    void updateScanlineByTrace(int target);
   #endif
 
     /**
@@ -307,7 +310,5 @@ class TIA : public AbstractTIA
     TIA& operator=(const TIA&) = delete;
     TIA& operator=(TIA&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_TIA

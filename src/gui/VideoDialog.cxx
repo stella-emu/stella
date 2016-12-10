@@ -28,7 +28,7 @@
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Console.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"

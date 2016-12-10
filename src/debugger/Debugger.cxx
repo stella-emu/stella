@@ -37,7 +37,6 @@
 #include "System.hxx"
 #include "M6502.hxx"
 #include "Cart.hxx"
-#include "AbstractTIA.hxx"
 
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"
@@ -56,6 +55,7 @@
 #include "PackedBitArray.hxx"
 #include "YaccParser.hxx"
 
+#include "TIA.hxx"
 #include "Debugger.hxx"
 
 Debugger* Debugger::myStaticDebugger = nullptr;

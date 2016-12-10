@@ -19,8 +19,6 @@
 
 #include "Background.hxx"
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Background::Background()
 {
@@ -99,5 +97,3 @@ bool Background::load(Serializer& in)
 
   return false;
 }
-
-} // namespace TIA6502tsCore

@@ -22,8 +22,6 @@
 
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class DelayQueueMember
 {
   public:
@@ -71,7 +69,5 @@ class DelayQueueMember
     DelayQueueMember& operator=(const DelayQueueMember&) = delete;
 
 };
-
-} // namespace TIA6502tsCore
 
 #endif //  TIA_6502TS_CORE_DELAY_QUEUE_MEMBER

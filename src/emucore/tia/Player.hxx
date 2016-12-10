@@ -23,8 +23,6 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class Player : public Serializable
 {
   public:
@@ -120,7 +118,5 @@ class Player : public Serializable
     Player& operator=(const Player&) = delete;
     Player& operator=(Player&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_PLAYER

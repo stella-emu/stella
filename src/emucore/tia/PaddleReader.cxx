@@ -29,8 +29,6 @@ static constexpr double
 
 static constexpr double TRIPPOINT_LINES = 380;
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaddleReader::PaddleReader()
 {
@@ -106,5 +104,3 @@ void PaddleReader::updateCharge(double timestamp)
 
   myTimestamp = timestamp;
 }
-
-} // namespace TIA6502tsCore

@@ -94,7 +94,7 @@ MODULES := $(MODULES)
 # After the game specific modules follow the shared modules
 MODULES += \
 	src/emucore \
-	src/emucore/tia/core_default \
+	src/emucore/tia \
 	src/gui \
 	src/common \
 	src/common/tv_filters

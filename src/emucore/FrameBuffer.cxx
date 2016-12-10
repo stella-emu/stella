@@ -35,7 +35,7 @@
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"

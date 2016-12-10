@@ -24,8 +24,6 @@
 #include "bspf.hxx"
 #include "Player.hxx"
 
-namespace TIA6502tsCore {
-
 class Missile : public Serializable
 {
   public:
@@ -114,7 +112,5 @@ class Missile : public Serializable
     Missile& operator=(const Missile&) = delete;
     Missile& operator=(Missile&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_MISSILE

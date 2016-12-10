@@ -23,7 +23,7 @@
 class Device;
 class M6502;
 class M6532;
-class AbstractTIA;
+class TIA;
 class NullDevice;
 
 #include "bspf.hxx"
@@ -53,7 +53,7 @@ class System : public Serializable
       pages of 2^6 bytes.
     */
     System(const OSystem& osystem, M6502& m6502, M6532& m6532,
-           AbstractTIA& mTIA, Cartridge& mCart);
+           TIA& mTIA, Cartridge& mCart);
     virtual ~System() = default;
 
     // Mask to apply to an address before accessing memory
@@ -109,7 +109,7 @@ class System : public Serializable
 
       @return The attached TIA device
     */
-    AbstractTIA& tia() const { return myTIA; }
+    TIA& tia() const { return myTIA; }
 
     /**
       Answer the random generator attached to the system.
@@ -389,7 +389,7 @@ class System : public Serializable
     M6532& myM6532;
 
     // TIA device attached to the system
-    AbstractTIA& myTIA;
+    TIA& myTIA;
 
     // Cartridge device attached to the system
     Cartridge& myCart;

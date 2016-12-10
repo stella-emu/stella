@@ -19,8 +19,6 @@
 
 #include "Playfield.hxx"
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Playfield::Playfield(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
@@ -231,5 +229,3 @@ bool Playfield::load(Serializer& in)
 
   return false;
 }
-
-} // namespace TIA6502tsCore

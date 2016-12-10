@@ -20,12 +20,8 @@
 #ifndef TIA_6502TS_CORE_TYPES
 #define TIA_6502TS_CORE_TYPES
 
-namespace TIA6502tsCore {
-
 enum TvMode {
   pal, ntsc
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_TYPES

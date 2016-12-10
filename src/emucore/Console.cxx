@@ -39,6 +39,7 @@
 #include "CompuMate.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
+#include "TIA.hxx"
 #include "Paddles.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
@@ -54,12 +55,6 @@
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
 #include "Version.hxx"
-
-#include "tia/core_default/TIA.hxx"
-
-#ifdef SUPPORT_6502TS_TIA
-  #include "tia/core_6502ts/TIA.hxx"
-#endif
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -89,7 +84,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Create subsystems for the console
   my6502 = make_ptr<M6502>(myOSystem.settings());
   myRiot = make_ptr<M6532>(*this, myOSystem.settings());
-  myTIA  = unique_ptr<AbstractTIA>(createTIA());
+  myTIA  = make_ptr<TIA>(*this, myOSystem.sound(), myOSystem.settings());
   mySwitches = make_ptr<Switches>(myEvent, myProperties);
 
   // Construct the system and components
@@ -543,31 +538,6 @@ void Console::changeHeight(int direction)
   val << height;
   myOSystem.frameBuffer().showMessage("Height " + val.str());
   myProperties.set(Display_Height, val.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractTIA* Console::createTIA()
-{
-#ifdef SUPPORT_6502TS_TIA
-  string coreType = myOSystem.settings().getString("tia.core");
-#else
-  string coreType = "default";
-#endif
-
-  if (coreType == "default") {
-    myOSystem.logMessage("using default TIA core", 1);
-    return new TIADefaultCore::TIA(*this, myOSystem.sound(), myOSystem.settings());
-  }
-
-  if (coreType == "6502ts") {
-    myOSystem.logMessage("using 6502.ts TIA core", 1);
-    return new TIA6502tsCore::TIA(*this, myOSystem.sound(), myOSystem.settings());
-  }
-
-  ostringstream buffer;
-
-  buffer << "invalid TIA core type " << coreType;
-  throw new runtime_error(buffer.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

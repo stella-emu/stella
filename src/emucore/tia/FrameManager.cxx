@@ -37,8 +37,6 @@ static constexpr uInt32
   frameLinesNTSC = Metrics::vsync + Metrics::vblankNTSC + Metrics::kernelNTSC + Metrics::overscanNTSC,
   frameLinesPAL = Metrics::vsync + Metrics::vblankPAL + Metrics::kernelPAL + Metrics::overscanPAL;
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
   : myMode(TvMode::pal)
@@ -286,5 +284,3 @@ bool FrameManager::load(Serializer& in)
 
   return false;
 }
-
-} // namespace TIA6502tsCore

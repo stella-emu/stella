@@ -19,8 +19,6 @@
 
 #include "DelayQueue.hxx"
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DelayQueue::DelayQueue(uInt8 length, uInt8 size)
   : myIndex(0)
@@ -60,5 +58,3 @@ void DelayQueue::reset()
 
   memset(myIndices, 0xFF, 0xFF);
 }
-
-} // namespace TIA6502tsCore

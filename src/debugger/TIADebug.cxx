@@ -20,7 +20,7 @@
 #include "Base.hxx"
 #include "System.hxx"
 #include "Debugger.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 
 #include "TIADebug.hxx"
 

@@ -19,8 +19,6 @@
 
 #include "DelayQueueMember.hxx"
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DelayQueueMember::DelayQueueMember(uInt8 size)
   : myEntries(size),
@@ -51,5 +49,3 @@ void DelayQueueMember::remove(uInt8 address)
     mySize--;
   }
 }
-
-} // namespace TIA6502tsCore

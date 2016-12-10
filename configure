@@ -26,7 +26,6 @@ _build_cheats=yes
 _build_thumb=yes
 _build_static=no
 _build_profile=no
-_build_6502ts_tia=yes
 
 # more defaults
 _ranlib=ranlib
@@ -196,8 +195,6 @@ Optional Features:
   --disable-sound
   --enable-debugger      enable/disable all debugger options [disabled]
   --disable-debugger
-  --enable-6502ts-tia    enable/disable support for 6502.ts TIA core [enabled]
-  --disable-6502ts-tia
   --enable-joystick      enable/disable joystick support [enabled]
   --disable-joystick
   --enable-cheats        enable/disable cheatcode support [enabled]
@@ -238,8 +235,6 @@ for ac_option in $@; do
       --disable-sound)          _build_sound=no      ;;
       --enable-debugger)        _build_debugger=yes  ;;
       --disable-debugger)       _build_debugger=no   ;;
-      --enable-6502ts-tia)   	  _build_6502ts_tia=yes;;
-      --disable-6502ts-tia)     _build_6502ts_tia=no ;;
       --enable-joystick)        _build_joystick=yes  ;;
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;
@@ -620,15 +615,7 @@ else
 	echo
 fi
 
-if test "$_build_6502ts_tia" = "yes" ; then
-	echo_n "   Support for 6502.ts TIA core enabled"
-	echo
-else
-	echo_n "   Support for 6502.ts TIA core disabled"
-	echo
-fi
-
-if test "$_build_6502ts_tia" = yes ; then
+if test "$_build_joystick" = yes ; then
 	echo_n "   Joystick support enabled"
 	echo
 else
@@ -685,19 +672,18 @@ find_sdlconfig
 
 SRC="src"
 CORE="$SRC/emucore"
-TIA_CORE_DEFAULT="$SRC/emucore/tia/core_default"
 COMMON="$SRC/common"
+TIA="$SRC/emucore/tia"
 TV="$SRC/common/tv_filters"
 GUI="$SRC/gui"
 DBG="$SRC/debugger"
-TIA_6502TS="$SRC/emucore/tia/core_6502ts"
 DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
 LIBPNG="$SRC/libpng"
 ZLIB="$SRC/zlib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI -I$TIA"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then
@@ -753,11 +739,6 @@ if test "$_build_debugger" = yes ; then
 	DEFINES="$DEFINES -DDEBUGGER_SUPPORT"
 	MODULES="$MODULES $DBG $DBGGUI $YACC"
 	INCLUDES="$INCLUDES -I$DBG -I$DBGGUI -I$YACC"
-fi
-
-if test "$_build_6502ts_tia" = yes ; then
-  DEFINES="$DEFINES -DSUPPORT_6502TS_TIA"
-	MODULES="$MODULES $TIA_6502TS"
 fi
 
 if test "$_build_joystick" = yes ; then

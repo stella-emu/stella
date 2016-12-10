@@ -20,7 +20,7 @@
 #include <sstream>
 
 #include "System.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 #include "Debugger.hxx"
 #include "Switches.hxx"
 

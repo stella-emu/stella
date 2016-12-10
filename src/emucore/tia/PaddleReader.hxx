@@ -23,8 +23,6 @@
 #include "bspf.hxx"
 #include "Types.hxx"
 
-namespace TIA6502tsCore {
-
 class PaddleReader
 {
   public:
@@ -67,7 +65,5 @@ class PaddleReader
     PaddleReader& operator=(const PaddleReader&) = delete;
     PaddleReader& operator=(PaddleReader&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_PADDLE_READER

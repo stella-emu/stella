@@ -23,8 +23,6 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class Background : public Serializable
 {
   public:
@@ -60,7 +58,5 @@ class Background : public Serializable
     Background& operator=(const Background&) = delete;
     Background& operator=(Background&&);
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_BACKGROUND

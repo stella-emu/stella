@@ -23,8 +23,6 @@
 #include "bspf.hxx"
 #include "DelayQueueMember.hxx"
 
-namespace TIA6502tsCore {
-
 class DelayQueue
 {
   public:
@@ -71,7 +69,5 @@ template<class T> void DelayQueue::execute(T executor)
 
   myIndex = (myIndex + 1) % myMembers.size();
 }
-
-} // namespace TIA6502tsCore
 
 #endif //  TIA_6502TS_CORE_DELAY_QUEUE

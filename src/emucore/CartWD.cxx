@@ -17,7 +17,7 @@
 // $Id$
 //============================================================================
 
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
 #include "CartWD.hxx"

@@ -24,8 +24,6 @@ enum Count: Int8 {
   renderCounterOffset = -5
 };
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Player::Player(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
@@ -350,5 +348,3 @@ bool Player::load(Serializer& in)
 
   return false;
 }
-
-} // namespace TIA6502tsCore

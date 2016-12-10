@@ -21,8 +21,6 @@
 
 #include "DrawCounterDecodes.hxx"
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* const* DrawCounterDecodes::playerDecodes() const
 {
@@ -81,5 +79,3 @@ DrawCounterDecodes::DrawCounterDecodes()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrawCounterDecodes DrawCounterDecodes::myInstance;
-
-} // namespace TIA6502tsCore

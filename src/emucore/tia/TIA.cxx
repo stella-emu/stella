@@ -53,8 +53,6 @@ enum DummyRegisters: uInt8 {
   shuffleP1 = 0xF1
 };
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
@@ -1237,5 +1235,3 @@ void TIA::updatePaddle(uInt8 idx)
 
   myPaddleReaders[idx].update(double(resistance) / MAX_RESISTANCE, myTimestamp, myFrameManager.tvMode());
 }
-
-} // namespace TIA6502tsCore

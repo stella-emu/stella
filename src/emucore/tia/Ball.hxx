@@ -23,8 +23,6 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class Ball : public Serializable
 {
   public:
@@ -116,7 +114,5 @@ class Ball : public Serializable
     Ball& operator=(const Ball&) = delete;
     Ball& operator=(Ball&&);
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_BALL

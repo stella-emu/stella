@@ -1,22 +1,22 @@
-MODULE := src/emucore/tia/core_6502ts
+MODULE := src/emucore/tia
 
 MODULE_OBJS := \
-	src/emucore/tia/core_6502ts/TIA.o \
-	src/emucore/tia/core_6502ts/DelayQueueMember.o \
-	src/emucore/tia/core_6502ts/DelayQueue.o \
-	src/emucore/tia/core_6502ts/FrameManager.o \
-	src/emucore/tia/core_6502ts/Playfield.o \
-	src/emucore/tia/core_6502ts/DrawCounterDecodes.o \
-	src/emucore/tia/core_6502ts/Missile.o \
-	src/emucore/tia/core_6502ts/Player.o \
-	src/emucore/tia/core_6502ts/Ball.o \
-	src/emucore/tia/core_6502ts/Background.o \
-	src/emucore/tia/core_6502ts/LatchedInput.o \
-	src/emucore/tia/core_6502ts/PaddleReader.o
+	src/emucore/tia/TIA.o \
+	src/emucore/tia/DelayQueueMember.o \
+	src/emucore/tia/DelayQueue.o \
+	src/emucore/tia/FrameManager.o \
+	src/emucore/tia/Playfield.o \
+	src/emucore/tia/DrawCounterDecodes.o \
+	src/emucore/tia/Missile.o \
+	src/emucore/tia/Player.o \
+	src/emucore/tia/Ball.o \
+	src/emucore/tia/Background.o \
+	src/emucore/tia/LatchedInput.o \
+	src/emucore/tia/PaddleReader.o
 
 
 MODULE_DIRS += \
-	src/emucore/tia/core_6502ts
+	src/emucore/tia
 
 # Include common rules
 include $(srcdir)/common.rules

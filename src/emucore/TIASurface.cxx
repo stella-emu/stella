@@ -23,7 +23,7 @@
 #include "Settings.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
-#include "AbstractTIA.hxx"
+#include "TIA.hxx"
 
 #include "TIASurface.hxx"
 

@@ -19,8 +19,6 @@
 
 #include "LatchedInput.hxx"
 
-namespace TIA6502tsCore {
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LatchedInput::LatchedInput()
 {
@@ -57,5 +55,3 @@ uInt8 LatchedInput::inpt(bool pinState)
 
   return value;
 }
-
-} // namespace TIA6502tsCore

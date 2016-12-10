@@ -22,8 +22,6 @@
 
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class DrawCounterDecodes
 {
   public:
@@ -55,7 +53,5 @@ class DrawCounterDecodes
     DrawCounterDecodes& operator=(const DrawCounterDecodes&) = delete;
     DrawCounterDecodes& operator=(DrawCounterDecodes&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_DRAW_COUNTER_DECODES

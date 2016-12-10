@@ -23,8 +23,6 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class Playfield : public Serializable
 {
   public:
@@ -116,7 +114,5 @@ class Playfield : public Serializable
     Playfield& operator=(const Playfield&) = delete;
     Playfield& operator=(Playfield&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_PLAYFIELD

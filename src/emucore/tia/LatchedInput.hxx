@@ -22,8 +22,6 @@
 
 #include "bspf.hxx"
 
-namespace TIA6502tsCore {
-
 class LatchedInput
 {
   public:
@@ -49,7 +47,5 @@ class LatchedInput
     LatchedInput& operator=(const LatchedInput&) = delete;
     LatchedInput& operator=(LatchedInput&&) = delete;
 };
-
-} // namespace TIA6502tsCore
 
 #endif // TIA_6502TS_CORE_LATCHED_INPUT
