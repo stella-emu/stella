@@ -61,15 +61,17 @@ class TIA : public Device
     /**
       Create a new TIA for the specified console
 
-      @param console  The console the TIA is associated with
-      @param sound    The sound object the TIA is associated with
-      @param settings The settings object for this TIA device
+      @param console   The console the TIA is associated with
+      @param sound     The sound object the TIA is associated with
+      @param settings  The settings object for this TIA device
     */
     TIA(Console& console, Sound& sound, Settings& settings);
     virtual ~TIA() = default;
 
   public:
-
+    /**
+      Reset device to its power-on state
+    */
     void reset() override;
 
     /**
@@ -77,20 +79,75 @@ class TIA : public Device
     */
     void frameReset();
 
+    /**
+      Notification method invoked by the system right before the
+      system resets its cycle counter to zero.
+    */
     void systemCyclesReset() override;
 
+    /**
+      Install TIA in the specified system.  Invoked by the system
+      when the TIA is attached to it.
+
+      @param system The system the device should install itself in
+    */
     void install(System& system) override;
 
+    /**
+      Get the byte at the specified address
+
+      @return The byte at the specified address
+    */
     uInt8 peek(uInt16 address) override;
 
+    /**
+      Change the byte at the specified address to the given value
+
+      @param address  The address where the value should be stored
+      @param value    The value to be stored at the address
+
+      @return  True if the poke changed the device address space, else false
+    */
     bool poke(uInt16 address, uInt8 value) override;
 
+    /**
+      Install TIA in the specified system and device.  Invoked by
+      the system when the TIA is attached to it.  All devices
+      which invoke this method take responsibility for chaining
+      requests back to *this* device.
+
+      @param system  The system the device should install itself in
+      @param device  The device responsible for this address space
+    */
     void installDelegate(System& system, Device& device);
 
-    bool saveDisplay(Serializer& out) const;
+    /**
+      The following are very similar to save() and load(), except they
+      do a 'deeper' save of the display data itself.
 
+      Normally, the internal framebuffer doesn't need to be saved to
+      a state file, since the file already contains all the information
+      needed to re-create it, starting from scanline 0.  In effect, when a
+      state is loaded, the framebuffer is empty, and the next call to
+      update() generates valid framebuffer data.
+
+      However, state files saved from the debugger need more information,
+      such as the exact state of the internal framebuffer itself *before*
+      we call update(), including if the display was in partial frame mode.
+
+      Essentially, a normal state save has 'frame resolution', whereas
+      the debugger state save has 'cycle resolution', and hence needs
+      more information.  The methods below save/load this extra info,
+      and eliminate having to save approx. 50K to normal state files.
+    */
+    bool saveDisplay(Serializer& out) const;
     bool loadDisplay(Serializer& in);
 
+    /**
+      This method should be called at an interval corresponding to the 
+      desired frame rate to update the TIA.  Invoking this method will update
+      the graphics buffer and generate the corresponding audio samples.
+    */
     void update();
 
     /**
@@ -118,36 +175,121 @@ class TIA : public Device
     void setHeight(uInt32 height);
     void setYStart(uInt32 ystart);
 
+    /**
+      Enables/disables auto-frame calculation.  If enabled, the TIA
+      re-adjusts the framerate at regular intervals.
+
+      @param mode  Whether to enable or disable all auto-frame calculation
+    */
     void enableAutoFrame(bool enabled);
 
+    /**
+      Enables/disables color-loss for PAL modes only.
+
+      @param mode  Whether to enable or disable PAL color-loss mode
+    */
     void enableColorLoss(bool enabled);
 
+    /**
+      Answers whether this TIA runs at NTSC or PAL scanrates.
+    */
     bool isPAL() const;
 
+    /**
+      Answers the current color clock we've gotten to on this scanline.
+
+      @return The current color clock
+    */
     uInt32 clocksThisLine() const;
 
+    /**
+      Answers the total number of scanlines the TIA generated in producing
+      the current frame buffer. For partial frames, this will be the
+      current scanline.
+
+      @return The total number of scanlines generated
+    */
     uInt32 scanlines() const;
 
+    /**
+      Answers whether the TIA is currently in 'partial frame' mode
+      (we're in between the start and end of drawing a frame).
+
+      @return If we're in partial frame mode
+    */
     bool partialFrame() const;
 
+    /**
+      Answers the first scanline at which drawing occured in the last frame.
+
+      @return The starting scanline
+    */
     uInt32 startScanline() const;
 
+    /**
+      Answers the current position of the virtual 'electron beam' used to
+      draw the TIA image.  If not in partial frame mode, the position is
+      defined to be in the lower right corner (@ width/height of the screen).
+      Note that the coordinates are with respect to currentFrameBuffer(),
+      taking any YStart values into account.
+
+      @return The x/y coordinates of the scanline electron beam, and whether
+              it is in the visible/viewable area of the screen
+    */
     bool scanlinePos(uInt16& x, uInt16& y) const;
 
-    bool toggleBit(TIABit b, uInt8 mode = 2);
+    /**
+      Enables/disable/toggle the specified (or all) TIA bit(s).  Note that
+      disabling a graphical object also disables its collisions.
 
+      @param mode  1/0 indicates on/off, and values greater than 1 mean
+                   flip the bit from its current state
+
+      @return  Whether the bit was enabled or disabled
+    */
+    bool toggleBit(TIABit b, uInt8 mode = 2);
     bool toggleBits();
 
-    bool toggleCollision(TIABit b, uInt8 mode = 2);
+    /**
+      Enables/disable/toggle the specified (or all) TIA bit collision(s).
 
+      @param mode  1/0 indicates on/off, and values greater than 1 mean
+                   flip the collision from its current state
+
+      @return  Whether the collision was enabled or disabled
+    */
+    bool toggleCollision(TIABit b, uInt8 mode = 2);
     bool toggleCollisions();
 
+    /**
+      Enables/disable/toggle 'fixed debug colors' mode.
+
+      @param mode  1/0 indicates on/off, otherwise flip from
+                   its current state
+
+      @return  Whether the mode was enabled or disabled
+    */
     bool toggleFixedColors(uInt8 mode = 2);
 
+    /**
+      Enable/disable/query state of 'undriven/floating TIA pins'.
+
+      @param mode  1/0 indicates on/off, otherwise return the current state
+
+      @return  Whether the mode was enabled or disabled
+    */
     bool driveUnusedPinsRandom(uInt8 mode = 2);
 
-    bool toggleJitter(uInt8 mode = 2);
+    /**
+      Enables/disable/toggle 'scanline jittering' mode, and set the
+      recovery 'factor'.
 
+      @param mode  1/0 indicates on/off, otherwise flip from
+                   its current state
+
+      @return  Whether the mode was enabled or disabled
+    */
+    bool toggleJitter(uInt8 mode = 2);
     void setJitterRecoveryFactor(Int32 f);
 
     // Clear both internal TIA buffers to black (palette color 0)
