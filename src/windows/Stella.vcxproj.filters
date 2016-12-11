@@ -52,20 +52,8 @@
     <Filter Include="Header Files\emucore\tia">
       <UniqueIdentifier>{81542c6c-60bf-4329-8243-f5caad4deffa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\emucore\tia\core_6502ts">
-      <UniqueIdentifier>{8242434f-1442-47c7-80d3-e39c60ffb6e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\emucore\tia\core_default">
-      <UniqueIdentifier>{ad9e0040-296c-4734-adec-69872a1ac8a4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\emucore\tia">
       <UniqueIdentifier>{ffa3642d-aa8a-43a5-8ac5-acd8878dd091}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\emucore\tia\core_6502ts">
-      <UniqueIdentifier>{4e9712a3-8901-4fb0-b825-8a872a3cd33f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\emucore\tia\core_default">
-      <UniqueIdentifier>{60d2f411-fff7-424f-a815-fbfd96a7e66f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -804,47 +792,41 @@
     <ClCompile Include="..\emucore\Cart3EPlus.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\Background.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\Background.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\Ball.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\Ball.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\DelayQueue.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\DelayQueue.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\DelayQueueMember.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\DelayQueueMember.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\DrawCounterDecodes.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\DrawCounterDecodes.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\FrameManager.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\FrameManager.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\LatchedInput.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\LatchedInput.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\Missile.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\Missile.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\PaddleReader.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\PaddleReader.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\Player.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\Player.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\Playfield.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
+    <ClCompile Include="..\emucore\tia\Playfield.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_6502ts\TIA.cxx">
-      <Filter>Source Files\emucore\tia\core_6502ts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_default\TIA.cxx">
-      <Filter>Source Files\emucore\tia\core_default</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\tia\core_default\TIATables.cxx">
-      <Filter>Source Files\emucore\tia\core_default</Filter>
+    <ClCompile Include="..\emucore\tia\TIA.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1652,53 +1634,44 @@
     <ClInclude Include="..\emucore\Cart3EPlus.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_default\TIATables.hxx">
-      <Filter>Header Files\emucore\tia\core_default</Filter>
+    <ClInclude Include="..\emucore\tia\Background.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_default\TIA.hxx">
-      <Filter>Header Files\emucore\tia\core_default</Filter>
+    <ClInclude Include="..\emucore\tia\Ball.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\Background.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\DelayQueue.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\Ball.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\DelayQueueMember.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\DelayQueue.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\DrawCounterDecodes.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\DelayQueueMember.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\FrameManager.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\DrawCounterDecodes.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\LatchedInput.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\FrameManager.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\Missile.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\LatchedInput.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\PaddleReader.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\Missile.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\Player.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\PaddleReader.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\Playfield.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\Player.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
+    <ClInclude Include="..\emucore\tia\TIA.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\Playfield.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\TIA.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\tia\core_6502ts\Types.hxx">
-      <Filter>Header Files\emucore\tia\core_6502ts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\AbstractTIA.hxx">
-      <Filter>Header Files\emucore</Filter>
+    <ClInclude Include="..\emucore\tia\Types.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
