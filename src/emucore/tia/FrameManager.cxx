@@ -124,6 +124,10 @@ void FrameManager::setVsync(bool vsync)
 {
   if (!myWaitForVsync || vsync == myVsync) return;
 
+#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+  (cout << "vsync " << myVsync << " -> " << vsync << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
+#endif
+
   myVsync = vsync;
 
   switch (myState)
@@ -142,7 +146,7 @@ void FrameManager::setVsync(bool vsync)
       break;
 
     case State::frame:
-      if (myVsync) finalizeFrame();
+      if (myVsync) finalizeFrame(State::waitForVsyncEnd);
       break;
 
     default:
@@ -220,6 +224,10 @@ void FrameManager::setState(FrameManager::State state)
 {
   if (myState == state) return;
 
+#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+  (cout << "state change " << myState << " -> " << state << " @ " << myLineInState << "\n").flush();
+#endif // TIA_FRAMEMANAGER_DEBUG_LOG
+
   myState = state;
   myLineInState = 0;
 
@@ -227,7 +235,7 @@ void FrameManager::setState(FrameManager::State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::finalizeFrame()
+void FrameManager::finalizeFrame(FrameManager::State state)
 {
   const uInt32
     deltaNTSC = abs(Int32(myCurrentFrameTotalLines) - Int32(frameLinesNTSC)),
@@ -241,9 +249,13 @@ void FrameManager::finalizeFrame()
     myOnFrameComplete();
   }
 
+#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+  (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
+#endif // TIA_FRAMEMANAGER_DEBUG_LOG
+
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
   myCurrentFrameTotalLines = 0;
-  setState(State::overscan);
+  setState(state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

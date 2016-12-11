@@ -82,7 +82,7 @@ class FrameManager : public Serializable
 
     void setState(State state);
 
-    void finalizeFrame();
+    void finalizeFrame(State state = State::overscan);
 
   private:
 
