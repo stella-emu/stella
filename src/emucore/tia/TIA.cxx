@@ -45,7 +45,8 @@ enum Delay: uInt8 {
   hmm = 2,
   hmbl = 2,
   hmclr = 2,
-  refp = 1
+  refp = 1,
+  vblank = 1
 };
 
 enum DummyRegisters: uInt8 {
@@ -355,15 +356,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VBLANK:
-      myLinesSinceChange = 0;
-
       myInput0.vblank(value);
       myInput1.vblank(value);
 
-      myFrameManager.setVblank(value & 0x02);
-
       for (PaddleReader& paddleReader : myPaddleReaders)
         paddleReader.vblank(value, myTimestamp);
+
+      myDelayQueue.push(VBLANK, value, Delay::vblank);
 
       break;
 
@@ -1107,6 +1106,11 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 {
   switch (address)
   {
+    case VBLANK:
+      myLinesSinceChange = 0;
+      myFrameManager.setVblank(value & 0x02);
+      break;
+
     case HMOVE:
       myLinesSinceChange = 0;
 
