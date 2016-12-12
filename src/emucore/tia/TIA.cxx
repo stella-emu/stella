@@ -78,6 +78,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     },
     [this] () {
       mySystem->m6502().stop();
+      mySystem->resetCycles();
     }
   );
 
@@ -146,6 +147,7 @@ void TIA::systemCyclesReset()
   const uInt32 cycles = mySystem->cycles();
 
   myLastCycle -= cycles;
+
   mySound.adjustCycleCounter(-1 * cycles);
 }
 
@@ -897,15 +899,17 @@ void TIA::updateScanlineByTrace(int target)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateEmulation()
 {
-  const uInt32 cycles = mySystem->cycles();
+  const uInt32 systemCycles = mySystem->cycles();
 
   if (mySubClock > 2)
     throw runtime_error("subclock exceeds range");
 
-  cycle(3 * (cycles - myLastCycle) + mySubClock);
+  const uInt32 cyclesToRun = 3 * (systemCycles - myLastCycle) + mySubClock;
 
   mySubClock = 0;
-  myLastCycle = cycles;
+  myLastCycle = systemCycles;
+
+  cycle(cyclesToRun);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

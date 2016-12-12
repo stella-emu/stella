@@ -144,7 +144,7 @@ class TIA : public Device
     bool loadDisplay(Serializer& in);
 
     /**
-      This method should be called at an interval corresponding to the 
+      This method should be called at an interval corresponding to the
       desired frame rate to update the TIA.  Invoking this method will update
       the graphics buffer and generate the corresponding audio samples.
     */
@@ -383,10 +383,6 @@ class TIA : public Device
 
     void nextLine();
 
-    void onFrameComplete();
-
-    void onFrameStart();
-
     void delayedWrite(uInt8 address, uInt8 value);
 
     void updatePaddle(uInt8 idx);
@@ -421,7 +417,7 @@ class TIA : public Device
     uInt8 myCtrlPF;  // needed for the debugger
 
     uInt8 mySubClock;
-    uInt32 myLastCycle;
+    Int32 myLastCycle;
 
     uInt8 mySpriteEnabledBits;
     uInt8 myCollisionsEnabledBits;
