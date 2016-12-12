@@ -17,20 +17,24 @@
 // $Id$
 //============================================================================
 
+// #define TIA_FRAMEMANAGER_DEBUG_LOG
+
 #include "FrameManager.hxx"
 
 enum Metrics: uInt32 {
-  vblankNTSC               = 40,
-  vblankPAL                = 48,
-  kernelNTSC               = 192,
-  kernelPAL                = 228,
-  overscanNTSC             = 30,
-  overscanPAL              = 36,
-  vsync                    = 3,
-  visibleOverscan          = 20,
-  maxUnderscan             = 10,
-  maxFramesWithoutVsync    = 50,
-  tvModeDetectionTolerance = 20
+  vblankNTSC                    = 40,
+  vblankPAL                     = 48,
+  kernelNTSC                    = 192,
+  kernelPAL                     = 228,
+  overscanNTSC                  = 30,
+  overscanPAL                   = 36,
+  vsync                         = 3,
+  visibleOverscan               = 20,
+  maxUnderscan                  = 10,
+  maxFramesWithoutVsync         = 50,
+  tvModeDetectionTolerance      = 20,
+  modeDetectionInitialFrameskip = 5,
+  framesForModeConfirmation     = 5
 };
 
 static constexpr uInt32
@@ -65,6 +69,9 @@ void FrameManager::reset()
   myWaitForVsync = true;
   myVsync = false;
   myVblank = false;
+  myTotalFrames = 0;
+  myFramesInMode = 0;
+  myModeConfirmed = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,7 +153,10 @@ void FrameManager::setVsync(bool vsync)
       break;
 
     case State::frame:
-      if (myVsync) finalizeFrame(State::waitForVsyncEnd);
+      if (myVsync) {
+        myCurrentFrameTotalLines++;
+        finalizeFrame(State::waitForVsyncEnd);
+      }
       break;
 
     default:
@@ -237,25 +247,50 @@ void FrameManager::setState(FrameManager::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::finalizeFrame(FrameManager::State state)
 {
-  const uInt32
-    deltaNTSC = abs(Int32(myCurrentFrameTotalLines) - Int32(frameLinesNTSC)),
-    deltaPAL =  abs(Int32(myCurrentFrameTotalLines) - Int32(frameLinesPAL));
-
-  if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance) {
-    setTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
-  }
-
   if (myOnFrameComplete) {
     myOnFrameComplete();
   }
 
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
+  (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameTotalLines << " total)" << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
   myCurrentFrameTotalLines = 0;
   setState(state);
+
+  myTotalFrames++;
+
+  if (myTotalFrames <= Metrics::modeDetectionInitialFrameskip) {
+    return;
+  }
+
+  const TvMode oldMode = myMode;
+
+  const uInt32
+    deltaNTSC = abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesNTSC)),
+    deltaPAL =  abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesPAL));
+
+  if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance)
+    setTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
+  else if (!myModeConfirmed) {
+    if (
+      (myCurrentFrameFinalLines  < frameLinesPAL) &&
+      (myCurrentFrameFinalLines > frameLinesNTSC) &&
+      (myCurrentFrameFinalLines % 2)
+    )
+      setTvMode(TvMode::ntsc);
+    else
+      setTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
+  }
+
+  if (oldMode == myMode)
+    myFramesInMode++;
+  else
+    myFramesInMode = 0;
+
+  if (myFramesInMode > Metrics::framesForModeConfirmation)
+    myModeConfirmed = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -97,6 +97,10 @@ class FrameManager : public Serializable
     uInt32 myCurrentFrameTotalLines;
     uInt32 myCurrentFrameFinalLines;
 
+    uInt32 myTotalFrames;
+    uInt32 myFramesInMode;
+    bool myModeConfirmed;
+
     bool myVsync;
     bool myVblank;
 
