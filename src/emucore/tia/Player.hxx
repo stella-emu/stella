@@ -40,7 +40,7 @@ class Player : public Serializable
 
     void nusiz(uInt8 value);
 
-    void resp(bool hblank);
+    void resp(bool hblank, bool extendedHblank);
 
     void refp(uInt8 value);
     bool refp() const { return myIsReflected; }

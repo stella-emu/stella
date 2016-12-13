@@ -442,12 +442,12 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESM0:
       myLinesSinceChange = 0;
-      myMissile0.resm(myHstate == HState::blank);
+      myMissile0.resm(myHstate == HState::blank, myExtendedHblank);
       break;
 
     case RESM1:
       myLinesSinceChange = 0;
-      myMissile1.resm(myHstate == HState::blank);
+      myMissile1.resm(myHstate == HState::blank, myExtendedHblank);
       break;
 
     case RESMP0:
@@ -512,12 +512,12 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESP0:
       myLinesSinceChange = 0;
-      myPlayer0.resp(myHstate == HState::blank);
+      myPlayer0.resp(myHstate == HState::blank, myExtendedHblank);
       break;
 
     case RESP1:
       myLinesSinceChange = 0;
-      myPlayer1.resp(myHstate == HState::blank);
+      myPlayer1.resp(myHstate == HState::blank, myExtendedHblank);
       break;
 
     case REFP0:
@@ -553,7 +553,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESBL:
       myLinesSinceChange = 0;
-      myBall.resbl(myHstate == HState::blank);
+      myBall.resbl(myHstate == HState::blank, myExtendedHblank);
       break;
 
     case VDELBL:

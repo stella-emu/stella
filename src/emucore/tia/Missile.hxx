@@ -39,7 +39,7 @@ class Missile : public Serializable
     void hmm(uInt8 value);
     uInt32 hmm() const { return myHmmClocks; }
 
-    void resm(bool hblank);
+    void resm(bool hblank, bool extendHblank);
 
     void resmp(uInt8 value, const Player& player);
     bool resmp() const { return bool(myResmp); }

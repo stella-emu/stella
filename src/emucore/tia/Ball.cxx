@@ -69,9 +69,9 @@ void Ball::hmbl(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Ball::resbl(bool hblank)
+void Ball::resbl(bool hblank, bool extendedHblank)
 {
-  myCounter = hblank ? 159 : 157;
+  myCounter = hblank ? (extendedHblank ? 158 : 159) : 157;
 
   myIsRendering = true;
   myRenderCounter = Count::renderCounterOffset;

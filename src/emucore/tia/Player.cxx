@@ -91,9 +91,9 @@ void Player::nusiz(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::resp(bool hblank)
+void Player::resp(bool hblank, bool extendedHblank)
 {
-  myCounter = hblank ? 159 : 157;
+  myCounter = hblank ? (extendedHblank ? 158 : 159) : 157;
 
   if (myIsRendering && myRenderCounter < -1)
     myRenderCounter = Count::renderCounterOffset;

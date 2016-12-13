@@ -69,9 +69,9 @@ void Missile::hmm(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::resm(bool hblank)
+void Missile::resm(bool hblank, bool extendedHblank)
 {
-  myCounter = hblank ? 159 : 157;
+  myCounter = hblank ? (extendedHblank ? 158 : 159) : 157;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
