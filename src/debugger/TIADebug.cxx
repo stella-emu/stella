@@ -320,22 +320,26 @@ bool TIADebug::priorityPF(int newVal)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIADebug::collision(int collID)
+bool TIADebug::collision(CollisionBit id) const
 {
-#if 0 // FIXME
-  uInt32 mask = 1 << collID;
-
-  if(newVal > -1)
+  switch(id)
   {
-    if(newVal)
-      myTIA.myCollision |= mask;
-    else
-      myTIA.myCollision &= ~mask;
+    case Cx_M0P1:  return myTIA.collCXM0P()  & 0x80;
+    case Cx_M0P0:  return myTIA.collCXM0P()  & 0x40;
+    case Cx_M1P0:  return myTIA.collCXM1P()  & 0x80;
+    case Cx_M1P1:  return myTIA.collCXM1P()  & 0x40;
+    case Cx_P0PF:  return myTIA.collCXP0FB() & 0x80;
+    case Cx_P0BL:  return myTIA.collCXP0FB() & 0x40;
+    case Cx_P1PF:  return myTIA.collCXP1FB() & 0x80;
+    case Cx_P1BL:  return myTIA.collCXP1FB() & 0x40;
+    case Cx_M0PF:  return myTIA.collCXM0FB() & 0x80;
+    case Cx_M0BL:  return myTIA.collCXM0FB() & 0x40;
+    case Cx_M1PF:  return myTIA.collCXM1FB() & 0x80;
+    case Cx_M1BL:  return myTIA.collCXM1FB() & 0x40;
+    case Cx_BLPF:  return myTIA.collCXBLPF() & 0x80;
+    case Cx_P0P1:  return myTIA.collCXPPMM() & 0x80;
+    case Cx_M0M1:  return myTIA.collCXPPMM() & 0x40;
   }
-
-  return myTIA.myCollision & mask;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -416,7 +420,7 @@ uInt8 TIADebug::pf0(int newVal)
   if(newVal > -1)
     mySystem.poke(PF0, newVal << 4);
 
-  return myTIA.myPlayfield.pf0() & 0x0f;
+  return myTIA.myPlayfield.pf0();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -425,7 +429,7 @@ uInt8 TIADebug::pf1(int newVal)
   if(newVal > -1)
     mySystem.poke(PF1, newVal);
 
-  return (myTIA.myPlayfield.pf1() & 0xff0) >> 4;
+  return myTIA.myPlayfield.pf1();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -434,7 +438,7 @@ uInt8 TIADebug::pf2(int newVal)
   if(newVal > -1)
     mySystem.poke(PF2, newVal);
 
-  return (myTIA.myPlayfield.pf2() & 0xff000) >> 12;
+  return myTIA.myPlayfield.pf2();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

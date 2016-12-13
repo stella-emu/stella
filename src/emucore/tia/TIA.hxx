@@ -387,6 +387,18 @@ class TIA : public Device
 
     void updatePaddle(uInt8 idx);
 
+    /**
+      Get the result of the specified collision register.
+    */
+    uInt8 collCXM0P() const;
+    uInt8 collCXM1P() const;
+    uInt8 collCXP0FB() const;
+    uInt8 collCXP1FB() const;
+    uInt8 collCXM0FB() const;
+    uInt8 collCXM1FB() const;
+    uInt8 collCXPPMM() const;
+    uInt8 collCXBLPF() const;
+
   private:
 
     Console& myConsole;

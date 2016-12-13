@@ -251,56 +251,35 @@ uInt8 TIA::peek(uInt16 address)
 
   switch (address & 0x0F) {
     case CXM0P:
-      result = (
-        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player0) ? 0x40 : 0) |
-        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player1) ? 0x80 : 0)
-      );
+      result = collCXM0P();
       break;
 
     case CXM1P:
-      result = (
-        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player1) ? 0x40 : 0) |
-        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player0) ? 0x80 : 0)
-      );
+      result = collCXM1P();
       break;
 
     case CXP0FB:
-      result = (
-        ((myCollisionMask & CollisionMask::player0 & CollisionMask::ball) ? 0x40 : 0) |
-        ((myCollisionMask & CollisionMask::player0 & CollisionMask::playfield) ? 0x80 : 0)
-      );
+      result = collCXP0FB();
       break;
 
     case CXP1FB:
-      result = (
-        ((myCollisionMask & CollisionMask::player1 & CollisionMask::ball) ? 0x40 : 0) |
-        ((myCollisionMask & CollisionMask::player1 & CollisionMask::playfield) ? 0x80 : 0)
-      );
+      result = collCXP1FB();
       break;
 
     case CXM0FB:
-      result = (
-        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::ball) ? 0x40 : 0) |
-        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::playfield) ? 0x80 : 0)
-      );
+      result = collCXM0FB();
       break;
 
     case CXM1FB:
-      result = (
-        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::ball) ? 0x40 : 0) |
-        ((myCollisionMask & CollisionMask::missile1 & CollisionMask::playfield) ? 0x80 : 0)
-      );
+      result = collCXM1FB();
       break;
 
     case CXPPMM:
-      result = (
-        ((myCollisionMask & CollisionMask::missile0 & CollisionMask::missile1) ? 0x40 : 0) |
-        ((myCollisionMask & CollisionMask::player0 & CollisionMask::player1) ? 0x80 : 0)
-      );
+      result = collCXPPMM();
       break;
 
     case CXBLPF:
-      result = (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
+      result = collCXBLPF();
       break;
 
     case INPT0:
@@ -1244,4 +1223,73 @@ void TIA::updatePaddle(uInt8 idx)
 
   myPaddleReaders[idx].update(double(resistance) / MAX_RESISTANCE,
                               myTimestamp, myFrameManager.tvMode());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXM0P() const
+{
+  return (
+    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player0) ? 0x40 : 0) |
+    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::player1) ? 0x80 : 0)
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXM1P() const
+{
+  return (
+    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player1) ? 0x40 : 0) |
+    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::player0) ? 0x80 : 0)
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXP0FB() const
+{
+  return (
+    ((myCollisionMask & CollisionMask::player0 & CollisionMask::ball) ? 0x40 : 0) |
+    ((myCollisionMask & CollisionMask::player0 & CollisionMask::playfield) ? 0x80 : 0)
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXP1FB() const
+{
+  return (
+    ((myCollisionMask & CollisionMask::player1 & CollisionMask::ball) ? 0x40 : 0) |
+    ((myCollisionMask & CollisionMask::player1 & CollisionMask::playfield) ? 0x80 : 0)
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXM0FB() const
+{
+  return (
+    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::ball) ? 0x40 : 0) |
+    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::playfield) ? 0x80 : 0)
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXM1FB() const
+{
+  return (
+    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::ball) ? 0x40 : 0) |
+    ((myCollisionMask & CollisionMask::missile1 & CollisionMask::playfield) ? 0x80 : 0)
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXPPMM() const
+{
+  return (
+    ((myCollisionMask & CollisionMask::missile0 & CollisionMask::missile1) ? 0x40 : 0) |
+    ((myCollisionMask & CollisionMask::player0 & CollisionMask::player1) ? 0x80 : 0)
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::collCXBLPF() const
+{
+  return (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
 }

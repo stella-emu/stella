@@ -121,21 +121,21 @@ class TIADebug : public DebuggerSystem
     bool priorityPF(int newVal = -1);
 
     // Collision registers
-    bool collM0_P1() { return collision(0);  }
-    bool collM0_P0() { return collision(1);  }
-    bool collM1_P0() { return collision(2);  }
-    bool collM1_P1() { return collision(3);  }
-    bool collP0_PF() { return collision(4);  }
-    bool collP0_BL() { return collision(5);  }
-    bool collP1_PF() { return collision(6);  }
-    bool collP1_BL() { return collision(7);  }
-    bool collM0_PF() { return collision(8);  }
-    bool collM0_BL() { return collision(9);  }
-    bool collM1_PF() { return collision(10); }
-    bool collM1_BL() { return collision(11); }
-    bool collBL_PF() { return collision(12); }
-    bool collP0_P1() { return collision(13); }
-    bool collM0_M1() { return collision(14); }
+    bool collM0_P1() const { return collision(Cx_M0P1); }
+    bool collM0_P0() const { return collision(Cx_M0P0); }
+    bool collM1_P0() const { return collision(Cx_M1P0); }
+    bool collM1_P1() const { return collision(Cx_M1P1); }
+    bool collP0_PF() const { return collision(Cx_P0PF); }
+    bool collP0_BL() const { return collision(Cx_P0BL); }
+    bool collP1_PF() const { return collision(Cx_P1PF); }
+    bool collP1_BL() const { return collision(Cx_P1BL); }
+    bool collM0_PF() const { return collision(Cx_M0PF); }
+    bool collM0_BL() const { return collision(Cx_M0BL); }
+    bool collM1_PF() const { return collision(Cx_M1PF); }
+    bool collM1_BL() const { return collision(Cx_M1BL); }
+    bool collBL_PF() const { return collision(Cx_BLPF); }
+    bool collP0_P1() const { return collision(Cx_P0P1); }
+    bool collM0_M1() const { return collision(Cx_M0M1); }
 
     // TIA strobe registers
     void strobeWsync() { mySystem.poke(WSYNC, 0); }
@@ -163,7 +163,7 @@ class TIADebug : public DebuggerSystem
     string colorSwatch(uInt8 c);
 
     /** Get specific bits in the collision register (used by collXX_XX) */
-    bool collision(int collID);
+    bool collision(CollisionBit id) const;
 
     string audFreq(uInt8 div);
     string booleanWithLabel(string label, bool value);
