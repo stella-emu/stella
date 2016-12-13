@@ -121,21 +121,21 @@ class TIADebug : public DebuggerSystem
     bool priorityPF(int newVal = -1);
 
     // Collision registers
-    bool collM0_P1(int newVal = -1) { return collision(0,  newVal); }
-    bool collM0_P0(int newVal = -1) { return collision(1,  newVal); }
-    bool collM1_P0(int newVal = -1) { return collision(2,  newVal); }
-    bool collM1_P1(int newVal = -1) { return collision(3,  newVal); }
-    bool collP0_PF(int newVal = -1) { return collision(4,  newVal); }
-    bool collP0_BL(int newVal = -1) { return collision(5,  newVal); }
-    bool collP1_PF(int newVal = -1) { return collision(6,  newVal); }
-    bool collP1_BL(int newVal = -1) { return collision(7,  newVal); }
-    bool collM0_PF(int newVal = -1) { return collision(8,  newVal); }
-    bool collM0_BL(int newVal = -1) { return collision(9,  newVal); }
-    bool collM1_PF(int newVal = -1) { return collision(10, newVal); }
-    bool collM1_BL(int newVal = -1) { return collision(11, newVal); }
-    bool collBL_PF(int newVal = -1) { return collision(12, newVal); }
-    bool collP0_P1(int newVal = -1) { return collision(13, newVal); }
-    bool collM0_M1(int newVal = -1) { return collision(14, newVal); }
+    bool collM0_P1() { return collision(0);  }
+    bool collM0_P0() { return collision(1);  }
+    bool collM1_P0() { return collision(2);  }
+    bool collM1_P1() { return collision(3);  }
+    bool collP0_PF() { return collision(4);  }
+    bool collP0_BL() { return collision(5);  }
+    bool collP1_PF() { return collision(6);  }
+    bool collP1_BL() { return collision(7);  }
+    bool collM0_PF() { return collision(8);  }
+    bool collM0_BL() { return collision(9);  }
+    bool collM1_PF() { return collision(10); }
+    bool collM1_BL() { return collision(11); }
+    bool collBL_PF() { return collision(12); }
+    bool collP0_P1() { return collision(13); }
+    bool collM0_M1() { return collision(14); }
 
     // TIA strobe registers
     void strobeWsync() { mySystem.poke(WSYNC, 0); }
@@ -162,8 +162,8 @@ class TIADebug : public DebuggerSystem
     /** Display a color patch for color at given index in the palette */
     string colorSwatch(uInt8 c);
 
-    /** Get/set specific bits in the collision register (used by collXX_XX) */
-    bool collision(int collID, int newVal);
+    /** Get specific bits in the collision register (used by collXX_XX) */
+    bool collision(int collID);
 
     string audFreq(uInt8 div);
     string booleanWithLabel(string label, bool value);

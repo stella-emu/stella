@@ -177,12 +177,6 @@ TvMode FrameManager::tvMode() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameManager::vblank() const
-{
-  return myVblank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameManager::height() const
 {
   return myKernelLines + Metrics::visibleOverscan;

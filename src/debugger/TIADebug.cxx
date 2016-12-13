@@ -320,7 +320,7 @@ bool TIADebug::priorityPF(int newVal)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIADebug::collision(int collID, int newVal)
+bool TIADebug::collision(int collID)
 {
 #if 0 // FIXME
   uInt32 mask = 1 << collID;
@@ -712,7 +712,7 @@ uInt8 TIADebug::hmBL(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::frameCount() const
 {
-return 0;//  return myTIA.myFrameCounter;
+  return myTIA.myFrameManager.frameCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -730,19 +730,13 @@ int TIADebug::clocksThisLine() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vsync() const
 {
-#if 0 // FIXME
-  return (myTIA.myVSYNC & 2) == 2;
-#endif
-return 0;
+  return myTIA.myFrameManager.vsync();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vblank() const
 {
-#if 0 // FIXME
-  return (myTIA.myVBLANK & 2) == 2;
-#endif
-return 0;
+  return myTIA.myFrameManager.vblank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

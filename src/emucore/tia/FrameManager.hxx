@@ -51,13 +51,17 @@ class FrameManager : public Serializable
 
     TvMode tvMode() const;
 
-    bool vblank() const;
+    bool vblank() const { return myVblank; }
+
+    bool vsync() const { return myVsync; }
 
     uInt32 height() const;
 
     uInt32 currentLine() const;
 
     uInt32 scanlines() const;
+
+    uInt32 frameCount() const { return myTotalFrames; }
 
     /**
       Serializable methods (see that class for more information).

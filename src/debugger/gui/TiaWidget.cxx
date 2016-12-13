@@ -108,10 +108,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
                                             "", kCheckActionCmd);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
-// TODO - make collisions editable in TIA //
       myCollision[idx]->setEditable(false);
-//      addFocusWidget(myCollision[idx]);
-////////////////////////////////////////////
 
       collX += myCollision[idx]->getWidth() + 10;
       idx++;
@@ -691,66 +688,6 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kCheckActionCmd:
       switch(id)
       {
-        case kP0_PFID:
-          tia.collP0_PF(myCollision[kP0_PFID]->getState() ? 1 : 0);
-          break;
-
-        case kP0_BLID:
-          tia.collP0_BL(myCollision[kP0_BLID]->getState() ? 1 : 0);
-          break;
-
-        case kP0_M1ID:
-          tia.collM1_P0(myCollision[kP0_M1ID]->getState() ? 1 : 0);
-          break;
-
-        case kP0_M0ID:
-          tia.collM0_P0(myCollision[kP0_M0ID]->getState() ? 1 : 0);
-          break;
-
-        case kP0_P1ID:
-          tia.collP0_P1(myCollision[kP0_P1ID]->getState() ? 1 : 0);
-          break;
-
-        case kP1_PFID:
-          tia.collP1_PF(myCollision[kP1_PFID]->getState() ? 1 : 0);
-          break;
-
-        case kP1_BLID:
-          tia.collP1_BL(myCollision[kP1_BLID]->getState() ? 1 : 0);
-          break;
-
-        case kP1_M1ID:
-          tia.collM1_P1(myCollision[kP1_M1ID]->getState() ? 1 : 0);
-          break;
-
-        case kP1_M0ID:
-          tia.collM0_P1(myCollision[kP1_M0ID]->getState() ? 1 : 0);
-          break;
-
-        case kM0_PFID:
-          tia.collM0_PF(myCollision[kM0_PFID]->getState() ? 1 : 0);
-          break;
-
-        case kM0_BLID:
-          tia.collM0_BL(myCollision[kM0_BLID]->getState() ? 1 : 0);
-          break;
-
-        case kM0_M1ID:
-          tia.collM0_M1(myCollision[kM0_M1ID]->getState() ? 1 : 0);
-          break;
-
-        case kM1_PFID:
-          tia.collM1_PF(myCollision[kM1_PFID]->getState() ? 1 : 0);
-          break;
-
-        case kM1_BLID:
-          tia.collM1_BL(myCollision[kM1_BLID]->getState() ? 1 : 0);
-          break;
-
-        case kBL_PFID:
-          tia.collBL_PF(myCollision[kBL_PFID]->getState() ? 1 : 0);
-          break;
-
         case kRefP0ID:
           tia.refP0(myRefP0->getState() ? 1 : 0);
           break;

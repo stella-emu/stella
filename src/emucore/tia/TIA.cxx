@@ -1242,5 +1242,6 @@ void TIA::updatePaddle(uInt8 idx)
       throw runtime_error("invalid paddle index");
   }
 
-  myPaddleReaders[idx].update(double(resistance) / MAX_RESISTANCE, myTimestamp, myFrameManager.tvMode());
+  myPaddleReaders[idx].update(double(resistance) / MAX_RESISTANCE,
+                              myTimestamp, myFrameManager.tvMode());
 }
