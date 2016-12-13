@@ -22,8 +22,8 @@
 #include "FrameManager.hxx"
 
 enum Metrics: uInt32 {
-  vblankNTSC                    = 40,
-  vblankPAL                     = 48,
+  vblankNTSC                    = 37,
+  vblankPAL                     = 45,
   kernelNTSC                    = 192,
   kernelPAL                     = 228,
   overscanNTSC                  = 30,
@@ -31,10 +31,11 @@ enum Metrics: uInt32 {
   vsync                         = 3,
   visibleOverscan               = 20,
   maxUnderscan                  = 10,
-  maxFramesWithoutVsync         = 50,
   tvModeDetectionTolerance      = 20,
-  modeDetectionInitialFrameskip = 5,
-  framesForModeConfirmation     = 5
+  initialGarbageFrames          = 10,
+  framesForModeConfirmation     = 5,
+  maxVblankViolations           = 2,
+  minStableVblankFrames         = 1
 };
 
 static constexpr uInt32
@@ -70,6 +71,11 @@ void FrameManager::reset()
   myTotalFrames = 0;
   myFramesInMode = 0;
   myModeConfirmed = false;
+  myVblankMode = VblankMode::floating;
+  myLastVblankLines = 0;
+  myVblankViolations = 0;
+  myStableVblankFrames = 0;
+  myVblankViolated = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,8 +91,7 @@ void FrameManager::nextLine()
       break;
 
     case State::waitForFrameStart:
-      if (myLineInState >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan))
-        setState(State::frame);
+      nextLineInVsync();
       break;
 
     case State::frame:
@@ -97,6 +102,54 @@ void FrameManager::nextLine()
 
     default:
       throw runtime_error("frame manager: invalid state");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::nextLineInVsync()
+{
+  bool shouldTransition = myLineInState >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan);
+
+  switch (myVblankMode) {
+    case VblankMode::floating:
+
+      if (shouldTransition) {
+        if (myTotalFrames > initialGarbageFrames && myLineInState == myLastVblankLines)
+          myStableVblankFrames++;
+        else
+          myStableVblankFrames = 0;
+
+        myLastVblankLines = myLineInState;
+
+        setState(State::frame);
+      }
+
+      if (myStableVblankFrames >= Metrics::minStableVblankFrames) {
+        myVblankMode = VblankMode::locked;
+        myVblankViolations = 0;
+      }
+
+      break;
+
+    case VblankMode::locked:
+
+      if (myLineInState == myLastVblankLines) {
+        if (shouldTransition && !myVblankViolated)
+          myVblankViolations = 0;
+        else {
+          if (!myVblankViolated) myVblankViolations++;
+          myVblankViolated = true;
+        }
+
+        setState(State::frame);
+    } else if (shouldTransition){
+      if (!myVblankViolated) myVblankViolations++;
+      myVblankViolated = true;
+    }
+
+    if (myVblankViolations > Metrics::maxVblankViolations)
+      myVblankMode = VblankMode::floating;
+
   }
 }
 
@@ -123,9 +176,8 @@ void FrameManager::setVsync(bool vsync)
       break;
 
     case State::waitForVsyncEnd:
-      if (!myVsync) {
+      if (!myVsync)
         setState(State::waitForFrameStart);
-      }
       break;
 
     case State::frame:
@@ -210,7 +262,18 @@ void FrameManager::setState(FrameManager::State state)
   myState = state;
   myLineInState = 0;
 
-  if (myState == State::frame && myOnFrameStart) myOnFrameStart();
+  switch (myState) {
+    case State::waitForFrameStart:
+      myVblankViolated = false;
+      break;
+
+    case State::frame:
+      if (myOnFrameStart) myOnFrameStart();
+      break;
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,7 +293,7 @@ void FrameManager::finalizeFrame(FrameManager::State state)
 
   myTotalFrames++;
 
-  if (myTotalFrames <= Metrics::modeDetectionInitialFrameskip) {
+  if (myTotalFrames <= Metrics::initialGarbageFrames) {
     return;
   }
 

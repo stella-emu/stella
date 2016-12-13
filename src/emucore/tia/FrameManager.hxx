@@ -79,6 +79,11 @@ class FrameManager : public Serializable
       frame
     };
 
+    enum VblankMode {
+      locked,
+      floating
+    };
+
   private:
 
     void setTvMode(TvMode mode);
@@ -86,6 +91,8 @@ class FrameManager : public Serializable
     void setState(State state);
 
     void finalizeFrame(State state = State::waitForVsyncStart);
+
+    void nextLineInVsync();
 
   private:
 
@@ -109,6 +116,12 @@ class FrameManager : public Serializable
     uInt32 myKernelLines;
     uInt32 myOverscanLines;
     uInt32 myFrameLines;
+
+    VblankMode myVblankMode;
+    uInt32 myLastVblankLines;
+    uInt8 myVblankViolations;
+    uInt8 myStableVblankFrames;
+    bool myVblankViolated;
 
   private:
     FrameManager(const FrameManager&) = delete;
