@@ -79,9 +79,14 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
     {
       mySWCHA = value;
       bank(mySWCHA & 0x3);
-      uInt8& column = myCompuMate->myColumn;
-      if(value & 0x20) column = 0;
-      if(value & 0x40) column = (column + 1) % 10;
+      if(myCompuMate)
+      {
+        uInt8& column = myCompuMate->myColumn;
+        if(value & 0x20)
+          column = 0;
+        if(value & 0x40)
+          column = (column + 1) % 10;
+      }
     }
     mySystem->m6532().poke(address, value);
   }

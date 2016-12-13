@@ -14162,6 +14162,13 @@
 "Cartridge.Note" "AKA Grand Prix"
 ""
 
+"Cartridge.MD5" "b50ae55aac93fbed258bc5a873edd2cb"
+"Cartridge.Manufacturer" "Recompile"
+"Cartridge.Name" "E.T. The Extra-Terrestrial (Recompile) (Hack)"
+"Cartridge.Note" "www.neocomputer.org/projects/et"
+"Cartridge.Rarity" "Hack"
+""
+
 "Cartridge.MD5" "b5110f55ed99d5279f18266d001a8cd5"
 "Cartridge.Manufacturer" "Eckhard Stolberg"
 "Cartridge.Name" "Auto-mobile Demo (2001) (Eckhard Stolberg)"
@@ -14452,7 +14459,6 @@
 "Cartridge.Type" "CM"
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
-"Display.Format" "NTSC"
 "Display.Phosphor" "YES"
 ""
 
@@ -18250,7 +18256,6 @@
 "Cartridge.Type" "CM"
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
-"Display.Format" "PAL"
 "Display.Phosphor" "YES"
 ""
 
@@ -20307,12 +20312,5 @@
 "Cartridge.MD5" "ffebb0070689b9d322687edd9c0a2bae"
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 "Display.YStart" "28"
-""
-
-"Cartridge.MD5" "b50ae55aac93fbed258bc5a873edd2cb"
-"Cartridge.Manufacturer" "Recompile"
-"Cartridge.Name" "E.T. The Extra-Terrestrial (Recompile) (Hack)"
-"Cartridge.Note" "www.neocomputer.org/projects/et"
-"Cartridge.Rarity" "Hack"
 ""
 
