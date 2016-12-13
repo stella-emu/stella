@@ -65,8 +65,6 @@ void FrameManager::reset()
   myState = State::waitForVsyncStart;
   myCurrentFrameTotalLines = myCurrentFrameFinalLines = 0;
   myLineInState = 0;
-  myLinesWithoutVsync = 0;
-  myWaitForVsync = true;
   myVsync = false;
   myVblank = false;
   myTotalFrames = 0;
@@ -84,21 +82,11 @@ void FrameManager::nextLine()
   {
     case State::waitForVsyncStart:
     case State::waitForVsyncEnd:
-      if (myLinesWithoutVsync > myMaxLinesWithoutVsync) {
-        myWaitForVsync = false;
-        setState(State::waitForFrameStart);
-      }
       break;
 
     case State::waitForFrameStart:
-      if (myWaitForVsync) {
-        if (myLineInState >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan))
-          setState(State::frame);
-      } else {
-        if (!myVblank) {
-          setState(State::frame);
-        }
-      }
+      if (myLineInState >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan))
+        setState(State::frame);
       break;
 
     case State::frame:
@@ -107,17 +95,9 @@ void FrameManager::nextLine()
       }
       break;
 
-    case State::overscan:
-      if (myLineInState >= myOverscanLines - Metrics::visibleOverscan) {
-        setState(myWaitForVsync ? State::waitForVsyncStart : State::waitForFrameStart);
-      }
-      break;
-
     default:
       throw runtime_error("frame manager: invalid state");
   }
-
-  if (myWaitForVsync) myLinesWithoutVsync++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,8 +109,6 @@ void FrameManager::setVblank(bool vblank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVsync(bool vsync)
 {
-  if (!myWaitForVsync || vsync == myVsync) return;
-
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
   (cout << "vsync " << myVsync << " -> " << vsync << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
 #endif
@@ -141,14 +119,12 @@ void FrameManager::setVsync(bool vsync)
   {
     case State::waitForVsyncStart:
     case State::waitForFrameStart:
-    case State::overscan:
       if (myVsync) setState(State::waitForVsyncEnd);
       break;
 
     case State::waitForVsyncEnd:
       if (!myVsync) {
         setState(State::waitForFrameStart);
-        myLinesWithoutVsync = 0;
       }
       break;
 
@@ -220,7 +196,6 @@ void FrameManager::setTvMode(TvMode mode)
   }
 
   myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
-  myMaxLinesWithoutVsync = myFrameLines * Metrics::maxFramesWithoutVsync;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

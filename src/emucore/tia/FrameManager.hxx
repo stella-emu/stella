@@ -76,8 +76,7 @@ class FrameManager : public Serializable
       waitForVsyncStart,
       waitForVsyncEnd,
       waitForFrameStart,
-      frame,
-      overscan
+      frame
     };
 
   private:
@@ -86,7 +85,7 @@ class FrameManager : public Serializable
 
     void setState(State state);
 
-    void finalizeFrame(State state = State::overscan);
+    void finalizeFrame(State state = State::waitForVsyncStart);
 
   private:
 
@@ -95,9 +94,7 @@ class FrameManager : public Serializable
 
     TvMode myMode;
     State myState;
-    bool myWaitForVsync;
     uInt32 myLineInState;
-    uInt32 myLinesWithoutVsync;
     uInt32 myCurrentFrameTotalLines;
     uInt32 myCurrentFrameFinalLines;
 
@@ -112,7 +109,6 @@ class FrameManager : public Serializable
     uInt32 myKernelLines;
     uInt32 myOverscanLines;
     uInt32 myFrameLines;
-    uInt32 myMaxLinesWithoutVsync;
 
   private:
     FrameManager(const FrameManager&) = delete;
