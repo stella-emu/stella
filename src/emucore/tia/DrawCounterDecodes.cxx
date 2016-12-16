@@ -49,9 +49,6 @@ DrawCounterDecodes::DrawCounterDecodes()
     decodes[156] = 1;
   }
 
-  memset(myDecodesWide, 0, 160);
-  myDecodesWide[157] = 1;
-
   myDecodes1[12] = 1;
   myDecodes2[28] = 1;
   myDecodes3[12] = myDecodes3[28] = 1;
@@ -63,9 +60,9 @@ DrawCounterDecodes::DrawCounterDecodes()
   myPlayerDecodes[2] = myDecodes2;
   myPlayerDecodes[3] = myDecodes3;
   myPlayerDecodes[4] = myDecodes4;
-  myPlayerDecodes[5] = myDecodesWide;
+  myPlayerDecodes[5] = myDecodes0;
   myPlayerDecodes[6] = myDecodes6;
-  myPlayerDecodes[7] = myDecodesWide;
+  myPlayerDecodes[7] = myDecodes0;
 
   myMissileDecodes[0] = myDecodes0;
   myMissileDecodes[1] = myDecodes1;

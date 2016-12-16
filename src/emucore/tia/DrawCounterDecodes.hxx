@@ -43,7 +43,7 @@ class DrawCounterDecodes
     uInt8* myMissileDecodes[8];
 
     uInt8 myDecodes0[160], myDecodes1[160], myDecodes2[160], myDecodes3[160],
-          myDecodes4[160], myDecodes6[160], myDecodesWide[160];
+          myDecodes4[160], myDecodes6[160];
 
     static DrawCounterDecodes myInstance;
 

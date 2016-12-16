@@ -21,7 +21,8 @@
 #include "DrawCounterDecodes.hxx"
 
 enum Count: Int8 {
-  renderCounterOffset = -5
+  renderCounterOffset = -5,
+  renderCounterOffsetWide = -6
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,8 +96,10 @@ void Player::resp(bool hblank, bool extendedHblank)
 {
   myCounter = hblank ? (extendedHblank ? 158 : 159) : 157;
 
-  if (myIsRendering && myRenderCounter < -1)
-    myRenderCounter = Count::renderCounterOffset;
+  const Int8 renderCounterOffset = myWidth > 8 ? Count::renderCounterOffsetWide : Count::renderCounterOffset;
+
+  if (myIsRendering && (myRenderCounter - renderCounterOffset) < 4)
+    myRenderCounter = renderCounterOffset;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,7 +192,7 @@ void Player::tick()
 {
   if (myDecodes[myCounter]) {
     myIsRendering = true;
-    myRenderCounter = Count::renderCounterOffset;
+    myRenderCounter = myWidth > 8 ? Count::renderCounterOffset : Count::renderCounterOffset;
   } else if (myIsRendering && ++myRenderCounter >= myWidth) {
     myIsRendering = false;
   }
