@@ -179,14 +179,14 @@ class TIA : public Device
       Enables/disables auto-frame calculation.  If enabled, the TIA
       re-adjusts the framerate at regular intervals.
 
-      @param mode  Whether to enable or disable all auto-frame calculation
+      @param enabled  Whether to enable or disable all auto-frame calculation
     */
     void enableAutoFrame(bool enabled);
 
     /**
       Enables/disables color-loss for PAL modes only.
 
-      @param mode  Whether to enable or disable PAL color-loss mode
+      @param enabled  Whether to enable or disable PAL color-loss mode
     */
     void enableColorLoss(bool enabled);
 
@@ -218,13 +218,6 @@ class TIA : public Device
       @return If we're in partial frame mode
     */
     bool partialFrame() const;
-
-    /**
-      Answers the first scanline at which drawing occured in the last frame.
-
-      @return The starting scanline
-    */
-    uInt32 startScanline() const;
 
     /**
       Answers the current position of the virtual 'electron beam' used to
@@ -437,6 +430,9 @@ class TIA : public Device
     uInt8 myColorHBlank;
 
     double myTimestamp;
+
+    // Automatic framerate correction based on number of scanlines
+    bool myAutoFrameEnabled;
 
     // Pointer to the current and previous frame buffers
     BytePtr myCurrentFrameBuffer;

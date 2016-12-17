@@ -65,6 +65,7 @@ void FrameManager::reset()
 {
   myState = State::waitForVsyncStart;
   myCurrentFrameTotalLines = myCurrentFrameFinalLines = 0;
+  myFrameRate = 60.0;
   myLineInState = 0;
   myVsync = false;
   myVblank = false;
@@ -323,6 +324,9 @@ void FrameManager::finalizeFrame(FrameManager::State state)
 
   if (myFramesInMode > Metrics::framesForModeConfirmation)
     myModeConfirmed = true;
+
+  myFrameRate = (myMode == TvMode::pal ? 15600.0 : 15720.0) /
+                myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

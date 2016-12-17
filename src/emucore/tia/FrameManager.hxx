@@ -63,6 +63,8 @@ class FrameManager : public Serializable
 
     uInt32 frameCount() const { return myTotalFrames; }
 
+    float frameRate() const { return myFrameRate; }
+
     /**
       Serializable methods (see that class for more information).
     */
@@ -104,6 +106,7 @@ class FrameManager : public Serializable
     uInt32 myLineInState;
     uInt32 myCurrentFrameTotalLines;
     uInt32 myCurrentFrameFinalLines;
+    float  myFrameRate;
 
     uInt32 myTotalFrames;
     uInt32 myFramesInMode;

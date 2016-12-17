@@ -79,6 +79,10 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     [this] () {
       mySystem->m6502().stop();
       mySystem->resetCycles();
+
+      // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
+      if(myAutoFrameEnabled)
+        myConsole.setFramerate(myFrameManager.frameRate());
     }
   );
 
@@ -104,8 +108,8 @@ void TIA::reset()
   myCollisionMask = 0;
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = false;
+  myAutoFrameEnabled = false;
   myColorHBlank = 0;
-
   myLastCycle = 0;
   mySubClock = 0;
 
@@ -137,6 +141,8 @@ void TIA::frameReset()
 {
   // Clear frame buffers
   clearBuffers();
+
+  myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
 
   // TODO - make use of ystart and height, maybe move to FrameManager
 }
@@ -621,9 +627,9 @@ void TIA::setYStart(uInt32 ystart)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 void TIA::enableAutoFrame(bool enabled)
 {
+  myAutoFrameEnabled = enabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -655,13 +661,6 @@ uInt32 TIA::scanlines() const
 bool TIA::partialFrame() const
 {
   return myFrameManager.isRendering();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
-uInt32 TIA::startScanline() const
-{
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
