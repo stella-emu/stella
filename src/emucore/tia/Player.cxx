@@ -88,8 +88,8 @@ void Player::nusiz(uInt8 value)
   if (myIsRendering && myRenderCounter >= myWidth)
     myIsRendering = false;
 
-  if (myIsRendering && myRenderCounter < -2 && myWidth > 8 && oldWidth == 8)
-    myRenderCounter -= 2;
+  if (myIsRendering && myRenderCounter < 0 && myWidth > 8 && oldWidth == 8)
+    myRenderCounter += (myRenderCounter < -2 ? -1 : 1);
 
   if (oldWidth != myWidth) updatePattern();
 }
@@ -195,7 +195,7 @@ void Player::tick()
 {
   if (myDecodes[myCounter]) {
     myIsRendering = true;
-    myRenderCounter = myWidth > 8 ? Count::renderCounterOffset : Count::renderCounterOffset;
+    myRenderCounter = myWidth > 8 ? Count::renderCounterOffsetWide : Count::renderCounterOffset;
   } else if (myIsRendering && ++myRenderCounter >= myWidth) {
     myIsRendering = false;
   }
