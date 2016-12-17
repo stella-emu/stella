@@ -923,14 +923,14 @@ void TIA::tickMovement()
     myLinesSinceChange = 0;
 
     const bool apply = myHstate == HState::blank;
-
     bool m = false;
+    uInt8 movementCounter = myMovementClock > 15 ? 0 : myMovementClock;
 
-    m = myMissile0.movementTick(myMovementClock, apply) || m;
-    m = myMissile1.movementTick(myMovementClock, apply) || m;
-    m = myPlayer0.movementTick(myMovementClock, apply) || m;
-    m = myPlayer1.movementTick(myMovementClock, apply) || m;
-    m = myBall.movementTick(myMovementClock, apply) || m;
+    m = myMissile0.movementTick(movementCounter, apply) || m;
+    m = myMissile1.movementTick(movementCounter, apply) || m;
+    m = myPlayer0.movementTick(movementCounter, apply) || m;
+    m = myPlayer1.movementTick(movementCounter, apply) || m;
+    m = myBall.movementTick(movementCounter, apply) || m;
 
     myMovementInProgress = m;
     myCollisionUpdateRequired = m;
