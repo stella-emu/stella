@@ -88,6 +88,9 @@ void Player::nusiz(uInt8 value)
   if (myIsRendering && myRenderCounter >= myWidth)
     myIsRendering = false;
 
+  if (myIsRendering && myRenderCounter < -2 && myWidth > 8 && oldWidth == 8)
+    myRenderCounter -= 2;
+
   if (oldWidth != myWidth) updatePattern();
 }
 
