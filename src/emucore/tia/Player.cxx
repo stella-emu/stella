@@ -88,6 +88,8 @@ void Player::nusiz(uInt8 value)
   if (myIsRendering && myRenderCounter >= myWidth)
     myIsRendering = false;
 
+  // NUSIZ during decode seems to affect the decoding logic. The rods in Meltdown
+  // are highly sensitive to this effect, and this seems to model it adequately.
   if (myIsRendering && myRenderCounter < 0 && myWidth > 8 && oldWidth == 8)
     myRenderCounter += (myRenderCounter < -2 ? -1 : 1);
 
@@ -95,12 +97,14 @@ void Player::nusiz(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::resp(bool hblank, bool extendedHblank)
+void Player::resp(uInt8 counter)
 {
-  myCounter = hblank ? (extendedHblank ? 158 : 159) : 157;
+  myCounter = counter;
 
   const Int8 renderCounterOffset = myWidth > 8 ? Count::renderCounterOffsetWide : Count::renderCounterOffset;
 
+  // This tries to account for the effects of RESP during draw counter decode as
+  // described in Andrew Towers' notes. Still room for tuning.'
   if (myIsRendering && (myRenderCounter - renderCounterOffset) < 4)
     myRenderCounter = renderCounterOffset;
 }

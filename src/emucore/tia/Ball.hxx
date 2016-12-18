@@ -39,7 +39,7 @@ class Ball : public Serializable
     void hmbl(uInt8 value);
     uInt8 hmbl() const { return myHmmClocks; }
 
-    void resbl(bool hblank, bool extendedHblank);
+    void resbl(uInt8 counter);
 
     void ctrlpf(uInt8 value);
 

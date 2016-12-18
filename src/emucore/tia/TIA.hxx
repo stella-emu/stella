@@ -380,6 +380,8 @@ class TIA : public Device
 
     void updatePaddle(uInt8 idx);
 
+    uInt8 resxCounter();
+
     /**
       Get the result of the specified collision register.
     */

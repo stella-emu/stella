@@ -57,6 +57,17 @@ enum DummyRegisters: uInt8 {
   shuffleBL = 0xF2
 };
 
+enum ResxCounter: uInt8 {
+  hblank = 159,
+  lateHblank = 158,
+  frame = 157
+};
+
+// This parameter still has room for tuning. If we go lower than 73, long005 will show
+// a slight artifact (still have to crosscheck on real hardware), if we go lower than
+// 70, the G.I. Joe will show an artifact (hole in roof).
+static constexpr uInt8 resxLateHblankThreshold = 73;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
@@ -451,12 +462,12 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESM0:
       myLinesSinceChange = 0;
-      myMissile0.resm(myHstate == HState::blank, myHctr >= 68);
+      myMissile0.resm(resxCounter());
       break;
 
     case RESM1:
       myLinesSinceChange = 0;
-      myMissile1.resm(myHstate == HState::blank, myHctr >= 68);
+      myMissile1.resm(resxCounter());
       break;
 
     case RESMP0:
@@ -520,12 +531,12 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESP0:
       myLinesSinceChange = 0;
-      myPlayer0.resp(myHstate == HState::blank, myHctr >= 68);
+      myPlayer0.resp(resxCounter());
       break;
 
     case RESP1:
       myLinesSinceChange = 0;
-      myPlayer1.resp(myHstate == HState::blank, myHctr >= 68);
+      myPlayer1.resp(resxCounter());
       break;
 
     case REFP0:
@@ -560,7 +571,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESBL:
       myLinesSinceChange = 0;
-      myBall.resbl(myHstate == HState::blank, myHctr >= 68);
+      myBall.resbl(resxCounter());
       break;
 
     case VDELBL:
@@ -1233,6 +1244,13 @@ void TIA::updatePaddle(uInt8 idx)
 
   myPaddleReaders[idx].update(double(resistance) / MAX_RESISTANCE,
                               myTimestamp, myFrameManager.tvMode());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::resxCounter()
+{
+  return myHstate == HState::blank ?
+    (myHctr >= resxLateHblankThreshold ? ResxCounter::lateHblank : ResxCounter::hblank) : ResxCounter::frame;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
