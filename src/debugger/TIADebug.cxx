@@ -339,6 +339,7 @@ bool TIADebug::collision(CollisionBit id) const
     case Cx_BLPF:  return myTIA.collCXBLPF() & 0x80;
     case Cx_P0P1:  return myTIA.collCXPPMM() & 0x80;
     case Cx_M0M1:  return myTIA.collCXPPMM() & 0x40;
+    default:       return false;  // make compiler happy
   }
 }
 
