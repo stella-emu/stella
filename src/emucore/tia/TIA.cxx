@@ -316,7 +316,7 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     case INPT5:
-      result = myInput0.inpt(!myConsole.rightController().read(Controller::Six));
+      result = myInput1.inpt(!myConsole.rightController().read(Controller::Six));
       break;
 
     default:
