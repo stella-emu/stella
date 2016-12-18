@@ -41,17 +41,20 @@ enum Delay: uInt8 {
   pf = 2,
   grp = 1,
   shufflePlayer = 1,
+  shuffleBall = 1,
   hmp = 2,
   hmm = 2,
   hmbl = 2,
   hmclr = 2,
   refp = 1,
+  enabl = 1,
   vblank = 1
 };
 
 enum DummyRegisters: uInt8 {
   shuffleP0 = 0xF0,
-  shuffleP1 = 0xF1
+  shuffleP1 = 0xF1,
+  shuffleBL = 0xF2
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -504,10 +507,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case GRP1:
     {
-      myLinesSinceChange = 0;
       myDelayQueue.push(GRP1, value, Delay::grp);
       myDelayQueue.push(DummyRegisters::shuffleP0, 0, Delay::shufflePlayer);
-      myBall.shuffleStatus();
+      myDelayQueue.push(DummyRegisters::shuffleBL, 0, Delay::shuffleBall);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -553,8 +555,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case ENABL:
-      myLinesSinceChange = 0;
-      myBall.enabl(value);
+      myDelayQueue.push(ENABL, value, Delay::enabl);
       break;
 
     case RESBL:
@@ -1166,6 +1167,11 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       myPlayer1.shufflePatterns();
       break;
 
+    case DummyRegisters::shuffleBL:
+      myLinesSinceChange = 0;
+      myBall.shuffleStatus();
+      break;
+
     case HMP0:
       myLinesSinceChange = 0;
       myPlayer0.hmp(value);
@@ -1189,6 +1195,11 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
     case REFP1:
       myLinesSinceChange = 0;
       myPlayer1.refp(value);
+      break;
+
+    case ENABL:
+      myLinesSinceChange = 0;
+      myBall.enabl(value);
       break;
   }
 }
