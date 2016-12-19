@@ -11999,6 +11999,7 @@
 "Cartridge.ModelNo" "11029"
 "Cartridge.Name" "Meltdown (1983) (20th Century Fox) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "96eccc2277043508a6c481ea432d7dd9"
@@ -20314,3 +20315,19 @@
 "Display.YStart" "28"
 ""
 
+"Cartridge.MD5" "bfb73aabb2489316cd5882c3cd11d9f9"
+"Cartridge.Manufacturer" "AtariAge, Chris Walton & Thomas Jentzsch"
+"Cartridge.ModelNo" "165"
+"Cartridge.Name" "Star Castle Arcade (AtariAge)"
+"Cartridge.Rarity" "Homebrew"
+"Controller.Right" "SAVEKEY"
+"Display.YStart" "30"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "e5f360226dc552aba3e7e9b202330f48"
+"Cartridge.Manufacturer" "Supercat"
+"Cartridge.Name" "Mega Bitmap Demo (2007) (Supercat)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+""

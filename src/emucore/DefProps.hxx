@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3286
+#define DEF_PROPS_SIZE 3288
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -1968,7 +1968,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "968efc79d500dce52a906870a97358ab", "Atari", "CX26190", "BMX Air Master (1990) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "969b968383d9f0e9d8ffd1056bcaef49", "Atari, Larry Kaplan", "CX2628, CX2628P", "Bowling (1979) (Atari) (PAL)", "", "Common", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "96bcb3d97ce4ff7586326d183ac338a2", "", "", "Revenge of the Apes (Hack) [h2]", "Hack of Planet of the Apes", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "96e798995af6ed9d8601166d4350f276", "20th Century Fox Video Games - Videa, David Ross", "11029", "Meltdown (1983) (20th Century Fox) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "96e798995af6ed9d8601166d4350f276", "20th Century Fox Video Games - Videa, David Ross", "11029", "Meltdown (1983) (20th Century Fox) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "96eccc2277043508a6c481ea432d7dd9", "Thomas Jentzsch", "", "Missile Command (CX-80 Trackball) (2002) (TJ) (PAL)", "Uses CX-80 Trackball Controller", "Homebrew", "", "", "", "", "", "", "TRACKBALL80", "", "", "", "", "", "", "YES", "" }, 
   { "96f806fc62005205d851e758d050dfca", "", "", "Push (V0.05) (2001) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "97184b263722748757cfdc41107ca5c0", "Parker Brothers", "PB5820", "Mr. Do!'s Castle (1984) (Parker Bros)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
@@ -2428,6 +2428,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "bf976cf80bcf52c5f164c1d45f2b316b", "Atari, Tod Frye", "CX2657", "SwordQuest - FireWorld (1982) (Atari) (PAL)", "AKA Adventure II, SwordQuest II - FireWorld", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bf9ddc5dd9056633d4ac0dac8b871dfe", "", "", "Star Fire - Cockpit View (10-10-2002) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bfa58198c6b9cd8062ee76a2b38e9b33", "", "", "20 Sprites at Once Demo 4 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "bfb73aabb2489316cd5882c3cd11d9f9", "AtariAge, Chris Walton & Thomas Jentzsch", "165", "Star Castle Arcade (AtariAge)", "", "Homebrew", "", "", "", "", "", "", "", "SAVEKEY", "", "", "", "30", "", "YES", "" }, 
   { "bfcabc6995ef42d0b6c06786993dc4d6", "", "", "Star Fire - Creating a Universe (09-09-2002) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bff8f8f53a8aeb1ee804004ccbb08313", "", "", "Droid Demo 22 (David Conrad Schweinsberg) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bffe34516aaa3cbf5d307eab382a7e95", "", "", "Euchre (Release Candidate) (PAL) (28-09-2002) (Erik Eid)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2954,6 +2955,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "e5d72ff8bab4450be57785cc9e83f3c0", "Telegames", "6082 A145", "Kung Fu Superkicks (1989) (Telegames) (PAL)", "AKA Chuck Norris Superkicks", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "e5ecd78edd24326a968809decbc7b916", "Imagic, Bob Smith", "720020-1A, IA3611", "Cheese (Dragonfire Beta) (05-21-1982) (Imagic) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "e5f17b3e62a21d0df1ca9aee1aa8c7c5", "CommaVid, John Bronstein", "CM-003", "Cosmic Swarm (1982) (CommaVid)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
+  { "e5f360226dc552aba3e7e9b202330f48", "Supercat", "", "Mega Bitmap Demo (2007) (Supercat)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "e5f84930aa468db33c0d0f7b26dd8293", "CCE", "C-826", "Grand Prix (1983) (CCE) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "e5fcc62e1d73706be7b895e887e90f84", "", "", "Air-Sea Battle (Unknown) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "40", "260", "", "" }, 
   { "e600f5e98a20fafa47676198efe6834d", "Parker Brothers", "PB5080", "Gyruss (1984) (Parker Bros) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
