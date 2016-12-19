@@ -74,7 +74,7 @@ void Ball::resbl(uInt8 counter)
   myCounter = counter;
 
   myIsRendering = true;
-  myRenderCounter = Count::renderCounterOffset;
+  myRenderCounter = Count::renderCounterOffset + (counter - 157);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
