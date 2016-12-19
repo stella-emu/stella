@@ -1508,10 +1508,12 @@ void DebuggerParser::executeTrapMRW(bool read, bool write)
     {
       for(uInt32 i = beg; i <= end; ++i)
       {
-        if((i & 0x1080) == 0x0000 && (i & 0x003F) == addr)
+        if((i & 0x1080) == 0x0000)
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if(read && (i & 0x000F) == addr)
+            debugger.toggleReadTrap(i);
+          if(write && (i & 0x003F) == addr)
+            debugger.toggleWriteTrap(i);
         }
       }
       break;
