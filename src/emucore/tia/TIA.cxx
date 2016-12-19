@@ -347,9 +347,15 @@ bool TIA::poke(uInt16 address, uInt8 value)
   switch (address)
   {
     case WSYNC:
-      mySubClock += (228 - myHctr) % 228;
-      mySystem->incrementCycles(mySubClock / 3);
-      mySubClock %= 3;
+      // It appears that the 6507 only halts during a read cycle so
+      // we test here for follow-on writes which should be ignored as
+      // far as halting the processor is concerned.
+      if (mySystem->m6502().lastAccessWasRead())
+      {
+        mySubClock += (228 - myHctr) % 228;
+        mySystem->incrementCycles(mySubClock / 3);
+        mySubClock %= 3;
+      }
       break;
 
     case VSYNC:
