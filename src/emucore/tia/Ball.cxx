@@ -165,7 +165,7 @@ void Ball::tick(bool isReceivingMclock)
     myRenderCounter = Count::renderCounterOffset;
 
     uInt8 starfieldDelta = (myCounter + 160 - myLastMovementTick) % 4;
-    if (starfieldEffect && starfieldDelta == 3) myRenderCounter++;
+    if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) myRenderCounter++;
 
     switch (starfieldDelta) {
       case 3:
