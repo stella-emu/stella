@@ -1,6 +1,13 @@
-This is my fork of the VCS emulator [Stella](http://stella.sourceforge.net/) for
-integrating the [6502.ts](https://github.com/6502ts/6502.ts) TIA core into Stella.
-The upstream repo is hosted on [Sourceforge](https://sourceforge.net/projects/stella/).
+Stella is a multi-platform Atari 2600 VCS emulator which allows you to
+play all of your favourite Atari 2600 games on your PC.  You'll find the
+Stella Users Manual in the docs subdirectory.  If you'd like to verify
+that you have the latest release of Stella, visit the Stella Website at:
+
+  http://stella.sourceforge.net
+
+Enjoy,
+
+The Stella Team
 
 # Reporting issues
 
