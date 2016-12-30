@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -40,8 +38,8 @@ void GameList::sortByName()
     auto end2 = b._isdir ? b._name.end() - 1 : b._name.end();
 
     // Stop when either string's end has been reached
-    while((it1 != end1) && (it2 != end2)) 
-    { 
+    while((it1 != end1) && (it2 != end2))
+    {
       if(toupper(*it1) != toupper(*it2)) // letters differ?
         return toupper(*it1) < toupper(*it2);
 

@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartE7.hxx"
@@ -87,7 +85,7 @@ CartridgeE7Widget::CartridgeE7Widget(
 void CartridgeE7Widget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < this->internalRamSize();i++)
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
@@ -136,7 +134,7 @@ string CartridgeE7Widget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeE7Widget::internalRamSize() 
+uInt32 CartridgeE7Widget::internalRamSize()
 {
   return 2048;
 }
@@ -148,7 +146,7 @@ uInt32 CartridgeE7Widget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeE7Widget::internalRamDescription() 
+string CartridgeE7Widget::internalRamDescription()
 {
   ostringstream desc;
   desc << "First 1K accessible via:\n"
@@ -157,7 +155,7 @@ string CartridgeE7Widget::internalRamDescription()
        << "256K of second 1K accessible via:\n"
        << "  $F800 - $F8FF used for Write Access\n"
        << "  $F900 - $F9FF used for Read Access"  ;
-  
+
   return desc.str();
 }
 

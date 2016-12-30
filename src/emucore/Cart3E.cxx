@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "System.hxx"
@@ -153,9 +151,9 @@ bool Cartridge3E::bank(uInt16 bank)
       // around to a valid bank number
       myCurrentBank = bank % (mySize >> 11);
     }
-  
+
     uInt32 offset = myCurrentBank << 11;
-  
+
     // Setup the page access methods for the current bank
     System::PageAccess access(this, System::PA_READ);
 
@@ -176,7 +174,7 @@ bool Cartridge3E::bank(uInt16 bank)
 
     uInt32 offset = bank << 10;
     uInt32 address;
-  
+
     // Setup the page access methods for the current bank
     System::PageAccess access(this, System::PA_READ);
 

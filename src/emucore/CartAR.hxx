@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEAR_HXX
@@ -29,16 +27,15 @@ class System;
 #endif
 
 /**
-  This is the cartridge class for Arcadia (aka Starpath) Supercharger 
-  games.  Christopher Salomon provided most of the technical details 
+  This is the cartridge class for Arcadia (aka Starpath) Supercharger
+  games.  Christopher Salomon provided most of the technical details
   used in creating this class.  A good description of the Supercharger
   is provided in the Cuttle Cart's manual.
 
-  The Supercharger has four 2K banks.  There are three banks of RAM 
+  The Supercharger has four 2K banks.  There are three banks of RAM
   and one bank of ROM.  All 6K of the RAM can be read and written.
 
   @author  Bradford W. Mott
-  @version $Id$
 */
 class CartridgeAR : public Cartridge
 {
@@ -197,7 +194,7 @@ class CartridgeAR : public Cartridge
     // Size of the ROM image
     uInt32 mySize;
 
-    // All of the 8448 byte loads associated with the game 
+    // All of the 8448 byte loads associated with the game
     BytePtr myLoadImages;
 
     // Indicates how many 8448 loads there are

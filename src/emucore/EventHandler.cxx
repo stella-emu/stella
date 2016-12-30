@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include <sstream>
@@ -798,7 +796,7 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
       if(value & EVENT_HATUP_M)
         myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATUP);
       if(value & EVENT_HATRIGHT_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATRIGHT); 
+        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATRIGHT);
       if(value & EVENT_HATDOWN_M)
         myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
       if(value & EVENT_HATLEFT_M)
@@ -1383,7 +1381,7 @@ bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
           joy->axisTable[axis][0][mode] = Event::NoType;
         if(eventIsAnalog(joy->axisTable[axis][1][mode]))
           joy->axisTable[axis][1][mode] = Event::NoType;
-    
+
         joy->axisTable[axis][(value > 0)][mode] = event;
       }
       if(updateMenus)

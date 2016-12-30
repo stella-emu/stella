@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartDASH.hxx"
@@ -122,7 +120,7 @@ CartridgeDASHWidget::CartridgeDASHWidget(
 void CartridgeDASHWidget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < this->internalRamSize();i++)
     myOldState.internalram.push_back(myCart.myRAM[i]);
 }
@@ -312,7 +310,7 @@ void CartridgeDASHWidget::updateUIState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeDASHWidget::internalRamSize() 
+uInt32 CartridgeDASHWidget::internalRamSize()
 {
   return 32*1024;
 }
@@ -324,13 +322,13 @@ uInt32 CartridgeDASHWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeDASHWidget::internalRamDescription() 
+string CartridgeDASHWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "Accessible 512b at a time via:\n"
        << "  $F000/$F200/$F400/etc used for Read Access\n"
        << "  $F800/$FA00/$FC00/etc used for Write Access (+$800)";
-  
+
   return desc.str();
 }
 

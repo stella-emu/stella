@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "FSNodePOSIX.hxx"
@@ -65,7 +63,7 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& p, bool verify)
       _path.replace(0, 1, home);
   }
 
-  // Get absolute path  
+  // Get absolute path
   char buf[MAXPATHLEN];
   if(realpath(_path.c_str(), buf))
     _path = buf;
@@ -184,7 +182,7 @@ bool FilesystemNodePOSIX::makeDir()
 {
   if(mkdir(_path.c_str(), 0777) == 0)
   {
-    // Get absolute path  
+    // Get absolute path
     char buf[MAXPATHLEN];
     if(realpath(_path.c_str(), buf))
       _path = buf;
@@ -195,7 +193,7 @@ bool FilesystemNodePOSIX::makeDir()
     // Add a trailing slash, if necessary
     if (_path.length() > 0 && _path[_path.length()-1] != '/')
       _path += '/';
-    
+
     return true;
   }
   else
@@ -209,7 +207,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
   {
     _path = newfile;
 
-    // Get absolute path  
+    // Get absolute path
     char buf[MAXPATHLEN];
     if(realpath(_path.c_str(), buf))
       _path = buf;
@@ -220,7 +218,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
     // Add a trailing slash, if necessary
     if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
       _path += '/';
-    
+
     return true;
   }
   else

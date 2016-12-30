@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -56,7 +54,6 @@ struct ConsoleInfo
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id$
 */
 class Console : public Serializable
 {
@@ -67,7 +64,7 @@ class Console : public Serializable
 
       @param osystem  The OSystem object to use
       @param cart     The cartridge to use with this console
-      @param props    The properties for the cartridge  
+      @param props    The properties for the cartridge
     */
     Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
             const Properties& props);
@@ -328,7 +325,7 @@ class Console : public Serializable
     // Properties for the game
     Properties myProperties;
 
-    // Pointer to the 6502 based system being emulated 
+    // Pointer to the 6502 based system being emulated
     unique_ptr<System> mySystem;
 
     // Pointer to the M6502 CPU
@@ -338,7 +335,7 @@ class Console : public Serializable
     // A RIOT of my own! (...with apologies to The Clash...)
     unique_ptr<M6532> myRiot;
 
-    // Pointer to the TIA object 
+    // Pointer to the TIA object
     unique_ptr<TIA> myTIA;
 
     // Pointer to the Cartridge (the debugger needs it)

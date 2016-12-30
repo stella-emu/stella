@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "M6502.hxx"
@@ -118,7 +116,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
 
   // Cancel any pending write if more than 5 distinct accesses have occurred
   // TODO: Modify to handle when the distinct counter wraps around...
-  if(myWritePending && 
+  if(myWritePending &&
       (mySystem->m6502().distinctAccesses() > myNumberOfDistinctAccesses + 5))
   {
     myWritePending = false;
@@ -139,7 +137,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
     bankConfiguration(myDataHoldRegister);
   }
   // Handle poke if writing enabled
-  else if(myWriteEnabled && myWritePending && 
+  else if(myWriteEnabled && myWritePending &&
       (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
     if((addr & 0x0800) == 0)
@@ -165,7 +163,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
 
   // Cancel any pending write if more than 5 distinct accesses have occurred
   // TODO: Modify to handle when the distinct counter wraps around...
-  if(myWritePending && 
+  if(myWritePending &&
       (mySystem->m6502().distinctAccesses() > myNumberOfDistinctAccesses + 5))
   {
     myWritePending = false;
@@ -186,7 +184,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
     bankConfiguration(myDataHoldRegister);
   }
   // Handle poke if writing enabled
-  else if(myWriteEnabled && myWritePending && 
+  else if(myWriteEnabled && myWritePending &&
       (mySystem->m6502().distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
     if((addr & 0x0800) == 0)
@@ -234,7 +232,7 @@ bool CartridgeAR::bankConfiguration(uInt8 configuration)
   //  101wp     1            ROM
   //  110wp     2            1      as used in Killer Satellites
   //  111wp     1            2      as we use for 2k/4k ROM cloning
-  // 
+  //
   //  w = Write Enable (1 = enabled; accesses to $F000-$F0FF cause writes
   //    to happen.  0 = disabled, and the cart acts like ROM.)
   //  p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
@@ -368,7 +366,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       // Copy the load's header
       memcpy(myHeader, myLoadImages.get() + (image * 8448) + 8192, 256);
 
-      // Verify the load's header 
+      // Verify the load's header
       if(checksum(myHeader, 8) != 0x55)
       {
         cerr << "WARNING: The Supercharger header checksum is invalid...\n";
@@ -463,7 +461,7 @@ bool CartridgeAR::save(Serializer& out) const
     // The 256 byte header for the current 8448 byte load
     out.putByteArray(myHeader, 256);
 
-    // All of the 8448 byte loads associated with the game 
+    // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
     out.putByteArray(myLoadImages.get(), myNumberOfLoadImages * 8448);
 
@@ -514,7 +512,7 @@ bool CartridgeAR::load(Serializer& in)
     // The 256 byte header for the current 8448 byte load
     in.getByteArray(myHeader, 256);
 
-    // All of the 8448 byte loads associated with the game 
+    // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
     in.getByteArray(myLoadImages.get(), myNumberOfLoadImages * 8448);
 

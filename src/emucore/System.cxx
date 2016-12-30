@@ -8,13 +8,11 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include <cassert>
@@ -129,7 +127,7 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
     access.device->setAccessFlags(addr, flags);
 #endif
 
-  // See if this page uses direct accessing or not 
+  // See if this page uses direct accessing or not
   uInt8 result;
   if(access.directPeekBase)
     result = *(access.directPeekBase + (addr & PAGE_MASK));
@@ -150,7 +148,7 @@ void System::poke(uInt16 addr, uInt8 value)
   uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
   PageAccess& access = myPageAccessTable[page];
 
-  // See if this page uses direct accessing or not 
+  // See if this page uses direct accessing or not
   if(access.directPokeBase)
   {
     // Since we have direct access to this poke, we can dirty its page

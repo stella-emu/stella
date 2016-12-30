@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGECV_WIDGET_HXX
@@ -36,16 +34,16 @@ class CartridgeCVWidget : public CartDebugWidget
     CartridgeCV& myCart;
     struct CartState {
       ByteArray internalram;
-    };  
-    CartState myOldState; 
+    };
+    CartState myOldState;
 
   private:
     // No implementation for non-bankswitched ROMs
     void loadConfig() override { }
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
-  
+
     void saveOldState() override;
-  
+
     // start of functions for Cartridge RAM tab
     uInt32 internalRamSize() override;
     uInt32 internalRamRPort(int start) override;
@@ -56,7 +54,7 @@ class CartridgeCVWidget : public CartDebugWidget
     uInt8 internalRamGetValue(int addr) override;
     string internalRamLabel(int addr) override;
     // end of functions for Cartridge RAM tab
-  
+
     // Following constructors and assignment operators not supported
     CartridgeCVWidget() = delete;
     CartridgeCVWidget(const CartridgeCVWidget&) = delete;

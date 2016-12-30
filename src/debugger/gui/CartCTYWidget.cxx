@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartCTY.hxx"
@@ -59,7 +57,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 void CartridgeCTYWidget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < this->internalRamSize();i++)
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
@@ -102,7 +100,7 @@ string CartridgeCTYWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeCTYWidget::internalRamSize() 
+uInt32 CartridgeCTYWidget::internalRamSize()
 {
   return 64;
 }
@@ -114,12 +112,12 @@ uInt32 CartridgeCTYWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCTYWidget::internalRamDescription() 
+string CartridgeCTYWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "$F000 - $F03F used for Write Access\n"
        << "$F040 - $F07F used for Read Access";
-  
+
   return desc.str();
 }
 
@@ -154,7 +152,7 @@ uInt8 CartridgeCTYWidget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCTYWidget::internalRamLabel(int addr) 
+string CartridgeCTYWidget::internalRamLabel(int addr)
 {
   CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + 0xF040, false);

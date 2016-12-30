@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEFA2_HXX
@@ -31,7 +29,7 @@ class System;
 /**
   This is an extended version of the CBS RAM Plus bankswitching scheme
   supported by the Harmony cartridge.
-  
+
   There are six (or seven) 4K banks and 256 bytes of RAM.  The 256 bytes
   of RAM can be loaded/saved to Harmony cart flash, which is emulated by
   storing in a file.
@@ -41,7 +39,6 @@ class System;
   completely ignored by the emulator.
 
   @author  Chris D. Walton
-  @version $Id$
 */
 class CartridgeFA2 : public Cartridge
 {

@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "Cart3E.hxx"
@@ -91,7 +89,7 @@ Cartridge3EWidget::Cartridge3EWidget(
 void Cartridge3EWidget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < this->internalRamSize();i++)
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
@@ -170,7 +168,7 @@ string Cartridge3EWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Cartridge3EWidget::internalRamSize() 
+uInt32 Cartridge3EWidget::internalRamSize()
 {
   return 32*1024;
 }
@@ -182,13 +180,13 @@ uInt32 Cartridge3EWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Cartridge3EWidget::internalRamDescription() 
+string Cartridge3EWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "Accessible 1K at a time via:\n"
        << "  $F000 - $F3FF used for Read Access\n"
        << "  $F400 - $F7FF used for Write Access";
-  
+
   return desc.str();
 }
 

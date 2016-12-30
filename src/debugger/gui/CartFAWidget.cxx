@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartFA.hxx"
@@ -64,7 +62,7 @@ CartridgeFAWidget::CartridgeFAWidget(
 void CartridgeFAWidget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < this->internalRamSize();i++)
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
@@ -105,7 +103,7 @@ string CartridgeFAWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeFAWidget::internalRamSize() 
+uInt32 CartridgeFAWidget::internalRamSize()
 {
   return 256;
 }
@@ -117,12 +115,12 @@ uInt32 CartridgeFAWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFAWidget::internalRamDescription() 
+string CartridgeFAWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "$F000 - $F0FF used for Write Access\n"
        << "$F100 - $F1FF used for Read Access";
-  
+
   return desc.str();
 }
 
@@ -157,7 +155,7 @@ uInt8 CartridgeFAWidget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFAWidget::internalRamLabel(int addr) 
+string CartridgeFAWidget::internalRamLabel(int addr)
 {
   CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + 0xF100, false);

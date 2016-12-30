@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGE_DPC_PLUS_HXX
@@ -41,7 +39,6 @@ class System;
   Patent Number 4,644,495.
 
   @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
-  @version $Id$
 */
 class CartridgeDPCPlus : public Cartridge
 {
@@ -167,28 +164,28 @@ class CartridgeDPCPlus : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    /** 
+    /**
       Sets the initial state of the DPC pointers and RAM
     */
     void setInitialState();
 
-    /** 
+    /**
       Clocks the random number generator to move it to its next state
     */
     void clockRandomNumberGenerator();
-  
-    /** 
+
+    /**
       Clocks the random number generator to move it to its prior state
     */
     void priorClockRandomNumberGenerator();
 
-    /** 
+    /**
       Updates any data fetchers in music mode based on the number of
       CPU cycles which have passed since the last update.
     */
     void updateMusicModeDataFetchers();
 
-    /** 
+    /**
       Call Special Functions
     */
     void callFunction(uInt8 value);
@@ -226,7 +223,7 @@ class CartridgeDPCPlus : public Cartridge
 
     // The counter registers for the data fetchers
     uInt16 myCounters[8];
-  
+
     // The counter registers for the fractional data fetchers
     uInt32 myFractionalCounters[8];
 
@@ -235,7 +232,7 @@ class CartridgeDPCPlus : public Cartridge
 
     // The Fast Fetcher Enabled flag
     bool myFastFetch;
-  
+
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;
 
@@ -250,10 +247,10 @@ class CartridgeDPCPlus : public Cartridge
 
     // The music frequency
     uInt32 myMusicFrequencies[3];
-  
+
     // The music waveforms
     uInt16 myMusicWaveforms[3];
-  
+
     // The random number generator register
     uInt32 myRandomNumber;
 
@@ -265,7 +262,7 @@ class CartridgeDPCPlus : public Cartridge
 
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
-  
+
   private:
     // Following constructors and assignment operators not supported
     CartridgeDPCPlus() = delete;

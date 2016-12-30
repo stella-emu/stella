@@ -8,15 +8,13 @@
 ;;  SS  SS   tt   ee      ll   ll  aa  aa
 ;;   SSSS     ttt  eeeee llll llll  aaaaa
 ;;
-;; Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+;; Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 ;; and the Stella Team
 ;;
 ;; See the file "License.txt" for information on usage and redistribution of
 ;; this file, and for a DISCLAIMER OF ALL WARRANTIES.
-;;
-;; $Id: scrom.asm,v 1.3 2005-06-16 01:11:29 stephena Exp $
 ;;============================================================================
-;; 
+;;
 ;; This file contains a "dummy" Supercharger BIOS for Stella.  It is based
 ;; on routines developed by Eckhard Stolberg.
 ;;
@@ -52,7 +50,7 @@ HMOVE   equ  $2a
 ;; Entry point for multi-load reading
 ;;
         org $F800
-    
+
         LDA $FA        ; Grab the load number and store it in $80 where the
         STA $80        ; emulator will grab it when it does the loading
         JMP clrp7      ; Go clear page 7 of RAM bank 1 like the real SC
@@ -116,7 +114,7 @@ copy    LDY code,X
 mlclr1  STY $04,X
         DEX
         BPL mlclr1
-      
+
         LDX #$1C
 mlclr2  STY $81,X
         DEX
@@ -152,9 +150,9 @@ startbars:
         STA WSYNC
         LDX #$07
         DEX
-pos     DEX 
+pos     DEX
         BNE pos
-        LDA #$00 
+        LDA #$00
         STA HMP0
         STA RESP0
         STA RESP1
@@ -232,7 +230,7 @@ skipbars:
 ;; Setup value to be stored in the bank switching control register
 ;;
         LDX $80
-        CMP $F000,X 
+        CMP $F000,X
 
 ;;
 ;; Initialize A, X, Y, and SP registers

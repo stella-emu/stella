@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -28,8 +26,8 @@ class System;
 #include "bspf.hxx"
 
 /**
-  A controller is a device that plugs into either the left or right 
-  controller jack of the Video Computer System (VCS).  The pins of 
+  A controller is a device that plugs into either the left or right
+  controller jack of the Video Computer System (VCS).  The pins of
   the controller jacks are mapped as follows:
 
                            -------------
@@ -58,7 +56,6 @@ class System;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id$
 */
 class Controller : public Serializable
 {
@@ -135,7 +132,7 @@ class Controller : public Serializable
     virtual bool read(DigitalPin pin);
 
     /**
-      Read the resistance at the specified analog pin for this controller.  
+      Read the resistance at the specified analog pin for this controller.
       The returned value is the resistance measured in ohms.
 
       @param pin The pin of the controller jack to read
@@ -144,8 +141,8 @@ class Controller : public Serializable
     virtual Int32 read(AnalogPin pin);
 
     /**
-      Write the given value to the specified digital pin for this 
-      controller.  Writing is only allowed to the pins associated 
+      Write the given value to the specified digital pin for this
+      controller.  Writing is only allowed to the pins associated
       with the PIA.  Therefore you cannot write to pin six.
 
       @param pin The pin of the controller jack to write to
@@ -176,7 +173,7 @@ class Controller : public Serializable
 
     /**
       Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary 
+      system resets its cycle counter to zero.  It may be necessary
       to override this method for controllers that remember cycle counts.
     */
     virtual void systemCyclesReset() { }

@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartDPC.hxx"
@@ -172,7 +170,7 @@ void CartridgeDPCWidget::loadConfig()
     changed.push_back(myCart.myTops[i] != myOldState.tops[i]);
   }
   myTops->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 8; ++i)
   {
@@ -237,7 +235,7 @@ string CartridgeDPCWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeDPCWidget::internalRamSize() 
+uInt32 CartridgeDPCWidget::internalRamSize()
 {
   return 2*1024;
 }
@@ -249,13 +247,13 @@ uInt32 CartridgeDPCWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeDPCWidget::internalRamDescription() 
+string CartridgeDPCWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "$0000 - $07FF - 2K display data\n"
        << "                indirectly accessible to 6507\n"
        << "                via DPC+'s Data Fetcher registers\n";
-  
+
   return desc.str();
 }
 

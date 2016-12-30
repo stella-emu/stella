@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGE3EPLUS_WIDGET_HXX
@@ -45,11 +43,11 @@ class Cartridge3EPlusWidget : public CartDebugWidget
     PopUpWidget* myBankType[4];
     ButtonWidget* myBankCommit[4];
     EditTextWidget* myBankState[8];
-  
+
     struct CartState {
       ByteArray internalram;
-    };  
-    CartState myOldState;   
+    };
+    CartState myOldState;
 
     enum BankID {
       kBank0Changed = 'b0CH',
@@ -65,7 +63,7 @@ class Cartridge3EPlusWidget : public CartDebugWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     string bankState() override;
-  
+
     // start of functions for Cartridge RAM tab
     uInt32 internalRamSize() override;
     uInt32 internalRamRPort(int start) override;

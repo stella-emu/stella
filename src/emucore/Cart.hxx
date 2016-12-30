@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -35,13 +33,12 @@ class GuiObject;
 #include "Font.hxx"
 
 /**
-  A cartridge is a device which contains the machine code for a 
+  A cartridge is a device which contains the machine code for a
   game and handles any bankswitching performed by the cartridge.
   A 'bank' is defined as a 4K block that is visible in the
   0x1000-0x2000 area (or its mirrors).
 
   @author  Bradford W. Mott
-  @version $Id$
 */
 class Cartridge : public Device
 {
@@ -51,7 +48,7 @@ class Cartridge : public Device
       type of cartridge created depends on the properties object.
 
       @param image    A pointer to the ROM image
-      @param size     The size of the ROM image 
+      @param size     The size of the ROM image
       @param md5      The md5sum for the given ROM image (can be updated)
       @param dtype    The detected bankswitch type of the ROM image
       @param id       Any extra info about the ROM (currently which part
@@ -225,7 +222,7 @@ class Cartridge : public Device
       multi-ROM image.
 
       @param image    A pointer to the ROM image
-      @param size     The size of the ROM image 
+      @param size     The size of the ROM image
       @param numroms  The number of ROMs in the multicart
       @param md5      The md5sum for the specific cart in the ROM image
       @param id       The ID for the specific cart in the ROM image
@@ -239,7 +236,7 @@ class Cartridge : public Device
       Try to auto-detect the bankswitching type of the cartridge
 
       @param image  A pointer to the ROM image
-      @param size   The size of the ROM image 
+      @param size   The size of the ROM image
 
       @return The "best guess" for the cartridge type
     */
@@ -249,7 +246,7 @@ class Cartridge : public Device
       Search the image for the specified byte signature
 
       @param image      A pointer to the ROM image
-      @param imagesize  The size of the ROM image 
+      @param imagesize  The size of the ROM image
       @param signature  The byte sequence to search for
       @param sigsize    The number of bytes in the signature
       @param minhits    The minimum number of times a signature is to be found

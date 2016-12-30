@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -109,7 +107,7 @@ void SoundSDL2::setEnabled(bool state)
 {
   myOSystem.settings().setValue("sound", state);
 
-  myOSystem.logMessage(state ? "SoundSDL2::setEnabled(true)" : 
+  myOSystem.logMessage(state ? "SoundSDL2::setEnabled(true)" :
                                 "SoundSDL2::setEnabled(false)", 2);
 }
 
@@ -260,7 +258,7 @@ void SoundSDL2::set(uInt16 addr, uInt8 value, Int32 cycle)
   double delta = double(cycle - myLastRegisterSetCycle) / 1193191.66666667;
 
   // Now, adjust the time based on the frame rate the user has selected. For
-  // the sound to "scale" correctly, we have to know the games real frame 
+  // the sound to "scale" correctly, we have to know the games real frame
   // rate (e.g., 50 or 60) and the currently emulated frame rate. We use these
   // values to "scale" the time before the register change occurs.
   RegWrite info;
@@ -333,7 +331,7 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
           // round the count passed to process up if needed.
           double samples = (myHardwareSpec.freq * info.delta);
           myTIASound.process(stream + (uInt32(position) * channels),
-              uInt32(samples) + uInt32(position + samples) - 
+              uInt32(samples) + uInt32(position + samples) -
               (uInt32(position) + uInt32(samples)));
 
           position += samples;

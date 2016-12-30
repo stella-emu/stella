@@ -8,13 +8,11 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef M6502_HXX
@@ -39,13 +37,12 @@ class Settings;
   This class provides a high compatibility 6502 microprocessor emulator.
 
   The memory accesses and cycle counts it generates are valid at the
-  sub-instruction level and "false" reads are generated (such as the ones 
+  sub-instruction level and "false" reads are generated (such as the ones
   produced by the Indirect,X addressing when it crosses a page boundary).
   This provides provides better compatibility for hardware that has side
   effects and for games which are very time sensitive.
 
   @author  Bradford W. Mott
-  @version $Id$
 */
 class M6502 : public Serializable
 {
@@ -70,7 +67,7 @@ class M6502 : public Serializable
     void install(System& system);
 
     /**
-      Reset the processor to its power-on state.  This method should not 
+      Reset the processor to its power-on state.  This method should not
       be invoked until the entire 6502 system is constructed and installed
       since it involves reading the reset vector from memory.
     */
@@ -97,8 +94,8 @@ class M6502 : public Serializable
     bool execute(uInt32 number);
 
     /**
-      Tell the processor to stop executing instructions.  Invoking this 
-      method while the processor is executing instructions will stop 
+      Tell the processor to stop executing instructions.  Invoking this
+      method while the processor is executing instructions will stop
       execution as soon as possible.
     */
     void stop() { myExecutionStatus |= StopExecutionBit; }
@@ -110,7 +107,7 @@ class M6502 : public Serializable
       @return true iff a fatal error has occured
     */
     bool fatalError() const { return myExecutionStatus & FatalErrorBit; }
-  
+
     /**
       Get the 16-bit value of the Program Counter register.
 
@@ -122,10 +119,10 @@ class M6502 : public Serializable
       Answer true iff the last memory access was a read.
 
       @return true iff last access was a read
-    */ 
+    */
     bool lastAccessWasRead() const { return myLastAccessWasRead; }
 
-    /**                                                                    
+    /**
       Return the last address that was part of a read/peek.  Note that
       reads which are part of a write are not considered here, unless
       they're not the same as the last write address.  This eliminates
@@ -139,7 +136,7 @@ class M6502 : public Serializable
         myLastPeekAddress;
     }
 
-    /**                                                                    
+    /**
       Return the source of the address that was used for a write/poke.
       Note that this isn't the same as the address that is poked, but
       is instead the address of the *data* that is poked (if any).
@@ -148,7 +145,7 @@ class M6502 : public Serializable
     */
     uInt16 lastDataAddressForPoke() const { return myDataAddressForPoke; }
 
-    /**                                                                    
+    /**
       Return the last data address used as part of a peek operation for
       the S/A/X/Y registers.  Note that if an address wasn't used (as in
       immediate mode), then the address is -1.
@@ -269,12 +266,12 @@ class M6502 : public Serializable
     void interruptHandler();
 
   private:
-    /** 
-      Bit fields used to indicate that certain conditions need to be 
-      handled such as stopping execution, fatal errors, maskable interrupts 
+    /**
+      Bit fields used to indicate that certain conditions need to be
+      handled such as stopping execution, fatal errors, maskable interrupts
       and non-maskable interrupts (in myExecutionStatus)
     */
-    enum 
+    enum
     {
       StopExecutionBit = 0x01,
       FatalErrorBit = 0x02,
@@ -282,7 +279,7 @@ class M6502 : public Serializable
       NonmaskableInterruptBit = 0x08
     };
     uInt8 myExecutionStatus;
-  
+
     /// Pointer to the system the processor is installed in or the null pointer
     System* mySystem;
 
@@ -328,7 +325,7 @@ class M6502 : public Serializable
     /// is set to zero
     uInt16 myDataAddressForPoke;
 
-    /// Indicates the number of system cycles per processor cycle 
+    /// Indicates the number of system cycles per processor cycle
     static constexpr uInt32 SYSTEM_CYCLES_PER_CPU = 1;
 
 #ifdef DEBUGGER_SUPPORT

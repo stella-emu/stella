@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 //#include "YaccParser.hxx"
@@ -40,7 +38,7 @@ YYSTYPE result;
 string errMsg;
 #include "y.tab.c"
 
-const string& errorMessage() 
+const string& errorMessage()
 {
   return errMsg;
 }
@@ -86,7 +84,7 @@ inline bool is_base_prefix(char x)
 
 inline bool is_identifier(char x)
 {
-  return ( (x>='0' && x<='9') || 
+  return ( (x>='0' && x<='9') ||
            (x>='a' && x<='z') ||
            (x>='A' && x<='Z') ||
             x=='.' || x=='_'  );

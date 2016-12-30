@@ -2,7 +2,6 @@
   Simple program that produces a hex list of a binary object file
 
   @author  Bradford W. Mott
-  @version $Id$
 */
 
 #include <iomanip>

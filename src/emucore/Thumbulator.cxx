@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 //============================================================================
@@ -281,7 +279,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
           return;
       }
       return;
-      
+
     case 0x40000000: //RAM
       write16(addr+0, (data >>  0) & 0xFFFF);
       write16(addr+2, (data >> 16) & 0xFFFF);

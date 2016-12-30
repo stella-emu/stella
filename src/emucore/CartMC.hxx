@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEMC_HXX
@@ -29,8 +27,8 @@ class System;
 #endif
 
 /**
-  This is the cartridge class for Chris Wilkson's Megacart.  It does not 
-  handle battery-backed RAM at this time and the code could use some serious 
+  This is the cartridge class for Chris Wilkson's Megacart.  It does not
+  handle battery-backed RAM at this time and the code could use some serious
   speed improvements.  It is based on the following Megacart specification:
 
 
@@ -75,7 +73,7 @@ class System;
 
   Special Case - RAM
   -------------------
-  
+
   RAM blocks differ from ROM blocks in that one of the console's address lines,
   A9 in this case, must be used as a read/write select.  Because of this, RAM
   blocks are limited to 512 bytes each, yet still occupy an entire 1K slot.
@@ -115,9 +113,9 @@ class System;
 			...
   $1FFDD	BOOT	SEI		; disable interrupts
   $1FFDE		CLD		; set hexadecimal arithmetic mode
-  $1FFDF		LDX	#$FF	; 
+  $1FFDF		LDX	#$FF	;
   $1FFE1		TXS		; set stack pointer to $ff
-  $1FFE2 		LDA	#$00 
+  $1FFE2 		LDA	#$00
   $1FFE4	ZERO	STA	00,X	; clear RIOT and TIA -BEFORE- setting
   $1FFE6		DEX		; up banks
   $1FFE7		BNE	ZERO
@@ -128,7 +126,7 @@ class System;
   $1FFF1		LDA	#$FD	; rom block $fd ($1f400-$1f7ff)
   $1FFF3		STA	SLOT2	; slot 2 points to rom block $fd
   $1FFF5		LDA	#$83	; rom block $83 ($00C00-$01000)
-  $1FFF7		STA	SLOT3	; slot 3 points to bootcode 
+  $1FFF7		STA	SLOT3	; slot 3 points to bootcode
 					; (rom block $ff)
  	 				; until jumping out of slot 3
   $1FFF9		JMP	$F800	; jump to slot 2
@@ -137,7 +135,6 @@ class System;
 
 
   @author  Bradford W. Mott
-  @version $Id$
 */
 class CartridgeMC : public Cartridge
 {

@@ -2,7 +2,6 @@
     Initial Version: Darrell Walisser <dwaliss1@purdue.edu>
     Non-NIB-Code & other changes: Max Horn <max@quendi.de>
   */
-// $Id$
 
 #import <Cocoa/Cocoa.h>
 

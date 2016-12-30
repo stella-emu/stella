@@ -2,7 +2,6 @@
     Initial Version: Darrell Walisser <dwaliss1@purdue.edu>
     Non-NIB-Code & other changes: Max Horn <max@quendi.de>
   */
-// $Id$
 
 #import "SDL.h"
 #import "SDLMain.h"
@@ -108,7 +107,7 @@ static SDLMain* sharedInstance = nil;
   // Hand off to main application code
   gCalledAppMainline = TRUE;
   status = SDL_main (gArgc, gArgv);
-	
+
   // We're done, thank you for playing
   exit(status);
 }
@@ -143,7 +142,7 @@ int main (int argc, char* argv[])
       gArgv[i] = argv[i];
     gFinderLaunch = NO;
   }
-	
+
 	myPrefs = [Preferences sharedInstance];
 
   NSApplicationMain (argc, (const char**)argv);

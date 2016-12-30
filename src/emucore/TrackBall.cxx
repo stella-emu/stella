@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include <cstdlib>
@@ -39,7 +37,7 @@ TrackBall::TrackBall(Jack jack, const Event& event, const System& system,
   myTrakBallCountH = myTrakBallCountV = 0;
   myTrakBallLinesH = myTrakBallLinesV = 1;
 
-  myTrakBallLeft = myTrakBallDown = myScanCountV = myScanCountH = 
+  myTrakBallLeft = myTrakBallDown = myScanCountV = myScanCountH =
     myCountV = myCountH = 0;
 
   // Analog pins are never used by the trackball controller
@@ -63,7 +61,7 @@ uInt8 TrackBall::read()
     }
     myScanCountV += myTrakBallLinesV;
   }
-	
+
   while((myScanCountH + myTrakBallLinesH) < scanline)
   {
     if(myTrakBallCountH)

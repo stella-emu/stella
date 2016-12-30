@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "System.hxx"
@@ -96,10 +94,10 @@ inline void CartridgeDPC::clockRandomNumberGenerator()
 
   // Using bits 7, 5, 4, & 3 of the shift register compute the input
   // bit for the shift register
-  uInt8 bit = f[((myRandomNumber >> 3) & 0x07) | 
+  uInt8 bit = f[((myRandomNumber >> 3) & 0x07) |
       ((myRandomNumber & 0x80) ? 0x08 : 0x00)];
 
-  // Update the shift register 
+  // Update the shift register
   myRandomNumber = (myRandomNumber << 1) | bit;
 }
 
@@ -168,7 +166,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
     return myProgramImage[(myCurrentBank << 12) + address];
 
   // Clock the random number generator.  This should be done for every
-  // cartridge access, however, we're only doing it for the DPC and 
+  // cartridge access, however, we're only doing it for the DPC and
   // hot-spot accesses to save time.
   clockRandomNumberGenerator();
 
@@ -291,14 +289,14 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
   address &= 0x0FFF;
 
   // Clock the random number generator.  This should be done for every
-  // cartridge access, however, we're only doing it for the DPC and 
+  // cartridge access, however, we're only doing it for the DPC and
   // hot-spot accesses to save time.
   clockRandomNumberGenerator();
 
   if((address >= 0x0040) && (address < 0x0080))
   {
     // Get the index of the data fetcher that's being accessed
-    uInt32 index = address & 0x07;    
+    uInt32 index = address & 0x07;
     uInt32 function = (address >> 3) & 0x07;
 
     switch(function)

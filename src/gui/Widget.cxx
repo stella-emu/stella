@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -462,7 +460,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
   _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
 
 
-  // Depending on font size, either the font or box will need to be 
+  // Depending on font size, either the font or box will need to be
   // centered vertically
   if(_h > 14)  // center box
     _boxY = (_h - 14) / 2;
@@ -576,7 +574,7 @@ void SliderWidget::setValue(int value)
 
   if(value != _value)
   {
-    _value = value; 
+    _value = value;
     setDirty();
     sendCommand(_cmd, _value, _id);
   }
@@ -653,7 +651,7 @@ bool SliderWidget::handleEvent(Event::Type e)
     case Event::UIPgDown:
       setValue(_value - _stepValue);
       break;
-  
+
     case Event::UIUp:
     case Event::UIRight:
     case Event::UIPgUp:
@@ -702,7 +700,7 @@ int SliderWidget::valueToPos(int value)
   if(value < _valueMin)      value = _valueMin;
   else if(value > _valueMax) value = _valueMax;
   int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
-  
+
   return ((_w - _labelWidth - 4) * (value - _valueMin) / range);
 }
 

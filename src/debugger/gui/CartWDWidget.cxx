@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartWD.hxx"
@@ -69,7 +67,7 @@ CartridgeWDWidget::CartridgeWDWidget(
 void CartridgeWDWidget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myRAM[i]);
 }
@@ -101,9 +99,9 @@ string CartridgeWDWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* segments[] = {
-    "[0,0,1,2]",  "[0,1,3,2]",  "[4,5,6,7]",  "[7,4,3,2]", 
-    "[0,0,6,7]",  "[0,1,7,6]",  "[3,2,4,5]",  "[6,0,5,1]", 
-    "[0,0,1,2]",  "[0,1,3,2]",  "[4,5,6,7]",  "[7,4,3,2]", 
+    "[0,0,1,2]",  "[0,1,3,2]",  "[4,5,6,7]",  "[7,4,3,2]",
+    "[0,0,6,7]",  "[0,1,7,6]",  "[3,2,4,5]",  "[6,0,5,1]",
+    "[0,0,1,2]",  "[0,1,3,2]",  "[4,5,6,7]",  "[7,4,3,2]",
     "[0,0,6,7*]", "[0,1,7,6*]", "[3,2,4,5*]", "[6,0,5,1*]"
   };
   uInt16 bank = myCart.getBank();
@@ -113,7 +111,7 @@ string CartridgeWDWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeWDWidget::internalRamSize() 
+uInt32 CartridgeWDWidget::internalRamSize()
 {
   return 64;
 }
@@ -125,12 +123,12 @@ uInt32 CartridgeWDWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeWDWidget::internalRamDescription() 
+string CartridgeWDWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "$F000 - $F03F used for Read Access\n"
        << "$F040 - $F07F used for Write Access";
-  
+
   return desc.str();
 }
 
@@ -165,7 +163,7 @@ uInt8 CartridgeWDWidget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeWDWidget::internalRamLabel(int addr) 
+string CartridgeWDWidget::internalRamLabel(int addr)
 {
   CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + 0xF000, false);

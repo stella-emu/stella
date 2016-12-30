@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartF8SC.hxx"
@@ -63,7 +61,7 @@ CartridgeF8SCWidget::CartridgeF8SCWidget(
 void CartridgeF8SCWidget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < this->internalRamSize();i++)
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
@@ -104,7 +102,7 @@ string CartridgeF8SCWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeF8SCWidget::internalRamSize() 
+uInt32 CartridgeF8SCWidget::internalRamSize()
 {
   return 128;
 }
@@ -116,12 +114,12 @@ uInt32 CartridgeF8SCWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeF8SCWidget::internalRamDescription() 
+string CartridgeF8SCWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "$F000 - $F07F used for Write Access\n"
        << "$F080 - $F0FF used for Read Access";
-  
+
   return desc.str();
 }
 
@@ -156,7 +154,7 @@ uInt8 CartridgeF8SCWidget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeF8SCWidget::internalRamLabel(int addr) 
+string CartridgeF8SCWidget::internalRamLabel(int addr)
 {
   CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + 0xF080, false);

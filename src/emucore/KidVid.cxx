@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include <cstdlib>
@@ -119,7 +117,7 @@ cerr << "myTape = " << myTape << endl;
   if((myTape != 0) && ((IOPortA & 0x01) == 0x01) && !myTapeBusy)
   {
     IOPortA = (IOPortA & 0xf7) | (((ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80) >> 4);
-		
+
     // increase to next bit
     myIdx++;
     myBlockIdx--;
@@ -143,7 +141,7 @@ cerr << "myTape = " << myTape << endl;
         }
         else
         {
-          if(myBlock >= ourKVBlocks[myTape + 2 - 1])				
+          if(myBlock >= ourKVBlocks[myTape + 2 - 1])
             myIdx = 42 * 8; //KVData80-KVData=42
           else
           {

@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CHEAT_MANAGER_HXX
@@ -35,7 +33,6 @@ using CheatList = vector<shared_ptr<Cheat>>;
   the list of all cheats currently in use.
 
   @author  Stephen Anthony
-  @version $Id$
 */
 class CheatManager
 {

@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +28,7 @@
 
 /*
  * TODO list
- * - add some sense of the window being "active" (i.e. in front) or not. If it 
+ * - add some sense of the window being "active" (i.e. in front) or not. If it
  *   was inactive and just became active, reset certain vars (like who is focused).
  *   Maybe we should just add lostFocus and receivedFocus methods to Dialog, just
  *   like we have for class Widget?
@@ -412,13 +410,13 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 void Dialog::handleMouseMoved(int x, int y, int button)
 {
   Widget* w;
-  
+
   if(_focusedWidget && !_dragWidget)
   {
     w = _focusedWidget;
     int wx = w->getAbsX() - _x;
     int wy = w->getAbsY() - _y;
-    
+
     // We still send mouseEntered/Left messages to the focused item
     // (but to no other items).
     bool mouseInFocusedWidget = (x >= wx && x < wx + w->_w && y >= wy && y < wy + w->_h);

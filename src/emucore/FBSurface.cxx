@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "FrameBuffer.hxx"
@@ -217,7 +215,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
   uInt32 i;
   int width = font.getStringWidth(s);
   string str;
-	
+
   if(useEllipsis && width > w)
   {
     // String is too wide. So we shorten it "intelligently", by replacing
@@ -227,11 +225,11 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     // make this configurable, replacing the middle probably is a good
     // compromise.
     const int ellipsisWidth = font.getStringWidth("...");
-		
+
     // SLOW algorithm to remove enough of the middle. But it is good enough for now.
     const int halfWidth = (w - ellipsisWidth) / 2;
     int w2 = 0;
-		
+
     for(i = 0; i < s.size(); ++i)
     {
       int charWidth = font.getCharWidth(s[i]);
@@ -245,7 +243,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     // At this point we know that the first 'i' chars are together 'w2'
     // pixels wide. We took the first i-1, and add "..." to them.
     str += "...";
-		
+
     // The original string is width wide. Of those we already skipped past
     // w2 pixels, which means (width - w2) remain.
     // The new str is (w2+ellipsisWidth) wide, so we can accomodate about

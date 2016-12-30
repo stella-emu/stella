@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include <algorithm>
@@ -104,7 +102,7 @@ bool FrameBuffer::initialize()
   // Normally, this is configurable by the user, except in the case of
   // very small screens
   if(!smallScreen)
-  {    
+  {
     const string& lf = myOSystem.settings().getString("launcherfont");
     if(lf == "small")
       myLauncherFont = make_ptr<GUI::Font>(GUI::consoleDesc);
@@ -662,7 +660,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     {
       ostringstream desc;
       desc << "Zoom " << zoom << "x";
-      
+
       VideoMode mode(baseWidth*zoom, baseHeight*zoom,
               baseWidth*zoom, baseHeight*zoom, -1, zoom, desc.str());
       mode.applyAspectCorrection(aspect);

@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "CartBFSC.hxx"
@@ -126,7 +124,7 @@ CartridgeBFSCWidget::CartridgeBFSCWidget(
 void CartridgeBFSCWidget::saveOldState()
 {
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < this->internalRamSize();i++)
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
@@ -176,7 +174,7 @@ string CartridgeBFSCWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeBFSCWidget::internalRamSize() 
+uInt32 CartridgeBFSCWidget::internalRamSize()
 {
   return 128;
 }
@@ -188,12 +186,12 @@ uInt32 CartridgeBFSCWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeBFSCWidget::internalRamDescription() 
+string CartridgeBFSCWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "$F000 - $F07F used for Write Access\n"
        << "$F080 - $F0FF used for Read Access";
-  
+
   return desc.str();
 }
 
@@ -228,7 +226,7 @@ uInt8 CartridgeBFSCWidget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeBFSCWidget::internalRamLabel(int addr) 
+string CartridgeBFSCWidget::internalRamLabel(int addr)
 {
   CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + 0xF080, false);

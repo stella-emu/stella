@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEWD_HXX
@@ -32,7 +30,7 @@ class System;
   This is the cartridge class for a "Wickstead Design" prototype cart.
   The ROM is normally 8K, but sometimes has an extra 3 bytes appended,
   to be mapped as described below.  There is also 64 bytes of RAM.
-  In this bankswitching scheme the 2600's 4K cartridge address space 
+  In this bankswitching scheme the 2600's 4K cartridge address space
   is broken into four 1K segments.  The desired arrangement of 1K slices
   is selected by accessing $30 - $3F of TIA address space.  The slices
   are mapped into all 4 segments at once as follows:

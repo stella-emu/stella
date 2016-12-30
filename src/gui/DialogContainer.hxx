@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -32,12 +30,11 @@ class OSystem;
   The base class for groups of dialog boxes.  Each dialog box has a
   parent.  In most cases, the parent is itself a dialog box, but in the
   case of the lower-most dialog box, this class is its parent.
-  
+
   This class keeps track of its children (dialog boxes), organizes them into
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id$
 */
 class DialogContainer
 {
@@ -178,7 +175,7 @@ class DialogContainer
       int button;
     } myCurrentMouseDown;
     uInt64 myClickRepeatTime;
-	
+
     // For continuous 'joy button down' events
     struct {
       int stick;

@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "bspf.hxx"
@@ -277,7 +275,7 @@ void TabWidget::drawWidget(bool hilite)
   const int right1 = _x + kTabLeftOffset + _activeTab * (_tabWidth + kTabSpacing);
   const int left2  = right1 + _tabWidth;
   const int right2 = _x + _w - 2;
-	
+
   // Draw horizontal line
   s.hLine(left1, _y + _tabHeight - 2, right1, kShadowColor);
   s.hLine(left2, _y + _tabHeight - 2, right2, kShadowColor);

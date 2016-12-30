@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include <cassert>
@@ -64,8 +62,8 @@ void CartridgeMC::install(System& system)
       ((0x1800 & mask) == 0) && ((0x1C00 & mask) == 0));
 */
 
-  // Set the page accessing methods for the hot spots in the TIA.  For 
-  // correct emulation I would need to chain any accesses below 0x40 to 
+  // Set the page accessing methods for the hot spots in the TIA.  For
+  // correct emulation I would need to chain any accesses below 0x40 to
   // the TIA but for now I'll just forget about them.
   //
   // TODO: These TIA accesses may need to be chained, however, at this

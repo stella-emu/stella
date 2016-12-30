@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "OSystem.hxx"
@@ -132,7 +130,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
   if(tag != "")  // indicates that the defaultTag should be used instead
   {
     for(uInt32 item = 0; item < _entries.size(); ++item)
-    { 
+    {
       if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
       {
         setSelectedIndex(item);
@@ -417,7 +415,7 @@ void ContextMenu::moveDown()
     if(_selectedOffset == _numEntries)
       scrollDown();
     else if(_selectedOffset < int(_entries.size()))
-      drawCurrentSelection(_selectedOffset+1);    
+      drawCurrentSelection(_selectedOffset+1);
   }
   else
   {

@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "atari_ntsc.hxx"
@@ -85,7 +83,7 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
     float b = impl.to_float [*palette++];
 
     float y, i, q = RGB_TO_YIQ( r, g, b, y, i );
-      
+
     // Generate kernel
     int ir, ig, ib = YIQ_TO_RGB( y, i, q, impl.to_rgb, int, ir, ig );
     atari_ntsc_rgb_t rgb = PACK_RGB( ir, ig, ib );
@@ -114,7 +112,7 @@ void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
     atari_ntsc_out_t* restrict line_out = static_cast<atari_ntsc_out_t*>(rgb_out);
     int n;
     ++line_in;
-    
+
     for ( n = chunk_count; n; --n )
     {
       /* order of input and output pixels must not be altered */
@@ -123,28 +121,28 @@ void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
       ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
       ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
       ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
-      
+
       ATARI_NTSC_COLOR_IN( 1, ntsc, TO_SINGLE(line_in[1]) );
       ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
       ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
       ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
-      
+
       line_in  += 2;
       line_out += 7;
     }
-    
+
     /* finish final pixels */
     ATARI_NTSC_COLOR_IN( 0, ntsc, TO_SINGLE(atari_ntsc_black) );
     ATARI_NTSC_RGB_OUT_8888( 0, line_out[0] );
     ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
     ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
     ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
-    
+
     ATARI_NTSC_COLOR_IN( 1, ntsc, TO_SINGLE(atari_ntsc_black) );
     ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
     ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
     ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
-    
+
     atari_in += in_row_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;
   }
@@ -169,7 +167,7 @@ void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
     int n;
     ++line_in1;
     ++line_in2;
-    
+
     for ( n = chunk_count; n; --n )
     {
       /* order of input and output pixels must not be altered */
@@ -179,18 +177,18 @@ void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
       ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
       ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
       ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
-      
+
       ATARI_NTSC_COLOR_IN( 1, ntsc,
           TO_DOUBLE(line_in1[1], line_in2[1]) );
       ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
       ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
       ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
-      
+
       line_in1 += 2;
       line_in2 += 2;
       line_out += 7;
     }
-    
+
     /* finish final pixels */
     ATARI_NTSC_COLOR_IN( 0, ntsc,
         TO_DOUBLE(atari_ntsc_black, atari_ntsc_black) );
@@ -198,13 +196,13 @@ void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
     ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
     ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
     ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
-    
+
     ATARI_NTSC_COLOR_IN( 1, ntsc,
         TO_DOUBLE(atari_ntsc_black, atari_ntsc_black) );
     ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
     ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
     ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
-    
+
     atari_in1 += in_row_width;
     atari_in2 += in_row_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;

@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #include "ColorWidget.hxx"
@@ -321,7 +319,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myEnaM0->setTarget(this);
   myEnaM0->setID(kEnaM0ID);
   addFocusWidget(myEnaM0);
-  
+
   // posM0
   xpos += myEnaM0->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 6*fontWidth, fontHeight,
@@ -377,7 +375,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myEnaM1->setTarget(this);
   myEnaM1->setID(kEnaM1ID);
   addFocusWidget(myEnaM1);
-  
+
   // posM0
   xpos += myEnaM1->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 6*fontWidth, fontHeight,
@@ -433,7 +431,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myEnaBL->setTarget(this);
   myEnaBL->setID(kEnaBLID);
   addFocusWidget(myEnaBL);
-  
+
   // posBL
   xpos += myEnaBL->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 6*fontWidth, fontHeight,

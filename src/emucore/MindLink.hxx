@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2016 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id$
 //============================================================================
 
 #ifndef MINDLINK_HXX
@@ -38,7 +36,6 @@
   addressable by DigitalPin number.
 
   @author  Stephen Anthony & z26 team
-  @version $Id$
 */
 class MindLink : public Controller
 {
@@ -101,14 +98,14 @@ class MindLink : public Controller
 
   private:
     // Position value in Mindlink controller
-    // Gets transferred bitwise (16 bits) 
+    // Gets transferred bitwise (16 bits)
     int myMindlinkPos;
 
     // Which bit to transfer next
     int myMindlinkShift;
 
     // Whether to use the mouse to emulate this controller
-    int myMouseEnabled;  
+    int myMouseEnabled;
 
   private:
     // Following constructors and assignment operators not supported
