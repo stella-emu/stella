@@ -54,9 +54,9 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - March 2016</b></center>
+  <center><b>February 1999 - November 2016</b></center>
     <center><b>The Stella Team</b></center>
-  <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
+  <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
   <br><br><br>
 
@@ -146,7 +146,7 @@
   popping up all over, and 1982 saw releases from companies like Venturevision,
   Spectravision, Telesys, CBS, 20th Century Fox, US Games, M Network, Tigervision,
   Data Age, Imagic and Coleco. There was even a company that released a line of
-  X-Rated games for the 2600 called Mystique. The year was financially successful 
+  X-Rated games for the 2600 called Mystique. The year was financially successful
   for Atari, however there seemed to be a glut of software. Although there were
   many quality titles still produced, there was an increasing number of rushed
   games as manufacturers attempted to cash in on the craze.
@@ -267,7 +267,7 @@
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
       <a href="http://2600-daptor.com">2600-adaptor/2600-daptor II</a></li>
-    <li>Support for the speech portion of a real  
+    <li>Support for the speech portion of a real
       <a href="http://atariage.com/store/index.php?l=product_list&c=98">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
     <li>Supports EEPROM emulation for <a href="http://atariage.com/store/index.php?l=product_list&c=98">
@@ -289,7 +289,7 @@
     <li>Full system state save/load functionality</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
-      and dynamic analysis at runtime by tracking code/graphics/data sections, and 
+      and dynamic analysis at runtime by tracking code/graphics/data sections, and
       generation of DASM-compatible disassembly files</li>
     <li>Emulation of CRT TV systems using <a href="http://slack.net/~ant/libs/ntsc.html">
       Blargg filtering</a>, including presets for several common TV outputs
@@ -320,7 +320,7 @@
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>Enough RAM for the OS + 256MB RAM for the emulation; 512MB+ highly recommended</li>
     <li>Joysticks or gamepads are highly recommended</li>
-    <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> / 
+    <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> /
     <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
     <li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
   </ul>
@@ -400,7 +400,7 @@
     <li><b>Building and installing from source code</b>
     <ul>
       <li>See the developers build instructions at the
-      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
+      <a href="https://stella-emu.github.io/development.html">Stella Development Page</a>.
     </ul>
     </li>
   </ul>
@@ -418,7 +418,7 @@
     <li><b>Building and installing from source code</b>
     <ul>
       <li>See the developers build instructions at the
-      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
+      <a href="https://stella-emu.github.io/development.html">Stella Development Page</a>.
     </ul>
     </li>
   </ul>
@@ -442,7 +442,7 @@
     <li><b>Building and installing from source code</b>
     <ul>
       <li>See the developers build instructions at the
-      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
+      <a href="https://stella-emu.github.io/development.html">Stella Development Page</a>.
     </ul>
     </li>
   </ul>
@@ -476,7 +476,7 @@
 
     <li>If you're handy with a soldering iron then you can design and build a
     device that plugs into the printer port of a PC and read the data from the
-    cartridge</li>    
+    cartridge</li>
   </ul>
 
   <p><b>WARNING:</b> It is illegal to use ROM images of games that you do not
@@ -504,7 +504,7 @@
   image file for Survival Island you would do the following under Unix:
 
   <pre>   % cat survivl0.bin survivl6.bin survivl7.bin > survivl.bin</pre>
-  
+
   or to create it under DOS you would:
 
   <pre>   % copy /b survivl0.bin+survivl6.bin+survivl7.bin survivl.bin</pre>
@@ -576,7 +576,7 @@
   <p>
   <h3><b><u>Command Menu</u></b></h3>
 
-  <p>While playing a game, normally one would use the keyboard shortcuts for controlling the 
+  <p>While playing a game, normally one would use the keyboard shortcuts for controlling the
   'virtual' switches in Stella (ie, the commands associated with the
   function keys as described in
   <b>Getting Started - <a href="#Keyboard">Keyboard Layout</a></b>).
@@ -1426,6 +1426,12 @@
     </tr>
 
     <tr>
+      <td>Toggle TIA HMOVE blanks</td>
+      <td>Alt + m</td>
+      <td>Cmd + m</td>
+    </tr>
+
+    <tr>
       <td>Toggle TIA 'Fixed Debug Colors' mode</td>
       <td>Alt + Comma</td>
       <td>Cmd + Comma</td>
@@ -1716,7 +1722,7 @@
   <a name="Advanced">Advanced Configuration</a></h1>
   <hr>
 
-  <p>The default options in Stella are meant to cater to as many situations as 
+  <p>The default options in Stella are meant to cater to as many situations as
   possible.  As such, you may never need to change many of its options.  However,
   Stella is very configurable, and if you want to change its behaviour in some way,
   there's likely a configuration option to do so.  The remainder of this (lengthy)
@@ -1979,7 +1985,7 @@
     </tr>
 
     <tr>
-      <td><pre>-grabmouse &lt;1|0&gt;</pre></td> 
+      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
       <td>Locks the mouse cursor in the game window in emulation mode.</td>
     </tr>
 
@@ -2883,10 +2889,10 @@
 
   <p><ul>
     <li>Developer key-combo shortcuts, used to change TIA state dynamically
-    (ie, while the emulation is still running).  See <b>Keyboard Layout - 
+    (ie, while the emulation is still running).  See <b>Keyboard Layout -
     <a href="#DeveloperKeys">Developer Keys in TIA mode</a></b> for more information.</li>
 
-    <li>Commandline options influencing emulation state.  See <b>Using the Command Line - 
+    <li>Commandline options influencing emulation state.  See <b>Using the Command Line -
     <a href="#DeveloperCommandLine">Developer Commands</a></b> for more information.</li>
 
     <li>Viewing TIA/console information overlaid on the TIA image.  This option
@@ -3496,8 +3502,8 @@ Ms Pac-Man (Stella extended codes):
   Some people have provided technical help while others have offered suggestions
   and praise.  The Stella Team is grateful for all the help and support it has
   received over the years.  A (likely incomplete) list of the people who have
-  played a part in bringing Stella to you is available on the main Stella 
-  webpage <a href="http://stella.sf.net/credits.php">Credits List</a>.
+  played a part in bringing Stella to you is available on the main Stella
+  webpage <a href="https://stella-emu.github.io/credits.html">Credits List</a>.
   If we've missed someone, please let us know.</p>
 
 
@@ -3515,7 +3521,7 @@ Version 2, June 1991
 </P>
 
 <PRE>
-Copyright (C) 1989, 1991 Free Software Foundation, Inc.  
+Copyright (C) 1989, 1991 Free Software Foundation, Inc.
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
 Everyone is permitted to copy and distribute verbatim copies

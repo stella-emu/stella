@@ -53,7 +53,7 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "The multi-platform Atari 2600 emulator.  Stella is released under the GPLv2."
-            VALUE "CompanyName", "The Stella Team (http://stella.sourceforge.net)"
+            VALUE "CompanyName", "The Stella Team (https://stella-emu.github.io)"
             VALUE "FileDescription", "Stella"
             VALUE "FileVersion", "4.7.3"
             VALUE "InternalName", "Stella"

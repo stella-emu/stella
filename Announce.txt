@@ -14,7 +14,7 @@
 
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the
 most popular home video game system of the early 1980's.  Now you can enjoy
-all of your favourite Atari 2600 games on your PC thanks to Stella! 
+all of your favourite Atari 2600 games on your PC thanks to Stella!
 
 Stella is a multi-platform Atari 2600 VCS emulator.  It allows you to play
 all of your favourite Atari 2600 games again!  Stella was originally
@@ -48,8 +48,8 @@ distributions currently available are:
 
 
 Distribution Site
-================= 
+=================
 
 The Stella distributions can be obtained from the Stella Website at:
 
-  http://stella.sourceforge.net
+  https://stella-emu.github.io

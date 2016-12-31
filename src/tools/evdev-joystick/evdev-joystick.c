@@ -3,7 +3,7 @@
     https://github.com/VDrift/vdrift/tree/master/tools/G25manage
 
   This code is released under the GPLv2, and modified from the
-  original by Stephen Anthony (stephena@users.sf.net).
+  original by Stephen Anthony (sa666666@gmail.com).
 */
 
 #include <stdio.h>
@@ -26,8 +26,8 @@
 #include <linux/input.h>
 
 /* this macro is used to tell if "bit" is set in "array"
- * it selects a byte from the array, and does a boolean AND 
- * operation with a byte that only has the relevant bit set. 
+ * it selects a byte from the array, and does a boolean AND
+ * operation with a byte that only has the relevant bit set.
  * eg. to check for the 12th bit, we do (array[1] & 1<<4)
  */
 #define test_bit(bit, array)    (array[bit/8] & (1<<(bit%8)))

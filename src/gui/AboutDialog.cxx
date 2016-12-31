@@ -105,10 +105,10 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
       ADD_ALINE();
       ADD_ATEXT("\\CCopyright (C) 1995-2017 The Stella Team");
-      ADD_ATEXT("\\C(http://stella.sf.net)");
+      ADD_ATEXT("\\C(https://stella-emu.github.io)");
       ADD_ALINE();
       ADD_ATEXT("\\CStella is now DonationWare!");
-      ADD_ATEXT("\\C(http://stella.sf.net/donations.php)");
+      ADD_ATEXT("\\C(https://stella-emu.github.io/donations.html)");
       ADD_ALINE();
       ADD_ATEXT("\\CStella is free software released under the GNU GPL");
       ADD_ATEXT("\\CSee manual for further details");
@@ -128,7 +128,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
 
     case 3:
       title = "Contributors";
-      ADD_ATEXT("\\L\\c0""  See http://stella.sf.net/credits.php for");
+      ADD_ATEXT("\\L\\c0""  See https://stella-emu.github.io/credits.html for");
       ADD_ATEXT("\\L\\c0""  people that have contributed to Stella");
       ADD_ALINE();
       ADD_ATEXT("\\L\\c0""  Thanks to the ScummVM project for the GUI code");

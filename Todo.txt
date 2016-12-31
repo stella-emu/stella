@@ -13,9 +13,9 @@
 ===========================================================================
 
 The main Todo list is now available directly from the main webpage:
-  http://stella.sf.net/todo.php
+  https://stella-emu.github.io/todo.html
 
 If you would like to contribute to Stella's development then feel free to
 contact me by email:
 
-  Stephen Anthony (stephena@users.sf.net).
+  Stephen Anthony (sa666666@gmail.com).

@@ -9,7 +9,7 @@ It is developed by Stephen Anthony, and released under the GPL/v2.
 evdev-joystick is used to set the deadzone for Linux 'evdev' joystick devices.
 Currently, other than G25manage there is no other standalone program available
 to perform such calibration.  This program was originally developed for Stella
-(stella.sf.net), an Atari 2600 emulator, and as such much of this document
+(https://stella-emu.github.io), an Atari 2600 emulator, and as such much of this document
 refers to Stella.  The program itself can be used to calibrate any joystick
 for any application, though, and is not specific to Stella.
 

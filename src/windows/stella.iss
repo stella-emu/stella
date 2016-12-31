@@ -5,9 +5,9 @@
 AppName=Stella
 AppVerName=Stella {#STELLA_VER}
 AppPublisher=The Stella Team
-AppPublisherURL=http://stella.sourceforge.net
-AppSupportURL=http://stella.sourceforge.net
-AppUpdatesURL=http://stella.sourceforge.net
+AppPublisherURL=https://stella-emu.github.io
+AppSupportURL=https://stella-emu.github.io
+AppUpdatesURL=https://stella-emu.github.io
 DefaultDirName={pf}\Stella
 DefaultGroupName=Stella
 OutputBaseFilename="Stella-{#STELLA_VER}-{#STELLA_ARCH}"

@@ -16,8 +16,8 @@ Version:        %{version}
 Release:        %{release}
 Group:          Emulators
 License:        GPL
-URL:            http://stella.sourceforge.net
-Source:         %{name}-%{version}.tar.bz2
+URL:            https://stella-emu.github.io
+Source:         %{name}-%{version}.tar.xz
 BuildRoot:      %_tmppath/%name-%version-%release-root
 BuildRequires:  SDL2-devel MesaGLU-devel
 
