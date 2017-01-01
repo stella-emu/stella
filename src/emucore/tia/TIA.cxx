@@ -83,23 +83,15 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 {
   myFrameManager.setHandlers(
     [this] () {
-      myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
-
-      for (uInt8 i = 0; i < 4; i++)
-        updatePaddle(i);
+      onFrameStart();
     },
     [this] () {
-      mySystem->m6502().stop();
-      mySystem->resetCycles();
-
-      // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
-      if(myAutoFrameEnabled)
-        myConsole.setFramerate(myFrameManager.frameRate());
+      onFrameComplete();
     }
   );
 
-  myCurrentFrameBuffer  = make_ptr<uInt8[]>(160 * 320);
-  myPreviousFrameBuffer = make_ptr<uInt8[]>(160 * 320);
+  myCurrentFrameBuffer  = make_ptr<uInt8[]>(160 * FrameManager::frameBufferHeight);
+  myPreviousFrameBuffer = make_ptr<uInt8[]>(160 * FrameManager::frameBufferHeight);
 
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
@@ -193,8 +185,8 @@ void TIA::installDelegate(System& system, Device& device)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearBuffers()
 {
-  memset(myCurrentFrameBuffer.get(), 0, 160 * 320);
-  memset(myPreviousFrameBuffer.get(), 0, 160 * 320);
+  memset(myCurrentFrameBuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
+  memset(myPreviousFrameBuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -904,6 +896,31 @@ void TIA::updateEmulation()
   myLastCycle = systemCycles;
 
   cycle(cyclesToRun);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::onFrameStart()
+{
+  myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
+
+  for (uInt8 i = 0; i < 4; i++)
+    updatePaddle(i);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::onFrameComplete()
+{
+  mySystem->m6502().stop();
+  mySystem->resetCycles();
+
+  Int32 missingScanlines = myFrameManager.maxVisibleFrameLines() - myFrameManager.currentLine();
+
+  if (missingScanlines > 0)
+    memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.currentLine(), 0, missingScanlines * 160);
+
+  // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
+  if(myAutoFrameEnabled)
+    myConsole.setFramerate(myFrameManager.frameRate());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

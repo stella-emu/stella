@@ -17,6 +17,8 @@
 
 // #define TIA_FRAMEMANAGER_DEBUG_LOG
 
+#include <algorithm>
+
 #include "FrameManager.hxx"
 
 enum Metrics: uInt32 {
@@ -65,6 +67,7 @@ void FrameManager::reset()
   myCurrentFrameTotalLines = myCurrentFrameFinalLines = 0;
   myFrameRate = 60.0;
   myLineInState = 0;
+  myMaxVisibleFrameLines = 0;
   myVsync = false;
   myVblank = false;
   myTotalFrames = 0;
@@ -141,14 +144,15 @@ void FrameManager::nextLineInVsync()
         }
 
         setState(State::frame);
-    } else if (shouldTransition){
-      if (!myVblankViolated) myVblankViolations++;
-      myVblankViolated = true;
-    }
+      } else if (shouldTransition){
+        if (!myVblankViolated) myVblankViolations++;
+        myVblankViolated = true;
+      }
 
-    if (myVblankViolations > Metrics::maxVblankViolations)
-      myVblankMode = VblankMode::floating;
+      if (myVblankViolations > Metrics::maxVblankViolations)
+        myVblankMode = VblankMode::floating;
 
+      break;
   }
 }
 
@@ -222,6 +226,12 @@ uInt32 FrameManager::scanlines() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::maxVisibleFrameLines() const
+{
+  return myMaxVisibleFrameLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setTvMode(TvMode mode)
 {
   if (mode == myMode) return;
@@ -278,6 +288,13 @@ void FrameManager::setState(FrameManager::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::finalizeFrame(FrameManager::State state)
 {
+  myCurrentFrameFinalLines = myCurrentFrameTotalLines;
+  myCurrentFrameTotalLines = 0;
+  myTotalFrames++;
+
+  if (myTotalFrames > Metrics::initialGarbageFrames)
+    myMaxVisibleFrameLines = std::max(myMaxVisibleFrameLines, myLineInState);
+
   if (myOnFrameComplete) {
     myOnFrameComplete();
   }
@@ -286,12 +303,7 @@ void FrameManager::finalizeFrame(FrameManager::State state)
   (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameTotalLines << " total)" << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
-  myCurrentFrameFinalLines = myCurrentFrameTotalLines;
-  myCurrentFrameTotalLines = 0;
   setState(state);
-
-  myTotalFrames++;
-
   if (myTotalFrames <= Metrics::initialGarbageFrames) {
     return;
   }

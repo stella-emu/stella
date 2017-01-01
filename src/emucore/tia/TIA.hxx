@@ -351,6 +351,10 @@ class TIA : public Device
 
   private:
 
+    void onFrameStart();
+
+    void onFrameComplete();
+
     void updateEmulation();
 
     void cycle(uInt32 colorClocks);
