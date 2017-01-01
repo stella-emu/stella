@@ -165,6 +165,8 @@ void FrameManager::setVblank(bool vblank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVsync(bool vsync)
 {
+  if (vsync == myVsync) return;
+
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
   (cout << "vsync " << myVsync << " -> " << vsync << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
 #endif
