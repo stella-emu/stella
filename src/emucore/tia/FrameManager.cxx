@@ -222,7 +222,7 @@ uInt32 FrameManager::currentLine() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameManager::scanlines() const
 {
-  return myState == State::frame ? myLineInState : myCurrentFrameFinalLines;
+  return myState == State::frame ? myCurrentFrameTotalLines : myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
