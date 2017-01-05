@@ -88,8 +88,12 @@ void Player::nusiz(uInt8 value)
 
   // NUSIZ during decode seems to affect the decoding logic. The rods in Meltdown
   // are highly sensitive to this effect, and this seems to model it adequately.
-  if (myIsRendering && myRenderCounter < 0 && myWidth > 8 && oldWidth == 8)
-    myRenderCounter += (myRenderCounter < -2 ? -1 : 1);
+  if (myIsRendering && myRenderCounter < 0) {
+    if (myWidth > 8 && oldWidth == 8)
+      myRenderCounter += (myRenderCounter < -2 ? -1 : 1);
+    else if (myWidth == 8 && oldWidth > 8 && myRenderCounter < -3)
+      myRenderCounter++;
+  }
 
   if (oldWidth != myWidth) updatePattern();
 }
