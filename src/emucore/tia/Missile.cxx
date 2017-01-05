@@ -70,6 +70,9 @@ void Missile::hmm(uInt8 value)
 void Missile::resm(uInt8 counter)
 {
   myCounter = counter;
+
+  if (myIsRendering && myRenderCounter < 0)
+    myRenderCounter = Count::renderCounterOffset + (counter - 157);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
