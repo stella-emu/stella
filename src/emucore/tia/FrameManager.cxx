@@ -44,7 +44,8 @@ static constexpr uInt32
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
-  : myMode(TvMode::pal)
+  : myMode(TvMode::pal),
+    myYstart(0)
 {
   setTvMode(TvMode::ntsc);
   reset();
@@ -73,11 +74,12 @@ void FrameManager::reset()
   myTotalFrames = 0;
   myFramesInMode = 0;
   myModeConfirmed = false;
-  myVblankMode = VblankMode::floating;
   myLastVblankLines = 0;
   myVblankViolations = 0;
   myStableVblankFrames = 0;
   myVblankViolated = false;
+
+  if (myVblankMode == VblankMode::locked) myVblankMode = VblankMode::floating;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -153,7 +155,26 @@ void FrameManager::nextLineInVsync()
         myVblankMode = VblankMode::floating;
 
       break;
+
+    case VblankMode::fixed:
+      if (myLineInState > myYstart) setState(State::frame);
+      break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setYstart(uInt32 ystart)
+{
+  if (ystart == myYstart) return;
+
+  myYstart = ystart;
+
+  myVblankMode = ystart ? VblankMode::fixed : VblankMode::floating;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::ystart() const {
+  return myYstart;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -321,7 +321,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "NO",        // Controller.SwapPaddles
   "AUTO",      // Controller.MouseAxis
   "AUTO",      // Display.Format
-  "34",        // Display.YStart
+  "0",         // Display.YStart
   "210",       // Display.Height
   "NO",        // Display.Phosphor
   "77"         // Display.PPBlend

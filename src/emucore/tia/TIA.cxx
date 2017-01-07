@@ -619,7 +619,7 @@ uInt32 TIA::height() const
 // TODO: stub
 uInt32 TIA::ystart() const
 {
-  return 0;
+  return myFrameManager.ystart();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -632,6 +632,7 @@ void TIA::setHeight(uInt32 height)
 // TODO: stub
 void TIA::setYStart(uInt32 ystart)
 {
+  myFrameManager.setYstart(ystart);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

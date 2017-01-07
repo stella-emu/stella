@@ -65,6 +65,10 @@ class FrameManager : public Serializable
 
     float frameRate() const { return myFrameRate; }
 
+    void setYstart(uInt32 ystart);
+
+    uInt32 ystart() const;
+
     /**
       Serializable methods (see that class for more information).
     */
@@ -87,7 +91,8 @@ class FrameManager : public Serializable
 
     enum VblankMode {
       locked,
-      floating
+      floating,
+      fixed
     };
 
   private:
@@ -127,6 +132,7 @@ class FrameManager : public Serializable
 
     VblankMode myVblankMode;
     uInt32 myLastVblankLines;
+    uInt32 myYstart;
     uInt8 myVblankViolations;
     uInt8 myStableVblankFrames;
     bool myVblankViolated;
