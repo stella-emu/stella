@@ -101,14 +101,12 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 56"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "0164f26f6b38a34208cd4a2d0212afc3"
 "Cartridge.Manufacturer" "Coleco, Ed English"
 "Cartridge.ModelNo" "2656"
 "Cartridge.Name" "Mr. Do! (1983) (Coleco)"
-"Display.YStart" "26"
 "Display.Phosphor" "YES"
 ""
 
@@ -116,20 +114,17 @@
 "Cartridge.Manufacturer" "CBS Electronics, Ed English"
 "Cartridge.ModelNo" "4L1751"
 "Cartridge.Name" "Roc 'n Rope (1984) (CBS Electronics) (PAL)"
-"Display.YStart" "50"
 ""
 
 "Cartridge.MD5" "01abcc1d2d3cba87a3aa0eb97a9d7b9c"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Topy (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "01b09872dcd9556427761f0ed64aa42a"
 "Cartridge.Manufacturer" "Galaga Games"
 "Cartridge.Name" "River Raid (1984) (Galaga Games)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "01cb3e8dfab7203a9c62ba3b94b4e59f"
@@ -195,7 +190,6 @@
 "Cartridge.Manufacturer" "Coleco, Steve 'Jessica' Kitchen"
 "Cartridge.ModelNo" "2468"
 "Cartridge.Name" "Carnival (1982) (Coleco)"
-"Display.YStart" "26"
 "Display.Height" "214"
 ""
 
@@ -243,7 +237,6 @@
 "Cartridge.ModelNo" "11020"
 "Cartridge.Name" "Earth Dies Screaming, The (1983) (20th Century Fox)"
 "Cartridge.Note" "The Day the Earth Stood Still"
-"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "034c1434280b0f2c9f229777d790d1e1"
@@ -294,7 +287,6 @@
 "Cartridge.ModelNo" "CA285"
 "Cartridge.Name" "Wall-Defender (1983) (Bomb)"
 "Cartridge.Note" "AKA Wall Break"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "04014d563b094e79ac8974366f616308"
@@ -318,7 +310,6 @@
 "Cartridge.Manufacturer" "M Network, Patricia Lewis Du Long, Ron Surratt - INTV"
 "Cartridge.ModelNo" "MT4518"
 "Cartridge.Name" "BurgerTime (1983) (M Network)"
-"Display.YStart" "26"
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
@@ -326,7 +317,6 @@
 "Cartridge.ModelNo" "AR-4401"
 "Cartridge.Name" "Survival Island (1983) (Arcadia)"
 "Cartridge.Note" "AKA Jungle Raid"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "047ac3b9faea64522b7a23c4465a7aa8"
@@ -537,7 +527,6 @@
 "Cartridge.MD5" "073d7aff37b7601431e4f742c36c0dc1"
 "Cartridge.Name" "Bermuda (Unknown) (PAL)"
 "Cartridge.Note" "AKA River Raid"
-"Display.YStart" "10"
 ""
 
 "Cartridge.MD5" "074ec425ec20579e64a7ded592155d48"
@@ -551,7 +540,6 @@
 "Cartridge.ModelNo" "C-803"
 "Cartridge.Name" "Bobby Is Going Home (1983) (CCE)"
 "Cartridge.Note" "AKA Bobby Vai Para Casa"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "0751f342ee4cf28f2c9a6e8467c901be"
@@ -838,7 +826,6 @@
 "Cartridge.Name" "Towering Inferno (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Joystick Controllers (swapped)"
 "Console.SwapPorts" "YES"
-"Display.YStart" "30"
 "Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
@@ -905,7 +892,6 @@
 "Cartridge.Manufacturer" "Tigervision, Karl T. Olinger - Teldec"
 "Cartridge.ModelNo" "7-001 - 3.60001 VE"
 "Cartridge.Name" "King Kong (1982) (Tigervision) (PAL) [a]"
-"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "0b17ed42984000da8b727ca46143f87a"
@@ -961,7 +947,6 @@
 "Cartridge.ModelNo" "CX26118"
 "Cartridge.Name" "Millipede (01-04-1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "0bf1e354304f46c0caf8fc0f6f5e9525"
