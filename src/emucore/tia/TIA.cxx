@@ -116,6 +116,7 @@ void TIA::reset()
   myColorHBlank = 0;
   myLastCycle = 0;
   mySubClock = 0;
+  myXDelta = 0;
 
   myBackground.reset();
   myPlayfield.reset();
@@ -346,6 +347,10 @@ bool TIA::poke(uInt16 address, uInt8 value)
         mySystem->incrementCycles(mySubClock / 3);
         mySubClock %= 3;
       }
+      break;
+
+    case RSYNC:
+      applyRsync();
       break;
 
     case VSYNC:
@@ -942,6 +947,9 @@ void TIA::cycle(uInt32 colorClocks)
     else
       tickHframe();
 
+    if (++myHctr >= 228)
+      nextLine();
+
     if (myCollisionUpdateRequired) updateCollision();
 
     myTimestamp++;
@@ -982,8 +990,6 @@ void TIA::tickHblank()
   }
 
   if (++myHblankCtr >= 68) myHstate = HState::frame;
-
-  myHctr++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -991,7 +997,7 @@ void TIA::tickHframe()
 {
   const uInt32 y = myFrameManager.currentLine();
   const bool lineNotCached = myLinesSinceChange < 2 || y == 0;
-  const uInt32 x = myHctr - 68;
+  const uInt32 x = myHctr - 68 + myXDelta;
 
   myCollisionUpdateRequired = lineNotCached;
 
@@ -1004,9 +1010,20 @@ void TIA::tickHframe()
 
   if (myFrameManager.isRendering())
     renderPixel(x, y, lineNotCached);
+}
 
-  if (++myHctr >= 228)
-    nextLine();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::applyRsync()
+{
+  const Int32 x = myHctr - 68;
+
+  if (x > 0 && myFrameManager.isRendering()) {
+    myXDelta = x - 157;
+    memset(myCurrentFrameBuffer.get() + myFrameManager.currentLine() * 160 + x, 0, 160 - x);
+  }
+
+  myLinesSinceChange = 0;
+  myHctr = 225;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1038,6 +1055,7 @@ void TIA::nextLine()
   myHstate = HState::blank;
   myIsFreshLine = true;
   myExtendedHblank = false;
+  myXDelta = 0;
 
   myFrameManager.nextLine();
 }
@@ -1058,6 +1076,8 @@ void TIA::updateCollision()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
 {
+  if (x >= 160) return;
+
   if (lineNotCached) {
     uInt8 color = myBackground.getColor();
 

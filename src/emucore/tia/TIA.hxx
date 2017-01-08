@@ -365,6 +365,8 @@ class TIA : public Device
 
     void tickHframe();
 
+    void applyRsync();
+
     void updateCollision();
 
     void renderSprites();
@@ -411,6 +413,7 @@ class TIA : public Device
 
     Int32 myHblankCtr;
     Int32 myHctr;
+    Int32 myXDelta;
 
     bool myCollisionUpdateRequired;
     uInt32 myCollisionMask;
