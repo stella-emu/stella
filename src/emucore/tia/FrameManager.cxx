@@ -45,6 +45,7 @@ static constexpr uInt32
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
   : myMode(TvMode::pal),
+    myVblankMode(VblankMode::floating),
     myYstart(0)
 {
   setTvMode(TvMode::ntsc);
@@ -79,7 +80,7 @@ void FrameManager::reset()
   myStableVblankFrames = 0;
   myVblankViolated = false;
 
-  if (myVblankMode == VblankMode::locked) myVblankMode = VblankMode::floating;
+  if (myVblankMode != VblankMode::fixed) myVblankMode = VblankMode::floating;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
