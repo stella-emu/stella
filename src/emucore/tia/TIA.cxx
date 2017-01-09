@@ -614,27 +614,24 @@ void TIA::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 uInt32 TIA::height() const
 {
   return myFrameManager.height();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 uInt32 TIA::ystart() const
 {
   return myFrameManager.ystart();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 void TIA::setHeight(uInt32 height)
 {
+  myFrameManager.setFixedHeight(height);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 void TIA::setYStart(uInt32 ystart)
 {
   myFrameManager.setYstart(ystart);

@@ -511,6 +511,7 @@ void Console::changeHeight(int direction)
   if(direction == +1)       // increase Height
   {
     height++;
+    if (height < 210) height = 210;
     if(height > 256 || height > dheight)
     {
       myOSystem.frameBuffer().showMessage("Height at maximum");
@@ -520,11 +521,7 @@ void Console::changeHeight(int direction)
   else if(direction == -1)  // decrease Height
   {
     height--;
-    if(height < 210)
-    {
-      myOSystem.frameBuffer().showMessage("Height at minimum");
-      return;
-    }
+    if(height < 210) height = 0;
   }
   else
     return;
@@ -546,7 +543,7 @@ void Console::setTIAProperties()
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   if(ystart > 64) ystart = 64;
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
-  if(height < 210)      height = 210;
+  if(height < 210 && height != 0)      height = 210;
   else if(height > 256) height = 256;
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
@@ -563,18 +560,9 @@ void Console::setTIAProperties()
     myConsoleInfo.InitialFrameRate = "50";
 
     // PAL ROMs normally need at least 250 lines
-    height = std::max(height, 250u);
+    if (height !=  0) height = std::max(height, 250u);
   }
 
-  // Make sure these values fit within the bounds of the desktop
-  // If not, attempt to center vertically
-  uInt32 dheight = myOSystem.frameBuffer().desktopSize().h;
-  if(height > dheight)
-  {
-    ystart += height - dheight;
-    ystart = std::min(ystart, 64u);
-    height = dheight;
-  }
   myTIA->setYStart(ystart);
   myTIA->setHeight(height);
 }

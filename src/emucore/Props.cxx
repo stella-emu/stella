@@ -322,7 +322,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "AUTO",      // Controller.MouseAxis
   "AUTO",      // Display.Format
   "0",         // Display.YStart
-  "210",       // Display.Height
+  "0",         // Display.Height
   "NO",        // Display.Phosphor
   "77"         // Display.PPBlend
 };

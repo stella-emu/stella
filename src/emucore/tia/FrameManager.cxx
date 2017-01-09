@@ -45,6 +45,7 @@ static constexpr uInt32
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
   : myMode(TvMode::pal),
+    myFixedHeight(0),
     myVblankMode(VblankMode::floating),
     myYstart(0)
 {
@@ -100,9 +101,8 @@ void FrameManager::nextLine()
       break;
 
     case State::frame:
-      if (myLineInState >= myKernelLines + Metrics::visibleOverscan) {
+      if (myLineInState >= (myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan)))
         finalizeFrame();
-      }
       break;
 
     default:
@@ -234,7 +234,15 @@ TvMode FrameManager::tvMode() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameManager::height() const
 {
-  return myKernelLines + Metrics::visibleOverscan;
+  return myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setFixedHeight(uInt32 height)
+{
+  myFixedHeight = height;
+
+  (cout << myFixedHeight << "\n").flush();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

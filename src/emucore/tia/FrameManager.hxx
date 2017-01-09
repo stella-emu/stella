@@ -55,6 +55,8 @@ class FrameManager : public Serializable
 
     uInt32 height() const;
 
+    void setFixedHeight(uInt32 height);
+
     uInt32 currentLine() const;
 
     uInt32 scanlines() const;
@@ -129,6 +131,7 @@ class FrameManager : public Serializable
     uInt32 myKernelLines;
     uInt32 myOverscanLines;
     uInt32 myFrameLines;
+    uInt32 myFixedHeight;
 
     VblankMode myVblankMode;
     uInt32 myLastVblankLines;
