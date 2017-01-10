@@ -16,10 +16,8 @@
 //============================================================================
 
 #include "TIA.hxx"
-#include "TIATypes.hxx"
 #include "M6502.hxx"
 #include "Console.hxx"
-#include "Types.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -638,6 +636,24 @@ void TIA::setYStart(uInt32 ystart)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::autodetectTvMode(bool toggle)
+{
+  myFrameManager.autodetectTvMode(toggle);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setTvMode(TvMode mode)
+{
+  myFrameManager.setTvMode(mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TvMode TIA::tvMode() const
+{
+  return myFrameManager.tvMode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::enableAutoFrame(bool enabled)
 {
   myAutoFrameEnabled = enabled;
@@ -647,12 +663,6 @@ void TIA::enableAutoFrame(bool enabled)
 // TODO: stub
 void TIA::enableColorLoss(bool enabled)
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::isPAL() const
-{
-  return myFrameManager.tvMode() == TvMode::pal;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -766,7 +776,7 @@ bool TIA::toggleFixedColors(uInt8 mode)
   // Otherwise, flip the state
   bool on = (mode == 0 || mode == 1) ? bool(mode) : myColorHBlank == 0;
 
-  bool pal = isPAL();
+  bool pal = myFrameManager.tvMode() == TvMode::pal;
   myMissile0.setDebugColor(pal ? M0ColorPAL : M0ColorNTSC);
   myMissile1.setDebugColor(pal ? M1ColorPAL : M1ColorNTSC);
   myPlayer0.setDebugColor(pal ? P0ColorPAL : P0ColorNTSC);

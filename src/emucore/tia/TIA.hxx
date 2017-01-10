@@ -33,6 +33,7 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
+#include "TvMode.hxx"
 
 class Console;
 
@@ -172,6 +173,10 @@ class TIA : public Device
     void setHeight(uInt32 height);
     void setYStart(uInt32 ystart);
 
+    void autodetectTvMode(bool toggle);
+    void setTvMode(TvMode mode);
+    TvMode tvMode() const;
+
     /**
       Enables/disables auto-frame calculation.  If enabled, the TIA
       re-adjusts the framerate at regular intervals.
@@ -186,11 +191,6 @@ class TIA : public Device
       @param enabled  Whether to enable or disable PAL color-loss mode
     */
     void enableColorLoss(bool enabled);
-
-    /**
-      Answers whether this TIA runs at NTSC or PAL scanrates.
-    */
-    bool isPAL() const;
 
     /**
       Answers the current color clock we've gotten to on this scanline.

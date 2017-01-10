@@ -21,7 +21,7 @@
 #include <functional>
 
 #include "Serializable.hxx"
-#include "Types.hxx"
+#include "TvMode.hxx"
 #include "bspf.hxx"
 
 class FrameManager : public Serializable
@@ -71,6 +71,10 @@ class FrameManager : public Serializable
 
     uInt32 ystart() const;
 
+    void autodetectTvMode(bool toggle);
+
+    void setTvMode(TvMode mode);
+
     /**
       Serializable methods (see that class for more information).
     */
@@ -99,7 +103,9 @@ class FrameManager : public Serializable
 
   private:
 
-    void setTvMode(TvMode mode);
+    void updateTvMode(TvMode mode);
+
+    void updateAutodetectedTvMode();
 
     void setState(State state);
 
@@ -113,6 +119,7 @@ class FrameManager : public Serializable
     callback myOnFrameComplete;
 
     TvMode myMode;
+    bool myAutodetectTvMode;
     State myState;
     uInt32 myLineInState;
     uInt32 myCurrentFrameTotalLines;

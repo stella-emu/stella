@@ -19,7 +19,7 @@
 #define TIA_6502TS_CORE_PADDLE_READER
 
 #include "bspf.hxx"
-#include "Types.hxx"
+#include "TvMode.hxx"
 
 class PaddleReader
 {

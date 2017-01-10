@@ -45,11 +45,12 @@ static constexpr uInt32
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
   : myMode(TvMode::pal),
+    myAutodetectTvMode(true),
     myFixedHeight(0),
     myVblankMode(VblankMode::floating),
     myYstart(0)
 {
-  setTvMode(TvMode::ntsc);
+  updateTvMode(TvMode::ntsc);
   reset();
 }
 
@@ -266,6 +267,18 @@ uInt32 FrameManager::maxVisibleFrameLines() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setTvMode(TvMode mode)
 {
+  if (!myAutodetectTvMode) updateTvMode(mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::autodetectTvMode(bool toggle)
+{
+  myAutodetectTvMode = toggle;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::updateTvMode(TvMode mode)
+{
   if (mode == myMode) return;
 
   myMode = mode;
@@ -336,6 +349,16 @@ void FrameManager::finalizeFrame(FrameManager::State state)
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
   setState(state);
+
+  if (myAutodetectTvMode) updateAutodetectedTvMode();
+
+  myFrameRate = (myMode == TvMode::pal ? 15600.0 : 15720.0) /
+                myCurrentFrameFinalLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::updateAutodetectedTvMode()
+{
   if (myTotalFrames <= Metrics::initialGarbageFrames) {
     return;
   }
@@ -347,16 +370,16 @@ void FrameManager::finalizeFrame(FrameManager::State state)
     deltaPAL =  abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesPAL));
 
   if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance)
-    setTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
+    updateTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
   else if (!myModeConfirmed) {
     if (
       (myCurrentFrameFinalLines  < frameLinesPAL) &&
       (myCurrentFrameFinalLines > frameLinesNTSC) &&
       (myCurrentFrameFinalLines % 2)
     )
-      setTvMode(TvMode::ntsc);
+      updateTvMode(TvMode::ntsc);
     else
-      setTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
+      updateTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
   }
 
   if (oldMode == myMode)
@@ -366,9 +389,6 @@ void FrameManager::finalizeFrame(FrameManager::State state)
 
   if (myFramesInMode > Metrics::framesForModeConfirmation)
     myModeConfirmed = true;
-
-  myFrameRate = (myMode == TvMode::pal ? 15600.0 : 15720.0) /
-                myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
