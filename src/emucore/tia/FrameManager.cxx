@@ -29,10 +29,11 @@ enum Metrics: uInt32 {
   overscanNTSC                  = 30,
   overscanPAL                   = 36,
   vsync                         = 3,
+  vsyncLimit                    = 30,
   visibleOverscan               = 20,
   maxUnderscan                  = 10,
   tvModeDetectionTolerance      = 20,
-  initialGarbageFrames          = 10,
+  initialGarbageFrames          = 20,
   framesForModeConfirmation     = 5,
   maxVblankViolations           = 2,
   minStableVblankFrames         = 1
@@ -71,7 +72,6 @@ void FrameManager::reset()
   myCurrentFrameTotalLines = myCurrentFrameFinalLines = 0;
   myFrameRate = 60.0;
   myLineInState = 0;
-  myMaxVisibleFrameLines = 0;
   myVsync = false;
   myVblank = false;
   myTotalFrames = 0;
@@ -81,6 +81,7 @@ void FrameManager::reset()
   myVblankViolations = 0;
   myStableVblankFrames = 0;
   myVblankViolated = false;
+  myVsyncLines = 0;
 
   if (myVblankMode != VblankMode::fixed) myVblankMode = VblankMode::floating;
 }
@@ -94,7 +95,17 @@ void FrameManager::nextLine()
   switch (myState)
   {
     case State::waitForVsyncStart:
+      if (Int32(myLineInState) > Int32(myFrameLines - myCurrentFrameFinalLines) || !myCurrentFrameFinalLines)
+        myVsyncLines++;
+
+      if (myVsyncLines > Metrics::vsyncLimit) setState(State::waitForFrameStart);
+
+      break;
+
     case State::waitForVsyncEnd:
+      if (++myVsyncLines > Metrics::vsyncLimit)
+        setState(State::waitForFrameStart);
+
       break;
 
     case State::waitForFrameStart:
@@ -165,27 +176,6 @@ void FrameManager::nextLineInVsync()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setYstart(uInt32 ystart)
-{
-  if (ystart == myYstart) return;
-
-  myYstart = ystart;
-
-  myVblankMode = ystart ? VblankMode::fixed : VblankMode::floating;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::ystart() const {
-  return myYstart;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setVblank(bool vblank)
-{
-  myVblank = vblank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVsync(bool vsync)
 {
   if (vsync == myVsync) return;
@@ -221,90 +211,6 @@ void FrameManager::setVsync(bool vsync)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameManager::isRendering() const
-{
-  return myState == State::frame;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TvMode FrameManager::tvMode() const
-{
-  return myMode;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::height() const
-{
-  return myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setFixedHeight(uInt32 height)
-{
-  myFixedHeight = height;
-
-  (cout << myFixedHeight << "\n").flush();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::currentLine() const
-{
-  return myState == State::frame ? myLineInState : 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::scanlines() const
-{
-  return myState == State::frame ? myCurrentFrameTotalLines : myCurrentFrameFinalLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::maxVisibleFrameLines() const
-{
-  return myMaxVisibleFrameLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setTvMode(TvMode mode)
-{
-  if (!myAutodetectTvMode) updateTvMode(mode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::autodetectTvMode(bool toggle)
-{
-  myAutodetectTvMode = toggle;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::updateTvMode(TvMode mode)
-{
-  if (mode == myMode) return;
-
-  myMode = mode;
-
-  switch (myMode)
-  {
-    case TvMode::ntsc:
-      myVblankLines     = Metrics::vblankNTSC;
-      myKernelLines     = Metrics::kernelNTSC;
-      myOverscanLines   = Metrics::overscanNTSC;
-      break;
-
-    case TvMode::pal:
-      myVblankLines     = Metrics::vblankPAL;
-      myKernelLines     = Metrics::kernelPAL;
-      myOverscanLines   = Metrics::overscanPAL;
-      break;
-
-    default:
-      throw runtime_error("frame manager: invalid TV mode");
-  }
-
-  myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setState(FrameManager::State state)
 {
   if (myState == state) return;
@@ -318,10 +224,12 @@ void FrameManager::setState(FrameManager::State state)
 
   switch (myState) {
     case State::waitForFrameStart:
+      myVsyncLines = 0;
       myVblankViolated = false;
       break;
 
     case State::frame:
+      myVsyncLines = 0;
       if (myOnFrameStart) myOnFrameStart();
       break;
 
@@ -337,15 +245,12 @@ void FrameManager::finalizeFrame(FrameManager::State state)
   myCurrentFrameTotalLines = 0;
   myTotalFrames++;
 
-  if (myTotalFrames > Metrics::initialGarbageFrames)
-    myMaxVisibleFrameLines = std::max(myMaxVisibleFrameLines, myLineInState);
-
   if (myOnFrameComplete) {
     myOnFrameComplete();
   }
 
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameTotalLines << " total)" << "\n").flush();
+  (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
   setState(state);
@@ -389,6 +294,103 @@ void FrameManager::updateAutodetectedTvMode()
 
   if (myFramesInMode > Metrics::framesForModeConfirmation)
     myModeConfirmed = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::updateTvMode(TvMode mode)
+{
+  if (mode == myMode) return;
+
+  myMode = mode;
+
+  switch (myMode)
+  {
+    case TvMode::ntsc:
+      myVblankLines     = Metrics::vblankNTSC;
+      myKernelLines     = Metrics::kernelNTSC;
+      myOverscanLines   = Metrics::overscanNTSC;
+      break;
+
+    case TvMode::pal:
+      myVblankLines     = Metrics::vblankPAL;
+      myKernelLines     = Metrics::kernelPAL;
+      myOverscanLines   = Metrics::overscanPAL;
+      break;
+
+    default:
+      throw runtime_error("frame manager: invalid TV mode");
+  }
+
+  myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setYstart(uInt32 ystart)
+{
+  if (ystart == myYstart) return;
+
+  myYstart = ystart;
+
+  myVblankMode = ystart ? VblankMode::fixed : VblankMode::floating;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::ystart() const {
+  return myYstart;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setVblank(bool vblank)
+{
+  myVblank = vblank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameManager::isRendering() const
+{
+  return myState == State::frame;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TvMode FrameManager::tvMode() const
+{
+  return myMode;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::height() const
+{
+  return myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setFixedHeight(uInt32 height)
+{
+  myFixedHeight = height;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::currentLine() const
+{
+  return myState == State::frame ? myLineInState : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::scanlines() const
+{
+  return myState == State::frame ? myCurrentFrameTotalLines : myCurrentFrameFinalLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setTvMode(TvMode mode)
+{
+  if (!myAutodetectTvMode) updateTvMode(mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::autodetectTvMode(bool toggle)
+{
+  myAutodetectTvMode = toggle;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

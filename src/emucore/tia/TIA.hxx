@@ -443,6 +443,7 @@ class TIA : public Device
     // Pointer to the current and previous frame buffers
     BytePtr myCurrentFrameBuffer;
     BytePtr myPreviousFrameBuffer;
+    uInt32 myLastFrameHeight;
 
     Background myBackground;
     Playfield myPlayfield;

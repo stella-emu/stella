@@ -118,7 +118,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myOSystem.settings().setValue("fastscbios", true);
     mySystem->reset(true);  // autodetect in reset enabled
     myTIA->autodetectTvMode(true);
-    for(int i = 0; i < 60; ++i)
+    for(int i = 0; i < 80; ++i)
       myTIA->update();
     myDisplayFormat = myTIA->tvMode() == TvMode::pal ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO")

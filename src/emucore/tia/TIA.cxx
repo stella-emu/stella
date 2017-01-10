@@ -115,6 +115,7 @@ void TIA::reset()
   myLastCycle = 0;
   mySubClock = 0;
   myXDelta = 0;
+  myLastFrameHeight = 0;
 
   myBackground.reset();
   myPlayfield.reset();
@@ -146,8 +147,6 @@ void TIA::frameReset()
   clearBuffers();
 
   myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
-
-  // TODO - make use of ystart and height, maybe move to FrameManager
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -926,10 +925,12 @@ void TIA::onFrameComplete()
   mySystem->m6502().stop();
   mySystem->resetCycles();
 
-  Int32 missingScanlines = myFrameManager.maxVisibleFrameLines() - myFrameManager.currentLine();
+  Int32 missingScanlines = myLastFrameHeight - myFrameManager.currentLine();
 
   if (missingScanlines > 0)
     memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.currentLine(), 0, missingScanlines * 160);
+
+  myLastFrameHeight = myFrameManager.currentLine();
 
   // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)

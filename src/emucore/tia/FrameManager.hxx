@@ -61,8 +61,6 @@ class FrameManager : public Serializable
 
     uInt32 scanlines() const;
 
-    uInt32 maxVisibleFrameLines() const;
-
     uInt32 frameCount() const { return myTotalFrames; }
 
     float frameRate() const { return myFrameRate; }
@@ -124,7 +122,7 @@ class FrameManager : public Serializable
     uInt32 myLineInState;
     uInt32 myCurrentFrameTotalLines;
     uInt32 myCurrentFrameFinalLines;
-    uInt32 myMaxVisibleFrameLines;
+    uInt32 myVsyncLines;
     float  myFrameRate;
 
     uInt32 myTotalFrames;
