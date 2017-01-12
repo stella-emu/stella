@@ -67,8 +67,8 @@ my @prop_defaults = (
   "NO",
   "AUTO",
   "AUTO",
-  "34",
-  "210",
+  "0",
+  "0",
   "NO",
   "77"
 );

@@ -28,7 +28,7 @@
 "Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech - Teldec"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega)"
-"Display.YStart" "36"
+"Display.YStart" "34"
 ""
 
 "Cartridge.MD5" "00ce0bdd43aed84a983bef38fe7f5ee3"
@@ -125,6 +125,7 @@
 "Cartridge.MD5" "01b09872dcd9556427761f0ed64aa42a"
 "Cartridge.Manufacturer" "Galaga Games"
 "Cartridge.Name" "River Raid (1984) (Galaga Games)"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "01cb3e8dfab7203a9c62ba3b94b4e59f"
@@ -342,7 +343,6 @@
 
 "Cartridge.MD5" "04dfb4acac1d0909e4c360fd2ac04480"
 "Cartridge.Name" "Jammed (2001) (XYPE) (NTSC)"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "04e737c9d53cd84bfd5ee679954e4706"
@@ -620,7 +620,6 @@
 "Cartridge.Name" "Tanks DX (Charles Morgan) (Hack)"
 "Cartridge.Note" "Hack of Tanks But No Tanks"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "0832fb2ee654bf9382bc57d2b16d2ffc"
@@ -737,7 +736,7 @@
 "Cartridge.Name" "Acid Drop (TJ)"
 "Cartridge.Note" "NTSC Conversion"
 "Cartridge.Rarity" "Homebrew"
-"Display.YStart" "8"
+"Display.YStart" "6"
 "Display.Height" "240"
 ""
 
@@ -841,6 +840,7 @@
 "Cartridge.MD5" "0acaf71e60b89f6b6eab63db6ab84510"
 "Cartridge.Name" "This Planet Sucks (Greg Troutman) [a2]"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "0aceb7c3bd13fe048b77a1928ed4267d"
@@ -993,7 +993,7 @@
 "Cartridge.Name" "Air-Sea Battle (1977) (Atari) (PAL)"
 "Cartridge.Note" "AKA Anti-Aircraft"
 "Cartridge.Rarity" "Uncommon"
-"Display.YStart" "38"
+"Display.YStart" "40"
 "Display.Height" "256"
 ""
 
@@ -1209,7 +1209,6 @@
 
 "Cartridge.MD5" "0f341d1f4e144e3163d9a5fc5a662b79"
 "Cartridge.Name" "RUN Platform Demo (PD)"
-"Display.YStart" "0"
 "Display.Phosphor" "YES"
 ""
 
@@ -1415,7 +1414,6 @@
 "Cartridge.ModelNo" "CX26118"
 "Cartridge.Name" "Millipede (1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "11cf751bc8173db105eabd119c5844ba"
@@ -1459,7 +1457,6 @@
 "Cartridge.ModelNo" "719.013 5"
 "Cartridge.Name" "Ungeheuer der Tiefe (Quelle) (PAL)"
 "Cartridge.Note" "AKA Skindiver"
-"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "1287535256bf5dff404839ac9e25c3e7"
@@ -1725,7 +1722,6 @@
 "Cartridge.Manufacturer" "Hozer Video Games"
 "Cartridge.Name" "Jammed (V0.2) (Demo) (2001) (TJ)"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "15bcd74f2f1f2a63e1aa93e90d2c0555"
@@ -1754,7 +1750,7 @@
 
 "Cartridge.MD5" "15fe28d0c8893be9223e8cb2d032e557"
 "Cartridge.Name" "Towering Inferno (208 in 1) (Unknown) (PAL)"
-"Display.YStart" "52"
+"Display.YStart" "53"
 "Display.Phosphor" "YES"
 ""
 
@@ -1764,7 +1760,6 @@
 "Cartridge.Note" "NTSC Conversion"
 "Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
-"Display.YStart" "20"
 "Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
@@ -1890,7 +1885,6 @@
 "Cartridge.Manufacturer" "M Network, Hal Finney, Bruce Pedersen - INTV"
 "Cartridge.ModelNo" "MT5659"
 "Cartridge.Name" "Space Attack (1982) (M Network)"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "17bbe288c3855c235950fea91c9504e9"
@@ -2038,7 +2032,6 @@
 "Cartridge.Manufacturer" "Parker Brothers, David Lamkins, Laura Nikolich"
 "Cartridge.ModelNo" "PB5900"
 "Cartridge.Name" "Spider-Man (1982) (Parker Bros)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "19a9d3f9fa1b1358fb53009444247aaf"
@@ -2059,7 +2052,6 @@
 "Cartridge.Manufacturer" "PlayAround - J.H.M."
 "Cartridge.ModelNo" "202"
 "Cartridge.Name" "Burning Desire (1982) (PlayAround)"
-"Display.YStart" "25"
 "Display.Phosphor" "YES"
 ""
 
@@ -2232,7 +2224,6 @@
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.ModelNo" "005-01"
 "Cartridge.Name" "Buck Rogers - Planet of Zoom (1983) (Sega)"
-"Display.YStart" "26"
 "Display.Phosphor" "YES"
 ""
 
@@ -2360,7 +2351,7 @@
 
 "Cartridge.MD5" "1ec5bef77b91e59313cba205f15b06d7"
 "Cartridge.Name" "Overhead Adventure Demo 1 (PD)"
-"Display.YStart" "64"
+"Display.YStart" "60"
 ""
 
 "Cartridge.MD5" "1ede4f365ce1386d58f121b15a775e24"
@@ -2466,7 +2457,6 @@
 "Cartridge.Manufacturer" "20th Century Fox Video Games - Videa, Lee Actor"
 "Cartridge.Name" "Lasercade (1983) (20th Century Fox) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "200309c8fba0f248c13751ed4fc69bab"
@@ -2560,7 +2550,6 @@
 "Cartridge.Name" "Custer's Viagra (JSK) (Hack) [a]"
 "Cartridge.Note" "Hack of Custer's Revenge"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "211fbbdbbca1102dc5b43dc8157c09b3"
@@ -2577,7 +2566,6 @@
 "Cartridge.Manufacturer" "K-Tel Vision"
 "Cartridge.Name" "Spider Maze (1982) (K-Tel Vision)"
 "Cartridge.Note" "AKA Spider Kong"
-"Display.YStart" "25"
 "Display.Height" "220"
 ""
 
@@ -2658,7 +2646,7 @@
 "Cartridge.MD5" "225522777dc7155627808bde0c1d0ef0"
 "Cartridge.Name" "This Planet Sucks Demo 1 (Greg Troutman) (PD)"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "40"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "22675cacd9b71dea21800cbf8597f000"
@@ -2740,7 +2728,6 @@
 "Console.LeftDifficulty" "A"
 "Console.RightDifficulty" "A"
 "Console.SwapPorts" "YES"
-"Display.YStart" "26"
 "Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
@@ -2921,7 +2908,6 @@
 "Cartridge.Manufacturer" "Avalon Hill, Jean Baer, Bill Hood"
 "Cartridge.ModelNo" "5004002"
 "Cartridge.Name" "Shuttle Orbiter (1983) (Avalon Hill)"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "25bb080457351be724aac8a02021aa92"
@@ -2967,7 +2953,6 @@
 "Cartridge.Note" "NTSC Conversion, joystick ports swapped"
 "Cartridge.Rarity" "Homebrew"
 "Console.SwapPorts" "YES"
-"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "262ccb882ff617d9b4b51f24aee02cbe"
@@ -3199,7 +3184,6 @@
 "Cartridge.Name" "32 in 1 Game Cartridge (1988) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
 "Cartridge.Type" "32IN1"
-"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "291cc37604bc899e8e065c30153fc4b9"
@@ -3213,7 +3197,6 @@
 "Cartridge.Name" "32 in 1 Console ROM (02-10-1989) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
 "Cartridge.Type" "32IN1"
-"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "292a0bb975b2587f9ac784c960e1b453"
@@ -3302,7 +3285,6 @@
 "Cartridge.Manufacturer" "Tigervision, Bill Hogue"
 "Cartridge.ModelNo" "7-011"
 "Cartridge.Name" "Miner 2049er Volume II (1983) (Tigervision)"
-"Display.YStart" "28"
 "Display.Phosphor" "YES"
 ""
 
@@ -3445,7 +3427,6 @@
 "Cartridge.Manufacturer" "Xonox - K-Tel Software - Beck-Tech"
 "Cartridge.ModelNo" "6210, 06002, 06004, 99002"
 "Cartridge.Name" "Ghost Manor (1983) (Xonox)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "2bf34b6ad7d2317a2d0808b3fb93571b"
@@ -3529,7 +3510,6 @@
 "Cartridge.Manufacturer" "PlayAround - J.H.M."
 "Cartridge.ModelNo" "203"
 "Cartridge.Name" "Jungle Fever (1982) (PlayAround)"
-"Display.YStart" "24"
 "Display.Phosphor" "YES"
 ""
 
@@ -3744,7 +3724,6 @@
 "Cartridge.MD5" "2f2f9061398a74c80420b99ddecf6448"
 "Cartridge.Manufacturer" "Rentacom - Brazil"
 "Cartridge.Name" "Bobby Is Going Home (Rentacom)"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "2f66ebf037321ed0442ac4b89ce22633"
@@ -3783,6 +3762,7 @@
 "Cartridge.MD5" "303242c239474f2d7763b843de58c1c3"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Laser Blast (CCE)"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "304512528a5530a9361e8a231ed9a6de"
@@ -3790,6 +3770,7 @@
 "Cartridge.Name" "River Raid Plus (Thomas Jentzsch) (Hack)"
 "Cartridge.Note" "Hack of River Raid"
 "Cartridge.Rarity" "Hack"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "30512e0e83903fc05541d2f6a6a62654"
@@ -3844,7 +3825,6 @@
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "30e0ab8be713208ae9a978b34e9e8e8c"
@@ -3987,14 +3967,12 @@
 "Cartridge.ModelNo" "CX2663"
 "Cartridge.Name" "Road Runner (06-25-1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "44"
 ""
 
 "Cartridge.MD5" "324cb4a749bcac4f3db9da842b85d2f7"
 "Cartridge.Manufacturer" "Dennis Debro"
 "Cartridge.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
 "Cartridge.Rarity" "Homebrew"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "327468d6c19697e65ab702f06502c7ed"
@@ -4032,7 +4010,6 @@
 "Cartridge.ModelNo" "99007, 6240"
 "Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox)"
 "Cartridge.Note" "AKA Thundarr the Barbarian"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "32e65d1e4dfcbcd9b57fee72cafe074c"
@@ -4063,7 +4040,6 @@
 
 "Cartridge.MD5" "332f01fd18e99c6584f61aa45ee7791e"
 "Cartridge.Name" "X'Mission (Unknown) (PAL)"
-"Display.YStart" "0"
 "Display.Phosphor" "YES"
 ""
 
@@ -4104,20 +4080,19 @@
 "Cartridge.Manufacturer" "CBS Electronics, Tom DiDomenico"
 "Cartridge.ModelNo" "4L 2486 5000"
 "Cartridge.Name" "Blueprint (1983) (CBS Electronics)"
-"Display.YStart" "32"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "33ed6dfac4b9ea2f81f778ceddbb4a75"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.Name" "River Raid (1982) (SpkSoft) [t1]"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "340f546d59e72fb358c49ac2ca8482bb"
 "Cartridge.Manufacturer" "Sancho - Tang's Electronic Co."
 "Cartridge.ModelNo" "TEC003"
 "Cartridge.Name" "Skindiver (1983) (Sancho) (PAL)"
-"Display.YStart" "39"
 ""
 
 "Cartridge.MD5" "34340c8eecd1e557314789cc6477e650"
@@ -4131,7 +4106,6 @@
 "Cartridge.ModelNo" "4L 2486 5000"
 "Cartridge.Name" "Blueprint (1983) (CBS Electronics) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "345758747b893e4c9bdde8877de47788"
@@ -4345,14 +4319,12 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 56"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "36c993dc328933e4dd6374a8ffe224f4"
 "Cartridge.Manufacturer" "Gameworld"
 "Cartridge.ModelNo" "133-007"
 "Cartridge.Name" "Bermuda Triangle (1983) (Gameworld) (PAL)"
-"Display.YStart" "48"
 ""
 
 "Cartridge.MD5" "36e47ed74968c365121eab60f48c6517"
@@ -4553,6 +4525,7 @@
 "Cartridge.Manufacturer" "Activision, Carol Shaw"
 "Cartridge.ModelNo" "AX-020, AX-020-04"
 "Cartridge.Name" "River Raid (1982) (Activision)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "393e41ca8bdd35b52bf6256a968a9b89"
@@ -4565,7 +4538,6 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Lilly Adventure (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "30"
 "Display.Height" "230"
 ""
 
@@ -4608,6 +4580,7 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-811"
 "Cartridge.Name" "River Raid (1983) (CCE) [a]"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "39da69ff9833f8c143f03b6e0e7a996b"
@@ -4621,6 +4594,7 @@
 "Cartridge.Manufacturer" "Robby"
 "Cartridge.ModelNo" "18"
 "Cartridge.Name" "River Raid (Robby)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "3a2e2d0c6892aa14544083dfb7762782"
@@ -4671,7 +4645,6 @@
 "Cartridge.Manufacturer" "Absolute Entertainment, Dan Kitchen"
 "Cartridge.ModelNo" "AK-046-04"
 "Cartridge.Name" "Tomcat (1988) (Absolute)"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "3ad58b53a1e972396890bd86c735e78d"
@@ -4684,7 +4657,7 @@
 "Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) [fixed]"
-"Display.YStart" "31"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
@@ -4712,7 +4685,7 @@
 "Cartridge.MD5" "3b64a00ce147c3c29f7f8f8e531d08d8"
 "Cartridge.Name" "This Planet Sucks (16K) (Greg Troutman)"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "38"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "3b69f8929373598e1752f43f8da61aa4"
@@ -4734,7 +4707,6 @@
 "Cartridge.ModelNo" "MT4319"
 "Cartridge.Name" "Masters of the Universe (1983) (M Network)"
 "Console.RightDifficulty" "A"
-"Display.YStart" "25"
 "Display.Phosphor" "YES"
 ""
 
@@ -4773,7 +4745,6 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Dragster (Jone Yuan) (4K)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "3c3a2bb776dec245c7d6678b5a56ac10"
@@ -4855,12 +4826,10 @@
 "Cartridge.Name" "Bobby Is Going Home (1983) (CCE) (PAL)"
 "Cartridge.Note" "AKA Bobby Vai Para Casa"
 "Cartridge.Rarity" "Rare"
-"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "3cdd91e1c28d28e856c0063d602da166"
 "Cartridge.Name" "Stell-A-Sketch (03-11-1997) (Bob Colbert) (PD)"
-"Display.YStart" "20"
 "Display.Phosphor" "YES"
 ""
 
@@ -4895,7 +4864,6 @@
 "Cartridge.ModelNo" "C-833"
 "Cartridge.Name" "Target Practice (1983) (CCE)"
 "Cartridge.Note" "AKA Carnival"
-"Display.YStart" "26"
 "Display.Height" "214"
 ""
 
@@ -4954,7 +4922,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Robot City (V0.12) (TJ)"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "3e22c7eaf6459b67388602e4bebbb3a8"
@@ -5324,7 +5291,6 @@
 
 "Cartridge.MD5" "4251b4557ea6953e88afb22a3a868724"
 "Cartridge.Name" "Robot City (V1.1) (TJ)"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "425ee444a41d218598893d6b6e03431a"
@@ -6042,7 +6008,6 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "4c205f166157154df2f1ef60d87e552f"
@@ -6259,6 +6224,7 @@
 "Cartridge.Manufacturer" "Supergame"
 "Cartridge.Name" "River Raid III (Supergame)"
 "Cartridge.Note" "AKA River Raid"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "4e99ebd65a967cabf350db54405d577c"
@@ -6391,7 +6357,6 @@
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "PADDLES"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "50568c80ac61cab789d9923c9b05b68e"
@@ -6516,7 +6481,6 @@
 "Cartridge.ModelNo" "PG206"
 "Cartridge.Name" "Bobby Is Going Home (1983) (BitCorp)"
 "Cartridge.Note" "AKA Bobby geht Heim"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "522c9cf684ecd72db2f85053e6f6f720"
@@ -6926,7 +6890,6 @@
 "Cartridge.Manufacturer" "Mystique - American Multiple Industries, Joel H. Martin"
 "Cartridge.ModelNo" "1001"
 "Cartridge.Name" "Custer's Revenge (1982) (Mystique)"
-"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "585600522b1f22f617652c962e358a5d"
@@ -6956,7 +6919,8 @@
 "Cartridge.MD5" "589c73bbcd77db798cb92a992b4c06c3"
 "Cartridge.Manufacturer" "Xonox - K-Tel Software, John Perkins"
 "Cartridge.ModelNo" "6230, 7210, 06004, 99004"
-"Cartridge.Name" "Artillery Duel (1983) (Xonox) (PAL)"
+"Cartridge.Name" "Artillery Duel (1983) (Xonox) (PAL60)"
+"Display.Format" "PAL60"
 "Display.YStart" "20"
 ""
 
@@ -7011,7 +6975,7 @@
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "599cbf919d47a05af975ad447df29497"
@@ -7052,6 +7016,7 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-811"
 "Cartridge.Name" "River Raid (1983) (CCE)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "5a17e30e6e911e74ccd7b716d02b16c6"
@@ -7583,7 +7548,7 @@
 
 "Cartridge.MD5" "5fb71cc60e293fe10a5023f11c734e55"
 "Cartridge.Name" "This Planet Sucks (Fix) (27-12-2002) (Greg Troutman)"
-"Display.YStart" "38"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "600d48eef5c0ec27db554b7328b3251c"
@@ -7802,7 +7767,6 @@
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "6333ef5b5cbb77acd47f558c8b7a95d3"
@@ -8840,7 +8804,6 @@
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 70"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "6ed6bda5c42b2eb7a21c54e5b3ace3e3"
@@ -9528,7 +9491,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-001"
 "Cartridge.Name" "Dragster (1980) (Activision)"
-"Display.YStart" "22"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "7732e4e4cc2644f163d6650ddcc9d9df"
@@ -9857,7 +9820,6 @@
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "3-D Tic-Tac-Toe (32 in 1) (1988) (Atari) (PAL)"
-"Display.YStart" "62"
 ""
 
 "Cartridge.MD5" "7b6f3348dbf71ada88db0fdaf7feefe0"
@@ -10069,7 +10031,6 @@
 "Cartridge.ModelNo" "C-833"
 "Cartridge.Name" "Target Practice (1983) (CCE) [a]"
 "Cartridge.Note" "AKA Carnival"
-"Display.YStart" "26"
 "Display.Height" "214"
 ""
 
@@ -10481,7 +10442,6 @@
 
 "Cartridge.MD5" "82337e5fe0f418ca9484ca851dfc226a"
 "Cartridge.Name" "Robot City (V1.0) (Alpha) (TJ)"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "826481f6fc53ea47c9f272f7050eedf7"
@@ -10674,6 +10634,7 @@
 "Cartridge.MD5" "8530caaaf40acbdcd118c282b5f8a37a"
 "Cartridge.Name" "This Planet Sucks Demo 2 (Greg Troutman) (PD)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "8538c5e3ee83267774480649f83fa8d6"
@@ -10890,7 +10851,6 @@
 "Cartridge.Manufacturer" "Dennis Debro"
 "Cartridge.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
 "Cartridge.Rarity" "Homebrew"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "87b6a17132fc32f576bc49ea18729506"
@@ -11127,7 +11087,7 @@
 "Cartridge.Manufacturer" "Atari, Larry Kaplan"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL)"
-"Display.YStart" "40"
+"Display.YStart" "42"
 "Display.Height" "256"
 ""
 
@@ -11141,7 +11101,7 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Cosmic Swarm (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "30"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "8b04e9d132b8e30d447acaa6bd049c32"
@@ -11267,11 +11227,13 @@
 "Cartridge.Manufacturer" "Supergame"
 "Cartridge.ModelNo" "71"
 "Cartridge.Name" "River Raid (1984) (Supergame)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "8c941fa32c7718a10061d8c328909577"
 "Cartridge.Manufacturer" "Digivision"
 "Cartridge.Name" "River Raid (Digivision)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "8ccaa442d26b09139685f5b22bf189c4"
@@ -11563,6 +11525,7 @@
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "River Raid II (1985) (Digitel)"
 "Cartridge.Note" "AKA River Raid"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "910dd9bf98cc5bc080943e5128b15bf5"
@@ -11583,7 +11546,6 @@
 "Cartridge.Manufacturer" "Hozer Video Games"
 "Cartridge.Name" "Jammed (V0.1) (Demo) (2001) (TJ)"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "913d5d959b5021f879033c89797bab5e"
@@ -11617,7 +11579,7 @@
 "Cartridge.Name" "Laser Blast (Jone Yuan) (Hack)"
 "Cartridge.Note" "2600 Screen Search Console"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "30"
+"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "91c2098e88a6b13f977af8c003e0bca5"
@@ -11712,6 +11674,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-008"
 "Cartridge.Name" "Laser Blast (1981) (Activision)"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "9333172e3c4992ecf548d3ac1f2553eb"
@@ -11806,7 +11769,6 @@
 "Cartridge.Name" "Custer's Viagra (JSK) (Hack)"
 "Cartridge.Note" "Hack of Custer's Revenge"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "94102febc53b4a78342d11b645342ed4"
@@ -12052,7 +12014,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Robot City (V0.21) (15-09-2002) (TJ)"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "97d0151beb84acbe82aa6db18cd91b98"
@@ -12400,7 +12361,6 @@
 "Cartridge.Name" "Climber 5 (16-04-2003) (Dennis Debro)"
 "Cartridge.Note" "For Philly Classic 4"
 "Cartridge.Rarity" "Homebrew"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "9d522a3759aa855668e75962c84546f7"
@@ -13216,7 +13176,7 @@
 "Cartridge.Name" "Dragrace (Hack)"
 "Cartridge.Note" "Hack of Dragster"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "27"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "a875f0a919129b4f1b5103ddd200d2fe"
@@ -13296,6 +13256,7 @@
 "Cartridge.MD5" "a94528ae05dd051894e945d4d2349b3b"
 "Cartridge.Manufacturer" "Genus"
 "Cartridge.Name" "River Raid (Genus)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "a94b8ca630f467b574b614808d813919"
@@ -13330,7 +13291,7 @@
 "Cartridge.MD5" "a98b649912b6ca19eaf5c2d2faf38562"
 "Cartridge.Name" "This Planet Sucks (Greg Troutman) (PAL) [!]"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "38"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "a995b6cbdb1f0433abc74050808590e6"
@@ -13411,7 +13372,6 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "02"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "aafc79ffc32c4c9b2d73c8ada7602cfe"
@@ -14797,6 +14757,16 @@
 "Cartridge.Name" "20 Sprites at Once Demo 4 (PD)"
 ""
 
+"Cartridge.MD5" "bfb73aabb2489316cd5882c3cd11d9f9"
+"Cartridge.Manufacturer" "AtariAge, Chris Walton & Thomas Jentzsch"
+"Cartridge.ModelNo" "165"
+"Cartridge.Name" "Star Castle Arcade (2014) (AtariAge)"
+"Cartridge.Rarity" "Homebrew"
+"Controller.Right" "SAVEKEY"
+"Display.YStart" "30"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "bfcabc6995ef42d0b6c06786993dc4d6"
 "Cartridge.Name" "Star Fire - Creating a Universe (09-09-2002) (MP)"
 ""
@@ -14980,7 +14950,7 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Dragster (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "22"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "c221607529cabc93450ef25dbac6e8d2"
@@ -15025,6 +14995,7 @@
 "Cartridge.Name" "River Raid (Jone Yuan) (Hack)"
 "Cartridge.Note" "2600 Screen Search Console"
 "Cartridge.Rarity" "Hack"
+"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "c29f8db680990cb45ef7fef6ab57a2c2"
@@ -15257,7 +15228,6 @@
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "45"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "c5387fc1aa71f11d2fa82459e189a5f0"
@@ -15445,7 +15415,7 @@
 "Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
 "Cartridge.Name" "Official Frogger, The (1983) (Arcadia)"
-"Display.YStart" "32"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c745487828a1a6a743488ecebc55ad44"
@@ -15460,6 +15430,7 @@
 "Cartridge.Name" "River Raid Tanks (Thomas Jentzsch) (Hack)"
 "Cartridge.Note" "Hack of River Raid"
 "Cartridge.Rarity" "Hack"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "c7600d72247c5dfa1ec1a88d23e6c85e"
@@ -15829,7 +15800,7 @@
 "Cartridge.ModelNo" "PG206 [demonstration cartridge]"
 "Cartridge.Name" "Bobby Is Going Home (1983) (BitCorp) (PAL) [demo cart]"
 "Cartridge.Note" "AKA Bobby geht Heim"
-"Display.YStart" "40"
+"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "ccb5fa954fb76f09caae9a8c66462190"
@@ -15900,6 +15871,7 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "River Raid (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
+"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "cd4ded1ede63c4dd09f3dd01bda7458c"
@@ -16234,13 +16206,15 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Laser Blast (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "d078d25873c5b99f78fa267245a2af02"
 "Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega) [a]"
-"Display.YStart" "36"
+"Display.YStart" "34"
+"Display.Height" "211"
 ""
 
 "Cartridge.MD5" "d08fccfbebaa531c4a4fa7359393a0a9"
@@ -16447,6 +16421,7 @@
 "Cartridge.ModelNo" "08-08-1980"
 "Cartridge.Name" "Laser Blast (08-08-1980) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "d2c957dd7746521b51bb09fde25c5774"
@@ -16649,7 +16624,6 @@
 "Cartridge.Name" "Custer's Viagra (Atari Troll) (Hack)"
 "Cartridge.Note" "Hack of Custer's Revenge"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "d597d35c6022c590d6e75e865738558a"
@@ -16679,12 +16653,14 @@
 "Cartridge.Manufacturer" "Star Game"
 "Cartridge.ModelNo" "003"
 "Cartridge.Name" "River Raid (Star Game)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "d5f965c159e26a1fb49a22a47fbd1dd0"
 "Cartridge.Manufacturer" "Supergame"
 "Cartridge.Name" "River Raid II (Supergame)"
 "Cartridge.Note" "AKA River Raid"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "d605ed12f4eaaaec3dcd5aa909a4bad7"
@@ -16851,7 +16827,6 @@
 "Cartridge.Manufacturer" "Dennis Debro"
 "Cartridge.Name" "Climber 5 (30-10-2002) (Dennis Debro) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "d85f1e35c5445ac898746719a3d93f09"
@@ -16988,6 +16963,7 @@
 "Cartridge.MD5" "da5096000db5fdaa8d02db57d9367998"
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "River Raid (1983) (Digitel)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "da6465a34d2e44d26aa9a2a0cd1bce4d"
@@ -17290,7 +17266,7 @@
 "Cartridge.MD5" "dd92d6ad50976f881d86b52d38616118"
 "Cartridge.Manufacturer" "SpkSoft"
 "Cartridge.Name" "River Raid (SpkSoft) [h1]"
-"Display.YStart" "10"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "dda23757407c4e217f64962c87ad0c82"
@@ -17514,7 +17490,7 @@
 "Cartridge.MD5" "dfe6aa7443bb813cefa35a4cf4887422"
 "Cartridge.Name" "This Planet Sucks (Greg Troutman) [a1]"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "37"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "dff33523ccd2fdc8912e84cab8e0d982"
@@ -17838,7 +17814,6 @@
 "Cartridge.ModelNo" "CX2618, CX2618P"
 "Cartridge.Name" "3-D Tic-Tac-Toe (1980) (Atari) (PAL)"
 "Cartridge.Rarity" "Uncommon"
-"Display.YStart" "44"
 ""
 
 "Cartridge.MD5" "e363e467f605537f3777ad33e74e113a"
@@ -18024,6 +17999,7 @@
 "Cartridge.MD5" "e56da674188ba2f02c7a0a343a01236f"
 "Cartridge.Name" "This Planet Sucks Demo 4 (Greg Troutman) (PD)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "e5a6e0bb7d56e2f08b237e15076e5699"
@@ -18059,6 +18035,13 @@
 "Cartridge.Manufacturer" "CommaVid, John Bronstein"
 "Cartridge.ModelNo" "CM-003"
 "Cartridge.Name" "Cosmic Swarm (1982) (CommaVid)"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "e5f360226dc552aba3e7e9b202330f48"
+"Cartridge.Manufacturer" "Supercat"
+"Cartridge.Name" "Mega Bitmap Demo (2007) (Supercat)"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -18688,7 +18671,7 @@
 "Cartridge.MD5" "edf69b123e06eaf8663cc78d8aeba06e"
 "Cartridge.Manufacturer" "SpkSoft 98"
 "Cartridge.Name" "River Raid (SpkSoft 98) [h1]"
-"Display.YStart" "10"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "ee28424af389a7f3672182009472500c"
@@ -18964,6 +18947,7 @@
 "Cartridge.MD5" "f11cfab087fcbd930ab8b0becc5b2e5a"
 "Cartridge.Manufacturer" "Canal 3 - Intellivision"
 "Cartridge.Name" "River Raid (Canal 3)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "f12afbffa080dd3b2801dd14d4837cf6"
@@ -19120,6 +19104,7 @@
 "Cartridge.Manufacturer" "Digimax"
 "Cartridge.Name" "River Raid II (Digimax)"
 "Cartridge.Note" "AKA River Raid"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "f2e4fb2d3600c0f76d05864e658cc57b"
@@ -19134,7 +19119,6 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Bobby Is Going Home (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "f303630a2d7316787aecd67fff6b2e33"
@@ -19359,7 +19343,7 @@
 "Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
 "Cartridge.Name" "Official Frogger, The (Preview) (1983) (Arcadia)"
-"Display.YStart" "32"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "f613aad84d2163d6b197b220bfec1b7e"
@@ -19701,7 +19685,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Robot City (V0.18) (01-09-2002) (TJ)"
 "Cartridge.Rarity" "New Release"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "f9655ed51462ecfc690c7b97cec649f9"
@@ -19793,7 +19776,7 @@
 "Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision)"
-"Display.YStart" "31"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "fa1b060fd8e0bca0c2a097dcffce93d3"
@@ -19808,7 +19791,6 @@
 "Cartridge.MD5" "fa2be8125c3c60ab83e1c0fe56922fcb"
 "Cartridge.Manufacturer" "DSD-Camelot - Johnson & Johnson, Michael Doherty, Clyde Hager"
 "Cartridge.Name" "Tooth Protectors (1983) (DSD-Camelot)"
-"Display.YStart" "26"
 "Display.Phosphor" "YES"
 ""
 
@@ -19992,6 +19974,7 @@
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "River Raid III (1985) (Digitel)"
 "Cartridge.Note" "AKA River Raid"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "fbd6102e17a5c02c6e1911381b7203f9"
@@ -20229,7 +20212,6 @@
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10"
-"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "ff3bd0c684f7144aeaa18758d8281a78"
@@ -20239,7 +20221,6 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES_IAXIS"
-"Display.YStart" "48"
 ""
 
 "Cartridge.MD5" "ff5a9e340d96df6f5a5b6eb038e923bd"
@@ -20300,19 +20281,3 @@
 "Display.YStart" "28"
 ""
 
-"Cartridge.MD5" "bfb73aabb2489316cd5882c3cd11d9f9"
-"Cartridge.Manufacturer" "AtariAge, Chris Walton & Thomas Jentzsch"
-"Cartridge.ModelNo" "165"
-"Cartridge.Name" "Star Castle Arcade (AtariAge)"
-"Cartridge.Rarity" "Homebrew"
-"Controller.Right" "SAVEKEY"
-"Display.YStart" "30"
-"Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "e5f360226dc552aba3e7e9b202330f48"
-"Cartridge.Manufacturer" "Supercat"
-"Cartridge.Name" "Mega Bitmap Demo (2007) (Supercat)"
-"Cartridge.Rarity" "Homebrew"
-"Display.Phosphor" "YES"
-""
