@@ -35,6 +35,9 @@ class FrameManager : public Serializable
     FrameManager();
 
   public:
+
+    static uInt8 initialGarbageFrames();
+
     void setHandlers(callback frameStartCallback, callback frameCompletionCallback);
 
     void reset();

@@ -29,11 +29,12 @@ enum Metrics: uInt32 {
   overscanNTSC                  = 30,
   overscanPAL                   = 36,
   vsync                         = 3,
-  vsyncLimit                    = 30,
+  maxLinesVsync                 = 30,
+  maxLinesVsyncDuringAutodetect = 100,
   visibleOverscan               = 20,
   maxUnderscan                  = 10,
   tvModeDetectionTolerance      = 20,
-  initialGarbageFrames          = 20,
+  initialGarbageFrames          = 10,
   framesForModeConfirmation     = 5,
   maxVblankViolations           = 2,
   minStableVblankFrames         = 1
@@ -42,6 +43,16 @@ enum Metrics: uInt32 {
 static constexpr uInt32
   frameLinesNTSC = Metrics::vsync + Metrics::vblankNTSC + Metrics::kernelNTSC + Metrics::overscanNTSC,
   frameLinesPAL = Metrics::vsync + Metrics::vblankPAL + Metrics::kernelPAL + Metrics::overscanPAL;
+
+inline static uInt32 vsyncLimit(bool autodetect) {
+  return autodetect ? maxLinesVsyncDuringAutodetect : maxLinesVsync;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 FrameManager::initialGarbageFrames()
+{
+  return Metrics::initialGarbageFrames;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
@@ -95,15 +106,15 @@ void FrameManager::nextLine()
   switch (myState)
   {
     case State::waitForVsyncStart:
-      if (Int32(myLineInState) > Int32(myFrameLines - myCurrentFrameFinalLines) || !myCurrentFrameFinalLines)
+      if (Int32(myLineInState) >= Int32(myFrameLines - myCurrentFrameFinalLines) || !myCurrentFrameFinalLines)
         myVsyncLines++;
 
-      if (myVsyncLines > Metrics::vsyncLimit) setState(State::waitForFrameStart);
+      if (myVsyncLines > vsyncLimit(myAutodetectTvMode)) setState(State::waitForFrameStart);
 
       break;
 
     case State::waitForVsyncEnd:
-      if (++myVsyncLines > Metrics::vsyncLimit)
+      if (++myVsyncLines > vsyncLimit(myAutodetectTvMode))
         setState(State::waitForFrameStart);
 
       break;
@@ -131,7 +142,7 @@ void FrameManager::nextLineInVsync()
     case VblankMode::floating:
 
       if (shouldTransition) {
-        if (myTotalFrames > initialGarbageFrames && myLineInState == myLastVblankLines)
+        if (myTotalFrames > Metrics::initialGarbageFrames && myLineInState == myLastVblankLines)
           myStableVblankFrames++;
         else
           myStableVblankFrames = 0;

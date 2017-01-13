@@ -54,6 +54,7 @@
 #include "Serializable.hxx"
 #include "Version.hxx"
 #include "TvMode.hxx"
+#include "FrameManager.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -116,11 +117,20 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     // The 'fastscbios' option must be changed before the system is reset
     bool fastscbios = myOSystem.settings().getBool("fastscbios");
     myOSystem.settings().setValue("fastscbios", true);
+
+    uInt8 initialGarbageFrames = FrameManager::initialGarbageFrames();
+    uInt8 linesPAL = 0;
+    uInt8 linesNTSC = 0;
+
     mySystem->reset(true);  // autodetect in reset enabled
     myTIA->autodetectTvMode(true);
-    for(int i = 0; i < 80; ++i)
+    for(int i = 0; i < 60; ++i) {
+      if (i > initialGarbageFrames) myTIA->tvMode() == TvMode::pal ? linesPAL++ : linesNTSC++;
+
       myTIA->update();
-    myDisplayFormat = myTIA->tvMode() == TvMode::pal ? "PAL" : "NTSC";
+    }
+
+    myDisplayFormat = linesPAL > linesNTSC  ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO")
     {
       autodetected = "*";
