@@ -1,8 +1,8 @@
 ===========================================================================
 
-   SSSS    tt          lll  lll       
-  SS  SS   tt           ll   ll        
-  SS     tttttt  eeee   ll   ll   aaaa 
+   SSSS    tt          lll  lll
+  SS  SS   tt           ll   ll
+  SS     tttttt  eeee   ll   ll   aaaa
    SSSS    tt   ee  ee  ll   ll      aa
       SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
   SS  SS   tt   ee      ll   ll  aa  aa
@@ -12,7 +12,7 @@
                   License Information and Copyright Notice
 ===========================================================================
 
-Copyright (C) 1995-2016 by Bradford W. Mott, Stephen Anthony and the
+Copyright (C) 1995-2017 by Bradford W. Mott, Stephen Anthony and the
 Stella Team
 
 This program is free software; you can redistribute it and/or modify it
@@ -20,7 +20,7 @@ under the terms of the GNU General Public License as published by the Free
 Software Foundation; either version 2 of the License, or any later version.
 
 You should have received a copy of the GNU General Public License version 2
-along with this program (License.txt); if not, write to the Free Software 
+along with this program (License.txt); if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
 
 This program is distributed in the hope that it will be useful, but WITHOUT

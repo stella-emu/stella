@@ -117,6 +117,7 @@ void RomInfoWidget::parseProperties()
   myRomInfo.push_back("Note:  " + myProperties.get(Cartridge_Note));
   myRomInfo.push_back("Controllers:  " + myProperties.get(Controller_Left) +
                       " (left), " + myProperties.get(Controller_Right) + " (right)");
+//   myRomInfo.push_back("ystart:  " + myProperties.get(Display_YStart) + "    " + myProperties.get(Display_Height));
 
   setDirty();
 }
