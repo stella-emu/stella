@@ -486,7 +486,7 @@ void Console::changeYStart(int direction)
 
   if(direction == +1)       // increase YStart
   {
-    if(ystart >= 64)
+    if(ystart >= FrameManager::maxYStart)
     {
       myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
@@ -495,7 +495,7 @@ void Console::changeYStart(int direction)
   }
   else if(direction == -1)  // decrease YStart
   {
-    if(ystart == 0)
+    if(ystart == FrameManager::minYStart-1)
     {
       myOSystem.frameBuffer().showMessage("YStart at minimum");
       return;
@@ -510,7 +510,10 @@ void Console::changeYStart(int direction)
 
   ostringstream val;
   val << ystart;
-  myOSystem.frameBuffer().showMessage("YStart " + val.str());
+  if(ystart == FrameManager::minYStart-1)
+    myOSystem.frameBuffer().showMessage("YStart autodetected");
+  else
+    myOSystem.frameBuffer().showMessage("YStart " + val.str());
   myProperties.set(Display_YStart, val.str());
 }
 
@@ -523,8 +526,7 @@ void Console::changeHeight(int direction)
   if(direction == +1)       // increase Height
   {
     height++;
-    if (height < 210) height = 210;
-    if(height > 256 || height > dheight)
+    if(height > FrameManager::maxViewableHeight || height > dheight)
     {
       myOSystem.frameBuffer().showMessage("Height at maximum");
       return;
@@ -533,7 +535,7 @@ void Console::changeHeight(int direction)
   else if(direction == -1)  // decrease Height
   {
     height--;
-    if(height < 210) height = 0;
+    if(height < FrameManager::minViewableHeight) height = 0;
   }
   else
     return;
@@ -551,12 +553,12 @@ void Console::changeHeight(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setTIAProperties()
 {
-  // TODO - query these values directly from the TIA if value is 'AUTO'
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
-  if(ystart > 64) ystart = 64;
+  if(ystart != 0)
+    ystart = BSPF::clamp(ystart, FrameManager::minYStart, FrameManager::maxYStart);
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
-  if(height < 210 && height != 0)      height = 210;
-  else if(height > 256) height = 256;
+  if(height != 0)
+    height = BSPF::clamp(height, FrameManager::minViewableHeight, FrameManager::maxViewableHeight);
 
   myTIA->autodetectTvMode(false);
 
@@ -575,7 +577,7 @@ void Console::setTIAProperties()
     myConsoleInfo.InitialFrameRate = "50";
 
     // PAL ROMs normally need at least 250 lines
-    if (height !=  0) height = std::max(height, 250u);
+    if (height != 0) height = std::max(height, 250u);
 
     myTIA->setTvMode(TvMode::pal);
   }

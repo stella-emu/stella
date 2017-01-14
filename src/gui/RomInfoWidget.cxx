@@ -28,7 +28,8 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     mySurfaceIsValid(false),
     myHaveProperties(false),
-    myAvail(w > 400 ? GUI::Size(640, 512) : GUI::Size(320, 256))
+    myAvail(w > 400 ? GUI::Size(640, FrameManager::maxViewableHeight*2) :
+                      GUI::Size(320, FrameManager::maxViewableHeight))
 {
   _flags = WIDGET_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
@@ -75,7 +76,7 @@ void RomInfoWidget::parseProperties()
   // only draw certain parts of it
   if(mySurface == nullptr)
   {
-    mySurface = instance().frameBuffer().allocateSurface(320*2, 256*2);
+    mySurface = instance().frameBuffer().allocateSurface(320*2, FrameManager::maxViewableHeight*2);
     mySurface->attributes().smoothing = true;
     mySurface->applyAttributes();
 

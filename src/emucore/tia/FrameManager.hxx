@@ -84,8 +84,9 @@ class FrameManager : public Serializable
     string name() const override { return "TIA_FrameManager"; }
 
   public:
-
     static constexpr uInt32 frameBufferHeight = 320;
+    static constexpr uInt32 minYStart = 1, maxYStart = 64;
+    static constexpr uInt32 minViewableHeight = 210, maxViewableHeight = 256;
 
   private:
 

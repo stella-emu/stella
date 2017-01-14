@@ -26,6 +26,7 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "TabWidget.hxx"
+#include "FrameManager.hxx"
 #include "Widget.hxx"
 
 #include "GameInfoDialog.hxx"
@@ -317,16 +318,27 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "YStart:", kTextAlignLeft);
-  myYStart = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                4*fontWidth, fontHeight, "");
+
+  myYStart = new SliderWidget(myTab, font, xpos+lwidth, ypos, 8*fontWidth, lineHeight,
+                              "", 0, kYStartChanged);
+  myYStart->setMinValue(FrameManager::minYStart-1);
+  myYStart->setMaxValue(FrameManager::maxYStart);
   wid.push_back(myYStart);
+  myYStartLabel = new StaticTextWidget(myTab, font, xpos+lwidth+myYStart->getWidth() + 4,
+                                       ypos+1, 5*fontWidth, fontHeight, "", kTextAlignLeft);
+  myYStartLabel->setFlags(WIDGET_CLEARBG);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Height:", kTextAlignLeft);
-  myHeight = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                4*fontWidth, fontHeight, "");
+  myHeight = new SliderWidget(myTab, font, xpos+lwidth, ypos, 8*fontWidth, lineHeight,
+                              "", 0, kHeightChanged);
+  myHeight->setMinValue(FrameManager::minViewableHeight-1);
+  myHeight->setMaxValue(FrameManager::maxViewableHeight);
   wid.push_back(myHeight);
+  myHeightLabel = new StaticTextWidget(myTab, font, xpos+lwidth+myHeight->getWidth() + 4,
+                                       ypos+1, 5*fontWidth, fontHeight, "", kTextAlignLeft);
+  myHeightLabel->setFlags(WIDGET_CLEARBG);
 
   ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Yes");
@@ -462,8 +474,14 @@ void GameInfoDialog::loadView()
 
   // Display properties
   myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO");
-  myYStart->setText(myGameProperties.get(Display_YStart));
-  myHeight->setText(myGameProperties.get(Display_Height));
+
+  const string& ystart = myGameProperties.get(Display_YStart);
+  myYStart->setValue(atoi(ystart.c_str()));
+  myYStartLabel->setLabel(ystart == "0" ? "Auto" : ystart);
+
+  const string& height = myGameProperties.get(Display_Height);
+  myHeight->setValue(atoi(height.c_str()));
+  myHeightLabel->setLabel(height == "0" ? "Auto" : height);
 
   const string& phos = myGameProperties.get(Display_Phosphor);
   myPhosphor->setSelected(phos, "NO");
@@ -516,8 +534,9 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
-  myGameProperties.set(Display_YStart, myYStart->getText());
-  myGameProperties.set(Display_Height, myHeight->getText());
+  myGameProperties.set(Display_YStart, myYStartLabel->getLabel());
+  myGameProperties.set(Display_Height, myHeightLabel->getLabel() == "Auto" ? "0" :
+                       myHeightLabel->getLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag().toString());
   myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel());
 
@@ -576,6 +595,20 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       myPPBlendLabel->setEnabled(status);
       break;
     }
+
+    case kYStartChanged:
+      if(myYStart->getValue() == FrameManager::minYStart-1)
+        myYStartLabel->setLabel("Auto");
+      else
+        myYStartLabel->setValue(myYStart->getValue());
+      break;
+
+    case kHeightChanged:
+      if(myHeight->getValue() == FrameManager::minViewableHeight-1)
+        myHeightLabel->setLabel("Auto");
+      else
+        myHeightLabel->setValue(myHeight->getValue());
+      break;
 
     case kPPBlendChanged:
       myPPBlendLabel->setValue(myPPBlend->getValue());

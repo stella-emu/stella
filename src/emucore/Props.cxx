@@ -194,7 +194,7 @@ void Properties::writeQuotedString(ostream& out, const string& s)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Properties::operator == (const Properties& properties) const
+bool Properties::operator==(const Properties& properties) const
 {
   for(int i = 0; i < LastPropType; ++i)
     if(myProperties[i] != properties.myProperties[i])
@@ -204,13 +204,13 @@ bool Properties::operator == (const Properties& properties) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Properties::operator != (const Properties& properties) const
+bool Properties::operator!=(const Properties& properties) const
 {
   return !(*this == properties);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Properties& Properties::operator = (const Properties& properties)
+Properties& Properties::operator=(const Properties& properties)
 {
   // Do the assignment only if this isn't a self assignment
   if(this != &properties)

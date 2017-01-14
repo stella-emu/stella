@@ -77,8 +77,10 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // Display properties
     PopUpWidget*      myFormat;
-    EditTextWidget*   myYStart;
-    EditTextWidget*   myHeight;
+    SliderWidget*     myYStart;
+    StaticTextWidget* myYStartLabel;
+    SliderWidget*     myHeight;
+    StaticTextWidget* myHeightLabel;
     PopUpWidget*      myPhosphor;
     SliderWidget*     myPPBlend;
     StaticTextWidget* myPPBlendLabel;
@@ -87,6 +89,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
       kMRangeChanged   = 'MRch',
+      kYStartChanged   = 'YSch',
+      kHeightChanged   = 'HTch',
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',
       kMCtrlChanged    = 'MCch'

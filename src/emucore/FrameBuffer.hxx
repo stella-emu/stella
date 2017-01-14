@@ -33,6 +33,7 @@ namespace GUI {
 #include "Variant.hxx"
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
+#include "FrameManager.hxx"
 #include "bspf.hxx"
 
 // Return values for initialization of framebuffer window
@@ -129,7 +130,7 @@ class FrameBuffer
 {
   public:
     enum {
-      kTIAMinW = 320u, kTIAMinH = 210u,
+      kTIAMinW = 320u, kTIAMinH = FrameManager::minViewableHeight,
       kFBMinW  = 640u, kFBMinH  = 480u
     };
 

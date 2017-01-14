@@ -654,7 +654,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
     // Figure our the smallest zoom level we can use
     uInt32 firstZoom = 2;
-    if(myDesktopSize.w < 640 || myDesktopSize.h < 480)
+    if(myDesktopSize.w < kFBMinW || myDesktopSize.h < kFBMinH)
       firstZoom = 1;
     for(uInt32 zoom = firstZoom; zoom <= maxZoom; ++zoom)
     {

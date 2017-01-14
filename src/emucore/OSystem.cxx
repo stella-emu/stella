@@ -441,7 +441,7 @@ bool OSystem::createLauncher(const string& startdir)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::getROMInfo(const FilesystemNode& romfile)
 {
-  string md5, type, id, result = "";
+  string md5, type, id;
   unique_ptr<Console> console;
   try
   {
@@ -454,8 +454,7 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
     return buf.str();
   }
 
-  result = getROMInfo(*console);
-  return result;
+  return getROMInfo(*console);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
