@@ -57,8 +57,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
-  : myConsole(nullptr),
-    myLauncherUsed(false),
+  : myLauncherUsed(false),
     myQuitLoop(false)
 {
   // Calculate startup time
@@ -227,8 +226,7 @@ void OSystem::setBaseDir(const string& basedir)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setConfigFile(const string& file)
 {
-  FilesystemNode node(file);
-  myConfigFile = node.getPath();
+  myConfigFile = FilesystemNode(file).getPath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -441,10 +439,10 @@ bool OSystem::createLauncher(const string& startdir)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::getROMInfo(const FilesystemNode& romfile)
 {
-  string md5, type, id;
   unique_ptr<Console> console;
   try
   {
+    string md5, type, id;
     console = openConsole(romfile, md5, type, id);
   }
   catch(const runtime_error& e)

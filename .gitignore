@@ -3,3 +3,4 @@ config.mak
 src/**/*/.deps
 src/**/*.o
 stella
+*.diff

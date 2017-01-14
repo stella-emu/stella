@@ -534,7 +534,8 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
-  myGameProperties.set(Display_YStart, myYStartLabel->getLabel());
+  myGameProperties.set(Display_YStart, myYStartLabel->getLabel() == "Auto" ? "0" :
+                       myYStartLabel->getLabel());
   myGameProperties.set(Display_Height, myHeightLabel->getLabel() == "Auto" ? "0" :
                        myHeightLabel->getLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag().toString());
