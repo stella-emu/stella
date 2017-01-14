@@ -66,6 +66,7 @@
 "Cartridge.ModelNo" "SS-001"
 "Cartridge.Name" "Time Race (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Space Jockey"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "00f7985c20b8bdf3c557fac4d3f26775"
@@ -311,6 +312,7 @@
 "Cartridge.Manufacturer" "M Network, Patricia Lewis Du Long, Ron Surratt - INTV"
 "Cartridge.ModelNo" "MT4518"
 "Cartridge.Name" "BurgerTime (1983) (M Network)"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
@@ -773,6 +775,7 @@
 
 "Cartridge.MD5" "097074f24cde141fe6a0f26a10333265"
 "Cartridge.Name" "Marble Craze (V0.90) (Paul Slocum)"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "097936b07e0e0117b9026ae6835eb168"
@@ -1013,6 +1016,7 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 50"
+"Display.YStart" "34"
 ""
 
 "Cartridge.MD5" "0cb7af80fd0ddef84844481d85e5d29b"
@@ -1143,6 +1147,7 @@
 "Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83105"
 "Cartridge.Name" "Panda Chase (1983) (Home Vision) (PAL)"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "0e7e73421606873b544e858c59dc283e"
@@ -1268,6 +1273,7 @@
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-027"
 "Cartridge.Name" "Zoo Fun (Suntek) (PAL)"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "0fd72a13b3b6103fc825a692c71963b4"
@@ -1868,6 +1874,7 @@
 "Cartridge.Manufacturer" "Zach Matley"
 "Cartridge.Name" "Combat AI (16-02-2003) (Zach Matley)"
 "Cartridge.Rarity" "Homebrew"
+"Display.YStart" "34"
 ""
 
 "Cartridge.MD5" "177504abd4260c4265e1338955e9fa47"
@@ -2347,6 +2354,7 @@
 "Cartridge.ModelNo" "CX2675"
 "Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "1ec57bbd27bdbd08b60c391c4895c1cf"
@@ -2519,6 +2527,7 @@
 "Cartridge.Manufacturer" "CBS Electronics, Harley H. Puthuff Jr."
 "Cartridge.ModelNo" "4L1802"
 "Cartridge.Name" "Donkey Kong Junior (1983) (CBS Electronics) (PAL)"
+"Display.Height" "251"
 ""
 
 "Cartridge.MD5" "20ae62fb69c6cc6e8098cca8cd080487"
@@ -2624,6 +2633,7 @@
 
 "Cartridge.MD5" "21b09c40295c2d7074a83ae040f22edf"
 "Cartridge.Name" "Marble Craze (V0.90) (Easy Version) (Paul Slocum)"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "21d2c435bcccde7792d82844b3cf60f4"
@@ -3175,6 +3185,7 @@
 "Cartridge.ModelNo" "5"
 "Cartridge.Name" "Open Sesame (1983) (Goliath) (PAL) [a]"
 "Cartridge.Note" "AKA Open, Sesame!"
+"Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
 
@@ -3560,6 +3571,7 @@
 
 "Cartridge.MD5" "2d1cf85fbc732856bf76470cd4060f4a"
 "Cartridge.Name" "Daredevil (V1) (Stunt_Cycle_Rules!) (PD)"
+"Display.Height" "216"
 ""
 
 "Cartridge.MD5" "2d2c5f0761e609e3c5228766f446f7f8"
@@ -4162,6 +4174,7 @@
 
 "Cartridge.MD5" "34b269387fa1aa5a396636f5ecdd63dd"
 "Cartridge.Name" "Marble Craze (mc7_23) (Paul Slocum)"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "34c808ad6577dbfa46169b73171585a3"
@@ -4907,6 +4920,7 @@
 "Cartridge.Rarity" "Prototype"
 "Controller.Right" "MINDLINK"
 "Controller.MouseAxis" "78"
+"Display.Height" "215"
 ""
 
 "Cartridge.MD5" "3d8a2d6493123a53ade45e3e2c5cafa0"
@@ -5620,6 +5634,7 @@
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 55"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "4702d8d9b48a332724af198aeac9e469"
@@ -6516,6 +6531,7 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-804"
 "Cartridge.Name" "Open, Sesame! (1983) (CCE)"
+"Display.Height" "214"
 "Display.Phosphor" "YES"
 ""
 
@@ -8484,6 +8500,7 @@
 
 "Cartridge.MD5" "6a9b30ca46b0dba9e719f4cbd340e01c"
 "Cartridge.Name" "Frostbite (Unknown) (PAL) (Hack)"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "6a9e0c72fab92df70084eccd9061fdbd"
@@ -8690,6 +8707,7 @@
 "Cartridge.Manufacturer" "Funvision - Fund. International Co."
 "Cartridge.Name" "Persian Gulf War (Funvision)"
 "Cartridge.Note" "AKA River Raid"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "6cea35ded079863a846159c3a1101cc7"
@@ -9104,6 +9122,7 @@
 "Cartridge.Name" "Die Ente und der Wolf (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Pooyan"
 "Display.YStart" "26"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "72a46e0c21f825518b7261c267ab886e"
@@ -9472,6 +9491,7 @@
 "Cartridge.ModelNo" "311377"
 "Cartridge.Name" "Fox & Goat (Double-Game Package) (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Nuts"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "76f53abbbf39a0063f24036d6ee0968a"
@@ -9911,6 +9931,7 @@
 
 "Cartridge.MD5" "7ccf350354ee15cd9b85564a2014b08c"
 "Cartridge.Name" "Big Dig (13-04-2003) (CT)"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "7cd379da92c93679f3b6d2548617746a"
@@ -10213,6 +10234,7 @@
 "Cartridge.Manufacturer" "PlayAround - J.H.M."
 "Cartridge.ModelNo" "203"
 "Cartridge.Name" "Knight on the Town (1982) (PlayAround)"
+"Display.Height" "216"
 "Display.Phosphor" "YES"
 ""
 
@@ -10286,6 +10308,7 @@
 "Cartridge.Note" "Uses the AtariVox controller"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "ATARIVOX"
+"Display.YStart" "34"
 ""
 
 "Cartridge.MD5" "808c3b1e60ee0e7c65205fa4bd772221"
@@ -10348,6 +10371,7 @@
 
 "Cartridge.MD5" "8108ad2679bd055afec0a35a1dca46a4"
 "Cartridge.Name" "Maze Craze (Unknown)"
+"Display.Height" "245"
 ""
 
 "Cartridge.MD5" "810d8952af5a6036fca8d0c4e1b23db6"
@@ -10461,6 +10485,7 @@
 "Cartridge.ModelNo" "SS-035"
 "Cartridge.Name" "Panda (Quest) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Panda Chase"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "82c25d1c35e6ac6f893d1d7c2fc2f9c8"
@@ -10851,6 +10876,7 @@
 "Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cartridge.ModelNo" "CX2675"
 "Cartridge.Name" "Ms. Pac-Man (1982) (Atari)"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "87f020daa98d0132e98e43db7d8fea7e"
@@ -11462,7 +11488,6 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PGP204"
 "Cartridge.Name" "Open Sesame (4 Game in One Dark Green) (1983) (BitCorp) (PAL)"
-"Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
 
@@ -11841,6 +11866,7 @@
 "Cartridge.Manufacturer" "PlayAround - J.H.M."
 "Cartridge.ModelNo" "204"
 "Cartridge.Name" "Lady in Wading (1982) (PlayAround)"
+"Display.Height" "216"
 "Display.Phosphor" "YES"
 ""
 
@@ -11854,6 +11880,7 @@
 "Cartridge.Manufacturer" "Quelle"
 "Cartridge.ModelNo" "719.252 9"
 "Cartridge.Name" "Im Schutz der Drachen (1983) (Quelle) (PAL)"
+"Display.Height" "250"
 "Display.Phosphor" "YES"
 ""
 
@@ -14161,6 +14188,7 @@
 "Cartridge.Note" "NTSC Conversion"
 "Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
+"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -14374,8 +14402,8 @@
 "Cartridge.ModelNo" "CM-010"
 "Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "20"
-"Display.Height" "230"
+"Display.YStart" "23"
+"Display.Height" "245"
 ""
 
 "Cartridge.MD5" "b9d1e3be30b131324482345959aed5e5"
@@ -14938,7 +14966,7 @@
 "Cartridge.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
 "Cartridge.Note" "NTSC Conversion"
 "Cartridge.Rarity" "Homebrew"
-"Display.Height" "230"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "c2778507b83d9540e9be5713758ff945"
@@ -15029,6 +15057,7 @@
 "Cartridge.Manufacturer" "Atari, Robert C. Polaro"
 "Cartridge.ModelNo" "CX26157"
 "Cartridge.Name" "Stunt Cycle (07-21-1980) (Atari) (Prototype)"
+"Display.Height" "215"
 ""
 
 "Cartridge.MD5" "c3e4aa718f46291311f1cce53e6ccd79"
@@ -15591,6 +15620,7 @@
 "Cartridge.Manufacturer" "Amiga, Jerry Lawson, Dan McElroy"
 "Cartridge.Name" "3-D Genesis (1983) (Amiga) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "cad982c9b45bc5eff34e4ea982d5f1ca"
@@ -15690,6 +15720,7 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "AUTO 50"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "cbeafd37f15e0dddb0540dbe15c545a4"
@@ -15863,6 +15894,7 @@
 
 "Cartridge.MD5" "cd8fa2e9f6255ef3d3b9b5a4f24a54f7"
 "Cartridge.Name" "Daredevil (V2) (Stunt_Cycle_Rules!) (PD)"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "cd98be8a48ebf610c9609a688b9c57f2"
@@ -15877,6 +15909,7 @@
 "Cartridge.Manufacturer" "Paul Slocum"
 "Cartridge.Name" "Marble Craze Demo (PD)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "cda38714267978b9a8b0b24bee3529ae"
@@ -16642,6 +16675,7 @@
 
 "Cartridge.MD5" "d632b74fea533d593af82cf16e7c5e4a"
 "Cartridge.Name" "Fu Kung! (V0.13) (01-02-2003) (AD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "d65028524761ef52fbbdebab46f79d0f"
@@ -17044,6 +17078,7 @@
 "Cartridge.MD5" "db971b6afc9d243f614ebf380af0ac60"
 "Cartridge.Manufacturer" "Gammation, Robert L. Esken Jr."
 "Cartridge.Name" "Gamma-Attack (1983) (Gammation)"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "dba2692a216cb6c262c78f8b111a813e"
@@ -17352,7 +17387,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG202"
 "Cartridge.Name" "Space Tunnel (1982) (BitCorp)"
-"Display.Height" "215"
+"Display.Height" "222"
 ""
 
 "Cartridge.MD5" "df3e6a9b6927cf59b7afb626f6fd7eea"
@@ -18123,6 +18158,7 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Apples and Dolls (CCE)"
 "Cartridge.Note" "AKA Open Sesame"
+"Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
 
@@ -18479,8 +18515,8 @@
 "Cartridge.ModelNo" "CM-010"
 "Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype) [a2]"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
-"Display.Height" "220"
+"Display.YStart" "23"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "ebf9038e927e6a0db3e0d170c59911e6"
@@ -18741,6 +18777,7 @@
 "Cartridge.Note" "Won't work with Stella < V1.2"
 "Cartridge.Rarity" "New Release"
 "Display.YStart" "24"
+"Display.Height" "215"
 ""
 
 "Cartridge.MD5" "ef60b06fddb675b0d783afbfa5fc5232"
@@ -19130,7 +19167,7 @@
 "Cartridge.Name" "Toyshop Trouble (AtariAge)"
 "Cartridge.Note" "F8 Emulator Release"
 "Controller.Right" "PADDLES"
-"Display.YStart" "33"
+"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "f3c431930e035a457fe370ed4d230659"
@@ -19429,6 +19466,7 @@
 "Cartridge.Manufacturer" "Eckhard Stolberg"
 "Cartridge.Name" "Cubis (1997) (Eckhard Stolberg)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "f750b5d613796963acecab1690f554ae"
@@ -19560,6 +19598,7 @@
 
 "Cartridge.MD5" "f8582bc6ca7046adb8e18164e8cecdbc"
 "Cartridge.Name" "Panda Chase (Unknown) (PAL)"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "f8648d0c6ad1266434f6c485ff69ec40"
@@ -19587,6 +19626,7 @@
 
 "Cartridge.MD5" "f8ff34b53d86f55bd52d7a520af6d1dc"
 "Cartridge.Name" "Big Dig (04-04-2003) (CT)"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "f90b5da189f24d7e1a2117d8c8abc952"
@@ -19653,6 +19693,7 @@
 "Cartridge.Manufacturer" "Avalon Hill, Jean Baer, Bill 'Rebecca Ann' Heineman, Jim Jacob"
 "Cartridge.ModelNo" "5005002"
 "Cartridge.Name" "Out of Control (1983) (Avalon Hill)"
+"Display.Height" "216"
 ""
 
 "Cartridge.MD5" "f98d2276d4a25b286135566255aea9d0"
@@ -19864,6 +19905,7 @@
 "Cartridge.Manufacturer" "ITT Family Games"
 "Cartridge.Name" "Pumuckl I (1983) (ITT Family Games) (PAL)"
 "Cartridge.Note" "AKA Panda Chase"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "fb884ffd89013331a6f01ae3f6abd214"
