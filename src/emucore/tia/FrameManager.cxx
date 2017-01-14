@@ -149,6 +149,9 @@ void FrameManager::nextLineInVsync()
 
         myLastVblankLines = myLineInState;
 
+#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+        (cout << "leaving vblank in floating mode, should transition: " << shouldTransition << "\n").flush();
+#endif
         setState(State::frame);
       }
 
@@ -162,6 +165,7 @@ void FrameManager::nextLineInVsync()
     case VblankMode::locked:
 
       if (myLineInState == myLastVblankLines) {
+
         if (shouldTransition && !myVblankViolated)
           myVblankViolations = 0;
         else {
@@ -169,14 +173,20 @@ void FrameManager::nextLineInVsync()
           myVblankViolated = true;
         }
 
+#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+        (cout << "leaving vblank in locked mode, should transition: " << shouldTransition << "\n").flush();
+#endif
+
         setState(State::frame);
       } else if (shouldTransition){
         if (!myVblankViolated) myVblankViolations++;
         myVblankViolated = true;
       }
 
-      if (myVblankViolations > Metrics::maxVblankViolations)
+      if (myVblankViolations > Metrics::maxVblankViolations) {
         myVblankMode = VblankMode::floating;
+        myStableVblankFrames = 0;
+      }
 
       break;
 
@@ -353,6 +363,11 @@ uInt32 FrameManager::ystart() const {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVblank(bool vblank)
 {
+#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+  if (myVblank != vblank)
+    (cout << "vblank " << myVblank << " -> " << vblank << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
+#endif
+
   myVblank = vblank;
 }
 
