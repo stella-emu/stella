@@ -29,7 +29,7 @@ enum Metrics: uInt32 {
   overscanNTSC                  = 30,
   overscanPAL                   = 36,
   vsync                         = 3,
-  maxLinesVsync                 = 30,
+  maxLinesVsync                 = 32,
   maxLinesVsyncDuringAutodetect = 100,
   visibleOverscan               = 20,
   maxUnderscan                  = 10,
@@ -93,6 +93,8 @@ void FrameManager::reset()
   myStableVblankFrames = 0;
   myVblankViolated = false;
   myVsyncLines = 0;
+  myY = 0;
+  myFramePending = false;
 
   if (myVblankMode != VblankMode::fixed) myVblankMode = VblankMode::floating;
 }
@@ -100,13 +102,15 @@ void FrameManager::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::nextLine()
 {
+  State previousState = myState;
+
   myCurrentFrameTotalLines++;
   myLineInState++;
 
   switch (myState)
   {
     case State::waitForVsyncStart:
-      if (Int32(myLineInState) >= Int32(myFrameLines - myCurrentFrameFinalLines) || !myCurrentFrameFinalLines)
+      if ((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0)
         myVsyncLines++;
 
       if (myVsyncLines > vsyncLimit(myAutodetectTvMode)) setState(State::waitForFrameStart);
@@ -125,12 +129,14 @@ void FrameManager::nextLine()
 
     case State::frame:
       if (myLineInState >= (myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan)))
-        finalizeFrame();
+        setState(State::waitForVsyncStart);
       break;
 
     default:
       throw runtime_error("frame manager: invalid state");
   }
+
+  if (myState == State::frame && previousState == State::frame) myY++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,15 +221,11 @@ void FrameManager::setVsync(bool vsync)
       break;
 
     case State::waitForVsyncEnd:
-      if (!myVsync)
-        setState(State::waitForFrameStart);
+      if (!myVsync) setState(State::waitForFrameStart);
       break;
 
     case State::frame:
-      if (myVsync) {
-        myCurrentFrameTotalLines++;
-        finalizeFrame(State::waitForVsyncEnd);
-      }
+      if (myVsync) setState(State::waitForVsyncEnd);
       break;
 
     default:
@@ -245,13 +247,17 @@ void FrameManager::setState(FrameManager::State state)
 
   switch (myState) {
     case State::waitForFrameStart:
+      if (myFramePending) finalizeFrame();
+      if (myOnFrameStart) myOnFrameStart();
+      myFramePending = true;
+
       myVsyncLines = 0;
       myVblankViolated = false;
       break;
 
     case State::frame:
       myVsyncLines = 0;
-      if (myOnFrameStart) myOnFrameStart();
+      myY = 0;
       break;
 
     default:
@@ -260,21 +266,17 @@ void FrameManager::setState(FrameManager::State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::finalizeFrame(FrameManager::State state)
+void FrameManager::finalizeFrame()
 {
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
   myCurrentFrameTotalLines = 0;
   myTotalFrames++;
 
-  if (myOnFrameComplete) {
-    myOnFrameComplete();
-  }
+  if (myOnFrameComplete) myOnFrameComplete();
 
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
   (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
-
-  setState(state);
 
   if (myAutodetectTvMode) updateAutodetectedTvMode();
 
@@ -321,6 +323,10 @@ void FrameManager::updateAutodetectedTvMode()
 void FrameManager::updateTvMode(TvMode mode)
 {
   if (mode == myMode) return;
+
+#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+  (cout << "TV mode switched to " << int(mode) << "\n").flush();
+#endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
   myMode = mode;
 
@@ -393,12 +399,6 @@ uInt32 FrameManager::height() const
 void FrameManager::setFixedHeight(uInt32 height)
 {
   myFixedHeight = height;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::currentLine() const
-{
-  return myState == State::frame ? myLineInState : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

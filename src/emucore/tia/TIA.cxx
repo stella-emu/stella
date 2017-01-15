@@ -925,12 +925,12 @@ void TIA::onFrameComplete()
   mySystem->m6502().stop();
   mySystem->resetCycles();
 
-  Int32 missingScanlines = myLastFrameHeight - myFrameManager.currentLine();
+  Int32 missingScanlines = myLastFrameHeight - myFrameManager.getY();
 
   if (missingScanlines > 0)
-    memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.currentLine(), 0, missingScanlines * 160);
+    memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.getY(), 0, missingScanlines * 160);
 
-  myLastFrameHeight = myFrameManager.currentLine();
+  myLastFrameHeight = myFrameManager.getY();
 
   // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)
@@ -1003,7 +1003,7 @@ void TIA::tickHblank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::tickHframe()
 {
-  const uInt32 y = myFrameManager.currentLine();
+  const uInt32 y = myFrameManager.getY();
   const bool lineNotCached = myLinesSinceChange < 2 || y == 0;
   const uInt32 x = myHctr - 68 + myXDelta;
 
@@ -1027,7 +1027,7 @@ void TIA::applyRsync()
 
   if (x > 0 && myFrameManager.isRendering()) {
     myXDelta = x - 157;
-    memset(myCurrentFrameBuffer.get() + myFrameManager.currentLine() * 160 + x, 0, 160 - x);
+    memset(myCurrentFrameBuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
   }
 
   myLinesSinceChange = 0;
@@ -1141,7 +1141,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
 void TIA::clearHmoveComb()
 {
   if (myFrameManager.isRendering() && myHstate == HState::blank)
-    memset(myCurrentFrameBuffer.get() + myFrameManager.currentLine() * 160,
+    memset(myCurrentFrameBuffer.get() + myFrameManager.getY() * 160,
            myColorHBlank, 8);
 }
 
