@@ -5260,6 +5260,11 @@
 "Cartridge.Name" "Bridge (1980) (Activision) [fixed]"
 ""
 
+"Cartridge.MD5" "4153dd2beed648e9dc082140ebe8e836"
+"Cartridge.Name" "Coke Zero (v1.0) (NTSC)"
+"Display.YStart" "28"
+""
+
 "Cartridge.MD5" "415c11fcac66bbd2ace2096687774b5a"
 "Cartridge.Name" "Fu Kung! (V0.00) (07-01-2003) (AD)"
 ""
@@ -20099,6 +20104,11 @@
 
 "Cartridge.MD5" "fdd4995a50395db14f518f63c2d63438"
 "Cartridge.Name" "Oh No! (Version 3) (18-01-2003) (AD)"
+""
+
+"Cartridge.MD5" "fde42e39710e75e9e4d4d75440f8e4e5"
+"Cartridge.Name" "Coke Zero (v1.0) (PAL)"
+"Display.YStart" "35"
 ""
 
 "Cartridge.MD5" "fdf0de38517e0cf7f0885f98ccc95836"

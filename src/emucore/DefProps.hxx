@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3288
+#define DEF_PROPS_SIZE 3290
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -879,6 +879,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "40e12c008037a323a1290c8fa4d2fe7f", "", "", "Skeleton (NTSC) (06-09-2002) (Eric Ball)", "", "", "STEREO", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "40eb4e263581b3dfec6dd8920b68e00f", "Sears Tele-Games, Marilyn Churchill, Matthew L. Hubbard", "CX2647 - 49-75142", "Seawolf 3 (03-23-1981) (Sears) (Prototype) (PAL)", "Submarine Commander Beta", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "413c925c5fdcea62842a63a4c671a5f2", "Activision, Larry Kaplan", "AX-006", "Bridge (1980) (Activision) [fixed]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "4153dd2beed648e9dc082140ebe8e836", "", "", "Coke Zero (v1.0) (NTSC)", "", "", "", "", "", "", "", "", "", "", "", "", "", "28", "", "", "" }, 
   { "415c11fcac66bbd2ace2096687774b5a", "", "", "Fu Kung! (V0.00) (07-01-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4181087389a79c7f59611fb51c263137", "Atari, Suki Lee", "CX26113", "Miss Piggy's Wedding (06-24-1983) (Atari) (Prototype) (8K)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "24", "", "", "" }, 
   { "41810dd94bd0de1110bedc5092bef5b0", "Funvision - Fund. International Co.", "", "Dragon Treasure (Funvision)", "AKA Dragonfire", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3292,6 +3293,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "fd8b4ee0d57605b35e236e814f706ff1", "Atari - GCC, Mike Feinstein, John Mracek", "CX2673, CX2673P", "Phoenix (1982) (Atari) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fd9b321cee5fbb32c39ba3ca5d9ec7cf", "Jeffry Johnston", "", "Radial Pong - Version 5 (Jeffry Johnston) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fdd4995a50395db14f518f63c2d63438", "", "", "Oh No! (Version 3) (18-01-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "fde42e39710e75e9e4d4d75440f8e4e5", "", "", "Coke Zero (v1.0) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "35", "", "", "" }, 
   { "fdf0de38517e0cf7f0885f98ccc95836", "Arcadia Corporation, Dennis Caswell", "AR-4200", "Escape from the Mindmaster (2 of 4) (1982) (Arcadia)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fdf6680b2b1e8054293a39700a765692", "", "", "Alpha Demo - The Beta Demo 2 (2000) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fe0b7f27e3ad50bbf9ff468ee56d553d", "", "", "Lines Demo (Eckhard Stolberg) (PAL) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
