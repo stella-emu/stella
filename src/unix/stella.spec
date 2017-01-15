@@ -59,7 +59,7 @@ export CXXFLAGS=$RPM_OPT_FLAGS
 %else
   --enable-shared \
 %endif
-  --force-builtin-libpng --force-builtin-zlib \
+  --force-builtin-libpng \
   --docdir=%{_docdir}/stella
 
 %make

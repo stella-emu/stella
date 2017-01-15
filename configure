@@ -15,7 +15,6 @@ CXXFLAGS="$CXXFLAGS $CPPFLAGS"
 
 # default lib behaviour yes/no/auto
 _libpng=auto
-_zlib=auto
 
 # default option behaviour yes/no
 _build_windowed=yes
@@ -129,7 +128,7 @@ find_sdlconfig()
 	echo_n "Looking for sdl2-config... "
 	sdlconfigs="$_sdlconfig"
 	_sdlconfig=
-	
+
 	IFS="${IFS=   }"; ac_save_ifs="$IFS"; IFS="$SEPARATOR"
 	done=0
 	for path_dir in $_sdlpath; do
@@ -147,9 +146,9 @@ find_sdlconfig()
 			break
 		fi
 	done
-	
+
 	IFS="$ac_save_ifs"
-	
+
 	if test -z "$_sdlconfig"; then
 		echo "none found!"
 		exit 1
@@ -159,8 +158,8 @@ find_sdlconfig()
 #
 # Function to provide echo -n for bourne shells that don't have it
 #
-echo_n() 
-{ 
+echo_n()
+{
 	printf "$@"
 }
 
@@ -209,7 +208,6 @@ Optional Features:
   --enable-profile       build binary with profiling info [disabled]
   --disable-profile
   --force-builtin-libpng force use of built-in libpng library [auto]
-  --force-builtin-zlib   force use of built-in zlib library [auto]
 
 Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
@@ -249,7 +247,6 @@ for ac_option in $@; do
       --enable-profile)         _build_profile=yes   ;;
       --disable-profile)        _build_profile=no    ;;
       --force-builtin-libpng)   _libpng=no           ;;
-      --force-builtin-zlib)     _zlib=no             ;;
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
         _sdlpath="$arg:$arg/bin"
@@ -486,7 +483,7 @@ if test "$cxx_verc_fail" = yes ; then
 	echo
 	echo "The version of your compiler is not supported at this time"
 	echo "Please ensure you are using GCC 4.7 / Clang 3.4 or above"
-	exit 1	
+	exit 1
 fi
 
 #
@@ -506,7 +503,7 @@ if test -n "$_host"; then
 			exit 1
 			;;
 	esac
-	
+
 else
 	#
 	# Determine build settings
@@ -564,6 +561,7 @@ EOF
 	cc_check $LDFLAGS $CXXFLAGS $LIBPNG_CFLAGS $LIBPNG_LIBS -lpng && _libpng=yes
 fi
 if test "$_libpng" = yes ; then
+  _zlib=auto
 	echo "$_libpng"
 else
 	echo "none found, using built-in version"
@@ -572,8 +570,8 @@ fi
 #
 # Check for ZLib
 #
-echocheck "zlib"
 if test "$_zlib" = auto ; then
+  echocheck "zlib"
 	_zlib=no
 	cat > $TMPC << EOF
 #include <string.h>
@@ -581,11 +579,13 @@ if test "$_zlib" = auto ; then
 int main(void) { return strcmp(ZLIB_VERSION, zlibVersion()); }
 EOF
 	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS -lz && _zlib=yes
-fi
-if test "$_zlib" = yes ; then
-	echo "$_zlib"
-else
-	echo "none found, using built-in version"
+
+  if test "$_zlib" = yes ; then
+    echo "$_zlib"
+  else
+    echo "zlib missing"
+    exit 1
+  fi
 fi
 
 #
@@ -694,7 +694,7 @@ else
 fi
 
 LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs`"
-LD=$CXX 
+LD=$CXX
 case $_host_os in
 		unix)
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY"

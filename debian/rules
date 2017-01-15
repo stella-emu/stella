@@ -20,7 +20,7 @@ endif
 
 config.status: configure
 	dh_testdir
-	CXXFLAGS="$(CXXFLAGS)" ./configure --prefix=/usr --force-builtin-libpng --force-builtin-zlib
+	CXXFLAGS="$(CXXFLAGS)" ./configure --prefix=/usr --force-builtin-libpng
 
 build: build-stamp
 
@@ -32,19 +32,19 @@ build-stamp:  config.status
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp 
+	rm -f build-stamp
 	-$(MAKE) distclean
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
 
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/stella
-	
+
 # Build architecture-independent files here.
 binary-indep: build install
 # We have nothing to do by default.
@@ -67,4 +67,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install 
+.PHONY: build clean binary-indep binary-arch binary install
