@@ -12,6 +12,21 @@
                                Release History
 ===========================================================================
 
+4.7.3 to 5.0: (xxx. xx, 2017)
+
+  * For the OSX port:
+    - Always use the built-in zlib library instead of the system version.
+
+    - The preferences file has changed from 'net.sourceforge.Stella' to
+      'Stella-emu.plist'.  To keep your old settings, run the following
+      command from the terminal:
+        cd ~/Library/Preferences
+        mv net.sourceforge.Stella.plist Stella-emu.plist
+
+
+-Have fun!
+
+
 4.7.2 to 4.7.3: (Nov. 21, 2016)
 
   * Added preliminary support for the 3E+ bankswitching scheme, developed
@@ -31,8 +46,6 @@
   * Updated UNIX configure script to fix a bug where it fails in
     cross-compilation under certain circumstances.  Thanks to Vlad
     Zakharov for providing a patch to fix this issue.
-
--Have fun!
 
 
 4.7.1 to 4.7.2: (Mar. 25, 2016)

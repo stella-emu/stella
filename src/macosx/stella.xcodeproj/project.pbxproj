@@ -242,6 +242,33 @@
 		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
 		DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */; };
+		DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83C1E2C0E6D00905161 /* adler32.c */; };
+		DC3EE8571E2C0E6D00905161 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83D1E2C0E6D00905161 /* compress.c */; };
+		DC3EE8581E2C0E6D00905161 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83E1E2C0E6D00905161 /* crc32.c */; };
+		DC3EE8591E2C0E6D00905161 /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE83F1E2C0E6D00905161 /* crc32.h */; };
+		DC3EE85A1E2C0E6D00905161 /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8401E2C0E6D00905161 /* deflate.c */; settings = {COMPILER_FLAGS = "-Wno-conversion"; }; };
+		DC3EE85B1E2C0E6D00905161 /* deflate.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8411E2C0E6D00905161 /* deflate.h */; };
+		DC3EE85C1E2C0E6D00905161 /* gzclose.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8421E2C0E6D00905161 /* gzclose.c */; };
+		DC3EE85D1E2C0E6D00905161 /* gzguts.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8431E2C0E6D00905161 /* gzguts.h */; };
+		DC3EE85E1E2C0E6D00905161 /* gzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8441E2C0E6D00905161 /* gzlib.c */; };
+		DC3EE85F1E2C0E6D00905161 /* gzread.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8451E2C0E6D00905161 /* gzread.c */; settings = {COMPILER_FLAGS = "-Wno-conversion"; }; };
+		DC3EE8601E2C0E6D00905161 /* gzwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8461E2C0E6D00905161 /* gzwrite.c */; settings = {COMPILER_FLAGS = "-Wno-conversion"; }; };
+		DC3EE8611E2C0E6D00905161 /* infback.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8471E2C0E6D00905161 /* infback.c */; };
+		DC3EE8621E2C0E6D00905161 /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8481E2C0E6D00905161 /* inffast.c */; };
+		DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8491E2C0E6D00905161 /* inffast.h */; };
+		DC3EE8641E2C0E6D00905161 /* inffixed.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE84A1E2C0E6D00905161 /* inffixed.h */; };
+		DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84B1E2C0E6D00905161 /* inflate.c */; };
+		DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE84C1E2C0E6D00905161 /* inflate.h */; };
+		DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84D1E2C0E6D00905161 /* inftrees.c */; };
+		DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE84E1E2C0E6D00905161 /* inftrees.h */; };
+		DC3EE8691E2C0E6D00905161 /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84F1E2C0E6D00905161 /* trees.c */; };
+		DC3EE86A1E2C0E6D00905161 /* trees.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8501E2C0E6D00905161 /* trees.h */; };
+		DC3EE86B1E2C0E6D00905161 /* uncompr.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8511E2C0E6D00905161 /* uncompr.c */; };
+		DC3EE86C1E2C0E6D00905161 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8521E2C0E6D00905161 /* zconf.h */; };
+		DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8531E2C0E6D00905161 /* zlib.h */; };
+		DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8541E2C0E6D00905161 /* zutil.c */; };
+		DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8551E2C0E6D00905161 /* zutil.h */; };
+		DC3EE8711E2C192300905161 /* TvMode.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8701E2C192300905161 /* TvMode.hxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -522,7 +549,6 @@
 		DCF3A6FD1DFC75E3008A8AF3 /* Playfield.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */; };
 		DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */; };
 		DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */; };
-		DCF3A7001DFC75E3008A8AF3 /* Types.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E61DFC75E3008A8AF3 /* Types.hxx */; };
 		DCF3A7021DFC76BC008A8AF3 /* TIATypes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */; };
 		DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B40F93993B00B25D7A /* SoundNull.hxx */; };
 		DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467BC0F9399F500B25D7A /* Version.hxx */; };
@@ -826,6 +852,33 @@
 		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SoundSDL2.hxx; path = ../common/SoundSDL2.hxx; sourceTree = SOURCE_ROOT; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFA2.cxx; path = ../emucore/CartFA2.cxx; sourceTree = SOURCE_ROOT; };
 		DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFA2.hxx; path = ../emucore/CartFA2.hxx; sourceTree = SOURCE_ROOT; };
+		DC3EE83C1E2C0E6D00905161 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = adler32.c; path = ../zlib/adler32.c; sourceTree = "<group>"; };
+		DC3EE83D1E2C0E6D00905161 /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = compress.c; path = ../zlib/compress.c; sourceTree = "<group>"; };
+		DC3EE83E1E2C0E6D00905161 /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = ../zlib/crc32.c; sourceTree = "<group>"; };
+		DC3EE83F1E2C0E6D00905161 /* crc32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crc32.h; path = ../zlib/crc32.h; sourceTree = "<group>"; };
+		DC3EE8401E2C0E6D00905161 /* deflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = deflate.c; path = ../zlib/deflate.c; sourceTree = "<group>"; };
+		DC3EE8411E2C0E6D00905161 /* deflate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = deflate.h; path = ../zlib/deflate.h; sourceTree = "<group>"; };
+		DC3EE8421E2C0E6D00905161 /* gzclose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gzclose.c; path = ../zlib/gzclose.c; sourceTree = "<group>"; };
+		DC3EE8431E2C0E6D00905161 /* gzguts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gzguts.h; path = ../zlib/gzguts.h; sourceTree = "<group>"; };
+		DC3EE8441E2C0E6D00905161 /* gzlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gzlib.c; path = ../zlib/gzlib.c; sourceTree = "<group>"; };
+		DC3EE8451E2C0E6D00905161 /* gzread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gzread.c; path = ../zlib/gzread.c; sourceTree = "<group>"; };
+		DC3EE8461E2C0E6D00905161 /* gzwrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gzwrite.c; path = ../zlib/gzwrite.c; sourceTree = "<group>"; };
+		DC3EE8471E2C0E6D00905161 /* infback.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = infback.c; path = ../zlib/infback.c; sourceTree = "<group>"; };
+		DC3EE8481E2C0E6D00905161 /* inffast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inffast.c; path = ../zlib/inffast.c; sourceTree = "<group>"; };
+		DC3EE8491E2C0E6D00905161 /* inffast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inffast.h; path = ../zlib/inffast.h; sourceTree = "<group>"; };
+		DC3EE84A1E2C0E6D00905161 /* inffixed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inffixed.h; path = ../zlib/inffixed.h; sourceTree = "<group>"; };
+		DC3EE84B1E2C0E6D00905161 /* inflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inflate.c; path = ../zlib/inflate.c; sourceTree = "<group>"; };
+		DC3EE84C1E2C0E6D00905161 /* inflate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inflate.h; path = ../zlib/inflate.h; sourceTree = "<group>"; };
+		DC3EE84D1E2C0E6D00905161 /* inftrees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inftrees.c; path = ../zlib/inftrees.c; sourceTree = "<group>"; };
+		DC3EE84E1E2C0E6D00905161 /* inftrees.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inftrees.h; path = ../zlib/inftrees.h; sourceTree = "<group>"; };
+		DC3EE84F1E2C0E6D00905161 /* trees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = trees.c; path = ../zlib/trees.c; sourceTree = "<group>"; };
+		DC3EE8501E2C0E6D00905161 /* trees.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trees.h; path = ../zlib/trees.h; sourceTree = "<group>"; };
+		DC3EE8511E2C0E6D00905161 /* uncompr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = uncompr.c; path = ../zlib/uncompr.c; sourceTree = "<group>"; };
+		DC3EE8521E2C0E6D00905161 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zconf.h; path = ../zlib/zconf.h; sourceTree = "<group>"; };
+		DC3EE8531E2C0E6D00905161 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zlib.h; path = ../zlib/zlib.h; sourceTree = "<group>"; };
+		DC3EE8541E2C0E6D00905161 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = ../zlib/zutil.c; sourceTree = "<group>"; };
+		DC3EE8551E2C0E6D00905161 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = ../zlib/zutil.h; sourceTree = "<group>"; };
+		DC3EE8701E2C192300905161 /* TvMode.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TvMode.hxx; path = ../emucore/tia/TvMode.hxx; sourceTree = "<group>"; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomAuditDialog.cxx; path = ../gui/RomAuditDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomAuditDialog.hxx; path = ../gui/RomAuditDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
@@ -1108,7 +1161,6 @@
 		DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Playfield.hxx; path = ../emucore/tia/Playfield.hxx; sourceTree = "<group>"; };
 		DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TIA.cxx; path = ../emucore/tia/TIA.cxx; sourceTree = "<group>"; };
 		DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TIA.hxx; path = ../emucore/tia/TIA.hxx; sourceTree = "<group>"; };
-		DCF3A6E61DFC75E3008A8AF3 /* Types.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Types.hxx; path = ../emucore/tia/Types.hxx; sourceTree = "<group>"; };
 		DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TIATypes.hxx; path = ../emucore/TIATypes.hxx; sourceTree = "<group>"; };
 		DCF467B40F93993B00B25D7A /* SoundNull.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SoundNull.hxx; path = ../common/SoundNull.hxx; sourceTree = SOURCE_ROOT; };
 		DCF467BC0F9399F500B25D7A /* Version.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Version.hxx; path = ../common/Version.hxx; sourceTree = SOURCE_ROOT; };
@@ -1212,6 +1264,7 @@
 				2D6050C60898771C00C6DE89 /* macosx */,
 				2D6050C90898774B00C6DE89 /* unix */,
 				2D60513708987A5400C6DE89 /* yacc */,
+				DC3EE83B1E2C0E4400905161 /* zlib */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -1750,6 +1803,39 @@
 			name = yacc;
 			sourceTree = "<group>";
 		};
+		DC3EE83B1E2C0E4400905161 /* zlib */ = {
+			isa = PBXGroup;
+			children = (
+				DC3EE83C1E2C0E6D00905161 /* adler32.c */,
+				DC3EE83D1E2C0E6D00905161 /* compress.c */,
+				DC3EE83E1E2C0E6D00905161 /* crc32.c */,
+				DC3EE83F1E2C0E6D00905161 /* crc32.h */,
+				DC3EE8401E2C0E6D00905161 /* deflate.c */,
+				DC3EE8411E2C0E6D00905161 /* deflate.h */,
+				DC3EE8421E2C0E6D00905161 /* gzclose.c */,
+				DC3EE8431E2C0E6D00905161 /* gzguts.h */,
+				DC3EE8441E2C0E6D00905161 /* gzlib.c */,
+				DC3EE8451E2C0E6D00905161 /* gzread.c */,
+				DC3EE8461E2C0E6D00905161 /* gzwrite.c */,
+				DC3EE8471E2C0E6D00905161 /* infback.c */,
+				DC3EE8481E2C0E6D00905161 /* inffast.c */,
+				DC3EE8491E2C0E6D00905161 /* inffast.h */,
+				DC3EE84A1E2C0E6D00905161 /* inffixed.h */,
+				DC3EE84B1E2C0E6D00905161 /* inflate.c */,
+				DC3EE84C1E2C0E6D00905161 /* inflate.h */,
+				DC3EE84D1E2C0E6D00905161 /* inftrees.c */,
+				DC3EE84E1E2C0E6D00905161 /* inftrees.h */,
+				DC3EE84F1E2C0E6D00905161 /* trees.c */,
+				DC3EE8501E2C0E6D00905161 /* trees.h */,
+				DC3EE8511E2C0E6D00905161 /* uncompr.c */,
+				DC3EE8521E2C0E6D00905161 /* zconf.h */,
+				DC3EE8531E2C0E6D00905161 /* zlib.h */,
+				DC3EE8541E2C0E6D00905161 /* zutil.c */,
+				DC3EE8551E2C0E6D00905161 /* zutil.h */,
+			);
+			name = zlib;
+			sourceTree = "<group>";
+		};
 		DCC467EA14FBEC9600E15508 /* tv_filters */ = {
 			isa = PBXGroup;
 			children = (
@@ -1836,7 +1922,7 @@
 				DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */,
 				DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */,
 				DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */,
-				DCF3A6E61DFC75E3008A8AF3 /* Types.hxx */,
+				DC3EE8701E2C192300905161 /* TvMode.hxx */,
 			);
 			name = tia;
 			sourceTree = "<group>";
@@ -1853,6 +1939,8 @@
 				2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */,
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
+				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
+				DC3EE86A1E2C0E6D00905161 /* trees.h in Headers */,
 				2D9173D009BA90380026E9FF /* Cart4K.hxx in Headers */,
 				2D9173D109BA90380026E9FF /* CartAR.hxx in Headers */,
 				2D9173D209BA90380026E9FF /* CartCV.hxx in Headers */,
@@ -1866,6 +1954,7 @@
 				2D9173D809BA90380026E9FF /* CartF6.hxx in Headers */,
 				2D9173D909BA90380026E9FF /* CartF6SC.hxx in Headers */,
 				2D9173DA09BA90380026E9FF /* CartF8.hxx in Headers */,
+				DC3EE8591E2C0E6D00905161 /* crc32.h in Headers */,
 				2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */,
 				2D9173DD09BA90380026E9FF /* CartFE.hxx in Headers */,
 				2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */,
@@ -1889,6 +1978,7 @@
 				2D9173F009BA90380026E9FF /* Switches.hxx in Headers */,
 				2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */,
 				2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */,
+				DC3EE8711E2C192300905161 /* TvMode.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
 				2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */,
 				2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */,
@@ -1898,6 +1988,7 @@
 				2D91740109BA90380026E9FF /* AudioDialog.hxx in Headers */,
 				2D91740209BA90380026E9FF /* BrowserDialog.hxx in Headers */,
 				2D91740309BA90380026E9FF /* Command.hxx in Headers */,
+				DC3EE85B1E2C0E6D00905161 /* deflate.h in Headers */,
 				2D91740409BA90380026E9FF /* Dialog.hxx in Headers */,
 				2D91740509BA90380026E9FF /* DialogContainer.hxx in Headers */,
 				DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */,
@@ -1929,6 +2020,7 @@
 				2D91742209BA90380026E9FF /* Debugger.hxx in Headers */,
 				2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */,
 				2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */,
+				DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */,
 				DCF3A6F21DFC75E3008A8AF3 /* FrameManager.hxx in Headers */,
 				2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */,
 				DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */,
@@ -1938,6 +2030,7 @@
 				2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */,
 				DCF3A6F61DFC75E3008A8AF3 /* Missile.hxx in Headers */,
 				2D91742C09BA90380026E9FF /* CpuDebug.hxx in Headers */,
+				DC3EE86C1E2C0E6D00905161 /* zconf.h in Headers */,
 				2D91743609BA90380026E9FF /* DebuggerSystem.hxx in Headers */,
 				2D91743A09BA90380026E9FF /* Expression.hxx in Headers */,
 				2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */,
@@ -2000,6 +2093,7 @@
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
 				DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */,
 				DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */,
+				DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */,
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
@@ -2011,11 +2105,13 @@
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
+				DC3EE8641E2C0E6D00905161 /* inffixed.h in Headers */,
 				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
+				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
 				DCC527D710B9DA19005E1287 /* System.hxx in Headers */,
 				DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */,
@@ -2088,6 +2184,7 @@
 				DC676A4A1729A0B000E4E73D /* CartCTYWidget.hxx in Headers */,
 				DC676A4C1729A0B000E4E73D /* CartDPCPlusWidget.hxx in Headers */,
 				DC676A4E1729A0B000E4E73D /* CartDPCWidget.hxx in Headers */,
+				DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */,
 				DC676A501729A0B000E4E73D /* CartE0Widget.hxx in Headers */,
 				DC676A521729A0B000E4E73D /* CartE7Widget.hxx in Headers */,
 				DC676A541729A0B000E4E73D /* CartFA2Widget.hxx in Headers */,
@@ -2097,8 +2194,8 @@
 				DC676A5C1729A0B000E4E73D /* CartX07Widget.hxx in Headers */,
 				DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */,
 				DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */,
-				DCF3A7001DFC75E3008A8AF3 /* Types.hxx in Headers */,
 				DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */,
+				DC3EE85D1E2C0E6D00905161 /* gzguts.h in Headers */,
 				DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */,
 				DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */,
 				DC79F81317A88D9E00288B91 /* Base.hxx in Headers */,
@@ -2162,7 +2259,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0700;
-				ORGANIZATIONNAME = net.sourceforge.stella;
+				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2222,6 +2319,7 @@
 			files = (
 				2D91747409BA90380026E9FF /* SDLMain.m in Sources */,
 				2D91747509BA90380026E9FF /* Booster.cxx in Sources */,
+				DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */,
 				2D91747609BA90380026E9FF /* Cart.cxx in Sources */,
 				2D91747709BA90380026E9FF /* Cart2K.cxx in Sources */,
 				2D91747809BA90380026E9FF /* Cart3F.cxx in Sources */,
@@ -2283,6 +2381,7 @@
 				DC6A18FC19B3E67A00DEB242 /* CartMDM.cxx in Sources */,
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
+				DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
 				DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */,
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
@@ -2338,13 +2437,17 @@
 				DCACBAD41C54298300703A9B /* CartCVPlus.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
+				DC3EE85E1E2C0E6D00905161 /* gzlib.c in Sources */,
 				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
+				DC3EE8571E2C0E6D00905161 /* compress.c in Sources */,
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
 				DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
+				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
+				DC3EE8691E2C0E6D00905161 /* trees.c in Sources */,
 				DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */,
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
@@ -2365,6 +2468,7 @@
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
+				DC3EE86B1E2C0E6D00905161 /* uncompr.c in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
 				DCB20EC71A0C506C0048F595 /* main.cxx in Sources */,
@@ -2382,11 +2486,13 @@
 				DCD6FC7811C281ED005DA767 /* pngread.c in Sources */,
 				DCD6FC7911C281ED005DA767 /* pngrio.c in Sources */,
 				DCD6FC7A11C281ED005DA767 /* pngrtran.c in Sources */,
+				DC3EE85C1E2C0E6D00905161 /* gzclose.c in Sources */,
 				DCD6FC7B11C281ED005DA767 /* pngrutil.c in Sources */,
 				DCD6FC7C11C281ED005DA767 /* pngset.c in Sources */,
 				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
 				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
 				DCD6FC8011C281ED005DA767 /* pngwrite.c in Sources */,
+				DC3EE8621E2C0E6D00905161 /* inffast.c in Sources */,
 				DCD6FC8111C281ED005DA767 /* pngwtran.c in Sources */,
 				DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */,
 				DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */,
@@ -2405,6 +2511,7 @@
 				DCCF4B0414BA27EB00814FAB /* KeyboardWidget.cxx in Sources */,
 				DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */,
 				DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */,
+				DC3EE8611E2C0E6D00905161 /* infback.c in Sources */,
 				DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */,
 				DCF3A6EB1DFC75E3008A8AF3 /* DelayQueue.cxx in Sources */,
 				DCF3A6F31DFC75E3008A8AF3 /* LatchedInput.cxx in Sources */,
@@ -2413,6 +2520,7 @@
 				DCE395F216CB0B5F008DB1E5 /* ZipHandler.cxx in Sources */,
 				DCAAE5D31715887B0080BB82 /* Cart2KWidget.cxx in Sources */,
 				DCAAE5D51715887B0080BB82 /* Cart3FWidget.cxx in Sources */,
+				DC3EE8601E2C0E6D00905161 /* gzwrite.c in Sources */,
 				DCAAE5D71715887B0080BB82 /* Cart4KWidget.cxx in Sources */,
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
@@ -2433,7 +2541,9 @@
 				DCAAE5F21715887B0080BB82 /* CartUAWidget.cxx in Sources */,
 				DC676A411729A0B000E4E73D /* Cart3EWidget.cxx in Sources */,
 				DC676A431729A0B000E4E73D /* Cart4A50Widget.cxx in Sources */,
+				DC3EE85A1E2C0E6D00905161 /* deflate.c in Sources */,
 				DC676A451729A0B000E4E73D /* CartARWidget.cxx in Sources */,
+				DC3EE85F1E2C0E6D00905161 /* gzread.c in Sources */,
 				DC676A471729A0B000E4E73D /* CartCMWidget.cxx in Sources */,
 				DC676A491729A0B000E4E73D /* CartCTYWidget.cxx in Sources */,
 				DC676A4B1729A0B000E4E73D /* CartDPCPlusWidget.cxx in Sources */,
@@ -2448,6 +2558,7 @@
 				DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */,
 				DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */,
 				DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */,
+				DC3EE8581E2C0E6D00905161 /* crc32.c in Sources */,
 				DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */,
 				DC79F81217A88D9E00288B91 /* Base.cxx in Sources */,
 				DCAACAF6188D631500A4D282 /* Cart4KSC.cxx in Sources */,
@@ -2465,6 +2576,7 @@
 				DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */,
 				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
 				DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */,
+				DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2512,7 +2624,7 @@
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
-				PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.Stella;
+				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -2564,7 +2676,7 @@
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
-				PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.Stella;
+				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -2615,7 +2727,7 @@
 				LIBRARY_SEARCH_PATHS = .;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
-				PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.Stella;
+				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
