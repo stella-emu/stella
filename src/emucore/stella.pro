@@ -10601,6 +10601,7 @@
 "Cartridge.ModelNo" "C-868"
 "Cartridge.Name" "Bingo (1983) (CCE) (PAL)"
 "Cartridge.Note" "AKA Dice Puzzle"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "8454ed9787c9d8211748ccddb673e920"
@@ -17235,6 +17236,7 @@
 "Cartridge.Manufacturer" "Xonox - K-Tel Software"
 "Cartridge.ModelNo" "99005, 6220, 6250"
 "Cartridge.Name" "Robin Hood (1983) (Xonox) (PAL)"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "dd7884b4f93cab423ac471aa1935e3df"
