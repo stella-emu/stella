@@ -665,10 +665,9 @@ void TIA::enableColorLoss(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 uInt32 TIA::clocksThisLine() const
 {
-  return 0;
+  return myHctr + myXDelta;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -684,10 +683,30 @@ bool TIA::partialFrame() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::scanlinePos(uInt16& x, uInt16& y) const
 {
-  return false;
+  if(partialFrame())
+  {
+    // We only care about the scanline position when it's in the viewable area
+    if(1)//myFramePointerClocks >= myFramePointerOffset)
+    {
+      x = clocksThisLine();//(myFramePointerClocks - myFramePointerOffset) % 160;
+      y = scanlines();//(myFramePointerClocks - myFramePointerOffset) / 160;
+      return true;
+    }
+    else
+    {
+      x = 0;
+      y = 0;
+      return false;
+    }
+  }
+  else
+  {
+    x = width();
+    y = height();
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -822,77 +841,33 @@ void TIA::setJitterRecoveryFactor(Int32 f)
 {
 }
 
-#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
 {
-#if 0 // FIXME
-  // Start a new frame if the old one was finished
-  if(!myPartialFrameFlag)
-    startFrame();
-
-  myPartialFrameFlag = true;  // true either way
-
+#if 0
   int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   int endClock = ((totalClocks + 228) / 228) * 228;
 
-  int clock;
   do {
-    mySystem->m6502().execute(1);
-    clock = mySystem->cycles() * 3;
-    updateFrame(clock);
-  } while(clock < endClock);
-
-  // if we finished the frame, get ready for the next one
-  if(!myPartialFrameFlag)
-    endFrame();
+    updateScanlineByStep();
+  } while((mySystem->cycles() * 3) < endClock);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanlineByStep()
 {
-#if 0 // FIXME
-  // Start a new frame if the old one was finished
-  if(!myPartialFrameFlag)
-    startFrame();
-
-  // true either way:
-  myPartialFrameFlag = true;
-
   // Update frame by one CPU instruction/color clock
   mySystem->m6502().execute(1);
-  updateFrame(mySystem->cycles() * 3);
-
-  // if we finished the frame, get ready for the next one
-  if(!myPartialFrameFlag)
-    endFrame();
-#endif
+  updateEmulation();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanlineByTrace(int target)
 {
-#if 0 // FIXME
-  // Start a new frame if the old one was finished
-  if(!myPartialFrameFlag)
-    startFrame();
-
-  // true either way:
-  myPartialFrameFlag = true;
-
   while(mySystem->m6502().getPC() != target)
-  {
-    mySystem->m6502().execute(1);
-    updateFrame(mySystem->cycles() * 3);
-  }
-
-  // if we finished the frame, get ready for the next one
-  if(!myPartialFrameFlag)
-    endFrame();
-#endif
+    updateScanlineByStep();
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateEmulation()

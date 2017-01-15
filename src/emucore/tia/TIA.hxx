@@ -285,7 +285,6 @@ class TIA : public Device
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
 
-  #ifdef DEBUGGER_SUPPORT
     /**
       This method should be called to update the TIA with a new scanline.
     */
@@ -302,7 +301,6 @@ class TIA : public Device
       scanline by tracing to target address.
     */
     void updateScanlineByTrace(int target);
-  #endif
 
     /**
       Save the current state of this device to the given Serializer.
