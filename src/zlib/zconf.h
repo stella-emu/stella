@@ -431,7 +431,7 @@ typedef uLong FAR uLongf;
    typedef unsigned long z_crc_t;
 #endif
 
-#if 1    /* was set to #if 1 by ./configure */
+#if HAVE_UNISTD_H    /* SA:  2017-01-15 */
 #  define Z_HAVE_UNISTD_H
 #endif
 
