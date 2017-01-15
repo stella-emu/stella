@@ -60,7 +60,10 @@ class FrameManager : public Serializable
 
     void setFixedHeight(uInt32 height);
 
-    uInt32 currentLine() const;
+    uInt32 getY() const
+    {
+      return myY;
+    }
 
     uInt32 scanlines() const;
 
@@ -111,7 +114,7 @@ class FrameManager : public Serializable
 
     void setState(State state);
 
-    void finalizeFrame(State state = State::waitForVsyncStart);
+    void finalizeFrame();
 
     void nextLineInVsync();
 
@@ -128,6 +131,8 @@ class FrameManager : public Serializable
     uInt32 myCurrentFrameFinalLines;
     uInt32 myVsyncLines;
     float  myFrameRate;
+    uInt32 myY;
+    bool myFramePending;
 
     uInt32 myTotalFrames;
     uInt32 myFramesInMode;
