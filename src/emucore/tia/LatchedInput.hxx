@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_LATCHED_INPUT
-#define TIA_6502TS_CORE_LATCHED_INPUT
+#ifndef TIA_LATCHED_INPUT
+#define TIA_LATCHED_INPUT
 
 #include "bspf.hxx"
 
@@ -46,4 +46,4 @@ class LatchedInput
     LatchedInput& operator=(LatchedInput&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_LATCHED_INPUT
+#endif // TIA_LATCHED_INPUT

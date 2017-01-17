@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_BACKGROUND
-#define TIA_6502TS_CORE_BACKGROUND
+#ifndef TIA_BACKGROUND
+#define TIA_BACKGROUND
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
@@ -57,4 +57,4 @@ class Background : public Serializable
     Background& operator=(Background&&);
 };
 
-#endif // TIA_6502TS_CORE_BACKGROUND
+#endif // TIA_BACKGROUND

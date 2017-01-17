@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_PLAYFIELD
-#define TIA_6502TS_CORE_PLAYFIELD
+#ifndef TIA_PLAYFIELD
+#define TIA_PLAYFIELD
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
@@ -117,4 +117,4 @@ class Playfield : public Serializable
     Playfield& operator=(Playfield&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_PLAYFIELD
+#endif // TIA_PLAYFIELD

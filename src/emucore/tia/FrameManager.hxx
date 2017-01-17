@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_FRAME_MANAGER
-#define TIA_6502TS_CORE_FRAME_MANAGER
+#ifndef TIA_FRAME_MANAGER
+#define TIA_FRAME_MANAGER
 
 #include <functional>
 
@@ -103,6 +103,7 @@ class FrameManager : public Serializable
     enum VblankMode {
       locked,
       floating,
+      final,
       fixed
     };
 
@@ -161,4 +162,4 @@ class FrameManager : public Serializable
     FrameManager& operator=(FrameManager&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_FRAME_MANAGER
+#endif // TIA_FRAME_MANAGER

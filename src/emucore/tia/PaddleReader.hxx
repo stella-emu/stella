@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_PADDLE_READER
-#define TIA_6502TS_CORE_PADDLE_READER
+#ifndef TIA_PADDLE_READER
+#define TIA_PADDLE_READER
 
 #include "bspf.hxx"
 #include "TvMode.hxx"
@@ -64,4 +64,4 @@ class PaddleReader
     PaddleReader& operator=(PaddleReader&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_PADDLE_READER
+#endif // TIA_PADDLE_READER

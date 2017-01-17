@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_MISSILE
-#define TIA_6502TS_CORE_MISSILE
+#ifndef TIA_MISSILE
+#define TIA_MISSILE
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
@@ -114,4 +114,4 @@ class Missile : public Serializable
     Missile& operator=(Missile&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_MISSILE
+#endif // TIA_MISSILE

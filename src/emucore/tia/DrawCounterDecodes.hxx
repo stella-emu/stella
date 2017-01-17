@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_DRAW_COUNTER_DECODES
-#define TIA_6502TS_CORE_DRAW_COUNTER_DECODES
+#ifndef TIA_DRAW_COUNTER_DECODES
+#define TIA_DRAW_COUNTER_DECODES
 
 #include "bspf.hxx"
 
@@ -52,4 +52,4 @@ class DrawCounterDecodes
     DrawCounterDecodes& operator=(DrawCounterDecodes&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_DRAW_COUNTER_DECODES
+#endif // TIA_DRAW_COUNTER_DECODES

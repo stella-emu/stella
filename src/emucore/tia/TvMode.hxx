@@ -15,11 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_TYPES
-#define TIA_6502TS_CORE_TYPES
+#ifndef TIA_TYPES
+#define TIA_TYPES
 
 enum TvMode {
   pal, ntsc
 };
 
-#endif // TIA_6502TS_CORE_TYPES
+#endif // TIA_TYPES

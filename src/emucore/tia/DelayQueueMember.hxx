@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_DELAY_QUEUE_MEMBER
-#define TIA_6502TS_CORE_DELAY_QUEUE_MEMBER
+#ifndef TIA_DELAY_QUEUE_MEMBER
+#define TIA_DELAY_QUEUE_MEMBER
 
 #include "bspf.hxx"
 
@@ -68,4 +68,4 @@ class DelayQueueMember
 
 };
 
-#endif //  TIA_6502TS_CORE_DELAY_QUEUE_MEMBER
+#endif //  TIA_DELAY_QUEUE_MEMBER

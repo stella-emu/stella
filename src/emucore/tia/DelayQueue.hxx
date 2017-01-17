@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_DELAY_QUEUE
-#define TIA_6502TS_CORE_DELAY_QUEUE
+#ifndef TIA_DELAY_QUEUE
+#define TIA_DELAY_QUEUE
 
 #include "bspf.hxx"
 #include "DelayQueueMember.hxx"
@@ -68,4 +68,4 @@ template<class T> void DelayQueue::execute(T executor)
   myIndex = (myIndex + 1) % myMembers.size();
 }
 
-#endif //  TIA_6502TS_CORE_DELAY_QUEUE
+#endif //  TIA_DELAY_QUEUE

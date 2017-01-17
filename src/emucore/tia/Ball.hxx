@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_BALL
-#define TIA_6502TS_CORE_BALL
+#ifndef TIA_BALL
+#define TIA_BALL
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
@@ -116,4 +116,4 @@ class Ball : public Serializable
     Ball& operator=(Ball&&);
 };
 
-#endif // TIA_6502TS_CORE_BALL
+#endif // TIA_BALL

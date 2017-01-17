@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_TIA
-#define TIA_6502TS_CORE_TIA
+#ifndef TIA_TIA
+#define TIA_TIA
 
 #include "bspf.hxx"
 #include "Sound.hxx"
@@ -463,4 +463,4 @@ class TIA : public Device
     TIA& operator=(TIA&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_TIA
+#endif // TIA_TIA

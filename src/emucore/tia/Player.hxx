@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_6502TS_CORE_PLAYER
-#define TIA_6502TS_CORE_PLAYER
+#ifndef TIA_PLAYER
+#define TIA_PLAYER
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
@@ -123,4 +123,4 @@ class Player : public Serializable
     Player& operator=(Player&&) = delete;
 };
 
-#endif // TIA_6502TS_CORE_PLAYER
+#endif // TIA_PLAYER
