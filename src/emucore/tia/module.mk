@@ -13,7 +13,7 @@ MODULE_OBJS := \
 	src/emucore/tia/Background.o \
 	src/emucore/tia/LatchedInput.o \
 	src/emucore/tia/PaddleReader.o \
-	src/emucore/tia/Vblankanager.o
+	src/emucore/tia/VblankManager.o
 
 
 MODULE_DIRS += \
