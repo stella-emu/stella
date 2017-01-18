@@ -35,9 +35,7 @@ enum Metrics: uInt32 {
   maxUnderscan                  = 10,
   tvModeDetectionTolerance      = 20,
   initialGarbageFrames          = 10,
-  framesForModeConfirmation     = 5,
-  maxVblankViolations           = 2,
-  minStableVblankFrames         = 1
+  framesForModeConfirmation     = 5
 };
 
 static constexpr uInt32
@@ -58,9 +56,7 @@ uInt8 FrameManager::initialGarbageFrames()
 FrameManager::FrameManager()
   : myMode(TvMode::pal),
     myAutodetectTvMode(true),
-    myFixedHeight(0),
-    myVblankMode(VblankMode::floating),
-    myYstart(0)
+    myFixedHeight(0)
 {
   updateTvMode(TvMode::ntsc);
   reset();
@@ -79,24 +75,19 @@ void FrameManager::setHandlers(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::reset()
 {
+  myVblankManager.reset();
+
   myState = State::waitForVsyncStart;
   myCurrentFrameTotalLines = myCurrentFrameFinalLines = 0;
   myFrameRate = 60.0;
   myLineInState = 0;
   myVsync = false;
-  myVblank = false;
   myTotalFrames = 0;
   myFramesInMode = 0;
   myModeConfirmed = false;
-  myLastVblankLines = 0;
-  myVblankViolations = 0;
-  myStableVblankFrames = 0;
-  myVblankViolated = false;
   myVsyncLines = 0;
   myY = 0;
   myFramePending = false;
-
-  if (myVblankMode != VblankMode::fixed) myVblankMode = VblankMode::floating;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,7 +115,8 @@ void FrameManager::nextLine()
       break;
 
     case State::waitForFrameStart:
-      nextLineInVsync();
+      if (myVblankManager.nextLine(myTotalFrames <= Metrics::initialGarbageFrames))
+        setState(State::frame);
       break;
 
     case State::frame:
@@ -137,69 +129,6 @@ void FrameManager::nextLine()
   }
 
   if (myState == State::frame && previousState == State::frame) myY++;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::nextLineInVsync()
-{
-  bool shouldTransition = myLineInState >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan);
-
-  switch (myVblankMode) {
-    case VblankMode::floating:
-
-      if (shouldTransition) {
-        if (myTotalFrames > Metrics::initialGarbageFrames && myLineInState == myLastVblankLines)
-          myStableVblankFrames++;
-        else
-          myStableVblankFrames = 0;
-
-        myLastVblankLines = myLineInState;
-
-#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-        (cout << "leaving vblank in floating mode, should transition: " << shouldTransition << "\n").flush();
-#endif
-        setState(State::frame);
-      }
-
-      if (myStableVblankFrames >= Metrics::minStableVblankFrames) {
-        myVblankMode = VblankMode::locked;
-        myVblankViolations = 0;
-      }
-
-      break;
-
-    case VblankMode::locked:
-
-      if (myLineInState == myLastVblankLines) {
-
-        if (shouldTransition && !myVblankViolated)
-          myVblankViolations = 0;
-        else {
-          if (!myVblankViolated) myVblankViolations++;
-          myVblankViolated = true;
-        }
-
-#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-        (cout << "leaving vblank in locked mode, should transition: " << shouldTransition << "\n").flush();
-#endif
-
-        setState(State::frame);
-      } else if (shouldTransition){
-        if (!myVblankViolated) myVblankViolations++;
-        myVblankViolated = true;
-      }
-
-      if (myVblankViolations > Metrics::maxVblankViolations) {
-        myVblankMode = VblankMode::floating;
-        myStableVblankFrames = 0;
-      }
-
-      break;
-
-    case VblankMode::fixed:
-      if (myLineInState > myYstart) setState(State::frame);
-      break;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -249,10 +178,10 @@ void FrameManager::setState(FrameManager::State state)
     case State::waitForFrameStart:
       if (myFramePending) finalizeFrame();
       if (myOnFrameStart) myOnFrameStart();
+      myVblankManager.start();
       myFramePending = true;
 
       myVsyncLines = 0;
-      myVblankViolated = false;
       break;
 
     case State::frame:
@@ -349,32 +278,25 @@ void FrameManager::updateTvMode(TvMode mode)
   }
 
   myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
+
+  myVblankManager.setVblankLines(myVblankLines);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setYstart(uInt32 ystart)
 {
-  if (ystart == myYstart) return;
-
-  myYstart = ystart;
-
-  myVblankMode = ystart ? VblankMode::fixed : VblankMode::floating;
+  myVblankManager.setYstart(ystart);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameManager::ystart() const {
-  return myYstart;
+  return myVblankManager.ystart();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVblank(bool vblank)
 {
-#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  if (myVblank != vblank)
-    (cout << "vblank " << myVblank << " -> " << vblank << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
-#endif
-
-  myVblank = vblank;
+  myVblankManager.setVblank(vblank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -427,6 +349,8 @@ bool FrameManager::save(Serializer& out) const
   {
     out.putString(name());
 
+    if (!myVblankManager.save(out)) return false;
+
     // TODO - save instance variables
   }
   catch(...)
@@ -446,6 +370,8 @@ bool FrameManager::load(Serializer& in)
   {
     if(in.getString() != name())
       return false;
+
+    if (!myVblankManager.load(in)) return false;
 
     // TODO - load instance variables
   }

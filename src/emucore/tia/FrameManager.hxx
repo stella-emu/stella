@@ -20,6 +20,7 @@
 
 #include <functional>
 
+#include "VblankManager.hxx"
 #include "Serializable.hxx"
 #include "TvMode.hxx"
 #include "bspf.hxx"
@@ -52,7 +53,7 @@ class FrameManager : public Serializable
 
     TvMode tvMode() const;
 
-    bool vblank() const { return myVblank; }
+    bool vblank() const { return myVblankManager.vblank(); }
 
     bool vsync() const { return myVsync; }
 
@@ -124,6 +125,8 @@ class FrameManager : public Serializable
     callback myOnFrameStart;
     callback myOnFrameComplete;
 
+    VblankManager myVblankManager;
+
     TvMode myMode;
     bool myAutodetectTvMode;
     State myState;
@@ -140,20 +143,12 @@ class FrameManager : public Serializable
     bool myModeConfirmed;
 
     bool myVsync;
-    bool myVblank;
 
     uInt32 myVblankLines;
     uInt32 myKernelLines;
     uInt32 myOverscanLines;
     uInt32 myFrameLines;
     uInt32 myFixedHeight;
-
-    VblankMode myVblankMode;
-    uInt32 myLastVblankLines;
-    uInt32 myYstart;
-    uInt8 myVblankViolations;
-    uInt8 myStableVblankFrames;
-    bool myVblankViolated;
 
   private:
     FrameManager(const FrameManager&) = delete;
