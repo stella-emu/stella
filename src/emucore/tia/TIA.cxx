@@ -44,6 +44,7 @@ enum Delay: uInt8 {
   hmclr = 2,
   refp = 1,
   enabl = 1,
+  enam = 1,
   vblank = 1
 };
 
@@ -449,13 +450,11 @@ bool TIA::poke(uInt16 address, uInt8 value)
     }
 
     case ENAM0:
-      myLinesSinceChange = 0;
-      myMissile0.enam(value);
+      myDelayQueue.push(ENAM0, value, Delay::enam);
       break;
 
     case ENAM1:
-      myLinesSinceChange = 0;
-      myMissile1.enam(value);
+      myDelayQueue.push(ENAM1, value, Delay::enam);
       break;
 
     case RESM0:
@@ -1236,6 +1235,16 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
     case ENABL:
       myLinesSinceChange = 0;
       myBall.enabl(value);
+      break;
+
+    case ENAM0:
+      myLinesSinceChange = 0;
+      myMissile0.enam(value);
+      break;
+
+    case ENAM1:
+      myLinesSinceChange = 0;
+      myMissile1.enam(value);
       break;
   }
 }
