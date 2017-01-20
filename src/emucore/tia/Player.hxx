@@ -103,6 +103,7 @@ class Player : public Serializable
     uInt8 myCounter;
     bool myIsMoving;
     uInt8 myWidth;
+    uInt8 myEffectiveWidth;
 
     bool myIsRendering;
     Int8 myRenderCounter;

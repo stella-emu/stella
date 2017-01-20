@@ -40,6 +40,7 @@ void Player::reset()
   myCounter = 0;
   myIsMoving = false;
   myWidth = 8;
+  myEffectiveWidth = 8;
   myIsRendering = false;
   myRenderCounter = 0;
   myPatternOld = 0;
@@ -83,8 +84,13 @@ void Player::nusiz(uInt8 value)
 
   myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
 
-  if (myIsRendering && myRenderCounter >= myWidth)
-    myIsRendering = false;
+  // This is an incomplete description of the effects seen in issues #87 and #82. More investigation
+  // is required for a complete description (#63)
+  if (myIsRendering && myRenderCounter >= (8 - myWidth - 2) && oldWidth == 8 && myWidth != oldWidth) {
+    myEffectiveWidth = 8;
+  } else {
+    myEffectiveWidth = oldWidth;
+  }
 
   // NUSIZ during decode seems to affect the decoding logic. The rods in Meltdown
   // are highly sensitive to this effect, and this seems to model it adequately.
@@ -201,8 +207,9 @@ void Player::tick()
 {
   if (myDecodes[myCounter]) {
     myIsRendering = true;
+    myEffectiveWidth = myWidth;
     myRenderCounter = myWidth > 8 ? Count::renderCounterOffsetWide : Count::renderCounterOffset;
-  } else if (myIsRendering && ++myRenderCounter >= myWidth) {
+  } else if (myIsRendering && ++myRenderCounter >= myEffectiveWidth) {
     myIsRendering = false;
   }
 
