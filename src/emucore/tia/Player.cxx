@@ -86,11 +86,13 @@ void Player::nusiz(uInt8 value)
 
   // This is an incomplete description of the effects seen in issues #87 and #82. More investigation
   // is required for a complete description (#63)
-  if (myIsRendering && myRenderCounter >= (8 - myWidth - 2) && oldWidth == 8 && myWidth != oldWidth) {
+  if (myIsRendering && myRenderCounter >= (8 - myWidth - 2) && oldWidth == 8 && myWidth != oldWidth)
     myEffectiveWidth = 8;
-  } else {
+  else
     myEffectiveWidth = oldWidth;
-  }
+
+  if (myRenderCounter >= myEffectiveWidth)
+    myIsRendering = false;
 
   // NUSIZ during decode seems to affect the decoding logic. The rods in Meltdown
   // are highly sensitive to this effect, and this seems to model it adequately.
