@@ -86,10 +86,10 @@ void Player::nusiz(uInt8 value)
 
   // This is an incomplete description of the effects seen in issues #87 and #82. More investigation
   // is required for a complete description (#63)
-  if (myIsRendering && myRenderCounter >= (8 - myWidth - 2) && oldWidth == 8 && myWidth != oldWidth)
-    myEffectiveWidth = 8;
-  else
+  if (myIsRendering && myRenderCounter >= (8 - myWidth / 4 - 2) && oldWidth == 8 && myWidth != oldWidth)
     myEffectiveWidth = oldWidth;
+  else
+    myEffectiveWidth = myWidth;
 
   if (myRenderCounter >= myEffectiveWidth)
     myIsRendering = false;
