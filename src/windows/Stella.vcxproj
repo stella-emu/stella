@@ -318,6 +318,7 @@
     <ClCompile Include="..\emucore\tia\Player.cxx" />
     <ClCompile Include="..\emucore\tia\Playfield.cxx" />
     <ClCompile Include="..\emucore\tia\TIA.cxx" />
+    <ClCompile Include="..\emucore\tia\VblankManager.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -589,6 +590,7 @@
     <ClInclude Include="..\emucore\tia\Playfield.hxx" />
     <ClInclude Include="..\emucore\tia\TIA.hxx" />
     <ClInclude Include="..\emucore\tia\Types.hxx" />
+    <ClInclude Include="..\emucore\tia\VblankManager.hxx" />
     <ClInclude Include="..\gui\ConsoleBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />

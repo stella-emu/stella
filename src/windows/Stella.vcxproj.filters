@@ -828,6 +828,9 @@
     <ClCompile Include="..\emucore\tia\TIA.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\tia\VblankManager.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1671,6 +1674,9 @@
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\tia\Types.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\VblankManager.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
   </ItemGroup>
