@@ -354,6 +354,8 @@
 		DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */; };
 		DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */; };
 		DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */; };
+		DC72B2221E356F4F009056D0 /* VblankManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC72B2201E356F4F009056D0 /* VblankManager.cxx */; };
+		DC72B2231E356F4F009056D0 /* VblankManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC72B2211E356F4F009056D0 /* VblankManager.hxx */; };
 		DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */; };
 		DC73BD861915E5B1003FAFAD /* FBSurfaceSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */; };
 		DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD871915E5E3003FAFAD /* FBSurface.cxx */; };
@@ -964,6 +966,8 @@
 		DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LoggerDialog.hxx; path = ../gui/LoggerDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartWDWidget.cxx; path = ../debugger/gui/CartWDWidget.cxx; sourceTree = "<group>"; };
 		DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartWDWidget.hxx; path = ../debugger/gui/CartWDWidget.hxx; sourceTree = "<group>"; };
+		DC72B2201E356F4F009056D0 /* VblankManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VblankManager.cxx; path = ../emucore/tia/VblankManager.cxx; sourceTree = "<group>"; };
+		DC72B2211E356F4F009056D0 /* VblankManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VblankManager.hxx; path = ../emucore/tia/VblankManager.hxx; sourceTree = "<group>"; };
 		DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceSDL2.cxx; path = ../common/FBSurfaceSDL2.cxx; sourceTree = "<group>"; };
 		DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceSDL2.hxx; path = ../common/FBSurfaceSDL2.hxx; sourceTree = "<group>"; };
 		DC73BD871915E5E3003FAFAD /* FBSurface.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurface.cxx; path = ../emucore/FBSurface.cxx; sourceTree = "<group>"; };
@@ -1923,6 +1927,8 @@
 				DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */,
 				DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */,
 				DC3EE8701E2C192300905161 /* TvMode.hxx */,
+				DC72B2201E356F4F009056D0 /* VblankManager.cxx */,
+				DC72B2211E356F4F009056D0 /* VblankManager.hxx */,
 			);
 			name = tia;
 			sourceTree = "<group>";
@@ -2110,6 +2116,7 @@
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
+				DC72B2231E356F4F009056D0 /* VblankManager.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
@@ -2535,6 +2542,7 @@
 				DCAAE5E81715887B0080BB82 /* CartF6SCWidget.cxx in Sources */,
 				DCAAE5EA1715887B0080BB82 /* CartF6Widget.cxx in Sources */,
 				DCAAE5EC1715887B0080BB82 /* CartF8SCWidget.cxx in Sources */,
+				DC72B2221E356F4F009056D0 /* VblankManager.cxx in Sources */,
 				DCB20ECC1A0C50930048F595 /* atari_ntsc.cxx in Sources */,
 				DCAAE5EE1715887B0080BB82 /* CartF8Widget.cxx in Sources */,
 				DCAAE5F01715887B0080BB82 /* CartFAWidget.cxx in Sources */,
