@@ -459,12 +459,12 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case RESM0:
       myLinesSinceChange = 0;
-      myMissile0.resm(resxCounter());
+      myMissile0.resm(resxCounter(), myHctr);
       break;
 
     case RESM1:
       myLinesSinceChange = 0;
-      myMissile1.resm(resxCounter());
+      myMissile1.resm(resxCounter(), myHctr);
       break;
 
     case RESMP0:

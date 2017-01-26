@@ -67,7 +67,7 @@ void Missile::hmm(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::resm(uInt8 counter)
+void Missile::resm(uInt8 counter, uInt32 hctr)
 {
   myCounter = counter;
 
@@ -76,26 +76,34 @@ void Missile::resm(uInt8 counter)
       myRenderCounter = Count::renderCounterOffset + (counter - 157);
 
     } else {
-
       // The following is an effective description of the behavior of missile width after a
       // RESMx during draw. It would be much simpler without the HBLANK cases :)
+      uInt8 delta = 0;
+      bool hblank = counter != 157;
+
+      if (hblank) {
+        if (hctr > 72) delta = 0;
+        else if (hctr > 66) delta = 1;
+        else delta = 2;
+      }
+
       switch (myWidth) {
         case 8:
-          myRenderCounter = (counter - 157) + ((myRenderCounter >= 4) ? 5 : 0);
+          myRenderCounter = delta + ((myRenderCounter >= 4) ? 5 : 0);
           break;
 
         case 4:
-          myRenderCounter = counter - 157;
+          myRenderCounter = delta;
           break;
 
         case 2:
-          if (counter != 157) myIsRendering = myRenderCounter > 1;
+          if (hblank) myIsRendering = myRenderCounter > 1;
           else if (myRenderCounter == 0) myRenderCounter++;
 
           break;
 
         default:
-          if (counter != 157) myIsRendering = myRenderCounter > 0;
+          if (hblank) myIsRendering = myRenderCounter > 0;
 
           break;
       }
