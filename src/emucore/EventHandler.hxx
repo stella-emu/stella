@@ -315,6 +315,14 @@ class EventHandler
     void allowAllDirections(bool allow) { myAllowAllDirectionsFlag = allow; }
 
     /**
+      Determines whether the given controller must use the mouse (aka,
+      whether the controller generates analog output).
+
+      @param jack  The controller to query
+    */
+    bool controllerIsAnalog(Controller::Jack jack) const;
+
+    /**
       Return a list of all joysticks currently in the internal database
       (first part of variant) and its internal ID (second part of variant).
     */

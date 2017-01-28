@@ -1869,6 +1869,26 @@ void EventHandler::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::controllerIsAnalog(Controller::Jack jack) const
+{
+  const Controller& controller = jack == Controller::Left ?
+      myOSystem.console().leftController() : myOSystem.console().rightController();
+
+  switch(controller.type())
+  {
+    case Controller::Paddles:
+    case Controller::Driving:
+    case Controller::TrackBall22:
+    case Controller::TrackBall80:
+    case Controller::AmigaMouse:
+    case Controller::MindLink:
+      return true;
+    default:
+      return false;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setMouseControllerMode(const string& enable)
 {
   if(myOSystem.hasConsole())
@@ -1880,32 +1900,9 @@ void EventHandler::setMouseControllerMode(const string& enable)
       usemouse = false;
     else  // 'analog'
     {
-      switch(myOSystem.console().leftController().type())
-      {
-        case Controller::Paddles:
-        case Controller::Driving:
-        case Controller::TrackBall22:
-        case Controller::TrackBall80:
-        case Controller::AmigaMouse:
-        case Controller::MindLink:
-          usemouse = true;
-          break;
-        default:
-          break;
-      }
-      switch(myOSystem.console().rightController().type())
-      {
-        case Controller::Paddles:
-        case Controller::Driving:
-        case Controller::TrackBall22:
-        case Controller::TrackBall80:
-        case Controller::AmigaMouse:
-        case Controller::MindLink:
-          usemouse = true;
-          break;
-        default:
-          break;
-      }
+      if(controllerIsAnalog(Controller::Left) ||
+         controllerIsAnalog(Controller::Right))
+        usemouse = true;
     }
 
     const string& control = usemouse ?
