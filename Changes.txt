@@ -14,6 +14,17 @@
 
 4.7.3 to 5.0: (xxx. xx, 2017)
 
+  * For the Linux/UNIX port:
+    - The settings directory now uses the XDG Base Directory Specification.
+      In most cases, this means that your files will now be stored in
+      '~/.config/stella' instead of '~/.stella'.  To keep your old settings,
+      run the following commands from the terminal:
+        cd ~
+        mv .stella .config/stella
+
+      You will probably need to edit '~/.config/stella/stellarc' and change
+      some paths accordingly.
+
   * For the OSX port:
     - Always use the built-in zlib library instead of the system version.
 
@@ -23,6 +34,7 @@
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
 
+  * Updated included PNG and ZLIB libraries to latest stable version.
 
 -Have fun!
 
@@ -392,7 +404,7 @@
 
   * Added bankswitch schemes BF, BFSC, DF, DFSC and 4KSC, thanks to
     RevEng and CPUWIZ of AtariAge.
- 
+
   * Updated ROM properties for several ROMs, thanks to Omegamatrix of
     AtariAge.
 
@@ -958,7 +970,7 @@
     be activated by setting this argument to 'auto'.  Related to this,
     removed redundant 'usemouse' argument.
 
-  * Huge restructuring of the OpenGL code, making it compatible with 
+  * Huge restructuring of the OpenGL code, making it compatible with
     OpenGL 2.x+ features (such as vertex buffer objects), while at the
     same time keeping compatibility with OpenGL 1.5 / OpenGL ES.
     Because of the required changes, TV effects were removed (they will
@@ -2338,7 +2350,7 @@
     environment variable 'STELLA_BASEDIR'.  This must be done each time before
     Stella starts.
 
-  * Added '-fastscbios' commandline argument, which speeds up loading of 
+  * Added '-fastscbios' commandline argument, which speeds up loading of
     vertical bars in Supercharger ROMs, and made it the default.
 
   * Added '-autoslot' commandline argument, which automatically switches
@@ -2650,22 +2662,22 @@
   * Updated the sound system. All popping and cracking sounds that previously
     occurred at program start/stop and when entering/exiting menu or pause
     mode have been eliminated.
- 
+
   * Fixed the gl_fsmax argument to mean "switch to desktop resolution on
     fullscreen OpenGL", instead of to the maximum possible resolution (the two
     are not always the same).
- 
+
   * Added Alt [ and Alt ] keys to dynamically adjust the sound volume during
     emulation.
- 
+
   * Added Control 0, Control 1, Control 2, Control 3 keys to dynamically change
     which paddle the mouse should emulate.
- 
+
   * Added video_driver argument. This accepts the different options that can be
     specified for SDL_VIDEODRIVER (see SDL homepage for more information).
     Basically, it eliminates the need to set the SDL_VIDEODRIVER environment
     variable.
- 
+
   * Made sure screen is refreshed before taking a snapshot.  This eliminates
     the problem with new snapshots containing the text "Snapshot saved".
 
@@ -2702,7 +2714,7 @@
 
   * For the OSX port; added preference to allow user to select the directory
     in which ROM images are stored.  This sets the default directory to start
-    the browsing for a ROM in, and doesn't preclude the user from selecting a 
+    the browsing for a ROM in, and doesn't preclude the user from selecting a
     file outside that directory.
 
   * For the OSX port; fixed preferences bug where Preferences changed before
@@ -2818,7 +2830,7 @@
   * Added 3F bankswitching auto-detection routine so that homebrews and
     demos work without a stella.pro entry
 
-  * Updated the TIA message boxes so they look a little nicer 
+  * Updated the TIA message boxes so they look a little nicer
 
   * Latest stella.pro file included in distribution
 
@@ -2829,7 +2841,7 @@
     stella.pro file; X11 and SDL versions supported for now (compile option)
 
   * External sound server for the X11 and SDL versions no longer required, as
-    all sound code is now integrated into the core 
+    all sound code is now integrated into the core
 
   * Changed locations of the user's config files for the X11 and SDL versions;
     the user's stellarc file is now located in $HOME/.stella/stellarc, state
@@ -2850,7 +2862,7 @@
 
   * Added the developer command line options to the X11 and SDL versions,
     which are only activated in developer builds: -Dformat, -Dwidth,
-    -Dheight, -Dxstart, -Dystart, -Dmerge 
+    -Dheight, -Dxstart, -Dystart, -Dmerge
 
   * Fixed window resize bug in the X11 port
 
@@ -2868,15 +2880,15 @@
   * DOS port is using a new Sound Blaster driver created by Matt Conte which
     supports auto-detection of sound cards.
 
-  * DOS port supports a STELLA_HOME environment variable that defines 
+  * DOS port supports a STELLA_HOME environment variable that defines
     the location of config files.
- 
+
   * In the DOS port the stella.pro file is searched for first in the
     current working director and then in the $STELLA_HOME directory
 
   * In the DOS port the ROM image is searched for first using the
     specified path, then in $STELLA_HOME/ROMS, and finally in $STELLA_HOME
-  
+
 
 Cyberstella 1.2.1 (May 16, 2002)
 
@@ -2929,26 +2941,26 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Basic message support added to the TIA emulation. This allows a short
     message to overlay the TIA frame. Currently, it's used when switching
     color modes and difficulty settings.
- 
+
   * The internal data structure for the stella.pro file was changed from
     a resizable array to a binary search tree. This results in quicker
     startup times.
 
   * An SDL port of Stella is available (requires SDL 1.2.0 or greater)
 
-  * Added option to not load in the whole stella.pro file when starting 
-    Stella. This option is enabled on the X11, SDL, and DOS versions. Win32 
-    version is left alone since it's needed for loading multiple games from 
+  * Added option to not load in the whole stella.pro file when starting
+    Stella. This option is enabled on the X11, SDL, and DOS versions. Win32
+    version is left alone since it's needed for loading multiple games from
     the UI. Saves on memory usage.
 
-  * Added INI file option to the X11 and SDL versions. Options can be 
-    specified in this file instead of entering them on the commandline. Any 
-    options entered on the commandline override options in the INI file.  
+  * Added INI file option to the X11 and SDL versions. Options can be
+    specified in this file instead of entering them on the commandline. Any
+    options entered on the commandline override options in the INI file.
     File is called stellarc. For the X11 and SDL versions, it can be in
     either $HOME (as $HOME/.stellarc) or in /etc (as /etc/stellarc).  The
     one in $HOME has higher priority than the one in /etc.
 
-  * Added snapshot support to the X11 and SDL versions. Pressing F12 saves 
+  * Added snapshot support to the X11 and SDL versions. Pressing F12 saves
     the current screen in PNG format. Requires PNG library.
 
   * Removed stella.pro file from the binary, resulting in large space
@@ -2964,7 +2976,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
 1.0 to 1.1: (February 26, 1999)
 
-  * DOS and Linux versions support real Atari 2600 paddles using a 
+  * DOS and Linux versions support real Atari 2600 paddles using a
     special PC game port adaptor
 
   * Linux version uses the new 1.2.x joystick driver API
@@ -2981,7 +2993,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
     - All Supercharger games load and execute at this point
 
-  * Added a small hack to the TIA code to fix a display problem in "Escape 
+  * Added a small hack to the TIA code to fix a display problem in "Escape
     from the Mindmaster"
 
   * Improved TIA emulation to support the RESPx multi-sprite trick
@@ -2991,11 +3003,11 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
   * DOS version supports 320x200 and 320x240 graphics modes
 
-  * Several portability issues have been resolved 
+  * Several portability issues have been resolved
 
   * Preliminary support for Chris Wilkson's Megacart bank-switching scheme
 
-  * BSDI target included in makefile 
+  * BSDI target included in makefile
 
   * Improved Users Manual in several "popular" formats
 
@@ -3060,7 +3072,7 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
 
   * Changed TIA peeking so lower nibble of byte read is the same
     as the TIA address being accessed (Warlords now works)
-  
+
 
 0.5 to 0.6: (January 18, 1997)
 
