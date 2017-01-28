@@ -843,14 +843,14 @@ void TIA::setJitterRecoveryFactor(Int32 f)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
 {
-#if 0
-  int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  int endClock = ((totalClocks + 228) / 228) * 228;
-
-  do {
+  // Update frame by one scanline at a time
+  uInt32 line = scanlines();
+cerr << "-> " << line << endl;
+  while (line == scanlines())
+  {
     updateScanlineByStep();
-  } while((mySystem->cycles() * 3) < endClock);
-#endif
+cerr << line << endl;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -864,7 +864,7 @@ void TIA::updateScanlineByStep()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanlineByTrace(int target)
 {
-  while(mySystem->m6502().getPC() != target)
+  while (mySystem->m6502().getPC() != target)
     updateScanlineByStep();
 }
 
