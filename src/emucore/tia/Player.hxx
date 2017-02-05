@@ -86,7 +86,6 @@ class Player : public Serializable
 
   private:
 
-    void updatePattern();
     void applyColors();
 
   private:
@@ -102,17 +101,18 @@ class Player : public Serializable
     uInt8 myHmmClocks;
     uInt8 myCounter;
     bool myIsMoving;
-    uInt8 myWidth;
-    uInt8 myEffectiveWidth;
 
     bool myIsRendering;
     Int8 myRenderCounter;
+    uInt8 myDivider;
+    uInt8 myDividerPending;
+    uInt8 mySampleCounter;
+    Int8 myDividerChangeCounter;
 
     const uInt8* myDecodes;
 
     uInt8 myPatternOld;
     uInt8 myPatternNew;
-    uInt32 myPattern;
 
     bool myIsReflected;
     bool myIsDelaying;

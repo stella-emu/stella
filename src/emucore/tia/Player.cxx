@@ -20,7 +20,6 @@
 
 enum Count: Int8 {
   renderCounterOffset = -5,
-  renderCounterOffsetWide = -6
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,28 +38,25 @@ void Player::reset()
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
-  myWidth = 8;
-  myEffectiveWidth = 8;
   myIsRendering = false;
   myRenderCounter = 0;
   myPatternOld = 0;
   myPatternNew = 0;
-  myPattern = 0;
   myIsReflected = 0;
   myIsDelaying = false;
   myColor = myObjectColor = myDebugColor = 0;
   myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
-
-  updatePattern();
+  myDivider = 1;
+  mySampleCounter = 0;
+  myDividerPending = 0;
+  myDividerChangeCounter = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::grp(uInt8 pattern)
 {
   myPatternNew = pattern;
-
-  if (!myIsDelaying) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,45 +69,64 @@ void Player::hmp(uInt8 value)
 void Player::nusiz(uInt8 value)
 {
   const uInt8 masked = value & 0x07;
-  const uInt8 oldWidth = myWidth;
 
-  if (masked == 5)
-    myWidth = 16;
-  else if (masked == 7)
-    myWidth = 32;
-  else
-    myWidth = 8;
+  switch (masked) {
+    case 5:
+      myDividerPending = 2;
+      break;
 
-  myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
+    case 7:
+      myDividerPending = 4;
+      break;
 
-  // This is an incomplete description of the effects seen in issues #87 and #82. More investigation
-  // is required for a complete description (#63)
-  if (myIsRendering && myRenderCounter >= (8 - myWidth / 4 - 2) && oldWidth == 8 && myWidth != oldWidth)
-    myEffectiveWidth = oldWidth;
-  else
-    myEffectiveWidth = myWidth;
-
-  if (myRenderCounter >= myEffectiveWidth)
-    myIsRendering = false;
-
-  // NUSIZ during decode seems to affect the decoding logic. The rods in Meltdown
-  // are highly sensitive to this effect, and this seems to model it adequately.
-  if (myIsRendering && myRenderCounter < 0) {
-    if (myWidth > 8 && oldWidth == 8)
-      myRenderCounter += (myRenderCounter < -2 ? -1 : 1);
-    else if (myWidth == 8 && oldWidth > 8 && myRenderCounter < -3)
-      myRenderCounter++;
+    default:
+      myDividerPending = 1;
+      break;
   }
 
-  if (oldWidth != myWidth) updatePattern();
+  if (myIsRendering) {
+
+    switch ((myDivider << 4) | myDividerPending) {
+      case 0x12:
+      case 0x14:
+        if ((myRenderCounter - Count::renderCounterOffset) < 3)
+          myDivider = myDividerPending;
+        else
+          myDividerChangeCounter = 1;
+        break;
+
+      case 0x21:
+      case 0x41:
+        if ((myRenderCounter - Count::renderCounterOffset) < 3) {
+          myDivider = myDividerPending;
+        } else if ((myRenderCounter - Count::renderCounterOffset) < 5) {
+          myDivider = myDividerPending;
+          myRenderCounter--;
+        } else {
+          myDividerChangeCounter = 1;
+        }
+
+        break;
+
+      default:
+        if (myRenderCounter < 1)
+          myDivider = myDividerPending;
+        else
+          myDividerChangeCounter = (myDivider - (myRenderCounter - 1) % myDivider);
+        break;
+    }
+
+  } else {
+    myDivider = myDividerPending;
+  }
+
+  myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::resp(uInt8 counter)
 {
   myCounter = counter;
-
-  const Int8 renderCounterOffset = myWidth > 8 ? Count::renderCounterOffsetWide : Count::renderCounterOffset;
 
   // This tries to account for the effects of RESP during draw counter decode as
   // described in Andrew Towers' notes. Still room for tuning.'
@@ -122,11 +137,7 @@ void Player::resp(uInt8 counter)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::refp(uInt8 value)
 {
-  const bool oldIsReflected = myIsReflected;
-
   myIsReflected = (value & 0x08) > 0;
-
-  if (myIsReflected != oldIsReflected) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,15 +146,12 @@ void Player::vdelp(uInt8 value)
   const bool oldIsDelaying = myIsDelaying;
 
   myIsDelaying = (value & 0x01) > 0;
-
-  if (myIsDelaying != oldIsDelaying) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::toggleEnabled(bool enabled)
 {
   myIsSuppressed = !enabled;
-  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,11 +205,16 @@ bool Player::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::render()
 {
-  collision = (
-    myIsRendering &&
-    myRenderCounter >= 0 &&
-    (myPattern & (1 << (myWidth - myRenderCounter - 1)))
-  ) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  if (!myIsRendering || myRenderCounter < (myDivider > 1 ? 1 : 0)) {
+    collision = myCollisionMaskDisabled;
+    return;
+  }
+
+  uInt8 pixel =
+    (myIsDelaying ? myPatternOld : myPatternNew) &
+    (1 << (!myIsReflected ? (7 - mySampleCounter) : mySampleCounter));
+
+  collision = (pixel > 0) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,10 +222,27 @@ void Player::tick()
 {
   if (myDecodes[myCounter]) {
     myIsRendering = true;
-    myEffectiveWidth = myWidth;
-    myRenderCounter = myWidth > 8 ? Count::renderCounterOffsetWide : Count::renderCounterOffset;
-  } else if (myIsRendering && ++myRenderCounter >= myEffectiveWidth) {
-    myIsRendering = false;
+    mySampleCounter = 0;
+    myRenderCounter = Count::renderCounterOffset;
+  } else if (myIsRendering) {
+    myRenderCounter++;
+
+    if (myDivider == 1) {
+      if (myRenderCounter > 0) {
+        mySampleCounter++;
+      }
+
+      if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+        myDivider = myDividerPending;
+    } else {
+      if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
+        mySampleCounter++;
+
+      if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+        myDivider = myDividerPending;
+    }
+
+    if (mySampleCounter > 7) myIsRendering = false;
   }
 
   if (++myCounter >= 160) myCounter = 0;
@@ -224,104 +254,24 @@ void Player::shufflePatterns()
   const uInt8 oldPatternOld = myPatternOld;
 
   myPatternOld = myPatternNew;
-
-  if (myIsDelaying && oldPatternOld != myPatternOld) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Player::getRespClock() const
 {
-  switch (myWidth)
+  switch (myDivider)
   {
-    case 8:
+    case 1:
       return (myCounter + 160 - 5) % 160;
 
-    case 16:
+    case 2:
       return (myCounter + 160 - 9) % 160;
 
-    case 32:
+    case 4:
       return (myCounter + 160 - 12) % 160;
 
     default:
       throw runtime_error("invalid width");
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::updatePattern()
-{
-  if (myIsSuppressed) {
-    myPattern = 0;
-    return;
-  }
-
-  const uInt32 pattern = myIsDelaying ? myPatternOld : myPatternNew;
-
-  switch (myWidth)
-  {
-    case 8:
-      if (myIsReflected) {
-        myPattern =
-          ((pattern & 0x01) << 7) |
-          ((pattern & 0x02) << 5) |
-          ((pattern & 0x04) << 3) |
-          ((pattern & 0x08) << 1) |
-          ((pattern & 0x10) >> 1) |
-          ((pattern & 0x20) >> 3) |
-          ((pattern & 0x40) >> 5) |
-          ((pattern & 0x80) >> 7);
-      } else {
-        myPattern = pattern;
-      }
-      break;
-
-    case 16:
-      if (myIsReflected) {
-        myPattern =
-          ((3 * (pattern & 0x01)) << 14) |
-          ((3 * (pattern & 0x02)) << 11) |
-          ((3 * (pattern & 0x04)) << 8)  |
-          ((3 * (pattern & 0x08)) << 5)  |
-          ((3 * (pattern & 0x10)) << 2)  |
-          ((3 * (pattern & 0x20)) >> 1)  |
-          ((3 * (pattern & 0x40)) >> 4)  |
-          ((3 * (pattern & 0x80)) >> 7);
-      } else {
-        myPattern =
-          ((3 * (pattern & 0x01)))       |
-          ((3 * (pattern & 0x02)) << 1)  |
-          ((3 * (pattern & 0x04)) << 2)  |
-          ((3 * (pattern & 0x08)) << 3)  |
-          ((3 * (pattern & 0x10)) << 4)  |
-          ((3 * (pattern & 0x20)) << 5)  |
-          ((3 * (pattern & 0x40)) << 6)  |
-          ((3 * (pattern & 0x80)) << 7);
-      }
-      break;
-
-    case 32:
-      if (myIsReflected) {
-        myPattern =
-          ((0xF * (pattern & 0x01)) << 28) |
-          ((0xF * (pattern & 0x02)) << 23) |
-          ((0xF * (pattern & 0x04)) << 18) |
-          ((0xF * (pattern & 0x08)) << 13) |
-          ((0xF * (pattern & 0x10)) << 8)  |
-          ((0xF * (pattern & 0x20)) << 3)  |
-          ((0xF * (pattern & 0x40)) >> 2)  |
-          ((0xF * (pattern & 0x80)) >> 7);
-      } else {
-        myPattern =
-          ((0xF * (pattern & 0x01)))       |
-          ((0xF * (pattern & 0x02)) << 3)  |
-          ((0xF * (pattern & 0x04)) << 6)  |
-          ((0xF * (pattern & 0x08)) << 9)  |
-          ((0xF * (pattern & 0x10)) << 12) |
-          ((0xF * (pattern & 0x20)) << 15) |
-          ((0xF * (pattern & 0x40)) << 18) |
-          ((0xF * (pattern & 0x80)) << 21);
-      }
-      break;
   }
 }
 
