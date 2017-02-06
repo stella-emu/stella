@@ -84,6 +84,13 @@ void Player::nusiz(uInt8 value)
       break;
   }
 
+  myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
+
+  if (myDividerPending == myDivider) return;
+
+  // The following is an effective description of the effects of NUSIZ during
+  // decode and rendering.
+
   if (myIsRendering) {
 
     switch ((myDivider << 4) | myDividerPending) {
@@ -108,19 +115,23 @@ void Player::nusiz(uInt8 value)
 
         break;
 
-      default:
+      case 0x42:
+      case 0x24:
         if (myRenderCounter < 1)
           myDivider = myDividerPending;
         else
           myDividerChangeCounter = (myDivider - (myRenderCounter - 1) % myDivider);
+        break;
+
+      default:
+        // should never happen
+        myDivider = myDividerPending;
         break;
     }
 
   } else {
     myDivider = myDividerPending;
   }
-
-  myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
