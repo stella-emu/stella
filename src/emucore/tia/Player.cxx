@@ -47,16 +47,22 @@ void Player::reset()
   myColor = myObjectColor = myDebugColor = 0;
   myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
-  myDivider = 1;
   mySampleCounter = 0;
   myDividerPending = 0;
   myDividerChangeCounter = -1;
+
+  setDivider(1);
+  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::grp(uInt8 pattern)
 {
+  const uInt8 oldPatternNew = myPatternNew;
+
   myPatternNew = pattern;
+
+  if (!myIsDelaying && myPatternNew != oldPatternNew) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,7 +103,7 @@ void Player::nusiz(uInt8 value)
       case 0x12:
       case 0x14:
         if ((myRenderCounter - Count::renderCounterOffset) < 3)
-          myDivider = myDividerPending;
+          setDivider(myDividerPending);
         else
           myDividerChangeCounter = 1;
         break;
@@ -105,9 +111,9 @@ void Player::nusiz(uInt8 value)
       case 0x21:
       case 0x41:
         if ((myRenderCounter - Count::renderCounterOffset) < 3) {
-          myDivider = myDividerPending;
+          setDivider(myDividerPending);
         } else if ((myRenderCounter - Count::renderCounterOffset) < 5) {
-          myDivider = myDividerPending;
+          setDivider(myDividerPending);
           myRenderCounter--;
         } else {
           myDividerChangeCounter = 1;
@@ -118,19 +124,19 @@ void Player::nusiz(uInt8 value)
       case 0x42:
       case 0x24:
         if (myRenderCounter < 1)
-          myDivider = myDividerPending;
+          setDivider(myDividerPending);
         else
           myDividerChangeCounter = (myDivider - (myRenderCounter - 1) % myDivider);
         break;
 
       default:
         // should never happen
-        myDivider = myDividerPending;
+        setDivider(myDividerPending);
         break;
     }
 
   } else {
-    myDivider = myDividerPending;
+    setDivider(myDividerPending);
   }
 }
 
@@ -148,7 +154,11 @@ void Player::resp(uInt8 counter)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::refp(uInt8 value)
 {
+  const bool oldIsReflected = myIsReflected;
+
   myIsReflected = (value & 0x08) > 0;
+
+  if (oldIsReflected != myIsReflected) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,12 +167,18 @@ void Player::vdelp(uInt8 value)
   const bool oldIsDelaying = myIsDelaying;
 
   myIsDelaying = (value & 0x01) > 0;
+
+  if (oldIsDelaying != myIsDelaying) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::toggleEnabled(bool enabled)
 {
+  const bool oldIsSuppressed = myIsSuppressed;
+
   myIsSuppressed = !enabled;
+
+  if (oldIsSuppressed != myIsSuppressed) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,16 +232,12 @@ bool Player::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::render()
 {
-  if (!myIsRendering || myRenderCounter < (myDivider > 1 ? 1 : 0)) {
+  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint) {
     collision = myCollisionMaskDisabled;
     return;
   }
 
-  uInt8 pixel =
-    (myIsDelaying ? myPatternOld : myPatternNew) &
-    (1 << (!myIsReflected ? (7 - mySampleCounter) : mySampleCounter));
-
-  collision = (pixel > 0) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -238,19 +250,24 @@ void Player::tick()
   } else if (myIsRendering) {
     myRenderCounter++;
 
-    if (myDivider == 1) {
-      if (myRenderCounter > 0) {
-        mySampleCounter++;
-      }
+    switch (myDivider) {
+      case 1:
+        if (myRenderCounter > 0)
+          mySampleCounter++;
 
-      if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
-        myDivider = myDividerPending;
-    } else {
-      if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
-        mySampleCounter++;
+        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+          setDivider(myDividerPending);
 
-      if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
-        myDivider = myDividerPending;
+        break;
+
+      default:
+        if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
+          mySampleCounter++;
+
+        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+          setDivider(myDividerPending);
+
+        break;
     }
 
     if (mySampleCounter > 7) myIsRendering = false;
@@ -265,6 +282,8 @@ void Player::shufflePatterns()
   const uInt8 oldPatternOld = myPatternOld;
 
   myPatternOld = myPatternNew;
+
+  if (myIsDelaying && myPatternOld != oldPatternOld) updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -284,6 +303,37 @@ uInt8 Player::getRespClock() const
     default:
       throw runtime_error("invalid width");
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::updatePattern()
+{
+  if (myIsSuppressed) {
+    myPattern = 0;
+    return;
+  }
+
+  myPattern = myIsDelaying ? myPatternOld : myPatternNew;
+
+  if (!myIsReflected) {
+    myPattern = (
+      ((myPattern & 0x01) << 7) |
+      ((myPattern & 0x02) << 5) |
+      ((myPattern & 0x04) << 3) |
+      ((myPattern & 0x08) << 1) |
+      ((myPattern & 0x10) >> 1) |
+      ((myPattern & 0x20) >> 3) |
+      ((myPattern & 0x40) >> 5) |
+      ((myPattern & 0x80) >> 7)
+    );
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::setDivider(uInt8 divider)
+{
+  myDivider = divider;
+  myRenderCounterTripPoint = divider == 1 ? 0 : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

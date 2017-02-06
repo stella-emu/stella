@@ -86,7 +86,9 @@ class Player : public Serializable
 
   private:
 
+    void updatePattern();
     void applyColors();
+    void setDivider(uInt8 divider);
 
   private:
 
@@ -104,6 +106,7 @@ class Player : public Serializable
 
     bool myIsRendering;
     Int8 myRenderCounter;
+    Int8 myRenderCounterTripPoint;
     uInt8 myDivider;
     uInt8 myDividerPending;
     uInt8 mySampleCounter;
@@ -113,6 +116,7 @@ class Player : public Serializable
 
     uInt8 myPatternOld;
     uInt8 myPatternNew;
+    uInt8 myPattern;
 
     bool myIsReflected;
     bool myIsDelaying;
