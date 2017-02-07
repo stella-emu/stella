@@ -90,7 +90,18 @@ void Player::nusiz(uInt8 value)
       break;
   }
 
+  const uInt8* oldDecodes = myDecodes;
+
   myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
+
+  if (
+    myDecodes != oldDecodes &&
+    myIsRendering &&
+    (myRenderCounter - Count::renderCounterOffset) < 2 &&
+    !myDecodes[(myCounter - myRenderCounter + Count::renderCounterOffset + 159) % 160]
+  ) {
+    myIsRendering = false;
+  }
 
   if (myDividerPending == myDivider) return;
 
