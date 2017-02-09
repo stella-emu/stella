@@ -997,15 +997,16 @@ void TIA::tickHframe()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::applyRsync()
 {
-  const Int32 x = myHctr - 68;
+  const uInt32 x = myHctr > 68 ? myHctr - 68 : 0;
 
-  if (x > 0 && myFrameManager.isRendering()) {
-    myXDelta = x - 157;
+  if (myFrameManager.isRendering()) {
+    myXDelta = 157 - x;
     memset(myCurrentFrameBuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
   }
 
   myLinesSinceChange = 0;
   myHctr = 225;
+  myHstate = HState::frame;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
