@@ -246,9 +246,6 @@
     <ClCompile Include="..\emucore\TIASnd.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\TrackBall.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\cheat\BankRomCheat.cxx">
       <Filter>Source Files\cheat</Filter>
     </ClCompile>
@@ -831,6 +828,15 @@
     <ClCompile Include="..\emucore\tia\VblankManager.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\AmigaMouse.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\AtariMouse.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\TrakBall.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1053,9 +1059,6 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\TIASnd.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\TrackBall.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx">
@@ -1678,6 +1681,15 @@
     </ClInclude>
     <ClInclude Include="..\emucore\tia\VblankManager.hxx">
       <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\AmigaMouse.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\AtariMouse.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\TrakBall.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

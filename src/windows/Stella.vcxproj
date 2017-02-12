@@ -288,6 +288,8 @@
     <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
+    <ClCompile Include="..\emucore\AmigaMouse.cxx" />
+    <ClCompile Include="..\emucore\AtariMouse.cxx" />
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
@@ -319,6 +321,7 @@
     <ClCompile Include="..\emucore\tia\Playfield.cxx" />
     <ClCompile Include="..\emucore\tia\TIA.cxx" />
     <ClCompile Include="..\emucore\tia\VblankManager.cxx" />
+    <ClCompile Include="..\emucore\TrakBall.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -385,7 +388,6 @@
     <ClCompile Include="..\emucore\System.cxx" />
     <ClCompile Include="..\emucore\Thumbulator.cxx" />
     <ClCompile Include="..\emucore\TIASnd.cxx" />
-    <ClCompile Include="..\emucore\TrackBall.cxx" />
     <ClCompile Include="..\cheat\BankRomCheat.cxx" />
     <ClCompile Include="..\cheat\CheatCodeDialog.cxx" />
     <ClCompile Include="..\cheat\CheatManager.cxx" />
@@ -559,6 +561,8 @@
     <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
+    <ClInclude Include="..\emucore\AmigaMouse.hxx" />
+    <ClInclude Include="..\emucore\AtariMouse.hxx" />
     <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
@@ -591,6 +595,7 @@
     <ClInclude Include="..\emucore\tia\TIA.hxx" />
     <ClInclude Include="..\emucore\tia\Types.hxx" />
     <ClInclude Include="..\emucore\tia\VblankManager.hxx" />
+    <ClInclude Include="..\emucore\TrakBall.hxx" />
     <ClInclude Include="..\gui\ConsoleBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
@@ -675,7 +680,6 @@
     <ClInclude Include="..\emucore\System.hxx" />
     <ClInclude Include="..\emucore\Thumbulator.hxx" />
     <ClInclude Include="..\emucore\TIASnd.hxx" />
-    <ClInclude Include="..\emucore\TrackBall.hxx" />
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx" />
     <ClInclude Include="..\debugger\CartDebug.hxx" />
     <ClInclude Include="..\debugger\gui\ColorWidget.hxx" />
