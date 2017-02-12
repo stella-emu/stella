@@ -228,6 +228,12 @@
 		DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC13B53E176FF2F500B8B4BB /* RomListSettings.hxx */; };
 		DC173F760E2CAC1E00320F94 /* ContextMenu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */; };
 		DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */; };
+		DC1B2EC31E50036100F62837 /* AmigaMouse.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1B2EBD1E50036100F62837 /* AmigaMouse.cxx */; };
+		DC1B2EC41E50036100F62837 /* AmigaMouse.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */; };
+		DC1B2EC51E50036100F62837 /* AtariMouse.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1B2EBF1E50036100F62837 /* AtariMouse.cxx */; };
+		DC1B2EC61E50036100F62837 /* AtariMouse.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC01E50036100F62837 /* AtariMouse.hxx */; };
+		DC1B2EC71E50036100F62837 /* TrakBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1B2EC11E50036100F62837 /* TrakBall.cxx */; };
+		DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC21E50036100F62837 /* TrakBall.hxx */; };
 		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
 		DC2AADAE194F389C0026C7A4 /* CartDASH.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2AADAA194F389C0026C7A4 /* CartDASH.cxx */; };
@@ -523,8 +529,6 @@
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
 		DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */; };
 		DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */; };
-		DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */; };
-		DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
 		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
 		DCF3A6E71DFC75E3008A8AF3 /* Background.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */; };
@@ -840,6 +844,12 @@
 		DC13B53E176FF2F500B8B4BB /* RomListSettings.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RomListSettings.hxx; path = ../debugger/gui/RomListSettings.hxx; sourceTree = SOURCE_ROOT; };
 		DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ContextMenu.cxx; path = ../gui/ContextMenu.cxx; sourceTree = SOURCE_ROOT; };
 		DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ContextMenu.hxx; path = ../gui/ContextMenu.hxx; sourceTree = SOURCE_ROOT; };
+		DC1B2EBD1E50036100F62837 /* AmigaMouse.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AmigaMouse.cxx; path = ../emucore/AmigaMouse.cxx; sourceTree = "<group>"; };
+		DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AmigaMouse.hxx; path = ../emucore/AmigaMouse.hxx; sourceTree = "<group>"; };
+		DC1B2EBF1E50036100F62837 /* AtariMouse.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AtariMouse.cxx; path = ../emucore/AtariMouse.cxx; sourceTree = "<group>"; };
+		DC1B2EC01E50036100F62837 /* AtariMouse.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AtariMouse.hxx; path = ../emucore/AtariMouse.hxx; sourceTree = "<group>"; };
+		DC1B2EC11E50036100F62837 /* TrakBall.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TrakBall.cxx; path = ../emucore/TrakBall.cxx; sourceTree = "<group>"; };
+		DC1B2EC21E50036100F62837 /* TrakBall.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TrakBall.hxx; path = ../emucore/TrakBall.hxx; sourceTree = "<group>"; };
 		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
 		DC2AADAA194F389C0026C7A4 /* CartDASH.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDASH.cxx; path = ../emucore/CartDASH.cxx; sourceTree = "<group>"; };
@@ -1137,8 +1147,6 @@
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotRamWidget.cxx; path = ../debugger/gui/RiotRamWidget.cxx; sourceTree = "<group>"; };
 		DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotRamWidget.hxx; path = ../debugger/gui/RiotRamWidget.hxx; sourceTree = "<group>"; };
-		DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall.cxx; path = ../emucore/TrackBall.cxx; sourceTree = SOURCE_ROOT; };
-		DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TrackBall.hxx; path = ../emucore/TrackBall.hxx; sourceTree = SOURCE_ROOT; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
 		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
 		DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Background.cxx; path = ../emucore/tia/Background.cxx; sourceTree = "<group>"; };
@@ -1505,6 +1513,10 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC1B2EBD1E50036100F62837 /* AmigaMouse.cxx */,
+				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
+				DC1B2EBF1E50036100F62837 /* AtariMouse.cxx */,
+				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
 				DC487FB50DA5350900E12499 /* AtariVox.hxx */,
 				2DE2DF100627AE07006BEC99 /* Booster.cxx */,
@@ -1663,8 +1675,8 @@
 				DC2AADAC194F389C0026C7A4 /* TIASurface.cxx */,
 				DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */,
 				DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */,
-				DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */,
-				DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */,
+				DC1B2EC11E50036100F62837 /* TrakBall.cxx */,
+				DC1B2EC21E50036100F62837 /* TrakBall.hxx */,
 			);
 			name = emucore;
 			sourceTree = "<group>";
@@ -1973,6 +1985,7 @@
 				2D9173E609BA90380026E9FF /* Keyboard.hxx in Headers */,
 				DCACBAD51C54298300703A9B /* CartCVPlus.hxx in Headers */,
 				DCACBAD11C54296300703A9B /* CartCVPlusWidget.hxx in Headers */,
+				DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */,
 				2D9173E709BA90380026E9FF /* M6532.hxx in Headers */,
 				2D9173E809BA90380026E9FF /* MD5.hxx in Headers */,
 				2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */,
@@ -2040,6 +2053,7 @@
 				2D91743609BA90380026E9FF /* DebuggerSystem.hxx in Headers */,
 				2D91743A09BA90380026E9FF /* Expression.hxx in Headers */,
 				2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */,
+				DC1B2EC61E50036100F62837 /* AtariMouse.hxx in Headers */,
 				2D91745009BA90380026E9FF /* CheckListWidget.hxx in Headers */,
 				2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */,
 				DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */,
@@ -2091,7 +2105,6 @@
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
-				DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */,
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
 				DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */,
 				DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */,
@@ -2161,6 +2174,7 @@
 				DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */,
 				DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */,
 				DC67270C1556F4860023653B /* CartCTY.hxx in Headers */,
+				DC1B2EC41E50036100F62837 /* AmigaMouse.hxx in Headers */,
 				DC67270D1556F4860023653B /* CartCTYTunes.hxx in Headers */,
 				DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */,
 				DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */,
@@ -2377,6 +2391,7 @@
 				2D9174B509BA90380026E9FF /* ListWidget.cxx in Sources */,
 				2D9174B609BA90380026E9FF /* Menu.cxx in Sources */,
 				DC5E473B19EC9A14000E45DF /* EventJoyHandler.cxx in Sources */,
+				DC1B2EC71E50036100F62837 /* TrakBall.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
 				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
@@ -2389,6 +2404,7 @@
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
 				DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */,
+				DC1B2EC51E50036100F62837 /* AtariMouse.cxx in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
 				DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */,
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
@@ -2423,6 +2439,7 @@
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
 				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
 				2D9174FE09BA90380026E9FF /* RomWidget.cxx in Sources */,
+				DC1B2EC31E50036100F62837 /* AmigaMouse.cxx in Sources */,
 				2D9174FF09BA90380026E9FF /* TiaInfoWidget.cxx in Sources */,
 				2D91750009BA90380026E9FF /* TiaOutputWidget.cxx in Sources */,
 				2D91750109BA90380026E9FF /* TiaWidget.cxx in Sources */,
@@ -2463,7 +2480,6 @@
 				DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */,
 				DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */,
 				DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */,
-				DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */,
 				DC173F760E2CAC1E00320F94 /* ContextMenu.cxx in Sources */,
 				DC2AADB4194F390F0026C7A4 /* CartRamWidget.cxx in Sources */,
 				DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */,
