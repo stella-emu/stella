@@ -269,6 +269,9 @@ bool Playfield::load(Serializer& in)
     myPf2 = in.getByte();
 
     myX = in.getInt();
+
+    applyColors();
+    updatePattern();
   }
   catch(...)
   {
