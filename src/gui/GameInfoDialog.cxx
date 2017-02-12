@@ -178,7 +178,7 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 10; ypos = vBorder;
   lwidth = font.getStringWidth("P0 Controller: ");
-  pwidth = font.getStringWidth("CX-22 Trakball");
+  pwidth = font.getStringWidth("CX22 Trakball");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P0 Controller:", kTextAlignLeft);
   ctrls.clear();
@@ -190,9 +190,9 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(ctrls, "BoosterGrip",    "BOOSTERGRIP"  );
   VarList::push_back(ctrls, "Driving",        "DRIVING"      );
   VarList::push_back(ctrls, "Keyboard",       "KEYBOARD"     );
-  VarList::push_back(ctrls, "CX-22 Trakball", "TRACKBALL22"  );
-  VarList::push_back(ctrls, "CX-80 Mouse",    "TRACKBALL80"  );
   VarList::push_back(ctrls, "AmigaMouse",     "AMIGAMOUSE"   );
+  VarList::push_back(ctrls, "AtariMouse",     "ATARIMOUSE"   );
+  VarList::push_back(ctrls, "CX22 Trakball",  "TRAKBALL"     );
   VarList::push_back(ctrls, "AtariVox",       "ATARIVOX"     );
   VarList::push_back(ctrls, "SaveKey",        "SAVEKEY"      );
   VarList::push_back(ctrls, "Sega Genesis",   "GENESIS"      );
@@ -216,7 +216,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myLeftPort);
 
   xpos = 10;  ypos += lineHeight + 5;
-  pwidth = font.getStringWidth("CX-22 Trakball");
+  pwidth = font.getStringWidth("CX22 Trakball");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P1 Controller:", kTextAlignLeft);
   myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,

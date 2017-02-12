@@ -88,7 +88,7 @@ class Controller : public Serializable
     enum Type
     {
       BoosterGrip, Driving, Keyboard, Paddles, Joystick,
-      TrackBall22, TrackBall80, AmigaMouse, AtariVox, SaveKey,
+      AmigaMouse, AtariMouse, TrakBall, AtariVox, SaveKey,
       KidVid, Genesis, MindLink, CompuMate
     };
 

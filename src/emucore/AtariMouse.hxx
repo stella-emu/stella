@@ -15,39 +15,31 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TRACKBALL_HXX
-#define TRACKBALL_HXX
+#ifndef ATARIMOUSE_HXX
+#define ATARIMOUSE_HXX
 
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Event.hxx"
 
 /**
-  The various trackball-like controllers supported by the Atari 2600.
-  They're all placed in one class, since other than a few minor
-  differences, they work almost exactly the same.  This code was
-  heavily borrowed from z26.
-
-  The supported controllers include:
-    TrackBall22: Atari 2600 CX-22 Trakball
-    TrackBall80: Atari ST CX-80 Trakball
-    AmigaMouse:  Amiga Mouse
+  Trakball-like controller emulating the Atari ST mouse.
+  This code was heavily borrowed from z26.
 
   @author  Stephen Anthony & z26 team
 */
-class TrackBall : public Controller
+class AtariMouse : public Controller
 {
   public:
     /**
-      Create a new TrackBall controller plugged into the specified jack
+      Create a new AtariMouse controller plugged into the specified jack
 
       @param jack   The jack the controller is plugged into
       @param event  The event object to use for events
       @param system The system using this controller
-      @param type   The type of trackball controller
     */
-    TrackBall(Jack jack, const Event& event, const System& system, Type type);
-    virtual ~TrackBall() = default;
+    AtariMouse(Jack jack, const Event& event, const System& system);
+    virtual ~AtariMouse() = default;
 
   public:
     using Controller::read;
@@ -106,25 +98,13 @@ class TrackBall : public Controller
     // Whether to use the mouse to emulate this controller
     int myMouseEnabled;
 
-    // CX-22
-    static const uInt32 ourTrakBallTableTB_H[2][2];
-    static const uInt32 ourTrakBallTableTB_V[2][2];
-
-    // ST mouse / CX-80
-    static const uInt32 ourTrakBallTableST_H[4];
-    static const uInt32 ourTrakBallTableST_V[4];
-
-    // Amiga mouse
-    static const uInt32 ourTrakBallTableAM_H[4];
-    static const uInt32 ourTrakBallTableAM_V[4];
-
   private:
     // Following constructors and assignment operators not supported
-    TrackBall() = delete;
-    TrackBall(const TrackBall&) = delete;
-    TrackBall(TrackBall&&) = delete;
-    TrackBall& operator=(const TrackBall&) = delete;
-    TrackBall& operator=(TrackBall&&) = delete;
+    AtariMouse() = delete;
+    AtariMouse(const AtariMouse&) = delete;
+    AtariMouse(AtariMouse&&) = delete;
+    AtariMouse& operator=(const AtariMouse&) = delete;
+    AtariMouse& operator=(AtariMouse&&) = delete;
 };
 
 #endif

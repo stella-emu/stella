@@ -15,17 +15,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cstdlib>
-
 #include "Event.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
-#include "TrackBall.hxx"
+#include "AmigaMouse.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TrackBall::TrackBall(Jack jack, const Event& event, const System& system,
-                     Type type)
-  : Controller(jack, event, system, type),
+AmigaMouse::AmigaMouse(Jack jack, const Event& event, const System& system)
+  : Controller(jack, event, system, Controller::AmigaMouse),
     myHCounter(0),
     myVCounter(0),
     myMouseEnabled(false)
@@ -40,12 +37,12 @@ TrackBall::TrackBall(Jack jack, const Event& event, const System& system,
   myTrakBallLeft = myTrakBallDown = myScanCountV = myScanCountH =
     myCountV = myCountH = 0;
 
-  // Analog pins are never used by the trackball controller
+  // Analog pins are never used by the trakball controller
   myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TrackBall::read()
+uInt8 AmigaMouse::read()
 {
   int scanline = mySystem.tia().scanlines();
 
@@ -76,27 +73,9 @@ uInt8 TrackBall::read()
   myCountV &= 0x03;
   myCountH &= 0x03;
 
-  uInt8 IOPortA = 0x00;
-  switch(myType)
-  {
-    case Controller::TrackBall80:
-      IOPortA = IOPortA
-          | ourTrakBallTableST_V[myCountV]
-          | ourTrakBallTableST_H[myCountH];
-      break;
-    case Controller::TrackBall22:
-      IOPortA = IOPortA
-          | ourTrakBallTableTB_V[myCountV & 0x01][myTrakBallDown]
-          | ourTrakBallTableTB_H[myCountH & 0x01][myTrakBallLeft];
-      break;
-    case Controller::AmigaMouse:
-      IOPortA = IOPortA
-          | ourTrakBallTableAM_V[myCountV]
-          | ourTrakBallTableAM_H[myCountH];
-      break;
-    default:
-      break;
-  }
+  static constexpr uInt32 ourTableH[4] = { 0x00, 0x10, 0x50, 0x40 };
+  static constexpr uInt32 ourTableV[4] = { 0x00, 0x80, 0xa0, 0x20 };
+  uInt8 IOPortA = ourTableV[myCountV] | ourTableH[myCountH];
 
   myDigitalPinState[One]   = IOPortA & 0x10;
   myDigitalPinState[Two]   = IOPortA & 0x20;
@@ -107,7 +86,7 @@ uInt8 TrackBall::read()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TrackBall::update()
+void AmigaMouse::update()
 {
   if(!myMouseEnabled)
     return;
@@ -133,10 +112,10 @@ void TrackBall::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TrackBall::setMouseControl(
+bool AmigaMouse::setMouseControl(
     Controller::Type xtype, int xid, Controller::Type ytype, int yid)
 {
-  // Currently, the various trackball controllers take full control of the
+  // Currently, the various trakball controllers take full control of the
   // mouse, and use both mouse buttons for the single fire button
   // As well, there's no separate setting for x and y axis, so any
   // combination of Controller and id is valid
@@ -144,33 +123,3 @@ bool TrackBall::setMouseControl(
                    (xid != -1 || yid != -1);
   return true;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 TrackBall::ourTrakBallTableTB_H[2][2] = {
-  { 0x40, 0x00 }, { 0xc0, 0x80 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 TrackBall::ourTrakBallTableTB_V[2][2] = {
-  { 0x00, 0x10 }, { 0x20, 0x30 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 TrackBall::ourTrakBallTableST_H[4] = {
-  0x00, 0x80, 0xc0, 0x40
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 TrackBall::ourTrakBallTableST_V[4] = {
-  0x00, 0x10, 0x30, 0x20
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 TrackBall::ourTrakBallTableAM_H[4] = {
-  0x00, 0x10, 0x50, 0x40
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 TrackBall::ourTrakBallTableAM_V[4] = {
-  0x00, 0x80, 0xa0, 0x20
-};

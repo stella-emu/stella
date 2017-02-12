@@ -74,11 +74,13 @@ MODULE_OBJS := \
 	src/emucore/System.o \
 	src/emucore/TIASnd.o \
 	src/emucore/TIASurface.o \
-	src/emucore/TrackBall.o \
+	src/emucore/AmigaMouse.o \
+	src/emucore/AtariMouse.o \
+	src/emucore/TrakBall.o \
 	src/emucore/Thumbulator.o
 
 MODULE_DIRS += \
 	src/emucore
 
-# Include common rules 
+# Include common rules
 include $(srcdir)/common.rules

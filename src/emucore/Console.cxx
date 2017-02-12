@@ -46,7 +46,9 @@
 #include "Sound.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
-#include "TrackBall.hxx"
+#include "AmigaMouse.hxx"
+#include "AtariMouse.hxx"
+#include "TrakBall.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
@@ -641,20 +643,17 @@ void Console::setControllers(const string& rommd5)
     leftC = make_ptr<Paddles>(Controller::Left, myEvent, *mySystem,
                               swapPaddles, swapAxis, swapDir);
   }
-  else if(left == "TRACKBALL22")
-  {
-    leftC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
-                                Controller::TrackBall22);
-  }
-  else if(left == "TRACKBALL80")
-  {
-    leftC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
-                                Controller::TrackBall80);
-  }
   else if(left == "AMIGAMOUSE")
   {
-    leftC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
-                                Controller::AmigaMouse);
+    leftC = make_ptr<AmigaMouse>(Controller::Left, myEvent, *mySystem);
+  }
+  else if(left == "ATARIMOUSE")
+  {
+    leftC = make_ptr<AtariMouse>(Controller::Left, myEvent, *mySystem);
+  }
+  else if(left == "TRAKBALL")
+  {
+    leftC = make_ptr<TrakBall>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "GENESIS")
   {
@@ -694,20 +693,17 @@ void Console::setControllers(const string& rommd5)
     rightC = make_ptr<Paddles>(Controller::Right, myEvent, *mySystem,
                                swapPaddles, swapAxis, swapDir);
   }
-  else if(right == "TRACKBALL22")
+  else if(left == "AMIGAMOUSE")
   {
-    rightC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
-                                 Controller::TrackBall22);
+    rightC = make_ptr<AmigaMouse>(Controller::Left, myEvent, *mySystem);
   }
-  else if(right == "TRACKBALL80")
+  else if(left == "ATARIMOUSE")
   {
-    rightC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
-                                 Controller::TrackBall80);
+    rightC = make_ptr<AtariMouse>(Controller::Left, myEvent, *mySystem);
   }
-  else if(right == "AMIGAMOUSE")
+  else if(left == "TRAKBALL")
   {
-    rightC = make_ptr<TrackBall>(Controller::Left, myEvent, *mySystem,
-                                 Controller::AmigaMouse);
+    rightC = make_ptr<TrakBall>(Controller::Left, myEvent, *mySystem);
   }
   else if(right == "ATARIVOX")
   {

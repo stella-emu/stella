@@ -1878,9 +1878,9 @@ bool EventHandler::controllerIsAnalog(Controller::Jack jack) const
   {
     case Controller::Paddles:
     case Controller::Driving:
-    case Controller::TrackBall22:
-    case Controller::TrackBall80:
     case Controller::AmigaMouse:
+    case Controller::AtariMouse:
+    case Controller::TrakBall:
     case Controller::MindLink:
       return true;
     default:

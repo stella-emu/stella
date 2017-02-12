@@ -54,14 +54,14 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
     case Keyboard:
       myName = "Keyboard";
       break;
-    case TrackBall22:
-      myName = "TrackBall22";
-      break;
-    case TrackBall80:
-      myName = "TrackBall80";
-      break;
     case AmigaMouse:
       myName = "AmigaMouse";
+      break;
+    case AtariMouse:
+      myName = "AtariMouse";
+      break;
+    case TrakBall:
+      myName = "TrakBall";
       break;
     case AtariVox:
       myName = "AtariVox";

@@ -2719,10 +2719,10 @@
 
 "Cartridge.MD5" "2365e1534d67f94d8670394ab99150ce"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Missile Command (CX-80 Trackball) (2002) (TJ)"
-"Cartridge.Note" "Uses CX-80 Trackball Controller"
+"Cartridge.Name" "Missile Command (Atari Mouse) (2002) (TJ)"
+"Cartridge.Note" "Uses Atari ST Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "TRACKBALL80"
+"Controller.Left" "ATARIMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -11188,10 +11188,10 @@
 
 "Cartridge.MD5" "8bebac614571135933116045204f0f00"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Missile Command (CX-22 Trackball) (2002) (TJ) (PAL)"
-"Cartridge.Note" "Uses CX-22 Trackball Controller"
+"Cartridge.Name" "Missile Command (CX22 Trakball) (2002) (TJ) (PAL)"
+"Cartridge.Note" "Uses CX22 Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "TRACKBALL22"
+"Controller.Left" "TRAKBALL"
 "Display.Phosphor" "YES"
 ""
 
@@ -11261,10 +11261,10 @@
 
 "Cartridge.MD5" "8ce9126066f2ddd5173e9f1f9ce1494e"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Missile Command (CX-22 Trackball) (2002) (TJ)"
-"Cartridge.Note" "Uses CX-22 Trackball Controller"
+"Cartridge.Name" "Missile Command (CX22 Trakball) (2002) (TJ)"
+"Cartridge.Note" "Uses CX22 Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "TRACKBALL22"
+"Controller.Left" "TRAKBALL"
 "Display.Phosphor" "YES"
 ""
 
@@ -11952,10 +11952,10 @@
 
 "Cartridge.MD5" "96eccc2277043508a6c481ea432d7dd9"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Missile Command (CX-80 Trackball) (2002) (TJ) (PAL)"
-"Cartridge.Note" "Uses CX-80 Trackball Controller"
+"Cartridge.Name" "Missile Command (Atari Mouse) (2002) (TJ) (PAL)"
+"Cartridge.Note" "Uses Atari ST Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "TRACKBALL80"
+"Controller.Left" "ATARIMOUSE"
 "Display.Phosphor" "YES"
 ""
 
