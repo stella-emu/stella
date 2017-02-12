@@ -206,14 +206,36 @@ void Ball::applyColors()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Ball::save(Serializer& out) const
 {
   try
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    out.putInt(collision);
+    out.putInt(myCollisionMaskDisabled);
+    out.putInt(myCollisionMaskEnabled);
+
+    out.putByte(myColor);
+    out.putByte(myObjectColor);
+    out.putByte(myDebugColor);
+    out.putBool(myDebugEnabled);
+
+    out.putBool(myIsEnabledOld);
+    out.putBool(myIsEnabledNew);
+    out.putBool(myIsEnabled);
+    out.putBool(myIsSuppressed);
+    out.putBool(myIsDelaying);
+
+    out.putByte(myHmmClocks);
+    out.putByte(myCounter);
+    out.putBool(myIsMoving);
+    out.putByte(myWidth);
+    out.putByte(myEffectiveWidth);
+    out.putByte(myLastMovementTick);
+
+    out.putBool(myIsRendering);
+    out.putByte(myRenderCounter);
   }
   catch(...)
   {
@@ -225,7 +247,6 @@ bool Ball::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Ball::load(Serializer& in)
 {
   try
@@ -233,7 +254,33 @@ bool Ball::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    collision = in.getInt();
+    myCollisionMaskDisabled = in.getInt();
+    myCollisionMaskEnabled = in.getInt();
+
+    myColor = in.getByte();
+    myObjectColor = in.getByte();
+    myDebugColor = in.getByte();
+    myDebugEnabled = in.getBool();
+
+    myIsEnabledOld = in.getBool();
+    myIsEnabledNew = in.getBool();
+    myIsEnabled = in.getBool();
+    myIsSuppressed = in.getBool();
+    myIsDelaying = in.getBool();
+
+    myHmmClocks = in.getByte();
+    myCounter = in.getByte();
+    myIsMoving = in.getBool();
+    myWidth = in.getByte();
+    myEffectiveWidth = in.getByte();
+    myLastMovementTick = in.getByte();
+
+    myIsRendering = in.getBool();
+    myRenderCounter = in.getByte();
+
+    updateEnabled();
+    applyColors();
   }
   catch(...)
   {

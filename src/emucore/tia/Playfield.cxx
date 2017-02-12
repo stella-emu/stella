@@ -193,14 +193,38 @@ void Playfield::updatePattern()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Playfield::save(Serializer& out) const
 {
   try
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    out.putInt(collision);
+    out.putInt(myCollisionMaskDisabled);
+    out.putInt(myCollisionMaskEnabled);
+
+    out.putBool(myIsSuppressed);
+
+    out.putByte(myColorLeft);
+    out.putByte(myColorRight);
+    out.putByte(myColorP0);
+    out.putByte(myColorP1);
+    out.putByte(myObjectColor);
+    out.putByte(myDebugColor);
+    out.putBool(myDebugEnabled);
+
+    out.putByte(myColorMode);
+
+    out.putInt(myPattern);
+    out.putInt(myEffectivePattern);
+    out.putBool(myRefp);
+    out.putBool(myReflected);
+
+    out.putByte(myPf0);
+    out.putByte(myPf1);
+    out.putByte(myPf2);
+
+    out.putInt(myX);
   }
   catch(...)
   {
@@ -212,7 +236,6 @@ bool Playfield::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Playfield::load(Serializer& in)
 {
   try
@@ -220,7 +243,32 @@ bool Playfield::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    collision = in.getInt();
+    myCollisionMaskDisabled = in.getInt();
+    myCollisionMaskEnabled = in.getInt();
+
+    myIsSuppressed = in.getBool();
+
+    myColorLeft = in.getByte();
+    myColorRight = in.getByte();
+    myColorP0 = in.getByte();
+    myColorP1 = in.getByte();
+    myObjectColor = in.getByte();
+    myDebugColor = in.getByte();
+    myDebugEnabled = in.getBool();
+
+    myColorMode = (ColorMode)in.getByte();
+
+    myPattern = in.getInt();
+    myEffectivePattern = in.getInt();
+    myRefp = in.getBool();
+    myReflected = in.getBool();
+
+    myPf0 = in.getByte();
+    myPf1 = in.getByte();
+    myPf2 = in.getByte();
+
+    myX = in.getInt();
   }
   catch(...)
   {

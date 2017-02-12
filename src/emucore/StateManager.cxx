@@ -28,7 +28,7 @@
 
 #include "StateManager.hxx"
 
-#define STATE_HEADER "04080000state"
+#define STATE_HEADER "04090100state"
 #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

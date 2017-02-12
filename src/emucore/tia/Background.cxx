@@ -58,14 +58,16 @@ void Background::applyColors()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Background::save(Serializer& out) const
 {
   try
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    out.putByte(myColor);
+    out.putByte(myObjectColor);
+    out.putByte(myDebugColor);
+    out.putBool(myDebugEnabled);
   }
   catch(...)
   {
@@ -77,7 +79,6 @@ bool Background::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Background::load(Serializer& in)
 {
   try
@@ -85,7 +86,12 @@ bool Background::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    myColor = in.getByte();
+    myObjectColor = in.getByte();
+    myDebugColor = in.getByte();
+    myDebugEnabled = in.getBool();
+
+    applyColors();
   }
   catch(...)
   {
