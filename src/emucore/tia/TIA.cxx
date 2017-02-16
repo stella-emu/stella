@@ -690,7 +690,7 @@ bool TIA::scanlinePos(uInt16& x, uInt16& y) const
     if(1)//myFramePointerClocks >= myFramePointerOffset)
     {
       x = clocksThisLine();//(myFramePointerClocks - myFramePointerOffset) % 160;
-      y = scanlines();//(myFramePointerClocks - myFramePointerOffset) / 160;
+      y = myFrameManager.getY();//(myFramePointerClocks - myFramePointerOffset) / 160;
       return true;
     }
     else

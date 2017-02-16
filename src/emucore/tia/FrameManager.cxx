@@ -326,7 +326,7 @@ void FrameManager::setFixedHeight(uInt32 height)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameManager::scanlines() const
 {
-  return myState == State::frame ? myCurrentFrameTotalLines : myCurrentFrameFinalLines;
+  return  myCurrentFrameTotalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
