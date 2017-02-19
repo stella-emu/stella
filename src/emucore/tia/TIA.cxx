@@ -288,35 +288,39 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     case CXBLPF:
-      result = collCXBLPF();
+      result = collCXBLPF() | (lastDataBusValue & 0x40);
       break;
 
     case INPT0:
       updatePaddle(0);
-      result = myPaddleReaders[0].inpt(myTimestamp);
+      result = myPaddleReaders[0].inpt(myTimestamp) | (lastDataBusValue & 0x40);
       break;
 
     case INPT1:
       updatePaddle(1);
-      result = myPaddleReaders[1].inpt(myTimestamp);
+      result = myPaddleReaders[1].inpt(myTimestamp) | (lastDataBusValue & 0x40);
       break;
 
     case INPT2:
       updatePaddle(2);
-      result = myPaddleReaders[2].inpt(myTimestamp);
+      result = myPaddleReaders[2].inpt(myTimestamp) | (lastDataBusValue & 0x40);
       break;
 
     case INPT3:
       updatePaddle(3);
-      result = myPaddleReaders[3].inpt(myTimestamp);
+      result = myPaddleReaders[3].inpt(myTimestamp) | (lastDataBusValue & 0x40);
       break;
 
     case INPT4:
-      result = myInput0.inpt(!myConsole.leftController().read(Controller::Six));
+      result =
+        myInput0.inpt(!myConsole.leftController().read(Controller::Six)) |
+        (lastDataBusValue & 0x40);
       break;
 
     case INPT5:
-      result = myInput1.inpt(!myConsole.rightController().read(Controller::Six));
+      result =
+        myInput1.inpt(!myConsole.rightController().read(Controller::Six)) |
+        (lastDataBusValue & 0x40);
       break;
 
     default:
