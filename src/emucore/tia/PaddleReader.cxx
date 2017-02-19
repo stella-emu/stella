@@ -97,8 +97,9 @@ void PaddleReader::updateCharge(double timestamp)
 {
   if (myIsDumped) return;
 
-  myU = USUPP * (1 - (1 - myU / USUPP) *
-    exp(-(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
+  if (myValue >= 0)
+    myU = USUPP * (1 - (1 - myU / USUPP) *
+      exp(-(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
 
   myTimestamp = timestamp;
 }

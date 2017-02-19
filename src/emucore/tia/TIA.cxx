@@ -18,6 +18,7 @@
 #include "TIA.hxx"
 #include "M6502.hxx"
 #include "Console.hxx"
+#include "Control.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -1291,8 +1292,11 @@ void TIA::updatePaddle(uInt8 idx)
       throw runtime_error("invalid paddle index");
   }
 
-  myPaddleReaders[idx].update(double(resistance) / MAX_RESISTANCE,
-                              myTimestamp, myFrameManager.tvMode());
+  myPaddleReaders[idx].update(
+    (resistance == Controller::maximumResistance ? -1 : double(resistance)) / MAX_RESISTANCE,
+    myTimestamp,
+    myFrameManager.tvMode()
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
