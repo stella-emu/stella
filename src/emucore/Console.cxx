@@ -405,8 +405,6 @@ void Console::setProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Console::initializeVideo(bool full)
 {
-  setPalette(myOSystem.settings().getString("palette"));
-
   FBInitStatus fbstatus = kSuccess;
 
   if(full)
@@ -421,6 +419,7 @@ FBInitStatus Console::initializeVideo(bool full)
     myOSystem.frameBuffer().showFrameStats(myOSystem.settings().getBool("stats"));
     generateColorLossPalette();
   }
+  setPalette(myOSystem.settings().getString("palette"));
 
   // Set the correct framerate based on the format of the ROM
   // This can be overridden by changing the framerate in the

@@ -111,7 +111,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       {
         ostringstream command;
         int lines = myClickY + ystart;
-        if(instance().console().tia().partialFrame())
+        if(instance().console().tia().isRendering())
           lines -= instance().console().tia().scanlines();
         if(lines > 0)
         {
@@ -156,7 +156,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
   // This determines where the frame greying should start, and where a
   // scanline 'pointer' should be drawn
   uInt16 scanx, scany, scanoffset;
-  bool visible = instance().console().tia().scanlinePos(scanx, scany);
+  bool visible = instance().console().tia().electronBeamPos(scanx, scany);
   scanoffset = width * scany + scanx;
 
   for(uInt32 y = 0, i = 0; y < height; ++y)
@@ -164,7 +164,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     uInt32* line_ptr = myLineBuffer;
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
-      uInt8 shift = i > scanoffset ? 1 : 0;
+      uInt8 shift = i >= scanoffset ? 1 : 0;
       uInt32 pixel = instance().frameBuffer().tiaSurface().pixel(i, shift);
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;

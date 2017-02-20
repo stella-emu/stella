@@ -61,12 +61,11 @@ class FrameManager : public Serializable
 
     void setFixedHeight(uInt32 height);
 
-    uInt32 getY() const
-    {
-      return myY;
-    }
+    uInt32 getY() const { return myY; }
 
     uInt32 scanlines() const;
+
+    uInt32 scanlinesLastFrame() const;
 
     uInt32 frameCount() const { return myTotalFrames; }
 

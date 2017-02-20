@@ -151,31 +151,27 @@ class TIA : public Device
     /**
       Answers the current and previous frame buffer pointers
     */
-    uInt8* currentFrameBuffer() const {
-      return myCurrentFrameBuffer.get();
-    }
-    uInt8* previousFrameBuffer() const {
-      return myPreviousFrameBuffer.get();
-    }
+    uInt8* currentFrameBuffer() const  { return myCurrentFrameBuffer.get();  }
+    uInt8* previousFrameBuffer() const { return myPreviousFrameBuffer.get(); }
 
     /**
       Answers dimensional info about the framebuffer
     */
-    uInt32 width() const { return 160; }
-    uInt32 height() const;
-    uInt32 ystart() const;
+    uInt32 width() const  { return 160; }
+    uInt32 height() const { return myFrameManager.height(); }
+    uInt32 ystart() const { return myFrameManager.ystart(); }
 
     /**
       Changes the current Height/YStart properties.
       Note that calls to these method(s) must be eventually followed by
       ::frameReset() for the changes to take effect.
     */
-    void setHeight(uInt32 height);
-    void setYStart(uInt32 ystart);
+    void setHeight(uInt32 height) { myFrameManager.setFixedHeight(height); }
+    void setYStart(uInt32 ystart) { myFrameManager.setYstart(ystart); }
 
-    void autodetectTvMode(bool toggle);
-    void setTvMode(TvMode mode);
-    TvMode tvMode() const;
+    void autodetectTvMode(bool toggle) { myFrameManager.autodetectTvMode(toggle); }
+    void setTvMode(TvMode mode) { myFrameManager.setTvMode(mode); }
+    TvMode tvMode() const { return myFrameManager.tvMode(); }
 
     /**
       Enables/disables auto-frame calculation.  If enabled, the TIA
@@ -183,7 +179,7 @@ class TIA : public Device
 
       @param enabled  Whether to enable or disable all auto-frame calculation
     */
-    void enableAutoFrame(bool enabled);
+    void enableAutoFrame(bool enabled) { myAutoFrameEnabled = enabled; }
 
     /**
       Enables/disables color-loss for PAL modes only.
@@ -197,7 +193,7 @@ class TIA : public Device
 
       @return The current color clock
     */
-    uInt32 clocksThisLine() const;
+    uInt32 clocksThisLine() const { return myHctr + myXDelta; }
 
     /**
       Answers the total number of scanlines the TIA generated in producing
@@ -206,27 +202,32 @@ class TIA : public Device
 
       @return The total number of scanlines generated
     */
-    uInt32 scanlines() const;
+    uInt32 scanlines() const { return myFrameManager.scanlines(); }
 
     /**
-      Answers whether the TIA is currently in 'partial frame' mode
+      Answers the total number of scanlines the TIA generated in the
+      previous frame.
+
+      @return The total number of scanlines generated in the last frame.
+    */
+    uInt32 scanlinesLastFrame() const { return myFrameManager.scanlinesLastFrame(); }
+
+    /**
+      Answers whether the TIA is currently in being rendered
       (we're in between the start and end of drawing a frame).
 
-      @return If we're in partial frame mode
+      @return If the frame is in rendering mode
     */
-    bool partialFrame() const;
+    bool isRendering() const { return myFrameManager.isRendering(); }
 
     /**
       Answers the current position of the virtual 'electron beam' used to
-      draw the TIA image.  If not in partial frame mode, the position is
-      defined to be in the lower right corner (@ width/height of the screen).
-      Note that the coordinates are with respect to currentFrameBuffer(),
-      taking any YStart values into account.
+      draw the TIA image.
 
       @return The x/y coordinates of the scanline electron beam, and whether
               it is in the visible/viewable area of the screen
     */
-    bool scanlinePos(uInt16& x, uInt16& y) const;
+    bool electronBeamPos(uInt16& x, uInt16& y) const;
 
     /**
       Enables/disable/toggle the specified (or all) TIA bit(s).  Note that

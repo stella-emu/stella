@@ -230,7 +230,7 @@ void FrameManager::updateAutodetectedTvMode()
     updateTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
   else if (!myModeConfirmed) {
     if (
-      (myCurrentFrameFinalLines  < frameLinesPAL) &&
+      (myCurrentFrameFinalLines < frameLinesPAL) &&
       (myCurrentFrameFinalLines > frameLinesNTSC) &&
       (myCurrentFrameFinalLines % 2)
     )
@@ -289,7 +289,8 @@ void FrameManager::setYstart(uInt32 ystart)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::ystart() const {
+uInt32 FrameManager::ystart() const
+{
   return myVblankManager.ystart();
 }
 
@@ -327,6 +328,12 @@ void FrameManager::setFixedHeight(uInt32 height)
 uInt32 FrameManager::scanlines() const
 {
   return  myCurrentFrameTotalLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::scanlinesLastFrame() const
+{
+  return  myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

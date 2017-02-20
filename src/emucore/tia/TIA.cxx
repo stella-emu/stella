@@ -199,12 +199,13 @@ bool TIA::save(Serializer& out) const
     // TODO - save instance variables
 
     // Save the state of each graphics object
-    if(!myPlayfield.save(out)) return false;
-    if(!myMissile0.save(out))  return false;
-    if(!myMissile1.save(out))  return false;
-    if(!myPlayer0.save(out))   return false;
-    if(!myPlayer1.save(out))   return false;
-    if(!myBall.save(out))      return false;
+    if(!myBackground.save(out)) return false;
+    if(!myPlayfield.save(out))  return false;
+    if(!myMissile0.save(out))   return false;
+    if(!myMissile1.save(out))   return false;
+    if(!myPlayer0.save(out))    return false;
+    if(!myPlayer1.save(out))    return false;
+    if(!myBall.save(out))       return false;
 
     // Save the sound sample stuff ...
     mySound.save(out);
@@ -229,12 +230,13 @@ bool TIA::load(Serializer& in)
     // TODO - load instance variables
 
     // Load the state of each graphics object
-    if(!myPlayfield.load(in)) return false;
-    if(!myMissile0.load(in))  return false;
-    if(!myMissile1.load(in))  return false;
-    if(!myPlayer0.load(in))   return false;
-    if(!myPlayer1.load(in))   return false;
-    if(!myBall.load(in))      return false;
+    if(!myBackground.load(in)) return false;
+    if(!myPlayfield.load(in))  return false;
+    if(!myMissile0.load(in))   return false;
+    if(!myMissile1.load(in))   return false;
+    if(!myPlayer0.load(in))    return false;
+    if(!myPlayer1.load(in))    return false;
+    if(!myBall.load(in))       return false;
   }
   catch(...)
   {
@@ -344,6 +346,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       // It appears that the 6507 only halts during a read cycle so
       // we test here for follow-on writes which should be ignored as
       // far as halting the processor is concerned.
+      // See issue #42 for more information.
       if (mySystem->m6502().lastAccessWasRead())
       {
         mySubClock += (228 - myHctr) % 228;
@@ -615,102 +618,18 @@ void TIA::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIA::height() const
-{
-  return myFrameManager.height();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIA::ystart() const
-{
-  return myFrameManager.ystart();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setHeight(uInt32 height)
-{
-  myFrameManager.setFixedHeight(height);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setYStart(uInt32 ystart)
-{
-  myFrameManager.setYstart(ystart);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::autodetectTvMode(bool toggle)
-{
-  myFrameManager.autodetectTvMode(toggle);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setTvMode(TvMode mode)
-{
-  myFrameManager.setTvMode(mode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TvMode TIA::tvMode() const
-{
-  return myFrameManager.tvMode();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::enableAutoFrame(bool enabled)
-{
-  myAutoFrameEnabled = enabled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: stub
 void TIA::enableColorLoss(bool enabled)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIA::clocksThisLine() const
+bool TIA::electronBeamPos(uInt16& x, uInt16& y) const
 {
-  return myHctr + myXDelta;
-}
+  x = clocksThisLine();
+  y = myFrameManager.getY();
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIA::scanlines() const
-{
-  return myFrameManager.scanlines();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::partialFrame() const
-{
-  return myFrameManager.isRendering();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::scanlinePos(uInt16& x, uInt16& y) const
-{
-  if(partialFrame())
-  {
-    // We only care about the scanline position when it's in the viewable area
-    if(1)//myFramePointerClocks >= myFramePointerOffset)
-    {
-      x = clocksThisLine();//(myFramePointerClocks - myFramePointerOffset) % 160;
-      y = myFrameManager.getY();//(myFramePointerClocks - myFramePointerOffset) / 160;
-      return true;
-    }
-    else
-    {
-      x = 0;
-      y = 0;
-      return false;
-    }
-  }
-  else
-  {
-    x = width();
-    y = height();
-    return false;
-  }
+  return isRendering();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -850,12 +769,8 @@ void TIA::updateScanline()
 {
   // Update frame by one scanline at a time
   uInt32 line = scanlines();
-cerr << "-> " << line << endl;
   while (line == scanlines())
-  {
     updateScanlineByStep();
-cerr << line << endl;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -274,7 +274,7 @@ void FrameBuffer::update()
         const ConsoleInfo& info = myOSystem.console().about();
         char msg[30];
         std::snprintf(msg, 30, "%3u @ %3.2ffps => %s",
-                myOSystem.console().tia().scanlines(),
+                myOSystem.console().tia().scanlinesLastFrame(),
                 myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
         myStatsMsg.surface->drawString(infoFont(),
