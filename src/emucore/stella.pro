@@ -10376,7 +10376,7 @@
 
 "Cartridge.MD5" "8108ad2679bd055afec0a35a1dca46a4"
 "Cartridge.Name" "Maze Craze (Unknown)"
-"Display.Height" "245"
+"Display.Format" "NTSC"
 ""
 
 "Cartridge.MD5" "810d8952af5a6036fca8d0c4e1b23db6"
@@ -19589,6 +19589,7 @@
 "Cartridge.Manufacturer" "Atari, Richard Maurer - Sears"
 "Cartridge.ModelNo" "CX2635 - 49-75157"
 "Cartridge.Name" "Maze Craze (1980) (Atari)"
+"Display.Format" "NTSC"
 ""
 
 "Cartridge.MD5" "f844f4c6f3baaaf5322657442d6f29eb"

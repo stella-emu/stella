@@ -15,7 +15,7 @@ if (@ARGV != 2)
     usage();
   }
   # Saves me from having to type these paths *every single time*
-  $usr_file  = "$ENV{HOME}/.stella/stella.pro";
+  $usr_file  = "$ENV{HOME}/.config/stella/stella.pro";
   $sys_file = "src/emucore/stella.pro";
 }
 else
