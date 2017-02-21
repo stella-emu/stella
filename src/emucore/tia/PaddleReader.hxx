@@ -44,7 +44,7 @@ class PaddleReader : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override { return "TIA_PADDLE_READER"; }
+    string name() const override { return "TIA_PaddleReader"; }
 
   private:
 
