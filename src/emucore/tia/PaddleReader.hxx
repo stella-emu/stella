@@ -32,6 +32,7 @@ class PaddleReader
     void reset(double timestamp);
 
     void vblank(uInt8 value, double timestamp);
+    bool vblankDumped() const { return myIsDumped; }
 
     uInt8 inpt(double timestamp);
 

@@ -30,6 +30,7 @@ class LatchedInput
     void reset();
 
     void vblank(uInt8 value);
+    bool vblankLatched() const { return myModeLatched; }
 
     uInt8 inpt(bool pinState);
 

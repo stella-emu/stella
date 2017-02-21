@@ -151,13 +151,12 @@ uInt8 RiotDebug::inpt(int x)
 bool RiotDebug::vblank(int bit)
 {
   if(bit == 6)       // latches
-    return 0;//FIXME mySystem.tia().myVBLANK & 0x40;
+    return myConsole.tia().myInput0.vblankLatched();
   else if(bit == 7)  // dump to ground
-    return 0;//FIXME mySystem.tia().myDumpEnabled;
+    return myConsole.tia().myPaddleReaders[0].vblankDumped();
   else
     return true;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotDebug::tim1T(int newVal)

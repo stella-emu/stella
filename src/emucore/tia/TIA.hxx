@@ -221,8 +221,8 @@ class TIA : public Device
     bool isRendering() const { return myFrameManager.isRendering(); }
 
     /**
-      Answers the current position of the virtual 'electron beam' used to
-      draw the TIA image.
+      Answers the current position of the virtual 'electron beam' used
+      when drawing the TIA image in debugger mode.
 
       @return The x/y coordinates of the scanline electron beam, and whether
               it is in the visible/viewable area of the screen
