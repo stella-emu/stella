@@ -20,8 +20,9 @@
 
 #include "bspf.hxx"
 #include "TvMode.hxx"
+#include "Serializable.hxx"
 
-class PaddleReader
+class PaddleReader : public Serializable
 {
   public:
 
@@ -37,6 +38,13 @@ class PaddleReader
     uInt8 inpt(double timestamp);
 
     void update(double value, double timestamp, TvMode tvMode);
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_PADDLE_READER"; }
 
   private:
 
@@ -58,7 +66,6 @@ class PaddleReader
     bool myIsDumped;
 
   private:
-
     PaddleReader(const PaddleReader&) = delete;
     PaddleReader(PaddleReader&&) = delete;
     PaddleReader& operator=(const PaddleReader&) = delete;

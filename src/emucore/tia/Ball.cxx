@@ -243,7 +243,7 @@ bool Ball::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -288,5 +288,5 @@ bool Ball::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }

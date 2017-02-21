@@ -53,3 +53,42 @@ uInt8 LatchedInput::inpt(bool pinState)
 
   return value;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool LatchedInput::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    out.putBool(myModeLatched);
+    out.putByte(myLatchedValue);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_LatchedInput::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool LatchedInput::load(Serializer& in)
+{
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    myModeLatched = in.getBool();
+    myLatchedValue = in.getByte();
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_LatchedInput::load" << endl;
+    return false;
+  }
+
+  return true;
+}

@@ -207,6 +207,14 @@ bool TIA::save(Serializer& out) const
     if(!myPlayer1.save(out))    return false;
     if(!myBall.save(out))       return false;
 
+    // Save dumped input ports
+    for (const PaddleReader& paddleReader : myPaddleReaders)
+      if(!paddleReader.save(out)) return false;
+
+    // Save latched input ports
+    if(!myInput0.save(out)) return false;
+    if(!myInput1.save(out)) return false;
+
     // Save the sound sample stuff ...
     mySound.save(out);
   }
@@ -237,6 +245,14 @@ bool TIA::load(Serializer& in)
     if(!myPlayer0.load(in))    return false;
     if(!myPlayer1.load(in))    return false;
     if(!myBall.load(in))       return false;
+
+    // Load dumped input ports
+    for (PaddleReader& paddleReader : myPaddleReaders)
+      if(!paddleReader.load(in)) return false;
+
+    // Load latched input ports
+    if(!myInput0.load(in)) return false;
+    if(!myInput1.load(in)) return false;
   }
   catch(...)
   {

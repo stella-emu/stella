@@ -19,8 +19,9 @@
 #define TIA_LATCHED_INPUT
 
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
-class LatchedInput
+class LatchedInput : public Serializable
 {
   public:
     LatchedInput();
@@ -33,6 +34,13 @@ class LatchedInput
     bool vblankLatched() const { return myModeLatched; }
 
     uInt8 inpt(bool pinState);
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_PADDLE_READER"; }
 
   private:
 

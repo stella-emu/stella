@@ -103,3 +103,42 @@ void PaddleReader::updateCharge(double timestamp)
 
   myTimestamp = timestamp;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool PaddleReader::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    // TODO - save instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_PaddleReader::save" << endl;
+    return false;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: implement this once the class is finalized
+bool PaddleReader::load(Serializer& in)
+{
+  try
+  {
+    if(in.getString() != name())
+      return false;
+
+    // TODO - load instance variables
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_PaddleReader::load" << endl;
+    return false;
+  }
+
+  return false;
+}

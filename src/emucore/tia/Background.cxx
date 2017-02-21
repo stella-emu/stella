@@ -75,7 +75,7 @@ bool Background::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,5 +99,5 @@ bool Background::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }

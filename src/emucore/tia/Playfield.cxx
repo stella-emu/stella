@@ -232,7 +232,7 @@ bool Playfield::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -279,5 +279,5 @@ bool Playfield::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }
