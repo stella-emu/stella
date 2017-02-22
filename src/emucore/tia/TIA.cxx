@@ -945,14 +945,13 @@ void TIA::applyRsync()
 {
   const uInt32 x = myHctr > 68 ? myHctr - 68 : 0;
 
-  if (myFrameManager.isRendering()) {
-    myXDelta = 157 - x;
+  myXDelta = 157 - x;
+  if (myFrameManager.isRendering())
     memset(myCurrentFrameBuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
-  }
 
   myLinesSinceChange = 0;
   myHctr = 225;
-  myHstate = HState::frame;
+  //myHstate = HState::frame;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
