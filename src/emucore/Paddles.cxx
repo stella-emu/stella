@@ -26,6 +26,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     myMPaddleIDX(-1),
     myMPaddleIDY(-1)
 {
+  myAnalogPinValue[Nine] = myAnalogPinValue[Five] = 0;
+
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex
   // As well, while many paddle games have horizontal movement of
