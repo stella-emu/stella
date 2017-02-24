@@ -101,9 +101,9 @@ void AtariMouse::update()
   else               myTrakBallDown = 1;
   myTrakBallCountH = abs(myVCounter >> 1);
   myTrakBallCountV = abs(myHCounter >> 1);
-  myTrakBallLinesH = 200 /*LinesInFrame*/ / (myTrakBallCountH + 1);
+  myTrakBallLinesH = mySystem.tia().height() / (myTrakBallCountH + 1);
   if(myTrakBallLinesH == 0) myTrakBallLinesH = 1;
-  myTrakBallLinesV = 200 /*LinesInFrame*/ / (myTrakBallCountV + 1);
+  myTrakBallLinesV = mySystem.tia().height() / (myTrakBallCountV + 1);
   if(myTrakBallLinesV == 0) myTrakBallLinesV = 1;
 
   // Get mouse button state

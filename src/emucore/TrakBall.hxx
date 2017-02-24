@@ -23,7 +23,7 @@
 #include "Event.hxx"
 
 /**
-  CS22/CX80 trakball controller.  This code was heavily borrowed from z26.
+  CX22/CX80 trakball controller.  This code was heavily borrowed from z26.
 
   @author  Stephen Anthony & z26 team
 */
