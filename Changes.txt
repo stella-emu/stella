@@ -14,6 +14,33 @@
 
 4.7.3 to 5.0: (xxx. xx, 2017)
 
+  * New TIA core: TODO - gather info on all new functionality:
+    - RSYNC
+    - YStart autodetection
+    - ...
+
+  * Fixed bug with SaveKey and AtariVox not properly closing their memory
+    files before starting another instance of the same ROM, when the ROM
+    was opened in the ROM launcher.
+
+  * Fixed trap'm' debugger commands when setting read TIA addresses; it
+    was only working for write addresses.
+
+  * Mouse grabbing is now enabled in windowed mode only when the ROM is
+    using a virtual analog controller (paddles, trakball, etc).
+
+  * Renamed various trakball-like controllers more accurately: AmigaMouse,
+    AtariMouse (previously CX80) and Trakball (previously CX22).  Related
+    to this, reduced the resolution of the Trakball by half, to properly
+    match real hardware.
+
+  * The stack pointer (SP) is now initialized to $FD instead of $FF, to
+    match research done in other 6502 projects.
+
+  * Fixed bug in debugger tracing and displaying the partial TIA image;
+    the first time entering the debugger and starting to trace, the image
+    was blanked out (black) instead of being drawn in greyscale.
+
   * For the Linux/UNIX port:
     - The settings directory now uses the XDG Base Directory Specification.
       In most cases, this means that your files will now be stored in
@@ -34,7 +61,10 @@
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
 
-  * Updated included PNG and ZLIB libraries to latest stable version.
+  * Updated included PNG and ZLIB libraries to latest stable version.  Also,
+    both libraries are now compiled into the app whenever one is selected
+    (in particular, this affects the OSX port, which no longer uses the
+    system-provided libpng).
 
 -Have fun!
 
