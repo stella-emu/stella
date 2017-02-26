@@ -397,7 +397,7 @@ uInt8 M6532::intim() const
 
   // Get number of clocks since timer was set
   Int32 timer = timerClocks();
-  if(!(timer & 0x40000))
+  if(timer >= 0)
     return (timer >> myIntervalShift) & 0xff;
   else
     return timer & 0xff;
@@ -426,7 +426,7 @@ Int32 M6532::intimClocks() const
 
   // Get number of clocks since timer was set
   Int32 timer = timerClocks();
-  if(!(timer & 0x40000))
+  if(timer >= 0)
     return timerClocks() & ((1 << myIntervalShift) - 1);
   else
     return timer & 0xff;
