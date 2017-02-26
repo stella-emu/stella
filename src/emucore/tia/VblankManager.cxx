@@ -44,6 +44,7 @@ void VblankManager::reset()
   myStableVblankFrames = 0;
   myVblankViolated = false;
   myLastVblankLines = 0;
+  myIsRunning = false;
 
   if (myMode != VblankMode::fixed) myMode = VblankMode::floating;
 }
@@ -52,13 +53,63 @@ void VblankManager::reset()
 void VblankManager::start()
 {
   myCurrentLine = 0;
+  myIsRunning = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool VblankManager::nextLine(bool isGarbageFrame)
 {
+  if (!myIsRunning) return false;
+
   myCurrentLine++;
 
+  const bool transition =
+    myMode == VblankMode::fixed ? (myCurrentLine >= myYstart) : shouldTransition(isGarbageFrame);
+
+  if (transition) myIsRunning = false;
+
+  return transition;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VblankManager::setVblankLines(uInt32 vblankLines)
+{
+  myVblankLines = vblankLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VblankManager::setYstart(uInt32 ystart)
+{
+  if (ystart == myYstart) return;
+
+  myYstart = ystart;
+
+  myMode = ystart ? VblankMode::fixed : VblankMode::floating;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VblankManager::setVblank(bool vblank)
+{
+  myVblank = vblank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool VblankManager::setVblankDuringVblank(bool vblank, bool isGarbageFrame)
+{
+  const bool oldVblank = myVblank;
+
+  myVblank = vblank;
+  if (!myIsRunning || vblank || oldVblank == myVblank) return false;
+
+  const bool transition = shouldTransition(isGarbageFrame);
+  if (transition) myIsRunning = false;
+
+  return transition;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool VblankManager::shouldTransition(bool isGarbageFrame)
+{
   bool shouldTransition = myCurrentLine >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan);
   bool transition = false;
 
@@ -114,40 +165,12 @@ bool VblankManager::nextLine(bool isGarbageFrame)
 
       break;
 
-    case VblankMode::fixed:
-      if (myCurrentLine > myYstart) transition = true;
+    default:
+      transition = false;
       break;
-
   }
 
   return transition;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VblankManager::setVblankLines(uInt32 vblankLines)
-{
-  myVblankLines = vblankLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VblankManager::setYstart(uInt32 ystart)
-{
-  if (ystart == myYstart) return;
-
-  myYstart = ystart;
-
-  myMode = ystart ? VblankMode::fixed : VblankMode::floating;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VblankManager::setVblank(bool vblank)
-{
-#ifdef TIA_VBLANK_MANAGER_DEBUG_LOG
-  if (myVblank != vblank)
-    (cout << "vblank " << myVblank << " -> " << vblank << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
-#endif
-
-  myVblank = vblank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

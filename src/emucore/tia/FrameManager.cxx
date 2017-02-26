@@ -297,7 +297,12 @@ uInt32 FrameManager::ystart() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVblank(bool vblank)
 {
-  myVblankManager.setVblank(vblank);
+  if (myState == State::waitForFrameStart) {
+    if (myVblankManager.setVblankDuringVblank(vblank, myTotalFrames <= Metrics::initialGarbageFrames)) {
+      setState(State::frame);
+    }
+  } else
+    myVblankManager.setVblank(vblank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

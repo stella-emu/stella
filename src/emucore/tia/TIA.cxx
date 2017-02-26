@@ -835,6 +835,11 @@ void TIA::onFrameStart()
 {
   swapBuffers();
 
+  const Int32 x = myHctr - 68;
+
+  if (x > 0)
+    memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.getY(), 0, x);
+
   for (uInt8 i = 0; i < 4; i++)
     updatePaddle(i);
 }
@@ -845,7 +850,7 @@ void TIA::onFrameComplete()
   mySystem->m6502().stop();
   mySystem->resetCycles();
 
-  Int32 missingScanlines = myLastFrameHeight[0] - myFrameManager.getY();
+  const Int32 missingScanlines = myLastFrameHeight[0] - myFrameManager.getY();
 
   if (missingScanlines > 0)
     memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.getY(), 0, missingScanlines * 160);

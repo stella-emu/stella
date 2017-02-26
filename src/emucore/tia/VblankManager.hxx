@@ -42,6 +42,8 @@ class VblankManager : public Serializable
 
     void setVblank(bool vblank);
 
+    bool setVblankDuringVblank(bool vblank, bool isGarbageFrame);
+
     bool vblank() const { return myVblank; }
 
     uInt32 currentLine() const {return myCurrentLine; };
@@ -63,6 +65,10 @@ class VblankManager : public Serializable
 
   private:
 
+    bool shouldTransition(bool isGarbageFrame);
+
+  private:
+
     uInt32 myVblankLines;
     uInt32 myMaxUnderscan;
     uInt32 myYstart;
@@ -74,6 +80,8 @@ class VblankManager : public Serializable
     uInt8 myVblankViolations;
     uInt8 myStableVblankFrames;
     bool myVblankViolated;
+
+    bool myIsRunning;
 
   private:
 
