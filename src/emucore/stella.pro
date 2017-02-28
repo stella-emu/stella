@@ -126,7 +126,6 @@
 "Cartridge.MD5" "01b09872dcd9556427761f0ed64aa42a"
 "Cartridge.Manufacturer" "Galaga Games"
 "Cartridge.Name" "River Raid (1984) (Galaga Games)"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "01cb3e8dfab7203a9c62ba3b94b4e59f"
@@ -192,7 +191,6 @@
 "Cartridge.Manufacturer" "Coleco, Steve 'Jessica' Kitchen"
 "Cartridge.ModelNo" "2468"
 "Cartridge.Name" "Carnival (1982) (Coleco)"
-"Display.Height" "214"
 ""
 
 "Cartridge.MD5" "02811151906e477d47c135db5b1699c6"
@@ -312,7 +310,6 @@
 "Cartridge.Manufacturer" "M Network, Patricia Lewis Du Long, Ron Surratt - INTV"
 "Cartridge.ModelNo" "MT4518"
 "Cartridge.Name" "BurgerTime (1983) (M Network)"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
@@ -1016,7 +1013,6 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 50"
-"Display.YStart" "34"
 ""
 
 "Cartridge.MD5" "0cb7af80fd0ddef84844481d85e5d29b"
@@ -1266,7 +1262,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-853"
 "Cartridge.Name" "Spider Fighter (1983) (CCE)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "0fcff6fe3b0769ad5d0cf82814d2a6d9"
@@ -2354,7 +2349,6 @@
 "Cartridge.ModelNo" "CX2675"
 "Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "1ec57bbd27bdbd08b60c391c4895c1cf"
@@ -2540,7 +2534,6 @@
 "Cartridge.ModelNo" "CX2640"
 "Cartridge.Name" "RealSports Baseball (1982) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "20dca534b997bf607d658e77fbb3c0ee"
@@ -2847,7 +2840,6 @@
 "Cartridge.Manufacturer" "Activision, Larry Miller"
 "Cartridge.ModelNo" "AX-021"
 "Cartridge.Name" "Spider Fighter (1982) (Activision)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "24d9a55d8f0633e886a1b33ee1e0e797"
@@ -3185,6 +3177,7 @@
 "Cartridge.ModelNo" "5"
 "Cartridge.Name" "Open Sesame (1983) (Goliath) (PAL) [a]"
 "Cartridge.Note" "AKA Open, Sesame!"
+"Display.YStart" "38"
 "Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
@@ -3800,7 +3793,6 @@
 "Cartridge.MD5" "303242c239474f2d7763b843de58c1c3"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Laser Blast (CCE)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "304512528a5530a9361e8a231ed9a6de"
@@ -3886,7 +3878,6 @@
 "Cartridge.ModelNo" "011-01, 011-02"
 "Cartridge.Name" "Spy Hunter (1984) (Sega)"
 "Cartridge.Note" "Uses Joystick Coupler (Dual Control Module)"
-"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "310ba30e25ea8957e58180b663503c0c"
@@ -4565,7 +4556,6 @@
 "Cartridge.Manufacturer" "Activision, Carol Shaw"
 "Cartridge.ModelNo" "AX-020, AX-020-04"
 "Cartridge.Name" "River Raid (1982) (Activision)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "393e41ca8bdd35b52bf6256a968a9b89"
@@ -4620,7 +4610,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-811"
 "Cartridge.Name" "River Raid (1983) (CCE) [a]"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "39da69ff9833f8c143f03b6e0e7a996b"
@@ -4634,7 +4623,6 @@
 "Cartridge.Manufacturer" "Robby"
 "Cartridge.ModelNo" "18"
 "Cartridge.Name" "River Raid (Robby)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "3a2e2d0c6892aa14544083dfb7762782"
@@ -4697,7 +4685,7 @@
 "Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) [fixed]"
-"Display.YStart" "28"
+"Display.Height" "214"
 ""
 
 "Cartridge.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
@@ -5233,7 +5221,7 @@
 "Cartridge.Manufacturer" "Xonox - K-Tel Software - Beck-Tech"
 "Cartridge.ModelNo" "6210, 06002, 06004, 99002"
 "Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL)"
-"Display.YStart" "28"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "40d9f5709877ecf3dd1184f9791dd35e"
@@ -5274,7 +5262,6 @@
 "Cartridge.ModelNo" "CX26113"
 "Cartridge.Name" "Miss Piggy's Wedding (06-24-1983) (Atari) (Prototype) (8K)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "41810dd94bd0de1110bedc5092bef5b0"
@@ -5757,7 +5744,6 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26150"
 "Cartridge.Name" "Q-bert (1987) (Atari)"
-"Display.YStart" "40"
 ""
 
 "Cartridge.MD5" "4868a81e1b6031ed66ecd60547e6ec85"
@@ -5851,8 +5837,6 @@
 
 "Cartridge.MD5" "49571b26f46620a85f93448359324c28"
 "Cartridge.Name" "Save Our Ship (Unknown)"
-"Display.Format" "NTSC"
-"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "497f3d2970c43e5224be99f75e97cbbb"
@@ -6266,7 +6250,6 @@
 "Cartridge.Manufacturer" "Supergame"
 "Cartridge.Name" "River Raid III (Supergame)"
 "Cartridge.Note" "AKA River Raid"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "4e99ebd65a967cabf350db54405d577c"
@@ -6472,7 +6455,7 @@
 "Cartridge.Manufacturer" "Parker Brothers, Todd Marshall"
 "Cartridge.ModelNo" "PB5550"
 "Cartridge.Name" "Q-bert's Qubes (1984) (Parker Bros)"
-"Display.YStart" "30"
+"Display.Height" "214"
 ""
 
 "Cartridge.MD5" "517923e655755086a3b72c0b17b430e6"
@@ -6748,7 +6731,6 @@
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.ModelNo" "SA-212"
 "Cartridge.Name" "Mangia' (1983) (Spectravideo)"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "54bafc299423f5a50b8bc3a797914706"
@@ -6962,7 +6944,6 @@
 "Cartridge.ModelNo" "6230, 7210, 06004, 99004"
 "Cartridge.Name" "Artillery Duel (1983) (Xonox) (PAL60)"
 "Display.Format" "PAL60"
-"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "58a82e1da64a692fd727c25faef2ecc9"
@@ -7014,7 +6995,7 @@
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "28"
+"Display.Height" "214"
 ""
 
 "Cartridge.MD5" "599cbf919d47a05af975ad447df29497"
@@ -7054,7 +7035,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-811"
 "Cartridge.Name" "River Raid (1983) (CCE)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "5a17e30e6e911e74ccd7b716d02b16c6"
@@ -7985,7 +7965,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-812"
 "Cartridge.Name" "Pac Man (1983) (CCE) [a]"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "6522717cfd75d1dba252cbde76992090"
@@ -8211,7 +8190,6 @@
 "Cartridge.Manufacturer" "CommaVid, Irwin Gaines"
 "Cartridge.ModelNo" "CM-004"
 "Cartridge.Name" "Room of Doom (1982) (CommaVid)"
-"Display.YStart" "24"
 "Display.Phosphor" "YES"
 ""
 
@@ -8712,7 +8690,6 @@
 "Cartridge.Manufacturer" "Funvision - Fund. International Co."
 "Cartridge.Name" "Persian Gulf War (Funvision)"
 "Cartridge.Note" "AKA River Raid"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "6cea35ded079863a846159c3a1101cc7"
@@ -8801,7 +8778,6 @@
 "Cartridge.Manufacturer" "Atari, Tod Frye - Sears"
 "Cartridge.ModelNo" "CX2646 - 49-75185"
 "Cartridge.Name" "Pac-Man (1982) (Atari)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "6e4521989a60a0ddf4ff1fc6e6e5fc3d"
@@ -9219,7 +9195,7 @@
 
 "Cartridge.MD5" "73cb1f1666f3fd30b52b4f3d760c928f"
 "Cartridge.Name" "Mines of Minos (Unknown) (PAL)"
-"Display.YStart" "24"
+"Display.Height" "225"
 "Display.Phosphor" "YES"
 ""
 
@@ -9509,7 +9485,6 @@
 "Cartridge.MD5" "76f66ce3b83d7a104a899b4b3354a2f2"
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Cat Trax (1983) (UA Limited) (1)"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -9804,7 +9779,6 @@
 "Cartridge.Manufacturer" "Atari, Joseph Tung"
 "Cartridge.ModelNo" "CX26152"
 "Cartridge.Name" "Super Baseball (1988) (Atari)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "7af40c1485ce9f29b1a7b069a2eb04a7"
@@ -10313,7 +10287,6 @@
 "Cartridge.Note" "Uses the AtariVox controller"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "ATARIVOX"
-"Display.YStart" "34"
 ""
 
 "Cartridge.MD5" "808c3b1e60ee0e7c65205fa4bd772221"
@@ -10689,7 +10662,6 @@
 "Cartridge.ModelNo" "554-33 367"
 "Cartridge.Name" "Laser Base (1983) (ITT Family Games) (PAL) [a]"
 "Cartridge.Note" "AKA The End of the World (Perry Rhodan-Serie)"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -10856,6 +10828,7 @@
 "Cartridge.Manufacturer" "Goliath"
 "Cartridge.ModelNo" "5"
 "Cartridge.Name" "Open Sesame (1983) (Goliath) (PAL)"
+"Display.YStart" "34"
 "Display.Phosphor" "YES"
 ""
 
@@ -10882,7 +10855,6 @@
 "Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cartridge.ModelNo" "CX2675"
 "Cartridge.Name" "Ms. Pac-Man (1982) (Atari)"
-"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "87f020daa98d0132e98e43db7d8fea7e"
@@ -11017,7 +10989,6 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG208"
 "Cartridge.Name" "Snail Against Squirrel (1983) (BitCorp) (PAL)"
-"Display.YStart" "44"
 ""
 
 "Cartridge.MD5" "89a65b83203980d5d4d60f52a584a5b8"
@@ -11168,7 +11139,6 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Pleiades (1983) (UA Limited) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "32"
 "Display.Phosphor" "YES"
 ""
 
@@ -11212,7 +11182,6 @@
 "Cartridge.ModelNo" "VCS83137"
 "Cartridge.Name" "Teddy Apple (1983) (Home Vision) (PAL)"
 "Cartridge.Note" "AKA Open Sesame"
-"Display.YStart" "42"
 "Display.Phosphor" "YES"
 ""
 
@@ -11238,13 +11207,11 @@
 "Cartridge.Manufacturer" "Supergame"
 "Cartridge.ModelNo" "71"
 "Cartridge.Name" "River Raid (1984) (Supergame)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "8c941fa32c7718a10061d8c328909577"
 "Cartridge.Manufacturer" "Digivision"
 "Cartridge.Name" "River Raid (Digivision)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "8ccaa442d26b09139685f5b22bf189c4"
@@ -11494,6 +11461,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PGP204"
 "Cartridge.Name" "Open Sesame (4 Game in One Dark Green) (1983) (BitCorp) (PAL)"
+"Display.YStart" "34"
 "Display.Phosphor" "YES"
 ""
 
@@ -11535,7 +11503,6 @@
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "River Raid II (1985) (Digitel)"
 "Cartridge.Note" "AKA River Raid"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "910dd9bf98cc5bc080943e5128b15bf5"
@@ -11579,7 +11546,6 @@
 "Cartridge.Name" "Laser Blast (Jone Yuan) (Hack)"
 "Cartridge.Note" "2600 Screen Search Console"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "91c2098e88a6b13f977af8c003e0bca5"
@@ -11605,7 +11571,6 @@
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "106"
 "Cartridge.Name" "Dice Puzzle (1983) (Panda)"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -11662,7 +11627,6 @@
 "Cartridge.MD5" "92e72f7cc569584c44c9530d645ae04e"
 "Cartridge.Manufacturer" "Canal 3 - Intellivision"
 "Cartridge.Name" "Spider Fighter (Canal 3)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "92ede72ed8f61d255bc58d2f166dc6b6"
@@ -11673,14 +11637,12 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-008"
 "Cartridge.Name" "Laser Blast (1981) (Activision)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "9333172e3c4992ecf548d3ac1f2553eb"
 "Cartridge.Manufacturer" "Konami"
 "Cartridge.ModelNo" "RC 101-X 02"
 "Cartridge.Name" "Strategy X (1983) (Konami)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "93420cc4cb1af1f2175c63e52ec18332"
@@ -11700,8 +11662,6 @@
 "Cartridge.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
 "Cartridge.Name" "Pac Kong (Unknown)"
 "Cartridge.Note" "AKA Spider Kong"
-"Display.YStart" "24"
-"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "936f555b4b1a2cd061b659ff63f4f5f2"
@@ -12290,8 +12250,7 @@
 "Cartridge.ModelNo" "VC1002"
 "Cartridge.Name" "Sneak 'n Peek (1982) (U.S. Games)"
 "Cartridge.Note" "AKA Hide 'n Seek"
-"Display.YStart" "30"
-"Display.Height" "218"
+"Display.Height" "215"
 ""
 
 "Cartridge.MD5" "9c6fd6ed3599978ab7b6f900484b9be6"
@@ -12801,7 +12760,6 @@
 "Cartridge.MD5" "a34560841e0878c7b14cc65f79f6967d"
 "Cartridge.Manufacturer" "Multivision, Michael Case"
 "Cartridge.Name" "Harem (1982) (Multivision)"
-"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "a3486c0b8110d9d4b1db5d8a280723c6"
@@ -12845,7 +12803,6 @@
 "Cartridge.ModelNo" "873.790 0"
 "Cartridge.Name" "Eishockey-Fieber (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Ice Hockey"
-"Display.YStart" "52"
 ""
 
 "Cartridge.MD5" "a3f8aebb38182749cb8da85cfbc63d7c"
@@ -13252,7 +13209,6 @@
 "Cartridge.MD5" "a94528ae05dd051894e945d4d2349b3b"
 "Cartridge.Manufacturer" "Genus"
 "Cartridge.Name" "River Raid (Genus)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "a94b8ca630f467b574b614808d813919"
@@ -13727,7 +13683,6 @@
 "Cartridge.Manufacturer" "Apollo - Games by Apollo"
 "Cartridge.ModelNo" "AP-2006"
 "Cartridge.Name" "Infiltrate (1981) (Apollo)"
-"Display.YStart" "29"
 "Display.Phosphor" "YES"
 ""
 
@@ -13829,7 +13784,6 @@
 "Cartridge.ModelNo" "83-215"
 "Cartridge.Name" "Dream Flight (1983) (Goliath) (PAL)"
 "Cartridge.Note" "AKA Nightmare"
-"Display.YStart" "44"
 "Display.Height" "256"
 ""
 
@@ -14014,7 +13968,6 @@
 "Cartridge.MD5" "b36040a2f9ecafa73d835d804a572dbf"
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "Pac Man (1983) (Digitel)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "b37f0fe822b92ca8f5e330bf62d56ea9"
@@ -14036,7 +13989,6 @@
 "Cartridge.MD5" "b40dea357d41c5408546e4e4d5f27779"
 "Cartridge.Manufacturer" "Digivision"
 "Cartridge.Name" "Spider Fighter (Digivision)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "b41fdd4a522e1d5a2721840028684ac2"
@@ -14143,7 +14095,6 @@
 "Cartridge.Manufacturer" "Imagic, Dennis Koble"
 "Cartridge.ModelNo" "720021-1A, IA3410"
 "Cartridge.Name" "Shootin' Gallery (1982) (Imagic)"
-"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "b5cb9cf6e668ea3f4cc2be00ea70ec3c"
@@ -14174,7 +14125,6 @@
 "Cartridge.ModelNo" "3130"
 "Cartridge.Name" "Off Your Rocker (1983) (Amiga) (Prototype)"
 "Cartridge.Note" "Uses the Amiga Joyboard"
-"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "b64426e787f04ff23ee629182c168603"
@@ -14185,7 +14135,6 @@
 "Cartridge.MD5" "b65d4a38d6047735824ee99684f3515e"
 "Cartridge.Manufacturer" "Dynacom"
 "Cartridge.Name" "MegaBoy (Dynacom)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "b676a9b7094e0345a76ef027091d916b"
@@ -14302,7 +14251,6 @@
 "Cartridge.Manufacturer" "20th Century Fox Video Games, David Lubar"
 "Cartridge.ModelNo" "11008"
 "Cartridge.Name" "Fantastic Voyage (1982) (20th Century Fox)"
-"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "b816296311019ab69a21cb9e9e235d12"
@@ -14837,7 +14785,6 @@
 "Cartridge.Manufacturer" "Sega - Bally Midway - Beck-Tech"
 "Cartridge.ModelNo" "010-01"
 "Cartridge.Name" "Tapper (1984) (Sega)"
-"Display.YStart" "24"
 "Display.Height" "225"
 ""
 
@@ -14867,7 +14814,6 @@
 
 "Cartridge.MD5" "c16fbfdbfdf5590cc8179e4b0f5f5aeb"
 "Cartridge.Name" "Wall Break (Unknown)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c17bdc7d14a36e10837d039f43ee5fa3"
@@ -14924,7 +14870,6 @@
 "Cartridge.Name" "G.I. Joe - Cobra Strike (1983) (Parker Bros)"
 "Cartridge.Note" "Uses the Paddle (left) and Joystick (right) Controllers"
 "Controller.Left" "PADDLES"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c20f15282a1aa8724d70c117e5c9709e"
@@ -14988,7 +14933,6 @@
 "Cartridge.Name" "River Raid (Jone Yuan) (Hack)"
 "Cartridge.Note" "2600 Screen Search Console"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "c29f8db680990cb45ef7fef6ab57a2c2"
@@ -15063,7 +15007,6 @@
 "Cartridge.Manufacturer" "Atari, Robert C. Polaro"
 "Cartridge.ModelNo" "CX26157"
 "Cartridge.Name" "Stunt Cycle (07-21-1980) (Atari) (Prototype)"
-"Display.Height" "215"
 ""
 
 "Cartridge.MD5" "c3e4aa718f46291311f1cce53e6ccd79"
@@ -15094,7 +15037,6 @@
 "Cartridge.MD5" "c41e7735f6701dd50e84ee71d3ed1d8f"
 "Cartridge.Manufacturer" "Dynacom"
 "Cartridge.Name" "Spider Fighter (1983) (Dynacom)"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c43bd363e1f128e73ba5f0380b6fd7e3"
@@ -15117,7 +15059,6 @@
 "Cartridge.MD5" "c469151655e333793472777052013f4f"
 "Cartridge.Name" "Base Attack (Unknown) (Hack)"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c471b97446a85304bbac021c57c2cb49"
@@ -15262,7 +15203,6 @@
 "Cartridge.Manufacturer" "Atari, Howard Scott Warshaw - Sears"
 "Cartridge.ModelNo" "CX2655 - 49-75167"
 "Cartridge.Name" "Yars' Revenge (1982) (Atari)"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -15391,7 +15331,6 @@
 "Cartridge.ModelNo" "CX2640"
 "Cartridge.Name" "RealSports Baseball (07-09-1982) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c738fc3f5aae1e8f86f7249f6c82ac81"
@@ -15408,7 +15347,7 @@
 "Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
 "Cartridge.Name" "Official Frogger, The (1983) (Arcadia)"
-"Display.YStart" "30"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "c745487828a1a6a743488ecebc55ad44"
@@ -15440,7 +15379,6 @@
 "Cartridge.ModelNo" "6230, 7210, 06004, 99004"
 "Cartridge.Name" "Artillery Duel (1983) (Xonox)"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "c77d3b47f2293e69419b92522c6f6647"
@@ -15563,7 +15501,6 @@
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 50"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "ca09fa7406b7d2aea10d969b6fc90195"
@@ -15591,7 +15528,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-812"
 "Cartridge.Name" "Pac Man (1983) (CCE)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "ca54de69f7cdf4d7996e86f347129892"
@@ -15726,7 +15662,6 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.MouseAxis" "AUTO 50"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "cbeafd37f15e0dddb0540dbe15c545a4"
@@ -15866,7 +15801,6 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "River Raid (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "cd4ded1ede63c4dd09f3dd01bda7458c"
@@ -15944,7 +15878,6 @@
 "Cartridge.Note" "Uses the Keypad Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
-"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "ce17325834bf8b0a0d0d8de08478d436"
@@ -15957,7 +15890,6 @@
 "Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.Name" "Jacky Jump (1983) (Home Vision) (PAL)"
 "Cartridge.Note" "AKA Bobby Is Going Home"
-"Display.YStart" "39"
 "Display.Height" "256"
 ""
 
@@ -16019,7 +15951,6 @@
 "Cartridge.Manufacturer" "Ultravision"
 "Cartridge.ModelNo" "1044"
 "Cartridge.Name" "Karate (1982) (Ultravision)"
-"Display.YStart" "25"
 ""
 
 "Cartridge.MD5" "cef01595000627ee50863d4290372c27"
@@ -16192,7 +16123,6 @@
 "Cartridge.MD5" "d071d2ec86b9d52b585cc0382480b351"
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Cat Trax (1983) (UA Limited) (1) [a]"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -16200,15 +16130,13 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Laser Blast (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "d078d25873c5b99f78fa267245a2af02"
 "Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega) [a]"
-"Display.YStart" "34"
-"Display.Height" "211"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "d08fccfbebaa531c4a4fa7359393a0a9"
@@ -16415,7 +16343,6 @@
 "Cartridge.ModelNo" "08-08-1980"
 "Cartridge.Name" "Laser Blast (08-08-1980) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "d2c957dd7746521b51bb09fde25c5774"
@@ -16501,7 +16428,7 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Funky Fish (1983) (UA Limited) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-"Display.YStart" "38"
+"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -16543,7 +16470,6 @@
 "Cartridge.ModelNo" "CX26140, CX26140P"
 "Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
-"Display.YStart" "22"
 ""
 
 "Cartridge.MD5" "d483f65468d9a265661917bae1a54f3e"
@@ -16646,14 +16572,12 @@
 "Cartridge.Manufacturer" "Star Game"
 "Cartridge.ModelNo" "003"
 "Cartridge.Name" "River Raid (Star Game)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "d5f965c159e26a1fb49a22a47fbd1dd0"
 "Cartridge.Manufacturer" "Supergame"
 "Cartridge.Name" "River Raid II (Supergame)"
 "Cartridge.Note" "AKA River Raid"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "d605ed12f4eaaaec3dcd5aa909a4bad7"
@@ -16957,7 +16881,6 @@
 "Cartridge.MD5" "da5096000db5fdaa8d02db57d9367998"
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "River Raid (1983) (Digitel)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "da6465a34d2e44d26aa9a2a0cd1bce4d"
@@ -17568,7 +17491,6 @@
 "Cartridge.Manufacturer" "Parker Brothers, Dawn Stockbridge"
 "Cartridge.ModelNo" "PB5910"
 "Cartridge.Name" "Strawberry Shortcake - Musical Match-Ups (1983) (Parker Bros)"
-"Display.YStart" "25"
 "Display.Height" "225"
 ""
 
@@ -18080,7 +18002,6 @@
 "Cartridge.ModelNo" "7-003"
 "Cartridge.Name" "Threshold (1982) (Tigervision)"
 "Display.YStart" "22"
-"Display.Height" "210"
 ""
 
 "Cartridge.MD5" "e63efdfda9a4003dcd77a854a781a06a"
@@ -18287,7 +18208,6 @@
 "Cartridge.Manufacturer" "Atari, Howard Scott Warshaw"
 "Cartridge.ModelNo" "CX2655, CX2655P"
 "Cartridge.Name" "Yars' Revenge (1982) (Atari) (PAL)"
-"Display.YStart" "36"
 "Display.Phosphor" "YES"
 ""
 
@@ -18395,7 +18315,6 @@
 "Cartridge.Manufacturer" "Sancho - Tang's Electronic Co."
 "Cartridge.ModelNo" "TEC004"
 "Cartridge.Name" "Nightmare (1983) (Sancho) (PAL)"
-"Display.YStart" "43"
 "Display.Height" "256"
 ""
 
@@ -18458,7 +18377,6 @@
 "Cartridge.Manufacturer" "Atari, Eric Manghise, Joseph Tung"
 "Cartridge.ModelNo" "CX2640"
 "Cartridge.Name" "RealSports Baseball (1982) (Atari)"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -18500,7 +18418,6 @@
 "Cartridge.Manufacturer" "JVP"
 "Cartridge.Name" "Bob Is Going Home (JVP)"
 "Cartridge.Note" "AKA Bobby Is Going Home"
-"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "ebcbc8a181a738e13df6216e5c329230"
@@ -18614,7 +18531,6 @@
 "Cartridge.MD5" "ed1a784875538c7871d035b7a98c2433"
 "Cartridge.Name" "Save Our Ship (Unknown) (Hack)"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "ed2218b3075d15eaa34e3356025ccca3"
@@ -18778,15 +18694,6 @@
 "Cartridge.Name" "Private Eye (1983) (Activision)"
 ""
 
-"Cartridge.MD5" "ef5c02c95a1e7ed24f24193935755cd3"
-"Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Jammed Demo (1999) (Hozer Video Games)"
-"Cartridge.Note" "Won't work with Stella < V1.2"
-"Cartridge.Rarity" "New Release"
-"Display.YStart" "24"
-"Display.Height" "215"
-""
-
 "Cartridge.MD5" "ef60b06fddb675b0d783afbfa5fc5232"
 "Cartridge.Name" "Many Blue Bars and Text Demo 4 (PD)"
 ""
@@ -18939,7 +18846,6 @@
 "Cartridge.MD5" "f11cfab087fcbd930ab8b0becc5b2e5a"
 "Cartridge.Manufacturer" "Canal 3 - Intellivision"
 "Cartridge.Name" "River Raid (Canal 3)"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "f12afbffa080dd3b2801dd14d4837cf6"
@@ -19096,7 +19002,6 @@
 "Cartridge.Manufacturer" "Digimax"
 "Cartridge.Name" "River Raid II (Digimax)"
 "Cartridge.Note" "AKA River Raid"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "f2e4fb2d3600c0f76d05864e658cc57b"
@@ -19174,7 +19079,7 @@
 "Cartridge.Name" "Toyshop Trouble (AtariAge)"
 "Cartridge.Note" "F8 Emulator Release"
 "Controller.Right" "PADDLES"
-"Display.YStart" "31"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "f3c431930e035a457fe370ed4d230659"
@@ -19335,7 +19240,7 @@
 "Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
 "Cartridge.Name" "Official Frogger, The (Preview) (1983) (Arcadia)"
-"Display.YStart" "30"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "f613aad84d2163d6b197b220bfec1b7e"
@@ -19760,7 +19665,7 @@
 "Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision)"
-"Display.YStart" "28"
+"Display.Height" "214"
 ""
 
 "Cartridge.MD5" "fa1b060fd8e0bca0c2a097dcffce93d3"
@@ -19865,7 +19770,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Super Baseball (CCE)"
 "Cartridge.Note" "AKA RealSports Baseball"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "faffd84f3a8eceee2fa5ea5b0a3e6678"
@@ -19926,7 +19830,6 @@
 "Cartridge.ModelNo" "11031"
 "Cartridge.Name" "Crash Dive (1983) (20th Century Fox)"
 "Cartridge.Note" "AKA Voyage to the Bottom of the Sea"
-"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "fb91da78455d9b1606913fbf8c859772"
@@ -19957,7 +19860,6 @@
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "River Raid III (1985) (Digitel)"
 "Cartridge.Note" "AKA River Raid"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "fbd6102e17a5c02c6e1911381b7203f9"
@@ -20070,7 +19972,6 @@
 "Cartridge.ModelNo" "CX26140"
 "Cartridge.Name" "Desert Falcon (1987) (Atari)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
-"Display.YStart" "22"
 ""
 
 "Cartridge.MD5" "fd6e507b5df68beeeddeaf696b6828fa"
