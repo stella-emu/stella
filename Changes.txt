@@ -23,8 +23,8 @@
     files before starting another instance of the same ROM, when the ROM
     was opened in the ROM launcher.
 
-  * Fixed trap'm' debugger commands when setting read TIA addresses; it
-    was only working for write addresses.
+  * Fixed trap'm' debugger commands when setting TIA read addresses; it
+    was previously only working for write addresses.
 
   * Mouse grabbing is now enabled in windowed mode only when the ROM is
     using a virtual analog controller (paddles, trakball, etc).
@@ -53,18 +53,20 @@
       some paths accordingly.
 
   * For the OSX port:
-    - Always use the built-in zlib library instead of the system version.
+    - Always use the built-in png and zlib libraries instead of the system
+      versions.
 
-    - The preferences file has changed from 'net.sourceforge.Stella' to
-      'Stella-emu.plist'.  To keep your old settings, run the following
+    - The preferences file has changed from 'net.sourceforge.Stella.plist'
+      to 'Stella-emu.plist'.  To keep your old settings, run the following
       command from the terminal:
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
 
   * Updated included PNG and ZLIB libraries to latest stable version.  Also,
-    both libraries are now compiled into the app whenever one is selected
-    (in particular, this affects the OSX port, which no longer uses the
-    system-provided libpng).
+    both libraries are now compiled into the app whenever one is selected.
+    This fixes issues with a newer ZLIB not working with an older PNG, etc.
+
+  * Updated UNIX configure script to work with the clang 5.x compiler.
 
 -Have fun!
 
