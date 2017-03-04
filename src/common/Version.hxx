@@ -18,9 +18,7 @@
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-#include <cstdlib>
-
-#define STELLA_VERSION "5.0.0-pre4"
-#define STELLA_BUILD atoi("$Rev$" + 6)
+#define STELLA_VERSION "5.0.0-pre5"
+#define STELLA_BUILD "3242"
 
 #endif
