@@ -3075,6 +3075,7 @@
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "PADDLES"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "27c4c2af4b46394bb98638af8e0f6e9d"
@@ -6382,6 +6383,7 @@
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "PADDLES"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "50568c80ac61cab789d9923c9b05b68e"
@@ -7335,6 +7337,7 @@
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "PADDLES"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "5d8fb14860c2f198472b233874f6b0c9"

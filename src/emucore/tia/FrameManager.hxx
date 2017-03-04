@@ -74,6 +74,7 @@ class FrameManager : public Serializable
     void setYstart(uInt32 ystart) { myVblankManager.setYstart(ystart); }
 
     uInt32 ystart() const { return myVblankManager.ystart(); }
+    bool ystartIsAuto(uInt32 line) const { return myVblankManager.ystartIsAuto(line); }
 
     void autodetectTvMode(bool toggle) { myAutodetectTvMode = toggle; }
 

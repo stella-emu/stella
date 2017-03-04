@@ -506,16 +506,26 @@ void Console::changeYStart(int direction)
   else
     return;
 
-  myTIA->setYStart(ystart);
-  myTIA->frameReset();
-
   ostringstream val;
   val << ystart;
   if(ystart == FrameManager::minYStart-1)
     myOSystem.frameBuffer().showMessage("YStart autodetected");
   else
-    myOSystem.frameBuffer().showMessage("YStart " + val.str());
+  {
+    if(myTIA->ystartIsAuto(ystart))
+    {
+      // We've reached the auto-detect value, so reset
+      myOSystem.frameBuffer().showMessage("YStart " + val.str() + " (Auto)");
+      val.str("");
+      val << FrameManager::minYStart-1;
+    }
+    else
+      myOSystem.frameBuffer().showMessage("YStart " + val.str());
+  }
+
   myProperties.set(Display_YStart, val.str());
+  myTIA->setYStart(ystart);
+  myTIA->frameReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

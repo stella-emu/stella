@@ -39,6 +39,7 @@ class VblankManager : public Serializable
     void setYstart(uInt32 ystart);
 
     uInt32 ystart() const { return myYstart == 0 ? myLastVblankLines : myYstart; }
+    bool ystartIsAuto(uInt32 line) const { return myLastVblankLines == line; }
 
     void setVblank(bool vblank) { myVblank = vblank; }
 
