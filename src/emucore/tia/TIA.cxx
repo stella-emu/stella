@@ -253,6 +253,9 @@ bool TIA::load(Serializer& in)
     // Load latched input ports
     if(!myInput0.load(in)) return false;
     if(!myInput1.load(in)) return false;
+
+    // Load the sound sample stuff ...
+    if(!mySound.load(in)) return false;
   }
   catch(...)
   {
