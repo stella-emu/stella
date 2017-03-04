@@ -35,7 +35,7 @@
 "Cartridge.Manufacturer" "20th Century Fox, Bill Aspromonte"
 "Cartridge.ModelNo" "11012"
 "Cartridge.Name" "Bank Heist (1983) (20th Century Fox)"
-"Cartridge.Note" "AKA Bonnie and Clyde, Holdup, Rooring 20's"
+"Cartridge.Note" "AKA Bonnie and Clyde, Cops 'n' Robbers, Holdup, Rooring 20's"
 "Cartridge.Rarity" "Rare"
 ""
 
@@ -1268,6 +1268,7 @@
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-027"
 "Cartridge.Name" "Zoo Fun (Suntek) (PAL)"
+"Cartridge.Note" "AKA Panda Chase"
 "Display.Height" "256"
 ""
 
@@ -5686,7 +5687,6 @@
 "Cartridge.MD5" "47abfb993ff14f502f88cf988092e055"
 "Cartridge.Manufacturer" "Zellers"
 "Cartridge.Name" "Inca Gold (Zellers)"
-"Cartridge.Note" "AKA Spider Kong"
 ""
 
 "Cartridge.MD5" "47aef18509051bab493589cb2619170b"
@@ -10231,7 +10231,6 @@
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-032"
 "Cartridge.Name" "Walker (Suntek) (PAL)"
-"Cartridge.Note" "AKA Clown Down Town"
 ""
 
 "Cartridge.MD5" "7ffc2d80fd49a124808315306d19868e"
@@ -10901,7 +10900,7 @@
 "Cartridge.MD5" "88d300a38bdd7cab9edad271c18cd02b"
 "Cartridge.Manufacturer" "Funvision - Fund. Int'l Co."
 "Cartridge.Name" "Pac Kong (Funvision) (PAL)"
-"Cartridge.Note" "AKA Spider Kong"
+"Cartridge.Note" "AKA Inca Gold"
 ""
 
 "Cartridge.MD5" "88d7b6b3967de0db24cdae1c7f7181bd"
@@ -11664,7 +11663,7 @@
 
 "Cartridge.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
 "Cartridge.Name" "Pac Kong (Unknown)"
-"Cartridge.Note" "AKA Spider Kong"
+"Cartridge.Note" "AKA Inca Gold"
 ""
 
 "Cartridge.MD5" "936f555b4b1a2cd061b659ff63f4f5f2"
@@ -12636,6 +12635,11 @@
 "Cartridge.Rarity" "Homebrew"
 ""
 
+"Cartridge.MD5" "a1bcbe0bfe6570da2661fc4de2f74e8a"
+"Cartridge.Manufacturer" "Imagic - Advanced Program Technology, Rob Fulop"
+"Cartridge.Name" "Actionauts (Microbots) (1984-2008) (Imagic)"
+""
+
 "Cartridge.MD5" "a1ca372388b6465a693e4626cc98b865"
 "Cartridge.Manufacturer" "Quelle"
 "Cartridge.ModelNo" "176.543 7"
@@ -13573,7 +13577,7 @@
 ""
 
 "Cartridge.MD5" "ae465044dfba287d344ba468820995d7"
-"Cartridge.Name" "Spider Kong (Unknown) (PAL)"
+"Cartridge.Name" "Inca Gold (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "ae4be3a36b285c1a1dff202157e2155d"
@@ -16035,7 +16039,7 @@
 
 "Cartridge.MD5" "cfce5596a7e8ca13529e9804cad693ef"
 "Cartridge.Manufacturer" "Canal 3 - Intellivision"
-"Cartridge.Name" "Tennis (Canal 3)"
+"Cartridge.Name" "Tennis (Canal 3) (4K)"
 ""
 
 "Cartridge.MD5" "cfd6a8b23d12b0462baf6a05ef347cd8"
@@ -16249,7 +16253,6 @@
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-032"
 "Cartridge.Name" "Walker (Suntek) (PAL) [a]"
-"Cartridge.Note" "AKA Clown Down Town"
 "Display.Height" "230"
 ""
 
@@ -17249,7 +17252,7 @@
 "Cartridge.Manufacturer" "Star Game"
 "Cartridge.ModelNo" "001"
 "Cartridge.Name" "Donkey Kong (Star Game)"
-"Cartridge.Note" "AKA Spider Kong"
+"Cartridge.Note" "AKA Inca Gold"
 "Display.YStart" "30"
 ""
 
@@ -18873,9 +18876,10 @@
 ""
 
 "Cartridge.MD5" "f14d5e96ec3380aef57a4b70132c6677"
-"Cartridge.Manufacturer" "Goliath"
-"Cartridge.ModelNo" "6"
-"Cartridge.Name" "Spider Kong (1983) (Goliath) (PAL) [a]"
+"Cartridge.Manufacturer" "Goliath - Hot Shot"
+"Cartridge.ModelNo" "83-414"
+"Cartridge.Name" "Pac Kong (1983) (Goliath) (PAL)"
+"Cartridge.Note" "AKA Inca Gold"
 ""
 
 "Cartridge.MD5" "f1554569321dc933c87981cf5c239c43"

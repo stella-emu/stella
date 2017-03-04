@@ -62,6 +62,10 @@
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
 
+  * Updated internal ROM properties database to ROM-Hunter version 12
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
+
   * Updated included PNG and ZLIB libraries to latest stable version.  Also,
     both libraries are now compiled into the app whenever one is selected.
     This fixes issues with a newer ZLIB not working with an older PNG, etc.
