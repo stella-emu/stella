@@ -283,18 +283,6 @@ void FrameManager::updateTvMode(TvMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setYstart(uInt32 ystart)
-{
-  myVblankManager.setYstart(ystart);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::ystart() const
-{
-  return myVblankManager.ystart();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVblank(bool vblank)
 {
   if (myState == State::waitForFrameStart) {
@@ -306,51 +294,9 @@ void FrameManager::setVblank(bool vblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameManager::isRendering() const
-{
-  return myState == State::frame;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TvMode FrameManager::tvMode() const
-{
-  return myMode;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameManager::height() const
 {
   return myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setFixedHeight(uInt32 height)
-{
-  myFixedHeight = height;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::scanlines() const
-{
-  return  myCurrentFrameTotalLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::scanlinesLastFrame() const
-{
-  return  myCurrentFrameFinalLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setTvMode(TvMode mode)
-{
-  if (!myAutodetectTvMode) updateTvMode(mode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::autodetectTvMode(bool toggle)
-{
-  myAutodetectTvMode = toggle;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -20,15 +20,15 @@
 #include "VblankManager.hxx"
 
 enum Metrics: uInt32 {
-  maxUnderscan                  = 10,
-  maxVblankViolations           = 2,
-  minStableVblankFrames         = 1
+  maxUnderscan          = 10,
+  maxVblankViolations   = 2,
+  minStableVblankFrames = 1
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VblankManager::VblankManager()
   : myVblankLines(0),
-    myMaxUnderscan(0),
+    //myMaxUnderscan(0),
     myYstart(0),
     myMode(VblankMode::floating)
 {
@@ -72,12 +72,6 @@ bool VblankManager::nextLine(bool isGarbageFrame)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VblankManager::setVblankLines(uInt32 vblankLines)
-{
-  myVblankLines = vblankLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VblankManager::setYstart(uInt32 ystart)
 {
   if (ystart == myYstart) return;
@@ -85,12 +79,6 @@ void VblankManager::setYstart(uInt32 ystart)
   myYstart = ystart;
 
   myMode = ystart ? VblankMode::fixed : VblankMode::floating;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VblankManager::setVblank(bool vblank)
-{
-  myVblank = vblank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

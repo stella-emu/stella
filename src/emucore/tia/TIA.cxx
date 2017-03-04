@@ -640,7 +640,7 @@ void TIA::enableColorLoss(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::electronBeamPos(uInt16& x, uInt16& y) const
+bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
 {
   x = clocksThisLine();
   y = myFrameManager.getY();

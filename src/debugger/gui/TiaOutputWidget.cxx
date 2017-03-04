@@ -99,7 +99,7 @@ void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  int ystart = atoi(instance().console().properties().get(Display_YStart).c_str());
+  uInt32 ystart = instance().console().tia().ystart();
 
   switch(cmd)
   {
@@ -155,7 +155,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
   // Get current scanline position
   // This determines where the frame greying should start, and where a
   // scanline 'pointer' should be drawn
-  uInt16 scanx, scany, scanoffset;
+  uInt32 scanx, scany, scanoffset;
   bool visible = instance().console().tia().electronBeamPos(scanx, scany);
   scanoffset = width * scany + scanx;
 

@@ -34,19 +34,19 @@ class VblankManager : public Serializable
 
     bool nextLine(bool isGarbageFrame);
 
-    void setVblankLines(uInt32 lines);
+    void setVblankLines(uInt32 lines) { myVblankLines = lines; }
 
     void setYstart(uInt32 ystart);
 
-    uInt32 ystart() const { return myYstart; }
+    uInt32 ystart() const { return myYstart == 0 ? myLastVblankLines : myYstart; }
 
-    void setVblank(bool vblank);
+    void setVblank(bool vblank) { myVblank = vblank; }
 
     bool setVblankDuringVblank(bool vblank, bool isGarbageFrame);
 
     bool vblank() const { return myVblank; }
 
-    uInt32 currentLine() const {return myCurrentLine; };
+    uInt32 currentLine() const { return myCurrentLine; };
 
     /**
       Serializable methods (see that class for more information).
@@ -70,7 +70,7 @@ class VblankManager : public Serializable
   private:
 
     uInt32 myVblankLines;
-    uInt32 myMaxUnderscan;
+    //uInt32 myMaxUnderscan;
     uInt32 myYstart;
     bool myVblank;
     uInt32 myCurrentLine;

@@ -253,7 +253,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
 
   // Get current scanline position
   // This determines where the frame greying should start
-  uInt16 scanx, scany, scanoffset;
+  uInt32 scanx, scany, scanoffset;
   instance().console().tia().electronBeamPos(scanx, scany);
   scanoffset = width * scany + scanx;
 

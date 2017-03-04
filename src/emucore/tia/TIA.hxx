@@ -227,7 +227,7 @@ class TIA : public Device
       @return The x/y coordinates of the scanline electron beam, and whether
               it is in the visible/viewable area of the screen
     */
-    bool electronBeamPos(uInt16& x, uInt16& y) const;
+    bool electronBeamPos(uInt32& x, uInt32& y) const;
 
     /**
       Enables/disable/toggle the specified (or all) TIA bit(s).  Note that

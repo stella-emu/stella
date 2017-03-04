@@ -49,9 +49,9 @@ class FrameManager : public Serializable
 
     void setVsync(bool vsync);
 
-    bool isRendering() const;
+    bool isRendering() const { return myState == State::frame; }
 
-    TvMode tvMode() const;
+    TvMode tvMode() const { return myMode; }
 
     bool vblank() const { return myVblankManager.vblank(); }
 
@@ -59,25 +59,25 @@ class FrameManager : public Serializable
 
     uInt32 height() const;
 
-    void setFixedHeight(uInt32 height);
+    void setFixedHeight(uInt32 height) { myFixedHeight = height; }
 
     uInt32 getY() const { return myY; }
 
-    uInt32 scanlines() const;
+    uInt32 scanlines() const { return myCurrentFrameTotalLines; }
 
-    uInt32 scanlinesLastFrame() const;
+    uInt32 scanlinesLastFrame() const { return myCurrentFrameFinalLines; }
 
     uInt32 frameCount() const { return myTotalFrames; }
 
     float frameRate() const { return myFrameRate; }
 
-    void setYstart(uInt32 ystart);
+    void setYstart(uInt32 ystart) { myVblankManager.setYstart(ystart); }
 
-    uInt32 ystart() const;
+    uInt32 ystart() const { return myVblankManager.ystart(); }
 
-    void autodetectTvMode(bool toggle);
+    void autodetectTvMode(bool toggle) { myAutodetectTvMode = toggle; }
 
-    void setTvMode(TvMode mode);
+    void setTvMode(TvMode mode) { if (!myAutodetectTvMode) updateTvMode(mode); }
 
     /**
       Serializable methods (see that class for more information).
