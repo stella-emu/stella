@@ -61,6 +61,7 @@ class VblankManager : public Serializable
     enum VblankMode {
       locked,
       floating,
+      final,
       fixed
     };
 
@@ -68,10 +69,11 @@ class VblankManager : public Serializable
 
     bool shouldTransition(bool isGarbageFrame);
 
+    void setVblankMode(VblankMode mode);
+
   private:
 
     uInt32 myVblankLines;
-    //uInt32 myMaxUnderscan;
     uInt32 myYstart;
     bool myVblank;
     uInt32 myCurrentLine;
@@ -81,6 +83,7 @@ class VblankManager : public Serializable
     uInt8 myVblankViolations;
     uInt8 myStableVblankFrames;
     bool myVblankViolated;
+    uInt8 myFramesInLockedMode;
 
     bool myIsRunning;
 

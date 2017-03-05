@@ -22,13 +22,13 @@
 enum Metrics: uInt32 {
   maxUnderscan          = 10,
   maxVblankViolations   = 2,
-  minStableVblankFrames = 1
+  minStableVblankFrames = 1,
+  framesUntilFinal = 30
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VblankManager::VblankManager()
   : myVblankLines(0),
-    //myMaxUnderscan(0),
     myYstart(0),
     myMode(VblankMode::floating)
 {
@@ -46,7 +46,7 @@ void VblankManager::reset()
   myLastVblankLines = 0;
   myIsRunning = false;
 
-  if (myMode != VblankMode::fixed) myMode = VblankMode::floating;
+  if (myMode != VblankMode::fixed) setVblankMode(VblankMode::floating);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,6 +54,10 @@ void VblankManager::start()
 {
   myCurrentLine = 0;
   myIsRunning = true;
+  myVblankViolated = false;
+
+  if (myMode == VblankMode::locked && ++myFramesInLockedMode > Metrics::framesUntilFinal)
+    setVblankMode(VblankMode::final);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,9 +67,7 @@ bool VblankManager::nextLine(bool isGarbageFrame)
 
   myCurrentLine++;
 
-  const bool transition =
-    myMode == VblankMode::fixed ? (myCurrentLine >= myYstart) : shouldTransition(isGarbageFrame);
-
+  const bool transition = shouldTransition(isGarbageFrame);
   if (transition) myIsRunning = false;
 
   return transition;
@@ -78,7 +80,7 @@ void VblankManager::setYstart(uInt32 ystart)
 
   myYstart = ystart;
 
-  myMode = ystart ? VblankMode::fixed : VblankMode::floating;
+  setVblankMode(ystart ? VblankMode::fixed : VblankMode::floating);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,7 +121,7 @@ bool VblankManager::shouldTransition(bool isGarbageFrame)
       }
 
       if (myStableVblankFrames >= Metrics::minStableVblankFrames) {
-        myMode = VblankMode::locked;
+        setVblankMode(VblankMode::locked);
         myVblankViolations = 0;
       }
 
@@ -147,18 +149,39 @@ bool VblankManager::shouldTransition(bool isGarbageFrame)
       }
 
       if (myVblankViolations > Metrics::maxVblankViolations) {
-        myMode = VblankMode::floating;
+        setVblankMode(VblankMode::floating);
         myStableVblankFrames = 0;
       }
 
       break;
 
-    default:
-      transition = false;
+    case VblankMode::fixed:
+      transition = myCurrentLine >= myYstart;
+      break;
+
+    case VblankMode::final:
+      transition = myCurrentLine >= myLastVblankLines;
       break;
   }
 
   return transition;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VblankManager::setVblankMode(VblankMode mode)
+{
+  if (myMode == mode) return;
+
+  myMode = mode;
+
+  switch (myMode) {
+    case VblankMode::locked:
+      myFramesInLockedMode = 0;
+      break;
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
