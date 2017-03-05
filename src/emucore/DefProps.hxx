@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3290
+#define DEF_PROPS_SIZE 3292
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -978,6 +978,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "493de059b32f84ab29cde6213964aeee", "Atari, Bill Aspromonte, Andrew Fuchs", "CX26120", "Stargate (1984) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "493e90602a4434b117c91c95e73828d1", "Telegames", "", "Lock 'n' Chase (1989) (Telegames) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4947c9de2e28b2f5f3b0c40ce7e56d93", "", "", "3-D Corridor Demo 2 (29-03-2003) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "494cda91cc640551b4898c82be058dd9", "Andreas Dietrich", "", "Donkey Kong VCS (2017) (1.0) (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "YES", "" }, 
   { "49571b26f46620a85f93448359324c28", "", "", "Save Our Ship (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "497f3d2970c43e5224be99f75e97cbbb", "CommaVid, John Bronstein", "CM-002", "Video Life (1981) (CommaVid)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "4981cefe5493ea512284e7f9f27d1e54", "Home Vision - Gem International Corp.", "VCS83136", "Cosmic War (1983) (Home Vision) (PAL)", "AKA Space Tunnel", "", "", "", "", "", "", "", "", "", "", "", "", "", "256", "", "" }, 
@@ -3114,6 +3115,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "f1929bb9b5db22d98dd992aa3fe72920", "", "", "Cube Conquest (Improved Interlace) (Billy Eno) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "f19aba18f86e415812480ad2be221425", "Chris Larkin", "", "Solaris Trainer (2002) (Chris Larkin) (Hack)", "Hack of Solaris", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f1a0a23e6464d954e3a9579c4ccd01c8", "20th Century Fox, Douglas 'Dallas North' Neubauer", "11006", "Alien (1982) (20th Century Fox)", "", "Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
+  { "f1ae6305fa33a948e36deb0ef12af852", "Andreas Dietrich", "", "Donkey Kong VCS (2017) (1.0)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "f1b2ea568b3e156e3f2849dac83591f6", "", "", "Sprite Demo (1997) (Bob Colbert) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f1b7edff81ceef5af7ae1fa76c8590fc", "Atari, Richard Maurer", "CX2632, CX2632P", "Space Invaders (1980) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f1beca5a198cf08190487e5c27b8e540", "", "", "Fu Kung! (V0.16) (2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

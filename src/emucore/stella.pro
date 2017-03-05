@@ -20175,3 +20175,17 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cartridge.MD5" "f1ae6305fa33a948e36deb0ef12af852"
+"Cartridge.Manufacturer" "Andreas Dietrich"
+"Cartridge.Name" "Donkey Kong VCS (2017) (1.0)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "494cda91cc640551b4898c82be058dd9"
+"Cartridge.Manufacturer" "Andreas Dietrich"
+"Cartridge.Name" "Donkey Kong VCS (2017) (1.0) (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+""

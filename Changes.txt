@@ -62,6 +62,9 @@
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
 
+  * Added ROM properties for D.K. VCS homebrew ROM, thanks to Andreas
+    Dietrich.
+
   * Updated internal ROM properties database to ROM-Hunter version 12
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
