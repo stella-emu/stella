@@ -841,7 +841,7 @@ void TIA::onFrameStart()
   const Int32 x = myHctr - 68;
 
   if (x > 0)
-    memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.getY(), 0, x);
+    memset(myCurrentFrameBuffer.get(), 0, x);
 
   for (uInt8 i = 0; i < 4; i++)
     updatePaddle(i);
