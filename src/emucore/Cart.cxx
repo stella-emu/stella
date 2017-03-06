@@ -616,10 +616,10 @@ bool Cartridge::isProbablyARM(const uInt8* image, uInt32 size)
     { 0xA0, 0xC1, 0x1F, 0xE0 },
     { 0x00, 0x80, 0x02, 0xE0 }
   };
-  if(searchForBytes(image, 1024, signature[0], 4, 1))
+  if(searchForBytes(image, std::min(size, 1024u), signature[0], 4, 1))
     return true;
   else
-    return searchForBytes(image, 1024, signature[1], 4, 1);
+    return searchForBytes(image, std::min(size, 1024u), signature[1], 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -923,7 +923,7 @@ bool Cartridge::isProbablyMDM(const uInt8* image, uInt32 size)
 {
   // MDM cart is identified key 'MDMC' in the first 8K of ROM
   uInt8 signature[] = { 'M', 'D', 'M', 'C' };
-  return searchForBytes(image, 8192, signature, 4, 1);
+  return searchForBytes(image, std::min(size, 8192u), signature, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
