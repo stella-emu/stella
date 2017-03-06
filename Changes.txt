@@ -41,6 +41,10 @@
     the first time entering the debugger and starting to trace, the image
     was blanked out (black) instead of being drawn in greyscale.
 
+  * Fixed crash with zipped ROMs that are less than 4K in size; so far
+    this bug has only ever occurred in Windows XP, but it's been there
+    since Stella 4.1.
+
   * For the Linux/UNIX port:
     - The settings directory now uses the XDG Base Directory Specification.
       In most cases, this means that your files will now be stored in
@@ -58,7 +62,7 @@
 
     - The preferences file has changed from 'net.sourceforge.Stella.plist'
       to 'Stella-emu.plist'.  To keep your old settings, run the following
-      command from the terminal:
+      commands from the terminal:
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
 
