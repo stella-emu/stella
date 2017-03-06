@@ -92,6 +92,7 @@
 "Cartridge.Manufacturer" "TechnoVision"
 "Cartridge.ModelNo" "TVS1002"
 "Cartridge.Name" "Save Our Ship (1983) (TechnoVision) (PAL)"
+"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "012b8e6ef3b5fd5aabc94075c527709d"
@@ -1238,6 +1239,7 @@
 "Cartridge.ModelNo" "684.733 9"
 "Cartridge.Name" "Robin Hood (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Save Our Ship"
+"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "0f95264089c99fc2a839a19872552004"
@@ -3802,7 +3804,6 @@
 "Cartridge.Name" "River Raid Plus (Thomas Jentzsch) (Hack)"
 "Cartridge.Note" "Hack of River Raid"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "30512e0e83903fc05541d2f6a6a62654"
@@ -4117,7 +4118,6 @@
 "Cartridge.MD5" "33ed6dfac4b9ea2f81f778ceddbb4a75"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.Name" "River Raid (1982) (SpkSoft) [t1]"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "340f546d59e72fb358c49ac2ca8482bb"
@@ -5836,8 +5836,17 @@
 "Cartridge.Name" "3-D Corridor Demo 2 (29-03-2003) (MP)"
 ""
 
+"Cartridge.MD5" "494cda91cc640551b4898c82be058dd9"
+"Cartridge.Manufacturer" "Andreas Dietrich"
+"Cartridge.Name" "Donkey Kong VCS (2017) (1.0) (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "49571b26f46620a85f93448359324c28"
 "Cartridge.Name" "Save Our Ship (Unknown)"
+"Display.YStart" "37"
 ""
 
 "Cartridge.MD5" "497f3d2970c43e5224be99f75e97cbbb"
@@ -9475,6 +9484,7 @@
 "Cartridge.ModelNo" "311377"
 "Cartridge.Name" "Fox & Goat (Double-Game Package) (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Nuts"
+"Display.YStart" "45"
 "Display.Height" "256"
 ""
 
@@ -10200,6 +10210,7 @@
 "Cartridge.MD5" "7f790939f7eaa8c47a246c4283981f84"
 "Cartridge.Name" "This Planet Sucks Demo 3 (Greg Troutman) (PD)"
 "Cartridge.Rarity" "New Release"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "7f819454734ddf93f83fefcffcd3e212"
@@ -12420,6 +12431,7 @@
 
 "Cartridge.MD5" "9ed0f2aa226c34d4f55f661442e8f22a"
 "Cartridge.Name" "Nuts (Unknown) (PAL)"
+"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "9eeb40f04a27efb1c68ba1d25e606607"
@@ -12919,7 +12931,7 @@
 "Cartridge.Manufacturer" "Xonox - K-Tel Software - Beck-Tech"
 "Cartridge.ModelNo" "6210, 7210, 06003. 99001"
 "Cartridge.Name" "Spike's Peak (1983) (Xonox)"
-"Display.Height" "217"
+"Display.Height" "223"
 ""
 
 "Cartridge.MD5" "a4ecb54f877cd94515527b11e698608c"
@@ -15369,7 +15381,6 @@
 "Cartridge.Name" "River Raid Tanks (Thomas Jentzsch) (Hack)"
 "Cartridge.Note" "Hack of River Raid"
 "Cartridge.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "c7600d72247c5dfa1ec1a88d23e6c85e"
@@ -16916,6 +16927,7 @@
 "Cartridge.ModelNo" "460673"
 "Cartridge.Name" "Pick 'n' Pile (1990) (Salu) (PAL)"
 "Console.SwapPorts" "YES"
+"Display.YStart" "40"
 "Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
@@ -17189,7 +17201,6 @@
 "Cartridge.MD5" "dd92d6ad50976f881d86b52d38616118"
 "Cartridge.Manufacturer" "SpkSoft"
 "Cartridge.Name" "River Raid (SpkSoft) [h1]"
-"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "dda23757407c4e217f64962c87ad0c82"
@@ -17279,6 +17290,7 @@
 
 "Cartridge.MD5" "de7a64108074098ba333cc0c70eef18a"
 "Cartridge.Name" "Nuts (Unknown)"
+"Display.YStart" "37"
 ""
 
 "Cartridge.MD5" "de7bca4e569ad9d3fd08ff1395e53d2d"
@@ -17779,6 +17791,7 @@
 "Cartridge.Manufacturer" "TechnoVision"
 "Cartridge.ModelNo" "TVS1001"
 "Cartridge.Name" "Nuts (1983) (TechnoVision) (PAL)"
+"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "e3ed4ba3361756970f076e46e9cad1d2"
@@ -18537,6 +18550,7 @@
 "Cartridge.MD5" "ed1a784875538c7871d035b7a98c2433"
 "Cartridge.Name" "Save Our Ship (Unknown) (Hack)"
 "Cartridge.Rarity" "Hack"
+"Display.YStart" "37"
 ""
 
 "Cartridge.MD5" "ed2218b3075d15eaa34e3356025ccca3"
@@ -18584,7 +18598,6 @@
 "Cartridge.MD5" "edf69b123e06eaf8663cc78d8aeba06e"
 "Cartridge.Manufacturer" "SpkSoft 98"
 "Cartridge.Name" "River Raid (SpkSoft 98) [h1]"
-"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "ee28424af389a7f3672182009472500c"
@@ -18912,6 +18925,13 @@
 "Cartridge.ModelNo" "11006"
 "Cartridge.Name" "Alien (1982) (20th Century Fox)"
 "Cartridge.Rarity" "Rare"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "f1ae6305fa33a948e36deb0ef12af852"
+"Cartridge.Manufacturer" "Andreas Dietrich"
+"Cartridge.Name" "Donkey Kong VCS (2017) (1.0)"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -20175,17 +20195,3 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
-"Cartridge.MD5" "f1ae6305fa33a948e36deb0ef12af852"
-"Cartridge.Manufacturer" "Andreas Dietrich"
-"Cartridge.Name" "Donkey Kong VCS (2017) (1.0)"
-"Cartridge.Rarity" "Homebrew"
-"Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "494cda91cc640551b4898c82be058dd9"
-"Cartridge.Manufacturer" "Andreas Dietrich"
-"Cartridge.Name" "Donkey Kong VCS (2017) (1.0) (PAL60)"
-"Cartridge.Rarity" "Homebrew"
-"Display.Format" "PAL60"
-"Display.Phosphor" "YES"
-""
