@@ -507,13 +507,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case NUSIZ0:
       myLinesSinceChange = 0;
       myMissile0.nusiz(value);
-      myPlayer0.nusiz(value);
+      myPlayer0.nusiz(value, myHstate == HState::blank);
       break;
 
     case NUSIZ1:
       myLinesSinceChange = 0;
       myMissile1.nusiz(value);
-      myPlayer1.nusiz(value);
+      myPlayer1.nusiz(value, myHstate == HState::blank);
       break;
 
     case HMM0:

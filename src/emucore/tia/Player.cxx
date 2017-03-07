@@ -72,7 +72,7 @@ void Player::hmp(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::nusiz(uInt8 value)
+void Player::nusiz(uInt8 value, bool hblank)
 {
   const uInt8 masked = value & 0x07;
 
@@ -121,20 +121,20 @@ void Player::nusiz(uInt8 value)
 
       case 0x21:
       case 0x41:
-        if ((myRenderCounter - Count::renderCounterOffset) < 3) {
+        if ((myRenderCounter - Count::renderCounterOffset) < (hblank ? 4 : 3)) {
           setDivider(myDividerPending);
-        } else if ((myRenderCounter - Count::renderCounterOffset) < 5) {
+        } else if ((myRenderCounter - Count::renderCounterOffset) < (hblank ? 6 : 5)) {
           setDivider(myDividerPending);
           myRenderCounter--;
         } else {
-          myDividerChangeCounter = 1;
+          myDividerChangeCounter = (hblank ? 0 : 1);
         }
 
         break;
 
       case 0x42:
       case 0x24:
-        if (myRenderCounter < 1)
+        if (myRenderCounter < 1 || (hblank && (myRenderCounter % myDivider == 1)))
           setDivider(myDividerPending);
         else
           myDividerChangeCounter = (myDivider - (myRenderCounter - 1) % myDivider);

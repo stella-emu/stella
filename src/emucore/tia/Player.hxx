@@ -36,7 +36,7 @@ class Player : public Serializable
     void hmp(uInt8 value);
     uInt8 hmp() const { return myHmmClocks; }
 
-    void nusiz(uInt8 value);
+    void nusiz(uInt8 value, bool hblank);
 
     void resp(uInt8 counter);
 
