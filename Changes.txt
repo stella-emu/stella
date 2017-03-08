@@ -45,6 +45,11 @@
     this bug has only ever occurred in Windows XP, but it's been there
     since Stella 4.1.
 
+  * When in 'ROM launcher mode', Stella now uses less CPU time.
+
+  * Added ROM properties for D.K. VCS homebrew ROM, thanks to Andreas
+    Dietrich.
+
   * For the Linux/UNIX port:
     - The settings directory now uses the XDG Base Directory Specification.
       In most cases, this means that your files will now be stored in
@@ -65,9 +70,6 @@
       commands from the terminal:
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
-
-  * Added ROM properties for D.K. VCS homebrew ROM, thanks to Andreas
-    Dietrich.
 
   * Updated internal ROM properties database to ROM-Hunter version 12
     (thanks go to RomHunter for his tireless research in this area).

@@ -425,7 +425,7 @@ bool OSystem::createLauncher(const string& startdir)
     myLauncher->reStack();
     myFrameBuffer->setCursorState();
 
-    setFramerate(60);
+    setFramerate(30);
     resetLoopTiming();
     status = true;
   }
