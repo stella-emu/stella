@@ -109,21 +109,30 @@ void Player::nusiz(uInt8 value, bool hblank)
   // decode and rendering.
 
   if (myIsRendering) {
+    Int8 delta = myRenderCounter - Count::renderCounterOffset;
 
     switch ((myDivider << 4) | myDividerPending) {
       case 0x12:
       case 0x14:
-        if ((myRenderCounter - Count::renderCounterOffset) < 3)
-          setDivider(myDividerPending);
-        else
-          myDividerChangeCounter = 1;
+        if (hblank) {
+          if (delta < 4)
+            setDivider(myDividerPending);
+          else
+            myDividerChangeCounter = (delta < 5 ? 1 : 0);
+        } else {
+          if (delta < 3)
+            setDivider(myDividerPending);
+          else
+            myDividerChangeCounter = 1;
+        }
+
         break;
 
       case 0x21:
       case 0x41:
-        if ((myRenderCounter - Count::renderCounterOffset) < (hblank ? 4 : 3)) {
+        if (delta < (hblank ? 4 : 3)) {
           setDivider(myDividerPending);
-        } else if ((myRenderCounter - Count::renderCounterOffset) < (hblank ? 6 : 5)) {
+        } else if (delta < (hblank ? 6 : 5)) {
           setDivider(myDividerPending);
           myRenderCounter--;
         } else {
