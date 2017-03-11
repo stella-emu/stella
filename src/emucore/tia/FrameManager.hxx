@@ -57,15 +57,17 @@ class FrameManager : public Serializable
 
     bool vsync() const { return myVsync; }
 
-    uInt32 height() const;
+    uInt32 height() const { return myHeight; }
 
-    void setFixedHeight(uInt32 height) { myFixedHeight = height; }
+    void setFixedHeight(uInt32 height);
 
     uInt32 getY() const { return myY; }
 
     uInt32 scanlines() const { return myCurrentFrameTotalLines; }
 
     uInt32 scanlinesLastFrame() const { return myCurrentFrameFinalLines; }
+
+    uInt32 missingScanlines() const;
 
     uInt32 frameCount() const { return myTotalFrames; }
 
@@ -135,7 +137,7 @@ class FrameManager : public Serializable
     uInt32 myCurrentFrameFinalLines;
     uInt32 myVsyncLines;
     float  myFrameRate;
-    uInt32 myY;
+    uInt32 myY, myLastY;
     bool myFramePending;
 
     uInt32 myTotalFrames;
@@ -148,6 +150,7 @@ class FrameManager : public Serializable
     uInt32 myKernelLines;
     uInt32 myOverscanLines;
     uInt32 myFrameLines;
+    uInt32 myHeight;
     uInt32 myFixedHeight;
 
   private:

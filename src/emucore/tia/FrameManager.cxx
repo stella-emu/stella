@@ -56,6 +56,7 @@ uInt8 FrameManager::initialGarbageFrames()
 FrameManager::FrameManager()
   : myMode(TvMode::pal),
     myAutodetectTvMode(true),
+    myHeight(0),
     myFixedHeight(0)
 {
   updateTvMode(TvMode::ntsc);
@@ -120,8 +121,11 @@ void FrameManager::nextLine()
       break;
 
     case State::frame:
-      if (myLineInState >= (myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan)))
+      if (myLineInState >= myHeight)
+      {
+        myLastY = ystart() + myY;  // Last line drawn in this frame
         setState(State::waitForVsyncStart);
+      }
       break;
 
     default:
@@ -129,6 +133,15 @@ void FrameManager::nextLine()
   }
 
   if (myState == State::frame && previousState == State::frame) myY++;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameManager::missingScanlines() const
+{
+  if (myLastY == ystart() + myY)
+    return 0;
+  else
+    return myHeight - myY;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,6 +291,7 @@ void FrameManager::updateTvMode(TvMode mode)
   }
 
   myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
+  setFixedHeight(myFixedHeight);  // update since myKernelLines may have changed
 
   myVblankManager.setVblankLines(myVblankLines);
 }
@@ -294,9 +308,10 @@ void FrameManager::setVblank(bool vblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::height() const
+void FrameManager::setFixedHeight(uInt32 height)
 {
-  return myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan);
+  myFixedHeight = height;
+  myHeight = myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

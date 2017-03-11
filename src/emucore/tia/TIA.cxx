@@ -117,7 +117,6 @@ void TIA::reset()
   myLastCycle = 0;
   mySubClock = 0;
   myXDelta = 0;
-  myLastFrameHeight[0] = myLastFrameHeight[1] = 0;
 
   myBackground.reset();
   myPlayfield.reset();
@@ -827,10 +826,6 @@ void TIA::updateEmulation()
 void TIA::swapBuffers()
 {
   myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
-
-  uInt32 tmp = myLastFrameHeight[0];
-  myLastFrameHeight[0] = myLastFrameHeight[1];
-  myLastFrameHeight[1] = tmp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -853,12 +848,10 @@ void TIA::onFrameComplete()
   mySystem->m6502().stop();
   mySystem->resetCycles();
 
-  const Int32 missingScanlines = myLastFrameHeight[0] - myFrameManager.getY();
-
+  // Blank out any extra lines not drawn this frame
+  const uInt32 missingScanlines = myFrameManager.missingScanlines();
   if (missingScanlines > 0)
     memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.getY(), 0, missingScanlines * 160);
-
-  myLastFrameHeight[0] = myFrameManager.getY();
 
   // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)
