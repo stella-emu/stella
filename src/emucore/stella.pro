@@ -1932,7 +1932,8 @@
 "Cartridge.ModelNo" "460758"
 "Cartridge.Name" "Acid Drop (1992) (Salu) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.YStart" "54"
+"Display.YStart" "50"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "1802cc46b879b229272501998c5de04f"
@@ -5628,7 +5629,6 @@
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 55"
-"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "4702d8d9b48a332724af198aeac9e469"
@@ -8292,6 +8292,8 @@
 
 "Cartridge.MD5" "6847ce70819b74febcfd03e99610243b"
 "Cartridge.Name" "Ruby Runner 4A50"
+"Display.YStart" "27"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "68489e60268a5e6e052bad9c62681635"
@@ -11069,7 +11071,6 @@
 "Cartridge.Name" "Rescue Bira Bira (Chris Cracknell)"
 "Cartridge.Note" "Hack of Jungle Fever"
 "Cartridge.Rarity" "Hack"
-"Display.Height" "210"
 "Display.Phosphor" "YES"
 ""
 
@@ -11859,7 +11860,6 @@
 "Cartridge.Manufacturer" "Quelle"
 "Cartridge.ModelNo" "719.252 9"
 "Cartridge.Name" "Im Schutz der Drachen (1983) (Quelle) (PAL)"
-"Display.Height" "250"
 "Display.Phosphor" "YES"
 ""
 
