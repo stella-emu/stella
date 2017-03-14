@@ -29,10 +29,10 @@
 M6532::M6532(const Console& console, const Settings& settings)
   : myConsole(console),
     mySettings(settings),
-    myTimer(0), myIntervalShift(0), myCyclesWhenTimerSet(0),
+    myTimer(0), mySubTimer(0), myDivider(1),
+    myTimerWrapped(false), mySetTimerCycle(0), myLastCycle(0),
     myDDRA(0), myDDRB(0), myOutA(0), myOutB(0),
     myInterruptFlag(false),
-    myTimerFlagValid(false),
     myEdgeDetectPositive(false)
 {
 }
@@ -47,11 +47,12 @@ void M6532::reset()
   else
     memset(myRAM, 0, 128);
 
-  // The timer absolutely cannot be initialized to zero; some games will
-  // loop or hang (notably Solaris and H.E.R.O.)
-  myTimer = (0xff - (mySystem->randGenerator().next() % 0xfe)) << 10;
-  myIntervalShift = 10;
-  myCyclesWhenTimerSet = 0;
+  myTimer = mySystem->randGenerator().next() & 0xff;
+  myDivider = 1024;
+  mySubTimer = 0;
+  myTimerWrapped = false;
+  mySetTimerCycle = 0;
+  myLastCycle = mySystem->cycles();
 
   // Zero the I/O registers
   myDDRA = myDDRB = myOutA = myOutB = 0x00;
@@ -61,7 +62,6 @@ void M6532::reset()
 
   // Zero the interrupt flag register and mark D7 as invalid
   myInterruptFlag = 0x00;
-  myTimerFlagValid = false;
 
   // Edge-detect set to negative (high to low)
   myEdgeDetectPositive = false;
@@ -72,7 +72,8 @@ void M6532::systemCyclesReset()
 {
   // System cycles are being reset to zero so we need to adjust
   // the cycle count we remembered when the timer was last set
-  myCyclesWhenTimerSet -= mySystem->cycles();
+  myLastCycle -= mySystem->cycles();
+  mySetTimerCycle -= mySystem->cycles();
 
   // We should also inform any 'smart' controllers as well
   myConsole.leftController().systemCyclesReset();
@@ -103,6 +104,35 @@ void M6532::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::updateEmulation()
+{
+  uInt32 cycles = mySystem->cycles() - myLastCycle;
+  uInt32 subTimer = mySubTimer;
+
+  mySubTimer = (cycles + mySubTimer) % myDivider;
+
+  if (!myTimerWrapped) {
+    uInt32 timerTicks = (cycles + subTimer) / myDivider;
+
+    if (timerTicks > myTimer) {
+      cycles -= ((myTimer + 1) * myDivider - subTimer);
+      myTimer = 0xFF;
+      myTimerWrapped = true;
+      myInterruptFlag |= TimerBit;
+    } else {
+      myTimer -= timerTicks;
+      cycles = 0;
+    }
+  }
+
+  if (myTimerWrapped) {
+    myTimer = (myTimer - cycles) & 0xFF;
+  }
+
+  myLastCycle = mySystem->cycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::install(System& system)
 {
   installDelegate(system, *this);
@@ -126,6 +156,8 @@ void M6532::installDelegate(System& system, Device& device)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 M6532::peek(uInt16 addr)
 {
+  updateEmulation();
+
   // Access RAM directly.  Originally, accesses to RAM could bypass
   // this method and its pages could be installed directly into the
   // system.  However, certain cartridges (notably 4A50) can mirror
@@ -170,36 +202,14 @@ uInt8 M6532::peek(uInt16 addr)
       // Timer Flag is always cleared when accessing INTIM
       myInterruptFlag &= ~TimerBit;
 
-      // Get number of clocks since timer was set
-      Int32 timer = timerClocks();
+      myTimerWrapped = false;
 
-      if(timer >= 0)
-      {
-        // Return at 'divide by TIMxT' interval rate
-        return (timer >> myIntervalShift) & 0xff;
-      }
-      else
-      {
-        // Return at 'divide by 1' rate
-        uInt8 divByOne = timer & 0xff;
-
-        // Timer flag has been updated; don't update it again on TIMINT read
-        if(divByOne != 0 && divByOne != 255)
-          myTimerFlagValid = true;
-
-        return divByOne;
-      }
+      return myTimer;
     }
 
     case 0x05:    // TIMINT/INSTAT - Interrupt Flag
     case 0x07:
     {
-      // Update timer flag if it is invalid and timer has expired
-      if(!myTimerFlagValid && timerClocks() < 0)
-      {
-        myInterruptFlag |= TimerBit;
-        myTimerFlagValid = true;
-      }
       // PA7 Flag is always cleared after accessing TIMINT
       uInt8 result = myInterruptFlag;
       myInterruptFlag &= ~PA7Bit;
@@ -219,6 +229,8 @@ uInt8 M6532::peek(uInt16 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6532::poke(uInt16 addr, uInt8 value)
 {
+  updateEmulation();
+
   // Access RAM directly.  Originally, accesses to RAM could bypass
   // this method and its pages could be installed directly into the
   // system.  However, certain cartridges (notably 4A50) can mirror
@@ -278,16 +290,19 @@ bool M6532::poke(uInt16 addr, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 {
-  static constexpr uInt8 shift[] = { 0, 3, 6, 10 };
+  static constexpr uInt32 divider[] = { 1, 8, 64, 1024 };
 
-  myIntervalShift = shift[interval];
+  myDivider = divider[interval];
   myOutTimer[interval] = value;
-  myTimer = value << myIntervalShift;
-  myCyclesWhenTimerSet = mySystem->cycles();
+
+  myTimer = value;
+  mySubTimer = myDivider - 1;
+  myTimerWrapped = false;
 
   // Interrupt timer flag is cleared (and invalid) when writing to the timer
   myInterruptFlag &= ~TimerBit;
-  myTimerFlagValid = false;
+
+  mySetTimerCycle = mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -334,8 +349,11 @@ bool M6532::save(Serializer& out) const
     out.putByteArray(myRAM, 128);
 
     out.putInt(myTimer);
-    out.putInt(myIntervalShift);
-    out.putInt(myCyclesWhenTimerSet);
+    out.putInt(mySubTimer);
+    out.putInt(myDivider);
+    out.putBool(myTimerWrapped);
+    out.putInt(myLastCycle);
+    out.putInt(mySetTimerCycle);
 
     out.putByte(myDDRA);
     out.putByte(myDDRB);
@@ -343,7 +361,6 @@ bool M6532::save(Serializer& out) const
     out.putByte(myOutB);
 
     out.putByte(myInterruptFlag);
-    out.putBool(myTimerFlagValid);
     out.putBool(myEdgeDetectPositive);
     out.putByteArray(myOutTimer, 4);
   }
@@ -367,8 +384,11 @@ bool M6532::load(Serializer& in)
     in.getByteArray(myRAM, 128);
 
     myTimer = in.getInt();
-    myIntervalShift = in.getInt();
-    myCyclesWhenTimerSet = in.getInt();
+    mySubTimer = in.getInt();
+    myDivider = in.getInt();
+    myTimerWrapped = in.getBool();
+    myLastCycle = in.getInt();
+    mySetTimerCycle = in.getInt();
 
     myDDRA = in.getByte();
     myDDRB = in.getByte();
@@ -376,7 +396,6 @@ bool M6532::load(Serializer& in)
     myOutB = in.getByte();
 
     myInterruptFlag = in.getByte();
-    myTimerFlagValid = in.getBool();
     myEdgeDetectPositive = in.getBool();
     in.getByteArray(myOutTimer, 4);
   }
@@ -390,44 +409,35 @@ bool M6532::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 M6532::intim() const
+uInt8 M6532::intim()
 {
-  // This method is documented in ::peek(0x284), and exists so that the
-  // debugger can read INTIM without changing the state of the system
+  updateEmulation();
 
-  // Get number of clocks since timer was set
-  Int32 timer = timerClocks();
-  if(timer >= 0)
-    return (timer >> myIntervalShift) & 0xff;
-  else
-    return timer & 0xff;
+  return myTimer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 M6532::timint() const
+uInt8 M6532::timint()
 {
-  // This method is documented in ::peek(0x285), and exists so that the
-  // debugger can read TIMINT without changing the state of the system
+  updateEmulation();
 
-  // Update timer flag if it is invalid and timer has expired
-  uInt8 interrupt = myInterruptFlag;
-  if(timerClocks() < 0)
-    interrupt |= TimerBit;
-
-  return interrupt;
+  return myInterruptFlag;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 M6532::intimClocks() const
+Int32 M6532::intimClocks()
 {
+  updateEmulation();
+
   // This method is similar to intim(), except instead of giving the actual
   // INTIM value, it will give the current number of clocks between one
   // INTIM value and the next
 
-  // Get number of clocks since timer was set
-  Int32 timer = timerClocks();
-  if(timer >= 0)
-    return timerClocks() & ((1 << myIntervalShift) - 1);
-  else
-    return timer & 0xff;
+  return myTimerWrapped ? 1 : (myDivider - mySubTimer);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 M6532::timerClocks() const
+{
+  return mySystem->cycles() - mySetTimerCycle;
 }

@@ -133,18 +133,19 @@ class M6532 : public Device
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    Int32 timerClocks() const
-      { return myTimer - (mySystem->cycles() - myCyclesWhenTimerSet); }
 
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
 
+    void updateEmulation();
+
     // The following are used by the debugger to read INTIM/TIMINT
     // We need separate methods to do this, so the state of the system
     // isn't changed
-    uInt8 intim() const;
-    uInt8 timint() const;
-    Int32 intimClocks() const;
+    uInt8 intim();
+    uInt8 timint();
+    Int32 intimClocks();
+    uInt32 timerClocks() const;
 
   private:
     // Accessible bits in the interrupt flag register
@@ -164,13 +165,22 @@ class M6532 : public Device
     uInt8 myRAM[128];
 
     // Current value of the timer
-    uInt32 myTimer;
+    uInt8 myTimer;
 
-    // Log base 2 of the number of cycles in a timer interval
-    uInt32 myIntervalShift;
+    // Current number of clocks "queued" for the divider
+    uInt32 mySubTimer;
 
-    // Indicates the number of cycles when the timer was last set
-    Int32 myCyclesWhenTimerSet;
+    // The divider
+    uInt32 myDivider;
+
+    // Has the timer wrapped?
+    bool myTimerWrapped;
+
+    // Cycle when the timer set. Debugging only.
+    Int32 mySetTimerCycle;
+
+    // Last cycle considered in emu updates
+    Int32 myLastCycle;
 
     // Data Direction Register for Port A
     uInt8 myDDRA;
@@ -186,10 +196,6 @@ class M6532 : public Device
 
     // Interrupt Flag Register
     uInt8 myInterruptFlag;
-
-    // Whether the timer flag (as currently set) can be used
-    // If it isn't valid, it will be updated as required
-    bool myTimerFlagValid;
 
     // Used to determine whether an active transition on PA7 has occurred
     // True is positive edge-detect, false is negative edge-detect
