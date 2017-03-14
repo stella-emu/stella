@@ -111,23 +111,26 @@ void M6532::updateEmulation()
 
   mySubTimer = (cycles + mySubTimer) % myDivider;
 
-  if (!myTimerWrapped) {
+  if(!myTimerWrapped)
+  {
     uInt32 timerTicks = (cycles + subTimer) / myDivider;
 
-    if (timerTicks > myTimer) {
+    if(timerTicks > myTimer)
+    {
       cycles -= ((myTimer + 1) * myDivider - subTimer);
       myTimer = 0xFF;
       myTimerWrapped = true;
       myInterruptFlag |= TimerBit;
-    } else {
+    }
+    else
+    {
       myTimer -= timerTicks;
       cycles = 0;
     }
   }
 
-  if (myTimerWrapped) {
+  if(myTimerWrapped)
     myTimer = (myTimer - cycles) & 0xFF;
-  }
 
   myLastCycle = mySystem->cycles();
 }
@@ -163,9 +166,7 @@ uInt8 M6532::peek(uInt16 addr)
   // system.  However, certain cartridges (notably 4A50) can mirror
   // the RAM address space, making it necessary to chain accesses.
   if((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
-  {
     return myRAM[addr & 0x007f];
-  }
 
   switch(addr & 0x07)
   {
@@ -201,9 +202,7 @@ uInt8 M6532::peek(uInt16 addr)
     {
       // Timer Flag is always cleared when accessing INTIM
       myInterruptFlag &= ~TimerBit;
-
       myTimerWrapped = false;
-
       return myTimer;
     }
 

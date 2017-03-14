@@ -19,6 +19,11 @@
     - YStart autodetection
     - ...
 
+  * Much improved RIOT timer emulation never before seen in any emulator.
+    Special thanks to DirtyHairy for the implementation, and alex_79 for
+    finding documentation that finally describes in more detail how the
+    M6532 chip actually works.
+
   * Fixed bug with SaveKey and AtariVox not properly closing their memory
     files before starting another instance of the same ROM, when the ROM
     was opened in the ROM launcher.
