@@ -26,6 +26,7 @@
 #include "TIATypes.hxx"
 #include "DelayQueue.hxx"
 #include "FrameManager.hxx"
+#include "FrameLayout.hxx"
 #include "Background.hxx"
 #include "Playfield.hxx"
 #include "Missile.hxx"
@@ -33,7 +34,6 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
-#include "TvMode.hxx"
 
 class Console;
 
@@ -170,9 +170,9 @@ class TIA : public Device
     void setHeight(uInt32 height) { myFrameManager.setFixedHeight(height); }
     void setYStart(uInt32 ystart) { myFrameManager.setYstart(ystart); }
 
-    void autodetectTvMode(bool toggle) { myFrameManager.autodetectTvMode(toggle); }
-    void setTvMode(TvMode mode) { myFrameManager.setTvMode(mode); }
-    TvMode tvMode() const { return myFrameManager.tvMode(); }
+    void autodetectLayout(bool toggle) { myFrameManager.autodetectLayout(toggle); }
+    void setLayout(FrameLayout layout) { myFrameManager.setLayout(layout); }
+    FrameLayout frameLayout() const { return myFrameManager.layout(); }
 
     /**
       Enables/disables auto-frame calculation.  If enabled, the TIA

@@ -42,7 +42,7 @@ void PaddleReader::reset(double timestamp)
   myValue = 0;
   myTimestamp = timestamp;
 
-  setTvMode(TvMode::ntsc);
+  setLayout(FrameLayout::ntsc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,10 +71,10 @@ uInt8 PaddleReader::inpt(double timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::update(double value, double timestamp, TvMode tvMode)
+void PaddleReader::update(double value, double timestamp, FrameLayout layout)
 {
-  if (tvMode != myTvMode) {
-    setTvMode(tvMode);
+  if (layout != myLayout) {
+    setLayout(layout);
   }
 
   if (value != myValue) {
@@ -84,11 +84,11 @@ void PaddleReader::update(double value, double timestamp, TvMode tvMode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::setTvMode(TvMode mode)
+void PaddleReader::setLayout(FrameLayout layout)
 {
-  myTvMode = mode;
+  myLayout = layout;
 
-  myClockFreq = myTvMode == TvMode::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
+  myClockFreq = myLayout == FrameLayout::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
   myUThresh = USUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq  / (RPOT + R0) / C));
 }
 

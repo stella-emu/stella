@@ -735,7 +735,7 @@ bool TIA::toggleFixedColors(uInt8 mode)
   // Otherwise, flip the state
   bool on = (mode == 0 || mode == 1) ? bool(mode) : myColorHBlank == 0;
 
-  bool pal = myFrameManager.tvMode() == TvMode::pal;
+  bool pal = myFrameManager.layout() == FrameLayout::pal;
   myMissile0.setDebugColor(pal ? M0ColorPAL : M0ColorNTSC);
   myMissile1.setDebugColor(pal ? M1ColorPAL : M1ColorNTSC);
   myPlayer0.setDebugColor(pal ? P0ColorPAL : P0ColorNTSC);
@@ -1226,7 +1226,7 @@ void TIA::updatePaddle(uInt8 idx)
   myPaddleReaders[idx].update(
     (resistance == Controller::maximumResistance ? -1 : double(resistance)) / MAX_RESISTANCE,
     myTimestamp,
-    myFrameManager.tvMode()
+    myFrameManager.layout()
   );
 }
 

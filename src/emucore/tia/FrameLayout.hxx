@@ -15,11 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_TYPES
-#define TIA_TYPES
+#ifndef FRAME_LAYOUT
+#define FRAME_LAYOUT
 
-enum TvMode {
-  pal, ntsc
+enum FrameLayout {
+  ntsc, // ROM display has NTSC timings (~60Hz, ~262 scanlines, etc)
+  pal   // ROM display has PAL timings (~50Hz, ~312 scanlines, etc)
 };
 
-#endif // TIA_TYPES
+#endif // FRAME_LAYOUT

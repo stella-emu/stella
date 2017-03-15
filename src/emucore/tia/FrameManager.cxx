@@ -54,12 +54,12 @@ uInt8 FrameManager::initialGarbageFrames()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
-  : myMode(TvMode::pal),
-    myAutodetectTvMode(true),
+  : myLayout(FrameLayout::pal),
+    myAutodetectLayout(true),
     myHeight(0),
     myFixedHeight(0)
 {
-  updateTvMode(TvMode::ntsc);
+  updateLayout(FrameLayout::ntsc);
   reset();
 }
 
@@ -105,12 +105,12 @@ void FrameManager::nextLine()
       if ((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0)
         myVsyncLines++;
 
-      if (myVsyncLines > vsyncLimit(myAutodetectTvMode)) setState(State::waitForFrameStart);
+      if (myVsyncLines > vsyncLimit(myAutodetectLayout)) setState(State::waitForFrameStart);
 
       break;
 
     case State::waitForVsyncEnd:
-      if (++myVsyncLines > vsyncLimit(myAutodetectTvMode))
+      if (++myVsyncLines > vsyncLimit(myAutodetectLayout))
         setState(State::waitForFrameStart);
 
       break;
@@ -220,39 +220,39 @@ void FrameManager::finalizeFrame()
   (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
-  if (myAutodetectTvMode) updateAutodetectedTvMode();
+  if (myAutodetectLayout) updateAutodetectedLayout();
 
-  myFrameRate = (myMode == TvMode::pal ? 15600.0 : 15720.0) /
-                myCurrentFrameFinalLines;
+  myFrameRate = (myLayout == FrameLayout::pal ? 15600.0 : 15720.0) /
+                 myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::updateAutodetectedTvMode()
+void FrameManager::updateAutodetectedLayout()
 {
   if (myTotalFrames <= Metrics::initialGarbageFrames) {
     return;
   }
 
-  const TvMode oldMode = myMode;
+  const FrameLayout oldLayout = myLayout;
 
   const uInt32
     deltaNTSC = abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesNTSC)),
     deltaPAL =  abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesPAL));
 
   if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance)
-    updateTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
+    updateLayout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
   else if (!myModeConfirmed) {
     if (
       (myCurrentFrameFinalLines < frameLinesPAL) &&
       (myCurrentFrameFinalLines > frameLinesNTSC) &&
       (myCurrentFrameFinalLines % 2)
     )
-      updateTvMode(TvMode::ntsc);
+      updateLayout(FrameLayout::ntsc);
     else
-      updateTvMode(deltaNTSC <= deltaPAL ? TvMode::ntsc : TvMode::pal);
+      updateLayout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
   }
 
-  if (oldMode == myMode)
+  if (oldLayout == myLayout)
     myFramesInMode++;
   else
     myFramesInMode = 0;
@@ -262,28 +262,28 @@ void FrameManager::updateAutodetectedTvMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::updateTvMode(TvMode mode)
+void FrameManager::updateLayout(FrameLayout layout)
 {
-  if (mode == myMode) return;
+  if (layout == myLayout) return;
 
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
   (cout << "TV mode switched to " << int(mode) << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
-  myMode = mode;
+  myLayout = layout;
 
-  switch (myMode)
+  switch (myLayout)
   {
-    case TvMode::ntsc:
-      myVblankLines     = Metrics::vblankNTSC;
-      myKernelLines     = Metrics::kernelNTSC;
-      myOverscanLines   = Metrics::overscanNTSC;
+    case FrameLayout::ntsc:
+      myVblankLines   = Metrics::vblankNTSC;
+      myKernelLines   = Metrics::kernelNTSC;
+      myOverscanLines = Metrics::overscanNTSC;
       break;
 
-    case TvMode::pal:
-      myVblankLines     = Metrics::vblankPAL;
-      myKernelLines     = Metrics::kernelPAL;
-      myOverscanLines   = Metrics::overscanPAL;
+    case FrameLayout::pal:
+      myVblankLines   = Metrics::vblankPAL;
+      myKernelLines   = Metrics::kernelPAL;
+      myOverscanLines = Metrics::overscanPAL;
       break;
 
     default:
@@ -291,7 +291,8 @@ void FrameManager::updateTvMode(TvMode mode)
   }
 
   myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
-  setFixedHeight(myFixedHeight);  // update since myKernelLines may have changed
+  if (myFixedHeight == 0)
+    myHeight = myKernelLines + Metrics::visibleOverscan;
 
   myVblankManager.setVblankLines(myVblankLines);
 }

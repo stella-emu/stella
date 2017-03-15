@@ -19,7 +19,7 @@
 #define TIA_PADDLE_READER
 
 #include "bspf.hxx"
-#include "TvMode.hxx"
+#include "FrameLayout.hxx"
 #include "Serializable.hxx"
 
 class PaddleReader : public Serializable
@@ -37,7 +37,7 @@ class PaddleReader : public Serializable
 
     uInt8 inpt(double timestamp);
 
-    void update(double value, double timestamp, TvMode tvMode);
+    void update(double value, double timestamp, FrameLayout layout);
 
     /**
       Serializable methods (see that class for more information).
@@ -48,7 +48,7 @@ class PaddleReader : public Serializable
 
   private:
 
-    void setTvMode(TvMode mode);
+    void setLayout(FrameLayout layout);
 
     void updateCharge(double timestamp);
 
@@ -60,7 +60,7 @@ class PaddleReader : public Serializable
     double myValue;
     double myTimestamp;
 
-    TvMode myTvMode;
+    FrameLayout myLayout;
     double myClockFreq;
 
     bool myIsDumped;

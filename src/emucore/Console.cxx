@@ -55,8 +55,8 @@
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
 #include "Version.hxx"
-#include "TvMode.hxx"
 #include "FrameManager.hxx"
+#include "FrameLayout.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -125,9 +125,10 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     uInt8 linesNTSC = 0;
 
     mySystem->reset(true);  // autodetect in reset enabled
-    myTIA->autodetectTvMode(true);
+    myTIA->autodetectLayout(true);
     for(int i = 0; i < 60; ++i) {
-      if (i > initialGarbageFrames) myTIA->tvMode() == TvMode::pal ? linesPAL++ : linesNTSC++;
+      if (i > initialGarbageFrames)
+        myTIA->frameLayout() == FrameLayout::pal ? linesPAL++ : linesNTSC++;
 
       myTIA->update();
     }
@@ -245,7 +246,7 @@ void Console::toggleFormat(int direction)
   {
     case 0:  // auto-detect
       myTIA->update();
-      myDisplayFormat = myTIA->tvMode() == TvMode::pal ? "PAL" : "NTSC";
+      myDisplayFormat = myTIA->frameLayout() == FrameLayout::pal ? "PAL" : "NTSC";
       message = "Auto-detect mode: " + myDisplayFormat;
       saveformat = "AUTO";
       break;
@@ -571,7 +572,7 @@ void Console::setTIAProperties()
   if(height != 0)
     height = BSPF::clamp(height, FrameManager::minViewableHeight, FrameManager::maxViewableHeight);
 
-  myTIA->autodetectTvMode(false);
+  myTIA->autodetectLayout(false);
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
@@ -579,7 +580,7 @@ void Console::setTIAProperties()
     // Assume we've got ~262 scanlines (NTSC-like format)
     myFramerate = 60.0;
     myConsoleInfo.InitialFrameRate = "60";
-    myTIA->setTvMode(TvMode::ntsc);
+    myTIA->setLayout(FrameLayout::ntsc);
   }
   else
   {
@@ -590,7 +591,7 @@ void Console::setTIAProperties()
     // PAL ROMs normally need at least 250 lines
     if (height != 0) height = std::max(height, 250u);
 
-    myTIA->setTvMode(TvMode::pal);
+    myTIA->setLayout(FrameLayout::pal);
   }
 
   myTIA->setYStart(ystart);

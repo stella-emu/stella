@@ -22,7 +22,7 @@
 
 #include "VblankManager.hxx"
 #include "Serializable.hxx"
-#include "TvMode.hxx"
+#include "FrameLayout.hxx"
 #include "bspf.hxx"
 
 class FrameManager : public Serializable
@@ -51,7 +51,7 @@ class FrameManager : public Serializable
 
     bool isRendering() const { return myState == State::frame; }
 
-    TvMode tvMode() const { return myMode; }
+    FrameLayout layout() const { return myLayout; }
 
     bool vblank() const { return myVblankManager.vblank(); }
 
@@ -78,9 +78,9 @@ class FrameManager : public Serializable
     uInt32 ystart() const { return myVblankManager.ystart(); }
     bool ystartIsAuto(uInt32 line) const { return myVblankManager.ystartIsAuto(line); }
 
-    void autodetectTvMode(bool toggle) { myAutodetectTvMode = toggle; }
+    void autodetectLayout(bool toggle) { myAutodetectLayout = toggle; }
 
-    void setTvMode(TvMode mode) { if (!myAutodetectTvMode) updateTvMode(mode); }
+    void setLayout(FrameLayout mode) { if (!myAutodetectLayout) updateLayout(mode); }
 
     /**
       Serializable methods (see that class for more information).
@@ -112,9 +112,9 @@ class FrameManager : public Serializable
 
   private:
 
-    void updateTvMode(TvMode mode);
+    void updateLayout(FrameLayout mode);
 
-    void updateAutodetectedTvMode();
+    void updateAutodetectedLayout();
 
     void setState(State state);
 
@@ -129,8 +129,8 @@ class FrameManager : public Serializable
 
     VblankManager myVblankManager;
 
-    TvMode myMode;
-    bool myAutodetectTvMode;
+    FrameLayout myLayout;
+    bool myAutodetectLayout;
     State myState;
     uInt32 myLineInState;
     uInt32 myCurrentFrameTotalLines;
