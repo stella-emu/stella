@@ -259,6 +259,7 @@ class Cartridge : public Device
 
     /**
       Returns true if the image is probably a SuperChip (256 bytes RAM)
+      Note: should be called only on ROMs with size multiple of 4K
     */
     static bool isProbablySC(const uInt8* image, uInt32 size);
 

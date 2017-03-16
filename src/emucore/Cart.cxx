@@ -314,7 +314,7 @@ bool Cartridge::saveROM(ofstream& out)
   int size = -1;
 
   const uInt8* image = getImage(size);
-  if(image == 0 || size <= 0)
+  if(image == nullptr || size <= 0)
   {
     cerr << "save not supported" << endl;
     return false;
@@ -576,14 +576,13 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
 {
   // We assume a Superchip cart repeats the first 128 bytes for the second
   // 128 bytes in the RAM area, which is the first 256 bytes of each 4K bank
-  uInt32 banks = size / 4096;
-  for(uInt32 i = 0; i < banks; ++i)
+  while(size)
   {
-    for(uInt32 j = 0; j < 128; ++j)
-    {
-      if(image[i*4096+j] != image[i*4096+j + 128])
-        return false;
-    }
+    if(memcmp(image, image + 128, 128) != 0)
+      return false;
+
+    image += 4096;
+    size  -= 4096;
   }
   return true;
 }
