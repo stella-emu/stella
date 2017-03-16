@@ -258,13 +258,13 @@ class Cartridge : public Device
                                uInt32 minhits);
 
     /**
-      Returns true if the image is probably a SuperChip (256 bytes RAM)
+      Returns true if the image is probably a SuperChip (128 bytes RAM)
       Note: should be called only on ROMs with size multiple of 4K
     */
     static bool isProbablySC(const uInt8* image, uInt32 size);
 
     /**
-      Returns true if the image is probably a 4K SuperChip (256 bytes RAM)
+      Returns true if the image is probably a 4K SuperChip (128 bytes RAM)
     */
     static bool isProbably4KSC(const uInt8* image, uInt32 size);
 
