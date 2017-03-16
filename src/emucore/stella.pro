@@ -8760,7 +8760,6 @@
 "Cartridge.Manufacturer" "Atari - GCC, Douglas B. Macrae"
 "Cartridge.ModelNo" "CX2677"
 "Cartridge.Name" "Dig Dug (1983) (Atari)"
-"Cartridge.Type" "F6SC"
 ""
 
 "Cartridge.MD5" "6de924c2297c8733524952448d54a33c"

@@ -1452,7 +1452,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "6d842c96d5a01967be9680080dd5be54", "Activision, David Crane", "AB-035-04", "Pitfall II (1983) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "6d8a04ee15951480cb7c466e5951eee0", "Zirok", "", "Kanguru (1983) (Zirok)", "AKA Kangaroo", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "6d9afd70e9369c2a6bff96c4964413b7", "", "", "Time Warp (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "6dda84fb8e442ecf34241ac0d1d91d69", "Atari - GCC, Douglas B. Macrae", "CX2677", "Dig Dug (1983) (Atari)", "", "", "", "F6SC", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "6dda84fb8e442ecf34241ac0d1d91d69", "Atari - GCC, Douglas B. Macrae", "CX2677", "Dig Dug (1983) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "6de924c2297c8733524952448d54a33c", "CCE", "C-1006", "Moon Patrol (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "6dfad2dd2c7c16ac0fa257b6ce0be2f0", "Parker Brothers, Larry Gelberg, Gary Goltz", "PB5065", "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype) (PAL)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "6e179eee3d4631a7434d40cf7aeea6e8", "Wizard Video Games, Robert Barber, Tim Martin", "007", "Halloween (1983) (Wizard Video Games) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

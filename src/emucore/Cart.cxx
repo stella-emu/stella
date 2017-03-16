@@ -574,16 +574,14 @@ bool Cartridge::searchForBytes(const uInt8* image, uInt32 imagesize,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
 {
-  // We assume a Superchip cart contains the same bytes for its entire
-  // RAM area; obviously this test will fail if it doesn't
-  // The RAM area will be the first 256 bytes of each 4K bank
+  // We assume a Superchip cart repeats the first 128 bytes for the second
+  // 128 bytes in the RAM area, which is the first 256 bytes of each 4K bank
   uInt32 banks = size / 4096;
   for(uInt32 i = 0; i < banks; ++i)
   {
-    uInt8 first = image[i*4096];
-    for(uInt32 j = 0; j < 256; ++j)
+    for(uInt32 j = 0; j < 128; ++j)
     {
-      if(image[i*4096+j] != first)
+      if(image[i*4096+j] != image[i*4096+j + 128])
         return false;
     }
   }

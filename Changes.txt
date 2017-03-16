@@ -55,6 +55,10 @@
   * Added ROM properties for D.K. VCS homebrew ROM, thanks to Andreas
     Dietrich.
 
+  * Added slight improvement for auto-detecting Superchip bankswitching;
+    the new implementation now works for the NTSC 'Dig Dug' ROM.  Special
+    thanks for SpiceWare for the idea and modified implementation.
+
   * For the Linux/UNIX port:
     - The settings directory now uses the XDG Base Directory Specification.
       In most cases, this means that your files will now be stored in
