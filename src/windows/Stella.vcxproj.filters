@@ -1676,9 +1676,6 @@
     <ClInclude Include="..\emucore\tia\TIA.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\Types.hxx">
-      <Filter>Header Files\emucore\tia</Filter>
-    </ClInclude>
     <ClInclude Include="..\emucore\tia\VblankManager.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
@@ -1690,6 +1687,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\TrakBall.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\FrameLayout.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

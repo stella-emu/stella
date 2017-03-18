@@ -586,6 +586,7 @@
     <ClInclude Include="..\emucore\tia\DelayQueue.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueueMember.hxx" />
     <ClInclude Include="..\emucore\tia\DrawCounterDecodes.hxx" />
+    <ClInclude Include="..\emucore\tia\FrameLayout.hxx" />
     <ClInclude Include="..\emucore\tia\FrameManager.hxx" />
     <ClInclude Include="..\emucore\tia\LatchedInput.hxx" />
     <ClInclude Include="..\emucore\tia\Missile.hxx" />
@@ -593,7 +594,6 @@
     <ClInclude Include="..\emucore\tia\Player.hxx" />
     <ClInclude Include="..\emucore\tia\Playfield.hxx" />
     <ClInclude Include="..\emucore\tia\TIA.hxx" />
-    <ClInclude Include="..\emucore\tia\Types.hxx" />
     <ClInclude Include="..\emucore\tia\VblankManager.hxx" />
     <ClInclude Include="..\emucore\TrakBall.hxx" />
     <ClInclude Include="..\gui\ConsoleBFont.hxx" />
