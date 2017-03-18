@@ -176,33 +176,35 @@ void Missile::render()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::tick(bool isReceivingMclock)
 {
-  bool starfieldEffect = myIsMoving && isReceivingMclock;
-
   if (myDecodes[myCounter]) {
     myIsRendering = true;
     myRenderCounter = Count::renderCounterOffset;
 
-    uInt8 starfieldDelta = (myCounter + 160 - myLastMovementTick) % 4;
-    if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) myRenderCounter++;
+  } else if (myIsRendering) {
+      bool starfieldEffect = myIsMoving && isReceivingMclock;
+      uInt8 starfieldDelta = (myCounter + 160 - myLastMovementTick + 2) % 4;
 
-    switch (starfieldDelta) {
-      case 3:
-        myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
-        break;
+      if (myRenderCounter == -2 && starfieldEffect) {
 
-      case 2:
-        myEffectiveWidth = 0;
-        break;
+        switch (starfieldDelta) {
+          case 3:
+            myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
+            if (myWidth < 4) myRenderCounter++;
+            break;
 
-      default:
-        myEffectiveWidth = myWidth;
-        break;
-    }
+          case 2:
+            myEffectiveWidth = 0;
+            break;
 
-  } else if (
-    myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth)
-  )
-    myIsRendering = false;
+          default:
+            myEffectiveWidth = myWidth;
+            break;
+        }
+
+      }
+
+      if (++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth)) myIsRendering = false;
+  }
 
   if (++myCounter >= 160) myCounter = 0;
 }
