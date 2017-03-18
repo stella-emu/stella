@@ -78,7 +78,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myDisplayFormat(""),  // Unknown TV format @ start
     myFramerate(0.0),     // Unknown framerate @ start
     myCurrentFormat(0),   // Unknown format @ start
-    myUserPaletteDefined(false)
+    myUserPaletteDefined(false),
+    myConsoleTiming(ConsoleTiming::ntsc)
 {
   // Load user-defined palette for this ROM
   loadUserPalette();
@@ -151,12 +152,36 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   //   properties (60Hz, 262 scanlines, etc), but likely result in flicker
   // The TIA will self-adjust the framerate if necessary
   setTIAProperties();
-  if(myDisplayFormat == "NTSC")         myCurrentFormat = 1;
-  else if(myDisplayFormat == "PAL")     myCurrentFormat = 2;
-  else if(myDisplayFormat == "SECAM")   myCurrentFormat = 3;
-  else if(myDisplayFormat == "NTSC50")  myCurrentFormat = 4;
-  else if(myDisplayFormat == "PAL60")   myCurrentFormat = 5;
-  else if(myDisplayFormat == "SECAM60") myCurrentFormat = 6;
+  if(myDisplayFormat == "NTSC")
+  {
+    myCurrentFormat = 1;
+    myConsoleTiming = ConsoleTiming::ntsc;
+  }
+  else if(myDisplayFormat == "PAL")
+  {
+    myCurrentFormat = 2;
+    myConsoleTiming = ConsoleTiming::pal;
+  }
+  else if(myDisplayFormat == "SECAM")
+  {
+    myCurrentFormat = 3;
+    myConsoleTiming = ConsoleTiming::secam;
+  }
+  else if(myDisplayFormat == "NTSC50")
+  {
+    myCurrentFormat = 4;
+    myConsoleTiming = ConsoleTiming::ntsc;
+  }
+  else if(myDisplayFormat == "PAL60")
+  {
+    myCurrentFormat = 5;
+    myConsoleTiming = ConsoleTiming::pal;
+  }
+  else if(myDisplayFormat == "SECAM60")
+  {
+    myCurrentFormat = 6;
+    myConsoleTiming = ConsoleTiming::secam;
+  }
 
   // Bumper Bash always requires all 4 directions
   // Other ROMs can use it if the setting is enabled
@@ -249,29 +274,37 @@ void Console::toggleFormat(int direction)
       myDisplayFormat = myTIA->frameLayout() == FrameLayout::pal ? "PAL" : "NTSC";
       message = "Auto-detect mode: " + myDisplayFormat;
       saveformat = "AUTO";
+      myConsoleTiming = myTIA->frameLayout() == FrameLayout::pal ?
+          ConsoleTiming::pal : ConsoleTiming::ntsc;
       break;
     case 1:
-      saveformat = myDisplayFormat  = "NTSC";
+      saveformat = myDisplayFormat = "NTSC";
+      myConsoleTiming = ConsoleTiming::ntsc;
       message = "NTSC mode";
       break;
     case 2:
-      saveformat = myDisplayFormat  = "PAL";
+      saveformat = myDisplayFormat = "PAL";
+      myConsoleTiming = ConsoleTiming::pal;
       message = "PAL mode";
       break;
     case 3:
-      saveformat = myDisplayFormat  = "SECAM";
+      saveformat = myDisplayFormat = "SECAM";
+      myConsoleTiming = ConsoleTiming::secam;
       message = "SECAM mode";
       break;
     case 4:
-      saveformat = myDisplayFormat  = "NTSC50";
+      saveformat = myDisplayFormat = "NTSC50";
+      myConsoleTiming = ConsoleTiming::ntsc;
       message = "NTSC50 mode";
       break;
     case 5:
-      saveformat = myDisplayFormat  = "PAL60";
+      saveformat = myDisplayFormat = "PAL60";
+      myConsoleTiming = ConsoleTiming::pal;
       message = "PAL60 mode";
       break;
     case 6:
-      saveformat = myDisplayFormat  = "SECAM60";
+      saveformat = myDisplayFormat = "SECAM60";
+      myConsoleTiming = ConsoleTiming::secam;
       message = "SECAM60 mode";
       break;
   }

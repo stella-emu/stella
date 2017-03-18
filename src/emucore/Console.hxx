@@ -51,6 +51,16 @@ struct ConsoleInfo
 };
 
 /**
+  Contains timing information about the specified console.
+*/
+enum class ConsoleTiming
+{
+  ntsc,  // console with CPU running at 1.193182 MHz, NTSC colours
+  pal,   // console with CPU running at 1.182298 MHz, PAL colours
+  secam  // console with CPU running at 1.187500 MHz, SECAM colours
+};
+
+/**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
@@ -159,6 +169,11 @@ class Console : public Serializable
       Query detailed information about this console.
     */
     const ConsoleInfo& about() const { return myConsoleInfo; }
+
+    /**
+      Timing information for this console.
+    */
+    ConsoleTiming timing() const { return myConsoleTiming; }
 
     /**
       Set up the console to use the debugger.
@@ -365,6 +380,9 @@ class Console : public Serializable
 
     // Contains detailed info about this console
     ConsoleInfo myConsoleInfo;
+
+    // Contains timing information for this console
+    ConsoleTiming myConsoleTiming;
 
     // Table of RGB values for NTSC, PAL and SECAM
     static uInt32 ourNTSCPalette[256];

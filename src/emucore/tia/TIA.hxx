@@ -19,6 +19,7 @@
 #define TIA_TIA
 
 #include "bspf.hxx"
+#include "Console.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
 #include "Device.hxx"
@@ -34,8 +35,6 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
-
-class Console;
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -173,6 +172,11 @@ class TIA : public Device
     void autodetectLayout(bool toggle) { myFrameManager.autodetectLayout(toggle); }
     void setLayout(FrameLayout layout) { myFrameManager.setLayout(layout); }
     FrameLayout frameLayout() const { return myFrameManager.layout(); }
+
+    /**
+      Answers the timing of the console currently in use.
+    */
+    ConsoleTiming consoleTiming() const { return myConsole.timing(); }
 
     /**
       Enables/disables auto-frame calculation.  If enabled, the TIA
