@@ -274,7 +274,6 @@
 		DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8531E2C0E6D00905161 /* zlib.h */; };
 		DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8541E2C0E6D00905161 /* zutil.c */; };
 		DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8551E2C0E6D00905161 /* zutil.h */; };
-		DC3EE8711E2C192300905161 /* TvMode.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8701E2C192300905161 /* TvMode.hxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -529,6 +528,7 @@
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
 		DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */; };
 		DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */; };
+		DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE8B1861E7E03B300189864 /* FrameLayout.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
 		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
 		DCF3A6E71DFC75E3008A8AF3 /* Background.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */; };
@@ -890,7 +890,6 @@
 		DC3EE8531E2C0E6D00905161 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zlib.h; path = ../zlib/zlib.h; sourceTree = "<group>"; };
 		DC3EE8541E2C0E6D00905161 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = ../zlib/zutil.c; sourceTree = "<group>"; };
 		DC3EE8551E2C0E6D00905161 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = ../zlib/zutil.h; sourceTree = "<group>"; };
-		DC3EE8701E2C192300905161 /* TvMode.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TvMode.hxx; path = ../emucore/tia/TvMode.hxx; sourceTree = "<group>"; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomAuditDialog.cxx; path = ../gui/RomAuditDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomAuditDialog.hxx; path = ../gui/RomAuditDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
@@ -1147,6 +1146,7 @@
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotRamWidget.cxx; path = ../debugger/gui/RiotRamWidget.cxx; sourceTree = "<group>"; };
 		DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotRamWidget.hxx; path = ../debugger/gui/RiotRamWidget.hxx; sourceTree = "<group>"; };
+		DCE8B1861E7E03B300189864 /* FrameLayout.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FrameLayout.hxx; path = ../emucore/tia/FrameLayout.hxx; sourceTree = "<group>"; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
 		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
 		DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Background.cxx; path = ../emucore/tia/Background.cxx; sourceTree = "<group>"; };
@@ -1924,6 +1924,7 @@
 				DCF3A6D41DFC75E3008A8AF3 /* DelayQueueMember.hxx */,
 				DCF3A6D51DFC75E3008A8AF3 /* DrawCounterDecodes.cxx */,
 				DCF3A6D61DFC75E3008A8AF3 /* DrawCounterDecodes.hxx */,
+				DCE8B1861E7E03B300189864 /* FrameLayout.hxx */,
 				DCF3A6D71DFC75E3008A8AF3 /* FrameManager.cxx */,
 				DCF3A6D81DFC75E3008A8AF3 /* FrameManager.hxx */,
 				DCF3A6D91DFC75E3008A8AF3 /* LatchedInput.cxx */,
@@ -1938,7 +1939,6 @@
 				DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */,
 				DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */,
 				DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */,
-				DC3EE8701E2C192300905161 /* TvMode.hxx */,
 				DC72B2201E356F4F009056D0 /* VblankManager.cxx */,
 				DC72B2211E356F4F009056D0 /* VblankManager.hxx */,
 			);
@@ -1997,7 +1997,6 @@
 				2D9173F009BA90380026E9FF /* Switches.hxx in Headers */,
 				2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */,
 				2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */,
-				DC3EE8711E2C192300905161 /* TvMode.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
 				2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */,
 				2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */,
@@ -2029,6 +2028,7 @@
 				2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */,
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
+				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				2D91741D09BA90380026E9FF /* Preferences.h in Headers */,
