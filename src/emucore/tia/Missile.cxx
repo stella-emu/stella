@@ -170,7 +170,7 @@ void Missile::render(uInt8 hclock)
 {
   bool render =
     myIsRendering &&
-    (myRenderCounter >= 0 || (myIsMoving && myRenderCounter == -1 && ((hclock + 1) % 4 == 3))) &&
+    (myRenderCounter >= 0 || (myIsMoving && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3))) &&
     myIsEnabled;
 
   collision = render ? myCollisionMaskEnabled : myCollisionMaskDisabled;
