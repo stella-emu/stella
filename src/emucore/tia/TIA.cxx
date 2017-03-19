@@ -897,8 +897,8 @@ void TIA::tickMovement()
     bool m = false;
     uInt8 movementCounter = myMovementClock > 15 ? 0 : myMovementClock;
 
-    m = myMissile0.movementTick(movementCounter, apply) || m;
-    m = myMissile1.movementTick(movementCounter, apply) || m;
+    m = myMissile0.movementTick(movementCounter, myHctr, apply) || m;
+    m = myMissile1.movementTick(movementCounter, myHctr, apply) || m;
     m = myPlayer0.movementTick(movementCounter, apply) || m;
     m = myPlayer1.movementTick(movementCounter, apply) || m;
     m = myBall.movementTick(movementCounter, apply) || m;
@@ -960,16 +960,16 @@ void TIA::renderSprites()
 {
   myPlayer0.render();
   myPlayer1.render();
-  myMissile0.render();
-  myMissile1.render();
+  myMissile0.render(myHctr);
+  myMissile1.render(myHctr);
   myBall.render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::tickSprites()
 {
-  myMissile0.tick();
-  myMissile1.tick();
+  myMissile0.tick(myHctr);
+  myMissile1.tick(myHctr);
   myPlayer0.tick();
   myPlayer1.tick();
   myBall.tick();

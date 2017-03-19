@@ -46,11 +46,11 @@ class Missile : public Serializable
 
     void startMovement();
 
-    bool movementTick(uInt32 clock, bool apply);
+    bool movementTick(uInt8 clock, uInt8 hclock, bool apply);
 
-    void render();
+    void render(uInt8 hclock);
 
-    void tick(bool isReceivingMclock = true);
+    void tick(uInt8 hclock);
 
     void setColor(uInt8 color);
 

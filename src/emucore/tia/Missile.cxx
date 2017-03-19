@@ -151,42 +151,42 @@ void Missile::startMovement()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Missile::movementTick(uInt32 clock, bool apply)
+bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
 {
   myLastMovementTick = myCounter;
 
   if (clock == myHmmClocks) myIsMoving = false;
 
   if (myIsMoving && apply) {
-    render();
-    tick(false);
+    render(hclock);
+    tick(hclock);
   }
 
   return myIsMoving;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::render()
+void Missile::render(uInt8 hclock)
 {
-  collision = (myIsRendering && myRenderCounter >= 0 && myIsEnabled) ?
-    myCollisionMaskEnabled :
-    myCollisionMaskDisabled;
+  bool render =
+    myIsRendering &&
+    (myRenderCounter >= 0 || (myIsMoving && myRenderCounter == -1 && ((hclock + 1) % 4 == 3))) &&
+    myIsEnabled;
+
+  collision = render ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::tick(bool isReceivingMclock)
+void Missile::tick(uInt8 hclock)
 {
   if (myDecodes[myCounter]) {
     myIsRendering = true;
     myRenderCounter = Count::renderCounterOffset;
-
   } else if (myIsRendering) {
-      bool starfieldEffect = myIsMoving && isReceivingMclock;
-      uInt8 starfieldDelta = (myCounter + 160 - myLastMovementTick + 2) % 4;
 
-      if (myRenderCounter == -2 && starfieldEffect) {
+      if (myIsMoving && myRenderCounter == -1) {
 
-        switch (starfieldDelta) {
+        switch ((hclock + 1) % 4) {
           case 3:
             myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
             if (myWidth < 4) myRenderCounter++;
@@ -203,7 +203,7 @@ void Missile::tick(bool isReceivingMclock)
 
       }
 
-      if (++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth)) myIsRendering = false;
+      if (++myRenderCounter >= (myIsMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
   }
 
   if (++myCounter >= 160) myCounter = 0;
