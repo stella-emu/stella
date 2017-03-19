@@ -359,6 +359,7 @@ bool M6532::save(Serializer& out) const
     out.putInt(mySubTimer);
     out.putInt(myDivider);
     out.putBool(myTimerWrapped);
+    out.putBool(myWrappedThisCycle);
     out.putInt(myLastCycle);
     out.putInt(mySetTimerCycle);
 
@@ -394,6 +395,7 @@ bool M6532::load(Serializer& in)
     mySubTimer = in.getInt();
     myDivider = in.getInt();
     myTimerWrapped = in.getBool();
+    myWrappedThisCycle = in.getBool();
     myLastCycle = in.getInt();
     mySetTimerCycle = in.getInt();
 
