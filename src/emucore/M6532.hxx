@@ -175,6 +175,7 @@ class M6532 : public Device
 
     // Has the timer wrapped?
     bool myTimerWrapped;
+    bool myWrappedThisCycle;
 
     // Cycle when the timer set. Debugging only.
     Int32 mySetTimerCycle;

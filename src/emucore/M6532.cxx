@@ -30,7 +30,7 @@ M6532::M6532(const Console& console, const Settings& settings)
   : myConsole(console),
     mySettings(settings),
     myTimer(0), mySubTimer(0), myDivider(1),
-    myTimerWrapped(false), mySetTimerCycle(0), myLastCycle(0),
+    myTimerWrapped(false), myWrappedThisCycle(false), mySetTimerCycle(0), myLastCycle(0),
     myDDRA(0), myDDRB(0), myOutA(0), myOutB(0),
     myInterruptFlag(false),
     myEdgeDetectPositive(false)
@@ -51,6 +51,8 @@ void M6532::reset()
   myDivider = 1024;
   mySubTimer = 0;
   myTimerWrapped = false;
+  myWrappedThisCycle = false;
+
   mySetTimerCycle = 0;
   myLastCycle = mySystem->cycles();
 
@@ -109,6 +111,11 @@ void M6532::updateEmulation()
   uInt32 cycles = mySystem->cycles() - myLastCycle;
   uInt32 subTimer = mySubTimer;
 
+  // Guard against further state changes if the debugger alread forwarded emulation
+  // state (in particular myWrappedThisCycle)
+  if (cycles == 0) return;
+
+  myWrappedThisCycle = false;
   mySubTimer = (cycles + mySubTimer) % myDivider;
 
   if(!myTimerWrapped)
@@ -118,6 +125,7 @@ void M6532::updateEmulation()
     if(timerTicks > myTimer)
     {
       cycles -= ((myTimer + 1) * myDivider - subTimer);
+      myWrappedThisCycle = cycles == 0;
       myTimer = 0xFF;
       myTimerWrapped = true;
       myInterruptFlag |= TimerBit;
@@ -201,7 +209,7 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x06:
     {
       // Timer Flag is always cleared when accessing INTIM
-      myInterruptFlag &= ~TimerBit;
+      if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
       myTimerWrapped = false;
       return myTimer;
     }
