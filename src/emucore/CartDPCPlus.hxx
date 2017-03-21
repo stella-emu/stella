@@ -259,6 +259,9 @@ class CartridgeDPCPlus : public Cartridge
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
+  
+    // System cycle count when the last Thumbulator->Run() occurred
+    Int32 myARMCycles;
 
     // Indicates which bank is currently active
     uInt16 myCurrentBank;

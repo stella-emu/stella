@@ -56,8 +56,11 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal)
   : rom(rom_ptr),
-    ram(ram_ptr)
+    ram(ram_ptr),
+    T1TCR(0),
+    T1TC(0)
 {
+  setConsoleTiming(ConsoleTiming::ntsc);
   trapFatalErrors(traponfatal);
   reset();
 }
@@ -77,6 +80,43 @@ string Thumbulator::run()
   cout << statusMsg.str() << endl;
 #endif
   return statusMsg.str();
+}
+
+void Thumbulator::setConsoleTiming(ConsoleTiming timing)
+{
+  // this sets how many ticks of the Harmony/Melody clock
+  // will occur per tick of the 6507 clock
+  constexpr double NTSC   = 70.0 / 1.193182;  // NTSC  6507 clock rate
+  constexpr double PAL    = 70.0 / 1.182298;  // PAL   6507 clock rate
+  constexpr double SECAM  = 70.0 / 1.187500;  // SECAM 6507 clock rate
+  
+  switch (timing)
+  {
+    case ConsoleTiming::ntsc:   timing_factor = NTSC;   break;
+    case ConsoleTiming::secam:  timing_factor = SECAM;  break;
+    case ConsoleTiming::pal:    timing_factor = PAL;    break;
+    default:                    timing_factor = NTSC;   break;
+  }
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Thumbulator::updateTimer(uInt32 cycles)
+{
+  double increment;
+  
+  increment = cycles * timing_factor;
+  
+  if (T1TCR & 1) // bit 0 controls timer on/off
+  {
+    
+    T1TC += uInt32(increment);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Thumbulator::run(uInt32 cycles)
+{
+  updateTimer(cycles);
+  return this->run();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,6 +275,14 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
         case 0xE0000000:
           DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]" << endl);
           break;
+          
+        case 0xE0008004:  // T1TCR - Timer 1 Control Register
+          T1TCR = data;
+          break;
+          
+        case 0xE0008008:  // T1TC - Timer 1 Counter
+          T1TC = data;
+          break;
 
         case 0xE000E010:
         {
@@ -348,6 +396,14 @@ uInt32 Thumbulator::read32(uInt32 addr)
     {
       switch(addr)
       {
+        case 0xE0008004:  // T1TCR - Timer 1 Control Register
+          data = T1TCR;
+          return data;
+          
+        case 0xE0008008:  // T1TC - Timer 1 Counter
+          data = T1TC;
+          return data;
+          
         case 0xE000E010:
           data = systick_ctrl;
           systick_ctrl &= (~0x00010000);
