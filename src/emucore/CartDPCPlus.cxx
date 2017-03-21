@@ -21,6 +21,7 @@
 #include "System.hxx"
 #include "Thumbulator.hxx"
 #include "CartDPCPlus.hxx"
+#include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
@@ -31,6 +32,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
     myParameterPointer(0),
     mySystemCycles(0),
     myFractionalClocks(0.0),
+    myARMCycles(0),
     myCurrentBank(0)
 {
   // Store image, making sure it's at least 29KB
@@ -72,6 +74,7 @@ void CartridgeDPCPlus::reset()
 {
   // Update cycles to the current system cycles
   mySystemCycles = mySystem->cycles();
+  myARMCycles = mySystem->cycles();
   myFractionalClocks = 0.0;
 
   setInitialState();
@@ -106,6 +109,7 @@ void CartridgeDPCPlus::systemCyclesReset()
 {
   // Adjust the cycle counter so that it reflects the new value
   mySystemCycles -= mySystem->cycles();
+  myARMCycles -= mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,7 +192,20 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
     case 255:
       // Call user written ARM code (most likely be C compiled for ARM)
       try {
-        myThumbEmulator->run();
+        Int32 cycles = mySystem->cycles() - myARMCycles;
+        myARMCycles = mySystem->cycles();
+        
+        // setConsoleTiming should go elsewhere for one-time-setup, but doesn't
+        // work in install()
+        //
+        // if put in setInitialState() Stella ends up crashing in System.hxx at
+        //      TIA& tia() const { return myTIA; }
+        // with error
+        //      "Thread 1: EXC_BAD_ACCESS (code=1, address=0x20)"
+        
+        myThumbEmulator->setConsoleTiming(mySystem->tia().consoleTiming());
+        
+        myThumbEmulator->run(cycles);
       }
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
@@ -680,8 +697,12 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     // The random number generator register
     out.putInt(myRandomNumber);
 
+    // Get system cycles and fractional clocks
     out.putInt(mySystemCycles);
     out.putInt(uInt32(myFractionalClocks * 100000000.0));
+    
+    // clock info for Thumbulator
+    out.putInt(myARMCycles);
   }
   catch(...)
   {
@@ -743,6 +764,9 @@ bool CartridgeDPCPlus::load(Serializer& in)
     // Get system cycles and fractional clocks
     mySystemCycles = in.getInt();
     myFractionalClocks = double(in.getInt()) / 100000000.0;
+    
+    // clock info for Thumbulator
+    myARMCycles = (Int32)in.getInt();
   }
   catch(...)
   {

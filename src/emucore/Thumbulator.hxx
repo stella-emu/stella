@@ -28,6 +28,7 @@
 #define THUMBULATOR_HXX
 
 #include "bspf.hxx"
+#include "Console.hxx"
 
 #define ROMADDMASK 0x7FFF
 #define RAMADDMASK 0x1FFF
@@ -54,6 +55,7 @@ class Thumbulator
                otherwise an empty string
     */
     string run();
+    string run(uInt32 cycles);
 
     /**
       Normally when a fatal error is encountered, the ARM emulation
@@ -68,6 +70,8 @@ class Thumbulator
       @param enable  Enable (the default) or disable exceptions on fatal errors
     */
     static void trapFatalErrors(bool enable) { trapOnFatal = enable; }
+  
+  void setConsoleTiming(ConsoleTiming timing);
 
   private:
     uInt32 read_register(uInt32 reg);
@@ -78,6 +82,7 @@ class Thumbulator
     uInt32 read32(uInt32 addr);
     void write16(uInt32 addr, uInt32 data);
     void write32(uInt32 addr, uInt32 data);
+    void updateTimer(uInt32 cycles);
 
     void do_zflag(uInt32 x);
     void do_nflag(uInt32 x);
@@ -106,6 +111,13 @@ class Thumbulator
     bool handler_mode;
     uInt32 systick_ctrl, systick_reload, systick_count, systick_calibrate;
     uInt64 instructions, fetches, reads, writes, systick_ints;
+  
+    // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.
+    // Register names from documentation:
+    // http://www.nxp.com/documents/user_manual/UM10161.pdf
+    uInt32 T1TCR;  // Timer 1 Timer Control Register
+    uInt32 T1TC;   // Timer 1 Timer Counter
+    double timing_factor;
 
     ostringstream statusMsg;
 
