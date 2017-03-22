@@ -95,6 +95,14 @@ void System::resetCycles()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::consoleChanged(ConsoleTiming timing)
+{
+  myM6532.consoleChanged(timing);
+  myTIA.consoleChanged(timing);
+  myCart.consoleChanged(timing);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 {
   uInt16 start_page = (start_addr & ADDRESS_MASK) >> PAGE_SHIFT;

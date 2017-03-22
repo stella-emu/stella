@@ -201,6 +201,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myConsoleInfo.BankSwitch = myCart->about();
 
   myCart->setRomName(myConsoleInfo.CartName);
+
+  // Let the other devices know about the new console
+  mySystem->consoleChanged(myConsoleTiming);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,6 +319,9 @@ void Console::toggleFormat(int direction)
   initializeVideo();  // takes care of refreshing the screen
 
   myOSystem.frameBuffer().showMessage(message);
+
+  // Let the other devices know about the console change
+  mySystem->consoleChanged(myConsoleTiming);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

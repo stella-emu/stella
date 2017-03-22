@@ -105,6 +105,14 @@ void CartridgeDPCPlus::setInitialState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeDPCPlus::consoleChanged(ConsoleTiming timing)
+{
+#ifdef THUMB_SUPPORT
+  myThumbEmulator->setConsoleTiming(timing);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlus::systemCyclesReset()
 {
   // Adjust the cycle counter so that it reflects the new value
@@ -194,17 +202,7 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       try {
         Int32 cycles = mySystem->cycles() - myARMCycles;
         myARMCycles = mySystem->cycles();
-        
-        // setConsoleTiming should go elsewhere for one-time-setup, but doesn't
-        // work in install()
-        //
-        // if put in setInitialState() Stella ends up crashing in System.hxx at
-        //      TIA& tia() const { return myTIA; }
-        // with error
-        //      "Thread 1: EXC_BAD_ACCESS (code=1, address=0x20)"
-        
-        myThumbEmulator->setConsoleTiming(mySystem->tia().consoleTiming());
-        
+
         myThumbEmulator->run(cycles);
       }
       catch(const runtime_error& e) {
@@ -700,8 +698,8 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     // Get system cycles and fractional clocks
     out.putInt(mySystemCycles);
     out.putInt(uInt32(myFractionalClocks * 100000000.0));
-    
-    // clock info for Thumbulator
+
+    // Clock info for Thumbulator
     out.putInt(myARMCycles);
   }
   catch(...)
@@ -764,9 +762,9 @@ bool CartridgeDPCPlus::load(Serializer& in)
     // Get system cycles and fractional clocks
     mySystemCycles = in.getInt();
     myFractionalClocks = double(in.getInt()) / 100000000.0;
-    
-    // clock info for Thumbulator
-    myARMCycles = (Int32)in.getInt();
+
+    // Clock info for Thumbulator
+    myARMCycles = in.getInt();
   }
   catch(...)
   {

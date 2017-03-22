@@ -149,6 +149,11 @@ class System : public Serializable
     void resetCycles();
 
     /**
+      Informs all attached devices that the console type has changed.
+    */
+    void consoleChanged(ConsoleTiming timing);
+
+    /**
       Answers whether the system is currently in device autodetect mode.
     */
     bool autodetectMode() const { return mySystemInAutodetect; }

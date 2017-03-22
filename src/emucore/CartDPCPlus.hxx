@@ -63,6 +63,15 @@ class CartridgeDPCPlus : public Cartridge
     void reset() override;
 
     /**
+      Notification method invoked by the system when the console type
+      has changed.  We need this to inform the Thumbulator that the
+      timing has changed.
+
+      @param timing  Enum representing the new console type
+    */
+    void consoleChanged(ConsoleTiming timing) override;
+
+    /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary
       to override this method for devices that remember cycle counts.
@@ -259,8 +268,8 @@ class CartridgeDPCPlus : public Cartridge
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
-  
-    // System cycle count when the last Thumbulator->Run() occurred
+
+    // System cycle count when the last Thumbulator::run() occurred
     Int32 myARMCycles;
 
     // Indicates which bank is currently active

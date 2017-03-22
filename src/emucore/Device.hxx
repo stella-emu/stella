@@ -20,6 +20,7 @@
 
 class System;
 
+#include "Console.hxx"
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
@@ -44,6 +45,15 @@ class Device : public Serializable
       method directly at all.
     */
     virtual void reset() = 0;
+
+    /**
+      Notification method invoked by the system when the console type
+      has changed.  It may be necessary to override this method for
+      devices that want to know about console changes.
+
+      @param timing  Enum representing the new console type
+    */
+    virtual void consoleChanged(ConsoleTiming timing) { }
 
     /**
       Notification method invoked by the system right before the
@@ -107,6 +117,7 @@ class Device : public Serializable
       @param address The address to modify
     */
     virtual uInt8 getAccessFlags(uInt16 address) const { return 0; }
+
     /**
       Change the given address type to use the given disassembly flags
 
