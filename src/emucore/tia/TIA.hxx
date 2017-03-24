@@ -462,6 +462,11 @@ class TIA : public Device
     LatchedInput myInput0;
     LatchedInput myInput1;
 
+    //////////////////////////////////////////////////////////////
+    // Audio values; only used by TIADebug
+    // FIXME - remove this when the new sound core is implemented
+    uInt8 myAUDV0, myAUDV1, myAUDC0, myAUDC1, myAUDF0, myAUDF1;
+
    private:
     TIA() = delete;
     TIA(const TIA&) = delete;

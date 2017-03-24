@@ -344,73 +344,55 @@ bool TIADebug::collision(CollisionBit id) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audC0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDC0, newVal);
 
   return myTIA.myAUDC0;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audC1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDC1, newVal);
 
   return myTIA.myAUDC1;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audV0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDV0, newVal);
 
   return myTIA.myAUDV0;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audV1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDV1, newVal);
 
   return myTIA.myAUDV1;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audF0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDF0, newVal);
 
   return myTIA.myAUDF0;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::audF1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(AUDF1, newVal);
 
   return myTIA.myAUDF1;
-#endif
-return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

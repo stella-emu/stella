@@ -138,15 +138,16 @@ void TIA::reset()
   myFrameManager.reset();
   toggleFixedColors(0);  // Turn off debug colours
 
+  // FIXME - rework this when we add the new sound core
+  myAUDV0 = myAUDV1 = myAUDF0 = myAUDF1 = myAUDC0 = myAUDC1 = 0;
+
   frameReset();  // Recalculate the size of the display
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::frameReset()
 {
-  // Clear frame buffers
   clearBuffers();
-
   myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
 }
 
@@ -215,7 +216,7 @@ bool TIA::save(Serializer& out) const
     if(!myInput1.save(out)) return false;
 
     // Save the sound sample stuff ...
-    mySound.save(out);
+    if(!mySound.save(out)) return false;
   }
   catch(...)
   {
@@ -392,14 +393,33 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
       break;
 
+    ////////////////////////////////////////////////////////////
+    // FIXME - rework this when we add the new sound core
     case AUDV0:
-    case AUDV1:
-    case AUDF0:
-    case AUDF1:
-    case AUDC0:
-    case AUDC1:
+      myAUDV0 = value & 0x0f;
       mySound.set(address, value, mySystem->cycles());
       break;
+    case AUDV1:
+      myAUDV1 = value & 0x0f;
+      mySound.set(address, value, mySystem->cycles());
+      break;
+    case AUDF0:
+      myAUDF0 = value & 0x1f;
+      mySound.set(address, value, mySystem->cycles());
+      break;
+    case AUDF1:
+      myAUDF1 = value & 0x1f;
+      mySound.set(address, value, mySystem->cycles());
+      break;
+    case AUDC0:
+      myAUDC0 = value & 0x0f;
+      mySound.set(address, value, mySystem->cycles());
+      break;
+    case AUDC1:
+      myAUDC1 = value & 0x0f;
+      mySound.set(address, value, mySystem->cycles());
+      break;
+    ////////////////////////////////////////////////////////////
 
     case HMOVE:
       myDelayQueue.push(HMOVE, value, Delay::hmove);
