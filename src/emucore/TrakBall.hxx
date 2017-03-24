@@ -15,15 +15,16 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CX_TRAKBALL_HXX
-#define CX_TRAKBALL_HXX
+#ifndef TRAKBALL_HXX
+#define TRAKBALL_HXX
 
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Event.hxx"
 
 /**
-  CX22/CX80 trakball controller.  This code was heavily borrowed from z26.
+  Emulates the standard trakball controller, sometimes known as the 'CX22'
+  controller. This code was heavily borrowed from z26.
 
   @author  Stephen Anthony & z26 team
 */

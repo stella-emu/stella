@@ -178,27 +178,27 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 10; ypos = vBorder;
   lwidth = font.getStringWidth("P0 Controller: ");
-  pwidth = font.getStringWidth("CX22 Trakball");
+  pwidth = font.getStringWidth("Paddles_IAxis");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P0 Controller:", kTextAlignLeft);
   ctrls.clear();
-  VarList::push_back(ctrls, "Joystick",       "JOYSTICK"     );
-  VarList::push_back(ctrls, "Paddles",        "PADDLES"      );
-  VarList::push_back(ctrls, "Paddles_IAxis",  "PADDLES_IAXIS");
-  VarList::push_back(ctrls, "Paddles_IDir",   "PADDLES_IDIR" );
-  VarList::push_back(ctrls, "Paddles_IAxDr",  "PADDLES_IAXDR");
-  VarList::push_back(ctrls, "BoosterGrip",    "BOOSTERGRIP"  );
-  VarList::push_back(ctrls, "Driving",        "DRIVING"      );
-  VarList::push_back(ctrls, "Keyboard",       "KEYBOARD"     );
-  VarList::push_back(ctrls, "AmigaMouse",     "AMIGAMOUSE"   );
-  VarList::push_back(ctrls, "AtariMouse",     "ATARIMOUSE"   );
-  VarList::push_back(ctrls, "CX22 Trakball",  "TRAKBALL"     );
-  VarList::push_back(ctrls, "AtariVox",       "ATARIVOX"     );
-  VarList::push_back(ctrls, "SaveKey",        "SAVEKEY"      );
-  VarList::push_back(ctrls, "Sega Genesis",   "GENESIS"      );
-  VarList::push_back(ctrls, "CompuMate",      "COMPUMATE"    );
-//  VarList::push_back(ctrls, "KidVid",         "KIDVID"      );
-  VarList::push_back(ctrls, "MindLink",       "MINDLINK"     );
+  VarList::push_back(ctrls, "Joystick",      "JOYSTICK"     );
+  VarList::push_back(ctrls, "Paddles",       "PADDLES"      );
+  VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
+  VarList::push_back(ctrls, "Paddles_IDir",  "PADDLES_IDIR" );
+  VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
+  VarList::push_back(ctrls, "BoosterGrip",   "BOOSTERGRIP"  );
+  VarList::push_back(ctrls, "Driving",       "DRIVING"      );
+  VarList::push_back(ctrls, "Keyboard",      "KEYBOARD"     );
+  VarList::push_back(ctrls, "AmigaMouse",    "AMIGAMOUSE"   );
+  VarList::push_back(ctrls, "AtariMouse",    "ATARIMOUSE"   );
+  VarList::push_back(ctrls, "Trakball",      "TRAKBALL"     );
+  VarList::push_back(ctrls, "AtariVox",      "ATARIVOX"     );
+  VarList::push_back(ctrls, "SaveKey",       "SAVEKEY"      );
+  VarList::push_back(ctrls, "Sega Genesis",  "GENESIS"      );
+  VarList::push_back(ctrls, "CompuMate",     "COMPUMATE"    );
+//  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
+  VarList::push_back(ctrls, "MindLink",      "MINDLINK"     );
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, ctrls, "", 0, 0);
   wid.push_back(myP0Controller);
@@ -216,7 +216,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myLeftPort);
 
   xpos = 10;  ypos += lineHeight + 5;
-  pwidth = font.getStringWidth("CX22 Trakball");
+  pwidth = font.getStringWidth("Paddles_IAxis");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P1 Controller:", kTextAlignLeft);
   myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,

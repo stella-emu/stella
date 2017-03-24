@@ -11171,8 +11171,8 @@
 
 "Cartridge.MD5" "8bebac614571135933116045204f0f00"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Missile Command (CX22 Trakball) (2002) (TJ) (PAL)"
-"Cartridge.Note" "Uses CX22 Trakball Controller"
+"Cartridge.Name" "Missile Command (Trakball) (2002) (TJ) (PAL)"
+"Cartridge.Note" "Uses the Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Left" "TRAKBALL"
 "Display.Phosphor" "YES"
@@ -11241,8 +11241,8 @@
 
 "Cartridge.MD5" "8ce9126066f2ddd5173e9f1f9ce1494e"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Missile Command (CX22 Trakball) (2002) (TJ)"
-"Cartridge.Note" "Uses CX22 Trakball Controller"
+"Cartridge.Name" "Missile Command (Trakball) (2002) (TJ)"
+"Cartridge.Note" "Uses the Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Left" "TRAKBALL"
 "Display.Phosphor" "YES"
