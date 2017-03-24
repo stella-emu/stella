@@ -179,7 +179,7 @@ void Missile::render(uInt8 hclock)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::tick(uInt8 hclock)
 {
-  if (myDecodes[myCounter]) {
+  if (myDecodes[myCounter] && !myResmp) {
     myIsRendering = true;
     myRenderCounter = Count::renderCounterOffset;
   } else if (myIsRendering) {
