@@ -26,6 +26,8 @@
 #include "Cart4K.hxx"
 #include "Cart4KSC.hxx"
 #include "CartAR.hxx"
+#include "CartBUS.hxx"
+#include "CartCDF.hxx"
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
 #include "CartCV.hxx"
@@ -198,6 +200,10 @@ unique_ptr<Cartridge> Cartridge::create(const BytePtr& img, uInt32 size,
     cartridge = make_ptr<Cartridge4KSC>(image, size, settings);
   else if(type == "AR")
     cartridge = make_ptr<CartridgeAR>(image, size, settings);
+  else if(type == "BUS")
+    cartridge = make_ptr<CartridgeBUS>(image, size, settings);
+  else if(type == "CDF")
+    cartridge = make_ptr<CartridgeCDF>(image, size, settings);
   else if(type == "CM")
     cartridge = make_ptr<CartridgeCM>(image, size, settings);
   else if(type == "CTY")
@@ -472,6 +478,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3E";
     else if(isProbably3F(image, size))
       type = "3F";
+    else if (isProbablyBUS(image, size))
+      type = "BUS";
+    else if (isProbablyCDF(image, size))
+      type = "CDF";
     else if(isProbablyDPCplus(image, size))
       type = "DPC+";
     else if(isProbablyCTY(image, size))
@@ -734,6 +744,8 @@ bool Cartridge::isProbablyDASH(const uInt8* image, uInt32 size)
 bool Cartridge::isProbablyDPCplus(const uInt8* image, uInt32 size)
 {
   // DPC+ ARM code has 2 occurrences of the string DPC+
+  // Note: all Harmony/Melody custom drivers also contain the value
+  // 0x10adab1e (LOADABLE) if needed for future improvement
   uInt8 signature[] = { 'D', 'P', 'C', '+' };
   return searchForBytes(image, size, signature, 4, 2);
 }
@@ -856,6 +868,26 @@ bool Cartridge::isProbablyBF(const uInt8* image, uInt32 size, const char*& type)
   }
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyBUS(const uInt8* image, uInt32 size)
+{
+  // BUS ARM code has 2 occurrences of the string BUS
+  // Note: all Harmony/Melody custom drivers also contain the value
+  // 0x10adab1e (LOADABLE) if needed for future improvement
+  uInt8 bus[] = { 'B', 'U', 'S'};
+  return searchForBytes(image, size, bus, 3, 2);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyCDF(const uInt8* image, uInt32 size)
+{
+  // CDF ARM code has 3 occurrences of the string DPC+
+  // Note: all Harmony/Melody custom drivers also contain the value
+  // 0x10adab1e (LOADABLE) if needed for future improvement
+  uInt8 signature[] = { 'C', 'D', 'F' };
+  return searchForBytes(image, size, signature, 3, 3);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -997,6 +1029,8 @@ Cartridge::BankswitchType Cartridge::ourBSList[ourNumBSTypes] = {
   { "AR",       "AR (Supercharger)"             },
   { "BF",       "BF (CPUWIZ 256K)"              },
   { "BFSC",     "BFSC (CPUWIZ 256K + ram)"      },
+  { "BUS",      "BUS (Bus Stuffing)"            },
+  { "CDF",      "CDF (Chris, Darrell, Fred)"    },  
   { "CM",       "CM (SpectraVideo CompuMate)"   },
   { "CTY",      "CTY (CDW - Chetiry)"           },
   { "CV",       "CV (Commavid extra ram)"       },

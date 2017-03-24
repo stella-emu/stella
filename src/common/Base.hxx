@@ -42,6 +42,8 @@ class Base
       F_16,      // base 16: 2, 4, 8 bytes (depending on value)
       F_16_1,    // base 16: 1 byte wide
       F_16_2,    // base 16: 2 bytes wide
+      F_16_2_2,  // base 16: fractional value shown as xx.xx
+      F_16_3_2,  // base 16: fractional value shown as xxx.xx
       F_16_4,    // base 16: 4 bytes wide
       F_16_8,    // base 16: 8 bytes wide
       F_10,      // base 10: 3 or 5 bytes (depending on value)

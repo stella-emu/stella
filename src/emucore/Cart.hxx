@@ -173,6 +173,13 @@ class Cartridge : public Device
     virtual void setRomName(const string& name) { }
 
     /**
+      Thumbulator only supports 16-bit ARM code.  Some Harmony/Melody drivers,
+      such as BUS and CDF, feature 32-bit ARM code subroutines.  This is used
+      to pass values back to the cartridge class to emulate those subroutines.
+    */
+    virtual uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) { return 0; }
+  
+    /**
       Get debugger widget responsible for accessing the inner workings
       of the cart.  This will need to be overridden and implemented by
       each specific cart type, since the bankswitching/inner workings
@@ -187,7 +194,7 @@ class Cartridge : public Device
       const char* type;
       const char* desc;
     };
-    enum { ourNumBSTypes = 48 };
+    enum { ourNumBSTypes = 50 };
     static BankswitchType ourBSList[ourNumBSTypes];
 
   protected:
@@ -303,6 +310,16 @@ class Cartridge : public Device
     */
     static bool isProbablyBF(const uInt8* image, uInt32 size, const char*& type);
 
+    /**
+      Returns true if the image is probably a BUS bankswitching cartridge
+    */
+    static bool isProbablyBUS(const uInt8* image, uInt32 size);
+  
+    /**
+      Returns true if the image is probably a CDF bankswitching cartridge
+    */
+    static bool isProbablyCDF(const uInt8* image, uInt32 size);
+  
     /**
       Returns true if the image is probably a CTY bankswitching cartridge
     */

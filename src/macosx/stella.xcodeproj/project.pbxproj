@@ -214,6 +214,14 @@
 		2D91751009BA90380026E9FF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DEB3D4C0629BD24007EBBD3 /* OpenGL.framework */; };
 		2D91751209BA90380026E9FF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D17D98E08BC398400E47F69 /* ApplicationServices.framework */; };
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
+		CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */; };
+		CFE3F60C1E84A9A200A8204E /* CartBUSWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */; };
+		CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */; };
+		CFE3F60E1E84A9A200A8204E /* CartCDFWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFE3F60A1E84A9A200A8204E /* CartCDFWidget.hxx */; };
+		CFE3F6131E84A9CE00A8204E /* CartBUS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F60F1E84A9CE00A8204E /* CartBUS.cxx */; };
+		CFE3F6141E84A9CE00A8204E /* CartBUS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFE3F6101E84A9CE00A8204E /* CartBUS.hxx */; };
+		CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6111E84A9CE00A8204E /* CartCDF.cxx */; };
+		CFE3F6161E84A9CE00A8204E /* CartCDF.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */; };
 		DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */; };
 		DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */; };
 		DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */; };
@@ -830,6 +838,14 @@
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerSystem.hxx; path = ../debugger/DebuggerSystem.hxx; sourceTree = SOURCE_ROOT; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Expression.hxx; path = ../debugger/Expression.hxx; sourceTree = SOURCE_ROOT; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
+		CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartBUSWidget.cxx; path = ../debugger/gui/CartBUSWidget.cxx; sourceTree = "<group>"; };
+		CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartBUSWidget.hxx; path = ../debugger/gui/CartBUSWidget.hxx; sourceTree = "<group>"; };
+		CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCDFWidget.cxx; path = ../debugger/gui/CartCDFWidget.cxx; sourceTree = "<group>"; };
+		CFE3F60A1E84A9A200A8204E /* CartCDFWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCDFWidget.hxx; path = ../debugger/gui/CartCDFWidget.hxx; sourceTree = "<group>"; };
+		CFE3F60F1E84A9CE00A8204E /* CartBUS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartBUS.cxx; path = ../emucore/CartBUS.cxx; sourceTree = "<group>"; };
+		CFE3F6101E84A9CE00A8204E /* CartBUS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartBUS.hxx; path = ../emucore/CartBUS.hxx; sourceTree = "<group>"; };
+		CFE3F6111E84A9CE00A8204E /* CartCDF.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCDF.cxx; path = ../emucore/CartCDF.cxx; sourceTree = "<group>"; };
+		CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCDF.hxx; path = ../emucore/CartCDF.hxx; sourceTree = "<group>"; };
 		DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JoystickDialog.cxx; path = ../gui/JoystickDialog.cxx; sourceTree = "<group>"; };
 		DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JoystickDialog.hxx; path = ../gui/JoystickDialog.hxx; sourceTree = "<group>"; };
 		DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StateManager.cxx; path = ../emucore/StateManager.cxx; sourceTree = SOURCE_ROOT; };
@@ -1335,6 +1351,10 @@
 				DCAACB07188D636F00A4D282 /* CartBFSCWidget.hxx */,
 				DCAACB08188D636F00A4D282 /* CartBFWidget.cxx */,
 				DCAACB09188D636F00A4D282 /* CartBFWidget.hxx */,
+				CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */,
+				CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */,
+				CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */,
+				CFE3F60A1E84A9A200A8204E /* CartCDFWidget.hxx */,
 				DC676A2B1729A0B000E4E73D /* CartCMWidget.cxx */,
 				DC676A2C1729A0B000E4E73D /* CartCMWidget.hxx */,
 				DC676A2D1729A0B000E4E73D /* CartCTYWidget.cxx */,
@@ -1545,6 +1565,10 @@
 				DCAACAEF188D631500A4D282 /* CartBF.hxx */,
 				DCAACAF0188D631500A4D282 /* CartBFSC.cxx */,
 				DCAACAF1188D631500A4D282 /* CartBFSC.hxx */,
+				CFE3F60F1E84A9CE00A8204E /* CartBUS.cxx */,
+				CFE3F6101E84A9CE00A8204E /* CartBUS.hxx */,
+				CFE3F6111E84A9CE00A8204E /* CartCDF.cxx */,
+				CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */,
 				DC8C1BA714B25DE7006440EE /* CartCM.cxx */,
 				DC8C1BA814B25DE7006440EE /* CartCM.hxx */,
 				DC6727081556F4860023653B /* CartCTY.cxx */,
@@ -2134,6 +2158,7 @@
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
 				DCC527D710B9DA19005E1287 /* System.hxx in Headers */,
+				CFE3F6161E84A9CE00A8204E /* CartCDF.hxx in Headers */,
 				DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */,
 				DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */,
 				DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */,
@@ -2144,6 +2169,7 @@
 				DCF3A6F41DFC75E3008A8AF3 /* LatchedInput.hxx in Headers */,
 				DC74E5C7198AF12700F37E36 /* CartDASHWidget.hxx in Headers */,
 				DCD6FC7711C281ED005DA767 /* pngpriv.h in Headers */,
+				CFE3F60C1E84A9A200A8204E /* CartBUSWidget.hxx in Headers */,
 				DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */,
 				DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */,
 				DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */,
@@ -2200,6 +2226,7 @@
 				DCAAE5F31715887B0080BB82 /* CartUAWidget.hxx in Headers */,
 				DC676A421729A0B000E4E73D /* Cart3EWidget.hxx in Headers */,
 				DC676A441729A0B000E4E73D /* Cart4A50Widget.hxx in Headers */,
+				CFE3F6141E84A9CE00A8204E /* CartBUS.hxx in Headers */,
 				DC676A461729A0B000E4E73D /* CartARWidget.hxx in Headers */,
 				DC676A481729A0B000E4E73D /* CartCMWidget.hxx in Headers */,
 				DC676A4A1729A0B000E4E73D /* CartCTYWidget.hxx in Headers */,
@@ -2241,6 +2268,7 @@
 				DCF3A6F91DFC75E3008A8AF3 /* PaddleReader.hxx in Headers */,
 				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
 				DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */,
+				CFE3F60E1E84A9A200A8204E /* CartCDFWidget.hxx in Headers */,
 				DCF3A6F01DFC75E3008A8AF3 /* DrawCounterDecodes.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2391,6 +2419,7 @@
 				2D9174B509BA90380026E9FF /* ListWidget.cxx in Sources */,
 				2D9174B609BA90380026E9FF /* Menu.cxx in Sources */,
 				DC5E473B19EC9A14000E45DF /* EventJoyHandler.cxx in Sources */,
+				CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */,
 				DC1B2EC71E50036100F62837 /* TrakBall.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
@@ -2404,6 +2433,7 @@
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
 				DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */,
+				CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */,
 				DC1B2EC51E50036100F62837 /* AtariMouse.cxx in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
 				DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */,
@@ -2448,6 +2478,7 @@
 				2D91750309BA90380026E9FF /* TogglePixelWidget.cxx in Sources */,
 				2D91750409BA90380026E9FF /* ToggleWidget.cxx in Sources */,
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,
+				CFE3F6131E84A9CE00A8204E /* CartBUS.cxx in Sources */,
 				DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */,
 				2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
@@ -2496,6 +2527,7 @@
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
 				DCB20EC71A0C506C0048F595 /* main.cxx in Sources */,
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
+				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
 				DCD6FC7011C281ED005DA767 /* png.c in Sources */,
