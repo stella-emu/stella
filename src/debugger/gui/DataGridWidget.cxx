@@ -690,7 +690,7 @@ void DataGridWidget::endEditMode()
         editString().insert(0, 1, '#');
         break;
       case Common::Base::F_DEFAULT:
-      default:
+      default:  // TODO - properly handle all other cases
         break;
     }
   }
