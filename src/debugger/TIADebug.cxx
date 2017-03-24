@@ -737,12 +737,13 @@ string TIADebug::colorSwatch(uInt8 c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// FIXME - how does this work; is this even needed ??
 string TIADebug::audFreq(uInt8 div)
 {
   string ret;
   char buf[10];
 
-  double hz = 30000.0;
+  double hz = 31400.0;
   if(div) hz /= div;
   std::snprintf(buf, 9, "%5.1f", hz);
   ret += buf;
@@ -774,7 +775,6 @@ string TIADebug::booleanWithLabel(string label, bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::toString()
 {
-#if 0 // FIXME
   ostringstream buf;
 
   buf << "00: ";
@@ -801,7 +801,7 @@ string TIADebug::toString()
       << booleanWithLabel("inpt3", myTIA.peek(0x0b) & 0x80) << " "
       << booleanWithLabel("inpt4", myTIA.peek(0x0c) & 0x80) << " "
       << booleanWithLabel("inpt5", myTIA.peek(0x0d) & 0x80) << " "
-      << booleanWithLabel("dump_gnd_0123", myTIA.myDumpEnabled)
+      << booleanWithLabel("dump_gnd_0123", myTIA.myPaddleReaders[0].vblankDumped())
       << endl
       << "COLUxx: "
       << "P0=$" << Common::Base::HEX2 << state.coluRegs[0] << "/"
@@ -827,19 +827,19 @@ string TIADebug::toString()
       << booleanWithLabel("refl", refP1()) << " "
       << booleanWithLabel("delay", vdelP1())
       << endl
-      << "M0: " << (myTIA.myENAM0 ? " ENABLED" : "disabled")
+      << "M0: " << (enaM0() ? " ENABLED" : "disabled")
       << " pos=#" << std::dec << state.pos[M0]
       << " HM=$" << Common::Base::HEX2 << state.hm[M0]
       << " size=" << std::dec << state.size[M0] << " "
       << booleanWithLabel("reset", resMP0())
       << endl
-      << "M1: " << (myTIA.myENAM1 ? " ENABLED" : "disabled")
+      << "M1: " << (enaM1() ? " ENABLED" : "disabled")
       << " pos=#" << std::dec << state.pos[M1]
       << " HM=$" << Common::Base::HEX2 << state.hm[M1]
       << " size=" << std::dec << state.size[M1] << " "
       << booleanWithLabel("reset", resMP0())
       << endl
-      << "BL: " << (myTIA.myENABL ? " ENABLED" : "disabled")
+      << "BL: " << (enaBL() ? " ENABLED" : "disabled")
       << " pos=#" << std::dec << state.pos[BL]
       << " HM=$" << Common::Base::HEX2 << state.hm[BL]
       << " size=" << std::dec << state.size[BL] << " "
@@ -887,6 +887,4 @@ string TIADebug::toString()
       ;
   // note: last line should not contain \n, caller will add.
   return buf.str();
-#endif
-return "TODO";
 }
