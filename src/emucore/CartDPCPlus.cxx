@@ -61,7 +61,9 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   myThumbEmulator = make_ptr<Thumbulator>
       (reinterpret_cast<uInt16*>(myProgramImage-0xC00),
        reinterpret_cast<uInt16*>(myDPCRAM),
-       settings.getBool("thumb.trapfatal"));
+       settings.getBool("thumb.trapfatal"),
+       Thumbulator::ConfigureFor::DPCplus,
+       this);
 #endif
   setInitialState();
 
@@ -196,9 +198,10 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       myParameterPointer = 0;
       break;
   #ifdef THUMB_SUPPORT
-    case 254:
-    case 255:
       // Call user written ARM code (most likely be C compiled for ARM)
+    case 254: // call with IRQ driven audio, no special handling needed at this
+              // time for Stella as ARM code "runs in zero 6507 cycles".
+    case 255: // call without IRQ driven audio
       try {
         Int32 cycles = mySystem->cycles() - myARMCycles;
         myARMCycles = mySystem->cycles();

@@ -28,6 +28,7 @@
 #define THUMBULATOR_HXX
 
 #include "bspf.hxx"
+#include "Cart.hxx"
 #include "Console.hxx"
 
 #define ROMADDMASK 0x7FFF
@@ -44,7 +45,16 @@
 class Thumbulator
 {
   public:
-    Thumbulator(const uInt16* rom, uInt16* ram, bool traponfatal);
+    // control cartridge specific features of the Thumbulator class,
+    // such as the start location for calling custom code
+    enum ConfigureFor {
+      BUS,      // cartridges of type BUS
+      CDF,      // cartridges of type CDF
+      DPCplus   // cartridges of type DPC+
+    };
+  
+    Thumbulator(const uInt16* rom, uInt16* ram, bool traponfatal,
+                Thumbulator::ConfigureFor configurefor, Cartridge* cartridge);
 
     /**
       Run the ARM code, and return when finished.  A runtime_error exception is
@@ -122,6 +132,10 @@ class Thumbulator
     ostringstream statusMsg;
 
     static bool trapOnFatal;
+  
+    ConfigureFor configuration;
+  
+    Cartridge* myCartridge;
 
   private:
     // Following constructors and assignment operators not supported

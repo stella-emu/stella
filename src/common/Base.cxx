@@ -74,6 +74,12 @@ string Base::toString(int value, Common::Base::Format outputBase)
     case Base::F_16_2:  // base 16: 2 bytes wide
       std::snprintf(vToS_buf, 3, myFmt[1], value);
       break;
+    case Base::F_16_2_2:
+      std::snprintf(vToS_buf, 6, "%02X.%02X", value >> 8, value & 0xff );
+      break;
+    case Base::F_16_3_2:
+      std::snprintf(vToS_buf, 7, "%03X.%02X", value >> 8, value & 0xff );
+      break;
     case Base::F_16_4:  // base 16: 4 bytes wide
       std::snprintf(vToS_buf, 5, myFmt[2], value);
       break;

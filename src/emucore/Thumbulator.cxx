@@ -54,11 +54,14 @@ using Common::Base;
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal)
+Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal,
+                         Thumbulator::ConfigureFor configurefor, Cartridge* cartridge)
   : rom(rom_ptr),
     ram(ram_ptr),
     T1TCR(0),
-    T1TC(0)
+    T1TC(0),
+    configuration(configurefor),
+    myCartridge(cartridge)
 {
   setConsoleTiming(ConsoleTiming::ntsc);
   trapFatalErrors(traponfatal);
@@ -227,8 +230,29 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
 {
   if((addr > 0x40001fff) && (addr < 0x50000000))
     fatalError("write16", addr, "abort - out of range");
-  else if((addr > 0x40000028) && (addr < 0x40000c00))
-    fatalError("write16", addr, "to bankswitch code area");
+  
+  switch(configuration)
+  {
+      // this protects 2K Harmony/Melody Drivers
+      // Initial section of driver is the bootstrap which copies the driver
+      // from ROM to RAM, so it can safely be used by the custom ARM code
+      // as additional RAM
+    case ConfigureFor::BUS:
+    case ConfigureFor::CDF:
+      if((addr > 0x40000028) && (addr < 0x40000800))
+        fatalError("write16", addr, "to bankswitch code area");
+      break;
+      
+      // this protects 3K Harmony/Melody Drivers
+      // Initial section of driver is the bootstrap which copies the driver
+      // from ROM to RAM, so it can safely be used by the custom ARM code
+      // as additional RAM
+    case ConfigureFor::DPCplus:
+      if((addr > 0x40000028) && (addr < 0x40000c00))
+        fatalError("write16", addr, "to bankswitch code area");
+      break;
+  }
+
   if(addr & 1)
     fatalError("write16", addr, "abort - misaligned");
 
@@ -1042,14 +1066,95 @@ int Thumbulator::execute()
     //fprintf(stderr,"bx r%u 0x%X 0x%X\n",rm,rc,pc);
     if(rc & 1)
     {
+      // branch to odd address denotes 16 bit ARM code
       rc &= ~1;
       write_register(15, rc);
       return 0;
     }
     else
     {
-      //fprintf(stderr,"cannot branch to arm 0x%08X 0x%04X\n",pc,inst);
-      // fxq: or maybe this one??
+      // branch to even address denotes 32 bit ARM code, which the Thumbulator
+      // class does not support. So capture relavent information and hand it
+      // off to the Cartridge class for it to handle.
+      
+      bool handled = false;
+      
+      switch(configuration)
+      {
+        case ConfigureFor::BUS:
+        case ConfigureFor::CDF:
+          // this subroutine interface is used in BUS and CDF drivers,
+          // and starts at address 0x000006e0 in both.
+          // _SetNote:
+          //   ldr     r4, =NoteStore
+          //   bx      r4   // bx instruction at 0x000006e2
+          // _ResetWave:
+          //   ldr     r4, =ResetWaveStore
+          //   bx      r4   // bx instruction at 0x000006e6
+          // _GetWavePtr:
+          //   ldr     r4, =WavePtrFetch
+          //   bx      r4   // bx instruction at 0x000006ea
+          // _SetWaveSize:
+          //   ldr     r4, =WaveSizeStore
+          //   bx      r4   // bx instruction at 0x000006ee
+          
+          // address to test for is + 4 due to pipelining
+#define BUS_SetNote     (0x000006e2 + 4)
+#define BUS_ResetWave   (0x000006e6 + 4)
+#define BUS_GetWavePtr  (0x000006ea + 4)
+#define BUS_SetWaveSize (0x000006ee + 4)
+          
+          if      (pc == BUS_SetNote)
+          {
+            myCartridge->thumbCallback(0, read_register(2), read_register(3));
+            handled = true;
+          }
+          else if (pc == BUS_ResetWave)
+          {
+            myCartridge->thumbCallback(1, read_register(2), 0);
+            handled = true;
+          }
+          else if (pc == BUS_GetWavePtr)
+          {
+            write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
+            handled = true;
+          }
+          else if (pc == BUS_SetWaveSize)
+          {
+            myCartridge->thumbCallback(3, read_register(2), read_register(3));
+            handled = true;
+          }
+          else if (pc == 0x0000083a)
+          {
+            // exiting Custom ARM code, returning to BUS Driver control
+          }
+          else
+          {
+            // just for testing
+            uInt32 r0 = read_register(0);
+            uInt32 r1 = read_register(1);
+            uInt32 r2 = read_register(2);
+            uInt32 r3 = read_register(3);
+            uInt32 r4 = read_register(4);
+            myCartridge->thumbCallback(255,0,0);
+          }
+          
+          break;
+          
+        case ConfigureFor::DPCplus:
+          // no 32-bit subroutines in DPC+
+          break;
+      }
+      
+      if (handled)
+      {
+        rc = read_register(14); // lr
+        rc += 2;
+        rc &= ~1;
+        write_register(15, rc);
+        return 0;
+      }
+      
       return 1;
     }
   }
@@ -2098,9 +2203,23 @@ int Thumbulator::reset()
 {
   std::fill(reg_norm, reg_norm+12, 0);
   reg_norm[13] = 0x40001FB4;
-  reg_norm[14] = 0x00000C00;
-  reg_norm[15] = 0x00000C0B;
 
+  switch(configuration)
+  {
+      // future 2K Harmony/Melody drivers will most likely use these settings
+    case ConfigureFor::BUS:
+    case ConfigureFor::CDF:
+      reg_norm[14] = 0x00000800; // Link Register
+      reg_norm[15] = 0x0000080B; // Program Counter
+      break;
+      
+      // future 3K Harmony/Melody drivers will most likely use these settings
+    case ConfigureFor::DPCplus:
+      reg_norm[14] = 0x00000C00; // Link Register
+      reg_norm[15] = 0x00000C0B; // Program Counter
+      break;
+  }
+  
   cpsr = mamcr = 0;
   handler_mode = false;
 
