@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2015 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id: CartBUS.hxx 3131 2015-01-01 03:49:32Z stephena $
 //============================================================================
 
 #ifndef CARTRIDGE_BUS_HXX
@@ -22,7 +20,7 @@
 
 class System;
 #ifdef THUMB_SUPPORT
-class Thumbulator;
+  class Thumbulator;
 #endif
 #ifdef DEBUGGER_SUPPORT
   #include "CartBUSWidget.hxx"
@@ -32,22 +30,22 @@ class Thumbulator;
 #include "Cart.hxx"
 
 /**
-  Cartridge class used for BUS.  
- 
+  Cartridge class used for BUS.
+
   THIS NEEDS TO BE UPDATED
- 
- 
+
+
   There are seven 4K program banks, a 4K Display Data RAM,
   1K C Varaible and Stack, and the BUS chip.
   BUS chip access is mapped to $1000 - $103F.
 
-  @author  Darrell Spice Jr, Chris Walton, Fred Quimby, Stephen Anthony, Bradford W. Mott
-  @version $Id: CartBUS.hxx 3131 2015-01-01 03:49:32Z stephena $
+  Authors:  Darrell Spice Jr, Chris Walton, Fred Quimby,
+            Stephen Anthony, Bradford W. Mott
 */
 class CartridgeBUS : public Cartridge
 {
   friend class CartridgeBUSWidget;
-	friend class CartridgeRamBUSWidget;
+  friend class CartridgeRamBUSWidget;
 
   public:
     /**
@@ -58,11 +56,7 @@ class CartridgeBUS : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeBUS(const uInt8* image, uInt32 size, const Settings& settings);
- 
-    /**
-      Destructor
-    */
-    virtual ~CartridgeBUS();
+    virtual ~CartridgeBUS() = default;
 
   public:
     /**
@@ -74,11 +68,11 @@ class CartridgeBUS : public Cartridge
       Notification method invoked by the system when the console type
       has changed.  We need this to inform the Thumbulator that the
       timing has changed.
-   
+
       @param timing  Enum representing the new console type
     */
     void consoleChanged(ConsoleTiming timing) override;
-  
+
     /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary
@@ -150,14 +144,14 @@ class CartridgeBUS : public Cartridge
       @return The name of the object
     */
     string name() const override { return "CartridgeBUS"; }
-    
+
     uInt8 busOverdrive(uInt16 address);
-  
+
   /**
    Used for Thumbulator to pass values back to the cartridge
    */
   uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) override;
-  
+
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -189,49 +183,49 @@ class CartridgeBUS : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    /** 
+    /**
       Sets the initial state of the DPC pointers and RAM
     */
     void setInitialState();
 
-    /** 
+    /**
       Updates any data fetchers in music mode based on the number of
       CPU cycles which have passed since the last update.
     */
     void updateMusicModeDataFetchers();
 
-    /** 
+    /**
       Call Special Functions
     */
     void callFunction(uInt8 value);
-  
-    uInt32 getDatastreamPointer(uInt8 index);
+
+    uInt32 getDatastreamPointer(uInt8 index) const;
     void setDatastreamPointer(uInt8 index, uInt32 value);
-  
-    uInt32 getDatastreamIncrement(uInt8 index);
+
+    uInt32 getDatastreamIncrement(uInt8 index) const;
     void setDatastreamIncrement(uInt8 index, uInt32 value);
-  
-    uInt32 getAddressMap(uInt8 index);
+
+    uInt32 getAddressMap(uInt8 index) const;
     void setAddressMap(uInt8 index, uInt32 value);
-  
-    bool getBusStuffFlag(void);
+
+    bool getBusStuffFlag(void) const;
     void setBusStuffFlag(bool value);
 
     uInt8 readFromDatastream(uInt8 index);
-  
-    uInt32 getWaveform(uInt8 index);
-    uInt32 getWaveformSize(uInt8 index);
-  
+
+    uInt32 getWaveform(uInt8 index) const;
+    uInt32 getWaveformSize(uInt8 index) const;
+
   private:
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
 
     // Pointer to the 28K program ROM image of the cartridge
     uInt8* myProgramImage;
-   
+
     // Pointer to the 4K display ROM image of the cartridge
     uInt8* myDisplayImage;
-  
+
     // Pointer to the 2K BUS driver image in RAM
     uInt8* myBusDriverImage;
 
@@ -248,7 +242,7 @@ class CartridgeBUS : public Cartridge
 
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
-  
+
     // Address to override the bus for
     uInt16 myBusOverdriveAddress;
 
@@ -257,25 +251,25 @@ class CartridgeBUS : public Cartridge
 
     // System cycle count when the last update to music data fetchers occurred
     Int32 mySystemCycles;
-  
+
     uInt8 mySetAddress;
-  
+
     // The music mode counters
     uInt32 myMusicCounters[3];
-  
+
     // The music frequency
     uInt32 myMusicFrequencies[3];
-  
+
     // The music waveform sizes
     uInt8 myMusicWaveformSize[3];
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
-  
+
     // Flags that Bus Stuffing is active
     bool myBusStuff;
-  
-private:
+
+  private:
     // Following constructors and assignment operators not supported
     CartridgeBUS() = delete;
     CartridgeBUS(const CartridgeBUS&) = delete;

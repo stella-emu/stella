@@ -1030,7 +1030,7 @@ Cartridge::BankswitchType Cartridge::ourBSList[ourNumBSTypes] = {
   { "BF",       "BF (CPUWIZ 256K)"              },
   { "BFSC",     "BFSC (CPUWIZ 256K + ram)"      },
   { "BUS",      "BUS (Bus Stuffing)"            },
-  { "CDF",      "CDF (Chris, Darrell, Fred)"    },  
+  { "CDF",      "CDF (Chris, Darrell, Fred)"    },
   { "CM",       "CM (SpectraVideo CompuMate)"   },
   { "CTY",      "CTY (CDW - Chetiry)"           },
   { "CV",       "CV (Commavid extra ram)"       },

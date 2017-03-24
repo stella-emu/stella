@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2015 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id: CartCDFWidget.cxx 3131 2015-01-01 03:49:32Z stephena $
 //============================================================================
 
 #include "CartCDF.hxx"
@@ -24,13 +22,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDFWidget::CartridgeCDFWidget(
-                                       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-                                       int x, int y, int w, int h, CartridgeCDF& cart)
-: CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-myCart(cart)
+    GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+    int x, int y, int w, int h, CartridgeCDF& cart)
+  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+    myCart(cart)
 {
   uInt16 size = 8 * 4096;
-  
+
   ostringstream info;
   info << "CDF Stuffing cartridge\n"
   << "32K ROM, seven 4K banks are accessible to 2600\n"
@@ -38,7 +36,7 @@ myCart(cart)
   << "CDF registers accessible @ $F000 - $F03F\n"
   << "Banks accessible at hotspots $FF5 to $FFB\n"
   << "Startup bank = " << cart.myStartBank << "\n";
-  
+
 #if 0
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < 7; ++i, offset += 0x1000)
@@ -49,11 +47,11 @@ myCart(cart)
     << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 #endif
-  
+
   int xpos = 10,
   ypos = addBaseInformation(size, "AtariAge", info.str()) +
   myLineHeight;
-  
+
   VariantList items;
   VarList::push_back(items, "0 ($FF5)");
   VarList::push_back(items, "1 ($FF6)");
@@ -68,68 +66,68 @@ myCart(cart)
                   _font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  
+
   int lwidth = _font.getStringWidth("Datastream Increments: "); // get width of the widest label
-  
+
   // Datastream Pointers
   xpos = 0;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Pointers: ", kTextAlignLeft);
   xpos += lwidth;
-  
+
   myDatastreamPointers = new DataGridWidget(boss, _nfont, 0, ypos+myLineHeight-2, 4, 8, 6, 32, Common::Base::F_16_3_2);
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
-  
+
   // Datastream Increments
   xpos = 0 + myDatastreamPointers->getWidth();
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Increments: ", kTextAlignLeft);
-  
+
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2, 4, 8, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
-  
+
   // Music counters
   xpos = 10;  ypos += myLineHeight*10 + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Music Counters: ", kTextAlignLeft);
   xpos += lwidth;
-  
+
   myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
   myMusicCounters->setTarget(this);
   myMusicCounters->setEditable(false);
-  
+
   // Music frequencies
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Music Frequencies: ", kTextAlignLeft);
   xpos += lwidth;
-  
+
   myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
   myMusicFrequencies->setTarget(this);
   myMusicFrequencies->setEditable(false);
-  
+
   // Music waveforms
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Music Waveforms: ", kTextAlignLeft);
   xpos += lwidth;
-  
+
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
-  
+
   // Music waveform sizes
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Music Waveform Sizes: ", kTextAlignLeft);
   xpos += lwidth;
-  
+
   myMusicWaveformSizes = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);
   myMusicWaveformSizes->setTarget(this);
   myMusicWaveformSizes->setEditable(false);
-  
+
   // done differently than in DPC+, need to rethink debugger support
 //  // Fast fetch and immediate mode LDA flags
 //  xpos = 10;  ypos += myLineHeight + 4;
@@ -155,7 +153,7 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.mwaves.clear();
   myOldState.mwavesizes.clear();
   myOldState.internalram.clear();
-  
+
   for(uInt32 i = 0; i < 32; i++)
   {
     // Pointers are stored as:
@@ -167,23 +165,23 @@ void CartridgeCDFWidget::saveOldState()
     // P = Pointer
     // I = Increment
     // F = Fractional
-    
+
     myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>12);
     myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
   }
-  
+
   for(uInt32 i = 0; i < 3; ++i)
   {
     myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
   }
-  
+
   for(uInt32 i = 0; i < 3; ++i)
   {
     myOldState.mfreqs.push_back(myCart.myMusicFrequencies[i]);
     myOldState.mwaves.push_back(myCart.getWaveform(i) >> 5);
     myOldState.mwavesizes.push_back(myCart.getWaveformSize((i)));
   }
-  
+
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myCDFRAM[i]);
 }
@@ -192,12 +190,12 @@ void CartridgeCDFWidget::saveOldState()
 void CartridgeCDFWidget::loadConfig()
 {
   myBank->setSelectedIndex(myCart.myCurrentBank);
-  
+
   // Get registers, using change tracking
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 32; ++i)
   {
@@ -210,58 +208,58 @@ void CartridgeCDFWidget::loadConfig()
     // P = Pointer
     // I = Increment
     // F = Fractional
-    
-    uInt32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+
+    Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
   myDatastreamPointers->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 32; ++i)
   {
-    uInt32 incrementvalue = myCart.getDatastreamIncrement(i);
+    Int32 incrementvalue = myCart.getDatastreamIncrement(i);
     alist.push_back(0);  vlist.push_back(incrementvalue);
     changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
   }
   myDatastreamIncrements->setList(alist, vlist, changed);
-    
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
-    changed.push_back(myCart.myMusicCounters[i] != (uInt32)myOldState.mcounters[i]);
+    changed.push_back(myCart.myMusicCounters[i] != uInt32(myOldState.mcounters[i]));
   }
   myMusicCounters->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
-    changed.push_back(myCart.myMusicFrequencies[i] != (uInt32)myOldState.mfreqs[i]);
+    changed.push_back(myCart.myMusicFrequencies[i] != uInt32(myOldState.mfreqs[i]));
   }
   myMusicFrequencies->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5);
-    changed.push_back((myCart.getWaveform(i) >> 5) != myOldState.mwaves[i]);
+    changed.push_back((myCart.getWaveform(i) >> 5) != uInt32(myOldState.mwaves[i]));
   }
   myMusicWaveforms->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveformSize(i));
-    changed.push_back((myCart.getWaveformSize(i)) != myOldState.mwavesizes[i]);
+    changed.push_back((myCart.getWaveformSize(i)) != uInt32(myOldState.mwavesizes[i]));
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
-  
+
 // done differently than in DPC+, need to rethink debugger support
 //  myFastFetch->setState(myCart.myFastFetch);
 //  myIMLDA->setState(myCart.myLDAimmediate);
-  
+
   CartDebugWidget::loadConfig();
 }
 
@@ -282,13 +280,13 @@ void CartridgeCDFWidget::handleCommand(CommandSender* sender,
 string CartridgeCDFWidget::bankState()
 {
   ostringstream& buf = buffer();
-  
+
   static const char* spot[] = {
     "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
   << ", hotspot = " << spot[myCart.myCurrentBank];
-  
+
   return buf.str();
 }
 
@@ -315,7 +313,7 @@ string CartridgeCDFWidget::internalRamDescription()
   << "                via CDF's Data Stream registers\n"
   << "$1800 - $1FFF - 2K C variable storage and stack\n"
   << "                not accessible to 6507";
-  
+
   return desc.str();
 }
 

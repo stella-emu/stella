@@ -13,6 +13,8 @@ MODULE_OBJS := \
 	src/emucore/Cart4K.o \
 	src/emucore/Cart4KSC.o \
 	src/emucore/CartAR.o \
+	src/emucore/CartBUS.o \
+	src/emucore/CartCDF.o \
 	src/emucore/CartCM.o \
 	src/emucore/CartCTY.o \
 	src/emucore/CartCV.o \

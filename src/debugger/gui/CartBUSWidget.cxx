@@ -1,20 +1,18 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2015 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id: CartBUSWidget.cxx 3131 2015-01-01 03:49:32Z stephena $
 //============================================================================
 
 #include "CartBUS.hxx"
@@ -76,7 +74,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Pointers: ", kTextAlignLeft);
   xpos += lwidth;
-  
+
   myDatastreamPointers = new DataGridWidget(boss, _nfont, 0, ypos+myLineHeight-2, 4, 4, 6, 32, Common::Base::F_16_3_2);
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
@@ -85,20 +83,20 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   xpos = 0 + myDatastreamPointers->getWidth();
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Increments: ", kTextAlignLeft);
-  
+
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2, 4, 4, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
-  
+
   // Datastream Maps
   xpos = 0;  ypos += myLineHeight*5 + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Address Maps: ", kTextAlignLeft);
-  
+
   myAddressMaps = new DataGridWidget(boss, _nfont, 0, ypos+myLineHeight-2, 8, 5, 8, 32, Common::Base::F_16_8);
   myAddressMaps->setTarget(this);
   myAddressMaps->setEditable(false);
-  
+
   // Music counters
   xpos = 10;  ypos += myLineHeight*6 + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
@@ -138,8 +136,8 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicWaveformSizes = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);
   myMusicWaveformSizes->setTarget(this);
   myMusicWaveformSizes->setEditable(false);
-  
-  
+
+
   // BUS stuff and ZP STY flags
   xpos = 10;  ypos += myLineHeight + 4;
   myBusOverdrive = new CheckboxWidget(boss, _font, xpos, ypos, "BUS Overdrive enabled");
@@ -149,7 +147,6 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myZPSTY = new CheckboxWidget(boss, _font, xpos, ypos, "Zero Page STY");
   myZPSTY->setTarget(this);
   myZPSTY->setEditable(false);
-  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,7 +174,7 @@ void CartridgeBUSWidget::saveOldState()
     // P = Pointer
     // I = Increment
     // F = Fractional
-    
+
     myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>12);
     myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
   }
@@ -186,7 +183,7 @@ void CartridgeBUSWidget::saveOldState()
   {
     myOldState.addressmaps.push_back(myCart.getAddressMap(i));
   }
-  
+
   for(uInt32 i = 0; i < 3; ++i)
   {
     myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
@@ -198,7 +195,7 @@ void CartridgeBUSWidget::saveOldState()
     myOldState.mwaves.push_back(myCart.getWaveform(i) >> 5);
     myOldState.mwavesizes.push_back(myCart.getWaveformSize((i)));
   }
-  
+
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myBUSRAM[i]);
 }
@@ -225,8 +222,8 @@ void CartridgeBUSWidget::loadConfig()
     // P = Pointer
     // I = Increment
     // F = Fractional
-    
-    uInt32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+
+    Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
@@ -235,21 +232,21 @@ void CartridgeBUSWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 16; ++i)
   {
-    uInt32 incrementvalue = myCart.getDatastreamIncrement(i);
+    Int32 incrementvalue = myCart.getDatastreamIncrement(i);
     alist.push_back(0);  vlist.push_back(incrementvalue);
     changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
   }
   myDatastreamIncrements->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 40; ++i)
   {
-    uInt32 mapvalue = myCart.getAddressMap(i);
+    Int32 mapvalue = myCart.getAddressMap(i);
     alist.push_back(0);  vlist.push_back(mapvalue);
     changed.push_back(mapvalue != myOldState.addressmaps[i]);
   }
   myAddressMaps->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)
   {
@@ -270,7 +267,7 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5);
-    changed.push_back((myCart.getWaveform(i) >> 5) != myOldState.mwaves[i]);
+    changed.push_back((myCart.getWaveform(i) >> 5) != uInt32(myOldState.mwaves[i]));
   }
   myMusicWaveforms->setList(alist, vlist, changed);
 
@@ -278,10 +275,10 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveformSize(i));
-    changed.push_back((myCart.getWaveformSize(i)) != myOldState.mwavesizes[i]);
+    changed.push_back((myCart.getWaveformSize(i)) != uInt32(myOldState.mwavesizes[i]));
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
-  
+
   myBusOverdrive->setState(myCart.getBusStuffFlag());
   myZPSTY->setState(myCart.mySTYZeroPage);
 
@@ -290,7 +287,7 @@ void CartridgeBUSWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUSWidget::handleCommand(CommandSender* sender,
-                                           int cmd, int data, int id)
+                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)
   {
@@ -316,7 +313,7 @@ string CartridgeBUSWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeBUSWidget::internalRamSize() 
+uInt32 CartridgeBUSWidget::internalRamSize()
 {
   return 8*1024;
 }
@@ -328,7 +325,7 @@ uInt32 CartridgeBUSWidget::internalRamRPort(int start)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeBUSWidget::internalRamDescription() 
+string CartridgeBUSWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "$0000 - $07FF - BUS driver\n"
@@ -338,7 +335,7 @@ string CartridgeBUSWidget::internalRamDescription()
        << "                via BUS's Data Stream registers\n"
        << "$1800 - $1FFF - 2K C variable storage and stack\n"
        << "                not accessible to 6507";
-  
+
   return desc.str();
 }
 

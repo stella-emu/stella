@@ -178,7 +178,7 @@ class Cartridge : public Device
       to pass values back to the cartridge class to emulate those subroutines.
     */
     virtual uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) { return 0; }
-  
+
     /**
       Get debugger widget responsible for accessing the inner workings
       of the cart.  This will need to be overridden and implemented by
@@ -314,12 +314,12 @@ class Cartridge : public Device
       Returns true if the image is probably a BUS bankswitching cartridge
     */
     static bool isProbablyBUS(const uInt8* image, uInt32 size);
-  
+
     /**
       Returns true if the image is probably a CDF bankswitching cartridge
     */
     static bool isProbablyCDF(const uInt8* image, uInt32 size);
-  
+
     /**
       Returns true if the image is probably a CTY bankswitching cartridge
     */

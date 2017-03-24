@@ -111,6 +111,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
         return (c >= '0' && c <= '9') || c == ' ';
 
       case Common::Base::F_DEFAULT:
+      default:
         return false;
     }
     return false;

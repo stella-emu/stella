@@ -85,6 +85,7 @@ string Thumbulator::run()
   return statusMsg.str();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::setConsoleTiming(ConsoleTiming timing)
 {
   // this sets how many ticks of the Harmony/Melody clock
@@ -92,7 +93,7 @@ void Thumbulator::setConsoleTiming(ConsoleTiming timing)
   constexpr double NTSC   = 70.0 / 1.193182;  // NTSC  6507 clock rate
   constexpr double PAL    = 70.0 / 1.182298;  // PAL   6507 clock rate
   constexpr double SECAM  = 70.0 / 1.187500;  // SECAM 6507 clock rate
-  
+
   switch (timing)
   {
     case ConsoleTiming::ntsc:   timing_factor = NTSC;   break;
@@ -104,22 +105,15 @@ void Thumbulator::setConsoleTiming(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::updateTimer(uInt32 cycles)
 {
-  double increment;
-  
-  increment = cycles * timing_factor;
-  
   if (T1TCR & 1) // bit 0 controls timer on/off
-  {
-    
-    T1TC += uInt32(increment);
-  }
+    T1TC += uInt32(cycles * timing_factor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Thumbulator::run(uInt32 cycles)
 {
   updateTimer(cycles);
-  return this->run();
+  return run();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,23 +224,23 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
 {
   if((addr > 0x40001fff) && (addr < 0x50000000))
     fatalError("write16", addr, "abort - out of range");
-  
+
   switch(configuration)
   {
-      // this protects 2K Harmony/Melody Drivers
-      // Initial section of driver is the bootstrap which copies the driver
-      // from ROM to RAM, so it can safely be used by the custom ARM code
-      // as additional RAM
+    // this protects 2K Harmony/Melody Drivers
+    // Initial section of driver is the bootstrap which copies the driver
+    // from ROM to RAM, so it can safely be used by the custom ARM code
+    // as additional RAM
     case ConfigureFor::BUS:
     case ConfigureFor::CDF:
       if((addr > 0x40000028) && (addr < 0x40000800))
         fatalError("write16", addr, "to bankswitch code area");
       break;
-      
-      // this protects 3K Harmony/Melody Drivers
-      // Initial section of driver is the bootstrap which copies the driver
-      // from ROM to RAM, so it can safely be used by the custom ARM code
-      // as additional RAM
+
+    // this protects 3K Harmony/Melody Drivers
+    // Initial section of driver is the bootstrap which copies the driver
+    // from ROM to RAM, so it can safely be used by the custom ARM code
+    // as additional RAM
     case ConfigureFor::DPCplus:
       if((addr > 0x40000028) && (addr < 0x40000c00))
         fatalError("write16", addr, "to bankswitch code area");
@@ -299,11 +293,11 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
         case 0xE0000000:
           DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]" << endl);
           break;
-          
+
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
           T1TCR = data;
           break;
-          
+
         case 0xE0008008:  // T1TC - Timer 1 Counter
           T1TC = data;
           break;
@@ -423,11 +417,11 @@ uInt32 Thumbulator::read32(uInt32 addr)
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
           data = T1TCR;
           return data;
-          
+
         case 0xE0008008:  // T1TC - Timer 1 Counter
           data = T1TC;
           return data;
-          
+
         case 0xE000E010:
           data = systick_ctrl;
           systick_ctrl &= (~0x00010000);
@@ -1076,9 +1070,9 @@ int Thumbulator::execute()
       // branch to even address denotes 32 bit ARM code, which the Thumbulator
       // class does not support. So capture relavent information and hand it
       // off to the Cartridge class for it to handle.
-      
+
       bool handled = false;
-      
+
       switch(configuration)
       {
         case ConfigureFor::BUS:
@@ -1097,13 +1091,14 @@ int Thumbulator::execute()
           // _SetWaveSize:
           //   ldr     r4, =WaveSizeStore
           //   bx      r4   // bx instruction at 0x000006ee
-          
+
           // address to test for is + 4 due to pipelining
-#define BUS_SetNote     (0x000006e2 + 4)
-#define BUS_ResetWave   (0x000006e6 + 4)
-#define BUS_GetWavePtr  (0x000006ea + 4)
-#define BUS_SetWaveSize (0x000006ee + 4)
-          
+
+        #define BUS_SetNote     (0x000006e2 + 4)
+        #define BUS_ResetWave   (0x000006e6 + 4)
+        #define BUS_GetWavePtr  (0x000006ea + 4)
+        #define BUS_SetWaveSize (0x000006ee + 4)
+
           if      (pc == BUS_SetNote)
           {
             myCartridge->thumbCallback(0, read_register(2), read_register(3));
@@ -1130,22 +1125,23 @@ int Thumbulator::execute()
           }
           else
           {
-            // just for testing
+          #if 0  // uncomment this for testing
             uInt32 r0 = read_register(0);
             uInt32 r1 = read_register(1);
             uInt32 r2 = read_register(2);
             uInt32 r3 = read_register(3);
             uInt32 r4 = read_register(4);
-            myCartridge->thumbCallback(255,0,0);
+          #endif
+            myCartridge->thumbCallback(255, 0, 0);
           }
-          
+
           break;
-          
+
         case ConfigureFor::DPCplus:
           // no 32-bit subroutines in DPC+
           break;
       }
-      
+
       if (handled)
       {
         rc = read_register(14); // lr
@@ -1154,7 +1150,7 @@ int Thumbulator::execute()
         write_register(15, rc);
         return 0;
       }
-      
+
       return 1;
     }
   }
@@ -2206,20 +2202,20 @@ int Thumbulator::reset()
 
   switch(configuration)
   {
-      // future 2K Harmony/Melody drivers will most likely use these settings
+    // future 2K Harmony/Melody drivers will most likely use these settings
     case ConfigureFor::BUS:
     case ConfigureFor::CDF:
       reg_norm[14] = 0x00000800; // Link Register
       reg_norm[15] = 0x0000080B; // Program Counter
       break;
-      
-      // future 3K Harmony/Melody drivers will most likely use these settings
+
+    // future 3K Harmony/Melody drivers will most likely use these settings
     case ConfigureFor::DPCplus:
       reg_norm[14] = 0x00000C00; // Link Register
       reg_norm[15] = 0x00000C0B; // Program Counter
       break;
   }
-  
+
   cpsr = mamcr = 0;
   handler_mode = false;
 

@@ -52,7 +52,7 @@ class Thumbulator
       CDF,      // cartridges of type CDF
       DPCplus   // cartridges of type DPC+
     };
-  
+
     Thumbulator(const uInt16* rom, uInt16* ram, bool traponfatal,
                 Thumbulator::ConfigureFor configurefor, Cartridge* cartridge);
 
@@ -80,8 +80,13 @@ class Thumbulator
       @param enable  Enable (the default) or disable exceptions on fatal errors
     */
     static void trapFatalErrors(bool enable) { trapOnFatal = enable; }
-  
-  void setConsoleTiming(ConsoleTiming timing);
+
+    /**
+      Inform the Thumbulator class about the console currently in use,
+      which is used to accurately determine how many 6507 cycles have
+      passed while ARM code is being executed.
+    */
+    void setConsoleTiming(ConsoleTiming timing);
 
   private:
     uInt32 read_register(uInt32 reg);
@@ -121,7 +126,7 @@ class Thumbulator
     bool handler_mode;
     uInt32 systick_ctrl, systick_reload, systick_count, systick_calibrate;
     uInt64 instructions, fetches, reads, writes, systick_ints;
-  
+
     // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.
     // Register names from documentation:
     // http://www.nxp.com/documents/user_manual/UM10161.pdf
@@ -132,9 +137,9 @@ class Thumbulator
     ostringstream statusMsg;
 
     static bool trapOnFatal;
-  
+
     ConfigureFor configuration;
-  
+
     Cartridge* myCartridge;
 
   private:

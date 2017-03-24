@@ -8,13 +8,11 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2015 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-// $Id: CartBUS.cxx 3131 2015-01-01 03:49:32Z stephena $
 //============================================================================
 
 #include <cstring>
@@ -45,14 +43,14 @@ CartridgeBUS::CartridgeBUS(const uInt8* image, uInt32 size,
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, std::min(32768u, size));
-  
+
   // even though the ROM is 32K, only 28K is accessible to the 6507
   createCodeAccessBase(4096 * 7);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K BUS Driver and 2K C Code
   myProgramImage = myImage + 4096;
-  
+
   // Pointer to BUS driver in RAM
   myBusDriverImage = myBUSRAM;
 
@@ -61,24 +59,16 @@ CartridgeBUS::CartridgeBUS(const uInt8* image, uInt32 size,
 
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
-  myThumbEmulator = make_ptr<Thumbulator>
-    ((uInt16*)myImage, (uInt16*)myBUSRAM,
-     settings.getBool("thumb.trapfatal"),
-     Thumbulator::ConfigureFor::BUS,
-     this);
+  myThumbEmulator = make_ptr<Thumbulator>((uInt16*)myImage, (uInt16*)myBUSRAM,
+    settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this);
 #endif
   setInitialState();
 
   // BUS always starts in bank 6
   myStartBank = 6;
-  
+
   // bus stuffing is off by default
   myBusStuff = false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBUS::~CartridgeBUS()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,11 +76,10 @@ void CartridgeBUS::reset()
 {
   // Initialize RAM
   if(mySettings.getBool("ramrandom"))
-    for(uInt32 t = 2048; t < 8192; ++t)
-      myBUSRAM[t] = mySystem->randGenerator().next();
+    initializeRAM(myBUSRAM+2048, 8192-2048);
   else
     memset(myBUSRAM+2048, 0, 8192-2048);
-  
+
   // Update cycles to the current system cycles
   mySystemCycles = mySystem->cycles();
   myFractionalClocks = 0.0;
@@ -106,7 +95,7 @@ void CartridgeBUS::setInitialState()
 {
   // Copy initial BUS driver to Harmony RAM
   memcpy(myBusDriverImage, myImage, 0x0800);
-  
+
   for (int i=0; i < 3; ++i)
     myMusicWaveformSize[i] = 27;
 }
@@ -135,12 +124,12 @@ void CartridgeBUS::install(System& system)
   System::PageAccess access(this, System::PA_READ);
   for(uInt32 i = 0x1000; i < 0x1040; i += (1 << System::PAGE_SHIFT))
     mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
-  
+
   // Mirror all access in TIA and RIOT; by doing so we're taking responsibility
   // for that address space in peek and poke below.
   mySystem->tia().installDelegate(system, *this);
   mySystem->m6532().installDelegate(system, *this);
-  
+
   // Install pages for the startup bank
   bank(myStartBank);
 }
@@ -212,28 +201,28 @@ uInt8 CartridgeBUS::peek(uInt16 address)
   else
   {
     address &= 0x0FFF;
-    
+
     uInt8 peekvalue = myProgramImage[(myCurrentBank << 12) + address];
-    
+
     // In debugger/bank-locked mode, we ignore all hotspots and in general
     // anything that can change the internal state of the cart
     if(bankLocked())
       return peekvalue;
-    
+
     // save the STY's zero page address
     if (getBusStuffFlag() && mySTYZeroPage)
       myBusOverdriveAddress =  peekvalue;
-    
+
     mySTYZeroPage = false;
-    
+
     if(address < 0x20)
     {
       uInt8 result = 0;
-      
+
       // Get the index of the data fetcher that's being accessed
       uInt32 index = address & 0x0f;
       uInt32 function = (address >> 4) & 0x01;
-      
+
       switch(function)
       {
         case 0x00:  // read from a datastream
@@ -257,24 +246,24 @@ uInt8 CartridgeBUS::peek(uInt16 address)
             case 0x09:  // 0x19 STUFFMODE
             case 0x0a:  // 0x1A CALLFN
               break;
-              
+
             case 0x08:  // 0x18 = AMPLITUDE
               // Update the music data fetchers (counter & flag)
               updateMusicModeDataFetchers();
-              
+
               // using myDisplayImage[] instead of myProgramImage[] because waveforms
               // can be modified during runtime.
               uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
               myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
               myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
-              
+
               result = uInt8(i);
               break;
           }
           break;
         }
       }
-      
+
       return result;
     }
     else
@@ -286,48 +275,50 @@ uInt8 CartridgeBUS::peek(uInt16 address)
           // Set the current bank to the first 4k bank
           bank(0);
           break;
-          
+
         case 0x0FF6:
           // Set the current bank to the second 4k bank
           bank(1);
           break;
-          
+
         case 0x0FF7:
           // Set the current bank to the third 4k bank
           bank(2);
           break;
-          
+
         case 0x0FF8:
           // Set the current bank to the fourth 4k bank
           bank(3);
           break;
-          
+
         case 0x0FF9:
           // Set the current bank to the fifth 4k bank
           bank(4);
           break;
-          
+
         case 0x0FFA:
           // Set the current bank to the sixth 4k bank
           bank(5);
           break;
-          
+
         case 0x0FFB:
           // Set the current bank to the last 4k bank
           bank(6);
           break;
-          
+
         default:
           break;
       }
-      
+
       // this might not work right for STY $84
       if (getBusStuffFlag())
         mySTYZeroPage = (peekvalue == 0x84);
-      
+
       return peekvalue;
     }
   }
+
+  return 0;  // make compiler happy
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -336,25 +327,24 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
   if (!(address & 0x1000))
   {
     value &= busOverdrive(address);
-    
+
     // Check for RAM or TIA mirroring
     uInt16 lowAddress = address & 0x3ff;
     if(lowAddress & 0x80)
       mySystem->m6532().poke(address, value);
     else if(!(lowAddress & 0x200))
       mySystem->tia().poke(address, value);
-  
   }
   else
   {
     address &= 0x0FFF;
-    
+
     if ((address >= 0x10) && (address <= 0x1F))
     {
       // Get the index of the data fetcher that's being accessed
       uInt32 index = address & 0x0f;
       uInt32 pointer;
-      
+
       switch (index)
       {
         case 0x00:  // DS0WRITE
@@ -366,13 +356,13 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           //
           // P = Pointer
           // F = Fractional
-          
+
           pointer = getDatastreamPointer(index);
           myDisplayImage[ pointer >> 20 ] = value;
           pointer += 0x100000;  // always increment by 1 when writing
           setDatastreamPointer(index, pointer);
           break;
-          
+
         case 0x04:  // 0x14 DS0PTR
         case 0x05:  // 0x15 DS1PTR
         case 0x06:  // 0x16 DS2PTR
@@ -382,7 +372,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           //
           // P = Pointer
           // F = Fractional
-          
+
           index &= 0x03;
           pointer = getDatastreamPointer(index);
           pointer <<=8;
@@ -390,11 +380,11 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           pointer |= (value << 20);
           setDatastreamPointer(index, pointer);
           break;
-          
+
         case 0x09:  // 0x19 turn on STY ZP bus stuffing if value is 0
           setBusStuffFlag(value==0);
           break;
-          
+
         case 0x0A:  // 0x1A CALLFUNCTION
           callFunction(value);
           break;
@@ -409,37 +399,37 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           // Set the current bank to the first 4k bank
           bank(0);
           break;
-          
+
         case 0x0FF6:
           // Set the current bank to the second 4k bank
           bank(1);
           break;
-          
+
         case 0x0FF7:
           // Set the current bank to the third 4k bank
           bank(2);
           break;
-          
+
         case 0x0FF8:
           // Set the current bank to the fourth 4k bank
           bank(3);
           break;
-          
+
         case 0x0FF9:
           // Set the current bank to the fifth 4k bank
           bank(4);
           break;
-          
+
         case 0x0FFA:
           // Set the current bank to the sixth 4k bank
           bank(5);
           break;
-          
+
         case 0x0FFB:
           // Set the current bank to the last 4k bank
           bank(6);
           break;
-          
+
         default:
           break;
       }
@@ -506,46 +496,43 @@ const uInt8* CartridgeBUS::getImage(int& size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 uInt8 CartridgeBUS::busOverdrive(uInt16 address)
 {
   uInt8 overdrive = 0xff;
-  
+
   // Not sure how to do this, check with stephena.
   //
   // Per discussion with cd-w, have this routine check that the Y register has a
   // value of 0xFF.  Of it doesn't then "crash the emulation".
-  
-  
+
+
   // only overdrive if the address matches
   if (address == myBusOverdriveAddress)
   {
     uInt8 map = address & 0x7f;
-      if (map <= 0x24) // map TIA registers VSYNC thru HMBL inclusive
-      {
-        uInt32 alldatastreams = getAddressMap(map);
-        uInt8 datastream = alldatastreams & 0x0f;  // lowest nybble has the current datastream to use
-        overdrive = readFromDatastream(datastream);
-        
-        // rotate map nybbles for next time
-        alldatastreams >>= 4;
-        alldatastreams |= (datastream << 28);
-        setAddressMap(map, alldatastreams);
-        
-//        overdrive |= 0x7c; // breaks bus stuffing to match hobo's system
-      }
+    if (map <= 0x24) // map TIA registers VSYNC thru HMBL inclusive
+    {
+      uInt32 alldatastreams = getAddressMap(map);
+      uInt8 datastream = alldatastreams & 0x0f;  // lowest nybble has the current datastream to use
+      overdrive = readFromDatastream(datastream);
+
+      // rotate map nybbles for next time
+      alldatastreams >>= 4;
+      alldatastreams |= (datastream << 28);
+      setAddressMap(map, alldatastreams);
+
+      // overdrive |= 0x7c; // breaks bus stuffing to match hobo's system
+    }
   }
-  
+
   myBusOverdriveAddress = 0xff; // turns off overdrive for next poke event
-  
+
   return overdrive;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 {
-  
   switch (function)
   {
     case 0:
@@ -558,7 +545,7 @@ uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
     case 1:
       myMusicCounters[value1] = 0;
       break;
-      
+
       // _GetWavePtr - return the counter
     case 2:
       return myMusicCounters[value1];
@@ -569,10 +556,9 @@ uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
       myMusicWaveformSize[value1] = value2;
       break;
   }
-  
+
   return 0;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeBUS::save(Serializer& out) const
@@ -629,16 +615,18 @@ bool CartridgeBUS::load(Serializer& in)
   return true;
 }
 
-uInt32 CartridgeBUS::getDatastreamPointer(uInt8 index)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeBUS::getDatastreamPointer(uInt8 index) const
 {
 //  index &= 0x0f;
-  
+
   return myBUSRAM[DSxPTR + index*4 + 0]        +  // low byte
         (myBUSRAM[DSxPTR + index*4 + 1] << 8)  +
         (myBUSRAM[DSxPTR + index*4 + 2] << 16) +
         (myBUSRAM[DSxPTR + index*4 + 3] << 24) ;  // high byte
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::setDatastreamPointer(uInt8 index, uInt32 value)
 {
 //  index &= 0x0f;
@@ -648,7 +636,8 @@ void CartridgeBUS::setDatastreamPointer(uInt8 index, uInt32 value)
   myBUSRAM[DSxPTR + index*4 + 3] = (value >> 24) & 0xff;  // high byte
 }
 
-uInt32 CartridgeBUS::getDatastreamIncrement(uInt8 index)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeBUS::getDatastreamIncrement(uInt8 index) const
 {
 //  index &= 0x0f;
   return myBUSRAM[DSxINC + index*4 + 0]        +   // low byte
@@ -657,6 +646,7 @@ uInt32 CartridgeBUS::getDatastreamIncrement(uInt8 index)
         (myBUSRAM[DSxINC + index*4 + 3] << 24) ;   // high byte
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::setDatastreamIncrement(uInt8 index, uInt32 value)
 {
 //  index &= 0x0f;
@@ -666,7 +656,8 @@ void CartridgeBUS::setDatastreamIncrement(uInt8 index, uInt32 value)
   myBUSRAM[DSxINC + index*4 + 3] = (value >> 24) & 0xff;  // high byte
 }
 
-uInt32 CartridgeBUS::getAddressMap(uInt8 index)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeBUS::getAddressMap(uInt8 index) const
 {
   //  index &= 0x0f;
   return myBUSRAM[DSMAPS + index*4 + 0]        +   // low byte
@@ -675,40 +666,43 @@ uInt32 CartridgeBUS::getAddressMap(uInt8 index)
         (myBUSRAM[DSMAPS + index*4 + 3] << 24) ;   // high byte
 }
 
-uInt32 CartridgeBUS::getWaveform(uInt8 index)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeBUS::getWaveform(uInt8 index) const
 {
   // instead of 0, 1, 2, etc. this returned
   // 0x40000800 for 0
   // 0x40000820 for 1
   // 0x40000840 for 2
   // ...
-  
+
 //  return myBUSRAM[WAVEFORM + index*4 + 0]        +   // low byte
 //        (myBUSRAM[WAVEFORM + index*4 + 1] << 8)  +
 //        (myBUSRAM[WAVEFORM + index*4 + 2] << 16) +
 //        (myBUSRAM[WAVEFORM + index*4 + 3] << 24) -   // high byte
 //         0x40000800;
-  
+
   uInt32 result;
-  
+
   result = myBUSRAM[WAVEFORM + index*4 + 0]        +   // low byte
           (myBUSRAM[WAVEFORM + index*4 + 1] << 8)  +
           (myBUSRAM[WAVEFORM + index*4 + 2] << 16) +
           (myBUSRAM[WAVEFORM + index*4 + 3] << 24);
-  
+
   result -= 0x40000800;
 
   if (result >= 4096)
     result = 0;
-  
+
   return result;
 }
 
-uInt32 CartridgeBUS::getWaveformSize(uInt8 index)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeBUS::getWaveformSize(uInt8 index) const
 {
   return myMusicWaveformSize[index];
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::setAddressMap(uInt8 index, uInt32 value)
 {
   //  index &= 0x0f;
@@ -718,16 +712,19 @@ void CartridgeBUS::setAddressMap(uInt8 index, uInt32 value)
   myBUSRAM[DSMAPS + index*4 + 3] = (value >> 24) & 0xff;  // high byte
 }
 
-bool CartridgeBUS::getBusStuffFlag(void)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeBUS::getBusStuffFlag(void) const
 {
   return myBusStuff;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::setBusStuffFlag(bool value)
 {
   myBusStuff = value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeBUS::readFromDatastream(uInt8 index)
 {
   // Pointers are stored as:
@@ -739,7 +736,7 @@ uInt8 CartridgeBUS::readFromDatastream(uInt8 index)
   // P = Pointer
   // I = Increment
   // F = Fractional
-  
+
   uInt32 pointer = getDatastreamPointer(index);
   uInt16 increment = getDatastreamIncrement(index);
   uInt8 value = myDisplayImage[ pointer >> 20 ];
@@ -747,4 +744,3 @@ uInt8 CartridgeBUS::readFromDatastream(uInt8 index)
   setDatastreamPointer(index, pointer);
   return value;
 }
-

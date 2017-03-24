@@ -31,6 +31,8 @@ MODULE_OBJS := \
 	src/debugger/gui/Cart4KWidget.o \
 	src/debugger/gui/Cart4KSCWidget.o \
 	src/debugger/gui/CartARWidget.o \
+	src/debugger/gui/CartBUSWidget.o \
+	src/debugger/gui/CartCDFWidget.o \
 	src/debugger/gui/CartCMWidget.o \
 	src/debugger/gui/CartCTYWidget.o \
 	src/debugger/gui/CartCVWidget.o \
@@ -74,5 +76,5 @@ MODULE_OBJS := \
 MODULE_DIRS += \
 	src/debugger/gui
 
-# Include common rules 
+# Include common rules
 include $(srcdir)/common.rules
