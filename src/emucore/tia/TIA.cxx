@@ -710,17 +710,38 @@ bool TIA::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::saveDisplay(Serializer& out) const
 {
-  return false;
+  try
+  {
+    out.putByteArray(myCurrentFrameBuffer.get(), 160*320);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA::saveDisplay" << endl;
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::loadDisplay(Serializer& in)
 {
-  return false;
+  try
+  {
+    // Reset frame buffer pointer and data
+    clearBuffers();
+    in.getByteArray(myCurrentFrameBuffer.get(), 160*320);
+    memcpy(myPreviousFrameBuffer.get(), myCurrentFrameBuffer.get(), 160*320);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA::loadDisplay" << endl;
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
