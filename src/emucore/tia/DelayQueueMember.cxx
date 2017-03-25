@@ -38,12 +38,56 @@ void DelayQueueMember::remove(uInt8 address)
 {
   size_t index;
 
-  for (index = 0; index < mySize; index++) {
-    if (myEntries.at(index).address == address) break;
-  }
+  for (index = 0; index < mySize; index++)
+    if (myEntries.at(index).address == address)
+      break;
 
   if (index < mySize) {
     myEntries.at(index) = myEntries.at(mySize - 1);
     mySize--;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DelayQueueMember::save(Serializer& out) const
+{
+  try
+  {
+    out.putInt(mySize);
+    for(size_t i = 0; i < mySize; ++i)
+    {
+      const Entry& e = myEntries[i];
+      out.putByte(e.address);
+      out.putByte(e.value);
+    }
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueueMember::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DelayQueueMember::load(Serializer& in)
+{
+  try
+  {
+    mySize = size_t(in.getInt());
+    for(size_t i = 0; i < mySize; ++i)
+    {
+      Entry& e = myEntries[i];
+      e.address = in.getByte();
+      e.value = in.getByte();
+    }
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueueMember::load" << endl;
+    return false;
+  }
+
+  return true;
 }

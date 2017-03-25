@@ -33,6 +33,11 @@ class Serializable
     Serializable() = default;
     virtual ~Serializable() = default;
 
+    Serializable(const Serializable&) = default;
+    Serializable(Serializable&&) = default;
+    Serializable& operator=(const Serializable&) = default;
+    Serializable& operator=(Serializable&&) = default;
+
     /**
       Save the current state of the object to the given Serializer.
 
@@ -55,13 +60,6 @@ class Serializable
       @return The name of the object
     */
     virtual string name() const = 0;
-
-  private:
-    // Following constructors and assignment operators not supported
-    Serializable(const Serializable&) = delete;
-    Serializable(Serializable&&) = delete;
-    Serializable& operator=(const Serializable&) = delete;
-    Serializable& operator=(Serializable&&) = delete;
 };
 
 #endif

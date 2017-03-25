@@ -18,23 +18,21 @@
 #ifndef TIA_DELAY_QUEUE_MEMBER
 #define TIA_DELAY_QUEUE_MEMBER
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
-class DelayQueueMember
+class DelayQueueMember : public Serializable
 {
   public:
-
     struct Entry {
       uInt8 address;
       uInt8 value;
     };
 
   public:
-
-    DelayQueueMember(uInt8 size);
+    DelayQueueMember(uInt8 size = 0);
 
     DelayQueueMember(DelayQueueMember&&) = default;
-
     DelayQueueMember& operator=(DelayQueueMember&&) = default;
 
   public:
@@ -55,17 +53,20 @@ class DelayQueueMember
       mySize = 0;
     }
 
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_DelayQueueMember"; }
+
   private:
-
     vector<Entry> myEntries;
-
     size_t mySize;
 
   private:
-    DelayQueueMember() = delete;
     DelayQueueMember(const DelayQueueMember&) = delete;
     DelayQueueMember& operator=(const DelayQueueMember&) = delete;
-
 };
 
 #endif //  TIA_DELAY_QUEUE_MEMBER

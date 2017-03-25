@@ -62,7 +62,10 @@ bool DelayQueue::save(Serializer& out) const
 {
   try
   {
-    // FIXME out.putVector(myMembers);
+    out.putInt(myMembers.size());
+    for(const DelayQueueMember& m: myMembers)
+      m.save(out);
+
     out.putByte(myIndex);
     out.putByteArray(myIndices, 0xFF);
   }
@@ -80,7 +83,10 @@ bool DelayQueue::load(Serializer& in)
 {
   try
   {
-    // FIXME in.getVector(myMembers);
+    myMembers.resize(in.getInt());
+    for(DelayQueueMember& m: myMembers)
+      m.load(in);
+
     myIndex = in.getByte();
     in.getByteArray(myIndices, 0xFF);
   }

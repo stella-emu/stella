@@ -39,7 +39,7 @@ class System;
   1K C Varaible and Stack, and the CDF chip.
   CDF chip access is mapped to $1000 - $103F.
 
-  Authors:  Darrell Spice Jr, Chris Walton, Fred Quimby,
+  @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
             Stephen Anthony, Bradford W. Mott
 */
 class CartridgeCDF : public Cartridge
