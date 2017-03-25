@@ -26,7 +26,8 @@ enum Count: Int8 {
 Missile::Missile(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    myIsSuppressed(false)
+    myIsSuppressed(false),
+    myDecodesOffset(0)
 {
   reset();
 }
@@ -34,7 +35,7 @@ Missile::Missile(uInt32 collisionMask)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::reset()
 {
-  myDecodes = DrawCounterDecodes::get().missileDecodes()[0];
+  myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
   myIsEnabled = false;
   myEnam = false;
   myResmp = 0;
@@ -137,8 +138,9 @@ void Missile::nusiz(uInt8 value)
 {
   static constexpr uInt8 ourWidths[] = { 1, 2, 4, 8 };
 
+  myDecodesOffset = value & 0x07;
   myWidth = ourWidths[(value & 0x30) >> 4];
-  myDecodes = DrawCounterDecodes::get().missileDecodes()[value & 0x07];
+  myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
 
   if (myIsRendering && myRenderCounter >= myWidth)
     myIsRendering = false;
@@ -243,14 +245,36 @@ void Missile::applyColors()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Missile::save(Serializer& out) const
 {
   try
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    out.putInt(collision);
+    out.putInt(myCollisionMaskDisabled);
+    out.putInt(myCollisionMaskEnabled);
+
+    out.putBool(myIsEnabled);
+    out.putBool(myIsSuppressed);
+    out.putBool(myEnam);
+    out.putByte(myResmp);
+
+    out.putByte(myHmmClocks);
+    out.putByte(myCounter);
+    out.putBool(myIsMoving);
+    out.putByte(myWidth);
+    out.putByte(myEffectiveWidth);
+    out.putByte(myLastMovementTick);
+
+    out.putBool(myIsRendering);
+    out.putByte(myRenderCounter);
+
+    out.putByte(myDecodesOffset);
+
+    out.putByte(myColor);
+    out.putByte(myObjectColor);  out.putByte(myDebugColor);
+    out.putBool(myDebugEnabled);
   }
   catch(...)
   {
@@ -258,11 +282,10 @@ bool Missile::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Missile::load(Serializer& in)
 {
   try
@@ -270,7 +293,31 @@ bool Missile::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    collision = in.getInt();
+    myCollisionMaskDisabled = in.getInt();
+    myCollisionMaskEnabled = in.getInt();
+
+    myIsEnabled = in.getBool();
+    myIsSuppressed = in.getBool();
+    myEnam = in.getBool();
+    myResmp = in.getByte();
+
+    myHmmClocks = in.getByte();
+    myCounter = in.getByte();
+    myIsMoving = in.getBool();
+    myWidth = in.getByte();
+    myEffectiveWidth = in.getByte();
+    myLastMovementTick = in.getByte();
+
+    myIsRendering = in.getBool();
+    myRenderCounter = in.getByte();
+
+    myDecodesOffset = in.getByte();
+    myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];
+
+    myColor = in.getByte();
+    myObjectColor = in.getByte();  myDebugColor = in.getByte();
+    myDebugEnabled = in.getBool();
   }
   catch(...)
   {
@@ -278,5 +325,5 @@ bool Missile::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }

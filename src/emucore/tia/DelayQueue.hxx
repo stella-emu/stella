@@ -18,10 +18,11 @@
 #ifndef TIA_DELAY_QUEUE
 #define TIA_DELAY_QUEUE
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 #include "DelayQueueMember.hxx"
 
-class DelayQueue
+class DelayQueue : public Serializable
 {
   public:
     DelayQueue(uInt8 length, uInt8 size);
@@ -34,12 +35,16 @@ class DelayQueue
 
     template<class T> void execute(T executor);
 
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override { return "TIA_DelayQueue"; }
+
   private:
-
     vector<DelayQueueMember> myMembers;
-
     uInt8 myIndex;
-
     uInt8 myIndices[0xFF];
 
   private:

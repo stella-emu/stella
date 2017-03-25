@@ -278,9 +278,6 @@ bool Ball::load(Serializer& in)
 
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();
-
-    updateEnabled();
-    applyColors();
   }
   catch(...)
   {

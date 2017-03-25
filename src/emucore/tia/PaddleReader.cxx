@@ -105,14 +105,22 @@ void PaddleReader::updateCharge(double timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool PaddleReader::save(Serializer& out) const
 {
   try
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    out.putDouble(myUThresh);
+    out.putDouble(myU);
+
+    out.putDouble(myValue);
+    out.putDouble(myTimestamp);
+
+    out.putInt(int(myLayout));
+    out.putDouble(myClockFreq);
+
+    out.putBool(myIsDumped);
   }
   catch(...)
   {
@@ -120,11 +128,10 @@ bool PaddleReader::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool PaddleReader::load(Serializer& in)
 {
   try
@@ -132,7 +139,16 @@ bool PaddleReader::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    myUThresh = in.getDouble();
+    myU = in.getDouble();
+
+    myValue = in.getDouble();
+    myTimestamp = in.getDouble();
+
+    myLayout = FrameLayout(in.getInt());
+    myClockFreq = in.getDouble();
+
+    myIsDumped = in.getBool();
   }
   catch(...)
   {
@@ -140,5 +156,5 @@ bool PaddleReader::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }

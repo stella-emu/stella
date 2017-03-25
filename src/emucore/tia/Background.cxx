@@ -90,8 +90,6 @@ bool Background::load(Serializer& in)
     myObjectColor = in.getByte();
     myDebugColor = in.getByte();
     myDebugEnabled = in.getBool();
-
-    applyColors();
   }
   catch(...)
   {

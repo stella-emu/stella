@@ -111,6 +111,13 @@ class Serializer
     void getIntArray(uInt32* array, uInt32 size) const;
 
     /**
+      Reads a double value (signed 64-bit) from the current input stream.
+
+      @result The double value which has been read from the stream.
+    */
+    double getDouble() const;
+
+    /**
       Reads a string from the current input stream.
 
       @result The string which has been read from the stream.
@@ -168,6 +175,13 @@ class Serializer
       @param size   The size of the array (number of integers to write)
     */
     void putIntArray(const uInt32* array, uInt32 size);
+
+    /**
+      Writes a double value (signed 64-bit) to the current output stream.
+
+      @param value The double value to write to the output stream.
+    */
+    void putDouble(double value);
 
     /**
       Writes a string to the current output stream.

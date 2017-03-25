@@ -43,9 +43,7 @@ class LatchedInput : public Serializable
     string name() const override { return "TIA_LatchedInput"; }
 
   private:
-
     bool myModeLatched;
-
     uInt8 myLatchedValue;
 
   private:

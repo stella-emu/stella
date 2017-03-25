@@ -94,6 +94,7 @@ class Player : public Serializable
 
     uInt32 myCollisionMaskDisabled;
     uInt32 myCollisionMaskEnabled;
+
     uInt8 myColor;
     uInt8 myObjectColor, myDebugColor;
     bool myDebugEnabled;
@@ -113,6 +114,7 @@ class Player : public Serializable
     Int8 myDividerChangeCounter;
 
     const uInt8* myDecodes;
+    uInt8 myDecodesOffset;  // needed for state saving
 
     uInt8 myPatternOld;
     uInt8 myPatternNew;

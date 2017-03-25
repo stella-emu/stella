@@ -530,7 +530,7 @@ int Thumbulator::execute()
 
   pc = read_register(15);
 
-#if 0  // FIXME SA - not sure if this should be enabled
+#if 0
   if(handler_mode)
   {
     if((pc & 0xF0000000) == 0xF0000000)

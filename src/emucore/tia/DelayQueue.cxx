@@ -56,3 +56,39 @@ void DelayQueue::reset()
 
   memset(myIndices, 0xFF, 0xFF);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DelayQueue::save(Serializer& out) const
+{
+  try
+  {
+    // FIXME out.putVector(myMembers);
+    out.putByte(myIndex);
+    out.putByteArray(myIndices, 0xFF);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueue::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DelayQueue::load(Serializer& in)
+{
+  try
+  {
+    // FIXME in.getVector(myMembers);
+    myIndex = in.getByte();
+    in.getByteArray(myIndices, 0xFF);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueue::load" << endl;
+    return false;
+  }
+
+  return true;
+}

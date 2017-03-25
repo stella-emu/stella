@@ -185,14 +185,25 @@ void VblankManager::setVblankMode(VblankMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool VblankManager::save(Serializer& out) const
 {
   try
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    out.putInt(myVblankLines);
+    out.putInt(myYstart);
+    out.putBool(myVblank);
+    out.putInt(myCurrentLine);
+
+    out.putInt(int(myMode));
+    out.putInt(myLastVblankLines);
+    out.putByte(myVblankViolations);
+    out.putByte(myStableVblankFrames);
+    out.putBool(myVblankViolated);
+    out.putByte(myFramesInLockedMode);
+
+    out.putBool(myIsRunning);
   }
   catch(...)
   {
@@ -200,11 +211,10 @@ bool VblankManager::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool VblankManager::load(Serializer& in)
 {
   try
@@ -212,7 +222,19 @@ bool VblankManager::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    myVblankLines = in.getInt();
+    myYstart = in.getInt();
+    myVblank = in.getBool();
+    myCurrentLine = in.getInt();
+
+    myMode = VblankMode(in.getInt());
+    myLastVblankLines = in.getInt();
+    myVblankViolations = in.getByte();
+    myStableVblankFrames = in.getByte();
+    myVblankViolated = in.getBool();
+    myFramesInLockedMode = in.getByte();
+
+    myIsRunning = in.getBool();
   }
   catch(...)
   {
@@ -220,5 +242,5 @@ bool VblankManager::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }

@@ -316,7 +316,6 @@ void FrameManager::setFixedHeight(uInt32 height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool FrameManager::save(Serializer& out) const
 {
   try
@@ -325,7 +324,29 @@ bool FrameManager::save(Serializer& out) const
 
     if (!myVblankManager.save(out)) return false;
 
-    // TODO - save instance variables
+    out.putInt(uInt32(myLayout));
+    out.putBool(myAutodetectLayout);
+    out.putInt(uInt32(myState));
+    out.putInt(myLineInState);
+    out.putInt(myCurrentFrameTotalLines);
+    out.putInt(myCurrentFrameFinalLines);
+    out.putInt(myVsyncLines);
+    out.putDouble(myFrameRate);
+    out.putInt(myY);  out.putInt(myLastY);
+    out.putBool(myFramePending);
+
+    out.putInt(myTotalFrames);
+    out.putInt(myFramesInMode);
+    out.putBool(myModeConfirmed);
+
+    out.putBool(myVsync);
+
+    out.putInt(myVblankLines);
+    out.putInt(myKernelLines);
+    out.putInt(myOverscanLines);
+    out.putInt(myFrameLines);
+    out.putInt(myHeight);
+    out.putInt(myFixedHeight);
   }
   catch(...)
   {
@@ -333,11 +354,10 @@ bool FrameManager::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool FrameManager::load(Serializer& in)
 {
   try
@@ -347,7 +367,29 @@ bool FrameManager::load(Serializer& in)
 
     if (!myVblankManager.load(in)) return false;
 
-    // TODO - load instance variables
+    myLayout = FrameLayout(in.getInt());
+    myAutodetectLayout = in.getBool();
+    myState = State(in.getInt());
+    myLineInState = in.getInt();
+    myCurrentFrameTotalLines = in.getInt();
+    myCurrentFrameFinalLines = in.getInt();
+    myVsyncLines = in.getInt();
+    myFrameRate = float(in.getDouble());
+    myY = in.getInt();  myLastY = in.getInt();
+    myFramePending = in.getBool();
+
+    myTotalFrames = in.getInt();
+    myFramesInMode = in.getInt();
+    myModeConfirmed = in.getBool();
+
+    myVsync = in.getBool();
+
+    myVblankLines = in.getInt();
+    myKernelLines = in.getInt();
+    myOverscanLines = in.getInt();
+    myFrameLines = in.getInt();
+    myHeight = in.getInt();
+    myFixedHeight = in.getInt();
   }
   catch(...)
   {
@@ -355,5 +397,5 @@ bool FrameManager::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }

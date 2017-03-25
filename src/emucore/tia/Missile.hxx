@@ -102,6 +102,7 @@ class Missile : public Serializable
     Int8 myRenderCounter;
 
     const uInt8* myDecodes;
+    uInt8 myDecodesOffset;  // needed for state saving
 
     uInt8 myColor;
     uInt8 myObjectColor, myDebugColor;

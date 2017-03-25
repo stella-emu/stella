@@ -26,7 +26,8 @@ enum Count: Int8 {
 Player::Player(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    myIsSuppressed(false)
+    myIsSuppressed(false),
+    myDecodesOffset(0)
 {
   reset();
 }
@@ -34,7 +35,7 @@ Player::Player(uInt32 collisionMask)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::reset()
 {
-  myDecodes = DrawCounterDecodes::get().playerDecodes()[0];
+  myDecodes = DrawCounterDecodes::get().playerDecodes()[myDecodesOffset];
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
@@ -74,9 +75,9 @@ void Player::hmp(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::nusiz(uInt8 value, bool hblank)
 {
-  const uInt8 masked = value & 0x07;
+  myDecodesOffset = value & 0x07;
 
-  switch (masked) {
+  switch (myDecodesOffset) {
     case 5:
       myDividerPending = 2;
       break;
@@ -92,7 +93,7 @@ void Player::nusiz(uInt8 value, bool hblank)
 
   const uInt8* oldDecodes = myDecodes;
 
-  myDecodes = DrawCounterDecodes::get().playerDecodes()[masked];
+  myDecodes = DrawCounterDecodes::get().playerDecodes()[myDecodesOffset];
 
   if (
     myDecodes != oldDecodes &&
@@ -363,14 +364,42 @@ void Player::applyColors()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Player::save(Serializer& out) const
 {
   try
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    out.putInt(collision);
+    out.putInt(myCollisionMaskDisabled);
+    out.putInt(myCollisionMaskEnabled);
+
+    out.putByte(myColor);
+    out.putByte(myObjectColor);  out.putByte(myDebugColor);
+    out.putBool(myDebugEnabled);
+
+    out.putBool(myIsSuppressed);
+
+    out.putByte(myHmmClocks);
+    out.putByte(myCounter);
+    out.putBool(myIsMoving);
+
+    out.putBool(myIsRendering);
+    out.putByte(myRenderCounter);
+    out.putByte(myRenderCounterTripPoint);
+    out.putByte(myDivider);
+    out.putByte(myDividerPending);
+    out.putByte(mySampleCounter);
+    out.putByte(myDividerChangeCounter);
+
+    out.putByte(myDecodesOffset);
+
+    out.putByte(myPatternOld);
+    out.putByte(myPatternNew);
+    out.putByte(myPattern);
+
+    out.putBool(myIsReflected);
+    out.putBool(myIsDelaying);
   }
   catch(...)
   {
@@ -378,11 +407,10 @@ bool Player::save(Serializer& out) const
     return false;
   }
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: implement this once the class is finalized
 bool Player::load(Serializer& in)
 {
   try
@@ -390,7 +418,37 @@ bool Player::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    collision = in.getInt();
+    myCollisionMaskDisabled = in.getInt();
+    myCollisionMaskEnabled = in.getInt();
+
+    myColor = in.getByte();
+    myObjectColor = in.getByte();  myDebugColor = in.getByte();
+    myDebugEnabled = in.getBool();
+
+    myIsSuppressed = in.getBool();
+
+    myHmmClocks = in.getByte();
+    myCounter = in.getByte();
+    myIsMoving = in.getBool();
+
+    myIsRendering = in.getBool();
+    myRenderCounter = in.getByte();
+    myRenderCounterTripPoint = in.getByte();
+    myDivider = in.getByte();
+    myDividerPending = in.getByte();
+    mySampleCounter = in.getByte();
+    myDividerChangeCounter = in.getByte();
+
+    myDecodesOffset = in.getByte();
+    myDecodes = DrawCounterDecodes::get().playerDecodes()[myDecodesOffset];
+
+    myPatternOld = in.getByte();
+    myPatternNew = in.getByte();
+    myPattern = in.getByte();
+
+    myIsReflected = in.getBool();
+    myIsDelaying = in.getBool();
   }
   catch(...)
   {
@@ -398,5 +456,5 @@ bool Player::load(Serializer& in)
     return false;
   }
 
-  return false;
+  return true;
 }

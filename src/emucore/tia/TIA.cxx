@@ -72,14 +72,14 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySound(sound),
     mySettings(settings),
     myDelayQueue(10, 20),
-    mySpriteEnabledBits(0xFF),
-    myCollisionsEnabledBits(0xFF),
     myPlayfield(~CollisionMask::playfield & 0x7FFF),
     myMissile0(~CollisionMask::missile0 & 0x7FFF),
     myMissile1(~CollisionMask::missile1 & 0x7FFF),
     myPlayer0(~CollisionMask::player0 & 0x7FFF),
     myPlayer1(~CollisionMask::player1 & 0x7FFF),
-    myBall(~CollisionMask::ball & 0x7FFF)
+    myBall(~CollisionMask::ball & 0x7FFF),
+    mySpriteEnabledBits(0xFF),
+    myCollisionsEnabledBits(0xFF)
 {
   myFrameManager.setHandlers(
     [this] () {
@@ -196,9 +196,11 @@ bool TIA::save(Serializer& out) const
   {
     out.putString(name());
 
-    // TODO - save instance variables
+    if(!mySound.save(out)) return false;
 
-    // Save the state of each graphics object
+    if(!myDelayQueue.save(out))   return false;
+    if(!myFrameManager.save(out)) return false;
+
     if(!myBackground.save(out)) return false;
     if(!myPlayfield.save(out))  return false;
     if(!myMissile0.save(out))   return false;
@@ -207,16 +209,51 @@ bool TIA::save(Serializer& out) const
     if(!myPlayer1.save(out))    return false;
     if(!myBall.save(out))       return false;
 
-    // Save dumped input ports
     for (const PaddleReader& paddleReader : myPaddleReaders)
       if(!paddleReader.save(out)) return false;
 
-    // Save latched input ports
     if(!myInput0.save(out)) return false;
     if(!myInput1.save(out)) return false;
 
-    // Save the sound sample stuff ...
-    if(!mySound.save(out)) return false;
+    out.putBool(myTIAPinsDriven);
+
+    out.putInt(int(myHstate));
+    out.putBool(myIsFreshLine);
+
+    out.putInt(myHblankCtr);
+    out.putInt(myHctr);
+    out.putInt(myXDelta);
+
+    out.putBool(myCollisionUpdateRequired);
+    out.putInt(myCollisionMask);
+
+    out.putInt(myMovementClock);
+    out.putBool(myMovementInProgress);
+    out.putBool(myExtendedHblank);
+
+    out.putInt(myLinesSinceChange);
+
+    out.putInt(int(myPriority));
+    out.putByte(myCtrlPF);
+
+    out.putByte(mySubClock);
+    out.putInt(myLastCycle);
+
+    out.putByte(mySpriteEnabledBits);
+    out.putByte(myCollisionsEnabledBits);
+
+    out.putByte(myColorHBlank);
+
+    out.putDouble(myTimestamp);
+
+    out.putBool(myAutoFrameEnabled);
+
+    out.putByte(myAUDV0);
+    out.putByte(myAUDV1);
+    out.putByte(myAUDC0);
+    out.putByte(myAUDC1);
+    out.putByte(myAUDF0);
+    out.putByte(myAUDF1);
   }
   catch(...)
   {
@@ -224,7 +261,7 @@ bool TIA::save(Serializer& out) const
     return false;
   }
 
-  return false;  // for now, until class is finalized
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,9 +272,11 @@ bool TIA::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // TODO - load instance variables
+    if(!mySound.load(in)) return false;
 
-    // Load the state of each graphics object
+    if(!myDelayQueue.load(in))   return false;
+    if(!myFrameManager.load(in)) return false;
+
     if(!myBackground.load(in)) return false;
     if(!myPlayfield.load(in))  return false;
     if(!myMissile0.load(in))   return false;
@@ -246,16 +285,51 @@ bool TIA::load(Serializer& in)
     if(!myPlayer1.load(in))    return false;
     if(!myBall.load(in))       return false;
 
-    // Load dumped input ports
     for (PaddleReader& paddleReader : myPaddleReaders)
       if(!paddleReader.load(in)) return false;
 
-    // Load latched input ports
     if(!myInput0.load(in)) return false;
     if(!myInput1.load(in)) return false;
 
-    // Load the sound sample stuff ...
-    if(!mySound.load(in)) return false;
+    myTIAPinsDriven = in.getBool();
+
+    myHstate = HState(in.getInt());
+    myIsFreshLine = in.getBool();
+
+    myHblankCtr = in.getInt();
+    myHctr = in.getInt();
+    myXDelta = in.getInt();
+
+    myCollisionUpdateRequired = in.getBool();
+    myCollisionMask = in.getInt();
+
+    myMovementClock = in.getInt();
+    myMovementInProgress = in.getBool();
+    myExtendedHblank = in.getBool();
+
+    myLinesSinceChange = in.getInt();
+
+    myPriority = Priority(in.getInt());
+    myCtrlPF = in.getByte();
+
+    mySubClock = in.getByte();
+    myLastCycle = in.getInt();
+
+    mySpriteEnabledBits = in.getByte();
+    myCollisionsEnabledBits = in.getByte();
+
+    myColorHBlank = in.getByte();
+
+    myTimestamp = in.getDouble();
+
+    myAutoFrameEnabled = in.getBool();
+
+    myAUDV0 = in.getByte();
+    myAUDV1 = in.getByte();
+    myAUDC0 = in.getByte();
+    myAUDC1 = in.getByte();
+    myAUDF0 = in.getByte();
+    myAUDF1 = in.getByte();
   }
   catch(...)
   {
@@ -263,7 +337,7 @@ bool TIA::load(Serializer& in)
     return false;
   }
 
-  return false;  // for now, until class is finalized
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -409,10 +409,26 @@ class TIA : public Device
     Sound& mySound;
     Settings& mySettings;
 
-    bool myTIAPinsDriven;
-
     DelayQueue myDelayQueue;
     FrameManager myFrameManager;
+
+    Background myBackground;
+    Playfield myPlayfield;
+    Missile myMissile0;
+    Missile myMissile1;
+    Player myPlayer0;
+    Player myPlayer1;
+    Ball myBall;
+    PaddleReader myPaddleReaders[4];
+
+    LatchedInput myInput0;
+    LatchedInput myInput1;
+
+    // Pointer to the current and previous frame buffers
+    BytePtr myCurrentFrameBuffer;
+    BytePtr myPreviousFrameBuffer;
+
+    bool myTIAPinsDriven;
 
     HState myHstate;
     bool myIsFreshLine;
@@ -445,22 +461,6 @@ class TIA : public Device
 
     // Automatic framerate correction based on number of scanlines
     bool myAutoFrameEnabled;
-
-    // Pointer to the current and previous frame buffers
-    BytePtr myCurrentFrameBuffer;
-    BytePtr myPreviousFrameBuffer;
-
-    Background myBackground;
-    Playfield myPlayfield;
-    Missile myMissile0;
-    Missile myMissile1;
-    Player myPlayer0;
-    Player myPlayer1;
-    Ball myBall;
-    PaddleReader myPaddleReaders[4];
-
-    LatchedInput myInput0;
-    LatchedInput myInput1;
 
     //////////////////////////////////////////////////////////////
     // Audio values; only used by TIADebug
