@@ -837,6 +837,18 @@
     <ClCompile Include="..\emucore\TrakBall.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCDFWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartBUS.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartCDF.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1690,6 +1702,18 @@
     </ClInclude>
     <ClInclude Include="..\emucore\tia\FrameLayout.hxx">
       <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartBUS.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartCDF.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartBUSWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCDFWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
