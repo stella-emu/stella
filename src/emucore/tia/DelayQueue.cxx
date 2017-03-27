@@ -62,7 +62,7 @@ bool DelayQueue::save(Serializer& out) const
 {
   try
   {
-    out.putInt(myMembers.size());
+    out.putInt(uInt32(myMembers.size()));
     for(const DelayQueueMember& m: myMembers)
       m.save(out);
 

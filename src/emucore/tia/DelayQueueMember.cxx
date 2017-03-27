@@ -54,7 +54,7 @@ bool DelayQueueMember::save(Serializer& out) const
   try
   {
     out.putInt(mySize);
-    for(size_t i = 0; i < mySize; ++i)
+    for(uInt32 i = 0; i < mySize; ++i)
     {
       const Entry& e = myEntries[i];
       out.putByte(e.address);
@@ -75,8 +75,8 @@ bool DelayQueueMember::load(Serializer& in)
 {
   try
   {
-    mySize = size_t(in.getInt());
-    for(size_t i = 0; i < mySize; ++i)
+    mySize = in.getInt();
+    for(uInt32 i = 0; i < mySize; ++i)
     {
       Entry& e = myEntries[i];
       e.address = in.getByte();

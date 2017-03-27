@@ -62,7 +62,7 @@ class DelayQueueMember : public Serializable
 
   private:
     vector<Entry> myEntries;
-    size_t mySize;
+    uInt32 mySize;
 
   private:
     DelayQueueMember(const DelayQueueMember&) = delete;
