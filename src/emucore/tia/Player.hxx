@@ -31,17 +31,14 @@ class Player : public Serializable
     void reset();
 
     void grp(uInt8 value);
-    uInt8 grp() const { return myPatternNew; }
 
     void hmp(uInt8 value);
-    uInt8 hmp() const { return myHmmClocks; }
 
     void nusiz(uInt8 value, bool hblank);
 
     void resp(uInt8 counter);
 
     void refp(uInt8 value);
-    bool refp() const { return myIsReflected; }
 
     void vdelp(uInt8 value);
 
@@ -50,7 +47,6 @@ class Player : public Serializable
     void toggleCollisions(bool enabled);
 
     void setColor(uInt8 color);
-    uInt8 getColor() const { return myObjectColor; }
 
     void setDebugColor(uInt8 color);
     void enableDebugColors(bool enabled);

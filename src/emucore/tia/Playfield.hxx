@@ -31,13 +31,10 @@ class Playfield : public Serializable
     void reset();
 
     void pf0(uInt8 value);
-    uInt8 pf0() const { return myPf0; }
 
     void pf1(uInt8 value);
-    uInt8 pf1() const { return myPf1; }
 
     void pf2(uInt8 value);
-    uInt8 pf2() const { return myPf2; }
 
     void ctrlpf(uInt8 value);
 
@@ -46,7 +43,6 @@ class Playfield : public Serializable
     void toggleCollisions(bool enabled);
 
     void setColor(uInt8 color);
-    uInt8 getColor() const { return myObjectColor; }
 
     void setColorP0(uInt8 color);
 

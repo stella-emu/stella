@@ -185,7 +185,7 @@ bool TIADebug::vdelP0(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELP0, bool(newVal));
 
-  return (myTIA.valueLastWrittenToRegister(VDELP0) & 0x01) > 0;
+  return myTIA.lastValueWrittenToRegister(VDELP0) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,7 +194,7 @@ bool TIADebug::vdelP1(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELP1, bool(newVal));
 
-  return (myTIA.valueLastWrittenToRegister(VDELP1) & 0x01) > 0;
+  return myTIA.lastValueWrittenToRegister(VDELP1) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,7 +203,7 @@ bool TIADebug::vdelBL(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELBL, bool(newVal));
 
-  return myTIA.myBall.vdelbl();
+  return myTIA.lastValueWrittenToRegister(VDELBL) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,7 +212,7 @@ bool TIADebug::enaM0(int newVal)
   if(newVal > -1)
     mySystem.poke(ENAM0, bool(newVal) << 1);
 
-  return myTIA.myMissile0.enam();
+  return myTIA.lastValueWrittenToRegister(ENAM0) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,7 +221,7 @@ bool TIADebug::enaM1(int newVal)
   if(newVal > -1)
     mySystem.poke(ENAM1, bool(newVal) << 1);
 
-  return myTIA.myMissile1.enam();
+  return myTIA.lastValueWrittenToRegister(ENAM1) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,7 +230,7 @@ bool TIADebug::enaBL(int newVal)
   if(newVal > -1)
     mySystem.poke(ENABL, bool(newVal) << 1);
 
-  return myTIA.myBall.enabl();
+  return myTIA.lastValueWrittenToRegister(ENABL) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,7 +239,7 @@ bool TIADebug::resMP0(int newVal)
   if(newVal > -1)
     mySystem.poke(RESMP0, bool(newVal) << 1);
 
-  return myTIA.myMissile0.resmp();
+  return myTIA.lastValueWrittenToRegister(RESMP0) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -248,7 +248,7 @@ bool TIADebug::resMP1(int newVal)
   if(newVal > -1)
     mySystem.poke(RESMP1, bool(newVal) << 1);
 
-  return myTIA.myMissile1.resmp();
+  return myTIA.lastValueWrittenToRegister(RESMP1) & 0x02;;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -257,7 +257,7 @@ bool TIADebug::refP0(int newVal)
   if(newVal > -1)
     mySystem.poke(REFP0, bool(newVal) << 3);
 
-  return myTIA.myPlayer0.refp();
+  return myTIA.lastValueWrittenToRegister(REFP0) & 0x08;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,7 +266,7 @@ bool TIADebug::refP1(int newVal)
   if(newVal > -1)
     mySystem.poke(REFP1, bool(newVal) << 3);
 
-  return myTIA.myPlayer1.refp();
+  return myTIA.lastValueWrittenToRegister(REFP1) & 0x08;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,7 +274,7 @@ bool TIADebug::refPF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.myCtrlPF;
+    int tmp = myTIA.lastValueWrittenToRegister(CTRLPF);
     if(newVal)
       tmp |= 0x01;
     else
@@ -282,7 +282,7 @@ bool TIADebug::refPF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.myCtrlPF & 0x01;
+  return myTIA.lastValueWrittenToRegister(CTRLPF) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,7 +290,7 @@ bool TIADebug::scorePF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.myCtrlPF;
+    int tmp = myTIA.lastValueWrittenToRegister(CTRLPF);
     if(newVal)
       tmp |= 0x02;
     else
@@ -298,7 +298,7 @@ bool TIADebug::scorePF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.myCtrlPF & 0x02;
+  return myTIA.lastValueWrittenToRegister(CTRLPF) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -306,7 +306,7 @@ bool TIADebug::priorityPF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.myCtrlPF;
+    int tmp = myTIA.lastValueWrittenToRegister(CTRLPF);
     if(newVal)
       tmp |= 0x04;
     else
@@ -314,7 +314,7 @@ bool TIADebug::priorityPF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.myCtrlPF & 0x04;
+  return myTIA.lastValueWrittenToRegister(CTRLPF) & 0x04;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -347,7 +347,7 @@ uInt8 TIADebug::audC0(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDC0, newVal);
 
-  return myTIA.myAUDC0;
+  return myTIA.lastValueWrittenToRegister(AUDC0) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -356,7 +356,7 @@ uInt8 TIADebug::audC1(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDC1, newVal);
 
-  return myTIA.myAUDC1;
+  return myTIA.lastValueWrittenToRegister(AUDC1) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,7 +365,7 @@ uInt8 TIADebug::audV0(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDV0, newVal);
 
-  return myTIA.myAUDV0;
+  return myTIA.lastValueWrittenToRegister(AUDV0) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -374,7 +374,7 @@ uInt8 TIADebug::audV1(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDV1, newVal);
 
-  return myTIA.myAUDV1;
+  return myTIA.lastValueWrittenToRegister(AUDV1) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -383,7 +383,7 @@ uInt8 TIADebug::audF0(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDF0, newVal);
 
-  return myTIA.myAUDF0;
+  return myTIA.lastValueWrittenToRegister(AUDF0) & 0x1f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -392,7 +392,7 @@ uInt8 TIADebug::audF1(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDF1, newVal);
 
-  return myTIA.myAUDF1;
+  return myTIA.lastValueWrittenToRegister(AUDF1) & 0x1f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -401,7 +401,7 @@ uInt8 TIADebug::pf0(int newVal)
   if(newVal > -1)
     mySystem.poke(PF0, newVal << 4);
 
-  return myTIA.myPlayfield.pf0();
+  return myTIA.lastValueWrittenToRegister(PF0) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -410,7 +410,7 @@ uInt8 TIADebug::pf1(int newVal)
   if(newVal > -1)
     mySystem.poke(PF1, newVal);
 
-  return myTIA.myPlayfield.pf1();
+  return myTIA.lastValueWrittenToRegister(PF1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -419,7 +419,7 @@ uInt8 TIADebug::pf2(int newVal)
   if(newVal > -1)
     mySystem.poke(PF2, newVal);
 
-  return myTIA.myPlayfield.pf2();
+  return myTIA.lastValueWrittenToRegister(PF1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -428,7 +428,7 @@ uInt8 TIADebug::coluP0(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUP0, newVal);
 
-  return myTIA.myPlayer0.getColor();
+  return myTIA.lastValueWrittenToRegister(COLUP0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -437,7 +437,7 @@ uInt8 TIADebug::coluP1(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUP1, newVal);
 
-  return myTIA.myPlayer1.getColor();
+  return myTIA.lastValueWrittenToRegister(COLUP1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -446,7 +446,7 @@ uInt8 TIADebug::coluPF(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUPF, newVal);
 
-  return myTIA.myPlayfield.getColor();
+  return myTIA.lastValueWrittenToRegister(COLUPF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,95 +455,77 @@ uInt8 TIADebug::coluBK(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUBK, newVal);
 
-  return myTIA.myBackground.getColor();
+  return myTIA.lastValueWrittenToRegister(COLUBK);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusiz0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(NUSIZ0, newVal);
 
-  return myTIA.myNUSIZ0;
-#endif
-return 0;
+  return myTIA.lastValueWrittenToRegister(NUSIZ0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusiz1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
     mySystem.poke(NUSIZ1, newVal);
 
-  return myTIA.myNUSIZ1;
-#endif
-return 0;
+  return myTIA.lastValueWrittenToRegister(NUSIZ1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.myNUSIZ0 & ~0x07;
+    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ0) & ~0x07;
     tmp |= (newVal & 0x07);
     mySystem.poke(NUSIZ0, tmp);
   }
 
-  return myTIA.myNUSIZ0 & 0x07;
-#endif
-return 0;
+  return myTIA.lastValueWrittenToRegister(NUSIZ0) & 0x07;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.myNUSIZ1 & ~0x07;
+    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ1) & ~0x07;
     tmp |= newVal & 0x07;
     mySystem.poke(NUSIZ1, tmp);
   }
 
-  return myTIA.myNUSIZ1 & 0x07;
-#endif
-return 0;
+  return myTIA.lastValueWrittenToRegister(NUSIZ1) & 0x07;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizM0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.myNUSIZ0 & ~0x30;
+    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ0) & ~0x30;
     tmp |= (newVal & 0x04) << 4;
     mySystem.poke(NUSIZ0, tmp);
   }
 
-  return (myTIA.myNUSIZ0 & 0x30) >> 4;
-#endif
-return 0;
+  return (myTIA.lastValueWrittenToRegister(NUSIZ0) & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::nusizM1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.myNUSIZ1 & ~0x30;
+    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ1) & ~0x30;
     tmp |= (newVal & 0x04) << 4;
     mySystem.poke(NUSIZ1, tmp);
   }
 
-  return (myTIA.myNUSIZ1 & 0x30) >> 4;
-#endif
-return 0;
+  return (myTIA.lastValueWrittenToRegister(NUSIZ1) & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -552,7 +534,7 @@ uInt8 TIADebug::grP0(int newVal)
   if(newVal > -1)
     mySystem.poke(GRP0, newVal);
 
-  return myTIA.myPlayer0.grp();
+  return myTIA.lastValueWrittenToRegister(GRP0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -561,7 +543,7 @@ uInt8 TIADebug::grP1(int newVal)
   if(newVal > -1)
     mySystem.poke(GRP1, newVal);
 
-  return myTIA.myPlayer1.grp();
+  return myTIA.lastValueWrittenToRegister(GRP1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -630,23 +612,20 @@ uInt8 TIADebug::ctrlPF(int newVal)
   if(newVal > -1)
     mySystem.poke(CTRLPF, newVal);
 
-  return myTIA.myCtrlPF;
+  return myTIA.lastValueWrittenToRegister(CTRLPF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::sizeBL(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.myCTRLPF & ~0x30;
+    uInt8 tmp = myTIA.lastValueWrittenToRegister(CTRLPF) & ~0x30;
     tmp |= (newVal & 0x04) << 4;
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return (myTIA.myCTRLPF & 0x30) >> 4;
-#endif
-return 0;
+  return (myTIA.lastValueWrittenToRegister(CTRLPF) & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -655,7 +634,7 @@ uInt8 TIADebug::hmP0(int newVal)
   if(newVal > -1)
     mySystem.poke(HMP0, newVal << 4);
 
-  return myTIA.myPlayer0.hmp();
+  return myTIA.lastValueWrittenToRegister(HMP0) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -664,7 +643,7 @@ uInt8 TIADebug::hmP1(int newVal)
   if(newVal > -1)
     mySystem.poke(HMP1, newVal << 4);
 
-  return myTIA.myPlayer1.hmp();
+  return myTIA.lastValueWrittenToRegister(HMP1) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -673,7 +652,7 @@ uInt8 TIADebug::hmM0(int newVal)
   if(newVal > -1)
     mySystem.poke(HMM0, newVal << 4);
 
-  return myTIA.myMissile0.hmm();
+  return myTIA.lastValueWrittenToRegister(HMM0) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -682,7 +661,7 @@ uInt8 TIADebug::hmM1(int newVal)
   if(newVal > -1)
     mySystem.poke(HMM1, newVal << 4);
 
-  return myTIA.myMissile1.hmm();
+  return myTIA.lastValueWrittenToRegister(HMM1) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -691,7 +670,7 @@ uInt8 TIADebug::hmBL(int newVal)
   if(newVal > -1)
     mySystem.poke(HMBL, newVal << 4);
 
-  return myTIA.myBall.hmbl();
+  return myTIA.lastValueWrittenToRegister(HMBL) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -715,13 +694,13 @@ int TIADebug::clocksThisLine() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vsync() const
 {
-  return myTIA.myFrameManager.vsync();
+  return myTIA.lastValueWrittenToRegister(VSYNC) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vblank() const
 {
-  return myTIA.myFrameManager.vblank();
+  return myTIA.lastValueWrittenToRegister(VBLANK) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -875,15 +854,15 @@ string TIADebug::toString()
       << endl << "            "
       << booleanWithLabel("m0_m1 ", collM0_M1())
       << endl
-      << "AUDF0: $" << Common::Base::HEX2 << int(myTIA.myAUDF0)
-      << "/" << audFreq(myTIA.myAUDF0) << " "
-      << "AUDC0: $" << Common::Base::HEX2 << int(myTIA.myAUDC0) << " "
-      << "AUDV0: $" << Common::Base::HEX2 << int(myTIA.myAUDV0)
+      << "AUDF0: $" << Common::Base::HEX2 << int(audF0())
+      << "/" << audFreq(audF0()) << " "
+      << "AUDC0: $" << Common::Base::HEX2 << int(audC0()) << " "
+      << "AUDV0: $" << Common::Base::HEX2 << int(audV0())
       << endl
-      << "AUDF1: $" << Common::Base::HEX2 << int(myTIA.myAUDF1)
-      << "/" << audFreq(myTIA.myAUDF1) << " "
-      << "AUDC1: $" << Common::Base::HEX2 << int(myTIA.myAUDC1) << " "
-      << "AUDV1: $" << Common::Base::HEX2 << int(myTIA.myAUDV1)
+      << "AUDF1: $" << Common::Base::HEX2 << int(audF1())
+      << "/" << audFreq(audF1()) << " "
+      << "AUDC1: $" << Common::Base::HEX2 << int(audC1()) << " "
+      << "AUDV1: $" << Common::Base::HEX2 << int(audV1())
       ;
   // note: last line should not contain \n, caller will add.
   return buf.str();

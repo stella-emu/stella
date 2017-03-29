@@ -309,7 +309,7 @@ class TIA : public Device
     void updateScanlineByTrace(int target);
 
     // Retrieve the last value written to a certain register
-    uInt8 valueLastWrittenToRegister(uInt8 reg) const;
+    uInt8 lastValueWrittenToRegister(uInt8 reg) const;
 
     /**
       Save the current state of this device to the given Serializer.
@@ -450,7 +450,6 @@ class TIA : public Device
     uInt32 myLinesSinceChange;
 
     Priority myPriority;
-    uInt8 myCtrlPF;  // needed for the debugger
 
     uInt8 mySubClock;
     Int32 myLastCycle;
@@ -466,11 +465,6 @@ class TIA : public Device
 
     // Automatic framerate correction based on number of scanlines
     bool myAutoFrameEnabled;
-
-    //////////////////////////////////////////////////////////////
-    // Audio values; only used by TIADebug
-    // FIXME - remove this when the new sound core is implemented
-    uInt8 myAUDV0, myAUDV1, myAUDC0, myAUDC1, myAUDF0, myAUDF1;
 
    private:
     TIA() = delete;

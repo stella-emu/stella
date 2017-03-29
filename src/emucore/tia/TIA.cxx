@@ -140,9 +140,6 @@ void TIA::reset()
   myFrameManager.reset();
   toggleFixedColors(0);  // Turn off debug colours
 
-  // FIXME - rework this when we add the new sound core
-  myAUDV0 = myAUDV1 = myAUDF0 = myAUDF1 = myAUDC0 = myAUDC1 = 0;
-
   frameReset();  // Recalculate the size of the display
 }
 
@@ -236,7 +233,6 @@ bool TIA::save(Serializer& out) const
     out.putInt(myLinesSinceChange);
 
     out.putInt(int(myPriority));
-    out.putByte(myCtrlPF);
 
     out.putByte(mySubClock);
     out.putInt(myLastCycle);
@@ -250,12 +246,7 @@ bool TIA::save(Serializer& out) const
 
     out.putBool(myAutoFrameEnabled);
 
-    out.putByte(myAUDV0);
-    out.putByte(myAUDV1);
-    out.putByte(myAUDC0);
-    out.putByte(myAUDC1);
-    out.putByte(myAUDF0);
-    out.putByte(myAUDF1);
+    out.putByteArray(myShadowRegisters, 64);
   }
   catch(...)
   {
@@ -312,7 +303,6 @@ bool TIA::load(Serializer& in)
     myLinesSinceChange = in.getInt();
 
     myPriority = Priority(in.getInt());
-    myCtrlPF = in.getByte();
 
     mySubClock = in.getByte();
     myLastCycle = in.getInt();
@@ -326,12 +316,7 @@ bool TIA::load(Serializer& in)
 
     myAutoFrameEnabled = in.getBool();
 
-    myAUDV0 = in.getByte();
-    myAUDV1 = in.getByte();
-    myAUDC0 = in.getByte();
-    myAUDC1 = in.getByte();
-    myAUDF0 = in.getByte();
-    myAUDF1 = in.getByte();
+    in.getByteArray(myShadowRegisters, 64);
   }
   catch(...)
   {
@@ -473,27 +458,21 @@ bool TIA::poke(uInt16 address, uInt8 value)
     ////////////////////////////////////////////////////////////
     // FIXME - rework this when we add the new sound core
     case AUDV0:
-      myAUDV0 = value & 0x0f;
       mySound.set(address, value, mySystem->cycles());
       break;
     case AUDV1:
-      myAUDV1 = value & 0x0f;
       mySound.set(address, value, mySystem->cycles());
       break;
     case AUDF0:
-      myAUDF0 = value & 0x1f;
       mySound.set(address, value, mySystem->cycles());
       break;
     case AUDF1:
-      myAUDF1 = value & 0x1f;
       mySound.set(address, value, mySystem->cycles());
       break;
     case AUDC0:
-      myAUDC0 = value & 0x0f;
       mySound.set(address, value, mySystem->cycles());
       break;
     case AUDC1:
-      myAUDC1 = value & 0x0f;
       mySound.set(address, value, mySystem->cycles());
       break;
     ////////////////////////////////////////////////////////////
@@ -529,7 +508,6 @@ bool TIA::poke(uInt16 address, uInt8 value)
                    (value & 0x02) ? Priority::score : Priority::normal;
       myPlayfield.ctrlpf(value);
       myBall.ctrlpf(value);
-      myCtrlPF = value;
       break;
 
     case COLUPF:
@@ -927,7 +905,7 @@ void TIA::updateScanlineByTrace(int target)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TIA::valueLastWrittenToRegister(uInt8 reg) const
+uInt8 TIA::lastValueWrittenToRegister(uInt8 reg) const
 {
   return reg < 64 ? myShadowRegisters[reg] : 0;
 }

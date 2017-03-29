@@ -32,17 +32,14 @@ class Ball : public Serializable
     void reset();
 
     void enabl(uInt8 value);
-    bool enabl() const { return myIsEnabled; }
 
     void hmbl(uInt8 value);
-    uInt8 hmbl() const { return myHmmClocks; }
 
     void resbl(uInt8 counter);
 
     void ctrlpf(uInt8 value);
 
     void vdelbl(uInt8 value);
-    bool vdelbl() const { return myIsDelaying; }
 
     void toggleCollisions(bool enabled);
 
