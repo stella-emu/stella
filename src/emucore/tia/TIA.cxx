@@ -759,7 +759,9 @@ void TIA::enableColorLoss(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
 {
-  x = clocksThisLine();
+  uInt8 clocks = clocksThisLine();
+
+  x = clocks < 68 ? 0 : clocks - 68;
   y = myFrameManager.getY();
 
   return isRendering();
