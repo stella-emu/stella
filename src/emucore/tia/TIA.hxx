@@ -198,7 +198,7 @@ class TIA : public Device
 
       @return The current color clock
     */
-    uInt32 clocksThisLine() const { return myHctr + myXDelta; }
+    uInt32 clocksThisLine() const { return myHctr - myXDelta; }
 
     /**
       Answers the total number of scanlines the TIA generated in producing
@@ -435,7 +435,7 @@ class TIA : public Device
 
     Int32 myHblankCtr;
     Int32 myHctr;
-    Int32 myXDelta;
+    uInt32 myXDelta;
 
     bool myCollisionUpdateRequired;
     uInt32 myCollisionMask;

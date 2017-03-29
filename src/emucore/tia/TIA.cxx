@@ -1043,7 +1043,7 @@ void TIA::tickHframe()
 {
   const uInt32 y = myFrameManager.getY();
   const bool lineNotCached = myLinesSinceChange < 2 || y == 0;
-  const uInt32 x = myHctr - 68 + myXDelta;
+  const uInt32 x = myHctr - 68 - myXDelta;
 
   myCollisionUpdateRequired = lineNotCached;
 
@@ -1069,7 +1069,6 @@ void TIA::applyRsync()
 
   myLinesSinceChange = 0;
   myHctr = 225;
-  //myHstate = HState::frame;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
