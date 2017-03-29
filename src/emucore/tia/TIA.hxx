@@ -35,7 +35,7 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
-#include "PositioningProvider.hxx"
+#include "PlayfieldPositionProvider.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -50,7 +50,7 @@
 
   @author  Christian Speckner (DirtyHairy) and Stephen Anthony
 */
-class TIA : public Device, public PositioningProvider
+class TIA : public Device, public PlayfieldPositionProvider
 {
   public:
     friend class TIADebug;

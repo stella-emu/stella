@@ -549,10 +549,8 @@ uInt8 TIADebug::grP1(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
-    myTIA.myPOSP0 = newVal;
-#endif
+    myTIA.myPlayer0.setPosition(newVal);
 
   return myTIA.myPlayer0.getPosition();
 }
@@ -560,10 +558,8 @@ uInt8 TIADebug::posP0(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posP1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
-    myTIA.myPOSP1 = newVal;
-#endif
+    myTIA.myPlayer1.setPosition(newVal);
 
   return myTIA.myPlayer1.getPosition();
 }

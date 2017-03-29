@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_POSITIONING_PROVIDER
-#define TIA_POSITIONING_PROVIDER
+#ifndef TIA_PLAYFIELD_PROVIDER
+#define TIA_PLAYFIELD_PROVIDER
 
 #include "bspf.hxx"
 
@@ -27,7 +27,7 @@
 
   @author  Christian Speckner (DirtyHairy) and Stephen Anthony
 */
-class PositioningProvider
+class PlayfieldPositionProvider
 {
   public:
 
@@ -38,7 +38,7 @@ class PositioningProvider
 
   protected:
 
-    ~PositioningProvider() = default;
+    ~PlayfieldPositionProvider() = default;
 
 };
 

@@ -20,7 +20,7 @@
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
-#include "PositioningProvider.hxx"
+#include "PlayfieldPositionProvider.hxx"
 
 class Player : public Serializable
 {
@@ -29,8 +29,8 @@ class Player : public Serializable
 
   public:
 
-    void setPositioningProvider(PositioningProvider* positioningProvider) {
-      myPositioningProvider = positioningProvider;
+    void setPlayfieldPositionProvider(PlayfieldPositionProvider* playfieldPositionProvider) {
+      myPlayfieldPositionProvider = playfieldPositionProvider;
     }
 
     void reset();
@@ -74,6 +74,7 @@ class Player : public Serializable
     uInt8 getRespClock() const;
 
     uInt8 getPosition() const;
+    void setPosition(uInt8 newPosition);
 
     /**
       Serializable methods (see that class for more information).
@@ -125,7 +126,7 @@ class Player : public Serializable
     bool myIsReflected;
     bool myIsDelaying;
 
-    PositioningProvider *myPositioningProvider;
+    PlayfieldPositionProvider *myPlayfieldPositionProvider;
 
   private:
     Player(const Player&) = delete;

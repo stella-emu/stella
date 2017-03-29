@@ -369,7 +369,15 @@ uInt8 Player::getPosition() const
   const uInt8 shift = myDivider == 1 ? 0 : 1;
 
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (316 - myCounter - Count::renderCounterOffset + shift + myPositioningProvider->getPosition()) % 160;
+  return (316 - myCounter - Count::renderCounterOffset + shift + myPlayfieldPositionProvider->getPosition()) % 160;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::setPosition(uInt8 newPosition)
+{
+  const uInt8 shift = myDivider == 1 ? 0 : 1;
+
+  myCounter = (316 - newPosition - Count::renderCounterOffset + shift + myPlayfieldPositionProvider->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
