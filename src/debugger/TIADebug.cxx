@@ -567,37 +567,28 @@ uInt8 TIADebug::posP1(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posM0(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
-    myTIA.myPOSM0 = newVal;
+    myTIA.myMissile0.setPosition(newVal);
 
-  return myTIA.myPOSM0;
-#endif
-return 0;
+  return myTIA.myMissile0.getPosition();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posM1(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
-    myTIA.myPOSM1 = newVal;
+    myTIA.myMissile1.setPosition(newVal);
 
-  return myTIA.myPOSM1;
-#endif
-return 0;
+  return myTIA.myMissile1.getPosition();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posBL(int newVal)
 {
-#if 0 // FIXME
   if(newVal > -1)
-    myTIA.myPOSBL = newVal;
+    myTIA.myBall.setPosition(newVal);
 
-  return myTIA.myPOSBL;
-#endif
-return 0;
+  return myTIA.myBall.getPosition();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

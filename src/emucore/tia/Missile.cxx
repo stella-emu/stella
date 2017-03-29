@@ -245,6 +245,19 @@ void Missile::applyColors()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Missile::getPosition() const
+{
+  // Mind the sign of renderCounterOffset: it's defined negative above
+  return (316 - myCounter - Count::renderCounterOffset + myPlayfieldPositionProvider->getPosition()) % 160;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::setPosition(uInt8 newPosition)
+{
+  myCounter = (316 - newPosition - Count::renderCounterOffset + myPlayfieldPositionProvider->getPosition()) % 160;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Missile::save(Serializer& out) const
 {
   try

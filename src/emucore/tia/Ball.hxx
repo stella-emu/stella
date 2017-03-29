@@ -20,6 +20,7 @@
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
+#include "PlayfieldPositionProvider.hxx"
 
 class Ball : public Serializable
 {
@@ -28,6 +29,10 @@ class Ball : public Serializable
     Ball(uInt32 collisionMask);
 
   public:
+
+    void setPlayfieldPositionProvider(PlayfieldPositionProvider* playfieldPositionProvider) {
+      myPlayfieldPositionProvider = playfieldPositionProvider;
+    }
 
     void reset();
 
@@ -63,6 +68,9 @@ class Ball : public Serializable
     }
 
     void shuffleStatus();
+
+    uInt8 getPosition() const;
+    void setPosition(uInt8 newPosition);
 
     /**
       Serializable methods (see that class for more information).
@@ -104,6 +112,8 @@ class Ball : public Serializable
 
     bool myIsRendering;
     Int8 myRenderCounter;
+
+    PlayfieldPositionProvider* myPlayfieldPositionProvider;
 
   private:
     Ball() = delete;

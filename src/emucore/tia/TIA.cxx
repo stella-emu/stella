@@ -97,6 +97,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 
   myPlayer0.setPlayfieldPositionProvider(this);
   myPlayer1.setPlayfieldPositionProvider(this);
+  myMissile0.setPlayfieldPositionProvider(this);
+  myMissile1.setPlayfieldPositionProvider(this);
+  myBall.setPlayfieldPositionProvider(this);
 
   reset();
 }

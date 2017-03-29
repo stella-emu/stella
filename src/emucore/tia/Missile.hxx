@@ -21,13 +21,19 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 #include "Player.hxx"
+#include "PlayfieldPositionProvider.hxx"
 
 class Missile : public Serializable
 {
   public:
+
     Missile(uInt32 collisionMask);
 
   public:
+
+    void setPlayfieldPositionProvider(PlayfieldPositionProvider* playfieldPositionProvider) {
+      myPlayfieldPositionProvider = playfieldPositionProvider;
+    }
 
     void reset();
 
@@ -61,6 +67,9 @@ class Missile : public Serializable
     uInt8 getPixel(uInt8 colorIn) const {
       return (collision & 0x8000) ? myColor : colorIn;
     }
+
+    uInt8 getPosition() const;
+    void setPosition(uInt8 newPosition);
 
     /**
       Serializable methods (see that class for more information).
@@ -104,6 +113,8 @@ class Missile : public Serializable
     uInt8 myColor;
     uInt8 myObjectColor, myDebugColor;
     bool myDebugEnabled;
+
+    PlayfieldPositionProvider *myPlayfieldPositionProvider;
 
   private:
     Missile(const Missile&) = delete;
