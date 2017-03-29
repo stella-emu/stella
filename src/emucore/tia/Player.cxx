@@ -364,6 +364,15 @@ void Player::applyColors()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Player::getPosition() const
+{
+  const uInt8 shift = myDivider == 1 ? 0 : 1;
+
+  // Mind the sign of renderCounterOffset: it's defined negative above
+  return (316 - myCounter - Count::renderCounterOffset + shift + myPositioningProvider->getPosition()) % 160;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Player::save(Serializer& out) const
 {
   try

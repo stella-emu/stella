@@ -35,6 +35,7 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
+#include "PositioningProvider.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -49,7 +50,7 @@
 
   @author  Christian Speckner (DirtyHairy) and Stephen Anthony
 */
-class TIA : public Device
+class TIA : public Device, public PositioningProvider
 {
   public:
     friend class TIADebug;
@@ -308,8 +309,15 @@ class TIA : public Device
     */
     void updateScanlineByTrace(int target);
 
-    // Retrieve the last value written to a certain register
+    /**
+      Retrieve the last value written to a certain register
+    */
     uInt8 lastValueWrittenToRegister(uInt8 reg) const;
+
+    /**
+      Get the current x value
+    */
+    virtual uInt8 getPosition() {return (myHctr < 68) ? 0 : (myHctr - 68 - myXDelta);}
 
     /**
       Save the current state of this device to the given Serializer.

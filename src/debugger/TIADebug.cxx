@@ -552,10 +552,9 @@ uInt8 TIADebug::posP0(int newVal)
 #if 0 // FIXME
   if(newVal > -1)
     myTIA.myPOSP0 = newVal;
-
-  return myTIA.myPOSP0;
 #endif
-return 0;
+
+  return myTIA.myPlayer0.getPosition();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -564,10 +563,9 @@ uInt8 TIADebug::posP1(int newVal)
 #if 0 // FIXME
   if(newVal > -1)
     myTIA.myPOSP1 = newVal;
-
-  return myTIA.myPOSP1;
 #endif
-return 0;
+
+  return myTIA.myPlayer1.getPosition();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

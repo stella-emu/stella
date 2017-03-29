@@ -18,8 +18,9 @@
 #ifndef TIA_PLAYER
 #define TIA_PLAYER
 
-#include "Serializable.hxx"
 #include "bspf.hxx"
+#include "Serializable.hxx"
+#include "PositioningProvider.hxx"
 
 class Player : public Serializable
 {
@@ -27,6 +28,10 @@ class Player : public Serializable
     Player(uInt32 collisionMask);
 
   public:
+
+    void setPositioningProvider(PositioningProvider* positioningProvider) {
+      myPositioningProvider = positioningProvider;
+    }
 
     void reset();
 
@@ -67,6 +72,8 @@ class Player : public Serializable
     void shufflePatterns();
 
     uInt8 getRespClock() const;
+
+    uInt8 getPosition() const;
 
     /**
       Serializable methods (see that class for more information).
@@ -117,6 +124,8 @@ class Player : public Serializable
 
     bool myIsReflected;
     bool myIsDelaying;
+
+    PositioningProvider *myPositioningProvider;
 
   private:
     Player(const Player&) = delete;

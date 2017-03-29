@@ -95,6 +95,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
+  myPlayer0.setPositioningProvider(this);
+  myPlayer1.setPositioningProvider(this);
+
   reset();
 }
 
