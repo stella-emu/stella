@@ -185,7 +185,7 @@ bool TIADebug::vdelP0(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELP0, bool(newVal));
 
-  return myTIA.myPlayer0.vdelp();
+  return (myTIA.valueLastWrittenToRegister(VDELP0) & 0x01) > 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,7 +194,7 @@ bool TIADebug::vdelP1(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELP1, bool(newVal));
 
-  return myTIA.myPlayer1.vdelp();
+  return (myTIA.valueLastWrittenToRegister(VDELP1) & 0x01) > 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -308,6 +308,9 @@ class TIA : public Device
     */
     void updateScanlineByTrace(int target);
 
+    // Retrieve the last value written to a certain register
+    uInt8 valueLastWrittenToRegister(uInt8 reg) const;
+
     /**
       Save the current state of this device to the given Serializer.
 
@@ -458,6 +461,8 @@ class TIA : public Device
     uInt8 myColorHBlank;
 
     double myTimestamp;
+
+    uInt8 myShadowRegisters[64];
 
     // Automatic framerate correction based on number of scanlines
     bool myAutoFrameEnabled;

@@ -118,6 +118,8 @@ void TIA::reset()
   mySubClock = 0;
   myXDelta = 0;
 
+  memset(myShadowRegisters, 0, 64);
+
   myBackground.reset();
   myPlayfield.reset();
   myMissile0.reset();
@@ -432,6 +434,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
   updateEmulation();
 
   address &= 0x3F;
+  myShadowRegisters[address] = value;
 
   switch (address)
   {
@@ -921,6 +924,12 @@ void TIA::updateScanlineByTrace(int target)
 {
   while (mySystem->m6502().getPC() != target)
     updateScanlineByStep();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::valueLastWrittenToRegister(uInt8 reg) const
+{
+  return reg < 64 ? myShadowRegisters[reg] : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

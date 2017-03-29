@@ -44,7 +44,6 @@ class Player : public Serializable
     bool refp() const { return myIsReflected; }
 
     void vdelp(uInt8 value);
-    bool vdelp() const { return myIsDelaying; }
 
     void toggleEnabled(bool enabled);
 
