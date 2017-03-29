@@ -30,14 +30,12 @@
 class PlayfieldPositionProvider
 {
   public:
-
     /**
       Get the current x value
     */
-    virtual uInt8 getPosition() = 0;
+    virtual uInt8 getPosition() const = 0;
 
   protected:
-
     ~PlayfieldPositionProvider() = default;
 
 };

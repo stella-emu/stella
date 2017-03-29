@@ -317,7 +317,9 @@ class TIA : public Device, public PlayfieldPositionProvider
     /**
       Get the current x value
     */
-    virtual uInt8 getPosition() {return (myHctr < 68) ? 0 : (myHctr - 68 - myXDelta);}
+    uInt8 getPosition() const override {
+      return (myHctr < 68) ? 0 : (myHctr - 68 - myXDelta);
+    }
 
     /**
       Save the current state of this device to the given Serializer.
