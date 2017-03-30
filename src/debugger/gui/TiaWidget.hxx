@@ -26,6 +26,7 @@ class ToggleBitWidget;
 class TogglePixelWidget;
 class EditTextWidget;
 class ColorWidget;
+class DelayQueueWidget;
 
 #include "Widget.hxx"
 #include "Command.hxx"
@@ -90,6 +91,8 @@ class TiaWidget : public Widget, public CommandSender
     CheckboxWidget* myPriorityPF;
 
     CheckboxWidget* myUndrivenPins;
+
+    DelayQueueWidget* myDelayQueueWidget;
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets

@@ -5,7 +5,9 @@
             "-I/home/cnspeckn/git/stella/src/common",
             "-I/home/cnspeckn/git/stella/src/emucore",
             "-I/home/cnspeckn/git/stella/src/emucore/tia",
-            "-I/home/cnspeckn/git/stella/src/emucore/debugger"
+            "-I/home/cnspeckn/git/stella/src/debugger",
+            "-I/home/cnspeckn/git/stella/src/debugger/gui",
+            "-I/home/cnspeckn/git/stella/src/gui"
         ],
         "editor.tabSize": 2,
         "files.trimTrailingWhitespace": true,

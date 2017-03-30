@@ -71,7 +71,8 @@ MODULE_OBJS := \
 	src/debugger/gui/KeyboardWidget.o \
 	src/debugger/gui/GenesisWidget.o \
 	src/debugger/gui/AtariVoxWidget.o \
-	src/debugger/gui/SaveKeyWidget.o
+	src/debugger/gui/SaveKeyWidget.o \
+	src/debugger/gui/DelayQueueWidget.o
 
 MODULE_DIRS += \
 	src/debugger/gui
