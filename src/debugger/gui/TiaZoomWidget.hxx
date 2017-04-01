@@ -48,7 +48,7 @@ class TiaZoomWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;
-    bool wantsFocus() { return true; }
+    bool wantsFocus() const override { return true; }
 
   private:
     unique_ptr<ContextMenu> myMenu;

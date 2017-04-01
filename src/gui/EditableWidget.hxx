@@ -58,7 +58,7 @@ class EditableWidget : public Widget, public CommandSender
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
 
     // We only want to focus this widget when we can edit its contents
-    virtual bool wantsFocus() const { return _editable; }
+    bool wantsFocus() const override { return _editable; }
 
     // Set filter used to test whether a character can be inserted
     void setTextFilter(const TextFilter& filter) { _filter = filter; }

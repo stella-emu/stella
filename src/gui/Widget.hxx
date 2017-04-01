@@ -96,7 +96,7 @@ class Widget : public GuiObject
 
     bool isEnabled() const          { return _flags & WIDGET_ENABLED;         }
     bool isVisible() const override { return !(_flags & WIDGET_INVISIBLE);    }
-    bool wantsFocus() const         { return _flags & WIDGET_RETAIN_FOCUS;    }
+    virtual bool wantsFocus() const { return _flags & WIDGET_RETAIN_FOCUS;    }
     bool wantsTab() const           { return _flags & WIDGET_WANTS_TAB;       }
     bool wantsRaw() const           { return _flags & WIDGET_WANTS_RAWDATA;   }
 

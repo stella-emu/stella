@@ -386,10 +386,6 @@ class TIA : public Device, public PlayfieldPositionProvider
 
     void updateCollision();
 
-    void renderSprites();
-
-    void tickSprites();
-
     void renderPixel(uInt32 x, uInt32 y, bool lineNotCached);
 
     void clearHmoveComb();

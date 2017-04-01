@@ -1042,10 +1042,21 @@ void TIA::tickHframe()
 
   myPlayfield.tick(x);
 
-  if (lineNotCached)
-    renderSprites();
+  // Render sprites
+  if (lineNotCached) {
+    myPlayer0.render();
+    myPlayer1.render();
+    myMissile0.render(myHctr);
+    myMissile1.render(myHctr);
+    myBall.render();
+  }
 
-  tickSprites();
+  // Tick sprites
+  myMissile0.tick(myHctr);
+  myMissile1.tick(myHctr);
+  myPlayer0.tick();
+  myPlayer1.tick();
+  myBall.tick();
 
   if (myFrameManager.isRendering())
     renderPixel(x, y, lineNotCached);
@@ -1062,26 +1073,6 @@ void TIA::applyRsync()
 
   myLinesSinceChange = 0;
   myHctr = 225;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::renderSprites()
-{
-  myPlayer0.render();
-  myPlayer1.render();
-  myMissile0.render(myHctr);
-  myMissile1.render(myHctr);
-  myBall.render();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::tickSprites()
-{
-  myMissile0.tick(myHctr);
-  myMissile1.tick(myHctr);
-  myPlayer0.tick();
-  myPlayer1.tick();
-  myBall.tick();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

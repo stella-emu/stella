@@ -199,11 +199,6 @@ class Controller : public Serializable
     { return false; }
 
     /**
-      Returns the name of this controller.
-    */
-    virtual string name() const override { return myName; }
-
-    /**
       Returns more detailed information about this controller.
     */
     virtual string about() const
@@ -236,6 +231,11 @@ class Controller : public Serializable
       @return The result of the load.  True on success, false on failure.
     */
     bool load(Serializer& in) override;
+
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return myName; }
 
   public:
     /// Constant which represents maximum resistance for analog pins

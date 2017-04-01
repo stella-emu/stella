@@ -40,7 +40,7 @@ class ComboDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     Event::Type myComboEvent;
