@@ -61,13 +61,19 @@ void EditableWidget::setText(const string& str, bool)
   setDirty();
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::setEditable(bool editable)
+void EditableWidget::setEditable(bool editable, bool hiliteBG)
 {
   _editable = editable;
   if(_editable)
+  {
     setFlags(WIDGET_WANTS_RAWDATA | WIDGET_RETAIN_FOCUS);
+    _bgcolor = kWidColor;
+  }
   else
+  {
     clearFlags(WIDGET_WANTS_RAWDATA | WIDGET_RETAIN_FOCUS);
+    _bgcolor = hiliteBG ? kBGColorLo : kWidColor;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

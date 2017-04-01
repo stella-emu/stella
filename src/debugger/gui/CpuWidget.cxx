@@ -54,7 +54,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos += lwidth + myPCGrid->getWidth() + 10;
   myPCLabel = new EditTextWidget(boss, nfont, xpos, ypos, (max_w - xpos + x) - 10,
                                  fontHeight+1, "");
-  myPCLabel->setEditable(false);
+  myPCLabel->setEditable(false, true);
 
   // Create a 1x4 grid with labels for the other CPU registers
   xpos = x + lwidth;  ypos += myPCGrid->getHeight() + 1;
@@ -89,7 +89,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   {
     myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w,
                                  fontHeight+1, "");
-    myCpuDataSrc[i]->setEditable(false);
+    myCpuDataSrc[i]->setEditable(false, true);
     src_y += fontHeight+2;
   }
   int swidth = lfont.getStringWidth("Source Address");

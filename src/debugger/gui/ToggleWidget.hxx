@@ -43,6 +43,7 @@ class ToggleWidget : public Widget, public CommandSender
 
     int colWidth() const { return _colWidth; }
     void setEditable(bool editable) { _editable = editable; }
+    bool isEditable() const { return _editable; }
 
   protected:
 

@@ -61,6 +61,7 @@ enum MessagePosition {
 enum {
   kColor = 256,
   kBGColor,
+  kBGColorLo,
   kShadowColor,
   kTextColor,
   kTextColorHi,

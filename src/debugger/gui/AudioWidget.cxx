@@ -45,7 +45,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
                               2, 1, 2, 5, Common::Base::F_16);
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
-  myAudF->setEditable(false);
+  myAudF->setEditable(false, true);
   addFocusWidget(myAudF);
 
   for(int col = 0; col < 2; ++col)
@@ -65,7 +65,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
                               2, 1, 2, 4, Common::Base::F_16);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
-  myAudC->setEditable(false);
+  myAudC->setEditable(false, true);
   addFocusWidget(myAudC);
 
   // AudV registers
@@ -77,7 +77,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
                               2, 1, 2, 4, Common::Base::F_16);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
-  myAudV->setEditable(false);
+  myAudV->setEditable(false, true);
   addFocusWidget(myAudV);
 }
 

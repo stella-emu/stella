@@ -341,7 +341,7 @@ void DebuggerDialog::addStatusArea()
   myMessageBox = new EditTextWidget(this, *myLFont,
                                     xpos, ypos, myTiaZoom->getWidth(),
                                     myLFont->getLineHeight(), "");
-  myMessageBox->setEditable(false);
+  myMessageBox->setEditable(false, false);
   myMessageBox->clearFlags(WIDGET_RETAIN_FOCUS);
   myMessageBox->setTextColor(kTextColorEm);
 }

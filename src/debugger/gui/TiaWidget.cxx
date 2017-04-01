@@ -237,7 +237,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos += myNusizP0->getWidth() + 5;
   myNusizP0Text = new EditTextWidget(boss, nfont, xpos, ypos, 23*fontWidth,
                                      lineHeight, "");
-  myNusizP0Text->setEditable(false);
+  myNusizP0Text->setEditable(false, true);
 
   ////////////////////////////
   // P1 register info
@@ -304,7 +304,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos += myNusizP1->getWidth() + 5;
   myNusizP1Text = new EditTextWidget(boss, nfont, xpos, ypos, 23*fontWidth,
                                      lineHeight, "");
-  myNusizP1Text->setEditable(false);
+  myNusizP1Text->setEditable(false, true);
 
   ////////////////////////////
   // M0 register info

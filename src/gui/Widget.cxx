@@ -486,8 +486,15 @@ void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 void CheckboxWidget::setEditable(bool editable)
 {
   _editable = editable;
-  if(!_editable)
+  if(_editable)
+  {
+    _bgcolor = kWidColor;
+  }
+  else
+  {
+    _bgcolor = kBGColorLo;
     setFill(CheckboxWidget::Inactive);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

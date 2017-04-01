@@ -52,7 +52,7 @@ class EditableWidget : public Widget, public CommandSender
     const string& getText() const { return _editString; }
 
     bool isEditable() const	{ return _editable; }
-    void setEditable(bool editable);
+    void setEditable(bool editable, bool hiliteBG = false);
 
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;

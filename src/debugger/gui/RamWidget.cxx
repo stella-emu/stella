@@ -142,7 +142,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos += 6*myFontWidth + 5;
   myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
                                myLineHeight);
-  myLabel->setEditable(false);
+  myLabel->setEditable(false, true);
 
   // Inputbox which will pop up when searching RAM
   StringList labels = { "Search: " };
