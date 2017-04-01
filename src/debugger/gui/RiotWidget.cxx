@@ -121,7 +121,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos += t->getWidth() + 5;
   myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::F_16);
   myTimRead->setTarget(this);
-  myTimRead->setEditable(false, true);
+  myTimRead->setEditable(false);
 
   // Controller ports
   const RiotDebug& riot = instance().debugger().riotDebug();
@@ -143,7 +143,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos += 6*fontWidth + 5;
   myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
   myLeftINPT->setTarget(this);
-  myLeftINPT->setEditable(false, true);
+  myLeftINPT->setEditable(false);
 
   // TIA INPTx registers (R), right port
   const char* contRightReadNames[] = { "INPT2:", "INPT3:", "INPT5:" };
@@ -156,7 +156,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos += 6*fontWidth + 5;
   myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
   myRightINPT->setTarget(this);
-  myRightINPT->setEditable(false, true);
+  myRightINPT->setEditable(false);
 
   // TIA INPTx VBLANK bits (D6-latch, D7-dump) (R)
   xpos = col + 20;  ypos += myLeftINPT->getHeight() + lineHeight;
