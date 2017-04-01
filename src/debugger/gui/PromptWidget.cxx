@@ -922,18 +922,12 @@ string PromptWidget::getCompletionPrefix(const StringList& completions, string p
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::clearScreen()
 {
-  // Initialize start position and history
+  // Initialize start position
   _currentPos = 0;
   _scrollLine = _linesPerPage - 1;
   _firstLineInBuffer = 0;
   _promptStartPos = _promptEndPos = -1;
   memset(_buffer, 0, kBufferSize * sizeof(int));
-
-  _historyIndex = 0;
-  _historyLine = 0;
-  _historySize = 0;
-  for (int i = 0; i < kHistorySize; i++)
-    _history[i][0] = '\0';
 
   if(!_firstTime)
     updateScrollBuffer();
