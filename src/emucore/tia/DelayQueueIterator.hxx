@@ -15,40 +15,42 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef DELAY_QUEUE_WIDGET_HXX
-#define DELAY_QUEUE_WIDGET_HXX
+#ifndef TIA_DELAY_QUEUE_ITERATOR
+#define TIA_DELAY_QUEUE_ITERATOR
 
-#include "Widget.hxx"
+#include "bspf.hxx"
+#include "DelayQueue.hxx"
+#include "DelayQueueMember.hxx"
 
-class DelayQueueWidget : public Widget
+class DelayQueueIterator
 {
-
   public:
 
-    DelayQueueWidget(
-      GuiObject* boss,
-      const GUI::Font& font,
-      int x, int y
-    );
+    DelayQueueIterator(const DelayQueue&);
 
-    void loadConfig() override;
+    bool isValid() const;
 
-  protected:
+    uInt8 delay() const;
 
-    void drawWidget(bool hilite) override;
+    uInt8 address() const;
 
-  private:
+    uInt8 value() const;
 
-    string myLines[3];
+    bool next();
 
   private:
 
-    DelayQueueWidget() = delete;
-    DelayQueueWidget(const DelayQueueWidget&) = delete;
-    DelayQueueWidget(DelayQueueWidget&&) = delete;
-    DelayQueueWidget& operator=(const DelayQueueWidget&);
-    DelayQueueWidget& operator=(DelayQueueWidget&&);
+    uInt8 currentIndex() const {
+      return (myDelayQueue.myIndex +  myDelayCycle) % myDelayQueue.myMembers.size();
+    }
 
+  private:
+
+    const DelayQueue& myDelayQueue;
+
+    uInt8 myDelayCycle;
+
+    DelayQueueMember::iterator myCurrentIterator;
 };
 
-#endif // DELAY_QUEUE_WIDGET_HXX
+#endif // TIA_DELAY_QUEUE_ITERATOR

@@ -185,7 +185,7 @@ bool TIADebug::vdelP0(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELP0, bool(newVal));
 
-  return myTIA.lastValueWrittenToRegister(VDELP0) & 0x01;
+  return myTIA.registerValue(VDELP0) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,7 +194,7 @@ bool TIADebug::vdelP1(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELP1, bool(newVal));
 
-  return myTIA.lastValueWrittenToRegister(VDELP1) & 0x01;
+  return myTIA.registerValue(VDELP1) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,7 +203,7 @@ bool TIADebug::vdelBL(int newVal)
   if(newVal > -1)
     mySystem.poke(VDELBL, bool(newVal));
 
-  return myTIA.lastValueWrittenToRegister(VDELBL) & 0x01;
+  return myTIA.registerValue(VDELBL) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,7 +212,7 @@ bool TIADebug::enaM0(int newVal)
   if(newVal > -1)
     mySystem.poke(ENAM0, bool(newVal) << 1);
 
-  return myTIA.lastValueWrittenToRegister(ENAM0) & 0x02;
+  return myTIA.registerValue(ENAM0) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,7 +221,7 @@ bool TIADebug::enaM1(int newVal)
   if(newVal > -1)
     mySystem.poke(ENAM1, bool(newVal) << 1);
 
-  return myTIA.lastValueWrittenToRegister(ENAM1) & 0x02;
+  return myTIA.registerValue(ENAM1) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,7 +230,7 @@ bool TIADebug::enaBL(int newVal)
   if(newVal > -1)
     mySystem.poke(ENABL, bool(newVal) << 1);
 
-  return myTIA.lastValueWrittenToRegister(ENABL) & 0x02;
+  return myTIA.registerValue(ENABL) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,7 +239,7 @@ bool TIADebug::resMP0(int newVal)
   if(newVal > -1)
     mySystem.poke(RESMP0, bool(newVal) << 1);
 
-  return myTIA.lastValueWrittenToRegister(RESMP0) & 0x02;
+  return myTIA.registerValue(RESMP0) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -248,7 +248,7 @@ bool TIADebug::resMP1(int newVal)
   if(newVal > -1)
     mySystem.poke(RESMP1, bool(newVal) << 1);
 
-  return myTIA.lastValueWrittenToRegister(RESMP1) & 0x02;;
+  return myTIA.registerValue(RESMP1) & 0x02;;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -257,7 +257,7 @@ bool TIADebug::refP0(int newVal)
   if(newVal > -1)
     mySystem.poke(REFP0, bool(newVal) << 3);
 
-  return myTIA.lastValueWrittenToRegister(REFP0) & 0x08;
+  return myTIA.registerValue(REFP0) & 0x08;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,7 +266,7 @@ bool TIADebug::refP1(int newVal)
   if(newVal > -1)
     mySystem.poke(REFP1, bool(newVal) << 3);
 
-  return myTIA.lastValueWrittenToRegister(REFP1) & 0x08;
+  return myTIA.registerValue(REFP1) & 0x08;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,7 +274,7 @@ bool TIADebug::refPF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.lastValueWrittenToRegister(CTRLPF);
+    int tmp = myTIA.registerValue(CTRLPF);
     if(newVal)
       tmp |= 0x01;
     else
@@ -282,7 +282,7 @@ bool TIADebug::refPF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.lastValueWrittenToRegister(CTRLPF) & 0x01;
+  return myTIA.registerValue(CTRLPF) & 0x01;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,7 +290,7 @@ bool TIADebug::scorePF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.lastValueWrittenToRegister(CTRLPF);
+    int tmp = myTIA.registerValue(CTRLPF);
     if(newVal)
       tmp |= 0x02;
     else
@@ -298,7 +298,7 @@ bool TIADebug::scorePF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.lastValueWrittenToRegister(CTRLPF) & 0x02;
+  return myTIA.registerValue(CTRLPF) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -306,7 +306,7 @@ bool TIADebug::priorityPF(int newVal)
 {
   if(newVal > -1)
   {
-    int tmp = myTIA.lastValueWrittenToRegister(CTRLPF);
+    int tmp = myTIA.registerValue(CTRLPF);
     if(newVal)
       tmp |= 0x04;
     else
@@ -314,7 +314,7 @@ bool TIADebug::priorityPF(int newVal)
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return myTIA.lastValueWrittenToRegister(CTRLPF) & 0x04;
+  return myTIA.registerValue(CTRLPF) & 0x04;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -347,7 +347,7 @@ uInt8 TIADebug::audC0(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDC0, newVal);
 
-  return myTIA.lastValueWrittenToRegister(AUDC0) & 0x0f;
+  return myTIA.registerValue(AUDC0) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -356,7 +356,7 @@ uInt8 TIADebug::audC1(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDC1, newVal);
 
-  return myTIA.lastValueWrittenToRegister(AUDC1) & 0x0f;
+  return myTIA.registerValue(AUDC1) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,7 +365,7 @@ uInt8 TIADebug::audV0(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDV0, newVal);
 
-  return myTIA.lastValueWrittenToRegister(AUDV0) & 0x0f;
+  return myTIA.registerValue(AUDV0) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -374,7 +374,7 @@ uInt8 TIADebug::audV1(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDV1, newVal);
 
-  return myTIA.lastValueWrittenToRegister(AUDV1) & 0x0f;
+  return myTIA.registerValue(AUDV1) & 0x0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -383,7 +383,7 @@ uInt8 TIADebug::audF0(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDF0, newVal);
 
-  return myTIA.lastValueWrittenToRegister(AUDF0) & 0x1f;
+  return myTIA.registerValue(AUDF0) & 0x1f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -392,7 +392,7 @@ uInt8 TIADebug::audF1(int newVal)
   if(newVal > -1)
     mySystem.poke(AUDF1, newVal);
 
-  return myTIA.lastValueWrittenToRegister(AUDF1) & 0x1f;
+  return myTIA.registerValue(AUDF1) & 0x1f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -401,7 +401,7 @@ uInt8 TIADebug::pf0(int newVal)
   if(newVal > -1)
     mySystem.poke(PF0, newVal << 4);
 
-  return myTIA.lastValueWrittenToRegister(PF0) >> 4;
+  return myTIA.registerValue(PF0) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -410,7 +410,7 @@ uInt8 TIADebug::pf1(int newVal)
   if(newVal > -1)
     mySystem.poke(PF1, newVal);
 
-  return myTIA.lastValueWrittenToRegister(PF1);
+  return myTIA.registerValue(PF1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -419,7 +419,7 @@ uInt8 TIADebug::pf2(int newVal)
   if(newVal > -1)
     mySystem.poke(PF2, newVal);
 
-  return myTIA.lastValueWrittenToRegister(PF1);
+  return myTIA.registerValue(PF1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -428,7 +428,7 @@ uInt8 TIADebug::coluP0(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUP0, newVal);
 
-  return myTIA.lastValueWrittenToRegister(COLUP0);
+  return myTIA.registerValue(COLUP0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -437,7 +437,7 @@ uInt8 TIADebug::coluP1(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUP1, newVal);
 
-  return myTIA.lastValueWrittenToRegister(COLUP1);
+  return myTIA.registerValue(COLUP1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -446,7 +446,7 @@ uInt8 TIADebug::coluPF(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUPF, newVal);
 
-  return myTIA.lastValueWrittenToRegister(COLUPF);
+  return myTIA.registerValue(COLUPF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,7 +455,7 @@ uInt8 TIADebug::coluBK(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUBK, newVal);
 
-  return myTIA.lastValueWrittenToRegister(COLUBK);
+  return myTIA.registerValue(COLUBK);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -464,7 +464,7 @@ uInt8 TIADebug::nusiz0(int newVal)
   if(newVal > -1)
     mySystem.poke(NUSIZ0, newVal);
 
-  return myTIA.lastValueWrittenToRegister(NUSIZ0);
+  return myTIA.registerValue(NUSIZ0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -473,7 +473,7 @@ uInt8 TIADebug::nusiz1(int newVal)
   if(newVal > -1)
     mySystem.poke(NUSIZ1, newVal);
 
-  return myTIA.lastValueWrittenToRegister(NUSIZ1);
+  return myTIA.registerValue(NUSIZ1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -481,12 +481,12 @@ uInt8 TIADebug::nusizP0(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ0) & ~0x07;
+    uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x07;
     tmp |= (newVal & 0x07);
     mySystem.poke(NUSIZ0, tmp);
   }
 
-  return myTIA.lastValueWrittenToRegister(NUSIZ0) & 0x07;
+  return myTIA.registerValue(NUSIZ0) & 0x07;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -494,12 +494,12 @@ uInt8 TIADebug::nusizP1(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ1) & ~0x07;
+    uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x07;
     tmp |= newVal & 0x07;
     mySystem.poke(NUSIZ1, tmp);
   }
 
-  return myTIA.lastValueWrittenToRegister(NUSIZ1) & 0x07;
+  return myTIA.registerValue(NUSIZ1) & 0x07;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -507,12 +507,12 @@ uInt8 TIADebug::nusizM0(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ0) & ~0x30;
+    uInt8 tmp = myTIA.registerValue(NUSIZ0) & ~0x30;
     tmp |= (newVal & 0x04) << 4;
     mySystem.poke(NUSIZ0, tmp);
   }
 
-  return (myTIA.lastValueWrittenToRegister(NUSIZ0) & 0x30) >> 4;
+  return (myTIA.registerValue(NUSIZ0) & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -520,12 +520,12 @@ uInt8 TIADebug::nusizM1(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.lastValueWrittenToRegister(NUSIZ1) & ~0x30;
+    uInt8 tmp = myTIA.registerValue(NUSIZ1) & ~0x30;
     tmp |= (newVal & 0x04) << 4;
     mySystem.poke(NUSIZ1, tmp);
   }
 
-  return (myTIA.lastValueWrittenToRegister(NUSIZ1) & 0x30) >> 4;
+  return (myTIA.registerValue(NUSIZ1) & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -534,7 +534,7 @@ uInt8 TIADebug::grP0(int newVal)
   if(newVal > -1)
     mySystem.poke(GRP0, newVal);
 
-  return myTIA.lastValueWrittenToRegister(GRP0);
+  return myTIA.registerValue(GRP0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -543,7 +543,7 @@ uInt8 TIADebug::grP1(int newVal)
   if(newVal > -1)
     mySystem.poke(GRP1, newVal);
 
-  return myTIA.lastValueWrittenToRegister(GRP1);
+  return myTIA.registerValue(GRP1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -597,7 +597,7 @@ uInt8 TIADebug::ctrlPF(int newVal)
   if(newVal > -1)
     mySystem.poke(CTRLPF, newVal);
 
-  return myTIA.lastValueWrittenToRegister(CTRLPF);
+  return myTIA.registerValue(CTRLPF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -605,12 +605,12 @@ uInt8 TIADebug::sizeBL(int newVal)
 {
   if(newVal > -1)
   {
-    uInt8 tmp = myTIA.lastValueWrittenToRegister(CTRLPF) & ~0x30;
+    uInt8 tmp = myTIA.registerValue(CTRLPF) & ~0x30;
     tmp |= (newVal & 0x04) << 4;
     mySystem.poke(CTRLPF, tmp);
   }
 
-  return (myTIA.lastValueWrittenToRegister(CTRLPF) & 0x30) >> 4;
+  return (myTIA.registerValue(CTRLPF) & 0x30) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -619,7 +619,7 @@ uInt8 TIADebug::hmP0(int newVal)
   if(newVal > -1)
     mySystem.poke(HMP0, newVal << 4);
 
-  return myTIA.lastValueWrittenToRegister(HMP0) >> 4;
+  return myTIA.registerValue(HMP0) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -628,7 +628,7 @@ uInt8 TIADebug::hmP1(int newVal)
   if(newVal > -1)
     mySystem.poke(HMP1, newVal << 4);
 
-  return myTIA.lastValueWrittenToRegister(HMP1) >> 4;
+  return myTIA.registerValue(HMP1) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -637,7 +637,7 @@ uInt8 TIADebug::hmM0(int newVal)
   if(newVal > -1)
     mySystem.poke(HMM0, newVal << 4);
 
-  return myTIA.lastValueWrittenToRegister(HMM0) >> 4;
+  return myTIA.registerValue(HMM0) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -646,7 +646,7 @@ uInt8 TIADebug::hmM1(int newVal)
   if(newVal > -1)
     mySystem.poke(HMM1, newVal << 4);
 
-  return myTIA.lastValueWrittenToRegister(HMM1) >> 4;
+  return myTIA.registerValue(HMM1) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -655,7 +655,7 @@ uInt8 TIADebug::hmBL(int newVal)
   if(newVal > -1)
     mySystem.poke(HMBL, newVal << 4);
 
-  return myTIA.lastValueWrittenToRegister(HMBL) >> 4;
+  return myTIA.registerValue(HMBL) >> 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -679,13 +679,19 @@ int TIADebug::clocksThisLine() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vsync() const
 {
-  return myTIA.lastValueWrittenToRegister(VSYNC) & 0x02;
+  return myTIA.registerValue(VSYNC) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vblank() const
 {
-  return myTIA.lastValueWrittenToRegister(VBLANK) & 0x02;
+  return myTIA.registerValue(VBLANK) & 0x02;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+shared_ptr<DelayQueueIterator> TIADebug::delayQueueIterator() const
+{
+  return shared_ptr<DelayQueueIterator>(new DelayQueueIterator(myTIA.myDelayQueue));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,8 +13,8 @@ MODULE_OBJS := \
 	src/emucore/tia/Background.o \
 	src/emucore/tia/LatchedInput.o \
 	src/emucore/tia/PaddleReader.o \
-	src/emucore/tia/VblankManager.o
-
+	src/emucore/tia/VblankManager.o \
+	src/emucore/tia/DelayQueueIterator.o
 
 MODULE_DIRS += \
 	src/emucore/tia

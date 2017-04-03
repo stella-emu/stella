@@ -25,6 +25,9 @@
 class DelayQueue : public Serializable
 {
   public:
+    friend class DelayQueueIterator;
+
+  public:
     DelayQueue(uInt8 length, uInt8 size);
 
   public:

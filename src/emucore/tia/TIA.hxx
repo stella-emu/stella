@@ -312,7 +312,7 @@ class TIA : public Device, public PlayfieldPositionProvider
     /**
       Retrieve the last value written to a certain register
     */
-    uInt8 lastValueWrittenToRegister(uInt8 reg) const;
+    uInt8 registerValue(uInt8 reg) const;
 
     /**
       Get the current x value

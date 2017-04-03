@@ -23,6 +23,8 @@ class TiaDebug;
 class TIA;
 
 #include "DebuggerSystem.hxx"
+#include "DelayQueueIterator.hxx"
+#include "bspf.hxx"
 
 // Function type for TIADebug instance methods
 class TIADebug;
@@ -155,6 +157,8 @@ class TIADebug : public DebuggerSystem
     bool vblank() const;
     int vsyncAsInt() const  { return int(vsync());  } // so we can use _vsync pseudo-register
     int vblankAsInt() const { return int(vblank()); } // so we can use _vblank pseudo-register
+
+    shared_ptr<DelayQueueIterator> delayQueueIterator() const;
 
   private:
     /** Display a color patch for color at given index in the palette */

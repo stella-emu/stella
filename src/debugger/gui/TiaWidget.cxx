@@ -915,6 +915,8 @@ void TiaWidget::loadConfig()
 
   // Undriven pins
   myUndrivenPins->setState(tia.tia().driveUnusedPinsRandom());
+
+  myDelayQueueWidget->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
