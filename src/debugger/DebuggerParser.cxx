@@ -986,20 +986,35 @@ void DebuggerParser::executeGfx()
 // "help"
 void DebuggerParser::executeHelp()
 {
-  // Find length of longest command
-  uInt16 clen = 0;
-  for(int i = 0; i < kNumCommands; ++i)
+  if(argCount == 0)  // normal help, show all commands
   {
-    uInt16 len = commands[i].cmdString.length();
-    if(len > clen)  clen = len;
+    // Find length of longest command
+    uInt16 clen = 0;
+    for(int i = 0; i < kNumCommands; ++i)
+    {
+      uInt16 len = commands[i].cmdString.length();
+      if(len > clen)  clen = len;
+    }
+
+    commandResult << setfill(' ');
+    for(int i = 0; i < kNumCommands; ++i)
+      commandResult << setw(clen) << right << commands[i].cmdString
+                    << " - " << commands[i].description << endl;
+
+    commandResult << debugger.builtinHelp();
   }
-
-  commandResult << setfill(' ');
-  for(int i = 0; i < kNumCommands; ++i)
-    commandResult << setw(clen) << right << commands[i].cmdString
-                  << " - " << commands[i].description << endl;
-
-  commandResult << debugger.builtinHelp();
+  else  // get help for specific command
+  {
+    for(int i = 0; i < kNumCommands; ++i)
+    {
+      if(argStrings[0] == commands[i].cmdString)
+      {
+        commandResult << "  " << red(commands[i].description) << endl
+                      << commands[i].extendedDesc;
+        break;
+      }
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1470,6 +1485,7 @@ void DebuggerParser::executeTrapRW(bool read, bool write)
   }
 }
 
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapm"
 void DebuggerParser::executeTrapM()
@@ -1575,6 +1591,7 @@ void DebuggerParser::executeTrapMRW(bool read, bool write)
   commandResult << trapStatus(addr) << " + mirrors from $"
                 << Base::HEX4 << beg << " - $" << end << endl;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "type"
@@ -1666,7 +1683,8 @@ void DebuggerParser::executeZ()
 DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "a",
-    "Set Accumulator to value xx",
+    "Set Accumulator to <value>",
+    "Valid value is 0 - 255\nExample: a ff, a #10",
     true,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -1675,7 +1693,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "base",
-    "Set default base (hex, dec, or bin)",
+    "Set default base to <base>",
+    "Base is hex, dec, or bin\nExample: base hex",
     true,
     true,
     { kARG_BASE_SPCL, kARG_END_ARGS },
@@ -1684,7 +1703,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "break",
-    "Set/clear breakpoint at address xx (default=PC)",
+    "Set/clear breakpoint at <address>",
+    "Command is a toggle, default is current PC\n:Example: break, break f000",
     false,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -1693,7 +1713,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "breakif",
-    "Set breakpoint on condition xx",
+    "Set breakpoint on <condition>",
+    "Condition can include multiple items, see documentation\nExample: breakif _scan>100",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -1703,6 +1724,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "c",
     "Carry Flag: set (0 or 1), or toggle (no arg)",
+    "Example: c, c 0, c 1",
     false,
     true,
     { kARG_BOOL, kARG_END_ARGS },
@@ -1712,6 +1734,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "cheat",
     "Use a cheat code (see manual for cheat types)",
+    "Example: cheat 0040, cheat abff00",
     false,
     false,
     { kARG_LABEL, kARG_END_ARGS },
@@ -1721,6 +1744,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "clearbreaks",
     "Clear all breakpoints",
+    "Example: clearbreaks (no parameters)",
     false,
     true,
     { kARG_END_ARGS },
@@ -1730,6 +1754,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "clearconfig",
     "Clear Distella config directives [bank xx]",
+    "Example: clearconfig 0, clearconfig 1",
     false,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -1739,6 +1764,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "cleartraps",
     "Clear all traps",
+    "All traps cleared, including any mirrored ones\nExample: cleartraps (no parameters)",
     false,
     false,
     { kARG_END_ARGS },
@@ -1748,6 +1774,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "clearwatches",
     "Clear all watches",
+    "Example: clearwatches (no parameters)",
     false,
     false,
     { kARG_END_ARGS },
@@ -1756,7 +1783,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "cls",
-    "Clear prompt area of text and erase history",
+    "Clear prompt area of text",
+    "Completely clears screen, but keeps history of commands",
     false,
     false,
     { kARG_END_ARGS },
@@ -1766,6 +1794,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "code",
     "Mark 'CODE' range in disassembly",
+    "Start and end of range required\nExample: code f000 f010",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -1775,6 +1804,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "colortest",
     "Show value xx as TIA color",
+    "Shows a color swatch for the given value\nExample: colortest 1f",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -1783,7 +1813,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "d",
-    "Decimal Flag: set (0 or 1), or toggle (no arg)",
+    "Carry Flag: set (0 or 1), or toggle (no arg)",
+    "Example: d, d 0, d 1",
     false,
     true,
     { kARG_BOOL, kARG_END_ARGS },
@@ -1793,6 +1824,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "data",
     "Mark 'DATA' range in disassembly",
+    "Start and end of range required\nExample: data f000 f010",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -1802,6 +1834,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "define",
     "Define label xx for address yy",
+    "Example: define LABEL1 f100",
     true,
     true,
     { kARG_LABEL, kARG_WORD, kARG_END_ARGS },
@@ -1810,7 +1843,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "delbreakif",
-    "Delete conditional breakif xx",
+    "Delete conditional breakif <xx>",
+    "Example: delbreakif 0",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -1820,6 +1854,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "delfunction",
     "Delete function with label xx",
+    "Example: delfunction FUNC1",
     true,
     false,
     { kARG_LABEL, kARG_END_ARGS },
@@ -1828,7 +1863,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "delwatch",
-    "Delete watch xx",
+    "Delete watch <xx>",
+    "Example: delwatch 0",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -1838,6 +1874,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "disasm",
     "Disassemble address xx [yy lines] (default=PC)",
+    "Disassembles from starting address <xx> (default=PC) for <yy> lines\n"
+    "Example: disasm, disasm f000 100",
     false,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -1846,7 +1884,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "dump",
-    "Dump 128 bytes of memory at address xx",
+    "Dump 128 bytes of memory at address <xx>",
+    "Example: dump f000",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -1855,7 +1894,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "exec",
-    "Execute script file xx",
+    "Execute script file <xx>",
+    "Example: exec script.dat, exec auto.txt",
     true,
     true,
     { kARG_FILE, kARG_END_ARGS },
@@ -1865,6 +1905,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "exitrom",
     "Exit emulator, return to ROM launcher",
+    "Self-explanatory",
     false,
     false,
     { kARG_END_ARGS },
@@ -1873,7 +1914,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "frame",
-    "Advance emulation by xx frames (default=1)",
+    "Advance emulation by <xx> frames (default=1)",
+    "Example: frame, frame 100",
     false,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -1883,6 +1925,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "function",
     "Define function name xx for expression yy",
+    "Example: define FUNC1 { ... }",
     true,
     false,
     { kARG_LABEL, kARG_WORD, kARG_END_ARGS },
@@ -1891,7 +1934,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "gfx",
-    "Mark 'CFX' range in disassembly",
+    "Mark 'GFX' range in disassembly",
+    "Start and end of range required\nExample: gfx f000 f010",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -1900,16 +1944,19 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "help",
-    "This cruft",
+    "help <command>",
+    "Show all commands, or give function for help on that command\n"
+    "Example: help, help code",
     false,
     false,
-    { kARG_END_ARGS },
+    { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeHelp)
   },
 
   {
     "jump",
     "Scroll disassembly to address xx",
+    "Moves disassembly listing to address <xx>\nExample: jump f400",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -1919,6 +1966,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "listbreaks",
     "List breakpoints",
+    "Example: listbreaks (no parameters)",
     false,
     false,
     { kARG_END_ARGS },
@@ -1928,6 +1976,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "listconfig",
     "List Distella config directives [bank xx]",
+    "Example: listconfig 0, listconfig 1",
     false,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -1937,6 +1986,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "listfunctions",
     "List user-defined functions",
+    "Example: listfunctions (no parameters)",
     false,
     false,
     { kARG_END_ARGS },
@@ -1946,6 +1996,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "listtraps",
     "List traps",
+    "Lists all traps (read and/or write)\nExample: listtraps (no parameters)",
     false,
     false,
     { kARG_END_ARGS },
@@ -1955,6 +2006,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "loadconfig",
     "Load Distella config file",
+    "Example: loadconfig file.cfg",
     false,
     true,
     { kARG_END_ARGS },
@@ -1964,6 +2016,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "loadstate",
     "Load emulator state xx (0-9)",
+    "Example: loadstate 0, loadstate 9",
     true,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -1973,6 +2026,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "n",
     "Negative Flag: set (0 or 1), or toggle (no arg)",
+    "Example: n, n 0, n 1",
     false,
     true,
     { kARG_BOOL, kARG_END_ARGS },
@@ -1982,6 +2036,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "pc",
     "Set Program Counter to address xx",
+    "Example: pc f000",
     true,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -1991,6 +2046,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "pgfx",
     "Mark 'PGFX' range in disassembly",
+    "Start and end of range required\nExample: pgfx f000 f010",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2000,6 +2056,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "print",
     "Evaluate/print expression xx in hex/dec/binary",
+    "Almost anything can be printed (constants, expressions, registers)\n"
+    "Example: print pc, print f000",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -2009,6 +2067,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "ram",
     "Show ZP RAM, or set address xx to yy1 [yy2 ...]",
+    "Example: ram, ram 80 00 ...",
     false,
     true,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2018,6 +2077,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "reset",
     "Reset system to power-on state",
+    "System is completely reset, just as if it was just powered on",
     false,
     true,
     { kARG_END_ARGS },
@@ -2027,6 +2087,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "rewind",
     "Rewind state to last step/trace/scanline/frame",
+    "Rewind currently only works in the debugger",
     false,
     true,
     { kARG_END_ARGS },
@@ -2036,6 +2097,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "riot",
     "Show RIOT timer/input status",
+    "Display text-based output of the contents of the RIOT tab",
     false,
     false,
     { kARG_END_ARGS },
@@ -2045,6 +2107,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "rom",
     "Set ROM address xx to yy1 [yy2 ...]",
+    "What happens here depends on the current bankswitching scheme\n"
+    "Example: rom f000 00 01 ff ...",
     true,
     true,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2054,6 +2118,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "row",
     "Mark 'ROW' range in disassembly",
+    "Start and end of range required\nExample: row f000 f010",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2063,6 +2128,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "run",
     "Exit debugger, return to emulator",
+    "Self-explanatory",
     false,
     false,
     { kARG_END_ARGS },
@@ -2072,6 +2138,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "runto",
     "Run until string xx in disassembly",
+    "Advance until the given string is detected in the disassembly\n"
+    "Example: runto lda",
     true,
     true,
     { kARG_LABEL, kARG_END_ARGS },
@@ -2081,6 +2149,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "runtopc",
     "Run until PC is set to value xx",
+    "Example: runtopc f200",
     true,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -2090,6 +2159,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "s",
     "Set Stack Pointer to value xx",
+    "Example: s f0",
     true,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -2099,6 +2169,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "save",
     "Save breaks, watches, traps to file xx",
+    "Example: save commands.txt",
     true,
     false,
     { kARG_FILE, kARG_END_ARGS },
@@ -2108,6 +2179,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "saveconfig",
     "Save Distella config file",
+    "Example: saveconfig file.cfg",
     false,
     false,
     { kARG_END_ARGS },
@@ -2117,6 +2189,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "savedis",
     "Save Distella disassembly",
+    "Example: savedis file.asm",
     false,
     false,
     { kARG_END_ARGS },
@@ -2126,6 +2199,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "saverom",
     "Save (possibly patched) ROM",
+    "Example: savedrom file.bin",
     false,
     false,
     { kARG_END_ARGS },
@@ -2135,6 +2209,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "saveses",
     "Save console session to file xx",
+    "Example: saveses session.txt",
     true,
     false,
     { kARG_FILE, kARG_END_ARGS },
@@ -2144,6 +2219,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "savesnap",
     "Save current TIA image to PNG file",
+    "Save snapshot to current snapshot save directory\n"
+    "Example: savesnap (no parameters)",
     false,
     false,
     { kARG_END_ARGS },
@@ -2153,6 +2230,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "savestate",
     "Save emulator state xx (valid args 0-9)",
+    "Example: savestate 0, savestate 9",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -2161,7 +2239,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "scanline",
-    "Advance emulation by xx scanlines (default=1)",
+    "Advance emulation by <xx> scanlines (default=1)",
+    "Example: scanline, scanline 100",
     false,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -2171,6 +2250,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "step",
     "Single step CPU [with count xx]",
+    "Example: step, step 100",
     false,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -2179,7 +2259,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "tia",
-    "Show TIA state (NOT FINISHED YET)",
+    "Show TIA state",
+    "Display text-based output of the contents of the TIA tab",
     false,
     false,
     { kARG_END_ARGS },
@@ -2189,6 +2270,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trace",
     "Single step CPU over subroutines [with count xx]",
+    "Example: trace, trace 100",
     false,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -2198,6 +2280,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trap",
     "Trap read/write access to address(es) xx [to yy]",
+    "Set a R/W trap on the given address(es) and all mirrors\n"
+    "Example: trap f000, trap f000 f100",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2207,6 +2291,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trapread",
     "Trap read access to address(es) xx [to yy]",
+    "Set a read trap on the given address(es) and all mirrors\n"
+    "Example: trapread f000, trapread f000 f100",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2216,6 +2302,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trapwrite",
     "Trap write access to address(es) xx [to yy]",
+    "Set a write trap on the given address(es) and all mirrors\n"
+    "Example: trapwrite f000, trapwrite f000 f100",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2223,35 +2311,9 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
-    "trapm",
-    "Trap read/write access to address xx (+mirrors)",
-    true,
-    false,
-    { kARG_WORD, kARG_MULTI_WORD },
-    std::mem_fn(&DebuggerParser::executeTrapM)
-  },
-
-  {
-    "trapreadm",
-    "Trap read access to address xx (+mirrors)",
-    true,
-    false,
-    { kARG_WORD, kARG_MULTI_WORD },
-    std::mem_fn(&DebuggerParser::executeTrapreadM)
-  },
-
-  {
-    "trapwritem",
-    "Trap write access to address xx (+mirrors)",
-    true,
-    false,
-    { kARG_WORD, kARG_MULTI_WORD },
-    std::mem_fn(&DebuggerParser::executeTrapwriteM)
-  },
-
-  {
     "type",
     "Show disassembly type for address xx [to yy]",
+    "Example: type f000, type f000 f010",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2261,6 +2323,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "uhex",
     "Toggle upper/lowercase HEX display",
+    "Note: not all hex output can be changed\n"
+    "Example: uhex (no parameters)",
     false,
     true,
     { kARG_END_ARGS },
@@ -2270,6 +2334,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "undef",
     "Undefine label xx (if defined)",
+    "Example: undef LABEL1",
     true,
     true,
     { kARG_LABEL, kARG_END_ARGS },
@@ -2279,6 +2344,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "v",
     "Overflow Flag: set (0 or 1), or toggle (no arg)",
+    "Example: v, v 0, v 1",
     false,
     true,
     { kARG_BOOL, kARG_END_ARGS },
@@ -2288,6 +2354,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "watch",
     "Print contents of address xx before every prompt",
+    "Example: watch ram_80",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
@@ -2297,6 +2364,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "x",
     "Set X Register to value xx",
+    "Valid value is 0 - 255\nExample: x ff, x #10",
     true,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -2306,6 +2374,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "y",
     "Set Y Register to value xx",
+    "Valid value is 0 - 255\nExample: y ff, y #10",
     true,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -2315,6 +2384,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "z",
     "Zero Flag: set (0 or 1), or toggle (no arg)",
+    "Example: z, z 0, z 1",
     false,
     true,
     { kARG_BOOL, kARG_END_ARGS },

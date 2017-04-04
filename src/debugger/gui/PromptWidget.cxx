@@ -240,11 +240,19 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       else
       {
-        // we got a delimiter, so this must be a label or a function
-        const Debugger& dbg = instance().debugger();
+        // Special case for 'help' command
+        if(BSPF::startsWithIgnoreCase(str, "help"))
+        {
+          instance().debugger().parser().getCompletions(str + lastDelimPos + 1, list);
+        }
+        else
+        {
+          // we got a delimiter, so this must be a label or a function
+          const Debugger& dbg = instance().debugger();
 
-        dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
-        dbg.getCompletions(str + lastDelimPos + 1, list);
+          dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
+          dbg.getCompletions(str + lastDelimPos + 1, list);
+        }
 
         if(list.size() < 1)
           break;

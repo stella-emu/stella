@@ -30,8 +30,15 @@
     files before starting another instance of the same ROM, when the ROM
     was opened in the ROM launcher.
 
-  * Fixed trap'm' debugger commands when setting TIA read addresses; it
-    was previously only working for write addresses.
+  * Various improvements to the debugger prompt:
+    - The 'cls' command now only clears the screen, not the history
+    - The 'help' command now accepts other commands, and gives extra
+      information about the command (ie, 'help breakif' prints extended
+      information about the breakif command)
+    - The previous trap'm' commands now work when setting TIA read
+      addresses; previously they only worked for write addresses
+    - Command completion now works with internal functions and pseudo-ops
+      (basically, anything starting with the '_' character)
 
   * Mouse grabbing is now enabled in windowed mode only when the ROM is
     using a virtual analog controller (paddles, trakball, etc).
