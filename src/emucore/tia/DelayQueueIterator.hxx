@@ -25,7 +25,6 @@
 class DelayQueueIterator
 {
   public:
-
     DelayQueueIterator(const DelayQueue&);
 
     bool isValid() const;
@@ -39,17 +38,14 @@ class DelayQueueIterator
     bool next();
 
   private:
-
     uInt8 currentIndex() const {
       return (myDelayQueue.myIndex +  myDelayCycle) % myDelayQueue.myMembers.size();
     }
 
   private:
-
     const DelayQueue& myDelayQueue;
 
     uInt8 myDelayCycle;
-
     DelayQueueMember::iterator myCurrentIterator;
 };
 

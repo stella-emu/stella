@@ -22,33 +22,28 @@
 
 class DelayQueueWidget : public Widget
 {
-
   public:
-
     DelayQueueWidget(
       GuiObject* boss,
       const GUI::Font& font,
       int x, int y
     );
+    virtual ~DelayQueueWidget() = default;
 
     void loadConfig() override;
 
   protected:
-
     void drawWidget(bool hilite) override;
 
   private:
-
     string myLines[3];
 
   private:
-
     DelayQueueWidget() = delete;
     DelayQueueWidget(const DelayQueueWidget&) = delete;
     DelayQueueWidget(DelayQueueWidget&&) = delete;
     DelayQueueWidget& operator=(const DelayQueueWidget&);
     DelayQueueWidget& operator=(DelayQueueWidget&&);
-
 };
 
 #endif // DELAY_QUEUE_WIDGET_HXX
