@@ -218,7 +218,7 @@ void DelayQueueWidget::drawWidget(bool hilite)
   y += 1;
   x += 1;
   w -= 1;
-  surface.fillRect(x, y, w - 1, _h - 2, kWidColor);
+  surface.fillRect(x, y, w - 1, _h - 2, kBGColorLo);
 
   y += 2;
   x += 2;

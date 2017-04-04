@@ -88,7 +88,7 @@ bool DelayQueueIterator::next()
       else
         break;
     }
-
-    return isValid();
   }
+
+  return isValid();
 }

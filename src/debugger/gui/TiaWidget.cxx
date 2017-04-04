@@ -523,21 +523,21 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
 
-  // How to handle undriven pins
-  xpos = 10;  ypos += 2*lineHeight;
-  myUndrivenPins = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-      "Drive unused TIA pins randomly on a read/peek", kPPinCmd);
-  myUndrivenPins->setTarget(this);
-  addFocusWidget(myUndrivenPins);
-
   xpos = 10;
-  ypos += 2*lineHeight;
+  ypos += 2 * lineHeight;
   new StaticTextWidget(boss, lfont, xpos, ypos, 20*fontWidth, fontHeight,
     "Queued Writes:", kTextAlignLeft);
 
   ypos += 1.3*lineHeight;
   xpos = 10;
   myDelayQueueWidget = new DelayQueueWidget(boss, lfont, xpos, ypos);
+
+  // How to handle undriven pins
+  xpos = 10;  ypos += (myDelayQueueWidget->getHeight() + lineHeight);
+  myUndrivenPins = new CheckboxWidget(boss, lfont, xpos, ypos+1,
+      "Drive unused TIA pins randomly on a read/peek", kPPinCmd);
+  myUndrivenPins->setTarget(this);
+  addFocusWidget(myUndrivenPins);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

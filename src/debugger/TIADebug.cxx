@@ -419,7 +419,7 @@ uInt8 TIADebug::pf2(int newVal)
   if(newVal > -1)
     mySystem.poke(PF2, newVal);
 
-  return myTIA.registerValue(PF1);
+  return myTIA.registerValue(PF2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
