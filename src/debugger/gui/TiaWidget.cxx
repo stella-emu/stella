@@ -525,11 +525,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   xpos = 10;
   ypos += 2 * lineHeight;
-  new StaticTextWidget(boss, lfont, xpos, ypos, 20*fontWidth, fontHeight,
+  t = new StaticTextWidget(boss, lfont, xpos, ypos, 14*fontWidth, fontHeight,
     "Queued Writes:", kTextAlignLeft);
 
-  ypos += 1.3*lineHeight;
-  xpos = 10;
+  xpos += t->getWidth() + 10;
   myDelayQueueWidget = new DelayQueueWidget(boss, lfont, xpos, ypos);
 
   // How to handle undriven pins
@@ -888,20 +887,16 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // PF register info
   ////////////////////////////
-  int pfx_bgcolor = !tia.priorityPF() ? state.coluRegs[3] : -1;
   // PF0
   myPF[0]->setColor(state.coluRegs[2]);
-  myPF[0]->setBackgroundColor(pfx_bgcolor);
   myPF[0]->setIntState(state.pf[0], true);  // reverse bit order
 
   // PF1
   myPF[1]->setColor(state.coluRegs[2]);
-  myPF[1]->setBackgroundColor(pfx_bgcolor);
   myPF[1]->setIntState(state.pf[1], false);
 
   // PF2
   myPF[2]->setColor(state.coluRegs[2]);
-  myPF[2]->setBackgroundColor(pfx_bgcolor);
   myPF[2]->setIntState(state.pf[2], true);  // reverse bit order
 
   // Reflect
