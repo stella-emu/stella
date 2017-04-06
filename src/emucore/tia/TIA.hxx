@@ -349,21 +349,23 @@ class TIA : public Device, public PlayfieldPositionProvider
     enum Priority {pfp, score, normal};
 
     enum FixedColors {
-      P0ColorNTSC = 0x30,
-      P1ColorNTSC = 0x16,
-      M0ColorNTSC = 0x38,
-      M1ColorNTSC = 0x12,
-      BLColorNTSC = 0x7e,
-      PFColorNTSC = 0x76,
-      BKColorNTSC = 0x0a,
-      P0ColorPAL  = 0x62,
-      P1ColorPAL  = 0x26,
-      M0ColorPAL  = 0x68,
-      M1ColorPAL  = 0x2e,
-      BLColorPAL  = 0xde,
-      PFColorPAL  = 0xd8,
-      BKColorPAL  = 0x1c,
-      HBLANKColor = 0x0e
+      P0ColorNTSC = 0x30, // red
+      M0ColorNTSC = 0x38, // orange
+      P1ColorNTSC = 0x1c, // yellow
+      M1ColorNTSC = 0xc4, // green
+      BLColorNTSC = 0x9e, // blue
+      PFColorNTSC = 0x66, // purple
+      BKColorNTSC = 0x0a, // grey
+
+      P0ColorPAL  = 0x62, // red
+      M0ColorPAL  = 0x4a, // orange
+      P1ColorPAL  = 0x2e, // yellow
+      M1ColorPAL  = 0x34, // green
+      BLColorPAL  = 0xbc, // blue
+      PFColorPAL  = 0xa6, // purple
+      BKColorPAL  = 0x0a, // grey
+
+      HBLANKColor = 0x0e  // white
     };
 
   private:
