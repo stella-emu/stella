@@ -1151,6 +1151,13 @@ void DebuggerParser::executeN()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "palette"
+void DebuggerParser::executePalette()
+{
+  commandResult << debugger.tiaDebug().palette();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "pc"
 void DebuggerParser::executePc()
 {
@@ -2031,6 +2038,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_BOOL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeN)
+  },
+
+  {
+    "palette",
+    "Show current TIA palette",
+    "Example: palette (no parameters)",
+    false,
+    false,
+    { kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executePalette)
   },
 
   {

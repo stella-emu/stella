@@ -695,7 +695,7 @@ shared_ptr<DelayQueueIterator> TIADebug::delayQueueIterator() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::colorSwatch(uInt8 c)
+string TIADebug::colorSwatch(uInt8 c) const
 {
   string ret;
 
@@ -743,6 +743,24 @@ string TIADebug::booleanWithLabel(string label, bool value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::palette() const
+{
+  ostringstream buf;
+
+  buf << "     0     2     4     6     8     A     C     E\n";
+  uInt8 c = 0;
+  for(uInt16 row = 0; row < 16; ++row)
+  {
+    buf << " " << Common::Base::HEX1 << row << " ";
+    for(uInt16 col = 0; col < 8; ++col, c += 2)
+      buf << colorSwatch(c);
+
+    buf << endl;
+  }
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::toString()
 {
   ostringstream buf;
@@ -776,11 +794,11 @@ string TIADebug::toString()
       << "COLUxx: "
       << "P0=$" << Common::Base::HEX2 << state.coluRegs[0] << "/"
       << colorSwatch(state.coluRegs[0])
-      << "P1=$" << Common::Base::HEX2 << state.coluRegs[1] << "/"
+      << " P1=$" << Common::Base::HEX2 << state.coluRegs[1] << "/"
       << colorSwatch(state.coluRegs[1])
-      << "PF=$" << Common::Base::HEX2 << state.coluRegs[2] << "/"
+      << " PF=$" << Common::Base::HEX2 << state.coluRegs[2] << "/"
       << colorSwatch(state.coluRegs[2])
-      << "BK=$" << Common::Base::HEX2 << state.coluRegs[3] << "/"
+      << " BK=$" << Common::Base::HEX2 << state.coluRegs[3] << "/"
       << colorSwatch(state.coluRegs[3])
       << endl
       << "P0: GR=%" << Common::Base::toString(state.gr[P0], Common::Base::F_2_8)

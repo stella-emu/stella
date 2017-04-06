@@ -35,6 +35,8 @@
     - The 'help' command now accepts other commands, and gives extra
       information about the command (ie, 'help breakif' prints extended
       information about the breakif command)
+    - Added 'palette' command, which shows a color swatch of the
+      currently active TIA palette
     - The previous trap'm' commands now work when setting TIA read
       addresses; previously they only worked for write addresses
     - Command completion now works with internal functions and pseudo-ops
