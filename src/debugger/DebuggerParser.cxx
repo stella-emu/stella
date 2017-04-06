@@ -1459,75 +1459,77 @@ void DebuggerParser::executeTrace()
 // "trap"
 void DebuggerParser::executeTrap()
 {
-  executeTrapRW(true, true);
+  if(argCount > 2)
+  {
+    commandResult << red("Command takes one or two arguments") << endl;
+    return;
+  }
+
+  uInt32 beg = args[0];
+  uInt32 end = argCount == 2 ? args[1] : beg;
+  if(beg > 0xFFFF || end > 0xFFFF)
+  {
+    commandResult << red("One or more addresses are invalid") << endl;
+    return;
+  }
+
+  for(uInt32 addr = beg; addr <= end; ++addr)
+    executeTrapRW(addr, true, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapread"
 void DebuggerParser::executeTrapread()
 {
-  executeTrapRW(true, false);
+  if(argCount > 2)
+  {
+    commandResult << red("Command takes one or two arguments") << endl;
+    return;
+  }
+
+  uInt32 beg = args[0];
+  uInt32 end = argCount == 2 ? args[1] : beg;
+  if(beg > 0xFFFF || end > 0xFFFF)
+  {
+    commandResult << red("One or more addresses are invalid") << endl;
+    return;
+  }
+
+  for(uInt32 addr = beg; addr <= end; ++addr)
+    executeTrapRW(addr, true, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapwrite"
 void DebuggerParser::executeTrapwrite()
 {
-  executeTrapRW(false, true);
+  if(argCount > 2)
+  {
+    commandResult << red("Command takes one or two arguments") << endl;
+    return;
+  }
+
+  uInt32 beg = args[0];
+  uInt32 end = argCount == 2 ? args[1] : beg;
+  if(beg > 0xFFFF || end > 0xFFFF)
+  {
+    commandResult << red("One or more addresses are invalid") << endl;
+    return;
+  }
+
+  for(uInt32 addr = beg; addr <= end; ++addr)
+    executeTrapRW(addr, false, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // wrapper function for trap/trapread/trapwrite commands
-void DebuggerParser::executeTrapRW(bool read, bool write)
+void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
 {
-  uInt32 beg = args[0];
-  uInt32 end = argCount >= 2 ? args[1] : beg;
-  if(beg > end)  std::swap(beg, end);
-
-  for(uInt32 i = beg; i <= end; ++i)
-  {
-    if(read)  debugger.toggleReadTrap(i);
-    if(write) debugger.toggleWriteTrap(i);
-    commandResult << trapStatus(i) << endl;
-  }
-}
-
-#if 0
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapm"
-void DebuggerParser::executeTrapM()
-{
-  executeTrapMRW(true, true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapreadm"
-void DebuggerParser::executeTrapreadM()
-{
-  executeTrapMRW(true, false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapwritem"
-void DebuggerParser::executeTrapwriteM()
-{
-  executeTrapMRW(false, true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// wrapper function for trapm/trapreadm/trapwritem commands
-void DebuggerParser::executeTrapMRW(bool read, bool write)
-{
-  uInt32 addr = args[0];
-  uInt32 beg = argCount > 1 ? args[1] : 0;
-  uInt32 end = argCount > 2 ? args[2] : 0xFFFF;
-  if(beg > end)  std::swap(beg, end);
-
   switch(debugger.cartDebug().addressType(addr))
   {
     case CartDebug::ADDR_TIA:
     {
-      for(uInt32 i = beg; i <= end; ++i)
+      for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
         if((i & 0x1080) == 0x0000)
         {
@@ -1541,7 +1543,7 @@ void DebuggerParser::executeTrapMRW(bool read, bool write)
     }
     case CartDebug::ADDR_IO:
     {
-      for(uInt32 i = beg; i <= end; ++i)
+      for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
         if((i & 0x1080) == 0x0080 && (i & 0x0200) != 0x0000 && (i & 0x02FF) == addr)
         {
@@ -1553,7 +1555,7 @@ void DebuggerParser::executeTrapMRW(bool read, bool write)
     }
     case CartDebug::ADDR_ZPRAM:
     {
-      for(uInt32 i = beg; i <= end; ++i)
+      for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
         if((i & 0x1080) == 0x0080 && (i & 0x0200) == 0x0000 && (i & 0x00FF) == addr)
         {
@@ -1565,40 +1567,23 @@ void DebuggerParser::executeTrapMRW(bool read, bool write)
     }
     case CartDebug::ADDR_ROM:
     {
-      // Enforce range?
-      if(argCount > 1)
+      if(addr >= 0x1000 && addr <= 0xFFFF)
       {
-        if(beg < addr) beg = addr & 0xF000;
-        if(end < beg)  beg = end;
-      }
-      else
-      {
-        beg = 0x1000;
-        end = 0xFFFF;
-      }
-
-      // Are we in range?
-      if(!(addr >= beg && addr <= end))
-      {
-        commandResult << "Address " << addr << " is outside range" << endl;
-        return;
-      }
-      for(uInt32 i = beg; i <= end; ++i)
-      {
-        if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
+        for(uInt32 i = 0x1000; i <= 0xFFFF; ++i)
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
+          {
+            if(read)  debugger.toggleReadTrap(i);
+            if(write) debugger.toggleWriteTrap(i);
+          }
         }
       }
       break;
     }
   }
 
-  commandResult << trapStatus(addr) << " + mirrors from $"
-                << Base::HEX4 << beg << " - $" << end << endl;
+  commandResult << trapStatus(addr) << " + mirrors" << endl;
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "type"

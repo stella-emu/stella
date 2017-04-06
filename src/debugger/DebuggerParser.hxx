@@ -180,7 +180,7 @@ class DebuggerParser
     void executeTrap();
     void executeTrapread();
     void executeTrapwrite();
-    void executeTrapRW(bool read, bool write);  // not exposed by debugger
+    void executeTrapRW(uInt32 addr, bool read, bool write);  // not exposed by debugger
     void executeType();
     void executeUHex();
     void executeUndef();

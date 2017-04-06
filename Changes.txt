@@ -14,6 +14,8 @@
 
 4.7.3 to 5.0: (xxx. xx, 2017)
 
+  * Stella has moved from Sourceforge to Github.
+
   * New TIA core: TODO - gather info on all new functionality:
     - RSYNC
     - YStart autodetection
@@ -24,7 +26,8 @@
     finding documentation that finally describes in more detail how the
     M6532 chip actually works.
 
-  * Added BUS and CDF bankswitching schemes, thanks to SpiceWare.
+  * Added BUS and CDF bankswitching schemes, and also ARM Timer 1
+    support; special thanks to SpiceWare for the code.
 
   * Fixed bug with SaveKey and AtariVox not properly closing their memory
     files before starting another instance of the same ROM, when the ROM
@@ -39,8 +42,11 @@
       currently active TIA palette
     - The previous trap'm' commands now work when setting TIA read
       addresses; previously they only worked for write addresses
+    - The previous trap'm' commands are now renamed 'trap', 'trapread'
+      and 'trapwrite'
     - Command completion now works with internal functions and pseudo-ops
       (basically, anything starting with the '_' character)
+    - In general, input error checking is much more strictly enforced.
 
   * Mouse grabbing is now enabled in windowed mode only when the ROM is
     using a virtual analog controller (paddles, trakball, etc).
@@ -61,7 +67,7 @@
     this bug has only ever occurred in Windows XP, but it's been there
     since Stella 4.1.
 
-  * When in 'ROM launcher mode', Stella now uses less CPU time.
+  * When in 'ROM launcher mode', Stella now uses slightly less CPU time.
 
   * Added ROM properties for D.K. VCS homebrew ROM, thanks to Andreas
     Dietrich.
