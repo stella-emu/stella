@@ -283,6 +283,7 @@
     <ClCompile Include="..\debugger\gui\CartUAWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartWDWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartX07Widget.cxx" />
+    <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
     <ClCompile Include="..\debugger\gui\JoystickWidget.cxx" />
@@ -316,6 +317,7 @@
     <ClCompile Include="..\emucore\tia\Background.cxx" />
     <ClCompile Include="..\emucore\tia\Ball.cxx" />
     <ClCompile Include="..\emucore\tia\DelayQueue.cxx" />
+    <ClCompile Include="..\emucore\tia\DelayQueueIterator.cxx" />
     <ClCompile Include="..\emucore\tia\DelayQueueMember.cxx" />
     <ClCompile Include="..\emucore\tia\DrawCounterDecodes.cxx" />
     <ClCompile Include="..\emucore\tia\FrameManager.cxx" />
@@ -559,6 +561,7 @@
     <ClInclude Include="..\debugger\gui\CartWDWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartX07Widget.hxx" />
     <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\DelayQueueWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />
     <ClInclude Include="..\debugger\gui\GenesisWidget.hxx" />
     <ClInclude Include="..\debugger\gui\JoystickWidget.hxx" />
@@ -593,6 +596,7 @@
     <ClInclude Include="..\emucore\tia\Background.hxx" />
     <ClInclude Include="..\emucore\tia\Ball.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueue.hxx" />
+    <ClInclude Include="..\emucore\tia\DelayQueueIterator.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueueMember.hxx" />
     <ClInclude Include="..\emucore\tia\DrawCounterDecodes.hxx" />
     <ClInclude Include="..\emucore\tia\FrameLayout.hxx" />

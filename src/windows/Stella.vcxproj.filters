@@ -849,6 +849,12 @@
     <ClCompile Include="..\emucore\CartCDF.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\DelayQueueIterator.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1714,6 +1720,12 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartCDFWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\DelayQueueWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\DelayQueueIterator.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
