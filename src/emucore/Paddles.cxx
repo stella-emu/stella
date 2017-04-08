@@ -26,7 +26,9 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     myMPaddleIDX(-1),
     myMPaddleIDY(-1)
 {
-  myAnalogPinValue[Nine] = myAnalogPinValue[Five] = 0;
+  // We must start with minimum resistance; see commit
+  // 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
+  myAnalogPinValue[Nine] = myAnalogPinValue[Five] = minimumResistance;
 
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex
