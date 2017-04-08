@@ -59,6 +59,7 @@ class TIADebug : public DebuggerSystem
 
     void saveOldState() override;
     string toString() override;
+    string debugColors() const;
     string palette() const;
 
     // TIA byte (or part of a byte) registers

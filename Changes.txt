@@ -40,6 +40,8 @@
       information about the breakif command)
     - Added 'palette' command, which shows a color swatch of the
       currently active TIA palette
+    - Added 'debugcolors' command, which shows a legend for 'fixed debug
+      colors' mode
     - The previous trap'm' commands now work when setting TIA read
       addresses; previously they only worked for write addresses
     - The previous trap'm' commands are now renamed 'trap', 'trapread'

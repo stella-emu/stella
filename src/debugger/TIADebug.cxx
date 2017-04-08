@@ -743,6 +743,36 @@ string TIADebug::booleanWithLabel(string label, bool value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::debugColors() const
+{
+  ostringstream buf;
+
+  if(myTIA.myFrameManager.layout() == FrameLayout::ntsc)
+  {
+    buf << " Red    " << colorSwatch(myTIA.P0ColorNTSC) << " Player 0\n"
+        << " Orange " << colorSwatch(myTIA.M0ColorNTSC) << " Missile 0\n"
+        << " Yellow " << colorSwatch(myTIA.P1ColorNTSC) << " Player 1\n"
+        << " Green  " << colorSwatch(myTIA.M1ColorNTSC) << " Missile 1\n"
+        << " Blue   " << colorSwatch(myTIA.BLColorNTSC) << " Ball\n"
+        << " Purple " << colorSwatch(myTIA.PFColorNTSC) << " Playfield\n"
+        << " Grey   " << colorSwatch(myTIA.BKColorNTSC) << " Background\n"
+        << " White  " << colorSwatch(myTIA.HBLANKColor) << " HMOVE\n";
+  }
+  else
+  {
+    buf << " Red    " << colorSwatch(myTIA.P0ColorPAL)  << " Player 0\n"
+        << " Orange " << colorSwatch(myTIA.M0ColorPAL)  << " Missile 0\n"
+        << " Yellow " << colorSwatch(myTIA.P1ColorPAL)  << " Player 1\n"
+        << " Green  " << colorSwatch(myTIA.M1ColorPAL)  << " Missile 1\n"
+        << " Blue   " << colorSwatch(myTIA.BLColorPAL)  << " Ball\n"
+        << " Purple " << colorSwatch(myTIA.PFColorPAL)  << " Playfield\n"
+        << " Grey   " << colorSwatch(myTIA.BKColorPAL)  << " Background\n"
+        << " White  " << colorSwatch(myTIA.HBLANKColor) << " HMOVE\n";
+  }
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::palette() const
 {
   ostringstream buf;

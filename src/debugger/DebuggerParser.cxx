@@ -838,6 +838,13 @@ void DebuggerParser::executeData()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "debugcolors"
+void DebuggerParser::executeDebugColors()
+{
+  commandResult << debugger.tiaDebug().debugColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "define"
 void DebuggerParser::executeDefine()
 {
@@ -1821,6 +1828,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeData)
+  },
+
+  {
+    "debugcolors",
+    "Show Fixed Debug Colors information",
+    "Example: debugcolors (no parameters)",
+    false,
+    false,
+    { kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeDebugColors)
   },
 
   {
