@@ -112,7 +112,7 @@ class DebuggerParser
     // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;
     StringList argStrings;
-    int argCount;
+    uInt32 argCount;
 
     StringList watches;
 

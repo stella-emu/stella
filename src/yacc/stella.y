@@ -93,8 +93,8 @@ expression:	expression '+' expression { if(DEBUG_EXP) fprintf(stderr, " +"); $$ 
 	|	'>' expression { if(DEBUG_EXP) fprintf(stderr, " U>");  $$ = new HiByteExpression($2);  lastExp = $$; }
 	|	'(' expression ')'	{ if(DEBUG_EXP) fprintf(stderr, " ()"); $$ = $2; lastExp = $$; }
 	|	expression '[' expression ']' { if(DEBUG_EXP) fprintf(stderr, " []"); $$ = new ByteDerefOffsetExpression($1, $3); lastExp = $$; }
-	|	NUMBER { if(DEBUG_EXP) fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); lastExp = $$; }
-	|	EQUATE { if(DEBUG_EXP) fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); lastExp = $$; }
+	|	NUMBER { if(DEBUG_EXP) fprintf(stderr, "const %d", $1); $$ = new ConstExpression($1); lastExp = $$; }
+	|	EQUATE { if(DEBUG_EXP) fprintf(stderr, "equate %s", $1); $$ = new EquateExpression($1); lastExp = $$; }
 	|	CPU_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CpuMethod)"); $$ = new CpuMethodExpression($1); lastExp = $$; }
 	|	CART_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CartMethod)"); $$ = new CartMethodExpression($1); lastExp = $$; }
 	|	TIA_METHOD { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); $$ = new TiaMethodExpression($1); lastExp = $$; }

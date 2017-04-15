@@ -219,9 +219,9 @@ class Debugger : public DialogContainer
     void setAccessFlags(uInt16 addr, uInt8 flags)
       { mySystem.setAccessFlags(addr, flags); }
 
-    void setBreakPoint(int bp, bool set);
+    void setBreakPoint(uInt16 bp, bool set);
 
-    bool patchROM(int addr, int value);
+    bool patchROM(uInt16 addr, uInt8 value);
 
     /**
       Normally, accessing RAM or ROM during emulation can possibly trigger
@@ -256,14 +256,14 @@ class Debugger : public DialogContainer
     void nextFrame(int frames);
     bool rewindState();
 
-    void toggleBreakPoint(int bp);
+    void toggleBreakPoint(uInt16 bp);
 
-    bool breakPoint(int bp);
-    void toggleReadTrap(int t);
-    void toggleWriteTrap(int t);
-    void toggleTrap(int t);
-    bool readTrap(int t);
-    bool writeTrap(int t);
+    bool breakPoint(uInt16 bp);
+    void toggleReadTrap(uInt16 t);
+    void toggleWriteTrap(uInt16 t);
+    void toggleTrap(uInt16 t);
+    bool readTrap(uInt16 t);
+    bool writeTrap(uInt16 t);
     void clearAllTraps();
 
     // Set a bunch of RAM locations at once

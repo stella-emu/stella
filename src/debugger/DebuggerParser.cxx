@@ -66,8 +66,8 @@ DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
 // main entry point: PromptWidget calls this method.
 string DebuggerParser::run(const string& command)
 {
-  /*
-    // this was our parser test code. Left for reference.
+#if 0
+  // this was our parser test code. Left for reference.
   static Expression *lastExpression;
 
   // special case: parser testing
@@ -99,14 +99,10 @@ string DebuggerParser::run(const string& command)
       commandResult = "no valid expr";
     return commandResult;
   }
-  */
+#endif
 
   string verb;
   getArgs(command, verb);
-#ifdef EXPR_REF_COUNT
-  extern int refCount;
-  cerr << "Expression count: " << refCount << endl;
-#endif
   commandResult.str("");
 
   for(int i = 0; i < kNumCommands; ++i)
@@ -373,24 +369,9 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   if(curArg != "")
     argStrings.push_back(curArg);
 
-  argCount = int(argStrings.size());
-  /*
-  cerr << "verb = " << verb << endl;
-  cerr << "arguments (" << argCount << "):\n";
-  for(int x = 0; x < argCount; x++)
-    cerr << "command " << x << ": " << argStrings[x] << endl;
-  */
+  argCount = uInt32(argStrings.size());
 
-  /*
-  // Now decipher each argument, in turn.
-  for(int i=0; i<argCount; i++) {
-    int temp = decipher_arg(argStrings[i]);
-    args.push_back(temp); // value maybe -1, if not expression argument
-                          // (validate_args will decide whether that's OK, not us.)
-  }
-  */
-
-  for(int arg = 0; arg < argCount; ++arg)
+  for(uInt32 arg = 0; arg < argCount; ++arg)
   {
     if(!YaccParser::parse(argStrings[arg].c_str()))
     {
@@ -423,7 +404,7 @@ bool DebuggerParser::validateArgs(int cmd)
   }
 
   // Figure out how many arguments are required by the command
-  int count = 0, argRequiredCount = 0;
+  uInt32 count = 0, argRequiredCount = 0;
   while(*p != kARG_END_ARGS && *p != kARG_MULTI_BYTE)
   {
     count++;
@@ -435,19 +416,19 @@ bool DebuggerParser::validateArgs(int cmd)
   argRequiredCount = (*p == kARG_END_ARGS) ? count : argCount;
 
   p = commands[cmd].parms;
-  int curCount = 0;
+  uInt32 curCount = 0;
 
   do {
     if(curCount >= argCount)
       break;
 
-    int curArgInt     = args[curCount];
+    uInt32 curArgInt  = args[curCount];
     string& curArgStr = argStrings[curCount];
 
     switch(*p)
     {
       case kARG_WORD:
-        if(curArgInt < 0 || curArgInt > 0xffff)
+        if(curArgInt > 0xffff)
         {
           commandResult.str(red("invalid word argument (must be 0-$ffff)"));
           return false;
@@ -455,7 +436,7 @@ bool DebuggerParser::validateArgs(int cmd)
         break;
 
       case kARG_BYTE:
-        if(curArgInt < 0 || curArgInt > 0xff)
+        if(curArgInt > 0xff)
         {
           commandResult.str(red("invalid byte argument (must be 0-$ff)"));
           return false;
@@ -519,7 +500,7 @@ cerr << "curCount         = " << curCount << endl
 string DebuggerParser::eval()
 {
   ostringstream buf;
-  for(int i = 0; i < argCount; ++i)
+  for(uInt32 i = 0; i < argCount; ++i)
   {
     string rlabel = debugger.cartDebug().getLabel(args[i], true);
     string wlabel = debugger.cartDebug().getLabel(args[i], false);
@@ -665,7 +646,7 @@ void DebuggerParser::executeBase()
 // "break"
 void DebuggerParser::executeBreak()
 {
-  int bp;
+  uInt16 bp;
   if(argCount == 0)
     bp = debugger.cpuDebug().pc();
   else
@@ -718,7 +699,7 @@ void DebuggerParser::executeCheat()
     return;
   }
 
-  for(int arg = 0; arg < argCount; arg++)
+  for(uInt32 arg = 0; arg < argCount; ++arg)
   {
     const string& cheat = argStrings[arg];
     if(debugger.myOSystem.cheat().add("DBG", cheat))
@@ -1053,7 +1034,7 @@ void DebuggerParser::executeListbreaks()
   ostringstream buf;
   int count = 0;
 
-  for(uInt32 i = 0; i < 0x10000; i++)
+  for(uInt32 i = 0; i <= 0xffff; ++i)
   {
     if(debugger.breakPoints().isSet(i))
     {
@@ -1117,7 +1098,7 @@ void DebuggerParser::executeListtraps()
 {
   int count = 0;
 
-  for(uInt32 i = 0; i < 0x10000; ++i)
+  for(uInt32 i = 0; i <= 0xffff; ++i)
   {
     if(debugger.readTrap(i) || debugger.writeTrap(i))
     {
@@ -1243,10 +1224,10 @@ void DebuggerParser::executeRiot()
 // "rom"
 void DebuggerParser::executeRom()
 {
-  int addr = args[0];
-  for(int i = 1; i < argCount; ++i)
+  uInt16 addr = args[0];
+  for(uInt32 i = 1; i < argCount; ++i)
   {
-    if( !(debugger.patchROM(addr++, args[i])) )
+    if(!(debugger.patchROM(addr++, args[i])))
     {
       commandResult << red("patching ROM unsupported for this cart type");
       return;
@@ -1301,7 +1282,7 @@ void DebuggerParser::executeRunTo()
   const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
-  uInt32 count = 0, max_iterations = int(list.size());
+  uInt32 count = 0, max_iterations = uInt32(list.size());
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
@@ -1352,8 +1333,7 @@ void DebuggerParser::executeRunToPc()
     // Update romlist to point to current PC
     int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     done = (pcline >= 0) && (list[pcline].address == args[0]);
-    ++count;
-  } while(!done && count < list.size());
+  } while(!done && ++count < list.size());
 
   if(done)
     commandResult
@@ -1683,10 +1663,10 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "a",
     "Set Accumulator to <value>",
-    "Valid value is 0 - 255\nExample: a ff, a #10",
+    "Valid value is 0 - ff\nExample: a ff, a #10",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeA)
   },
 
@@ -1703,7 +1683,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "break",
     "Set/clear breakpoint at <address>",
-    "Command is a toggle, default is current PC\n:Example: break, break f000",
+    "Command is a toggle, default is current PC\nValid address is 0 - ffff\n"
+    "Example: break, break f000",
     false,
     true,
     { kARG_WORD, kARG_END_ARGS },
@@ -1806,7 +1787,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Shows a color swatch for the given value\nExample: colortest 1f",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeColortest)
   },
 
@@ -2028,7 +2009,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: loadstate 0, loadstate 9",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeLoadstate)
   },
 
@@ -2178,10 +2159,10 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "s",
     "Set Stack Pointer to value xx",
-    "Example: s f0",
+    "Accepts 8-bit value, Example: s f0",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeS)
   },
 
@@ -2252,7 +2233,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: savestate 0, savestate 9",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavestate)
   },
 
@@ -2383,20 +2364,20 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "x",
     "Set X Register to value xx",
-    "Valid value is 0 - 255\nExample: x ff, x #10",
+    "Valid value is 0 - ff\nExample: x ff, x #10",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeX)
   },
 
   {
     "y",
     "Set Y Register to value xx",
-    "Valid value is 0 - 255\nExample: y ff, y #10",
+    "Valid value is 0 - ff\nExample: y ff, y #10",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeY)
   },
 

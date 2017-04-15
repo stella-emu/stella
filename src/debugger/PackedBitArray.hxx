@@ -27,12 +27,12 @@ class PackedBitArray
   public:
     PackedBitArray() : myInitialized(false) { }
 
-    bool isSet(uInt32 bit) const   { return myBits[bit];  }
-    bool isClear(uInt32 bit) const { return !myBits[bit]; }
+    bool isSet(uInt16 bit) const   { return myBits[bit];  }
+    bool isClear(uInt16 bit) const { return !myBits[bit]; }
 
-    void set(uInt32 bit)    { myBits[bit] = true;  }
-    void clear(uInt32 bit)  { myBits[bit] = false; }
-    void toggle(uInt32 bit) { myBits.flip(bit);    }
+    void set(uInt16 bit)    { myBits[bit] = true;  }
+    void clear(uInt16 bit)  { myBits[bit] = false; }
+    void toggle(uInt16 bit) { myBits.flip(bit);    }
 
     void initialize() { myInitialized = true; }
     void clearAll() { myInitialized = false; myBits.reset(); }
