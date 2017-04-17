@@ -417,7 +417,7 @@ elif test "$have_gcc" = yes; then
 	fi
 
 	case $cxx_version in
-		4.[7-9]|4.[7-9].[0-9]|4.[7-9].[0-9][-.]*|[5-6].[0-9]|[5-6].[0-9].[0-9]|[5-6].[0-9].[0-9][-.]*)
+		4.[7-9]|4.[7-9].[0-9]|4.[7-9].[0-9][-.]*|[5-9]|[5-9].[0-9]|[5-9].[0-9].[0-9]|[5-9].[0-9].[0-9][-.]*)
 			_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
 			_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
 			cxx_version="$cxx_version, ok"

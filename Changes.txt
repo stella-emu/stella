@@ -109,7 +109,8 @@
     both libraries are now compiled into the app whenever one is selected.
     This fixes issues with a newer ZLIB not working with an older PNG, etc.
 
-  * Updated UNIX configure script to work with the clang 5.x compiler.
+  * Updated UNIX configure script to work with the clang 5+ and gcc 7+
+    compiler versions.
 
 -Have fun!
 
