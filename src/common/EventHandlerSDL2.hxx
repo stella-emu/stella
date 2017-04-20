@@ -18,7 +18,7 @@
 #ifndef EVENTHANDLER_SDL2_HXX
 #define EVENTHANDLER_SDL2_HXX
 
-#include <SDL.h>
+#include "SDL_lib.hxx"
 #include "EventHandler.hxx"
 
 /**

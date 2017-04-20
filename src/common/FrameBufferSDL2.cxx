@@ -15,11 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <SDL.h>
 #include <sstream>
 #include <time.h>
 #include <fstream>
 
+#include "SDL_lib.hxx"
 #include "bspf.hxx"
 
 #include "Console.hxx"
