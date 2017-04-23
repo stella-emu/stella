@@ -17,6 +17,7 @@
 
 #include "Missile.hxx"
 #include "DrawCounterDecodes.hxx"
+#include "TIA.hxx"
 
 enum Count: Int8 {
   renderCounterOffset = -4
@@ -57,7 +58,12 @@ void Missile::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::enam(uInt8 value)
 {
+  const auto oldEnam = myEnam;
+
   myEnam = (value & 0x02) > 0;
+
+  if (oldEnam != myEnam) myTIA->flushLineCache();
+
   updateEnabled();
 }
 
@@ -109,8 +115,9 @@ void Missile::resmp(uInt8 value, const Player& player)
 {
   const uInt8 resmp = value & 0x02;
 
-  if (resmp == myResmp)
-    return;
+  if (resmp == myResmp) return;
+
+  myTIA->flushLineCache();
 
   myResmp = resmp;
 
@@ -159,28 +166,21 @@ bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
 
   if (clock == myHmmClocks) myIsMoving = false;
 
-  if (myIsMoving && apply) {
-    render(hclock);
-    tick(hclock);
-  }
+  if (myIsMoving && apply) tick(hclock);
 
   return myIsMoving;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::render(uInt8 hclock)
+void Missile::tick(uInt8 hclock)
 {
-  bool render =
+  const bool render =
     myIsRendering &&
     (myRenderCounter >= 0 || (myIsMoving && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3))) &&
     myIsEnabled;
 
   collision = render ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::tick(uInt8 hclock)
-{
   if (myDecodes[myCounter] && !myResmp) {
     myIsRendering = true;
     myRenderCounter = Count::renderCounterOffset;
@@ -213,6 +213,8 @@ void Missile::tick(uInt8 hclock)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::setColor(uInt8 color)
 {
+  if (color != myObjectColor && myIsEnabled)  myTIA->flushLineCache();
+
   myObjectColor = color;
   applyColors();
 }
@@ -220,6 +222,7 @@ void Missile::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::setDebugColor(uInt8 color)
 {
+  myTIA->flushLineCache();
   myDebugColor = color;
   applyColors();
 }
@@ -247,13 +250,14 @@ void Missile::applyColors()
 uInt8 Missile::getPosition() const
 {
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (316 - myCounter - Count::renderCounterOffset + myPlayfieldPositionProvider->getPosition()) % 160;
+  return (316 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::setPosition(uInt8 newPosition)
 {
-  myCounter = (316 - newPosition - Count::renderCounterOffset + myPlayfieldPositionProvider->getPosition()) % 160;
+  myTIA->flushLineCache();
+  myCounter = (316 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

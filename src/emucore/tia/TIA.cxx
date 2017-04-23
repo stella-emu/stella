@@ -95,11 +95,13 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
-  myPlayer0.setPlayfieldPositionProvider(this);
-  myPlayer1.setPlayfieldPositionProvider(this);
-  myMissile0.setPlayfieldPositionProvider(this);
-  myMissile1.setPlayfieldPositionProvider(this);
-  myBall.setPlayfieldPositionProvider(this);
+  myBackground.setTIA(this);
+  myPlayfield.setTIA(this);
+  myPlayer0.setTIA(this);
+  myPlayer1.setTIA(this);
+  myMissile0.setTIA(this);
+  myMissile1.setTIA(this);
+  myBall.setTIA(this);
 
   reset();
 }
@@ -114,7 +116,6 @@ void TIA::reset()
   myMovementClock = 0;
   myPriority = Priority::normal;
   myHstate = HState::blank;
-  myIsFreshLine = true;
   myCollisionMask = 0;
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = false;
@@ -223,7 +224,6 @@ bool TIA::save(Serializer& out) const
     out.putBool(myTIAPinsDriven);
 
     out.putInt(int(myHstate));
-    out.putBool(myIsFreshLine);
 
     out.putInt(myHblankCtr);
     out.putInt(myHctr);
@@ -293,7 +293,6 @@ bool TIA::load(Serializer& in)
     myTIAPinsDriven = in.getBool();
 
     myHstate = HState(in.getInt());
-    myIsFreshLine = in.getBool();
 
     myHblankCtr = in.getInt();
     myHctr = in.getInt();
@@ -443,6 +442,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RSYNC:
+      flushLineCache();
       applyRsync();
       myShadowRegisters[address] = value;
       break;
@@ -496,13 +496,11 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUBK:
-      myLinesSinceChange = 0;
       myBackground.setColor(value & 0xFE);
       myShadowRegisters[address] = value;
       break;
 
     case COLUP0:
-      myLinesSinceChange = 0;
       value &= 0xFE;
       myPlayfield.setColorP0(value);
       myMissile0.setColor(value);
@@ -511,7 +509,6 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUP1:
-      myLinesSinceChange = 0;
       value &= 0xFE;
       myPlayfield.setColorP1(value);
       myMissile1.setColor(value);
@@ -520,7 +517,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case CTRLPF:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myPriority = (value & 0x04) ? Priority::pfp :
                    (value & 0x02) ? Priority::score : Priority::normal;
       myPlayfield.ctrlpf(value);
@@ -529,7 +526,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUPF:
-      myLinesSinceChange = 0;
+      flushLineCache();
       value &= 0xFE;
       myPlayfield.setColor(value);
       myBall.setColor(value);
@@ -578,38 +575,36 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESM0:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myMissile0.resm(resxCounter(), myHstate == HState::blank);
       myShadowRegisters[address] = value;
       break;
 
     case RESM1:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myMissile1.resm(resxCounter(), myHstate == HState::blank);
       myShadowRegisters[address] = value;
       break;
 
     case RESMP0:
-      myLinesSinceChange = 0;
       myMissile0.resmp(value, myPlayer0);
       myShadowRegisters[address] = value;
       break;
 
     case RESMP1:
-      myLinesSinceChange = 0;
       myMissile1.resmp(value, myPlayer1);
       myShadowRegisters[address] = value;
       break;
 
     case NUSIZ0:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myMissile0.nusiz(value);
       myPlayer0.nusiz(value, myHstate == HState::blank);
       myShadowRegisters[address] = value;
       break;
 
     case NUSIZ1:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myMissile1.nusiz(value);
       myPlayer1.nusiz(value, myHstate == HState::blank);
       myShadowRegisters[address] = value;
@@ -653,13 +648,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
     }
 
     case RESP0:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myPlayer0.resp(resxCounter());
       myShadowRegisters[address] = value;
       break;
 
     case RESP1:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myPlayer1.resp(resxCounter());
       myShadowRegisters[address] = value;
       break;
@@ -673,13 +668,11 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VDELP0:
-      myLinesSinceChange = 0;
       myPlayer0.vdelp(value);
       myShadowRegisters[address] = value;
       break;
 
     case VDELP1:
-      myLinesSinceChange = 0;
       myPlayer1.vdelp(value);
       myShadowRegisters[address] = value;
       break;
@@ -697,13 +690,12 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case RESBL:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myBall.resbl(resxCounter());
       myShadowRegisters[address] = value;
       break;
 
     case VDELBL:
-      myLinesSinceChange = 0;
       myBall.vdelbl(value);
       myShadowRegisters[address] = value;
       break;
@@ -713,7 +705,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case CXCLR:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myCollisionMask = 0;
       myShadowRegisters[address] = value;
       break;
@@ -1005,17 +997,19 @@ void TIA::cycle(uInt32 colorClocks)
 
     myCollisionUpdateRequired = false;
 
-    tickMovement();
+    if (myLinesSinceChange < 2) {
+      tickMovement();
 
-    if (myHstate == HState::blank)
-      tickHblank();
-    else
-      tickHframe();
+      if (myHstate == HState::blank)
+        tickHblank();
+      else
+        tickHframe();
+
+      if (myCollisionUpdateRequired) updateCollision();
+    }
 
     if (++myHctr >= 228)
       nextLine();
-
-    if (myCollisionUpdateRequired) updateCollision();
 
     myTimestamp++;
   }
@@ -1027,8 +1021,6 @@ void TIA::tickMovement()
   if (!myMovementInProgress) return;
 
   if ((myHctr & 0x03) == 0) {
-    myLinesSinceChange = 0;
-
     const bool apply = myHstate == HState::blank;
     bool m = false;
     uInt8 movementCounter = myMovementClock > 15 ? 0 : myMovementClock;
@@ -1049,9 +1041,8 @@ void TIA::tickMovement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::tickHblank()
 {
-  if (myIsFreshLine) {
+  if (myHctr == 0) {
     myHblankCtr = 0;
-    myIsFreshLine = false;
   }
 
   if (++myHblankCtr >= 68) myHstate = HState::frame;
@@ -1061,23 +1052,11 @@ void TIA::tickHblank()
 void TIA::tickHframe()
 {
   const uInt32 y = myFrameManager.getY();
-  const bool lineNotCached = myLinesSinceChange < 2 || y == 0;
   const uInt32 x = myHctr - 68 - myXDelta;
 
-  myCollisionUpdateRequired = lineNotCached;
+  myCollisionUpdateRequired = true;
 
   myPlayfield.tick(x);
-
-  // Render sprites
-  if (lineNotCached) {
-    myPlayer0.render();
-    myPlayer1.render();
-    myMissile0.render(myHctr);
-    myMissile1.render(myHctr);
-    myBall.render();
-  }
-
-  // Tick sprites
   myMissile0.tick(myHctr);
   myMissile1.tick(myHctr);
   myPlayer0.tick();
@@ -1085,7 +1064,7 @@ void TIA::tickHframe()
   myBall.tick();
 
   if (myFrameManager.isRendering())
-    renderPixel(x, y, lineNotCached);
+    renderPixel(x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1097,22 +1076,39 @@ void TIA::applyRsync()
   if (myFrameManager.isRendering())
     memset(myCurrentFrameBuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
 
-  myLinesSinceChange = 0;
   myHctr = 225;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::nextLine()
 {
+  if (myLinesSinceChange >= 2) {
+    cloneLastLine();
+  }
+
   myHctr = 0;
-  myLinesSinceChange++;
+
+  if (!myMovementInProgress && myLinesSinceChange < 2) myLinesSinceChange++;
 
   myHstate = HState::blank;
-  myIsFreshLine = true;
   myExtendedHblank = false;
   myXDelta = 0;
 
   myFrameManager.nextLine();
+
+  if (myFrameManager.isRendering() && myFrameManager.getY() == 0) flushLineCache();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::cloneLastLine()
+{
+  const auto y = myFrameManager.getY();
+
+  if (!myFrameManager.isRendering() || y == 0) return;
+
+  uInt8* buffer = myCurrentFrameBuffer.get();
+
+  memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1129,58 +1125,73 @@ void TIA::updateCollision()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::renderPixel(uInt32 x, uInt32 y, bool lineNotCached)
+void TIA::renderPixel(uInt32 x, uInt32 y)
 {
   if (x >= 160) return;
 
-  if (lineNotCached) {
-    uInt8 color = myBackground.getColor();
+  uInt8 color = myBackground.getColor();
 
-    switch (myPriority)
-    {
-      // Playfield has priority so ScoreBit isn't used
-      // Priority from highest to lowest:
-      //   BL/PF => P0/M0 => P1/M1 => BK
-      case Priority::pfp:  // CTRLPF D2=1, D1=ignored
-        color = myMissile1.getPixel(color);
-        color = myPlayer1.getPixel(color);
-        color = myMissile0.getPixel(color);
-        color = myPlayer0.getPixel(color);
-        color = myPlayfield.getPixel(color);
-        color = myBall.getPixel(color);
-        break;
+  switch (myPriority)
+  {
+    // Playfield has priority so ScoreBit isn't used
+    // Priority from highest to lowest:
+    //   BL/PF => P0/M0 => P1/M1 => BK
+    case Priority::pfp:  // CTRLPF D2=1, D1=ignored
+      color = myMissile1.getPixel(color);
+      color = myPlayer1.getPixel(color);
+      color = myMissile0.getPixel(color);
+      color = myPlayer0.getPixel(color);
+      color = myPlayfield.getPixel(color);
+      color = myBall.getPixel(color);
+      break;
 
-      case Priority::score:  // CTRLPF D2=0, D1=1
-        // Formally we have (priority from highest to lowest)
-        //   PF/P0/M0 => P1/M1 => BL => BK
-        // for the first half and
-        //   P0/M0 => PF/P1/M1 => BL => BK
-        // for the second half. However, the first ordering is equivalent
-        // to the second (PF has the same color as P0/M0), so we can just
-        // write
-        color = myBall.getPixel(color);
-        color = myMissile1.getPixel(color);
-        color = myPlayer1.getPixel(color);
-        color = myPlayfield.getPixel(color);
-        color = myMissile0.getPixel(color);
-        color = myPlayer0.getPixel(color);
-        break;
+    case Priority::score:  // CTRLPF D2=0, D1=1
+      // Formally we have (priority from highest to lowest)
+      //   PF/P0/M0 => P1/M1 => BL => BK
+      // for the first half and
+      //   P0/M0 => PF/P1/M1 => BL => BK
+      // for the second half. However, the first ordering is equivalent
+      // to the second (PF has the same color as P0/M0), so we can just
+      // write
+      color = myBall.getPixel(color);
+      color = myMissile1.getPixel(color);
+      color = myPlayer1.getPixel(color);
+      color = myPlayfield.getPixel(color);
+      color = myMissile0.getPixel(color);
+      color = myPlayer0.getPixel(color);
+      break;
 
-      // Priority from highest to lowest:
-      //   P0/M0 => P1/M1 => BL/PF => BK
-      case Priority::normal:  // CTRLPF D2=0, D1=0
-        color = myPlayfield.getPixel(color);
-        color = myBall.getPixel(color);
-        color = myMissile1.getPixel(color);
-        color = myPlayer1.getPixel(color);
-        color = myMissile0.getPixel(color);
-        color = myPlayer0.getPixel(color);
-        break;
+    // Priority from highest to lowest:
+    //   P0/M0 => P1/M1 => BL/PF => BK
+    case Priority::normal:  // CTRLPF D2=0, D1=0
+      color = myPlayfield.getPixel(color);
+      color = myBall.getPixel(color);
+      color = myMissile1.getPixel(color);
+      color = myPlayer1.getPixel(color);
+      color = myMissile0.getPixel(color);
+      color = myPlayer0.getPixel(color);
+      break;
+  }
+
+  myCurrentFrameBuffer.get()[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::flushLineCache()
+{
+  const bool wasCaching = myLinesSinceChange >= 2;
+
+  myLinesSinceChange = 0;
+
+  if (wasCaching) {
+    const auto rewindCycles = myHctr;
+
+    for (myHctr = 0; myHctr < rewindCycles; myHctr++) {
+      if (myHstate == HState::blank)
+        tickHblank();
+      else
+        tickHframe();
     }
-
-    myCurrentFrameBuffer.get()[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
-  } else {
-    myCurrentFrameBuffer.get()[y * 160 + x] = myCurrentFrameBuffer.get()[(y-1) * 160 + x];
   }
 }
 
@@ -1201,12 +1212,12 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
   switch (address)
   {
     case VBLANK:
-      myLinesSinceChange = 0;
+      flushLineCache();
       myFrameManager.setVblank(value & 0x02);
       break;
 
     case HMOVE:
-      myLinesSinceChange = 0;
+      flushLineCache();
 
       myMovementClock = 0;
       myMovementInProgress = true;
@@ -1225,32 +1236,26 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       break;
 
     case PF0:
-      myLinesSinceChange = 0;
       myPlayfield.pf0(value);
       break;
 
     case PF1:
-      myLinesSinceChange = 0;
       myPlayfield.pf1(value);
       break;
 
     case PF2:
-      myLinesSinceChange = 0;
       myPlayfield.pf2(value);
       break;
 
     case HMM0:
-      myLinesSinceChange = 0;
       myMissile0.hmm(value);
       break;
 
     case HMM1:
-      myLinesSinceChange = 0;
       myMissile1.hmm(value);
       break;
 
     case HMCLR:
-      myLinesSinceChange = 0;
       myMissile0.hmm(0);
       myMissile1.hmm(0);
       myPlayer0.hmp(0);
@@ -1259,67 +1264,54 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       break;
 
     case GRP0:
-      myLinesSinceChange = 0;
       myPlayer0.grp(value);
       break;
 
     case GRP1:
-      myLinesSinceChange = 0;
       myPlayer1.grp(value);
       break;
 
     case DummyRegisters::shuffleP0:
-      myLinesSinceChange = 0;
       myPlayer0.shufflePatterns();
       break;
 
     case DummyRegisters::shuffleP1:
-      myLinesSinceChange = 0;
       myPlayer1.shufflePatterns();
       break;
 
     case DummyRegisters::shuffleBL:
-      myLinesSinceChange = 0;
       myBall.shuffleStatus();
       break;
 
     case HMP0:
-      myLinesSinceChange = 0;
       myPlayer0.hmp(value);
       break;
 
     case HMP1:
-      myLinesSinceChange = 0;
       myPlayer1.hmp(value);
       break;
 
     case HMBL:
-      myLinesSinceChange = 0;
       myBall.hmbl(value);
       break;
 
     case REFP0:
-      myLinesSinceChange = 0;
       myPlayer0.refp(value);
       break;
 
     case REFP1:
-      myLinesSinceChange = 0;
       myPlayer1.refp(value);
       break;
 
     case ENABL:
-      myLinesSinceChange = 0;
       myBall.enabl(value);
       break;
 
     case ENAM0:
-      myLinesSinceChange = 0;
       myMissile0.enam(value);
       break;
 
     case ENAM1:
-      myLinesSinceChange = 0;
       myMissile1.enam(value);
       break;
   }

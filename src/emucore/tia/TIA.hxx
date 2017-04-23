@@ -35,7 +35,6 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
-#include "PlayfieldPositionProvider.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -50,7 +49,7 @@
 
   @author  Christian Speckner (DirtyHairy) and Stephen Anthony
 */
-class TIA : public Device, public PlayfieldPositionProvider
+class TIA : public Device
 {
   public:
     friend class TIADebug;
@@ -317,9 +316,15 @@ class TIA : public Device, public PlayfieldPositionProvider
     /**
       Get the current x value
     */
-    uInt8 getPosition() const override {
+    uInt8 getPosition() const {
       return (myHctr < 68) ? 0 : (myHctr - 68 - myXDelta);
     }
+
+    /**
+      Flush the line cache after an externally triggered state change
+      (e.g. a register write)
+    */
+    void flushLineCache();
 
     /**
       Save the current state of this device to the given Serializer.
@@ -388,11 +393,13 @@ class TIA : public Device, public PlayfieldPositionProvider
 
     void updateCollision();
 
-    void renderPixel(uInt32 x, uInt32 y, bool lineNotCached);
+    void renderPixel(uInt32 x, uInt32 y);
 
     void clearHmoveComb();
 
     void nextLine();
+
+    void cloneLastLine();
 
     void delayedWrite(uInt8 address, uInt8 value);
 
@@ -442,7 +449,6 @@ class TIA : public Device, public PlayfieldPositionProvider
     bool myTIAPinsDriven;
 
     HState myHstate;
-    bool myIsFreshLine;
 
     Int32 myHblankCtr;
     Int32 myHctr;

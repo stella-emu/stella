@@ -21,12 +21,18 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
+class TIA;
+
 class Background : public Serializable
 {
   public:
     Background();
 
   public:
+    void setTIA(TIA* tia) {
+      myTIA = tia;
+    }
+
     void reset();
 
     void setColor(uInt8 color);
@@ -49,6 +55,8 @@ class Background : public Serializable
     uInt8 myColor;
     uInt8 myObjectColor, myDebugColor;
     bool myDebugEnabled;
+
+    TIA* myTIA;
 
   private:
     Background(const Background&) = delete;

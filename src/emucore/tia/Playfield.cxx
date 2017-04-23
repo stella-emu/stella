@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Playfield.hxx"
+#include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Playfield::Playfield(uInt32 collisionMask)
@@ -52,8 +53,12 @@ void Playfield::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf0(uInt8 value)
 {
+  if (myPf0 == value >> 4) return;
+
+  myTIA->flushLineCache();
+
   myPattern = (myPattern & 0x000FFFF0) | (value >> 4);
-  myPf0 = value;
+  myPf0 = value >> 4;
 
   updatePattern();
 }
@@ -61,6 +66,10 @@ void Playfield::pf0(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf1(uInt8 value)
 {
+  if (myPf1 == value) return;
+
+  myTIA->flushLineCache();
+
   myPattern = (myPattern & 0x000FF00F)
     | ((value & 0x80) >> 3)
     | ((value & 0x40) >> 1)
@@ -78,6 +87,10 @@ void Playfield::pf1(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::pf2(uInt8 value)
 {
+  if (myPf2 == value) return;
+
+  myTIA->flushLineCache();
+
   myPattern = (myPattern & 0x00000FFF) | (value << 12);
   myPf2 = value;
 
@@ -87,8 +100,15 @@ void Playfield::pf2(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::ctrlpf(uInt8 value)
 {
-  myReflected = (value & 0x01) > 0;
-  myColorMode = (value & 0x06) == 0x02 ? ColorMode::score : ColorMode::normal;
+  const bool reflected = (value & 0x01) > 0;
+  const ColorMode colorMode = (value & 0x06) == 0x02 ? ColorMode::score : ColorMode::normal;
+
+  if (myReflected == reflected && myColorMode == colorMode) return;
+
+  myTIA->flushLineCache();
+
+  myReflected = reflected;
+  myColorMode = colorMode;
   applyColors();
 }
 
@@ -109,6 +129,8 @@ void Playfield::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColor(uInt8 color)
 {
+  if (color != myObjectColor && myColorMode == ColorMode::normal) myTIA->flushLineCache();
+
   myObjectColor = color;
   applyColors();
 }
@@ -116,6 +138,8 @@ void Playfield::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColorP0(uInt8 color)
 {
+  if (color != myColorP0 && myColorMode == ColorMode::score) myTIA->flushLineCache();
+
   myColorP0 = color;
   applyColors();
 }
@@ -123,6 +147,8 @@ void Playfield::setColorP0(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setColorP1(uInt8 color)
 {
+  if (color != myColorP1 && myColorMode == ColorMode::score) myTIA->flushLineCache();
+
   myColorP1 = color;
   applyColors();
 }
@@ -130,6 +156,7 @@ void Playfield::setColorP1(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::setDebugColor(uInt8 color)
 {
+  myTIA->flushLineCache();
   myDebugColor = color;
   applyColors();
 }
@@ -137,6 +164,7 @@ void Playfield::setDebugColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::enableDebugColors(bool enabled)
 {
+  myTIA->flushLineCache();
   myDebugEnabled = enabled;
   applyColors();
 }

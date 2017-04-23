@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Ball.hxx"
+#include "TIA.hxx"
 
 enum Count: Int8 {
   renderCounterOffset = -4
@@ -56,8 +57,14 @@ void Ball::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::enabl(uInt8 value)
 {
+  const auto enabledNewOldValue = myIsEnabledNew;
+
   myIsEnabledNew = (value & 0x02) > 0;
-  updateEnabled();
+
+  if (myIsEnabledNew != enabledNewOldValue && !myIsDelaying) {
+    myTIA->flushLineCache();
+    updateEnabled();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,14 +87,25 @@ void Ball::ctrlpf(uInt8 value)
 {
   static constexpr uInt8 ourWidths[] = {1, 2, 4, 8};
 
-  myWidth = ourWidths[(value & 0x30) >> 4];
+  const uInt8 newWidth = ourWidths[(value & 0x30) >> 4];
+
+  if (newWidth != myWidth) {
+    myTIA->flushLineCache();
+    myWidth = newWidth;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::vdelbl(uInt8 value)
 {
+  const auto oldIsDelaying = myIsDelaying;
+
   myIsDelaying = (value & 0x01) > 0;
-  updateEnabled();
+
+  if (oldIsDelaying != myIsDelaying) {
+    myTIA->flushLineCache();
+    updateEnabled();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,6 +124,8 @@ void Ball::toggleEnabled(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setColor(uInt8 color)
 {
+  if (color != myObjectColor && myIsEnabled) myTIA->flushLineCache();
+
   myObjectColor = color;
   applyColors();
 }
@@ -113,6 +133,8 @@ void Ball::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setDebugColor(uInt8 color)
 {
+  myTIA->flushLineCache();
+
   myDebugColor = color;
   applyColors();
 }
@@ -120,6 +142,8 @@ void Ball::setDebugColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::enableDebugColors(bool enabled)
 {
+  myTIA->flushLineCache();
+
   myDebugEnabled = enabled;
   applyColors();
 }
@@ -137,25 +161,18 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 
   if (clock == myHmmClocks) myIsMoving = false;
 
-  if (myIsMoving && apply) {
-    render();
-    tick(false);
-  }
+  if (myIsMoving && apply) tick(false);
 
   return myIsMoving;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Ball::render()
+void Ball::tick(bool isReceivingMclock)
 {
   collision = (myIsRendering && myRenderCounter >= 0 && myIsEnabled) ?
     myCollisionMaskEnabled :
     myCollisionMaskDisabled;
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Ball::tick(bool isReceivingMclock)
-{
   bool starfieldEffect = myIsMoving && isReceivingMclock;
 
   if (myCounter == 156) {
@@ -189,8 +206,14 @@ void Ball::tick(bool isReceivingMclock)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::shuffleStatus()
 {
+  const auto oldIsEnabledOld = myIsEnabledOld;
+
   myIsEnabledOld = myIsEnabledNew;
-  updateEnabled();
+
+  if (myIsEnabledOld != oldIsEnabledOld && myIsDelaying) {
+    myTIA->flushLineCache();
+    updateEnabled();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,13 +232,15 @@ void Ball::applyColors()
 uInt8 Ball::getPosition() const
 {
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (316 - myCounter - Count::renderCounterOffset + myPlayfieldPositionProvider->getPosition()) % 160;
+  return (316 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setPosition(uInt8 newPosition)
 {
-  myCounter = (316 - newPosition - Count::renderCounterOffset + myPlayfieldPositionProvider->getPosition()) % 160;
+  myTIA->flushLineCache();
+
+  myCounter = (316 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

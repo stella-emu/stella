@@ -17,6 +17,7 @@
 
 #include "Player.hxx"
 #include "DrawCounterDecodes.hxx"
+#include "TIA.hxx"
 
 enum Count: Int8 {
   renderCounterOffset = -5,
@@ -63,7 +64,10 @@ void Player::grp(uInt8 pattern)
 
   myPatternNew = pattern;
 
-  if (!myIsDelaying && myPatternNew != oldPatternNew) updatePattern();
+  if (!myIsDelaying && myPatternNew != oldPatternNew) {
+    myTIA->flushLineCache();
+    updatePattern();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,7 +183,10 @@ void Player::refp(uInt8 value)
 
   myIsReflected = (value & 0x08) > 0;
 
-  if (oldIsReflected != myIsReflected) updatePattern();
+  if (oldIsReflected != myIsReflected) {
+    myTIA->flushLineCache();
+    updatePattern();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,7 +196,10 @@ void Player::vdelp(uInt8 value)
 
   myIsDelaying = (value & 0x01) > 0;
 
-  if (oldIsDelaying != myIsDelaying) updatePattern();
+  if (oldIsDelaying != myIsDelaying) {
+    myTIA->flushLineCache();
+    updatePattern();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -211,6 +221,8 @@ void Player::toggleCollisions(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setColor(uInt8 color)
 {
+  if (color != myObjectColor && myPattern) myTIA->flushLineCache();
+
   myObjectColor = color;
   applyColors();
 }
@@ -218,6 +230,8 @@ void Player::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setDebugColor(uInt8 color)
 {
+  myTIA->flushLineCache();
+
   myDebugColor = color;
   applyColors();
 }
@@ -225,6 +239,8 @@ void Player::setDebugColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::enableDebugColors(bool enabled)
 {
+  myTIA->flushLineCache();
+
   myDebugEnabled = enabled;
   applyColors();
 }
@@ -242,28 +258,19 @@ bool Player::movementTick(uInt32 clock, bool apply)
     myIsMoving = false;
   }
 
-  if (myIsMoving && apply) {
-    render();
-    tick();
-  }
+  if (myIsMoving && apply) tick();
 
   return myIsMoving;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::render()
-{
-  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint) {
-    collision = myCollisionMaskDisabled;
-    return;
-  }
-
-  collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::tick()
 {
+  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
+    collision = myCollisionMaskDisabled;
+  else
+    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+
   if (myDecodes[myCounter]) {
     myIsRendering = true;
     mySampleCounter = 0;
@@ -304,7 +311,10 @@ void Player::shufflePatterns()
 
   myPatternOld = myPatternNew;
 
-  if (myIsDelaying && myPatternOld != oldPatternOld) updatePattern();
+  if (myIsDelaying && myPatternOld != oldPatternOld) {
+    myTIA->flushLineCache();
+    updatePattern();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -369,15 +379,17 @@ uInt8 Player::getPosition() const
   const uInt8 shift = myDivider == 1 ? 0 : 1;
 
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (316 - myCounter - Count::renderCounterOffset + shift + myPlayfieldPositionProvider->getPosition()) % 160;
+  return (316 - myCounter - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::setPosition(uInt8 newPosition)
 {
+  myTIA->flushLineCache();
+
   const uInt8 shift = myDivider == 1 ? 0 : 1;
 
-  myCounter = (316 - newPosition - Count::renderCounterOffset + shift + myPlayfieldPositionProvider->getPosition()) % 160;
+  myCounter = (316 - newPosition - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
