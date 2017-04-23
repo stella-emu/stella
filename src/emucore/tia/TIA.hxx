@@ -294,19 +294,19 @@ class TIA : public Device
     /**
       This method should be called to update the TIA with a new scanline.
     */
-    void updateScanline();
+    TIA& updateScanline();
 
     /**
       This method should be called to update the TIA with a new partial
       scanline by stepping one CPU instruction.
     */
-    void updateScanlineByStep();
+    TIA& updateScanlineByStep();
 
     /**
       This method should be called to update the TIA with a new partial
       scanline by tracing to target address.
     */
-    void updateScanlineByTrace(int target);
+    TIA& updateScanlineByTrace(int target);
 
     /**
       Retrieve the last value written to a certain register

@@ -905,27 +905,33 @@ void TIA::setJitterRecoveryFactor(Int32 f)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::updateScanline()
+TIA& TIA::updateScanline()
 {
   // Update frame by one scanline at a time
   uInt32 line = scanlines();
   while (line == scanlines())
     updateScanlineByStep();
+
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::updateScanlineByStep()
+TIA& TIA::updateScanlineByStep()
 {
   // Update frame by one CPU instruction/color clock
   mySystem->m6502().execute(1);
   updateEmulation();
+
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::updateScanlineByTrace(int target)
+TIA& TIA::updateScanlineByTrace(int target)
 {
   while (mySystem->m6502().getPC() != target)
     updateScanlineByStep();
+
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
