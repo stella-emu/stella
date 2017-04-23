@@ -21,7 +21,8 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 #include "Player.hxx"
-#include "PlayfieldPositionProvider.hxx"
+
+class TIA;
 
 class Missile : public Serializable
 {
@@ -31,8 +32,8 @@ class Missile : public Serializable
 
   public:
 
-    void setPlayfieldPositionProvider(PlayfieldPositionProvider* playfieldPositionProvider) {
-      myPlayfieldPositionProvider = playfieldPositionProvider;
+    void setTIA(TIA* tia) {
+      myTIA = tia;
     }
 
     void reset();
@@ -50,8 +51,6 @@ class Missile : public Serializable
     void startMovement();
 
     bool movementTick(uInt8 clock, uInt8 hclock, bool apply);
-
-    void render(uInt8 hclock);
 
     void tick(uInt8 hclock);
 
@@ -114,7 +113,7 @@ class Missile : public Serializable
     uInt8 myObjectColor, myDebugColor;
     bool myDebugEnabled;
 
-    PlayfieldPositionProvider *myPlayfieldPositionProvider;
+    TIA *myTIA;
 
   private:
     Missile(const Missile&) = delete;

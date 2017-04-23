@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Background.hxx"
+#include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Background::Background()
@@ -33,6 +34,8 @@ void Background::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::setColor(uInt8 color)
 {
+  if (color != myObjectColor) myTIA->flushLineCache();
+
   myObjectColor = color;
   applyColors();
 }
@@ -40,6 +43,7 @@ void Background::setColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::setDebugColor(uInt8 color)
 {
+  myTIA->flushLineCache();
   myDebugColor = color;
   applyColors();
 }
@@ -47,6 +51,7 @@ void Background::setDebugColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::enableDebugColors(bool enabled)
 {
+  myTIA->flushLineCache();
   myDebugEnabled = enabled;
   applyColors();
 }

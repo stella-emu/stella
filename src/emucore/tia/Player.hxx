@@ -20,7 +20,8 @@
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
-#include "PlayfieldPositionProvider.hxx"
+
+class TIA;
 
 class Player : public Serializable
 {
@@ -29,8 +30,8 @@ class Player : public Serializable
 
   public:
 
-    void setPlayfieldPositionProvider(PlayfieldPositionProvider* playfieldPositionProvider) {
-      myPlayfieldPositionProvider = playfieldPositionProvider;
+    void setTIA(TIA* tia) {
+      myTIA = tia;
     }
 
     void reset();
@@ -59,8 +60,6 @@ class Player : public Serializable
     void startMovement();
 
     bool movementTick(uInt32 clock, bool apply);
-
-    void render();
 
     void tick();
     uInt8 getClock() const { return myCounter; }
@@ -126,7 +125,7 @@ class Player : public Serializable
     bool myIsReflected;
     bool myIsDelaying;
 
-    PlayfieldPositionProvider *myPlayfieldPositionProvider;
+    TIA* myTIA;
 
   private:
     Player(const Player&) = delete;

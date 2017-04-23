@@ -21,12 +21,18 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
+class TIA;
+
 class Playfield : public Serializable
 {
   public:
     Playfield(uInt32 collisionMask);
 
   public:
+
+    void setTIA(TIA* tia) {
+      myTIA = tia;
+    }
 
     void reset();
 
@@ -104,6 +110,8 @@ class Playfield : public Serializable
     uInt8 myPf2;
 
     uInt32 myX;
+
+    TIA* myTIA;
 
   private:
     Playfield() = delete;

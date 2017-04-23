@@ -306,7 +306,7 @@ int Debugger::step()
   int cyc = mySystem.cycles();
 
   unlockBankswitchState();
-  myOSystem.console().tia().updateScanlineByStep();
+  myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockBankswitchState();
 
   return mySystem.cycles() - cyc;
@@ -335,7 +335,7 @@ int Debugger::trace()
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     unlockBankswitchState();
-    myOSystem.console().tia().updateScanlineByTrace(targetPC);
+    myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
     lockBankswitchState();
 
     return mySystem.cycles() - cyc;
@@ -411,6 +411,8 @@ void Debugger::nextScanline(int lines)
     --lines;
   }
   lockBankswitchState();
+
+  myOSystem.console().tia().flushLineCache();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
