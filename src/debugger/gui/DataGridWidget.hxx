@@ -54,6 +54,8 @@ class DataGridWidget : public EditableWidget
     void setList(int a, int v, bool changed);
     void setList(int a, int v); // automatically calculate if changed
 
+    void setEditable(bool editable, bool hiliteBG = true) override;
+
     void setHiliteList(const BoolArray& hilitelist);
     void setNumRows(int rows);
 

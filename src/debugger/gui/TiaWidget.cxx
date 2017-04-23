@@ -27,7 +27,7 @@
 #include "ToggleBitWidget.hxx"
 #include "TogglePixelWidget.hxx"
 #include "Widget.hxx"
-
+#include "DelayQueueWidget.hxx"
 #include "TiaWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -237,7 +237,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos += myNusizP0->getWidth() + 5;
   myNusizP0Text = new EditTextWidget(boss, nfont, xpos, ypos, 23*fontWidth,
                                      lineHeight, "");
-  myNusizP0Text->setEditable(false);
+  myNusizP0Text->setEditable(false, true);
 
   ////////////////////////////
   // P1 register info
@@ -304,7 +304,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos += myNusizP1->getWidth() + 5;
   myNusizP1Text = new EditTextWidget(boss, nfont, xpos, ypos, 23*fontWidth,
                                      lineHeight, "");
-  myNusizP1Text->setEditable(false);
+  myNusizP1Text->setEditable(false, true);
 
   ////////////////////////////
   // M0 register info
@@ -523,8 +523,16 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
 
+  xpos = 10;
+  ypos += 2 * lineHeight;
+  t = new StaticTextWidget(boss, lfont, xpos, ypos, 14*fontWidth, fontHeight,
+    "Queued Writes:", kTextAlignLeft);
+
+  xpos += t->getWidth() + 10;
+  myDelayQueueWidget = new DelayQueueWidget(boss, lfont, xpos, ypos);
+
   // How to handle undriven pins
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += (myDelayQueueWidget->getHeight() + lineHeight);
   myUndrivenPins = new CheckboxWidget(boss, lfont, xpos, ypos+1,
       "Drive unused TIA pins randomly on a read/peek", kPPinCmd);
   myUndrivenPins->setTarget(this);
@@ -879,20 +887,16 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // PF register info
   ////////////////////////////
-  int pfx_bgcolor = !tia.priorityPF() ? state.coluRegs[3] : -1;
   // PF0
   myPF[0]->setColor(state.coluRegs[2]);
-  myPF[0]->setBackgroundColor(pfx_bgcolor);
   myPF[0]->setIntState(state.pf[0], true);  // reverse bit order
 
   // PF1
   myPF[1]->setColor(state.coluRegs[2]);
-  myPF[1]->setBackgroundColor(pfx_bgcolor);
   myPF[1]->setIntState(state.pf[1], false);
 
   // PF2
   myPF[2]->setColor(state.coluRegs[2]);
-  myPF[2]->setBackgroundColor(pfx_bgcolor);
   myPF[2]->setIntState(state.pf[2], true);  // reverse bit order
 
   // Reflect
@@ -906,6 +910,8 @@ void TiaWidget::loadConfig()
 
   // Undriven pins
   myUndrivenPins->setState(tia.tia().driveUnusedPinsRandom());
+
+  myDelayQueueWidget->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

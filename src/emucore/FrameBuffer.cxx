@@ -885,6 +885,7 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     // Base colors
     kColor            Normal foreground color (non-text)
     kBGColor          Normal background color (non-text)
+    kBGColorLo        Disabled background color (non-text)
     kShadowColor      Item is disabled
     kTextColor        Normal text color
     kTextColorHi      Highlighted text color
@@ -915,7 +916,7 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
 */
 uInt32 FrameBuffer::ourGUIColors[2][kNumColors-256] = {
   // Standard
-  { 0x686868, 0x000000, 0x404040, 0x000000, 0x62a108, 0x9f0000,
+  { 0x686868, 0x000000, 0xdccfa5, 0x404040, 0x000000, 0x62a108, 0x9f0000,
     0xc9af7c, 0xf0f0cf, 0xc80000,
     0xac3410, 0xd55941, 0xffffff, 0xffd652,
     0xac3410,
@@ -925,7 +926,7 @@ uInt32 FrameBuffer::ourGUIColors[2][kNumColors-256] = {
   },
 
   // Classic
-  { 0x686868, 0x000000, 0x404040, 0x20a020, 0x00ff00, 0xc80000,
+  { 0x686868, 0x000000, 0x404040, 0x404040, 0x20a020, 0x00ff00, 0xc80000,
     0x000000, 0x000000, 0xc80000,
     0x000000, 0x000000, 0x20a020, 0x00ff00,
     0x20a020,

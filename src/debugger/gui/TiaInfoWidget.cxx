@@ -47,7 +47,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
                        kTextAlignLeft);
   xpos += lwidth;
   myFrameCount = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
-  myFrameCount->setEditable(false);
+  myFrameCount->setEditable(false, true);
 
   xpos = x;  ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
@@ -55,7 +55,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
                        kTextAlignLeft);
   xpos += lwidth;
   myFrameCycles = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
-  myFrameCycles->setEditable(false);
+  myFrameCycles->setEditable(false, true);
 
   xpos = x + 20;  ypos += lineHeight + 8;
   myVSync = new CheckboxWidget(boss, lfont, xpos, ypos-3, "VSync", 0);
@@ -73,7 +73,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   myScanlineCount = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
-  myScanlineCount->setEditable(false);
+  myScanlineCount->setEditable(false, true);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
@@ -81,7 +81,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   myScanlineCycles = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                         lineHeight, "");
-  myScanlineCycles->setEditable(false);
+  myScanlineCycles->setEditable(false, true);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
@@ -89,7 +89,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   myPixelPosition = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
-  myPixelPosition->setEditable(false);
+  myPixelPosition->setEditable(false, true);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
@@ -97,7 +97,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   myColorClocks = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                      lineHeight, "");
-  myColorClocks->setEditable(false);
+  myColorClocks->setEditable(false, true);
 
   // Calculate actual dimensions
   _w = myColorClocks->getAbsX() + myColorClocks->getWidth() - x;

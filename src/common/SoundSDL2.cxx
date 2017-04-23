@@ -20,8 +20,8 @@
 #include <sstream>
 #include <cassert>
 #include <cmath>
-#include <SDL.h>
 
+#include "SDL_lib.hxx"
 #include "TIASnd.hxx"
 #include "TIATypes.hxx"
 #include "FrameBuffer.hxx"

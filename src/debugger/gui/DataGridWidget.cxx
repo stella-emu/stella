@@ -179,6 +179,13 @@ void DataGridWidget::setList(int a, int v)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setEditable(bool editable, bool hiliteBG)
+{
+  // Override parent method; enable hilite when widget is not editable
+  EditableWidget::setEditable(editable, hiliteBG);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setHiliteList(const BoolArray& hilitelist)
 {
   assert(hilitelist.size() == uInt32(_rows * _cols));

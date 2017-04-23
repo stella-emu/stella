@@ -537,6 +537,11 @@
 		DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */; };
 		DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */; };
 		DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE8B1861E7E03B300189864 /* FrameLayout.hxx */; };
+		DCEC58581E945125002F0246 /* DelayQueueWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */; };
+		DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */; };
+		DCEC585D1E945175002F0246 /* DelayQueueIterator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEC585A1E945175002F0246 /* DelayQueueIterator.cxx */; };
+		DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */; };
+		DCEC585F1E945175002F0246 /* PlayfieldPositionProvider.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC585C1E945175002F0246 /* PlayfieldPositionProvider.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
 		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
 		DCF3A6E71DFC75E3008A8AF3 /* Background.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */; };
@@ -1163,6 +1168,11 @@
 		DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotRamWidget.cxx; path = ../debugger/gui/RiotRamWidget.cxx; sourceTree = "<group>"; };
 		DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotRamWidget.hxx; path = ../debugger/gui/RiotRamWidget.hxx; sourceTree = "<group>"; };
 		DCE8B1861E7E03B300189864 /* FrameLayout.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FrameLayout.hxx; path = ../emucore/tia/FrameLayout.hxx; sourceTree = "<group>"; };
+		DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DelayQueueWidget.cxx; path = ../debugger/gui/DelayQueueWidget.cxx; sourceTree = "<group>"; };
+		DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DelayQueueWidget.hxx; path = ../debugger/gui/DelayQueueWidget.hxx; sourceTree = "<group>"; };
+		DCEC585A1E945175002F0246 /* DelayQueueIterator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DelayQueueIterator.cxx; path = ../emucore/tia/DelayQueueIterator.cxx; sourceTree = "<group>"; };
+		DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DelayQueueIterator.hxx; path = ../emucore/tia/DelayQueueIterator.hxx; sourceTree = "<group>"; };
+		DCEC585C1E945175002F0246 /* PlayfieldPositionProvider.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PlayfieldPositionProvider.hxx; path = ../emucore/tia/PlayfieldPositionProvider.hxx; sourceTree = "<group>"; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
 		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
 		DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Background.cxx; path = ../emucore/tia/Background.cxx; sourceTree = "<group>"; };
@@ -1427,6 +1437,8 @@
 				2D20F9EB08C603EC00A73076 /* DataGridWidget.hxx */,
 				2D20F9EC08C603EC00A73076 /* DebuggerDialog.cxx */,
 				2D20F9ED08C603EC00A73076 /* DebuggerDialog.hxx */,
+				DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */,
+				DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */,
 				DCCF4AFE14BA27EB00814FAB /* DrivingWidget.cxx */,
 				DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */,
 				DCCF4ADA14B9433100814FAB /* GenesisWidget.cxx */,
@@ -1944,6 +1956,8 @@
 				DCF3A6D01DFC75E3008A8AF3 /* Ball.hxx */,
 				DCF3A6D11DFC75E3008A8AF3 /* DelayQueue.cxx */,
 				DCF3A6D21DFC75E3008A8AF3 /* DelayQueue.hxx */,
+				DCEC585A1E945175002F0246 /* DelayQueueIterator.cxx */,
+				DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */,
 				DCF3A6D31DFC75E3008A8AF3 /* DelayQueueMember.cxx */,
 				DCF3A6D41DFC75E3008A8AF3 /* DelayQueueMember.hxx */,
 				DCF3A6D51DFC75E3008A8AF3 /* DrawCounterDecodes.cxx */,
@@ -1961,6 +1975,7 @@
 				DCF3A6E11DFC75E3008A8AF3 /* Player.hxx */,
 				DCF3A6E21DFC75E3008A8AF3 /* Playfield.cxx */,
 				DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */,
+				DCEC585C1E945175002F0246 /* PlayfieldPositionProvider.hxx */,
 				DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */,
 				DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */,
 				DC72B2201E356F4F009056D0 /* VblankManager.cxx */,
@@ -2045,6 +2060,7 @@
 				2D91740E09BA90380026E9FF /* ListWidget.hxx in Headers */,
 				2D91740F09BA90380026E9FF /* Menu.hxx in Headers */,
 				2D91741009BA90380026E9FF /* OptionsDialog.hxx in Headers */,
+				DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */,
 				2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */,
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
@@ -2111,6 +2127,7 @@
 				DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */,
 				DC47455709C34BFA00EDDA3A /* Cheat.hxx in Headers */,
 				DC47455909C34BFA00EDDA3A /* CheatCodeDialog.hxx in Headers */,
+				DCEC585F1E945175002F0246 /* PlayfieldPositionProvider.hxx in Headers */,
 				DC47455B09C34BFA00EDDA3A /* CheatManager.hxx in Headers */,
 				DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */,
 				DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */,
@@ -2121,6 +2138,7 @@
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
 				DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
+				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
@@ -2307,7 +2325,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
@@ -2435,6 +2453,7 @@
 				DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */,
 				CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */,
 				DC1B2EC51E50036100F62837 /* AtariMouse.cxx in Sources */,
+				DCEC58581E945125002F0246 /* DelayQueueWidget.cxx in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
 				DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */,
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
@@ -2522,6 +2541,7 @@
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
+				DCEC585D1E945175002F0246 /* DelayQueueIterator.cxx in Sources */,
 				DC3EE86B1E2C0E6D00905161 /* uncompr.c in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
@@ -2798,24 +2818,74 @@
 		2D91752209BA903B0026E9FF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = NO;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
 				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Development;
+		};
+		2D91752309BA903B0026E9FF /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = NO;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					.,
+					"$(HOME)/Library/Frameworks",
+				);
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2833,61 +2903,30 @@
 				VALID_ARCHS = x86_64;
 				WARNING_CFLAGS = "-Wall";
 			};
-			name = Development;
-		};
-		2D91752309BA903B0026E9FF /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CLANG_WARN__EXIT_TIME_DESTRUCTORS = NO;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					.,
-					"$(HOME)/Library/Frameworks",
-				);
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = "";
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = "@rpath";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
-				VALID_ARCHS = x86_64;
-				WARNING_CFLAGS = "-Wall";
-			};
 			name = Deployment;
 		};
 		2D91752409BA903B0026E9FF /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = NO;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

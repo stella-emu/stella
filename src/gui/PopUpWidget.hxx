@@ -58,7 +58,7 @@ class PopUpWidget : public Widget, public CommandSender
     const string& getSelectedName() const { return myMenu->getSelectedName(); }
     const Variant& getSelectedTag() const { return myMenu->getSelectedTag();  }
 
-    bool wantsFocus()  { return true; }
+    bool wantsFocus() const override { return true; }
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount) override;

@@ -68,7 +68,7 @@ class DebuggerParser
     bool saveScriptFile(string file);
 
   private:
-    enum { kNumCommands = 73 };
+    enum { kNumCommands = 72 };
 
     // Constants for argument processing
     enum {
@@ -93,6 +93,7 @@ class DebuggerParser
     struct Command {
       string cmdString;
       string description;
+      string extendedDesc;
       bool parmsRequired;
       bool refreshRequired;
       parameters parms[10];
@@ -111,7 +112,7 @@ class DebuggerParser
     // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;
     StringList argStrings;
-    int argCount;
+    uInt32 argCount;
 
     StringList watches;
 
@@ -131,6 +132,7 @@ class DebuggerParser
     void executeColortest();
     void executeD();
     void executeData();
+    void executeDebugColors();
     void executeDefine();
     void executeDelbreakif();
     void executeDelfunction();
@@ -151,6 +153,7 @@ class DebuggerParser
     void executeLoadconfig();
     void executeLoadstate();
     void executeN();
+    void executePalette();
     void executePc();
     void executePGfx();
     void executePrint();
@@ -178,11 +181,7 @@ class DebuggerParser
     void executeTrap();
     void executeTrapread();
     void executeTrapwrite();
-    void executeTrapRW(bool read, bool write);  // not exposed by debugger
-    void executeTrapM();
-    void executeTrapreadM();
-    void executeTrapwriteM();
-    void executeTrapMRW(bool read, bool write); // not exposed by debugger
+    void executeTrapRW(uInt32 addr, bool read, bool write);  // not exposed by debugger
     void executeType();
     void executeUHex();
     void executeUndef();

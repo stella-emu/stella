@@ -77,10 +77,9 @@ class PromptWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     // Account for the extra width of embedded scrollbar
-    virtual int getWidth() const override;
+    int getWidth() const override;
 
-    virtual bool wantsFocus() { return true; }
-
+    bool wantsFocus() const override { return true; }
     void loadConfig() override;
 
   private:

@@ -283,7 +283,7 @@ class AbstractFSNode
 //    AbstractFSNode(AbstractFSNode&&) = default;
     AbstractFSNode& operator=(const AbstractFSNode&) = default;
 //    AbstractFSNode& operator=(AbstractFSNode&&) = default;
-    virtual ~AbstractFSNode() { }
+    virtual ~AbstractFSNode() = default;
 
     /*
      * Indicates whether the object referred by this path exists in the

@@ -345,58 +345,55 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleBreakPoint(int bp)
+void Debugger::toggleBreakPoint(uInt16 bp)
 {
   breakPoints().initialize();
-  if(bp < 0) bp = myCpuDebug->pc();
   breakPoints().toggle(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setBreakPoint(int bp, bool set)
+void Debugger::setBreakPoint(uInt16 bp, bool set)
 {
   breakPoints().initialize();
-  if(bp < 0) bp = myCpuDebug->pc();
   if(set) breakPoints().set(bp);
   else    breakPoints().clear(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::breakPoint(int bp)
+bool Debugger::breakPoint(uInt16 bp)
 {
-  if(bp < 0) bp = myCpuDebug->pc();
   return breakPoints().isSet(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleReadTrap(int t)
+void Debugger::toggleReadTrap(uInt16 t)
 {
   readTraps().initialize();
   readTraps().toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleWriteTrap(int t)
+void Debugger::toggleWriteTrap(uInt16 t)
 {
   writeTraps().initialize();
   writeTraps().toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleTrap(int t)
+void Debugger::toggleTrap(uInt16 t)
 {
   toggleReadTrap(t);
   toggleWriteTrap(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::readTrap(int t)
+bool Debugger::readTrap(uInt16 t)
 {
   return readTraps().isInitialized() && readTraps().isSet(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::writeTrap(int t)
+bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
 }
@@ -463,7 +460,7 @@ string Debugger::showWatches()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::patchROM(int addr, int value)
+bool Debugger::patchROM(uInt16 addr, uInt8 value)
 {
   return myConsole.cartridge().patch(addr, value);
 }
@@ -613,12 +610,12 @@ void Debugger::getCompletions(const char* in, StringList& list) const
   for(const auto& iter: myFunctions)
   {
     const char* l = iter.first.c_str();
-    if(BSPF::equalsIgnoreCase(l, in))
+    if(BSPF::startsWithIgnoreCase(l, in))
       list.push_back(l);
   }
 
   for(int i = 0; pseudo_registers[i][0] != 0; ++i)
-    if(BSPF::equalsIgnoreCase(pseudo_registers[i][0], in))
+    if(BSPF::startsWithIgnoreCase(pseudo_registers[i][0], in))
       list.push_back(pseudo_registers[i][0]);
 }
 

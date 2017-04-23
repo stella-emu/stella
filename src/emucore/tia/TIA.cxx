@@ -425,7 +425,6 @@ bool TIA::poke(uInt16 address, uInt8 value)
   updateEmulation();
 
   address &= 0x3F;
-  myShadowRegisters[address] = value;
 
   switch (address)
   {
@@ -440,14 +439,17 @@ bool TIA::poke(uInt16 address, uInt8 value)
         mySystem->incrementCycles(mySubClock / 3);
         mySubClock %= 3;
       }
+      myShadowRegisters[address] = value;
       break;
 
     case RSYNC:
       applyRsync();
+      myShadowRegisters[address] = value;
       break;
 
     case VSYNC:
       myFrameManager.setVsync(value & 0x02);
+      myShadowRegisters[address] = value;
       break;
 
     case VBLANK:
@@ -465,21 +467,27 @@ bool TIA::poke(uInt16 address, uInt8 value)
     // FIXME - rework this when we add the new sound core
     case AUDV0:
       mySound.set(address, value, mySystem->cycles());
+      myShadowRegisters[address] = value;
       break;
     case AUDV1:
       mySound.set(address, value, mySystem->cycles());
+      myShadowRegisters[address] = value;
       break;
     case AUDF0:
       mySound.set(address, value, mySystem->cycles());
+      myShadowRegisters[address] = value;
       break;
     case AUDF1:
       mySound.set(address, value, mySystem->cycles());
+      myShadowRegisters[address] = value;
       break;
     case AUDC0:
       mySound.set(address, value, mySystem->cycles());
+      myShadowRegisters[address] = value;
       break;
     case AUDC1:
       mySound.set(address, value, mySystem->cycles());
+      myShadowRegisters[address] = value;
       break;
     ////////////////////////////////////////////////////////////
 
@@ -490,6 +498,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case COLUBK:
       myLinesSinceChange = 0;
       myBackground.setColor(value & 0xFE);
+      myShadowRegisters[address] = value;
       break;
 
     case COLUP0:
@@ -498,6 +507,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       myPlayfield.setColorP0(value);
       myMissile0.setColor(value);
       myPlayer0.setColor(value);
+      myShadowRegisters[address] = value;
       break;
 
     case COLUP1:
@@ -506,6 +516,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       myPlayfield.setColorP1(value);
       myMissile1.setColor(value);
       myPlayer1.setColor(value);
+      myShadowRegisters[address] = value;
       break;
 
     case CTRLPF:
@@ -514,6 +525,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
                    (value & 0x02) ? Priority::score : Priority::normal;
       myPlayfield.ctrlpf(value);
       myBall.ctrlpf(value);
+      myShadowRegisters[address] = value;
       break;
 
     case COLUPF:
@@ -521,6 +533,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       value &= 0xFE;
       myPlayfield.setColor(value);
       myBall.setColor(value);
+      myShadowRegisters[address] = value;
       break;
 
     case PF0:
@@ -567,33 +580,39 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case RESM0:
       myLinesSinceChange = 0;
       myMissile0.resm(resxCounter(), myHstate == HState::blank);
+      myShadowRegisters[address] = value;
       break;
 
     case RESM1:
       myLinesSinceChange = 0;
       myMissile1.resm(resxCounter(), myHstate == HState::blank);
+      myShadowRegisters[address] = value;
       break;
 
     case RESMP0:
       myLinesSinceChange = 0;
       myMissile0.resmp(value, myPlayer0);
+      myShadowRegisters[address] = value;
       break;
 
     case RESMP1:
       myLinesSinceChange = 0;
       myMissile1.resmp(value, myPlayer1);
+      myShadowRegisters[address] = value;
       break;
 
     case NUSIZ0:
       myLinesSinceChange = 0;
       myMissile0.nusiz(value);
       myPlayer0.nusiz(value, myHstate == HState::blank);
+      myShadowRegisters[address] = value;
       break;
 
     case NUSIZ1:
       myLinesSinceChange = 0;
       myMissile1.nusiz(value);
       myPlayer1.nusiz(value, myHstate == HState::blank);
+      myShadowRegisters[address] = value;
       break;
 
     case HMM0:
@@ -636,11 +655,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case RESP0:
       myLinesSinceChange = 0;
       myPlayer0.resp(resxCounter());
+      myShadowRegisters[address] = value;
       break;
 
     case RESP1:
       myLinesSinceChange = 0;
       myPlayer1.resp(resxCounter());
+      myShadowRegisters[address] = value;
       break;
 
     case REFP0:
@@ -654,11 +675,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case VDELP0:
       myLinesSinceChange = 0;
       myPlayer0.vdelp(value);
+      myShadowRegisters[address] = value;
       break;
 
     case VDELP1:
       myLinesSinceChange = 0;
       myPlayer1.vdelp(value);
+      myShadowRegisters[address] = value;
       break;
 
     case HMP0:
@@ -676,11 +699,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case RESBL:
       myLinesSinceChange = 0;
       myBall.resbl(resxCounter());
+      myShadowRegisters[address] = value;
       break;
 
     case VDELBL:
       myLinesSinceChange = 0;
       myBall.vdelbl(value);
+      myShadowRegisters[address] = value;
       break;
 
     case HMBL:
@@ -690,6 +715,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case CXCLR:
       myLinesSinceChange = 0;
       myCollisionMask = 0;
+      myShadowRegisters[address] = value;
       break;
   }
 
@@ -911,7 +937,7 @@ void TIA::updateScanlineByTrace(int target)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TIA::lastValueWrittenToRegister(uInt8 reg) const
+uInt8 TIA::registerValue(uInt8 reg) const
 {
   return reg < 64 ? myShadowRegisters[reg] : 0;
 }
@@ -1042,10 +1068,21 @@ void TIA::tickHframe()
 
   myPlayfield.tick(x);
 
-  if (lineNotCached)
-    renderSprites();
+  // Render sprites
+  if (lineNotCached) {
+    myPlayer0.render();
+    myPlayer1.render();
+    myMissile0.render(myHctr);
+    myMissile1.render(myHctr);
+    myBall.render();
+  }
 
-  tickSprites();
+  // Tick sprites
+  myMissile0.tick(myHctr);
+  myMissile1.tick(myHctr);
+  myPlayer0.tick();
+  myPlayer1.tick();
+  myBall.tick();
 
   if (myFrameManager.isRendering())
     renderPixel(x, y, lineNotCached);
@@ -1062,26 +1099,6 @@ void TIA::applyRsync()
 
   myLinesSinceChange = 0;
   myHctr = 225;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::renderSprites()
-{
-  myPlayer0.render();
-  myPlayer1.render();
-  myMissile0.render(myHctr);
-  myMissile1.render(myHctr);
-  myBall.render();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::tickSprites()
-{
-  myMissile0.tick(myHctr);
-  myMissile1.tick(myHctr);
-  myPlayer0.tick();
-  myPlayer1.tick();
-  myBall.tick();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1178,6 +1195,9 @@ void TIA::clearHmoveComb()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::delayedWrite(uInt8 address, uInt8 value)
 {
+  if (address < 64)
+    myShadowRegisters[address] = value;
+
   switch (address)
   {
     case VBLANK:

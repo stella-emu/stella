@@ -37,15 +37,19 @@ class DelayQueueMember : public Serializable
 
   public:
 
+    typedef vector<Entry>::const_iterator iterator;
+
+  public:
+
     void push(uInt8 address, uInt8 value);
 
     void remove(uInt8 address);
 
-    vector<Entry>::const_iterator begin() const {
+    iterator begin() const {
       return myEntries.begin();
     }
 
-    vector<Entry>::const_iterator end() const {
+    iterator end() const {
       return (mySize < myEntries.size()) ? (myEntries.begin() + mySize) : myEntries.end();
     }
 

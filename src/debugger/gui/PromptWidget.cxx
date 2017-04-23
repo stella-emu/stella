@@ -240,11 +240,19 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       }
       else
       {
-        // we got a delimiter, so this must be a label or a function
-        const Debugger& dbg = instance().debugger();
+        // Special case for 'help' command
+        if(BSPF::startsWithIgnoreCase(str, "help"))
+        {
+          instance().debugger().parser().getCompletions(str + lastDelimPos + 1, list);
+        }
+        else
+        {
+          // we got a delimiter, so this must be a label or a function
+          const Debugger& dbg = instance().debugger();
 
-        dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
-        dbg.getCompletions(str + lastDelimPos + 1, list);
+          dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
+          dbg.getCompletions(str + lastDelimPos + 1, list);
+        }
 
         if(list.size() < 1)
           break;
@@ -922,18 +930,12 @@ string PromptWidget::getCompletionPrefix(const StringList& completions, string p
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::clearScreen()
 {
-  // Initialize start position and history
+  // Initialize start position
   _currentPos = 0;
   _scrollLine = _linesPerPage - 1;
   _firstLineInBuffer = 0;
   _promptStartPos = _promptEndPos = -1;
   memset(_buffer, 0, kBufferSize * sizeof(int));
-
-  _historyIndex = 0;
-  _historyLine = 0;
-  _historySize = 0;
-  for (int i = 0; i < kHistorySize; i++)
-    _history[i][0] = '\0';
 
   if(!_firstTime)
     updateScrollBuffer();

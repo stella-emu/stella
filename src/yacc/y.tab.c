@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -166,7 +166,7 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
+
 union YYSTYPE
 {
 #line 28 "stella.y" /* yacc.c:355  */
@@ -181,6 +181,8 @@ union YYSTYPE
 
 #line 183 "y.tab.c" /* yacc.c:355  */
 };
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -194,7 +196,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 198 "y.tab.c" /* yacc.c:358  */
+#line 200 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -1338,215 +1340,215 @@ yyreduce:
         case 2:
 #line 66 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, "\ndone\n"); result.exp = (yyvsp[0].exp); }
-#line 1342 "y.tab.c" /* yacc.c:1646  */
+#line 1344 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
 #line 69 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " +"); (yyval.exp) = new PlusExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1348 "y.tab.c" /* yacc.c:1646  */
+#line 1350 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
 #line 70 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " -"); (yyval.exp) = new MinusExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1354 "y.tab.c" /* yacc.c:1646  */
+#line 1356 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
 #line 71 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " *"); (yyval.exp) = new MultExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1360 "y.tab.c" /* yacc.c:1646  */
+#line 1362 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
 #line 72 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " /"); (yyval.exp) = new DivExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1366 "y.tab.c" /* yacc.c:1646  */
+#line 1368 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
 #line 73 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " %%"); (yyval.exp) = new ModExpression((yyvsp[-2].exp), (yyvsp[0].exp));  lastExp = (yyval.exp); }
-#line 1372 "y.tab.c" /* yacc.c:1646  */
+#line 1374 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
 #line 74 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " &"); (yyval.exp) = new BinAndExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1378 "y.tab.c" /* yacc.c:1646  */
+#line 1380 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
 #line 75 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " |"); (yyval.exp) = new BinOrExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1384 "y.tab.c" /* yacc.c:1646  */
+#line 1386 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
 #line 76 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " ^"); (yyval.exp) = new BinXorExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1390 "y.tab.c" /* yacc.c:1646  */
+#line 1392 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 77 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " <"); (yyval.exp) = new LessExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1396 "y.tab.c" /* yacc.c:1646  */
+#line 1398 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 78 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " >"); (yyval.exp) = new GreaterExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1402 "y.tab.c" /* yacc.c:1646  */
+#line 1404 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 79 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " >="); (yyval.exp) = new GreaterEqualsExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1408 "y.tab.c" /* yacc.c:1646  */
+#line 1410 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
 #line 80 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " <="); (yyval.exp) = new LessEqualsExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1414 "y.tab.c" /* yacc.c:1646  */
+#line 1416 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
 #line 81 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " !="); (yyval.exp) = new NotEqualsExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1420 "y.tab.c" /* yacc.c:1646  */
+#line 1422 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
 #line 82 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " =="); (yyval.exp) = new EqualsExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1426 "y.tab.c" /* yacc.c:1646  */
+#line 1428 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
 #line 83 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " >>"); (yyval.exp) = new ShiftRightExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1432 "y.tab.c" /* yacc.c:1646  */
+#line 1434 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
 #line 84 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " <<"); (yyval.exp) = new ShiftLeftExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1438 "y.tab.c" /* yacc.c:1646  */
+#line 1440 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
 #line 85 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " ||"); (yyval.exp) = new LogOrExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1444 "y.tab.c" /* yacc.c:1646  */
+#line 1446 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 86 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " &&"); (yyval.exp) = new LogAndExpression((yyvsp[-2].exp), (yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1450 "y.tab.c" /* yacc.c:1646  */
+#line 1452 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
 #line 87 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " U-"); (yyval.exp) = new UnaryMinusExpression((yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1456 "y.tab.c" /* yacc.c:1646  */
+#line 1458 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
 #line 88 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " ~"); (yyval.exp) = new BinNotExpression((yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1462 "y.tab.c" /* yacc.c:1646  */
+#line 1464 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
 #line 89 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " !"); (yyval.exp) = new LogNotExpression((yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1468 "y.tab.c" /* yacc.c:1646  */
+#line 1470 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
 #line 90 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " U*"); (yyval.exp) = new ByteDerefExpression((yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1474 "y.tab.c" /* yacc.c:1646  */
+#line 1476 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
 #line 91 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " U@"); (yyval.exp) = new WordDerefExpression((yyvsp[0].exp)); lastExp = (yyval.exp); }
-#line 1480 "y.tab.c" /* yacc.c:1646  */
+#line 1482 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
 #line 92 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " U<");  (yyval.exp) = new LoByteExpression((yyvsp[0].exp));  lastExp = (yyval.exp); }
-#line 1486 "y.tab.c" /* yacc.c:1646  */
+#line 1488 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
 #line 93 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " U>");  (yyval.exp) = new HiByteExpression((yyvsp[0].exp));  lastExp = (yyval.exp); }
-#line 1492 "y.tab.c" /* yacc.c:1646  */
+#line 1494 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
 #line 94 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " ()"); (yyval.exp) = (yyvsp[-1].exp); lastExp = (yyval.exp); }
-#line 1498 "y.tab.c" /* yacc.c:1646  */
+#line 1500 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
 #line 95 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " []"); (yyval.exp) = new ByteDerefOffsetExpression((yyvsp[-3].exp), (yyvsp[-1].exp)); lastExp = (yyval.exp); }
-#line 1504 "y.tab.c" /* yacc.c:1646  */
+#line 1506 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
 #line 96 "stella.y" /* yacc.c:1646  */
-    { if(DEBUG_EXP) fprintf(stderr, " %d", (yyvsp[0].val)); (yyval.exp) = new ConstExpression((yyvsp[0].val)); lastExp = (yyval.exp); }
-#line 1510 "y.tab.c" /* yacc.c:1646  */
+    { if(DEBUG_EXP) fprintf(stderr, "const %d", (yyvsp[0].val)); (yyval.exp) = new ConstExpression((yyvsp[0].val)); lastExp = (yyval.exp); }
+#line 1512 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
 #line 97 "stella.y" /* yacc.c:1646  */
-    { if(DEBUG_EXP) fprintf(stderr, " %s", (yyvsp[0].Equate)); (yyval.exp) = new EquateExpression((yyvsp[0].Equate)); lastExp = (yyval.exp); }
-#line 1516 "y.tab.c" /* yacc.c:1646  */
+    { if(DEBUG_EXP) fprintf(stderr, "equate %s", (yyvsp[0].Equate)); (yyval.exp) = new EquateExpression((yyvsp[0].Equate)); lastExp = (yyval.exp); }
+#line 1518 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
 #line 98 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " (CpuMethod)"); (yyval.exp) = new CpuMethodExpression((yyvsp[0].cpuMethod)); lastExp = (yyval.exp); }
-#line 1522 "y.tab.c" /* yacc.c:1646  */
+#line 1524 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
 #line 99 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " (CartMethod)"); (yyval.exp) = new CartMethodExpression((yyvsp[0].cartMethod)); lastExp = (yyval.exp); }
-#line 1528 "y.tab.c" /* yacc.c:1646  */
+#line 1530 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
 #line 100 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); (yyval.exp) = new TiaMethodExpression((yyvsp[0].tiaMethod)); lastExp = (yyval.exp); }
-#line 1534 "y.tab.c" /* yacc.c:1646  */
+#line 1536 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
 #line 101 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " (DefinedFunction)"); (yyval.exp) = new FunctionExpression((yyvsp[0].DefinedFunction)); lastExp = (yyval.exp); }
-#line 1540 "y.tab.c" /* yacc.c:1646  */
+#line 1542 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
 #line 102 "stella.y" /* yacc.c:1646  */
     { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((char*)"Invalid label or constant"); return 1; }
-#line 1546 "y.tab.c" /* yacc.c:1646  */
+#line 1548 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1550 "y.tab.c" /* yacc.c:1646  */
+#line 1552 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

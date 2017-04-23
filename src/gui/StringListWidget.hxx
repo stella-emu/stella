@@ -29,6 +29,7 @@ class StringListWidget : public ListWidget
     virtual ~StringListWidget() = default;
 
     void setList(const StringList& list);
+    bool wantsFocus() const override { return true; }
 
   protected:
     void drawWidget(bool hilite) override;

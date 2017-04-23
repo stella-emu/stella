@@ -42,10 +42,10 @@ class TiaOutputWidget : public Widget, public CommandSender
 // For example, clicking an area may cause an action
 // (fill to this scanline, etc).
 /*
-    virtual void handleMouseUp(int x, int y, int button, int clickCount) override;
-    virtual void handleMouseWheel(int x, int y, int direction) override;
-    virtual bool handleKeyDown(StellaKey key, StellaMod mod) override;
-    virtual bool handleKeyUp(StellaKey key, StellaMod mod) override;
+    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseWheel(int x, int y, int direction) override;
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    bool handleKeyUp(StellaKey key, StellaMod mod) override;
 */
   private:
     unique_ptr<ContextMenu> myMenu;
@@ -62,7 +62,7 @@ class TiaOutputWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;
-    bool wantsFocus() { return false; }
+    bool wantsFocus() const override { return false; }
 
     // Following constructors and assignment operators not supported
     TiaOutputWidget() = delete;

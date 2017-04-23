@@ -101,14 +101,22 @@ void ToggleBitWidget::drawWidget(bool hilite)
       else
         buffer = _offList[pos];
 
-      // Highlight changes
-      if(_changedList[pos])
+      if(isEditable())
       {
-        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
-        s.drawString(_font, buffer, x, y, _colWidth, kDbgChangedTextColor);
+        // Highlight changes
+        if(_changedList[pos])
+        {
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
+          s.drawString(_font, buffer, x, y, _colWidth, kDbgChangedTextColor);
+        }
+        else
+          s.drawString(_font, buffer, x, y, _colWidth, kTextColor);
       }
       else
+      {
+        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kBGColorLo);
         s.drawString(_font, buffer, x, y, _colWidth, kTextColor);
+      }
     }
   }
 }

@@ -23,6 +23,8 @@ class TiaDebug;
 class TIA;
 
 #include "DebuggerSystem.hxx"
+#include "DelayQueueIterator.hxx"
+#include "bspf.hxx"
 
 // Function type for TIADebug instance methods
 class TIADebug;
@@ -57,6 +59,8 @@ class TIADebug : public DebuggerSystem
 
     void saveOldState() override;
     string toString() override;
+    string debugColors() const;
+    string palette() const;
 
     // TIA byte (or part of a byte) registers
     uInt8 nusiz0(int newVal = -1);
@@ -137,7 +141,7 @@ class TIADebug : public DebuggerSystem
 
     // TIA strobe registers
     void strobeWsync() { mySystem.poke(WSYNC, 0); }
-    void strobeRsync() { mySystem.poke(RSYNC, 0); } // not emulated!
+    void strobeRsync() { mySystem.poke(RSYNC, 0); }
     void strobeResP0() { mySystem.poke(RESP0, 0); }
     void strobeResP1() { mySystem.poke(RESP1, 0); }
     void strobeResM0() { mySystem.poke(RESM0, 0); }
@@ -156,9 +160,11 @@ class TIADebug : public DebuggerSystem
     int vsyncAsInt() const  { return int(vsync());  } // so we can use _vsync pseudo-register
     int vblankAsInt() const { return int(vblank()); } // so we can use _vblank pseudo-register
 
+    shared_ptr<DelayQueueIterator> delayQueueIterator() const;
+
   private:
     /** Display a color patch for color at given index in the palette */
-    string colorSwatch(uInt8 c);
+    string colorSwatch(uInt8 c) const;
 
     /** Get specific bits in the collision register (used by collXX_XX) */
     bool collision(CollisionBit id) const;

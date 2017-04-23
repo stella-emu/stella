@@ -18,7 +18,7 @@
 #ifndef FRAMEBUFFER_SDL2_HXX
 #define FRAMEBUFFER_SDL2_HXX
 
-#include <SDL.h>
+#include "SDL_lib.hxx"
 
 class OSystem;
 class FBSurfaceSDL2;

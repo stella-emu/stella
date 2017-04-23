@@ -202,7 +202,6 @@ void Missile::tick(uInt8 hclock)
             myEffectiveWidth = myWidth;
             break;
         }
-
       }
 
       if (++myRenderCounter >= (myIsMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
