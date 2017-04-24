@@ -75,6 +75,9 @@ class Player : public Serializable
     uInt8 getPosition() const;
     void setPosition(uInt8 newPosition);
 
+    uInt8 getGRPOld() const { return myPatternOld; };
+    uInt8 getGRPNew() const { return myPatternNew; };
+
     /**
       Serializable methods (see that class for more information).
     */

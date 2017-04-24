@@ -71,6 +71,9 @@ class Ball : public Serializable
     uInt8 getPosition() const;
     void setPosition(uInt8 newPosition);
 
+    bool getENABLOld() const { return myIsEnabledOld; }
+    bool getENABLNew() const { return myIsEnabledNew; }
+
     /**
       Serializable methods (see that class for more information).
     */
