@@ -208,6 +208,7 @@ class CartridgeCDF : public Cartridge
 
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
+    uInt32 getSample();
 
   private:
     // The 32K ROM image of the cartridge
@@ -237,16 +238,37 @@ class CartridgeCDF : public Cartridge
     uInt16 myCurrentBank;
 
     // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    Int32 myAudioCycles;
 
     Int32 myARMCycles;
 
     uInt8 mySetAddress;
+  
+    // The audio routines in the driver run in 32-bit mode and take advantage
+    // of the FIQ Shadow Registers which are not accessible to 16-bit thumb
+    // code.  As such, Thumbulator does not support them.  The driver supplies a
+    // few 16-bit subroutines used to pass values from 16-bit to 32-bit.  The
+    // Thumbulator will trap these calls and pass the appropriate information to
+    // the Cartridge Class via callFunction() so it can emulate the 32 bit audio routines.
 
+  /* Register usage for audio:
+   r8  = channel0 accumulator
+   r9  = channel1 accumulator
+   r10 = channel2 accumulator
+   r11 = channel0 frequency
+   r12 = channel1 frequency
+   r13 = channel2 frequency
+   r14 = timer base */
+  
     // The music mode counters
+    // In the driver these are stored in ARM FIQ shadow registers r8, r9 and r10
+    // which are not accessible to Thumb code.  Thumbulator will use
+    // callFunction() to pass back values that end up in them so so the Thumbulator does not
+    // support these.  So the
+    //
     uInt32 myMusicCounters[3];
 
-    // The music frequency
+    // The music frequency, ARM FIQ shadow registers r11, r12, r13
     uInt32 myMusicFrequencies[3];
 
     // The music waveform sizes
@@ -266,6 +288,8 @@ class CartridgeCDF : public Cartridge
     uInt16 myLDAimmediateOperandAddress;
 
     TIA* myTIA;
+  
+    uInt8 myFastJumpActive;
 
   private:
     // Following constructors and assignment operators not supported
