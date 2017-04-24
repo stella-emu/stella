@@ -47,7 +47,9 @@ class TiaWidget : public Widget, public CommandSender
     ColorWidget* myCOLUBKColor;
 
     TogglePixelWidget* myGRP0;
+    TogglePixelWidget* myGRP0Old;
     TogglePixelWidget* myGRP1;
+    TogglePixelWidget* myGRP1Old;
 
     DataGridWidget* myPosP0;
     DataGridWidget* myPosP1;
@@ -105,7 +107,8 @@ class TiaWidget : public Widget, public CommandSender
 
       kRamID,
       kColorRegsID,
-      kGRP0ID,    kGRP1ID,
+      kGRP0ID,    kGRP0OldID,
+      kGRP1ID,    kGRP1OldID,
       kPosP0ID,   kPosP1ID,
       kPosM0ID,   kPosM1ID,   kPosBLID,
       kHMP0ID,    kHMP1ID,

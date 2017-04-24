@@ -40,11 +40,11 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
-  int xpos = 10, ypos = 15 + lineHeight, lwidth = 4 * fontWidth;
+  int xpos = 10, ypos = 15 + lineHeight;
   StaticTextWidget* t;
 
   // Color registers
-  const char* regNames[] = { "COLUP0:", "COLUP1:", "COLUPF:", "COLUBK:" };
+  const char* regNames[] = { "COLUP0", "COLUP1", "COLUPF", "COLUBK" };
   for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
@@ -174,21 +174,20 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // P0 register info
   ////////////////////////////
-  // grP0
+  // grP0 (new)
   xpos = 10;  ypos = buttonY + 2*lineHeight;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 7*fontWidth, fontHeight,
-                       "P0: GR:", kTextAlignLeft);
-  xpos += 7*fontWidth + 5;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "P0", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myGRP0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
   addFocusWidget(myGRP0);
 
   // posP0
-  xpos += myGRP0->getWidth() + 8;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2,
-                           6*fontWidth, fontHeight,
-                           "Pos: #", kTextAlignLeft);
+  xpos += myGRP0->getWidth() + 12;
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
+                           "Pos #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosP0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -198,17 +197,17 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP0);
 
   // hmP0
-  xpos += myPosP0->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "HM:", kTextAlignLeft);
-  xpos += 3*fontWidth + 5;
+  xpos += myPosP0->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "HM", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myHMP0 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
   myHMP0->setTarget(this);
   myHMP0->setID(kHMP0ID);
   addFocusWidget(myHMP0);
 
-  // P0 reflect and delay
+  // P0 reflect
   xpos += myHMP0->getWidth() + 15;
   myRefP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
                                "Reflect", kCheckActionCmd);
@@ -216,18 +215,26 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
-  xpos += myRefP0->getWidth() + 15;
+  // grP0 (old)
+  xpos = 10 + 2*fontWidth + 5;  ypos += myGRP0->getHeight() + 5;
+  myGRP0Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  myGRP0Old->setTarget(this);
+  myGRP0Old->setID(kGRP0OldID);
+  addFocusWidget(myGRP0Old);
+
+  // P0 delay
+  xpos += myGRP0Old->getWidth() + 12;
   myDelP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "Delay", kCheckActionCmd);
+                               "VDel", kCheckActionCmd);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
   addFocusWidget(myDelP0);
 
   // NUSIZ0 (player portion)
-  xpos = 10 + lwidth;  ypos += myGRP0->getHeight() + 5;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 8*fontWidth, fontHeight,
-                       "NusizP0:", kTextAlignLeft);
-  xpos += 8*fontWidth + 5;
+  xpos += myDelP0->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
+                       "NuSiz", kTextAlignLeft);
+  xpos += 5*fontWidth + 5;
   myNusizP0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 3, Common::Base::F_16_1);
   myNusizP0->setTarget(this);
@@ -242,20 +249,20 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // P1 register info
   ////////////////////////////
-  // grP1
+  // grP1 (new)
   xpos = 10;  ypos += 2*lineHeight;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 7*fontWidth, fontHeight,
-                       "P1: GR:", kTextAlignLeft);
-  xpos += 7*fontWidth + 5;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "P1", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myGRP1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
   addFocusWidget(myGRP1);
 
   // posP1
-  xpos += myGRP1->getWidth() + 8;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 6*fontWidth, fontHeight,
-                           "Pos: #", kTextAlignLeft);
+  xpos += myGRP1->getWidth() + 12;
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
+                           "Pos #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosP1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -265,17 +272,17 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP1);
 
   // hmP1
-  xpos += myPosP1->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "HM:", kTextAlignLeft);
-  xpos += 3*fontWidth + 5;
+  xpos += myPosP1->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "HM", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myHMP1 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
   myHMP1->setTarget(this);
   myHMP1->setID(kHMP1ID);
   addFocusWidget(myHMP1);
 
-  // P1 reflect and delay
+  // P1 reflect
   xpos += myHMP1->getWidth() + 15;
   myRefP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
                                "Reflect", kCheckActionCmd);
@@ -283,18 +290,26 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
-  xpos += myRefP1->getWidth() + 15;
+  // grP1 (old)
+  xpos = 10 + 2*fontWidth + 5;  ypos += myGRP1->getHeight() + 5;
+  myGRP1Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
+  myGRP1Old->setTarget(this);
+  myGRP1Old->setID(kGRP1OldID);
+  addFocusWidget(myGRP1Old);
+
+  // P1 delay
+  xpos += myGRP1Old->getWidth() + 12;
   myDelP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "Delay", kCheckActionCmd);
+                               "VDel", kCheckActionCmd);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
   addFocusWidget(myDelP1);
 
   // NUSIZ1 (player portion)
-  xpos = 10 + lwidth;  ypos += myGRP1->getHeight() + 5;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 8*fontWidth, fontHeight,
-                       "NusizP1:", kTextAlignLeft);
-  xpos += 8*fontWidth + 5;
+  xpos += myDelP1->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
+                       "NuSiz", kTextAlignLeft);
+  xpos += 5*fontWidth + 5;
   myNusizP1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 3, Common::Base::F_16_1);
   myNusizP1->setTarget(this);
@@ -311,9 +326,9 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // enaM0
   xpos = 10;  ypos += 2*lineHeight;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "M0:", kTextAlignLeft);
-  xpos += 3*fontWidth + 8;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "M0", kTextAlignLeft);
+  xpos += 2*fontWidth + 8;
   myEnaM0 = new CheckboxWidget(boss, lfont, xpos, ypos+2,
                                "Enable", kCheckActionCmd);
   myEnaM0->setTarget(this);
@@ -322,8 +337,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posM0
   xpos += myEnaM0->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 6*fontWidth, fontHeight,
-                           "Pos: #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
+                           "Pos #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosM0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -333,10 +348,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosM0);
 
   // hmM0
-  xpos += myPosM0->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "HM:", kTextAlignLeft);
-  xpos += 3*fontWidth + 5;
+  xpos += myPosM0->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "HM", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myHMM0 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
   myHMM0->setTarget(this);
@@ -344,10 +359,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myHMM0);
 
   // NUSIZ0 (missile portion)
-  xpos += myHMM0->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                       "Size:", kTextAlignLeft);
-  xpos += 5*fontWidth + 5;
+  xpos += myHMM0->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                       "Size", kTextAlignLeft);
+  xpos += 4*fontWidth + 5;
   myNusizM0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 2, Common::Base::F_16_1);
   myNusizM0->setTarget(this);
@@ -367,9 +382,9 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // enaM1
   xpos = 10;  ypos += lineHeight + 6;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "M1:", kTextAlignLeft);
-  xpos += 3*fontWidth + 8;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "M1", kTextAlignLeft);
+  xpos += 2*fontWidth + 8;
   myEnaM1 = new CheckboxWidget(boss, lfont, xpos, ypos+2,
                                "Enable", kCheckActionCmd);
   myEnaM1->setTarget(this);
@@ -378,8 +393,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posM0
   xpos += myEnaM1->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 6*fontWidth, fontHeight,
-                           "Pos: #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
+                           "Pos #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosM1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -389,10 +404,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosM1);
 
   // hmM0
-  xpos += myPosM1->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "HM:", kTextAlignLeft);
-  xpos += 3*fontWidth + 5;
+  xpos += myPosM1->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "HM", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myHMM1 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
   myHMM1->setTarget(this);
@@ -400,10 +415,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myHMM1);
 
   // NUSIZ1 (missile portion)
-  xpos += myHMM1->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                       "Size:", kTextAlignLeft);
-  xpos += 5*fontWidth + 5;
+  xpos += myHMM1->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                       "Size", kTextAlignLeft);
+  xpos += 4*fontWidth + 5;
   myNusizM1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 2, Common::Base::F_16_1);
   myNusizM1->setTarget(this);
@@ -423,9 +438,9 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // enaBL
   xpos = 10;  ypos += lineHeight + 6;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "BL:", kTextAlignLeft);
-  xpos += 3*fontWidth + 8;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "BL", kTextAlignLeft);
+  xpos += 2*fontWidth + 8;
   myEnaBL = new CheckboxWidget(boss, lfont, xpos, ypos+2,
                                "Enable", kCheckActionCmd);
   myEnaBL->setTarget(this);
@@ -434,8 +449,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posBL
   xpos += myEnaBL->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 6*fontWidth, fontHeight,
-                           "Pos: #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
+                           "Pos #", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosBL = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -445,10 +460,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosBL);
 
   // hmBL
-  xpos += myPosBL->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 3*fontWidth, fontHeight,
-                       "HM:", kTextAlignLeft);
-  xpos += 3*fontWidth + 5;
+  xpos += myPosBL->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "HM", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myHMBL = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
   myHMBL->setTarget(this);
@@ -456,10 +471,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myHMBL);
 
   // CTRLPF (size portion)
-  xpos += myHMBL->getWidth() + 8;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                       "Size:", kTextAlignLeft);
-  xpos += 5*fontWidth + 5;
+  xpos += myHMBL->getWidth() + 12;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                       "Size", kTextAlignLeft);
+  xpos += 4*fontWidth + 5;
   mySizeBL = new DataGridWidget(boss, nfont, xpos, ypos,
                                 1, 1, 1, 2, Common::Base::F_16_1);
   mySizeBL->setTarget(this);
@@ -477,11 +492,16 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // PF 0/1/2 registers
   ////////////////////////////
+  const GUI::Font& sf = instance().frameBuffer().smallFont();
+  const int sfWidth = sf.getMaxCharWidth(),
+            sfHeight = sf.getFontHeight();
+  const char* bitNames[] = { "0", "1", "2", "3", "4", "5", "6", "7" };
+
   // PF0
-  xpos = 10;  ypos += lineHeight + 6;
-  new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                       "PF:", kTextAlignLeft);
-  xpos += 4*fontWidth;
+  xpos = 10;  ypos += lineHeight + sfHeight + 6;
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
+                       "PF", kTextAlignLeft);
+  xpos += 2*fontWidth + 5;
   myPF[0] = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 4, 1);
   myPF[0]->setTarget(this);
   myPF[0]->setID(kPF0ID);
@@ -500,6 +520,33 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myPF[2]->setTarget(this);
   myPF[2]->setID(kPF2ID);
   addFocusWidget(myPF[2]);
+
+  // PFx bit labels
+  auto start = [&](int w) { return (w - sfWidth) / 2; };
+  int colw = myPF[0]->getWidth() / 4;
+  xpos = 10 + 2*fontWidth + 5 + start(colw);
+  int _ypos = ypos - sfHeight;
+  for(int i = 4; i <= 7; ++i)
+  {
+    new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
+                         bitNames[i], kTextAlignLeft);
+    xpos += colw;
+  }
+  xpos = 10 + 2*fontWidth + 5 + myPF[0]->getWidth() + 2 + start(colw);
+  for(int i = 7; i >= 0; --i)
+  {
+    new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
+                         bitNames[i], kTextAlignLeft);
+    xpos += colw;
+  }
+  xpos = 10 + 2*fontWidth + 5 + myPF[0]->getWidth() + 2 +
+         myPF[1]->getWidth() + 2 + start(colw);
+  for(int i = 0; i <= 7; ++i)
+  {
+    new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
+                         bitNames[i], kTextAlignLeft);
+    xpos += colw;
+  }
 
   // PF reflect, score, priority
   xpos = 10 + 4*fontWidth;  ypos += lineHeight + 6;
@@ -673,8 +720,16 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           tia.grP0(myGRP0->getIntState());
           break;
 
+        case kGRP0OldID:
+          cerr << "GRP0Old\n";
+          break;
+
         case kGRP1ID:
           tia.grP1(myGRP1->getIntState());
+          break;
+
+        case kGRP1OldID:
+          cerr << "GRP1Old\n";
           break;
 
         case kPF0ID:
@@ -787,10 +842,15 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // P0 register info
   ////////////////////////////
-  // grP0
+  // grP0 (new)
   myGRP0->setColor(state.coluRegs[0]);
   myGRP0->setBackgroundColor(-1);
   myGRP0->setIntState(state.gr[P0], false);
+
+  // grP0 (old)  // FIXME - for now, same as 'new'
+  myGRP0Old->setColor(state.coluRegs[0]);
+  myGRP0Old->setBackgroundColor(-1);
+  myGRP0Old->setIntState(state.gr[P0], false);
 
   // posP0
   myPosP0->setList(0, state.pos[P0], state.pos[P0] != oldstate.pos[P0]);
@@ -810,10 +870,15 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // P1 register info
   ////////////////////////////
-  // grP1
+  // grP1 (new)
   myGRP1->setColor(state.coluRegs[1]);
-  myGRP1->setBackgroundColor(tia.priorityPF() ? state.coluRegs[3] : -1);
+  myGRP1->setBackgroundColor(-1);
   myGRP1->setIntState(state.gr[P1], false);
+
+  // grP1 (old)  // FIXME - for now, same as 'new'
+  myGRP1Old->setColor(state.coluRegs[1]);
+  myGRP1Old->setBackgroundColor(-1);
+  myGRP1Old->setIntState(state.gr[P1], false);
 
   // posP1
   myPosP1->setList(0, state.pos[P1], state.pos[P1] != oldstate.pos[P1]);
