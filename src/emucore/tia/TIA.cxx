@@ -49,12 +49,6 @@ enum Delay: uInt8 {
   vblank = 1
 };
 
-enum DummyRegisters: uInt8 {
-  shuffleP0 = 0xF0,
-  shuffleP1 = 0xF1,
-  shuffleBL = 0xF2
-};
-
 enum ResxCounter: uInt8 {
   hblank = 159,
   lateHblank = 158,

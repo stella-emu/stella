@@ -21,6 +21,7 @@
 #include "TIATypes.hxx"
 #include "Debugger.hxx"
 #include "Base.hxx"
+#include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DelayQueueWidget::DelayQueueWidget(
@@ -32,9 +33,9 @@ DelayQueueWidget::DelayQueueWidget(
   _textcolor = kTextColor;
 
   _w = 20 * font.getMaxCharWidth() + 6;
-  _h = 3 * font.getLineHeight() + 6;
+  _h = lineCount * font.getLineHeight() + 6;
 
-  myLines[0] = myLines[1] = myLines[2];
+  for (auto&& line : myLines) line = "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,23 +44,41 @@ void DelayQueueWidget::loadConfig() {
       instance().debugger().tiaDebug().delayQueueIterator();
 
   using Common::Base;
-  for (uInt8 i = 0; i < 3; i++) {
-    if (delayQueueIterator->isValid() && delayQueueIterator->address() < 64) {
-      stringstream ss;
+  for (auto&& line : myLines) {
+    if (!delayQueueIterator->isValid()) {
+      line = "";
+      continue;
+    };
 
-      ss
-        << int(delayQueueIterator->delay())
-        << " clk, $"
-        << Base::toString(delayQueueIterator->value(), Base::Format::F_16_2)
-        << " -> "
-        << instance().debugger().cartDebug().getLabel(
-              delayQueueIterator->address(), false);
+    stringstream ss;
+    const auto address = delayQueueIterator->address();
+    const int delay = delayQueueIterator->delay();
 
-      myLines[i] = ss.str();
-      delayQueueIterator->next();
+    switch (address) {
+      case TIA::DummyRegisters::shuffleP0:
+        ss << delay << " clk, shuffle GRP0";
+        break;
+
+      case TIA::DummyRegisters::shuffleP1:
+        ss << delay << " clk, shuffle GRP1";
+        break;
+
+      case TIA::DummyRegisters::shuffleBL:
+        ss << delay << " clk, shuffle ENABL";
+        break;
+
+      default:
+        if (address < 64) ss
+          << delay
+          << " clk, $"
+          << Base::toString(delayQueueIterator->value(), Base::Format::F_16_2)
+          << " -> "
+          << instance().debugger().cartDebug().getLabel(delay, false);
+        break;
     }
-    else
-      myLines[i] = "";
+
+    line = ss.str();
+    delayQueueIterator->next();
   }
 }
 
@@ -83,11 +102,9 @@ void DelayQueueWidget::drawWidget(bool hilite)
   y += 2;
   x += 2;
   w -= 3;
-  surface.drawString(_font, myLines[0], x, y, w, _textcolor);
 
-  y += lineHeight;
-  surface.drawString(_font, myLines[1], x, y, w, _textcolor);
-
-  y += lineHeight;
-  surface.drawString(_font, myLines[2], x, y, w, _textcolor);
+  for (const auto& line : myLines) {
+    surface.drawString(_font, line, x, y, w, _textcolor);
+    y += lineHeight;
+  }
 }

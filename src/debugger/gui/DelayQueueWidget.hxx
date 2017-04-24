@@ -36,7 +36,9 @@ class DelayQueueWidget : public Widget
     void drawWidget(bool hilite) override;
 
   private:
-    string myLines[3];
+    static constexpr uInt8 lineCount = 4;
+
+    string myLines[lineCount];
 
   private:
     DelayQueueWidget() = delete;
