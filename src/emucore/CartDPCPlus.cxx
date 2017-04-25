@@ -173,7 +173,7 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
   // Let's update counters and flags of the music mode data fetchers
   for(int x = 0; x <= 2; ++x)
   {
-    myMusicCounters[x] += myMusicFrequencies[x];
+    myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
   }
 }
 
