@@ -73,7 +73,7 @@ void DelayQueueWidget::loadConfig() {
           << " clk, $"
           << Base::toString(delayQueueIterator->value(), Base::Format::F_16_2)
           << " -> "
-          << instance().debugger().cartDebug().getLabel(delay, false);
+          << instance().debugger().cartDebug().getLabel(address, false);
         break;
     }
 
