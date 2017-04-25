@@ -78,6 +78,8 @@ class Player : public Serializable
     uInt8 getGRPOld() const { return myPatternOld; };
     uInt8 getGRPNew() const { return myPatternNew; };
 
+    void setGRPOld(uInt8 pattern);
+
     /**
       Serializable methods (see that class for more information).
     */
