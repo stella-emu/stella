@@ -80,6 +80,9 @@
     the new implementation now works for the NTSC 'Dig Dug' ROM.  Special
     thanks for SpiceWare for the idea and modified implementation.
 
+  * Fixed long-standing bug in 3-voice music in DPC+ bankswitching scheme;
+    the music now sounds much more like the real thing.
+
   * For the Linux/UNIX port:
     - The settings directory now uses the XDG Base Directory Specification.
       In most cases, this means that your files will now be stored in
