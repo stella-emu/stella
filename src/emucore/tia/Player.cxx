@@ -337,6 +337,15 @@ uInt8 Player::getRespClock() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::setGRPOld(uInt8 pattern)
+{
+  myTIA->flushLineCache();
+
+  myPatternOld = pattern;
+  updatePattern();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::updatePattern()
 {
   if (myIsSuppressed) {

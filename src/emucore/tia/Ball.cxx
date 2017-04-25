@@ -204,6 +204,15 @@ void Ball::tick(bool isReceivingMclock)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::setENABLOld(bool enabled)
+{
+  myTIA->flushLineCache();
+
+  myIsEnabledOld = enabled;
+  updateEnabled();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::shuffleStatus()
 {
   const auto oldIsEnabledOld = myIsEnabledOld;

@@ -74,6 +74,8 @@ class Ball : public Serializable
     bool getENABLOld() const { return myIsEnabledOld; }
     bool getENABLNew() const { return myIsEnabledNew; }
 
+    void setENABLOld(bool enabled);
+
     /**
       Serializable methods (see that class for more information).
     */
