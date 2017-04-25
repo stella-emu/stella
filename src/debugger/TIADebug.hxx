@@ -104,6 +104,10 @@ class TIADebug : public DebuggerSystem
     uInt8 audV0(int newVal = -1);
     uInt8 audV1(int newVal = -1);
 
+    void setGRP0Old(uInt8 b);
+    void setGRP1Old(uInt8 b);
+    void setENABLOld(bool b);
+
     // TIA bool registers
     bool refP0(int newVal = -1);
     bool refP1(int newVal = -1);

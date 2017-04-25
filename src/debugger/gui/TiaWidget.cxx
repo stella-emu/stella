@@ -186,8 +186,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posP0
   xpos += myGRP0->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                           "Pos #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                           "Pos#", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosP0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -197,7 +197,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP0);
 
   // hmP0
-  xpos += myPosP0->getWidth() + 12;
+  xpos += myPosP0->getWidth() + fontWidth + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "HM", kTextAlignLeft);
   xpos += 2*fontWidth + 5;
@@ -242,7 +242,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myNusizP0);
 
   xpos += myNusizP0->getWidth() + 5;
-  myNusizP0Text = new EditTextWidget(boss, nfont, xpos, ypos, 23*fontWidth,
+  myNusizP0Text = new EditTextWidget(boss, nfont, xpos, ypos, 21*fontWidth,
                                      lineHeight, "");
   myNusizP0Text->setEditable(false, true);
 
@@ -261,8 +261,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posP1
   xpos += myGRP1->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                           "Pos #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                           "Pos#", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosP1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -272,7 +272,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPosP1);
 
   // hmP1
-  xpos += myPosP1->getWidth() + 12;
+  xpos += myPosP1->getWidth() + fontWidth + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "HM", kTextAlignLeft);
   xpos += 2*fontWidth + 5;
@@ -317,7 +317,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myNusizP1);
 
   xpos += myNusizP1->getWidth() + 5;
-  myNusizP1Text = new EditTextWidget(boss, nfont, xpos, ypos, 23*fontWidth,
+  myNusizP1Text = new EditTextWidget(boss, nfont, xpos, ypos, 21*fontWidth,
                                      lineHeight, "");
   myNusizP1Text->setEditable(false, true);
 
@@ -337,8 +337,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posM0
   xpos += myEnaM0->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                           "Pos #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                           "Pos#", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosM0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -393,8 +393,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posM0
   xpos += myEnaM1->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                           "Pos #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                           "Pos#", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosM1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -449,8 +449,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // posBL
   xpos += myEnaBL->getWidth() + 12;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                           "Pos #", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
+                           "Pos#", kTextAlignLeft);
   xpos += t->getWidth() + 2;
   myPosBL = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -721,7 +721,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
 
         case kGRP0OldID:
-          cerr << "GRP0Old\n";
+          tia.setGRP0Old(myGRP0Old->getIntState());
           break;
 
         case kGRP1ID:
@@ -729,7 +729,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
 
         case kGRP1OldID:
-          cerr << "GRP1Old\n";
+          tia.setGRP1Old(myGRP1Old->getIntState());
           break;
 
         case kPF0ID:
@@ -847,10 +847,10 @@ void TiaWidget::loadConfig()
   myGRP0->setBackgroundColor(-1);
   myGRP0->setIntState(state.gr[P0], false);
 
-  // grP0 (old)  // FIXME - for now, same as 'new'
+  // grP0 (old)
   myGRP0Old->setColor(state.coluRegs[0]);
   myGRP0Old->setBackgroundColor(-1);
-  myGRP0Old->setIntState(state.gr[P0], false);
+  myGRP0Old->setIntState(state.gr[P0+2], false);
 
   // posP0
   myPosP0->setList(0, state.pos[P0], state.pos[P0] != oldstate.pos[P0]);
@@ -875,10 +875,10 @@ void TiaWidget::loadConfig()
   myGRP1->setBackgroundColor(-1);
   myGRP1->setIntState(state.gr[P1], false);
 
-  // grP1 (old)  // FIXME - for now, same as 'new'
+  // grP1 (old)
   myGRP1Old->setColor(state.coluRegs[1]);
   myGRP1Old->setBackgroundColor(-1);
-  myGRP1Old->setIntState(state.gr[P1], false);
+  myGRP1Old->setIntState(state.gr[P1+2], false);
 
   // posP1
   myPosP1->setList(0, state.pos[P1], state.pos[P1] != oldstate.pos[P1]);

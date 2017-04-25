@@ -53,8 +53,10 @@ const DebuggerState& TIADebug::getState()
 
   // Player 1 & 2 graphics registers
   myState.gr.clear();
-  myState.gr.push_back(grP0());
-  myState.gr.push_back(grP1());
+  myState.gr.push_back(myTIA.myPlayer0.getGRPNew());
+  myState.gr.push_back(myTIA.myPlayer1.getGRPNew());
+  myState.gr.push_back(myTIA.myPlayer0.getGRPOld());
+  myState.gr.push_back(myTIA.myPlayer1.getGRPOld());
 
   // Position registers
   myState.pos.clear();
@@ -114,8 +116,10 @@ void TIADebug::saveOldState()
 
   // Player 1 & 2 graphics registers
   myOldState.gr.clear();
-  myOldState.gr.push_back(grP0());
-  myOldState.gr.push_back(grP1());
+  myOldState.gr.push_back(myTIA.myPlayer0.getGRPNew());
+  myOldState.gr.push_back(myTIA.myPlayer1.getGRPNew());
+  myOldState.gr.push_back(myTIA.myPlayer0.getGRPOld());
+  myOldState.gr.push_back(myTIA.myPlayer1.getGRPOld());
 
   // Position registers
   myOldState.pos.clear();
@@ -656,6 +660,24 @@ uInt8 TIADebug::hmBL(int newVal)
     mySystem.poke(HMBL, newVal << 4);
 
   return myTIA.registerValue(HMBL) >> 4;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::setGRP0Old(uInt8 b)
+{
+  myTIA.myPlayer0.setGRPOld(b);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::setGRP1Old(uInt8 b)
+{
+  myTIA.myPlayer1.setGRPOld(b);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::setENABLOld(bool b)
+{
+  myTIA.myBall.setENABLOld(b);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
