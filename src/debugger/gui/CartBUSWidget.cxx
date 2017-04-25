@@ -279,8 +279,8 @@ void CartridgeBUSWidget::loadConfig()
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
-  myBusOverdrive->setState(myCart.getBusStuffFlag());
-  myZPSTY->setState(myCart.mySTYZeroPage);
+//  myBusOverdrive->setState(myCart.getBusStuffFlag());
+//  myZPSTY->setState(myCart.mySTYZeroPage);
 
   CartDebugWidget::loadConfig();
 }
