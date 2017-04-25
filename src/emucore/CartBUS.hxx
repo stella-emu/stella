@@ -208,13 +208,11 @@ class CartridgeBUS : public Cartridge
     uInt32 getAddressMap(uInt8 index) const;
     void setAddressMap(uInt8 index, uInt32 value);
 
-    bool getBusStuffFlag(void) const;
-    void setBusStuffFlag(bool value);
-
     uInt8 readFromDatastream(uInt8 index);
 
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
+    uInt32 getSample();
 
   private:
     // The 32K ROM image of the cartridge
@@ -246,8 +244,8 @@ class CartridgeBUS : public Cartridge
     // Address to override the bus for
     uInt16 myBusOverdriveAddress;
 
-    // Flags that last byte peeked was 84 (STY ZP)
-    bool mySTYZeroPage;
+    // set to address of ZP if last byte peeked was $84 (STY ZP)
+    uInt16 mySTYZeroPageAddress;
 
     // System cycle count when the last update to music data fetchers occurred
     Int32 mySystemCycles;
@@ -266,8 +264,12 @@ class CartridgeBUS : public Cartridge
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
 
-    // Flags that Bus Stuffing is active
-    bool myBusStuff;
+    // Controls mode, lower nybble sets Fast Fetch, upper nybble sets audio
+    // -0 = Bus Stuffing ON
+    // -F = Bus Stuffing OFF
+    // 0- = Packed Digital Sample
+    // F- = 3 Voice Music
+    uInt8 myMode;
 
   private:
     // Following constructors and assignment operators not supported

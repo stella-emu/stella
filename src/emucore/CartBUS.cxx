@@ -33,6 +33,8 @@
 #define WAVEFORM      0x07F4
 #define DSRAM         0x0800
 
+#define BUS_STUFF_ON ((myMode & 0x0F) == 0)
+#define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUS::CartridgeBUS(const uInt8* image, uInt32 size,
@@ -63,12 +65,6 @@ CartridgeBUS::CartridgeBUS(const uInt8* image, uInt32 size,
     settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this);
 #endif
   setInitialState();
-
-  // BUS always starts in bank 6
-  myStartBank = 6;
-
-  // bus stuffing is off by default
-  myBusStuff = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +94,13 @@ void CartridgeBUS::setInitialState()
 
   for (int i=0; i < 3; ++i)
     myMusicWaveformSize[i] = 27;
+  
+  // BUS always starts in bank 6
+  myStartBank = 6;
+  
+  // Assuming mode starts out with Fast Fetch off and 3-Voice music,
+  // need to confirm with Chris
+  myMode = 0xFF;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -210,10 +213,10 @@ uInt8 CartridgeBUS::peek(uInt16 address)
       return peekvalue;
 
     // save the STY's zero page address
-    if (getBusStuffFlag() && mySTYZeroPage)
+    if (BUS_STUFF_ON && mySTYZeroPageAddress == address)
       myBusOverdriveAddress =  peekvalue;
 
-    mySTYZeroPage = false;
+    mySTYZeroPageAddress = 0;
 
     if(address < 0x20)
     {
@@ -251,13 +254,26 @@ uInt8 CartridgeBUS::peek(uInt16 address)
               // Update the music data fetchers (counter & flag)
               updateMusicModeDataFetchers();
 
-              // using myDisplayImage[] instead of myProgramImage[] because waveforms
-              // can be modified during runtime.
-              uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-              myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-              myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
-
-              result = uInt8(i);
+              if DIGITAL_AUDIO_ON
+              {
+                // retrieve packed sample (max size is 2K, or 4K of unpacked data)
+                result = myImage[getSample() + (myMusicCounters[0] >> 21)];
+                
+                //
+                if ((myMusicCounters[0] & (1<<20)) == 0)
+                  result >>= 4;
+                result &= 0x0f;
+              }
+              else
+              {
+                // using myDisplayImage[] instead of myProgramImage[] because waveforms
+                // can be modified during runtime.
+                uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
+                myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
+                myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+                
+                result = uInt8(i);
+              }
               break;
           }
           break;
@@ -311,8 +327,8 @@ uInt8 CartridgeBUS::peek(uInt16 address)
       }
 
       // this might not work right for STY $84
-      if (getBusStuffFlag())
-        mySTYZeroPage = (peekvalue == 0x84);
+      if (BUS_STUFF_ON && peekvalue == 0x84)
+        mySTYZeroPageAddress = address + 1;
 
       return peekvalue;
     }
@@ -381,8 +397,8 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           setDatastreamPointer(index, pointer);
           break;
 
-        case 0x09:  // 0x19 turn on STY ZP bus stuffing if value is 0
-          setBusStuffFlag(value==0);
+        case 0x09:  // 0x19 SETMODE
+          myMode = value;
           break;
 
         case 0x0A:  // 0x1A CALLFUNCTION
@@ -683,16 +699,29 @@ uInt32 CartridgeBUS::getWaveform(uInt8 index) const
 
   uInt32 result;
 
-  result = myBUSRAM[WAVEFORM + index*4 + 0]        +   // low byte
+  result = myBUSRAM[WAVEFORM + index*4 + 0]        +  // low byte
           (myBUSRAM[WAVEFORM + index*4 + 1] << 8)  +
           (myBUSRAM[WAVEFORM + index*4 + 2] << 16) +
-          (myBUSRAM[WAVEFORM + index*4 + 3] << 24);
+          (myBUSRAM[WAVEFORM + index*4 + 3] << 24);   // high byte
 
   result -= 0x40000800;
 
   if (result >= 4096)
     result = 0;
 
+  return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeBUS::getSample()
+{
+  uInt32 result;
+  
+  result = myBUSRAM[WAVEFORM + 0]        +  // low byte
+          (myBUSRAM[WAVEFORM + 1] << 8)  +
+          (myBUSRAM[WAVEFORM + 2] << 16) +
+          (myBUSRAM[WAVEFORM + 3] << 24);   // high byte
+  
   return result;
 }
 
@@ -710,18 +739,6 @@ void CartridgeBUS::setAddressMap(uInt8 index, uInt32 value)
   myBUSRAM[DSMAPS + index*4 + 1] = (value >> 8) & 0xff;
   myBUSRAM[DSMAPS + index*4 + 2] = (value >> 16) & 0xff;
   myBUSRAM[DSMAPS + index*4 + 3] = (value >> 24) & 0xff;  // high byte
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeBUS::getBusStuffFlag(void) const
-{
-  return myBusStuff;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeBUS::setBusStuffFlag(bool value)
-{
-  myBusStuff = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
