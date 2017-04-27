@@ -35,15 +35,16 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
     myARMCycles(0),
     myCurrentBank(0)
 {
-  // Store image, making sure it's at least 29KB
-  uInt32 minsize = 4096 * 6 + 4096 + 1024 + 255;
-  mySize = std::max(minsize, size);
-  myImage = make_ptr<uInt8[]>(mySize);
-  memcpy(myImage.get(), image, size);
+  // Image is always 32K, but in the case of ROM > 29K, the image is
+  // copied to the end of the buffer
+  mySize = std::min(size, 32768u);
+  if(mySize < 32768u)
+    memset(myImage, 0, 32768);
+  memcpy(myImage + (32768u - mySize), image, size);
   createCodeAccessBase(4096 * 6);
 
-  // Pointer to the program ROM (24K @ 0 byte offset)
-  myProgramImage = myImage.get();
+  // Pointer to the program ROM (24K @ 3072 byte offset; ignore first 3K)
+  myProgramImage = myImage + 0xC00;
 
   // Pointer to the display RAM
   myDisplayImage = myDPCRAM + 0xC00;
@@ -51,15 +52,10 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   // Pointer to the Frequency RAM
   myFrequencyImage = myDisplayImage + 0x1000;
 
-  // If the image is larger than 29K, we assume any excess at the
-  // beginning is ARM code, and skip over it
-  if(size > 29 * 1024)
-    myProgramImage += (size - 29 * 1024);
-
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = make_ptr<Thumbulator>
-      (reinterpret_cast<uInt16*>(myProgramImage-0xC00),
+      (reinterpret_cast<uInt16*>(myImage),
        reinterpret_cast<uInt16*>(myDPCRAM),
        settings.getBool("thumb.trapfatal"),
        Thumbulator::ConfigureFor::DPCplus,
@@ -166,15 +162,11 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
   myFractionalClocks = clocks - double(wholeClocks);
 
   if(wholeClocks <= 0)
-  {
     return;
-  }
 
   // Let's update counters and flags of the music mode data fetchers
   for(int x = 0; x <= 2; ++x)
-  {
     myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -648,7 +640,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeDPCPlus::getImage(int& size) const
 {
   size = mySize;
-  return myImage.get();
+  return myImage + (32768u - mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
