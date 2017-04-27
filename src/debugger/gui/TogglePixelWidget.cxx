@@ -28,7 +28,8 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   : ToggleWidget(boss, font, x, y, cols, rows),
     _pixelColor(0),
     _backgroundColor(kDlgColor),
-    _swapBits(false)
+    _swapBits(false),
+    _crossBits(false)
 {
   _rowHeight = _colWidth = font.getLineHeight();
 
@@ -134,4 +135,9 @@ void TogglePixelWidget::drawWidget(bool hilite)
                  _stateList[pos] ? _pixelColor : _backgroundColor);
     }
   }
+
+  // Cross out the bits?
+  if(_crossBits)
+    for (row = 0; row < 4; ++row)
+      s.hLine(_x, _y + (row * lineheight/4), _x + linewidth, kColor);
 }
