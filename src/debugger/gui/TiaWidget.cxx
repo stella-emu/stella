@@ -41,7 +41,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
   int xpos = 10, ypos = 15 + lineHeight;
-  StaticTextWidget* t;
+  StaticTextWidget* t = nullptr;
 
   // Color registers
   const char* regNames[] = { "COLUP0", "COLUP1", "COLUPF", "COLUBK" };
@@ -76,42 +76,41 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   // Collision register bits
   ////////////////////////////
-  // Add horizontal labels
   xpos += myCOLUBKColor->getWidth() + 2*fontWidth + 30;  ypos -= 4*lineHeight + 5;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos, 14*fontWidth, fontHeight,
-                           "PF BL M1 M0 P1", kTextAlignLeft);
 
-  // Add label for Strobes; buttons will be added later
-  new StaticTextWidget(boss, lfont, xpos + t->getWidth() + 9*fontWidth, ypos,
-                       8*fontWidth, fontHeight, "Strobes:", kTextAlignLeft);
-
-  // Add vertical labels
+  // Add all 15 collision bits (with labels)
   xpos -= 2*fontWidth + 5;  ypos += lineHeight;
-  const char* collLabel[] = { "P0", "P1", "M0", "M1", "BL" };
-  for(int row = 0; row < 5; ++row)
-  {
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*(lineHeight+3),
-                         2*fontWidth, fontHeight,
-                         collLabel[row], kTextAlignLeft);
-  }
-
-  // Finally, add all 15 collision bits
-  xpos += 2 * fontWidth + 5;
-  uInt32 collX = xpos, collY = ypos, idx = 0;
+  const char* rowLabel[] = { "P0", "P1", "M0", "M1", "BL" };
+  const char* colLabel[] = { "PF", "BL", "M1", "M0", "P1" };
+  uInt32 lwidth = 2*fontWidth, collX = xpos + lwidth + 5, collY = ypos, idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
+    // Add vertical label
+    new StaticTextWidget(boss, lfont, xpos, ypos + row*(lineHeight+3),
+                         2*fontWidth, fontHeight,
+                         rowLabel[row], kTextAlignLeft);
+
     for(uInt32 col = 0; col < 5 - row; ++col)
     {
-      myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY,
-                                            "", kCheckActionCmd);
+      myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY, "");
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
-      myCollision[idx]->setEditable(false);
+      myCollision[idx]->setEditable(false);  // TODO - enable this
+
+      // Add horizontal label
+      uInt32 labelx = collX;
+      if(lwidth > uInt32(myCollision[idx]->getWidth()))
+        labelx -= (lwidth - myCollision[idx]->getWidth()) / 2;
+      else
+        labelx += (myCollision[idx]->getWidth() - lwidth) / 2;
+
+      new StaticTextWidget(boss, lfont, labelx, ypos-lineHeight, lwidth, fontHeight,
+                           colLabel[col], kTextAlignLeft);
 
       collX += myCollision[idx]->getWidth() + 10;
       idx++;
     }
-    collX = xpos;
+    collX = xpos + lwidth + 5;
     collY += lineHeight+3;
   }
 
@@ -120,8 +119,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ////////////////////////////
   ButtonWidget* b;
   uInt32 buttonX, buttonY, buttonW;
-  buttonX = collX + 20*fontWidth;  buttonY = ypos;
+  buttonX = collX + 5*(myCollision[0]->getWidth() + 10) + 14;  buttonY = ypos;
   buttonW = 7 * fontWidth;
+
+  new StaticTextWidget(boss, lfont, buttonX + (2*buttonW+4 - 7*fontWidth)/2,
+                       ypos - lineHeight, 7*fontWidth, fontHeight, "Strobes",
+                       kTextAlignLeft);
+
   b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
                        "WSync", kWsyncCmd);
   b->setTarget(this);
@@ -182,6 +186,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
+  myGRP0->setBackgroundColor(-1);
   addFocusWidget(myGRP0);
 
   // posP0
@@ -220,6 +225,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP0Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP0Old->setTarget(this);
   myGRP0Old->setID(kGRP0OldID);
+  myGRP0Old->setBackgroundColor(-1);
   addFocusWidget(myGRP0Old);
 
   // P0 delay
@@ -257,6 +263,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
+  myGRP1->setBackgroundColor(-1);
   addFocusWidget(myGRP1);
 
   // posP1
@@ -295,6 +302,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP1Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP1Old->setTarget(this);
   myGRP1Old->setID(kGRP1OldID);
+  myGRP1Old->setBackgroundColor(-1);
   addFocusWidget(myGRP1Old);
 
   // P1 delay
@@ -842,14 +850,20 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // P0 register info
   ////////////////////////////
-  // grP0 (new)
-  myGRP0->setColor(state.coluRegs[0]);
-  myGRP0->setBackgroundColor(-1);
+  // grP0 (new and old)
+  if(tia.vdelP0())
+  {
+    myGRP0->setColor(kBGColorLo);
+    myGRP0Old->setColor(state.coluRegs[0]);
+    myGRP0Old->setCrossed(false);
+  }
+  else
+  {
+    myGRP0->setColor(state.coluRegs[0]);
+    myGRP0Old->setColor(kBGColorLo);
+    myGRP0Old->setCrossed(true);
+  }
   myGRP0->setIntState(state.gr[P0], false);
-
-  // grP0 (old)
-  myGRP0Old->setColor(state.coluRegs[0]);
-  myGRP0Old->setBackgroundColor(-1);
   myGRP0Old->setIntState(state.gr[P0+2], false);
 
   // posP0
@@ -870,14 +884,20 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // P1 register info
   ////////////////////////////
-  // grP1 (new)
-  myGRP1->setColor(state.coluRegs[1]);
-  myGRP1->setBackgroundColor(-1);
+  // grP1 (new and old)
+  if(tia.vdelP1())
+  {
+    myGRP1->setColor(kBGColorLo);
+    myGRP1Old->setColor(state.coluRegs[1]);
+    myGRP1Old->setCrossed(false);
+  }
+  else
+  {
+    myGRP1->setColor(state.coluRegs[1]);
+    myGRP1Old->setColor(kBGColorLo);
+    myGRP1Old->setCrossed(true);
+  }
   myGRP1->setIntState(state.gr[P1], false);
-
-  // grP1 (old)
-  myGRP1Old->setColor(state.coluRegs[1]);
-  myGRP1Old->setBackgroundColor(-1);
   myGRP1Old->setIntState(state.gr[P1+2], false);
 
   // posP1
