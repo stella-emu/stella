@@ -201,7 +201,7 @@ class CartridgeDPCPlus : public Cartridge
 
   private:
     // The ROM image and size
-    BytePtr myImage;
+    uInt8 myImage[32768];
     uInt32 mySize;
 
     // Pointer to the 24K program ROM image of the cartridge
