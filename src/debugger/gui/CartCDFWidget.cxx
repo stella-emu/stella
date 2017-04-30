@@ -30,11 +30,11 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   uInt16 size = 8 * 4096;
 
   ostringstream info;
-  info << "CDF Stuffing cartridge\n"
+  info << "CDF cartridge\n"
   << "32K ROM, seven 4K banks are accessible to 2600\n"
   << "8K CDF RAM\n"
-  << "CDF registers accessible @ $F000 - $F03F\n"
-  << "Banks accessible at hotspots $FF5 to $FFB\n"
+  << "CDF registers accessible @ $FFF0 - $FFF3\n"
+  << "Banks accessible at hotspots $FFF5 to $FFFB\n"
   << "Startup bank = " << cart.myStartBank << "\n";
 
 #if 0
@@ -53,45 +53,77 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FF5)");
-  VarList::push_back(items, "1 ($FF6)");
-  VarList::push_back(items, "2 ($FF7)");
-  VarList::push_back(items, "3 ($FF8)");
-  VarList::push_back(items, "4 ($FF9)");
-  VarList::push_back(items, "5 ($FFA)");
-  VarList::push_back(items, "6 ($FFB)");
+  VarList::push_back(items, "0 ($FFF5)");
+  VarList::push_back(items, "1 ($FFF6)");
+  VarList::push_back(items, "2 ($FFF7)");
+  VarList::push_back(items, "3 ($FFF8)");
+  VarList::push_back(items, "4 ($FFF9)");
+  VarList::push_back(items, "5 ($FFFA)");
+  VarList::push_back(items, "6 ($FFFB)");
   myBank =
   new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
-                  myLineHeight, items, "Set bank: ",
-                  _font.getStringWidth("Set bank: "), kBankChanged);
+                  myLineHeight, items, "Set bank ",
+                  _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
-  int lwidth = _font.getStringWidth("Datastream Increments: "); // get width of the widest label
+  int lwidth = _font.getStringWidth("Datastream Increments"); // get width of the widest label
 
   // Datastream Pointers
-  xpos = 0;  ypos += myLineHeight + 4;
+#define DS_X 30
+  xpos = DS_X;
+  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Datastream Pointers: ", kTextAlignLeft);
+                       myFontHeight, "Datastream Pointers", kTextAlignLeft);
   xpos += lwidth;
 
-  myDatastreamPointers = new DataGridWidget(boss, _nfont, 0, ypos+myLineHeight-2, 4, 8, 6, 32, Common::Base::F_16_3_2);
+  myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X, ypos+myLineHeight-2, 4, 8, 6, 32, Common::Base::F_16_3_2);
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
+  
+  myDatastreamPointers2 = new DataGridWidget(boss, _nfont, DS_X + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 8*myLineHeight, 1, 2, 6, 32, Common::Base::F_16_3_2);
+  myDatastreamPointers2->setTarget(this);
+  myDatastreamPointers2->setEditable(false);
+  
 
+  uInt32 row;
+  for(row = 0; row < 8; ++row)
+  {
+    myDatastreamLabels[row] =
+    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                         ypos+myLineHeight-2 + row*myLineHeight + 2,
+                         myFontWidth*2, myFontHeight, "", kTextAlignLeft);
+    myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
+  }
+  lwidth = _font.getStringWidth("Write Data (stream 20)");
+  myDatastreamLabels[row] =
+  new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                       ypos+myLineHeight-2 + 8*myLineHeight + 2,
+                       lwidth, myFontHeight, "Write Data (stream 20)", kTextAlignLeft);
+//  myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
+  myDatastreamLabels[row] =
+  new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                       ypos+myLineHeight-2 + 9*myLineHeight + 2,
+                       lwidth, myFontHeight, "Jump Data (stream 21)", kTextAlignLeft);
+//  myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
+  
   // Datastream Increments
-  xpos = 0 + myDatastreamPointers->getWidth();
+  xpos = DS_X + myDatastreamPointers->getWidth() + 20;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Datastream Increments: ", kTextAlignLeft);
+                       myFontHeight, "Datastream Increments", kTextAlignLeft);
 
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2, 4, 8, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
+  
+  myDatastreamIncrements2 = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 8*myLineHeight, 1, 2, 5, 32, Common::Base::F_16_2_2);
+  myDatastreamIncrements2->setTarget(this);
+  myDatastreamIncrements2->setEditable(false);
 
   // Music counters
-  xpos = 10;  ypos += myLineHeight*10 + 4;
+  xpos = 10;  ypos += myLineHeight*12 + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Music Counters: ", kTextAlignLeft);
+                       myFontHeight, "Music Counters", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -101,7 +133,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   // Music frequencies
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Music Frequencies: ", kTextAlignLeft);
+                       myFontHeight, "Music Frequencies", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -111,33 +143,41 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   // Music waveforms
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Music Waveforms: ", kTextAlignLeft);
+                       myFontHeight, "Music Waveforms", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
 
+  int xpossp = xpos + myMusicWaveforms->getWidth() + 20;
+  int lwidth2 = _font.getStringWidth("Sample Pointer ");
+  new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
+                       myFontHeight, "Sample Pointer ", kTextAlignLeft);
+  
+  mySamplePointer = new DataGridWidget(boss, _nfont, xpossp + lwidth2, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
+  mySamplePointer->setTarget(this);
+  mySamplePointer->setEditable(false);
+  
   // Music waveform sizes
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Music Waveform Sizes: ", kTextAlignLeft);
+                       myFontHeight, "Music Waveform Sizes", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicWaveformSizes = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);
   myMusicWaveformSizes->setTarget(this);
   myMusicWaveformSizes->setEditable(false);
 
-  // done differently than in DPC+, need to rethink debugger support
-//  // Fast fetch and immediate mode LDA flags
-//  xpos = 10;  ypos += myLineHeight + 4;
-//  myFastFetch = new CheckboxWidget(boss, _font, xpos, ypos, "Fast Fetcher enabled");
-//  myFastFetch->setTarget(this);
-//  myFastFetch->setEditable(false);
-//  ypos += myLineHeight + 4;
-//  myIMLDA = new CheckboxWidget(boss, _font, xpos, ypos, "Immediate mode LDA");
-//  myIMLDA->setTarget(this);
-//  myIMLDA->setEditable(false);
+  // Fast Fetch and Digital Audio flags
+  xpos = 10;  ypos += myLineHeight + 4;
+  myFastFetch = new CheckboxWidget(boss, _font, xpos, ypos, "Fast Fetcher enabled");
+  myFastFetch->setTarget(this);
+  myFastFetch->setEditable(false);
+  
+  myDigitalSample = new CheckboxWidget(boss, _font, xpossp, ypos, "Digital Sample mode");
+  myDigitalSample->setTarget(this);
+  myDigitalSample->setEditable(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -153,8 +193,9 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.mwaves.clear();
   myOldState.mwavesizes.clear();
   myOldState.internalram.clear();
+  myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < 32; i++)
+  for(uInt32 i = 0; i < 34; i++)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -184,6 +225,8 @@ void CartridgeCDFWidget::saveOldState()
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myCDFRAM[i]);
+  
+  myOldState.samplepointer.push_back(myCart.getSample());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,6 +259,15 @@ void CartridgeCDFWidget::loadConfig()
   myDatastreamPointers->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 32; i < 34; ++i)
+  {
+    Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+    alist.push_back(0);  vlist.push_back(pointervalue);
+    changed.push_back(pointervalue != myOldState.datastreampointers[i]);
+  }
+  myDatastreamPointers2->setList(alist, vlist, changed);
+  
+  alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 32; ++i)
   {
     Int32 incrementvalue = myCart.getDatastreamIncrement(i);
@@ -224,6 +276,15 @@ void CartridgeCDFWidget::loadConfig()
   }
   myDatastreamIncrements->setList(alist, vlist, changed);
 
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 32; i < 34; ++i)
+  {
+    Int32 incrementvalue = myCart.getDatastreamIncrement(i);
+    alist.push_back(0);  vlist.push_back(incrementvalue);
+    changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
+  }
+  myDatastreamIncrements2->setList(alist, vlist, changed);
+  
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)
   {
@@ -256,9 +317,26 @@ void CartridgeCDFWidget::loadConfig()
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
-// done differently than in DPC+, need to rethink debugger support
-//  myFastFetch->setState(myCart.myFastFetch);
-//  myIMLDA->setState(myCart.myLDAimmediate);
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(myCart.getSample());
+  changed.push_back((myCart.getSample()) != uInt32(myOldState.samplepointer[0]));
+  mySamplePointer->setList(alist, vlist, changed);
+  
+  myFastFetch->setState((myCart.myMode & 0x0f) == 0);
+  myDigitalSample->setState((myCart.myMode & 0xf0) == 0);
+  
+  if ((myCart.myMode & 0xf0) == 0)
+  {
+    myMusicWaveforms->setCrossed(true);
+    myMusicWaveformSizes->setCrossed(true);
+    mySamplePointer->setCrossed(false);
+  }
+  else
+  {
+    myMusicWaveforms->setCrossed(false);
+    myMusicWaveformSizes->setCrossed(false);
+    mySamplePointer->setCrossed(true);
+  }
 
   CartDebugWidget::loadConfig();
 }

@@ -22,6 +22,7 @@ class CartridgeCDF;
 class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
+class StaticTextWidget;
 
 #include "CartDebugWidget.hxx"
 
@@ -45,6 +46,7 @@ class CartridgeCDFWidget : public CartDebugWidget
       IntArray mfreqs;
       IntArray mwaves;
       IntArray mwavesizes;
+      IntArray samplepointer;
       uInt32 random;
       ByteArray internalram;
     };
@@ -54,13 +56,18 @@ class CartridgeCDFWidget : public CartDebugWidget
 
     DataGridWidget* myDatastreamPointers;
     DataGridWidget* myDatastreamIncrements;
+    DataGridWidget* myDatastreamPointers2;
+    DataGridWidget* myDatastreamIncrements2;
     DataGridWidget* myMusicCounters;
     DataGridWidget* myMusicFrequencies;
     DataGridWidget* myMusicWaveforms;
     DataGridWidget* myMusicWaveformSizes;
+    DataGridWidget* mySamplePointer;
+    StaticTextWidget* myDatastreamLabels[10];
+  
     // done differently than in DPC+, need to rethink debugger support
-    //  CheckboxWidget* myFastFetch;
-    //  CheckboxWidget* myIMLDA;
+    CheckboxWidget* myFastFetch;
+    CheckboxWidget* myDigitalSample;
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };

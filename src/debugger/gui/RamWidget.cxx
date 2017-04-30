@@ -116,7 +116,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Add Binary display of selected RAM cell
   xpos = x + w - 13*myFontWidth - 20;
   new StaticTextWidget(boss, lfont, xpos, ypos, 4*myFontWidth, myFontHeight,
-                       "Bin:", kTextAlignLeft);
+                       "Bin", kTextAlignLeft);
   myBinValue = new DataGridWidget(boss, nfont, xpos + 4*myFontWidth + 5, ypos-2,
                                   1, 1, 8, 8, Common::Base::F_2);
   myBinValue->setTarget(this);
@@ -125,7 +125,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Add Decimal display of selected RAM cell
   xpos -= 8*myFontWidth + 5 + 20;
   new StaticTextWidget(boss, lfont, xpos, ypos, 4*myFontWidth, myFontHeight,
-                       "Dec:", kTextAlignLeft);
+                       "Dec", kTextAlignLeft);
   myDecValue = new DataGridWidget(boss, nfont, xpos + 4*myFontWidth + 5, ypos-2,
                                   1, 1, 3, 8, Common::Base::F_10);
   myDecValue->setTarget(this);
@@ -138,14 +138,14 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   int xpos_r = xpos - 20;
   xpos = x + 10;
   new StaticTextWidget(boss, lfont, xpos, ypos, 6*myFontWidth, myFontHeight,
-                       "Label:", kTextAlignLeft);
+                       "Label", kTextAlignLeft);
   xpos += 6*myFontWidth + 5;
   myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
                                myLineHeight);
   myLabel->setEditable(false, true);
 
   // Inputbox which will pop up when searching RAM
-  StringList labels = { "Search: " };
+  StringList labels = { "Search " };
   myInputBox = make_ptr<InputTextDialog>(boss, lfont, nfont, labels);
   myInputBox->setTarget(this);
 
