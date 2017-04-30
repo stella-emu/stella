@@ -35,7 +35,7 @@ CartRamWidget::CartRamWidget(
     myLineHeight(lfont.getLineHeight()),
     myButtonHeight(myLineHeight + 4)
 {
-  int lwidth = lfont.getStringWidth("Description: "),
+  int lwidth = lfont.getStringWidth("Description "),
             fwidth = w - lwidth - 20;
 
   EditTextWidget* etw = nullptr;
@@ -44,7 +44,7 @@ CartRamWidget::CartRamWidget(
 
   // Add RAM size
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "RAM Size: ", kTextAlignLeft);
+                       myFontHeight, "RAM Size ", kTextAlignLeft);
 
   uInt32 ramsize = cartDebug.internalRamSize();
   buf << ramsize << " bytes";
@@ -66,7 +66,7 @@ CartRamWidget::CartRamWidget(
   if(lines > maxlines) lines = maxlines;
 
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Description: ", kTextAlignLeft);
+                       myFontHeight, "Description ", kTextAlignLeft);
   myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos,
                                 fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);

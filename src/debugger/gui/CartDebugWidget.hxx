@@ -52,7 +52,7 @@ class CartDebugWidget : public Widget, public CommandSender
     int addBaseInformation(int bytes, const string& manufacturer,
         const string& desc, const uInt16 maxlines = 10)
     {
-      const int lwidth = _font.getStringWidth("Manufacturer: "),
+      const int lwidth = _font.getStringWidth("Manufacturer "),
                 fwidth = _w - lwidth - 20;
       EditTextWidget* w = nullptr;
       ostringstream buf;
@@ -61,7 +61,7 @@ class CartDebugWidget : public Widget, public CommandSender
 
       // Add ROM size, manufacturer and bankswitch info
       new StaticTextWidget(_boss, _font, x, y, lwidth,
-            myFontHeight, "ROM Size: ", kTextAlignLeft);
+            myFontHeight, "ROM Size ", kTextAlignLeft);
       buf << bytes << " bytes";
       if(bytes >= 1024)
         buf << " / " << (bytes/1024) << "KB";
@@ -72,7 +72,7 @@ class CartDebugWidget : public Widget, public CommandSender
       y += myLineHeight + 4;
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
-            myFontHeight, "Manufacturer: ", kTextAlignLeft);
+            myFontHeight, "Manufacturer ", kTextAlignLeft);
       w = new EditTextWidget(_boss, _nfont, x+lwidth, y,
             fwidth, myLineHeight, manufacturer);
       w->setEditable(false);
@@ -85,7 +85,7 @@ class CartDebugWidget : public Widget, public CommandSender
       if(lines > maxlines) lines = maxlines;
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
-            myFontHeight, "Description: ", kTextAlignLeft);
+            myFontHeight, "Description ", kTextAlignLeft);
       myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y,
                    fwidth, lines * myLineHeight, false);
       myDesc->setEditable(false);

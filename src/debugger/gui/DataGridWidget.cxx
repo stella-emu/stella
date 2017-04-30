@@ -41,6 +41,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _rowHeight(font.getLineHeight()),
     _colWidth(colchars * font.getMaxCharWidth() + 8),
     _bits(bits),
+    _crossGrid(false),
     _base(base),
     _selectedItem(0),
     _currentKeyDown(KBDK_UNKNOWN),
@@ -635,6 +636,11 @@ void DataGridWidget::drawWidget(bool hilite)
   // Draw the scrollbar
   if(_scrollBar)
     _scrollBar->recalc();  // takes care of the draw
+  
+  // Cross out the grid?
+  if (_crossGrid)
+    for (row = 0; row < 4; ++row)
+      s.hLine(_x, _y + (row * lineheight/4), _x + linewidth, kColor);    
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -237,13 +237,12 @@ class CartridgeCDF : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // System cycle count when the last update to music data fetchers occurred
+    // System cycle count from when the last update to music data fetchers occurred
     Int32 myAudioCycles;
 
+    // ARM cycle count from when the last callFunction() occurred
     Int32 myARMCycles;
 
-    uInt8 mySetAddress;
-  
     // The audio routines in the driver run in 32-bit mode and take advantage
     // of the FIQ Shadow Registers which are not accessible to 16-bit thumb
     // code.  As such, Thumbulator does not support them.  The driver supplies a
@@ -260,12 +259,7 @@ class CartridgeCDF : public Cartridge
    r13 = channel2 frequency
    r14 = timer base */
   
-    // The music mode counters
-    // In the driver these are stored in ARM FIQ shadow registers r8, r9 and r10
-    // which are not accessible to Thumb code.  Thumbulator will use
-    // callFunction() to pass back values that end up in them so so the Thumbulator does not
-    // support these.  So the
-    //
+  // The music counters, ARM FIQ shadow registers r8, r9, r10
     uInt32 myMusicCounters[3];
 
     // The music frequency, ARM FIQ shadow registers r11, r12, r13
@@ -274,7 +268,7 @@ class CartridgeCDF : public Cartridge
     // The music waveform sizes
     uInt8 myMusicWaveformSize[3];
 
-    // Fractional DPC music OSC clocks unused during the last update
+    // Fractional CDF music, OSC clocks unused during the last update
     double myFractionalClocks;
 
     // Controls mode, lower nybble sets Fast Fetch, upper nybble sets audio

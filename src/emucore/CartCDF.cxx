@@ -488,9 +488,24 @@ bool CartridgeCDF::save(Serializer& out) const
     // Indicates which bank is currently active
     out.putShort(myCurrentBank);
 
+    // Indicates current mode
+    out.putByte(myMode);
+    
+    // State of FastJump
+    out.putByte(myFastJumpActive);
+    
+    // Address of LDA # operand
+    out.putShort(myLDAimmediateOperandAddress);
+    
     // Harmony RAM
     out.putByteArray(myCDFRAM, 8192);
 
+    // Audio info
+    out.putIntArray(myMusicCounters, 3);
+    out.putIntArray(myMusicFrequencies, 3);
+    out.putByteArray(myMusicWaveformSize, 3);
+    
+    // Save cycles and clocks
     out.putInt(myAudioCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
     out.putInt(myARMCycles);
@@ -514,14 +529,27 @@ bool CartridgeCDF::load(Serializer& in)
 
     // Indicates which bank is currently active
     myCurrentBank = in.getShort();
+    
+    // Indicates current mode
+    myMode = in.getByte();
+    
+    // State of FastJump
+    myFastJumpActive = in.getByte();
+    
+    // Address of LDA # operand
+    myLDAimmediateOperandAddress = in.getShort();
 
     // Harmony RAM
     in.getByteArray(myCDFRAM, 8192);
+    
+    // Audio info
+    in.getIntArray(myMusicCounters, 3);
+    in.getIntArray(myMusicFrequencies, 3);
+    in.getByteArray(myMusicWaveformSize, 3);
 
-    // Get system cycles and fractional clocks
+    // Get cycles and clocks
     myAudioCycles = (Int32)in.getInt();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
-
     myARMCycles = (Int32)in.getInt();
   }
   catch(...)
