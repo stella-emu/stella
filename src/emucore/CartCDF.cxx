@@ -98,14 +98,14 @@ void CartridgeCDF::setInitialState()
 
   for (int i=0; i < 3; ++i)
     myMusicWaveformSize[i] = 27;
-  
+
   // CDF always starts in bank 6
   myStartBank = 6;
-  
+
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris
   myMode = 0xFF;
-  
+
   myFastJumpActive = 0;
 }
 
@@ -152,15 +152,11 @@ inline void CartridgeCDF::updateMusicModeDataFetchers()
   myFractionalClocks = clocks - double(wholeClocks);
 
   if(wholeClocks <= 0)
-  {
     return;
-  }
 
   // Let's update counters and flags of the music mode data fetchers
   for(int x = 0; x <= 2; ++x)
-  {
     myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,20 +201,20 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   // anything that can change the internal state of the cart
   if(bankLocked())
     return peekvalue;
-  
+
   // implement JMP FASTJMP which fetches the destination address from stream 33
   if (myFastJumpActive)
   {
     uInt32 pointer;
     uInt8 value;
-    
+
     myFastJumpActive--;
-    
+
     pointer = getDatastreamPointer(JUMPSTREAM);
     value = myDisplayImage[ pointer >> 20 ];
     pointer += 0x100000;  // always increment by 1
     setDatastreamPointer(JUMPSTREAM, pointer);
-    
+
     return value;
   }
 
@@ -240,13 +236,13 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     if (peekvalue == AMPLITUDE)
     {
       updateMusicModeDataFetchers();
-      
+
       if DIGITAL_AUDIO_ON
       {
         // retrieve packed sample (max size is 2K, or 4K of unpacked data)
         address = getSample() + (myMusicCounters[0] >> 21);
         peekvalue = myImage[address];
-        
+
         //
         if ((myMusicCounters[0] & (1<<20)) == 0)
           peekvalue >>= 4;
@@ -274,44 +270,44 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       // Set the current bank to the first 4k bank
       bank(0);
       break;
-      
+
     case 0x0FF6:
       // Set the current bank to the second 4k bank
       bank(1);
       break;
-      
+
     case 0x0FF7:
       // Set the current bank to the third 4k bank
       bank(2);
       break;
-      
+
     case 0x0FF8:
       // Set the current bank to the fourth 4k bank
       bank(3);
       break;
-      
+
     case 0x0FF9:
       // Set the current bank to the fifth 4k bank
       bank(4);
       break;
-      
+
     case 0x0FFA:
       // Set the current bank to the sixth 4k bank
       bank(5);
       break;
-      
+
     case 0x0FFB:
       // Set the current bank to the last 4k bank
       bank(6);
       break;
-      
+
     default:
       break;
   }
 
   if(FAST_FETCH_ON && peekvalue == 0xA9)
     myLDAimmediateOperandAddress = address + 1;
-    
+
   return peekvalue;
 }
 
@@ -319,7 +315,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
 bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 {
   uInt32 pointer;
-  
+
   address &= 0x0FFF;
 
   // Switch banks if necessary
@@ -331,7 +327,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
       pointer += 0x100000;  // always increment by 1 when writing
       setDatastreamPointer(WRITESTREAM, pointer);
       break;
-      
+
     case 0xFF1:   // DSPTR
       pointer = getDatastreamPointer(WRITESTREAM);
       pointer <<=8;
@@ -339,50 +335,50 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
       pointer |= (value << 20);
       setDatastreamPointer(WRITESTREAM, pointer);
       break;
-      
+
     case 0xFF2:   // SETMODE
       myMode = value;
       break;
-      
+
     case 0xFF3:   // CALLFN
       callFunction(value);
       break;
-      
+
     case 0xFF5:
       // Set the current bank to the first 4k bank
       bank(0);
       break;
-      
+
     case 0x0FF6:
       // Set the current bank to the second 4k bank
       bank(1);
       break;
-      
+
     case 0x0FF7:
       // Set the current bank to the third 4k bank
       bank(2);
       break;
-      
+
     case 0x0FF8:
       // Set the current bank to the fourth 4k bank
       bank(3);
       break;
-      
+
     case 0x0FF9:
       // Set the current bank to the fifth 4k bank
       bank(4);
       break;
-      
+
     case 0x0FFA:
       // Set the current bank to the sixth 4k bank
       bank(5);
       break;
-      
+
     case 0x0FFB:
       // Set the current bank to the last 4k bank
       bank(6);
       break;
-      
+
     default:
       break;
   }
@@ -490,13 +486,13 @@ bool CartridgeCDF::save(Serializer& out) const
 
     // Indicates current mode
     out.putByte(myMode);
-    
+
     // State of FastJump
     out.putByte(myFastJumpActive);
-    
+
     // Address of LDA # operand
     out.putShort(myLDAimmediateOperandAddress);
-    
+
     // Harmony RAM
     out.putByteArray(myCDFRAM, 8192);
 
@@ -504,7 +500,7 @@ bool CartridgeCDF::save(Serializer& out) const
     out.putIntArray(myMusicCounters, 3);
     out.putIntArray(myMusicFrequencies, 3);
     out.putByteArray(myMusicWaveformSize, 3);
-    
+
     // Save cycles and clocks
     out.putInt(myAudioCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
@@ -529,19 +525,19 @@ bool CartridgeCDF::load(Serializer& in)
 
     // Indicates which bank is currently active
     myCurrentBank = in.getShort();
-    
+
     // Indicates current mode
     myMode = in.getByte();
-    
+
     // State of FastJump
     myFastJumpActive = in.getByte();
-    
+
     // Address of LDA # operand
     myLDAimmediateOperandAddress = in.getShort();
 
     // Harmony RAM
     in.getByteArray(myCDFRAM, 8192);
-    
+
     // Audio info
     in.getIntArray(myMusicCounters, 3);
     in.getIntArray(myMusicFrequencies, 3);
@@ -625,12 +621,12 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 uInt32 CartridgeCDF::getSample()
 {
   uInt32 result;
-  
+
   result = myCDFRAM[WAVEFORM + 0]        +  // low byte
           (myCDFRAM[WAVEFORM + 1] << 8)  +
           (myCDFRAM[WAVEFORM + 2] << 16) +
           (myCDFRAM[WAVEFORM + 3] << 24);   // high byte
-  
+
   return result;
 }
 

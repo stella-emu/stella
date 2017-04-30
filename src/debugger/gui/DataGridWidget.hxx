@@ -81,7 +81,7 @@ class DataGridWidget : public EditableWidget
     int colWidth() { return _colWidth; }
 
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
-  
+
     void setCrossed(bool enable) { _crossGrid = enable; }
 
   protected:

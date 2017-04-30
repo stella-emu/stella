@@ -80,11 +80,11 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X, ypos+myLineHeight-2, 4, 8, 6, 32, Common::Base::F_16_3_2);
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
-  
+
   myDatastreamPointers2 = new DataGridWidget(boss, _nfont, DS_X + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 8*myLineHeight, 1, 2, 6, 32, Common::Base::F_16_3_2);
   myDatastreamPointers2->setTarget(this);
   myDatastreamPointers2->setEditable(false);
-  
+
 
   uInt32 row;
   for(row = 0; row < 8; ++row)
@@ -106,7 +106,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
                        ypos+myLineHeight-2 + 9*myLineHeight + 2,
                        lwidth, myFontHeight, "Jump Data (stream 21)", kTextAlignLeft);
 //  myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
-  
+
   // Datastream Increments
   xpos = DS_X + myDatastreamPointers->getWidth() + 20;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
@@ -115,7 +115,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2, 4, 8, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
-  
+
   myDatastreamIncrements2 = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 8*myLineHeight, 1, 2, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements2->setTarget(this);
   myDatastreamIncrements2->setEditable(false);
@@ -154,11 +154,11 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   int lwidth2 = _font.getStringWidth("Sample Pointer ");
   new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
                        myFontHeight, "Sample Pointer ", kTextAlignLeft);
-  
+
   mySamplePointer = new DataGridWidget(boss, _nfont, xpossp + lwidth2, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
   mySamplePointer->setTarget(this);
   mySamplePointer->setEditable(false);
-  
+
   // Music waveform sizes
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
@@ -174,7 +174,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myFastFetch = new CheckboxWidget(boss, _font, xpos, ypos, "Fast Fetcher enabled");
   myFastFetch->setTarget(this);
   myFastFetch->setEditable(false);
-  
+
   myDigitalSample = new CheckboxWidget(boss, _font, xpossp, ypos, "Digital Sample mode");
   myDigitalSample->setTarget(this);
   myDigitalSample->setEditable(false);
@@ -225,7 +225,7 @@ void CartridgeCDFWidget::saveOldState()
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myCDFRAM[i]);
-  
+
   myOldState.samplepointer.push_back(myCart.getSample());
 }
 
@@ -266,7 +266,7 @@ void CartridgeCDFWidget::loadConfig()
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
   myDatastreamPointers2->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 32; ++i)
   {
@@ -284,7 +284,7 @@ void CartridgeCDFWidget::loadConfig()
     changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
   }
   myDatastreamIncrements2->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)
   {
@@ -321,10 +321,10 @@ void CartridgeCDFWidget::loadConfig()
   alist.push_back(0);  vlist.push_back(myCart.getSample());
   changed.push_back((myCart.getSample()) != uInt32(myOldState.samplepointer[0]));
   mySamplePointer->setList(alist, vlist, changed);
-  
+
   myFastFetch->setState((myCart.myMode & 0x0f) == 0);
   myDigitalSample->setState((myCart.myMode & 0xf0) == 0);
-  
+
   if ((myCart.myMode & 0xf0) == 0)
   {
     myMusicWaveforms->setCrossed(true);

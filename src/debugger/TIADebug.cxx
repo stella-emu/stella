@@ -51,12 +51,14 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluPF());
   myState.coluRegs.push_back(coluBK());
 
-  // Player 1 & 2 graphics registers
+  // Player 0 & 1 and Ball graphics registers
   myState.gr.clear();
   myState.gr.push_back(myTIA.myPlayer0.getGRPNew());
   myState.gr.push_back(myTIA.myPlayer1.getGRPNew());
   myState.gr.push_back(myTIA.myPlayer0.getGRPOld());
   myState.gr.push_back(myTIA.myPlayer1.getGRPOld());
+  myState.gr.push_back(myTIA.myBall.getENABLNew());
+  myState.gr.push_back(myTIA.myBall.getENABLOld());
 
   // Position registers
   myState.pos.clear();
@@ -114,12 +116,14 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
 
-  // Player 1 & 2 graphics registers
+  // Player 0 & 1 graphics registers
   myOldState.gr.clear();
   myOldState.gr.push_back(myTIA.myPlayer0.getGRPNew());
   myOldState.gr.push_back(myTIA.myPlayer1.getGRPNew());
   myOldState.gr.push_back(myTIA.myPlayer0.getGRPOld());
   myOldState.gr.push_back(myTIA.myPlayer1.getGRPOld());
+  myOldState.gr.push_back(myTIA.myBall.getENABLNew());
+  myOldState.gr.push_back(myTIA.myBall.getENABLOld());
 
   // Position registers
   myOldState.pos.clear();

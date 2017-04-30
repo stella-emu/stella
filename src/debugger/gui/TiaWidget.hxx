@@ -77,9 +77,10 @@ class TiaWidget : public Widget, public CommandSender
     CheckboxWidget* myDelP1;
     CheckboxWidget* myDelBL;
 
-    CheckboxWidget* myEnaM0;
-    CheckboxWidget* myEnaM1;
-    CheckboxWidget* myEnaBL;
+    TogglePixelWidget* myEnaM0;
+    TogglePixelWidget* myEnaM1;
+    TogglePixelWidget* myEnaBL;
+    TogglePixelWidget* myEnaBLOld;
 
     CheckboxWidget* myResMP0;
     CheckboxWidget* myResMP1;
@@ -117,7 +118,7 @@ class TiaWidget : public Widget, public CommandSender
       kDelP0ID,   kDelP1ID,   kDelBLID,
       kNusizP0ID, kNusizP1ID,
       kNusizM0ID, kNusizM1ID, kSizeBLID,
-      kEnaM0ID,   kEnaM1ID,   kEnaBLID,
+      kEnaM0ID,   kEnaM1ID,   kEnaBLID, kEnaBLOldID,
       kResMP0ID,  kResMP1ID,
       kPF0ID,     kPF1ID,     kPF2ID,
       kRefPFID,   kScorePFID, kPriorityPFID
