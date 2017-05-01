@@ -35,7 +35,7 @@ class Expression
       : myLHS(lhs), myRHS(rhs) { }
     virtual ~Expression() = default;
 
-    virtual uInt32 evaluate() const { return 0; }
+    virtual Int32 evaluate() const { return 0; }
 
   protected:
     unique_ptr<Expression> myLHS, myRHS;
