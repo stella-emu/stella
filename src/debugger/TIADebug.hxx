@@ -40,6 +40,7 @@ class TiaState : public DebuggerState
   public:
     IntArray ram;
     IntArray coluRegs;
+    IntArray fixedCols;
     IntArray gr;
     IntArray pos;
     IntArray hm;

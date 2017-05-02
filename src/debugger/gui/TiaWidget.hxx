@@ -46,6 +46,8 @@ class TiaWidget : public Widget, public CommandSender
     ColorWidget* myCOLUPFColor;
     ColorWidget* myCOLUBKColor;
 
+    ColorWidget* myFixedColors[8];
+
     TogglePixelWidget* myGRP0;
     TogglePixelWidget* myGRP0Old;
     TogglePixelWidget* myGRP1;

@@ -51,6 +51,31 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluPF());
   myState.coluRegs.push_back(coluBK());
 
+  // Debug Colors
+  myState.fixedCols.clear();
+  if(myTIA.myFrameManager.layout() == FrameLayout::ntsc)
+  {
+    myState.fixedCols.push_back(myTIA.P0ColorNTSC);
+    myState.fixedCols.push_back(myTIA.M0ColorNTSC);
+    myState.fixedCols.push_back(myTIA.P1ColorNTSC);
+    myState.fixedCols.push_back(myTIA.M1ColorNTSC);
+    myState.fixedCols.push_back(myTIA.BLColorNTSC);
+    myState.fixedCols.push_back(myTIA.PFColorNTSC);
+    myState.fixedCols.push_back(myTIA.BKColorNTSC);
+    myState.fixedCols.push_back(myTIA.HBLANKColor);
+  }
+  else
+  {
+    myState.fixedCols.push_back(myTIA.P0ColorPAL);
+    myState.fixedCols.push_back(myTIA.M0ColorPAL);
+    myState.fixedCols.push_back(myTIA.P1ColorPAL);
+    myState.fixedCols.push_back(myTIA.M1ColorPAL);
+    myState.fixedCols.push_back(myTIA.BLColorPAL);
+    myState.fixedCols.push_back(myTIA.PFColorPAL);
+    myState.fixedCols.push_back(myTIA.BKColorPAL);
+    myState.fixedCols.push_back(myTIA.HBLANKColor);
+  }
+
   // Player 0 & 1 and Ball graphics registers
   myState.gr.clear();
   myState.gr.push_back(myTIA.myPlayer0.getGRPNew());
@@ -115,6 +140,31 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluP1());
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
+
+  // Debug Colors
+  myOldState.fixedCols.clear();
+  if(myTIA.myFrameManager.layout() == FrameLayout::ntsc)
+  {
+    myOldState.fixedCols.push_back(myTIA.P0ColorNTSC);
+    myOldState.fixedCols.push_back(myTIA.M0ColorNTSC);
+    myOldState.fixedCols.push_back(myTIA.P1ColorNTSC);
+    myOldState.fixedCols.push_back(myTIA.M1ColorNTSC);
+    myOldState.fixedCols.push_back(myTIA.BLColorNTSC);
+    myOldState.fixedCols.push_back(myTIA.PFColorNTSC);
+    myOldState.fixedCols.push_back(myTIA.BKColorNTSC);
+    myOldState.fixedCols.push_back(myTIA.HBLANKColor);
+  }
+  else
+  {
+    myOldState.fixedCols.push_back(myTIA.P0ColorPAL);
+    myOldState.fixedCols.push_back(myTIA.M0ColorPAL);
+    myOldState.fixedCols.push_back(myTIA.P1ColorPAL);
+    myOldState.fixedCols.push_back(myTIA.M1ColorPAL);
+    myOldState.fixedCols.push_back(myTIA.BLColorPAL);
+    myOldState.fixedCols.push_back(myTIA.PFColorPAL);
+    myOldState.fixedCols.push_back(myTIA.BKColorPAL);
+    myOldState.fixedCols.push_back(myTIA.HBLANKColor);
+  }
 
   // Player 0 & 1 graphics registers
   myOldState.gr.clear();
