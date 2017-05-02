@@ -141,31 +141,6 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
 
-  // Debug Colors
-  myOldState.fixedCols.clear();
-  if(myTIA.myFrameManager.layout() == FrameLayout::ntsc)
-  {
-    myOldState.fixedCols.push_back(myTIA.P0ColorNTSC);
-    myOldState.fixedCols.push_back(myTIA.M0ColorNTSC);
-    myOldState.fixedCols.push_back(myTIA.P1ColorNTSC);
-    myOldState.fixedCols.push_back(myTIA.M1ColorNTSC);
-    myOldState.fixedCols.push_back(myTIA.BLColorNTSC);
-    myOldState.fixedCols.push_back(myTIA.PFColorNTSC);
-    myOldState.fixedCols.push_back(myTIA.BKColorNTSC);
-    myOldState.fixedCols.push_back(myTIA.HBLANKColor);
-  }
-  else
-  {
-    myOldState.fixedCols.push_back(myTIA.P0ColorPAL);
-    myOldState.fixedCols.push_back(myTIA.M0ColorPAL);
-    myOldState.fixedCols.push_back(myTIA.P1ColorPAL);
-    myOldState.fixedCols.push_back(myTIA.M1ColorPAL);
-    myOldState.fixedCols.push_back(myTIA.BLColorPAL);
-    myOldState.fixedCols.push_back(myTIA.PFColorPAL);
-    myOldState.fixedCols.push_back(myTIA.BKColorPAL);
-    myOldState.fixedCols.push_back(myTIA.HBLANKColor);
-  }
-
   // Player 0 & 1 graphics registers
   myOldState.gr.clear();
   myOldState.gr.push_back(myTIA.myPlayer0.getGRPNew());
