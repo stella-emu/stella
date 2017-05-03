@@ -55,4 +55,9 @@ void ColorWidget::drawWidget(bool hilite)
 
   // Show the currently selected color
   s.fillRect(_x+1, _y+1, _w-2, _h-1, _color);
+
+  // Cross out the grid?
+  if(_crossGrid)
+    for(uInt32 row = 1; row < 4; ++row)
+      s.hLine(_x, _y + (row * _h/4), _x + _w - 2, kColor);
 }

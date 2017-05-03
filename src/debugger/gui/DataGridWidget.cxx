@@ -638,8 +638,8 @@ void DataGridWidget::drawWidget(bool hilite)
     _scrollBar->recalc();  // takes care of the draw
 
   // Cross out the grid?
-  if (_crossGrid)
-    for (row = 0; row < 4; ++row)
+  if(_crossGrid)
+    for(row = 1; row < 4; ++row)
       s.hLine(_x, _y + (row * lineheight/4), _x + linewidth, kColor);
 }
 

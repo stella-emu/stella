@@ -46,6 +46,7 @@ class TiaWidget : public Widget, public CommandSender
     ColorWidget* myCOLUPFColor;
     ColorWidget* myCOLUBKColor;
 
+    CheckboxWidget* myFixedEnabled;
     ColorWidget* myFixedColors[8];
 
     TogglePixelWidget* myGRP0;
@@ -138,6 +139,7 @@ class TiaWidget : public Widget, public CommandSender
       kHmoveCmd = 'Shmv',
       kHmclrCmd = 'Shmc',
       kCxclrCmd = 'Scxl',
+      kDbgClCmd = 'DBGc',
       kPPinCmd  = 'PPin'
     };
 
