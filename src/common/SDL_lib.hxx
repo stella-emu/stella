@@ -19,6 +19,14 @@
 #define SDL_LIB_HXX
 
 #include <SDL.h>
-#undef bool  // Seems to be needed for ppc64le, doesn't hurt other archs
+
+/*
+  Seems to be needed for ppc64le, doesn't hurt other archs
+  Note that this is a problem in SDL2, which includes <altivec.h>
+    https://bugzilla.redhat.com/show_bug.cgi?id=1419452
+*/
+#undef vector
+#undef pixel
+#undef bool
 
 #endif
