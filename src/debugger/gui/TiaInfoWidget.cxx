@@ -38,12 +38,12 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   x += 5;
   const int lineHeight = lfont.getLineHeight();
   int xpos = x, ypos = y + 10;
-  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle:" : "F. Cycle:");
+  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle " : "F. Cycle ");
   int fwidth = 5 * lfont.getMaxCharWidth() + 4;
 
   // Add frame info
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Frame Count:" : "Frame:",
+                       longstr ? "Frame Count " : "Frame ",
                        kTextAlignLeft);
   xpos += lwidth;
   myFrameCount = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
@@ -51,7 +51,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   xpos = x;  ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Frame Cycle:" : "F. Cycle:",
+                       longstr ? "Frame Cycle " : "F. Cycle ",
                        kTextAlignLeft);
   xpos += lwidth;
   myFrameCycles = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
@@ -66,10 +66,10 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   myVBlank->setEditable(false);
 
   xpos = x + lwidth + myFrameCycles->getWidth() + 8;  ypos = y + 10;
-  lwidth = lfont.getStringWidth(longstr ? "Color Clock:" : "Pixel Pos:");
+  lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ");
   fwidth = 3 * lfont.getMaxCharWidth() + 4;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       "Scanline:", kTextAlignLeft);
+                       "Scanline ", kTextAlignLeft);
 
   myScanlineCount = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
@@ -77,7 +77,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Scan Cycle:" : "S. Cycle:", kTextAlignLeft);
+                       longstr ? "Scan Cycle " : "S. Cycle ", kTextAlignLeft);
 
   myScanlineCycles = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                         lineHeight, "");
@@ -85,7 +85,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       "Pixel Pos:", kTextAlignLeft);
+                       "Pixel Pos ", kTextAlignLeft);
 
   myPixelPosition = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
@@ -93,7 +93,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Color Clock:" : "Color Clk:", kTextAlignLeft);
+                       longstr ? "Color Clock " : "Color Clk ", kTextAlignLeft);
 
   myColorClocks = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                      lineHeight, "");

@@ -43,7 +43,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create a 1x1 grid with label for the PC register
   xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
   new StaticTextWidget(boss, lfont, xpos, ypos+1, lwidth-2, fontHeight,
-                       "PC:", kTextAlignLeft);
+                       "PC ", kTextAlignLeft);
   myPCGrid =
     new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::F_16);
   myPCGrid->setTarget(this);
@@ -99,7 +99,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Add labels for other CPU registers
   xpos = x;
-  string labels[4] = { "SP:", "A:", "X:", "Y:" };
+  string labels[4] = { "SP ", "A ", "X ", "Y " };
   for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 1,
@@ -110,7 +110,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create a bitfield widget for changing the processor status
   xpos = x;  ypos += 4*lineHeight + 2;
   new StaticTextWidget(boss, lfont, xpos, ypos+1, lwidth-2, fontHeight,
-                       "PS:", kTextAlignLeft);
+                       "PS ", kTextAlignLeft);
   myPSRegister = new ToggleBitWidget(boss, nfont, xpos+lwidth, ypos, 8, 1);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);

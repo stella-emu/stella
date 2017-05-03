@@ -60,19 +60,23 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myColorRegs);
 
   xpos += myColorRegs->colWidth() + 5;
-  myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos+2, 1.5*lineHeight, lineHeight - 4);
+  myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUP0Color->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos+2, 1.5*lineHeight, lineHeight - 4);
+  myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUP1Color->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos+2, 1.5*lineHeight, lineHeight - 4);
+  myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUPFColor->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos+2, 1.5*lineHeight, lineHeight - 4);
+  myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUBKColor->setTarget(this);
 
   // Fixed debug colors
@@ -88,7 +92,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
                              dbgLabels[row], kTextAlignLeft);
     myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
-                               ypos + 2, 1.5*lineHeight, lineHeight - 4);
+                               ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
   }
   xpos += t->getWidth() + myFixedColors[0]->getWidth() + 24;
@@ -99,7 +103,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
                              dbgLabels[row], kTextAlignLeft);
     myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
-                               ypos + 2, 1.5*lineHeight, lineHeight - 4);
+                               ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
   }
 
