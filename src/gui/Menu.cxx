@@ -21,8 +21,6 @@
 #include "bspf.hxx"
 #include "Menu.hxx"
 
-class Properties;
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Menu::Menu(OSystem& osystem)
   : DialogContainer(osystem)
