@@ -35,12 +35,12 @@ class ConfigPathDialog : public Dialog, public CommandSender
 {
   public:
     ConfigPathDialog(OSystem& osystem, DialogContainer& parent,
-                     const GUI::Font& font, GuiObject* boss,
-                     int max_w, int max_h);
+                     const GUI::Font& font, GuiObject* boss);
     virtual ~ConfigPathDialog() = default;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void createBrowser();
 
     void loadConfig() override;
     void saveConfig() override;
@@ -61,7 +61,7 @@ class ConfigPathDialog : public Dialog, public CommandSender
       kNVRamDirChosenCmd    = 'LOnc'  // nvram (flash/eeprom) dir changed
     };
 
-    unique_ptr<BrowserDialog> myBrowser;
+    const GUI::Font& myFont;
 
     // Config paths
     EditTextWidget* myRomPath;
@@ -70,6 +70,8 @@ class ConfigPathDialog : public Dialog, public CommandSender
     EditTextWidget* myCheatFile;
     EditTextWidget* myPaletteFile;
     EditTextWidget* myPropsFile;
+
+    unique_ptr<BrowserDialog> myBrowser;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

@@ -120,8 +120,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myAudioDialog    = make_ptr<AudioDialog>(osystem, parent, font);
   myInputDialog    = make_ptr<InputDialog>(osystem, parent, font, max_w, max_h);
   myUIDialog       = make_ptr<UIDialog>(osystem, parent, font);
-  mySnapshotDialog = make_ptr<SnapshotDialog>(osystem, parent, font, boss, max_w, max_h);
-  myConfigPathDialog = make_ptr<ConfigPathDialog>(osystem, parent, font, boss, max_w, max_h);
+  mySnapshotDialog = make_ptr<SnapshotDialog>(osystem, parent, font, boss);
+  myConfigPathDialog = make_ptr<ConfigPathDialog>(osystem, parent, font, boss);
   myRomAuditDialog = make_ptr<RomAuditDialog>(osystem, parent, font, max_w, max_h);
   myGameInfoDialog = make_ptr<GameInfoDialog>(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
@@ -211,6 +211,16 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 #endif
 
     case kLoggerCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      if(!myIsGlobal)
+      {
+        uInt32 w = 0, h = 0;
+        bool uselargefont = getResizableBounds(w, h);
+
+        myLoggerDialog = make_ptr<LoggerDialog>(instance(), parent(),
+            instance().frameBuffer().font(), w, h, uselargefont);
+      }
       myLoggerDialog->open();
       break;
 

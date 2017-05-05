@@ -34,7 +34,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
-                           const GUI::Font& font, int max_w, int max_h)
+                           const GUI::Font& font, int max_w, int max_h,
+                           bool uselargefont)
   : Dialog(osystem, parent),
     myLogInfo(nullptr)
 {
@@ -51,10 +52,9 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // Test listing of the log output
   xpos = 10;  ypos = 10;
-  myLogInfo = new StringListWidget(this, instance().frameBuffer().infoFont(),
-                                   xpos, ypos, _w - 2 * xpos,
-                                   _h - buttonHeight - ypos - 20 - 2 * lineHeight,
-                                   false);
+  myLogInfo = new StringListWidget(this, uselargefont ? font :
+                  instance().frameBuffer().infoFont(), xpos, ypos, _w - 2 * xpos,
+                  _h - buttonHeight - ypos - 20 - 2 * lineHeight, false);
   myLogInfo->setEditable(false);
   wid.push_back(myLogInfo);
   ypos += myLogInfo->getHeight() + 8;

@@ -35,8 +35,7 @@ class SnapshotDialog : public Dialog
 {
   public:
     SnapshotDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, GuiObject* boss,
-                   int max_w, int max_h);
+                   const GUI::Font& font, GuiObject* boss);
     virtual ~SnapshotDialog() = default;
 
   private:
@@ -45,6 +44,7 @@ class SnapshotDialog : public Dialog
     void setDefaults() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void createBrowser();
 
   private:
     enum {
@@ -54,7 +54,7 @@ class SnapshotDialog : public Dialog
       kSnapLoadDirChosenCmd = 'snlc'  // snap chosen (load files)
     };
 
-    unique_ptr<BrowserDialog> myBrowser;
+    const GUI::Font& myFont;
 
     // Config paths
     EditTextWidget* mySnapSavePath;
@@ -65,6 +65,8 @@ class SnapshotDialog : public Dialog
 
     CheckboxWidget* mySnapSingle;
     CheckboxWidget* mySnap1x;
+
+    unique_ptr<BrowserDialog> myBrowser;
 
   private:
     // Following constructors and assignment operators not supported
