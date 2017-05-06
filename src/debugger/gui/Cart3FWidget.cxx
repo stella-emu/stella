@@ -48,7 +48,7 @@ Cartridge3FWidget::Cartridge3FWidget(
 
   ostringstream label;
   label << "Set bank ($" << Common::Base::HEX4 << start << " - $" <<
-           (start+0x7FF) << "): ";
+           (start+0x7FF) << ") ";
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($3F) "),
                     myLineHeight, items, label.str(),

@@ -50,16 +50,16 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 3 ");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 0 "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // Raw SWCHA value (this will be broken down further in other UI elements)
-  int lwidth = _font.getStringWidth("Current column: ");
+  int lwidth = _font.getStringWidth("Current column ");
   ypos += myLineHeight + 8;
   new StaticTextWidget(boss, _font, xpos, ypos+2, lwidth, myFontHeight,
-                       "Current SWCHA: ", kTextAlignLeft);
+                       "Current SWCHA ", kTextAlignLeft);
   xpos += lwidth;
   mySWCHA = new ToggleBitWidget(boss, _nfont, xpos, ypos, 8, 1);
   mySWCHA->setTarget(this);
@@ -68,7 +68,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   // Current column number
   xpos = 10;  ypos += myLineHeight + 5;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current column: ", kTextAlignLeft);
+        myFontHeight, "Current column ", kTextAlignLeft);
   xpos += lwidth;
 
   myColumn = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
@@ -136,12 +136,12 @@ CartridgeCMWidget::CartridgeCMWidget(
 
   // Ram state (combination of several bits in SWCHA)
   ypos += myLineHeight + 8;
-  lwidth = _font.getStringWidth("Ram State: ");
+  lwidth = _font.getStringWidth("Ram State ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Ram State: ", kTextAlignLeft);
-  myRAM = new EditTextWidget(boss, _nfont, xpos+lwidth, ypos-1,
+        myFontHeight, "Ram State ", kTextAlignLeft);
+  myRAM = new EditTextWidget(boss, _nfont, xpos+lwidth, ypos-2,
               _nfont.getStringWidth(" Write-only "), myLineHeight, "");
-  myRAM->setEditable(false);
+  myRAM->setEditable(false, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

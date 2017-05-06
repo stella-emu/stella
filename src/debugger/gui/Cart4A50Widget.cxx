@@ -60,7 +60,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   string highlabel   = "Set high 256B region ($FE00 - $FEFF): ";
   const int lwidth  = _font.getStringWidth(middlelabel),
             fwidth  = _font.getStringWidth("Inactive"),
-            flwidth = _font.getStringWidth("ROM: ");
+            flwidth = _font.getStringWidth("ROM ");
 
   // Lower bank/region configuration
   xpos = 10;
@@ -71,14 +71,14 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   xpos += 40;
   myROMLower =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
-                    items32, "ROM: ", flwidth, kROMLowerChanged);
+                    items32, "ROM ", flwidth, kROMLowerChanged);
   myROMLower->setTarget(this);
   addFocusWidget(myROMLower);
 
   xpos += myROMLower->getWidth() + 20;
   myRAMLower =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
-                    items16, "RAM: ", flwidth, kRAMLowerChanged);
+                    items16, "RAM ", flwidth, kRAMLowerChanged);
   myRAMLower->setTarget(this);
   addFocusWidget(myRAMLower);
 
@@ -91,14 +91,14 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   xpos += 40;
   myROMMiddle =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
-                    items32, "ROM: ", flwidth, kROMMiddleChanged);
+                    items32, "ROM ", flwidth, kROMMiddleChanged);
   myROMMiddle->setTarget(this);
   addFocusWidget(myROMMiddle);
 
   xpos += myROMMiddle->getWidth() + 20;
   myRAMMiddle =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
-                    items16, "RAM: ", flwidth, kRAMMiddleChanged);
+                    items16, "RAM ", flwidth, kRAMMiddleChanged);
   myRAMMiddle->setTarget(this);
   addFocusWidget(myRAMMiddle);
 
@@ -111,14 +111,14 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   xpos += 40;
   myROMHigh =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
-                    items256, "ROM: ", flwidth, kROMHighChanged);
+                    items256, "ROM ", flwidth, kROMHighChanged);
   myROMHigh->setTarget(this);
   addFocusWidget(myROMHigh);
 
   xpos += myROMHigh->getWidth() + 20;
   myRAMHigh =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight,
-                    items128, "RAM: ", flwidth, kRAMHighChanged);
+                    items128, "RAM ", flwidth, kRAMHighChanged);
   myRAMHigh->setTarget(this);
   addFocusWidget(myRAMHigh);
 }

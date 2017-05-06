@@ -40,7 +40,7 @@ CartridgeEFSCWidget::CartridgeEFSCWidget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << (start + 0x100)
-         << " - " << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << " - " << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
@@ -48,26 +48,26 @@ CartridgeEFSCWidget::CartridgeEFSCWidget(
                                 info.str()) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, " 0 ($FE0)");
-  VarList::push_back(items, " 1 ($FE1)");
-  VarList::push_back(items, " 2 ($FE2)");
-  VarList::push_back(items, " 3 ($FE3)");
-  VarList::push_back(items, " 4 ($FE4)");
-  VarList::push_back(items, " 5 ($FE5)");
-  VarList::push_back(items, " 6 ($FE6)");
-  VarList::push_back(items, " 7 ($FE7)");
-  VarList::push_back(items, " 8 ($FE8)");
-  VarList::push_back(items, " 9 ($FE9)");
-  VarList::push_back(items, "10 ($FEA)");
-  VarList::push_back(items, "11 ($FEB)");
-  VarList::push_back(items, "12 ($FEC)");
-  VarList::push_back(items, "13 ($FED)");
-  VarList::push_back(items, "14 ($FEE)");
-  VarList::push_back(items, "15 ($FEF)");
+  VarList::push_back(items, " 0 ($FFE0)");
+  VarList::push_back(items, " 1 ($FFE1)");
+  VarList::push_back(items, " 2 ($FFE2)");
+  VarList::push_back(items, " 3 ($FFE3)");
+  VarList::push_back(items, " 4 ($FFE4)");
+  VarList::push_back(items, " 5 ($FFE5)");
+  VarList::push_back(items, " 6 ($FFE6)");
+  VarList::push_back(items, " 7 ($FFE7)");
+  VarList::push_back(items, " 8 ($FFE8)");
+  VarList::push_back(items, " 9 ($FFE9)");
+  VarList::push_back(items, "10 ($FFEA)");
+  VarList::push_back(items, "11 ($FFEB)");
+  VarList::push_back(items, "12 ($FFEC)");
+  VarList::push_back(items, "13 ($FFED)");
+  VarList::push_back(items, "14 ($FFEE)");
+  VarList::push_back(items, "15 ($FFEF)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("15 ($FE0) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("15 ($FFE0) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -110,8 +110,8 @@ string CartridgeEFSCWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "$FE0", "$FE1", "$FE2", "$FE3", "$FE4", "$FE5", "$FE6", "$FE7",
-    "$FE8", "$FE9", "$FEA", "$FEB", "$FEC", "$FED", "$FEE", "$FEF"
+    "$FFE0", "$FFE1", "$FFE2", "$FFE3", "$FFE4", "$FFE5", "$FFE6", "$FFE7",
+    "$FFE8", "$FFE9", "$FFEA", "$FFEB", "$FFEC", "$FFED", "$FFEE", "$FFEF"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];

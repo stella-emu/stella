@@ -38,50 +38,50 @@ CartridgeDFWidget::CartridgeDFWidget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
       ypos = addBaseInformation(size, "CPUWIZ", info.str()) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, " 0 ($FC0)");
-  VarList::push_back(items, " 1 ($FC1)");
-  VarList::push_back(items, " 2 ($FC2)");
-  VarList::push_back(items, " 3 ($FC3)");
-  VarList::push_back(items, " 4 ($FC4)");
-  VarList::push_back(items, " 5 ($FC5)");
-  VarList::push_back(items, " 6 ($FC6)");
-  VarList::push_back(items, " 7 ($FC7)");
-  VarList::push_back(items, " 8 ($FC8)");
-  VarList::push_back(items, " 9 ($FC9)");
-  VarList::push_back(items, "10 ($FCA)");
-  VarList::push_back(items, "11 ($FCB)");
-  VarList::push_back(items, "12 ($FCC)");
-  VarList::push_back(items, "13 ($FCD)");
-  VarList::push_back(items, "14 ($FCE)");
-  VarList::push_back(items, "15 ($FCF)");
-  VarList::push_back(items, "16 ($FD0)");
-  VarList::push_back(items, "17 ($FD1)");
-  VarList::push_back(items, "18 ($FD2)");
-  VarList::push_back(items, "19 ($FD3)");
-  VarList::push_back(items, "20 ($FD4)");
-  VarList::push_back(items, "21 ($FD5)");
-  VarList::push_back(items, "22 ($FD6)");
-  VarList::push_back(items, "23 ($FD7)");
-  VarList::push_back(items, "24 ($FD8)");
-  VarList::push_back(items, "25 ($FD9)");
-  VarList::push_back(items, "26 ($FDA)");
-  VarList::push_back(items, "27 ($FDB)");
-  VarList::push_back(items, "28 ($FDC)");
-  VarList::push_back(items, "29 ($FDD)");
-  VarList::push_back(items, "30 ($FDE)");
-  VarList::push_back(items, "31 ($FDF)");
+  VarList::push_back(items, " 0 ($FFC0)");
+  VarList::push_back(items, " 1 ($FFC1)");
+  VarList::push_back(items, " 2 ($FFC2)");
+  VarList::push_back(items, " 3 ($FFC3)");
+  VarList::push_back(items, " 4 ($FFC4)");
+  VarList::push_back(items, " 5 ($FFC5)");
+  VarList::push_back(items, " 6 ($FFC6)");
+  VarList::push_back(items, " 7 ($FFC7)");
+  VarList::push_back(items, " 8 ($FFC8)");
+  VarList::push_back(items, " 9 ($FFC9)");
+  VarList::push_back(items, "10 ($FFCA)");
+  VarList::push_back(items, "11 ($FFCB)");
+  VarList::push_back(items, "12 ($FFCC)");
+  VarList::push_back(items, "13 ($FFCD)");
+  VarList::push_back(items, "14 ($FFCE)");
+  VarList::push_back(items, "15 ($FFCF)");
+  VarList::push_back(items, "16 ($FFD0)");
+  VarList::push_back(items, "17 ($FFD1)");
+  VarList::push_back(items, "18 ($FFD2)");
+  VarList::push_back(items, "19 ($FFD3)");
+  VarList::push_back(items, "20 ($FFD4)");
+  VarList::push_back(items, "21 ($FFD5)");
+  VarList::push_back(items, "22 ($FFD6)");
+  VarList::push_back(items, "23 ($FFD7)");
+  VarList::push_back(items, "24 ($FFD8)");
+  VarList::push_back(items, "25 ($FFD9)");
+  VarList::push_back(items, "26 ($FFDA)");
+  VarList::push_back(items, "27 ($FFDB)");
+  VarList::push_back(items, "28 ($FFDC)");
+  VarList::push_back(items, "29 ($FFDD)");
+  VarList::push_back(items, "30 ($FFDE)");
+  VarList::push_back(items, "31 ($FFDF)");
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("31 ($FDF) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("31 ($FFDF) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -113,10 +113,10 @@ string CartridgeDFWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "$FC0", "$FC1", "$FC2", "$FC3", "$FC4", "$FC5", "$FC6", "$FC7",
-    "$FC8", "$FC9", "$FCA", "$FCB", "$FCC", "$FCD", "$FCE", "$FCF",
-    "$FD0", "$FD1", "$FD2", "$FD3", "$FD4", "$FD5", "$FD6", "$FD7",
-    "$FD8", "$FD9", "$FDA", "$FDB", "$FDC", "$FDD", "$FDE", "$FDF"
+    "$FFC0", "$FFC1", "$FFC2", "$FFC3", "$FFC4", "$FFC5", "$FFC6", "$FFC7",
+    "$FFC8", "$FFC9", "$FFCA", "$FFCB", "$FFCC", "$FFCD", "$FFCE", "$FFCF",
+    "$FFD0", "$FFD1", "$FFD2", "$FFD3", "$FFD4", "$FFD5", "$FFD6", "$FFD7",
+    "$FFD8", "$FFD9", "$FFDA", "$FFDB", "$FFDC", "$FFDD", "$FFDE", "$FFDF"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];

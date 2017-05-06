@@ -44,7 +44,7 @@ CartridgeCVPlusWidget::CartridgeCVPlusWidget(
       VarList::push_back(items, Variant(i).toString() + " ($3D)");
 
   ostringstream label;
-  label << "Set bank ($F800 - $FFFF): ";
+  label << "Set bank ($F800 - $FFFF) ";
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("xxx ($3D) "),
                     myLineHeight, items, label.str(),

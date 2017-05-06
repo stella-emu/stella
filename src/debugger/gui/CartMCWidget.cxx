@@ -56,12 +56,12 @@ CartridgeMCWidget::CartridgeMCWidget(
     VarList::push_back(items, b + " (RAM)", b);
   }
 
-  const int lwidth = _font.getStringWidth("Set slice for segment X ($3X): "),
+  const int lwidth = _font.getStringWidth("Set slice for segment X ($3X) "),
             fwidth = _font.getStringWidth("255 (ROM)");
 
   mySlice0 =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
-                    myLineHeight, items, "Set slice for segment 0 ($3C): ",
+                    myLineHeight, items, "Set slice for segment 0 ($3C) ",
                     lwidth, kSlice0Changed);
   mySlice0->setTarget(this);
   addFocusWidget(mySlice0);
@@ -69,7 +69,7 @@ CartridgeMCWidget::CartridgeMCWidget(
 
   mySlice1 =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
-                    myLineHeight, items, "Set slice for segment 1 ($3D): ",
+                    myLineHeight, items, "Set slice for segment 1 ($3D) ",
                     lwidth, kSlice1Changed);
   mySlice1->setTarget(this);
   addFocusWidget(mySlice1);
@@ -77,7 +77,7 @@ CartridgeMCWidget::CartridgeMCWidget(
 
   mySlice2 =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
-                    myLineHeight, items, "Set slice for segment 2 ($3E): ",
+                    myLineHeight, items, "Set slice for segment 2 ($3E) ",
                     lwidth, kSlice2Changed);
   mySlice2->setTarget(this);
   addFocusWidget(mySlice2);
@@ -85,7 +85,7 @@ CartridgeMCWidget::CartridgeMCWidget(
 
   mySlice3 =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth,
-                    myLineHeight, items, "Set slice for segment 3 ($3F): ",
+                    myLineHeight, items, "Set slice for segment 3 ($3F) ",
                     lwidth, kSlice3Changed);
   mySlice3->setTarget(this);
   addFocusWidget(mySlice3);

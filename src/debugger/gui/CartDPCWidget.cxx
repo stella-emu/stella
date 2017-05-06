@@ -42,7 +42,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << Common::Base::HEX4 << (start + 0x80) << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
@@ -50,26 +50,26 @@ CartridgeDPCWidget::CartridgeDPCWidget(
               myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FF8)");
-  VarList::push_back(items, "1 ($FF9)");
+  VarList::push_back(items, "0 ($FFF8)");
+  VarList::push_back(items, "1 ($FFF9)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   ypos += myLineHeight + 8;
 
   // Data fetchers
-  int lwidth = _font.getStringWidth("Data Fetchers: ");
+  int lwidth = _font.getStringWidth("Data Fetchers ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Data Fetchers: ", kTextAlignLeft);
+        myFontHeight, "Data Fetchers ", kTextAlignLeft);
 
   // Top registers
-  lwidth = _font.getStringWidth("Counter Registers: ");
+  lwidth = _font.getStringWidth("Counter Registers ");
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Top Registers: ", kTextAlignLeft);
+        myFontHeight, "Top Registers ", kTextAlignLeft);
   xpos += lwidth;
 
   myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -79,7 +79,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Bottom registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers: ", kTextAlignLeft);
+        myFontHeight, "Bottom Registers ", kTextAlignLeft);
   xpos += lwidth;
 
   myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -89,7 +89,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Counter registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Counter Registers: ", kTextAlignLeft);
+        myFontHeight, "Counter Registers ", kTextAlignLeft);
   xpos += lwidth;
 
   myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
@@ -99,7 +99,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Flag registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Flag Registers: ", kTextAlignLeft);
+        myFontHeight, "Flag Registers ", kTextAlignLeft);
   xpos += lwidth;
 
   myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -108,9 +108,9 @@ CartridgeDPCWidget::CartridgeDPCWidget(
 
   // Music mode
   xpos = 10;  ypos += myLineHeight + 12;
-  lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7): ");
+  lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7) ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music mode (DF5/DF6/DF7): ", kTextAlignLeft);
+        myFontHeight, "Music mode (DF5/DF6/DF7) ", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::F_16);
@@ -120,7 +120,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Current random number
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current random number: ", kTextAlignLeft);
+        myFontHeight, "Current random number ", kTextAlignLeft);
   xpos += lwidth;
 
   myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
@@ -227,7 +227,7 @@ string CartridgeDPCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* spot[] = { "$FF8", "$FF9" };
+  static const char* spot[] = { "$FFF8", "$FFF9" };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 

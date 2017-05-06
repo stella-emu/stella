@@ -34,7 +34,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
        << "8K DPC RAM\n"
        << "DPC registers accessible @ $F000 - $F07F\n"
        << "  $F000 - $F03F (R), $F040 - $F07F (W)\n"
-       << "Banks accessible at hotspots $FF6 to $FFB\n"
+       << "Banks accessible at hotspots $FFF6 to $FFFB\n"
        << "Startup bank = " << cart.myStartBank << "\n";
 
 #if 0
@@ -53,24 +53,24 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
               myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FF6)");
-  VarList::push_back(items, "1 ($FF7)");
-  VarList::push_back(items, "2 ($FF8)");
-  VarList::push_back(items, "3 ($FF9)");
-  VarList::push_back(items, "4 ($FFA)");
-  VarList::push_back(items, "5 ($FFB)");
+  VarList::push_back(items, "0 ($FFF6)");
+  VarList::push_back(items, "1 ($FFF7)");
+  VarList::push_back(items, "2 ($FFF8)");
+  VarList::push_back(items, "3 ($FFF9)");
+  VarList::push_back(items, "4 ($FFFA)");
+  VarList::push_back(items, "5 ($FFFB)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // Top registers
-  int lwidth = _font.getStringWidth("Counter Registers: ");
+  int lwidth = _font.getStringWidth("Counter Registers ");
   xpos = 10;  ypos += myLineHeight + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Top Registers: ", kTextAlignLeft);
+        myFontHeight, "Top Registers ", kTextAlignLeft);
   xpos += lwidth;
 
   myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -80,7 +80,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Bottom registers
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers: ", kTextAlignLeft);
+        myFontHeight, "Bottom Registers ", kTextAlignLeft);
   xpos += lwidth;
 
   myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -90,7 +90,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Counter registers
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Counter Registers: ", kTextAlignLeft);
+        myFontHeight, "Counter Registers ", kTextAlignLeft);
   xpos += lwidth;
 
   myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
@@ -100,7 +100,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Fractional counter registers
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Frac Counters: ", kTextAlignLeft);
+        myFontHeight, "Frac Counters ", kTextAlignLeft);
   xpos += lwidth;
 
   myFracCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 4, 2, 8, 32, Common::Base::F_16_8);
@@ -110,7 +110,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Fractional increment registers
   xpos = 10;  ypos += myFracCounters->getHeight() + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Frac Increments: ", kTextAlignLeft);
+        myFontHeight, "Frac Increments ", kTextAlignLeft);
   xpos += lwidth;
 
   myFracIncrements = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -120,7 +120,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Special function parameters
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Function Params: ", kTextAlignLeft);
+        myFontHeight, "Function Params ", kTextAlignLeft);
   xpos += lwidth;
 
   myParameter = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -130,7 +130,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Music counters
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Counters: ", kTextAlignLeft);
+        myFontHeight, "Music Counters ", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -140,7 +140,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Music frequencies
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Frequencies: ", kTextAlignLeft);
+        myFontHeight, "Music Frequencies ", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -150,7 +150,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Music waveforms
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Waveforms: ", kTextAlignLeft);
+        myFontHeight, "Music Waveforms ", kTextAlignLeft);
   xpos += lwidth;
 
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_4);
@@ -158,10 +158,10 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myMusicWaveforms->setEditable(false);
 
   // Current random number
-  lwidth = _font.getStringWidth("Current random number: ");
+  lwidth = _font.getStringWidth("Current random number ");
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current random number: ", kTextAlignLeft);
+        myFontHeight, "Current random number ", kTextAlignLeft);
   xpos += lwidth;
 
   myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
@@ -325,7 +325,7 @@ string CartridgeDPCPlusWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
+    "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
