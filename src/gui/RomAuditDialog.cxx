@@ -44,7 +44,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Audit path:") + 20,
+            buttonWidth  = font.getStringWidth("Audit path") + 20,
             buttonHeight = font.getLineHeight() + 4,
             lwidth = font.getStringWidth("ROMs without properties (skipped): ");
   int xpos = vBorder, ypos = vBorder;
@@ -57,7 +57,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // Audit path
   ButtonWidget* romButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Audit path:", kChooseAuditDirCmd);
+                     "Audit path", kChooseAuditDirCmd);
   wid.push_back(romButton);
   xpos += buttonWidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -67,14 +67,14 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // Show results of ROM audit
   xpos = vBorder + 10;  ypos += buttonHeight + 10;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                       "ROMs with properties (renamed): ", kTextAlignLeft);
+                       "ROMs with properties (renamed) ", kTextAlignLeft);
   myResults1 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
                                     _w - lwidth - 20, fontHeight, "",
                                     kTextAlignLeft);
   myResults1->setFlags(WIDGET_CLEARBG);
   ypos += buttonHeight;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                       "ROMs without properties (skipped): ", kTextAlignLeft);
+                       "ROMs without properties (skipped) ", kTextAlignLeft);
   myResults2 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
                                     _w - lwidth - 20, fontHeight, "",
                                     kTextAlignLeft);
@@ -190,7 +190,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      myBrowser->show("Select ROM directory to audit:", myRomPath->getText(),
+      myBrowser->show("Select ROM directory to audit", myRomPath->getText(),
                       BrowserDialog::Directories, kAuditDirChosenCmd);
       break;
 

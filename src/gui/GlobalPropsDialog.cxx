@@ -39,7 +39,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Right Difficulty: "),
+  int lwidth = font.getStringWidth("Right Difficulty "),
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
   VariantList items;
@@ -53,7 +53,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Bankswitch type:", kTextAlignLeft);
+                       "Bankswitch type", kTextAlignLeft);
   for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
     VarList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
@@ -64,7 +64,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   // Left difficulty
   pwidth = font.getStringWidth("Debugger");
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Left Difficulty:", kTextAlignLeft);
+                       "Left Difficulty", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "B", "B");
@@ -76,7 +76,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Right difficulty
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Right Difficulty:", kTextAlignLeft);
+                       "Right Difficulty", kTextAlignLeft);
   // ... use same items as above
   myRightDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                 pwidth, lineHeight, items, "", 0, 0);
@@ -85,7 +85,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // TV type
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "TV Type:", kTextAlignLeft);
+                       "TV Type", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
@@ -97,7 +97,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Start in debugger mode
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Startup Mode:", kTextAlignLeft);
+                       "Startup Mode", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "Console", "false");
   VarList::push_back(items, "Debugger", "true");
@@ -151,7 +151,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
 
   // Left joystick
   StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2,
-    font.getStringWidth("Left Joy:"), fontHeight, "Left Joy:",
+    font.getStringWidth("Left Joy"), fontHeight, "Left Joy",
     kTextAlignLeft);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myJoy[kJ0Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Up);
@@ -171,7 +171,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
 
   // Right joystick
   t = new StaticTextWidget(this, font, xpos, ypos+2,
-    font.getStringWidth("Right Joy:"), fontHeight, "Right Joy:",
+    font.getStringWidth("Right Joy"), fontHeight, "Right Joy",
     kTextAlignLeft);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myJoy[kJ1Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Up);
@@ -190,7 +190,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
 
   // Console Select/Reset
   t = new StaticTextWidget(this, font, xpos, ypos+2,
-    font.getStringWidth("Console:"), fontHeight, "Console:",
+    font.getStringWidth("Console"), fontHeight, "Console",
     kTextAlignLeft);
   xpos -= 10;  ypos += t->getHeight() + 10;
   myHoldSelect = new CheckboxWidget(this, font, xpos, ypos, "Select");

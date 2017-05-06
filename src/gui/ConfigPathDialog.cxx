@@ -38,7 +38,7 @@ ConfigPathDialog::ConfigPathDialog(
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Properties file:") + 20,
+            buttonWidth  = font.getStringWidth("Properties file") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
   int xpos, ypos;
@@ -54,7 +54,7 @@ ConfigPathDialog::ConfigPathDialog(
   // ROM path
   ButtonWidget* romButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Rom path:", kChooseRomDirCmd);
+                     "Rom path", kChooseRomDirCmd);
   wid.push_back(romButton);
   xpos += buttonWidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -64,7 +64,7 @@ ConfigPathDialog::ConfigPathDialog(
   // Cheat file
   xpos = vBorder;  ypos += romButton->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Cheat file:", kChooseCheatFileCmd);
+                       "Cheat file", kChooseCheatFileCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myCheatFile = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -74,7 +74,7 @@ ConfigPathDialog::ConfigPathDialog(
   // Palette file
   xpos = vBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Palette file:", kChoosePaletteFileCmd);
+                       "Palette file", kChoosePaletteFileCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myPaletteFile = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -84,7 +84,7 @@ ConfigPathDialog::ConfigPathDialog(
   // Properties file
   xpos = vBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Properties file:", kChoosePropsFileCmd);
+                       "Properties file", kChoosePropsFileCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myPropsFile = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -94,7 +94,7 @@ ConfigPathDialog::ConfigPathDialog(
   // State directory
   xpos = vBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "State path:", kChooseStateDirCmd);
+                       "State path", kChooseStateDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myStatePath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -104,7 +104,7 @@ ConfigPathDialog::ConfigPathDialog(
   // NVRAM directory
   xpos = vBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "NVRAM path:", kChooseNVRamDirCmd);
+                       "NVRAM path", kChooseNVRamDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myNVRamPath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -206,7 +206,7 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select ROM directory:", myRomPath->getText(),
+      myBrowser->show("Select ROM directory", myRomPath->getText(),
                       BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
       break;
 
@@ -214,7 +214,7 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select cheat file:", myCheatFile->getText(),
+      myBrowser->show("Select cheat file", myCheatFile->getText(),
                       BrowserDialog::FileLoad, kCheatFileChosenCmd);
       break;
 
@@ -222,7 +222,7 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select palette file:", myPaletteFile->getText(),
+      myBrowser->show("Select palette file", myPaletteFile->getText(),
                       BrowserDialog::FileLoad, kPaletteFileChosenCmd);
       break;
 
@@ -230,7 +230,7 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select properties file:", myPropsFile->getText(),
+      myBrowser->show("Select properties file", myPropsFile->getText(),
                       BrowserDialog::FileLoad, kPropsFileChosenCmd);
       break;
 
@@ -238,7 +238,7 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select NVRAM directory:", myNVRamPath->getText(),
+      myBrowser->show("Select NVRAM directory", myNVRamPath->getText(),
                       BrowserDialog::Directories, kNVRamDirChosenCmd);
       break;
 
@@ -246,7 +246,7 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select state directory:", myStatePath->getText(),
+      myBrowser->show("Select state directory", myStatePath->getText(),
                       BrowserDialog::Directories, kStateDirChosenCmd);
       break;
 

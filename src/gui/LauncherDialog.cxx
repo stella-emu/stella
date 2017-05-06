@@ -116,7 +116,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Add note textwidget to show any notes for the currently selected ROM
   xpos = 10;
   xpos += 5;  ypos += myList->getHeight() + 4;
-  lwidth = font.getStringWidth("Note:");
+  lwidth = font.getStringWidth("Note");
   myDirLabel = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                                     "Dir:", kTextAlignLeft);
   xpos += lwidth + 5;
@@ -515,7 +515,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       if(!myRomDir)
         myRomDir = make_ptr<BrowserDialog>(this, instance().frameBuffer().font(), _w, _h);
 
-      myRomDir->show("Select ROM directory:", "~",
+      myRomDir->show("Select ROM directory", "~",
                      BrowserDialog::Directories, kStartupRomDirChosenCmd);
       break;
 

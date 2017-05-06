@@ -65,52 +65,52 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Cartridge");
 
   xpos = 10;
-  lwidth = font.getStringWidth("Manufacturer: ");
+  lwidth = font.getStringWidth("Manufacturer ");
   fwidth = _w - xpos - lwidth - 10;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Name:", kTextAlignLeft);
+                       "Name", kTextAlignLeft);
   myName = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                               fwidth, fontHeight, "");
   wid.push_back(myName);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "MD5:", kTextAlignLeft);
+                       "MD5", kTextAlignLeft);
   myMD5 = new StaticTextWidget(myTab, font, xpos+lwidth, ypos,
                                fwidth, fontHeight,
                                "", kTextAlignLeft);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Manufacturer:", kTextAlignLeft);
+                       "Manufacturer", kTextAlignLeft);
   myManufacturer = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                       fwidth, fontHeight, "");
   wid.push_back(myManufacturer);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Model:", kTextAlignLeft);
+                       "Model", kTextAlignLeft);
   myModelNo = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                  fwidth, fontHeight, "");
   wid.push_back(myModelNo);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Rarity:", kTextAlignLeft);
+                       "Rarity", kTextAlignLeft);
   myRarity = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                 fwidth, fontHeight, "");
   wid.push_back(myRarity);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Note:", kTextAlignLeft);
+                       "Note", kTextAlignLeft);
   myNote = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                               fwidth, fontHeight, "");
   wid.push_back(myNote);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Sound:", kTextAlignLeft);
+                       "Sound", kTextAlignLeft);
   pwidth = font.getStringWidth("Stereo");
   items.clear();
   VarList::push_back(items, "Mono", "MONO");
@@ -121,7 +121,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Type:", kTextAlignLeft);
+                       "Type", kTextAlignLeft);
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
   for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
@@ -139,10 +139,10 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Console");
 
   xpos = 10; ypos = vBorder;
-  lwidth = font.getStringWidth("Right Difficulty: ");
+  lwidth = font.getStringWidth("Right Difficulty ");
   pwidth = font.getStringWidth("B & W");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Left Difficulty:", kTextAlignLeft);
+                       "Left Difficulty", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "B", "B");
   VarList::push_back(items, "A", "A");
@@ -152,7 +152,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Right Difficulty:", kTextAlignLeft);
+                       "Right Difficulty", kTextAlignLeft);
   // ... use same items as above
   myRightDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                 pwidth, lineHeight, items, "", 0, 0);
@@ -160,7 +160,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "TV Type:", kTextAlignLeft);
+                       "TV Type", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "Color", "COLOR");
   VarList::push_back(items, "B & W", "BW");
@@ -177,10 +177,10 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Controller");
 
   xpos = 10; ypos = vBorder;
-  lwidth = font.getStringWidth("P0 Controller: ");
+  lwidth = font.getStringWidth("P0 Controller ");
   pwidth = font.getStringWidth("Paddles_IAxis");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "P0 Controller:", kTextAlignLeft);
+                       "P0 Controller", kTextAlignLeft);
   ctrls.clear();
   VarList::push_back(ctrls, "Joystick",      "JOYSTICK"     );
   VarList::push_back(ctrls, "Paddles",       "PADDLES"      );
@@ -218,7 +218,7 @@ GameInfoDialog::GameInfoDialog(
   xpos = 10;  ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Paddles_IAxis");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "P1 Controller:", kTextAlignLeft);
+                       "P1 Controller", kTextAlignLeft);
   myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, ctrls, "", 0, 0);
   wid.push_back(myP1Controller);
@@ -235,7 +235,7 @@ GameInfoDialog::GameInfoDialog(
   xpos = 10;  ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Yes");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Swap Paddles:", kTextAlignLeft);
+                       "Swap Paddles", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "Yes", "YES");
   VarList::push_back(items, "No", "NO");
@@ -244,18 +244,18 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(mySwapPaddles);
 
   ypos += lineHeight + 8;
-  lwidth = font.getStringWidth("Mouse axis mode: ");
+  lwidth = font.getStringWidth("Mouse axis mode ");
   pwidth = font.getStringWidth("Specific axis");
   items.clear();
   VarList::push_back(items, "Automatic", "AUTO");
   VarList::push_back(items, "Specific axis", "specific");
   myMouseControl =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                   "Mouse axis mode: ", lwidth, kMCtrlChanged);
+                   "Mouse axis mode ", lwidth, kMCtrlChanged);
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
-  lwidth = font.getStringWidth("X-Axis is: ");
+  lwidth = font.getStringWidth("X-Axis is ");
   pwidth = font.getStringWidth("MindLink 0");
   items.clear();
   VarList::push_back(items, "None",       MouseControl::NoControl);
@@ -270,18 +270,18 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 45;  ypos += lineHeight + 4;
   myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-               "X-Axis is: ", lwidth);
+               "X-Axis is ", lwidth);
   wid.push_back(myMouseX);
 
   ypos += lineHeight + 4;
   myMouseY = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-               "Y-Axis is: ", lwidth);
+               "Y-Axis is ", lwidth);
   wid.push_back(myMouseY);
 
   xpos = 10;  ypos += lineHeight + 8;
-  lwidth = font.getStringWidth("Mouse axis range: ");
+  lwidth = font.getStringWidth("Mouse axis range ");
   myMouseRange = new SliderWidget(myTab, font, xpos, ypos, 8*fontWidth, lineHeight,
-                                  "Mouse axis range: ", lwidth, kMRangeChanged);
+                                  "Mouse axis range ", lwidth, kMRangeChanged);
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   wid.push_back(myMouseRange);
 
@@ -299,10 +299,10 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Display");
 
   xpos = 10; ypos = vBorder;
-  lwidth = font.getStringWidth("Use Phosphor: ");
+  lwidth = font.getStringWidth("Use Phosphor ");
   pwidth = font.getStringWidth("Auto-detect");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Format:", kTextAlignLeft);
+                       "Format", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
   VarList::push_back(items, "NTSC",    "NTSC");
@@ -317,7 +317,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "YStart:", kTextAlignLeft);
+                       "YStart", kTextAlignLeft);
 
   myYStart = new SliderWidget(myTab, font, xpos+lwidth, ypos, 8*fontWidth, lineHeight,
                               "", 0, kYStartChanged);
@@ -330,7 +330,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Height:", kTextAlignLeft);
+                       "Height", kTextAlignLeft);
   myHeight = new SliderWidget(myTab, font, xpos+lwidth, ypos, 8*fontWidth, lineHeight,
                               "", 0, kHeightChanged);
   myHeight->setMinValue(FrameManager::minViewableHeight-1);
@@ -343,7 +343,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Yes");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Use Phosphor:", kTextAlignLeft);
+                       "Use Phosphor", kTextAlignLeft);
   items.clear();
   VarList::push_back(items, "Yes", "YES");
   VarList::push_back(items, "No", "NO");
@@ -352,8 +352,8 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myPhosphor);
 
   myPPBlend = new SliderWidget(myTab, font, xpos + lwidth + myPhosphor->getWidth() + 10,
-                               ypos, 8*fontWidth, lineHeight, "Blend: ",
-                               font.getStringWidth("Blend: "),
+                               ypos, 8*fontWidth, lineHeight, "Blend ",
+                               font.getStringWidth("Blend "),
                                kPPBlendChanged);
   myPPBlend->setMinValue(1); myPPBlend->setMaxValue(100);
   wid.push_back(myPPBlend);

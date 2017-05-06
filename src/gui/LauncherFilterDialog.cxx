@@ -39,7 +39,7 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Show: "),
+  int lwidth = font.getStringWidth("Show "),
       pwidth = font.getStringWidth("ROMs ending with");
   WidgetArray wid;
   VariantList items;
@@ -55,7 +55,7 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   VarList::push_back(items, "ROMs ending with", "__EXTS");
   myFileType =
     new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items,
-                    "Show: ", lwidth, kFileTypeChanged);
+                    "Show ", lwidth, kFileTypeChanged);
   wid.push_back(myFileType);
   ypos += lineHeight + 10;
 

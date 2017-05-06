@@ -42,7 +42,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Sample Size (*): "),
+  int lwidth = font.getStringWidth("Sample Size (*) "),
       pwidth = font.getStringWidth("512 bytes");
   WidgetArray wid;
   VariantList items;
@@ -55,7 +55,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   xpos = 3 * fontWidth;  ypos = 10;
 
   myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 6*fontWidth, lineHeight,
-                                    "Volume: ", lwidth, kVolumeChanged);
+                                    "Volume ", lwidth, kVolumeChanged);
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   wid.push_back(myVolumeSlider);
   myVolumeLabel = new StaticTextWidget(this, font,
@@ -75,7 +75,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "4 KB", "4096");
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                    items, "Sample size (*): ", lwidth);
+                                    items, "Sample size (*) ", lwidth);
   wid.push_back(myFragsizePopup);
   ypos += lineHeight + 4;
 
@@ -88,7 +88,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "48000 Hz", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                items, "Frequency (*): ", lwidth);
+                                items, "Frequency (*) ", lwidth);
   wid.push_back(myFreqPopup);
   ypos += lineHeight + 4;
 

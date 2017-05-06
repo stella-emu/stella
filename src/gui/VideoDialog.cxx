@@ -45,7 +45,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos, tabID;
-  int lwidth = font.getStringWidth("NTSC Aspect: "),
+  int lwidth = font.getStringWidth("NTSC Aspect "),
       pwidth = font.getStringWidth("XXXXxXXXX");
   WidgetArray wid;
   VariantList items;
@@ -66,13 +66,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Video renderer
   myRenderer = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                instance().frameBuffer().supportedRenderers(),
-                               "Renderer: ", lwidth);
+                               "Renderer ", lwidth);
   wid.push_back(myRenderer);
   ypos += lineHeight + 4;
 
   // TIA filters (will be dynamically filled later)
   myTIAZoom = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                              lineHeight, items, "TIA Zoom: ", lwidth);
+                              lineHeight, items, "TIA Zoom ", lwidth);
   wid.push_back(myTIAZoom);
   ypos += lineHeight + 4;
 
@@ -82,7 +82,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Z26", "z26");
   VarList::push_back(items, "User", "user");
   myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                 lineHeight, items, "TIA Palette: ", lwidth);
+                                 lineHeight, items, "TIA Palette ", lwidth);
   wid.push_back(myTIAPalette);
   ypos += lineHeight + 4;
 
@@ -91,7 +91,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Linear", "linear");
   VarList::push_back(items, "Nearest", "nearest");
   myTIAInterpolate = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "TIA Inter: ", lwidth);
+                                     items, "TIA Inter ", lwidth);
   wid.push_back(myTIAInterpolate);
   ypos += lineHeight + 4;
 
@@ -100,14 +100,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Sleep", "sleep");
   VarList::push_back(items, "Busy-wait", "busy");
   myFrameTiming = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                  items, "Timing (*): ", lwidth);
+                                  items, "Timing (*) ", lwidth);
   wid.push_back(myFrameTiming);
   ypos += lineHeight + 4;
 
   // Aspect ratio (NTSC mode)
   myNAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                     "NTSC Aspect: ", lwidth, kNAspectRatioChanged);
+                     "NTSC Aspect ", lwidth, kNAspectRatioChanged);
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
   wid.push_back(myNAspectRatio);
   myNAspectRatioLabel =
@@ -119,7 +119,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Aspect ratio (PAL mode)
   myPAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                     "PAL Aspect: ", lwidth, kPAspectRatioChanged);
+                     "PAL Aspect ", lwidth, kPAspectRatioChanged);
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
   wid.push_back(myPAspectRatio);
   myPAspectRatioLabel =
@@ -131,7 +131,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Framerate
   myFrameRate =
     new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                     "Framerate: ", lwidth, kFrameRateChanged);
+                     "Framerate ", lwidth, kFrameRateChanged);
   myFrameRate->setMinValue(0); myFrameRate->setMaxValue(300);
   myFrameRate->setStepValue(10);
   wid.push_back(myFrameRate);
@@ -205,18 +205,18 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "RGB", NTSCFilter::PRESET_RGB);
   VarList::push_back(items, "Bad adjust", NTSCFilter::PRESET_BAD);
   VarList::push_back(items, "Custom", NTSCFilter::PRESET_CUSTOM);
-  lwidth = font.getStringWidth("TV Mode: ");
+  lwidth = font.getStringWidth("TV Mode ");
   pwidth = font.getStringWidth("Bad adjust"),
   myTVMode =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                    items, "TV Mode: ", lwidth, kTVModeChanged);
+                    items, "TV Mode ", lwidth, kTVModeChanged);
   wid.push_back(myTVMode);
   ypos += lineHeight + 4;
 
   // Custom adjustables (using macro voodoo)
   xpos += 8; ypos += 4;
   pwidth = lwidth;
-  lwidth = font.getStringWidth("Saturation: ");
+  lwidth = font.getStringWidth("Saturation ");
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc)                                 \
   myTV ## obj =                                                          \
@@ -230,16 +230,16 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
   ypos += lineHeight + 4
 
-  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast: ");
-  CREATE_CUSTOM_SLIDERS(Bright, "Brightness: ");
-  CREATE_CUSTOM_SLIDERS(Hue, "Hue: ");
-  CREATE_CUSTOM_SLIDERS(Satur, "Saturation: ");
-  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma: ");
-  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness: ");
-  CREATE_CUSTOM_SLIDERS(Res, "Resolution: ");
-  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts: ");
-  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing: ");
-  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding: ");
+  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ");
+  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ");
+  CREATE_CUSTOM_SLIDERS(Hue, "Hue ");
+  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ");
+  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ");
+  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ");
+  CREATE_CUSTOM_SLIDERS(Res, "Resolution ");
+  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts ");
+  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
+  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
   xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 20;
   ypos = 8;
@@ -249,20 +249,20 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                                   "Jitter/Roll effect", kTVJitterChanged);
   wid.push_back(myTVJitter);
   ypos += lineHeight;
-  lwidth = font.getStringWidth("Intensity: ");
+  lwidth = font.getStringWidth("Intensity ");
   pwidth = font.getMaxCharWidth() * 6;
-  CREATE_CUSTOM_SLIDERS(JitterRec, "Recovery: ");
+  CREATE_CUSTOM_SLIDERS(JitterRec, "Recovery ");
   myTVJitterRec->setMinValue(1); myTVJitterRec->setMaxValue(20);
   ypos += 4;
 
   // Scanline intensity and interpolation
   myTVScanLabel =
-    new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings:"),
-                         fontHeight, "Scanline settings:", kTextAlignLeft);
+    new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings"),
+                         fontHeight, "Scanline settings", kTextAlignLeft);
   ypos += lineHeight;
 
   xpos += 20;
-  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity: ");
+  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ");
 
   myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos,
                                            "Interpolation");
@@ -319,7 +319,7 @@ void VideoDialog::loadConfig()
   // the desktop and which renderer we're using
   const VariantList& items = instance().frameBuffer().supportedTIAZoomLevels();
   myTIAZoom->addItems(items);
-  myTIAZoom->setSelected(instance().settings().getString("tia.zoom"), "2");
+  myTIAZoom->setSelected(instance().settings().getString("tia.zoom"), "3");
 
   // TIA Palette
   myTIAPalette->setSelected(
@@ -491,8 +491,8 @@ void VideoDialog::setDefaults()
   {
     case 0:  // General
     {
-      myRenderer->setSelected("soft", "");
-      myTIAZoom->setSelected("2", "");
+      myRenderer->setSelectedIndex(0);
+      myTIAZoom->setSelected("3", "");
       myTIAPalette->setSelected("standard", "");
       myFrameTiming->setSelected("sleep", "");
       myTIAInterpolate->setSelected("nearest", "");

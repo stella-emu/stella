@@ -67,8 +67,8 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Verbose", "2");
   myLogLevel =
     new PopUpWidget(this, font, xpos, ypos, font.getStringWidth("Verbose"),
-                    lineHeight, items, "Log level: ",
-                    font.getStringWidth("Log level: "));
+                    lineHeight, items, "Log level ",
+                    font.getStringWidth("Log level "));
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
