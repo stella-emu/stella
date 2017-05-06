@@ -492,7 +492,7 @@ void CheckboxWidget::setEditable(bool editable)
   }
   else
   {
-    _bgcolor = kBGColorLo;
+    _bgcolor = kBGColorHi;
     setFill(CheckboxWidget::Inactive);
   }
 }

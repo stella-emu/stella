@@ -723,3 +723,21 @@ Widget* Dialog::TabFocus::getNewFocus()
 
   return (currentTab < focus.size()) ? focus[currentTab].widget : nullptr;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
+{
+  const GUI::Rect& r = instance().frameBuffer().imageRect();
+  if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)
+  {
+    w = uInt32(0.8 * FrameBuffer::kTIAMinW) * 2;
+    h = FrameBuffer::kTIAMinH * 2;
+    return false;
+  }
+  else
+  {
+    w = std::max(uInt32(0.8 * r.width()), uInt32(FrameBuffer::kFBMinW));
+    h = std::max(uInt32(0.8 * r.height()), uInt32(FrameBuffer::kFBMinH));
+    return true;
+  }
+}

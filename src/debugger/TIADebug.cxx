@@ -51,12 +51,39 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluPF());
   myState.coluRegs.push_back(coluBK());
 
-  // Player 1 & 2 graphics registers
+  // Debug Colors
+  myState.fixedCols.clear();
+  if(myTIA.myFrameManager.layout() == FrameLayout::ntsc)
+  {
+    myState.fixedCols.push_back(myTIA.P0ColorNTSC);
+    myState.fixedCols.push_back(myTIA.P1ColorNTSC);
+    myState.fixedCols.push_back(myTIA.PFColorNTSC);
+    myState.fixedCols.push_back(myTIA.BKColorNTSC);
+    myState.fixedCols.push_back(myTIA.M0ColorNTSC);
+    myState.fixedCols.push_back(myTIA.M1ColorNTSC);
+    myState.fixedCols.push_back(myTIA.BLColorNTSC);
+    myState.fixedCols.push_back(myTIA.HBLANKColor);
+  }
+  else
+  {
+    myState.fixedCols.push_back(myTIA.P0ColorPAL);
+    myState.fixedCols.push_back(myTIA.P1ColorPAL);
+    myState.fixedCols.push_back(myTIA.PFColorPAL);
+    myState.fixedCols.push_back(myTIA.BKColorPAL);
+    myState.fixedCols.push_back(myTIA.M0ColorPAL);
+    myState.fixedCols.push_back(myTIA.M1ColorPAL);
+    myState.fixedCols.push_back(myTIA.BLColorPAL);
+    myState.fixedCols.push_back(myTIA.HBLANKColor);
+  }
+
+  // Player 0 & 1 and Ball graphics registers
   myState.gr.clear();
   myState.gr.push_back(myTIA.myPlayer0.getGRPNew());
   myState.gr.push_back(myTIA.myPlayer1.getGRPNew());
   myState.gr.push_back(myTIA.myPlayer0.getGRPOld());
   myState.gr.push_back(myTIA.myPlayer1.getGRPOld());
+  myState.gr.push_back(myTIA.myBall.getENABLNew());
+  myState.gr.push_back(myTIA.myBall.getENABLOld());
 
   // Position registers
   myState.pos.clear();
@@ -114,12 +141,14 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
 
-  // Player 1 & 2 graphics registers
+  // Player 0 & 1 graphics registers
   myOldState.gr.clear();
   myOldState.gr.push_back(myTIA.myPlayer0.getGRPNew());
   myOldState.gr.push_back(myTIA.myPlayer1.getGRPNew());
   myOldState.gr.push_back(myTIA.myPlayer0.getGRPOld());
   myOldState.gr.push_back(myTIA.myPlayer1.getGRPOld());
+  myOldState.gr.push_back(myTIA.myBall.getENABLNew());
+  myOldState.gr.push_back(myTIA.myBall.getENABLOld());
 
   // Position registers
   myOldState.pos.clear();
@@ -775,8 +804,8 @@ string TIADebug::debugColors() const
         << " Orange " << colorSwatch(myTIA.M0ColorNTSC) << " Missile 0\n"
         << " Yellow " << colorSwatch(myTIA.P1ColorNTSC) << " Player 1\n"
         << " Green  " << colorSwatch(myTIA.M1ColorNTSC) << " Missile 1\n"
-        << " Blue   " << colorSwatch(myTIA.BLColorNTSC) << " Ball\n"
-        << " Purple " << colorSwatch(myTIA.PFColorNTSC) << " Playfield\n"
+        << " Blue   " << colorSwatch(myTIA.PFColorNTSC) << " Playfield\n"
+        << " Purple " << colorSwatch(myTIA.BLColorNTSC) << " Ball\n"
         << " Grey   " << colorSwatch(myTIA.BKColorNTSC) << " Background\n"
         << " White  " << colorSwatch(myTIA.HBLANKColor) << " HMOVE\n";
   }
@@ -786,8 +815,8 @@ string TIADebug::debugColors() const
         << " Orange " << colorSwatch(myTIA.M0ColorPAL)  << " Missile 0\n"
         << " Yellow " << colorSwatch(myTIA.P1ColorPAL)  << " Player 1\n"
         << " Green  " << colorSwatch(myTIA.M1ColorPAL)  << " Missile 1\n"
-        << " Blue   " << colorSwatch(myTIA.BLColorPAL)  << " Ball\n"
-        << " Purple " << colorSwatch(myTIA.PFColorPAL)  << " Playfield\n"
+        << " Blue   " << colorSwatch(myTIA.PFColorPAL)  << " Playfield\n"
+        << " Purple " << colorSwatch(myTIA.BLColorPAL)  << " Ball\n"
         << " Grey   " << colorSwatch(myTIA.BKColorPAL)  << " Background\n"
         << " White  " << colorSwatch(myTIA.HBLANKColor) << " HMOVE\n";
   }

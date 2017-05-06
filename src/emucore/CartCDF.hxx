@@ -258,7 +258,7 @@ class CartridgeCDF : public Cartridge
    r12 = channel1 frequency
    r13 = channel2 frequency
    r14 = timer base */
-  
+
   // The music counters, ARM FIQ shadow registers r8, r9, r10
     uInt32 myMusicCounters[3];
 
@@ -282,7 +282,7 @@ class CartridgeCDF : public Cartridge
     uInt16 myLDAimmediateOperandAddress;
 
     TIA* myTIA;
-  
+
     uInt8 myFastJumpActive;
 
   private:

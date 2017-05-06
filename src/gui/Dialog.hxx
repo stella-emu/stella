@@ -105,6 +105,11 @@ class Dialog : public GuiObject
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
 
+    /** Determine the maximum bounds based on the given width and height
+        Returns whether or not a large font can be used within these bounds.
+    */
+    bool getResizableBounds(uInt32& w, uInt32& h) const;
+
   private:
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);

@@ -34,12 +34,12 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = lfont.getStringWidth("AUDW: ");
+  int xpos = 10, ypos = 25, lwidth = lfont.getStringWidth("AUDW ");
 
   // AudF registers
   new StaticTextWidget(boss, lfont, xpos, ypos+2,
                        lwidth, fontHeight,
-                       "AUDF:", kTextAlignLeft);
+                       "AUDF", kTextAlignLeft);
   xpos += lwidth;
   myAudF = new DataGridWidget(boss, nfont, xpos, ypos,
                               2, 1, 2, 5, Common::Base::F_16);
@@ -59,7 +59,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   // AudC registers
   xpos = 10;  ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
-                       "AUDC:", kTextAlignLeft);
+                       "AUDC", kTextAlignLeft);
   xpos += lwidth;
   myAudC = new DataGridWidget(boss, nfont, xpos, ypos,
                               2, 1, 2, 4, Common::Base::F_16);
@@ -71,7 +71,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   // AudV registers
   xpos = 10;  ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
-                       "AUDV:", kTextAlignLeft);
+                       "AUDV", kTextAlignLeft);
   xpos += lwidth;
   myAudV = new DataGridWidget(boss, nfont, xpos, ypos,
                               2, 1, 2, 4, Common::Base::F_16);

@@ -29,10 +29,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SnapshotDialog::SnapshotDialog(
       OSystem& osystem, DialogContainer& parent,
-      const GUI::Font& font, GuiObject* boss,
-      int max_w, int max_h)
+      const GUI::Font& font, GuiObject* boss)
   : Dialog(osystem, parent),
-    myBrowser(nullptr)
+    myFont(font)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -124,9 +123,6 @@ SnapshotDialog::SnapshotDialog(
   addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
-
-  // Create file browser dialog
-  myBrowser = make_ptr<BrowserDialog>(this, font, max_w, max_h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,11 +181,17 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseSnapSaveDirCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select snapshot save directory:", mySnapSavePath->getText(),
                       BrowserDialog::Directories, kSnapSaveDirChosenCmd);
       break;
 
     case kChooseSnapLoadDirCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select snapshot load directory:", mySnapLoadPath->getText(),
                       BrowserDialog::Directories, kSnapLoadDirChosenCmd);
       break;
@@ -206,4 +208,16 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SnapshotDialog::createBrowser()
+{
+  uInt32 w = 0, h = 0;
+  getResizableBounds(w, h);
+
+  // Create file browser dialog
+  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
+                   uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_ptr<BrowserDialog>(this, myFont, w, h);
 }

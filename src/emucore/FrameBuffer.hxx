@@ -62,6 +62,7 @@ enum {
   kColor = 256,
   kBGColor,
   kBGColorLo,
+  kBGColorHi,
   kShadowColor,
   kTextColor,
   kTextColorHi,

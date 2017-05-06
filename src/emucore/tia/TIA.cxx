@@ -873,6 +873,12 @@ bool TIA::toggleFixedColors(uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::usingFixedColors() const
+{
+  return myColorHBlank != 0x00;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::driveUnusedPinsRandom(uInt8 mode)
 {
   // If mode is 0 or 1, use it as a boolean (off or on)

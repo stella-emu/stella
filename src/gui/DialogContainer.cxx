@@ -19,6 +19,7 @@
 #include "Dialog.hxx"
 #include "Stack.hxx"
 #include "EventHandler.hxx"
+#include "FrameBuffer.hxx"
 #include "Joystick.hxx"
 #include "bspf.hxx"
 #include "DialogContainer.hxx"
@@ -114,7 +115,12 @@ void DialogContainer::draw(bool full)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::addDialog(Dialog* d)
 {
-  myDialogStack.push(d);
+  GUI::Rect r = myOSystem.frameBuffer().imageRect();
+  if(uInt32(d->getWidth()) > r.width() || uInt32(d->getHeight()) > r.height())
+    myOSystem.frameBuffer().showMessage(
+        "Unable to show dialog box; resize current window");
+  else
+    myDialogStack.push(d);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

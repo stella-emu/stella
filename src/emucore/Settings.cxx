@@ -46,7 +46,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("uimessages", "true");
 
   // TIA specific options
-  setInternal("tia.zoom", "2");
+  setInternal("tia.zoom", "3");
   setInternal("tia.inter", "false");
   setInternal("tia.aspectn", "90");
   setInternal("tia.aspectp", "100");
@@ -109,10 +109,10 @@ Settings::Settings(OSystem& osystem)
 
   // ROM browser options
   setInternal("exitlauncher", "false");
-  setInternal("launcherres", GUI::Size(640, 480));
+  setInternal("launcherres", GUI::Size(900, 600));
   setInternal("launcherfont", "medium");
   setInternal("launcherexts", "allroms");
-  setInternal("romviewer", "0");
+  setInternal("romviewer", "1");
   setInternal("lastrom", "");
 
   // UI-related options

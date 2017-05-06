@@ -39,18 +39,20 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 {
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight();
-  int xpos = 10, ypos = 15 + lineHeight;
+            lineHeight = lfont.getLineHeight(),
+            buttonW = 7 * fontWidth;
+  int xpos = 10, ypos = 10 + lineHeight, buttonX = 0, buttonY = 0;
   StaticTextWidget* t = nullptr;
+  ButtonWidget* b = nullptr;
 
   // Color registers
   const char* regNames[] = { "COLUP0", "COLUP1", "COLUPF", "COLUBK" };
   for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         7*fontWidth, fontHeight, regNames[row], kTextAlignLeft);
+                         6*fontWidth, fontHeight, regNames[row], kTextAlignLeft);
   }
-  xpos += 7*fontWidth + 5;
+  xpos += 6*fontWidth + 8;
   myColorRegs = new DataGridWidget(boss, nfont, xpos, ypos,
                                    1, 4, 2, 8, Common::Base::F_16);
   myColorRegs->setTarget(this);
@@ -58,27 +60,60 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myColorRegs);
 
   xpos += myColorRegs->colWidth() + 5;
-  myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos+2, 20, lineHeight - 4);
+  myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUP0Color->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos+2, 20, lineHeight - 4);
+  myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUP1Color->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos+2, 20, lineHeight - 4);
+  myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUPFColor->setTarget(this);
 
   ypos += lineHeight;
-  myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos+2, 20, lineHeight - 4);
+  myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos+2,
+                                  uInt32(1.5*lineHeight), lineHeight - 4);
   myCOLUBKColor->setTarget(this);
+
+  // Fixed debug colors
+  xpos += myCOLUP0Color->getWidth() + 30;  ypos = 10;
+  myFixedEnabled = new CheckboxWidget(boss, lfont, xpos, ypos, "Debug Colors", kDbgClCmd);
+  myFixedEnabled->setTarget(this);
+  addFocusWidget(myFixedEnabled);
+
+  const char* dbgLabels[] = { "P0", "P1", "PF", "BK", "M0", "M1", "BL", "HM" };
+  for(uInt32 row = 0; row <= 3; ++row)
+  {
+    ypos += lineHeight;
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
+                             dbgLabels[row], kTextAlignLeft);
+    myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
+                               ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
+    myFixedColors[row]->setTarget(this);
+  }
+  xpos += t->getWidth() + myFixedColors[0]->getWidth() + 24;
+  ypos = 10;
+  for(uInt32 row = 4; row <= 7; ++row)
+  {
+    ypos += lineHeight;
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
+                             dbgLabels[row], kTextAlignLeft);
+    myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
+                               ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
+    myFixedColors[row]->setTarget(this);
+  }
 
   ////////////////////////////
   // Collision register bits
   ////////////////////////////
-  xpos += myCOLUBKColor->getWidth() + 2*fontWidth + 30;  ypos -= 4*lineHeight + 5;
+  xpos += myFixedColors[0]->getWidth() + 2*fontWidth + 60;  ypos = 10;
 
   // Add all 15 collision bits (with labels)
+  uInt32 cxclrY = 0;
   xpos -= 2*fontWidth + 5;  ypos += lineHeight;
   const char* rowLabel[] = { "P0", "P1", "M0", "M1", "BL" };
   const char* colLabel[] = { "PF", "BL", "M1", "M0", "P1" };
@@ -95,7 +130,12 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
       myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY, "");
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
-      myCollision[idx]->setEditable(false);  // TODO - enable this
+      myCollision[idx]->setEditable(false);  // TODO - enable this?
+
+      // We need to know where the PF_BL register is, to properly position
+      // the CXCLR button
+      if(idx == kBL_PFID)
+        cxclrY = collY;
 
       // Add horizontal label
       uInt32 labelx = collX;
@@ -114,72 +154,19 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     collY += lineHeight+3;
   }
 
-  ////////////////////////////
-  // Strobe buttons
-  ////////////////////////////
-  ButtonWidget* b;
-  uInt32 buttonX, buttonY, buttonW;
-  buttonX = collX + 5*(myCollision[0]->getWidth() + 10) + 14;  buttonY = ypos;
-  buttonW = 7 * fontWidth;
-
-  new StaticTextWidget(boss, lfont, buttonX + (2*buttonW+4 - 7*fontWidth)/2,
-                       ypos - lineHeight, 7*fontWidth, fontHeight, "Strobes",
-                       kTextAlignLeft);
-
+  // Clear all collision bits
+  buttonX = collX + 5*(myCollision[0]->getWidth() + 10) - buttonW - 10;
+  buttonY = lineHeight == 15 ? cxclrY : cxclrY - 4;
   b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "WSync", kWsyncCmd);
+                       "CXCLR", kCxclrCmd);
   b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "ResP0", kResP0Cmd);
-  b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "ResM0", kResM0Cmd);
-  b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "ResBL", kResBLCmd);
-  b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "HmClr", kHmclrCmd);
-  b->setTarget(this);
-
-  buttonX += buttonW + 4;  buttonY = ypos;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "RSync", kRsyncCmd);
-  b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "ResP1", kResP1Cmd);
-  b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "ResM1", kResM1Cmd);
-  b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "HMove", kHmoveCmd);
-  b->setTarget(this);
-
-  buttonY += lineHeight + 3;
-  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
-                       "CxClr", kCxclrCmd);
-  b->setTarget(this);
+  addFocusWidget(b);
 
   ////////////////////////////
   // P0 register info
   ////////////////////////////
   // grP0 (new)
-  xpos = 10;  ypos = buttonY + 2*lineHeight;
+  xpos = 10;  ypos = collY + 4;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "P0", kTextAlignLeft);
   xpos += 2*fontWidth + 5;
@@ -220,6 +207,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
 
+  // P0 reset
+  xpos += myRefP0->getWidth() + 12;
+  buttonX = xpos;
+  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+                       "RESP0", kResP0Cmd);
+  b->setTarget(this);
+  addFocusWidget(b);
+
   // grP0 (old)
   xpos = 10 + 2*fontWidth + 5;  ypos += myGRP0->getHeight() + 5;
   myGRP0Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
@@ -256,7 +251,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // P1 register info
   ////////////////////////////
   // grP1 (new)
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += lineHeight + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "P1", kTextAlignLeft);
   xpos += 2*fontWidth + 5;
@@ -297,6 +292,13 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
 
+  // P1 reset
+  xpos += myRefP1->getWidth() + 12;
+  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+                       "RESP1", kResP1Cmd);
+  b->setTarget(this);
+  addFocusWidget(b);
+
   // grP1 (old)
   xpos = 10 + 2*fontWidth + 5;  ypos += myGRP1->getHeight() + 5;
   myGRP1Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
@@ -333,14 +335,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // M0 register info
   ////////////////////////////
   // enaM0
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += lineHeight + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "M0", kTextAlignLeft);
-  xpos += 2*fontWidth + 8;
-  myEnaM0 = new CheckboxWidget(boss, lfont, xpos, ypos+2,
-                               "Enable", kCheckActionCmd);
+  xpos += 2*fontWidth + 5;
+  myEnaM0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaM0->setTarget(this);
   myEnaM0->setID(kEnaM0ID);
+  myEnaM0->setBackgroundColor(-1);
   addFocusWidget(myEnaM0);
 
   // posM0
@@ -377,26 +379,33 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myNusizM0->setID(kNusizM0ID);
   addFocusWidget(myNusizM0);
 
-  // M0 reset
+  // M0 reset to player 0
   xpos += myNusizM0->getWidth() + 15;
   myResMP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                                "Reset", kCheckActionCmd);
+                                "Reset to P0", kCheckActionCmd);
   myResMP0->setTarget(this);
   myResMP0->setID(kResMP0ID);
   addFocusWidget(myResMP0);
+
+  // M0 reset
+  xpos = buttonX;
+  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+                       "RESM0", kResM0Cmd);
+  b->setTarget(this);
+  addFocusWidget(b);
 
   ////////////////////////////
   // M1 register info
   ////////////////////////////
   // enaM1
-  xpos = 10;  ypos += lineHeight + 6;
+  xpos = 10;  ypos += lineHeight + 4;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "M1", kTextAlignLeft);
-  xpos += 2*fontWidth + 8;
-  myEnaM1 = new CheckboxWidget(boss, lfont, xpos, ypos+2,
-                               "Enable", kCheckActionCmd);
+  xpos += 2*fontWidth + 5;
+  myEnaM1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaM1->setTarget(this);
   myEnaM1->setID(kEnaM1ID);
+  myEnaM1->setBackgroundColor(-1);
   addFocusWidget(myEnaM1);
 
   // posM0
@@ -433,26 +442,33 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myNusizM1->setID(kNusizM1ID);
   addFocusWidget(myNusizM1);
 
-  // M1 reset
+  // M1 reset to player 0
   xpos += myNusizM1->getWidth() + 15;
   myResMP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                                "Reset", kCheckActionCmd);
+                                "Reset to P1", kCheckActionCmd);
   myResMP1->setTarget(this);
   myResMP1->setID(kResMP1ID);
   addFocusWidget(myResMP1);
+
+  // M1 reset
+  xpos = buttonX;
+  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+                       "RESM1", kResM1Cmd);
+  b->setTarget(this);
+  addFocusWidget(b);
 
   ////////////////////////////
   // BL register info
   ////////////////////////////
   // enaBL
-  xpos = 10;  ypos += lineHeight + 6;
+  xpos = 10;  ypos += lineHeight + 4;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "BL", kTextAlignLeft);
-  xpos += 2*fontWidth + 8;
-  myEnaBL = new CheckboxWidget(boss, lfont, xpos, ypos+2,
-                               "Enable", kCheckActionCmd);
+  xpos += 2*fontWidth + 5;
+  myEnaBL = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaBL->setTarget(this);
   myEnaBL->setID(kEnaBLID);
+  myEnaBL->setBackgroundColor(-1);
   addFocusWidget(myEnaBL);
 
   // posBL
@@ -489,10 +505,25 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   mySizeBL->setID(kSizeBLID);
   addFocusWidget(mySizeBL);
 
-  // BL delay
-  xpos += mySizeBL->getWidth() + 15;
+  // Reset ball
+  xpos = buttonX;
+  b = new ButtonWidget(boss, lfont, xpos, ypos, buttonW, lineHeight,
+                       "RESBL", kResBLCmd);
+  b->setTarget(this);
+  addFocusWidget(b);
+
+  // Ball (old)
+  xpos = 10 + 2*fontWidth + 5;  ypos += myEnaBL->getHeight() + 5;
+  myEnaBLOld = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
+  myEnaBLOld->setTarget(this);
+  myEnaBLOld->setID(kEnaBLOldID);
+  myEnaBLOld->setBackgroundColor(-1);
+  addFocusWidget(myEnaBLOld);
+
+  // Ball delay
+  xpos += myEnaBLOld->getWidth() + 12;
   myDelBL = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "Delay", kCheckActionCmd);
+                               "VDel", kCheckActionCmd);
   myDelBL->setTarget(this);
   myDelBL->setID(kDelBLID);
   addFocusWidget(myDelBL);
@@ -580,11 +611,39 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   xpos = 10;
   ypos += 2 * lineHeight;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos, 14*fontWidth, fontHeight,
-    "Queued Writes:", kTextAlignLeft);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos, 13*fontWidth, fontHeight,
+    "Queued Writes", kTextAlignLeft);
 
   xpos += t->getWidth() + 10;
   myDelayQueueWidget = new DelayQueueWidget(boss, lfont, xpos, ypos);
+
+  ////////////////////////////
+  // Strobe buttons
+  ////////////////////////////
+  buttonX = xpos + myDelayQueueWidget->getWidth() + 20;
+  buttonY = ypos;
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+                       "WSYNC", kWsyncCmd);
+  b->setTarget(this);
+  addFocusWidget(b);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+                       "RSYNC", kRsyncCmd);
+  b->setTarget(this);
+  addFocusWidget(b);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+                       "HMOVE", kHmoveCmd);
+  b->setTarget(this);
+  addFocusWidget(b);
+
+  buttonY += lineHeight + 3;
+  b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
+                       "HMCLR", kHmclrCmd);
+  b->setTarget(this);
+  addFocusWidget(b);
 
   // How to handle undriven pins
   xpos = 10;  ypos += (myDelayQueueWidget->getHeight() + lineHeight);
@@ -640,6 +699,10 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kCxclrCmd:
       tia.strobeCxclr();
+      break;
+
+    case kDbgClCmd:
+      myFixedEnabled->setState(tia.tia().toggleFixedColors());
       break;
 
     case kPPinCmd:
@@ -740,6 +803,22 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           tia.setGRP1Old(myGRP1Old->getIntState());
           break;
 
+        case kEnaM0ID:
+          tia.enaM0(myEnaM0->getIntState());
+          break;
+
+        case kEnaM1ID:
+          tia.enaM1(myEnaM1->getIntState());
+          break;
+
+        case kEnaBLID:
+          tia.enaBL(myEnaBL->getIntState());
+          break;
+
+        case kEnaBLOldID:
+          tia.setENABLOld(myEnaBLOld->getIntState() != 0);
+          break;
+
         case kPF0ID:
           tia.pf0(myPF[0]->getIntState());
           break;
@@ -823,10 +902,24 @@ void TiaWidget::loadConfig()
   }
   myColorRegs->setList(alist, vlist, changed);
 
+  bool fixed = tia.tia().usingFixedColors();
+
   myCOLUP0Color->setColor(state.coluRegs[0]);
   myCOLUP1Color->setColor(state.coluRegs[1]);
   myCOLUPFColor->setColor(state.coluRegs[2]);
   myCOLUBKColor->setColor(state.coluRegs[3]);
+  myCOLUP0Color->setCrossed(fixed);
+  myCOLUP1Color->setCrossed(fixed);
+  myCOLUPFColor->setCrossed(fixed);
+  myCOLUBKColor->setCrossed(fixed);
+
+  // Fixed debug colors
+  myFixedEnabled->setState(fixed);
+  for(uInt32 c = 0; c < 8; ++c)
+  {
+    myFixedColors[c]->setColor(state.fixedCols[c]);
+    myFixedColors[c]->setCrossed(!fixed);
+  }
 
   ////////////////////////////
   // Collision register bits
@@ -919,7 +1012,16 @@ void TiaWidget::loadConfig()
   // M0 register info
   ////////////////////////////
   // enaM0
-  myEnaM0->setState(tia.enaM0());
+  if(tia.enaM0())
+  {
+    myEnaM0->setColor(state.coluRegs[0]);
+    myEnaM0->setIntState(1, false);
+  }
+  else
+  {
+    myEnaM0->setColor(kBGColorLo);
+    myEnaM0->setIntState(0, false);
+  }
 
   // posM0
   myPosM0->setList(0, state.pos[M0], state.pos[M0] != oldstate.pos[M0]);
@@ -937,7 +1039,16 @@ void TiaWidget::loadConfig()
   // M1 register info
   ////////////////////////////
   // enaM1
-  myEnaM1->setState(tia.enaM1());
+  if(tia.enaM1())
+  {
+    myEnaM1->setColor(state.coluRegs[1]);
+    myEnaM1->setIntState(1, false);
+  }
+  else
+  {
+    myEnaM1->setColor(kBGColorLo);
+    myEnaM1->setIntState(0, false);
+  }
 
   // posM1
   myPosM1->setList(0, state.pos[M1], state.pos[M1] != oldstate.pos[M1]);
@@ -954,8 +1065,21 @@ void TiaWidget::loadConfig()
   ////////////////////////////
   // BL register info
   ////////////////////////////
-  // enaBL
-  myEnaBL->setState(tia.enaBL());
+  // enaBL (new and old)
+  if(tia.vdelBL())
+  {
+    myEnaBL->setColor(kBGColorLo);
+    myEnaBLOld->setColor(state.coluRegs[2]);
+    myEnaBLOld->setCrossed(false);
+  }
+  else
+  {
+    myEnaBL->setColor(state.coluRegs[2]);
+    myEnaBLOld->setColor(kBGColorLo);
+    myEnaBLOld->setCrossed(true);
+  }
+  myEnaBL->setIntState(state.gr[4], false);
+  myEnaBLOld->setIntState(state.gr[5], false);
 
   // posBL
   myPosBL->setList(0, state.pos[BL], state.pos[BL] != oldstate.pos[BL]);

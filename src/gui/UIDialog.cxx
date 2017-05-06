@@ -415,7 +415,7 @@ void UIDialog::setDefaults()
   {
     case 0:  // Launcher options
     {
-      uInt32 w = std::min(instance().frameBuffer().desktopSize().w, 1000u);
+      uInt32 w = std::min(instance().frameBuffer().desktopSize().w, 900u);
       uInt32 h = std::min(instance().frameBuffer().desktopSize().h, 600u);
       myLauncherWidthSlider->setValue(w);
       myLauncherWidthLabel->setValue(w);

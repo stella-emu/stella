@@ -266,7 +266,7 @@ class TIA : public Device
     bool toggleCollisions();
 
     /**
-      Enables/disable/toggle 'fixed debug colors' mode.
+      Enables/disable/toggle/query 'fixed debug colors' mode.
 
       @param mode  1/0 indicates on/off, otherwise flip from
                    its current state
@@ -274,6 +274,7 @@ class TIA : public Device
       @return  Whether the mode was enabled or disabled
     */
     bool toggleFixedColors(uInt8 mode = 2);
+    bool usingFixedColors() const;
 
     /**
       Enable/disable/query state of 'undriven/floating TIA pins'.
@@ -366,16 +367,16 @@ class TIA : public Device
       M0ColorNTSC = 0x38, // orange
       P1ColorNTSC = 0x1c, // yellow
       M1ColorNTSC = 0xc4, // green
-      BLColorNTSC = 0x9e, // blue
-      PFColorNTSC = 0x66, // purple
+      PFColorNTSC = 0x9e, // blue
+      BLColorNTSC = 0x66, // purple
       BKColorNTSC = 0x0a, // grey
 
       P0ColorPAL  = 0x62, // red
       M0ColorPAL  = 0x4a, // orange
       P1ColorPAL  = 0x2e, // yellow
       M1ColorPAL  = 0x34, // green
-      BLColorPAL  = 0xbc, // blue
-      PFColorPAL  = 0xa6, // purple
+      PFColorPAL  = 0xbc, // blue
+      BLColorPAL  = 0xa6, // purple
       BKColorPAL  = 0x0a, // grey
 
       HBLANKColor = 0x0e  // white

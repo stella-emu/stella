@@ -29,10 +29,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ConfigPathDialog::ConfigPathDialog(
       OSystem& osystem, DialogContainer& parent,
-      const GUI::Font& font, GuiObject* boss,
-      int max_w, int max_h)
+      const GUI::Font& font, GuiObject* boss)
   : Dialog(osystem, parent),
     CommandSender(boss),
+    myFont(font),
     myBrowser(nullptr),
     myIsGlobal(boss != nullptr)
 {
@@ -126,9 +126,6 @@ ConfigPathDialog::ConfigPathDialog(
     romButton->clearFlags(WIDGET_ENABLED);
     myRomPath->setEditable(false);
   }
-
-  // Create file browser dialog
-  myBrowser = make_ptr<BrowserDialog>(this, font, max_w, max_h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,7 +187,7 @@ void ConfigPathDialog::setDefaults()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
-                                   int data, int id)
+                                     int data, int id)
 {
   switch (cmd)
   {
@@ -206,31 +203,49 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseRomDirCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select ROM directory:", myRomPath->getText(),
                       BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select cheat file:", myCheatFile->getText(),
                       BrowserDialog::FileLoad, kCheatFileChosenCmd);
       break;
 
     case kChoosePaletteFileCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select palette file:", myPaletteFile->getText(),
                       BrowserDialog::FileLoad, kPaletteFileChosenCmd);
       break;
 
     case kChoosePropsFileCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select properties file:", myPropsFile->getText(),
                       BrowserDialog::FileLoad, kPropsFileChosenCmd);
       break;
 
     case kChooseNVRamDirCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select NVRAM directory:", myNVRamPath->getText(),
                       BrowserDialog::Directories, kNVRamDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser();
       myBrowser->show("Select state directory:", myStatePath->getText(),
                       BrowserDialog::Directories, kStateDirChosenCmd);
       break;
@@ -267,4 +282,16 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ConfigPathDialog::createBrowser()
+{
+  uInt32 w = 0, h = 0;
+  getResizableBounds(w, h);
+
+  // Create file browser dialog
+  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
+                   uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_ptr<BrowserDialog>(this, myFont, w, h);
 }

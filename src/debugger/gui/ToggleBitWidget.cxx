@@ -114,7 +114,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
       }
       else
       {
-        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kBGColorLo);
+        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kBGColorHi);
         s.drawString(_font, buffer, x, y, _colWidth, kTextColor);
       }
     }

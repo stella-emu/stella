@@ -46,7 +46,6 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(l, "Set breakpoint", "bp");
   VarList::push_back(l, "Set zoom position", "zoom");
   VarList::push_back(l, "Save snapshot", "snap");
-  VarList::push_back(l, "Toggle fixed debug colors (from beam pos)", "fixed");
   myMenu = make_ptr<ContextMenu>(this, font, l);
 }
 
@@ -134,10 +133,6 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       else if(rmb == "snap")
       {
         instance().debugger().parser().run("savesnap");
-      }
-      else if(rmb == "fixed")
-      {
-        instance().console().tia().toggleFixedColors();
       }
       break;
     }

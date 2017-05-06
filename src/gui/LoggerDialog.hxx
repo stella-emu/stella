@@ -31,7 +31,8 @@ class LoggerDialog : public Dialog
 {
   public:
     LoggerDialog(OSystem& osystem, DialogContainer& parent,
-                 const GUI::Font& font, int max_w, int max_h);
+                 const GUI::Font& font, int max_w, int max_h,
+                 bool useLargeFont = true);
     virtual ~LoggerDialog() = default;
 
   private:

@@ -42,12 +42,16 @@ class ColorWidget : public Widget, public CommandSender
     void setColor(int color);
     int  getColor() const { return _color;  }
 
+    void setCrossed(bool enable) { _crossGrid = enable; }
+
   protected:
     void drawWidget(bool hilite) override;
 
   protected:
     int _color;
     int	_cmd;
+
+    bool _crossGrid;
 
   private:
     // Following constructors and assignment operators not supported
