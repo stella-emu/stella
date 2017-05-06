@@ -46,7 +46,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Audit path") + 20,
             buttonHeight = font.getLineHeight() + 4,
-            lwidth = font.getStringWidth("ROMs without properties (skipped): ");
+            lwidth = font.getStringWidth("ROMs without properties (skipped) ");
   int xpos = vBorder, ypos = vBorder;
   WidgetArray wid;
 
@@ -68,17 +68,15 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   xpos = vBorder + 10;  ypos += buttonHeight + 10;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "ROMs with properties (renamed) ", kTextAlignLeft);
-  myResults1 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
-                                    _w - lwidth - 20, fontHeight, "",
-                                    kTextAlignLeft);
-  myResults1->setFlags(WIDGET_CLEARBG);
+  myResults1 = new EditTextWidget(this, font, xpos + lwidth, ypos - 2,
+                                  _w - xpos - lwidth - 10, lineHeight, "");
+  myResults1->setEditable(false, true);
   ypos += buttonHeight;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "ROMs without properties (skipped) ", kTextAlignLeft);
-  myResults2 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
-                                    _w - lwidth - 20, fontHeight, "",
-                                    kTextAlignLeft);
-  myResults2->setFlags(WIDGET_CLEARBG);
+  myResults2 = new EditTextWidget(this, font, xpos + lwidth, ypos - 2,
+                                  _w - xpos - lwidth - 10, lineHeight, "");
+  myResults2->setEditable(false, true);
 
   ypos += buttonHeight + 8;
   new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
@@ -102,16 +100,16 @@ void RomAuditDialog::loadConfig()
     instance().settings().getString("romdir") : currentdir;
 
   myRomPath->setText(path);
-  myResults1->setLabel("");
-  myResults2->setLabel("");
+  myResults1->setText("");
+  myResults2->setText("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::auditRoms()
 {
   const string& auditPath = myRomPath->getText();
-  myResults1->setLabel("");
-  myResults2->setLabel("");
+  myResults1->setText("");
+  myResults2->setText("");
 
   FilesystemNode node(auditPath);
   FSList files;
@@ -129,6 +127,7 @@ void RomAuditDialog::auditRoms()
   int renamed = 0, notfound = 0;
   for(uInt32 idx = 0; idx < files.size(); idx++)
   {
+    bool renameSucceeded = false;
     string extension;
     if(files[idx].isFile() &&
        LauncherFilterDialog::isValidRomName(files[idx], extension))
@@ -136,19 +135,22 @@ void RomAuditDialog::auditRoms()
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
       const string& md5 = MD5::hash(files[idx]);
-      instance().propSet().getMD5(md5, props);
-      const string& name = props.get(Cartridge_Name);
-
-      // Only rename the file if we found a valid properties entry
-      if(name != "" && name != files[idx].getName())
+      if(instance().propSet().getMD5(md5, props))
       {
-        const string& newfile = node.getPath() + name + "." + extension;
+        const string& name = props.get(Cartridge_Name);
 
-        if(files[idx].getPath() != newfile && files[idx].rename(newfile))
-          renamed++;
+        // Only rename the file if we found a valid properties entry
+        if(name != "" && name != files[idx].getName())
+        {
+          const string& newfile = node.getPath() + name + "." + extension;
+          if(files[idx].getPath() != newfile && files[idx].rename(newfile))
+            renameSucceeded = true;
+        }
       }
+      if(renameSucceeded)
+        ++renamed;
       else
-        notfound++;
+        ++notfound;
     }
 
     // Update the progress bar, indicating one more ROM has been processed
@@ -156,8 +158,8 @@ void RomAuditDialog::auditRoms()
   }
   progress.close();
 
-  myResults1->setValue(renamed);
-  myResults2->setValue(notfound);
+  myResults1->setText(Variant(renamed).toString());
+  myResults2->setText(Variant(notfound).toString());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,8 +200,8 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
     {
       FilesystemNode dir(myBrowser->getResult());
       myRomPath->setText(dir.getShortPath());
-      myResults1->setLabel("");
-      myResults2->setLabel("");
+      myResults1->setText("");
+      myResults2->setText("");
       break;
     }
 
