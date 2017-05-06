@@ -25,10 +25,10 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller)
 {
   bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Joystick):" : "Right (Joystick):";
+  const string& label = leftport ? "Left (Joystick)" : "Right (Joystick)";
 
   const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Joystick):");
+  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Joystick)");
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,

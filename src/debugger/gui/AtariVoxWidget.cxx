@@ -25,15 +25,14 @@ AtariVoxWidget::AtariVoxWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller)
 {
   bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (AtariVox):" : "Right (AtariVox):";
+  const string& label = leftport ? "Left (AtariVox)" : "Right (AtariVox)";
 
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
+  const int fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
             bwidth  = font.getStringWidth("Erase EEPROM") + 20,
             bheight = lineHeight + 4;
 
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (AtariVox):");
+  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (AtariVox)");
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
@@ -46,16 +45,18 @@ AtariVoxWidget::AtariVoxWidget(GuiObject* boss, const GUI::Font& font,
   myEEPROMErase->setTarget(this);
   ypos += lineHeight + 20;
 
-  new StaticTextWidget(boss, font, xpos, ypos, fontWidth*22,
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
+  lwidth = ifont.getMaxCharWidth() * 20;
+  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
                        fontHeight, "(*) This will erase", kTextAlignLeft);
   ypos += lineHeight + 2;
-  new StaticTextWidget(boss, font, xpos, ypos, fontWidth*22,
+  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
                        fontHeight, "all EEPROM data, not", kTextAlignLeft);
   ypos += lineHeight + 2;
-  new StaticTextWidget(boss, font, xpos, ypos, fontWidth*22,
+  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
                        fontHeight, "just the range used", kTextAlignLeft);
   ypos += lineHeight + 2;
-  new StaticTextWidget(boss, font, xpos, ypos, fontWidth*22,
+  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
                        fontHeight, "for this ROM", kTextAlignLeft);
 }
 

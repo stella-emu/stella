@@ -25,12 +25,12 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
     myGreyIndex(0)
 {
   bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Driving):" : "Right (Driving):";
+  const string& label = leftport ? "Left (Driving)" : "Right (Driving)";
 
   const int fontHeight = font.getFontHeight(),
             bwidth = font.getStringWidth("Grey code +") + 10,
             bheight = font.getLineHeight() + 4;
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Driving):");
+  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Driving)");
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,

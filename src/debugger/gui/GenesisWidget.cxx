@@ -25,10 +25,10 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller)
 {
   bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Genesis):" : "Right (Genesis):";
+  const string& label = leftport ? "Left (Genesis)" : "Right (Genesis)";
 
   const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Genesis):");
+  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Genesis)");
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
