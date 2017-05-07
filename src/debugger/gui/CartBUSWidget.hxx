@@ -45,6 +45,7 @@ class CartridgeBUSWidget : public CartDebugWidget
       IntArray mfreqs;
       IntArray mwaves;
       IntArray mwavesizes;
+      IntArray samplepointer;
       uInt32 random;
       ByteArray internalram;
     };
@@ -54,13 +55,17 @@ class CartridgeBUSWidget : public CartDebugWidget
 
     DataGridWidget* myDatastreamPointers;
     DataGridWidget* myDatastreamIncrements;
+    DataGridWidget* myDatastreamPointers2;
+    DataGridWidget* myDatastreamIncrements2;
     DataGridWidget* myAddressMaps;
     DataGridWidget* myMusicCounters;
     DataGridWidget* myMusicFrequencies;
     DataGridWidget* myMusicWaveforms;
     DataGridWidget* myMusicWaveformSizes;
+    DataGridWidget* mySamplePointer;
+    StaticTextWidget* myDatastreamLabels[6];
     CheckboxWidget* myBusOverdrive;
-    CheckboxWidget* myZPSTY;
+    CheckboxWidget* myDigitalSample;
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };

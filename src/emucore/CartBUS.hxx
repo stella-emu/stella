@@ -249,8 +249,9 @@ class CartridgeBUS : public Cartridge
 
     // System cycle count when the last update to music data fetchers occurred
     Int32 mySystemCycles;
-
-    uInt8 mySetAddress;
+  
+    // ARM cycle count from when the last callFunction() occurred
+    Int32 myARMCycles;
 
     // The music mode counters
     uInt32 myMusicCounters[3];
@@ -270,6 +271,8 @@ class CartridgeBUS : public Cartridge
     // 0- = Packed Digital Sample
     // F- = 3 Voice Music
     uInt8 myMode;
+  
+    uInt8 myFastJumpActive;
 
   private:
     // Following constructors and assignment operators not supported

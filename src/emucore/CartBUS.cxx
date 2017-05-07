@@ -27,11 +27,14 @@
 #include "CartBUS.hxx"
 
 // Location of data within the RAM copy of the BUS Driver.
-#define DSxPTR        0x06E0
+#define DSxPTR        0x06D8
 #define DSxINC        0x0720
 #define DSMAPS        0x0760
 #define WAVEFORM      0x07F4
 #define DSRAM         0x0800
+
+#define COMMSTREAM    0x10
+#define JUMPSTREAM    0x11
 
 #define BUS_STUFF_ON ((myMode & 0x0F) == 0)
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
@@ -41,6 +44,7 @@ CartridgeBUS::CartridgeBUS(const uInt8* image, uInt32 size,
                                    const Settings& settings)
   : Cartridge(settings),
     mySystemCycles(0),
+    myARMCycles(0),
     myFractionalClocks(0.0)
 {
   // Copy the ROM image into my buffer
@@ -78,6 +82,7 @@ void CartridgeBUS::reset()
 
   // Update cycles to the current system cycles
   mySystemCycles = mySystem->cycles();
+  myARMCycles = mySystem->cycles();
   myFractionalClocks = 0.0;
 
   setInitialState();
@@ -116,6 +121,7 @@ void CartridgeBUS::systemCyclesReset()
 {
   // Adjust the cycle counter so that it reflects the new value
   mySystemCycles -= mySystem->cycles();
+  myARMCycles -= mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,7 +178,10 @@ inline void CartridgeBUS::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        myThumbEmulator->run();
+        Int32 cycles = mySystem->cycles() - myARMCycles;
+        myARMCycles = mySystem->cycles();
+        
+        myThumbEmulator->run(cycles);
       }
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
@@ -211,6 +220,32 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     // anything that can change the internal state of the cart
     if(bankLocked())
       return peekvalue;
+    
+    // implement JMP FASTJMP which fetches the destination address from stream 33
+    if (myFastJumpActive)
+    {
+      uInt32 pointer;
+      uInt8 value;
+      
+      myFastJumpActive--;
+      
+      pointer = getDatastreamPointer(JUMPSTREAM);
+      value = myDisplayImage[ pointer >> 20 ];
+      pointer += 0x100000;  // always increment by 1
+      setDatastreamPointer(JUMPSTREAM, pointer);
+      
+      return value;
+    }
+    
+    // test for JMP FASTJUMP where FASTJUMP = $0000
+    if (BUS_STUFF_ON
+        && peekvalue == 0x4C
+        && myProgramImage[(myCurrentBank << 12) + address+1] == 0
+        && myProgramImage[(myCurrentBank << 12) + address+2] == 0)
+    {
+      myFastJumpActive = 2; // return next two peeks from datastream 31
+      return peekvalue;
+    }
 
     // save the STY's zero page address
     if (BUS_STUFF_ON && mySTYZeroPageAddress == address)
@@ -218,120 +253,90 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 
     mySTYZeroPageAddress = 0;
 
-    if(address < 0x20)
+    switch(address)
     {
-      uInt8 result = 0;
-
-      // Get the index of the data fetcher that's being accessed
-      uInt32 index = address & 0x0f;
-      uInt32 function = (address >> 4) & 0x01;
-
-      switch(function)
-      {
-        case 0x00:  // read from a datastream
+      case 0xFEE: // AMPLITUDE
+        
+        // Update the music data fetchers (counter & flag)
+        updateMusicModeDataFetchers();
+        
+        if DIGITAL_AUDIO_ON
         {
-          result = readFromDatastream(index);
-          break;
+          // retrieve packed sample (max size is 2K, or 4K of unpacked data)
+          peekvalue = myImage[getSample() + (myMusicCounters[0] >> 21)];
+          
+          //
+          if ((myMusicCounters[0] & (1<<20)) == 0)
+            peekvalue >>= 4;
+          peekvalue &= 0x0f;
         }
-        case 0x01:  // misc read registers
+        else
         {
-          switch(index)
-          {
-              // the following are POKE ONLY
-            case 0x00:  // 0x10 DF0WRITE
-            case 0x01:  // 0x11 DF1WRITE
-            case 0x02:  // 0x12 DF2WRITE
-            case 0x03:  // 0x13 DF3WRITE
-            case 0x04:  // 0x14 DF0PTR
-            case 0x05:  // 0x15 DF1PTR
-            case 0x06:  // 0x16 DF2PTR
-            case 0x07:  // 0x17 DF3PTR
-            case 0x09:  // 0x19 STUFFMODE
-            case 0x0a:  // 0x1A CALLFN
-              break;
-
-            case 0x08:  // 0x18 = AMPLITUDE
-              // Update the music data fetchers (counter & flag)
-              updateMusicModeDataFetchers();
-
-              if DIGITAL_AUDIO_ON
-              {
-                // retrieve packed sample (max size is 2K, or 4K of unpacked data)
-                result = myImage[getSample() + (myMusicCounters[0] >> 21)];
-                
-                //
-                if ((myMusicCounters[0] & (1<<20)) == 0)
-                  result >>= 4;
-                result &= 0x0f;
-              }
-              else
-              {
-                // using myDisplayImage[] instead of myProgramImage[] because waveforms
-                // can be modified during runtime.
-                uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
-                
-                result = uInt8(i);
-              }
-              break;
-          }
-          break;
+          // using myDisplayImage[] instead of myProgramImage[] because waveforms
+          // can be modified during runtime.
+          uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
+          myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
+          myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+          
+          peekvalue = uInt8(i);
         }
-      }
-
-      return result;
+        break;
+        
+      case 0xFEF: // DSREAD
+        peekvalue = readFromDatastream(COMMSTREAM);
+        break;
+        
+      case 0xFF0: // DSWRITE
+      case 0xFF1: // DSPTR
+      case 0xFF2: // SETMODE
+      case 0xFF3: // CALLFN
+        // these are write-only
+        break;
+        
+      case 0xFF5:
+        // Set the current bank to the first 4k bank
+        bank(0);
+        break;
+        
+      case 0x0FF6:
+        // Set the current bank to the second 4k bank
+        bank(1);
+        break;
+        
+      case 0x0FF7:
+        // Set the current bank to the third 4k bank
+        bank(2);
+        break;
+        
+      case 0x0FF8:
+        // Set the current bank to the fourth 4k bank
+        bank(3);
+        break;
+        
+      case 0x0FF9:
+        // Set the current bank to the fifth 4k bank
+        bank(4);
+        break;
+        
+      case 0x0FFA:
+        // Set the current bank to the sixth 4k bank
+        bank(5);
+        break;
+        
+      case 0x0FFB:
+        // Set the current bank to the last 4k bank
+        bank(6);
+        break;
+        
+      default:
+        break;
     }
-    else
-    {
-      // Switch banks if necessary
-      switch(address)
-      {
-        case 0xFF5:
-          // Set the current bank to the first 4k bank
-          bank(0);
-          break;
-
-        case 0x0FF6:
-          // Set the current bank to the second 4k bank
-          bank(1);
-          break;
-
-        case 0x0FF7:
-          // Set the current bank to the third 4k bank
-          bank(2);
-          break;
-
-        case 0x0FF8:
-          // Set the current bank to the fourth 4k bank
-          bank(3);
-          break;
-
-        case 0x0FF9:
-          // Set the current bank to the fifth 4k bank
-          bank(4);
-          break;
-
-        case 0x0FFA:
-          // Set the current bank to the sixth 4k bank
-          bank(5);
-          break;
-
-        case 0x0FFB:
-          // Set the current bank to the last 4k bank
-          bank(6);
-          break;
-
-        default:
-          break;
-      }
-
-      // this might not work right for STY $84
-      if (BUS_STUFF_ON && peekvalue == 0x84)
-        mySTYZeroPageAddress = address + 1;
-
-      return peekvalue;
-    }
+    
+    // this might not work right for STY $84
+    if (BUS_STUFF_ON && peekvalue == 0x84)
+      mySTYZeroPageAddress = address + 1;
+    
+    return peekvalue;
   }
 
   return 0;  // make compiler happy
@@ -353,102 +358,77 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
   }
   else
   {
+    uInt32 pointer;
+
     address &= 0x0FFF;
 
-    if ((address >= 0x10) && (address <= 0x1F))
+    switch(address)
     {
-      // Get the index of the data fetcher that's being accessed
-      uInt32 index = address & 0x0f;
-      uInt32 pointer;
-
-      switch (index)
-      {
-        case 0x00:  // DS0WRITE
-        case 0x01:  // DS1WRITE
-        case 0x02:  // DS2WRITE
-        case 0x03:  // DS3WRITE
-          // Pointers are stored as:
-          // PPPFF---
-          //
-          // P = Pointer
-          // F = Fractional
-
-          pointer = getDatastreamPointer(index);
-          myDisplayImage[ pointer >> 20 ] = value;
-          pointer += 0x100000;  // always increment by 1 when writing
-          setDatastreamPointer(index, pointer);
-          break;
-
-        case 0x04:  // 0x14 DS0PTR
-        case 0x05:  // 0x15 DS1PTR
-        case 0x06:  // 0x16 DS2PTR
-        case 0x07:  // 0x17 DS3PTR
-          // Pointers are stored as:
-          // PPPFF---
-          //
-          // P = Pointer
-          // F = Fractional
-
-          index &= 0x03;
-          pointer = getDatastreamPointer(index);
-          pointer <<=8;
-          pointer &= 0xf0000000;
-          pointer |= (value << 20);
-          setDatastreamPointer(index, pointer);
-          break;
-
-        case 0x09:  // 0x19 SETMODE
-          myMode = value;
-          break;
-
-        case 0x0A:  // 0x1A CALLFUNCTION
-          callFunction(value);
-          break;
-      }
-    }
-    else
-    {
-      // Switch banks if necessary
-      switch(address)
-      {
-        case 0xFF5:
-          // Set the current bank to the first 4k bank
-          bank(0);
-          break;
-
-        case 0x0FF6:
-          // Set the current bank to the second 4k bank
-          bank(1);
-          break;
-
-        case 0x0FF7:
-          // Set the current bank to the third 4k bank
-          bank(2);
-          break;
-
-        case 0x0FF8:
-          // Set the current bank to the fourth 4k bank
-          bank(3);
-          break;
-
-        case 0x0FF9:
-          // Set the current bank to the fifth 4k bank
-          bank(4);
-          break;
-
-        case 0x0FFA:
-          // Set the current bank to the sixth 4k bank
-          bank(5);
-          break;
-
-        case 0x0FFB:
-          // Set the current bank to the last 4k bank
-          bank(6);
-          break;
-
-        default:
-          break;
-      }
+      case 0xFEE: // AMPLITUDE
+      case 0xFEF: // DSREAD
+        // these are read-only
+        break;
+        
+      case 0xFF0: // DSWRITE
+        pointer = getDatastreamPointer(COMMSTREAM);
+        myDisplayImage[ pointer >> 20 ] = value;
+        pointer += 0x100000;  // always increment by 1 when writing
+        setDatastreamPointer(COMMSTREAM, pointer);
+        break;
+        
+      case 0xFF1: // DSPTR
+        pointer = getDatastreamPointer(COMMSTREAM);
+        pointer <<=8;
+        pointer &= 0xf0000000;
+        pointer |= (value << 20);
+        setDatastreamPointer(COMMSTREAM, pointer);
+        break;
+        
+      case 0xFF2: // SETMODE
+        myMode = value;
+        break;
+        
+      case 0xFF3: // CALLFN
+        callFunction(value);
+        break;
+        
+      case 0xFF5:
+        // Set the current bank to the first 4k bank
+        bank(0);
+        break;
+        
+      case 0x0FF6:
+        // Set the current bank to the second 4k bank
+        bank(1);
+        break;
+        
+      case 0x0FF7:
+        // Set the current bank to the third 4k bank
+        bank(2);
+        break;
+        
+      case 0x0FF8:
+        // Set the current bank to the fourth 4k bank
+        bank(3);
+        break;
+        
+      case 0x0FF9:
+        // Set the current bank to the fifth 4k bank
+        bank(4);
+        break;
+        
+      case 0x0FFA:
+        // Set the current bank to the sixth 4k bank
+        bank(5);
+        break;
+        
+      case 0x0FFB:
+        // Set the current bank to the last 4k bank
+        bank(6);
+        break;
+        
+      default:
+        break;
     }
   }
 
@@ -516,12 +496,6 @@ uInt8 CartridgeBUS::busOverdrive(uInt16 address)
 {
   uInt8 overdrive = 0xff;
 
-  // Not sure how to do this, check with stephena.
-  //
-  // Per discussion with cd-w, have this routine check that the Y register has a
-  // value of 0xFF.  Of it doesn't then "crash the emulation".
-
-
   // only overdrive if the address matches
   if (address == myBusOverdriveAddress)
   {
@@ -536,8 +510,6 @@ uInt8 CartridgeBUS::busOverdrive(uInt16 address)
       alldatastreams >>= 4;
       alldatastreams |= (datastream << 28);
       setAddressMap(map, alldatastreams);
-
-      // overdrive |= 0x7c; // breaks bus stuffing to match hobo's system
     }
   }
 
@@ -588,9 +560,26 @@ bool CartridgeBUS::save(Serializer& out) const
 
     // Harmony RAM
     out.putByteArray(myBUSRAM, 8192);
-
+    
+    // Addresses for bus override logic
+    out.putShort(myBusOverdriveAddress);
+    out.putShort(mySTYZeroPageAddress);
+    
+    // Save cycles and clocks
     out.putInt(mySystemCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
+    out.putInt(myARMCycles);
+    
+    // Audio info
+    out.putIntArray(myMusicCounters, 3);
+    out.putIntArray(myMusicFrequencies, 3);
+    out.putByteArray(myMusicWaveformSize, 3);
+
+    // Indicates current mode
+    out.putByte(myMode);
+
+    // Indicates if in the middle of a fast jump
+    out.putByte(myFastJumpActive);
   }
   catch(...)
   {
@@ -614,10 +603,26 @@ bool CartridgeBUS::load(Serializer& in)
 
     // Harmony RAM
     in.getByteArray(myBUSRAM, 8192);
+    
+    // Addresses for bus override logic
+    myBusOverdriveAddress = in.getShort();
+    mySTYZeroPageAddress = in.getShort();
 
     // Get system cycles and fractional clocks
     mySystemCycles = (Int32)in.getInt();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
+    myARMCycles = (Int32)in.getInt();
+    
+    // Audio info
+    in.getIntArray(myMusicCounters, 3);
+    in.getIntArray(myMusicFrequencies, 3);
+    in.getByteArray(myMusicWaveformSize, 3);
+    
+    // Indicates current mode
+    myMode = in.getByte();
+    
+    // Indicates if in the middle of a fast jump
+    myFastJumpActive = in.getByte();
   }
   catch(...)
   {

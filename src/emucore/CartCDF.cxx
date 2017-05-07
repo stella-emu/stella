@@ -32,7 +32,7 @@
 #define WAVEFORM      0x07F0
 #define DSRAM         0x0800
 
-#define WRITESTREAM   0x20
+#define COMMSTREAM    0x20
 #define JUMPSTREAM    0x21
 #define AMPLITUDE     0x22
 
@@ -228,11 +228,15 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     return peekvalue;
   }
 
-  // Check if we're in Fast Fetch mode and the prior byte was an A9 (LDA #value)
+  // Do a FAST FETCH LDA# if:
+  //  1) in Fast Fetch mode
+  //  2) peeking the operand of an LDA # instruction
+  //  3) peek value is 0-34
   if(FAST_FETCH_ON
      && myLDAimmediateOperandAddress == address
      && peekvalue <= AMPLITUDE)
   {
+    myLDAimmediateOperandAddress = 0;
     if (peekvalue == AMPLITUDE)
     {
       updateMusicModeDataFetchers();
@@ -318,22 +322,21 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 
   address &= 0x0FFF;
 
-  // Switch banks if necessary
   switch(address)
   {
     case 0xFF0:   // DSWRITE
-      pointer = getDatastreamPointer(WRITESTREAM);
+      pointer = getDatastreamPointer(COMMSTREAM);
       myDisplayImage[ pointer >> 20 ] = value;
       pointer += 0x100000;  // always increment by 1 when writing
-      setDatastreamPointer(WRITESTREAM, pointer);
+      setDatastreamPointer(COMMSTREAM, pointer);
       break;
 
     case 0xFF1:   // DSPTR
-      pointer = getDatastreamPointer(WRITESTREAM);
+      pointer = getDatastreamPointer(COMMSTREAM);
       pointer <<=8;
       pointer &= 0xf0000000;
       pointer |= (value << 20);
-      setDatastreamPointer(WRITESTREAM, pointer);
+      setDatastreamPointer(COMMSTREAM, pointer);
       break;
 
     case 0xFF2:   // SETMODE

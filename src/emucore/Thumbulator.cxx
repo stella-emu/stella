@@ -1076,29 +1076,28 @@ int Thumbulator::execute()
       switch(configuration)
       {
         case ConfigureFor::BUS:
-        case ConfigureFor::CDF:
-          // this subroutine interface is used in BUS and CDF drivers,
-          // and starts at address 0x000006e0 in both.
+          // this subroutine interface is used in the BUS driver,
+          // it starts at address 0x000006d8
           // _SetNote:
           //   ldr     r4, =NoteStore
-          //   bx      r4   // bx instruction at 0x000006e2
+          //   bx      r4   // bx instruction at 0x000006da
           // _ResetWave:
           //   ldr     r4, =ResetWaveStore
-          //   bx      r4   // bx instruction at 0x000006e6
+          //   bx      r4   // bx instruction at 0x000006de
           // _GetWavePtr:
           //   ldr     r4, =WavePtrFetch
-          //   bx      r4   // bx instruction at 0x000006ea
+          //   bx      r4   // bx instruction at 0x000006e2
           // _SetWaveSize:
           //   ldr     r4, =WaveSizeStore
-          //   bx      r4   // bx instruction at 0x000006ee
-
+          //   bx      r4   // bx instruction at 0x000006e6
+          
           // address to test for is + 4 due to pipelining
-
-        #define BUS_SetNote     (0x000006e2 + 4)
-        #define BUS_ResetWave   (0x000006e6 + 4)
-        #define BUS_GetWavePtr  (0x000006ea + 4)
-        #define BUS_SetWaveSize (0x000006ee + 4)
-
+          
+#define BUS_SetNote     (0x000006da + 4)
+#define BUS_ResetWave   (0x000006de + 4)
+#define BUS_GetWavePtr  (0x000006e2 + 4)
+#define BUS_SetWaveSize (0x000006e6 + 4)
+          
           if      (pc == BUS_SetNote)
           {
             myCartridge->thumbCallback(0, read_register(2), read_register(3));
@@ -1115,6 +1114,67 @@ int Thumbulator::execute()
             handled = true;
           }
           else if (pc == BUS_SetWaveSize)
+          {
+            myCartridge->thumbCallback(3, read_register(2), read_register(3));
+            handled = true;
+          }
+          else if (pc == 0x0000083a)
+          {
+            // exiting Custom ARM code, returning to BUS Driver control
+          }
+          else
+          {
+#if 0  // uncomment this for testing
+            uInt32 r0 = read_register(0);
+            uInt32 r1 = read_register(1);
+            uInt32 r2 = read_register(2);
+            uInt32 r3 = read_register(3);
+            uInt32 r4 = read_register(4);
+#endif
+            myCartridge->thumbCallback(255, 0, 0);
+          }
+          
+          break;
+          
+        case ConfigureFor::CDF:
+          // this subroutine interface is used in the CDF driver,
+          // it starts at address 0x000006e0
+          // _SetNote:
+          //   ldr     r4, =NoteStore
+          //   bx      r4   // bx instruction at 0x000006e2
+          // _ResetWave:
+          //   ldr     r4, =ResetWaveStore
+          //   bx      r4   // bx instruction at 0x000006e6
+          // _GetWavePtr:
+          //   ldr     r4, =WavePtrFetch
+          //   bx      r4   // bx instruction at 0x000006ea
+          // _SetWaveSize:
+          //   ldr     r4, =WaveSizeStore
+          //   bx      r4   // bx instruction at 0x000006ee
+
+          // address to test for is + 4 due to pipelining
+
+        #define CDF_SetNote     (0x000006e2 + 4)
+        #define CDF_ResetWave   (0x000006e6 + 4)
+        #define CDF_GetWavePtr  (0x000006ea + 4)
+        #define CDF_SetWaveSize (0x000006ee + 4)
+
+          if      (pc == CDF_SetNote)
+          {
+            myCartridge->thumbCallback(0, read_register(2), read_register(3));
+            handled = true;
+          }
+          else if (pc == CDF_ResetWave)
+          {
+            myCartridge->thumbCallback(1, read_register(2), 0);
+            handled = true;
+          }
+          else if (pc == CDF_GetWavePtr)
+          {
+            write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
+            handled = true;
+          }
+          else if (pc == CDF_SetWaveSize)
           {
             myCartridge->thumbCallback(3, read_register(2), read_register(3));
             handled = true;
