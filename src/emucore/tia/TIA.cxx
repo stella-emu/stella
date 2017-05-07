@@ -19,6 +19,7 @@
 #include "M6502.hxx"
 #include "Console.hxx"
 #include "Control.hxx"
+#include "Paddles.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -1326,8 +1327,6 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updatePaddle(uInt8 idx)
 {
-  static constexpr double MAX_RESISTANCE = 1400000;
-
   Int32 resistance;
   switch (idx) {
     case 0:
@@ -1351,7 +1350,7 @@ void TIA::updatePaddle(uInt8 idx)
   }
 
   myPaddleReaders[idx].update(
-    (resistance == Controller::maximumResistance ? -1 : double(resistance)) / MAX_RESISTANCE,
+    (resistance == Controller::maximumResistance ? -1 : double(resistance)) / Paddles::MAX_RESISTANCE,
     myTimestamp,
     myFrameManager.layout()
   );

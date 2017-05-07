@@ -25,10 +25,10 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller)
 {
   bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Keyboard):" : "Right (Keyboard):";
+  const string& label = leftport ? "Left (Keyboard)" : "Right (Keyboard)";
 
   const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Keyboard):");
+  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Keyboard)");
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,

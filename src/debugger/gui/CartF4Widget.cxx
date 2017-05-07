@@ -38,25 +38,25 @@ CartridgeF4Widget::CartridgeF4Widget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << Common::Base::HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
       ypos = addBaseInformation(size, "Atari", info.str(), 15) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FF4)");
-  VarList::push_back(items, "1 ($FF5)");
-  VarList::push_back(items, "2 ($FF6)");
-  VarList::push_back(items, "3 ($FF7)");
-  VarList::push_back(items, "4 ($FF8)");
-  VarList::push_back(items, "5 ($FF9)");
-  VarList::push_back(items, "6 ($FFA)");
-  VarList::push_back(items, "7 ($FFB)");
+  VarList::push_back(items, "0 ($FFF4)");
+  VarList::push_back(items, "1 ($FFF5)");
+  VarList::push_back(items, "2 ($FFF6)");
+  VarList::push_back(items, "3 ($FFF7)");
+  VarList::push_back(items, "4 ($FFF8)");
+  VarList::push_back(items, "5 ($FFF9)");
+  VarList::push_back(items, "6 ($FFFA)");
+  VarList::push_back(items, "7 ($FFFB)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -88,7 +88,7 @@ string CartridgeF4Widget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "$FF4", "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
+    "$FFF4", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];

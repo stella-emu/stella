@@ -103,7 +103,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   switch(page)
   {
     case 1:
-      title = "Common commands:";
+      title = "Common commands";
 #ifndef BSPF_MAC_OSX
       ADD_BIND("Ctrl Q",    "Quit emulation");
 #else
@@ -121,7 +121,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       break;
 
     case 2:
-      title = "Special commands:";
+      title = "Special commands";
       ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
       ADD_BIND("Ctrl f", "Switch between NTSC/PAL/SECAM");
       ADD_BIND("Ctrl s", "Save game properties");
@@ -132,7 +132,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       break;
 
     case 3:
-      title = "TV Filters:";
+      title = "TV Filters";
       ADD_BIND(ALT_" 1", "Disable filtering");
       ADD_BIND(ALT_" 2", "Enable 'Composite' mode");
       ADD_BIND(ALT_" 3", "Enable 'S-video' mode");
@@ -146,7 +146,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       break;
 
     case 4:
-      title = "Developer commands:";
+      title = "Developer commands";
       ADD_BIND("~",         "Enter/exit debugger");
       ADD_LINE();
       ADD_BIND(ALT_" PgUp", "Increase Display.YStart");
@@ -156,7 +156,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       break;
 
     case 5:
-      title = "All other commands:";
+      title = "All other commands";
       ADD_LINE();
       ADD_BIND("Remapped Events", "");
       ADD_TEXT("Most other commands can be");

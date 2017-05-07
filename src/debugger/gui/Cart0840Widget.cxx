@@ -50,8 +50,8 @@ Cartridge0840Widget::Cartridge0840Widget(
   VarList::push_back(items, "1 ($840)");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($800) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

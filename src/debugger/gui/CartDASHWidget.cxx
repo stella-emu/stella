@@ -99,7 +99,7 @@ CartridgeDASHWidget::CartridgeDASHWidget(
     int xoffset = xpos_s+t->getWidth() + 10;
     myBankState[2*i] = new EditTextWidget(boss, _font, xoffset, ypos_s,
               w - xoffset - 10, myLineHeight, "");
-    myBankState[2*i]->setEditable(false);
+    myBankState[2*i]->setEditable(false, true);
     ypos_s += myLineHeight + 4;
 
     label.str("");
@@ -109,7 +109,7 @@ CartridgeDASHWidget::CartridgeDASHWidget(
 
     myBankState[2*i+1] = new EditTextWidget(boss, _font, xoffset, ypos_s,
               w - xoffset - 10, myLineHeight, "");
-    myBankState[2*i+1]->setEditable(false);
+    myBankState[2*i+1]->setEditable(false, true);
 
     xpos = 10;
     ypos+= 2 * myLineHeight;

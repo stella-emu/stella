@@ -20,11 +20,11 @@
 #include "CartE7Widget.hxx"
 
 static const char* spot_lower[] = {
-  "0 - ROM ($FE0)", "1 - ROM ($FE1)", "2 - ROM ($FE2)", "3 - ROM ($FE3)",
-  "4 - ROM ($FE4)", "5 - ROM ($FE5)", "6 - ROM ($FE6)", "7 - RAM ($FE7)"
+  "0 - ROM ($FFE0)", "1 - ROM ($FFE1)", "2 - ROM ($FFE2)", "3 - ROM ($FFE3)",
+  "4 - ROM ($FFE4)", "5 - ROM ($FFE5)", "6 - ROM ($FFE6)", "7 - RAM ($FFE7)"
 };
 static const char* spot_upper[] = {
-  "0 - RAM ($FE8)", "1 - RAM ($FE9)", "2 - RAM ($FEA)", "3 - RAM ($FEB)"
+  "0 - RAM ($FFE8)", "1 - RAM ($FFE9)", "2 - RAM ($FFEA)", "3 - RAM ($FFEB)"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,18 +65,18 @@ CartridgeE7Widget::CartridgeE7Widget(
   for(int i = 0; i < 4; ++i)
     VarList::push_back(items1, spot_upper[i]);
 
-  const int lwidth = _font.getStringWidth("Set slice for upper 256B: "),
-            fwidth = _font.getStringWidth("3 - RAM ($FEB)");
+  const int lwidth = _font.getStringWidth("Set slice for upper 256B "),
+            fwidth = _font.getStringWidth("3 - RAM ($FFEB)");
   myLower2K =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight, items0,
-                    "Set slice for lower 2K: ", lwidth, kLowerChanged);
+                    "Set slice for lower 2K ", lwidth, kLowerChanged);
   myLower2K->setTarget(this);
   addFocusWidget(myLower2K);
   ypos += myLower2K->getHeight() + 4;
 
   myUpper256B =
     new PopUpWidget(boss, _font, xpos, ypos-2, fwidth, myLineHeight, items1,
-                    "Set slice for upper 256B: ", lwidth, kUpperChanged);
+                    "Set slice for upper 256B ", lwidth, kUpperChanged);
   myUpper256B->setTarget(this);
   addFocusWidget(myUpper256B);
 }

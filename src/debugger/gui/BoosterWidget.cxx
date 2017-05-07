@@ -25,10 +25,10 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller)
 {
   bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Booster):" : "Right (Booster):";
+  const string& label = leftport ? "Left (Booster)" : "Right (Booster)";
 
   const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Booster):");
+  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Booster)");
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,

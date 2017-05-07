@@ -104,6 +104,8 @@ class Paddles : public Controller
     */
     static void setPaddleRange(int range);
 
+    static constexpr double MAX_RESISTANCE = 1400000.0;
+
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()

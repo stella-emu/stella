@@ -38,19 +38,19 @@ CartridgeF8Widget::CartridgeF8Widget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << Common::Base::HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
       ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FF8)");
-  VarList::push_back(items, "1 ($FF9)");
+  VarList::push_back(items, "0 ($FFF8)");
+  VarList::push_back(items, "1 ($FFF9)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -81,7 +81,7 @@ string CartridgeF8Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* spot[] = { "$FF8", "$FF9" };
+  static const char* spot[] = { "$FFF8", "$FFF9" };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 

@@ -20,16 +20,16 @@
 #include "CartE0Widget.hxx"
 
 static const char* seg0[] = {
-  "0 ($FE0)", "1 ($FE1)", "2 ($FE2)", "3 ($FE3)",
-  "4 ($FE4)", "5 ($FE5)", "6 ($FE6)", "7 ($FE7)"
+  "0 ($FFE0)", "1 ($FFE1)", "2 ($FFE2)", "3 ($FFE3)",
+  "4 ($FFE4)", "5 ($FFE5)", "6 ($FFE6)", "7 ($FFE7)"
 };
 static const char* seg1[] = {
-  "0 ($FE8)", "1 ($FE9)", "2 ($FEA)", "3 ($FEB)",
-  "4 ($FEC)", "5 ($FED)", "6 ($FEE)", "7 ($FEF)"
+  "0 ($FFE8)", "1 ($FFE9)", "2 ($FFEA)", "3 ($FFEB)",
+  "4 ($FFEC)", "5 ($FFED)", "6 ($FFEE)", "7 ($FFEF)"
 };
 static const char* seg2[] = {
-  "0 ($FF0)", "1 ($FF1)", "2 ($FF2)", "3 ($FF3)",
-  "4 ($FF4)", "5 ($FF5)", "6 ($FF6)", "7 ($FF7)"
+  "0 ($FFF0)", "1 ($FFF1)", "2 ($FFF2)", "3 ($FFF3)",
+  "4 ($FFF4)", "5 ($FFF5)", "6 ($FFF6)", "7 ($FFF7)"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,26 +70,26 @@ CartridgeE0Widget::CartridgeE0Widget(
     VarList::push_back(items2, seg2[i]);
   }
 
-  const int lwidth = _font.getStringWidth("Set slice for segment X: ");
+  const int lwidth = _font.getStringWidth("Set slice for segment X ");
   mySlice0 =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FF7)"),
-                    myLineHeight, items0, "Set slice for segment 0: ",
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FFF7)"),
+                    myLineHeight, items0, "Set slice for segment 0 ",
                     lwidth, kSlice0Changed);
   mySlice0->setTarget(this);
   addFocusWidget(mySlice0);
   ypos += mySlice0->getHeight() + 4;
 
   mySlice1 =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FF7)"),
-                    myLineHeight, items1, "Set slice for segment 1: ",
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FFF7)"),
+                    myLineHeight, items1, "Set slice for segment 1 ",
                     lwidth, kSlice1Changed);
   mySlice1->setTarget(this);
   addFocusWidget(mySlice1);
   ypos += mySlice1->getHeight() + 4;
 
   mySlice2 =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FF7)"),
-                    myLineHeight, items2, "Set slice for segment 2: ",
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("7 ($FFF7)"),
+                    myLineHeight, items2, "Set slice for segment 2 ",
                     lwidth, kSlice2Changed);
   mySlice2->setTarget(this);
   addFocusWidget(mySlice2);

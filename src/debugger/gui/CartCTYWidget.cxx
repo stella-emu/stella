@@ -38,17 +38,17 @@ CartridgeCTYWidget::CartridgeCTYWidget(
       ypos = addBaseInformation(size, "Chris D. Walton", info) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "1 ($FF5)");
-  VarList::push_back(items, "2 ($FF6)");
-  VarList::push_back(items, "3 ($FF7)");
-  VarList::push_back(items, "4 ($FF8)");
-  VarList::push_back(items, "5 ($FF9)");
-  VarList::push_back(items, "6 ($FFA)");
-  VarList::push_back(items, "7 ($FFB)");
+  VarList::push_back(items, "1 ($FFF5)");
+  VarList::push_back(items, "2 ($FFF6)");
+  VarList::push_back(items, "3 ($FFF7)");
+  VarList::push_back(items, "4 ($FFF8)");
+  VarList::push_back(items, "5 ($FFF9)");
+  VarList::push_back(items, "6 ($FFFA)");
+  VarList::push_back(items, "7 ($FFFB)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -91,7 +91,7 @@ string CartridgeCTYWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "", "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
+    "", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   uInt16 bank = myCart.getBank();
   buf << "Bank = " << std::dec << bank << ", hotspot = " << spot[bank];

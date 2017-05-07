@@ -61,7 +61,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   VarList::push_back(items, "5 ($FFFA)");
   VarList::push_back(items, "6 ($FFFB)");
   myBank =
-  new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
+  new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
                   myLineHeight, items, "Set bank ",
                   _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
@@ -358,7 +358,7 @@ string CartridgeCDFWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
+    "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
   << ", hotspot = " << spot[myCart.myCurrentBank];

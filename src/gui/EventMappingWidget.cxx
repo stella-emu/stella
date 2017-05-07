@@ -106,13 +106,13 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   // Show message for currently selected event
   xpos = 10;  ypos = 5 + myActionsList->getHeight() + 5;
   StaticTextWidget* t;
-  t = new StaticTextWidget(boss, font, xpos, ypos, font.getStringWidth("Action:"),
-                           fontHeight, "Action:", kTextAlignLeft);
+  t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
+                           fontHeight, "Action", kTextAlignLeft);
   t->setFlags(WIDGET_CLEARBG);
 
-  myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 5, ypos,
+  myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,
                                     _w - xpos - t->getWidth() - 15, lineHeight, "");
-  myKeyMapping->setEditable(false);
+  myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(WIDGET_RETAIN_FOCUS);
 }
 

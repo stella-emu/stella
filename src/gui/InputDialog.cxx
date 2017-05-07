@@ -104,13 +104,13 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Stelladaptor mappings
   xpos = 5;  ypos = 5;
-  lwidth = font.getStringWidth("Use mouse as a controller: ");
+  lwidth = font.getStringWidth("Use mouse as a controller ");
   pwidth = font.getStringWidth("-UI, -Emulation");
 
   VarList::push_back(items, "Left / Right", "lr");
   VarList::push_back(items, "Right / Left", "rl");
   mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                             "Stelladaptor port order: ", lwidth);
+                             "Stelladaptor port order ", lwidth);
   wid.push_back(mySAPort);
 
   // Use mouse as controller
@@ -120,7 +120,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   VarList::push_back(items, "Analog devices", "analog");
   VarList::push_back(items, "Never", "never");
   myMouseControl = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                             "Use mouse as a controller: ", lwidth);
+                             "Use mouse as a controller ", lwidth);
   wid.push_back(myMouseControl);
 
   // Mouse cursor state
@@ -131,7 +131,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   VarList::push_back(items, "+UI, -Emulation", "2");
   VarList::push_back(items, "+UI, +Emulation", "3");
   myCursorState = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                             "Mouse cursor visibility: ", lwidth);
+                             "Mouse cursor visibility ", lwidth);
   wid.push_back(myCursorState);
 #ifndef WINDOWED_SUPPORT
   myCursorState->clearFlags(WIDGET_ENABLED);
@@ -139,21 +139,21 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add AtariVox serial port
   ypos += lineHeight + 5;
-  lwidth = font.getStringWidth("AVox serial port: ");
+  lwidth = font.getStringWidth("AVox serial port ");
   int fwidth = _w - xpos - lwidth - 20;
   new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
-                       "AVox serial port: ", kTextAlignLeft);
+                       "AVox serial port ", kTextAlignLeft);
   myAVoxPort = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                   fwidth, fontHeight, "");
   wid.push_back(myAVoxPort);
 
-  lwidth = font.getStringWidth("Digital paddle sensitivity: ");
+  lwidth = font.getStringWidth("Digital paddle sensitivity ");
   pwidth = font.getMaxCharWidth() * 8;
 
   // Add joystick deadzone setting
   ypos += lineHeight + 8;
   myDeadzone = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                "Joystick deadzone size: ", lwidth, kDeadzoneChanged);
+                                "Joystick deadzone size ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   xpos += myDeadzone->getWidth() + 5;
   myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
@@ -164,7 +164,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Add paddle speed (digital emulation)
   xpos = 5;  ypos += lineHeight + 4;
   myDPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   "Digital paddle sensitivity: ",
+                                   "Digital paddle sensitivity ",
                                    lwidth, kDPSpeedChanged);
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   xpos += myDPaddleSpeed->getWidth() + 5;
@@ -176,7 +176,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Add paddle speed (mouse emulation)
   xpos = 5;  ypos += lineHeight + 4;
   myMPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   "Mouse paddle sensitivity: ",
+                                   "Mouse paddle sensitivity ",
                                    lwidth, kMPSpeedChanged);
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   xpos += myMPaddleSpeed->getWidth() + 5;

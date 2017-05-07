@@ -32,7 +32,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
   info << "Modified FA RAM+, six or seven 4K banks\n"
        << "256 bytes RAM @ $F000 - $F1FF\n"
        << "  $F100 - $F1FF (R), $F000 - $F0FF (W)\n"
-       << "RAM can be loaded/saved to Harmony flash by accessing $FF4\n"
+       << "RAM can be loaded/saved to Harmony flash by accessing $FFF4\n"
        << "Startup bank = " << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
@@ -42,7 +42,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << Common::Base::HEX4 << (start + 0x200) << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
@@ -50,19 +50,19 @@ CartridgeFA2Widget::CartridgeFA2Widget(
                 info.str(), 15) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FF5)");
-  VarList::push_back(items, "1 ($FF6)");
-  VarList::push_back(items, "2 ($FF7)");
-  VarList::push_back(items, "3 ($FF8)");
-  VarList::push_back(items, "4 ($FF9)");
-  VarList::push_back(items, "5 ($FFA)");
+  VarList::push_back(items, "0 ($FFF5)");
+  VarList::push_back(items, "1 ($FFF6)");
+  VarList::push_back(items, "2 ($FFF7)");
+  VarList::push_back(items, "3 ($FFF8)");
+  VarList::push_back(items, "4 ($FFF9)");
+  VarList::push_back(items, "5 ($FFFA)");
   if(cart.bankCount() == 7)
-    VarList::push_back(items, "6 ($FFB)");
+    VarList::push_back(items, "6 ($FFFB)");
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   ypos += myLineHeight + 20;
@@ -70,8 +70,8 @@ CartridgeFA2Widget::CartridgeFA2Widget(
   const int bwidth = _font.getStringWidth("Erase") + 20;
 
   StaticTextWidget* t = new StaticTextWidget(boss, _font, xpos, ypos,
-      _font.getStringWidth("Harmony Flash: "),
-      myFontHeight, "Harmony Flash: ", kTextAlignLeft);
+      _font.getStringWidth("Harmony Flash "),
+      myFontHeight, "Harmony Flash ", kTextAlignLeft);
 
   xpos += t->getWidth() + 4;
   myFlashErase =
@@ -147,7 +147,7 @@ string CartridgeFA2Widget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "$FF5", "$FF6", "$FF7", "$FF8", "$FF9", "$FFA", "$FFB"
+    "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];

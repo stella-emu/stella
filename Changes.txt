@@ -46,6 +46,9 @@
       addresses; previously they only worked for write addresses
     - The previous trap'm' commands are now renamed 'trap', 'trapread'
       and 'trapwrite'
+    - The TIA tab now shows 'old' contents of player and ball registers
+    - Various UI items are crossed out when disabled, to more clearly
+      indicate their current state
     - Command completion now works with internal functions and pseudo-ops
       (basically, anything starting with the '_' character)
     - In general, input error checking is much more strictly enforced
@@ -70,6 +73,12 @@
   * Fixed crash with zipped ROMs that are less than 4K in size; so far
     this bug has only ever occurred in Windows XP, but it's been there
     since Stella 4.1.
+
+  * Fixed bug in 'Rom Audit' functionality; sometimes ROMs without a
+    valid properties entry were being renamed as "Untitled.bin".
+
+  * For the entire UI, removed colons and generally made the UI items
+    easier to read.
 
   * When in 'ROM launcher mode', Stella now uses slightly less CPU time.
 
@@ -112,8 +121,12 @@
     both libraries are now compiled into the app whenever one is selected.
     This fixes issues with a newer ZLIB not working with an older PNG, etc.
 
+  * Updated build scripts for Visual Studio 2017 (Windows) and MacOS
+    Sierra (latest version of Xcode).
+
   * Updated UNIX configure script to work with the clang 5+ and gcc 7+
-    compiler versions.
+    compiler versions, and fixed compile issues on AArch64 and ppc64le
+    architectures.
 
 -Have fun!
 

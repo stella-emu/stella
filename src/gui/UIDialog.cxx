@@ -64,11 +64,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   //////////////////////////////////////////////////////////
   // 1) Launcher options
   tabID = myTab->addTab(" Launcher ");
-  lwidth = font.getStringWidth("Exit to Launcher: ");
+  lwidth = font.getStringWidth("Exit to Launcher ");
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                           lineHeight, "Launcher Width: ",
+                                           lineHeight, "Launcher Width ",
                                            lwidth, kLWidthChanged);
   myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
   myLauncherWidthSlider->setMaxValue(ds.w);
@@ -82,7 +82,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                            lineHeight, "Launcher Height: ",
+                                            lineHeight, "Launcher Height ",
                                             lwidth, kLHeightChanged);
   myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
   myLauncherHeightSlider->setMaxValue(ds.h);
@@ -103,7 +103,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large",  "large");
   myLauncherFontPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
-                    "Launcher Font: ", lwidth);
+                    "Launcher Font ", lwidth);
   wid.push_back(myLauncherFontPopup);
   ypos += lineHeight + 4;
 
@@ -114,7 +114,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "2x (1000x760)", "2");
   myRomViewerPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
-                    "ROM Info viewer: ", lwidth);
+                    "ROM Info viewer ", lwidth);
   wid.push_back(myRomViewerPopup);
   ypos += lineHeight + 4;
 
@@ -125,7 +125,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Always", "1");
   myLauncherExitPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
-                    "Exit to Launcher: ", lwidth);
+                    "Exit to Launcher ", lwidth);
   wid.push_back(myLauncherExitPopup);
   ypos += lineHeight + 4;
 
@@ -144,12 +144,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.clear();
   tabID = myTab->addTab(" Debugger ");
 #ifdef DEBUGGER_SUPPORT
-  lwidth = font.getStringWidth("Debugger Height: ");
+  lwidth = font.getStringWidth("Debugger Height ");
   xpos = ypos = vBorder;
 
   // Debugger width and height
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                           lineHeight, "Debugger Width: ",
+                                           lineHeight, "Debugger Width ",
                                            lwidth, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
@@ -163,7 +163,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                            lineHeight, "Debugger Height: ",
+                                            lineHeight, "Debugger Height ",
                                             lwidth, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
@@ -192,7 +192,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += b->getHeight() + 12;
 
   // Font style (bold label vs. text, etc)
-  lwidth = font.getStringWidth("Font Style: ");
+  lwidth = font.getStringWidth("Font Style ");
   pwidth = font.getStringWidth("Bold non-labels only");
   xpos = vBorder;
   items.clear();
@@ -202,7 +202,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "All Bold font", "3");
   myDebuggerFontStyle =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
-                    "Font Style: ", lwidth);
+                    "Font Style ", lwidth);
   wid.push_back(myDebuggerFontStyle);
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
@@ -232,7 +232,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // 3) Misc. options
   wid.clear();
   tabID = myTab->addTab(" Misc. ");
-  lwidth = font.getStringWidth("Interface Palette (*): ");
+  lwidth = font.getStringWidth("Interface Palette (*) ");
   pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
 
@@ -242,7 +242,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   items, "Interface Palette (*): ", lwidth);
+                                   items, "Interface Palette (*) ", lwidth);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
@@ -258,7 +258,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "900 ms", "900");
   VarList::push_back(items, "1 second", "1000");
   myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "List quick delay (*): ", lwidth);
+                                     items, "List quick delay (*) ", lwidth);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 
@@ -275,7 +275,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "9 lines", "9");
   VarList::push_back(items, "10 lines", "10");
   myWheelLinesPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      items, "Mouse wheel scroll: ", lwidth);
+                                      items, "Mouse wheel scroll ", lwidth);
   wid.push_back(myWheelLinesPopup);
   ypos += lineHeight + 4;
 

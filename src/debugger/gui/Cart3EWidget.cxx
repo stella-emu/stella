@@ -71,16 +71,16 @@ Cartridge3EWidget::Cartridge3EWidget(
   xpos += 40;
   myROMBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($3E) "),
-                    myLineHeight, romitems, "ROM ($3F): ",
-                    _font.getStringWidth("ROM ($3F): "), kROMBankChanged);
+                    myLineHeight, romitems, "ROM ($3F) ",
+                    _font.getStringWidth("ROM ($3F) "), kROMBankChanged);
   myROMBank->setTarget(this);
   addFocusWidget(myROMBank);
 
   xpos += myROMBank->getWidth() + 20;
   myRAMBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($3E) "),
-                    myLineHeight, ramitems, "RAM ($3E): ",
-                    _font.getStringWidth("RAM ($3E): "), kRAMBankChanged);
+                    myLineHeight, ramitems, "RAM ($3E) ",
+                    _font.getStringWidth("RAM ($3E) "), kRAMBankChanged);
   myRAMBank->setTarget(this);
   addFocusWidget(myRAMBank);
 }

@@ -52,7 +52,6 @@
 class TIA : public Device
 {
   public:
-
     enum DummyRegisters: uInt8 {
       shuffleP0 = 0xF0,
       shuffleP1 = 0xF1,

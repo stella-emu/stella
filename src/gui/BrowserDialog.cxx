@@ -74,9 +74,9 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   // Add currently selected item
   ypos += _fileList->getHeight() + 4;
 
-  _type = new StaticTextWidget(this, font, xpos, ypos,
-                               font.getStringWidth("Name: "), lineHeight,
-                               "Name:", kTextAlignCenter);
+  _type = new StaticTextWidget(this, font, xpos, ypos+2,
+                               font.getStringWidth("Name "), lineHeight,
+                               "Name", kTextAlignCenter);
   _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos,
                                  _w - _type->getWidth() - 2 * xpos, lineHeight, "");
   _selected->setEditable(false);

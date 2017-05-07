@@ -58,8 +58,8 @@ class RomAuditDialog : public Dialog
     EditTextWidget* myRomPath;
 
     // Show the results of the ROM audit
-    StaticTextWidget* myResults1;
-    StaticTextWidget* myResults2;
+    EditTextWidget* myResults1;
+    EditTextWidget* myResults2;
 
     // Show a message about the dangers of using this function
     unique_ptr<GUI::MessageBox> myConfirmMsg;

@@ -40,82 +40,82 @@ CartridgeBFSCWidget::CartridgeBFSCWidget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << (start + 0x100)
-         << " - " << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << " - " << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
       ypos = addBaseInformation(size, "CPUWIZ", info.str()) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, " 0 ($F80)");
-  VarList::push_back(items, " 1 ($F81)");
-  VarList::push_back(items, " 2 ($F82)");
-  VarList::push_back(items, " 3 ($F83)");
-  VarList::push_back(items, " 4 ($F84)");
-  VarList::push_back(items, " 5 ($F85)");
-  VarList::push_back(items, " 6 ($F86)");
-  VarList::push_back(items, " 7 ($F87)");
-  VarList::push_back(items, " 8 ($F88)");
-  VarList::push_back(items, " 9 ($F89)");
-  VarList::push_back(items, "10 ($F8A)");
-  VarList::push_back(items, "11 ($F8B)");
-  VarList::push_back(items, "12 ($F8C)");
-  VarList::push_back(items, "13 ($F8D)");
-  VarList::push_back(items, "14 ($F8E)");
-  VarList::push_back(items, "15 ($F8F)");
-  VarList::push_back(items, "16 ($F90)");
-  VarList::push_back(items, "17 ($F91)");
-  VarList::push_back(items, "18 ($F92)");
-  VarList::push_back(items, "19 ($F93)");
-  VarList::push_back(items, "20 ($F94)");
-  VarList::push_back(items, "21 ($F95)");
-  VarList::push_back(items, "22 ($F96)");
-  VarList::push_back(items, "23 ($F97)");
-  VarList::push_back(items, "24 ($F98)");
-  VarList::push_back(items, "25 ($F99)");
-  VarList::push_back(items, "26 ($F9A)");
-  VarList::push_back(items, "27 ($F9B)");
-  VarList::push_back(items, "28 ($F9C)");
-  VarList::push_back(items, "29 ($F9D)");
-  VarList::push_back(items, "30 ($F9E)");
-  VarList::push_back(items, "31 ($F9F)");
-  VarList::push_back(items, "32 ($FA0)");
-  VarList::push_back(items, "33 ($FA1)");
-  VarList::push_back(items, "34 ($FA2)");
-  VarList::push_back(items, "35 ($FA3)");
-  VarList::push_back(items, "36 ($FA4)");
-  VarList::push_back(items, "37 ($FA5)");
-  VarList::push_back(items, "38 ($FA6)");
-  VarList::push_back(items, "39 ($FA7)");
-  VarList::push_back(items, "40 ($FA8)");
-  VarList::push_back(items, "41 ($FA9)");
-  VarList::push_back(items, "42 ($FAA)");
-  VarList::push_back(items, "43 ($FAB)");
-  VarList::push_back(items, "44 ($FAC)");
-  VarList::push_back(items, "45 ($FAD)");
-  VarList::push_back(items, "46 ($FAE)");
-  VarList::push_back(items, "47 ($FAF)");
-  VarList::push_back(items, "48 ($FB0)");
-  VarList::push_back(items, "49 ($FB1)");
-  VarList::push_back(items, "50 ($FB2)");
-  VarList::push_back(items, "51 ($FB3)");
-  VarList::push_back(items, "52 ($FB4)");
-  VarList::push_back(items, "53 ($FB5)");
-  VarList::push_back(items, "54 ($FB6)");
-  VarList::push_back(items, "55 ($FB7)");
-  VarList::push_back(items, "56 ($FB8)");
-  VarList::push_back(items, "57 ($FB9)");
-  VarList::push_back(items, "58 ($FBA)");
-  VarList::push_back(items, "59 ($FBB)");
-  VarList::push_back(items, "60 ($FBC)");
-  VarList::push_back(items, "61 ($FBD)");
-  VarList::push_back(items, "62 ($FBE)");
-  VarList::push_back(items, "63 ($FBF)");
+  VarList::push_back(items, " 0 ($FF80)");
+  VarList::push_back(items, " 1 ($FF81)");
+  VarList::push_back(items, " 2 ($FF82)");
+  VarList::push_back(items, " 3 ($FF83)");
+  VarList::push_back(items, " 4 ($FF84)");
+  VarList::push_back(items, " 5 ($FF85)");
+  VarList::push_back(items, " 6 ($FF86)");
+  VarList::push_back(items, " 7 ($FF87)");
+  VarList::push_back(items, " 8 ($FF88)");
+  VarList::push_back(items, " 9 ($FF89)");
+  VarList::push_back(items, "10 ($FF8A)");
+  VarList::push_back(items, "11 ($FF8B)");
+  VarList::push_back(items, "12 ($FF8C)");
+  VarList::push_back(items, "13 ($FF8D)");
+  VarList::push_back(items, "14 ($FF8E)");
+  VarList::push_back(items, "15 ($FF8F)");
+  VarList::push_back(items, "16 ($FF90)");
+  VarList::push_back(items, "17 ($FF91)");
+  VarList::push_back(items, "18 ($FF92)");
+  VarList::push_back(items, "19 ($FF93)");
+  VarList::push_back(items, "20 ($FF94)");
+  VarList::push_back(items, "21 ($FF95)");
+  VarList::push_back(items, "22 ($FF96)");
+  VarList::push_back(items, "23 ($FF97)");
+  VarList::push_back(items, "24 ($FF98)");
+  VarList::push_back(items, "25 ($FF99)");
+  VarList::push_back(items, "26 ($FF9A)");
+  VarList::push_back(items, "27 ($FF9B)");
+  VarList::push_back(items, "28 ($FF9C)");
+  VarList::push_back(items, "29 ($FF9D)");
+  VarList::push_back(items, "30 ($FF9E)");
+  VarList::push_back(items, "31 ($FF9F)");
+  VarList::push_back(items, "32 ($FFA0)");
+  VarList::push_back(items, "33 ($FFA1)");
+  VarList::push_back(items, "34 ($FFA2)");
+  VarList::push_back(items, "35 ($FFA3)");
+  VarList::push_back(items, "36 ($FFA4)");
+  VarList::push_back(items, "37 ($FFA5)");
+  VarList::push_back(items, "38 ($FFA6)");
+  VarList::push_back(items, "39 ($FFA7)");
+  VarList::push_back(items, "40 ($FFA8)");
+  VarList::push_back(items, "41 ($FFA9)");
+  VarList::push_back(items, "42 ($FFAA)");
+  VarList::push_back(items, "43 ($FFAB)");
+  VarList::push_back(items, "44 ($FFAC)");
+  VarList::push_back(items, "45 ($FFAD)");
+  VarList::push_back(items, "46 ($FFAE)");
+  VarList::push_back(items, "47 ($FFAF)");
+  VarList::push_back(items, "48 ($FFB0)");
+  VarList::push_back(items, "49 ($FFB1)");
+  VarList::push_back(items, "50 ($FFB2)");
+  VarList::push_back(items, "51 ($FFB3)");
+  VarList::push_back(items, "52 ($FFB4)");
+  VarList::push_back(items, "53 ($FFB5)");
+  VarList::push_back(items, "54 ($FFB6)");
+  VarList::push_back(items, "55 ($FFB7)");
+  VarList::push_back(items, "56 ($FFB8)");
+  VarList::push_back(items, "57 ($FFB9)");
+  VarList::push_back(items, "58 ($FFBA)");
+  VarList::push_back(items, "59 ($FFBB)");
+  VarList::push_back(items, "60 ($FFBC)");
+  VarList::push_back(items, "61 ($FFBD)");
+  VarList::push_back(items, "62 ($FFBE)");
+  VarList::push_back(items, "63 ($FFBF)");
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("63 ($FBF) "),
-                    myLineHeight, items, "Set bank: ",
-                    _font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("63 ($FFBF) "),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -158,14 +158,14 @@ string CartridgeBFSCWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* spot[] = {
-    "$F80", "$F81", "$F82", "$F83", "$F84", "$F85", "$F86", "$F87",
-    "$F88", "$F89", "$F8A", "$F8B", "$F8C", "$F8D", "$F8E", "$F8F",
-    "$F90", "$F91", "$F92", "$F93", "$F94", "$F95", "$F96", "$F97",
-    "$F98", "$F99", "$F9A", "$F9B", "$F9C", "$F9D", "$F9E", "$F9F",
-    "$FA0", "$FA1", "$FA2", "$FA3", "$FA4", "$FA5", "$FA6", "$FA7",
-    "$FA8", "$FA9", "$FAA", "$FAB", "$FAC", "$FAD", "$FAE", "$FAF",
-    "$FB0", "$FB1", "$FB2", "$FB3", "$FB4", "$FB5", "$FB6", "$FB7",
-    "$FB8", "$FB9", "$FBA", "$FBB", "$FBC", "$FBD", "$FBE", "$FBF"
+    "$FF80", "$FF81", "$FF82", "$FF83", "$FF84", "$FF85", "$FF86", "$FF87",
+    "$FF88", "$FF89", "$FF8A", "$FF8B", "$FF8C", "$FF8D", "$FF8E", "$FF8F",
+    "$FF90", "$FF91", "$FF92", "$FF93", "$FF94", "$FF95", "$FF96", "$FF97",
+    "$FF98", "$FF99", "$FF9A", "$FF9B", "$FF9C", "$FF9D", "$FF9E", "$FF9F",
+    "$FFA0", "$FFA1", "$FFA2", "$FFA3", "$FFA4", "$FFA5", "$FFA6", "$FFA7",
+    "$FFA8", "$FFA9", "$FFAA", "$FFAB", "$FFAC", "$FFAD", "$FFAE", "$FFAF",
+    "$FFB0", "$FFB1", "$FFB2", "$FFB3", "$FFB4", "$FFB5", "$FFB6", "$FFB7",
+    "$FFB8", "$FFB9", "$FFBA", "$FFBB", "$FFBC", "$FFBD", "$FFBE", "$FFBF"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];

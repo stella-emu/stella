@@ -35,7 +35,7 @@ SnapshotDialog::SnapshotDialog(
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Save path:") + 20,
+            buttonWidth  = font.getStringWidth("Save path") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 10;
   int xpos, ypos, lwidth, fwidth;
@@ -50,7 +50,7 @@ SnapshotDialog::SnapshotDialog(
 
   // Snapshot path (save files)
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Save path:", kChooseSnapSaveDirCmd);
+                       "Save path", kChooseSnapSaveDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -60,7 +60,7 @@ SnapshotDialog::SnapshotDialog(
   // Snapshot path (load files)
   xpos = vBorder;  ypos += buttonHeight + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Load path:", kChooseSnapLoadDirCmd);
+                       "Load path", kChooseSnapLoadDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   mySnapLoadPath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -68,7 +68,7 @@ SnapshotDialog::SnapshotDialog(
   wid.push_back(mySnapLoadPath);
 
   // Snapshot naming
-  lwidth = font.getStringWidth("Continuous snapshot interval: ");
+  lwidth = font.getStringWidth("Continuous snapshot interval ");
   fwidth = font.getStringWidth("internal database");
   VariantList items;
   VarList::push_back(items, "actual ROM name", "rom");
@@ -76,7 +76,7 @@ SnapshotDialog::SnapshotDialog(
   xpos = vBorder+10;  ypos += buttonHeight + 8;
   mySnapName =
     new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
-                    "Save snapshots according to: ", lwidth);
+                    "Save snapshots according to ", lwidth);
   wid.push_back(mySnapName);
 
   // Snapshot interval (continuous mode)
@@ -94,7 +94,7 @@ SnapshotDialog::SnapshotDialog(
   ypos += buttonHeight;
   mySnapInterval =
     new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
-                    "Continuous snapshot interval: ", lwidth);
+                    "Continuous snapshot interval ", lwidth);
   wid.push_back(mySnapInterval);
 
   // Booleans for saving snapshots
@@ -184,7 +184,7 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select snapshot save directory:", mySnapSavePath->getText(),
+      myBrowser->show("Select snapshot save directory", mySnapSavePath->getText(),
                       BrowserDialog::Directories, kSnapSaveDirChosenCmd);
       break;
 
@@ -192,7 +192,7 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       createBrowser();
-      myBrowser->show("Select snapshot load directory:", mySnapLoadPath->getText(),
+      myBrowser->show("Select snapshot load directory", mySnapLoadPath->getText(),
                       BrowserDialog::Directories, kSnapLoadDirChosenCmd);
       break;
 

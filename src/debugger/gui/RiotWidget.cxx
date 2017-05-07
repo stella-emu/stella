@@ -48,7 +48,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = 9 * fontWidth, col = 0;
+  int xpos = 10, ypos = 25, lwidth = 8 * fontWidth, col = 0;
   StaticTextWidget* t;
   VariantList items;
 
@@ -73,50 +73,50 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   bits->setList(off, on);
 
   // SWCHA bits in 'poke' mode
-  CREATE_IO_REGS("SWCHA(W):", mySWCHAWriteBits, kSWCHABitsID, true);
+  CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true);
   col = xpos + 20;  // remember this for adding widgets to the second column
 
   // SWACNT bits
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWACNT:", mySWACNTBits, kSWACNTBitsID, true);
+  CREATE_IO_REGS("SWACNT", mySWACNTBits, kSWACNTBitsID, true);
 
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHA(R):", mySWCHAReadBits, 0, false);
+  CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, 0, false);
 
   // SWCHB bits in 'poke' mode
   xpos = 10;  ypos += 2 * lineHeight;
-  CREATE_IO_REGS("SWCHB(W):", mySWCHBWriteBits, kSWCHBBitsID, true);
+  CREATE_IO_REGS("SWCHB(W)", mySWCHBWriteBits, kSWCHBBitsID, true);
 
   // SWBCNT bits
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWBCNT:", mySWBCNTBits, kSWBCNTBitsID, true);
+  CREATE_IO_REGS("SWBCNT", mySWBCNTBits, kSWBCNTBitsID, true);
 
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHB(R):", mySWCHBReadBits, 0, false);
+  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, 0, false);
 
   // Timer registers (R/W)
-  const char* writeNames[] = { "TIM1T:", "TIM8T:", "TIM64T:", "T1024T:" };
+  const char* writeNames[] = { "TIM1T", "TIM8T", "TIM64T", "T1024T" };
   xpos = 10;  ypos += 2*lineHeight;
   for(int row = 0; row < 4; ++row)
   {
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                             9*fontWidth, fontHeight, writeNames[row], kTextAlignLeft);
+                             lwidth, fontHeight, writeNames[row], kTextAlignLeft);
   }
-  xpos += 9*fontWidth + 5;
+  xpos += t->getWidth() + 5;
   myTimWrite = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::F_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
 
   // Timer registers (RO)
-  const char* readNames[] = { "INTIM:", "TIMINT:", "Total Clks:", "INTIM Clks:" };
+  const char* readNames[] = { "INTIM", "TIMINT", "Total Clks", "INTIM Clks" };
   xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight;
   for(int row = 0; row < 4; ++row)
   {
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                             11*fontWidth, fontHeight, readNames[row], kTextAlignLeft);
+                             10*fontWidth, fontHeight, readNames[row], kTextAlignLeft);
   }
   xpos += t->getWidth() + 5;
   myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::F_16);
@@ -133,27 +133,27 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
       riot.controller(Controller::Right));
 
   // TIA INPTx registers (R), left port
-  const char* contLeftReadNames[] = { "INPT0:", "INPT1:", "INPT4:" };
+  const char* contLeftReadNames[] = { "INPT0", "INPT1", "INPT4" };
   xpos = col;  ypos += myLeftControl->getHeight() + 2 * lineHeight;
   for(int row = 0; row < 3; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         6*fontWidth, fontHeight, contLeftReadNames[row], kTextAlignLeft);
+                         5*fontWidth, fontHeight, contLeftReadNames[row], kTextAlignLeft);
   }
-  xpos += 6*fontWidth + 5;
+  xpos += 5*fontWidth + 5;
   myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
   myLeftINPT->setTarget(this);
   myLeftINPT->setEditable(false);
 
   // TIA INPTx registers (R), right port
-  const char* contRightReadNames[] = { "INPT2:", "INPT3:", "INPT5:" };
+  const char* contRightReadNames[] = { "INPT2", "INPT3", "INPT5" };
   xpos = col + myLeftControl->getWidth() + 15;
   for(int row = 0; row < 3; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         6*fontWidth, fontHeight, contRightReadNames[row], kTextAlignLeft);
+                         5*fontWidth, fontHeight, contRightReadNames[row], kTextAlignLeft);
   }
-  xpos += 6*fontWidth + 5;
+  xpos += 5*fontWidth + 5;
   myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
   myRightINPT->setTarget(this);
   myRightINPT->setEditable(false);
@@ -170,19 +170,19 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // PO & P1 difficulty switches
   int pwidth = lfont.getStringWidth("B/easy");
-  lwidth = lfont.getStringWidth("P0 Diff: ");
+  lwidth = lfont.getStringWidth("P0 Diff ");
   xpos = col;  ypos += 2 * lineHeight;
   int col2_ypos = ypos;
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
   myP0Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
-                             "P0 Diff: ", lwidth, kP0DiffChanged);
+                             "P0 Diff ", lwidth, kP0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
   ypos += myP0Diff->getHeight() + 5;
   myP1Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
-                             "P1 Diff: ", lwidth, kP1DiffChanged);
+                             "P1 Diff ", lwidth, kP1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
 
@@ -192,7 +192,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   VarList::push_back(items, "B&W", "bw");
   VarList::push_back(items, "Color", "color");
   myTVType = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
-                             "TV Type: ", lwidth, kTVTypeChanged);
+                             "TV Type ", lwidth, kTVTypeChanged);
   myTVType->setTarget(this);
   addFocusWidget(myTVType);
 
@@ -436,24 +436,36 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 {
   switch(controller.type())
   {
-    case Controller::Joystick:
-      return new JoystickWidget(boss, font, x, y, controller);
-    case Controller::Paddles:
-      return new PaddleWidget(boss, font, x, y, controller);
+    case Controller::AmigaMouse:  // TODO - implement this
+      return new NullControlWidget(boss, font, x, y, controller);
+    case Controller::AtariMouse:  // TODO - implement this
+      return new NullControlWidget(boss, font, x, y, controller);
+    case Controller::AtariVox:
+      return new AtariVoxWidget(boss, font, x, y, controller);
     case Controller::BoosterGrip:
       return new BoosterWidget(boss, font, x, y, controller);
+    case Controller::CompuMate:   // TODO - implement this
+      return new NullControlWidget(boss, font, x, y, controller);
     case Controller::Driving:
       return new DrivingWidget(boss, font, x, y, controller);
     case Controller::Genesis:
       return new GenesisWidget(boss, font, x, y, controller);
+    case Controller::Joystick:
+      return new JoystickWidget(boss, font, x, y, controller);
     case Controller::Keyboard:
       return new KeyboardWidget(boss, font, x, y, controller);
-    case Controller::AtariVox:
-      return new AtariVoxWidget(boss, font, x, y, controller);
+    case Controller::KidVid:      // TODO - implement this
+      return new NullControlWidget(boss, font, x, y, controller);
+    case Controller::MindLink:    // TODO - implement this
+      return new NullControlWidget(boss, font, x, y, controller);
+    case Controller::Paddles:
+      return new PaddleWidget(boss, font, x, y, controller);
     case Controller::SaveKey:
       return new SaveKeyWidget(boss, font, x, y, controller);
-    default:
+    case Controller::TrakBall:    // TODO - implement this
       return new NullControlWidget(boss, font, x, y, controller);
+    default:
+      return nullptr;  // make compiler happy
   }
 }
 
