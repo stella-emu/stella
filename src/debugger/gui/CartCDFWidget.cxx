@@ -96,16 +96,14 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
   }
   lwidth = _font.getStringWidth("Write Data (stream 20)");
-  myDatastreamLabels[row] =
+  myDatastreamLabels[8] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                        ypos+myLineHeight-2 + 8*myLineHeight + 2,
                        lwidth, myFontHeight, "Write Data (stream 20)", kTextAlignLeft);
-//  myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
-  myDatastreamLabels[row] =
+  myDatastreamLabels[9] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                        ypos+myLineHeight-2 + 9*myLineHeight + 2,
                        lwidth, myFontHeight, "Jump Data (stream 21)", kTextAlignLeft);
-//  myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
 
   // Datastream Increments
   xpos = DS_X + myDatastreamPointers->getWidth() + 20;

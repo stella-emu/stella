@@ -65,7 +65,6 @@ class CartridgeCDFWidget : public CartDebugWidget
     DataGridWidget* mySamplePointer;
     StaticTextWidget* myDatastreamLabels[10];
 
-    // done differently than in DPC+, need to rethink debugger support
     CheckboxWidget* myFastFetch;
     CheckboxWidget* myDigitalSample;
     CartState myOldState;
