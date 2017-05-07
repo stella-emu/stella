@@ -44,8 +44,8 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
     new SliderWidget(boss, font, xpos, ypos, 10*fontWidth, lineHeight,
                      p0string, lwidth, kP0Changed);
   myP0Resistance->setMinValue(0);
-  myP0Resistance->setMaxValue(Paddles::MAX_RESISTANCE);
-  myP0Resistance->setStepValue(Paddles::MAX_RESISTANCE/100);
+  myP0Resistance->setMaxValue(uInt32(Paddles::MAX_RESISTANCE));
+  myP0Resistance->setStepValue(uInt32(Paddles::MAX_RESISTANCE/100));
   myP0Resistance->setTarget(this);
 
   xpos += 20;  ypos += myP0Resistance->getHeight() + 4;
@@ -58,8 +58,8 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
     new SliderWidget(boss, font, xpos, ypos, 10*fontWidth, lineHeight,
                      p1string, lwidth, kP1Changed);
   myP1Resistance->setMinValue(0);
-  myP1Resistance->setMaxValue(Paddles::MAX_RESISTANCE);
-  myP1Resistance->setStepValue(Paddles::MAX_RESISTANCE/100);
+  myP1Resistance->setMaxValue(uInt32(Paddles::MAX_RESISTANCE));
+  myP1Resistance->setStepValue(uInt32(Paddles::MAX_RESISTANCE/100));
   myP1Resistance->setTarget(this);
 
   xpos += 20;  ypos += myP1Resistance->getHeight() + 4;
@@ -71,10 +71,10 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleWidget::loadConfig()
 {
-  myP0Resistance->setValue(Paddles::MAX_RESISTANCE -
-      Int32(myController.read(Controller::Nine)));
-  myP1Resistance->setValue(Paddles::MAX_RESISTANCE -
-      Int32(myController.read(Controller::Five)));
+  myP0Resistance->setValue(Int32(Paddles::MAX_RESISTANCE -
+      myController.read(Controller::Nine)));
+  myP1Resistance->setValue(Int32(Paddles::MAX_RESISTANCE -
+      myController.read(Controller::Five)));
   myP0Fire->setState(!myController.read(Controller::Four));
   myP1Fire->setState(!myController.read(Controller::Three));
 }
@@ -87,11 +87,11 @@ void PaddleWidget::handleCommand(
   {
     case kP0Changed:
       myController.set(Controller::Nine,
-                       Paddles::MAX_RESISTANCE - myP0Resistance->getValue());
+                       Int32(Paddles::MAX_RESISTANCE - myP0Resistance->getValue()));
       break;
     case kP1Changed:
       myController.set(Controller::Five,
-                       Paddles::MAX_RESISTANCE - myP1Resistance->getValue());
+                       Int32(Paddles::MAX_RESISTANCE - myP1Resistance->getValue()));
       break;
     case kP0Fire:
       myController.set(Controller::Four, !myP0Fire->getState());

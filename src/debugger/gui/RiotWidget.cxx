@@ -464,6 +464,8 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new SaveKeyWidget(boss, font, x, y, controller);
     case Controller::TrakBall:    // TODO - implement this
       return new NullControlWidget(boss, font, x, y, controller);
+    default:
+      return nullptr;  // make compiler happy
   }
 }
 
