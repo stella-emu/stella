@@ -125,7 +125,8 @@
     Sierra (latest version of Xcode).
 
   * Updated UNIX configure script to work with the clang 5+ and gcc 7+
-    compiler versions, and fixed compile issues on aarch64 architectures.
+    compiler versions, and fixed compile issues on AArch64 and ppc64le
+    architectures.
 
 -Have fun!
 
