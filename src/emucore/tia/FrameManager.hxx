@@ -89,6 +89,10 @@ class FrameManager : public Serializable
     bool load(Serializer& in) override;
     string name() const override { return "TIA_FrameManager"; }
 
+    void setJitterFactor(uInt8 factor) { myVblankManager.setJitterFactor(factor); }
+    bool jitterEnabled() const { return myJitterEnabled; }
+    void enableJitter(bool enabled);
+
   public:
     static constexpr uInt32 frameBufferHeight = 320;
     static constexpr uInt32 minYStart = 1, maxYStart = 64;
@@ -122,6 +126,8 @@ class FrameManager : public Serializable
 
     void nextLineInVsync();
 
+    void handleJitter(Int32 scanlineDifference);
+
   private:
 
     callback myOnFrameStart;
@@ -152,6 +158,8 @@ class FrameManager : public Serializable
     uInt32 myFrameLines;
     uInt32 myHeight;
     uInt32 myFixedHeight;
+
+    bool myJitterEnabled;
 
   private:
     FrameManager(const FrameManager&) = delete;

@@ -17,20 +17,25 @@
 
 // #define TIA_VBLANK_MANAGER_DEBUG_LOG
 
+#include <algorithm>
+
 #include "VblankManager.hxx"
 
 enum Metrics: uInt32 {
   maxUnderscan          = 10,
   maxVblankViolations   = 2,
   minStableVblankFrames = 1,
-  framesUntilFinal = 30
+  framesUntilFinal = 30,
+  maxJitter = 50
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VblankManager::VblankManager()
   : myVblankLines(0),
     myYstart(0),
-    myMode(VblankMode::floating)
+    myMode(VblankMode::floating),
+    myJitter(0),
+    myJitterFactor(2)
 {
   reset();
 }
@@ -45,8 +50,22 @@ void VblankManager::reset()
   myVblankViolated = false;
   myLastVblankLines = 0;
   myIsRunning = false;
+  myJitter = 0;
 
   if (myMode != VblankMode::fixed) setVblankMode(VblankMode::floating);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VblankManager::setJitter(Int32 jitter) {
+  jitter = std::min<Int32>(jitter, Metrics::maxJitter);
+
+  if (myMode == VblankMode::final) jitter = std::max<Int32>(jitter, -myLastVblankLines);
+  if (myMode == VblankMode::fixed) jitter = std::max<Int32>(jitter, -myYstart);
+
+  if (jitter > 0) jitter += myJitterFactor;
+  if (jitter < 0) jitter -= myJitterFactor;
+
+  if (abs(jitter) > abs(myJitter)) myJitter = jitter;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,6 +77,9 @@ void VblankManager::start()
 
   if (myMode == VblankMode::locked && ++myFramesInLockedMode > Metrics::framesUntilFinal)
     setVblankMode(VblankMode::final);
+
+  if (myJitter > 0) myJitter = std::max(myJitter - myJitterFactor, 0);
+  if (myJitter < 0) myJitter = std::min(myJitter + myJitterFactor, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,11 +178,13 @@ bool VblankManager::shouldTransition(bool isGarbageFrame)
       break;
 
     case VblankMode::fixed:
-      transition = myCurrentLine >= myYstart;
+      transition = (Int32)myCurrentLine >=
+        std::max<Int32>(myYstart + std::min<Int32>(myJitter, Metrics::maxJitter), 0);
       break;
 
     case VblankMode::final:
-      transition = myCurrentLine >= myLastVblankLines;
+      transition = (Int32)myCurrentLine >=
+        std::max<Int32>(myLastVblankLines + std::min<Int32>(myJitter, Metrics::maxJitter), 0);
       break;
   }
 
@@ -203,6 +227,9 @@ bool VblankManager::save(Serializer& out) const
     out.putBool(myVblankViolated);
     out.putByte(myFramesInLockedMode);
 
+    out.putInt(myJitter);
+    out.putByte(myJitterFactor);
+
     out.putBool(myIsRunning);
   }
   catch(...)
@@ -233,6 +260,9 @@ bool VblankManager::load(Serializer& in)
     myStableVblankFrames = in.getByte();
     myVblankViolated = in.getBool();
     myFramesInLockedMode = in.getByte();
+
+    myJitter = in.getInt();
+    myJitterFactor = in.getByte();
 
     myIsRunning = in.getBool();
   }

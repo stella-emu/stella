@@ -49,6 +49,9 @@ class VblankManager : public Serializable
 
     uInt32 currentLine() const { return myCurrentLine; };
 
+    void setJitter(Int32 jitter);
+    void setJitterFactor(uInt8 jitterFactor) { myJitterFactor = jitterFactor; }
+
     /**
       Serializable methods (see that class for more information).
     */
@@ -84,6 +87,9 @@ class VblankManager : public Serializable
     uInt8 myStableVblankFrames;
     bool myVblankViolated;
     uInt8 myFramesInLockedMode;
+
+    Int32 myJitter;
+    uInt8 myJitterFactor;
 
     bool myIsRunning;
 

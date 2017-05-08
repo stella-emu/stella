@@ -57,7 +57,8 @@ FrameManager::FrameManager()
   : myLayout(FrameLayout::pal),
     myAutodetectLayout(true),
     myHeight(0),
-    myFixedHeight(0)
+    myFixedHeight(0),
+    myJitterEnabled(false)
 {
   updateLayout(FrameLayout::ntsc);
   reset();
@@ -210,6 +211,8 @@ void FrameManager::setState(FrameManager::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::finalizeFrame()
 {
+  handleJitter(myCurrentFrameTotalLines - myCurrentFrameFinalLines);
+
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
   myCurrentFrameTotalLines = 0;
   myTotalFrames++;
@@ -224,6 +227,14 @@ void FrameManager::finalizeFrame()
 
   myFrameRate = (myLayout == FrameLayout::pal ? 15600.0 : 15720.0) /
                  myCurrentFrameFinalLines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::handleJitter(Int32 scanlineDifference)
+{
+  if (scanlineDifference == 0 || !myJitterEnabled || myTotalFrames < Metrics::initialGarbageFrames) return;
+
+  myVblankManager.setJitter(scanlineDifference);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,6 +327,14 @@ void FrameManager::setFixedHeight(uInt32 height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::enableJitter(bool enabled)
+{
+  myJitterEnabled = enabled;
+
+  if (!enabled) myVblankManager.setJitter(0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameManager::save(Serializer& out) const
 {
   try
@@ -347,6 +366,8 @@ bool FrameManager::save(Serializer& out) const
     out.putInt(myFrameLines);
     out.putInt(myHeight);
     out.putInt(myFixedHeight);
+
+    out.putBool(myJitterEnabled);
   }
   catch(...)
   {
@@ -390,6 +411,8 @@ bool FrameManager::load(Serializer& in)
     myFrameLines = in.getInt();
     myHeight = in.getInt();
     myFixedHeight = in.getInt();
+
+    myJitterEnabled = in.getBool();
   }
   catch(...)
   {

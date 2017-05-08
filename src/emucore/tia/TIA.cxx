@@ -98,6 +98,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
+  myFrameManager.enableJitter(mySettings.getBool("tv.jitter"));
+  myFrameManager.setJitterFactor(mySettings.getInt("tv.jitter_recovery"));
+
   reset();
 }
 
@@ -896,13 +899,24 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
 // TODO: stub
 bool TIA::toggleJitter(uInt8 mode)
 {
-  return false;
-}
+  switch (mode) {
+    case 0:
+      myFrameManager.enableJitter(false);
+      break;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
-void TIA::setJitterRecoveryFactor(Int32 f)
-{
+    case 1:
+      myFrameManager.enableJitter(true);
+      break;
+
+    case 2:
+      myFrameManager.enableJitter(!myFrameManager.jitterEnabled());
+      break;
+
+    default:
+      throw runtime_error("invalid argument for toggleJitter");
+  }
+
+  return myFrameManager.jitterEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

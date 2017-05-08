@@ -294,7 +294,7 @@ class TIA : public Device
       @return  Whether the mode was enabled or disabled
     */
     bool toggleJitter(uInt8 mode = 2);
-    void setJitterRecoveryFactor(Int32 f);
+    void setJitterRecoveryFactor(Int32 factor) { myFrameManager.setJitterFactor(factor); }
 
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
