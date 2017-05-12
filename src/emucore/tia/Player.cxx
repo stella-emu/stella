@@ -231,7 +231,6 @@ void Player::setColor(uInt8 color)
 void Player::setDebugColor(uInt8 color)
 {
   myTIA->flushLineCache();
-
   myDebugColor = color;
   applyColors();
 }
@@ -240,8 +239,14 @@ void Player::setDebugColor(uInt8 color)
 void Player::enableDebugColors(bool enabled)
 {
   myTIA->flushLineCache();
-
   myDebugEnabled = enabled;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::applyColorLoss()
+{
+  myTIA->flushLineCache();
   applyColors();
 }
 
@@ -379,7 +384,14 @@ void Player::setDivider(uInt8 divider)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::applyColors()
 {
-  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
+  if (!myDebugEnabled)
+  {
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
+    else                          myObjectColor &= 0xfe;
+    myColor = myObjectColor;
+  }
+  else
+    myColor = myDebugColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -487,6 +499,8 @@ bool Player::load(Serializer& in)
 
     myIsReflected = in.getBool();
     myIsDelaying = in.getBool();
+
+    applyColors();
   }
   catch(...)
   {

@@ -69,6 +69,10 @@ class FrameManager : public Serializable
 
     uInt32 missingScanlines() const;
 
+    bool scanlineCountTransitioned() const {
+      return (myPreviousFrameFinalLines & 0x1) != (myCurrentFrameFinalLines & 0x1);
+    }
+
     uInt32 frameCount() const { return myTotalFrames; }
 
     float frameRate() const { return myFrameRate; }
@@ -141,6 +145,7 @@ class FrameManager : public Serializable
     uInt32 myLineInState;
     uInt32 myCurrentFrameTotalLines;
     uInt32 myCurrentFrameFinalLines;
+    uInt32 myPreviousFrameFinalLines;
     uInt32 myVsyncLines;
     float  myFrameRate;
     uInt32 myY, myLastY;

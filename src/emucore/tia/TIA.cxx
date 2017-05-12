@@ -118,6 +118,7 @@ void TIA::reset()
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = false;
   myAutoFrameEnabled = false;
+  myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
   myLastCycle = 0;
   mySubClock = 0;
@@ -152,7 +153,8 @@ void TIA::reset()
 void TIA::frameReset()
 {
   clearBuffers();
-  myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
+  myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
+  enableColorLoss(mySettings.getBool("colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -754,9 +756,30 @@ void TIA::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
-void TIA::enableColorLoss(bool enabled)
+bool TIA::enableColorLoss(bool enabled)
 {
+  if (consoleTiming() != ConsoleTiming::pal)
+    return false;
+
+  if(enabled)
+  {
+    myColorLossEnabled = true;
+    myColorLossActive = false;  // will be determined each frame
+  }
+  else
+  {
+    myColorLossEnabled = myColorLossActive = false;
+
+    myMissile0.applyColorLoss();
+    myMissile1.applyColorLoss();
+    myPlayer0.applyColorLoss();
+    myPlayer1.applyColorLoss();
+    myBall.applyColorLoss();
+    myPlayfield.applyColorLoss();
+    myBackground.applyColorLoss();
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -877,12 +900,6 @@ bool TIA::toggleFixedColors(uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::usingFixedColors() const
-{
-  return myColorHBlank != 0x00;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::driveUnusedPinsRandom(uInt8 mode)
 {
   // If mode is 0 or 1, use it as a boolean (off or on)
@@ -896,7 +913,6 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: stub
 bool TIA::toggleJitter(uInt8 mode)
 {
   switch (mode) {
@@ -989,6 +1005,26 @@ void TIA::onFrameStart()
 
   for (uInt8 i = 0; i < 4; i++)
     updatePaddle(i);
+
+  // Check for colour-loss emulation
+  if (myColorLossEnabled)
+  {
+    // Only activate it when necessary, since changing colours in
+    // the graphical object forces the TIA cached line to be flushed
+    if (myFrameManager.scanlineCountTransitioned())
+    {
+      myColorLossActive = myFrameManager.scanlinesLastFrame() & 0x1;
+
+cerr << "change: " << myColorLossActive << endl;
+      myMissile0.applyColorLoss();
+      myMissile1.applyColorLoss();
+      myPlayer0.applyColorLoss();
+      myPlayer1.applyColorLoss();
+      myBall.applyColorLoss();
+      myPlayfield.applyColorLoss();
+      myBackground.applyColorLoss();
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

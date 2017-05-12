@@ -29,15 +29,15 @@ class Background : public Serializable
     Background();
 
   public:
-    void setTIA(TIA* tia) {
-      myTIA = tia;
-    }
+    void setTIA(TIA* tia) { myTIA = tia; }
 
     void reset();
 
     void setColor(uInt8 color);
     void setDebugColor(uInt8 color);
     void enableDebugColors(bool enabled);
+
+    void applyColorLoss();
 
     uInt8 getColor() const { return myColor; }
 

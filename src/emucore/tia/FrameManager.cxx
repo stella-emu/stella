@@ -213,6 +213,7 @@ void FrameManager::finalizeFrame()
 {
   handleJitter(myCurrentFrameTotalLines - myCurrentFrameFinalLines);
 
+  myPreviousFrameFinalLines = myCurrentFrameFinalLines;
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
   myCurrentFrameTotalLines = 0;
   myTotalFrames++;
@@ -349,6 +350,7 @@ bool FrameManager::save(Serializer& out) const
     out.putInt(myLineInState);
     out.putInt(myCurrentFrameTotalLines);
     out.putInt(myCurrentFrameFinalLines);
+    out.putInt(myPreviousFrameFinalLines);
     out.putInt(myVsyncLines);
     out.putDouble(myFrameRate);
     out.putInt(myY);  out.putInt(myLastY);
@@ -394,6 +396,7 @@ bool FrameManager::load(Serializer& in)
     myLineInState = in.getInt();
     myCurrentFrameTotalLines = in.getInt();
     myCurrentFrameFinalLines = in.getInt();
+    myPreviousFrameFinalLines = in.getInt();
     myVsyncLines = in.getInt();
     myFrameRate = float(in.getDouble());
     myY = in.getInt();  myLastY = in.getInt();

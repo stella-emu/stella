@@ -230,7 +230,15 @@ void Missile::setDebugColor(uInt8 color)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::enableDebugColors(bool enabled)
 {
+  myTIA->flushLineCache();
   myDebugEnabled = enabled;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::applyColorLoss()
+{
+  myTIA->flushLineCache();
   applyColors();
 }
 
@@ -243,7 +251,14 @@ void Missile::updateEnabled()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::applyColors()
 {
-  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
+  if (!myDebugEnabled)
+  {
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
+    else                          myObjectColor &= 0xfe;
+    myColor = myObjectColor;
+  }
+  else
+    myColor = myDebugColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -334,6 +349,8 @@ bool Missile::load(Serializer& in)
     myColor = in.getByte();
     myObjectColor = in.getByte();  myDebugColor = in.getByte();
     myDebugEnabled = in.getBool();
+
+    applyColors();
   }
   catch(...)
   {

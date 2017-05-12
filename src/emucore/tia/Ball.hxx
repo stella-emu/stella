@@ -31,9 +31,7 @@ class Ball : public Serializable
 
   public:
 
-    void setTIA(TIA* tia) {
-      myTIA = tia;
-    }
+    void setTIA(TIA* tia) { myTIA = tia; }
 
     void reset();
 
@@ -55,6 +53,8 @@ class Ball : public Serializable
 
     void setDebugColor(uInt8 color);
     void enableDebugColors(bool enabled);
+
+    void applyColorLoss();
 
     void startMovement();
 

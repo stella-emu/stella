@@ -32,9 +32,7 @@ class Missile : public Serializable
 
   public:
 
-    void setTIA(TIA* tia) {
-      myTIA = tia;
-    }
+    void setTIA(TIA* tia) { myTIA = tia; }
 
     void reset();
 
@@ -58,6 +56,8 @@ class Missile : public Serializable
 
     void setDebugColor(uInt8 color);
     void enableDebugColors(bool enabled);
+
+    void applyColorLoss();
 
     void toggleCollisions(bool enabled);
 

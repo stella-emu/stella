@@ -198,7 +198,14 @@ class TIA : public Device
 
       @param enabled  Whether to enable or disable PAL color-loss mode
     */
-    void enableColorLoss(bool enabled);
+    bool enableColorLoss(bool enabled);
+
+    /**
+      Answers whether colour-loss is applicable for the current frame.
+
+      @return  Colour-loss is active for this frame
+    */
+    bool colorLossActive() const { return myColorLossActive; }
 
     /**
       Answers the current color clock we've gotten to on this scanline.
@@ -273,7 +280,7 @@ class TIA : public Device
       @return  Whether the mode was enabled or disabled
     */
     bool toggleFixedColors(uInt8 mode = 2);
-    bool usingFixedColors() const;
+    bool usingFixedColors() const { return myColorHBlank != 0x00; }
 
     /**
       Enable/disable/query state of 'undriven/floating TIA pins'.
@@ -488,7 +495,13 @@ class TIA : public Device
     // Automatic framerate correction based on number of scanlines
     bool myAutoFrameEnabled;
 
-   private:
+    // Indicates if color loss should be enabled or disabled.  Color loss
+    // occurs on PAL-like systems when the previous frame contains an odd
+    // number of scanlines.
+    bool myColorLossEnabled;
+    bool myColorLossActive;
+
+  private:
     TIA() = delete;
     TIA(const TIA&) = delete;
     TIA(TIA&&) = delete;

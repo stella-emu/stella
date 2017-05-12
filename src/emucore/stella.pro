@@ -4261,9 +4261,7 @@
 "Cartridge.MD5" "35be55426c1fec32dfb503b4f0651572"
 "Cartridge.Manufacturer" "Men-A-Vision"
 "Cartridge.Name" "Air Raid (Men-A-Vision) (PAL)"
-"Cartridge.Note" "NTSC50 format"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.Format" "NTSC50"
 "Display.Phosphor" "YES"
 ""
 

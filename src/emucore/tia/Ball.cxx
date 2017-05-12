@@ -51,7 +51,6 @@ void Ball::reset()
   myRenderCounter = 0;
 
   updateEnabled();
-  applyColors();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,7 +133,6 @@ void Ball::setColor(uInt8 color)
 void Ball::setDebugColor(uInt8 color)
 {
   myTIA->flushLineCache();
-
   myDebugColor = color;
   applyColors();
 }
@@ -143,8 +141,14 @@ void Ball::setDebugColor(uInt8 color)
 void Ball::enableDebugColors(bool enabled)
 {
   myTIA->flushLineCache();
-
   myDebugEnabled = enabled;
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::applyColorLoss()
+{
+  myTIA->flushLineCache();
   applyColors();
 }
 
@@ -234,7 +238,14 @@ void Ball::updateEnabled()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::applyColors()
 {
-  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
+  if (!myDebugEnabled)
+  {
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
+    else                          myObjectColor &= 0xfe;
+    myColor = myObjectColor;
+  }
+  else
+    myColor = myDebugColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,6 +336,8 @@ bool Ball::load(Serializer& in)
 
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();
+
+    applyColors();
   }
   catch(...)
   {

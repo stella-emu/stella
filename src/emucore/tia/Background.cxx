@@ -57,9 +57,23 @@ void Background::enableDebugColors(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Background::applyColorLoss()
+{
+  myTIA->flushLineCache();
+  applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::applyColors()
 {
-  myColor = myDebugEnabled ? myDebugColor : myObjectColor;
+  if (!myDebugEnabled)
+  {
+    if (myTIA->colorLossActive()) myObjectColor |= 0x01;
+    else                          myObjectColor &= 0xfe;
+    myColor = myObjectColor;
+  }
+  else
+    myColor = myDebugColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,6 +109,8 @@ bool Background::load(Serializer& in)
     myObjectColor = in.getByte();
     myDebugColor = in.getByte();
     myDebugEnabled = in.getBool();
+
+    applyColors();
   }
   catch(...)
   {
