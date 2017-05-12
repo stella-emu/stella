@@ -764,7 +764,7 @@ bool TIA::enableColorLoss(bool enabled)
   if(enabled)
   {
     myColorLossEnabled = true;
-    myColorLossActive = false;  // will be determined each frame
+    myColorLossActive = myFrameManager.scanlinesLastFrame() & 0x1;
   }
   else
   {
