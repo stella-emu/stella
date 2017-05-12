@@ -203,12 +203,14 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     return peekvalue;
 
   // implement JMP FASTJMP which fetches the destination address from stream 33
-  if (myFastJumpActive)
+  if (myFastJumpActive
+      && myJMPoperandAddress == address)
   {
     uInt32 pointer;
     uInt8 value;
 
     myFastJumpActive--;
+    myJMPoperandAddress++;
 
     pointer = getDatastreamPointer(JUMPSTREAM);
     value = myDisplayImage[ pointer >> 20 ];
@@ -225,8 +227,11 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       && myProgramImage[(myCurrentBank << 12) + address+2] == 0)
   {
     myFastJumpActive = 2; // return next two peeks from datastream 31
+    myJMPoperandAddress = address + 1;
     return peekvalue;
   }
+  
+  myJMPoperandAddress = 0;
 
   // Do a FAST FETCH LDA# if:
   //  1) in Fast Fetch mode
@@ -493,8 +498,9 @@ bool CartridgeCDF::save(Serializer& out) const
     // State of FastJump
     out.putByte(myFastJumpActive);
 
-    // Address of LDA # operand
+    // operand addresses
     out.putShort(myLDAimmediateOperandAddress);
+    out.putShort(myJMPoperandAddress);
 
     // Harmony RAM
     out.putByteArray(myCDFRAM, 8192);
@@ -537,6 +543,7 @@ bool CartridgeCDF::load(Serializer& in)
 
     // Address of LDA # operand
     myLDAimmediateOperandAddress = in.getShort();
+    myJMPoperandAddress = in.getShort();
 
     // Harmony RAM
     in.getByteArray(myCDFRAM, 8192);

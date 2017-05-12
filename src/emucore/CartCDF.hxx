@@ -281,6 +281,10 @@ class CartridgeCDF : public Cartridge
     // set to address of #value if last byte peeked was A9 (LDA #)
     uInt16 myLDAimmediateOperandAddress;
 
+    // set to address of the JMP operand if last byte peeked was 4C
+    // *and* the next two bytes in ROM are 00 00
+    uInt16 myJMPoperandAddress;
+  
     TIA* myTIA;
 
     uInt8 myFastJumpActive;
