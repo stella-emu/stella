@@ -1015,7 +1015,6 @@ void TIA::onFrameStart()
     {
       myColorLossActive = myFrameManager.scanlinesLastFrame() & 0x1;
 
-cerr << "change: " << myColorLossActive << endl;
       myMissile0.applyColorLoss();
       myMissile1.applyColorLoss();
       myPlayer0.applyColorLoss();
