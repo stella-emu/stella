@@ -221,13 +221,15 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     if(bankLocked())
       return peekvalue;
     
-    // implement JMP FASTJMP which fetches the destination address from stream 33
-    if (myFastJumpActive)
+    // implement JMP FASTJMP which fetches the destination address from stream 17
+    if (myFastJumpActive
+        && myJMPoperandAddress == address)
     {
       uInt32 pointer;
       uInt8 value;
       
       myFastJumpActive--;
+      myJMPoperandAddress++;
       
       pointer = getDatastreamPointer(JUMPSTREAM);
       value = myDisplayImage[ pointer >> 20 ];
@@ -236,16 +238,19 @@ uInt8 CartridgeBUS::peek(uInt16 address)
       
       return value;
     }
-    
+
     // test for JMP FASTJUMP where FASTJUMP = $0000
     if (BUS_STUFF_ON
         && peekvalue == 0x4C
         && myProgramImage[(myCurrentBank << 12) + address+1] == 0
         && myProgramImage[(myCurrentBank << 12) + address+2] == 0)
     {
-      myFastJumpActive = 2; // return next two peeks from datastream 31
+      myFastJumpActive = 2; // return next two peeks from datastream 17
+      myJMPoperandAddress = address + 1;
       return peekvalue;
     }
+
+    myJMPoperandAddress = 0;
 
     // save the STY's zero page address
     if (BUS_STUFF_ON && mySTYZeroPageAddress == address)
@@ -564,6 +569,7 @@ bool CartridgeBUS::save(Serializer& out) const
     // Addresses for bus override logic
     out.putShort(myBusOverdriveAddress);
     out.putShort(mySTYZeroPageAddress);
+    out.putShort(myJMPoperandAddress);
     
     // Save cycles and clocks
     out.putInt(mySystemCycles);
@@ -607,6 +613,7 @@ bool CartridgeBUS::load(Serializer& in)
     // Addresses for bus override logic
     myBusOverdriveAddress = in.getShort();
     mySTYZeroPageAddress = in.getShort();
+    myJMPoperandAddress = in.getShort();
 
     // Get system cycles and fractional clocks
     mySystemCycles = (Int32)in.getInt();

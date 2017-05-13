@@ -247,9 +247,13 @@ class CartridgeBUS : public Cartridge
     // set to address of ZP if last byte peeked was $84 (STY ZP)
     uInt16 mySTYZeroPageAddress;
 
+    // set to address of the JMP operand if last byte peeked was 4C
+    // *and* the next two bytes in ROM are 00 00
+    uInt16 myJMPoperandAddress;
+
     // System cycle count when the last update to music data fetchers occurred
     Int32 mySystemCycles;
-  
+
     // ARM cycle count from when the last callFunction() occurred
     Int32 myARMCycles;
 
