@@ -41,7 +41,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("fullscreen", "false");
   setInternal("center", "false");
   setInternal("palette", "standard");
-  setInternal("colorloss", "true");
+  setInternal("colorloss", "false");
   setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
