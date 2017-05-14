@@ -21,8 +21,9 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
-class DelayQueueMember : public Serializable
-{
+template<int capacity>
+class DelayQueueMember : public Serializable {
+
   public:
     struct Entry {
       uInt8 address;
@@ -30,47 +31,137 @@ class DelayQueueMember : public Serializable
     };
 
   public:
-    DelayQueueMember(uInt8 size = 0);
-
-    DelayQueueMember(DelayQueueMember&&) = default;
-    DelayQueueMember& operator=(DelayQueueMember&&) = default;
+    DelayQueueMember();
 
   public:
-
-    typedef vector<Entry>::const_iterator iterator;
-
-  public:
-
     void push(uInt8 address, uInt8 value);
 
     void remove(uInt8 address);
 
-    iterator begin() const {
-      return myEntries.begin();
-    }
-
-    iterator end() const {
-      return (mySize < myEntries.size()) ? (myEntries.begin() + mySize) : myEntries.end();
-    }
-
-    void clear() {
-      mySize = 0;
-    }
+    void clear();
 
     /**
       Serializable methods (see that class for more information).
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override { return "TIA_DelayQueueMember"; }
+    string name() const override;
+
+  public:
+    Entry myEntries[capacity];
+    uInt8 mySize;
 
   private:
-    vector<Entry> myEntries;
-    uInt32 mySize;
 
-  private:
-    DelayQueueMember(const DelayQueueMember&) = delete;
-    DelayQueueMember& operator=(const DelayQueueMember&) = delete;
+    DelayQueueMember(const DelayQueueMember<capacity>&) = delete;
+    DelayQueueMember(DelayQueueMember<capacity>&&) = delete;
+    DelayQueueMember<capacity>& operator=(const DelayQueueMember<capacity>&) = delete;
+    DelayQueueMember<capacity>& operator=(DelayQueueMember<capacity>&&) = delete;
+
 };
 
-#endif //  TIA_DELAY_QUEUE_MEMBER
+// ############################################################################
+// Implementation
+// ############################################################################
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int capacity>
+DelayQueueMember<capacity>::DelayQueueMember()
+  : mySize(0)
+{}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int capacity>
+void DelayQueueMember<capacity>::push(uInt8 address, uInt8 value)
+{
+  if (mySize == capacity) throw runtime_error("delay queue overflow");
+
+  myEntries[mySize].address = address;
+  myEntries[mySize++].value = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int capacity>
+void DelayQueueMember<capacity>::remove(uInt8 address)
+{
+  uInt8 index;
+
+  for (index = 0; index < mySize; index++) {
+    if (myEntries[index].address == address) break;
+  }
+
+  if (index < mySize) {
+    for (uInt8 i = index + 1; i < mySize; i++) {
+      myEntries[i-1] = myEntries[i];
+    }
+
+    mySize--;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int capacity>
+void DelayQueueMember<capacity>::clear()
+{
+  mySize = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int capacity>
+bool DelayQueueMember<capacity>::save(Serializer& out) const
+{
+    try
+  {
+    out.putInt(mySize);
+    for(uInt8 i = 0; i < mySize; ++i)
+    {
+      const Entry& e = myEntries[i];
+      out.putByte(e.address);
+      out.putByte(e.value);
+    }
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueueMember::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int capacity>
+bool DelayQueueMember<capacity>::load(Serializer& in)
+{
+  try
+  {
+    mySize = in.getInt();
+    if (mySize > capacity) throw new runtime_error("invalid delay queue size");
+    for(uInt32 i = 0; i < mySize; ++i)
+    {
+      Entry& e = myEntries[i];
+      e.address = in.getByte();
+      e.value = in.getByte();
+    }
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueueMember::load" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int capacity>
+string DelayQueueMember<capacity>::name() const
+{
+  stringstream ss;
+
+  ss << "TIA_DelayQueueMember<" << capacity << ">";
+
+  return ss.str();
+}
+
+#endif // TIA_DELAY_QUEUE_MEMBER

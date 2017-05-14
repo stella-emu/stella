@@ -2,8 +2,6 @@ MODULE := src/emucore/tia
 
 MODULE_OBJS := \
 	src/emucore/tia/TIA.o \
-	src/emucore/tia/DelayQueueMember.o \
-	src/emucore/tia/DelayQueue.o \
 	src/emucore/tia/FrameManager.o \
 	src/emucore/tia/Playfield.o \
 	src/emucore/tia/DrawCounterDecodes.o \
@@ -13,8 +11,7 @@ MODULE_OBJS := \
 	src/emucore/tia/Background.o \
 	src/emucore/tia/LatchedInput.o \
 	src/emucore/tia/PaddleReader.o \
-	src/emucore/tia/VblankManager.o \
-	src/emucore/tia/DelayQueueIterator.o
+	src/emucore/tia/VblankManager.o
 
 MODULE_DIRS += \
 	src/emucore/tia

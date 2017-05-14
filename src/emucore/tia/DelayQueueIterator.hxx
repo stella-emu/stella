@@ -25,28 +25,18 @@
 class DelayQueueIterator
 {
   public:
-    DelayQueueIterator(const DelayQueue&);
+    virtual ~DelayQueueIterator() {}
 
-    bool isValid() const;
+  public:
+    virtual bool isValid() const = 0;
 
-    uInt8 delay() const;
+    virtual uInt8 delay() const = 0;
 
-    uInt8 address() const;
+    virtual uInt8 address() const = 0;
 
-    uInt8 value() const;
+    virtual uInt8 value() const = 0;
 
-    bool next();
-
-  private:
-    uInt8 currentIndex() const {
-      return (myDelayQueue.myIndex +  myDelayCycle) % myDelayQueue.myMembers.size();
-    }
-
-  private:
-    const DelayQueue& myDelayQueue;
-
-    uInt8 myDelayCycle;
-    DelayQueueMember::iterator myCurrentIterator;
+    virtual bool next() = 0;
 };
 
 #endif // TIA_DELAY_QUEUE_ITERATOR

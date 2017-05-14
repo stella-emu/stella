@@ -742,7 +742,7 @@ bool TIADebug::vblank() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<DelayQueueIterator> TIADebug::delayQueueIterator() const
 {
-  return shared_ptr<DelayQueueIterator>(new DelayQueueIterator(myTIA.myDelayQueue));
+  return myTIA.delayQueueIterator();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

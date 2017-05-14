@@ -22,13 +22,17 @@
 #include "bspf.hxx"
 #include "DelayQueueMember.hxx"
 
+template<int length, int capacity>
+class DelayQueueIteratorImpl;
+
+template<int length, int capacity>
 class DelayQueue : public Serializable
 {
   public:
-    friend class DelayQueueIterator;
+    friend DelayQueueIteratorImpl<length, capacity>;
 
   public:
-    DelayQueue(uInt8 length, uInt8 size);
+    DelayQueue();
 
   public:
 
@@ -46,12 +50,11 @@ class DelayQueue : public Serializable
     string name() const override { return "TIA_DelayQueue"; }
 
   private:
-    vector<DelayQueueMember> myMembers;
+    DelayQueueMember<capacity> myMembers[length];
     uInt8 myIndex;
     uInt8 myIndices[0xFF];
 
   private:
-    DelayQueue() = delete;
     DelayQueue(const DelayQueue&) = delete;
     DelayQueue(DelayQueue&&) = delete;
     DelayQueue& operator=(const DelayQueue&) = delete;
@@ -62,18 +65,104 @@ class DelayQueue : public Serializable
 // Implementation
 // ############################################################################
 
-template<class T> void DelayQueue::execute(T executor)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int length, int capacity>
+DelayQueue<length, capacity>::DelayQueue()
+  : myIndex(0)
 {
-  DelayQueueMember& currentMember = myMembers.at(myIndex);
+  memset(myIndices, 0xFF, 0xFF);
+}
 
-  for (auto&& entry : currentMember) {
-    executor(entry.address, entry.value);
-    myIndices[entry.address] = 0xFF;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int length, int capacity>
+void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
+{
+  if (delay >= length)
+    throw runtime_error("delay exceeds queue length");
+
+  uInt8 currentIndex = myIndices[address];
+
+  if (currentIndex < 0xFF)
+    myMembers[currentIndex].remove(address);
+
+  uInt8 index = (myIndex + delay) % length;
+  myMembers[index].push(address, value);
+
+  myIndices[address] = index;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int length, int capacity>
+void DelayQueue<length, capacity>::reset()
+{
+  for (uInt8 i = 0; i < length; i++)
+    myMembers[i].clear();
+
+  myIndex = 0;
+  memset(myIndices, 0xFF, 0xFF);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int length, int capacity>
+template<class T>
+void DelayQueue<length, capacity>::execute(T executor)
+{
+  DelayQueueMember<capacity>& currentMember = myMembers[myIndex];
+
+  for (uInt8 i = 0; i < currentMember.mySize; i++) {
+    executor(currentMember.myEntries[i].address, currentMember.myEntries[i].value);
+    myIndices[currentMember.myEntries[i].address] = 0xFF;
   }
 
   currentMember.clear();
 
-  myIndex = (myIndex + 1) % myMembers.size();
+  myIndex = (myIndex + 1) % length;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int length, int capacity>
+bool DelayQueue<length, capacity>::save(Serializer& out) const
+{
+  try
+  {
+    out.putInt(length);
+
+    for (uInt8 i = 0; i < length; i++)
+      myMembers[i].save(out);
+
+    out.putByte(myIndex);
+    out.putByteArray(myIndices, 0xFF);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueue::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<int length, int capacity>
+bool DelayQueue<length, capacity>::load(Serializer& in)
+{
+  try
+  {
+    if (in.getInt() != length) throw runtime_error("delay queue length mismatch");
+
+    for (uInt8 i = 0; i < length; i++)
+      myMembers[i].load(in);
+
+    myIndex = in.getByte();
+    in.getByteArray(myIndices, 0xFF);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_DelayQueue::load" << endl;
+    return false;
+  }
+
+  return true;
 }
 
 #endif //  TIA_DELAY_QUEUE

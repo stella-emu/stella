@@ -26,6 +26,7 @@
 #include "Serializer.hxx"
 #include "TIATypes.hxx"
 #include "DelayQueue.hxx"
+#include "DelayQueueIterator.hxx"
 #include "FrameManager.hxx"
 #include "FrameLayout.hxx"
 #include "Background.hxx"
@@ -35,6 +36,7 @@
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
+#include "DelayQueueIterator.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -342,6 +344,11 @@ class TIA : public Device
     void flushLineCache();
 
     /**
+      Create a new delayQueueIterator for the debugger.
+    */
+    shared_ptr<DelayQueueIterator> delayQueueIterator() const;
+
+    /**
       Save the current state of this device to the given Serializer.
 
       @param out  The Serializer object to use
@@ -442,7 +449,10 @@ class TIA : public Device
     Sound& mySound;
     Settings& mySettings;
 
-    DelayQueue myDelayQueue;
+    static constexpr int delayQueueLength = 10;
+    static constexpr int delayQueueSize = 20;
+    DelayQueue<delayQueueLength, delayQueueSize> myDelayQueue;
+
     FrameManager myFrameManager;
 
     Background myBackground;

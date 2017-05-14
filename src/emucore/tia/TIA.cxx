@@ -20,6 +20,7 @@
 #include "Console.hxx"
 #include "Control.hxx"
 #include "Paddles.hxx"
+#include "DelayQueueIteratorImpl.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -66,7 +67,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
     mySound(sound),
     mySettings(settings),
-    myDelayQueue(10, 20),
     myPlayfield(~CollisionMask::playfield & 0x7FFF),
     myMissile0(~CollisionMask::missile0 & 0x7FFF),
     myMissile1(~CollisionMask::missile1 & 0x7FFF),
@@ -933,6 +933,14 @@ bool TIA::toggleJitter(uInt8 mode)
   }
 
   return myFrameManager.jitterEnabled();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+shared_ptr<DelayQueueIterator> TIA::delayQueueIterator() const
+{
+  return shared_ptr<DelayQueueIterator>(
+    new DelayQueueIteratorImpl<delayQueueLength, delayQueueSize>(myDelayQueue)
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
