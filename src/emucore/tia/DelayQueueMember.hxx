@@ -21,7 +21,7 @@
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
-template<int capacity>
+template<unsigned capacity>
 class DelayQueueMember : public Serializable {
 
   public:
@@ -65,13 +65,13 @@ class DelayQueueMember : public Serializable {
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int capacity>
+template<unsigned capacity>
 DelayQueueMember<capacity>::DelayQueueMember()
   : mySize(0)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int capacity>
+template<unsigned capacity>
 void DelayQueueMember<capacity>::push(uInt8 address, uInt8 value)
 {
   if (mySize == capacity) throw runtime_error("delay queue overflow");
@@ -81,7 +81,7 @@ void DelayQueueMember<capacity>::push(uInt8 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int capacity>
+template<unsigned capacity>
 void DelayQueueMember<capacity>::remove(uInt8 address)
 {
   uInt8 index;
@@ -100,14 +100,14 @@ void DelayQueueMember<capacity>::remove(uInt8 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int capacity>
+template<unsigned capacity>
 void DelayQueueMember<capacity>::clear()
 {
   mySize = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int capacity>
+template<unsigned capacity>
 bool DelayQueueMember<capacity>::save(Serializer& out) const
 {
     try
@@ -130,7 +130,7 @@ bool DelayQueueMember<capacity>::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int capacity>
+template<unsigned capacity>
 bool DelayQueueMember<capacity>::load(Serializer& in)
 {
   try
@@ -154,14 +154,10 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int capacity>
+template<unsigned capacity>
 string DelayQueueMember<capacity>::name() const
 {
-  stringstream ss;
-
-  ss << "TIA_DelayQueueMember<" << capacity << ">";
-
-  return ss.str();
+  return "TIA_DelayQueueMember";
 }
 
 #endif // TIA_DELAY_QUEUE_MEMBER

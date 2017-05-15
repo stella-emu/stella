@@ -20,12 +20,13 @@
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
+#include "smartmod.hxx"
 #include "DelayQueueMember.hxx"
 
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 class DelayQueueIteratorImpl;
 
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 class DelayQueue : public Serializable
 {
   public:
@@ -47,7 +48,7 @@ class DelayQueue : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override { return "TIA_DelayQueue"; }
+    string name() const override;
 
   private:
     DelayQueueMember<capacity> myMembers[length];
@@ -66,7 +67,7 @@ class DelayQueue : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 DelayQueue<length, capacity>::DelayQueue()
   : myIndex(0)
 {
@@ -74,7 +75,7 @@ DelayQueue<length, capacity>::DelayQueue()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
 {
   if (delay >= length)
@@ -85,14 +86,14 @@ void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
   if (currentIndex < 0xFF)
     myMembers[currentIndex].remove(address);
 
-  uInt8 index = (myIndex + delay) % length;
+  uInt8 index = smartmod<length>(myIndex + delay);
   myMembers[index].push(address, value);
 
   myIndices[address] = index;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 void DelayQueue<length, capacity>::reset()
 {
   for (uInt8 i = 0; i < length; i++)
@@ -103,7 +104,7 @@ void DelayQueue<length, capacity>::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 template<class T>
 void DelayQueue<length, capacity>::execute(T executor)
 {
@@ -116,11 +117,11 @@ void DelayQueue<length, capacity>::execute(T executor)
 
   currentMember.clear();
 
-  myIndex = (myIndex + 1) % length;
+  myIndex = smartmod<length>(myIndex + 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 bool DelayQueue<length, capacity>::save(Serializer& out) const
 {
   try
@@ -143,7 +144,7 @@ bool DelayQueue<length, capacity>::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 bool DelayQueue<length, capacity>::load(Serializer& in)
 {
   try
@@ -163,6 +164,13 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+template<unsigned length, unsigned capacity>
+string DelayQueue<length, capacity>::name() const
+{
+  return "TIA_DelayQueue";
 }
 
 #endif //  TIA_DELAY_QUEUE

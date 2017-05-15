@@ -23,7 +23,7 @@
 #include "DelayQueueMember.hxx"
 #include "DelayQueueIterator.hxx"
 
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 class DelayQueueIteratorImpl : public DelayQueueIterator
 {
   public:
@@ -55,8 +55,8 @@ class DelayQueueIteratorImpl : public DelayQueueIterator
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
-DelayQueueIteratorImpl<length,capacity>::DelayQueueIteratorImpl(
+template<unsigned length, unsigned capacity>
+DelayQueueIteratorImpl<length, capacity>::DelayQueueIteratorImpl(
   const DelayQueue<length, capacity>& delayQueue
 )
   : myDelayQueue(delayQueue),
@@ -68,14 +68,14 @@ DelayQueueIteratorImpl<length,capacity>::DelayQueueIteratorImpl(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 bool DelayQueueIteratorImpl<length, capacity>::isValid() const
 {
   return myDelayCycle < length;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 uInt8 DelayQueueIteratorImpl<length, capacity>::delay() const
 {
   if (!isValid()) {
@@ -86,7 +86,7 @@ uInt8 DelayQueueIteratorImpl<length, capacity>::delay() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 uInt8 DelayQueueIteratorImpl<length, capacity>::address() const
 {
   if (!isValid()) {
@@ -97,7 +97,7 @@ uInt8 DelayQueueIteratorImpl<length, capacity>::address() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 uInt8 DelayQueueIteratorImpl<length, capacity>::value() const
 {
   if (!isValid()) {
@@ -108,7 +108,7 @@ uInt8 DelayQueueIteratorImpl<length, capacity>::value() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 bool DelayQueueIteratorImpl<length, capacity>::next()
 {
   if (!isValid()) return false;
@@ -126,7 +126,7 @@ bool DelayQueueIteratorImpl<length, capacity>::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<int length, int capacity>
+template<unsigned length, unsigned capacity>
 uInt8 DelayQueueIteratorImpl<length, capacity>::currentIndex() const
 {
   return (myDelayQueue.myIndex + myDelayCycle) % length;

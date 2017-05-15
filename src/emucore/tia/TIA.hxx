@@ -449,8 +449,8 @@ class TIA : public Device
     Sound& mySound;
     Settings& mySettings;
 
-    static constexpr int delayQueueLength = 10;
-    static constexpr int delayQueueSize = 20;
+    static constexpr unsigned delayQueueLength = 16;
+    static constexpr unsigned delayQueueSize = 16;
     DelayQueue<delayQueueLength, delayQueueSize> myDelayQueue;
 
     FrameManager myFrameManager;
