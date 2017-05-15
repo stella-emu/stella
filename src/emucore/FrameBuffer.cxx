@@ -132,9 +132,9 @@ bool FrameBuffer::initialize()
 
   for(int i = 0, j = 256; i < kNumColors-256; ++i, ++j)
   {
-    Uint8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
-    Uint8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
-    Uint8 b = ourGUIColors[palID][i] & 0xff;
+    uInt8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
+    uInt8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
+    uInt8 b = ourGUIColors[palID][i] & 0xff;
 
     myPalette[j] = mapRGB(r, g, b);
   }
@@ -495,9 +495,9 @@ void FrameBuffer::setPalette(const uInt32* raw_palette)
   // Set palette for normal fill
   for(int i = 0; i < 256; ++i)
   {
-    Uint8 r = (raw_palette[i] >> 16) & 0xff;
-    Uint8 g = (raw_palette[i] >> 8) & 0xff;
-    Uint8 b = raw_palette[i] & 0xff;
+    uInt8 r = (raw_palette[i] >> 16) & 0xff;
+    uInt8 g = (raw_palette[i] >> 8) & 0xff;
+    uInt8 b = raw_palette[i] & 0xff;
 
     myPalette[i] = mapRGB(r, g, b);
   }
