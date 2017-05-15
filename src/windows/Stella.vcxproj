@@ -316,9 +316,6 @@
     <ClCompile Include="..\emucore\TIASurface.cxx" />
     <ClCompile Include="..\emucore\tia\Background.cxx" />
     <ClCompile Include="..\emucore\tia\Ball.cxx" />
-    <ClCompile Include="..\emucore\tia\DelayQueue.cxx" />
-    <ClCompile Include="..\emucore\tia\DelayQueueIterator.cxx" />
-    <ClCompile Include="..\emucore\tia\DelayQueueMember.cxx" />
     <ClCompile Include="..\emucore\tia\DrawCounterDecodes.cxx" />
     <ClCompile Include="..\emucore\tia\FrameManager.cxx" />
     <ClCompile Include="..\emucore\tia\LatchedInput.cxx" />
@@ -597,6 +594,7 @@
     <ClInclude Include="..\emucore\tia\Ball.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueue.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueueIterator.hxx" />
+    <ClInclude Include="..\emucore\tia\DelayQueueIteratorImpl.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueueMember.hxx" />
     <ClInclude Include="..\emucore\tia\DrawCounterDecodes.hxx" />
     <ClInclude Include="..\emucore\tia\FrameLayout.hxx" />

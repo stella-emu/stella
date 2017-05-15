@@ -795,12 +795,6 @@
     <ClCompile Include="..\emucore\tia\Ball.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\DelayQueue.cxx">
-      <Filter>Source Files\emucore\tia</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\tia\DelayQueueMember.cxx">
-      <Filter>Source Files\emucore\tia</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\tia\DrawCounterDecodes.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
@@ -851,9 +845,6 @@
     </ClCompile>
     <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx">
       <Filter>Source Files\debugger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\tia\DelayQueueIterator.cxx">
-      <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1725,6 +1716,9 @@
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\tia\DelayQueueIterator.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\DelayQueueIteratorImpl.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
   </ItemGroup>
