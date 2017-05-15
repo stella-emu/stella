@@ -70,7 +70,7 @@ class FrameBufferSDL2 : public FrameBuffer
       @param g      The green component of the color
       @param b      The blue component of the color
     */
-    inline void getRGB(Uint32 pixel, Uint8* r, Uint8* g, Uint8* b) const override
+    inline void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const override
       { SDL_GetRGB(pixel, myPixelFormat, r, g, b); }
 
     /**
@@ -80,7 +80,7 @@ class FrameBufferSDL2 : public FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    inline Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const override
+    inline uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const override
       { return SDL_MapRGB(myPixelFormat, r, g, b); }
 
     /**

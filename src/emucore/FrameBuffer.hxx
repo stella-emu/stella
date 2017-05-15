@@ -315,7 +315,7 @@ class FrameBuffer
       @param g      The green component of the color
       @param b      The blue component of the color
     */
-    virtual void getRGB(Uint32 pixel, Uint8* r, Uint8* g, Uint8* b) const = 0;
+    virtual void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const = 0;
 
     /**
       This method is called to map a given R/G/B triple to the screen palette.
@@ -324,7 +324,7 @@ class FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const = 0;
+    virtual uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const = 0;
 
     /**
       This method is called to get the specified ARGB data from the viewable
@@ -399,7 +399,7 @@ class FrameBuffer
     OSystem& myOSystem;
 
     // Color palette for TIA and UI modes
-    Uint32 myPalette[256+kNumColors];
+    uInt32 myPalette[256+kNumColors];
 
   private:
     /**
