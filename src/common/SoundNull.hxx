@@ -39,7 +39,7 @@ class SoundNull : public Sound
     */
     SoundNull(OSystem& osystem) : Sound(osystem)
     {
-      myOSystem->logMessage("Sound disabled.\n", 1);
+      myOSystem.logMessage("Sound disabled.\n", 1);
     }
 
     /**
