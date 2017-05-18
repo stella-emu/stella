@@ -18,7 +18,9 @@
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
+#ifdef CHEATCODE_SUPPORT
 class CheatManager;
+#endif
 class CommandMenu;
 class Console;
 class Debugger;
@@ -462,8 +464,10 @@ class OSystem
     unique_ptr<Debugger> myDebugger;
   #endif
 
+  #ifdef CHEATCODE_SUPPORT
     // Pointer to the CheatManager object
     unique_ptr<CheatManager> myCheatManager;
+  #endif
 
     // Pointer to the StateManager object
     unique_ptr<StateManager> myStateManager;
