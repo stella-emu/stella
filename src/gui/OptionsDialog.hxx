@@ -32,7 +32,9 @@ class OSystem;
 #include "ConfigPathDialog.hxx"
 #include "RomAuditDialog.hxx"
 #include "GameInfoDialog.hxx"
+#ifdef CHEATCODE_SUPPORT
 #include "CheatCodeDialog.hxx"
+#endif
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "LoggerDialog.hxx"
@@ -58,7 +60,9 @@ class OptionsDialog : public Dialog
     unique_ptr<ConfigPathDialog> myConfigPathDialog;
     unique_ptr<RomAuditDialog>   myRomAuditDialog;
     unique_ptr<GameInfoDialog>   myGameInfoDialog;
+  #ifdef CHEATCODE_SUPPORT
     unique_ptr<CheatCodeDialog>  myCheatCodeDialog;
+  #endif
     unique_ptr<LoggerDialog>     myLoggerDialog;
     unique_ptr<HelpDialog>       myHelpDialog;
     unique_ptr<AboutDialog>      myAboutDialog;
