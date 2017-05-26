@@ -28,6 +28,8 @@
 
 class Settings;
 
+#include <functional>
+
 #include "bspf.hxx"
 #include "System.hxx"
 #include "Serializable.hxx"
@@ -49,6 +51,10 @@ class M6502 : public Serializable
   // The 6502 and Cart debugger classes are friends who need special access
   friend class CartDebug;
   friend class CpuDebug;
+
+  public:
+
+    using onHaltCallback = std::function<void()>;
 
   public:
     /**
@@ -82,6 +88,21 @@ class M6502 : public Serializable
       Request a non-maskable interrupt
     */
     void nmi() { myExecutionStatus |= NonmaskableInterruptBit; }
+
+    /**
+      Set the callback for handling a halt condition
+    */
+    void setOnHaltCallback(onHaltCallback callback) { myOnHaltCallback = callback; }
+
+    /**
+      RDY pulled low --- halt on next read.
+    */
+    void requestHalt();
+
+    /**
+      Pull RDY high again before the callback was triggered.
+    */
+    void clearHaltRequest() { myHaltRequested = false; };
 
     /**
       Execute instructions until the specified number of instructions
@@ -327,6 +348,12 @@ class M6502 : public Serializable
 
     /// Indicates the number of system cycles per processor cycle
     static constexpr uInt32 SYSTEM_CYCLES_PER_CPU = 1;
+
+    /// Called when the processor enters halt state
+    onHaltCallback myOnHaltCallback;
+
+    /// Indicates whether RDY was pulled low
+    bool myHaltRequested;
 
 #ifdef DEBUGGER_SUPPORT
     Int32 evalCondBreaks() {

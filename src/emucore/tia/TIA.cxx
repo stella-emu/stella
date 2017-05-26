@@ -186,6 +186,12 @@ void TIA::installDelegate(System& system, Device& device)
   for(uInt32 i = 0; i < 8192; i += (1 << System::PAGE_SHIFT))
     if((i & 0x1080) == 0x0000)
       mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+
+  mySystem->m6502().setOnHaltCallback(
+    [this] () {
+      onHalt();
+    }
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -428,17 +434,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
   switch (address)
   {
     case WSYNC:
-      // It appears that the 6507 only halts during a read cycle so
-      // we test here for follow-on writes which should be ignored as
-      // far as halting the processor is concerned.
-      // See issue #42 for more information.
-      if (mySystem->m6502().lastAccessWasRead())
-      {
-        mySubClock += (228 - myHctr) % 228;
-        mySystem->incrementCycles(mySubClock / 3);
-        mySubClock %= 3;
-      }
-      myShadowRegisters[address] = value;
+      mySystem->m6502().requestHalt();
       break;
 
     case RSYNC:
@@ -1051,6 +1047,14 @@ void TIA::onFrameComplete()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::onHalt()
+{
+  mySubClock += (228 - myHctr) % 228;
+  mySystem->incrementCycles(mySubClock / 3);
+  mySubClock %= 3;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::cycle(uInt32 colorClocks)
 {
   for (uInt32 i = 0; i < colorClocks; i++)
@@ -1161,6 +1165,8 @@ void TIA::nextLine()
   myFrameManager.nextLine();
 
   if (myFrameManager.isRendering() && myFrameManager.getY() == 0) flushLineCache();
+
+  mySystem->m6502().clearHaltRequest();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

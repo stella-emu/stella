@@ -58,7 +58,9 @@ M6502::M6502(const Settings& settings)
     myLastSrcAddressA(-1),
     myLastSrcAddressX(-1),
     myLastSrcAddressY(-1),
-    myDataAddressForPoke(0)
+    myDataAddressForPoke(0),
+    myOnHaltCallback(0),
+    myHaltRequested(false)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
@@ -102,11 +104,18 @@ void M6502::reset()
   myLastSrcAddressS = myLastSrcAddressA =
     myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
+
+  myHaltRequested = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
 {
+  if (myHaltRequested) {
+    myOnHaltCallback();
+    myHaltRequested = false;
+  }
+
   ////////////////////////////////////////////////
   // TODO - move this logic directly into CartAR
   if(address != myLastAddress)
@@ -157,6 +166,13 @@ inline void M6502::poke(uInt16 address, uInt8 value)
   mySystem->poke(address, value);
   myLastAccessWasRead = false;
   myLastPokeAddress = address;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::requestHalt()
+{
+  if (!myOnHaltCallback) throw runtime_error("onHaltCallback not configured");
+  myHaltRequested = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,6 +326,8 @@ bool M6502::save(Serializer& out) const
     out.putInt(myLastSrcAddressA);
     out.putInt(myLastSrcAddressX);
     out.putInt(myLastSrcAddressY);
+
+    out.putBool(myHaltRequested);
   }
   catch(...)
   {
@@ -358,6 +376,8 @@ bool M6502::load(Serializer& in)
     myLastSrcAddressA = in.getInt();
     myLastSrcAddressX = in.getInt();
     myLastSrcAddressY = in.getInt();
+
+    myHaltRequested = in.getBool();
   }
   catch(...)
   {
