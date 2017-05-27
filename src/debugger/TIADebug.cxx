@@ -722,6 +722,12 @@ int TIADebug::scanlines() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::scanlinesLastFrame() const
+{
+  return myTIA.myFrameManager.scanlinesLastFrame();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::clocksThisLine() const
 {
   return myTIA.clocksThisLine();

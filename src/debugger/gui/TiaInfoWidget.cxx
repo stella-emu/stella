@@ -68,16 +68,23 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos = x + lwidth + myFrameCycles->getWidth() + 8;  ypos = y + 10;
   lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ");
   fwidth = 3 * lfont.getMaxCharWidth() + 4;
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       "Scanline ", kTextAlignLeft);
 
-  myScanlineCount = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
+  new StaticTextWidget(boss, lfont, xpos, ypos,
+    lfont.getStringWidth(longstr ? "Scanline" : "Scn Ln"), lineHeight,
+    longstr ? "Scanline" : "Scn Ln", kTextAlignLeft);
+
+  myScanlineCountLast = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
+  myScanlineCountLast->setEditable(false, true);
+
+  myScanlineCount = new EditTextWidget(boss, nfont,
+        xpos+lwidth - myScanlineCountLast->getWidth() - 2, ypos-1, fwidth,
+        lineHeight, "");
   myScanlineCount->setEditable(false, true);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Scan Cycle " : "S. Cycle ", kTextAlignLeft);
+                       longstr ? "Scan Cycle " : "Scn Cycle", kTextAlignLeft);
 
   myScanlineCycles = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                         lineHeight, "");
@@ -128,7 +135,10 @@ void TiaInfoWidget::loadConfig()
   myVBlank->setState(tia.vblank());
 
   int clk = tia.clocksThisLine();
-  myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::F_10));
+  myScanlineCount->setText(
+      Common::Base::toString(tia.scanlines(), Common::Base::F_10));
+  myScanlineCountLast->setText(
+      Common::Base::toString(tia.scanlinesLastFrame(), Common::Base::F_10));
   myScanlineCycles->setText(Common::Base::toString(clk/3, Common::Base::F_10));
   myPixelPosition->setText(Common::Base::toString(clk-68, Common::Base::F_10));
   myColorClocks->setText(Common::Base::toString(clk, Common::Base::F_10));

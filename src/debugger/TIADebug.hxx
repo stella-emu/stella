@@ -158,6 +158,7 @@ class TIADebug : public DebuggerSystem
 
     // Read-only internal TIA state
     int scanlines() const;
+    int scanlinesLastFrame() const;
     int frameCount() const;
     int clocksThisLine() const;
     bool vsync() const;

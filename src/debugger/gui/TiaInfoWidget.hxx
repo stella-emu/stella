@@ -39,6 +39,7 @@ class TiaInfoWidget : public Widget, public CommandSender
     EditTextWidget* myFrameCycles;
 
     EditTextWidget* myScanlineCount;
+    EditTextWidget* myScanlineCountLast;
     EditTextWidget* myScanlineCycles;
     EditTextWidget* myPixelPosition;
     EditTextWidget* myColorClocks;
