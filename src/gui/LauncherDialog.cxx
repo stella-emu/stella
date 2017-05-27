@@ -523,7 +523,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     {
       FilesystemNode dir(myRomDir->getResult());
       instance().settings().setValue("romdir", dir.getShortPath());
-      // fall through to the next case
+      [[fallthrough]];
     }
     case kRomDirChosenCmd:
       myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));

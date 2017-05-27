@@ -210,6 +210,7 @@ uInt32 Thumbulator::fetch32(uInt32 addr)
         if(addr == 0x0000003C) return data;
         fatalError("fetch32", addr, "abort");
       }
+      [[fallthrough]];
 
     case 0x40000000: //RAM
       data = read32(addr);
@@ -1090,14 +1091,14 @@ int Thumbulator::execute()
           // _SetWaveSize:
           //   ldr     r4, =WaveSizeStore
           //   bx      r4   // bx instruction at 0x000006e6
-          
+
           // address to test for is + 4 due to pipelining
-          
+
 #define BUS_SetNote     (0x000006da + 4)
 #define BUS_ResetWave   (0x000006de + 4)
 #define BUS_GetWavePtr  (0x000006e2 + 4)
 #define BUS_SetWaveSize (0x000006e6 + 4)
-          
+
           if      (pc == BUS_SetNote)
           {
             myCartridge->thumbCallback(0, read_register(2), read_register(3));
@@ -1133,9 +1134,9 @@ int Thumbulator::execute()
 #endif
             myCartridge->thumbCallback(255, 0, 0);
           }
-          
+
           break;
-          
+
         case ConfigureFor::CDF:
           // this subroutine interface is used in the CDF driver,
           // it starts at address 0x000006e0

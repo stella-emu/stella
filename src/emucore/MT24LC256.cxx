@@ -328,6 +328,7 @@ void MT24LC256::jpee_clock_fall()
       jpee_state=3;
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
       JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
+      [[fallthrough]];
 
     case 3:
       jpee_sdat = !!(jpee_nb & 256);
