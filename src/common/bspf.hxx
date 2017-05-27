@@ -91,6 +91,7 @@ namespace BSPF
     static const string PATH_SEPARATOR = "/";
   #elif defined(BSPF_WINDOWS)
     static const string PATH_SEPARATOR = "\\";
+    #pragma warning (disable : 4146)  // unary minus operator applied to unsigned type
     #pragma warning(2:4264)  // no override available for virtual member function from base 'class'; function is hidden
     #pragma warning(2:4265)  // class has virtual functions, but destructor is not virtual
     #pragma warning(2:4266)  // no override available for virtual member function from base 'type'; function is hidden
