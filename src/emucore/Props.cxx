@@ -66,7 +66,7 @@ void Properties::set(PropertyType key, const string& value)
       case Display_PPBlend:
       {
         int blend = atoi(myProperties[key].c_str());
-        if(blend < 0 || blend > 100) blend = 77;
+        if(blend < 50 || blend > 100) blend = 77;
         ostringstream buf;
         buf << blend;
         myProperties[key] = buf.str();

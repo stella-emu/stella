@@ -86,6 +86,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   );
 
   myFramebuffer  = make_ptr<uInt8[]>(160 * FrameManager::frameBufferHeight);
+  myRGBFramebuffer = make_ptr<uInt32[]>(160 * FrameManager::frameBufferHeight);
 
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
@@ -152,6 +153,7 @@ void TIA::reset()
 void TIA::frameReset()
 {
   memset(myFramebuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
+  memset(myRGBFramebuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("colorloss"));
 }

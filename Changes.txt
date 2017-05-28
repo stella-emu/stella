@@ -21,6 +21,10 @@
     - YStart autodetection
     - ...
 
+  * Implemented new phosphor emulation mode, which is much closer to real
+    TV output.  Special thanks to Thomas Jentzsch for the idea and
+    implementation.
+
   * Proper emulation of RDY during write cycles.
 
   * Much improved RIOT timer emulation never before seen in any emulator.

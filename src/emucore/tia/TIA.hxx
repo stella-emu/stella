@@ -157,9 +157,10 @@ class TIA : public Device
     void update();
 
     /**
-      Returns pointer to the internal frame buffer.
+      Returns a pointer to the internal frame buffer(s).
     */
-    uInt8* frameBuffer() const { return myFramebuffer.get();  }
+    uInt8* frameBuffer() const     { return myFramebuffer.get();    }
+    uInt32* rgbFramebuffer() const { return myRGBFramebuffer.get(); }
 
     /**
       Answers dimensional info about the framebuffer.
@@ -465,6 +466,9 @@ class TIA : public Device
 
     // Pointer to the internal frame buffer
     BytePtr myFramebuffer;
+
+    // Pointer to the RGB frame buffer (used for phosphor)
+    std::unique_ptr<uInt32[]> myRGBFramebuffer;
 
     bool myTIAPinsDriven;
 
