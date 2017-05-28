@@ -120,7 +120,7 @@ class TIASurface
     */
     uInt8 getPhosphor(uInt8 c1, uInt8 c2) const {
       // Use maximum of current and decayed previous values
-      c2 *= myPhosphorPercent;
+      c2 = uInt8(c2 * myPhosphorPercent);
       if(c1 > c2)  return c1; // raise (assumed immediate)
       else         return c2; // decay
     }
