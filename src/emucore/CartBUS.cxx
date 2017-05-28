@@ -99,10 +99,10 @@ void CartridgeBUS::setInitialState()
 
   for (int i=0; i < 3; ++i)
     myMusicWaveformSize[i] = 27;
-  
+
   // BUS always starts in bank 6
   myStartBank = 6;
-  
+
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris
   myMode = 0xFF;
@@ -156,15 +156,11 @@ inline void CartridgeBUS::updateMusicModeDataFetchers()
   myFractionalClocks = clocks - double(wholeClocks);
 
   if(wholeClocks <= 0)
-  {
     return;
-  }
 
   // Let's update counters and flags of the music mode data fetchers
   for(int x = 0; x <= 2; ++x)
-  {
     myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,7 +176,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
       try {
         Int32 cycles = mySystem->cycles() - myARMCycles;
         myARMCycles = mySystem->cycles();
-        
+
         myThumbEmulator->run(cycles);
       }
       catch(const runtime_error& e) {
@@ -220,22 +216,22 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     // anything that can change the internal state of the cart
     if(bankLocked())
       return peekvalue;
-    
+
     // implement JMP FASTJMP which fetches the destination address from stream 17
     if (myFastJumpActive
         && myJMPoperandAddress == address)
     {
       uInt32 pointer;
       uInt8 value;
-      
+
       myFastJumpActive--;
       myJMPoperandAddress++;
-      
+
       pointer = getDatastreamPointer(JUMPSTREAM);
       value = myDisplayImage[ pointer >> 20 ];
       pointer += 0x100000;  // always increment by 1
       setDatastreamPointer(JUMPSTREAM, pointer);
-      
+
       return value;
     }
 
@@ -261,16 +257,23 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     switch(address)
     {
       case 0xFEE: // AMPLITUDE
-        
         // Update the music data fetchers (counter & flag)
         updateMusicModeDataFetchers();
-        
+
         if DIGITAL_AUDIO_ON
         {
           // retrieve packed sample (max size is 2K, or 4K of unpacked data)
-          peekvalue = myImage[getSample() + (myMusicCounters[0] >> 21)];
-          
-          //
+          uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> 21);
+
+          // get sample value from ROM or RAM
+          if (sampleaddress < 0x8000)
+            peekvalue = myImage[sampleaddress];
+          else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40002000) // check for RAM
+            peekvalue = myBUSRAM[sampleaddress - 0x40000000];
+          else
+            peekvalue = 0;
+
+          // make sure current volume value is in the lower nybble
           if ((myMusicCounters[0] & (1<<20)) == 0)
             peekvalue >>= 4;
           peekvalue &= 0x0f;
@@ -280,67 +283,67 @@ uInt8 CartridgeBUS::peek(uInt16 address)
           // using myDisplayImage[] instead of myProgramImage[] because waveforms
           // can be modified during runtime.
           uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-          myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-          myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
-          
+                     myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
+                     myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+
           peekvalue = uInt8(i);
         }
         break;
-        
+
       case 0xFEF: // DSREAD
         peekvalue = readFromDatastream(COMMSTREAM);
         break;
-        
+
       case 0xFF0: // DSWRITE
       case 0xFF1: // DSPTR
       case 0xFF2: // SETMODE
       case 0xFF3: // CALLFN
         // these are write-only
         break;
-        
+
       case 0xFF5:
         // Set the current bank to the first 4k bank
         bank(0);
         break;
-        
+
       case 0x0FF6:
         // Set the current bank to the second 4k bank
         bank(1);
         break;
-        
+
       case 0x0FF7:
         // Set the current bank to the third 4k bank
         bank(2);
         break;
-        
+
       case 0x0FF8:
         // Set the current bank to the fourth 4k bank
         bank(3);
         break;
-        
+
       case 0x0FF9:
         // Set the current bank to the fifth 4k bank
         bank(4);
         break;
-        
+
       case 0x0FFA:
         // Set the current bank to the sixth 4k bank
         bank(5);
         break;
-        
+
       case 0x0FFB:
         // Set the current bank to the last 4k bank
         bank(6);
         break;
-        
+
       default:
         break;
     }
-    
+
     // this might not work right for STY $84
     if (BUS_STUFF_ON && peekvalue == 0x84)
       mySTYZeroPageAddress = address + 1;
-    
+
     return peekvalue;
   }
 
@@ -373,14 +376,14 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
       case 0xFEF: // DSREAD
         // these are read-only
         break;
-        
+
       case 0xFF0: // DSWRITE
         pointer = getDatastreamPointer(COMMSTREAM);
         myDisplayImage[ pointer >> 20 ] = value;
         pointer += 0x100000;  // always increment by 1 when writing
         setDatastreamPointer(COMMSTREAM, pointer);
         break;
-        
+
       case 0xFF1: // DSPTR
         pointer = getDatastreamPointer(COMMSTREAM);
         pointer <<=8;
@@ -388,50 +391,50 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
         pointer |= (value << 20);
         setDatastreamPointer(COMMSTREAM, pointer);
         break;
-        
+
       case 0xFF2: // SETMODE
         myMode = value;
         break;
-        
+
       case 0xFF3: // CALLFN
         callFunction(value);
         break;
-        
+
       case 0xFF5:
         // Set the current bank to the first 4k bank
         bank(0);
         break;
-        
+
       case 0x0FF6:
         // Set the current bank to the second 4k bank
         bank(1);
         break;
-        
+
       case 0x0FF7:
         // Set the current bank to the third 4k bank
         bank(2);
         break;
-        
+
       case 0x0FF8:
         // Set the current bank to the fourth 4k bank
         bank(3);
         break;
-        
+
       case 0x0FF9:
         // Set the current bank to the fifth 4k bank
         bank(4);
         break;
-        
+
       case 0x0FFA:
         // Set the current bank to the sixth 4k bank
         bank(5);
         break;
-        
+
       case 0x0FFB:
         // Set the current bank to the last 4k bank
         bank(6);
         break;
-        
+
       default:
         break;
     }
@@ -565,17 +568,17 @@ bool CartridgeBUS::save(Serializer& out) const
 
     // Harmony RAM
     out.putByteArray(myBUSRAM, 8192);
-    
+
     // Addresses for bus override logic
     out.putShort(myBusOverdriveAddress);
     out.putShort(mySTYZeroPageAddress);
     out.putShort(myJMPoperandAddress);
-    
+
     // Save cycles and clocks
     out.putInt(mySystemCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
     out.putInt(myARMCycles);
-    
+
     // Audio info
     out.putIntArray(myMusicCounters, 3);
     out.putIntArray(myMusicFrequencies, 3);
@@ -609,7 +612,7 @@ bool CartridgeBUS::load(Serializer& in)
 
     // Harmony RAM
     in.getByteArray(myBUSRAM, 8192);
-    
+
     // Addresses for bus override logic
     myBusOverdriveAddress = in.getShort();
     mySTYZeroPageAddress = in.getShort();
@@ -619,15 +622,15 @@ bool CartridgeBUS::load(Serializer& in)
     mySystemCycles = (Int32)in.getInt();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
     myARMCycles = (Int32)in.getInt();
-    
+
     // Audio info
     in.getIntArray(myMusicCounters, 3);
     in.getIntArray(myMusicFrequencies, 3);
     in.getByteArray(myMusicWaveformSize, 3);
-    
+
     // Indicates current mode
     myMode = in.getByte();
-    
+
     // Indicates if in the middle of a fast jump
     myFastJumpActive = in.getByte();
   }
@@ -728,12 +731,12 @@ uInt32 CartridgeBUS::getWaveform(uInt8 index) const
 uInt32 CartridgeBUS::getSample()
 {
   uInt32 result;
-  
+
   result = myBUSRAM[WAVEFORM + 0]        +  // low byte
           (myBUSRAM[WAVEFORM + 1] << 8)  +
           (myBUSRAM[WAVEFORM + 2] << 16) +
           (myBUSRAM[WAVEFORM + 3] << 24);   // high byte
-  
+
   return result;
 }
 

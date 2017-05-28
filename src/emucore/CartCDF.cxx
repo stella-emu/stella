@@ -230,7 +230,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     myJMPoperandAddress = address + 1;
     return peekvalue;
   }
-  
+
   myJMPoperandAddress = 0;
 
   // Do a FAST FETCH LDA# if:
@@ -249,10 +249,17 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       if DIGITAL_AUDIO_ON
       {
         // retrieve packed sample (max size is 2K, or 4K of unpacked data)
-        address = getSample() + (myMusicCounters[0] >> 21);
-        peekvalue = myImage[address];
+        uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> 21);
 
-        //
+        // get sample value from ROM or RAM
+        if (sampleaddress < 0x8000)
+          peekvalue = myImage[sampleaddress];
+        else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40002000) // check for RAM
+          peekvalue = myCDFRAM[sampleaddress - 0x40000000];
+        else
+          peekvalue = 0;
+
+        // make sure current volume value is in the lower nybble
         if ((myMusicCounters[0] & (1<<20)) == 0)
           peekvalue >>= 4;
         peekvalue &= 0x0f;
