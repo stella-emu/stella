@@ -85,8 +85,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     }
   );
 
-  myCurrentFrameBuffer  = make_ptr<uInt8[]>(160 * FrameManager::frameBufferHeight);
-  myPreviousFrameBuffer = make_ptr<uInt8[]>(160 * FrameManager::frameBufferHeight);
+  myFramebuffer  = make_ptr<uInt8[]>(160 * FrameManager::frameBufferHeight);
 
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
@@ -152,7 +151,7 @@ void TIA::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::frameReset()
 {
-  clearBuffers();
+  memset(myFramebuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("colorloss"));
 }
@@ -192,13 +191,6 @@ void TIA::installDelegate(System& system, Device& device)
       onHalt();
     }
   );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::clearBuffers()
-{
-  memset(myCurrentFrameBuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
-  memset(myPreviousFrameBuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -715,7 +707,7 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myCurrentFrameBuffer.get(), 160*320);
+    out.putByteArray(myFramebuffer.get(), 160*FrameManager::frameBufferHeight);
   }
   catch(...)
   {
@@ -732,9 +724,7 @@ bool TIA::loadDisplay(Serializer& in)
   try
   {
     // Reset frame buffer pointer and data
-    clearBuffers();
-    in.getByteArray(myCurrentFrameBuffer.get(), 160*320);
-    memcpy(myPreviousFrameBuffer.get(), myCurrentFrameBuffer.get(), 160*320);
+    in.getByteArray(myFramebuffer.get(), 160*FrameManager::frameBufferHeight);
   }
   catch(...)
   {
@@ -992,20 +982,12 @@ void TIA::updateEmulation()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::swapBuffers()
-{
-  myCurrentFrameBuffer.swap(myPreviousFrameBuffer);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::onFrameStart()
 {
-  swapBuffers();
-
   const Int32 x = myHctr - 68;
 
   if (x > 0)
-    memset(myCurrentFrameBuffer.get(), 0, x);
+    memset(myFramebuffer.get(), 0, x);
 
   for (uInt8 i = 0; i < 4; i++)
     updatePaddle(i);
@@ -1039,7 +1021,7 @@ void TIA::onFrameComplete()
   // Blank out any extra lines not drawn this frame
   const uInt32 missingScanlines = myFrameManager.missingScanlines();
   if (missingScanlines > 0)
-    memset(myCurrentFrameBuffer.get() + 160 * myFrameManager.getY(), 0, missingScanlines * 160);
+    memset(myFramebuffer.get() + 160 * myFrameManager.getY(), 0, missingScanlines * 160);
 
   // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)
@@ -1142,7 +1124,7 @@ void TIA::applyRsync()
 
   myXDelta = 157 - x;
   if (myFrameManager.isRendering())
-    memset(myCurrentFrameBuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
+    memset(myFramebuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
 
   myHctr = 225;
 }
@@ -1176,7 +1158,7 @@ void TIA::cloneLastLine()
 
   if (!myFrameManager.isRendering() || y == 0) return;
 
-  uInt8* buffer = myCurrentFrameBuffer.get();
+  uInt8* buffer = myFramebuffer.get();
 
   memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
 }
@@ -1243,7 +1225,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
       break;
   }
 
-  myCurrentFrameBuffer.get()[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
+  myFramebuffer.get()[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1269,7 +1251,7 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager.isRendering() && myHstate == HState::blank)
-    memset(myCurrentFrameBuffer.get() + myFrameManager.getY() * 160,
+    memset(myFramebuffer.get() + myFrameManager.getY() * 160,
            myColorHBlank, 8);
 }
 

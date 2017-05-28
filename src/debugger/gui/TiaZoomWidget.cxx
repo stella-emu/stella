@@ -246,7 +246,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   // Draw the zoomed image
   // This probably isn't as efficient as it can be, but it's a small area
   // and I don't have time to make it faster :)
-  const uInt8* currentFrame  = instance().console().tia().currentFrameBuffer();
+  const uInt8* currentFrame  = instance().console().tia().frameBuffer();
   const int width = instance().console().tia().width(),
             wzoom = myZoomLevel << 1,
             hzoom = myZoomLevel;

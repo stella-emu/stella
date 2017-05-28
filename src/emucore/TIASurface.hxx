@@ -67,7 +67,7 @@ class TIASurface
     /**
       Get the TIA base surface for use in saving to a PNG image.
     */
-    const FBSurface& baseSurface(GUI::Rect& rect);
+    const FBSurface& baseSurface(GUI::Rect& rect) const;
 
     /**
       Get the TIA pixel associated with the given TIA buffer index,

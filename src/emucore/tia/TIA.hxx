@@ -76,12 +76,12 @@ class TIA : public Device
 
   public:
     /**
-      Reset device to its power-on state
+      Reset device to its power-on state.
     */
     void reset() override;
 
     /**
-      Reset frame to current YStart/Height properties
+      Reset frame to current YStart/Height properties.
     */
     void frameReset();
 
@@ -100,14 +100,14 @@ class TIA : public Device
     void install(System& system) override;
 
     /**
-      Get the byte at the specified address
+      Get the byte at the specified address.
 
       @return The byte at the specified address
     */
     uInt8 peek(uInt16 address) override;
 
     /**
-      Change the byte at the specified address to the given value
+      Change the byte at the specified address to the given value.
 
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
@@ -157,13 +157,12 @@ class TIA : public Device
     void update();
 
     /**
-      Answers the current and previous frame buffer pointers
+      Returns pointer to the internal frame buffer.
     */
-    uInt8* currentFrameBuffer() const  { return myCurrentFrameBuffer.get();  }
-    uInt8* previousFrameBuffer() const { return myPreviousFrameBuffer.get(); }
+    uInt8* frameBuffer() const { return myFramebuffer.get();  }
 
     /**
-      Answers dimensional info about the framebuffer
+      Answers dimensional info about the framebuffer.
     */
     uInt32 width() const  { return 160; }
     uInt32 height() const { return myFrameManager.height(); }
@@ -305,9 +304,6 @@ class TIA : public Device
     bool toggleJitter(uInt8 mode = 2);
     void setJitterRecoveryFactor(Int32 factor) { myFrameManager.setJitterFactor(factor); }
 
-    // Clear both internal TIA buffers to black (palette color 0)
-    void clearBuffers();
-
     /**
       This method should be called to update the TIA with a new scanline.
     */
@@ -326,12 +322,12 @@ class TIA : public Device
     TIA& updateScanlineByTrace(int target);
 
     /**
-      Retrieve the last value written to a certain register
+      Retrieve the last value written to a certain register.
     */
     uInt8 registerValue(uInt8 reg) const;
 
     /**
-      Get the current x value
+      Get the current x value.
     */
     uInt8 getPosition() const {
       return (myHctr < 68) ? 0 : (myHctr - 68 - myXDelta);
@@ -339,7 +335,7 @@ class TIA : public Device
 
     /**
       Flush the line cache after an externally triggered state change
-      (e.g. a register write)
+      (e.g. a register write).
     */
     void flushLineCache();
 
@@ -431,8 +427,6 @@ class TIA : public Device
 
     uInt8 resxCounter();
 
-    void swapBuffers();
-
     /**
       Get the result of the specified collision register.
     */
@@ -469,9 +463,8 @@ class TIA : public Device
     LatchedInput myInput0;
     LatchedInput myInput1;
 
-    // Pointer to the current and previous frame buffers
-    BytePtr myCurrentFrameBuffer;
-    BytePtr myPreviousFrameBuffer;
+    // Pointer to the internal frame buffer
+    BytePtr myFramebuffer;
 
     bool myTIAPinsDriven;
 

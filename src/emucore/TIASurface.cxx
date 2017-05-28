@@ -121,7 +121,7 @@ void TIASurface::setPalette(const uInt32* tia_palette, const uInt32* rgb_palette
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FBSurface& TIASurface::baseSurface(GUI::Rect& rect)
+const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
 {
   uInt32 tiaw = myTIA->width(), width = tiaw*2, height = myTIA->height();
   rect.setBounds(0, 0, width, height);
@@ -146,10 +146,8 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TIASurface::pixel(uInt32 idx, uInt8 shift) const
 {
-  uInt8 c = *(myTIA->currentFrameBuffer() + idx) | shift;
-  uInt8 p = *(myTIA->previousFrameBuffer() + idx) | shift;
-
-  return (!myUsePhosphor ? myPalette[c] : myPhosphorPalette[c][p]);
+// FIXME - use TJ phosphor code
+  return myPalette[*(myTIA->frameBuffer() + idx) | shift];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -303,10 +301,9 @@ void TIASurface::render()
   // In hardware rendering mode, it's faster to just assume that the screen
   // is dirty and always do an update
 
-  uInt8* currentFrame  = myTIA->currentFrameBuffer();
-  uInt8* previousFrame = myTIA->previousFrameBuffer();
-  uInt32 width         = myTIA->width();
-  uInt32 height        = myTIA->height();
+  uInt8* fbuffer = myTIA->frameBuffer();
+  uInt32 width   = myTIA->width();
+  uInt32 height  = myTIA->height();
 
   uInt32 *buffer, pitch;
   myTiaSurface->basePtr(buffer, pitch);
@@ -323,7 +320,7 @@ void TIASurface::render()
       {
         uInt32 pos = screenofsY;
         for(uInt32 x = 0; x < width; ++x)
-          buffer[pos++] = myPalette[currentFrame[bufofsY + x]];
+          buffer[pos++] = myPalette[fbuffer[bufofsY + x]];
 
         bufofsY    += width;
         screenofsY += pitch;
@@ -332,6 +329,7 @@ void TIASurface::render()
     }
     case kPhosphor:
     {
+#if 0 // FIXME
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
       for(uInt32 y = 0; y < height; ++y)
@@ -345,18 +343,20 @@ void TIASurface::render()
         bufofsY    += width;
         screenofsY += pitch;
       }
+#endif
       break;
     }
     case kBlarggNormal:
     {
-      myNTSCFilter.blit_single(currentFrame, width, height,
-                               buffer, pitch << 2);
+      myNTSCFilter.blit_single(fbuffer, width, height, buffer, pitch << 2);
       break;
     }
     case kBlarggPhosphor:
     {
+#if 0 // FIXME
       myNTSCFilter.blit_double(currentFrame, previousFrame, width, height,
                                buffer, pitch << 2);
+#endif
       break;
     }
   }
