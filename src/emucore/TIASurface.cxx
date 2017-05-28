@@ -32,7 +32,7 @@ TIASurface::TIASurface(OSystem& system)
     myTIA(nullptr),
     myFilterType(kNormal),
     myUsePhosphor(false),
-    myPhosphorPercent(0.77f),
+    myPhosphorPercent(0.60f),
     myScanlinesEnabled(false),
     myPalette(nullptr)
 {

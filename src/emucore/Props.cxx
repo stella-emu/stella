@@ -324,7 +324,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "0",         // Display.YStart
   "0",         // Display.Height
   "NO",        // Display.Phosphor
-  "77"         // Display.PPBlend
+  "60"         // Display.PPBlend
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
