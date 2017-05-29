@@ -506,7 +506,7 @@ void VideoDialog::setDefaults()
       myFullscreen->setState(false);
       myUseStretch->setState(true);
       myUseVSync->setState(true);
-      myColorLoss->setState(true);
+      myColorLoss->setState(false);
       myUIMessages->setState(true);
       myCenter->setState(false);
       myFastSCBios->setState(false);
