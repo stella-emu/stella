@@ -355,7 +355,7 @@ GameInfoDialog::GameInfoDialog(
                                ypos, 8*fontWidth, lineHeight, "Blend ",
                                font.getStringWidth("Blend "),
                                kPPBlendChanged);
-  myPPBlend->setMinValue(50); myPPBlend->setMaxValue(100);
+  myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   wid.push_back(myPPBlend);
 
   myPPBlendLabel = new StaticTextWidget(myTab, font,

@@ -223,7 +223,7 @@ void TIASurface::enableScanlineInterpolation(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
-  myUsePhosphor   = enable;
+  myUsePhosphor = enable;
   myPhosphorPercent = blend / 100.0;
   myFilterType = FilterType(enable ? myFilterType | 0x01 : myFilterType & 0x10);
   myTiaSurface->setDirty();
@@ -231,7 +231,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p, uInt8 shift) const
+inline uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p, uInt8 shift) const
 {
   uInt8 rc, gc, bc, rp, gp, bp;
 
@@ -320,11 +320,10 @@ void TIASurface::render()
   {
     case kNormal:
     {
-      uInt32 bufofsY    = 0;
-      uInt32 screenofsY = 0;
+      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
       for(uInt32 y = 0; y < height; ++y)
       {
-        uInt32 pos = screenofsY;
+        pos = screenofsY;
         for(uInt32 x = 0; x < width; ++x)
           buffer[pos++] = myPalette[tiaFrame[bufofsY + x]];
 
@@ -335,11 +334,10 @@ void TIASurface::render()
     }
     case kPhosphor:
     {
-      uInt32 bufofsY    = 0;
-      uInt32 screenofsY = 0;
+      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
       for(uInt32 y = 0; y < height; ++y)
       {
-        uInt32 pos = screenofsY;
+        pos = screenofsY;
         for(uInt32 x = 0; x < width; ++x)
         {
           const uInt32 bufofs = bufofsY + x;

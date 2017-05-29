@@ -211,6 +211,13 @@ class Console : public Serializable
     void togglePhosphor();
 
     /**
+      Change the "Display.PPBlend" variable.
+
+      @param direction +1 indicates increase, -1 indicates decrease.
+    */
+    void changePhosphor(int direction);
+
+    /**
       Toggles the PAL color-loss effect.
     */
     void toggleColorLoss();

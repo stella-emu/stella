@@ -14365,6 +14365,7 @@
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
 "Display.Phosphor" "YES"
+"Display.PPBlend" "60"
 ""
 
 "Cartridge.MD5" "b9b4612358a0b2c1b4d66bb146767306"
@@ -18155,6 +18156,7 @@
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
 "Display.Phosphor" "YES"
+"Display.PPBlend" "60"
 ""
 
 "Cartridge.MD5" "e800e4aec7c6c54c9cf3db0d1d030058"

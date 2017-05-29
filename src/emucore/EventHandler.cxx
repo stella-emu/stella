@@ -404,6 +404,14 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
             myOSystem.console().toggleBits();
           break;
 
+        case KBDK_I:  // Alt-i decreases phosphor blend
+          myOSystem.console().changePhosphor(-1);
+          break;
+
+        case KBDK_O:  // Alt-o increases phosphor blend
+          myOSystem.console().changePhosphor(+1);
+          break;
+
         case KBDK_P:  // Alt-p toggles phosphor effect
           myOSystem.console().togglePhosphor();
           break;

@@ -66,7 +66,7 @@ void Properties::set(PropertyType key, const string& value)
       case Display_PPBlend:
       {
         int blend = atoi(myProperties[key].c_str());
-        if(blend < 50 || blend > 100) blend = 77;
+        if(blend < 0 || blend > 100) blend = 30;
         ostringstream buf;
         buf << blend;
         myProperties[key] = buf.str();
@@ -324,7 +324,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "0",         // Display.YStart
   "0",         // Display.Height
   "NO",        // Display.Phosphor
-  "60"         // Display.PPBlend
+  "30"         // Display.PPBlend
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -441,6 +441,47 @@ void Console::togglePhosphor()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changePhosphor(int direction)
+{
+  bool enable = myProperties.get(Display_Phosphor) == "YES";
+  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
+
+  if(enable)
+  {
+    if(direction == +1)       // increase blend
+    {
+      if(blend >= 100)
+      {
+        myOSystem.frameBuffer().showMessage("Phosphor blend at maximum");
+        return;
+      }
+      else
+        blend = std::min(blend+2, 100);
+    }
+    else if(direction == -1)  // decrease blend
+    {
+      if(blend <= 0)
+      {
+        myOSystem.frameBuffer().showMessage("Phosphor blend at minimum");
+        return;
+      }
+      else
+        blend = std::max(blend-2, 0);
+    }
+    else
+      return;
+
+    ostringstream val;
+    val << blend;
+    myProperties.set(Display_PPBlend, val.str());
+    myOSystem.frameBuffer().showMessage("Phosphor blend " + val.str());
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable, blend);
+  }
+  else
+    myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setProperties(const Properties& props)
 {
   myProperties = props;
