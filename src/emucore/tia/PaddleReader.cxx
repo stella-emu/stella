@@ -42,7 +42,7 @@ void PaddleReader::reset(double timestamp)
   myValue = 0;
   myTimestamp = timestamp;
 
-  setLayout(FrameLayout::ntsc);
+  setConsoleTiming(ConsoleTiming::ntsc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,10 +71,10 @@ uInt8 PaddleReader::inpt(double timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::update(double value, double timestamp, FrameLayout layout)
+void PaddleReader::update(double value, double timestamp, ConsoleTiming consoleTiming)
 {
-  if (layout != myLayout) {
-    setLayout(layout);
+  if (consoleTiming != myConsoleTiming) {
+    setConsoleTiming(consoleTiming);
   }
 
   if (value != myValue) {
@@ -84,11 +84,11 @@ void PaddleReader::update(double value, double timestamp, FrameLayout layout)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::setLayout(FrameLayout layout)
+void PaddleReader::setConsoleTiming(ConsoleTiming consoleTiming)
 {
-  myLayout = layout;
+  myConsoleTiming = consoleTiming;
 
-  myClockFreq = myLayout == FrameLayout::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
+  myClockFreq = myConsoleTiming == ConsoleTiming::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
   myUThresh = USUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq  / (RPOT + R0) / C));
 }
 
@@ -117,7 +117,7 @@ bool PaddleReader::save(Serializer& out) const
     out.putDouble(myValue);
     out.putDouble(myTimestamp);
 
-    out.putInt(int(myLayout));
+    out.putInt(int(myConsoleTiming));
     out.putDouble(myClockFreq);
 
     out.putBool(myIsDumped);
@@ -145,7 +145,7 @@ bool PaddleReader::load(Serializer& in)
     myValue = in.getDouble();
     myTimestamp = in.getDouble();
 
-    myLayout = FrameLayout(in.getInt());
+    myConsoleTiming = ConsoleTiming(in.getInt());
     myClockFreq = in.getDouble();
 
     myIsDumped = in.getBool();

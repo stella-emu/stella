@@ -19,8 +19,8 @@
 #define TIA_PADDLE_READER
 
 #include "bspf.hxx"
-#include "FrameLayout.hxx"
 #include "Serializable.hxx"
+#include "Console.hxx"
 
 class PaddleReader : public Serializable
 {
@@ -37,7 +37,7 @@ class PaddleReader : public Serializable
 
     uInt8 inpt(double timestamp);
 
-    void update(double value, double timestamp, FrameLayout layout);
+    void update(double value, double timestamp, ConsoleTiming consoleTiming);
 
     /**
       Serializable methods (see that class for more information).
@@ -48,7 +48,7 @@ class PaddleReader : public Serializable
 
   private:
 
-    void setLayout(FrameLayout layout);
+    void setConsoleTiming(ConsoleTiming timing);
 
     void updateCharge(double timestamp);
 
@@ -60,7 +60,7 @@ class PaddleReader : public Serializable
     double myValue;
     double myTimestamp;
 
-    FrameLayout myLayout;
+    ConsoleTiming myConsoleTiming;
     double myClockFreq;
 
     bool myIsDumped;
