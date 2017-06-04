@@ -25,18 +25,18 @@
 */
 @interface AboutBox : NSObject
 {
-  IBOutlet id appNameField;
-  IBOutlet id creditsField;
-  IBOutlet id versionField;
+  IBOutlet NSTextField *appNameField;
+  IBOutlet NSTextView *creditsField;
+  IBOutlet NSTextField *versionField;
   NSTimer *scrollTimer;
-  float currentPosition;
-  float maxScrollHeight;
+  CGFloat currentPosition;
+  CGFloat maxScrollHeight;
   NSTimeInterval startTime;
   BOOL restartAtTop;
 }
 
 + (AboutBox *)sharedInstance;
 - (IBAction)showPanel:(id)sender;
-- (void)OK:(id)sender;
+- (IBAction)OK:(id)sender;
 
 @end
