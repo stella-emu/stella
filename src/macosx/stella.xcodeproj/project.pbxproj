@@ -1283,6 +1283,7 @@
 			name = "«PROJECTNAMEASXML»";
 			sourceTree = "<group>";
 			tabWidth = 2;
+			usesTabs = 0;
 		};
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
