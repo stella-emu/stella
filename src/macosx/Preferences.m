@@ -45,23 +45,26 @@ static Preferences *sharedInstance = nil;
 
 - (id)init
 {
-  defaults = [NSUserDefaults standardUserDefaults];
-  sharedInstance = self;
+  if (self = [super init]) {
+    defaults = [NSUserDefaults standardUserDefaults];
+    sharedInstance = self;
+  }
   return(self);
 }
 
 - (void)setString:(const char *)key : (const char *)value
 {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
   NSString* theValue = [NSString stringWithCString:value encoding:NSASCIIStringEncoding];
 
   [defaults setObject:theValue forKey:theKey];
-  [theKey release];
-  [theValue release];
+  [pool release];
 }
 
 - (void)getString:(const char *)key : (char *)value : (int)size
 {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
   NSString* theValue = [defaults objectForKey:theKey];
   if (theValue != nil)
@@ -69,13 +72,14 @@ static Preferences *sharedInstance = nil;
   else
     value[0] = 0;
 
-  [theKey release];
-  [theValue release];
+  [pool release];
 }
 
 - (void)save
 {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   [defaults synchronize];
+  [pool release];
 }
 
 @end
