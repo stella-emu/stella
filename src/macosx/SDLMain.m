@@ -114,6 +114,42 @@ static SDLMain* sharedInstance = nil;
 
 @end
 
+static int IsRootCwd()
+{
+  char buf[MAXPATHLEN];
+  char *cwd = getcwd(buf, sizeof (buf));
+  return (cwd && (strcmp(cwd, "/") == 0));
+}
+
+static int IsTenPointNineOrLater()
+{
+  /* -instancesRespondToSelector is available in 10.9, but it says that it's 
+   available in 10.10. Either way, if it's there, we're on 10.9 or higher: 
+   just return true so we don't clobber the user's console with this. */
+  if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
+    return 1;
+  }
+  /* Gestalt() is deprecated in 10.8, but I don't care. Stop using SDL 1.2. */
+  SInt32 major, minor;
+  Gestalt(gestaltSystemVersionMajor, &major);
+  Gestalt(gestaltSystemVersionMinor, &minor);
+  return ( ((major << 16) | minor) >= ((10 << 16) | 9) );
+}
+
+static int IsFinderLaunch(const int argc, char **argv)
+{
+  const int bIsNewerOS = IsTenPointNineOrLater();
+  /* -psn_XXX is passed if we are launched from Finder in 10.8 and earlier */
+  if ( (!bIsNewerOS) && (argc >= 2) && (strncmp(argv[1], "-psn", 4) == 0) ) {
+    return 1;
+  } else if ((bIsNewerOS) && (argc == 1) && IsRootCwd()) {
+    /* we might still be launched from the Finder; on 10.9+, you might not
+     get the -psn command line anymore. Check version, if there's no
+     command line, and if our current working directory is "/". */
+    return 1;
+  }
+  return 0;  /* not a Finder launch. */
+}
 
 #ifdef main
 #  undef main
@@ -126,7 +162,7 @@ int main (int argc, char* argv[])
 
   // Copy the arguments into a global variable
   // This is passed if we are launched by double-clicking
-  if ( argc >= 2 && strncmp (argv[1], "-psn", 4) == 0 )
+  if (IsFinderLaunch(argc, argv))
   {
     gArgv = (char**) SDL_malloc(sizeof(char*) * 2);
     gArgv[0] = argv[0];
