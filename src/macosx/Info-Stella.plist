@@ -33,7 +33,7 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>Stella</string>
+	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Stella</string>
 	<key>CFBundleHelpBookFolder</key>
@@ -62,10 +62,8 @@
 		<string>10.7.0</string>
 	</dict>
 	<key>NSMainNibFile</key>
-	<string>SDLMain.nib</string>
+	<string>SDLMain</string>
 	<key>NSPrincipalClass</key>
 	<string>SDLApplication</string>
-	<key>«PROJECTNAMEASXML»</key>
-	<string>SDL Cocoa App</string>
 </dict>
 </plist>
