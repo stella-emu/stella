@@ -7,3 +7,4 @@ stella
 project.xcworkspace/
 xcuserdata/
 build/
+src/macosx/M6502.ins
