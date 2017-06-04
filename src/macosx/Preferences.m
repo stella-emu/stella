@@ -46,17 +46,27 @@ static Preferences *sharedInstance = nil;
 - (id)init
 {
   if (self = [super init]) {
-    defaults = [NSUserDefaults standardUserDefaults];
+    defaults = [[NSUserDefaults standardUserDefaults] retain];
     sharedInstance = self;
   }
   return(self);
 }
 
+- (void)dealloc
+{
+  [defaults release];
+  if (self == sharedInstance) {
+    sharedInstance = nil;
+  }
+  
+  [super dealloc];
+}
+
 - (void)setString:(const char *)key : (const char *)value
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
-  NSString* theValue = [NSString stringWithCString:value encoding:NSASCIIStringEncoding];
+  NSString* theKey   = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
+  NSString* theValue = [NSString stringWithCString:value encoding:NSUTF8StringEncoding];
 
   [defaults setObject:theValue forKey:theKey];
   [pool release];
@@ -65,10 +75,10 @@ static Preferences *sharedInstance = nil;
 - (void)getString:(const char *)key : (char *)value : (int)size
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
+  NSString* theKey   = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
   NSString* theValue = [defaults objectForKey:theKey];
   if (theValue != nil)
-    strncpy(value, [theValue cStringUsingEncoding: NSASCIIStringEncoding], size);
+    strncpy(value, [theValue cStringUsingEncoding: NSUTF8StringEncoding], size);
   else
     value[0] = 0;
 
