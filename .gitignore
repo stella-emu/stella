@@ -4,3 +4,6 @@ src/**/*/.deps
 src/**/*.o
 stella
 *.diff
+project.xcworkspace/
+xcuserdata/
+build/
