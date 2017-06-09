@@ -244,7 +244,7 @@ void CheatManager::loadCheatDatabase()
     md5   = line.substr(one + 1, two - one - 1);
     cheat = line.substr(three + 1, four - three - 1);
 
-    myCheatMap.insert(make_pair(md5, cheat));
+    myCheatMap.emplace(md5, cheat);
   }
 
   myListIsDirty = false;
@@ -315,7 +315,7 @@ void CheatManager::saveCheats(const string& md5sum)
 
     // Add new entry only if there are any cheats defined
     if(cheats.str() != "")
-      myCheatMap.insert(make_pair(md5sum, cheats.str()));
+      myCheatMap.emplace(md5sum, cheats.str());
   }
 
   // Update the dirty flag

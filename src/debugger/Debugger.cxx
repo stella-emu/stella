@@ -512,8 +512,8 @@ void Debugger::setQuitState()
 bool Debugger::addFunction(const string& name, const string& definition,
                            Expression* exp, bool builtin)
 {
-  myFunctions.insert(make_pair(name, unique_ptr<Expression>(exp)));
-  myFunctionDefs.insert(make_pair(name, definition));
+  myFunctions.emplace(name, unique_ptr<Expression>(exp));
+  myFunctionDefs.emplace(name, definition);
 
   return true;
 }

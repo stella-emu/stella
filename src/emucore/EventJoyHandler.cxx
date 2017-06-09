@@ -250,7 +250,7 @@ EventHandler::JoystickHandler::JoystickHandler(OSystem& system)
       if(joyname.length() != 0)
       {
         StickInfo info(joymap);
-        myDatabase.insert(make_pair(joyname, info));
+        myDatabase.emplace(joyname, info);
       }
     }
   }
@@ -343,7 +343,7 @@ bool EventHandler::JoystickHandler::add(StellaJoystick* stick)
   else    // adding for the first time
   {
     StickInfo info("", stick);
-    myDatabase.insert(make_pair(stick->name, info));
+    myDatabase.emplace(stick->name, info);
     setStickDefaultMapping(stick->ID, Event::NoType, kEmulationMode);
     setStickDefaultMapping(stick->ID, Event::NoType, kMenuMode);
   }

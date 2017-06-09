@@ -169,7 +169,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
   {
     // Remove old item and insert again
     list.erase(ret.first);
-    list.insert(make_pair(md5, properties));
+    list.emplace(md5, properties);
   }
 }
 
@@ -205,7 +205,7 @@ void PropertiesSet::print() const
       if(DefProps[i][p][0] != 0)
         properties.set(PropertyType(p), DefProps[i][p]);
 
-    list.insert(make_pair(DefProps[i][Cartridge_MD5], properties));
+    list.emplace(DefProps[i][Cartridge_MD5], properties);
   }
 
   // Now, print the resulting list

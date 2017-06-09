@@ -211,7 +211,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       {
         reservedLabel.str("");
         reservedLabel << "L" << Base::HEX4 << (k+myOffset);
-        myReserved.Label.insert(make_pair(k+myOffset, reservedLabel.str()));
+        myReserved.Label.emplace(k+myOffset, reservedLabel.str());
       }
     }
   }

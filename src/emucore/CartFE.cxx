@@ -117,7 +117,6 @@ bool CartridgeFE::bankChanged()
   return Cartridge::bankChanged();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::patch(uInt16 address, uInt8 value)
 {
