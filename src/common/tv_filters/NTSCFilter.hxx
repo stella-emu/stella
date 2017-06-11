@@ -108,15 +108,15 @@ class NTSCFilter
     // output buffer
     // In the current implementation, the source pitch is always the
     // same as the actual width
-    inline void blit_single(uInt8* src_buf, int src_width, int src_height,
-                            uInt32* dest_buf, int dest_pitch)
+    inline void blit_single(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
+                            uInt32* dest_buf, uInt32 dest_pitch)
     {
       atari_ntsc_blit_single(&myFilter, src_buf, src_width, src_height,
                              dest_buf, dest_pitch);
     }
     inline void blit_double(uInt8* src_buf, uInt8* src_back_buf,
-                            int src_width, int src_height,
-                            uInt32* dest_buf, int dest_pitch)
+                            uInt32 src_width, uInt32 src_height,
+                            uInt32* dest_buf, uInt32 dest_pitch)
     {
       atari_ntsc_blit_double(&myFilter, src_buf, src_back_buf, src_width,
                              src_height, dest_buf, dest_pitch);
