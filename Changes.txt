@@ -19,13 +19,12 @@
   * New TIA core: TODO - gather info on all new functionality:
     - RSYNC
     - YStart autodetection
+    - Proper emulation of RDY during write cycles (WSYNC).
     - ...
 
   * Implemented new phosphor emulation mode, which is much closer to real
     TV output.  Special thanks to Thomas Jentzsch for the idea and
     implementation.
-
-  * Proper emulation of RDY during write cycles.
 
   * Much improved RIOT timer emulation never before seen in any emulator.
     Special thanks to DirtyHairy for the implementation, and alex_79 for
@@ -60,6 +59,8 @@
     - In general, input error checking is much more strictly enforced
     - Read-only UI items now have a different background color, to
       clearly indicate if an item can be modified.
+    - Debugger '.lst' and '.sym' files are now searched based on the name
+      of the ROM file, and not on the internal properties name.
 
   * Mouse grabbing is now enabled in windowed mode only when the ROM is
     using a virtual analog controller (paddles, trakball, etc).

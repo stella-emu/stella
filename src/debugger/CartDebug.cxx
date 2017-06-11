@@ -676,19 +676,16 @@ int CartDebug::getAddress(const string& label) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadListFile()
 {
-  // Currently, the default naming/location for list files is:
-  // 1) ROM dir based on properties entry name
+  // The default naming/location for list files is the ROM dir based on the
+  // actual ROM filename
 
   if(myListFile == "")
   {
-    const string& propsname =
-      myConsole.properties().get(Cartridge_Name) + ".lst";
-
-    FilesystemNode case1(myOSystem.romFile().getParent().getPath() + propsname);
-    if(case1.isFile() && case1.isReadable())
-      myListFile = case1.getPath();
+    FilesystemNode lst(myOSystem.romFile().getPathWithExt("") + ".lst");
+    if(lst.isFile() && lst.isReadable())
+      myListFile = lst.getPath();
     else
-      return DebuggerParser::red("list file not found in:\n  " + case1.getShortPath());
+      return DebuggerParser::red("list file not found in:\n  " + lst.getShortPath());
   }
 
   FilesystemNode node(myListFile);
@@ -740,19 +737,16 @@ string CartDebug::loadListFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadSymbolFile()
 {
-  // Currently, the default naming/location for symbol files is:
-  // 1) ROM dir based on properties entry name
+  // The default naming/location for symbol files is the ROM dir based on the
+  // actual ROM filename
 
   if(mySymbolFile == "")
   {
-    const string& propsname =
-      myConsole.properties().get(Cartridge_Name) + ".sym";
-
-    FilesystemNode case1(myOSystem.romFile().getParent().getPath() + propsname);
-    if(case1.isFile() && case1.isReadable())
-      mySymbolFile = case1.getPath();
+    FilesystemNode sym(myOSystem.romFile().getPathWithExt("") + ".sym");
+    if(sym.isFile() && sym.isReadable())
+      mySymbolFile = sym.getPath();
     else
-      return DebuggerParser::red("symbol file not found in:\n  " + case1.getShortPath());
+      return DebuggerParser::red("symbol file not found in:\n  " + sym.getShortPath());
   }
 
   FilesystemNode node(mySymbolFile);
