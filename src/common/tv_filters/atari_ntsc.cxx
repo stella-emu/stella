@@ -54,10 +54,10 @@ pixel_info_t const atari_ntsc_pixels [alignment_count] = {
   { PIXEL_OFFSET(  0, -5 ), {            1, 1, 1, 1 } },
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out )
 {
-  unsigned i;
-  for ( i = 0; i < rgb_kernel_size / 2; i++ )
+  for ( uInt32 i = 0; i < rgb_kernel_size / 2; i++ )
   {
     atari_ntsc_rgb_t error = color -
         out [i    ] - out [(i+10)%14+14] -
@@ -66,17 +66,17 @@ static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out )
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
                       atari_ntsc_in_t const* palette )
 {
-  int entry;
   init_t impl;
   if ( !setup )
     setup = &atari_ntsc_composite;
   init( &impl, setup );
 
   // Palette stores R/G/B data for 'atari_ntsc_palette_size' entries
-  for ( entry = 0; entry < atari_ntsc_palette_size; entry++ )
+  for ( uInt32 entry = 0; entry < atari_ntsc_palette_size; ++entry )
   {
     float r = impl.to_float [*palette++];
     float g = impl.to_float [*palette++];
@@ -97,32 +97,29 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
-    atari_ntsc_in_t const* atari_in,
-    long in_row_width, int in_width, int in_height,
-    void* rgb_out, long out_pitch )
+    atari_ntsc_in_t const* atari_in, uInt32 in_width, uInt32 in_height,
+    void* rgb_out, uInt32 out_pitch )
 {
-  #define TO_SINGLE(pixel) ((1<<14)+(pixel>>1))
-
-  int const chunk_count = (in_width - 1) / atari_ntsc_in_chunk;
+  uInt32 const chunk_count = (in_width - 1) / atari_ntsc_in_chunk;
   while ( in_height-- )
   {
     atari_ntsc_in_t const* line_in = atari_in;
-    ATARI_NTSC_BEGIN_ROW( ntsc, TO_SINGLE(atari_ntsc_black), TO_SINGLE(line_in[0]) );
+    ATARI_NTSC_BEGIN_ROW( ntsc, atari_ntsc_black, line_in[0] );
     atari_ntsc_out_t* restrict line_out = static_cast<atari_ntsc_out_t*>(rgb_out);
-    int n;
     ++line_in;
 
-    for ( n = chunk_count; n; --n )
+    for ( uInt32 n = chunk_count; n; --n )
     {
       /* order of input and output pixels must not be altered */
-      ATARI_NTSC_COLOR_IN( 0, ntsc, TO_SINGLE(line_in[0]) );
+      ATARI_NTSC_COLOR_IN( 0, ntsc, line_in[0] );
       ATARI_NTSC_RGB_OUT_8888( 0, line_out[0] );
       ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
       ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
       ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
 
-      ATARI_NTSC_COLOR_IN( 1, ntsc, TO_SINGLE(line_in[1]) );
+      ATARI_NTSC_COLOR_IN( 1, ntsc, line_in[1] );
       ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
       ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
       ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
@@ -132,30 +129,29 @@ void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
     }
 
     /* finish final pixels */
-    ATARI_NTSC_COLOR_IN( 0, ntsc, TO_SINGLE(atari_ntsc_black) );
+    ATARI_NTSC_COLOR_IN( 0, ntsc, atari_ntsc_black );
     ATARI_NTSC_RGB_OUT_8888( 0, line_out[0] );
     ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
     ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
     ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
 
-    ATARI_NTSC_COLOR_IN( 1, ntsc, TO_SINGLE(atari_ntsc_black) );
+    ATARI_NTSC_COLOR_IN( 1, ntsc, atari_ntsc_black );
     ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
     ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
     ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
 
-    atari_in += in_row_width;
+    atari_in += in_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;
   }
 }
 
 void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
     atari_ntsc_in_t const* atari_in1, atari_ntsc_in_t const* atari_in2,
-    long in_row_width, int in_width, int in_height,
-    void* rgb_out, long out_pitch )
+    uInt32 in_width, uInt32 in_height, void* rgb_out, uInt32 out_pitch )
 {
   #define TO_DOUBLE(pixel1, pixel2) (((pixel1>>1)<<7)+(pixel2>>1))
 
-  int const chunk_count = (in_width - 1) / atari_ntsc_in_chunk;
+  uInt32 const chunk_count = (in_width - 1) / atari_ntsc_in_chunk;
   while ( in_height-- )
   {
     atari_ntsc_in_t const* line_in1 = atari_in1;
@@ -164,11 +160,10 @@ void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
         TO_DOUBLE(atari_ntsc_black, atari_ntsc_black),
         TO_DOUBLE(line_in1[0], line_in2[0]) );
     atari_ntsc_out_t* restrict line_out = static_cast<atari_ntsc_out_t*>(rgb_out);
-    int n;
     ++line_in1;
     ++line_in2;
 
-    for ( n = chunk_count; n; --n )
+    for ( uInt32 n = chunk_count; n; --n )
     {
       /* order of input and output pixels must not be altered */
       ATARI_NTSC_COLOR_IN( 0, ntsc,
@@ -203,8 +198,8 @@ void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
     ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
     ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
 
-    atari_in1 += in_row_width;
-    atari_in2 += in_row_width;
+    atari_in1 += in_width;
+    atari_in2 += in_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;
   }
 }

@@ -39,6 +39,7 @@ void NTSCFilter::setTIAPalette(const TIASurface& tiaSurface, const uInt32* palet
   // the Blargg code assumes 128 colours
   uInt8* ptr = myTIAPalette;
 
+#if 0
   // Set palette for phosphor effect
   for(int i = 0; i < 256; i+=2)
   {
@@ -56,8 +57,9 @@ void NTSCFilter::setTIAPalette(const TIASurface& tiaSurface, const uInt32* palet
       *ptr++ = tiaSurface.getPhosphor(bi, bj);
     }
   }
+#endif
   // Set palette for normal fill
-  for(int i = 0; i < 256; i+=2)
+  for(int i = 0; i < 256; ++i)
   {
     *ptr++ = (palette[i] >> 16) & 0xff;
     *ptr++ = (palette[i] >> 8) & 0xff;

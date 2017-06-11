@@ -20,8 +20,10 @@
 #ifndef ATARI_NTSC_H
 #define ATARI_NTSC_H
 
-typedef unsigned char atari_ntsc_in_t;
-typedef unsigned int atari_ntsc_out_t;
+#include "bspf.hxx"
+
+using atari_ntsc_in_t = uInt8;
+using atari_ntsc_out_t = uInt32;
 
 #ifdef __cplusplus
   extern "C" {
@@ -29,7 +31,7 @@ typedef unsigned int atari_ntsc_out_t;
 
 /* Image parameters, ranging from -1.0 to 1.0. Actual internal values shown
    in parenthesis and should remain fairly stable in future versions. */
-typedef struct atari_ntsc_setup_t
+struct atari_ntsc_setup_t
 {
   /* Basic parameters */
   double hue;        /* -1 = -180 degrees     +1 = +180 degrees */
@@ -45,7 +47,7 @@ typedef struct atari_ntsc_setup_t
   double fringing;   /* color artifacts caused by brightness changes */
   double bleed;      /* color bleed (color resolution reduction) */
   float const* decoder_matrix; /* optional RGB decoder matrix, 6 elements */
-} atari_ntsc_setup_t;
+};
 
 /* Video format presets */
 extern atari_ntsc_setup_t const atari_ntsc_composite; /* color bleeding + artifacts */
@@ -53,7 +55,7 @@ extern atari_ntsc_setup_t const atari_ntsc_svideo;    /* color bleeding only */
 extern atari_ntsc_setup_t const atari_ntsc_rgb;       /* crisp image */
 extern atari_ntsc_setup_t const atari_ntsc_bad;       /* badly adjusted TV */
 
-enum { atari_ntsc_palette_size = 129 * 128 };
+enum { atari_ntsc_palette_size = 256 };
 
 /* Initializes and adjusts parameters. Can be called multiple times on the same
    atari_ntsc_t object. Can pass NULL for either parameter. */
@@ -65,13 +67,11 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
    In_row_width is the number of pixels to get to the next input row. Out_pitch
    is the number of *bytes* to get to the next output row. */
 void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
-    atari_ntsc_in_t const* atari_in,
-    long in_row_width, int in_width, int in_height,
-    void* rgb_out, long out_pitch );
+    atari_ntsc_in_t const* atari_in, uInt32 in_width, uInt32 in_height,
+    void* rgb_out, uInt32 out_pitch );
 void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
     atari_ntsc_in_t const* atari_in1, atari_ntsc_in_t const* atari_in2,
-    long in_row_width, int in_width, int in_height,
-    void* rgb_out, long out_pitch );
+    uInt32 in_width, uInt32 in_height, void* rgb_out, uInt32 out_pitch );
 
 /* Number of output pixels written by blitter for given input width. Width might
    be rounded down slightly; use ATARI_NTSC_IN_WIDTH() on result to find rounded
@@ -116,7 +116,7 @@ enum { atari_ntsc_black     = 0  }; /* palette index for black */
 
 /* private */
 enum { atari_ntsc_entry_size = 2 * 14 };
-typedef unsigned long atari_ntsc_rgb_t;
+using atari_ntsc_rgb_t = uInt32;
 struct atari_ntsc_t {
 	atari_ntsc_rgb_t table [atari_ntsc_palette_size] [atari_ntsc_entry_size];
 };
@@ -133,7 +133,7 @@ struct atari_ntsc_t {
 	atari_ntsc_rgb_t const* kernelx1 = kernel0
 
 /* common ntsc macros */
-#define atari_ntsc_rgb_builder    ((1L << 21) | (1 << 11) | (1 << 1))
+#define atari_ntsc_rgb_builder    ((1 << 21) | (1 << 11) | (1 << 1))
 #define atari_ntsc_clamp_mask     (atari_ntsc_rgb_builder * 3 / 2)
 #define atari_ntsc_clamp_add      (atari_ntsc_rgb_builder * 0x101)
 #define ATARI_NTSC_CLAMP_( io, shift ) {\
