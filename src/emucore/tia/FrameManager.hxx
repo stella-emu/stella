@@ -39,7 +39,11 @@ class FrameManager : public Serializable
 
     static uInt8 initialGarbageFrames();
 
-    void setHandlers(callback frameStartCallback, callback frameCompletionCallback);
+    void setHandlers(
+      callback frameStartCallback,
+      callback frameCompletionCallback,
+      callback renderingStartCallback
+    );
 
     void reset();
 
@@ -136,6 +140,7 @@ class FrameManager : public Serializable
 
     callback myOnFrameStart;
     callback myOnFrameComplete;
+    callback myOnRenderingStart;
 
     VblankManager myVblankManager;
 

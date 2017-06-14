@@ -82,6 +82,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     },
     [this] () {
       onFrameComplete();
+    },
+    [this] () {
+      onRenderingStart();
     }
   );
 
@@ -123,6 +126,7 @@ void TIA::reset()
   myLastCycle = 0;
   mySubClock = 0;
   myXDelta = 0;
+  myXAtRenderingStart = 0;
 
   memset(myShadowRegisters, 0, 64);
 
@@ -986,10 +990,7 @@ void TIA::updateEmulation()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::onFrameStart()
 {
-  const Int32 x = myHctr - 68;
-
-  if (x > 0)
-    memset(myFramebuffer.get(), 0, x);
+  myXAtRenderingStart = 0;
 
   for (uInt8 i = 0; i < 4; i++)
     updatePaddle(i);
@@ -1015,10 +1016,19 @@ void TIA::onFrameStart()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::onRenderingStart()
+{
+  myXAtRenderingStart = myHctr > 68 ? myHctr - 68 : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::onFrameComplete()
 {
   mySystem->m6502().stop();
   mySystem->resetCycles();
+
+  if (myXAtRenderingStart > 0)
+    memset(myFramebuffer.get(), 0, myXAtRenderingStart);
 
   // Blank out any extra lines not drawn this frame
   const uInt32 missingScanlines = myFrameManager.missingScanlines();

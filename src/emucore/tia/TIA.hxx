@@ -396,6 +396,8 @@ class TIA : public Device
 
     void onFrameStart();
 
+    void onRenderingStart();
+
     void onFrameComplete();
 
     void onHalt();
@@ -477,6 +479,7 @@ class TIA : public Device
     Int32 myHblankCtr;
     Int32 myHctr;
     uInt32 myXDelta;
+    uInt32 myXAtRenderingStart;
 
     bool myCollisionUpdateRequired;
     uInt32 myCollisionMask;

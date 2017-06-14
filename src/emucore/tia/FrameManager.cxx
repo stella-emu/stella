@@ -67,11 +67,13 @@ FrameManager::FrameManager()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setHandlers(
   FrameManager::callback frameStartCallback,
-  FrameManager::callback frameCompleteCallback
+  FrameManager::callback frameCompleteCallback,
+  FrameManager::callback renderingStartCallback
 )
 {
   myOnFrameStart = frameStartCallback;
   myOnFrameComplete = frameCompleteCallback;
+  myOnRenderingStart = renderingStartCallback;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,6 +201,7 @@ void FrameManager::setState(FrameManager::State state)
       break;
 
     case State::frame:
+      if (myOnRenderingStart) myOnRenderingStart();
       myVsyncLines = 0;
       myY = 0;
       break;
