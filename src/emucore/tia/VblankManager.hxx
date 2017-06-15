@@ -52,6 +52,8 @@ class VblankManager : public Serializable
     void setJitter(Int32 jitter);
     void setJitterFactor(uInt8 jitterFactor) { myJitterFactor = jitterFactor; }
 
+    bool isStable() const { return myMode != VblankMode::floating; }
+
     /**
       Serializable methods (see that class for more information).
     */

@@ -53,7 +53,7 @@ class FrameManager : public Serializable
 
     void setVsync(bool vsync);
 
-    bool isRendering() const { return myState == State::frame; }
+    bool isRendering() const { return myState == State::frame && myHasStabilized; }
 
     FrameLayout layout() const { return myLayout; }
 
@@ -159,6 +159,10 @@ class FrameManager : public Serializable
     uInt32 myTotalFrames;
     uInt32 myFramesInMode;
     bool myModeConfirmed;
+
+    uInt32 myStableFrames;
+    uInt32 myStabilizationFrames;
+    bool myHasStabilized;
 
     bool myVsync;
 

@@ -35,7 +35,9 @@ enum Metrics: uInt32 {
   maxUnderscan                  = 10,
   tvModeDetectionTolerance      = 20,
   initialGarbageFrames          = 10,
-  framesForModeConfirmation     = 5
+  framesForModeConfirmation     = 5,
+  minStableFrames               = 10,
+  maxStabilizationFrames        = 20
 };
 
 static constexpr uInt32
@@ -92,6 +94,9 @@ void FrameManager::reset()
   myVsyncLines = 0;
   myY = 0;
   myFramePending = false;
+  myStabilizationFrames = 0;
+  myStableFrames = 0;
+  myHasStabilized = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -192,8 +197,22 @@ void FrameManager::setState(FrameManager::State state)
 
   switch (myState) {
     case State::waitForFrameStart:
+      if (!myHasStabilized) {
+        myHasStabilized =
+          myStableFrames >= Metrics::minStableFrames ||
+          myStabilizationFrames >= Metrics::maxStabilizationFrames;
+
+        myStabilizationFrames++;
+
+        if (myVblankManager.isStable())
+          myStableFrames++;
+        else
+          myStableFrames = 0;
+      }
+
       if (myFramePending) finalizeFrame();
       if (myOnFrameStart) myOnFrameStart();
+
       myVblankManager.start();
       myFramePending = true;
 
