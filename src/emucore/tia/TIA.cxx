@@ -232,6 +232,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myHblankCtr);
     out.putInt(myHctr);
     out.putInt(myXDelta);
+    out.putInt(myXAtRenderingStart);
 
     out.putBool(myCollisionUpdateRequired);
     out.putInt(myCollisionMask);
@@ -301,6 +302,7 @@ bool TIA::load(Serializer& in)
     myHblankCtr = in.getInt();
     myHctr = in.getInt();
     myXDelta = in.getInt();
+    myXAtRenderingStart = in.getInt();
 
     myCollisionUpdateRequired = in.getBool();
     myCollisionMask = in.getInt();
