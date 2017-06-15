@@ -382,6 +382,10 @@ bool FrameManager::save(Serializer& out) const
     out.putInt(myFramesInMode);
     out.putBool(myModeConfirmed);
 
+    out.putInt(myStableFrames);
+    out.putInt(myStabilizationFrames);
+    out.putBool(myHasStabilized);
+
     out.putBool(myVsync);
 
     out.putInt(myVblankLines);
@@ -427,6 +431,10 @@ bool FrameManager::load(Serializer& in)
     myTotalFrames = in.getInt();
     myFramesInMode = in.getInt();
     myModeConfirmed = in.getBool();
+
+    myStableFrames = in.getInt();
+    myStabilizationFrames = in.getInt();
+    myHasStabilized = in.getBool();
 
     myVsync = in.getBool();
 
