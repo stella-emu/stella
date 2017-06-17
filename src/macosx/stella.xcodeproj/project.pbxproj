@@ -252,6 +252,8 @@
 		DC2AADB1194F389C0026C7A4 /* TIASurface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */; };
 		DC2AADB4194F390F0026C7A4 /* CartRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */; };
 		DC2AADB5194F390F0026C7A4 /* CartRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */; };
+		DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */; };
+		DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */; };
 		DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */; };
 		DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */; };
 		DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5218A2FB710084199C /* SoundSDL2.cxx */; };
@@ -465,9 +467,6 @@
 		DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */; };
 		DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */; };
 		DCB20EC71A0C506C0048F595 /* main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC61A0C506C0048F595 /* main.cxx */; };
-		DCB20ECB1A0C50930048F595 /* atari_ntsc_impl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB20EC81A0C50930048F595 /* atari_ntsc_impl.hxx */; };
-		DCB20ECC1A0C50930048F595 /* atari_ntsc.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC91A0C50930048F595 /* atari_ntsc.cxx */; };
-		DCB20ECD1A0C50930048F595 /* atari_ntsc.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB20ECA1A0C50930048F595 /* atari_ntsc.hxx */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
 		DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */; };
 		DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */; };
@@ -878,6 +877,8 @@
 		DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TIASurface.hxx; sourceTree = "<group>"; };
 		DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartRamWidget.cxx; sourceTree = "<group>"; };
 		DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartRamWidget.hxx; sourceTree = "<group>"; };
+		DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariNTSC.cxx; sourceTree = "<group>"; };
+		DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariNTSC.hxx; sourceTree = "<group>"; };
 		DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBufferSDL2.cxx; sourceTree = "<group>"; };
 		DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameBufferSDL2.hxx; sourceTree = "<group>"; };
 		DC368F5218A2FB710084199C /* SoundSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSDL2.cxx; sourceTree = "<group>"; };
@@ -1092,9 +1093,6 @@
 		DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDPCPlus.cxx; sourceTree = "<group>"; };
 		DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDPCPlus.hxx; sourceTree = "<group>"; };
 		DCB20EC61A0C506C0048F595 /* main.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cxx; sourceTree = "<group>"; };
-		DCB20EC81A0C50930048F595 /* atari_ntsc_impl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = atari_ntsc_impl.hxx; sourceTree = "<group>"; };
-		DCB20EC91A0C50930048F595 /* atari_ntsc.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = atari_ntsc.cxx; sourceTree = "<group>"; };
-		DCB20ECA1A0C50930048F595 /* atari_ntsc.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = atari_ntsc.hxx; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EPlusWidget.cxx; sourceTree = "<group>"; };
@@ -1880,9 +1878,8 @@
 		DCC467EA14FBEC9600E15508 /* tv_filters */ = {
 			isa = PBXGroup;
 			children = (
-				DCB20EC81A0C50930048F595 /* atari_ntsc_impl.hxx */,
-				DCB20EC91A0C50930048F595 /* atari_ntsc.cxx */,
-				DCB20ECA1A0C50930048F595 /* atari_ntsc.hxx */,
+				DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */,
+				DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */,
 				DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */,
 				DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */,
 			);
@@ -2144,12 +2141,12 @@
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
-				DCB20ECD1A0C50930048F595 /* atari_ntsc.hxx in Headers */,
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
 				DCF3A7021DFC76BC008A8AF3 /* TIATypes.hxx in Headers */,
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
 				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
+				DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */,
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
 				DC3EE8641E2C0E6D00905161 /* inffixed.h in Headers */,
@@ -2220,7 +2217,6 @@
 				DCAAE5E11715887B0080BB82 /* CartEFWidget.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
-				DCB20ECB1A0C50930048F595 /* atari_ntsc_impl.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
 				DCAAE5E91715887B0080BB82 /* CartF6SCWidget.hxx in Headers */,
 				DCAAE5EB1715887B0080BB82 /* CartF6Widget.hxx in Headers */,
@@ -2462,6 +2458,7 @@
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
 				2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */,
+				DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */,
 				2D9174F509BA90380026E9FF /* CommandMenu.cxx in Sources */,
 				2D9174F609BA90380026E9FF /* ColorWidget.cxx in Sources */,
 				2D9174F709BA90380026E9FF /* CpuWidget.cxx in Sources */,
@@ -2596,7 +2593,6 @@
 				DCAAE5EA1715887B0080BB82 /* CartF6Widget.cxx in Sources */,
 				DCAAE5EC1715887B0080BB82 /* CartF8SCWidget.cxx in Sources */,
 				DC72B2221E356F4F009056D0 /* VblankManager.cxx in Sources */,
-				DCB20ECC1A0C50930048F595 /* atari_ntsc.cxx in Sources */,
 				DCAAE5EE1715887B0080BB82 /* CartF8Widget.cxx in Sources */,
 				DCAAE5F01715887B0080BB82 /* CartFAWidget.cxx in Sources */,
 				DCAAE5F21715887B0080BB82 /* CartUAWidget.cxx in Sources */,
