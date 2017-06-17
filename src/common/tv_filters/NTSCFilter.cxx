@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()
-  : mySetup(atari_ntsc_composite),
+  : mySetup(AtariNTSC::TV_Composite),
     myPreset(PRESET_OFF),
     myCurrentAdjustable(0)
 {
@@ -76,19 +76,19 @@ string NTSCFilter::setPreset(Preset preset)
   switch(myPreset)
   {
     case PRESET_COMPOSITE:
-      mySetup = atari_ntsc_composite;
+      mySetup = AtariNTSC::TV_Composite;
       msg = "COMPOSITE";
       break;
     case PRESET_SVIDEO:
-      mySetup = atari_ntsc_svideo;
+      mySetup = AtariNTSC::TV_SVideo;
       msg = "S-VIDEO";
       break;
     case PRESET_RGB:
-      mySetup = atari_ntsc_rgb;
+      mySetup = AtariNTSC::TV_RGB;
       msg = "RGB";
       break;
     case PRESET_BAD:
-      mySetup = atari_ntsc_bad;
+      mySetup = AtariNTSC::TV_Bad;
       msg = "BAD ADJUST";
       break;
     case PRESET_CUSTOM:
@@ -220,13 +220,13 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset) const
   switch(preset)
   {
     case PRESET_COMPOSITE:
-      convertToAdjustable(adjustable, atari_ntsc_composite);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_Composite);  break;
     case PRESET_SVIDEO:
-      convertToAdjustable(adjustable, atari_ntsc_svideo);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_SVideo);  break;
     case PRESET_RGB:
-      convertToAdjustable(adjustable, atari_ntsc_rgb);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_RGB);  break;
     case PRESET_BAD:
-      convertToAdjustable(adjustable, atari_ntsc_bad);  break;
+      convertToAdjustable(adjustable, AtariNTSC::TV_Bad);  break;
     case PRESET_CUSTOM:
       convertToAdjustable(adjustable, myCustomSetup);  break;
     default:
@@ -251,7 +251,7 @@ void NTSCFilter::setCustomAdjustables(Adjustable& adjustable)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
-                                     const atari_ntsc_setup_t& setup) const
+                                     const AtariNTSC::Setup& setup) const
 {
   adjustable.hue         = SCALE_TO_100(setup.hue);
   adjustable.saturation  = SCALE_TO_100(setup.saturation);
@@ -266,7 +266,7 @@ void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-atari_ntsc_setup_t NTSCFilter::myCustomSetup = atari_ntsc_composite;
+AtariNTSC::Setup NTSCFilter::myCustomSetup = AtariNTSC::TV_Composite;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const NTSCFilter::AdjustableTag NTSCFilter::ourCustomAdjustables[10] = {

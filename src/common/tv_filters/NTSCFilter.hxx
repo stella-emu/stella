@@ -22,7 +22,7 @@ class TIASurface;
 class Settings;
 
 #include "bspf.hxx"
-#include "atari_ntsc.hxx"
+#include "AtariNTSC.hxx"
 
 #define SCALE_FROM_100(x) ((x/50.0)-1.0)
 #define SCALE_TO_100(x) uInt32(50*(x+1.0))
@@ -76,7 +76,7 @@ class NTSCFilter
     // have changed)
     inline void updateFilter()
     {
-      atari_ntsc_init(&myFilter, &mySetup, myTIAPalette);
+      myNTSC.initialize(mySetup, myTIAPalette);
     }
 
     // Get adjustables for the given preset
@@ -111,33 +111,25 @@ class NTSCFilter
     inline void blit_single(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
                             uInt32* dest_buf, uInt32 dest_pitch)
     {
-      atari_ntsc_blit_single(&myFilter, src_buf, src_width, src_height,
-                             dest_buf, dest_pitch);
-    }
-    inline void blit_double(uInt8* src_buf, uInt8* src_back_buf,
-                            uInt32 src_width, uInt32 src_height,
-                            uInt32* dest_buf, uInt32 dest_pitch)
-    {
-      atari_ntsc_blit_double(&myFilter, src_buf, src_back_buf, src_width,
-                             src_height, dest_buf, dest_pitch);
+      myNTSC.blitSingle(src_buf, src_width, src_height, dest_buf, dest_pitch);
     }
 
   private:
     // Convert from atari_ntsc_setup_t values to equivalent adjustables
     void convertToAdjustable(Adjustable& adjustable,
-                             const atari_ntsc_setup_t& setup) const;
+                             const AtariNTSC::Setup& setup) const;
 
   private:
-    // The NTSC filter structure
-    atari_ntsc_t myFilter;
+    // The NTSC object
+    AtariNTSC myNTSC;
 
     // Contains controls used to adjust the palette in the NTSC filter
     // This is the main setup object used by the underlying ntsc code
-    atari_ntsc_setup_t mySetup;
+    AtariNTSC::Setup mySetup;
 
     // This setup is used only in custom mode (after it is modified,
     // it is copied to mySetup)
-    static atari_ntsc_setup_t myCustomSetup;
+    static AtariNTSC::Setup myCustomSetup;
 
     // Current preset in use
     Preset myPreset;
@@ -152,7 +144,7 @@ class NTSCFilter
     //    128x128 in first bytes of array
     //    128     in last bytes of array
     //    Each colour is represented by 3 bytes, in R,G,B order
-    uInt8 myTIAPalette[atari_ntsc_palette_size * 3];
+    uInt8 myTIAPalette[AtariNTSC::palette_size * 3];
 
     struct AdjustableTag {
       const char* type;

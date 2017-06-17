@@ -40,7 +40,7 @@ TIASurface::TIASurface(OSystem& system)
   myNTSCFilter.loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
-  myTiaSurface = myFB.allocateSurface(ATARI_NTSC_OUT_WIDTH(kTIAW), kTIAH);
+  myTiaSurface = myFB.allocateSurface(AtariNTSC::outWidth(kTIAW), kTIAH);
 
   // Generate scanline data, and a pre-defined scanline surface
   uInt32 scanData[kScanH];
@@ -258,7 +258,7 @@ void TIASurface::enableNTSC(bool enable)
   myFilterType = FilterType(enable ? myFilterType | 0x10 : myFilterType & 0x01);
 
   // Normal vs NTSC mode uses different source widths
-  myTiaSurface->setSrcSize(enable ? ATARI_NTSC_OUT_WIDTH(160) : 160, myTIA->height());
+  myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(160) : 160, myTIA->height());
 
   FBSurface::Attributes& tia_attr = myTiaSurface->attributes();
   tia_attr.smoothing = myOSystem.settings().getBool("tia.inter");
