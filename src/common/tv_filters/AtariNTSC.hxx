@@ -261,18 +261,6 @@ class AtariNTSC
       out [1] = (unsigned char) (clamped >> 11);\
       out [2] = (unsigned char) (clamped >>  1);\
     }
-
-    // blitter related
-    #ifndef restrict
-      #if defined (__GNUC__)
-        #define restrict __restrict__
-      #elif defined (_MSC_VER) && _MSC_VER > 1300
-        #define restrict __restrict
-      #else
-        /* no support for restricted pointers */
-        #define restrict
-      #endif
-    #endif
 };
 
 #endif

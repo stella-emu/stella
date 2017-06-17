@@ -235,7 +235,7 @@
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\main.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
-    <ClCompile Include="..\common\tv_filters\atari_ntsc.cxx" />
+    <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
     <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx" />
@@ -504,8 +504,7 @@
     <ClInclude Include="..\common\MouseControl.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
-    <ClInclude Include="..\common\tv_filters\atari_ntsc.hxx" />
-    <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.hxx" />
+    <ClInclude Include="..\common\tv_filters\AtariNTSC.hxx" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\common\UniquePtr.hxx" />
     <ClInclude Include="..\common\Variant.hxx" />
