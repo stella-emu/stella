@@ -713,7 +713,14 @@ void Console::setControllers(const string& rommd5)
   bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
 
   // Construct left controller
-  if(left == "BOOSTERGRIP")
+  if(left == "JOYSTICK")
+  {
+    // Already created in c'tor
+    // We save some time by not looking at all the other types
+    leftC = myLeftControl ? std::move(myLeftControl) :
+        make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
+  }
+  else if(left == "BOOSTERGRIP")
   {
     leftC = make_ptr<BoosterGrip>(Controller::Left, myEvent, *mySystem);
   }
@@ -757,13 +764,16 @@ void Console::setControllers(const string& rommd5)
   {
     leftC = make_ptr<MindLink>(Controller::Left, myEvent, *mySystem);
   }
-  else
-  {
-    leftC = make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
-  }
 
   // Construct right controller
-  if(right == "BOOSTERGRIP")
+  if(right == "JOYSTICK")
+  {
+    // Already created in c'tor
+    // We save some time by not looking at all the other types
+    rightC = myRightControl ? std::move(myRightControl) :
+        make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
+  }
+  else if(right == "BOOSTERGRIP")
   {
     rightC = make_ptr<BoosterGrip>(Controller::Right, myEvent, *mySystem);
   }
@@ -823,10 +833,6 @@ void Console::setControllers(const string& rommd5)
   else if(right == "MINDLINK")
   {
     rightC = make_ptr<MindLink>(Controller::Right, myEvent, *mySystem);
-  }
-  else
-  {
-    rightC = make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
   }
 
   // Swap the ports if necessary
