@@ -707,7 +707,8 @@ void Console::setControllers(const string& rommd5)
     return;
   }
 
-  unique_ptr<Controller> leftC, rightC;
+  unique_ptr<Controller> leftC  = std::move(myLeftControl),
+                         rightC = std::move(myRightControl);
 
   // Also check if we should swap the paddles plugged into a jack
   bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
@@ -717,8 +718,8 @@ void Console::setControllers(const string& rommd5)
   {
     // Already created in c'tor
     // We save some time by not looking at all the other types
-    leftC = myLeftControl ? std::move(myLeftControl) :
-        make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
+    if(!leftC)
+      leftC = make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "BOOSTERGRIP")
   {
@@ -770,8 +771,8 @@ void Console::setControllers(const string& rommd5)
   {
     // Already created in c'tor
     // We save some time by not looking at all the other types
-    rightC = myRightControl ? std::move(myRightControl) :
-        make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
+    if(!rightC)
+      rightC = make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "BOOSTERGRIP")
   {
