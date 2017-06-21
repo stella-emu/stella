@@ -124,7 +124,7 @@ void TIA::reset()
   myColorHBlank = 0;
   myLastCycle = 0;
   mySubClock = 0;
-  myXDelta = 0;
+  myHctrDelta = 0;
   myXAtRenderingStart = 0;
 
   memset(myShadowRegisters, 0, 64);
@@ -229,7 +229,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(int(myHstate));
 
     out.putInt(myHctr);
-    out.putInt(myXDelta);
+    out.putInt(myHctrDelta);
     out.putInt(myXAtRenderingStart);
 
     out.putBool(myCollisionUpdateRequired);
@@ -298,7 +298,7 @@ bool TIA::load(Serializer& in)
     myHstate = HState(in.getInt());
 
     myHctr = in.getInt();
-    myXDelta = in.getInt();
+    myHctrDelta = in.getInt();
     myXAtRenderingStart = in.getInt();
 
     myCollisionUpdateRequired = in.getBool();
@@ -778,7 +778,7 @@ bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
 {
   uInt8 clocks = clocksThisLine();
 
-  x = clocks < 68 ? 0 : clocks - 68;
+  x = (clocks < 68) ? 0 : clocks - 68;
   y = myFrameManager.getY();
 
   return isRendering();
@@ -1121,7 +1121,7 @@ void TIA::tickHblank()
 void TIA::tickHframe()
 {
   const uInt32 y = myFrameManager.getY();
-  const uInt32 x = myHctr - 68 - myXDelta;
+  const uInt32 x = myHctr - 68 - myHctrDelta;
 
   myCollisionUpdateRequired = true;
 
@@ -1141,7 +1141,7 @@ void TIA::applyRsync()
 {
   const uInt32 x = myHctr > 68 ? myHctr - 68 : 0;
 
-  myXDelta = 157 - x;
+  myHctrDelta = 225 - myHctr;
   if (myFrameManager.isRendering())
     memset(myFramebuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
 
@@ -1160,7 +1160,7 @@ void TIA::nextLine()
   if (!myMovementInProgress && myLinesSinceChange < 2) myLinesSinceChange++;
 
   myHstate = HState::blank;
-  myXDelta = 0;
+  myHctrDelta = 0;
 
   myFrameManager.nextLine();
 

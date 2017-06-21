@@ -214,7 +214,7 @@ class TIA : public Device
 
       @return The current color clock
     */
-    uInt32 clocksThisLine() const { return myHctr - myXDelta; }
+    uInt32 clocksThisLine() const { return myHctr - myHctrDelta; }
 
     /**
       Answers the total number of scanlines the TIA generated in producing
@@ -331,7 +331,9 @@ class TIA : public Device
       Get the current x value.
     */
     uInt8 getPosition() const {
-      return (myHctr < 68) ? 0 : (myHctr - 68 - myXDelta);
+      uInt8 realHctr = myHctr - myHctrDelta;
+
+      return (realHctr < 68) ? 0 : (realHctr - 68);
     }
 
     /**
@@ -476,10 +478,12 @@ class TIA : public Device
 
     HState myHstate;
 
-
+    // Master line counter
     uInt8 myHctr;
-    uInt32 myXDelta;
-    uInt32 myXAtRenderingStart;
+    // Delta between master line counter and actual color clock. Nonzero after RSYNC (before the scanline terminates)
+    Int32 myHctrDelta;
+    // Electron beam x at rendering start (used for blanking out any pixels from the last frame that are not overwritten)
+    uInt8 myXAtRenderingStart;
 
     bool myCollisionUpdateRequired;
     uInt32 myCollisionMask;
