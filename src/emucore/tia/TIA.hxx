@@ -476,8 +476,8 @@ class TIA : public Device
 
     HState myHstate;
 
-    Int32 myHblankCtr;
-    Int32 myHctr;
+
+    uInt8 myHctr;
     uInt32 myXDelta;
     uInt32 myXAtRenderingStart;
 

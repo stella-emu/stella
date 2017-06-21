@@ -110,7 +110,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::reset()
 {
-  myHblankCtr = 0;
   myHctr = 0;
   myMovementInProgress = false;
   myExtendedHblank = false;
@@ -229,7 +228,6 @@ bool TIA::save(Serializer& out) const
 
     out.putInt(int(myHstate));
 
-    out.putInt(myHblankCtr);
     out.putInt(myHctr);
     out.putInt(myXDelta);
     out.putInt(myXAtRenderingStart);
@@ -299,7 +297,6 @@ bool TIA::load(Serializer& in)
 
     myHstate = HState(in.getInt());
 
-    myHblankCtr = in.getInt();
     myHctr = in.getInt();
     myXDelta = in.getInt();
     myXAtRenderingStart = in.getInt();
@@ -1105,11 +1102,19 @@ void TIA::tickMovement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::tickHblank()
 {
-  if (myHctr == 0) {
-    myHblankCtr = 0;
-  }
+  switch (myHctr) {
+    case 0:
+      myExtendedHblank = false;
+      break;
 
-  if (++myHblankCtr >= 68) myHstate = HState::frame;
+    case 67:
+      if (!myExtendedHblank) myHstate = HState::frame;
+      break;
+
+    case 75:
+      if (myExtendedHblank) myHstate = HState::frame;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1155,7 +1160,6 @@ void TIA::nextLine()
   if (!myMovementInProgress && myLinesSinceChange < 2) myLinesSinceChange++;
 
   myHstate = HState::blank;
-  myExtendedHblank = false;
   myXDelta = 0;
 
   myFrameManager.nextLine();
@@ -1289,7 +1293,6 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       myMovementInProgress = true;
 
       if (!myExtendedHblank) {
-        myHblankCtr -= 8;
         clearHmoveComb();
         myExtendedHblank = true;
       }
