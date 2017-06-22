@@ -37,7 +37,8 @@ enum Metrics: uInt32 {
   initialGarbageFrames          = 10,
   framesForModeConfirmation     = 5,
   minStableFrames               = 10,
-  maxStabilizationFrames        = 20
+  maxStabilizationFrames        = 20,
+  minDeltaForJitter             = 3
 };
 
 static constexpr uInt32
@@ -255,7 +256,11 @@ void FrameManager::finalizeFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::handleJitter(Int32 scanlineDifference)
 {
-  if (scanlineDifference == 0 || !myJitterEnabled || myTotalFrames < Metrics::initialGarbageFrames) return;
+  if (
+    abs(scanlineDifference) < minDeltaForJitter ||
+    !myJitterEnabled ||
+    myTotalFrames < Metrics::initialGarbageFrames
+  ) return;
 
   myVblankManager.setJitter(scanlineDifference);
 }
