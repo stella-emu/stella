@@ -111,10 +111,7 @@ void M6502::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
 {
-  if (myHaltRequested) {
-    myOnHaltCallback();
-    myHaltRequested = false;
-  }
+  handleHalt();
 
   ////////////////////////////////////////////////
   // TODO - move this logic directly into CartAR
@@ -173,6 +170,15 @@ void M6502::requestHalt()
 {
   if (!myOnHaltCallback) throw runtime_error("onHaltCallback not configured");
   myHaltRequested = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void M6502::handleHalt()
+{
+  if (myHaltRequested) {
+    myOnHaltCallback();
+    myHaltRequested = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,6 +247,12 @@ bool M6502::execute(uInt32 number)
     // See if execution has been stopped
     if(myExecutionStatus & StopExecutionBit)
     {
+      // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
+      // beginning of the next line (otherwise, the next instruction would be stepped in order for
+      // the halt to take effect). This is safe because as we know that the next cycle will be a read
+      // cycle anyway.
+      handleHalt();
+
       // Yes, so answer that everything finished fine
       return true;
     }
@@ -255,6 +267,9 @@ bool M6502::execute(uInt32 number)
     // See if we've executed the specified number of instructions
     if(number == 0)
     {
+      // See above
+      handleHalt();
+
       // Yes, so answer that everything finished fine
       return true;
     }

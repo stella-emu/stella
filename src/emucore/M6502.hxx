@@ -286,6 +286,11 @@ class M6502 : public Serializable
     */
     void interruptHandler();
 
+    /**
+      Check whether halt was requested (RDY low) and notify
+    */
+    void handleHalt();
+
   private:
     /**
       Bit fields used to indicate that certain conditions need to be
