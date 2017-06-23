@@ -38,7 +38,8 @@ enum Metrics: uInt32 {
   framesForModeConfirmation     = 5,
   minStableFrames               = 10,
   maxStabilizationFrames        = 20,
-  minDeltaForJitter             = 3
+  minDeltaForJitter             = 3,
+  framesForStableHeight         = 2
 };
 
 static constexpr uInt32
@@ -98,6 +99,9 @@ void FrameManager::reset()
   myStabilizationFrames = 0;
   myStableFrames = 0;
   myHasStabilized = false;
+
+  myStableFrameLines = -1;
+  myStableFrameHeightCountdown = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,7 +238,20 @@ void FrameManager::setState(FrameManager::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::finalizeFrame()
 {
-  handleJitter(myCurrentFrameTotalLines - myCurrentFrameFinalLines);
+  if (myCurrentFrameTotalLines != (uInt32)myStableFrameLines) {
+    if (myCurrentFrameTotalLines == myCurrentFrameFinalLines) {
+
+      if (++myStableFrameHeightCountdown >= Metrics::framesForStableHeight) {
+        if (myStableFrameLines >= 0) {
+          handleJitter(myCurrentFrameTotalLines - myStableFrameLines);
+        }
+
+        myStableFrameLines = myCurrentFrameTotalLines;
+      }
+
+    }
+    else myStableFrameHeightCountdown = 0;
+  }
 
   myPreviousFrameFinalLines = myCurrentFrameFinalLines;
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
@@ -257,7 +274,7 @@ void FrameManager::finalizeFrame()
 void FrameManager::handleJitter(Int32 scanlineDifference)
 {
   if (
-    abs(scanlineDifference) < minDeltaForJitter ||
+    (uInt32)abs(scanlineDifference) < Metrics::minDeltaForJitter ||
     !myJitterEnabled ||
     myTotalFrames < Metrics::initialGarbageFrames
   ) return;
@@ -401,6 +418,9 @@ bool FrameManager::save(Serializer& out) const
     out.putInt(myFixedHeight);
 
     out.putBool(myJitterEnabled);
+
+    out.putInt(myStableFrameLines);
+    out.putInt(myStableFrameHeightCountdown);
   }
   catch(...)
   {
@@ -451,6 +471,9 @@ bool FrameManager::load(Serializer& in)
     myFixedHeight = in.getInt();
 
     myJitterEnabled = in.getBool();
+
+    myStableFrameLines = in.getInt();
+    myStableFrameHeightCountdown = in.getInt();
   }
   catch(...)
   {

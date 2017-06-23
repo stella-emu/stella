@@ -175,6 +175,9 @@ class FrameManager : public Serializable
 
     bool myJitterEnabled;
 
+    Int32 myStableFrameLines;
+    uInt8 myStableFrameHeightCountdown;
+
   private:
     FrameManager(const FrameManager&) = delete;
     FrameManager(FrameManager&&) = delete;
