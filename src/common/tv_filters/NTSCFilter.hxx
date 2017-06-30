@@ -32,9 +32,7 @@ class Settings;
   and is derived from 'filter_ntsc.(h|c)'.  Original code based on
   implementation from http://www.slack.net/~ant.
 
-  The class is basically a thin wrapper around atari_ntsc_xxx structs
-  and methods, so that the rest of the codebase isn't affected by
-  updated versions of Blargg code.
+  The class is basically a thin wrapper around the AtariNTSC class.
 */
 class NTSCFilter
 {
@@ -64,20 +62,24 @@ class NTSCFilter
        uses this as a baseline for calculating its own internal palette
        in YIQ format.
     */
-    void setTIAPalette(const TIASurface& tiaSurface, const uInt32* palette);
+    inline void setTIAPalette(const uInt32* palette) {
+      uInt8* ptr = myTIAPalette;
+
+      // Set palette for normal fill
+      for(uInt32 i = 0; i < AtariNTSC::palette_size; ++i)
+      {
+        *ptr++ = (palette[i] >> 16) & 0xff;
+        *ptr++ = (palette[i] >> 8) & 0xff;
+        *ptr++ = palette[i] & 0xff;
+      }
+      myNTSC.initializePalette(myTIAPalette);
+    }
 
     // The following are meant to be used strictly for toggling from the GUI
     string setPreset(Preset preset);
 
     // Get current preset info encoded as a string
     string getPreset() const;
-
-    // Reinitialises the NTSC filter (automatically called after settings
-    // have changed)
-    inline void updateFilter()
-    {
-      myNTSC.initialize(mySetup, myTIAPalette);
-    }
 
     // Get adjustables for the given preset
     // Values will be scaled to 0 - 100 range, independent of how
@@ -106,8 +108,6 @@ class NTSCFilter
 
     // Perform Blargg filtering on input buffer, place results in
     // output buffer
-    // In the current implementation, the source pitch is always the
-    // same as the actual width
     inline void blit_single(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
                             uInt32* dest_buf, uInt32 dest_pitch)
     {

@@ -31,6 +31,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+  The class is basically a thin wrapper around atari_ntsc_xxx structs
+  and methods, so that the rest of the codebase isn't affected by
+  updated versions of Blargg code.
+*/
+
 #ifndef ATARI_NTSC_HXX
 #define ATARI_NTSC_HXX
 
@@ -82,25 +88,25 @@ class AtariNTSC
     void blitSingle(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
                     void* rgb_out, uInt32 out_pitch);
 
-    // Number of output pixels written by blitter for given input width.
-    // Width might be rounded down slightly; use inWidth() on result to
-    // find rounded value. Guaranteed not to round 160 down at all.
-    static uInt32 outWidth(uInt32 in_width) {
-      return ((((in_width) - 1) / AN_in_chunk + 1)* AN_out_chunk);
-    }
-
     // Number of input pixels that will fit within given output width.
     // Might be rounded down slightly; use outWidth() on result to find
     // rounded value.
     static uInt32 inWidth( uInt32 out_width ) {
-      return (((out_width) / AN_out_chunk - 1) * AN_in_chunk + 1);
+      return (((out_width) / PIXEL_out_chunk - 1) * PIXEL_in_chunk + 1);
+    }
+
+    // Number of output pixels written by blitter for given input width.
+    // Width might be rounded down slightly; use inWidth() on result to
+    // find rounded value. Guaranteed not to round 160 down at all.
+    static uInt32 outWidth(uInt32 in_width) {
+      return ((((in_width) - 1) / PIXEL_in_chunk + 1)* PIXEL_out_chunk);
     }
 
   private:
     enum {
-      AN_in_chunk  = 2,   // number of input pixels read per chunk
-      AN_out_chunk = 7,   // number of output pixels generated per chunk
-      AN_black     = 0,   // palette index for black
+      PIXEL_in_chunk  = 2,   // number of input pixels read per chunk
+      PIXEL_out_chunk = 7,   // number of output pixels generated per chunk
+      NTSC_black      = 0,   // palette index for black
 
       alignment_count = 2,
       burst_count     = 1,
@@ -166,12 +172,20 @@ class AtariNTSC
 
     // Begins outputting row and starts two pixels. First pixel will be cut
     // off a bit.  Use atari_ntsc_black for unused pixels.
-    #define ATARI_NTSC_BEGIN_ROW( ntsc, pixel0, pixel1 ) \
-    	ATARI_NTSC_BEGIN_ROW_6_( pixel0, pixel1, ATARI_NTSC_ENTRY_, ntsc )
+    #define ATARI_NTSC_BEGIN_ROW( pixel0, pixel1 ) \
+    	unsigned const atari_ntsc_pixel0_ = (pixel0);\
+    	uInt32 const* kernel0  = myNTSC.table[atari_ntsc_pixel0_];\
+    	unsigned const atari_ntsc_pixel1_ = (pixel1);\
+    	uInt32 const* kernel1  = myNTSC.table[atari_ntsc_pixel1_];\
+    	uInt32 const* kernelx0;\
+    	uInt32 const* kernelx1 = kernel0
 
     // Begins input pixel
-    #define ATARI_NTSC_COLOR_IN( in_index, ntsc, color_in ) \
-    	ATARI_NTSC_COLOR_IN_( in_index, color_in, ATARI_NTSC_ENTRY_, ntsc )
+    #define ATARI_NTSC_COLOR_IN( index, color ) {\
+    	unsigned color_;\
+    	kernelx##index = kernel##index;\
+    	kernel##index = (color_ = (color), myNTSC.table[color_]);\
+    }
 
     // Generates output in the specified 32-bit format (x = junk bits).
     //  native: xxxRRRRR RRRxxGGG GGGGGxxB BBBBBBBx (native internal format)
@@ -184,18 +198,7 @@ class AtariNTSC
       rgb_out = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
     }
 
-    #define ATARI_NTSC_ENTRY_( ntsc, n ) (ntsc)->table [n]
-
-    // common 3->7 ntsc macros
-    #define ATARI_NTSC_BEGIN_ROW_6_( pixel0, pixel1, ENTRY, table ) \
-    	unsigned const atari_ntsc_pixel0_ = (pixel0);\
-    	uInt32 const* kernel0  = ENTRY( table, atari_ntsc_pixel0_ );\
-    	unsigned const atari_ntsc_pixel1_ = (pixel1);\
-    	uInt32 const* kernel1  = ENTRY( table, atari_ntsc_pixel1_ );\
-    	uInt32 const* kernelx0;\
-    	uInt32 const* kernelx1 = kernel0
-
-    // common ntsc macros
+    // Common ntsc macros
     #define atari_ntsc_clamp_mask     (rgb_builder * 3 / 2)
     #define atari_ntsc_clamp_add      (rgb_builder * 0x101)
     #define ATARI_NTSC_CLAMP_( io, shift ) {\
@@ -206,13 +209,7 @@ class AtariNTSC
     	io &= clamp;\
     }
 
-    #define ATARI_NTSC_COLOR_IN_( index, color, ENTRY, table ) {\
-    	unsigned color_;\
-    	kernelx##index = kernel##index;\
-    	kernel##index = (color_ = (color), ENTRY( table, color_ ));\
-    }
-
-    // kernel generation
+    // Kernel generation
     #define ROTATE_IQ( i, q, sin_b, cos_b ) {\
       float t;\
       t = i * cos_b - q * sin_b;\

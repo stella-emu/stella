@@ -63,10 +63,10 @@ void Properties::set(PropertyType key, const string& value)
         break;
       }
 
-      case Display_PPBlend:
+      case Display_PPBlend:  // FIXME - handle global default
       {
         int blend = atoi(myProperties[key].c_str());
-        if(blend < 0 || blend > 100) blend = 30;
+        if(blend < 1 || blend > 100) blend = 50;
         ostringstream buf;
         buf << blend;
         myProperties[key] = buf.str();
@@ -261,7 +261,14 @@ void Properties::print() const
 void Properties::setDefaults()
 {
   for(int i = 0; i < LastPropType; ++i)
-    myProperties[i] = ourDefaultProperties[i];
+  {
+    if(i == Display_PPBlend)  // special case, handle global default
+    {
+      myProperties[i] = "50"; // FIXME - for now, just use 50
+    }
+    else
+      myProperties[i] = ourDefaultProperties[i];
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -324,7 +331,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "0",         // Display.YStart
   "0",         // Display.Height
   "NO",        // Display.Phosphor
-  "30"         // Display.PPBlend
+  "0"          // Display.PPBlend
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

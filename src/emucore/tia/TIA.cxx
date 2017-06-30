@@ -88,9 +88,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     }
   );
 
-  myFramebuffer  = make_ptr<uInt8[]>(160 * FrameManager::frameBufferHeight);
-  myRGBFramebuffer = make_ptr<uInt32[]>(160 * FrameManager::frameBufferHeight);
-
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
   myBackground.setTIA(this);
@@ -155,8 +152,7 @@ void TIA::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::frameReset()
 {
-  memset(myFramebuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
-  memset(myRGBFramebuffer.get(), 0, 160 * FrameManager::frameBufferHeight);
+  memset(myFramebuffer, 0, 160 * FrameManager::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("colorloss"));
 }
@@ -712,7 +708,7 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myFramebuffer.get(), 160*FrameManager::frameBufferHeight);
+    out.putByteArray(myFramebuffer, 160*FrameManager::frameBufferHeight);
   }
   catch(...)
   {
@@ -729,7 +725,7 @@ bool TIA::loadDisplay(Serializer& in)
   try
   {
     // Reset frame buffer pointer and data
-    in.getByteArray(myFramebuffer.get(), 160*FrameManager::frameBufferHeight);
+    in.getByteArray(myFramebuffer, 160*FrameManager::frameBufferHeight);
   }
   catch(...)
   {
@@ -1027,12 +1023,12 @@ void TIA::onFrameComplete()
   mySystem->resetCycles();
 
   if (myXAtRenderingStart > 0)
-    memset(myFramebuffer.get(), 0, myXAtRenderingStart);
+    memset(myFramebuffer, 0, myXAtRenderingStart);
 
   // Blank out any extra lines not drawn this frame
   const uInt32 missingScanlines = myFrameManager.missingScanlines();
   if (missingScanlines > 0)
-    memset(myFramebuffer.get() + 160 * myFrameManager.getY(), 0, missingScanlines * 160);
+    memset(myFramebuffer + 160 * myFrameManager.getY(), 0, missingScanlines * 160);
 
   // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)
@@ -1143,7 +1139,7 @@ void TIA::applyRsync()
 
   myHctrDelta = 225 - myHctr;
   if (myFrameManager.isRendering())
-    memset(myFramebuffer.get() + myFrameManager.getY() * 160 + x, 0, 160 - x);
+    memset(myFramebuffer + myFrameManager.getY() * 160 + x, 0, 160 - x);
 
   myHctr = 225;
 }
@@ -1176,7 +1172,7 @@ void TIA::cloneLastLine()
 
   if (!myFrameManager.isRendering() || y == 0) return;
 
-  uInt8* buffer = myFramebuffer.get();
+  uInt8* buffer = myFramebuffer;
 
   memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
 }
@@ -1243,7 +1239,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
       break;
   }
 
-  myFramebuffer.get()[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
+  myFramebuffer[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1269,8 +1265,7 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager.isRendering() && myHstate == HState::blank)
-    memset(myFramebuffer.get() + myFrameManager.getY() * 160,
-           myColorHBlank, 8);
+    memset(myFramebuffer + myFrameManager.getY() * 160, myColorHBlank, 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

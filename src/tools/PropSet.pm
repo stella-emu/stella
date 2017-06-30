@@ -70,7 +70,7 @@ my @prop_defaults = (
   "0",
   "0",
   "NO",
-  "30"
+  "0"
 );
 
 # Load and parse a properties file into an hash table of property

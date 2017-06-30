@@ -25,6 +25,7 @@ class FrameBuffer;
 class FBSurface;
 class VideoMode;
 
+#include "FrameManager.hxx"
 #include "Rect.hxx"
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
@@ -73,7 +74,7 @@ class TIASurface
       Get the TIA pixel associated with the given TIA buffer index,
       shifting by the given offset (for greyscale values).
     */
-    uInt32 pixel(uInt32 idx, uInt8 shift = 0) const;
+    uInt32 pixel(uInt32 idx, uInt8 shift = 0);
 
     /**
       Get the NTSCFilter object associated with the framebuffer
@@ -118,7 +119,7 @@ class TIASurface
 
       @return  Averaged value of the two colors
     */
-    uInt8 getPhosphor(uInt8 c1, uInt8 c2) const {
+    inline uInt8 getPhosphor(uInt8 c1, uInt8 c2) const {
       // Use maximum of current and decayed previous values
       c2 = uInt8(c2 * myPhosphorPercent);
       if(c1 > c2)  return c1; // raise (assumed immediate)
@@ -139,7 +140,7 @@ class TIASurface
       Enable/disable/query NTSC filtering effects.
     */
     void enableNTSC(bool enable);
-    bool ntscEnabled() const { return myFilterType & 0x10; }
+    bool ntscEnabled() const { return uInt8(myFilter) & 0x10; }
     string effectsInfo() const;
 
     /**
@@ -156,13 +157,13 @@ class TIASurface
 
     // Enumeration created such that phosphor off/on is in LSB,
     // and Blargg off/on is in MSB
-    enum FilterType {
-      kNormal         = 0x00,
-      kPhosphor       = 0x01,
-      kBlarggNormal   = 0x10,
-      kBlarggPhosphor = 0x11
+    enum class Filter: uInt8 {
+      Normal         = 0x00,
+      Phosphor       = 0x01,
+      BlarggNormal   = 0x10,
+      BlarggPhosphor = 0x11
     };
-    FilterType myFilterType;
+    Filter myFilter;
 
     enum TIAConstants {
       kTIAW  = 160,
@@ -173,11 +174,17 @@ class TIASurface
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;
 
-    // Use phosphor effect (aka no flicker on 30Hz screens)
+    /////////////////////////////////////////////////////////////
+    // Phosphor mode items (aka reduced flicker on 30Hz screens)
+    // RGB frame buffer
+    uInt32 myRGBFramebuffer[160 * FrameManager::frameBufferHeight];
+
+    // Use phosphor effect
     bool myUsePhosphor;
 
     // Amount to blend when using phosphor effect
     float myPhosphorPercent;
+    /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode
     bool myScanlinesEnabled;
