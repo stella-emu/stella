@@ -88,6 +88,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     }
   );
 
+  setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
   myBackground.setTIA(this);
@@ -865,14 +866,14 @@ bool TIA::toggleFixedColors(uInt8 mode)
   // Otherwise, flip the state
   bool on = (mode == 0 || mode == 1) ? bool(mode) : myColorHBlank == 0;
 
-  bool pal = myFrameManager.layout() == FrameLayout::pal;
-  myMissile0.setDebugColor(pal ? M0ColorPAL : M0ColorNTSC);
-  myMissile1.setDebugColor(pal ? M1ColorPAL : M1ColorNTSC);
-  myPlayer0.setDebugColor(pal ? P0ColorPAL : P0ColorNTSC);
-  myPlayer1.setDebugColor(pal ? P1ColorPAL : P1ColorNTSC);
-  myBall.setDebugColor(pal ? BLColorPAL : BLColorNTSC);
-  myPlayfield.setDebugColor(pal ? PFColorPAL : PFColorNTSC);
-  myBackground.setDebugColor(pal ? BKColorPAL : BKColorNTSC);
+  int layout = myFrameManager.layout() == FrameLayout::pal ? 1 : 0;
+  myMissile0.setDebugColor(myFixedColorPalette[layout][FixedObject::M0]);
+  myMissile1.setDebugColor(myFixedColorPalette[layout][FixedObject::M1]);
+  myPlayer0.setDebugColor(myFixedColorPalette[layout][FixedObject::P0]);
+  myPlayer1.setDebugColor(myFixedColorPalette[layout][FixedObject::P1]);
+  myBall.setDebugColor(myFixedColorPalette[layout][FixedObject::BL]);
+  myPlayfield.setDebugColor(myFixedColorPalette[layout][FixedObject::PF]);
+  myBackground.setDebugColor(FixedColor::BK_GREY);
 
   myMissile0.enableDebugColors(on);
   myMissile1.enableDebugColors(on);
@@ -881,9 +882,44 @@ bool TIA::toggleFixedColors(uInt8 mode)
   myBall.enableDebugColors(on);
   myPlayfield.enableDebugColors(on);
   myBackground.enableDebugColors(on);
-  myColorHBlank = on ? HBLANKColor : 0x00;
+  myColorHBlank = on ? FixedColor::HBLANK_WHITE : 0x00;
 
   return on;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setFixedColorPalette(const string& colors)
+{
+  for(int i = 0; i < 6; ++i)
+  {
+    switch(colors[i])
+    {
+      case 'r':
+        myFixedColorPalette[0][i] = FixedColor::NTSC_RED;
+        myFixedColorPalette[1][i] = FixedColor::PAL_RED;
+        break;
+      case 'o':
+        myFixedColorPalette[0][i] = FixedColor::NTSC_ORANGE;
+        myFixedColorPalette[1][i] = FixedColor::PAL_ORANGE;
+        break;
+      case 'y':
+        myFixedColorPalette[0][i] = FixedColor::NTSC_YELLOW;
+        myFixedColorPalette[1][i] = FixedColor::PAL_YELLOW;
+        break;
+      case 'g':
+        myFixedColorPalette[0][i] = FixedColor::NTSC_GREEN;
+        myFixedColorPalette[1][i] = FixedColor::PAL_GREEN;
+        break;
+      case 'b':
+        myFixedColorPalette[0][i] = FixedColor::NTSC_BLUE;
+        myFixedColorPalette[1][i] = FixedColor::PAL_BLUE;
+        break;
+      case 'p':
+        myFixedColorPalette[0][i] = FixedColor::NTSC_PURPLE;
+        myFixedColorPalette[1][i] = FixedColor::PAL_PURPLE;
+        break;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

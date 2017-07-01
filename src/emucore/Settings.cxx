@@ -51,6 +51,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("tia.aspectn", "90");
   setInternal("tia.aspectp", "100");
   setInternal("tia.fsfill", "false");
+  setInternal("tia.dbgcolors", "roygpb");
 
   // TV filtering options
   setInternal("tv.filter", "0");
@@ -272,6 +273,10 @@ void Settings::validate()
   if(i < 80 || i > 120)  setInternal("tia.aspectn", "90");
   i = getInt("tia.aspectp");
   if(i < 80 || i > 120)  setInternal("tia.aspectp", "100");
+
+  s = getString("tia.dbgcolors");
+  sort(s.begin(), s.end());
+  if(s != "bgopry")  setInternal("tia.dbgcolors", "roygpb");
 
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setInternal("tv.filter", "0");

@@ -284,6 +284,17 @@ class TIA : public Device
     bool usingFixedColors() const { return myColorHBlank != 0x00; }
 
     /**
+      Sets the color of each object in 'fixed debug colors' mode.
+      Note that this doesn't enable/disable fixed colors; it simply
+      updates the palette that is used.
+
+      @param colors  Each character in the 6-char string represents the
+                     first letter of the color to use for
+                     P0/M0/P1/M1/PF/BL, respectively.
+    */
+    void setFixedColorPalette(const string& colors);
+
+    /**
       Enable/disable/query state of 'undriven/floating TIA pins'.
 
       @param mode  1/0 indicates on/off, otherwise return the current state
@@ -373,25 +384,26 @@ class TIA : public Device
     enum HState {blank, frame};
     enum Priority {pfp, score, normal};
 
-    enum FixedColors {
-      P0ColorNTSC = 0x30, // red
-      M0ColorNTSC = 0x38, // orange
-      P1ColorNTSC = 0x1c, // yellow
-      M1ColorNTSC = 0xc4, // green
-      PFColorNTSC = 0x9e, // blue
-      BLColorNTSC = 0x66, // purple
-      BKColorNTSC = 0x0a, // grey
+    enum FixedColor {
+      NTSC_RED    = 0x30,
+      NTSC_ORANGE = 0x38,
+      NTSC_YELLOW = 0x1c,
+      NTSC_GREEN  = 0xc4,
+      NTSC_BLUE   = 0x9e,
+      NTSC_PURPLE = 0x66,
 
-      P0ColorPAL  = 0x62, // red
-      M0ColorPAL  = 0x4a, // orange
-      P1ColorPAL  = 0x2e, // yellow
-      M1ColorPAL  = 0x34, // green
-      PFColorPAL  = 0xbc, // blue
-      BLColorPAL  = 0xa6, // purple
-      BKColorPAL  = 0x0a, // grey
+      PAL_RED     = 0x62,
+      PAL_ORANGE  = 0x4a,
+      PAL_YELLOW  = 0x2e,
+      PAL_GREEN   = 0x34,
+      PAL_BLUE    = 0xbc,
+      PAL_PURPLE  = 0xa6,
 
-      HBLANKColor = 0x0e  // white
+      BK_GREY      = 0x0a,
+      HBLANK_WHITE = 0x0e
     };
+    enum FixedObject { P0, M0, P1, M1, PF, BL };
+    FixedColor myFixedColorPalette[2][6];
 
   private:
 

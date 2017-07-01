@@ -52,29 +52,16 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluBK());
 
   // Debug Colors
+  int mode = myTIA.myFrameManager.layout() == FrameLayout::ntsc ? 0 : 1;
   myState.fixedCols.clear();
-  if(myTIA.myFrameManager.layout() == FrameLayout::ntsc)
-  {
-    myState.fixedCols.push_back(myTIA.P0ColorNTSC);
-    myState.fixedCols.push_back(myTIA.P1ColorNTSC);
-    myState.fixedCols.push_back(myTIA.PFColorNTSC);
-    myState.fixedCols.push_back(myTIA.BKColorNTSC);
-    myState.fixedCols.push_back(myTIA.M0ColorNTSC);
-    myState.fixedCols.push_back(myTIA.M1ColorNTSC);
-    myState.fixedCols.push_back(myTIA.BLColorNTSC);
-    myState.fixedCols.push_back(myTIA.HBLANKColor);
-  }
-  else
-  {
-    myState.fixedCols.push_back(myTIA.P0ColorPAL);
-    myState.fixedCols.push_back(myTIA.P1ColorPAL);
-    myState.fixedCols.push_back(myTIA.PFColorPAL);
-    myState.fixedCols.push_back(myTIA.BKColorPAL);
-    myState.fixedCols.push_back(myTIA.M0ColorPAL);
-    myState.fixedCols.push_back(myTIA.M1ColorPAL);
-    myState.fixedCols.push_back(myTIA.BLColorPAL);
-    myState.fixedCols.push_back(myTIA.HBLANKColor);
-  }
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P0]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P1]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::PF]);
+  myState.fixedCols.push_back(TIA::FixedColor::BK_GREY);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::M0]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::M1]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::BL]);
+  myState.fixedCols.push_back(TIA::FixedColor::HBLANK_WHITE);
 
   // Player 0 & 1 and Ball graphics registers
   myState.gr.clear();
@@ -758,7 +745,7 @@ string TIADebug::colorSwatch(uInt8 c) const
 
   ret += char((c >> 1) | 0x80);
   ret += "\177     ";
-  ret += "\177\003 ";
+  ret += "\177\001 ";
 
   return ret;
 }
@@ -804,28 +791,24 @@ string TIADebug::debugColors() const
 {
   ostringstream buf;
 
-  if(myTIA.myFrameManager.layout() == FrameLayout::ntsc)
-  {
-    buf << " Red    " << colorSwatch(myTIA.P0ColorNTSC) << " Player 0\n"
-        << " Orange " << colorSwatch(myTIA.M0ColorNTSC) << " Missile 0\n"
-        << " Yellow " << colorSwatch(myTIA.P1ColorNTSC) << " Player 1\n"
-        << " Green  " << colorSwatch(myTIA.M1ColorNTSC) << " Missile 1\n"
-        << " Blue   " << colorSwatch(myTIA.PFColorNTSC) << " Playfield\n"
-        << " Purple " << colorSwatch(myTIA.BLColorNTSC) << " Ball\n"
-        << " Grey   " << colorSwatch(myTIA.BKColorNTSC) << " Background\n"
-        << " White  " << colorSwatch(myTIA.HBLANKColor) << " HMOVE\n";
-  }
-  else
-  {
-    buf << " Red    " << colorSwatch(myTIA.P0ColorPAL)  << " Player 0\n"
-        << " Orange " << colorSwatch(myTIA.M0ColorPAL)  << " Missile 0\n"
-        << " Yellow " << colorSwatch(myTIA.P1ColorPAL)  << " Player 1\n"
-        << " Green  " << colorSwatch(myTIA.M1ColorPAL)  << " Missile 1\n"
-        << " Blue   " << colorSwatch(myTIA.PFColorPAL)  << " Playfield\n"
-        << " Purple " << colorSwatch(myTIA.BLColorPAL)  << " Ball\n"
-        << " Grey   " << colorSwatch(myTIA.BKColorPAL)  << " Background\n"
-        << " White  " << colorSwatch(myTIA.HBLANKColor) << " HMOVE\n";
-  }
+  int mode = myTIA.myFrameManager.layout() == FrameLayout::ntsc ? 0 : 1;
+  buf << " Red    " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P0])
+      << " Player 0\n"
+      << " Orange " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M0])
+      << " Missile 0\n"
+      << " Yellow " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P1])
+      << " Player 1\n"
+      << " Green  " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M1])
+      << " Missile 1\n"
+      << " Blue   " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::PF])
+      << " Playfield\n"
+      << " Purple " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BL])
+      << " Ball\n"
+      << " Grey   " << colorSwatch(TIA::FixedColor::BK_GREY)
+      << " Background\n"
+      << " White  " << colorSwatch(TIA::FixedColor::HBLANK_WHITE)
+      << " HMOVE\n";
+
   return buf.str();
 }
 

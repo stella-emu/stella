@@ -20,6 +20,10 @@
     - RSYNC
     - YStart autodetection
     - Proper emulation of RDY during write cycles (WSYNC).
+    - Fixed debug colors can now be set for each graphical object, from a
+      choice of 'red', 'orange', 'yellow', 'green', 'blue' and 'purple'.
+      This is accessible through the new 'tia.dbgcolors' commandline
+      argument.
     - ...
 
   * Implemented new phosphor emulation mode, which is much closer to real
