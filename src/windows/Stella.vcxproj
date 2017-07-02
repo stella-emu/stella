@@ -304,6 +304,7 @@
     <ClCompile Include="..\emucore\CartCTY.cxx" />
     <ClCompile Include="..\emucore\CartCVPlus.cxx" />
     <ClCompile Include="..\emucore\CartDASH.cxx" />
+    <ClCompile Include="..\emucore\CartDetector.cxx" />
     <ClCompile Include="..\emucore\CartDF.cxx" />
     <ClCompile Include="..\emucore\CartDFSC.cxx" />
     <ClCompile Include="..\emucore\CartFA2.cxx" />
@@ -569,6 +570,7 @@
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
     <ClInclude Include="..\emucore\AmigaMouse.hxx" />
     <ClInclude Include="..\emucore\AtariMouse.hxx" />
+    <ClInclude Include="..\emucore\BSType.hxx" />
     <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
@@ -580,6 +582,7 @@
     <ClInclude Include="..\emucore\CartCTYTunes.hxx" />
     <ClInclude Include="..\emucore\CartCVPlus.hxx" />
     <ClInclude Include="..\emucore\CartDASH.hxx" />
+    <ClInclude Include="..\emucore\CartDetector.hxx" />
     <ClInclude Include="..\emucore\CartDF.hxx" />
     <ClInclude Include="..\emucore\CartDFSC.hxx" />
     <ClInclude Include="..\emucore\CartFA2.hxx" />
