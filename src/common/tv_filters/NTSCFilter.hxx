@@ -147,7 +147,7 @@ class NTSCFilter
     uInt8 myTIAPalette[AtariNTSC::palette_size * 3];
 
     struct AdjustableTag {
-      const char* type;
+      const char* const type;
       double* value;
     };
     uInt32 myCurrentAdjustable;

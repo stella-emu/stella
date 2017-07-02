@@ -125,7 +125,7 @@ string CartridgeDFSCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* spot[] = {
+  static const char* const spot[] = {
     "$FFC0", "$FFC1", "$FFC2", "$FFC3", "$FFC4", "$FFC5", "$FFC6", "$FFC7",
     "$FFC8", "$FFC9", "$FFCA", "$FFCB", "$FFCC", "$FFCD", "$FFCE", "$FFCF",
     "$FFD0", "$FFD1", "$FFD2", "$FFD3", "$FFD4", "$FFD5", "$FFD6", "$FFE7",

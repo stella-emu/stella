@@ -123,8 +123,8 @@ static int IsRootCwd()
 
 static int IsTenPointNineOrLater()
 {
-  /* -instancesRespondToSelector is available in 10.9, but it says that it's 
-   available in 10.10. Either way, if it's there, we're on 10.9 or higher: 
+  /* -instancesRespondToSelector is available in 10.9, but it says that it's
+   available in 10.10. Either way, if it's there, we're on 10.9 or higher:
    just return true so we don't clobber the user's console with this. */
   if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
     return 1;

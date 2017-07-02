@@ -93,9 +93,9 @@ class Base
 
     // Format specifiers to use for sprintf (eventually we may convert
     // to C++ streams
-    static const char* myLowerFmt[4];
-    static const char* myUpperFmt[4];
-    static const char** myFmt;
+    static const char* const myLowerFmt[4];
+    static const char* const myUpperFmt[4];
+    static const char* const* myFmt;
 
   private:
     // Following constructors and assignment operators not supported

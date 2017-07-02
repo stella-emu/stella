@@ -382,10 +382,10 @@ class CartDebug : public DebuggerSystem
     string myListFile, mySymbolFile, myCfgFile, myDisasmFile, myRomFile;
 
     /// Table of instruction mnemonics
-    static const char* ourTIAMnemonicR[16]; // read mode
-    static const char* ourTIAMnemonicW[64]; // write mode
-    static const char* ourIOMnemonic[24];
-    static const char* ourZPMnemonic[128];
+    static const char* const ourTIAMnemonicR[16]; // read mode
+    static const char* const ourTIAMnemonicW[64]; // write mode
+    static const char* const ourIOMnemonic[24];
+    static const char* const ourZPMnemonic[128];
 
   private:
     // Following constructors and assignment operators not supported

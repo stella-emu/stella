@@ -358,7 +358,8 @@ class EventHandler
     /**
       Returns the human-readable name for a StellaKey.
     */
-    virtual const char* nameForKey(StellaKey key) const { return EmptyString.c_str(); }
+    virtual const char* const nameForKey(StellaKey key) const
+      { return EmptyString.c_str(); }
 
     /**
       Collects and dispatches any pending events.

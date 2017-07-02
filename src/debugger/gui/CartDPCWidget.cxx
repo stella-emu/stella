@@ -227,7 +227,7 @@ string CartridgeDPCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* spot[] = { "$FFF8", "$FFF9" };
+  static const char* const spot[] = { "$FFF8", "$FFF9" };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
       << ", hotspot = " << spot[myCart.myCurrentBank];
 

@@ -97,7 +97,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, 0, false);
 
   // Timer registers (R/W)
-  const char* writeNames[] = { "TIM1T", "TIM8T", "TIM64T", "T1024T" };
+  const char* const writeNames[] = { "TIM1T", "TIM8T", "TIM64T", "T1024T" };
   xpos = 10;  ypos += 2*lineHeight;
   for(int row = 0; row < 4; ++row)
   {
@@ -111,7 +111,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myTimWrite);
 
   // Timer registers (RO)
-  const char* readNames[] = { "INTIM", "TIMINT", "Total Clks", "INTIM Clks" };
+  const char* const readNames[] = { "INTIM", "TIMINT", "Total Clks", "INTIM Clks" };
   xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight;
   for(int row = 0; row < 4; ++row)
   {
@@ -133,7 +133,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
       riot.controller(Controller::Right));
 
   // TIA INPTx registers (R), left port
-  const char* contLeftReadNames[] = { "INPT0", "INPT1", "INPT4" };
+  const char* const contLeftReadNames[] = { "INPT0", "INPT1", "INPT4" };
   xpos = col;  ypos += myLeftControl->getHeight() + 2 * lineHeight;
   for(int row = 0; row < 3; ++row)
   {
@@ -146,7 +146,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myLeftINPT->setEditable(false);
 
   // TIA INPTx registers (R), right port
-  const char* contRightReadNames[] = { "INPT2", "INPT3", "INPT5" };
+  const char* const contRightReadNames[] = { "INPT2", "INPT3", "INPT5" };
   xpos = col + myLeftControl->getWidth() + 15;
   for(int row = 0; row < 3; ++row)
   {
@@ -230,7 +230,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   new StaticTextWidget(boss, lfont, xpos, ypos+1,
       lwidth, fontHeight, "Randomize CPU ", kTextAlignLeft);
   xpos += lwidth + 10;
-  const char* cpuregs[] = { "SP", "A", "X", "Y", "PS" };
+  const char* const cpuregs[] = { "SP", "A", "X", "Y", "PS" };
   for(int i = 0; i < 5; ++i)
   {
     myRandomizeCPU[i] = new CheckboxWidget(boss, lfont, xpos, ypos+1,
@@ -340,7 +340,7 @@ void RiotWidget::loadConfig()
   myRandomizeRAM->setState(instance().settings().getBool("ramrandom"));
 
   const string& cpurandom = instance().settings().getString("cpurandom");
-  const char* cpuregs[] = { "S", "A", "X", "Y", "P" };
+  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
     myRandomizeCPU[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
 }
@@ -473,7 +473,7 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 void RiotWidget::handleRandomCPU()
 {
   string cpurandom;
-  const char* cpuregs[] = { "S", "A", "X", "Y", "P" };
+  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
     if(myRandomizeCPU[i]->getState())
       cpurandom += cpuregs[i];

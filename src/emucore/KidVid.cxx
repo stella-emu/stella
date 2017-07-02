@@ -165,7 +165,7 @@ cerr << "myTape = " << myTape << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::openSampleFile()
 {
-  static const char* kvNameTable[6] = {
+  static const char* const kvNameTable[6] = {
     "kvs3.wav", "kvs1.wav", "kvs2.wav", "kvb3.wav", "kvb1.wav", "kvb2.wav"
   };
   static uInt32 StartSong[6] = {

@@ -121,7 +121,7 @@ bool LauncherFilterDialog::isValidRomName(const string& name,
   string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
-    const char* ext = name.c_str() + idx + 1;
+    const char* const ext = name.c_str() + idx + 1;
 
     for(const auto& s: exts)
       if(BSPF::equalsIgnoreCase(ext, s))
@@ -138,7 +138,7 @@ bool LauncherFilterDialog::isValidRomName(const FilesystemNode& node, string& ex
   string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
-    const char* e = name.c_str() + idx + 1;
+    const char* const e = name.c_str() + idx + 1;
 
     for(uInt32 i = 0; i < 5; ++i)
     {
@@ -249,7 +249,7 @@ void LauncherFilterDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* LauncherFilterDialog::ourRomTypes[2][5] = {
+const char* const LauncherFilterDialog::ourRomTypes[2][5] = {
   { ".a26", ".bin", ".rom", ".zip", ".gz" },
   { "a26", "bin", "rom", "zip", "gz" }
 };

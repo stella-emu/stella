@@ -1391,13 +1391,13 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourTIAMnemonicR[16] = {
+const char* const CartDebug::ourTIAMnemonicR[16] = {
   "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
   "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", 0, 0
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourTIAMnemonicW[64] = {
+const char* const CartDebug::ourTIAMnemonicW[64] = {
   "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
   "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
   "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
@@ -1408,13 +1408,13 @@ const char* CartDebug::ourTIAMnemonicW[64] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourIOMnemonic[24] = {
+const char* const CartDebug::ourIOMnemonic[24] = {
   "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT", 0, 0,  0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, "TIM1T", "TIM8T", "TIM64T", "T1024T"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourZPMnemonic[128] = {
+const char* const CartDebug::ourZPMnemonic[128] = {
   "ram_80", "ram_81", "ram_82", "ram_83", "ram_84", "ram_85", "ram_86", "ram_87",
   "ram_88", "ram_89", "ram_8A", "ram_8B", "ram_8C", "ram_8D", "ram_8E", "ram_8F",
   "ram_90", "ram_91", "ram_92", "ram_93", "ram_94", "ram_95", "ram_96", "ram_97",

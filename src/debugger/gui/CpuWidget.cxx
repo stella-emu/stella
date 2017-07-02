@@ -117,8 +117,8 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Set the strings to be used in the PSRegister
   // We only do this once because it's the state that changes, not the strings
-  const char* offstr[] = { "n", "v", "-", "b", "d", "i", "z", "c" };
-  const char* onstr[]  = { "N", "V", "-", "B", "D", "I", "Z", "C" };
+  const char* const offstr[] = { "n", "v", "-", "b", "d", "i", "z", "c" };
+  const char* const onstr[]  = { "N", "V", "-", "B", "D", "I", "Z", "C" };
   StringList off, on;
   for(int i = 0; i < 8; ++i)
   {

@@ -46,7 +46,7 @@ class EventHandlerSDL2 : public EventHandler
     /**
       Returns the human-readable name for a StellaKey.
     */
-    const char* nameForKey(StellaKey key) const override {
+    const char* const nameForKey(StellaKey key) const override {
       return SDL_GetScancodeName(SDL_Scancode(key));
     }
 

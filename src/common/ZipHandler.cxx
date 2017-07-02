@@ -87,7 +87,7 @@ string ZipHandler::next()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 ZipHandler::decompress(BytePtr& image)
 {
-  static const char* zip_error_s[] = {
+  static const char* const zip_error_s[] = {
     "ZIPERR_NONE",
     "ZIPERR_OUT_OF_MEMORY",
     "ZIPERR_FILE_ERROR",

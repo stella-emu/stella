@@ -56,7 +56,7 @@ class Variant
 
     // Conversion methods
     const string& toString() const { return data;                          }
-    const char* toCString() const  { return data.c_str();                  }
+    const char* const toCString() const { return data.c_str();             }
     const Int32 toInt() const      { return atoi(data.c_str());            }
     const float toFloat() const    { return float(atof(data.c_str()));     }
     const bool toBool() const      { return data == "1" || data == "true"; }

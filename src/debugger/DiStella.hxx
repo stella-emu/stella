@@ -174,7 +174,7 @@ class DiStella
     };
 
     struct Instruction_tag {
-      const char*    mnemonic;
+      const char* const mnemonic;
       AddressingMode addr_mode;
       AccessMode     source;
       ReadWriteMode  rw_mode;

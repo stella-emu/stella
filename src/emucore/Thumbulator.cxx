@@ -129,7 +129,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* ms
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
-                                    const char* msg)
+                                   const char* msg)
 {
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << Base::HEX8 << v1 << "," << v2 << "), " << msg << endl;

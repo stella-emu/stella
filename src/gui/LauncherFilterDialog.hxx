@@ -72,7 +72,7 @@ class LauncherFilterDialog : public Dialog, public CommandSender
     };
 
     // Holds static strings representing ROM types
-    static const char* ourRomTypes[2][5];
+    static const char* const ourRomTypes[2][5];
 
   private:
     // Following constructors and assignment operators not supported

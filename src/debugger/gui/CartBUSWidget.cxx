@@ -80,11 +80,11 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X, ypos+myLineHeight-2, 4, 4, 6, 32, Common::Base::F_16_3_2);
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
-  
+
   myDatastreamPointers2 = new DataGridWidget(boss, _nfont, DS_X + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 4*myLineHeight, 1, 2, 6, 32, Common::Base::F_16_3_2);
   myDatastreamPointers2->setTarget(this);
   myDatastreamPointers2->setEditable(false);
-  
+
   uInt32 row;
   for(row = 0; row < 4; ++row)
   {
@@ -112,7 +112,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2, 4, 4, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
-  
+
   myDatastreamIncrements2 = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 4*myLineHeight, 1, 2, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements2->setTarget(this);
   myDatastreamIncrements2->setEditable(false);
@@ -155,12 +155,12 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
-  
+
   int xpossp = xpos + myMusicWaveforms->getWidth() + 20;
   int lwidth2 = _font.getStringWidth("Sample Pointer ");
   new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
                        myFontHeight, "Sample Pointer ", kTextAlignLeft);
-  
+
   mySamplePointer = new DataGridWidget(boss, _nfont, xpossp + lwidth2, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
   mySamplePointer->setTarget(this);
   mySamplePointer->setEditable(false);
@@ -181,7 +181,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myBusOverdrive = new CheckboxWidget(boss, _font, xpos, ypos, "BUS Overdrive enabled");
   myBusOverdrive->setTarget(this);
   myBusOverdrive->setEditable(false);
-  
+
   myDigitalSample = new CheckboxWidget(boss, _font, xpossp, ypos, "Digital Sample mode");
   myDigitalSample->setTarget(this);
   myDigitalSample->setEditable(false);
@@ -225,7 +225,7 @@ void CartridgeBUSWidget::saveOldState()
   {
     myOldState.addressmaps.push_back(myCart.getAddressMap(i));
   }
-  
+
   for(uInt32 i = 37; i < 40; i++) // but need 40 for the grid
   {
     myOldState.addressmaps.push_back(0);
@@ -245,7 +245,7 @@ void CartridgeBUSWidget::saveOldState()
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myBUSRAM[i]);
-  
+
   myOldState.samplepointer.push_back(myCart.getSample());
 }
 
@@ -277,7 +277,7 @@ void CartridgeBUSWidget::loadConfig()
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
   myDatastreamPointers->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 16; i < 18; ++i)
   {
@@ -286,7 +286,7 @@ void CartridgeBUSWidget::loadConfig()
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
   myDatastreamPointers2->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 16; ++i)
   {
@@ -295,7 +295,7 @@ void CartridgeBUSWidget::loadConfig()
     changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
   }
   myDatastreamIncrements->setList(alist, vlist, changed);
-  
+
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 16; i < 18; ++i)
   {
@@ -394,7 +394,7 @@ string CartridgeBUSWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* spot[] = {
+  static const char* const spot[] = {
     "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank

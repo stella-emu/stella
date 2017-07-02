@@ -88,7 +88,7 @@ void listDevices()
     int devlen = strlen(dp->d_name);
     if(devlen >= len)
     {
-      const char* start = dp->d_name + devlen - len;
+      const char* const start = dp->d_name + devlen - len;
       if(strncmp(start, "event-joystick", len) == 0)
         printf("%s%s\n", EVDEV_DIR, dp->d_name);
     }

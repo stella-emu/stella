@@ -19,11 +19,11 @@
 #include "PopUpWidget.hxx"
 #include "CartE7Widget.hxx"
 
-static const char* spot_lower[] = {
+static const char* const spot_lower[] = {
   "0 - ROM ($FFE0)", "1 - ROM ($FFE1)", "2 - ROM ($FFE2)", "3 - ROM ($FFE3)",
   "4 - ROM ($FFE4)", "5 - ROM ($FFE5)", "6 - ROM ($FFE6)", "7 - RAM ($FFE7)"
 };
-static const char* spot_upper[] = {
+static const char* const spot_upper[] = {
   "0 - RAM ($FFE8)", "1 - RAM ($FFE9)", "2 - RAM ($FFEA)", "3 - RAM ($FFEB)"
 };
 

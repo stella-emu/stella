@@ -357,7 +357,7 @@ string CartridgeCDFWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* spot[] = {
+  static const char* const spot[] = {
     "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   buf << "Bank = " << std::dec << myCart.myCurrentBank
