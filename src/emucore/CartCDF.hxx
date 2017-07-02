@@ -55,7 +55,7 @@ class CartridgeCDF : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCDF(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeCDF(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeCDF() = default;
 
   public:
@@ -284,7 +284,7 @@ class CartridgeCDF : public Cartridge
     // set to address of the JMP operand if last byte peeked was 4C
     // *and* the next two bytes in ROM are 00 00
     uInt16 myJMPoperandAddress;
-  
+
     TIA* myTIA;
 
     uInt8 myFastJumpActive;

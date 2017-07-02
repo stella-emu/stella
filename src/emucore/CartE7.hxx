@@ -70,7 +70,7 @@ class CartridgeE7 : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeE7(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeE7(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeE7() = default;
 
   public:

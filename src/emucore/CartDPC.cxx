@@ -19,7 +19,7 @@
 #include "CartDPC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
+CartridgeDPC::CartridgeDPC(const BytePtr& image, uInt32 size,
                            const Settings& settings)
   : Cartridge(settings),
     mySize(size),
@@ -28,7 +28,7 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
     myCurrentBank(0)
 {
   // Make a copy of the entire image
-  memcpy(myImage, image, std::min(size, 8192u + 2048u + 256u));
+  memcpy(myImage, image.get(), std::min(size, 8192u + 2048u + 256u));
   createCodeAccessBase(8192);
 
   // Pointer to the program ROM (8K @ 0 byte offset)

@@ -531,13 +531,10 @@ class OSystem
 
       @param romfile  The file node of the ROM to use (contains path)
       @param md5      The MD5sum of the ROM
-      @param type     The bankswitch type of the ROM
-      @param id       The additional id (if any) used by the ROM
 
       @return  The actual Console object, otherwise nullptr.
     */
-    unique_ptr<Console> openConsole(const FilesystemNode& romfile, string& md5,
-                                    string& type, string& id);
+    unique_ptr<Console> openConsole(const FilesystemNode& romfile, string& md5);
 
     /**
       Close and finalize any currently open console.

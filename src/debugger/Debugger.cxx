@@ -59,7 +59,7 @@
 Debugger* Debugger::myStaticDebugger = nullptr;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const char* builtin_functions[][3] = {
+static const char* const builtin_functions[][3] = {
   // { "name", "definition", "help text" }
 
   // left joystick:
@@ -92,7 +92,7 @@ static const char* builtin_functions[][3] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Names are defined here, but processed in YaccParser
-static const char* pseudo_registers[][2] = {
+static const char* const pseudo_registers[][2] = {
   // { "name", "help text" }
 
   { "_bank", "Currently selected bank" },

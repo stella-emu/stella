@@ -44,7 +44,7 @@ class CartridgeFA : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeFA(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeFA(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeFA() = default;
 
   public:

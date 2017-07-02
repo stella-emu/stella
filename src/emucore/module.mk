@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	src/emucore/AtariVox.o \
 	src/emucore/Booster.o \
 	src/emucore/Cart.o \
+	src/emucore/CartDetector.o \
 	src/emucore/Cart0840.o \
 	src/emucore/Cart2K.o \
 	src/emucore/Cart3E.o \

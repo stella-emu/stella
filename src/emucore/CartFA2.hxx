@@ -52,7 +52,7 @@ class CartridgeFA2 : public Cartridge
       @param size      The size of the ROM image
       @param osystem   A reference to the OSystem currently in use
     */
-    CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osystem);
+    CartridgeFA2(const BytePtr& image, uInt32 size, const OSystem& osystem);
     virtual ~CartridgeFA2() = default;
 
   public:

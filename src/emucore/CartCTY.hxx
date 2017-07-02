@@ -119,7 +119,7 @@ class CartridgeCTY : public Cartridge
       @param size      The size of the ROM image
       @param osystem   A reference to the OSystem currently in use
     */
-    CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osystem);
+    CartridgeCTY(const BytePtr& image, uInt32 size, const OSystem& osystem);
     virtual ~CartridgeCTY() = default;
 
   public:

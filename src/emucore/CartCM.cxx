@@ -21,13 +21,14 @@
 #include "CartCM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCM::CartridgeCM(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeCM::CartridgeCM(const BytePtr& image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings),
     mySWCHA(0xFF),   // portA is all 1's
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(16384u, size));
+  memcpy(myImage, image.get(), std::min(16384u, size));
   createCodeAccessBase(16384);
 
   // On powerup, the last bank of ROM is enabled and RAM is disabled

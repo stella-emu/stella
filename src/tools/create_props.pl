@@ -60,7 +60,7 @@ print OUTFILE "  regenerated and the application recompiled.\n";
 print OUTFILE "*/\n";
 print OUTFILE "\n#define DEF_PROPS_SIZE " . $setsize;
 print OUTFILE "\n\n";
-print OUTFILE "static const char* DefProps[DEF_PROPS_SIZE][" . $typesize . "] = {\n";
+print OUTFILE "static const char* const DefProps[DEF_PROPS_SIZE][" . $typesize . "] = {\n";
 
 # Walk the hash map and print each item in order of md5sum
 my $idx = 0;

@@ -19,11 +19,12 @@
 #include "Cart4KSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4KSC::Cartridge4KSC(const uInt8* image, uInt32 size, const Settings& settings)
+Cartridge4KSC::Cartridge4KSC(const BytePtr& image, uInt32 size,
+                             const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(4096u, size));
+  memcpy(myImage, image.get(), std::min(4096u, size));
   createCodeAccessBase(4096);
 }
 

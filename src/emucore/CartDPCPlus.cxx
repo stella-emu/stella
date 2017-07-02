@@ -24,7 +24,7 @@
 #include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
+CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
                                    const Settings& settings)
   : Cartridge(settings),
     myFastFetch(false),
@@ -40,7 +40,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   mySize = std::min(size, 32768u);
   if(mySize < 32768u)
     memset(myImage, 0, 32768);
-  memcpy(myImage + (32768u - mySize), image, size);
+  memcpy(myImage + (32768u - mySize), image.get(), size);
   createCodeAccessBase(4096 * 6);
 
   // Pointer to the program ROM (24K @ 3072 byte offset; ignore first 3K)

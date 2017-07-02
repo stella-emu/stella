@@ -44,7 +44,7 @@ class CartridgeF6 : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeF6(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeF6(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeF6() = default;
 
   public:

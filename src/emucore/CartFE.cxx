@@ -19,14 +19,15 @@
 #include "CartFE.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFE::CartridgeFE(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeFE::CartridgeFE(const BytePtr& image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings),
     myLastAddress1(0),
     myLastAddress2(0),
     myLastAddressChanged(false)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(8192u, size));
+  memcpy(myImage, image.get(), std::min(8192u, size));
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the address space of FE carts can change

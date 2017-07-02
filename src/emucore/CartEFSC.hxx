@@ -48,7 +48,7 @@ class CartridgeEFSC : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeEFSC(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeEFSC(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeEFSC() = default;
 
   public:

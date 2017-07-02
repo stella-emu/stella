@@ -57,7 +57,7 @@ class CartridgeCVPlus : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCVPlus(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeCVPlus(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeCVPlus() = default;
 
   public:

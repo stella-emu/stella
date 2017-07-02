@@ -28,7 +28,7 @@
 // TODO (2010-10-03) - support CodeAccessBase functionality somehow
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size,
+CartridgeMC::CartridgeMC(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySlot3Locked(false)
@@ -40,7 +40,7 @@ CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size,
   memset(myImage, 0, 131072);
 
   // Copy the ROM image to the end of the ROM buffer
-  memcpy(myImage + 131072 - size, image, size);
+  memcpy(myImage + 131072 - size, image.get(), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -21,7 +21,7 @@
 #include "Cart4A50.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size,
+Cartridge4A50::Cartridge4A50(const BytePtr& image, uInt32 size,
                              const Settings& settings)
   : Cartridge(settings),
     mySize(size),
@@ -40,7 +40,7 @@ Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size,
   else if(size < 131072)  size = 65536;
   else                    size = 131072;
   for(uInt32 slice = 0; slice < 131072 / size; ++slice)
-    memcpy(myImage + (slice*size), image, size);
+    memcpy(myImage + (slice*size), image.get(), size);
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the address space of 4A50 carts can change

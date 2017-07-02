@@ -20,7 +20,8 @@
 #include "CartDASH.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeDASH::CartridgeDASH(const BytePtr& image, uInt32 size,
+                             const Settings& settings)
   : Cartridge(settings),
     mySize(size)
 {
@@ -28,7 +29,7 @@ CartridgeDASH::CartridgeDASH(const uInt8* image, uInt32 size, const Settings& se
   myImage = make_ptr<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image, mySize);
+  memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize + RAM_TOTAL_SIZE);
 
   // Remember startup bank (0 per spec, rather than last per 3E scheme).

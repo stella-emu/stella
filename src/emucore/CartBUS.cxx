@@ -40,15 +40,15 @@
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBUS::CartridgeBUS(const uInt8* image, uInt32 size,
-                                   const Settings& settings)
+CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
+                           const Settings& settings)
   : Cartridge(settings),
     mySystemCycles(0),
     myARMCycles(0),
     myFractionalClocks(0.0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(32768u, size));
+  memcpy(myImage, image.get(), std::min(32768u, size));
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
   createCodeAccessBase(4096 * 7);

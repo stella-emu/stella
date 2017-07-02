@@ -55,7 +55,7 @@ class CartridgeBUS : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeBUS(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeBUS(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeBUS() = default;
 
   public:
@@ -275,7 +275,7 @@ class CartridgeBUS : public Cartridge
     // 0- = Packed Digital Sample
     // F- = 3 Voice Music
     uInt8 myMode;
-  
+
     uInt8 myFastJumpActive;
 
   private:

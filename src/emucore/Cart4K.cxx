@@ -19,11 +19,12 @@
 #include "Cart4K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4K::Cartridge4K(const uInt8* image, uInt32 size, const Settings& settings)
+Cartridge4K::Cartridge4K(const BytePtr& image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(4096u, size));
+  memcpy(myImage, image.get(), std::min(4096u, size));
   createCodeAccessBase(4096);
 }
 

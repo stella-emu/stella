@@ -21,12 +21,13 @@
 #include "CartX07.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeX07::CartridgeX07(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeX07::CartridgeX07(const BytePtr& image, uInt32 size,
+                           const Settings& settings)
   : Cartridge(settings),
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(65536u, size));
+  memcpy(myImage, image.get(), std::min(65536u, size));
   createCodeAccessBase(65536);
 
   // Remember startup bank

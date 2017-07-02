@@ -20,7 +20,7 @@
 #include "CartCVPlus.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCVPlus::CartridgeCVPlus(const uInt8* image, uInt32 size,
+CartridgeCVPlus::CartridgeCVPlus(const BytePtr& image, uInt32 size,
                                  const Settings& settings)
   : Cartridge(settings),
     mySize(size),
@@ -30,7 +30,7 @@ CartridgeCVPlus::CartridgeCVPlus(const uInt8* image, uInt32 size,
   myImage = make_ptr<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image, mySize);
+  memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize + 1024);
 
   // Remember startup bank

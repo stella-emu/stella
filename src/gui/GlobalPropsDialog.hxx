@@ -58,7 +58,7 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     CheckboxWidget* myHoldSelect;
     CheckboxWidget* myHoldReset;
 
-    static const char* ourJoyState[10];
+    static const char* const ourJoyState[10];
 
   private:
     // Following constructors and assignment operators not supported

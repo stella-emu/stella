@@ -19,12 +19,13 @@
 #include "CartF8SC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8SC::CartridgeF8SC(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeF8SC::CartridgeF8SC(const BytePtr& image, uInt32 size,
+                             const Settings& settings)
   : Cartridge(settings),
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(8192u, size));
+  memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
 
   // Remember startup bank

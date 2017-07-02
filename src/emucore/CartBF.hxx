@@ -45,7 +45,7 @@ class CartridgeBF : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeBF(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeBF(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeBF() = default;
 
   public:

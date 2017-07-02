@@ -43,7 +43,7 @@ class Cartridge0840 : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge0840(const uInt8* image, uInt32 size, const Settings& settings);
+    Cartridge0840(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~Cartridge0840() = default;
 
   public:

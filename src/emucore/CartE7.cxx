@@ -19,12 +19,13 @@
 #include "CartE7.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE7::CartridgeE7(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeE7::CartridgeE7(const BytePtr& image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings),
     myCurrentRAM(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(16384u, size));
+  memcpy(myImage, image.get(), std::min(16384u, size));
   createCodeAccessBase(16384 + 2048);
 
   // Remember startup bank

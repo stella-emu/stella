@@ -21,7 +21,7 @@
 #include "CartWD.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeWD::CartridgeWD(const uInt8* image, uInt32 size,
+CartridgeWD::CartridgeWD(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(std::min(8195u, size)),
@@ -30,7 +30,7 @@ CartridgeWD::CartridgeWD(const uInt8* image, uInt32 size,
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, mySize);
+  memcpy(myImage, image.get(), mySize);
   createCodeAccessBase(8192);
 
   // Remember startup bank

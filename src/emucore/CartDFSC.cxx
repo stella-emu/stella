@@ -19,12 +19,13 @@
 #include "CartDFSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDFSC::CartridgeDFSC(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeDFSC::CartridgeDFSC(const BytePtr& image, uInt32 size,
+                             const Settings& settings)
   : Cartridge(settings),
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(131072u, size));
+  memcpy(myImage, image.get(), std::min(131072u, size));
   createCodeAccessBase(131072);
 
   // Remember startup bank

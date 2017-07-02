@@ -183,10 +183,10 @@ class Properties
     string myProperties[LastPropType];
 
     // List of default properties to use when none have been provided
-    static const char* ourDefaultProperties[LastPropType];
+    static const char* const ourDefaultProperties[LastPropType];
 
     // The text strings associated with each property type
-    static const char* ourPropertyNames[LastPropType];
+    static const char* const ourPropertyNames[LastPropType];
 };
 
 #endif

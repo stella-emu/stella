@@ -17,7 +17,7 @@
 
 #include "bspf.hxx"
 
-#include "Cart.hxx"
+#include "BSType.hxx"
 #include "Control.hxx"
 #include "Dialog.hxx"
 #include "OSystem.hxx"
@@ -54,8 +54,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Bankswitch type", kTextAlignLeft);
-  for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
-    VarList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
+  for(int i = 0; i < int(BSType::NumSchemes); ++i)
+    VarList::push_back(items, BSList[i].desc, BSList[i].name);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myBSType);
@@ -308,6 +308,6 @@ void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* GlobalPropsDialog::ourJoyState[10] = {
+const char* const GlobalPropsDialog::ourJoyState[10] = {
   "U", "D", "L", "R", "F", "U", "D", "L", "R", "F"
 };

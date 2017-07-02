@@ -20,7 +20,7 @@
 #include "Cart3F.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size,
+Cartridge3F::Cartridge3F(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(size),
@@ -30,7 +30,7 @@ Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size,
   myImage = make_ptr<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image, mySize);
+  memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize);
 
   // Remember startup bank

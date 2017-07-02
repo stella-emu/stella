@@ -19,12 +19,13 @@
 #include "CartFA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA::CartridgeFA(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeFA::CartridgeFA(const BytePtr& image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings),
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(12288u, size));
+  memcpy(myImage, image.get(), std::min(12288u, size));
   createCodeAccessBase(12288);
 
   // Remember startup bank

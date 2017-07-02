@@ -19,7 +19,8 @@
 #include "CartMDM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMDM::CartridgeMDM(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeMDM::CartridgeMDM(const BytePtr& image, uInt32 size,
+                           const Settings& settings)
   : Cartridge(settings),
     mySize(size),
     myCurrentBank(0),
@@ -29,7 +30,7 @@ CartridgeMDM::CartridgeMDM(const uInt8* image, uInt32 size, const Settings& sett
   myImage = make_ptr<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image, mySize);
+  memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize);
 
   // Remember startup bank

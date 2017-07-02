@@ -19,11 +19,12 @@
 #include "CartE0.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE0::CartridgeE0(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeE0::CartridgeE0(const BytePtr& image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(8192u, size));
+  memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
 }
 

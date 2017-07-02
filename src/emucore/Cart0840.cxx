@@ -19,12 +19,13 @@
 #include "Cart0840.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0840::Cartridge0840(const uInt8* image, uInt32 size, const Settings& settings)
+Cartridge0840::Cartridge0840(const BytePtr& image, uInt32 size,
+                             const Settings& settings)
   : Cartridge(settings),
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(8192u, size));
+  memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
 
   // Remember startup bank

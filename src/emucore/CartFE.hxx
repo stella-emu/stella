@@ -59,7 +59,7 @@ class CartridgeFE : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeFE(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeFE(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~CartridgeFE() = default;
 
   public:

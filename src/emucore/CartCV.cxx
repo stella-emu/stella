@@ -19,7 +19,7 @@
 #include "CartCV.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
+CartridgeCV::CartridgeCV(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(size)
@@ -27,7 +27,7 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
   if(mySize == 2048)
   {
     // Copy the ROM data into my buffer
-    memcpy(myImage, image, 2048);
+    memcpy(myImage, image.get(), 2048);
   }
   else if(mySize == 4096)
   {
@@ -35,11 +35,11 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
     // Useful for MagiCard program listings
 
     // Copy the ROM data into my buffer
-    memcpy(myImage, image + 2048, 2048);
+    memcpy(myImage, image.get() + 2048, 2048);
 
     // Copy the RAM image into a buffer for use in reset()
     myInitialRAM = make_ptr<uInt8[]>(1024);
-    memcpy(myInitialRAM.get(), image, 1024);
+    memcpy(myInitialRAM.get(), image.get(), 1024);
   }
   createCodeAccessBase(2048+1024);
 }

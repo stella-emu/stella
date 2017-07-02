@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Cart.hxx"
+#include "BSType.hxx"
 #include "Console.hxx"
 #include "MouseControl.hxx"
 #include "Dialog.hxx"
@@ -124,8 +124,8 @@ GameInfoDialog::GameInfoDialog(
                        "Type", kTextAlignLeft);
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  for(int i = 0; i < Cartridge::ourNumBSTypes; ++i)
-    VarList::push_back(items, Cartridge::ourBSList[i].desc, Cartridge::ourBSList[i].type);
+  for(int i = 0; i < int(BSType::NumSchemes); ++i)
+    VarList::push_back(items, BSList[i].desc, BSList[i].name);
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myType);

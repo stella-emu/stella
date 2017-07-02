@@ -310,7 +310,7 @@ void Properties::printHeader()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* Properties::ourDefaultProperties[LastPropType] = {
+const char* const Properties::ourDefaultProperties[LastPropType] = {
   "",          // Cartridge.MD5
   "",          // Cartridge.Manufacturer
   "",          // Cartridge.ModelNo
@@ -335,7 +335,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* Properties::ourPropertyNames[LastPropType] = {
+const char* const Properties::ourPropertyNames[LastPropType] = {
   "Cartridge.MD5",
   "Cartridge.Manufacturer",
   "Cartridge.ModelNo",

@@ -40,6 +40,7 @@
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
+#include "CartDetector.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
@@ -307,11 +308,10 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 
   // Create an instance of the 2600 game console
   ostringstream buf;
-  string type, id;
   try
   {
     closeConsole();
-    myConsole = openConsole(myRomFile, myRomMD5, type, id);
+    myConsole = openConsole(myRomFile, myRomMD5);
   }
   catch(const runtime_error& e)
   {
@@ -342,10 +342,12 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 
     if(showmessage)
     {
+      const string& id = myConsole->cartridge().multiCartID();
       if(id == "")
         myFrameBuffer->showMessage("New console created");
       else
-        myFrameBuffer->showMessage("Multicart " + type + ", loading ROM" + id);
+        myFrameBuffer->showMessage("Multicart " +
+          myConsole->cartridge().detectedType() + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl << endl
@@ -442,8 +444,8 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
   unique_ptr<Console> console;
   try
   {
-    string md5, type, id;
-    console = openConsole(romfile, md5, type, id);
+    string md5;
+    console = openConsole(romfile, md5);
   }
   catch(const runtime_error& e)
   {
@@ -472,8 +474,8 @@ void OSystem::logMessage(const string& message, uInt8 level)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
-                                         string& md5, string& type, string& id)
+unique_ptr<Console>
+OSystem::openConsole(const FilesystemNode& romfile, string& md5)
 {
   unique_ptr<Console> console;
 
@@ -498,9 +500,9 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
 
     // Now create the cartridge
     string cartmd5 = md5;
-    type = props.get(Cartridge_Type);
+    const string& type = props.get(Cartridge_Type);
     unique_ptr<Cartridge> cart =
-      Cartridge::create(image, size, cartmd5, type, id, *this, *mySettings);
+      CartDetector::create(image, size, cartmd5, type, *this);
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed
@@ -510,7 +512,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile,
       {
         // Cart md5 wasn't found, so we create a new props for it
         props.set(Cartridge_MD5, cartmd5);
-        props.set(Cartridge_Name, props.get(Cartridge_Name)+id);
+        props.set(Cartridge_Name, props.get(Cartridge_Name)+cart->multiCartID());
         myPropSet->insert(props, false);
       }
     }

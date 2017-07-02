@@ -21,7 +21,8 @@
 #include "CartFA2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osystem)
+CartridgeFA2::CartridgeFA2(const BytePtr& image, uInt32 size,
+                           const OSystem& osystem)
   : Cartridge(osystem.settings()),
     myOSystem(osystem),
     mySize(28 * 1024),
@@ -29,13 +30,14 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
     myCurrentBank(0)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
+  const uInt8* img_ptr = image.get();
   if(size >= 29 * 1024)
-    image += 1024;
+    img_ptr += 1024;
   else if(size < mySize)
     mySize = size;
 
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, mySize);
+  memcpy(myImage, img_ptr, mySize);
   createCodeAccessBase(mySize);
 
   // Remember startup bank

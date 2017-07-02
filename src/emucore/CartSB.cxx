@@ -19,7 +19,7 @@
 #include "CartSB.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeSB::CartridgeSB(const uInt8* image, uInt32 size,
+CartridgeSB::CartridgeSB(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(size),
@@ -29,7 +29,7 @@ CartridgeSB::CartridgeSB(const uInt8* image, uInt32 size,
   myImage = make_ptr<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image, mySize);
+  memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize);
 
   // Remember startup bank

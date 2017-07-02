@@ -20,7 +20,7 @@
 #include "CartAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
+CartridgeAR::CartridgeAR(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(std::max(size, 8448u)),
@@ -35,7 +35,7 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
   // Create a load image buffer and copy the given image
   myLoadImages = make_ptr<uInt8[]>(mySize);
   myNumberOfLoadImages = mySize / 8448;
-  memcpy(myLoadImages.get(), image, size);
+  memcpy(myLoadImages.get(), image.get(), size);
 
   // Add header if image doesn't include it
   if(size < 8448)

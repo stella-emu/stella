@@ -42,7 +42,7 @@ class Cartridge4KSC : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge4KSC(const uInt8* image, uInt32 size, const Settings& settings);
+    Cartridge4KSC(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~Cartridge4KSC() = default;
 
   public:

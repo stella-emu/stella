@@ -58,7 +58,7 @@ class Cartridge4A50 : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge4A50(const uInt8* image, uInt32 size, const Settings& settings);
+    Cartridge4A50(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~Cartridge4A50() = default;
 
   public:

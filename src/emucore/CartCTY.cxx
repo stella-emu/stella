@@ -22,7 +22,8 @@
 #include "CartCTY.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osystem)
+CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
+                           const OSystem& osystem)
   : Cartridge(osystem.settings()),
     myOSystem(osystem),
     myOperationType(0),
@@ -35,7 +36,7 @@ CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osyst
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, std::min(32768u, size));
+  memcpy(myImage, image.get(), std::min(32768u, size));
   createCodeAccessBase(32768);
 
   // Point to the first tune

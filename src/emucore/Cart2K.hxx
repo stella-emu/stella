@@ -45,7 +45,7 @@ class Cartridge2K : public Cartridge
       @param size      The size of the ROM image (<= 2048 bytes)
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge2K(const uInt8* image, uInt32 size, const Settings& settings);
+    Cartridge2K(const BytePtr& image, uInt32 size, const Settings& settings);
     virtual ~Cartridge2K() = default;
 
   public:

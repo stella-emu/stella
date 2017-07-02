@@ -19,7 +19,8 @@
 #include "Cart2K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size, const Settings& settings)
+Cartridge2K::Cartridge2K(const BytePtr& image, uInt32 size,
+                         const Settings& settings)
   : Cartridge(settings)
 {
   // Size can be a maximum of 2K
@@ -41,7 +42,7 @@ Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size, const Settings& settin
   memset(myImage.get(), 0x02, mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image, size);
+  memcpy(myImage.get(), image.get(), size);
   createCodeAccessBase(mySize);
 
   // Set mask for accessing the image buffer
