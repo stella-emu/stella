@@ -159,7 +159,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
       float* out = impl.to_rgb;
       int n;
 
-      n = burst_count; // FIXME: dead code detected by llvm scan-build
+      n = burst_count;
       do
       {
         float const* in = decoder;
@@ -344,12 +344,14 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
     }
     while ( alignment_count > 1 && --alignment_remain );
 
+#if 0   // FIXME: dead code detected by Xcode
     if ( burst_count <= 1 )
       break;
 
     to_rgb += 6;
 
     ROTATE_IQ( i, q, -0.866025f, -0.5f ); /* -120 degrees */
+#endif
   }
   while ( --burst_remain );
 }
