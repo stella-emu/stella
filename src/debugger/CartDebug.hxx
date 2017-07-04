@@ -271,7 +271,8 @@ class CartDebug : public DebuggerSystem
 
   private:
     using AddrToLabel = std::map<uInt16, string>;
-    using LabelToAddr = std::map<string, uInt16>;
+    using LabelToAddr = std::map<string, uInt16,
+        std::function<bool(const string&, const string&)>>;
 
     struct DirectiveTag {
       DisasmType type;

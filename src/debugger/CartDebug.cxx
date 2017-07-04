@@ -46,6 +46,17 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     myRWPortAddress(0),
     myLabelLength(8)   // longest pre-defined label
 {
+  // Add case sensitive compare for user labels
+  // TODO - should user labels be case insensitive too?
+  auto usrCmp = [](const string& a, const string& b) { return a < b; };
+  myUserAddresses = LabelToAddr(usrCmp);
+
+  // Add case insensitive compare for system labels
+  auto sysCmp = [](const string& a, const string& b) {
+      return BSPF::compareIgnoreCase(a, b) < 0;
+  };
+  mySystemAddresses = LabelToAddr(sysCmp);
+
   // Add Zero-page RAM addresses
   for(uInt32 i = 0x80; i <= 0xFF; ++i)
   {
