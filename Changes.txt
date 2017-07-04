@@ -60,6 +60,8 @@
       indicate their current state
     - Command completion now works with internal functions and pseudo-ops
       (basically, anything starting with the '_' character)
+    - System labels (aka, register names, etc) can now be typed in lower-
+      case.  Previously, these labels always had to be uppercase.
     - In general, input error checking is much more strictly enforced
     - Read-only UI items now have a different background color, to
       clearly indicate if an item can be modified.
