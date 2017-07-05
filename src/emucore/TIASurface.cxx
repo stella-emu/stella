@@ -54,7 +54,7 @@ TIASurface::TIASurface(OSystem& system)
   // Base TIA surface for use in taking snapshots in 1x mode
   myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
 
-  memset(myRGBFramebuffer, 0, 160 * FrameManager::frameBufferHeight);
+  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -260,7 +260,7 @@ void TIASurface::enableNTSC(bool enable)
   myFilter = Filter(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
 
   // Normal vs NTSC mode uses different source widths
-  myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(160) : 160, myTIA->height());
+  myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(kTIAW) : kTIAW, myTIA->height());
 
   FBSurface::Attributes& tia_attr = myTiaSurface->attributes();
   tia_attr.smoothing = myOSystem.settings().getBool("tia.inter");
@@ -275,6 +275,8 @@ void TIASurface::enableNTSC(bool enable)
 
   myTiaSurface->setDirty();
   mySLineSurface->setDirty();
+
+  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,8 +367,29 @@ void TIASurface::render()
 
     case Filter::BlarggPhosphor:
     {
+      // First do Blargg filtering
       myNTSCFilter.blit_single(myTIA->frameBuffer(), width, height,
                                out, outPitch << 2);
+
+      // Then do phosphor mode (blend the resulting frames)
+      uInt32* rgbIn = myRGBFramebuffer;
+
+      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
+      for(uInt32 y = 0; y < height; ++y)
+      {
+        pos = screenofsY;
+        for(uInt32 x = 0; x < AtariNTSC::outWidth(kTIAW); ++x)
+        {
+          const uInt32 bufofs = bufofsY + x;
+          const uInt32 retVal = getRGBPhosphor(out[bufofs], rgbIn[bufofs]);
+
+          // Store back into displayed frame buffer (for next frame)
+          rgbIn[bufofs] = retVal;
+          out[pos++] = retVal;
+        }
+        bufofsY    += AtariNTSC::outWidth(kTIAW);
+        screenofsY += outPitch;
+      }
       break;
     }
   }

@@ -167,7 +167,7 @@ class TIASurface
 
     enum TIAConstants {
       kTIAW  = 160,
-      kTIAH  = 320,
+      kTIAH  = FrameManager::frameBufferHeight,
       kScanH = kTIAH*2
     };
 
@@ -177,7 +177,7 @@ class TIASurface
     /////////////////////////////////////////////////////////////
     // Phosphor mode items (aka reduced flicker on 30Hz screens)
     // RGB frame buffer
-    uInt32 myRGBFramebuffer[160 * FrameManager::frameBufferHeight];
+    uInt32 myRGBFramebuffer[AtariNTSC::outWidth(kTIAW) * kTIAH];
 
     // Use phosphor effect
     bool myUsePhosphor;
