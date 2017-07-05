@@ -52,7 +52,7 @@ void AtariNTSC::initializePalette(const uInt8* palette)
     int ir, ig, ib = YIQ_TO_RGB( y, i, q, myImpl.to_rgb, int, ir, ig );
     uInt32 rgb = PACK_RGB( ir, ig, ib );
 
-    uInt32* kernel = myNTSC.table[entry];
+    uInt32* kernel = myColorTable[entry];
     genKernel(myImpl, y, i, q, kernel);
 
     for ( uInt32 i = 0; i < rgb_kernel_size / 2; i++ )

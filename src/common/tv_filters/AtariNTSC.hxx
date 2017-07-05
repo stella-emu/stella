@@ -138,10 +138,7 @@ class AtariNTSC
     #define PI 3.14159265358979323846f
     #define LUMA_CUTOFF 0.20
 
-    struct atari_ntsc_t {
-    	uInt32 table[palette_size][entry_size];
-    };
-    atari_ntsc_t myNTSC;
+    uInt32 myColorTable[palette_size][entry_size];
 
     struct init_t
     {
@@ -174,9 +171,9 @@ class AtariNTSC
     // off a bit.  Use atari_ntsc_black for unused pixels.
     #define ATARI_NTSC_BEGIN_ROW( pixel0, pixel1 ) \
     	unsigned const atari_ntsc_pixel0_ = (pixel0);\
-    	uInt32 const* kernel0  = myNTSC.table[atari_ntsc_pixel0_];\
+    	uInt32 const* kernel0  = myColorTable[atari_ntsc_pixel0_];\
     	unsigned const atari_ntsc_pixel1_ = (pixel1);\
-    	uInt32 const* kernel1  = myNTSC.table[atari_ntsc_pixel1_];\
+    	uInt32 const* kernel1  = myColorTable[atari_ntsc_pixel1_];\
     	uInt32 const* kernelx0;\
     	uInt32 const* kernelx1 = kernel0
 
@@ -184,7 +181,7 @@ class AtariNTSC
     #define ATARI_NTSC_COLOR_IN( index, color ) {\
     	unsigned color_;\
     	kernelx##index = kernel##index;\
-    	kernel##index = (color_ = (color), myNTSC.table[color_]);\
+    	kernel##index = (color_ = (color), myColorTable[color_]);\
     }
 
     // Generates output in the specified 32-bit format (x = junk bits).
