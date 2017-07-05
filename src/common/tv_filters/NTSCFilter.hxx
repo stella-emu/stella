@@ -116,9 +116,6 @@ class NTSCFilter
     void convertToAdjustable(Adjustable& adjustable,
                              const AtariNTSC::Setup& setup) const;
 
-    constexpr double scaleFrom100(double x) const { return (x/50.0) - 1.0;     }
-    constexpr uInt32 scaleTo100(double x) const   { return uInt32(50*(x+1.0)); }
-
   private:
     // The NTSC object
     AtariNTSC myNTSC;
