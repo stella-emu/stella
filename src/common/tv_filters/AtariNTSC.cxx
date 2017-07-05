@@ -66,8 +66,8 @@ void AtariNTSC::initializePalette(const uInt8* palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::blitSingle(const uInt8* atari_in, uInt32 in_width,
-                           uInt32 in_height, void* rgb_out, uInt32 out_pitch)
+void AtariNTSC::render(const uInt8* atari_in, uInt32 in_width,
+                       uInt32 in_height, void* rgb_out, uInt32 out_pitch)
 {
   uInt32 const chunk_count = (in_width - 1) / PIXEL_in_chunk;
   while ( in_height-- )
@@ -146,38 +146,31 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
   {
     float hue = float(setup.hue) * PI + PI / 180 * ext_decoder_hue;
     float sat = float(setup.saturation) + 1;
-    float const* decoder = setup.decoder_matrix;
-    if ( !decoder )
-    {
-      decoder = default_decoder;
-      hue += PI / 180 * (std_decoder_hue - ext_decoder_hue);
-    }
+    hue += PI / 180 * (std_decoder_hue - ext_decoder_hue);
 
-    {
-      float s = float(sin( hue )) * sat;
-      float c = float(cos( hue )) * sat;
-      float* out = impl.to_rgb;
-      int n;
+    float s = float(sin( hue )) * sat;
+    float c = float(cos( hue )) * sat;
+    float* out = impl.to_rgb;
+    int n;
 
-      n = burst_count;
+    n = burst_count;
+    do
+    {
+      float const* in = default_decoder;
+      int n2 = 3;
       do
       {
-        float const* in = decoder;
-        int n2 = 3;
-        do
-        {
-          float i = *in++;
-          float q = *in++;
-          *out++ = i * c - q * s;
-          *out++ = i * s + q * c;
-        }
-        while ( --n2 );
-        if ( burst_count <= 1 )
-          break;
-        ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
+        float i = *in++;
+        float q = *in++;
+        *out++ = i * c - q * s;
+        *out++ = i * s + q * c;
       }
-      while ( --n );
+      while ( --n2 );
+      if ( burst_count <= 1 )
+        break;
+      ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
     }
+    while ( --n );
   }
 }
 
@@ -343,31 +336,22 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
       }
     }
     while ( alignment_count > 1 && --alignment_remain );
-
-#if 0   // FIXME: dead code detected by Xcode
-    if ( burst_count <= 1 )
-      break;
-
-    to_rgb += 6;
-
-    ROTATE_IQ( i, q, -0.866025f, -0.5f ); /* -120 degrees */
-#endif
   }
   while ( --burst_remain );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const AtariNTSC::Setup AtariNTSC::TV_Composite = {
-  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.15,  0.0,  0.0,  0.0, 0
+  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.15, 0.0, 0.0, 0.0
 };
 const AtariNTSC::Setup AtariNTSC::TV_SVideo = {
-  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.45, -1.0, -1.0,  0.0, 0
+  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.45, -1.0, -1.0, 0.0
 };
 const AtariNTSC::Setup AtariNTSC::TV_RGB = {
-  0.0,  0.0, 0.0, 0.0,  0.2, 0.0, 0.70, -1.0, -1.0, -1.0, 0
+  0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.70, -1.0, -1.0, -1.0
 };
 const AtariNTSC::Setup AtariNTSC::TV_Bad = {
-  0.1, -0.3, 0.3, 0.25, 0.2, 0.0, 0.1,   0.5,  0.5,  0.5, 0
+  0.1, -0.3, 0.3, 0.25, 0.2, 0.0, 0.1, 0.5, 0.5, 0.5
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

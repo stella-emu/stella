@@ -53,7 +53,7 @@ class AtariNTSC
 
     // Image parameters, ranging from -1.0 to 1.0. Actual internal values shown
     // in parenthesis and should remain fairly stable in future versions.
-    struct Setup // atari_ntsc_setup_t
+    struct Setup
     {
       // Basic parameters
       double hue;        // -1 = -180 degrees     +1 = +180 degrees
@@ -68,7 +68,6 @@ class AtariNTSC
       double artifacts;  // artifacts caused by color changes
       double fringing;   // color artifacts caused by brightness changes
       double bleed;      // color bleed (color resolution reduction)
-      float const* decoder_matrix; // optional RGB decoder matrix, 6 elements
     };
 
     // Video format presets
@@ -85,8 +84,8 @@ class AtariNTSC
     // palette colors.
     //  In_row_width is the number of pixels to get to the next input row.
     //  Out_pitch is the number of *bytes* to get to the next output row.
-    void blitSingle(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
-                    void* rgb_out, uInt32 out_pitch);
+    void render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
+                void* rgb_out, uInt32 out_pitch);
 
     // Number of input pixels that will fit within given output width.
     // Might be rounded down slightly; use outWidth() on result to find

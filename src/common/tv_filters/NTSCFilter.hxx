@@ -24,9 +24,6 @@ class Settings;
 #include "bspf.hxx"
 #include "AtariNTSC.hxx"
 
-#define SCALE_FROM_100(x) ((x/50.0)-1.0)
-#define SCALE_TO_100(x) uInt32(50*(x+1.0))
-
 /**
   This class is based on the Blargg NTSC filter code from Atari800,
   and is derived from 'filter_ntsc.(h|c)'.  Original code based on
@@ -108,16 +105,19 @@ class NTSCFilter
 
     // Perform Blargg filtering on input buffer, place results in
     // output buffer
-    inline void blit_single(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
-                            uInt32* dest_buf, uInt32 dest_pitch)
+    inline void render(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
+                       uInt32* dest_buf, uInt32 dest_pitch)
     {
-      myNTSC.blitSingle(src_buf, src_width, src_height, dest_buf, dest_pitch);
+      myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch);
     }
 
   private:
     // Convert from atari_ntsc_setup_t values to equivalent adjustables
     void convertToAdjustable(Adjustable& adjustable,
                              const AtariNTSC::Setup& setup) const;
+
+    constexpr double scaleFrom100(double x) const { return (x/50.0) - 1.0;     }
+    constexpr uInt32 scaleTo100(double x) const   { return uInt32(50*(x+1.0)); }
 
   private:
     // The NTSC object
@@ -134,16 +134,9 @@ class NTSCFilter
     // Current preset in use
     Preset myPreset;
 
-    // The base 2600 palette contains 128 colours
-    // However, 'phosphor' mode needs a 128x128 matrix to simulate
-    // low-flicker output, so we need 128x128 + 128, or 129x128
-    // Note that this is a huge hack, which hopefully will go
-    // away once the phosphor effect can be more properly emulated
-    // Memory layout is as follows:
-    //
-    //    128x128 in first bytes of array
-    //    128     in last bytes of array
-    //    Each colour is represented by 3 bytes, in R,G,B order
+    // The base 2600 palette contains 128 normal colours
+    // and 128 black&white colours (PAL colour loss)
+    // Each colour is represented by 3 bytes, in R,G,B order
     uInt8 myTIAPalette[AtariNTSC::palette_size * 3];
 
     struct AdjustableTag {

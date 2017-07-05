@@ -111,9 +111,9 @@ string NTSCFilter::increaseAdjustable()
   if(myPreset != PRESET_CUSTOM)
     return "'Custom' TV mode not selected";
 
-  uInt32 newval = SCALE_TO_100(*ourCustomAdjustables[myCurrentAdjustable].value);
+  uInt32 newval = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
   newval += 2;  if(newval > 100) newval = 100;
-  *ourCustomAdjustables[myCurrentAdjustable].value = SCALE_FROM_100(newval);
+  *ourCustomAdjustables[myCurrentAdjustable].value = scaleFrom100(newval);
 
   ostringstream buf;
   buf << "Custom '" << ourCustomAdjustables[myCurrentAdjustable].type
@@ -129,10 +129,10 @@ string NTSCFilter::decreaseAdjustable()
   if(myPreset != PRESET_CUSTOM)
     return "'Custom' TV mode not selected";
 
-  uInt32 newval = SCALE_TO_100(*ourCustomAdjustables[myCurrentAdjustable].value);
+  uInt32 newval = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
   if(newval < 2) newval = 0;
   else           newval -= 2;
-  *ourCustomAdjustables[myCurrentAdjustable].value = SCALE_FROM_100(newval);
+  *ourCustomAdjustables[myCurrentAdjustable].value = scaleFrom100(newval);
 
   ostringstream buf;
   buf << "Custom '" << ourCustomAdjustables[myCurrentAdjustable].type
@@ -197,32 +197,32 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::setCustomAdjustables(Adjustable& adjustable)
 {
-  myCustomSetup.hue = SCALE_FROM_100(adjustable.hue);
-  myCustomSetup.saturation = SCALE_FROM_100(adjustable.saturation);
-  myCustomSetup.contrast = SCALE_FROM_100(adjustable.contrast);
-  myCustomSetup.brightness = SCALE_FROM_100(adjustable.brightness);
-  myCustomSetup.sharpness = SCALE_FROM_100(adjustable.sharpness);
-  myCustomSetup.gamma = SCALE_FROM_100(adjustable.gamma);
-  myCustomSetup.resolution = SCALE_FROM_100(adjustable.resolution);
-  myCustomSetup.artifacts = SCALE_FROM_100(adjustable.artifacts);
-  myCustomSetup.fringing = SCALE_FROM_100(adjustable.fringing);
-  myCustomSetup.bleed = SCALE_FROM_100(adjustable.bleed);
+  myCustomSetup.hue = scaleFrom100(adjustable.hue);
+  myCustomSetup.saturation = scaleFrom100(adjustable.saturation);
+  myCustomSetup.contrast = scaleFrom100(adjustable.contrast);
+  myCustomSetup.brightness = scaleFrom100(adjustable.brightness);
+  myCustomSetup.sharpness = scaleFrom100(adjustable.sharpness);
+  myCustomSetup.gamma = scaleFrom100(adjustable.gamma);
+  myCustomSetup.resolution = scaleFrom100(adjustable.resolution);
+  myCustomSetup.artifacts = scaleFrom100(adjustable.artifacts);
+  myCustomSetup.fringing = scaleFrom100(adjustable.fringing);
+  myCustomSetup.bleed = scaleFrom100(adjustable.bleed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
                                      const AtariNTSC::Setup& setup) const
 {
-  adjustable.hue         = SCALE_TO_100(setup.hue);
-  adjustable.saturation  = SCALE_TO_100(setup.saturation);
-  adjustable.contrast    = SCALE_TO_100(setup.contrast);
-  adjustable.brightness  = SCALE_TO_100(setup.brightness);
-  adjustable.sharpness   = SCALE_TO_100(setup.sharpness);
-  adjustable.gamma       = SCALE_TO_100(setup.gamma);
-  adjustable.resolution  = SCALE_TO_100(setup.resolution);
-  adjustable.artifacts   = SCALE_TO_100(setup.artifacts);
-  adjustable.fringing    = SCALE_TO_100(setup.fringing);
-  adjustable.bleed       = SCALE_TO_100(setup.bleed);
+  adjustable.hue         = scaleTo100(setup.hue);
+  adjustable.saturation  = scaleTo100(setup.saturation);
+  adjustable.contrast    = scaleTo100(setup.contrast);
+  adjustable.brightness  = scaleTo100(setup.brightness);
+  adjustable.sharpness   = scaleTo100(setup.sharpness);
+  adjustable.gamma       = scaleTo100(setup.gamma);
+  adjustable.resolution  = scaleTo100(setup.resolution);
+  adjustable.artifacts   = scaleTo100(setup.artifacts);
+  adjustable.fringing    = scaleTo100(setup.fringing);
+  adjustable.bleed       = scaleTo100(setup.bleed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

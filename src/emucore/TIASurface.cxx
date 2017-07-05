@@ -360,16 +360,14 @@ void TIASurface::render()
 
     case Filter::BlarggNormal:
     {
-      myNTSCFilter.blit_single(myTIA->frameBuffer(), width, height,
-                               out, outPitch << 2);
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
       break;
     }
 
     case Filter::BlarggPhosphor:
     {
       // First do Blargg filtering
-      myNTSCFilter.blit_single(myTIA->frameBuffer(), width, height,
-                               out, outPitch << 2);
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
 
       // Then do phosphor mode (blend the resulting frames)
       uInt32* rgbIn = myRGBFramebuffer;
