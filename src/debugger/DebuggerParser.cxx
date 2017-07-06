@@ -2279,7 +2279,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "trap",
-    "Trap read/write access to address(es) xx [to yy]",
+    "Trap read/write access to address(es) xx [yy]",
     "Set a R/W trap on the given address(es) and all mirrors\n"
     "Example: trap f000, trap f000 f100",
     true,
@@ -2290,7 +2290,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "trapread",
-    "Trap read access to address(es) xx [to yy]",
+    "Trap read access to address(es) xx [yy]",
     "Set a read trap on the given address(es) and all mirrors\n"
     "Example: trapread f000, trapread f000 f100",
     true,
@@ -2301,7 +2301,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "trapwrite",
-    "Trap write access to address(es) xx [to yy]",
+    "Trap write access to address(es) xx [yy]",
     "Set a write trap on the given address(es) and all mirrors\n"
     "Example: trapwrite f000, trapwrite f000 f100",
     true,
@@ -2312,7 +2312,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "type",
-    "Show disassembly type for address xx [to yy]",
+    "Show disassembly type for address xx [yy]",
     "Example: type f000, type f000 f010",
     true,
     false,

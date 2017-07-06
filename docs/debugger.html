@@ -455,7 +455,7 @@ presses both Select and Reset:</p>
 </pre>
 
 <p>User-defined functions appear in "listfunctions", which shows the label
-and expression for each function.  Functions can be removed with 
+and expression for each function.  Functions can be removed with
 "delfunction label", where the labels come from "listfunctions".</p>
 
 <p>If you've defined a lot of complex functions, you probably will
@@ -622,33 +622,34 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
 <p>Type "help" to see this list in the debugger.</p>
 
 <pre>
-            a - Set Accumulator to value xx
-         base - Set default base (hex, dec, or bin)
-        break - Set/clear breakpoint at address xx (default=PC)
-      breakif - Set breakpoint on condition xx
+            a - Set Accumulator to <value>
+         base - Set default base to <base>
+        break - Set/clear breakpoint at <address>
+      breakif - Set breakpoint on <condition>
             c - Carry Flag: set (0 or 1), or toggle (no arg)
         cheat - Use a cheat code (see manual for cheat types)
   clearbreaks - Clear all breakpoints
   clearconfig - Clear Distella config directives [bank xx]
    cleartraps - Clear all traps
  clearwatches - Clear all watches
-          cls - Clear prompt area of text and erase history
+          cls - Clear prompt area of text
          code - Mark 'CODE' range in disassembly
     colortest - Show value xx as TIA color
-            d - Decimal Flag: set (0 or 1), or toggle (no arg)
+            d - Carry Flag: set (0 or 1), or toggle (no arg)
          data - Mark 'DATA' range in disassembly
+  debugcolors - Show Fixed Debug Colors information
        define - Define label xx for address yy
-   delbreakif - Delete conditional breakif xx
+   delbreakif - Delete conditional breakif <xx>
   delfunction - Delete function with label xx
-     delwatch - Delete watch xx
+     delwatch - Delete watch <xx>
        disasm - Disassemble address xx [yy lines] (default=PC)
-         dump - Dump 128 bytes of memory at address xx
-         exec - Execute script file xx
+         dump - Dump 128 bytes of memory at address <xx>
+         exec - Execute script file <xx>
       exitrom - Exit emulator, return to ROM launcher
-        frame - Advance emulation by xx frames (default=1)
+        frame - Advance emulation by <xx> frames (default=1)
      function - Define function name xx for expression yy
-          gfx - Mark 'CFX' range in disassembly
-         help - This cruft
+          gfx - Mark 'GFX' range in disassembly
+         help - help <command>
          jump - Scroll disassembly to address xx
    listbreaks - List breakpoints
    listconfig - List Distella config directives [bank xx]
@@ -657,6 +658,7 @@ listfunctions - List user-defined functions
    loadconfig - Load Distella config file
     loadstate - Load emulator state xx (0-9)
             n - Negative Flag: set (0 or 1), or toggle (no arg)
+      palette - Show current TIA palette
            pc - Set Program Counter to address xx
          pgfx - Mark 'PGFX' range in disassembly
         print - Evaluate/print expression xx in hex/dec/binary
@@ -677,17 +679,14 @@ listfunctions - List user-defined functions
       saveses - Save console session to file xx
      savesnap - Save current TIA image to PNG file
     savestate - Save emulator state xx (valid args 0-9)
-     scanline - Advance emulation by xx scanlines (default=1)
+     scanline - Advance emulation by <xx> scanlines (default=1)
          step - Single step CPU [with count xx]
-          tia - Show TIA state (NOT FINISHED YET)
+          tia - Show TIA state
         trace - Single step CPU over subroutines [with count xx]
-         trap - Trap read/write access to address(es) xx [to yy]
-     trapread - Trap read access to address(es) xx [to yy]
-    trapwrite - Trap write access to address(es) xx [to yy]
-        trapm - Trap read/write access to address xx (+mirrors)
-    trapreadm - Trap read access to address xx (+mirrors)
-   trapwritem - Trap write access to address xx (+mirrors)
-         type - Show disassembly type for address xx [to yy]
+         trap - Trap read/write access to address(es) xx [yy]
+     trapread - Trap read access to address(es) xx [yy]
+    trapwrite - Trap write access to address(es) xx [yy]
+         type - Show disassembly type for address xx [yy]
          uhex - Toggle upper/lowercase HEX display
         undef - Undefine label xx (if defined)
             v - Overflow Flag: set (0 or 1), or toggle (no arg)
@@ -1062,7 +1061,7 @@ cannot be edited.  Also note that certain ROMs can have
 sections of address space swapped in and out dynamically.  As such, changing
 the contents of a certain address will change the area pointed to <b>at
 that time</b>.  In particular, modifying an address that points to internal
-RAM will change the RAM, not the underlying ROM.  A future release may 
+RAM will change the RAM, not the underlying ROM.  A future release may
 graphically differentiate between RAM and ROM areas.</p>
 
 <p>The ROM Disassembly also contains a Settings dialog, accessible by right-clicking
