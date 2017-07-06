@@ -1102,8 +1102,9 @@ void DebuggerParser::executeListtraps()
   {
     if(debugger.readTrap(i) || debugger.writeTrap(i))
     {
-      commandResult << trapStatus(i) << endl;
+      commandResult << trapStatus(i) << " + mirrors" << endl;
       count++;
+      break;
     }
   }
 
