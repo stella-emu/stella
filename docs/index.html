@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 4.7.3</b></h4></center>
+  <center><h4><b>Release 5.0</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - November 2016</b></center>
+  <center><b>February 1999 - July 2017</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -245,6 +245,9 @@
 
   <ul>
     <li>High speed emulation using optimized C++11 code</li>
+    <li>Supports high quality TIA emulation using the TIA core from
+      <a href="https://github.com/6502ts/6502.ts">6502.ts</a> by
+      Christian Speckner</li>
     <li>Supports high quality sound emulation using code derived from Ron Fries'
       TIA Sound Emulation library, including stereo sound support</li>
     <li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard,
@@ -335,7 +338,7 @@
     <li>OpenGL capable video card</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc) have been confirmed to work,
       but aren't as well tested as i386/x86_64</li>
-    <li>GNU g++ v/4.8 or Clang v/3.3 (with C++11 support) and the make utility are required for compiling the Stella source code</li>
+    <li>GNU g++ v/5 or Clang v/3.5 (with C++11 support) and the make utility are required for compiling the Stella source code</li>
   </ul>
 
   <p>
@@ -347,7 +350,7 @@
     <li>MacOSX 10.7 (Lion) or above</li>
     <li>64-bit Intel processor</li>
     <li>OpenGL capable video card</li>
-    <li>Xcode 5.0/6.0 is required to compile the Stella source code</li>
+    <li>Xcode 8.0 is required to compile the Stella source code</li>
   </ul>
 
   <p>
@@ -359,8 +362,9 @@
   <ul>
     <li>Direct3D or OpenGL capable video card</li>
     <li>64-bit port has been tested on Windows Vista and above only</li>
-    <li>Visual C++ 2013 Professional/Express is required to compile the Stella source code</li>
-    <li>(*) Note: Support for Windows XP is problematic on some systems, and will probably be discontinued in a future release</li>
+    <li>Visual C++ 2017 Community is required to compile the Stella source code</li>
+    <li>(*) Note: Support for Windows XP is problematic on some systems, and will
+        probably be discontinued in a future release</li>
   </ul>
 
   <p>
@@ -1679,7 +1683,7 @@
       <td> &#x2713;</td>
     </tr>
     <tr>
-      <th> Trackball/mouse</th>
+      <th> Trakball/mouse</th>
       <td> &#x2715;</td>
       <td> &#x2715;</td>
       <td> &#x2713;</td>
@@ -1987,7 +1991,7 @@
       <td><pre>-usemouse &lt;always|analog|never&gt;</pre></td>
       <td>Use mouse as a controller as specified by ROM properties in specific case.
       Always and never are self-explanatory, analog means only for analog-type devices
-      (paddles, trackball, etc).</td>
+      (paddles, trakball, etc).</td>
     </tr>
 
     <tr>
