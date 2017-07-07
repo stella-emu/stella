@@ -732,7 +732,26 @@ course, you can clear all the collisions with the CXCLR Strobe button.</p>
 drawn in the current color. Changing a color register will change the
 color of this rectangle.</p>
 
-<p> <b>FIXME</b> - Christian and Thomas, you probably want to add something here ...</p>
+<p>Both player graphics registers (GRP0 and GRP1) come in two versions:
+a "new" and an "old" register. Writing GRP0 updates the value in the "new"
+version of GRP0 and, at the same time, copies the value in the "new" GRP1
+register into its "old" counterpart. Writing to GRP1 behaves the same way,
+with the roles of GRP0 and GRP1 switched. The debugger shows both registers,
+the "old" register being located below the "new" one. If VDEL is off, the
+TIA displays the content of the "new" register, and the debugger tab reflects
+this by crossing out the old register. If VDEL is enabled, the TIA displays
+the "old" register, and the lines are removed in the tab.</p>
+
+<p>The "enable ball" register (ENABL) also comes in a "new" and an "old"
+version. The content of "new" is copied into "old" on writes to GRP1, and
+VDELBL selects the register that is used to control the ball. This is
+visualized in the debugger in the same way as the two copies of GRP0 and
+GRP1</p>
+
+<p>For many registers, writes don't take effect immediatelly as the
+TIA takes some color clocks to change state. In Stella's TIA core, this
+is implemented by queueing the writes, and the contents of this queue
+are visualized in the debugger in the queued writes area of the TIA tab.</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
