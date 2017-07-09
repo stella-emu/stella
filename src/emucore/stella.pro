@@ -243,7 +243,7 @@
 "Cartridge.MD5" "034c1434280b0f2c9f229777d790d1e1"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5665 A016"
-"Cartridge.Name" "Baseball (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Baseball (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Super Challenge Baseball"
 ""
 
@@ -496,7 +496,7 @@
 "Cartridge.MD5" "06cfd57f0559f38b9293adae9128ff88"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "4317 A009"
-"Cartridge.Name" "Adventures on GX-12 (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Adventures on GX-12 (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Adventures of Tron"
 ""
 
@@ -1755,7 +1755,7 @@
 ""
 
 "Cartridge.MD5" "15dd21c2608e0d7d9f54c0d3f08cca1f"
-"Cartridge.Manufacturer" "Data Age"
+"Cartridge.Manufacturer" "Data Age, J. Ray Dettling"
 "Cartridge.ModelNo" "112-008"
 "Cartridge.Name" "Frankenstein's Monster (1983) (Data Age)"
 ""
@@ -2142,7 +2142,7 @@
 
 "Cartridge.MD5" "1b8c3c0bfb815b2a1010bba95998b66e"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Frogs and Flies (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Frogs and Flies (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "1b8d35d93697450ea26ebf7ff17bd4d1"
@@ -3608,9 +3608,10 @@
 ""
 
 "Cartridge.MD5" "2d9e5d8d083b6367eda880e80dfdfaeb"
-"Cartridge.Manufacturer" "Selchow & Righter - QDI"
+"Cartridge.Manufacturer" "Selchow & Righter - QDI, Mike Montana, Rich Montana"
 "Cartridge.ModelNo" "87"
 "Cartridge.Name" "Glib (1983) (Selchow & Righter)"
+"Cartridge.Note" "Enduro (Dactari - Milmar)"
 ""
 
 "Cartridge.MD5" "2d9e65959808a6098c16c82a59c9d9dc"
@@ -3936,6 +3937,11 @@
 "Cartridge.Type" "4IN1"
 ""
 
+"Cartridge.MD5" "31c5fd55a39db5ff30a0da065f86c140"
+"Cartridge.Manufacturer" "Dactari - Milmar"
+"Cartridge.Name" "Enduro (Dactari)"
+""
+
 "Cartridge.MD5" "31d08cb465965f80d3541a57ec82c625"
 "Cartridge.Manufacturer" "Atari, Alan Miller - Sears"
 "Cartridge.ModelNo" "CX2641 - 99807, 49-75105"
@@ -4021,6 +4027,11 @@
 "Cartridge.ModelNo" "CX2691"
 "Cartridge.Name" "Joust (1983) (Atari)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "3278158e5c1f7eb5c5d28ccfd7285250"
+"Cartridge.Manufacturer" "Dactari - Milmar"
+"Cartridge.Name" "Megamania (Dactari)"
 ""
 
 "Cartridge.MD5" "327fe8cf94f3a45c35a840a453df1235"
@@ -4354,7 +4365,7 @@
 ""
 
 "Cartridge.MD5" "36c993dc328933e4dd6374a8ffe224f4"
-"Cartridge.Manufacturer" "Gameworld"
+"Cartridge.Manufacturer" "Gameworld, J. Ray Dettling"
 "Cartridge.ModelNo" "133-007"
 "Cartridge.Name" "Bermuda Triangle (1983) (Gameworld) (PAL)"
 ""
@@ -5051,6 +5062,7 @@
 "Cartridge.Manufacturer" "Atari, Larry Wagner, Bob Whitehead"
 "Cartridge.ModelNo" "CX2645, CX2645P"
 "Cartridge.Name" "Video Chess (1979) (Atari) (PAL)"
+"Cartridge.Note" "AKA Computer Chess"
 ""
 
 "Cartridge.MD5" "3f01bd6d059396f495a4cde7de0ab180"
@@ -5089,7 +5101,7 @@
 "Cartridge.MD5" "3f58f972276d1e4e0e09582521ed7a5b"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "6082 A145"
-"Cartridge.Name" "Kung Fu Superkicks (1989) (Telegames)"
+"Cartridge.Name" "Kung Fu Superkicks (1988) (Telegames)"
 "Cartridge.Note" "AKA Chuck Norris Superkicks"
 ""
 
@@ -5109,7 +5121,7 @@
 
 "Cartridge.MD5" "3f6dbf448f25e2bd06dea44248eb122d"
 "Cartridge.ModelNo" "5687 A279"
-"Cartridge.Name" "Soccer (1989) (Telegames)"
+"Cartridge.Name" "Soccer (1988) (Telegames)"
 "Cartridge.Note" "AKA International Soccer"
 ""
 
@@ -5175,7 +5187,7 @@
 
 "Cartridge.MD5" "405f8591b6941cff56c9b392c2d5e4e5"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Star Strike (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Star Strike (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "4066309eb3fa3e7a725585b9814bc375"
@@ -5622,7 +5634,7 @@
 
 "Cartridge.MD5" "46e9428848c9ea71a4d8f91ff81ac9cc"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Astroblast (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Astroblast (1988) (Telegames) (PAL)"
 "Cartridge.Note" "Can also use left joystick"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
@@ -5827,7 +5839,7 @@
 
 "Cartridge.MD5" "493e90602a4434b117c91c95e73828d1"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Lock 'n' Chase (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Lock 'n' Chase (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "4947c9de2e28b2f5f3b0c40ce7e56d93"
@@ -5905,6 +5917,11 @@
 "Cartridge.Manufacturer" "Hozer Video Games"
 "Cartridge.Name" "Crazy Valet (Hozer Video Games)"
 "Cartridge.Rarity" "New Release"
+""
+
+"Cartridge.MD5" "4a8c743396b8ad69d97e6fd3dd3e3132"
+"Cartridge.Manufacturer" "Arcadia Corporation"
+"Cartridge.Name" "Supercharger BIOS (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "4a9009620038f7f30aaeb2a00ae58fde"
@@ -7404,7 +7421,7 @@
 "Cartridge.MD5" "5e0c37f534ab5ccc4661768e2ddf0162"
 "Cartridge.Manufacturer" "Telegames, Ed Salvo"
 "Cartridge.ModelNo" "5667 A106"
-"Cartridge.Name" "Glacier Patrol (1989) (Telegames)"
+"Cartridge.Name" "Glacier Patrol (1988) (Telegames)"
 ""
 
 "Cartridge.MD5" "5e1b4629426f4992cf3b2905a696e1a7"
@@ -7558,7 +7575,7 @@
 "Cartridge.MD5" "5f9b62350b31be8bd270d9a241cbd50e"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5658 A088"
-"Cartridge.Name" "Football (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Football (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Super Challenge Football"
 ""
 
@@ -8235,7 +8252,7 @@
 "Cartridge.MD5" "67cdde4176e0447fc45a71e0a1cdd288"
 "Cartridge.Manufacturer" "Telegames, Ed Salvo"
 "Cartridge.ModelNo" "5665 A016"
-"Cartridge.Name" "Glacier Patrol (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Glacier Patrol (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "67ce6cdf788d324935fd317d064ed842"
@@ -8538,7 +8555,7 @@
 ""
 
 "Cartridge.MD5" "6b4eb5b3df80995b8d9117cb7e9aeb3c"
-"Cartridge.Manufacturer" "Gameworld"
+"Cartridge.Manufacturer" "Gameworld, J. Ray Dettling"
 "Cartridge.ModelNo" "133-006"
 "Cartridge.Name" "Journey Escape (1983) (Gameworld) (PAL)"
 "Cartridge.Note" "AKA Rock 'n' Roll Escape"
@@ -8926,7 +8943,7 @@
 
 "Cartridge.MD5" "700a786471c8a91ec09e2f8e47f14a04"
 "Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Unknown Activision Game #2 (1983) (Activision) (Prototype)"
+"Cartridge.Name" "Hard-Head (1983) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -9031,10 +9048,9 @@
 ""
 
 "Cartridge.MD5" "718ae62c70af4e5fd8e932fee216948a"
-"Cartridge.Manufacturer" "Data Age"
+"Cartridge.Manufacturer" "Data Age, J. Ray Dettling"
 "Cartridge.ModelNo" "112-006"
 "Cartridge.Name" "Journey Escape (1982) (Data Age)"
-"Display.Height" "230"
 "Display.Phosphor" "YES"
 ""
 
@@ -9949,7 +9965,7 @@
 ""
 
 "Cartridge.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
-"Cartridge.Manufacturer" "Gameworld"
+"Cartridge.Manufacturer" "Gameworld, J. Ray Dettling"
 "Cartridge.ModelNo" "133-008"
 "Cartridge.Name" "Frankenstein's Monster (1983) (Gameworld) (PAL)"
 ""
@@ -10425,9 +10441,8 @@
 "Cartridge.MD5" "81a010abdba1a640f7adf7f84e13d307"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "7062 A305"
-"Cartridge.Name" "Universal Chaos (1989) (Telegames)"
+"Cartridge.Name" "Universal Chaos (1988) (Telegames)"
 "Cartridge.Note" "AKA Targ"
-"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "81b3bf17cf01039d311b4cd738ae608e"
@@ -10567,7 +10582,7 @@
 
 "Cartridge.MD5" "841b7bc1cad05f5408302308777d49dc"
 "Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Unknown Activision Game #1 (10-22-1982) (Activision) (Prototype)"
+"Cartridge.Name" "Unknown Activision Game (10-22-1982) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -11608,7 +11623,7 @@
 "Cartridge.MD5" "9295570a141cdec18074c55dc7229d08"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "7045 A015"
-"Cartridge.Name" "Bump 'n' Jump (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Bump 'n' Jump (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "929e8a84ed50601d9af8c49b0425c7ea"
@@ -12568,7 +12583,7 @@
 "Cartridge.MD5" "a0675883f9b09a3595ddd66a6f5d3498"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "6057 A227"
-"Cartridge.Name" "Quest for Quintana Roo (1989) (Telegames)"
+"Cartridge.Name" "Quest for Quintana Roo (1988) (Telegames)"
 ""
 
 "Cartridge.MD5" "a075ad332942740c386f4c3814925ece"
@@ -13411,7 +13426,7 @@
 
 "Cartridge.MD5" "abb741c83f665d73c86d90a7d9292a9b"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Space Attack (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Space Attack (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "abc64037ca5d5b04ae8a7eedbca3ed74"
@@ -14022,7 +14037,7 @@
 "Cartridge.MD5" "b438a6aa9d4b9b8f0b2ddb51323b21e4"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5861 A030"
-"Cartridge.Name" "Bogey Blaster (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Bogey Blaster (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Air Raiders"
 "Cartridge.Rarity" "Rare"
 ""
@@ -14325,7 +14340,7 @@
 ""
 
 "Cartridge.MD5" "b8ed78afdb1e6cfe44ef6e3428789d5f"
-"Cartridge.Manufacturer" "Data Age"
+"Cartridge.Manufacturer" "Data Age, J. Ray Dettling"
 "Cartridge.ModelNo" "112-007"
 "Cartridge.Name" "Bermuda Triangle (1982) (Data Age)"
 "Cartridge.Rarity" "Rare"
@@ -14576,7 +14591,7 @@
 
 "Cartridge.MD5" "bd39598f067a1193ae81bd6182e756d1"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Night Stalker (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Night Stalker (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Dark Cavern"
 ""
 
@@ -14877,7 +14892,7 @@
 
 "Cartridge.MD5" "c1f209d80f0624dada5866ce05dd3399"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Deadly Discs (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Deadly Discs (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA TRON - Deadly Discs"
 ""
 
@@ -15226,7 +15241,7 @@
 "Cartridge.MD5" "c59633dbebd926c150fb6d30b0576405"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5861 A030"
-"Cartridge.Name" "Bogey Blaster (1989) (Telegames)"
+"Cartridge.Name" "Bogey Blaster (1988) (Telegames)"
 "Cartridge.Note" "AKA Air Raiders"
 "Cartridge.Rarity" "Rare"
 ""
@@ -15954,7 +15969,7 @@
 "Cartridge.MD5" "ce904c0ae58d36d085cd506989116b0b"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5687 A279"
-"Cartridge.Name" "International Soccer (1989) (Telegames) (PAL)"
+"Cartridge.Name" "International Soccer (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "cea9f72036dc6f7af5eff52459066290"
@@ -16195,7 +16210,7 @@
 
 "Cartridge.MD5" "d0af33865512e9b6900714c26db5fa23"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Armor Ambush (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Armor Ambush (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "d0b26e908370683ad99bc6b52137a784"
@@ -16575,6 +16590,13 @@
 "Cartridge.MD5" "d5d2d44fb73785996ccc24ae3a0f5cef"
 "Cartridge.Manufacturer" "Robby"
 "Cartridge.Name" "Grand Prix (Robby)"
+""
+
+"Cartridge.MD5" "d5e17022d1ecc20fd9b53dc464c302f1"
+"Cartridge.Manufacturer" "Activision, Carol Shaw"
+"Cartridge.ModelNo" "EAX-020"
+"Cartridge.Name" "River Raid (1982) (Activision) (SECAM)"
+"Display.Format" "SECAM"
 ""
 
 "Cartridge.MD5" "d5e27051512c1e7445a9bf91501bda09"
@@ -17438,7 +17460,7 @@
 "Cartridge.MD5" "e020f612255e266a8a6a9795a4df0c0f"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "7062 A305"
-"Cartridge.Name" "Universal Chaos (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Universal Chaos (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Targ"
 ""
 
@@ -17950,7 +17972,7 @@
 "Cartridge.MD5" "e5d72ff8bab4450be57785cc9e83f3c0"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "6082 A145"
-"Cartridge.Name" "Kung Fu Superkicks (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Kung Fu Superkicks (1988) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Chuck Norris Superkicks"
 ""
 
@@ -18639,7 +18661,7 @@
 
 "Cartridge.MD5" "ee681f566aad6c07c61bbbfc66d74a27"
 "Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Unknown Activision Game #1 (10-29-1982) (Activision) (Prototype)"
+"Cartridge.Name" "Unknown Activision Game (10-29-1982) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -18824,6 +18846,7 @@
 "Cartridge.Manufacturer" "Atari, Larry Wagner, Bob Whitehead - Sears"
 "Cartridge.ModelNo" "CX2645 - 49-75181"
 "Cartridge.Name" "Video Chess (1979) (Atari)"
+"Cartridge.Note" "AKA Computer Chess"
 ""
 
 "Cartridge.MD5" "f0cacae1d1b79ee92f0dc035f42e0560"
@@ -19381,7 +19404,7 @@
 "Cartridge.MD5" "f736864442164b29235e8872013180cd"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "6057 A227"
-"Cartridge.Name" "Quest for Quintana Roo (1989) (Telegames) (PAL)"
+"Cartridge.Name" "Quest for Quintana Roo (1988) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "f73d2d0eff548e8fc66996f27acf2b4b"
@@ -19550,6 +19573,12 @@
 "Cartridge.Name" "Chopper Command (Jone Yuan) (Hack)"
 "Cartridge.Note" "2600 Screen Search Console"
 "Cartridge.Rarity" "Hack"
+""
+
+"Cartridge.MD5" "f8b2a6a4d73ebff10d805a9b59041986"
+"Cartridge.Manufacturer" "Activision, Larry Kaplan - Ariola"
+"Cartridge.ModelNo" "EAX-006, PAX-006 - 771 006-720"
+"Cartridge.Name" "Bridge (1980) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "f8bfd99163d2c4ec688357786e6fba28"

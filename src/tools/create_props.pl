@@ -69,7 +69,7 @@ for my $key ( sort keys %propset )
   print OUTFILE PropSet::build_prop_string(@{ $propset{$key} });
 
   if ($idx+1 < $setsize) {
-    print OUTFILE ", ";
+    print OUTFILE ",";
   }
   print OUTFILE "\n";
   $idx++;

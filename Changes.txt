@@ -127,7 +127,7 @@
         cd ~/Library/Preferences
         mv net.sourceforge.Stella.plist Stella-emu.plist
 
-  * Updated internal ROM properties database to ROM-Hunter version 12
+  * Updated internal ROM properties database to ROM-Hunter version 13
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
 
