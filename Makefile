@@ -45,9 +45,9 @@ include config.mak
 # CXXFLAGS+= -Werror
 
 ifdef CXXFLAGS
-  CXXFLAGS:= $(CXXFLAGS)
+  CXXFLAGS:= $(CXXFLAGS) -x c++
 else
-  CXXFLAGS:= -O2
+  CXXFLAGS:= -O2 -x c++
 endif
 CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers
 ifdef HAVE_GCC
@@ -66,7 +66,7 @@ endif
 # Even more warnings...
 #CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion
 #CXXFLAGS+= -Wshadow -Wimplicit -Wundef -Wnon-virtual-dtor
-#CXXFLAGS+= -Wno-reorder -Wwrite-strings -fcheck-new -Wctor-dtor-privacy 
+#CXXFLAGS+= -Wno-reorder -Wwrite-strings -fcheck-new -Wctor-dtor-privacy
 
 #######################################################################
 # Misc stuff - you should never have to edit this                     #
@@ -112,7 +112,7 @@ CPPFLAGS:= $(DEFINES) $(INCLUDES)
 
 # Depdir information
 DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULE_DIRS))
-DEPFILES = 
+DEPFILES =
 
 # The build rule for the Stella executable
 $(EXECUTABLE):  $(OBJS)
@@ -132,7 +132,7 @@ clean:
 
 ifndef CXX_UPDATE_DEP_FLAG
 # If you use GCC, disable the above and enable this for intelligent
-# dependency tracking. 
+# dependency tracking.
 CXX_UPDATE_DEP_FLAG = -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2"
 .cxx.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
@@ -216,6 +216,6 @@ src/emucore/M6502.ins: src/emucore/M6502.m4
 
 # Special rule for windows icon stuff (there's probably a better way to do this ...)
 src/windows/stella_icon.o: src/windows/stella.ico src/windows/stella.rc
-	windres --include-dir src/windows src/windows/stella.rc src/windows/stella_icon.o 
-		
+	windres --include-dir src/windows src/windows/stella.rc src/windows/stella_icon.o
+
 .PHONY: deb bundle test install uninstall

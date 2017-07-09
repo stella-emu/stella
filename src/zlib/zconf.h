@@ -8,7 +8,7 @@
 #ifndef ZCONF_H
 #define ZCONF_H
 
-/* Added by SA: 2017-01-15 */
+/* Added by SA: 2017-07-09 */
 #if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
   #define HAVE_UNISTD_H
 #endif

@@ -1,8 +1,8 @@
 /* pnglibconf.h - library build configuration */
 
-/* libpng version 1.6.18, July 23, 2015 */
+/* libpng version 1.6.30, June 28, 2017 */
 
-/* Copyright (c) 1998-2014 Glenn Randers-Pehrson */
+/* Copyright (c) 1998-2017 Glenn Randers-Pehrson */
 
 /* This code is released under the libpng license. */
 /* For conditions of distribution and use, see the disclaimer */
@@ -42,6 +42,8 @@
 #define PNG_IO_STATE_SUPPORTED
 #define PNG_MNG_FEATURES_SUPPORTED
 #define PNG_POINTER_INDEXING_SUPPORTED
+/*#undef PNG_POWERPC_VSX_API_SUPPORTED*/
+/*#undef PNG_POWERPC_VSX_CHECK_SUPPORTED*/
 #define PNG_PROGRESSIVE_READ_SUPPORTED
 #define PNG_READ_16BIT_SUPPORTED
 #define PNG_READ_ALPHA_MODE_SUPPORTED
@@ -107,6 +109,7 @@
 #define PNG_SIMPLIFIED_READ_SUPPORTED
 #define PNG_SIMPLIFIED_WRITE_AFIRST_SUPPORTED
 #define PNG_SIMPLIFIED_WRITE_BGR_SUPPORTED
+#define PNG_SIMPLIFIED_WRITE_STDIO_SUPPORTED
 #define PNG_SIMPLIFIED_WRITE_SUPPORTED
 #define PNG_STDIO_SUPPORTED
 #define PNG_STORE_UNKNOWN_CHUNKS_SUPPORTED
@@ -183,7 +186,6 @@
 /* end of options */
 /* settings */
 #define PNG_API_RULE 0
-#define PNG_COST_SHIFT 3
 #define PNG_DEFAULT_READ_MACROS 1
 #define PNG_GAMMA_THRESHOLD_FIXED 5000
 #define PNG_IDAT_READ_SIZE PNG_ZBUF_SIZE
@@ -202,9 +204,8 @@
 #define PNG_USER_CHUNK_MALLOC_MAX 8000000
 #define PNG_USER_HEIGHT_MAX 1000000
 #define PNG_USER_WIDTH_MAX 1000000
-#define PNG_WEIGHT_SHIFT 8
 #define PNG_ZBUF_SIZE 8192
-#define PNG_ZLIB_VERNUM 0x12a0
+#define PNG_ZLIB_VERNUM 0x12b0
 #define PNG_Z_DEFAULT_COMPRESSION (-1)
 #define PNG_Z_DEFAULT_NOFILTER_STRATEGY 0
 #define PNG_Z_DEFAULT_STRATEGY 1
