@@ -24,7 +24,7 @@
       choice of 'red', 'orange', 'yellow', 'green', 'blue' and 'purple'.
       This is accessible through the new 'tia.dbgcolors' commandline
       argument.
-    - The defaul
+    - ...
 
   * Implemented new phosphor emulation mode, which is much closer to real
     TV output.  Related to this, added ability to change the default
