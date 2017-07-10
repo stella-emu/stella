@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-4.7.3 to 5.0: (xxx. xx, 2017)
+4.7.3 to 5.0: (July 16, 2017)
 
   * Stella has moved from Sourceforge to Github.
 
