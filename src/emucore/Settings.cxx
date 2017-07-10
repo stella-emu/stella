@@ -55,10 +55,11 @@ Settings::Settings(OSystem& osystem)
 
   // TV filtering options
   setInternal("tv.filter", "0");
-  setInternal("tv.scanlines", "25");
-  setInternal("tv.scaninter", "true");
+  setInternal("tv.phosphor", "50");
   setInternal("tv.jitter", "false");
   setInternal("tv.jitter_recovery", "10");
+  setInternal("tv.scanlines", "25");
+  setInternal("tv.scaninter", "true");
   // TV options when using 'custom' mode
   setInternal("tv.contrast", "0.0");
   setInternal("tv.brightness", "0.0");
@@ -278,6 +279,9 @@ void Settings::validate()
   sort(s.begin(), s.end());
   if(s != "bgopry")  setInternal("tia.dbgcolors", "roygpb");
 
+  i = getInt("tv.phosphor");
+  if(i < 0 || i > 100)  setInternal("tv.phosphor", "50");
+
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setInternal("tv.filter", "0");
 
@@ -368,17 +372,19 @@ void Settings::usage() const
     << "  -volume       <number>       Set the volume (0 - 100)\n"
     << endl
   #endif
-    << "  -tia.zoom     <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"
-    << "  -tia.inter    <1|0>          Enable interpolated (smooth) scaling for TIA image\n"
-    << "  -tia.aspectn  <number>       Scale TIA width by the given percentage in NTSC mode\n"
-    << "  -tia.aspectp  <number>       Scale TIA width by the given percentage in PAL mode\n"
-    << "  -tia.fsfill   <1|0>          Stretch TIA image to fill fullscreen mode\n"
+    << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"
+    << "  -tia.inter     <1|0>          Enable interpolated (smooth) scaling for TIA image\n"
+    << "  -tia.aspectn   <number>       Scale TIA width by the given percentage in NTSC mode\n"
+    << "  -tia.aspectp   <number>       Scale TIA width by the given percentage in PAL mode\n"
+    << "  -tia.fsfill    <1|0>          Stretch TIA image to fill fullscreen mode\n"
+    << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual for description)\n"
     << endl
     << "  -tv.filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
-    << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
-    << "  -tv.scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
+    << "  -tv.phosphor  <0-100>        Set default blend level in phosphor mode\n"
     << "  -tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
+    << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
+    << "  -tv.scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
     << "  -tv.contrast    <value>      Set TV effects custom contrast to value 1.0 - 1.0\n"
     << "  -tv.brightness  <value>      Set TV effects custom brightness to value 1.0 - 1.0\n"
     << "  -tv.hue         <value>      Set TV effects custom hue to value 1.0 - 1.0\n"

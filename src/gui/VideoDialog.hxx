@@ -95,6 +95,16 @@ class VideoDialog : public Dialog
     SliderWidget*     myTVGamma;
     StaticTextWidget* myTVGammaLabel;
 
+    // TV jitter effects
+    CheckboxWidget*   myTVJitter;
+    SliderWidget*     myTVJitterRec;
+    StaticTextWidget* myTVJitterRecLabel;
+
+    // TV phosphor effect
+    StaticTextWidget* myTVPhosLabel;
+    SliderWidget*     myTVPhosLevel;
+    StaticTextWidget* myTVPhosLevelLabel;
+
     // TV scanline intensity and interpolation
     StaticTextWidget* myTVScanLabel;
     SliderWidget*     myTVScanIntense;
@@ -107,11 +117,6 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneRGB;
     ButtonWidget*     myCloneBad;
     ButtonWidget*     myCloneCustom;
-
-    // TV jitter effects
-    CheckboxWidget*   myTVJitter;
-    SliderWidget*     myTVJitterRec;
-    StaticTextWidget* myTVJitterRecLabel;
 
     enum {
       kNAspectRatioChanged = 'VDan',
@@ -133,6 +138,8 @@ class VideoDialog : public Dialog
 
       kTVJitterChanged     = 'TVjt',
       kTVJitterRecChanged  = 'TVjr',
+
+      kTVPhosLevelChanged  = 'TVpl',
 
       kCloneCompositeCmd   = 'CLcp',
       kCloneSvideoCmd      = 'CLsv',

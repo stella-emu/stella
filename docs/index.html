@@ -1866,6 +1866,23 @@
     </tr>
 
     <tr>
+      <td><pre>-tia.debugcolors &lt;ROYGBP&gt;</pre></td>
+      <td>Assigns the colours (R)ed, (O)range, (Y)ellow, (G)reen, (B)lue and (P)urple
+        to each graphical register P0/M0/P1/M1/PF/BL, respectively.  Currently,
+        these change be changed around to apply different colours to the
+        respective register.
+      </td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.phosphor &lt;0 - 100&gt;</pre></td>
+      <td>Enable default phosphor blending level; 0 implies no mixing, and 100
+        is full mixing (not recommended).  Note that this doesn't actually
+        enable phosphor mode; that is done for each ROM in the ROM properties.
+      </td>
+    </tr>
+
+    <tr>
       <td><pre>-tv.jitter &lt;1|0&gt;</pre></td>
       <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
         per frame.</td>

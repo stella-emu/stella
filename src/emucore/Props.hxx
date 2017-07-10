@@ -136,6 +136,14 @@ class Properties
     */
     Properties& operator = (const Properties& properties);
 
+    /**
+      Set the default value associated with key to the given value.
+
+      @param key      The key of the property to set
+      @param value    The value to assign to the property
+    */
+    static void setDefault(PropertyType key, const string& value);
+
   private:
     /**
       Helper function to perform a deep copy of the specified
@@ -183,7 +191,7 @@ class Properties
     string myProperties[LastPropType];
 
     // List of default properties to use when none have been provided
-    static const char* const ourDefaultProperties[LastPropType];
+    static string ourDefaultProperties[LastPropType];
 
     // The text strings associated with each property type
     static const char* const ourPropertyNames[LastPropType];

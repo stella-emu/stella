@@ -361,7 +361,7 @@ GameInfoDialog::GameInfoDialog(
   myPPBlendLabel = new StaticTextWidget(myTab, font,
                                         xpos + lwidth + myPhosphor->getWidth() + 10 +
                                         myPPBlend->getWidth() + 4, ypos+1,
-                                        3*fontWidth, fontHeight, "", kTextAlignLeft);
+                                        5*fontWidth, fontHeight, "", kTextAlignLeft);
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 3
@@ -490,7 +490,7 @@ void GameInfoDialog::loadView()
 
   const string& blend = myGameProperties.get(Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
-  myPPBlendLabel->setLabel(blend);
+  myPPBlendLabel->setLabel(blend == "0" ? "Auto" : blend);
 
   myTab->loadConfig();
 }
@@ -539,7 +539,8 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Display_Height, myHeightLabel->getLabel() == "Auto" ? "0" :
                        myHeightLabel->getLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag().toString());
-  myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel());
+  myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel() == "Auto" ? "0" :
+                       myPPBlendLabel->getLabel());
 
   // Determine whether to add or remove an entry from the properties set
   if(myDefaultsSelected)
@@ -612,7 +613,10 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPPBlendChanged:
-      myPPBlendLabel->setValue(myPPBlend->getValue());
+      if(myPPBlend->getValue() == 0)
+        myPPBlendLabel->setLabel("Auto");
+      else
+        myPPBlendLabel->setValue(myPPBlend->getValue());
       break;
 
     case kMRangeChanged:

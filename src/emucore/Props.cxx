@@ -63,13 +63,11 @@ void Properties::set(PropertyType key, const string& value)
         break;
       }
 
-      case Display_PPBlend:  // FIXME - handle global default
+      case Display_PPBlend:
       {
         int blend = atoi(myProperties[key].c_str());
-        if(blend < 1 || blend > 100) blend = 50;
-        ostringstream buf;
-        buf << blend;
-        myProperties[key] = buf.str();
+        if(blend < 1 || blend > 100)
+          myProperties[key] = ourDefaultProperties[key];
         break;
       }
 
@@ -223,6 +221,12 @@ Properties& Properties::operator=(const Properties& properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::setDefault(PropertyType key, const string& value)
+{
+  ourDefaultProperties[key] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::copy(const Properties& properties)
 {
   // Now, copy each property from properties
@@ -261,14 +265,7 @@ void Properties::print() const
 void Properties::setDefaults()
 {
   for(int i = 0; i < LastPropType; ++i)
-  {
-    if(i == Display_PPBlend)  // special case, handle global default
-    {
-      myProperties[i] = "50"; // FIXME - for now, just use 50
-    }
-    else
-      myProperties[i] = ourDefaultProperties[i];
-  }
+    myProperties[i] = ourDefaultProperties[i];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,7 +307,7 @@ void Properties::printHeader()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* const Properties::ourDefaultProperties[LastPropType] = {
+string Properties::ourDefaultProperties[LastPropType] = {
   "",          // Cartridge.MD5
   "",          // Cartridge.Manufacturer
   "",          // Cartridge.ModelNo

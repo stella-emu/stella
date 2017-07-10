@@ -24,11 +24,13 @@
       choice of 'red', 'orange', 'yellow', 'green', 'blue' and 'purple'.
       This is accessible through the new 'tia.dbgcolors' commandline
       argument.
-    - ...
+    - The defaul
 
   * Implemented new phosphor emulation mode, which is much closer to real
-    TV output.  Special thanks to Thomas Jentzsch for the idea and
-    implementation.
+    TV output.  Related to this, added ability to change the default
+    phosphor blend level in the UI and through the new 'tv.phosphor'
+    commandline argument.  Special thanks to Thomas Jentzsch for the idea
+    and implementation.
 
   * Much improved RIOT timer emulation never before seen in any emulator.
     Special thanks to DirtyHairy for the implementation, and alex_79 for

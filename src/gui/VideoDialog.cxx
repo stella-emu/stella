@@ -52,7 +52,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(52 * fontWidth + 10, max_w);
-  _h = std::min(14 * (lineHeight + 4) + 10, max_h);
+  _h = std::min(16 * (lineHeight + 4) + 10, max_h);
 
   // The tab widget
   xpos = ypos = 5;
@@ -244,18 +244,33 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 20;
   ypos = 8;
 
-  // TV jitter effect
-  myTVJitter = new CheckboxWidget(myTab, font, xpos, ypos,
-                                  "Jitter/Roll effect", kTVJitterChanged);
-  wid.push_back(myTVJitter);
-  ypos += lineHeight;
   lwidth = font.getStringWidth("Intensity ");
   pwidth = font.getMaxCharWidth() * 6;
+
+  // TV Phosphor effect
+  myTVPhosLabel = new StaticTextWidget(myTab, font, xpos, ypos,
+      font.getStringWidth("Phosphor Effect"), fontHeight,
+      "Phosphor Effect", kTextAlignLeft);
+  ypos += lineHeight;
+
+  // TV Phosphor default level
+  xpos += 20;
+  CREATE_CUSTOM_SLIDERS(PhosLevel, "Default ");
+  ypos += 4;
+
+  // TV jitter effect
+  xpos -= 20;
+  myTVJitter = new CheckboxWidget(myTab, font, xpos, ypos,
+                                  "Jitter/Roll Effect", kTVJitterChanged);
+  wid.push_back(myTVJitter);
+  xpos += 20;
+  ypos += lineHeight;
   CREATE_CUSTOM_SLIDERS(JitterRec, "Recovery ");
   myTVJitterRec->setMinValue(1); myTVJitterRec->setMaxValue(20);
   ypos += 4;
 
   // Scanline intensity and interpolation
+  xpos -= 20;
   myTVScanLabel =
     new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings"),
                          fontHeight, "Scanline settings", kTextAlignLeft);
@@ -288,6 +303,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
+
+  //////////////////////////////////////////////////////////
+  // 3) TIA debug colours
+  wid.clear();
+  tabID = myTab->addTab(" Debug Colors ");
+  xpos = ypos = 8;
+
 
   // Activate the first tab
   myTab->setActiveTab(0);
@@ -375,6 +397,10 @@ void VideoDialog::loadConfig()
 
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+
+  // TV phosphor blend
+  myTVPhosLevel->setValue(instance().settings().getInt("tv.phosphor"));
+  myTVPhosLevelLabel->setLabel(instance().settings().getString("tv.phosphor"));
 
   // TV jitter
   myTVJitterRec->setValue(instance().settings().getInt("tv.jitter_recovery"));
@@ -467,6 +493,10 @@ void VideoDialog::saveConfig()
   adj.bleed       = myTVBleed->getValue();
   instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(adj);
 
+  // TV phosphor blend
+  instance().settings().setValue("tv.phosphor", myTVPhosLevelLabel->getLabel());
+  Properties::setDefault(Display_PPBlend, myTVPhosLevelLabel->getLabel());
+
   // TV jitter
   instance().settings().setValue("tv.jitter", myTVJitter->getState());
   instance().settings().setValue("tv.jitter_recovery", myTVJitterRecLabel->getLabel());
@@ -517,6 +547,15 @@ void VideoDialog::setDefaults()
     {
       myTVMode->setSelected("0", "0");
 
+      // TV phosphor blend
+      myTVPhosLevel->setValue(50);
+      myTVPhosLevelLabel->setLabel("50");
+
+      // TV jitter
+      myTVJitterRec->setValue(10);
+      myTVJitterRecLabel->setLabel("10");
+      handleTVJitterChange(false);
+
       // TV scanline intensity and interpolation
       myTVScanIntense->setValue(25);
       myTVScanIntenseLabel->setLabel("25");
@@ -525,11 +564,6 @@ void VideoDialog::setDefaults()
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(NTSCFilter::PRESET_OFF);
       loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
-
-      // TV jitter
-      myTVJitterRec->setValue(10);
-      myTVJitterRecLabel->setLabel("10");
-      handleTVJitterChange(false);
       break;
     }
   }
@@ -666,11 +700,13 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     case kTVGammaChanged:  myTVGammaLabel->setValue(myTVGamma->getValue());
       break;
-    case kTVScanIntenseChanged:  myTVScanIntenseLabel->setValue(myTVScanIntense->getValue());
+    case kTVPhosLevelChanged:  myTVPhosLevelLabel->setValue(myTVPhosLevel->getValue());
       break;
     case kTVJitterChanged:  handleTVJitterChange(myTVJitter->getState());
       break;
     case kTVJitterRecChanged:  myTVJitterRecLabel->setValue(myTVJitterRec->getValue());
+      break;
+    case kTVScanIntenseChanged:  myTVScanIntenseLabel->setValue(myTVScanIntense->getValue());
       break;
     case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::PRESET_COMPOSITE);
       break;

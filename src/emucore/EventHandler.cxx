@@ -103,6 +103,10 @@ void EventHandler::initialize()
 
   // Integer to string conversions (for HEX) use upper or lower-case
   Common::Base::setHexUppercase(myOSystem.settings().getBool("dbg.uhex"));
+
+  // Default phosphor blend
+  Properties::setDefault(Display_PPBlend,
+                         myOSystem.settings().getString("tv.phosphor"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
