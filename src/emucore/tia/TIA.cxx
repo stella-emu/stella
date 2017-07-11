@@ -412,7 +412,7 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     default:
-      result = lastDataBusValue;
+      result = 0;
   }
 
   return (result & 0xC0) | (lastDataBusValue & 0x3F);
