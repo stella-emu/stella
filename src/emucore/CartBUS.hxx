@@ -32,8 +32,8 @@ class System;
 /**
   Cartridge class used for BUS.
 
-  THIS NEEDS TO BE UPDATED
-
+  THIS BANKSWITCHING SCHEME IS EXPERIMENTAL, AND MAY BE REMOVED
+  IN A FUTURE RELEASE.
 
   There are seven 4K program banks, a 4K Display Data RAM,
   1K C Varaible and Stack, and the BUS chip.

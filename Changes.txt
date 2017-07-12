@@ -37,8 +37,8 @@
     finding documentation that finally describes in more detail how the
     M6532 chip actually works.
 
-  * Added BUS and CDF bankswitching schemes, and also ARM Timer 1
-    support; special thanks to SpiceWare for the code.
+  * Added BUS (experimental) and CDF bankswitching schemes, and also
+    ARM Timer 1 support; special thanks to SpiceWare for the code.
 
   * Fixed bug with SaveKey and AtariVox not properly closing their memory
     files before starting another instance of the same ROM, when the ROM

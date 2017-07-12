@@ -30,7 +30,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   uInt16 size = 8 * 4096;
 
   ostringstream info;
-  info << "BUS Stuffing cartridge\n"
+  info << "BUS Stuffing cartridge (EXPERIMENTAL)\n"
        << "32K ROM, seven 4K banks are accessible to 2600\n"
        << "8K BUS RAM\n"
        << "BUS registers accessible @ $FFEE - $FFF3\n"

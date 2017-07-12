@@ -244,7 +244,7 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, BSType type,
       return make_ptr<Cartridge2K>(image, size, osystem.settings());
     case BSType::_3E:
       return make_ptr<Cartridge3E>(image, size, osystem.settings());
-    case BSType::_3EPlus:
+    case BSType::_3EP:
       return make_ptr<Cartridge3EPlus>(image, size, osystem.settings());
     case BSType::_3F:
       return make_ptr<Cartridge3F>(image, size, osystem.settings());
@@ -266,13 +266,13 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, BSType type,
       return make_ptr<CartridgeCTY>(image, size, osystem);
     case BSType::_CV:
       return make_ptr<CartridgeCV>(image, size, osystem.settings());
-    case BSType::_CVPlus:
+    case BSType::_CVP:
       return make_ptr<CartridgeCVPlus>(image, size, osystem.settings());
     case BSType::_DASH:
       return make_ptr<CartridgeDASH>(image, size, osystem.settings());
     case BSType::_DPC:
       return make_ptr<CartridgeDPC>(image, size, osystem.settings());
-    case BSType::_DPCPlus:
+    case BSType::_DPCP:
       return make_ptr<CartridgeDPCPlus>(image, size, osystem.settings());
     case BSType::_E0:
       return make_ptr<CartridgeE0>(image, size, osystem.settings());
@@ -335,7 +335,7 @@ BSType CartDetector::autodetectType(const BytePtr& image, uInt32 size)
 
   if(isProbablyCVPlus(image,size))
   {
-    type = BSType::_CVPlus;
+    type = BSType::_CVP;
   }
   else if((size % 8448) == 0 || size == 6144)
   {
@@ -420,7 +420,7 @@ BSType CartDetector::autodetectType(const BytePtr& image, uInt32 size)
     if(isProbablyARM(image, size))
       type = BSType::_FA2;
     else /*if(isProbablyDPCplus(image, size))*/
-      type = BSType::_DPCPlus;
+      type = BSType::_DPCP;
   }
   else if(size == 32*1024)  // 32K
   {
@@ -435,7 +435,7 @@ BSType CartDetector::autodetectType(const BytePtr& image, uInt32 size)
     else if (isProbablyCDF(image, size))
       type = BSType::_CDF;
     else if(isProbablyDPCplus(image, size))
-      type = BSType::_DPCPlus;
+      type = BSType::_DPCP;
     else if(isProbablyCTY(image, size))
       type = BSType::_CTY;
     else if(isProbablyFA2(image, size))
@@ -498,7 +498,7 @@ BSType CartDetector::autodetectType(const BytePtr& image, uInt32 size)
   if(isProbablyDASH(image, size))
     type = BSType::_DASH;
   else if(isProbably3EPlus(image, size))
-    type = BSType::_3EPlus;
+    type = BSType::_3EP;
   else if(isProbablyMDM(image, size))
     type = BSType::_MDM;
 
