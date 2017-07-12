@@ -460,7 +460,7 @@ void Console::changePhosphor(int direction)
     }
     else if(direction == -1)  // decrease blend
     {
-      if(blend <= 0)
+      if(blend <= 2)
       {
         myOSystem.frameBuffer().showMessage("Phosphor blend at minimum");
         return;
