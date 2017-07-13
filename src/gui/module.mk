@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	src/gui/AboutDialog.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
+	src/gui/ColorWidget.o \
 	src/gui/ComboDialog.o \
 	src/gui/CommandDialog.o \
 	src/gui/CommandMenu.o \
@@ -47,5 +48,5 @@ MODULE_OBJS := \
 MODULE_DIRS += \
 	src/gui
 
-# Include common rules 
+# Include common rules
 include $(srcdir)/common.rules

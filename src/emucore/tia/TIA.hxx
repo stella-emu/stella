@@ -60,6 +60,25 @@ class TIA : public Device
       shuffleBL = 0xF2
     };
 
+    enum FixedColor {
+      NTSC_RED    = 0x30,
+      NTSC_ORANGE = 0x38,
+      NTSC_YELLOW = 0x1c,
+      NTSC_GREEN  = 0xc4,
+      NTSC_BLUE   = 0x9e,
+      NTSC_PURPLE = 0x66,
+
+      PAL_RED     = 0x62,
+      PAL_ORANGE  = 0x4a,
+      PAL_YELLOW  = 0x2e,
+      PAL_GREEN   = 0x34,
+      PAL_BLUE    = 0xbc,
+      PAL_PURPLE  = 0xa6,
+
+      BK_GREY      = 0x0a,
+      HBLANK_WHITE = 0x0e
+    };
+
   public:
     friend class TIADebug;
     friend class RiotDebug;
@@ -275,12 +294,12 @@ class TIA : public Device
     /**
       Enables/disable/toggle/query 'fixed debug colors' mode.
 
-      @param mode  1/0 indicates on/off, otherwise flip from
-                   its current state
+      @param enable  Whether to enable fixed debug colors mode
 
       @return  Whether the mode was enabled or disabled
     */
-    bool toggleFixedColors(uInt8 mode = 2);
+    bool enableFixedColors(bool enable);
+    bool toggleFixedColors() { return enableFixedColors(!usingFixedColors()); }
     bool usingFixedColors() const { return myColorHBlank != 0x00; }
 
     /**
@@ -291,8 +310,10 @@ class TIA : public Device
       @param colors  Each character in the 6-char string represents the
                      first letter of the color to use for
                      P0/M0/P1/M1/PF/BL, respectively.
+
+      @return  True if colors were changed successfully, else false
     */
-    void setFixedColorPalette(const string& colors);
+    bool setFixedColorPalette(const string& colors);
 
     /**
       Enable/disable/query state of 'undriven/floating TIA pins'.
@@ -384,24 +405,6 @@ class TIA : public Device
     enum HState {blank, frame};
     enum Priority {pfp, score, normal};
 
-    enum FixedColor {
-      NTSC_RED    = 0x30,
-      NTSC_ORANGE = 0x38,
-      NTSC_YELLOW = 0x1c,
-      NTSC_GREEN  = 0xc4,
-      NTSC_BLUE   = 0x9e,
-      NTSC_PURPLE = 0x66,
-
-      PAL_RED     = 0x62,
-      PAL_ORANGE  = 0x4a,
-      PAL_YELLOW  = 0x2e,
-      PAL_GREEN   = 0x34,
-      PAL_BLUE    = 0xbc,
-      PAL_PURPLE  = 0xa6,
-
-      BK_GREY      = 0x0a,
-      HBLANK_WHITE = 0x0e
-    };
     enum FixedObject { P0, M0, P1, M1, PF, BL };
     FixedColor myFixedColorPalette[2][6];
 

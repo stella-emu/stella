@@ -88,7 +88,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     }
   );
 
-  setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
   myBackground.setTIA(this);
@@ -145,9 +144,12 @@ void TIA::reset()
   mySound.reset();
   myDelayQueue.reset();
   myFrameManager.reset();
-  toggleFixedColors(0);  // Turn off debug colours
 
   frameReset();  // Recalculate the size of the display
+
+  // Must be done last, after all other items have reset
+  enableFixedColors(false);
+  setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -860,12 +862,8 @@ bool TIA::toggleCollisions()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleFixedColors(uInt8 mode)
+bool TIA::enableFixedColors(bool enable)
 {
-  // If mode is 0 or 1, use it as a boolean (off or on)
-  // Otherwise, flip the state
-  bool on = (mode == 0 || mode == 1) ? bool(mode) : myColorHBlank == 0;
-
   int layout = myFrameManager.layout() == FrameLayout::pal ? 1 : 0;
   myMissile0.setDebugColor(myFixedColorPalette[layout][FixedObject::M0]);
   myMissile1.setDebugColor(myFixedColorPalette[layout][FixedObject::M1]);
@@ -875,21 +873,26 @@ bool TIA::toggleFixedColors(uInt8 mode)
   myPlayfield.setDebugColor(myFixedColorPalette[layout][FixedObject::PF]);
   myBackground.setDebugColor(FixedColor::BK_GREY);
 
-  myMissile0.enableDebugColors(on);
-  myMissile1.enableDebugColors(on);
-  myPlayer0.enableDebugColors(on);
-  myPlayer1.enableDebugColors(on);
-  myBall.enableDebugColors(on);
-  myPlayfield.enableDebugColors(on);
-  myBackground.enableDebugColors(on);
-  myColorHBlank = on ? FixedColor::HBLANK_WHITE : 0x00;
+  myMissile0.enableDebugColors(enable);
+  myMissile1.enableDebugColors(enable);
+  myPlayer0.enableDebugColors(enable);
+  myPlayer1.enableDebugColors(enable);
+  myBall.enableDebugColors(enable);
+  myPlayfield.enableDebugColors(enable);
+  myBackground.enableDebugColors(enable);
+  myColorHBlank = enable ? FixedColor::HBLANK_WHITE : 0x00;
 
-  return on;
+  return enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setFixedColorPalette(const string& colors)
+bool TIA::setFixedColorPalette(const string& colors)
 {
+  string s = colors;
+  sort(s.begin(), s.end());
+  if(s != "bgopry")
+    return false;
+
   for(int i = 0; i < 6; ++i)
   {
     switch(colors[i])
@@ -920,6 +923,12 @@ void TIA::setFixedColorPalette(const string& colors)
         break;
     }
   }
+
+  // If already in fixed debug colours mode, update the current palette
+  if(usingFixedColors())
+    enableFixedColors(true);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

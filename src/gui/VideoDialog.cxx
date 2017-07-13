@@ -23,6 +23,7 @@
 #include "Dialog.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
+#include "ColorWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Console.hxx"
@@ -310,6 +311,42 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" Debug Colors ");
   xpos = ypos = 8;
 
+  items.clear();
+  VarList::push_back(items, "Red", "r");
+  VarList::push_back(items, "Orange", "o");
+  VarList::push_back(items, "Yellow", "y");
+  VarList::push_back(items, "Green", "g");
+  VarList::push_back(items, "Blue", "b");
+  VarList::push_back(items, "Purple", "p");
+
+  static constexpr int dbg_cmds[6] = {
+    kP0ColourChangedCmd,  kM0ColourChangedCmd,  kP1ColourChangedCmd,
+    kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
+  };
+
+  auto createDebugColourWidgets = [&](int idx, const string& desc) {
+    int x = xpos;
+    myDbgColour[idx] = new PopUpWidget(myTab, font, x, ypos,
+        pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
+    wid.push_back(myDbgColour[idx]);
+    x += myDbgColour[idx]->getWidth() + 10;
+    myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos,
+        uInt32(2*lineHeight), lineHeight);
+    ypos += lineHeight + 8;
+  };
+
+  createDebugColourWidgets(0, "Player 0 ");
+  createDebugColourWidgets(1, "Missile 0 ");
+  createDebugColourWidgets(2, "Player 1 ");
+  createDebugColourWidgets(3, "Missile 1 ");
+  createDebugColourWidgets(4, "Playfield ");
+  createDebugColourWidgets(5, "Ball ");
+
+  // Add message concerning usage
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, infofont, 10, ypos,
+        font.getStringWidth("(*) Colors must be different for each object"), fontHeight,
+        "(*) Colors must be different for each object", kTextAlignLeft);
 
   // Activate the first tab
   myTab->setActiveTab(0);
@@ -412,6 +449,9 @@ void VideoDialog::loadConfig()
   myTVScanIntenseLabel->setLabel(instance().settings().getString("tv.scanlines"));
   myTVScanInterpolate->setState(instance().settings().getBool("tv.scaninter"));
 
+  // Debug colours
+  handleDebugColours(instance().settings().getString("tia.dbgcolors"));
+
   myTab->loadConfig();
 }
 
@@ -510,6 +550,14 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tv.scanlines", myTVScanIntenseLabel->getLabel());
   instance().settings().setValue("tv.scaninter", myTVScanInterpolate->getState());
 
+  // Debug colours
+  string dbgcolors;
+  for(int i = 0; i < 6; ++i)
+    dbgcolors += myDbgColour[i]->getSelectedTag().toString();
+  if(instance().hasConsole() &&
+     instance().console().tia().setFixedColorPalette(dbgcolors))
+    instance().settings().setValue("tia.dbgcolors", dbgcolors);
+
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
 }
@@ -566,6 +614,12 @@ void VideoDialog::setDefaults()
       loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
       break;
     }
+
+    case 2:  // Debug colours
+    {
+      handleDebugColours("roygpb");
+      break;
+    }
   }
 
   _dirty = true;
@@ -617,6 +671,51 @@ void VideoDialog::handleTVJitterChange(bool enable)
   myTVJitter->setState(enable);
   myTVJitterRec->setEnabled(enable);
   myTVJitterRecLabel->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleDebugColours(int idx, int color)
+{
+  if(idx < 0 || idx > 5)
+    return;
+
+  static constexpr int dbg_color[2][6] = {
+    { TIA::FixedColor::NTSC_RED,
+      TIA::FixedColor::NTSC_ORANGE,
+      TIA::FixedColor::NTSC_YELLOW,
+      TIA::FixedColor::NTSC_GREEN,
+      TIA::FixedColor::NTSC_BLUE,
+      TIA::FixedColor::NTSC_PURPLE
+    },
+    { TIA::FixedColor::PAL_RED,
+      TIA::FixedColor::PAL_ORANGE,
+      TIA::FixedColor::PAL_YELLOW,
+      TIA::FixedColor::PAL_GREEN,
+      TIA::FixedColor::PAL_BLUE,
+      TIA::FixedColor::PAL_PURPLE
+    }
+  };
+  int mode = instance().console().tia().frameLayout() == FrameLayout::ntsc ? 0 : 1;
+  myDbgColourSwatch[idx]->setColor(dbg_color[mode][color]);
+  myDbgColour[idx]->setSelectedIndex(color);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleDebugColours(const string& colors)
+{
+  for(int i = 0; i < 6; ++i)
+  {
+    switch(colors[i])
+    {
+      case 'r':  handleDebugColours(i, 0);  break;
+      case 'o':  handleDebugColours(i, 1);  break;
+      case 'y':  handleDebugColours(i, 2);  break;
+      case 'g':  handleDebugColours(i, 3);  break;
+      case 'b':  handleDebugColours(i, 4);  break;
+      case 'p':  handleDebugColours(i, 5);  break;
+      default:                              break;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -717,6 +816,25 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloneBadCmd: loadTVAdjustables(NTSCFilter::PRESET_BAD);
       break;
     case kCloneCustomCmd: loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+      break;
+
+    case kP0ColourChangedCmd:
+      handleDebugColours(0, myDbgColour[0]->getSelected());
+      break;
+    case kM0ColourChangedCmd:
+      handleDebugColours(1, myDbgColour[1]->getSelected());
+      break;
+    case kP1ColourChangedCmd:
+      handleDebugColours(2, myDbgColour[2]->getSelected());
+      break;
+    case kM1ColourChangedCmd:
+      handleDebugColours(3, myDbgColour[3]->getSelected());
+      break;
+    case kPFColourChangedCmd:
+      handleDebugColours(4, myDbgColour[4]->getSelected());
+      break;
+    case kBLColourChangedCmd:
+      handleDebugColours(5, myDbgColour[5]->getSelected());
       break;
 
     default:
