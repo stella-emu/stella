@@ -228,8 +228,10 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   myUsePhosphor = enable;
   myPhosphorPercent = blend / 100.0;
   myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
+
   myTiaSurface->setDirty();
   mySLineSurface->setDirty();
+  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH * 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,8 +280,7 @@ void TIASurface::enableNTSC(bool enable)
 
   myTiaSurface->setDirty();
   mySLineSurface->setDirty();
-
-  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
+  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH * 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
