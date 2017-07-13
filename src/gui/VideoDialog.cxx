@@ -587,7 +587,7 @@ void VideoDialog::setDefaults()
       myColorLoss->setState(false);
       myUIMessages->setState(true);
       myCenter->setState(false);
-      myFastSCBios->setState(false);
+      myFastSCBios->setState(true);
       break;
     }
 

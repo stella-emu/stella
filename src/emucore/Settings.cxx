@@ -136,7 +136,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("ramrandom", "true");
   setInternal("avoxport", "");
   setInternal("stats", "false");
-  setInternal("fastscbios", "false");
+  setInternal("fastscbios", "true");
   setExternal("romloadcount", "0");
   setExternal("maxres", "");
 
