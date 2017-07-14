@@ -55,7 +55,8 @@ Settings::Settings(OSystem& osystem)
 
   // TV filtering options
   setInternal("tv.filter", "0");
-  setInternal("tv.phosphor", "50");
+  setInternal("tv.phosphor", "byrom");
+  setInternal("tv.phosblend", "50");
   setInternal("tv.jitter", "true");
   setInternal("tv.jitter_recovery", "10");
   setInternal("tv.scanlines", "25");
@@ -279,8 +280,11 @@ void Settings::validate()
   sort(s.begin(), s.end());
   if(s != "bgopry")  setInternal("tia.dbgcolors", "roygpb");
 
-  i = getInt("tv.phosphor");
-  if(i < 0 || i > 100)  setInternal("tv.phosphor", "50");
+  s = getString("tv.phosphor");
+  if(s != "always" && s != "byrom")  setInternal("tv.phosphor", "byrom");
+
+  i = getInt("tv.phosblend");
+  if(i < 0 || i > 100)  setInternal("tv.phosblend", "50");
 
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setInternal("tv.filter", "0");
@@ -380,7 +384,8 @@ void Settings::usage() const
     << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual for description)\n"
     << endl
     << "  -tv.filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
-    << "  -tv.phosphor  <0-100>        Set default blend level in phosphor mode\n"
+    << "  -tv.phosphor  <always|byrom> When to use phosphor mode\n"
+    << "  -tv.phosblend <0-100>        Set default blend level in phosphor mode\n"
     << "  -tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"

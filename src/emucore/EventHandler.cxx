@@ -106,7 +106,7 @@ void EventHandler::initialize()
 
   // Default phosphor blend
   Properties::setDefault(Display_PPBlend,
-                         myOSystem.settings().getString("tv.phosphor"));
+                         myOSystem.settings().getString("tv.phosblend"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

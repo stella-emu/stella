@@ -104,7 +104,7 @@ class VideoDialog : public Dialog
     StaticTextWidget* myTVJitterRecLabel;
 
     // TV phosphor effect
-    StaticTextWidget* myTVPhosLabel;
+    PopUpWidget*      myTVPhosphor;
     SliderWidget*     myTVPhosLevel;
     StaticTextWidget* myTVPhosLevelLabel;
 

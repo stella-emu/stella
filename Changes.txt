@@ -14,9 +14,16 @@
 
 4.7.3 to 5.0: (July 16, 2017)
 
+  * Note: because of major TIA/6502/RIOT changes, the state file format
+          has changed, and old state files will not work with this release.
+
   * Stella has moved from Sourceforge to Github.
 
-  * New TIA core: TODO - gather info on all new functionality:
+  * Completely new TIA core is now available, ported from 6502ts by
+    Christian Speckner.  This new core is extremely accurate, and matches
+    real hardware in almost every test we've performed.  New features
+    include:
+    - TODO - gather info on all new functionality:
     - RSYNC
     - YStart autodetection
     - Proper emulation of RDY during write cycles (WSYNC).
@@ -28,9 +35,14 @@
 
   * Implemented new phosphor emulation mode, which is much closer to real
     TV output.  Related to this, added ability to change the default
-    phosphor blend level in the UI and through the new 'tv.phosphor'
+    phosphor blend level in the UI and through the new 'tv.phosblend'
     commandline argument.  Special thanks to Thomas Jentzsch for the idea
     and implementation.
+
+  * TV phosphor effect can now be force-enabled for all ROMs, instead
+    of manually setting ROM properties for each ROM.  This is accessible
+    in the UI and through the 'tv.phosphor' commandline argument, and
+    defaults to being off (or enabled per-ROM).
 
   * Much improved RIOT timer emulation never before seen in any emulator.
     Special thanks to DirtyHairy for the implementation, and alex_79 for
@@ -69,8 +81,8 @@
       clearly indicate if an item can be modified.
     - Debugger '.lst' and '.sym' files are now searched based on the name
       of the ROM file, and not on the internal properties name.
-    - Snapshots can now be saved by pressing F12 key (the various other
-      ways to save snapshots still exist).
+    - Snapshots can now be saved by pressing the F12 key (the various
+      other ways to save snapshots still exist).
 
   * Mouse grabbing is now enabled in windowed mode only when the ROM is
     using a virtual analog controller (paddles, trakball, etc).
@@ -99,6 +111,7 @@
     easier to read.
 
   * When in 'ROM launcher mode', Stella now uses slightly less CPU time.
+    More work is required in this area, though.
 
   * Added ROM properties for D.K. VCS homebrew ROM, thanks to Andreas
     Dietrich.
@@ -141,7 +154,7 @@
 
   * Updated build scripts for Visual Studio 2017 (Windows) and MacOS
     Sierra (latest version of Xcode), and make these the minimum supported
-    versions.
+    versions for building Stella.
 
   * Updated UNIX configure script to work with the clang 5+ and gcc 7+
     compiler versions, and fixed compile issues on AArch64 and ppc64le

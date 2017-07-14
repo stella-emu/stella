@@ -53,7 +53,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(52 * fontWidth + 10, max_w);
-  _h = std::min(16 * (lineHeight + 4) + 10, max_h);
+  _h = std::min(16 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
   xpos = ypos = 5;
@@ -249,10 +249,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   pwidth = font.getMaxCharWidth() * 6;
 
   // TV Phosphor effect
-  myTVPhosLabel = new StaticTextWidget(myTab, font, xpos, ypos,
-      font.getStringWidth("Phosphor Effect"), fontHeight,
-      "Phosphor Effect", kTextAlignLeft);
-  ypos += lineHeight;
+  items.clear();
+  VarList::push_back(items, "Always", "always");
+  VarList::push_back(items, "Per-ROM", "byrom");
+  myTVPhosphor = new PopUpWidget(myTab, font, xpos, ypos,
+      font.getStringWidth("Per-ROM"), lineHeight, items,
+      "TV Phosphor ", font.getStringWidth("TV Phosphor "));
+  ypos += lineHeight + 4;
 
   // TV Phosphor default level
   xpos += 20;
@@ -440,9 +443,13 @@ void VideoDialog::loadConfig()
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
 
+  // TV phosphor mode
+  myTVPhosphor->setSelected(
+      instance().settings().getString("tv.phosphor"), "byrom");
+
   // TV phosphor blend
-  myTVPhosLevel->setValue(instance().settings().getInt("tv.phosphor"));
-  myTVPhosLevelLabel->setLabel(instance().settings().getString("tv.phosphor"));
+  myTVPhosLevel->setValue(instance().settings().getInt("tv.phosblend"));
+  myTVPhosLevelLabel->setLabel(instance().settings().getString("tv.phosblend"));
 
   // TV jitter
   myTVJitterRec->setValue(instance().settings().getInt("tv.jitter_recovery"));
@@ -538,8 +545,12 @@ void VideoDialog::saveConfig()
   adj.bleed       = myTVBleed->getValue();
   instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(adj);
 
+  // TV phosphor mode
+  instance().settings().setValue("tv.phosphor",
+      myTVPhosphor->getSelectedTag().toString());
+
   // TV phosphor blend
-  instance().settings().setValue("tv.phosphor", myTVPhosLevelLabel->getLabel());
+  instance().settings().setValue("tv.phosblend", myTVPhosLevelLabel->getLabel());
   Properties::setDefault(Display_PPBlend, myTVPhosLevelLabel->getLabel());
 
   // TV jitter
@@ -599,6 +610,9 @@ void VideoDialog::setDefaults()
     case 1:  // TV effects
     {
       myTVMode->setSelected("0", "0");
+
+      // TV phosphor mode
+      myTVPhosphor->setSelected("byrom", "byrom");
 
       // TV phosphor blend
       myTVPhosLevel->setValue(50);

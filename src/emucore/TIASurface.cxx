@@ -67,7 +67,9 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
   mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
   mySLineSurface->setDstSize(mode.image.width(), mode.image.height());
 
-  bool p_enable = console.properties().get(Display_Phosphor) == "YES";
+  // Phosphor mode can be enabled either globally or per-ROM
+  bool p_enable = myOSystem.settings().getString("tv.phosphor") == "always" ||
+      console.properties().get(Display_Phosphor) == "YES";
   int p_blend = atoi(console.properties().get(Display_PPBlend).c_str());
   enablePhosphor(p_enable, p_blend);
   setNTSC(NTSCFilter::Preset(myOSystem.settings().getInt("tv.filter")), false);
