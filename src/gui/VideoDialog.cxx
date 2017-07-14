@@ -607,7 +607,7 @@ void VideoDialog::setDefaults()
       // TV jitter
       myTVJitterRec->setValue(10);
       myTVJitterRecLabel->setLabel("10");
-      handleTVJitterChange(false);
+      handleTVJitterChange(true);
 
       // TV scanline intensity and interpolation
       myTVScanIntense->setValue(25);

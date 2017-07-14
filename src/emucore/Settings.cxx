@@ -56,7 +56,7 @@ Settings::Settings(OSystem& osystem)
   // TV filtering options
   setInternal("tv.filter", "0");
   setInternal("tv.phosphor", "50");
-  setInternal("tv.jitter", "false");
+  setInternal("tv.jitter", "true");
   setInternal("tv.jitter_recovery", "10");
   setInternal("tv.scanlines", "25");
   setInternal("tv.scaninter", "true");
