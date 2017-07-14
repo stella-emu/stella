@@ -55,7 +55,7 @@ void ColorWidget::drawWidget(bool hilite)
   s.vLine(_x + _w - 1, _y, _y +_h - 1, kShadowColor);
 
   // Show the currently selected color
-  s.fillRect(_x+1, _y+1, _w-2, _h-1, _color);
+  s.fillRect(_x+1, _y+1, _w-2, _h-1, isEnabled() ? _color : kWidColor);
 
   // Cross out the grid?
   if(_crossGrid)
