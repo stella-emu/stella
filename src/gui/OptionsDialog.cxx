@@ -116,11 +116,11 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_ptr<VideoDialog>(osystem, parent, font, max_w, max_h);
+  myVideoDialog    = make_ptr<VideoDialog>(osystem, parent, font, max_w, max_h, myIsGlobal);
   myAudioDialog    = make_ptr<AudioDialog>(osystem, parent, font);
   myInputDialog    = make_ptr<InputDialog>(osystem, parent, font, max_w, max_h);
   myUIDialog       = make_ptr<UIDialog>(osystem, parent, font);
-  mySnapshotDialog = make_ptr<SnapshotDialog>(osystem, parent, font, boss);
+  mySnapshotDialog = make_ptr<SnapshotDialog>(osystem, parent, font);
   myConfigPathDialog = make_ptr<ConfigPathDialog>(osystem, parent, font, boss);
   myRomAuditDialog = make_ptr<RomAuditDialog>(osystem, parent, font, max_w, max_h);
   myGameInfoDialog = make_ptr<GameInfoDialog>(osystem, parent, font, this);

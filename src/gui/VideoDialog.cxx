@@ -37,7 +37,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
-                         const GUI::Font& font, int max_w, int max_h)
+                         const GUI::Font& font, int max_w, int max_h, bool isGlobal)
   : Dialog(osystem, parent)
 {
   const int lineHeight   = font.getLineHeight(),
@@ -333,6 +333,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos,
         uInt32(2*lineHeight), lineHeight);
     ypos += lineHeight + 8;
+    if(isGlobal)
+    {
+      myDbgColour[idx]->clearFlags(WIDGET_ENABLED);
+      myDbgColourSwatch[idx]->clearFlags(WIDGET_ENABLED);
+    }
   };
 
   createDebugColourWidgets(0, "Player 0 ");
@@ -676,7 +681,7 @@ void VideoDialog::handleTVJitterChange(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleDebugColours(int idx, int color)
 {
-  if(idx < 0 || idx > 5)
+  if(!instance().hasConsole() || idx < 0 || idx > 5)
     return;
 
   static constexpr int dbg_color[2][6] = {

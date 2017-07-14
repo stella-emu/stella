@@ -267,9 +267,6 @@
     <ClCompile Include="..\debugger\CartDebug.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\ColorWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\CpuDebug.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -849,6 +846,9 @@
     <ClCompile Include="..\emucore\CartDetector.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\ColorWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1077,9 +1077,6 @@
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\CartDebug.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\debugger\gui\ColorWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\CpuDebug.hxx">
@@ -1726,6 +1723,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\CartDetector.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\ColorWidget.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

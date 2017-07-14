@@ -35,7 +35,7 @@ class SnapshotDialog : public Dialog
 {
   public:
     SnapshotDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, GuiObject* boss);
+                   const GUI::Font& font);
     virtual ~SnapshotDialog() = default;
 
   private:

@@ -327,6 +327,7 @@
     <ClCompile Include="..\emucore\tia\TIA.cxx" />
     <ClCompile Include="..\emucore\tia\VblankManager.cxx" />
     <ClCompile Include="..\emucore\TrakBall.cxx" />
+    <ClCompile Include="..\gui\ColorWidget.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -400,7 +401,6 @@
     <ClCompile Include="..\cheat\RamCheat.cxx" />
     <ClCompile Include="..\debugger\gui\AudioWidget.cxx" />
     <ClCompile Include="..\debugger\CartDebug.cxx" />
-    <ClCompile Include="..\debugger\gui\ColorWidget.cxx" />
     <ClCompile Include="..\debugger\CpuDebug.cxx" />
     <ClCompile Include="..\debugger\gui\CpuWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DataGridOpsWidget.cxx" />
@@ -609,6 +609,7 @@
     <ClInclude Include="..\emucore\tia\TIA.hxx" />
     <ClInclude Include="..\emucore\tia\VblankManager.hxx" />
     <ClInclude Include="..\emucore\TrakBall.hxx" />
+    <ClInclude Include="..\gui\ColorWidget.hxx" />
     <ClInclude Include="..\gui\ConsoleBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
@@ -695,7 +696,6 @@
     <ClInclude Include="..\emucore\TIASnd.hxx" />
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx" />
     <ClInclude Include="..\debugger\CartDebug.hxx" />
-    <ClInclude Include="..\debugger\gui\ColorWidget.hxx" />
     <ClInclude Include="..\debugger\CpuDebug.hxx" />
     <ClInclude Include="..\debugger\gui\CpuWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DataGridOpsWidget.hxx" />

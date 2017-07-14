@@ -27,9 +27,8 @@
 #include "SnapshotDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SnapshotDialog::SnapshotDialog(
-      OSystem& osystem, DialogContainer& parent,
-      const GUI::Font& font, GuiObject* boss)
+SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
+                               const GUI::Font& font)
   : Dialog(osystem, parent),
     myFont(font)
 {
