@@ -69,6 +69,8 @@
       clearly indicate if an item can be modified.
     - Debugger '.lst' and '.sym' files are now searched based on the name
       of the ROM file, and not on the internal properties name.
+    - Snapshots can now be saved by pressing F12 key (the various other
+      ways to save snapshots still exist).
 
   * Mouse grabbing is now enabled in windowed mode only when the ROM is
     using a virtual analog controller (paddles, trakball, etc).
