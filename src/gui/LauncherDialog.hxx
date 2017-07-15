@@ -106,7 +106,7 @@ class LauncherDialog : public Dialog
 
     StringListWidget* myList;
     StaticTextWidget* myDirLabel;
-    StaticTextWidget* myDir;
+    EditTextWidget*   myDir;
     StaticTextWidget* myRomCount;
     EditTextWidget*   myPattern;
 

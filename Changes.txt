@@ -31,6 +31,8 @@
       choice of 'red', 'orange', 'yellow', 'green', 'blue' and 'purple'.
       This is accessible through the new 'tia.dbgcolors' commandline
       argument.
+    - Several ROMs that have never worked in any emulator are now
+      emulated correctly.
     - ...
 
   * Implemented new phosphor emulation mode, which is much closer to real

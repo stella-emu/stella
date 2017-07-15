@@ -59,6 +59,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   const int fontWidth = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
+            lineHeight = font.getLineHeight(),
             bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4,
             bheight = font.getLineHeight() + 4;
   int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
@@ -98,7 +99,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   int listWidth = _w - (romWidth > 0 ? romWidth+5 : 0) - 20;
   myList = new StringListWidget(this, font, xpos, ypos,
-                                listWidth, _h - 28 - bheight - 2*fontHeight);
+                                listWidth, _h - 35 - bheight - 2*fontHeight);
   myList->setEditable(false);
   wid.push_back(myList);
   if(myPattern)  wid.push_back(myPattern);  // Add after the list for tab order
@@ -113,16 +114,16 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
         xpos, ypos, romWidth, myList->getHeight());
   }
 
-  // Add note textwidget to show any notes for the currently selected ROM
+  // Add textfield to show current directory
   xpos = 10;
   xpos += 5;  ypos += myList->getHeight() + 4;
-  lwidth = font.getStringWidth("Note");
-  myDirLabel = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                                    "Dir:", kTextAlignLeft);
+  lwidth = font.getStringWidth("Dir ");
+  myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwidth, fontHeight,
+                                    "Dir", kTextAlignLeft);
   xpos += lwidth + 5;
-  myDir = new StaticTextWidget(this, font, xpos, ypos,
-                                _w - xpos - 10, fontHeight,
-                                "", kTextAlignLeft);
+  myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - 10, lineHeight, "");
+  myDir->setEditable(false, true);
+  myDir->clearFlags(WIDGET_RETAIN_FOCUS);
 
   // Add four buttons at the bottom
   xpos = 10;  ypos += myDir->getHeight() + 4;
@@ -257,7 +258,7 @@ void LauncherDialog::updateListing(const string& nameToSelect)
 {
   // Start with empty list
   myGameList->clear();
-  myDir->setLabel("");
+  myDir->setText("");
 
   loadDirListing();
 
@@ -265,7 +266,7 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
-  myDir->setLabel(myCurrentNode.getShortPath());
+  myDir->setText(myCurrentNode.getShortPath());
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
