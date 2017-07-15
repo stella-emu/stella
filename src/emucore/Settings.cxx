@@ -486,6 +486,9 @@ void Settings::usage() const
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
   #endif
+  #ifdef DTHUMB_SUPPORT
+    << "   -thumb.trapfatal <1|0>      Determines whether errors in ARM emulation throw an exception\n"
+  #endif
     << endl << std::flush;
 }
 

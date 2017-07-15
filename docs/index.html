@@ -1449,8 +1449,8 @@
 
     <tr>
       <td>Toggle TV 'jitter' effect</td>
-      <td>Shift-Alt + j</td>
-      <td>Shift-Cmd + j</td>
+      <td>Alt + j</td>
+      <td>Cmd + j</td>
     </tr>
   </table>
 
@@ -1866,7 +1866,7 @@
     </tr>
 
     <tr>
-      <td><pre>-tia.debugcolors &lt;ROYGBP&gt;</pre></td>
+      <td><pre>-tia.dbgcolors &lt;roygbp&gt;</pre></td>
       <td>Assigns the colours (R)ed, (O)range, (Y)ellow, (G)reen, (B)lue and (P)urple
         to each graphical register P0/M0/P1/M1/PF/BL, respectively.  Currently,
         these change be changed around to apply different colours to the
@@ -1875,7 +1875,23 @@
     </tr>
 
     <tr>
-      <td><pre>-tv.phosphor &lt;0 - 100&gt;</pre></td>
+      <td><pre>-tv.filter &lt;1 - 6&gt;</pre></td>
+      <td>Blargg TV effects, 0 is disabled, next numbers in
+        sequence represent presets for 'Composite', 'S-Video', 'RGB', 'Bad Adjust',
+        and 'Custom' modes.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.phosphor &lt;always|byrom&gt;</pre></td>
+      <td>Determines how phosphor mode is enabled.  If 'always', then the
+        ROM properties entry is ignored, and phosphor mode is always turned
+        on.  Otherwise, the ROM properties determine whether phosphor mode
+        is used for each ROM.
+      </td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.phosblend &lt;0 - 100&gt;</pre></td>
       <td>Enable default phosphor blending level; 0 implies no mixing, and 100
         is full mixing (not recommended).  Note that this doesn't actually
         enable phosphor mode; that is done for each ROM in the ROM properties.
@@ -1892,13 +1908,6 @@
       <td><pre>-tv.jitter_recovery &lt;1 - 20&gt;</pre></td>
       <td>When TV jitter/roll effect is enabled, determines how long to delay recovery
         time (recovery spread over multiple frames).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.filter &lt;1 - 6&gt;</pre></td>
-      <td>Blargg TV effects, 0 is disabled, next numbers in
-        sequence represent presets for 'Composite', 'S-Video', 'RGB', 'Bad Adjust',
-        and 'Custom' modes.</td>
     </tr>
 
     <tr>
@@ -2456,9 +2465,12 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>TV Mode</td><td>disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
+          <tr><td>TV Phosphor</td><td>enable phosphor mode under what conditions</td><td>-tv.phosphor</td></tr>
+          <tr><td>Phosphor (Default)</td><td>default blend level to use in phosphor mode<br/>
+                (needs to be manually set for your particular hardware)</td><td>-tv.phosblend</td></tr>
           <tr><td>Jitter/Roll effect</td><td>emulate screen roll with inconsistent scanline count</td><td>-tv.jitter</td></tr>
           <tr><td>Jitter/Roll recovery</td><td>determines recovery time for screen rolling</td><td>-tv.jitter_recovery</td></tr>
-          <tr><td>TV Mode</td><td>disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
           <tr><td>Scanline Intensity</td><td>sets scanline black-level intensity</td><td>-tv.scanlines</td></tr>
           <tr><td>Scanline Interpolation</td><td>smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
           <tr><td>Adjustable sliders</td><td>set specific attribute in 'Custom' mode</td><td>-tv.contrast, tv.hue, etc.</td></tr>
@@ -2467,6 +2479,23 @@
           <tr><td>Clone RGB</td><td>copy 'RGB' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone Bad Adjust</td><td>copy 'Bad Adjust' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Revert</td><td>revert attribute sliders to saved 'Custom' settings</td><td>&nbsp;</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <p><b>Video Settings</b> dialog (Debug Colors):</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_video_dbgcolors.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Player 0 <br/>Missile 0 <br/>Player 1 <br/>
+            Missile 1 <br/>Playfield <br/>Ball </td>
+          <td>Set color for specific object in debug colors mode</td><td>-tia.dbgcolors</td></tr>
         </table>
       </td>
     </tr>

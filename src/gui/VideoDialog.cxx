@@ -356,6 +356,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
         font.getStringWidth("(*) Colors must be different for each object"), fontHeight,
         "(*) Colors must be different for each object", kTextAlignLeft);
 
+  // Add items for tab 2
+  addToFocusList(wid, myTab, tabID);
+
   // Activate the first tab
   myTab->setActiveTab(0);
 
