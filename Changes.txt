@@ -46,6 +46,11 @@
     in the UI and through the 'tv.phosphor' commandline argument, and
     defaults to being off (or enabled per-ROM).
 
+  * PAL color-loss and Blargg TV effects can now be enabled at the same
+    time.  Previously, when Blargg effects were enabled, PAL color-loss
+    couldn't be shown.  Related to this, the Blargg effects now use much
+    less memory and in some cases run faster than before.
+
   * Much improved RIOT timer emulation never before seen in any emulator.
     Special thanks to DirtyHairy for the implementation, and alex_79 for
     finding documentation that finally describes in more detail how the
