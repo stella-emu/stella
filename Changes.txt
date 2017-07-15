@@ -26,8 +26,8 @@
      - Meltdown emulates correct
      - The lap number in Pole Positions displays correctly
      - Artifacts in the mountains on Snoopy and the Red baron are gone
-     - Line artifacts in Title Match Pro Wrestling and Realsports Boxing are
-       fixed
+     - Line artifacts in Title Match Pro Wrestling and Realsports Boxing
+       are fixed
      - The spurious line at the left border of Video Chess now displays
        correctly
      - All 32 char text demos from AtariAge now work perfectly (Stella 4
@@ -39,17 +39,17 @@
      - RSYNC emulation has improved, all testcases now match real
        hardware
      - Several other ROMs that have never worked in any emulator are now
-       emulated correctly.
+       emulated correctly
      - RDY behavior with respect to write cycles is accurate
      - Optional YStart autodetect and more robust frame handling
      - NUSIZ during player draw matches hardware
      - RESMx during missile draw matches hardware
      - Paddle emulation is slightly more accurate. As a consequence, the
        "paddle feel" may be slightly different from Stella 4
-     - Fixed debug colors can now be set for each graphical object, from a
-      choice of 'red', 'orange', 'yellow', 'green', 'blue' and 'purple'.
-      This is accessible through the new 'tia.dbgcolors' commandline
-      argument.
+     - Fixed debug colors can now be set for each graphical object, from
+       a choice of 'red', 'orange', 'yellow', 'green', 'blue' and
+       'purple'.  This is accessible through the new 'tia.dbgcolors'
+       commandline argument and within the UI.
 
   * Implemented new phosphor emulation mode, which is much closer to real
     TV output.  Related to this, added ability to change the default
@@ -68,9 +68,9 @@
     less memory and in some cases run faster than before.
 
   * Much improved RIOT timer emulation never before seen in any emulator.
-    Special thanks to Christian Speckner (DirtyHairy) for the implementation,
-    and alex_79 for finding documentation that finally describes in more detail
-    how the M6532 chip actually works.
+    Special thanks to Christian Speckner (DirtyHairy) for the
+    implementation, and alex_79 for finding documentation that finally
+    describes in more detail how the M6532 chip actually works.
 
   * Added BUS (experimental) and CDF bankswitching schemes, and also
     ARM Timer 1 support; special thanks to SpiceWare for the code.
