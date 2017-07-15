@@ -90,7 +90,6 @@
 		2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */; };
 		2D91745209BA90380026E9FF /* CommandDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D73959408C3EB4E0060BB99 /* CommandDialog.hxx */; };
 		2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D73959608C3EB4E0060BB99 /* CommandMenu.hxx */; };
-		2D91745409BA90380026E9FF /* ColorWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20F9E508C603EC00A73076 /* ColorWidget.hxx */; };
 		2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20F9E708C603EC00A73076 /* CpuWidget.hxx */; };
 		2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20F9E908C603EC00A73076 /* DataGridOpsWidget.hxx */; };
 		2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20F9EB08C603EC00A73076 /* DataGridWidget.hxx */; };
@@ -190,7 +189,6 @@
 		2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */; };
 		2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D73959308C3EB4E0060BB99 /* CommandDialog.cxx */; };
 		2D9174F509BA90380026E9FF /* CommandMenu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D73959508C3EB4E0060BB99 /* CommandMenu.cxx */; };
-		2D9174F609BA90380026E9FF /* ColorWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20F9E408C603EC00A73076 /* ColorWidget.cxx */; };
 		2D9174F709BA90380026E9FF /* CpuWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20F9E608C603EC00A73076 /* CpuWidget.cxx */; };
 		2D9174F809BA90380026E9FF /* DataGridOpsWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20F9E808C603EC00A73076 /* DataGridOpsWidget.cxx */; };
 		2D9174F909BA90380026E9FF /* DataGridWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20F9EA08C603EC00A73076 /* DataGridWidget.cxx */; };
@@ -286,6 +284,8 @@
 		DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8531E2C0E6D00905161 /* zlib.h */; };
 		DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8541E2C0E6D00905161 /* zutil.c */; };
 		DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8551E2C0E6D00905161 /* zutil.h */; };
+		DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */; };
+		DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -651,8 +651,6 @@
 		2D1A6CD4085135F9007CDBA8 /* AboutBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AboutBox.h; sourceTree = SOURCE_ROOT; };
 		2D1A6CD5085135F9007CDBA8 /* AboutBox.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AboutBox.m; sourceTree = SOURCE_ROOT; };
 		2D1A6CD808513610007CDBA8 /* AboutBox.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = AboutBox.nib; sourceTree = SOURCE_ROOT; };
-		2D20F9E408C603EC00A73076 /* ColorWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ColorWidget.cxx; sourceTree = "<group>"; };
-		2D20F9E508C603EC00A73076 /* ColorWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = ColorWidget.hxx; sourceTree = "<group>"; };
 		2D20F9E608C603EC00A73076 /* CpuWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CpuWidget.cxx; sourceTree = "<group>"; };
 		2D20F9E708C603EC00A73076 /* CpuWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CpuWidget.hxx; sourceTree = "<group>"; };
 		2D20F9E808C603EC00A73076 /* DataGridOpsWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DataGridOpsWidget.cxx; sourceTree = "<group>"; };
@@ -914,6 +912,8 @@
 		DC3EE8531E2C0E6D00905161 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		DC3EE8541E2C0E6D00905161 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zutil.c; sourceTree = "<group>"; };
 		DC3EE8551E2C0E6D00905161 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zutil.h; sourceTree = "<group>"; };
+		DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorWidget.cxx; sourceTree = "<group>"; };
+		DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ColorWidget.hxx; sourceTree = "<group>"; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RomAuditDialog.cxx; sourceTree = "<group>"; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RomAuditDialog.hxx; sourceTree = "<group>"; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = BankRomCheat.cxx; sourceTree = "<group>"; };
@@ -1419,8 +1419,6 @@
 				DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */,
 				DC676A3F1729A0B000E4E73D /* CartX07Widget.cxx */,
 				DC676A401729A0B000E4E73D /* CartX07Widget.hxx */,
-				2D20F9E408C603EC00A73076 /* ColorWidget.cxx */,
-				2D20F9E508C603EC00A73076 /* ColorWidget.hxx */,
 				DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */,
 				2D20F9E608C603EC00A73076 /* CpuWidget.cxx */,
 				2D20F9E708C603EC00A73076 /* CpuWidget.hxx */,
@@ -1724,6 +1722,8 @@
 				2DDBEAA9084578BF00812C11 /* BrowserDialog.hxx */,
 				2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */,
 				2DEF21F908BC033500B246B4 /* CheckListWidget.hxx */,
+				DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */,
+				DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */,
 				DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */,
 				DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */,
 				2DDBEAAA084578BF00812C11 /* Command.hxx */,
@@ -2092,7 +2092,6 @@
 				DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */,
 				2D91745209BA90380026E9FF /* CommandDialog.hxx in Headers */,
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
-				2D91745409BA90380026E9FF /* ColorWidget.hxx in Headers */,
 				DCB2ECAE1F0AECA3009738A6 /* BSType.hxx in Headers */,
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
@@ -2272,6 +2271,7 @@
 				DC6A18FD19B3E67A00DEB242 /* CartMDM.hxx in Headers */,
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
+				DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
 				DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */,
 				DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */,
@@ -2407,6 +2407,7 @@
 				2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */,
 				2D91749009BA90380026E9FF /* M6532.cxx in Sources */,
 				2D91749109BA90380026E9FF /* MD5.cxx in Sources */,
+				DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */,
 				2D91749309BA90380026E9FF /* Paddles.cxx in Sources */,
 				2D91749409BA90380026E9FF /* Props.cxx in Sources */,
 				2D91749509BA90380026E9FF /* PropsSet.cxx in Sources */,
@@ -2471,7 +2472,6 @@
 				2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */,
 				DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */,
 				2D9174F509BA90380026E9FF /* CommandMenu.cxx in Sources */,
-				2D9174F609BA90380026E9FF /* ColorWidget.cxx in Sources */,
 				2D9174F709BA90380026E9FF /* CpuWidget.cxx in Sources */,
 				2D9174F809BA90380026E9FF /* DataGridOpsWidget.cxx in Sources */,
 				2D9174F909BA90380026E9FF /* DataGridWidget.cxx in Sources */,
