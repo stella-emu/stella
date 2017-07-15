@@ -25,7 +25,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int cols, int rows, int colchars)
-  : ToggleWidget(boss, font, x, y, cols, rows)
+  : ToggleWidget(boss, font, x, y, cols, rows, 1)
 {
   _rowHeight = font.getLineHeight();
   _colWidth  = colchars * font.getMaxCharWidth() + 8;

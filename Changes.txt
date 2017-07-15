@@ -74,6 +74,8 @@
     - The TIA tab now shows 'old' contents of player and ball registers
     - Various UI items are crossed out when disabled, to more clearly
       indicate their current state
+    - Various UI items that previously required a double-click to toggle
+      (pixel and bit widgets) now require only a single-click.
     - Command completion now works with internal functions and pseudo-ops
       (basically, anything starting with the '_' character)
     - System labels (aka, register names, etc) can now be typed in lower-

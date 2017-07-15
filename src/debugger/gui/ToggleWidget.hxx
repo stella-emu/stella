@@ -33,7 +33,8 @@ class ToggleWidget : public Widget, public CommandSender
 
   public:
     ToggleWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int cols, int rows);
+                 int x, int y, int cols, int rows,
+                 int clicksToChange = 2);
     virtual ~ToggleWidget() = default;
 
     const BoolArray& getState()    { return _stateList; }
@@ -55,6 +56,7 @@ class ToggleWidget : public Widget, public CommandSender
     int  _rowHeight;   // explicitly set in child classes
     int  _colWidth;    // explicitly set in child classes
     int  _selectedItem;
+    int  _clicksToChange;  // number of clicks to register a change
     bool _editable;
 
     BoolArray  _stateList;

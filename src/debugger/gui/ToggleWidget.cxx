@@ -21,7 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int cols, int rows)
+                           int x, int y, int cols, int rows,
+                           int clicksToChange)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     _rows(rows),
@@ -31,6 +32,7 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
     _rowHeight(0),
     _colWidth(0),
     _selectedItem(0),
+    _clicksToChange(clicksToChange),
     _editable(true)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
@@ -66,7 +68,7 @@ void ToggleWidget::handleMouseUp(int x, int y, int button, int clickCount)
 
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
-  if (clickCount == 2 && (_selectedItem == findItem(x, y)))
+  if (clickCount == _clicksToChange && (_selectedItem == findItem(x, y)))
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];

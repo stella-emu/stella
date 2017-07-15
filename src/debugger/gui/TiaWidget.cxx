@@ -1012,16 +1012,8 @@ void TiaWidget::loadConfig()
   // M0 register info
   ////////////////////////////
   // enaM0
-  if(tia.enaM0())
-  {
-    myEnaM0->setColor(state.coluRegs[0]);
-    myEnaM0->setIntState(1, false);
-  }
-  else
-  {
-    myEnaM0->setColor(kBGColorLo);
-    myEnaM0->setIntState(0, false);
-  }
+  myEnaM0->setColor(state.coluRegs[0]);
+  myEnaM0->setIntState(tia.enaM0() ? 1: 0, false);
 
   // posM0
   myPosM0->setList(0, state.pos[M0], state.pos[M0] != oldstate.pos[M0]);
@@ -1039,16 +1031,8 @@ void TiaWidget::loadConfig()
   // M1 register info
   ////////////////////////////
   // enaM1
-  if(tia.enaM1())
-  {
-    myEnaM1->setColor(state.coluRegs[1]);
-    myEnaM1->setIntState(1, false);
-  }
-  else
-  {
-    myEnaM1->setColor(kBGColorLo);
-    myEnaM1->setIntState(0, false);
-  }
+  myEnaM1->setColor(state.coluRegs[1]);
+  myEnaM1->setIntState(tia.enaM1() ? 1: 0, false);
 
   // posM1
   myPosM1->setList(0, state.pos[M1], state.pos[M1] != oldstate.pos[M1]);
