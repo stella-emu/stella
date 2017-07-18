@@ -182,7 +182,7 @@ class System : public Serializable
       @param hmask  The bits which should always be driven high
       @return  The data bus state
     */
-    uInt8 getDataBusState(uInt8 zmask, uInt8 hmask = 0x00)
+    uInt8 getDataBusState(uInt8 zmask, uInt8 hmask = 0x00) const
     {
       // For the pins that are floating, randomly decide which are high or low
       // Otherwise, they're specifically driven high

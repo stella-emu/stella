@@ -52,7 +52,7 @@ class Random
 
       @return A random number
     */
-    uInt32 next()
+    uInt32 next() const
     {
       return (myValue = (myValue * 2416 + 374441) % 1771875);
     }
@@ -62,7 +62,11 @@ class Random
     const OSystem& myOSystem;
 
     // Indicates the next random number
-    uInt32 myValue;
+    // We make this mutable, since it's not immediately obvious that
+    // calling next() should change internal state (ie, the *logical*
+    // state of the object shouldn't change just by asking for another
+    // random number)
+    mutable uInt32 myValue;
 
   private:
     // Following constructors and assignment operators not supported
