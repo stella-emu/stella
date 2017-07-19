@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3297
+#define DEF_PROPS_SIZE 3299
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -261,6 +261,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "11bcf5c752088b5aaf86d6c7a6a11e8d", "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira", "CX26118", "Millipede (1984) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "11cf751bc8173db105eabd119c5844ba", "", "", "Star Fire - Crosshair (12-02-2002) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "11e7e0d9437ec98fa085284cf16d0eb4", "", "", "Bowling (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "11f9532557e4c9569f4b242164006161", "Chris Walton, Justin Hairgrove, Tony Morse", "", "Hunchy II (2005) (PAL)", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1201c18cf00d2c236f42e4d7d8c86aa1", "", "", "Nick Bensema Demo (Nick Bensema)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "12123b534bdee79ed7563b9ad74f1cbd", "Absolute Entertainment, Alex DeMeo", "AG-041-04", "Title Match Pro Wrestling (1987) (Absolute)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1228c01cd3c4b9c477540c5adb306d2a", "Atari, Alan Miller", "CX26163P", "Basketball (32 in 1) (1988) (Atari) (PAL)", "Console ports are swapped", "", "", "", "", "", "", "YES", "", "", "", "", "", "", "", "", "" },
@@ -2070,6 +2071,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "9f901509f0474bf9760e6ebd80e629cd", "Atari, Bob Whitehead - Sears", "CX2623 - 6-99819, 49-75108, 49-75125", "Home Run (1978) (Atari) (4K)", "", "", "", "", "", "", "", "YES", "", "", "", "", "", "", "", "", "" },
   { "9f93734c68f6479eb022cab40814142e", "", "", "Push (V0.07) (2001) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9f9ee0f60c119c831e80694b6678ca1a", "Jeffry Johnston", "", "Radial Pong - Version 8 (Jeffry Johnston) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "9fa0c664b157a0c27d10319dbbca812c", "Chris Walton, Justin Hairgrove, Tony Morse", "", "Hunchy II (2005)", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9fc2d1627dcdd8925f4c042e38eb0bc9", "Atari - GCC, Mike Feinstein, John Allred", "CX2688, CX2688P", "Jungle Hunt (1983) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "E68E28752D3C54EDD3CCDA42C27E320C", "Xonox - K-Tel Software, Anthony R. Henderson", "99007, 6240", "Tomarc the Barbarian (1983) (Xonox)", "Genesis controller (B is jump and throw, C switches between players)", "Hack of Tomarc the Barbarian", "", "", "", "", "", "", "GENESIS", "", "", "", "", "", "", "", "" },
   { "a0028f057d496f22b549fd8deecc6f78", "Joe Grand", "", "SCSIcide Pre-release 6 (Joe Grand)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

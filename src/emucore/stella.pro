@@ -20223,3 +20223,14 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cartridge.MD5" "11f9532557e4c9569f4b242164006161"
+"Cartridge.Manufacturer" "Chris Walton, Justin Hairgrove, Tony Morse"
+"Cartridge.Name" "Hunchy II (2005) (PAL)"
+"Cartridge.Note" "Homebrew"
+""
+
+"Cartridge.MD5" "9fa0c664b157a0c27d10319dbbca812c"
+"Cartridge.Manufacturer" "Chris Walton, Justin Hairgrove, Tony Morse"
+"Cartridge.Name" "Hunchy II (2005)"
+"Cartridge.Note" "Homebrew"
+""
