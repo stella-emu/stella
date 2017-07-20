@@ -267,7 +267,8 @@ void TIASurface::enableNTSC(bool enable)
   myFilter = Filter(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
 
   // Normal vs NTSC mode uses different source widths
-  myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(kTIAW) : kTIAW, myTIA->height());
+  myTiaSurface->setSrcSize(enable ?
+      AtariNTSC::outWidth(kTIAW) : uInt32(kTIAW), myTIA->height());
 
   FBSurface::Attributes& tia_attr = myTiaSurface->attributes();
   tia_attr.smoothing = myOSystem.settings().getBool("tia.inter");
