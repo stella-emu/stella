@@ -25,7 +25,7 @@ class FrameBuffer;
 class FBSurface;
 class VideoMode;
 
-#include "FrameManager.hxx"
+#include "tia/FrameManager.hxx"
 #include "Rect.hxx"
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
