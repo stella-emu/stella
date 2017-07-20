@@ -183,10 +183,18 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myConsoleTiming = ConsoleTiming::secam;
   }
 
-  // Bumper Bash always requires all 4 directions
+  // Bumper Bash and Decathlon always require all 4 directions
   // Other ROMs can use it if the setting is enabled
-  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
-                   md5 == "1bf503c724001b09be79c515ecfcbd03" ||
+  // Hopefully this list should stay short
+  // If it starts to get too long, we should add a ROM properties entry
+  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" || // Bumper Bash
+                   md5 == "16ee443c990215f61f7dd1e55a0d2256" || // Bumper Bash (PAL)
+                   md5 == "1bf503c724001b09be79c515ecfcbd03" || // Bumper Bash (Unknown)
+                   md5 == "ac7c2260378975614192ca2bc3d20e0b" || // Decathlon
+                   md5 == "883258dcd68cefc6cd4d40b1185116dc" || // Decathlon (PAL)
+                   md5 == "ede4ab11ca346bd023b2c21d941e0c50" || // Decathlon (SECAM)
+                   md5 == "525f2dfc8b21b0186cff2568e0509bfc" || // Decathlon [fixed]
+                   md5 == "bf52327c2197d9d2c4544be053caded1" || // Decathlon (HES)
                    myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
 

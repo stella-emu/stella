@@ -12,6 +12,17 @@
                                Release History
 ===========================================================================
 
+5.0 to 5.0.1: (xxxx yy, 2017)
+
+  * Various 'Bumper Bash' and 'Decathlon' ROMs are marked as always having
+    all 4 directions on a joystick enabled, since they can't be played
+    properly otherwise.
+
+  * Added 'Hunchy II' from Chris Walton (cd-w) to ROM properties database.
+
+-Have fun!
+
+
 4.7.3 to 5.0: (July 16, 2017)
 
   * Note: because of major TIA/6502/RIOT changes, the state file format
@@ -184,8 +195,6 @@
   * Updated UNIX configure script to work with the clang 5+ and gcc 7+
     compiler versions, and fixed compile issues on AArch64 and ppc64le
     architectures.
-
--Have fun!
 
 
 4.7.2 to 4.7.3: (Nov. 21, 2016)
