@@ -40,8 +40,6 @@
 */
 class CompuMate
 {
-  friend class CartridgeCM;
-
   public:
     /**
       Create a new CompuMate handler for both left and right ports.
@@ -76,6 +74,9 @@ class CompuMate
       entered on the CompuMate keyboard.
     */
     void enableKeyHandling(bool enable);
+
+    /** Needed for communication with CartCM class */
+    uInt8& column() { return myColumn; }
 
   private:
     /**

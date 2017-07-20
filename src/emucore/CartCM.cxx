@@ -80,7 +80,7 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
       bank(mySWCHA & 0x3);
       if(myCompuMate)
       {
-        uInt8& column = myCompuMate->myColumn;
+        uInt8& column = myCompuMate->column();
         if(value & 0x20)
           column = 0;
         if(value & 0x40)
@@ -95,7 +95,7 @@ bool CartridgeCM::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCM::column() const
 {
-  return myCompuMate->myColumn;
+  return myCompuMate->column();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,7 +196,7 @@ bool CartridgeCM::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
     out.putByte(mySWCHA);
-    out.putByte(myCompuMate->myColumn);
+    out.putByte(myCompuMate->column());
     out.putByteArray(myRAM, 2048);
   }
   catch(...)
@@ -218,7 +218,7 @@ bool CartridgeCM::load(Serializer& in)
 
     myCurrentBank = in.getShort();
     mySWCHA = in.getByte();
-    myCompuMate->myColumn = in.getByte();
+    myCompuMate->column() = in.getByte();
     in.getByteArray(myRAM, 2048);
   }
   catch(...)

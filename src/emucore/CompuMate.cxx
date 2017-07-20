@@ -76,7 +76,7 @@ void CompuMate::update()
   rp.myDigitalPinState[Controller::Three] = true;
   rp.myDigitalPinState[Controller::Four] = true;
 
-  switch(myColumn)  // This is updated outside the class
+  switch(myColumn)  // This is updated inside CartCM class
   {
     case 0:
       if (myKeyTable[KBDK_7]) lp.myDigitalPinState[Controller::Six] = false;
