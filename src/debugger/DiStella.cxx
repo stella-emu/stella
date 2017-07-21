@@ -42,7 +42,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   bool resolve_code = mySettings.resolve_code;
 
-  CartDebug::AddressList::iterator it = addresses.begin();
+  auto it = addresses.cbegin();
   uInt16 start = *it++;
 
   myOffset = info.offset;

@@ -85,20 +85,20 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   loadUserPalette();
 
   // Create subsystems for the console
-  my6502 = make_ptr<M6502>(myOSystem.settings());
-  myRiot = make_ptr<M6532>(*this, myOSystem.settings());
-  myTIA  = make_ptr<TIA>(*this, myOSystem.sound(), myOSystem.settings());
-  mySwitches = make_ptr<Switches>(myEvent, myProperties);
+  my6502 = make_unique<M6502>(myOSystem.settings());
+  myRiot = make_unique<M6532>(*this, myOSystem.settings());
+  myTIA  = make_unique<TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  mySwitches = make_unique<Switches>(myEvent, myProperties);
 
   // Construct the system and components
-  mySystem = make_ptr<System>(osystem, *my6502, *myRiot, *myTIA, *myCart);
+  mySystem = make_unique<System>(osystem, *my6502, *myRiot, *myTIA, *myCart);
 
   // The real controllers for this console will be added later
   // For now, we just add dummy joystick controllers, since autodetection
   // runs the emulation for a while, and this may interfere with 'smart'
   // controllers such as the AVox and SaveKey
-  myLeftControl  = make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
-  myRightControl = make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
+  myLeftControl  = make_unique<Joystick>(Controller::Left, myEvent, *mySystem);
+  myRightControl = make_unique<Joystick>(Controller::Right, myEvent, *mySystem);
 
   // We can only initialize after all the devices/components have been created
   mySystem->initialize();
@@ -727,19 +727,19 @@ void Console::setControllers(const string& rommd5)
     // Already created in c'tor
     // We save some time by not looking at all the other types
     if(!leftC)
-      leftC = make_ptr<Joystick>(Controller::Left, myEvent, *mySystem);
+      leftC = make_unique<Joystick>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "BOOSTERGRIP")
   {
-    leftC = make_ptr<BoosterGrip>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<BoosterGrip>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "DRIVING")
   {
-    leftC = make_ptr<Driving>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<Driving>(Controller::Left, myEvent, *mySystem);
   }
   else if((left == "KEYBOARD") || (left == "KEYPAD"))
   {
-    leftC = make_ptr<Keyboard>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<Keyboard>(Controller::Left, myEvent, *mySystem);
   }
   else if(BSPF::startsWithIgnoreCase(left, "PADDLES"))
   {
@@ -750,28 +750,28 @@ void Console::setControllers(const string& rommd5)
       swapDir = true;
     else if(left == "PADDLES_IAXDR")
       swapAxis = swapDir = true;
-    leftC = make_ptr<Paddles>(Controller::Left, myEvent, *mySystem,
+    leftC = make_unique<Paddles>(Controller::Left, myEvent, *mySystem,
                               swapPaddles, swapAxis, swapDir);
   }
   else if(left == "AMIGAMOUSE")
   {
-    leftC = make_ptr<AmigaMouse>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<AmigaMouse>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "ATARIMOUSE")
   {
-    leftC = make_ptr<AtariMouse>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<AtariMouse>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "TRAKBALL")
   {
-    leftC = make_ptr<TrakBall>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<TrakBall>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "GENESIS")
   {
-    leftC = make_ptr<Genesis>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<Genesis>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "MINDLINK")
   {
-    leftC = make_ptr<MindLink>(Controller::Left, myEvent, *mySystem);
+    leftC = make_unique<MindLink>(Controller::Left, myEvent, *mySystem);
   }
 
   // Construct right controller
@@ -780,19 +780,19 @@ void Console::setControllers(const string& rommd5)
     // Already created in c'tor
     // We save some time by not looking at all the other types
     if(!rightC)
-      rightC = make_ptr<Joystick>(Controller::Right, myEvent, *mySystem);
+      rightC = make_unique<Joystick>(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "BOOSTERGRIP")
   {
-    rightC = make_ptr<BoosterGrip>(Controller::Right, myEvent, *mySystem);
+    rightC = make_unique<BoosterGrip>(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "DRIVING")
   {
-    rightC = make_ptr<Driving>(Controller::Right, myEvent, *mySystem);
+    rightC = make_unique<Driving>(Controller::Right, myEvent, *mySystem);
   }
   else if((right == "KEYBOARD") || (right == "KEYPAD"))
   {
-    rightC = make_ptr<Keyboard>(Controller::Right, myEvent, *mySystem);
+    rightC = make_unique<Keyboard>(Controller::Right, myEvent, *mySystem);
   }
   else if(BSPF::startsWithIgnoreCase(right, "PADDLES"))
   {
@@ -803,45 +803,45 @@ void Console::setControllers(const string& rommd5)
       swapDir = true;
     else if(right == "PADDLES_IAXDR")
       swapAxis = swapDir = true;
-    rightC = make_ptr<Paddles>(Controller::Right, myEvent, *mySystem,
+    rightC = make_unique<Paddles>(Controller::Right, myEvent, *mySystem,
                                swapPaddles, swapAxis, swapDir);
   }
   else if(left == "AMIGAMOUSE")
   {
-    rightC = make_ptr<AmigaMouse>(Controller::Left, myEvent, *mySystem);
+    rightC = make_unique<AmigaMouse>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "ATARIMOUSE")
   {
-    rightC = make_ptr<AtariMouse>(Controller::Left, myEvent, *mySystem);
+    rightC = make_unique<AtariMouse>(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "TRAKBALL")
   {
-    rightC = make_ptr<TrakBall>(Controller::Left, myEvent, *mySystem);
+    rightC = make_unique<TrakBall>(Controller::Left, myEvent, *mySystem);
   }
   else if(right == "ATARIVOX")
   {
     const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
-    rightC = make_ptr<AtariVox>(Controller::Right, myEvent,
+    rightC = make_unique<AtariVox>(Controller::Right, myEvent,
                    *mySystem, myOSystem.serialPort(),
                    myOSystem.settings().getString("avoxport"), nvramfile);
   }
   else if(right == "SAVEKEY")
   {
     const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
-    rightC = make_ptr<SaveKey>(Controller::Right, myEvent, *mySystem,
+    rightC = make_unique<SaveKey>(Controller::Right, myEvent, *mySystem,
                                nvramfile);
   }
   else if(right == "GENESIS")
   {
-    rightC = make_ptr<Genesis>(Controller::Right, myEvent, *mySystem);
+    rightC = make_unique<Genesis>(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "KIDVID")
   {
-    rightC = make_ptr<KidVid>(Controller::Right, myEvent, *mySystem, rommd5);
+    rightC = make_unique<KidVid>(Controller::Right, myEvent, *mySystem, rommd5);
   }
   else if(right == "MINDLINK")
   {
-    rightC = make_ptr<MindLink>(Controller::Right, myEvent, *mySystem);
+    rightC = make_unique<MindLink>(Controller::Right, myEvent, *mySystem);
   }
 
   // Swap the ports if necessary

@@ -25,19 +25,19 @@ namespace Vec {
 template<class T>
 void append(vector<T>& dst, const vector<T>& src)
 {
-  dst.insert(dst.end(), src.begin(), src.end());
+  dst.insert(dst.cend(), src.cbegin(), src.cend());
 }
 
 template<class T>
 void insertAt(vector<T>& dst, uInt32 idx, const T& element)
 {
-  dst.insert(dst.begin()+idx, element);
+  dst.insert(dst.cbegin()+idx, element);
 }
 
 template<class T>
 void removeAt(vector<T>& dst, uInt32 idx)
 {
-  dst.erase(dst.begin()+idx);
+  dst.erase(dst.cbegin()+idx);
 }
 
 }  // Namespace Vec

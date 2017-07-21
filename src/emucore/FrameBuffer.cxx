@@ -88,15 +88,15 @@ bool FrameBuffer::initialize()
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
   // use it
-  mySmallFont = make_ptr<GUI::Font>(GUI::stellaDesc);
+  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc);
 
   // The general font used in all UI elements
   // This is determined by the size of the framebuffer
-  myFont = make_ptr<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
+  myFont = make_unique<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
 
   // The info font used in all UI elements
   // This is determined by the size of the framebuffer
-  myInfoFont = make_ptr<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
+  myInfoFont = make_unique<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
 
   // The font used by the ROM launcher
   // Normally, this is configurable by the user, except in the case of
@@ -105,14 +105,14 @@ bool FrameBuffer::initialize()
   {
     const string& lf = myOSystem.settings().getString("launcherfont");
     if(lf == "small")
-      myLauncherFont = make_ptr<GUI::Font>(GUI::consoleDesc);
+      myLauncherFont = make_unique<GUI::Font>(GUI::consoleDesc);
     else if(lf == "medium")
-      myLauncherFont = make_ptr<GUI::Font>(GUI::stellaMediumDesc);
+      myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
     else
-      myLauncherFont = make_ptr<GUI::Font>(GUI::stellaLargeDesc);
+      myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
   }
   else
-    myLauncherFont = make_ptr<GUI::Font>(GUI::stellaDesc);
+    myLauncherFont = make_unique<GUI::Font>(GUI::stellaDesc);
 
   // Determine possible TIA windowed zoom levels
   uInt32 maxZoom = maxWindowSizeForScreen(uInt32(kTIAMinW), uInt32(kTIAMinH),
@@ -141,7 +141,7 @@ bool FrameBuffer::initialize()
   FBSurface::setPalette(myPalette);
 
   // Create a TIA surface; we need it for rendering TIA images
-  myTIASurface = make_ptr<TIASurface>(myOSystem);
+  myTIASurface = make_unique<TIASurface>(myOSystem);
 
   return true;
 }

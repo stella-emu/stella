@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <list>
 
-#include "../common/UniquePtr.hxx"
 using namespace std;
 
 using uInt8 = unsigned char;
@@ -50,18 +49,18 @@ int main(int ac, char* av[])
   }
   if(ac > 3)
     offset = atoi(av[3]);
-  
+
   ifstream in(av[1], ios_base::binary);
   in.seekg(0, ios::end);
   int i_size = (int) in.tellg();
   in.seekg(0, ios::beg);
 
-  unique_ptr<uInt8[]> image = make_ptr<uInt8[]>(i_size);
+  unique_ptr<uInt8[]> image = make_unique<uInt8[]>(i_size);
   in.read((char*)(image.get()), i_size);
   in.close();
 
   int s_size = 0;
-  unique_ptr<uInt8[]> sig = make_ptr<uInt8[]>(strlen(av[2])/2);
+  unique_ptr<uInt8[]> sig = make_unique<uInt8[]>(strlen(av[2])/2);
   istringstream buf(av[2]);
 
   uInt32 c;

@@ -218,5 +218,5 @@ void SnapshotDialog::createBrowser()
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
                    uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_ptr<BrowserDialog>(this, myFont, w, h);
+    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h);
 }

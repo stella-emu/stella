@@ -33,7 +33,7 @@ CartridgeAR::CartridgeAR(const BytePtr& image, uInt32 size,
     myCurrentBank(0)
 {
   // Create a load image buffer and copy the given image
-  myLoadImages = make_ptr<uInt8[]>(mySize);
+  myLoadImages = make_unique<uInt8[]>(mySize);
   myNumberOfLoadImages = mySize / 8448;
   memcpy(myLoadImages.get(), image.get(), size);
 

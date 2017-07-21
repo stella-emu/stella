@@ -8,8 +8,6 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-
-#include "../common/UniquePtr.hxx"
 using namespace std;
 
 using uInt8 = unsigned char;
@@ -37,7 +35,7 @@ int main(int ac, char* av[])
     int len = (int)in.tellg();
     in.seekg(0, ios::beg);
 
-    unique_ptr<uInt8[]> data = make_ptr<uInt8[]>(len);
+    unique_ptr<uInt8[]> data = make_unique<uInt8[]>(len);
     in.read((char*)data.get(), len);
     in.close();
 

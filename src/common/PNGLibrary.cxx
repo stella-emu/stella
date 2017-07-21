@@ -125,11 +125,11 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
   png_uint_32 width = rect.width(), height = rect.height();
 
   // Get framebuffer pixel data (we get ABGR format)
-  unique_ptr<png_byte[]> buffer = make_ptr<png_byte[]>(width * height * 4);
+  unique_ptr<png_byte[]> buffer = make_unique<png_byte[]>(width * height * 4);
   myFB.readPixels(buffer.get(), width*4, rect);
 
   // Set up pointers into "buffer" byte array
-  unique_ptr<png_bytep[]> rows = make_ptr<png_bytep[]>(height);
+  unique_ptr<png_bytep[]> rows = make_unique<png_bytep[]>(height);
   for(png_uint_32 k = 0; k < height; ++k)
     rows[k] = png_bytep(buffer.get() + k*width*4);
 
@@ -154,11 +154,11 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
   }
 
   // Get the surface pixel data (we get ABGR format)
-  unique_ptr<png_byte[]> buffer = make_ptr<png_byte[]>(width * height * 4);
+  unique_ptr<png_byte[]> buffer = make_unique<png_byte[]>(width * height * 4);
   surface.readPixels(buffer.get(), width, rect);
 
   // Set up pointers into "buffer" byte array
-  unique_ptr<png_bytep[]> rows = make_ptr<png_bytep[]>(height);
+  unique_ptr<png_bytep[]> rows = make_unique<png_bytep[]>(height);
   for(png_uint_32 k = 0; k < height; ++k)
     rows[k] = png_bytep(buffer.get() + k*width*4);
 
@@ -234,7 +234,7 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
   uInt32 req_buffer_size = w * h * 3;
   if(req_buffer_size > ReadInfo.buffer_size)
   {
-    ReadInfo.buffer = make_ptr<png_byte[]>(req_buffer_size);
+    ReadInfo.buffer = make_unique<png_byte[]>(req_buffer_size);
     if(ReadInfo.buffer == nullptr)
       return false;
 
@@ -243,7 +243,7 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
   uInt32 req_row_size = h;
   if(req_row_size > ReadInfo.row_size)
   {
-    ReadInfo.row_pointers = make_ptr<png_bytep[]>(req_row_size);
+    ReadInfo.row_pointers = make_unique<png_bytep[]>(req_row_size);
     if(ReadInfo.row_pointers == nullptr)
       return false;
 
@@ -293,7 +293,7 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
   if(numComments == 0)
     return;
 
-  unique_ptr<png_text[]> text_ptr = make_ptr<png_text[]>(numComments);
+  unique_ptr<png_text[]> text_ptr = make_unique<png_text[]>(numComments);
   for(uInt32 i = 0; i < numComments; ++i)
   {
     text_ptr[i].key = const_cast<char*>(comments[i].first.c_str());

@@ -58,7 +58,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   myScrollBar->setTarget(this);
 
   // Add settings menu
-  myMenu = make_ptr<RomListSettings>(this, lfont);
+  myMenu = make_unique<RomListSettings>(this, lfont);
 
   // Take advantage of a wide debugger window when possible
   const int fontWidth = lfont.getMaxCharWidth(),

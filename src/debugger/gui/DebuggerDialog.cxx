@@ -210,53 +210,53 @@ void DebuggerDialog::createFont()
   if(_w >= kLargeFontMinW && _h >= kLargeFontMinH)
   {
     // Large font doesn't use fontstyle at all
-    myLFont = make_ptr<GUI::Font>(GUI::stellaMediumDesc);
-    myNFont = make_ptr<GUI::Font>(GUI::stellaMediumDesc);
+    myLFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
+    myNFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
   }
   else if(_w >= kMediumFontMinW && _h >= kMediumFontMinH)
   {
     if(fontstyle == 1)
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
     }
     else if(fontstyle == 2)
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
     }
     else if(fontstyle == 3)
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumBDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
     }
     else  // default to zero
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleMediumDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
     }
   }
   else
   {
     if(fontstyle == 1)
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
     }
     else if(fontstyle == 2)
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
     }
     else if(fontstyle == 3)
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleBDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
     }
     else  // default to zero
     {
-      myLFont = make_ptr<GUI::Font>(GUI::consoleDesc);
-      myNFont = make_ptr<GUI::Font>(GUI::consoleDesc);
+      myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
+      myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
     }
   }
 }
@@ -264,7 +264,7 @@ void DebuggerDialog::createFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(const string& msg)
 {
-  myFatalError = make_ptr<GUI::MessageBox>(this, *myLFont, msg, _w/2, _h/2,
+  myFatalError = make_unique<GUI::MessageBox>(this, *myLFont, msg, _w/2, _h/2,
                           kDDExitFatalCmd, "Exit ROM", "Continue");
   myFatalError->show();
 }

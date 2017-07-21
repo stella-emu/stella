@@ -54,7 +54,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
 
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
-  myThumbEmulator = make_ptr<Thumbulator>
+  myThumbEmulator = make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage),
        reinterpret_cast<uInt16*>(myDPCRAM),
        settings.getBool("thumb.trapfatal"),

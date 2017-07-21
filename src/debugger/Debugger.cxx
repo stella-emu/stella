@@ -117,13 +117,13 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     myHeight(DebuggerDialog::kSmallFontMinH)
 {
   // Init parser
-  myParser = make_ptr<DebuggerParser>(*this, osystem.settings());
+  myParser = make_unique<DebuggerParser>(*this, osystem.settings());
 
   // Create debugger subsystems
-  myCpuDebug  = make_ptr<CpuDebug>(*this, myConsole);
-  myCartDebug = make_ptr<CartDebug>(*this, myConsole, osystem);
-  myRiotDebug = make_ptr<RiotDebug>(*this, myConsole);
-  myTiaDebug  = make_ptr<TIADebug>(*this, myConsole);
+  myCpuDebug  = make_unique<CpuDebug>(*this, myConsole);
+  myCartDebug = make_unique<CartDebug>(*this, myConsole, osystem);
+  myRiotDebug = make_unique<RiotDebug>(*this, myConsole);
+  myTiaDebug  = make_unique<TIADebug>(*this, myConsole);
 
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
@@ -152,7 +152,7 @@ void Debugger::initialize()
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
   myBaseDialog = myDialog;
 
-  myRewindManager = make_ptr<RewindManager>(myOSystem, myDialog->rewindButton());
+  myRewindManager = make_unique<RewindManager>(myOSystem, myDialog->rewindButton());
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 }
 

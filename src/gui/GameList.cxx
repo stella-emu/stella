@@ -31,11 +31,11 @@ void GameList::sortByName()
 
   auto cmp = [](const Entry& a, const Entry& b)
   {
-    auto it1 = a._name.begin(), it2 = b._name.begin();
+    auto it1 = a._name.cbegin(), it2 = b._name.cbegin();
 
     // Account for ending ']' character in directory entries
-    auto end1 = a._isdir ? a._name.end() - 1 : a._name.end();
-    auto end2 = b._isdir ? b._name.end() - 1 : b._name.end();
+    auto end1 = a._isdir ? a._name.cend() - 1 : a._name.cend();
+    auto end2 = b._isdir ? b._name.cend() - 1 : b._name.cend();
 
     // Stop when either string's end has been reached
     while((it1 != end1) && (it2 != end2))

@@ -88,7 +88,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = make_ptr<BrowserDialog>(this, font, myMaxWidth, myMaxHeight);
+  myBrowser = make_unique<BrowserDialog>(this, font, myMaxWidth, myMaxHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,7 +179,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("");
         msg.push_back("If you're sure you want to proceed with the");
         msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
-        myConfirmMsg = make_ptr<GUI::MessageBox>
+        myConfirmMsg = make_unique<GUI::MessageBox>
                           (this, instance().frameBuffer().font(), msg,
                           myMaxWidth, myMaxHeight, kConfirmAuditCmd);
       }

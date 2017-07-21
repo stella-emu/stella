@@ -64,7 +64,7 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
   myDisplayImage = myCDFRAM + DSRAM;
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
-  myThumbEmulator = make_ptr<Thumbulator>((uInt16*)myImage, (uInt16*)myCDFRAM,
+  myThumbEmulator = make_unique<Thumbulator>((uInt16*)myImage, (uInt16*)myCDFRAM,
       settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::CDF, this);
 #endif
   setInitialState();

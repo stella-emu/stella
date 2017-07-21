@@ -440,7 +440,7 @@ bool SoundSDL2::load(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::RegWriteQueue::RegWriteQueue(uInt32 capacity)
-  : myBuffer(make_ptr<RegWrite[]>(capacity)),
+  : myBuffer(make_unique<RegWrite[]>(capacity)),
     myCapacity(capacity),
     mySize(0),
     myHead(0),
@@ -504,7 +504,7 @@ uInt32 SoundSDL2::RegWriteQueue::size() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::RegWriteQueue::grow()
 {
-  unique_ptr<RegWrite[]> buffer = make_ptr<RegWrite[]>(myCapacity*2);
+  unique_ptr<RegWrite[]> buffer = make_unique<RegWrite[]>(myCapacity*2);
   for(uInt32 i = 0; i < mySize; ++i)
     buffer[i] = myBuffer[(myHead + i) % myCapacity];
 

@@ -38,7 +38,7 @@ CartridgeCV::CartridgeCV(const BytePtr& image, uInt32 size,
     memcpy(myImage, image.get() + 2048, 2048);
 
     // Copy the RAM image into a buffer for use in reset()
-    myInitialRAM = make_ptr<uInt8[]>(1024);
+    myInitialRAM = make_unique<uInt8[]>(1024);
     memcpy(myInitialRAM.get(), image.get(), 1024);
   }
   createCodeAccessBase(2048+1024);

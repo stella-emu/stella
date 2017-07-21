@@ -49,7 +49,6 @@ using uInt64 = uint64_t;
 #include <cstdio>
 #include <utility>
 #include <vector>
-#include "UniquePtr.hxx"  // only until C++14 compilers are more common
 
 using std::cin;
 using std::cout;
@@ -67,7 +66,7 @@ using std::istringstream;
 using std::stringstream;
 using std::unique_ptr;
 using std::shared_ptr;
-using std::make_ptr;
+using std::make_unique;
 using std::make_shared;
 using std::array;
 using std::vector;
@@ -163,11 +162,11 @@ namespace BSPF
   // starting from 'startpos' in the first string
   inline size_t findIgnoreCase(const string& s1, const string& s2, int startpos = 0)
   {
-    auto pos = std::search(s1.begin()+startpos, s1.end(),
-      s2.begin(), s2.end(), [](char ch1, char ch2) {
+    auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
+      s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
         return toupper(uInt8(ch1)) == toupper(uInt8(ch2));
       });
-    return pos == s1.end() ? string::npos : size_t(pos - (s1.begin()+startpos));
+    return pos == s1.cend() ? string::npos : size_t(pos - (s1.cbegin()+startpos));
   }
 
   // Test whether the first string ends with the second one (case insensitive)

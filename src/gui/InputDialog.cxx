@@ -435,7 +435,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDBButtonPressed:
       if(!myJoyDialog)
-        myJoyDialog = make_ptr<JoystickDialog>
+        myJoyDialog = make_unique<JoystickDialog>
                           (this, instance().frameBuffer().font(), _w-60, _h-60);
       myJoyDialog->show();
       break;

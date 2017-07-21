@@ -65,7 +65,7 @@ CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
 
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
-  myThumbEmulator = make_ptr<Thumbulator>((uInt16*)myImage, (uInt16*)myBUSRAM,
+  myThumbEmulator = make_unique<Thumbulator>((uInt16*)myImage, (uInt16*)myBUSRAM,
     settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this);
 #endif
   setInitialState();

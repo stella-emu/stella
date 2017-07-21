@@ -89,7 +89,7 @@ OSystem::OSystem()
   myBuildInfo = info.str();
 
   mySettings = MediaFactory::createSettings(*this);
-  myRandom = make_ptr<Random>(*this);
+  myRandom = make_unique<Random>(*this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,18 +128,18 @@ bool OSystem::create()
   myEventHandler->initialize();
 
   // Create a properties set for us to use and set it up
-  myPropSet = make_ptr<PropertiesSet>(propertiesFile());
+  myPropSet = make_unique<PropertiesSet>(propertiesFile());
 
 #ifdef CHEATCODE_SUPPORT
-  myCheatManager = make_ptr<CheatManager>(*this);
+  myCheatManager = make_unique<CheatManager>(*this);
   myCheatManager->loadCheatDatabase();
 #endif
 
   // Create menu and launcher GUI objects
-  myMenu = make_ptr<Menu>(*this);
-  myCommandMenu = make_ptr<CommandMenu>(*this);
-  myLauncher = make_ptr<Launcher>(*this);
-  myStateManager = make_ptr<StateManager>(*this);
+  myMenu = make_unique<Menu>(*this);
+  myCommandMenu = make_unique<CommandMenu>(*this);
+  myLauncher = make_unique<Launcher>(*this);
+  myStateManager = make_unique<StateManager>(*this);
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
@@ -155,7 +155,7 @@ bool OSystem::create()
   myRandom->initSeed();
 
   // Create PNG handler
-  myPNGLib = make_ptr<PNGLibrary>(*myFrameBuffer);
+  myPNGLib = make_unique<PNGLibrary>(*myFrameBuffer);
 
   return true;
 }
@@ -323,7 +323,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   if(myConsole)
   {
   #ifdef DEBUGGER_SUPPORT
-    myDebugger = make_ptr<Debugger>(*this, *myConsole);
+    myDebugger = make_unique<Debugger>(*this, *myConsole);
     myDebugger->initialize();
     myConsole->attachDebugger(*myDebugger);
   #endif
@@ -536,7 +536,7 @@ OSystem::openConsole(const FilesystemNode& romfile, string& md5)
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = make_ptr<Console>(*this, cart, props);
+      console = make_unique<Console>(*this, cart, props);
   }
 
   return console;

@@ -76,7 +76,7 @@ EventHandler::EventHandler(OSystem& osystem)
       myComboTable[i][j] = Event::NoType;
 
   // Create joystick handler (to handle all joystick functionality)
-  myJoyHandler = make_ptr<JoystickHandler>(osystem);
+  myJoyHandler = make_unique<JoystickHandler>(osystem);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1283,7 +1283,7 @@ void EventHandler::setKeymap()
   if(event == Event::LastType && map.size() == KBDK_LAST * kNumModes)
   {
     // Fill the keymap table with events
-    auto e = map.begin();
+    auto e = map.cbegin();
     for(int mode = 0; mode < kNumModes; ++mode)
       for(int i = 0; i < KBDK_LAST; ++i)
         myKeyTable[i][mode] = Event::Type(*e++);
@@ -1920,7 +1920,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
     const string& control = usemouse ?
       myOSystem.console().properties().get(Controller_MouseAxis) : "none";
 
-    myMouseControl = make_ptr<MouseControl>(myOSystem.console(), control);
+    myMouseControl = make_unique<MouseControl>(myOSystem.console(), control);
     myMouseControl->next();  // set first available mode
   }
 }

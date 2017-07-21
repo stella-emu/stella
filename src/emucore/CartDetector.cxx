@@ -210,7 +210,7 @@ CartDetector::createFromMultiCart(const BytePtr& image, uInt32& size,
   // Get a piece of the larger image
   uInt32 i = osystem.settings().getInt("romloadcount");
   size /= numroms;
-  BytePtr slice = make_ptr<uInt8[]>(size);
+  BytePtr slice = make_unique<uInt8[]>(size);
   memcpy(slice.get(), image.get()+i*size, size);
 
   // We need a new md5 and name
@@ -239,89 +239,89 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, BSType type,
   switch(type)
   {
     case BSType::_0840:
-      return make_ptr<Cartridge0840>(image, size, osystem.settings());
+      return make_unique<Cartridge0840>(image, size, osystem.settings());
     case BSType::_2K:
-      return make_ptr<Cartridge2K>(image, size, osystem.settings());
+      return make_unique<Cartridge2K>(image, size, osystem.settings());
     case BSType::_3E:
-      return make_ptr<Cartridge3E>(image, size, osystem.settings());
+      return make_unique<Cartridge3E>(image, size, osystem.settings());
     case BSType::_3EP:
-      return make_ptr<Cartridge3EPlus>(image, size, osystem.settings());
+      return make_unique<Cartridge3EPlus>(image, size, osystem.settings());
     case BSType::_3F:
-      return make_ptr<Cartridge3F>(image, size, osystem.settings());
+      return make_unique<Cartridge3F>(image, size, osystem.settings());
     case BSType::_4A50:
-      return make_ptr<Cartridge4A50>(image, size, osystem.settings());
+      return make_unique<Cartridge4A50>(image, size, osystem.settings());
     case BSType::_4K:
-      return make_ptr<Cartridge4K>(image, size, osystem.settings());
+      return make_unique<Cartridge4K>(image, size, osystem.settings());
     case BSType::_4KSC:
-      return make_ptr<Cartridge4KSC>(image, size, osystem.settings());
+      return make_unique<Cartridge4KSC>(image, size, osystem.settings());
     case BSType::_AR:
-      return make_ptr<CartridgeAR>(image, size, osystem.settings());
+      return make_unique<CartridgeAR>(image, size, osystem.settings());
     case BSType::_BUS:
-      return make_ptr<CartridgeBUS>(image, size, osystem.settings());
+      return make_unique<CartridgeBUS>(image, size, osystem.settings());
     case BSType::_CDF:
-      return make_ptr<CartridgeCDF>(image, size, osystem.settings());
+      return make_unique<CartridgeCDF>(image, size, osystem.settings());
     case BSType::_CM:
-      return make_ptr<CartridgeCM>(image, size, osystem.settings());
+      return make_unique<CartridgeCM>(image, size, osystem.settings());
     case BSType::_CTY:
-      return make_ptr<CartridgeCTY>(image, size, osystem);
+      return make_unique<CartridgeCTY>(image, size, osystem);
     case BSType::_CV:
-      return make_ptr<CartridgeCV>(image, size, osystem.settings());
+      return make_unique<CartridgeCV>(image, size, osystem.settings());
     case BSType::_CVP:
-      return make_ptr<CartridgeCVPlus>(image, size, osystem.settings());
+      return make_unique<CartridgeCVPlus>(image, size, osystem.settings());
     case BSType::_DASH:
-      return make_ptr<CartridgeDASH>(image, size, osystem.settings());
+      return make_unique<CartridgeDASH>(image, size, osystem.settings());
     case BSType::_DPC:
-      return make_ptr<CartridgeDPC>(image, size, osystem.settings());
+      return make_unique<CartridgeDPC>(image, size, osystem.settings());
     case BSType::_DPCP:
-      return make_ptr<CartridgeDPCPlus>(image, size, osystem.settings());
+      return make_unique<CartridgeDPCPlus>(image, size, osystem.settings());
     case BSType::_E0:
-      return make_ptr<CartridgeE0>(image, size, osystem.settings());
+      return make_unique<CartridgeE0>(image, size, osystem.settings());
     case BSType::_E7:
-      return make_ptr<CartridgeE7>(image, size, osystem.settings());
+      return make_unique<CartridgeE7>(image, size, osystem.settings());
     case BSType::_EF:
-      return make_ptr<CartridgeEF>(image, size, osystem.settings());
+      return make_unique<CartridgeEF>(image, size, osystem.settings());
     case BSType::_EFSC:
-      return make_ptr<CartridgeEFSC>(image, size, osystem.settings());
+      return make_unique<CartridgeEFSC>(image, size, osystem.settings());
     case BSType::_BF:
-      return make_ptr<CartridgeBF>(image, size, osystem.settings());
+      return make_unique<CartridgeBF>(image, size, osystem.settings());
     case BSType::_BFSC:
-      return make_ptr<CartridgeBFSC>(image, size, osystem.settings());
+      return make_unique<CartridgeBFSC>(image, size, osystem.settings());
     case BSType::_DF:
-      return make_ptr<CartridgeDF>(image, size, osystem.settings());
+      return make_unique<CartridgeDF>(image, size, osystem.settings());
     case BSType::_DFSC:
-      return make_ptr<CartridgeDFSC>(image, size, osystem.settings());
+      return make_unique<CartridgeDFSC>(image, size, osystem.settings());
     case BSType::_F0:
-      return make_ptr<CartridgeF0>(image, size, osystem.settings());
+      return make_unique<CartridgeF0>(image, size, osystem.settings());
     case BSType::_F4:
-      return make_ptr<CartridgeF4>(image, size, osystem.settings());
+      return make_unique<CartridgeF4>(image, size, osystem.settings());
     case BSType::_F4SC:
-      return make_ptr<CartridgeF4SC>(image, size, osystem.settings());
+      return make_unique<CartridgeF4SC>(image, size, osystem.settings());
     case BSType::_F6:
-      return make_ptr<CartridgeF6>(image, size, osystem.settings());
+      return make_unique<CartridgeF6>(image, size, osystem.settings());
     case BSType::_F6SC:
-      return make_ptr<CartridgeF6SC>(image, size, osystem.settings());
+      return make_unique<CartridgeF6SC>(image, size, osystem.settings());
     case BSType::_F8:
-      return make_ptr<CartridgeF8>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF8>(image, size, md5, osystem.settings());
     case BSType::_F8SC:
-      return make_ptr<CartridgeF8SC>(image, size, osystem.settings());
+      return make_unique<CartridgeF8SC>(image, size, osystem.settings());
     case BSType::_FA:
-      return make_ptr<CartridgeFA>(image, size, osystem.settings());
+      return make_unique<CartridgeFA>(image, size, osystem.settings());
     case BSType::_FA2:
-      return make_ptr<CartridgeFA2>(image, size, osystem);
+      return make_unique<CartridgeFA2>(image, size, osystem);
     case BSType::_FE:
-      return make_ptr<CartridgeFE>(image, size, osystem.settings());
+      return make_unique<CartridgeFE>(image, size, osystem.settings());
     case BSType::_MC:
-      return make_ptr<CartridgeMC>(image, size, osystem.settings());
+      return make_unique<CartridgeMC>(image, size, osystem.settings());
     case BSType::_MDM:
-      return make_ptr<CartridgeMDM>(image, size, osystem.settings());
+      return make_unique<CartridgeMDM>(image, size, osystem.settings());
     case BSType::_UA:
-      return make_ptr<CartridgeUA>(image, size, osystem.settings());
+      return make_unique<CartridgeUA>(image, size, osystem.settings());
     case BSType::_SB:
-      return make_ptr<CartridgeSB>(image, size, osystem.settings());
+      return make_unique<CartridgeSB>(image, size, osystem.settings());
     case BSType::_WD:
-      return make_ptr<CartridgeWD>(image, size, osystem.settings());
+      return make_unique<CartridgeWD>(image, size, osystem.settings());
     case BSType::_X07:
-      return make_ptr<CartridgeX07>(image, size, osystem.settings());
+      return make_unique<CartridgeX07>(image, size, osystem.settings());
     default:
       return nullptr;  // The remaining types have already been handled
   }

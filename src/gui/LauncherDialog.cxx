@@ -163,12 +163,12 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
   // Create an options dialog, similar to the in-game one
-  myOptions = make_ptr<OptionsDialog>(osystem, parent, this,
+  myOptions = make_unique<OptionsDialog>(osystem, parent, this,
                   int(w * 0.8), int(h * 0.8), true);
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
-  myGameList = make_ptr<GameList>();
+  myGameList = make_unique<GameList>();
 
   addToFocusList(wid);
 
@@ -177,14 +177,14 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(l, "Power-on options", "override");
   VarList::push_back(l, "Filter listing", "filter");
   VarList::push_back(l, "Reload listing", "reload");
-  myMenu = make_ptr<ContextMenu>(this, osystem.frameBuffer().font(), l);
+  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
-  myGlobalProps = make_ptr<GlobalPropsDialog>(this, osystem.frameBuffer().font());
+  myGlobalProps = make_unique<GlobalPropsDialog>(this, osystem.frameBuffer().font());
 
   // Create dialog whereby the files shown in the ROM listing can be customized
-  myFilters = make_ptr<LauncherFilterDialog>(this, osystem.frameBuffer().font());
+  myFilters = make_unique<LauncherFilterDialog>(this, osystem.frameBuffer().font());
 
   // Figure out which filters are needed for the ROM listing
   setListFilters();
@@ -229,7 +229,7 @@ void LauncherDialog::loadConfig()
       msg.push_back("");
       msg.push_back("Click 'OK' to select a default ROM directory,");
       msg.push_back("or 'Cancel' to browse the filesystem manually.");
-      myFirstRunMsg = make_ptr<GUI::MessageBox>
+      myFirstRunMsg = make_unique<GUI::MessageBox>
                           (this, instance().frameBuffer().font(),
                           msg, _w, _h, kFirstRunMsgChosenCmd);
     }
@@ -514,7 +514,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kFirstRunMsgChosenCmd:
       // Show a file browser, starting from the users' home directory
       if(!myRomDir)
-        myRomDir = make_ptr<BrowserDialog>(this, instance().frameBuffer().font(), _w, _h);
+        myRomDir = make_unique<BrowserDialog>(this, instance().frameBuffer().font(), _w, _h);
 
       myRomDir->show("Select ROM directory", "~",
                      BrowserDialog::Directories, kStartupRomDirChosenCmd);

@@ -24,7 +24,7 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
                  const string& eepromfile)
   : Controller(jack, event, system, Controller::SaveKey)
 {
-  myEEPROM = make_ptr<MT24LC256>(eepromfile, system);
+  myEEPROM = make_unique<MT24LC256>(eepromfile, system);
 
   myDigitalPinState[One] = myDigitalPinState[Two] = true;
 }

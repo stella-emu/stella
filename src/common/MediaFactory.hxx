@@ -67,11 +67,11 @@ class MediaFactory
     static unique_ptr<OSystem> createOSystem()
     {
     #if defined(BSPF_UNIX)
-      return make_ptr<OSystemUNIX>();
+      return make_unique<OSystemUNIX>();
     #elif defined(BSPF_WINDOWS)
-      return make_ptr<OSystemWINDOWS>();
+      return make_unique<OSystemWINDOWS>();
     #elif defined(BSPF_MAC_OSX)
-      return make_ptr<OSystemMACOSX>();
+      return make_unique<OSystemMACOSX>();
     #else
       #error Unsupported platform for OSystem!
     #endif
@@ -80,11 +80,11 @@ class MediaFactory
     static unique_ptr<Settings> createSettings(OSystem& osystem)
     {
     #if defined(BSPF_UNIX)
-      return make_ptr<SettingsUNIX>(osystem);
+      return make_unique<SettingsUNIX>(osystem);
     #elif defined(BSPF_WINDOWS)
-      return make_ptr<SettingsWINDOWS>(osystem);
+      return make_unique<SettingsWINDOWS>(osystem);
     #elif defined(BSPF_MAC_OSX)
-      return make_ptr<SettingsMACOSX>(osystem);
+      return make_unique<SettingsMACOSX>(osystem);
     #else
       #error Unsupported platform for Settings!
     #endif
@@ -93,33 +93,33 @@ class MediaFactory
     static unique_ptr<SerialPort> createSerialPort()
     {
     #if defined(BSPF_UNIX)
-      return make_ptr<SerialPortUNIX>();
+      return make_unique<SerialPortUNIX>();
     #elif defined(BSPF_WINDOWS)
-      return make_ptr<SerialPortWINDOWS>();
+      return make_unique<SerialPortWINDOWS>();
     #elif defined(BSPF_MAC_OSX)
-      return make_ptr<SerialPortMACOSX>();
+      return make_unique<SerialPortMACOSX>();
     #else
-      return make_ptr<SerialPort>();
+      return make_unique<SerialPort>();
     #endif
     }
 
     static unique_ptr<FrameBuffer> createVideo(OSystem& osystem)
     {
-      return make_ptr<FrameBufferSDL2>(osystem);
+      return make_unique<FrameBufferSDL2>(osystem);
     }
 
     static unique_ptr<Sound> createAudio(OSystem& osystem)
     {
     #ifdef SOUND_SUPPORT
-      return make_ptr<SoundSDL2>(osystem);
+      return make_unique<SoundSDL2>(osystem);
     #else
-      return make_ptr<SoundNull>(osystem);
+      return make_unique<SoundNull>(osystem);
     #endif
     }
 
     static unique_ptr<EventHandler> createEventHandler(OSystem& osystem)
     {
-      return make_ptr<EventHandlerSDL2>(osystem);
+      return make_unique<EventHandlerSDL2>(osystem);
     }
 
   private:

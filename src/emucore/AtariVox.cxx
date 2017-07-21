@@ -35,7 +35,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
 
-  myEEPROM = make_ptr<MT24LC256>(eepromfile, system);
+  myEEPROM = make_unique<MT24LC256>(eepromfile, system);
 
   myDigitalPinState[One] = myDigitalPinState[Two] =
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;

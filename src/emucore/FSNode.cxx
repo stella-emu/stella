@@ -189,7 +189,7 @@ uInt32 FilesystemNode::read(BytePtr& image) const
   gzFile f = gzopen(getPath().c_str(), "rb");
   if(f)
   {
-    image = make_ptr<uInt8[]>(512 * 1024);
+    image = make_unique<uInt8[]>(512 * 1024);
     size = gzread(f, image.get(), 512 * 1024);
     gzclose(f);
 

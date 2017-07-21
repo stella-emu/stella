@@ -102,7 +102,7 @@ uInt32 ZipHandler::decompress(BytePtr& image)
   if(myZip)
   {
     uInt32 length = myZip->header.uncompressed_length;
-    image = make_ptr<uInt8[]>(length);
+    image = make_unique<uInt8[]>(length);
 
     ZipHandler::zip_error err = zip_file_decompress(myZip, image.get(), length);
     if(err == ZIPERR_NONE)

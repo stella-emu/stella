@@ -33,7 +33,7 @@ Serializer::Serializer(const string& filename, bool readonly)
     FilesystemNode node(filename);
     if(node.isFile() && node.isReadable())
     {
-      unique_ptr<fstream> str = make_ptr<fstream>(filename, ios::in | ios::binary);
+      unique_ptr<fstream> str = make_unique<fstream>(filename, ios::in | ios::binary);
       if(str && str->is_open())
       {
         myStream = std::move(str);
@@ -54,7 +54,7 @@ Serializer::Serializer(const string& filename, bool readonly)
     fstream temp(filename, ios::out | ios::app);
     temp.close();
 
-    unique_ptr<fstream> str = make_ptr<fstream>(filename, ios::in | ios::out | ios::binary);
+    unique_ptr<fstream> str = make_unique<fstream>(filename, ios::in | ios::out | ios::binary);
     if(str && str->is_open())
     {
       myStream = std::move(str);
@@ -68,7 +68,7 @@ Serializer::Serializer(const string& filename, bool readonly)
 Serializer::Serializer()
   : myStream(nullptr)
 {
-  myStream = make_ptr<stringstream>(ios::in | ios::out | ios::binary);
+  myStream = make_unique<stringstream>(ios::in | ios::out | ios::binary);
 
   // For some reason, Windows and possibly OSX needs to store something in
   // the stream before it is used for the first time

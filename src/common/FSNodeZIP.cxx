@@ -207,4 +207,4 @@ AbstractFSNode* FilesystemNodeZIP::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<ZipHandler> FilesystemNodeZIP::myZipHandler = make_ptr<ZipHandler>();
+unique_ptr<ZipHandler> FilesystemNodeZIP::myZipHandler = make_unique<ZipHandler>();

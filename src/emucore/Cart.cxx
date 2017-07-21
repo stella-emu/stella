@@ -80,7 +80,7 @@ void Cartridge::triggerReadFromWritePort(uInt16 address)
 void Cartridge::createCodeAccessBase(uInt32 size)
 {
 #ifdef DEBUGGER_SUPPORT
-  myCodeAccessBase = make_ptr<uInt8[]>(size);
+  myCodeAccessBase = make_unique<uInt8[]>(size);
   memset(myCodeAccessBase.get(), CartDebug::ROW, size);
 #else
   myCodeAccessBase = nullptr;

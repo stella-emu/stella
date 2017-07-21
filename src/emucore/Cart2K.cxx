@@ -38,7 +38,7 @@ Cartridge2K::Cartridge2K(const BytePtr& image, uInt32 size,
     mySize = 64;
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
-  myImage = make_ptr<uInt8[]>(mySize);
+  myImage = make_unique<uInt8[]>(mySize);
   memset(myImage.get(), 0x02, mySize);
 
   // Copy the ROM image into my buffer

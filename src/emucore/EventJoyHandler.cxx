@@ -138,7 +138,7 @@ bool EventHandler::StellaJoystick::setMap(const string& mapString)
   if(int(map.size()) == numAxes * 2 * kNumModes)
   {
     // Fill the axes table with events
-    auto event = map.begin();
+    auto event = map.cbegin();
     for(int m = 0; m < kNumModes; ++m)
       for(int a = 0; a < numAxes; ++a)
         for(int k = 0; k < 2; ++k)
@@ -147,7 +147,7 @@ bool EventHandler::StellaJoystick::setMap(const string& mapString)
   getValues(items[2], map);
   if(int(map.size()) == numButtons * kNumModes)
   {
-    auto event = map.begin();
+    auto event = map.cbegin();
     for(int m = 0; m < kNumModes; ++m)
       for(int b = 0; b < numButtons; ++b)
         btnTable[b][m] = Event::Type(*event++);
@@ -155,7 +155,7 @@ bool EventHandler::StellaJoystick::setMap(const string& mapString)
   getValues(items[3], map);
   if(int(map.size()) == numHats * 4 * kNumModes)
   {
-    auto event = map.begin();
+    auto event = map.cbegin();
     for(int m = 0; m < kNumModes; ++m)
       for(int h = 0; h < numHats; ++h)
         for(int k = 0; k < 4; ++k)

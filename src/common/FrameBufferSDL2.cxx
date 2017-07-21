@@ -287,7 +287,7 @@ void FrameBufferSDL2::setWindowIcon()
 unique_ptr<FBSurface> FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
                                           const uInt32* data) const
 {
-  return make_ptr<FBSurfaceSDL2>(const_cast<FrameBufferSDL2&>(*this), w, h, data);
+  return make_unique<FBSurfaceSDL2>(const_cast<FrameBufferSDL2&>(*this), w, h, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -27,7 +27,7 @@ Cartridge3F::Cartridge3F(const BytePtr& image, uInt32 size,
     myCurrentBank(0)
 {
   // Allocate array for the ROM image
-  myImage = make_ptr<uInt8[]>(mySize);
+  myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
   memcpy(myImage.get(), image.get(), mySize);

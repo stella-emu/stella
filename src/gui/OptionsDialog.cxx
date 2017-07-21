@@ -116,20 +116,20 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_ptr<VideoDialog>(osystem, parent, font, max_w, max_h, myIsGlobal);
-  myAudioDialog    = make_ptr<AudioDialog>(osystem, parent, font);
-  myInputDialog    = make_ptr<InputDialog>(osystem, parent, font, max_w, max_h);
-  myUIDialog       = make_ptr<UIDialog>(osystem, parent, font);
-  mySnapshotDialog = make_ptr<SnapshotDialog>(osystem, parent, font);
-  myConfigPathDialog = make_ptr<ConfigPathDialog>(osystem, parent, font, boss);
-  myRomAuditDialog = make_ptr<RomAuditDialog>(osystem, parent, font, max_w, max_h);
-  myGameInfoDialog = make_ptr<GameInfoDialog>(osystem, parent, font, this);
+  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h, myIsGlobal);
+  myAudioDialog    = make_unique<AudioDialog>(osystem, parent, font);
+  myInputDialog    = make_unique<InputDialog>(osystem, parent, font, max_w, max_h);
+  myUIDialog       = make_unique<UIDialog>(osystem, parent, font);
+  mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, font);
+  myConfigPathDialog = make_unique<ConfigPathDialog>(osystem, parent, font, boss);
+  myRomAuditDialog = make_unique<RomAuditDialog>(osystem, parent, font, max_w, max_h);
+  myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
-  myCheatCodeDialog = make_ptr<CheatCodeDialog>(osystem, parent, font);
+  myCheatCodeDialog = make_unique<CheatCodeDialog>(osystem, parent, font);
 #endif
-  myLoggerDialog    = make_ptr<LoggerDialog>(osystem, parent, font, max_w, max_h);
-  myHelpDialog      = make_ptr<HelpDialog>(osystem, parent, font);
-  myAboutDialog     = make_ptr<AboutDialog>(osystem, parent, font);
+  myLoggerDialog    = make_unique<LoggerDialog>(osystem, parent, font, max_w, max_h);
+  myHelpDialog      = make_unique<HelpDialog>(osystem, parent, font);
+  myAboutDialog     = make_unique<AboutDialog>(osystem, parent, font);
 
   addToFocusList(wid);
 
@@ -218,7 +218,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
         uInt32 w = 0, h = 0;
         bool uselargefont = getResizableBounds(w, h);
 
-        myLoggerDialog = make_ptr<LoggerDialog>(instance(), parent(),
+        myLoggerDialog = make_unique<LoggerDialog>(instance(), parent(),
             instance().frameBuffer().font(), w, h, uselargefont);
       }
       myLoggerDialog->open();
