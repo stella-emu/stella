@@ -65,6 +65,8 @@ class Keyboard : public Controller
                 mySevenEvent, myEightEvent, myNineEvent,
                 myStarEvent, myZeroEvent, myPoundEvent;
 
+    static constexpr Int32 MIN_RESISTANCE = 5600;
+
   private:
     // Following constructors and assignment operators not supported
     Keyboard() = delete;

@@ -32,10 +32,10 @@ CompuMate::CompuMate(const Console& console, const Event& event,
   myLeftController  = make_ptr<CMControl>(*this, Controller::Left, event, system);
   myRightController = make_ptr<CMControl>(*this, Controller::Right, event, system);
 
-  myLeftController->myAnalogPinValue[Controller::Nine] = Controller::maximumResistance;
-  myLeftController->myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
-  myRightController->myAnalogPinValue[Controller::Nine] = Controller::minimumResistance;
-  myRightController->myAnalogPinValue[Controller::Five] = Controller::maximumResistance;
+  myLeftController->updateAnalogPin(Controller::Nine, Controller::maximumResistance);
+  myLeftController->updateAnalogPin(Controller::Five, Controller::minimumResistance);
+  myRightController->updateAnalogPin(Controller::Nine, Controller::minimumResistance);
+  myRightController->updateAnalogPin(Controller::Five, Controller::maximumResistance);
 
   enableKeyHandling(false);
 }
@@ -60,6 +60,7 @@ void CompuMate::update()
   // Handle SWCHA changes - the following comes almost directly from z26
   Controller& lp = myConsole.leftController();
   Controller& rp = myConsole.rightController();
+
 
   lp.myAnalogPinValue[Controller::Nine] = Controller::maximumResistance;
   lp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
@@ -195,5 +196,15 @@ void CompuMate::update()
       break;
     default:
       break;
+  }
+
+  if (lp.myOnAnalogPinUpdateCallback) {
+    lp.myOnAnalogPinUpdateCallback(Controller::Five);
+    lp.myOnAnalogPinUpdateCallback(Controller::Nine);
+  }
+
+  if (rp.myOnAnalogPinUpdateCallback) {
+    rp.myOnAnalogPinUpdateCallback(Controller::Five);
+    rp.myOnAnalogPinUpdateCallback(Controller::Nine);
   }
 }

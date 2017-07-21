@@ -37,6 +37,7 @@
 #include "LatchedInput.hxx"
 #include "PaddleReader.hxx"
 #include "DelayQueueIterator.hxx"
+#include "Control.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -145,6 +146,11 @@ class TIA : public Device
       @param device  The device responsible for this address space
     */
     void installDelegate(System& system, Device& device);
+
+    /**
+      Bind to controllers.
+    */
+    void bindToControllers();
 
     /**
       The following are very similar to save() and load(), except they

@@ -39,8 +39,6 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 
   myDigitalPinState[One] = myDigitalPinState[Two] =
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;
-
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

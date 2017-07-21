@@ -41,11 +41,6 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myFire1Event   = Event::JoystickOneFire;
     myFire2Event   = Event::JoystickOneFire5;
   }
-
-  // Analog pin 9 is not connected to this controller at all
-  // Analog pin 5 corresponds to button 'C' on the gamepad, and corresponds
-  // to the 'booster' button on a BoosterGrip controller
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,8 +56,10 @@ void Genesis::update()
   // The Genesis has one more button (C) that can be read by the 2600
   // However, it seems to work opposite to the BoosterGrip controller,
   // in that the logic is inverted
-  myAnalogPinValue[Five] = (myEvent.get(myFire2Event) == 0) ?
-                            minimumResistance : maximumResistance;
+  updateAnalogPin(
+    Five,
+    (myEvent.get(myFire2Event) == 0) ? minimumResistance : maximumResistance
+  );
 
   // Mouse motion and button events
   if(myControlID > -1)
@@ -93,7 +90,7 @@ void Genesis::update()
     if(myEvent.get(Event::MouseButtonLeftValue))
       myDigitalPinState[Six] = false;
     if(myEvent.get(Event::MouseButtonRightValue))
-      myAnalogPinValue[Five] = maximumResistance;
+      updateAnalogPin(Five, maximumResistance);
   }
 }
 

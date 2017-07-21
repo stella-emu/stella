@@ -27,7 +27,6 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
   myEEPROM = make_ptr<MT24LC256>(eepromfile, system);
 
   myDigitalPinState[One] = myDigitalPinState[Two] = true;
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

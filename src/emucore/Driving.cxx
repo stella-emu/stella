@@ -49,9 +49,6 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
 
   // Digital pins 3 and 4 are not connected
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;
-
-  // Analog pins are not connected
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

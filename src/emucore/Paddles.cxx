@@ -28,7 +28,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 {
   // We must start with minimum resistance; see commit
   // 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
-  myAnalogPinValue[Nine] = myAnalogPinValue[Five] = minimumResistance;
+  updateAnalogPin(Five, minimumResistance);
+  updateAnalogPin(Nine, minimumResistance);
 
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex
@@ -260,12 +261,12 @@ void Paddles::update()
   int sa_yaxis = myEvent.get(myP1AxisValue);
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
-    myAnalogPinValue[Nine] = Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0));
+    updateAnalogPin(Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
     sa_changed = true;
   }
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
-    myAnalogPinValue[Five] = Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0));
+    updateAnalogPin(Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
@@ -352,11 +353,9 @@ void Paddles::update()
 
   // Only change state if the charge has actually changed
   if(myCharge[1] != myLastCharge[1])
-    myAnalogPinValue[Five] =
-        Int32(MAX_RESISTANCE * (myCharge[1] / float(TRIGMAX)));
+    updateAnalogPin(Five, Int32(MAX_RESISTANCE * (myCharge[1] / float(TRIGMAX))));
   if(myCharge[0] != myLastCharge[0])
-    myAnalogPinValue[Nine] =
-        Int32(MAX_RESISTANCE * (myCharge[0] / float(TRIGMAX)));
+    updateAnalogPin(Nine, Int32(MAX_RESISTANCE * (myCharge[0] / float(TRIGMAX))));
 
   myLastCharge[1] = myCharge[1];
   myLastCharge[0] = myCharge[0];

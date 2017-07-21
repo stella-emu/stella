@@ -36,9 +36,6 @@ AtariMouse::AtariMouse(Jack jack, const Event& event, const System& system)
 
   myTrakBallLeft = myTrakBallDown = myScanCountV = myScanCountH =
     myCountV = myCountH = 0;
-
-  // Analog pins are never used by the Atari ST mouse controller
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

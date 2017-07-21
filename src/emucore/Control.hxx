@@ -22,6 +22,8 @@ class Controller;
 class Event;
 class System;
 
+#include <functional>
+
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
@@ -91,6 +93,11 @@ class Controller : public Serializable
       Driving, Genesis, Joystick, Keyboard, KidVid, MindLink,
       Paddles, SaveKey, TrakBall
     };
+
+    /**
+      Callback type for analog pin updates
+    */
+    using onAnalogPinUpdateCallback = std::function<void(AnalogPin)>;
 
   public:
     /**
@@ -237,12 +244,22 @@ class Controller : public Serializable
     */
     string name() const override { return myName; }
 
+    /**
+      Inject a callback to be notified on analog pin updates.
+    */
+    void setOnAnalogPinUpdateCallback(onAnalogPinUpdateCallback callback) {
+      myOnAnalogPinUpdateCallback = callback;
+    }
+
   public:
     /// Constant which represents maximum resistance for analog pins
     static constexpr Int32 maximumResistance = 0x7FFFFFFF;
 
     /// Constant which represents minimum resistance for analog pins
     static constexpr Int32 minimumResistance = 0x00000000;
+
+  protected:
+    void updateAnalogPin(AnalogPin, Int32 value);
 
   protected:
     /// Specifies which jack the controller is plugged in
@@ -263,6 +280,10 @@ class Controller : public Serializable
     /// The boolean value on each digital pin
     bool myDigitalPinState[5];
 
+    /// The callback that is dispatched whenver an analog pin has changed
+    onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback;
+
+  private:
     /// The analog value on each analog pin
     Int32 myAnalogPinValue[2];
 

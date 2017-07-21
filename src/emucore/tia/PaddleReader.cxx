@@ -22,10 +22,10 @@
 static constexpr double
   C = 68e-9,
   RPOT = 1e6,
-  R0 = 1.8e3,
+  R0 = 1.5e3,
   USUPP = 5;
 
-static constexpr double TRIPPOINT_LINES = 380;
+static constexpr double TRIPPOINT_LINES = 379;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaddleReader::PaddleReader()
@@ -79,7 +79,16 @@ void PaddleReader::update(double value, double timestamp, ConsoleTiming consoleT
 
   if (value != myValue) {
     myValue = value;
-    updateCharge(timestamp);
+
+    if (myValue < 0) {
+      // value < 0 signifies either maximum resistance OR analog input connected to
+      // ground (keyboard controllers). As we have no way to tell these apart we just
+      // assume ground and discharge.
+      myU = 0;
+      myTimestamp = timestamp;
+    } else {
+      updateCharge(timestamp);
+    }
   }
 }
 

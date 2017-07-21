@@ -43,9 +43,6 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system)
     myXAxisValue = Event::SARightAxis0Value;
     myYAxisValue = Event::SARightAxis1Value;
   }
-
-  // Analog pins are never used by the joystick
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

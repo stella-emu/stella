@@ -335,6 +335,45 @@ bool TIA::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::bindToControllers()
+{
+  myConsole.leftController().setOnAnalogPinUpdateCallback(
+    [this] (Controller::AnalogPin pin) {
+      TIA& tia = mySystem->tia();
+
+      switch (pin) {
+        case Controller::AnalogPin::Five:
+          tia.updatePaddle(1);
+          break;
+
+        case Controller::AnalogPin::Nine:
+          tia.updatePaddle(0);
+          break;
+      }
+    }
+  );
+
+  myConsole.rightController().setOnAnalogPinUpdateCallback(
+    [this] (Controller::AnalogPin pin) {
+      TIA& tia = mySystem->tia();
+
+      switch (pin) {
+        case Controller::AnalogPin::Five:
+          tia.updatePaddle(3);
+          break;
+
+        case Controller::AnalogPin::Nine:
+          tia.updatePaddle(2);
+          break;
+      }
+    }
+  );
+
+  for (uInt8 i = 0; i < 4; i++)
+    updatePaddle(i);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIA::peek(uInt16 address)
 {
   updateEmulation();
@@ -1032,9 +1071,6 @@ void TIA::onFrameStart()
 {
   myXAtRenderingStart = 0;
 
-  for (uInt8 i = 0; i < 4; i++)
-    updatePaddle(i);
-
   // Check for colour-loss emulation
   if (myColorLossEnabled)
   {
@@ -1452,7 +1488,7 @@ void TIA::updatePaddle(uInt8 idx)
   }
 
   myPaddleReaders[idx].update(
-    (resistance == Controller::maximumResistance ? -1 : double(resistance)) / Paddles::MAX_RESISTANCE,
+    (resistance == Controller::maximumResistance) ? -1 : (double(resistance) / Paddles::MAX_RESISTANCE),
     myTimestamp,
     consoleTiming()
   );

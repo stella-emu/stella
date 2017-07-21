@@ -26,7 +26,8 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
   : myJack(jack),
     myEvent(event),
     mySystem(system),
-    myType(type)
+    myType(type),
+    myOnAnalogPinUpdateCallback(0)
 {
   myDigitalPinState[One]   =
   myDigitalPinState[Two]   =
@@ -116,7 +117,17 @@ void Controller::set(DigitalPin pin, bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Controller::set(AnalogPin pin, Int32 value)
 {
+  updateAnalogPin(pin, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::updateAnalogPin(AnalogPin pin, Int32 value)
+{
   myAnalogPinValue[pin] = value;
+
+  if (myOnAnalogPinUpdateCallback) {
+    myOnAnalogPinUpdateCallback(pin);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

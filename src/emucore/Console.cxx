@@ -855,6 +855,8 @@ void Console::setControllers(const string& rommd5)
     myLeftControl  = std::move(rightC);
     myRightControl = std::move(leftC);
   }
+
+  myTIA->bindToControllers();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

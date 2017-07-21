@@ -46,10 +46,6 @@ KidVid::KidVid(Jack jack, const Event& event, const System& system,
     myGame = KVSMURFS;    // Smurfs Save the Day
   else
     myEnabled = false;
-
-  // Analog pins are never used by the KidVid controller
-  // (at least not in this implementation)
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

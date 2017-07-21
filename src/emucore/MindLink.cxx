@@ -29,9 +29,6 @@ MindLink::MindLink(Jack jack, const Event& event, const System& system)
   myDigitalPinState[Two]   = true;
   myDigitalPinState[Three] = true;
   myDigitalPinState[Four]  = true;
-
-  // Analog pins are never used by the MindLink
-  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
