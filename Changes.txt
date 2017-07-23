@@ -12,13 +12,18 @@
                                Release History
 ===========================================================================
 
-5.0 to 5.0.1: (xxxx yy, 2017)
+5.0 to 5.0.1: (July 23, 2017)
+
+  * Fixed issues in keypad, Genesis and various other controllers that use
+    INPTx registers; the emulation is now much more accurate in this area.
 
   * Various 'Bumper Bash' and 'Decathlon' ROMs are marked as always having
     all 4 directions on a joystick enabled, since they can't be played
     properly otherwise.
 
   * Added 'Hunchy II' from Chris Walton (cd-w) to ROM properties database.
+
+  * Codebase now uses C++14 features.
 
 -Have fun!
 
