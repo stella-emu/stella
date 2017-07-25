@@ -1895,6 +1895,11 @@
       <td>Enable default phosphor blending level; 0 implies no mixing, and 100
         is full mixing (not recommended).  Note that this doesn't actually
         enable phosphor mode; that is done for each ROM in the ROM properties.
+        Higher blend values will intensify the phosphor effect. Depending on your
+        display and personal preferences, the optimal default for you may vary.
+        Slow LCDs (especially for office use) may only need a low blend of
+        around 30, while fast switching gamer LCDs may need about 70 to look
+        similar to a CRT.
       </td>
     </tr>
 
@@ -2403,7 +2408,7 @@
     <tr>
       <td><pre>-ppblend &lt;number&gt;</pre></td>
       <td>Set "Display.PPBlend" property, used for phosphor effect (0-100).
-        Default is 77.</td>
+        Default is whatever is specified for tv.phosblend.</td>
     </tr>
 
     <tr>
@@ -3446,7 +3451,7 @@ Ms Pac-Man (Stella extended codes):
       <td VALIGN="TOP"><i>Display.PPBlend:</i></td>
       <td>Indicates the amount of blending which will occur while using the
       phosphor effect.  The value must be <i>n</i> such that 0 &lt;= <i>n</i>
-      &lt;= 100.  The default value is 77.</td>
+      &lt;= 100.  The default value is whatever is specified for tv.phosblend.</td>
     </tr>
   </table>
 <!--
