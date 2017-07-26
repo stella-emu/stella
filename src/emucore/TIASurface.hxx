@@ -25,10 +25,10 @@ class FrameBuffer;
 class FBSurface;
 class VideoMode;
 
-#include "FrameManager.hxx"
 #include "Rect.hxx"
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
+#include "TIAConstants.hxx"
 
 /**
   This class is basically a wrapper around all things related to rendering
@@ -165,9 +165,9 @@ class TIASurface
     };
     Filter myFilter;
 
-    enum TIAConstants {
+    enum {
       kTIAW  = 160,
-      kTIAH  = FrameManager::frameBufferHeight,
+      kTIAH  = TIAConstants::frameBufferHeight,
       kScanH = kTIAH*2
     };
 

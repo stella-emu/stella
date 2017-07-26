@@ -21,6 +21,7 @@
 #include "Control.hxx"
 #include "Paddles.hxx"
 #include "DelayQueueIteratorImpl.hxx"
+#include "TIAConstants.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -155,7 +156,7 @@ void TIA::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::frameReset()
 {
-  memset(myFramebuffer, 0, 160 * FrameManager::frameBufferHeight);
+  memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("colorloss"));
 }
@@ -750,7 +751,7 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myFramebuffer, 160*FrameManager::frameBufferHeight);
+    out.putByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
   }
   catch(...)
   {
@@ -767,7 +768,7 @@ bool TIA::loadDisplay(Serializer& in)
   try
   {
     // Reset frame buffer pointer and data
-    in.getByteArray(myFramebuffer, 160*FrameManager::frameBufferHeight);
+    in.getByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
   }
   catch(...)
   {

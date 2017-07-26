@@ -34,7 +34,7 @@ enum Metrics: uInt32 {
   visibleOverscan               = 20,
   maxUnderscan                  = 10,
   tvModeDetectionTolerance      = 20,
-  initialGarbageFrames          = 10,
+  initialGarbageFrames          = TIAConstants::initialGarbageFrames,
   framesForModeConfirmation     = 5,
   minStableFrames               = 10,
   maxStabilizationFrames        = 20,
@@ -48,12 +48,6 @@ static constexpr uInt32
 
 inline static uInt32 vsyncLimit(bool autodetect) {
   return autodetect ? maxLinesVsyncDuringAutodetect : maxLinesVsync;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 FrameManager::initialGarbageFrames()
-{
-  return Metrics::initialGarbageFrames;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -95,6 +95,7 @@ MODULES := $(MODULES)
 MODULES += \
 	src/emucore \
 	src/emucore/tia \
+	src/emucore/tia/frame-manager \
 	src/gui \
 	src/common \
 	src/common/tv_filters

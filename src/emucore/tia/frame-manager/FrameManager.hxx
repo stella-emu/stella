@@ -23,6 +23,7 @@
 #include "VblankManager.hxx"
 #include "Serializable.hxx"
 #include "FrameLayout.hxx"
+#include "TIAConstants.hxx"
 #include "bspf.hxx"
 
 class FrameManager : public Serializable
@@ -36,8 +37,6 @@ class FrameManager : public Serializable
     FrameManager();
 
   public:
-
-    static uInt8 initialGarbageFrames();
 
     void setHandlers(
       callback frameStartCallback,
@@ -100,11 +99,6 @@ class FrameManager : public Serializable
     void setJitterFactor(uInt8 factor) { myVblankManager.setJitterFactor(factor); }
     bool jitterEnabled() const { return myJitterEnabled; }
     void enableJitter(bool enabled);
-
-  public:
-    static constexpr uInt32 frameBufferHeight = 320;
-    static constexpr uInt32 minYStart = 1, maxYStart = 64;
-    static constexpr uInt32 minViewableHeight = 210, maxViewableHeight = 256;
 
   private:
 

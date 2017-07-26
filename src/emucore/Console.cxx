@@ -55,7 +55,7 @@
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
 #include "Version.hxx"
-#include "FrameManager.hxx"
+#include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -121,7 +121,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     bool fastscbios = myOSystem.settings().getBool("fastscbios");
     myOSystem.settings().setValue("fastscbios", true);
 
-    uInt8 initialGarbageFrames = FrameManager::initialGarbageFrames();
+    uInt8 initialGarbageFrames = TIAConstants::initialGarbageFrames;
     uInt8 linesPAL = 0;
     uInt8 linesNTSC = 0;
 
@@ -580,7 +580,7 @@ void Console::changeYStart(int direction)
 
   if(direction == +1)       // increase YStart
   {
-    if(ystart >= FrameManager::maxYStart)
+    if(ystart >= TIAConstants::maxYStart)
     {
       myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
@@ -589,7 +589,7 @@ void Console::changeYStart(int direction)
   }
   else if(direction == -1)  // decrease YStart
   {
-    if(ystart == FrameManager::minYStart-1)
+    if(ystart == TIAConstants::minYStart-1)
     {
       myOSystem.frameBuffer().showMessage("YStart at minimum");
       return;
@@ -601,7 +601,7 @@ void Console::changeYStart(int direction)
 
   ostringstream val;
   val << ystart;
-  if(ystart == FrameManager::minYStart-1)
+  if(ystart == TIAConstants::minYStart-1)
     myOSystem.frameBuffer().showMessage("YStart autodetected");
   else
   {
@@ -610,7 +610,7 @@ void Console::changeYStart(int direction)
       // We've reached the auto-detect value, so reset
       myOSystem.frameBuffer().showMessage("YStart " + val.str() + " (Auto)");
       val.str("");
-      val << FrameManager::minYStart-1;
+      val << TIAConstants::minYStart-1;
     }
     else
       myOSystem.frameBuffer().showMessage("YStart " + val.str());
@@ -630,7 +630,7 @@ void Console::changeHeight(int direction)
   if(direction == +1)       // increase Height
   {
     height++;
-    if(height > FrameManager::maxViewableHeight || height > dheight)
+    if(height > TIAConstants::maxViewableHeight || height > dheight)
     {
       myOSystem.frameBuffer().showMessage("Height at maximum");
       return;
@@ -639,7 +639,7 @@ void Console::changeHeight(int direction)
   else if(direction == -1)  // decrease Height
   {
     height--;
-    if(height < FrameManager::minViewableHeight) height = 0;
+    if(height < TIAConstants::minViewableHeight) height = 0;
   }
   else
     return;
@@ -659,10 +659,10 @@ void Console::setTIAProperties()
 {
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   if(ystart != 0)
-    ystart = BSPF::clamp(ystart, FrameManager::minYStart, FrameManager::maxYStart);
+    ystart = BSPF::clamp(ystart, TIAConstants::minYStart, TIAConstants::maxYStart);
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
   if(height != 0)
-    height = BSPF::clamp(height, FrameManager::minViewableHeight, FrameManager::maxViewableHeight);
+    height = BSPF::clamp(height, TIAConstants::minViewableHeight, TIAConstants::maxViewableHeight);
 
   myTIA->autodetectLayout(false);
 

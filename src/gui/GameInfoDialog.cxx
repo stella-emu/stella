@@ -26,7 +26,7 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "TabWidget.hxx"
-#include "FrameManager.hxx"
+#include "TIAConstants.hxx"
 #include "Widget.hxx"
 
 #include "GameInfoDialog.hxx"
@@ -321,8 +321,8 @@ GameInfoDialog::GameInfoDialog(
 
   myYStart = new SliderWidget(myTab, font, xpos+lwidth, ypos, 8*fontWidth, lineHeight,
                               "", 0, kYStartChanged);
-  myYStart->setMinValue(FrameManager::minYStart-1);
-  myYStart->setMaxValue(FrameManager::maxYStart);
+  myYStart->setMinValue(TIAConstants::minYStart-1);
+  myYStart->setMaxValue(TIAConstants::maxYStart);
   wid.push_back(myYStart);
   myYStartLabel = new StaticTextWidget(myTab, font, xpos+lwidth+myYStart->getWidth() + 4,
                                        ypos+1, 5*fontWidth, fontHeight, "", kTextAlignLeft);
@@ -333,8 +333,8 @@ GameInfoDialog::GameInfoDialog(
                        "Height", kTextAlignLeft);
   myHeight = new SliderWidget(myTab, font, xpos+lwidth, ypos, 8*fontWidth, lineHeight,
                               "", 0, kHeightChanged);
-  myHeight->setMinValue(FrameManager::minViewableHeight-1);
-  myHeight->setMaxValue(FrameManager::maxViewableHeight);
+  myHeight->setMinValue(TIAConstants::minViewableHeight-1);
+  myHeight->setMaxValue(TIAConstants::maxViewableHeight);
   wid.push_back(myHeight);
   myHeightLabel = new StaticTextWidget(myTab, font, xpos+lwidth+myHeight->getWidth() + 4,
                                        ypos+1, 5*fontWidth, fontHeight, "", kTextAlignLeft);
@@ -599,14 +599,14 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kYStartChanged:
-      if(myYStart->getValue() == FrameManager::minYStart-1)
+      if(myYStart->getValue() == TIAConstants::minYStart-1)
         myYStartLabel->setLabel("Auto");
       else
         myYStartLabel->setValue(myYStart->getValue());
       break;
 
     case kHeightChanged:
-      if(myHeight->getValue() == FrameManager::minViewableHeight-1)
+      if(myHeight->getValue() == TIAConstants::minViewableHeight-1)
         myHeightLabel->setLabel("Auto");
       else
         myHeightLabel->setValue(myHeight->getValue());

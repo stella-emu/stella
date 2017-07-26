@@ -25,9 +25,10 @@
 #include "Device.hxx"
 #include "Serializer.hxx"
 #include "TIATypes.hxx"
+#include "TIAConstants.hxx"
 #include "DelayQueue.hxx"
 #include "DelayQueueIterator.hxx"
-#include "FrameManager.hxx"
+#include "frame-manager/FrameManager.hxx"
 #include "FrameLayout.hxx"
 #include "Background.hxx"
 #include "Playfield.hxx"
@@ -489,7 +490,7 @@ class TIA : public Device
     LatchedInput myInput1;
 
     // Pointer to the internal color-index-based frame buffer
-    uInt8 myFramebuffer[160 * FrameManager::frameBufferHeight];
+    uInt8 myFramebuffer[160 * TIAConstants::frameBufferHeight];
 
     bool myTIAPinsDriven;
 
