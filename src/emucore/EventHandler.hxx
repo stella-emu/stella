@@ -583,6 +583,19 @@ class EventHandler
     // state change; we detect when this happens and discard the event
     bool mySkipMouseMotion;
 
+    // Sometimes key combos with the Alt key become 'stuck' after the
+    // window changes state, and we want to ignore that event
+    // For example, press Alt-Tab and then upon re-entering the window,
+    // the app receives 'tab'; obviously the 'tab' shouldn't be happening
+    // So we keep track of the cases that matter (Alt-Tab and Alt-Enter)
+    // and swallow the event afterwards
+    // Basically, the initial event sets the variable to 1, and upon
+    // returning to the app (ie, receiving EVENT_WINDOW_FOCUS_GAINED),
+    // the count is updated to 2, but only if it was already updated to 1
+    // TODO - This may be a bug in SDL, and might be removed in the future
+    //        It only seems to be an issue in Linux
+    uInt8 myAltKeyCounter;
+
     // Used for continuous snapshot mode
     uInt32 myContSnapshotInterval;
     uInt32 myContSnapshotCounter;

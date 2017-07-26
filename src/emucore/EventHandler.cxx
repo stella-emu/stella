@@ -62,6 +62,7 @@ EventHandler::EventHandler(OSystem& osystem)
     myFryingFlag(false),
     myUseCtrlKeyFlag(true),
     mySkipMouseMotion(true),
+    myAltKeyCounter(0),
     myContSnapshotInterval(0),
     myContSnapshotCounter(0)
 {
@@ -246,6 +247,16 @@ void EventHandler::handleTextEvent(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 {
+  // Swallow KBDK_TAB and KBDK_RETURN under certain conditions
+  // See commments on 'myAltKeyCounter' for more information
+#ifdef BSPF_UNIX
+  if(myAltKeyCounter > 1 && (key == KBDK_TAB || key == KBDK_RETURN))
+  {
+    myAltKeyCounter = false;
+    return;
+  }
+#endif
+
   bool handled = true;
 
   // Immediately store the key state
@@ -263,8 +274,16 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     }
     else
 #endif
-    if(key == KBDK_RETURN)
+    if(key == KBDK_TAB)
     {
+      // Swallow Alt-Tab, but remember that it happened
+      myAltKeyCounter = 1;
+      return;
+    }
+    else if(key == KBDK_RETURN)
+    {
+      // Swallow Alt-Enter, but remember that it happened
+      myAltKeyCounter = 1;
       myOSystem.frameBuffer().toggleFullscreen();
     }
     // These only work when in emulation mode
@@ -823,11 +842,18 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
   switch(e)
   {
     case EVENT_WINDOW_EXPOSED:
-        myOSystem.frameBuffer().update();
-        break;
+      myOSystem.frameBuffer().update();
+      break;
+
+    case EVENT_WINDOW_FOCUS_GAINED:
+      // Used to handle Alt-x key combos; sometimes the key associated with
+      // Alt gets 'stuck'  and is passed to the core for processing
+      if(myAltKeyCounter > 0)
+        myAltKeyCounter = 2;
+      break;
 #if 0
     case EVENT_WINDOW_MINIMIZED:
-        if(myState == S_EMULATE) enterMenuMode(S_MENU);
+      if(myState == S_EMULATE) enterMenuMode(S_MENU);
         break;
 #endif
     default:  // handle other events as testing requires

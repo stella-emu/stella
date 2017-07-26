@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+5.0.1 to 5.x: (xxxx yy, 2017)
+
+  * Fixed an annoying bug in Linux, where Alt-Tab'ing out of a window and
+    then back again would pass a 'Tab' key event to the app, which in
+    most cases would navigate to the next UI element.
+
+-Have fun!
+
+
 5.0 to 5.0.1: (July 23, 2017)
 
   * Fixed issues in keypad, Genesis and various other controllers that use
@@ -24,8 +33,6 @@
   * Added 'Hunchy II' from Chris Walton (cd-w) to ROM properties database.
 
   * Codebase now uses C++14 features.
-
--Have fun!
 
 
 4.7.3 to 5.0: (July 16, 2017)
