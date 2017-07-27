@@ -247,10 +247,10 @@ void EventHandler::handleTextEvent(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 {
-  // Swallow KBDK_TAB and KBDK_RETURN under certain conditions
+  // Swallow KBDK_TAB under certain conditions
   // See commments on 'myAltKeyCounter' for more information
 #ifdef BSPF_UNIX
-  if(myAltKeyCounter > 1 && (key == KBDK_TAB || key == KBDK_RETURN))
+  if(myAltKeyCounter > 1 && key == KBDK_TAB)
   {
     myAltKeyCounter = false;
     return;
@@ -282,8 +282,6 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     }
     else if(key == KBDK_RETURN)
     {
-      // Swallow Alt-Enter, but remember that it happened
-      myAltKeyCounter = 1;
       myOSystem.frameBuffer().toggleFullscreen();
     }
     // These only work when in emulation mode

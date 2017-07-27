@@ -587,7 +587,7 @@ class EventHandler
     // window changes state, and we want to ignore that event
     // For example, press Alt-Tab and then upon re-entering the window,
     // the app receives 'tab'; obviously the 'tab' shouldn't be happening
-    // So we keep track of the cases that matter (Alt-Tab and Alt-Enter)
+    // So we keep track of the cases that matter (for now, Alt-Tab)
     // and swallow the event afterwards
     // Basically, the initial event sets the variable to 1, and upon
     // returning to the app (ie, receiving EVENT_WINDOW_FOCUS_GAINED),
