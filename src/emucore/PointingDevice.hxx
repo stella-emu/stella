@@ -193,9 +193,9 @@ void PointingDevice<T>::update()
   myTrakBallCountH = abs(myVCounter / T::counterDivide);
   myTrakBallCountV = abs(myHCounter / T::counterDivide);
 
-  myTrakBallLinesH = mySystem.tia().height() / (myTrakBallCountH + 1);
+  myTrakBallLinesH = mySystem.tia().scanlinesLastFrame() / (myTrakBallCountH + 1);
   if(myTrakBallLinesH == 0) myTrakBallLinesH = 1;
-  myTrakBallLinesV = mySystem.tia().height() / (myTrakBallCountV + 1);
+  myTrakBallLinesV = mySystem.tia().scanlinesLastFrame() / (myTrakBallCountV + 1);
   if(myTrakBallLinesV == 0) myTrakBallLinesV = 1;
 
   // Get mouse button state
