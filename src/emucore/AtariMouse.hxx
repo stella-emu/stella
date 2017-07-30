@@ -34,12 +34,10 @@ namespace {
 
     public:
       static constexpr Controller::Type controllerType = Controller::AtariMouse;
-
       static constexpr uInt8 counterDivide = 2;
   };
-
 }
 
-typedef PointingDevice<AtariMouseHelper> AtariMouse;
+using AtariMouse = PointingDevice<AtariMouseHelper>;
 
 #endif // ATARIMOUSE_HXX

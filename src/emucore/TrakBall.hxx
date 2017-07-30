@@ -29,18 +29,15 @@ namespace {
         static constexpr uInt32 ourTableH[2][2] = {{ 0x40, 0x00 }, { 0xc0, 0x80 }};
         static constexpr uInt32 ourTableV[2][2] = {{ 0x00, 0x10 }, { 0x20, 0x30 }};
 
-        return ourTableV[countV & 0x01][down] |
-               ourTableH[countH & 0x01][left];
+        return ourTableV[countV & 0x01][down] | ourTableH[countH & 0x01][left];
       }
 
     public:
       static constexpr Controller::Type controllerType = Controller::TrakBall;
-
       static constexpr uInt8 counterDivide = 4;
   };
-
 }
 
-typedef PointingDevice<TrakBallHelper> TrakBall;
+using TrakBall = PointingDevice<TrakBallHelper>;
 
 #endif // TRAKBALL_HXX

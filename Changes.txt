@@ -14,6 +14,9 @@
 
 5.0.1 to 5.x: (xxxx yy, 2017)
 
+  * Improved emulation of Trakball controller, eliminating bias in left/
+    right directions.  Thanks to Thomas Jentzsch for the idea and code.
+
   * Fixed an annoying bug in Linux, where Alt-Tab'ing out of a window and
     then back again would pass a 'Tab' key event to the app, which in
     most cases would navigate to the next UI element.

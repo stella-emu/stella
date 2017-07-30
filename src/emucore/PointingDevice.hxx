@@ -27,8 +27,11 @@
   This code was heavily borrowed from z26.
 
   @author  Stephen Anthony & z26 team
+           Template-ification by Christian Speckner, based on ideas by
+           Thomas Jentzsch
 */
-template<class T> class PointingDevice : public Controller
+template<class T>
+class PointingDevice : public Controller
 {
   public:
     PointingDevice(Jack jack, const Event& event, const System& system);

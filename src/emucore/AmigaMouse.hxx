@@ -34,12 +34,10 @@ namespace {
 
     public:
       static constexpr Controller::Type controllerType = Controller::AmigaMouse;
-
       static constexpr uInt8 counterDivide = 2;
   };
-
 }
 
-typedef PointingDevice<AmigaMouseHelper> AmigaMouse;
+using AmigaMouse = PointingDevice<AmigaMouseHelper>;
 
 #endif // AMIGAMOUSE_HXX

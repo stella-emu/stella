@@ -816,15 +816,6 @@
     <ClCompile Include="..\emucore\tia\VblankManager.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\AmigaMouse.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\AtariMouse.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\TrakBall.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
