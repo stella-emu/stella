@@ -587,6 +587,7 @@
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
+    <ClInclude Include="..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\emucore\TIASurface.hxx" />
     <ClInclude Include="..\emucore\tia\Background.hxx" />
     <ClInclude Include="..\emucore\tia\Ball.hxx" />
