@@ -118,17 +118,16 @@ PointingDevice<T>::PointingDevice(Jack jack, const Event& event, const System& s
     myVCounter(0),
     myHCounterRemainder(0),
     myVCounterRemainder(0),
+    myTrakBallCountH(0), myTrakBallCountV(0),
+    myTrakBallLinesH(1), myTrakBallLinesV(1),
+    myTrakBallLeft(0), myTrakBallDown(0),
+    myCountH(0), myCountV(0),
+    myScanCountH(0), myScanCountV(0),
     myMouseEnabled(false)
 {
-  // This code in ::read() is set up to always return IOPortA values in
+  // The code in ::read() is set up to always return IOPortA values in
   // the lower 4 bits data value
   // As such, the jack type (left or right) isn't necessary here
-
-  myTrakBallCountH = myTrakBallCountV = 0;
-  myTrakBallLinesH = myTrakBallLinesV = 1;
-
-  myTrakBallLeft = myTrakBallDown = myScanCountV = myScanCountH =
-    myCountV = myCountH = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,10 +184,8 @@ void PointingDevice<T>::update()
   myHCounter = myEvent.get(Event::MouseAxisXValue) + myHCounterRemainder;
   myVCounter = myEvent.get(Event::MouseAxisYValue) + myVCounterRemainder;
 
-  if(myVCounter < 0) myTrakBallLeft = 1;
-  else               myTrakBallLeft = 0;
-  if(myHCounter < 0) myTrakBallDown = 0;
-  else               myTrakBallDown = 1;
+  myTrakBallDown = (myHCounter < 0) ? 0 : 1;
+  myTrakBallLeft = (myVCounter < 0) ? 1 : 0;
 
   myHCounterRemainder = myHCounter % T::counterDivide;
   myVCounterRemainder = myVCounter % T::counterDivide;
