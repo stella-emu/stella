@@ -34,7 +34,7 @@ namespace {
 
     public:
       static constexpr Controller::Type controllerType = Controller::AmigaMouse;
-      static constexpr uInt8 counterDivide = 2;
+      static constexpr double trackballSensitivity = 0.8; // TODO: make configurable
   };
 }
 

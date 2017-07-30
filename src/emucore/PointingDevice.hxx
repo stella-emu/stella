@@ -74,14 +74,9 @@ class PointingDevice : public Controller
                          Controller::Type ytype, int yid) override;
 
   private:
-    // Counter to iterate through the gray codes
-    int myHCounter, myVCounter;
-    int myHCounterRemainder, myVCounterRemainder;
+    float myHCounterRemainder, myVCounterRemainder;
 
-    // How many new horizontal and vertical values this frame
-    int myTrakBallCountH, myTrakBallCountV;
-
-    // How many lines to wait before sending new horz and vert val
+    // How many lines to wait between sending new horz and vert values
     int myTrakBallLinesH, myTrakBallLinesV;
 
     // Was TrakBall moved left or moved right instead
@@ -90,6 +85,7 @@ class PointingDevice : public Controller
     // Was TrakBall moved down or moved up instead
     uInt8 myTrakBallDown;
 
+    // Counter to iterate through the gray codes
     uInt8 myCountH, myCountV;
     int myScanCountH, myScanCountV;
 
@@ -114,11 +110,8 @@ class PointingDevice : public Controller
 template<class T>
 PointingDevice<T>::PointingDevice(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, T::controllerType),
-    myHCounter(0),
-    myVCounter(0),
-    myHCounterRemainder(0),
-    myVCounterRemainder(0),
-    myTrakBallCountH(0), myTrakBallCountV(0),
+    myHCounterRemainder(0.0),
+    myVCounterRemainder(0.0),
     myTrakBallLinesH(1), myTrakBallLinesV(1),
     myTrakBallLeft(0), myTrakBallDown(0),
     myCountH(0), myCountV(0),
@@ -136,34 +129,30 @@ uInt8 PointingDevice<T>::read()
 {
   int scanline = mySystem.tia().scanlines();
 
-  if(myScanCountV > scanline) myScanCountV = 0;
-  if(myScanCountH > scanline) myScanCountH = 0;
-  while((myScanCountV + myTrakBallLinesV) < scanline)
+  // Loop over all missed changes
+  while(myScanCountH < scanline)
   {
-    if(myTrakBallCountV)
-    {
-      if(myTrakBallDown) myCountV--;
-      else               myCountV++;
-      myTrakBallCountV--;
-    }
-    myScanCountV += myTrakBallLinesV;
-  }
+    if(myTrakBallLeft) myCountH--;
+    else               myCountH++;
 
-  while((myScanCountH + myTrakBallLinesH) < scanline)
-  {
-    if(myTrakBallCountH)
-    {
-      if(myTrakBallLeft) myCountH--;
-      else               myCountH++;
-      myTrakBallCountH--;
-    }
+    // Define scanline of next change
     myScanCountH += myTrakBallLinesH;
   }
 
-  myCountV &= 0x03;
-  myCountH &= 0x03;
+  // Loop over all missed changes
+  while(myScanCountV < scanline)
+  {
+    if(myTrakBallDown) myCountV--;
+    else               myCountV++;
 
-  uInt8 ioPortA = T::ioPortA(myCountH, myCountV, myTrakBallLeft, myTrakBallDown);
+    // Define scanline of next change
+    myScanCountV += myTrakBallLinesV;
+  }
+
+  myCountH &= 0x03;
+  myCountV &= 0x03;
+
+  uInt8 ioPortA = T::ioPortA(myCountV, myCountH, myTrakBallDown, myTrakBallLeft);
 
   myDigitalPinState[One]   = ioPortA & 0x10;
   myDigitalPinState[Two]   = ioPortA & 0x20;
@@ -181,22 +170,57 @@ void PointingDevice<T>::update()
     return;
 
   // Get the current mouse position
-  myHCounter = myEvent.get(Event::MouseAxisXValue) + myHCounterRemainder;
-  myVCounter = myEvent.get(Event::MouseAxisYValue) + myVCounterRemainder;
+  int hCounter = myEvent.get(Event::MouseAxisXValue);
+  int vCounter = myEvent.get(Event::MouseAxisYValue);
 
-  myTrakBallDown = (myHCounter < 0) ? 0 : 1;
-  myTrakBallLeft = (myVCounter < 0) ? 1 : 0;
+  // Apply sensitivity and calculate remainders
+  float fTrakBallCountH = hCounter * T::trackballSensitivity + myHCounterRemainder;
+  int trakBallCountH = std::lround(fTrakBallCountH);
+  myHCounterRemainder = fTrakBallCountH - trakBallCountH;
 
-  myHCounterRemainder = myHCounter % T::counterDivide;
-  myVCounterRemainder = myVCounter % T::counterDivide;
+  float fTrakBallCountV = vCounter * T::trackballSensitivity + myVCounterRemainder;
+  int trakBallCountV = std::lround(fTrakBallCountV);
+  myVCounterRemainder = fTrakBallCountV - trakBallCountV;
 
-  myTrakBallCountH = abs(myVCounter / T::counterDivide);
-  myTrakBallCountV = abs(myHCounter / T::counterDivide);
+  if(trakBallCountH)
+  {
+    myTrakBallLeft = (trakBallCountH < 0) ? 0 : 1;
+    trakBallCountH = abs(trakBallCountH);
 
-  myTrakBallLinesH = mySystem.tia().scanlinesLastFrame() / (myTrakBallCountH + 1);
-  if(myTrakBallLinesH == 0) myTrakBallLinesH = 1;
-  myTrakBallLinesV = mySystem.tia().scanlinesLastFrame() / (myTrakBallCountV + 1);
-  if(myTrakBallLinesV == 0) myTrakBallLinesV = 1;
+    // Calculate lines to wait between sending new horz values
+    myTrakBallLinesH = mySystem.tia().scanlinesLastFrame() / trakBallCountH;
+
+    // Set lower limit in case of (unrealistic) ultra fast mouse movements
+    if (myTrakBallLinesH == 0) myTrakBallLinesH = 1;
+
+    // Define random scanline of first change
+    myScanCountH = rand() % myTrakBallLinesH;
+  }
+  else
+  {
+    // Prevent any change
+    myScanCountH = INT_MAX;
+  }
+
+  if(trakBallCountV)
+  {
+    myTrakBallDown = (trakBallCountV < 0) ? 1 : 0;
+    trakBallCountV = abs(trakBallCountV);
+
+    // Calculate lines to wait between sending new vert values
+    myTrakBallLinesV = mySystem.tia().scanlinesLastFrame() / trakBallCountV;
+
+    // Set lower limit in case of (unrealistic) ultra fast mouse movements
+    if (myTrakBallLinesV == 0) myTrakBallLinesV = 1;
+
+    // Define random scanline of first change
+    myScanCountV = rand() % myTrakBallLinesV;
+  }
+  else
+  {
+    // Prevent any change
+    myScanCountV = INT_MAX;
+  }
 
   // Get mouse button state
   myDigitalPinState[Six] = (myEvent.get(Event::MouseButtonLeftValue) == 0) &&

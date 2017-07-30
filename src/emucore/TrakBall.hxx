@@ -34,7 +34,7 @@ namespace {
 
     public:
       static constexpr Controller::Type controllerType = Controller::TrakBall;
-      static constexpr uInt8 counterDivide = 4;
+      static constexpr double trackballSensitivity = 0.4; // 50% of Atari and Amiga mouse; TODO: make configurable
   };
 }
 
