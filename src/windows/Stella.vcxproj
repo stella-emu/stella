@@ -89,22 +89,22 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

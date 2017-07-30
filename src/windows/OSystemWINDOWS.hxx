@@ -22,8 +22,6 @@
 
 /**
   This class defines Windows system specific settings.
-
-  @author  Stephen Anthony
 */
 class OSystemWINDOWS : public OSystem
 {
