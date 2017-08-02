@@ -18,22 +18,23 @@
 #ifndef POINTING_DEVICE_HXX
 #define POINTING_DEVICE_HXX
 
+class Controller;
+class Event;
+
 #include "bspf.hxx"
-#include "Control.hxx"
-#include "Event.hxx"
 
 /**
   Common controller class for pointing devices (Atari Mouse, Amiga Mouse, Trak-Ball)
   This code was heavily borrowed from z26.
 
   @author  Stephen Anthony, Thomas Jentzsch & z26 team
-           Template-ification by Christian Speckner
 */
-template<class T>
 class PointingDevice : public Controller
 {
   public:
-    PointingDevice(Jack jack, const Event& event, const System& system);
+    PointingDevice(Jack jack, const Event& event,
+                   const System& system, Controller::Type type,
+                   float sensitivity);
     virtual ~PointingDevice() = default;
 
   public:
@@ -72,13 +73,28 @@ class PointingDevice : public Controller
     bool setMouseControl(Controller::Type xtype, int xid,
                          Controller::Type ytype, int yid) override;
 
+    /**
+      Sets the sensitivity for analog emulation of trackball movement
+      using a mouse.
+
+      @param sensitivity  Value from 1 to 20, with larger values causing
+                          more movement (10 represents the baseline)
+    */
+    static void setSensitivity(int sensitivity);
+
+  protected:
+    // Each derived class must implement this, to determine how its
+    // IOPortA values are calculated
+    virtual uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) = 0;
+
   private:
-    void updateDirection(const int& counter, double& counterRemainder,
+    void updateDirection(const int& counter, float& counterRemainder,
                          bool& trackBallDir, int& trackBallLines,
                          int& scanCount, int& firstScanOffset);
 
   private:
-    double myHCounterRemainder, myVCounterRemainder;
+    // Mouse input to sensitivity emulation
+    float mySensitivity, myHCounterRemainder, myVCounterRemainder;
 
     // How many lines to wait between sending new horz and vert values
     int myTrackBallLinesH, myTrackBallLinesV;
@@ -101,143 +117,17 @@ class PointingDevice : public Controller
     // Whether to use the mouse to emulate this controller
     bool myMouseEnabled;
 
-  private:
+    // User-defined sensitivity; adjustable since end-users may have different
+    // mouse speeds
+    static float TB_SENSITIVITY;
+
+private:
     // Following constructors and assignment operators not supported
     PointingDevice() = delete;
-    PointingDevice(const PointingDevice<T>&) = delete;
-    PointingDevice(PointingDevice<T>&&) = delete;
-    PointingDevice& operator=(const PointingDevice<T>&) = delete;
-    PointingDevice& operator=(PointingDevice<T>&&) = delete;
+    PointingDevice(const PointingDevice&) = delete;
+    PointingDevice(PointingDevice&&) = delete;
+    PointingDevice& operator=(const PointingDevice&) = delete;
+    PointingDevice& operator=(PointingDevice&&) = delete;
 };
-
-// ############################################################################
-// Implementation
-// ############################################################################
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
-PointingDevice<T>::PointingDevice(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, T::controllerType),
-    myHCounterRemainder(0.0), myVCounterRemainder(0.0),
-    myTrackBallLinesH(1), myTrackBallLinesV(1),
-    myTrackBallLeft(false), myTrackBallDown(false),
-    myCountH(0), myCountV(0),
-    myScanCountH(0), myScanCountV(0),
-    myFirstScanOffsetH(0), myFirstScanOffsetV(0),
-    myMouseEnabled(false)
-{
-  // The code in ::read() is set up to always return IOPortA values in
-  // the lower 4 bits data value
-  // As such, the jack type (left or right) isn't necessary here
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
-uInt8 PointingDevice<T>::read()
-{
-  int scanline = mySystem.tia().scanlines();
-
-  // Loop over all missed changes
-  while(myScanCountH < scanline)
-  {
-    if(myTrackBallLeft) myCountH--;
-    else                myCountH++;
-
-    // Define scanline of next change 
-    myScanCountH += myTrackBallLinesH;
-  }
-
-  // Loop over all missed changes
-  while(myScanCountV < scanline)
-  {
-    if(myTrackBallDown) myCountV--;
-    else                myCountV++;
-
-    // Define scanline of next change 
-    myScanCountV += myTrackBallLinesV;
-  }
-
-  myCountH &= 0x03;
-  myCountV &= 0x03;
-
-  uInt8 ioPortA = T::ioPortA(myCountV, myCountH, myTrackBallDown, myTrackBallLeft);
-
-  myDigitalPinState[One]   = ioPortA & 0x10;
-  myDigitalPinState[Two]   = ioPortA & 0x20;
-  myDigitalPinState[Three] = ioPortA & 0x40;
-  myDigitalPinState[Four]  = ioPortA & 0x80;
-
-  return (ioPortA >> 4);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
-void PointingDevice<T>::update()
-{
-  if(!myMouseEnabled)
-    return;
-
-  // Update horizontal direction
-  updateDirection( myEvent.get(Event::MouseAxisXValue), myHCounterRemainder,
-      myTrackBallLeft, myTrackBallLinesH, myScanCountH, myFirstScanOffsetH);
-
-  // Update vertical direction
-  updateDirection(-myEvent.get(Event::MouseAxisYValue), myVCounterRemainder,
-      myTrackBallDown, myTrackBallLinesV, myScanCountV, myFirstScanOffsetV);
-
-  // Get mouse button state
-  myDigitalPinState[Six] = (myEvent.get(Event::MouseButtonLeftValue)  == 0) &&
-                           (myEvent.get(Event::MouseButtonRightValue) == 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
-bool PointingDevice<T>::setMouseControl(
-    Controller::Type xtype, int xid, Controller::Type ytype, int yid)
-{
-  // Currently, the various trakball controllers take full control of the
-  // mouse, and use both mouse buttons for the single fire button
-  // As well, there's no separate setting for x and y axis, so any
-  // combination of Controller and id is valid
-  myMouseEnabled = (xtype == myType || ytype == myType) &&
-                   (xid != -1 || yid != -1);
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<class T>
-void PointingDevice<T>::updateDirection(const int& counter, double& counterRemainder,
-    bool& trackBallDir, int& trackBallLines, int& scanCount, int& firstScanOffset)
-{
-  // Apply sensitivity and calculate remainder
-  float fTrackBallCount = counter * T::trackballSensitivity + counterRemainder;
-  int trackBallCount = std::lround(fTrackBallCount);
-  counterRemainder = fTrackBallCount - trackBallCount;
-
-  if(trackBallCount)
-  {
-    trackBallDir = (trackBallCount > 0);
-    trackBallCount = abs(trackBallCount);
-
-    // Calculate lines to wait between sending new horz/vert values
-    trackBallLines = mySystem.tia().scanlinesLastFrame() / trackBallCount;
-
-    // Set lower limit in case of (unrealistic) ultra fast mouse movements
-    if (trackBallLines == 0) trackBallLines = 1;
-
-    // Define scanline of first change
-    scanCount = (trackBallLines * firstScanOffset) >> 12;
-  }
-  else
-  {
-    // Prevent any change
-    scanCount = INT_MAX;
-
-    // Define offset factor for first change, move randomly forward by up to 1/8th
-    firstScanOffset = (((firstScanOffset << 3) + rand() %
-                      (1 << 12)) >> 3) & ((1 << 12) - 1);
-  }
-}
 
 #endif // POINTING_DEVICE_HXX

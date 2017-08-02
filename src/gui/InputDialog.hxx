@@ -57,6 +57,7 @@ class InputDialog : public Dialog
       kDeadzoneChanged = 'DZch',
       kDPSpeedChanged  = 'PDch',
       kMPSpeedChanged  = 'PMch',
+      kTBSpeedChanged  = 'TBch',
       kDBButtonPressed = 'DBbp'
     };
 
@@ -75,8 +76,10 @@ class InputDialog : public Dialog
     StaticTextWidget* myDeadzoneLabel;
     SliderWidget*     myDPaddleSpeed;
     SliderWidget*     myMPaddleSpeed;
+    SliderWidget*     myTrackBallSpeed;
     StaticTextWidget* myDPaddleLabel;
     StaticTextWidget* myMPaddleLabel;
+    StaticTextWidget* myTrackBallLabel;
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
     CheckboxWidget*   myCtrlCombo;

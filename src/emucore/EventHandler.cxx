@@ -32,6 +32,7 @@
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "PointingDevice.hxx"
 #include "PropsSet.hxx"
 #include "ListWidget.hxx"
 #include "ScrollBarWidget.hxx"
@@ -95,6 +96,7 @@ void EventHandler::initialize()
   Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
   Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
+  PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
 
   // Set quick select delay when typing characters in listwidgets
   ListWidget::setQuickSelectDelay(myOSystem.settings().getInt("listdelay"));

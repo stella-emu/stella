@@ -16,6 +16,8 @@
 
   * Improved emulation of Trakball controller, eliminating bias in left/
     right directions.  Thanks to Thomas Jentzsch for the idea and code.
+    Related to this, added 'tsense' commandline argument and associated
+    UI item, to allow changing sensitivity of mouse trackball emulation.
 
   * Fixed an annoying bug in Linux, where Alt-Tab'ing out of a window and
     then back again would pass a 'Tab' key event to the app, which in

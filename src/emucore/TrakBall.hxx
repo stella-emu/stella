@@ -20,24 +20,32 @@
 
 #include "PointingDevice.hxx"
 
-namespace {
+class TrakBall : public PointingDevice
+{
+  public:
+    /**
+      Create a new trakball controller plugged into the specified jack
 
-  class TrakBallHelper {
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
+    */
+    TrakBall(Jack jack, const Event& event, const System& system)
+      : PointingDevice(jack, event, system, Controller::TrakBall,
+        trackballSensitivity) { }
+    virtual ~TrakBall() = default;
 
-    public:
-      static uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) {
-        static constexpr uInt32 ourTableH[2][2] = {{ 0x40, 0x00 }, { 0xc0, 0x80 }};
-        static constexpr uInt32 ourTableV[2][2] = {{ 0x00, 0x10 }, { 0x20, 0x30 }};
+  protected:
+    uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) override
+    {
+      static constexpr uInt32 ourTableH[2][2] = {{ 0x00, 0x10 }, { 0x20, 0x30 }};
+      static constexpr uInt32 ourTableV[2][2] = {{ 0x40, 0x00 }, { 0xc0, 0x80 }};
 
-        return ourTableV[countV & 0x01][down] | ourTableH[countH & 0x01][left];
-      }
+      return ourTableH[countH & 0x01][left] | ourTableV[countV & 0x01][down];
+    }
 
-    public:
-      static constexpr Controller::Type controllerType = Controller::TrakBall;
-      static constexpr double trackballSensitivity = 0.4; // 50% of Atari and Amiga mouse; TODO: make configurable
-  };
-}
-
-using TrakBall = PointingDevice<TrakBallHelper>;
+    // 50% of Atari and Amiga mouse
+    static constexpr float trackballSensitivity = 0.4;
+};
 
 #endif // TRAKBALL_HXX

@@ -20,24 +20,31 @@
 
 #include "PointingDevice.hxx"
 
-namespace {
+class AtariMouse : public PointingDevice
+{
+  public:
+    /**
+      Create a new Atari Mouse controller plugged into the specified jack
 
-  class AtariMouseHelper {
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
+    */
+    AtariMouse(Jack jack, const Event& event, const System& system)
+      : PointingDevice(jack, event, system, Controller::AtariMouse,
+        trackballSensitivity) { }
+    virtual ~AtariMouse() = default;
 
-    public:
-      static uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) {
-        static constexpr uInt32 ourTableH[4] = { 0x00, 0x80, 0xc0, 0x40 };
-        static constexpr uInt32 ourTableV[4] = { 0x00, 0x10, 0x30, 0x20 };
+  protected:
+    uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8, uInt8) override
+    {
+      static constexpr uInt32 ourTableH[4] = { 0x00, 0x10, 0x30, 0x20 };
+      static constexpr uInt32 ourTableV[4] = { 0x00, 0x80, 0xc0, 0x40 };
 
-        return ourTableV[countV] | ourTableH[countH];
-      }
+      return ourTableH[countH] | ourTableV[countV];
+    }
 
-    public:
-      static constexpr Controller::Type controllerType = Controller::AtariMouse;
-      static constexpr double trackballSensitivity = 0.8; // TODO: make configurable
-  };
-}
-
-using AtariMouse = PointingDevice<AtariMouseHelper>;
+    static constexpr float trackballSensitivity = 0.8;
+};
 
 #endif // ATARIMOUSE_HXX

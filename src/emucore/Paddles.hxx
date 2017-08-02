@@ -127,12 +127,12 @@ class Paddles : public Controller
 
     // Range of values over which digital and mouse movement is scaled
     // to paddle resistance
-    static const int TRIGMIN = 1;
-    static const int TRIGMAX = 4096;
+    static constexpr int TRIGMIN = 1;
+    static constexpr int TRIGMAX = 4096;
     static int TRIGRANGE;  // This one is variable for the upper range
 
-    static const int MAX_DIGITAL_SENSE = 20;
-    static const int MAX_MOUSE_SENSE = 20;
+    static constexpr int MAX_DIGITAL_SENSE = 20;
+    static constexpr int MAX_MOUSE_SENSE = 20;
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
     static int MOUSE_SENSITIVITY;
 
