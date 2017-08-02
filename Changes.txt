@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-5.0.1 to 5.x: (xxxx yy, 2017)
+5.0.1 to 5.x: (xxxx xx, 2017)
 
   * Improved emulation of Trakball controller, eliminating bias in left/
     right directions.  Thanks to Thomas Jentzsch for the idea and code.
