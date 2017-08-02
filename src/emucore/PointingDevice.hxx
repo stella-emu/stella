@@ -88,7 +88,7 @@ class PointingDevice : public Controller
     virtual uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) = 0;
 
   private:
-    void updateDirection(const int& counter, float& counterRemainder,
+    void updateDirection(int counter, float& counterRemainder,
                          bool& trackBallDir, int& trackBallLines,
                          int& scanCount, int& firstScanOffset);
 

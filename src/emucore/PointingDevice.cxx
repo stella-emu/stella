@@ -119,7 +119,7 @@ void PointingDevice::setSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PointingDevice::updateDirection(const int& counter, float& counterRemainder,
+void PointingDevice::updateDirection(int counter, float& counterRemainder,
     bool& trackBallDir, int& trackBallLines, int& scanCount, int& firstScanOffset)
 {
   // Apply sensitivity and calculate remainder
