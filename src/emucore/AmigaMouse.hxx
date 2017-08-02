@@ -44,7 +44,7 @@ class AmigaMouse : public PointingDevice
       return ourTableH[countH] | ourTableV[countV];
     }
 
-    static constexpr float trackballSensitivity = 0.8;
+    static constexpr float trackballSensitivity = 0.8f;
 };
 
 #endif // AMIGAMOUSE_HXX

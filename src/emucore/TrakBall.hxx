@@ -45,7 +45,7 @@ class TrakBall : public PointingDevice
     }
 
     // 50% of Atari and Amiga mouse
-    static constexpr float trackballSensitivity = 0.4;
+    static constexpr float trackballSensitivity = 0.4f;
 };
 
 #endif // TRAKBALL_HXX

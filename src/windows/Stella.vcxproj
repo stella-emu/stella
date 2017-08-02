@@ -312,6 +312,7 @@
     <ClCompile Include="..\emucore\EventJoyHandler.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
+    <ClCompile Include="..\emucore\PointingDevice.cxx" />
     <ClCompile Include="..\emucore\TIASurface.cxx" />
     <ClCompile Include="..\emucore\tia\Background.cxx" />
     <ClCompile Include="..\emucore\tia\Ball.cxx" />
