@@ -174,6 +174,9 @@ class SoundSDL2 : public Sound
       uInt16 addr;
       uInt8 value;
       double delta;
+
+      RegWrite(uInt16 a = 0, uInt8 v = 0, double d = 0.0)
+        : addr(a), value(v), delta(d) { }
     };
 
     /**
@@ -209,7 +212,7 @@ class SoundSDL2 : public Sound
         /**
           Enqueue the specified object.
         */
-        void enqueue(const RegWrite& info);
+        void enqueue(uInt16 addr, uInt8 value, double delta);
 
         /**
           Return the item at the front on the queue.

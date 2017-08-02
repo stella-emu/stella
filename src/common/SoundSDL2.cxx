@@ -261,11 +261,7 @@ void SoundSDL2::set(uInt16 addr, uInt8 value, Int32 cycle)
   // the sound to "scale" correctly, we have to know the games real frame
   // rate (e.g., 50 or 60) and the currently emulated frame rate. We use these
   // values to "scale" the time before the register change occurs.
-  RegWrite info;
-  info.addr = addr;
-  info.value = value;
-  info.delta = delta;
-  myRegWriteQueue.enqueue(info);
+  myRegWriteQueue.enqueue(addr, value, delta);
 
   // Update last cycle counter to the current cycle
   myLastRegisterSetCycle = cycle;
@@ -476,14 +472,17 @@ double SoundSDL2::RegWriteQueue::duration() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::RegWriteQueue::enqueue(const RegWrite& info)
+void SoundSDL2::RegWriteQueue::enqueue(uInt16 addr, uInt8 value, double delta)
 {
   // If an attempt is made to enqueue more than the queue can hold then
   // we'll enlarge the queue's capacity.
   if(mySize == myCapacity)
     grow();
 
-  myBuffer[myTail] = info;
+  RegWrite& reg = myBuffer[myTail];
+  reg.addr  = addr;
+  reg.value = value;
+  reg.delta = delta;
   myTail = (myTail + 1) % myCapacity;
   ++mySize;
 }

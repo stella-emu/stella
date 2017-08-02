@@ -295,7 +295,7 @@ void Settings::validate()
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
-  if(i < 0 || i > 100)    setInternal("volume", "100");
+  if(i < 0 || i > 100)  setInternal("volume", "100");
   i = getInt("freq");
   if(!(i == 11025 || i == 22050 || i == 31400 || i == 44100 || i == 48000))
     setInternal("freq", "31400");
@@ -622,9 +622,7 @@ int Settings::setInternal(const string& key, const Variant& value,
   }
   else
   {
-    Setting setting;
-    setting.key   = key;
-    setting.value = value;
+    Setting setting(key, value);
     if(useAsInitial) setting.initialValue = value;
 
     myInternalSettings.push_back(setting);
@@ -676,9 +674,7 @@ int Settings::setExternal(const string& key, const Variant& value,
   }
   else
   {
-    Setting setting;
-    setting.key   = key;
-    setting.value = value;
+    Setting setting(key, value);
     if(useAsInitial) setting.initialValue = value;
 
     myExternalSettings.push_back(setting);

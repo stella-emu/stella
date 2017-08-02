@@ -41,7 +41,7 @@ class DiStella
     // A list of options that can be applied to the disassembly
     // This will eventually grow to include all options supported by
     // standalone Distella
-    struct Settings{
+    struct Settings {
       Common::Base::Format gfx_format;
       bool resolve_code;    // Attempt to detect code vs. data sections
       bool show_addresses;  // Show PC addresses (always off for external output)
