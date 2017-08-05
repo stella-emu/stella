@@ -124,7 +124,7 @@ void PointingDevice::updateDirection(int counter, float& counterRemainder,
 {
   // Apply sensitivity and calculate remainder
   float fTrackBallCount = counter * mySensitivity * TB_SENSITIVITY + counterRemainder;
-  int trackBallCount = std::lround(fTrackBallCount);
+  int trackBallCount = int(std::lround(fTrackBallCount));
   counterRemainder = fTrackBallCount - trackBallCount;
 
   if(trackBallCount)

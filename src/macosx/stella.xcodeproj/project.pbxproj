@@ -303,6 +303,7 @@
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
+		DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */; };
 		DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */; };
 		DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */; };
 		DC5BE4B317C913AC0091FD64 /* ConsoleBFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5BE4B117C913AC0091FD64 /* ConsoleBFont.hxx */; };
@@ -928,6 +929,7 @@
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RiotWidget.hxx; sourceTree = "<group>"; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SaveKey.cxx; sourceTree = "<group>"; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SaveKey.hxx; sourceTree = "<group>"; };
+		DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDevice.cxx; sourceTree = "<group>"; };
 		DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseControl.cxx; sourceTree = "<group>"; };
 		DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MouseControl.hxx; sourceTree = "<group>"; };
 		DC5BE4B117C913AC0091FD64 /* ConsoleBFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleBFont.hxx; sourceTree = "<group>"; };
@@ -1668,6 +1670,7 @@
 				2DDBEB7508457B7D00812C11 /* OSystem.hxx */,
 				2DE2DF820627AE34006BEC99 /* Paddles.cxx */,
 				2DE2DF830627AE34006BEC99 /* Paddles.hxx */,
+				DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */,
 				DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */,
 				2DE2DF840627AE34006BEC99 /* Props.cxx */,
 				2DE2DF850627AE34006BEC99 /* Props.hxx */,
@@ -2442,6 +2445,7 @@
 				DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */,
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
 				2D9174C209BA90380026E9FF /* Preferences.m in Sources */,
+				DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */,
 				2D9174C409BA90380026E9FF /* AboutBox.m in Sources */,
 				2D9174C509BA90380026E9FF /* Font.cxx in Sources */,
 				2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */,
