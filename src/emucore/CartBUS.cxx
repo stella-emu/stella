@@ -74,11 +74,7 @@ CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    initializeRAM(myBUSRAM+2048, 8192-2048);
-  else
-    memset(myBUSRAM+2048, 0, 8192-2048);
+  initializeRAM(myBUSRAM+2048, 8192-2048);
 
   // Update cycles to the current system cycles
   mySystemCycles = mySystem->cycles();

@@ -73,11 +73,7 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    initializeRAM(myCDFRAM+2048, 8192-2048);
-  else
-    memset(myCDFRAM+2048, 0, 8192-2048);
+  initializeRAM(myCDFRAM+2048, 8192-2048);
 
   // Update cycles to the current system cycles
   myAudioCycles = mySystem->cycles();
