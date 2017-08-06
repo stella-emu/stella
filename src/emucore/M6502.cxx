@@ -414,7 +414,7 @@ void M6502::attach(Debugger& debugger)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 M6502::addCondBreak(Expression* e, const string& name)
 {
-  myBreakConds.emplace_back(unique_ptr<Expression>(e));
+  myBreakConds.emplace_back(e);
   myBreakCondNames.push_back(name);
   return uInt32(myBreakConds.size() - 1);
 }
