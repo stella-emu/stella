@@ -63,9 +63,8 @@ class Missile : public Serializable
 
     void toggleEnabled(bool enabled);
 
-    uInt8 getPixel(uInt8 colorIn) const {
-      return (collision & 0x8000) ? myColor : colorIn;
-    }
+    bool isOn() const { return (collision & 0x8000); }
+    uInt8 getColor() const { return myColor; }
 
     uInt8 getPosition() const;
     void setPosition(uInt8 newPosition);

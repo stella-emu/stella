@@ -1276,51 +1276,59 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
 {
   if (x >= 160) return;
 
-  uInt8 color = myBackground.getColor();
+  uInt8 color;
 
-  switch (myPriority)
+  if (!myFrameManager.vblank())
   {
-    // Playfield has priority so ScoreBit isn't used
-    // Priority from highest to lowest:
-    //   BL/PF => P0/M0 => P1/M1 => BK
-    case Priority::pfp:  // CTRLPF D2=1, D1=ignored
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-      color = myPlayfield.getPixel(color);
-      color = myBall.getPixel(color);
-      break;
+    switch (myPriority)
+    {
+      case Priority::pfp:  // CTRLPF D2=1, D1=ignored
+        // Playfield has priority so ScoreBit isn't used
+        // Priority from highest to lowest:
+        //   BL/PF => P0/M0 => P1/M1 => BK
+        if (myPlayfield.isOn())       color = myPlayfield.getColor();
+        else if (myBall.isOn())       color = myBall.getColor();
+        else if (myPlayer0.isOn())    color = myPlayer0.getColor();
+        else if (myMissile0.isOn())   color = myMissile0.getColor();
+        else if (myPlayer1.isOn())    color = myPlayer1.getColor();
+        else if (myMissile1.isOn())   color = myMissile1.getColor();
+        else                          color = myBackground.getColor();
+        break;
 
-    case Priority::score:  // CTRLPF D2=0, D1=1
-      // Formally we have (priority from highest to lowest)
-      //   PF/P0/M0 => P1/M1 => BL => BK
-      // for the first half and
-      //   P0/M0 => PF/P1/M1 => BL => BK
-      // for the second half. However, the first ordering is equivalent
-      // to the second (PF has the same color as P0/M0), so we can just
-      // write
-      color = myBall.getPixel(color);
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myPlayfield.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-      break;
+      case Priority::score:  // CTRLPF D2=0, D1=1
+        // Formally we have (priority from highest to lowest)
+        //   PF/P0/M0 => P1/M1 => BL => BK
+        // for the first half and
+        //   P0/M0 => PF/P1/M1 => BL => BK
+        // for the second half. However, the first ordering is equivalent
+        // to the second (PF has the same color as P0/M0), so we can just
+        // write
+        if (myPlayer0.isOn())         color = myPlayer0.getColor();
+        else if (myMissile0.isOn())   color = myMissile0.getColor();
+        else if (myPlayfield.isOn())  color = myPlayfield.getColor();
+        else if (myPlayer1.isOn())    color = myPlayer1.getColor();
+        else if (myMissile1.isOn())   color = myMissile1.getColor();
+        else if (myBall.isOn())       color = myBall.getColor();
+        else                          color = myBackground.getColor();
+        break;
 
-    // Priority from highest to lowest:
-    //   P0/M0 => P1/M1 => BL/PF => BK
-    case Priority::normal:  // CTRLPF D2=0, D1=0
-      color = myPlayfield.getPixel(color);
-      color = myBall.getPixel(color);
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-      break;
+      case Priority::normal:  // CTRLPF D2=0, D1=0
+        // Priority from highest to lowest:
+        //   P0/M0 => P1/M1 => BL/PF => BK
+        if (myPlayer0.isOn())         color = myPlayer0.getColor();
+        else if (myMissile0.isOn())   color = myMissile0.getColor();
+        else if (myPlayer1.isOn())    color = myPlayer1.getColor();
+        else if (myMissile1.isOn())   color = myMissile1.getColor();
+        else if (myPlayfield.isOn())  color = myPlayfield.getColor();
+        else if (myBall.isOn())       color = myBall.getColor();
+        else                          color = myBackground.getColor();
+        break;
+    }
   }
+  else
+   color = 0;
 
-  myFramebuffer[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
+  myFramebuffer[y * 160 + x] = color;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
