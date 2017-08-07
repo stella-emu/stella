@@ -55,11 +55,6 @@ TIASurface::TIASurface(OSystem& system)
   myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
 
   memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
-
-  // Precalculate the average colors for the 'phosphor' effect
-  for(Int16 c = 255; c >= 0; c--)
-    for(Int16 p = 255; p >= 0; p--)
-      myPhosphorPalette[c][p] = getPhosphor(c, p);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,6 +234,14 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   myTiaSurface->setDirty();
   mySLineSurface->setDirty();
   memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH * 4);
+
+  // Precalculate the average colors for the 'phosphor' effect
+  if(myUsePhosphor)
+  {
+    for(Int16 c = 255; c >= 0; c--)
+      for(Int16 p = 255; p >= 0; p--)
+        myPhosphorPalette[c][p] = getPhosphor(c, p);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
