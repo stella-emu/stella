@@ -55,6 +55,11 @@ TIASurface::TIASurface(OSystem& system)
   myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
 
   memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
+
+  // Precalculate the average colors for the 'phosphor' effect
+  for(Int16 c = 255; c >= 0; c--)
+    for(Int16 p = 255; p >= 0; p--)
+      myPhosphorPalette[c][p] = getPhosphor(c, p);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,7 +144,7 @@ uInt32 TIASurface::pixel(uInt32 idx, uInt8 shift)
     const uInt32 p = myRGBFramebuffer[idx];
 
     // Mix current calculated frame with previous displayed frame
-    const uInt32 retVal = getRGBPhosphor(myPalette[c], p, shift);
+    const uInt32 retVal = getRGBPhosphor(myPalette[c], p);
 
     // Store back into displayed frame buffer (for next frame)
     myRGBFramebuffer[idx] = retVal;
@@ -237,7 +242,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p, uInt8 shift) const
+inline uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p) const
 {
   #define TO_RGB(color, red, green, blue) \
     red = color >> 16;  green = color >> 8;  blue = color;
@@ -248,15 +253,9 @@ inline uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p, uInt8 shift) const
   TO_RGB(p, rp, gp, bp);
 
   // Mix current calculated frame with previous displayed frame
-  uInt8 rn = getPhosphor(rc, rp);
-  uInt8 gn = getPhosphor(gc, gp);
-  uInt8 bn = getPhosphor(bc, bp);
-
-  if(shift)
-  {
-    // Convert RGB to grayscale
-    rn = gn = bn = uInt8(0.2126*rn + 0.7152*gn + 0.0722*bn);
-  }
+  uInt8 rn = myPhosphorPalette[rc][rp];
+  uInt8 gn = myPhosphorPalette[gc][gp];
+  uInt8 bn = myPhosphorPalette[bc][bp];
 
   return (rn << 16) | (gn << 8) | bn;
 }

@@ -119,7 +119,7 @@ class TIASurface
 
       @return  Averaged value of the two colors
     */
-    inline uInt8 getPhosphor(uInt8 c1, uInt8 c2) const {
+    inline uInt8 getPhosphor(const uInt8 c1, uInt8 c2) const {
       // Use maximum of current and decayed previous values
       c2 = uInt8(c2 * myPhosphorPercent);
       if(c1 > c2)  return c1; // raise (assumed immediate)
@@ -134,7 +134,7 @@ class TIASurface
 
       @return  Averaged value of the two RGB colors
     */
-    uInt32 getRGBPhosphor(uInt32 c, uInt32 cp, uInt8 shift = 0) const;
+    uInt32 getRGBPhosphor(uInt32 c, uInt32 cp) const;
 
     /**
       Enable/disable/query NTSC filtering effects.
@@ -184,6 +184,9 @@ class TIASurface
 
     // Amount to blend when using phosphor effect
     float myPhosphorPercent;
+
+    // Precalculated averaged phosphor colors
+    uInt8 myPhosphorPalette[256][256];
     /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode
