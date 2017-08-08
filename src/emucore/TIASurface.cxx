@@ -248,17 +248,15 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 inline uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p) const
 {
   #define TO_RGB(color, red, green, blue) \
-    red = color >> 16;  green = color >> 8;  blue = color;
-
-  uInt8 rc, gc, bc, rp, gp, bp;
+    const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
 
   TO_RGB(c, rc, gc, bc);
   TO_RGB(p, rp, gp, bp);
 
   // Mix current calculated frame with previous displayed frame
-  uInt8 rn = myPhosphorPalette[rc][rp];
-  uInt8 gn = myPhosphorPalette[gc][gp];
-  uInt8 bn = myPhosphorPalette[bc][bp];
+  const uInt8 rn = myPhosphorPalette[rc][rp];
+  const uInt8 gn = myPhosphorPalette[gc][gp];
+  const uInt8 bn = myPhosphorPalette[bc][bp];
 
   return (rn << 16) | (gn << 8) | bn;
 }
