@@ -1276,7 +1276,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
 {
   if (x >= 160) return;
 
-  uInt8 color;
+  uInt8 color = 0;
 
   if (!myFrameManager.vblank())
   {
@@ -1325,8 +1325,6 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
         break;
     }
   }
-  else
-   color = 0;
 
   myFramebuffer[y * 160 + x] = color;
 }
