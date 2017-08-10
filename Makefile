@@ -27,7 +27,7 @@
 srcdir      ?= .
 
 DEFINES     := -D_GLIBCXX_USE_CXX11_ABI=1
-LDFLAGS     :=
+LDFLAGS     := -pthread
 INCLUDES    :=
 LIBS	    :=
 OBJS	    :=

@@ -72,6 +72,10 @@ class NTSCFilter
       myNTSC.initializePalette(myTIAPalette);
     }
 
+    inline void setPhosphorPalette(uInt8 palette[256][256]) {
+      myNTSC.setPhosphorPalette(palette);
+    }
+
     // The following are meant to be used strictly for toggling from the GUI
     string setPreset(Preset preset);
 
@@ -110,6 +114,11 @@ class NTSCFilter
     {
       myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch);
     }
+    inline void render(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
+                       uInt32* dest_buf, uInt32 dest_pitch, uInt32* prev_buf)
+    {
+      myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch, prev_buf);
+    }
 
   private:
     // Convert from atari_ntsc_setup_t values to equivalent adjustables
@@ -135,6 +144,7 @@ class NTSCFilter
     // and 128 black&white colours (PAL colour loss)
     // Each colour is represented by 3 bytes, in R,G,B order
     uInt8 myTIAPalette[AtariNTSC::palette_size * 3];
+    uInt8* myPhosphorPalette;
 
     struct AdjustableTag {
       const char* const type;
