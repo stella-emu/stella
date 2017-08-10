@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cmath>
+#include <algorithm>
 
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
@@ -241,11 +242,13 @@ void TIASurface::enablePhosphor(bool enable, int blend)
     for(Int16 c = 255; c >= 0; c--)
       for(Int16 p = 255; p >= 0; p--)
         myPhosphorPalette[c][p] = getPhosphor(c, p);
+
+    myNTSCFilter.setPhosphorPalette(myPhosphorPalette);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p) const
+inline uInt32 TIASurface::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 {
   #define TO_RGB(color, red, green, blue) \
     const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
@@ -325,16 +328,17 @@ void TIASurface::render()
   {
     case Filter::Normal:
     {
-      uInt8* in = myTIA->frameBuffer();
+      uInt8* tiaIn = myTIA->frameBuffer();
 
-      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
+      uInt32 bufofs = 0, screenofsY = 0, pos;
       for(uInt32 y = 0; y < height; ++y)
       {
         pos = screenofsY;
-        for(uInt32 x = 0; x < width; ++x)
-          out[pos++] = myPalette[in[bufofsY + x]];
-
-        bufofsY    += width;
+        for (uInt32 x = width / 2; x; --x)
+        {
+          out[pos++] = myPalette[tiaIn[bufofs++]];
+          out[pos++] = myPalette[tiaIn[bufofs++]];
+        }
         screenofsY += outPitch;
       }
       break;
@@ -345,21 +349,18 @@ void TIASurface::render()
       uInt8*  tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer;
 
-      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
-      for(uInt32 y = 0; y < height; ++y)
+      uInt32 bufofs = 0, screenofsY = 0, pos;
+      for(uInt32 y = height; y ; --y)
       {
         pos = screenofsY;
-        for(uInt32 x = 0; x < width; ++x)
+        for(uInt32 x = width / 2; x ; --x)
         {
-          const uInt32 bufofs = bufofsY + x;
-          const uInt8 c = tiaIn[bufofs];
-          const uInt32 retVal = getRGBPhosphor(myPalette[c], rgbIn[bufofs]);
-
           // Store back into displayed frame buffer (for next frame)
-          rgbIn[bufofs] = retVal;
-          out[pos++] = retVal;
+          rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          bufofs++;
+          rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          bufofs++;
         }
-        bufofsY    += width;
         screenofsY += outPitch;
       }
       break;
@@ -373,28 +374,7 @@ void TIASurface::render()
 
     case Filter::BlarggPhosphor:
     {
-      // First do Blargg filtering
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
-
-      // Then do phosphor mode (blend the resulting frames)
-      uInt32* rgbIn = myRGBFramebuffer;
-
-      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
-      for(uInt32 y = 0; y < height; ++y)
-      {
-        pos = screenofsY;
-        for(uInt32 x = 0; x < AtariNTSC::outWidth(kTIAW); ++x)
-        {
-          const uInt32 bufofs = bufofsY + x;
-          const uInt32 retVal = getRGBPhosphor(out[bufofs], rgbIn[bufofs]);
-
-          // Store back into displayed frame buffer (for next frame)
-          rgbIn[bufofs] = retVal;
-          out[pos++] = retVal;
-        }
-        bufofsY    += AtariNTSC::outWidth(kTIAW);
-        screenofsY += outPitch;
-      }
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer);
       break;
     }
   }

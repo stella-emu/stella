@@ -25,6 +25,8 @@ class FrameBuffer;
 class FBSurface;
 class VideoMode;
 
+#include <thread>
+
 #include "FrameManager.hxx"
 #include "Rect.hxx"
 #include "NTSCFilter.hxx"
@@ -134,7 +136,7 @@ class TIASurface
 
       @return  Averaged value of the two RGB colors
     */
-    uInt32 getRGBPhosphor(uInt32 c, uInt32 cp) const;
+    uInt32 getRGBPhosphor(const uInt32 c, const uInt32 cp) const;
 
     /**
       Enable/disable/query NTSC filtering effects.
