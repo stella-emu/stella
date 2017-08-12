@@ -18,6 +18,7 @@
 #include <cassert>
 #include <sstream>
 #include <fstream>
+#include <chrono>
 
 #include <ctime>
 #ifdef HAVE_GETTIMEOFDAY
@@ -55,6 +56,9 @@
 #include "Version.hxx"
 
 #include "OSystem.hxx"
+
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
@@ -642,15 +646,45 @@ uInt64 OSystem::getTicks() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
+  uInt32 frameIndex = 0;
+  high_resolution_clock::time_point timestamp = high_resolution_clock::now();
+  SDL_Event event;
+
   if(mySettings->getString("timing") == "sleep")
   {
     // Sleep-based wait: good for CPU, bad for graphical sync
     for(;;)
     {
+      if (frameIndex == 1000) {
+        high_resolution_clock::time_point newTimestamp = high_resolution_clock::now();
+        high_resolution_clock::duration delta = newTimestamp - timestamp;
+        auto deltaMicroseconds = duration_cast<std::chrono::microseconds>(delta);
+        double fps = 1000. / deltaMicroseconds.count() * 1E6;
+
+        (cerr << deltaMicroseconds.count() << " microseconds for 1000 frames, " << fps << " FPS\n").flush();
+
+        timestamp = newTimestamp;
+        frameIndex = 0;
+      } else {
+        frameIndex++;
+      }
+
+      #if 0
+
       myTimingInfo.start = getTicks();
       myEventHandler->poll(myTimingInfo.start);
+
+      #endif
+
+      while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) myQuitLoop = true;
+      }
+
       if(myQuitLoop) break;  // Exit if the user wants to quit
       myFrameBuffer->update();
+
+      #if 0
+
       myTimingInfo.current = getTicks();
       myTimingInfo.virt += myTimePerFrame;
 
@@ -668,6 +702,8 @@ void OSystem::mainLoop()
 
       myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
       myTimingInfo.totalFrames++;
+
+      #endif
     }
   }
   else
