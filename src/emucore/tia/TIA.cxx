@@ -417,7 +417,7 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     case CXBLPF:
-      result = collCXBLPF() | (lastDataBusValue & 0x40);
+      result = collCXBLPF();
       break;
 
     case INPT0:
