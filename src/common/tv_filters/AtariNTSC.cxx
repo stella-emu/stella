@@ -87,18 +87,22 @@ void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width,
 void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
   void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in)
 {
-  // Spawn the threads...
-  for(uInt8 i = 0; i < myNumThreads; i++)
+  // spawn myNumThreads - 1 threads...
+  for (uInt32 i = 1; i < myNumThreads; i++)
     myThreads[i] = std::thread([=] {
-      renderWithPhosphorThread(atari_in, in_width, in_height, myNumThreads, i,
-                               rgb_in, rgb_out, out_pitch);
+    rgb_in == NULL ? renderThread(atari_in, in_width, in_height, myNumThreads, i, rgb_out, out_pitch) :
+      renderWithPhosphorThread(atari_in, in_width, in_height, myNumThreads, i, rgb_in, rgb_out, out_pitch);
   });
+  // make the main thread busy too
+  rgb_in == NULL ? renderThread(atari_in, in_width, in_height, myNumThreads, 0, rgb_out, out_pitch) :
+    renderWithPhosphorThread(atari_in, in_width, in_height, myNumThreads, 0, rgb_in, rgb_out, out_pitch);
   // ...and make them join again
-  for(uInt8 i = 0; i < myNumThreads; i++)
+  for (uInt32 i = 1; i < myNumThreads; i++)
     myThreads[i].join();
 
   // Copy phosphor values into out buffer
-  memcpy(rgb_out, rgb_in, in_height * out_pitch);
+  if (rgb_in != NULL)
+    memcpy(rgb_out, rgb_in, in_height * out_pitch);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
