@@ -23,6 +23,9 @@
     then back again would pass a 'Tab' key event to the app, which in
     most cases would navigate to the next UI element.
 
+  * Fixed possible lockups when entering the debugger under certain
+    circumstances.
+
   * Reverted joystick changes for Decathlon ROMs from last release, as
     it was added by mistake.
 

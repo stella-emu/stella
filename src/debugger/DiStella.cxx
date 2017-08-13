@@ -103,9 +103,16 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     // use all access points determined by Stella during emulation
     int codeAccessPoint = 0;
 
-    while(!myAddressQueue.empty())
+    // Sometimes we get a circular reference, in that processing a certain
+    // PC address leads us to a sequence of addresses that end up trying
+    // to process the same address again.  We detect such consecutive PC
+    // addresses and only process the first one
+    uInt16 lastPC = 0;
+    bool duplicateFound = false;
+    while(!(myAddressQueue.empty() || duplicateFound))
     {
-      myPC = myAddressQueue.front();
+      myPC = lastPC = myAddressQueue.front();
+
       uInt16 pcBeg = myPC;
       myAddressQueue.pop();
       disasm(myPC, 1);
@@ -174,6 +181,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
           ++codeAccessPoint;
         }
       }
+      duplicateFound = (myAddressQueue.front() == lastPC);
     }
     for (int k = 0; k <= myAppData.end; k++)
     {
