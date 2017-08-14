@@ -144,7 +144,6 @@ class NTSCFilter
     // and 128 black&white colours (PAL colour loss)
     // Each colour is represented by 3 bytes, in R,G,B order
     uInt8 myTIAPalette[AtariNTSC::palette_size * 3];
-    uInt8* myPhosphorPalette;
 
     struct AdjustableTag {
       const char* const type;
