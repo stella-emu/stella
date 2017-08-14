@@ -35,22 +35,6 @@ void AtariNTSC::initialize(const Setup& setup, const uInt8* palette)
 {
   init(myImpl, setup);
   initializePalette(palette);
-
-  uInt32 systemThreads = std::thread::hardware_concurrency();
-  if(systemThreads <= 1)
-  {
-    myWorkerThreads = 0;
-    myTotalThreads  = 1;
-  }
-  else
-  {
-    systemThreads = std::min(4u, systemThreads);
-
-    myWorkerThreads = systemThreads - 1;
-    myTotalThreads  = systemThreads;
-
-    myThreads = make_unique<std::thread[]>(myWorkerThreads);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,6 +63,26 @@ void AtariNTSC::initializePalette(const uInt8* palette)
           kernel [i + 7] - kernel [i + 3    +14];
       kernel [i + 3 + 14] += error;
     }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariNTSC::enableThreading(bool enable)
+{
+  uInt32 systemThreads = enable ? std::thread::hardware_concurrency() : 0;
+  if(systemThreads <= 1)
+  {
+    myWorkerThreads = 0;
+    myTotalThreads  = 1;
+  }
+  else
+  {
+    systemThreads = std::min(4u, systemThreads);
+
+    myWorkerThreads = systemThreads - 1;
+    myTotalThreads  = systemThreads;
+
+    myThreads = make_unique<std::thread[]>(myWorkerThreads);
   }
 }
 

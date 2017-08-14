@@ -51,6 +51,9 @@ class AtariNTSC
       entry_size = 2 * 14,
     };
 
+    // By default, threading is turned off
+    AtariNTSC() { enableThreading(false); }
+
     // Image parameters, ranging from -1.0 to 1.0. Actual internal values shown
     // in parenthesis and should remain fairly stable in future versions.
     struct Setup
@@ -79,6 +82,9 @@ class AtariNTSC
     // Initializes and adjusts parameters.
     void initialize(const Setup& setup, const uInt8* palette);
     void initializePalette(const uInt8* palette);
+
+    // Set up threading
+    void enableThreading(bool enable);
 
     // Set phosphor palette, for use in Blargg + phosphor mode
     void setPhosphorPalette(uInt8 palette[256][256]) {

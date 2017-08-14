@@ -56,6 +56,9 @@ TIASurface::TIASurface(OSystem& system)
   myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
 
   memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
+
+  // Enable/disable threading in the NTSC TV effects renderer
+  myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

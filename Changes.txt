@@ -24,6 +24,9 @@
     this, further optimized the TIA rendering code.  Thanks to Thomas
     Jentzsch for the bulk of the work in this area.
 
+  * Added 'threads' commandline argument and associated UI item to
+    enable/disable multi-threading.
+
   * Updated CDF scheme to latest version from Spiceware.  In addition,
     this scheme now supports versioning, so older and newer ROMs will
     continue to work.

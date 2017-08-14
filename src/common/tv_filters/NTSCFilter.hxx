@@ -120,6 +120,12 @@ class NTSCFilter
       myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch, prev_buf);
     }
 
+    // Enable threading for the NTSC rendering
+    inline void enableThreading(bool enable)
+    {
+      myNTSC.enableThreading(enable);
+    }
+
   private:
     // Convert from atari_ntsc_setup_t values to equivalent adjustables
     void convertToAdjustable(Adjustable& adjustable,

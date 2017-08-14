@@ -139,6 +139,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("fastscbios", "true");
+  setInternal("threads", "false");
   setExternal("romloadcount", "0");
   setExternal("maxres", "");
 
@@ -424,6 +425,7 @@ void Settings::usage() const
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
+    << "  -threads      <1|0>          Whether to using multi-threading during emulation\n"
     << "  -snapsavedir  <path>         The directory to save snapshot files to\n"
     << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
     << "  -snapname     <int|rom>      Name snapshots according to internal database or ROM\n"
