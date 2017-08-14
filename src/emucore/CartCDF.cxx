@@ -27,9 +27,10 @@
 #include "TIA.hxx"
 
 // Location of data within the RAM copy of the CDF Driver.
-#define DSxPTR        0x06E0
-#define DSxINC        0x0768
-#define WAVEFORM      0x07F0
+//  Version                   0       1
+const uInt16 DSxPTR[]   = {0x06E0, 0x00A0};
+const uInt16 DSxINC[]   = {0x0768, 0x0128};
+const uInt16 WAVEFORM[] = {0x07F0, 0x01B0};
 #define DSRAM         0x0800
 
 #define COMMSTREAM    0x20
@@ -62,10 +63,15 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
 
   // Pointer to the display RAM
   myDisplayImage = myCDFRAM + DSRAM;
+
+  setVersion();
+
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
-  myThumbEmulator = make_unique<Thumbulator>((uInt16*)myImage, (uInt16*)myCDFRAM,
-      settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::CDF, this);
+  myThumbEmulator = make_unique<Thumbulator>(
+      (uInt16*)myImage, (uInt16*)myCDFRAM, settings.getBool("thumb.trapfatal"),
+      myVersion ? Thumbulator::ConfigureFor::CDF1 : Thumbulator::ConfigureFor::CDF,
+      this);
 #endif
   setInitialState();
 }
@@ -576,51 +582,57 @@ bool CartridgeCDF::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 {
-  //  index &= 0x0f;
+  uInt16 address = DSxPTR[myVersion] + index * 4;
 
-  return myCDFRAM[DSxPTR + index*4 + 0]        +  // low byte
-        (myCDFRAM[DSxPTR + index*4 + 1] << 8)  +
-        (myCDFRAM[DSxPTR + index*4 + 2] << 16) +
-        (myCDFRAM[DSxPTR + index*4 + 3] << 24) ;  // high byte
+  return myCDFRAM[address + 0]        +  // low byte
+        (myCDFRAM[address + 1] << 8)  +
+        (myCDFRAM[address + 2] << 16) +
+        (myCDFRAM[address + 3] << 24) ;  // high byte
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 {
-  //  index &= 0x1f;
-  myCDFRAM[DSxPTR + index*4 + 0] = value & 0xff;          // low byte
-  myCDFRAM[DSxPTR + index*4 + 1] = (value >> 8) & 0xff;
-  myCDFRAM[DSxPTR + index*4 + 2] = (value >> 16) & 0xff;
-  myCDFRAM[DSxPTR + index*4 + 3] = (value >> 24) & 0xff;  // high byte
+  uInt16 address = DSxPTR[myVersion] + index * 4;
+
+  myCDFRAM[address + 0] = value & 0xff;          // low byte
+  myCDFRAM[address + 1] = (value >> 8) & 0xff;
+  myCDFRAM[address + 2] = (value >> 16) & 0xff;
+  myCDFRAM[address + 3] = (value >> 24) & 0xff;  // high byte
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 {
-  return myCDFRAM[DSxINC + index*4 + 0]        +   // low byte
-        (myCDFRAM[DSxINC + index*4 + 1] << 8)  +
-        (myCDFRAM[DSxINC + index*4 + 2] << 16) +
-        (myCDFRAM[DSxINC + index*4 + 3] << 24) ;   // high byte
+  uInt16 address = DSxINC[myVersion] + index * 4;
+
+  return myCDFRAM[address + 0]        +   // low byte
+        (myCDFRAM[address + 1] << 8)  +
+        (myCDFRAM[address + 2] << 16) +
+        (myCDFRAM[address + 3] << 24) ;   // high byte
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::setDatastreamIncrement(uInt8 index, uInt32 value)
 {
-  myCDFRAM[DSxINC + index*4 + 0] = value & 0xff;          // low byte
-  myCDFRAM[DSxINC + index*4 + 1] = (value >> 8) & 0xff;
-  myCDFRAM[DSxINC + index*4 + 2] = (value >> 16) & 0xff;
-  myCDFRAM[DSxINC + index*4 + 3] = (value >> 24) & 0xff;  // high byte
+  uInt16 address = DSxINC[myVersion] + index * 4;
+
+  myCDFRAM[address + 0] = value & 0xff;          // low byte
+  myCDFRAM[address + 1] = (value >> 8) & 0xff;
+  myCDFRAM[address + 2] = (value >> 16) & 0xff;
+  myCDFRAM[address + 3] = (value >> 24) & 0xff;  // high byte
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
   uInt32 result;
+  uInt16 address = WAVEFORM[myVersion] + index * 4;
 
-  result = myCDFRAM[WAVEFORM + index*4 + 0]        +  // low byte
-          (myCDFRAM[WAVEFORM + index*4 + 1] << 8)  +
-          (myCDFRAM[WAVEFORM + index*4 + 2] << 16) +
-          (myCDFRAM[WAVEFORM + index*4 + 3] << 24);   // high byte
+  result = myCDFRAM[address + 0]        +  // low byte
+          (myCDFRAM[address + 1] << 8)  +
+          (myCDFRAM[address + 2] << 16) +
+          (myCDFRAM[address + 3] << 24);   // high byte
 
   result -= (0x40000000 + DSRAM);
 
@@ -634,11 +646,12 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 uInt32 CartridgeCDF::getSample()
 {
   uInt32 result;
+  uInt16 address = WAVEFORM[myVersion];
 
-  result = myCDFRAM[WAVEFORM + 0]        +  // low byte
-          (myCDFRAM[WAVEFORM + 1] << 8)  +
-          (myCDFRAM[WAVEFORM + 2] << 16) +
-          (myCDFRAM[WAVEFORM + 3] << 24);   // high byte
+  result = myCDFRAM[address + 0]        +  // low byte
+          (myCDFRAM[address + 1] << 8)  +
+          (myCDFRAM[address + 2] << 16) +
+          (myCDFRAM[address + 3] << 24);   // high byte
 
   return result;
 }
@@ -668,4 +681,22 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   pointer += (increment << 12);
   setDatastreamPointer(index, pointer);
   return value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCDF::setVersion()
+{
+  myVersion = 0;
+
+  for(uInt32 i = 0; i < 2048; i += 4)
+  {
+    // CDF signature occurs 3 times in a row, i+3 (+7 or +11) is version
+    if (    myImage[i+0] == 0x43 && myImage[i + 4] == 0x43 && myImage[i + 8] == 0x43) // C
+      if (  myImage[i+1] == 0x44 && myImage[i + 5] == 0x44 && myImage[i + 9] == 0x44) // D
+        if (myImage[i+2] == 0x46 && myImage[i + 6] == 0x46 && myImage[i +10] == 0x46) // F
+        {
+          myVersion = myImage[i+3];
+          break;
+        }
+  }
 }

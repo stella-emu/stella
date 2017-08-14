@@ -36,7 +36,7 @@ class System;
 
 
   There are seven 4K program banks, a 4K Display Data RAM,
-  1K C Varaible and Stack, and the CDF chip.
+  1K C Variable and Stack, and the CDF chip.
   CDF chip access is mapped to $1000 - $103F.
 
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
@@ -209,6 +209,7 @@ class CartridgeCDF : public Cartridge
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
+    void setVersion();
 
   private:
     // The 32K ROM image of the cartridge
@@ -250,16 +251,16 @@ class CartridgeCDF : public Cartridge
     // Thumbulator will trap these calls and pass the appropriate information to
     // the Cartridge Class via callFunction() so it can emulate the 32 bit audio routines.
 
-  /* Register usage for audio:
-   r8  = channel0 accumulator
-   r9  = channel1 accumulator
-   r10 = channel2 accumulator
-   r11 = channel0 frequency
-   r12 = channel1 frequency
-   r13 = channel2 frequency
-   r14 = timer base */
+    /* Register usage for audio:
+      r8  = channel0 accumulator
+      r9  = channel1 accumulator
+      r10 = channel2 accumulator
+      r11 = channel0 frequency
+      r12 = channel1 frequency
+      r13 = channel2 frequency
+      r14 = timer base  */
 
-  // The music counters, ARM FIQ shadow registers r8, r9, r10
+    // The music counters, ARM FIQ shadow registers r8, r9, r10
     uInt32 myMusicCounters[3];
 
     // The music frequency, ARM FIQ shadow registers r11, r12, r13
@@ -288,6 +289,9 @@ class CartridgeCDF : public Cartridge
     TIA* myTIA;
 
     uInt8 myFastJumpActive;
+
+    // version of CDF
+    uInt16 myVersion;
 
   private:
     // Following constructors and assignment operators not supported

@@ -234,6 +234,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
     // as additional RAM
     case ConfigureFor::BUS:
     case ConfigureFor::CDF:
+    case ConfigureFor::CDF1:
       if((addr > 0x40000028) && (addr < 0x40000800))
         fatalError("write16", addr, "to bankswitch code area");
       break;
@@ -1193,6 +1194,67 @@ int Thumbulator::execute()
             uInt32 r3 = read_register(3);
             uInt32 r4 = read_register(4);
           #endif
+            myCartridge->thumbCallback(255, 0, 0);
+          }
+
+          break;
+
+        case ConfigureFor::CDF1:
+          // this subroutine interface is used in the CDF driver,
+          // it starts at address 0x00000750
+          // _SetNote:
+          //   ldr     r4, =NoteStore
+          //   bx      r4   // bx instruction at 0x000006e2
+          // _ResetWave:
+          //   ldr     r4, =ResetWaveStore
+          //   bx      r4   // bx instruction at 0x000006e6
+          // _GetWavePtr:
+          //   ldr     r4, =WavePtrFetch
+          //   bx      r4   // bx instruction at 0x000006ea
+          // _SetWaveSize:
+          //   ldr     r4, =WaveSizeStore
+          //   bx      r4   // bx instruction at 0x000006ee
+
+          // address to test for is + 4 due to pipelining
+
+#define CDF1_SetNote     (0x00000752 + 4)
+#define CDF1_ResetWave   (0x00000756 + 4)
+#define CDF1_GetWavePtr  (0x0000075a + 4)
+#define CDF1_SetWaveSize (0x0000075e + 4)
+
+          if      (pc == CDF1_SetNote)
+          {
+            myCartridge->thumbCallback(0, read_register(2), read_register(3));
+            handled = true;
+          }
+          else if (pc == CDF1_ResetWave)
+          {
+            myCartridge->thumbCallback(1, read_register(2), 0);
+            handled = true;
+          }
+          else if (pc == CDF1_GetWavePtr)
+          {
+            write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
+            handled = true;
+          }
+          else if (pc == CDF1_SetWaveSize)
+          {
+            myCartridge->thumbCallback(3, read_register(2), read_register(3));
+            handled = true;
+          }
+          else if (pc == 0x0000083a)
+          {
+            // exiting Custom ARM code, returning to BUS Driver control
+          }
+          else
+          {
+#if 0  // uncomment this for testing
+            uInt32 r0 = read_register(0);
+            uInt32 r1 = read_register(1);
+            uInt32 r2 = read_register(2);
+            uInt32 r3 = read_register(3);
+            uInt32 r4 = read_register(4);
+#endif
             myCartridge->thumbCallback(255, 0, 0);
           }
 
@@ -2266,6 +2328,7 @@ int Thumbulator::reset()
     // future 2K Harmony/Melody drivers will most likely use these settings
     case ConfigureFor::BUS:
     case ConfigureFor::CDF:
+    case ConfigureFor::CDF1:
       reg_norm[14] = 0x00000800; // Link Register
       reg_norm[15] = 0x0000080B; // Program Counter
       break;
