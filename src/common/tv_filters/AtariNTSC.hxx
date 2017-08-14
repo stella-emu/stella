@@ -90,9 +90,7 @@ class AtariNTSC
     //  In_row_width is the number of pixels to get to the next input row.
     //  Out_pitch is the number of *bytes* to get to the next output row.
     void render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
-                void* rgb_out, const uInt32 out_pitch);
-    void render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
-                void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in);
+                void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in = nullptr);
 
     // Number of input pixels that will fit within given output width.
     // Might be rounded down slightly; use outWidth() on result to find
@@ -165,9 +163,9 @@ class AtariNTSC
     uInt8 myPhosphorPalette[256][256];
 
     // Rendering threads
-    std::thread* myThreads;
-    // Number of rendering threads
-    uInt8 myNumThreads;
+    unique_ptr<std::thread[]> myThreads;
+    // Number of rendering and total threads
+    uInt32 myWorkerThreads, myTotalThreads;
 
     struct init_t
     {
