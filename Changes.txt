@@ -19,12 +19,20 @@
     Related to this, added 'tsense' commandline argument and associated
     UI item, to allow changing sensitivity of mouse trackball emulation.
 
+  * Added preliminary support for multi-threading in the Blargg TV effects
+    code.  This is still a WIP; more improvements are coming.  Related to
+    this, further optimized the TIA rendering code.  Thanks to Thomas
+    Jentzsch for the bulk of the work in this area.
+
+  * Updated CDF scheme to latest version from Spiceware.  In addition,
+    this scheme now supports versioning, so older and newer ROMs will
+    continue to work.
+
   * Fixed an annoying bug in Linux, where Alt-Tab'ing out of a window and
     then back again would pass a 'Tab' key event to the app, which in
     most cases would navigate to the next UI element.
 
-  * Fixed possible lockups when entering the debugger under certain
-    circumstances.
+  * Fixed lockups when entering the debugger under certain circumstances.
 
   * Reverted joystick changes for Decathlon ROMs from last release, as
     it was added by mistake.
