@@ -22,7 +22,7 @@
   * Added preliminary support for multi-threading in the Blargg TV effects
     code.  This is still a WIP; more improvements are coming.  Related to
     this, further optimized the TIA rendering code.  Also added 'threads'
-    commandline argument and associated UI item to  enable/disable
+    commandline argument and associated UI item to enable/disable
     multi-threading.  Thanks to Thomas Jentzsch for the bulk of the work
     in this area.
 
