@@ -151,7 +151,7 @@ void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
     }
 
     // finish final pixels
-    ATARI_NTSC_COLOR_IN(0, NTSC_black);
+    ATARI_NTSC_COLOR_IN(0, line_in[0]);
     ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
     ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
     ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
@@ -161,6 +161,22 @@ void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
     ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
     ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
     ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+
+    line_in += 2;
+    line_out += 7;
+
+    ATARI_NTSC_COLOR_IN(0, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+
+    ATARI_NTSC_COLOR_IN(1, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+#if 0
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+#endif
 
     atari_in += in_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;
@@ -208,7 +224,7 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
     }
 
     // finish final pixels
-    ATARI_NTSC_COLOR_IN(0, NTSC_black);
+    ATARI_NTSC_COLOR_IN(0, line_in[0]);
     ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
     ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
     ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
@@ -219,8 +235,24 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
     ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
     ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
 
+    line_in += 2;
+    line_out += 7;
+
+    ATARI_NTSC_COLOR_IN(0, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+
+    ATARI_NTSC_COLOR_IN(1, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+#if 0
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+#endif
+
     // Do phosphor mode (blend the resulting frames)
-    // Note: The codes assumes that AtariNTSC::outWidth(kTIAW) == outPitch == 560
+    // Note: The code assumes that AtariNTSC::outWidth(kTIAW) == outPitch == 565
     for (uInt32 x = AtariNTSC::outWidth(in_width) / 8; x; --x)
     {
       // Store back into displayed frame buffer (for next frame)
@@ -241,6 +273,23 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
       bufofs++;
     }
+    // finish final pixels
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+#if 0
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+#endif
 
     atari_in += in_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;

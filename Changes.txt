@@ -21,11 +21,13 @@
 
   * Added preliminary support for multi-threading in the Blargg TV effects
     code.  This is still a WIP; more improvements are coming.  Related to
-    this, further optimized the TIA rendering code.  Thanks to Thomas
-    Jentzsch for the bulk of the work in this area.
+    this, further optimized the TIA rendering code.  Also added 'threads'
+    commandline argument and associated UI item to  enable/disable
+    multi-threading.  Thanks to Thomas Jentzsch for the bulk of the work
+    in this area.
 
-  * Added 'threads' commandline argument and associated UI item to
-    enable/disable multi-threading.
+  * Blargg TV effects now no longer cut off the right side of the image
+    (by several pixels) in certain cases.
 
   * Updated CDF scheme to latest version from Spiceware.  In addition,
     this scheme now supports versioning, so older and newer ROMs will
