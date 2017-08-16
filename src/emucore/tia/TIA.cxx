@@ -1019,8 +1019,8 @@ TIA& TIA::updateScanline()
 {
   // Update frame by one scanline at a time
   uInt32 line = scanlines();
-  while (line == scanlines())
-    updateScanlineByStep();
+  while (line == scanlines() && mySystem->m6502().execute(1))
+    updateEmulation();
 
   return *this;
 }
@@ -1029,8 +1029,8 @@ TIA& TIA::updateScanline()
 TIA& TIA::updateScanlineByStep()
 {
   // Update frame by one CPU instruction/color clock
-  mySystem->m6502().execute(1);
-  updateEmulation();
+  if (mySystem->m6502().execute(1))
+    updateEmulation();
 
   return *this;
 }
@@ -1038,8 +1038,10 @@ TIA& TIA::updateScanlineByStep()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA& TIA::updateScanlineByTrace(int target)
 {
-  while (mySystem->m6502().getPC() != target)
-    updateScanlineByStep();
+  uInt32 count = 100;  // only try up to 100 steps
+  while (mySystem->m6502().getPC() != target && count-- &&
+         mySystem->m6502().execute(1))
+    updateEmulation();
 
   return *this;
 }
