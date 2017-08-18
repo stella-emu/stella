@@ -37,6 +37,10 @@
     then back again would pass a 'Tab' key event to the app, which in
     most cases would navigate to the next UI element.
 
+  * Fixed potential issue with state file saving and the debugger; under
+    certain circumstances a rewind would give a different state than
+    before (note that the state file format has changed because of this).
+
   * Fixed lockups when entering the debugger under certain circumstances.
 
   * Reverted joystick changes for Decathlon ROMs from last release, as

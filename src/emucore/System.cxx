@@ -221,6 +221,8 @@ bool System::save(Serializer& out) const
       return false;
     if(!myCart.save(out))
       return false;
+    if(!randGenerator().save(out))
+      return false;
   }
   catch(...)
   {
@@ -250,6 +252,8 @@ bool System::load(Serializer& in)
     if(!myTIA.load(in))
       return false;
     if(!myCart.load(in))
+      return false;
+    if(!randGenerator().load(in))
       return false;
   }
   catch(...)
