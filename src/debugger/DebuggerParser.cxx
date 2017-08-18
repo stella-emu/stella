@@ -284,16 +284,16 @@ int DebuggerParser::decipher_arg(const string& str)
 string DebuggerParser::showWatches()
 {
   ostringstream buf;
-  for(uInt32 i = 0; i < watches.size(); i++)
+  for(uInt32 i = 0; i < myWatches.size(); ++i)
   {
-    if(watches[i] != "")
+    if(myWatches[i] != "")
     {
       // Clear the args, since we're going to pass them to eval()
       argStrings.clear();
       args.clear();
 
       argCount = 1;
-      argStrings.push_back(watches[i]);
+      argStrings.push_back(myWatches[i]);
       args.push_back(decipher_arg(argStrings[0]));
       if(args[0] < 0)
         buf << "BAD WATCH " << (i+1) << ": " << argStrings[0] << endl;
@@ -534,13 +534,14 @@ string DebuggerParser::eval()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::trapStatus(int addr)
+string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
 {
   string result;
   result += Base::toString(addr);
   result += ": ";
   bool r = debugger.readTrap(addr);
   bool w = debugger.writeTrap(addr);
+  enabled = r || w;
   if(r && w)
     result += "read|write";
   else if(r)
@@ -570,11 +571,11 @@ bool DebuggerParser::saveScriptFile(string file)
   ofstream out(file);
 
   FunctionDefMap funcs = debugger.getFunctionDefMap();
-  for(const auto& i: funcs)
-    out << "function " << i.first << " { " << i.second << " }" << endl;
+  for(const auto& f: funcs)
+    out << "function " << f.first << " { " << f.second << " }" << endl;
 
-  for(const auto& i: watches)
-    out << "watch " << i << endl;
+  for(const auto& w: myWatches)
+    out << "watch " << w << endl;
 
   for(uInt32 i = 0; i < 0x10000; ++i)
     if(debugger.breakPoint(i))
@@ -735,6 +736,7 @@ void DebuggerParser::executeClearconfig()
 // "cleartraps"
 void DebuggerParser::executeCleartraps()
 {
+  myTraps.clear();
   debugger.clearAllTraps();
   commandResult << "all traps cleared";
 }
@@ -743,7 +745,7 @@ void DebuggerParser::executeCleartraps()
 // "clearwatches"
 void DebuggerParser::executeClearwatches()
 {
-  watches.clear();
+  myWatches.clear();
   commandResult << "all watches cleared";
 }
 
@@ -856,9 +858,9 @@ void DebuggerParser::executeDelfunction()
 void DebuggerParser::executeDelwatch()
 {
   int which = args[0] - 1;
-  if(which >= 0 && which < int(watches.size()))
+  if(which >= 0 && which < int(myWatches.size()))
   {
-    Vec::removeAt(watches, which);
+    Vec::removeAt(myWatches, which);
     commandResult << "removed watch";
   }
   else
@@ -1096,19 +1098,13 @@ void DebuggerParser::executeListfunctions()
 // "listtraps"
 void DebuggerParser::executeListtraps()
 {
-  int count = 0;
-
-  for(uInt32 i = 0; i <= 0xffff; ++i)
+  if(myTraps.size() > 0)
   {
-    if(debugger.readTrap(i) || debugger.writeTrap(i))
-    {
-      commandResult << trapStatus(i) << " + mirrors" << endl;
-      count++;
-      break;
-    }
+    bool enabled = true;
+    for(const auto& trap: myTraps)
+      commandResult << trapStatus(trap, enabled) << " + mirrors" << endl;
   }
-
-  if(!count)
+  else
     commandResult << "no traps set";
 }
 
@@ -1570,7 +1566,12 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
     }
   }
 
-  commandResult << trapStatus(addr) << " + mirrors" << endl;
+  bool trapEnabled = false;
+  const string& result = trapStatus(addr, trapEnabled);
+  if(trapEnabled) myTraps.insert(addr);
+  else            myTraps.erase(addr);
+
+  commandResult << result << " + mirrors" << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1629,7 +1630,7 @@ void DebuggerParser::executeV()
 // "watch"
 void DebuggerParser::executeWatch()
 {
-  watches.push_back(argStrings[0]);
+  myWatches.push_back(argStrings[0]);
   commandResult << "added watch \"" << argStrings[0] << "\"";
 }
 
