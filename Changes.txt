@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-5.0.1 to 5.x: (xxxx yy, 2017)
+5.0.1 to 5.0.2: (August 20, 2017)
 
   * Improved emulation of Trakball controller, eliminating bias in left/
     right directions.  Thanks to Thomas Jentzsch for the idea and code.
@@ -42,6 +42,9 @@
     before (note that the state file format has changed because of this).
 
   * Fixed lockups when entering the debugger under certain circumstances.
+
+  * The debugger 'listtraps' command now shows all traps set, not just
+    the first one(s).
 
   * Reverted joystick changes for Decathlon ROMs from last release, as
     it was added by mistake.
