@@ -551,8 +551,7 @@ string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
   else
     result += "none";
 
-  // TODO - technically, we should determine if the label is read or write
-  const string& l = debugger.cartDebug().getLabel(addr, true);
+  const string& l = debugger.cartDebug().getLabel(addr, !w);
   if(l != "") {
     result += "  (";
     result += l;
