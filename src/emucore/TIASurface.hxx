@@ -109,9 +109,10 @@ class TIASurface
     void enableScanlineInterpolation(bool enable);
 
     /**
-      Enable/disable phosphor effect.
+      Enable/disable/query phosphor effect.
     */
-    void enablePhosphor(bool enable, int blend);
+    void enablePhosphor(bool enable, int blend = -1);
+    bool phosphorEnabled() const { return myUsePhosphor; }
 
     /**
       Used to calculate an averaged color for the 'phosphor' effect.

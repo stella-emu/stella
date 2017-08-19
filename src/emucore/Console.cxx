@@ -424,32 +424,26 @@ void Console::setPalette(const string& type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor()
 {
-  const string& phosphor = myProperties.get(Display_Phosphor);
-  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
-  bool enable;
-  if(phosphor == "YES")
+  if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
     myProperties.set(Display_Phosphor, "No");
-    enable = false;
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(false);
     myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
   }
   else
   {
     myProperties.set(Display_Phosphor, "Yes");
-    enable = true;
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
     myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
   }
-
-  myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable, blend);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  bool enable = myProperties.get(Display_Phosphor) == "YES";
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
 
-  if(enable)
+  if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
     if(direction == +1)       // increase blend
     {
@@ -478,7 +472,7 @@ void Console::changePhosphor(int direction)
     val << blend;
     myProperties.set(Display_PPBlend, val.str());
     myOSystem.frameBuffer().showMessage("Phosphor blend " + val.str());
-    myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable, blend);
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
   }
   else
     myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
