@@ -12,6 +12,12 @@
                                Release History
 ===========================================================================
 
+5.0.2 to 5.0.3
+
+  * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc.)
+
+  * Fixed a bug in ystart autodetection that could cause screen jumps
+
 5.0.1 to 5.0.2: (August 20, 2017)
 
   * Improved emulation of Trakball controller, eliminating bias in left/

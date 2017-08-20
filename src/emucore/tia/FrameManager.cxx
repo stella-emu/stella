@@ -32,7 +32,6 @@ enum Metrics: uInt32 {
   maxLinesVsync                 = 32,
   maxLinesVsyncDuringAutodetect = 100,
   visibleOverscan               = 20,
-  maxUnderscan                  = 10,
   tvModeDetectionTolerance      = 20,
   initialGarbageFrames          = 10,
   framesForModeConfirmation     = 5,
@@ -323,7 +322,7 @@ void FrameManager::updateLayout(FrameLayout layout)
   if (layout == myLayout) return;
 
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "TV mode switched to " << int(mode) << "\n").flush();
+  (cout << "TV mode switched to " << int(layout) << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
   myLayout = layout;
@@ -356,6 +355,10 @@ void FrameManager::updateLayout(FrameLayout layout)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVblank(bool vblank)
 {
+  #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
+    (cout << "vblank change " << myVblankManager.vblank() << " -> " << vblank << "@" << myLineInState << "\n").flush();
+  #endif // TIA_FRAMEMANAGER_DEBUG_LOG
+
   if (myState == State::waitForFrameStart) {
     if (myVblankManager.setVblankDuringVblank(vblank, myTotalFrames <= Metrics::initialGarbageFrames)) {
       setState(State::frame);

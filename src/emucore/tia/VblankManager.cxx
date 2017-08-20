@@ -75,9 +75,6 @@ void VblankManager::start()
   myIsRunning = true;
   myVblankViolated = false;
 
-  if (myMode == VblankMode::locked && ++myFramesInLockedMode > Metrics::framesUntilFinal)
-    setVblankMode(VblankMode::final);
-
   if (myJitter > 0) myJitter = std::max(myJitter - myJitterFactor, 0);
   if (myJitter < 0) myJitter = std::min(myJitter + myJitterFactor, 0);
 }
@@ -87,10 +84,16 @@ bool VblankManager::nextLine(bool isGarbageFrame)
 {
   if (!myIsRunning) return false;
 
-  myCurrentLine++;
-
+  // Make sure that we do the transition check **before** incrementing the line
+  // counter. This ensures that, if the transition is caused by VSYNC off during
+  // the line, this will continue to trigger the transition in 'locked' mode. Otherwise,
+  // the transition would be triggered by the line change **before** the VSYNC
+  // and thus detected as a suprious violation. Sigh, this stuff is complicated,
+  // isn't it?
   const bool transition = shouldTransition(isGarbageFrame);
   if (transition) myIsRunning = false;
+
+  myCurrentLine++;
 
   return transition;
 }
@@ -122,26 +125,37 @@ bool VblankManager::setVblankDuringVblank(bool vblank, bool isGarbageFrame)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool VblankManager::shouldTransition(bool isGarbageFrame)
 {
-  bool shouldTransition = myCurrentLine >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan);
+  // Are we free to transition as per vblank cycle?
+  bool shouldTransition = myCurrentLine + 1 >= (myVblank ? myVblankLines : myVblankLines - Metrics::maxUnderscan);
+
+  // Do we **actually** transition? This depends on what mode we are in.
   bool transition = false;
 
   switch (myMode) {
+    // Floating mode: we still are looking for a stable frame start
     case VblankMode::floating:
 
+      // Are we free to transition?
       if (shouldTransition) {
+        // Is this same scanline in which the transition ocurred last frame?
         if (!isGarbageFrame && myCurrentLine == myLastVblankLines)
+          // Yes? -> Increase the number of stable frames
           myStableVblankFrames++;
         else
+          // No? -> Frame start shifted again, set the number of consecutive stable frames to zero
           myStableVblankFrames = 0;
 
+        // Save the transition point for checking on it next frame
         myLastVblankLines = myCurrentLine;
 
 #ifdef TIA_VBLANK_MANAGER_DEBUG_LOG
         (cout << "leaving vblank in floating mode, should transition: " << shouldTransition << "\n").flush();
 #endif
+        // In floating mode, we transition whenever we can.
         transition = true;
       }
 
+      // Transition to locked mode if we saw enough stable frames in a row.
       if (myStableVblankFrames >= Metrics::minStableVblankFrames) {
         setVblankMode(VblankMode::locked);
         myVblankViolations = 0;
@@ -149,13 +163,20 @@ bool VblankManager::shouldTransition(bool isGarbageFrame)
 
       break;
 
+    // Locked mode: always transition at the same point, but check whether this is actually the
+    // detected transition point and revert state if applicable
     case VblankMode::locked:
 
+      // Have we reached the transition point?
       if (myCurrentLine == myLastVblankLines) {
 
+        // Are we free to transition per the algorithm and didn't we observe an violation before?
+        // (aka did the algorithm tell us to transition before reaching the actual line)
         if (shouldTransition && !myVblankViolated)
+          // Reset the number of irregular frames (if any)
           myVblankViolations = 0;
         else {
+          // Record a violation if it wasn't recorded before
           if (!myVblankViolated) myVblankViolations++;
           myVblankViolated = true;
         }
@@ -164,24 +185,33 @@ bool VblankManager::shouldTransition(bool isGarbageFrame)
         (cout << "leaving vblank in locked mode, should transition: " << shouldTransition << "\n").flush();
 #endif
 
+        // transition
         transition = true;
-      } else if (shouldTransition){
+      // The algorithm tells us to transition although we haven't reached the trip line before
+      } else if (shouldTransition) {
+        // Record a violation if it wasn't recorded before
         if (!myVblankViolated) myVblankViolations++;
         myVblankViolated = true;
       }
 
-      if (myVblankViolations > Metrics::maxVblankViolations) {
+      // Freeze frame start if the detected value seems to be sufficiently stable
+      if (transition && ++myFramesInLockedMode > Metrics::framesUntilFinal) {
+        setVblankMode(VblankMode::final);
+      // Revert to floating mode if there were too many irregular frames in a row
+      } else if (myVblankViolations > Metrics::maxVblankViolations) {
         setVblankMode(VblankMode::floating);
         myStableVblankFrames = 0;
       }
 
       break;
 
+    // Fixed mode: use external ystart value
     case VblankMode::fixed:
       transition = (Int32)myCurrentLine >=
         std::max<Int32>(myYstart + std::min<Int32>(myJitter, Metrics::maxJitter), 0);
       break;
 
+    // Final mode: use detected ystart value
     case VblankMode::final:
       transition = (Int32)myCurrentLine >=
         std::max<Int32>(myLastVblankLines + std::min<Int32>(myJitter, Metrics::maxJitter), 0);
