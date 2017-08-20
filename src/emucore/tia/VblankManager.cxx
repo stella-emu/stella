@@ -85,9 +85,9 @@ bool VblankManager::nextLine(bool isGarbageFrame)
   if (!myIsRunning) return false;
 
   // Make sure that we do the transition check **before** incrementing the line
-  // counter. This ensures that, if the transition is caused by VSYNC off during
+  // counter. This ensures that, if the transition is caused by VBLANK off during
   // the line, this will continue to trigger the transition in 'locked' mode. Otherwise,
-  // the transition would be triggered by the line change **before** the VSYNC
+  // the transition would be triggered by the line change **before** the VBLANK
   // and thus detected as a suprious violation. Sigh, this stuff is complicated,
   // isn't it?
   const bool transition = shouldTransition(isGarbageFrame);
