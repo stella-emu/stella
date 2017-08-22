@@ -199,6 +199,12 @@ class EventHandler
     */
     void handleEvent(Event::Type type, Int32 value);
 
+    /**
+      Handle events that must be processed each time a new console is
+      created.  Typically, these are events set by commandline arguments.
+    */
+    void handleConsoleStartupEvents();
+
     bool frying() const { return myFryingFlag; }
 
     StringList getActionList(EventMode mode) const;
@@ -535,9 +541,6 @@ class EventHandler
     bool eventIsAnalog(Event::Type event) const;
 
     void setEventState(State state);
-
-    // Callback function invoked by the event-reset timer
-    static uInt32 resetEventsCallback(uInt32 interval, void* param);
 
   private:
     // Structure used for action menu items

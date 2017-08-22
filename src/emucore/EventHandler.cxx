@@ -119,12 +119,6 @@ void EventHandler::reset(State state)
   myOSystem.state().reset();
 
   setContinuousSnapshots(0);
-
-  // Reset events almost immediately after starting emulation mode
-  // We wait a little while, since 'hold' events may be present, and we want
-  // time for the ROM to process them
-  if(state == S_EMULATE)
-    SDL_AddTimer(500, resetEventsCallback, static_cast<void*>(this));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1101,6 +1095,56 @@ void EventHandler::handleEvent(Event::Type event, int state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleConsoleStartupEvents()
+{
+  bool update = false;
+  if(myOSystem.settings().getBool("holdreset"))
+  {
+    handleEvent(Event::ConsoleReset, 1);
+    update = true;
+  }
+  if(myOSystem.settings().getBool("holdselect"))
+  {
+    handleEvent(Event::ConsoleSelect, 1);
+    update = true;
+  }
+
+  const string& holdjoy0 = myOSystem.settings().getString("holdjoy0");
+  update = update || holdjoy0 != "";
+  if(BSPF::containsIgnoreCase(holdjoy0, "U"))
+    handleEvent(Event::JoystickZeroUp, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "D"))
+    handleEvent(Event::JoystickZeroDown, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "L"))
+    handleEvent(Event::JoystickZeroLeft, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "R"))
+    handleEvent(Event::JoystickZeroRight, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "F"))
+    handleEvent(Event::JoystickZeroFire, 1);
+
+  const string& holdjoy1 = myOSystem.settings().getString("holdjoy1");
+  update = update || holdjoy1 != "";
+  if(BSPF::containsIgnoreCase(holdjoy1, "U"))
+    handleEvent(Event::JoystickOneUp, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "D"))
+    handleEvent(Event::JoystickOneDown, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "L"))
+    handleEvent(Event::JoystickOneLeft, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "R"))
+    handleEvent(Event::JoystickOneRight, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "F"))
+    handleEvent(Event::JoystickOneFire, 1);
+
+  if(update)
+    myOSystem.console().riot().update();
+
+#ifdef DEBUGGER_SUPPORT
+  if(myOSystem.settings().getBool("debug"))
+    enterDebugMode();
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::eventStateChange(Event::Type type)
 {
   bool handled = true;
@@ -2064,6 +2108,7 @@ void EventHandler::setEventState(State state)
     case S_LAUNCHER:
       myOverlay = &myOSystem.launcher();
       enableTextEvents(true);
+      myEvent.clear();
       break;
 
 #ifdef DEBUGGER_SUPPORT
@@ -2085,19 +2130,9 @@ void EventHandler::setEventState(State state)
   if(myOSystem.hasConsole())
     myOSystem.console().stateChanged(myState);
 
-  // Always clear any pending events when changing states
-  myEvent.clear();
-
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed
   mySkipMouseMotion = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
-{
-  (static_cast<EventHandler*>(param))->myEvent.clear();
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
