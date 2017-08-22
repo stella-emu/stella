@@ -251,8 +251,16 @@ void Ball::applyColors()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Ball::getPosition() const
 {
+  // position =
+  //    current playfield x +
+  //    (current counter - 156 (the decode clock of copy 0)) +
+  //    clock count after decode until first pixel +
+  //    1 (it'll take another cycle after the decode for the rendter counter to start ticking)
+  //
+  // The result may be negative, so we add 160 and do the modulus -> 317 = 156 + 160 + 1
+  //
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (316 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % 160;
+  return (317 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -260,7 +268,8 @@ void Ball::setPosition(uInt8 newPosition)
 {
   myTIA->flushLineCache();
 
-  myCounter = (316 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % 160;
+  // See getPosition for an explanation
+  myCounter = (317 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

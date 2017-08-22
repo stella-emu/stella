@@ -397,10 +397,20 @@ void Player::applyColors()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Player::getPosition() const
 {
+  // Wide players are shifted by one pixel to the right
   const uInt8 shift = myDivider == 1 ? 0 : 1;
 
+  // position =
+  //    current playfield x +
+  //    (current counter - 156 (the decode clock of copy 0)) +
+  //    clock count after decode until first pixel +
+  //    shift (accounts for wide player shift) +
+  //    1 (it'll take another cycle after the decode for the rendter counter to start ticking)
+  //
+  // The result may be negative, so we add 160 and do the modulus -> 317 = 156 + 160 + 1
+  //
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (316 - myCounter - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
+  return (317 - myCounter - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -410,7 +420,8 @@ void Player::setPosition(uInt8 newPosition)
 
   const uInt8 shift = myDivider == 1 ? 0 : 1;
 
-  myCounter = (316 - newPosition - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
+  // See getPosition for an explanation
+  myCounter = (317 - newPosition - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
