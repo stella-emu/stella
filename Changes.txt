@@ -21,6 +21,9 @@
   * Fixed several bugs in holdselect, holdreset and holdjoyX commandline
     arguments; these now work as expected.
 
+  * Fixed wrong display of HM values in debugger after 'HMCLR' has been
+    executed.
+
 -Have fun!
 
 
