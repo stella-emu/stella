@@ -1409,11 +1409,12 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       break;
 
     case HMCLR:
-      myMissile0.hmm(0);
-      myMissile1.hmm(0);
-      myPlayer0.hmp(0);
-      myPlayer1.hmp(0);
-      myBall.hmbl(0);
+      // We must update the shadow registers for each HM object too
+      myMissile0.hmm(0);  myShadowRegisters[HMM0] = 0;
+      myMissile1.hmm(0);  myShadowRegisters[HMM1] = 0;
+      myPlayer0.hmp(0);   myShadowRegisters[HMP0] = 0;
+      myPlayer1.hmp(0);   myShadowRegisters[HMP1] = 0;
+      myBall.hmbl(0);     myShadowRegisters[HMBL] = 0;
       break;
 
     case GRP0:
