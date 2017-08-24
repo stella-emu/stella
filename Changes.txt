@@ -24,6 +24,9 @@
   * Fixed wrong display of HM values in debugger after 'HMCLR' has been
     executed.
 
+  * Added ROM properties for 'Scramble' ROMs, and updated info for all
+    "Champ Games" ROMs.
+
 -Have fun!
 
 
