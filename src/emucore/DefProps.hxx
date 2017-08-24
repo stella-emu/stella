@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3299
+#define DEF_PROPS_SIZE 3301
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -472,6 +472,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "2319922df4d0c820b3e5f15faa870cc3", "Atari - GCC, Mike Feinstein", "CX2681, CX2681P", "Battlezone (1983) (Atari) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2327456f86d7e0deda94758c518d05b3", "Digitel", "", "Mr. Postman (Digitel)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2351d26d0bfdee3095bec9c05cbcf7b0", "", "", "Warring Worms (19-01-2002) (Billy Eno)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "2353725ec98e0f0073462109e886efd7", "Champ Games", "CG-03-P", "Scramble (PAL60)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "YES", "" },
   { "235436ab0832370e73677c9c6f0c8b06", "", "", "Beast Invaders (Double Shot) (Hack)", "Hack of Space Invaders", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2365e1534d67f94d8670394ab99150ce", "Thomas Jentzsch", "", "Missile Command (Atari Mouse) (2002) (TJ)", "Uses Atari ST Mouse Controller", "Homebrew", "", "", "", "", "", "", "ATARIMOUSE", "", "", "", "", "", "", "YES", "" },
   { "23d445ea19a18fb78d5035878d9fb649", "CBS Electronics, Sylvia Day, Henry Will IV", "4L1818, 4L1819, 4L1820, 4L1821", "Mouse Trap (1982) (CBS Electronics) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
@@ -1774,7 +1775,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "855a42078b14714bcfd490d2cf57e68d", "Atari, Suki Lee", "CX26113", "Miss Piggy's Wedding (1983) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "24", "", "", "" },
   { "85a4133f6dcf4180e36e70ad0fca0921", "CCE", "C-827", "Chopper Command (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "85b1bca93e69f13905107cc802a02470", "Atari, Craig Nelson", "CX2617, CX2617P", "Backgammon (1979) (Atari) (PAL)", "Uses the Paddle Controllers", "Extremely Rare", "", "", "", "", "", "", "PADDLES_IAXDR", "", "", "AUTO 80", "", "", "", "", "" },
-  { "85bbefb90e16bf386b304c1e9a1f6084", "Champ Games", "", "Conquest Of Mars (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "" },
+  { "85bbefb90e16bf386b304c1e9a1f6084", "Champ Games", "CG-02-P", "Conquest Of Mars (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "" },
   { "85e48d68c8d802e3ba9d494a47d6e016", "", "", "Ship Demo (V 15) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "85e564dae5687e431955056fbda10978", "Milton Bradley Company", "4362", "Survival Run (1983) (Milton Bradley)", "AKA Cosmic Commander", "", "", "", "", "", "", "", "", "", "", "", "", "", "225", "YES", "" },
   { "86128001e69ab049937f265911ce7e8a", "Apollo - Games by Apollo, Steve Stringfellow", "AP-2005", "Lochjaw (1981) (Apollo)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2244,7 +2245,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "adb770ff70e9adf08bbb907a7eccd240", "", "", "Inv Demo 3 (2001) (Erik Mooney) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "adb79f9ac1a633cdd44954e2eac14774", "Digivision", "", "Frostbite (Digivision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "adf1afac3bdd7b36d2eda5949f1a0fa3", "Quelle", "495.463 2 - 746381", "Angriff der Luftflotten (1983) (Quelle) (PAL)", "AKA Paris Attack, M.A.D.", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "adfbd2e8a38f96e03751717f7422851d", "Champ Games", "", "Lady Bug (NTSC)", "", "Homebrew", "", "", "", "A", "", "", "", "", "", "", "", "", "", "YES", "" },
+  { "adfbd2e8a38f96e03751717f7422851d", "Champ Games", "CG-01-N", "Lady Bug (NTSC)", "", "Homebrew", "", "", "", "A", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "ae047e9468bda961d8e9e9d8ff52980f", "", "", "Tunnel Demo (Red Spiral) (30-03-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ae0d4f3396cb49de0fabdff03cb2756f", "Retroactive", "", "Qb (V2.02) (PAL) (2001) (Retroactive)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "ae10527840a1ac24de43730645ed508d", "Charles Morgan", "", "Planet Invaders (Charles Morgan) (Hack)", "Hack of Space Invaders", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2373,7 +2374,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "b9336ed6d94a5cc81a16483b0a946a73", "Atari, Jerome Domurat, Michael Sierchio", "CX2667, CX2667P", "RealSports Soccer (1983) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "b958d5fd9574c5cf9ece4b9421c28ecd", "Piero Cavina", "", "Multi-Sprite Game V1.0 (Piero Cavina) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b95a6274ca0e0c773bfdc06b4c3daa42", "Paul Slocum", "", "3-D Corridor (29-03-2003) (Paul Slocum)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "b98cc2c6f7a0f05176f74f0f62c45488", "Spectravideo", "SV-010", "CompuMate (1983) (Spectravideo)", "", "", "", "CM", "", "", "", "", "COMPUMATE", "COMPUMATE", "", "", "", "", "", "YES", "60" },
+  { "b98cc2c6f7a0f05176f74f0f62c45488", "Spectravideo", "SV-010", "CompuMate (1983) (Spectravideo)", "", "", "", "CM", "", "", "", "", "COMPUMATE", "COMPUMATE", "", "", "", "", "", "YES", "80" },
   { "b9b4612358a0b2c1b4d66bb146767306", "Commavid, Ben Burch", "CM-010", "Rush Hour (1983) (Commavid) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "23", "245", "", "" },
   { "b9d1e3be30b131324482345959aed5e5", "Activision, Rex Bradford", "", "Kabobber (07-25-1983) (Activision) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b9f6fa399b8cd386c235983ec45e4355", "Parker Brothers, John Emerson", "931511", "Action Force (1983) (Parker Bros) (PAL)", "AKA G.I. Joe - Cobra Strike", "", "", "", "", "", "", "", "PADDLES", "", "", "01 55", "", "", "", "", "" },
@@ -2479,7 +2480,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "c2b5c50ccb59816867036d7cf730bf75", "Salu - Avantgarde Software, Michael Buetepage", "460741", "Ghostbusters II (1992) (Salu) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "c2bcd8f2378c3779067f3a551f662bb7", "Activision, Bob Whitehead - Ariola", "EAG-002, EAG-002-04I, PAG-002 - 711 002-715", "Boxing (1980) (Activision) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "c2c7a11717e255593e54d0acaf653ee5", "", "", "Chopper Command (208 in 1) (Unknown) (PAL) (Hack)", "", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "c2fbef02b6eea37d8df3e91107f89950", "Champ Games", "", "Conquest Of Mars (NTSC)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "c2fbef02b6eea37d8df3e91107f89950", "Champ Games", "CG-02-N", "Conquest Of Mars (NTSC)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "c31a17942d162b80962cb1f7571cd1d5", "Home Vision - Gem International Corp.", "VCS83112", "Sky Alien (1983) (Home Vision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "c3205e3707f646e1a106e09c5c49c1bf", "", "", "Unknown Title (bin00003 (200206)) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "c3472fa98c3b452fa2fd37d1c219fb6f", "Atari, Carla Meninsky - Sears", "CX2637 - 49-75158", "Dodge 'Em (1980) (Atari) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2991,7 +2992,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "e7864caaf9ec49ed67b1904ce8602690", "", "", "Donkey Kong 2K3 Pic (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e7a758bb0b43d0f7004e92b9abf4bc83", "", "", "Troll's Adventure (Hack)", "Hack of Adventure", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e7dd8c2e6c100044002c1086d02b366e", "Activision, Steve Cartwright - Ariola", "EAX-013, PAX-013, 711 013-720", "Barnstorming (1982) (Activision) (PAL)", "AKA Die tollkeuhnen Flieger", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "e7f005ddb6902c648de098511f6ae2e5", "Spectravideo - Universum", "SV-010", "CompuMate (1983) (Spectravideo) (PAL)", "", "", "", "CM", "", "", "", "", "COMPUMATE", "COMPUMATE", "", "", "", "", "", "YES", "60" },
+  { "e7f005ddb6902c648de098511f6ae2e5", "Spectravideo - Universum", "SV-010", "CompuMate (1983) (Spectravideo) (PAL)", "", "", "", "CM", "", "", "", "", "COMPUMATE", "COMPUMATE", "", "", "", "", "", "YES", "80" },
   { "e800e4aec7c6c54c9cf3db0d1d030058", "", "", "Qb (2.06) (Retroactive) (Stella)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "e80a4026d29777c3c7993fbfaee8920f", "", "", "Frisco (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e823b13751e4388f1f2a375d3560a8d7", "Arcadia Corporation, Stephen Harland Landrum", "AR-4105", "Official Frogger (Preview) (1983) (Arcadia) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "32", "", "", "" },
@@ -3017,6 +3018,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "e9cb18770a41a16de63b124c1e8bd493", "Parker Brothers, Joe Gaucher", "931519", "Popeye (1983) (Parker Bros) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "e9e646f730b8400cd5da08c849ef3e3b", "Tron", "", "Enduro (Tron)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e9e6ad30549a6e2cd89fe93b7691d447", "Atari, Robert C. Polaro", "CX26140, CX26140P", "Desert Falcon (05-27-1987) (Atari) (Prototype) (PAL)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "e9f25c7af4f27c9e1b5b8f6fe6141e8c", "Champ Games", "CG-03-N", "Scramble (NTSC)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "ea38fcfc06ad87a0aed1a3d1588744e4", "Atari, Lou Harp", "CX26122", "Sinistar (1984) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ea6d40db5498d6386571a76df448aa4c", "", "", "Vertical Playfield Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ea7e25ade3fe68f5b786ee0aa82b1fe5", "", "", "Galatic (208 in 1) (Unknown) (PAL)", "AKA Challenge of.... Nexar, The", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3114,7 +3116,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "f11cfab087fcbd930ab8b0becc5b2e5a", "Canal 3 - Intellivision", "", "River Raid (Canal 3)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f12afbffa080dd3b2801dd14d4837cf6", "Atari, Michael Kosaka, Peter C. Niday, Robert Vieira", "CX26110", "Crystal Castles (01-04-1984) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "f137211537438b1fce3d811baef25457", "", "", "Incoming (02-10-2002) (Ben Larson) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "f1489e27a4539a0c6c8529262f9f7e18", "Champ Games", "", "Lady Bug (PAL60)", "", "Homebrew", "", "", "", "A", "", "", "", "", "", "", "PAL60", "", "", "YES", "" },
+  { "f1489e27a4539a0c6c8529262f9f7e18", "Champ Games", "CG-01-P", "Lady Bug (PAL60)", "", "Homebrew", "", "", "", "A", "", "", "", "", "", "", "PAL60", "", "", "YES", "" },
   { "f14d5e96ec3380aef57a4b70132c6677", "Goliath - Hot Shot", "83-414", "Pac Kong (1983) (Goliath) (PAL)", "AKA Inca Gold", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f1554569321dc933c87981cf5c239c43", "Atari, Glenn Axworthy", "CX26129", "Midnight Magic (1984) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "f16c709df0a6c52f47ff52b9d95b7d8d", "Atari, Alan Miller - Sears", "CX2662 - 6-99811", "Hangman (1978) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

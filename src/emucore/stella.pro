@@ -10728,6 +10728,7 @@
 
 "Cartridge.MD5" "85bbefb90e16bf386b304c1e9a1f6084"
 "Cartridge.Manufacturer" "Champ Games"
+"Cartridge.ModelNo" "CG-02-P"
 "Cartridge.Name" "Conquest Of Mars (PAL60)"
 "Cartridge.Rarity" "Homebrew"
 "Display.Format" "PAL60"
@@ -13564,6 +13565,7 @@
 
 "Cartridge.MD5" "adfbd2e8a38f96e03751717f7422851d"
 "Cartridge.Manufacturer" "Champ Games"
+"Cartridge.ModelNo" "CG-01-N"
 "Cartridge.Name" "Lady Bug (NTSC)"
 "Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
@@ -14380,7 +14382,7 @@
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
 "Display.Phosphor" "YES"
-"Display.PPBlend" "60"
+"Display.PPBlend" "80"
 ""
 
 "Cartridge.MD5" "b9b4612358a0b2c1b4d66bb146767306"
@@ -14999,6 +15001,7 @@
 
 "Cartridge.MD5" "c2fbef02b6eea37d8df3e91107f89950"
 "Cartridge.Manufacturer" "Champ Games"
+"Cartridge.ModelNo" "CG-02-N"
 "Cartridge.Name" "Conquest Of Mars (NTSC)"
 "Cartridge.Rarity" "Homebrew"
 ""
@@ -18178,7 +18181,7 @@
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
 "Display.Phosphor" "YES"
-"Display.PPBlend" "60"
+"Display.PPBlend" "80"
 ""
 
 "Cartridge.MD5" "e800e4aec7c6c54c9cf3db0d1d030058"
@@ -18903,6 +18906,7 @@
 
 "Cartridge.MD5" "f1489e27a4539a0c6c8529262f9f7e18"
 "Cartridge.Manufacturer" "Champ Games"
+"Cartridge.ModelNo" "CG-01-P"
 "Cartridge.Name" "Lady Bug (PAL60)"
 "Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
@@ -20233,4 +20237,23 @@
 "Cartridge.Manufacturer" "Chris Walton, Justin Hairgrove, Tony Morse"
 "Cartridge.Name" "Hunchy II (2005)"
 "Cartridge.Note" "Homebrew"
+""
+
+"Cartridge.MD5" "2353725ec98e0f0073462109e886efd7"
+"Cartridge.Manufacturer" "Champ Games"
+"Cartridge.ModelNo" "CG-03-P"
+"Cartridge.Name" "Scramble (PAL60)"
+"Cartridge.Note" "Compatible with Genesis controller"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "e9f25c7af4f27c9e1b5b8f6fe6141e8c"
+"Cartridge.Manufacturer" "Champ Games"
+"Cartridge.ModelNo" "CG-03-N"
+"Cartridge.Name" "Scramble (NTSC)"
+"Cartridge.Note" "Compatible with Genesis controller"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
