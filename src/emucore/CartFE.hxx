@@ -31,7 +31,7 @@ class System;
 
   This scheme was originally designed to have up to 8 4K banks, and is
   triggered by monitoring the address bus for address $01FE.  All released
-  carts only had two banks, and this implementation assumes that (ie, ROM
+  carts had only two banks, and this implementation assumes that (ie, ROM
   is always 8K, and there are two 4K banks).
 
   The following is paraphrased from the original patent by David Crane,
@@ -72,7 +72,8 @@ class System;
         particular *why* the address $01FE will be placed on the address
         bus after both the JSR and RTS opcodes.
 
-  @author  Stephen Anthony; with ideas from Christian Speckner and TomSon
+  @author  Stephen Anthony; with ideas/research from Christian Speckner and
+           ale-79 and TomSon (of AtariAge)
 */
 class CartridgeFE : public Cartridge
 {
