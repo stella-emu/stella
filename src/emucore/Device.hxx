@@ -99,7 +99,7 @@ class Device : public Serializable
 
       @return The byte at the specified address
     */
-    virtual uInt8 peek(uInt16 address) = 0;
+    virtual uInt8 peek(uInt16 address) { return 0; }
 
     /**
       Change the byte at the specified address to the given value
@@ -109,7 +109,7 @@ class Device : public Serializable
 
       @return  True if the poke changed the device address space, else false
     */
-    virtual bool poke(uInt16 address, uInt8 value) = 0;
+    virtual bool poke(uInt16 address, uInt8 value) { return false; }
 
     /**
       Query the given address for its disassembly flags

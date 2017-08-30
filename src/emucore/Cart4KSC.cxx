@@ -74,33 +74,18 @@ void Cartridge4KSC::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge4KSC::peek(uInt16 address)
 {
-  uInt16 peekAddress = address;
-  address &= 0x0FFF;
+  // The only way we can get to this method is if we attempt to read from
+  // the write port (0xF000 - 0xF080, 128 bytes), in which case an
+  // unwanted write is triggered
+  uInt8 value = mySystem->getDataBusState(0xFF);
 
-  if(address < 0x0080)  // Write port is at 0xF000 - 0xF080 (128 bytes)
-  {
-    // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(peekAddress);
-      return myRAM[address] = value;
-    }
-  }
+  if(bankLocked())
+    return value;
   else
-    return myImage[address & 0x0FFF];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4KSC::poke(uInt16 address, uInt8)
-{
-  // NOTE: This does not handle accessing RAM, however, this function
-  // should never be called for RAM because of the way page accessing
-  // has been setup
-  return false;
+  {
+    triggerReadFromWritePort(address);
+    return myRAM[address & 0x0FFF] = value;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

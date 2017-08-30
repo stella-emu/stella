@@ -72,19 +72,6 @@ void Cartridge2K::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge2K::peek(uInt16 address)
-{
-  return myImage[address & myMask];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge2K::poke(uInt16, uInt8)
-{
-  // This is ROM so poking has no effect :-)
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge2K::patch(uInt16 address, uInt8 value)
 {
   myImage[address & myMask] = value;
