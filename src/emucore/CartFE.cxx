@@ -59,12 +59,8 @@ void CartridgeFE::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFE::peek(uInt16 address)
 {
-  uInt8 value = 0;
-
-  if(address < 0x200)
-    value = mySystem->m6532().peek(address);
-  else
-    value = myImage[myBankOffset + (address & 0x0FFF)];
+  uInt8 value = (address < 0x200) ? mySystem->m6532().peek(address) :
+      myImage[myBankOffset + (address & 0x0FFF)];
 
   // Check if we hit hotspot
   checkBankSwitch(address, value);

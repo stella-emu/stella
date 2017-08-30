@@ -65,7 +65,7 @@ class System;
     binary 111 -> decimal 7 -> Lower 4K ROM (bank 0) @ $F000
 
   Since the actual bank numbers (0 and 1) do not map directly to their
-  respective bitstrings (7 and 6), we simply test for D6 being 0 or 1.
+  respective bitstrings (7 and 6), we simply test for D5 being 0 or 1.
   This is the significance of the test '(value & 0x20) ? 0 : 1' in the code.
 
   NOTE: Consult the patent application for more specific information, in
