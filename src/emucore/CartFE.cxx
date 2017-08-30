@@ -90,14 +90,21 @@ void CartridgeFE::checkBankSwitch(uInt16 address, uInt8 value)
   // If so, we bankswitch according to the upper 3 bits of the data bus
   // NOTE: see the header file for the significance of 'value & 0x20'
   if(myLastAccessWasFE)
-  {
-    myBankOffset = ((value & 0x20) ? 0 : 1) << 12;
-    myBankChanged = true;
-  }
+    bank((value & 0x20) ? 0 : 1);
 
   // On the next cycle, we use the (then) current data bus value to decode
   // the bank to use
   myLastAccessWasFE = address == 0x01FE;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFE::bank(uInt16 bank)
+{
+  if(bankLocked())
+    return false;
+
+  myBankOffset = bank << 12;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

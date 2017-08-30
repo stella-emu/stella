@@ -105,6 +105,13 @@ class CartridgeFE : public Cartridge
     void install(System& system) override;
 
     /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    bool bank(uInt16 bank) override;
+
+    /**
       Get the current bank.
     */
     uInt16 getBank() const override;
