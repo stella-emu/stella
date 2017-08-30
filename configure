@@ -840,7 +840,7 @@ rm -f stella-conf*
 if test "$_host_os" = darwin; then
 	cat <<EOI
 
-WARNING: plain UNIX-style builds on OSX without XCode have decraded functionality
+WARNING: plain UNIX-style builds on OSX without XCode have degraded functionality
 and are unsupported. Continue on your own risk...
 EOI
 fi
