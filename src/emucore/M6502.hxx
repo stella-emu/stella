@@ -137,13 +137,6 @@ class M6502 : public Serializable
     uInt16 getPC() const { return PC; }
 
     /**
-      Answer true iff the last memory access was a read.
-
-      @return true iff last access was a read
-    */
-    bool lastAccessWasRead() const { return myLastAccessWasRead; }
-
-    /**
       Return the last address that was part of a read/peek.  Note that
       reads which are part of a write are not considered here, unless
       they're not the same as the last write address.  This eliminates
@@ -326,9 +319,6 @@ class M6502 : public Serializable
     bool I;     // I flag for processor status register
     bool notZ;  // Z flag complement for processor status register
     bool C;     // C flag for processor status register
-
-    /// Indicates if the last memory access was a read or not
-    bool myLastAccessWasRead;
 
     /// Indicates the numer of distinct memory accesses
     uInt32 myNumberOfDistinctAccesses;

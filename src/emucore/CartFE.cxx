@@ -22,26 +22,21 @@
 CartridgeFE::CartridgeFE(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    myLastAddress1(0),
-    myLastAddress2(0),
-    myLastAddressChanged(false)
+    myBankOffset(0),
+    myLastAccessWasFE(false)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(8192u, size));
-
-  // We use System::PageAccess.codeAccessBase, but don't allow its use
-  // through a pointer, since the address space of FE carts can change
-  // at the instruction level, and PageAccess is normally defined at an
-  // interval of 64 bytes
-  //
-  // Instead, access will be through the getAccessFlags and setAccessFlags
-  // methods below
   createCodeAccessBase(8192);
+
+  myStartBank = 0;  // For now, we assume this; more research is needed
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFE::reset()
 {
+  myBankOffset = myStartBank << 12;
+  myLastAccessWasFE = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -49,8 +44,14 @@ void CartridgeFE::install(System& system)
 {
   mySystem = &system;
 
-  // Map all of the accesses to call peek and poke
-  System::PageAccess access(this, System::PA_READ);
+  // The hotspot $01FE is in a mirror of zero-page RAM
+  // We need to claim access to it here, and deal with it in peek/poke below
+  System::PageAccess access(this, System::PA_READWRITE);
+  for(uInt32 i = 0x180; i < 0x200; i += (1 << System::PAGE_SHIFT))
+    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+
+  // Map all of the cart accesses to call peek and poke
+  access.type = System::PA_READ;
   for(uInt32 i = 0x1000; i < 0x2000; i += (1 << System::PAGE_SHIFT))
     mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
 }
@@ -58,41 +59,55 @@ void CartridgeFE::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFE::peek(uInt16 address)
 {
-  // The bank is determined by A13 of the processor
-  // We keep track of the two most recent accesses to determine which bank
-  // we're in, and when the values actually changed
-  myLastAddress2 = myLastAddress1;
-  myLastAddress1 = address;
-  myLastAddressChanged = true;
+  uInt8 value = 0;
 
-  return myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)];
+  if(address < 0x200)
+    value = mySystem->m6532().peek(address);
+  else
+    value = myImage[myBankOffset + (address & 0x0FFF)];
+
+  // Check if we hit hotspot
+  checkBankSwitch(address, value);
+
+  return value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFE::poke(uInt16, uInt8)
+bool CartridgeFE::poke(uInt16 address, uInt8 value)
 {
+  if(address < 0x200)
+    mySystem->m6532().poke(address, value);
+
+  // Check if we hit hotspot
+  checkBankSwitch(address, value);
+
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeFE::getAccessFlags(uInt16 address) const
+void CartridgeFE::checkBankSwitch(uInt16 address, uInt8 value)
 {
-  return myCodeAccessBase[(address & 0x0FFF) +
-            (((address & 0x2000) == 0) ? 4096 : 0)];
-}
+  if(bankLocked())
+    return;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFE::setAccessFlags(uInt16 address, uInt8 flags)
-{
-  myCodeAccessBase[(address & 0x0FFF) +
-      (((address & 0x2000) == 0) ? 4096 : 0)] |= flags;
+  // Did we detect $01FE on the last address bus access?
+  // If so, we bankswitch according to the upper 3 bits of the data bus
+  // NOTE: see the header file for the significance of 'value & 0x20'
+  if(myLastAccessWasFE)
+  {
+    myBankOffset = ((value & 0x20) ? 0 : 1) << 12;
+    myBankChanged = true;
+  }
+
+  // On the next cycle, we use the (then) current data bus value to decode
+  // the bank to use
+  myLastAccessWasFE = address == 0x01FE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeFE::getBank() const
 {
-  // The current bank depends on the last address accessed
-  return ((myLastAddress1 & 0x2000) == 0) ? 1 : 0;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,26 +117,9 @@ uInt16 CartridgeFE::bankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFE::bankChanged()
-{
-  if(myLastAddressChanged)
-  {
-    // A bankswitch occurs when the addresses transition from state to another
-    myBankChanged = ((myLastAddress1 & 0x2000) == 0) !=
-                    ((myLastAddress2 & 0x2000) == 0);
-    myLastAddressChanged = false;
-  }
-  else
-    myBankChanged = false;
-
-  // In any event, let the base class know about it
-  return Cartridge::bankChanged();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::patch(uInt16 address, uInt8 value)
 {
-  myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)] = value;
+  myImage[myBankOffset + (address & 0x0FFF)] = value;
   return myBankChanged = true;
 }
 
@@ -138,8 +136,8 @@ bool CartridgeFE::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myLastAddress1);
-    out.putShort(myLastAddress2);
+    out.putShort(myBankOffset);
+    out.putBool(myLastAccessWasFE);
   }
   catch(...)
   {
@@ -158,8 +156,8 @@ bool CartridgeFE::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myLastAddress1 = in.getShort();
-    myLastAddress2 = in.getShort();
+    myBankOffset = in.getShort();
+    myLastAccessWasFE = in.getBool();
   }
   catch(...)
   {
