@@ -168,9 +168,9 @@ class EventHandler
     inline bool kbdAlt(int mod) const
     {
   #if defined(BSPF_MAC_OSX) || defined(OSX_KEYS)
-      return (mod & KBDM_ALT);
-  #else
       return (mod & KBDM_GUI);
+  #else
+      return (mod & KBDM_ALT);
   #endif
     }
 
