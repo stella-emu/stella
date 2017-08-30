@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3301
+#define DEF_PROPS_SIZE 3303
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -69,7 +69,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "033e21521e0bf4e54e8816873943406d", "20th Century Fox Video Games, Dan Thompson", "11020", "Earth Dies Screaming, The (1983) (20th Century Fox)", "The Day the Earth Stood Still", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "034c1434280b0f2c9f229777d790d1e1", "Telegames", "5665 A016", "Baseball (1988) (Telegames) (PAL)", "AKA Super Challenge Baseball", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "0375f589f7da06d2d2be532e0d4d4b94", "", "", "Push (V0.04) (2001) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "0383dc02cb82302da3d155fd108bfe3a", "AtariAge, Chris Spry", "26200", "Princess Rescue (2013) (Sprybug) (PAL60)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "YES", "" },
+  { "0383dc02cb82302da3d155fd108bfe3a", "AtariAge, Chris Spry", "CX26200", "Princess Rescue (2013) (Sprybug) (PAL60)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "YES", "" },
   { "038e1e79c3d4410defde4bfe0b99cc32", "Atari, Tod Frye, Gary Shannon", "", "Aquaventure (08-12-1983) (Atari) (Prototype)", "AKA Sea Sentinel", "Unbelievably Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "039cf18b459d33b8a8fca31d06c4c244", "", "", "Demo Image Series #0 (12-02-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "03b1051c9374678363c899914412cfc5", "", "", "Incoming (30-10-2002) (Ben Larson) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -241,7 +241,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "103d4c890c2108cb536372c98d093e5f", "", "", "Star Fire - Star Background (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "103e9d616328969f5d7b4e0a381b25d5", "", "", "Playfield Illustration and Logo Demo (2001) (Jake Patterson) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "103f1756d9dc0dd2b16b53ad0f0f1859", "Home Vision, Gem International Corp.", "", "Go Go Home Monster (1983) (Home Vision) (PAL)", "AKA Go Go Home", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "104468e44898b8e9fa4a1500fde8d4cb", "AtariAge, Chris Spry", "26200", "Princess Rescue (2013) (Sprybug)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
+  { "104468e44898b8e9fa4a1500fde8d4cb", "AtariAge, Chris Spry", "CX26200", "Princess Rescue (2013) (Sprybug)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "106326c262dfd3e8eaeabd961d2a0519", "", "", "PAL-NTSC Detector (15-11-2002) (CT)[a1]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "106855474c69d08c8ffa308d47337269", "Atari, Adam Clayton, John Howard Palevich", "CX26151", "Dark Chambers (1988) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "107cc025334211e6d29da0b6be46aec7", "Atari, Bob Smith - Sears", "CX2648 - 49-75161", "Video Pinball (1981) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -929,6 +929,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "4543b7691914dfd69c3755a5287a95e1", "CommaVid, Irwin Gaines", "CM-005", "Mines of Minos (1982) (CommaVid)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "456453a54ca65191781aef316343ae00", "", "", "Full Screen Bitmap (3-D Green) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "4565c1a7abce773e53c75b35414adefd", "Arcadia Corporation", "", "Supercharger BIOS (1982) (Arcadia)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "457b03cd48ff6d895795ef043c6b0f1e", "AtariAge, Chris Spry", "CX26201", "Zippy the Porcupine (2014) (Sprybug)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "457e7d4fcd56ebc47f5925dbea3ee427", "Carrere Video, Garry Kitchen - Teldec", "USC1001", "Space Jockey (1983) (Carrere Video) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "457f4ad2cda5f4803f122508bfbde3f5", "", "", "Canyon Bomber (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "458883f1d952cd772cf0057abca57497", "", "", "Fishing Derby (Unknown) (PAL) (Hack)", "", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2200,6 +2201,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "a98b649912b6ca19eaf5c2d2faf38562", "", "", "This Planet Sucks (Greg Troutman) (PAL) [!]", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "36", "", "", "" },
   { "a995b6cbdb1f0433abc74050808590e6", "Imagic, Rob Fulop, Bob Smith", "720106-1A, IA3600", "Riddle of the Sphinx (1982) (Imagic)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "a9cb638cd2cb2e8e0643d7a67db4281c", "M Network, Larry Zwick - INTV", "MT5861", "Air Raiders (1982) (M Network)", "AKA Air Battle", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "a9d9e19d0c89fb31780b5d63e1f8c6a4", "AtariAge, Chris Spry", "CX26201", "Zippy the Porcupine (2014) (Sprybug) (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "" },
   { "a9e3c23599c0d77151602f8e31daf879", "", "", "Kung Fu Master (Genesis)", "Genesis controller (C is extra kick modes)", "Hack of Kung Fu Master", "", "", "", "", "", "", "GENESIS", "", "", "", "", "", "", "", "" },
   { "aa1c41f86ec44c0a44eb64c332ce08af", "Spectravideo, David Lubar", "SA-218", "Bumper Bash (1983) (Spectravideo)", "", "", "", "", "", "", "", "", "", "", "", "", "", "20", "", "", "" },
   { "aa2c4b32656bde9a75042a4d158583e1", "", "", "Oystron X (Piero Cavina) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

@@ -14,7 +14,7 @@
 
 5.0.2 to 5.0.3: (August xx, 2017)
 
-  * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc.)
+  * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc).
 
   * Fixed a bug in ystart autodetection that could cause screen jumps.
 
@@ -26,6 +26,9 @@
 
   * Added ROM properties for 'Scramble' ROMs, and updated info for all
     "Champ Games" ROMs.
+
+  * Added ROM properties for 'Zippy the Porcupine' ROMs, and updated
+    info for all "Chris Spry (Sprybug)" ROMs.
 
 -Have fun!
 

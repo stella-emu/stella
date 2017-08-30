@@ -253,7 +253,7 @@
 
 "Cartridge.MD5" "0383dc02cb82302da3d155fd108bfe3a"
 "Cartridge.Manufacturer" "AtariAge, Chris Spry"
-"Cartridge.ModelNo" "26200"
+"Cartridge.ModelNo" "CX26200"
 "Cartridge.Name" "Princess Rescue (2013) (Sprybug) (PAL60)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
@@ -1311,7 +1311,7 @@
 
 "Cartridge.MD5" "104468e44898b8e9fa4a1500fde8d4cb"
 "Cartridge.Manufacturer" "AtariAge, Chris Spry"
-"Cartridge.ModelNo" "26200"
+"Cartridge.ModelNo" "CX26200"
 "Cartridge.Name" "Princess Rescue (2013) (Sprybug)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
@@ -20256,4 +20256,19 @@
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "457b03cd48ff6d895795ef043c6b0f1e"
+"Cartridge.Manufacturer" "AtariAge, Chris Spry"
+"Cartridge.ModelNo" "CX26201"
+"Cartridge.Name" "Zippy the Porcupine (2014) (Sprybug)"
+"Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "a9d9e19d0c89fb31780b5d63e1f8c6a4"
+"Cartridge.Manufacturer" "AtariAge, Chris Spry"
+"Cartridge.ModelNo" "CX26201"
+"Cartridge.Name" "Zippy the Porcupine (2014) (Sprybug) (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
 ""
