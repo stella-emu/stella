@@ -230,7 +230,7 @@ void CartridgeCDFWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDFWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   // Get registers, using change tracking
   IntArray alist;
@@ -360,8 +360,8 @@ string CartridgeCDFWidget::bankState()
   static const char* const spot[] = {
     "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-  << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+  << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

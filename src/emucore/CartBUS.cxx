@@ -206,7 +206,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
   {
     address &= 0x0FFF;
 
-    uInt8 peekvalue = myProgramImage[(myCurrentBank << 12) + address];
+    uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
     // In debugger/bank-locked mode, we ignore all hotspots and in general
     // anything that can change the internal state of the cart
@@ -234,8 +234,8 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     // test for JMP FASTJUMP where FASTJUMP = $0000
     if (BUS_STUFF_ON
         && peekvalue == 0x4C
-        && myProgramImage[(myCurrentBank << 12) + address+1] == 0
-        && myProgramImage[(myCurrentBank << 12) + address+2] == 0)
+        && myProgramImage[myBankOffset + address+1] == 0
+        && myProgramImage[myBankOffset + address+2] == 0)
     {
       myFastJumpActive = 2; // return next two peeks from datastream 17
       myJMPoperandAddress = address + 1;
@@ -445,8 +445,7 @@ bool CartridgeBUS::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
@@ -455,7 +454,7 @@ bool CartridgeBUS::bank(uInt16 bank)
   for(uInt32 address = 0x1040; address < 0x2000;
       address += (1 << System::PAGE_SHIFT))
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
@@ -464,7 +463,7 @@ bool CartridgeBUS::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeBUS::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -481,7 +480,7 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
   // For now, we ignore attempts to patch the BUS address space
   if(address >= 0x0040)
   {
-    myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
+    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
     return myBankChanged = true;
   }
   else
@@ -560,7 +559,7 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putString(name());
 
     // Indicates which bank is currently active
-    out.putShort(myCurrentBank);
+    out.putShort(myBankOffset);
 
     // Harmony RAM
     out.putByteArray(myBUSRAM, 8192);
@@ -604,7 +603,7 @@ bool CartridgeBUS::load(Serializer& in)
       return false;
 
     // Indicates which bank is currently active
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getShort();
 
     // Harmony RAM
     in.getByteArray(myBUSRAM, 8192);
@@ -637,7 +636,7 @@ bool CartridgeBUS::load(Serializer& in)
   }
 
   // Now, go to the current bank
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

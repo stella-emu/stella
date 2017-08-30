@@ -238,8 +238,8 @@ class CartridgeBUS : public Cartridge
     unique_ptr<Thumbulator> myThumbEmulator;
 #endif
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
     // Address to override the bus for
     uInt16 myBusOverdriveAddress;

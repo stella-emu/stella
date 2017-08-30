@@ -35,7 +35,7 @@ CartridgeFE::CartridgeFE(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFE::reset()
 {
-  myBankOffset = myStartBank << 12;
+  bank(myStartBank);
   myLastAccessWasFE = false;
 }
 

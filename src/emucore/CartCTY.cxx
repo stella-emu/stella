@@ -33,7 +33,7 @@ CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
     myRamAccessTimeout(0),
     mySystemCycles(0),
     myFractionalClocks(0.0),
-    myCurrentBank(0)
+    myBankOffset(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(32768u, size));
@@ -87,7 +87,7 @@ uInt8 CartridgeCTY::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
   address &= 0x0FFF;
-  uInt8 peekValue = myImage[myCurrentBank + address];
+  uInt8 peekValue = myImage[myBankOffset + address];
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
@@ -233,14 +233,14 @@ bool CartridgeCTY::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank << 12;
+  myBankOffset = bank << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
   for(uInt32 address = 0x1080; address < 0x2000;
       address += (1 << System::PAGE_SHIFT))
   {
-    access.codeAccessBase = &myCodeAccessBase[myCurrentBank + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
@@ -249,7 +249,7 @@ bool CartridgeCTY::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCTY::getBank() const
 {
-  return myCurrentBank >> 12;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -271,7 +271,7 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
     myRAM[address & 0x003F] = value;
   }
   else
-    myImage[myCurrentBank + address] = value;
+    myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
 }
@@ -403,7 +403,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         break;
     }
     // Bit 6 is 1, busy
-    return myImage[myCurrentBank + 0xFF4] | 0x40;
+    return myImage[myBankOffset + 0xFF4] | 0x40;
   }
   else
   {
@@ -414,11 +414,11 @@ uInt8 CartridgeCTY::ramReadWrite()
       myRAM[0] = 0;            // Successful operation
 
       // Bit 6 is 0, ready/success
-      return myImage[myCurrentBank + 0xFF4] & ~0x40;
+      return myImage[myBankOffset + 0xFF4] & ~0x40;
     }
     else
       // Bit 6 is 1, busy
-      return myImage[myCurrentBank + 0xFF4] | 0x40;
+      return myImage[myBankOffset + 0xFF4] | 0x40;
   }
 }
 

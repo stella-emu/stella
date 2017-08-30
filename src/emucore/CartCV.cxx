@@ -98,30 +98,18 @@ void CartridgeCV::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCV::peek(uInt16 address)
 {
-  if((address & 0x0FFF) < 0x0800)  // Write port is at 0xF400 - 0xF800 (1024 bytes)
-  {                                // Read port is handled in ::install()
-    // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
+  // The only way we can get to this method is if we attempt to read from
+  // the write port (0xF400 - 0xF800, 1024 bytes), in which case an
+  // unwanted write is triggered
+  uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(address);
-      return myRAM[address & 0x03FF] = value;
-    }
-  }
+  if(bankLocked())
+    return value;
   else
-    return myImage[address & 0x07FF];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::poke(uInt16, uInt8)
-{
-  // NOTE: This does not handle accessing RAM, however, this function
-  // should never be called for RAM because of the way page accessing
-  // has been setup
-  return false;
+  {
+    triggerReadFromWritePort(address);
+    return myRAM[address & 0x03FF] = value;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

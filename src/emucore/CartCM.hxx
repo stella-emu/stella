@@ -244,8 +244,8 @@ class CartridgeCM : public Cartridge
     // Current copy of SWCHA (controls ROM/RAM accesses)
     uInt8 mySWCHA;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
 private:
     // Following constructors and assignment operators not supported

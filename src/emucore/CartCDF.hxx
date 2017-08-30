@@ -235,8 +235,8 @@ class CartridgeCDF : public Cartridge
     unique_ptr<Thumbulator> myThumbEmulator;
   #endif
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
     // System cycle count from when the last update to music data fetchers occurred
     Int32 myAudioCycles;
