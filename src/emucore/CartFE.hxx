@@ -73,7 +73,7 @@ class System;
         bus after both the JSR and RTS opcodes.
 
   @author  Stephen Anthony; with ideas/research from Christian Speckner and
-           ale-79 and TomSon (of AtariAge)
+           alex_79 and TomSon (of AtariAge)
 */
 class CartridgeFE : public Cartridge
 {
