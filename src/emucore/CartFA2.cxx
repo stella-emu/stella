@@ -27,7 +27,7 @@ CartridgeFA2::CartridgeFA2(const BytePtr& image, uInt32 size,
     myOSystem(osystem),
     mySize(28 * 1024),
     myRamAccessTimeout(0),
-    myCurrentBank(0)
+    myBankOffset(0)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
   const uInt8* img_ptr = image.get();
@@ -152,7 +152,7 @@ uInt8 CartridgeFA2::peek(uInt16 address)
     }
   }
   else
-    return myImage[(myCurrentBank << 12) + address];
+    return myImage[myBankOffset + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,8 +221,7 @@ bool CartridgeFA2::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   System::PageAccess access(this, System::PA_READ);
 
@@ -230,7 +229,7 @@ bool CartridgeFA2::bank(uInt16 bank)
   for(uInt32 i = (0x1FF4 & ~System::PAGE_MASK); i < 0x2000;
       i += (1 << System::PAGE_SHIFT))
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (i & 0x0FFF)];
     mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
   }
 
@@ -238,8 +237,8 @@ bool CartridgeFA2::bank(uInt16 bank)
   for(uInt32 address = 0x1200; address < (0x1FF4U & ~System::PAGE_MASK);
       address += (1 << System::PAGE_SHIFT))
   {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
@@ -248,7 +247,7 @@ bool CartridgeFA2::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeFA2::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,7 +269,7 @@ bool CartridgeFA2::patch(uInt16 address, uInt8 value)
     myRAM[address & 0x00FF] = value;
   }
   else
-    myImage[(myCurrentBank << 12) + address] = value;
+    myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
 }
@@ -288,7 +287,7 @@ bool CartridgeFA2::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
+    out.putShort(myBankOffset);
     out.putByteArray(myRAM, 256);
   }
   catch(...)
@@ -308,7 +307,7 @@ bool CartridgeFA2::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getShort();
     in.getByteArray(myRAM, 256);
   }
   catch(...)
@@ -318,7 +317,7 @@ bool CartridgeFA2::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }
@@ -388,7 +387,7 @@ uInt8 CartridgeFA2::ramReadWrite()
       }
     }
     // Bit 6 is 1, busy
-    return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
+    return myImage[myBankOffset + 0xFF4] | 0x40;
   }
   else
   {
@@ -399,11 +398,11 @@ uInt8 CartridgeFA2::ramReadWrite()
       myRAM[255] = 0;          // Successful operation
 
       // Bit 6 is 0, ready/success
-      return myImage[(myCurrentBank << 12) + 0xFF4] & ~0x40;
+      return myImage[myBankOffset + 0xFF4] & ~0x40;
     }
     else
       // Bit 6 is 1, busy
-      return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
+      return myImage[myBankOffset + 0xFF4] | 0x40;
   }
 }
 

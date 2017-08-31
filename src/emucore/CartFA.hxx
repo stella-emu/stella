@@ -29,6 +29,7 @@ class System;
 /**
   Cartridge class used for CBS' RAM Plus cartridges.  There are
   three 4K banks and 256 bytes of RAM.
+  RAM read port is $1100 - $11FF, write port is $1000 - $10FF.
 
   @author  Bradford W. Mott
 */
@@ -154,8 +155,8 @@ class CartridgeFA : public Cartridge
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

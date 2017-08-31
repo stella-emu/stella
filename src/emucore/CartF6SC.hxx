@@ -29,6 +29,7 @@ class System;
 /**
   Cartridge class used for Atari's 16K bankswitched games with
   128 bytes of RAM.  There are four 4K banks.
+  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 
   @author  Bradford W. Mott
 */
@@ -154,8 +155,8 @@ class CartridgeF6SC : public Cartridge
     // The 128 bytes of RAM
     uInt8 myRAM[128];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

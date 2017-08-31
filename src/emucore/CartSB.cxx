@@ -23,7 +23,7 @@ CartridgeSB::CartridgeSB(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySize(size),
-    myCurrentBank(0)
+    myBankOffset(0)
 {
   // Allocate array for the ROM image
   myImage = make_unique<uInt8[]>(mySize);
@@ -114,8 +114,7 @@ bool CartridgeSB::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt32 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
@@ -124,8 +123,8 @@ bool CartridgeSB::bank(uInt16 bank)
   for(uInt32 address = 0x1000; address < 0x2000;
       address += (1 << System::PAGE_SHIFT))
   {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
@@ -134,7 +133,7 @@ bool CartridgeSB::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeSB::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,7 +145,7 @@ uInt16 CartridgeSB::bankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeSB::patch(uInt16 address, uInt8 value)
 {
-  myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
+  myImage[myBankOffset + (address & 0x0FFF)] = value;
   return myBankChanged = true;
 }
 
@@ -163,7 +162,7 @@ bool CartridgeSB::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
+    out.putInt(myBankOffset);
   }
   catch(...)
   {
@@ -182,7 +181,7 @@ bool CartridgeSB::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getInt();
   }
   catch(...)
   {
@@ -191,7 +190,7 @@ bool CartridgeSB::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

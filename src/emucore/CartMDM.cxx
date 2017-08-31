@@ -23,7 +23,7 @@ CartridgeMDM::CartridgeMDM(const BytePtr& image, uInt32 size,
                            const Settings& settings)
   : Cartridge(settings),
     mySize(size),
-    myCurrentBank(0),
+    myBankOffset(0),
     myBankingDisabled(false)
 {
   // Allocate array for the ROM image
@@ -105,8 +105,7 @@ bool CartridgeMDM::bank(uInt16 bank)
 
   // Remember what bank we're in
   // Wrap around to a valid bank number if necessary
-  myCurrentBank = bank % bankCount();
-  uInt32 offset = myCurrentBank << 12;
+  myBankOffset = (bank % bankCount()) << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
@@ -115,8 +114,8 @@ bool CartridgeMDM::bank(uInt16 bank)
   for(uInt32 address = 0x1000; address < 0x2000;
       address += (1 << System::PAGE_SHIFT))
   {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
 
@@ -129,7 +128,7 @@ bool CartridgeMDM::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeMDM::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -141,7 +140,7 @@ uInt16 CartridgeMDM::bankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMDM::patch(uInt16 address, uInt8 value)
 {
-  myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
+  myImage[myBankOffset + (address & 0x0FFF)] = value;
   return myBankChanged = true;
 }
 
@@ -158,7 +157,7 @@ bool CartridgeMDM::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
+    out.putInt(myBankOffset);
   }
   catch(...)
   {
@@ -177,7 +176,7 @@ bool CartridgeMDM::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getInt();
   }
   catch(...)
   {
@@ -186,7 +185,7 @@ bool CartridgeMDM::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

@@ -22,7 +22,7 @@
 CartridgeFA::CartridgeFA(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    myCurrentBank(0)
+    myBankOffset(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(12288u, size));
@@ -113,7 +113,7 @@ uInt8 CartridgeFA::peek(uInt16 address)
     }
   }
   else
-    return myImage[(myCurrentBank << 12) + address];
+    return myImage[myBankOffset + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,8 +155,7 @@ bool CartridgeFA::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   System::PageAccess access(this, System::PA_READ);
 
@@ -164,7 +163,7 @@ bool CartridgeFA::bank(uInt16 bank)
   for(uInt32 i = (0x1FF8 & ~System::PAGE_MASK); i < 0x2000;
       i += (1 << System::PAGE_SHIFT))
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (i & 0x0FFF)];
     mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
   }
 
@@ -172,8 +171,8 @@ bool CartridgeFA::bank(uInt16 bank)
   for(uInt32 address = 0x1200; address < (0x1FF8U & ~System::PAGE_MASK);
       address += (1 << System::PAGE_SHIFT))
   {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
@@ -182,7 +181,7 @@ bool CartridgeFA::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeFA::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -204,7 +203,7 @@ bool CartridgeFA::patch(uInt16 address, uInt8 value)
     myRAM[address & 0x00FF] = value;
   }
   else
-    myImage[(myCurrentBank << 12) + address] = value;
+    myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
 }
@@ -222,7 +221,7 @@ bool CartridgeFA::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
+    out.putShort(myBankOffset);
     out.putByteArray(myRAM, 256);
   }
   catch(...)
@@ -242,7 +241,7 @@ bool CartridgeFA::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getShort();
     in.getByteArray(myRAM, 256);
   }
   catch(...)
@@ -252,7 +251,7 @@ bool CartridgeFA::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

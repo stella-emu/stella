@@ -205,8 +205,8 @@ class CartridgeFA2 : public Cartridge
     // of internal RAM to Harmony cart flash
     string myFlashFile;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

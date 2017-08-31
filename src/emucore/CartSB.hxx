@@ -153,8 +153,8 @@ class CartridgeSB : public Cartridge
     BytePtr myImage;
     uInt32 mySize;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt32 myBankOffset;
 
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess[8];

@@ -153,8 +153,8 @@ class CartridgeF8 : public Cartridge
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

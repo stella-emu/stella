@@ -109,14 +109,14 @@ void CartridgeFA2Widget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2Widget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   CartDebugWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2Widget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+                                       int cmd, int data, int id)
 {
   switch(cmd)
   {
@@ -149,8 +149,8 @@ string CartridgeFA2Widget::bankState()
   static const char* const spot[] = {
     "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-      << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+      << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

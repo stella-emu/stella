@@ -64,7 +64,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDMWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
   myBankDisabled->setState(myCart.myBankingDisabled);
 
   CartDebugWidget::loadConfig();
@@ -92,9 +92,9 @@ string CartridgeMDMWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
+  buf << "Bank = " << std::dec << myCart.getBank()
       << ", hotspot = " << "$" << Common::Base::HEX4
-      << (myCart.myCurrentBank+0x800);
+      << (myCart.getBank()+0x800);
 
   return buf.str();
 }
