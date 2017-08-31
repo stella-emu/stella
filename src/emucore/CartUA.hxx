@@ -28,7 +28,8 @@ class System;
 
 /**
   Cartridge class used for UA Limited's 8K bankswitched games.  There
-  are two 4K banks.
+  are two 4K banks, which are switched by accessing $0220 (bank 0) and
+  $0240 (bank 1).
 
   @author  Bradford W. Mott
 */
@@ -154,8 +155,8 @@ class CartridgeUA : public Cartridge
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

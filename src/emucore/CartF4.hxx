@@ -27,8 +27,8 @@ class System;
 #endif
 
 /**
-  Cartridge class used for Atari's 32K bankswitched games.  There
-  are eight 4K banks.
+  Cartridge class used for Atari's 32K bankswitched games.  There are eight
+  4K banks, accessible by read/write to $1FF4 - $1FFB.
 
   @author  Bradford W. Mott
 */

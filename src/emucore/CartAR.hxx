@@ -27,6 +27,8 @@ class System;
 #endif
 
 /**
+  FIXME: This scheme needs to be be described in more detail.
+
   This is the cartridge class for Arcadia (aka Starpath) Supercharger
   games.  Christopher Salomon provided most of the technical details
   used in creating this class.  A good description of the Supercharger

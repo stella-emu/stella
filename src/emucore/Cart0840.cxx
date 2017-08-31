@@ -86,15 +86,10 @@ uInt8 Cartridge0840::peek(uInt16 address)
       break;
   }
 
-  if(!(address & 0x1000))
-  {
-    // Because of the way we've set up accessing above, we can only
-    // get here when the addresses are from 0x800 - 0xFFF
-    int hotspot = ((address & 0x0F00) >> 8) - 8;
-    return myHotSpotPageAccess[hotspot].device->peek(address);
-  }
-
-  return 0;
+  // Because of the way we've set up accessing above, we can only
+  // get here when the addresses are from 0x800 - 0xFFF
+  int hotspot = ((address & 0x0F00) >> 8) - 8;
+  return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,13 +114,14 @@ bool Cartridge0840::poke(uInt16 address, uInt8 value)
       break;
   }
 
+  // Because of the way accessing is set up, we will may get here by
+  // doing a write to 0x800 - 0xFFF or cart; we ignore the cart write
   if(!(address & 0x1000))
   {
-    // Because of the way we've set up accessing above, we can only
-    // get here when the addresses are from 0x800 - 0xFFF
     int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
+
   return false;
 }
 

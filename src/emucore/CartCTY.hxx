@@ -27,6 +27,8 @@ class System;
 #endif
 
 /**
+  FIXME: This scheme is not yet fully implemented.
+
   The 'Chetiry' bankswitch scheme was developed by Chris D. Walton for a
   Tetris clone game by the same name.  It makes use of a Harmony cart,
   whereby ARM code in bank 0 is executed to implement the bankswitch scheme.

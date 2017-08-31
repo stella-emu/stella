@@ -30,13 +30,18 @@ class System;
   This is an extended version of the CBS RAM Plus bankswitching scheme
   supported by the Harmony cartridge.
 
-  There are six (or seven) 4K banks and 256 bytes of RAM.  The 256 bytes
-  of RAM can be loaded/saved to Harmony cart flash, which is emulated by
-  storing in a file.
+  There are six (or seven) 4K banks, accessible by read/write to $1FF5 -
+  $1FFA (or $1FFB), and 256 bytes of RAM.
 
-  For 29K versions of the scheme, the first 1K is ARM code
-  (implements actual bankswitching on the Harmony cart), which is
-  completely ignored by the emulator.
+  The 256 bytes of RAM can be loaded/saved to Harmony cart flash by
+  accessing $1FF4 (see ramReadWrite() for more information), which is
+  emulated by storing in a file.
+  RAM read port is $1100 - $11FF, write port is $1000 - $10FF.
+
+  For 29K versions of the scheme, the first 1K is ARM code (implements
+  actual bankswitching on the Harmony cart), which is completely ignored
+  by the emulator.  Also supported is a 32K variant.  In any event, only
+  data at 1K - 29K of the ROM is used.
 
   @author  Chris D. Walton
 */

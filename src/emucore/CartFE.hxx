@@ -61,8 +61,8 @@ class System;
   by Activision only uses two banks.  Furthermore, the two banks it uses
   are actually indicated by binary 110 and 111, and translated as follows:
 
-    binary 110 -> decimal 6 -> Upper 4K ROM (bank 1) @ $D000
-    binary 111 -> decimal 7 -> Lower 4K ROM (bank 0) @ $F000
+    binary 110 -> decimal 6 -> Upper 4K ROM (bank 1) @ $D000 - $DFFF
+    binary 111 -> decimal 7 -> Lower 4K ROM (bank 0) @ $F000 - $FFFF
 
   Since the actual bank numbers (0 and 1) do not map directly to their
   respective bitstrings (7 and 6), we simply test for D5 being 0 or 1.

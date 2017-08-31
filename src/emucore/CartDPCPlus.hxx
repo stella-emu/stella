@@ -34,11 +34,14 @@ class System;
   program banks, a 4K display bank, 1K frequency table and the DPC chip.
   DPC chip access is mapped to $1000 - $1080 ($1000 - $103F is read port,
   $1040 - $107F is write port).
+  Program banks are accessible by read/write to $1FF6 - $1FFB.
+
+  FIXME: THIS NEEDS TO BE UPDATED
 
   For complete details on the DPC chip see David P. Crane's United States
   Patent Number 4,644,495.
 
-  @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
+  @authors  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
 */
 class CartridgeDPCPlus : public Cartridge
 {

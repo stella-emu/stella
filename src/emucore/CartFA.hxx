@@ -27,8 +27,8 @@ class System;
 #endif
 
 /**
-  Cartridge class used for CBS' RAM Plus cartridges.  There are
-  three 4K banks and 256 bytes of RAM.
+  Cartridge class used for CBS' RAM Plus cartridges.  There are three 4K
+  banks, accessible by read/write at $1FF8 - $1FFA, and 256 bytes of RAM.
   RAM read port is $1100 - $11FF, write port is $1000 - $10FF.
 
   @author  Bradford W. Mott

@@ -59,7 +59,7 @@ CartridgeUAWidget::CartridgeUAWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeUAWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   CartDebugWidget::loadConfig();
 }
@@ -83,8 +83,8 @@ string CartridgeUAWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* const spot[] = { "$200", "$240" };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-      << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+      << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

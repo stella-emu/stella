@@ -32,12 +32,12 @@ class System;
 /**
   Cartridge class used for CDF.
 
-  THIS NEEDS TO BE UPDATED
-
-
   There are seven 4K program banks, a 4K Display Data RAM,
   1K C Variable and Stack, and the CDF chip.
-  CDF chip access is mapped to $1000 - $103F.
+  CDF chip access is mapped to $1000 - $103F (both read and write).
+  Program banks are accessible by read/write to $1FF5 - $1FFB.
+
+  FIXME: THIS NEEDS TO BE UPDATED
 
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
             Stephen Anthony, Bradford W. Mott

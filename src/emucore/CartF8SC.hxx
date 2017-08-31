@@ -27,8 +27,8 @@ class System;
 #endif
 
 /**
-  Cartridge class used for Atari's 8K bankswitched games with
-  128 bytes of RAM.  There are two 4K banks.
+  Cartridge class used for Atari's 8K bankswitched games with 128 bytes of
+  RAM.  There are two 4K banks, accessible by read/write to $1FF8 - $1FF9.
   RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 
   @author  Bradford W. Mott

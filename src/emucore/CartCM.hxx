@@ -28,6 +28,9 @@ class System;
 #endif
 
 /**
+  FIXME: This scheme is not yet fully implemented.  In particular, loading
+         from and saving to the cassette is completely missing.
+
   Cartridge class used for SpectraVideo CompuMate bankswitched games.
 
   This is more than just a cartridge mapper - it's also a "computer" add-on.
