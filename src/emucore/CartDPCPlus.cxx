@@ -33,7 +33,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
     mySystemCycles(0),
     myFractionalClocks(0.0),
     myARMCycles(0),
-    myCurrentBank(0)
+    myBankOffset(0)
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
   // copied to the end of the buffer
@@ -221,7 +221,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 {
   address &= 0x0FFF;
 
-  uInt8 peekvalue = myProgramImage[(myCurrentBank << 12) + address];
+  uInt8 peekvalue = myProgramImage[myBankOffset + address];
   uInt8 flag;
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
@@ -593,8 +593,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
@@ -603,7 +602,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank)
   for(uInt32 address = 0x1080; address < 0x2000;
       address += (1 << System::PAGE_SHIFT))
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
@@ -612,7 +611,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDPCPlus::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -629,7 +628,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
   // For now, we ignore attempts to patch the DPC address space
   if(address >= 0x0080)
   {
-    myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
+    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
     return myBankChanged = true;
   }
   else
@@ -651,7 +650,7 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putString(name());
 
     // Indicates which bank is currently active
-    out.putShort(myCurrentBank);
+    out.putShort(myBankOffset);
 
     // Harmony RAM
     out.putByteArray(myDPCRAM, 8192);
@@ -715,7 +714,7 @@ bool CartridgeDPCPlus::load(Serializer& in)
       return false;
 
     // Indicates which bank is currently active
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getShort();
 
     // Harmony RAM
     in.getByteArray(myDPCRAM, 8192);
@@ -768,7 +767,7 @@ bool CartridgeDPCPlus::load(Serializer& in)
   }
 
   // Now, go to the current bank
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

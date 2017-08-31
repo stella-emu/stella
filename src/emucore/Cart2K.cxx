@@ -31,11 +31,8 @@ Cartridge2K::Cartridge2K(const BytePtr& image, uInt32 size,
   while(mySize < size)
     mySize <<= 1;
 
-  // The smallest addressable area by Stella is 64 bytes
-  // This should really be read from the System, but for now I'm going
-  // to cheat a little and hard-code it to 64 (aka 2^6)
-  if(mySize < 64)
-    mySize = 64;
+  // We can't use a size smaller than the minimum page size in Stella
+  mySize = std::max(mySize, 1u << System::PAGE_SHIFT);
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
   myImage = make_unique<uInt8[]>(mySize);
@@ -62,6 +59,8 @@ void Cartridge2K::install(System& system)
   mySystem = &system;
 
   // Map ROM image into the system
+  // Note that we don't need our own peek/poke methods, since the mapping
+  // takes care of the entire address space
   System::PageAccess access(this, System::PA_READ);
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << System::PAGE_SHIFT))
   {

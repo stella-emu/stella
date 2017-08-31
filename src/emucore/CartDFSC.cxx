@@ -22,7 +22,7 @@
 CartridgeDFSC::CartridgeDFSC(const BytePtr& image, uInt32 size,
                              const Settings& settings)
   : Cartridge(settings),
-    myCurrentBank(0)
+    myBankOffset(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(131072u, size));
@@ -95,7 +95,7 @@ uInt8 CartridgeDFSC::peek(uInt16 address)
     }
   }
   else
-    return myImage[(myCurrentBank << 12) + address];
+    return myImage[myBankOffset + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,7 +107,7 @@ bool CartridgeDFSC::poke(uInt16 address, uInt8)
   if((address >= 0x0FC0) && (address <= 0x0FDF))
     bank(address - 0x0FC0);
 
-  // NOTE: This does not handle accessing RAM, however, this function
+  // NOTE: This does not handle accessing RAM, however, this method
   // should never be called for RAM because of the way page accessing
   // has been setup
   return false;
@@ -119,8 +119,7 @@ bool CartridgeDFSC::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt32 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   System::PageAccess access(this, System::PA_READ);
 
@@ -128,7 +127,7 @@ bool CartridgeDFSC::bank(uInt16 bank)
   for(uInt32 i = (0x1FC0 & ~System::PAGE_MASK); i < 0x2000;
       i += (1 << System::PAGE_SHIFT))
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (i & 0x0FFF)];
     mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
   }
 
@@ -136,8 +135,8 @@ bool CartridgeDFSC::bank(uInt16 bank)
   for(uInt32 address = 0x1100; address < (0x1FC0U & ~System::PAGE_MASK);
       address += (1 << System::PAGE_SHIFT))
   {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
   }
   return myBankChanged = true;
@@ -146,7 +145,7 @@ bool CartridgeDFSC::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeDFSC::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,7 +167,7 @@ bool CartridgeDFSC::patch(uInt16 address, uInt8 value)
     myRAM[address & 0x007F] = value;
   }
   else
-    myImage[(myCurrentBank << 12) + address] = value;
+    myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
 }
@@ -186,7 +185,7 @@ bool CartridgeDFSC::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
+    out.putInt(myBankOffset);
     out.putByteArray(myRAM, 128);
   }
   catch(...)
@@ -206,7 +205,7 @@ bool CartridgeDFSC::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getInt();
     in.getByteArray(myRAM, 128);
   }
   catch(...)
@@ -216,7 +215,7 @@ bool CartridgeDFSC::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

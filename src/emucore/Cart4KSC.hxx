@@ -28,6 +28,7 @@ class System;
 
 /**
   Cartridge class used for 4K games with 128 bytes of RAM.
+  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 */
 
 class Cartridge4KSC : public Cartridge

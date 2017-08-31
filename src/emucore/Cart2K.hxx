@@ -27,11 +27,12 @@ class System;
 #endif
 
 /**
-  This is the standard Atari 2K cartridge.  These cartridges
-  are not bankswitched, however, the data repeats twice in the
-  2600's 4K cartridge addressing space.
+  This is the standard Atari 2K cartridge.  These cartridges are not
+  bankswitched, however, the data repeats twice in the 2600's 4K cartridge
+  addressing space.  For 'Sub2K' ROMs (ROMs less than 2K in size), the
+  data repeats in intervals based on the size of the ROM.
 
-  @author  Bradford W. Mott
+  @author  Stephen Anthony
 */
 class Cartridge2K : public Cartridge
 {

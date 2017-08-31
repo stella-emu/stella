@@ -272,8 +272,8 @@ class CartridgeDPCPlus : public Cartridge
     // System cycle count when the last Thumbulator::run() occurred
     Int32 myARMCycles;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

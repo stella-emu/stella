@@ -29,6 +29,7 @@ class System;
 /**
   There are 32 4K banks (total of 128K ROM) with 128 bytes of RAM.
   Accessing $1FC0 - $1FDF switches to each bank.
+  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 
   @author  Stephen Anthony
 */
@@ -154,8 +155,8 @@ class CartridgeDFSC : public Cartridge
     // The 128 bytes of RAM
     uInt8 myRAM[128];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt32 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

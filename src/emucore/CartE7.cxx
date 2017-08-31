@@ -136,7 +136,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8)
   }
 
   // NOTE: This does not handle writing to RAM, however, this
-  // function should never be called for RAM because of the
+  // method should never be called for RAM because of the
   // way page accessing has been setup
   return false;
 }

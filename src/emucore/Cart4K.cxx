@@ -40,6 +40,8 @@ void Cartridge4K::install(System& system)
   mySystem = &system;
 
   // Map ROM image into the system
+  // Note that we don't need our own peek/poke methods, since the mapping
+  // takes care of the entire address space
   System::PageAccess access(this, System::PA_READ);
   for(uInt32 address = 0x1000; address < 0x2000;
       address += (1 << System::PAGE_SHIFT))

@@ -29,6 +29,7 @@ class System;
 /**
   There are 64 4K banks (total of 256K ROM) with 128 bytes of RAM.
   Accessing $1F80 - $1FBF switches to each bank.
+  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 
   @author  Stephen Anthony
 */
