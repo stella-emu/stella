@@ -339,15 +339,15 @@ void TIA::bindToControllers()
 {
   myConsole.leftController().setOnAnalogPinUpdateCallback(
     [this] (Controller::AnalogPin pin) {
-      TIA& tia = mySystem->tia();
+      updateEmulation();
 
       switch (pin) {
         case Controller::AnalogPin::Five:
-          tia.updatePaddle(1);
+          updatePaddle(1);
           break;
 
         case Controller::AnalogPin::Nine:
-          tia.updatePaddle(0);
+          updatePaddle(0);
           break;
       }
     }
@@ -355,15 +355,15 @@ void TIA::bindToControllers()
 
   myConsole.rightController().setOnAnalogPinUpdateCallback(
     [this] (Controller::AnalogPin pin) {
-      TIA& tia = mySystem->tia();
+      updateEmulation();
 
       switch (pin) {
         case Controller::AnalogPin::Five:
-          tia.updatePaddle(3);
+          updatePaddle(3);
           break;
 
         case Controller::AnalogPin::Nine:
-          tia.updatePaddle(2);
+          updatePaddle(2);
           break;
       }
     }
