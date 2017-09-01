@@ -156,9 +156,6 @@
     <ClCompile Include="..\emucore\CartFE.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\CartMC.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\CartSB.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -669,9 +666,6 @@
     <ClCompile Include="..\debugger\gui\CartFEWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartMCWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartSBWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -954,9 +948,6 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\CartFE.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\CartMC.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\CartSB.hxx">
@@ -1506,9 +1497,6 @@
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartFEWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartMCWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartSBWidget.hxx">
