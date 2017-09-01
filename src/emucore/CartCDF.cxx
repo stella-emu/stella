@@ -452,7 +452,7 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCDF::getImage(int& size) const
+const uInt8* CartridgeCDF::getImage(uInt32& size) const
 {
   size = 32768;
   return myImage;

@@ -145,7 +145,7 @@ bool CartridgeX07::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeX07::getImage(int& size) const
+const uInt8* CartridgeX07::getImage(uInt32& size) const
 {
   size = 65536;
   return myImage;

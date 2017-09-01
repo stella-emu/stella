@@ -181,7 +181,7 @@ bool CartridgeCM::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCM::getImage(int& size) const
+const uInt8* CartridgeCM::getImage(uInt32& size) const
 {
   size = 16384;
   return myImage;

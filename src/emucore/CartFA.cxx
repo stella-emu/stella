@@ -209,7 +209,7 @@ bool CartridgeFA::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeFA::getImage(int& size) const
+const uInt8* CartridgeFA::getImage(uInt32& size) const
 {
   size = 12288;
   return myImage;

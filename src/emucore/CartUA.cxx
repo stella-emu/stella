@@ -156,7 +156,7 @@ bool CartridgeUA::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeUA::getImage(int& size) const
+const uInt8* CartridgeUA::getImage(uInt32& size) const
 {
   size = 8192;
   return myImage;

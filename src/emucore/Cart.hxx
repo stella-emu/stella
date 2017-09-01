@@ -146,7 +146,7 @@ class Cartridge : public Device
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    virtual const uInt8* getImage(int& size) const = 0;
+    virtual const uInt8* getImage(uInt32& size) const = 0;
 
     /**
       Informs the cartridge about the name of the ROM file used when

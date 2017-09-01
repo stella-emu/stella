@@ -173,7 +173,7 @@ bool CartridgeEFSC::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeEFSC::getImage(int& size) const
+const uInt8* CartridgeEFSC::getImage(uInt32& size) const
 {
   size = 65536;
   return myImage;

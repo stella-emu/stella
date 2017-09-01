@@ -189,7 +189,7 @@ bool CartridgeCVPlus::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCVPlus::getImage(int& size) const
+const uInt8* CartridgeCVPlus::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage.get();

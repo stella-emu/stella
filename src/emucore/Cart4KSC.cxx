@@ -107,7 +107,7 @@ bool Cartridge4KSC::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge4KSC::getImage(int& size) const
+const uInt8* Cartridge4KSC::getImage(uInt32& size) const
 {
   size = 4096;
   return myImage;

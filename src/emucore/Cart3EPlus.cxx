@@ -297,7 +297,7 @@ bool Cartridge3EPlus::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge3EPlus::getImage(int& size) const
+const uInt8* Cartridge3EPlus::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage.get();

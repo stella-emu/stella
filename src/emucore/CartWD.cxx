@@ -261,7 +261,7 @@ bool CartridgeWD::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeWD::getImage(int& size) const
+const uInt8* CartridgeWD::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage;

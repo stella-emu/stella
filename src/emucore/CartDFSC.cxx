@@ -173,7 +173,7 @@ bool CartridgeDFSC::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeDFSC::getImage(int& size) const
+const uInt8* CartridgeDFSC::getImage(uInt32& size) const
 {
   size = 131072;
   return myImage;

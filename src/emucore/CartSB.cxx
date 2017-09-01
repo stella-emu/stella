@@ -150,7 +150,7 @@ bool CartridgeSB::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeSB::getImage(int& size) const
+const uInt8* CartridgeSB::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage.get();

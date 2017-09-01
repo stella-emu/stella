@@ -145,7 +145,7 @@ bool CartridgeMDM::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeMDM::getImage(int& size) const
+const uInt8* CartridgeMDM::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage.get();

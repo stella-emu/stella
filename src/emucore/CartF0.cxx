@@ -130,7 +130,7 @@ bool CartridgeF0::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeF0::getImage(int& size) const
+const uInt8* CartridgeF0::getImage(uInt32& size) const
 {
   size = 65536;
   return myImage;

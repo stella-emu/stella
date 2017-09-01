@@ -636,7 +636,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeDPCPlus::getImage(int& size) const
+const uInt8* CartridgeDPCPlus::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage + (32768u - mySize);

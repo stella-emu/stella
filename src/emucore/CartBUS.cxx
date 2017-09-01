@@ -488,7 +488,7 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeBUS::getImage(int& size) const
+const uInt8* CartridgeBUS::getImage(uInt32& size) const
 {
   size = 32768;
   return myImage;

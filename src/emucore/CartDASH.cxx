@@ -302,7 +302,7 @@ bool CartridgeDASH::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeDASH::getImage(int& size) const
+const uInt8* CartridgeDASH::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage.get();

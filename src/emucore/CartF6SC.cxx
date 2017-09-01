@@ -219,7 +219,7 @@ bool CartridgeF6SC::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeF6SC::getImage(int& size) const
+const uInt8* CartridgeF6SC::getImage(uInt32& size) const
 {
   size = 16384;
   return myImage;
