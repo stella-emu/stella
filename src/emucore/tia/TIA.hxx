@@ -416,7 +416,7 @@ class TIA : public Device
 
   private:
     /**
-     * During each line, the TIA cycles through these two states
+     * During each line, the TIA cycles through these two states.
      */
     enum HState {blank, frame};
 
@@ -435,13 +435,13 @@ class TIA : public Device
   private:
 
     /**
-     * This callback is invoked by FrameManager when a new frame starts
+     * This callback is invoked by FrameManager when a new frame starts.
      */
     void onFrameStart();
 
     /**
      * This callback is invoked by FrameManager when the visible range of the
-     * current frame starts
+     * current frame starts.
      */
     void onRenderingStart();
 
@@ -463,7 +463,7 @@ class TIA : public Device
     void updateEmulation();
 
     /**
-     * Execute colorClocks cycles of TIA simulation
+     * Execute colorClocks cycles of TIA simulation.
      */
     void cycle(uInt32 colorClocks);
 
@@ -483,7 +483,7 @@ class TIA : public Device
     void tickHframe();
 
     /**
-     * Execute a RSYNC
+     * Execute a RSYNC.
      */
     void applyRsync();
 
@@ -493,12 +493,13 @@ class TIA : public Device
     void updateCollision();
 
     /**
-     * Render the current pixel into the framebuffer
+     * Render the current pixel into the framebuffer.
      */
     void renderPixel(uInt32 x, uInt32 y);
 
     /**
-     * Clear the first 8 pixels of a scanline with black if we are in hblank (called during HMOVE)
+     * Clear the first 8 pixels of a scanline with black if we are in hblank
+     * (called during HMOVE).
      */
     void clearHmoveComb();
 
@@ -523,13 +524,14 @@ class TIA : public Device
     void updatePaddle(uInt8 idx);
 
     /**
-     * Get the target counter value during a RESx. This exentially depends on the position
-     * in the current scanline.
+     * Get the target counter value during a RESx. This essentially depends on
+     * the position in the current scanline.
+     */
     uInt8 resxCounter();
 
     /**
       Get the result of the specified collision register.
-    */
+     */
     uInt8 collCXM0P() const;
     uInt8 collCXM1P() const;
     uInt8 collCXP0FB() const;
@@ -557,7 +559,7 @@ class TIA : public Device
 
     /**
      * A list of delayed writes that are queued up for future execution. Delayed
-     * writes can be both actual writes whose effect is delayed by one or more clocs
+     * writes can be both actual writes whose effect is delayed by one or more clocks
      * on real hardware and delayed side effects of certain operations (GRPx!).
      */
     DelayQueue<delayQueueLength, delayQueueSize> myDelayQueue;
