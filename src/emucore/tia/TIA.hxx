@@ -592,49 +592,118 @@ class TIA : public Device
     LatchedInput myInput0;
     LatchedInput myInput1;
 
-    // Pointer to the internal color-index-based frame buffer
+    /**
+     * Pointer to the internal color-index-based frame buffer
+     */
     uInt8 myFramebuffer[160 * FrameManager::frameBufferHeight];
 
+    /**
+     * Setting this to true injects random values into undefined reads.
+     */
     bool myTIAPinsDriven;
 
+    /**
+     * The current "line state" --- either hblank or frame.
+     */
     HState myHstate;
 
-    // Master line counter
+    /**
+     * Master line counter
+     */
+
     uInt8 myHctr;
-    // Delta between master line counter and actual color clock. Nonzero after RSYNC (before the scanline terminates)
+    /**
+     * Delta between master line counter and actual color clock. Nonzero after
+     * RSYNC (before the scanline terminates)
+     */
     Int32 myHctrDelta;
-    // Electron beam x at rendering start (used for blanking out any pixels from the last frame that are not overwritten)
+    /**
+     * Electron beam x at rendering start (used for blanking out any pixels from
+     * the last frame that are not overwritten)
+     */
     uInt8 myXAtRenderingStart;
 
+    /**
+     * Do we need to update the collision mask this clock?
+     */
     bool myCollisionUpdateRequired;
+
+    /**
+     * The collision latches are represented by 15 bits in a bitfield.
+     */
     uInt32 myCollisionMask;
 
+    /**
+     * The movement clock counts the extra ticks sent to the objects during
+     * movement.
+     */
     uInt32 myMovementClock;
+    /**
+     * Movement mode --- are we sending movement clocks?
+     */
     bool myMovementInProgress;
+    /**
+     * Do we have an extended hblank this line? Get set by strobing HMOVE and
+     * cleared when the line wraps.
+     */
     bool myExtendedHblank;
 
+    /**
+     * Counts the number of line wraps since the last external TIA state change.
+     * If at least two line breaks have passed, the TIA will suspend simulation
+     * and just reuse the last line instead.
+     */
     uInt32 myLinesSinceChange;
 
+    /**
+     * The current mode of the priority encoder.
+     */
     Priority myPriority;
 
-    uInt8 mySubClock;
+    /**
+     * The index of the last CPU cycle that was included in the simulation.
+     */
     Int32 myLastCycle;
+    /**
+     * Keeps track of a possible fractional number of clocks that still need
+     * to be simulated.
+     */
+    uInt8 mySubClock;
 
+    /**
+     * Bitmasks that track which sprites / collisions are enabled / disabled.
+     */
     uInt8 mySpriteEnabledBits;
     uInt8 myCollisionsEnabledBits;
 
+    /**
+     * The color used to highlight HMOVE blanks (if enabled).
+     */
     uInt8 myColorHBlank;
 
+    /**
+     * The total number of color clocks since emulation started. This is a
+     * double a) to avoid overflows and b) as it will enter floating point
+     * expressions in the paddle readout simulation anyway.
+     */
     double myTimestamp;
 
+    /**
+     * The "shadow registers" track the last written register value for the
+     * debugger.
+     */
     uInt8 myShadowRegisters[64];
 
-    // Automatic framerate correction based on number of scanlines
+    /**
+     * Automatic framerate correction based on number of scanlines
+     */
     bool myAutoFrameEnabled;
 
-    // Indicates if color loss should be enabled or disabled.  Color loss
-    // occurs on PAL-like systems when the previous frame contains an odd
-    // number of scanlines.
+    /**
+     * Indicates if color loss should be enabled or disabled.  Color loss
+     * occurs on PAL-like systems when the previous frame contains an odd
+     * number of scanlines.
+     */
     bool myColorLossEnabled;
     bool myColorLossActive;
 
