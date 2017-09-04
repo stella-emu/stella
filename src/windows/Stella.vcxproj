@@ -235,6 +235,8 @@
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\main.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
+    <ClCompile Include="..\common\RewindManager.cxx" />
+    <ClCompile Include="..\common\StateManager.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
@@ -385,7 +387,6 @@
     <ClCompile Include="..\emucore\SaveKey.cxx" />
     <ClCompile Include="..\emucore\Serializer.cxx" />
     <ClCompile Include="..\emucore\Settings.cxx" />
-    <ClCompile Include="..\emucore\StateManager.cxx" />
     <ClCompile Include="..\emucore\Switches.cxx" />
     <ClCompile Include="..\emucore\System.cxx" />
     <ClCompile Include="..\emucore\Thumbulator.cxx" />
@@ -499,6 +500,8 @@
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
+    <ClInclude Include="..\common\RewindManager.hxx" />
+    <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
     <ClInclude Include="..\common\tv_filters\AtariNTSC.hxx" />
@@ -683,7 +686,6 @@
     <ClInclude Include="..\emucore\Serializer.hxx" />
     <ClInclude Include="..\emucore\Settings.hxx" />
     <ClInclude Include="..\emucore\Sound.hxx" />
-    <ClInclude Include="..\emucore\StateManager.hxx" />
     <ClInclude Include="..\emucore\Switches.hxx" />
     <ClInclude Include="..\emucore\System.hxx" />
     <ClInclude Include="..\emucore\Thumbulator.hxx" />
