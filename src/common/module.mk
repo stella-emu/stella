@@ -10,10 +10,12 @@ MODULE_OBJS := \
 	src/common/FSNodeZIP.o \
 	src/common/PNGLibrary.o \
 	src/common/MouseControl.o \
+	src/common/RewindManager.o \
+	src/common/StateManager.o \
 	src/common/ZipHandler.o
 
 MODULE_DIRS += \
 	src/common
 
-# Include common rules 
+# Include common rules
 include $(srcdir)/common.rules

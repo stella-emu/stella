@@ -28,7 +28,7 @@
 
 #include "StateManager.hxx"
 
-#define STATE_HEADER "05000200state"
+#define STATE_HEADER "05000300state"
 #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,6 +37,7 @@ StateManager::StateManager(OSystem& osystem)
     myCurrentSlot(0),
     myActiveMode(kOffMode)
 {
+  myRewindManager = make_unique<RewindManager>(myOSystem, *this);
   reset();
 }
 

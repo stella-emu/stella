@@ -152,7 +152,6 @@ void Debugger::initialize()
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
   myBaseDialog = myDialog;
 
-  myRewindManager = make_unique<RewindManager>(myOSystem, myDialog->rewindButton());
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 }
 
@@ -433,11 +432,15 @@ void Debugger::nextFrame(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::rewindState()
 {
+  RewindManager& r = myOSystem.state().rewindManager();
+
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  bool result = myRewindManager->rewindState();
+  bool result = r.rewindState();
   lockBankswitchState();
+
+  myDialog->rewindButton().setEnabled(!r.empty());
 
   return result;
 }
@@ -476,7 +479,12 @@ void Debugger::saveOldState(bool addrewind)
   myTiaDebug->saveOldState();
 
   // Add another rewind level to the Undo list
-  if(addrewind)  myRewindManager->addState();
+  if(addrewind)
+  {
+    RewindManager& r = myOSystem.state().rewindManager();
+    r.addState();
+    myDialog->rewindButton().setEnabled(!r.empty());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -485,8 +493,11 @@ void Debugger::setStartState()
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
 
-  // Start a new rewind list
-  myRewindManager->clear();
+  // If rewinding is not enabled, always start the debugger with a clean list
+  RewindManager& r = myOSystem.state().rewindManager();
+  if(0) // FIXME
+    r.clear();
+  myDialog->rewindButton().setEnabled(!r.empty());
 
   // Save initial state, but don't add it to the rewind list
   saveOldState(false);
@@ -633,91 +644,4 @@ void Debugger::unlockBankswitchState()
 {
   mySystem.unlockDataBus();
   myConsole.cartridge().unlockBank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::RewindManager::RewindManager(OSystem& system, ButtonWidget& button)
-  : myOSystem(system),
-    myRewindButton(button),
-    mySize(0),
-    myTop(0)
-{
-  for(int i = 0; i < MAX_SIZE; ++i)
-    myStateList[i] = nullptr;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::RewindManager::~RewindManager()
-{
-  for(int i = 0; i < MAX_SIZE; ++i)
-    delete myStateList[i];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::RewindManager::addState()
-{
-  // Create a new Serializer object if we need one
-  if(myStateList[myTop] == nullptr)
-    myStateList[myTop] = new Serializer();
-  Serializer& s = *(myStateList[myTop]);
-
-  if(s)
-  {
-    s.reset();
-    if(myOSystem.state().saveState(s) && myOSystem.console().tia().saveDisplay(s))
-    {
-      // Are we still within the allowable size, or are we overwriting an item?
-      mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
-
-      myTop = (myTop + 1) % MAX_SIZE;
-      myRewindButton.setEnabled(true);
-      return true;
-    }
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::RewindManager::rewindState()
-{
-  if(mySize > 0)
-  {
-    mySize--;
-    myTop = myTop == 0 ? MAX_SIZE - 1 : myTop - 1;
-    Serializer& s = *(myStateList[myTop]);
-
-    s.reset();
-    myOSystem.state().loadState(s);
-    myOSystem.console().tia().loadDisplay(s);
-
-    if(mySize == 0)
-      myRewindButton.setEnabled(false);
-
-    return true;
-  }
-  else
-    return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::RewindManager::empty()
-{
-  return mySize == 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::RewindManager::clear()
-{
-  for(int i = 0; i < MAX_SIZE; ++i)
-    if(myStateList[i] != nullptr)
-      myStateList[i]->reset();
-
-  myTop = mySize = 0;
-
-  // We use Widget::clearFlags here instead of Widget::setEnabled(),
-  // since the latter implies an immediate draw/update, but this method
-  // might be called before any UI exists
-  // TODO - fix this deficiency in the UI core; we shouldn't have to worry
-  //        about such things at this level
-  myRewindButton.clearFlags(WIDGET_ENABLED);
 }

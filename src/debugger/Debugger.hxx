@@ -26,7 +26,6 @@ class TiaZoomWidget;
 class EditTextWidget;
 class RomWidget;
 class Expression;
-class Serializer;
 class PackedBitArray;
 class PromptWidget;
 class ButtonWidget;
@@ -294,38 +293,6 @@ class Debugger : public DialogContainer
     // Dimensions of the entire debugger window
     uInt32 myWidth;
     uInt32 myHeight;
-
-    // Class holding all rewind state functionality in the debugger
-    // Essentially, it's a modified circular array-based stack
-    // that cleverly deals with allocation/deallocation of memory
-    class RewindManager
-    {
-      public:
-        RewindManager(OSystem& system, ButtonWidget& button);
-        virtual ~RewindManager();
-
-      public:
-        bool addState();
-        bool rewindState();
-        bool empty();
-        void clear();
-
-      private:
-        enum { MAX_SIZE = 100 };
-        OSystem& myOSystem;
-        ButtonWidget& myRewindButton;
-        Serializer* myStateList[MAX_SIZE];
-        uInt32 mySize, myTop;
-
-      private:
-        // Following constructors and assignment operators not supported
-        RewindManager() = delete;
-        RewindManager(const RewindManager&) = delete;
-        RewindManager(RewindManager&&) = delete;
-        RewindManager& operator=(const RewindManager&) = delete;
-        RewindManager& operator=(RewindManager&&) = delete;
-    };
-    unique_ptr<RewindManager> myRewindManager;
 
   private:
     // Following constructors and assignment operators not supported

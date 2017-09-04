@@ -20,6 +20,7 @@
 
 class OSystem;
 
+#include "RewindManager.hxx"
 #include "Serializer.hxx"
 
 /**
@@ -95,6 +96,11 @@ class StateManager
     */
     void reset();
 
+    /**
+      The rewind facility for the state manager
+    */
+    RewindManager& rewindManager() const { return *myRewindManager; }
+
   private:
     enum Mode {
       kOffMode,
@@ -123,6 +129,9 @@ class StateManager
     // Serializer classes used to save/load the eventstream
     Serializer myMovieWriter;
     Serializer myMovieReader;
+
+    // Stored savestates to be later rewound
+    unique_ptr<RewindManager> myRewindManager;
 
   private:
     // Following constructors and assignment operators not supported

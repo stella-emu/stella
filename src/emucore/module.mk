@@ -73,7 +73,6 @@ MODULE_OBJS := \
 	src/emucore/Serializer.o \
 	src/emucore/Settings.o \
 	src/emucore/Switches.o \
-	src/emucore/StateManager.o \
 	src/emucore/System.o \
 	src/emucore/TIASnd.o \
 	src/emucore/TIASurface.o \
