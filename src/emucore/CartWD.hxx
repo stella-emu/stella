@@ -224,7 +224,7 @@ class CartridgeWD : public Cartridge
     uInt16 myOffset[4];
 
     // Indicates the cycle at which a bankswitch was initiated
-    uInt32 myCyclesAtBankswitchInit;
+    uInt64 myCyclesAtBankswitchInit;
 
     // Indicates the bank we wish to switch to in the future
     uInt16 myPendingBank;

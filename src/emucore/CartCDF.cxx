@@ -120,14 +120,6 @@ void CartridgeCDF::consoleChanged(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCDF::systemCyclesReset()
-{
-  // Adjust the cycle counter so that it reflects the new value
-  myAudioCycles -= mySystem->cycles();
-  myARMCycles -= mySystem->cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::install(System& system)
 {
   mySystem = &system;
@@ -145,7 +137,7 @@ void CartridgeCDF::install(System& system)
 inline void CartridgeCDF::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = mySystem->cycles() - myAudioCycles;
+  Int32 cycles = Int32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CDF OSC clocks since the last update
@@ -172,7 +164,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        Int32 cycles = mySystem->cycles() - myARMCycles;
+        Int32 cycles = Int32(mySystem->cycles() - myARMCycles);
         myARMCycles = mySystem->cycles();
 
         myThumbEmulator->run(cycles);
@@ -519,9 +511,9 @@ bool CartridgeCDF::save(Serializer& out) const
     out.putByteArray(myMusicWaveformSize, 3);
 
     // Save cycles and clocks
-    out.putInt(myAudioCycles);
+    out.putLong(myAudioCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
-    out.putInt(myARMCycles);
+    out.putLong(myARMCycles);
   }
   catch(...)
   {
@@ -562,9 +554,9 @@ bool CartridgeCDF::load(Serializer& in)
     in.getByteArray(myMusicWaveformSize, 3);
 
     // Get cycles and clocks
-    myAudioCycles = (Int32)in.getInt();
+    myAudioCycles = in.getLong();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
-    myARMCycles = (Int32)in.getInt();
+    myARMCycles = in.getLong();
   }
   catch(...)
   {

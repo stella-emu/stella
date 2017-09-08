@@ -99,6 +99,7 @@ static const char* const pseudo_registers[][2] = {
   { "_rwport", "Address at which a read from a write port occurred" },
   { "_scan", "Current scanline count" },
   { "_fcount", "Number of frames since emulation started" },
+//FIXME  { "_fcycles", "Number of cycles since frame started" },
   { "_cclocks", "Color clocks on current scanline" },
   { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
   { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
@@ -302,13 +303,13 @@ int Debugger::step()
   saveOldState();
   mySystem.clearDirtyPages();
 
-  int cyc = mySystem.cycles();
+  uInt64 startCycle = mySystem.cycles();
 
   unlockBankswitchState();
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockBankswitchState();
 
-  return mySystem.cycles() - cyc;
+  return int(mySystem.cycles() - startCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -330,14 +331,14 @@ int Debugger::trace()
     saveOldState();
     mySystem.clearDirtyPages();
 
-    int cyc = mySystem.cycles();
+    uInt64 startCycle = mySystem.cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     unlockBankswitchState();
     myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
     lockBankswitchState();
 
-    return mySystem.cycles() - cyc;
+    return int(mySystem.cycles() - startCycle);
   }
   else
     return step();

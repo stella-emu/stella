@@ -48,14 +48,6 @@ class Sound : public Serializable
     virtual void setEnabled(bool enable) = 0;
 
     /**
-      The system cycle counter is being adjusting by the specified amount.  Any
-      members using the system cycle counter should be adjusted as needed.
-
-      @param amount The amount the cycle counter is being adjusted by
-    */
-    virtual void adjustCycleCounter(Int32 amount) = 0;
-
-    /**
       Sets the number of channels (mono or stereo sound).
 
       @param channels The number of channels
@@ -101,7 +93,7 @@ class Sound : public Serializable
       @param value The value to save into the register
       @param cycle The system cycle at which the register is being updated
     */
-    virtual void set(uInt16 addr, uInt8 value, Int32 cycle) = 0;
+    virtual void set(uInt16 addr, uInt8 value, uInt64 cycle) = 0;
 
     /**
       Sets the volume of the sound device to the specified level.  The

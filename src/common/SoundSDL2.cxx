@@ -227,12 +227,6 @@ void SoundSDL2::adjustVolume(Int8 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::adjustCycleCounter(Int32 amount)
-{
-  myLastRegisterSetCycle += amount;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setChannels(uInt32 channels)
 {
   if(channels == 1 || channels == 2)
@@ -249,7 +243,7 @@ void SoundSDL2::setFrameRate(float framerate)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::set(uInt16 addr, uInt8 value, Int32 cycle)
+void SoundSDL2::set(uInt16 addr, uInt8 value, uInt64 cycle)
 {
   SDL_LockAudio();
 
@@ -386,7 +380,7 @@ bool SoundSDL2::save(Serializer& out) const
       for(int i = 0; i < 6; ++i)
         out.putByte(0);
 
-    out.putInt(myLastRegisterSetCycle);
+    out.putLong(myLastRegisterSetCycle);
   }
   catch(...)
   {
@@ -423,7 +417,7 @@ bool SoundSDL2::load(Serializer& in)
       for(int i = 0; i < 6; ++i)
         in.getByte();
 
-    myLastRegisterSetCycle = in.getInt();
+    myLastRegisterSetCycle = in.getLong();
   }
   catch(...)
   {

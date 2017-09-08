@@ -61,13 +61,6 @@ class CartridgeAR : public Cartridge
     void reset() override;
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
@@ -207,9 +200,6 @@ class CartridgeAR : public Cartridge
 
     // Indicates if the ROM's power is on or off
     bool myPower;
-
-    // Indicates when the power was last turned on
-    Int32 myPowerRomCycle;
 
     // Data hold register used for writing
     uInt8 myDataHoldRegister;

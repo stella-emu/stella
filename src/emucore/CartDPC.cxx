@@ -63,13 +63,6 @@ void CartridgeDPC::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::systemCyclesReset()
-{
-  // Adjust the cycle counter so that it reflects the new value
-  mySystemCycles -= mySystem->cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPC::install(System& system)
 {
   mySystem = &system;
@@ -105,7 +98,7 @@ inline void CartridgeDPC::clockRandomNumberGenerator()
 inline void CartridgeDPC::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = mySystem->cycles() - mySystemCycles;
+  Int32 cycles = Int32(mySystem->cycles() - mySystemCycles);
   mySystemCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
@@ -481,7 +474,7 @@ bool CartridgeDPC::save(Serializer& out) const
     // The random number generator register
     out.putByte(myRandomNumber);
 
-    out.putInt(mySystemCycles);
+    out.putLong(mySystemCycles);
     out.putInt(uInt32(myFractionalClocks * 100000000.0));
   }
   catch(...)
@@ -524,7 +517,7 @@ bool CartridgeDPC::load(Serializer& in)
     myRandomNumber = in.getByte();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = Int32(in.getInt());
+    mySystemCycles = in.getLong();
     myFractionalClocks = double(in.getInt()) / 100000000.0;
   }
   catch(...)

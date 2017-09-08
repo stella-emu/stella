@@ -69,10 +69,8 @@ void System::reset(bool autodetect)
   // Provide hint to devices that autodetection is active (or not)
   mySystemInAutodetect = autodetect;
 
-  // Reset system cycle counter
-  resetCycles();
-
   // Reset all devices
+  myCycles = 0;     // Must be done first (the reset() methods use its value)
   myM6532.reset();
   myTIA.reset();
   myCart.reset();
@@ -80,18 +78,6 @@ void System::reset(bool autodetect)
 
   // There are no dirty pages upon startup
   clearDirtyPages();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::resetCycles()
-{
-  // First we let all of the device attached to me know about the reset
-  myM6532.systemCyclesReset();
-  myTIA.systemCyclesReset();
-  myCart.systemCyclesReset();
-
-  // Now, we reset cycle count to zero
-  myCycles = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,7 +195,7 @@ bool System::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putInt(myCycles);
+    out.putLong(myCycles);
     out.putByte(myDataBusState);
 
     // Save the state of each device
@@ -241,7 +227,7 @@ bool System::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCycles = in.getInt();
+    myCycles = in.getLong();
     myDataBusState = in.getByte();
 
     // Load the state of each device

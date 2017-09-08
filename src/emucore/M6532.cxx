@@ -68,19 +68,10 @@ void M6532::reset()
 
   // Edge-detect set to negative (high to low)
   myEdgeDetectPositive = false;
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::systemCyclesReset()
-{
-  // System cycles are being reset to zero so we need to adjust
-  // the cycle count we remembered when the timer was last set
-  myLastCycle -= mySystem->cycles();
-  mySetTimerCycle -= mySystem->cycles();
-
-  // We should also inform any 'smart' controllers as well
-  myConsole.leftController().systemCyclesReset();
-  myConsole.rightController().systemCyclesReset();
+  // Let the controllers know about the reset
+  myConsole.leftController().reset();
+  myConsole.rightController().reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,7 +100,7 @@ void M6532::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::updateEmulation()
 {
-  uInt32 cycles = mySystem->cycles() - myLastCycle;
+  uInt32 cycles = uInt32(mySystem->cycles() - myLastCycle);
   uInt32 subTimer = mySubTimer;
 
   // Guard against further state changes if the debugger alread forwarded emulation
@@ -361,8 +352,8 @@ bool M6532::save(Serializer& out) const
     out.putInt(myDivider);
     out.putBool(myTimerWrapped);
     out.putBool(myWrappedThisCycle);
-    out.putInt(myLastCycle);
-    out.putInt(mySetTimerCycle);
+    out.putLong(myLastCycle);
+    out.putLong(mySetTimerCycle);
 
     out.putByte(myDDRA);
     out.putByte(myDDRB);
@@ -397,8 +388,8 @@ bool M6532::load(Serializer& in)
     myDivider = in.getInt();
     myTimerWrapped = in.getBool();
     myWrappedThisCycle = in.getBool();
-    myLastCycle = in.getInt();
-    mySetTimerCycle = in.getInt();
+    myLastCycle = in.getLong();
+    mySetTimerCycle = in.getLong();
 
     myDDRA = in.getByte();
     myDDRB = in.getByte();
@@ -449,5 +440,5 @@ Int32 M6532::intimClocks()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 M6532::timerClocks() const
 {
-  return mySystem->cycles() - mySetTimerCycle;
+  return uInt32(mySystem->cycles() - mySetTimerCycle);
 }

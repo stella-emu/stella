@@ -56,14 +56,6 @@ class SoundSDL2 : public Sound
     void setEnabled(bool state) override;
 
     /**
-      The system cycle counter is being adjusting by the specified amount. Any
-      members using the system cycle counter should be adjusted as needed.
-
-      @param amount  The amount the cycle counter is being adjusted by
-    */
-    void adjustCycleCounter(Int32 amount) override;
-
-    /**
       Sets the number of channels (mono or stereo sound).  Note that this
       determines how the emulation should 'mix' the channels of the TIA sound
       system (of which there are always two).  It does not specify the actual
@@ -113,7 +105,7 @@ class SoundSDL2 : public Sound
       @param value  The value to save into the register
       @param cycle  The system cycle at which the register is being updated
     */
-    void set(uInt16 addr, uInt8 value, Int32 cycle) override;
+    void set(uInt16 addr, uInt8 value, uInt64 cycle) override;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -258,7 +250,7 @@ class SoundSDL2 : public Sound
     bool myIsInitializedFlag;
 
     // Indicates the cycle when a sound register was last set
-    Int32 myLastRegisterSetCycle;
+    uInt64 myLastRegisterSetCycle;
 
     // Indicates the number of channels (mono or stereo)
     uInt32 myNumChannels;

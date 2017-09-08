@@ -62,13 +62,6 @@ void CartridgeCTY::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCTY::systemCyclesReset()
-{
-  // Adjust the cycle counter so that it reflects the new value
-  mySystemCycles -= mySystem->cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::install(System& system)
 {
   mySystem = &system;
@@ -296,7 +289,7 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putShort(myCounter);
     out.putBool(myLDAimmediate);
     out.putInt(myRandomNumber);
-    out.putInt(mySystemCycles);
+    out.putLong(mySystemCycles);
     out.putInt(uInt32(myFractionalClocks * 100000000.0));
 
   }
@@ -325,7 +318,7 @@ bool CartridgeCTY::load(Serializer& in)
     myCounter = in.getShort();
     myLDAimmediate = in.getBool();
     myRandomNumber = in.getInt();
-    mySystemCycles = in.getInt();
+    mySystemCycles = in.getLong();
     myFractionalClocks = double(in.getInt()) / 100000000.0;
   }
   catch(...)
@@ -513,7 +506,7 @@ void CartridgeCTY::wipeAllScores()
 inline void CartridgeCTY::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = mySystem->cycles() - mySystemCycles;
+  Int32 cycles = Int32(mySystem->cycles() - mySystemCycles);
   mySystemCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update

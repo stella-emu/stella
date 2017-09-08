@@ -74,13 +74,6 @@ class CartridgeCDF : public Cartridge
     void consoleChanged(ConsoleTiming timing) override;
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
@@ -239,10 +232,10 @@ class CartridgeCDF : public Cartridge
     uInt16 myBankOffset;
 
     // System cycle count from when the last update to music data fetchers occurred
-    Int32 myAudioCycles;
+    uInt64 myAudioCycles;
 
     // ARM cycle count from when the last callFunction() occurred
-    Int32 myARMCycles;
+    uInt64 myARMCycles;
 
     // The audio routines in the driver run in 32-bit mode and take advantage
     // of the FIQ Shadow Registers which are not accessible to 16-bit thumb

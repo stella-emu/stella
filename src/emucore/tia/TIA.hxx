@@ -113,12 +113,6 @@ class TIA : public Device
     void frameReset();
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Install TIA in the specified system.  Invoked by the system
       when the TIA is attached to it.
 
@@ -263,6 +257,11 @@ class TIA : public Device
       @return The total number of scanlines generated in the last frame.
     */
     uInt32 scanlinesLastFrame() const { return myFrameManager.scanlinesLastFrame(); }
+
+    /**
+      Answers the system cycles from the start of the current frame.
+    */
+    uInt32 frameCycles() const;
 
     /**
       Answers whether the TIA is currently in being rendered
@@ -706,6 +705,11 @@ class TIA : public Device
      */
     bool myColorLossEnabled;
     bool myColorLossActive;
+
+    /**
+     * System cycles at the end of the previous frame / beginning of next frame
+     */
+    uInt64 myCyclesAtFrameStart;
 
   private:
     TIA() = delete;

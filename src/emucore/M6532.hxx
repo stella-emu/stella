@@ -61,13 +61,6 @@ class M6532 : public Device
     void reset() override;
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Update the entire digital and analog pin state of ports A and B.
     */
     void update();
@@ -178,7 +171,7 @@ class M6532 : public Device
     bool myWrappedThisCycle;
 
     // Cycle when the timer set. Debugging only.
-    Int32 mySetTimerCycle;
+    uInt64 mySetTimerCycle;
 
     // Last cycle considered in emu updates
     Int32 myLastCycle;

@@ -56,13 +56,6 @@ class Device : public Serializable
     virtual void consoleChanged(ConsoleTiming timing) { }
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    virtual void systemCyclesReset() { }
-
-    /**
       Install device in the specified system.  Invoked by the system
       when the device is attached to it.
 

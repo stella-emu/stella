@@ -695,6 +695,12 @@ int TIADebug::frameCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::frameCycles() const
+{
+  return myTIA.frameCycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::scanlines() const
 {
   return myTIA.scanlines();

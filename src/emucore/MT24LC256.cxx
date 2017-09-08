@@ -145,21 +145,17 @@ void MT24LC256::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MT24LC256::systemReset()
+{
+  myCyclesWhenSDASet = myCyclesWhenSCLSet = myCyclesWhenTimerSet =
+    mySystem.cycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::erase()
 {
   memset(myData, 0xff, 32768);
   myDataChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MT24LC256::systemCyclesReset()
-{
-  // System cycles are being reset to zero so we need to adjust
-  // the cycle counts we remembered
-  uInt32 cycles = mySystem.cycles();
-  myCyclesWhenSDASet -= cycles;
-  myCyclesWhenSCLSet -= cycles;
-  myCyclesWhenTimerSet -= cycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -366,7 +362,7 @@ bool MT24LC256::jpee_timercheck(int mode)
   {
     if(myTimerActive)
     {
-      uInt32 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
+      uInt32 elapsed = uInt32(mySystem.cycles() - myCyclesWhenTimerSet);
       myTimerActive = elapsed < uInt32(5000000.0 / 838.0);
     }
     return myTimerActive;

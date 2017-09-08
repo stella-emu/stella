@@ -275,7 +275,7 @@ bool CartridgeWD::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 64);
-    out.putInt(myCyclesAtBankswitchInit);
+    out.putLong(myCyclesAtBankswitchInit);
     out.putShort(myPendingBank);
   }
   catch(...)
@@ -297,7 +297,7 @@ bool CartridgeWD::load(Serializer& in)
 
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 64);
-    myCyclesAtBankswitchInit = in.getInt();
+    myCyclesAtBankswitchInit = in.getLong();
     myPendingBank = in.getShort();
 
     bank(myCurrentBank);

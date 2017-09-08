@@ -113,14 +113,6 @@ void CartridgeBUS::consoleChanged(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeBUS::systemCyclesReset()
-{
-  // Adjust the cycle counter so that it reflects the new value
-  mySystemCycles -= mySystem->cycles();
-  myARMCycles -= mySystem->cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::install(System& system)
 {
   mySystem = &system;
@@ -143,7 +135,7 @@ void CartridgeBUS::install(System& system)
 inline void CartridgeBUS::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = mySystem->cycles() - mySystemCycles;
+  Int32 cycles = Int32(mySystem->cycles() - mySystemCycles);
   mySystemCycles = mySystem->cycles();
 
   // Calculate the number of BUS OSC clocks since the last update
@@ -170,7 +162,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        Int32 cycles = mySystem->cycles() - myARMCycles;
+        Int32 cycles = Int32(mySystem->cycles() - myARMCycles);
         myARMCycles = mySystem->cycles();
 
         myThumbEmulator->run(cycles);
@@ -570,9 +562,9 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putShort(myJMPoperandAddress);
 
     // Save cycles and clocks
-    out.putInt(mySystemCycles);
+    out.putLong(mySystemCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
-    out.putInt(myARMCycles);
+    out.putLong(myARMCycles);
 
     // Audio info
     out.putIntArray(myMusicCounters, 3);
@@ -614,9 +606,9 @@ bool CartridgeBUS::load(Serializer& in)
     myJMPoperandAddress = in.getShort();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = (Int32)in.getInt();
+    mySystemCycles = in.getLong();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
-    myARMCycles = (Int32)in.getInt();
+    myARMCycles = in.getLong();
 
     // Audio info
     in.getIntArray(myMusicCounters, 3);

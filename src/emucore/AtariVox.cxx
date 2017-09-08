@@ -99,13 +99,12 @@ void AtariVox::write(DigitalPin pin, bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::clockDataIn(bool value)
 {
-  uInt32 cycle = mySystem.cycles();
-
   if(value && (myShiftCount == 0))
     return;
 
   // If this is the first write this frame, or if it's been a long time
   // since the last write, start a new data byte.
+  uInt64 cycle = mySystem.cycles();
   if((cycle < myLastDataWriteCycle) || (cycle > myLastDataWriteCycle + 1000))
   {
     myShiftRegister = 0;
@@ -139,20 +138,17 @@ void AtariVox::clockDataIn(bool value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariVox::reset()
+{
+  myLastDataWriteCycle = mySystem.cycles();
+  myEEPROM->systemReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::close()
 {
   // Force the EEPROM object to cleanup
   myEEPROM.reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariVox::systemCyclesReset()
-{
-  myLastDataWriteCycle -= mySystem.cycles();
-
-  // The EEPROM keeps track of cycle counts, and needs to know when the
-  // cycles are reset
-  myEEPROM->systemCyclesReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

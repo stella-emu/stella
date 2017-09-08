@@ -126,12 +126,12 @@ class System : public Serializable
 
   public:
     /**
-      Get the number of system cycles which have passed since the last
-      time cycles were reset or the system was reset.
+      Get the number of system cycles which have passed since the
+      system was created.
 
       @return The number of system cycles which have passed
     */
-    uInt32 cycles() const { return myCycles; }
+    uInt64 cycles() const { return myCycles; }
 
     /**
       Increment the system cycles by the specified number of cycles.
@@ -139,14 +139,6 @@ class System : public Serializable
       @param amount The amount to add to the system cycles counter
     */
     void incrementCycles(uInt32 amount) { myCycles += amount; }
-
-    /**
-      Reset the system cycle count to zero.  The first thing that
-      happens is that all devices are notified of the reset by invoking
-      their systemCyclesReset method then the system cycle count is
-      reset to zero.
-    */
-    void resetCycles();
 
     /**
       Informs all attached devices that the console type has changed.
@@ -396,8 +388,8 @@ class System : public Serializable
     // Cartridge device attached to the system
     Cartridge& myCart;
 
-    // Number of system cycles executed since the last reset
-    uInt32 myCycles;
+    // Number of system cycles executed since instantiation
+    uInt64 myCycles;
 
     // Null device to use for page which are not installed
     NullDevice myNullDevice;

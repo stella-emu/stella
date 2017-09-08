@@ -59,13 +59,6 @@ class CartridgeDPC : public Cartridge
     void reset() override;
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
@@ -203,7 +196,7 @@ class CartridgeDPC : public Cartridge
     uInt8 myRandomNumber;
 
     // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    uInt64 mySystemCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;

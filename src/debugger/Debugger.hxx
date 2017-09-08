@@ -153,11 +153,6 @@ class Debugger : public DialogContainer
     */
     const string run(const string& command);
 
-    /**
-      The current cycle count of the System.
-    */
-    int cycles() const { return int(mySystem.cycles()); }
-
     string autoExec();
 
     string showWatches();

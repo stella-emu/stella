@@ -27,12 +27,9 @@
   stream can be either an actual file, or an in-memory structure.
 
   Bytes are written as characters, shorts as 2 characters (16-bits),
-  integers as 4 characters (32-bits), strings are written as characters
-  prepended by the length of the string, boolean values are written using
-  a special character pattern.
-
-  All bytes, shorts and ints should be cast to their appropriate data type upon
-  method return.
+  integers as 4 characters (32-bits), long integers as 8 bytes (64-bits),
+  strings are written as characters prepended by the length of the string,
+  boolean values are written using a special character pattern.
 
   @author  Stephen Anthony
 */
@@ -111,6 +108,13 @@ class Serializer
     void getIntArray(uInt32* array, uInt32 size) const;
 
     /**
+      Reads a long int value (unsigned 64-bit) from the current input stream.
+
+      @result The long int value which has been read from the stream.
+    */
+    uInt64 getLong() const;
+
+    /**
       Reads a double value (signed 64-bit) from the current input stream.
 
       @result The double value which has been read from the stream.
@@ -175,6 +179,13 @@ class Serializer
       @param size   The size of the array (number of integers to write)
     */
     void putIntArray(const uInt32* array, uInt32 size);
+
+    /**
+      Writes a long int value (unsigned 64-bit) to the current output stream.
+
+      @param value The long int value to write to the output stream.
+    */
+    void putLong(uInt64 value);
 
     /**
       Writes a double value (signed 64-bit) to the current output stream.

@@ -111,14 +111,6 @@ void CartridgeDPCPlus::consoleChanged(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPCPlus::systemCyclesReset()
-{
-  // Adjust the cycle counter so that it reflects the new value
-  mySystemCycles -= mySystem->cycles();
-  myARMCycles -= mySystem->cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlus::install(System& system)
 {
   mySystem = &system;
@@ -153,7 +145,7 @@ inline void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = mySystem->cycles() - mySystemCycles;
+  Int32 cycles = Int32(mySystem->cycles() - mySystemCycles);
   mySystemCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
@@ -195,7 +187,7 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        Int32 cycles = mySystem->cycles() - myARMCycles;
+        Int32 cycles = Int32(mySystem->cycles() - myARMCycles);
         myARMCycles = mySystem->cycles();
 
         myThumbEmulator->run(cycles);
@@ -690,11 +682,11 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putInt(myRandomNumber);
 
     // Get system cycles and fractional clocks
-    out.putInt(mySystemCycles);
+    out.putLong(mySystemCycles);
     out.putInt(uInt32(myFractionalClocks * 100000000.0));
 
     // Clock info for Thumbulator
-    out.putInt(myARMCycles);
+    out.putLong(myARMCycles);
   }
   catch(...)
   {
@@ -754,11 +746,11 @@ bool CartridgeDPCPlus::load(Serializer& in)
     myRandomNumber = in.getInt();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = in.getInt();
+    mySystemCycles = in.getLong();
     myFractionalClocks = double(in.getInt()) / 100000000.0;
 
     // Clock info for Thumbulator
-    myARMCycles = in.getInt();
+    myARMCycles = in.getLong();
   }
   catch(...)
   {

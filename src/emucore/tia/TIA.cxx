@@ -145,6 +145,8 @@ void TIA::reset()
   myDelayQueue.reset();
   myFrameManager.reset();
 
+  myCyclesAtFrameStart = 0;
+
   frameReset();  // Recalculate the size of the display
 
   // Must be done last, after all other items have reset
@@ -158,16 +160,6 @@ void TIA::frameReset()
   memset(myFramebuffer, 0, 160 * FrameManager::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("colorloss"));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::systemCyclesReset()
-{
-  const uInt32 cycles = mySystem->cycles();
-
-  myLastCycle -= cycles;
-
-  mySound.adjustCycleCounter(-1 * cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,7 +235,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(int(myPriority));
 
     out.putByte(mySubClock);
-    out.putInt(myLastCycle);
+    out.putLong(myLastCycle);
 
     out.putByte(mySpriteEnabledBits);
     out.putByte(myCollisionsEnabledBits);
@@ -255,6 +247,8 @@ bool TIA::save(Serializer& out) const
     out.putBool(myAutoFrameEnabled);
 
     out.putByteArray(myShadowRegisters, 64);
+
+    out.putLong(myCyclesAtFrameStart);
   }
   catch(...)
   {
@@ -312,7 +306,7 @@ bool TIA::load(Serializer& in)
     myPriority = Priority(in.getInt());
 
     mySubClock = in.getByte();
-    myLastCycle = in.getInt();
+    myLastCycle = in.getLong();
 
     mySpriteEnabledBits = in.getByte();
     myCollisionsEnabledBits = in.getByte();
@@ -324,6 +318,8 @@ bool TIA::load(Serializer& in)
     myAutoFrameEnabled = in.getBool();
 
     in.getByteArray(myShadowRegisters, 64);
+
+    myCyclesAtFrameStart = in.getLong();
   }
   catch(...)
   {
@@ -812,6 +808,12 @@ bool TIA::enableColorLoss(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIA::frameCycles() const
+{
+  return uInt32(mySystem->cycles() - myCyclesAtFrameStart);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
 {
   uInt8 clocks = clocksThisLine();
@@ -1055,12 +1057,12 @@ uInt8 TIA::registerValue(uInt8 reg) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateEmulation()
 {
-  const uInt32 systemCycles = mySystem->cycles();
+  const uInt64 systemCycles = mySystem->cycles();
 
   if (mySubClock > 2)
     throw runtime_error("subclock exceeds range");
 
-  const uInt32 cyclesToRun = 3 * (systemCycles - myLastCycle) + mySubClock;
+  const uInt32 cyclesToRun = 3 * uInt32(systemCycles - myLastCycle) + mySubClock;
 
   mySubClock = 0;
   myLastCycle = systemCycles;
@@ -1103,7 +1105,7 @@ void TIA::onRenderingStart()
 void TIA::onFrameComplete()
 {
   mySystem->m6502().stop();
-  mySystem->resetCycles();
+  myCyclesAtFrameStart = mySystem->cycles();
 
   if (myXAtRenderingStart > 0)
     memset(myFramebuffer, 0, myXAtRenderingStart);
