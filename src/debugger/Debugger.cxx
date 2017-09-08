@@ -96,13 +96,13 @@ static const char* const pseudo_registers[][2] = {
   // { "name", "help text" }
 
   { "_bank", "Currently selected bank" },
+  { "_cclocks", "Color clocks on current scanline" },
+  { "_fcount", "Number of frames since emulation started" },
+  { "_fcycles", "Number of cycles since frame started" },
   { "_rwport", "Address at which a read from a write port occurred" },
   { "_scan", "Current scanline count" },
-  { "_fcount", "Number of frames since emulation started" },
-//FIXME  { "_fcycles", "Number of cycles since frame started" },
-  { "_cclocks", "Color clocks on current scanline" },
-  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
   { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
+  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
 
   // empty string marks end of list, do not remove
   { 0, 0 }

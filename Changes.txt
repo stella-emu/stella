@@ -24,6 +24,9 @@
   * Fixed wrong display of HM values in debugger after 'HMCLR' has been
     executed.
 
+  * Added debugger pseudo-register '_fcycles', which gives the number of
+    CPU cycles that have occurred since the frame started.
+
   * Improved emulation of 'FE' bankswitch scheme (no user-visible changes,
     but internally the emulation is much more accurate compared to the
     real thing).  Related to this, improved the debugger support for this
