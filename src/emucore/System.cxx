@@ -70,7 +70,7 @@ void System::reset(bool autodetect)
   mySystemInAutodetect = autodetect;
 
   // Reset all devices
-  myCycles = 0;     // Must be done first (the reset() methods use its value)
+  myCycles = 0;     // Must be done first (the reset() methods may use its value)
   myM6532.reset();
   myTIA.reset();
   myCart.reset();

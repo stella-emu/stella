@@ -31,7 +31,8 @@ M6532::M6532(const Console& console, const Settings& settings)
   : myConsole(console),
     mySettings(settings),
     myTimer(0), mySubTimer(0), myDivider(1),
-    myTimerWrapped(false), myWrappedThisCycle(false), mySetTimerCycle(0), myLastCycle(0),
+    myTimerWrapped(false), myWrappedThisCycle(false),
+    mySetTimerCycle(0), myLastCycle(0),
     myDDRA(0), myDDRB(0), myOutA(0), myOutB(0),
     myInterruptFlag(false),
     myEdgeDetectPositive(false)
@@ -54,8 +55,7 @@ void M6532::reset()
   myTimerWrapped = false;
   myWrappedThisCycle = false;
 
-  mySetTimerCycle = 0;
-  myLastCycle = mySystem->cycles();
+  mySetTimerCycle = myLastCycle = 0;
 
   // Zero the I/O registers
   myDDRA = myDDRB = myOutA = myOutB = 0x00;

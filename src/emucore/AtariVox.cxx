@@ -140,7 +140,7 @@ void AtariVox::clockDataIn(bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::reset()
 {
-  myLastDataWriteCycle = mySystem.cycles();
+  myLastDataWriteCycle = 0;
   myEEPROM->systemReset();
 }
 

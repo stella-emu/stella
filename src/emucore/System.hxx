@@ -388,7 +388,7 @@ class System : public Serializable
     // Cartridge device attached to the system
     Cartridge& myCart;
 
-    // Number of system cycles executed since instantiation
+    // Number of system cycles executed since last reset
     uInt64 myCycles;
 
     // Null device to use for page which are not installed

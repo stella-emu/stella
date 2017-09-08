@@ -174,7 +174,7 @@ class M6532 : public Device
     uInt64 mySetTimerCycle;
 
     // Last cycle considered in emu updates
-    Int32 myLastCycle;
+    uInt64 myLastCycle;
 
     // Data Direction Register for Port A
     uInt8 myDDRA;
