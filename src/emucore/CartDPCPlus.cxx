@@ -30,9 +30,9 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
     myFastFetch(false),
     myLDAimmediate(false),
     myParameterPointer(0),
-    mySystemCycles(0),
-    myFractionalClocks(0.0),
+    myAudioCycles(0),
     myARMCycles(0),
+    myFractionalClocks(0.0),
     myBankOffset(0)
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
@@ -70,9 +70,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlus::reset()
 {
-  // Update cycles to the current system cycles
-  mySystemCycles = mySystem->cycles();
-  myARMCycles = mySystem->cycles();
+  myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
 
   setInitialState();
@@ -145,20 +143,18 @@ inline void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = Int32(mySystem->cycles() - mySystemCycles);
-  mySystemCycles = mySystem->cycles();
+  uInt32 cycles = uInt32(mySystem->cycles() - myAudioCycles);
+  myAudioCycles = mySystem->cycles();
 
-  // Calculate the number of DPC OSC clocks since the last update
+  // Calculate the number of DPC+ OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = Int32(clocks);
+  uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
-  if(wholeClocks <= 0)
-    return;
-
   // Let's update counters and flags of the music mode data fetchers
-  for(int x = 0; x <= 2; ++x)
-    myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
+  if(wholeClocks > 0)
+    for(int x = 0; x <= 2; ++x)
+      myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -682,8 +678,8 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putInt(myRandomNumber);
 
     // Get system cycles and fractional clocks
-    out.putLong(mySystemCycles);
-    out.putInt(uInt32(myFractionalClocks * 100000000.0));
+    out.putLong(myAudioCycles);
+    out.putDouble(myFractionalClocks);
 
     // Clock info for Thumbulator
     out.putLong(myARMCycles);
@@ -745,9 +741,9 @@ bool CartridgeDPCPlus::load(Serializer& in)
     // The random number generator register
     myRandomNumber = in.getInt();
 
-    // Get system cycles and fractional clocks
-    mySystemCycles = in.getLong();
-    myFractionalClocks = double(in.getInt()) / 100000000.0;
+    // Get audio cycles and fractional clocks
+    myAudioCycles = in.getLong();
+    myFractionalClocks = in.getDouble();
 
     // Clock info for Thumbulator
     myARMCycles = in.getLong();

@@ -292,8 +292,8 @@ class CartridgeCTY : public Cartridge
     // of internal RAM to Harmony cart EEPROM
     string myEEPROMFile;
 
-    // System cycle count when the last update to music data fetchers occurred
-    uInt64 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;

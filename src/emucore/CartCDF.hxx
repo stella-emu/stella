@@ -138,8 +138,6 @@ class CartridgeCDF : public Cartridge
     */
     string name() const override { return "CartridgeCDF"; }
 
-    // uInt8 busOverdrive(uInt16 address) override;
-
     /**
       Used for Thumbulator to pass values back to the cartridge
     */

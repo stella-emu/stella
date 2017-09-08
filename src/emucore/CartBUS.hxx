@@ -244,8 +244,8 @@ class CartridgeBUS : public Cartridge
     // *and* the next two bytes in ROM are 00 00
     uInt16 myJMPoperandAddress;
 
-    // System cycle count when the last update to music data fetchers occurred
-    uInt64 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // ARM cycle count from when the last callFunction() occurred
     uInt64 myARMCycles;

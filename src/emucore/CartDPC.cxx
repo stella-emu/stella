@@ -23,7 +23,7 @@ CartridgeDPC::CartridgeDPC(const BytePtr& image, uInt32 size,
                            const Settings& settings)
   : Cartridge(settings),
     mySize(size),
-    mySystemCycles(0),
+    myAudioCycles(0),
     myFractionalClocks(0.0),
     myBankOffset(0)
 {
@@ -54,8 +54,7 @@ CartridgeDPC::CartridgeDPC(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPC::reset()
 {
-  // Update cycles to the current system cycles
-  mySystemCycles = mySystem->cycles();
+  myAudioCycles = 0;
   myFractionalClocks = 0.0;
 
   // Upon reset we switch to the startup bank
@@ -98,18 +97,16 @@ inline void CartridgeDPC::clockRandomNumberGenerator()
 inline void CartridgeDPC::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = Int32(mySystem->cycles() - mySystemCycles);
-  mySystemCycles = mySystem->cycles();
+  uInt32 cycles = uInt32(mySystem->cycles() - myAudioCycles);
+  myAudioCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = Int32(clocks);
+  uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
   if(wholeClocks <= 0)
-  {
     return;
-  }
 
   // Let's update counters and flags of the music mode data fetchers
   for(int x = 5; x <= 7; ++x)
@@ -124,24 +121,16 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
       {
         newLow -= (wholeClocks % top);
         if(newLow < 0)
-        {
           newLow += top;
-        }
       }
       else
-      {
         newLow = 0;
-      }
 
       // Update flag register for this data fetcher
       if(newLow <= myBottoms[x])
-      {
         myFlags[x] = 0x00;
-      }
       else if(newLow <= myTops[x])
-      {
         myFlags[x] = 0xff;
-      }
 
       myCounters[x] = (myCounters[x] & 0x0700) | uInt16(newLow);
     }
@@ -474,8 +463,8 @@ bool CartridgeDPC::save(Serializer& out) const
     // The random number generator register
     out.putByte(myRandomNumber);
 
-    out.putLong(mySystemCycles);
-    out.putInt(uInt32(myFractionalClocks * 100000000.0));
+    out.putLong(myAudioCycles);
+    out.putDouble(myFractionalClocks);
   }
   catch(...)
   {
@@ -517,8 +506,8 @@ bool CartridgeDPC::load(Serializer& in)
     myRandomNumber = in.getByte();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = in.getLong();
-    myFractionalClocks = double(in.getInt()) / 100000000.0;
+    myAudioCycles = in.getLong();
+    myFractionalClocks = in.getDouble();
   }
   catch(...)
   {

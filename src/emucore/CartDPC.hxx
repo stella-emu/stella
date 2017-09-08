@@ -195,8 +195,8 @@ class CartridgeDPC : public Cartridge
     // The random number generator register
     uInt8 myRandomNumber;
 
-    // System cycle count when the last update to music data fetchers occurred
-    uInt64 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;

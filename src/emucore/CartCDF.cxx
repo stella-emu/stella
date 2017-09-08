@@ -81,9 +81,7 @@ void CartridgeCDF::reset()
 {
   initializeRAM(myCDFRAM+2048, 8192-2048);
 
-  // Update cycles to the current system cycles
-  myAudioCycles = mySystem->cycles();
-  myARMCycles = mySystem->cycles();
+  myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
 
   setInitialState();
@@ -137,20 +135,18 @@ void CartridgeCDF::install(System& system)
 inline void CartridgeCDF::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = Int32(mySystem->cycles() - myAudioCycles);
+  uInt32 cycles = uInt32(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CDF OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = Int32(clocks);
+  uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
-  if(wholeClocks <= 0)
-    return;
-
   // Let's update counters and flags of the music mode data fetchers
-  for(int x = 0; x <= 2; ++x)
-    myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
+  if(wholeClocks > 0)
+    for(int x = 0; x <= 2; ++x)
+      myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -512,7 +508,7 @@ bool CartridgeCDF::save(Serializer& out) const
 
     // Save cycles and clocks
     out.putLong(myAudioCycles);
-    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
+    out.putDouble(myFractionalClocks);
     out.putLong(myARMCycles);
   }
   catch(...)
@@ -555,7 +551,7 @@ bool CartridgeCDF::load(Serializer& in)
 
     // Get cycles and clocks
     myAudioCycles = in.getLong();
-    myFractionalClocks = (double)in.getInt() / 100000000.0;
+    myFractionalClocks = in.getDouble();
     myARMCycles = in.getLong();
   }
   catch(...)

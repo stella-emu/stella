@@ -259,14 +259,14 @@ class CartridgeDPCPlus : public Cartridge
     // The random number generator register
     uInt32 myRandomNumber;
 
-    // System cycle count when the last update to music data fetchers occurred
-    uInt64 mySystemCycles;
-
-    // Fractional DPC music OSC clocks unused during the last update
-    double myFractionalClocks;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // System cycle count when the last Thumbulator::run() occurred
     uInt64 myARMCycles;
+
+    // Fractional DPC music OSC clocks unused during the last update
+    double myFractionalClocks;
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
