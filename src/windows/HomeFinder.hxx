@@ -56,21 +56,21 @@ class HomeFinder
       return ourAppDataPath;
     }
 
-    // Return the 'DESKTOPDIRECTORY' folder, or an empty string if the folder couldn't be determined.
-    const string& getDesktopPath() const
+    // Return the 'My Documents' folder, or an empty string if the folder couldn't be determined.
+    const string& getDocumentsPath() const
     {
-      if(ourDesktopPath == "")
+      if(ourDocumentsPath == "")
       {
         char folder_path[MAX_PATH];
-        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_DESKTOPDIRECTORY | CSIDL_FLAG_CREATE,
+        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_MYDOCUMENTS | CSIDL_FLAG_CREATE,
           NULL, 0, folder_path);
-        ourDesktopPath = (result == S_OK) ? folder_path : EmptyString;
+        ourDocumentsPath = (result == S_OK) ? folder_path : EmptyString;
       }
-      return ourDesktopPath;
+      return ourDocumentsPath;
     }
 
   private:
-    static string ourHomePath, ourAppDataPath, ourDesktopPath;
+    static string ourHomePath, ourAppDataPath, ourDocumentsPath;
 
     // Following constructors and assignment operators not supported
     HomeFinder(const HomeFinder&) = delete;
@@ -81,6 +81,6 @@ class HomeFinder
 
 __declspec(selectany) string HomeFinder::ourHomePath = "";
 __declspec(selectany) string HomeFinder::ourAppDataPath = "";
-__declspec(selectany) string HomeFinder::ourDesktopPath = "";
+__declspec(selectany) string HomeFinder::ourDocumentsPath = "";
 
 #endif

@@ -190,8 +190,8 @@ void OSystem::setConfigPaths()
   string s;
 
   validatePath(myStateDir, "statedir", myBaseDir + "state");
-  validatePath(mySnapshotSaveDir, "snapsavedir", defaultSnapSaveDir());
-  validatePath(mySnapshotLoadDir, "snaploaddir", defaultSnapLoadDir());
+  validatePath(mySnapshotSaveDir, "snapsavedir", defaultSaveDir());
+  validatePath(mySnapshotLoadDir, "snaploaddir", defaultLoadDir());
   validatePath(myNVRamDir, "nvramdir", myBaseDir + "nvram");
   validatePath(myCfgDir, "cfgdir", myBaseDir + "cfg");
 

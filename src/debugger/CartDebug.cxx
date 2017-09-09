@@ -955,20 +955,12 @@ string CartDebug::saveDisassembly()
   if(myConsole.cartridge().bankCount() > 1)
     return DebuggerParser::red("disassembly for multi-bank ROM not yet supported");
 
-  // Currently, the default naming/location for disassembly files is:
-  // 1) ROM dir based on properties entry name
-
   if(myDisasmFile == "")
   {
     const string& propsname =
       myConsole.properties().get(Cartridge_Name) + ".asm";
 
-    FilesystemNode case0(myOSystem.romFile().getParent().getPath() + propsname);
-    if(case0.getParent().isWritable())
-      myDisasmFile = case0.getPath();
-    else
-      return DebuggerParser::red("disassembly file not writable:\n  " +
-          case0.getShortPath());
+    myDisasmFile = FilesystemNode(myOSystem.defaultSaveDir() + propsname).getPath();
   }
 
   FilesystemNode node(myDisasmFile);

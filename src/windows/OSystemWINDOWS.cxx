@@ -74,23 +74,23 @@ OSystemWINDOWS::OSystemWINDOWS()
       basedir += "Stella";
     }
     else
-      basedir = ".";  // otherwise, default to current directory
+      basedir = ".\\";  // otherwise, default to current directory
   }
 
   setBaseDir(basedir);
-  setConfigFile(basedir + "\\stella.ini");
+  setConfigFile(basedir + "stella.ini");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWINDOWS::defaultSnapSaveDir()
+string OSystemWINDOWS::defaultSaveDir() const
 {
   HomeFinder homefinder;
-  FilesystemNode desktop(homefinder.getDesktopPath());
-  return desktop.isDirectory() ? desktop.getShortPath() : "~";
+  FilesystemNode desktop(homefinder.getDesktopPath() + "\\Stella");
+  return desktop.isDirectory() ? desktop.getShortPath() : "~\\";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWINDOWS::defaultSnapLoadDir()
+string OSystemWINDOWS::defaultLoadDir() const
 {
-  return defaultSnapSaveDir();
+  return defaultSaveDir();
 }
