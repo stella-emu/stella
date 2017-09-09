@@ -121,6 +121,15 @@ class FilesystemNode
     }
 
     /**
+     * By default, the output operator simply outputs the fully-qualified
+     * pathname of the node.
+     */
+    friend ostream& operator<<(ostream& os, const FilesystemNode& node)
+    {
+      return os << node.getPath();
+    }
+
+    /**
      * Indicates whether the object referred by this path exists in the
      * filesystem or not.
      *
