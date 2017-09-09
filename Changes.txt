@@ -41,6 +41,8 @@
   * Added ROM properties for 'Zippy the Porcupine' ROMs, and updated
     info for all "Chris Spry (Sprybug)" ROMs.
 
+  * Updated included PNG library to latest stable version.
+
 -Have fun!
 
 
