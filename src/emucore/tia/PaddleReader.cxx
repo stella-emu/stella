@@ -19,13 +19,6 @@
 
 #include "PaddleReader.hxx"
 
-static constexpr double
-  C = 68e-9,
-  RPOT = 1e6,
-  USUPP = 5;
-
-static constexpr double TRIPPOINT_LINES = 379;
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaddleReader::PaddleReader()
 {
