@@ -24,6 +24,10 @@
   * Fixed wrong display of HM values in debugger after 'HMCLR' has been
     executed.
 
+  * Fixed bug with the debugger 'savedis' command in Windows; it wasn't
+    actually saving the files at all.  This has never been reported
+    before, so I guess it shows how many people use that functionality.
+
   * Added debugger pseudo-register '_fcycles', which gives the number of
     CPU cycles that have occurred since the frame started.
 
