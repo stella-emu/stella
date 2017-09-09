@@ -1154,10 +1154,9 @@ string CartDebug::saveDisassembly()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveRom()
 {
-  const string& path = string("~") + BSPF::PATH_SEPARATOR +
-    myConsole.properties().get(Cartridge_Name) + ".a26";
+  const string& rom = myConsole.properties().get(Cartridge_Name) + ".a26";
 
-  FilesystemNode node(path);
+  FilesystemNode node(myOSystem.defaultSaveDir() + rom);
   ofstream out(node.getPath(), std::ios::binary);
   if(out && myConsole.cartridge().saveROM(out))
     return "saved ROM as " + node.getShortPath();

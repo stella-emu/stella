@@ -28,6 +28,11 @@
     actually saving the files at all.  This has never been reported
     before, so I guess it shows how many people use that functionality.
 
+  * The debugger 'savedis', 'saverom' and 'saveses' now save files in
+    a default, user-visible directory (see the documentation for more
+    information).  In the case of 'saveses', the filename is now named
+    based on the date and time of when the command was entered.
+
   * Added debugger pseudo-register '_fcycles', which gives the number of
     CPU cycles that have occurred since the frame started.
 

@@ -1404,10 +1404,20 @@ void DebuggerParser::executeSaverom()
 // "saveses"
 void DebuggerParser::executeSaveses()
 {
-  if(debugger.prompt().saveBuffer(argStrings[0]))
-    commandResult << "saved session to file " << argStrings[0];
+  // Create a file named with the current date and time
+  time_t currtime;
+  struct tm* timeinfo;
+  char buffer[80];
+
+  time(&currtime);
+  timeinfo = localtime(&currtime);
+  strftime(buffer, 80, "session_%F_%H-%M-%S.txt", timeinfo);
+
+  FilesystemNode file(debugger.myOSystem.defaultSaveDir() + buffer);
+  if(debugger.prompt().saveBuffer(file))
+    commandResult << "saved " + file.getShortPath() + " OK";
   else
-    commandResult << red("I/O error");
+    commandResult << "Unable to save session";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2213,7 +2223,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "savedis",
     "Save Distella disassembly (with default name)",
-    "Example: savedis",
+    "Example: savedis\n"
+    "NOTE: saves to default save location",
     false,
     false,
     { kARG_END_ARGS },
@@ -2223,7 +2234,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "saverom",
     "Save (possibly patched) ROM (with default name)",
-    "Example: saverom",
+    "Example: saverom\n"
+    "NOTE: saves to default save location",
     false,
     false,
     { kARG_END_ARGS },
@@ -2232,11 +2244,12 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saveses",
-    "Save console session to file xx",
-    "Example: saveses session.txt",
-    true,
+    "Save console session",
+    "Example: saveses\n"
+    "NOTE: saves to default save location",
     false,
-    { kARG_FILE, kARG_END_ARGS },
+    false,
+    { kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaveses)
   },
 

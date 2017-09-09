@@ -876,21 +876,21 @@ void PromptWidget::scrollToCurrent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PromptWidget::saveBuffer(string& filename)
+bool PromptWidget::saveBuffer(const FilesystemNode& file)
 {
-  ofstream out(filename);
+  ofstream out(file.getPath());
   if(!out.is_open())
     return false;
 
-  for(int start=0; start<_promptStartPos; start+=_lineWidth)
+  for(int start = 0; start < _promptStartPos; start += _lineWidth)
   {
-    int end = start+_lineWidth-1;
+    int end = start + _lineWidth - 1;
 
-    // look for first non-space, printing char from end of line
+    // Look for first non-space, printing char from end of line
     while( char(_buffer[end] & 0xff) <= ' ' && end >= start)
       end--;
 
-    // spit out the line minus its trailing junk.
+    // Spit out the line minus its trailing junk
     // Strip off any color/inverse bits
     for(int j = start; j <= end; ++j)
       out << char(_buffer[j] & 0xff);
