@@ -298,22 +298,16 @@ bool FilesystemNodeWINDOWS::rename(const string& newfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNode* FilesystemNodeWINDOWS::getParent() const
 {
-  if(!_isValid || _isPseudoRoot)
+  if(_isPseudoRoot)
     return nullptr;
 
-  FilesystemNodeWINDOWS* p = new FilesystemNodeWINDOWS();
   if(_path.size() > 3)
   {
     const char* start = _path.c_str();
     const char* end = lastPathComponent(_path);
 
-    p->_path = string(start, end - start);
-    p->_isValid = true;
-    p->_isDirectory = true;
-    p->_isFile = false;
-    p->_displayName = lastPathComponent(p->_path);
-    p->_isPseudoRoot = false;
+    return new FilesystemNodeWINDOWS(string(start, size_t(end - start)));
   }
-
-  return p;
+  else
+    return new FilesystemNodeWINDOWS();
 }
