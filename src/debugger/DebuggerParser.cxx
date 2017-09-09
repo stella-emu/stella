@@ -2202,8 +2202,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saveconfig",
-    "Save Distella config file",
-    "Example: saveconfig file.cfg",
+    "Save Distella config file (with default name)",
+    "Example: saveconfig",
     false,
     false,
     { kARG_END_ARGS },
@@ -2212,8 +2212,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "savedis",
-    "Save Distella disassembly",
-    "Example: savedis file.asm",
+    "Save Distella disassembly (with default name)",
+    "Example: savedis",
     false,
     false,
     { kARG_END_ARGS },
@@ -2222,8 +2222,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saverom",
-    "Save (possibly patched) ROM",
-    "Example: savedrom file.bin",
+    "Save (possibly patched) ROM (with default name)",
+    "Example: saverom",
     false,
     false,
     { kARG_END_ARGS },
