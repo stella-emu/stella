@@ -65,6 +65,8 @@ class PaddleReader : public Serializable
 
     bool myIsDumped;
 
+    static constexpr double R0 = 1.5e3;
+
   private:
     PaddleReader(const PaddleReader&) = delete;
     PaddleReader(PaddleReader&&) = delete;
