@@ -22,7 +22,6 @@
 static constexpr double
   C = 68e-9,
   RPOT = 1e6,
-  R0 = 1.5e3,
   USUPP = 5;
 
 static constexpr double TRIPPOINT_LINES = 379;
