@@ -891,16 +891,37 @@ void DebuggerParser::executeDisasm()
 // "dump"
 void DebuggerParser::executeDump()
 {
-  for(int i = 0; i < 8; ++i)
+  auto dump = [&](int start, int end)
   {
-    int start = args[0] + i*16;
-    commandResult << Base::toString(start) << ": ";
-    for(int j = 0; j < 16; ++j)
+    for(int i = start; i <= end; i += 16)
     {
-      commandResult << Base::toString(debugger.peek(start+j)) << " ";
-      if(j == 7) commandResult << "- ";
+      // Print label every 16 bytes
+      commandResult << Base::toString(i) << ": ";
+
+      for(int j = i; j < i+16 && j <= end; ++j)
+      {
+        commandResult << Base::toString(debugger.peek(j)) << " ";
+        if(j == i+7 && j != end) commandResult << "- ";
+      }
+      commandResult << endl;
     }
-    if(i != 7) commandResult << endl;
+  };
+
+  // Error checking
+  if(argCount > 1 && args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  if(argCount == 1)
+    dump(args[0], args[0] + 127);
+  else if(argCount == 2)
+    dump(args[0], args[1]);
+  else
+  {
+    commandResult << "wrong number of arguments";
+    return;
   }
 }
 
@@ -1875,11 +1896,13 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "dump",
-    "Dump 128 bytes of memory at address <xx>",
-    "Example: dump f000",
+    "Dump data at address <xx> [to yy]",
+    "Examples:\n"
+    "  dump f000 - dumps 128 bytes @ f000\n"
+    "  dump f000 f0ff - dumps all bytes from f000 to f0ff",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeDump)
   },
 

@@ -27,6 +27,9 @@
   * Added debugger pseudo-register '_fcycles', which gives the number of
     CPU cycles that have occurred since the frame started.
 
+  * Extended debugger 'dump' command to take a second argument, indicating
+    the end of the range to dump data.
+
   * Improved emulation of 'FE' bankswitch scheme (no user-visible changes,
     but internally the emulation is much more accurate compared to the
     real thing).  Related to this, improved the debugger support for this
