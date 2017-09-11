@@ -50,6 +50,8 @@
   * Added ROM properties for 'Zippy the Porcupine' ROMs, and updated
     info for all "Chris Spry (Sprybug)" ROMs.
 
+  * Fix error when building with uClibc-ng for ARM (thanks to Sergio Prado).
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!
