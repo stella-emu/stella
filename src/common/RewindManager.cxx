@@ -29,30 +29,31 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
     mySize(0),
     myTop(0)
 {
-  for(int i = 0; i < MAX_SIZE; ++i)
-    myStateList[i] = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::~RewindManager()
 {
-  for(int i = 0; i < MAX_SIZE; ++i)
-    delete myStateList[i];
+  for(uInt8 i = 0; i < MAX_SIZE; ++i)
+    delete myStateList[i].data;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::addState(const string& message)
 {
   // Create a new Serializer object if we need one
-  if(myStateList[myTop] == nullptr)
-    myStateList[myTop] = new Serializer();
-  Serializer& s = *(myStateList[myTop]);
+  if(myStateList[myTop].data == nullptr)
+    myStateList[myTop].data = new Serializer();
 
-  if(s)
+  // And use it to store the serialized data and text message
+  if(myStateList[myTop].data != nullptr)
   {
+    Serializer& s = *(myStateList[myTop].data);
     s.reset();
     if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
     {
+      myStateList[myTop].message = "Rewind " + message;
+
       // Are we still within the allowable size, or are we overwriting an item?
       mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
       myTop = (myTop + 1) % MAX_SIZE;
@@ -70,11 +71,14 @@ bool RewindManager::rewindState()
   {
     mySize--;
     myTop = myTop == 0 ? MAX_SIZE - 1 : myTop - 1;
-    Serializer& s = *(myStateList[myTop]);
+    Serializer& s = *(myStateList[myTop].data);
 
     s.reset();
     myStateManager.loadState(s);
     myOSystem.console().tia().loadDisplay(s);
+
+    // Show message indicating the rewind state
+    myOSystem.frameBuffer().showMessage(myStateList[myTop].message);
 
     return true;
   }
@@ -85,9 +89,9 @@ bool RewindManager::rewindState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::clear()
 {
-  for(int i = 0; i < MAX_SIZE; ++i)
-    if(myStateList[i] != nullptr)
-      myStateList[i]->reset();
+  for(uInt8 i = 0; i < MAX_SIZE; ++i)
+    if(myStateList[i].data != nullptr)
+      myStateList[i].data->reset();
 
   myTop = mySize = 0;
 }

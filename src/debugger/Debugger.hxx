@@ -231,8 +231,11 @@ class Debugger : public DialogContainer
   private:
     /**
       Save state of each debugger subsystem.
+
+      If a message is provided, we assume that a rewind state should
+      be saved with the given message.
     */
-    void saveOldState(bool addrewind = true);
+    void saveOldState(string rewindMsg = "");
 
     /**
       Set initial state before entering the debugger.

@@ -57,13 +57,20 @@ class RewindManager
 
   private:
     // Maximum number of states to save
-    enum { MAX_SIZE = 100 };
+    static constexpr uInt8 MAX_SIZE = 100;
 
     OSystem& myOSystem;
     StateManager& myStateManager;
 
-    Serializer* myStateList[MAX_SIZE];
-    uInt32 mySize, myTop;
+    struct SerialData {
+      Serializer* data;
+      string message;
+
+      SerialData(Serializer* d = nullptr) : data(d) { }
+    };
+
+    SerialData myStateList[MAX_SIZE];
+    uInt8 mySize, myTop;
 
   private:
     // Following constructors and assignment operators not supported

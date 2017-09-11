@@ -300,7 +300,7 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
-  saveOldState();
+  saveOldState("1 step");
   mySystem.clearDirtyPages();
 
   uInt64 startCycle = mySystem.cycles();
@@ -313,7 +313,6 @@ int Debugger::step()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 // trace is just like step, except it treats a subroutine call as one
 // instruction.
 
@@ -328,7 +327,7 @@ int Debugger::trace()
   // 32 is the 6502 JSR instruction:
   if(mySystem.peek(myCpuDebug->pc()) == 32)
   {
-    saveOldState();
+    saveOldState("1 trace");
     mySystem.clearDirtyPages();
 
     uInt64 startCycle = mySystem.cycles();
@@ -401,7 +400,12 @@ bool Debugger::writeTrap(uInt16 t)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)
 {
-  saveOldState();
+  ostringstream buf;
+  buf << lines << " scanline";
+  if(lines > 1)
+    buf << "s";
+
+  saveOldState(buf.str());
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
@@ -418,7 +422,12 @@ void Debugger::nextScanline(int lines)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames)
 {
-  saveOldState();
+  ostringstream buf;
+  buf << frames << " frame";
+  if(frames > 1)
+    buf << "s";
+
+  saveOldState(buf.str());
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
@@ -472,7 +481,7 @@ bool Debugger::patchROM(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveOldState(bool addrewind)
+void Debugger::saveOldState(string rewindMsg)
 {
   myCartDebug->saveOldState();
   myCpuDebug->saveOldState();
@@ -480,10 +489,10 @@ void Debugger::saveOldState(bool addrewind)
   myTiaDebug->saveOldState();
 
   // Add another rewind level to the Undo list
-  if(addrewind)
+  if(rewindMsg != "")
   {
     RewindManager& r = myOSystem.state().rewindManager();
-    r.addState();
+    r.addState(rewindMsg);
     myDialog->rewindButton().setEnabled(!r.empty());
   }
 }
@@ -501,7 +510,7 @@ void Debugger::setStartState()
   myDialog->rewindButton().setEnabled(!r.empty());
 
   // Save initial state, but don't add it to the rewind list
-  saveOldState(false);
+  saveOldState();  // FIXME - rework this
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);
