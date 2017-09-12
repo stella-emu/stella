@@ -662,7 +662,7 @@ class TIA : public Device
     /**
      * The index of the last CPU cycle that was included in the simulation.
      */
-    Int32 myLastCycle;
+    uInt64 myLastCycle;
     /**
      * Keeps track of a possible fractional number of clocks that still need
      * to be simulated.
