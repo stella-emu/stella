@@ -76,6 +76,7 @@ class CartDebug : public DebuggerSystem
       string label;
       string disasm;
       string ccount;
+      string ctotal;
       string bytes;
       bool hllabel;
     };

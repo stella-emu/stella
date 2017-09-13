@@ -83,7 +83,11 @@ class DiStella
     void disasm(uInt32 distart, int pass);
     bool check_range(uInt16 start, uInt16 end) const;
     int mark(uInt32 address, uInt8 mask, bool directive = false);
-    bool check_bit(uInt16 address, uInt8 mask) const;
+    bool checkBit(uInt16 address, uInt8 mask) const;
+
+    bool DiStella::checkBits(uInt16 address, uInt8 mask, uInt8 notMask) const;
+    void outputGraphics();
+    void outputBytes(CartDebug::DisasmType type);
 
     // Convenience methods to generate appropriate labels
     inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
@@ -114,7 +118,8 @@ class DiStella
     CartDebug::ReservedEquates& myReserved;
     stringstream myDisasmBuf;
     std::queue<uInt16> myAddressQueue;
-    uInt16 myOffset, myPC, myPCEnd;
+    uInt16 myOffset, myPC, myPCEnd, myPass;
+    uInt16 mySegType;
 
     struct resource {
       uInt16 start;

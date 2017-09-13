@@ -845,7 +845,7 @@ define(M6502_RTS, `{
   peek(0x0100 + SP++, DISASM_NONE);
   PC = peek(0x0100 + SP++, DISASM_NONE);
   PC |= (uInt16(peek(0x0100 + SP, DISASM_NONE)) << 8);
-  peek(PC++, DISASM_CODE);
+  peek(PC++, DISASM_NONE);
 }')
 
 define(M6502_SAX, `{

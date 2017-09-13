@@ -461,7 +461,7 @@ void RomListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  int ccountw = _fontWidth << 2,
+  int ccountw = _fontWidth << 3,
       large_disasmw = _w - l.x() - _labelWidth,
       medium_disasmw = large_disasmw - r.width(),
       small_disasmw = medium_disasmw - (ccountw << 1),
