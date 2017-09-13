@@ -694,7 +694,7 @@ class TIA : public Device
     uInt8 myShadowRegisters[64];
 
     /**
-     * Automatic framerate correction based on number of scanlines
+     * Automatic framerate correction based on number of scanlines.
      */
     bool myAutoFrameEnabled;
 
