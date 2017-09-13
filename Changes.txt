@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-5.0.2 to 5.0.3: (August xx, 2017)
+5.0.2 to 5.0.3: (August xxx, 2017)
 
   * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc).
 
