@@ -582,7 +582,7 @@ void RomListWidget::startEditMode()
     {
       case CartDebug::GFX:
       case CartDebug::PGFX:
-        _base = DiStella::settings.gfx_format;
+        _base = DiStella::settings.gfxFormat;
         break;
       default:
         _base = Common::Base::format();

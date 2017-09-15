@@ -35,15 +35,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   myLabels(labels),
   myDirectives(directives)
 {
-  CartDebug::AddressList& addresses = info.addressList;
-
-  while (!myAddressQueue.empty())
-    myAddressQueue.pop();
-
-  bool resolve_code = mySettings.resolve_code;
-
-  auto it = addresses.cbegin();
-  uInt16 start = *it++;
+  bool resolve_code = mySettings.resolveCode;
+  CartDebug::AddressList& debuggerAddresses = info.addressList;
+  auto it = debuggerAddresses.cbegin();
+  uInt16 start = *it++;  
 
   myOffset = info.offset;
   if (start & 0x1000) {
@@ -89,6 +84,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   memset(myLabels, 0, 0x1000);
   memset(myDirectives, 0, 0x1000);
+  myReserved.breakFound = false;
+
+  while (!myAddressQueue.empty())
+    myAddressQueue.pop();
   myAddressQueue.push(start);
 
   // Process any directives first, as they override automatic code determination
@@ -105,12 +104,23 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     // addresses and only process the first one
     uInt16 lastPC = 0;
     bool duplicateFound = false;
-    while (!(myAddressQueue.empty() || duplicateFound)) {
-      myPC = lastPC = myAddressQueue.front();
+    int count = 0;
 
-      uInt16 pcBeg = myPC;
+    
+    uInt8 flags = Debugger::debugger().getAccessFlags(0xf52c);
+    //checkBit(0xf52c, CartDebug::DATA);
+
+    while (!(myAddressQueue.empty() || duplicateFound)) {
+
+      /*if (++count == 2)
+        break;*/
+
+      uInt16 pcBeg = myPC = lastPC = myAddressQueue.front();
+      
       myAddressQueue.pop();
-      disasm(myPC, 1);
+      //disasm(myPC, 1);
+      disasmPass1(myPC);
+      
       if (pcBeg <= myPCEnd) {
         // Tentatively mark all addresses in the range as CODE
         // Note that this is a 'best-effort' approach, since
@@ -120,11 +130,13 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         // in the emulation core indicate that the CODE range has finished
         // Therefore, we stop at the first such address encountered
         for (uInt32 k = pcBeg; k <= myPCEnd; k++) {
-          if (Debugger::debugger().getAccessFlags(k) &
-            (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
+          /*if (Debugger::debugger().getAccessFlags(k) &
+              (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
             myPCEnd = k - 1;
+            if (k == 0xf5c6)
+              k = k;
             break;
-          }
+          }*/
           mark(k, CartDebug::CODE);
         }
       }
@@ -144,30 +156,28 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       // the processing of a single address can cause others to be added in
       // the ::disasm method
       // All of these have to be exhausted before considering a new address
-      if (myAddressQueue.empty()) {
-        while (it != addresses.end()) {
-          uInt16 addr = *it;
-          if (!checkBit(addr - myOffset, CartDebug::CODE)) {
-            myAddressQueue.push(addr);
-            ++it;
-            break;
-          } else   // remove this address, it is redundant
-            it = addresses.erase(it);
-        }
+      while (myAddressQueue.empty() && it != debuggerAddresses.end()) {
+        uInt16 addr = *it;
 
-        // Stella itself can provide hints on whether an address has ever
-        // been referenced as CODE
-        while (it == addresses.end() && codeAccessPoint <= myAppData.end) {
-          if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & CartDebug::CODE)
-            && !(myLabels[codeAccessPoint & myAppData.end] & CartDebug::CODE)) {
-            myAddressQueue.push(codeAccessPoint + myOffset);
-            ++codeAccessPoint;
-            break;
-          }
-          ++codeAccessPoint;
-        }
+        if (!checkBit(addr - myOffset, CartDebug::CODE)) {
+          myAddressQueue.push(addr);
+          ++it;
+        } else // remove this address, it is redundant
+          it = debuggerAddresses.erase(it);
       }
-      duplicateFound = (myAddressQueue.front() == lastPC);
+
+      // Stella itself can provide hints on whether an address has ever
+      // been referenced as CODE
+      while (myAddressQueue.empty() && codeAccessPoint <= myAppData.end) {
+        if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & CartDebug::CODE)
+            && !(myLabels[codeAccessPoint & myAppData.end] & CartDebug::CODE)) {
+          myAddressQueue.push(codeAccessPoint + myOffset);
+          ++codeAccessPoint;
+          break;
+        }
+        ++codeAccessPoint;
+      }
+      duplicateFound = !myAddressQueue.empty() && (myAddressQueue.front() == lastPC); // TODO: check!
     } // while
 
     for (int k = 0; k <= myAppData.end; k++) {
@@ -180,10 +190,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
       // Must be ROW / unused bytes
       if (!checkBit(k, CartDebug::CODE | CartDebug::GFX |
-        CartDebug::PGFX | CartDebug::DATA))
+          CartDebug::PGFX | CartDebug::DATA))
         mark(k + myOffset, CartDebug::ROW);
     }
-  }
+  } // resolve code
 
   // Second pass
   disasm(myOffset, 2);
@@ -207,6 +217,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   // Third pass
   disasm(myOffset, 3);
+
+  for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
+    //myReserved.ZPRAM[addr - 0x80]
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -218,10 +232,10 @@ void DiStella::disasm(uInt32 distart, int pass)
    - pass 3 generates output
 */
 {
-#define LABEL_A12_HIGH(address) labelA12High(nextLine, op, address, labelFound)
-#define LABEL_A12_LOW(address)  labelA12Low(nextLine, op, address, labelFound)
+#define LABEL_A12_HIGH(address) labelA12High(nextLine, opcode, address, labelFound)
+#define LABEL_A12_LOW(address)  labelA12Low(nextLine, opcode, address, labelFound)
 
-  uInt8 op, d1;
+  uInt8 opcode, d1;
   uInt16 ad;
   uInt32 cycles = 0;
   AddressingMode addrMode;
@@ -231,11 +245,11 @@ void DiStella::disasm(uInt32 distart, int pass)
   mySegType = CartDebug::NONE; // create extra lines between code and data
 
   myDisasmBuf.str("");
-  myPass = pass;
 
   /* pc=myAppData.start; */
   myPC = distart - myOffset;
   while (myPC <= myAppData.end) {
+   
     if (checkBits(myPC, CartDebug::GFX | CartDebug::PGFX, 
         CartDebug::CODE)) {
       if (pass == 2)
@@ -261,6 +275,8 @@ void DiStella::disasm(uInt32 distart, int pass)
       else
         myPC++;
     } else {
+      // The following sections must be CODE
+      
       // add extra spacing line when switching from non-code to code
       if (pass == 3 && mySegType != CartDebug::CODE && mySegType != CartDebug::NONE) {                
         myDisasmBuf << "    '     ' ";
@@ -269,37 +285,65 @@ void DiStella::disasm(uInt32 distart, int pass)
       }
       mySegType = CartDebug::CODE;
       
-      // The following sections must be CODE
-      // Add label (if any)
-      op = Debugger::debugger().peek(myPC + myOffset);
       /* version 2.1 bug fix */
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
-      
+
+      // get opcode
+      opcode = Debugger::debugger().peek(myPC + myOffset);
+      // get address mode for opcode 
+      addrMode = ourLookup[opcode].addr_mode;
+
       if (pass == 3) {
         if (checkBit(myPC, CartDebug::REFERENCED))
           myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4 << myPC + myOffset << "'";
         else
           myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
       }
-
-      // Add opcode mnemonic
-      addrMode = ourLookup[op].addr_mode;
       myPC++;
+
+      // detect labels inside instructions (e.g. BIT masks)
+      labelFound = false;
+      for (Uint8 i = 0; i < ourLookup[opcode].bytes - 1; i++) {
+        if (checkBit(myPC + i, CartDebug::REFERENCED)) {
+          labelFound = true;
+          break;
+        }
+      }      
+      if (labelFound) {
+        // the opcode's operand address matches a label address
+        if (pass == 3) {
+          // output the byte of the opcode incl. cycles
+          Uint8 nextOpcode = Debugger::debugger().peek(myPC + myOffset);
+
+          cycles += int(ourLookup[opcode].cycles) - int(ourLookup[nextOpcode].cycles);
+          nextLine << ".byte   $" << Base::HEX2 << int(opcode) << " ;";
+          nextLine << ourLookup[opcode].mnemonic;
+
+          myDisasmBuf << nextLine.str() << "'" << ";"
+            << std::dec << int(ourLookup[opcode].cycles) << "-"
+            << std::dec << int(ourLookup[nextOpcode].cycles) << " "
+            << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
+
+          nextLine.str("");
+          cycles = 0;
+          addEntry(CartDebug::CODE); // add the new found CODE entry
+        }
+        // continue with the label's opcode
+        continue;
+      }
 
       // Undefined opcodes start with a '.'
       // These are undefined wrt DASM
-      if (ourLookup[op].mnemonic[0] == '.') {
-        addrMode = IMPLIED;
-        if (pass == 3)
-          nextLine << ".byte $" << Base::HEX2 << int(op) << " ;";
+      if (ourLookup[opcode].mnemonic[0] == '.' && pass == 3) {
+        nextLine << ".byte   $" << Base::HEX2 << int(opcode) << " ;";
       }
 
       if (pass == 3) {
-        nextLine << ourLookup[op].mnemonic;
-        nextLineBytes << Base::HEX2 << int(op) << " ";
+        nextLine << ourLookup[opcode].mnemonic;
+        nextLineBytes << Base::HEX2 << int(opcode) << " ";
       }
-
+     
       // Add operand(s) for PC values outside the app data range
       if (myPC >= myAppData.end) {
         switch (addrMode) {
@@ -314,9 +358,9 @@ void DiStella::disasm(uInt32 distart, int pass)
               /* Line information is already printed; append .byte since last
                  instruction will put recompilable object larger that original
                  binary file */
-              myDisasmBuf << ".byte $" << Base::HEX2 << int(op) << "              $"
+              myDisasmBuf << ".byte $" << Base::HEX2 << int(opcode) << "              $"
                 << Base::HEX4 << myPC + myOffset << "'"
-                << Base::HEX2 << int(op);
+                << Base::HEX2 << int(opcode);
               addEntry(CartDebug::DATA);
 
               if (myPC == myAppData.end) {
@@ -325,10 +369,10 @@ void DiStella::disasm(uInt32 distart, int pass)
                 else
                   myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
 
-                op = Debugger::debugger().peek(myPC + myOffset);  myPC++;
-                myDisasmBuf << ".byte $" << Base::HEX2 << int(op) << "              $"
+                opcode = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+                myDisasmBuf << ".byte $" << Base::HEX2 << int(opcode) << "              $"
                   << Base::HEX4 << myPC + myOffset << "'"
-                  << Base::HEX2 << int(op);
+                  << Base::HEX2 << int(opcode);
                 addEntry(CartDebug::DATA);
               }
             }
@@ -345,7 +389,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             if (pass == 3) {
               /* Line information is already printed, but we can remove the
                   Instruction (i.e. BMI) by simply clearing the buffer to print */
-              myDisasmBuf << ".byte $" << Base::HEX2 << int(op);
+              myDisasmBuf << ".byte $" << Base::HEX2 << int(opcode);
               addEntry(CartDebug::ROW);
               nextLine.str("");
               nextLineBytes.str("");
@@ -366,7 +410,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       switch (addrMode) {
         case ACCUMULATOR:
         {
-          if (pass == 3 && mySettings.aflag)
+          if (pass == 3 && mySettings.aFlag)
             nextLine << "     A";
           break;
         }
@@ -375,18 +419,8 @@ void DiStella::disasm(uInt32 distart, int pass)
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
           labelFound = mark(ad, CartDebug::REFERENCED);
-          if (pass == 1) {
-            if (!checkBit(ad & myAppData.end, CartDebug::CODE)) {
-              if (ad > 0xfff)
-                myAddressQueue.push((ad & myAppData.end) + myOffset);
-
-              mark(ad, CartDebug::CODE);
-            } else if (ad > 0xfff) {
-              mark(ad, CartDebug::DATA);
-            }
-          } 
           if (pass == 3) {
-            if (ad < 0x100 && mySettings.fflag)
+            if (ad < 0x100 && mySettings.fFlag)
               nextLine << ".w   ";
             else
               nextLine << "     ";
@@ -395,7 +429,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               LABEL_A12_HIGH(ad);
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
             } else if (labelFound == 4) {
-              if (mySettings.rflag) {
+              if (mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextLineBytes << Base::HEX2 << int(tmp & 0xff) << " " << Base::HEX2 << int(tmp >> 8);
@@ -444,7 +478,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             // the code can somehow track access to CPU registers
             mark(ad, CartDebug::ROW);
           } else if (pass == 3) {
-            if (ad < 0x100 && mySettings.fflag)
+            if (ad < 0x100 && mySettings.fFlag)
               nextLine << ".wx  ";
             else
               nextLine << "     ";
@@ -454,7 +488,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextLine << ",x";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
             } else if (labelFound == 4) {
-              if (mySettings.rflag) {
+              if (mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextLine << ",x";
@@ -483,7 +517,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             // the code can somehow track access to CPU registers
             mark(ad, CartDebug::ROW);
           } else if (pass == 3) {
-            if (ad < 0x100 && mySettings.fflag)
+            if (ad < 0x100 && mySettings.fFlag)
               nextLine << ".wy  ";
             else
               nextLine << "     ";
@@ -493,7 +527,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextLine << ",y";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
             } else if (labelFound == 4) {
-              if (mySettings.rflag) {
+              if (mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextLine << ",y";
@@ -572,12 +606,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
 
           labelFound = mark(ad, CartDebug::REFERENCED);
-          if (pass == 1) {
-            if (!checkBit(ad - myOffset, CartDebug::CODE)) {
-              myAddressQueue.push(ad);
-              mark(ad, CartDebug::CODE);
-            }
-          } else if (pass == 3) {
+          if (pass == 3) {
             if (labelFound == 1) {
               nextLine << "     ";
               LABEL_A12_HIGH(ad);
@@ -600,7 +629,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             // the code can somehow track access to CPU registers
             mark(ad, CartDebug::ROW);
           } else if (pass == 3) {
-            if (ad < 0x100 && mySettings.fflag)
+            if (ad < 0x100 && mySettings.fFlag)
               nextLine << ".ind ";
             else
               nextLine << "     ";
@@ -625,24 +654,15 @@ void DiStella::disasm(uInt32 distart, int pass)
           break;
       } // end switch
 
-      if (pass == 1) {
-        // RTS/JMP/RTI always indicate the end of a block of CODE
-        if (!strcmp(ourLookup[op].mnemonic, "RTS") ||
-          !strcmp(ourLookup[op].mnemonic, "JMP") ||
-          /*!strcmp(ourLookup[op].mnemonic,"BRK") || */ // BRK may return here
-          !strcmp(ourLookup[op].mnemonic, "RTI")) {
-          myPCEnd = (myPC - 1) + myOffset;
-          return;
-        }
-      } else if (pass == 3) {
-        cycles += int(ourLookup[op].cycles);
+      if (pass == 3) {
+        cycles += int(ourLookup[opcode].cycles);
         // A complete line of disassembly (text, cycle count, and bytes)
         myDisasmBuf << nextLine.str() << "'"
-          << ";" << std::dec << int(ourLookup[op].cycles)
+          << ";" << std::dec << int(ourLookup[opcode].cycles)
           << (addrMode == RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/4!" : "/3 " : "   ");
-        if ((op == 0x40 || op == 0x60 || op == 0x4c || op == 0x00                       // code block end
-            || checkBit(myPC, CartDebug::REFERENCED)                                    // referenced address
-            || /*addr_mode == ZERO_PAGE &&*/ ourLookup[op].rw_mode == WRITE && d1 == WSYNC) // strobe WSYNC
+        if ((opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00 // code block end
+            || checkBit(myPC, CartDebug::REFERENCED)                              // referenced address
+            || ourLookup[opcode].rw_mode == WRITE && d1 == WSYNC)                 // strobe WSYNC
             && cycles > 0) {
           // output cycles for previous code block
           myDisasmBuf << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
@@ -653,7 +673,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         myDisasmBuf << "'" << nextLineBytes.str();
 
         addEntry(CartDebug::CODE);
-        if (op == 0x40 || op == 0x60 || op == 0x4c || op == 0x00) {
+        if (opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00) {
           myDisasmBuf << "    '     ' ";
           addEntry(CartDebug::NONE);
           mySegType = CartDebug::NONE; // prevent extra lines if data follows
@@ -668,6 +688,154 @@ void DiStella::disasm(uInt32 distart, int pass)
   /* Just in case we are disassembling outside of the address range, force the myPCEnd to EOF */
   myPCEnd = myAppData.end + myOffset;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DiStella::disasmPass1(uInt32 distart)
+{
+  uInt8 opcode, d1;
+  uInt16 ad;
+  AddressingMode addrMode;
+
+  myPC = distart - myOffset;
+
+  while (myPC <= myAppData.end) {
+
+    // abort when we reach non-code areas
+    if (checkBits(myPC, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX, CartDebug::CODE)) {
+      myPCEnd = (myPC - 1) + myOffset;
+      return;
+    }
+
+    // so this should be code now...
+    // get opcode
+    opcode = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+    // get address mode for opcode 
+    addrMode = ourLookup[opcode].addr_mode; 
+
+    // Add operand(s) for PC values outside the app data range
+    if (myPC >= myAppData.end) {
+      switch (addrMode) {
+        case ABSOLUTE:
+        case ABSOLUTE_X:
+        case ABSOLUTE_Y:
+        case INDIRECT_X:
+        case INDIRECT_Y:
+        case ABS_INDIRECT:
+          myPCEnd = myAppData.end + myOffset;
+          return;
+
+        case ZERO_PAGE:
+        case IMMEDIATE:
+        case ZERO_PAGE_X:
+        case ZERO_PAGE_Y:
+        case RELATIVE:
+          if (myPC > myAppData.end) {
+            myPC++;
+            myPCEnd = myAppData.end + myOffset;
+            return;
+          }
+
+        default:
+          break;
+      }  // end switch(addr_mode)
+    } // end if (myPC >= myAppData.end)
+
+    // Add operand(s)
+    switch (addrMode) {
+      case ABSOLUTE:
+        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
+        mark(ad, CartDebug::REFERENCED);
+        // handle JMP/JSR
+        if (ourLookup[opcode].source == M_ADDR) {
+          // do NOT use flags set by debugger, else known CODE will not analyzed statically.
+          if (!checkBit(ad & myAppData.end, CartDebug::CODE, false)) { 
+            if (ad > 0xfff)
+              myAddressQueue.push((ad & myAppData.end) + myOffset);
+            mark(ad, CartDebug::CODE);
+          }
+        } else
+          mark(ad, CartDebug::DATA);
+        break;
+
+      case ZERO_PAGE:
+        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        mark(d1, CartDebug::REFERENCED);
+        break;
+
+      case IMMEDIATE:
+        myPC++;
+        break;
+
+      case ABSOLUTE_X:
+        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
+        mark(ad, CartDebug::REFERENCED);
+        break;
+
+      case ABSOLUTE_Y:
+        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
+        mark(ad, CartDebug::REFERENCED);
+        break;
+
+      case INDIRECT_X:
+        myPC++;
+        break;
+
+      case INDIRECT_Y:
+        myPC++;
+        break;
+
+      case ZERO_PAGE_X:
+        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        mark(d1, CartDebug::REFERENCED);
+        break;
+
+      case ZERO_PAGE_Y:
+        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        mark(d1, CartDebug::REFERENCED);
+        break;
+
+      case RELATIVE:
+        // SA - 04-06-2010: there seemed to be a bug in distella,
+        // where wraparound occurred on a 32-bit int, and subsequent
+        // indexing into the labels array caused a crash
+        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
+        mark(ad, CartDebug::REFERENCED);
+        // do NOT use flags set by debugger, else known CODE will not analyzed statically.
+        if (!checkBit(ad - myOffset, CartDebug::CODE, false)) {
+          myAddressQueue.push(ad);
+          mark(ad, CartDebug::CODE);
+        }
+        break;
+
+      case ABS_INDIRECT:
+        ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
+        mark(ad, CartDebug::REFERENCED);
+        break;
+
+      default:
+        break;
+    } // end switch
+
+    // mark BRK vector
+    if (opcode == 0x00) {
+      if (!myReserved.breakFound) {
+        ad = Debugger::debugger().dpeek(0xfffe, CartDebug::DATA);        
+        myAddressQueue.push(ad);
+        mark(ad, CartDebug::CODE);        
+        myReserved.breakFound = true;
+      }
+    }
+
+    // JMP/RTS/RTI always indicate the end of a block of CODE
+    if (opcode == 0x4c || opcode == 0x60 || opcode == 0x40) { 
+      // code block end
+      myPCEnd = (myPC - 1) + myOffset;
+      return;
+    }
+  } // while
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
@@ -719,6 +887,11 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
     ===========================================================
   -----------------------------------------------------------------------*/
 
+  /*if (address == 0xf5c2) {
+    address++;
+    address--;
+  }*/
+
   // Check for equates before ROM/ZP-RAM accesses, because the original logic
   // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
   CartDebug::AddrType type = myDbg.addressType(address);
@@ -743,13 +916,12 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::checkBit(uInt16 address, uInt8 mask) const
+bool DiStella::checkBit(uInt16 address, uInt8 mask, bool useDebugger) const
 {
   // The REFERENCED and VALID_ENTRY flags are needed for any inspection of
   // an address
   // Since they're set only in the labels array (as the lower two bits),
   // they must be included in the other bitfields
-  // thrust26: ignoreStella is currently only used with addbranch
   uInt8 label = myLabels[address & myAppData.end],
     lastbits = label & 0x03,
     directive = myDirectives[address & myAppData.end] & 0xFC,
@@ -759,16 +931,16 @@ bool DiStella::checkBit(uInt16 address, uInt8 mask) const
   if (directive)
     return (directive | lastbits) & mask;
   // Next, the results from a dynamic/runtime analysis are used (except for pass 1)
-  else if (myPass != 1 && ((debugger | lastbits) & mask))
+  else if (useDebugger && ((debugger | lastbits) & mask))
     return true;
   // Otherwise, default to static analysis from Distella
   else
     return label & mask;
 }
 
-bool DiStella::checkBits(uInt16 address, uInt8 mask, uInt8 notMask) const
+bool DiStella::checkBits(uInt16 address, uInt8 mask, uInt8 notMask, bool useDebugger) const
 {
-  return checkBit(address, mask) && !checkBit(address, notMask);
+  return checkBit(address, mask, useDebugger) && !checkBit(address, notMask, useDebugger);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -817,7 +989,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
     if (tag.label == EmptyString) {
       if (myDisasmBuf.peek() != ' ')
         getline(myDisasmBuf, tag.label, '\'');
-      else if (mySettings.show_addresses && tag.type == CartDebug::CODE) {
+      else if (mySettings.showAddresses && tag.type == CartDebug::CODE) {
         // Have addresses indented, to differentiate from actual labels
         tag.label = " " + Base::toString(tag.address, Base::F_16_4);
         tag.hllabel = false;
@@ -893,7 +1065,7 @@ void DiStella::outputGraphics()
   for (uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
     myDisasmBuf << ((c > 127) ? bitString : " ");
   myDisasmBuf << "|  $" << Base::HEX4 << myPC + myOffset << "'";
-  if (mySettings.gfx_format == Base::F_2)
+  if (mySettings.gfxFormat == Base::F_2)
     myDisasmBuf << Base::toString(byte, Base::F_2_8);
   else
     myDisasmBuf << Base::HEX2 << int(byte);
@@ -937,7 +1109,7 @@ void DiStella::outputBytes(CartDebug::DisasmType type)
       lineEmpty = false;
     }
     // Otherwise, append bytes to the current line, up until the maximum
-    else if (++numBytes == mySettings.bwidth) {
+    else if (++numBytes == mySettings.bytesWidth) {
       addEntry(type);
       lineEmpty = true;
     } else {
@@ -966,340 +1138,341 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::Settings DiStella::settings = {
-  Base::F_2, // gfx_format
-  true,      // resolve_code (opposite of -d in Distella)
-  true,      // show_addresses (not used externally; always off)
-  false,     // aflag (-a in Distella)
-  true,      // fflag (-f in Distella)
-  false,     // rflag (-r in Distella)
-  9          // number of bytes to use with .byte directive
+  Base::F_2, // gfxFormat
+  true,      // resolveCode (opposite of -d in Distella)
+  true,      // showAddresses (not used externally; always off)
+  false,     // aFlag (-a in Distella)
+  true,      // fFlag (-f in Distella)
+  false,     // rFlag (-r in Distella)
+  false,     // bFlag (-b in Distella)
+  8+1        // number of bytes to use with .byte directive
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /****  Positive  ****/
 
-  /* 00 */ { "BRK", IMPLIED,     M_NONE, NONE,  7 }, /* Pseudo Absolute */
-  /* 01 */ { "ORA", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* 02 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* 03 */ { "slo", INDIRECT_X,  M_INDX, WRITE, 8 },
+  /* 00 */{"brk", IMPLIED,     M_NONE, NONE,  7, 1}, /* Pseudo Absolute */
+  /* 01 */{"ora", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
+  /* 02 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* 03 */{"SLO", INDIRECT_X,  M_INDX, WRITE, 8, 2},
 
-  /* 04 */ { "nop", ZERO_PAGE,   M_NONE, NONE,  3 },
-  /* 05 */ { "ORA", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* 06 */ { "ASL", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
-  /* 07 */ { "slo", ZERO_PAGE,   M_ZERO, WRITE, 5 },
+  /* 04 */{"NOP", ZERO_PAGE,   M_NONE, NONE,  3, 2},
+  /* 05 */{"ora", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* 06 */{"asl", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
+  /* 07 */{"SLO", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
 
-  /* 08 */ { "PHP", IMPLIED,     M_SR,   NONE,  3 },
-  /* 09 */ { "ORA", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* 0a */ { "ASL", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
-  /* 0b */ { "anc", IMMEDIATE,   M_ACIM, READ,  2 },
+  /* 08 */{"php", IMPLIED,     M_SR,   NONE,  3, 1},
+  /* 09 */{"ora", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* 0a */{"asl", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
+  /* 0b */{"ANC", IMMEDIATE,   M_ACIM, READ,  2, 2},
 
-  /* 0c */ { "nop", ABSOLUTE,    M_NONE, NONE,  4 },
-  /* 0d */ { "ORA", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* 0e */ { "ASL", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
-  /* 0f */ { "slo", ABSOLUTE,    M_ABS,  WRITE, 6 },
+  /* 0c */{"NOP", ABSOLUTE,    M_NONE, NONE,  4, 3},
+  /* 0d */{"ora", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* 0e */{"asl", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
+  /* 0f */{"SLO", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
 
-  /* 10 */ { "BPL", RELATIVE,    M_REL,  READ,  2 },
-  /* 11 */ { "ORA", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 12 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* 13 */ { "slo", INDIRECT_Y,  M_INDY, WRITE, 8 },
+  /* 10 */{"bpl", RELATIVE,    M_REL,  READ,  2, 2},
+  /* 11 */{"ora", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
+  /* 12 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* 13 */{"SLO", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
 
-  /* 14 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
-  /* 15 */ { "ORA", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* 16 */ { "ASL", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
-  /* 17 */ { "slo", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
+  /* 14 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
+  /* 15 */{"ora", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* 16 */{"asl", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
+  /* 17 */{"SLO", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
 
-  /* 18 */ { "CLC", IMPLIED,     M_NONE, NONE,  2 },
-  /* 19 */ { "ORA", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 1a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
-  /* 1b */ { "slo", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
+  /* 18 */{"clc", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 19 */{"ora", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* 1a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 1b */{"SLO", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
 
-  /* 1c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
-  /* 1d */ { "ORA", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
-  /* 1e */ { "ASL", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
-  /* 1f */ { "slo", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
+  /* 1c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
+  /* 1d */{"ora", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
+  /* 1e */{"asl", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
+  /* 1f */{"SLO", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
 
-  /* 20 */ { "JSR", ABSOLUTE,    M_ADDR, READ,  6 },
-  /* 21 */ { "AND", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect ,X) */
-  /* 22 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* 23 */ { "rla", INDIRECT_X,  M_INDX, WRITE, 8 },
+  /* 20 */{"jsr", ABSOLUTE,    M_ADDR, READ,  6, 3},
+  /* 21 */{"and", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect ,X) */
+  /* 22 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* 23 */{"RLA", INDIRECT_X,  M_INDX, WRITE, 8, 2},
 
-  /* 24 */ { "BIT", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* 25 */ { "AND", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* 26 */ { "ROL", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
-  /* 27 */ { "rla", ZERO_PAGE,   M_ZERO, WRITE, 5 },
+  /* 24 */{"bit", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* 25 */{"and", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* 26 */{"rol", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
+  /* 27 */{"RLA", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
 
-  /* 28 */ { "PLP", IMPLIED,     M_NONE, NONE,  4 },
-  /* 29 */ { "AND", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* 2a */ { "ROL", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
-  /* 2b */ { ".anc",IMMEDIATE,   M_ACIM, READ,  2 },
+  /* 28 */{"plp", IMPLIED,     M_NONE, NONE,  4, 1},
+  /* 29 */{"and", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* 2a */{"rol", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
+  /* 2b */{"ANC", IMMEDIATE,   M_ACIM, READ,  2, 2},
 
-  /* 2c */ { "BIT", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* 2d */ { "AND", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* 2e */ { "ROL", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
-  /* 2f */ { "rla", ABSOLUTE,    M_ABS,  WRITE, 6 },
+  /* 2c */{"bit", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* 2d */{"and", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* 2e */{"rol", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
+  /* 2f */{"RLA", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
 
-  /* 30 */ { "BMI", RELATIVE,    M_REL,  READ,  2 },
-  /* 31 */ { "AND", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 32 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* 33 */ { "rla", INDIRECT_Y,  M_INDY, WRITE, 8 },
+  /* 30 */{"bmi", RELATIVE,    M_REL,  READ,  2, 2},
+  /* 31 */{"and", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
+  /* 32 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* 33 */{"RLA", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
 
-  /* 34 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
-  /* 35 */ { "AND", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* 36 */ { "ROL", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
-  /* 37 */ { "rla", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
+  /* 34 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
+  /* 35 */{"and", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* 36 */{"rol", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
+  /* 37 */{"RLA", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
 
-  /* 38 */ { "SEC", IMPLIED,     M_NONE, NONE,  2 },
-  /* 39 */ { "AND", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 3a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
-  /* 3b */ { "rla", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
+  /* 38 */{"sec", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 39 */{"and", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* 3a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 3b */{"RLA", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
 
-  /* 3c */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
-  /* 3d */ { "AND", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
-  /* 3e */ { "ROL", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
-  /* 3f */ { "rla", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
+  /* 3c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
+  /* 3d */{"and", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
+  /* 3e */{"rol", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
+  /* 3f */{"RLA", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
 
-  /* 40 */ { "RTI", IMPLIED,     M_NONE, NONE,  6 },
-  /* 41 */ { "EOR", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* 42 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* 43 */ { "sre", INDIRECT_X,  M_INDX, WRITE, 8 },
+  /* 40 */{"rti", IMPLIED,     M_NONE, NONE,  6, 1},
+  /* 41 */{"eor", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
+  /* 42 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* 43 */{"SRE", INDIRECT_X,  M_INDX, WRITE, 8, 2},
 
-  /* 44 */ { ".nop",ZERO_PAGE,   M_NONE, NONE,  3 },
-  /* 45 */ { "EOR", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* 46 */ { "LSR", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
-  /* 47 */ { "sre", ZERO_PAGE,   M_ZERO, WRITE, 5 },
+  /* 44 */{"NOP", ZERO_PAGE,   M_NONE, NONE,  3, 2},
+  /* 45 */{"eor", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* 46 */{"lsr", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
+  /* 47 */{"SRE", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
 
-  /* 48 */ { "PHA", IMPLIED,     M_AC,   NONE,  3 },
-  /* 49 */ { "EOR", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* 4a */ { "LSR", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
-  /* 4b */ { "asr", IMMEDIATE,   M_ACIM, READ,  2 }, /* (AC & IMM) >>1 */
+  /* 48 */{"pha", IMPLIED,     M_AC,   NONE,  3, 1},
+  /* 49 */{"eor", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* 4a */{"lsr", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
+  /* 4b */{"ASR", IMMEDIATE,   M_ACIM, READ,  2, 2}, /* (AC & IMM) >>1 */
 
-  /* 4c */ { "JMP", ABSOLUTE,    M_ADDR, READ,  3 }, /* Absolute */
-  /* 4d */ { "EOR", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* 4e */ { "LSR", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
-  /* 4f */ { "sre", ABSOLUTE,    M_ABS,  WRITE, 6 },
+  /* 4c */{"jmp", ABSOLUTE,    M_ADDR, READ,  3, 3}, /* Absolute */
+  /* 4d */{"eor", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* 4e */{"lsr", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
+  /* 4f */{"SRE", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
 
-  /* 50 */ { "BVC", RELATIVE,    M_REL,  READ,  2 },
-  /* 51 */ { "EOR", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 52 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* 53 */ { "sre", INDIRECT_Y,  M_INDY, WRITE, 8 },
+  /* 50 */{"bvc", RELATIVE,    M_REL,  READ,  2, 2},
+  /* 51 */{"eor", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
+  /* 52 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* 53 */{"SRE", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
 
-  /* 54 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
-  /* 55 */ { "EOR", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* 56 */ { "LSR", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
-  /* 57 */ { "sre", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
+  /* 54 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
+  /* 55 */{"eor", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* 56 */{"lsr", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
+  /* 57 */{"SRE", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
 
-  /* 58 */ { "CLI", IMPLIED,     M_NONE, NONE,  2 },
-  /* 59 */ { "EOR", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 5a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
-  /* 5b */ { "sre", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
+  /* 58 */{"cli", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 59 */{"eor", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* 5a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 5b */{"SRE", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
 
-  /* 5c */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
-  /* 5d */ { "EOR", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
-  /* 5e */ { "LSR", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
-  /* 5f */ { "sre", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
+  /* 5c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
+  /* 5d */{"eor", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
+  /* 5e */{"lsr", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
+  /* 5f */{"SRE", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
 
-  /* 60 */ { "RTS", IMPLIED,     M_NONE, NONE,  6 },
-  /* 61 */ { "ADC", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* 62 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* 63 */ { "rra", INDIRECT_X,  M_INDX, WRITE, 8 },
+  /* 60 */{"rts", IMPLIED,     M_NONE, NONE,  6, 1},
+  /* 61 */{"adc", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
+  /* 62 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* 63 */{"RRA", INDIRECT_X,  M_INDX, WRITE, 8, 2},
 
-  /* 64 */ { ".nop",ZERO_PAGE,   M_NONE, NONE,  3 },
-  /* 65 */ { "ADC", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* 66 */ { "ROR", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
-  /* 67 */ { "rra", ZERO_PAGE,   M_ZERO, WRITE, 5 },
+  /* 64 */{"NOP", ZERO_PAGE,   M_NONE, NONE,  3, 2},
+  /* 65 */{"adc", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* 66 */{"ror", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
+  /* 67 */{"RRA", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
 
-  /* 68 */ { "PLA", IMPLIED,     M_NONE, NONE,  4 },
-  /* 69 */ { "ADC", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* 6a */ { "ROR", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
-  /* 6b */ { "arr", IMMEDIATE,   M_ACIM, READ,  2 }, /* ARR isn't typo */
+  /* 68 */{"pla", IMPLIED,     M_NONE, NONE,  4, 1},
+  /* 69 */{"adc", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* 6a */{"ror", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
+  /* 6b */{"ARR", IMMEDIATE,   M_ACIM, READ,  2, 2}, /* ARR isn't typo */
 
-  /* 6c */ { "JMP", ABS_INDIRECT,M_AIND, READ,  5 }, /* Indirect */
-  /* 6d */ { "ADC", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* 6e */ { "ROR", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
-  /* 6f */ { "rra", ABSOLUTE,    M_ABS,  WRITE, 6 },
+  /* 6c */{"jmp", ABS_INDIRECT,M_AIND, READ,  5, 3}, /* Indirect */
+  /* 6d */{"adc", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* 6e */{"ror", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
+  /* 6f */{"RRA", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
 
-  /* 70 */ { "BVS", RELATIVE,    M_REL,  READ,  2 },
-  /* 71 */ { "ADC", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 72 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
-  /* 73 */ { "rra", INDIRECT_Y,  M_INDY, WRITE, 8 },
+  /* 70 */{"bvs", RELATIVE,    M_REL,  READ,  2, 2},
+  /* 71 */{"adc", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
+  /* 72 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT relative? */
+  /* 73 */{"RRA", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
 
-  /* 74 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
-  /* 75 */ { "ADC", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* 76 */ { "ROR", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
-  /* 77 */ { "rra", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
+  /* 74 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
+  /* 75 */{"adc", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* 76 */{"ror", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
+  /* 77 */{"RRA", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
 
-  /* 78 */ { "SEI", IMPLIED,     M_NONE, NONE,  2 },
-  /* 79 */ { "ADC", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 7a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
-  /* 7b */ { "rra", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
+  /* 78 */{"sei", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 79 */{"adc", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* 7a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* 7b */{"RRA", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
 
-  /* 7c */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
-  /* 7d */ { "ADC", ABSOLUTE_X,  M_ABSX, READ,  4 },  /* Absolute,X */
-  /* 7e */ { "ROR", ABSOLUTE_X,  M_ABSX, WRITE, 7 },  /* Absolute,X */
-  /* 7f */ { "rra", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
+  /* 7c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
+  /* 7d */{"adc", ABSOLUTE_X,  M_ABSX, READ,  4, 3},  /* Absolute,X */
+  /* 7e */{"ror", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},  /* Absolute,X */
+  /* 7f */{"RRA", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
 
   /****  Negative  ****/
 
-  /* 80 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
-  /* 81 */ { "STA", INDIRECT_X,  M_AC,   WRITE, 6 }, /* (Indirect,X) */
-  /* 82 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 },
-  /* 83 */ { "sax", INDIRECT_X,  M_ANXR, WRITE, 6 },
+  /* 80 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
+  /* 81 */{"sta", INDIRECT_X,  M_AC,   WRITE, 6, 2}, /* (Indirect,X) */
+  /* 82 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
+  /* 83 */{"SAX", INDIRECT_X,  M_ANXR, WRITE, 6, 2},
 
-  /* 84 */ { "STY", ZERO_PAGE,   M_YR,   WRITE, 3 }, /* Zeropage */
-  /* 85 */ { "STA", ZERO_PAGE,   M_AC,   WRITE, 3 }, /* Zeropage */
-  /* 86 */ { "STX", ZERO_PAGE,   M_XR,   WRITE, 3 }, /* Zeropage */
-  /* 87 */ { "sax", ZERO_PAGE,   M_ANXR, WRITE, 3 },
+  /* 84 */{"sty", ZERO_PAGE,   M_YR,   WRITE, 3, 2}, /* Zeropage */
+  /* 85 */{"sta", ZERO_PAGE,   M_AC,   WRITE, 3, 2}, /* Zeropage */
+  /* 86 */{"stx", ZERO_PAGE,   M_XR,   WRITE, 3, 2}, /* Zeropage */
+  /* 87 */{"SAX", ZERO_PAGE,   M_ANXR, WRITE, 3, 2},
 
-  /* 88 */ { "DEY", IMPLIED,     M_YR,   NONE,  2 },
-  /* 89 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 },
-  /* 8a */ { "TXA", IMPLIED,     M_XR,   NONE,  2 },
+  /* 88 */{"dey", IMPLIED,     M_YR,   NONE,  2, 1},
+  /* 89 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
+  /* 8a */{"txa", IMPLIED,     M_XR,   NONE,  2, 1},
   /****  very abnormal: usually AC = AC | #$EE & XR & #$oper  ****/
-  /* 8b */ { "ane", IMMEDIATE,   M_AXIM, READ,  2 },
+  /* 8b */{"ANE", IMMEDIATE,   M_AXIM, READ,  2, 2},
 
-  /* 8c */ { "STY", ABSOLUTE,    M_YR,   WRITE, 4 }, /* Absolute */
-  /* 8d */ { "STA", ABSOLUTE,    M_AC,   WRITE, 4 }, /* Absolute */
-  /* 8e */ { "STX", ABSOLUTE,    M_XR,   WRITE, 4 }, /* Absolute */
-  /* 8f */ { "sax", ABSOLUTE,    M_ANXR, WRITE, 4 },
+  /* 8c */{"sty", ABSOLUTE,    M_YR,   WRITE, 4, 3}, /* Absolute */
+  /* 8d */{"sta", ABSOLUTE,    M_AC,   WRITE, 4, 3}, /* Absolute */
+  /* 8e */{"stx", ABSOLUTE,    M_XR,   WRITE, 4, 3}, /* Absolute */
+  /* 8f */{"SAX", ABSOLUTE,    M_ANXR, WRITE, 4, 3},
 
-  /* 90 */ { "BCC", RELATIVE,    M_REL,  READ,  2 },
-  /* 91 */ { "STA", INDIRECT_Y,  M_AC,   WRITE, 6 }, /* (Indirect),Y */
-  /* 92 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
-  /* 93 */ { "sha", INDIRECT_Y,  M_ANXR, WRITE, 6 },
+  /* 90 */{"bcc", RELATIVE,    M_REL,  READ,  2, 2},
+  /* 91 */{"sta", INDIRECT_Y,  M_AC,   WRITE, 6, 2}, /* (Indirect),Y */
+  /* 92 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT relative? */
+  /* 93 */{"SHA", INDIRECT_Y,  M_ANXR, WRITE, 6, 2},
 
-  /* 94 */ { "STY", ZERO_PAGE_X, M_YR,   WRITE, 4 }, /* Zeropage,X */
-  /* 95 */ { "STA", ZERO_PAGE_X, M_AC,   WRITE, 4 }, /* Zeropage,X */
-  /* 96 */ { "STX", ZERO_PAGE_Y, M_XR,   WRITE, 4 }, /* Zeropage,Y */
-  /* 97 */ { "sax", ZERO_PAGE_Y, M_ANXR, WRITE, 4 },
+  /* 94 */{"sty", ZERO_PAGE_X, M_YR,   WRITE, 4, 2}, /* Zeropage,X */
+  /* 95 */{"sta", ZERO_PAGE_X, M_AC,   WRITE, 4, 2}, /* Zeropage,X */
+  /* 96 */{"stx", ZERO_PAGE_Y, M_XR,   WRITE, 4, 2}, /* Zeropage,Y */
+  /* 97 */{"SAX", ZERO_PAGE_Y, M_ANXR, WRITE, 4, 2},
 
-  /* 98 */ { "TYA", IMPLIED,     M_YR,   NONE,  2 },
-  /* 99 */ { "STA", ABSOLUTE_Y,  M_AC,   WRITE, 5 }, /* Absolute,Y */
-  /* 9a */ { "TXS", IMPLIED,     M_XR,   NONE,  2 },
-  /*** This is very mysterious comm AND ... */
-  /* 9b */ { "shs", ABSOLUTE_Y,  M_ANXR, WRITE, 5 },
+  /* 98 */{"tya", IMPLIED,     M_YR,   NONE,  2, 1},
+  /* 99 */{"sta", ABSOLUTE_Y,  M_AC,   WRITE, 5, 3}, /* Absolute,Y */
+  /* 9a */{"txs", IMPLIED,     M_XR,   NONE,  2, 1},
+  /*** This is very mysterious command ... */
+  /* 9b */{"SHS", ABSOLUTE_Y,  M_ANXR, WRITE, 5, 3},
 
-  /* 9c */ { "shy", ABSOLUTE_X,  M_YR,   WRITE, 5 },
-  /* 9d */ { "STA", ABSOLUTE_X,  M_AC,   WRITE, 5 }, /* Absolute,X */
-  /* 9e */ { "shx", ABSOLUTE_Y,  M_XR  , WRITE, 5 },
-  /* 9f */ { "sha", ABSOLUTE_Y,  M_ANXR, WRITE, 5 },
+  /* 9c */{"SHY", ABSOLUTE_X,  M_YR,   WRITE, 5, 3},
+  /* 9d */{"sta", ABSOLUTE_X,  M_AC,   WRITE, 5, 3}, /* Absolute,X */
+  /* 9e */{"SHX", ABSOLUTE_Y,  M_XR  , WRITE, 5, 3},
+  /* 9f */{"SHA", ABSOLUTE_Y,  M_ANXR, WRITE, 5, 3},
 
-  /* a0 */ { "LDY", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* a1 */ { "LDA", INDIRECT_X,  M_INDX, READ,  6 }, /* (indirect,X) */
-  /* a2 */ { "LDX", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* a3 */ { "lax", INDIRECT_X,  M_INDX, READ,  6 }, /* (indirect,X) */
+  /* a0 */{"ldy", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* a1 */{"lda", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (indirect,X) */
+  /* a2 */{"ldx", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* a3 */{"LAX", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (indirect,X) */
 
-  /* a4 */ { "LDY", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* a5 */ { "LDA", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* a6 */ { "LDX", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* a7 */ { "lax", ZERO_PAGE,   M_ZERO, READ,  3 },
+  /* a4 */{"ldy", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* a5 */{"lda", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* a6 */{"ldx", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* a7 */{"LAX", ZERO_PAGE,   M_ZERO, READ,  3, 2},
 
-  /* a8 */ { "TAY", IMPLIED,     M_AC,   NONE,  2 },
-  /* a9 */ { "LDA", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* aa */ { "TAX", IMPLIED,     M_AC,   NONE,  2 },
-  /* ab */ { "lxa", IMMEDIATE,   M_ACIM, READ,  2 }, /* LXA isn't a typo */
+  /* a8 */{"tay", IMPLIED,     M_AC,   NONE,  2, 1},
+  /* a9 */{"lda", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* aa */{"tax", IMPLIED,     M_AC,   NONE,  2, 1},
+  /* ab */{"LXA", IMMEDIATE,   M_ACIM, READ,  2, 2}, /* LXA isn't a typo */
 
-  /* ac */ { "LDY", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* ad */ { "LDA", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* ae */ { "LDX", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* af */ { "lax", ABSOLUTE,    M_ABS,  READ,  4 },
+  /* ac */{"ldy", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* ad */{"lda", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* ae */{"ldx", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* af */{"LAX", ABSOLUTE,    M_ABS,  READ,  4, 3},
 
-  /* b0 */ { "BCS", RELATIVE,    M_REL,  READ,  2 },
-  /* b1 */ { "LDA", INDIRECT_Y,  M_INDY, READ,  5 }, /* (indirect),Y */
-  /* b2 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* b3 */ { "lax", INDIRECT_Y,  M_INDY, READ,  5 },
+  /* b0 */{"bcs", RELATIVE,    M_REL,  READ,  2, 2},
+  /* b1 */{"lda", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (indirect),Y */
+  /* b2 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* b3 */{"LAX", INDIRECT_Y,  M_INDY, READ,  5, 2},
 
-  /* b4 */ { "LDY", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* b5 */ { "LDA", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* b6 */ { "LDX", ZERO_PAGE_Y, M_ZERY, READ,  4 }, /* Zeropage,Y */
-  /* b7 */ { "lax", ZERO_PAGE_Y, M_ZERY, READ,  4 },
+  /* b4 */{"ldy", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* b5 */{"lda", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* b6 */{"ldx", ZERO_PAGE_Y, M_ZERY, READ,  4, 2}, /* Zeropage,Y */
+  /* b7 */{"LAX", ZERO_PAGE_Y, M_ZERY, READ,  4, 2},
 
-  /* b8 */ { "CLV", IMPLIED,     M_NONE, NONE,  2 },
-  /* b9 */ { "LDA", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* ba */ { "TSX", IMPLIED,     M_SP,   NONE,  2 },
-  /* bb */ { "las", ABSOLUTE_Y,  M_SABY, READ,  4 },
+  /* b8 */{"clv", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* b9 */{"lda", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* ba */{"tsx", IMPLIED,     M_SP,   NONE,  2, 1},
+  /* bb */{"LAS", ABSOLUTE_Y,  M_SABY, READ,  4, 3},
 
-  /* bc */ { "LDY", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
-  /* bd */ { "LDA", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
-  /* be */ { "LDX", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* bf */ { "lax", ABSOLUTE_Y,  M_ABSY, READ,  4 },
+  /* bc */{"ldy", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
+  /* bd */{"lda", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
+  /* be */{"ldx", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* bf */{"LAX", ABSOLUTE_Y,  M_ABSY, READ,  4, 3},
 
-  /* c0 */ { "CPY", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* c1 */ { "CMP", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* c2 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 }, /* occasional TILT */
-  /* c3 */ { "dcp", INDIRECT_X,  M_INDX, WRITE, 8 },
+  /* c0 */{"cpy", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* c1 */{"cmp", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
+  /* c2 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2}, /* occasional TILT */
+  /* c3 */{"DCP", INDIRECT_X,  M_INDX, WRITE, 8, 2},
 
-  /* c4 */ { "CPY", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* c5 */ { "CMP", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* c6 */ { "DEC", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
-  /* c7 */ { "dcp", ZERO_PAGE,   M_ZERO, WRITE, 5 },
+  /* c4 */{"cpy", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* c5 */{"cmp", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* c6 */{"dec", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
+  /* c7 */{"DCP", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
 
-  /* c8 */ { "INY", IMPLIED,     M_YR,   NONE,  2 },
-  /* c9 */ { "CMP", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* ca */ { "DEX", IMPLIED,     M_XR,   NONE,  2 },
-  /* cb */ { "sbx", IMMEDIATE,   M_IMM,  READ,  2 },
+  /* c8 */{"iny", IMPLIED,     M_YR,   NONE,  2, 1},
+  /* c9 */{"cmp", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* ca */{"dex", IMPLIED,     M_XR,   NONE,  2, 1},
+  /* cb */{"SBX", IMMEDIATE,   M_IMM,  READ,  2, 2},
 
-  /* cc */ { "CPY", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* cd */ { "CMP", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* ce */ { "DEC", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
-  /* cf */ { "dcp", ABSOLUTE,    M_ABS,  WRITE, 6 },
+  /* cc */{"cpy", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* cd */{"cmp", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* ce */{"dec", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
+  /* cf */{"DCP", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
 
-  /* d0 */ { "BNE", RELATIVE,    M_REL,  READ,  2 },
-  /* d1 */ { "CMP", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* d2 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* d3 */ { "dcp", INDIRECT_Y,  M_INDY, WRITE, 8 },
+  /* d0 */{"bne", RELATIVE,    M_REL,  READ,  2, 2},
+  /* d1 */{"cmp", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
+  /* d2 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* d3 */{"DCP", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
 
-  /* d4 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
-  /* d5 */ { "CMP", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* d6 */ { "DEC", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
-  /* d7 */ { "dcp", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
+  /* d4 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
+  /* d5 */{"cmp", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* d6 */{"dec", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
+  /* d7 */{"DCP", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
 
-  /* d8 */ { "CLD", IMPLIED,     M_NONE, NONE,  2 },
-  /* d9 */ { "CMP", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* da */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
-  /* db */ { "dcp", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
+  /* d8 */{"cld", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* d9 */{"cmp", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* da */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* db */{"DCP", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
 
-  /* dc */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
-  /* dd */ { "CMP", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
-  /* de */ { "DEC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
-  /* df */ { "dcp", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
+  /* dc */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
+  /* dd */{"cmp", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
+  /* de */{"dec", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
+  /* df */{"DCP", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
 
-  /* e0 */ { "CPX", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* e1 */ { "SBC", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* e2 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 },
-  /* e3 */ { "isb", INDIRECT_X,  M_INDX, WRITE, 8 },
+  /* e0 */{"cpx", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* e1 */{"sbc", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
+  /* e2 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
+  /* e3 */{"ISB", INDIRECT_X,  M_INDX, WRITE, 8, 2},
 
-  /* e4 */ { "CPX", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* e5 */ { "SBC", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
-  /* e6 */ { "INC", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
-  /* e7 */ { "isb", ZERO_PAGE,   M_ZERO, WRITE, 5 },
+  /* e4 */{"cpx", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* e5 */{"sbc", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
+  /* e6 */{"inc", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
+  /* e7 */{"ISB", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
 
-  /* e8 */ { "INX", IMPLIED,     M_XR,   NONE,  2 },
-  /* e9 */ { "SBC", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
-  /* ea */ { "NOP", IMPLIED,     M_NONE, NONE,  2 },
-  /* eb */ { ".sbc",IMMEDIATE,   M_IMM,  READ,  2 }, /* same as e9 */
+  /* e8 */{"inx", IMPLIED,     M_XR,   NONE,  2, 1},
+  /* e9 */{"sbc", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
+  /* ea */{"nop", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* eb */{"SBC", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* same as e9 */
 
-  /* ec */ { "CPX", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* ed */ { "SBC", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
-  /* ee */ { "INC", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
-  /* ef */ { "isb", ABSOLUTE,    M_ABS,  WRITE, 6 },
+  /* ec */{"cpx", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* ed */{"sbc", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
+  /* ee */{"inc", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
+  /* ef */{"ISB", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
 
-  /* f0 */ { "BEQ", RELATIVE,    M_REL,  READ,  2 },
-  /* f1 */ { "SBC", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* f2 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
-  /* f3 */ { "isb", INDIRECT_Y,  M_INDY, WRITE, 8 },
+  /* f0 */{"beq", RELATIVE,    M_REL,  READ,  2, 2},
+  /* f1 */{"sbc", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
+  /* f2 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
+  /* f3 */{"ISB", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
 
-  /* f4 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
-  /* f5 */ { "SBC", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
-  /* f6 */ { "INC", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
-  /* f7 */ { "isb", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
+  /* f4 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
+  /* f5 */{"sbc", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
+  /* f6 */{"inc", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
+  /* f7 */{"ISB", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
 
-  /* f8 */ { "SED", IMPLIED,     M_NONE, NONE,  2 },
-  /* f9 */ { "SBC", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* fa */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
-  /* fb */ { "isb", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
+  /* f8 */{"sed", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* f9 */{"sbc", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
+  /* fa */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
+  /* fb */{"ISB", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
 
-  /* fc */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
-  /* fd */ { "SBC", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
-  /* fe */ { "INC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
-  /* ff */ { "isb", ABSOLUTE_X,  M_ABSX, WRITE, 7 }
+  /* fc */{"NOP" ,ABSOLUTE_X,  M_NONE, NONE,  4, 3},
+  /* fd */{"sbc", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
+  /* fe */{"inc", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
+  /* ff */{"ISB", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}
 };

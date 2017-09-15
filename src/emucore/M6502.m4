@@ -38,7 +38,7 @@
 
 #ifndef CLEAR_LAST_PEEK
   #ifdef DEBUGGER_SUPPORT
-    #define CLEAR_LAST_PEEK(_addr) _addr = -1;
+    #define CLEAR_LAST_PEEK(_addr) _addr = 0;
   #else
     #define CLEAR_LAST_PEEK(_addr)
   #endif
@@ -83,10 +83,14 @@ define(M6502_ABSOLUTEX_READ, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = (uInt16(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | uInt8(low + X);
-  operand = peek(intermediateAddress, DISASM_DATA);
   if((low + X) > 0xFF)
   {
+    operand = peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
+    operand = peek(intermediateAddress, DISASM_DATA);
+  } 
+  else
+  {
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }')
@@ -94,14 +98,14 @@ define(M6502_ABSOLUTEX_READ, `{
 define(M6502_ABSOLUTEX_WRITE, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = (uInt16(peek(PC++, DISASM_CODE)) << 8);
-  peek(high | uInt8(low + X), DISASM_DATA);
+  peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
 }')
 
 define(M6502_ABSOLUTEX_READMODIFYWRITE, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = (uInt16(peek(PC++, DISASM_CODE)) << 8);
-  peek(high | uInt8(low + X), DISASM_DATA);
+  peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
   poke(operandAddress, operand);
@@ -111,10 +115,14 @@ define(M6502_ABSOLUTEY_READ, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = (uInt16(peek(PC++, DISASM_CODE)) << 8);
   intermediateAddress = high | uInt8(low + Y);
-  operand = peek(intermediateAddress, DISASM_DATA);
   if((low + Y) > 0xFF)
   {
+    operand = peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
+    operand = peek(intermediateAddress, DISASM_DATA);
+  }
+  else
+  {
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }')
@@ -122,14 +130,14 @@ define(M6502_ABSOLUTEY_READ, `{
 define(M6502_ABSOLUTEY_WRITE, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = (uInt16(peek(PC++, DISASM_CODE)) << 8);
-  peek(high | uInt8(low + Y), DISASM_DATA);
+  peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
 }')
 
 define(M6502_ABSOLUTEY_READMODIFYWRITE, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = (uInt16(peek(PC++, DISASM_CODE)) << 8);
-  peek(high | uInt8(low + Y), DISASM_DATA);
+  peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
   poke(operandAddress, operand);
@@ -152,20 +160,20 @@ define(M6502_ZERO_READMODIFYWRITE, `{
 
 define(M6502_ZEROX_READ, `{
   intermediateAddress = peek(PC++, DISASM_CODE);
-  peek(intermediateAddress, DISASM_DATA);
+  peek(intermediateAddress, DISASM_NONE);
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ZEROX_WRITE, `{
   operandAddress = peek(PC++, DISASM_CODE);
-  peek(operandAddress, DISASM_DATA);
+  peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
 }')
 
 define(M6502_ZEROX_READMODIFYWRITE, `{
   operandAddress = peek(PC++, DISASM_CODE);
-  peek(operandAddress, DISASM_DATA);
+  peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
   poke(operandAddress, operand);
@@ -173,20 +181,20 @@ define(M6502_ZEROX_READMODIFYWRITE, `{
 
 define(M6502_ZEROY_READ, `{
   intermediateAddress = peek(PC++, DISASM_CODE);
-  peek(intermediateAddress, DISASM_DATA);
+  peek(intermediateAddress, DISASM_NONE);
   intermediateAddress += Y;
   operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ZEROY_WRITE, `{
   operandAddress = peek(PC++, DISASM_CODE);
-  peek(operandAddress, DISASM_DATA);
+  peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + Y) & 0xFF;
 }')
 
 define(M6502_ZEROY_READMODIFYWRITE, `{
   operandAddress = peek(PC++, DISASM_CODE);
-  peek(operandAddress, DISASM_DATA);
+  peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + Y) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
   poke(operandAddress, operand);
@@ -205,7 +213,7 @@ define(M6502_INDIRECT, `{
 
 define(M6502_INDIRECTX_READ, `{
   uInt8 pointer = peek(PC++, DISASM_CODE);
-  peek(pointer, DISASM_DATA);
+  peek(pointer, DISASM_NONE);
   pointer += X;
   intermediateAddress = peek(pointer++, DISASM_DATA);
   intermediateAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
@@ -214,7 +222,7 @@ define(M6502_INDIRECTX_READ, `{
 
 define(M6502_INDIRECTX_WRITE, `{
   uInt8 pointer = peek(PC++, DISASM_CODE);
-  peek(pointer, DISASM_DATA);
+  peek(pointer, DISASM_NONE);
   pointer += X;
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
@@ -222,7 +230,7 @@ define(M6502_INDIRECTX_WRITE, `{
 
 define(M6502_INDIRECTX_READMODIFYWRITE, `{
   uInt8 pointer = peek(PC++, DISASM_CODE);
-  peek(pointer, DISASM_DATA);
+  peek(pointer, DISASM_NONE);
   pointer += X;
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
@@ -235,10 +243,14 @@ define(M6502_INDIRECTY_READ, `{
   uInt16 low = peek(pointer++, DISASM_DATA);
   uInt16 high = (uInt16(peek(pointer, DISASM_DATA)) << 8);
   intermediateAddress = high | uInt8(low + Y);
-  operand = peek(intermediateAddress, DISASM_DATA);
   if((low + Y) > 0xFF)
   {
+    operand = peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
+    operand = peek(intermediateAddress, DISASM_DATA);
+  }
+  else
+  {
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }')
@@ -247,7 +259,7 @@ define(M6502_INDIRECTY_WRITE, `{
   uInt8 pointer = peek(PC++, DISASM_CODE);
   uInt16 low = peek(pointer++, DISASM_DATA);
   uInt16 high = (uInt16(peek(pointer, DISASM_DATA)) << 8);
-  peek(high | uInt8(low + Y), DISASM_DATA);
+  peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
 }')
 
@@ -255,12 +267,11 @@ define(M6502_INDIRECTY_READMODIFYWRITE, `{
   uInt8 pointer = peek(PC++, DISASM_CODE);
   uInt16 low = peek(pointer++, DISASM_DATA);
   uInt16 high = (uInt16(peek(pointer, DISASM_DATA)) << 8);
-  peek(high | uInt8(low + Y), DISASM_DATA);
+  peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
   poke(operandAddress, operand);
 }')
-
 
 define(M6502_BCC, `{
   if(!C)
@@ -484,7 +495,7 @@ define(M6502_BIT, `{
 }')
 
 define(M6502_BRK, `{
-  peek(PC++, DISASM_CODE);
+  peek(PC++, DISASM_NONE);
 
   B = true;
 
@@ -494,8 +505,8 @@ define(M6502_BRK, `{
 
   I = true;
 
-  PC = peek(0xfffe, DISASM_NONE);
-  PC |= (uInt16(peek(0xffff, DISASM_NONE)) << 8);
+  PC = peek(0xfffe, DISASM_DATA);
+  PC |= (uInt16(peek(0xffff, DISASM_DATA)) << 8);
 }')
 
 define(M6502_CLC, `{
@@ -996,7 +1007,8 @@ define(M6502_TYA, `{
   N = A & 0x80;
 }')
 
-
+//////////////////////////////////////////////////
+// ADC
 case 0x69:
 M6502_IMMEDIATE_READ
 M6502_ADC
@@ -1037,20 +1049,23 @@ M6502_INDIRECTY_READ
 M6502_ADC
 break;
 
-
+//////////////////////////////////////////////////
+// ASR
 case 0x4b:
 M6502_IMMEDIATE_READ
 M6502_ASR
 break;
 
-
+//////////////////////////////////////////////////
+// ANC
 case 0x0b:
 case 0x2b:
 M6502_IMMEDIATE_READ
 M6502_ANC
 break;
 
-
+//////////////////////////////////////////////////
+// AND
 case 0x29:
 M6502_IMMEDIATE_READ
 M6502_AND
@@ -1091,19 +1106,22 @@ M6502_INDIRECTY_READ
 M6502_AND
 break;
 
-
+//////////////////////////////////////////////////
+// ANE
 case 0x8b:
 M6502_IMMEDIATE_READ
 M6502_ANE
 break;
 
-
+//////////////////////////////////////////////////
+// ARR
 case 0x6b:
 M6502_IMMEDIATE_READ
 M6502_ARR
 break;
 
-
+//////////////////////////////////////////////////
+// ASL
 case 0x0a:
 M6502_IMPLIED
 M6502_ASLA
@@ -1129,7 +1147,20 @@ M6502_ABSOLUTEX_READMODIFYWRITE
 M6502_ASL
 break;
 
+//////////////////////////////////////////////////
+// BIT
+case 0x24:
+M6502_ZERO_READ
+M6502_BIT
+break;
 
+case 0x2C:
+M6502_ABSOLUTE_READ
+M6502_BIT
+break;
+
+//////////////////////////////////////////////////
+// Branches
 case 0x90:
 M6502_IMMEDIATE_READ
 M6502_BCC
@@ -1145,17 +1176,6 @@ break;
 case 0xf0:
 M6502_IMMEDIATE_READ
 M6502_BEQ
-break;
-
-
-case 0x24:
-M6502_ZERO_READ
-M6502_BIT
-break;
-
-case 0x2C:
-M6502_ABSOLUTE_READ
-M6502_BIT
 break;
 
 
@@ -1177,11 +1197,6 @@ M6502_BPL
 break;
 
 
-case 0x00:
-M6502_BRK
-break;
-
-
 case 0x50:
 M6502_IMMEDIATE_READ
 M6502_BVC
@@ -1193,31 +1208,42 @@ M6502_IMMEDIATE_READ
 M6502_BVS
 break;
 
+//////////////////////////////////////////////////
+// BRK
+case 0x00:
+M6502_BRK
+break;
 
+//////////////////////////////////////////////////
+// CLC
 case 0x18:
 M6502_IMPLIED
 M6502_CLC
 break;
 
-
+//////////////////////////////////////////////////
+// CLD
 case 0xd8:
 M6502_IMPLIED
 M6502_CLD
 break;
 
-
+//////////////////////////////////////////////////
+// CLI
 case 0x58:
 M6502_IMPLIED
 M6502_CLI
 break;
 
-
+//////////////////////////////////////////////////
+// CLV
 case 0xb8:
 M6502_IMPLIED
 M6502_CLV
 break;
 
-
+//////////////////////////////////////////////////
+// CMP
 case 0xc9:
 M6502_IMMEDIATE_READ
 M6502_CMP
@@ -1258,7 +1284,8 @@ M6502_INDIRECTY_READ
 M6502_CMP
 break;
 
-
+//////////////////////////////////////////////////
+// CPX
 case 0xe0:
 M6502_IMMEDIATE_READ
 M6502_CPX
@@ -1274,7 +1301,8 @@ M6502_ABSOLUTE_READ
 M6502_CPX
 break;
 
-
+//////////////////////////////////////////////////
+// CPY
 case 0xc0:
 M6502_IMMEDIATE_READ
 M6502_CPY
@@ -1290,7 +1318,8 @@ M6502_ABSOLUTE_READ
 M6502_CPY
 break;
 
-
+//////////////////////////////////////////////////
+// DCP
 case 0xcf:
 M6502_ABSOLUTE_READMODIFYWRITE
 M6502_DCP
@@ -1326,7 +1355,8 @@ M6502_INDIRECTY_READMODIFYWRITE
 M6502_DCP
 break;
 
-
+//////////////////////////////////////////////////
+// DEC
 case 0xc6:
 M6502_ZERO_READMODIFYWRITE
 M6502_DEC
@@ -1347,19 +1377,22 @@ M6502_ABSOLUTEX_READMODIFYWRITE
 M6502_DEC
 break;
 
-
+//////////////////////////////////////////////////
+// DEX
 case 0xca:
 M6502_IMPLIED
 M6502_DEX
 break;
 
-
+//////////////////////////////////////////////////
+// DEY
 case 0x88:
 M6502_IMPLIED
 M6502_DEY
 break;
 
-
+//////////////////////////////////////////////////
+// EOR
 case 0x49:
 M6502_IMMEDIATE_READ
 M6502_EOR
@@ -1400,7 +1433,8 @@ M6502_INDIRECTY_READ
 M6502_EOR
 break;
 
-
+//////////////////////////////////////////////////
+// INC
 case 0xe6:
 M6502_ZERO_READMODIFYWRITE
 M6502_INC
@@ -1421,19 +1455,22 @@ M6502_ABSOLUTEX_READMODIFYWRITE
 M6502_INC
 break;
 
-
+//////////////////////////////////////////////////
+// INX
 case 0xe8:
 M6502_IMPLIED
 M6502_INX
 break;
 
-
+//////////////////////////////////////////////////
+// INY
 case 0xc8:
 M6502_IMPLIED
 M6502_INY
 break;
 
-
+//////////////////////////////////////////////////
+// ISB
 case 0xef:
 M6502_ABSOLUTE_READMODIFYWRITE
 M6502_ISB
@@ -1469,7 +1506,8 @@ M6502_INDIRECTY_READMODIFYWRITE
 M6502_ISB
 break;
 
-
+//////////////////////////////////////////////////
+// JMP
 case 0x4c:
 M6502_ABSOLUTE_WRITE
 M6502_JMP
@@ -1480,12 +1518,14 @@ M6502_INDIRECT
 M6502_JMP
 break;
 
-
+//////////////////////////////////////////////////
+// JSR
 case 0x20:
 M6502_JSR
 break;
 
-
+//////////////////////////////////////////////////
+// LAS
 case 0xbb:
 M6502_ABSOLUTEY_READ
 M6502_LAS
@@ -1657,7 +1697,8 @@ M6502_LDY
 break;
 //////////////////////////////////////////////////
 
-
+//////////////////////////////////////////////////
+// LSR
 case 0x4a:
 M6502_IMPLIED
 M6502_LSRA
@@ -1684,13 +1725,15 @@ M6502_ABSOLUTEX_READMODIFYWRITE
 M6502_LSR
 break;
 
-
+//////////////////////////////////////////////////
+// LXA
 case 0xab:
 M6502_IMMEDIATE_READ
 M6502_LXA
 break;
 
-
+//////////////////////////////////////////////////
+// NOP
 case 0x1a:
 case 0x3a:
 case 0x5a:
@@ -1795,35 +1838,40 @@ M6502_ORA
 break;
 //////////////////////////////////////////////////
 
-
+//////////////////////////////////////////////////
+// PHA
 case 0x48:
 M6502_IMPLIED
 // TODO - add tracking for this opcode
 M6502_PHA
 break;
 
-
+//////////////////////////////////////////////////
+// PHP
 case 0x08:
 M6502_IMPLIED
 // TODO - add tracking for this opcode
 M6502_PHP
 break;
 
-
+//////////////////////////////////////////////////
+// PLA
 case 0x68:
 M6502_IMPLIED
 // TODO - add tracking for this opcode
 M6502_PLA
 break;
 
-
+//////////////////////////////////////////////////
+// PLP
 case 0x28:
 M6502_IMPLIED
 // TODO - add tracking for this opcode
 M6502_PLP
 break;
 
-
+//////////////////////////////////////////////////
+// RLA
 case 0x2f:
 M6502_ABSOLUTE_READMODIFYWRITE
 M6502_RLA
@@ -1859,12 +1907,12 @@ M6502_INDIRECTY_READMODIFYWRITE
 M6502_RLA
 break;
 
-
+//////////////////////////////////////////////////
+// ROL
 case 0x2a:
 M6502_IMPLIED
 M6502_ROLA
 break;
-
 
 case 0x26:
 M6502_ZERO_READMODIFYWRITE
@@ -1886,7 +1934,8 @@ M6502_ABSOLUTEX_READMODIFYWRITE
 M6502_ROL
 break;
 
-
+//////////////////////////////////////////////////
+// ROR
 case 0x6a:
 M6502_IMPLIED
 M6502_RORA
@@ -1912,7 +1961,8 @@ M6502_ABSOLUTEX_READMODIFYWRITE
 M6502_ROR
 break;
 
-
+//////////////////////////////////////////////////
+// RRA
 case 0x6f:
 M6502_ABSOLUTE_READMODIFYWRITE
 M6502_RRA
@@ -1948,19 +1998,22 @@ M6502_INDIRECTY_READMODIFYWRITE
 M6502_RRA
 break;
 
-
+//////////////////////////////////////////////////
+// RTI
 case 0x40:
 M6502_IMPLIED
 M6502_RTI
 break;
 
-
+//////////////////////////////////////////////////
+// RTS
 case 0x60:
 M6502_IMPLIED
 M6502_RTS
 break;
 
-
+//////////////////////////////////////////////////
+// SAX
 case 0x8f:
 M6502_ABSOLUTE_WRITE
 M6502_SAX
@@ -1981,7 +2034,8 @@ M6502_INDIRECTX_WRITE
 M6502_SAX
 break;
 
-
+//////////////////////////////////////////////////
+// SBC
 case 0xe9:
 case 0xeb:
 M6502_IMMEDIATE_READ
@@ -2023,31 +2077,36 @@ M6502_INDIRECTY_READ
 M6502_SBC
 break;
 
-
+//////////////////////////////////////////////////
+// SBX
 case 0xcb:
 M6502_IMMEDIATE_READ
 M6502_SBX
 break;
 
-
+//////////////////////////////////////////////////
+// SEC
 case 0x38:
 M6502_IMPLIED
 M6502_SEC
 break;
 
-
+//////////////////////////////////////////////////
+// SED
 case 0xf8:
 M6502_IMPLIED
 M6502_SED
 break;
 
-
+//////////////////////////////////////////////////
+// SEI
 case 0x78:
 M6502_IMPLIED
 M6502_SEI
 break;
 
-
+//////////////////////////////////////////////////
+// SHA
 case 0x9f:
 M6502_ABSOLUTEY_WRITE
 M6502_SHA
@@ -2058,25 +2117,29 @@ M6502_INDIRECTY_WRITE
 M6502_SHA
 break;
 
-
+//////////////////////////////////////////////////
+// SHS
 case 0x9b:
 M6502_ABSOLUTEY_WRITE
 M6502_SHS
 break;
 
-
+//////////////////////////////////////////////////
+// SHX
 case 0x9e:
 M6502_ABSOLUTEY_WRITE
 M6502_SHX
 break;
 
-
+//////////////////////////////////////////////////
+// SHY
 case 0x9c:
 M6502_ABSOLUTEX_WRITE
 M6502_SHY
 break;
 
-
+//////////////////////////////////////////////////
+// SLO
 case 0x0f:
 M6502_ABSOLUTE_READMODIFYWRITE
 M6502_SLO
@@ -2112,7 +2175,8 @@ M6502_INDIRECTY_READMODIFYWRITE
 M6502_SLO
 break;
 
-
+//////////////////////////////////////////////////
+// SRE
 case 0x4f:
 M6502_ABSOLUTE_READMODIFYWRITE
 M6502_SRE

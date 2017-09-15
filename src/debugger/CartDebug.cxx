@@ -82,8 +82,9 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   myBankInfo.push_back(info);
 
   // We know the address for the startup bank right now
-  myBankInfo[myConsole.cartridge().startBank()].addressList.push_back(myDebugger.dpeek(0xfffc));
-  addLabel("START", myDebugger.dpeek(0xfffc));
+  myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(myDebugger.dpeek(0xfffc));
+  addLabel("Start", myDebugger.dpeek(0xfffc, DATA));
+  addLabel("Break", myDebugger.dpeek(0xfffe));
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -114,16 +115,17 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   myDisassembly.list.reserve(2048);
 
   // Add settings for Distella
-  DiStella::settings.gfx_format =
+  DiStella::settings.gfxFormat =
     myOSystem.settings().getInt("dis.gfxformat") == 16 ? Base::F_16 : Base::F_2;
-  DiStella::settings.resolve_code =
+  DiStella::settings.resolveCode =
     myOSystem.settings().getBool("dis.resolve");
-  DiStella::settings.show_addresses =
+  DiStella::settings.showAddresses =
     myOSystem.settings().getBool("dis.showaddr");
-  DiStella::settings.aflag = false; // Not currently configurable
-  DiStella::settings.fflag = true;  // Not currently configurable
-  DiStella::settings.rflag = myOSystem.settings().getBool("dis.relocate");
-  DiStella::settings.bwidth = 9;  // TODO - configure based on window size
+  DiStella::settings.aFlag = false; // Not currently configurable
+  DiStella::settings.fFlag = true;  // Not currently configurable
+  DiStella::settings.rFlag = myOSystem.settings().getBool("dis.relocate");
+  DiStella::settings.bFlag = true;  // Not currently configurable
+  DiStella::settings.bytesWidth = 8+1;  // TODO - configure based on window size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -263,34 +265,28 @@ bool CartDebug::disassemble(bool force)
 
     // Only add addresses when absolutely necessary, to cut down on the
     // work that Distella has to do
-    // Distella expects the addresses to be unique and in sorted order
     if(bankChanged || !pcfound)
     {
       AddressList::const_iterator i;
       for(i = addresses.cbegin(); i != addresses.cend(); ++i)
       {
-        if(PC < *i)
-        {
-          addresses.insert(i, PC);
-          break;
-        }
-        else if(PC == *i)  // already present
+        if (PC == *i)  // already present
           break;
       }
       // Otherwise, add the item at the end
-      if(i == addresses.end())
-        addresses.push_back(PC);
+      if (i == addresses.end())
+        addresses.push_back(PC); 
     }
 
     // Always attempt to resolve code sections unless it's been
     // specifically disabled
     bool found = fillDisassemblyList(info, PC);
-    if(!found && DiStella::settings.resolve_code)
+    if(!found && DiStella::settings.resolveCode)
     {
       // Temporarily turn off code resolution
-      DiStella::settings.resolve_code = false;
+      DiStella::settings.resolveCode = false;
       fillDisassemblyList(info, PC);
-      DiStella::settings.resolve_code = true;
+      DiStella::settings.resolveCode = true;
     }
   }
 
@@ -973,20 +969,21 @@ string CartDebug::saveDisassembly()
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first
   ostringstream buf;
-  buf << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n;\n"
-      << ";      MAIN PROGRAM\n"
-      << ";\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+  buf << "\n\n;***********************************************************\n"
+      << ";      Program Code + Data\n"
+      << ";***********************************************************\n\n";
 
   // Use specific settings for disassembly output
   // This will most likely differ from what you see in the debugger
   DiStella::Settings settings;
-  settings.gfx_format = DiStella::settings.gfx_format;
-  settings.resolve_code = true;
-  settings.show_addresses = false;
-  settings.aflag = false; // Otherwise DASM gets confused
-  settings.fflag = DiStella::settings.fflag;
-  settings.rflag = DiStella::settings.rflag;
-  settings.bwidth = 8+1;  // same as Stella debugger
+  settings.gfxFormat = DiStella::settings.gfxFormat;
+  settings.resolveCode = true;
+  settings.showAddresses = false;
+  settings.aFlag = false; // Otherwise DASM gets confused
+  settings.fFlag = DiStella::settings.fFlag;
+  settings.rFlag = DiStella::settings.rFlag;
+  settings.bytesWidth = 8+1;  // same as Stella debugger
+  settings.bFlag = DiStella::settings.bFlag;; // process break routine (TODO)
 
   Disassembly disasm;
   disasm.list.reserve(2048);
@@ -1001,6 +998,9 @@ string CartDebug::saveDisassembly()
     disasm.list.clear();
     DiStella distella(*this, disasm.list, info, settings,
                       myDisLabels, myDisDirectives, myReserved);
+    
+    //if (myReserved.breakFound)
+    //  addLabel("BREAK", myDebugger.dpeek(0xfffe));
 
     buf << "    SEG     CODE\n"
         << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
@@ -1031,7 +1031,7 @@ string CartDebug::saveDisassembly()
         }
         case CartDebug::GFX:
         {
-          buf << ".byte   " << (settings.gfx_format == Base::F_2 ? "%" : "$")
+          buf << ".byte   " << (settings.gfxFormat == Base::F_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
@@ -1040,7 +1040,7 @@ string CartDebug::saveDisassembly()
         }
         case CartDebug::PGFX:
         {
-          buf << ".byte   " << (settings.gfx_format == Base::F_2 ? "%" : "$")
+          buf << ".byte   " << (settings.gfxFormat == Base::F_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
@@ -1087,9 +1087,9 @@ string CartDebug::saveDisassembly()
     addrUsed = addrUsed || myReserved.IOReadWrite[addr];
   if(addrUsed)
   {
-    out << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-        << ";      TIA AND IO CONSTANTS\n"
-        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    out << "\n;-----------------------------------------------------------\n"
+        << ";      TIA and IO constants accessed\n"
+        << ";-----------------------------------------------------------\n\n";
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
       if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
         out << ALIGN(16) << ourTIAMnemonicR[addr] << "=  $"
@@ -1109,9 +1109,9 @@ string CartDebug::saveDisassembly()
     addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80];
   if(addrUsed)
   {
-    out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-        << ";      RIOT RAM (zero-page)\n"
-        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    out << "\n\n;-----------------------------------------------------------\n"
+        << ";      RIOT RAM (zero-page) labels\n"
+        << ";-----------------------------------------------------------\n\n";
     for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
     {
       if(myReserved.ZPRAM[addr-0x80] &&
@@ -1125,18 +1125,18 @@ string CartDebug::saveDisassembly()
 
   if(myReserved.Label.size() > 0)
   {
-    out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-        << ";      NON LOCATABLE\n"
-        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    out << "\n\n;-----------------------------------------------------------\n"
+        << ";      Non Locatable Labels\n"
+        << ";-----------------------------------------------------------\n\n";
     for(const auto& iter: myReserved.Label)
         out << ALIGN(16) << iter.second << "= $" << iter.first << "\n";
   }
 
   if(myUserLabels.size() > 0)
   {
-    out << "\n;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n"
-        << ";      USER DEFINED\n"
-        << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n";
+    out << "\n\n;-----------------------------------------------------------\n"
+        << ";      User Defined Labels\n"
+        << ";-----------------------------------------------------------\n\n";
     int max_len = 16;
     for(const auto& iter: myUserLabels)
       max_len = std::max(max_len, int(iter.second.size()));

@@ -206,8 +206,8 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /* These are now exposed so Expressions can use them. */
-    int peek(int addr) { return mySystem.peek(addr); }
-    int dpeek(int addr) { return mySystem.peek(addr) | (mySystem.peek(addr+1) << 8); }
+    int peek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags); }
+    int dpeek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8); }
     int getAccessFlags(uInt16 addr) const
       { return mySystem.getAccessFlags(addr); }
     void setAccessFlags(uInt16 addr, uInt8 flags)
