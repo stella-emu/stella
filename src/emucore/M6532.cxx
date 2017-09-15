@@ -150,10 +150,15 @@ void M6532::installDelegate(System& system, Device& device)
   // All accesses are to the given device
   System::PageAccess access(&device, System::PA_READWRITE);
 
-  // We're installing in a 2600 system
-  for(int address = 0; address < 8192; address += (1 << System::PAGE_SHIFT))
-    if((address & 0x1080) == 0x0080)
-      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+  // Map all peek/poke to mirrors of RIOT address space to this class
+  // That is, all mirrors of ZP RAM ($80 - $FF) and IO ($280 - $29F) in the
+  // lower 4K of the 2600 address space are mapped here
+  // The two types of addresses are differentiated in peek/poke as follows:
+  //    (addr & 0x0200) == 0x0000 is ZP RAM (A9 is 0)
+  //    (addr & 0x0200) != 0x0000 is IO     (A9 is 1)
+  for(uInt16 addr = 0; addr < 0x1000; addr += (1 << System::PAGE_SHIFT))
+    if((addr & 0x0080) == 0x0080)
+      mySystem->setPageAccess(addr >> System::PAGE_SHIFT, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,11 +166,10 @@ uInt8 M6532::peek(uInt16 addr)
 {
   updateEmulation();
 
-  // Access RAM directly.  Originally, accesses to RAM could bypass
-  // this method and its pages could be installed directly into the
-  // system.  However, certain cartridges (notably 4A50) can mirror
-  // the RAM address space, making it necessary to chain accesses.
-  if((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
+  // A9 distinguishes I/O registers from ZP RAM
+  // A9 = 1 is read from I/O
+  // A9 = 0 is read from RAM
+  if((addr & 0x0200) == 0x0000)
     return myRAM[addr & 0x007f];
 
   switch(addr & 0x07)
@@ -230,11 +234,10 @@ bool M6532::poke(uInt16 addr, uInt8 value)
 {
   updateEmulation();
 
-  // Access RAM directly.  Originally, accesses to RAM could bypass
-  // this method and its pages could be installed directly into the
-  // system.  However, certain cartridges (notably 4A50) can mirror
-  // the RAM address space, making it necessary to chain accesses.
-  if((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
+  // A9 distinguishes I/O registers from ZP RAM
+  // A9 = 1 is write to I/O
+  // A9 = 0 is write to RAM
+  if((addr & 0x0200) == 0x0000)
   {
     myRAM[addr & 0x007f] = value;
     return true;

@@ -177,10 +177,12 @@ void TIA::installDelegate(System& system, Device& device)
   // All accesses are to the given device
   System::PageAccess access(&device, System::PA_READWRITE);
 
-  // We're installing in a 2600 system
-  for(uInt32 i = 0; i < 8192; i += (1 << System::PAGE_SHIFT))
-    if((i & 0x1080) == 0x0000)
-      mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+  // Map all peek/poke to mirrors of TIA address space to this class
+  // That is, all mirrors of ($00 - $3F) in the lower 4K of the 2600
+  // address space are mapped here
+  for(uInt16 addr = 0; addr < 0x1000; addr += (1 << System::PAGE_SHIFT))
+    if((addr & 0x0080) == 0x0000)
+      mySystem->setPageAccess(addr >> System::PAGE_SHIFT, access);
 
   mySystem->m6502().setOnHaltCallback(
     [this] () {
