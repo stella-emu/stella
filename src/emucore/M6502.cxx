@@ -155,7 +155,7 @@ inline void M6502::poke(uInt16 address, uInt8 value)
   }
 #endif  // DEBUGGER_SUPPORT
 
-  mySystem->poke(address, value, CartDebug::DATA); // can't think of anything else but data
+  mySystem->poke(address, value, CartDebug::WRITE); // can't think of anything else but data
   myLastPokeAddress = address;
 }
 

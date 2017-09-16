@@ -68,7 +68,9 @@ class CartDebug : public DebuggerSystem
       GFX    = 1 << 5,  // 0x20, addresses loaded into GRPx registers
       PGFX   = 1 << 4,  // 0x10, addresses loaded into PFx registers
       DATA   = 1 << 3,  // 0x08, addresses loaded into registers other than GRPx / PFx
-      ROW    = 1 << 2   // 0x04, all other addresses
+      ROW    = 1 << 2,  // 0x04, all other addresses
+      // special type for poke()
+      WRITE  = TCODE    // 0x40, address written to
     };
     struct DisassemblyTag {
       DisasmType type;

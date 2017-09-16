@@ -23,6 +23,10 @@
 #include "Settings.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
+#ifdef DEBUGGER_SUPPORT
+  //#include "Debugger.hxx"
+  #include "CartDebug.hxx"
+#endif
 
 #include "M6532.hxx"
 
@@ -37,6 +41,7 @@ M6532::M6532(const Console& console, const Settings& settings)
     myInterruptFlag(false),
     myEdgeDetectPositive(false)
 {
+  createCodeAccessBase(0x80);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,9 +161,11 @@ void M6532::installDelegate(System& system, Device& device)
   // The two types of addresses are differentiated in peek/poke as follows:
   //    (addr & 0x0200) == 0x0000 is ZP RAM (A9 is 0)
   //    (addr & 0x0200) != 0x0000 is IO     (A9 is 1)
-  for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
-    if((addr & 0x0080) == 0x0080)
+  for (uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
+    if ((addr & 0x0080) == 0x0080) {
+      access.codeAccessBase = &myCodeAccessBase[addr & 0x7f];
       mySystem->setPageAccess(addr, access);
+    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -444,4 +451,15 @@ Int32 M6532::intimClocks()
 uInt32 M6532::timerClocks() const
 {
   return uInt32(mySystem->cycles() - mySetTimerCycle);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::createCodeAccessBase(uInt32 size)
+{
+#ifdef DEBUGGER_SUPPORT
+  myCodeAccessBase = make_unique<uInt8[]>(size);
+  memset(myCodeAccessBase.get(), CartDebug::NONE, size);
+#else
+  myCodeAccessBase = nullptr;
+#endif
 }

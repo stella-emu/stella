@@ -527,7 +527,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         // A complete line of disassembly (text, cycle count, and bytes)
         myDisasmBuf << nextLine.str() << "'"
           << ";" << std::dec << int(ourLookup[opcode].cycles)
-          << (addrMode == RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/4!" : "/3 " : "   ");
+          << (addrMode == RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 " : "   ");
         if ((opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00 // code block end
             || checkBit(myPC, CartDebug::REFERENCED)                              // referenced address
             || ourLookup[opcode].rw_mode == WRITE && d1 == WSYNC)                 // strobe WSYNC

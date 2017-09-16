@@ -970,8 +970,10 @@ string CartDebug::saveDisassembly()
   // been processed; therefore buffer output to a string first
   ostringstream buf;
   buf << "\n\n;***********************************************************\n"
-      << ";      Program Code + Data\n"
-      << ";***********************************************************\n\n";
+      << ";      Bank " << myConsole.cartridge().getBank();
+  if (myConsole.cartridge().bankCount() > 0)
+    buf << " / (0.." << myConsole.cartridge().bankCount() - 1 << ")";
+  buf << "\n;***********************************************************\n\n";
 
   // Use specific settings for disassembly output
   // This will most likely differ from what you see in the debugger
@@ -1072,11 +1074,12 @@ string CartDebug::saveDisassembly()
       << "; ROM properties MD5  : " << myConsole.properties().get(Cartridge_MD5) << "\n"
       << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
       << "; Legend: * = CODE not yet run (tentative code)\n"
-      << ";         ! = taken branch crosses page\n"
       << ";         D = DATA directive (referenced in some way)\n"
       << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
-      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n\n"
-      << "    processor 6502\n\n";
+      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n"
+      << ";         i = indexed accessed only\n"
+      << ";         ! = page crossed, 1 cycle penalty\n"
+      << "\n    processor 6502\n\n";
 
   bool addrUsed = false;
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -1123,28 +1126,15 @@ string CartDebug::saveDisassembly()
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
           << Base::HEX2 << right << (addr) << "\n";
         addLine = false;
-      }/* else if (Debugger::debugger().getAccessFlags(addr) & DATA) {
+      } else if (mySystem.getAccessFlags(addr) & DATA) {
         if (addLine)
           out << "\n";
-        out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "=  $"
-          << Base::HEX2 << right << (addr) << "; (*)\n";
+        out << ALIGN(18) << ";" << "$"
+          << Base::HEX2 << right << (addr) << " (i)\n";
         addLine = false;
-      }*/ else
+      } else
         addLine = true;
     }
-    for (uInt16 addr = 0x1000; addr <= 0x10FF; ++addr)
-      out << Debugger::debugger().getAccessFlags(addr) << "\n";
-/*
-      ;                 $93
-      ;                 $94
-      ;                 §94(*)
-      ;                 $96
-      ;                 §97(*)
-      ;                 $98
-      ;                 $99
-      ;                 $9a
-      ;                 $9b(*)
-*/
   }
 
   if(myReserved.Label.size() > 0)
