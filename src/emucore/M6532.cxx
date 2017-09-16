@@ -24,6 +24,7 @@
 #include "Switches.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
+  //#include "Debugger.hxx"
   #include "CartDebug.hxx"
 #endif
 
@@ -38,13 +39,9 @@ M6532::M6532(const Console& console, const Settings& settings)
     mySetTimerCycle(0), myLastCycle(0),
     myDDRA(0), myDDRB(0), myOutA(0), myOutB(0),
     myInterruptFlag(false),
-    myEdgeDetectPositive(false)
-{
-#ifdef DEBUGGER_SUPPORT
-  constexpr uInt32 size = 0x80 + 0x1F; // first 0x80 bytes are for ZP, rest is for IO
-  myAccessBase = make_unique<uInt8[]>(size);
-  memset(myAccessBase.get(), CartDebug::NONE, size);
-#endif
+    myEdgeDetectPositive(false),
+    myRAMAccessBase(nullptr)
+{  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,7 +54,7 @@ void M6532::reset()
   else
     memset(myRAM, 0, 128);
 
-  myTimer = mySystem->randGenerator().next() & 0xFF;
+  myTimer = mySystem->randGenerator().next() & 0xff;
   myDivider = 1024;
   mySubTimer = 0;
   myTimerWrapped = false;
@@ -80,6 +77,8 @@ void M6532::reset()
   // Let the controllers know about the reset
   myConsole.leftController().reset();
   myConsole.rightController().reset();
+
+  createAccessBases();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,21 +161,14 @@ void M6532::installDelegate(System& system, Device& device)
   // That is, all mirrors of ZP RAM ($80 - $FF) and IO ($280 - $29F) in the
   // lower 4K of the 2600 address space are mapped here
   // The two types of addresses are differentiated in peek/poke as follows:
-  //    (addr & 0x0200) == 0x0000 is ZP RAM (A9 is 0)
-  //    (addr & 0x0200) != 0x0000 is IO     (A9 is 1)
-  for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
-  {
-    if((addr & 0x0080) == 0x0080)   // RIOT addresses
-    {
-    #ifdef DEBUGGER_SUPPORT
-      if((addr & 0x0200) == 0x0000) // ZP RAM addresses
-        access.codeAccessBase = &myAccessBase[addr & 0x7F];
-      else                          // IO addresses
-        access.codeAccessBase = &myAccessBase[0x80 + (addr & 0x1F)];
-    #endif
+  //    (addr & 0x0200) == 0x0200 is IO     (A9 is 1)
+  //    (addr & 0x0300) == 0x0100 is Stack  (A8 is 1, A9 is 0)
+  //    (addr & 0x0300) == 0x0000 is ZP RAM (A8 is 0, A9 is 0)
+  for (uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
+    if ((addr & 0x0080) == 0x0080) {
+      //access.codeAccessBase = &myRAMAccessBase[addr & 0x7f];
       mySystem->setPageAccess(addr, access);
     }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,7 +180,7 @@ uInt8 M6532::peek(uInt16 addr)
   // A9 = 1 is read from I/O
   // A9 = 0 is read from RAM
   if((addr & 0x0200) == 0x0000)
-    return myRAM[addr & 0x7F];
+    return myRAM[addr & 0x007f];
 
   switch(addr & 0x07)
   {
@@ -257,18 +249,18 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   // A9 = 0 is write to RAM
   if((addr & 0x0200) == 0x0000)
   {
-    myRAM[addr & 0x7F] = value;
+    myRAM[addr & 0x007f] = value;
     return true;
   }
 
   // A2 distinguishes I/O registers from the timer
   // A2 = 1 is write to timer
   // A2 = 0 is write to I/O
-  if(addr & 0x04)
+  if((addr & 0x04) != 0)
   {
     // A4 = 1 is write to TIMxT (x = 1, 8, 64, 1024)
     // A4 = 0 is write to edge detect control
-    if(addr & 0x10)
+    if((addr & 0x10) != 0)
       setTimerRegister(value, addr & 0x03);  // A1A0 determines interval
     else
       myEdgeDetectPositive = addr & 0x01;    // A0 determines direction
@@ -462,4 +454,53 @@ Int32 M6532::intimClocks()
 uInt32 M6532::timerClocks() const
 {
   return uInt32(mySystem->cycles() - mySetTimerCycle);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::createAccessBases()
+{
+#ifdef DEBUGGER_SUPPORT
+  myRAMAccessBase = make_unique<uInt8[]>(RAM_SIZE);
+  memset(myRAMAccessBase.get(), CartDebug::NONE, RAM_SIZE);
+  myStackAccessBase = make_unique<uInt8[]>(STACK_SIZE);
+  memset(myStackAccessBase.get(), CartDebug::NONE, STACK_SIZE);
+  myIOAccessBase = make_unique<uInt8[]>(IO_SIZE);
+  memset(myIOAccessBase.get(), CartDebug::NONE, IO_SIZE);
+#else
+  myRAMAccessBase = myStackAccessBase = myIOAccessBase = nullptr;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 M6532::getAccessFlags(uInt16 address) const
+{
+  if (address & IO_BIT)
+    return myIOAccessBase[address & IO_MASK];
+  else if (address & STACK_BIT) 
+    return myStackAccessBase[address & STACK_MASK];
+  else
+    return myRAMAccessBase[address & RAM_MASK];
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::setAccessFlags(uInt16 address, uInt8 flags) 
+{
+  // ignore none flag
+  if (flags != CartDebug::NONE) {
+    if (address & IO_BIT)
+      myIOAccessBase[address & IO_MASK] |= flags;
+    else if (address & STACK_BIT)
+      // the first access is assumed as initialization
+      if (!(myStackAccessBase[address & STACK_MASK] & CartDebug::ROW))
+        myStackAccessBase[address & STACK_MASK] |= CartDebug::ROW;
+      else
+        myStackAccessBase[address & STACK_MASK] |= flags;
+    else
+      // the first access is assumed as initialization
+      if (!(myRAMAccessBase[address & RAM_MASK] & CartDebug::ROW))
+        myRAMAccessBase[address & RAM_MASK] |= CartDebug::ROW;
+      else
+        myRAMAccessBase[address & RAM_MASK] |= flags;
+  }
 }

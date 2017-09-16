@@ -736,14 +736,14 @@ define(M6502_PHP, `{
 
 define(M6502_PLA, `{
   peek(0x0100 + SP++, DISASM_NONE);
-  A = peek(0x0100 + SP, DISASM_NONE);
+  A = peek(0x0100 + SP, DISASM_DATA);
   notZ = A;
   N = A & 0x80;
 }')
 
 define(M6502_PLP, `{
   peek(0x0100 + SP++, DISASM_NONE);
-  PS(peek(0x0100 + SP, DISASM_NONE));
+  PS(peek(0x0100 + SP, DISASM_DATA));
 }')
 
 define(M6502_RLA, `{

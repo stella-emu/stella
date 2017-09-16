@@ -1111,26 +1111,34 @@ string CartDebug::saveDisassembly()
 
   addrUsed = false;
   for(uInt16 addr = 0x80; addr <= 0xFF; ++addr) 
-    addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80];
+    addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80] 
+      || (mySystem.getAccessFlags(addr) & (DATA | WRITE)) 
+      || (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
   if(addrUsed)
   {
     bool addLine = false;
     out << "\n\n;-----------------------------------------------------------\n"
         << ";      RIOT RAM (zero-page) labels\n"
         << ";-----------------------------------------------------------\n\n";
+    
     for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
+      bool ramUsed = (mySystem.getAccessFlags(addr) & (DATA | WRITE));
+      bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
+      
       if (myReserved.ZPRAM[addr - 0x80] &&
           myUserLabels.find(addr) == myUserLabels.end()) {
         if (addLine)
           out << "\n";
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
-          << Base::HEX2 << right << (addr) << "\n";
+          << Base::HEX2 << right << (addr)
+          << (stackUsed ? " ; (s)" : "") << "\n";
         addLine = false;
-      } else if (mySystem.getAccessFlags(addr) & DATA) {
+      } else if (ramUsed|stackUsed) {
         if (addLine)
           out << "\n";
         out << ALIGN(18) << ";" << "$"
-          << Base::HEX2 << right << (addr) << " (i)\n";
+          << Base::HEX2 << right << (addr) 
+          << "   (" << (ramUsed ? "i" : "") << (stackUsed ? "s" : "") << ")\n";
         addLine = false;
       } else
         addLine = true;

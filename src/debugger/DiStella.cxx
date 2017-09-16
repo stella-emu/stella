@@ -598,6 +598,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
                     CartDebug::CODE)) {
                 //if (Debugger::debugger().getAccessFlags(k) &
                 //    (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
+                // TODO: this should never happen, remove when we are sure
                   Uint8 flags = Debugger::debugger().getAccessFlags(k);
                   myPCEnd = k - 1;
                   break;
