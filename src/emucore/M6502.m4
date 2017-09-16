@@ -76,7 +76,7 @@ define(M6502_ABSOLUTE_READMODIFYWRITE, `{
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_ABSOLUTEX_READ, `{
@@ -108,7 +108,7 @@ define(M6502_ABSOLUTEX_READMODIFYWRITE, `{
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_ABSOLUTEY_READ, `{
@@ -140,7 +140,7 @@ define(M6502_ABSOLUTEY_READMODIFYWRITE, `{
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_ZERO_READ, `{
@@ -155,7 +155,7 @@ define(M6502_ZERO_WRITE, `{
 define(M6502_ZERO_READMODIFYWRITE, `{
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_ZEROX_READ, `{
@@ -176,7 +176,7 @@ define(M6502_ZEROX_READMODIFYWRITE, `{
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_ZEROY_READ, `{
@@ -197,7 +197,7 @@ define(M6502_ZEROY_READMODIFYWRITE, `{
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + Y) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_INDIRECT, `{
@@ -235,7 +235,7 @@ define(M6502_INDIRECTX_READMODIFYWRITE, `{
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_INDIRECTY_READ, `{
@@ -270,7 +270,7 @@ define(M6502_INDIRECTY_READMODIFYWRITE, `{
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }')
 
 define(M6502_BCC, `{
@@ -460,7 +460,7 @@ define(M6502_ASL, `{
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -499,9 +499,9 @@ define(M6502_BRK, `{
 
   B = true;
 
-  poke(0x0100 + SP--, PC >> 8);
-  poke(0x0100 + SP--, PC & 0x00ff);
-  poke(0x0100 + SP--, PS());
+  poke(0x0100 + SP--, PC >> 8, DISASM_WRITE);
+  poke(0x0100 + SP--, PC & 0x00ff, DISASM_WRITE);
+  poke(0x0100 + SP--, PS(), DISASM_WRITE);
 
   I = true;
 
@@ -551,7 +551,7 @@ define(M6502_CPY, `{
 
 define(M6502_DCP, `{
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -561,7 +561,7 @@ define(M6502_DCP, `{
 
 define(M6502_DEC, `{
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -590,7 +590,7 @@ define(M6502_EOR, `{
 
 define(M6502_INC, `{
   uInt8 value = operand + 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -610,7 +610,7 @@ define(M6502_INY, `{
 
 define(M6502_ISB, `{
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -650,8 +650,8 @@ define(M6502_JSR, `{
   // It seems that the 650x does not push the address of the next instruction
   // on the stack it actually pushes the address of the next instruction
   // minus one.  This is compensated for in the RTS instruction
-  poke(0x0100 + SP--, PC >> 8);
-  poke(0x0100 + SP--, PC & 0xff);
+  poke(0x0100 + SP--, PC >> 8, DISASM_WRITE);
+  poke(0x0100 + SP--, PC & 0xff, DISASM_WRITE);
 
   PC = (low | (uInt16(peek(PC, DISASM_CODE)) << 8));
 }')
@@ -692,7 +692,7 @@ define(M6502_LSR, `{
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -727,11 +727,11 @@ define(M6502_ORA, `{
 }')
 
 define(M6502_PHA, `{
-  poke(0x0100 + SP--, A);
+  poke(0x0100 + SP--, A, DISASM_WRITE);
 }')
 
 define(M6502_PHP, `{
-  poke(0x0100 + SP--, PS());
+  poke(0x0100 + SP--, PS(), DISASM_WRITE);
 }')
 
 define(M6502_PLA, `{
@@ -748,7 +748,7 @@ define(M6502_PLP, `{
 
 define(M6502_RLA, `{
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -763,7 +763,7 @@ define(M6502_ROL, `{
   C = operand & 0x80;
 
   operand = (operand << 1) | (oldC ? 1 : 0);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -788,7 +788,7 @@ define(M6502_ROR, `{
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -813,7 +813,7 @@ define(M6502_RRA, `{
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -860,7 +860,7 @@ define(M6502_RTS, `{
 }')
 
 define(M6502_SAX, `{
-  poke(operandAddress, A & X);
+  poke(operandAddress, A & X, DISASM_WRITE);
 }')
 
 define(M6502_SBC, `{
@@ -915,26 +915,26 @@ define(M6502_SEI, `{
 define(M6502_SHA, `{
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
-  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }')
 
 define(M6502_SHS, `{
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
   SP = A & X;
-  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }')
 
 define(M6502_SHX, `{
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
-  poke(operandAddress, X & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, X & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }')
 
 define(M6502_SHY, `{
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
-  poke(operandAddress, Y & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, Y & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }')
 
 define(M6502_SLO, `{
@@ -942,7 +942,7 @@ define(M6502_SLO, `{
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -954,7 +954,7 @@ define(M6502_SRE, `{
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -962,15 +962,15 @@ define(M6502_SRE, `{
 }')
 
 define(M6502_STA, `{
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }')
 
 define(M6502_STX, `{
-  poke(operandAddress, X);
+  poke(operandAddress, X, DISASM_WRITE);
 }')
 
 define(M6502_STY, `{
-  poke(operandAddress, Y);
+  poke(operandAddress, Y, DISASM_WRITE);
 }')
 
 define(M6502_TAX, `{

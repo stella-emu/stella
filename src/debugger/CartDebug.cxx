@@ -84,8 +84,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(myDebugger.dpeek(0xfffc));
   addLabel("Start", myDebugger.dpeek(0xfffc, DATA));
-  addLabel("Break", myDebugger.dpeek(0xfffe));
-
+  
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
   {
@@ -1001,8 +1000,8 @@ string CartDebug::saveDisassembly()
     DiStella distella(*this, disasm.list, info, settings,
                       myDisLabels, myDisDirectives, myReserved);
     
-    //if (myReserved.breakFound)
-    //  addLabel("BREAK", myDebugger.dpeek(0xfffe));
+    if (myReserved.breakFound)
+      addLabel("Break", myDebugger.dpeek(0xfffe));
 
     buf << "    SEG     CODE\n"
         << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
@@ -1078,6 +1077,8 @@ string CartDebug::saveDisassembly()
       << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
       << ";         P = PGFX directive, shown as '*' (stored in playfield)\n"
       << ";         i = indexed accessed only\n"
+      << ";         c = used by code executed in RAM\n"
+      << ";         s = used by stack\n"
       << ";         ! = page crossed, 1 cycle penalty\n"
       << "\n    processor 6502\n\n";
 
@@ -1123,7 +1124,9 @@ string CartDebug::saveDisassembly()
     
     for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
       bool ramUsed = (mySystem.getAccessFlags(addr) & (DATA | WRITE));
+      bool codeUsed = (mySystem.getAccessFlags(addr) & CODE);
       bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
+      ramUsed = true;
       
       if (myReserved.ZPRAM[addr - 0x80] &&
           myUserLabels.find(addr) == myUserLabels.end()) {
@@ -1131,14 +1134,22 @@ string CartDebug::saveDisassembly()
           out << "\n";
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
           << Base::HEX2 << right << (addr)
-          << (stackUsed ? " ; (s)" : "") << "\n";
+          << (stackUsed|codeUsed ? "; (" : "")
+          << (codeUsed ? "c" : "")
+          << (stackUsed ? "s" : "")           
+          << (stackUsed | codeUsed ? ")" : "")
+          << "\n";
         addLine = false;
-      } else if (ramUsed|stackUsed) {
+      } else if (ramUsed|codeUsed|stackUsed) {
         if (addLine)
           out << "\n";
         out << ALIGN(18) << ";" << "$"
           << Base::HEX2 << right << (addr) 
-          << "   (" << (ramUsed ? "i" : "") << (stackUsed ? "s" : "") << ")\n";
+          << "  (" 
+          << (ramUsed ? "i" : "") 
+          << (codeUsed ? "c" : "") 
+          << (stackUsed ? "s" : "") 
+          << ")\n";
         addLine = false;
       } else
         addLine = true;

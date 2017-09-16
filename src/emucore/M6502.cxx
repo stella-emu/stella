@@ -27,6 +27,7 @@
   #define DISASM_PGFX  CartDebug::PGFX
   #define DISASM_DATA  CartDebug::DATA
   #define DISASM_ROW   CartDebug::ROW
+  #define DISASM_WRITE CartDebug::WRITE
   #define DISASM_NONE  0
 #else
   // Flags for disassembly types
@@ -36,6 +37,7 @@
   #define DISASM_DATA  0
   #define DISASM_ROW   0
   #define DISASM_NONE  0
+  #define DISASM_WRITE 0 
 #endif
 #include "Settings.hxx"
 #include "Vec.hxx"
@@ -134,7 +136,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void M6502::poke(uInt16 address, uInt8 value)
+inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
 {
   ////////////////////////////////////////////////
   // TODO - move this logic directly into CartAR
@@ -155,7 +157,7 @@ inline void M6502::poke(uInt16 address, uInt8 value)
   }
 #endif  // DEBUGGER_SUPPORT
 
-  mySystem->poke(address, value, CartDebug::WRITE); // can't think of anything else but data
+  mySystem->poke(address, value, flags); 
   myLastPokeAddress = address;
 }
 

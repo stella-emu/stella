@@ -238,7 +238,7 @@ class M6502 : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value);
+    void poke(uInt16 address, uInt8 value, uInt8 flags = 0);
 
     /**
       Get the 8-bit value of the Processor Status register.

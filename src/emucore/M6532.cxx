@@ -490,17 +490,21 @@ void M6532::setAccessFlags(uInt16 address, uInt8 flags)
   if (flags != CartDebug::NONE) {
     if (address & IO_BIT)
       myIOAccessBase[address & IO_MASK] |= flags;
-    else if (address & STACK_BIT)
-      // the first access is assumed as initialization
-      if (!(myStackAccessBase[address & STACK_MASK] & CartDebug::ROW))
-        myStackAccessBase[address & STACK_MASK] |= CartDebug::ROW;
+    else {
+      // the first access, either by direct RAM or stack access is assumed as initialization
+      bool initialized = (myStackAccessBase[address & STACK_MASK] & CartDebug::ROW) != 0
+        || (myRAMAccessBase[address & RAM_MASK] & CartDebug::ROW) != 0;
+
+      if (address & STACK_BIT)
+        if (!initialized)
+          myStackAccessBase[address & STACK_MASK] |= CartDebug::ROW;
+        else
+          myStackAccessBase[address & STACK_MASK] |= flags;
       else
-        myStackAccessBase[address & STACK_MASK] |= flags;
-    else
-      // the first access is assumed as initialization
-      if (!(myRAMAccessBase[address & RAM_MASK] & CartDebug::ROW))
-        myRAMAccessBase[address & RAM_MASK] |= CartDebug::ROW;
-      else
-        myRAMAccessBase[address & RAM_MASK] |= flags;
+        if (!initialized)
+          myRAMAccessBase[address & RAM_MASK] |= CartDebug::ROW;
+        else
+          myRAMAccessBase[address & RAM_MASK] |= flags;
+    }
   }
 }

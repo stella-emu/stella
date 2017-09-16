@@ -63,6 +63,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   // Process any directives first, as they override automatic code determination
   processDirectives(info.directiveList);
 
+  myReserved.breakFound = false;
+
   if (resolve_code) 
     // First pass
     disasmPass1(info.addressList);
@@ -179,26 +181,32 @@ void DiStella::disasm(uInt32 distart, int pass)
         }
       }      
       if (labelFound) {
-        // the opcode's operand address matches a label address
-        if (pass == 3) {
-          // output the byte of the opcode incl. cycles
-          Uint8 nextOpcode = Debugger::debugger().peek(myPC + myOffset);
+        if (myOffset >= 0x1000) {
+          // the opcode's operand address matches a label address
+          if (pass == 3) {
+            // output the byte of the opcode incl. cycles
+            Uint8 nextOpcode = Debugger::debugger().peek(myPC + myOffset);
 
-          cycles += int(ourLookup[opcode].cycles) - int(ourLookup[nextOpcode].cycles);
-          nextLine << ".byte   $" << Base::HEX2 << int(opcode) << " ;";
-          nextLine << ourLookup[opcode].mnemonic;
+            cycles += int(ourLookup[opcode].cycles) - int(ourLookup[nextOpcode].cycles);
+            nextLine << ".byte   $" << Base::HEX2 << int(opcode) << " ;";
+            nextLine << ourLookup[opcode].mnemonic;
 
-          myDisasmBuf << nextLine.str() << "'" << ";"
-            << std::dec << int(ourLookup[opcode].cycles) << "-"
-            << std::dec << int(ourLookup[nextOpcode].cycles) << " "
-            << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
+            myDisasmBuf << nextLine.str() << "'" << ";"
+              << std::dec << int(ourLookup[opcode].cycles) << "-"
+              << std::dec << int(ourLookup[nextOpcode].cycles) << " "
+              << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
 
-          nextLine.str("");
-          cycles = 0;
-          addEntry(CartDebug::CODE); // add the new found CODE entry
+            nextLine.str("");
+            cycles = 0;
+            addEntry(CartDebug::CODE); // add the new found CODE entry
+          }
+          // continue with the label's opcode
+          continue;
+        } else {
+          if (pass == 3) {
+            // TODO
+          }
         }
-        // continue with the label's opcode
-        continue;
       }
 
       // Undefined opcodes start with a '.'
@@ -792,9 +800,10 @@ void DiStella::disasmFromAddress(uInt32 distart)
     // mark BRK vector
     if (opcode == 0x00) {
       ad = Debugger::debugger().dpeek(0xfffe, CartDebug::DATA);
-      if (!checkBit(ad - myOffset, CartDebug::CODE, false)) {
+      if (!myReserved.breakFound) {
         myAddressQueue.push(ad);
         mark(ad, CartDebug::CODE);        
+        myReserved.breakFound = true;
       }
     }
 

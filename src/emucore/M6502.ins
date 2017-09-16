@@ -861,14 +861,14 @@ case 0x06:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -881,14 +881,14 @@ case 0x16:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -900,14 +900,14 @@ case 0x0e:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -921,14 +921,14 @@ case 0x1e:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -1107,9 +1107,9 @@ case 0x00:
 
   B = true;
 
-  poke(0x0100 + SP--, PC >> 8);
-  poke(0x0100 + SP--, PC & 0x00ff);
-  poke(0x0100 + SP--, PS());
+  poke(0x0100 + SP--, PC >> 8, DISASM_WRITE);
+  poke(0x0100 + SP--, PC & 0x00ff, DISASM_WRITE);
+  poke(0x0100 + SP--, PS(), DISASM_WRITE);
 
   I = true;
 
@@ -1411,11 +1411,11 @@ case 0xcf:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -1431,11 +1431,11 @@ case 0xdf:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -1451,11 +1451,11 @@ case 0xdb:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -1468,11 +1468,11 @@ case 0xc7:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -1487,11 +1487,11 @@ case 0xd7:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -1508,11 +1508,11 @@ case 0xc3:
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -1529,11 +1529,11 @@ case 0xd3:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   uInt16 value2 = uInt16(A) - uInt16(value);
   notZ = value2;
@@ -1548,11 +1548,11 @@ case 0xc6:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1565,11 +1565,11 @@ case 0xd6:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1581,11 +1581,11 @@ case 0xce:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1599,11 +1599,11 @@ case 0xde:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand - 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1782,11 +1782,11 @@ case 0xe6:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand + 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1799,11 +1799,11 @@ case 0xf6:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand + 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1815,11 +1815,11 @@ case 0xee:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand + 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1833,11 +1833,11 @@ case 0xfe:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = operand + 1;
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   notZ = value;
   N = value & 0x80;
@@ -1877,11 +1877,11 @@ case 0xef:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -1918,11 +1918,11 @@ case 0xff:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -1959,11 +1959,11 @@ case 0xfb:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -1997,11 +1997,11 @@ case 0xe7:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -2037,11 +2037,11 @@ case 0xf7:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -2079,11 +2079,11 @@ case 0xe3:
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -2121,11 +2121,11 @@ case 0xf3:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   operand = operand + 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
   Int32 sum = A - operand - (C ? 0 : 1);
@@ -2193,8 +2193,8 @@ case 0x20:
   // It seems that the 650x does not push the address of the next instruction
   // on the stack it actually pushes the address of the next instruction
   // minus one.  This is compensated for in the RTS instruction
-  poke(0x0100 + SP--, PC >> 8);
-  poke(0x0100 + SP--, PC & 0xff);
+  poke(0x0100 + SP--, PC >> 8, DISASM_WRITE);
+  poke(0x0100 + SP--, PC & 0xff, DISASM_WRITE);
 
   PC = (low | (uInt16(peek(PC, DISASM_CODE)) << 8));
 }
@@ -2683,14 +2683,14 @@ case 0x46:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -2703,14 +2703,14 @@ case 0x56:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -2722,14 +2722,14 @@ case 0x4e:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -2743,14 +2743,14 @@ case 0x5e:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3019,7 +3019,7 @@ case 0x48:
 }
 // TODO - add tracking for this opcode
 {
-  poke(0x0100 + SP--, A);
+  poke(0x0100 + SP--, A, DISASM_WRITE);
 }
 break;
 
@@ -3031,7 +3031,7 @@ case 0x08:
 }
 // TODO - add tracking for this opcode
 {
-  poke(0x0100 + SP--, PS());
+  poke(0x0100 + SP--, PS(), DISASM_WRITE);
 }
 break;
 
@@ -3070,11 +3070,11 @@ case 0x2f:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -3090,11 +3090,11 @@ case 0x3f:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -3110,11 +3110,11 @@ case 0x3b:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -3127,11 +3127,11 @@ case 0x27:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -3146,11 +3146,11 @@ case 0x37:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -3167,11 +3167,11 @@ case 0x23:
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -3188,11 +3188,11 @@ case 0x33:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   uInt8 value = (operand << 1) | (C ? 1 : 0);
-  poke(operandAddress, value);
+  poke(operandAddress, value, DISASM_WRITE);
 
   A &= value;
   C = operand & 0x80;
@@ -3224,7 +3224,7 @@ case 0x26:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3233,7 +3233,7 @@ case 0x26:
   C = operand & 0x80;
 
   operand = (operand << 1) | (oldC ? 1 : 0);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3246,7 +3246,7 @@ case 0x36:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3255,7 +3255,7 @@ case 0x36:
   C = operand & 0x80;
 
   operand = (operand << 1) | (oldC ? 1 : 0);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3267,7 +3267,7 @@ case 0x2e:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3276,7 +3276,7 @@ case 0x2e:
   C = operand & 0x80;
 
   operand = (operand << 1) | (oldC ? 1 : 0);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3290,7 +3290,7 @@ case 0x3e:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3299,7 +3299,7 @@ case 0x3e:
   C = operand & 0x80;
 
   operand = (operand << 1) | (oldC ? 1 : 0);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3329,7 +3329,7 @@ case 0x66:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3338,7 +3338,7 @@ case 0x66:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3351,7 +3351,7 @@ case 0x76:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3360,7 +3360,7 @@ case 0x76:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3372,7 +3372,7 @@ case 0x6e:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3381,7 +3381,7 @@ case 0x6e:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3395,7 +3395,7 @@ case 0x7e:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3404,7 +3404,7 @@ case 0x7e:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
   N = operand & 0x80;
@@ -3418,7 +3418,7 @@ case 0x6f:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3427,7 +3427,7 @@ case 0x6f:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -3467,7 +3467,7 @@ case 0x7f:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3476,7 +3476,7 @@ case 0x7f:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -3516,7 +3516,7 @@ case 0x7b:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3525,7 +3525,7 @@ case 0x7b:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -3562,7 +3562,7 @@ case 0x67:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3571,7 +3571,7 @@ case 0x67:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -3610,7 +3610,7 @@ case 0x77:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3619,7 +3619,7 @@ case 0x77:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -3660,7 +3660,7 @@ case 0x63:
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3669,7 +3669,7 @@ case 0x63:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -3710,7 +3710,7 @@ case 0x73:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   bool oldC = C;
@@ -3719,7 +3719,7 @@ case 0x73:
   C = operand & 0x01;
 
   operand = ((operand >> 1) & 0x7f) | (oldC ? 0x80 : 0x00);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   if(!D)
   {
@@ -3788,7 +3788,7 @@ case 0x8f:
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
 }
 {
-  poke(operandAddress, A & X);
+  poke(operandAddress, A & X, DISASM_WRITE);
 }
 break;
 
@@ -3797,7 +3797,7 @@ case 0x87:
   operandAddress = peek(PC++, DISASM_CODE);
 }
 {
-  poke(operandAddress, A & X);
+  poke(operandAddress, A & X, DISASM_WRITE);
 }
 break;
 
@@ -3808,7 +3808,7 @@ case 0x97:
   operandAddress = (operandAddress + Y) & 0xFF;
 }
 {
-  poke(operandAddress, A & X);
+  poke(operandAddress, A & X, DISASM_WRITE);
 }
 break;
 
@@ -3821,7 +3821,7 @@ case 0x83:
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
 }
 {
-  poke(operandAddress, A & X);
+  poke(operandAddress, A & X, DISASM_WRITE);
 }
 break;
 
@@ -4201,7 +4201,7 @@ case 0x9f:
 {
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
-  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }
 break;
 
@@ -4216,7 +4216,7 @@ case 0x93:
 {
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
-  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }
 break;
 
@@ -4233,7 +4233,7 @@ case 0x9b:
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
   SP = A & X;
-  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, A & X & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }
 break;
 
@@ -4249,7 +4249,7 @@ case 0x9e:
 {
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
-  poke(operandAddress, X & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, X & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }
 break;
 
@@ -4265,7 +4265,7 @@ case 0x9c:
 {
   // NOTE: There are mixed reports on the actual operation
   // of this instruction!
-  poke(operandAddress, Y & (((operandAddress >> 8) & 0xff) + 1));
+  poke(operandAddress, Y & (((operandAddress >> 8) & 0xff) + 1), DISASM_WRITE);
 }
 break;
 
@@ -4276,14 +4276,14 @@ case 0x0f:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -4298,14 +4298,14 @@ case 0x1f:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -4320,14 +4320,14 @@ case 0x1b:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -4339,14 +4339,14 @@ case 0x07:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -4360,14 +4360,14 @@ case 0x17:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -4383,14 +4383,14 @@ case 0x03:
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -4406,14 +4406,14 @@ case 0x13:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the left-most bit in value
   C = operand & 0x80;
 
   operand <<= 1;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A |= operand;
   notZ = A;
@@ -4428,14 +4428,14 @@ case 0x4f:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -4450,14 +4450,14 @@ case 0x5f:
   peek(high | uInt8(low + X), DISASM_NONE);
   operandAddress = (high | low) + X;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -4472,14 +4472,14 @@ case 0x5b:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -4491,14 +4491,14 @@ case 0x47:
 {
   operandAddress = peek(PC++, DISASM_CODE);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -4512,14 +4512,14 @@ case 0x57:
   peek(operandAddress, DISASM_NONE);
   operandAddress = (operandAddress + X) & 0xFF;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -4535,14 +4535,14 @@ case 0x43:
   operandAddress = peek(pointer++, DISASM_DATA);
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -4558,14 +4558,14 @@ case 0x53:
   peek(high | uInt8(low + Y), DISASM_NONE);
   operandAddress = (high | low) + Y;
   operand = peek(operandAddress, DISASM_DATA);
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 }
 {
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
   operand = (operand >> 1) & 0x7f;
-  poke(operandAddress, operand);
+  poke(operandAddress, operand, DISASM_WRITE);
 
   A ^= operand;
   notZ = A;
@@ -4582,7 +4582,7 @@ case 0x85:
 }
 SET_LAST_POKE(myLastSrcAddressA)
 {
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }
 break;
 
@@ -4593,7 +4593,7 @@ case 0x95:
   operandAddress = (operandAddress + X) & 0xFF;
 }
 {
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }
 break;
 
@@ -4603,7 +4603,7 @@ case 0x8d:
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
 }
 {
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }
 break;
 
@@ -4615,7 +4615,7 @@ case 0x9d:
   operandAddress = (high | low) + X;
 }
 {
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }
 break;
 
@@ -4627,7 +4627,7 @@ case 0x99:
   operandAddress = (high | low) + Y;
 }
 {
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }
 break;
 
@@ -4640,7 +4640,7 @@ case 0x81:
   operandAddress |= (uInt16(peek(pointer, DISASM_DATA)) << 8);
 }
 {
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }
 break;
 
@@ -4653,7 +4653,7 @@ case 0x91:
   operandAddress = (high | low) + Y;
 }
 {
-  poke(operandAddress, A);
+  poke(operandAddress, A, DISASM_WRITE);
 }
 break;
 //////////////////////////////////////////////////
@@ -4667,7 +4667,7 @@ case 0x86:
 }
 SET_LAST_POKE(myLastSrcAddressX)
 {
-  poke(operandAddress, X);
+  poke(operandAddress, X, DISASM_WRITE);
 }
 break;
 
@@ -4678,7 +4678,7 @@ case 0x96:
   operandAddress = (operandAddress + Y) & 0xFF;
 }
 {
-  poke(operandAddress, X);
+  poke(operandAddress, X, DISASM_WRITE);
 }
 break;
 
@@ -4688,7 +4688,7 @@ case 0x8e:
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
 }
 {
-  poke(operandAddress, X);
+  poke(operandAddress, X, DISASM_WRITE);
 }
 break;
 //////////////////////////////////////////////////
@@ -4702,7 +4702,7 @@ case 0x84:
 }
 SET_LAST_POKE(myLastSrcAddressY)
 {
-  poke(operandAddress, Y);
+  poke(operandAddress, Y, DISASM_WRITE);
 }
 break;
 
@@ -4713,7 +4713,7 @@ case 0x94:
   operandAddress = (operandAddress + X) & 0xFF;
 }
 {
-  poke(operandAddress, Y);
+  poke(operandAddress, Y, DISASM_WRITE);
 }
 break;
 
@@ -4723,7 +4723,7 @@ case 0x8c:
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
 }
 {
-  poke(operandAddress, Y);
+  poke(operandAddress, Y, DISASM_WRITE);
 }
 break;
 //////////////////////////////////////////////////
