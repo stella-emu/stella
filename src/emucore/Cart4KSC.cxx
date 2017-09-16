@@ -45,29 +45,29 @@ void Cartridge4KSC::install(System& system)
 
   // Set the page accessing method for the RAM writing pages
   access.type = System::PA_WRITE;
-  for(uInt32 j = 0x1000; j < 0x1080; j += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x1080; addr += System::PAGE_SIZE)
   {
-    access.directPokeBase = &myRAM[j & 0x007F];
-    access.codeAccessBase = &myCodeAccessBase[j & 0x007F];
-    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
+    access.directPokeBase = &myRAM[addr & 0x007F];
+    access.codeAccessBase = &myCodeAccessBase[addr & 0x007F];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
   access.type = System::PA_READ;
-  for(uInt32 k = 0x1080; k < 0x1100; k += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1080; addr < 0x1100; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myRAM[k & 0x007F];
-    access.codeAccessBase = &myCodeAccessBase[0x80 + (k & 0x007F)];
-    mySystem->setPageAccess(k >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myRAM[addr & 0x007F];
+    access.codeAccessBase = &myCodeAccessBase[0x80 + (addr & 0x007F)];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Map ROM image into the system
-  for(uInt32 address = 0x1100; address < 0x2000; address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1100; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[address & 0x0FFF];
-    access.codeAccessBase = &myCodeAccessBase[address & 0x0FFF];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[addr & 0x0FFF];
+    access.codeAccessBase = &myCodeAccessBase[addr & 0x0FFF];
+    mySystem->setPageAccess(addr, access);
   }
 }
 

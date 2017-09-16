@@ -156,9 +156,9 @@ void M6532::installDelegate(System& system, Device& device)
   // The two types of addresses are differentiated in peek/poke as follows:
   //    (addr & 0x0200) == 0x0000 is ZP RAM (A9 is 0)
   //    (addr & 0x0200) != 0x0000 is IO     (A9 is 1)
-  for(uInt16 addr = 0; addr < 0x1000; addr += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
     if((addr & 0x0080) == 0x0080)
-      mySystem->setPageAccess(addr >> System::PAGE_SHIFT, access);
+      mySystem->setPageAccess(addr, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

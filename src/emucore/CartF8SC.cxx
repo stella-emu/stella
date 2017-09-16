@@ -50,21 +50,21 @@ void CartridgeF8SC::install(System& system)
 
   // Set the page accessing method for the RAM writing pages
   access.type = System::PA_WRITE;
-  for(uInt32 j = 0x1000; j < 0x1080; j += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x1080; addr += System::PAGE_SIZE)
   {
-    access.directPokeBase = &myRAM[j & 0x007F];
-    access.codeAccessBase = &myCodeAccessBase[j & 0x007F];
-    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
+    access.directPokeBase = &myRAM[addr & 0x007F];
+    access.codeAccessBase = &myCodeAccessBase[addr & 0x007F];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
   access.type = System::PA_READ;
-  for(uInt32 k = 0x1080; k < 0x1100; k += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1080; addr < 0x1100; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myRAM[k & 0x007F];
-    access.codeAccessBase = &myCodeAccessBase[0x80 + (k & 0x007F)];
-    mySystem->setPageAccess(k >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myRAM[addr & 0x007F];
+    access.codeAccessBase = &myCodeAccessBase[0x80 + (addr & 0x007F)];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Install pages for the startup bank
@@ -150,20 +150,20 @@ bool CartridgeF8SC::bank(uInt16 bank)
   System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
-  for(uInt32 i = (0x1FF8 & ~System::PAGE_MASK); i < 0x2000;
-      i += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = (0x1FF8 & ~System::PAGE_MASK); addr < 0x2000;
+      addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (i & 0x0FFF)];
-    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Setup the page access methods for the current bank
-  for(uInt32 address = 0x1100; address < (0x1FF8U & ~System::PAGE_MASK);
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1100; addr < (0x1FF8U & ~System::PAGE_MASK);
+      addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
 }

@@ -46,12 +46,12 @@ void CartridgeUA::install(System& system)
 
   // Get the page accessing methods for the hot spots since they overlap
   // areas within the TIA we'll need to forward requests to the TIA
-  myHotSpotPageAccess = mySystem->getPageAccess(0x0220 >> System::PAGE_SHIFT);
+  myHotSpotPageAccess = mySystem->getPageAccess(0x0220);
 
   // Set the page accessing methods for the hot spots
   System::PageAccess access(this, System::PA_READ);
-  mySystem->setPageAccess(0x0220 >> System::PAGE_SHIFT, access);
-  mySystem->setPageAccess(0x0240 >> System::PAGE_SHIFT, access);
+  mySystem->setPageAccess(0x0220, access);
+  mySystem->setPageAccess(0x0240, access);
 
   // Install pages for the startup bank
   bank(myStartBank);
@@ -126,12 +126,11 @@ bool CartridgeUA::bank(uInt16 bank)
   System::PageAccess access(this, System::PA_READ);
 
   // Map ROM image into the system
-  for(uInt32 address = 0x1000; address < 0x2000;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
 }

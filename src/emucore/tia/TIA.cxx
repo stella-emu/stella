@@ -180,9 +180,9 @@ void TIA::installDelegate(System& system, Device& device)
   // Map all peek/poke to mirrors of TIA address space to this class
   // That is, all mirrors of ($00 - $3F) in the lower 4K of the 2600
   // address space are mapped here
-  for(uInt16 addr = 0; addr < 0x1000; addr += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
     if((addr & 0x0080) == 0x0000)
-      mySystem->setPageAccess(addr >> System::PAGE_SHIFT, access);
+      mySystem->setPageAccess(addr, access);
 
   mySystem->m6502().setOnHaltCallback(
     [this] () {

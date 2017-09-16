@@ -43,12 +43,11 @@ void Cartridge4K::install(System& system)
   // Note that we don't need our own peek/poke methods, since the mapping
   // takes care of the entire address space
   System::PageAccess access(this, System::PA_READ);
-  for(uInt32 address = 0x1000; address < 0x2000;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[address & 0x0FFF];
-    access.codeAccessBase = &myCodeAccessBase[address & 0x0FFF];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[addr & 0x0FFF];
+    access.codeAccessBase = &myCodeAccessBase[addr & 0x0FFF];
+    mySystem->setPageAccess(addr, access);
   }
 }
 

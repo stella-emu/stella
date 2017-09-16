@@ -32,7 +32,7 @@ Cartridge2K::Cartridge2K(const BytePtr& image, uInt32 size,
     mySize <<= 1;
 
   // We can't use a size smaller than the minimum page size in Stella
-  mySize = std::max(mySize, 1u << System::PAGE_SHIFT);
+  mySize = std::max<uInt32>(mySize, System::PAGE_SIZE);
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
   myImage = make_unique<uInt8[]>(mySize);
@@ -62,11 +62,11 @@ void Cartridge2K::install(System& system)
   // Note that we don't need our own peek/poke methods, since the mapping
   // takes care of the entire address space
   System::PageAccess access(this, System::PA_READ);
-  for(uInt32 address = 0x1000; address < 0x2000; address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[address & myMask];
-    access.codeAccessBase = &myCodeAccessBase[address & myMask];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[addr & myMask];
+    access.codeAccessBase = &myCodeAccessBase[addr & myMask];
+    mySystem->setPageAccess(addr, access);
   }
 }
 

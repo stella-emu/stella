@@ -45,7 +45,7 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
   PageAccess access(&myNullDevice, System::PA_READ);
   for(int page = 0; page < NUM_PAGES; ++page)
   {
-    setPageAccess(page, access);
+    myPageAccessTable[page] = access;
     myPageIsDirtyTable[page] = false;
   }
 
@@ -187,7 +187,7 @@ void System::setAccessFlags(uInt16 addr, uInt8 flags)
 {
 #ifdef DEBUGGER_SUPPORT
   PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
-  if (addr == 0xf52c /*0xf505*/) 
+  if (addr == 0xf52c /*0xf505*/)
     addr = addr;
 
   if(access.codeAccessBase)

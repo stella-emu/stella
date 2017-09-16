@@ -53,20 +53,17 @@ void Cartridge3E::install(System& system)
 
   System::PageAccess access(this, System::PA_READWRITE);
 
-  // Set the page accessing methods for the hot spots (for 100% emulation
-  // we need to chain any accesses below 0x40 to the TIA. Our poke() method
-  // does this via mySystem->tiaPoke(...), at least until we come up with a
-  // cleaner way to do it).
-  for(uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
-    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+  // The hotspots ($3E and $3F) are in TIA address space, so we claim it here
+  for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
+    mySystem->setPageAccess(addr, access);
 
   // Setup the second segment to always point to the last ROM slice
   access.type = System::PA_READ;
-  for(uInt32 j = 0x1800; j < 0x2000; j += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[(mySize - 2048) + (j & 0x07FF)];
-    access.codeAccessBase = &myCodeAccessBase[(mySize - 2048) + (j & 0x07FF)];
-    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[(mySize - 2048) + (addr & 0x07FF)];
+    access.codeAccessBase = &myCodeAccessBase[(mySize - 2048) + (addr & 0x07FF)];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Install pages for the startup bank into the first segment
@@ -124,10 +121,7 @@ bool Cartridge3E::poke(uInt16 address, uInt8 value)
     bank(value + 256);
   }
 
-  // Pass the poke through to the TIA. In a real Atari, both the cart and the
-  // TIA see the address lines, and both react accordingly. In Stella, each
-  // 64-byte chunk of address space is "owned" by only one device. If we
-  // don't chain the poke to the TIA, then the TIA can't see it...
+  // Handle TIA space that we claimed above
   mySystem->tia().poke(address, value);
 
   return false;
@@ -158,12 +152,11 @@ bool Cartridge3E::bank(uInt16 bank)
     System::PageAccess access(this, System::PA_READ);
 
     // Map ROM image into the system
-    for(uInt32 address = 0x1000; address < 0x1800;
-        address += (1 << System::PAGE_SHIFT))
+    for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
     {
-      access.directPeekBase = &myImage[offset + (address & 0x07FF)];
-      access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x07FF)];
-      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+      access.directPeekBase = &myImage[offset + (addr & 0x07FF)];
+      access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x07FF)];
+      mySystem->setPageAccess(addr, access);
     }
   }
   else
@@ -173,28 +166,27 @@ bool Cartridge3E::bank(uInt16 bank)
     myCurrentBank = bank + 256;
 
     uInt32 offset = bank << 10;
-    uInt32 address;
 
     // Setup the page access methods for the current bank
     System::PageAccess access(this, System::PA_READ);
 
     // Map read-port RAM image into the system
-    for(address = 0x1000; address < 0x1400; address += (1 << System::PAGE_SHIFT))
+    for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
     {
-      access.directPeekBase = &myRAM[offset + (address & 0x03FF)];
-      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (address & 0x03FF)];
-      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+      access.directPeekBase = &myRAM[offset + (addr & 0x03FF)];
+      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (addr & 0x03FF)];
+      mySystem->setPageAccess(addr, access);
     }
 
     access.directPeekBase = 0;
     access.type = System::PA_WRITE;
 
     // Map write-port RAM image into the system
-    for(address = 0x1400; address < 0x1800; address += (1 << System::PAGE_SHIFT))
+    for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
     {
-      access.directPokeBase = &myRAM[offset + (address & 0x03FF)];
-      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (address & 0x03FF)];
-      mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+      access.directPokeBase = &myRAM[offset + (addr & 0x03FF)];
+      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (addr & 0x03FF)];
+      mySystem->setPageAccess(addr, access);
     }
   }
   return myBankChanged = true;

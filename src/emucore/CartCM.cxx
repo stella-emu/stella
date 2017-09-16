@@ -117,37 +117,35 @@ bool CartridgeCM::bank(uInt16 bank)
   System::PageAccess access(this, System::PA_READ);
 
   // Lower 2K (always ROM)
-  for(uInt32 address = 0x1000; address < 0x1800;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Upper 2K (RAM or ROM)
-  for(uInt32 address = 0x1800; address < 0x2000;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.type = System::PA_READWRITE;
 
     if(mySWCHA & 0x10)
     {
-      access.directPeekBase = &myImage[myBankOffset + (address & 0x0FFF)];
-      access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
+      access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+      access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
     }
     else
     {
-      access.directPeekBase = &myRAM[address & 0x7FF];
-      access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x07FF)];
+      access.directPeekBase = &myRAM[addr & 0x7FF];
+      access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x07FF)];
     }
 
     if((mySWCHA & 0x30) == 0x20)
-      access.directPokeBase = &myRAM[address & 0x7FF];
+      access.directPokeBase = &myRAM[addr & 0x7FF];
     else
       access.directPokeBase = 0;
 
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    mySystem->setPageAccess(addr, access);
   }
 
   return myBankChanged = true;
