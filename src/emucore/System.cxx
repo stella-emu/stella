@@ -137,10 +137,18 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::poke(uInt16 addr, uInt8 value)
+void System::poke(uInt16 addr, uInt8 value, uInt8 flags)
 {
   uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
   const PageAccess& access = myPageAccessTable[page];
+
+#ifdef DEBUGGER_SUPPORT
+  // Set access type
+  if (access.codeAccessBase)
+    *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
+  else
+    access.device->setAccessFlags(addr, flags);
+#endif
 
   // See if this page uses direct accessing or not
   if(access.directPokeBase)

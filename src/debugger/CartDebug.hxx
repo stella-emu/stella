@@ -317,7 +317,6 @@ class CartDebug : public DebuggerSystem
       bool IOReadWrite[24];
       bool ZPRAM[128];
       AddrToLabel Label;
-      bool breakFound;
     };
     ReservedEquates myReserved;
 

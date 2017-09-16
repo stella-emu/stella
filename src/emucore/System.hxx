@@ -210,7 +210,7 @@ class System : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value);
+    void poke(uInt16 address, uInt8 value, uInt8 flags = 0);
 
     /**
       Lock/unlock the data bus. When the bus is locked, peek() and

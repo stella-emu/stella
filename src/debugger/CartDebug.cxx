@@ -1092,35 +1092,59 @@ string CartDebug::saveDisassembly()
         << ";-----------------------------------------------------------\n\n";
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
       if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
-        out << ALIGN(16) << ourTIAMnemonicR[addr] << "=  $"
-            << Base::HEX2 << right << addr << " ; (R)\n";
+        out << ALIGN(16) << ourTIAMnemonicR[addr] << "= $"
+            << Base::HEX2 << right << addr << "  ; (R)\n";
+    out << "\n";
     for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
       if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
-        out << ALIGN(16) << ourTIAMnemonicW[addr] << "=  $"
-            << Base::HEX2 << right << addr << " ; (W)\n";
+        out << ALIGN(16) << ourTIAMnemonicW[addr] << "= $"
+            << Base::HEX2 << right << addr << "  ; (W)\n";
+    out << "\n";
     for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
       if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
-        out << ALIGN(16) << ourIOMnemonic[addr] << "=  $"
+        out << ALIGN(16) << ourIOMnemonic[addr] << "= $"
             << Base::HEX4 << right << (addr+0x280) << "\n";
   }
 
   addrUsed = false;
-  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
+  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr) 
     addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80];
   if(addrUsed)
   {
+    bool addLine = false;
     out << "\n\n;-----------------------------------------------------------\n"
         << ";      RIOT RAM (zero-page) labels\n"
         << ";-----------------------------------------------------------\n\n";
-    for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
-    {
-      if(myReserved.ZPRAM[addr-0x80] &&
-         myUserLabels.find(addr) == myUserLabels.end())
-      {
-        out << ALIGN(16) << ourZPMnemonic[addr-0x80] << "=  $"
-            << Base::HEX2 << right << (addr) << "\n";
-      }
+    for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
+      if (myReserved.ZPRAM[addr - 0x80] &&
+          myUserLabels.find(addr) == myUserLabels.end()) {
+        if (addLine)
+          out << "\n";
+        out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
+          << Base::HEX2 << right << (addr) << "\n";
+        addLine = false;
+      }/* else if (Debugger::debugger().getAccessFlags(addr) & DATA) {
+        if (addLine)
+          out << "\n";
+        out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "=  $"
+          << Base::HEX2 << right << (addr) << "; (*)\n";
+        addLine = false;
+      }*/ else
+        addLine = true;
     }
+    for (uInt16 addr = 0x1000; addr <= 0x10FF; ++addr)
+      out << Debugger::debugger().getAccessFlags(addr) << "\n";
+/*
+      ;                 $93
+      ;                 $94
+      ;                 §94(*)
+      ;                 $96
+      ;                 §97(*)
+      ;                 $98
+      ;                 $99
+      ;                 $9a
+      ;                 $9b(*)
+*/
   }
 
   if(myReserved.Label.size() > 0)

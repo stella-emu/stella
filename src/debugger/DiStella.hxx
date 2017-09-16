@@ -82,7 +82,8 @@ class DiStella
 
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
-    void disasmPass1(uInt32 distart);
+    void disasmPass1(CartDebug::AddressList& debuggerAddresses);
+    void disasmFromAddress(uInt32 distart);
 
     bool check_range(uInt16 start, uInt16 end) const;
     int mark(uInt32 address, uInt8 mask, bool directive = false);

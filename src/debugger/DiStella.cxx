@@ -36,42 +36,17 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   myDirectives(directives)
 {
   bool resolve_code = mySettings.resolveCode;
-  CartDebug::AddressList& debuggerAddresses = info.addressList;
-  auto it = debuggerAddresses.cbegin();
-  uInt16 start = *it++;  
+  CartDebug::AddressList& debuggerAddresses = info.addressList;  
+  uInt16 start = *debuggerAddresses.cbegin();
 
   myOffset = info.offset;
   if (start & 0x1000) {
-    if (info.size == 4096)  // 4K ROM space
-    {
-      /*============================================
-        The offset is the address where the code segment
-        starts.  For a 4K game, it is usually 0xf000.
-
-        Example:
-          Start address = $D973, so therefore
-          Offset to code = $D000
-          Code range = $D000-$DFFF
-      =============================================*/
-      info.start = myAppData.start = 0x0000;
-      info.end = myAppData.end = 0x0FFF;
-
-      // Keep previous offset; it may be different between banks
-      if (info.offset == 0)
-        info.offset = myOffset = (start - (start % 0x1000));
-    } else  // 2K ROM space (also includes 'Sub2K' ROMs)
-    {
-      /*============================================
-        The offset is the address where the code segment
-        starts.  For a 2K game, it is usually 0xf800,
-        but can also be 0xf000.
-      =============================================*/
-      info.start = myAppData.start = 0x0000;
-      info.end = myAppData.end = info.size - 1;
+    info.start = myAppData.start = 0x0000;
+    info.end = myAppData.end = info.size - 1;
+    // Keep previous offset; it may be different between banks
+    if (info.offset == 0)
       info.offset = myOffset = (start - (start % info.size));
-    }
-  } else  // ZP RAM
-  {
+  } else { // ZP RAM
     // For now, we assume all accesses below $1000 are zero-page
     info.start = myAppData.start = 0x0080;
     info.end = myAppData.end = 0x00FF;
@@ -84,116 +59,13 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   memset(myLabels, 0, 0x1000);
   memset(myDirectives, 0, 0x1000);
-  myReserved.breakFound = false;
-
-  while (!myAddressQueue.empty())
-    myAddressQueue.pop();
-  myAddressQueue.push(start);
 
   // Process any directives first, as they override automatic code determination
   processDirectives(info.directiveList);
 
-  if (resolve_code) {
-    // After we've disassembled from all addresses in the address list,
-    // use all access points determined by Stella during emulation
-    int codeAccessPoint = 0;
-
-    // Sometimes we get a circular reference, in that processing a certain
-    // PC address leads us to a sequence of addresses that end up trying
-    // to process the same address again.  We detect such consecutive PC
-    // addresses and only process the first one
-    uInt16 lastPC = 0;
-    bool duplicateFound = false;
-    int count = 0;
-
-    
-    uInt8 flags = Debugger::debugger().getAccessFlags(0xf52c);
-    //checkBit(0xf52c, CartDebug::DATA);
-
-    while (!(myAddressQueue.empty() || duplicateFound)) {
-
-      /*if (++count == 2)
-        break;*/
-
-      uInt16 pcBeg = myPC = lastPC = myAddressQueue.front();
-      
-      myAddressQueue.pop();
-      //disasm(myPC, 1);
-      disasmPass1(myPC);
-      
-      if (pcBeg <= myPCEnd) {
-        // Tentatively mark all addresses in the range as CODE
-        // Note that this is a 'best-effort' approach, since
-        // Distella will normally keep going until the end of the
-        // range or branch is encountered
-        // However, addresses *specifically* marked as DATA/GFX/PGFX
-        // in the emulation core indicate that the CODE range has finished
-        // Therefore, we stop at the first such address encountered
-        for (uInt32 k = pcBeg; k <= myPCEnd; k++) {
-          /*if (Debugger::debugger().getAccessFlags(k) &
-              (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
-            myPCEnd = k - 1;
-            if (k == 0xf5c6)
-              k = k;
-            break;
-          }*/
-          mark(k, CartDebug::CODE);
-        }
-      }
-
-      // When we get to this point, all addresses have been processed
-      // starting from the initial one in the address list
-      // If so, process the next one in the list that hasn't already
-      // been marked as CODE
-      // If it *has* been marked, it can be removed from consideration
-      // in all subsequent passes
-      //
-      // Once the address list has been exhausted, we process all addresses
-      // determined during emulation to represent code, which *haven't* already
-      // been considered
-      //
-      // Note that we can't simply add all addresses right away, since
-      // the processing of a single address can cause others to be added in
-      // the ::disasm method
-      // All of these have to be exhausted before considering a new address
-      while (myAddressQueue.empty() && it != debuggerAddresses.end()) {
-        uInt16 addr = *it;
-
-        if (!checkBit(addr - myOffset, CartDebug::CODE)) {
-          myAddressQueue.push(addr);
-          ++it;
-        } else // remove this address, it is redundant
-          it = debuggerAddresses.erase(it);
-      }
-
-      // Stella itself can provide hints on whether an address has ever
-      // been referenced as CODE
-      while (myAddressQueue.empty() && codeAccessPoint <= myAppData.end) {
-        if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & CartDebug::CODE)
-            && !(myLabels[codeAccessPoint & myAppData.end] & CartDebug::CODE)) {
-          myAddressQueue.push(codeAccessPoint + myOffset);
-          ++codeAccessPoint;
-          break;
-        }
-        ++codeAccessPoint;
-      }
-      duplicateFound = !myAddressQueue.empty() && (myAddressQueue.front() == lastPC); // TODO: check!
-    } // while
-
-    for (int k = 0; k <= myAppData.end; k++) {
-      // Let the emulation core know about tentative code
-      if (checkBit(k, CartDebug::CODE) &&
-        !(Debugger::debugger().getAccessFlags(k + myOffset) & CartDebug::CODE)
-        && myOffset != 0) {
-        Debugger::debugger().setAccessFlags(k + myOffset, CartDebug::TCODE);
-      }
-
-      // Must be ROW / unused bytes
-      if (!checkBit(k, CartDebug::CODE | CartDebug::GFX |
-          CartDebug::PGFX | CartDebug::DATA))
-        mark(k + myOffset, CartDebug::ROW);
-    }
-  } // resolve code
+  if (resolve_code) 
+    // First pass
+    disasmPass1(info.addressList);
 
   // Second pass
   disasm(myOffset, 2);
@@ -217,10 +89,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   // Third pass
   disasm(myOffset, 3);
-
-  for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
-    //myReserved.ZPRAM[addr - 0x80]
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -690,7 +558,110 @@ void DiStella::disasm(uInt32 distart, int pass)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::disasmPass1(uInt32 distart)
+void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
+{
+  auto it = debuggerAddresses.cbegin();
+  uInt16 start = *it++;
+
+  // After we've disassembled from all addresses in the address list,
+  // use all access points determined by Stella during emulation
+  int codeAccessPoint = 0;
+
+  // Sometimes we get a circular reference, in that processing a certain
+  // PC address leads us to a sequence of addresses that end up trying
+  // to process the same address again.  We detect such consecutive PC
+  // addresses and only process the first one
+  uInt16 lastPC = 0;
+  bool duplicateFound = false;
+  int count = 0;
+
+  while (!myAddressQueue.empty())
+    myAddressQueue.pop();
+  myAddressQueue.push(start);
+
+  while (!(myAddressQueue.empty() || duplicateFound)) {
+    uInt16 pcBeg = myPC = lastPC = myAddressQueue.front();      
+    myAddressQueue.pop();
+    
+    disasmFromAddress(myPC);
+      
+    if (pcBeg <= myPCEnd) {
+      // Tentatively mark all addresses in the range as CODE
+      // Note that this is a 'best-effort' approach, since
+      // Distella will normally keep going until the end of the
+      // range or branch is encountered
+      // However, addresses *specifically* marked as DATA/GFX/PGFX
+      // in the emulation core indicate that the CODE range has finished
+      // Therefore, we stop at the first such address encountered
+      for (uInt32 k = pcBeg; k <= myPCEnd; k++) {
+                if (checkBits(k, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX, 
+                    CartDebug::CODE)) {
+                //if (Debugger::debugger().getAccessFlags(k) &
+                //    (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
+                  Uint8 flags = Debugger::debugger().getAccessFlags(k);
+                  myPCEnd = k - 1;
+                  break;
+                }
+        mark(k, CartDebug::CODE);
+      }
+    }
+
+    // When we get to this point, all addresses have been processed
+    // starting from the initial one in the address list
+    // If so, process the next one in the list that hasn't already
+    // been marked as CODE
+    // If it *has* been marked, it can be removed from consideration
+    // in all subsequent passes
+    //
+    // Once the address list has been exhausted, we process all addresses
+    // determined during emulation to represent code, which *haven't* already
+    // been considered
+    //
+    // Note that we can't simply add all addresses right away, since
+    // the processing of a single address can cause others to be added in
+    // the ::disasm method
+    // All of these have to be exhausted before considering a new address
+    while (myAddressQueue.empty() && it != debuggerAddresses.end()) {
+      uInt16 addr = *it;
+
+      if (!checkBit(addr - myOffset, CartDebug::CODE)) {
+        myAddressQueue.push(addr);
+        ++it;
+      } else // remove this address, it is redundant
+        it = debuggerAddresses.erase(it);
+    }
+
+    // Stella itself can provide hints on whether an address has ever
+    // been referenced as CODE
+    while (myAddressQueue.empty() && codeAccessPoint <= myAppData.end) {
+      if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & CartDebug::CODE)
+          && !(myLabels[codeAccessPoint & myAppData.end] & CartDebug::CODE)) {
+        myAddressQueue.push(codeAccessPoint + myOffset);
+        ++codeAccessPoint;
+        break;
+      }
+      ++codeAccessPoint;
+    }
+    duplicateFound = !myAddressQueue.empty() && (myAddressQueue.front() == lastPC); // TODO: check!
+  } // while
+
+  for (int k = 0; k <= myAppData.end; k++) {
+    // Let the emulation core know about tentative code
+    if (checkBit(k, CartDebug::CODE) &&
+      !(Debugger::debugger().getAccessFlags(k + myOffset) & CartDebug::CODE)
+      && myOffset != 0) {
+      Debugger::debugger().setAccessFlags(k + myOffset, CartDebug::TCODE);
+    }
+
+    // Must be ROW / unused bytes
+    if (!checkBit(k, CartDebug::CODE | CartDebug::GFX |
+        CartDebug::PGFX | CartDebug::DATA))
+      mark(k + myOffset, CartDebug::ROW);
+  }
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DiStella::disasmFromAddress(uInt32 distart)
 {
   uInt8 opcode, d1;
   uInt16 ad;
@@ -819,11 +790,10 @@ void DiStella::disasmPass1(uInt32 distart)
 
     // mark BRK vector
     if (opcode == 0x00) {
-      if (!myReserved.breakFound) {
-        ad = Debugger::debugger().dpeek(0xfffe, CartDebug::DATA);        
+      ad = Debugger::debugger().dpeek(0xfffe, CartDebug::DATA);
+      if (!checkBit(ad - myOffset, CartDebug::CODE, false)) {
         myAddressQueue.push(ad);
         mark(ad, CartDebug::CODE);        
-        myReserved.breakFound = true;
       }
     }
 
