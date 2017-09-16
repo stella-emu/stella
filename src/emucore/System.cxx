@@ -111,10 +111,7 @@ void System::clearDirtyPages()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 System::peek(uInt16 addr, uInt8 flags)
 {
-  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
-
-  if (addr == 0xf52c /*0xf505*/)
-    addr = addr;
+  const PageAccess& access = getPageAccess(addr);
 
 #ifdef DEBUGGER_SUPPORT
   // Set access type
@@ -143,10 +140,7 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
 void System::poke(uInt16 addr, uInt8 value)
 {
   uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
-  PageAccess& access = myPageAccessTable[page];
-
-  if (addr == 0xf52c /*0xf505*/)
-    addr = addr;
+  const PageAccess& access = myPageAccessTable[page];
 
   // See if this page uses direct accessing or not
   if(access.directPokeBase)
@@ -171,7 +165,7 @@ void System::poke(uInt16 addr, uInt8 value)
 uInt8 System::getAccessFlags(uInt16 addr) const
 {
 #ifdef DEBUGGER_SUPPORT
-  const PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
+  const PageAccess& access = getPageAccess(addr);
 
   if(access.codeAccessBase)
     return *(access.codeAccessBase + (addr & PAGE_MASK));
@@ -186,9 +180,7 @@ uInt8 System::getAccessFlags(uInt16 addr) const
 void System::setAccessFlags(uInt16 addr, uInt8 flags)
 {
 #ifdef DEBUGGER_SUPPORT
-  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
-  if (addr == 0xf52c /*0xf505*/)
-    addr = addr;
+  const PageAccess& access = getPageAccess(addr);
 
   if(access.codeAccessBase)
     *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
