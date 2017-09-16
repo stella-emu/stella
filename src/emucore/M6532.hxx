@@ -139,17 +139,6 @@ class M6532 : public Device
     uInt8 timint();
     Int32 intimClocks();
     uInt32 timerClocks() const;
-//#ifdef DEBUGGER_SUPPORT
-    void createCodeAccessBase(uInt32 size);
-/*    / **
-    Query/change the given address type to use the given disassembly flags
-
-    @param address The address to modify
-    @param flags A bitfield of DisasmType directives for the given address
-    * /
-    uInt8 getAccessFlags(uInt16 address) const override;
-    void setAccessFlags(uInt16 address, uInt8 flags) override;
-#endif  // DEBUGGER_SUPPORT*/
 
   private:
     // Accessible bits in the interrupt flag register
@@ -209,9 +198,9 @@ class M6532 : public Device
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
 
-//#ifdef DEBUGGER_SUPPORT
-    BytePtr myCodeAccessBase;
-//#endif  // DEBUGGER_SUPPORT
+    // The array containing information about every address of ZP RAM
+    // and IO space, and how/whether it is accessed.
+    BytePtr myAccessBase;
 
   private:
     // Following constructors and assignment operators not supported

@@ -24,7 +24,6 @@
 #include "Switches.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
-  //#include "Debugger.hxx"
   #include "CartDebug.hxx"
 #endif
 
@@ -41,7 +40,11 @@ M6532::M6532(const Console& console, const Settings& settings)
     myInterruptFlag(false),
     myEdgeDetectPositive(false)
 {
-  createCodeAccessBase(0x80);
+#ifdef DEBUGGER_SUPPORT
+  constexpr uInt32 size = 0x80 + 0x1F; // first 0x80 bytes are for ZP, rest is for IO
+  myAccessBase = make_unique<uInt8[]>(size);
+  memset(myAccessBase.get(), CartDebug::NONE, size);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,7 +57,7 @@ void M6532::reset()
   else
     memset(myRAM, 0, 128);
 
-  myTimer = mySystem->randGenerator().next() & 0xff;
+  myTimer = mySystem->randGenerator().next() & 0xFF;
   myDivider = 1024;
   mySubTimer = 0;
   myTimerWrapped = false;
@@ -161,11 +164,19 @@ void M6532::installDelegate(System& system, Device& device)
   // The two types of addresses are differentiated in peek/poke as follows:
   //    (addr & 0x0200) == 0x0000 is ZP RAM (A9 is 0)
   //    (addr & 0x0200) != 0x0000 is IO     (A9 is 1)
-  for (uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
-    if ((addr & 0x0080) == 0x0080) {
-      access.codeAccessBase = &myCodeAccessBase[addr & 0x7f];
+  for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
+  {
+    if((addr & 0x0080) == 0x0080)   // RIOT addresses
+    {
+    #ifdef DEBUGGER_SUPPORT
+      if((addr & 0x0200) == 0x0000) // ZP RAM addresses
+        access.codeAccessBase = &myAccessBase[addr & 0x7F];
+      else                          // IO addresses
+        access.codeAccessBase = &myAccessBase[0x80 + (addr & 0x1F)];
+    #endif
       mySystem->setPageAccess(addr, access);
     }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,7 +188,7 @@ uInt8 M6532::peek(uInt16 addr)
   // A9 = 1 is read from I/O
   // A9 = 0 is read from RAM
   if((addr & 0x0200) == 0x0000)
-    return myRAM[addr & 0x007f];
+    return myRAM[addr & 0x7F];
 
   switch(addr & 0x07)
   {
@@ -246,18 +257,18 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   // A9 = 0 is write to RAM
   if((addr & 0x0200) == 0x0000)
   {
-    myRAM[addr & 0x007f] = value;
+    myRAM[addr & 0x7F] = value;
     return true;
   }
 
   // A2 distinguishes I/O registers from the timer
   // A2 = 1 is write to timer
   // A2 = 0 is write to I/O
-  if((addr & 0x04) != 0)
+  if(addr & 0x04)
   {
     // A4 = 1 is write to TIMxT (x = 1, 8, 64, 1024)
     // A4 = 0 is write to edge detect control
-    if((addr & 0x10) != 0)
+    if(addr & 0x10)
       setTimerRegister(value, addr & 0x03);  // A1A0 determines interval
     else
       myEdgeDetectPositive = addr & 0x01;    // A0 determines direction
@@ -451,15 +462,4 @@ Int32 M6532::intimClocks()
 uInt32 M6532::timerClocks() const
 {
   return uInt32(mySystem->cycles() - mySetTimerCycle);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::createCodeAccessBase(uInt32 size)
-{
-#ifdef DEBUGGER_SUPPORT
-  myCodeAccessBase = make_unique<uInt8[]>(size);
-  memset(myCodeAccessBase.get(), CartDebug::NONE, size);
-#else
-  myCodeAccessBase = nullptr;
-#endif
 }
