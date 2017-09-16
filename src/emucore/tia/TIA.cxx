@@ -1267,6 +1267,8 @@ void TIA::cloneLastLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateCollision()
 {
+  if (myFrameManager.vblank()) return;
+
   myCollisionMask |= (
     myPlayer0.collision &
     myPlayer1.collision &
