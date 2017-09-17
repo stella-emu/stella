@@ -970,8 +970,8 @@ string CartDebug::saveDisassembly()
   ostringstream buf;
   buf << "\n\n;***********************************************************\n"
       << ";      Bank " << myConsole.cartridge().getBank();
-  if (myConsole.cartridge().bankCount() > 0)
-    buf << " / (0.." << myConsole.cartridge().bankCount() - 1 << ")";
+  if (myConsole.cartridge().bankCount() > 1)
+    buf << " / 0.." << myConsole.cartridge().bankCount() - 1;
   buf << "\n;***********************************************************\n\n";
 
   // Use specific settings for disassembly output
@@ -1084,9 +1084,9 @@ string CartDebug::saveDisassembly()
 
   bool addrUsed = false;
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    addrUsed = addrUsed || myReserved.TIARead[addr];
+    addrUsed = addrUsed || myReserved.TIARead[addr] || (mySystem.getAccessFlags(addr) & WRITE);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    addrUsed = addrUsed || myReserved.TIAWrite[addr];
+    addrUsed = addrUsed || myReserved.TIAWrite[addr] || (mySystem.getAccessFlags(addr) & DATA);
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
     addrUsed = addrUsed || myReserved.IOReadWrite[addr];
   if(addrUsed)
@@ -1094,16 +1094,28 @@ string CartDebug::saveDisassembly()
     out << "\n;-----------------------------------------------------------\n"
         << ";      TIA and IO constants accessed\n"
         << ";-----------------------------------------------------------\n\n";
+    
+    // TIA read access
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
       if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
         out << ALIGN(16) << ourTIAMnemonicR[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (R)\n";
+      else if (mySystem.getAccessFlags(addr) & DATA)
+        out << ";" << ALIGN(16-1) << ourTIAMnemonicR[addr] << "= $"
+        << Base::HEX2 << right << addr << "  ; (Ri)\n";
     out << "\n";
+
+    // TIA write access
     for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
       if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
         out << ALIGN(16) << ourTIAMnemonicW[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (W)\n";
+      else if (mySystem.getAccessFlags(addr) & WRITE)
+        out << ";" << ALIGN(16-1) << ourTIAMnemonicW[addr] << "= $"
+        << Base::HEX2 << right << addr << "  ; (Wi)\n";
     out << "\n";
+
+    // RIOT IO access
     for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
       if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
         out << ALIGN(16) << ourIOMnemonic[addr] << "= $"
@@ -1126,7 +1138,6 @@ string CartDebug::saveDisassembly()
       bool ramUsed = (mySystem.getAccessFlags(addr) & (DATA | WRITE));
       bool codeUsed = (mySystem.getAccessFlags(addr) & CODE);
       bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
-      ramUsed = true;
       
       if (myReserved.ZPRAM[addr - 0x80] &&
           myUserLabels.find(addr) == myUserLabels.end()) {
@@ -1427,7 +1438,7 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* const CartDebug::ourTIAMnemonicR[16] = {
   "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
-  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", 0, 0
+  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$1e", "$1f"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1437,8 +1448,9 @@ const char* const CartDebug::ourTIAMnemonicW[64] = {
   "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
   "AUDF1", "AUDV0", "AUDV1", "GRP0", "GRP1", "ENAM0", "ENAM1", "ENABL",
   "HMP0", "HMP1", "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL",
-  "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", "$2d", "$2e", "$2f",
+  "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37", 
+  "$38", "$39", "$3a", "$3b", "$3c", "$3d", "$3e", "$3f"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

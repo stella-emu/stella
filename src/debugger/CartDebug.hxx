@@ -63,14 +63,14 @@ class CartDebug : public DebuggerSystem
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of decreasing hierarchy
       //
-      CODE   = 1 << 7,  // 0x80, disassemble-able code segments
-      TCODE  = 1 << 6,  // 0x40, (tentative) disassemble-able code segments
-      GFX    = 1 << 5,  // 0x20, addresses loaded into GRPx registers
-      PGFX   = 1 << 4,  // 0x10, addresses loaded into PFx registers
-      DATA   = 1 << 3,  // 0x08, addresses loaded into registers other than GRPx / PFx
-      ROW    = 1 << 2,  // 0x04, all other addresses
+      CODE  = 1 << 7, // 0x80, disassemble-able code segments
+      TCODE = 1 << 6, // 0x40, (tentative) disassemble-able code segments
+      GFX   = 1 << 5, // 0x20, addresses loaded into GRPx registers
+      PGFX  = 1 << 4, // 0x10, addresses loaded into PFx registers
+      DATA  = 1 << 3, // 0x08, addresses loaded into registers other than GRPx / PFx
+      ROW   = 1 << 2, // 0x04, all other addresses
       // special type for poke()
-      WRITE  = TCODE    // 0x40, address written to
+      WRITE = TCODE   // 0x40, address written to
     };
     struct DisassemblyTag {
       DisasmType type;

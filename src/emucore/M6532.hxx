@@ -209,16 +209,21 @@ class M6532 : public Device
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
 
+#ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of RIOT 
     // indicating whether and how (RW) it is used.
     BytePtr myRAMAccessBase;
     BytePtr myStackAccessBase;
     BytePtr myIOAccessBase;
+    // The array used to skip the first ZP access tracking
+    BytePtr myZPAccessDelay;
 
     static constexpr uInt16
       RAM_SIZE = 0x80, RAM_MASK = RAM_SIZE - 1,
-      STACK_SIZE = 0x80, STACK_MASK = STACK_SIZE - 1, STACK_BIT = 0x100,
-      IO_SIZE = 0x20, IO_MASK = IO_SIZE - 1, IO_BIT = 0x200;
+      STACK_SIZE = RAM_SIZE, STACK_MASK = RAM_MASK, STACK_BIT = 0x100,
+      IO_SIZE = 0x20, IO_MASK = IO_SIZE - 1, IO_BIT = 0x200,
+      ZP_DELAY = 1;
+#endif // DEBUGGER_SUPPORT
 
   private:
     // Following constructors and assignment operators not supported

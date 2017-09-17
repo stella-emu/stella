@@ -152,6 +152,10 @@ void TIA::reset()
   // Must be done last, after all other items have reset
   enableFixedColors(false);
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
+
+#ifdef DEBUGGER_SUPPORT
+  createAccessBase();
+#endif // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,7 +185,7 @@ void TIA::installDelegate(System& system, Device& device)
   // That is, all mirrors of ($00 - $3F) in the lower 4K of the 2600
   // address space are mapped here
   for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
-    if((addr & 0x0080) == 0x0000)
+    if((addr & TIA_BIT) == 0x0000)
       mySystem->setPageAccess(addr, access);
 
   mySystem->m6502().setOnHaltCallback(
@@ -1584,3 +1588,40 @@ uInt8 TIA::collCXBLPF() const
 {
   return (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::createAccessBase()
+{
+#ifdef DEBUGGER_SUPPORT
+  myAccessBase = make_unique<uInt8[]>(TIA_SIZE);
+  memset(myAccessBase.get(), CartDebug::NONE, TIA_SIZE);
+  myAccessDelay = make_unique<uInt8[]>(TIA_SIZE);
+  memset(myAccessDelay.get(), TIA_DELAY, TIA_SIZE);
+#else
+  myAccessBase = nullptr;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::getAccessFlags(uInt16 address) const
+{
+  return myAccessBase[address & TIA_MASK];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setAccessFlags(uInt16 address, uInt8 flags)
+{
+  // ignore none flag
+  if (flags != CartDebug::NONE) {
+    if (flags == CartDebug::WRITE) {
+      // the first two write accesses are assumed as initialization
+      if (myAccessDelay[address & TIA_MASK])
+        myAccessDelay[address & TIA_MASK]--;
+      else
+        myAccessBase[address & TIA_MASK] |= flags;
+    } else
+      myAccessBase[address & TIA_READ_MASK] |= flags;
+  }
+}
+#endif // DEBUGGER_SUPPORT

@@ -78,7 +78,9 @@ void M6532::reset()
   myConsole.leftController().reset();
   myConsole.rightController().reset();
 
+#ifdef DEBUGGER_SUPPORT
   createAccessBases();
+#endif // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,7 +168,6 @@ void M6532::installDelegate(System& system, Device& device)
   //    (addr & 0x0300) == 0x0000 is ZP RAM (A8 is 0, A9 is 0)
   for (uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
     if ((addr & 0x0080) == 0x0080) {
-      //access.codeAccessBase = &myRAMAccessBase[addr & 0x7f];
       mySystem->setPageAccess(addr, access);
     }
 }
@@ -456,6 +457,7 @@ uInt32 M6532::timerClocks() const
   return uInt32(mySystem->cycles() - mySetTimerCycle);
 }
 
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::createAccessBases()
 {
@@ -466,6 +468,9 @@ void M6532::createAccessBases()
   memset(myStackAccessBase.get(), CartDebug::NONE, STACK_SIZE);
   myIOAccessBase = make_unique<uInt8[]>(IO_SIZE);
   memset(myIOAccessBase.get(), CartDebug::NONE, IO_SIZE);
+
+  myZPAccessDelay = make_unique<uInt8[]>(RAM_SIZE);
+  memset(myZPAccessDelay.get(), ZP_DELAY, RAM_SIZE);
 #else
   myRAMAccessBase = myStackAccessBase = myIOAccessBase = nullptr;
 #endif
@@ -492,19 +497,13 @@ void M6532::setAccessFlags(uInt16 address, uInt8 flags)
       myIOAccessBase[address & IO_MASK] |= flags;
     else {
       // the first access, either by direct RAM or stack access is assumed as initialization
-      bool initialized = (myStackAccessBase[address & STACK_MASK] & CartDebug::ROW) != 0
-        || (myRAMAccessBase[address & RAM_MASK] & CartDebug::ROW) != 0;
-
-      if (address & STACK_BIT)
-        if (!initialized)
-          myStackAccessBase[address & STACK_MASK] |= CartDebug::ROW;
-        else
-          myStackAccessBase[address & STACK_MASK] |= flags;
+      if (myZPAccessDelay[address & RAM_MASK])
+        myZPAccessDelay[address & RAM_MASK]--;
+      else if (address & STACK_BIT)
+        myStackAccessBase[address & STACK_MASK] |= flags;
       else
-        if (!initialized)
-          myRAMAccessBase[address & RAM_MASK] |= CartDebug::ROW;
-        else
-          myRAMAccessBase[address & RAM_MASK] |= flags;
+        myRAMAccessBase[address & RAM_MASK] |= flags;
     }
   }
 }
+#endif // DEBUGGER_SUPPORT

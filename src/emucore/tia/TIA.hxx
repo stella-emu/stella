@@ -540,6 +540,18 @@ class TIA : public Device
     uInt8 collCXPPMM() const;
     uInt8 collCXBLPF() const;
 
+#ifdef DEBUGGER_SUPPORT
+    void createAccessBase();
+    /**
+    Query/change the given address type to use the given disassembly flags
+
+    @param address The address to modify
+    @param flags A bitfield of DisasmType directives for the given address
+    */
+    uInt8 getAccessFlags(uInt16 address) const override;
+    void setAccessFlags(uInt16 address, uInt8 flags) override;
+#endif // DEBUGGER_SUPPORT
+
   private:
 
     Console& myConsole;
@@ -710,6 +722,17 @@ class TIA : public Device
      * System cycles at the end of the previous frame / beginning of next frame
      */
     uInt64 myCyclesAtFrameStart;
+
+#ifdef DEBUGGER_SUPPORT
+    // The arrays containing information about every byte of TIA 
+    // indicating whether and how (RW) it is used.
+    BytePtr myAccessBase;
+    // The array used to skip the first two TIA access trackings
+    BytePtr myAccessDelay;
+
+    static constexpr uInt16
+      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;
+#endif // DEBUGGER_SUPPORT
 
   private:
     TIA() = delete;
