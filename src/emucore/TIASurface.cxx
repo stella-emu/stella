@@ -122,8 +122,9 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
   {
     for(uInt32 x = 0; x < tiaw; ++x)
     {
-      *buf_ptr++ = myFB.tiaSurface().pixel(y*tiaw + x);
-      *buf_ptr++ = myFB.tiaSurface().pixel(y*tiaw + x);
+      uInt32 pixel = myPalette[*(myTIA->frameBuffer() + y*tiaw + x)];
+      *buf_ptr++ = pixel;
+      *buf_ptr++ = pixel;
     }
   }
 
@@ -133,22 +134,7 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TIASurface::pixel(uInt32 idx, uInt8 shift)
 {
-  uInt8 c = *(myTIA->frameBuffer() + idx) | shift;
-
-  if(!myUsePhosphor)
-    return myPalette[c];
-  else
-  {
-    const uInt32 p = myRGBFramebuffer[idx];
-
-    // Mix current calculated frame with previous displayed frame
-    const uInt32 retVal = getRGBPhosphor(myPalette[c], p);
-
-    // Store back into displayed frame buffer (for next frame)
-    myRGBFramebuffer[idx] = retVal;
-
-    return retVal;
-  }
+  return myPalette[*(myTIA->frameBuffer() + idx) | shift];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

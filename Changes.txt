@@ -35,6 +35,9 @@
     information).  In the case of 'saveses', the filename is now named
     based on the date and time of when the command was entered.
 
+  * Fixed bug with saving snapshots in 'filtering disabled' mode; there
+    was graphical corruption in some cases.
+
   * Added debugger pseudo-register '_fcycles', which gives the number of
     CPU cycles that have occurred since the frame started.
 
