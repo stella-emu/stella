@@ -1153,7 +1153,7 @@ void TIA::cycle(uInt32 colorClocks)
       else
         tickHframe();
 
-      if (myCollisionUpdateRequired) updateCollision();
+      if (myCollisionUpdateRequired && !myFrameManager.vblank()) updateCollision();
     }
 
     if (++myHctr >= 228)
@@ -1271,8 +1271,6 @@ void TIA::cloneLastLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateCollision()
 {
-  if (myFrameManager.vblank()) return;
-
   myCollisionMask |= (
     myPlayer0.collision &
     myPlayer1.collision &
