@@ -122,9 +122,8 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
   {
     for(uInt32 x = 0; x < tiaw; ++x)
     {
-      uInt32 pixel = myFB.tiaSurface().pixel(y*tiaw+x);
-      *buf_ptr++ = pixel;
-      *buf_ptr++ = pixel;
+      *buf_ptr++ = myFB.tiaSurface().pixel(y*tiaw + x);
+      *buf_ptr++ = myFB.tiaSurface().pixel(y*tiaw + x);
     }
   }
 
@@ -232,8 +231,7 @@ void TIASurface::enableScanlineInterpolation(bool enable)
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor = enable;
-  if(blend >= 0)
-    myPhosphorPercent = blend / 100.0;
+  myPhosphorPercent = blend / 100.0;
   myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
 
   myTiaSurface->setDirty();
