@@ -115,16 +115,21 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
   rect.setBounds(0, 0, width, height);
 
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
-  uInt32 *buf_ptr, pitch;
+  uInt32 *buf_ptr, pitch, idx;
   myBaseTiaSurface->basePtr(buf_ptr, pitch);
+  bool useBlargg = ntscEnabled();
 
   for(uInt32 y = 0; y < height; ++y)
   {
-    for(uInt32 x = 0; x < tiaw; ++x)
+    for(uInt32 x = 0; x < width; ++x)
     {
-      uInt32 pixel = myPalette[*(myTIA->frameBuffer() + y*tiaw + x)];
-      *buf_ptr++ = pixel;
-      *buf_ptr++ = pixel;
+      if (useBlargg) 
+        // just some odd formula to convert to Blargg index (reversed 7:2 conversion)
+        idx = (y * (myTIA->width() * 7 + 10) >> 1) + y * 5 * 0 + (x * 7 >> 2);
+      else
+        idx = y * myTIA->width() + (x >> 1);
+
+      *buf_ptr++ = myRGBFramebuffer[idx];
     }
   }
 
