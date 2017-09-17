@@ -22,21 +22,21 @@ using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-  CartDebug::BankInfo& info, const DiStella::Settings& s,
-  uInt8* labels, uInt8* directives,
-  CartDebug::ReservedEquates& reserved)
+                   CartDebug::BankInfo& info, const DiStella::Settings& s,
+                   uInt8* labels, uInt8* directives,
+                   CartDebug::ReservedEquates& reserved)
   : myDbg(dbg),
-  myList(list),
-  mySettings(s),
-  myReserved(reserved),
-  myOffset(0),
-  myPC(0),
-  myPCEnd(0),
-  myLabels(labels),
-  myDirectives(directives)
+    myList(list),
+    mySettings(s),
+    myReserved(reserved),
+    myOffset(0),
+    myPC(0),
+    myPCEnd(0),
+    myLabels(labels),
+    myDirectives(directives)
 {
   bool resolve_code = mySettings.resolveCode;
-  CartDebug::AddressList& debuggerAddresses = info.addressList;  
+  CartDebug::AddressList& debuggerAddresses = info.addressList;
   uInt16 start = *debuggerAddresses.cbegin();
 
   myOffset = info.offset;
@@ -65,7 +65,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   myReserved.breakFound = false;
 
-  if (resolve_code) 
+  if (resolve_code)
     // First pass
     disasmPass1(info.addressList);
 
@@ -109,7 +109,7 @@ void DiStella::disasm(uInt32 distart, int pass)
   uInt16 ad;
   uInt32 cycles = 0;
   AddressingMode addrMode;
-  int bytes = 0, labelFound = 0;
+  int labelFound = 0;
   stringstream nextLine, nextLineBytes;
 
   mySegType = CartDebug::NONE; // create extra lines between code and data
@@ -119,15 +119,15 @@ void DiStella::disasm(uInt32 distart, int pass)
   /* pc=myAppData.start; */
   myPC = distart - myOffset;
   while (myPC <= myAppData.end) {
-   
-    if (checkBits(myPC, CartDebug::GFX | CartDebug::PGFX, 
+
+    if (checkBits(myPC, CartDebug::GFX | CartDebug::PGFX,
         CartDebug::CODE)) {
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
-      if (pass == 3) 
-        outputGraphics();        
+      if (pass == 3)
+        outputGraphics();
       myPC++;
-    } else if (checkBits(myPC, CartDebug::DATA, 
+    } else if (checkBits(myPC, CartDebug::DATA,
                CartDebug::CODE | CartDebug::GFX | CartDebug::PGFX)) {
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
@@ -146,22 +146,22 @@ void DiStella::disasm(uInt32 distart, int pass)
         myPC++;
     } else {
       // The following sections must be CODE
-      
+
       // add extra spacing line when switching from non-code to code
-      if (pass == 3 && mySegType != CartDebug::CODE && mySegType != CartDebug::NONE) {                
+      if (pass == 3 && mySegType != CartDebug::CODE && mySegType != CartDebug::NONE) {
         myDisasmBuf << "    '     ' ";
         addEntry(CartDebug::NONE);
         mark(myPC + myOffset, CartDebug::REFERENCED); // add label when switching
       }
       mySegType = CartDebug::CODE;
-      
+
       /* version 2.1 bug fix */
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
 
       // get opcode
       opcode = Debugger::debugger().peek(myPC + myOffset);
-      // get address mode for opcode 
+      // get address mode for opcode
       addrMode = ourLookup[opcode].addr_mode;
 
       if (pass == 3) {
@@ -179,7 +179,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           labelFound = true;
           break;
         }
-      }      
+      }
       if (labelFound) {
         if (myOffset >= 0x1000) {
           // the opcode's operand address matches a label address
@@ -219,7 +219,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         nextLine << ourLookup[opcode].mnemonic;
         nextLineBytes << Base::HEX2 << int(opcode) << " ";
       }
-     
+
       // Add operand(s) for PC values outside the app data range
       if (myPC >= myAppData.end) {
         switch (addrMode) {
@@ -538,7 +538,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           << (addrMode == RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 " : "   ");
         if ((opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00 // code block end
             || checkBit(myPC, CartDebug::REFERENCED)                              // referenced address
-            || ourLookup[opcode].rw_mode == WRITE && d1 == WSYNC)                 // strobe WSYNC
+            || (ourLookup[opcode].rw_mode == WRITE && d1 == WSYNC))               // strobe WSYNC
             && cycles > 0) {
           // output cycles for previous code block
           myDisasmBuf << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
@@ -581,18 +581,17 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
   // addresses and only process the first one
   uInt16 lastPC = 0;
   bool duplicateFound = false;
-  int count = 0;
 
   while (!myAddressQueue.empty())
     myAddressQueue.pop();
   myAddressQueue.push(start);
 
   while (!(myAddressQueue.empty() || duplicateFound)) {
-    uInt16 pcBeg = myPC = lastPC = myAddressQueue.front();      
+    uInt16 pcBeg = myPC = lastPC = myAddressQueue.front();
     myAddressQueue.pop();
-    
+
     disasmFromAddress(myPC);
-      
+
     if (pcBeg <= myPCEnd) {
       // Tentatively mark all addresses in the range as CODE
       // Note that this is a 'best-effort' approach, since
@@ -602,15 +601,15 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
       // in the emulation core indicate that the CODE range has finished
       // Therefore, we stop at the first such address encountered
       for (uInt32 k = pcBeg; k <= myPCEnd; k++) {
-                if (checkBits(k, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX, 
-                    CartDebug::CODE)) {
-                //if (Debugger::debugger().getAccessFlags(k) &
-                //    (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
-                // TODO: this should never happen, remove when we are sure
-                  Uint8 flags = Debugger::debugger().getAccessFlags(k);
-                  myPCEnd = k - 1;
-                  break;
-                }
+        if (checkBits(k, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX,
+                      CartDebug::CODE)) {
+          //if (Debugger::debugger().getAccessFlags(k) &
+          //    (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
+          // TODO: this should never happen, remove when we are sure
+          // TODO: NOT USED: uInt8 flags = Debugger::debugger().getAccessFlags(k);
+          myPCEnd = k - 1;
+          break;
+        }
         mark(k, CartDebug::CODE);
       }
     }
@@ -667,7 +666,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
         CartDebug::PGFX | CartDebug::DATA))
       mark(k + myOffset, CartDebug::ROW);
   }
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::disasmFromAddress(uInt32 distart)
@@ -689,8 +688,8 @@ void DiStella::disasmFromAddress(uInt32 distart)
     // so this should be code now...
     // get opcode
     opcode = Debugger::debugger().peek(myPC + myOffset);  myPC++;
-    // get address mode for opcode 
-    addrMode = ourLookup[opcode].addr_mode; 
+    // get address mode for opcode
+    addrMode = ourLookup[opcode].addr_mode;
 
     // Add operand(s) for PC values outside the app data range
     if (myPC >= myAppData.end) {
@@ -728,7 +727,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         // handle JMP/JSR
         if (ourLookup[opcode].source == M_ADDR) {
           // do NOT use flags set by debugger, else known CODE will not analyzed statically.
-          if (!checkBit(ad & myAppData.end, CartDebug::CODE, false)) { 
+          if (!checkBit(ad & myAppData.end, CartDebug::CODE, false)) {
             if (ad > 0xfff)
               myAddressQueue.push((ad & myAppData.end) + myOffset);
             mark(ad, CartDebug::CODE);
@@ -802,13 +801,13 @@ void DiStella::disasmFromAddress(uInt32 distart)
       ad = Debugger::debugger().dpeek(0xfffe, CartDebug::DATA);
       if (!myReserved.breakFound) {
         myAddressQueue.push(ad);
-        mark(ad, CartDebug::CODE);        
+        mark(ad, CartDebug::CODE);
         myReserved.breakFound = true;
       }
     }
 
     // JMP/RTS/RTI always indicate the end of a block of CODE
-    if (opcode == 0x4c || opcode == 0x60 || opcode == 0x40) { 
+    if (opcode == 0x4c || opcode == 0x60 || opcode == 0x40) {
       // code block end
       myPCEnd = (myPC - 1) + myOffset;
       return;
@@ -866,11 +865,6 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
       Anything else = invalid, return 0.
     ===========================================================
   -----------------------------------------------------------------------*/
-
-  /*if (address == 0xf5c2) {
-    address++;
-    address--;
-  }*/
 
   // Check for equates before ROM/ZP-RAM accesses, because the original logic
   // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
@@ -1056,7 +1050,7 @@ void DiStella::outputGraphics()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::outputBytes(CartDebug::DisasmType type)
 {
-  bool isType = true; 
+  bool isType = true;
   bool referenced = checkBit(myPC, CartDebug::REFERENCED);
   bool lineEmpty = true;
   int numBytes = 0;

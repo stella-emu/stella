@@ -33,7 +33,8 @@
   All 7800-related stuff has been removed, as well as some commandline options.
   Over time, some of the configurability of Distella may be added again.
 
-  @author  Stephen Anthony
+  @authors  Stephen Anthony and Thomas Jentzsch
+            Original distella developers (http://distella.sf.net)
 */
 class DiStella
 {
