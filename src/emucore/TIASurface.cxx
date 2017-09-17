@@ -123,13 +123,17 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
   {
     for(uInt32 x = 0; x < width; ++x)
     {
-      if (useBlargg) 
-        // just some odd formula to convert to Blargg index (reversed 7:2 conversion)
-        idx = (y * (myTIA->width() * 7 + 10) >> 1) + y * 5 * 0 + (x * 7 >> 2);
-      else
-        idx = y * myTIA->width() + (x >> 1);
+      idx = y * myTIA->width() + (x >> 1);
+      if (myUsePhosphor) 
+      {
+        if (useBlargg)
+          // just some odd formula to convert to Blargg index (reversed 7:2 conversion)
+          idx = (y * (myTIA->width() * 7 + 10) >> 1) + y * 5 * 0 + (x * 7 >> 2);
 
-      *buf_ptr++ = myRGBFramebuffer[idx];
+        *buf_ptr++ = myRGBFramebuffer[idx];
+      }
+      else 
+        *buf_ptr++ = myPalette[*(myTIA->frameBuffer() + idx)];
     }
   }
 
