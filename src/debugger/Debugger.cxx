@@ -505,12 +505,12 @@ void Debugger::setStartState()
 
   // If rewinding is not enabled, always start the debugger with a clean list
   RewindManager& r = myOSystem.state().rewindManager();
-  if(0) // FIXME
+  if(myOSystem.state().mode() == StateManager::Mode::Off)
     r.clear();
   myDialog->rewindButton().setEnabled(!r.empty());
 
   // Save initial state, but don't add it to the rewind list
-  saveOldState();  // FIXME - rework this
+  saveOldState();
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);

@@ -197,27 +197,20 @@ void EventHandler::poll(uInt64 time)
   {
     myOSystem.console().riot().update();
 
-#if 0
     // Now check if the StateManager should be saving or loading state
-    // Per-frame cheats are disabled if the StateManager is active, since
-    // it would interfere with proper playback
-    if(myOSystem.state().isActive())
-    {
+    // (for rewind and/or movies
+    if(myOSystem.state().mode() != StateManager::Mode::Off)
       myOSystem.state().update();
-    }
-    else
-#endif
-    {
-    #ifdef CHEATCODE_SUPPORT
-      for(auto& cheat: myOSystem.cheat().perFrame())
-        cheat->evaluate();
-    #endif
 
-      // Handle continuous snapshots
-      if(myContSnapshotInterval > 0 &&
-        (++myContSnapshotCounter % myContSnapshotInterval == 0))
-        takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
-    }
+  #ifdef CHEATCODE_SUPPORT
+    for(auto& cheat: myOSystem.cheat().perFrame())
+      cheat->evaluate();
+  #endif
+
+    // Handle continuous snapshots
+    if(myContSnapshotInterval > 0 &&
+      (++myContSnapshotCounter % myContSnapshotInterval == 0))
+      takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
   }
   else if(myOverlay)
   {
@@ -439,6 +432,10 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
         case KBDK_L:
           myOSystem.frameBuffer().toggleFrameStats();
+          break;
+
+        case KBDK_R:  // Alt-r toggles continuous store rewind states
+          myOSystem.state().toggleRewindMode();
           break;
 
         case KBDK_S:

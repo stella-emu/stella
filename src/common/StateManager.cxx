@@ -35,16 +35,16 @@
 StateManager::StateManager(OSystem& osystem)
   : myOSystem(osystem),
     myCurrentSlot(0),
-    myActiveMode(kOffMode)
+    myActiveMode(Mode::Off)
 {
   myRewindManager = make_unique<RewindManager>(myOSystem, *this);
   reset();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::toggleRecordMode()
-{
 #if 0
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StateManager::toggleRecordMode()
+{
   if(myActiveMode != kMovieRecordMode)  // Turn on movie record mode
   {
     myActiveMode = kOffMode;
@@ -81,15 +81,8 @@ bool StateManager::toggleRecordMode()
   }
 
   return myActiveMode == kMovieRecordMode;
-#endif
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::toggleRewindMode()
-{
-  // FIXME - For now, I'm going to use this to activate movie playback
-#if 0
+////////////////////////////////////////////////////////
+// FIXME - For now, I'm going to use this to activate movie playback
   // Close the writer, since we're about to re-open in read mode
   myMovieWriter.close();
 
@@ -128,34 +121,44 @@ bool StateManager::toggleRewindMode()
     myMovieReader.close();
     return false;
   }
-
-  return myActiveMode == kMoviePlaybackMode;
+}
 #endif
-  return false;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StateManager::toggleRewindMode()
+{
+  myActiveMode = myActiveMode == Mode::Rewind ? Mode::Off : Mode::Rewind;
+  if(myActiveMode == Mode::Rewind)
+    myOSystem.frameBuffer().showMessage("Continuous rewind enabled");
+  else
+    myOSystem.frameBuffer().showMessage("Continuous rewind disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::update()
 {
-#if 0
   switch(myActiveMode)
   {
-    case kMovieRecordMode:
+    case Mode::Rewind:
+      myRewindManager->addState("1 frame");
+      break;
+
+#if 0
+    case Mode::MovieRecord:
       myOSystem.console().controller(Controller::Left).save(myMovieWriter);
       myOSystem.console().controller(Controller::Right).save(myMovieWriter);
       myOSystem.console().switches().save(myMovieWriter);
       break;
 
-    case kMoviePlaybackMode:
+    case Mode::MoviePlayback:
       myOSystem.console().controller(Controller::Left).load(myMovieReader);
       myOSystem.console().controller(Controller::Right).load(myMovieReader);
       myOSystem.console().switches().load(myMovieReader);
       break;
-
+#endif
     default:
       break;
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

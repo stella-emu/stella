@@ -33,41 +33,58 @@ class OSystem;
 class StateManager
 {
   public:
+    enum class Mode {
+      Off,
+      Rewind,
+      MovieRecord,
+      MoviePlayback
+    };
+
     /**
-      Create a new statemananger class
+      Create a new statemananger class.
     */
     StateManager(OSystem& osystem);
 
   public:
     /**
-      Answers whether the manager is in record or playback mode
+      Answers whether the manager is in record or playback mode.
     */
-    bool isActive() const { return myActiveMode != kOffMode; }
+    Mode mode() const { return myActiveMode; }
 
-    bool toggleRecordMode();
-    bool toggleRewindMode();
+#if 0
+    /**
+      Toggle movie recording mode (FIXME - currently disabled)
+    */
+    void toggleRecordMode();
+#endif
 
     /**
-      Updates the state of the system based on the currently active mode
+      Toggle state rewind recording mode; this uses the RewindManager
+      for its functionality.
+    */
+    void toggleRewindMode();
+
+    /**
+      Updates the state of the system based on the currently active mode.
     */
     void update();
 
     /**
-      Load a state into the current system
+      Load a state into the current system.
 
       @param slot  The state 'slot' to load state from
     */
     void loadState(int slot = -1);
 
     /**
-      Save the current state from the system
+      Save the current state from the system.
 
       @param slot  The state 'slot' to save into
     */
     void saveState(int slot = -1);
 
     /**
-      Switches to the next higher state slot (circular queue style)
+      Switches to the next higher state slot (circular queue style).
     */
     void changeState();
 
@@ -92,7 +109,7 @@ class StateManager
     bool saveState(Serializer& out);
 
     /**
-      Resets manager to defaults
+      Resets manager to defaults.
     */
     void reset();
 
@@ -102,14 +119,6 @@ class StateManager
     RewindManager& rewindManager() const { return *myRewindManager; }
 
   private:
-    enum Mode {
-      kOffMode,
-      kMoviePlaybackMode,
-      kMovieRecordMode,
-      kRewindPlaybackMode,
-      kRewindRecordMode
-    };
-
     enum {
       kVersion = 001
     };

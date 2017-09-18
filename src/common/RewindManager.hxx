@@ -44,7 +44,7 @@ class RewindManager
 
       @param message  Message to display when rewinding to this state
     */
-    bool addState(const string& message = "");
+    bool addState(const string& message);
 
     /**
       Rewind one level of the state list, and display the message associated
