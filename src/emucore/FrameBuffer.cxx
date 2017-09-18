@@ -588,8 +588,9 @@ void FrameBuffer::setCursorState()
   bool analog = myOSystem.hasConsole() ?
       (myOSystem.eventHandler().controllerIsAnalog(Controller::Left) ||
        myOSystem.eventHandler().controllerIsAnalog(Controller::Right)) : false;
+  bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
-  grabMouse(emulation && analog && myOSystem.settings().getBool("grabmouse"));
+  grabMouse(emulation && (analog || alwaysUseMouse) && myOSystem.settings().getBool("grabmouse"));
 
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
   switch(myOSystem.settings().getInt("cursor"))
