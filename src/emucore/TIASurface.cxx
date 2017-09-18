@@ -17,6 +17,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <math.h>      
 
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
@@ -111,29 +112,27 @@ void TIASurface::setPalette(const uInt32* tia_palette, const uInt32* rgb_palette
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
 {
-  uInt32 tiaw = myTIA->width(), width = tiaw*2, height = myTIA->height();
+  uInt32 tiaw = myTIA->width(), width = tiaw * 2, height = myTIA->height();
   rect.setBounds(0, 0, width, height);
 
-  // Fill the surface with pixels from the TIA, scaled 2x horizontally
-  uInt32 *buf_ptr, pitch, idx;
-  myBaseTiaSurface->basePtr(buf_ptr, pitch);
+  // Get Blargg buffer and width
+  uInt32 *blarggBuf, blarggPitch;
+  myTiaSurface->basePtr(blarggBuf, blarggPitch);
+  double blarggXFactor = (double)blarggPitch / width;
   bool useBlargg = ntscEnabled();
+
+  // Fill the surface with pixels from the TIA, scaled 2x horizontally
+  uInt32 *buf_ptr, pitch;
+  myBaseTiaSurface->basePtr(buf_ptr, pitch);
 
   for(uInt32 y = 0; y < height; ++y)
   {
     for(uInt32 x = 0; x < width; ++x)
     {
-      idx = y * myTIA->width() + (x >> 1);
-      if (myUsePhosphor) 
-      {
-        if (useBlargg)
-          // just some odd formula to convert to Blargg index (reversed 7:2 conversion)
-          idx = (y * (myTIA->width() * 7 + 10) >> 1) + y * 5 * 0 + (x * 7 >> 2);
-
-        *buf_ptr++ = myRGBFramebuffer[idx];
-      }
+      if (useBlargg)
+        *buf_ptr++ = blarggBuf[y * blarggPitch + (uInt32)nearbyint(x * blarggXFactor)];
       else 
-        *buf_ptr++ = myPalette[*(myTIA->frameBuffer() + idx)];
+        *buf_ptr++ = myPalette[*(myTIA->frameBuffer() + y * tiaw + x / 2)];
     }
   }
 
