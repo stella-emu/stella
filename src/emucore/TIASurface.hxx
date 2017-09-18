@@ -152,7 +152,7 @@ class TIASurface
     void render();
 
     /**
-    This method renders the current frame again.
+      This method renders the current frame again.
     */
     void reRender();
 

@@ -14,6 +14,9 @@
 
 5.0.2 to 5.0.3: (August xx, 2017)
 
+  * Huge improvements to the disassembly view in the debugger:
+    - TODO: add items ...
+
   * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc).
 
   * Fixed a bug in ystart autodetection that could cause screen jumps.
@@ -35,8 +38,13 @@
     information).  In the case of 'saveses', the filename is now named
     based on the date and time of when the command was entered.
 
-  * Fixed bug with saving snapshots in 'filtering disabled' mode; there
-    was graphical corruption in some cases.
+  * Fixed bug with saving snapshots in 1x mode; there was graphical
+    corruption in some cases.  Such snapshots also now include any TV
+    effects / phosphor blending currently in use.
+
+  * Fixed regular-sized snapshots when phosphor effect was enabled;
+    sometimes the image was 'double-blended', resulting in a snapshot that
+    was too dark.
 
   * Added debugger pseudo-register '_fcycles', which gives the number of
     CPU cycles that have occurred since the frame started.
