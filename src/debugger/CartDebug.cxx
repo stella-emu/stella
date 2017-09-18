@@ -685,6 +685,9 @@ string CartDebug::loadListFile()
   // The default naming/location for list files is the ROM dir based on the
   // actual ROM filename
 
+  myUserAddresses.clear();
+  myUserLabels.clear();
+
   if(myListFile == "")
   {
     FilesystemNode lst(myOSystem.romFile().getPathWithExt("") + ".lst");
@@ -699,7 +702,7 @@ string CartDebug::loadListFile()
   if(!in.is_open())
     return DebuggerParser::red("list file '" + node.getShortPath() + "' not readable");
 
-  myUserCLabels.clear();
+  //myUserCLabels.clear();
 
   while(!in.eof())
   {
@@ -731,7 +734,8 @@ string CartDebug::loadListFile()
         char eq = '\0';
         buf >> hex >> xx >> hex >> yy >> line >> eq;
         if(xx >= 0 && yy >= 0 && eq == '=')
-          myUserCLabels.emplace(xx*256+yy, line);
+          //myUserCLabels.emplace(xx*256+yy, line);
+          addLabel(line, xx * 256 + yy);
       }
     }
   }
@@ -760,8 +764,8 @@ string CartDebug::loadSymbolFile()
   if(!in.is_open())
     return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not readable");
 
-  myUserAddresses.clear();
-  myUserLabels.clear();
+  //myUserAddresses.clear();
+  //myUserLabels.clear();
 
   while(!in.eof())
   {
@@ -776,8 +780,10 @@ string CartDebug::loadSymbolFile()
     {
       // Make sure the value doesn't represent a constant
       // For now, we simply ignore constants completely
-      const auto& iter = myUserCLabels.find(value);
-      if(iter == myUserCLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
+      //const auto& iter = myUserCLabels.find(value);
+      //if(iter == myUserCLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
+      const auto& iter = myUserLabels.find(value);
+      if (iter == myUserLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
       {
         // Check for period, and strip leading number
         if(string::size_type pos = label.find_first_of(".", 0) != string::npos)
@@ -1139,7 +1145,7 @@ string CartDebug::saveDisassembly()
       bool codeUsed = (mySystem.getAccessFlags(addr) & CODE);
       bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
       
-      if (myReserved.ZPRAM[addr - 0x80] &&
+      if (myReserved.ZPRAM[addr - 0x80] && 
           myUserLabels.find(addr) == myUserLabels.end()) {
         if (addLine)
           out << "\n";
@@ -1185,7 +1191,7 @@ string CartDebug::saveDisassembly()
     for(const auto& iter: myUserLabels)
       max_len = std::max(max_len, int(iter.second.size()));
     for(const auto& iter: myUserLabels)
-        out << ALIGN(max_len) << iter.second << "= $" << iter.first << "\n";
+      out << ALIGN(max_len) << iter.second << "= $" << iter.first << "\n";
   }
 
   // And finally, output the disassembly

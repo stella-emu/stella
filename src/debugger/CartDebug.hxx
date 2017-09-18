@@ -366,7 +366,7 @@ class CartDebug : public DebuggerSystem
 
     // Mappings from label to address (and vice versa) for constants
     // defined through a DASM lst file
-    AddrToLabel myUserCLabels;
+    // AddrToLabel myUserCLabels;
     // LabelToAddr myUserCAddresses;
 
     // Mappings for labels to addresses for system-defined equates
