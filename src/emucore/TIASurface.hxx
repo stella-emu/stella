@@ -151,6 +151,11 @@ class TIASurface
     */
     void render();
 
+    /**
+    This method renders the current frame again.
+    */
+    void reRender();
+
   private:
     OSystem& myOSystem;
     FrameBuffer& myFB;

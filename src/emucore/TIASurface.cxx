@@ -387,3 +387,49 @@ void TIASurface::render()
     mySLineSurface->render();
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::reRender()
+{
+  uInt32 width = myTIA->width();
+  uInt32 height = myTIA->height();
+  uInt32 pos = 0;
+  uInt32 *outPtr, outPitch;
+
+  myTiaSurface->basePtr(outPtr, outPitch);
+
+  switch (myFilter) 
+  {
+    // for non-phosphor modes, render the frame again
+    case Filter::Normal:
+    case Filter::BlarggNormal:
+      render();
+      break;
+    // for phosphor modes, copy the phosphor framebuffer
+    case Filter::Phosphor:
+      for (uInt32 y = height; y; --y)
+      {
+        memcpy(outPtr, myRGBFramebuffer + pos, width);
+        outPtr += outPitch;
+        pos += width;
+      }
+      break;
+    case Filter::BlarggPhosphor:
+      memcpy(outPtr, myRGBFramebuffer, height * outPitch << 2);
+      break;
+  }
+
+  if (myUsePhosphor)
+  {
+    // Draw TIA image
+    myTiaSurface->setDirty();
+    myTiaSurface->render();
+
+    // Draw overlaying scanlines
+    if (myScanlinesEnabled)
+    {
+      mySLineSurface->setDirty();
+      mySLineSurface->render();
+    }
+  }
+}
