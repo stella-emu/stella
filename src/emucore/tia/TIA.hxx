@@ -264,6 +264,11 @@ class TIA : public Device
     uInt32 frameCycles() const;
 
     /**
+    Answers the total system cycles from the start of the current ROM's emulation.
+    */
+    uInt64 cycles() const;
+
+    /**
       Answers whether the TIA is currently in being rendered
       (we're in between the start and end of drawing a frame).
 

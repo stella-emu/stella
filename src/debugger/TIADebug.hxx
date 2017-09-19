@@ -160,6 +160,8 @@ class TIADebug : public DebuggerSystem
     int scanlinesLastFrame() const;
     int frameCount() const;
     int frameCycles() const;
+    int cyclesLo() const;
+    int cyclesHi() const;
     int clocksThisLine() const;
     bool vsync() const;
     bool vblank() const;

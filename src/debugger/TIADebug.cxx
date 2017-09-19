@@ -701,6 +701,18 @@ int TIADebug::frameCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::cyclesLo() const
+{
+  return (int)myTIA.cycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::cyclesHi() const
+{
+  return (int)(myTIA.cycles() >> 32);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::scanlines() const
 {
   return myTIA.scanlines();
