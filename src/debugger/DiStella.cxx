@@ -281,7 +281,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       }
 
       // Add operand(s)
-      d1 = 0; // not WSYNC by default!
+      ad = d1 = 0; // not WSYNC by default!
       /* Version 2.1 added the extensions to mnemonics */
       switch (addrMode) {
         case ACCUMULATOR:
