@@ -32,18 +32,11 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RewindManager::~RewindManager()
-{
-  for(uInt8 i = 0; i < MAX_SIZE; ++i)
-    delete myStateList[i].data;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::addState(const string& message)
 {
   // Create a new Serializer object if we need one
   if(myStateList[myTop].data == nullptr)
-    myStateList[myTop].data = new Serializer();
+    myStateList[myTop].data = make_unique<Serializer>();
 
   // And use it to store the serialized data and text message
   if(myStateList[myTop].data != nullptr)

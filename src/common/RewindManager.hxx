@@ -21,6 +21,8 @@
 class OSystem;
 class StateManager;
 
+#include "bspf.hxx"
+
 /**
   This class is used to save (and later 'rewind') system save states.
   Essentially, it's a modified circular array-based stack that cleverly deals
@@ -35,7 +37,6 @@ class RewindManager
 {
   public:
     RewindManager(OSystem& system, StateManager& statemgr);
-    virtual ~RewindManager();
 
   public:
     /**
@@ -63,10 +64,8 @@ class RewindManager
     StateManager& myStateManager;
 
     struct SerialData {
-      Serializer* data;
+      unique_ptr<Serializer> data;
       string message;
-
-      SerialData(Serializer* d = nullptr) : data(d) { }
     };
 
     SerialData myStateList[MAX_SIZE];
