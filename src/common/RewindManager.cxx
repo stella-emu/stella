@@ -25,34 +25,24 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
   : myOSystem(system),
-    myStateManager(statemgr),
-    mySize(0),
-    myTop(0)
+    myStateManager(statemgr)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::addState(const string& message)
 {
-  // Create a new Serializer object if we need one
-  if(myStateList[myTop].data == nullptr)
-    myStateList[myTop].data = make_unique<Serializer>();
+  RewindPtr state = make_unique<RewindState>();  // TODO: get this from object pool
+  Serializer& s = state->data;
 
-  // And use it to store the serialized data and text message
-  if(myStateList[myTop].data != nullptr)
+  s.reset();  // rewind Serializer internal buffers
+  if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
-    Serializer& s = *(myStateList[myTop].data);
-    s.reset();
-    if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
-    {
-      myStateList[myTop].message = "Rewind " + message;
+    state->message = "Rewind " + message;
 
-      // Are we still within the allowable size, or are we overwriting an item?
-      mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
-      myTop = (myTop + 1) % MAX_SIZE;
-
-      return true;
-    }
+    // Add to the list  TODO: should check against current size
+    myStateList.emplace_front(std::move(state));
+    return true;
   }
   return false;
 }
@@ -60,31 +50,21 @@ bool RewindManager::addState(const string& message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::rewindState()
 {
-  if(mySize > 0)
+  if(myStateList.size() > 0)
   {
-    mySize--;
-    myTop = myTop == 0 ? MAX_SIZE - 1 : myTop - 1;
-    Serializer& s = *(myStateList[myTop].data);
+    RewindPtr state = std::move(myStateList.front());
+    myStateList.pop_front();  // TODO: add 'state' to object pool
+    Serializer& s = state->data;
 
-    s.reset();
+    s.reset();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
     myOSystem.console().tia().loadDisplay(s);
 
     // Show message indicating the rewind state
-    myOSystem.frameBuffer().showMessage(myStateList[myTop].message);
+    myOSystem.frameBuffer().showMessage(state->message);
 
     return true;
   }
   else
     return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RewindManager::clear()
-{
-  for(uInt8 i = 0; i < MAX_SIZE; ++i)
-    if(myStateList[i].data != nullptr)
-      myStateList[i].data->reset();
-
-  myTop = mySize = 0;
 }

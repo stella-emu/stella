@@ -21,15 +21,16 @@
 class OSystem;
 class StateManager;
 
+#include <list>
 #include "bspf.hxx"
 
 /**
   This class is used to save (and later 'rewind') system save states.
-  Essentially, it's a modified circular array-based stack that cleverly deals
-  with allocation/deallocation of memory.
 
-  Since the stack is circular, the oldest states are automatically overwritten
-  by new ones (up to MAX_SIZE, defined below).
+  TODO: This will eventually be converted to use object pools
+        Currently, it uses a C++ doubly-linked list as a stack, with
+        add/remove happening at the front of the list
+        Also, the additions are currently unbounded
 
   @author  Stephen Anthony
 */
@@ -53,23 +54,23 @@ class RewindManager
     */
     bool rewindState();
 
-    bool empty() const { return mySize == 0; }
-    void clear();
+    bool empty() const { return myStateList.size() == 0; }
+    void clear() { myStateList.clear(); }
 
   private:
     // Maximum number of states to save
-    static constexpr uInt8 MAX_SIZE = 100;
+    static constexpr uInt32 MAX_SIZE = 100;  // FIXME: use this
 
     OSystem& myOSystem;
     StateManager& myStateManager;
 
-    struct SerialData {
-      unique_ptr<Serializer> data;
+    struct RewindState {
+      Serializer data;
       string message;
     };
 
-    SerialData myStateList[MAX_SIZE];
-    uInt8 mySize, myTop;
+    using RewindPtr = unique_ptr<RewindState>;
+    std::list<RewindPtr> myStateList;
 
   private:
     // Following constructors and assignment operators not supported
