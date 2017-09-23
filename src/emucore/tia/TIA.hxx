@@ -38,6 +38,7 @@
 #include "PaddleReader.hxx"
 #include "DelayQueueIterator.hxx"
 #include "Control.hxx"
+#include "System.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -259,14 +260,21 @@ class TIA : public Device
     uInt32 scanlinesLastFrame() const { return myFrameManager.scanlinesLastFrame(); }
 
     /**
-      Answers the system cycles from the start of the current frame.
+      Answers the total system cycles from the start of the emulation.
     */
-    uInt32 frameCycles() const;
+    uInt64 cycles() const { return uInt64(mySystem->cycles()); }
 
     /**
-    Answers the total system cycles from the start of the current ROM's emulation.
+      Answers the frame count from the start of the emulation.
     */
-    uInt64 cycles() const;
+    uInt32 frameCount() const { return myFrameManager.frameCount(); }
+
+    /**
+      Answers the system cycles from the start of the current frame.
+    */
+    uInt32 frameCycles() const {
+      return uInt32(mySystem->cycles() - myCyclesAtFrameStart);
+    }
 
     /**
       Answers whether the TIA is currently in being rendered
@@ -548,10 +556,10 @@ class TIA : public Device
 #ifdef DEBUGGER_SUPPORT
     void createAccessBase();
     /**
-    Query/change the given address type to use the given disassembly flags
+      Query/change the given address type to use the given disassembly flags
 
-    @param address The address to modify
-    @param flags A bitfield of DisasmType directives for the given address
+      @param address The address to modify
+      @param flags A bitfield of DisasmType directives for the given address
     */
     uInt8 getAccessFlags(uInt16 address) const override;
     void setAccessFlags(uInt16 address, uInt8 flags) override;
@@ -729,7 +737,7 @@ class TIA : public Device
     uInt64 myCyclesAtFrameStart;
 
 #ifdef DEBUGGER_SUPPORT
-    // The arrays containing information about every byte of TIA 
+    // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
     BytePtr myAccessBase;
     // The array used to skip the first two TIA access trackings

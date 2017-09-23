@@ -691,7 +691,7 @@ void TIADebug::setENABLOld(bool b)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::frameCount() const
 {
-  return myTIA.myFrameManager.frameCount();
+  return myTIA.frameCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

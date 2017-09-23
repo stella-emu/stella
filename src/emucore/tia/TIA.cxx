@@ -814,18 +814,6 @@ bool TIA::enableColorLoss(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIA::frameCycles() const
-{
-  return uInt32(mySystem->cycles() - myCyclesAtFrameStart);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 TIA::cycles() const
-{
-  return uInt64(mySystem->cycles());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
 {
   uInt8 clocks = clocksThisLine();
