@@ -38,8 +38,9 @@ DrawCounterDecodes& DrawCounterDecodes::DrawCounterDecodes::get()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrawCounterDecodes::DrawCounterDecodes()
 {
-  for (uInt8 *decodes : {myDecodes0, myDecodes1, myDecodes2, myDecodes3,
-                         myDecodes4, myDecodes6})
+  uInt8 *decodeTables[] = {myDecodes0, myDecodes1, myDecodes2, myDecodes3, myDecodes4, myDecodes6};
+
+  for (uInt8 *decodes : decodeTables)
   {
     memset(decodes, 0, 160);
     decodes[156] = 1;
