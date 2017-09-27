@@ -14,6 +14,7 @@
                 "${workspaceRoot}/src/gui",
                 "${workspaceRoot}/src/emucore",
                 "${workspaceRoot}/src/emucore/tia",
+                "${workspaceRoot}/src/emucore/tia/frame-manager",
                 "${workspaceRoot}/src/unix",
                 "${workspaceRoot}/src/debugger",
                 "${workspaceRoot}/src/debugger/gui",
