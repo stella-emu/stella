@@ -71,26 +71,31 @@ OSystemWINDOWS::OSystemWINDOWS()
       basedir = appdata.getShortPath();
       if(basedir.length() > 1 && basedir[basedir.length()-1] != '\\')
         basedir += '\\';
-      basedir += "Stella";
+      basedir += "Stella\\";
     }
     else
-      basedir = ".";  // otherwise, default to current directory
+      basedir = ".\\";  // otherwise, default to current directory
   }
 
   setBaseDir(basedir);
-  setConfigFile(basedir + "\\stella.ini");
+  setConfigFile(basedir + "stella.ini");
+
+  // Create default save/load dir
+  FilesystemNode node(defaultSaveDir());
+  if(!node.exists())
+    node.makeDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWINDOWS::defaultSnapSaveDir()
+string OSystemWINDOWS::defaultSaveDir() const
 {
   HomeFinder homefinder;
-  FilesystemNode desktop(homefinder.getDesktopPath());
-  return desktop.isDirectory() ? desktop.getShortPath() : "~";
+  FilesystemNode documents(homefinder.getDocumentsPath());
+  return documents.isDirectory() ? documents.getShortPath() + "\\Stella\\" : "~\\";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWINDOWS::defaultSnapLoadDir()
+string OSystemWINDOWS::defaultLoadDir() const
 {
-  return defaultSnapSaveDir();
+  return defaultSaveDir();
 }

@@ -111,9 +111,13 @@ namespace BSPF
 
   // Combines 'max' and 'min', and clamps value to the upper/lower value
   // if it is outside the specified range
-  template<typename T> inline T clamp(T a, T l, T u)
+  template<class T> inline T clamp(T val, T lower, T upper)
   {
-    return (a<l) ? l : (a>u) ? u : a;
+    return (val < lower) ? lower : (val > upper) ? upper : val;
+  }
+  template<class T> inline void clamp(T& val, T lower, T upper, T setVal)
+  {
+    if(val < lower || val > upper)  val = setVal;
   }
 
   // Compare two strings, ignoring case

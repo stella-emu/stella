@@ -56,20 +56,20 @@ void CartridgeWD::install(System& system)
 
   // Set the page accessing method for the RAM reading pages
   System::PageAccess read(this, System::PA_READ);
-  for(uInt32 k = 0x1000; k < 0x1040; k += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x1040; addr += System::PAGE_SIZE)
   {
-    read.directPeekBase = &myRAM[k & 0x003F];
-    read.codeAccessBase = &myCodeAccessBase[k & 0x003F];
-    mySystem->setPageAccess(k >> System::PAGE_SHIFT, read);
+    read.directPeekBase = &myRAM[addr & 0x003F];
+    read.codeAccessBase = &myCodeAccessBase[addr & 0x003F];
+    mySystem->setPageAccess(addr, read);
   }
 
   // Set the page accessing method for the RAM writing pages
   System::PageAccess write(this, System::PA_WRITE);
-  for(uInt32 j = 0x1040; j < 0x1080; j += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1040; addr < 0x1080; addr += System::PAGE_SIZE)
   {
-    write.directPokeBase = &myRAM[j & 0x003F];
-    write.codeAccessBase = &myCodeAccessBase[j & 0x003F];
-    mySystem->setPageAccess(j >> System::PAGE_SHIFT, write);
+    write.directPokeBase = &myRAM[addr & 0x003F];
+    write.codeAccessBase = &myCodeAccessBase[addr & 0x003F];
+    mySystem->setPageAccess(addr, write);
   }
 
   // Mirror all access in TIA; by doing so we're taking responsibility
@@ -168,11 +168,10 @@ void CartridgeWD::segmentZero(uInt8 slice)
   System::PageAccess access(this, System::PA_READ);
 
   // Skip first 128 bytes; it is always RAM
-  for(uInt32 address = 0x1080; address < 0x1400;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1080; addr < 0x1400; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x03FF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    mySystem->setPageAccess(addr, access);
   }
   myOffset[0] = offset;
 }
@@ -183,11 +182,10 @@ void CartridgeWD::segmentOne(uInt8 slice)
   uInt16 offset = slice << 10;
   System::PageAccess access(this, System::PA_READ);
 
-  for(uInt32 address = 0x1400; address < 0x1800;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x03FF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    mySystem->setPageAccess(addr, access);
   }
   myOffset[1] = offset;
 }
@@ -198,11 +196,10 @@ void CartridgeWD::segmentTwo(uInt8 slice)
   uInt16 offset = slice << 10;
   System::PageAccess access(this, System::PA_READ);
 
-  for(uInt32 address = 0x1800; address < 0x1C00;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1800; addr < 0x1C00; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x03FF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    mySystem->setPageAccess(addr, access);
   }
   myOffset[2] = offset;
 }
@@ -224,11 +221,10 @@ void CartridgeWD::segmentThree(uInt8 slice, bool map3bytes)
 
   System::PageAccess access(this, System::PA_READ);
 
-  for(uInt32 address = 0x1C00; address < 0x2000;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1C00; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x03FF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    mySystem->setPageAccess(addr, access);
   }
   myOffset[3] = offset;
 }
@@ -261,7 +257,7 @@ bool CartridgeWD::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeWD::getImage(int& size) const
+const uInt8* CartridgeWD::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage;
@@ -275,7 +271,7 @@ bool CartridgeWD::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 64);
-    out.putInt(myCyclesAtBankswitchInit);
+    out.putLong(myCyclesAtBankswitchInit);
     out.putShort(myPendingBank);
   }
   catch(...)
@@ -297,7 +293,7 @@ bool CartridgeWD::load(Serializer& in)
 
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 64);
-    myCyclesAtBankswitchInit = in.getInt();
+    myCyclesAtBankswitchInit = in.getLong();
     myPendingBank = in.getShort();
 
     bank(myCurrentBank);

@@ -41,6 +41,8 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myFire1Event   = Event::JoystickOneFire;
     myFire2Event   = Event::JoystickOneFire5;
   }
+
+  updateAnalogPin(Five, minimumResistance);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

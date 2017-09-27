@@ -20,6 +20,7 @@
 
 class OSystem;
 
+#include "RewindManager.hxx"
 #include "Serializer.hxx"
 
 /**
@@ -32,41 +33,58 @@ class OSystem;
 class StateManager
 {
   public:
+    enum class Mode {
+      Off,
+      Rewind,
+      MovieRecord,
+      MoviePlayback
+    };
+
     /**
-      Create a new statemananger class
+      Create a new statemananger class.
     */
     StateManager(OSystem& osystem);
 
   public:
     /**
-      Answers whether the manager is in record or playback mode
+      Answers whether the manager is in record or playback mode.
     */
-    bool isActive() const { return myActiveMode != kOffMode; }
+    Mode mode() const { return myActiveMode; }
 
-    bool toggleRecordMode();
-    bool toggleRewindMode();
+#if 0
+    /**
+      Toggle movie recording mode (FIXME - currently disabled)
+    */
+    void toggleRecordMode();
+#endif
 
     /**
-      Updates the state of the system based on the currently active mode
+      Toggle state rewind recording mode; this uses the RewindManager
+      for its functionality.
+    */
+    void toggleRewindMode();
+
+    /**
+      Updates the state of the system based on the currently active mode.
     */
     void update();
 
     /**
-      Load a state into the current system
+      Load a state into the current system.
 
       @param slot  The state 'slot' to load state from
     */
     void loadState(int slot = -1);
 
     /**
-      Save the current state from the system
+      Save the current state from the system.
 
       @param slot  The state 'slot' to save into
     */
     void saveState(int slot = -1);
 
     /**
-      Switches to the next higher state slot (circular queue style)
+      Switches to the next higher state slot (circular queue style).
     */
     void changeState();
 
@@ -91,19 +109,16 @@ class StateManager
     bool saveState(Serializer& out);
 
     /**
-      Resets manager to defaults
+      Resets manager to defaults.
     */
     void reset();
 
-  private:
-    enum Mode {
-      kOffMode,
-      kMoviePlaybackMode,
-      kMovieRecordMode,
-      kRewindPlaybackMode,
-      kRewindRecordMode
-    };
+    /**
+      The rewind facility for the state manager
+    */
+    RewindManager& rewindManager() const { return *myRewindManager; }
 
+  private:
     enum {
       kVersion = 001
     };
@@ -123,6 +138,9 @@ class StateManager
     // Serializer classes used to save/load the eventstream
     Serializer myMovieWriter;
     Serializer myMovieReader;
+
+    // Stored savestates to be later rewound
+    unique_ptr<RewindManager> myRewindManager;
 
   private:
     // Following constructors and assignment operators not supported

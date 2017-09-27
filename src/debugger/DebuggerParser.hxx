@@ -20,6 +20,7 @@
 
 #include <functional>
 #include <sstream>
+#include <set>
 
 class Debugger;
 class FilesystemNode;
@@ -64,7 +65,6 @@ class DebuggerParser
     bool getArgs(const string& command, string& verb);
     bool validateArgs(int cmd);
     string eval();
-    string trapStatus(int addr);
     bool saveScriptFile(string file);
 
   private:
@@ -114,7 +114,11 @@ class DebuggerParser
     StringList argStrings;
     uInt32 argCount;
 
-    StringList watches;
+    StringList myWatches;
+
+    // Keep track of traps (read and/or write)
+    std::set<uInt32> myTraps;
+    string trapStatus(uInt32 addr, bool& enabled);
 
     // List of available command methods
     void executeA();

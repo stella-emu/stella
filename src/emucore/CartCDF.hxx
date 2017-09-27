@@ -32,12 +32,12 @@ class System;
 /**
   Cartridge class used for CDF.
 
-  THIS NEEDS TO BE UPDATED
-
-
   There are seven 4K program banks, a 4K Display Data RAM,
-  1K C Varaible and Stack, and the CDF chip.
-  CDF chip access is mapped to $1000 - $103F.
+  1K C Variable and Stack, and the CDF chip.
+  CDF chip access is mapped to $1000 - $103F (both read and write).
+  Program banks are accessible by read/write to $1FF5 - $1FFB.
+
+  FIXME: THIS NEEDS TO BE UPDATED
 
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
             Stephen Anthony, Bradford W. Mott
@@ -72,13 +72,6 @@ class CartridgeCDF : public Cartridge
       @param timing  Enum representing the new console type
     */
     void consoleChanged(ConsoleTiming timing) override;
-
-    /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
 
     /**
       Install cartridge in the specified system.  Invoked by the system
@@ -120,7 +113,7 @@ class CartridgeCDF : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -144,8 +137,6 @@ class CartridgeCDF : public Cartridge
       @return The name of the object
     */
     string name() const override { return "CartridgeCDF"; }
-
-    // uInt8 busOverdrive(uInt16 address) override;
 
     /**
       Used for Thumbulator to pass values back to the cartridge
@@ -209,6 +200,7 @@ class CartridgeCDF : public Cartridge
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
+    void setVersion();
 
   private:
     // The 32K ROM image of the cartridge
@@ -234,14 +226,14 @@ class CartridgeCDF : public Cartridge
     unique_ptr<Thumbulator> myThumbEmulator;
   #endif
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
     // System cycle count from when the last update to music data fetchers occurred
-    Int32 myAudioCycles;
+    uInt64 myAudioCycles;
 
     // ARM cycle count from when the last callFunction() occurred
-    Int32 myARMCycles;
+    uInt64 myARMCycles;
 
     // The audio routines in the driver run in 32-bit mode and take advantage
     // of the FIQ Shadow Registers which are not accessible to 16-bit thumb
@@ -250,16 +242,16 @@ class CartridgeCDF : public Cartridge
     // Thumbulator will trap these calls and pass the appropriate information to
     // the Cartridge Class via callFunction() so it can emulate the 32 bit audio routines.
 
-  /* Register usage for audio:
-   r8  = channel0 accumulator
-   r9  = channel1 accumulator
-   r10 = channel2 accumulator
-   r11 = channel0 frequency
-   r12 = channel1 frequency
-   r13 = channel2 frequency
-   r14 = timer base */
+    /* Register usage for audio:
+      r8  = channel0 accumulator
+      r9  = channel1 accumulator
+      r10 = channel2 accumulator
+      r11 = channel0 frequency
+      r12 = channel1 frequency
+      r13 = channel2 frequency
+      r14 = timer base  */
 
-  // The music counters, ARM FIQ shadow registers r8, r9, r10
+    // The music counters, ARM FIQ shadow registers r8, r9, r10
     uInt32 myMusicCounters[3];
 
     // The music frequency, ARM FIQ shadow registers r11, r12, r13
@@ -288,6 +280,9 @@ class CartridgeCDF : public Cartridge
     TIA* myTIA;
 
     uInt8 myFastJumpActive;
+
+    // version of CDF
+    uInt16 myVersion;
 
   private:
     // Following constructors and assignment operators not supported

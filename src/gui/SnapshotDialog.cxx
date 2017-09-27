@@ -111,7 +111,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   // Snapshot in 1x mode (ignore scaling)
   ypos += mySnapSingle->getHeight() + 4;
   mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
-                                "Disable image filtering (1x mode)");
+                                "Ignore scaling (1x mode)");
   wid.push_back(mySnap1x);
 
   // Add Defaults, OK and Cancel buttons
@@ -156,8 +156,8 @@ void SnapshotDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::setDefaults()
 {
-  mySnapSavePath->setText(instance().defaultSnapSaveDir());
-  mySnapLoadPath->setText(instance().defaultSnapLoadDir());
+  mySnapSavePath->setText(instance().defaultSaveDir());
+  mySnapLoadPath->setText(instance().defaultLoadDir());
 
   mySnapSingle->setState(false);
   mySnap1x->setState(false);

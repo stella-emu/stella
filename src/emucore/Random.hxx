@@ -22,6 +22,7 @@
 
 #include "bspf.hxx"
 #include "OSystem.hxx"
+#include "Serializable.hxx"
 
 /**
   This is a quick-and-dirty random number generator.  It is based on
@@ -30,7 +31,7 @@
 
   @author  Bradford W. Mott
 */
-class Random
+class Random : public Serializable
 {
   public:
     /**
@@ -56,6 +57,59 @@ class Random
     {
       return (myValue = (myValue * 2416 + 374441) % 1771875);
     }
+
+    /**
+      Save the current state of this device to the given Serializer.
+
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    bool save(Serializer& out) const override
+    {
+        try
+        {
+          out.putString(name());
+          out.putInt(myValue);
+        }
+        catch(...)
+        {
+          cerr << "ERROR: Random::save" << endl;
+          return false;
+        }
+
+        return true;
+    }
+
+    /**
+      Load the current state of this device from the given Serializer.
+
+      @param in  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    bool load(Serializer& in) override
+    {
+      try
+      {
+        if(in.getString() != name())
+          return false;
+
+        myValue = in.getInt();
+      }
+      catch(...)
+      {
+        cerr << "ERROR: Random::load" << endl;
+        return false;
+      }
+
+      return true;
+    }
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    string name() const override { return "Random"; }
 
   private:
     // Set the OSystem we're using

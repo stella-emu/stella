@@ -378,31 +378,54 @@ echocheck "compiler version"
 
 have_clang=no
 cc_check_define __clang_version__ && have_clang=yes
+if test $have_clang = no; then
+	cc_check_define __clang__ && have_clang=yes
+fi
 have_gcc=no
 cc_check_define __GNUC__ && have_gcc=yes
 
 if test "$have_clang" = yes; then
-	cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
-	cxx_version=$( $CXX -dM -E -x c /dev/null | grep __clang_version__ | sed 's/^.*[^0-9]\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*$/\1/g' 2>&1)
-	if test "$?" -gt 0; then
-		cxx_version="not found"
-	fi
 
-	case $cxx_version in
-		[3].[4-9]|[3].[4-9].[0-9]|[3].[4-9].[0-9][-.]*|[4-9].[0-9].[0-9])
-			_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
-			_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
+	is_xcode=$( $CXX -dM -E -x c /dev/null | grep __apple_build_version__ )
+
+	if test -n "$is_xcode"; then
+		clang_minor=$( $CXX -dM -E -x c /dev/null | grep __clang_minor__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
+		clang_patch=$( $CXX -dM -E -x c /dev/null | grep __clang_patchlevel__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
+		clang_major=$( $CXX -dM -E -x c /dev/null | grep __clang_major__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
+
+		cxx_version="$clang_major.$clang_minor.$clang_patch"
+		cxx_name="XCode $cxx_version"
+
+		if test $clang_major -ge 8; then
 			cxx_version="$cxx_version, ok"
 			cxx_verc_fail=no
-			;;
-		'not found')
-			cxx_verc_fail=yes
-			;;
-		*)
+		else
 			cxx_version="$cxx_version, bad"
-			cxx_verc_fail=yes
-			;;
-	esac
+			cxx_verc_fail=bad
+		fi
+	else
+		cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
+		cxx_version=$( $CXX -dM -E -x c /dev/null | grep __clang_version__ | sed 's/^.*[^0-9]\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*$/\1/g' 2>&1)
+		if test "$?" -gt 0; then
+			cxx_version="not found"
+		fi
+
+		case $cxx_version in
+			[3].[4-9]|[3].[4-9].[0-9]|[3].[4-9].[0-9][-.]*|[4-9].[0-9].[0-9])
+				_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
+				_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
+				cxx_version="$cxx_version, ok"
+				cxx_verc_fail=no
+				;;
+			'not found')
+				cxx_verc_fail=yes
+				;;
+			*)
+				cxx_version="$cxx_version, bad"
+				cxx_verc_fail=yes
+				;;
+		esac
+	fi
 	CXXFLAGS="$CXXFLAGS"
 	_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
 	add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
@@ -515,6 +538,10 @@ else
 		linux* | openbsd* | freebsd* | kfreebsd* | netbsd* | bsd* | gnu0.* | sunos* | hpux* | beos*)
 			DEFINES="$DEFINES -DUNIX"
 			_host_os=unix
+			;;
+		darwin*)
+			DEFINES="$DEFINES -DUNIX -DDARWIN"
+			_host_os=darwin
 			;;
 		irix*)
 			DEFINES="$DEFINES -DUNIX"
@@ -695,9 +722,15 @@ fi
 
 LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs`"
 LD=$CXX
+
 case $_host_os in
 		unix)
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY"
+			MODULES="$MODULES $SRC/unix"
+			INCLUDES="$INCLUDES -I$SRC/unix"
+			;;
+		darwin)
+			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DOSX_KEYS"
 			MODULES="$MODULES $SRC/unix"
 			INCLUDES="$INCLUDES -I$SRC/unix"
 			;;
@@ -803,3 +836,11 @@ EOF
 
 # This should be taken care of elsewhere, but I'm not sure where
 rm -f stella-conf*
+
+if test "$_host_os" = darwin; then
+	cat <<EOI
+
+WARNING: plain UNIX-style builds on OSX without XCode have degraded functionality
+and are unsupported. Continue on your own risk...
+EOI
+fi

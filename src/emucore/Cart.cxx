@@ -45,10 +45,10 @@ void Cartridge::setAbout(const string& about, const string& type,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::saveROM(ofstream& out) const
 {
-  int size = -1;
+  uInt32 size = 0;
 
   const uInt8* image = getImage(size);
-  if(image == nullptr || size <= 0)
+  if(image == nullptr || size == 0)
   {
     cerr << "save not supported" << endl;
     return false;

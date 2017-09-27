@@ -64,7 +64,7 @@ CartridgeF4Widget::CartridgeF4Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4Widget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   CartDebugWidget::loadConfig();
 }
@@ -90,8 +90,8 @@ string CartridgeF4Widget::bankState()
   static const char* const spot[] = {
     "$FFF4", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-      << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+      << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

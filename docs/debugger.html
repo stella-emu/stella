@@ -541,12 +541,13 @@ that holds 'number of scanlines' on an actual console).</p>
 <table border="1" cellpadding="3">
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td> _bank</td><td> Currently selected bank</td></tr>
-<tr><td> _rwport</td><td> Last address to attempt a read from the cart write port</td></tr>
-<tr><td> _fcount</td><td> Number of frames since emulation started</td></tr>
 <tr><td> _cclocks</td><td> Color clocks on a scanline</td></tr>
+<tr><td> _fcount</td><td> Number of frames since emulation started</td></tr>
+<tr><td> _fcycles</td><td> Number of cycles since frame started</td></tr>
+<tr><td> _rwport</td><td> Last address to attempt a read from the cart write port</td></tr>
 <tr><td> _scan</td><td> Current scanline count</td></tr>
-<tr><td> _vsync</td><td> Whether vertical sync is enabled (1 or 0)</td></tr>
 <tr><td> _vblank</td><td> Whether vertical blank is enabled (1 or 0)</td></tr>
+<tr><td> _vsync</td><td> Whether vertical sync is enabled (1 or 0)</td></tr>
 </table>
 
 <p><b>_scan</b> always contains the current scanline count. You can use
@@ -646,7 +647,7 @@ Type "help 'cmd'" to see extended information about the given command.</p>
   delfunction - Delete function with label xx
      delwatch - Delete watch &lt;xx&gt;
        disasm - Disassemble address xx [yy lines] (default=PC)
-         dump - Dump 128 bytes of memory at address &lt;xx&gt;
+         dump - Dump data at address &lt;xx&gt; [to yy]
          exec - Execute script file &lt;xx&gt;
       exitrom - Exit emulator, return to ROM launcher
         frame - Advance emulation by &lt;xx&gt; frames (default=1)
@@ -676,9 +677,9 @@ listfunctions - List user-defined functions
       runtopc - Run until PC is set to value xx
             s - Set Stack Pointer to value xx
          save - Save breaks, watches, traps to file xx
-   saveconfig - Save Distella config file
-      savedis - Save Distella disassembly
-      saverom - Save (possibly patched) ROM
+   saveconfig - Save Distella config file (with default name)
+      savedis - Save Distella disassembly (with default name)
+      saverom - Save (possibly patched) ROM (with default name)
       saveses - Save console session to file xx
      savesnap - Save current TIA image to PNG file
     savestate - Save emulator state xx (valid args 0-9)

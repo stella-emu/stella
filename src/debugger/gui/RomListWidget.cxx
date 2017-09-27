@@ -67,7 +67,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _labelWidth = std::max(16, int(0.20 * (numchars - 12))) * fontWidth - 1;
   _bytesWidth = 12 * fontWidth;
 
-  //////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////
   // Add checkboxes
   int ypos = _y + 2;
 
@@ -461,7 +461,7 @@ void RomListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  int ccountw = _fontWidth << 2,
+  int ccountw = _fontWidth << 3,
       large_disasmw = _w - l.x() - _labelWidth,
       medium_disasmw = large_disasmw - r.width(),
       small_disasmw = medium_disasmw - (ccountw << 1),
@@ -582,7 +582,7 @@ void RomListWidget::startEditMode()
     {
       case CartDebug::GFX:
       case CartDebug::PGFX:
-        _base = DiStella::settings.gfx_format;
+        _base = DiStella::settings.gfxFormat;
         break;
       default:
         _base = Common::Base::format();

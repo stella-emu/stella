@@ -30,13 +30,18 @@ class System;
   This is an extended version of the CBS RAM Plus bankswitching scheme
   supported by the Harmony cartridge.
 
-  There are six (or seven) 4K banks and 256 bytes of RAM.  The 256 bytes
-  of RAM can be loaded/saved to Harmony cart flash, which is emulated by
-  storing in a file.
+  There are six (or seven) 4K banks, accessible by read/write to $1FF5 -
+  $1FFA (or $1FFB), and 256 bytes of RAM.
 
-  For 29K versions of the scheme, the first 1K is ARM code
-  (implements actual bankswitching on the Harmony cart), which is
-  completely ignored by the emulator.
+  The 256 bytes of RAM can be loaded/saved to Harmony cart flash by
+  accessing $1FF4 (see ramReadWrite() for more information), which is
+  emulated by storing in a file.
+  RAM read port is $1100 - $11FF, write port is $1000 - $10FF.
+
+  For 29K versions of the scheme, the first 1K is ARM code (implements
+  actual bankswitching on the Harmony cart), which is completely ignored
+  by the emulator.  Also supported is a 32K variant.  In any event, only
+  data at 1K - 29K of the ROM is used.
 
   @author  Chris D. Walton
 */
@@ -101,7 +106,7 @@ class CartridgeFA2 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -205,8 +210,8 @@ class CartridgeFA2 : public Cartridge
     // of internal RAM to Harmony cart flash
     string myFlashFile;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

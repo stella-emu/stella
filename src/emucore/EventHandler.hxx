@@ -167,10 +167,10 @@ class EventHandler
 
     inline bool kbdAlt(int mod) const
     {
-  #ifndef BSPF_MAC_OSX
-      return (mod & KBDM_ALT);
-  #else
+  #if defined(BSPF_MAC_OSX) || defined(OSX_KEYS)
       return (mod & KBDM_GUI);
+  #else
+      return (mod & KBDM_ALT);
   #endif
     }
 
@@ -198,6 +198,12 @@ class EventHandler
       @param value The value for the event
     */
     void handleEvent(Event::Type type, Int32 value);
+
+    /**
+      Handle events that must be processed each time a new console is
+      created.  Typically, these are events set by commandline arguments.
+    */
+    void handleConsoleStartupEvents();
 
     bool frying() const { return myFryingFlag; }
 
@@ -536,9 +542,6 @@ class EventHandler
 
     void setEventState(State state);
 
-    // Callback function invoked by the event-reset timer
-    static uInt32 resetEventsCallback(uInt32 interval, void* param);
-
   private:
     // Structure used for action menu items
     struct ActionList {
@@ -582,6 +585,19 @@ class EventHandler
     // Sometimes an extraneous mouse motion event occurs after a video
     // state change; we detect when this happens and discard the event
     bool mySkipMouseMotion;
+
+    // Sometimes key combos with the Alt key become 'stuck' after the
+    // window changes state, and we want to ignore that event
+    // For example, press Alt-Tab and then upon re-entering the window,
+    // the app receives 'tab'; obviously the 'tab' shouldn't be happening
+    // So we keep track of the cases that matter (for now, Alt-Tab)
+    // and swallow the event afterwards
+    // Basically, the initial event sets the variable to 1, and upon
+    // returning to the app (ie, receiving EVENT_WINDOW_FOCUS_GAINED),
+    // the count is updated to 2, but only if it was already updated to 1
+    // TODO - This may be a bug in SDL, and might be removed in the future
+    //        It only seems to be an issue in Linux
+    uInt8 myAltKeyCounter;
 
     // Used for continuous snapshot mode
     uInt32 myContSnapshotInterval;

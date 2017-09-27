@@ -27,6 +27,8 @@ class System;
 #endif
 
 /**
+  FIXME: This scheme is not yet fully implemented.
+
   The 'Chetiry' bankswitch scheme was developed by Chris D. Walton for a
   Tetris clone game by the same name.  It makes use of a Harmony cart,
   whereby ARM code in bank 0 is executed to implement the bankswitch scheme.
@@ -129,13 +131,6 @@ class CartridgeCTY : public Cartridge
     void reset() override;
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
@@ -175,7 +170,7 @@ class CartridgeCTY : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -297,14 +292,14 @@ class CartridgeCTY : public Cartridge
     // of internal RAM to Harmony cart EEPROM
     string myEEPROMFile;
 
-    // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

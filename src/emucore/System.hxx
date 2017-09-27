@@ -59,8 +59,11 @@ class System : public Serializable
     // Amount to shift an address by to determine what page it's on
     static constexpr uInt16 PAGE_SHIFT = 6;
 
+    // Size of a page
+    static constexpr uInt16 PAGE_SIZE = (1 << PAGE_SHIFT);
+
     // Mask to apply to an address to obtain its page offset
-    static constexpr uInt16 PAGE_MASK = (1 << PAGE_SHIFT) - 1;
+    static constexpr uInt16 PAGE_MASK = PAGE_SIZE - 1;
 
     // Number of pages in the system
     static constexpr uInt16 NUM_PAGES = 1 << (13 - PAGE_SHIFT);
@@ -126,12 +129,12 @@ class System : public Serializable
 
   public:
     /**
-      Get the number of system cycles which have passed since the last
-      time cycles were reset or the system was reset.
+      Get the number of system cycles which have passed since the
+      system was created.
 
       @return The number of system cycles which have passed
     */
-    uInt32 cycles() const { return myCycles; }
+    uInt64 cycles() const { return myCycles; }
 
     /**
       Increment the system cycles by the specified number of cycles.
@@ -139,14 +142,6 @@ class System : public Serializable
       @param amount The amount to add to the system cycles counter
     */
     void incrementCycles(uInt32 amount) { myCycles += amount; }
-
-    /**
-      Reset the system cycle count to zero.  The first thing that
-      happens is that all devices are notified of the reset by invoking
-      their systemCyclesReset method then the system cycle count is
-      reset to zero.
-    */
-    void resetCycles();
 
     /**
       Informs all attached devices that the console type has changed.
@@ -215,7 +210,7 @@ class System : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value);
+    void poke(uInt16 address, uInt8 value, uInt8 flags = 0);
 
     /**
       Lock/unlock the data bus. When the bus is locked, peek() and
@@ -306,23 +301,23 @@ class System : public Serializable
     };
 
     /**
-      Set the page accessing method for the specified page.
+      Set the page accessing method for the specified address.
 
-      @param page The page accessing methods should be set for
+      @param addr   The address/page accessing methods should be set for
       @param access The accessing methods to be used by the page
     */
-    void setPageAccess(uInt16 page, const PageAccess& access) {
-      myPageAccessTable[page] = access;
+    void setPageAccess(uInt16 addr, const PageAccess& access) {
+      myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT] = access;
     }
 
     /**
-      Get the page accessing method for the specified page.
+      Get the page accessing method for the specified address.
 
-      @param page The page to get accessing methods for
+      @param addr  The address/page to get accessing methods for
       @return The accessing methods used by the page
     */
-    const PageAccess& getPageAccess(uInt16 page) const {
-      return myPageAccessTable[page];
+    const PageAccess& getPageAccess(uInt16 addr) const {
+      return myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
     }
 
     /**
@@ -396,8 +391,8 @@ class System : public Serializable
     // Cartridge device attached to the system
     Cartridge& myCart;
 
-    // Number of system cycles executed since the last reset
-    uInt32 myCycles;
+    // Number of system cycles executed since last reset
+    uInt64 myCycles;
 
     // Null device to use for page which are not installed
     NullDevice myNullDevice;

@@ -61,13 +61,6 @@ class M6532 : public Device
     void reset() override;
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Update the entire digital and analog pin state of ports A and B.
     */
     void update();
@@ -146,6 +139,17 @@ class M6532 : public Device
     uInt8 timint();
     Int32 intimClocks();
     uInt32 timerClocks() const;
+#ifdef DEBUGGER_SUPPORT
+    void createAccessBases();
+    /**
+    Query/change the given address type to use the given disassembly flags
+
+    @param address The address to modify
+    @param flags A bitfield of DisasmType directives for the given address
+    */
+    uInt8 getAccessFlags(uInt16 address) const override;
+    void setAccessFlags(uInt16 address, uInt8 flags) override;
+#endif // DEBUGGER_SUPPORT
 
   private:
     // Accessible bits in the interrupt flag register
@@ -178,10 +182,10 @@ class M6532 : public Device
     bool myWrappedThisCycle;
 
     // Cycle when the timer set. Debugging only.
-    Int32 mySetTimerCycle;
+    uInt64 mySetTimerCycle;
 
     // Last cycle considered in emu updates
-    Int32 myLastCycle;
+    uInt64 myLastCycle;
 
     // Data Direction Register for Port A
     uInt8 myDDRA;
@@ -204,6 +208,22 @@ class M6532 : public Device
 
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
+
+#ifdef DEBUGGER_SUPPORT
+    // The arrays containing information about every byte of RIOT 
+    // indicating whether and how (RW) it is used.
+    BytePtr myRAMAccessBase;
+    BytePtr myStackAccessBase;
+    BytePtr myIOAccessBase;
+    // The array used to skip the first ZP access tracking
+    BytePtr myZPAccessDelay;
+
+    static constexpr uInt16
+      RAM_SIZE = 0x80, RAM_MASK = RAM_SIZE - 1,
+      STACK_SIZE = RAM_SIZE, STACK_MASK = RAM_MASK, STACK_BIT = 0x100,
+      IO_SIZE = 0x20, IO_MASK = IO_SIZE - 1, IO_BIT = 0x200,
+      ZP_DELAY = 1;
+#endif // DEBUGGER_SUPPORT
 
   private:
     // Following constructors and assignment operators not supported

@@ -28,7 +28,7 @@ class System;
 
 /**
   Bankswitching method as defined/created by John Payson (aka Supercat),
-  documented at http://www.casperkitty.com/stella/cartfmt.htm.
+  documented at https://stella-emu.github.io/4A50.html.
 
   In this bankswitching scheme the 2600's 4K cartridge address space
   is broken into four segments.  The first 2K segment accesses any 2K
@@ -43,6 +43,12 @@ class System;
   many different ways.  It contains so many hotspots and possibilities
   for the ROM address space to change that we just consider the bank to
   have changed on every poke operation (for any RAM) or an actual bankswitch.
+
+  NOTE: This scheme hasn't been fully implemented, and may never be (there
+        is only one test ROM, and it hasn't been extended any further).
+        In particular, the following functionality is missing:
+          - hires helper functions
+          - 1E00 page wrap
 
   @author  Eckhard Stolberg & Stephen Anthony
 */
@@ -90,7 +96,7 @@ class Cartridge4A50 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.

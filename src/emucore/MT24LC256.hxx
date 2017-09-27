@@ -50,15 +50,11 @@ class MT24LC256
     void writeSDA(bool state);
     void writeSCL(bool state);
 
+    /** Called when the system is being reset */
+    void systemReset();
+
     /** Erase entire EEPROM to known state ($FF) */
     void erase();
-
-    /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset();
 
   private:
     // I2C access code provided by Supercat
@@ -85,10 +81,10 @@ class MT24LC256
     bool myTimerActive;
 
     // Indicates when the timer was set
-    uInt32 myCyclesWhenTimerSet;
+    uInt64 myCyclesWhenTimerSet;
 
     // Indicates when the SDA and SCL pins were set/written
-    uInt32 myCyclesWhenSDASet, myCyclesWhenSCLSet;
+    uInt64 myCyclesWhenSDASet, myCyclesWhenSCLSet;
 
     // The file containing the EEPROM data
     string myDataFile;

@@ -9,8 +9,104 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===========================================================================
-                               Release History
+                              Release History
 ===========================================================================
+
+5.0.2 to 5.0.3: (August xx, 2017)
+
+  * Huge improvements to the disassembly view in the debugger:
+    - TODO: add items ...
+
+  * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc).
+
+  * Fixed a bug in ystart autodetection that could cause screen jumps.
+
+  * Fixed several bugs in holdselect, holdreset and holdjoyX commandline
+    arguments; these now work as expected.
+
+  * Fixed bug in TIA collision handling; it is now disabled in VBlank.
+
+  * Fixed wrong display of HM values in debugger after 'HMCLR' has been
+    executed.
+
+  * Fixed bug with the debugger 'savedis' command in Windows; it wasn't
+    actually saving the files at all.  This has never been reported
+    before, so I guess it shows how many people use that functionality.
+
+  * The debugger 'savedis', 'saverom' and 'saveses' now save files in
+    a default, user-visible directory (see the documentation for more
+    information).  In the case of 'saveses', the filename is now named
+    based on the date and time of when the command was entered.
+
+  * Fixed bug with saving snapshots in 1x mode; there was graphical
+    corruption in some cases.  Such snapshots also now include any TV
+    effects / phosphor blending currently in use.
+
+  * Fixed regular-sized snapshots when phosphor effect was enabled;
+    sometimes the image was 'double-blended', resulting in a snapshot that
+    was too dark.
+
+  * Added debugger pseudo-register '_fcycles', which gives the number of
+    CPU cycles that have occurred since the frame started.
+
+  * Extended debugger 'dump' command to take a second argument, indicating
+    the end of the range to dump data.
+
+  * Improved emulation of 'FE' bankswitch scheme (no user-visible changes,
+    but internally the emulation is much more accurate compared to the
+    real thing).  Related to this, improved the debugger support for this
+    scheme (you can now switch banks in the debugger view).
+
+  * Added ROM properties for 'Scramble' ROMs, and updated info for all
+    "Champ Games" ROMs.
+
+  * Added ROM properties for 'Zippy the Porcupine' ROMs, and updated
+    info for all "Chris Spry (Sprybug)" ROMs.
+
+  * Fix error when building with uClibc-ng for ARM (thanks to Sergio Prado).
+
+  * Updated included PNG library to latest stable version.
+
+-Have fun!
+
+
+5.0.1 to 5.0.2: (August 20, 2017)
+
+  * Improved emulation of Trakball controller, eliminating bias in left/
+    right directions.  Thanks to Thomas Jentzsch for the idea and code.
+    Related to this, added 'tsense' commandline argument and associated
+    UI item, to allow changing sensitivity of mouse trackball emulation.
+
+  * Added preliminary support for multi-threading in the Blargg TV effects
+    code.  This is still a WIP; more improvements are coming.  Related to
+    this, further optimized the TIA rendering code.  Also added 'threads'
+    commandline argument and associated UI item to enable/disable
+    multi-threading.  Thanks to Thomas Jentzsch for the bulk of the work
+    in this area.
+
+  * Blargg TV effects now no longer cut off the right side of the image
+    (by several pixels) in certain cases.
+
+  * Updated CDF scheme to latest version from Spiceware.  In addition,
+    this scheme now supports versioning, so older and newer ROMs will
+    continue to work.
+
+  * Fixed an annoying bug in Linux, where Alt-Tab'ing out of a window and
+    then back again would pass a 'Tab' key event to the app, which in
+    most cases would navigate to the next UI element.
+
+  * Fixed potential issue with state file saving and the debugger; under
+    certain circumstances a rewind would give a different state than
+    before (note that the state file format has changed because of this).
+
+  * Fixed lockups when entering the debugger under certain circumstances.
+
+  * The debugger 'listtraps' command now shows all traps set, not just
+    the first one(s).
+
+  * Reverted joystick changes for Decathlon ROMs from last release, as
+    it was added by mistake.
+
 
 5.0 to 5.0.1: (July 23, 2017)
 
@@ -24,8 +120,6 @@
   * Added 'Hunchy II' from Chris Walton (cd-w) to ROM properties database.
 
   * Codebase now uses C++14 features.
-
--Have fun!
 
 
 4.7.3 to 5.0: (July 16, 2017)

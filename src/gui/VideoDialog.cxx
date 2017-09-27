@@ -188,6 +188,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Center window (in windowed mode)
   myCenter = new CheckboxWidget(myTab, font, xpos, ypos, "Center window");
   wid.push_back(myCenter);
+  ypos += lineHeight + 4;
+
+  // Use multi-threading
+  myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos, "Use multi-threading");
+  wid.push_back(myUseThreads);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -437,6 +442,9 @@ void VideoDialog::loadConfig()
   // Fast loading of Supercharger BIOS
   myFastSCBios->setState(instance().settings().getBool("fastscbios"));
 
+  // Multi-threaded rendering
+  myUseThreads->setState(instance().settings().getBool("threads"));
+
   // TV Mode
   myTVMode->setSelected(
     instance().settings().getString("tv.filter"), "0");
@@ -530,6 +538,11 @@ void VideoDialog::saveConfig()
   // Fast loading of Supercharger BIOS
   instance().settings().setValue("fastscbios", myFastSCBios->getState());
 
+  // Multi-threaded rendering
+  instance().settings().setValue("threads", myUseThreads->getState());
+  if(instance().hasConsole())
+    instance().frameBuffer().tiaSurface().ntsc().enableThreading(myUseThreads->getState());
+
   // TV Mode
   instance().settings().setValue("tv.filter",
     myTVMode->getSelectedTag().toString());
@@ -607,6 +620,7 @@ void VideoDialog::setDefaults()
       myUIMessages->setState(true);
       myCenter->setState(false);
       myFastSCBios->setState(true);
+      myUseThreads->setState(false);
       break;
     }
 

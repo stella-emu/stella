@@ -156,9 +156,6 @@
     <ClCompile Include="..\emucore\CartFE.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\CartMC.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\CartSB.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -229,9 +226,6 @@
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\Settings.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\StateManager.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\Switches.cxx">
@@ -669,9 +663,6 @@
     <ClCompile Include="..\debugger\gui\CartFEWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartMCWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartSBWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -816,15 +807,6 @@
     <ClCompile Include="..\emucore\tia\VblankManager.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\AmigaMouse.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\AtariMouse.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\TrakBall.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -848,6 +830,15 @@
     </ClCompile>
     <ClCompile Include="..\gui\ColorWidget.cxx">
       <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\PointingDevice.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\RewindManager.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\StateManager.cxx">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -962,9 +953,6 @@
     <ClInclude Include="..\emucore\CartFE.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\CartMC.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
     <ClInclude Include="..\emucore\CartSB.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -1056,9 +1044,6 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\Sound.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\StateManager.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\Switches.hxx">
@@ -1514,9 +1499,6 @@
     <ClInclude Include="..\debugger\gui\CartFEWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartMCWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\CartSBWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
@@ -1723,6 +1705,15 @@
     </ClInclude>
     <ClInclude Include="..\gui\ColorWidget.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\PointingDevice.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\RewindManager.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\StateManager.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

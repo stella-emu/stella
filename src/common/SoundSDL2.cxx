@@ -227,12 +227,6 @@ void SoundSDL2::adjustVolume(Int8 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::adjustCycleCounter(Int32 amount)
-{
-  myLastRegisterSetCycle += amount;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setChannels(uInt32 channels)
 {
   if(channels == 1 || channels == 2)
@@ -249,7 +243,7 @@ void SoundSDL2::setFrameRate(float framerate)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::set(uInt16 addr, uInt8 value, Int32 cycle)
+void SoundSDL2::set(uInt16 addr, uInt8 value, uInt64 cycle)
 {
   SDL_LockAudio();
 
@@ -261,11 +255,7 @@ void SoundSDL2::set(uInt16 addr, uInt8 value, Int32 cycle)
   // the sound to "scale" correctly, we have to know the games real frame
   // rate (e.g., 50 or 60) and the currently emulated frame rate. We use these
   // values to "scale" the time before the register change occurs.
-  RegWrite info;
-  info.addr = addr;
-  info.value = value;
-  info.delta = delta;
-  myRegWriteQueue.enqueue(info);
+  myRegWriteQueue.enqueue(addr, value, delta);
 
   // Update last cycle counter to the current cycle
   myLastRegisterSetCycle = cycle;
@@ -390,7 +380,7 @@ bool SoundSDL2::save(Serializer& out) const
       for(int i = 0; i < 6; ++i)
         out.putByte(0);
 
-    out.putInt(myLastRegisterSetCycle);
+    out.putLong(myLastRegisterSetCycle);
   }
   catch(...)
   {
@@ -427,7 +417,7 @@ bool SoundSDL2::load(Serializer& in)
       for(int i = 0; i < 6; ++i)
         in.getByte();
 
-    myLastRegisterSetCycle = in.getInt();
+    myLastRegisterSetCycle = in.getLong();
   }
   catch(...)
   {
@@ -476,14 +466,17 @@ double SoundSDL2::RegWriteQueue::duration() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::RegWriteQueue::enqueue(const RegWrite& info)
+void SoundSDL2::RegWriteQueue::enqueue(uInt16 addr, uInt8 value, double delta)
 {
   // If an attempt is made to enqueue more than the queue can hold then
   // we'll enlarge the queue's capacity.
   if(mySize == myCapacity)
     grow();
 
-  myBuffer[myTail] = info;
+  RegWrite& reg = myBuffer[myTail];
+  reg.addr  = addr;
+  reg.value = value;
+  reg.delta = delta;
   myTail = (myTail + 1) % myCapacity;
   ++mySize;
 }

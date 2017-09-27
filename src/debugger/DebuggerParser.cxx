@@ -284,16 +284,16 @@ int DebuggerParser::decipher_arg(const string& str)
 string DebuggerParser::showWatches()
 {
   ostringstream buf;
-  for(uInt32 i = 0; i < watches.size(); i++)
+  for(uInt32 i = 0; i < myWatches.size(); ++i)
   {
-    if(watches[i] != "")
+    if(myWatches[i] != "")
     {
       // Clear the args, since we're going to pass them to eval()
       argStrings.clear();
       args.clear();
 
       argCount = 1;
-      argStrings.push_back(watches[i]);
+      argStrings.push_back(myWatches[i]);
       args.push_back(decipher_arg(argStrings[0]));
       if(args[0] < 0)
         buf << "BAD WATCH " << (i+1) << ": " << argStrings[0] << endl;
@@ -534,13 +534,14 @@ string DebuggerParser::eval()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::trapStatus(int addr)
+string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
 {
   string result;
   result += Base::toString(addr);
   result += ": ";
   bool r = debugger.readTrap(addr);
   bool w = debugger.writeTrap(addr);
+  enabled = r || w;
   if(r && w)
     result += "read|write";
   else if(r)
@@ -550,8 +551,7 @@ string DebuggerParser::trapStatus(int addr)
   else
     result += "none";
 
-  // TODO - technically, we should determine if the label is read or write
-  const string& l = debugger.cartDebug().getLabel(addr, true);
+  const string& l = debugger.cartDebug().getLabel(addr, !w);
   if(l != "") {
     result += "  (";
     result += l;
@@ -570,11 +570,11 @@ bool DebuggerParser::saveScriptFile(string file)
   ofstream out(file);
 
   FunctionDefMap funcs = debugger.getFunctionDefMap();
-  for(const auto& i: funcs)
-    out << "function " << i.first << " { " << i.second << " }" << endl;
+  for(const auto& f: funcs)
+    out << "function " << f.first << " { " << f.second << " }" << endl;
 
-  for(const auto& i: watches)
-    out << "watch " << i << endl;
+  for(const auto& w: myWatches)
+    out << "watch " << w << endl;
 
   for(uInt32 i = 0; i < 0x10000; ++i)
     if(debugger.breakPoint(i))
@@ -735,6 +735,7 @@ void DebuggerParser::executeClearconfig()
 // "cleartraps"
 void DebuggerParser::executeCleartraps()
 {
+  myTraps.clear();
   debugger.clearAllTraps();
   commandResult << "all traps cleared";
 }
@@ -743,7 +744,7 @@ void DebuggerParser::executeCleartraps()
 // "clearwatches"
 void DebuggerParser::executeClearwatches()
 {
-  watches.clear();
+  myWatches.clear();
   commandResult << "all watches cleared";
 }
 
@@ -856,9 +857,9 @@ void DebuggerParser::executeDelfunction()
 void DebuggerParser::executeDelwatch()
 {
   int which = args[0] - 1;
-  if(which >= 0 && which < int(watches.size()))
+  if(which >= 0 && which < int(myWatches.size()))
   {
-    Vec::removeAt(watches, which);
+    Vec::removeAt(myWatches, which);
     commandResult << "removed watch";
   }
   else
@@ -890,16 +891,37 @@ void DebuggerParser::executeDisasm()
 // "dump"
 void DebuggerParser::executeDump()
 {
-  for(int i = 0; i < 8; ++i)
+  auto dump = [&](int start, int end)
   {
-    int start = args[0] + i*16;
-    commandResult << Base::toString(start) << ": ";
-    for(int j = 0; j < 16; ++j)
+    for(int i = start; i <= end; i += 16)
     {
-      commandResult << Base::toString(debugger.peek(start+j)) << " ";
-      if(j == 7) commandResult << "- ";
+      // Print label every 16 bytes
+      commandResult << Base::toString(i) << ": ";
+
+      for(int j = i; j < i+16 && j <= end; ++j)
+      {
+        commandResult << Base::toString(debugger.peek(j)) << " ";
+        if(j == i+7 && j != end) commandResult << "- ";
+      }
+      commandResult << endl;
     }
-    if(i != 7) commandResult << endl;
+  };
+
+  // Error checking
+  if(argCount > 1 && args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  if(argCount == 1)
+    dump(args[0], args[0] + 127);
+  else if(argCount == 2)
+    dump(args[0], args[1]);
+  else
+  {
+    commandResult << "wrong number of arguments";
+    return;
   }
 }
 
@@ -1096,19 +1118,13 @@ void DebuggerParser::executeListfunctions()
 // "listtraps"
 void DebuggerParser::executeListtraps()
 {
-  int count = 0;
-
-  for(uInt32 i = 0; i <= 0xffff; ++i)
+  if(myTraps.size() > 0)
   {
-    if(debugger.readTrap(i) || debugger.writeTrap(i))
-    {
-      commandResult << trapStatus(i) << " + mirrors" << endl;
-      count++;
-      break;
-    }
+    bool enabled = true;
+    for(const auto& trap: myTraps)
+      commandResult << trapStatus(trap, enabled) << " + mirrors" << endl;
   }
-
-  if(!count)
+  else
     commandResult << "no traps set";
 }
 
@@ -1388,10 +1404,20 @@ void DebuggerParser::executeSaverom()
 // "saveses"
 void DebuggerParser::executeSaveses()
 {
-  if(debugger.prompt().saveBuffer(argStrings[0]))
-    commandResult << "saved session to file " << argStrings[0];
+  // Create a file named with the current date and time
+  time_t currtime;
+  struct tm* timeinfo;
+  char buffer[80];
+
+  time(&currtime);
+  timeinfo = localtime(&currtime);
+  strftime(buffer, 80, "session_%F_%H-%M-%S.txt", timeinfo);
+
+  FilesystemNode file(debugger.myOSystem.defaultSaveDir() + buffer);
+  if(debugger.prompt().saveBuffer(file))
+    commandResult << "saved " + file.getShortPath() + " OK";
   else
-    commandResult << red("I/O error");
+    commandResult << "Unable to save session";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1570,7 +1596,12 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
     }
   }
 
-  commandResult << trapStatus(addr) << " + mirrors" << endl;
+  bool trapEnabled = false;
+  const string& result = trapStatus(addr, trapEnabled);
+  if(trapEnabled) myTraps.insert(addr);
+  else            myTraps.erase(addr);
+
+  commandResult << result << " + mirrors" << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1629,7 +1660,7 @@ void DebuggerParser::executeV()
 // "watch"
 void DebuggerParser::executeWatch()
 {
-  watches.push_back(argStrings[0]);
+  myWatches.push_back(argStrings[0]);
   commandResult << "added watch \"" << argStrings[0] << "\"";
 }
 
@@ -1875,11 +1906,13 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "dump",
-    "Dump 128 bytes of memory at address <xx>",
-    "Example: dump f000",
+    "Dump data at address <xx> [to yy]",
+    "Examples:\n"
+    "  dump f000 - dumps 128 bytes @ f000\n"
+    "  dump f000 f0ff - dumps all bytes from f000 to f0ff",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeDump)
   },
 
@@ -2179,8 +2212,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saveconfig",
-    "Save Distella config file",
-    "Example: saveconfig file.cfg",
+    "Save Distella config file (with default name)",
+    "Example: saveconfig",
     false,
     false,
     { kARG_END_ARGS },
@@ -2189,8 +2222,9 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "savedis",
-    "Save Distella disassembly",
-    "Example: savedis file.asm",
+    "Save Distella disassembly (with default name)",
+    "Example: savedis\n"
+    "NOTE: saves to default save location",
     false,
     false,
     { kARG_END_ARGS },
@@ -2199,8 +2233,9 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saverom",
-    "Save (possibly patched) ROM",
-    "Example: savedrom file.bin",
+    "Save (possibly patched) ROM (with default name)",
+    "Example: saverom\n"
+    "NOTE: saves to default save location",
     false,
     false,
     { kARG_END_ARGS },
@@ -2209,11 +2244,12 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saveses",
-    "Save console session to file xx",
-    "Example: saveses session.txt",
-    true,
+    "Save console session",
+    "Example: saveses\n"
+    "NOTE: saves to default save location",
     false,
-    { kARG_FILE, kARG_END_ARGS },
+    false,
+    { kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaveses)
   },
 

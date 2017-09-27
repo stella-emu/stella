@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 5.0.1</b></h4></center>
+  <center><h4><b>Release 5.0.2</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -2039,14 +2039,21 @@
       <td><pre>-dsense &lt;number&gt;</pre></td>
       <td>Sensitivity for emulation of paddles when using a digital device
       (ie, joystick digital axis or button, keyboard key, etc).
-      Valid range of values is from 1 to 10, with larger numbers causing
+      Valid range of values is from 1 to 20, with larger numbers causing
       faster movement.</td>
     </tr>
 
     <tr>
       <td><pre>-msense &lt;number&gt;</pre></td>
       <td>Sensitivity for emulation of paddles when using a mouse.
-      Valid range of values is from 1 to 15, with larger numbers causing
+      Valid range of values is from 1 to 20, with larger numbers causing
+      faster movement.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of trackball controllers when using a mouse.
+      Valid range of values is from 1 to 20, with larger numbers causing
       faster movement.</td>
     </tr>
 
@@ -2080,6 +2087,11 @@
     <tr>
       <td><pre>-fastscbios &lt;1|0&gt;</pre></td>
       <td>Disable Supercharger BIOS progress loading bars.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-threads &lt;1|0&gt;</pre></td>
+      <td>Enable multi-threaded video rendering (may not improve performance on all systems).</td>
     </tr>
 
     <tr>
@@ -2284,23 +2296,29 @@
     <tr>
       <td><pre>-holdjoy0 &lt;U,D,L,R,F&gt;</pre></td>
       <td>Start the emulator with the left joystick direction/button held down
-        (ie, use 'UF' for up and fire).</td>
+        (ie, use 'UF' for up and fire).  After entering the emulation, you will
+        have to press and release the direction again to release the event.</td>
     </tr>
 
     <tr>
       <td><pre>-holdjoy1 &lt;U,D,L,R,F&gt;</pre></td>
       <td>Start the emulator with the right joystick direction/button held down
-        (ie, use 'UF' for up and fire).</td>
+        (ie, use 'UF' for up and fire).  After entering the emulation, you will
+        have to press and release the direction again to release the event.</td>
     </tr>
 
     <tr>
       <td><pre>-holdselect</pre></td>
-      <td>Start the emulator with the Game Select switch held down.</td>
+      <td>Start the emulator with the Game Select switch held down.  After entering
+        the emulation, you will have to press and release 'Select' to release the
+        event.</td>
     </tr>
 
     <tr>
       <td><pre>-holdreset</pre></td>
-      <td>Start the emulator with the Game Reset switch held down.</td>
+      <td>Start the emulator with the Game Reset switch held down.  After entering
+        the emulation, you will have to press and release 'Reset' to release the
+        event.</td>
     </tr>
 
     <tr>
@@ -2456,6 +2474,7 @@
           <tr><td>Fast SC/AR BIOS</td><td>skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>attempt to center application window</td><td>-center</td></tr>
+          <tr><td>Use multi-threading</td><td>enable multi-threaded rendering</td><td>-threads</td></tr>
         </table>
       </td>
     </tr>
@@ -2527,7 +2546,7 @@
   <p><b>Input Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
-      <td><img src="graphics/options_input.png"></td>
+      <td><img src="graphics/eventmapping.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top"><br>This dialog is described in further detail in
       <b>Advanced Configuration - <a href="#Remapping">Event Remapping</a></b>.</td>
@@ -2588,7 +2607,7 @@
           <tr><td>Save snapshots according to</td><td>specifies how to name saved snapshots</td><td>-snapname</td></tr>
           <tr><td>Continuous snapshot interval</td><td>interval (in seconds) between snapshot</td><td>-ssinterval</td></tr>
           <tr><td>Overwrite existing files</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
-          <tr><td>Disable image filtering (1x mode)</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
+          <tr><td>Ignore scaling (1x mode)</td><td>save snapshot in 1x mode, without scaling</td><td>-ss1x</td></tr>
         </table>
       </td>
     </tr>
@@ -2696,6 +2715,7 @@
           <tr><td>Joy deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
+          <tr><td>Trackball sensitivity</td><td>Sensitivity used when emulating a trackball device using a mouse</td><td>-tsense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode</td><td>-grabmouse</td></tr>
           <tr><td>Use Control key combos</td><td>Enable using Control key in keyboard actions</td><td>-ctrlcombo</td></tr>

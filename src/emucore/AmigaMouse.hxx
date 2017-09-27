@@ -18,17 +18,9 @@
 #ifndef AMIGAMOUSE_HXX
 #define AMIGAMOUSE_HXX
 
-#include "bspf.hxx"
-#include "Control.hxx"
-#include "Event.hxx"
+#include "PointingDevice.hxx"
 
-/**
-  Trakball-like controller emulating the original Amiga mouse.
-  This code was heavily borrowed from z26.
-
-  @author  Stephen Anthony & z26 team
-*/
-class AmigaMouse : public Controller
+class AmigaMouse : public PointingDevice
 {
   public:
     /**
@@ -38,73 +30,21 @@ class AmigaMouse : public Controller
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    AmigaMouse(Jack jack, const Event& event, const System& system);
+    AmigaMouse(Jack jack, const Event& event, const System& system)
+      : PointingDevice(jack, event, system, Controller::AmigaMouse,
+        trackballSensitivity) { }
     virtual ~AmigaMouse() = default;
 
-  public:
-    using Controller::read;
+  protected:
+    uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8, uInt8) override
+    {
+      static constexpr uInt32 ourTableH[4] = { 0x00, 0x80, 0xa0, 0x20 };
+      static constexpr uInt32 ourTableV[4] = { 0x00, 0x10, 0x50, 0x40 };
 
-    /**
-      Read the entire state of all digital pins for this controller.
-      Note that this method must use the lower 4 bits, and zero the upper bits.
+      return ourTableH[countH] | ourTableV[countV];
+    }
 
-      @return The state of all digital pins
-    */
-    uInt8 read() override;
-
-    /**
-      Update the entire digital and analog pin state according to the
-      events currently set.
-    */
-    void update() override;
-
-    /**
-      Determines how this controller will treat values received from the
-      X/Y axis and left/right buttons of the mouse.  Since not all controllers
-      use the mouse the same way (or at all), it's up to the specific class to
-      decide how to use this data.
-
-      In the current implementation, the left button is tied to the X axis,
-      and the right one tied to the Y axis.
-
-      @param xtype  The controller to use for x-axis data
-      @param xid    The controller ID to use for x-axis data (-1 for no id)
-      @param ytype  The controller to use for y-axis data
-      @param yid    The controller ID to use for y-axis data (-1 for no id)
-
-      @return  Whether the controller supports using the mouse
-    */
-    bool setMouseControl(Controller::Type xtype, int xid,
-                         Controller::Type ytype, int yid) override;
-
-  private:
-    // Counter to iterate through the gray codes
-    int myHCounter, myVCounter;
-
-    // How many new horizontal and vertical values this frame
-    int myTrakBallCountH, myTrakBallCountV;
-
-    // How many lines to wait before sending new horz and vert val
-    int myTrakBallLinesH, myTrakBallLinesV;
-
-    // Was TrakBall moved left or moved right instead
-    int myTrakBallLeft;
-
-    // Was TrakBall moved down or moved up instead
-    int myTrakBallDown;
-
-    int myScanCountH, myScanCountV, myCountH, myCountV;
-
-    // Whether to use the mouse to emulate this controller
-    int myMouseEnabled;
-
-  private:
-    // Following constructors and assignment operators not supported
-    AmigaMouse() = delete;
-    AmigaMouse(const AmigaMouse&) = delete;
-    AmigaMouse(AmigaMouse&&) = delete;
-    AmigaMouse& operator=(const AmigaMouse&) = delete;
-    AmigaMouse& operator=(AmigaMouse&&) = delete;
+    static constexpr float trackballSensitivity = 0.8f;
 };
 
-#endif
+#endif // AMIGAMOUSE_HXX

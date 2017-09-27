@@ -20,6 +20,7 @@
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "PointingDevice.hxx"
 #include "Settings.hxx"
 #include "EventMappingWidget.hxx"
 #include "EditTextWidget.hxx"
@@ -45,7 +46,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(50 * fontWidth + 10, max_w);
-  _h = std::min(15 * (lineHeight + 4) + 14, max_h);
+  _h = std::min(16 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -164,8 +165,8 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Add paddle speed (digital emulation)
   xpos = 5;  ypos += lineHeight + 4;
   myDPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   "Digital paddle sensitivity ",
-                                   lwidth, kDPSpeedChanged);
+                                    "Digital paddle sensitivity ",
+                                    lwidth, kDPSpeedChanged);
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   xpos += myDPaddleSpeed->getWidth() + 5;
   myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
@@ -176,14 +177,26 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Add paddle speed (mouse emulation)
   xpos = 5;  ypos += lineHeight + 4;
   myMPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   "Mouse paddle sensitivity ",
-                                   lwidth, kMPSpeedChanged);
+                                    "Mouse paddle sensitivity ",
+                                    lwidth, kMPSpeedChanged);
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   xpos += myMPaddleSpeed->getWidth() + 5;
   myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", kTextAlignLeft);
   myMPaddleSpeed->setFlags(WIDGET_CLEARBG);
   wid.push_back(myMPaddleSpeed);
+
+  // Add trackball speed
+  xpos = 5;  ypos += lineHeight + 4;
+  myTrackBallSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                      "Trackball sensitivity ",
+                                      lwidth, kTBSpeedChanged);
+  myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
+  xpos += myTrackBallSpeed->getWidth() + 5;
+  myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                          "", kTextAlignLeft);
+  myTrackBallSpeed->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick
   xpos = 10;  ypos += lineHeight + 12;
@@ -240,6 +253,10 @@ void InputDialog::loadConfig()
   myMPaddleSpeed->setValue(instance().settings().getInt("msense"));
   myMPaddleLabel->setLabel(instance().settings().getString("msense"));
 
+  // Trackball speed
+  myTrackBallSpeed->setValue(instance().settings().getInt("tsense"));
+  myTrackBallLabel->setLabel(instance().settings().getString("tsense"));
+
   // AtariVox serial port
   myAVoxPort->setText(instance().settings().getString("avoxport"));
 
@@ -278,6 +295,11 @@ void InputDialog::saveConfig()
   sensitivity = myMPaddleSpeed->getValue();
   instance().settings().setValue("msense", sensitivity);
   Paddles::setMouseSensitivity(sensitivity);
+
+  // Trackball speed
+  sensitivity = myTrackBallSpeed->getValue();
+  instance().settings().setValue("tsense", sensitivity);
+  PointingDevice::setSensitivity(sensitivity);
 
   // AtariVox serial port
   instance().settings().setValue("avoxport", myAVoxPort->getText());
@@ -330,6 +352,8 @@ void InputDialog::setDefaults()
       myDPaddleLabel->setLabel("10");
       myMPaddleSpeed->setValue(10);
       myMPaddleLabel->setLabel("10");
+      myTrackBallSpeed->setValue(10);
+      myTrackBallLabel->setLabel("10");
 
       // AtariVox serial port
       myAVoxPort->setText("");
@@ -431,6 +455,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMPSpeedChanged:
       myMPaddleLabel->setValue(myMPaddleSpeed->getValue());
+      break;
+
+    case kTBSpeedChanged:
+      myTrackBallLabel->setValue(myTrackBallSpeed->getValue());
       break;
 
     case kDBButtonPressed:

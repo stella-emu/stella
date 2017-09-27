@@ -63,12 +63,9 @@ void CartridgeDASH::install(System& system)
 
   System::PageAccess access(this, System::PA_READWRITE);
 
-  // Set the page accessing methods for the hot spots (for 100% emulation
-  // we need to chain any accesses below 0x40 to the TIA. Our poke() method
-  // does this via mySystem->tiaPoke(...), at least until we come up with a
-  // cleaner way to do it).
-  for (uInt32 i = 0x00; i < 0x40; i += (1 << System::PAGE_SHIFT))
-    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+  // The hotspots are in TIA address space, so we claim it here
+  for (uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
+    mySystem->setPageAccess(addr, access);
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
@@ -136,10 +133,7 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value)
   else if (address == BANK_SWITCH_HOTSPOT_ROM)
     changed = bankROM(value);
 
-  // Pass the poke through to the TIA. In a real Atari, both the cart and the
-  // TIA see the address lines, and both react accordingly. In Stella, each
-  // 64-byte chunk of address space is "owned" by only one device. If we
-  // don't chain the poke to the TIA, then the TIA can't see it...
+  // Handle TIA space that we claimed above
   mySystem->tia().poke(address, value);
 
   return changed;
@@ -184,18 +178,18 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank)
     access.type = System::PA_READ;
   }
 
-  uInt32 start = 0x1000 + (bankNumber << RAM_BANK_TO_POWER) + (upper ? RAM_WRITE_OFFSET : 0);
-  uInt32 end = start + RAM_BANK_SIZE - 1;
+  uInt16 start = 0x1000 + (bankNumber << RAM_BANK_TO_POWER) + (upper ? RAM_WRITE_OFFSET : 0);
+  uInt16 end = start + RAM_BANK_SIZE - 1;
 
-  for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
+  for (uInt16 addr = start; addr <= end; addr += System::PAGE_SIZE)
   {
     if(upper)
-      access.directPokeBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+      access.directPokeBase = &myRAM[startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
     else
-      access.directPeekBase = &myRAM[startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
+      access.directPeekBase = &myRAM[startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
 
-    access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + (address & (RAM_BANK_SIZE - 1))];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
+    mySystem->setPageAccess(addr, access);
   }
 }
 
@@ -231,14 +225,14 @@ void CartridgeDASH::bankROMSlot(uInt16 bank)
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
 
-  uInt32 start = 0x1000 + (bankNumber << ROM_BANK_TO_POWER) + (upper ? ROM_BANK_SIZE / 2 : 0);
-  uInt32 end = start + ROM_BANK_SIZE / 2 - 1;
+  uInt16 start = 0x1000 + (bankNumber << ROM_BANK_TO_POWER) + (upper ? ROM_BANK_SIZE / 2 : 0);
+  uInt16 end = start + ROM_BANK_SIZE / 2 - 1;
 
-  for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
+  for (uInt16 addr = start; addr <= end; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
-    access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (address & (ROM_BANK_SIZE - 1))];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
+    access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
+    mySystem->setPageAccess(addr, access);
   }
 }
 
@@ -252,10 +246,10 @@ void CartridgeDASH::initializeBankState()
     {
       // All accesses point to peek/poke above
       System::PageAccess access(this, System::PA_READ);
-      uInt32 start = 0x1000 + (b << RAM_BANK_TO_POWER);
-      uInt32 end = start + RAM_BANK_SIZE - 1;
-      for (uInt32 address = start; address <= end; address += (1 << System::PAGE_SHIFT))
-        mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+      uInt16 start = 0x1000 + (b << RAM_BANK_TO_POWER);
+      uInt16 end = start + RAM_BANK_SIZE - 1;
+      for (uInt16 addr = start; addr <= end; addr += System::PAGE_SIZE)
+        mySystem->setPageAccess(addr, access);
     }
     else if (bankInUse[b] & BITMASK_ROMRAM)
       bankRAMSlot(bankInUse[b]);
@@ -302,7 +296,7 @@ bool CartridgeDASH::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeDASH::getImage(int& size) const
+const uInt8* CartridgeDASH::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage.get();

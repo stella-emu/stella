@@ -73,8 +73,8 @@ void Cartridge4A50::install(System& system)
 
   // Map all of the accesses to call peek and poke (We don't yet indicate RAM areas)
   System::PageAccess access(this, System::PA_READ);
-  for(uInt32 i = 0x1000; i < 0x2000; i += (1 << System::PAGE_SHIFT))
-    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
+    mySystem->setPageAccess(addr, access);
 
   // Mirror all access in TIA and RIOT; by doing so we're taking responsibility
   // for that address space in peek and poke below.
@@ -356,7 +356,7 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge4A50::getImage(int& size) const
+const uInt8* Cartridge4A50::getImage(uInt32& size) const
 {
   size = mySize;
   return myImage;

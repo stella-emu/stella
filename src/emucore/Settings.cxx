@@ -90,6 +90,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("cursor", "2");
   setInternal("dsense", "10");
   setInternal("msense", "10");
+  setInternal("tsense", "10");
   setInternal("saport", "lr");
   setInternal("ctrlcombo", "true");
 
@@ -138,6 +139,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("fastscbios", "true");
+  setInternal("threads", "false");
   setExternal("romloadcount", "0");
   setExternal("maxres", "");
 
@@ -294,7 +296,7 @@ void Settings::validate()
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
-  if(i < 0 || i > 100)    setInternal("volume", "100");
+  if(i < 0 || i > 100)  setInternal("volume", "100");
   i = getInt("freq");
   if(!(i == 11025 || i == 22050 || i == 31400 || i == 44100 || i == 48000))
     setInternal("freq", "31400");
@@ -309,12 +311,16 @@ void Settings::validate()
     setInternal("cursor", "2");
 
   i = getInt("dsense");
-  if(i < 1)        setInternal("dsense", "1");
-  else if(i > 20)  setInternal("dsense", "10");
+  if(i < 1 || i > 20)
+    setInternal("dsense", "10");
 
   i = getInt("msense");
-  if(i < 1)        setInternal("msense", "1");
-  else if(i > 20)  setInternal("msense", "15");
+  if(i < 1 || i > 20)
+    setInternal("msense", "10");
+
+  i = getInt("tsense");
+  if(i < 1 || i > 20)
+    setInternal("tsense", "10");
 
   i = getInt("ssinterval");
   if(i < 1)        setInternal("ssinterval", "2");
@@ -413,11 +419,13 @@ void Settings::usage() const
     << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
     << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-20)\n"
     << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-20)\n"
+    << "  -tsense       <number>       Sensitivity of mouse emulated trackball movement (1-20)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
+    << "  -threads      <1|0>          Whether to using multi-threading during emulation\n"
     << "  -snapsavedir  <path>         The directory to save snapshot files to\n"
     << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
     << "  -snapname     <int|rom>      Name snapshots according to internal database or ROM\n"
@@ -616,9 +624,7 @@ int Settings::setInternal(const string& key, const Variant& value,
   }
   else
   {
-    Setting setting;
-    setting.key   = key;
-    setting.value = value;
+    Setting setting(key, value);
     if(useAsInitial) setting.initialValue = value;
 
     myInternalSettings.push_back(setting);
@@ -670,9 +676,7 @@ int Settings::setExternal(const string& key, const Variant& value,
   }
   else
   {
-    Setting setting;
-    setting.key   = key;
-    setting.value = value;
+    Setting setting(key, value);
     if(useAsInitial) setting.initialValue = value;
 
     myExternalSettings.push_back(setting);

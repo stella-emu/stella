@@ -43,7 +43,7 @@
 CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
                            const Settings& settings)
   : Cartridge(settings),
-    mySystemCycles(0),
+    myAudioCycles(0),
     myARMCycles(0),
     myFractionalClocks(0.0)
 {
@@ -74,15 +74,10 @@ CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::reset()
 {
-  // Initialize RAM
-  if(mySettings.getBool("ramrandom"))
-    initializeRAM(myBUSRAM+2048, 8192-2048);
-  else
-    memset(myBUSRAM+2048, 0, 8192-2048);
+  initializeRAM(myBUSRAM+2048, 8192-2048);
 
   // Update cycles to the current system cycles
-  mySystemCycles = mySystem->cycles();
-  myARMCycles = mySystem->cycles();
+  myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
 
   setInitialState();
@@ -117,22 +112,14 @@ void CartridgeBUS::consoleChanged(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeBUS::systemCyclesReset()
-{
-  // Adjust the cycle counter so that it reflects the new value
-  mySystemCycles -= mySystem->cycles();
-  myARMCycles -= mySystem->cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::install(System& system)
 {
   mySystem = &system;
 
   // Map all of the accesses to call peek and poke
   System::PageAccess access(this, System::PA_READ);
-  for(uInt32 i = 0x1000; i < 0x1040; i += (1 << System::PAGE_SHIFT))
-    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+  for(uInt16 addr = 0x1000; addr < 0x1040; addr += System::PAGE_SIZE)
+    mySystem->setPageAccess(addr, access);
 
   // Mirror all access in TIA and RIOT; by doing so we're taking responsibility
   // for that address space in peek and poke below.
@@ -147,20 +134,18 @@ void CartridgeBUS::install(System& system)
 inline void CartridgeBUS::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = mySystem->cycles() - mySystemCycles;
-  mySystemCycles = mySystem->cycles();
+  uInt32 cycles = uInt32(mySystem->cycles() - myAudioCycles);
+  myAudioCycles = mySystem->cycles();
 
   // Calculate the number of BUS OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = Int32(clocks);
+  uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
-  if(wholeClocks <= 0)
-    return;
-
   // Let's update counters and flags of the music mode data fetchers
-  for(int x = 0; x <= 2; ++x)
-    myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
+  if(wholeClocks > 0)
+    for(int x = 0; x <= 2; ++x)
+      myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,7 +159,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        Int32 cycles = mySystem->cycles() - myARMCycles;
+        Int32 cycles = Int32(mySystem->cycles() - myARMCycles);
         myARMCycles = mySystem->cycles();
 
         myThumbEmulator->run(cycles);
@@ -210,7 +195,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
   {
     address &= 0x0FFF;
 
-    uInt8 peekvalue = myProgramImage[(myCurrentBank << 12) + address];
+    uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
     // In debugger/bank-locked mode, we ignore all hotspots and in general
     // anything that can change the internal state of the cart
@@ -238,8 +223,8 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     // test for JMP FASTJUMP where FASTJUMP = $0000
     if (BUS_STUFF_ON
         && peekvalue == 0x4C
-        && myProgramImage[(myCurrentBank << 12) + address+1] == 0
-        && myProgramImage[(myCurrentBank << 12) + address+2] == 0)
+        && myProgramImage[myBankOffset + address+1] == 0
+        && myProgramImage[myBankOffset + address+2] == 0)
     {
       myFastJumpActive = 2; // return next two peeks from datastream 17
       myJMPoperandAddress = address + 1;
@@ -449,18 +434,16 @@ bool CartridgeBUS::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PA_READ);
 
   // Map Program ROM image into the system
-  for(uInt32 address = 0x1040; address < 0x2000;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
 }
@@ -468,7 +451,7 @@ bool CartridgeBUS::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeBUS::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -485,7 +468,7 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
   // For now, we ignore attempts to patch the BUS address space
   if(address >= 0x0040)
   {
-    myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
+    myProgramImage[myBankOffset + (address & 0x0FFF)] = value;
     return myBankChanged = true;
   }
   else
@@ -493,7 +476,7 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeBUS::getImage(int& size) const
+const uInt8* CartridgeBUS::getImage(uInt32& size) const
 {
   size = 32768;
   return myImage;
@@ -564,7 +547,7 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putString(name());
 
     // Indicates which bank is currently active
-    out.putShort(myCurrentBank);
+    out.putShort(myBankOffset);
 
     // Harmony RAM
     out.putByteArray(myBUSRAM, 8192);
@@ -575,9 +558,9 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putShort(myJMPoperandAddress);
 
     // Save cycles and clocks
-    out.putInt(mySystemCycles);
-    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
-    out.putInt(myARMCycles);
+    out.putLong(myAudioCycles);
+    out.putDouble(myFractionalClocks);
+    out.putLong(myARMCycles);
 
     // Audio info
     out.putIntArray(myMusicCounters, 3);
@@ -608,7 +591,7 @@ bool CartridgeBUS::load(Serializer& in)
       return false;
 
     // Indicates which bank is currently active
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getShort();
 
     // Harmony RAM
     in.getByteArray(myBUSRAM, 8192);
@@ -619,9 +602,9 @@ bool CartridgeBUS::load(Serializer& in)
     myJMPoperandAddress = in.getShort();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = (Int32)in.getInt();
-    myFractionalClocks = (double)in.getInt() / 100000000.0;
-    myARMCycles = (Int32)in.getInt();
+    myAudioCycles = in.getLong();
+    myFractionalClocks = in.getDouble();
+    myARMCycles = in.getLong();
 
     // Audio info
     in.getIntArray(myMusicCounters, 3);
@@ -641,7 +624,7 @@ bool CartridgeBUS::load(Serializer& in)
   }
 
   // Now, go to the current bank
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

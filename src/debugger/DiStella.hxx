@@ -33,7 +33,8 @@
   All 7800-related stuff has been removed, as well as some commandline options.
   Over time, some of the configurability of Distella may be added again.
 
-  @author  Stephen Anthony
+  @authors  Stephen Anthony and Thomas Jentzsch
+            Original distella developers (http://distella.sf.net)
 */
 class DiStella
 {
@@ -41,14 +42,15 @@ class DiStella
     // A list of options that can be applied to the disassembly
     // This will eventually grow to include all options supported by
     // standalone Distella
-    struct Settings{
-      Common::Base::Format gfx_format;
-      bool resolve_code;    // Attempt to detect code vs. data sections
-      bool show_addresses;  // Show PC addresses (always off for external output)
-      bool aflag;  // Turns 'A' off in accumulator instructions (-a in Distella)
-      bool fflag;  // Forces correct address length (-f in Distella)
-      bool rflag;  // Relocate calls out of address range (-r in Distella)
-      int bwidth;  // Number of bytes to use per line (with .byte xxx)
+    struct Settings {
+      Common::Base::Format gfxFormat;
+      bool resolveCode;    // Attempt to detect code vs. data sections
+      bool showAddresses;  // Show PC addresses (always off for external output)
+      bool aFlag;  // Turns 'A' off in accumulator instructions (-a in Distella)
+      bool fFlag;  // Forces correct address length (-f in Distella)
+      bool rFlag;  // Relocate calls out of address range (-r in Distella)
+      bool bFlag;  // Process break routine (-b in Distella)
+      int bytesWidth;  // Number of bytes to use per line (with .byte xxx)
     };
     static Settings settings;  // Default settings
 
@@ -81,9 +83,16 @@ class DiStella
 
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
+    void disasmPass1(CartDebug::AddressList& debuggerAddresses);
+    void disasmFromAddress(uInt32 distart);
+
     bool check_range(uInt16 start, uInt16 end) const;
     int mark(uInt32 address, uInt8 mask, bool directive = false);
-    bool check_bit(uInt16 address, uInt8 mask) const;
+    bool checkBit(uInt16 address, uInt8 mask, bool useDebugger = true) const;
+
+    bool checkBits(uInt16 address, uInt8 mask, uInt8 notMask, bool useDebugger = true) const;
+    void outputGraphics();
+    void outputBytes(CartDebug::DisasmType type);
 
     // Convenience methods to generate appropriate labels
     inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
@@ -115,6 +124,7 @@ class DiStella
     stringstream myDisasmBuf;
     std::queue<uInt16> myAddressQueue;
     uInt16 myOffset, myPC, myPCEnd;
+    uInt16 mySegType;
 
     struct resource {
       uInt16 start;
@@ -179,6 +189,7 @@ class DiStella
       AccessMode     source;
       ReadWriteMode  rw_mode;
       uInt8          cycles;
+      uInt8          bytes;
     };
     static const Instruction_tag ourLookup[256];
 

@@ -183,18 +183,13 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myConsoleTiming = ConsoleTiming::secam;
   }
 
-  // Bumper Bash and Decathlon always require all 4 directions
+  // Bumper Bash always require all 4 directions
   // Other ROMs can use it if the setting is enabled
   // Hopefully this list should stay short
   // If it starts to get too long, we should add a ROM properties entry
   bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" || // Bumper Bash
                    md5 == "16ee443c990215f61f7dd1e55a0d2256" || // Bumper Bash (PAL)
                    md5 == "1bf503c724001b09be79c515ecfcbd03" || // Bumper Bash (Unknown)
-                   md5 == "ac7c2260378975614192ca2bc3d20e0b" || // Decathlon
-                   md5 == "883258dcd68cefc6cd4d40b1185116dc" || // Decathlon (PAL)
-                   md5 == "ede4ab11ca346bd023b2c21d941e0c50" || // Decathlon (SECAM)
-                   md5 == "525f2dfc8b21b0186cff2568e0509bfc" || // Decathlon [fixed]
-                   md5 == "bf52327c2197d9d2c4544be053caded1" || // Decathlon (HES)
                    myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
 
@@ -429,32 +424,26 @@ void Console::setPalette(const string& type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor()
 {
-  const string& phosphor = myProperties.get(Display_Phosphor);
-  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
-  bool enable;
-  if(phosphor == "YES")
+  if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
     myProperties.set(Display_Phosphor, "No");
-    enable = false;
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(false);
     myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
   }
   else
   {
     myProperties.set(Display_Phosphor, "Yes");
-    enable = true;
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
     myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
   }
-
-  myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable, blend);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  bool enable = myProperties.get(Display_Phosphor) == "YES";
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
 
-  if(enable)
+  if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
     if(direction == +1)       // increase blend
     {
@@ -483,7 +472,7 @@ void Console::changePhosphor(int direction)
     val << blend;
     myProperties.set(Display_PPBlend, val.str());
     myOSystem.frameBuffer().showMessage("Phosphor blend " + val.str());
-    myOSystem.frameBuffer().tiaSurface().enablePhosphor(enable, blend);
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
   }
   else
     myOSystem.frameBuffer().showMessage("Phosphor effect disabled");

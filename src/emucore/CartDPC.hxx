@@ -59,13 +59,6 @@ class CartridgeDPC : public Cartridge
     void reset() override;
 
     /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
-
-    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
@@ -105,7 +98,7 @@ class CartridgeDPC : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -202,14 +195,14 @@ class CartridgeDPC : public Cartridge
     // The random number generator register
     uInt8 myRandomNumber;
 
-    // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

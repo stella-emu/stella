@@ -32,21 +32,21 @@
 OSystemMACOSX::OSystemMACOSX()
   : OSystem()
 {
-  setBaseDir("~/Library/Application Support/Stella");
+  setBaseDir("~/Library/Application Support/Stella/");
 
   // This will be overridden, as OSX uses plist files for settings
   setConfigFile("~/Library/Application Support/Stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemMACOSX::defaultSnapSaveDir()
+string OSystemMACOSX::defaultSaveDir() const
 {
-  FilesystemNode desktop("~/Desktop");
-  return desktop.isDirectory() ? desktop.getShortPath() : "~";
+  FilesystemNode desktop("~/Desktop/");
+  return desktop.isDirectory() ? desktop.getShortPath() : "~/";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemMACOSX::defaultSnapLoadDir()
+string OSystemMACOSX::defaultLoadDir() const
 {
-  return defaultSnapSaveDir();
+  return defaultSaveDir();
 }

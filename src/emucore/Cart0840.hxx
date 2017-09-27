@@ -27,7 +27,8 @@
 
 /**
   Cartridge class used for 0840 "Econobanking" 8K bankswitched games.  There
-  are two 4K banks.
+  are two 4K banks, which are switched by accessing $0800 (bank 0) and
+  $0840 (bank 1).
 
   @author  Fred X. Quimby
 */
@@ -92,7 +93,7 @@ class Cartridge0840 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -150,8 +151,8 @@ class Cartridge0840 : public Cartridge
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess[8];

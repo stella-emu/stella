@@ -403,14 +403,14 @@ class OSystem
     virtual void stateChanged(EventHandler::State state) { }
 
     /**
-      Returns the default save and load paths for the snapshot directory.
-      Since this varies greatly among different systems and is the one
-      directory that most end-users care about (vs. config file stuff
-      that usually isn't user-modifiable), we create a special method
-      for it.
+      Returns the default save and load paths for various files
+      (snapshots, disassembly, roms, etc).  Since this varies greatly
+      among different systems and is the one directory that most end-users
+      care about (vs. config file stuff that usually isn't user-modifiable),
+      we create a special method for it.
     */
-    virtual string defaultSnapSaveDir() { return string("~") + BSPF::PATH_SEPARATOR; }
-    virtual string defaultSnapLoadDir() { return string("~") + BSPF::PATH_SEPARATOR; }
+    virtual string defaultSaveDir() const { return string("~") + BSPF::PATH_SEPARATOR; }
+    virtual string defaultLoadDir() const { return string("~") + BSPF::PATH_SEPARATOR; }
 
   protected:
     /**

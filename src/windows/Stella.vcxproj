@@ -89,22 +89,22 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>C:\Users\stephen\Source\sdl\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -235,6 +235,8 @@
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\main.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
+    <ClCompile Include="..\common\RewindManager.cxx" />
+    <ClCompile Include="..\common\StateManager.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
@@ -276,7 +278,6 @@
     <ClCompile Include="..\debugger\gui\CartFA2Widget.cxx" />
     <ClCompile Include="..\debugger\gui\CartFAWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartFEWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartMCWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartMDMWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartSBWidget.cxx" />
@@ -292,8 +293,6 @@
     <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
-    <ClCompile Include="..\emucore\AmigaMouse.cxx" />
-    <ClCompile Include="..\emucore\AtariMouse.cxx" />
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
@@ -314,6 +313,7 @@
     <ClCompile Include="..\emucore\EventJoyHandler.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
+    <ClCompile Include="..\emucore\PointingDevice.cxx" />
     <ClCompile Include="..\emucore\TIASurface.cxx" />
     <ClCompile Include="..\emucore\tia\Background.cxx" />
     <ClCompile Include="..\emucore\tia\Ball.cxx" />
@@ -326,7 +326,6 @@
     <ClCompile Include="..\emucore\tia\Playfield.cxx" />
     <ClCompile Include="..\emucore\tia\TIA.cxx" />
     <ClCompile Include="..\emucore\tia\VblankManager.cxx" />
-    <ClCompile Include="..\emucore\TrakBall.cxx" />
     <ClCompile Include="..\gui\ColorWidget.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
@@ -364,7 +363,6 @@
     <ClCompile Include="..\emucore\CartF8SC.cxx" />
     <ClCompile Include="..\emucore\CartFA.cxx" />
     <ClCompile Include="..\emucore\CartFE.cxx" />
-    <ClCompile Include="..\emucore\CartMC.cxx" />
     <ClCompile Include="..\emucore\CartSB.cxx" />
     <ClCompile Include="..\emucore\CartUA.cxx" />
     <ClCompile Include="..\emucore\CartX07.cxx" />
@@ -389,7 +387,6 @@
     <ClCompile Include="..\emucore\SaveKey.cxx" />
     <ClCompile Include="..\emucore\Serializer.cxx" />
     <ClCompile Include="..\emucore\Settings.cxx" />
-    <ClCompile Include="..\emucore\StateManager.cxx" />
     <ClCompile Include="..\emucore\Switches.cxx" />
     <ClCompile Include="..\emucore\System.cxx" />
     <ClCompile Include="..\emucore\Thumbulator.cxx" />
@@ -503,6 +500,8 @@
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
+    <ClInclude Include="..\common\RewindManager.hxx" />
+    <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
     <ClInclude Include="..\common\tv_filters\AtariNTSC.hxx" />
@@ -549,7 +548,6 @@
     <ClInclude Include="..\debugger\gui\CartFA2Widget.hxx" />
     <ClInclude Include="..\debugger\gui\CartFAWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartFEWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartMCWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartMDMWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartSBWidget.hxx" />
@@ -590,6 +588,7 @@
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
+    <ClInclude Include="..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\emucore\TIASurface.hxx" />
     <ClInclude Include="..\emucore\tia\Background.hxx" />
     <ClInclude Include="..\emucore\tia\Ball.hxx" />
@@ -656,7 +655,6 @@
     <ClInclude Include="..\emucore\CartF8SC.hxx" />
     <ClInclude Include="..\emucore\CartFA.hxx" />
     <ClInclude Include="..\emucore\CartFE.hxx" />
-    <ClInclude Include="..\emucore\CartMC.hxx" />
     <ClInclude Include="..\emucore\CartSB.hxx" />
     <ClInclude Include="..\emucore\CartUA.hxx" />
     <ClInclude Include="..\emucore\CartX07.hxx" />
@@ -688,7 +686,6 @@
     <ClInclude Include="..\emucore\Serializer.hxx" />
     <ClInclude Include="..\emucore\Settings.hxx" />
     <ClInclude Include="..\emucore\Sound.hxx" />
-    <ClInclude Include="..\emucore\StateManager.hxx" />
     <ClInclude Include="..\emucore\Switches.hxx" />
     <ClInclude Include="..\emucore\System.hxx" />
     <ClInclude Include="..\emucore\Thumbulator.hxx" />

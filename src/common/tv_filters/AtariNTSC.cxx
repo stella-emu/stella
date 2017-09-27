@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <thread>
 #include "AtariNTSC.hxx"
 
 // blitter related
@@ -66,50 +67,250 @@ void AtariNTSC::initializePalette(const uInt8* palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::render(const uInt8* atari_in, uInt32 in_width,
-                       uInt32 in_height, void* rgb_out, uInt32 out_pitch)
+void AtariNTSC::enableThreading(bool enable)
 {
+  uInt32 systemThreads = enable ? std::thread::hardware_concurrency() : 0;
+  if(systemThreads <= 1)
+  {
+    myWorkerThreads = 0;
+    myTotalThreads  = 1;
+  }
+  else
+  {
+    systemThreads = std::min(4u, systemThreads);
+
+    myWorkerThreads = systemThreads - 1;
+    myTotalThreads  = systemThreads;
+
+    myThreads = make_unique<std::thread[]>(myWorkerThreads);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
+  void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in)
+{
+  // Spawn the threads...
+  for(uInt32 i = 0; i < myWorkerThreads; ++i)
+  {
+    myThreads[i] = std::thread([=] {
+    rgb_in == nullptr ?
+      renderThread(atari_in, in_width, in_height, myTotalThreads, i+1, rgb_out, out_pitch) :
+      renderWithPhosphorThread(atari_in, in_width, in_height, myTotalThreads, i+1, rgb_in, rgb_out, out_pitch);
+    });
+  }
+  // Make the main thread busy too
+  rgb_in == nullptr ?
+    renderThread(atari_in, in_width, in_height, myTotalThreads, 0, rgb_out, out_pitch) :
+    renderWithPhosphorThread(atari_in, in_width, in_height, myTotalThreads, 0, rgb_in, rgb_out, out_pitch);
+  // ...and make them join again
+  for(uInt32 i = 0; i < myWorkerThreads; ++i)
+    myThreads[i].join();
+
+  // Copy phosphor values into out buffer
+  if(rgb_in != nullptr)
+    memcpy(rgb_out, rgb_in, in_height * out_pitch);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
+  const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum,
+  void* rgb_out, const uInt32 out_pitch)
+{
+  // Adapt parameters to thread number
+  const uInt32 yStart = in_height * threadNum / numThreads;
+  const uInt32 yEnd = in_height * (threadNum + 1) / numThreads;
+  atari_in += in_width * yStart;
+  rgb_out  = static_cast<char*>(rgb_out) + out_pitch * yStart;
+
   uInt32 const chunk_count = (in_width - 1) / PIXEL_in_chunk;
-  while ( in_height-- )
+
+  for(uInt32 y = yStart; y < yEnd; ++y)
   {
     const uInt8* line_in = atari_in;
-    ATARI_NTSC_BEGIN_ROW( NTSC_black, line_in[0] );
+    ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
     uInt32* restrict line_out = static_cast<uInt32*>(rgb_out);
     ++line_in;
 
-    for ( uInt32 n = chunk_count; n; --n )
+    for(uInt32 n = chunk_count; n; --n)
     {
-      /* order of input and output pixels must not be altered */
-      ATARI_NTSC_COLOR_IN( 0, line_in[0] );
-      ATARI_NTSC_RGB_OUT_8888( 0, line_out[0] );
-      ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
-      ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
-      ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
+      // order of input and output pixels must not be altered
+      ATARI_NTSC_COLOR_IN(0, line_in[0]);
+      ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+      ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+      ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+      ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
 
-      ATARI_NTSC_COLOR_IN( 1, line_in[1] );
-      ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
-      ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
-      ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
+      ATARI_NTSC_COLOR_IN(1, line_in[1]);
+      ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+      ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+      ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
 
-      line_in  += 2;
+      line_in += 2;
       line_out += 7;
     }
 
-    /* finish final pixels */
-    ATARI_NTSC_COLOR_IN( 0, NTSC_black );
-    ATARI_NTSC_RGB_OUT_8888( 0, line_out[0] );
-    ATARI_NTSC_RGB_OUT_8888( 1, line_out[1] );
-    ATARI_NTSC_RGB_OUT_8888( 2, line_out[2] );
-    ATARI_NTSC_RGB_OUT_8888( 3, line_out[3] );
+    // finish final pixels
+    ATARI_NTSC_COLOR_IN(0, line_in[0]);
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
 
-    ATARI_NTSC_COLOR_IN( 1, NTSC_black );
-    ATARI_NTSC_RGB_OUT_8888( 4, line_out[4] );
-    ATARI_NTSC_RGB_OUT_8888( 5, line_out[5] );
-    ATARI_NTSC_RGB_OUT_8888( 6, line_out[6] );
+    ATARI_NTSC_COLOR_IN(1, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+
+    line_in += 2;
+    line_out += 7;
+
+    ATARI_NTSC_COLOR_IN(0, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+
+    ATARI_NTSC_COLOR_IN(1, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+#if 0
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+#endif
 
     atari_in += in_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_width,
+  const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum,
+  uInt32* rgb_in, void* rgb_out, const uInt32 out_pitch)
+{
+  // Adapt parameters to thread number
+  const uInt32 yStart = in_height * threadNum / numThreads;
+  const uInt32 yEnd = in_height * (threadNum + 1) / numThreads;
+  uInt32 bufofs = AtariNTSC::outWidth(in_width) * yStart;
+  uInt32* out = static_cast<uInt32*>(rgb_out);
+  atari_in += in_width * yStart;
+  rgb_out = static_cast<char*>(rgb_out) + out_pitch * yStart;
+
+  uInt32 const chunk_count = (in_width - 1) / PIXEL_in_chunk;
+
+  for(uInt32 y = yStart; y < yEnd; ++y)
+  {
+    const uInt8* line_in = atari_in;
+    ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
+    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out);
+    ++line_in;
+
+    for(uInt32 n = chunk_count; n; --n)
+    {
+      // order of input and output pixels must not be altered
+      ATARI_NTSC_COLOR_IN(0, line_in[0]);
+      ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+      ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+      ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+      ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+
+      ATARI_NTSC_COLOR_IN(1, line_in[1]);
+      ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+      ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+      ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+
+      line_in += 2;
+      line_out += 7;
+    }
+
+    // finish final pixels
+    ATARI_NTSC_COLOR_IN(0, line_in[0]);
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+
+    ATARI_NTSC_COLOR_IN(1, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+
+    line_in += 2;
+    line_out += 7;
+
+    ATARI_NTSC_COLOR_IN(0, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+
+    ATARI_NTSC_COLOR_IN(1, NTSC_black);
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+#if 0
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+#endif
+
+    // Do phosphor mode (blend the resulting frames)
+    // Note: The code assumes that AtariNTSC::outWidth(kTIAW) == outPitch == 565
+    for (uInt32 x = AtariNTSC::outWidth(in_width) / 8; x; --x)
+    {
+      // Store back into displayed frame buffer (for next frame)
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      bufofs++;
+    }
+    // finish final pixels
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+#if 0
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    bufofs++;
+#endif
+
+    atari_in += in_width;
+    rgb_out = static_cast<char*>(rgb_out) + out_pitch;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
+{
+#define TO_RGB(color, red, green, blue) \
+    const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
+
+  TO_RGB(c, rc, gc, bc);
+  TO_RGB(p, rp, gp, bp);
+
+  // Mix current calculated frame with previous displayed frame
+  const uInt8 rn = myPhosphorPalette[rc][rp];
+  const uInt8 gn = myPhosphorPalette[gc][gp];
+  const uInt8 bn = myPhosphorPalette[bc][bp];
+
+  return (rn << 16) | (gn << 8) | bn;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

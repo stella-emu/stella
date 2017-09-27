@@ -86,7 +86,7 @@ void CartridgeEFSCWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEFSCWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   CartDebugWidget::loadConfig();
 }
@@ -113,8 +113,8 @@ string CartridgeEFSCWidget::bankState()
     "$FFE0", "$FFE1", "$FFE2", "$FFE3", "$FFE4", "$FFE5", "$FFE6", "$FFE7",
     "$FFE8", "$FFE9", "$FFEA", "$FFEB", "$FFEC", "$FFED", "$FFEE", "$FFEF"
   };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-      << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+      << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

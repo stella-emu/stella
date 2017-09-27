@@ -53,7 +53,6 @@
 #include "CartFA.hxx"
 #include "CartFA2.hxx"
 #include "CartFE.hxx"
-#include "CartMC.hxx"
 #include "CartMDM.hxx"
 #include "CartSB.hxx"
 #include "CartUA.hxx"
@@ -310,8 +309,6 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, BSType type,
       return make_unique<CartridgeFA2>(image, size, osystem);
     case BSType::_FE:
       return make_unique<CartridgeFE>(image, size, osystem.settings());
-    case BSType::_MC:
-      return make_unique<CartridgeMC>(image, size, osystem.settings());
     case BSType::_MDM:
       return make_unique<CartridgeMDM>(image, size, osystem.settings());
     case BSType::_UA:
@@ -470,8 +467,6 @@ BSType CartDetector::autodetectType(const BytePtr& image, uInt32 size)
       type = BSType::_4A50;
     else if(isProbablySB(image, size))
       type = BSType::_SB;
-    else
-      type = BSType::_MC;
   }
   else if(size == 256*1024)  // 256K
   {

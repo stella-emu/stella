@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "CartFE.hxx"
+#include "PopUpWidget.hxx"
 #include "CartFEWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -27,15 +28,45 @@ CartridgeFEWidget::CartridgeFEWidget(
 {
   string info =
     "FE cartridge, two 4K banks\n"
-    "Doesn't support bankswitching with hotspots, "
-    "but instead watches A13 of called addresses:\n"
-    "Bank 0 @ $F000 - $FFFF (A13 = 1)\n"
-    "Bank 1 @ $D000 - $DFFF (A13 = 0)\n"
-    "\n"
-    "Changing banks is not currently supported, since it "
-    "would immediately switch on the next address change\n";
+    "Monitors access to hotspot $01FE, and uses "
+    "upper 3 bits of databus for bank number:\n"
+    "Bank 0 @ $F000 - $FFFF (DATA = 111, D5 = 1)\n"
+    "Bank 1 @ $D000 - $DFFF (DATA = 110, D5 = 0)\n";
 
-  addBaseInformation(2 * 4096, "Activision", info);
+  int xpos = 10,
+      ypos = addBaseInformation(2 * 4096, "Activision", info) + myLineHeight;
+
+  VariantList items;
+  VarList::push_back(items, "0 ($01FE, D5=1)");
+  VarList::push_back(items, "1 ($01FE, D5=0)");
+  myBank =
+    new PopUpWidget(boss, _font, xpos, ypos-2,
+                    _font.getStringWidth("0 ($01FE, D5=1)"),
+                    myLineHeight, items, "Set bank ",
+                    _font.getStringWidth("Set bank "), kBankChanged);
+  myBank->setTarget(this);
+  addFocusWidget(myBank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFEWidget::loadConfig()
+{
+  myBank->setSelectedIndex(myCart.getBank());
+
+  CartDebugWidget::loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFEWidget::handleCommand(CommandSender* sender,
+                                      int cmd, int data, int id)
+{
+  if(cmd == kBankChanged)
+  {
+    myCart.unlockBank();
+    myCart.bank(myBank->getSelected());
+    myCart.lockBank();
+    invalidate();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

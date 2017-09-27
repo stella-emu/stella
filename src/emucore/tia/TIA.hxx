@@ -39,6 +39,7 @@
 #include "PaddleReader.hxx"
 #include "DelayQueueIterator.hxx"
 #include "Control.hxx"
+#include "System.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -56,12 +57,19 @@
 class TIA : public Device
 {
   public:
+    /**
+     * These dummy register addresses are used to represent the delayed
+     * old / new register swap on writing GRPx and ENABL in the DelayQueue (see below).
+     */
     enum DummyRegisters: uInt8 {
       shuffleP0 = 0xF0,
       shuffleP1 = 0xF1,
       shuffleBL = 0xF2
     };
 
+    /**
+     * Possible palette entries for objects in "fixed debug color mode".
+     */
     enum FixedColor {
       NTSC_RED    = 0x30,
       NTSC_ORANGE = 0x38,
@@ -105,12 +113,6 @@ class TIA : public Device
       Reset frame to current YStart/Height properties.
     */
     void frameReset();
-
-    /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.
-    */
-    void systemCyclesReset() override;
 
     /**
       Install TIA in the specified system.  Invoked by the system
@@ -257,6 +259,23 @@ class TIA : public Device
       @return The total number of scanlines generated in the last frame.
     */
     uInt32 scanlinesLastFrame() const { return myFrameManager.scanlinesLastFrame(); }
+
+    /**
+      Answers the total system cycles from the start of the emulation.
+    */
+    uInt64 cycles() const { return uInt64(mySystem->cycles()); }
+
+    /**
+      Answers the frame count from the start of the emulation.
+    */
+    uInt32 frameCount() const { return myFrameManager.frameCount(); }
+
+    /**
+      Answers the system cycles from the start of the current frame.
+    */
+    uInt32 frameCycles() const {
+      return uInt32(mySystem->cycles() - myCyclesAtFrameStart);
+    }
 
     /**
       Answers whether the TIA is currently in being rendered
@@ -409,53 +428,123 @@ class TIA : public Device
     string name() const override { return "TIA"; }
 
   private:
+    /**
+     * During each line, the TIA cycles through these two states.
+     */
     enum HState {blank, frame};
+
+    /**
+     * The three different modes of the priority encoder. Check TIA::renderPixel
+     * for a precise definition.
+     */
     enum Priority {pfp, score, normal};
 
+    /**
+     * Palette and indices for fixed debug colors.
+     */
     enum FixedObject { P0, M0, P1, M1, PF, BL };
     FixedColor myFixedColorPalette[2][6];
 
   private:
 
+    /**
+     * This callback is invoked by FrameManager when a new frame starts.
+     */
     void onFrameStart();
 
+    /**
+     * This callback is invoked by FrameManager when the visible range of the
+     * current frame starts.
+     */
     void onRenderingStart();
 
+    /**
+     * This callback is invoked by FrameManager when the current frame completes.
+     */
     void onFrameComplete();
 
+    /**
+     * Called when the CPU enters halt state (RDY pulled low). Execution continues
+     * immediatelly afterwards, so we have to adjust the system clock to account
+     * for the cycles the 6502 spent in halt state.
+     */
     void onHalt();
 
+    /**
+     * Run and forward TIA emulation to the current system clock.
+     */
     void updateEmulation();
 
+    /**
+     * Execute colorClocks cycles of TIA simulation.
+     */
     void cycle(uInt32 colorClocks);
 
+    /**
+     * Advance the movement logic by a single clock.
+     */
     void tickMovement();
 
+    /**
+     * Advance a single clock during hblank.
+     */
     void tickHblank();
 
+    /**
+     * Advance a single clock duing the visible part of the scanline.
+     */
     void tickHframe();
 
+    /**
+     * Execute a RSYNC.
+     */
     void applyRsync();
 
+    /**
+     * Update the collision bitfield.
+     */
     void updateCollision();
 
+    /**
+     * Render the current pixel into the framebuffer.
+     */
     void renderPixel(uInt32 x, uInt32 y);
 
+    /**
+     * Clear the first 8 pixels of a scanline with black if we are in hblank
+     * (called during HMOVE).
+     */
     void clearHmoveComb();
 
+    /**
+     * Advance a line and update our state accordingly.
+     */
     void nextLine();
 
+    /**
+     * Clone the last line. Called in nextLine if TIA state was unchanged.
+     */
     void cloneLastLine();
 
+    /**
+     * Execute a delayed write. Called when the DelayQueue is pumped.
+     */
     void delayedWrite(uInt8 address, uInt8 value);
 
+    /**
+     * Update all paddle readout circuits to the current controller state.
+     */
     void updatePaddle(uInt8 idx);
 
+    /**
+     * Get the target counter value during a RESx. This essentially depends on
+     * the position in the current scanline.
+     */
     uInt8 resxCounter();
 
     /**
       Get the result of the specified collision register.
-    */
+     */
     uInt8 collCXM0P() const;
     uInt8 collCXM1P() const;
     uInt8 collCXP0FB() const;
@@ -465,18 +554,50 @@ class TIA : public Device
     uInt8 collCXPPMM() const;
     uInt8 collCXBLPF() const;
 
+#ifdef DEBUGGER_SUPPORT
+    void createAccessBase();
+    /**
+      Query/change the given address type to use the given disassembly flags
+
+      @param address The address to modify
+      @param flags A bitfield of DisasmType directives for the given address
+    */
+    uInt8 getAccessFlags(uInt16 address) const override;
+    void setAccessFlags(uInt16 address, uInt8 flags) override;
+#endif // DEBUGGER_SUPPORT
+
   private:
 
     Console& myConsole;
     Sound& mySound;
     Settings& mySettings;
 
+    /**
+     * The length of the delay queue (maximum number of clocks delay)
+     */
     static constexpr unsigned delayQueueLength = 16;
+
+    /**
+     * The size of the delay queue (maximum number of writes scheduled in a single slot).
+     */
     static constexpr unsigned delayQueueSize = 16;
+
+    /**
+     * A list of delayed writes that are queued up for future execution. Delayed
+     * writes can be both actual writes whose effect is delayed by one or more clocks
+     * on real hardware and delayed side effects of certain operations (GRPx!).
+     */
     DelayQueue<delayQueueLength, delayQueueSize> myDelayQueue;
 
+    /**
+     * The frame manager is responsible for detecting frame boundaries and the visible
+     * region of each frame.
+     */
     FrameManager myFrameManager;
 
+    /**
+     * The various TIA objects.
+     */
     Background myBackground;
     Playfield myPlayfield;
     Missile myMissile0;
@@ -484,56 +605,146 @@ class TIA : public Device
     Player myPlayer0;
     Player myPlayer1;
     Ball myBall;
+
+    /**
+     * The paddle readout circuits.
+     */
     PaddleReader myPaddleReaders[4];
 
+    /**
+     * Circuits for the "latched inputs".
+     */
     LatchedInput myInput0;
     LatchedInput myInput1;
 
     // Pointer to the internal color-index-based frame buffer
     uInt8 myFramebuffer[160 * TIAConstants::frameBufferHeight];
 
+    /**
+     * Setting this to true injects random values into undefined reads.
+     */
     bool myTIAPinsDriven;
 
+    /**
+     * The current "line state" --- either hblank or frame.
+     */
     HState myHstate;
 
-    // Master line counter
+    /**
+     * Master line counter
+     */
+
     uInt8 myHctr;
-    // Delta between master line counter and actual color clock. Nonzero after RSYNC (before the scanline terminates)
+    /**
+     * Delta between master line counter and actual color clock. Nonzero after
+     * RSYNC (before the scanline terminates)
+     */
     Int32 myHctrDelta;
-    // Electron beam x at rendering start (used for blanking out any pixels from the last frame that are not overwritten)
+    /**
+     * Electron beam x at rendering start (used for blanking out any pixels from
+     * the last frame that are not overwritten)
+     */
     uInt8 myXAtRenderingStart;
 
+    /**
+     * Do we need to update the collision mask this clock?
+     */
     bool myCollisionUpdateRequired;
+
+    /**
+     * The collision latches are represented by 15 bits in a bitfield.
+     */
     uInt32 myCollisionMask;
 
+    /**
+     * The movement clock counts the extra ticks sent to the objects during
+     * movement.
+     */
     uInt32 myMovementClock;
+    /**
+     * Movement mode --- are we sending movement clocks?
+     */
     bool myMovementInProgress;
+    /**
+     * Do we have an extended hblank this line? Get set by strobing HMOVE and
+     * cleared when the line wraps.
+     */
     bool myExtendedHblank;
 
+    /**
+     * Counts the number of line wraps since the last external TIA state change.
+     * If at least two line breaks have passed, the TIA will suspend simulation
+     * and just reuse the last line instead.
+     */
     uInt32 myLinesSinceChange;
 
+    /**
+     * The current mode of the priority encoder.
+     */
     Priority myPriority;
 
+    /**
+     * The index of the last CPU cycle that was included in the simulation.
+     */
+    uInt64 myLastCycle;
+    /**
+     * Keeps track of a possible fractional number of clocks that still need
+     * to be simulated.
+     */
     uInt8 mySubClock;
-    Int32 myLastCycle;
 
+    /**
+     * Bitmasks that track which sprites / collisions are enabled / disabled.
+     */
     uInt8 mySpriteEnabledBits;
     uInt8 myCollisionsEnabledBits;
 
+    /**
+     * The color used to highlight HMOVE blanks (if enabled).
+     */
     uInt8 myColorHBlank;
 
+    /**
+     * The total number of color clocks since emulation started. This is a
+     * double a) to avoid overflows and b) as it will enter floating point
+     * expressions in the paddle readout simulation anyway.
+     */
     double myTimestamp;
 
+    /**
+     * The "shadow registers" track the last written register value for the
+     * debugger.
+     */
     uInt8 myShadowRegisters[64];
 
-    // Automatic framerate correction based on number of scanlines
+    /**
+     * Automatic framerate correction based on number of scanlines.
+     */
     bool myAutoFrameEnabled;
 
-    // Indicates if color loss should be enabled or disabled.  Color loss
-    // occurs on PAL-like systems when the previous frame contains an odd
-    // number of scanlines.
+    /**
+     * Indicates if color loss should be enabled or disabled.  Color loss
+     * occurs on PAL-like systems when the previous frame contains an odd
+     * number of scanlines.
+     */
     bool myColorLossEnabled;
     bool myColorLossActive;
+
+    /**
+     * System cycles at the end of the previous frame / beginning of next frame
+     */
+    uInt64 myCyclesAtFrameStart;
+
+#ifdef DEBUGGER_SUPPORT
+    // The arrays containing information about every byte of TIA
+    // indicating whether and how (RW) it is used.
+    BytePtr myAccessBase;
+    // The array used to skip the first two TIA access trackings
+    BytePtr myAccessDelay;
+
+    static constexpr uInt16
+      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;
+#endif // DEBUGGER_SUPPORT
 
   private:
     TIA() = delete;

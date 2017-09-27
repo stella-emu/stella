@@ -26,7 +26,6 @@ class TiaZoomWidget;
 class EditTextWidget;
 class RomWidget;
 class Expression;
-class Serializer;
 class PackedBitArray;
 class PromptWidget;
 class ButtonWidget;
@@ -154,11 +153,6 @@ class Debugger : public DialogContainer
     */
     const string run(const string& command);
 
-    /**
-      The current cycle count of the System.
-    */
-    int cycles() const { return int(mySystem.cycles()); }
-
     string autoExec();
 
     string showWatches();
@@ -212,8 +206,8 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /* These are now exposed so Expressions can use them. */
-    int peek(int addr) { return mySystem.peek(addr); }
-    int dpeek(int addr) { return mySystem.peek(addr) | (mySystem.peek(addr+1) << 8); }
+    int peek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags); }
+    int dpeek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8); }
     int getAccessFlags(uInt16 addr) const
       { return mySystem.getAccessFlags(addr); }
     void setAccessFlags(uInt16 addr, uInt8 flags)
@@ -237,8 +231,11 @@ class Debugger : public DialogContainer
   private:
     /**
       Save state of each debugger subsystem.
+
+      If a message is provided, we assume that a rewind state should
+      be saved with the given message.
     */
-    void saveOldState(bool addrewind = true);
+    void saveOldState(string rewindMsg = "");
 
     /**
       Set initial state before entering the debugger.
@@ -294,38 +291,6 @@ class Debugger : public DialogContainer
     // Dimensions of the entire debugger window
     uInt32 myWidth;
     uInt32 myHeight;
-
-    // Class holding all rewind state functionality in the debugger
-    // Essentially, it's a modified circular array-based stack
-    // that cleverly deals with allocation/deallocation of memory
-    class RewindManager
-    {
-      public:
-        RewindManager(OSystem& system, ButtonWidget& button);
-        virtual ~RewindManager();
-
-      public:
-        bool addState();
-        bool rewindState();
-        bool empty();
-        void clear();
-
-      private:
-        enum { MAX_SIZE = 100 };
-        OSystem& myOSystem;
-        ButtonWidget& myRewindButton;
-        Serializer* myStateList[MAX_SIZE];
-        uInt32 mySize, myTop;
-
-      private:
-        // Following constructors and assignment operators not supported
-        RewindManager() = delete;
-        RewindManager(const RewindManager&) = delete;
-        RewindManager(RewindManager&&) = delete;
-        RewindManager& operator=(const RewindManager&) = delete;
-        RewindManager& operator=(RewindManager&&) = delete;
-    };
-    unique_ptr<RewindManager> myRewindManager;
 
   private:
     // Following constructors and assignment operators not supported

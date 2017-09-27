@@ -66,62 +66,49 @@ void CartridgeCV::install(System& system)
   System::PageAccess access(this, System::PA_READ);
 
   // Map ROM image into the system
-  for(uInt32 address = 0x1800; address < 0x2000;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[address & 0x07FF];
-    access.codeAccessBase = &myCodeAccessBase[address & 0x07FF];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[addr & 0x07FF];
+    access.codeAccessBase = &myCodeAccessBase[addr & 0x07FF];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing method for the RAM writing pages
   access.directPeekBase = 0;
   access.codeAccessBase = 0;
   access.type = System::PA_WRITE;
-  for(uInt32 j = 0x1400; j < 0x1800; j += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.directPokeBase = &myRAM[j & 0x03FF];
-    mySystem->setPageAccess(j >> System::PAGE_SHIFT, access);
+    access.directPokeBase = &myRAM[addr & 0x03FF];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
   access.type = System::PA_READ;
-  for(uInt32 k = 0x1000; k < 0x1400; k += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myRAM[k & 0x03FF];
-    access.codeAccessBase = &myCodeAccessBase[2048 + (k & 0x03FF)];
-    mySystem->setPageAccess(k >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myRAM[addr & 0x03FF];
+    access.codeAccessBase = &myCodeAccessBase[2048 + (addr & 0x03FF)];
+    mySystem->setPageAccess(addr, access);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCV::peek(uInt16 address)
 {
-  if((address & 0x0FFF) < 0x0800)  // Write port is at 0xF400 - 0xF800 (1024 bytes)
-  {                                // Read port is handled in ::install()
-    // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
+  // The only way we can get to this method is if we attempt to read from
+  // the write port (0xF400 - 0xF800, 1024 bytes), in which case an
+  // unwanted write is triggered
+  uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(address);
-      return myRAM[address & 0x03FF] = value;
-    }
-  }
+  if(bankLocked())
+    return value;
   else
-    return myImage[address & 0x07FF];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::poke(uInt16, uInt8)
-{
-  // NOTE: This does not handle accessing RAM, however, this function
-  // should never be called for RAM because of the way page accessing
-  // has been setup
-  return false;
+  {
+    triggerReadFromWritePort(address);
+    return myRAM[address & 0x03FF] = value;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,7 +131,7 @@ bool CartridgeCV::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCV::getImage(int& size) const
+const uInt8* CartridgeCV::getImage(uInt32& size) const
 {
   size = 2048;
   return myImage;

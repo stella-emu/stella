@@ -96,12 +96,15 @@ static const char* const pseudo_registers[][2] = {
   // { "name", "help text" }
 
   { "_bank", "Currently selected bank" },
+  { "_cclocks", "Color clocks on current scanline" },
+  { "_fcount", "Number of frames since emulation started" },
+  { "_fcycles", "Number of cycles since frame started" },
+  { "_cyclesLo", "Lower 32 bits of number of cycles since emulation started"},
+  { "_cyclesHi", "Higher 32 bits of number of cycles since emulation started"},
   { "_rwport", "Address at which a read from a write port occurred" },
   { "_scan", "Current scanline count" },
-  { "_fcount", "Number of frames since emulation started" },
-  { "_cclocks", "Color clocks on current scanline" },
-  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
   { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
+  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
 
   // empty string marks end of list, do not remove
   { 0, 0 }
@@ -152,7 +155,6 @@ void Debugger::initialize()
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
   myBaseDialog = myDialog;
 
-  myRewindManager = make_unique<RewindManager>(myOSystem, myDialog->rewindButton());
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 }
 
@@ -300,20 +302,19 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
-  saveOldState();
+  saveOldState("1 step");
   mySystem.clearDirtyPages();
 
-  int cyc = mySystem.cycles();
+  uInt64 startCycle = mySystem.cycles();
 
   unlockBankswitchState();
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockBankswitchState();
 
-  return mySystem.cycles() - cyc;
+  return int(mySystem.cycles() - startCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 // trace is just like step, except it treats a subroutine call as one
 // instruction.
 
@@ -328,17 +329,17 @@ int Debugger::trace()
   // 32 is the 6502 JSR instruction:
   if(mySystem.peek(myCpuDebug->pc()) == 32)
   {
-    saveOldState();
+    saveOldState("1 trace");
     mySystem.clearDirtyPages();
 
-    int cyc = mySystem.cycles();
+    uInt64 startCycle = mySystem.cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     unlockBankswitchState();
     myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
     lockBankswitchState();
 
-    return mySystem.cycles() - cyc;
+    return int(mySystem.cycles() - startCycle);
   }
   else
     return step();
@@ -401,7 +402,12 @@ bool Debugger::writeTrap(uInt16 t)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)
 {
-  saveOldState();
+  ostringstream buf;
+  buf << lines << " scanline";
+  if(lines > 1)
+    buf << "s";
+
+  saveOldState(buf.str());
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
@@ -418,7 +424,12 @@ void Debugger::nextScanline(int lines)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextFrame(int frames)
 {
-  saveOldState();
+  ostringstream buf;
+  buf << frames << " frame";
+  if(frames > 1)
+    buf << "s";
+
+  saveOldState(buf.str());
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
@@ -433,11 +444,15 @@ void Debugger::nextFrame(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::rewindState()
 {
+  RewindManager& r = myOSystem.state().rewindManager();
+
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  bool result = myRewindManager->rewindState();
+  bool result = r.rewindState();
   lockBankswitchState();
+
+  myDialog->rewindButton().setEnabled(!r.empty());
 
   return result;
 }
@@ -468,7 +483,7 @@ bool Debugger::patchROM(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveOldState(bool addrewind)
+void Debugger::saveOldState(string rewindMsg)
 {
   myCartDebug->saveOldState();
   myCpuDebug->saveOldState();
@@ -476,7 +491,12 @@ void Debugger::saveOldState(bool addrewind)
   myTiaDebug->saveOldState();
 
   // Add another rewind level to the Undo list
-  if(addrewind)  myRewindManager->addState();
+  if(rewindMsg != "")
+  {
+    RewindManager& r = myOSystem.state().rewindManager();
+    r.addState(rewindMsg);
+    myDialog->rewindButton().setEnabled(!r.empty());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -485,11 +505,14 @@ void Debugger::setStartState()
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
 
-  // Start a new rewind list
-  myRewindManager->clear();
+  // If rewinding is not enabled, always start the debugger with a clean list
+  RewindManager& r = myOSystem.state().rewindManager();
+  if(myOSystem.state().mode() == StateManager::Mode::Off)
+    r.clear();
+  myDialog->rewindButton().setEnabled(!r.empty());
 
   // Save initial state, but don't add it to the rewind list
-  saveOldState(false);
+  saveOldState();
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);
@@ -633,91 +656,4 @@ void Debugger::unlockBankswitchState()
 {
   mySystem.unlockDataBus();
   myConsole.cartridge().unlockBank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::RewindManager::RewindManager(OSystem& system, ButtonWidget& button)
-  : myOSystem(system),
-    myRewindButton(button),
-    mySize(0),
-    myTop(0)
-{
-  for(int i = 0; i < MAX_SIZE; ++i)
-    myStateList[i] = nullptr;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::RewindManager::~RewindManager()
-{
-  for(int i = 0; i < MAX_SIZE; ++i)
-    delete myStateList[i];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::RewindManager::addState()
-{
-  // Create a new Serializer object if we need one
-  if(myStateList[myTop] == nullptr)
-    myStateList[myTop] = new Serializer();
-  Serializer& s = *(myStateList[myTop]);
-
-  if(s)
-  {
-    s.reset();
-    if(myOSystem.state().saveState(s) && myOSystem.console().tia().saveDisplay(s))
-    {
-      // Are we still within the allowable size, or are we overwriting an item?
-      mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
-
-      myTop = (myTop + 1) % MAX_SIZE;
-      myRewindButton.setEnabled(true);
-      return true;
-    }
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::RewindManager::rewindState()
-{
-  if(mySize > 0)
-  {
-    mySize--;
-    myTop = myTop == 0 ? MAX_SIZE - 1 : myTop - 1;
-    Serializer& s = *(myStateList[myTop]);
-
-    s.reset();
-    myOSystem.state().loadState(s);
-    myOSystem.console().tia().loadDisplay(s);
-
-    if(mySize == 0)
-      myRewindButton.setEnabled(false);
-
-    return true;
-  }
-  else
-    return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::RewindManager::empty()
-{
-  return mySize == 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::RewindManager::clear()
-{
-  for(int i = 0; i < MAX_SIZE; ++i)
-    if(myStateList[i] != nullptr)
-      myStateList[i]->reset();
-
-  myTop = mySize = 0;
-
-  // We use Widget::clearFlags here instead of Widget::setEnabled(),
-  // since the latter implies an immediate draw/update, but this method
-  // might be called before any UI exists
-  // TODO - fix this deficiency in the UI core; we shouldn't have to worry
-  //        about such things at this level
-  myRewindButton.clearFlags(WIDGET_ENABLED);
 }

@@ -30,9 +30,9 @@ class System;
   This is the cartridge class for Parker Brothers' 8K games.  In
   this bankswitching scheme the 2600's 4K cartridge address space
   is broken into four 1K segments.  The desired 1K slice of the
-  ROM is selected by accessing 1FE0 to 1FE7 for the first 1K.
-  1FE8 to 1FEF selects the slice for the second 1K, and 1FF0 to
-  1FF7 selects the slice for the third 1K.  The last 1K segment
+  ROM is selected by accessing $1FE0 to $1FE7 for the first 1K.
+  $1FE8 to $1FEF selects the slice for the second 1K, and $1FF0 to
+  $1FF7 selects the slice for the third 1K.  The last 1K segment
   always points to the last 1K of the ROM image.
 
   Because of the complexity of this scheme, the cart reports having
@@ -85,7 +85,7 @@ class CartridgeE0 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.

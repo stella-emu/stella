@@ -19,6 +19,8 @@
 #define CARTRIDGEFE_WIDGET_HXX
 
 class CartridgeFE;
+class PopUpWidget;
+
 #include "CartDebugWidget.hxx"
 
 class CartridgeFEWidget : public CartDebugWidget
@@ -32,11 +34,14 @@ class CartridgeFEWidget : public CartDebugWidget
 
   private:
     CartridgeFE& myCart;
+    PopUpWidget* myBank;
+
+    enum { kBankChanged = 'bkCH' };
 
   private:
     // No implementation for non-bankswitched ROMs
-    void loadConfig() override { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     string bankState() override;
 

@@ -41,7 +41,6 @@ MODULE_OBJS := \
 	src/emucore/CartFA.o \
 	src/emucore/CartFA2.o \
 	src/emucore/CartFE.o \
-	src/emucore/CartMC.o \
 	src/emucore/CartMDM.o \
 	src/emucore/CartSB.o \
 	src/emucore/CartUA.o \
@@ -67,19 +66,16 @@ MODULE_OBJS := \
 	src/emucore/MD5.o \
 	src/emucore/OSystem.o \
 	src/emucore/Paddles.o \
+	src/emucore/PointingDevice.o \
 	src/emucore/Props.o \
 	src/emucore/PropsSet.o \
 	src/emucore/SaveKey.o \
 	src/emucore/Serializer.o \
 	src/emucore/Settings.o \
 	src/emucore/Switches.o \
-	src/emucore/StateManager.o \
 	src/emucore/System.o \
 	src/emucore/TIASnd.o \
 	src/emucore/TIASurface.o \
-	src/emucore/AmigaMouse.o \
-	src/emucore/AtariMouse.o \
-	src/emucore/TrakBall.o \
 	src/emucore/Thumbulator.o
 
 MODULE_DIRS += \

@@ -115,6 +115,9 @@ class Settings
       string key;
       Variant value;
       Variant initialValue;
+
+      Setting(const string& k, const Variant& v, const Variant& i = EmptyVariant)
+        : key(k), value(v), initialValue(i) { }
     };
     using SettingsArray = vector<Setting>;
 

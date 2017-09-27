@@ -40,10 +40,6 @@ TIADebug::TIADebug(Debugger& dbg, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const DebuggerState& TIADebug::getState()
 {
-  myState.ram.clear();
-  for(int i = 0; i < 0x010; ++i)
-    myState.ram.push_back(myTIA.peek(i));
-
   // Color registers
   myState.coluRegs.clear();
   myState.coluRegs.push_back(coluP0());
@@ -117,10 +113,6 @@ const DebuggerState& TIADebug::getState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIADebug::saveOldState()
 {
-  myOldState.ram.clear();
-  for(int i = 0; i < 0x010; ++i)
-    myOldState.ram.push_back(myTIA.peek(i));
-
   // Color registers
   myOldState.coluRegs.clear();
   myOldState.coluRegs.push_back(coluP0());
@@ -699,7 +691,25 @@ void TIADebug::setENABLOld(bool b)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::frameCount() const
 {
-  return myTIA.myFrameManager.frameCount();
+  return myTIA.frameCount();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::frameCycles() const
+{
+  return myTIA.frameCycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::cyclesLo() const
+{
+  return (int)myTIA.cycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::cyclesHi() const
+{
+  return (int)(myTIA.cycles() >> 32);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

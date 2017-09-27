@@ -16,6 +16,8 @@
 //============================================================================
 
 #include <cmath>
+#include <algorithm>
+#include <math.h>      
 
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
@@ -55,6 +57,9 @@ TIASurface::TIASurface(OSystem& system)
   myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
 
   memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
+
+  // Enable/disable threading in the NTSC TV effects renderer
+  myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,8 +112,14 @@ void TIASurface::setPalette(const uInt32* tia_palette, const uInt32* rgb_palette
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
 {
-  uInt32 tiaw = myTIA->width(), width = tiaw*2, height = myTIA->height();
+  uInt32 tiaw = myTIA->width(), width = tiaw * 2, height = myTIA->height();
   rect.setBounds(0, 0, width, height);
+
+  // Get Blargg buffer and width
+  uInt32 *blarggBuf, blarggPitch;
+  myTiaSurface->basePtr(blarggBuf, blarggPitch);
+  double blarggXFactor = (double)blarggPitch / width;
+  bool useBlargg = ntscEnabled();
 
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
   uInt32 *buf_ptr, pitch;
@@ -116,11 +127,12 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
 
   for(uInt32 y = 0; y < height; ++y)
   {
-    for(uInt32 x = 0; x < tiaw; ++x)
+    for(uInt32 x = 0; x < width; ++x)
     {
-      uInt32 pixel = myFB.tiaSurface().pixel(y*tiaw+x);
-      *buf_ptr++ = pixel;
-      *buf_ptr++ = pixel;
+      if (useBlargg)
+        *buf_ptr++ = blarggBuf[y * blarggPitch + (uInt32)nearbyint(x * blarggXFactor)];
+      else 
+        *buf_ptr++ = myPalette[*(myTIA->frameBuffer() + y * tiaw + x / 2)];
     }
   }
 
@@ -130,22 +142,7 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TIASurface::pixel(uInt32 idx, uInt8 shift)
 {
-  uInt8 c = *(myTIA->frameBuffer() + idx) | shift;
-
-  if(!myUsePhosphor)
-    return myPalette[c];
-  else
-  {
-    const uInt32 p = myRGBFramebuffer[idx];
-
-    // Mix current calculated frame with previous displayed frame
-    const uInt32 retVal = getRGBPhosphor(myPalette[c], p, shift);
-
-    // Store back into displayed frame buffer (for next frame)
-    myRGBFramebuffer[idx] = retVal;
-
-    return retVal;
-  }
+  return myPalette[*(myTIA->frameBuffer() + idx) | shift];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -228,35 +225,38 @@ void TIASurface::enableScanlineInterpolation(bool enable)
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor = enable;
-  myPhosphorPercent = blend / 100.0;
+  if(blend >= 0)
+    myPhosphorPercent = blend / 100.0;
   myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
 
   myTiaSurface->setDirty();
   mySLineSurface->setDirty();
   memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH * 4);
+
+  // Precalculate the average colors for the 'phosphor' effect
+  if(myUsePhosphor)
+  {
+    for(Int16 c = 255; c >= 0; c--)
+      for(Int16 p = 255; p >= 0; p--)
+        myPhosphorPalette[c][p] = getPhosphor(c, p);
+
+    myNTSCFilter.setPhosphorPalette(myPhosphorPalette);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt32 TIASurface::getRGBPhosphor(uInt32 c, uInt32 p, uInt8 shift) const
+inline uInt32 TIASurface::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 {
   #define TO_RGB(color, red, green, blue) \
-    red = color >> 16;  green = color >> 8;  blue = color;
-
-  uInt8 rc, gc, bc, rp, gp, bp;
+    const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
 
   TO_RGB(c, rc, gc, bc);
   TO_RGB(p, rp, gp, bp);
 
   // Mix current calculated frame with previous displayed frame
-  uInt8 rn = getPhosphor(rc, rp);
-  uInt8 gn = getPhosphor(gc, gp);
-  uInt8 bn = getPhosphor(bc, bp);
-
-  if(shift)
-  {
-    // Convert RGB to grayscale
-    rn = gn = bn = uInt8(0.2126*rn + 0.7152*gn + 0.0722*bn);
-  }
+  const uInt8 rn = myPhosphorPalette[rc][rp];
+  const uInt8 gn = myPhosphorPalette[gc][gp];
+  const uInt8 bn = myPhosphorPalette[bc][bp];
 
   return (rn << 16) | (gn << 8) | bn;
 }
@@ -325,16 +325,17 @@ void TIASurface::render()
   {
     case Filter::Normal:
     {
-      uInt8* in = myTIA->frameBuffer();
+      uInt8* tiaIn = myTIA->frameBuffer();
 
-      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
+      uInt32 bufofs = 0, screenofsY = 0, pos;
       for(uInt32 y = 0; y < height; ++y)
       {
         pos = screenofsY;
-        for(uInt32 x = 0; x < width; ++x)
-          out[pos++] = myPalette[in[bufofsY + x]];
-
-        bufofsY    += width;
+        for (uInt32 x = width / 2; x; --x)
+        {
+          out[pos++] = myPalette[tiaIn[bufofs++]];
+          out[pos++] = myPalette[tiaIn[bufofs++]];
+        }
         screenofsY += outPitch;
       }
       break;
@@ -345,21 +346,18 @@ void TIASurface::render()
       uInt8*  tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer;
 
-      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
-      for(uInt32 y = 0; y < height; ++y)
+      uInt32 bufofs = 0, screenofsY = 0, pos;
+      for(uInt32 y = height; y ; --y)
       {
         pos = screenofsY;
-        for(uInt32 x = 0; x < width; ++x)
+        for(uInt32 x = width / 2; x ; --x)
         {
-          const uInt32 bufofs = bufofsY + x;
-          const uInt8 c = tiaIn[bufofs];
-          const uInt32 retVal = getRGBPhosphor(myPalette[c], rgbIn[bufofs]);
-
           // Store back into displayed frame buffer (for next frame)
-          rgbIn[bufofs] = retVal;
-          out[pos++] = retVal;
+          rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          bufofs++;
+          rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          bufofs++;
         }
-        bufofsY    += width;
         screenofsY += outPitch;
       }
       break;
@@ -373,28 +371,7 @@ void TIASurface::render()
 
     case Filter::BlarggPhosphor:
     {
-      // First do Blargg filtering
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2);
-
-      // Then do phosphor mode (blend the resulting frames)
-      uInt32* rgbIn = myRGBFramebuffer;
-
-      uInt32 bufofsY = 0, screenofsY = 0, pos = 0;
-      for(uInt32 y = 0; y < height; ++y)
-      {
-        pos = screenofsY;
-        for(uInt32 x = 0; x < AtariNTSC::outWidth(kTIAW); ++x)
-        {
-          const uInt32 bufofs = bufofsY + x;
-          const uInt32 retVal = getRGBPhosphor(out[bufofs], rgbIn[bufofs]);
-
-          // Store back into displayed frame buffer (for next frame)
-          rgbIn[bufofs] = retVal;
-          out[pos++] = retVal;
-        }
-        bufofsY    += AtariNTSC::outWidth(kTIAW);
-        screenofsY += outPitch;
-      }
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer);
       break;
     }
   }
@@ -408,5 +385,51 @@ void TIASurface::render()
   {
     mySLineSurface->setDirty();
     mySLineSurface->render();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::reRender()
+{
+  uInt32 width = myTIA->width();
+  uInt32 height = myTIA->height();
+  uInt32 pos = 0;
+  uInt32 *outPtr, outPitch;
+
+  myTiaSurface->basePtr(outPtr, outPitch);
+
+  switch (myFilter) 
+  {
+    // for non-phosphor modes, render the frame again
+    case Filter::Normal:
+    case Filter::BlarggNormal:
+      render();
+      break;
+    // for phosphor modes, copy the phosphor framebuffer
+    case Filter::Phosphor:
+      for (uInt32 y = height; y; --y)
+      {
+        memcpy(outPtr, myRGBFramebuffer + pos, width);
+        outPtr += outPitch;
+        pos += width;
+      }
+      break;
+    case Filter::BlarggPhosphor:
+      memcpy(outPtr, myRGBFramebuffer, height * outPitch << 2);
+      break;
+  }
+
+  if (myUsePhosphor)
+  {
+    // Draw TIA image
+    myTiaSurface->setDirty();
+    myTiaSurface->render();
+
+    // Draw overlaying scanlines
+    if (myScanlinesEnabled)
+    {
+      mySLineSurface->setDirty();
+      mySLineSurface->render();
+    }
   }
 }

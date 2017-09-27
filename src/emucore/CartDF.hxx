@@ -94,7 +94,7 @@ class CartridgeDF : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -152,8 +152,8 @@ class CartridgeDF : public Cartridge
     // The 128K ROM image of the cartridge
     uInt8 myImage[32 * 4096];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt32 myBankOffset;
 
 private:
     // Following constructors and assignment operators not supported

@@ -26,7 +26,6 @@ CartridgeAR::CartridgeAR(const BytePtr& image, uInt32 size,
     mySize(std::max(size, 8448u)),
     myWriteEnabled(false),
     myPower(true),
-    myPowerRomCycle(0),
     myDataHoldRegister(0),
     myNumberOfDistinctAccesses(0),
     myWritePending(false),
@@ -64,7 +63,6 @@ void CartridgeAR::reset()
 
   myWriteEnabled = false;
   myPower = true;
-  myPowerRomCycle = mySystem->cycles();
 
   myDataHoldRegister = 0;
   myNumberOfDistinctAccesses = 0;
@@ -75,21 +73,14 @@ void CartridgeAR::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::systemCyclesReset()
-{
-  // Adjust cycle values
-  myPowerRomCycle -= mySystem->cycles();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::install(System& system)
 {
   mySystem = &system;
 
   // Map all of the accesses to call peek and poke (we don't yet indicate RAM areas)
   System::PageAccess access(this, System::PA_READ);
-  for(uInt32 i = 0x1000; i < 0x2000; i += (1 << System::PAGE_SHIFT))
-    mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
+    mySystem->setPageAccess(addr, access);
 
   bankConfiguration(0);
 }
@@ -242,11 +233,6 @@ bool CartridgeAR::bankConfiguration(uInt8 configuration)
 
   // Handle ROM power configuration
   myPower = !(configuration & 0x01);
-
-  if(myPower)
-  {
-    myPowerRomCycle = mySystem->cycles();
-  }
 
   myWriteEnabled = configuration & 0x02;
 
@@ -439,7 +425,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeAR::getImage(int& size) const
+const uInt8* CartridgeAR::getImage(uInt32& size) const
 {
   size = mySize;
   return myLoadImages.get();
@@ -473,9 +459,6 @@ bool CartridgeAR::save(Serializer& out) const
 
     // Indicates if the ROM's power is on or off
     out.putBool(myPower);
-
-    // Indicates when the power was last turned on
-    out.putInt(myPowerRomCycle);
 
     // Data hold register used for writing
     out.putByte(myDataHoldRegister);
@@ -524,9 +507,6 @@ bool CartridgeAR::load(Serializer& in)
 
     // Indicates if the ROM's power is on or off
     myPower = in.getBool();
-
-    // Indicates when the power was last turned on
-    myPowerRomCycle = in.getInt();
 
     // Data hold register used for writing
     myDataHoldRegister = in.getByte();

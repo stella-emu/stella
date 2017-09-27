@@ -52,9 +52,9 @@ class CartDebug : public DebuggerSystem
   public:
     enum DisasmType {
       NONE        = 0,
-      REFERENCED  = 1 << 0, /* code somewhere in the program references it,
+      REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
                                i.e. LDA $F372 referenced $F372 */
-      VALID_ENTRY = 1 << 1, /* addresses that can have a label placed in front of it.
+      VALID_ENTRY = 1 << 1, /* 0x02, addresses that can have a label placed in front of it.
                                A good counterexample would be "FF00: LDA $FE00"; $FF01
                                would be in the middle of a multi-byte instruction, and
                                therefore cannot be labelled. */
@@ -63,12 +63,14 @@ class CartDebug : public DebuggerSystem
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of decreasing hierarchy
       //
-      CODE   = 1 << 7,  // disassemble-able code segments
-      TCODE  = 1 << 6,  // (tentative) disassemble-able code segments
-      GFX    = 1 << 5,  // addresses loaded into GRPx registers
-      PGFX   = 1 << 4,  // addresses loaded into PFx registers
-      DATA   = 1 << 3,  // addresses loaded into registers other than GRPx / PFx
-      ROW    = 1 << 2   // all other addresses
+      CODE  = 1 << 7, // 0x80, disassemble-able code segments
+      TCODE = 1 << 6, // 0x40, (tentative) disassemble-able code segments
+      GFX   = 1 << 5, // 0x20, addresses loaded into GRPx registers
+      PGFX  = 1 << 4, // 0x10, addresses loaded into PFx registers
+      DATA  = 1 << 3, // 0x08, addresses loaded into registers other than GRPx / PFx
+      ROW   = 1 << 2, // 0x04, all other addresses
+      // special type for poke()
+      WRITE = TCODE   // 0x40, address written to
     };
     struct DisassemblyTag {
       DisasmType type;
@@ -76,6 +78,7 @@ class CartDebug : public DebuggerSystem
       string label;
       string disasm;
       string ccount;
+      string ctotal;
       string bytes;
       bool hllabel;
     };
@@ -316,6 +319,7 @@ class CartDebug : public DebuggerSystem
       bool IOReadWrite[24];
       bool ZPRAM[128];
       AddrToLabel Label;
+      bool breakFound;
     };
     ReservedEquates myReserved;
 
@@ -362,7 +366,7 @@ class CartDebug : public DebuggerSystem
 
     // Mappings from label to address (and vice versa) for constants
     // defined through a DASM lst file
-    AddrToLabel myUserCLabels;
+    // AddrToLabel myUserCLabels;
     // LabelToAddr myUserCAddresses;
 
     // Mappings for labels to addresses for system-defined equates

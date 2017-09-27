@@ -72,6 +72,10 @@ class NTSCFilter
       myNTSC.initializePalette(myTIAPalette);
     }
 
+    inline void setPhosphorPalette(uInt8 palette[256][256]) {
+      myNTSC.setPhosphorPalette(palette);
+    }
+
     // The following are meant to be used strictly for toggling from the GUI
     string setPreset(Preset preset);
 
@@ -109,6 +113,17 @@ class NTSCFilter
                        uInt32* dest_buf, uInt32 dest_pitch)
     {
       myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch);
+    }
+    inline void render(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
+                       uInt32* dest_buf, uInt32 dest_pitch, uInt32* prev_buf)
+    {
+      myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch, prev_buf);
+    }
+
+    // Enable threading for the NTSC rendering
+    inline void enableThreading(bool enable)
+    {
+      myNTSC.enableThreading(enable);
     }
 
   private:

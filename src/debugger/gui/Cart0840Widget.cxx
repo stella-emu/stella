@@ -59,14 +59,14 @@ Cartridge0840Widget::Cartridge0840Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge0840Widget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   CartDebugWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge0840Widget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+                                        int cmd, int data, int id)
 {
   if(cmd == kBankChanged)
   {
@@ -83,8 +83,8 @@ string Cartridge0840Widget::bankState()
   ostringstream& buf = buffer();
 
   static const char* const spot[] = { "$800", "$840" };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-      << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+      << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

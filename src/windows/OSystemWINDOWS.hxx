@@ -22,8 +22,6 @@
 
 /**
   This class defines Windows system specific settings.
-
-  @author  Stephen Anthony
 */
 class OSystemWINDOWS : public OSystem
 {
@@ -36,10 +34,10 @@ class OSystemWINDOWS : public OSystem
 
   public:
     /**
-      Returns the default paths for the snapshot directory.
+      Returns the default paths for loading/saving files.
     */
-    string defaultSnapSaveDir() override;
-    string defaultSnapLoadDir() override;
+    string defaultSaveDir() const override;
+    string defaultLoadDir() const override;
 
   private:
     // Following constructors and assignment operators not supported

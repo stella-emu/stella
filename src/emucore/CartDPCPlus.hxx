@@ -34,11 +34,14 @@ class System;
   program banks, a 4K display bank, 1K frequency table and the DPC chip.
   DPC chip access is mapped to $1000 - $1080 ($1000 - $103F is read port,
   $1040 - $107F is write port).
+  Program banks are accessible by read/write to $1FF6 - $1FFB.
+
+  FIXME: THIS NEEDS TO BE UPDATED
 
   For complete details on the DPC chip see David P. Crane's United States
   Patent Number 4,644,495.
 
-  @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
+  @authors  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
 */
 class CartridgeDPCPlus : public Cartridge
 {
@@ -70,13 +73,6 @@ class CartridgeDPCPlus : public Cartridge
       @param timing  Enum representing the new console type
     */
     void consoleChanged(ConsoleTiming timing) override;
-
-    /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
 
     /**
       Install cartridge in the specified system.  Invoked by the system
@@ -118,7 +114,7 @@ class CartridgeDPCPlus : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -263,17 +259,17 @@ class CartridgeDPCPlus : public Cartridge
     // The random number generator register
     uInt32 myRandomNumber;
 
-    // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
+
+    // System cycle count when the last Thumbulator::run() occurred
+    uInt64 myARMCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
 
-    // System cycle count when the last Thumbulator::run() occurred
-    Int32 myARMCycles;
-
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

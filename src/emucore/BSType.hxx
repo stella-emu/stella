@@ -28,8 +28,7 @@ enum class BSType {
   _CM,    _CTY,     _CV,    _CVP,    _DASH,   _DF,    _DFSC,
   _DPC,   _DPCP,    _E0,    _E7,     _EF,     _EFSC,  _F0,
   _F4,    _F4SC,    _F6,    _F6SC,   _F8,     _F8SC,  _FA,
-  _FA2,   _FE,      _MC,    _MDM,    _SB,     _UA,    _WD,
-  _X07,
+  _FA2,   _FE,      _MDM,   _SB,     _UA,     _WD,    _X07,
   NumSchemes
 };
 
@@ -85,7 +84,6 @@ static BSDescription BSList[int(BSType::NumSchemes)] = {
   { "FA",       "FA (CBS RAM Plus)"             },
   { "FA2",      "FA2 (CBS RAM Plus 24/28K)"     },
   { "FE",       "FE (8K Decathlon)"             },
-  { "MC",       "MC (C. Wilkson Megacart)"      },
   { "MDM",      "MDM (Menu Driven Megacart)"    },
   { "SB",       "SB (128-256K SUPERbank)"       },
   { "UA",       "UA (8K UA Ltd.)"               },

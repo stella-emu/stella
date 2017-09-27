@@ -32,6 +32,7 @@
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "PointingDevice.hxx"
 #include "PropsSet.hxx"
 #include "ListWidget.hxx"
 #include "ScrollBarWidget.hxx"
@@ -62,6 +63,7 @@ EventHandler::EventHandler(OSystem& osystem)
     myFryingFlag(false),
     myUseCtrlKeyFlag(true),
     mySkipMouseMotion(true),
+    myAltKeyCounter(0),
     myContSnapshotInterval(0),
     myContSnapshotCounter(0)
 {
@@ -94,6 +96,7 @@ void EventHandler::initialize()
   Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
   Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
+  PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
 
   // Set quick select delay when typing characters in listwidgets
   ListWidget::setQuickSelectDelay(myOSystem.settings().getInt("listdelay"));
@@ -116,12 +119,6 @@ void EventHandler::reset(State state)
   myOSystem.state().reset();
 
   setContinuousSnapshots(0);
-
-  // Reset events almost immediately after starting emulation mode
-  // We wait a little while, since 'hold' events may be present, and we want
-  // time for the ROM to process them
-  if(state == S_EMULATE)
-    SDL_AddTimer(500, resetEventsCallback, static_cast<void*>(this));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -200,27 +197,20 @@ void EventHandler::poll(uInt64 time)
   {
     myOSystem.console().riot().update();
 
-#if 0
     // Now check if the StateManager should be saving or loading state
-    // Per-frame cheats are disabled if the StateManager is active, since
-    // it would interfere with proper playback
-    if(myOSystem.state().isActive())
-    {
+    // (for rewind and/or movies
+    if(myOSystem.state().mode() != StateManager::Mode::Off)
       myOSystem.state().update();
-    }
-    else
-#endif
-    {
-    #ifdef CHEATCODE_SUPPORT
-      for(auto& cheat: myOSystem.cheat().perFrame())
-        cheat->evaluate();
-    #endif
 
-      // Handle continuous snapshots
-      if(myContSnapshotInterval > 0 &&
-        (++myContSnapshotCounter % myContSnapshotInterval == 0))
-        takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
-    }
+  #ifdef CHEATCODE_SUPPORT
+    for(auto& cheat: myOSystem.cheat().perFrame())
+      cheat->evaluate();
+  #endif
+
+    // Handle continuous snapshots
+    if(myContSnapshotInterval > 0 &&
+      (++myContSnapshotCounter % myContSnapshotInterval == 0))
+      takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
   }
   else if(myOverlay)
   {
@@ -246,6 +236,16 @@ void EventHandler::handleTextEvent(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 {
+  // Swallow KBDK_TAB under certain conditions
+  // See commments on 'myAltKeyCounter' for more information
+#ifdef BSPF_UNIX
+  if(myAltKeyCounter > 1 && key == KBDK_TAB)
+  {
+    myAltKeyCounter = false;
+    return;
+  }
+#endif
+
   bool handled = true;
 
   // Immediately store the key state
@@ -263,7 +263,13 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     }
     else
 #endif
-    if(key == KBDK_RETURN)
+    if(key == KBDK_TAB)
+    {
+      // Swallow Alt-Tab, but remember that it happened
+      myAltKeyCounter = 1;
+      return;
+    }
+    else if(key == KBDK_RETURN)
     {
       myOSystem.frameBuffer().toggleFullscreen();
     }
@@ -426,6 +432,10 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
         case KBDK_L:
           myOSystem.frameBuffer().toggleFrameStats();
+          break;
+
+        case KBDK_R:  // Alt-r toggles continuous store rewind states
+          myOSystem.state().toggleRewindMode();
           break;
 
         case KBDK_S:
@@ -823,11 +833,18 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
   switch(e)
   {
     case EVENT_WINDOW_EXPOSED:
-        myOSystem.frameBuffer().update();
-        break;
+      myOSystem.frameBuffer().update();
+      break;
+
+    case EVENT_WINDOW_FOCUS_GAINED:
+      // Used to handle Alt-x key combos; sometimes the key associated with
+      // Alt gets 'stuck'  and is passed to the core for processing
+      if(myAltKeyCounter > 0)
+        myAltKeyCounter = 2;
+      break;
 #if 0
     case EVENT_WINDOW_MINIMIZED:
-        if(myState == S_EMULATE) enterMenuMode(S_MENU);
+      if(myState == S_EMULATE) enterMenuMode(S_MENU);
         break;
 #endif
     default:  // handle other events as testing requires
@@ -1072,6 +1089,56 @@ void EventHandler::handleEvent(Event::Type event, int state)
 
   // Otherwise, pass it to the emulation core
   myEvent.set(event, state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleConsoleStartupEvents()
+{
+  bool update = false;
+  if(myOSystem.settings().getBool("holdreset"))
+  {
+    handleEvent(Event::ConsoleReset, 1);
+    update = true;
+  }
+  if(myOSystem.settings().getBool("holdselect"))
+  {
+    handleEvent(Event::ConsoleSelect, 1);
+    update = true;
+  }
+
+  const string& holdjoy0 = myOSystem.settings().getString("holdjoy0");
+  update = update || holdjoy0 != "";
+  if(BSPF::containsIgnoreCase(holdjoy0, "U"))
+    handleEvent(Event::JoystickZeroUp, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "D"))
+    handleEvent(Event::JoystickZeroDown, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "L"))
+    handleEvent(Event::JoystickZeroLeft, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "R"))
+    handleEvent(Event::JoystickZeroRight, 1);
+  if(BSPF::containsIgnoreCase(holdjoy0, "F"))
+    handleEvent(Event::JoystickZeroFire, 1);
+
+  const string& holdjoy1 = myOSystem.settings().getString("holdjoy1");
+  update = update || holdjoy1 != "";
+  if(BSPF::containsIgnoreCase(holdjoy1, "U"))
+    handleEvent(Event::JoystickOneUp, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "D"))
+    handleEvent(Event::JoystickOneDown, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "L"))
+    handleEvent(Event::JoystickOneLeft, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "R"))
+    handleEvent(Event::JoystickOneRight, 1);
+  if(BSPF::containsIgnoreCase(holdjoy1, "F"))
+    handleEvent(Event::JoystickOneFire, 1);
+
+  if(update)
+    myOSystem.console().riot().update();
+
+#ifdef DEBUGGER_SUPPORT
+  if(myOSystem.settings().getBool("debug"))
+    enterDebugMode();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1861,7 +1928,7 @@ void EventHandler::takeSnapshot(uInt32 number)
   {
     // Make sure we have a 'clean' image, with no onscreen messages
     myOSystem.frameBuffer().enableMessages(false);
-    myOSystem.frameBuffer().tiaSurface().render();
+    myOSystem.frameBuffer().tiaSurface().reRender();
 
     string message = "Snapshot saved";
     try
@@ -2038,6 +2105,7 @@ void EventHandler::setEventState(State state)
     case S_LAUNCHER:
       myOverlay = &myOSystem.launcher();
       enableTextEvents(true);
+      myEvent.clear();
       break;
 
 #ifdef DEBUGGER_SUPPORT
@@ -2059,19 +2127,9 @@ void EventHandler::setEventState(State state)
   if(myOSystem.hasConsole())
     myOSystem.console().stateChanged(myState);
 
-  // Always clear any pending events when changing states
-  myEvent.clear();
-
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed
   mySkipMouseMotion = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
-{
-  (static_cast<EventHandler*>(param))->myEvent.clear();
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

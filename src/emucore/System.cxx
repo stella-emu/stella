@@ -45,7 +45,7 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
   PageAccess access(&myNullDevice, System::PA_READ);
   for(int page = 0; page < NUM_PAGES; ++page)
   {
-    setPageAccess(page, access);
+    myPageAccessTable[page] = access;
     myPageIsDirtyTable[page] = false;
   }
 
@@ -69,10 +69,8 @@ void System::reset(bool autodetect)
   // Provide hint to devices that autodetection is active (or not)
   mySystemInAutodetect = autodetect;
 
-  // Reset system cycle counter
-  resetCycles();
-
   // Reset all devices
+  myCycles = 0;     // Must be done first (the reset() methods may use its value)
   myM6532.reset();
   myTIA.reset();
   myCart.reset();
@@ -80,18 +78,6 @@ void System::reset(bool autodetect)
 
   // There are no dirty pages upon startup
   clearDirtyPages();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::resetCycles()
-{
-  // First we let all of the device attached to me know about the reset
-  myM6532.systemCyclesReset();
-  myTIA.systemCyclesReset();
-  myCart.systemCyclesReset();
-
-  // Now, we reset cycle count to zero
-  myCycles = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,7 +111,7 @@ void System::clearDirtyPages()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 System::peek(uInt16 addr, uInt8 flags)
 {
-  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
+  const PageAccess& access = getPageAccess(addr);
 
 #ifdef DEBUGGER_SUPPORT
   // Set access type
@@ -151,10 +137,18 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::poke(uInt16 addr, uInt8 value)
+void System::poke(uInt16 addr, uInt8 value, uInt8 flags)
 {
   uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
-  PageAccess& access = myPageAccessTable[page];
+  const PageAccess& access = myPageAccessTable[page];
+
+#ifdef DEBUGGER_SUPPORT
+  // Set access type
+  if (access.codeAccessBase)
+    *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
+  else
+    access.device->setAccessFlags(addr, flags);
+#endif
 
   // See if this page uses direct accessing or not
   if(access.directPokeBase)
@@ -179,7 +173,7 @@ void System::poke(uInt16 addr, uInt8 value)
 uInt8 System::getAccessFlags(uInt16 addr) const
 {
 #ifdef DEBUGGER_SUPPORT
-  const PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
+  const PageAccess& access = getPageAccess(addr);
 
   if(access.codeAccessBase)
     return *(access.codeAccessBase + (addr & PAGE_MASK));
@@ -194,7 +188,7 @@ uInt8 System::getAccessFlags(uInt16 addr) const
 void System::setAccessFlags(uInt16 addr, uInt8 flags)
 {
 #ifdef DEBUGGER_SUPPORT
-  PageAccess& access = myPageAccessTable[(addr & ADDRESS_MASK) >> PAGE_SHIFT];
+  const PageAccess& access = getPageAccess(addr);
 
   if(access.codeAccessBase)
     *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
@@ -209,7 +203,7 @@ bool System::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putInt(myCycles);
+    out.putLong(myCycles);
     out.putByte(myDataBusState);
 
     // Save the state of each device
@@ -220,6 +214,8 @@ bool System::save(Serializer& out) const
     if(!myTIA.save(out))
       return false;
     if(!myCart.save(out))
+      return false;
+    if(!randGenerator().save(out))
       return false;
   }
   catch(...)
@@ -239,7 +235,7 @@ bool System::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCycles = in.getInt();
+    myCycles = in.getLong();
     myDataBusState = in.getByte();
 
     // Load the state of each device
@@ -250,6 +246,8 @@ bool System::load(Serializer& in)
     if(!myTIA.load(in))
       return false;
     if(!myCart.load(in))
+      return false;
+    if(!randGenerator().load(in))
       return false;
   }
   catch(...)

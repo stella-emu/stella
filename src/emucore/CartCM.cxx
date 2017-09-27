@@ -25,7 +25,7 @@ CartridgeCM::CartridgeCM(const BytePtr& image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
     mySWCHA(0xFF),   // portA is all 1's
-    myCurrentBank(0)
+    myBankOffset(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(16384u, size));
@@ -60,7 +60,7 @@ void CartridgeCM::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCM::peek(uInt16 address)
 {
-  // NOTE: This does not handle accessing cart ROM/RAM, however, this function
+  // NOTE: This does not handle accessing cart ROM/RAM, however, this method
   // should never be called for ROM/RAM because of the way page accessing
   // has been setup (it will only ever be called for RIOT reads)
   return mySystem->m6532().peek(address);
@@ -104,8 +104,7 @@ bool CartridgeCM::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
+  myBankOffset = bank << 12;
 
   // Although this scheme contains four 4K ROM banks and one 2K RAM bank,
   // it's easier to think of things in terms of 2K slices, as follows:
@@ -118,37 +117,35 @@ bool CartridgeCM::bank(uInt16 bank)
   System::PageAccess access(this, System::PA_READ);
 
   // Lower 2K (always ROM)
-  for(uInt32 address = 0x1000; address < 0x1800;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    mySystem->setPageAccess(addr, access);
   }
 
   // Upper 2K (RAM or ROM)
-  for(uInt32 address = 0x1800; address < 0x2000;
-      address += (1 << System::PAGE_SHIFT))
+  for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.type = System::PA_READWRITE;
 
     if(mySWCHA & 0x10)
     {
-      access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-      access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+      access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+      access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
     }
     else
     {
-      access.directPeekBase = &myRAM[address & 0x7FF];
-      access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x07FF)];
+      access.directPeekBase = &myRAM[addr & 0x7FF];
+      access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x07FF)];
     }
 
     if((mySWCHA & 0x30) == 0x20)
-      access.directPokeBase = &myRAM[address & 0x7FF];
+      access.directPokeBase = &myRAM[addr & 0x7FF];
     else
       access.directPokeBase = 0;
 
-    mySystem->setPageAccess(address >> System::PAGE_SHIFT, access);
+    mySystem->setPageAccess(addr, access);
   }
 
   return myBankChanged = true;
@@ -157,7 +154,7 @@ bool CartridgeCM::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCM::getBank() const
 {
-  return myCurrentBank;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -176,13 +173,13 @@ bool CartridgeCM::patch(uInt16 address, uInt8 value)
   if((mySWCHA & 0x30) == 0x20)
     myRAM[address & 0x7FF] = value;
   else
-    myImage[(myCurrentBank << 12) + address] = value;
+    myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCM::getImage(int& size) const
+const uInt8* CartridgeCM::getImage(uInt32& size) const
 {
   size = 16384;
   return myImage;
@@ -194,7 +191,7 @@ bool CartridgeCM::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
+    out.putShort(myBankOffset);
     out.putByte(mySWCHA);
     out.putByte(myCompuMate->column());
     out.putByteArray(myRAM, 2048);
@@ -216,7 +213,7 @@ bool CartridgeCM::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
+    myBankOffset = in.getShort();
     mySWCHA = in.getByte();
     myCompuMate->column() = in.getByte();
     in.getByteArray(myRAM, 2048);
@@ -228,7 +225,7 @@ bool CartridgeCM::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  bank(myCurrentBank);
+  bank(myBankOffset >> 12);
 
   return true;
 }

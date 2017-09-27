@@ -21,6 +21,7 @@
 #include <stdarg.h>
 
 class ScrollBarWidget;
+class FilesystemNode;
 
 #include "Widget.hxx"
 #include "Command.hxx"
@@ -38,7 +39,7 @@ class PromptWidget : public Widget, public CommandSender
     int vprintf(const char* format, va_list argptr);
     void print(const string& str);
     void printPrompt();
-    bool saveBuffer(string& filename);
+    bool saveBuffer(const FilesystemNode& file);
 
     // Clear screen and erase all history
     void clearScreen();

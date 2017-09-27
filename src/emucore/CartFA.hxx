@@ -27,8 +27,9 @@ class System;
 #endif
 
 /**
-  Cartridge class used for CBS' RAM Plus cartridges.  There are
-  three 4K banks and 256 bytes of RAM.
+  Cartridge class used for CBS' RAM Plus cartridges.  There are three 4K
+  banks, accessible by read/write at $1FF8 - $1FFA, and 256 bytes of RAM.
+  RAM read port is $1100 - $11FF, write port is $1000 - $10FF.
 
   @author  Bradford W. Mott
 */
@@ -93,7 +94,7 @@ class CartridgeFA : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -154,8 +155,8 @@ class CartridgeFA : public Cartridge
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

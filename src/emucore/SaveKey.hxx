@@ -75,18 +75,18 @@ class SaveKey : public Controller
     void update() override { }
 
     /**
+      Notification method invoked by the system after its reset method has
+      been called.  It may be necessary to override this method for
+      controllers that need to know a reset has occurred.
+    */
+    void reset() override;
+
+    /**
       Notification method invoked by the system indicating that the
       console is about to be destroyed.  It may be necessary to override
       this method for controllers that need cleanup before exiting.
     */
     void close() override;
-
-    /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
 
   private:
     // The EEPROM used in the SaveKey

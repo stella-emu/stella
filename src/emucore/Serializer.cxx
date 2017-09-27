@@ -134,6 +134,15 @@ void Serializer::getIntArray(uInt32* array, uInt32 size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 Serializer::getLong() const
+{
+  uInt64 val = 0;
+  myStream->read(reinterpret_cast<char*>(&val), sizeof(uInt64));
+
+  return val;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double Serializer::getDouble() const
 {
   double val = 0.0;
@@ -193,6 +202,12 @@ void Serializer::putInt(uInt32 value)
 void Serializer::putIntArray(const uInt32* array, uInt32 size)
 {
   myStream->write(reinterpret_cast<const char*>(array), sizeof(uInt32)*size);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Serializer::putLong(uInt64 value)
+{
+  myStream->write(reinterpret_cast<char*>(&value), sizeof(uInt64));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -50,6 +50,7 @@ class Thumbulator
     enum ConfigureFor {
       BUS,      // cartridges of type BUS
       CDF,      // cartridges of type CDF
+      CDF1,     // cartridges of type CDF version 1
       DPCplus   // cartridges of type DPC+
     };
 

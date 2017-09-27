@@ -74,6 +74,7 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myUIMessages;
     CheckboxWidget*   myCenter;
     CheckboxWidget*   myFastSCBios;
+    CheckboxWidget*   myUseThreads;
 
     // TV effects adjustables (custom mode)
     PopUpWidget*      myTVMode;

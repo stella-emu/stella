@@ -30,9 +30,7 @@ class System;
   Cartridge class used for Homestar Runner by Paul Slocum.
   There are 16 4K banks (total of 64K ROM) with 128 bytes of RAM.
   Accessing $1FE0 - $1FEF switches to each bank.
-
-  This interpretation is based on analysis of the z26 assembly code,
-  as this scheme doesn't seem to be documented anywhere.
+  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 
   @author  Stephen Anthony
 */
@@ -97,7 +95,7 @@ class CartridgeEFSC : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -158,8 +156,8 @@ class CartridgeEFSC : public Cartridge
     // The 128 bytes of RAM
     uInt8 myRAM[128];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

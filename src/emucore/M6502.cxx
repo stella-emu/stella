@@ -27,6 +27,7 @@
   #define DISASM_PGFX  CartDebug::PGFX
   #define DISASM_DATA  CartDebug::DATA
   #define DISASM_ROW   CartDebug::ROW
+  #define DISASM_WRITE CartDebug::WRITE
   #define DISASM_NONE  0
 #else
   // Flags for disassembly types
@@ -36,6 +37,7 @@
   #define DISASM_DATA  0
   #define DISASM_ROW   0
   #define DISASM_NONE  0
+  #define DISASM_WRITE 0 
 #endif
 #include "Settings.hxx"
 #include "Vec.hxx"
@@ -49,7 +51,6 @@ M6502::M6502(const Settings& settings)
     mySettings(settings),
     A(0), X(0), Y(0), SP(0), IR(0), PC(0),
     N(false), V(false), B(false), D(false), I(false), notZ(false), C(false),
-    myLastAccessWasRead(true),
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),
     myLastPeekAddress(0),
@@ -94,9 +95,6 @@ void M6502::reset()
   PS(BSPF::containsIgnoreCase(cpurandom, "P") ?
           mySystem->randGenerator().next() : 0x20);
 
-  // Reset access flag
-  myLastAccessWasRead = true;
-
   // Load PC from the reset vector
   PC = uInt16(mySystem->peek(0xfffc)) | (uInt16(mySystem->peek(0xfffd)) << 8);
 
@@ -133,13 +131,12 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
 #endif  // DEBUGGER_SUPPORT
 
   uInt8 result = mySystem->peek(address, flags);
-  myLastAccessWasRead = true;
   myLastPeekAddress = address;
   return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void M6502::poke(uInt16 address, uInt8 value)
+inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
 {
   ////////////////////////////////////////////////
   // TODO - move this logic directly into CartAR
@@ -160,8 +157,7 @@ inline void M6502::poke(uInt16 address, uInt8 value)
   }
 #endif  // DEBUGGER_SUPPORT
 
-  mySystem->poke(address, value);
-  myLastAccessWasRead = false;
+  mySystem->poke(address, value, flags); 
   myLastPokeAddress = address;
 }
 
@@ -414,7 +410,7 @@ void M6502::attach(Debugger& debugger)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 M6502::addCondBreak(Expression* e, const string& name)
 {
-  myBreakConds.emplace_back(unique_ptr<Expression>(e));
+  myBreakConds.emplace_back(e);
   myBreakCondNames.push_back(name);
   return uInt32(myBreakConds.size() - 1);
 }

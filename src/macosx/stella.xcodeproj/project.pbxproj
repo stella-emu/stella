@@ -25,7 +25,6 @@
 		2D9173DA09BA90380026E9FF /* CartF8.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF2D0627AE07006BEC99 /* CartF8.hxx */; };
 		2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF2F0627AE07006BEC99 /* CartF8SC.hxx */; };
 		2D9173DD09BA90380026E9FF /* CartFE.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF330627AE07006BEC99 /* CartFE.hxx */; };
-		2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF370627AE07006BEC99 /* CartMC.hxx */; };
 		2D9173E009BA90380026E9FF /* Console.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF390627AE07006BEC99 /* Console.hxx */; };
 		2D9173E109BA90380026E9FF /* Control.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF3B0627AE07006BEC99 /* Control.hxx */; };
 		2D9173E309BA90380026E9FF /* Driving.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF3F0627AE07006BEC99 /* Driving.hxx */; };
@@ -132,7 +131,6 @@
 		2D91748309BA90380026E9FF /* CartF8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF2C0627AE07006BEC99 /* CartF8.cxx */; };
 		2D91748409BA90380026E9FF /* CartF8SC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF2E0627AE07006BEC99 /* CartF8SC.cxx */; };
 		2D91748609BA90380026E9FF /* CartFE.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF320627AE07006BEC99 /* CartFE.cxx */; };
-		2D91748809BA90380026E9FF /* CartMC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF360627AE07006BEC99 /* CartMC.cxx */; };
 		2D91748909BA90380026E9FF /* Console.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF380627AE07006BEC99 /* Console.cxx */; };
 		2D91748A09BA90380026E9FF /* Control.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3A0627AE07006BEC99 /* Control.cxx */; };
 		2D91748C09BA90380026E9FF /* Driving.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3E0627AE07006BEC99 /* Driving.cxx */; };
@@ -224,8 +222,6 @@
 		CFE3F6161E84A9CE00A8204E /* CartCDF.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */; };
 		DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */; };
 		DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */; };
-		DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */; };
-		DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */; };
 		DC0984850D3985160073C852 /* CartSB.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984830D3985160073C852 /* CartSB.cxx */; };
 		DC0984860D3985160073C852 /* CartSB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0984840D3985160073C852 /* CartSB.hxx */; };
 		DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */; };
@@ -236,11 +232,8 @@
 		DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC13B53E176FF2F500B8B4BB /* RomListSettings.hxx */; };
 		DC173F760E2CAC1E00320F94 /* ContextMenu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */; };
 		DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */; };
-		DC1B2EC31E50036100F62837 /* AmigaMouse.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1B2EBD1E50036100F62837 /* AmigaMouse.cxx */; };
 		DC1B2EC41E50036100F62837 /* AmigaMouse.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */; };
-		DC1B2EC51E50036100F62837 /* AtariMouse.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1B2EBF1E50036100F62837 /* AtariMouse.cxx */; };
 		DC1B2EC61E50036100F62837 /* AtariMouse.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC01E50036100F62837 /* AtariMouse.hxx */; };
-		DC1B2EC71E50036100F62837 /* TrakBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1B2EC11E50036100F62837 /* TrakBall.cxx */; };
 		DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC21E50036100F62837 /* TrakBall.hxx */; };
 		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
@@ -258,6 +251,7 @@
 		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
 		DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */; };
+		DC3DAFAC1F2E233B00A64410 /* PointingDevice.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */; };
 		DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83C1E2C0E6D00905161 /* adler32.c */; };
 		DC3EE8571E2C0E6D00905161 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83D1E2C0E6D00905161 /* compress.c */; };
 		DC3EE8581E2C0E6D00905161 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83E1E2C0E6D00905161 /* crc32.c */; };
@@ -305,6 +299,7 @@
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
+		DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */; };
 		DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */; };
 		DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */; };
 		DC5BE4B317C913AC0091FD64 /* ConsoleBFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5BE4B117C913AC0091FD64 /* ConsoleBFont.hxx */; };
@@ -349,8 +344,6 @@
 		DC676A541729A0B000E4E73D /* CartFA2Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC676A381729A0B000E4E73D /* CartFA2Widget.hxx */; };
 		DC676A551729A0B000E4E73D /* CartFEWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC676A391729A0B000E4E73D /* CartFEWidget.cxx */; };
 		DC676A561729A0B000E4E73D /* CartFEWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC676A3A1729A0B000E4E73D /* CartFEWidget.hxx */; };
-		DC676A571729A0B000E4E73D /* CartMCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC676A3B1729A0B000E4E73D /* CartMCWidget.cxx */; };
-		DC676A581729A0B000E4E73D /* CartMCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC676A3C1729A0B000E4E73D /* CartMCWidget.hxx */; };
 		DC676A591729A0B000E4E73D /* CartSBWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC676A3D1729A0B000E4E73D /* CartSBWidget.cxx */; };
 		DC676A5A1729A0B000E4E73D /* CartSBWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC676A3E1729A0B000E4E73D /* CartSBWidget.hxx */; };
 		DC676A5B1729A0B000E4E73D /* CartX07Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC676A3F1729A0B000E4E73D /* CartX07Widget.cxx */; };
@@ -524,6 +517,10 @@
 		DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDA03AE1A2009BA00711920 /* CartWD.cxx */; };
 		DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDA03AF1A2009BB00711920 /* CartWD.hxx */; };
 		DCDAF4D918CA9AAB00D3865D /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCDAF4D818CA9AAB00D3865D /* SDL2.framework */; };
+		DCDDEAC41F5DBF0400C67366 /* RewindManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */; };
+		DCDDEAC51F5DBF0400C67366 /* RewindManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */; };
+		DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */; };
+		DCDDEAC71F5DBF0400C67366 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */; };
 		DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */; };
 		DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */; };
 		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
@@ -800,8 +797,6 @@
 		2DE2DF2F0627AE07006BEC99 /* CartF8SC.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CartF8SC.hxx; sourceTree = "<group>"; };
 		2DE2DF320627AE07006BEC99 /* CartFE.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CartFE.cxx; sourceTree = "<group>"; };
 		2DE2DF330627AE07006BEC99 /* CartFE.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CartFE.hxx; sourceTree = "<group>"; };
-		2DE2DF360627AE07006BEC99 /* CartMC.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CartMC.cxx; sourceTree = "<group>"; };
-		2DE2DF370627AE07006BEC99 /* CartMC.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CartMC.hxx; sourceTree = "<group>"; };
 		2DE2DF380627AE07006BEC99 /* Console.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Console.cxx; sourceTree = "<group>"; };
 		2DE2DF390627AE07006BEC99 /* Console.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Console.hxx; sourceTree = "<group>"; };
 		2DE2DF3A0627AE07006BEC99 /* Control.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Control.cxx; sourceTree = "<group>"; };
@@ -851,8 +846,6 @@
 		CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCDF.hxx; sourceTree = "<group>"; };
 		DC047FEC1A4A6F3600348F0F /* JoystickDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JoystickDialog.cxx; sourceTree = "<group>"; };
 		DC047FED1A4A6F3600348F0F /* JoystickDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JoystickDialog.hxx; sourceTree = "<group>"; };
-		DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = StateManager.cxx; sourceTree = "<group>"; };
-		DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = StateManager.hxx; sourceTree = "<group>"; };
 		DC0984830D3985160073C852 /* CartSB.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartSB.cxx; sourceTree = "<group>"; };
 		DC0984840D3985160073C852 /* CartSB.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartSB.hxx; sourceTree = "<group>"; };
 		DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlobalPropsDialog.cxx; sourceTree = "<group>"; };
@@ -863,11 +856,8 @@
 		DC13B53E176FF2F500B8B4BB /* RomListSettings.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RomListSettings.hxx; sourceTree = "<group>"; };
 		DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenu.cxx; sourceTree = "<group>"; };
 		DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = ContextMenu.hxx; sourceTree = "<group>"; };
-		DC1B2EBD1E50036100F62837 /* AmigaMouse.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AmigaMouse.cxx; sourceTree = "<group>"; };
 		DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AmigaMouse.hxx; sourceTree = "<group>"; };
-		DC1B2EBF1E50036100F62837 /* AtariMouse.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariMouse.cxx; sourceTree = "<group>"; };
 		DC1B2EC01E50036100F62837 /* AtariMouse.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariMouse.hxx; sourceTree = "<group>"; };
-		DC1B2EC11E50036100F62837 /* TrakBall.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrakBall.cxx; sourceTree = "<group>"; };
 		DC1B2EC21E50036100F62837 /* TrakBall.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrakBall.hxx; sourceTree = "<group>"; };
 		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
@@ -885,6 +875,7 @@
 		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL2.hxx; sourceTree = "<group>"; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA2.cxx; sourceTree = "<group>"; };
 		DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA2.hxx; sourceTree = "<group>"; };
+		DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PointingDevice.hxx; sourceTree = "<group>"; };
 		DC3EE83C1E2C0E6D00905161 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adler32.c; sourceTree = "<group>"; };
 		DC3EE83D1E2C0E6D00905161 /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = compress.c; sourceTree = "<group>"; };
 		DC3EE83E1E2C0E6D00905161 /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crc32.c; sourceTree = "<group>"; };
@@ -932,6 +923,7 @@
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RiotWidget.hxx; sourceTree = "<group>"; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SaveKey.cxx; sourceTree = "<group>"; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SaveKey.hxx; sourceTree = "<group>"; };
+		DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDevice.cxx; sourceTree = "<group>"; };
 		DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseControl.cxx; sourceTree = "<group>"; };
 		DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MouseControl.hxx; sourceTree = "<group>"; };
 		DC5BE4B117C913AC0091FD64 /* ConsoleBFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleBFont.hxx; sourceTree = "<group>"; };
@@ -976,8 +968,6 @@
 		DC676A381729A0B000E4E73D /* CartFA2Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA2Widget.hxx; sourceTree = "<group>"; };
 		DC676A391729A0B000E4E73D /* CartFEWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFEWidget.cxx; sourceTree = "<group>"; };
 		DC676A3A1729A0B000E4E73D /* CartFEWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFEWidget.hxx; sourceTree = "<group>"; };
-		DC676A3B1729A0B000E4E73D /* CartMCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartMCWidget.cxx; sourceTree = "<group>"; };
-		DC676A3C1729A0B000E4E73D /* CartMCWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartMCWidget.hxx; sourceTree = "<group>"; };
 		DC676A3D1729A0B000E4E73D /* CartSBWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartSBWidget.cxx; sourceTree = "<group>"; };
 		DC676A3E1729A0B000E4E73D /* CartSBWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartSBWidget.hxx; sourceTree = "<group>"; };
 		DC676A3F1729A0B000E4E73D /* CartX07Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartX07Widget.cxx; sourceTree = "<group>"; };
@@ -1153,6 +1143,10 @@
 		DCDA03AE1A2009BA00711920 /* CartWD.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartWD.cxx; sourceTree = "<group>"; };
 		DCDA03AF1A2009BB00711920 /* CartWD.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartWD.hxx; sourceTree = "<group>"; };
 		DCDAF4D818CA9AAB00D3865D /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
+		DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RewindManager.cxx; sourceTree = "<group>"; };
+		DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RewindManager.hxx; sourceTree = "<group>"; };
+		DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StateManager.cxx; sourceTree = "<group>"; };
+		DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StateManager.hxx; sourceTree = "<group>"; };
 		DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConfigPathDialog.cxx; sourceTree = "<group>"; };
 		DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConfigPathDialog.hxx; sourceTree = "<group>"; };
 		DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnapshotDialog.cxx; sourceTree = "<group>"; };
@@ -1403,8 +1397,6 @@
 				DCAAE5D01715887B0080BB82 /* CartFAWidget.hxx */,
 				DC676A391729A0B000E4E73D /* CartFEWidget.cxx */,
 				DC676A3A1729A0B000E4E73D /* CartFEWidget.hxx */,
-				DC676A3B1729A0B000E4E73D /* CartMCWidget.cxx */,
-				DC676A3C1729A0B000E4E73D /* CartMCWidget.hxx */,
 				DC6A18F619B3E65500DEB242 /* CartMDMWidget.cxx */,
 				DC6A18F719B3E65500DEB242 /* CartMDMWidget.hxx */,
 				DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */,
@@ -1492,10 +1484,14 @@
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
+				DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */,
+				DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */,
 				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
 				DC368F5218A2FB710084199C /* SoundSDL2.cxx */,
 				DC368F5318A2FB710084199C /* SoundSDL2.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
+				DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */,
+				DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */,
 				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
 				DCC467EA14FBEC9600E15508 /* tv_filters */,
@@ -1533,9 +1529,7 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
-				DC1B2EBD1E50036100F62837 /* AmigaMouse.cxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
-				DC1B2EBF1E50036100F62837 /* AtariMouse.cxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
 				DC487FB50DA5350900E12499 /* AtariVox.hxx */,
@@ -1619,8 +1613,6 @@
 				DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */,
 				2DE2DF320627AE07006BEC99 /* CartFE.cxx */,
 				2DE2DF330627AE07006BEC99 /* CartFE.hxx */,
-				2DE2DF360627AE07006BEC99 /* CartMC.cxx */,
-				2DE2DF370627AE07006BEC99 /* CartMC.hxx */,
 				DC6A18FA19B3E67A00DEB242 /* CartMDM.cxx */,
 				DC6A18FB19B3E67A00DEB242 /* CartMDM.hxx */,
 				DC0984830D3985160073C852 /* CartSB.cxx */,
@@ -1674,6 +1666,8 @@
 				2DDBEB7508457B7D00812C11 /* OSystem.hxx */,
 				2DE2DF820627AE34006BEC99 /* Paddles.cxx */,
 				2DE2DF830627AE34006BEC99 /* Paddles.hxx */,
+				DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */,
+				DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */,
 				2DE2DF840627AE34006BEC99 /* Props.cxx */,
 				2DE2DF850627AE34006BEC99 /* Props.hxx */,
 				2DE2DF860627AE34006BEC99 /* PropsSet.cxx */,
@@ -1688,8 +1682,6 @@
 				2D944848062904E800DD9879 /* Settings.cxx */,
 				2D733D77062895F1006265D9 /* Settings.hxx */,
 				2DE2DF8D0627AE34006BEC99 /* Sound.hxx */,
-				DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */,
-				DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */,
 				2DE2DF8E0627AE34006BEC99 /* Switches.cxx */,
 				2DE2DF8F0627AE34006BEC99 /* Switches.hxx */,
 				DCC527CE10B9DA19005E1287 /* System.cxx */,
@@ -1702,7 +1694,6 @@
 				DC2AADAC194F389C0026C7A4 /* TIASurface.cxx */,
 				DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */,
 				DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */,
-				DC1B2EC11E50036100F62837 /* TrakBall.cxx */,
 				DC1B2EC21E50036100F62837 /* TrakBall.hxx */,
 			);
 			path = emucore;
@@ -2003,7 +1994,6 @@
 				DC3EE8591E2C0E6D00905161 /* crc32.h in Headers */,
 				2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */,
 				2D9173DD09BA90380026E9FF /* CartFE.hxx in Headers */,
-				2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */,
 				DC62E6481960E87B007AEF05 /* AtariVoxWidget.hxx in Headers */,
 				2D9173E009BA90380026E9FF /* Console.hxx in Headers */,
 				2D9173E109BA90380026E9FF /* Control.hxx in Headers */,
@@ -2126,7 +2116,6 @@
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
-				DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
@@ -2190,6 +2179,7 @@
 				DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */,
 				DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */,
 				DCF3A6FB1DFC75E3008A8AF3 /* Player.hxx in Headers */,
+				DCDDEAC71F5DBF0400C67366 /* StateManager.hxx in Headers */,
 				DC8C1BB014B25DE7006440EE /* CompuMate.hxx in Headers */,
 				DC8C1BB214B25DE7006440EE /* MindLink.hxx in Headers */,
 				DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */,
@@ -2243,9 +2233,9 @@
 				DC676A521729A0B000E4E73D /* CartE7Widget.hxx in Headers */,
 				DC676A541729A0B000E4E73D /* CartFA2Widget.hxx in Headers */,
 				DC676A561729A0B000E4E73D /* CartFEWidget.hxx in Headers */,
-				DC676A581729A0B000E4E73D /* CartMCWidget.hxx in Headers */,
 				DC676A5A1729A0B000E4E73D /* CartSBWidget.hxx in Headers */,
 				DC676A5C1729A0B000E4E73D /* CartX07Widget.hxx in Headers */,
+				DC3DAFAC1F2E233B00A64410 /* PointingDevice.hxx in Headers */,
 				DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */,
 				DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */,
 				DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */,
@@ -2265,6 +2255,7 @@
 				DCAACB0F188D636F00A4D282 /* Cart4KSCWidget.hxx in Headers */,
 				DCAACB11188D636F00A4D282 /* CartBFSCWidget.hxx in Headers */,
 				DC6A18FD19B3E67A00DEB242 /* CartMDM.hxx in Headers */,
+				DCDDEAC51F5DBF0400C67366 /* RewindManager.hxx in Headers */,
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */,
@@ -2395,7 +2386,6 @@
 				2D91748409BA90380026E9FF /* CartF8SC.cxx in Sources */,
 				DCF3A6FA1DFC75E3008A8AF3 /* Player.cxx in Sources */,
 				2D91748609BA90380026E9FF /* CartFE.cxx in Sources */,
-				2D91748809BA90380026E9FF /* CartMC.cxx in Sources */,
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
@@ -2429,7 +2419,6 @@
 				2D9174B609BA90380026E9FF /* Menu.cxx in Sources */,
 				DC5E473B19EC9A14000E45DF /* EventJoyHandler.cxx in Sources */,
 				CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */,
-				DC1B2EC71E50036100F62837 /* TrakBall.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
 				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
@@ -2443,12 +2432,12 @@
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
 				DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */,
 				CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */,
-				DC1B2EC51E50036100F62837 /* AtariMouse.cxx in Sources */,
 				DCEC58581E945125002F0246 /* DelayQueueWidget.cxx in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
 				DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */,
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
 				2D9174C209BA90380026E9FF /* Preferences.m in Sources */,
+				DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */,
 				2D9174C409BA90380026E9FF /* AboutBox.m in Sources */,
 				2D9174C509BA90380026E9FF /* Font.cxx in Sources */,
 				2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */,
@@ -2479,7 +2468,6 @@
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
 				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
 				2D9174FE09BA90380026E9FF /* RomWidget.cxx in Sources */,
-				DC1B2EC31E50036100F62837 /* AmigaMouse.cxx in Sources */,
 				2D9174FF09BA90380026E9FF /* TiaInfoWidget.cxx in Sources */,
 				2D91750009BA90380026E9FF /* TiaOutputWidget.cxx in Sources */,
 				2D91750109BA90380026E9FF /* TiaWidget.cxx in Sources */,
@@ -2490,6 +2478,7 @@
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,
 				CFE3F6131E84A9CE00A8204E /* CartBUS.cxx in Sources */,
 				DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */,
+				DCDDEAC41F5DBF0400C67366 /* RewindManager.cxx in Sources */,
 				2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
@@ -2507,7 +2496,6 @@
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
 				DC3EE8571E2C0E6D00905161 /* compress.c in Sources */,
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
-				DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
@@ -2566,6 +2554,7 @@
 				DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */,
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
+				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
@@ -2617,7 +2606,6 @@
 				DC676A511729A0B000E4E73D /* CartE7Widget.cxx in Sources */,
 				DC676A531729A0B000E4E73D /* CartFA2Widget.cxx in Sources */,
 				DC676A551729A0B000E4E73D /* CartFEWidget.cxx in Sources */,
-				DC676A571729A0B000E4E73D /* CartMCWidget.cxx in Sources */,
 				DC676A591729A0B000E4E73D /* CartSBWidget.cxx in Sources */,
 				DC676A5B1729A0B000E4E73D /* CartX07Widget.cxx in Sources */,
 				DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */,

@@ -38,7 +38,6 @@ enum {
 class TiaState : public DebuggerState
 {
   public:
-    IntArray ram;
     IntArray coluRegs;
     IntArray fixedCols;
     IntArray gr;
@@ -160,6 +159,9 @@ class TIADebug : public DebuggerSystem
     int scanlines() const;
     int scanlinesLastFrame() const;
     int frameCount() const;
+    int frameCycles() const;
+    int cyclesLo() const;
+    int cyclesHi() const;
     int clocksThisLine() const;
     bool vsync() const;
     bool vblank() const;

@@ -146,11 +146,17 @@ void TIA::reset()
   myDelayQueue.reset();
   myFrameManager.reset();
 
+  myCyclesAtFrameStart = 0;
+
   frameReset();  // Recalculate the size of the display
 
   // Must be done last, after all other items have reset
   enableFixedColors(false);
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
+
+#ifdef DEBUGGER_SUPPORT
+  createAccessBase();
+#endif // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,16 +165,6 @@ void TIA::frameReset()
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("colorloss"));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::systemCyclesReset()
-{
-  const uInt32 cycles = mySystem->cycles();
-
-  myLastCycle -= cycles;
-
-  mySound.adjustCycleCounter(-1 * cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,10 +182,12 @@ void TIA::installDelegate(System& system, Device& device)
   // All accesses are to the given device
   System::PageAccess access(&device, System::PA_READWRITE);
 
-  // We're installing in a 2600 system
-  for(uInt32 i = 0; i < 8192; i += (1 << System::PAGE_SHIFT))
-    if((i & 0x1080) == 0x0000)
-      mySystem->setPageAccess(i >> System::PAGE_SHIFT, access);
+  // Map all peek/poke to mirrors of TIA address space to this class
+  // That is, all mirrors of ($00 - $3F) in the lower 4K of the 2600
+  // address space are mapped here
+  for(uInt16 addr = 0; addr < 0x1000; addr += System::PAGE_SIZE)
+    if((addr & TIA_BIT) == 0x0000)
+      mySystem->setPageAccess(addr, access);
 
   mySystem->m6502().setOnHaltCallback(
     [this] () {
@@ -244,7 +242,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(int(myPriority));
 
     out.putByte(mySubClock);
-    out.putInt(myLastCycle);
+    out.putLong(myLastCycle);
 
     out.putByte(mySpriteEnabledBits);
     out.putByte(myCollisionsEnabledBits);
@@ -256,6 +254,8 @@ bool TIA::save(Serializer& out) const
     out.putBool(myAutoFrameEnabled);
 
     out.putByteArray(myShadowRegisters, 64);
+
+    out.putLong(myCyclesAtFrameStart);
   }
   catch(...)
   {
@@ -313,7 +313,7 @@ bool TIA::load(Serializer& in)
     myPriority = Priority(in.getInt());
 
     mySubClock = in.getByte();
-    myLastCycle = in.getInt();
+    myLastCycle = in.getLong();
 
     mySpriteEnabledBits = in.getByte();
     myCollisionsEnabledBits = in.getByte();
@@ -325,6 +325,8 @@ bool TIA::load(Serializer& in)
     myAutoFrameEnabled = in.getBool();
 
     in.getByteArray(myShadowRegisters, 64);
+
+    myCyclesAtFrameStart = in.getLong();
   }
   catch(...)
   {
@@ -340,15 +342,15 @@ void TIA::bindToControllers()
 {
   myConsole.leftController().setOnAnalogPinUpdateCallback(
     [this] (Controller::AnalogPin pin) {
-      TIA& tia = mySystem->tia();
+      updateEmulation();
 
       switch (pin) {
         case Controller::AnalogPin::Five:
-          tia.updatePaddle(1);
+          updatePaddle(1);
           break;
 
         case Controller::AnalogPin::Nine:
-          tia.updatePaddle(0);
+          updatePaddle(0);
           break;
       }
     }
@@ -356,15 +358,15 @@ void TIA::bindToControllers()
 
   myConsole.rightController().setOnAnalogPinUpdateCallback(
     [this] (Controller::AnalogPin pin) {
-      TIA& tia = mySystem->tia();
+      updateEmulation();
 
       switch (pin) {
         case Controller::AnalogPin::Five:
-          tia.updatePaddle(3);
+          updatePaddle(3);
           break;
 
         case Controller::AnalogPin::Nine:
-          tia.updatePaddle(2);
+          updatePaddle(2);
           break;
       }
     }
@@ -418,7 +420,7 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     case CXBLPF:
-      result = collCXBLPF() | (lastDataBusValue & 0x40);
+      result = collCXBLPF();
       break;
 
     case INPT0:
@@ -1020,8 +1022,8 @@ TIA& TIA::updateScanline()
 {
   // Update frame by one scanline at a time
   uInt32 line = scanlines();
-  while (line == scanlines())
-    updateScanlineByStep();
+  while (line == scanlines() && mySystem->m6502().execute(1))
+    updateEmulation();
 
   return *this;
 }
@@ -1030,8 +1032,8 @@ TIA& TIA::updateScanline()
 TIA& TIA::updateScanlineByStep()
 {
   // Update frame by one CPU instruction/color clock
-  mySystem->m6502().execute(1);
-  updateEmulation();
+  if (mySystem->m6502().execute(1))
+    updateEmulation();
 
   return *this;
 }
@@ -1039,8 +1041,10 @@ TIA& TIA::updateScanlineByStep()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA& TIA::updateScanlineByTrace(int target)
 {
-  while (mySystem->m6502().getPC() != target)
-    updateScanlineByStep();
+  uInt32 count = 100;  // only try up to 100 steps
+  while (mySystem->m6502().getPC() != target && count-- &&
+         mySystem->m6502().execute(1))
+    updateEmulation();
 
   return *this;
 }
@@ -1054,12 +1058,12 @@ uInt8 TIA::registerValue(uInt8 reg) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateEmulation()
 {
-  const uInt32 systemCycles = mySystem->cycles();
+  const uInt64 systemCycles = mySystem->cycles();
 
   if (mySubClock > 2)
     throw runtime_error("subclock exceeds range");
 
-  const uInt32 cyclesToRun = 3 * (systemCycles - myLastCycle) + mySubClock;
+  const uInt32 cyclesToRun = 3 * uInt32(systemCycles - myLastCycle) + mySubClock;
 
   mySubClock = 0;
   myLastCycle = systemCycles;
@@ -1102,7 +1106,7 @@ void TIA::onRenderingStart()
 void TIA::onFrameComplete()
 {
   mySystem->m6502().stop();
-  mySystem->resetCycles();
+  myCyclesAtFrameStart = mySystem->cycles();
 
   if (myXAtRenderingStart > 0)
     memset(myFramebuffer, 0, myXAtRenderingStart);
@@ -1144,7 +1148,7 @@ void TIA::cycle(uInt32 colorClocks)
       else
         tickHframe();
 
-      if (myCollisionUpdateRequired) updateCollision();
+      if (myCollisionUpdateRequired && !myFrameManager.vblank()) updateCollision();
     }
 
     if (++myHctr >= 228)
@@ -1277,51 +1281,57 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
 {
   if (x >= 160) return;
 
-  uInt8 color = myBackground.getColor();
+  uInt8 color = 0;
 
-  switch (myPriority)
+  if (!myFrameManager.vblank())
   {
-    // Playfield has priority so ScoreBit isn't used
-    // Priority from highest to lowest:
-    //   BL/PF => P0/M0 => P1/M1 => BK
-    case Priority::pfp:  // CTRLPF D2=1, D1=ignored
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-      color = myPlayfield.getPixel(color);
-      color = myBall.getPixel(color);
-      break;
+    switch (myPriority)
+    {
+      case Priority::pfp:  // CTRLPF D2=1, D1=ignored
+        // Playfield has priority so ScoreBit isn't used
+        // Priority from highest to lowest:
+        //   BL/PF => P0/M0 => P1/M1 => BK
+        if (myPlayfield.isOn())       color = myPlayfield.getColor();
+        else if (myBall.isOn())       color = myBall.getColor();
+        else if (myPlayer0.isOn())    color = myPlayer0.getColor();
+        else if (myMissile0.isOn())   color = myMissile0.getColor();
+        else if (myPlayer1.isOn())    color = myPlayer1.getColor();
+        else if (myMissile1.isOn())   color = myMissile1.getColor();
+        else                          color = myBackground.getColor();
+        break;
 
-    case Priority::score:  // CTRLPF D2=0, D1=1
-      // Formally we have (priority from highest to lowest)
-      //   PF/P0/M0 => P1/M1 => BL => BK
-      // for the first half and
-      //   P0/M0 => PF/P1/M1 => BL => BK
-      // for the second half. However, the first ordering is equivalent
-      // to the second (PF has the same color as P0/M0), so we can just
-      // write
-      color = myBall.getPixel(color);
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myPlayfield.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-      break;
+      case Priority::score:  // CTRLPF D2=0, D1=1
+        // Formally we have (priority from highest to lowest)
+        //   PF/P0/M0 => P1/M1 => BL => BK
+        // for the first half and
+        //   P0/M0 => PF/P1/M1 => BL => BK
+        // for the second half. However, the first ordering is equivalent
+        // to the second (PF has the same color as P0/M0), so we can just
+        // write
+        if (myPlayer0.isOn())         color = myPlayer0.getColor();
+        else if (myMissile0.isOn())   color = myMissile0.getColor();
+        else if (myPlayfield.isOn())  color = myPlayfield.getColor();
+        else if (myPlayer1.isOn())    color = myPlayer1.getColor();
+        else if (myMissile1.isOn())   color = myMissile1.getColor();
+        else if (myBall.isOn())       color = myBall.getColor();
+        else                          color = myBackground.getColor();
+        break;
 
-    // Priority from highest to lowest:
-    //   P0/M0 => P1/M1 => BL/PF => BK
-    case Priority::normal:  // CTRLPF D2=0, D1=0
-      color = myPlayfield.getPixel(color);
-      color = myBall.getPixel(color);
-      color = myMissile1.getPixel(color);
-      color = myPlayer1.getPixel(color);
-      color = myMissile0.getPixel(color);
-      color = myPlayer0.getPixel(color);
-      break;
+      case Priority::normal:  // CTRLPF D2=0, D1=0
+        // Priority from highest to lowest:
+        //   P0/M0 => P1/M1 => BL/PF => BK
+        if (myPlayer0.isOn())         color = myPlayer0.getColor();
+        else if (myMissile0.isOn())   color = myMissile0.getColor();
+        else if (myPlayer1.isOn())    color = myPlayer1.getColor();
+        else if (myMissile1.isOn())   color = myMissile1.getColor();
+        else if (myPlayfield.isOn())  color = myPlayfield.getColor();
+        else if (myBall.isOn())       color = myBall.getColor();
+        else                          color = myBackground.getColor();
+        break;
+    }
   }
 
-  myFramebuffer[y * 160 + x] = myFrameManager.vblank() ? 0 : color;
+  myFramebuffer[y * 160 + x] = color;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1402,11 +1412,12 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
       break;
 
     case HMCLR:
-      myMissile0.hmm(0);
-      myMissile1.hmm(0);
-      myPlayer0.hmp(0);
-      myPlayer1.hmp(0);
-      myBall.hmbl(0);
+      // We must update the shadow registers for each HM object too
+      myMissile0.hmm(0);  myShadowRegisters[HMM0] = 0;
+      myMissile1.hmm(0);  myShadowRegisters[HMM1] = 0;
+      myPlayer0.hmp(0);   myShadowRegisters[HMP0] = 0;
+      myPlayer1.hmp(0);   myShadowRegisters[HMP1] = 0;
+      myBall.hmbl(0);     myShadowRegisters[HMBL] = 0;
       break;
 
     case GRP0:
@@ -1570,3 +1581,40 @@ uInt8 TIA::collCXBLPF() const
 {
   return (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::createAccessBase()
+{
+#ifdef DEBUGGER_SUPPORT
+  myAccessBase = make_unique<uInt8[]>(TIA_SIZE);
+  memset(myAccessBase.get(), CartDebug::NONE, TIA_SIZE);
+  myAccessDelay = make_unique<uInt8[]>(TIA_SIZE);
+  memset(myAccessDelay.get(), TIA_DELAY, TIA_SIZE);
+#else
+  myAccessBase = nullptr;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 TIA::getAccessFlags(uInt16 address) const
+{
+  return myAccessBase[address & TIA_MASK];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setAccessFlags(uInt16 address, uInt8 flags)
+{
+  // ignore none flag
+  if (flags != CartDebug::NONE) {
+    if (flags == CartDebug::WRITE) {
+      // the first two write accesses are assumed as initialization
+      if (myAccessDelay[address & TIA_MASK])
+        myAccessDelay[address & TIA_MASK]--;
+      else
+        myAccessBase[address & TIA_MASK] |= flags;
+    } else
+      myAccessBase[address & TIA_READ_MASK] |= flags;
+  }
+}
+#endif // DEBUGGER_SUPPORT

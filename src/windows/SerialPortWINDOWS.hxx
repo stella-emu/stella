@@ -24,8 +24,6 @@
 
 /**
   Implement reading and writing from a serial port under Windows systems.
-
-  @author  Stephen Anthony
 */
 class SerialPortWINDOWS : public SerialPort
 {

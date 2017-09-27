@@ -30,7 +30,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   uInt16 size = 8 * 4096;
 
   ostringstream info;
-  info << "CDF cartridge\n"
+  info << "CDF cartridge (version " << cart.myVersion << ")\n"
   << "32K ROM, seven 4K banks are accessible to 2600\n"
   << "8K CDF RAM\n"
   << "CDF registers accessible @ $FFF0 - $FFF3\n"
@@ -230,7 +230,7 @@ void CartridgeCDFWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDFWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   // Get registers, using change tracking
   IntArray alist;
@@ -360,8 +360,8 @@ string CartridgeCDFWidget::bankState()
   static const char* const spot[] = {
     "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-  << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+  << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

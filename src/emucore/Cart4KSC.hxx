@@ -28,6 +28,7 @@ class System;
 
 /**
   Cartridge class used for 4K games with 128 bytes of RAM.
+  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 */
 
 class Cartridge4KSC : public Cartridge
@@ -74,7 +75,7 @@ class Cartridge4KSC : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -119,17 +120,8 @@ class Cartridge4KSC : public Cartridge
     */
     uInt8 peek(uInt16 address) override;
 
-    /**
-      Change the byte at the specified address to the given value
-
-      @param address The address where the value should be stored
-      @param value   The value to be stored at the address
-      @return  True if the poke changed the device address space, else false
-    */
-    bool poke(uInt16 address, uInt8 value) override;
-
   private:
-    // The 8K ROM image of the cartridge
+    // The 4K ROM image of the cartridge
     uInt8 myImage[4096];
 
     // The 128 bytes of RAM

@@ -27,8 +27,9 @@ class System;
 #endif
 
 /**
-  Cartridge class used for Atari's 32K bankswitched games with
-  128 bytes of RAM.  There are eight 4K banks.
+  Cartridge class used for Atari's 32K bankswitched games with 128 bytes of
+  RAM.  There are eight 4K banks, accessible by read/write to $1FF4 - $1FFB.
+  RAM read port is $1080 - $10FF, write port is $1000 - $107F.
 
   @author  Bradford W. Mott
 */
@@ -93,7 +94,7 @@ class CartridgeF4SC : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -154,8 +155,8 @@ class CartridgeF4SC : public Cartridge
     // The 128 bytes of RAM
     uInt8 myRAM[128];
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 
   private:
     // Following constructors and assignment operators not supported

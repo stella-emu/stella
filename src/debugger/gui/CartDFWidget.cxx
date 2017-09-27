@@ -89,7 +89,7 @@ CartridgeDFWidget::CartridgeDFWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDFWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.myCurrentBank);
+  myBank->setSelectedIndex(myCart.getBank());
 
   CartDebugWidget::loadConfig();
 }
@@ -118,8 +118,8 @@ string CartridgeDFWidget::bankState()
     "$FFD0", "$FFD1", "$FFD2", "$FFD3", "$FFD4", "$FFD5", "$FFD6", "$FFD7",
     "$FFD8", "$FFD9", "$FFDA", "$FFDB", "$FFDC", "$FFDD", "$FFDE", "$FFDF"
   };
-  buf << "Bank = " << std::dec << myCart.myCurrentBank
-      << ", hotspot = " << spot[myCart.myCurrentBank];
+  buf << "Bank = " << std::dec << myCart.getBank()
+      << ", hotspot = " << spot[myCart.getBank()];
 
   return buf.str();
 }

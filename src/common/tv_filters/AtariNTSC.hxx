@@ -51,6 +51,9 @@ class AtariNTSC
       entry_size = 2 * 14,
     };
 
+    // By default, threading is turned off
+    AtariNTSC() { enableThreading(false); }
+
     // Image parameters, ranging from -1.0 to 1.0. Actual internal values shown
     // in parenthesis and should remain fairly stable in future versions.
     struct Setup
@@ -80,26 +83,51 @@ class AtariNTSC
     void initialize(const Setup& setup, const uInt8* palette);
     void initializePalette(const uInt8* palette);
 
+    // Set up threading
+    void enableThreading(bool enable);
+
+    // Set phosphor palette, for use in Blargg + phosphor mode
+    void setPhosphorPalette(uInt8 palette[256][256]) {
+      memcpy(myPhosphorPalette, palette, 256 * 256);
+    }
+
     // Filters one or more rows of pixels. Input pixels are 8-bit Atari
     // palette colors.
     //  In_row_width is the number of pixels to get to the next input row.
     //  Out_pitch is the number of *bytes* to get to the next output row.
-    void render(const uInt8* atari_in, uInt32 in_width, uInt32 in_height,
-                void* rgb_out, uInt32 out_pitch);
+    void render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
+                void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in = nullptr);
 
     // Number of input pixels that will fit within given output width.
     // Might be rounded down slightly; use outWidth() on result to find
     // rounded value.
     static constexpr uInt32 inWidth( uInt32 out_width ) {
-      return (((out_width) / PIXEL_out_chunk - 1) * PIXEL_in_chunk + 1);
+      return (((out_width-5) / PIXEL_out_chunk - 1) * PIXEL_in_chunk + 1);
     }
 
     // Number of output pixels written by blitter for given input width.
     // Width might be rounded down slightly; use inWidth() on result to
     // find rounded value. Guaranteed not to round 160 down at all.
     static constexpr uInt32 outWidth(uInt32 in_width) {
-      return ((((in_width) - 1) / PIXEL_in_chunk + 1)* PIXEL_out_chunk);
+      return ((((in_width) - 1) / PIXEL_in_chunk + 1)* PIXEL_out_chunk) + 5;
     }
+
+  private:
+    // Threaded rendering
+    void renderThread(const uInt8* atari_in, const uInt32 in_width,
+      const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum, void* rgb_out, const uInt32 out_pitch);
+    void renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_width,
+      const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum, uInt32* rgb_in, void* rgb_out, const uInt32 out_pitch);
+
+    /**
+      Used to calculate an averaged color for the 'phosphor' effect.
+
+      @param c  RGB Color 1 (current frame)
+      @param p  RGB Color 2 (previous frame)
+
+      @return  Averaged value of the two RGB colors
+    */
+    uInt32 getRGBPhosphor(const uInt32 c, const uInt32 cp) const;
 
   private:
     enum {
@@ -138,6 +166,12 @@ class AtariNTSC
     #define LUMA_CUTOFF 0.20
 
     uInt32 myColorTable[palette_size][entry_size];
+    uInt8 myPhosphorPalette[256][256];
+
+    // Rendering threads
+    unique_ptr<std::thread[]> myThreads;
+    // Number of rendering and total threads
+    uInt32 myWorkerThreads, myTotalThreads;
 
     struct init_t
     {

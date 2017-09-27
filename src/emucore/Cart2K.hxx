@@ -27,11 +27,13 @@ class System;
 #endif
 
 /**
-  This is the standard Atari 2K cartridge.  These cartridges
-  are not bankswitched, however, the data repeats twice in the
-  2600's 4K cartridge addressing space.
+  This is the standard Atari 2K cartridge.  These cartridges are not
+  bankswitched, however, the data repeats twice in the 2600's 4K cartridge
+  addressing space.  For 'Sub2K' ROMs (ROMs less than 2K in size), the
+  data repeats in intervals based on the size of the ROM (which will
+  always be a power of 2).
 
-  @author  Bradford W. Mott
+  @author  Stephen Anthony
 */
 class Cartridge2K : public Cartridge
 {
@@ -77,7 +79,7 @@ class Cartridge2K : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -113,23 +115,6 @@ class Cartridge2K : public Cartridge
       return new Cartridge2KWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
-
-  public:
-    /**
-      Get the byte at the specified address
-
-      @return The byte at the specified address
-    */
-    uInt8 peek(uInt16 address) override;
-
-    /**
-      Change the byte at the specified address to the given value
-
-      @param address The address where the value should be stored
-      @param value The value to be stored at the address
-      @return  True if the poke changed the device address space, else false
-    */
-    bool poke(uInt16 address, uInt8 value) override;
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge

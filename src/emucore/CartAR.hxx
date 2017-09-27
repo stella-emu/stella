@@ -27,6 +27,8 @@ class System;
 #endif
 
 /**
+  FIXME: This scheme needs to be be described in more detail.
+
   This is the cartridge class for Arcadia (aka Starpath) Supercharger
   games.  Christopher Salomon provided most of the technical details
   used in creating this class.  A good description of the Supercharger
@@ -57,13 +59,6 @@ class CartridgeAR : public Cartridge
       Reset device to its power-on state
     */
     void reset() override;
-
-    /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset() override;
 
     /**
       Install cartridge in the specified system.  Invoked by the system
@@ -105,7 +100,7 @@ class CartridgeAR : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(int& size) const override;
+    const uInt8* getImage(uInt32& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -205,9 +200,6 @@ class CartridgeAR : public Cartridge
 
     // Indicates if the ROM's power is on or off
     bool myPower;
-
-    // Indicates when the power was last turned on
-    Int32 myPowerRomCycle;
 
     // Data hold register used for writing
     uInt8 myDataHoldRegister;

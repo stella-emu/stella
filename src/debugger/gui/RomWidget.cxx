@@ -122,18 +122,18 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kTentativeCodeCmd:
     {
       // 'data' is the boolean value
-      DiStella::settings.resolve_code = data;
+      DiStella::settings.resolveCode = data;
       instance().settings().setValue("dis.resolve",
-          DiStella::settings.resolve_code);
+          DiStella::settings.resolveCode);
       invalidate();
       break;
     }
 
     case RomListWidget::kPCAddressesCmd:
       // 'data' is the boolean value
-      DiStella::settings.show_addresses = data;
+      DiStella::settings.showAddresses = data;
       instance().settings().setValue("dis.showaddr",
-          DiStella::settings.show_addresses);
+          DiStella::settings.showAddresses);
       invalidate();
       break;
 
@@ -141,12 +141,12 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       // 'data' is the boolean value
       if(data)
       {
-        DiStella::settings.gfx_format = Common::Base::F_2;
+        DiStella::settings.gfxFormat = Common::Base::F_2;
         instance().settings().setValue("dis.gfxformat", "2");
       }
       else
       {
-        DiStella::settings.gfx_format = Common::Base::F_16;
+        DiStella::settings.gfxFormat = Common::Base::F_16;
         instance().settings().setValue("dis.gfxformat", "16");
       }
       invalidate();
@@ -154,9 +154,9 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case RomListWidget::kAddrRelocationCmd:
       // 'data' is the boolean value
-      DiStella::settings.rflag = data;
+      DiStella::settings.rFlag = data;
       instance().settings().setValue("dis.relocate",
-          DiStella::settings.rflag);
+          DiStella::settings.rFlag);
       invalidate();
       break;
   }
