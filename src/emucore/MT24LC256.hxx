@@ -54,7 +54,16 @@ class MT24LC256
     void systemReset();
 
     /** Erase entire EEPROM to known state ($FF) */
-    void erase();
+    void eraseAll();
+
+    /** Erase the pages used by the current ROM to known state ($FF) */
+    void eraseCurrent();
+
+    /** Returns true if at least one EEPROM page has been detected for the current ROM */
+    bool isPageDetected()
+    {
+      return myPageDetected;
+    }
 
   private:
     // I2C access code provided by Supercat
@@ -68,11 +77,23 @@ class MT24LC256
     void update();
 
   private:
+    // Sizes of the EEPROM
+    static constexpr uInt32 FLASH_SIZE = 32 * 1024;
+    static constexpr uInt32 PAGE_SIZE = 64;
+    static constexpr uInt32 PAGE_NUM = FLASH_SIZE / PAGE_SIZE;
+    
+    // Inital state value of flash EEPROM
+    static constexpr uInt8  INIT_VALUE = 0xff;
+
     // The system of the parent controller
     const System& mySystem;
 
     // The EEPROM data
-    uInt8 myData[32768];
+    uInt8 myData[FLASH_SIZE];
+
+    // Track which pages are used
+    bool myPageHit[PAGE_NUM];
+    bool myPageDetected;
 
     // Cached state of the SDA and SCL pins on the last write
     bool mySDA, mySCL;

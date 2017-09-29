@@ -331,6 +331,7 @@
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
+    <ClCompile Include="FlashWidget.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
@@ -489,6 +490,7 @@
     <ClCompile Include="..\libpng\pngwrite.c" />
     <ClCompile Include="..\libpng\pngwtran.c" />
     <ClCompile Include="..\libpng\pngwutil.c" />
+    <ClCompile Include="StateList.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Base.hxx" />
@@ -619,6 +621,7 @@
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />
     <ClInclude Include="..\libpng\pngstruct.h" />
+    <ClInclude Include="FlashWidget.hxx" />
     <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWINDOWS.hxx" />
@@ -782,6 +785,7 @@
     <ClInclude Include="..\libpng\png.h" />
     <ClInclude Include="..\libpng\pngconf.h" />
     <ClInclude Include="..\libpng\pngpriv.h" />
+    <ClInclude Include="StateList.hxx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico" />

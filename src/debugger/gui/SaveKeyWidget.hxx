@@ -18,12 +18,10 @@
 #ifndef SAVEKEY_WIDGET_HXX
 #define SAVEKEY_WIDGET_HXX
 
-class ButtonWidget;
-
 #include "Control.hxx"
-#include "ControllerWidget.hxx"
+#include "FlashWidget.hxx"
 
-class SaveKeyWidget : public ControllerWidget
+class SaveKeyWidget : public FlashWidget
 {
   public:
     SaveKeyWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
@@ -31,12 +29,15 @@ class SaveKeyWidget : public ControllerWidget
     virtual ~SaveKeyWidget() = default;
 
   private:
-    ButtonWidget* myEEPROMErase;
-    enum { kEEPROMErase  = 'eeER' };
-
-  private:
     void loadConfig() override { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    string getName()
+    {
+      return "SaveKey";
+    }
+    void eraseCurrent();
+    void eraseAll();
+    bool isPageDetected();
 
     // Following constructors and assignment operators not supported
     SaveKeyWidget() = delete;
