@@ -840,9 +840,6 @@
     <ClCompile Include="..\common\StateManager.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StateList.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FlashWidget.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
