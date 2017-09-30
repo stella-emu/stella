@@ -683,7 +683,7 @@ void Console::setTIAProperties()
 void Console::setControllers(const string& rommd5)
 {
   // Setup the controllers based on properties
-  const string& left  = myProperties.get(Controller_Left);
+  const string& left = myProperties.get(Controller_Left);
   const string& right = myProperties.get(Controller_Right);
 
   // Check for CompuMate controllers; they are special in that a handler
@@ -699,153 +699,109 @@ void Console::setControllers(const string& rommd5)
     cartcm->setCompuMate(myCMHandler);
     myCart = std::move(cartcm);
 
-    myLeftControl  = std::move(myCMHandler->leftController());
+    myLeftControl = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
     return;
   }
 
-  unique_ptr<Controller> leftC  = std::move(myLeftControl),
-                         rightC = std::move(myRightControl);
-
-  // Also check if we should swap the paddles plugged into a jack
-  bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
-
-  // Construct left controller
-  if(left == "JOYSTICK")
-  {
-    // Already created in c'tor
-    // We save some time by not looking at all the other types
-    if(!leftC)
-      leftC = make_unique<Joystick>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "BOOSTERGRIP")
-  {
-    leftC = make_unique<BoosterGrip>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "DRIVING")
-  {
-    leftC = make_unique<Driving>(Controller::Left, myEvent, *mySystem);
-  }
-  else if((left == "KEYBOARD") || (left == "KEYPAD"))
-  {
-    leftC = make_unique<Keyboard>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(BSPF::startsWithIgnoreCase(left, "PADDLES"))
-  {
-    bool swapAxis = false, swapDir = false;
-    if(left == "PADDLES_IAXIS")
-      swapAxis = true;
-    else if(left == "PADDLES_IDIR")
-      swapDir = true;
-    else if(left == "PADDLES_IAXDR")
-      swapAxis = swapDir = true;
-    leftC = make_unique<Paddles>(Controller::Left, myEvent, *mySystem,
-                              swapPaddles, swapAxis, swapDir);
-  }
-  else if(left == "AMIGAMOUSE")
-  {
-    leftC = make_unique<AmigaMouse>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "ATARIMOUSE")
-  {
-    leftC = make_unique<AtariMouse>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "TRAKBALL")
-  {
-    leftC = make_unique<TrakBall>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "GENESIS")
-  {
-    leftC = make_unique<Genesis>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "MINDLINK")
-  {
-    leftC = make_unique<MindLink>(Controller::Left, myEvent, *mySystem);
-  }
-
-  // Construct right controller
-  if(right == "JOYSTICK")
-  {
-    // Already created in c'tor
-    // We save some time by not looking at all the other types
-    if(!rightC)
-      rightC = make_unique<Joystick>(Controller::Right, myEvent, *mySystem);
-  }
-  else if(right == "BOOSTERGRIP")
-  {
-    rightC = make_unique<BoosterGrip>(Controller::Right, myEvent, *mySystem);
-  }
-  else if(right == "DRIVING")
-  {
-    rightC = make_unique<Driving>(Controller::Right, myEvent, *mySystem);
-  }
-  else if((right == "KEYBOARD") || (right == "KEYPAD"))
-  {
-    rightC = make_unique<Keyboard>(Controller::Right, myEvent, *mySystem);
-  }
-  else if(BSPF::startsWithIgnoreCase(right, "PADDLES"))
-  {
-    bool swapAxis = false, swapDir = false;
-    if(right == "PADDLES_IAXIS")
-      swapAxis = true;
-    else if(right == "PADDLES_IDIR")
-      swapDir = true;
-    else if(right == "PADDLES_IAXDR")
-      swapAxis = swapDir = true;
-    rightC = make_unique<Paddles>(Controller::Right, myEvent, *mySystem,
-                               swapPaddles, swapAxis, swapDir);
-  }
-  else if(left == "AMIGAMOUSE")
-  {
-    rightC = make_unique<AmigaMouse>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "ATARIMOUSE")
-  {
-    rightC = make_unique<AtariMouse>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "TRAKBALL")
-  {
-    rightC = make_unique<TrakBall>(Controller::Left, myEvent, *mySystem);
-  }
-  else if(right == "ATARIVOX")
-  {
-    const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
-    rightC = make_unique<AtariVox>(Controller::Right, myEvent,
-                   *mySystem, myOSystem.serialPort(),
-                   myOSystem.settings().getString("avoxport"), nvramfile);
-  }
-  else if(right == "SAVEKEY")
-  {
-    const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
-    rightC = make_unique<SaveKey>(Controller::Right, myEvent, *mySystem,
-                               nvramfile);
-  }
-  else if(right == "GENESIS")
-  {
-    rightC = make_unique<Genesis>(Controller::Right, myEvent, *mySystem);
-  }
-  else if(right == "KIDVID")
-  {
-    rightC = make_unique<KidVid>(Controller::Right, myEvent, *mySystem, rommd5);
-  }
-  else if(right == "MINDLINK")
-  {
-    rightC = make_unique<MindLink>(Controller::Right, myEvent, *mySystem);
-  }
+  unique_ptr<Controller> leftC = std::move(myLeftControl),
+    rightC = std::move(myRightControl);
+   
+  leftC = getControllerPort(rommd5, left, Controller::Left);
+  rightC = getControllerPort(rommd5, right, Controller::Right);
 
   // Swap the ports if necessary
-  if(myProperties.get(Console_SwapPorts) == "NO")
+  if(myProperties.get(Console_SwapPorts) == "NO") 
   {
-    myLeftControl  = std::move(leftC);
+    myLeftControl = std::move(leftC);
     myRightControl = std::move(rightC);
   }
-  else
+  else 
   {
-    myLeftControl  = std::move(rightC);
+    myLeftControl = std::move(rightC);
     myRightControl = std::move(leftC);
   }
 
   myTIA->bindToControllers();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Controller> Console::getControllerPort(const string& rommd5, string controllerName, Controller::Jack port)
+{
+  unique_ptr<Controller> controller = std::move(myLeftControl);
+
+  if(controllerName == "JOYSTICK")
+  {
+    // Already created in c'tor
+    // We save some time by not looking at all the other types
+    if(!controller)
+      controller = make_unique<Joystick>(port, myEvent, *mySystem);
+  }
+  else if(controllerName == "BOOSTERGRIP")
+  {
+    controller = make_unique<BoosterGrip>(port, myEvent, *mySystem);
+  }
+  else if(controllerName == "DRIVING")
+  {
+    controller = make_unique<Driving>(port, myEvent, *mySystem);
+  }
+  else if((controllerName == "KEYBOARD") || (controllerName == "KEYPAD"))
+  {
+    controller = make_unique<Keyboard>(port, myEvent, *mySystem);
+  }
+  else if(BSPF::startsWithIgnoreCase(controllerName, "PADDLES"))
+  {
+    // Also check if we should swap the paddles plugged into a jack
+    bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
+    bool swapAxis = false, swapDir = false;
+    if(controllerName == "PADDLES_IAXIS")
+      swapAxis = true;
+    else if(controllerName == "PADDLES_IDIR")
+      swapDir = true;
+    else if(controllerName == "PADDLES_IAXDR")
+      swapAxis = swapDir = true;
+    controller = make_unique<Paddles>(port, myEvent, *mySystem,
+                                      swapPaddles, swapAxis, swapDir);
+  }
+  else if(controllerName == "AMIGAMOUSE")
+  {
+    controller = make_unique<AmigaMouse>(port, myEvent, *mySystem);
+  }
+  else if(controllerName == "ATARIMOUSE")
+  {
+    controller = make_unique<AtariMouse>(port, myEvent, *mySystem);
+  }
+  else if(controllerName == "TRAKBALL")
+  {
+    controller = make_unique<TrakBall>(port, myEvent, *mySystem);
+  }
+  else if(controllerName == "ATARIVOX")
+  {
+    const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
+    controller = make_unique<AtariVox>(port, myEvent,
+                                       *mySystem, myOSystem.serialPort(),
+                                       myOSystem.settings().getString("avoxport"), nvramfile);
+  }
+  else if(controllerName == "SAVEKEY")
+  {
+    const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
+    controller = make_unique<SaveKey>(port, myEvent, *mySystem,
+                                      nvramfile);
+  }
+  else if(controllerName == "GENESIS")
+  {
+    controller = make_unique<Genesis>(port, myEvent, *mySystem);
+  }
+  else if(controllerName == "KIDVID")
+  {
+    controller = make_unique<KidVid>(port, myEvent, *mySystem, rommd5);
+  }
+  else if(controllerName == "MINDLINK")
+  {
+    controller = make_unique<MindLink>(port, myEvent, *mySystem);
+  }
+
+  return controller;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

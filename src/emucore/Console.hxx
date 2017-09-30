@@ -316,6 +316,11 @@ class Console : public Serializable
     void setControllers(const string& rommd5);
 
     /**
+      Selects the left or right controller depending on ROM properties
+    */
+    unique_ptr<Controller> getControllerPort(const string& rommd5, string controllerName, Controller::Jack port);
+
+    /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the
       appropriate user-defined palette arrays.
     */
