@@ -58,7 +58,8 @@ class InputDialog : public Dialog
       kDPSpeedChanged  = 'PDch',
       kMPSpeedChanged  = 'PMch',
       kTBSpeedChanged  = 'TBch',
-      kDBButtonPressed = 'DBbp'
+      kDBButtonPressed = 'DBbp',
+      //kEEButtonPressed = 'EEbp'
     };
 
     TabWidget* myTab;
@@ -85,6 +86,7 @@ class InputDialog : public Dialog
     CheckboxWidget*   myCtrlCombo;
 
     ButtonWidget*     myJoyDlgButton;
+    //ButtonWidget*     myEraseEEPROMButton;
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;

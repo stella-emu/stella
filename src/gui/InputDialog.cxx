@@ -104,8 +104,8 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   tabID = myTab->addTab("Devices & Ports");
 
   // Stelladaptor mappings
-  xpos = 5;  ypos = 5;
-  lwidth = font.getStringWidth("Use mouse as a controller ");
+  xpos = 5+3;  ypos = 5;
+  lwidth = font.getStringWidth("Digital paddle sensitivity "); // was: "Use mouse as a controller "
   pwidth = font.getStringWidth("-UI, -Emulation");
 
   VarList::push_back(items, "Left / Right", "lr");
@@ -138,16 +138,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myCursorState->clearFlags(WIDGET_ENABLED);
 #endif
 
-  // Add AtariVox serial port
-  ypos += lineHeight + 5;
-  lwidth = font.getStringWidth("AVox serial port ");
-  int fwidth = _w - xpos - lwidth - 20;
-  new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
-                       "AVox serial port ", kTextAlignLeft);
-  myAVoxPort = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                  fwidth, fontHeight, "");
-  wid.push_back(myAVoxPort);
-
   lwidth = font.getStringWidth("Digital paddle sensitivity ");
   pwidth = font.getMaxCharWidth() * 8;
 
@@ -163,7 +153,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myDeadzone);
 
   // Add paddle speed (digital emulation)
-  xpos = 5;  ypos += lineHeight + 4;
+  xpos = 5+3;  ypos += lineHeight + 4;
   myDPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                     "Digital paddle sensitivity ",
                                     lwidth, kDPSpeedChanged);
@@ -175,7 +165,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myDPaddleSpeed);
 
   // Add paddle speed (mouse emulation)
-  xpos = 5;  ypos += lineHeight + 4;
+  xpos = 5+3;  ypos += lineHeight + 4;
   myMPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                     "Mouse paddle sensitivity ",
                                     lwidth, kMPSpeedChanged);
@@ -187,7 +177,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
-  xpos = 5;  ypos += lineHeight + 4;
+  xpos = 5+3;  ypos += lineHeight + 4;
   myTrackBallSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                       "Trackball sensitivity ",
                                       lwidth, kTBSpeedChanged);
@@ -199,7 +189,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick
-  xpos = 10;  ypos += lineHeight + 12;
+  xpos = 10-2;  ypos += lineHeight + 12;
   myAllowAll4 = new CheckboxWidget(myTab, font, xpos, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
@@ -219,12 +209,32 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 	                "Use Control key combos");
   wid.push_back(myCtrlCombo);
 
+  int fwidth;
+
+  // Add EEPROM erase (part 1/2)  
+  /*fwidth = font.getStringWidth("Erase EEPROM") + 20;
+  lwidth = font.getStringWidth("AVox/SaveKey");
+  new StaticTextWidget(myTab, font, _w - 10 - (fwidth + lwidth) / 2, ypos + 1+8, "AVox/SaveKey");*/
+
   // Show joystick database
   xpos += 20;  ypos += lineHeight + 8;
-  myJoyDlgButton = new ButtonWidget(myTab, font, xpos, ypos,
-    font.getStringWidth("Show Joystick Database") + 20, font.getLineHeight() + 4,
+  myJoyDlgButton = new ButtonWidget(myTab, font, xpos, ypos, 20,
     "Show Joystick Database", kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
+
+  // Add EEPROM erase (part 1/2)
+  /*myEraseEEPROMButton = new ButtonWidget(myTab, font, _w - 14 - fwidth, ypos,                                        
+                                        "Erase EEPROM", kEEButtonPressed);*/
+  
+  // Add AtariVox serial port 
+  xpos -= 20; ypos += lineHeight + 12;
+  lwidth = font.getStringWidth("AVox serial port ");
+  fwidth = _w - 14 - xpos - lwidth;
+  new StaticTextWidget(myTab, font, xpos, ypos, "AVox serial port ");
+  myAVoxPort = new EditTextWidget(myTab, font, xpos + lwidth, ypos,
+                                  fwidth, fontHeight, "");
+
+  wid.push_back(myAVoxPort);
 
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
@@ -467,6 +477,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
                           (this, instance().frameBuffer().font(), _w-60, _h-60);
       myJoyDialog->show();
       break;
+
+    /*case kEEButtonPressed:
+      // TODO
+      break;*/
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

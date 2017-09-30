@@ -174,7 +174,10 @@ class StaticTextWidget : public Widget
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
-                     const string& text, TextAlignment align);
+                     const string& text, TextAlignment align = kTextAlignLeft);
+    StaticTextWidget(GuiObject* boss, const GUI::Font& font,
+                     int x, int y,
+                     const string& text, TextAlignment align = kTextAlignLeft);
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlignment align)  { _align = align; }
@@ -204,6 +207,12 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
   public:
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
+                 const string& label, int cmd = 0);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int dw, 
+                 const string& label, int cmd = 0);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y,
                  const string& label, int cmd = 0);
 
     void setCmd(int cmd)  { _cmd = cmd; }

@@ -25,50 +25,34 @@ FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
 {
-  bool leftport = myController.jack() == Controller::Left;
-  const string& label = (leftport ? "Left (" : "Right (") + getName() + ")";
-
-  const int fontHeight = font.getFontHeight(),
-    lineHeight = font.getLineHeight(),
-    bwidth = font.getStringWidth("Erase EEPROM area") + 20,
-    bheight = lineHeight + 4;
-
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (" + getName() + ")");
-  StaticTextWidget* t;
-
-  t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
-                           fontHeight, label, kTextAlignLeft);
-
-  ypos += t->getHeight() + 8;
-
-  myEEPROMEraseCurrent =
-    new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                     "Erase EEPROM range", kEEPROMEraseCurrent);
-  myEEPROMEraseCurrent->setTarget(this);
-
-  ypos += lineHeight + 8;
-
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  lwidth = ifont.getMaxCharWidth() * 20;
+  const int lineHeight = font.getLineHeight();
+  const int iLineHeight = ifont.getLineHeight();
+  int xpos = x, ypos = y;
 
-  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
-                       fontHeight, "(*) Erases only the", kTextAlignLeft);
-  ypos += lineHeight + 2;
-  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
-                       fontHeight, "current ROM's range", kTextAlignLeft);
+  bool leftport = myController.jack() == Controller::Left;
+  new StaticTextWidget(boss, font, xpos, ypos + 2, (leftport ? "Left (" : "Right (") + getName() + ")");
+
   ypos += lineHeight + 8;
 
-  myEEPROMEraseAll =
-    new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                     "Erase EEPROM", kEEPROMEraseAll);
+  myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
+                                          "Erase EEPROM range", kEEPROMEraseCurrent);
+  myEEPROMEraseCurrent->setTarget(this);
+  ypos += lineHeight + 8;
+  new StaticTextWidget(boss, ifont, xpos, ypos, "(*) Erases only the");
+  ypos += iLineHeight;
+  new StaticTextWidget(boss, ifont, xpos, ypos, "current ROM's range");
+
+  ypos += iLineHeight + 8;
+
+  myEEPROMEraseAll = new ButtonWidget(boss, font, xpos, ypos, 
+                                      myEEPROMEraseCurrent->getWidth(), myEEPROMEraseCurrent->getHeight(),
+                                      "Erase EEPROM", kEEPROMEraseAll);
   myEEPROMEraseAll->setTarget(this);
   ypos += lineHeight + 8;
-
-  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
-                       fontHeight, "(*) This will erase", kTextAlignLeft);
-  ypos += lineHeight + 2;
-  new StaticTextWidget(boss, ifont, xpos, ypos, lwidth,
-                       fontHeight, "all EEPROM data!", kTextAlignLeft);
+  new StaticTextWidget(boss, ifont, xpos, ypos, "(*) This will erase");
+  ypos += iLineHeight;
+  new StaticTextWidget(boss, ifont, xpos, ypos, "all EEPROM data!");
 
   updateButtonState();
 }
