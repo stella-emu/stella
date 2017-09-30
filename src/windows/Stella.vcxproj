@@ -490,7 +490,6 @@
     <ClCompile Include="..\libpng\pngwrite.c" />
     <ClCompile Include="..\libpng\pngwtran.c" />
     <ClCompile Include="..\libpng\pngwutil.c" />
-    <ClCompile Include="StateList.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Base.hxx" />
