@@ -786,7 +786,8 @@ string CartDebug::loadSymbolFile()
       if (iter == myUserLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
       {
         // Check for period, and strip leading number
-        if(string::size_type pos = label.find_first_of(".", 0) != string::npos)
+        string::size_type pos = label.find_first_of(".", 0);
+        if(pos != string::npos)
           addLabel(label.substr(pos), value);
         else
           addLabel(label, value);
