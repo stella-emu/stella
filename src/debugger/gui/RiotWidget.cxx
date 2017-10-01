@@ -36,6 +36,8 @@
 #include "AtariVoxWidget.hxx"
 #include "SaveKeyWidget.hxx"
 #include "AmigaMouseWidget.hxx"
+#include "AtariMouseWidget.hxx"
+#include "TrakBallWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -437,11 +439,10 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 {
   switch(controller.type())
   {
-    case Controller::AmigaMouse:  // TODO - implement this
-      //return new NullControlWidget(boss, font, x, y, controller);
+    case Controller::AmigaMouse:  
       return new AmigaMouseWidget(boss, font, x, y, controller);
-    case Controller::AtariMouse:  // TODO - implement this
-      return new NullControlWidget(boss, font, x, y, controller);
+    case Controller::AtariMouse: 
+      return new AtariMouseWidget(boss, font, x, y, controller);
     case Controller::AtariVox:
       return new AtariVoxWidget(boss, font, x, y, controller);
     case Controller::BoosterGrip:
@@ -464,8 +465,8 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new PaddleWidget(boss, font, x, y, controller);
     case Controller::SaveKey:
       return new SaveKeyWidget(boss, font, x, y, controller);
-    case Controller::TrakBall:    // TODO - implement this
-      return new NullControlWidget(boss, font, x, y, controller);
+    case Controller::TrakBall:   
+      return new TrakBallWidget(boss, font, x, y, controller);
     default:
       return nullptr;  // make compiler happy
   }

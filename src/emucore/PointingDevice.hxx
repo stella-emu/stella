@@ -32,7 +32,7 @@ class Event;
 */
 class PointingDevice : public Controller
 {
-  friend class TrackBallWidget;
+  friend class PointingDeviceWidget;
 
   public:
     PointingDevice(Jack jack, const Event& event,

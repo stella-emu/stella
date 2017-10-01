@@ -332,6 +332,7 @@
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="AmigaMouseWidget.cxx" />
+    <ClCompile Include="AtariMouseWidget.cxx" />
     <ClCompile Include="FlashWidget.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
@@ -492,7 +493,8 @@
     <ClCompile Include="..\libpng\pngwtran.c" />
     <ClCompile Include="..\libpng\pngwutil.c" />
     <ClCompile Include="StateList.cxx" />
-    <ClCompile Include="TrackBallWidget.cxx" />
+    <ClCompile Include="PointingDeviceWidget.cxx" />
+    <ClCompile Include="TrakBallWidget.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Base.hxx" />
@@ -624,6 +626,7 @@
     <ClInclude Include="..\libpng\pnglibconf.h" />
     <ClInclude Include="..\libpng\pngstruct.h" />
     <ClInclude Include="AmigaMouseWidget.hxx" />
+    <ClInclude Include="AtariMouseWidget.hxx" />
     <ClInclude Include="FlashWidget.hxx" />
     <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
@@ -789,7 +792,8 @@
     <ClInclude Include="..\libpng\pngconf.h" />
     <ClInclude Include="..\libpng\pngpriv.h" />
     <ClInclude Include="StateList.hxx" />
-    <ClInclude Include="TrackBallWidget.hxx" />
+    <ClInclude Include="PointingDeviceWidget.hxx" />
+    <ClInclude Include="TrakBallWidget.hxx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico" />

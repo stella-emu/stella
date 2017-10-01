@@ -843,13 +843,19 @@
     <ClCompile Include="StateList.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TrackBallWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
     <ClCompile Include="FlashWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="AmigaMouseWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="AtariMouseWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="TrakBallWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="PointingDeviceWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1733,10 +1739,16 @@
     <ClInclude Include="FlashWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
-    <ClInclude Include="TrackBallWidget.hxx">
+    <ClInclude Include="AmigaMouseWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
-    <ClInclude Include="AmigaMouseWidget.hxx">
+    <ClInclude Include="AtariMouseWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="TrakBallWidget.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="PointingDeviceWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
