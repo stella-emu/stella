@@ -364,8 +364,6 @@
 		DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */; };
 		DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */; };
 		DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */; };
-		DC72B2221E356F4F009056D0 /* VblankManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC72B2201E356F4F009056D0 /* VblankManager.cxx */; };
-		DC72B2231E356F4F009056D0 /* VblankManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC72B2211E356F4F009056D0 /* VblankManager.hxx */; };
 		DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */; };
 		DC73BD861915E5B1003FAFAD /* FBSurfaceSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */; };
 		DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC73BD871915E5E3003FAFAD /* FBSurface.cxx */; };
@@ -549,8 +547,6 @@
 		DCF3A6EE1DFC75E3008A8AF3 /* DelayQueueMember.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6D41DFC75E3008A8AF3 /* DelayQueueMember.hxx */; };
 		DCF3A6EF1DFC75E3008A8AF3 /* DrawCounterDecodes.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6D51DFC75E3008A8AF3 /* DrawCounterDecodes.cxx */; };
 		DCF3A6F01DFC75E3008A8AF3 /* DrawCounterDecodes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6D61DFC75E3008A8AF3 /* DrawCounterDecodes.hxx */; };
-		DCF3A6F11DFC75E3008A8AF3 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6D71DFC75E3008A8AF3 /* FrameManager.cxx */; };
-		DCF3A6F21DFC75E3008A8AF3 /* FrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6D81DFC75E3008A8AF3 /* FrameManager.hxx */; };
 		DCF3A6F31DFC75E3008A8AF3 /* LatchedInput.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6D91DFC75E3008A8AF3 /* LatchedInput.cxx */; };
 		DCF3A6F41DFC75E3008A8AF3 /* LatchedInput.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6DA1DFC75E3008A8AF3 /* LatchedInput.hxx */; };
 		DCF3A6F51DFC75E3008A8AF3 /* Missile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6DB1DFC75E3008A8AF3 /* Missile.cxx */; };
@@ -580,6 +576,12 @@
 		DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */; };
 		DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */; };
 		DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */; };
+		E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */; };
+		E0406FB71F81A85400A82AE0 /* AbstractFrameManager.hxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD791F81A358000F3505 /* AbstractFrameManager.hxx */; };
+		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
+		E0406FB91F81A85400A82AE0 /* FrameManager.hxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7C1F81A358000F3505 /* FrameManager.hxx */; };
+		E0406FBA1F81A85400A82AE0 /* VblankManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7E1F81A358000F3505 /* VblankManager.cxx */; };
+		E0406FBB1F81A85400A82AE0 /* VblankManager.hxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7F1F81A358000F3505 /* VblankManager.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -590,6 +592,7 @@
 			isEditable = 1;
 			outputFiles = (
 			);
+			script = "";
 		};
 		DC5EE7DF14F7C32D001C628C /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -598,6 +601,7 @@
 			isEditable = 1;
 			outputFiles = (
 			);
+			script = "";
 		};
 		DC5EE7E014F7C32D001C628C /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -606,6 +610,7 @@
 			isEditable = 1;
 			outputFiles = (
 			);
+			script = "";
 		};
 /* End PBXBuildRule section */
 
@@ -988,8 +993,6 @@
 		DC6C726113CDEA0A008A5975 /* LoggerDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LoggerDialog.hxx; sourceTree = "<group>"; };
 		DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartWDWidget.cxx; sourceTree = "<group>"; };
 		DC6D39861A3CE65000171E71 /* CartWDWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartWDWidget.hxx; sourceTree = "<group>"; };
-		DC72B2201E356F4F009056D0 /* VblankManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VblankManager.cxx; sourceTree = "<group>"; };
-		DC72B2211E356F4F009056D0 /* VblankManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VblankManager.hxx; sourceTree = "<group>"; };
 		DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurfaceSDL2.cxx; sourceTree = "<group>"; };
 		DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBSurfaceSDL2.hxx; sourceTree = "<group>"; };
 		DC73BD871915E5E3003FAFAD /* FBSurface.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBSurface.cxx; sourceTree = "<group>"; };
@@ -1175,8 +1178,6 @@
 		DCF3A6D41DFC75E3008A8AF3 /* DelayQueueMember.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueMember.hxx; sourceTree = "<group>"; };
 		DCF3A6D51DFC75E3008A8AF3 /* DrawCounterDecodes.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DrawCounterDecodes.cxx; sourceTree = "<group>"; };
 		DCF3A6D61DFC75E3008A8AF3 /* DrawCounterDecodes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DrawCounterDecodes.hxx; sourceTree = "<group>"; };
-		DCF3A6D71DFC75E3008A8AF3 /* FrameManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameManager.cxx; sourceTree = "<group>"; };
-		DCF3A6D81DFC75E3008A8AF3 /* FrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameManager.hxx; sourceTree = "<group>"; };
 		DCF3A6D91DFC75E3008A8AF3 /* LatchedInput.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LatchedInput.cxx; sourceTree = "<group>"; };
 		DCF3A6DA1DFC75E3008A8AF3 /* LatchedInput.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LatchedInput.hxx; sourceTree = "<group>"; };
 		DCF3A6DB1DFC75E3008A8AF3 /* Missile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Missile.cxx; sourceTree = "<group>"; };
@@ -1206,6 +1207,12 @@
 		DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerSDL2.hxx; sourceTree = "<group>"; };
 		DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComboDialog.cxx; sourceTree = "<group>"; };
 		DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ComboDialog.hxx; sourceTree = "<group>"; };
+		E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractFrameManager.cxx; sourceTree = "<group>"; };
+		E0DFDD791F81A358000F3505 /* AbstractFrameManager.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AbstractFrameManager.hxx; sourceTree = "<group>"; };
+		E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FrameManager.cxx; sourceTree = "<group>"; };
+		E0DFDD7C1F81A358000F3505 /* FrameManager.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FrameManager.hxx; sourceTree = "<group>"; };
+		E0DFDD7E1F81A358000F3505 /* VblankManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VblankManager.cxx; sourceTree = "<group>"; };
+		E0DFDD7F1F81A358000F3505 /* VblankManager.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VblankManager.hxx; sourceTree = "<group>"; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1933,6 +1940,7 @@
 		DCE903E31DF5DCD10080A7F3 /* tia */ = {
 			isa = PBXGroup;
 			children = (
+				E0DFDD731F81A358000F3505 /* frame-manager */,
 				DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */,
 				DCF3A6CE1DFC75E3008A8AF3 /* Background.hxx */,
 				DCF3A6CF1DFC75E3008A8AF3 /* Ball.cxx */,
@@ -1944,8 +1952,6 @@
 				DCF3A6D51DFC75E3008A8AF3 /* DrawCounterDecodes.cxx */,
 				DCF3A6D61DFC75E3008A8AF3 /* DrawCounterDecodes.hxx */,
 				DCE8B1861E7E03B300189864 /* FrameLayout.hxx */,
-				DCF3A6D71DFC75E3008A8AF3 /* FrameManager.cxx */,
-				DCF3A6D81DFC75E3008A8AF3 /* FrameManager.hxx */,
 				DCF3A6D91DFC75E3008A8AF3 /* LatchedInput.cxx */,
 				DCF3A6DA1DFC75E3008A8AF3 /* LatchedInput.hxx */,
 				DCF3A6DB1DFC75E3008A8AF3 /* Missile.cxx */,
@@ -1958,10 +1964,21 @@
 				DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */,
 				DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */,
 				DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */,
-				DC72B2201E356F4F009056D0 /* VblankManager.cxx */,
-				DC72B2211E356F4F009056D0 /* VblankManager.hxx */,
 			);
 			path = tia;
+			sourceTree = "<group>";
+		};
+		E0DFDD731F81A358000F3505 /* frame-manager */ = {
+			isa = PBXGroup;
+			children = (
+				E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */,
+				E0DFDD791F81A358000F3505 /* AbstractFrameManager.hxx */,
+				E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */,
+				E0DFDD7C1F81A358000F3505 /* FrameManager.hxx */,
+				E0DFDD7E1F81A358000F3505 /* VblankManager.cxx */,
+				E0DFDD7F1F81A358000F3505 /* VblankManager.hxx */,
+			);
+			path = "frame-manager";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2060,7 +2077,6 @@
 				2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */,
 				2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */,
 				DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */,
-				DCF3A6F21DFC75E3008A8AF3 /* FrameManager.hxx in Headers */,
 				2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */,
 				DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */,
 				2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */,
@@ -2150,7 +2166,6 @@
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
-				DC72B2231E356F4F009056D0 /* VblankManager.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
@@ -2365,6 +2380,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */,
+				E0406FB71F81A85400A82AE0 /* AbstractFrameManager.hxx in Sources */,
+				E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */,
+				E0406FB91F81A85400A82AE0 /* FrameManager.hxx in Sources */,
+				E0406FBA1F81A85400A82AE0 /* VblankManager.cxx in Sources */,
+				E0406FBB1F81A85400A82AE0 /* VblankManager.hxx in Sources */,
 				2D91747409BA90380026E9FF /* SDLMain.m in Sources */,
 				2D91747509BA90380026E9FF /* Booster.cxx in Sources */,
 				DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */,
@@ -2530,7 +2551,6 @@
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
 				DCD6FC7011C281ED005DA767 /* png.c in Sources */,
 				DCD6FC7311C281ED005DA767 /* pngerror.c in Sources */,
-				DCF3A6F11DFC75E3008A8AF3 /* FrameManager.cxx in Sources */,
 				DCF3A6E71DFC75E3008A8AF3 /* Background.cxx in Sources */,
 				DCD6FC7411C281ED005DA767 /* pngget.c in Sources */,
 				DCD6FC7511C281ED005DA767 /* pngmem.c in Sources */,
@@ -2589,7 +2609,6 @@
 				DCAAE5E81715887B0080BB82 /* CartF6SCWidget.cxx in Sources */,
 				DCAAE5EA1715887B0080BB82 /* CartF6Widget.cxx in Sources */,
 				DCAAE5EC1715887B0080BB82 /* CartF8SCWidget.cxx in Sources */,
-				DC72B2221E356F4F009056D0 /* VblankManager.cxx in Sources */,
 				DCAAE5EE1715887B0080BB82 /* CartF8Widget.cxx in Sources */,
 				DCAAE5F01715887B0080BB82 /* CartFAWidget.cxx in Sources */,
 				DCAAE5F21715887B0080BB82 /* CartUAWidget.cxx in Sources */,
