@@ -843,8 +843,14 @@
     <ClCompile Include="StateList.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TrackBallWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
     <ClCompile Include="FlashWidget.cxx">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="AmigaMouseWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1725,7 +1731,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FlashWidget.hxx">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackBallWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="AmigaMouseWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

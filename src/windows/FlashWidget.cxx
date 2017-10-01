@@ -16,6 +16,8 @@
 //============================================================================
 
 #include "FlashWidget.hxx"
+#include "MT24LC256.hxx"
+#include "Base.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
@@ -31,11 +33,23 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
   int xpos = x, ypos = y;
 
   bool leftport = myController.jack() == Controller::Left;
-  new StaticTextWidget(boss, font, xpos, ypos + 2, (leftport ? "Left (" : "Right (") + getName() + ")");
+  new StaticTextWidget(boss, font, xpos, ypos + 2, (leftport ? "Left (" : "Right (") + myController.name() + ")");
 
-  ypos += lineHeight + 8;
+  ypos += lineHeight + 6;
 
-  myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
+  new StaticTextWidget(boss, ifont, xpos, ypos, "Pages/Ranges used:");
+  
+  ypos += lineHeight + 2;
+  xpos += 8;
+
+  for(int page = 0; page < MAX_PAGES; page++)
+  {
+    myPage[page] = new StaticTextWidget(boss, ifont, xpos, ypos, 
+                                        page ? "                  " : "none              ");
+    ypos += lineHeight;
+  }  
+  
+  /*myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
                                           "Erase EEPROM range", kEEPROMEraseCurrent);
   myEEPROMEraseCurrent->setTarget(this);
   ypos += lineHeight + 8;
@@ -54,7 +68,7 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
   ypos += iLineHeight;
   new StaticTextWidget(boss, ifont, xpos, ypos, "all EEPROM data!");
 
-  updateButtonState();
+  updateButtonState();*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,11 +85,44 @@ void FlashWidget::handleCommand(CommandSender*, int cmd, int, int)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::drawWidget(bool hilite)
 {
-  updateButtonState();
+  int useCount = 0, startPage = -1;
+  for(int page = 0; page < MT24LC256::PAGE_NUM; page++)
+  {
+    if(isPageUsed(page)/* || page == 0x21 || page == 0x22*/)
+    {
+      if (startPage == -1)
+        startPage = page;
+    }
+    else
+    {
+      if(startPage != -1)
+      {
+        int from = startPage * MT24LC256::PAGE_SIZE;
+        int to = page * MT24LC256::PAGE_SIZE - 1;
+        ostringstream label;
+
+        label.str("");
+        label << Common::Base::HEX3 << startPage;
+        
+        if(page -1 != startPage)
+          label << "-" << Common::Base::HEX3 << page - 1;
+        else
+          label << "    ";
+        label << ": " << Common::Base::HEX4 << from << "-" << Common::Base::HEX4 << to;
+        
+        myPage[useCount]->setLabel(label.str());
+
+        startPage = -1;
+        if(++useCount == MAX_PAGES)
+          break;
+      }
+    }
+  }
+  //updateButtonState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::updateButtonState()
 {
-  myEEPROMEraseCurrent->setEnabled(isPageDetected());
+  //myEEPROMEraseCurrent->setEnabled(isUseDetected());
 }

@@ -38,8 +38,8 @@ class AmigaMouse : public PointingDevice
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8, uInt8) override
     {
-      static constexpr uInt32 ourTableH[4] = { 0x00, 0x80, 0xa0, 0x20 };
-      static constexpr uInt32 ourTableV[4] = { 0x00, 0x10, 0x50, 0x40 };
+      static constexpr uInt32 ourTableH[4] = { 0b0000, 0b1000, 0b1010, 0b0010 };
+      static constexpr uInt32 ourTableV[4] = { 0b0000, 0b0001, 0b0101, 0b0100 };
 
       return ourTableH[countH] | ourTableV[countV];
     }

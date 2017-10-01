@@ -35,6 +35,7 @@
 #include "KeyboardWidget.hxx"
 #include "AtariVoxWidget.hxx"
 #include "SaveKeyWidget.hxx"
+#include "AmigaMouseWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -437,7 +438,8 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
   switch(controller.type())
   {
     case Controller::AmigaMouse:  // TODO - implement this
-      return new NullControlWidget(boss, font, x, y, controller);
+      //return new NullControlWidget(boss, font, x, y, controller);
+      return new AmigaMouseWidget(boss, font, x, y, controller);
     case Controller::AtariMouse:  // TODO - implement this
       return new NullControlWidget(boss, font, x, y, controller);
     case Controller::AtariVox:

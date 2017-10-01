@@ -44,9 +44,17 @@ void AtariVoxWidget::eraseAll()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AtariVoxWidget::isPageDetected()
+bool AtariVoxWidget::isUseDetected()
 {
   AtariVox& avox = static_cast<AtariVox&>(myController);
 
-  return avox.myEEPROM->isPageDetected();
+  return avox.myEEPROM->isUseDetected();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AtariVoxWidget::isPageUsed(int page)
+{
+  AtariVox& avox = static_cast<AtariVox&>(myController);
+
+  return avox.myEEPROM->isPageUsed(page);
 }

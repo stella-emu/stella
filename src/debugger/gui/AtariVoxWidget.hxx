@@ -31,13 +31,10 @@ class AtariVoxWidget : public FlashWidget
  private:
     void loadConfig() override { }
 
-    string getName()
-    {
-        return "AtariVox";
-    }
     void eraseCurrent();
     void eraseAll();
-    bool isPageDetected();
+    bool isUseDetected();
+    bool isPageUsed(int page);
 
     // Following constructors and assignment operators not supported
     AtariVoxWidget() = delete;

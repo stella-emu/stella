@@ -31,13 +31,10 @@ class SaveKeyWidget : public FlashWidget
   private:
     void loadConfig() override { }
 
-    string getName()
-    {
-      return "SaveKey";
-    }
     void eraseCurrent();
     void eraseAll();
-    bool isPageDetected();
+    bool isUseDetected();
+    bool isPageUsed(int page);
 
     // Following constructors and assignment operators not supported
     SaveKeyWidget() = delete;

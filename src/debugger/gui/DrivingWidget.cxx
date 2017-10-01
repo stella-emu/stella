@@ -22,13 +22,13 @@
 DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller),
-    myGreyIndex(0)
+    myGrayIndex(0)
 {
   bool leftport = myController.jack() == Controller::Left;
   const string& label = leftport ? "Left (Driving)" : "Right (Driving)";
 
   const int fontHeight = font.getFontHeight(),
-            bwidth = font.getStringWidth("Grey code +") + 10,
+            bwidth = font.getStringWidth("Gray code +") + 10,
             bheight = font.getLineHeight() + 4;
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Driving)");
   StaticTextWidget* t;
@@ -37,22 +37,22 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
                            fontHeight, label, kTextAlignLeft);
 
   ypos += t->getHeight() + 20;
-  myGreyUp = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                              "Grey code +", kGreyUpCmd);
-  myGreyUp->setTarget(this);
+  myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+                              "Gray code +", kGrayUpCmd);
+  myGrayUp->setTarget(this);
 
-  ypos += myGreyUp->getHeight() + 5;
-  myGreyDown = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                "Grey code -", kGreyDownCmd);
-  myGreyDown->setTarget(this);
+  ypos += myGrayUp->getHeight() + 5;
+  myGrayDown = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+                                "Gray code -", kGrayDownCmd);
+  myGrayDown->setTarget(this);
 
-  xpos += myGreyDown->getWidth() + 10;  ypos -= 10;
-  myGreyValue = new DataGridWidget(boss, font, xpos, ypos,
+  xpos += myGrayDown->getWidth() + 10;  ypos -= 10;
+  myGrayValue = new DataGridWidget(boss, font, xpos, ypos,
                                    1, 1, 2, 8, Common::Base::F_16);
-  myGreyValue->setTarget(this);
-  myGreyValue->setEditable(false);
+  myGrayValue->setTarget(this);
+  myGrayValue->setEditable(false);
 
-  xpos = x + 30;  ypos += myGreyDown->getHeight() + 20;
+  xpos = x + 30;  ypos += myGrayDown->getHeight() + 20;
   myFire = new CheckboxWidget(boss, font, xpos, ypos, "Fire", kFireCmd);
   myFire->setTarget(this);
 }
@@ -60,16 +60,16 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DrivingWidget::loadConfig()
 {
-  uInt8 grey = 0;
-  if(myController.read(Controller::One)) grey += 1;
-  if(myController.read(Controller::Two)) grey += 2;
+  uInt8 gray = 0;
+  if(myController.read(Controller::One)) gray += 1;
+  if(myController.read(Controller::Two)) gray += 2;
 
-  for(myGreyIndex = 0; myGreyIndex < 4; ++myGreyIndex)
-    if(ourGreyTable[myGreyIndex] == grey)
+  for(myGrayIndex = 0; myGrayIndex < 4; ++myGrayIndex)
+    if(ourGrayTable[myGrayIndex] == gray)
       break;
 
   myFire->setState(!myController.read(Controller::Six));
-  myGreyValue->setList(0, grey);
+  myGrayValue->setList(0, gray);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,17 +78,17 @@ void DrivingWidget::handleCommand(
 {
   switch(cmd)
   {
-    case kGreyUpCmd:
-      myGreyIndex = (myGreyIndex + 1) % 4;
-      myController.set(Controller::One, (ourGreyTable[myGreyIndex] & 0x1) != 0);
-      myController.set(Controller::Two, (ourGreyTable[myGreyIndex] & 0x2) != 0);
-      myGreyValue->setList(0, ourGreyTable[myGreyIndex]);
+    case kGrayUpCmd:
+      myGrayIndex = (myGrayIndex + 1) % 4;
+      myController.set(Controller::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
+      myController.set(Controller::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
+      myGrayValue->setList(0, ourGrayTable[myGrayIndex]);
       break;
-    case kGreyDownCmd:
-      myGreyIndex = myGreyIndex == 0 ? 3 : myGreyIndex - 1;
-      myController.set(Controller::One, (ourGreyTable[myGreyIndex] & 0x1) != 0);
-      myController.set(Controller::Two, (ourGreyTable[myGreyIndex] & 0x2) != 0);
-      myGreyValue->setList(0, ourGreyTable[myGreyIndex]);
+    case kGrayDownCmd:
+      myGrayIndex = myGrayIndex == 0 ? 3 : myGrayIndex - 1;
+      myController.set(Controller::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
+      myController.set(Controller::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
+      myGrayValue->setList(0, ourGrayTable[myGrayIndex]);
       break;
     case kFireCmd:
       myController.set(Controller::Six, !myFire->getState());
@@ -97,4 +97,4 @@ void DrivingWidget::handleCommand(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 DrivingWidget::ourGreyTable[4] = { 0x03, 0x01, 0x00, 0x02 };
+uInt8 DrivingWidget::ourGrayTable[4] = { 0x03, 0x01, 0x00, 0x02 };

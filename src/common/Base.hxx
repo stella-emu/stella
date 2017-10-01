@@ -71,6 +71,11 @@ class Base
       os.flags(myHexflags);
       return os << std::setw(2) << std::setfill('0');
     }
+    static inline std::ostream& HEX3(std::ostream& os)
+    {
+      os.flags(myHexflags);
+      return os << std::setw(3) << std::setfill('0');
+    }
     static inline std::ostream& HEX4(std::ostream& os) {
       os.flags(myHexflags);
       return os << std::setw(4) << std::setfill('0');

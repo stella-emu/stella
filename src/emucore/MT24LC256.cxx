@@ -55,7 +55,7 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
     myDataFile(filename),
     myDataFileExists(false),
     myDataChanged(false),
-    myPageDetected(false),
+    myUseDetected(false),
     jpee_mdat(0),
     jpee_sdat(0),
     jpee_mclk(0),
@@ -151,7 +151,7 @@ void MT24LC256::systemReset()
   myCyclesWhenSDASet = myCyclesWhenSCLSet = myCyclesWhenTimerSet =
     mySystem.cycles();
   
-  myPageDetected = false;
+  myUseDetected = false;
   memset(myPageHit, false, sizeof(myPageHit));
 }
 
@@ -173,6 +173,15 @@ void MT24LC256::eraseCurrent()
       myDataChanged = true;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool MT24LC256::isPageUsed(int page) const 
+{
+  if(page < PAGE_NUM)
+    return myPageHit[page];
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,7 +252,7 @@ void MT24LC256::jpee_data_stop()
     for (int i=3; i<jpee_pptr; i++)
     {
       myDataChanged = true;
-      myPageDetected = myPageHit[jpee_address / PAGE_SIZE] = true;
+      myUseDetected = myPageHit[jpee_address / PAGE_SIZE] = true;
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */
@@ -340,7 +349,7 @@ void MT24LC256::jpee_clock_fall()
         break;
       }
       jpee_state=3;
-      myPageDetected = myPageHit[jpee_address / PAGE_SIZE] = true;
+      myUseDetected = myPageHit[jpee_address / PAGE_SIZE] = true;
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
       JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
       [[fallthrough]];

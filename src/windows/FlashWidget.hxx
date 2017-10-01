@@ -43,15 +43,18 @@ private:
     kEEPROMEraseCurrent = 'eeEC'
   };
 
+  static constexpr uInt32 MAX_PAGES = 7;
+  StaticTextWidget* myPage[MAX_PAGES];
+
 private:  
   void loadConfig() override {}
   void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
   void updateButtonState();
   
-  virtual string getName() = 0;  
   virtual void eraseCurrent() = 0;
   virtual void eraseAll() = 0;
-  virtual bool isPageDetected() = 0;
+  virtual bool isUseDetected() = 0;
+  virtual bool isPageUsed(int page) = 0;
 
   // Following constructors and assignment operators not supported
   FlashWidget() = delete;
