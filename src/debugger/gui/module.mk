@@ -68,10 +68,15 @@ MODULE_OBJS := \
 	src/debugger/gui/DrivingWidget.o \
 	src/debugger/gui/KeyboardWidget.o \
 	src/debugger/gui/GenesisWidget.o \
+	src/debugger/gui/FlashWidget.o \
 	src/debugger/gui/AtariVoxWidget.o \
 	src/debugger/gui/SaveKeyWidget.o \
 	src/debugger/gui/DelayQueueWidget.o
-
+	src/debugger/gui/PointingDeviceWidget.o \
+	src/debugger/gui/AmigaMouseWidget.o \
+	src/debugger/gui/AtariMouseWidget.o \
+	src/debugger/gui/TrakBallWidget.o \
+	
 MODULE_DIRS += \
 	src/debugger/gui
 
