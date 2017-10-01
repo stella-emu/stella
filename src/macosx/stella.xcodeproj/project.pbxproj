@@ -391,6 +391,16 @@
 		DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D3F0F278A5200FEFEFC /* DefProps.hxx */; };
 		DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D400F278A5200FEFEFC /* Serializable.hxx */; };
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
+		DC96162C1F817830008A2206 /* AmigaMouseWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC9616221F817830008A2206 /* AmigaMouseWidget.cxx */; };
+		DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC9616231F817830008A2206 /* AmigaMouseWidget.hxx */; };
+		DC96162E1F817830008A2206 /* AtariMouseWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC9616241F817830008A2206 /* AtariMouseWidget.cxx */; };
+		DC96162F1F817830008A2206 /* AtariMouseWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC9616251F817830008A2206 /* AtariMouseWidget.hxx */; };
+		DC9616301F817830008A2206 /* FlashWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC9616261F817830008A2206 /* FlashWidget.cxx */; };
+		DC9616311F817830008A2206 /* FlashWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC9616271F817830008A2206 /* FlashWidget.hxx */; };
+		DC9616321F817830008A2206 /* PointingDeviceWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC9616281F817830008A2206 /* PointingDeviceWidget.cxx */; };
+		DC9616331F817830008A2206 /* PointingDeviceWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC9616291F817830008A2206 /* PointingDeviceWidget.hxx */; };
+		DC9616341F817830008A2206 /* TrakBallWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC96162A1F817830008A2206 /* TrakBallWidget.cxx */; };
+		DC9616351F817830008A2206 /* TrakBallWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC96162B1F817830008A2206 /* TrakBallWidget.hxx */; };
 		DC98F35611F5B56200AA520F /* MessageBox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC98F35411F5B56200AA520F /* MessageBox.cxx */; };
 		DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC98F35511F5B56200AA520F /* MessageBox.hxx */; };
 		DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC9EA8850F729A36000452B5 /* KidVid.cxx */; };
@@ -1015,6 +1025,16 @@
 		DC932D3F0F278A5200FEFEFC /* DefProps.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DefProps.hxx; sourceTree = "<group>"; };
 		DC932D400F278A5200FEFEFC /* Serializable.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Serializable.hxx; sourceTree = "<group>"; };
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SerialPort.hxx; sourceTree = "<group>"; };
+		DC9616221F817830008A2206 /* AmigaMouseWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AmigaMouseWidget.cxx; sourceTree = "<group>"; };
+		DC9616231F817830008A2206 /* AmigaMouseWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AmigaMouseWidget.hxx; sourceTree = "<group>"; };
+		DC9616241F817830008A2206 /* AtariMouseWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariMouseWidget.cxx; sourceTree = "<group>"; };
+		DC9616251F817830008A2206 /* AtariMouseWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariMouseWidget.hxx; sourceTree = "<group>"; };
+		DC9616261F817830008A2206 /* FlashWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FlashWidget.cxx; sourceTree = "<group>"; };
+		DC9616271F817830008A2206 /* FlashWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FlashWidget.hxx; sourceTree = "<group>"; };
+		DC9616281F817830008A2206 /* PointingDeviceWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDeviceWidget.cxx; sourceTree = "<group>"; };
+		DC9616291F817830008A2206 /* PointingDeviceWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PointingDeviceWidget.hxx; sourceTree = "<group>"; };
+		DC96162A1F817830008A2206 /* TrakBallWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrakBallWidget.cxx; sourceTree = "<group>"; };
+		DC96162B1F817830008A2206 /* TrakBallWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrakBallWidget.hxx; sourceTree = "<group>"; };
 		DC98F35411F5B56200AA520F /* MessageBox.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessageBox.cxx; sourceTree = "<group>"; };
 		DC98F35511F5B56200AA520F /* MessageBox.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MessageBox.hxx; sourceTree = "<group>"; };
 		DC9EA8850F729A36000452B5 /* KidVid.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KidVid.cxx; sourceTree = "<group>"; };
@@ -1318,6 +1338,10 @@
 		2D20F9E308C603C500A73076 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				DC9616221F817830008A2206 /* AmigaMouseWidget.cxx */,
+				DC9616231F817830008A2206 /* AmigaMouseWidget.hxx */,
+				DC9616241F817830008A2206 /* AtariMouseWidget.cxx */,
+				DC9616251F817830008A2206 /* AtariMouseWidget.hxx */,
 				DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */,
 				DC62E6441960E87B007AEF05 /* AtariVoxWidget.hxx */,
 				2D23318F0900B5EF00613B1F /* AudioWidget.cxx */,
@@ -1422,6 +1446,8 @@
 				DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */,
 				DCCF4AFE14BA27EB00814FAB /* DrivingWidget.cxx */,
 				DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */,
+				DC9616261F817830008A2206 /* FlashWidget.cxx */,
+				DC9616271F817830008A2206 /* FlashWidget.hxx */,
 				DCCF4ADA14B9433100814FAB /* GenesisWidget.cxx */,
 				DCCF4ADB14B9433100814FAB /* GenesisWidget.hxx */,
 				DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */,
@@ -1431,6 +1457,8 @@
 				DCCF4AD014B7E6C300814FAB /* NullControlWidget.hxx */,
 				DCCF49B514B7544A00814FAB /* PaddleWidget.cxx */,
 				DCCF49B614B7544A00814FAB /* PaddleWidget.hxx */,
+				DC9616281F817830008A2206 /* PointingDeviceWidget.cxx */,
+				DC9616291F817830008A2206 /* PointingDeviceWidget.hxx */,
 				2D20F9EE08C603EC00A73076 /* PromptWidget.cxx */,
 				2D20F9EF08C603EC00A73076 /* PromptWidget.hxx */,
 				2D20F9F008C603EC00A73076 /* RamWidget.cxx */,
@@ -1459,6 +1487,8 @@
 				2D20F9FF08C603EC00A73076 /* TogglePixelWidget.hxx */,
 				2D20FA0008C603EC00A73076 /* ToggleWidget.cxx */,
 				2D20FA0108C603EC00A73076 /* ToggleWidget.hxx */,
+				DC96162A1F817830008A2206 /* TrakBallWidget.cxx */,
+				DC96162B1F817830008A2206 /* TrakBallWidget.hxx */,
 			);
 			path = gui;
 			sourceTree = "<group>";
@@ -1990,6 +2020,7 @@
 				DCF3A6FD1DFC75E3008A8AF3 /* Playfield.hxx in Headers */,
 				2D9173D809BA90380026E9FF /* CartF6.hxx in Headers */,
 				2D9173D909BA90380026E9FF /* CartF6SC.hxx in Headers */,
+				DC9616311F817830008A2206 /* FlashWidget.hxx in Headers */,
 				2D9173DA09BA90380026E9FF /* CartF8.hxx in Headers */,
 				DC3EE8591E2C0E6D00905161 /* crc32.h in Headers */,
 				2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */,
@@ -2020,6 +2051,7 @@
 				2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */,
 				2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */,
 				DCF3A6EE1DFC75E3008A8AF3 /* DelayQueueMember.hxx in Headers */,
+				DC96162F1F817830008A2206 /* AtariMouseWidget.hxx in Headers */,
 				DCF4907A1A0ECE5B00A67AA9 /* Vec.hxx in Headers */,
 				2D91740109BA90380026E9FF /* AudioDialog.hxx in Headers */,
 				2D91740209BA90380026E9FF /* BrowserDialog.hxx in Headers */,
@@ -2068,12 +2100,14 @@
 				2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */,
 				2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */,
 				DCF3A6F61DFC75E3008A8AF3 /* Missile.hxx in Headers */,
+				DC9616351F817830008A2206 /* TrakBallWidget.hxx in Headers */,
 				2D91742C09BA90380026E9FF /* CpuDebug.hxx in Headers */,
 				DC3EE86C1E2C0E6D00905161 /* zconf.h in Headers */,
 				2D91743609BA90380026E9FF /* DebuggerSystem.hxx in Headers */,
 				2D91743A09BA90380026E9FF /* Expression.hxx in Headers */,
 				2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */,
 				DC1B2EC61E50036100F62837 /* AtariMouse.hxx in Headers */,
+				DC9616331F817830008A2206 /* PointingDeviceWidget.hxx in Headers */,
 				2D91745009BA90380026E9FF /* CheckListWidget.hxx in Headers */,
 				2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */,
 				DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */,
@@ -2259,6 +2293,7 @@
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */,
+				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
 				DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */,
 				DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */,
@@ -2378,6 +2413,7 @@
 				2D91747C09BA90380026E9FF /* CartDPC.cxx in Sources */,
 				2D91747D09BA90380026E9FF /* CartE0.cxx in Sources */,
 				2D91747E09BA90380026E9FF /* CartE7.cxx in Sources */,
+				DC9616321F817830008A2206 /* PointingDeviceWidget.cxx in Sources */,
 				2D91747F09BA90380026E9FF /* CartF4.cxx in Sources */,
 				2D91748009BA90380026E9FF /* CartF4SC.cxx in Sources */,
 				2D91748109BA90380026E9FF /* CartF6.cxx in Sources */,
@@ -2439,6 +2475,7 @@
 				2D9174C209BA90380026E9FF /* Preferences.m in Sources */,
 				DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */,
 				2D9174C409BA90380026E9FF /* AboutBox.m in Sources */,
+				DC96162C1F817830008A2206 /* AmigaMouseWidget.cxx in Sources */,
 				2D9174C509BA90380026E9FF /* Font.cxx in Sources */,
 				2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */,
 				2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */,
@@ -2491,6 +2528,7 @@
 				DCACBAD41C54298300703A9B /* CartCVPlus.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
+				DC96162E1F817830008A2206 /* AtariMouseWidget.cxx in Sources */,
 				DC3EE85E1E2C0E6D00905161 /* gzlib.c in Sources */,
 				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
@@ -2550,6 +2588,7 @@
 				DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */,
 				DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */,
 				DC98F35611F5B56200AA520F /* MessageBox.cxx in Sources */,
+				DC9616301F817830008A2206 /* FlashWidget.cxx in Sources */,
 				DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */,
 				DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */,
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
@@ -2615,6 +2654,7 @@
 				DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */,
 				DC79F81217A88D9E00288B91 /* Base.cxx in Sources */,
 				DCAACAF6188D631500A4D282 /* Cart4KSC.cxx in Sources */,
+				DC9616341F817830008A2206 /* TrakBallWidget.cxx in Sources */,
 				DCAACAF8188D631500A4D282 /* CartBF.cxx in Sources */,
 				DCAACAFA188D631500A4D282 /* CartBFSC.cxx in Sources */,
 				DCAACAFC188D631500A4D282 /* CartDF.cxx in Sources */,
