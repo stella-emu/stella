@@ -75,7 +75,7 @@ class RiotWidget : public Widget, public CommandSender
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
-      kRandCPUID, kRandRAMID
+      kRandCPUID, kRandRAMID, kSWCHARBitsID
     };
 
   private:

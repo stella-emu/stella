@@ -85,7 +85,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, 0, false);
+  CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true);
 
   // SWCHB bits in 'poke' mode
   xpos = 10;  ypos += 2 * lineHeight;
@@ -398,6 +398,20 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           value = Debugger::get_bits(mySWBCNTBits->getState());
           riot.swbcnt(value & 0xff);
           break;
+        case kSWCHARBitsID:
+        {
+          // TODO: Check if there is a nicer way to do this
+          value = Debugger::get_bits(mySWCHAReadBits->getState());
+          riot.controller(Controller::Left).set(Controller::One, value & 0b00010000);
+          riot.controller(Controller::Left).set(Controller::Two, value & 0b00100000);
+          riot.controller(Controller::Left).set(Controller::Three, value & 0b01000000);
+          riot.controller(Controller::Left).set(Controller::Four, value & 0b10000000);
+          riot.controller(Controller::Right).set(Controller::One, value & 0b00000001);
+          riot.controller(Controller::Right).set(Controller::Two, value & 0b00000010);
+          riot.controller(Controller::Right).set(Controller::Three, value & 0b00000100);
+          riot.controller(Controller::Right).set(Controller::Four, value & 0b00001000);
+          break;
+        }
       }
       break;
 
