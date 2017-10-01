@@ -25,43 +25,42 @@ class DataGridWidget;
 
 class PointingDeviceWidget : public ControllerWidget
 {
-public:
-  PointingDeviceWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                  Controller& controller);
+  public:
+    PointingDeviceWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                         Controller& controller);
 
-  virtual ~PointingDeviceWidget() = default;
+    virtual ~PointingDeviceWidget() = default;
 
-private:
-  enum
-  {
-    kTBLeft = 'TWlf',
-    kTBRight = 'TWrt',
-    kTBUp = 'TWup',
-    kTBDown = 'TWdn',
-    kTBFire = 'TWfr'
-  };
-  ButtonWidget *myGrayLeft, *myGrayRight;
-  DataGridWidget* myGrayValueH;
-  ButtonWidget *myGrayUp, *myGrayDown;   
-  DataGridWidget* myGrayValueV;
-  CheckboxWidget* myFire;
+  private:
+    enum {
+      kTBLeft = 'TWlf',
+      kTBRight = 'TWrt',
+      kTBUp = 'TWup',
+      kTBDown = 'TWdn',
+      kTBFire = 'TWfr'
+    };
+    ButtonWidget *myGrayLeft, *myGrayRight;
+    DataGridWidget* myGrayValueH;
+    ButtonWidget *myGrayUp, *myGrayDown;
+    DataGridWidget* myGrayValueV;
+    CheckboxWidget* myFire;
 
-private:
-  virtual uInt8 getGrayCodeTable(const int index, const int direction) = 0;
+  private:
+    virtual uInt8 getGrayCodeTable(const int index, const int direction) = 0;
 
-  void loadConfig() override;
-  void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-  void setGrayCodeH();
-  void setGrayCodeV();
-  void setValue(DataGridWidget* greyValue, const int index, const int direction);
+    void setGrayCodeH();
+    void setGrayCodeV();
+    void setValue(DataGridWidget* greyValue, const int index, const int direction);
 
-  // Following constructors and assignment operators not supported
-  PointingDeviceWidget() = delete;
-  PointingDeviceWidget(const PointingDeviceWidget&) = delete;
-  PointingDeviceWidget(PointingDeviceWidget&&) = delete;
-  PointingDeviceWidget& operator=(const PointingDeviceWidget&) = delete;
-  PointingDeviceWidget& operator=(PointingDeviceWidget&&) = delete;
+    // Following constructors and assignment operators not supported
+    PointingDeviceWidget() = delete;
+    PointingDeviceWidget(const PointingDeviceWidget&) = delete;
+    PointingDeviceWidget(PointingDeviceWidget&&) = delete;
+    PointingDeviceWidget& operator=(const PointingDeviceWidget&) = delete;
+    PointingDeviceWidget& operator=(PointingDeviceWidget&&) = delete;
 };
 
 #endif

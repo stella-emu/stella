@@ -17,10 +17,11 @@
 
 #include "AtariMouseWidget.hxx"
 
-AtariMouseWidget::AtariMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                                   Controller& controller)
+AtariMouseWidget::AtariMouseWidget(GuiObject* boss, const GUI::Font& font,
+      int x, int y, Controller& controller)
   : PointingDeviceWidget(boss, font, x, y, controller)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 AtariMouseWidget::getGrayCodeTable(const int index, const int direction)

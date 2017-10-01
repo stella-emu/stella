@@ -19,8 +19,8 @@
 #include "DataGridWidget.hxx"
 #include "PointingDeviceWidget.hxx"
 
-PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                                           Controller& controller)
+PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& font,
+      int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
   bool leftport = controller.jack() == Controller::Left;
@@ -137,6 +137,6 @@ void PointingDeviceWidget::setValue(DataGridWidget* grayValue, const int index, 
 {
   uInt8 grayCode = getGrayCodeTable(index, direction);
 
-  // * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
+  // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
   grayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
 }

@@ -17,15 +17,14 @@
 
 #include "TrakBallWidget.hxx"
 
-TrakBallWidget::TrakBallWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                               Controller& controller)
+TrakBallWidget::TrakBallWidget(GuiObject* boss, const GUI::Font& font,
+      int x, int y, Controller& controller)
   : PointingDeviceWidget(boss, font, x, y, controller)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TrakBallWidget::getGrayCodeTable(const int index, const int direction)
 {
   return myGrayCodeTable[(index & 0b1) + direction * 2];
 }
-
-

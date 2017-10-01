@@ -17,10 +17,11 @@
 
 #include "AmigaMouseWidget.hxx"
 
-AmigaMouseWidget::AmigaMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                                   Controller& controller)
+AmigaMouseWidget::AmigaMouseWidget(GuiObject* boss, const GUI::Font& font,
+      int x, int y, Controller& controller)
   : PointingDeviceWidget(boss, font, x, y, controller)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 AmigaMouseWidget::getGrayCodeTable(const int index, const int direction)

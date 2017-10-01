@@ -23,23 +23,23 @@
 
 class AtariMouseWidget : public PointingDeviceWidget
 {
-public:
-  AtariMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                   Controller& controller);
+  public:
+    AtariMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                     Controller& controller);
 
-  virtual ~AtariMouseWidget() = default;
+    virtual ~AtariMouseWidget() = default;
 
-private:
-  uInt8 myGrayCodeTable[4] = { 0b00, 0b01, 0b11, 0b10 };
+  private:
+    uInt8 myGrayCodeTable[4] = { 0b00, 0b01, 0b11, 0b10 };
 
-  uInt8 getGrayCodeTable(const int index, const int direction);
+    uInt8 getGrayCodeTable(const int index, const int direction) override;
 
-  // Following constructors and assignment operators not supported
-  AtariMouseWidget() = delete;
-  AtariMouseWidget(const AtariMouseWidget&) = delete;
-  AtariMouseWidget(AtariMouseWidget&&) = delete;
-  AtariMouseWidget& operator=(const AtariMouseWidget&) = delete;
-  AtariMouseWidget& operator=(AtariMouseWidget&&) = delete;
+    // Following constructors and assignment operators not supported
+    AtariMouseWidget() = delete;
+    AtariMouseWidget(const AtariMouseWidget&) = delete;
+    AtariMouseWidget(AtariMouseWidget&&) = delete;
+    AtariMouseWidget& operator=(const AtariMouseWidget&) = delete;
+    AtariMouseWidget& operator=(AtariMouseWidget&&) = delete;
 };
 
 #endif

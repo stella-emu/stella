@@ -23,24 +23,23 @@
 
 class AmigaMouseWidget : public PointingDeviceWidget
 {
-public:
-  AmigaMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                   Controller& controller);
+  public:
+    AmigaMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                     Controller& controller);
 
-  virtual ~AmigaMouseWidget() = default;
+    virtual ~AmigaMouseWidget() = default;
 
-private:
-  uInt8 myGrayCodeTable[4] = { 0b00, 0b10, 0b11, 0b01 };
+  private:
+    uInt8 myGrayCodeTable[4] = { 0b00, 0b10, 0b11, 0b01 };
 
-  uInt8 getGrayCodeTable(const int index, const int direction);
+    uInt8 getGrayCodeTable(const int index, const int direction) override;
 
-  // Following constructors and assignment operators not supported
-  AmigaMouseWidget() = delete;
-  AmigaMouseWidget(const AmigaMouseWidget&) = delete;
-  AmigaMouseWidget(AmigaMouseWidget&&) = delete;
-  AmigaMouseWidget& operator=(const AmigaMouseWidget&) = delete;
-  AmigaMouseWidget& operator=(AmigaMouseWidget&&) = delete;
+    // Following constructors and assignment operators not supported
+    AmigaMouseWidget() = delete;
+    AmigaMouseWidget(const AmigaMouseWidget&) = delete;
+    AmigaMouseWidget(AmigaMouseWidget&&) = delete;
+    AmigaMouseWidget& operator=(const AmigaMouseWidget&) = delete;
+    AmigaMouseWidget& operator=(AmigaMouseWidget&&) = delete;
 };
 
 #endif
-

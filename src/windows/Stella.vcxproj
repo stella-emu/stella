@@ -240,6 +240,8 @@
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
+    <ClCompile Include="..\debugger\gui\AmigaMouseWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\AtariMouseWidget.cxx" />
     <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx" />
     <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart0840Widget.cxx" />
@@ -286,13 +288,16 @@
     <ClCompile Include="..\debugger\gui\CartX07Widget.cxx" />
     <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\FlashWidget.cxx" />
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
     <ClCompile Include="..\debugger\gui\JoystickWidget.cxx" />
     <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
     <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\PointingDeviceWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\TrakBallWidget.cxx" />
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
@@ -331,9 +336,6 @@
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
-    <ClCompile Include="AmigaMouseWidget.cxx" />
-    <ClCompile Include="AtariMouseWidget.cxx" />
-    <ClCompile Include="FlashWidget.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
@@ -492,9 +494,6 @@
     <ClCompile Include="..\libpng\pngwrite.c" />
     <ClCompile Include="..\libpng\pngwtran.c" />
     <ClCompile Include="..\libpng\pngwutil.c" />
-    <ClCompile Include="StateList.cxx" />
-    <ClCompile Include="PointingDeviceWidget.cxx" />
-    <ClCompile Include="TrakBallWidget.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Base.hxx" />
@@ -515,6 +514,8 @@
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\Vec.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
+    <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\AtariMouseWidget.hxx" />
     <ClInclude Include="..\debugger\gui\AtariVoxWidget.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx" />
@@ -563,14 +564,17 @@
     <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DelayQueueWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\FlashWidget.hxx" />
     <ClInclude Include="..\debugger\gui\GenesisWidget.hxx" />
     <ClInclude Include="..\debugger\gui\JoystickWidget.hxx" />
     <ClInclude Include="..\debugger\gui\KeyboardWidget.hxx" />
     <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
     <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\PointingDeviceWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\TrakBallWidget.hxx" />
     <ClInclude Include="..\emucore\AmigaMouse.hxx" />
     <ClInclude Include="..\emucore\AtariMouse.hxx" />
     <ClInclude Include="..\emucore\BSType.hxx" />
@@ -625,9 +629,6 @@
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />
     <ClInclude Include="..\libpng\pngstruct.h" />
-    <ClInclude Include="AmigaMouseWidget.hxx" />
-    <ClInclude Include="AtariMouseWidget.hxx" />
-    <ClInclude Include="FlashWidget.hxx" />
     <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWINDOWS.hxx" />
@@ -792,7 +793,6 @@
     <ClInclude Include="..\libpng\pngconf.h" />
     <ClInclude Include="..\libpng\pngpriv.h" />
     <ClInclude Include="StateList.hxx" />
-    <ClInclude Include="PointingDeviceWidget.hxx" />
     <ClInclude Include="TrakBallWidget.hxx" />
   </ItemGroup>
   <ItemGroup>

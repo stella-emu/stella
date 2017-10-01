@@ -23,23 +23,23 @@
 
 class TrakBallWidget : public PointingDeviceWidget
 {
-public:
-  TrakBallWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                 Controller& controller);
+  public:
+    TrakBallWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                   Controller& controller);
 
-  virtual ~TrakBallWidget() = default;
+    virtual ~TrakBallWidget() = default;
 
-private:
-  uInt8 myGrayCodeTable[4] = { 0b00, 0b10, 0b01, 0b11 };
+  private:
+    uInt8 myGrayCodeTable[4] = { 0b00, 0b10, 0b01, 0b11 };
 
-  uInt8 getGrayCodeTable(const int index, const int direction);
+    uInt8 getGrayCodeTable(const int index, const int direction) override;
 
-  // Following constructors and assignment operators not supported
-  TrakBallWidget() = delete;
-  TrakBallWidget(const TrakBallWidget&) = delete;
-  TrakBallWidget(TrakBallWidget&&) = delete;
-  TrakBallWidget& operator=(const TrakBallWidget&) = delete;
-  TrakBallWidget& operator=(TrakBallWidget&&) = delete;
+    // Following constructors and assignment operators not supported
+    TrakBallWidget() = delete;
+    TrakBallWidget(const TrakBallWidget&) = delete;
+    TrakBallWidget(TrakBallWidget&&) = delete;
+    TrakBallWidget& operator=(const TrakBallWidget&) = delete;
+    TrakBallWidget& operator=(TrakBallWidget&&) = delete;
 };
 
 #endif

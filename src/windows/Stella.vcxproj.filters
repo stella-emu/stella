@@ -840,22 +840,19 @@
     <ClCompile Include="..\common\StateManager.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StateList.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FlashWidget.cxx">
+    <ClCompile Include="..\debugger\gui\AmigaMouseWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="AmigaMouseWidget.cxx">
+    <ClCompile Include="..\debugger\gui\AtariMouseWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="AtariMouseWidget.cxx">
+    <ClCompile Include="..\debugger\gui\FlashWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="TrakBallWidget.cxx">
+    <ClCompile Include="..\debugger\gui\PointingDeviceWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="PointingDeviceWidget.cxx">
+    <ClCompile Include="..\debugger\gui\TrakBallWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1736,19 +1733,22 @@
     <ClInclude Include="StateList.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FlashWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="AmigaMouseWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="AtariMouseWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
     <ClInclude Include="TrakBallWidget.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="PointingDeviceWidget.hxx">
+    <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\AtariMouseWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\FlashWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\PointingDeviceWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\TrakBallWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
