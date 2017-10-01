@@ -69,7 +69,7 @@ void DrivingWidget::loadConfig()
       break;
 
   myFire->setState(!myController.read(Controller::Six));
-  myGrayValue->setList(0, gray);
+  setValue();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,18 +82,26 @@ void DrivingWidget::handleCommand(
       myGrayIndex = (myGrayIndex + 1) % 4;
       myController.set(Controller::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       myController.set(Controller::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
-      myGrayValue->setList(0, ourGrayTable[myGrayIndex]);
+      setValue();
       break;
     case kGrayDownCmd:
       myGrayIndex = myGrayIndex == 0 ? 3 : myGrayIndex - 1;
       myController.set(Controller::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       myController.set(Controller::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
-      myGrayValue->setList(0, ourGrayTable[myGrayIndex]);
+      setValue();
       break;
     case kFireCmd:
       myController.set(Controller::Six, !myFire->getState());
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DrivingWidget::setValue()
+{
+  int grayCode = ourGrayTable[myGrayIndex];
+  // * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
+  myGrayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

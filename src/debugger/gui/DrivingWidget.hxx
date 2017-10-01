@@ -51,6 +51,8 @@ class DrivingWidget : public ControllerWidget
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    void setValue();
+
     // Following constructors and assignment operators not supported
     DrivingWidget() = delete;
     DrivingWidget(const DrivingWidget&) = delete;
