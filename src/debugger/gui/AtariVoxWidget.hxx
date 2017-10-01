@@ -30,8 +30,6 @@ class AtariVoxWidget : public FlashWidget
 
  private:
     void eraseCurrent();
-    void eraseAll();
-    bool isUseDetected();
     bool isPageUsed(int page);
 
     // Following constructors and assignment operators not supported
