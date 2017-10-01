@@ -29,8 +29,6 @@ class SaveKeyWidget : public FlashWidget
     virtual ~SaveKeyWidget() = default;
 
   private:
-    void loadConfig() override { }
-
     void eraseCurrent();
     void eraseAll();
     bool isUseDetected();

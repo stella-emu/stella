@@ -36,22 +36,6 @@ void SaveKeyWidget::eraseCurrent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SaveKeyWidget::eraseAll()
-{
-  SaveKey& skey = static_cast<SaveKey&>(myController);
-
-  skey.myEEPROM->eraseAll();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SaveKeyWidget::isUseDetected()
-{
-  SaveKey& skey = static_cast<SaveKey&>(myController);
-
-  return skey.myEEPROM->isUseDetected();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SaveKeyWidget::isPageUsed(int page)
 {
   SaveKey& skey = static_cast<SaveKey&>(myController);

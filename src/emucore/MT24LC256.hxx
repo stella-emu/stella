@@ -66,9 +66,7 @@ class MT24LC256
     /** Erase the pages used by the current ROM to known state ($FF) */
     void eraseCurrent();
 
-    /** Returns true if at least one EEPROM page has been detected for the current ROM */
-    bool isUseDetected() const { return myUseDetected; }
-
+    /** Returns true if the page is used by the current ROM */
     bool isPageUsed(int page) const;
 
   private:
@@ -94,7 +92,6 @@ class MT24LC256
 
     // Track which pages are used
     bool myPageHit[PAGE_NUM];
-    bool myUseDetected;
 
     // Cached state of the SDA and SCL pins on the last write
     bool mySDA, mySCL;

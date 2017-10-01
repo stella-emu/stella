@@ -32,28 +32,26 @@ public:
 
 protected:
   void init(GuiObject* boss, const GUI::Font& font, int x, int y);
-  void drawWidget(bool hilite) override;
-
+  
 private:
-  ButtonWidget* myEEPROMEraseAll;
   ButtonWidget* myEEPROMEraseCurrent;
-  enum
-  {
-    kEEPROMEraseAll = 'eeER',
-    kEEPROMEraseCurrent = 'eeEC'
-  };
+  enum { kEEPROMEraseCurrent = 'eeEC' };
 
-  static constexpr uInt32 MAX_PAGES = 7;
+  static constexpr uInt32 MAX_PAGES = 5;
   StaticTextWidget* myPage[MAX_PAGES];
 
 private:  
-  void loadConfig() override {}
+  void loadConfig() override;
   void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-  void updateButtonState();
   
+  /**
+    Erase the EEPROM pages used by the current ROM
+  */
   virtual void eraseCurrent() = 0;
-  virtual void eraseAll() = 0;
-  virtual bool isUseDetected() = 0;
+
+  /**
+    Check if a page is used by the current ROM
+  */
   virtual bool isPageUsed(int page) = 0;
 
   // Following constructors and assignment operators not supported

@@ -29,8 +29,6 @@ class AtariVoxWidget : public FlashWidget
     virtual ~AtariVoxWidget() = default;
 
  private:
-    void loadConfig() override { }
-
     void eraseCurrent();
     void eraseAll();
     bool isUseDetected();

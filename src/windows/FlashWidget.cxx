@@ -38,7 +38,7 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
   ypos += lineHeight + 6;
 
   new StaticTextWidget(boss, ifont, xpos, ypos, "Pages/Ranges used:");
-  
+
   ypos += lineHeight + 2;
   xpos += 8;
 
@@ -48,47 +48,29 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
                                         page ? "                  " : "none              ");
     ypos += lineHeight;
   }  
-  
-  /*myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
-                                          "Erase EEPROM range", kEEPROMEraseCurrent);
+
+  xpos -= 8; ypos += 2;
+  myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
+                                          "Erase used pages", kEEPROMEraseCurrent);
   myEEPROMEraseCurrent->setTarget(this);
-  ypos += lineHeight + 8;
-  new StaticTextWidget(boss, ifont, xpos, ypos, "(*) Erases only the");
-  ypos += iLineHeight;
-  new StaticTextWidget(boss, ifont, xpos, ypos, "current ROM's range");
-
-  ypos += iLineHeight + 8;
-
-  myEEPROMEraseAll = new ButtonWidget(boss, font, xpos, ypos, 
-                                      myEEPROMEraseCurrent->getWidth(), myEEPROMEraseCurrent->getHeight(),
-                                      "Erase EEPROM", kEEPROMEraseAll);
-  myEEPROMEraseAll->setTarget(this);
-  ypos += lineHeight + 8;
-  new StaticTextWidget(boss, ifont, xpos, ypos, "(*) This will erase");
-  ypos += iLineHeight;
-  new StaticTextWidget(boss, ifont, xpos, ypos, "all EEPROM data!");
-
-  updateButtonState();*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::handleCommand(CommandSender*, int cmd, int, int)
 {
-  if(cmd == kEEPROMEraseAll) {
-    eraseAll();
-  }
   if(cmd == kEEPROMEraseCurrent) {
     eraseCurrent();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FlashWidget::drawWidget(bool hilite)
+// display the pages used by the current ROM and update erase button status
+void FlashWidget::loadConfig()
 {
   int useCount = 0, startPage = -1;
   for(int page = 0; page < MT24LC256::PAGE_NUM; page++)
   {
-    if(isPageUsed(page)/* || page == 0x21 || page == 0x22*/)
+    if(isPageUsed(page))
     {
       if (startPage == -1)
         startPage = page;
@@ -104,7 +86,7 @@ void FlashWidget::drawWidget(bool hilite)
         label.str("");
         label << Common::Base::HEX3 << startPage;
         
-        if(page -1 != startPage)
+        if(page - 1 != startPage)
           label << "-" << Common::Base::HEX3 << page - 1;
         else
           label << "    ";
@@ -118,11 +100,6 @@ void FlashWidget::drawWidget(bool hilite)
       }
     }
   }
-  //updateButtonState();
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FlashWidget::updateButtonState()
-{
-  //myEEPROMEraseCurrent->setEnabled(isUseDetected());
+  myEEPROMEraseCurrent->setEnabled(useCount != 0);
 }
