@@ -31,12 +31,12 @@ AtariVoxWidget::AtariVoxWidget(GuiObject* boss, const GUI::Font& font,
 void AtariVoxWidget::eraseCurrent()
 {
   AtariVox& avox = static_cast<AtariVox&>(myController);
-  
+
   avox.myEEPROM->eraseCurrent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AtariVoxWidget::isPageUsed(int page)
+bool AtariVoxWidget::isPageUsed(uInt32 page)
 {
   AtariVox& avox = static_cast<AtariVox&>(myController);
 

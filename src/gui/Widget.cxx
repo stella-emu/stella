@@ -311,7 +311,8 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
                                    const string& text, TextAlignment align)
   : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(), text, align)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::setValue(int value)
@@ -358,17 +359,19 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int dw, 
+                           int x, int y, int dw,
                            const string& label, int cmd)
   : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw, font.getLineHeight() + 4, label, cmd)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
                            const string& label, int cmd)
   : ButtonWidget(boss, font, x, y, 20, label, cmd)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseEntered(int button)

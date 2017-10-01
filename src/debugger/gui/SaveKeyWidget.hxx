@@ -29,8 +29,8 @@ class SaveKeyWidget : public FlashWidget
     virtual ~SaveKeyWidget() = default;
 
   private:
-    void eraseCurrent();
-    bool isPageUsed(int page);
+    void eraseCurrent() override;
+    bool isPageUsed(uInt32 page) override;
 
     // Following constructors and assignment operators not supported
     SaveKeyWidget() = delete;

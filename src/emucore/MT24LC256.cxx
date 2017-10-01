@@ -54,7 +54,7 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
     myCyclesWhenSCLSet(0),
     myDataFile(filename),
     myDataFileExists(false),
-    myDataChanged(false),    
+    myDataChanged(false),
     jpee_mdat(0),
     jpee_sdat(0),
     jpee_mclk(0),
@@ -149,7 +149,7 @@ void MT24LC256::systemReset()
 {
   myCyclesWhenSDASet = myCyclesWhenSCLSet = myCyclesWhenTimerSet =
     mySystem.cycles();
-    
+
   memset(myPageHit, false, sizeof(myPageHit));
 }
 
@@ -163,9 +163,9 @@ void MT24LC256::eraseAll()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseCurrent()
 {
-  for(uInt32 page = 0; page < PAGE_NUM; page++) 
+  for(uInt32 page = 0; page < PAGE_NUM; page++)
   {
-    if(myPageHit[page]) 
+    if(myPageHit[page])
     {
       memset(myData + page * PAGE_SIZE, INIT_VALUE, PAGE_SIZE);
       myDataChanged = true;
@@ -174,7 +174,7 @@ void MT24LC256::eraseCurrent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool MT24LC256::isPageUsed(int page) const 
+bool MT24LC256::isPageUsed(uInt32 page) const
 {
   if(page < PAGE_NUM)
     return myPageHit[page];
@@ -193,7 +193,7 @@ void MT24LC256::jpee_init()
   jpee_smallmode = 0;
   jpee_logmode = -1;
   if(!myDataFileExists)
-    memset(myData, INIT_VALUE, FLASH_SIZE);  
+    memset(myData, INIT_VALUE, FLASH_SIZE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

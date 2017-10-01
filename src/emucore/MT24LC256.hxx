@@ -45,7 +45,7 @@ class MT24LC256
   private:
     // Sizes of the EEPROM
     static constexpr uInt32 FLASH_SIZE = 32 * 1024;
-    
+
   public:
     static constexpr uInt32 PAGE_SIZE = 64;
     static constexpr uInt32 PAGE_NUM = FLASH_SIZE / PAGE_SIZE;
@@ -67,7 +67,7 @@ class MT24LC256
     void eraseCurrent();
 
     /** Returns true if the page is used by the current ROM */
-    bool isPageUsed(int page) const;
+    bool isPageUsed(uInt32 page) const;
 
   private:
     // I2C access code provided by Supercat
@@ -82,7 +82,7 @@ class MT24LC256
 
   private:
     // Inital state value of flash EEPROM
-    static constexpr uInt8  INIT_VALUE = 0xff;
+    static constexpr uInt8 INIT_VALUE = 0xff;
 
     // The system of the parent controller
     const System& mySystem;

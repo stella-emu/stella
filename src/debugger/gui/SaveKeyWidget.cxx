@@ -36,7 +36,7 @@ void SaveKeyWidget::eraseCurrent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SaveKeyWidget::isPageUsed(int page)
+bool SaveKeyWidget::isPageUsed(uInt32 page)
 {
   SaveKey& skey = static_cast<SaveKey&>(myController);
 

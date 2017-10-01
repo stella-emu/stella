@@ -683,7 +683,7 @@ void Console::setTIAProperties()
 void Console::setControllers(const string& rommd5)
 {
   // Setup the controllers based on properties
-  const string& left = myProperties.get(Controller_Left);
+  const string& left  = myProperties.get(Controller_Left);
   const string& right = myProperties.get(Controller_Right);
 
   // Check for CompuMate controllers; they are special in that a handler
@@ -699,24 +699,24 @@ void Console::setControllers(const string& rommd5)
     cartcm->setCompuMate(myCMHandler);
     myCart = std::move(cartcm);
 
-    myLeftControl = std::move(myCMHandler->leftController());
+    myLeftControl  = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
     return;
   }
 
   unique_ptr<Controller> leftC = std::move(myLeftControl),
     rightC = std::move(myRightControl);
-   
+
   leftC = getControllerPort(rommd5, left, Controller::Left);
   rightC = getControllerPort(rommd5, right, Controller::Right);
 
   // Swap the ports if necessary
-  if(myProperties.get(Console_SwapPorts) == "NO") 
+  if(myProperties.get(Console_SwapPorts) == "NO")
   {
     myLeftControl = std::move(leftC);
     myRightControl = std::move(rightC);
   }
-  else 
+  else
   {
     myLeftControl = std::move(rightC);
     myRightControl = std::move(leftC);
@@ -726,7 +726,8 @@ void Console::setControllers(const string& rommd5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Controller> Console::getControllerPort(const string& rommd5, string controllerName, Controller::Jack port)
+unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
+    const string& controllerName, Controller::Jack port)
 {
   unique_ptr<Controller> controller = std::move(myLeftControl);
 
@@ -779,8 +780,8 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5, string c
   {
     const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
     controller = make_unique<AtariVox>(port, myEvent,
-                                       *mySystem, myOSystem.serialPort(),
-                                       myOSystem.settings().getString("avoxport"), nvramfile);
+        *mySystem, myOSystem.serialPort(),
+        myOSystem.settings().getString("avoxport"), nvramfile);
   }
   else if(controllerName == "SAVEKEY")
   {

@@ -100,7 +100,7 @@ void DrivingWidget::handleCommand(
 void DrivingWidget::setValue()
 {
   int grayCode = ourGrayTable[myGrayIndex];
-  // * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
+  // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
   myGrayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
 }
 

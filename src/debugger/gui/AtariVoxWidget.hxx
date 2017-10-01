@@ -28,9 +28,9 @@ class AtariVoxWidget : public FlashWidget
                    Controller& controller);
     virtual ~AtariVoxWidget() = default;
 
- private:
-    void eraseCurrent();
-    bool isPageUsed(int page);
+  private:
+    void eraseCurrent() override;
+    bool isPageUsed(uInt32 page) override;
 
     // Following constructors and assignment operators not supported
     AtariVoxWidget() = delete;

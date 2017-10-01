@@ -22,18 +22,20 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller) {}
+  : ControllerWidget(boss, font, x, y, controller)
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = font.getLineHeight();
-  const int iLineHeight = ifont.getLineHeight();
   int xpos = x, ypos = y;
 
   bool leftport = myController.jack() == Controller::Left;
-  new StaticTextWidget(boss, font, xpos, ypos + 2, (leftport ? "Left (" : "Right (") + myController.name() + ")");
+  new StaticTextWidget(boss, font, xpos, ypos + 2,
+      (leftport ? "Left (" : "Right (") + myController.name() + ")");
 
   ypos += lineHeight + 6;
 
@@ -42,12 +44,12 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
   ypos += lineHeight + 2;
   xpos += 8;
 
-  for(int page = 0; page < MAX_PAGES; page++)
+  for(uInt32 page = 0; page < MAX_PAGES; ++page)
   {
-    myPage[page] = new StaticTextWidget(boss, ifont, xpos, ypos, 
-                                        page ? "                  " : "none              ");
+    myPage[page] = new StaticTextWidget(boss, ifont, xpos, ypos,
+        page ? "                  " : "none              ");
     ypos += lineHeight;
-  }  
+  }
 
   xpos -= 8; ypos += 2;
   myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
@@ -68,7 +70,7 @@ void FlashWidget::handleCommand(CommandSender*, int cmd, int, int)
 void FlashWidget::loadConfig()
 {
   int useCount = 0, startPage = -1;
-  for(int page = 0; page < MT24LC256::PAGE_NUM; page++)
+  for(uInt32 page = 0; page < MT24LC256::PAGE_NUM; ++page)
   {
     if(isPageUsed(page))
     {
@@ -85,13 +87,13 @@ void FlashWidget::loadConfig()
 
         label.str("");
         label << Common::Base::HEX3 << startPage;
-        
-        if(page - 1 != startPage)
+
+        if(int(page) - 1 != startPage)
           label << "-" << Common::Base::HEX3 << page - 1;
         else
           label << "    ";
         label << ": " << Common::Base::HEX4 << from << "-" << Common::Base::HEX4 << to;
-        
+
         myPage[useCount]->setLabel(label.str());
 
         startPage = -1;
