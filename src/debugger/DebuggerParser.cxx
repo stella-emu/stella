@@ -427,6 +427,14 @@ bool DebuggerParser::validateArgs(int cmd)
 
     switch(*p)
     {
+      case kARG_DWORD:
+        if(curArgInt > 0xffffffff)
+        {
+          commandResult.str(red("invalid word argument (must be 0-$ffffffff)"));
+          return false;
+        }
+        break;
+
       case kARG_WORD:
         if(curArgInt > 0xffff)
         {
@@ -923,6 +931,20 @@ void DebuggerParser::executeDump()
     commandResult << "wrong number of arguments";
     return;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "echo"
+void DebuggerParser::executeEcho()
+{
+  int res = YaccParser::parse(argStrings[0].c_str());
+  if(res == 0)
+  {    
+    unique_ptr<Expression> expr(YaccParser::getResult());
+    commandResult << expr->evaluate();
+  }
+  else
+    commandResult << red("invalid expression");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1688,7 +1710,6 @@ void DebuggerParser::executeZ()
     debugger.cpuDebug().setZ(args[0]);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
 DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
@@ -1907,13 +1928,23 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "dump",
     "Dump data at address <xx> [to yy]",
-    "Examples:\n"
+    "Example:\n"
     "  dump f000 - dumps 128 bytes @ f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeDump)
+  },
+
+  {
+    "echo",
+    "Echo expression result",
+    "Example: echo _fycles, echo _scan*#76, echo _bank==1",
+    false,
+    true,
+    { kARG_DWORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeEcho)
   },
 
   {
@@ -1949,7 +1980,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "function",
     "Define function name xx for expression yy",
-    "Example: define FUNC1 { ... }",
+    "Example: function FUNC1 { ... }",
     true,
     false,
     { kARG_LABEL, kARG_WORD, kARG_END_ARGS },

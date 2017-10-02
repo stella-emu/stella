@@ -68,7 +68,7 @@ class DebuggerParser
     bool saveScriptFile(string file);
 
   private:
-    enum { kNumCommands = 72 };
+    enum { kNumCommands = 73 };
 
     // Constants for argument processing
     enum {
@@ -80,6 +80,7 @@ class DebuggerParser
 
     enum parameters {
       kARG_WORD,        // single 16-bit value
+      kARG_DWORD,       // single 32-bit value
       kARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
       kARG_BYTE,        // single 8-bit value
       kARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
@@ -143,6 +144,7 @@ class DebuggerParser
     void executeDelwatch();
     void executeDisasm();
     void executeDump();
+    void executeEcho();
     void executeExec();
     void executeExitRom();
     void executeFrame();
