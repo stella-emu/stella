@@ -510,28 +510,29 @@ string DebuggerParser::eval()
   ostringstream buf;
   for(uInt32 i = 0; i < argCount; ++i)
   {
-    string rlabel = debugger.cartDebug().getLabel(args[i], true);
-    string wlabel = debugger.cartDebug().getLabel(args[i], false);
-    bool validR = rlabel != "" && rlabel[0] != '$',
-         validW = wlabel != "" && wlabel[0] != '$';
-    if(validR && validW)
+    if(args[i] < 0x10000)
     {
-      if(rlabel == wlabel)
-        buf << rlabel << "(R/W): ";
-      else
-        buf << rlabel << "(R) / " << wlabel << "(W): ";
+      string rlabel = debugger.cartDebug().getLabel(args[i], true);
+      string wlabel = debugger.cartDebug().getLabel(args[i], false);
+      bool validR = rlabel != "" && rlabel[0] != '$',
+        validW = wlabel != "" && wlabel[0] != '$';
+      if(validR && validW)
+      {
+        if(rlabel == wlabel)
+          buf << rlabel << "(R/W): ";
+        else
+          buf << rlabel << "(R) / " << wlabel << "(W): ";
+      }
+      else if(validR)
+        buf << rlabel << "(R): ";
+      else if(validW)
+        buf << wlabel << "(W): ";
     }
-    else if(validR)
-      buf << rlabel << "(R): ";
-    else if(validW)
-      buf << wlabel << "(W): ";
 
-    if(args[i] < 0x100)
-      buf << "$" << Base::toString(args[i], Base::F_16_2)
-          << " %" << Base::toString(args[i], Base::F_2_8);
-    else
-      buf << "$" << Base::toString(args[i], Base::F_16_4)
-          << " %" << Base::toString(args[i], Base::F_2_16);
+    buf << "$" << Base::toString(args[i], Base::F_16);
+
+    if(args[i] < 0x10000)
+      buf << " %" << Base::toString(args[i], Base::F_2);
 
     buf << " #" << int(args[i]);
     if(i != argCount - 1)
@@ -931,20 +932,6 @@ void DebuggerParser::executeDump()
     commandResult << "wrong number of arguments";
     return;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "echo"
-void DebuggerParser::executeEcho()
-{
-  int res = YaccParser::parse(argStrings[0].c_str());
-  if(res == 0)
-  {    
-    unique_ptr<Expression> expr(YaccParser::getResult());
-    commandResult << expr->evaluate();
-  }
-  else
-    commandResult << red("invalid expression");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1938,16 +1925,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
-    "echo",
-    "Echo expression result",
-    "Example: echo _fycles, echo _scan*#76, echo _bank==1",
-    false,
-    true,
-    { kARG_DWORD, kARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeEcho)
-  },
-
-  {
     "exec",
     "Execute script file <xx>",
     "Example: exec script.dat, exec auto.txt",
@@ -2125,7 +2102,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: print pc, print f000",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_DWORD, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executePrint)
   },
 
