@@ -52,6 +52,8 @@ class InputDialog : public Dialog
 
     void addDevicePortTab(const GUI::Font& font);
 
+    void eraseEEPROM();
+
   private:
     enum {
       kDeadzoneChanged = 'DZch',
@@ -59,7 +61,7 @@ class InputDialog : public Dialog
       kMPSpeedChanged  = 'PMch',
       kTBSpeedChanged  = 'TBch',
       kDBButtonPressed = 'DBbp',
-      //kEEButtonPressed = 'EEbp'
+      kEEButtonPressed = 'EEbp'
     };
 
     TabWidget* myTab;
@@ -86,7 +88,7 @@ class InputDialog : public Dialog
     CheckboxWidget*   myCtrlCombo;
 
     ButtonWidget*     myJoyDlgButton;
-    //ButtonWidget*     myEraseEEPROMButton;
+    ButtonWidget*     myEraseEEPROMButton;
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;

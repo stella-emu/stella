@@ -211,10 +211,11 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   int fwidth;
 
-  // Add EEPROM erase (part 1/2)  
-  /*fwidth = font.getStringWidth("Erase EEPROM") + 20;
+  // Add EEPROM erase (part 1/2)
+  fwidth = font.getStringWidth("Erase EEPROM") + 20;
   lwidth = font.getStringWidth("AVox/SaveKey");
-  new StaticTextWidget(myTab, font, _w - 10 - (fwidth + lwidth) / 2, ypos + 1+8, "AVox/SaveKey");*/
+  new StaticTextWidget(myTab, font, _w - 10 - (fwidth + lwidth) / 2, ypos + 8,
+                       "AVox/SaveKey");
 
   // Show joystick database
   xpos += 20;  ypos += lineHeight + 8;
@@ -223,10 +224,10 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myJoyDlgButton);
 
   // Add EEPROM erase (part 1/2)
-  /*myEraseEEPROMButton = new ButtonWidget(myTab, font, _w - 14 - fwidth, ypos,                                        
-                                        "Erase EEPROM", kEEButtonPressed);*/
-  
-  // Add AtariVox serial port 
+  myEraseEEPROMButton = new ButtonWidget(myTab, font, _w - 14 - fwidth, ypos,
+                                        "Erase EEPROM", kEEButtonPressed);
+
+  // Add AtariVox serial port
   xpos -= 20; ypos += lineHeight + 12;
   lwidth = font.getStringWidth("AVox serial port ");
   fwidth = _w - 14 - xpos - lwidth;
@@ -269,6 +270,12 @@ void InputDialog::loadConfig()
 
   // AtariVox serial port
   myAVoxPort->setText(instance().settings().getString("avoxport"));
+
+  // EEPROM erase (only enable in emulation mode)
+  if(instance().hasConsole())
+    myEraseEEPROMButton->setFlags(WIDGET_ENABLED);
+  else
+    myEraseEEPROMButton->clearFlags(WIDGET_ENABLED);
 
   // Allow all 4 joystick directions
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
@@ -436,6 +443,26 @@ bool InputDialog::handleJoyHat(int stick, int hat, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::eraseEEPROM()
+{
+  // This method will only be callable if a console exists, so we don't
+  // need to check again here
+  Controller& lport = instance().console().leftController();
+  Controller& rport = instance().console().rightController();
+
+  // FIXME thrust26 - cast to correct type and call whatever method you like ...
+  if(lport.type() == Controller::AtariVox)
+    cerr << "left avox needs to be erased\n";
+  else if(lport.type() == Controller::SaveKey)
+    cerr << "left savekey needs to be erased\n";
+
+  if(rport.type() == Controller::AtariVox)
+    cerr << "right avox needs to be erased\n";
+  else if(rport.type() == Controller::SaveKey)
+    cerr << "right savekey needs to be erased\n";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleCommand(CommandSender* sender, int cmd,
                                 int data, int id)
 {
@@ -478,9 +505,9 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       myJoyDialog->show();
       break;
 
-    /*case kEEButtonPressed:
-      // TODO
-      break;*/
+    case kEEButtonPressed:
+      eraseEEPROM();
+      break;
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
