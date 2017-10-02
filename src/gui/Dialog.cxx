@@ -319,23 +319,32 @@ void Dialog::handleText(char text)
 void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Test for TAB character
-  // Shift-left/shift-right cursor selects next tab
+  // Control-Tab selects next tab
+  // Shift-Control-Tab selects previous tab
   // Tab sets next widget in current tab
   // Shift-Tab sets previous widget in current tab
   Event::Type e = Event::NoType;
 
   // Detect selection of previous and next tab headers and objects
-  if(instance().eventHandler().kbdShift(mod))
+  if(key == KBDK_TAB)
   {
-    if(key == KBDK_LEFT && cycleTab(-1))
-      return;
-    else if(key == KBDK_RIGHT && cycleTab(+1))
-      return;
-    else if(key == KBDK_TAB)
-      e = Event::UINavPrev;
+    if(instance().eventHandler().kbdControl(mod))
+    {
+      // tab header navigation
+      if(instance().eventHandler().kbdShift(mod) && cycleTab(-1))
+        return;
+      else if(!instance().eventHandler().kbdShift(mod) && cycleTab(+1))
+        return;
+    }
+    else
+    {
+      // object navigation
+      if(instance().eventHandler().kbdShift(mod))
+        e = Event::UINavPrev;
+      else
+        e = Event::UINavNext;
+    }
   }
-  else if(key == KBDK_TAB)
-    e = Event::UINavNext;
 
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
