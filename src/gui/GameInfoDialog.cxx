@@ -209,45 +209,12 @@ GameInfoDialog::GameInfoDialog(
                                    pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myP0Controller);
 
-  /*
-  t = new StaticTextWidget(myTab, font, myP0Controller->getRight() + 4, myP0Controller->getTop()+1, font.getStringWidth("in "),
-                       fontHeight, "in ", kTextAlignLeft);
-
-  pwidth = font.getStringWidth("right port");
-  ports.clear();
-  VarList::push_back(ports, "left port", "L");
-  VarList::push_back(ports, "right port", "R");
-  myLeftPort = new PopUpWidget(myTab, font, t->getRight(), t->getTop()-1, pwidth, lineHeight,
-                               ports, "", 0, kLeftCChanged);
-  wid.push_back(myLeftPort);*/
-
   ypos += lineHeight + vGap;
   pwidth = font.getStringWidth("Paddles_IAxis");
   t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P1 Controller ", kTextAlignLeft);
   myP1Controller = new PopUpWidget(myTab, font, t->getRight(), t->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myP1Controller);
-
-  /*pwidth = font.getStringWidth("right port");
-  t = new StaticTextWidget(myTab, font, myP1Controller->getRight() + 4, myP1Controller->getTop()+1, 
-                           font.getStringWidth("in "), fontHeight, "in ", kTextAlignLeft);
-  myRightPort = new PopUpWidget(myTab, font, t->getRight(), t->getTop()-1, pwidth, lineHeight,
-                                ports, "", 0, kRightCChanged);
-  wid.push_back(myRightPort);*/
-
-
-  
-  /*ypos += lineHeight + vGap;
-  pwidth = font.getStringWidth("Yes");
-  t = new StaticTextWidget(myTab, font, hSpace, ypos + 1, lwidth, fontHeight,
-                           "Swap Ports", kTextAlignLeft);
-  items.clear();
-  VarList::push_back(items, "Yes", "YES");
-  VarList::push_back(items, "No", "NO");
-  mySwapPorts = new PopUpWidget(myTab, font, t->getRight(), t->getTop() - 1,
-                                  pwidth, lineHeight, items, "", 0, 0);
-  wid.push_back(mySwapPorts);*/
-
   
   //ypos += lineHeight + vGap;
   mySwapPorts = new CheckboxWidget(myTab, font, myP0Controller->getRight() + fontWidth*5, myP0Controller->getTop()+1, 
@@ -265,21 +232,6 @@ GameInfoDialog::GameInfoDialog(
                                            "Erase EEPROM", kEEButtonPressed);
   myEraseEEPROMInfo = new StaticTextWidget(myTab, ifont, myEraseEEPROMButton->getRight() + 4, myEraseEEPROMLabel->getTop() + 3, 
                                            "(for this game only)");
-
-  // paddles
-  /*ypos += lineHeight + vGap;
-  pwidth = font.getStringWidth("Yes");
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, lwidth, fontHeight,
-                       "Swap Paddles", kTextAlignLeft);
-  items.clear();
-  VarList::push_back(items, "Yes", "YES");
-  VarList::push_back(items, "No", "NO");
-  mySwapPaddles = new PopUpWidget(myTab, font, t->getRight(), t->getTop()-1,
-                                  pwidth, lineHeight, items, "", 0, 0);
-  wid.push_back(mySwapPaddles);*/
-
-
-
 
   ypos += lineHeight + vGap * 4;
   lwidth = font.getStringWidth("Mouse axis mode  ");
@@ -377,14 +329,6 @@ GameInfoDialog::GameInfoDialog(
 
   // Phosphor
   ypos += lineHeight + vGap*4;
-  //pwidth = font.getStringWidth("Yes");
-  //new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-  //                     "Use Phosphor", kTextAlignLeft);
-  //items.clear();
-  //VarList::push_back(items, "Yes", "YES");
-  //VarList::push_back(items, "No", "NO");
-  //myPhosphor = new PopUpWidget(myTab, font, xpos+lwidth, ypos, pwidth,
-  //                             lineHeight, items, "", 0, kPhosphorChanged);
   myPhosphor = new CheckboxWidget(myTab, font, hSpace, ypos+1, "Use Phosphor", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
@@ -472,16 +416,10 @@ void GameInfoDialog::loadView()
   myRightDiff->setSelected(myGameProperties.get(Console_RightDifficulty), "B");
   myTVType->setSelected(myGameProperties.get(Console_TelevisionType), "COLOR");
 
-  //const string& swap = myGameProperties.get(Console_SwapPorts);
-  //myLeftPort->setSelected((swap == "NO" ? "L" : "R"), "L");
-  //myRightPort->setSelected((swap == "NO" ? "R" : "L"), "R");
-  //mySwapPorts->setSelected(myGameProperties.get(Console_SwapPorts), "NO");
-  mySwapPorts->setState(myGameProperties.get(Console_SwapPorts) == "YES");
-
   // Controller properties
   myP0Controller->setSelected(myGameProperties.get(Controller_Left), "JOYSTICK");
   myP1Controller->setSelected(myGameProperties.get(Controller_Right), "JOYSTICK");
-  //mySwapPaddles->setSelected(myGameProperties.get(Controller_SwapPaddles), "NO");
+  mySwapPorts->setState(myGameProperties.get(Console_SwapPorts) == "YES");
   mySwapPaddles->setState(myGameProperties.get(Controller_SwapPaddles) == "YES");
 
   // MouseAxis property (potentially contains 'range' information)
@@ -525,11 +463,6 @@ void GameInfoDialog::loadView()
   myHeight->setValue(atoi(height.c_str()));
   myHeightLabel->setLabel(height == "0" ? "Auto" : height);
 
-  /*const string& phos = myGameProperties.get(Display_Phosphor);
-  myPhosphor->setSelected(phos, "NO");
-  myPPBlend->setEnabled(phos != "NO");
-  myPPBlendLabel->setEnabled(phos != "NO");*/
-
   bool usePhosphor = myGameProperties.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPPBlend->setEnabled(usePhosphor);
@@ -566,11 +499,7 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag().toString());
   myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag().toString());
   myGameProperties.set(Console_SwapPorts, mySwapPorts->getState() ? "YES" : "NO");
-                       //myLeftPort->getSelectedTag().toString() == "L" ? "NO" : "YES");
-                       //mySwapPorts->getSelectedTag().toString());
-                       
   myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getState() ? "YES" : "NO");
-                       //mySwapPaddles->getSelectedTag().toString());
 
   // MouseAxis property (potentially contains 'range' information)
   string mcontrol = myMouseControl->getSelectedTag().toString();
@@ -588,7 +517,6 @@ void GameInfoDialog::saveConfig()
                        myYStartLabel->getLabel());
   myGameProperties.set(Display_Height, myHeightLabel->getLabel() == "Auto" ? "0" :
                        myHeightLabel->getLabel());
-  //myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag().toString());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
   
   myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel() == "Auto" ? "0" :
@@ -674,15 +602,6 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    /*case kLeftCChanged:
-      myRightPort->setSelectedIndex(
-        myLeftPort->getSelected() == 1 ? 0 : 1);
-      break;
-
-    case kRightCChanged:
-      myLeftPort->setSelectedIndex(
-        myRightPort->getSelected() == 1 ? 0 : 1);
-      break;*/
     case kLeftCChanged:
     case kRightCChanged:
       enableEraseEEButton();
@@ -694,7 +613,6 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPhosphorChanged:
     {
-      //bool status = myPhosphor->getSelectedTag().toString() == "YES";
       bool status = myPhosphor->getState();
       myPPBlend->setEnabled(status);
       myPPBlendLabel->setEnabled(status);
