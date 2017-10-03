@@ -24,6 +24,7 @@ class ButtonWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
+
 class ControllerWidget : public Widget, public CommandSender
 {
   public:
@@ -43,6 +44,19 @@ class ControllerWidget : public Widget, public CommandSender
 
   protected:
     Controller& myController;
+
+  protected:
+    bool isLeftPort()
+    {
+      bool swappedPorts = instance().console().properties().get(Console_SwapPorts) == "YES";
+      
+      return (myController.jack() == Controller::Left) ^ swappedPorts;
+    }
+
+    string getHeader()
+    {
+      return (isLeftPort() ? "Left (" : "Right (") + myController.name() + ")";
+    }
 
   private:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }

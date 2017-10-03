@@ -88,8 +88,7 @@ class AtariVox : public SaveKey
     string about() const override { return Controller::about() + myAboutString; }
 
   private:
-   void clockDataIn(bool value);
-   void shiftIn(bool value);
+   void clockDataIn(bool value);   
 
   private:
     // Instance of an real serial port on the system

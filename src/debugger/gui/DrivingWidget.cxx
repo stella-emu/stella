@@ -24,8 +24,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller),
     myGrayIndex(0)
 {
-  bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Driving)" : "Right (Driving)";
+  const string& label = getHeader();
 
   const int fontHeight = font.getFontHeight(),
             bwidth = font.getStringWidth("Gray code +") + 10,

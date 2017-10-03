@@ -29,10 +29,8 @@ class NullControlWidget : public ControllerWidget
                       Controller& controller)
       : ControllerWidget(boss, font, x, y, controller)
     {
-      bool leftport = controller.jack() == Controller::Left;
       ostringstream buf;
-      buf << (leftport ? "Left (" : "Right (")
-          << controller.name() << "):";
+      buf << getHeader();
       const int fontHeight = font.getFontHeight(),
                 lineHeight = font.getLineHeight(),
                 lwidth = std::max(font.getStringWidth(buf.str()),

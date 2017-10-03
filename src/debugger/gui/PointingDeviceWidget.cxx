@@ -23,7 +23,6 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
       int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  bool leftport = controller.jack() == Controller::Left;
   int ypos = y;
   int xLeft = x + 10;
   int xMid = xLeft + 30;
@@ -31,7 +30,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
   int xValue = xLeft + 87;
   StaticTextWidget* t;
 
-  t = new StaticTextWidget(boss, font, x, y + 2, (leftport ? "Left (" : "Right (") + myController.name() + ")");
+  t = new StaticTextWidget(boss, font, x, y + 2, getHeader());
   ypos += t->getHeight() + 8;
 
   // add gray code and up widgets

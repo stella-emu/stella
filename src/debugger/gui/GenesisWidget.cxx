@@ -24,8 +24,7 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Genesis)" : "Right (Genesis)";
+  const string& label = getHeader(); 
 
   const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Genesis)");

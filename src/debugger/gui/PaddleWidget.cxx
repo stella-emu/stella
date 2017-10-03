@@ -25,8 +25,8 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Paddles)" : "Right (Paddles)";
+  bool leftport = isLeftPort();
+  const string& label = getHeader();
 
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),

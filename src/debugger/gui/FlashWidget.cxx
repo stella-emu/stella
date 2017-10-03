@@ -33,10 +33,8 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
   const int lineHeight = font.getLineHeight();
   int xpos = x, ypos = y;
 
-  bool leftport = myController.jack() == Controller::Left;
-  new StaticTextWidget(boss, font, xpos, ypos + 2,
-      (leftport ? "Left (" : "Right (") + myController.name() + ")");
-
+  new StaticTextWidget(boss, font, xpos, ypos + 2, getHeader());
+  
   ypos += lineHeight + 6;
 
   new StaticTextWidget(boss, ifont, xpos, ypos, "Pages/Ranges used:");
