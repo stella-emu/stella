@@ -59,7 +59,7 @@ GameInfoDialog::GameInfoDialog(
   StaticTextWidget* t;
 
   // Set real dimensions
-  _w = 52 * fontWidth + 8;  
+  _w = 52 * fontWidth + 8;
   _h = 9 * (lineHeight + vGap) + vBorder * 2 + buttonHeight + fontHeight + ifont.getLineHeight() + 20;
 
   // The tab widget
@@ -79,7 +79,7 @@ GameInfoDialog::GameInfoDialog(
   myName = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
                               fwidth, lineHeight, "");
   wid.push_back(myName);
-  
+
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "MD5", kTextAlignLeft);
@@ -183,7 +183,7 @@ GameInfoDialog::GameInfoDialog(
   wid.clear();
   tabID = myTab->addTab("Controller");
 
-  ypos = vBorder;  
+  ypos = vBorder;
   pwidth = font.getStringWidth("Paddles_IAxis");
   t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P0 Controller ", kTextAlignLeft);
   ctrls.clear();
@@ -215,13 +215,13 @@ GameInfoDialog::GameInfoDialog(
   myP1Controller = new PopUpWidget(myTab, font, t->getRight(), t->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myP1Controller);
-  
+
   //ypos += lineHeight + vGap;
-  mySwapPorts = new CheckboxWidget(myTab, font, myP0Controller->getRight() + fontWidth*5, myP0Controller->getTop()+1, 
+  mySwapPorts = new CheckboxWidget(myTab, font, myP0Controller->getRight() + fontWidth*5, myP0Controller->getTop()+1,
                                    "Swap Ports");
   wid.push_back(mySwapPorts);
   //ypos += lineHeight + vGap;
-  mySwapPaddles = new CheckboxWidget(myTab, font, myP1Controller->getRight() + fontWidth*5, myP1Controller->getTop()+1, 
+  mySwapPaddles = new CheckboxWidget(myTab, font, myP1Controller->getRight() + fontWidth*5, myP1Controller->getTop()+1,
                                      "Swap Paddles");
   wid.push_back(mySwapPaddles);
 
@@ -230,7 +230,7 @@ GameInfoDialog::GameInfoDialog(
   myEraseEEPROMLabel = new StaticTextWidget(myTab, font, hSpace, ypos, "AtariVox/SaveKey ");
   myEraseEEPROMButton = new ButtonWidget(myTab, font, myEraseEEPROMLabel->getRight(), ypos - 4,
                                            "Erase EEPROM", kEEButtonPressed);
-  myEraseEEPROMInfo = new StaticTextWidget(myTab, ifont, myEraseEEPROMButton->getRight() + 4, myEraseEEPROMLabel->getTop() + 3, 
+  myEraseEEPROMInfo = new StaticTextWidget(myTab, ifont, myEraseEEPROMButton->getRight() + 4, myEraseEEPROMLabel->getTop() + 3,
                                            "(for this game only)");
 
   ypos += lineHeight + vGap * 4;
@@ -332,8 +332,8 @@ GameInfoDialog::GameInfoDialog(
   myPhosphor = new CheckboxWidget(myTab, font, hSpace, ypos+1, "Use Phosphor", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
-  myPPBlend = new SliderWidget(myTab, font, 
-                               myPhosphor->getRight() + 16, myPhosphor->getTop()-2, 
+  myPPBlend = new SliderWidget(myTab, font,
+                               myPhosphor->getRight() + 16, myPhosphor->getTop()-2,
                                8*fontWidth, lineHeight, "Blend ",
                                font.getStringWidth("Blend "),
                                kPPBlendChanged);
@@ -518,7 +518,7 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Display_Height, myHeightLabel->getLabel() == "Auto" ? "0" :
                        myHeightLabel->getLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
-  
+
   myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel() == "Auto" ? "0" :
                        myPPBlendLabel->getLabel());
 
@@ -556,15 +556,19 @@ void GameInfoDialog::updateControllerStates(int cmd)
 
   // make sure the CompuMate is always selected for both controllers
   if(cmd == kLeftCChanged)
+  {
     if(contrP0 == "COMPUMATE")
       myP1Controller->setSelected("COMPUMATE");
     else if(contrP1 == "COMPUMATE")
       myP1Controller->setSelected(contrP0);
+  }
   if(cmd == kRightCChanged)
+  {
     if(contrP1 == "COMPUMATE")
       myP0Controller->setSelected("COMPUMATE");
     else if(contrP0 == "COMPUMATE")
       myP0Controller->setSelected(contrP1);
+  }
 
   enableSwapPorts = myP0Controller->getSelectedTag().toString() != "COMPUMATE";
   enableSwapPaddles = string::npos != contrP0.find("PADDLES")
