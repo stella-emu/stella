@@ -186,6 +186,7 @@ class StaticTextWidget : public Widget
     void setLabel(const string& label);
     void setAlign(TextAlignment align)  { _align = align; }
     const string& getLabel() const      { return _label; }
+    bool isEditable() const { return _editable;  }
 
   protected:
     void drawWidget(bool hilite) override;

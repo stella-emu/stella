@@ -392,7 +392,7 @@ void GameInfoDialog::loadConfig()
     }
   }
 
-  updateStates();
+  updateControllerStates();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -498,8 +498,8 @@ void GameInfoDialog::saveConfig()
   // Controller properties
   myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag().toString());
   myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag().toString());
-  myGameProperties.set(Console_SwapPorts, mySwapPorts->getState() ? "YES" : "NO");
-  myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getState() ? "YES" : "NO");
+  myGameProperties.set(Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
+  myGameProperties.set(Controller_SwapPaddles, (mySwapPaddles->isEnabled() && mySwapPaddles->getState()) ? "YES" : "NO");
 
   // MouseAxis property (potentially contains 'range' information)
   string mcontrol = myMouseControl->getSelectedTag().toString();
@@ -546,7 +546,7 @@ void GameInfoDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::updateStates(int cmd)
+void GameInfoDialog::updateControllerStates(int cmd)
 {
   string contrP0 = myP0Controller->getSelectedTag().toString();
   string contrP1 = myP1Controller->getSelectedTag().toString();
@@ -583,11 +583,11 @@ void GameInfoDialog::updateStates(int cmd)
   }
 
   mySwapPorts->setEnabled(enableSwapPorts);
-  if(!enableSwapPaddles)
-    mySwapPorts->setState(false);
+  //if(!enableSwapPaddles)
+  //  mySwapPorts->setState(false);
   mySwapPaddles->setEnabled(enableSwapPaddles);
-  if(!enableSwapPaddles)
-    mySwapPaddles->setState(false);
+  //if(!enableSwapPaddles)
+  //  mySwapPaddles->setState(false);
 
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
   myEraseEEPROMButton->setEnabled(enableEEEraseButton);
@@ -630,7 +630,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLeftCChanged:
     case kRightCChanged:
-      updateStates(cmd);
+      updateControllerStates(cmd);
       break;
 
     case kEEButtonPressed:
