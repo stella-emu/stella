@@ -53,7 +53,7 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // Cartridge properties
     EditTextWidget*   myName;
-    StaticTextWidget* myMD5;
+    EditTextWidget*   myMD5;
     EditTextWidget*   myManufacturer;
     EditTextWidget*   myModelNo;
     EditTextWidget*   myRarity;

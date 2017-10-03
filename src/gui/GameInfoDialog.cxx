@@ -76,43 +76,43 @@ GameInfoDialog::GameInfoDialog(
   fwidth = _w - xpos - lwidth - hSpace - hBorder * 2;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Name", kTextAlignLeft);
-  myName = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                              fwidth, fontHeight, "");
+  myName = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
+                              fwidth, lineHeight, "");
   wid.push_back(myName);
-
+  
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "MD5", kTextAlignLeft);
-  myMD5 = new StaticTextWidget(myTab, font, xpos+lwidth, ypos,
-                               fwidth, fontHeight,
-                               "", kTextAlignLeft);
+  myMD5 = new EditTextWidget(myTab, font, xpos + lwidth, ypos-1,
+                     fwidth, lineHeight, "");
+  myMD5->setEditable(false);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Manufacturer", kTextAlignLeft);
-  myManufacturer = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                      fwidth, fontHeight, "");
+  myManufacturer = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
+                                      fwidth, lineHeight, "");
   wid.push_back(myManufacturer);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Model", kTextAlignLeft);
-  myModelNo = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                 fwidth, fontHeight, "");
+  myModelNo = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
+                                 fwidth, lineHeight, "");
   wid.push_back(myModelNo);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Rarity", kTextAlignLeft);
-  myRarity = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                fwidth, fontHeight, "");
+  myRarity = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
+                                fwidth, lineHeight, "");
   wid.push_back(myRarity);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Note", kTextAlignLeft);
-  myNote = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                              fwidth, fontHeight, "");
+  myNote = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
+                              fwidth, lineHeight, "");
   wid.push_back(myNote);
 
   ypos += lineHeight + vGap;
@@ -403,7 +403,7 @@ void GameInfoDialog::loadView()
 
   // Cartridge properties
   myName->setText(myGameProperties.get(Cartridge_Name));
-  myMD5->setLabel(myGameProperties.get(Cartridge_MD5));
+  myMD5->setText(myGameProperties.get(Cartridge_MD5));
   myManufacturer->setText(myGameProperties.get(Cartridge_Manufacturer));
   myModelNo->setText(myGameProperties.get(Cartridge_ModelNo));
   myRarity->setText(myGameProperties.get(Cartridge_Rarity));
