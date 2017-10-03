@@ -61,7 +61,6 @@ void CompuMate::update()
   Controller& lp = myConsole.leftController();
   Controller& rp = myConsole.rightController();
 
-
   lp.myAnalogPinValue[Controller::Nine] = Controller::maximumResistance;
   lp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
   lp.myDigitalPinState[Controller::Six] = true;

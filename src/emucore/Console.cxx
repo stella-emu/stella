@@ -682,13 +682,9 @@ void Console::setTIAProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setControllers(const string& rommd5)
 {
-  // Setup the controllers based on properties
-  const string& left  = myProperties.get(Controller_Left);
-  const string& right = myProperties.get(Controller_Right);
-
-  // Check for CompuMate controllers; they are special in that a handler
-  // creates them for us, and also that they must be used in both ports
-  if(left == "COMPUMATE" || right == "COMPUMATE")
+  // Check for CompuMate scheme; it is special in that a handler creates both
+  // controllers for us, and associates them with the bankswitching class
+  if(myCart->detectedType() == "CM")
   {
     myCMHandler = make_shared<CompuMate>(*this, myEvent, *mySystem);
 
@@ -701,25 +697,27 @@ void Console::setControllers(const string& rommd5)
 
     myLeftControl  = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
-    return;
-  }
-
-  unique_ptr<Controller> leftC = std::move(myLeftControl),
-    rightC = std::move(myRightControl);
-
-  leftC = getControllerPort(rommd5, left, Controller::Left);
-  rightC = getControllerPort(rommd5, right, Controller::Right);
-
-  // Swap the ports if necessary
-  if(myProperties.get(Console_SwapPorts) == "NO")
-  {
-    myLeftControl = std::move(leftC);
-    myRightControl = std::move(rightC);
   }
   else
   {
-    myLeftControl = std::move(rightC);
-    myRightControl = std::move(leftC);
+    // Setup the controllers based on properties
+    const string& left  = myProperties.get(Controller_Left);
+    const string& right = myProperties.get(Controller_Right);
+
+    unique_ptr<Controller> leftC = getControllerPort(rommd5, left, Controller::Left),
+      rightC = getControllerPort(rommd5, right, Controller::Right);
+
+    // Swap the ports if necessary
+    if(myProperties.get(Console_SwapPorts) == "NO")
+    {
+      myLeftControl = std::move(leftC);
+      myRightControl = std::move(rightC);
+    }
+    else
+    {
+      myLeftControl = std::move(rightC);
+      myRightControl = std::move(leftC);
+    }
   }
 
   myTIA->bindToControllers();
