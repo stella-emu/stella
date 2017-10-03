@@ -45,6 +45,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     void setDefaults() override;
     void loadView();
 
+    void enableEraseEEButton();
+    void eraseEEPROM();
+
   private:
     TabWidget* myTab;
 
@@ -66,7 +69,11 @@ class GameInfoDialog : public Dialog, public CommandSender
     // Controller properties
     PopUpWidget*      myP0Controller;
     PopUpWidget*      myP1Controller;
-    PopUpWidget*      mySwapPaddles;
+    CheckboxWidget*   mySwapPorts;
+    CheckboxWidget*   mySwapPaddles;
+    StaticTextWidget* myEraseEEPROMLabel;
+    ButtonWidget*     myEraseEEPROMButton;
+    StaticTextWidget* myEraseEEPROMInfo;
     PopUpWidget*      myLeftPort;
     PopUpWidget*      myRightPort;
     PopUpWidget*      myMouseControl;
@@ -81,7 +88,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myYStartLabel;
     SliderWidget*     myHeight;
     StaticTextWidget* myHeightLabel;
-    PopUpWidget*      myPhosphor;
+    CheckboxWidget*   myPhosphor;
     SliderWidget*     myPPBlend;
     StaticTextWidget* myPPBlendLabel;
 
@@ -93,7 +100,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kHeightChanged   = 'HTch',
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',
-      kMCtrlChanged    = 'MCch'
+      kMCtrlChanged    = 'MCch',
+      kEEButtonPressed = 'EEgb',
     };
 
     // Game properties for currently loaded ROM

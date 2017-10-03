@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "SaveKey.hxx"
-#include "MT24LC256.hxx"
 #include "SaveKeyWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,7 +31,7 @@ void SaveKeyWidget::eraseCurrent()
 {
   SaveKey& skey = static_cast<SaveKey&>(myController);
 
-  skey.myEEPROM->eraseCurrent();
+  skey.eraseCurrent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,5 +39,5 @@ bool SaveKeyWidget::isPageUsed(uInt32 page)
 {
   SaveKey& skey = static_cast<SaveKey&>(myController);
 
-  return skey.myEEPROM->isPageUsed(page);
+  return skey.isPageUsed(page);
 }

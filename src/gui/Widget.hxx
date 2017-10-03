@@ -62,6 +62,10 @@ class Widget : public GuiObject
 
     virtual int getAbsX() const override { return _x + _boss->getChildX(); }
     virtual int getAbsY() const override { return _y + _boss->getChildY(); }
+    virtual int getLeft() const { return _x; }
+    virtual int getTop() const { return _y; }
+    virtual int getRight() const { return _x + getWidth(); }
+    virtual int getBottom() const { return _y + getHeight(); }
 
     virtual bool handleText(char text)                        { return false; }
     virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }

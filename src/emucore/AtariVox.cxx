@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "MT24LC256.hxx"
 #include "SerialPort.hxx"
 #include "System.hxx"
 #include "AtariVox.hxx"
@@ -24,7 +23,7 @@
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
                    const SerialPort& port, const string& portname,
                    const string& eepromfile)
-  : Controller(jack, event, system, Controller::AtariVox),
+  : SaveKey(jack, event, system, eepromfile, Controller::AtariVox),
     mySerialPort(const_cast<SerialPort&>(port)),
     myShiftCount(0),
     myShiftRegister(0),
@@ -35,9 +34,6 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
 
-  myEEPROM = make_unique<MT24LC256>(eepromfile, system);
-
-  myDigitalPinState[One] = myDigitalPinState[Two] =
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;
 }
 
@@ -54,13 +50,8 @@ bool AtariVox::read(DigitalPin pin)
       // For now, we just assume the device is always ready
       return myDigitalPinState[Two] = true;
 
-    // Pin 3: EEPROM SDA
-    //        input data from the 24LC256 EEPROM using the I2C protocol
-    case Three:
-      return myDigitalPinState[Three] = myEEPROM->readSDA();
-
     default:
-      return Controller::read(pin);
+      return SaveKey::read(pin);
   }
 }
 
@@ -77,22 +68,8 @@ void AtariVox::write(DigitalPin pin, bool value)
       clockDataIn(value);
       break;
 
-    // Pin 3: EEPROM SDA
-    //        output data to the 24LC256 EEPROM using the I2C protocol
-    case Three:
-      myDigitalPinState[Three] = value;
-      myEEPROM->writeSDA(value);
-      break;
-
-    // Pin 4: EEPROM SCL
-    //        output clock data to the 24LC256 EEPROM using the I2C protocol
-    case Four:
-      myDigitalPinState[Four] = value;
-      myEEPROM->writeSCL(value);
-      break;
-
     default:
-      break;
+      SaveKey::write(pin, value);
   }
 }
 
@@ -141,18 +118,5 @@ void AtariVox::clockDataIn(bool value)
 void AtariVox::reset()
 {
   myLastDataWriteCycle = 0;
-  myEEPROM->systemReset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariVox::close()
-{
-  // Force the EEPROM object to cleanup
-  myEEPROM.reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AtariVox::about() const
-{
-  return Controller::about() + myAboutString;
+  SaveKey::reset();
 }

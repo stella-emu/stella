@@ -21,6 +21,8 @@
 #include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "PointingDevice.hxx"
+#include "SaveKey.hxx"
+#include "AtariVox.hxx"
 #include "Settings.hxx"
 #include "EventMappingWidget.hxx"
 #include "EditTextWidget.hxx"
@@ -271,11 +273,17 @@ void InputDialog::loadConfig()
   // AtariVox serial port
   myAVoxPort->setText(instance().settings().getString("avoxport"));
 
-  // EEPROM erase (only enable in emulation mode)
+  // EEPROM erase (only enable in emulation mode and for valid controllers)
   if(instance().hasConsole())
-    myEraseEEPROMButton->setFlags(WIDGET_ENABLED);
+  {
+    Controller& lport = instance().console().leftController();
+    Controller& rport = instance().console().rightController();
+
+    myEraseEEPROMButton->setEnabled(lport.type() == Controller::SaveKey || lport.type() == Controller::AtariVox ||
+                                    rport.type() == Controller::SaveKey || rport.type() == Controller::AtariVox);
+  }
   else
-    myEraseEEPROMButton->clearFlags(WIDGET_ENABLED);
+    myEraseEEPROMButton->setEnabled(false);
 
   // Allow all 4 joystick directions
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
@@ -450,16 +458,17 @@ void InputDialog::eraseEEPROM()
   Controller& lport = instance().console().leftController();
   Controller& rport = instance().console().rightController();
 
-  // FIXME thrust26 - cast to correct type and call whatever method you like ...
-  if(lport.type() == Controller::AtariVox)
-    cerr << "left avox needs to be erased\n";
-  else if(lport.type() == Controller::SaveKey)
-    cerr << "left savekey needs to be erased\n";
+  if(lport.type() == Controller::SaveKey || lport.type() == Controller::AtariVox)
+  {
+    SaveKey& skey = static_cast<SaveKey&>(lport);
+    skey.eraseCurrent();
+  }
 
-  if(rport.type() == Controller::AtariVox)
-    cerr << "right avox needs to be erased\n";
-  else if(rport.type() == Controller::SaveKey)
-    cerr << "right savekey needs to be erased\n";
+  if(rport.type() == Controller::SaveKey || rport.type() == Controller::AtariVox)
+  {
+    SaveKey& skey = static_cast<SaveKey&>(rport);
+    skey.eraseCurrent();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

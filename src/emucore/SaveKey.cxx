@@ -15,9 +15,18 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "MT24LC256.hxx"
 #include "System.hxx"
 #include "SaveKey.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
+                 const string& eepromfile, Type type)
+  : Controller(jack, event, system, type)
+{
+  myEEPROM = make_unique<MT24LC256>(eepromfile, system);
+
+  myDigitalPinState[One] = myDigitalPinState[Two] = true;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
@@ -70,17 +79,4 @@ void SaveKey::write(DigitalPin pin, bool value)
     default:
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SaveKey::reset()
-{
-  myEEPROM->systemReset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SaveKey::close()
-{
-  // Force the EEPROM object to cleanup
-  myEEPROM.reset();
 }

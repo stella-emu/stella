@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "AtariVox.hxx"
-#include "MT24LC256.hxx"
 #include "AtariVoxWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,7 +31,7 @@ void AtariVoxWidget::eraseCurrent()
 {
   AtariVox& avox = static_cast<AtariVox&>(myController);
 
-  avox.myEEPROM->eraseCurrent();
+  avox.eraseCurrent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,5 +39,5 @@ bool AtariVoxWidget::isPageUsed(uInt32 page)
 {
   AtariVox& avox = static_cast<AtariVox&>(myController);
 
-  return avox.myEEPROM->isPageUsed(page);
+  return avox.isPageUsed(page);
 }

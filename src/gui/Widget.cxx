@@ -419,7 +419,8 @@ void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
   s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-               !isEnabled() ? uInt32(kColor) : hilite ? _textcolorhi : _textcolor, _align);
+               !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) : 
+               hilite ? _textcolorhi : _textcolor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -718,7 +719,7 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Fill the box
   s.fillRect(_x + _labelWidth + 2, _y + 2, _w - _labelWidth - 4, _h - 4,
-             !isEnabled() ? kColor : kWidColor);
+             !isEnabled() ? kBGColorHi : kWidColor);
 
   // Draw the 'bar'
   s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
