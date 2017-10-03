@@ -41,6 +41,10 @@ class AbstractFrameManager : public Serializable
       callback renderingStartCallback
     );
 
+    void reset();
+
+    void nextLine();
+
     void setVblank(bool vblank);
 
     void setVsync(bool vsync);
@@ -77,10 +81,6 @@ class AbstractFrameManager : public Serializable
 
   public:
 
-    virtual void reset() = 0;
-
-    virtual void nextLine() = 0;
-
     virtual uInt32 height() const = 0;
 
     virtual void setFixedHeight(uInt32 height) = 0;
@@ -109,6 +109,10 @@ class AbstractFrameManager : public Serializable
 
     virtual void onSetVsync() {}
 
+    virtual void onNextLine() {}
+
+    virtual void onReset() {}
+
     virtual bool onSave(Serializer& out) const { throw runtime_error("cannot be serialized"); }
 
     virtual bool onLoad(Serializer& in) { throw runtime_error("cannot be serialized"); }
@@ -117,7 +121,7 @@ class AbstractFrameManager : public Serializable
 
     void notifyFrameStart();
 
-    void notifyFrameComplete(uInt32 finalScanlines);
+    void notifyFrameComplete();
 
     void notifyRenderingStart();
 
@@ -128,6 +132,8 @@ class AbstractFrameManager : public Serializable
     bool myVsync;
 
     bool myVblank;
+
+    uInt32 myCurrentFrameTotalLines;
 
     uInt32 myCurrentFrameFinalLines;
 

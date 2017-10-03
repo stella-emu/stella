@@ -18,19 +18,37 @@
 #include "AbstractFrameManager.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFrameManager::AbstractFrameManager() :
-  myIsRendering(false),
-  myVsync(false),
-  myVblank(false),
-  myCurrentFrameFinalLines(0),
-  myPreviousFrameFinalLines(0),
-  myTotalFrames(0),
-  myLayout(FrameLayout::ntsc),
-  myFrameRate(0),
-  myOnFrameComplete(0),
-  myOnFrameStart(0),
-  myOnRenderingStart(0)
-{}
+AbstractFrameManager::AbstractFrameManager()
+{
+  reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AbstractFrameManager::reset()
+{
+  myIsRendering = false;
+  myVsync = false;
+  myVblank = false;
+  myCurrentFrameTotalLines = 0;
+  myCurrentFrameFinalLines = 0;
+  myPreviousFrameFinalLines = 0;
+  myTotalFrames = 0;
+  myLayout = FrameLayout::ntsc;
+  myFrameRate = 0;
+  myOnFrameComplete = 0;
+  myOnFrameStart = 0;
+  myOnRenderingStart = 0;
+
+  onReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AbstractFrameManager::nextLine()
+{
+  myCurrentFrameTotalLines++;
+
+  onNextLine();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AbstractFrameManager::setHandlers(
@@ -70,10 +88,11 @@ void AbstractFrameManager::notifyFrameStart()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractFrameManager::notifyFrameComplete(uInt32 finalScanlines)
+void AbstractFrameManager::notifyFrameComplete()
 {
   myPreviousFrameFinalLines = myCurrentFrameFinalLines;
-  myCurrentFrameFinalLines = finalScanlines;
+  myCurrentFrameFinalLines = myCurrentFrameTotalLines;
+  myCurrentFrameTotalLines = 0;
   myTotalFrames++;
 
   if (myOnFrameComplete) myOnFrameComplete();
