@@ -392,7 +392,7 @@ void GameInfoDialog::loadConfig()
     }
   }
 
-  enableEraseEEButton();
+  updateStates();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -546,26 +546,52 @@ void GameInfoDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::enableEraseEEButton()
+void GameInfoDialog::updateStates(int cmd)
 {
-  bool enable = false;
+  string contrP0 = myP0Controller->getSelectedTag().toString();
+  string contrP1 = myP1Controller->getSelectedTag().toString();
+  bool enableEEEraseButton = false;
+  bool enableSwapPaddles = false;
+  bool enableSwapPorts = false;
+
+  // make sure the CompuMate is always selected for both controllers
+  if(cmd == kLeftCChanged)
+    if(contrP0 == "COMPUMATE")
+      myP1Controller->setSelected("COMPUMATE");
+    else if(contrP1 == "COMPUMATE")
+      myP1Controller->setSelected(contrP0);
+  if(cmd == kRightCChanged)
+    if(contrP1 == "COMPUMATE")
+      myP0Controller->setSelected("COMPUMATE");
+    else if(contrP0 == "COMPUMATE")
+      myP0Controller->setSelected(contrP1);
+
+  enableSwapPorts = myP0Controller->getSelectedTag().toString() != "COMPUMATE";
+  enableSwapPaddles = string::npos != contrP0.find("PADDLES")
+    || string::npos != contrP1.find("PADDLES");
 
   if(instance().hasConsole())
   {
     Controller& lport = instance().console().leftController();
     Controller& rport = instance().console().rightController();
-    string contrP0 = myP0Controller->getSelectedTag().toString();
-    string contrP1 = myP1Controller->getSelectedTag().toString();
+
     // we only enable the button if we have a valid previous and new controller.
-    enable = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY")
-              || (lport.type() == Controller::AtariVox && contrP0 == "ATARIVOX")
-              || (rport.type() == Controller::SaveKey && contrP1 == "SAVEKEY")
-              || (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
+    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY")
+                           || (lport.type() == Controller::AtariVox && contrP0 == "ATARIVOX")
+                           || (rport.type() == Controller::SaveKey && contrP1 == "SAVEKEY")
+                           || (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
   }
 
-  myEraseEEPROMLabel->setEnabled(enable);
-  myEraseEEPROMButton->setEnabled(enable);
-  myEraseEEPROMInfo->setEnabled(enable);
+  mySwapPorts->setEnabled(enableSwapPorts);
+  if(!enableSwapPaddles)
+    mySwapPorts->setState(false);
+  mySwapPaddles->setEnabled(enableSwapPaddles);
+  if(!enableSwapPaddles)
+    mySwapPaddles->setState(false);
+
+  myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
+  myEraseEEPROMButton->setEnabled(enableEEEraseButton);
+  myEraseEEPROMInfo->setEnabled(enableEEEraseButton);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -604,7 +630,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLeftCChanged:
     case kRightCChanged:
-      enableEraseEEButton();
+      updateStates(cmd);
       break;
 
     case kEEButtonPressed:

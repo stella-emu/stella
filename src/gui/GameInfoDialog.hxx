@@ -45,7 +45,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void setDefaults() override;
     void loadView();
 
-    void enableEraseEEButton();
+    void updateStates(int cmd = 0);
     void eraseEEPROM();
 
   private:
