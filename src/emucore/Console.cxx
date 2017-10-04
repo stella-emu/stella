@@ -799,6 +799,8 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
   {
     controller = make_unique<MindLink>(port, myEvent, *mySystem);
   }
+  else  // What else can we do?
+    controller = make_unique<Joystick>(port, myEvent, *mySystem);
 
   return controller;
 }
