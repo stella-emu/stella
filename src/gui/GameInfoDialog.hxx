@@ -45,7 +45,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void setDefaults() override;
     void loadView();
 
-    void updateControllerStates(int cmd = 0);
+    void updateControllerStates();
     void eraseEEPROM();
 
   private:
@@ -67,6 +67,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget* myTVType;
 
     // Controller properties
+    StaticTextWidget* myP0Label;
+    StaticTextWidget* myP1Label;
     PopUpWidget*      myP0Controller;
     PopUpWidget*      myP1Controller;
     CheckboxWidget*   mySwapPorts;
@@ -74,8 +76,6 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myEraseEEPROMLabel;
     ButtonWidget*     myEraseEEPROMButton;
     StaticTextWidget* myEraseEEPROMInfo;
-    PopUpWidget*      myLeftPort;
-    PopUpWidget*      myRightPort;
     PopUpWidget*      myMouseControl;
     PopUpWidget*      myMouseX;
     PopUpWidget*      myMouseY;

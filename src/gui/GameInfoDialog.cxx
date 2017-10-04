@@ -185,7 +185,8 @@ GameInfoDialog::GameInfoDialog(
 
   ypos = vBorder;
   pwidth = font.getStringWidth("Paddles_IAxis");
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P0 Controller ", kTextAlignLeft);
+  myP0Label = new StaticTextWidget(myTab, font, hSpace, ypos+1,
+      "P0 Controller ", kTextAlignLeft);
   ctrls.clear();
   VarList::push_back(ctrls, "Joystick",      "JOYSTICK"     );
   VarList::push_back(ctrls, "Paddles",       "PADDLES"      );
@@ -201,18 +202,18 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(ctrls, "AtariVox",      "ATARIVOX"     );
   VarList::push_back(ctrls, "SaveKey",       "SAVEKEY"      );
   VarList::push_back(ctrls, "Sega Genesis",  "GENESIS"      );
-  VarList::push_back(ctrls, "CompuMate",     "COMPUMATE"    );
 //  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
   VarList::push_back(ctrls, "MindLink",      "MINDLINK"     );
 
-  myP0Controller = new PopUpWidget(myTab, font, t->getRight(), t->getTop()-1,
+  myP0Controller = new PopUpWidget(myTab, font, myP0Label->getRight(), myP0Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myP0Controller);
 
   ypos += lineHeight + vGap;
   pwidth = font.getStringWidth("Paddles_IAxis");
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P1 Controller ", kTextAlignLeft);
-  myP1Controller = new PopUpWidget(myTab, font, t->getRight(), t->getTop()-1,
+  myP1Label = new StaticTextWidget(myTab, font, hSpace, ypos+1,
+      "P1 Controller ", kTextAlignLeft);
+  myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myP1Controller);
 
@@ -226,7 +227,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(mySwapPaddles);
 
   // EEPROM erase button for P0
-  ypos += lineHeight + vGap + 4 ;
+  ypos += lineHeight + vGap + 4;
   myEraseEEPROMLabel = new StaticTextWidget(myTab, font, hSpace, ypos, "AtariVox/SaveKey ");
   myEraseEEPROMButton = new ButtonWidget(myTab, font, myEraseEEPROMLabel->getRight(), ypos - 4,
                                            "Erase EEPROM", kEEButtonPressed);
@@ -546,38 +547,25 @@ void GameInfoDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::updateControllerStates(int cmd)
+void GameInfoDialog::updateControllerStates()
 {
-  string contrP0 = myP0Controller->getSelectedTag().toString();
-  string contrP1 = myP1Controller->getSelectedTag().toString();
+  const string& contrP0 = myP0Controller->getSelectedTag().toString();
+  const string& contrP1 = myP1Controller->getSelectedTag().toString();
   bool enableEEEraseButton = false;
   bool enableSwapPaddles = false;
   bool enableSwapPorts = false;
 
-  // make sure the CompuMate is always selected for both controllers
-  if(cmd == kLeftCChanged)
-  {
-    if(contrP0 == "COMPUMATE")
-      myP1Controller->setSelected("COMPUMATE");
-    else if(contrP1 == "COMPUMATE")
-      myP1Controller->setSelected(contrP0);
-  }
-  if(cmd == kRightCChanged)
-  {
-    if(contrP1 == "COMPUMATE")
-      myP0Controller->setSelected("COMPUMATE");
-    else if(contrP0 == "COMPUMATE")
-      myP0Controller->setSelected(contrP1);
-  }
+  // Compumate bankswitching scheme doesn't allow to select controllers
+  bool enableSelectControl = myType->getSelectedTag() != "CM";
 
-  enableSwapPorts = myP0Controller->getSelectedTag().toString() != "COMPUMATE";
-  enableSwapPaddles = string::npos != contrP0.find("PADDLES")
-    || string::npos != contrP1.find("PADDLES");
+  enableSwapPorts = enableSelectControl;
+  enableSwapPaddles = BSPF::startsWithIgnoreCase(contrP0, "PADDLES") ||
+    BSPF::startsWithIgnoreCase(contrP1, "PADDLES");
 
   if(instance().hasConsole())
   {
-    Controller& lport = instance().console().leftController();
-    Controller& rport = instance().console().rightController();
+    const Controller& lport = instance().console().leftController();
+    const Controller& rport = instance().console().rightController();
 
     // we only enable the button if we have a valid previous and new controller.
     enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY")
@@ -586,12 +574,13 @@ void GameInfoDialog::updateControllerStates(int cmd)
                            || (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
   }
 
+  myP0Label->setEnabled(enableSelectControl);
+  myP1Label->setEnabled(enableSelectControl);
+  myP0Controller->setEnabled(enableSelectControl);
+  myP1Controller->setEnabled(enableSelectControl);
+
   mySwapPorts->setEnabled(enableSwapPorts);
-  //if(!enableSwapPaddles)
-  //  mySwapPorts->setState(false);
   mySwapPaddles->setEnabled(enableSwapPaddles);
-  //if(!enableSwapPaddles)
-  //  mySwapPaddles->setState(false);
 
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
   myEraseEEPROMButton->setEnabled(enableEEEraseButton);
@@ -632,9 +621,17 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
+    case kTabChangedCmd:
+      if(data == 2)  // 'Controller' tab selected
+        updateControllerStates();
+
+      // The underlying dialog still needs access to this command
+      Dialog::handleCommand(sender, cmd, data, 0);
+      break;
+
     case kLeftCChanged:
     case kRightCChanged:
-      updateControllerStates(cmd);
+      updateControllerStates();
       break;
 
     case kEEButtonPressed:
@@ -676,7 +673,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMCtrlChanged:
     {
-      bool state = myMouseControl->getSelectedTag().toString() != "AUTO";
+      bool state = myMouseControl->getSelectedTag() != "AUTO";
       myMouseX->setEnabled(state);
       myMouseY->setEnabled(state);
       break;

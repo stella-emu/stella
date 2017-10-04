@@ -46,6 +46,10 @@
     sometimes the image was 'double-blended', resulting in a snapshot that
     was too dark.
 
+  * Fixed crash when selecting 'CompuMate' as a controller type for a non-
+    CompuMate ROM; this controller type can no longer be manually
+    selected, and will be used automatically used for CompuMate ROMs.
+
   * Added debugger pseudo-register '_fcycles', which gives the number of
     CPU cycles that have occurred since the frame started.
 

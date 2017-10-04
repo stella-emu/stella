@@ -461,8 +461,6 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new AtariVoxWidget(boss, font, x, y, controller);
     case Controller::BoosterGrip:
       return new BoosterWidget(boss, font, x, y, controller);
-    case Controller::CompuMate:   // TODO - implement this
-      return new NullControlWidget(boss, font, x, y, controller);
     case Controller::Driving:
       return new DrivingWidget(boss, font, x, y, controller);
     case Controller::Genesis:
@@ -471,10 +469,8 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new JoystickWidget(boss, font, x, y, controller);
     case Controller::Keyboard:
       return new KeyboardWidget(boss, font, x, y, controller);
-    case Controller::KidVid:      // TODO - implement this
-      return new NullControlWidget(boss, font, x, y, controller);
-    case Controller::MindLink:    // TODO - implement this
-      return new NullControlWidget(boss, font, x, y, controller);
+//    case Controller::KidVid:      // TODO - implement this
+//    case Controller::MindLink:    // TODO - implement this
     case Controller::Paddles:
       return new PaddleWidget(boss, font, x, y, controller);
     case Controller::SaveKey:
@@ -482,7 +478,7 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
     case Controller::TrakBall:   
       return new TrakBallWidget(boss, font, x, y, controller);
     default:
-      return nullptr;  // make compiler happy
+      return new NullControlWidget(boss, font, x, y, controller);
   }
 }
 
