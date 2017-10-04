@@ -47,7 +47,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos, tabID;
   int lwidth = font.getStringWidth("NTSC Aspect "),
-      pwidth = font.getStringWidth("XXXXxXXXX");
+    pwidth = font.getStringWidth("XXXXxXXXX"),
+    swidth = 69;
+  
   WidgetArray wid;
   VariantList items;
 
@@ -220,7 +222,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Custom adjustables (using macro voodoo)
-  xpos += 8; ypos += 4;
+  xpos += 8+1; ypos += 0;
   pwidth = lwidth;
   lwidth = font.getStringWidth("Saturation ");
 
@@ -236,6 +238,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
   ypos += lineHeight + 4
 
+  pwidth = swidth;
   CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ");
   CREATE_CUSTOM_SLIDERS(Bright, "Brightness ");
   CREATE_CUSTOM_SLIDERS(Hue, "Hue ");
@@ -247,7 +250,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
-  xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 20;
+  xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 36;
   ypos = 8;
 
   lwidth = font.getStringWidth("Intensity ");
@@ -263,45 +266,46 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // TV Phosphor default level
-  xpos += 20;
-  CREATE_CUSTOM_SLIDERS(PhosLevel, "Default ");
-  ypos += 4;
+  xpos += 8-8+16;
+  pwidth = swidth;
+  CREATE_CUSTOM_SLIDERS(PhosLevel, "Default   ");
+  ypos += 6;
 
   // TV jitter effect
-  xpos -= 20;
+  xpos -= 8-8+16;
   myTVJitter = new CheckboxWidget(myTab, font, xpos, ypos,
                                   "Jitter/Roll Effect", kTVJitterChanged);
   wid.push_back(myTVJitter);
-  xpos += 20;
+  xpos += 8+8;
   ypos += lineHeight;
-  CREATE_CUSTOM_SLIDERS(JitterRec, "Recovery ");
+  CREATE_CUSTOM_SLIDERS(JitterRec, "Recovery  ");
   myTVJitterRec->setMinValue(1); myTVJitterRec->setMaxValue(20);
-  ypos += 4;
+  ypos += 6;
 
   // Scanline intensity and interpolation
-  xpos -= 20;
+  xpos -= 8+8;
   myTVScanLabel =
     new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings"),
                          fontHeight, "Scanline settings", kTextAlignLeft);
   ypos += lineHeight;
 
-  xpos += 20;
+  xpos += 8+8;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ");
 
   myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos,
                                            "Interpolation");
   wid.push_back(myTVScanInterpolate);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + 6;
 
   // Adjustable presets
-  xpos -= 20;
+  xpos -= 8+8;
   int cloneWidth = font.getStringWidth("Clone Bad Adjust") + 20;
 #define CREATE_CLONE_BUTTON(obj, desc)                                 \
   myClone ## obj =                                                     \
     new ButtonWidget(myTab, font, xpos, ypos, cloneWidth, buttonHeight,\
                      desc, kClone ## obj ##Cmd);                       \
   wid.push_back(myClone ## obj);                                       \
-  ypos += lineHeight + 10
+  ypos += lineHeight + 8
 
   ypos += 4;
   CREATE_CLONE_BUTTON(Composite, "Clone Composite");

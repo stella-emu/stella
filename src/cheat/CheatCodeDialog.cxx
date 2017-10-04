@@ -57,13 +57,13 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   xpos += myCheatList->getWidth() + 5;  ypos = 15;
 
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Add", kAddCheatCmd);
+                       "Add" + ELLIPSIS, kAddCheatCmd);
   wid.push_back(b);
   ypos += lineHeight + 10;
 
   myEditButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Edit", kEditCheatCmd);
+                     "Edit" + ELLIPSIS, kEditCheatCmd);
   wid.push_back(myEditButton);
   ypos += lineHeight + 10;
 
@@ -74,7 +74,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 10;
 
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "One shot", kAddOneShotCmd);
+                       "One shot" + ELLIPSIS, kAddOneShotCmd);
   wid.push_back(b);
 
   // Inputbox which will pop up when adding/editing a cheat

@@ -136,8 +136,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                       "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd);
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                       "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
@@ -149,7 +149,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
   myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd);
+                                     "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
   myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
@@ -174,8 +174,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Create context menu for ROM list options
   VariantList l;
-  VarList::push_back(l, "Power-on options", "override");
-  VarList::push_back(l, "Filter listing", "filter");
+  VarList::push_back(l, "Power-on options" + ELLIPSIS, "override");
+  VarList::push_back(l, "Filter listing" + ELLIPSIS, "filter");
   VarList::push_back(l, "Reload listing", "reload");
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
 

@@ -101,39 +101,41 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
+  const int vGap = 4;
+  const int hSpace = 8;
 
   // Devices/ports
   tabID = myTab->addTab("Devices & Ports");
 
   // Stelladaptor mappings
-  xpos = 5+3;  ypos = 5;
+  ypos = vGap+2;
   lwidth = font.getStringWidth("Digital paddle sensitivity "); // was: "Use mouse as a controller "
   pwidth = font.getStringWidth("-UI, -Emulation");
 
   VarList::push_back(items, "Left / Right", "lr");
   VarList::push_back(items, "Right / Left", "rl");
-  mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+  mySAPort = new PopUpWidget(myTab, font, hSpace, ypos, pwidth, lineHeight, items,
                              "Stelladaptor port order ", lwidth);
   wid.push_back(mySAPort);
 
   // Use mouse as controller
-  ypos += lineHeight + 5;
+  ypos += lineHeight + vGap;
   items.clear();
   VarList::push_back(items, "Always", "always");
   VarList::push_back(items, "Analog devices", "analog");
   VarList::push_back(items, "Never", "never");
-  myMouseControl = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+  myMouseControl = new PopUpWidget(myTab, font, hSpace, ypos, pwidth, lineHeight, items,
                              "Use mouse as a controller ", lwidth);
   wid.push_back(myMouseControl);
 
   // Mouse cursor state
-  ypos += lineHeight + 5;
+  ypos += lineHeight + vGap;
   items.clear();
   VarList::push_back(items, "-UI, -Emulation", "0");
   VarList::push_back(items, "-UI, +Emulation", "1");
   VarList::push_back(items, "+UI, -Emulation", "2");
   VarList::push_back(items, "+UI, +Emulation", "3");
-  myCursorState = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+  myCursorState = new PopUpWidget(myTab, font, hSpace, ypos, pwidth, lineHeight, items,
                              "Mouse cursor visibility ", lwidth);
   wid.push_back(myCursorState);
 #ifndef WINDOWED_SUPPORT
@@ -144,61 +146,61 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   pwidth = font.getMaxCharWidth() * 8;
 
   // Add joystick deadzone setting
-  ypos += lineHeight + 8;
-  myDeadzone = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+  ypos += lineHeight + vGap*3;
+  myDeadzone = new SliderWidget(myTab, font, hSpace, ypos, pwidth, lineHeight,
                                 "Joystick deadzone size ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
-  xpos += myDeadzone->getWidth() + 5;
+  xpos = hSpace + myDeadzone->getWidth() + 5;
   myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
                                          lineHeight, "", kTextAlignLeft);
   myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDeadzone);
 
   // Add paddle speed (digital emulation)
-  xpos = 5+3;  ypos += lineHeight + 4;
-  myDPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+  ypos += lineHeight + vGap;
+  myDPaddleSpeed = new SliderWidget(myTab, font, hSpace, ypos, pwidth, lineHeight,
                                     "Digital paddle sensitivity ",
                                     lwidth, kDPSpeedChanged);
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
-  xpos += myDPaddleSpeed->getWidth() + 5;
+  xpos = hSpace + myDPaddleSpeed->getWidth() + 5;
   myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", kTextAlignLeft);
   myDPaddleLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDPaddleSpeed);
 
   // Add paddle speed (mouse emulation)
-  xpos = 5+3;  ypos += lineHeight + 4;
-  myMPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+  ypos += lineHeight + vGap;
+  myMPaddleSpeed = new SliderWidget(myTab, font, hSpace, ypos, pwidth, lineHeight,
                                     "Mouse paddle sensitivity ",
                                     lwidth, kMPSpeedChanged);
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
-  xpos += myMPaddleSpeed->getWidth() + 5;
+  xpos = hSpace + myMPaddleSpeed->getWidth() + 5;
   myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", kTextAlignLeft);
   myMPaddleSpeed->setFlags(WIDGET_CLEARBG);
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
-  xpos = 5+3;  ypos += lineHeight + 4;
-  myTrackBallSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+  ypos += lineHeight + vGap;
+  myTrackBallSpeed = new SliderWidget(myTab, font, hSpace, ypos, pwidth, lineHeight,
                                       "Trackball sensitivity ",
                                       lwidth, kTBSpeedChanged);
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
-  xpos += myTrackBallSpeed->getWidth() + 5;
+  xpos = hSpace + myTrackBallSpeed->getWidth() + 5;
   myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                           "", kTextAlignLeft);
   myTrackBallSpeed->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick
-  xpos = 10-2;  ypos += lineHeight + 12;
-  myAllowAll4 = new CheckboxWidget(myTab, font, xpos, ypos,
+  ypos += lineHeight + 12;
+  myAllowAll4 = new CheckboxWidget(myTab, font, hSpace, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
 
   // Grab mouse (in windowed mode)
-  ypos += lineHeight + 4;
-  myGrabMouse = new CheckboxWidget(myTab, font, xpos, ypos,
+  ypos += lineHeight + vGap;
+  myGrabMouse = new CheckboxWidget(myTab, font, hSpace, ypos,
 	                "Grab mouse in emulation mode");
   wid.push_back(myGrabMouse);
 #ifndef WINDOWED_SUPPORT
@@ -206,35 +208,37 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 #endif
 
   // Enable/disable control key-combos
-  ypos += lineHeight + 4;
-  myCtrlCombo = new CheckboxWidget(myTab, font, xpos, ypos,
+  ypos += lineHeight + vGap;
+  myCtrlCombo = new CheckboxWidget(myTab, font, hSpace, ypos,
 	                "Use Control key combos");
   wid.push_back(myCtrlCombo);
 
   int fwidth;
 
   // Add EEPROM erase (part 1/2)
-  fwidth = font.getStringWidth("Erase EEPROM") + 20;
-  lwidth = font.getStringWidth("AVox/SaveKey");
-  new StaticTextWidget(myTab, font, _w - 10 - (fwidth + lwidth) / 2, ypos + 8,
-                       "AVox/SaveKey");
+  ypos += vGap*4;
+  fwidth = font.getStringWidth("AtariVox/SaveKey");
+  lwidth = font.getStringWidth("AtariVox/SaveKey");
+  new StaticTextWidget(myTab, font, _w - 14 - (fwidth + lwidth) / 2, ypos+2,
+                       "AtariVox/SaveKey");
 
-  // Show joystick database
-  xpos += 20;  ypos += lineHeight + 8;
-  myJoyDlgButton = new ButtonWidget(myTab, font, xpos, ypos, 20,
-    "Show Joystick Database", kDBButtonPressed);
+  // Show joystick database  
+  ypos += lineHeight;
+  myJoyDlgButton = new ButtonWidget(myTab, font, hSpace, ypos, 20,
+    "Joystick database" + ELLIPSIS, kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
 
   // Add EEPROM erase (part 1/2)
   myEraseEEPROMButton = new ButtonWidget(myTab, font, _w - 14 - fwidth, ypos,
+                                         fwidth, lineHeight+4,
                                         "Erase EEPROM", kEEButtonPressed);
 
   // Add AtariVox serial port
-  xpos -= 20; ypos += lineHeight + 12;
+  ypos += lineHeight + vGap*2;
   lwidth = font.getStringWidth("AVox serial port ");
-  fwidth = _w - 14 - xpos - lwidth;
-  new StaticTextWidget(myTab, font, xpos, ypos, "AVox serial port ");
-  myAVoxPort = new EditTextWidget(myTab, font, xpos + lwidth, ypos,
+  fwidth = _w - 14 - hSpace - lwidth;
+  new StaticTextWidget(myTab, font, hSpace, ypos, "AVox serial port ");
+  myAVoxPort = new EditTextWidget(myTab, font, hSpace + lwidth, ypos,
                                   fwidth, fontHeight, "");
 
   wid.push_back(myAVoxPort);

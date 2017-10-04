@@ -62,7 +62,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   xpos += myActionsList->getWidth() + 5;  ypos += 5;
   myMapButton = new ButtonWidget(boss, font, xpos, ypos,
                                  buttonWidth, buttonHeight,
-                                 "Map", kStartMapCmd);
+                                 "Map" + ELLIPSIS, kStartMapCmd);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
 

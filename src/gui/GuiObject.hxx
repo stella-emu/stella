@@ -95,6 +95,9 @@ class GuiObject : public CommandReceiver
     /** Redraw the focus list */
     virtual void redrawFocus() { }
 
+    /** special character for menues */
+    const string& ELLIPSIS = "\x1d";
+
   protected:
     virtual void releaseFocus() = 0;
     virtual void draw() = 0;

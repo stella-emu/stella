@@ -42,6 +42,53 @@ namespace GUI {
 // Font character bitmap data.
 static const uInt16 stellaMedium_font_bits[] = {
 
+
+  /* MODIFIED
+  Character 29 (0x1d): ellipsis
+  width 9
+  bbx ( 9, 15, 0, -3 )
+
+  +---------+
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  | XX XX XX|
+  | XX XX XX|
+  |         |
+  |         |
+  |         |
+  |         |
+  +---------+
+  */
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0b0110110110000000,
+  0b0110110110000000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+
+
 /* MODIFIED
    Character 30 (0x1e): large centered rounded rectangle
    width 9
@@ -4320,8 +4367,8 @@ static const FontDesc stellaMediumDesc = {
   18,
   9, 18, 0, -4,
   14,
-  30,
-  97,
+  29,
+  98,
   stellaMedium_font_bits,
   0,  /* no encode table*/
   0,  /* fixed width*/

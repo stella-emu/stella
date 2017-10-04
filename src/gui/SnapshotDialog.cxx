@@ -34,7 +34,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Save path") + 20,
+            buttonWidth  = font.getStringWidth("Save path" + ELLIPSIS) + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 10;
   int xpos, ypos, lwidth, fwidth;
@@ -49,7 +49,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Snapshot path (save files)
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Save path", kChooseSnapSaveDirCmd);
+                       "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -59,7 +59,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   // Snapshot path (load files)
   xpos = vBorder;  ypos += buttonHeight + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Load path", kChooseSnapLoadDirCmd);
+                       "Load path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   mySnapLoadPath = new EditTextWidget(this, font, xpos, ypos + 2,
