@@ -202,13 +202,13 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // Select and Reset
   xpos += myP0Diff->getWidth() + 20;  ypos = col2_ypos + lineHeight;
   mySelect = new CheckboxWidget(boss, lfont, xpos, ypos, "Select",
-                                kCheckActionCmd);
+                                CheckboxWidget::kCheckActionCmd);
   mySelect->setID(kSelectID);
   mySelect->setTarget(this);
   addFocusWidget(mySelect);
   ypos += mySelect->getHeight() + 5;
   myReset = new CheckboxWidget(boss, lfont, xpos, ypos, "Reset",
-                               kCheckActionCmd);
+                               CheckboxWidget::kCheckActionCmd);
   myReset->setID(kResetID);
   myReset->setTarget(this);
   addFocusWidget(myReset);
@@ -222,7 +222,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // Randomize RAM
   xpos += 30;  ypos += lineHeight + 4;
   myRandomizeRAM = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-      "Randomize zero-page and extended RAM", kCheckActionCmd);
+      "Randomize zero-page and extended RAM", CheckboxWidget::kCheckActionCmd);
   myRandomizeRAM->setID(kRandRAMID);
   myRandomizeRAM->setTarget(this);
   addFocusWidget(myRandomizeRAM);
@@ -237,7 +237,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int i = 0; i < 5; ++i)
   {
     myRandomizeCPU[i] = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-      cpuregs[i], kCheckActionCmd);
+      cpuregs[i], CheckboxWidget::kCheckActionCmd);
     myRandomizeCPU[i]->setID(kRandCPUID);
     myRandomizeCPU[i]->setTarget(this);
     addFocusWidget(myRandomizeCPU[i]);
@@ -415,7 +415,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kCheckActionCmd:
+    case CheckboxWidget::kCheckActionCmd:
       switch(id)
       {
         case kSelectID:
@@ -453,9 +453,9 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 {
   switch(controller.type())
   {
-    case Controller::AmigaMouse:  
+    case Controller::AmigaMouse:
       return new AmigaMouseWidget(boss, font, x, y, controller);
-    case Controller::AtariMouse: 
+    case Controller::AtariMouse:
       return new AtariMouseWidget(boss, font, x, y, controller);
     case Controller::AtariVox:
       return new AtariVoxWidget(boss, font, x, y, controller);
@@ -475,7 +475,7 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new PaddleWidget(boss, font, x, y, controller);
     case Controller::SaveKey:
       return new SaveKeyWidget(boss, font, x, y, controller);
-    case Controller::TrakBall:   
+    case Controller::TrakBall:
       return new TrakBallWidget(boss, font, x, y, controller);
     default:
       return new NullControlWidget(boss, font, x, y, controller);

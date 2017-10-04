@@ -257,7 +257,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case kSetPositionCmd:
+    case GuiObject::kSetPositionCmd:
       myCurrentRamBank = data;
       showSearchResults();
       fillGrid(false);

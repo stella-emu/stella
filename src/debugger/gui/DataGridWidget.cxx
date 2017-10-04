@@ -540,9 +540,9 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kSetPositionCmd:
+    case GuiObject::kSetPositionCmd:
       // Chain access; pass to parent
-      sendCommand(kSetPositionCmd, data, _id);
+      sendCommand(GuiObject::kSetPositionCmd, data, _id);
       break;
 
     case kDGZeroCmd:

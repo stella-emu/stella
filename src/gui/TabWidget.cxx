@@ -101,7 +101,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
 
   // Let parent know about the tab change
   if(show)
-    sendCommand(kTabChangedCmd, _activeTab, _id);
+    sendCommand(TabWidget::kTabChangedCmd, _activeTab, _id);
 }
 
 #if 0 // FIXME
@@ -134,7 +134,7 @@ void TabWidget::updateActiveTab()
 void TabWidget::activateTabs()
 {
   for(uInt32 i = 0; i <_tabs.size(); ++i)
-    sendCommand(kTabChangedCmd, i-1, _id);
+    sendCommand(TabWidget::kTabChangedCmd, i-1, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

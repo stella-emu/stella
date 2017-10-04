@@ -49,7 +49,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   int lwidth = font.getStringWidth("NTSC Aspect "),
     pwidth = font.getStringWidth("XXXXxXXXX"),
     swidth = 69;
-  
+
   WidgetArray wid;
   VariantList items;
 
@@ -375,7 +375,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.clear();
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
+                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
@@ -792,12 +792,12 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       saveConfig();
       close();
       break;
 
-    case kDefaultsCmd:
+    case GuiObject::kDefaultsCmd:
       setDefaults();
       break;
 

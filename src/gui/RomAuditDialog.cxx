@@ -169,7 +169,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       if(!myConfirmMsg)
       {
         StringList msg;

@@ -34,7 +34,8 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
   CheckboxWidget* t = nullptr;
   for(int i = 0; i < _rows; ++i)
   {
-    t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
+    t = new CheckboxWidget(boss, font, _x + 2, ypos, "",
+                           CheckboxWidget::kCheckActionCmd);
     t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(i);
@@ -171,14 +172,14 @@ void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kCheckActionCmd:
+    case CheckboxWidget::kCheckActionCmd:
     {
       // Figure out which line has been checked
       int line = _currentPos + id;
       _stateList[line] = bool(data);
 
       // Let the boss know about it
-      sendCommand(kListItemChecked, line, _id);
+      sendCommand(CheckListWidget::kListItemChecked, line, _id);
       break;
     }
 

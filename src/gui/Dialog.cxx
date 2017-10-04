@@ -629,12 +629,12 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kTabChangedCmd:
+    case TabWidget::kTabChangedCmd:
       if(_visible)
         buildCurrentFocusList(id);
       break;
 
-    case kCloseCmd:
+    case GuiObject::kCloseCmd:
       close();
       break;
   }
@@ -663,23 +663,23 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 #ifndef BSPF_MAC_OSX
   b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
                        buttonWidth, buttonHeight,
-                       okText == "" ? "OK" : okText, kOKCmd);
+                       okText == "" ? "OK" : okText, GuiObject::kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
   b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
                        buttonWidth, buttonHeight,
-                       cancelText == "" ? "Cancel" : cancelText, kCloseCmd);
+                       cancelText == "" ? "Cancel" : cancelText, GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 #else
   b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
                        buttonWidth, buttonHeight,
-                       cancelText == "" ? "Cancel" : cancelText, kCloseCmd);
+                       cancelText == "" ? "Cancel" : cancelText, GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
   b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
                        buttonWidth, buttonHeight,
-                       okText == "" ? "OK" : okText, kOKCmd);
+                       okText == "" ? "OK" : okText, GuiObject::kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
 #endif

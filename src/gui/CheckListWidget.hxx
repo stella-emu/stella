@@ -29,7 +29,7 @@ using CheckboxArray = vector<CheckboxWidget*>;
 class CheckListWidget : public ListWidget
 {
   public:
-    enum {  kListItemChecked = 'LIct' /* checkbox toggled on current line*/ };
+    enum { kListItemChecked = 'LIct' /* checkbox toggled on current line*/ };
     enum CheckStyle { XFill, SolidFill };
 
   public:

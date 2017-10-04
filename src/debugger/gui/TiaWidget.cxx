@@ -202,7 +202,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // P0 reflect
   xpos += myHMP0->getWidth() + 15;
   myRefP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "Reflect", kCheckActionCmd);
+                               "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP0->setTarget(this);
   myRefP0->setID(kRefP0ID);
   addFocusWidget(myRefP0);
@@ -226,7 +226,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // P0 delay
   xpos += myGRP0Old->getWidth() + 12;
   myDelP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "VDel", kCheckActionCmd);
+                               "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP0->setTarget(this);
   myDelP0->setID(kDelP0ID);
   addFocusWidget(myDelP0);
@@ -287,7 +287,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // P1 reflect
   xpos += myHMP1->getWidth() + 15;
   myRefP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "Reflect", kCheckActionCmd);
+                               "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefP1->setTarget(this);
   myRefP1->setID(kRefP1ID);
   addFocusWidget(myRefP1);
@@ -310,7 +310,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // P1 delay
   xpos += myGRP1Old->getWidth() + 12;
   myDelP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "VDel", kCheckActionCmd);
+                               "VDel", CheckboxWidget::kCheckActionCmd);
   myDelP1->setTarget(this);
   myDelP1->setID(kDelP1ID);
   addFocusWidget(myDelP1);
@@ -382,7 +382,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // M0 reset to player 0
   xpos += myNusizM0->getWidth() + 15;
   myResMP0 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                                "Reset to P0", kCheckActionCmd);
+                                "Reset to P0", CheckboxWidget::kCheckActionCmd);
   myResMP0->setTarget(this);
   myResMP0->setID(kResMP0ID);
   addFocusWidget(myResMP0);
@@ -445,7 +445,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // M1 reset to player 0
   xpos += myNusizM1->getWidth() + 15;
   myResMP1 = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                                "Reset to P1", kCheckActionCmd);
+                                "Reset to P1", CheckboxWidget::kCheckActionCmd);
   myResMP1->setTarget(this);
   myResMP1->setID(kResMP1ID);
   addFocusWidget(myResMP1);
@@ -523,7 +523,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // Ball delay
   xpos += myEnaBLOld->getWidth() + 12;
   myDelBL = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "VDel", kCheckActionCmd);
+                               "VDel", CheckboxWidget::kCheckActionCmd);
   myDelBL->setTarget(this);
   myDelBL->setID(kDelBLID);
   addFocusWidget(myDelBL);
@@ -590,21 +590,21 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // PF reflect, score, priority
   xpos = 10 + 4*fontWidth;  ypos += lineHeight + 6;
   myRefPF = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                               "Reflect", kCheckActionCmd);
+                               "Reflect", CheckboxWidget::kCheckActionCmd);
   myRefPF->setTarget(this);
   myRefPF->setID(kRefPFID);
   addFocusWidget(myRefPF);
 
   xpos += myRefPF->getWidth() + 15;
   myScorePF = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                                 "Score", kCheckActionCmd);
+                                 "Score", CheckboxWidget::kCheckActionCmd);
   myScorePF->setTarget(this);
   myScorePF->setID(kScorePFID);
   addFocusWidget(myScorePF);
 
   xpos += myScorePF->getWidth() + 15;
   myPriorityPF = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-                                    "Priority", kCheckActionCmd);
+                                    "Priority", CheckboxWidget::kCheckActionCmd);
   myPriorityPF->setTarget(this);
   myPriorityPF->setID(kPriorityPFID);
   addFocusWidget(myPriorityPF);
@@ -833,7 +833,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kCheckActionCmd:
+    case CheckboxWidget::kCheckActionCmd:
       switch(id)
       {
         case kRefP0ID:

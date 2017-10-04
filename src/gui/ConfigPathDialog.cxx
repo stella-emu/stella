@@ -115,7 +115,7 @@ ConfigPathDialog::ConfigPathDialog(
   // Add Defaults, OK and Cancel buttons
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        font.getStringWidth("Defaults") + 20, buttonHeight,
-                       "Defaults", kDefaultsCmd);
+                       "Defaults", GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
 
@@ -192,14 +192,14 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       saveConfig();
       close();
       if(myIsGlobal)  // Let the boss know romdir has changed
         sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
       break;
 
-    case kDefaultsCmd:
+    case GuiObject::kDefaultsCmd:
       setDefaults();
       break;
 

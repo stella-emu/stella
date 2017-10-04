@@ -38,7 +38,8 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
 
   for(int i = 0; i < 12; ++i)
   {
-    myBox[i] = new CheckboxWidget(boss, font, xpos, ypos, "", kCheckActionCmd);
+    myBox[i] = new CheckboxWidget(boss, font, xpos, ypos, "",
+                                  CheckboxWidget::kCheckActionCmd);
     myBox[i]->setID(i);
     myBox[i]->setTarget(this);
     xpos += myBox[i]->getWidth() + 5;
@@ -63,7 +64,7 @@ void KeyboardWidget::loadConfig()
 void KeyboardWidget::handleCommand(
     CommandSender* sender, int cmd, int data, int id)
 {
-  if(cmd == kCheckActionCmd)
+  if(cmd == CheckboxWidget::kCheckActionCmd)
     instance().eventHandler().handleEvent(myEvent[id], myBox[id]->getState());
 }
 

@@ -214,7 +214,7 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
                  int x, int y, int w, int h,
                  const string& label, int cmd = 0);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int dw, 
+                 int x, int y, int dw,
                  const string& label, int cmd = 0);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
@@ -248,6 +248,7 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 class CheckboxWidget : public ButtonWidget
 {
   public:
+    enum { kCheckActionCmd  = 'CBAC' };
     enum FillType { Normal, Inactive, Circle };
 
   public:

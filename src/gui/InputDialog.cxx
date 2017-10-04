@@ -86,7 +86,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
+                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
@@ -222,7 +222,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   new StaticTextWidget(myTab, font, _w - 14 - (fwidth + lwidth) / 2, ypos+2,
                        "AtariVox/SaveKey");
 
-  // Show joystick database  
+  // Show joystick database
   ypos += lineHeight;
   myJoyDlgButton = new ButtonWidget(myTab, font, hSpace, ypos, 20,
     "Joystick database" + ELLIPSIS, kDBButtonPressed);
@@ -481,17 +481,17 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       saveConfig();
       close();
       break;
 
-    case kCloseCmd:
+    case GuiObject::kCloseCmd:
       // Revert changes made to event mapping
       close();
       break;
 
-    case kDefaultsCmd:
+    case GuiObject::kDefaultsCmd:
       setDefaults();
       break;
 

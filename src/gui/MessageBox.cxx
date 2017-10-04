@@ -85,7 +85,7 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
     {
       close();
 

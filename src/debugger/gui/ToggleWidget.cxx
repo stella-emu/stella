@@ -202,7 +202,7 @@ void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case kSetPositionCmd:
+    case GuiObject::kSetPositionCmd:
       if (_selectedItem != data)
       {
         _selectedItem = data;

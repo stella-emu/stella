@@ -475,7 +475,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case kSetPositionCmd:
+    case GuiObject::kSetPositionCmd:
       int newPos = int(data) + _linesPerPage - 1 + _firstLineInBuffer;
       if (newPos != _scrollLine)
       {

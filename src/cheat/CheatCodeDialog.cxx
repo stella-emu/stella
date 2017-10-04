@@ -196,12 +196,12 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       saveConfig();
       close();
       break;
 
-    case kCloseCmd:
+    case GuiObject::kCloseCmd:
       close();
       break;
 
