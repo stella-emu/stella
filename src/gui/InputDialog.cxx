@@ -193,7 +193,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick
-  ypos += lineHeight + 12;
+  ypos += lineHeight + vGap*3;
   myAllowAll4 = new CheckboxWidget(myTab, font, hSpace, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);

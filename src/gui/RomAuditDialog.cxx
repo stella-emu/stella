@@ -39,48 +39,49 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {
-  const int vBorder = 8;
+  const int vBorder = 10;
+  const int hBorder = 10;
 
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Audit path") + 20,
+            buttonWidth  = font.getStringWidth("Audit path" + ELLIPSIS) + 20,
             buttonHeight = font.getLineHeight() + 4,
             lwidth = font.getStringWidth("ROMs without properties (skipped) ");
-  int xpos = vBorder, ypos = vBorder;
+  int xpos, ypos = vBorder;
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 44 * fontWidth + 10;
+  _w = 54 * fontWidth + 10;
   _h = 7 * (lineHeight + 4) + 10;
 
   // Audit path
   ButtonWidget* romButton =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Audit path", kChooseAuditDirCmd);
+    new ButtonWidget(this, font, hBorder, ypos, buttonWidth, buttonHeight,
+                     "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(romButton);
-  xpos += buttonWidth + 10;
+  xpos = hBorder + buttonWidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                 _w - xpos - 10, lineHeight, "");
+                                 _w - xpos - hBorder, lineHeight, "");
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
-  xpos = vBorder + 10;  ypos += buttonHeight + 10;
-  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+  ypos += buttonHeight + 16;
+  new StaticTextWidget(this, font, hBorder, ypos, lwidth, fontHeight,
                        "ROMs with properties (renamed) ", kTextAlignLeft);
-  myResults1 = new EditTextWidget(this, font, xpos + lwidth, ypos - 2,
-                                  _w - xpos - lwidth - 10, lineHeight, "");
+  myResults1 = new EditTextWidget(this, font, hBorder + lwidth, ypos - 2,
+                                  _w - hBorder*2 - lwidth, lineHeight, "");
   myResults1->setEditable(false, true);
   ypos += buttonHeight;
-  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+  new StaticTextWidget(this, font, hBorder, ypos, lwidth, fontHeight,
                        "ROMs without properties (skipped) ", kTextAlignLeft);
-  myResults2 = new EditTextWidget(this, font, xpos + lwidth, ypos - 2,
-                                  _w - xpos - lwidth - 10, lineHeight, "");
+  myResults2 = new EditTextWidget(this, font, hBorder + lwidth, ypos - 2,
+                                  _w - hBorder*2 - lwidth, lineHeight, "");
   myResults2->setEditable(false, true);
 
   ypos += buttonHeight + 8;
-  new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
-                       "(*) WARNING: operation cannot be undone",
+  new StaticTextWidget(this, font, hBorder, ypos, _w - 20, fontHeight,
+                       "(*) WARNING: operation cannot be undone!",
                        kTextAlignLeft);
 
   // Add OK and Cancel buttons

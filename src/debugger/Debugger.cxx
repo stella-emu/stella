@@ -449,7 +449,7 @@ bool Debugger::rewindState()
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  bool result = r.rewindState();
+  bool result = r.rewindEmulationState();
   lockBankswitchState();
 
   myDialog->rewindButton().setEnabled(!r.empty());
