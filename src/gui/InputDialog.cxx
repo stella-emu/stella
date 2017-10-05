@@ -36,7 +36,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent),
+  myConfirmMsg(nullptr),
+  myMaxWidth(max_w),
+  myMaxHeight(max_h)
+
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -519,6 +523,24 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kEEButtonPressed:
+      if(!myConfirmMsg)
+      {
+        StringList msg;
+        msg.push_back("This operation cannot be undone.");
+        msg.push_back("All data stored on your AtariVox");
+        msg.push_back("or SaveKey will be erased!");
+        msg.push_back("");
+        msg.push_back("If you are sure you want to erase");
+        msg.push_back("the data, click 'OK', otherwise ");
+        msg.push_back("click 'Cancel'.");
+        myConfirmMsg = make_unique<GUI::MessageBox>
+          (this, instance().frameBuffer().font(), msg,
+           myMaxWidth, myMaxHeight, kConfirmEEEraseCmd);        
+      }
+      myConfirmMsg->show();
+      break;          
+
+    case kConfirmEEEraseCmd:
       eraseEEPROM();
       break;
 

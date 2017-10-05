@@ -30,6 +30,7 @@ class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "JoystickDialog.hxx"
+#include "MessageBox.hxx"
 #include "bspf.hxx"
 
 class InputDialog : public Dialog
@@ -56,12 +57,13 @@ class InputDialog : public Dialog
 
   private:
     enum {
-      kDeadzoneChanged = 'DZch',
-      kDPSpeedChanged  = 'PDch',
-      kMPSpeedChanged  = 'PMch',
-      kTBSpeedChanged  = 'TBch',
-      kDBButtonPressed = 'DBbp',
-      kEEButtonPressed = 'EEbp'
+      kDeadzoneChanged   = 'DZch',
+      kDPSpeedChanged    = 'PDch',
+      kMPSpeedChanged    = 'PMch',
+      kTBSpeedChanged    = 'TBch',
+      kDBButtonPressed   = 'DBbp',
+      kEEButtonPressed   = 'EEbp',
+      kConfirmEEEraseCmd = 'EEcf'
     };
 
     TabWidget* myTab;
@@ -92,6 +94,12 @@ class InputDialog : public Dialog
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;
+
+    // Show a message about the dangers of using this function
+    unique_ptr<GUI::MessageBox> myConfirmMsg;
+
+    // Maximum width and height for this dialog
+    int myMaxWidth, myMaxHeight;
 
   private:
     // Following constructors and assignment operators not supported
