@@ -34,18 +34,6 @@ class SaveKey : public Controller
 {
   public:
     /**
-    Create a new SaveKey controller plugged into the specified jack
-
-    @param jack       The jack the controller is plugged into
-    @param event      The event object to use for events
-    @param system     The system using this controller
-    @param eepromfile The file containing the EEPROM data
-    @param type       The type for this controller
-    */
-    SaveKey(Jack jack, const Event& event, const System& system,
-            const string& eepromfile, Type type);
-
-    /**
       Create a new SaveKey controller plugged into the specified jack
 
       @param jack       The jack the controller is plugged into
@@ -55,8 +43,16 @@ class SaveKey : public Controller
     */
     SaveKey(Jack jack, const Event& event, const System& system,
             const string& eepromfile);
-    
+
     virtual ~SaveKey() = default;
+
+  protected:
+    /**
+      Delegating constructor currently used by both this class and classes
+      that inherit from SaveKey (currently, AtariVox)
+    */
+    SaveKey(Jack jack, const Event& event, const System& system,
+            const string& eepromfile, Type type);
 
   public:
     using Controller::read;
