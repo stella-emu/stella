@@ -100,8 +100,9 @@ class Dialog : public GuiObject
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
 
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                           const string& okText = "",
-                           const string& cancelText = "");
+                           const string& okText = "OK",
+                           const string& cancelText = "Cancel",
+                           bool focusOKButton = true);
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
 
@@ -132,8 +133,8 @@ class Dialog : public GuiObject
       Widget* widget;
       WidgetArray list;
 
-      Focus(Widget* w = nullptr);
-      virtual ~Focus();
+      Focus(Widget* w = nullptr) : widget(w) { }
+      virtual ~Focus() = default;
 
       Focus(const Focus&) = default;
       Focus& operator=(const Focus&) = default;
@@ -145,8 +146,8 @@ class Dialog : public GuiObject
       FocusList focus;
       uInt32 currentTab;
 
-      TabFocus(TabWidget* w = nullptr);
-      virtual ~TabFocus();
+      TabFocus(TabWidget* w = nullptr) : widget(w), currentTab(0) { }
+      virtual ~TabFocus() = default;
 
       TabFocus(const TabFocus&) = default;
       TabFocus& operator=(const TabFocus&) = default;

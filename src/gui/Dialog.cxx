@@ -652,60 +652,40 @@ Widget* Dialog::findWidget(int x, int y) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                               const string& okText, const string& cancelText)
+                               const string& okText, const string& cancelText,
+                               bool focusOKButton)
 {
-
   int buttonWidth = std::max(font.getStringWidth("Cancel"),
                     std::max(font.getStringWidth(okText),
                     font.getStringWidth(okText))) + 15;
   int buttonHeight = font.getLineHeight() + 4;
-  ButtonWidget* b;
+
 #ifndef BSPF_MAC_OSX
-  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       okText == "" ? "OK" : okText, GuiObject::kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       cancelText == "" ? "Cancel" : cancelText, GuiObject::kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
+  addOKWidget(new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
+  addCancelWidget(new ButtonWidget(this, font, _w - (buttonWidth + 10),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
 #else
-  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       cancelText == "" ? "Cancel" : cancelText, GuiObject::kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       okText == "" ? "OK" : okText, GuiObject::kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
+  addCancelWidget(new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
+  addOKWidget(new ButtonWidget(this, font, _w - (buttonWidth + 10),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
 #endif
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::Focus::Focus(Widget* w)
-  : widget(w)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::Focus::~Focus()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::TabFocus::TabFocus(TabWidget* w)
-  : widget(w),
-    currentTab(0)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::TabFocus::~TabFocus()
-{
+  // Note that 'focusOKButton' only takes effect when there are no other UI
+  // elements in the dialog; otherwise, the first widget of the dialog is always
+  // automatically focused first
+  // Changing this behaviour would require a fairly major refactoring of the UI code
+  if(focusOKButton)
+  {
+    wid.push_back(_okWidget);
+    wid.push_back(_cancelWidget);
+  }
+  else
+  {
+    wid.push_back(_cancelWidget);
+    wid.push_back(_okWidget);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

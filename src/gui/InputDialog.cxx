@@ -223,7 +223,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   ypos += vGap*4;
   fwidth = font.getStringWidth("AtariVox/SaveKey");
   lwidth = font.getStringWidth("AtariVox/SaveKey");
-  new StaticTextWidget(myTab, font, _w - 14 - (fwidth + lwidth) / 2, ypos+2,
+  new StaticTextWidget(myTab, font, _w - 14 - (fwidth + lwidth) / 2, ypos,
                        "AtariVox/SaveKey");
 
   // Show joystick database
@@ -535,7 +535,8 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("click 'Cancel'.");
         myConfirmMsg = make_unique<GUI::MessageBox>
           (this, instance().frameBuffer().font(), msg,
-           myMaxWidth, myMaxHeight, kConfirmEEEraseCmd);        
+           myMaxWidth, myMaxHeight, kConfirmEEEraseCmd,
+           "OK", "Cancel", false);
       }
       myConfirmMsg->show();
       break;          
