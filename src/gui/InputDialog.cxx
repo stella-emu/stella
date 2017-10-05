@@ -37,9 +37,9 @@
 InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent),
-  myConfirmMsg(nullptr),
-  myMaxWidth(max_w),
-  myMaxHeight(max_h)
+    myConfirmMsg(nullptr),
+    myMaxWidth(max_w),
+    myMaxHeight(max_h)
 
 {
   const int lineHeight   = font.getLineHeight(),
@@ -539,7 +539,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
            "OK", "Cancel", false);
       }
       myConfirmMsg->show();
-      break;          
+      break;
 
     case kConfirmEEEraseCmd:
       eraseEEPROM();
