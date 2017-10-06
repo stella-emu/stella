@@ -84,7 +84,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(myDebugger.dpeek(0xfffc));
   addLabel("Start", myDebugger.dpeek(0xfffc, DATA));
-  
+
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
   {
@@ -274,7 +274,7 @@ bool CartDebug::disassemble(bool force)
       }
       // Otherwise, add the item at the end
       if (i == addresses.end())
-        addresses.push_back(PC); 
+        addresses.push_back(PC);
     }
 
     // Always attempt to resolve code sections unless it's been
@@ -1005,7 +1005,7 @@ string CartDebug::saveDisassembly()
     disasm.list.clear();
     DiStella distella(*this, disasm.list, info, settings,
                       myDisLabels, myDisDirectives, myReserved);
-    
+
     if (myReserved.breakFound)
       addLabel("Break", myDebugger.dpeek(0xfffe));
 
@@ -1055,7 +1055,7 @@ string CartDebug::saveDisassembly()
           break;
         }
         case CartDebug::DATA:
-        {          
+        {
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (D)";
           break;
         }
@@ -1063,7 +1063,7 @@ string CartDebug::saveDisassembly()
         default:
         {
           break;
-        }        
+        }
       } // switch
       buf << "\n";
     }
@@ -1100,7 +1100,7 @@ string CartDebug::saveDisassembly()
     out << "\n;-----------------------------------------------------------\n"
         << ";      TIA and IO constants accessed\n"
         << ";-----------------------------------------------------------\n\n";
-    
+
     // TIA read access
     for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
       if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
@@ -1129,9 +1129,9 @@ string CartDebug::saveDisassembly()
   }
 
   addrUsed = false;
-  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr) 
-    addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80] 
-      || (mySystem.getAccessFlags(addr) & (DATA | WRITE)) 
+  for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
+    addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80]
+      || (mySystem.getAccessFlags(addr) & (DATA | WRITE))
       || (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
   if(addrUsed)
   {
@@ -1139,13 +1139,13 @@ string CartDebug::saveDisassembly()
     out << "\n\n;-----------------------------------------------------------\n"
         << ";      RIOT RAM (zero-page) labels\n"
         << ";-----------------------------------------------------------\n\n";
-    
+
     for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
       bool ramUsed = (mySystem.getAccessFlags(addr) & (DATA | WRITE));
       bool codeUsed = (mySystem.getAccessFlags(addr) & CODE);
       bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
-      
-      if (myReserved.ZPRAM[addr - 0x80] && 
+
+      if (myReserved.ZPRAM[addr - 0x80] &&
           myUserLabels.find(addr) == myUserLabels.end()) {
         if (addLine)
           out << "\n";
@@ -1153,7 +1153,7 @@ string CartDebug::saveDisassembly()
           << Base::HEX2 << right << (addr)
           << (stackUsed|codeUsed ? "; (" : "")
           << (codeUsed ? "c" : "")
-          << (stackUsed ? "s" : "")           
+          << (stackUsed ? "s" : "")
           << (stackUsed | codeUsed ? ")" : "")
           << "\n";
         addLine = false;
@@ -1161,11 +1161,11 @@ string CartDebug::saveDisassembly()
         if (addLine)
           out << "\n";
         out << ALIGN(18) << ";" << "$"
-          << Base::HEX2 << right << (addr) 
-          << "  (" 
-          << (ramUsed ? "i" : "") 
-          << (codeUsed ? "c" : "") 
-          << (stackUsed ? "s" : "") 
+          << Base::HEX2 << right << (addr)
+          << "  ("
+          << (ramUsed ? "i" : "")
+          << (codeUsed ? "c" : "")
+          << (stackUsed ? "s" : "")
           << ")\n";
         addLine = false;
       } else
@@ -1455,7 +1455,7 @@ const char* const CartDebug::ourTIAMnemonicW[64] = {
   "AUDF1", "AUDV0", "AUDV1", "GRP0", "GRP1", "ENAM0", "ENAM1", "ENABL",
   "HMP0", "HMP1", "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL",
   "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", "$2d", "$2e", "$2f",
-  "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37", 
+  "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37",
   "$38", "$39", "$3a", "$3b", "$3c", "$3d", "$3e", "$3f"
 };
 
