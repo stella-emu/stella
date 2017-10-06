@@ -68,7 +68,7 @@ class DebuggerParser
     bool saveScriptFile(string file);
 
   private:
-    enum { kNumCommands = 72 };
+    enum { kNumCommands = 76 };
 
     // Constants for argument processing
     enum {
@@ -100,7 +100,7 @@ class DebuggerParser
       parameters parms[10];
       std::function<void (DebuggerParser*)> executor;
     };
-
+    
     // Reference to our debugger object
     Debugger& debugger;
 
@@ -119,6 +119,7 @@ class DebuggerParser
 
     // Keep track of traps (read and/or write)
     std::set<uInt32> myTraps;
+    std::vector<uInt32> myTrapIfs;
     string trapStatus(uInt32 addr, bool& enabled);
 
     // List of available command methods
@@ -140,6 +141,7 @@ class DebuggerParser
     void executeDebugColors();
     void executeDefine();
     void executeDelbreakif();
+    void executeDeltrapif();
     void executeDelfunction();
     void executeDelwatch();
     void executeDisasm();
@@ -184,9 +186,13 @@ class DebuggerParser
     void executeTia();
     void executeTrace();
     void executeTrap();
+    void executeTrapif();
     void executeTrapread();
-    void executeTrapwrite();
-    void executeTrapRW(uInt32 addr, bool read, bool write);  // not exposed by debugger
+    void executeTrapreadif();
+    void executeTrapwrite();    
+    void executeTrapwriteif();    
+    void executeTraps(bool read, bool write, bool cond = false, string command = "");
+    void executeTrapRW(uInt32 addr, bool read, bool write, bool cond = false);  // not exposed by debugger
     void executeType();
     void executeUHex();
     void executeUndef();

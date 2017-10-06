@@ -575,6 +575,7 @@
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
     <ClInclude Include="..\debugger\gui\TrakBallWidget.hxx" />
+    <ClInclude Include="..\debugger\TrapArray.hxx" />
     <ClInclude Include="..\emucore\AmigaMouse.hxx" />
     <ClInclude Include="..\emucore\AtariMouse.hxx" />
     <ClInclude Include="..\emucore\BSType.hxx" />

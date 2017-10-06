@@ -388,6 +388,26 @@ void Debugger::toggleTrap(uInt16 t)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::addReadTrap(uInt16 t)
+{
+  readTraps().initialize();
+  readTraps().add(t);
+}
+
+void Debugger::addWriteTrap(uInt16 t)
+{
+  writeTraps().initialize();
+  writeTraps().add(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::addTrap(uInt16 t)
+{
+  addReadTrap(t);
+  addWriteTrap(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::readTrap(uInt16 t)
 {
   return readTraps().isInitialized() && readTraps().isSet(t);
@@ -398,6 +418,39 @@ bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
 }
+
+/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleReadTrapIf(uInt16 t)
+{
+  readTrapIfs().initialize();
+  readTrapIfs().toggle(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleWriteTrapIf(uInt16 t)
+{
+  writeTrapIfs().initialize();
+  writeTrapIfs().toggle(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::toggleTrapIf(uInt16 t)
+{
+  toggleReadTrapIf(t);
+  toggleWriteTrapIf(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::readTrapIf(uInt16 t)
+{
+  return readTrapIfs().isInitialized() && readTrapIfs().isSet(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::writeTrapIf(uInt16 t)
+{
+  return writeTrapIfs().isInitialized() && writeTrapIfs().isSet(t);
+}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)

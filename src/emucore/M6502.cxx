@@ -128,6 +128,16 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     myHitTrapInfo.message = "RTrap: ";
     myHitTrapInfo.address = address;
   }
+  /*if(myReadTrapIfs.isInitialized() && myReadTrapIfs.isSet(address))
+  {
+    int cond = evalCondTraps();
+    if(cond > -1)
+    {
+      myJustHitTrapFlag = true;
+      myHitTrapInfo.message = "RTrapIf (" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.address = address;
+    }
+  }*/
 #endif  // DEBUGGER_SUPPORT
 
   uInt8 result = mySystem->peek(address, flags);
@@ -155,6 +165,17 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     myHitTrapInfo.message = "WTrap: ";
     myHitTrapInfo.address = address;
   }
+  /*if(myWriteTrapIfs.isInitialized() && myWriteTrapIfs.isSet(address))
+  {
+    int cond = evalCondTraps();
+    if(cond > -1)
+    {
+      myJustHitTrapFlag = true;
+      myHitTrapInfo.message = "WTrapIf (" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.address = address;
+    }
+  }*/
+
 #endif  // DEBUGGER_SUPPORT
 
   mySystem->poke(address, value, flags); 
@@ -437,4 +458,36 @@ const StringList& M6502::getCondBreakNames() const
 {
   return myBreakCondNames;
 }
+
+/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 M6502::addCondTrap(Expression* e, const string& name)
+{
+  //myTrapConds.emplace_back(e);
+  myTrapCondNames.push_back(name);
+  return uInt32(myTrapConds.size() - 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::delCondTrap(uInt32 brk)
+{
+  if(brk < myTrapConds.size())
+  {
+    myTrapConds.erase(brk);
+    //Vec::removeAt(myTrapConds, brk);
+    Vec::removeAt(myTrapCondNames, brk);
+  }
+}                           
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::clearCondTraps()
+{
+  myTrapConds.clear();
+  myTrapCondNames.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const StringList& M6502::getCondTrapNames() const
+{
+  return myTrapCondNames;
+}*/
 #endif  // DEBUGGER_SUPPORT

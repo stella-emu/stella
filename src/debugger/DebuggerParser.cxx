@@ -548,7 +548,7 @@ string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
   string result;
   result += Base::toString(addr);
   result += ": ";
-  bool r = debugger.readTrap(addr);
+  bool r = debugger.readTrap(addr);  // TODO trapif
   bool w = debugger.writeTrap(addr);
   enabled = r || w;
   if(r && w)
@@ -591,7 +591,7 @@ bool DebuggerParser::saveScriptFile(string file)
 
   for(uInt32 i = 0; i < 0x10000; ++i)
   {
-    bool r = debugger.readTrap(i);
+    bool r = debugger.readTrap(i); // TODO trapif
     bool w = debugger.writeTrap(i);
 
     if(r && w)
@@ -745,7 +745,9 @@ void DebuggerParser::executeClearconfig()
 void DebuggerParser::executeCleartraps()
 {
   myTraps.clear();
+  myTrapIfs.clear(); // TODO trapif
   debugger.clearAllTraps();
+  //debugger.cpuDebug().m6502().clearCondTraps();
   commandResult << "all traps cleared";
 }
 
@@ -859,6 +861,14 @@ void DebuggerParser::executeDelfunction()
     commandResult << "removed function " << argStrings[0];
   else
     commandResult << "function " << argStrings[0] << " built-in or not found";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "deltrapif"
+void DebuggerParser::executeDeltrapif()
+{
+  //debugger.cpuDebug().m6502().delCondTrap(args[0]);
+  // TODO trapif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1129,11 +1139,40 @@ void DebuggerParser::executeListtraps()
 {
   if(myTraps.size() > 0)
   {
+    commandResult << "traps:\n";
     bool enabled = true;
+    uInt32 i = 0;
+
     for(const auto& trap: myTraps)
-      commandResult << trapStatus(trap, enabled) << " + mirrors" << endl;
+    {
+      commandResult << trapStatus(trap, enabled) << " + mirrors";
+      if(i != (myTraps.size() - 1)) commandResult << endl;
+      i++;
+    }
   }
-  else
+  // TODO trapif
+  /*if(myTrapIfs.size() > 0)
+  {
+    StringList conds = debugger.cpuDebug().m6502().getCondTrapNames();
+    commandResult << "trapifs:\n";
+    if(myTrapIfs.size() != conds.size())
+    {
+      // should never happen
+      commandResult << "ERROR! trapif condition size != address ranges size";
+      return;
+    }
+    bool enabled = true;
+    uInt32 i = 0;
+
+    for(const auto& trap : myTrapIfs)
+    {
+      commandResult << i << ": " << conds[i] << ", ";
+      //commandResult << trapStatus(trap.address, enabled, true) << " + mirrors";
+      if(i != (myTrapIfs.size() - 1)) commandResult << endl;
+      i++;
+    }           
+  }*/
+  if(myTraps.size() == 0 && myTrapIfs.size() == 0)
     commandResult << "no traps set";
 }
 
@@ -1482,58 +1521,71 @@ void DebuggerParser::executeTrace()
 // "trap"
 void DebuggerParser::executeTrap()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
+  executeTraps(true, true);
+}
 
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, true, true);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapif"
+void DebuggerParser::executeTrapif()
+{
+  executeTraps(true, true, true, "trapif");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapread"
 void DebuggerParser::executeTrapread()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
+  executeTraps(true, false);
+}
 
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, true, false);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapreadif"
+void DebuggerParser::executeTrapreadif()
+{
+  executeTraps(true, false, true, "trapreadif");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapwrite"
 void DebuggerParser::executeTrapwrite()
 {
-  if(argCount > 2)
+  executeTraps(false, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapwriteif"
+void DebuggerParser::executeTrapwriteif()
+{
+  executeTraps(false, true, true, "trapwriteif");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Wrapper function for trap(if)s
+void DebuggerParser::executeTraps(bool read, bool write, bool cond, string command)
+{
+  int ofs = cond ? 1 : 0;
+
+  if(argCount > ofs + 2)
   {
-    commandResult << red("Command takes one or two arguments") << endl;
+    commandResult << (cond ? red("Command takes two or three arguments") : red("Command takes one or two arguments")) << endl;
     return;
   }
 
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
+  /*if(cond)
+  {
+    int res = YaccParser::parse(argStrings[0].c_str());
+    if(res == 0)
+    {
+      uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
+        YaccParser::getResult(), argStrings[0]);
+      commandResult << "Added " << command << " " << Base::toString(ret) << ", ";
+    }
+    else
+      commandResult << red("invalid expression");
+  }*/
+
+  uInt32 beg = args[ofs];
+  uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : beg;
   if(beg > 0xFFFF || end > 0xFFFF)
   {
     commandResult << red("One or more addresses are invalid") << endl;
@@ -1541,12 +1593,12 @@ void DebuggerParser::executeTrapwrite()
   }
 
   for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, false, true);
+    executeTrapRW(addr, read, write, cond);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // wrapper function for trap/trapread/trapwrite commands
-void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
+void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool cond)
 {
   switch(debugger.cartDebug().addressType(addr))
   {
@@ -1557,7 +1609,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
         if((i & 0x1080) == 0x0000)
         {
           if(read && (i & 0x000F) == addr)
-            debugger.toggleReadTrap(i);
+            debugger.toggleReadTrap(i); 
           if(write && (i & 0x003F) == addr)
             debugger.toggleWriteTrap(i);
         }
@@ -1570,8 +1622,10 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
       {
         if((i & 0x1080) == 0x0080 && (i & 0x0200) != 0x0000 && (i & 0x02FF) == addr)
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if(read)
+            debugger.toggleReadTrap(i);
+          if(write)
+            debugger.toggleWriteTrap(i);
         }
       }
       break;
@@ -1582,8 +1636,10 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
       {
         if((i & 0x1080) == 0x0080 && (i & 0x0200) == 0x0000 && (i & 0x00FF) == addr)
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if(read)
+            debugger.toggleReadTrap(i);
+          if(write)
+            debugger.toggleWriteTrap(i);
         }
       }
       break;
@@ -1596,8 +1652,10 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
         {
           if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
           {
-            if(read)  debugger.toggleReadTrap(i);
-            if(write) debugger.toggleWriteTrap(i);
+            if(read)
+              debugger.toggleReadTrap(i);
+            if(write)
+              debugger.toggleWriteTrap(i);
           }
         }
       }
@@ -1607,10 +1665,9 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
 
   bool trapEnabled = false;
   const string& result = trapStatus(addr, trapEnabled);
-  if(trapEnabled) myTraps.insert(addr);
-  else            myTraps.erase(addr);
-
-  commandResult << result << " + mirrors" << endl;
+  
+  if(trapEnabled) cond ? myTrapIfs.push_back(addr) : myTraps.insert(addr);
+  else            cond ? myTrapIfs.size() : myTraps.erase(addr); // TODO trapif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1889,6 +1946,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelfunction)
+  },
+
+  {
+    "deltrapif",
+    "Delete conditional trapif <xx>",
+    "Example: deltrapif 0",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeDeltrapif)
   },
 
   {
@@ -2334,6 +2401,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "trapif",
+    "On <condition> trap R/W access to address(es) xx [yy]",
+    "Set a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapif _scan>100 GRP0, trapif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapif)
+  },         
+
+  {
     "trapread",
     "Trap read access to address(es) xx [yy]",
     "Set a read trap on the given address(es) and all mirrors\n"
@@ -2345,6 +2423,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "trapreadif",
+    "On <condition> trap read access to address(es) xx [yy]",
+    "Set a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapreadif _scan>100 GRP0, trapreadif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapreadif)
+  },
+
+  {
     "trapwrite",
     "Trap write access to address(es) xx [yy]",
     "Set a write trap on the given address(es) and all mirrors\n"
@@ -2353,6 +2442,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTrapwrite)
+  },
+
+  {
+    "trapwriteif",
+    "On <condition> trap write access to address(es) xx [yy]",
+    "Set a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapwriteif _scan>100 GRP0, trapwriteif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapwriteif)
   },
 
   {

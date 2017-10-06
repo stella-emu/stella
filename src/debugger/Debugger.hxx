@@ -145,8 +145,10 @@ class Debugger : public DialogContainer
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
     PackedBitArray& breakPoints() const { return mySystem.m6502().breakPoints(); }
-    PackedBitArray& readTraps() const   { return mySystem.m6502().readTraps();   }
-    PackedBitArray& writeTraps() const  { return mySystem.m6502().writeTraps();  }
+    TrapArray& readTraps() const        { return mySystem.m6502().readTraps();   }
+    TrapArray& writeTraps() const       { return mySystem.m6502().writeTraps();  }
+    /*PackedBitArray& readTrapIfs() const { return mySystem.m6502().readTrapIfs(); }
+    PackedBitArray& writeTrapIfs() const { return mySystem.m6502().writeTrapIfs(); }*/
 
     /**
       Run the debugger command and return the result.
@@ -259,8 +261,16 @@ class Debugger : public DialogContainer
     void toggleReadTrap(uInt16 t);
     void toggleWriteTrap(uInt16 t);
     void toggleTrap(uInt16 t);
+    void addReadTrap(uInt16 t);
+    void addWriteTrap(uInt16 t);
+    void addTrap(uInt16 t);
     bool readTrap(uInt16 t);
     bool writeTrap(uInt16 t);
+    /*void toggleReadTrapIf(uInt16 t);
+    void toggleWriteTrapIf(uInt16 t);
+    void toggleTrapIf(uInt16 t);
+    bool readTrapIf(uInt16 t);
+    bool writeTrapIf(uInt16 t);*/
     void clearAllTraps();
 
     // Set a bunch of RAM locations at once

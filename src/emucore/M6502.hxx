@@ -24,6 +24,7 @@
 
   #include "Expression.hxx"
   #include "PackedBitArray.hxx"
+  #include "TrapArray.hxx"
 #endif
 
 class Settings;
@@ -207,13 +208,23 @@ class M6502 : public Serializable
     void attach(Debugger& debugger);
 
     PackedBitArray& breakPoints() { return myBreakPoints; }
-    PackedBitArray& readTraps()   { return myReadTraps;   }
-    PackedBitArray& writeTraps()  { return myWriteTraps;  }
+    //PackedBitArray& readTraps()   { return myReadTraps;   }
+    //PackedBitArray& writeTraps()  { return myWriteTraps;  }
+    //PackedBitArray& readTrapIfs() { return myReadTrapIfs; }
+    //PackedBitArray& writeTrapIfs() { return myWriteTrapIfs; }
+    TrapArray& readTraps() { return myReadTraps; }
+    TrapArray& writeTraps() { return myWriteTraps; }
 
     uInt32 addCondBreak(Expression* e, const string& name);
     void delCondBreak(uInt32 brk);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
+
+    /*uInt32 addCondTrap(Expression* e, const string& name);
+    void delCondTrap(uInt32 brk);
+    void clearCondTraps();
+    const StringList& getCondTrapNames() const;*/
+
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -359,11 +370,21 @@ class M6502 : public Serializable
       return -1; // no break hit
     }
 
+    /*Int32 evalCondTraps()
+    {
+      for(uInt32 i = 0; i < myTrapConds.size(); i++)
+        if(myTrapConds[i]->evaluate())
+          return i;
+
+      return -1; // no trapif hit
+    }*/                    
+
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;
 
     // Addresses for which the specified action should occur
-    PackedBitArray myBreakPoints, myReadTraps, myWriteTraps;
+    PackedBitArray myBreakPoints;// , myReadTraps, myWriteTraps, myReadTrapIfs, myWriteTrapIfs;
+    TrapArray myReadTraps, myWriteTraps;
 
     // Did we just now hit a trap?
     bool myJustHitTrapFlag;
@@ -375,6 +396,8 @@ class M6502 : public Serializable
 
     vector<unique_ptr<Expression>> myBreakConds;
     StringList myBreakCondNames;
+    //std::map<uInt32, unique_ptr<Expression>> myTrapConds;
+    //StringList myTrapCondNames;
 #endif  // DEBUGGER_SUPPORT
 
   private:
