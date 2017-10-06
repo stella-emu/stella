@@ -22,6 +22,7 @@
 #include "Paddles.hxx"
 #include "DelayQueueIteratorImpl.hxx"
 #include "TIAConstants.hxx"
+#include "frame-manager/FrameManager.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -77,7 +78,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySpriteEnabledBits(0xFF),
     myCollisionsEnabledBits(0xFF)
 {
-  myFrameManager.setHandlers(
+  myFrameManager = new FrameManager();
+
+  myFrameManager->setHandlers(
     [this] () {
       onFrameStart();
     },
@@ -99,10 +102,15 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
-  myFrameManager.enableJitter(mySettings.getBool("tv.jitter"));
-  myFrameManager.setJitterFactor(mySettings.getInt("tv.jitter_recovery"));
+  myFrameManager->enableJitter(mySettings.getBool("tv.jitter"));
+  myFrameManager->setJitterFactor(mySettings.getInt("tv.jitter_recovery"));
 
   reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TIA::~TIA() {
+  delete myFrameManager;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,7 +152,7 @@ void TIA::reset()
 
   mySound.reset();
   myDelayQueue.reset();
-  myFrameManager.reset();
+  myFrameManager->reset();
 
   myCyclesAtFrameStart = 0;
 
@@ -206,7 +214,7 @@ bool TIA::save(Serializer& out) const
     if(!mySound.save(out)) return false;
 
     if(!myDelayQueue.save(out))   return false;
-    if(!myFrameManager.save(out)) return false;
+    if(!myFrameManager->save(out)) return false;
 
     if(!myBackground.save(out)) return false;
     if(!myPlayfield.save(out))  return false;
@@ -277,7 +285,7 @@ bool TIA::load(Serializer& in)
     if(!mySound.load(in)) return false;
 
     if(!myDelayQueue.load(in))   return false;
-    if(!myFrameManager.load(in)) return false;
+    if(!myFrameManager->load(in)) return false;
 
     if(!myBackground.load(in)) return false;
     if(!myPlayfield.load(in))  return false;
@@ -482,7 +490,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VSYNC:
-      myFrameManager.setVsync(value & 0x02);
+      myFrameManager->setVsync(value & 0x02);
       myShadowRegisters[address] = value;
       break;
 
@@ -796,7 +804,7 @@ bool TIA::enableColorLoss(bool enabled)
   if(enabled)
   {
     myColorLossEnabled = true;
-    myColorLossActive = myFrameManager.scanlinesLastFrame() & 0x1;
+    myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
   }
   else
   {
@@ -820,7 +828,7 @@ bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
   uInt8 clocks = clocksThisLine();
 
   x = (clocks < 68) ? 0 : clocks - 68;
-  y = myFrameManager.getY();
+  y = myFrameManager->getY();
 
   return isRendering();
 }
@@ -906,7 +914,7 @@ bool TIA::toggleCollisions()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
-  int layout = myFrameManager.layout() == FrameLayout::pal ? 1 : 0;
+  int layout = myFrameManager->layout() == FrameLayout::pal ? 1 : 0;
   myMissile0.setDebugColor(myFixedColorPalette[layout][FixedObject::M0]);
   myMissile1.setDebugColor(myFixedColorPalette[layout][FixedObject::M1]);
   myPlayer0.setDebugColor(myFixedColorPalette[layout][FixedObject::P0]);
@@ -991,22 +999,22 @@ bool TIA::toggleJitter(uInt8 mode)
 {
   switch (mode) {
     case 0:
-      myFrameManager.enableJitter(false);
+      myFrameManager->enableJitter(false);
       break;
 
     case 1:
-      myFrameManager.enableJitter(true);
+      myFrameManager->enableJitter(true);
       break;
 
     case 2:
-      myFrameManager.enableJitter(!myFrameManager.jitterEnabled());
+      myFrameManager->enableJitter(!myFrameManager->jitterEnabled());
       break;
 
     default:
       throw runtime_error("invalid argument for toggleJitter");
   }
 
-  return myFrameManager.jitterEnabled();
+  return myFrameManager->jitterEnabled();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1081,9 +1089,9 @@ void TIA::onFrameStart()
   {
     // Only activate it when necessary, since changing colours in
     // the graphical object forces the TIA cached line to be flushed
-    if (myFrameManager.scanlineCountTransitioned())
+    if (myFrameManager->scanlineCountTransitioned())
     {
-      myColorLossActive = myFrameManager.scanlinesLastFrame() & 0x1;
+      myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
 
       myMissile0.applyColorLoss();
       myMissile1.applyColorLoss();
@@ -1112,13 +1120,13 @@ void TIA::onFrameComplete()
     memset(myFramebuffer, 0, myXAtRenderingStart);
 
   // Blank out any extra lines not drawn this frame
-  const uInt32 missingScanlines = myFrameManager.missingScanlines();
+  const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
-    memset(myFramebuffer + 160 * myFrameManager.getY(), 0, missingScanlines * 160);
+    memset(myFramebuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
 
   // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)
-    myConsole.setFramerate(myFrameManager.frameRate());
+    myConsole.setFramerate(myFrameManager->frameRate());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1148,7 +1156,7 @@ void TIA::cycle(uInt32 colorClocks)
       else
         tickHframe();
 
-      if (myCollisionUpdateRequired && !myFrameManager.vblank()) updateCollision();
+      if (myCollisionUpdateRequired && !myFrameManager->vblank()) updateCollision();
     }
 
     if (++myHctr >= 228)
@@ -1202,7 +1210,7 @@ void TIA::tickHblank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::tickHframe()
 {
-  const uInt32 y = myFrameManager.getY();
+  const uInt32 y = myFrameManager->getY();
   const uInt32 x = myHctr - 68 - myHctrDelta;
 
   myCollisionUpdateRequired = true;
@@ -1214,7 +1222,7 @@ void TIA::tickHframe()
   myPlayer1.tick();
   myBall.tick();
 
-  if (myFrameManager.isRendering())
+  if (myFrameManager->isRendering())
     renderPixel(x, y);
 }
 
@@ -1224,8 +1232,8 @@ void TIA::applyRsync()
   const uInt32 x = myHctr > 68 ? myHctr - 68 : 0;
 
   myHctrDelta = 225 - myHctr;
-  if (myFrameManager.isRendering())
-    memset(myFramebuffer + myFrameManager.getY() * 160 + x, 0, 160 - x);
+  if (myFrameManager->isRendering())
+    memset(myFramebuffer + myFrameManager->getY() * 160 + x, 0, 160 - x);
 
   myHctr = 225;
 }
@@ -1244,9 +1252,9 @@ void TIA::nextLine()
   myHstate = HState::blank;
   myHctrDelta = 0;
 
-  myFrameManager.nextLine();
+  myFrameManager->nextLine();
 
-  if (myFrameManager.isRendering() && myFrameManager.getY() == 0) flushLineCache();
+  if (myFrameManager->isRendering() && myFrameManager->getY() == 0) flushLineCache();
 
   mySystem->m6502().clearHaltRequest();
 }
@@ -1254,9 +1262,9 @@ void TIA::nextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::cloneLastLine()
 {
-  const auto y = myFrameManager.getY();
+  const auto y = myFrameManager->getY();
 
-  if (!myFrameManager.isRendering() || y == 0) return;
+  if (!myFrameManager->isRendering() || y == 0) return;
 
   uInt8* buffer = myFramebuffer;
 
@@ -1283,7 +1291,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
 
   uInt8 color = 0;
 
-  if (!myFrameManager.vblank())
+  if (!myFrameManager->vblank())
   {
     switch (myPriority)
     {
@@ -1356,8 +1364,8 @@ void TIA::flushLineCache()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearHmoveComb()
 {
-  if (myFrameManager.isRendering() && myHstate == HState::blank)
-    memset(myFramebuffer + myFrameManager.getY() * 160, myColorHBlank, 8);
+  if (myFrameManager->isRendering() && myHstate == HState::blank)
+    memset(myFramebuffer + myFrameManager->getY() * 160, myColorHBlank, 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1370,7 +1378,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
   {
     case VBLANK:
       flushLineCache();
-      myFrameManager.setVblank(value & 0x02);
+      myFrameManager->setVblank(value & 0x02);
       break;
 
     case HMOVE:

@@ -18,8 +18,13 @@
 #include "AbstractFrameManager.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFrameManager::AbstractFrameManager()
+AbstractFrameManager::AbstractFrameManager() :
+  myLayout(FrameLayout::pal),
+  myOnFrameStart(0),
+  myOnFrameComplete(0),
+  myOnRenderingStart(0)
 {
+  layout(FrameLayout::ntsc);
   reset();
 }
 
@@ -33,11 +38,8 @@ void AbstractFrameManager::reset()
   myCurrentFrameFinalLines = 0;
   myPreviousFrameFinalLines = 0;
   myTotalFrames = 0;
-  myLayout = FrameLayout::ntsc;
   myFrameRate = 0;
-  myOnFrameComplete = 0;
-  myOnFrameStart = 0;
-  myOnRenderingStart = 0;
+  myFrameRate = 60.0;
 
   onReset();
 }
@@ -96,12 +98,25 @@ void AbstractFrameManager::notifyFrameComplete()
   myTotalFrames++;
 
   if (myOnFrameComplete) myOnFrameComplete();
+
+  myFrameRate = (layout() == FrameLayout::pal ? 15600.0 : 15720.0) /
+    myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AbstractFrameManager::notifyRenderingStart()
 {
   if (myOnRenderingStart) myOnRenderingStart();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AbstractFrameManager::layout(FrameLayout layout)
+{
+  if (layout == myLayout) return;
+
+  myLayout = layout;
+
+  onLayoutChange();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

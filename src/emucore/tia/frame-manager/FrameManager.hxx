@@ -18,87 +18,59 @@
 #ifndef TIA_FRAME_MANAGER
 #define TIA_FRAME_MANAGER
 
-#include <functional>
-
+#include "AbstractFrameManager.hxx"
 #include "VblankManager.hxx"
-#include "Serializable.hxx"
-#include "FrameLayout.hxx"
 #include "TIAConstants.hxx"
 #include "bspf.hxx"
 
-class FrameManager : public Serializable
-{
-  public:
-
-    using callback = std::function<void()>;
-
+class FrameManager: public AbstractFrameManager {
   public:
 
     FrameManager();
 
   public:
 
-    void setHandlers(
-      callback frameStartCallback,
-      callback frameCompletionCallback,
-      callback renderingStartCallback
-    );
+    void setJitterFactor(uInt8 factor) override { myVblankManager.setJitterFactor(factor); }
 
-    void reset();
+    bool jitterEnabled() const override { return myJitterEnabled; }
 
-    void nextLine();
+    void enableJitter(bool enabled) override;
 
-    void setVblank(bool vblank);
+    uInt32 height() const override { return myHeight; };
 
-    void setVsync(bool vsync);
+    void setFixedHeight(uInt32 height) override;
 
-    bool isRendering() const { return myState == State::frame && myHasStabilized; }
+    uInt32 getY() const override { return myY; }
 
-    FrameLayout layout() const { return myLayout; }
+    uInt32 scanlines() const override { return myCurrentFrameTotalLines; }
 
-    bool vblank() const { return myVblankManager.vblank(); }
+    Int32 missingScanlines() const override;
 
-    bool vsync() const { return myVsync; }
+    void setYstart(uInt32 ystart) override { myVblankManager.setYstart(ystart); }
 
-    uInt32 height() const { return myHeight; }
+    uInt32 ystart() const override { return myVblankManager.ystart(); }
 
-    void setFixedHeight(uInt32 height);
+    bool ystartIsAuto(uInt32 line) const override { return myVblankManager.ystartIsAuto(line); };
 
-    uInt32 getY() const { return myY; }
+    void autodetectLayout(bool toggle) override { myAutodetectLayout = toggle; }
 
-    uInt32 scanlines() const { return myCurrentFrameTotalLines; }
+    void setLayout(FrameLayout mode) override { if (!myAutodetectLayout) layout(mode); }
 
-    uInt32 scanlinesLastFrame() const { return myCurrentFrameFinalLines; }
+    void onSetVblank() override;
 
-    uInt32 missingScanlines() const;
+    void onSetVsync() override;
 
-    bool scanlineCountTransitioned() const {
-      return (myPreviousFrameFinalLines & 0x1) != (myCurrentFrameFinalLines & 0x1);
-    }
+    void onNextLine() override;
 
-    uInt32 frameCount() const { return myTotalFrames; }
+    void onReset() override;
 
-    float frameRate() const { return myFrameRate; }
+    void onLayoutChange() override;
 
-    void setYstart(uInt32 ystart) { myVblankManager.setYstart(ystart); }
+    bool onSave(Serializer& out) const override;
 
-    uInt32 ystart() const { return myVblankManager.ystart(); }
-    bool ystartIsAuto(uInt32 line) const { return myVblankManager.ystartIsAuto(line); }
+    bool onLoad(Serializer& in) override;
 
-    void autodetectLayout(bool toggle) { myAutodetectLayout = toggle; }
-
-    void setLayout(FrameLayout mode) { if (!myAutodetectLayout) updateLayout(mode); }
-
-    /**
-      Serializable methods (see that class for more information).
-    */
-    bool save(Serializer& out) const override;
-    bool load(Serializer& in) override;
     string name() const override { return "TIA_FrameManager"; }
-
-    void setJitterFactor(uInt8 factor) { myVblankManager.setJitterFactor(factor); }
-    bool jitterEnabled() const { return myJitterEnabled; }
-    void enableJitter(bool enabled);
 
   private:
 
@@ -109,16 +81,7 @@ class FrameManager : public Serializable
       frame
     };
 
-    enum VblankMode {
-      locked,
-      floating,
-      final,
-      fixed
-    };
-
   private:
-
-    void updateLayout(FrameLayout mode);
 
     void updateAutodetectedLayout();
 
@@ -130,35 +93,25 @@ class FrameManager : public Serializable
 
     void handleJitter(Int32 scanlineDifference);
 
-  private:
+    void updateIsRendering();
 
-    callback myOnFrameStart;
-    callback myOnFrameComplete;
-    callback myOnRenderingStart;
+  private:
 
     VblankManager myVblankManager;
 
-    FrameLayout myLayout;
     bool myAutodetectLayout;
     State myState;
     uInt32 myLineInState;
-    uInt32 myCurrentFrameTotalLines;
-    uInt32 myCurrentFrameFinalLines;
-    uInt32 myPreviousFrameFinalLines;
     uInt32 myVsyncLines;
-    float  myFrameRate;
     uInt32 myY, myLastY;
     bool myFramePending;
 
-    uInt32 myTotalFrames;
     uInt32 myFramesInMode;
     bool myModeConfirmed;
 
     uInt32 myStableFrames;
     uInt32 myStabilizationFrames;
     bool myHasStabilized;
-
-    bool myVsync;
 
     uInt32 myVblankLines;
     uInt32 myKernelLines;
@@ -173,6 +126,7 @@ class FrameManager : public Serializable
     uInt8 myStableFrameHeightCountdown;
 
   private:
+
     FrameManager(const FrameManager&) = delete;
     FrameManager(FrameManager&&) = delete;
     FrameManager& operator=(const FrameManager&) = delete;

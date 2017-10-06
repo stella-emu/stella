@@ -48,7 +48,7 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluBK());
 
   // Debug Colors
-  int mode = myTIA.myFrameManager.layout() == FrameLayout::ntsc ? 0 : 1;
+  int mode = myTIA.frameLayout() == FrameLayout::ntsc ? 0 : 1;
   myState.fixedCols.clear();
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P0]);
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P1]);
@@ -721,7 +721,7 @@ int TIADebug::scanlines() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::scanlinesLastFrame() const
 {
-  return myTIA.myFrameManager.scanlinesLastFrame();
+  return myTIA.scanlinesLastFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -801,7 +801,7 @@ string TIADebug::debugColors() const
 {
   ostringstream buf;
 
-  int mode = myTIA.myFrameManager.layout() == FrameLayout::ntsc ? 0 : 1;
+  int mode = myTIA.frameLayout() == FrameLayout::ntsc ? 0 : 1;
   buf << " Red    " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P0])
       << " Player 0\n"
       << " Orange " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M0])

@@ -50,39 +50,19 @@ inline static uInt32 vsyncLimit(bool autodetect) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameManager::FrameManager()
-  : myLayout(FrameLayout::pal),
-    myAutodetectLayout(true),
-    myHeight(0),
-    myFixedHeight(0),
-    myJitterEnabled(false)
+FrameManager::FrameManager() :
+  myHeight(0)
 {
-  updateLayout(FrameLayout::ntsc);
-  reset();
+  onLayoutChange();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setHandlers(
-  FrameManager::callback frameStartCallback,
-  FrameManager::callback frameCompleteCallback,
-  FrameManager::callback renderingStartCallback
-)
-{
-  myOnFrameStart = frameStartCallback;
-  myOnFrameComplete = frameCompleteCallback;
-  myOnRenderingStart = renderingStartCallback;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::reset()
+void FrameManager::onReset()
 {
   myVblankManager.reset();
 
   myState = State::waitForVsyncStart;
-  myCurrentFrameTotalLines = myCurrentFrameFinalLines = 0;
-  myFrameRate = 60.0;
   myLineInState = 0;
-  myVsync = false;
   myTotalFrames = 0;
   myFramesInMode = 0;
   myModeConfirmed = false;
@@ -98,11 +78,9 @@ void FrameManager::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::nextLine()
+void FrameManager::onNextLine()
 {
   State previousState = myState;
-
-  myCurrentFrameTotalLines++;
   myLineInState++;
 
   switch (myState)
@@ -142,24 +120,21 @@ void FrameManager::nextLine()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameManager::missingScanlines() const
+Int32 FrameManager::missingScanlines() const
 {
   if (myLastY == ystart() + myY)
     return 0;
-  else
+  else {
     return myHeight - myY;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setVsync(bool vsync)
+void FrameManager::onSetVsync()
 {
-  if (vsync == myVsync) return;
-
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "vsync " << myVsync << " -> " << vsync << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
+  (cout << "vsync " << !myVsync << " -> " << myVsync << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
 #endif
-
-  myVsync = vsync;
 
   switch (myState)
   {
@@ -200,6 +175,8 @@ void FrameManager::setState(FrameManager::State state)
           myStableFrames >= Metrics::minStableFrames ||
           myStabilizationFrames >= Metrics::maxStabilizationFrames;
 
+        updateIsRendering();
+
         myStabilizationFrames++;
 
         if (myVblankManager.isStable())
@@ -209,7 +186,7 @@ void FrameManager::setState(FrameManager::State state)
       }
 
       if (myFramePending) finalizeFrame();
-      if (myOnFrameStart) myOnFrameStart();
+      notifyFrameStart();
 
       myVblankManager.start();
       myFramePending = true;
@@ -218,7 +195,7 @@ void FrameManager::setState(FrameManager::State state)
       break;
 
     case State::frame:
-      if (myOnRenderingStart) myOnRenderingStart();
+      notifyRenderingStart();
       myVsyncLines = 0;
       myY = 0;
       break;
@@ -226,6 +203,8 @@ void FrameManager::setState(FrameManager::State state)
     default:
       break;
   }
+
+  updateIsRendering();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,21 +225,13 @@ void FrameManager::finalizeFrame()
     else myStableFrameHeightCountdown = 0;
   }
 
-  myPreviousFrameFinalLines = myCurrentFrameFinalLines;
-  myCurrentFrameFinalLines = myCurrentFrameTotalLines;
-  myCurrentFrameTotalLines = 0;
-  myTotalFrames++;
-
-  if (myOnFrameComplete) myOnFrameComplete();
+  notifyFrameComplete();
 
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
   (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
   if (myAutodetectLayout) updateAutodetectedLayout();
-
-  myFrameRate = (myLayout == FrameLayout::pal ? 15600.0 : 15720.0) /
-                 myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,26 +253,26 @@ void FrameManager::updateAutodetectedLayout()
     return;
   }
 
-  const FrameLayout oldLayout = myLayout;
+  const FrameLayout oldLayout = layout();
 
   const uInt32
     deltaNTSC = abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesNTSC)),
     deltaPAL =  abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesPAL));
 
   if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance)
-    updateLayout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
+    layout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
   else if (!myModeConfirmed) {
     if (
       (myCurrentFrameFinalLines < frameLinesPAL) &&
       (myCurrentFrameFinalLines > frameLinesNTSC) &&
       (myCurrentFrameFinalLines % 2)
     )
-      updateLayout(FrameLayout::ntsc);
+      layout(FrameLayout::ntsc);
     else
-      updateLayout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
+      layout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
   }
 
-  if (oldLayout == myLayout)
+  if (oldLayout == layout())
     myFramesInMode++;
   else
     myFramesInMode = 0;
@@ -311,17 +282,13 @@ void FrameManager::updateAutodetectedLayout()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::updateLayout(FrameLayout layout)
+void FrameManager::onLayoutChange()
 {
-  if (layout == myLayout) return;
-
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "TV mode switched to " << int(layout) << "\n").flush();
+  (cout << "TV mode switched to " << int(layout()) << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
-  myLayout = layout;
-
-  switch (myLayout)
+  switch (layout())
   {
     case FrameLayout::ntsc:
       myVblankLines   = Metrics::vblankNTSC;
@@ -347,18 +314,18 @@ void FrameManager::updateLayout(FrameLayout layout)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setVblank(bool vblank)
+void FrameManager::onSetVblank()
 {
   #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-    (cout << "vblank change " << myVblankManager.vblank() << " -> " << vblank << "@" << myLineInState << "\n").flush();
+    (cout << "vblank change " << !myVblank << " -> " << myVblank << "@" << myLineInState << "\n").flush();
   #endif // TIA_FRAMEMANAGER_DEBUG_LOG
 
   if (myState == State::waitForFrameStart) {
-    if (myVblankManager.setVblankDuringVblank(vblank, myTotalFrames <= Metrics::initialGarbageFrames)) {
+    if (myVblankManager.setVblankDuringVblank(myVblank, myTotalFrames <= Metrics::initialGarbageFrames)) {
       setState(State::frame);
     }
   } else
-    myVblankManager.setVblank(vblank);
+    myVblankManager.setVblank(myVblank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -377,106 +344,76 @@ void FrameManager::enableJitter(bool enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameManager::save(Serializer& out) const
+void FrameManager::updateIsRendering() {
+  myIsRendering = myState == State::frame && myHasStabilized;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameManager::onSave(Serializer& out) const
 {
-  try
-  {
-    out.putString(name());
+  if (!myVblankManager.save(out)) return false;
 
-    if (!myVblankManager.save(out)) return false;
+  out.putBool(myAutodetectLayout);
+  out.putInt(uInt32(myState));
+  out.putInt(myLineInState);
+  out.putInt(myVsyncLines);
+  out.putInt(myY);
+  out.putInt(myLastY);
+  out.putBool(myFramePending);
 
-    out.putInt(uInt32(myLayout));
-    out.putBool(myAutodetectLayout);
-    out.putInt(uInt32(myState));
-    out.putInt(myLineInState);
-    out.putInt(myCurrentFrameTotalLines);
-    out.putInt(myCurrentFrameFinalLines);
-    out.putInt(myPreviousFrameFinalLines);
-    out.putInt(myVsyncLines);
-    out.putDouble(myFrameRate);
-    out.putInt(myY);  out.putInt(myLastY);
-    out.putBool(myFramePending);
+  out.putInt(myFramesInMode);
+  out.putBool(myModeConfirmed);
 
-    out.putInt(myTotalFrames);
-    out.putInt(myFramesInMode);
-    out.putBool(myModeConfirmed);
+  out.putInt(myStableFrames);
+  out.putInt(myStabilizationFrames);
+  out.putBool(myHasStabilized);
 
-    out.putInt(myStableFrames);
-    out.putInt(myStabilizationFrames);
-    out.putBool(myHasStabilized);
+  out.putInt(myVblankLines);
+  out.putInt(myKernelLines);
+  out.putInt(myOverscanLines);
+  out.putInt(myFrameLines);
+  out.putInt(myHeight);
+  out.putInt(myFixedHeight);
 
-    out.putBool(myVsync);
+  out.putBool(myJitterEnabled);
 
-    out.putInt(myVblankLines);
-    out.putInt(myKernelLines);
-    out.putInt(myOverscanLines);
-    out.putInt(myFrameLines);
-    out.putInt(myHeight);
-    out.putInt(myFixedHeight);
-
-    out.putBool(myJitterEnabled);
-
-    out.putInt(myStableFrameLines);
-    out.putInt(myStableFrameHeightCountdown);
-  }
-  catch(...)
-  {
-    cerr << "ERROR: TIA_FrameManager::save" << endl;
-    return false;
-  }
+  out.putInt(myStableFrameLines);
+  out.putInt(myStableFrameHeightCountdown);
 
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameManager::load(Serializer& in)
+bool FrameManager::onLoad(Serializer& in)
 {
-  try
-  {
-    if(in.getString() != name())
-      return false;
+  if (!myVblankManager.load(in)) return false;
 
-    if (!myVblankManager.load(in)) return false;
+  myAutodetectLayout = in.getBool();
+  myState = State(in.getInt());
+  myLineInState = in.getInt();
+  myVsyncLines = in.getInt();
+  myY = in.getInt();
+  myLastY = in.getInt();
+  myFramePending = in.getBool();
 
-    myLayout = FrameLayout(in.getInt());
-    myAutodetectLayout = in.getBool();
-    myState = State(in.getInt());
-    myLineInState = in.getInt();
-    myCurrentFrameTotalLines = in.getInt();
-    myCurrentFrameFinalLines = in.getInt();
-    myPreviousFrameFinalLines = in.getInt();
-    myVsyncLines = in.getInt();
-    myFrameRate = float(in.getDouble());
-    myY = in.getInt();  myLastY = in.getInt();
-    myFramePending = in.getBool();
+  myFramesInMode = in.getInt();
+  myModeConfirmed = in.getBool();
 
-    myTotalFrames = in.getInt();
-    myFramesInMode = in.getInt();
-    myModeConfirmed = in.getBool();
+  myStableFrames = in.getInt();
+  myStabilizationFrames = in.getInt();
+  myHasStabilized = in.getBool();
 
-    myStableFrames = in.getInt();
-    myStabilizationFrames = in.getInt();
-    myHasStabilized = in.getBool();
+  myVblankLines = in.getInt();
+  myKernelLines = in.getInt();
+  myOverscanLines = in.getInt();
+  myFrameLines = in.getInt();
+  myHeight = in.getInt();
+  myFixedHeight = in.getInt();
 
-    myVsync = in.getBool();
+  myJitterEnabled = in.getBool();
 
-    myVblankLines = in.getInt();
-    myKernelLines = in.getInt();
-    myOverscanLines = in.getInt();
-    myFrameLines = in.getInt();
-    myHeight = in.getInt();
-    myFixedHeight = in.getInt();
-
-    myJitterEnabled = in.getBool();
-
-    myStableFrameLines = in.getInt();
-    myStableFrameHeightCountdown = in.getInt();
-  }
-  catch(...)
-  {
-    cerr << "ERROR: TIA_FrameManager::load" << endl;
-    return false;
-  }
+  myStableFrameLines = in.getInt();
+  myStableFrameHeightCountdown = in.getInt();
 
   return true;
 }

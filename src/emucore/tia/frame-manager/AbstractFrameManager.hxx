@@ -67,6 +67,10 @@ class AbstractFrameManager : public Serializable
 
     float frameRate() const { return myFrameRate; }
 
+    bool save(Serializer& out) const override;
+
+    bool load(Serializer& in) override;
+
   public:
 
     virtual void setJitterFactor(uInt8 factor) {}
@@ -74,10 +78,6 @@ class AbstractFrameManager : public Serializable
     virtual bool jitterEnabled() const { return false; }
 
     virtual void enableJitter(bool enabled) {};
-
-    bool save(Serializer& out) const override;
-
-    bool load(Serializer& in) override;
 
   public:
 
@@ -89,11 +89,11 @@ class AbstractFrameManager : public Serializable
 
     virtual uInt32 scanlines() const = 0;
 
-    virtual uInt32 missingScanlines() const = 0;
+    virtual Int32 missingScanlines() const = 0;
 
     virtual void setYstart(uInt32 ystart) = 0;
 
-    virtual uInt32 ystart() = 0;
+    virtual uInt32 ystart() const = 0;
 
     // TODO: this looks pretty weird --- does this actually work?
     virtual bool ystartIsAuto(uInt32 line) const = 0;
@@ -101,6 +101,7 @@ class AbstractFrameManager : public Serializable
     // TODO: this has to go
     virtual void autodetectLayout(bool toggle) = 0;
 
+    // TODO: this collides with layout(...). Refactor after all is done.
     virtual void setLayout(FrameLayout mode) = 0;
 
   protected:
@@ -113,6 +114,8 @@ class AbstractFrameManager : public Serializable
 
     virtual void onReset() {}
 
+    virtual void onLayoutChange() {}
+
     virtual bool onSave(Serializer& out) const { throw runtime_error("cannot be serialized"); }
 
     virtual bool onLoad(Serializer& in) { throw runtime_error("cannot be serialized"); }
@@ -124,6 +127,8 @@ class AbstractFrameManager : public Serializable
     void notifyFrameComplete();
 
     void notifyRenderingStart();
+
+    void layout(FrameLayout layout);
 
   protected:
 
@@ -141,11 +146,11 @@ class AbstractFrameManager : public Serializable
 
     uInt32 myTotalFrames;
 
-    FrameLayout myLayout;
-
     float myFrameRate;
 
   private:
+
+    FrameLayout myLayout;
 
     callback myOnFrameStart;
     callback myOnFrameComplete;
