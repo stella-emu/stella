@@ -101,9 +101,20 @@ class TIA : public Device
       @param settings  The settings object for this TIA device
     */
     TIA(Console& console, Sound& sound, Settings& settings);
-    virtual ~TIA();
+
+    virtual ~TIA() = default;
 
   public:
+    /**
+     * Configure the frame manager.
+     */
+    void setFrameManager(AbstractFrameManager *frameManager);
+
+    /**
+     * Clear the configured frame manager and deteach the lifecycle callbacks.
+     */
+    void clearFrameManager();
+
     /**
       Reset device to its power-on state.
     */
@@ -360,7 +371,7 @@ class TIA : public Device
       @return  Whether the mode was enabled or disabled
     */
     bool toggleJitter(uInt8 mode = 2);
-    void setJitterRecoveryFactor(Int32 factor) { myFrameManager->setJitterFactor(factor); }
+    void setJitterRecoveryFactor(Int32 factor);
 
     /**
       This method should be called to update the TIA with a new scanline.
@@ -731,9 +742,16 @@ class TIA : public Device
     bool myColorLossActive;
 
     /**
-     * System cycles at the end of the previous frame / beginning of next frame
+     * System cycles at the end of the previous frame / beginning of next frame.
      */
     uInt64 myCyclesAtFrameStart;
+
+    /**
+     * The frame manager can change during our lifetime, so we buffer those two.
+     */
+    bool myEnableJitter;
+    uInt8 myJitterFactor;
+
 
 #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA

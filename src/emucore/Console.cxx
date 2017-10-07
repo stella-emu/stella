@@ -57,6 +57,7 @@
 #include "Version.hxx"
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
+#include "frame-manager/FrameManager.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -88,7 +89,10 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   my6502 = make_unique<M6502>(myOSystem.settings());
   myRiot = make_unique<M6532>(*this, myOSystem.settings());
   myTIA  = make_unique<TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  myFrameManager = make_unique<FrameManager>();
   mySwitches = make_unique<Switches>(myEvent, myProperties);
+
+  myTIA->setFrameManager(myFrameManager.get());
 
   // Construct the system and components
   mySystem = make_unique<System>(osystem, *my6502, *myRiot, *myTIA, *myCart);

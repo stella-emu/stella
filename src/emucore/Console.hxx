@@ -35,6 +35,7 @@ class Debugger;
 #include "FrameBuffer.hxx"
 #include "Serializable.hxx"
 #include "NTSCFilter.hxx"
+#include "frame-manager/AbstractFrameManager.hxx"
 
 /**
   Contains detailed info about a console.
@@ -359,6 +360,9 @@ class Console : public Serializable
 
     // Pointer to the TIA object
     unique_ptr<TIA> myTIA;
+
+    // The frame manager instance that is used during emulation.
+    unique_ptr<AbstractFrameManager> myFrameManager;
 
     // Pointer to the Cartridge (the debugger needs it)
     unique_ptr<Cartridge> myCart;

@@ -20,9 +20,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFrameManager::AbstractFrameManager() :
   myLayout(FrameLayout::pal),
-  myOnFrameStart(0),
-  myOnFrameComplete(0),
-  myOnRenderingStart(0)
+  myOnFrameStart(nullptr),
+  myOnFrameComplete(nullptr),
+  myOnRenderingStart(nullptr)
 {
   layout(FrameLayout::ntsc);
   reset();
@@ -61,6 +61,12 @@ void AbstractFrameManager::setHandlers(
   myOnFrameStart = frameStartCallback;
   myOnFrameComplete = frameCompletionCallback;
   myOnRenderingStart = renderingStartCallback;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AbstractFrameManager::clearHandlers()
+{
+  myOnFrameStart = myOnFrameComplete = myOnRenderingStart = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

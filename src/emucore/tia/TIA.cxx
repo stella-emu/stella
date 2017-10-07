@@ -69,6 +69,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
     mySound(sound),
     mySettings(settings),
+    myFrameManager(nullptr),
     myPlayfield(~CollisionMask::playfield & 0x7FFF),
     myMissile0(~CollisionMask::missile0 & 0x7FFF),
     myMissile1(~CollisionMask::missile1 & 0x7FFF),
@@ -78,7 +79,28 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySpriteEnabledBits(0xFF),
     myCollisionsEnabledBits(0xFF)
 {
-  myFrameManager = new FrameManager();
+  myTIAPinsDriven = mySettings.getBool("tiadriven");
+
+  myBackground.setTIA(this);
+  myPlayfield.setTIA(this);
+  myPlayer0.setTIA(this);
+  myPlayer1.setTIA(this);
+  myMissile0.setTIA(this);
+  myMissile1.setTIA(this);
+  myBall.setTIA(this);
+
+  myEnableJitter = mySettings.getBool("tv.jitter");
+  myJitterFactor = mySettings.getInt("tv.jitter_recovery");
+
+  reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setFrameManager(AbstractFrameManager *frameManager)
+{
+  clearFrameManager();
+
+  myFrameManager = frameManager;
 
   myFrameManager->setHandlers(
     [this] () {
@@ -92,25 +114,18 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     }
   );
 
-  myTIAPinsDriven = mySettings.getBool("tiadriven");
-
-  myBackground.setTIA(this);
-  myPlayfield.setTIA(this);
-  myPlayer0.setTIA(this);
-  myPlayer1.setTIA(this);
-  myMissile0.setTIA(this);
-  myMissile1.setTIA(this);
-  myBall.setTIA(this);
-
-  myFrameManager->enableJitter(mySettings.getBool("tv.jitter"));
-  myFrameManager->setJitterFactor(mySettings.getInt("tv.jitter_recovery"));
-
-  reset();
+  myFrameManager->enableJitter(myEnableJitter);
+  myFrameManager->setJitterFactor(myJitterFactor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::~TIA() {
-  delete myFrameManager;
+void TIA::clearFrameManager()
+{
+  if (!myFrameManager) return;
+
+  myFrameManager->clearHandlers();
+
+  myFrameManager = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,7 +167,8 @@ void TIA::reset()
 
   mySound.reset();
   myDelayQueue.reset();
-  myFrameManager->reset();
+
+  if (myFrameManager) myFrameManager->reset();
 
   myCyclesAtFrameStart = 0;
 
@@ -914,7 +930,9 @@ bool TIA::toggleCollisions()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
-  int layout = myFrameManager->layout() == FrameLayout::pal ? 1 : 0;
+  int layout = 0;
+  if (myFrameManager) layout = myFrameManager->layout() == FrameLayout::pal ? 1 : 0;
+
   myMissile0.setDebugColor(myFixedColorPalette[layout][FixedObject::M0]);
   myMissile1.setDebugColor(myFixedColorPalette[layout][FixedObject::M1]);
   myPlayer0.setDebugColor(myFixedColorPalette[layout][FixedObject::P0]);
@@ -999,22 +1017,32 @@ bool TIA::toggleJitter(uInt8 mode)
 {
   switch (mode) {
     case 0:
-      myFrameManager->enableJitter(false);
+      myEnableJitter = false;
       break;
 
     case 1:
-      myFrameManager->enableJitter(true);
+      myEnableJitter = true;
       break;
 
     case 2:
-      myFrameManager->enableJitter(!myFrameManager->jitterEnabled());
+      myEnableJitter = !myEnableJitter;
       break;
 
     default:
       throw runtime_error("invalid argument for toggleJitter");
   }
 
-  return myFrameManager->jitterEnabled();
+  if (myFrameManager) myFrameManager->enableJitter(myEnableJitter);
+
+  return myEnableJitter;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setJitterRecoveryFactor(Int32 factor)
+{
+  myJitterFactor = factor;
+
+  if (myFrameManager) myFrameManager->setJitterFactor(myJitterFactor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

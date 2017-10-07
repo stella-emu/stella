@@ -45,6 +45,11 @@ class AbstractFrameManager : public Serializable
     );
 
     /**
+     * Clear the configured handler callbacks.
+     */
+    void clearHandlers();
+
+    /**
      * Reset.
      */
     void reset();
@@ -151,7 +156,7 @@ class AbstractFrameManager : public Serializable
     /**
      * Frame height.
      */
-    virtual uInt32 height() { return 0; }
+    virtual uInt32 height() const { return 0; }
 
     /**
      * Configure a fixed frame height (the default is determined by the frame
@@ -162,13 +167,13 @@ class AbstractFrameManager : public Serializable
     /**
      * The current y coordinate (valid only during rendering).
      */
-    virtual uInt32 getY() { return 0; }
+    virtual uInt32 getY() const { return 0; }
 
     /**
      * The current number of scanlines in the current frame (including invisible
      * lines).
      */
-    virtual uInt32 scanlines() { return 0; }
+    virtual uInt32 scanlines() const { return 0; }
 
     /**
      * Configure the ystart value.
@@ -178,12 +183,12 @@ class AbstractFrameManager : public Serializable
     /**
      * The configured ystart value.
      */
-    virtual uInt32 ystart() { return 0; }
+    virtual uInt32 ystart() const { return 0; }
 
     /**
      * TODO: this looks pretty weird --- does this actually work?
      */
-    virtual bool ystartIsAuto(uInt32 line) { return false; }
+    virtual bool ystartIsAuto(uInt32 line) const { return false; }
 
     /**
      * TODO: this has to go
