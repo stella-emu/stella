@@ -106,6 +106,7 @@ class DebuggerParser
       bool write;
       uInt32 begin;
       uInt32 end;
+      string condition;
     };
     
     // Reference to our debugger object

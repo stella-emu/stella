@@ -1153,9 +1153,9 @@ void DebuggerParser::executeListtraps()
       if(myTraps[i]->read && myTraps[i]->write)
         commandResult << "read|write";
       else if(myTraps[i]->read)
-        commandResult << "read";
+        commandResult << "read      ";
       else if(myTraps[i]->write)
-        commandResult << "write";
+        commandResult << "     write";
       else
         commandResult << "none";
         
@@ -1577,10 +1577,10 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   }
 
   int ofs = hasCond ? 1 : 0;
-  uInt32 beg = args[ofs];
-  uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : beg;
+  uInt32 begin = args[ofs];
+  uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : begin;
 
-  if(beg > 0xFFFF || end > 0xFFFF || beg > end)
+  if(begin > 0xFFFF || end > 0xFFFF || begin > end)
   {
     commandResult << red("One or more addresses are invalid");
     return;
@@ -1592,54 +1592,113 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
     parserBuf << "(" << argStrings[0] << ")&&(";
 
   // TODO: mirrors
-  //beg = getBaseMirror(beg);
+  //begin = getBaseMirror(begin);
   //end = getBaseMirror(eng);
 
   // add address range condition(s) to provided condition
   if(read)
   { 
-    if(beg != end)
-      parserBuf << "_lastread>=" << Base::toString(beg) << "&&_lastread<=" << Base::toString(end);
+    if(begin != end)
+      parserBuf << "_lastread>=" << Base::toString(begin) << "&&_lastread<=" << Base::toString(end);
     else
-      parserBuf << "_lastread==" << Base::toString(beg);
+      parserBuf << "_lastread==" << Base::toString(begin);
   }
   if(read && write)
     parserBuf << "||";
   if(write)
   {
-    if(beg != end)
-      parserBuf << "_lastwrite>=" << Base::toString(beg) << "&&_lastwrite<=" << Base::toString(end);
+    if(begin != end)
+      parserBuf << "_lastwrite>=" << Base::toString(begin) << "&&_lastwrite<=" << Base::toString(end);
     else
-      parserBuf << "_lastwrite==" << Base::toString(beg);
+      parserBuf << "_lastwrite==" << Base::toString(begin);
   }
   // parenthesize provided condition (end)
   if(hasCond)
     parserBuf << ")";
 
-  // TODO: duplicates
-  bool add = true;
-  
   const string parserCondition = parserBuf.str();
-  const string displayCondition = displayBuf.str();
 
   int res = YaccParser::parse(parserCondition.c_str());
   if(res == 0)
   {
-    uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
-      YaccParser::getResult(), argStrings[0]);
-    commandResult << "Added " << command << " " << Base::toString(ret);
+    // duplicates will remove each other
+    bool add = true;
+    for(uInt32 i = 0; i < myTraps.size(); i++)
+    {
+      if(myTraps[i]->begin == begin && myTraps[i]->end == end &&
+         myTraps[i]->read == read && myTraps[i]->write == write &&
+         myTraps[i]->condition == parserCondition)
+      {         
+        if(debugger.cpuDebug().m6502().delCondTrap(i))
+        {
+          add = false;
+          // @sa666666: please check this:
+          Vec::removeAt(myTraps, i);
+          commandResult << "Removed trap " << Base::toString(i);
+          break;
+        }
+        commandResult << "Internal error! Duplicate trap removal failed!";
+        return;
+      }
+    }
+    if(add)
+    {
+      uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
+        YaccParser::getResult(), hasCond ? argStrings[0] : " ");
+      commandResult << "Added trap " << Base::toString(ret);
+
+      // @sa666666: please check this:
+      myTraps.emplace_back(new Trap{ read, write, begin, end, parserCondition });
+    }
+
+    for(uInt32 addr = begin; addr <= end; ++addr)
+      executeTrapRW(addr, read, write, add);
   }
   else
   {
     commandResult << red("invalid expression");
-    return;
   } 
-  
-  // @sa666666: please check this:
-  myTraps.emplace_back(new Trap{ read, write, beg, end });
+}
 
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, read, write, add);
+uInt32 getBaseAddress(uInt32 addr, bool read)
+{  
+  // ADDR_TIA write (%xxx0 xxxx 0x?? ????)
+  if(!read && (addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
+    return addr & 0x003f; // 0b 0000 0000 0011 1111
+
+  // ADDR_TIA read (%xxx0 xxxx 0xxx ????)
+  if(read && (addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
+    return addr & 0x000f; // 0b 0000 0000 0000 1111
+
+  // ADDR_ZPRAM (%xxx0 xx0x 1??? ????)
+  if((addr & 0x1280) == 0x0080) // (addr & 0b 0001 0010 1000 0000) == 0b 0000 0000 1000 0000
+    return addr & 0x00ff; // 0b 0000 0000 1111 1111
+
+  // ADDR_ROM
+  if(addr & 0x1000)
+    return addr & 0x1fff; // 0b 0001 1111 1111 1111
+
+  // ADDR_IO read/write I/O registers (%xxx0 xx1x 1xxx x0??)
+  if((addr & 0x1284) == 0x0280) // (addr & 0b 0001 0010 1000 0100) == 0b 0000 0010 1000 0000
+    return addr & 0x0283; // 0b 0000 0010 1000 0011
+
+  // ADDR_IO write timers (%xxx0 xx1x 1xx1 ?1??)
+  if(!read && (addr & 0x1294) == 0x0294) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1001 0100
+    return addr & 0x029f; // 0b 0000 0010 1001 1111
+
+  // ADDR_IO read timers (%xxx0 xx1x 1xxx ?1x0)
+  if(read && (addr & 0x1285) == 0x0284) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0100
+    return addr & 0x028c; // 0b 0000 0010 1000 1100
+    
+  // ADDR_IO read timer/PA7 interrupt (%xxx0 xx1x 1xxx x1x1)
+  if(read && (addr & 0x1285) == 0x0285) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0101
+    return addr & 0x0285; // 0b 0000 0010 1000 0101
+
+  // ADDR_IO write PA7 edge control (%xxx0 xx1x 1xx0 x1??)
+  if(!read && (addr & 0x1294) == 0x0284) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1000 0100
+    return addr & 0x0287; // 0b 0000 0010 1000 0111    
+
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1654,6 +1713,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
       {
         if((i & 0x1080) == 0x0000)
         {
+          // @sa666666: This seems wrong. E.g. trapread 40 4f will never trigger
           if(read && (i & 0x000F) == addr)
             add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
           if(write && (i & 0x003F) == addr)
