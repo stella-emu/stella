@@ -746,6 +746,7 @@ void DebuggerParser::executeCleartraps()
 {
   debugger.clearAllTraps();
   debugger.cpuDebug().m6502().clearCondTraps();
+  myTraps.clear();
   commandResult << "all traps cleared";
 }
 
@@ -871,6 +872,7 @@ void DebuggerParser::executeDeltrap()
   {
     for(uInt32 addr = myTraps[index]->begin; addr <= myTraps[index]->end; ++addr)
       executeTrapRW(addr, myTraps[index]->read, myTraps[index]->write, false);
+    // @sa666666: please check this:
     Vec::removeAt(myTraps, index);    
     commandResult << "removed trap " << Base::toString(index);
   }
@@ -1645,6 +1647,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
     return;
   } 
   
+  // @sa666666: please check this:
   myTraps.emplace_back(new Trap{ read, write, beg, end });
 
   for(uInt32 addr = beg; addr <= end; ++addr)
@@ -1666,7 +1669,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
           if(read && (i & 0x000F) == addr)
             add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
           if(write && (i & 0x003F) == addr)
-            debugger.addWriteTrap(i);
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1678,9 +1681,9 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
         if((i & 0x1080) == 0x0080 && (i & 0x0200) != 0x0000 && (i & 0x02FF) == addr)
         {
           if(read)
-            debugger.addReadTrap(i);
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
           if(write)
-            debugger.addReadTrap(i);
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1692,9 +1695,9 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
         if((i & 0x1080) == 0x0080 && (i & 0x0200) == 0x0000 && (i & 0x00FF) == addr)
         {
           if(read)
-            debugger.addReadTrap(i);
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
           if(write)
-            debugger.addReadTrap(i);
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1708,21 +1711,15 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
           if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
           {
             if(read)
-              debugger.addReadTrap(i);
+              add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
             if(write)
-              debugger.addReadTrap(i);
+              add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
           }
         }
       }
       break;
     }
   }
-
-  /*bool trapEnabled = false;
-  const string& result = trapStatus(addr, trapEnabled);
-  
-  if(trapEnabled) cond ? myTrapIfs.push_back(addr) : myTraps.insert(addr);
-  else            cond ? myTrapIfs.size() : myTraps.erase(addr); // TODO trapif*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
