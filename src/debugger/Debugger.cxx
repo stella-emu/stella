@@ -368,7 +368,7 @@ bool Debugger::breakPoint(uInt16 bp)
   return breakPoints().isSet(bp);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleReadTrap(uInt16 t)
 {
   readTraps().initialize();
@@ -387,7 +387,7 @@ void Debugger::toggleTrap(uInt16 t)
 {
   toggleReadTrap(t);
   toggleWriteTrap(t);
-}
+}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::addReadTrap(uInt16 t)
@@ -407,6 +407,26 @@ void Debugger::addTrap(uInt16 t)
 {
   addReadTrap(t);
   addWriteTrap(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::removeReadTrap(uInt16 t)
+{
+  readTraps().initialize();
+  readTraps().remove(t);
+}
+
+void Debugger::removeWriteTrap(uInt16 t)
+{
+  writeTraps().initialize();
+  writeTraps().remove(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::removeTrap(uInt16 t)
+{
+  removeReadTrap(t);
+  removeWriteTrap(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -120,28 +120,24 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   }
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
+  uInt8 result = mySystem->peek(address, flags);
+  myLastPeekAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
   if(myReadTraps.isInitialized() && myReadTraps.isSet(address))
   {
-    myJustHitTrapFlag = true;
-    myHitTrapInfo.message = "RTrap: ";
-    myHitTrapInfo.address = address;
-  }
-  /*if(myReadTrapIfs.isInitialized() && myReadTrapIfs.isSet(address))
-  {
+    //TODO: myLastPeekBaseAddress = baseAddress(myLastPeekAddress); // mirror handling
     int cond = evalCondTraps();
     if(cond > -1)
     {
       myJustHitTrapFlag = true;
-      myHitTrapInfo.message = "RTrapIf (" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.message = "RTrap: ";
+      //myHitTrapInfo.message = "RTrapIf (" + myTrapCondNames[cond] + "): ";
       myHitTrapInfo.address = address;
     }
-  }*/
+  }
 #endif  // DEBUGGER_SUPPORT
 
-  uInt8 result = mySystem->peek(address, flags);
-  myLastPeekAddress = address;
   return result;
 }
 
@@ -156,30 +152,24 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
-  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
+  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);   
+  mySystem->poke(address, value, flags); 
+  myLastPokeAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
   if(myWriteTraps.isInitialized() && myWriteTraps.isSet(address))
   {
-    myJustHitTrapFlag = true;
-    myHitTrapInfo.message = "WTrap: ";
-    myHitTrapInfo.address = address;
-  }
-  /*if(myWriteTrapIfs.isInitialized() && myWriteTrapIfs.isSet(address))
-  {
+    //TODO: myLastPokeBaseAddress = baseAddress(myLastPokeAddress); // mirror handling
     int cond = evalCondTraps();
     if(cond > -1)
     {
       myJustHitTrapFlag = true;
-      myHitTrapInfo.message = "WTrapIf (" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.message = "WTrap: ";
+      //myHitTrapInfo.message = "WTrapIf (" + myTrapCondNames[cond] + "): ";
       myHitTrapInfo.address = address;
     }
-  }*/
-
-#endif  // DEBUGGER_SUPPORT
-
-  mySystem->poke(address, value, flags); 
-  myLastPokeAddress = address;
+  }
+#endif  // DEBUGGER_SUPPORT       
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -437,13 +427,15 @@ uInt32 M6502::addCondBreak(Expression* e, const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::delCondBreak(uInt32 brk)
+bool M6502::delCondBreak(uInt32 brk)
 {
   if(brk < myBreakConds.size())
   {
     Vec::removeAt(myBreakConds, brk);
     Vec::removeAt(myBreakCondNames, brk);
+    return true;
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -468,13 +460,15 @@ uInt32 M6502::addCondTrap(Expression* e, const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::delCondTrap(uInt32 brk)
+bool M6502::delCondTrap(uInt32 brk)
 {
   if(brk < myTrapConds.size())
   {
     Vec::removeAt(myTrapConds, brk);
     Vec::removeAt(myTrapCondNames, brk);
+    return true;
   }
+  return false;
 }                           
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

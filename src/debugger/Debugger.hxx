@@ -258,19 +258,17 @@ class Debugger : public DialogContainer
     void toggleBreakPoint(uInt16 bp);
 
     bool breakPoint(uInt16 bp);
-    void toggleReadTrap(uInt16 t);
+    /*void toggleReadTrap(uInt16 t);
     void toggleWriteTrap(uInt16 t);
-    void toggleTrap(uInt16 t);
+    void toggleTrap(uInt16 t);*/
     void addReadTrap(uInt16 t);
     void addWriteTrap(uInt16 t);
     void addTrap(uInt16 t);
+    void removeReadTrap(uInt16 t);
+    void removeWriteTrap(uInt16 t);
+    void removeTrap(uInt16 t);
     bool readTrap(uInt16 t);
     bool writeTrap(uInt16 t);
-    /*void toggleReadTrapIf(uInt16 t);
-    void toggleWriteTrapIf(uInt16 t);
-    void toggleTrapIf(uInt16 t);
-    bool readTrapIf(uInt16 t);
-    bool writeTrapIf(uInt16 t);*/
     void clearAllTraps();
 
     // Set a bunch of RAM locations at once

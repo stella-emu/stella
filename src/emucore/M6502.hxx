@@ -231,13 +231,13 @@ class M6502 : public Serializable
 
     // methods for 'breakif' handling
     uInt32 addCondBreak(Expression* e, const string& name);
-    void delCondBreak(uInt32 brk);
+    bool delCondBreak(uInt32 brk);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
 
     // methods for 'trapif' handling
     uInt32 addCondTrap(Expression* e, const string& name);
-    void delCondTrap(uInt32 brk);
+    bool delCondTrap(uInt32 brk);
     void clearCondTraps();
     const StringList& getCondTrapNames() const;
 #endif  // DEBUGGER_SUPPORT

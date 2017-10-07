@@ -100,6 +100,13 @@ class DebuggerParser
       parameters parms[10];
       std::function<void (DebuggerParser*)> executor;
     };
+    struct Trap
+    {
+      bool read;
+      bool write;
+      uInt32 begin;
+      uInt32 end;
+    };
     
     // Reference to our debugger object
     Debugger& debugger;
@@ -117,10 +124,12 @@ class DebuggerParser
 
     StringList myWatches;
 
+    
     // Keep track of traps (read and/or write)
-    std::set<uInt32> myTraps;
+    vector<unique_ptr<Trap>> myTraps;          
+    /*std::set<uInt32> myTraps;
     std::vector<uInt32> myTrapIfs;
-    string trapStatus(uInt32 addr, bool& enabled);
+    string trapStatus(uInt32 addr, bool& enabled);*/
 
     // List of available command methods
     void executeA();
@@ -140,9 +149,9 @@ class DebuggerParser
     void executeData();
     void executeDebugColors();
     void executeDefine();
-    void executeDelbreakif();
-    void executeDeltrapif();
+    void executeDelbreakif();    
     void executeDelfunction();
+    void executeDeltrap();
     void executeDelwatch();
     void executeDisasm();
     void executeDump();
@@ -191,8 +200,8 @@ class DebuggerParser
     void executeTrapreadif();
     void executeTrapwrite();    
     void executeTrapwriteif();    
-    void executeTraps(bool read, bool write, bool cond = false, string command = "");
-    void executeTrapRW(uInt32 addr, bool read, bool write, bool cond = false);  // not exposed by debugger
+    void executeTraps(bool read, bool write, string command, bool cond = false);
+    void executeTrapRW(uInt32 addr, bool read, bool write, bool add = true);  // not exposed by debugger
     void executeType();
     void executeUHex();
     void executeUndef();
