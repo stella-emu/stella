@@ -85,7 +85,6 @@ static const char* const builtin_functions[][3] = {
   { "_diff0a", "*SWCHB & $40", "Left diff. set to A (hard)" },
   { "_diff1b", "!(*SWCHB & $80)", "Right diff. set to B (easy)" },
   { "_diff1a", "*SWCHB & $80", "Right diff. set to A (hard)" },
-
   // empty string marks end of list, do not remove
   { 0, 0, 0 }
 };
@@ -104,7 +103,10 @@ static const char* const pseudo_registers[][2] = {
   { "_rwport", "Address at which a read from a write port occurred" },
   { "_scan", "Current scanline count" },
   { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
-  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
+  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },   
+  // CPU address access functions:
+  { "_lastread", "last CPU read address" }, 
+  { "_lastwrite", "last CPU write address" },
 
   // empty string marks end of list, do not remove
   { 0, 0 }

@@ -1571,21 +1571,36 @@ void DebuggerParser::executeTraps(bool read, bool write, bool cond, string comma
     return;
   }
 
-  /*if(cond)
-  {
-    int res = YaccParser::parse(argStrings[0].c_str());
+  uInt32 beg = args[ofs];
+  uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : beg;
+
+  if(cond)
+  {          
+    // create: (condition) && (_lastread >= f000 && _lastread <= f100)
+    // add address range condition(s) to provided condition
+    stringstream buf;
+    buf << "(" << argStrings[0] << ")&&(";
+    if(read)
+      buf << "_lastread>=" << Base::toString(beg) << "&&_lastread<=" << Base::toString(end);
+    if (read && write)
+      buf << "||";
+    if (write)
+      buf << "_lastwrite>=" << Base::toString(beg) << "&&_lastwrite<=" << Base::toString(end);
+    buf << ")";
+    string condition = buf.str();
+
+    //int res = YaccParser::parse(argStrings[0].c_str());
+    int res = YaccParser::parse(condition.c_str());
     if(res == 0)
     {
       uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
-        YaccParser::getResult(), argStrings[0]);
-      commandResult << "Added " << command << " " << Base::toString(ret) << ", ";
+        YaccParser::getResult(), condition);
+      commandResult << "Added " << command << " " << Base::toString(ret);
     }
     else
       commandResult << red("invalid expression");
-  }*/
+  }
 
-  uInt32 beg = args[ofs];
-  uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : beg;
   if(beg > 0xFFFF || end > 0xFFFF)
   {
     commandResult << red("One or more addresses are invalid") << endl;

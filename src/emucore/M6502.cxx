@@ -459,10 +459,10 @@ const StringList& M6502::getCondBreakNames() const
   return myBreakCondNames;
 }
 
-/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 M6502::addCondTrap(Expression* e, const string& name)
 {
-  //myTrapConds.emplace_back(e);
+  myTrapConds.emplace_back(e);
   myTrapCondNames.push_back(name);
   return uInt32(myTrapConds.size() - 1);
 }
@@ -472,8 +472,7 @@ void M6502::delCondTrap(uInt32 brk)
 {
   if(brk < myTrapConds.size())
   {
-    myTrapConds.erase(brk);
-    //Vec::removeAt(myTrapConds, brk);
+    Vec::removeAt(myTrapConds, brk);
     Vec::removeAt(myTrapCondNames, brk);
   }
 }                           
@@ -489,5 +488,5 @@ void M6502::clearCondTraps()
 const StringList& M6502::getCondTrapNames() const
 {
   return myTrapCondNames;
-}*/
+}
 #endif  // DEBUGGER_SUPPORT

@@ -145,11 +145,25 @@ class M6502 : public Serializable
 
       @return The address of the last read
     */
-    uInt16 lastReadAddress() const {
+    uInt16 lastRealReadAddress() const {
       return myLastPokeAddress ?
         (myLastPokeAddress != myLastPeekAddress ? myLastPeekAddress : 0) :
         myLastPeekAddress;
-    }
+    }             
+
+    /**
+      Return the last address that was part of a read/peek. 
+
+      @return The address of the last read
+    */
+    uInt16 lastReadAddress() const { return myLastPeekAddress; }
+
+    /**
+      Return the last address that was part of a write/poke.  
+
+      @return The address of the last write
+    */
+    uInt16 lastWriteAddress() const { return myLastPokeAddress; }
 
     /**
       Return the source of the address that was used for a write/poke.
@@ -215,16 +229,17 @@ class M6502 : public Serializable
     TrapArray& readTraps() { return myReadTraps; }
     TrapArray& writeTraps() { return myWriteTraps; }
 
+    // methods for 'breakif' handling
     uInt32 addCondBreak(Expression* e, const string& name);
     void delCondBreak(uInt32 brk);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
 
-    /*uInt32 addCondTrap(Expression* e, const string& name);
+    // methods for 'trapif' handling
+    uInt32 addCondTrap(Expression* e, const string& name);
     void delCondTrap(uInt32 brk);
     void clearCondTraps();
-    const StringList& getCondTrapNames() const;*/
-
+    const StringList& getCondTrapNames() const;
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -370,14 +385,14 @@ class M6502 : public Serializable
       return -1; // no break hit
     }
 
-    /*Int32 evalCondTraps()
+    Int32 evalCondTraps()
     {
       for(uInt32 i = 0; i < myTrapConds.size(); i++)
         if(myTrapConds[i]->evaluate())
           return i;
 
       return -1; // no trapif hit
-    }*/                    
+    }                    
 
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;
@@ -396,8 +411,8 @@ class M6502 : public Serializable
 
     vector<unique_ptr<Expression>> myBreakConds;
     StringList myBreakCondNames;
-    //std::map<uInt32, unique_ptr<Expression>> myTrapConds;
-    //StringList myTrapCondNames;
+    vector<unique_ptr<Expression>> myTrapConds;
+    StringList myTrapCondNames;
 #endif  // DEBUGGER_SUPPORT
 
   private:

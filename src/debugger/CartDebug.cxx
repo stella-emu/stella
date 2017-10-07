@@ -171,7 +171,7 @@ int CartDebug::readFromWritePort()
   // port address space AND the last access was actually a read (the latter
   // differentiates between reads that are normally part of a write cycle vs.
   // ones that are illegal)
-  if(mySystem.m6502().lastReadAddress() &&
+  if(mySystem.m6502().lastRealReadAddress() &&
       (mySystem.getPageAccessType(addr) & System::PA_WRITE) == System::PA_WRITE)
     return addr;
   else
