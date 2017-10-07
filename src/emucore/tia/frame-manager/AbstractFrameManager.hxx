@@ -35,61 +35,91 @@ class AbstractFrameManager : public Serializable
 
   public:
 
-    // Configure the various handler callbacks.
+    /**
+     * Configure the various handler callbacks.
+     */
     void setHandlers(
       callback frameStartCallback,
       callback frameCompletionCallback,
       callback renderingStartCallback
     );
 
-    // Reset.
+    /**
+     * Reset.
+     */
     void reset();
 
-    // Called by TIA to notify the start of the next scanline.
+    /**
+     * Called by TIA to notify the start of the next scanline.
+     */
     void nextLine();
 
-    // Called by TIA on VBLANK writes.
+    /**
+     * Called by TIA on VBLANK writes.
+     */
     void setVblank(bool vblank);
 
-    // Called by TIA on VSYNC writes.
+    /**
+     * Called by TIA on VSYNC writes.
+     */
     void setVsync(bool vsync);
 
-    // Should the TIA render its frame? This is buffered in a flag for
-    // performance reasons; descendants must update the flag.
+    /**
+     * Should the TIA render its frame? This is buffered in a flag for
+     * performance reasons; descendants must update the flag.
+     */
     bool isRendering() const { return myIsRendering; }
 
-    // Is vsync on?
+    /**
+     * Is vsync on?
+     */
     bool vsync() const { return myVsync; }
 
-    // Is vblank on?
+    /**
+     * Is vblank on?
+     */
     bool vblank() const { return myVblank; }
 
-    // The number of scanlines in the last finished frame.
+    /**
+     * The number of scanlines in the last finished frame.
+     */
     uInt32 scanlinesLastFrame() const { return myCurrentFrameFinalLines; }
 
-    // Did the number of scanlines switch between even / odd (used for color loss
-    // emulation).
-    //
-    // TODO: Crappy name, find something better.
+    /**
+     * Did the number of scanlines switch between even / odd (used for color loss
+     * emulation).
+     *
+     * TODO: Crappy name, find something better.
+     */
     bool scanlineCountTransitioned() const {
       return (myPreviousFrameFinalLines & 0x1) != (myCurrentFrameFinalLines & 0x1);
     }
 
-    // The total number of frames. 32 bit should be good for > 2 years :)
+    /**
+     * The total number of frames. 32 bit should be good for > 2 years :)
+     */
     uInt32 frameCount() const { return myTotalFrames; }
 
-    // The configured (our autodetected) frame layout (PAL / NTSC).
+    /**
+     * The configured (our autodetected) frame layout (PAL / NTSC).
+     */
     FrameLayout layout() const { return myLayout; };
 
-    // The current frame rate. This is calculated dynamically from the number of
-    // scanlines in the last frames and used to control sleep time in the
-    // dispatch loop.
+    /**
+     * The current frame rate. This is calculated dynamically from the number of
+     * scanlines in the last frames and used to control sleep time in the
+     * dispatch loop.
+     */
     float frameRate() const { return myFrameRate; }
 
-    // Save state.
+    /**
+     * Save state.
+     */
     bool save(Serializer& out) const override;
 
-    // Restore state.
+    /**
+     * Restore state.
+     */
     bool load(Serializer& in) override;
 
   public:
@@ -97,129 +127,199 @@ class AbstractFrameManager : public Serializable
     // required. All of these are irrelevant if nothing is displayed (during
     // autodetect).
 
-    // The jitter factor determines the time jitter simulation takes to recover.
+    /**
+     * The jitter factor determines the time jitter simulation takes to recover.
+     */
     virtual void setJitterFactor(uInt8 factor) {}
 
-    // Is jitter simulation enabled?
+    /**
+     * Is jitter simulation enabled?
+     */
     virtual bool jitterEnabled() const { return false; }
 
-    // Enable jitter simulation
+    /**
+     * Enable jitter simulation
+     */
     virtual void enableJitter(bool enabled) {};
 
-    // The scanline difference between the last two frames. Used in the TIA to
-    // clear any scanlines that were not repainted.
+    /**
+     * The scanline difference between the last two frames. Used in the TIA to
+     * clear any scanlines that were not repainted.
+     */
     virtual Int32 missingScanlines() const { return 0; }
 
-    // Frame height.
+    /**
+     * Frame height.
+     */
     virtual uInt32 height() { return 0; }
 
-    // Configure a fixed frame height (the default is determined by the frame
-    // layout).
+    /**
+     * Configure a fixed frame height (the default is determined by the frame
+     * layout).
+     */
     virtual void setFixedHeight(uInt32 height) {}
 
-    // The current y coordinate (valid only during rendering).
+    /**
+     * The current y coordinate (valid only during rendering).
+     */
     virtual uInt32 getY() { return 0; }
 
-    // The current number of scanlines in the current frame (including invisible
-    // lines).
+    /**
+     * The current number of scanlines in the current frame (including invisible
+     * lines).
+     */
     virtual uInt32 scanlines() { return 0; }
 
-    // Configure the ystart value.
+    /**
+     * Configure the ystart value.
+     */
     virtual void setYstart(uInt32 ystart) {}
 
-    // The configured ystart value.
+    /**
+     * The configured ystart value.
+     */
     virtual uInt32 ystart() { return 0; }
 
-    // TODO: this looks pretty weird --- does this actually work?
+    /**
+     * TODO: this looks pretty weird --- does this actually work?
+     */
     virtual bool ystartIsAuto(uInt32 line) { return false; }
 
-    // TODO: this has to go
+    /**
+     * TODO: this has to go
+     */
     virtual void autodetectLayout(bool toggle) {}
 
-    // Set the frame layout. This may be a noop (on the autodetection manager).
+    /**
+     * Set the frame layout. This may be a noop (on the autodetection manager).
+     */
     virtual void setLayout(FrameLayout mode) {}
 
   protected:
     // The following are template methods that can be implemented to hook into
     // the frame logic.
 
-    // Called if vblank changes.
+    /**
+     * Called if vblank changes.
+     */
     virtual void onSetVblank() {}
 
-    // Called if vsync changes.
+    /**
+     * Called if vsync changes.
+     */
     virtual void onSetVsync() {}
 
-    // Called if the next line is signalled, after the internal bookkeeping has
-    // been updated.
+    /**
+     * Called if the next line is signalled, after the internal bookkeeping has
+     * been updated.
+     */
     virtual void onNextLine() {}
 
-    // Called on reset (after the base class has reset).
+    /**
+     * Called on reset (after the base class has reset).
+     */
     virtual void onReset() {}
 
-    // Called after a frame layout change.
+    /**
+     * Called after a frame layout change.
+     */
     virtual void onLayoutChange() {}
 
-    // Called during state save (after the base class has serialized its state).
+    /**
+     * Called during state save (after the base class has serialized its state).
+     */
     virtual bool onSave(Serializer& out) const { throw runtime_error("cannot be serialized"); }
 
-    // Called during state restore (after the base class has restored its state).
+    /**
+     * Called during state restore (after the base class has restored its state).
+     */
     virtual bool onLoad(Serializer& in) { throw runtime_error("cannot be serialized"); }
 
-    // This needs to be overriden if state serialization is implemented
-    // (unnecesary in autodetect managers).
+    /**
+     * This needs to be overriden if state serialization is implemented
+     * (unnecesary in autodetect managers).
+     */
     string name() const override { throw runtime_error("state serialization is not implemented!"); }
 
   protected:
     // These need to be called in order to drive the frame lifecycle of the
     // emulation.
 
-    // Signal frame start.
+    /**
+     * Signal frame start.
+     */
     void notifyFrameStart();
 
-    // Signal frame stop.
+    /**
+     * Signal frame stop.
+     */
     void notifyFrameComplete();
 
-    // Signal rendering start. Mandatory only of actual rendering happens.
-    //
-    // TODO: This (and the related handling in the TIA) should be unnecessary
-    // after refactoring.
+    /**
+     * Signal rendering start. Mandatory only of actual rendering happens.
+     *
+     * TODO: This (and the related handling in the TIA) should be unnecessary
+     * after refactoring.
+     */
     void notifyRenderingStart();
 
-    // The internal setter to update the frame layout.
+    /**
+     * The internal setter to update the frame layout.
+     */
     void layout(FrameLayout layout);
 
   protected:
 
-    // Rendering flag.
+    /**
+     * Rendering flag.
+     */
     bool myIsRendering;
 
-    // Vsync flag.
+    /**
+     * Vsync flag.
+     */
     bool myVsync;
 
-    // Vblank flag.
+    /**
+     * Vblank flag.
+     */
     bool myVblank;
 
-    // Current scanline count in the current frame.
+    /**
+     * Current scanline count in the current frame.
+     */
     uInt32 myCurrentFrameTotalLines;
 
-    // Total number of scanlines in the last complete frame.
+    /**
+     * Total number of scanlines in the last complete frame.
+     */
     uInt32 myCurrentFrameFinalLines;
 
-    // Total number of scanlines in the second last complete frame.
+    /**
+     * Total number of scanlines in the second last complete frame.
+     */
     uInt32 myPreviousFrameFinalLines;
 
-    // Total frame count.
+    /**
+     * Total frame count.
+     */
     uInt32 myTotalFrames;
 
-    // Frame rate (see above.)
+    /**
+     * Frame rate (see above.)
+     */
     float myFrameRate;
 
   private:
 
-    // Current frame layout.
+    /**
+     * Current frame layout.
+     */
     FrameLayout myLayout;
 
-    // The various lifecycle callbacks.
+    /**
+     * The various lifecycle callbacks.
+     */
     callback myOnFrameStart;
     callback myOnFrameComplete;
     callback myOnRenderingStart;
