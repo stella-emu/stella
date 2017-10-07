@@ -1152,10 +1152,7 @@ void DebuggerParser::executeListtraps()
     for(uInt32 i = 0; i < names.size(); i++)
     {
       commandResult << Base::toString(i) << ": " << names[i];
-
-      commandResult << "|" << Base::toString(myTraps[i]->begin) << Base::toString(myTraps[i]->end);
-
-
+      //commandResult << "|" << Base::toString(myTraps[i]->begin) << " " << Base::toString(myTraps[i]->end);
       if(i != (names.size() - 1)) commandResult << endl;
     }
   }
@@ -1597,10 +1594,28 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   {
     displayBuf << "write";
   }
+
+  string label;
+  stringstream beginLabel, endLabel;
+  
+  label = debugger.cartDebug().getLabel(beg, !write);
+  if(label != "")
+  {
+    beginLabel << "  (";
+    beginLabel << label;
+    beginLabel << ")";
+  }
+  label = debugger.cartDebug().getLabel(end, !write);
+  if(label != "")
+  {
+    endLabel << "  (";
+    endLabel << label;
+    endLabel << ")";
+  }
+
+  displayBuf << " " << Base::toString(beg) << beginLabel.str();
   if(beg != end)
-    displayBuf << " " << Base::toString(beg) << " " << Base::toString(end);
-  else
-    displayBuf << " " << Base::toString(beg);
+    displayBuf << " " << Base::toString(end) << endLabel.str();
   displayBuf << " + mirrors";
 
   // TODO: mirrors
@@ -1631,8 +1646,8 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   // TODO: duplicates
   bool add = true;
   
-  string parserCondition = parserBuf.str();
-  string displayCondition = displayBuf.str();
+  const string parserCondition = parserBuf.str();
+  const string displayCondition = displayBuf.str();
 
   int res = YaccParser::parse(parserCondition.c_str());
   if(res == 0)
@@ -1655,7 +1670,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// wrapper function for trap/trapread/trapwrite commands
+// wrapper function for trap(if)/trapread(if)/trapwrite(if) commands
 void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
 {
   switch(debugger.cartDebug().addressType(addr))
