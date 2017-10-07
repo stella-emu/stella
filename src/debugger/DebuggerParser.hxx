@@ -128,8 +128,8 @@ class DebuggerParser
     // Keep track of traps (read and/or write)
     vector<unique_ptr<Trap>> myTraps;          
     /*std::set<uInt32> myTraps;
-    std::vector<uInt32> myTrapIfs;
-    string trapStatus(uInt32 addr, bool& enabled);*/
+    std::vector<uInt32> myTrapIfs;*/
+    string trapStatus(const Trap& trap);
 
     // List of available command methods
     void executeA();

@@ -542,33 +542,30 @@ string DebuggerParser::eval()
   return buf.str();
 }
 
-/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DebuggerParser::trapStatus(const Trap& trap)
 {
-  string result;
-  result += Base::toString(addr);
-  result += ": ";
-  bool r = debugger.readTrap(addr);  // TODO trapif
-  bool w = debugger.writeTrap(addr);
-  enabled = r || w;
-  if(r && w)
-    result += "read|write";
-  else if(r)
-    result += "read";
-  else if(w)
-    result += "write";
-  else
-    result += "none";
+  stringstream result;
 
-  const string& l = debugger.cartDebug().getLabel(addr, !w);
-  if(l != "") {
-    result += "  (";
-    result += l;
-    result += ")";
+  string lbl = debugger.cartDebug().getLabel(trap.begin, !trap.write);
+  if(lbl != "") {
+    result << " (";
+    result << lbl;
   }
 
-  return result;
-}*/
+  if(trap.begin != trap.end)
+  {
+    lbl = debugger.cartDebug().getLabel(trap.end, !trap.write);
+    if(lbl != "")
+    {
+      result << " ";
+      result << lbl;
+    }
+  }
+  result << ")";
+
+  return result.str();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::saveScriptFile(string file)
@@ -1151,8 +1148,23 @@ void DebuggerParser::executeListtraps()
   {
     for(uInt32 i = 0; i < names.size(); i++)
     {
-      commandResult << Base::toString(i) << ": " << names[i];
-      //commandResult << "|" << Base::toString(myTraps[i]->begin) << " " << Base::toString(myTraps[i]->end);
+      commandResult << Base::toString(i) << ": ";
+      
+      if(myTraps[i]->read && myTraps[i]->write)
+        commandResult << "read|write";
+      else if(myTraps[i]->read)
+        commandResult << "read";
+      else if(myTraps[i]->write)
+        commandResult << "write";
+      else
+        commandResult << "none";
+        
+      commandResult << " " << names[i];
+      commandResult << " " << Base::toString(myTraps[i]->begin);
+      if (myTraps[i]->begin != myTraps[i]->end)
+        commandResult << " " << Base::toString(myTraps[i]->end);
+      commandResult << trapStatus(*myTraps[i]);
+      commandResult << " + mirrors";
       if(i != (names.size() - 1)) commandResult << endl;
     }
   }
@@ -1551,7 +1563,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   {
     if(argCount < 1 || argCount > 3)
     {
-      commandResult << red("Command takes one to three arguments") << endl;
+      commandResult << red("Command takes one to three arguments");
       return;
     }
   }
@@ -1559,7 +1571,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   {
     if(argCount > 2)
     {
-      commandResult << red("Command takes one or two arguments") << endl;
+      commandResult << red("Command takes one or two arguments");
       return;
     }
   }
@@ -1568,55 +1580,16 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   uInt32 beg = args[ofs];
   uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : beg;
 
-  if(beg > 0xFFFF || end > 0xFFFF)
+  if(beg > 0xFFFF || end > 0xFFFF || beg > end)
   {
-    commandResult << red("One or more addresses are invalid") << endl;
+    commandResult << red("One or more addresses are invalid");
     return;
   }
 
   // parenthesize provided and address range condition(s) (begin)
   stringstream parserBuf, displayBuf;
   if(hasCond)
-  {
     parserBuf << "(" << argStrings[0] << ")&&(";
-    displayBuf << argStrings[0] << " ";
-  }
-  // build nice display string
-  if(read && write)
-  {
-    displayBuf << "read|write";
-  }
-  else if(read)
-  {
-    displayBuf << "read";
-  }
-  else if(write)
-  {
-    displayBuf << "write";
-  }
-
-  string label;
-  stringstream beginLabel, endLabel;
-  
-  label = debugger.cartDebug().getLabel(beg, !write);
-  if(label != "")
-  {
-    beginLabel << "  (";
-    beginLabel << label;
-    beginLabel << ")";
-  }
-  label = debugger.cartDebug().getLabel(end, !write);
-  if(label != "")
-  {
-    endLabel << "  (";
-    endLabel << label;
-    endLabel << ")";
-  }
-
-  displayBuf << " " << Base::toString(beg) << beginLabel.str();
-  if(beg != end)
-    displayBuf << " " << Base::toString(end) << endLabel.str();
-  displayBuf << " + mirrors";
 
   // TODO: mirrors
   //beg = getBaseMirror(beg);
@@ -1653,7 +1626,7 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   if(res == 0)
   {
     uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
-      YaccParser::getResult(), displayCondition);
+      YaccParser::getResult(), argStrings[0]);
     commandResult << "Added " << command << " " << Base::toString(ret);
   }
   else
