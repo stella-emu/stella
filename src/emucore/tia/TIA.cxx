@@ -930,6 +930,8 @@ bool TIA::toggleCollisions()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
+  // This will be called during reset at a point where no frame manager
+  // instance is available, so we guard aginst this here.
   int layout = 0;
   if (myFrameManager) layout = myFrameManager->layout() == FrameLayout::pal ? 1 : 0;
 
