@@ -545,24 +545,28 @@ string DebuggerParser::eval()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::trapStatus(const Trap& trap)
 {
-  stringstream result;
-
-  string lbl = debugger.cartDebug().getLabel(trap.begin, !trap.write);
-  if(lbl != "") {
+  stringstream result; 
+  string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
+  string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
+  
+  if(lblb != "") {
     result << " (";
-    result << lbl;
+    result << lblb;
   }
 
   if(trap.begin != trap.end)
   {
-    lbl = debugger.cartDebug().getLabel(trap.end, !trap.write);
-    if(lbl != "")
+    if(lble != "")
     {
-      result << " ";
-      result << lbl;
+      if (lblb != "")
+        result << " ";
+      else
+        result << " (";
+      result << lble;
     }
   }
-  result << ")";
+  if (lblb != "" || lble != "")
+    result << ")";
 
   return result.str();
 }
@@ -1608,18 +1612,18 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   if(read)
   { 
     if(beginRead != endRead)
-      parserBuf << "_lastread>=" << Base::toString(beginRead) << "&&_lastread<=" << Base::toString(endRead);
+      parserBuf << "__lastread>=" << Base::toString(beginRead) << "&&__lastread<=" << Base::toString(endRead);
     else
-      parserBuf << "_lastread==" << Base::toString(beginRead);
+      parserBuf << "__lastread==" << Base::toString(beginRead);
   }
   if(read && write)
     parserBuf << "||";
   if(write)
   {
     if(beginWrite != endWrite)
-      parserBuf << "_lastwrite>=" << Base::toString(beginWrite) << "&&_lastwrite<=" << Base::toString(endWrite);
+      parserBuf << "__lastwrite>=" << Base::toString(beginWrite) << "&&__lastwrite<=" << Base::toString(endWrite);
     else
-      parserBuf << "_lastwrite==" << Base::toString(beginWrite);
+      parserBuf << "__lastwrite==" << Base::toString(beginWrite);
   }
   // parenthesize provided condition (end)
   if(hasCond)
@@ -1682,9 +1686,9 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
         if((i & 0x1080) == 0x0000)
         {
           // @sa666666: This seems wrong. E.g. trapread 40 4f will never trigger
-          if(read && (i & 0x000F) == addr)
+          if(read && (i & 0x000F) == (addr & 0x000F))
             add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
-          if(write && (i & 0x003F) == addr)
+          if(write && (i & 0x003F) == (addr & 0x003F))
             add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
@@ -1694,7 +1698,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
-        if((i & 0x1080) == 0x0080 && (i & 0x0200) != 0x0000 && (i & 0x02FF) == addr)
+        if((i & 0x1280) == 0x0280 && (i & 0x029F) == (addr & 0x029F))
         {
           if(read)
             add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
@@ -1708,7 +1712,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
-        if((i & 0x1080) == 0x0080 && (i & 0x0200) == 0x0000 && (i & 0x00FF) == addr)
+        if((i & 0x1280) == 0x0080 && (i & 0x00FF) == (addr & 0x00FF))
         {
           if(read)
             add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);

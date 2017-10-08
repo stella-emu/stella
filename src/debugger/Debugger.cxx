@@ -105,8 +105,8 @@ static const char* const pseudo_registers[][2] = {
   { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
   { "_vsync", "Whether vertical sync is enabled (1 or 0)" },   
   // CPU address access functions:
-  { "_lastread", "last CPU read address" }, 
-  { "_lastwrite", "last CPU write address" },
+  /*{ "__lastread", "last CPU read address" }, 
+  { "__lastwrite", "last CPU write address" },*/
 
   // empty string marks end of list, do not remove
   { 0, 0 }
