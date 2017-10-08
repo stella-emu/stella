@@ -30,6 +30,7 @@ class CartDebugWidget;
 #include "Cart.hxx"
 #include "DebuggerSystem.hxx"
 #include "System.hxx"
+#include "M6502.hxx"
 
 // Function type for CartDebug instance methods
 class CartDebug;
@@ -126,6 +127,11 @@ class CartDebug : public DebuggerSystem
     // Return the address at which an invalid read was performed in a
     // write port area.
     int readFromWritePort();
+
+    // Return the base (= non-mirrored) address of the last CPU read
+    int lastReadBaseAddress() { return mySystem.m6502().lastReadBaseAddress(); }
+    // Return the base (= non-mirrored) address of the last CPU write
+    int lastWriteBaseAddress() { return mySystem.m6502().lastWriteBaseAddress(); }
 
     // The following two methods are meant to be used together
     // First, a call is made to disassemble(), which updates the disassembly

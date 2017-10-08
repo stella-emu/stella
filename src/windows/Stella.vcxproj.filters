@@ -1751,6 +1751,9 @@
     <ClInclude Include="..\debugger\gui\TrakBallWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
+    <ClInclude Include="..\debugger\TrapArray.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">

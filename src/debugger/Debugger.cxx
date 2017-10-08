@@ -85,7 +85,6 @@ static const char* const builtin_functions[][3] = {
   { "_diff0a", "*SWCHB & $40", "Left diff. set to A (hard)" },
   { "_diff1b", "!(*SWCHB & $80)", "Right diff. set to B (easy)" },
   { "_diff1a", "*SWCHB & $80", "Right diff. set to A (hard)" },
-
   // empty string marks end of list, do not remove
   { 0, 0, 0 }
 };
@@ -104,7 +103,10 @@ static const char* const pseudo_registers[][2] = {
   { "_rwport", "Address at which a read from a write port occurred" },
   { "_scan", "Current scanline count" },
   { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
-  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
+  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },   
+  // CPU address access functions:
+  /*{ "__lastread", "last CPU read address" }, 
+  { "__lastwrite", "last CPU write address" },*/
 
   // empty string marks end of list, do not remove
   { 0, 0 }
@@ -166,7 +168,7 @@ FBInitStatus Debugger::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::start(const string& message, int address)
+bool Debugger::start(const string& message, int address, bool read)
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
@@ -175,8 +177,7 @@ bool Debugger::start(const string& message, int address)
     ostringstream buf;
     buf << message;
     if(address > -1)
-      buf << Common::Base::HEX4 << address;
-
+      buf << cartDebug().getLabel(address, read);      
     myDialog->message().setText(buf.str());
     return true;
   }
@@ -367,24 +368,43 @@ bool Debugger::breakPoint(uInt16 bp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleReadTrap(uInt16 t)
+void Debugger::addReadTrap(uInt16 t)
 {
   readTraps().initialize();
-  readTraps().toggle(t);
+  readTraps().add(t);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleWriteTrap(uInt16 t)
+void Debugger::addWriteTrap(uInt16 t)
 {
   writeTraps().initialize();
-  writeTraps().toggle(t);
+  writeTraps().add(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleTrap(uInt16 t)
+void Debugger::addTrap(uInt16 t)
 {
-  toggleReadTrap(t);
-  toggleWriteTrap(t);
+  addReadTrap(t);
+  addWriteTrap(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::removeReadTrap(uInt16 t)
+{
+  readTraps().initialize();
+  readTraps().remove(t);
+}
+
+void Debugger::removeWriteTrap(uInt16 t)
+{
+  writeTraps().initialize();
+  writeTraps().remove(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::removeTrap(uInt16 t)
+{
+  removeReadTrap(t);
+  removeWriteTrap(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -397,6 +417,48 @@ bool Debugger::readTrap(uInt16 t)
 bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
+}
+                                                                              
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Debugger::getBaseAddress(uInt32 addr, bool read)
+{
+  if((addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
+    if(read)
+      // ADDR_TIA read (%xxx0 xxxx 0xxx ????)
+      return addr & 0x000f; // 0b 0000 0000 0000 1111
+    else
+      // ADDR_TIA write (%xxx0 xxxx 0x?? ????)
+      return addr & 0x003f; // 0b 0000 0000 0011 1111
+
+                            // ADDR_ZPRAM (%xxx0 xx0x 1??? ????)
+  if((addr & 0x1280) == 0x0080) // (addr & 0b 0001 0010 1000 0000) == 0b 0000 0000 1000 0000
+    return addr & 0x00ff; // 0b 0000 0000 1111 1111
+
+                          // ADDR_ROM
+  if(addr & 0x1000)
+    return addr & 0x1fff; // 0b 0001 1111 1111 1111
+
+                          // ADDR_IO read/write I/O registers (%xxx0 xx1x 1xxx x0??)
+  if((addr & 0x1284) == 0x0280) // (addr & 0b 0001 0010 1000 0100) == 0b 0000 0010 1000 0000
+    return addr & 0x0283; // 0b 0000 0010 1000 0011
+
+                          // ADDR_IO write timers (%xxx0 xx1x 1xx1 ?1??)
+  if(!read && (addr & 0x1294) == 0x0294) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1001 0100
+    return addr & 0x029f; // 0b 0000 0010 1001 1111
+
+                          // ADDR_IO read timers (%xxx0 xx1x 1xxx ?1x0)
+  if(read && (addr & 0x1285) == 0x0284) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0100
+    return addr & 0x028c; // 0b 0000 0010 1000 1100
+
+                          // ADDR_IO read timer/PA7 interrupt (%xxx0 xx1x 1xxx x1x1)
+  if(read && (addr & 0x1285) == 0x0285) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0101
+    return addr & 0x0285; // 0b 0000 0010 1000 0101
+
+                          // ADDR_IO write PA7 edge control (%xxx0 xx1x 1xx0 x1??)
+  if(!read && (addr & 0x1294) == 0x0284) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1000 0100
+    return addr & 0x0287; // 0b 0000 0010 1000 0111    
+
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

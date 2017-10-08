@@ -543,31 +543,32 @@ string DebuggerParser::eval()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
+string DebuggerParser::trapStatus(const Trap& trap)
 {
-  string result;
-  result += Base::toString(addr);
-  result += ": ";
-  bool r = debugger.readTrap(addr);
-  bool w = debugger.writeTrap(addr);
-  enabled = r || w;
-  if(r && w)
-    result += "read|write";
-  else if(r)
-    result += "read";
-  else if(w)
-    result += "write";
-  else
-    result += "none";
-
-  const string& l = debugger.cartDebug().getLabel(addr, !w);
-  if(l != "") {
-    result += "  (";
-    result += l;
-    result += ")";
+  stringstream result; 
+  string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
+  string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
+  
+  if(lblb != "") {
+    result << " (";
+    result << lblb;
   }
 
-  return result;
+  if(trap.begin != trap.end)
+  {
+    if(lble != "")
+    {
+      if (lblb != "")
+        result << " ";
+      else
+        result << " (";
+      result << lble;
+    }
+  }
+  if (lblb != "" || lble != "")
+    result << ")";
+
+  return result.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -589,9 +590,10 @@ bool DebuggerParser::saveScriptFile(string file)
     if(debugger.breakPoint(i))
       out << "break #" << i << endl;
 
+  // TODO: new trapif
   for(uInt32 i = 0; i < 0x10000; ++i)
   {
-    bool r = debugger.readTrap(i);
+    bool r = debugger.readTrap(i); 
     bool w = debugger.writeTrap(i);
 
     if(r && w)
@@ -744,8 +746,9 @@ void DebuggerParser::executeClearconfig()
 // "cleartraps"
 void DebuggerParser::executeCleartraps()
 {
-  myTraps.clear();
   debugger.clearAllTraps();
+  debugger.cpuDebug().m6502().clearCondTraps();
+  myTraps.clear();
   commandResult << "all traps cleared";
 }
 
@@ -859,6 +862,24 @@ void DebuggerParser::executeDelfunction()
     commandResult << "removed function " << argStrings[0];
   else
     commandResult << "function " << argStrings[0] << " built-in or not found";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "deltrap"
+void DebuggerParser::executeDeltrap()
+{
+  int index = args[0];
+  
+  if(debugger.cpuDebug().m6502().delCondTrap(index))
+  {
+    for(uInt32 addr = myTraps[index]->begin; addr <= myTraps[index]->end; ++addr)
+      executeTrapRW(addr, myTraps[index]->read, myTraps[index]->write, false);
+    // @sa666666: please check this:
+    Vec::removeAt(myTraps, index);    
+    commandResult << "removed trap " << Base::toString(index);
+  }
+  else 
+    commandResult << "no such trap";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1089,7 +1110,7 @@ void DebuggerParser::executeListbreaks()
     commandResult << "\nbreakifs:\n";
     for(uInt32 i = 0; i < conds.size(); i++)
     {
-      commandResult << i << ": " << conds[i];
+      commandResult << Base::toString(i) << ": " << conds[i];
       if(i != (conds.size() - 1)) commandResult << endl;
     }
   }
@@ -1127,11 +1148,37 @@ void DebuggerParser::executeListfunctions()
 // "listtraps"
 void DebuggerParser::executeListtraps()
 {
-  if(myTraps.size() > 0)
+  StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
+
+  if(myTraps.size() != names.size())
   {
-    bool enabled = true;
-    for(const auto& trap: myTraps)
-      commandResult << trapStatus(trap, enabled) << " + mirrors" << endl;
+    commandResult << "Internal error! Different trap sizes.";
+    return;
+  }
+           
+  if (names.size() > 0)
+  {
+    for(uInt32 i = 0; i < names.size(); i++)
+    {
+      commandResult << Base::toString(i) << ": ";
+      
+      if(myTraps[i]->read && myTraps[i]->write)
+        commandResult << "read|write";
+      else if(myTraps[i]->read)
+        commandResult << "read      ";
+      else if(myTraps[i]->write)
+        commandResult << "     write";
+      else
+        commandResult << "none";
+        
+      commandResult << " " << names[i];
+      commandResult << " " << Base::toString(myTraps[i]->begin);
+      if (myTraps[i]->begin != myTraps[i]->end)
+        commandResult << " " << Base::toString(myTraps[i]->end);
+      commandResult << trapStatus(*myTraps[i]);
+      commandResult << " + mirrors";
+      if(i != (names.size() - 1)) commandResult << endl;
+    }
   }
   else
     commandResult << "no traps set";
@@ -1482,71 +1529,153 @@ void DebuggerParser::executeTrace()
 // "trap"
 void DebuggerParser::executeTrap()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
+  executeTraps(true, true, "trap");
+}
 
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, true, true);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapif"
+void DebuggerParser::executeTrapif()
+{
+  executeTraps(true, true, "trapif", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapread"
 void DebuggerParser::executeTrapread()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
+  executeTraps(true, false, "trapread");
+}
 
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, true, false);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapreadif"
+void DebuggerParser::executeTrapreadif()
+{
+  executeTraps(true, false, "trapreadif", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapwrite"
 void DebuggerParser::executeTrapwrite()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
-
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, false, true);
+  executeTraps(false, true, "trapwrite");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// wrapper function for trap/trapread/trapwrite commands
-void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
+// "trapwriteif"
+void DebuggerParser::executeTrapwriteif()
+{
+  executeTraps(false, true, "trapwriteif", true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Wrapper function for trap(if)s
+void DebuggerParser::executeTraps(bool read, bool write, string command, bool hasCond)
+{
+  if(hasCond)
+  {
+    if(argCount < 1 || argCount > 3)
+    {
+      commandResult << red("Command takes one to three arguments");
+      return;
+    }
+  }
+  else
+  {
+    if(argCount > 2)
+    {
+      commandResult << red("Command takes one or two arguments");
+      return;
+    }
+  }
+
+  int ofs = hasCond ? 1 : 0;
+  uInt32 begin = args[ofs];
+  uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : begin;
+  // mirrors
+  uInt32 beginRead  = debugger.getBaseAddress(begin, true);
+  uInt32 endRead    = debugger.getBaseAddress(end,   true);
+  uInt32 beginWrite = debugger.getBaseAddress(begin, false);
+  uInt32 endWrite   = debugger.getBaseAddress(end,   false);
+
+  if(begin > 0xFFFF || end > 0xFFFF || begin > end)
+  {
+    commandResult << red("One or more addresses are invalid");
+    return;
+  }
+
+  // parenthesize provided and address range condition(s) (begin)
+  stringstream parserBuf, displayBuf;
+  if(hasCond)
+    parserBuf << "(" << argStrings[0] << ")&&(";
+                        
+  // add address range condition(s) to provided condition
+  if(read)
+  { 
+    if(beginRead != endRead)
+      parserBuf << "__lastread>=" << Base::toString(beginRead) << "&&__lastread<=" << Base::toString(endRead);
+    else
+      parserBuf << "__lastread==" << Base::toString(beginRead);
+  }
+  if(read && write)
+    parserBuf << "||";
+  if(write)
+  {
+    if(beginWrite != endWrite)
+      parserBuf << "__lastwrite>=" << Base::toString(beginWrite) << "&&__lastwrite<=" << Base::toString(endWrite);
+    else
+      parserBuf << "__lastwrite==" << Base::toString(beginWrite);
+  }
+  // parenthesize provided condition (end)
+  if(hasCond)
+    parserBuf << ")";
+
+  const string parserCondition = parserBuf.str();
+
+  int res = YaccParser::parse(parserCondition.c_str());
+  if(res == 0)
+  {
+    // duplicates will remove each other
+    bool add = true;
+    for(uInt32 i = 0; i < myTraps.size(); i++)
+    {
+      if(myTraps[i]->begin == begin && myTraps[i]->end == end &&
+         myTraps[i]->read == read && myTraps[i]->write == write &&
+         myTraps[i]->condition == parserCondition)
+      {         
+        if(debugger.cpuDebug().m6502().delCondTrap(i))
+        {
+          add = false;
+          // @sa666666: please check this:
+          Vec::removeAt(myTraps, i);
+          commandResult << "Removed trap " << Base::toString(i);
+          break;
+        }
+        commandResult << "Internal error! Duplicate trap removal failed!";
+        return;
+      }
+    }
+    if(add)
+    {
+      uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
+        YaccParser::getResult(), hasCond ? argStrings[0] : " ");
+      commandResult << "Added trap " << Base::toString(ret);
+
+      // @sa666666: please check this:
+      myTraps.emplace_back(new Trap{ read, write, begin, end, parserCondition });
+    }
+
+    for(uInt32 addr = begin; addr <= end; ++addr)
+      executeTrapRW(addr, read, write, add);
+  }
+  else
+  {
+    commandResult << red("invalid expression");
+  } 
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// wrapper function for trap(if)/trapread(if)/trapwrite(if) commands
+void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
 {
   switch(debugger.cartDebug().addressType(addr))
   {
@@ -1556,10 +1685,11 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
       {
         if((i & 0x1080) == 0x0000)
         {
-          if(read && (i & 0x000F) == addr)
-            debugger.toggleReadTrap(i);
-          if(write && (i & 0x003F) == addr)
-            debugger.toggleWriteTrap(i);
+          // @sa666666: This seems wrong. E.g. trapread 40 4f will never trigger
+          if(read && (i & 0x000F) == (addr & 0x000F))
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+          if(write && (i & 0x003F) == (addr & 0x003F))
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1568,10 +1698,12 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
-        if((i & 0x1080) == 0x0080 && (i & 0x0200) != 0x0000 && (i & 0x02FF) == addr)
+        if((i & 0x1280) == 0x0280 && (i & 0x029F) == (addr & 0x029F))
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if(read)
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+          if(write)
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1580,10 +1712,12 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
-        if((i & 0x1080) == 0x0080 && (i & 0x0200) == 0x0000 && (i & 0x00FF) == addr)
+        if((i & 0x1280) == 0x0080 && (i & 0x00FF) == (addr & 0x00FF))
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if(read)
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+          if(write)
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1596,21 +1730,16 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
         {
           if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
           {
-            if(read)  debugger.toggleReadTrap(i);
-            if(write) debugger.toggleWriteTrap(i);
+            if(read)
+              add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+            if(write)
+              add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
           }
         }
       }
       break;
     }
   }
-
-  bool trapEnabled = false;
-  const string& result = trapStatus(addr, trapEnabled);
-  if(trapEnabled) myTraps.insert(addr);
-  else            myTraps.erase(addr);
-
-  commandResult << result << " + mirrors" << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1889,6 +2018,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelfunction)
+  },
+
+  {
+    "deltrap",
+    "Delete trap <xx>",
+    "Example: deltrap 0",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeDeltrap)
   },
 
   {
@@ -2334,6 +2473,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "trapif",
+    "On <condition> trap R/W access to address(es) xx [yy]",
+    "Set a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapif _scan>100 GRP0, trapif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapif)
+  },         
+
+  {
     "trapread",
     "Trap read access to address(es) xx [yy]",
     "Set a read trap on the given address(es) and all mirrors\n"
@@ -2345,6 +2495,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "trapreadif",
+    "On <condition> trap read access to address(es) xx [yy]",
+    "Set a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapreadif _scan>100 GRP0, trapreadif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapreadif)
+  },
+
+  {
     "trapwrite",
     "Trap write access to address(es) xx [yy]",
     "Set a write trap on the given address(es) and all mirrors\n"
@@ -2353,6 +2514,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTrapwrite)
+  },
+
+  {
+    "trapwriteif",
+    "On <condition> trap write access to address(es) xx [yy]",
+    "Set a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapwriteif _scan>100 GRP0, trapwriteif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapwriteif)
   },
 
   {

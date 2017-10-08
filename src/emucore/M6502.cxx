@@ -55,6 +55,8 @@ M6502::M6502(const Settings& settings)
     myLastAddress(0),
     myLastPeekAddress(0),
     myLastPokeAddress(0),
+    myLastPeekBaseAddress(0),
+    myLastPokeBaseAddress(0),
     myLastSrcAddressS(-1),
     myLastSrcAddressA(-1),
     myLastSrcAddressX(-1),
@@ -65,7 +67,7 @@ M6502::M6502(const Settings& settings)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
-  myJustHitTrapFlag = false;
+  myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
 #endif
 }
 
@@ -98,7 +100,7 @@ void M6502::reset()
   // Load PC from the reset vector
   PC = uInt16(mySystem->peek(0xfffc)) | (uInt16(mySystem->peek(0xfffd)) << 8);
 
-  myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
+  myLastAddress = myLastPeekAddress = myLastPokeAddress = myLastPeekBaseAddress = myLastPokeBaseAddress;
   myLastSrcAddressS = myLastSrcAddressA =
     myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
@@ -120,18 +122,23 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   }
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
+  uInt8 result = mySystem->peek(address, flags);
+  myLastPeekAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
   if(myReadTraps.isInitialized() && myReadTraps.isSet(address))
   {
-    myJustHitTrapFlag = true;
-    myHitTrapInfo.message = "RTrap: ";
-    myHitTrapInfo.address = address;
+    myLastPeekBaseAddress = myDebugger->getBaseAddress(myLastPeekAddress, true); // mirror handling
+    int cond = evalCondTraps();
+    if(cond > -1)
+    {
+      myJustHitReadTrapFlag = true;      
+      myHitTrapInfo.message = "RTrap(" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.address = address;
+    }
   }
 #endif  // DEBUGGER_SUPPORT
 
-  uInt8 result = mySystem->peek(address, flags);
-  myLastPeekAddress = address;
   return result;
 }
 
@@ -146,19 +153,23 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
-  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
+  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);   
+  mySystem->poke(address, value, flags); 
+  myLastPokeAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
   if(myWriteTraps.isInitialized() && myWriteTraps.isSet(address))
   {
-    myJustHitTrapFlag = true;
-    myHitTrapInfo.message = "WTrap: ";
-    myHitTrapInfo.address = address;
+    myLastPokeBaseAddress = myDebugger->getBaseAddress(myLastPokeAddress, false); // mirror handling
+    int cond = evalCondTraps();
+    if(cond > -1)
+    {
+      myJustHitWriteTrapFlag = true;
+      myHitTrapInfo.message = "WTrap(" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.address = address;
+    }
   }
-#endif  // DEBUGGER_SUPPORT
-
-  mySystem->poke(address, value, flags); 
-  myLastPokeAddress = address;
+#endif  // DEBUGGER_SUPPORT       
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,11 +200,11 @@ bool M6502::execute(uInt32 number)
     for(; !myExecutionStatus && (number != 0); --number)
     {
 #ifdef DEBUGGER_SUPPORT
-      if(myJustHitTrapFlag)
+      if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
       {
-        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address))
-        {
-          myJustHitTrapFlag = false;
+        myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
+        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, myJustHitReadTrapFlag))
+        {          
           return true;
         }
       }
@@ -416,13 +427,15 @@ uInt32 M6502::addCondBreak(Expression* e, const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::delCondBreak(uInt32 brk)
+bool M6502::delCondBreak(uInt32 brk)
 {
   if(brk < myBreakConds.size())
   {
     Vec::removeAt(myBreakConds, brk);
     Vec::removeAt(myBreakCondNames, brk);
+    return true;
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -436,5 +449,38 @@ void M6502::clearCondBreaks()
 const StringList& M6502::getCondBreakNames() const
 {
   return myBreakCondNames;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 M6502::addCondTrap(Expression* e, const string& name)
+{
+  myTrapConds.emplace_back(e);
+  myTrapCondNames.push_back(name);
+  return uInt32(myTrapConds.size() - 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6502::delCondTrap(uInt32 brk)
+{
+  if(brk < myTrapConds.size())
+  {
+    Vec::removeAt(myTrapConds, brk);
+    Vec::removeAt(myTrapCondNames, brk);
+    return true;
+  }
+  return false;
+}                           
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::clearCondTraps()
+{
+  myTrapConds.clear();
+  myTrapCondNames.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const StringList& M6502::getCondTrapNames() const
+{
+  return myTrapCondNames;
 }
 #endif  // DEBUGGER_SUPPORT
