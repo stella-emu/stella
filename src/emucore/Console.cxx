@@ -58,6 +58,7 @@
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
 #include "frame-manager/FrameManager.hxx"
+#include "frame-manager/FrameLayoutDetector.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -125,20 +126,29 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     bool fastscbios = myOSystem.settings().getBool("fastscbios");
     myOSystem.settings().setValue("fastscbios", true);
 
-    uInt8 initialGarbageFrames = TIAConstants::initialGarbageFrames;
-    uInt8 linesPAL = 0;
-    uInt8 linesNTSC = 0;
+    FrameLayoutDetector frameLayoutDetector;
+    myTIA->setFrameManager(&frameLayoutDetector);
+    mySystem->reset(true);
 
-    mySystem->reset(true);  // autodetect in reset enabled
-    myTIA->autodetectLayout(true);
-    for(int i = 0; i < 60; ++i) {
-      if (i > initialGarbageFrames)
-        myTIA->frameLayout() == FrameLayout::pal ? linesPAL++ : linesNTSC++;
+    for(int i = 0; i < 60; ++i) myTIA->update();
 
-      myTIA->update();
+    myTIA->setFrameManager(myFrameManager.get());
+
+    (cout << int(frameLayoutDetector.detectedLayout()) << std::endl).flush();
+
+    switch (frameLayoutDetector.detectedLayout()) {
+      case FrameLayout::ntsc:
+        myDisplayFormat = "NTSC";
+        break;
+
+      case FrameLayout::pal:
+        myDisplayFormat = "PAL";
+        break;
+
+      default:
+        throw runtime_error("cannot happen");
     }
 
-    myDisplayFormat = linesPAL > linesNTSC  ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO")
     {
       autodetected = "*";
@@ -656,8 +666,6 @@ void Console::setTIAProperties()
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
   if(height != 0)
     height = BSPF::clamp(height, TIAConstants::minViewableHeight, TIAConstants::maxViewableHeight);
-
-  myTIA->autodetectLayout(false);
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")

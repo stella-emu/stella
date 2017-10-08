@@ -191,11 +191,6 @@ class AbstractFrameManager : public Serializable
     virtual bool ystartIsAuto(uInt32 line) const { return false; }
 
     /**
-     * TODO: this has to go
-     */
-    virtual void autodetectLayout(bool toggle) {}
-
-    /**
      * Set the frame layout. This may be a noop (on the autodetection manager).
      */
     virtual void setLayout(FrameLayout mode) {}

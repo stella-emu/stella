@@ -216,7 +216,6 @@ class TIA : public Device
     void setHeight(uInt32 height) { myFrameManager->setFixedHeight(height); }
     void setYStart(uInt32 ystart) { myFrameManager->setYstart(ystart); }
 
-    void autodetectLayout(bool toggle) { myFrameManager->autodetectLayout(toggle); }
     void setLayout(FrameLayout layout) { myFrameManager->setLayout(layout); }
     FrameLayout frameLayout() const { return myFrameManager->layout(); }
 

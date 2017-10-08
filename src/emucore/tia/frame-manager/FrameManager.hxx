@@ -52,9 +52,7 @@ class FrameManager: public AbstractFrameManager {
 
     bool ystartIsAuto(uInt32 line) const override { return myVblankManager.ystartIsAuto(line); };
 
-    void autodetectLayout(bool toggle) override { myAutodetectLayout = toggle; }
-
-    void setLayout(FrameLayout mode) override { if (!myAutodetectLayout) layout(mode); }
+    void setLayout(FrameLayout mode) override { layout(mode); }
 
     void onSetVblank() override;
 
@@ -99,15 +97,11 @@ class FrameManager: public AbstractFrameManager {
 
     VblankManager myVblankManager;
 
-    bool myAutodetectLayout;
     State myState;
     uInt32 myLineInState;
     uInt32 myVsyncLines;
     uInt32 myY, myLastY;
     bool myFramePending;
-
-    uInt32 myFramesInMode;
-    bool myModeConfirmed;
 
     uInt32 myStableFrames;
     uInt32 myStabilizationFrames;

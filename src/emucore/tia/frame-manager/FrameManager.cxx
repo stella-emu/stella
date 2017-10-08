@@ -30,24 +30,14 @@ enum Metrics: uInt32 {
   overscanPAL                   = 36,
   vsync                         = 3,
   maxLinesVsync                 = 32,
-  maxLinesVsyncDuringAutodetect = 100,
   visibleOverscan               = 20,
   tvModeDetectionTolerance      = 20,
   initialGarbageFrames          = TIAConstants::initialGarbageFrames,
-  framesForModeConfirmation     = 5,
   minStableFrames               = 10,
   maxStabilizationFrames        = 20,
   minDeltaForJitter             = 3,
   framesForStableHeight         = 2
 };
-
-static constexpr uInt32
-  frameLinesNTSC = Metrics::vsync + Metrics::vblankNTSC + Metrics::kernelNTSC + Metrics::overscanNTSC,
-  frameLinesPAL = Metrics::vsync + Metrics::vblankPAL + Metrics::kernelPAL + Metrics::overscanPAL;
-
-inline static uInt32 vsyncLimit(bool autodetect) {
-  return autodetect ? maxLinesVsyncDuringAutodetect : maxLinesVsync;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager() :
@@ -64,8 +54,6 @@ void FrameManager::onReset()
   myState = State::waitForVsyncStart;
   myLineInState = 0;
   myTotalFrames = 0;
-  myFramesInMode = 0;
-  myModeConfirmed = false;
   myVsyncLines = 0;
   myY = 0;
   myFramePending = false;
@@ -89,12 +77,12 @@ void FrameManager::onNextLine()
       if ((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0)
         myVsyncLines++;
 
-      if (myVsyncLines > vsyncLimit(myAutodetectLayout)) setState(State::waitForFrameStart);
+      if (myVsyncLines > Metrics::maxLinesVsync) setState(State::waitForFrameStart);
 
       break;
 
     case State::waitForVsyncEnd:
-      if (++myVsyncLines > vsyncLimit(myAutodetectLayout))
+      if (++myVsyncLines > Metrics::maxLinesVsync)
         setState(State::waitForFrameStart);
 
       break;
@@ -230,8 +218,6 @@ void FrameManager::finalizeFrame()
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
   (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
 #endif // TIA_FRAMEMANAGER_DEBUG_LOG
-
-  if (myAutodetectLayout) updateAutodetectedLayout();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,41 +233,7 @@ void FrameManager::handleJitter(Int32 scanlineDifference)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::updateAutodetectedLayout()
-{
-  if (myTotalFrames <= Metrics::initialGarbageFrames) {
-    return;
-  }
-
-  const FrameLayout oldLayout = layout();
-
-  const uInt32
-    deltaNTSC = abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesNTSC)),
-    deltaPAL =  abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesPAL));
-
-  if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance)
-    layout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
-  else if (!myModeConfirmed) {
-    if (
-      (myCurrentFrameFinalLines < frameLinesPAL) &&
-      (myCurrentFrameFinalLines > frameLinesNTSC) &&
-      (myCurrentFrameFinalLines % 2)
-    )
-      layout(FrameLayout::ntsc);
-    else
-      layout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
-  }
-
-  if (oldLayout == layout())
-    myFramesInMode++;
-  else
-    myFramesInMode = 0;
-
-  if (myFramesInMode > Metrics::framesForModeConfirmation)
-    myModeConfirmed = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: kill this with fire once frame manager refactoring is complete
 void FrameManager::onLayoutChange()
 {
 #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
@@ -353,16 +305,12 @@ bool FrameManager::onSave(Serializer& out) const
 {
   if (!myVblankManager.save(out)) return false;
 
-  out.putBool(myAutodetectLayout);
   out.putInt(uInt32(myState));
   out.putInt(myLineInState);
   out.putInt(myVsyncLines);
   out.putInt(myY);
   out.putInt(myLastY);
   out.putBool(myFramePending);
-
-  out.putInt(myFramesInMode);
-  out.putBool(myModeConfirmed);
 
   out.putInt(myStableFrames);
   out.putInt(myStabilizationFrames);
@@ -388,16 +336,12 @@ bool FrameManager::onLoad(Serializer& in)
 {
   if (!myVblankManager.load(in)) return false;
 
-  myAutodetectLayout = in.getBool();
   myState = State(in.getInt());
   myLineInState = in.getInt();
   myVsyncLines = in.getInt();
   myY = in.getInt();
   myLastY = in.getInt();
   myFramePending = in.getBool();
-
-  myFramesInMode = in.getInt();
-  myModeConfirmed = in.getBool();
 
   myStableFrames = in.getInt();
   myStabilizationFrames = in.getInt();
