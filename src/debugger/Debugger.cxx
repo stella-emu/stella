@@ -440,39 +440,48 @@ bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
 }
-
-/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleReadTrapIf(uInt16 t)
-{
-  readTrapIfs().initialize();
-  readTrapIfs().toggle(t);
-}
-
+                                                                              
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleWriteTrapIf(uInt16 t)
+uInt32 Debugger::getBaseAddress(uInt32 addr, bool read)
 {
-  writeTrapIfs().initialize();
-  writeTrapIfs().toggle(t);
-}
+  if((addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
+    if(read)
+      // ADDR_TIA read (%xxx0 xxxx 0xxx ????)
+      return addr & 0x000f; // 0b 0000 0000 0000 1111
+    else
+      // ADDR_TIA write (%xxx0 xxxx 0x?? ????)
+      return addr & 0x003f; // 0b 0000 0000 0011 1111
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleTrapIf(uInt16 t)
-{
-  toggleReadTrapIf(t);
-  toggleWriteTrapIf(t);
-}
+                            // ADDR_ZPRAM (%xxx0 xx0x 1??? ????)
+  if((addr & 0x1280) == 0x0080) // (addr & 0b 0001 0010 1000 0000) == 0b 0000 0000 1000 0000
+    return addr & 0x00ff; // 0b 0000 0000 1111 1111
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::readTrapIf(uInt16 t)
-{
-  return readTrapIfs().isInitialized() && readTrapIfs().isSet(t);
-}
+                          // ADDR_ROM
+  if(addr & 0x1000)
+    return addr & 0x1fff; // 0b 0001 1111 1111 1111
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::writeTrapIf(uInt16 t)
-{
-  return writeTrapIfs().isInitialized() && writeTrapIfs().isSet(t);
-}*/
+                          // ADDR_IO read/write I/O registers (%xxx0 xx1x 1xxx x0??)
+  if((addr & 0x1284) == 0x0280) // (addr & 0b 0001 0010 1000 0100) == 0b 0000 0010 1000 0000
+    return addr & 0x0283; // 0b 0000 0010 1000 0011
+
+                          // ADDR_IO write timers (%xxx0 xx1x 1xx1 ?1??)
+  if(!read && (addr & 0x1294) == 0x0294) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1001 0100
+    return addr & 0x029f; // 0b 0000 0010 1001 1111
+
+                          // ADDR_IO read timers (%xxx0 xx1x 1xxx ?1x0)
+  if(read && (addr & 0x1285) == 0x0284) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0100
+    return addr & 0x028c; // 0b 0000 0010 1000 1100
+
+                          // ADDR_IO read timer/PA7 interrupt (%xxx0 xx1x 1xxx x1x1)
+  if(read && (addr & 0x1285) == 0x0285) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0101
+    return addr & 0x0285; // 0b 0000 0010 1000 0101
+
+                          // ADDR_IO write PA7 edge control (%xxx0 xx1x 1xx0 x1??)
+  if(!read && (addr & 0x1294) == 0x0284) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1000 0100
+    return addr & 0x0287; // 0b 0000 0010 1000 0111    
+
+  return 0;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)

@@ -1144,6 +1144,13 @@ void DebuggerParser::executeListfunctions()
 void DebuggerParser::executeListtraps()
 {
   StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
+
+  if(myTraps.size() != names.size())
+  {
+    commandResult << "Internal error! Different trap sizes.";
+    return;
+  }
+           
   if (names.size() > 0)
   {
     for(uInt32 i = 0; i < names.size(); i++)
@@ -1579,6 +1586,11 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   int ofs = hasCond ? 1 : 0;
   uInt32 begin = args[ofs];
   uInt32 end = argCount == ofs + 2 ? args[ofs + 1] : begin;
+  // mirrors
+  uInt32 beginRead  = debugger.getBaseAddress(begin, true);
+  uInt32 endRead    = debugger.getBaseAddress(end,   true);
+  uInt32 beginWrite = debugger.getBaseAddress(begin, false);
+  uInt32 endWrite   = debugger.getBaseAddress(end,   false);
 
   if(begin > 0xFFFF || end > 0xFFFF || begin > end)
   {
@@ -1590,27 +1602,23 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   stringstream parserBuf, displayBuf;
   if(hasCond)
     parserBuf << "(" << argStrings[0] << ")&&(";
-
-  // TODO: mirrors
-  //begin = getBaseMirror(begin);
-  //end = getBaseMirror(eng);
-
+                        
   // add address range condition(s) to provided condition
   if(read)
   { 
-    if(begin != end)
-      parserBuf << "_lastread>=" << Base::toString(begin) << "&&_lastread<=" << Base::toString(end);
+    if(beginRead != endRead)
+      parserBuf << "_lastread>=" << Base::toString(beginRead) << "&&_lastread<=" << Base::toString(endRead);
     else
-      parserBuf << "_lastread==" << Base::toString(begin);
+      parserBuf << "_lastread==" << Base::toString(beginRead);
   }
   if(read && write)
     parserBuf << "||";
   if(write)
   {
-    if(begin != end)
-      parserBuf << "_lastwrite>=" << Base::toString(begin) << "&&_lastwrite<=" << Base::toString(end);
+    if(beginWrite != endWrite)
+      parserBuf << "_lastwrite>=" << Base::toString(beginWrite) << "&&_lastwrite<=" << Base::toString(endWrite);
     else
-      parserBuf << "_lastwrite==" << Base::toString(begin);
+      parserBuf << "_lastwrite==" << Base::toString(beginWrite);
   }
   // parenthesize provided condition (end)
   if(hasCond)
@@ -1658,47 +1666,6 @@ void DebuggerParser::executeTraps(bool read, bool write, string command, bool ha
   {
     commandResult << red("invalid expression");
   } 
-}
-
-uInt32 getBaseAddress(uInt32 addr, bool read)
-{  
-  // ADDR_TIA write (%xxx0 xxxx 0x?? ????)
-  if(!read && (addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
-    return addr & 0x003f; // 0b 0000 0000 0011 1111
-
-  // ADDR_TIA read (%xxx0 xxxx 0xxx ????)
-  if(read && (addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
-    return addr & 0x000f; // 0b 0000 0000 0000 1111
-
-  // ADDR_ZPRAM (%xxx0 xx0x 1??? ????)
-  if((addr & 0x1280) == 0x0080) // (addr & 0b 0001 0010 1000 0000) == 0b 0000 0000 1000 0000
-    return addr & 0x00ff; // 0b 0000 0000 1111 1111
-
-  // ADDR_ROM
-  if(addr & 0x1000)
-    return addr & 0x1fff; // 0b 0001 1111 1111 1111
-
-  // ADDR_IO read/write I/O registers (%xxx0 xx1x 1xxx x0??)
-  if((addr & 0x1284) == 0x0280) // (addr & 0b 0001 0010 1000 0100) == 0b 0000 0010 1000 0000
-    return addr & 0x0283; // 0b 0000 0010 1000 0011
-
-  // ADDR_IO write timers (%xxx0 xx1x 1xx1 ?1??)
-  if(!read && (addr & 0x1294) == 0x0294) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1001 0100
-    return addr & 0x029f; // 0b 0000 0010 1001 1111
-
-  // ADDR_IO read timers (%xxx0 xx1x 1xxx ?1x0)
-  if(read && (addr & 0x1285) == 0x0284) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0100
-    return addr & 0x028c; // 0b 0000 0010 1000 1100
-    
-  // ADDR_IO read timer/PA7 interrupt (%xxx0 xx1x 1xxx x1x1)
-  if(read && (addr & 0x1285) == 0x0285) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0101
-    return addr & 0x0285; // 0b 0000 0010 1000 0101
-
-  // ADDR_IO write PA7 edge control (%xxx0 xx1x 1xx0 x1??)
-  if(!read && (addr & 0x1294) == 0x0284) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1000 0100
-    return addr & 0x0287; // 0b 0000 0010 1000 0111    
-
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

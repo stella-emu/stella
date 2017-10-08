@@ -207,9 +207,9 @@ CartMethod getCartSpecial(char* ch)
   else if(BSPF::equalsIgnoreCase(ch, "_rwport"))
     return &CartDebug::readFromWritePort;
   else if(BSPF::equalsIgnoreCase(ch, "_lastread"))
-    return &CartDebug::lastReadAddress;
+    return &CartDebug::lastReadBaseAddress;
   else if(BSPF::equalsIgnoreCase(ch, "_lastwrite"))
-    return &CartDebug::lastWriteAddress;
+    return &CartDebug::lastWriteBaseAddress;
   else
     return 0;
 }

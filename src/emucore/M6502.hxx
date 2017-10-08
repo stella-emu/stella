@@ -145,7 +145,7 @@ class M6502 : public Serializable
 
       @return The address of the last read
     */
-    uInt16 lastRealReadAddress() const {
+    uInt16 lastReadAddress() const {
       return myLastPokeAddress ?
         (myLastPokeAddress != myLastPeekAddress ? myLastPeekAddress : 0) :
         myLastPeekAddress;
@@ -156,14 +156,14 @@ class M6502 : public Serializable
 
       @return The address of the last read
     */
-    uInt16 lastReadAddress() const { return myLastPeekAddress; }
+    uInt16 lastReadBaseAddress() const { return myLastPeekBaseAddress; }
 
     /**
       Return the last address that was part of a write/poke.  
 
       @return The address of the last write
     */
-    uInt16 lastWriteAddress() const { return myLastPokeAddress; }
+    uInt16 lastWriteBaseAddress() const { return myLastPokeBaseAddress; }
 
     /**
       Return the source of the address that was used for a write/poke.
@@ -355,6 +355,9 @@ class M6502 : public Serializable
     /// Indicates the last address which was accessed specifically
     /// by a peek or poke command
     uInt16 myLastPeekAddress, myLastPokeAddress;
+    /// Indicates the last base (= non-mirrored) address which was
+    /// accessed specifically by a peek or poke command
+    uInt16 myLastPeekBaseAddress, myLastPokeBaseAddress;
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)

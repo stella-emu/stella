@@ -216,6 +216,7 @@ class Debugger : public DialogContainer
       { mySystem.setAccessFlags(addr, flags); }
 
     void setBreakPoint(uInt16 bp, bool set);
+    uInt32 getBaseAddress(uInt32 addr, bool read);
 
     bool patchROM(uInt16 addr, uInt8 value);
 

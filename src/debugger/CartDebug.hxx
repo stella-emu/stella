@@ -128,10 +128,10 @@ class CartDebug : public DebuggerSystem
     // write port area.
     int readFromWritePort();
 
-    // Return the address of the last CPU read
-    int lastReadAddress() { return mySystem.m6502().lastReadAddress(); }
-    // Return the address of the last CPU write
-    int lastWriteAddress() { return mySystem.m6502().lastWriteAddress(); }
+    // Return the base (= non-mirrored) address of the last CPU read
+    int lastReadBaseAddress() { return mySystem.m6502().lastReadBaseAddress(); }
+    // Return the base (= non-mirrored) address of the last CPU write
+    int lastWriteBaseAddress() { return mySystem.m6502().lastWriteBaseAddress(); }
 
     // The following two methods are meant to be used together
     // First, a call is made to disassemble(), which updates the disassembly

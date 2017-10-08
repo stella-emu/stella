@@ -126,7 +126,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
 #ifdef DEBUGGER_SUPPORT
   if(myReadTraps.isInitialized() && myReadTraps.isSet(address))
   {
-    //TODO: myLastPeekBaseAddress = baseAddress(myLastPeekAddress); // mirror handling
+    myLastPeekBaseAddress = myDebugger->getBaseAddress(myLastPeekAddress, true); // mirror handling
     int cond = evalCondTraps();
     if(cond > -1)
     {
@@ -159,7 +159,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
 #ifdef DEBUGGER_SUPPORT
   if(myWriteTraps.isInitialized() && myWriteTraps.isSet(address))
   {
-    //TODO: myLastPokeBaseAddress = baseAddress(myLastPokeAddress); // mirror handling
+    myLastPokeBaseAddress = myDebugger->getBaseAddress(myLastPokeAddress, false); // mirror handling
     int cond = evalCondTraps();
     if(cond > -1)
     {
