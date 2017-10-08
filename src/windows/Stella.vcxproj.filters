@@ -887,9 +887,6 @@
     <ClInclude Include="..\common\Version.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\VideoModeList.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\emucore\AtariVox.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -1284,9 +1281,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\ScrollBarWidget.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\Stack.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\StellaFont.hxx">
@@ -1730,12 +1724,6 @@
     <ClInclude Include="..\common\StateManager.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StateList.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TrakBallWidget.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
@@ -1753,6 +1741,9 @@
     </ClInclude>
     <ClInclude Include="..\debugger\TrapArray.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LinkedObjectPool.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
