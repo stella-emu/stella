@@ -65,7 +65,7 @@ class DebuggerParser
     bool getArgs(const string& command, string& verb);
     bool validateArgs(int cmd);
     string eval();
-    bool saveScriptFile(string file);
+    string saveScriptFile(string file);
 
   private:
     enum { kNumCommands = 72 };

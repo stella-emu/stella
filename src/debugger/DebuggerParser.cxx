@@ -129,7 +129,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
   {
     ifstream in(file.getPath());
     if(!in.is_open())
-      return red("autoexec file \'" + file.getShortPath() + "\' not found");
+      return red("script file \'" + file.getShortPath() + "\' not found");
 
     ostringstream buf;
     int count = 0;
@@ -142,13 +142,13 @@ string DebuggerParser::exec(const FilesystemNode& file)
       run(command);
       count++;
     }
-    buf << "Executed " << count << " commands from \""
+    buf << "\nExecuted " << count << " commands from \""
         << file.getShortPath() << "\"";
 
     return buf.str();
   }
   else
-    return red("autoexec file \'" + file.getShortPath() + "\' not found");
+    return red("script file \'" + file.getShortPath() + "\' not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -571,12 +571,16 @@ string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DebuggerParser::saveScriptFile(string file)
+string DebuggerParser::saveScriptFile(string file)
 {
-  if( file.find_last_of('.') == string::npos )
-    file += ".stella";
+  // Append 'script' extension when necessary
+  if(file.find_last_of('.') == string::npos)
+    file += ".script";
 
-  ofstream out(file);
+  FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
+  ofstream out(node.getPath());
+  if(!out.is_open())
+    return "Unable to save script to " + node.getShortPath();
 
   FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& f: funcs)
@@ -606,7 +610,7 @@ bool DebuggerParser::saveScriptFile(string file)
   for(const auto& cond: conds)
     out << "breakif {" << cond << "}" << endl;
 
-  return out.good();
+  return "saved " + node.getShortPath() + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -938,8 +942,13 @@ void DebuggerParser::executeDump()
 // "exec"
 void DebuggerParser::executeExec()
 {
-  FilesystemNode file(argStrings[0]);
-  commandResult << exec(file);
+  // Append 'script' extension when necessary
+  string file = argStrings[0];
+  if(file.find_last_of('.') == string::npos)
+    file += ".script";
+
+  FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
+  commandResult << exec(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1382,10 +1391,7 @@ void DebuggerParser::executeS()
 // "save"
 void DebuggerParser::executeSave()
 {
-  if(saveScriptFile(argStrings[0]))
-    commandResult << "saved script to file " << argStrings[0];
-  else
-    commandResult << red("I/O error");
+  commandResult << saveScriptFile(argStrings[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

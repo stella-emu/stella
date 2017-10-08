@@ -210,13 +210,13 @@ string Debugger::autoExec()
 {
   ostringstream buf;
 
-  // autoexec.stella is always run
-  FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.stella");
+  // autoexec.script is always run
+  FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.script");
   buf << "autoExec():" << endl
       << myParser->exec(autoexec) << endl;
 
-  // Also, "romname.stella" if present
-  FilesystemNode romname(myOSystem.romFile().getPathWithExt(".stella"));
+  // Also, "romname.script" if present
+  FilesystemNode romname(myOSystem.romFile().getPathWithExt(".script"));
   buf << myParser->exec(romname) << endl;
 
   // Init builtins
