@@ -134,20 +134,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
     myTIA->setFrameManager(myFrameManager.get());
 
-    (cout << int(frameLayoutDetector.detectedLayout()) << std::endl).flush();
-
-    switch (frameLayoutDetector.detectedLayout()) {
-      case FrameLayout::ntsc:
-        myDisplayFormat = "NTSC";
-        break;
-
-      case FrameLayout::pal:
-        myDisplayFormat = "PAL";
-        break;
-
-      default:
-        throw runtime_error("cannot happen");
-    }
+    myDisplayFormat = frameLayoutDetector.detectedLayout() == FrameLayout::pal ? "PAL" : "NTSC";
 
     if(myProperties.get(Display_Format) == "AUTO")
     {
