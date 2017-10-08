@@ -32,7 +32,11 @@ public:
   void remove(const uInt16 address) { myCount[address]--; }
   //void toggle(uInt16 address) { myCount[address] ? remove(address) : add(address); } // TODO condition
 
-  void initialize() { myInitialized = true; }
+  void initialize() { 
+    if(!myInitialized)
+      memset(myCount, 0, sizeof(myCount));
+    myInitialized = true; 
+  }
   void clearAll() { myInitialized = false; memset(myCount, 0, sizeof(myCount)); }
 
   bool isInitialized() const { return myInitialized; }
