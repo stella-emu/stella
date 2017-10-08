@@ -55,6 +55,8 @@ M6502::M6502(const Settings& settings)
     myLastAddress(0),
     myLastPeekAddress(0),
     myLastPokeAddress(0),
+    myLastPeekBaseAddress(0),
+    myLastPokeBaseAddress(0),
     myLastSrcAddressS(-1),
     myLastSrcAddressA(-1),
     myLastSrcAddressX(-1),
@@ -65,7 +67,7 @@ M6502::M6502(const Settings& settings)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
-  myJustHitTrapFlag = false;
+  myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
 #endif
 }
 
@@ -98,7 +100,7 @@ void M6502::reset()
   // Load PC from the reset vector
   PC = uInt16(mySystem->peek(0xfffc)) | (uInt16(mySystem->peek(0xfffd)) << 8);
 
-  myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
+  myLastAddress = myLastPeekAddress = myLastPokeAddress = myLastPeekBaseAddress = myLastPokeBaseAddress;
   myLastSrcAddressS = myLastSrcAddressA =
     myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
@@ -130,9 +132,8 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     int cond = evalCondTraps();
     if(cond > -1)
     {
-      myJustHitTrapFlag = true;
-      myHitTrapInfo.message = "RTrap: ";
-      //myHitTrapInfo.message = "RTrapIf (" + myTrapCondNames[cond] + "): ";
+      myJustHitReadTrapFlag = true;      
+      myHitTrapInfo.message = "RTrap(" + myTrapCondNames[cond] + "): ";
       myHitTrapInfo.address = address;
     }
   }
@@ -163,9 +164,8 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     int cond = evalCondTraps();
     if(cond > -1)
     {
-      myJustHitTrapFlag = true;
-      myHitTrapInfo.message = "WTrap: ";
-      //myHitTrapInfo.message = "WTrapIf (" + myTrapCondNames[cond] + "): ";
+      myJustHitWriteTrapFlag = true;
+      myHitTrapInfo.message = "WTrap(" + myTrapCondNames[cond] + "): ";
       myHitTrapInfo.address = address;
     }
   }
@@ -200,11 +200,11 @@ bool M6502::execute(uInt32 number)
     for(; !myExecutionStatus && (number != 0); --number)
     {
 #ifdef DEBUGGER_SUPPORT
-      if(myJustHitTrapFlag)
+      if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
       {
-        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address))
-        {
-          myJustHitTrapFlag = false;
+        myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
+        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, myJustHitReadTrapFlag))
+        {          
           return true;
         }
       }

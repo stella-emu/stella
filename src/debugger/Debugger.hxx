@@ -88,7 +88,7 @@ class Debugger : public DialogContainer
       @param message  Message to display when entering debugger
       @param address  An address associated with the message
     */
-    bool start(const string& message = "", int address = -1);
+    bool start(const string& message = "", int address = -1, bool read = true);
     bool startWithFatalError(const string& message = "");
 
     /**
@@ -147,8 +147,6 @@ class Debugger : public DialogContainer
     PackedBitArray& breakPoints() const { return mySystem.m6502().breakPoints(); }
     TrapArray& readTraps() const        { return mySystem.m6502().readTraps();   }
     TrapArray& writeTraps() const       { return mySystem.m6502().writeTraps();  }
-    /*PackedBitArray& readTrapIfs() const { return mySystem.m6502().readTrapIfs(); }
-    PackedBitArray& writeTrapIfs() const { return mySystem.m6502().writeTrapIfs(); }*/
 
     /**
       Run the debugger command and return the result.
@@ -259,9 +257,6 @@ class Debugger : public DialogContainer
     void toggleBreakPoint(uInt16 bp);
 
     bool breakPoint(uInt16 bp);
-    /*void toggleReadTrap(uInt16 t);
-    void toggleWriteTrap(uInt16 t);
-    void toggleTrap(uInt16 t);*/
     void addReadTrap(uInt16 t);
     void addWriteTrap(uInt16 t);
     void addTrap(uInt16 t);

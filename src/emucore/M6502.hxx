@@ -405,7 +405,8 @@ class M6502 : public Serializable
     TrapArray myReadTraps, myWriteTraps;
 
     // Did we just now hit a trap?
-    bool myJustHitTrapFlag;
+    bool myJustHitReadTrapFlag;
+    bool myJustHitWriteTrapFlag;
     struct HitTrapInfo {
       string message;
       int address;

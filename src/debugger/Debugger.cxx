@@ -168,7 +168,7 @@ FBInitStatus Debugger::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::start(const string& message, int address)
+bool Debugger::start(const string& message, int address, bool read)
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
@@ -177,8 +177,7 @@ bool Debugger::start(const string& message, int address)
     ostringstream buf;
     buf << message;
     if(address > -1)
-      buf << Common::Base::HEX4 << address;
-
+      buf << cartDebug().getLabel(address, read);      
     myDialog->message().setText(buf.str());
     return true;
   }
@@ -367,27 +366,6 @@ bool Debugger::breakPoint(uInt16 bp)
 {
   return breakPoints().isSet(bp);
 }
-
-/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleReadTrap(uInt16 t)
-{
-  readTraps().initialize();
-  readTraps().toggle(t);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleWriteTrap(uInt16 t)
-{
-  writeTraps().initialize();
-  writeTraps().toggle(t);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleTrap(uInt16 t)
-{
-  toggleReadTrap(t);
-  toggleWriteTrap(t);
-}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::addReadTrap(uInt16 t)

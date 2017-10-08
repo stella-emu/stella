@@ -586,6 +586,7 @@ bool DebuggerParser::saveScriptFile(string file)
     if(debugger.breakPoint(i))
       out << "break #" << i << endl;
 
+  // TODO: new trapif
   for(uInt32 i = 0; i < 0x10000; ++i)
   {
     bool r = debugger.readTrap(i); 
