@@ -32,16 +32,16 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::addState(const string& message)
 {
-  RewindPtr state = make_unique<RewindState>();  // TODO: get this from object pool
-  Serializer& s = state->data;
+  if(myStateList.full())
+    myStateList.removeLast();  // remove the oldest state file
+
+  RewindState& state = myStateList.addFirst();
+  Serializer& s = state.data;
 
   s.reset();  // rewind Serializer internal buffers
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
-    state->message = "Rewind " + message;
-
-    // Add to the list  TODO: should check against current size
-    myStateList.emplace_front(std::move(state));
+    state.message = "Rewind " + message;
     return true;
   }
   return false;
@@ -50,18 +50,18 @@ bool RewindManager::addState(const string& message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::rewindState()
 {
-  if(myStateList.size() > 0)
+  if(!myStateList.empty())
   {
-    RewindPtr state = std::move(myStateList.front());
-    myStateList.pop_front();  // TODO: add 'state' to object pool
-    Serializer& s = state->data;
+    RewindState& state = myStateList.first();
+    Serializer& s = state.data;
 
     s.reset();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
     myOSystem.console().tia().loadDisplay(s);
 
     // Show message indicating the rewind state
-    myOSystem.frameBuffer().showMessage(state->message);
+    myOSystem.frameBuffer().showMessage(state.message);
+    myStateList.removeFirst();
 
     return true;
   }
