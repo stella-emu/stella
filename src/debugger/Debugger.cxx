@@ -177,7 +177,7 @@ bool Debugger::start(const string& message, int address, bool read)
     ostringstream buf;
     buf << message;
     if(address > -1)
-      buf << cartDebug().getLabel(address, read);      
+      buf << cartDebug().getLabel(address, read, 4);      
     myDialog->message().setText(buf.str());
     return true;
   }
