@@ -108,7 +108,7 @@ class DebuggerParser
       uInt32 end;
       string condition;
     };
-    
+
     // Reference to our debugger object
     Debugger& debugger;
 
@@ -125,10 +125,10 @@ class DebuggerParser
     StringList argStrings;
     uInt32 argCount;
 
-    StringList myWatches;              
-    
+    StringList myWatches;
+
     // Keep track of traps (read and/or write)
-    vector<unique_ptr<Trap>> myTraps;          
+    vector<unique_ptr<Trap>> myTraps;
     void listTraps(bool listCond);
     string trapStatus(const Trap& trap);
 
@@ -153,7 +153,7 @@ class DebuggerParser
     void executeData();
     void executeDebugColors();
     void executeDefine();
-    void executeDelbreakif();    
+    void executeDelbreakif();
     void executeDelfunction();
     void executeDeltrap();
     void executeDelwatch();
@@ -168,7 +168,7 @@ class DebuggerParser
     void executeJump();
     void executeListbreaks();
     void executeListconfig();
-    void executeListfunctions();    
+    void executeListfunctions();
     void executeListtraps();
     void executeLoadconfig();
     void executeLoadstate();
@@ -202,8 +202,8 @@ class DebuggerParser
     void executeTrapif();
     void executeTrapread();
     void executeTrapreadif();
-    void executeTrapwrite();    
-    void executeTrapwriteif();    
+    void executeTrapwrite();
+    void executeTrapwriteif();
     void executeTraps(bool read, bool write, const string& command, bool cond = false);
     void executeTrapRW(uInt32 addr, bool read, bool write, bool add = true);  // not exposed by debugger
     void executeType();

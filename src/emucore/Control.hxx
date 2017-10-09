@@ -209,9 +209,10 @@ class Controller : public Serializable
       Returns more detailed information about this controller.
     */
     virtual string about(bool swappedPorts) const
-    {       
-      return name() + " in " + (myJack == Left ^ swappedPorts ? "left port" : "right port");
-    } 
+    {
+      return name() + " in " + ((myJack == Left) ^ swappedPorts ?
+          "left port" : "right port");
+    }
 
     /**
       The following two functions are used by the debugger to set

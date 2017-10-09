@@ -158,7 +158,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
 void DebuggerParser::outputCommandError(const string& errorMsg, int command)
 {
   string example = commands[command].extendedDesc.substr(commands[command].extendedDesc.find("Example:"));
-  
+
   commandResult << red(errorMsg);
   if(!example.empty())
     commandResult << endl << example;
@@ -594,10 +594,10 @@ void DebuggerParser::listTraps(bool listCond)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::trapStatus(const Trap& trap)
 {
-  stringstream result; 
+  stringstream result;
   string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
   string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
-  
+
   if(lblb != "") {
     result << " (";
     result << lblb;
@@ -930,16 +930,16 @@ void DebuggerParser::executeDelfunction()
 void DebuggerParser::executeDeltrap()
 {
   int index = args[0];
-  
+
   if(debugger.cpuDebug().m6502().delCondTrap(index))
   {
     for(uInt32 addr = myTraps[index]->begin; addr <= myTraps[index]->end; ++addr)
       executeTrapRW(addr, myTraps[index]->read, myTraps[index]->write, false);
     // @sa666666: please check this:
-    Vec::removeAt(myTraps, index);    
+    Vec::removeAt(myTraps, index);
     commandResult << "removed trap " << Base::toString(index);
   }
-  else 
+  else
     commandResult << "no such trap";
 }
 
@@ -1159,7 +1159,7 @@ void DebuggerParser::executeListbreaks()
       buf << debugger.cartDebug().getLabel(i, true, 4) << " ";
       if(! (++count % 8) ) buf << endl;
     }
-  }             
+  }
   if(count)
     commandResult << "breaks:" << endl << buf.str();
 
@@ -1216,7 +1216,7 @@ void DebuggerParser::executeListtraps()
     commandResult << "Internal error! Different trap sizes.";
     return;
   }
-  
+
   if (names.size() > 0)
   {
     bool trapFound = false, trapifFound = false;
@@ -1617,9 +1617,10 @@ void DebuggerParser::executeTrapwriteif()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Wrapper function for trap(if)s
-void DebuggerParser::executeTraps(bool read, bool write, const string& command, bool hasCond)
+void DebuggerParser::executeTraps(bool read, bool write, const string& command,
+                                  bool hasCond)
 {
-  int ofs = hasCond ? 1 : 0;
+  uInt32 ofs = hasCond ? 1 : 0;
   uInt32 begin = args[ofs];
   uInt32 end = argCount == 2 + ofs ? args[1 + ofs] : begin;
 
@@ -1648,16 +1649,16 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command, 
   uInt32 beginRead = debugger.getBaseAddress(begin, true);
   uInt32 endRead = debugger.getBaseAddress(end, true);
   uInt32 beginWrite = debugger.getBaseAddress(begin, false);
-  uInt32 endWrite = debugger.getBaseAddress(end, false);  
+  uInt32 endWrite = debugger.getBaseAddress(end, false);
   stringstream conditionBuf;
 
   // parenthesize provided and address range condition(s) (begin)
   if(hasCond)
     conditionBuf << "(" << argStrings[0] << ")&&(";
-                        
+
   // add address range condition(s) to provided condition
   if(read)
-  { 
+  {
     if(beginRead != endRead)
       conditionBuf << "__lastread>=" << Base::toString(beginRead) << "&&__lastread<=" << Base::toString(endRead);
     else
@@ -1688,7 +1689,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command, 
       if(myTraps[i]->begin == begin && myTraps[i]->end == end &&
          myTraps[i]->read == read && myTraps[i]->write == write &&
          myTraps[i]->condition == condition)
-      {         
+      {
         if(debugger.cpuDebug().m6502().delCondTrap(i))
         {
           add = false;
@@ -1717,7 +1718,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command, 
   else
   {
     commandResult << red("invalid expression");
-  } 
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2528,7 +2529,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
       false,
       { kARG_WORD, kARG_MULTI_BYTE },
       std::mem_fn(&DebuggerParser::executeTrapif)
-  },         
+  },
 
   {
     "trapread",

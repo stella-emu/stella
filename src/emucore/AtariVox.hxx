@@ -81,14 +81,14 @@ class AtariVox : public SaveKey
     /**
       Notification method invoked by the system after its reset method has
       been called.  It may be necessary to override this method for
-      controllers that need to know a reset has occurred.      
+      controllers that need to know a reset has occurred.
     */
     void reset() override;
 
     string about(bool swappedPorts) const override { return Controller::about(swappedPorts) + myAboutString; }
 
   private:
-   void clockDataIn(bool value);   
+   void clockDataIn(bool value);
 
   private:
     // Instance of an real serial port on the system

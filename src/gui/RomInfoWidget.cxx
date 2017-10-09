@@ -117,7 +117,7 @@ void RomInfoWidget::parseProperties()
   myRomInfo.push_back("Rarity:  " + myProperties.get(Cartridge_Rarity));
   myRomInfo.push_back("Note:  " + myProperties.get(Cartridge_Note));
   bool swappedPorts = myProperties.get(Console_SwapPorts) == "YES";
-  myRomInfo.push_back("Controllers:  " + (!swappedPorts 
+  myRomInfo.push_back("Controllers:  " + (!swappedPorts
     ? myProperties.get(Controller_Left) + " (left), " + myProperties.get(Controller_Right) + " (right)"
     : myProperties.get(Controller_Right) + " (left), " + myProperties.get(Controller_Left) + " (right)"));
 #if 0
