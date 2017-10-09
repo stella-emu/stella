@@ -99,6 +99,7 @@ class Debugger : public DialogContainer
 
     bool addFunction(const string& name, const string& def,
                      Expression* exp, bool builtin = false);
+    bool isBuiltinFunction(const string& name);
     bool delFunction(const string& name);
     const Expression& getFunction(const string& name) const;
 

@@ -199,8 +199,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Finally, add remaining info about the console
   myConsoleInfo.CartName   = myProperties.get(Cartridge_Name);
   myConsoleInfo.CartMD5    = myProperties.get(Cartridge_MD5);
-  myConsoleInfo.Control0   = myLeftControl->about();
-  myConsoleInfo.Control1   = myRightControl->about();
+  bool swappedPorts = properties().get(Console_SwapPorts) == "YES";
+  myConsoleInfo.Control0   = myLeftControl->about(swappedPorts);
+  myConsoleInfo.Control1   = myRightControl->about(swappedPorts);
   myConsoleInfo.BankSwitch = myCart->about();
 
   myCart->setRomName(myConsoleInfo.CartName);

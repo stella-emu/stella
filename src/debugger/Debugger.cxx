@@ -604,6 +604,15 @@ bool Debugger::addFunction(const string& name, const string& definition,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::isBuiltinFunction(const string& name)
+{
+  for(int i = 0; builtin_functions[i][0] != 0; ++i)
+    if(name == builtin_functions[i][0])
+      return true;
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::delFunction(const string& name)
 {
   const auto& iter = myFunctions.find(name);
@@ -611,8 +620,7 @@ bool Debugger::delFunction(const string& name)
     return false;
 
   // We never want to delete built-in functions
-  for(int i = 0; builtin_functions[i][0] != 0; ++i)
-    if(name == builtin_functions[i][0])
+  if (isBuiltinFunction(name))
       return false;
 
   myFunctions.erase(name);

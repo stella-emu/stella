@@ -85,7 +85,7 @@ class AtariVox : public SaveKey
     */
     void reset() override;
 
-    string about() const override { return Controller::about() + myAboutString; }
+    string about(bool swappedPorts) const override { return Controller::about(swappedPorts) + myAboutString; }
 
   private:
    void clockDataIn(bool value);   

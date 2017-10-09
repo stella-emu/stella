@@ -118,19 +118,22 @@ class DebuggerParser
     // The results of the currently running command
     ostringstream commandResult;
 
+    // currently execute command id
+    int myCommand;
     // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;
     StringList argStrings;
     uInt32 argCount;
 
-    StringList myWatches;
-
+    StringList myWatches;              
     
     // Keep track of traps (read and/or write)
     vector<unique_ptr<Trap>> myTraps;          
-    /*std::set<uInt32> myTraps;
-    std::vector<uInt32> myTrapIfs;*/
+    void listTraps(bool listCond);
     string trapStatus(const Trap& trap);
+
+    // output the error with the example provided for the command
+    void outputCommandError(const string& errorMsg, int command);
 
     // List of available command methods
     void executeA();
@@ -165,7 +168,7 @@ class DebuggerParser
     void executeJump();
     void executeListbreaks();
     void executeListconfig();
-    void executeListfunctions();
+    void executeListfunctions();    
     void executeListtraps();
     void executeLoadconfig();
     void executeLoadstate();
@@ -201,7 +204,7 @@ class DebuggerParser
     void executeTrapreadif();
     void executeTrapwrite();    
     void executeTrapwriteif();    
-    void executeTraps(bool read, bool write, string command, bool cond = false);
+    void executeTraps(bool read, bool write, const string& command, bool cond = false);
     void executeTrapRW(uInt32 addr, bool read, bool write, bool add = true);  // not exposed by debugger
     void executeType();
     void executeUHex();
