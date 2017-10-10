@@ -1028,7 +1028,7 @@ void DebuggerParser::executeExec()
     file += ".script";
 
   FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
-  commandResult << exec(node, NULL);
+  commandResult << exec(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
