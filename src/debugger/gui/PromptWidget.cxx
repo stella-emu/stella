@@ -238,7 +238,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         completionList = list[0];
         for(uInt32 i = 1; i < list.size(); ++i)
           completionList += " " + list[i];
-        prefix = getCompletionPrefix(list, str);
+        prefix = getCompletionPrefix(list);
       }
       else
       {
@@ -263,7 +263,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         completionList = list[0];
         for(uInt32 i = 1; i < list.size(); ++i)
           completionList += " " + list[i];
-        prefix = getCompletionPrefix(list, str + lastDelimPos + 1);
+        prefix = getCompletionPrefix(list);
       }
 
       if(list.size() == 1)
@@ -911,28 +911,26 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PromptWidget::getCompletionPrefix(const StringList& completions, string prefix)
+string PromptWidget::getCompletionPrefix(const StringList& completions)
 {
-  // Search for prefix in every string, progressively growing it
-  // Once a mismatch is found or length is past one of the strings, we're done
-  // We *could* use the longest common string algorithm, but for the lengths
-  // of the strings we're dealing with, it's probably not worth it
-  for(;;)
+  // Find the largest match at the beginning of the completions provided
+  for(int len = 1;; len++)
   {
-    for(const auto& s: completions)
+    for(const auto& s1 : completions)
     {
-      if(s.length() < prefix.length())
-        return prefix;  // current prefix is the best we're going to get
-      else if(!BSPF::matches(s, prefix))
+      if(s1.length() < len)
       {
-        prefix.erase(prefix.length()-1);
-        return prefix;
+        return s1.substr(0, len - 1);
+      }
+      string find = s1.substr(0, len);
+      for(const auto& s2 : completions)
+      {
+        if(!BSPF::matches(s2, find))
+        {
+          return s1.substr(0, len - 1);
+        }
       }
     }
-    if(completions[0].length() > prefix.length())
-      prefix = completions[0].substr(0, prefix.length() + 1);
-    else
-      return prefix;
   }
 }
 

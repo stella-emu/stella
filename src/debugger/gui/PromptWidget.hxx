@@ -85,7 +85,7 @@ class PromptWidget : public Widget, public CommandSender
 
   private:
     // Get the longest prefix (initially 's') that is in every string in the list
-    string getCompletionPrefix(const StringList& completions, string s);
+    string getCompletionPrefix(const StringList& completions);
 
   private:
     enum {
