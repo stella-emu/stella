@@ -174,7 +174,7 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions) con
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(int i = 0; i < kNumCommands; ++i)
   {
-    if(BSPF::startsWithIgnoreCase(commands[i].cmdString.c_str(), in))
+    if(BSPF::matches(commands[i].cmdString, in))
       completions.push_back(commands[i].cmdString);
   }
 }

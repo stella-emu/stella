@@ -189,6 +189,24 @@ namespace BSPF
   {
     return findIgnoreCase(s1, s2) != string::npos;
   }
+
+  inline bool matches(const string& command, const string& in)
+  {
+    if(BSPF::startsWithIgnoreCase(command, in.substr(0, 1)))
+    {
+      size_t pos = 1;
+
+      for(int j = 1; j < in.size(); j++)
+      {
+        int found = BSPF::findIgnoreCase(command, in.substr(j, 1), pos);
+        if(found == string::npos)
+          return false;
+        pos += found + 1;
+      }
+      return true;
+    }
+    return false;
+  }
 } // namespace BSPF
 
 #endif

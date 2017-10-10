@@ -707,12 +707,12 @@ void Debugger::getCompletions(const char* in, StringList& list) const
   for(const auto& iter: myFunctions)
   {
     const char* l = iter.first.c_str();
-    if(BSPF::startsWithIgnoreCase(l, in))
+    if(BSPF::matches(l, in))
       list.push_back(l);
   }
 
   for(int i = 0; pseudo_registers[i][0] != 0; ++i)
-    if(BSPF::startsWithIgnoreCase(pseudo_registers[i][0], in))
+    if(BSPF::matches(pseudo_registers[i][0], in))
       list.push_back(pseudo_registers[i][0]);
 }
 

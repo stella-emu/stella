@@ -501,7 +501,7 @@ void PromptWidget::loadConfig()
     print(PROMPT);
 
     // Take care of one-time debugger stuff
-    // fill the history from the saves breaks, traps and watches commands
+    // fill the history from the saved breaks, traps and watches commands
     StringList history;
     print(instance().debugger().autoExec(&history));
     for(uInt32 i = 0; i < history.size(); i++)
@@ -922,7 +922,7 @@ string PromptWidget::getCompletionPrefix(const StringList& completions, string p
     {
       if(s.length() < prefix.length())
         return prefix;  // current prefix is the best we're going to get
-      else if(!BSPF::startsWithIgnoreCase(s, prefix))
+      else if(!BSPF::matches(s, prefix))
       {
         prefix.erase(prefix.length()-1);
         return prefix;
