@@ -913,22 +913,23 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PromptWidget::getCompletionPrefix(const StringList& completions)
 {
-  // Find the largest match at the beginning of the completions provided
+  // Find the number of characters matching for each of the completions provided
   for(uInt32 len = 1;; len++)
   {
-    for(const auto& s1 : completions)
+    for(uInt32 i = 0; i < completions.size(); i++)
     {
+      string s1 = completions[i];
       if(s1.length() < len)
       {
         return s1.substr(0, len - 1);
       }
       string find = s1.substr(0, len);
-      for(const auto& s2 : completions)
+
+      for(uInt32 j = i + 1; j < completions.size(); j++)
       {
-        if(!BSPF::matches(s2, find))
-        {
+        string s2 = completions[j];
+        if(!BSPF::startsWithIgnoreCase(s2, find))
           return s1.substr(0, len - 1);
-        }
       }
     }
   }
