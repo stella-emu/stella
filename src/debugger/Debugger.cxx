@@ -207,18 +207,18 @@ void Debugger::quit(bool exitrom)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::autoExec()
+string Debugger::autoExec(StringList* history)
 {
   ostringstream buf;
 
   // autoexec.script is always run
   FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.script");
   buf << "autoExec():" << endl
-      << myParser->exec(autoexec) << endl;
+      << myParser->exec(autoexec, history) << endl;
 
   // Also, "romname.script" if present
   FilesystemNode romname(myOSystem.romFile().getPathWithExt(".script"));
-  buf << myParser->exec(romname) << endl;
+  buf << myParser->exec(romname, history) << endl;
 
   // Init builtins
   for(int i = 0; builtin_functions[i][0] != 0; i++)

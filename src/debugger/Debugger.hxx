@@ -154,7 +154,7 @@ class Debugger : public DialogContainer
     */
     const string run(const string& command);
 
-    string autoExec();
+    string autoExec(StringList* history);
 
     string showWatches();
 

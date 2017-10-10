@@ -501,7 +501,14 @@ void PromptWidget::loadConfig()
     print(PROMPT);
 
     // Take care of one-time debugger stuff
-    print(instance().debugger().autoExec());
+    // fill the history from the saves breaks, traps and watches commands
+    StringList history;
+    print(instance().debugger().autoExec(&history));
+    for(uInt32 i = 0; i < history.size(); i++)
+    {
+      addToHistory(history[i].c_str());
+    }
+    history.clear();
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
     print(instance().debugger().cartDebug().loadListFile() + "\n");
     print(instance().debugger().cartDebug().loadSymbolFile() + "\n");

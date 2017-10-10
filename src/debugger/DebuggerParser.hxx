@@ -39,7 +39,7 @@ class DebuggerParser
     string run(const string& command);
 
     /** Execute parser commands given in 'file' */
-    string exec(const FilesystemNode& file);
+    string exec(const FilesystemNode& file, StringList* history = nullptr);
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */

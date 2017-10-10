@@ -126,7 +126,7 @@ string DebuggerParser::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::exec(const FilesystemNode& file)
+string DebuggerParser::exec(const FilesystemNode& file, StringList* history)
 {
   if(file.exists())
   {
@@ -143,6 +143,8 @@ string DebuggerParser::exec(const FilesystemNode& file)
         break;
 
       run(command);
+      if (history != nullptr)
+        history->push_back(command);
       count++;
     }
     buf << "\nExecuted " << count << " commands from \""
@@ -1026,7 +1028,7 @@ void DebuggerParser::executeExec()
     file += ".script";
 
   FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
-  commandResult << exec(node);
+  commandResult << exec(node, NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
