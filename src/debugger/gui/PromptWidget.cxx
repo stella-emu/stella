@@ -914,7 +914,7 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
 string PromptWidget::getCompletionPrefix(const StringList& completions)
 {
   // Find the largest match at the beginning of the completions provided
-  for(int len = 1;; len++)
+  for(uInt32 len = 1;; len++)
   {
     for(const auto& s1 : completions)
     {

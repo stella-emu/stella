@@ -190,15 +190,17 @@ namespace BSPF
     return findIgnoreCase(s1, s2) != string::npos;
   }
 
-  inline bool matches(const string& command, const string& in)
+  // Test whether the first string matches the second one (case insensitive)
+  // - the first character must match
+  // - the following characters must appear in the order of the first string
+  inline bool matches(const string& s1, const string& s2)
   {
-    if(BSPF::startsWithIgnoreCase(command, in.substr(0, 1)))
+    if(BSPF::startsWithIgnoreCase(s1, s2.substr(0, 1)))
     {
       size_t pos = 1;
-
-      for(int j = 1; j < in.size(); j++)
+      for(uInt32 j = 1; j < s2.size(); j++)
       {
-        int found = BSPF::findIgnoreCase(command, in.substr(j, 1), pos);
+        size_t found = BSPF::findIgnoreCase(s1, s2.substr(j, 1), pos);
         if(found == string::npos)
           return false;
         pos += found + 1;
