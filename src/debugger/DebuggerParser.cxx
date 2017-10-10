@@ -122,7 +122,7 @@ string DebuggerParser::run(const string& command)
     }
   }
 
-  return "No such command (try \"help\")";
+  return red("No such command (try \"help\")");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -914,7 +914,10 @@ void DebuggerParser::executeDefine()
 // "delbreakif"
 void DebuggerParser::executeDelbreakif()
 {
-  debugger.cpuDebug().m6502().delCondBreak(args[0]);
+  if (debugger.cpuDebug().m6502().delCondBreak(args[0]))
+    commandResult << "removed breakif " << Base::toString(args[0]);
+  else
+    commandResult << red("no such breakif");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -942,7 +945,7 @@ void DebuggerParser::executeDeltrap()
     commandResult << "removed trap " << Base::toString(index);
   }
   else
-    commandResult << "no such trap";
+    commandResult << red("no such trap");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -956,7 +959,7 @@ void DebuggerParser::executeDelwatch()
     commandResult << "removed watch";
   }
   else
-    commandResult << "no such watch";
+    commandResult << red("no such watch");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
