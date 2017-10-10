@@ -18,6 +18,9 @@
 #include "FrameLayoutDetector.hxx"
 #include "TIAConstants.hxx"
 
+/**
+ * Misc. numeric constants used in the algorithm.
+ */
 enum Metrics: uInt32 {
   frameLinesNTSC            = 262,
   frameLinesPAL             = 312,
@@ -28,6 +31,7 @@ enum Metrics: uInt32 {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameLayout FrameLayoutDetector::detectedLayout() const{
+  // We choose the mode that was detected for the majority of frames.
   return myPalFrames > myNtscFrames ? FrameLayout::pal : FrameLayout::ntsc;
 }
 
@@ -55,6 +59,8 @@ void FrameLayoutDetector::onNextLine()
 
   switch (myState) {
     case State::waitForVsyncStart:
+      // We start counting the number of "lines spent while waiting for vsync start" from
+      // the "ideal" frame size (corrected by the three scanlines spent in vsync).
       if (myCurrentFrameTotalLines > frameLines - 3 || myTotalFrames == 0)
         myLinesWaitingForVsync++;
 
@@ -78,15 +84,13 @@ void FrameLayoutDetector::setState(State state)
   if (state == myState) return;
 
   myState = state;
+  myLinesWaitingForVsync = 0;
 
   switch (myState) {
     case State::waitForVsyncEnd:
-      myLinesWaitingForVsync = 0;
       break;
 
     case State::waitForVsyncStart:
-      myLinesWaitingForVsync = 0;
-
       finalizeFrame();
       notifyFrameStart();
       break;
@@ -103,19 +107,25 @@ void FrameLayoutDetector::finalizeFrame()
 
   if (myTotalFrames <= Metrics::initialGarbageFrames) return;
 
+  // Calculate the delta between scanline count and the sweet spot for the respective
+  // frame layouts
   const uInt32
     deltaNTSC = abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesNTSC)),
     deltaPAL =  abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesPAL));
 
+  // Does the scanline count fall into one of our tolerance windows? -> use it
   if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance)
     layout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
   else if (
+  // If scanline count is odd and lies between the PAL and NTSC windows we assume
+  // it is NTSC (it would cause color loss on PAL CRTs)
     (myCurrentFrameFinalLines < frameLinesPAL) &&
     (myCurrentFrameFinalLines > frameLinesNTSC) &&
     (myCurrentFrameFinalLines % 2)
   )
     layout(FrameLayout::ntsc);
   else
+  // Take the nearest layout if all else fails
     layout(deltaNTSC <= deltaPAL ? FrameLayout::ntsc : FrameLayout::pal);
 
   switch (layout()) {

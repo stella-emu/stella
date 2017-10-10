@@ -21,6 +21,10 @@
 #include "AbstractFrameManager.hxx"
 #include "FrameLayout.hxx"
 
+/**
+ * This frame manager performs frame layout autodetection. It counts the scanlines
+ * in each frame and assigns guesses the frame layout from this.
+ */
 class FrameLayoutDetector: public AbstractFrameManager {
   public:
 
@@ -28,36 +32,70 @@ class FrameLayoutDetector: public AbstractFrameManager {
 
   public:
 
+    /**
+     * Return the detected frame layout.
+     */
     FrameLayout detectedLayout() const;
 
   protected:
 
+    /**
+     * Hook into vsync changes.
+     */
     void onSetVsync() override;
 
+    /**
+     * Hook into reset.
+     */
     void onReset() override;
 
+    /**
+     * Hook into line changes.
+     */
     void onNextLine() override;
 
   private:
 
+    /**
+     * This frame manager only tracks frame boundaries, so we have only two states.
+     */
     enum State {
+      // Wait for VSYNC to be enabled.
       waitForVsyncStart,
+
+      // Wait for VSYNC to be disabled.
       waitForVsyncEnd
     };
 
 
   private:
 
+    /**
+     * Change state and change internal state accordingly.
+     */
     void setState(State state);
 
+    /**
+     * Finalize the current frame and guess frame layout from the scanline count.
+     */
     void finalizeFrame();
 
   private:
 
+    /**
+     * The current state.
+     */
     State myState;
 
+    /**
+     * The total number of frames detected as the respective frame layout.
+     */
     uInt32 myNtscFrames, myPalFrames;
 
+    /**
+     * We count the number of scanlines we spend waiting for vsync to be
+     * toggled. If a threshold is exceeded, we force the transition.
+     */
     uInt32 myLinesWaitingForVsync;
 
 };
