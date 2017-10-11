@@ -165,7 +165,6 @@ void FrameManager::setState(FrameManager::State state)
       break;
 
     case State::frame:
-      notifyRenderingStart();
       myVsyncLines = 0;
       myY = 0;
       break;

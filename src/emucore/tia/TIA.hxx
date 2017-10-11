@@ -462,12 +462,6 @@ class TIA : public Device
     void onFrameStart();
 
     /**
-     * This callback is invoked by FrameManager when the visible range of the
-     * current frame starts.
-     */
-    void onRenderingStart();
-
-    /**
      * This callback is invoked by FrameManager when the current frame completes.
      */
     void onFrameComplete();

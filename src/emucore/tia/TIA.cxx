@@ -108,9 +108,6 @@ void TIA::setFrameManager(AbstractFrameManager *frameManager)
     },
     [this] () {
       onFrameComplete();
-    },
-    [this] () {
-      onRenderingStart();
     }
   );
 
@@ -1132,12 +1129,6 @@ void TIA::onFrameStart()
       myBackground.applyColorLoss();
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::onRenderingStart()
-{
-  myXAtRenderingStart = myHctr > 68 ? myHctr - 68 : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

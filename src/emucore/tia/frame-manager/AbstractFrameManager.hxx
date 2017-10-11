@@ -40,8 +40,7 @@ class AbstractFrameManager : public Serializable
      */
     void setHandlers(
       callback frameStartCallback,
-      callback frameCompletionCallback,
-      callback renderingStartCallback
+      callback frameCompletionCallback
     );
 
     /**
@@ -251,14 +250,6 @@ class AbstractFrameManager : public Serializable
     void notifyFrameComplete();
 
     /**
-     * Signal rendering start. Mandatory only of actual rendering happens.
-     *
-     * TODO: This (and the related handling in the TIA) should be unnecessary
-     * after refactoring.
-     */
-    void notifyRenderingStart();
-
-    /**
      * The internal setter to update the frame layout.
      */
     void layout(FrameLayout layout);
@@ -317,7 +308,6 @@ class AbstractFrameManager : public Serializable
      */
     callback myOnFrameStart;
     callback myOnFrameComplete;
-    callback myOnRenderingStart;
 
   private:
 

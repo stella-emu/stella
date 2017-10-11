@@ -21,8 +21,7 @@
 AbstractFrameManager::AbstractFrameManager() :
   myLayout(FrameLayout::pal),
   myOnFrameStart(nullptr),
-  myOnFrameComplete(nullptr),
-  myOnRenderingStart(nullptr)
+  myOnFrameComplete(nullptr)
 {
   layout(FrameLayout::ntsc);
   reset();
@@ -55,18 +54,16 @@ void AbstractFrameManager::nextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AbstractFrameManager::setHandlers(
   callback frameStartCallback,
-  callback frameCompletionCallback,
-  callback renderingStartCallback
+  callback frameCompletionCallback
 ) {
   myOnFrameStart = frameStartCallback;
   myOnFrameComplete = frameCompletionCallback;
-  myOnRenderingStart = renderingStartCallback;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AbstractFrameManager::clearHandlers()
 {
-  myOnFrameStart = myOnFrameComplete = myOnRenderingStart = nullptr;
+  myOnFrameStart = myOnFrameComplete = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,12 +104,6 @@ void AbstractFrameManager::notifyFrameComplete()
 
   myFrameRate = (layout() == FrameLayout::pal ? 15600.0 : 15720.0) /
     myCurrentFrameFinalLines;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractFrameManager::notifyRenderingStart()
-{
-  if (myOnRenderingStart) myOnRenderingStart();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
