@@ -59,6 +59,7 @@
 #include "FrameLayout.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
+#include "frame-manager/YStartDetector.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -144,7 +145,20 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
     // Don't forget to reset the SC progress bars again
     myOSystem.settings().setValue("fastscbios", fastscbios);
+
+    // TODO: move! move! move! (temporary for testing)
+    YStartDetector ystartDetector;
+    ystartDetector.setLayout(frameLayoutDetector.detectedLayout());
+    myTIA->setFrameManager(&ystartDetector);
+    mySystem->reset();
+
+    for (int i = 0; i < 80; i++) myTIA->update();
+
+    myTIA->setFrameManager(myFrameManager.get());
+
+    (cout << "detected ystart value: " << ystartDetector.detectedYStart() << std::endl).flush();
   }
+
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
   // Set up the correct properties used when toggling format

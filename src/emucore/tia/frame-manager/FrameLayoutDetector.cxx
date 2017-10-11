@@ -40,7 +40,7 @@ void FrameLayoutDetector::onReset()
 {
   myState = State::waitForVsyncStart;
   myNtscFrames = myPalFrames = 0;
-  myLinesWaitingForVsync = 0;
+  myLinesWaitingForVsyncToStart = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -62,14 +62,14 @@ void FrameLayoutDetector::onNextLine()
       // We start counting the number of "lines spent while waiting for vsync start" from
       // the "ideal" frame size (corrected by the three scanlines spent in vsync).
       if (myCurrentFrameTotalLines > frameLines - 3 || myTotalFrames == 0)
-        myLinesWaitingForVsync++;
+        myLinesWaitingForVsyncToStart++;
 
-      if (myLinesWaitingForVsync > Metrics::waitForVsync) setState(State::waitForVsyncEnd);
+      if (myLinesWaitingForVsyncToStart > Metrics::waitForVsync) setState(State::waitForVsyncEnd);
 
       break;
 
     case State::waitForVsyncEnd:
-      if (++myLinesWaitingForVsync > Metrics::waitForVsync) setState(State::waitForVsyncStart);
+      if (++myLinesWaitingForVsyncToStart > Metrics::waitForVsync) setState(State::waitForVsyncStart);
 
       break;
 
@@ -84,7 +84,7 @@ void FrameLayoutDetector::setState(State state)
   if (state == myState) return;
 
   myState = state;
-  myLinesWaitingForVsync = 0;
+  myLinesWaitingForVsyncToStart = 0;
 
   switch (myState) {
     case State::waitForVsyncEnd:

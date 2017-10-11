@@ -96,7 +96,7 @@ class FrameLayoutDetector: public AbstractFrameManager {
      * We count the number of scanlines we spend waiting for vsync to be
      * toggled. If a threshold is exceeded, we force the transition.
      */
-    uInt32 myLinesWaitingForVsync;
+    uInt32 myLinesWaitingForVsyncToStart;
 
 };
 
