@@ -306,6 +306,16 @@ class Console : public Serializable
 
   private:
     /**
+     * Dry-run the emulation and detect the frame layout (PAL / NTSC).
+     */
+    void autodetectFrameLayout();
+
+    /**
+     * Dryrun the emulation and detect ystart (the first visible scanline).
+     */
+    void autodetectYStart();
+
+    /**
       Sets various properties of the TIA (YStart, Height, etc) based on
       the current display format.
     */
@@ -384,6 +394,9 @@ class Console : public Serializable
 
     // Display format currently in use
     uInt32 myCurrentFormat;
+
+    // Autodetected ystart.
+    uInt32 myAutodetectedYstart;
 
     // Indicates whether an external palette was found and
     // successfully loaded

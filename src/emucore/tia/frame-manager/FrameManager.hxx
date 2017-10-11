@@ -50,8 +50,6 @@ class FrameManager: public AbstractFrameManager {
 
     uInt32 ystart() const override { return myVblankManager.ystart(); }
 
-    bool ystartIsAuto(uInt32 line) const override { return myVblankManager.ystartIsAuto(line); };
-
     void setLayout(FrameLayout mode) override { layout(mode); }
 
     void onSetVblank() override;
@@ -102,10 +100,6 @@ class FrameManager: public AbstractFrameManager {
     uInt32 myVsyncLines;
     uInt32 myY, myLastY;
     bool myFramePending;
-
-    uInt32 myStableFrames;
-    uInt32 myStabilizationFrames;
-    bool myHasStabilized;
 
     uInt32 myVblankLines;
     uInt32 myKernelLines;

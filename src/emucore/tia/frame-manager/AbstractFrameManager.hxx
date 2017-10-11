@@ -186,11 +186,6 @@ class AbstractFrameManager : public Serializable
     virtual uInt32 ystart() const { return 0; }
 
     /**
-     * TODO: this looks pretty weird --- does this actually work?
-     */
-    virtual bool ystartIsAuto(uInt32 line) const { return false; }
-
-    /**
      * Set the frame layout. This may be a noop (on the autodetection manager).
      */
     virtual void setLayout(FrameLayout mode) {}

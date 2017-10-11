@@ -206,7 +206,6 @@ class TIA : public Device
     uInt32 width() const  { return 160; }
     uInt32 height() const { return myFrameManager->height(); }
     uInt32 ystart() const { return myFrameManager->ystart(); }
-    bool ystartIsAuto(uInt32 line) const { return myFrameManager->ystartIsAuto(line); }
 
     /**
       Changes the current Height/YStart properties.
