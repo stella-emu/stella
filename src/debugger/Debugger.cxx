@@ -704,16 +704,20 @@ string Debugger::builtinHelp() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::getCompletions(const char* in, StringList& list) const
 {
-  for(const auto& iter: myFunctions)
+  // skip if filter equals "_" only
+  if(!BSPF::equalsIgnoreCase(in, "_"))
   {
-    const char* l = iter.first.c_str();
-    if(BSPF::matches(l, in))
-      list.push_back(l);
-  }
+    for(const auto& iter : myFunctions)
+    {
+      const char* l = iter.first.c_str();
+      if(BSPF::matches(l, in))
+        list.push_back(l);
+    }
 
-  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
-    if(BSPF::matches(pseudo_registers[i][0], in))
-      list.push_back(pseudo_registers[i][0]);
+    for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+      if(BSPF::matches(pseudo_registers[i][0], in))
+        list.push_back(pseudo_registers[i][0]);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

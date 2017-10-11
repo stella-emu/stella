@@ -220,6 +220,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         }
       }
       str[len] = '\0';
+      int strLen = len - lastDelimPos - 1;
 
       StringList list;
       string completionList;
@@ -227,7 +228,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
       if(lastDelimPos < 0)
       {
-        // no delimiters, do command completion:
+        // no delimiters, do only command completion:
         const DebuggerParser& parser = instance().debugger().parser();
         parser.getCompletions(str, list);
 
@@ -249,11 +250,15 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         }
         else
         {
-          // we got a delimiter, so this must be a label or a function
-          const Debugger& dbg = instance().debugger();
+          // do not show ALL labels without any filter as it makes no sense
+          if(strLen > 0)
+          {
+            // we got a delimiter, so this must be a label or a function
+            const Debugger& dbg = instance().debugger();
 
-          dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
-          dbg.getCompletions(str + lastDelimPos + 1, list);
+            dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
+            dbg.getCompletions(str + lastDelimPos + 1, list);
+          }
         }
 
         if(list.size() < 1)
@@ -265,6 +270,8 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
           completionList += " " + list[i];
         prefix = getCompletionPrefix(list);
       }
+
+      // TODO: tab through list
 
       if(list.size() == 1)
       {
@@ -927,8 +934,7 @@ string PromptWidget::getCompletionPrefix(const StringList& completions)
 
       for(uInt32 j = i + 1; j < completions.size(); j++)
       {
-        string s2 = completions[j];
-        if(!BSPF::startsWithIgnoreCase(s2, find))
+        if(!BSPF::startsWithIgnoreCase(completions[j], find))
           return s1.substr(0, len - 1);
       }
     }
