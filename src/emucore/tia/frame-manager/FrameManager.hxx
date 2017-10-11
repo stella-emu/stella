@@ -19,7 +19,6 @@
 #define TIA_FRAME_MANAGER
 
 #include "AbstractFrameManager.hxx"
-#include "VblankManager.hxx"
 #include "TIAConstants.hxx"
 #include "bspf.hxx"
 
@@ -30,7 +29,7 @@ class FrameManager: public AbstractFrameManager {
 
   public:
 
-    void setJitterFactor(uInt8 factor) override { myVblankManager.setJitterFactor(factor); }
+    void setJitterFactor(uInt8 factor) override { }
 
     bool jitterEnabled() const override { return myJitterEnabled; }
 
@@ -46,13 +45,11 @@ class FrameManager: public AbstractFrameManager {
 
     Int32 missingScanlines() const override;
 
-    void setYstart(uInt32 ystart) override { myVblankManager.setYstart(ystart); }
+    void setYstart(uInt32 ystart) override { myYStart = ystart; }
 
-    uInt32 ystart() const override { return myVblankManager.ystart(); }
+    uInt32 ystart() const override { return myYStart; }
 
     void setLayout(FrameLayout mode) override { layout(mode); }
-
-    void onSetVblank() override;
 
     void onSetVsync() override;
 
@@ -93,13 +90,10 @@ class FrameManager: public AbstractFrameManager {
 
   private:
 
-    VblankManager myVblankManager;
-
     State myState;
     uInt32 myLineInState;
     uInt32 myVsyncLines;
     uInt32 myY, myLastY;
-    bool myFramePending;
 
     uInt32 myVblankLines;
     uInt32 myKernelLines;
@@ -107,6 +101,7 @@ class FrameManager: public AbstractFrameManager {
     uInt32 myFrameLines;
     uInt32 myHeight;
     uInt32 myFixedHeight;
+    uInt32 myYStart;
 
     bool myJitterEnabled;
 

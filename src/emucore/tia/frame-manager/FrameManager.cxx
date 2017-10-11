@@ -41,7 +41,8 @@ enum Metrics: uInt32 {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager() :
-  myHeight(0)
+  myHeight(0),
+  myYStart(0)
 {
   onLayoutChange();
 }
@@ -49,14 +50,11 @@ FrameManager::FrameManager() :
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onReset()
 {
-  myVblankManager.reset();
-
   myState = State::waitForVsyncStart;
   myLineInState = 0;
   myTotalFrames = 0;
   myVsyncLines = 0;
   myY = 0;
-  myFramePending = false;
 
   myStableFrameLines = -1;
   myStableFrameHeightCountdown = 0;
@@ -85,8 +83,7 @@ void FrameManager::onNextLine()
       break;
 
     case State::waitForFrameStart:
-      if (myVblankManager.nextLine(myTotalFrames <= Metrics::initialGarbageFrames))
-        setState(State::frame);
+      if (myLineInState >= myYStart) setState(State::frame);
       break;
 
     case State::frame:
@@ -107,7 +104,7 @@ void FrameManager::onNextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 FrameManager::missingScanlines() const
 {
-  if (myLastY == ystart() + myY)
+  if (myLastY == myYStart + myY)
     return 0;
   else {
     return myHeight - myY;
@@ -117,28 +114,8 @@ Int32 FrameManager::missingScanlines() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onSetVsync()
 {
-#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "vsync " << !myVsync << " -> " << myVsync << ": state " << int(myState) << " @ " << myLineInState << "\n").flush();
-#endif
-
-  switch (myState)
-  {
-    case State::waitForVsyncStart:
-    case State::waitForFrameStart:
-      if (myVsync) setState(State::waitForVsyncEnd);
-      break;
-
-    case State::waitForVsyncEnd:
-      if (!myVsync) setState(State::waitForFrameStart);
-      break;
-
-    case State::frame:
-      if (myVsync) setState(State::waitForVsyncEnd);
-      break;
-
-    default:
-      throw runtime_error("frame manager: invalid state");
-  }
+  if (myState == State::waitForVsyncEnd) setState(State::waitForFrameStart);
+  else setState(State::waitForVsyncEnd);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,20 +123,13 @@ void FrameManager::setState(FrameManager::State state)
 {
   if (myState == state) return;
 
-#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "state change " << myState << " -> " << state << " @ " << myLineInState << "\n").flush();
-#endif // TIA_FRAMEMANAGER_DEBUG_LOG
-
   myState = state;
   myLineInState = 0;
 
   switch (myState) {
     case State::waitForFrameStart:
-      if (myFramePending) finalizeFrame();
+      finalizeFrame();
       notifyFrameStart();
-
-      myVblankManager.start();
-      myFramePending = true;
 
       myVsyncLines = 0;
       break;
@@ -204,6 +174,7 @@ void FrameManager::finalizeFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::handleJitter(Int32 scanlineDifference)
 {
+  /*
   if (
     (uInt32)abs(scanlineDifference) < Metrics::minDeltaForJitter ||
     !myJitterEnabled ||
@@ -211,16 +182,13 @@ void FrameManager::handleJitter(Int32 scanlineDifference)
   ) return;
 
   myVblankManager.setJitter(scanlineDifference);
+  */
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: kill this with fire once frame manager refactoring is complete
 void FrameManager::onLayoutChange()
 {
-#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "TV mode switched to " << int(layout()) << "\n").flush();
-#endif // TIA_FRAMEMANAGER_DEBUG_LOG
-
   switch (layout())
   {
     case FrameLayout::ntsc:
@@ -242,23 +210,6 @@ void FrameManager::onLayoutChange()
   myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
   if (myFixedHeight == 0)
     myHeight = myKernelLines + Metrics::visibleOverscan;
-
-  myVblankManager.setVblankLines(myVblankLines);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::onSetVblank()
-{
-  #ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-    (cout << "vblank change " << !myVblank << " -> " << myVblank << "@" << myLineInState << "\n").flush();
-  #endif // TIA_FRAMEMANAGER_DEBUG_LOG
-
-  if (myState == State::waitForFrameStart) {
-    if (myVblankManager.setVblankDuringVblank(myVblank, myTotalFrames <= Metrics::initialGarbageFrames)) {
-      setState(State::frame);
-    }
-  } else
-    myVblankManager.setVblank(myVblank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -271,9 +222,11 @@ void FrameManager::setFixedHeight(uInt32 height)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::enableJitter(bool enabled)
 {
+  /*
   myJitterEnabled = enabled;
 
   if (!enabled) myVblankManager.setJitter(0);
+  */
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -284,14 +237,11 @@ void FrameManager::updateIsRendering() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameManager::onSave(Serializer& out) const
 {
-  if (!myVblankManager.save(out)) return false;
-
   out.putInt(uInt32(myState));
   out.putInt(myLineInState);
   out.putInt(myVsyncLines);
   out.putInt(myY);
   out.putInt(myLastY);
-  out.putBool(myFramePending);
 
   out.putInt(myVblankLines);
   out.putInt(myKernelLines);
@@ -311,14 +261,11 @@ bool FrameManager::onSave(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameManager::onLoad(Serializer& in)
 {
-  if (!myVblankManager.load(in)) return false;
-
   myState = State(in.getInt());
   myLineInState = in.getInt();
   myVsyncLines = in.getInt();
   myY = in.getInt();
   myLastY = in.getInt();
-  myFramePending = in.getBool();
 
   myVblankLines = in.getInt();
   myKernelLines = in.getInt();
