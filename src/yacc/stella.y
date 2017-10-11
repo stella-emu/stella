@@ -99,6 +99,6 @@ expression:	expression '+' expression { if(DEBUG_EXP) fprintf(stderr, " +"); $$ 
 	|	CART_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CartMethod)"); $$ = new CartMethodExpression($1); lastExp = $$; }
 	|	TIA_METHOD { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); $$ = new TiaMethodExpression($1); lastExp = $$; }
 	|	FUNCTION { if(DEBUG_EXP) fprintf(stderr, " (DefinedFunction)"); $$ = new FunctionExpression($1); lastExp = $$; }
-	|  ERR { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((char*)"Invalid label or constant"); return 1; }
+	|  ERR { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((const char*)"Invalid label or constant"); return 1; }
 	;
 %%

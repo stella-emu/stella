@@ -214,7 +214,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Bad adjust", NTSCFilter::PRESET_BAD);
   VarList::push_back(items, "Custom", NTSCFilter::PRESET_CUSTOM);
   lwidth = font.getStringWidth("TV Mode ");
-  pwidth = font.getStringWidth("Bad adjust"),
+  pwidth = font.getStringWidth("Bad adjust");
   myTVMode =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                     items, "TV Mode ", lwidth, kTVModeChanged);
@@ -510,13 +510,13 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tia.aspectp", myPAspectRatioLabel->getLabel());
 
   // Framerate
-  int i = myFrameRate->getValue();
-  instance().settings().setValue("framerate", i);
+  int f = myFrameRate->getValue();
+  instance().settings().setValue("framerate", f);
   if(instance().hasConsole())
   {
     // Make sure auto-frame calculation is only enabled when necessary
-    instance().console().tia().enableAutoFrame(i <= 0);
-    instance().console().setFramerate(float(i));
+    instance().console().tia().enableAutoFrame(f <= 0);
+    instance().console().setFramerate(float(f));
   }
 
   // Fullscreen

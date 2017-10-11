@@ -2713,9 +2713,9 @@ static const FontDesc stellaDesc = {
   32,
   95,
   stella_font_bits,
-  0,  /* no encode table*/
-  0,  /* fixed width*/
-  0,  /* fixed bbox*/
+  nullptr,  /* no encode table*/
+  nullptr,  /* fixed width*/
+  nullptr,  /* fixed bbox*/
   32,
   sizeof(stella_font_bits)/sizeof(uInt16)
 };

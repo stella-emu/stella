@@ -94,12 +94,11 @@ void Thumbulator::setConsoleTiming(ConsoleTiming timing)
   constexpr double PAL    = 70.0 / 1.182298;  // PAL   6507 clock rate
   constexpr double SECAM  = 70.0 / 1.187500;  // SECAM 6507 clock rate
 
-  switch (timing)
+  switch(timing)
   {
     case ConsoleTiming::ntsc:   timing_factor = NTSC;   break;
     case ConsoleTiming::secam:  timing_factor = SECAM;  break;
     case ConsoleTiming::pal:    timing_factor = PAL;    break;
-    default:                    timing_factor = NTSC;   break;
   }
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

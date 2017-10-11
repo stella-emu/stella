@@ -561,7 +561,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPF[2]);
 
   // PFx bit labels
-  auto start = [&](int w) { return (w - sfWidth) / 2; };
+  auto start = [&](int sw) { return (sw - sfWidth) / 2; };
   int colw = myPF[0]->getWidth() / 4;
   xpos = 10 + 2*fontWidth + 5 + start(colw);
   int _ypos = ypos - sfHeight;

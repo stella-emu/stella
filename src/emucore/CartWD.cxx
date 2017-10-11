@@ -132,8 +132,6 @@ uInt8 CartridgeWD::peek(uInt16 address)
     else
       return mySegment3[address & 0x03FF];
   }
-
-  return 0;  // Make the compiler happy; we'll never reach this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

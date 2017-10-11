@@ -75,7 +75,7 @@ static const uInt16 console_font_bits[] = {
   0x0000,
   0b1101101100000000,
   0x0000,
-  0x0000,   
+  0x0000,
 
 /* MODIFIED
    Character 30 (0x1e): large centered rounded rectangle
@@ -3388,9 +3388,9 @@ static const FontDesc consoleDesc = {
   29,
   98,
   console_font_bits,
-  0,  /* no encode table*/
-  0,  /* fixed width*/
-  0,  /* fixed bbox*/
+  nullptr,  /* no encode table*/
+  nullptr,  /* fixed width*/
+  nullptr,  /* fixed bbox*/
   32,                       // Originally 30
   sizeof(console_font_bits)/sizeof(uInt16)
 };

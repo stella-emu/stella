@@ -333,7 +333,7 @@ void UIDialog::loadConfig()
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
   const GUI::Size& ds = instance().settings().getSize("dbg.res");
-  w = ds.w, h = ds.h;
+  w = ds.w; h = ds.h;
   w = std::max(w, uInt32(DebuggerDialog::kSmallFontMinW));
   h = std::max(h, uInt32(DebuggerDialog::kSmallFontMinH));
   w = std::min(w, ds.w);

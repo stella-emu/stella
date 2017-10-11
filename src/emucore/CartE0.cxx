@@ -57,7 +57,7 @@ void CartridgeE0::install(System& system)
   myCurrentSlice[3] = 7;
 
   // Set the page accessing methods for the hot spots in the last segment
-  access.directPeekBase = 0;
+  access.directPeekBase = nullptr;
   access.codeAccessBase = &myCodeAccessBase[8128];
   access.type = System::PA_READ;
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;

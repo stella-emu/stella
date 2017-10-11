@@ -47,7 +47,7 @@ class VblankManager : public Serializable
 
     bool vblank() const { return myVblank; }
 
-    uInt32 currentLine() const { return myCurrentLine; };
+    uInt32 currentLine() const { return myCurrentLine; }
 
     void setJitter(Int32 jitter);
     void setJitterFactor(uInt8 jitterFactor) { myJitterFactor = jitterFactor; }

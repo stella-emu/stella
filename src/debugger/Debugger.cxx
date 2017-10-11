@@ -59,6 +59,7 @@
 Debugger* Debugger::myStaticDebugger = nullptr;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// FIXME - use a vector for this
 static const char* const builtin_functions[][3] = {
   // { "name", "definition", "help text" }
 
@@ -91,6 +92,7 @@ static const char* const builtin_functions[][3] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Names are defined here, but processed in YaccParser
+// FIXME - use a vector for this
 static const char* const pseudo_registers[][2] = {
   // { "name", "help text" }
 

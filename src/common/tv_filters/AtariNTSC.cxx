@@ -56,12 +56,12 @@ void AtariNTSC::initializePalette(const uInt8* palette)
     uInt32* kernel = myColorTable[entry];
     genKernel(myImpl, y, i, q, kernel);
 
-    for ( uInt32 i = 0; i < rgb_kernel_size / 2; i++ )
+    for ( uInt32 c = 0; c < rgb_kernel_size / 2; ++c )
     {
       uInt32 error = rgb -
-          kernel [i    ] - kernel [(i+10)%14+14] -
-          kernel [i + 7] - kernel [i + 3    +14];
-      kernel [i + 3 + 14] += error;
+          kernel [c    ] - kernel [(c+10)%14+14] -
+          kernel [c + 7] - kernel [c + 3    +14];
+      kernel [c + 3 + 14] += error;
     }
   }
 }

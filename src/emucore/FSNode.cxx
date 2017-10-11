@@ -123,17 +123,17 @@ string FilesystemNode::getShortPathWithExt(const string& ext) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::hasParent() const
 {
-  return _realNode ? (_realNode->getParent() != 0) : false;
+  return _realNode ? (_realNode->getParent() != nullptr) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode FilesystemNode::getParent() const
 {
-  if (_realNode == 0)
+  if (_realNode == nullptr)
     return *this;
 
   AbstractFSNode* node = _realNode->getParent();
-  return (node == 0) ? *this : FilesystemNode(node);
+  return node ? FilesystemNode(node) : *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

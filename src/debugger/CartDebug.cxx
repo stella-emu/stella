@@ -723,7 +723,7 @@ string CartDebug::loadListFile()
       if(addr_s.length() == 0)
         continue;
       const char* p = addr_s[0] == 'U' ? addr_s.c_str() + 1 : addr_s.c_str();
-      addr = int(strtoul(p, NULL, 16));
+      addr = int(strtoul(p, nullptr, 16));
 
       // For now, completely ignore ROM addresses
       if(!(addr & 0x1000))
@@ -1462,8 +1462,10 @@ const char* const CartDebug::ourTIAMnemonicW[64] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* const CartDebug::ourIOMnemonic[24] = {
-  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT", 0, 0,  0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, "TIM1T", "TIM8T", "TIM64T", "T1024T"
+  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT",
+  "$286", "$287", "$288", "$289", "$28a", "$28b", "$28c",
+  "$28d", "$28e", "$28f", "$290", "$291", "$292", "$293",
+  "TIM1T", "TIM8T", "TIM64T", "T1024T"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

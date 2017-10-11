@@ -35,7 +35,7 @@ OSystemUNIX::OSystemUNIX()
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
   const char* configDir = getenv("XDG_CONFIG_HOME");
-  if(configDir == NULL)  configDir = "~/.config";
+  if(configDir == nullptr)  configDir = "~/.config";
 
   string stellaDir = string(configDir) + "/stella";
 

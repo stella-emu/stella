@@ -29,7 +29,7 @@
 #include "StateManager.hxx"
 
 #define STATE_HEADER "05000302state"
-#define MOVIE_HEADER "03030000movie"
+// #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem& osystem)

@@ -59,7 +59,7 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& p, bool verify)
   if(_path[0] == '~')
   {
     const char* home = getenv("HOME");
-    if (home != NULL)
+    if (home != nullptr)
       _path.replace(0, 1, home);
   }
 
@@ -79,7 +79,7 @@ string FilesystemNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const char* home = getenv("HOME");
-  if(home != NULL && BSPF::startsWithIgnoreCase(_path, home))
+  if(home != nullptr && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* offset = _path.c_str() + strlen(home);
@@ -99,11 +99,11 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
   DIR* dirp = opendir(_path.c_str());
   struct dirent* dp;
 
-  if (dirp == NULL)
+  if (dirp == nullptr)
     return false;
 
   // loop over dir entries using readdir
-  while ((dp = readdir(dirp)) != NULL)
+  while ((dp = readdir(dirp)) != nullptr)
   {
     // Skip 'invisible' files if necessary
     if (dp->d_name[0] == '.' && !hidden)

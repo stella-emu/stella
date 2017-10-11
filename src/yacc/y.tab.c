@@ -1543,7 +1543,7 @@ yyreduce:
 
   case 36:
 #line 102 "stella.y" /* yacc.c:1646  */
-    { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((char*)"Invalid label or constant"); return 1; }
+    { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((const char*)"Invalid label or constant"); return 1; }
 #line 1548 "y.tab.c" /* yacc.c:1646  */
     break;
 

@@ -58,7 +58,7 @@ void CartridgeEFSC::install(System& system)
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.directPokeBase = 0;
+  access.directPokeBase = nullptr;
   access.type = System::PA_READ;
   for(uInt16 addr = 0x1080; addr < 0x1100; addr += System::PAGE_SIZE)
   {

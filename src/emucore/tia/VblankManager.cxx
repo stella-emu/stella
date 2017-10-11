@@ -207,13 +207,13 @@ bool VblankManager::shouldTransition(bool isGarbageFrame)
 
     // Fixed mode: use external ystart value
     case VblankMode::fixed:
-      transition = (Int32)myCurrentLine >=
+      transition = Int32(myCurrentLine) >=
         std::max<Int32>(myYstart + std::min<Int32>(myJitter, Metrics::maxJitter), 0);
       break;
 
     // Final mode: use detected ystart value
     case VblankMode::final:
-      transition = (Int32)myCurrentLine >=
+      transition = Int32(myCurrentLine) >=
         std::max<Int32>(myLastVblankLines + std::min<Int32>(myJitter, Metrics::maxJitter), 0);
       break;
   }

@@ -324,7 +324,7 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
-    changed.push_back(myCart.myMusicCounters[i] != (uInt32)myOldState.mcounters[i]);
+    changed.push_back(myCart.myMusicCounters[i] != uInt32(myOldState.mcounters[i]));
   }
   myMusicCounters->setList(alist, vlist, changed);
 
@@ -332,7 +332,7 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
-    changed.push_back(myCart.myMusicFrequencies[i] != (uInt32)myOldState.mfreqs[i]);
+    changed.push_back(myCart.myMusicFrequencies[i] != uInt32(myOldState.mfreqs[i]));
   }
   myMusicFrequencies->setList(alist, vlist, changed);
 

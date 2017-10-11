@@ -55,7 +55,7 @@ class FilesystemNodeFactory
           return new FilesystemNodeZIP(path);
           break;
       }
-      return 0;
+      return nullptr;
     }
 
   private:

@@ -62,7 +62,7 @@ OSystem::OSystem()
     myQuitLoop(false)
 {
   // Calculate startup time
-  myMillisAtStart = uInt32(time(NULL) * 1000);
+  myMillisAtStart = uInt32(time(nullptr) * 1000);
 
   // Get built-in features
   #ifdef SOUND_SUPPORT
@@ -596,7 +596,7 @@ uInt64 OSystem::getTicks() const
 #ifdef HAVE_GETTIMEOFDAY
   // Gettimeofday natively refers to the UNIX epoch (a set time in the past)
   timeval now;
-  gettimeofday(&now, 0);
+  gettimeofday(&now, nullptr);
 
   return uInt64(now.tv_sec) * 1000000 + now.tv_usec;
 #else

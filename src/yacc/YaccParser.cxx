@@ -45,7 +45,7 @@ const string& errorMessage()
 
 Expression* getResult()
 {
-  lastExp = 0;
+  lastExp = nullptr;
   return result.exp;
 }
 
@@ -70,7 +70,7 @@ void setInput(const char *in)
 
 int parse(const char *in)
 {
-  lastExp = 0;
+  lastExp = nullptr;
   errMsg = "(no error)";
   setInput(in);
   return yyparse();
@@ -196,7 +196,7 @@ CpuMethod getCpuSpecial(char* ch)
   else if(BSPF::equalsIgnoreCase(ch, "b"))
     return &CpuDebug::b;
   else
-    return 0;
+    return nullptr;
 }
 
 // special methods that get Cart RAM/ROM internal state
@@ -211,7 +211,7 @@ CartMethod getCartSpecial(char* ch)
   else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
     return &CartDebug::lastWriteBaseAddress;
   else
-    return 0;
+    return nullptr;
 }
 
 // special methods that get TIA internal state
@@ -234,7 +234,7 @@ TiaMethod getTiaSpecial(char* ch)
   else if(BSPF::equalsIgnoreCase(ch, "_vblank"))
     return &TIADebug::vblankAsInt;
   else
-    return 0;
+    return nullptr;
 }
 
 int yylex() {

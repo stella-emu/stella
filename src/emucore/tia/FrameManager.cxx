@@ -140,8 +140,8 @@ void FrameManager::nextLine()
       }
       break;
 
-    default:
-      throw runtime_error("frame manager: invalid state");
+//     default:
+//       throw runtime_error("frame manager: invalid state");
   }
 
   if (myState == State::frame && previousState == State::frame) myY++;
@@ -182,8 +182,8 @@ void FrameManager::setVsync(bool vsync)
       if (myVsync) setState(State::waitForVsyncEnd);
       break;
 
-    default:
-      throw runtime_error("frame manager: invalid state");
+//     default:
+//       throw runtime_error("frame manager: invalid state");
   }
 }
 
@@ -341,8 +341,8 @@ void FrameManager::updateLayout(FrameLayout layout)
       myOverscanLines = Metrics::overscanPAL;
       break;
 
-    default:
-      throw runtime_error("frame manager: invalid TV mode");
+//     default:
+//       throw runtime_error("frame manager: invalid TV mode");
   }
 
   myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;

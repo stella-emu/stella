@@ -183,7 +183,7 @@ class Controller : public Serializable
       console is about to be destroyed.  It may be necessary to override
       this method for controllers that need cleanup before exiting.
     */
-    virtual void close() { };
+    virtual void close() { }
 
     /**
       Determines how this controller will treat values received from the

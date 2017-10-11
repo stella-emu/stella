@@ -168,7 +168,6 @@ bool ZipHandler::stream_read(fstream* stream, void* buffer, uInt64 offset,
   {
     return false;
   }
-  return false;
 }
 
 

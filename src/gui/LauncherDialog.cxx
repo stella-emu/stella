@@ -419,7 +419,6 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
       }
     }
   }
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

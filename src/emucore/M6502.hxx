@@ -103,7 +103,7 @@ class M6502 : public Serializable
     /**
       Pull RDY high again before the callback was triggered.
     */
-    void clearHaltRequest() { myHaltRequested = false; };
+    void clearHaltRequest() { myHaltRequested = false; }
 
     /**
       Execute instructions until the specified number of instructions
@@ -149,17 +149,17 @@ class M6502 : public Serializable
       return myLastPokeAddress ?
         (myLastPokeAddress != myLastPeekAddress ? myLastPeekAddress : 0) :
         myLastPeekAddress;
-    }             
+    }
 
     /**
-      Return the last address that was part of a read/peek. 
+      Return the last address that was part of a read/peek.
 
       @return The address of the last read
     */
     uInt16 lastReadBaseAddress() const { return myLastPeekBaseAddress; }
 
     /**
-      Return the last address that was part of a write/poke.  
+      Return the last address that was part of a write/poke.
 
       @return The address of the last write
     */
@@ -395,7 +395,7 @@ class M6502 : public Serializable
           return i;
 
       return -1; // no trapif hit
-    }                    
+    }
 
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;

@@ -398,7 +398,7 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
     w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
                      button, clickCount);
 
-  _dragWidget = 0;
+  _dragWidget = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -438,7 +438,7 @@ void Dialog::handleMouseMoved(int x, int y, int button)
     }
     else if (!mouseInFocusedWidget && _mouseWidget == w)
     {
-      _mouseWidget = 0;
+      _mouseWidget = nullptr;
       w->handleMouseLeft(button);
     }
 

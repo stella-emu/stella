@@ -115,7 +115,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
       default:  // TODO - properly handle all other cases
         return false;
     }
-    return false;
   };
   setTextFilter(f);
 }

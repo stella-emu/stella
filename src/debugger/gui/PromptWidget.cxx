@@ -213,7 +213,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       {
         str[i] = buffer(_promptStartPos + i) & 0x7f;
         // whitespace characters
-        if(strchr("{*@<> =[]()+-/&|!^~%", str[i]) != NULL )
+        if(strchr("{*@<> =[]()+-/&|!^~%", str[i]))
         {
           lastDelimPos = i;
           delimiter = str[i];

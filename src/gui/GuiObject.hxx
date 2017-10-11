@@ -60,7 +60,7 @@ class GuiObject : public CommandReceiver
         myDialog(dialog),
         _x(x), _y(y), _w(w), _h(h),
         _dirty(false),
-        _firstWidget(0) { }
+        _firstWidget(nullptr) { }
 
     virtual ~GuiObject() = default;
 

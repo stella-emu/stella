@@ -186,7 +186,7 @@ class TIA : public Device
     /**
       Returns a pointer to the internal frame buffer.
     */
-    uInt8* frameBuffer() const { return (uInt8*)(myFramebuffer); }
+    uInt8* frameBuffer() { return static_cast<uInt8*>(myFramebuffer); }
 
     /**
       Answers dimensional info about the framebuffer.

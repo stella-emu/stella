@@ -869,7 +869,7 @@ void Console::generateColorLossPalette()
   uInt32* palette[9] = {
     &ourNTSCPalette[0],    &ourPALPalette[0],    &ourSECAMPalette[0],
     &ourNTSCPaletteZ26[0], &ourPALPaletteZ26[0], &ourSECAMPaletteZ26[0],
-    0, 0, 0
+    nullptr, nullptr, nullptr
   };
   if(myUserPaletteDefined)
   {
@@ -880,7 +880,7 @@ void Console::generateColorLossPalette()
 
   for(int i = 0; i < 9; ++i)
   {
-    if(palette[i] == 0)
+    if(palette[i] == nullptr)
       continue;
 
     // Fill the odd numbered palette entries with gray values (calculated

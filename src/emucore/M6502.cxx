@@ -23,21 +23,21 @@
 
   // Flags for disassembly types
   #define DISASM_CODE  CartDebug::CODE
-  #define DISASM_GFX   CartDebug::GFX
-  #define DISASM_PGFX  CartDebug::PGFX
+//   #define DISASM_GFX   CartDebug::GFX  // TODO - uncomment when needed
+//   #define DISASM_PGFX  CartDebug::PGFX // TODO - uncomment when needed
   #define DISASM_DATA  CartDebug::DATA
-  #define DISASM_ROW   CartDebug::ROW
+//   #define DISASM_ROW   CartDebug::ROW  // TODO - uncomment when needed
   #define DISASM_WRITE CartDebug::WRITE
   #define DISASM_NONE  0
 #else
   // Flags for disassembly types
   #define DISASM_CODE  0
-  #define DISASM_GFX   0
-  #define DISASM_PGFX  0
+//   #define DISASM_GFX   0   // TODO - uncomment when needed
+//   #define DISASM_PGFX  0   // TODO - uncomment when needed
   #define DISASM_DATA  0
-  #define DISASM_ROW   0
+//   #define DISASM_ROW   0   // TODO - uncomment when needed
   #define DISASM_NONE  0
-  #define DISASM_WRITE 0 
+  #define DISASM_WRITE 0
 #endif
 #include "Settings.hxx"
 #include "Vec.hxx"
@@ -62,7 +62,7 @@ M6502::M6502(const Settings& settings)
     myLastSrcAddressX(-1),
     myLastSrcAddressY(-1),
     myDataAddressForPoke(0),
-    myOnHaltCallback(0),
+    myOnHaltCallback(nullptr),
     myHaltRequested(false)
 {
 #ifdef DEBUGGER_SUPPORT
@@ -132,7 +132,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     int cond = evalCondTraps();
     if(cond > -1)
     {
-      myJustHitReadTrapFlag = true;      
+      myJustHitReadTrapFlag = true;
       myHitTrapInfo.message = "RTrap(" + myTrapCondNames[cond] + "): ";
       myHitTrapInfo.address = address;
     }
@@ -153,8 +153,8 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
-  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);   
-  mySystem->poke(address, value, flags); 
+  mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
+  mySystem->poke(address, value, flags);
   myLastPokeAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
@@ -169,7 +169,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
       myHitTrapInfo.address = address;
     }
   }
-#endif  // DEBUGGER_SUPPORT       
+#endif  // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -204,7 +204,7 @@ bool M6502::execute(uInt32 number)
       {
         myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
         if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, myJustHitReadTrapFlag))
-        {          
+        {
           return true;
         }
       }
@@ -469,7 +469,7 @@ bool M6502::delCondTrap(uInt32 brk)
     return true;
   }
   return false;
-}                           
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::clearCondTraps()

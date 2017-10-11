@@ -41,7 +41,7 @@ M6532::M6532(const Console& console, const Settings& settings)
     myInterruptFlag(false),
     myEdgeDetectPositive(false),
     myRAMAccessBase(nullptr)
-{  
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -481,15 +481,14 @@ uInt8 M6532::getAccessFlags(uInt16 address) const
 {
   if (address & IO_BIT)
     return myIOAccessBase[address & IO_MASK];
-  else if (address & STACK_BIT) 
+  else if (address & STACK_BIT)
     return myStackAccessBase[address & STACK_MASK];
   else
     return myRAMAccessBase[address & RAM_MASK];
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::setAccessFlags(uInt16 address, uInt8 flags) 
+void M6532::setAccessFlags(uInt16 address, uInt8 flags)
 {
   // ignore none flag
   if (flags != CartDebug::NONE) {

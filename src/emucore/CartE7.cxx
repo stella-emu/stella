@@ -162,7 +162,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
   }
 
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  access.directPokeBase = 0;
+  access.directPokeBase = nullptr;
   access.type = System::PA_READ;
   for(uInt16 addr = 0x1900; addr < 0x1A00; addr += System::PAGE_SIZE)
   {
@@ -208,7 +208,7 @@ bool CartridgeE7::bank(uInt16 slice)
     }
 
     // Set the page accessing method for the 1K slice of RAM reading pages
-    access.directPokeBase = 0;
+    access.directPokeBase = nullptr;
     access.type = System::PA_READ;
     for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
     {

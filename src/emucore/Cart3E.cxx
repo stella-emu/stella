@@ -178,7 +178,7 @@ bool Cartridge3E::bank(uInt16 bank)
       mySystem->setPageAccess(addr, access);
     }
 
-    access.directPeekBase = 0;
+    access.directPeekBase = nullptr;
     access.type = System::PA_WRITE;
 
     // Map write-port RAM image into the system
