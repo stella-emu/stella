@@ -712,8 +712,9 @@ void PromptWidget::historyScroll(int direction)
 
   // Advance to the next line in the history
   int line = _historyLine + direction;
-  if ((direction < 0 && line < 0) || (direction > 0 && line > _historySize))
-    return;
+  if(line < 0)
+    line += _historySize + 1;
+  line %= (_historySize + 1);
 
   // If they press arrow-up with anything in the buffer, search backwards
   // in the history.
