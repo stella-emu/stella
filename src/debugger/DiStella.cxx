@@ -713,6 +713,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
             myPCEnd = myAppData.end + myOffset;
             return;
           }
+          break;  // TODO - is this the intent?
 
         default:
           break;

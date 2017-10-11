@@ -461,7 +461,6 @@ uInt32 M6532::timerClocks() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::createAccessBases()
 {
-#ifdef DEBUGGER_SUPPORT
   myRAMAccessBase = make_unique<uInt8[]>(RAM_SIZE);
   memset(myRAMAccessBase.get(), CartDebug::NONE, RAM_SIZE);
   myStackAccessBase = make_unique<uInt8[]>(STACK_SIZE);
@@ -471,9 +470,6 @@ void M6532::createAccessBases()
 
   myZPAccessDelay = make_unique<uInt8[]>(RAM_SIZE);
   memset(myZPAccessDelay.get(), ZP_DELAY, RAM_SIZE);
-#else
-  myRAMAccessBase = myStackAccessBase = myIOAccessBase = nullptr;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

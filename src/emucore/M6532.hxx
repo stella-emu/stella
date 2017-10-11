@@ -139,17 +139,24 @@ class M6532 : public Device
     uInt8 timint();
     Int32 intimClocks();
     uInt32 timerClocks() const;
-#ifdef DEBUGGER_SUPPORT
-    void createAccessBases();
-    /**
-    Query/change the given address type to use the given disassembly flags
 
-    @param address The address to modify
-    @param flags A bitfield of DisasmType directives for the given address
+  #ifdef DEBUGGER_SUPPORT
+    void createAccessBases();
+
+    /**
+      Query the given address type for the associated disassembly flags.
+
+      @param address  The address to query
     */
     uInt8 getAccessFlags(uInt16 address) const override;
+    /**
+      Change the given address to use the given disassembly flags.
+
+      @param address  The address to modify
+      @param flags    A bitfield of DisasmType directives for the given address
+    */
     void setAccessFlags(uInt16 address, uInt8 flags) override;
-#endif // DEBUGGER_SUPPORT
+  #endif // DEBUGGER_SUPPORT
 
   private:
     // Accessible bits in the interrupt flag register
@@ -210,7 +217,7 @@ class M6532 : public Device
     uInt8 myOutTimer[4];
 
 #ifdef DEBUGGER_SUPPORT
-    // The arrays containing information about every byte of RIOT 
+    // The arrays containing information about every byte of RIOT
     // indicating whether and how (RW) it is used.
     BytePtr myRAMAccessBase;
     BytePtr myStackAccessBase;

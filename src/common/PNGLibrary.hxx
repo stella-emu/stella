@@ -46,9 +46,9 @@ class PNGLibrary
       @param filename  The filename to load the PNG image
       @param surface   The FBSurface into which to place the PNG data
 
-      @return  On success, the FBSurface containing image data, otherwise a
-               runtime_error is thrown containing a more detailed
-               error message.
+      @post  On success, the FBSurface containing image data, otherwise a
+             runtime_error is thrown containing a more detailed
+             error message.
     */
     void loadImage(const string& filename, FBSurface& surface);
 
@@ -60,9 +60,9 @@ class PNGLibrary
       @param filename  The filename to save the PNG image
       @param comments  The text comments to add to the PNG image
 
-      @return  On success, the PNG file has been saved to 'filename',
-               otherwise a runtime_error is thrown containing a
-               more detailed error message.
+      @post  On success, the PNG file has been saved to 'filename',
+             otherwise a runtime_error is thrown containing a
+             more detailed error message.
     */
     void saveImage(const string& filename,
                    const VariantList& comments = EmptyVarList);
@@ -75,9 +75,9 @@ class PNGLibrary
       @param rect      The area of the surface to use
       @param comments  The text comments to add to the PNG image
 
-      @return  On success, the PNG file has been saved to 'filename',
-               otherwise a runtime_error is thrown containing a
-               more detailed error message.
+      @post  On success, the PNG file has been saved to 'filename',
+             otherwise a runtime_error is thrown containing a
+             more detailed error message.
     */
     void saveImage(const string& filename, const FBSurface& surface,
                    const GUI::Rect& rect = GUI::EmptyRect,

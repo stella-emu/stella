@@ -109,8 +109,6 @@ class CompuMate
           Called after *all* digital pins have been written on Port A.
           Only update on the left controller; the right controller will
           happen at the same cycle and is redundant.
-
-          @param value  The entire contents of the SWCHA register
         */
         void controlWrite(uInt8) override {
           if(myJack == Controller::Left) myHandler.update();

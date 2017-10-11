@@ -15,59 +15,62 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-//#include "YaccParser.hxx"
-
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-
 #include "Base.hxx"
-#include "Expression.hxx"
-#include "CartDebug.hxx"
-#include "CpuDebug.hxx"
-#include "TIADebug.hxx"
-
 #include "DebuggerExpressions.hxx"
 
+#include "YaccParser.hxx"
+
 namespace YaccParser {
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cctype>
 
 #include "y.tab.h"
-YYSTYPE result;
-string errMsg;
-#include "y.tab.c"
+static YYSTYPE result;
+static string errMsg;
 
+void yyerror(const char* e);
+
+#ifdef __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
+  #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
+  #include "y.tab.c"
+  #pragma clang diagnostic pop
+#else
+  #include "y.tab.c"
+#endif
+
+enum class State {
+  DEFAULT,
+  IDENTIFIER,
+  OPERATOR,
+  SPACE
+};
+
+static State state = State::DEFAULT;
+static const char *input, *c;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& errorMessage()
 {
   return errMsg;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Expression* getResult()
 {
   lastExp = nullptr;
   return result.exp;
 }
 
-const char *input, *c;
-
-enum {
-  ST_DEFAULT,
-  ST_IDENTIFIER,
-  ST_OPERATOR,
-  ST_SPACE
-};
-
-int state = ST_DEFAULT;
-
-//extern int yylval; // bison provides this
-
-void setInput(const char *in)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void setInput(const char* in)
 {
   input = c = in;
-  state = ST_DEFAULT;
+  state = State::DEFAULT;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int parse(const char *in)
 {
   lastExp = nullptr;
@@ -76,7 +79,8 @@ int parse(const char *in)
   return yyparse();
 }
 
-/* hand-rolled lexer. Hopefully faster than flex... */
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// hand-rolled lexer. Hopefully faster than flex...
 inline bool is_base_prefix(char x)
 {
   return ( (x=='\\' || x=='$' || x=='#') );
@@ -100,11 +104,13 @@ inline bool is_operator(char x)
             x=='[' || x==']' ) );
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // const_to_int converts a string into a number, in either the
 // current base, or (if there's a base override) the selected base.
 // Returns -1 on error, since negative numbers are the parser's
 // responsibility, not the lexer's
-int const_to_int(char* ch) {
+int const_to_int(char* ch)
+{
   // what base is the input in?
   Common::Base::Format format = Common::Base::format();
 
@@ -163,11 +169,28 @@ int const_to_int(char* ch) {
       return ret;
 
     default:
-      fprintf(stderr, "INVALID BASE in lexer!");
+      cerr << "INVALID BASE in lexer!" << endl;
       return 0;
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// special methods that get Cart RAM/ROM internal state
+CartMethod getCartSpecial(char* ch)
+{
+  if(BSPF::equalsIgnoreCase(ch, "_bank"))
+    return &CartDebug::getBank;
+  else if(BSPF::equalsIgnoreCase(ch, "_rwport"))
+    return &CartDebug::readFromWritePort;
+  else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
+    return &CartDebug::lastReadBaseAddress;
+  else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
+    return &CartDebug::lastWriteBaseAddress;
+  else
+    return nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get e.g. CPU registers
 CpuMethod getCpuSpecial(char* ch)
 {
@@ -199,21 +222,7 @@ CpuMethod getCpuSpecial(char* ch)
     return nullptr;
 }
 
-// special methods that get Cart RAM/ROM internal state
-CartMethod getCartSpecial(char* ch)
-{
-  if(BSPF::equalsIgnoreCase(ch, "_bank"))
-    return &CartDebug::getBank;
-  else if(BSPF::equalsIgnoreCase(ch, "_rwport"))
-    return &CartDebug::readFromWritePort;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
-    return &CartDebug::lastReadBaseAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
-    return &CartDebug::lastWriteBaseAddress;
-  else
-    return nullptr;
-}
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get TIA internal state
 TiaMethod getTiaSpecial(char* ch)
 {
@@ -237,28 +246,28 @@ TiaMethod getTiaSpecial(char* ch)
     return nullptr;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int yylex() {
   static char idbuf[255];
   char o, p;
   yylval.val = 0;
   while(*c != '\0') {
-    //fprintf(stderr, "looking at %c, state %d\n", *c, state);
     switch(state) {
-      case ST_SPACE:
+      case State::SPACE:
         yylval.val = 0;
         if(isspace(*c)) {
           c++;
         } else if(is_identifier(*c) || is_base_prefix(*c)) {
-          state = ST_IDENTIFIER;
+          state = State::IDENTIFIER;
         } else if(is_operator(*c)) {
-          state = ST_OPERATOR;
+          state = State::OPERATOR;
         } else {
-          state = ST_DEFAULT;
+          state = State::DEFAULT;
         }
 
         break;
 
-      case ST_IDENTIFIER:
+      case State::IDENTIFIER:
         {
           CartMethod cartMeth;
           CpuMethod  cpuMeth;
@@ -268,10 +277,9 @@ int yylex() {
           *bufp++ = *c++; // might be a base prefix
           while(is_identifier(*c)) { // may NOT be base prefixes
             *bufp++ = *c++;
-            //fprintf(stderr, "yylval==%d, *c==%c\n", yylval, *c);
           }
           *bufp = '\0';
-          state = ST_DEFAULT;
+          state = State::DEFAULT;
 
           // Note: specials (like "a" for accumulator) have priority over
           // numbers. So "a" always means accumulator, not hex 0xa. User
@@ -306,19 +314,18 @@ int yylex() {
           }
         }
 
-      case ST_OPERATOR:
+      case State::OPERATOR:
         o = *c++;
         if(!*c) return o;
         if(isspace(*c)) {
-          state = ST_SPACE;
+          state = State::SPACE;
           return o;
         } else if(is_identifier(*c) || is_base_prefix(*c)) {
-          state = ST_IDENTIFIER;
+          state = State::IDENTIFIER;
           return o;
         } else {
-          state = ST_DEFAULT;
+          state = State::DEFAULT;
           p = *c++;
-          //fprintf(stderr, "o==%c, p==%c\n", o, p);
           if(o == '>' && p == '=')
             return GTE;
           else if(o == '<' && p == '=')
@@ -342,15 +349,14 @@ int yylex() {
         }
         // break;  Never executed
 
-      case ST_DEFAULT:
-      default:
+      case State::DEFAULT:
         yylval.val = 0;
         if(isspace(*c)) {
-          state = ST_SPACE;
+          state = State::SPACE;
         } else if(is_identifier(*c) || is_base_prefix(*c)) {
-          state = ST_IDENTIFIER;
+          state = State::IDENTIFIER;
         } else if(is_operator(*c)) {
-          state = ST_OPERATOR;
+          state = State::OPERATOR;
         } else {
           yylval.val = *c++;
           return yylval.val;
@@ -359,24 +365,7 @@ int yylex() {
     }
   }
 
-  //fprintf(stderr, "end of input\n");
   return 0; // hit NUL, end of input.
 }
 
-
-#if 0
-int main(int argc, char **argv) {
-  int l;
-
-  set_input(argv[1]);
-  while( (l = yylex()) != 0 )
-    printf("ret %d, %d\n", l, yylval);
-
-  printf("%d\n", yylval);
-}
-#endif
-}
-
-//#ifdef __cplusplus
-//}
-//#endif
+} // namespace YaccParser

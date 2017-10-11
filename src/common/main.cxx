@@ -38,18 +38,6 @@
   #include "CheatManager.hxx"
 #endif
 
-// Pointer to the main parent osystem object or the null pointer
-unique_ptr<OSystem> theOSystem;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Does general Cleanup in case any operation failed (or at end of program)
-int Cleanup()
-{
-  theOSystem->logMessage("Cleanup from main", 2);
-  theOSystem->saveConfig();
-
-  return 0;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #if defined(BSPF_MAC_OSX)
@@ -61,9 +49,16 @@ int main(int argc, char* argv[])
   std::ios_base::sync_with_stdio(false);
 
   // Create the parent OSystem object
-  theOSystem = MediaFactory::createOSystem();
+  unique_ptr<OSystem> theOSystem = MediaFactory::createOSystem();
   theOSystem->loadConfig();
   theOSystem->logMessage("Loading config options ...", 2);
+
+  auto Cleanup = [&theOSystem]() {
+    theOSystem->logMessage("Cleanup from main", 2);
+    theOSystem->saveConfig();
+
+    return 0;
+  };
 
   // Take care of commandline arguments
   theOSystem->logMessage("Loading commandline arguments ...", 2);

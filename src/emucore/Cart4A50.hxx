@@ -152,12 +152,17 @@ class Cartridge4A50 : public Cartridge
 
   private:
     /**
-      Query/change the given address type to use the given disassembly flags
+      Query the given address type for the associated disassembly flags.
 
-      @param address The address to modify
-      @param flags A bitfield of DisasmType directives for the given address
+      @param address  The address to query
     */
     uInt8 getAccessFlags(uInt16 address) const override;
+    /**
+      Change the given address to use the given disassembly flags.
+
+      @param address  The address to modify
+      @param flags    A bitfield of DisasmType directives for the given address
+    */
     void setAccessFlags(uInt16 address, uInt8 flags) override;
 
     /**

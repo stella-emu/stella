@@ -63,8 +63,6 @@ class MindLink : public Controller
 
     /**
       Called after *all* digital pins have been written on Port A.
-
-      @param value  The entire contents of the SWCHA register
     */
     void controlWrite(uInt8) override { nextMindlinkBit(); }
 
