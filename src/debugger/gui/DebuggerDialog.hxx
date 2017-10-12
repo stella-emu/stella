@@ -62,6 +62,7 @@ class DebuggerDialog : public Dialog
     CartRamWidget& cartRam() const     { return *myCartRam;      }
     EditTextWidget& message() const    { return *myMessageBox;   }
     ButtonWidget& rewindButton() const { return *myRewindButton; }
+    ButtonWidget& unwindButton() const { return *myUnwindButton; }
 
     void showFatalMessage(const string& msg);
 
@@ -75,6 +76,7 @@ class DebuggerDialog : public Dialog
     void doScanlineAdvance();
     void doAdvance();
     void doRewind();
+    void doUnwind();
     void doExitDebugger();
     void doExitRom();
 
@@ -96,6 +98,7 @@ class DebuggerDialog : public Dialog
       kDDAdvCmd       = 'DDav',
       kDDSAdvCmd      = 'DDsv',
       kDDRewindCmd    = 'DDrw',
+      kDDUnwindCmd    = 'DDuw',
       kDDExitCmd      = 'DDex',
       kDDExitFatalCmd = 'DDer'
     };
@@ -113,6 +116,7 @@ class DebuggerDialog : public Dialog
     CartRamWidget*   myCartRam;
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
+    ButtonWidget*    myUnwindButton;
     unique_ptr<GUI::MessageBox> myFatalError;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels

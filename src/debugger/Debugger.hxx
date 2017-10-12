@@ -270,6 +270,7 @@ class Debugger : public DialogContainer
     void nextScanline(int lines);
     void nextFrame(int frames);
     bool rewindState();
+    bool unwindState();
 
     void toggleBreakPoint(uInt16 bp);
 
@@ -326,6 +327,8 @@ class Debugger : public DialogContainer
     static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
 
   private:
+    bool windState(bool unwind);
+
     // Following constructors and assignment operators not supported
     Debugger() = delete;
     Debugger(const Debugger&) = delete;

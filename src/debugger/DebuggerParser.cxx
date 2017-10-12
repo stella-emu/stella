@@ -1838,6 +1838,19 @@ void DebuggerParser::executeUndef()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "unwind"
+void DebuggerParser::executeUnwind()
+{
+  if(debugger.unwindState())
+  {
+    debugger.rom().invalidate();
+    commandResult << "unwind by one level";
+  }
+  else
+    commandResult << "no states left to rewind";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "v"
 void DebuggerParser::executeV()
 {
@@ -2609,6 +2622,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeUndef)
+  },
+
+  {
+    "unwind",
+    "Unwind state to last step/trace/scanline/frame",
+    "Unwind currently only works in the debugger",
+    false,
+    true,
+    { kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeUnwind)
   },
 
   {

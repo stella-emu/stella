@@ -49,7 +49,14 @@ class RewindManager
     */
     bool rewindState();
 
-    bool empty() const { return myStateList.empty(); }
+    /** 
+      Unwind one level of the state list, and display the message associated
+      with that state.
+    */
+    bool unwindState();
+
+    bool atLast() const { return myStateList.empty(); }
+    bool atFirst() const { return false; } // TODO
     void clear() { myStateList.clear(); }
 
   private:
@@ -62,6 +69,7 @@ class RewindManager
     struct RewindState {
       Serializer data;
       string message;
+      uInt64 cycle;
 
       // We do nothing on object instantiation or copy
       RewindState() { }
@@ -69,6 +77,13 @@ class RewindManager
     };
 
     Common::LinkedObjectPool<RewindState, MAX_SIZE> myStateList;
+
+    bool myIsNTSC;
+
+    void compressStates();
+
+    string getMessage(RewindState& state);
+
 
   private:
     // Following constructors and assignment operators not supported

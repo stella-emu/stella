@@ -451,20 +451,32 @@ void Debugger::nextFrame(int frames)
   lockBankswitchState();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::rewindState()
+bool Debugger::windState(bool unwind)
 {
   RewindManager& r = myOSystem.state().rewindManager();
 
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  bool result = r.rewindState();
+  bool result = unwind ? r.unwindState() : r.rewindState();
   lockBankswitchState();
 
-  myDialog->rewindButton().setEnabled(!r.empty());
+  myDialog->rewindButton().setEnabled(!r.atLast());
+  myDialog->unwindButton().setEnabled(!r.atFirst());
 
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::rewindState()
+{
+  return windState(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::unwindState()
+{
+  return windState(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -505,7 +517,8 @@ void Debugger::saveOldState(string rewindMsg)
   {
     RewindManager& r = myOSystem.state().rewindManager();
     r.addState(rewindMsg);
-    myDialog->rewindButton().setEnabled(!r.empty());
+    myDialog->rewindButton().setEnabled(!r.atLast());
+    myDialog->unwindButton().setEnabled(!r.atFirst());
   }
 }
 
@@ -519,7 +532,8 @@ void Debugger::setStartState()
   RewindManager& r = myOSystem.state().rewindManager();
   if(myOSystem.state().mode() == StateManager::Mode::Off)
     r.clear();
-  myDialog->rewindButton().setEnabled(!r.empty());
+  myDialog->rewindButton().setEnabled(!r.atLast());
+  myDialog->unwindButton().setEnabled(!r.atFirst());
 
   // Save initial state, but don't add it to the rewind list
   saveOldState();
