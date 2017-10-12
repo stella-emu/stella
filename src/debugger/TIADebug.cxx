@@ -731,6 +731,12 @@ int TIADebug::clocksThisLine() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::cyclesThisLine() const
+{
+  return myTIA.clocksThisLine()/3;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vsync() const
 {
   return myTIA.registerValue(VSYNC) & 0x02;

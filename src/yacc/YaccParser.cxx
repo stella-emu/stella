@@ -229,6 +229,8 @@ TiaMethod getTiaSpecial(char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_scan"))
     return &TIADebug::scanlines;
+  if(BSPF::equalsIgnoreCase(ch, "_scycles"))
+    return &TIADebug::cyclesThisLine;
   else if(BSPF::equalsIgnoreCase(ch, "_fcount"))
     return &TIADebug::frameCount;
   else if(BSPF::equalsIgnoreCase(ch, "_fcycles"))

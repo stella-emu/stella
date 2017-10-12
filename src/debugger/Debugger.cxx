@@ -732,6 +732,7 @@ Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_cyclesHi",  "Higher 32 bits of number of cycles since emulation started"},
   { "_rwport",    "Address at which a read from a write port occurred" },
   { "_scan",      "Current scanline count" },
+  { "_scycles",   "Number of cycles in current scanline" },
   { "_vblank",    "Whether vertical blank is enabled (1 or 0)" },
   { "_vsync",     "Whether vertical sync is enabled (1 or 0)" }
   // CPU address access functions:
