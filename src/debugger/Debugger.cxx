@@ -59,62 +59,6 @@
 Debugger* Debugger::myStaticDebugger = nullptr;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// FIXME - use a vector for this
-static const char* const builtin_functions[][3] = {
-  // { "name", "definition", "help text" }
-
-  // left joystick:
-  { "_joy0left", "!(*SWCHA & $40)", "Left joystick moved left" },
-  { "_joy0right", "!(*SWCHA & $80)", "Left joystick moved right" },
-  { "_joy0up", "!(*SWCHA & $10)", "Left joystick moved up" },
-  { "_joy0down", "!(*SWCHA & $20)", "Left joystick moved down" },
-  { "_joy0button", "!(*INPT4 & $80)", "Left joystick button pressed" },
-
-  // right joystick:
-  { "_joy1left", "!(*SWCHA & $04)", "Right joystick moved left" },
-  { "_joy1right", "!(*SWCHA & $08)", "Right joystick moved right" },
-  { "_joy1up", "!(*SWCHA & $01)", "Right joystick moved up" },
-  { "_joy1down", "!(*SWCHA & $02)", "Right joystick moved down" },
-  { "_joy1button", "!(*INPT5 & $80)", "Right joystick button pressed" },
-
-  // console switches:
-  { "_select", "!(*SWCHB & $02)", "Game Select pressed" },
-  { "_reset", "!(*SWCHB & $01)", "Game Reset pressed" },
-  { "_color", "*SWCHB & $08", "Color/BW set to Color" },
-  { "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
-  { "_diff0b", "!(*SWCHB & $40)", "Left diff. set to B (easy)" },
-  { "_diff0a", "*SWCHB & $40", "Left diff. set to A (hard)" },
-  { "_diff1b", "!(*SWCHB & $80)", "Right diff. set to B (easy)" },
-  { "_diff1a", "*SWCHB & $80", "Right diff. set to A (hard)" },
-  // empty string marks end of list, do not remove
-  { 0, 0, 0 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Names are defined here, but processed in YaccParser
-// FIXME - use a vector for this
-static const char* const pseudo_registers[][2] = {
-  // { "name", "help text" }
-
-  { "_bank", "Currently selected bank" },
-  { "_cclocks", "Color clocks on current scanline" },
-  { "_fcount", "Number of frames since emulation started" },
-  { "_fcycles", "Number of cycles since frame started" },
-  { "_cyclesLo", "Lower 32 bits of number of cycles since emulation started"},
-  { "_cyclesHi", "Higher 32 bits of number of cycles since emulation started"},
-  { "_rwport", "Address at which a read from a write port occurred" },
-  { "_scan", "Current scanline count" },
-  { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
-  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
-  // CPU address access functions:
-  /*{ "__lastread", "last CPU read address" },
-  { "__lastwrite", "last CPU write address" },*/
-
-  // empty string marks end of list, do not remove
-  { 0, 0 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem& osystem, Console& console)
   : DialogContainer(osystem),
     myConsole(console),
@@ -223,12 +167,12 @@ string Debugger::autoExec(StringList* history)
   buf << myParser->exec(romname, history) << endl;
 
   // Init builtins
-  for(int i = 0; builtin_functions[i][0] != 0; i++)
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
   {
     // TODO - check this for memory leaks
-    int res = YaccParser::parse(builtin_functions[i][1]);
+    int res = YaccParser::parse(ourBuiltinFunctions[i].defn);
     if(res == 0)
-      addFunction(builtin_functions[i][0], builtin_functions[i][1],
+      addFunction(ourBuiltinFunctions[i].name, ourBuiltinFunctions[i].defn,
                   YaccParser::getResult(), true);
     else
       cerr << "ERROR in builtin function!" << endl;
@@ -610,8 +554,8 @@ bool Debugger::addFunction(const string& name, const string& definition,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::isBuiltinFunction(const string& name)
 {
-  for(int i = 0; builtin_functions[i][0] != 0; ++i)
-    if(name == builtin_functions[i][0])
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
+    if(name == ourBuiltinFunctions[i].name)
       return true;
   return false;
 }
@@ -624,7 +568,7 @@ bool Debugger::delFunction(const string& name)
     return false;
 
   // We never want to delete built-in functions
-  if (isBuiltinFunction(name))
+  if(isBuiltinFunction(name))
       return false;
 
   myFunctions.erase(name);
@@ -664,39 +608,39 @@ string Debugger::builtinHelp() const
   uInt16 len, c_maxlen = 0, i_maxlen = 0;
 
   // Get column widths for aligned output (functions)
-  for(int i = 0; builtin_functions[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
   {
-    len = strlen(builtin_functions[i][0]);
+    len = ourBuiltinFunctions[i].name.size();
     if(len > c_maxlen)  c_maxlen = len;
-    len = strlen(builtin_functions[i][1]);
+    len = ourBuiltinFunctions[i].defn.size();
     if(len > i_maxlen)  i_maxlen = len;
   }
 
   buf << std::setfill(' ') << endl << "Built-in functions:" << endl;
-  for(int i = 0; builtin_functions[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
   {
-    buf << std::setw(c_maxlen) << std::left << builtin_functions[i][0]
+    buf << std::setw(c_maxlen) << std::left << ourBuiltinFunctions[i].name
         << std::setw(2) << std::right << "{"
-        << std::setw(i_maxlen) << std::left << builtin_functions[i][1]
+        << std::setw(i_maxlen) << std::left << ourBuiltinFunctions[i].defn
         << std::setw(4) << "}"
-        << builtin_functions[i][2]
+        << ourBuiltinFunctions[i].help
         << endl;
   }
 
   // Get column widths for aligned output (pseudo-registers)
   c_maxlen = 0;
-  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
   {
-    len = strlen(pseudo_registers[i][0]);
+    len = ourPseudoRegisters[i].name.size();
     if(len > c_maxlen)  c_maxlen = len;
   }
 
   buf << endl << "Pseudo-registers:" << endl;
-  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
   {
-    buf << std::setw(c_maxlen) << std::left << pseudo_registers[i][0]
+    buf << std::setw(c_maxlen) << std::left << ourPseudoRegisters[i].name
         << std::setw(2) << " "
-        << std::setw(i_maxlen) << std::left << pseudo_registers[i][1]
+        << std::setw(i_maxlen) << std::left << ourPseudoRegisters[i].help
         << endl;
   }
 
@@ -716,9 +660,9 @@ void Debugger::getCompletions(const char* in, StringList& list) const
         list.push_back(l);
     }
 
-    for(int i = 0; pseudo_registers[i][0] != 0; ++i)
-      if(BSPF::matches(pseudo_registers[i][0], in))
-        list.push_back(pseudo_registers[i][0]);
+    for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
+      if(BSPF::matches(ourPseudoRegisters[i].name, in))
+        list.push_back(ourPseudoRegisters[i].name);
   }
 }
 
@@ -735,3 +679,48 @@ void Debugger::unlockBankswitchState()
   mySystem.unlockDataBus();
   myConsole.cartridge().unlockBank();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Debugger::BuiltinFunction Debugger::ourBuiltinFunctions[NUM_BUILTIN_FUNCS] = {
+  // left joystick:
+  { "_joy0left",    "!(*SWCHA & $40)", "Left joystick moved left" },
+  { "_joy0right",   "!(*SWCHA & $80)", "Left joystick moved right" },
+  { "_joy0up",      "!(*SWCHA & $10)", "Left joystick moved up" },
+  { "_joy0down",    "!(*SWCHA & $20)", "Left joystick moved down" },
+  { "_joy0button",  "!(*INPT4 & $80)", "Left joystick button pressed" },
+
+  // right joystick:
+  { "_joy1left",    "!(*SWCHA & $04)", "Right joystick moved left" },
+  { "_joy1right",   "!(*SWCHA & $08)", "Right joystick moved right" },
+  { "_joy1up",      "!(*SWCHA & $01)", "Right joystick moved up" },
+  { "_joy1down",    "!(*SWCHA & $02)", "Right joystick moved down" },
+  { "_joy1button",  "!(*INPT5 & $80)", "Right joystick button pressed" },
+
+  // console switches:
+  { "_select",    "!(*SWCHB & $02)",  "Game Select pressed" },
+  { "_reset",     "!(*SWCHB & $01)",  "Game Reset pressed" },
+  { "_color",     "*SWCHB & $08",     "Color/BW set to Color" },
+  { "_bw",        "!(*SWCHB & $08)",  "Color/BW set to BW" },
+  { "_diff0b",    "!(*SWCHB & $40)",  "Left diff. set to B (easy)" },
+  { "_diff0a",    "*SWCHB & $40",     "Left diff. set to A (hard)" },
+  { "_diff1b",    "!(*SWCHB & $80)",  "Right diff. set to B (easy)" },
+  { "_diff1a",    "*SWCHB & $80",     "Right diff. set to A (hard)" }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Names are defined here, but processed in YaccParser
+Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
+  { "_bank",      "Currently selected bank" },
+  { "_cclocks",   "Color clocks on current scanline" },
+  { "_fcount",    "Number of frames since emulation started" },
+  { "_fcycles",   "Number of cycles since frame started" },
+  { "_cyclesLo",  "Lower 32 bits of number of cycles since emulation started"},
+  { "_cyclesHi",  "Higher 32 bits of number of cycles since emulation started"},
+  { "_rwport",    "Address at which a read from a write port occurred" },
+  { "_scan",      "Current scanline count" },
+  { "_vblank",    "Whether vertical blank is enabled (1 or 0)" },
+  { "_vsync",     "Whether vertical sync is enabled (1 or 0)" }
+  // CPU address access functions:
+  /*{ "__lastread", "last CPU read address" },
+  { "__lastwrite", "last CPU write address" },*/
+};

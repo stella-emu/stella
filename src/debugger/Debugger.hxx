@@ -313,6 +313,18 @@ class Debugger : public DialogContainer
     uInt32 myWidth;
     uInt32 myHeight;
 
+    // Various builtin functions and operations
+    struct BuiltinFunction {
+      string name, defn, help;
+    };
+    struct PseudoRegister {
+      string name, help;
+    };
+    static const uInt32 NUM_BUILTIN_FUNCS = 18;
+    static const uInt32 NUM_PSEUDO_REGS = 10;
+    static BuiltinFunction ourBuiltinFunctions[NUM_BUILTIN_FUNCS];
+    static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
+
   private:
     // Following constructors and assignment operators not supported
     Debugger() = delete;

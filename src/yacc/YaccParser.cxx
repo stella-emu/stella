@@ -65,14 +65,14 @@ Expression* getResult()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void setInput(const char* in)
+void setInput(const string& in)
 {
-  input = c = in;
+  input = c = in.c_str();
   state = State::DEFAULT;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int parse(const char *in)
+int parse(const string& in)
 {
   lastExp = nullptr;
   errMsg = "(no error)";
