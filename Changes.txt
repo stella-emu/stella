@@ -2680,7 +2680,7 @@
 
   * Fixed crash when adding one-shot cheats.
 
-  * Fixed bug in RAM comparitive searches in the debugger.
+  * Fixed bug in RAM comparative searches in the debugger.
 
   * Fixed bug with setting snapshot naming type from the GUI (it was
     always being set to 'romname').
