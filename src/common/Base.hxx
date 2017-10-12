@@ -98,6 +98,7 @@ class Base
 
     // Format specifiers to use for sprintf (eventually we may convert
     // to C++ streams
+    static ostringstream buf;
     static const char* const myLowerFmt[4];
     static const char* const myUpperFmt[4];
     static const char* const* myFmt;

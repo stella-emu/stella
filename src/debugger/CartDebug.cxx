@@ -58,7 +58,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   mySystemAddresses = LabelToAddr(sysCmp);
 
   // Add Zero-page RAM addresses
-  for(uInt32 i = 0x80; i <= 0xFF; ++i)
+  for(uInt16 i = 0x80; i <= 0xFF; ++i)
   {
     myState.rport.push_back(i);
     myState.wport.push_back(i);
@@ -75,14 +75,15 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 
   BankInfo info;
   info.size = std::min(banksize, 4096u);
-  for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
+  for(uInt32 i = 0; i < myConsole.cartridge().bankCount(); ++i)
     myBankInfo.push_back(info);
 
   info.size = 128;  // ZP RAM
   myBankInfo.push_back(info);
 
   // We know the address for the startup bank right now
-  myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(myDebugger.dpeek(0xfffc));
+  myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(
+    myDebugger.dpeek(0xfffc));
   addLabel("Start", myDebugger.dpeek(0xfffc, DATA));
 
   // Add system equates
@@ -132,7 +133,7 @@ const DebuggerState& CartDebug::getState()
 {
   myState.ram.clear();
   for(uInt32 i = 0; i < myState.rport.size(); ++i)
-    myState.ram.push_back(peek(myState.rport[i]));
+    myState.ram.push_back(myDebugger.peek(myState.rport[i]));
 
   if(myDebugWidget)
     myState.bank = myDebugWidget->bankState();
@@ -145,7 +146,7 @@ void CartDebug::saveOldState()
 {
   myOldState.ram.clear();
   for(uInt32 i = 0; i < myOldState.rport.size(); ++i)
-    myOldState.ram.push_back(peek(myOldState.rport[i]));
+    myOldState.ram.push_back(myDebugger.peek(myOldState.rport[i]));
 
   if(myDebugWidget)
   {
@@ -1333,7 +1334,7 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
   buf << "ORG " << Base::HEX4 << info.offset << endl;
 
   // Now consider each byte
-  uInt32 prev = info.offset, addr = prev + 1;
+  uInt16 prev = info.offset, addr = prev + 1;
   DisasmType prevType = disasmTypeAbsolute(mySystem.getAccessFlags(prev));
   for( ; addr < info.offset + info.size; ++addr)
   {

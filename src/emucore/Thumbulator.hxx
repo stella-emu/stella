@@ -27,6 +27,13 @@
 #ifndef THUMBULATOR_HXX
 #define THUMBULATOR_HXX
 
+// FIXME - This code has many instances of shifting into signed integers
+//         Perhaps the int's should be changed to uInt32
+#ifdef __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wshift-sign-overflow"
+#endif
+
 #include "bspf.hxx"
 #include "Cart.hxx"
 #include "Console.hxx"

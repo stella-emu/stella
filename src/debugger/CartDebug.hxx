@@ -39,10 +39,10 @@ using CartMethod = int (CartDebug::*)();
 class CartState : public DebuggerState
 {
   public:
-    ByteArray ram;   // The actual data values
-    IntArray rport;  // Address for reading from RAM
-    IntArray wport;  // Address for writing to RAM
-    string bank;     // Current banking layout
+    ByteArray ram;    // The actual data values
+    ShortArray rport; // Address for reading from RAM
+    ShortArray wport; // Address for writing to RAM
+    string bank;      // Current banking layout
 };
 
 class CartDebug : public DebuggerSystem
@@ -112,13 +112,6 @@ class CartDebug : public DebuggerSystem
     // functionality
     CartDebugWidget* getDebugWidget() const { return myDebugWidget; }
     void setDebugWidget(CartDebugWidget* w) { myDebugWidget = w; }
-
-    // The following assume that the given addresses are using the
-    // correct read/write port ranges; no checking will be done to
-    // confirm this.
-    uInt8 peek(uInt16 addr)   { return mySystem.peek(addr); }
-    uInt16 dpeek(uInt16 addr) { return mySystem.peek(addr) | (mySystem.peek(addr+1) << 8); }
-    void poke(uInt16 addr, uInt8 value) { mySystem.poke(addr, value); }
 
     // Indicate that a read from write port has occurred at the specified
     // address.
@@ -295,7 +288,7 @@ class CartDebug : public DebuggerSystem
       uInt16 start;                // start of address space
       uInt16 end;                  // end of address space
       uInt16 offset;               // ORG value
-      uInt16 size;                 // size of a bank (in bytes)
+      uInt32 size;                 // size of a bank (in bytes)
       AddressList addressList;     // addresses which PC has hit
       DirectiveList directiveList; // overrides for automatic code determination
 

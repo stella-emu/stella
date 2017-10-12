@@ -237,7 +237,7 @@ void FrameManager::setState(FrameManager::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::finalizeFrame()
 {
-  if (myCurrentFrameTotalLines != (uInt32)myStableFrameLines) {
+  if (myCurrentFrameTotalLines != uInt32(myStableFrameLines)) {
     if (myCurrentFrameTotalLines == myCurrentFrameFinalLines) {
 
       if (++myStableFrameHeightCountdown >= Metrics::framesForStableHeight) {
@@ -273,7 +273,7 @@ void FrameManager::finalizeFrame()
 void FrameManager::handleJitter(Int32 scanlineDifference)
 {
   if (
-    (uInt32)abs(scanlineDifference) < Metrics::minDeltaForJitter ||
+    uInt32(abs(scanlineDifference)) < Metrics::minDeltaForJitter ||
     !myJitterEnabled ||
     myTotalFrames < Metrics::initialGarbageFrames
   ) return;

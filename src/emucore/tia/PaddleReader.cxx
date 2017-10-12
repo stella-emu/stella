@@ -69,7 +69,7 @@ void PaddleReader::update(double value, double timestamp, ConsoleTiming consoleT
     setConsoleTiming(consoleTiming);
   }
 
-  if (value != myValue) {
+  if (value != myValue) {  // FIXME - warning on 'no-float-equal'
     myValue = value;
 
     if (myValue < 0) {

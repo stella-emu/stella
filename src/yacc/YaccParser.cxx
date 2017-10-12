@@ -32,6 +32,7 @@ void yyerror(const char* e);
 
 #ifdef __clang__
   #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wold-style-cast"
   #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
   #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
   #include "y.tab.c"

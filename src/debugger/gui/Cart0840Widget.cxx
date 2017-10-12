@@ -36,7 +36,7 @@ Cartridge0840Widget::Cartridge0840Widget(
   for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < 2;
       ++i, offset += 0x1000, spot += 0x40)
   {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
+    uInt16 start = uInt16((cart.myImage[offset+1] << 8) | cart.myImage[offset]);
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << Common::Base::HEX4 << start << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";

@@ -169,9 +169,9 @@ class Debugger : public DialogContainer
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
     {
       if(on)
-        return input | (1 << bit);
+        return uInt8(input | (1 << bit));
       else
-        return input & ~(1 << bit);
+        return uInt8(input & ~(1 << bit));
     }
     static void set_bits(uInt8 reg, BoolArray& bits)
     {
@@ -193,7 +193,7 @@ class Debugger : public DialogContainer
       return result;
     }
 
-    /* Invert given input if it differs from its previous value */
+    /** Invert given input if it differs from its previous value */
     const string invIfChanged(int reg, int oldReg);
 
     /**
@@ -206,9 +206,25 @@ class Debugger : public DialogContainer
     */
     static Debugger& debugger() { return *myStaticDebugger; }
 
-    /* These are now exposed so Expressions can use them. */
-    int peek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags); }
-    int dpeek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8); }
+    /** Convenience methods to access peek/poke from System */
+    uInt8 peek(uInt16 addr, uInt8 flags = 0) {
+      return mySystem.peek(addr, flags);
+    }
+    uInt16 dpeek(uInt16 addr, uInt8 flags = 0) {
+      return uInt16(mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8));
+    }
+    void poke(uInt16 addr, uInt8 value, uInt8 flags = 0) {
+      mySystem.poke(addr, value, flags);
+    }
+
+    /** These are now exposed so Expressions can use them. */
+    int peekAsInt(int addr, uInt8 flags = 0) {
+      return mySystem.peek(uInt16(addr), flags);
+    }
+    int dpeekAsInt(int addr, uInt8 flags = 0) {
+      return mySystem.peek(uInt16(addr), flags) |
+             (mySystem.peek(uInt16(addr+1), flags) << 8);
+    }
     int getAccessFlags(uInt16 addr) const
       { return mySystem.getAccessFlags(addr); }
     void setAccessFlags(uInt16 addr, uInt8 flags)
