@@ -445,12 +445,12 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
             uInt32 interval = myOSystem.settings().getInt("ssinterval");
             if(mod & KBDM_SHIFT)
             {
-              buf << "Enabling shotshots every frame";
+              buf << "Enabling snapshots every frame";
               interval = 1;
             }
             else
             {
-              buf << "Enabling shotshots in " << interval << " second intervals";
+              buf << "Enabling snapshots in " << interval << " second intervals";
               interval *= uInt32(myOSystem.frameRate());
             }
             myOSystem.frameBuffer().showMessage(buf.str());
