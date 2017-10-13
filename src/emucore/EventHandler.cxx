@@ -1445,8 +1445,7 @@ bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
   const StellaJoystick* joy = myJoyHandler->joy(stick);
   if(joy)
   {
-    if(axis >= 0 && axis < joy->numAxes &&
-       event >= 0 && event < Event::LastType)
+    if(axis >= 0 && axis < joy->numAxes && event < Event::LastType)
     {
       // This confusing code is because each axis has two associated values,
       // but analog events only affect one of the axis.
@@ -1481,8 +1480,7 @@ bool EventHandler::addJoyButtonMapping(Event::Type event, EventMode mode,
   const StellaJoystick* joy = myJoyHandler->joy(stick);
   if(joy)
   {
-    if(button >= 0 && button < joy->numButtons &&
-       event >= 0 && event < Event::LastType)
+    if(button >= 0 && button < joy->numButtons && event < Event::LastType)
     {
       joy->btnTable[button][mode] = event;
       if(updateMenus)
@@ -1503,8 +1501,8 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
   const StellaJoystick* joy = myJoyHandler->joy(stick);
   if(joy)
   {
-    if(hat >= 0 && hat < joy->numHats &&
-       event >= 0 && event < Event::LastType && value != EVENT_HATCENTER)
+    if(hat >= 0 && hat < joy->numHats && event < Event::LastType &&
+       value != EVENT_HATCENTER)
     {
       joy->hatTable[hat][value][mode] = event;
       if(updateMenus)

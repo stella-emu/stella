@@ -383,11 +383,11 @@ string RamWidget::doSearch(const string& str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RamWidget::doCompare(const string& str)
 {
-  bool comparitiveSearch = false;
+  bool comparativeSearch = false;
   int searchVal = 0, offset = 0;
 
   if(str.length() == 0)
-    return "Enter an absolute or comparitive value";
+    return "Enter an absolute or comparative value";
 
   // Do some pre-processing on the string
   string::size_type pos = str.find_first_of("+-", 0);
@@ -397,11 +397,11 @@ string RamWidget::doCompare(const string& str)
     return "Input must be [+|-]NUM";
   }
 
-  // A comparitive search searches memory for locations that have changed by
+  // A comparative search searches memory for locations that have changed by
   // the specified amount, vs. for exact values
   if(str[0] == '+' || str[0] == '-')
   {
-    comparitiveSearch = true;
+    comparativeSearch = true;
     bool negative = false;
     if(str[0] == '-')
       negative = true;
@@ -425,7 +425,7 @@ string RamWidget::doCompare(const string& str)
 
   for(uInt32 i = 0; i < mySearchAddr.size(); ++i)
   {
-    if(comparitiveSearch)
+    if(comparativeSearch)
     {
       searchVal = mySearchValue[i] + offset;
       if(searchVal < 0 || searchVal > 255)
