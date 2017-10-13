@@ -29,6 +29,7 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
   : myOSystem(system),
     myStateManager(statemgr),
     myIsNTSC(true) // TODO
+    // TODO: current is not valid
 {
 }
 
@@ -42,6 +43,7 @@ bool RewindManager::addState(const string& message)
     compressStates();
 
   RewindState& state = myStateList.addFirst();
+  // TODO: addFirst() must set current() to the just added element
   Serializer& s = state.data;
 
   s.reset();  // rewind Serializer internal buffers
@@ -60,7 +62,9 @@ bool RewindManager::rewindState()
   if(!myStateList.empty())
   {
     // TODO: get state previous to the current state instead of first()
-    RewindState& state = myStateList.first();
+    // RewindState& state = myStateList.current();
+    // myStateList.prev(); // moves current to the previous (older) element
+    RewindState& state = myStateList.first(); // TOOD: remove
     Serializer& s = state.data;
     string message = getMessage(state);
 
@@ -71,8 +75,8 @@ bool RewindManager::rewindState()
     // Show message indicating the rewind state
     myOSystem.frameBuffer().showMessage(message);
 
-    // TODO: Do NOT remove state (TODO later somewhere else: stop emulation)
-    myStateList.removeFirst();
+    // TODO: Do NOT remove state (TODO later somewhere else: stop emulation)    
+    myStateList.removeFirst(); // TODO: delete this
 
     return true;
   }

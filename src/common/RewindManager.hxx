@@ -49,7 +49,7 @@ class RewindManager
     */
     bool rewindState();
 
-    /** 
+    /**
       Unwind one level of the state list, and display the message associated
       with that state.
     */

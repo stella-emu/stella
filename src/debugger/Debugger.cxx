@@ -528,10 +528,7 @@ void Debugger::setStartState()
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
 
-  // If rewinding is not enabled, always start the debugger with a clean list
   RewindManager& r = myOSystem.state().rewindManager();
-  if(myOSystem.state().mode() == StateManager::Mode::Off)
-    r.clear();
   myDialog->rewindButton().setEnabled(!r.atLast());
   myDialog->unwindButton().setEnabled(!r.atFirst());
 
@@ -547,6 +544,9 @@ void Debugger::setQuitState()
 {
   // Bus must be unlocked for normal operation when leaving debugger mode
   unlockBankswitchState();
+
+  // Save state when leaving the debugger
+  saveOldState("exit debugger");
 
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
