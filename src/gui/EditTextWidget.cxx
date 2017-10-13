@@ -72,9 +72,8 @@ void EditTextWidget::drawWidget(bool hilite)
   // Highlight changes
   if(_changed)
     s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
-  if(!isEditable())
+  else if(!isEditable())
      s.fillRect(_x, _y, _w, _h, kBGColorHi);
-
 
   // Draw a thin frame around us.
   s.hLine(_x, _y, _x + _w - 1, kColor);

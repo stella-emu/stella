@@ -133,7 +133,8 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     if(cond > -1)
     {
       myJustHitReadTrapFlag = true;
-      myHitTrapInfo.message = "RTrap(" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.message = "RTrap"
+        + (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
       myHitTrapInfo.address = address;
     }
   }
@@ -165,7 +166,8 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     if(cond > -1)
     {
       myJustHitWriteTrapFlag = true;
-      myHitTrapInfo.message = "WTrap(" + myTrapCondNames[cond] + "): ";
+      myHitTrapInfo.message = "WTrap"
+        + (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
       myHitTrapInfo.address = address;
     }
   }
