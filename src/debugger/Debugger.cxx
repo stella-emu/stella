@@ -29,7 +29,6 @@
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
-#include "StateManager.hxx"
 
 #include "Console.hxx"
 #include "System.hxx"
@@ -451,6 +450,14 @@ void Debugger::nextFrame(int frames)
   lockBankswitchState();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::updateRewindbuttons(const RewindManager& r)
+{
+  myDialog->rewindButton().setEnabled(!r.atLast());
+  myDialog->unwindButton().setEnabled(!r.atFirst());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::windState(bool unwind)
 {
   RewindManager& r = myOSystem.state().rewindManager();
@@ -461,9 +468,7 @@ bool Debugger::windState(bool unwind)
   bool result = unwind ? r.unwindState() : r.rewindState();
   lockBankswitchState();
 
-  myDialog->rewindButton().setEnabled(!r.atLast());
-  myDialog->unwindButton().setEnabled(!r.atFirst());
-
+  updateRewindbuttons(r);
   return result;
 }
 
@@ -517,8 +522,7 @@ void Debugger::saveOldState(string rewindMsg)
   {
     RewindManager& r = myOSystem.state().rewindManager();
     r.addState(rewindMsg);
-    myDialog->rewindButton().setEnabled(!r.atLast());
-    myDialog->unwindButton().setEnabled(!r.atFirst());
+    updateRewindbuttons(r);
   }
 }
 
@@ -529,8 +533,7 @@ void Debugger::setStartState()
   lockBankswitchState();
 
   RewindManager& r = myOSystem.state().rewindManager();
-  myDialog->rewindButton().setEnabled(!r.atLast());
-  myDialog->unwindButton().setEnabled(!r.atFirst());
+  updateRewindbuttons(r);
 
   // Save initial state, but don't add it to the rewind list
   saveOldState();

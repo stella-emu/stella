@@ -36,6 +36,7 @@ class ButtonWidget;
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
+#include "StateManager.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
 #include "Stack.hxx"
@@ -327,7 +328,10 @@ class Debugger : public DialogContainer
     static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
 
   private:
+    // rewind/unwind one state
     bool windState(bool unwind);
+    // update the rewind/unwind button state
+    void updateRewindbuttons(const RewindManager& r);
 
     // Following constructors and assignment operators not supported
     Debugger() = delete;
