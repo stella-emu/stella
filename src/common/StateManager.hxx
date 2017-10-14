@@ -65,6 +65,16 @@ class StateManager
     void toggleRewindMode();
 
     /**
+      Rewinds one state; this uses the RewindManager for its functionality.
+    */
+    bool rewindState();
+
+    /**
+      Unwinds one state; this uses the RewindManager for its functionality.
+    */
+    bool unwindState();
+
+    /**
       Updates the state of the system based on the currently active mode.
     */
     void update();

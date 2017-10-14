@@ -273,9 +273,30 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     {
       myOSystem.frameBuffer().toggleFullscreen();
     }
-    // These only work when in emulation mode
-    else if(myState == S_EMULATE)
+    // state rewinding must work in pause mode too
+    else if(myState == S_EMULATE || myState == S_PAUSE)
     {
+      switch(key)
+      {
+        case KBDK_LEFT:  // Alt-left rewinds states
+          if(myOSystem.state().rewindState() && myState != S_PAUSE)
+            setEventState(S_PAUSE);
+          break;
+
+        case KBDK_RIGHT:  // Alt-right unwinds states
+          if(myOSystem.state().unwindState() && myState != S_PAUSE)
+            setEventState(S_PAUSE);
+          break;
+
+        default:
+          handled = false;
+          break;
+      }
+    }
+    // These only work when in emulation mode
+    if(!handled && myState == S_EMULATE)
+    {
+      handled = true;
       switch(key)
       {
         case KBDK_EQUALS:
@@ -566,10 +587,19 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     case S_EMULATE:
       handleEvent(myKeyTable[key][kEmulationMode], state);
       break;
+
     case S_PAUSE:
-      if(myKeyTable[key][kEmulationMode] == Event::TakeSnapshot)
-        handleEvent(myKeyTable[key][kEmulationMode], state);
+      switch(myKeyTable[key][kEmulationMode])
+      {
+        case Event::TakeSnapshot:
+        case Event::DebuggerMode:
+          handleEvent(myKeyTable[key][kEmulationMode], state);
+
+        default:
+          break;
+      }
       break;
+
     default:
       if(myOverlay)
         myOverlay->handleKeyEvent(key, mod, state);
@@ -1174,7 +1204,7 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::DebuggerMode:
-      if(myState == S_EMULATE)
+      if(myState == S_EMULATE || myState == S_PAUSE)
         enterDebugMode();
       else if(myState == S_DEBUGGER)
         leaveDebugMode();
