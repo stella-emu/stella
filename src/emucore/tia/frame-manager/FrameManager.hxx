@@ -21,6 +21,7 @@
 #include "AbstractFrameManager.hxx"
 #include "TIAConstants.hxx"
 #include "bspf.hxx"
+#include "JitterEmulation.hxx"
 
 class FrameManager: public AbstractFrameManager {
   public:
@@ -29,11 +30,11 @@ class FrameManager: public AbstractFrameManager {
 
   public:
 
-    void setJitterFactor(uInt8 factor) override { }
+    void setJitterFactor(uInt8 factor) override { myJitterEmulation.setJitterFactor(factor); }
 
     bool jitterEnabled() const override { return myJitterEnabled; }
 
-    void enableJitter(bool enabled) override;
+    void enableJitter(bool enabled) override { myJitterEnabled = enabled; }
 
     uInt32 height() const override { return myHeight; };
 
@@ -45,7 +46,7 @@ class FrameManager: public AbstractFrameManager {
 
     Int32 missingScanlines() const override;
 
-    void setYstart(uInt32 ystart) override { myYStart = ystart; }
+    void setYstart(uInt32 ystart) override;
 
     uInt32 ystart() const override { return myYStart; }
 
@@ -80,12 +81,6 @@ class FrameManager: public AbstractFrameManager {
 
     void setState(State state);
 
-    void finalizeFrame();
-
-    void nextLineInVsync();
-
-    void handleJitter(Int32 scanlineDifference);
-
     void updateIsRendering();
 
   private:
@@ -107,6 +102,8 @@ class FrameManager: public AbstractFrameManager {
 
     Int32 myStableFrameLines;
     uInt8 myStableFrameHeightCountdown;
+
+    JitterEmulation myJitterEmulation;
 
   private:
 

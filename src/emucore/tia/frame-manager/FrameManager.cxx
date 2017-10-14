@@ -58,11 +58,15 @@ void FrameManager::onReset()
 
   myStableFrameLines = -1;
   myStableFrameHeightCountdown = 0;
+
+  myJitterEmulation.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onNextLine()
 {
+  Int32 jitter;
+
   State previousState = myState;
   myLineInState++;
 
@@ -83,7 +87,10 @@ void FrameManager::onNextLine()
       break;
 
     case State::waitForFrameStart:
-      if (myLineInState >= myYStart) setState(State::frame);
+      jitter =
+        (myJitterEnabled && myTotalFrames > Metrics::initialGarbageFrames) ? myJitterEmulation.jitter() : 0;
+
+      if (myLineInState >= (myYStart + jitter)) setState(State::frame);
       break;
 
     case State::frame:
@@ -112,6 +119,13 @@ Int32 FrameManager::missingScanlines() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setYstart(uInt32 ystart)
+{
+  myYStart = ystart;
+  myJitterEmulation.setYStart(ystart);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onSetVsync()
 {
   if (myState == State::waitForVsyncEnd) setState(State::waitForFrameStart);
@@ -128,7 +142,8 @@ void FrameManager::setState(FrameManager::State state)
 
   switch (myState) {
     case State::waitForFrameStart:
-      finalizeFrame();
+      notifyFrameComplete();
+      myJitterEmulation.frameComplete(myCurrentFrameFinalLines);
       notifyFrameStart();
 
       myVsyncLines = 0;
@@ -144,45 +159,6 @@ void FrameManager::setState(FrameManager::State state)
   }
 
   updateIsRendering();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::finalizeFrame()
-{
-  if (myCurrentFrameTotalLines != (uInt32)myStableFrameLines) {
-    if (myCurrentFrameTotalLines == myCurrentFrameFinalLines) {
-
-      if (++myStableFrameHeightCountdown >= Metrics::framesForStableHeight) {
-        if (myStableFrameLines >= 0) {
-          handleJitter(myCurrentFrameTotalLines - myStableFrameLines);
-        }
-
-        myStableFrameLines = myCurrentFrameTotalLines;
-      }
-
-    }
-    else myStableFrameHeightCountdown = 0;
-  }
-
-  notifyFrameComplete();
-
-#ifdef TIA_FRAMEMANAGER_DEBUG_LOG
-  (cout << "frame complete @ " << myLineInState << " (" << myCurrentFrameFinalLines << " total)" << "\n").flush();
-#endif // TIA_FRAMEMANAGER_DEBUG_LOG
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::handleJitter(Int32 scanlineDifference)
-{
-  /*
-  if (
-    (uInt32)abs(scanlineDifference) < Metrics::minDeltaForJitter ||
-    !myJitterEnabled ||
-    myTotalFrames < Metrics::initialGarbageFrames
-  ) return;
-
-  myVblankManager.setJitter(scanlineDifference);
-  */
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,16 +196,6 @@ void FrameManager::setFixedHeight(uInt32 height)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::enableJitter(bool enabled)
-{
-  /*
-  myJitterEnabled = enabled;
-
-  if (!enabled) myVblankManager.setJitter(0);
-  */
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::updateIsRendering() {
   myIsRendering = myState == State::frame;
 }
@@ -237,6 +203,8 @@ void FrameManager::updateIsRendering() {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameManager::onSave(Serializer& out) const
 {
+  if (!myJitterEmulation.save(out)) return false;
+
   out.putInt(uInt32(myState));
   out.putInt(myLineInState);
   out.putInt(myVsyncLines);
@@ -261,6 +229,8 @@ bool FrameManager::onSave(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameManager::onLoad(Serializer& in)
 {
+  if (!myJitterEmulation.load(in)) return false;
+
   myState = State(in.getInt());
   myLineInState = in.getInt();
   myVsyncLines = in.getInt();

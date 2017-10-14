@@ -98,6 +98,13 @@ class FrameLayoutDetector: public AbstractFrameManager {
      */
     uInt32 myLinesWaitingForVsyncToStart;
 
+  private:
+
+    FrameLayoutDetector(const FrameLayoutDetector&) = delete;
+    FrameLayoutDetector(FrameLayoutDetector&&) = delete;
+    FrameLayoutDetector& operator=(const FrameLayoutDetector&) = delete;
+    FrameLayoutDetector& operator=(FrameLayoutDetector&&) = delete;
+
 };
 
 #endif // TIA_FRAME_LAYOUT_DETECTOR
