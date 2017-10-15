@@ -594,6 +594,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
         case Event::TakeSnapshot:
         case Event::DebuggerMode:
           handleEvent(myKeyTable[key][kEmulationMode], state);
+          break;
 
         default:
           break;
