@@ -35,6 +35,7 @@ class Debugger;
 #include "FrameBuffer.hxx"
 #include "Serializable.hxx"
 #include "NTSCFilter.hxx"
+#include "frame-manager/AbstractFrameManager.hxx"
 
 /**
   Contains detailed info about a console.
@@ -305,6 +306,16 @@ class Console : public Serializable
 
   private:
     /**
+     * Dry-run the emulation and detect the frame layout (PAL / NTSC).
+     */
+    void autodetectFrameLayout();
+
+    /**
+     * Dryrun the emulation and detect ystart (the first visible scanline).
+     */
+    void autodetectYStart();
+
+    /**
       Sets various properties of the TIA (YStart, Height, etc) based on
       the current display format.
     */
@@ -366,6 +377,9 @@ class Console : public Serializable
     // Pointer to the TIA object
     unique_ptr<TIA> myTIA;
 
+    // The frame manager instance that is used during emulation.
+    unique_ptr<AbstractFrameManager> myFrameManager;
+
     // Pointer to the Cartridge (the debugger needs it)
     unique_ptr<Cartridge> myCart;
 
@@ -386,6 +400,9 @@ class Console : public Serializable
 
     // Display format currently in use
     uInt32 myCurrentFormat;
+
+    // Autodetected ystart.
+    uInt32 myAutodetectedYstart;
 
     // Indicates whether an external palette was found and
     // successfully loaded

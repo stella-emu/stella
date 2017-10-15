@@ -25,9 +25,10 @@
 #include "Device.hxx"
 #include "Serializer.hxx"
 #include "TIATypes.hxx"
+#include "TIAConstants.hxx"
 #include "DelayQueue.hxx"
 #include "DelayQueueIterator.hxx"
-#include "FrameManager.hxx"
+#include "frame-manager/AbstractFrameManager.hxx"
 #include "FrameLayout.hxx"
 #include "Background.hxx"
 #include "Playfield.hxx"
@@ -100,9 +101,20 @@ class TIA : public Device
       @param settings  The settings object for this TIA device
     */
     TIA(Console& console, Sound& sound, Settings& settings);
+
     virtual ~TIA() = default;
 
   public:
+    /**
+     * Configure the frame manager.
+     */
+    void setFrameManager(AbstractFrameManager *frameManager);
+
+    /**
+     * Clear the configured frame manager and deteach the lifecycle callbacks.
+     */
+    void clearFrameManager();
+
     /**
       Reset device to its power-on state.
     */
@@ -192,21 +204,19 @@ class TIA : public Device
       Answers dimensional info about the framebuffer.
     */
     uInt32 width() const  { return 160; }
-    uInt32 height() const { return myFrameManager.height(); }
-    uInt32 ystart() const { return myFrameManager.ystart(); }
-    bool ystartIsAuto(uInt32 line) const { return myFrameManager.ystartIsAuto(line); }
+    uInt32 height() const { return myFrameManager->height(); }
+    uInt32 ystart() const { return myFrameManager->ystart(); }
 
     /**
       Changes the current Height/YStart properties.
       Note that calls to these method(s) must be eventually followed by
       ::frameReset() for the changes to take effect.
     */
-    void setHeight(uInt32 height) { myFrameManager.setFixedHeight(height); }
-    void setYStart(uInt32 ystart) { myFrameManager.setYstart(ystart); }
+    void setHeight(uInt32 height) { myFrameManager->setFixedHeight(height); }
+    void setYStart(uInt32 ystart) { myFrameManager->setYstart(ystart); }
 
-    void autodetectLayout(bool toggle) { myFrameManager.autodetectLayout(toggle); }
-    void setLayout(FrameLayout layout) { myFrameManager.setLayout(layout); }
-    FrameLayout frameLayout() const { return myFrameManager.layout(); }
+    void setLayout(FrameLayout layout) { myFrameManager->setLayout(layout); }
+    FrameLayout frameLayout() const { return myFrameManager->layout(); }
 
     /**
       Answers the timing of the console currently in use.
@@ -249,7 +259,7 @@ class TIA : public Device
 
       @return The total number of scanlines generated
     */
-    uInt32 scanlines() const { return myFrameManager.scanlines(); }
+    uInt32 scanlines() const { return myFrameManager->scanlines(); }
 
     /**
       Answers the total number of scanlines the TIA generated in the
@@ -257,7 +267,7 @@ class TIA : public Device
 
       @return The total number of scanlines generated in the last frame.
     */
-    uInt32 scanlinesLastFrame() const { return myFrameManager.scanlinesLastFrame(); }
+    uInt32 scanlinesLastFrame() const { return myFrameManager->scanlinesLastFrame(); }
 
     /**
       Answers the total system cycles from the start of the emulation.
@@ -267,7 +277,7 @@ class TIA : public Device
     /**
       Answers the frame count from the start of the emulation.
     */
-    uInt32 frameCount() const { return myFrameManager.frameCount(); }
+    uInt32 frameCount() const { return myFrameManager->frameCount(); }
 
     /**
       Answers the system cycles from the start of the current frame.
@@ -282,7 +292,7 @@ class TIA : public Device
 
       @return If the frame is in rendering mode
     */
-    bool isRendering() const { return myFrameManager.isRendering(); }
+    bool isRendering() const { return myFrameManager->isRendering(); }
 
     /**
       Answers the current position of the virtual 'electron beam' used
@@ -359,7 +369,7 @@ class TIA : public Device
       @return  Whether the mode was enabled or disabled
     */
     bool toggleJitter(uInt8 mode = 2);
-    void setJitterRecoveryFactor(Int32 factor) { myFrameManager.setJitterFactor(factor); }
+    void setJitterRecoveryFactor(Int32 factor);
 
     /**
       This method should be called to update the TIA with a new scanline.
@@ -450,12 +460,6 @@ class TIA : public Device
      * This callback is invoked by FrameManager when a new frame starts.
      */
     void onFrameStart();
-
-    /**
-     * This callback is invoked by FrameManager when the visible range of the
-     * current frame starts.
-     */
-    void onRenderingStart();
 
     /**
      * This callback is invoked by FrameManager when the current frame completes.
@@ -598,7 +602,7 @@ class TIA : public Device
      * The frame manager is responsible for detecting frame boundaries and the visible
      * region of each frame.
      */
-    FrameManager myFrameManager;
+    AbstractFrameManager *myFrameManager;
 
     /**
      * The various TIA objects.
@@ -622,10 +626,8 @@ class TIA : public Device
     LatchedInput myInput0;
     LatchedInput myInput1;
 
-    /**
-     * Pointer to the internal color-index-based frame buffer
-     */
-    uInt8 myFramebuffer[160 * FrameManager::frameBufferHeight];
+    // Pointer to the internal color-index-based frame buffer
+    uInt8 myFramebuffer[160 * TIAConstants::frameBufferHeight];
 
     /**
      * Setting this to true injects random values into undefined reads.
@@ -738,9 +740,16 @@ class TIA : public Device
     bool myColorLossActive;
 
     /**
-     * System cycles at the end of the previous frame / beginning of next frame
+     * System cycles at the end of the previous frame / beginning of next frame.
      */
     uInt64 myCyclesAtFrameStart;
+
+    /**
+     * The frame manager can change during our lifetime, so we buffer those two.
+     */
+    bool myEnableJitter;
+    uInt8 myJitterFactor;
+
 
 #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA

@@ -691,6 +691,7 @@ SRC="src"
 CORE="$SRC/emucore"
 COMMON="$SRC/common"
 TIA="$SRC/emucore/tia"
+TIA_FRAME_MANAGER="$SRC/emucore/tia/frame-manager"
 TV="$SRC/common/tv_filters"
 GUI="$SRC/gui"
 DBG="$SRC/debugger"
@@ -700,7 +701,7 @@ CHEAT="$SRC/cheat"
 LIBPNG="$SRC/libpng"
 ZLIB="$SRC/zlib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI -I$TIA"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI -I$TIA -I$TIA_FRAME_MANAGER"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then

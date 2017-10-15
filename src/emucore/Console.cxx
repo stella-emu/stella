@@ -55,8 +55,11 @@
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
 #include "Version.hxx"
-#include "FrameManager.hxx"
+#include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
+#include "frame-manager/FrameManager.hxx"
+#include "frame-manager/FrameLayoutDetector.hxx"
+#include "frame-manager/YStartDetector.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -77,7 +80,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCart(std::move(cart)),
     myDisplayFormat(""),  // Unknown TV format @ start
     myFramerate(0.0),     // Unknown framerate @ start
-    myCurrentFormat(0),   // Unknown format @ start
+    myCurrentFormat(0),   // Unknown format @ start,
+    myAutodetectedYstart(0),
     myUserPaletteDefined(false),
     myConsoleTiming(ConsoleTiming::ntsc)
 {
@@ -88,7 +92,10 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   my6502 = make_unique<M6502>(myOSystem.settings());
   myRiot = make_unique<M6532>(*this, myOSystem.settings());
   myTIA  = make_unique<TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  myFrameManager = make_unique<FrameManager>();
   mySwitches = make_unique<Switches>(myEvent, myProperties);
+
+  myTIA->setFrameManager(myFrameManager.get());
 
   // Construct the system and components
   mySystem = make_unique<System>(osystem, *my6502, *myRiot, *myTIA, *myCart);
@@ -114,36 +121,19 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   if(myDisplayFormat == "AUTO" || myOSystem.settings().getBool("rominfo"))
   {
-    // Run the TIA, looking for PAL scanline patterns
-    // We turn off the SuperCharger progress bars, otherwise the SC BIOS
-    // will take over 250 frames!
-    // The 'fastscbios' option must be changed before the system is reset
-    bool fastscbios = myOSystem.settings().getBool("fastscbios");
-    myOSystem.settings().setValue("fastscbios", true);
+    autodetectFrameLayout();
 
-    uInt8 initialGarbageFrames = FrameManager::initialGarbageFrames();
-    uInt8 linesPAL = 0;
-    uInt8 linesNTSC = 0;
-
-    mySystem->reset(true);  // autodetect in reset enabled
-    myTIA->autodetectLayout(true);
-    for(int i = 0; i < 60; ++i) {
-      if (i > initialGarbageFrames)
-        myTIA->frameLayout() == FrameLayout::pal ? linesPAL++ : linesNTSC++;
-
-      myTIA->update();
-    }
-
-    myDisplayFormat = linesPAL > linesNTSC  ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO")
     {
       autodetected = "*";
       myCurrentFormat = 0;
     }
-
-    // Don't forget to reset the SC progress bars again
-    myOSystem.settings().setValue("fastscbios", fastscbios);
   }
+
+  if (atoi(myProperties.get(Display_YStart).c_str()) == 0) {
+    autodetectYStart();
+  }
+
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
   // Set up the correct properties used when toggling format
@@ -216,6 +206,54 @@ Console::~Console()
   // Some smart controllers need to be informed that the console is going away
   myLeftControl->close();
   myRightControl->close();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::autodetectFrameLayout()
+{
+  // Run the TIA, looking for PAL scanline patterns
+  // We turn off the SuperCharger progress bars, otherwise the SC BIOS
+  // will take over 250 frames!
+  // The 'fastscbios' option must be changed before the system is reset
+  bool fastscbios = myOSystem.settings().getBool("fastscbios");
+  myOSystem.settings().setValue("fastscbios", true);
+
+  FrameLayoutDetector frameLayoutDetector;
+  myTIA->setFrameManager(&frameLayoutDetector);
+  mySystem->reset(true);
+
+  for(int i = 0; i < 60; ++i) myTIA->update();
+
+  myTIA->setFrameManager(myFrameManager.get());
+
+  myDisplayFormat = frameLayoutDetector.detectedLayout() == FrameLayout::pal ? "PAL" : "NTSC";
+
+  // Don't forget to reset the SC progress bars again
+  myOSystem.settings().setValue("fastscbios", fastscbios);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::autodetectYStart()
+{
+  // We turn off the SuperCharger progress bars, otherwise the SC BIOS
+  // will take over 250 frames!
+  // The 'fastscbios' option must be changed before the system is reset
+  bool fastscbios = myOSystem.settings().getBool("fastscbios");
+  myOSystem.settings().setValue("fastscbios", true);
+
+  YStartDetector ystartDetector;
+  ystartDetector.setLayout(myDisplayFormat == "PAL" ? FrameLayout::pal : FrameLayout::ntsc);
+  myTIA->setFrameManager(&ystartDetector);
+  mySystem->reset();
+
+  for (int i = 0; i < 80; i++) myTIA->update();
+
+  myTIA->setFrameManager(myFrameManager.get());
+
+  myAutodetectedYstart = ystartDetector.detectedYStart();
+
+  // Don't forget to reset the SC progress bars again
+  myOSystem.settings().setValue("fastscbios", fastscbios);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -570,7 +608,7 @@ void Console::changeYStart(int direction)
 
   if(direction == +1)       // increase YStart
   {
-    if(ystart >= FrameManager::maxYStart)
+    if(ystart >= TIAConstants::maxYStart)
     {
       myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
@@ -579,11 +617,17 @@ void Console::changeYStart(int direction)
   }
   else if(direction == -1)  // decrease YStart
   {
-    if(ystart == FrameManager::minYStart-1)
+    if (ystart == TIAConstants::minYStart && myAutodetectedYstart == 0) {
+      myOSystem.frameBuffer().showMessage("Autodetected YStart not available");
+      return;
+    }
+
+    if(ystart == TIAConstants::minYStart-1 && myAutodetectedYstart > 0)
     {
       myOSystem.frameBuffer().showMessage("YStart at minimum");
       return;
     }
+
     ystart--;
   }
   else
@@ -591,16 +635,16 @@ void Console::changeYStart(int direction)
 
   ostringstream val;
   val << ystart;
-  if(ystart == FrameManager::minYStart-1)
+  if(ystart == TIAConstants::minYStart-1)
     myOSystem.frameBuffer().showMessage("YStart autodetected");
   else
   {
-    if(myTIA->ystartIsAuto(ystart))
+    if(myAutodetectedYstart > 0 && myAutodetectedYstart == ystart)
     {
       // We've reached the auto-detect value, so reset
       myOSystem.frameBuffer().showMessage("YStart " + val.str() + " (Auto)");
       val.str("");
-      val << FrameManager::minYStart-1;
+      val << TIAConstants::minYStart-1;
     }
     else
       myOSystem.frameBuffer().showMessage("YStart " + val.str());
@@ -620,7 +664,7 @@ void Console::changeHeight(int direction)
   if(direction == +1)       // increase Height
   {
     height++;
-    if(height > FrameManager::maxViewableHeight || height > dheight)
+    if(height > TIAConstants::maxViewableHeight || height > dheight)
     {
       myOSystem.frameBuffer().showMessage("Height at maximum");
       return;
@@ -629,7 +673,7 @@ void Console::changeHeight(int direction)
   else if(direction == -1)  // decrease Height
   {
     height--;
-    if(height < FrameManager::minViewableHeight) height = 0;
+    if(height < TIAConstants::minViewableHeight) height = 0;
   }
   else
     return;
@@ -649,12 +693,10 @@ void Console::setTIAProperties()
 {
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   if(ystart != 0)
-    ystart = BSPF::clamp(ystart, FrameManager::minYStart, FrameManager::maxYStart);
+    ystart = BSPF::clamp(ystart, TIAConstants::minYStart, TIAConstants::maxYStart);
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
   if(height != 0)
-    height = BSPF::clamp(height, FrameManager::minViewableHeight, FrameManager::maxViewableHeight);
-
-  myTIA->autodetectLayout(false);
+    height = BSPF::clamp(height, TIAConstants::minViewableHeight, TIAConstants::maxViewableHeight);
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
@@ -676,7 +718,7 @@ void Console::setTIAProperties()
     myTIA->setLayout(FrameLayout::pal);
   }
 
-  myTIA->setYStart(ystart);
+  myTIA->setYStart(ystart != 0 ? ystart : myAutodetectedYstart);
   myTIA->setHeight(height);
 }
 
