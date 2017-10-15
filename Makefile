@@ -55,7 +55,7 @@ ifdef HAVE_GCC
 endif
 ifdef HAVE_CLANG
   CXXFLAGS+= -Weverything -Wno-c++17-extensions -Wno-c++98-compat -Wno-c++98-compat-pedantic \
-    -Wno-double-promotion -Wno-switch-enum -Wno-conversion \
+    -Wno-double-promotion -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
     -Wno-inconsistent-missing-destructor-override \
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
     -Wno-four-char-constants -Wno-padded
