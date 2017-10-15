@@ -783,9 +783,6 @@
     <ClCompile Include="..\emucore\tia\DrawCounterDecodes.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\FrameManager.cxx">
-      <Filter>Source Files\emucore\tia</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\tia\LatchedInput.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
@@ -802,9 +799,6 @@
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\tia\TIA.cxx">
-      <Filter>Source Files\emucore\tia</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\tia\VblankManager.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx">
@@ -854,6 +848,21 @@
     </ClCompile>
     <ClCompile Include="..\debugger\gui\TrakBallWidget.cxx">
       <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\frame-manager\AbstractFrameManager.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\frame-manager\FrameLayoutDetector.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\frame-manager\FrameManager.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\frame-manager\JitterEmulation.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1646,9 +1655,6 @@
     <ClInclude Include="..\emucore\tia\DrawCounterDecodes.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\FrameManager.hxx">
-      <Filter>Header Files\emucore\tia</Filter>
-    </ClInclude>
     <ClInclude Include="..\emucore\tia\LatchedInput.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
@@ -1665,9 +1671,6 @@
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\tia\TIA.hxx">
-      <Filter>Header Files\emucore\tia</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\tia\VblankManager.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\AmigaMouse.hxx">
@@ -1745,11 +1748,27 @@
     <ClInclude Include="..\common\LinkedObjectPool.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\emucore\tia\frame-manager\AbstractFrameManager.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\frame-manager\FrameLayoutDetector.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\frame-manager\FrameManager.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\frame-manager\JitterEmulation.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\frame-manager\YStartDetector.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\emucore\tia\frame-manager\module.mk" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="stella.rc">

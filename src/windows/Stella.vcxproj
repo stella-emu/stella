@@ -110,7 +110,7 @@
     <ClCompile>
       <AdditionalOptions>/MP /std:c++latest %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -141,7 +141,7 @@
     <ClCompile>
       <AdditionalOptions>/MP /std:c++latest %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -170,7 +170,7 @@
       <AdditionalOptions>/MP /std:c++latest %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -203,7 +203,7 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -323,14 +323,17 @@
     <ClCompile Include="..\emucore\tia\Background.cxx" />
     <ClCompile Include="..\emucore\tia\Ball.cxx" />
     <ClCompile Include="..\emucore\tia\DrawCounterDecodes.cxx" />
-    <ClCompile Include="..\emucore\tia\FrameManager.cxx" />
+    <ClCompile Include="..\emucore\tia\frame-manager\AbstractFrameManager.cxx" />
+    <ClCompile Include="..\emucore\tia\frame-manager\FrameLayoutDetector.cxx" />
+    <ClCompile Include="..\emucore\tia\frame-manager\FrameManager.cxx" />
+    <ClCompile Include="..\emucore\tia\frame-manager\JitterEmulation.cxx" />
+    <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx" />
     <ClCompile Include="..\emucore\tia\LatchedInput.cxx" />
     <ClCompile Include="..\emucore\tia\Missile.cxx" />
     <ClCompile Include="..\emucore\tia\PaddleReader.cxx" />
     <ClCompile Include="..\emucore\tia\Player.cxx" />
     <ClCompile Include="..\emucore\tia\Playfield.cxx" />
     <ClCompile Include="..\emucore\tia\TIA.cxx" />
-    <ClCompile Include="..\emucore\tia\VblankManager.cxx" />
     <ClCompile Include="..\gui\ColorWidget.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
@@ -609,15 +612,18 @@
     <ClInclude Include="..\emucore\tia\DelayQueueIteratorImpl.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueueMember.hxx" />
     <ClInclude Include="..\emucore\tia\DrawCounterDecodes.hxx" />
+    <ClInclude Include="..\emucore\tia\frame-manager\AbstractFrameManager.hxx" />
+    <ClInclude Include="..\emucore\tia\frame-manager\FrameLayoutDetector.hxx" />
+    <ClInclude Include="..\emucore\tia\frame-manager\FrameManager.hxx" />
+    <ClInclude Include="..\emucore\tia\frame-manager\JitterEmulation.hxx" />
+    <ClInclude Include="..\emucore\tia\frame-manager\YStartDetector.hxx" />
     <ClInclude Include="..\emucore\tia\FrameLayout.hxx" />
-    <ClInclude Include="..\emucore\tia\FrameManager.hxx" />
     <ClInclude Include="..\emucore\tia\LatchedInput.hxx" />
     <ClInclude Include="..\emucore\tia\Missile.hxx" />
     <ClInclude Include="..\emucore\tia\PaddleReader.hxx" />
     <ClInclude Include="..\emucore\tia\Player.hxx" />
     <ClInclude Include="..\emucore\tia\Playfield.hxx" />
     <ClInclude Include="..\emucore\tia\TIA.hxx" />
-    <ClInclude Include="..\emucore\tia\VblankManager.hxx" />
     <ClInclude Include="..\emucore\TrakBall.hxx" />
     <ClInclude Include="..\gui\ColorWidget.hxx" />
     <ClInclude Include="..\gui\ConsoleBFont.hxx" />
@@ -794,6 +800,7 @@
     <ClInclude Include="..\libpng\pngpriv.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\emucore\tia\frame-manager\module.mk" />
     <None Include="stella.ico" />
   </ItemGroup>
   <ItemGroup>
