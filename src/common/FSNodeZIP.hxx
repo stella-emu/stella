@@ -42,7 +42,6 @@ class FilesystemNodeZIP : public AbstractFSNode
      * Creates a FilesystemNodeZIP for a given path.
      *
      * @param path  String with the path the new node should point to.
-     * @param node  Raw pointer to use for the internal FSNode
      */
     FilesystemNodeZIP(const string& path);
 

@@ -21,6 +21,7 @@
 class SerialPort;
 
 #include "Control.hxx"
+#include "SaveKey.hxx"
 #include "MT24LC256.hxx"
 
 /**
@@ -32,10 +33,8 @@ class SerialPort;
 
   @author  B. Watson
 */
-class AtariVox : public Controller
+class AtariVox : public SaveKey
 {
-  friend class AtariVoxWidget;
-
   public:
     /**
       Create a new AtariVox controller plugged into the specified jack
@@ -86,27 +85,16 @@ class AtariVox : public Controller
     */
     void reset() override;
 
-    /**
-      Notification method invoked by the system indicating that the
-      console is about to be destroyed.  It may be necessary to override
-      this method for controllers that need cleanup before exiting.
-    */
-    void close() override;
-
-    string about() const override;
+    string about(bool swappedPorts) const override { return Controller::about(swappedPorts) + myAboutString; }
 
   private:
    void clockDataIn(bool value);
-   void shiftIn(bool value);
 
   private:
     // Instance of an real serial port on the system
     // Assuming there's a real AtariVox attached, we can send SpeakJet
     // bytes directly to it
     SerialPort& mySerialPort;
-
-    // The EEPROM used in the AtariVox
-    unique_ptr<MT24LC256> myEEPROM;
 
     // How many bits have been shifted into the shift register?
     uInt8 myShiftCount;

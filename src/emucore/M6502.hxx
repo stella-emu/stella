@@ -24,6 +24,7 @@
 
   #include "Expression.hxx"
   #include "PackedBitArray.hxx"
+  #include "TrapArray.hxx"
 #endif
 
 class Settings;
@@ -102,7 +103,7 @@ class M6502 : public Serializable
     /**
       Pull RDY high again before the callback was triggered.
     */
-    void clearHaltRequest() { myHaltRequested = false; };
+    void clearHaltRequest() { myHaltRequested = false; }
 
     /**
       Execute instructions until the specified number of instructions
@@ -149,6 +150,20 @@ class M6502 : public Serializable
         (myLastPokeAddress != myLastPeekAddress ? myLastPeekAddress : 0) :
         myLastPeekAddress;
     }
+
+    /**
+      Return the last address that was part of a read/peek.
+
+      @return The address of the last read
+    */
+    uInt16 lastReadBaseAddress() const { return myLastPeekBaseAddress; }
+
+    /**
+      Return the last address that was part of a write/poke.
+
+      @return The address of the last write
+    */
+    uInt16 lastWriteBaseAddress() const { return myLastPokeBaseAddress; }
 
     /**
       Return the source of the address that was used for a write/poke.
@@ -207,13 +222,24 @@ class M6502 : public Serializable
     void attach(Debugger& debugger);
 
     PackedBitArray& breakPoints() { return myBreakPoints; }
-    PackedBitArray& readTraps()   { return myReadTraps;   }
-    PackedBitArray& writeTraps()  { return myWriteTraps;  }
+    //PackedBitArray& readTraps()   { return myReadTraps;   }
+    //PackedBitArray& writeTraps()  { return myWriteTraps;  }
+    //PackedBitArray& readTrapIfs() { return myReadTrapIfs; }
+    //PackedBitArray& writeTrapIfs() { return myWriteTrapIfs; }
+    TrapArray& readTraps() { return myReadTraps; }
+    TrapArray& writeTraps() { return myWriteTraps; }
 
+    // methods for 'breakif' handling
     uInt32 addCondBreak(Expression* e, const string& name);
-    void delCondBreak(uInt32 brk);
+    bool delCondBreak(uInt32 brk);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
+
+    // methods for 'trapif' handling
+    uInt32 addCondTrap(Expression* e, const string& name);
+    bool delCondTrap(uInt32 brk);
+    void clearCondTraps();
+    const StringList& getCondTrapNames() const;
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -329,6 +355,9 @@ class M6502 : public Serializable
     /// Indicates the last address which was accessed specifically
     /// by a peek or poke command
     uInt16 myLastPeekAddress, myLastPokeAddress;
+    /// Indicates the last base (= non-mirrored) address which was
+    /// accessed specifically by a peek or poke command
+    uInt16 myLastPeekBaseAddress, myLastPokeBaseAddress;
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)
@@ -359,14 +388,25 @@ class M6502 : public Serializable
       return -1; // no break hit
     }
 
+    Int32 evalCondTraps()
+    {
+      for(uInt32 i = 0; i < myTrapConds.size(); i++)
+        if(myTrapConds[i]->evaluate())
+          return i;
+
+      return -1; // no trapif hit
+    }
+
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;
 
     // Addresses for which the specified action should occur
-    PackedBitArray myBreakPoints, myReadTraps, myWriteTraps;
+    PackedBitArray myBreakPoints;// , myReadTraps, myWriteTraps, myReadTrapIfs, myWriteTrapIfs;
+    TrapArray myReadTraps, myWriteTraps;
 
     // Did we just now hit a trap?
-    bool myJustHitTrapFlag;
+    bool myJustHitReadTrapFlag;
+    bool myJustHitWriteTrapFlag;
     struct HitTrapInfo {
       string message;
       int address;
@@ -375,6 +415,8 @@ class M6502 : public Serializable
 
     vector<unique_ptr<Expression>> myBreakConds;
     StringList myBreakCondNames;
+    vector<unique_ptr<Expression>> myTrapConds;
+    StringList myTrapCondNames;
 #endif  // DEBUGGER_SUPPORT
 
   private:

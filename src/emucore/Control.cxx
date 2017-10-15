@@ -27,7 +27,7 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
     myEvent(event),
     mySystem(system),
     myType(type),
-    myOnAnalogPinUpdateCallback(0)
+    myOnAnalogPinUpdateCallback(nullptr)
 {
   myDigitalPinState[One]   =
   myDigitalPinState[Two]   =

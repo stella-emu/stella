@@ -386,14 +386,16 @@ cc_check_define __GNUC__ && have_gcc=yes
 
 if test "$have_clang" = yes; then
 
+	clang_minor=$( $CXX -dM -E -x c /dev/null | grep __clang_minor__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
+	clang_patch=$( $CXX -dM -E -x c /dev/null | grep __clang_patchlevel__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
+	clang_major=$( $CXX -dM -E -x c /dev/null | grep __clang_major__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
+
+	cxx_version="$clang_major.$clang_minor.$clang_patch"
+
 	is_xcode=$( $CXX -dM -E -x c /dev/null | grep __apple_build_version__ )
 
+  # Need at least version 8
 	if test -n "$is_xcode"; then
-		clang_minor=$( $CXX -dM -E -x c /dev/null | grep __clang_minor__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
-		clang_patch=$( $CXX -dM -E -x c /dev/null | grep __clang_patchlevel__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
-		clang_major=$( $CXX -dM -E -x c /dev/null | grep __clang_major__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
-
-		cxx_version="$clang_major.$clang_minor.$clang_patch"
 		cxx_name="XCode $cxx_version"
 
 		if test $clang_major -ge 8; then
@@ -401,35 +403,23 @@ if test "$have_clang" = yes; then
 			cxx_verc_fail=no
 		else
 			cxx_version="$cxx_version, bad"
-			cxx_verc_fail=bad
+			cxx_verc_fail=yes
 		fi
 	else
-		cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
-		cxx_version=$( $CXX -dM -E -x c /dev/null | grep __clang_version__ | sed 's/^.*[^0-9]\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*$/\1/g' 2>&1)
-		if test "$?" -gt 0; then
-			cxx_version="not found"
+    # Need at least version 3.5
+		if [ $clang_major -ge 4 ] || [ $clang_major -eq 3 -a $clang_minor -ge 5 ]; then
+			cxx_version="$cxx_version, ok"
+			cxx_verc_fail=no
+		else
+			cxx_version="$cxx_version, bad"
+			cxx_verc_fail=yes
 		fi
-
-		case $cxx_version in
-			[3].[4-9]|[3].[4-9].[0-9]|[3].[4-9].[0-9][-.]*|[4-9].[0-9].[0-9])
-				_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
-				_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
-				cxx_version="$cxx_version, ok"
-				cxx_verc_fail=no
-				;;
-			'not found')
-				cxx_verc_fail=yes
-				;;
-			*)
-				cxx_version="$cxx_version, bad"
-				cxx_verc_fail=yes
-				;;
-		esac
 	fi
 	CXXFLAGS="$CXXFLAGS"
 	_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
 	add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
 	_make_def_HAVE_GCC='HAVE_GCC = 1'
+	_make_def_HAVE_CLANG='HAVE_CLANG = 1'
 	echo "$cxx_version"
 
 elif test "$have_gcc" = yes; then
@@ -505,7 +495,7 @@ fi
 if test "$cxx_verc_fail" = yes ; then
 	echo
 	echo "The version of your compiler is not supported at this time"
-	echo "Please ensure you are using GCC 4.7 / Clang 3.4 or above"
+	echo "Please ensure you are using GCC 5.0 / Clang 3.8 or above"
 	exit 1
 fi
 
@@ -827,6 +817,7 @@ PROFILE := $_build_profile
 
 $_make_def_HAVE_GCC
 $_make_def_HAVE_GCC3
+$_make_def_HAVE_CLANG
 
 INCLUDES += $INCLUDES
 OBJS += $OBJS

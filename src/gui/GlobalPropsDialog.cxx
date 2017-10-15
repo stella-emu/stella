@@ -135,7 +135,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
+                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font, "Load ROM", "Close");
 
@@ -289,14 +289,14 @@ void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       saveConfig();
       close();
       // Inform parent to load the ROM
       sendCommand(LauncherDialog::kLoadROMCmd, 0, 0);
       break;
 
-    case kDefaultsCmd:
+    case GuiObject::kDefaultsCmd:
       setDefaults();
       saveConfig();
       break;

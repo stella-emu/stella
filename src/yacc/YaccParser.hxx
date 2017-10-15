@@ -18,20 +18,26 @@
 #ifndef PARSER_HXX
 #define PARSER_HXX
 
-class Expression;
+#include "Expression.hxx"
+#include "CartDebug.hxx"
+#include "CpuDebug.hxx"
+#include "TIADebug.hxx"
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
+#include "bspf.hxx"
 
-namespace YaccParser {
-	int parse(const char*);
-	Expression* getResult();
-	const string& errorMessage();
+// FIXME - Convert this to a proper C++ class using Bison and Flex C++ mode
+namespace YaccParser
+{
+  Expression* getResult();
+  const string& errorMessage();
+
+  void setInput(const string& in);
+  int parse(const string& in);
+  int const_to_int(char* ch);
+
+  CartMethod getCartSpecial(char* ch);
+  CpuMethod getCpuSpecial(char* ch);
+  TiaMethod getTiaSpecial(char* ch);
 }
-
-//#ifdef __cplusplus
-//}
-//#endif
 
 #endif

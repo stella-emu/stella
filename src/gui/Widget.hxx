@@ -62,6 +62,10 @@ class Widget : public GuiObject
 
     virtual int getAbsX() const override { return _x + _boss->getChildX(); }
     virtual int getAbsY() const override { return _y + _boss->getChildY(); }
+    virtual int getLeft() const { return _x; }
+    virtual int getTop() const { return _y; }
+    virtual int getRight() const { return _x + getWidth(); }
+    virtual int getBottom() const { return _y + getHeight(); }
 
     virtual bool handleText(char text)                        { return false; }
     virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }
@@ -174,11 +178,15 @@ class StaticTextWidget : public Widget
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
-                     const string& text, TextAlignment align);
+                     const string& text, TextAlignment align = kTextAlignLeft);
+    StaticTextWidget(GuiObject* boss, const GUI::Font& font,
+                     int x, int y,
+                     const string& text, TextAlignment align = kTextAlignLeft);
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlignment align)  { _align = align; }
     const string& getLabel() const      { return _label; }
+    bool isEditable() const { return _editable;  }
 
   protected:
     void drawWidget(bool hilite) override;
@@ -204,6 +212,12 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
   public:
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
+                 const string& label, int cmd = 0);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int dw,
+                 const string& label, int cmd = 0);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y,
                  const string& label, int cmd = 0);
 
     void setCmd(int cmd)  { _cmd = cmd; }
@@ -234,6 +248,7 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 class CheckboxWidget : public ButtonWidget
 {
   public:
+    enum { kCheckActionCmd  = 'CBAC' };
     enum FillType { Normal, Inactive, Circle };
 
   public:

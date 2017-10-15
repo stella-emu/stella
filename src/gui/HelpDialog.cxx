@@ -46,20 +46,20 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   xpos = 10;  ypos = _h - buttonHeight - 10;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Previous", kPrevCmd);
+                     "Previous", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(WIDGET_ENABLED);
   wid.push_back(myPrevButton);
 
   xpos += buttonWidth + 7;
   myNextButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Next", kNextCmd);
+                     "Next", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
   xpos = _w - buttonWidth - 10;
   ButtonWidget* b =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Close", kCloseCmd);
+                     "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addOKWidget(b);  addCancelWidget(b);
 
@@ -192,7 +192,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kNextCmd:
+    case GuiObject::kNextCmd:
       myPage++;
       if(myPage >= myNumPages)
         myNextButton->clearFlags(WIDGET_ENABLED);
@@ -202,7 +202,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
       displayInfo();
       break;
 
-    case kPrevCmd:
+    case GuiObject::kPrevCmd:
       myPage--;
       if(myPage <= myNumPages)
         myNextButton->setFlags(WIDGET_ENABLED);

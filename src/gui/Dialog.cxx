@@ -319,23 +319,32 @@ void Dialog::handleText(char text)
 void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Test for TAB character
-  // Shift-left/shift-right cursor selects next tab
+  // Control-Tab selects next tab
+  // Shift-Control-Tab selects previous tab
   // Tab sets next widget in current tab
   // Shift-Tab sets previous widget in current tab
   Event::Type e = Event::NoType;
 
   // Detect selection of previous and next tab headers and objects
-  if(instance().eventHandler().kbdShift(mod))
+  if(key == KBDK_TAB)
   {
-    if(key == KBDK_LEFT && cycleTab(-1))
-      return;
-    else if(key == KBDK_RIGHT && cycleTab(+1))
-      return;
-    else if(key == KBDK_TAB)
-      e = Event::UINavPrev;
+    if(instance().eventHandler().kbdControl(mod))
+    {
+      // tab header navigation
+      if(instance().eventHandler().kbdShift(mod) && cycleTab(-1))
+        return;
+      else if(!instance().eventHandler().kbdShift(mod) && cycleTab(+1))
+        return;
+    }
+    else
+    {
+      // object navigation
+      if(instance().eventHandler().kbdShift(mod))
+        e = Event::UINavPrev;
+      else
+        e = Event::UINavNext;
+    }
   }
-  else if(key == KBDK_TAB)
-    e = Event::UINavNext;
 
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
@@ -389,7 +398,7 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
     w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
                      button, clickCount);
 
-  _dragWidget = 0;
+  _dragWidget = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -429,7 +438,7 @@ void Dialog::handleMouseMoved(int x, int y, int button)
     }
     else if (!mouseInFocusedWidget && _mouseWidget == w)
     {
-      _mouseWidget = 0;
+      _mouseWidget = nullptr;
       w->handleMouseLeft(button);
     }
 
@@ -620,12 +629,12 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kTabChangedCmd:
+    case TabWidget::kTabChangedCmd:
       if(_visible)
         buildCurrentFocusList(id);
       break;
 
-    case kCloseCmd:
+    case GuiObject::kCloseCmd:
       close();
       break;
   }
@@ -643,60 +652,40 @@ Widget* Dialog::findWidget(int x, int y) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                               const string& okText, const string& cancelText)
+                               const string& okText, const string& cancelText,
+                               bool focusOKButton)
 {
-
   int buttonWidth = std::max(font.getStringWidth("Cancel"),
                     std::max(font.getStringWidth(okText),
                     font.getStringWidth(okText))) + 15;
   int buttonHeight = font.getLineHeight() + 4;
-  ButtonWidget* b;
+
 #ifndef BSPF_MAC_OSX
-  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       okText == "" ? "OK" : okText, kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       cancelText == "" ? "Cancel" : cancelText, kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
+  addOKWidget(new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
+  addCancelWidget(new ButtonWidget(this, font, _w - (buttonWidth + 10),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
 #else
-  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       cancelText == "" ? "Cancel" : cancelText, kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight,
-                       okText == "" ? "OK" : okText, kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
+  addCancelWidget(new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
+  addOKWidget(new ButtonWidget(this, font, _w - (buttonWidth + 10),
+      _h - buttonHeight - 10, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
 #endif
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::Focus::Focus(Widget* w)
-  : widget(w)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::Focus::~Focus()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::TabFocus::TabFocus(TabWidget* w)
-  : widget(w),
-    currentTab(0)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog::TabFocus::~TabFocus()
-{
+  // Note that 'focusOKButton' only takes effect when there are no other UI
+  // elements in the dialog; otherwise, the first widget of the dialog is always
+  // automatically focused first
+  // Changing this behaviour would require a fairly major refactoring of the UI code
+  if(focusOKButton)
+  {
+    wid.push_back(_okWidget);
+    wid.push_back(_cancelWidget);
+  }
+  else
+  {
+    wid.push_back(_cancelWidget);
+    wid.push_back(_okWidget);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

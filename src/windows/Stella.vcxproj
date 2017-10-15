@@ -240,6 +240,8 @@
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
+    <ClCompile Include="..\debugger\gui\AmigaMouseWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\AtariMouseWidget.cxx" />
     <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx" />
     <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart0840Widget.cxx" />
@@ -286,13 +288,16 @@
     <ClCompile Include="..\debugger\gui\CartX07Widget.cxx" />
     <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\FlashWidget.cxx" />
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
     <ClCompile Include="..\debugger\gui\JoystickWidget.cxx" />
     <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
     <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\PointingDeviceWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\TrakBallWidget.cxx" />
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
@@ -498,6 +503,7 @@
     <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
+    <ClInclude Include="..\common\LinkedObjectPool.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
     <ClInclude Include="..\common\RewindManager.hxx" />
@@ -509,6 +515,8 @@
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\Vec.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
+    <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\AtariMouseWidget.hxx" />
     <ClInclude Include="..\debugger\gui\AtariVoxWidget.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx" />
@@ -557,14 +565,18 @@
     <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DelayQueueWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\FlashWidget.hxx" />
     <ClInclude Include="..\debugger\gui\GenesisWidget.hxx" />
     <ClInclude Include="..\debugger\gui\JoystickWidget.hxx" />
     <ClInclude Include="..\debugger\gui\KeyboardWidget.hxx" />
     <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
     <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\PointingDeviceWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\TrakBallWidget.hxx" />
+    <ClInclude Include="..\debugger\TrapArray.hxx" />
     <ClInclude Include="..\emucore\AmigaMouse.hxx" />
     <ClInclude Include="..\emucore\AtariMouse.hxx" />
     <ClInclude Include="..\emucore\BSType.hxx" />
@@ -628,7 +640,6 @@
     <ClInclude Include="..\common\SoundSDL2.hxx" />
     <ClInclude Include="..\common\Stack.hxx" />
     <ClInclude Include="..\common\Version.hxx" />
-    <ClInclude Include="..\common\VideoModeList.hxx" />
     <ClInclude Include="..\emucore\AtariVox.hxx" />
     <ClInclude Include="..\emucore\Booster.hxx" />
     <ClInclude Include="..\emucore\Cart.hxx" />
@@ -761,7 +772,6 @@
     <ClInclude Include="..\gui\RomAuditDialog.hxx" />
     <ClInclude Include="..\gui\RomInfoWidget.hxx" />
     <ClInclude Include="..\gui\ScrollBarWidget.hxx" />
-    <ClInclude Include="..\gui\Stack.hxx" />
     <ClInclude Include="..\gui\StellaFont.hxx" />
     <ClInclude Include="..\gui\StringListWidget.hxx" />
     <ClInclude Include="..\gui\TabWidget.hxx" />

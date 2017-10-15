@@ -71,6 +71,11 @@ class Base
       os.flags(myHexflags);
       return os << std::setw(2) << std::setfill('0');
     }
+    static inline std::ostream& HEX3(std::ostream& os)
+    {
+      os.flags(myHexflags);
+      return os << std::setw(3) << std::setfill('0');
+    }
     static inline std::ostream& HEX4(std::ostream& os) {
       os.flags(myHexflags);
       return os << std::setw(4) << std::setfill('0');
@@ -93,6 +98,7 @@ class Base
 
     // Format specifiers to use for sprintf (eventually we may convert
     // to C++ streams
+    static ostringstream buf;
     static const char* const myLowerFmt[4];
     static const char* const myUpperFmt[4];
     static const char* const* myFmt;

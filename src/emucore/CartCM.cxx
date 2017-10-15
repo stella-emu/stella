@@ -143,7 +143,7 @@ bool CartridgeCM::bank(uInt16 bank)
     if((mySWCHA & 0x30) == 0x20)
       access.directPokeBase = &myRAM[addr & 0x7FF];
     else
-      access.directPokeBase = 0;
+      access.directPokeBase = nullptr;
 
     mySystem->setPageAccess(addr, access);
   }

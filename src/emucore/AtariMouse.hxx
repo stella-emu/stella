@@ -38,8 +38,8 @@ class AtariMouse : public PointingDevice
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8, uInt8) override
     {
-      static constexpr uInt32 ourTableH[4] = { 0x00, 0x10, 0x30, 0x20 };
-      static constexpr uInt32 ourTableV[4] = { 0x00, 0x80, 0xc0, 0x40 };
+      static constexpr uInt32 ourTableH[4] = { 0b0000, 0b0001, 0b0011, 0b0010 };
+      static constexpr uInt32 ourTableV[4] = { 0b0000, 0b0100, 0b1100, 0b1000 };
 
       return ourTableH[countH] | ourTableV[countV];
     }

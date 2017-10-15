@@ -29,7 +29,7 @@
 #include "StateManager.hxx"
 
 #define STATE_HEADER "05000302state"
-#define MOVIE_HEADER "03030000movie"
+// #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem& osystem)
@@ -132,6 +132,22 @@ void StateManager::toggleRewindMode()
     myOSystem.frameBuffer().showMessage("Continuous rewind enabled");
   else
     myOSystem.frameBuffer().showMessage("Continuous rewind disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::rewindState()
+{
+  RewindManager& r = myOSystem.state().rewindManager();
+  // TODO: add parameter to indicate rewinding from within emulation
+  return r.rewindState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::unwindState()
+{
+  RewindManager& r = myOSystem.state().rewindManager();
+  // TODO: add parameter to indicate unwinding from within emulation
+  return r.unwindState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

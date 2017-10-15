@@ -74,8 +74,8 @@ string TIASound::channels(uInt32 hardware, bool stereo)
     case Hardware1:       return "Hardware1";
     case Hardware2Mono:   return "Hardware2Mono";
     case Hardware2Stereo: return "Hardware2Stereo";
-    default:              return EmptyString;
   }
+  return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

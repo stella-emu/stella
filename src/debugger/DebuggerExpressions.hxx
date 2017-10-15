@@ -337,7 +337,7 @@ class WordDerefExpression : public Expression
   public:
     WordDerefExpression(Expression* left) : Expression(left) { }
     Int32 evaluate() const override
-      { return Debugger::debugger().dpeek(myLHS->evaluate()); }
+      { return Debugger::debugger().dpeekAsInt(myLHS->evaluate()); }
 };
 
 #endif

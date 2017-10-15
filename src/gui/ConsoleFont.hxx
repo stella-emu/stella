@@ -42,6 +42,41 @@ namespace GUI {
 // Font character bitmap data.
 static const uInt16 console_font_bits[] = {
 
+  /* MODIFIED
+  Character 29 (0x1d):
+  width 8
+  bbx ( 8, 13, 0, -2 )
+
+  +--------+
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |XX XX XX|
+  |        |
+  |        |
+  +--------+
+  */
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0b1101101100000000,
+  0x0000,
+  0x0000,
+
 /* MODIFIED
    Character 30 (0x1e): large centered rounded rectangle
    width 8
@@ -1139,30 +1174,30 @@ static const uInt16 console_font_bits[] = {
    +--------+
    |        |
    |        |
-   | *      |
    |  *     |
    |   *    |
    |    *   |
    |     *  |
+   |      * |
+   |     *  |
    |    *   |
    |   *    |
    |  *     |
-   | *      |
    |        |
    |        |
    +--------+
 */
 0x0000,
 0x0000,
-0x4000,
 0x2000,
 0x1000,
 0x0800,
 0x0400,
+0x0200,
+0x0400,
 0x0800,
 0x1000,
 0x2000,
-0x4000,
 0x0000,
 0x0000,
 
@@ -3350,12 +3385,12 @@ static const FontDesc consoleDesc = {
   13,
   8, 13, 0, -2,
   11,
-  30,
-  97,
+  29,
+  98,
   console_font_bits,
-  0,  /* no encode table*/
-  0,  /* fixed width*/
-  0,  /* fixed bbox*/
+  nullptr,  /* no encode table*/
+  nullptr,  /* fixed width*/
+  nullptr,  /* fixed bbox*/
   32,                       // Originally 30
   sizeof(console_font_bits)/sizeof(uInt16)
 };

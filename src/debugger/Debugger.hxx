@@ -36,6 +36,7 @@ class ButtonWidget;
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
+#include "StateManager.hxx"
 #include "M6502.hxx"
 #include "System.hxx"
 #include "Stack.hxx"
@@ -88,7 +89,7 @@ class Debugger : public DialogContainer
       @param message  Message to display when entering debugger
       @param address  An address associated with the message
     */
-    bool start(const string& message = "", int address = -1);
+    bool start(const string& message = "", int address = -1, bool read = true);
     bool startWithFatalError(const string& message = "");
 
     /**
@@ -99,6 +100,7 @@ class Debugger : public DialogContainer
 
     bool addFunction(const string& name, const string& def,
                      Expression* exp, bool builtin = false);
+    bool isBuiltinFunction(const string& name);
     bool delFunction(const string& name);
     const Expression& getFunction(const string& name) const;
 
@@ -145,15 +147,15 @@ class Debugger : public DialogContainer
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
     PackedBitArray& breakPoints() const { return mySystem.m6502().breakPoints(); }
-    PackedBitArray& readTraps() const   { return mySystem.m6502().readTraps();   }
-    PackedBitArray& writeTraps() const  { return mySystem.m6502().writeTraps();  }
+    TrapArray& readTraps() const        { return mySystem.m6502().readTraps();   }
+    TrapArray& writeTraps() const       { return mySystem.m6502().writeTraps();  }
 
     /**
       Run the debugger command and return the result.
     */
     const string run(const string& command);
 
-    string autoExec();
+    string autoExec(StringList* history);
 
     string showWatches();
 
@@ -168,9 +170,9 @@ class Debugger : public DialogContainer
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
     {
       if(on)
-        return input | (1 << bit);
+        return uInt8(input | (1 << bit));
       else
-        return input & ~(1 << bit);
+        return uInt8(input & ~(1 << bit));
     }
     static void set_bits(uInt8 reg, BoolArray& bits)
     {
@@ -192,7 +194,7 @@ class Debugger : public DialogContainer
       return result;
     }
 
-    /* Invert given input if it differs from its previous value */
+    /** Invert given input if it differs from its previous value */
     const string invIfChanged(int reg, int oldReg);
 
     /**
@@ -205,15 +207,32 @@ class Debugger : public DialogContainer
     */
     static Debugger& debugger() { return *myStaticDebugger; }
 
-    /* These are now exposed so Expressions can use them. */
-    int peek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags); }
-    int dpeek(int addr, uInt8 flags = 0) { return mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8); }
+    /** Convenience methods to access peek/poke from System */
+    uInt8 peek(uInt16 addr, uInt8 flags = 0) {
+      return mySystem.peek(addr, flags);
+    }
+    uInt16 dpeek(uInt16 addr, uInt8 flags = 0) {
+      return uInt16(mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8));
+    }
+    void poke(uInt16 addr, uInt8 value, uInt8 flags = 0) {
+      mySystem.poke(addr, value, flags);
+    }
+
+    /** These are now exposed so Expressions can use them. */
+    int peekAsInt(int addr, uInt8 flags = 0) {
+      return mySystem.peek(uInt16(addr), flags);
+    }
+    int dpeekAsInt(int addr, uInt8 flags = 0) {
+      return mySystem.peek(uInt16(addr), flags) |
+             (mySystem.peek(uInt16(addr+1), flags) << 8);
+    }
     int getAccessFlags(uInt16 addr) const
       { return mySystem.getAccessFlags(addr); }
     void setAccessFlags(uInt16 addr, uInt8 flags)
       { mySystem.setAccessFlags(addr, flags); }
 
     void setBreakPoint(uInt16 bp, bool set);
+    uInt32 getBaseAddress(uInt32 addr, bool read);
 
     bool patchROM(uInt16 addr, uInt8 value);
 
@@ -252,13 +271,17 @@ class Debugger : public DialogContainer
     void nextScanline(int lines);
     void nextFrame(int frames);
     bool rewindState();
+    bool unwindState();
 
     void toggleBreakPoint(uInt16 bp);
 
     bool breakPoint(uInt16 bp);
-    void toggleReadTrap(uInt16 t);
-    void toggleWriteTrap(uInt16 t);
-    void toggleTrap(uInt16 t);
+    void addReadTrap(uInt16 t);
+    void addWriteTrap(uInt16 t);
+    void addTrap(uInt16 t);
+    void removeReadTrap(uInt16 t);
+    void removeWriteTrap(uInt16 t);
+    void removeTrap(uInt16 t);
     bool readTrap(uInt16 t);
     bool writeTrap(uInt16 t);
     void clearAllTraps();
@@ -292,7 +315,24 @@ class Debugger : public DialogContainer
     uInt32 myWidth;
     uInt32 myHeight;
 
+    // Various builtin functions and operations
+    struct BuiltinFunction {
+      string name, defn, help;
+    };
+    struct PseudoRegister {
+      string name, help;
+    };
+    static const uInt32 NUM_BUILTIN_FUNCS = 18;
+    static const uInt32 NUM_PSEUDO_REGS = 11;
+    static BuiltinFunction ourBuiltinFunctions[NUM_BUILTIN_FUNCS];
+    static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
+
   private:
+    // rewind/unwind one state
+    bool windState(bool unwind);
+    // update the rewind/unwind button state
+    void updateRewindbuttons(const RewindManager& r);
+
     // Following constructors and assignment operators not supported
     Debugger() = delete;
     Debugger(const Debugger&) = delete;

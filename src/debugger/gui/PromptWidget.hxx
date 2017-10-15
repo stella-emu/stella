@@ -35,8 +35,8 @@ class PromptWidget : public Widget, public CommandSender
     virtual ~PromptWidget() = default;
 
   public:
-    int printf(const char* format, ...);
-    int vprintf(const char* format, va_list argptr);
+    ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
+    ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     void print(const string& str);
     void printPrompt();
     bool saveBuffer(const FilesystemNode& file);
@@ -85,7 +85,7 @@ class PromptWidget : public Widget, public CommandSender
 
   private:
     // Get the longest prefix (initially 's') that is in every string in the list
-    string getCompletionPrefix(const StringList& completions, string s);
+    string getCompletionPrefix(const StringList& completions);
 
   private:
     enum {

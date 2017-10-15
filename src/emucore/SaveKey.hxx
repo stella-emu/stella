@@ -32,8 +32,6 @@
 */
 class SaveKey : public Controller
 {
-  friend class SaveKeyWidget;
-
   public:
     /**
       Create a new SaveKey controller plugged into the specified jack
@@ -45,7 +43,16 @@ class SaveKey : public Controller
     */
     SaveKey(Jack jack, const Event& event, const System& system,
             const string& eepromfile);
+
     virtual ~SaveKey() = default;
+
+  protected:
+    /**
+      Delegating constructor currently used by both this class and classes
+      that inherit from SaveKey (currently, AtariVox)
+    */
+    SaveKey(Jack jack, const Event& event, const System& system,
+            const string& eepromfile, Type type);
 
   public:
     using Controller::read;
@@ -79,14 +86,21 @@ class SaveKey : public Controller
       been called.  It may be necessary to override this method for
       controllers that need to know a reset has occurred.
     */
-    void reset() override;
+    void reset() override { myEEPROM->systemReset(); }
 
     /**
-      Notification method invoked by the system indicating that the
-      console is about to be destroyed.  It may be necessary to override
-      this method for controllers that need cleanup before exiting.
+      Force the EEPROM object to cleanup
     */
-    void close() override;
+    void close() override { myEEPROM.reset(); }
+
+    /** Erase entire EEPROM to known state ($FF) */
+    void eraseAll() { myEEPROM->eraseAll(); }
+
+    /** Erase the pages used by the current ROM to known state ($FF) */
+    void eraseCurrent() { myEEPROM->eraseCurrent(); }
+
+    /** Returns true if the page is used by the current ROM */
+    bool isPageUsed(const uInt32 page) const { return myEEPROM->isPageUsed(page); }
 
   private:
     // The EEPROM used in the SaveKey

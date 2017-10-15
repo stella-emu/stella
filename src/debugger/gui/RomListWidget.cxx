@@ -80,7 +80,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   CheckboxWidget* t = nullptr;
   for(int i = 0; i < _rows; ++i)
   {
-    t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "", kCheckActionCmd);
+    t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "",
+                           CheckboxWidget::kCheckActionCmd);
     t->setTarget(this);
     t->setID(i);
     t->setFill(CheckboxWidget::Circle);
@@ -114,7 +115,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
       default:  // TODO - properly handle all other cases
         return false;
     }
-    return false;
   };
   setTextFilter(f);
 }
@@ -414,14 +414,14 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 {
   switch (cmd)
   {
-    case kCheckActionCmd:
+    case CheckboxWidget::kCheckActionCmd:
       // We let the parent class handle this
       // Pass it as a kRLBreakpointChangedCmd command, since that's the intent
       sendCommand(RomListWidget::kBPointChangedCmd, _currentPos+id,
                   myCheckList[id]->getState());
       break;
 
-    case kSetPositionCmd:
+    case GuiObject::kSetPositionCmd:
       if (_currentPos != data)
       {
         _currentPos = data;

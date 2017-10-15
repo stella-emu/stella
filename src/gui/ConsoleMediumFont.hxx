@@ -3741,9 +3741,9 @@ static const FontDesc consoleMediumDesc = {
   30,
   97,
   consoleMedium_font_bits,
-  0,  /* no encode table*/
-  0,  /* fixed width*/
-  0,  /* fixed bbox*/
+  nullptr,  /* no encode table*/
+  nullptr,  /* fixed width*/
+  nullptr,  /* fixed bbox*/
   32,                       // Originally 30
   sizeof(consoleMedium_font_bits)/sizeof(uInt16)
 };

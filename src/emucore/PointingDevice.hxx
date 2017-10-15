@@ -21,6 +21,7 @@
 class Controller;
 class Event;
 
+#include "Control.hxx"
 #include "bspf.hxx"
 
 /**
@@ -31,6 +32,8 @@ class Event;
 */
 class PointingDevice : public Controller
 {
+  friend class PointingDeviceWidget;
+
   public:
     PointingDevice(Jack jack, const Event& event,
                    const System& system, Controller::Type type,

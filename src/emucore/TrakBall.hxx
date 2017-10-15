@@ -38,10 +38,10 @@ class TrakBall : public PointingDevice
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) override
     {
-      static constexpr uInt32 ourTableH[2][2] = {{ 0x00, 0x10 }, { 0x20, 0x30 }};
-      static constexpr uInt32 ourTableV[2][2] = {{ 0x40, 0x00 }, { 0xc0, 0x80 }};
+      static constexpr uInt32 ourTableH[2][2] = {{ 0b00, 0b01 }, { 0b10, 0b11 }};
+      static constexpr uInt32 ourTableV[2][2] = {{ 0b0100, 0b0000 }, { 0b1100, 0b1000 }};
 
-      return ourTableH[countH & 0x01][left] | ourTableV[countV & 0x01][down];
+      return ourTableH[countH & 0b1][left] | ourTableV[countV & 0b1][down];
     }
 
     // 50% of Atari and Amiga mouse

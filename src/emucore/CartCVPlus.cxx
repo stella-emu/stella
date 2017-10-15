@@ -58,8 +58,8 @@ void CartridgeCVPlus::install(System& system)
     mySystem->setPageAccess(addr, access);
 
   // Set the page accessing method for the RAM writing pages
-  access.directPeekBase = 0;
-  access.codeAccessBase = 0;
+  access.directPeekBase = nullptr;
+  access.codeAccessBase = nullptr;
   access.type = System::PA_WRITE;
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
@@ -69,7 +69,7 @@ void CartridgeCVPlus::install(System& system)
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.directPokeBase = 0;
+  access.directPokeBase = nullptr;
   access.type = System::PA_READ;
   for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
   {

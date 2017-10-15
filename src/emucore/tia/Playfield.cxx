@@ -302,7 +302,7 @@ bool Playfield::load(Serializer& in)
     myDebugColor = in.getByte();
     myDebugEnabled = in.getBool();
 
-    myColorMode = (ColorMode)in.getByte();
+    myColorMode = ColorMode(in.getByte());
 
     myPattern = in.getInt();
     myEffectivePattern = in.getInt();

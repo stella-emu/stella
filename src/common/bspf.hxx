@@ -22,7 +22,7 @@
   This file defines various basic data types and preprocessor variables
   that need to be defined for different operating systems.
 
-  @author Bradford W. Mott
+  @author Bradford W. Mott and Stephen Anthony
 */
 
 #include <cstdint>
@@ -77,6 +77,7 @@ using std::memcpy;
 using IntArray = std::vector<Int32>;
 using BoolArray = std::vector<bool>;
 using ByteArray = std::vector<uInt8>;
+using ShortArray = std::vector<uInt16>;
 using StringList = std::vector<std::string>;
 using BytePtr = std::unique_ptr<uInt8[]>;
 
@@ -87,12 +88,14 @@ namespace BSPF
   // Defines to help with path handling
   #if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
     static const string PATH_SEPARATOR = "/";
+    #define ATTRIBUTE_FMT_PRINTF __attribute__((__format__ (__printf__, 2, 0)))
   #elif defined(BSPF_WINDOWS)
     static const string PATH_SEPARATOR = "\\";
     #pragma warning (disable : 4146)  // unary minus operator applied to unsigned type
     #pragma warning(2:4264)  // no override available for virtual member function from base 'class'; function is hidden
     #pragma warning(2:4265)  // class has virtual functions, but destructor is not virtual
     #pragma warning(2:4266)  // no override available for virtual member function from base 'type'; function is hidden
+    #define ATTRIBUTE_FMT_PRINTF
   #else
     #error Update src/common/bspf.hxx for path separator
   #endif
@@ -164,13 +167,13 @@ namespace BSPF
 
   // Find location (if any) of the second string within the first,
   // starting from 'startpos' in the first string
-  inline size_t findIgnoreCase(const string& s1, const string& s2, int startpos = 0)
+  inline size_t findIgnoreCase(const string& s1, const string& s2, size_t startpos = 0)
   {
     auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
         return toupper(uInt8(ch1)) == toupper(uInt8(ch2));
       });
-    return pos == s1.cend() ? string::npos : size_t(pos - (s1.cbegin()+startpos));
+    return pos == s1.cend() ? string::npos : pos - (s1.cbegin()+startpos);
   }
 
   // Test whether the first string ends with the second one (case insensitive)
@@ -188,6 +191,26 @@ namespace BSPF
   inline bool containsIgnoreCase(const string& s1, const string& s2)
   {
     return findIgnoreCase(s1, s2) != string::npos;
+  }
+
+  // Test whether the first string matches the second one (case insensitive)
+  // - the first character must match
+  // - the following characters must appear in the order of the first string
+  inline bool matches(const string& s1, const string& s2)
+  {
+    if(BSPF::startsWithIgnoreCase(s1, s2.substr(0, 1)))
+    {
+      size_t pos = 1;
+      for(uInt32 j = 1; j < s2.size(); j++)
+      {
+        size_t found = BSPF::findIgnoreCase(s1, s2.substr(j, 1), pos);
+        if(found == string::npos)
+          return false;
+        pos += found + 1;
+      }
+      return true;
+    }
+    return false;
   }
 } // namespace BSPF
 

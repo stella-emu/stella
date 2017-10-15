@@ -410,7 +410,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch (cmd)
   {
-    case kSetPositionCmd:
+    case GuiObject::kSetPositionCmd:
       if (_currentPos != data)
       {
         _currentPos = data;

@@ -28,7 +28,8 @@ namespace GUI {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const StringList& text, int max_w, int max_h, int cmd,
-                       const string& okText, const string& cancelText)
+                       const string& okText, const string& cancelText,
+                       bool focusOKButton)
   : Dialog(boss->instance(), boss->parent(), 0, 0, max_w, max_h),
     CommandSender(boss),
     myCmd(cmd)
@@ -36,24 +37,18 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
   addText(font, text);
 
   WidgetArray wid;
-  addOKCancelBGroup(wid, font, okText, cancelText);
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton);
   addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const string& text, int max_w, int max_h, int cmd,
-                       const string& okText, const string& cancelText)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, max_w, max_h),
-    CommandSender(boss),
-    myCmd(cmd)
+                       const string& okText, const string& cancelText,
+                       bool focusOKButton)
+  : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
+               cmd, okText, cancelText, focusOKButton)
 {
-  StringParser p(text);
-  addText(font, p.stringList());
-
-  WidgetArray wid;
-  addOKCancelBGroup(wid, font, okText, cancelText);
-  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,7 +80,7 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
     {
       close();
 

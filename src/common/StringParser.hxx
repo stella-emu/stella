@@ -50,7 +50,7 @@ class StringParser
       @param str    The string to split
       @param maxlen The maximum length of string to generate
     */
-    StringParser(const string& str, uInt16 maxlen)
+    StringParser(const string& str, uInt32 maxlen)
     {
       istringstream buf(str);
       string line;

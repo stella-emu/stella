@@ -21,16 +21,11 @@
 class OSystem;
 class StateManager;
 
-#include <list>
+#include "LinkedObjectPool.hxx"
 #include "bspf.hxx"
 
 /**
   This class is used to save (and later 'rewind') system save states.
-
-  TODO: This will eventually be converted to use object pools
-        Currently, it uses a C++ doubly-linked list as a stack, with
-        add/remove happening at the front of the list
-        Also, the additions are currently unbounded
 
   @author  Stephen Anthony
 */
@@ -54,12 +49,19 @@ class RewindManager
     */
     bool rewindState();
 
-    bool empty() const { return myStateList.size() == 0; }
+    /**
+      Unwind one level of the state list, and display the message associated
+      with that state.
+    */
+    bool unwindState();
+
+    bool atLast() const { return myStateList.empty(); }
+    bool atFirst() const { return false; } // TODO
     void clear() { myStateList.clear(); }
 
   private:
     // Maximum number of states to save
-    static constexpr uInt32 MAX_SIZE = 100;  // FIXME: use this
+    static constexpr uInt32 MAX_SIZE = 100;
 
     OSystem& myOSystem;
     StateManager& myStateManager;
@@ -67,10 +69,21 @@ class RewindManager
     struct RewindState {
       Serializer data;
       string message;
+      uInt64 cycle;
+
+      // We do nothing on object instantiation or copy
+      RewindState() { }
+      RewindState(const RewindState&) { }
     };
 
-    using RewindPtr = unique_ptr<RewindState>;
-    std::list<RewindPtr> myStateList;
+    Common::LinkedObjectPool<RewindState, MAX_SIZE> myStateList;
+
+    bool myIsNTSC;
+
+    void compressStates();
+
+    string getMessage(RewindState& state);
+
 
   private:
     // Following constructors and assignment operators not supported

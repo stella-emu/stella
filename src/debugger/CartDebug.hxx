@@ -30,6 +30,7 @@ class CartDebugWidget;
 #include "Cart.hxx"
 #include "DebuggerSystem.hxx"
 #include "System.hxx"
+#include "M6502.hxx"
 
 // Function type for CartDebug instance methods
 class CartDebug;
@@ -38,10 +39,10 @@ using CartMethod = int (CartDebug::*)();
 class CartState : public DebuggerState
 {
   public:
-    ByteArray ram;   // The actual data values
-    IntArray rport;  // Address for reading from RAM
-    IntArray wport;  // Address for writing to RAM
-    string bank;     // Current banking layout
+    ByteArray ram;    // The actual data values
+    ShortArray rport; // Address for reading from RAM
+    ShortArray wport; // Address for writing to RAM
+    string bank;      // Current banking layout
 };
 
 class CartDebug : public DebuggerSystem
@@ -112,13 +113,6 @@ class CartDebug : public DebuggerSystem
     CartDebugWidget* getDebugWidget() const { return myDebugWidget; }
     void setDebugWidget(CartDebugWidget* w) { myDebugWidget = w; }
 
-    // The following assume that the given addresses are using the
-    // correct read/write port ranges; no checking will be done to
-    // confirm this.
-    uInt8 peek(uInt16 addr)   { return mySystem.peek(addr); }
-    uInt16 dpeek(uInt16 addr) { return mySystem.peek(addr) | (mySystem.peek(addr+1) << 8); }
-    void poke(uInt16 addr, uInt8 value) { mySystem.poke(addr, value); }
-
     // Indicate that a read from write port has occurred at the specified
     // address.
     void triggerReadFromWritePort(uInt16 address);
@@ -126,6 +120,11 @@ class CartDebug : public DebuggerSystem
     // Return the address at which an invalid read was performed in a
     // write port area.
     int readFromWritePort();
+
+    // Return the base (= non-mirrored) address of the last CPU read
+    int lastReadBaseAddress() { return mySystem.m6502().lastReadBaseAddress(); }
+    // Return the base (= non-mirrored) address of the last CPU write
+    int lastWriteBaseAddress() { return mySystem.m6502().lastWriteBaseAddress(); }
 
     // The following two methods are meant to be used together
     // First, a call is made to disassemble(), which updates the disassembly
@@ -289,7 +288,7 @@ class CartDebug : public DebuggerSystem
       uInt16 start;                // start of address space
       uInt16 end;                  // end of address space
       uInt16 offset;               // ORG value
-      uInt16 size;                 // size of a bank (in bytes)
+      uInt32 size;                 // size of a bank (in bytes)
       AddressList addressList;     // addresses which PC has hit
       DirectiveList directiveList; // overrides for automatic code determination
 

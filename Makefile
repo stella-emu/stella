@@ -53,6 +53,13 @@ CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
 endif
+ifdef HAVE_CLANG
+  CXXFLAGS+= -Weverything -Wno-c++17-extensions -Wno-c++98-compat -Wno-c++98-compat-pedantic \
+    -Wno-double-promotion -Wno-switch-enum -Wno-conversion \
+    -Wno-inconsistent-missing-destructor-override \
+    -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
+    -Wno-four-char-constants -Wno-padded
+endif
 
 ifdef PROFILE
   PROF:= -g -pg -fprofile-arcs -ftest-coverage
@@ -63,10 +70,6 @@ else
   endif
 endif
 
-# Even more warnings...
-#CXXFLAGS+= -pedantic -Wpointer-arith -Wcast-qual -Wconversion
-#CXXFLAGS+= -Wshadow -Wimplicit -Wundef -Wnon-virtual-dtor
-#CXXFLAGS+= -Wno-reorder -Wwrite-strings -fcheck-new -Wctor-dtor-privacy
 
 #######################################################################
 # Misc stuff - you should never have to edit this                     #

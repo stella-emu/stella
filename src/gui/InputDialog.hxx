@@ -30,6 +30,7 @@ class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "JoystickDialog.hxx"
+#include "MessageBox.hxx"
 #include "bspf.hxx"
 
 class InputDialog : public Dialog
@@ -52,13 +53,17 @@ class InputDialog : public Dialog
 
     void addDevicePortTab(const GUI::Font& font);
 
+    void eraseEEPROM();
+
   private:
     enum {
-      kDeadzoneChanged = 'DZch',
-      kDPSpeedChanged  = 'PDch',
-      kMPSpeedChanged  = 'PMch',
-      kTBSpeedChanged  = 'TBch',
-      kDBButtonPressed = 'DBbp'
+      kDeadzoneChanged   = 'DZch',
+      kDPSpeedChanged    = 'PDch',
+      kMPSpeedChanged    = 'PMch',
+      kTBSpeedChanged    = 'TBch',
+      kDBButtonPressed   = 'DBbp',
+      kEEButtonPressed   = 'EEbp',
+      kConfirmEEEraseCmd = 'EEcf'
     };
 
     TabWidget* myTab;
@@ -85,9 +90,16 @@ class InputDialog : public Dialog
     CheckboxWidget*   myCtrlCombo;
 
     ButtonWidget*     myJoyDlgButton;
+    ButtonWidget*     myEraseEEPROMButton;
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;
+
+    // Show a message about the dangers of using this function
+    unique_ptr<GUI::MessageBox> myConfirmMsg;
+
+    // Maximum width and height for this dialog
+    int myMaxWidth, myMaxHeight;
 
   private:
     // Following constructors and assignment operators not supported

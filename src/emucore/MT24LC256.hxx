@@ -42,7 +42,14 @@ class MT24LC256
     MT24LC256(const string& filename, const System& system);
     ~MT24LC256();
 
+  private:
+    // Sizes of the EEPROM
+    static constexpr uInt32 FLASH_SIZE = 32 * 1024;
+
   public:
+    static constexpr uInt32 PAGE_SIZE = 64;
+    static constexpr uInt32 PAGE_NUM = FLASH_SIZE / PAGE_SIZE;
+
     /** Read boolean data from the SDA line */
     bool readSDA() const { return jpee_mdat && jpee_sdat; }
 
@@ -54,7 +61,13 @@ class MT24LC256
     void systemReset();
 
     /** Erase entire EEPROM to known state ($FF) */
-    void erase();
+    void eraseAll();
+
+    /** Erase the pages used by the current ROM to known state ($FF) */
+    void eraseCurrent();
+
+    /** Returns true if the page is used by the current ROM */
+    bool isPageUsed(uInt32 page) const;
 
   private:
     // I2C access code provided by Supercat
@@ -68,11 +81,17 @@ class MT24LC256
     void update();
 
   private:
+    // Inital state value of flash EEPROM
+    static constexpr uInt8 INIT_VALUE = 0xff;
+
     // The system of the parent controller
     const System& mySystem;
 
     // The EEPROM data
-    uInt8 myData[32768];
+    uInt8 myData[FLASH_SIZE];
+
+    // Track which pages are used
+    bool myPageHit[PAGE_NUM];
 
     // Cached state of the SDA and SCL pins on the last write
     bool mySDA, mySCL;

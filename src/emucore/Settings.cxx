@@ -555,7 +555,7 @@ void Settings::saveConfig()
       << ";  Format MUST be as follows:" << endl
       << ";    command = value" << endl
       << ";" << endl
-      << ";  Commmands are the same as those specified on the commandline," << endl
+      << ";  Commands are the same as those specified on the commandline," << endl
       << ";  without the '-' character." << endl
       << ";" << endl
       << ";  Values are the same as those allowed on the commandline." << endl

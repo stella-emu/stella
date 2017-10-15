@@ -117,8 +117,10 @@ void RomInfoWidget::parseProperties()
   myRomInfo.push_back("Model:  " + myProperties.get(Cartridge_ModelNo));
   myRomInfo.push_back("Rarity:  " + myProperties.get(Cartridge_Rarity));
   myRomInfo.push_back("Note:  " + myProperties.get(Cartridge_Note));
-  myRomInfo.push_back("Controllers:  " + myProperties.get(Controller_Left) +
-                      " (left), " + myProperties.get(Controller_Right) + " (right)");
+  bool swappedPorts = myProperties.get(Console_SwapPorts) == "YES";
+  myRomInfo.push_back("Controllers:  " + (!swappedPorts
+    ? myProperties.get(Controller_Left) + " (left), " + myProperties.get(Controller_Right) + " (right)"
+    : myProperties.get(Controller_Right) + " (left), " + myProperties.get(Controller_Left) + " (right)"));
 #if 0
   myRomInfo.push_back("YStart/Height:  " + myProperties.get(Display_YStart) +
                       "    " + myProperties.get(Display_Height));

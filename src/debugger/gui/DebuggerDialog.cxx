@@ -92,7 +92,10 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
     switch(key)
     {
       case KBDK_R:
-        doRewind();
+        if(!instance().eventHandler().kbdShift(mod))
+          doRewind();
+        else
+          doUnwind();
         break;
       case KBDK_S:
         doStep();
@@ -141,6 +144,10 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       doRewind();
       break;
 
+    case kDDUnwindCmd:
+      doUnwind();
+      break;
+
     case kDDExitCmd:
       doExitDebugger();
       break;
@@ -187,6 +194,12 @@ void DebuggerDialog::doScanlineAdvance()
 void DebuggerDialog::doRewind()
 {
   instance().debugger().parser().run("rewind");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doUnwind()
+{
+  instance().debugger().parser().run("unwind");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -375,13 +388,21 @@ void DebuggerDialog::addRomArea()
                    bwidth, bheight, "Exit", kDDExitCmd);
 
   bwidth = myLFont->getStringWidth("< ") + 4;
-  bheight = bheight * 5 + 4*4;
+  bheight = bheight * 3 + 4 * 2;
   buttonX -= (bwidth + 5);
   buttonY = r.top + 5;
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, "<", kDDRewindCmd);
   myRewindButton->clearFlags(WIDGET_ENABLED);
+
+  buttonY += bheight + 4;
+  bheight = (myLFont->getLineHeight() + 2) * 2 + 4 * 1;
+  myUnwindButton =
+    new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                     bwidth, bheight, ">", kDDUnwindCmd);
+  myUnwindButton->clearFlags(WIDGET_ENABLED);
+
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 20;
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);

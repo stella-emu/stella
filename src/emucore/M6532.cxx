@@ -41,7 +41,7 @@ M6532::M6532(const Console& console, const Settings& settings)
     myInterruptFlag(false),
     myEdgeDetectPositive(false),
     myRAMAccessBase(nullptr)
-{  
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -461,7 +461,6 @@ uInt32 M6532::timerClocks() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::createAccessBases()
 {
-#ifdef DEBUGGER_SUPPORT
   myRAMAccessBase = make_unique<uInt8[]>(RAM_SIZE);
   memset(myRAMAccessBase.get(), CartDebug::NONE, RAM_SIZE);
   myStackAccessBase = make_unique<uInt8[]>(STACK_SIZE);
@@ -471,9 +470,6 @@ void M6532::createAccessBases()
 
   myZPAccessDelay = make_unique<uInt8[]>(RAM_SIZE);
   memset(myZPAccessDelay.get(), ZP_DELAY, RAM_SIZE);
-#else
-  myRAMAccessBase = myStackAccessBase = myIOAccessBase = nullptr;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -481,15 +477,14 @@ uInt8 M6532::getAccessFlags(uInt16 address) const
 {
   if (address & IO_BIT)
     return myIOAccessBase[address & IO_MASK];
-  else if (address & STACK_BIT) 
+  else if (address & STACK_BIT)
     return myStackAccessBase[address & STACK_MASK];
   else
     return myRAMAccessBase[address & RAM_MASK];
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::setAccessFlags(uInt16 address, uInt8 flags) 
+void M6532::setAccessFlags(uInt16 address, uInt8 flags)
 {
   // ignore none flag
   if (flags != CartDebug::NONE) {

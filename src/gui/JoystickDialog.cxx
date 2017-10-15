@@ -55,7 +55,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   // Add buttons at bottom
   xpos = _w - buttonWidth - 10;
   myCloseBtn = new ButtonWidget(this, font, xpos, ypos,
-      buttonWidth, buttonHeight, "Close", kCloseCmd);
+      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
   addOKWidget(myCloseBtn);  addCancelWidget(myCloseBtn);
 
   buttonWidth = font.getStringWidth("Remove") + 20;
@@ -95,7 +95,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       close();
       break;
 

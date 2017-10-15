@@ -178,11 +178,11 @@ void KidVid::openSampleFile()
     if(myTape == 4) i -= 3;
 
     mySampleFile = fopen(kvNameTable[i], "rb");
-    if(mySampleFile != NULL)
+    if(mySampleFile != nullptr)
     {
 cerr << "opened file: " << kvNameTable[i] << endl;
       mySharedSampleFile = fopen("kvshared.wav", "rb");
-      if(mySharedSampleFile == NULL)
+      if(mySharedSampleFile == nullptr)
       {
         fclose(mySampleFile);
         myFileOpened = false;

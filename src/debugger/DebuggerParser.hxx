@@ -39,7 +39,7 @@ class DebuggerParser
     string run(const string& command);
 
     /** Execute parser commands given in 'file' */
-    string exec(const FilesystemNode& file);
+    string exec(const FilesystemNode& file, StringList* history = nullptr);
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */
@@ -65,10 +65,10 @@ class DebuggerParser
     bool getArgs(const string& command, string& verb);
     bool validateArgs(int cmd);
     string eval();
-    bool saveScriptFile(string file);
+    string saveScriptFile(string file);
 
   private:
-    enum { kNumCommands = 72 };
+    enum { kNumCommands = 77 };
 
     // Constants for argument processing
     enum {
@@ -80,6 +80,7 @@ class DebuggerParser
 
     enum parameters {
       kARG_WORD,        // single 16-bit value
+      kARG_DWORD,       // single 32-bit value
       kARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
       kARG_BYTE,        // single 8-bit value
       kARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
@@ -99,6 +100,14 @@ class DebuggerParser
       parameters parms[10];
       std::function<void (DebuggerParser*)> executor;
     };
+    struct Trap
+    {
+      bool read;
+      bool write;
+      uInt32 begin;
+      uInt32 end;
+      string condition;
+    };
 
     // Reference to our debugger object
     Debugger& debugger;
@@ -109,6 +118,8 @@ class DebuggerParser
     // The results of the currently running command
     ostringstream commandResult;
 
+    // currently execute command id
+    int myCommand;
     // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;
     StringList argStrings;
@@ -117,8 +128,12 @@ class DebuggerParser
     StringList myWatches;
 
     // Keep track of traps (read and/or write)
-    std::set<uInt32> myTraps;
-    string trapStatus(uInt32 addr, bool& enabled);
+    vector<unique_ptr<Trap>> myTraps;
+    void listTraps(bool listCond);
+    string trapStatus(const Trap& trap);
+
+    // output the error with the example provided for the command
+    void outputCommandError(const string& errorMsg, int command);
 
     // List of available command methods
     void executeA();
@@ -140,6 +155,7 @@ class DebuggerParser
     void executeDefine();
     void executeDelbreakif();
     void executeDelfunction();
+    void executeDeltrap();
     void executeDelwatch();
     void executeDisasm();
     void executeDump();
@@ -183,12 +199,17 @@ class DebuggerParser
     void executeTia();
     void executeTrace();
     void executeTrap();
+    void executeTrapif();
     void executeTrapread();
+    void executeTrapreadif();
     void executeTrapwrite();
-    void executeTrapRW(uInt32 addr, bool read, bool write);  // not exposed by debugger
+    void executeTrapwriteif();
+    void executeTraps(bool read, bool write, const string& command, bool cond = false);
+    void executeTrapRW(uInt32 addr, bool read, bool write, bool add = true);  // not exposed by debugger
     void executeType();
     void executeUHex();
     void executeUndef();
+    void executeUnwind();
     void executeV();
     void executeWatch();
     void executeX();

@@ -110,7 +110,10 @@ string DebuggerParser::run(const string& command)
     if(BSPF::equalsIgnoreCase(verb, commands[i].cmdString))
     {
       if(validateArgs(i))
+      {
+        myCommand = i;
         commands[i].executor(this);
+      }
 
       if(commands[i].refreshRequired)
         debugger.myBaseDialog->loadConfig();
@@ -119,17 +122,17 @@ string DebuggerParser::run(const string& command)
     }
   }
 
-  return "No such command (try \"help\")";
+  return red("No such command (try \"help\")");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::exec(const FilesystemNode& file)
+string DebuggerParser::exec(const FilesystemNode& file, StringList* history)
 {
   if(file.exists())
   {
     ifstream in(file.getPath());
     if(!in.is_open())
-      return red("autoexec file \'" + file.getShortPath() + "\' not found");
+      return red("script file \'" + file.getShortPath() + "\' not found");
 
     ostringstream buf;
     int count = 0;
@@ -140,15 +143,27 @@ string DebuggerParser::exec(const FilesystemNode& file)
         break;
 
       run(command);
+      if (history != nullptr)
+        history->push_back(command);
       count++;
     }
-    buf << "Executed " << count << " commands from \""
+    buf << "\nExecuted " << count << " commands from \""
         << file.getShortPath() << "\"";
 
     return buf.str();
   }
   else
-    return red("autoexec file \'" + file.getShortPath() + "\' not found");
+    return red("script file \'" + file.getShortPath() + "\' not found");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::outputCommandError(const string& errorMsg, int command)
+{
+  string example = commands[command].extendedDesc.substr(commands[command].extendedDesc.find("Example:"));
+
+  commandResult << red(errorMsg);
+  if(!example.empty())
+    commandResult << endl << example;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,7 +174,7 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions) con
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(int i = 0; i < kNumCommands; ++i)
   {
-    if(BSPF::startsWithIgnoreCase(commands[i].cmdString.c_str(), in))
+    if(BSPF::matches(commands[i].cmdString, in))
       completions.push_back(commands[i].cmdString);
   }
 }
@@ -396,7 +411,8 @@ bool DebuggerParser::validateArgs(int cmd)
   {
     if(required)
     {
-      commandResult.str(red("missing required argument(s)"));
+      commandResult.str();
+      outputCommandError("missing required argument(s)", cmd);
       return false; // needed args. didn't get 'em.
     }
     else
@@ -427,6 +443,14 @@ bool DebuggerParser::validateArgs(int cmd)
 
     switch(*p)
     {
+      case kARG_DWORD:
+        if(curArgInt > 0xffffffff)
+        {
+          commandResult.str(red("invalid word argument (must be 0-$ffffffff)"));
+          return false;
+        }
+        break;
+
       case kARG_WORD:
         if(curArgInt > 0xffff)
         {
@@ -484,12 +508,14 @@ cerr << "curCount         = " << curCount << endl
 
   if(curCount < argRequiredCount)
   {
-    commandResult.str(red("missing required argument(s)"));
+    commandResult.str();
+    outputCommandError("missing required argument(s)", cmd);
     return false;
   }
   else if(argCount > curCount)
   {
-    commandResult.str(red("too many arguments"));
+    commandResult.str();
+    outputCommandError("too many arguments", cmd);
     return false;
   }
 
@@ -502,28 +528,29 @@ string DebuggerParser::eval()
   ostringstream buf;
   for(uInt32 i = 0; i < argCount; ++i)
   {
-    string rlabel = debugger.cartDebug().getLabel(args[i], true);
-    string wlabel = debugger.cartDebug().getLabel(args[i], false);
-    bool validR = rlabel != "" && rlabel[0] != '$',
-         validW = wlabel != "" && wlabel[0] != '$';
-    if(validR && validW)
+    if(args[i] < 0x10000)
     {
-      if(rlabel == wlabel)
-        buf << rlabel << "(R/W): ";
-      else
-        buf << rlabel << "(R) / " << wlabel << "(W): ";
+      string rlabel = debugger.cartDebug().getLabel(args[i], true);
+      string wlabel = debugger.cartDebug().getLabel(args[i], false);
+      bool validR = rlabel != "" && rlabel[0] != '$',
+        validW = wlabel != "" && wlabel[0] != '$';
+      if(validR && validW)
+      {
+        if(rlabel == wlabel)
+          buf << rlabel << "(R/W): ";
+        else
+          buf << rlabel << "(R) / " << wlabel << "(W): ";
+      }
+      else if(validR)
+        buf << rlabel << "(R): ";
+      else if(validW)
+        buf << wlabel << "(W): ";
     }
-    else if(validR)
-      buf << rlabel << "(R): ";
-    else if(validW)
-      buf << wlabel << "(W): ";
 
-    if(args[i] < 0x100)
-      buf << "$" << Base::toString(args[i], Base::F_16_2)
-          << " %" << Base::toString(args[i], Base::F_2_8);
-    else
-      buf << "$" << Base::toString(args[i], Base::F_16_4)
-          << " %" << Base::toString(args[i], Base::F_2_16);
+    buf << "$" << Base::toString(args[i], Base::F_16);
+
+    if(args[i] < 0x10000)
+      buf << " %" << Base::toString(args[i], Base::F_2);
 
     buf << " #" << int(args[i]);
     if(i != argCount - 1)
@@ -534,70 +561,117 @@ string DebuggerParser::eval()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::trapStatus(uInt32 addr, bool& enabled)
+void DebuggerParser::listTraps(bool listCond)
 {
-  string result;
-  result += Base::toString(addr);
-  result += ": ";
-  bool r = debugger.readTrap(addr);
-  bool w = debugger.writeTrap(addr);
-  enabled = r || w;
-  if(r && w)
-    result += "read|write";
-  else if(r)
-    result += "read";
-  else if(w)
-    result += "write";
-  else
-    result += "none";
+  StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
 
-  const string& l = debugger.cartDebug().getLabel(addr, !w);
-  if(l != "") {
-    result += "  (";
-    result += l;
-    result += ")";
+  commandResult << (listCond ? "trapifs:" : "traps:") << endl;
+  for(uInt32 i = 0; i < names.size(); i++)
+  {
+    bool hasCond = names[i] != "";
+    if(hasCond == listCond)
+    {
+      commandResult << Base::toString(i) << ": ";
+      if(myTraps[i]->read && myTraps[i]->write)
+        commandResult << "read|write";
+      else if(myTraps[i]->read)
+        commandResult << "read      ";
+      else if(myTraps[i]->write)
+        commandResult << "     write";
+      else
+        commandResult << "none";
+
+      if(hasCond)
+        commandResult << " " << names[i];
+      commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->begin, true, 4);
+      if(myTraps[i]->begin != myTraps[i]->end)
+        commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->end, true, 4);
+      commandResult << trapStatus(*myTraps[i]);
+      commandResult << " + mirrors";
+      if(i != (names.size() - 1)) commandResult << endl;
+    }
   }
-
-  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DebuggerParser::saveScriptFile(string file)
+string DebuggerParser::trapStatus(const Trap& trap)
 {
-  if( file.find_last_of('.') == string::npos )
-    file += ".stella";
+  stringstream result;
+  string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
+  string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
 
-  ofstream out(file);
+  if(lblb != "") {
+    result << " (";
+    result << lblb;
+  }
+
+  if(trap.begin != trap.end)
+  {
+    if(lble != "")
+    {
+      if (lblb != "")
+        result << " ";
+      else
+        result << " (";
+      result << lble;
+    }
+  }
+  if (lblb != "" || lble != "")
+    result << ")";
+
+  return result.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DebuggerParser::saveScriptFile(string file)
+{
+  // Append 'script' extension when necessary
+  if(file.find_last_of('.') == string::npos)
+    file += ".script";
+
+  FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
+  ofstream out(node.getPath());
+  if(!out.is_open())
+    return "Unable to save script to " + node.getShortPath();
 
   FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& f: funcs)
-    out << "function " << f.first << " { " << f.second << " }" << endl;
+    if (!debugger.isBuiltinFunction(f.first))
+      out << "function " << f.first << " {" << f.second << "}" << endl;
 
   for(const auto& w: myWatches)
     out << "watch " << w << endl;
 
   for(uInt32 i = 0; i < 0x10000; ++i)
     if(debugger.breakPoint(i))
-      out << "break #" << i << endl;
-
-  for(uInt32 i = 0; i < 0x10000; ++i)
-  {
-    bool r = debugger.readTrap(i);
-    bool w = debugger.writeTrap(i);
-
-    if(r && w)
-      out << "trap #" << i << endl;
-    else if(r)
-      out << "trapread #" << i << endl;
-    else if(w)
-      out << "trapwrite #" << i << endl;
-  }
+      out << "break " << Base::toString(i) << endl;
 
   StringList conds = debugger.cpuDebug().m6502().getCondBreakNames();
-  for(const auto& cond: conds)
+  for(const auto& cond : conds)
     out << "breakif {" << cond << "}" << endl;
 
-  return out.good();
+  StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
+  for(uInt32 i = 0; i < myTraps.size(); ++i)
+  {
+    bool read = myTraps[i]->read;
+    bool write = myTraps[i]->write;
+    bool hasCond = names[i] != "";
+
+    if(read && write)
+      out << "trap";
+    else if(read)
+      out << "trapread";
+    else if(write)
+      out << "trapwrite";
+    if(hasCond)
+      out << "if {" << names[i] << "}";
+    out << " " << Base::toString(myTraps[i]->begin);
+    if(myTraps[i]->begin != myTraps[i]->end)
+      out << " " << Base::toString(myTraps[i]->end);
+    out << endl;
+  }
+
+  return "saved " + node.getShortPath() + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -695,7 +769,7 @@ void DebuggerParser::executeCheat()
 #ifdef CHEATCODE_SUPPORT
   if(argCount == 0)
   {
-    commandResult << red("Missing cheat code");
+    outputCommandError("missing cheat code", myCommand);
     return;
   }
 
@@ -705,7 +779,7 @@ void DebuggerParser::executeCheat()
     if(debugger.myOSystem.cheat().add("DBG", cheat))
       commandResult << "Cheat code " << cheat << " enabled" << endl;
     else
-      commandResult << red("Invalid cheat code ") << cheat << endl;
+      commandResult << red("invalid cheat code ") << cheat << endl;
   }
 #else
   commandResult << red("Cheat support not enabled\n");
@@ -735,8 +809,9 @@ void DebuggerParser::executeClearconfig()
 // "cleartraps"
 void DebuggerParser::executeCleartraps()
 {
-  myTraps.clear();
   debugger.clearAllTraps();
+  debugger.cpuDebug().m6502().clearCondTraps();
+  myTraps.clear();
   commandResult << "all traps cleared";
 }
 
@@ -762,12 +837,12 @@ void DebuggerParser::executeCode()
 {
   if(argCount != 2)
   {
-    commandResult << red("Specify start and end of range only");
+    outputCommandError("specify start and end of range only", myCommand);
     return;
   }
   else if(args[1] < args[0])
   {
-    commandResult << red("Start address must be <= end address");
+    commandResult << red("start address must be <= end address");
     return;
   }
 
@@ -803,12 +878,12 @@ void DebuggerParser::executeData()
 {
   if(argCount != 2)
   {
-    commandResult << red("Specify start and end of range only");
+    outputCommandError("specify start and end of range only", myCommand);
     return;
   }
   else if(args[1] < args[0])
   {
-    commandResult << red("Start address must be <= end address");
+    commandResult << red("start address must be <= end address");
     return;
   }
 
@@ -839,7 +914,10 @@ void DebuggerParser::executeDefine()
 // "delbreakif"
 void DebuggerParser::executeDelbreakif()
 {
-  debugger.cpuDebug().m6502().delCondBreak(args[0]);
+  if (debugger.cpuDebug().m6502().delCondBreak(args[0]))
+    commandResult << "removed breakif " << Base::toString(args[0]);
+  else
+    commandResult << red("no such breakif");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -853,6 +931,24 @@ void DebuggerParser::executeDelfunction()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "deltrap"
+void DebuggerParser::executeDeltrap()
+{
+  int index = args[0];
+
+  if(debugger.cpuDebug().m6502().delCondTrap(index))
+  {
+    for(uInt32 addr = myTraps[index]->begin; addr <= myTraps[index]->end; ++addr)
+      executeTrapRW(addr, myTraps[index]->read, myTraps[index]->write, false);
+    // @sa666666: please check this:
+    Vec::removeAt(myTraps, index);
+    commandResult << "removed trap " << Base::toString(index);
+  }
+  else
+    commandResult << red("no such trap");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "delwatch"
 void DebuggerParser::executeDelwatch()
 {
@@ -863,7 +959,7 @@ void DebuggerParser::executeDelwatch()
     commandResult << "removed watch";
   }
   else
-    commandResult << "no such watch";
+    commandResult << red("no such watch");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -880,7 +976,7 @@ void DebuggerParser::executeDisasm()
     start = args[0];
     lines = args[1];
   } else {
-    commandResult << "wrong number of arguments";
+    outputCommandError("wrong number of arguments", myCommand);
     return;
   }
 
@@ -910,7 +1006,7 @@ void DebuggerParser::executeDump()
   // Error checking
   if(argCount > 1 && args[1] < args[0])
   {
-    commandResult << red("Start address must be <= end address");
+    commandResult << red("start address must be <= end address");
     return;
   }
 
@@ -920,7 +1016,7 @@ void DebuggerParser::executeDump()
     dump(args[0], args[1]);
   else
   {
-    commandResult << "wrong number of arguments";
+    outputCommandError("wrong number of arguments", myCommand);
     return;
   }
 }
@@ -929,8 +1025,13 @@ void DebuggerParser::executeDump()
 // "exec"
 void DebuggerParser::executeExec()
 {
-  FilesystemNode file(argStrings[0]);
-  commandResult << exec(file);
+  // Append 'script' extension when necessary
+  string file = argStrings[0];
+  if(file.find_last_of('.') == string::npos)
+    file += ".script";
+
+  FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
+  commandResult << exec(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -976,12 +1077,12 @@ void DebuggerParser::executeGfx()
 {
   if(argCount != 2)
   {
-    commandResult << red("Specify start and end of range only");
+    outputCommandError("specify start and end of range only", myCommand);
     return;
   }
   else if(args[1] < args[0])
   {
-    commandResult << red("Start address must be <= end address");
+    commandResult << red("start address must be <= end address");
     return;
   }
 
@@ -1061,26 +1162,21 @@ void DebuggerParser::executeListbreaks()
     if(debugger.breakPoints().isSet(i))
     {
       buf << debugger.cartDebug().getLabel(i, true, 4) << " ";
-      if(! (++count % 8) ) buf << "\n";
+      if(! (++count % 8) ) buf << endl;
     }
   }
-
-  /*
   if(count)
-    return ret;
-  else
-    return "no breakpoints set";
-    */
-  if(count)
-    commandResult << "breaks:\n" << buf.str();
+    commandResult << "breaks:" << endl << buf.str();
 
   StringList conds = debugger.cpuDebug().m6502().getCondBreakNames();
   if(conds.size() > 0)
   {
-    commandResult << "\nbreakifs:\n";
+    if(count)
+      commandResult << endl;
+    commandResult << "breakifs:" << endl;
     for(uInt32 i = 0; i < conds.size(); i++)
     {
-      commandResult << i << ": " << conds[i];
+      commandResult << Base::toString(i) << ": " << conds[i];
       if(i != (conds.size() - 1)) commandResult << endl;
     }
   }
@@ -1118,11 +1214,27 @@ void DebuggerParser::executeListfunctions()
 // "listtraps"
 void DebuggerParser::executeListtraps()
 {
-  if(myTraps.size() > 0)
+  StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
+
+  if(myTraps.size() != names.size())
   {
-    bool enabled = true;
-    for(const auto& trap: myTraps)
-      commandResult << trapStatus(trap, enabled) << " + mirrors" << endl;
+    commandResult << "Internal error! Different trap sizes.";
+    return;
+  }
+
+  if (names.size() > 0)
+  {
+    bool trapFound = false, trapifFound = false;
+    for(uInt32 i = 0; i < names.size(); i++)
+      if(names[i] == "")
+        trapFound = true;
+      else
+        trapifFound = true;
+
+    if(trapFound)
+      listTraps(false);
+    if(trapifFound)
+      listTraps(true);
   }
   else
     commandResult << "no traps set";
@@ -1175,12 +1287,12 @@ void DebuggerParser::executePGfx()
 {
   if(argCount != 2)
   {
-    commandResult << red("Specify start and end of range only");
+    outputCommandError("specify start and end of range only", myCommand);
     return;
   }
   else if(args[1] < args[0])
   {
-    commandResult << red("Start address must be <= end address");
+    commandResult << red("start address must be <= end address");
     return;
   }
 
@@ -1267,12 +1379,12 @@ void DebuggerParser::executeRow()
 {
   if(argCount != 2)
   {
-    commandResult << red("Specify start and end of range only");
+    outputCommandError("specify start and end of range only", myCommand);
     return;
   }
   else if(args[1] < args[0])
   {
-    commandResult << red("Start address must be <= end address");
+    commandResult << red("start address must be <= end address");
     return;
   }
 
@@ -1373,10 +1485,7 @@ void DebuggerParser::executeS()
 // "save"
 void DebuggerParser::executeSave()
 {
-  if(saveScriptFile(argStrings[0]))
-    commandResult << "saved script to file " << argStrings[0];
-  else
-    commandResult << red("I/O error");
+  commandResult << saveScriptFile(argStrings[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1473,71 +1582,153 @@ void DebuggerParser::executeTrace()
 // "trap"
 void DebuggerParser::executeTrap()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
+  executeTraps(true, true, "trap");
+}
 
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, true, true);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapif"
+void DebuggerParser::executeTrapif()
+{
+  executeTraps(true, true, "trapif", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapread"
 void DebuggerParser::executeTrapread()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
+  executeTraps(true, false, "trapread");
+}
 
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, true, false);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "trapreadif"
+void DebuggerParser::executeTrapreadif()
+{
+  executeTraps(true, false, "trapreadif", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapwrite"
 void DebuggerParser::executeTrapwrite()
 {
-  if(argCount > 2)
-  {
-    commandResult << red("Command takes one or two arguments") << endl;
-    return;
-  }
-
-  uInt32 beg = args[0];
-  uInt32 end = argCount == 2 ? args[1] : beg;
-  if(beg > 0xFFFF || end > 0xFFFF)
-  {
-    commandResult << red("One or more addresses are invalid") << endl;
-    return;
-  }
-
-  for(uInt32 addr = beg; addr <= end; ++addr)
-    executeTrapRW(addr, false, true);
+  executeTraps(false, true, "trapwrite");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// wrapper function for trap/trapread/trapwrite commands
-void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
+// "trapwriteif"
+void DebuggerParser::executeTrapwriteif()
+{
+  executeTraps(false, true, "trapwriteif", true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Wrapper function for trap(if)s
+void DebuggerParser::executeTraps(bool read, bool write, const string& command,
+                                  bool hasCond)
+{
+  uInt32 ofs = hasCond ? 1 : 0;
+  uInt32 begin = args[ofs];
+  uInt32 end = argCount == 2 + ofs ? args[1 + ofs] : begin;
+
+  if(argCount < 1 + ofs)
+  {
+    outputCommandError("missing required argument(s)", myCommand);
+    return;
+  }
+  if(argCount > 2 + ofs)
+  {
+    outputCommandError("too many arguments", myCommand);
+    return;
+  }
+  if(begin > 0xFFFF || end > 0xFFFF)
+  {
+    commandResult << red("invalid word argument(s) (must be 0-$ffff)");
+    return;
+  }
+  if(begin > end)
+  {
+    commandResult << red("start address must be <= end address");
+    return;
+  }
+
+  // base addresses of mirrors
+  uInt32 beginRead = debugger.getBaseAddress(begin, true);
+  uInt32 endRead = debugger.getBaseAddress(end, true);
+  uInt32 beginWrite = debugger.getBaseAddress(begin, false);
+  uInt32 endWrite = debugger.getBaseAddress(end, false);
+  stringstream conditionBuf;
+
+  // parenthesize provided and address range condition(s) (begin)
+  if(hasCond)
+    conditionBuf << "(" << argStrings[0] << ")&&(";
+
+  // add address range condition(s) to provided condition
+  if(read)
+  {
+    if(beginRead != endRead)
+      conditionBuf << "__lastread>=" << Base::toString(beginRead) << "&&__lastread<=" << Base::toString(endRead);
+    else
+      conditionBuf << "__lastread==" << Base::toString(beginRead);
+  }
+  if(read && write)
+    conditionBuf << "||";
+  if(write)
+  {
+    if(beginWrite != endWrite)
+      conditionBuf << "__lastwrite>=" << Base::toString(beginWrite) << "&&__lastwrite<=" << Base::toString(endWrite);
+    else
+      conditionBuf << "__lastwrite==" << Base::toString(beginWrite);
+  }
+  // parenthesize provided condition (end)
+  if(hasCond)
+    conditionBuf << ")";
+
+  const string condition = conditionBuf.str();
+
+  int res = YaccParser::parse(condition.c_str());
+  if(res == 0)
+  {
+    // duplicates will remove each other
+    bool add = true;
+    for(uInt32 i = 0; i < myTraps.size(); i++)
+    {
+      if(myTraps[i]->begin == begin && myTraps[i]->end == end &&
+         myTraps[i]->read == read && myTraps[i]->write == write &&
+         myTraps[i]->condition == condition)
+      {
+        if(debugger.cpuDebug().m6502().delCondTrap(i))
+        {
+          add = false;
+          // @sa666666: please check this:
+          Vec::removeAt(myTraps, i);
+          commandResult << "Removed trap " << Base::toString(i);
+          break;
+        }
+        commandResult << "Internal error! Duplicate trap removal failed!";
+        return;
+      }
+    }
+    if(add)
+    {
+      uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
+        YaccParser::getResult(), hasCond ? argStrings[0] : "");
+      commandResult << "Added trap " << Base::toString(ret);
+
+      // @sa666666: please check this:
+      myTraps.emplace_back(new Trap{ read, write, begin, end, condition });
+    }
+
+    for(uInt32 addr = begin; addr <= end; ++addr)
+      executeTrapRW(addr, read, write, add);
+  }
+  else
+  {
+    commandResult << red("invalid expression");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// wrapper function for trap(if)/trapread(if)/trapwrite(if) commands
+void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
 {
   switch(debugger.cartDebug().addressType(addr))
   {
@@ -1547,10 +1738,11 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
       {
         if((i & 0x1080) == 0x0000)
         {
-          if(read && (i & 0x000F) == addr)
-            debugger.toggleReadTrap(i);
-          if(write && (i & 0x003F) == addr)
-            debugger.toggleWriteTrap(i);
+          // @sa666666: This seems wrong. E.g. trapread 40 4f will never trigger
+          if(read && (i & 0x000F) == (addr & 0x000F))
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+          if(write && (i & 0x003F) == (addr & 0x003F))
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1559,10 +1751,12 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
-        if((i & 0x1080) == 0x0080 && (i & 0x0200) != 0x0000 && (i & 0x02FF) == addr)
+        if((i & 0x1280) == 0x0280 && (i & 0x029F) == (addr & 0x029F))
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if(read)
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+          if(write)
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1571,10 +1765,12 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
-        if((i & 0x1080) == 0x0080 && (i & 0x0200) == 0x0000 && (i & 0x00FF) == addr)
+        if((i & 0x1280) == 0x0080 && (i & 0x00FF) == (addr & 0x00FF))
         {
-          if(read)  debugger.toggleReadTrap(i);
-          if(write) debugger.toggleWriteTrap(i);
+          if(read)
+            add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+          if(write)
+            add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
         }
       }
       break;
@@ -1587,21 +1783,16 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write)
         {
           if((i % 0x2000 >= 0x1000) && (i & 0x0FFF) == (addr & 0x0FFF))
           {
-            if(read)  debugger.toggleReadTrap(i);
-            if(write) debugger.toggleWriteTrap(i);
+            if(read)
+              add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
+            if(write)
+              add ? debugger.addWriteTrap(i) : debugger.removeWriteTrap(i);
           }
         }
       }
       break;
     }
   }
-
-  bool trapEnabled = false;
-  const string& result = trapStatus(addr, trapEnabled);
-  if(trapEnabled) myTraps.insert(addr);
-  else            myTraps.erase(addr);
-
-  commandResult << result << " + mirrors" << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1647,6 +1838,19 @@ void DebuggerParser::executeUndef()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "unwind"
+void DebuggerParser::executeUnwind()
+{
+  if(debugger.unwindState())
+  {
+    debugger.rom().invalidate();
+    commandResult << "unwind by one level";
+  }
+  else
+    commandResult << "no states left to rewind";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "v"
 void DebuggerParser::executeV()
 {
@@ -1687,7 +1891,6 @@ void DebuggerParser::executeZ()
   else if(argCount == 1)
     debugger.cpuDebug().setZ(args[0]);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
@@ -1884,6 +2087,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "deltrap",
+    "Delete trap <xx>",
+    "Example: deltrap 0",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeDeltrap)
+  },
+
+  {
     "delwatch",
     "Delete watch <xx>",
     "Example: delwatch 0",
@@ -1907,7 +2120,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "dump",
     "Dump data at address <xx> [to yy]",
-    "Examples:\n"
+    "Example:\n"
     "  dump f000 - dumps 128 bytes @ f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff",
     true,
@@ -1949,7 +2162,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "function",
     "Define function name xx for expression yy",
-    "Example: define FUNC1 { ... }",
+    "Example: function FUNC1 { ... }",
     true,
     false,
     { kARG_LABEL, kARG_WORD, kARG_END_ARGS },
@@ -2094,7 +2307,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: print pc, print f000",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_DWORD, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executePrint)
   },
 
@@ -2326,6 +2539,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "trapif",
+    "On <condition> trap R/W access to address(es) xx [yy]",
+    "Set a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapif _scan>#100 GRP0, trapif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapif)
+  },
+
+  {
     "trapread",
     "Trap read access to address(es) xx [yy]",
     "Set a read trap on the given address(es) and all mirrors\n"
@@ -2337,6 +2561,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "trapreadif",
+    "On <condition> trap read access to address(es) xx [yy]",
+    "Set a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapreadif _scan>#100 GRP0, trapreadif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapreadif)
+  },
+
+  {
     "trapwrite",
     "Trap write access to address(es) xx [yy]",
     "Set a write trap on the given address(es) and all mirrors\n"
@@ -2345,6 +2580,17 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTrapwrite)
+  },
+
+  {
+    "trapwriteif",
+    "On <condition> trap write access to address(es) xx [yy]",
+    "Set a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Example: trapwriteif _scan>#100 GRP0, trapwriteif _bank==1 f000 f100",
+      true,
+      false,
+      { kARG_WORD, kARG_MULTI_BYTE },
+      std::mem_fn(&DebuggerParser::executeTrapwriteif)
   },
 
   {
@@ -2376,6 +2622,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeUndef)
+  },
+
+  {
+    "unwind",
+    "Unwind state to last step/trace/scanline/frame",
+    "Unwind currently only works in the debugger",
+    false,
+    true,
+    { kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeUnwind)
   },
 
   {

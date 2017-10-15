@@ -18,12 +18,10 @@
 #ifndef ATARIVOX_WIDGET_HXX
 #define ATARIVOX_WIDGET_HXX
 
-class ButtonWidget;
-
 #include "Control.hxx"
-#include "ControllerWidget.hxx"
+#include "FlashWidget.hxx"
 
-class AtariVoxWidget : public ControllerWidget
+class AtariVoxWidget : public FlashWidget
 {
   public:
     AtariVoxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
@@ -31,12 +29,8 @@ class AtariVoxWidget : public ControllerWidget
     virtual ~AtariVoxWidget() = default;
 
   private:
-    ButtonWidget* myEEPROMErase;
-    enum { kEEPROMErase  = 'eeER' };
-
-  private:
-    void loadConfig() override { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void eraseCurrent() override;
+    bool isPageUsed(uInt32 page) override;
 
     // Following constructors and assignment operators not supported
     AtariVoxWidget() = delete;

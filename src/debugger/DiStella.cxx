@@ -120,6 +120,12 @@ void DiStella::disasm(uInt32 distart, int pass)
   myPC = distart - myOffset;
   while (myPC <= myAppData.end) {
 
+    // since -1 is used in m6502.m4 for clearing the last peek
+    // and this results into an access at e.g. 0xffff,
+    // we have to fix the consequences here (ugly!).
+    if(myPC == myAppData.end)
+      goto FIX_LAST;
+
     if (checkBits(myPC, CartDebug::GFX | CartDebug::PGFX,
         CartDebug::CODE)) {
       if (pass == 2)
@@ -137,6 +143,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         myPC++;
     } else if (checkBits(myPC, CartDebug::ROW,
                CartDebug::CODE | CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
+FIX_LAST:
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
 
@@ -713,6 +720,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
             myPCEnd = myAppData.end + myOffset;
             return;
           }
+          break;  // TODO - is this the intent?
 
         default:
           break;

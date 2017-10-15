@@ -17,7 +17,7 @@
 
 #include <cmath>
 #include <algorithm>
-#include <math.h>      
+#include <math.h>
 
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
@@ -118,7 +118,7 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
   // Get Blargg buffer and width
   uInt32 *blarggBuf, blarggPitch;
   myTiaSurface->basePtr(blarggBuf, blarggPitch);
-  double blarggXFactor = (double)blarggPitch / width;
+  double blarggXFactor = double(blarggPitch) / width;
   bool useBlargg = ntscEnabled();
 
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
@@ -130,8 +130,8 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
     for(uInt32 x = 0; x < width; ++x)
     {
       if (useBlargg)
-        *buf_ptr++ = blarggBuf[y * blarggPitch + (uInt32)nearbyint(x * blarggXFactor)];
-      else 
+        *buf_ptr++ = blarggBuf[y * blarggPitch + uInt32(nearbyint(x * blarggXFactor))];
+      else
         *buf_ptr++ = myPalette[*(myTIA->frameBuffer() + y * tiaw + x / 2)];
     }
   }
@@ -398,7 +398,7 @@ void TIASurface::reRender()
 
   myTiaSurface->basePtr(outPtr, outPitch);
 
-  switch (myFilter) 
+  switch (myFilter)
   {
     // for non-phosphor modes, render the frame again
     case Filter::Normal:

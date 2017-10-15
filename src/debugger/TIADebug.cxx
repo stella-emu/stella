@@ -349,8 +349,8 @@ bool TIADebug::collision(CollisionBit id) const
     case Cx_BLPF:  return myTIA.collCXBLPF() & 0x80;
     case Cx_P0P1:  return myTIA.collCXPPMM() & 0x80;
     case Cx_M0M1:  return myTIA.collCXPPMM() & 0x40;
-    default:       return false;  // make compiler happy
   }
+  return false;  // make compiler happy
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -703,13 +703,13 @@ int TIADebug::frameCycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesLo() const
 {
-  return (int)myTIA.cycles();
+  return int(myTIA.cycles());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesHi() const
 {
-  return (int)(myTIA.cycles() >> 32);
+  return int(myTIA.cycles() >> 32);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -728,6 +728,12 @@ int TIADebug::scanlinesLastFrame() const
 int TIADebug::clocksThisLine() const
 {
   return myTIA.clocksThisLine();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::cyclesThisLine() const
+{
+  return myTIA.clocksThisLine()/3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -35,21 +35,23 @@ class DrivingWidget : public ControllerWidget
 
   private:
     enum {
-      kGreyUpCmd   = 'DWup',
-      kGreyDownCmd = 'DWdn',
+      kGrayUpCmd   = 'DWup',
+      kGrayDownCmd = 'DWdn',
       kFireCmd     = 'DWfr'
     };
-    ButtonWidget *myGreyUp, *myGreyDown;
-    DataGridWidget* myGreyValue;
+    ButtonWidget *myGrayUp, *myGrayDown;
+    DataGridWidget* myGrayValue;
     CheckboxWidget* myFire;
 
-    int myGreyIndex;
+    int myGrayIndex;
 
-    static uInt8 ourGreyTable[4];
+    static uInt8 ourGrayTable[4];
 
   private:
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void setValue();
 
     // Following constructors and assignment operators not supported
     DrivingWidget() = delete;

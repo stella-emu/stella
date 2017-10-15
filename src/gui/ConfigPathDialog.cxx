@@ -41,6 +41,7 @@ ConfigPathDialog::ConfigPathDialog(
             buttonWidth  = font.getStringWidth("Properties file") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
+  const int hBorder = 10;
   int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
@@ -49,12 +50,12 @@ ConfigPathDialog::ConfigPathDialog(
   _w = 56 * fontWidth + 8;
   _h = 9 * (lineHeight + 4) + 10;
 
-  xpos = vBorder;  ypos = vBorder;
+  xpos = hBorder;  ypos = vBorder;
 
   // ROM path
   ButtonWidget* romButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Rom path", kChooseRomDirCmd);
+                     "Rom path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(romButton);
   xpos += buttonWidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -62,9 +63,9 @@ ConfigPathDialog::ConfigPathDialog(
   wid.push_back(myRomPath);
 
   // Cheat file
-  xpos = vBorder;  ypos += romButton->getHeight() + 3;
+  xpos = hBorder;  ypos += romButton->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Cheat file", kChooseCheatFileCmd);
+                       "Cheat file" + ELLIPSIS, kChooseCheatFileCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myCheatFile = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -72,9 +73,9 @@ ConfigPathDialog::ConfigPathDialog(
   wid.push_back(myCheatFile);
 
   // Palette file
-  xpos = vBorder;  ypos += b->getHeight() + 3;
+  xpos = hBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Palette file", kChoosePaletteFileCmd);
+                       "Palette file" + ELLIPSIS, kChoosePaletteFileCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myPaletteFile = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -82,9 +83,9 @@ ConfigPathDialog::ConfigPathDialog(
   wid.push_back(myPaletteFile);
 
   // Properties file
-  xpos = vBorder;  ypos += b->getHeight() + 3;
+  xpos = hBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Properties file", kChoosePropsFileCmd);
+                       "Properties file" + ELLIPSIS, kChoosePropsFileCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myPropsFile = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -92,9 +93,9 @@ ConfigPathDialog::ConfigPathDialog(
   wid.push_back(myPropsFile);
 
   // State directory
-  xpos = vBorder;  ypos += b->getHeight() + 3;
+  xpos = hBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "State path", kChooseStateDirCmd);
+                       "State path" + ELLIPSIS, kChooseStateDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myStatePath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -102,9 +103,9 @@ ConfigPathDialog::ConfigPathDialog(
   wid.push_back(myStatePath);
 
   // NVRAM directory
-  xpos = vBorder;  ypos += b->getHeight() + 3;
+  xpos = hBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "NVRAM path", kChooseNVRamDirCmd);
+                       "NVRAM path" + ELLIPSIS, kChooseNVRamDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
   myNVRamPath = new EditTextWidget(this, font, xpos, ypos + 2,
@@ -114,7 +115,7 @@ ConfigPathDialog::ConfigPathDialog(
   // Add Defaults, OK and Cancel buttons
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        font.getStringWidth("Defaults") + 20, buttonHeight,
-                       "Defaults", kDefaultsCmd);
+                       "Defaults", GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
 
@@ -191,14 +192,14 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       saveConfig();
       close();
       if(myIsGlobal)  // Let the boss know romdir has changed
         sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
       break;
 
-    case kDefaultsCmd:
+    case GuiObject::kDefaultsCmd:
       setDefaults();
       break;
 

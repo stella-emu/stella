@@ -134,7 +134,7 @@ class TIASurface
       Used to calculate an averaged color for the 'phosphor' effect.
 
       @param c  RGB Color 1 (current frame)
-      @param p  RGB Color 2 (previous frame)
+      @param cp RGB Color 2 (previous frame)
 
       @return  Averaged value of the two RGB colors
     */

@@ -58,7 +58,7 @@ void CartridgeFA::install(System& system)
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.directPokeBase = 0;
+  access.directPokeBase = nullptr;
   access.type = System::PA_READ;
   for(uInt16 addr = 0x1100; addr < 0x1200; addr += System::PAGE_SIZE)
   {

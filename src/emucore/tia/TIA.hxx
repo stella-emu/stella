@@ -198,7 +198,7 @@ class TIA : public Device
     /**
       Returns a pointer to the internal frame buffer.
     */
-    uInt8* frameBuffer() const { return (uInt8*)(myFramebuffer); }
+    uInt8* frameBuffer() { return static_cast<uInt8*>(myFramebuffer); }
 
     /**
       Answers dimensional info about the framebuffer.
@@ -546,7 +546,7 @@ class TIA : public Device
     uInt8 resxCounter();
 
     /**
-      Get the result of the specified collision register.
+     * Get the result of the specified collision register.
      */
     uInt8 collCXM0P() const;
     uInt8 collCXM1P() const;
@@ -557,17 +557,23 @@ class TIA : public Device
     uInt8 collCXPPMM() const;
     uInt8 collCXBLPF() const;
 
-#ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
     void createAccessBase();
-    /**
-      Query/change the given address type to use the given disassembly flags
 
-      @param address The address to modify
-      @param flags A bitfield of DisasmType directives for the given address
-    */
+    /**
+     * Query the given address type for the associated disassembly flags.
+     *
+     * @param address  The address to query
+     */
     uInt8 getAccessFlags(uInt16 address) const override;
+    /**
+     * Change the given address to use the given disassembly flags.
+     *
+     * @param address  The address to modify
+     * @param flags    A bitfield of DisasmType directives for the given address
+     */
     void setAccessFlags(uInt16 address, uInt8 flags) override;
-#endif // DEBUGGER_SUPPORT
+  #endif // DEBUGGER_SUPPORT
 
   private:
 

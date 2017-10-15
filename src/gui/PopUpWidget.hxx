@@ -42,6 +42,9 @@ class PopUpWidget : public Widget, public CommandSender
                 const string& label, int labelWidth = 0, int cmd = 0);
     virtual ~PopUpWidget() = default;
 
+    int getTop() const override { return _y + 1; }
+    int getBottom() const override { return _y + 1 + getHeight(); }
+
     /** Add the given items to the widget. */
     void addItems(const VariantList& items) { myMenu->addItems(items);     }
 

@@ -285,6 +285,7 @@ void FrameBuffer::update()
         myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->render();
       }
+      myPausedCount = 0;
       break;  // S_EMULATE
     }
 
@@ -292,10 +293,10 @@ void FrameBuffer::update()
     {
       myTIASurface->render();
 
-      // Show a pause message every 5 seconds
-      if(myPausedCount++ >= 7*myOSystem.frameRate())
+      // Show a pause message immediately and then every 7 seconds
+      if (myPausedCount-- <= 0)
       {
-        myPausedCount = 0;
+        myPausedCount = uInt32(7 * myOSystem.frameRate());
         showMessage("Paused", kMiddleCenter);
       }
       break;  // S_PAUSE

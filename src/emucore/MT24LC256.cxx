@@ -74,10 +74,10 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
   {
     // Get length of file; it must be 32768
     in.seekg(0, std::ios::end);
-    if(uInt32(in.tellg()) == 32768u)
+    if(uInt32(in.tellg()) == FLASH_SIZE)
     {
       in.seekg(0, std::ios::beg);
-      in.read(reinterpret_cast<char*>(myData), 32768);
+      in.read(reinterpret_cast<char*>(myData), FLASH_SIZE);
       myDataFileExists = true;
     }
   }
@@ -96,7 +96,7 @@ MT24LC256::~MT24LC256()
   {
     ofstream out(myDataFile, std::ios_base::binary);
     if(out.is_open())
-      out.write(reinterpret_cast<char*>(myData), 32768);
+      out.write(reinterpret_cast<char*>(myData), FLASH_SIZE);
   }
 }
 
@@ -149,13 +149,37 @@ void MT24LC256::systemReset()
 {
   myCyclesWhenSDASet = myCyclesWhenSCLSet = myCyclesWhenTimerSet =
     mySystem.cycles();
+
+  memset(myPageHit, false, sizeof(myPageHit));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MT24LC256::erase()
+void MT24LC256::eraseAll()
 {
-  memset(myData, 0xff, 32768);
+  memset(myData, INIT_VALUE, FLASH_SIZE);
   myDataChanged = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MT24LC256::eraseCurrent()
+{
+  for(uInt32 page = 0; page < PAGE_NUM; page++)
+  {
+    if(myPageHit[page])
+    {
+      memset(myData + page * PAGE_SIZE, INIT_VALUE, PAGE_SIZE);
+      myDataChanged = true;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool MT24LC256::isPageUsed(uInt32 page) const
+{
+  if(page < PAGE_NUM)
+    return myPageHit[page];
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,12 +188,12 @@ void MT24LC256::jpee_init()
   jpee_sdat = 1;
   jpee_address = 0;
   jpee_state=0;
-  jpee_sizemask = 32767;
-  jpee_pagemask = 63;
+  jpee_sizemask = FLASH_SIZE - 1;
+  jpee_pagemask = PAGE_SIZE - 1;
   jpee_smallmode = 0;
   jpee_logmode = -1;
   if(!myDataFileExists)
-    memset(myData, 0xff, 32768);
+    memset(myData, INIT_VALUE, FLASH_SIZE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,6 +250,7 @@ void MT24LC256::jpee_data_stop()
     for (int i=3; i<jpee_pptr; i++)
     {
       myDataChanged = true;
+      myPageHit[jpee_address / PAGE_SIZE] = true;
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */
@@ -322,6 +347,7 @@ void MT24LC256::jpee_clock_fall()
         break;
       }
       jpee_state=3;
+      myPageHit[jpee_address / PAGE_SIZE] = true;
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
       JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
       [[fallthrough]];

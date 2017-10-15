@@ -69,9 +69,9 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = make_unique<Thumbulator>(
-      (uInt16*)myImage, (uInt16*)myCDFRAM, settings.getBool("thumb.trapfatal"),
-      myVersion ? Thumbulator::ConfigureFor::CDF1 : Thumbulator::ConfigureFor::CDF,
-      this);
+    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM),
+    settings.getBool("thumb.trapfatal"), myVersion ?
+    Thumbulator::ConfigureFor::CDF1 : Thumbulator::ConfigureFor::CDF, this);
 #endif
   setInitialState();
 }
@@ -465,7 +465,6 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
       // _GetWavePtr - return the counter
     case 2:
       return myMusicCounters[value1];
-      break;
 
       // _SetWaveSize - set size of waveform buffer
     case 3:

@@ -212,13 +212,15 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       for (int i = 0; i < len; i++)
       {
         str[i] = buffer(_promptStartPos + i) & 0x7f;
-        if(strchr("{*@<> ", str[i]) != NULL )
+        // whitespace characters
+        if(strchr("{*@<> =[]()+-/&|!^~%", str[i]))
         {
           lastDelimPos = i;
           delimiter = str[i];
         }
       }
       str[len] = '\0';
+      int strLen = len - lastDelimPos - 1;
 
       StringList list;
       string completionList;
@@ -226,7 +228,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
       if(lastDelimPos < 0)
       {
-        // no delimiters, do command completion:
+        // no delimiters, do only command completion:
         const DebuggerParser& parser = instance().debugger().parser();
         parser.getCompletions(str, list);
 
@@ -237,7 +239,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         completionList = list[0];
         for(uInt32 i = 1; i < list.size(); ++i)
           completionList += " " + list[i];
-        prefix = getCompletionPrefix(list, str);
+        prefix = getCompletionPrefix(list);
       }
       else
       {
@@ -248,11 +250,15 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         }
         else
         {
-          // we got a delimiter, so this must be a label or a function
-          const Debugger& dbg = instance().debugger();
+          // do not show ALL labels without any filter as it makes no sense
+          if(strLen > 0)
+          {
+            // we got a delimiter, so this must be a label or a function
+            const Debugger& dbg = instance().debugger();
 
-          dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
-          dbg.getCompletions(str + lastDelimPos + 1, list);
+            dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
+            dbg.getCompletions(str + lastDelimPos + 1, list);
+          }
         }
 
         if(list.size() < 1)
@@ -262,8 +268,10 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         completionList = list[0];
         for(uInt32 i = 1; i < list.size(); ++i)
           completionList += " " + list[i];
-        prefix = getCompletionPrefix(list, str + lastDelimPos + 1);
+        prefix = getCompletionPrefix(list);
       }
+
+      // TODO: tab through list
 
       if(list.size() == 1)
       {
@@ -475,7 +483,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case kSetPositionCmd:
+    case GuiObject::kSetPositionCmd:
       int newPos = int(data) + _linesPerPage - 1 + _firstLineInBuffer;
       if (newPos != _scrollLine)
       {
@@ -501,7 +509,14 @@ void PromptWidget::loadConfig()
     print(PROMPT);
 
     // Take care of one-time debugger stuff
-    print(instance().debugger().autoExec());
+    // fill the history from the saved breaks, traps and watches commands
+    StringList history;
+    print(instance().debugger().autoExec(&history));
+    for(uInt32 i = 0; i < history.size(); i++)
+    {
+      addToHistory(history[i].c_str());
+    }
+    history.clear();
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
     print(instance().debugger().cartDebug().loadListFile() + "\n");
     print(instance().debugger().cartDebug().loadSymbolFile() + "\n");
@@ -697,8 +712,9 @@ void PromptWidget::historyScroll(int direction)
 
   // Advance to the next line in the history
   int line = _historyLine + direction;
-  if ((direction < 0 && line < 0) || (direction > 0 && line > _historySize))
-    return;
+  if(line < 0)
+    line += _historySize + 1;
+  line %= (_historySize + 1);
 
   // If they press arrow-up with anything in the buffer, search backwards
   // in the history.
@@ -903,28 +919,26 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PromptWidget::getCompletionPrefix(const StringList& completions, string prefix)
+string PromptWidget::getCompletionPrefix(const StringList& completions)
 {
-  // Search for prefix in every string, progressively growing it
-  // Once a mismatch is found or length is past one of the strings, we're done
-  // We *could* use the longest common string algorithm, but for the lengths
-  // of the strings we're dealing with, it's probably not worth it
-  for(;;)
+  // Find the number of characters matching for each of the completions provided
+  for(uInt32 len = 1;; len++)
   {
-    for(const auto& s: completions)
+    for(uInt32 i = 0; i < completions.size(); i++)
     {
-      if(s.length() < prefix.length())
-        return prefix;  // current prefix is the best we're going to get
-      else if(!BSPF::startsWithIgnoreCase(s, prefix))
+      string s1 = completions[i];
+      if(s1.length() < len)
       {
-        prefix.erase(prefix.length()-1);
-        return prefix;
+        return s1.substr(0, len - 1);
+      }
+      string find = s1.substr(0, len);
+
+      for(uInt32 j = i + 1; j < completions.size(); j++)
+      {
+        if(!BSPF::startsWithIgnoreCase(completions[j], find))
+          return s1.substr(0, len - 1);
       }
     }
-    if(completions[0].length() > prefix.length())
-      prefix = completions[0].substr(0, prefix.length() + 1);
-    else
-      return prefix;
   }
 }
 

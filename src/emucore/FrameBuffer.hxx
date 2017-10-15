@@ -475,7 +475,7 @@ class FrameBuffer
     uInt32 myInitializedCount;
 
     // Used to set intervals between messages while in pause mode
-    uInt32 myPausedCount;
+    Int32 myPausedCount;
 
     // Dimensions of the actual image, after zooming, and taking into account
     // any image 'centering'

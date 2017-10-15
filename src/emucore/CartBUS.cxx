@@ -65,7 +65,8 @@ CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
 
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
-  myThumbEmulator = make_unique<Thumbulator>((uInt16*)myImage, (uInt16*)myBUSRAM,
+  myThumbEmulator = make_unique<Thumbulator>(
+    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myBUSRAM),
     settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this);
 #endif
   setInitialState();
@@ -528,7 +529,6 @@ uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
       // _GetWavePtr - return the counter
     case 2:
       return myMusicCounters[value1];
-      break;
 
       // _SetWaveSize - set size of waveform buffer
     case 3:

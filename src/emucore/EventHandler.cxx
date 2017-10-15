@@ -273,9 +273,30 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     {
       myOSystem.frameBuffer().toggleFullscreen();
     }
-    // These only work when in emulation mode
-    else if(myState == S_EMULATE)
+    // state rewinding must work in pause mode too
+    else if(myState == S_EMULATE || myState == S_PAUSE)
     {
+      switch(key)
+      {
+        case KBDK_LEFT:  // Alt-left rewinds states
+          if(myOSystem.state().rewindState() && myState != S_PAUSE)
+            setEventState(S_PAUSE);
+          break;
+
+        case KBDK_RIGHT:  // Alt-right unwinds states
+          if(myOSystem.state().unwindState() && myState != S_PAUSE)
+            setEventState(S_PAUSE);
+          break;
+
+        default:
+          handled = false;
+          break;
+      }
+    }
+    // These only work when in emulation mode
+    if(!handled && myState == S_EMULATE)
+    {
+      handled = true;
       switch(key)
       {
         case KBDK_EQUALS:
@@ -445,12 +466,12 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
             uInt32 interval = myOSystem.settings().getInt("ssinterval");
             if(mod & KBDM_SHIFT)
             {
-              buf << "Enabling shotshots every frame";
+              buf << "Enabling snapshots every frame";
               interval = 1;
             }
             else
             {
-              buf << "Enabling shotshots in " << interval << " second intervals";
+              buf << "Enabling snapshots in " << interval << " second intervals";
               interval *= uInt32(myOSystem.frameRate());
             }
             myOSystem.frameBuffer().showMessage(buf.str());
@@ -566,10 +587,19 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     case S_EMULATE:
       handleEvent(myKeyTable[key][kEmulationMode], state);
       break;
+
     case S_PAUSE:
-      if(myKeyTable[key][kEmulationMode] == Event::TakeSnapshot)
-        handleEvent(myKeyTable[key][kEmulationMode], state);
+      switch(myKeyTable[key][kEmulationMode])
+      {
+        case Event::TakeSnapshot:
+        case Event::DebuggerMode:
+          handleEvent(myKeyTable[key][kEmulationMode], state);
+
+        default:
+          break;
+      }
       break;
+
     default:
       if(myOverlay)
         myOverlay->handleKeyEvent(key, mod, state);
@@ -1174,7 +1204,7 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::DebuggerMode:
-      if(myState == S_EMULATE)
+      if(myState == S_EMULATE || myState == S_PAUSE)
         enterDebugMode();
       else if(myState == S_DEBUGGER)
         leaveDebugMode();
@@ -1445,8 +1475,7 @@ bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
   const StellaJoystick* joy = myJoyHandler->joy(stick);
   if(joy)
   {
-    if(axis >= 0 && axis < joy->numAxes &&
-       event >= 0 && event < Event::LastType)
+    if(axis >= 0 && axis < joy->numAxes && event < Event::LastType)
     {
       // This confusing code is because each axis has two associated values,
       // but analog events only affect one of the axis.
@@ -1481,8 +1510,7 @@ bool EventHandler::addJoyButtonMapping(Event::Type event, EventMode mode,
   const StellaJoystick* joy = myJoyHandler->joy(stick);
   if(joy)
   {
-    if(button >= 0 && button < joy->numButtons &&
-       event >= 0 && event < Event::LastType)
+    if(button >= 0 && button < joy->numButtons && event < Event::LastType)
     {
       joy->btnTable[button][mode] = event;
       if(updateMenus)
@@ -1503,8 +1531,8 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
   const StellaJoystick* joy = myJoyHandler->joy(stick);
   if(joy)
   {
-    if(hat >= 0 && hat < joy->numHats &&
-       event >= 0 && event < Event::LastType && value != EVENT_HATCENTER)
+    if(hat >= 0 && hat < joy->numHats && event < Event::LastType &&
+       value != EVENT_HATCENTER)
     {
       joy->hatTable[hat][value][mode] = event;
       if(updateMenus)

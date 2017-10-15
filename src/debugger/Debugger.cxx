@@ -29,7 +29,6 @@
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
-#include "StateManager.hxx"
 
 #include "Console.hxx"
 #include "System.hxx"
@@ -57,58 +56,6 @@
 #include "Debugger.hxx"
 
 Debugger* Debugger::myStaticDebugger = nullptr;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const char* const builtin_functions[][3] = {
-  // { "name", "definition", "help text" }
-
-  // left joystick:
-  { "_joy0left", "!(*SWCHA & $40)", "Left joystick moved left" },
-  { "_joy0right", "!(*SWCHA & $80)", "Left joystick moved right" },
-  { "_joy0up", "!(*SWCHA & $10)", "Left joystick moved up" },
-  { "_joy0down", "!(*SWCHA & $20)", "Left joystick moved down" },
-  { "_joy0button", "!(*INPT4 & $80)", "Left joystick button pressed" },
-
-  // right joystick:
-  { "_joy1left", "!(*SWCHA & $04)", "Right joystick moved left" },
-  { "_joy1right", "!(*SWCHA & $08)", "Right joystick moved right" },
-  { "_joy1up", "!(*SWCHA & $01)", "Right joystick moved up" },
-  { "_joy1down", "!(*SWCHA & $02)", "Right joystick moved down" },
-  { "_joy1button", "!(*INPT5 & $80)", "Right joystick button pressed" },
-
-  // console switches:
-  { "_select", "!(*SWCHB & $02)", "Game Select pressed" },
-  { "_reset", "!(*SWCHB & $01)", "Game Reset pressed" },
-  { "_color", "*SWCHB & $08", "Color/BW set to Color" },
-  { "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
-  { "_diff0b", "!(*SWCHB & $40)", "Left diff. set to B (easy)" },
-  { "_diff0a", "*SWCHB & $40", "Left diff. set to A (hard)" },
-  { "_diff1b", "!(*SWCHB & $80)", "Right diff. set to B (easy)" },
-  { "_diff1a", "*SWCHB & $80", "Right diff. set to A (hard)" },
-
-  // empty string marks end of list, do not remove
-  { 0, 0, 0 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Names are defined here, but processed in YaccParser
-static const char* const pseudo_registers[][2] = {
-  // { "name", "help text" }
-
-  { "_bank", "Currently selected bank" },
-  { "_cclocks", "Color clocks on current scanline" },
-  { "_fcount", "Number of frames since emulation started" },
-  { "_fcycles", "Number of cycles since frame started" },
-  { "_cyclesLo", "Lower 32 bits of number of cycles since emulation started"},
-  { "_cyclesHi", "Higher 32 bits of number of cycles since emulation started"},
-  { "_rwport", "Address at which a read from a write port occurred" },
-  { "_scan", "Current scanline count" },
-  { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
-  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
-
-  // empty string marks end of list, do not remove
-  { 0, 0 }
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem& osystem, Console& console)
@@ -166,7 +113,7 @@ FBInitStatus Debugger::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::start(const string& message, int address)
+bool Debugger::start(const string& message, int address, bool read)
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
@@ -175,8 +122,7 @@ bool Debugger::start(const string& message, int address)
     ostringstream buf;
     buf << message;
     if(address > -1)
-      buf << Common::Base::HEX4 << address;
-
+      buf << cartDebug().getLabel(address, read, 4);
     myDialog->message().setText(buf.str());
     return true;
   }
@@ -206,26 +152,26 @@ void Debugger::quit(bool exitrom)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::autoExec()
+string Debugger::autoExec(StringList* history)
 {
   ostringstream buf;
 
-  // autoexec.stella is always run
-  FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.stella");
+  // autoexec.script is always run
+  FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.script");
   buf << "autoExec():" << endl
-      << myParser->exec(autoexec) << endl;
+      << myParser->exec(autoexec, history) << endl;
 
-  // Also, "romname.stella" if present
-  FilesystemNode romname(myOSystem.romFile().getPathWithExt(".stella"));
-  buf << myParser->exec(romname) << endl;
+  // Also, "romname.script" if present
+  FilesystemNode romname(myOSystem.romFile().getPathWithExt(".script"));
+  buf << myParser->exec(romname, history) << endl;
 
   // Init builtins
-  for(int i = 0; builtin_functions[i][0] != 0; i++)
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
   {
     // TODO - check this for memory leaks
-    int res = YaccParser::parse(builtin_functions[i][1]);
+    int res = YaccParser::parse(ourBuiltinFunctions[i].defn);
     if(res == 0)
-      addFunction(builtin_functions[i][0], builtin_functions[i][1],
+      addFunction(ourBuiltinFunctions[i].name, ourBuiltinFunctions[i].defn,
                   YaccParser::getResult(), true);
     else
       cerr << "ERROR in builtin function!" << endl;
@@ -367,24 +313,43 @@ bool Debugger::breakPoint(uInt16 bp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleReadTrap(uInt16 t)
+void Debugger::addReadTrap(uInt16 t)
 {
   readTraps().initialize();
-  readTraps().toggle(t);
+  readTraps().add(t);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleWriteTrap(uInt16 t)
+void Debugger::addWriteTrap(uInt16 t)
 {
   writeTraps().initialize();
-  writeTraps().toggle(t);
+  writeTraps().add(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleTrap(uInt16 t)
+void Debugger::addTrap(uInt16 t)
 {
-  toggleReadTrap(t);
-  toggleWriteTrap(t);
+  addReadTrap(t);
+  addWriteTrap(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::removeReadTrap(uInt16 t)
+{
+  readTraps().initialize();
+  readTraps().remove(t);
+}
+
+void Debugger::removeWriteTrap(uInt16 t)
+{
+  writeTraps().initialize();
+  writeTraps().remove(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::removeTrap(uInt16 t)
+{
+  removeReadTrap(t);
+  removeWriteTrap(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -397,6 +362,50 @@ bool Debugger::readTrap(uInt16 t)
 bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Debugger::getBaseAddress(uInt32 addr, bool read)
+{
+  if((addr & 0x1080) == 0x0000) // (addr & 0b 0001 0000 1000 0000) == 0b 0000 0000 0000 0000
+  {
+    if(read)
+      // ADDR_TIA read (%xxx0 xxxx 0xxx ????)
+      return addr & 0x000f; // 0b 0000 0000 0000 1111
+    else
+      // ADDR_TIA write (%xxx0 xxxx 0x?? ????)
+      return addr & 0x003f; // 0b 0000 0000 0011 1111
+  }
+
+  // ADDR_ZPRAM (%xxx0 xx0x 1??? ????)
+  if((addr & 0x1280) == 0x0080) // (addr & 0b 0001 0010 1000 0000) == 0b 0000 0000 1000 0000
+    return addr & 0x00ff; // 0b 0000 0000 1111 1111
+
+  // ADDR_ROM
+  if(addr & 0x1000)
+    return addr & 0x1fff; // 0b 0001 1111 1111 1111
+
+  // ADDR_IO read/write I/O registers (%xxx0 xx1x 1xxx x0??)
+  if((addr & 0x1284) == 0x0280) // (addr & 0b 0001 0010 1000 0100) == 0b 0000 0010 1000 0000
+    return addr & 0x0283; // 0b 0000 0010 1000 0011
+
+  // ADDR_IO write timers (%xxx0 xx1x 1xx1 ?1??)
+  if(!read && (addr & 0x1294) == 0x0294) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1001 0100
+    return addr & 0x029f; // 0b 0000 0010 1001 1111
+
+  // ADDR_IO read timers (%xxx0 xx1x 1xxx ?1x0)
+  if(read && (addr & 0x1285) == 0x0284) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0100
+    return addr & 0x028c; // 0b 0000 0010 1000 1100
+
+  // ADDR_IO read timer/PA7 interrupt (%xxx0 xx1x 1xxx x1x1)
+  if(read && (addr & 0x1285) == 0x0285) // (addr & 0b 0001 0010 1000 0101) == 0b 0000 0010 1000 0101
+    return addr & 0x0285; // 0b 0000 0010 1000 0101
+
+  // ADDR_IO write PA7 edge control (%xxx0 xx1x 1xx0 x1??)
+  if(!read && (addr & 0x1294) == 0x0284) // (addr & 0b 0001 0010 1001 0100) == 0b 0000 0010 1000 0100
+    return addr & 0x0287; // 0b 0000 0010 1000 0111
+
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -442,19 +451,37 @@ void Debugger::nextFrame(int frames)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::rewindState()
+void Debugger::updateRewindbuttons(const RewindManager& r)
+{
+  myDialog->rewindButton().setEnabled(!r.atLast());
+  myDialog->unwindButton().setEnabled(!r.atFirst());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::windState(bool unwind)
 {
   RewindManager& r = myOSystem.state().rewindManager();
 
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  bool result = r.rewindState();
+  bool result = unwind ? r.unwindState() : r.rewindState();
   lockBankswitchState();
 
-  myDialog->rewindButton().setEnabled(!r.empty());
-
+  updateRewindbuttons(r);
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::rewindState()
+{
+  return windState(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::unwindState()
+{
+  return windState(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -495,7 +522,7 @@ void Debugger::saveOldState(string rewindMsg)
   {
     RewindManager& r = myOSystem.state().rewindManager();
     r.addState(rewindMsg);
-    myDialog->rewindButton().setEnabled(!r.empty());
+    updateRewindbuttons(r);
   }
 }
 
@@ -505,11 +532,8 @@ void Debugger::setStartState()
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
 
-  // If rewinding is not enabled, always start the debugger with a clean list
   RewindManager& r = myOSystem.state().rewindManager();
-  if(myOSystem.state().mode() == StateManager::Mode::Off)
-    r.clear();
-  myDialog->rewindButton().setEnabled(!r.empty());
+  updateRewindbuttons(r);
 
   // Save initial state, but don't add it to the rewind list
   saveOldState();
@@ -523,6 +547,9 @@ void Debugger::setQuitState()
 {
   // Bus must be unlocked for normal operation when leaving debugger mode
   unlockBankswitchState();
+
+  // Save state when leaving the debugger
+  saveOldState("exit debugger");
 
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
@@ -542,6 +569,15 @@ bool Debugger::addFunction(const string& name, const string& definition,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::isBuiltinFunction(const string& name)
+{
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
+    if(name == ourBuiltinFunctions[i].name)
+      return true;
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::delFunction(const string& name)
 {
   const auto& iter = myFunctions.find(name);
@@ -549,8 +585,7 @@ bool Debugger::delFunction(const string& name)
     return false;
 
   // We never want to delete built-in functions
-  for(int i = 0; builtin_functions[i][0] != 0; ++i)
-    if(name == builtin_functions[i][0])
+  if(isBuiltinFunction(name))
       return false;
 
   myFunctions.erase(name);
@@ -590,39 +625,39 @@ string Debugger::builtinHelp() const
   uInt16 len, c_maxlen = 0, i_maxlen = 0;
 
   // Get column widths for aligned output (functions)
-  for(int i = 0; builtin_functions[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
   {
-    len = strlen(builtin_functions[i][0]);
+    len = ourBuiltinFunctions[i].name.size();
     if(len > c_maxlen)  c_maxlen = len;
-    len = strlen(builtin_functions[i][1]);
+    len = ourBuiltinFunctions[i].defn.size();
     if(len > i_maxlen)  i_maxlen = len;
   }
 
   buf << std::setfill(' ') << endl << "Built-in functions:" << endl;
-  for(int i = 0; builtin_functions[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
   {
-    buf << std::setw(c_maxlen) << std::left << builtin_functions[i][0]
+    buf << std::setw(c_maxlen) << std::left << ourBuiltinFunctions[i].name
         << std::setw(2) << std::right << "{"
-        << std::setw(i_maxlen) << std::left << builtin_functions[i][1]
+        << std::setw(i_maxlen) << std::left << ourBuiltinFunctions[i].defn
         << std::setw(4) << "}"
-        << builtin_functions[i][2]
+        << ourBuiltinFunctions[i].help
         << endl;
   }
 
   // Get column widths for aligned output (pseudo-registers)
   c_maxlen = 0;
-  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
   {
-    len = strlen(pseudo_registers[i][0]);
+    len = ourPseudoRegisters[i].name.size();
     if(len > c_maxlen)  c_maxlen = len;
   }
 
   buf << endl << "Pseudo-registers:" << endl;
-  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+  for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
   {
-    buf << std::setw(c_maxlen) << std::left << pseudo_registers[i][0]
+    buf << std::setw(c_maxlen) << std::left << ourPseudoRegisters[i].name
         << std::setw(2) << " "
-        << std::setw(i_maxlen) << std::left << pseudo_registers[i][1]
+        << std::setw(i_maxlen) << std::left << ourPseudoRegisters[i].help
         << endl;
   }
 
@@ -632,16 +667,20 @@ string Debugger::builtinHelp() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::getCompletions(const char* in, StringList& list) const
 {
-  for(const auto& iter: myFunctions)
+  // skip if filter equals "_" only
+  if(!BSPF::equalsIgnoreCase(in, "_"))
   {
-    const char* l = iter.first.c_str();
-    if(BSPF::startsWithIgnoreCase(l, in))
-      list.push_back(l);
-  }
+    for(const auto& iter : myFunctions)
+    {
+      const char* l = iter.first.c_str();
+      if(BSPF::matches(l, in))
+        list.push_back(l);
+    }
 
-  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
-    if(BSPF::startsWithIgnoreCase(pseudo_registers[i][0], in))
-      list.push_back(pseudo_registers[i][0]);
+    for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
+      if(BSPF::matches(ourPseudoRegisters[i].name, in))
+        list.push_back(ourPseudoRegisters[i].name);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -657,3 +696,49 @@ void Debugger::unlockBankswitchState()
   mySystem.unlockDataBus();
   myConsole.cartridge().unlockBank();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Debugger::BuiltinFunction Debugger::ourBuiltinFunctions[NUM_BUILTIN_FUNCS] = {
+  // left joystick:
+  { "_joy0left",    "!(*SWCHA & $40)", "Left joystick moved left" },
+  { "_joy0right",   "!(*SWCHA & $80)", "Left joystick moved right" },
+  { "_joy0up",      "!(*SWCHA & $10)", "Left joystick moved up" },
+  { "_joy0down",    "!(*SWCHA & $20)", "Left joystick moved down" },
+  { "_joy0button",  "!(*INPT4 & $80)", "Left joystick button pressed" },
+
+  // right joystick:
+  { "_joy1left",    "!(*SWCHA & $04)", "Right joystick moved left" },
+  { "_joy1right",   "!(*SWCHA & $08)", "Right joystick moved right" },
+  { "_joy1up",      "!(*SWCHA & $01)", "Right joystick moved up" },
+  { "_joy1down",    "!(*SWCHA & $02)", "Right joystick moved down" },
+  { "_joy1button",  "!(*INPT5 & $80)", "Right joystick button pressed" },
+
+  // console switches:
+  { "_select",    "!(*SWCHB & $02)",  "Game Select pressed" },
+  { "_reset",     "!(*SWCHB & $01)",  "Game Reset pressed" },
+  { "_color",     "*SWCHB & $08",     "Color/BW set to Color" },
+  { "_bw",        "!(*SWCHB & $08)",  "Color/BW set to BW" },
+  { "_diff0b",    "!(*SWCHB & $40)",  "Left diff. set to B (easy)" },
+  { "_diff0a",    "*SWCHB & $40",     "Left diff. set to A (hard)" },
+  { "_diff1b",    "!(*SWCHB & $80)",  "Right diff. set to B (easy)" },
+  { "_diff1a",    "*SWCHB & $80",     "Right diff. set to A (hard)" }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Names are defined here, but processed in YaccParser
+Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
+  { "_bank",      "Currently selected bank" },
+  { "_cclocks",   "Color clocks on current scanline" },
+  { "_cycleshi",  "Higher 32 bits of number of cycles since emulation started" },
+  { "_cycleslo",  "Lower 32 bits of number of cycles since emulation started" },
+  { "_fcount",    "Number of frames since emulation started" },
+  { "_fcycles",   "Number of cycles since frame started" },
+  { "_rwport",    "Address at which a read from a write port occurred" },
+  { "_scan",      "Current scanline count" },
+  { "_scycles",   "Number of cycles in current scanline" },
+  { "_vblank",    "Whether vertical blank is enabled (1 or 0)" },
+  { "_vsync",     "Whether vertical sync is enabled (1 or 0)" }
+  // CPU address access functions:
+  /*{ "__lastread", "last CPU read address" },
+  { "__lastwrite", "last CPU write address" },*/
+};

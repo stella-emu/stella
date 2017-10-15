@@ -108,7 +108,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
   // Cleanup
 done:
   if(png_ptr)
-    png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : 0, 0);
+    png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
 
   if(err_message)
     throw runtime_error(err_message);

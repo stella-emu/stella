@@ -18,13 +18,27 @@
 #ifndef SDL_LIB_HXX
 #define SDL_LIB_HXX
 
-#include <SDL.h>
+/*
+ * We can't control the quality of code from outside projects, so for now
+ * just disable warnings for it.
+ */
+#ifdef __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wdocumentation"
+  #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
+  #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
+  #pragma clang diagnostic ignored "-Wreserved-id-macro"
+  #include <SDL.h>
+  #pragma clang diagnostic pop
+#else
+  #include <SDL.h>
+#endif
 
 /*
-  Seems to be needed for ppc64le, doesn't hurt other archs
-  Note that this is a problem in SDL2, which includes <altivec.h>
-    https://bugzilla.redhat.com/show_bug.cgi?id=1419452
-*/
+ * Seems to be needed for ppc64le, doesn't hurt other archs
+ * Note that this is a problem in SDL2, which includes <altivec.h>
+ *  https://bugzilla.redhat.com/show_bug.cgi?id=1419452
+ */
 #undef vector
 #undef pixel
 #undef bool

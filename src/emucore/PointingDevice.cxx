@@ -59,24 +59,24 @@ uInt8 PointingDevice::read()
   // Loop over all missed changes
   while(myScanCountV < scanline)
   {
-    if(myTrackBallDown) myCountV--;
-    else                myCountV++;
+    if(myTrackBallDown) myCountV++;
+    else                myCountV--;
 
     // Define scanline of next change
     myScanCountV += myTrackBallLinesV;
   }
 
-  myCountH &= 0x03;
-  myCountV &= 0x03;
+  myCountH &= 0b11;
+  myCountV &= 0b11;
 
   uInt8 portA = ioPortA(myCountH, myCountV, myTrackBallLeft, myTrackBallDown);
 
-  myDigitalPinState[One]   = portA & 0x10;
-  myDigitalPinState[Two]   = portA & 0x20;
-  myDigitalPinState[Three] = portA & 0x40;
-  myDigitalPinState[Four]  = portA & 0x80;
+  myDigitalPinState[One]   = portA & 0b0001;
+  myDigitalPinState[Two]   = portA & 0b0010;
+  myDigitalPinState[Three] = portA & 0b0100;
+  myDigitalPinState[Four]  = portA & 0b1000;
 
-  return (portA >> 4);
+  return portA;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

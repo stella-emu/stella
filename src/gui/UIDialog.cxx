@@ -295,7 +295,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Add Defaults, OK and Cancel buttons
   wid.clear();
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
+                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
@@ -333,7 +333,7 @@ void UIDialog::loadConfig()
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
   const GUI::Size& ds = instance().settings().getSize("dbg.res");
-  w = ds.w, h = ds.h;
+  w = ds.w; h = ds.h;
   w = std::max(w, uInt32(DebuggerDialog::kSmallFontMinW));
   h = std::max(h, uInt32(DebuggerDialog::kSmallFontMinH));
   w = std::min(w, ds.w);
@@ -498,12 +498,12 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 #endif
 
-    case kOKCmd:
+    case GuiObject::kOKCmd:
       saveConfig();
       close();
       break;
 
-    case kDefaultsCmd:
+    case GuiObject::kDefaultsCmd:
       setDefaults();
       break;
 

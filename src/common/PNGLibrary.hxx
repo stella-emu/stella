@@ -46,9 +46,9 @@ class PNGLibrary
       @param filename  The filename to load the PNG image
       @param surface   The FBSurface into which to place the PNG data
 
-      @return  On success, the FBSurface containing image data, otherwise a
-               runtime_error is thrown containing a more detailed
-               error message.
+      @post  On success, the FBSurface containing image data, otherwise a
+             runtime_error is thrown containing a more detailed
+             error message.
     */
     void loadImage(const string& filename, FBSurface& surface);
 
@@ -60,9 +60,9 @@ class PNGLibrary
       @param filename  The filename to save the PNG image
       @param comments  The text comments to add to the PNG image
 
-      @return  On success, the PNG file has been saved to 'filename',
-               otherwise a runtime_error is thrown containing a
-               more detailed error message.
+      @post  On success, the PNG file has been saved to 'filename',
+             otherwise a runtime_error is thrown containing a
+             more detailed error message.
     */
     void saveImage(const string& filename,
                    const VariantList& comments = EmptyVarList);
@@ -75,9 +75,9 @@ class PNGLibrary
       @param rect      The area of the surface to use
       @param comments  The text comments to add to the PNG image
 
-      @return  On success, the PNG file has been saved to 'filename',
-               otherwise a runtime_error is thrown containing a
-               more detailed error message.
+      @post  On success, the PNG file has been saved to 'filename',
+             otherwise a runtime_error is thrown containing a
+             more detailed error message.
     */
     void saveImage(const string& filename, const FBSurface& surface,
                    const GUI::Rect& rect = GUI::EmptyRect,
@@ -140,8 +140,8 @@ class PNGLibrary
     static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
     static void png_io_flush(png_structp ctx);
-    static void png_user_warn(png_structp ctx, png_const_charp str);
-    static void png_user_error(png_structp ctx, png_const_charp str);
+    [[noreturn]] static void png_user_warn(png_structp ctx, png_const_charp str);
+    [[noreturn]] static void png_user_error(png_structp ctx, png_const_charp str);
 
   private:
     // Following constructors and assignment operators not supported

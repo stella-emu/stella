@@ -163,6 +163,7 @@ class TIADebug : public DebuggerSystem
     int cyclesLo() const;
     int cyclesHi() const;
     int clocksThisLine() const;
+    int cyclesThisLine() const;
     bool vsync() const;
     bool vblank() const;
     int vsyncAsInt() const  { return int(vsync());  } // so we can use _vsync pseudo-register

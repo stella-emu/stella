@@ -189,7 +189,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kOKCmd:
+    case GuiObject::kOKCmd:
     case EditableWidget::kAcceptCmd:
     {
       // Send a signal to the calling class that a selection has been made
@@ -212,7 +212,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case EditableWidget::kCancelCmd:
-      Dialog::handleCommand(sender, kCloseCmd, data, id);
+      Dialog::handleCommand(sender, GuiObject::kCloseCmd, data, id);
       break;
 
 

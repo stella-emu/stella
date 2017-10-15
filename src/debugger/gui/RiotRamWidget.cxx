@@ -32,14 +32,14 @@ RiotRamWidget::RiotRamWidget(GuiObject* boss, const GUI::Font& lfont,
 uInt8 RiotRamWidget::getValue(int addr) const
 {
   const CartState& state = static_cast<const CartState&>(myDbg.getState());
-  return myDbg.peek(state.rport[addr]);
+  return instance().debugger().peek(state.rport[addr]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotRamWidget::setValue(int addr, uInt8 value)
 {
   const CartState& state = static_cast<const CartState&>(myDbg.getState());
-  myDbg.poke(state.wport[addr], value);
+  instance().debugger().poke(state.wport[addr], value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

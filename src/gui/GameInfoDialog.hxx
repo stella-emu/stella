@@ -45,12 +45,15 @@ class GameInfoDialog : public Dialog, public CommandSender
     void setDefaults() override;
     void loadView();
 
+    void updateControllerStates();
+    void eraseEEPROM();
+
   private:
     TabWidget* myTab;
 
     // Cartridge properties
     EditTextWidget*   myName;
-    StaticTextWidget* myMD5;
+    EditTextWidget*   myMD5;
     EditTextWidget*   myManufacturer;
     EditTextWidget*   myModelNo;
     EditTextWidget*   myRarity;
@@ -64,11 +67,15 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget* myTVType;
 
     // Controller properties
+    StaticTextWidget* myP0Label;
+    StaticTextWidget* myP1Label;
     PopUpWidget*      myP0Controller;
     PopUpWidget*      myP1Controller;
-    PopUpWidget*      mySwapPaddles;
-    PopUpWidget*      myLeftPort;
-    PopUpWidget*      myRightPort;
+    CheckboxWidget*   mySwapPorts;
+    CheckboxWidget*   mySwapPaddles;
+    StaticTextWidget* myEraseEEPROMLabel;
+    ButtonWidget*     myEraseEEPROMButton;
+    StaticTextWidget* myEraseEEPROMInfo;
     PopUpWidget*      myMouseControl;
     PopUpWidget*      myMouseX;
     PopUpWidget*      myMouseY;
@@ -81,7 +88,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myYStartLabel;
     SliderWidget*     myHeight;
     StaticTextWidget* myHeightLabel;
-    PopUpWidget*      myPhosphor;
+    CheckboxWidget*   myPhosphor;
     SliderWidget*     myPPBlend;
     StaticTextWidget* myPPBlendLabel;
 
@@ -93,7 +100,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kHeightChanged   = 'HTch',
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',
-      kMCtrlChanged    = 'MCch'
+      kMCtrlChanged    = 'MCch',
+      kEEButtonPressed = 'EEgb',
     };
 
     // Game properties for currently loaded ROM

@@ -69,8 +69,8 @@ class PropertiesSet
       @param md5         The md5 of the property to get
       @param properties  The properties with the given MD5, or the default
                          properties if not found
-      @param defaults    Use the built-in defaults, ignoring any properties
-                         from an external file
+      @param useDefaults  Use the built-in defaults, ignoring any properties
+                          from an external file
 
       @return  True if the set with the specified md5 was found, else false
     */
@@ -82,12 +82,10 @@ class PropertiesSet
       checking if it exists.  If it doesn't, insert a temporary copy into
       the set.
 
-      @param file        The node representing the
+      @param rom         The ROM file used to calculate the MD5
       @param md5         The md5 of the property to get
       @param properties  The properties with the given MD5, or the default
                          properties if not found
-      @param defaults    Use the built-in defaults, ignoring any properties
-                         from an external file
     */
     void getMD5WithInsert(const FilesystemNode& rom, const string& md5,
                           Properties& properties);

@@ -99,8 +99,8 @@ class Paddles : public Controller
       range of movement).  Note that this specfically does not apply to
       Stelladaptor-like devices, which uses an absolute value range.
 
-      @param sensitivity  Value from 1 to 100, representing the percentage
-                          of the range to use
+      @param range  Value from 1 to 100, representing the percentage
+                    of the range to use
     */
     static void setPaddleRange(int range);
 

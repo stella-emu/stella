@@ -136,8 +136,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                       "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd);
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+                                       "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
@@ -149,7 +149,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myQuitButton);
     xpos += bwidth + 8;
   myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd);
+                                     "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
   myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
@@ -163,8 +163,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
   // Create an options dialog, similar to the in-game one
-  myOptions = make_unique<OptionsDialog>(osystem, parent, this,
-                  int(w * 0.8), int(h * 0.8), true);
+  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, true);
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
@@ -174,8 +173,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Create context menu for ROM list options
   VariantList l;
-  VarList::push_back(l, "Power-on options", "override");
-  VarList::push_back(l, "Filter listing", "filter");
+  VarList::push_back(l, "Power-on options" + ELLIPSIS, "override");
+  VarList::push_back(l, "Filter listing" + ELLIPSIS, "filter");
   VarList::push_back(l, "Reload listing", "reload");
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
 
@@ -420,7 +419,6 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
       }
     }
   }
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
