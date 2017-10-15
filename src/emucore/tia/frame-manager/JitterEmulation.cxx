@@ -63,7 +63,7 @@ void JitterEmulation::frameComplete(uInt32 scanlineCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JitterEmulation::updateJitter(Int32 scanlineDifference)
 {
-  if ((uInt32)abs(scanlineDifference) < Metrics::minDeltaForJitter) return;
+  if (uInt32(abs(scanlineDifference)) < Metrics::minDeltaForJitter) return;
 
   Int32 jitter = std::min<Int32>(jitter, Metrics::maxJitter);
   jitter = std::max<Int32>(jitter, -myYStart);

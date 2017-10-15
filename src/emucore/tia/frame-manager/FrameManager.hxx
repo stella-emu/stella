@@ -36,7 +36,7 @@ class FrameManager: public AbstractFrameManager {
 
     void enableJitter(bool enabled) override { myJitterEnabled = enabled; }
 
-    uInt32 height() const override { return myHeight; };
+    uInt32 height() const override { return myHeight; }
 
     void setFixedHeight(uInt32 height) override;
 

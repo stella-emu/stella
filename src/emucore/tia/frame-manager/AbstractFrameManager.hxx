@@ -107,7 +107,7 @@ class AbstractFrameManager : public Serializable
     /**
      * The configured (our autodetected) frame layout (PAL / NTSC).
      */
-    FrameLayout layout() const { return myLayout; };
+    FrameLayout layout() const { return myLayout; }
 
     /**
      * The current frame rate. This is calculated dynamically from the number of
@@ -144,7 +144,7 @@ class AbstractFrameManager : public Serializable
     /**
      * Enable jitter simulation
      */
-    virtual void enableJitter(bool enabled) {};
+    virtual void enableJitter(bool enabled) {}
 
     /**
      * The scanline difference between the last two frames. Used in the TIA to
