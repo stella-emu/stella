@@ -88,7 +88,8 @@ bool JitterEmulation::save(Serializer& out) const
     out.putInt(myJitterFactor);
     out.putInt(myYStart);
   }
-  catch(...) {
+  catch(...)
+  {
     cerr << "ERROR: JitterEmulation::save" << std::endl;
 
     return false;
