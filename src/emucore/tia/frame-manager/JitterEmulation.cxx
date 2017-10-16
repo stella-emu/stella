@@ -18,9 +18,10 @@
 #include "JitterEmulation.hxx"
 
 enum Metrics: uInt32 {
-  framesForStableHeight   = 2,
-  minDeltaForJitter       = 3,
-  maxJitter               = 50
+  framesForStableHeight       = 2,
+  framesUntilDestabilization  = 10,
+  minDeltaForJitter           = 3,
+  maxJitter                   = 50
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,9 +33,10 @@ JitterEmulation::JitterEmulation() :
 void JitterEmulation::reset()
 {
   myLastFrameScanlines = 0;
-  myStableFrameFinalLines = 0;
+  myStableFrameFinalLines = -1;
   myStableFrames = 0;
   myStabilizationCounter = 0;
+  myDestabilizationCounter = 0;
   myJitter = 0;
 }
 
@@ -42,17 +44,21 @@ void JitterEmulation::reset()
 void JitterEmulation::frameComplete(uInt32 scanlineCount)
 {
   if (scanlineCount != myStableFrameFinalLines) {
+    if (myDestabilizationCounter++ > Metrics::framesUntilDestabilization) myStableFrameFinalLines = -1;
+
     if (scanlineCount == myLastFrameScanlines) {
 
       if (++myStabilizationCounter >= Metrics::framesForStableHeight) {
         if (myStableFrameFinalLines > 0) updateJitter(scanlineCount - myStableFrameFinalLines);
 
         myStableFrameFinalLines = scanlineCount;
+        myDestabilizationCounter = 0;
       }
 
     }
     else myStabilizationCounter = 0;
   }
+  else myDestabilizationCounter = 0;
 
   myLastFrameScanlines = scanlineCount;
 
@@ -84,6 +90,7 @@ bool JitterEmulation::save(Serializer& out) const
     out.putInt(myStableFrameFinalLines);
     out.putInt(myStableFrames);
     out.putInt(myStabilizationCounter);
+    out.putInt(myDestabilizationCounter);
     out.putInt(myJitter);
     out.putInt(myJitterFactor);
     out.putInt(myYStart);
@@ -108,6 +115,7 @@ bool JitterEmulation::load(Serializer& in)
     myStableFrameFinalLines = in.getInt();
     myStableFrames = in.getInt();
     myStabilizationCounter = in.getInt();
+    myDestabilizationCounter = in.getInt();
     myJitter = in.getInt();
     myJitterFactor = in.getInt();
     myYStart = in.getInt();
