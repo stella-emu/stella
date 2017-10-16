@@ -414,12 +414,16 @@ if test "$have_clang" = yes; then
 			cxx_version="$cxx_version, bad"
 			cxx_verc_fail=yes
 		fi
+
+    # Only clang >= 5.0 supports extra warnings
+		if [ $clang_major -ge 5 ]; then
+			_make_def_CLANG_WARNINGS='CLANG_WARNINGS = 1'
+		fi
 	fi
 	CXXFLAGS="$CXXFLAGS"
 	_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
 	add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
 	_make_def_HAVE_GCC='HAVE_GCC = 1'
-	_make_def_HAVE_CLANG='HAVE_CLANG = 1'
 	echo "$cxx_version"
 
 elif test "$have_gcc" = yes; then
@@ -817,7 +821,7 @@ PROFILE := $_build_profile
 
 $_make_def_HAVE_GCC
 $_make_def_HAVE_GCC3
-$_make_def_HAVE_CLANG
+$_make_def_CLANG_WARNINGS
 
 INCLUDES += $INCLUDES
 OBJS += $OBJS
