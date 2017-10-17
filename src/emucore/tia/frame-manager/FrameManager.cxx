@@ -31,12 +31,7 @@ enum Metrics: uInt32 {
   vsync                         = 3,
   maxLinesVsync                 = 50,
   visibleOverscan               = 20,
-  tvModeDetectionTolerance      = 20,
-  initialGarbageFrames          = TIAConstants::initialGarbageFrames,
-  minStableFrames               = 10,
-  maxStabilizationFrames        = 20,
-  minDeltaForJitter             = 3,
-  framesForStableHeight         = 2
+  initialGarbageFrames          = TIAConstants::initialGarbageFrames
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

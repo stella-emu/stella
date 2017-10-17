@@ -26,7 +26,7 @@ enum Metrics: uInt32 {
   frameLinesPAL             = 312,
   vblankNTSC                = 37,
   vblankPAL                 = 45,
-  waitForVsync              = 32,
+  waitForVsync              = 50,
   tvModeDetectionTolerance  = 20,
   maxUnderscan              = 10,
   maxVblankViolations       = 2,

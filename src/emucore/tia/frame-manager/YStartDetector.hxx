@@ -20,6 +20,10 @@
 
 #include "AbstractFrameManager.hxx"
 
+/**
+ * This frame manager detects ystart from the first line with vblank = off.
+ */
+
 class YStartDetector: public AbstractFrameManager {
 
   public:
