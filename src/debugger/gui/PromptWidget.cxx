@@ -208,18 +208,18 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       int lastDelimPos = -1;
       char delimiter = '\0';
 
-      char str[256];
+      char inputStr[256];
       for (int i = 0; i < len; i++)
       {
-        str[i] = buffer(_promptStartPos + i) & 0x7f;
+        inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
         // whitespace characters
-        if(strchr("{*@<> =[]()+-/&|!^~%", str[i]))
+        if(strchr("{*@<> =[]()+-/&|!^~%", inputStr[i]))
         {
           lastDelimPos = i;
-          delimiter = str[i];
+          delimiter = inputStr[i];
         }
       }
-      str[len] = '\0';
+      inputStr[len] = '\0';
       int strLen = len - lastDelimPos - 1;
 
       StringList list;
@@ -230,7 +230,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       {
         // no delimiters, do only command completion:
         const DebuggerParser& parser = instance().debugger().parser();
-        parser.getCompletions(str, list);
+        parser.getCompletions(inputStr, list);
 
         if(list.size() < 1)
           break;
@@ -244,9 +244,9 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       else
       {
         // Special case for 'help' command
-        if(BSPF::startsWithIgnoreCase(str, "help"))
+        if(BSPF::startsWithIgnoreCase(inputStr, "help"))
         {
-          instance().debugger().parser().getCompletions(str + lastDelimPos + 1, list);
+          instance().debugger().parser().getCompletions(inputStr + lastDelimPos + 1, list);
         }
         else
         {
@@ -256,8 +256,8 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
             // we got a delimiter, so this must be a label or a function
             const Debugger& dbg = instance().debugger();
 
-            dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
-            dbg.getCompletions(str + lastDelimPos + 1, list);
+            dbg.cartDebug().getCompletions(inputStr + lastDelimPos + 1, list);
+            dbg.getCompletions(inputStr + lastDelimPos + 1, list);
           }
         }
 
@@ -297,13 +297,21 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
         _promptStartPos = _currentPos;
 
-        for(int i = 0; i < lastDelimPos; i++)
-          putcharIntern(str[i]);
+        if(prefix.length() < strLen)
+        {
+          for(int i = 0; i < len; i++)
+            putcharIntern(inputStr[i]);
+        }
+        else
+        {
+          for(int i = 0; i < lastDelimPos; i++)
+            putcharIntern(inputStr[i]);
 
-        if(lastDelimPos > 0)
-          putcharIntern(delimiter);
+          if(lastDelimPos > 0)
+            putcharIntern(delimiter);
 
-        print(prefix);
+          print(prefix);
+        }
         _promptEndPos = _currentPos;
       }
       dirty = true;
