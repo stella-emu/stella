@@ -107,7 +107,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
   uInt8 opcode, d1;
   uInt16 ad;
-  uInt32 cycles = 0;
+  Int32 cycles = 0;
   AddressingMode addrMode;
   int labelFound = 0;
   stringstream nextLine, nextLineBytes;

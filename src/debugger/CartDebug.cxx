@@ -686,9 +686,6 @@ string CartDebug::loadListFile()
   // The default naming/location for list files is the ROM dir based on the
   // actual ROM filename
 
-  myUserAddresses.clear();
-  myUserLabels.clear();
-
   if(myListFile == "")
   {
     FilesystemNode lst(myOSystem.romFile().getPathWithExt("") + ".lst");
@@ -702,8 +699,6 @@ string CartDebug::loadListFile()
   ifstream in(node.getPath());
   if(!in.is_open())
     return DebuggerParser::red("list file '" + node.getShortPath() + "' not readable");
-
-  //myUserCLabels.clear();
 
   while(!in.eof())
   {
@@ -765,8 +760,8 @@ string CartDebug::loadSymbolFile()
   if(!in.is_open())
     return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not readable");
 
-  //myUserAddresses.clear();
-  //myUserLabels.clear();
+  myUserAddresses.clear();
+  myUserLabels.clear();
 
   while(!in.eof())
   {
