@@ -43,7 +43,7 @@ void JitterEmulation::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JitterEmulation::frameComplete(uInt32 scanlineCount)
 {
-  if (scanlineCount != myStableFrameFinalLines) {
+  if (Int32(scanlineCount) != myStableFrameFinalLines) {
     if (myDestabilizationCounter++ > Metrics::framesUntilDestabilization) myStableFrameFinalLines = -1;
 
     if (scanlineCount == myLastFrameScanlines) {
