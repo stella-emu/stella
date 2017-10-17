@@ -22,15 +22,27 @@
  * Misc. numeric constants used in the algorithm.
  */
 enum Metrics: uInt32 {
+  // ideal world frame sizes
   frameLinesNTSC            = 262,
   frameLinesPAL             = 312,
+
+  // the ideal vblank zone
   vblankNTSC                = 37,
   vblankPAL                 = 45,
+
+  // number of scanlines to wait for vsync to start (exceeding after the ideal frame size) and stop
   waitForVsync              = 50,
-  tvModeDetectionTolerance  = 20,
+
+  // max lines underscan
   maxUnderscan              = 10,
+
+  // max lines deviations from detected ystart before we switch back to floating
   maxVblankViolations       = 2,
+
+  // switch to fixed mode after this number of stable frames (+1)
   minStableVblankFrames     = 1,
+
+  // no transitions to fixed mode will happend during those
   initialGarbageFrames      = TIAConstants::initialGarbageFrames
 };
 
