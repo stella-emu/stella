@@ -143,7 +143,10 @@ void FrameManager::setState(FrameManager::State state)
   switch (myState) {
     case State::waitForFrameStart:
       notifyFrameComplete();
-      myJitterEmulation.frameComplete(myCurrentFrameFinalLines);
+
+      if (myTotalFrames > Metrics::initialGarbageFrames)
+        myJitterEmulation.frameComplete(myCurrentFrameFinalLines);
+
       notifyFrameStart();
 
       myVsyncLines = 0;
