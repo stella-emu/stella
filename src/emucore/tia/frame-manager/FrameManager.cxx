@@ -29,7 +29,7 @@ enum Metrics: uInt32 {
   overscanNTSC                  = 30,
   overscanPAL                   = 36,
   vsync                         = 3,
-  maxLinesVsync                 = 32,
+  maxLinesVsync                 = 50,
   visibleOverscan               = 20,
   tvModeDetectionTolerance      = 20,
   initialGarbageFrames          = TIAConstants::initialGarbageFrames,

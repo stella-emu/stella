@@ -1116,7 +1116,7 @@ void TIA::onFrameStart()
   {
     // Only activate it when necessary, since changing colours in
     // the graphical object forces the TIA cached line to be flushed
-    if (myFrameManager->scanlineCountTransitioned())
+    if (myFrameManager->scanlineParityChanged())
     {
       myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
 

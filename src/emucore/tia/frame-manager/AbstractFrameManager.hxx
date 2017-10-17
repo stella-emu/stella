@@ -92,10 +92,8 @@ class AbstractFrameManager : public Serializable
     /**
      * Did the number of scanlines switch between even / odd (used for color loss
      * emulation).
-     *
-     * TODO: Crappy name, find something better.
      */
-    bool scanlineCountTransitioned() const {
+    bool scanlineParityChanged() const {
       return (myPreviousFrameFinalLines & 0x1) != (myCurrentFrameFinalLines & 0x1);
     }
 
