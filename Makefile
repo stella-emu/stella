@@ -53,7 +53,7 @@ CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
 endif
-ifdef HAVE_CLANG
+ifdef CLANG_WARNINGS
   CXXFLAGS+= -Weverything -Wno-c++17-extensions -Wno-c++98-compat -Wno-c++98-compat-pedantic \
     -Wno-double-promotion -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
     -Wno-inconsistent-missing-destructor-override \

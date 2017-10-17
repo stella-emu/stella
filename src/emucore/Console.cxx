@@ -244,7 +244,7 @@ void Console::autodetectYStart()
   YStartDetector ystartDetector;
   ystartDetector.setLayout(myDisplayFormat == "PAL" ? FrameLayout::pal : FrameLayout::ntsc);
   myTIA->setFrameManager(&ystartDetector);
-  mySystem->reset();
+  mySystem->reset(true);
 
   for (int i = 0; i < 80; i++) myTIA->update();
 

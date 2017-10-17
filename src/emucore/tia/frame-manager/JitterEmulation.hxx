@@ -58,11 +58,13 @@ class JitterEmulation: public Serializable {
 
     uInt32 myLastFrameScanlines;
 
-    uInt32 myStableFrameFinalLines;
+    Int32 myStableFrameFinalLines;
 
     uInt32 myStableFrames;
 
     uInt32 myStabilizationCounter;
+
+    uInt32 myDestabilizationCounter;
 
     Int32 myJitter;
 

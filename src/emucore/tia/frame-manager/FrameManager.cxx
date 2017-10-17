@@ -162,7 +162,6 @@ void FrameManager::setState(FrameManager::State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// TODO: kill this with fire once frame manager refactoring is complete
 void FrameManager::onLayoutChange()
 {
   switch (layout())
