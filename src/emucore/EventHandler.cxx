@@ -889,6 +889,8 @@ void EventHandler::handleEvent(Event::Type event, int state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
+  bool is7800 = (myOSystem.settings().getString("console") == "7800");
+
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
@@ -1012,21 +1014,21 @@ void EventHandler::handleEvent(Event::Type event, int state)
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
-      if(state)
+      if(state && !is7800)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myOSystem.frameBuffer().showMessage("Color Mode");
       }
       break;
     case Event::ConsoleBlackWhite:
-      if(state)
+      if(state && !is7800)
       {
         myEvent.set(Event::ConsoleColor, 0);
         myOSystem.frameBuffer().showMessage("BW Mode");
       }
       break;
     case Event::ConsoleColorToggle:
-      if(state)
+      if(state && !is7800)
       {
         if(myOSystem.console().switches().tvColor())
         {
@@ -1040,7 +1042,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleColor, 1);
           myOSystem.frameBuffer().showMessage("Color Mode");
         }
-        myOSystem.console().switches().update();
+        myOSystem.console().switches().update(myOSystem.settings());
       }
       return;
 
@@ -1073,7 +1075,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleLeftDiffB, 0);
           myOSystem.frameBuffer().showMessage("Left Difficulty A");
         }
-        myOSystem.console().switches().update();
+        myOSystem.console().switches().update(myOSystem.settings());
       }
       return;
 
@@ -1106,7 +1108,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleRightDiffB, 0);
           myOSystem.frameBuffer().showMessage("Right Difficulty A");
         }
-        myOSystem.console().switches().update();
+        myOSystem.console().switches().update(myOSystem.settings());
       }
       return;
     ////////////////////////////////////////////////////////////////////////
@@ -2168,6 +2170,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::ConsoleColor,           "Color TV",                 "", true  },
   { Event::ConsoleBlackWhite,      "Black & White TV",         "", true  },
   { Event::ConsoleColorToggle,     "Swap Color / B&W TV",      "", true  },
+  { Event::Console7800Pause,       "7800 Pause Key",           "", true  },
   { Event::ConsoleLeftDiffA,       "P0 Difficulty A",          "", true  },
   { Event::ConsoleLeftDiffB,       "P0 Difficulty B",          "", true  },
   { Event::ConsoleLeftDiffToggle,  "P0 Swap Difficulty",       "", true  },

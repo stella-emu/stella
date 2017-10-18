@@ -508,7 +508,7 @@ class EventHandler
     enum {
       kComboSize          = 16,
       kEventsPerCombo     = 8,
-      kEmulActionListSize = 78 + kComboSize,
+      kEmulActionListSize = 79 + kComboSize,
       kMenuActionListSize = 14
     };
 

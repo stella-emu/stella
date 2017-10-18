@@ -39,6 +39,7 @@ class RiotWidget : public Widget, public CommandSender
     ControllerWidget* addControlWidget(GuiObject* boss, const GUI::Font& font,
         int x, int y, Controller& controller);
 
+    void handleConsole();
     void handleRandomCPU();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
@@ -65,9 +66,11 @@ class RiotWidget : public Widget, public CommandSender
     PopUpWidget *myTVType;
     CheckboxWidget* mySelect;
     CheckboxWidget* myReset;
+    CheckboxWidget* myPause;
 
     CheckboxWidget* myRandomizeCPU[5];
     CheckboxWidget* myRandomizeRAM;
+    PopUpWidget*    myConsole;
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
@@ -75,7 +78,7 @@ class RiotWidget : public Widget, public CommandSender
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
-      kRandCPUID, kRandRAMID, kSWCHARBitsID
+      kRandCPUID, kRandRAMID, kSWCHARBitsID, kConsoleChanged, kPauseID
     };
 
   private:

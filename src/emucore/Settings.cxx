@@ -134,6 +134,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("loglevel", "1");
   setInternal("logtoconsole", "0");
   setInternal("tiadriven", "false");
+  setInternal("console", "2600"); // 7800
   setInternal("cpurandom", "");
   setInternal("ramrandom", "true");
   setInternal("avoxport", "");

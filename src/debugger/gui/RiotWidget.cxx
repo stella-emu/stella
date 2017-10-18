@@ -199,28 +199,48 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myTVType->setTarget(this);
   addFocusWidget(myTVType);
 
+  // 2600/7800 mode
+  items.clear();
+  VarList::push_back(items, "Atari 2600", "2600");
+  VarList::push_back(items, "Atari 7800", "7800");
+  lwidth = lfont.getStringWidth("Console") + 29;
+  pwidth = lfont.getStringWidth("Atari 2600");
+  new StaticTextWidget(boss, lfont, 10, ypos+1, "Console");
+  myConsole = new PopUpWidget(boss, lfont, 10, ypos, pwidth, lineHeight, items,
+                              "", lwidth, kConsoleChanged);
+  myConsole->setTarget(this);
+  addFocusWidget(myConsole);
+
   // Select and Reset
-  xpos += myP0Diff->getWidth() + 20;  ypos = col2_ypos + lineHeight;
+  xpos += myP0Diff->getWidth() + 20;  ypos = col2_ypos + 1;
   mySelect = new CheckboxWidget(boss, lfont, xpos, ypos, "Select",
                                 CheckboxWidget::kCheckActionCmd);
   mySelect->setID(kSelectID);
   mySelect->setTarget(this);
   addFocusWidget(mySelect);
-  ypos += mySelect->getHeight() + 5;
+
+  ypos += myP0Diff->getHeight() + 5;
   myReset = new CheckboxWidget(boss, lfont, xpos, ypos, "Reset",
                                CheckboxWidget::kCheckActionCmd);
   myReset->setID(kResetID);
   myReset->setTarget(this);
   addFocusWidget(myReset);
 
+  ypos += myP0Diff->getHeight() + 5;
+  myPause = new CheckboxWidget(boss, lfont, xpos, ypos, "Pause",
+                               CheckboxWidget::kCheckActionCmd);
+  myPause->setID(kPauseID);
+  myPause->setTarget(this);
+  addFocusWidget(myPause);
+
   // Randomize items
-  xpos = 10;  ypos += 3*lineHeight;
+  xpos = 10;  ypos += 3 * lineHeight;
   new StaticTextWidget(boss, lfont, xpos, ypos,
       lfont.getStringWidth("When loading a ROM:"), fontHeight,
       "When loading a ROM:", kTextAlignLeft);
 
   // Randomize RAM
-  xpos += 30;  ypos += lineHeight + 4;
+  xpos += 16;  ypos += lineHeight + 4;
   myRandomizeRAM = new CheckboxWidget(boss, lfont, xpos, ypos+1,
       "Randomize zero-page and extended RAM", CheckboxWidget::kCheckActionCmd);
   myRandomizeRAM->setID(kRandRAMID);
@@ -333,6 +353,7 @@ void RiotWidget::loadConfig()
   // means 'grounded' in the system)
   myP0Diff->setSelectedIndex(riot.diffP0());
   myP1Diff->setSelectedIndex(riot.diffP1());
+  myConsole->setSelectedIndex(instance().settings().getString("console") == "7800" ? 1 : 0);
   myTVType->setSelectedIndex(riot.tvType());
   mySelect->setState(!riot.select());
   myReset->setState(!riot.reset());
@@ -346,6 +367,8 @@ void RiotWidget::loadConfig()
   const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
     myRandomizeCPU[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
+
+  handleConsole();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -424,6 +447,9 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kResetID:
           riot.reset(!myReset->getState());
           break;
+        case kPauseID:
+          handleConsole();
+          break;
         case kRandRAMID:
           instance().settings().setValue("ramrandom", myRandomizeRAM->getState());
           break;
@@ -442,7 +468,8 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kTVTypeChanged:
-      riot.tvType(myTVType->getSelected());
+    case kConsoleChanged:
+      handleConsole();
       break;
   }
 }
@@ -480,6 +507,29 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
     default:
       return new NullControlWidget(boss, font, x, y, controller);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RiotWidget::handleConsole()
+{
+  RiotDebug& riot = instance().debugger().riotDebug();
+  bool is7800 = myConsole->getSelected() == 1;
+  instance().settings().setValue("console", is7800 ? "7800" : "2600");
+
+  myTVType->setEnabled(!is7800);
+  myPause->setEnabled(is7800);
+  myRandomizeRAM->setEnabled(!is7800);
+  if(is7800)
+  {
+    myTVType->setSelectedIndex(myPause->getState() ? 0 : 1);
+    myRandomizeRAM->setState(false);
+    instance().settings().setValue("ramrandom", 0);
+  }
+  else
+  {
+    myPause->setState(myTVType->getSelected() == 0);
+  }
+  riot.tvType(myTVType->getSelected());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

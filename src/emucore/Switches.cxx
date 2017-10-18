@@ -53,15 +53,31 @@ Switches::Switches(const Event& event, const Properties& properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Switches::update()
+void Switches::update(const Settings& settings)
 {
-  if(myEvent.get(Event::ConsoleColor) != 0)
+  bool is7800 = (settings.getString("console") == "7800");
+
+  if(is7800)
   {
-    mySwitches |= 0x08;
+    if(myEvent.get(Event::Console7800Pause) != 0)
+    {
+      mySwitches &= ~0x08;
+    }
+    else
+    {
+      mySwitches |= 0x08;
+    }
   }
-  else if(myEvent.get(Event::ConsoleBlackWhite) != 0)
+  else
   {
-    mySwitches &= ~0x08;
+    if(myEvent.get(Event::ConsoleColor) != 0)
+    {
+      mySwitches |= 0x08;
+    }
+    else if(myEvent.get(Event::ConsoleBlackWhite) != 0)
+    {
+      mySwitches &= ~0x08;
+    }
   }
 
   if(myEvent.get(Event::ConsoleRightDiffA) != 0)

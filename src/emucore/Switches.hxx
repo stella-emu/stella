@@ -23,6 +23,7 @@ class Properties;
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
+#include "Settings.hxx"
 
 /**
   This class represents the console switches of the game console.
@@ -57,7 +58,7 @@ class Switches : public Serializable
     /**
       Update the switches variable
     */
-    void update();
+    void update(const Settings& settings);
 
     /**
       Save the current state of the switches to the given Serializer.
