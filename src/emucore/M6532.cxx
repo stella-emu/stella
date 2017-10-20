@@ -39,8 +39,7 @@ M6532::M6532(const Console& console, const Settings& settings)
     mySetTimerCycle(0), myLastCycle(0),
     myDDRA(0), myDDRB(0), myOutA(0), myOutB(0),
     myInterruptFlag(false),
-    myEdgeDetectPositive(false),
-    myRAMAccessBase(nullptr)
+    myEdgeDetectPositive(false)
 {
 }
 

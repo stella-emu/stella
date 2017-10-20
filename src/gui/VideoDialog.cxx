@@ -382,7 +382,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Disable certain functions when we know they aren't present
 #ifndef WINDOWED_SUPPORT
-  myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
+  myFullscreen->clearFlags(WIDGET_ENABLED);
   myCenter->clearFlags(WIDGET_ENABLED);
 #endif
 }

@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Settings.hxx"
+#include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "CartDebug.hxx"

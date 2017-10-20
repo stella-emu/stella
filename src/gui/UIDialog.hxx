@@ -55,12 +55,14 @@ class UIDialog : public Dialog
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
 
+#ifdef DEBUGGER_SUPPORT
     // Debugger options
     SliderWidget*     myDebuggerWidthSlider;
     StaticTextWidget* myDebuggerWidthLabel;
     SliderWidget*     myDebuggerHeightSlider;
     StaticTextWidget* myDebuggerHeightLabel;
     PopUpWidget*      myDebuggerFontStyle;
+#endif
 
     // Misc options
     PopUpWidget*      myPalettePopup;

@@ -51,10 +51,9 @@ class SoundNull : public Sound
     /**
       Enables/disables the sound subsystem.
 
-      @param enable  Either true or false, to enable or disable the sound system
-      @return        Whether the sound system was enabled or disabled
+      @param state  True or false, to enable or disable the sound system
     */
-    void setEnabled(bool enable) override { }
+    void setEnabled(bool state) override { }
 
     /**
       Sets the number of channels (mono or stereo sound).
@@ -93,7 +92,7 @@ class SoundNull : public Sound
     /**
       Reset the sound device.
     */
-    void reset() { }
+    void reset() override { }
 
     /**
       Sets the sound register to a given value.
@@ -128,7 +127,7 @@ class SoundNull : public Sound
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out) const
+    bool save(Serializer& out) const override
     {
       out.putString("TIASound");
 
@@ -147,7 +146,7 @@ class SoundNull : public Sound
       @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Serializer& in)
+    bool load(Serializer& in) override
     {
       if(in.getString() != "TIASound")
         return false;
@@ -167,7 +166,7 @@ class SoundNull : public Sound
 
       @return The name of the object
     */
-    string name() const { return "TIASound"; }
+    string name() const override { return "TIASound"; }
 
   private:
     // Following constructors and assignment operators not supported

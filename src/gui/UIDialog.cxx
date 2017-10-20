@@ -384,6 +384,7 @@ void UIDialog::saveConfig()
   instance().settings().setValue("exitlauncher",
     myLauncherExitPopup->getSelectedTag().toString());
 
+#ifdef DEBUGGER_SUPPORT
   // Debugger size
   instance().settings().setValue("dbg.res",
     GUI::Size(myDebuggerWidthSlider->getValue(),
@@ -392,6 +393,7 @@ void UIDialog::saveConfig()
   // Debugger font style
   instance().settings().setValue("dbg.fontstyle",
     myDebuggerFontStyle->getSelectedTag().toString());
+#endif
 
   // UI palette
   instance().settings().setValue("uipalette",

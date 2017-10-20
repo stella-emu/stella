@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "M6532.hxx"
 #include "System.hxx"
 #include "CartFE.hxx"
 
