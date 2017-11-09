@@ -156,6 +156,11 @@ void Playfield::setColorP1(uInt8 color)
 void Playfield::setDebugColor(uInt8 color)
 {
   myTIA->flushLineCache();
+  // allow slight luminance variations without changing color
+  if((color & 0xe) == 0xe)
+    color -= 2;
+  if((color & 0xe) == 0x0)
+    color += 2;
   myDebugColor = color;
   applyColors();
 }
@@ -228,6 +233,43 @@ void Playfield::applyColors()
         }
         break;
     }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Playfield::getColor() const
+{
+  if (!myDebugEnabled)
+    return myX < 80 ? myColorLeft : myColorRight;
+  else
+  {
+    if (myX < 80)
+    {
+      // left side:
+      if(myX < 16)
+        return myDebugColor - 2;    // PF0
+      if(myX < 48)
+        return myDebugColor;        // PF1
+    }
+    else
+    {
+      // right side:
+      if(!myReflected)
+      {
+        if(myX < 80 + 16)
+          return myDebugColor - 2;  // PF0
+        if(myX < 80 + 48)
+          return myDebugColor;      // PF1
+      }
+      else
+      {
+        if(myX >= 160 - 16)
+          return myDebugColor - 2;  // PF0
+        if(myX >= 160 - 48)
+          return myDebugColor;      // PF1
+      }
+    }
+    return myDebugColor + 2;        // PF2
   }
 }
 

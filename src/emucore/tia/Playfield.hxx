@@ -60,7 +60,7 @@ class Playfield : public Serializable
     void tick(uInt32 x);
 
     bool isOn() const { return (collision & 0x8000); }
-    uInt8 getColor() const { return myX < 80 ? myColorLeft : myColorRight; }
+    uInt8 getColor() const;
 
     /**
       Serializable methods (see that class for more information).
