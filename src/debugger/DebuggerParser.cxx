@@ -444,11 +444,13 @@ bool DebuggerParser::validateArgs(int cmd)
     switch(*p)
     {
       case kARG_DWORD:
+      #if 0   // TODO - do we need error checking at all here?
         if(curArgInt > 0xffffffff)
         {
           commandResult.str(red("invalid word argument (must be 0-$ffffffff)"));
           return false;
         }
+      #endif
         break;
 
       case kARG_WORD:

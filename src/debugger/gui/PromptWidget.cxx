@@ -220,7 +220,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         }
       }
       inputStr[len] = '\0';
-      int strLen = len - lastDelimPos - 1;
+      size_t strLen = len - lastDelimPos - 1;
 
       StringList list;
       string completionList;

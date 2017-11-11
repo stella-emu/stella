@@ -29,6 +29,9 @@ enum class BSType {
   _DPC,   _DPCP,    _E0,    _E7,     _EF,     _EFSC,  _F0,
   _F4,    _F4SC,    _F6,    _F6SC,   _F8,     _F8SC,  _FA,
   _FA2,   _FE,      _MDM,   _SB,     _UA,     _WD,    _X07,
+#ifdef CUSTOM_ARM
+  _CUSTOM,
+#endif
   NumSchemes
 };
 
@@ -88,8 +91,10 @@ static BSDescription BSList[int(BSType::NumSchemes)] = {
   { "SB",       "SB (128-256K SUPERbank)"       },
   { "UA",       "UA (8K UA Ltd.)"               },
   { "WD",       "WD (Experimental)"             },
-  { "X07",      "X07 (64K AtariAge)"            }
-
+  { "X07",      "X07 (64K AtariAge)"            },
+#ifdef CUSTOM_ARM
+  { "CUSTOM",   "CUSTOM (ARM)"                  }
+#endif
 };
 
 class Bankswitch
@@ -102,7 +107,7 @@ class Bankswitch
     static BSType nameToType(const string& name)
     {
       for(int i = 0; i < int(BSType::NumSchemes); ++i)
-        if(BSList[i].name == name)
+        if(BSPF::equalsIgnoreCase(BSList[i].name, name))
           return BSType(i);
 
       return BSType::_AUTO;
