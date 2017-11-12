@@ -156,7 +156,7 @@ void StateManager::update()
   switch(myActiveMode)
   {
     case Mode::Rewind:
-      myRewindManager->addState("1 frame");
+      myRewindManager->addState("add 1 frame");
       break;
 
 #if 0

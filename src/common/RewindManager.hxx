@@ -71,7 +71,7 @@ class RewindManager
 
   private:
     // Maximum number of states to save
-    static constexpr uInt32 MAX_SIZE = 100;
+    static constexpr uInt32 MAX_SIZE = 100; // TODO: use a parameter here and allow user to define size in UI
 
     OSystem& myOSystem;
     StateManager& myStateManager;

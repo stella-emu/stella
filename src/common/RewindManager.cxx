@@ -114,49 +114,105 @@ bool RewindManager::unwindState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::compressStates()
 {
+#if 0
   myStateList.removeFirst();  // remove the oldest state file
-  // TODO: add smart state removal
+#else
+  bool debugMode = myOSystem.eventHandler().state() == EventHandler::S_DEBUGGER;
+  // TODO: let user control these:
+  const double DENSITY = 1.15; // exponential growth of cycle intervals
+  const uInt32 STEP_STATES = 60; // single step rewind length
+  //const uInt32 SECONDS_STATES = 10; // TODO: one second rewind length
+
+  uInt64 currentCycle = myOSystem.console().tia().cycles();
+  uInt64 lastCycle = currentCycle;
+  double expectedCycles = 76 * 262.0; // == cycles of 1 frame, TODO: use actual number of scanlines
+  double maxDelta = 0;
+  uInt32 removeIdx = 0;
+
+  uInt32 idx = 0;
+  for(auto it = myStateList.begin(); it != myStateList.end(); ++it)
+  {
+    // test and never remove the very first saved state
+    if(++it == myStateList.end())
+    {
+      break;
+    }
+    --it; // UGLY!
+
+    if(idx >= STEP_STATES)
+    {
+      expectedCycles *= DENSITY;
+
+      double expected = expectedCycles * (1 + DENSITY);
+      uInt64 prev = (--it)->cycle; ++it; // UGLY!
+      uInt64 next = (++it)->cycle; --it; // UGLY!
+      double delta = expected / (prev - next);
+
+      if(delta > maxDelta)
+      {
+        maxDelta = delta;
+        removeIdx = idx;
+      }
+    }
+    lastCycle = it->cycle;
+    idx++;
+  }
+  if (maxDelta < 1)
+  {
+    // the horizon is getting too big
+    //myStateList.remove(idx - 1); // remove oldest but one
+  }
+  else
+  {
+    //myStateList.remove(removeIdx); // remove
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getMessage(RewindState& state)
 {
-  const Int64 NTSC_FREQ = 1193182;
-  const Int64 PAL_FREQ  = 1182298;
+  const uInt64 NTSC_FREQ = 1193182; // ~76*262*60
+  const uInt64 PAL_FREQ  = 1182298; // ~76*312*50
+  const uInt64 freq = myIsNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
+  const uInt64 scanlines = myIsNTSC ? 262 : 312; // TODO: use actual number of scanlines
+  //const uInt64 fps = myIsNTSC ? 60 : 50; // TODO: use actual FPS
+
   Int64 diff = myOSystem.console().tia().cycles() - state.cycle,
-    freq = myIsNTSC ? NTSC_FREQ : PAL_FREQ,
     diffUnit;
   stringstream message;
   string unit;
-freq = NTSC_FREQ; // TODO: remove
+
   message << (diff >= 0 ? "Rewind" : "Unwind");
   diff = abs(diff);
 
-  if(diff < 76 * 2)
+  // use the lower unit up to twice the next unit, except for an exact match of the next unit
+  // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
+  if(diff < 76 * 2 && diff % 76 != 0)
   {
     unit = "cycle";
     diffUnit = diff;
   }
-  else if(diff < 76 * 262 * 2)
+  else if(diff < 76 * scanlines * 2 && diff % (76 * scanlines) != 0)
   {
     unit = "scanline";
     diffUnit = diff / 76;
   }
-  else if(diff < NTSC_FREQ * 2)
+  else if(diff < freq * 2 && diff % freq != 0)
   {
     unit = "frame";
-    diffUnit = diff / (76 * 262);
+    diffUnit = diff / (76 * scanlines);
   }
-  else if(diff < NTSC_FREQ * 60 * 2)
+  else if(diff < freq * 60 * 2 && diff % (freq * 60) != 0)
   {
     unit = "second";
-    diffUnit = diff / NTSC_FREQ;
+    diffUnit = diff / freq;
   }
   else
   {
     unit = "minute";
-    diffUnit = diff / (NTSC_FREQ * 60);
-  }
+    diffUnit = diff / (freq * 60);
+  } // TODO: do we need hours here? don't think so
   message << " " << diffUnit << " " << unit;
   if(diffUnit != 1)
     message << "s";
