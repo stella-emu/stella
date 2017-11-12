@@ -22,27 +22,30 @@
 #include "bspf.hxx"
 
 /**
- * A fixed-size object-pool based doubly-linked list that makes use of
- * multiple STL lists, to reduce frequent (de)allocations.
- *
- * This structure can be used as either a stack or queue, but also allows
- * for removal at any location in the list.
- *
- * There are two internal lists; one stores active nodes, and the other
- * stores pool nodes that have been 'deleted' from the active list (note
- * that no actual deletion takes place; nodes are simply moved from one list
- * to another).  Similarly, when a new node is added to the active list, it
- * is simply moved from the pool list to the active list.
- *
- * NOTE: For efficiency reasons, none of the methods check for overflow or
- *       underflow; that is the responsibility of the caller.
- *
- *       In the case of methods which wrap the C++ 'splice()' method, the
- *       semantics of splice are followed wrt invalid/out-of-range/etc
- *       iterators.  See the applicable documentation for such behaviour.
- *
- * @author Stephen Anthony
- */
+  A fixed-size object-pool based doubly-linked list that makes use of
+  multiple STL lists, to reduce frequent (de)allocations.
+
+  This structure can be used as either a stack or queue, but also allows
+  for removal at any location in the list.
+
+  There are two internal lists; one stores active nodes, and the other
+  stores pool nodes that have been 'deleted' from the active list (note
+  that no actual deletion takes place; nodes are simply moved from one list
+  to another).  Similarly, when a new node is added to the active list, it
+  is simply moved from the pool list to the active list.
+
+  In all cases, the variable 'myCurrent' is updated to point to the
+  current node.
+
+  NOTE: You must always call 'currentIsValid()' before calling 'current()',
+        to make sure that the return value is a valid reference.
+
+        In the case of methods which wrap the C++ 'splice()' method, the
+        semantics of splice are followed wrt invalid/out-of-range/etc
+        iterators.  See the applicable documentation for such behaviour.
+
+  @author Stephen Anthony
+*/
 namespace Common {
 
 template <class T, uInt32 CAPACITY = 100>
@@ -53,88 +56,140 @@ class LinkedObjectPool
     using const_iter = typename std::list<T>::const_iterator;
 
     /*
-     * Create a pool of size CAPACITY; the active list starts out empty.
-     */
-    LinkedObjectPool<T, CAPACITY>() {
+      Create a pool of size CAPACITY; the active list starts out empty.
+    */
+    LinkedObjectPool<T, CAPACITY>() : myCurrent(myList.end()) {
       for(uInt32 i = 0; i < CAPACITY; ++i)
         myPool.emplace_back(T());
     }
 
     /**
-     * Return a reference to the element at the first node in the active list.
-     */
+      Return node data that the 'current' iterator points to.
+      Note that this returns a valid value only in the case where the list
+      is non-empty (at least one node has been added to the active list).
+
+      Make sure to call 'currentIsValid()' before accessing this method.
+    */
+    T& current() { return *myCurrent; }
+
+    /**
+      Does the 'current' iterator point to a valid node in the active list?
+      This must be called before 'current()' is called.
+    */
+    bool currentIsValid() { return myCurrent != myList.end(); }
+
+    /**
+      Advance 'current' iterator to previous position in the active list.
+      If we go past the beginning, it is reset to one past the end (indicates nullptr).
+    */
+    void moveToPrevious() {
+      if(currentIsValid())
+        myCurrent = myCurrent == myList.begin() ? myList.end() : std::prev(myCurrent, 1);
+    }
+
+    /**
+      Advance 'current' iterator to next position in the active list.
+      If we go past the last node, it will point to one past the end (indicates nullptr).
+    */
+    void moveToNext() {
+      if(currentIsValid())
+        myCurrent = std::next(myCurrent, 1);
+    }
+
+#if 0
+    /**
+      Return a reference to the element at the first node in the active list.
+    */
     T& first() { return myList.front(); }
 
     /**
-     * Return a reference to the element at the last node in the active list.
-     */
+      Return a reference to the element at the last node in the active list.
+    */
     T& last() { return myList.back(); }
+#endif
 
     /**
-     * Add a new node at beginning of the active list, and return a reference
-     * to that nodes' data. The reference may then be modified; ie, you're
-     * able to change the data located at that node.
-     */
-    T& addFirst() {
+      Add a new node at the beginning of the active list, and update 'current'
+      to point to that node.
+    */
+    void addFirst() {
       myList.splice(myList.begin(), myPool, myPool.begin());
-      return myList.front();
+      myCurrent = myList.begin();
     }
 
     /**
-     * Add a new node at the end of the active list, and return a reference
-     * to that nodes' data. The reference may then be modified; ie, you're
-     * able to change the data located at that node.
-     */
-    T& addLast() {
+      Add a new node at the end of the active list, and update 'current'
+      to point to that node.
+    */
+    void addLast() {
       myList.splice(myList.end(), myPool, myPool.begin());
-      return myList.back();
+      myCurrent = std::prev(myList.end(), 1);
     }
 
     /**
-     * Remove the first node of the active list.
-     */
+      Remove the first node of the active list, updating 'current' if it
+      happens to be the one removed.
+    */
     void removeFirst() {
-      myPool.splice(myPool.end(), myList, myList.begin());
+      const_iter i = myList.begin();
+      myPool.splice(myPool.end(), myList, i);
+      if(myCurrent == i)  // did we just invalidate 'current'
+        moveToNext();     // if so, move to the next node
     }
 
     /**
-     * Remove the last node of the active list.
-     */
+      Remove the last node of the active list, updating 'current' if it
+      happens to be the one removed.
+    */
     void removeLast() {
-      myPool.splice(myPool.end(), myList, std::prev(myList.end(), 1));
+      const_iter i = std::prev(myList.end(), 1);
+      myPool.splice(myPool.end(), myList, i);
+      if(myCurrent == i)  // did we just invalidate 'current'
+        moveToPrevious(); // if so, move to the previous node
     }
 
+#if 0
     /**
-     * Convenience method to remove a single element from the active list at
-     * position of the iterator +- the offset.
-     */
+      Convenience method to remove a single element from the active list at
+      position of the iterator +- the offset.
+    */
     void remove(const_iter i, Int32 offset = 0) {
       myPool.splice(myPool.end(), myList,
                     offset >= 0 ? std::next(i, offset) : std::prev(i, -offset));
     }
 
     /**
-     * Convenience method to remove a single element from the active list by
-     * index, offset from the beginning of the list. (ie, '0' means first
-     * element, '1' is second, and so on).
-     */
+      Convenience method to remove a single element from the active list by
+      index, offset from the beginning of the list. (ie, '0' means first
+      element, '1' is second, and so on).
+    */
     void remove(uInt32 index) {
       myPool.splice(myPool.end(), myList, std::next(myList.begin(), index));
     }
+#endif
 
     /**
-     * Convenience method to remove a range of elements from 'index' to the
-     * end of the active list.
-     */
-    void removeLast(uInt32 index) {
-      myPool.splice(myPool.end(), myList, std::next(myList.begin(), index), myList.end());
+      Remove range of elements from the beginning of the active list to
+      the 'current' node.
+    */
+    void removeToFirst() {
+      myPool.splice(myPool.end(), myList, myList.begin(), myCurrent);
     }
 
     /**
-     * Erase entire contents of active list.
-     */
+      Remove range of elements from the node after 'current' to the end of the
+      active list.
+    */
+    void removeToLast() {
+      myPool.splice(myPool.end(), myList, std::next(myCurrent, 1), myList.end());
+    }
+
+    /**
+      Erase entire contents of active list.
+    */
     void clear() {
       myPool.splice(myPool.end(), myList, myList.begin(), myList.end());
+      myCurrent = myList.end();
     }
 
     /** Access the list with iterators, just as you would a normal C++ STL list */
@@ -149,6 +204,9 @@ class LinkedObjectPool
 
   private:
     std::list<T> myList, myPool;
+
+    // Current position in the active list (end() indicates an invalid position)
+    iter myCurrent;
 
   private:
     // Following constructors and assignment operators not supported

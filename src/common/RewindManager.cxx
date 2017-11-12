@@ -24,26 +24,29 @@
 
 #include "RewindManager.hxx"
 
+static int count = 1;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
   : myOSystem(system),
     myStateManager(statemgr),
     myIsNTSC(true) // TODO
-    // TODO: current is not valid
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::addState(const string& message)
 {
-  // TODO: remove following (preceding???) (all invalid) states
-  // myStateList.removeToFront(); from current() + 1 (or - 1???)
+  // Remove all future states
+  myStateList.removeToLast();
 
+  // Make sure we never run out of space
   if(myStateList.full())
     compressStates();
 
-  RewindState& state = myStateList.addFirst();
-  // TODO: addFirst() must set current() to the just added element
+  // Add new state at the end of the list (queue adds at end)
+  // This updates the 'current' iterator inside the list
+  myStateList.addLast();
+  RewindState& state = myStateList.current();
   Serializer& s = state.data;
 
   s.reset();  // rewind Serializer internal buffers
@@ -51,6 +54,8 @@ bool RewindManager::addState(const string& message)
   {
     state.message = message;
     state.cycle = myOSystem.console().tia().cycles();
+    state.count = count++;
+cerr << "add " << state.count << endl;
     return true;
   }
   return false;
@@ -59,14 +64,12 @@ bool RewindManager::addState(const string& message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::rewindState()
 {
-  if(!myStateList.empty())
+  if(myStateList.currentIsValid())
   {
-    // TODO: get state previous to the current state instead of first()
-    // RewindState& state = myStateList.current();
-    // myStateList.prev(); // moves current to the previous (older) element
-    RewindState& state = myStateList.first(); // TOOD: remove
+    RewindState& state = myStateList.current();
     Serializer& s = state.data;
     string message = getMessage(state);
+cerr << "rewind " << state.count << endl;
 
     s.reset();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
@@ -75,8 +78,9 @@ bool RewindManager::rewindState()
     // Show message indicating the rewind state
     myOSystem.frameBuffer().showMessage(message);
 
-    // TODO: Do NOT remove state (TODO later somewhere else: stop emulation)    
-    myStateList.removeFirst(); // TODO: delete this
+    // Set internal current iterator to previous state (back in time),
+    // since we've now processed this state
+    myStateList.moveToPrevious();
 
     return true;
   }
@@ -87,6 +91,7 @@ bool RewindManager::rewindState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::unwindState()
 {
+#if 0
   if(!atFirst()) // or last???
   {
     // TODO: get state next to the current state
@@ -101,14 +106,15 @@ bool RewindManager::unwindState()
     // Show message indicating the rewind state
     myOSystem.frameBuffer().showMessage(message);*/
     return true;
-  }    
+  }
+#endif
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::compressStates()
 {
-  myStateList.removeLast();  // remove the oldest state file
+  myStateList.removeFirst();  // remove the oldest state file
   // TODO: add smart state removal
 }
 
@@ -122,7 +128,7 @@ string RewindManager::getMessage(RewindState& state)
     diffUnit;
   stringstream message;
   string unit;
-
+freq = NTSC_FREQ; // TODO: remove
   message << (diff >= 0 ? "Rewind" : "Unwind");
   diff = abs(diff);
 

@@ -25,7 +25,17 @@ class StateManager;
 #include "bspf.hxx"
 
 /**
-  This class is used to save (and later 'rewind') system save states.
+  This class is used to save (and later 'replay') system save states.
+  In this implementation, we assume states are added at the end of the list.
+
+  Rewinding involves moving the internal iterator backwards in time (towards
+  the beginning of the list).
+
+  Unwinding involves moving the internal iterator forwards in time (towards
+  the end of the list).
+
+  Any time a new state is added, the internal iterator moves back to the
+  insertion point of the data (the end of the list).
 
   @author  Stephen Anthony
 */
@@ -37,9 +47,9 @@ class RewindManager
   public:
     /**
       Add a new state file with the given message; this message will be
-      displayed when the state is rewound.
+      displayed when the state is replayed.
 
-      @param message  Message to display when rewinding to this state
+      @param message  Message to display when replaying this state
     */
     bool addState(const string& message);
 
@@ -70,12 +80,16 @@ class RewindManager
       Serializer data;
       string message;
       uInt64 cycle;
+      int count; //  TODO - remove this
 
       // We do nothing on object instantiation or copy
+      // The goal of LinkedObjectPool is to not do any allocations at all
       RewindState() { }
       RewindState(const RewindState&) { }
     };
 
+    // The linked-list to store states (internally it takes care of reducing
+    // frequent (de)-allocations)
     Common::LinkedObjectPool<RewindState, MAX_SIZE> myStateList;
 
     bool myIsNTSC;
@@ -83,7 +97,6 @@ class RewindManager
     void compressStates();
 
     string getMessage(RewindState& state);
-
 
   private:
     // Following constructors and assignment operators not supported
