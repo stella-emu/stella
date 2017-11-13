@@ -1863,19 +1863,21 @@ void DebuggerParser::executeWatch()
 // TODO: return and output (formatted) cycles
 void DebuggerParser::executeWinds(bool unwind)
 {
-  uInt16 levels;
+  uInt16 states;
   string type = unwind ? "unwind" : "rewind";
+  string message;
 
   if(argCount == 0)
-    levels = 1;
+    states = 1;
   else
-    levels = args[0];
+    states = args[0];
 
-  uInt16 winds = unwind ? debugger.unwindStates(levels) : debugger.rewindStates(levels);
+  uInt16 winds = unwind ? debugger.unwindStates(states, message) : debugger.rewindStates(states, message);
   if(winds > 0)
   {
     debugger.rom().invalidate();
-    commandResult << type << " by " << winds << " level" << (winds > 1 ? "s" : "");
+    commandResult << type << " by " << winds << " state" << (winds > 1 ? "s" : "");
+    commandResult << " (~" << message << ")";
   }
   else
     commandResult << "no states left to " << type;

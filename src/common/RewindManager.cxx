@@ -172,53 +172,62 @@ void RewindManager::compressStates()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getMessage(RewindState& state)
 {
-  const uInt64 NTSC_FREQ = 1193182; // ~76*262*60
-  const uInt64 PAL_FREQ  = 1182298; // ~76*312*50
-  const uInt64 freq = myIsNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
-  const uInt64 scanlines = myIsNTSC ? 262 : 312; // TODO: use actual number of scanlines
-  //const uInt64 fps = myIsNTSC ? 60 : 50; // TODO: use actual FPS
-
-  Int64 diff = myOSystem.console().tia().cycles() - state.cycle,
-    diffUnit;
+  Int64 diff = myOSystem.console().tia().cycles() - state.cycle;
   stringstream message;
-  string unit;
 
-  message << (diff >= 0 ? "Rewind" : "Unwind");
-  diff = abs(diff);
-
-  // use the lower unit up to twice the next unit, except for an exact match of the next unit
-  // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
-  if(diff < 76 * 2 && diff % 76 != 0)
-  {
-    unit = "cycle";
-    diffUnit = diff;
-  }
-  else if(diff < 76 * scanlines * 2 && diff % (76 * scanlines) != 0)
-  {
-    unit = "scanline";
-    diffUnit = diff / 76;
-  }
-  else if(diff < freq * 2 && diff % freq != 0)
-  {
-    unit = "frame";
-    diffUnit = diff / (76 * scanlines);
-  }
-  else if(diff < freq * 60 * 2 && diff % (freq * 60) != 0)
-  {
-    unit = "second";
-    diffUnit = diff / freq;
-  }
-  else
-  {
-    unit = "minute";
-    diffUnit = diff / (freq * 60);
-  } // TODO: do we need hours here? don't think so
-  message << " " << diffUnit << " " << unit;
-  if(diffUnit != 1)
-    message << "s";
+  message << (diff >= 0 ? "Rewind" : "Unwind") << " " << getUnitString(diff);
 
   // add optional message (TODO: when smart removal works, we have to do something smart with this part too)
   if(!state.message.empty())
     message << " (" << state.message << ")";
   return message.str();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string RewindManager::getUnitString(Int64 cycles)
+{
+  const uInt64 NTSC_FREQ = 1193182; // ~76*262*60
+  const uInt64 PAL_FREQ = 1182298; // ~76*312*50
+  const uInt64 freq = myIsNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
+  const uInt64 scanlines = myIsNTSC ? 262 : 312; // TODO: use actual number of scanlines
+                                                 //const uInt64 fps = myIsNTSC ? 60 : 50; // TODO: use actual FPS
+  string unit;
+  Int64 diffUnit;
+  stringstream result;
+
+  cycles = abs(cycles);
+  // use the lower unit up to twice the next unit, except for an exact match of the next unit
+  // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
+  if(cycles < 76 * 2 && cycles % 76 != 0)
+  {
+    unit = "cycle";
+    diffUnit = cycles;
+  }
+  else if(cycles < 76 * scanlines * 2 && cycles % (76 * scanlines) != 0)
+  {
+    unit = "scanline";
+    diffUnit = cycles / 76;
+  }
+  else if(cycles < freq * 2 && cycles % freq != 0)
+  {
+    unit = "frame";
+    diffUnit = cycles / (76 * scanlines);
+  }
+  else if(cycles < freq * 60 * 2 && cycles % (freq * 60) != 0)
+  {
+    unit = "second";
+    diffUnit = cycles / freq;
+  }
+  else
+  {
+    unit = "minute";
+    diffUnit = cycles / (freq * 60);
+  } // TODO: do we need hours here? don't think so
+
+  result << diffUnit << " " << unit;
+  if(diffUnit != 1)
+    result << "s";
+
+  return result.str();
+}
+

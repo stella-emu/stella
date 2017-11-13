@@ -458,7 +458,7 @@ void Debugger::updateRewindbuttons(const RewindManager& r)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::windStates(uInt16 levels, bool unwind)
+uInt16 Debugger::windStates(uInt16 states, bool unwind, string& message)
 {
   RewindManager& r = myOSystem.state().rewindManager();
 
@@ -467,11 +467,13 @@ uInt16 Debugger::windStates(uInt16 levels, bool unwind)
   unlockBankswitchState();
 
   uInt16 winds = 0;
-  for(uInt16 i = 0; i < levels; ++i)
+  uInt64 startCycles = myOSystem.console().tia().cycles();
+  for(uInt16 i = 0; i < states; ++i)
     if(unwind ? r.unwindState() : r.rewindState())
       winds++;
     else
       break;
+  message = r.getUnitString(myOSystem.console().tia().cycles() - startCycles);
 
   lockBankswitchState();
 
@@ -480,15 +482,15 @@ uInt16 Debugger::windStates(uInt16 levels, bool unwind)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::rewindStates(const uInt16 levels)
+uInt16 Debugger::rewindStates(const uInt16 states, string& message)
 {
-  return windStates(levels, false);
+  return windStates(states, false, message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::unwindStates(const uInt16 levels)
+uInt16 Debugger::unwindStates(const uInt16 states, string& message)
 {
-  return windStates(levels, true);
+  return windStates(states, true, message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

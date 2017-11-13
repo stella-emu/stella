@@ -270,8 +270,8 @@ class Debugger : public DialogContainer
     int trace();
     void nextScanline(int lines);
     void nextFrame(int frames);
-    uInt16 rewindStates(const uInt16 levels);
-    uInt16 unwindStates(const uInt16 levels);
+    uInt16 rewindStates(const uInt16 states, string& message);
+    uInt16 unwindStates(const uInt16 states, string& message);
 
     void toggleBreakPoint(uInt16 bp);
 
@@ -329,7 +329,7 @@ class Debugger : public DialogContainer
 
   private:
     // rewind/unwind n states
-    uInt16 windStates(uInt16 levels, bool unwind);
+    uInt16 windStates(uInt16 states, bool unwind, string& message);
     // update the rewind/unwind button state
     void updateRewindbuttons(const RewindManager& r);
 

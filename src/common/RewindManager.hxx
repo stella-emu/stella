@@ -69,6 +69,11 @@ class RewindManager
     bool atFirst() const { return false; } // TODO
     void clear() { myStateList.clear(); }
 
+    /**
+      Convert the cycles into a unit string.
+    */
+    string getUnitString(Int64 cycles);
+
   private:
     // Maximum number of states to save
     static constexpr uInt32 MAX_SIZE = 100; // TODO: use a parameter here and allow user to define size in UI
