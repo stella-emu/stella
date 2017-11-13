@@ -1500,6 +1500,16 @@ void DebuggerParser::executeReset()
 {
   debugger.reset();
   debugger.rom().invalidate();
+  debugger.riotDebug().controller(Controller::Left).set(Controller::One, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Two, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Three, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Four, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Six, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::One, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Two, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Three, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Four, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Six, true);
   commandResult << "reset system";
 }
 
