@@ -1162,6 +1162,116 @@ void DebuggerParser::executeHelp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0up"
+void DebuggerParser::executeJoy0Up()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::One, !controller.read(Controller::One));
+  else if(argCount == 1)
+    controller.set(Controller::One, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0down"
+void DebuggerParser::executeJoy0Down()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Two, !controller.read(Controller::Two));
+  else if(argCount == 1)
+    controller.set(Controller::Two, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0left"
+void DebuggerParser::executeJoy0Left()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Three, !controller.read(Controller::Three));
+  else if(argCount == 1)
+    controller.set(Controller::Three, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0right"
+void DebuggerParser::executeJoy0Right()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Four, !controller.read(Controller::Four));
+  else if(argCount == 1)
+    controller.set(Controller::Four, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0fire"
+void DebuggerParser::executeJoy0Fire()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Six, !controller.read(Controller::Six));
+  else if(argCount == 1)
+    controller.set(Controller::Six, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1up"
+void DebuggerParser::executeJoy1Up()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::One, !controller.read(Controller::One));
+  else if(argCount == 1)
+    controller.set(Controller::One, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1down"
+void DebuggerParser::executeJoy1Down()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Two, !controller.read(Controller::Two));
+  else if(argCount == 1)
+    controller.set(Controller::Two, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1left"
+void DebuggerParser::executeJoy1Left()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Three, !controller.read(Controller::Three));
+  else if(argCount == 1)
+    controller.set(Controller::Three, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1right"
+void DebuggerParser::executeJoy1Right()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Four, !controller.read(Controller::Four));
+  else if(argCount == 1)
+    controller.set(Controller::Four, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1fire"
+void DebuggerParser::executeJoy1Fire()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Six, !controller.read(Controller::Six));
+  else if(argCount == 1)
+    controller.set(Controller::Six, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "jump"
 void DebuggerParser::executeJump()
 {
@@ -2303,6 +2413,106 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeHelp)
+  },
+
+  {
+    "joy0up",
+    "Set joystick 0 up direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0up 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Up)
+  },
+
+  {
+    "joy0down",
+    "Set joystick 0 down direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0down 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Down)
+  },
+
+  {
+    "joy0left",
+    "Set joystick 0 left direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Left)
+  },
+
+  {
+    "joy0right",
+    "Set joystick 0 right direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Right)
+  },
+
+  {
+    "joy0fire",
+    "Set joystick 0 fire button to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0fire 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Fire)
+  },
+
+  {
+    "joy1up",
+    "Set joystick 1 up direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1up 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Up)
+  },
+
+  {
+    "joy1down",
+    "Set joystick 1 down direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1down 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Down)
+  },
+
+  {
+    "joy1left",
+    "Set joystick 1 left direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Left)
+  },
+
+  {
+    "joy1right",
+    "Set joystick 1 right direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Right)
+  },
+
+  {
+    "joy1fire",
+    "Set joystick 1 fire button to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1fire 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Fire)
   },
 
   {

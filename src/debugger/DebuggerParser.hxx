@@ -66,7 +66,7 @@ class DebuggerParser
     string saveScriptFile(string file);
 
   private:
-    enum { kNumCommands = 81 };
+    enum { kNumCommands = 91 };
 
     // Constants for argument processing
     enum {
@@ -165,6 +165,16 @@ class DebuggerParser
     void executeFunction();
     void executeGfx();
     void executeHelp();
+    void executeJoy0Up();
+    void executeJoy0Down();
+    void executeJoy0Left();
+    void executeJoy0Right();
+    void executeJoy0Fire();
+    void executeJoy1Up();
+    void executeJoy1Down();
+    void executeJoy1Left();
+    void executeJoy1Right();
+    void executeJoy1Fire();
     void executeJump();
     void executeListbreaks();
     void executeListconfig();
