@@ -1767,6 +1767,23 @@ void DebuggerParser::executeStep()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "stepwhile"
+void DebuggerParser::executeStepwhile()
+{
+  int res = YaccParser::parse(argStrings[0].c_str());
+  if(res != 0) {
+    commandResult << red("invalid expression");
+    return;
+  }
+  Expression* expr = YaccParser::getResult();
+  int ncycles = 0;
+  do {
+    ncycles += debugger.step();
+  } while (expr->evaluate());
+  commandResult << "executed " << ncycles << " cycles";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "tia"
 void DebuggerParser::executeTia()
 {
@@ -2866,6 +2883,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeStep)
+  },
+
+  {
+    "stepwhile",
+    "Single step CPU while <condition> is true",
+    "Example: stepwhile pc!=$f2a9",
+    true,
+    true,
+    { kARG_WORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeStepwhile)
   },
 
   {
