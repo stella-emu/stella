@@ -123,6 +123,8 @@ class DebuggerParser
     StringList argStrings;
     uInt32 argCount;
 
+    uInt32 execDepth;
+
     StringList myWatches;
 
     // Keep track of traps (read and/or write)
