@@ -16539,6 +16539,7 @@
 "Cartridge.ModelNo" "CX26140, CX26140P"
 "Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
+"Display.Format" "PAL"
 ""
 
 "Cartridge.MD5" "d483f65468d9a265661917bae1a54f3e"
