@@ -58,7 +58,8 @@ using std::right;
 DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger(d),
     settings(s),
-    argCount(0)
+    argCount(0),
+    execDepth(0)
 {
 }
 
@@ -1064,7 +1065,9 @@ void DebuggerParser::executeExec()
     file += ".script";
 
   FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
+  execDepth++;
   commandResult << exec(node);
+  execDepth--;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1695,7 +1698,7 @@ void DebuggerParser::executeSaveses()
 // "savesnap"
 void DebuggerParser::executeSavesnap()
 {
-  debugger.tiaOutput().saveSnapshot();
+  debugger.tiaOutput().saveSnapshot(execDepth);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
