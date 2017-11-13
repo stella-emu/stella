@@ -1335,13 +1335,7 @@ void DebuggerParser::executeReset()
 // "rewind"
 void DebuggerParser::executeRewind()
 {
-  if(debugger.rewindState())
-  {
-    debugger.rom().invalidate();
-    commandResult << "rewind by one level";
-  }
-  else
-    commandResult << "no states left to rewind";
+  executeWinds(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1843,13 +1837,7 @@ void DebuggerParser::executeUndef()
 // "unwind"
 void DebuggerParser::executeUnwind()
 {
-  if(debugger.unwindState())
-  {
-    debugger.rom().invalidate();
-    commandResult << "unwind by one level";
-  }
-  else
-    commandResult << "no states left to rewind";
+  executeWinds(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1868,6 +1856,29 @@ void DebuggerParser::executeWatch()
 {
   myWatches.push_back(argStrings[0]);
   commandResult << "added watch \"" << argStrings[0] << "\"";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// wrapper function for rewind/unwind commands
+// TODO: return and output (formatted) cycles
+void DebuggerParser::executeWinds(bool unwind)
+{
+  uInt16 levels;
+  string type = unwind ? "unwind" : "rewind";
+
+  if(argCount == 0)
+    levels = 1;
+  else
+    levels = args[0];
+
+  uInt16 winds = unwind ? debugger.unwindStates(levels) : debugger.rewindStates(levels);
+  if(winds > 0)
+  {
+    debugger.rom().invalidate();
+    commandResult << type << " by " << winds << " level" << (winds > 1 ? "s" : "");
+  }
+  else
+    commandResult << "no states left to " << type;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2335,11 +2346,11 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "rewind",
-    "Rewind state to last step/trace/scanline/frame",
-    "Rewind currently only works in the debugger",
+    "Rewind state to last step/trace/scanline/frame...",
+    "Example: rewind, rewind 5",
     false,
     true,
-    { kARG_END_ARGS },
+    { kARG_WORD, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeRewind)
   },
 
@@ -2628,11 +2639,11 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "unwind",
-    "Unwind state to last step/trace/scanline/frame",
-    "Unwind currently only works in the debugger",
+    "Unwind state to next step/trace/scanline/frame...",
+    "Example: unwind, unwind 5",
     false,
     true,
-    { kARG_END_ARGS },
+    { kARG_WORD, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeUnwind)
   },
 

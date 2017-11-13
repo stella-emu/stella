@@ -212,6 +212,7 @@ class DebuggerParser
     void executeUnwind();
     void executeV();
     void executeWatch();
+    void executeWinds(bool unwind);
     void executeX();
     void executeY();
     void executeZ();

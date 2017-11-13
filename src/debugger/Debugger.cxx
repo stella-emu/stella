@@ -458,30 +458,37 @@ void Debugger::updateRewindbuttons(const RewindManager& r)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::windState(bool unwind)
+uInt16 Debugger::windStates(uInt16 levels, bool unwind)
 {
   RewindManager& r = myOSystem.state().rewindManager();
 
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
-  bool result = unwind ? r.unwindState() : r.rewindState();
+
+  uInt16 winds = 0;
+  for(uInt16 i = 0; i < levels; ++i)
+    if(unwind ? r.unwindState() : r.rewindState())
+      winds++;
+    else
+      break;
+
   lockBankswitchState();
 
   updateRewindbuttons(r);
-  return result;
+  return winds;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::rewindState()
+uInt16 Debugger::rewindStates(const uInt16 levels)
 {
-  return windState(false);
+  return windStates(levels, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::unwindState()
+uInt16 Debugger::unwindStates(const uInt16 levels)
 {
-  return windState(true);
+  return windStates(levels, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
