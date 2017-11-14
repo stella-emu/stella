@@ -350,6 +350,8 @@ bool StateManager::saveState(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::reset()
 {
+  myActiveMode = Mode::Off;
+  myRewindManager->clear();
 #if 0
   myCurrentSlot = 0;
 
