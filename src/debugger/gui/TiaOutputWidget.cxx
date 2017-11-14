@@ -63,7 +63,6 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
   if (execDepth > 0) {
     drawWidget(false);
   }
-  int number = int(instance().getTicks() / 1000);
   ostringstream sspath;
   sspath << instance().snapshotSaveDir()
          << instance().console().properties().get(Cartridge_Name);
@@ -71,7 +70,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
   if (execDepth > 0 && !execPrefix.empty()) {
     sspath << execPrefix << "_";
   }
-  sspath << std::hex << std::setw(8) << std::setfill('0') << (number/1000 & 0xffffffff) << ".png";
+  sspath << std::hex << std::setw(8) << std::setfill('0') << (instance().getTicks()/1000 & 0xffffffff) << ".png";
 
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();
