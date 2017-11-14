@@ -59,7 +59,8 @@ DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger(d),
     settings(s),
     argCount(0),
-    execDepth(0)
+    execDepth(0),
+    execPrefix("")
 {
 }
 
@@ -1063,10 +1064,18 @@ void DebuggerParser::executeExec()
   string file = argStrings[0];
   if(file.find_last_of('.') == string::npos)
     file += ".script";
-
   FilesystemNode node(file);
   if (!node.exists()) {
     node = FilesystemNode(debugger.myOSystem.defaultSaveDir() + file);
+  }
+
+  if (argCount == 2) {
+    execPrefix = argStrings[1];
+  }
+  else {
+    ostringstream prefix;
+    prefix << std::hex << std::setw(8) << std::setfill('0') << (debugger.myOSystem.getTicks()/1000 & 0xffffffff);
+    execPrefix = prefix.str();
   }
   execDepth++;
   commandResult << exec(node);
@@ -1711,7 +1720,7 @@ void DebuggerParser::executeSaveses()
 // "savesnap"
 void DebuggerParser::executeSavesnap()
 {
-  debugger.tiaOutput().saveSnapshot(execDepth);
+  debugger.tiaOutput().saveSnapshot(execDepth, execPrefix);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2389,11 +2398,11 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "exec",
-    "Execute script file <xx>",
+    "Execute script file <xx> [prefix]",
     "Example: exec script.dat, exec auto.txt",
     true,
     true,
-    { kARG_FILE, kARG_END_ARGS },
+    { kARG_FILE, kARG_LABEL, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeExec)
   },
 
