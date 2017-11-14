@@ -1022,23 +1022,28 @@ void DebuggerParser::executeDisasm()
 // "dump"
 void DebuggerParser::executeDump()
 {
-  auto dump = [&](int start, int end)
+  auto dump = [&](ostream& os, int start, int end)
   {
     for(int i = start; i <= end; i += 16)
     {
       // Print label every 16 bytes
-      commandResult << Base::toString(i) << ": ";
+      os << Base::toString(i) << ": ";
 
       for(int j = i; j < i+16 && j <= end; ++j)
       {
-        commandResult << Base::toString(debugger.peek(j)) << " ";
-        if(j == i+7 && j != end) commandResult << "- ";
+        os << Base::toString(debugger.peek(j)) << " ";
+        if(j == i+7 && j != end) os << "- ";
       }
-      commandResult << endl;
+      os << endl;
     }
   };
 
   // Error checking
+  if( argCount == 0 || argCount > 3)
+  {
+    outputCommandError("wrong number of arguments", myCommand);
+    return;
+  }
   if(argCount > 1 && args[1] < args[0])
   {
     commandResult << red("start address must be <= end address");
@@ -1046,14 +1051,75 @@ void DebuggerParser::executeDump()
   }
 
   if(argCount == 1)
-    dump(args[0], args[0] + 127);
-  else if(argCount == 2)
-    dump(args[0], args[1]);
-  else
+    dump(commandResult, args[0], args[0] + 127);
+  else if(argCount == 2 || args[2] == 0)
+    dump(commandResult, args[0], args[1]);
+  else {
+    ostringstream file;
+    file << debugger.myOSystem.snapshotSaveDir() << debugger.myOSystem.console().properties().get(Cartridge_Name) << "_dbg_";
+    if (execDepth > 0) {
+      file << execPrefix;
+    }
+    else {
+      file << std::hex << std::setw(8) << std::setfill('0') << (debugger.myOSystem.getTicks()/1000 & 0xffffffff);
+    }
+    file << ".dump";
+    FilesystemNode node(file.str());
+    // cout << "dump " << args[0] << "-" << args[1] << " to " << file.str() << endl;
+    ofstream ofs(node.getPath(), ofstream::out | ofstream::app);
+    if(!ofs.is_open())
   {
-    outputCommandError("wrong number of arguments", myCommand);
+      outputCommandError("Unable to append dump to file " + node.getShortPath(), myCommand);
     return;
   }
+    if ((args[2] & 0x01) != 0) {
+      // dump memory
+      dump(ofs, args[0], args[1]);
+}
+    if ((args[2] & 0x02) != 0) {
+      // dump CPU state
+      CpuDebug& cpu = debugger.cpuDebug();
+      ofs << "XC: "
+          << Base::toString(cpu.pc()&0xff) << " "    // PC lsb
+          << Base::toString(cpu.pc()>>8)   << " "    // PC msb
+          << Base::toString(cpu.sp())      << " "    // SP
+          << Base::toString(cpu.a())       << " "    // A
+          << Base::toString(cpu.x())       << " "    // X
+          << Base::toString(cpu.y())       << " "    // Y
+          << Base::toString(0)             << " "    // unused
+          << Base::toString(0)             << " - "  // unused
+          << Base::toString(cpu.n())       << " "    // N (flag)
+          << Base::toString(cpu.v())       << " "    // V (flag)
+          << Base::toString(cpu.b())       << " "    // B (flag)
+          << Base::toString(cpu.d())       << " "    // D (flag)
+          << Base::toString(cpu.i())       << " "    // I (flag)
+          << Base::toString(cpu.z())       << " "    // Z (flag)
+          << Base::toString(cpu.c())       << " "    // C (flag)
+          << Base::toString(0)             << " "    // unused
+          << endl;
+    }
+    if ((args[2] & 0x04) != 0) {
+      // dump SWCHx/INPTx state
+      ofs << "XS: "
+          << Base::toString(debugger.peek(0x280)) << " "    // SWCHA
+          << Base::toString(0) << " "    // unused
+          << Base::toString(debugger.peek(0x282)) << " "    // SWCHB
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " - "  // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(debugger.peek(TIARegister::INPT4)) << " "
+          << Base::toString(debugger.peek(TIARegister::INPT5)) << " "
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << endl;
+    }
+}
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
