@@ -22,13 +22,17 @@
 #include "FSNode.hxx"
 #include "DiStella.hxx"
 #include "Debugger.hxx"
+#include "DebuggerParser.hxx"
 #include "CpuDebug.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "Version.hxx"
+#include "Cart.hxx"
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"
 #include "CartRamWidget.hxx"
+#include "System.hxx"
+#include "Base.hxx"
 using Common::Base;
 using std::hex;
 using std::dec;
@@ -177,6 +181,18 @@ int CartDebug::readFromWritePort()
     return addr;
   else
     return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::lastReadBaseAddress()
+{
+  return mySystem.m6502().lastReadBaseAddress();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::lastWriteBaseAddress()
+{
+  return mySystem.m6502().lastWriteBaseAddress();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -511,6 +527,18 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     list.push_back(tag);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::getBank()
+{
+  return myConsole.cartridge().getBank();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::bankCount() const
+{
+  return myConsole.cartridge().bankCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

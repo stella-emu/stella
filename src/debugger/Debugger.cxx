@@ -29,6 +29,7 @@
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
+#include "StateManager.hxx"
 
 #include "Console.hxx"
 #include "System.hxx"
@@ -177,6 +178,24 @@ string Debugger::autoExec(StringList* history)
       cerr << "ERROR in builtin function!" << endl;
   }
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PackedBitArray& Debugger::breakPoints() const
+{
+  return mySystem.m6502().breakPoints();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TrapArray& Debugger::readTraps() const
+{
+  return mySystem.m6502().readTraps();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TrapArray& Debugger::writeTraps() const
+{
+  return mySystem.m6502().writeTraps();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -510,6 +529,12 @@ void Debugger::clearAllTraps()
 string Debugger::showWatches()
 {
   return myParser->showWatches();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::stringToValue(const string& stringval)
+{
+  return myParser->decipher_arg(stringval);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -27,23 +27,23 @@ class EditTextWidget;
 class RomWidget;
 class Expression;
 class PackedBitArray;
+class TrapArray;
 class PromptWidget;
 class ButtonWidget;
+
+class CartDebug;
+class CpuDebug;
+class RiotDebug;
+class TIADebug;
+class DebuggerParser;
+class RewindManager;
 
 #include <map>
 
 #include "Base.hxx"
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
-#include "DebuggerParser.hxx"
-#include "StateManager.hxx"
-#include "M6502.hxx"
 #include "System.hxx"
-#include "Stack.hxx"
-#include "CartDebug.hxx"
-#include "CpuDebug.hxx"
-#include "RiotDebug.hxx"
-#include "TIADebug.hxx"
 #include "bspf.hxx"
 
 using FunctionMap = std::map<string, unique_ptr<Expression>>;
@@ -146,9 +146,9 @@ class Debugger : public DialogContainer
     RomWidget& rom() const              { return myDialog->rom();       }
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
-    PackedBitArray& breakPoints() const { return mySystem.m6502().breakPoints(); }
-    TrapArray& readTraps() const        { return mySystem.m6502().readTraps();   }
-    TrapArray& writeTraps() const       { return mySystem.m6502().writeTraps();  }
+    PackedBitArray& breakPoints() const;
+    TrapArray& readTraps() const;
+    TrapArray& writeTraps() const;
 
     /**
       Run the debugger command and return the result.
@@ -163,8 +163,7 @@ class Debugger : public DialogContainer
       Convert between string->integer and integer->string, taking into
       account the current base format.
     */
-    int stringToValue(const string& stringval)
-        { return myParser->decipher_arg(stringval); }
+    int stringToValue(const string& stringval);
 
     /* Convenience methods to get/set bit(s) in an 8-bit register */
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)

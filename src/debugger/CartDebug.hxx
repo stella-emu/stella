@@ -26,11 +26,7 @@ class CartDebugWidget;
 #include <list>
 
 #include "bspf.hxx"
-#include "Base.hxx"
-#include "Cart.hxx"
 #include "DebuggerSystem.hxx"
-#include "System.hxx"
-#include "M6502.hxx"
 
 // Function type for CartDebug instance methods
 class CartDebug;
@@ -122,9 +118,9 @@ class CartDebug : public DebuggerSystem
     int readFromWritePort();
 
     // Return the base (= non-mirrored) address of the last CPU read
-    int lastReadBaseAddress() { return mySystem.m6502().lastReadBaseAddress(); }
+    int lastReadBaseAddress();
     // Return the base (= non-mirrored) address of the last CPU write
-    int lastWriteBaseAddress() { return mySystem.m6502().lastWriteBaseAddress(); }
+    int lastWriteBaseAddress();
 
     // The following two methods are meant to be used together
     // First, a call is made to disassemble(), which updates the disassembly
@@ -190,17 +186,12 @@ class CartDebug : public DebuggerSystem
       Get the current bank in use by the cartridge
       (non-const because of use in YaccParser)
     */
-    int getBank() { return myConsole.cartridge().getBank(); }
+    int getBank();
 
     /**
       Get the total number of banks supported by the cartridge.
     */
-    int bankCount() const { return myConsole.cartridge().bankCount(); }
-
-    /**
-      Get the name/type of the cartridge.   // FIXME - dead code
-    */
-    string getCartType() const { return myConsole.cartridge().name(); }
+    int bankCount() const;
 
     /**
       Add a label and associated address.
@@ -293,19 +284,6 @@ class CartDebug : public DebuggerSystem
       DirectiveList directiveList; // overrides for automatic code determination
 
       BankInfo() : start(0), end(0), offset(0), size(0) { }
-#if 0
-      friend ostream& operator<<(ostream& os, const BankInfo& b)
-      {
-        os << "start=$" << Common::Base::HEX4 << b.start
-           << ", end=$" << Common::Base::HEX4 << b.end
-           << ", offset=$" << Common::Base::HEX4 << b.offset
-           << ", size=" << dec << b.size << endl
-           << "addrlist: ";
-        for(const auto& i: b.addressList)
-          os << Common::Base::HEX4 << i << " ";
-        return os;
-      }
-#endif
     };
 
     // Address type information determined by Distella

@@ -20,6 +20,8 @@
 #include "OSystem.hxx"
 #include "TIATypes.hxx"
 #include "Debugger.hxx"
+#include "CartDebug.hxx"
+#include "TIADebug.hxx"
 #include "Base.hxx"
 #include "TIA.hxx"
 
