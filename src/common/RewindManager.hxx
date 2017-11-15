@@ -97,8 +97,6 @@ class RewindManager
     // frequent (de)-allocations)
     Common::LinkedObjectPool<RewindState, MAX_SIZE> myStateList;
 
-    bool myIsNTSC;
-
     void compressStates();
 
     string getMessage(RewindState& state);

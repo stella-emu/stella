@@ -28,8 +28,7 @@ static int count = 1;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
   : myOSystem(system),
-    myStateManager(statemgr),
-    myIsNTSC(true) // TODO
+    myStateManager(statemgr)
 {
 }
 
@@ -186,11 +185,12 @@ string RewindManager::getMessage(RewindState& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getUnitString(Int64 cycles)
 {
+  const uInt64 scanlines = myOSystem.console().tia().scanlinesLastFrame();
+  const bool isNTSC = scanlines <= 285; // TODO: replace magic number
   const uInt64 NTSC_FREQ = 1193182; // ~76*262*60
   const uInt64 PAL_FREQ = 1182298; // ~76*312*50
-  const uInt64 freq = myIsNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
-  const uInt64 scanlines = myIsNTSC ? 262 : 312; // TODO: use actual number of scanlines
-                                                 //const uInt64 fps = myIsNTSC ? 60 : 50; // TODO: use actual FPS
+  const uInt64 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
+
   string unit;
   Int64 diffUnit;
   stringstream result;
