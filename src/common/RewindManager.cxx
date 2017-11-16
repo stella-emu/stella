@@ -185,47 +185,31 @@ string RewindManager::getMessage(RewindState& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getUnitString(Int64 cycles)
 {
-  const uInt64 scanlines = myOSystem.console().tia().scanlinesLastFrame();
+  const Int64 scanlines = myOSystem.console().tia().scanlinesLastFrame();
   const bool isNTSC = scanlines <= 285; // TODO: replace magic number
-  const uInt64 NTSC_FREQ = 1193182; // ~76*262*60
-  const uInt64 PAL_FREQ = 1182298; // ~76*312*50
-  const uInt64 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
+  const Int64 NTSC_FREQ = 1193182; // ~76*262*60
+  const Int64 PAL_FREQ = 1182298; // ~76*312*50
+  const Int64 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  string unit;
-  Int64 diffUnit;
+  // TODO: do we need hours here? don't think so
+  const Int32 NUM_UNITS = 5;
+  const string UNIT_NAMES[NUM_UNITS] = { "cycle", "scanline", "frame", "second", "minute" };
+  const Int64 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq, freq * 60, (Int64)1 << 63 };
+
   stringstream result;
+  Int32 i;
 
   cycles = abs(cycles);
-  // use the lower unit up to twice the next unit, except for an exact match of the next unit
-  // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
-  if(cycles < 76 * 2 && cycles % 76 != 0)
-  {
-    unit = "cycle";
-    diffUnit = cycles;
-  }
-  else if(cycles < 76 * scanlines * 2 && cycles % (76 * scanlines) != 0)
-  {
-    unit = "scanline";
-    diffUnit = cycles / 76;
-  }
-  else if(cycles < freq * 2 && cycles % freq != 0)
-  {
-    unit = "frame";
-    diffUnit = cycles / (76 * scanlines);
-  }
-  else if(cycles < freq * 60 * 2 && cycles % (freq * 60) != 0)
-  {
-    unit = "second";
-    diffUnit = cycles / freq;
-  }
-  else
-  {
-    unit = "minute";
-    diffUnit = cycles / (freq * 60);
-  } // TODO: do we need hours here? don't think so
 
-  result << diffUnit << " " << unit;
-  if(diffUnit != 1)
+  for(i = 0; i < NUM_UNITS - 1; ++i)
+  {
+    // use the lower unit up to twice the next unit, except for an exact match of the next unit
+    // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
+    if(cycles < UNIT_CYCLES[i + 1] * 2 && cycles % UNIT_CYCLES[i + 1] != 0)
+      break;
+  }
+  result << cycles / UNIT_CYCLES[i] << " " << UNIT_NAMES[i];
+  if(cycles / UNIT_CYCLES[i] != 1)
     result << "s";
 
   return result.str();
