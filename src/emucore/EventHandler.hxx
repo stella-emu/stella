@@ -22,12 +22,13 @@
 
 class Console;
 class OSystem;
+class MouseControl;
 class DialogContainer;
 class EventMappingWidget;
 
 #include "Event.hxx"
+#include "Control.hxx"
 #include "StellaKeys.hxx"
-#include "MouseControl.hxx"
 #include "Variant.hxx"
 #include "bspf.hxx"
 
@@ -82,7 +83,7 @@ class EventHandler
       Create a new event handler object
     */
     EventHandler(OSystem& osystem);
-    virtual ~EventHandler() = default;
+    virtual ~EventHandler();
 
     // Enumeration representing the different states of operation
     enum State {

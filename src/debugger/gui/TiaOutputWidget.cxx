@@ -25,6 +25,7 @@
 #include "TiaZoomWidget.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
+#include "PNGLibrary.hxx"
 #include "TIADebug.hxx"
 #include "TIASurface.hxx"
 #include "TIA.hxx"

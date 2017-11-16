@@ -34,9 +34,12 @@ class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
 
+namespace GUI {
+  class MessageBox;
+  struct Rect;
+}
+
 #include "Dialog.hxx"
-#include "MessageBox.hxx"
-#include "Rect.hxx"
 
 class DebuggerDialog : public Dialog
 {

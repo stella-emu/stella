@@ -34,56 +34,8 @@ namespace GUI {
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
 #include "TIAConstants.hxx"
+#include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
-
-// Return values for initialization of framebuffer window
-enum FBInitStatus {
-  kSuccess,
-  kFailComplete,
-  kFailTooLarge,
-  kFailNotSupported
-};
-
-// Positions for onscreen/overlaid messages
-enum MessagePosition {
-  kTopLeft,
-  kTopCenter,
-  kTopRight,
-  kMiddleLeft,
-  kMiddleCenter,
-  kMiddleRight,
-  kBottomLeft,
-  kBottomCenter,
-  kBottomRight
-};
-
-// Colors indices to use for the various GUI elements
-enum {
-  kColor = 256,
-  kBGColor,
-  kBGColorLo,
-  kBGColorHi,
-  kShadowColor,
-  kTextColor,
-  kTextColorHi,
-  kTextColorEm,
-  kDlgColor,
-  kWidColor,
-  kWidFrameColor,
-  kBtnColor,
-  kBtnColorHi,
-  kBtnTextColor,
-  kBtnTextColorHi,
-  kCheckColor,
-  kScrollColor,
-  kScrollColorHi,
-  kSliderColor,
-  kSliderColorHi,
-  kDbgChangedColor,
-  kDbgChangedTextColor,
-  kDbgColorHi,
-  kNumColors
-};
 
 // Contains all relevant info for the dimensions of a video screen
 // Also takes care of the case when the image should be 'centered'

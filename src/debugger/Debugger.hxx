@@ -31,6 +31,7 @@ class TrapArray;
 class PromptWidget;
 class ButtonWidget;
 
+class M6502;
 class CartDebug;
 class CpuDebug;
 class RiotDebug;
@@ -43,6 +44,7 @@ class RewindManager;
 #include "Base.hxx"
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
+#include "FrameBufferConstants.hxx"
 #include "System.hxx"
 #include "bspf.hxx"
 
@@ -69,7 +71,7 @@ class Debugger : public DialogContainer
       Create a new debugger parent object
     */
     Debugger(OSystem& osystem, Console& console);
-    virtual ~Debugger() = default;
+    virtual ~Debugger();
 
   public:
     /**
@@ -216,6 +218,9 @@ class Debugger : public DialogContainer
     void poke(uInt16 addr, uInt8 value, uInt8 flags = 0) {
       mySystem.poke(addr, value, flags);
     }
+
+    /** Convenience method to access the 6502 from System */
+    M6502& m6502() const { return mySystem.m6502(); }
 
     /** These are now exposed so Expressions can use them. */
     int peekAsInt(int addr, uInt8 flags = 0) {

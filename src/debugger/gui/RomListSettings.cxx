@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "Settings.hxx"
 #include "FrameBuffer.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"

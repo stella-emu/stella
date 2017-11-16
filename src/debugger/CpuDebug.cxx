@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "M6502.hxx"
+#include "System.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "TIADebug.hxx"
@@ -67,6 +68,78 @@ void CpuDebug::saveOldState()
   myOldState.srcY = my6502.lastSrcAddressY();
 
   Debugger::set_bits(myOldState.PS, myOldState.PSbits);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::pc() const
+{
+  return mySystem.m6502().PC;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::sp() const
+{
+  return mySystem.m6502().SP;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::a() const
+{
+  return mySystem.m6502().A;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::x() const
+{
+  return mySystem.m6502().X;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::y() const
+{
+  return mySystem.m6502().Y;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::n() const
+{
+  return mySystem.m6502().N;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::v() const
+{
+  return mySystem.m6502().V;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::b() const
+{
+  return mySystem.m6502().B;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::d() const
+{
+  return mySystem.m6502().D;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::i() const
+{
+  return mySystem.m6502().I;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::z() const
+{
+  return !mySystem.m6502().notZ;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::c() const
+{
+  return mySystem.m6502().C;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

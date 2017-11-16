@@ -19,12 +19,12 @@
 #define TIA_OUTPUT_WIDGET_HXX
 
 class GuiObject;
-class FBSurface;
+class ContextMenu;
 class TiaZoomWidget;
+class FBSurface;
 
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "ContextMenu.hxx"
 
 class TiaOutputWidget : public Widget, public CommandSender
 {

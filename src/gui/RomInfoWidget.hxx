@@ -18,14 +18,14 @@
 #ifndef ROM_INFO_WIDGET_HXX
 #define ROM_INFO_WIDGET_HXX
 
-#include <fstream>
+class FBSurface;
+class Properties;
+namespace GUI {
+  struct Size;
+}
 
-#include "Props.hxx"
 #include "Widget.hxx"
-#include "Command.hxx"
-#include "Rect.hxx"
 #include "bspf.hxx"
-
 
 class RomInfoWidget : public Widget
 {

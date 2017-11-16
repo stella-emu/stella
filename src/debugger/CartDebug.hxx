@@ -21,16 +21,16 @@
 class Settings;
 class CartDebugWidget;
 
+// Function type for CartDebug instance methods
+class CartDebug;
+using CartMethod = int (CartDebug::*)();
+
 #include <map>
 #include <set>
 #include <list>
 
 #include "bspf.hxx"
 #include "DebuggerSystem.hxx"
-
-// Function type for CartDebug instance methods
-class CartDebug;
-using CartMethod = int (CartDebug::*)();
 
 class CartState : public DebuggerState
 {

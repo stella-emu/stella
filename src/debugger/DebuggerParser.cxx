@@ -30,6 +30,7 @@
 #include "M6502.hxx"
 #include "Expression.hxx"
 #include "FSNode.hxx"
+#include "Settings.hxx"
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
@@ -565,7 +566,7 @@ string DebuggerParser::eval()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTraps(bool listCond)
 {
-  StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
+  StringList names = debugger.m6502().getCondTrapNames();
 
   commandResult << (listCond ? "trapifs:" : "traps:") << endl;
   for(uInt32 i = 0; i < names.size(); i++)
@@ -648,11 +649,11 @@ string DebuggerParser::saveScriptFile(string file)
     if(debugger.breakPoint(i))
       out << "break " << Base::toString(i) << endl;
 
-  StringList conds = debugger.cpuDebug().m6502().getCondBreakNames();
+  StringList conds = debugger.m6502().getCondBreakNames();
   for(const auto& cond : conds)
     out << "breakif {" << cond << "}" << endl;
 
-  StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
+  StringList names = debugger.m6502().getCondTrapNames();
   for(uInt32 i = 0; i < myTraps.size(); ++i)
   {
     bool read = myTraps[i]->read;
@@ -745,7 +746,7 @@ void DebuggerParser::executeBreakif()
   int res = YaccParser::parse(argStrings[0].c_str());
   if(res == 0)
   {
-    uInt32 ret = debugger.cpuDebug().m6502().addCondBreak(
+    uInt32 ret = debugger.m6502().addCondBreak(
                  YaccParser::getResult(), argStrings[0] );
     commandResult << "Added breakif " << Base::toString(ret);
   }
@@ -793,7 +794,7 @@ void DebuggerParser::executeCheat()
 void DebuggerParser::executeClearbreaks()
 {
   debugger.clearAllBreakPoints();
-  debugger.cpuDebug().m6502().clearCondBreaks();
+  debugger.m6502().clearCondBreaks();
   commandResult << "all breakpoints cleared";
 }
 
@@ -812,7 +813,7 @@ void DebuggerParser::executeClearconfig()
 void DebuggerParser::executeCleartraps()
 {
   debugger.clearAllTraps();
-  debugger.cpuDebug().m6502().clearCondTraps();
+  debugger.m6502().clearCondTraps();
   myTraps.clear();
   commandResult << "all traps cleared";
 }
@@ -916,7 +917,7 @@ void DebuggerParser::executeDefine()
 // "delbreakif"
 void DebuggerParser::executeDelbreakif()
 {
-  if (debugger.cpuDebug().m6502().delCondBreak(args[0]))
+  if (debugger.m6502().delCondBreak(args[0]))
     commandResult << "removed breakif " << Base::toString(args[0]);
   else
     commandResult << red("no such breakif");
@@ -938,7 +939,7 @@ void DebuggerParser::executeDeltrap()
 {
   int index = args[0];
 
-  if(debugger.cpuDebug().m6502().delCondTrap(index))
+  if(debugger.m6502().delCondTrap(index))
   {
     for(uInt32 addr = myTraps[index]->begin; addr <= myTraps[index]->end; ++addr)
       executeTrapRW(addr, myTraps[index]->read, myTraps[index]->write, false);
@@ -1170,7 +1171,7 @@ void DebuggerParser::executeListbreaks()
   if(count)
     commandResult << "breaks:" << endl << buf.str();
 
-  StringList conds = debugger.cpuDebug().m6502().getCondBreakNames();
+  StringList conds = debugger.m6502().getCondBreakNames();
   if(conds.size() > 0)
   {
     if(count)
@@ -1216,7 +1217,7 @@ void DebuggerParser::executeListfunctions()
 // "listtraps"
 void DebuggerParser::executeListtraps()
 {
-  StringList names = debugger.cpuDebug().m6502().getCondTrapNames();
+  StringList names = debugger.m6502().getCondTrapNames();
 
   if(myTraps.size() != names.size())
   {
@@ -1691,7 +1692,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
          myTraps[i]->read == read && myTraps[i]->write == write &&
          myTraps[i]->condition == condition)
       {
-        if(debugger.cpuDebug().m6502().delCondTrap(i))
+        if(debugger.m6502().delCondTrap(i))
         {
           add = false;
           // @sa666666: please check this:
@@ -1705,7 +1706,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
     }
     if(add)
     {
-      uInt32 ret = debugger.cpuDebug().m6502().addCondTrap(
+      uInt32 ret = debugger.m6502().addCondTrap(
         YaccParser::getResult(), hasCond ? argStrings[0] : "");
       commandResult << "Added trap " << Base::toString(ret);
 

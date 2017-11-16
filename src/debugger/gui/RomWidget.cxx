@@ -17,6 +17,7 @@
 
 #include <sstream>
 
+#include "Settings.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "DiStella.hxx"

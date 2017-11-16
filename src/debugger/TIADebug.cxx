@@ -19,6 +19,7 @@
 #include "System.hxx"
 #include "Debugger.hxx"
 #include "TIA.hxx"
+#include "DelayQueueIterator.hxx"
 
 #include "TIADebug.hxx"
 
@@ -686,6 +687,66 @@ void TIADebug::setGRP1Old(uInt8 b)
 void TIADebug::setENABLOld(bool b)
 {
   myTIA.myBall.setENABLOld(b);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeWsync()
+{
+  mySystem.poke(WSYNC, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeRsync()
+{
+  mySystem.poke(RSYNC, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeResP0()
+{
+  mySystem.poke(RESP0, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeResP1()
+{
+  mySystem.poke(RESP1, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeResM0()
+{
+  mySystem.poke(RESM0, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeResM1()
+{
+  mySystem.poke(RESM1, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeResBL()
+{
+  mySystem.poke(RESBL, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeHmove()
+{
+  mySystem.poke(HMOVE, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeHmclr()
+{
+  mySystem.poke(HMCLR, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIADebug::strobeCxclr()
+{
+  mySystem.poke(CXCLR, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -19,6 +19,7 @@
 
 #include "bspf.hxx"
 #include "System.hxx"
+#include "M6502.hxx"
 #include "FSNode.hxx"
 #include "DiStella.hxx"
 #include "Debugger.hxx"

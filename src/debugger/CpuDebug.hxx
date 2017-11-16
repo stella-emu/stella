@@ -18,12 +18,14 @@
 #ifndef CPU_DEBUG_HXX
 #define CPU_DEBUG_HXX
 
-#include "M6502.hxx"
-#include "System.hxx"
-#include "DebuggerSystem.hxx"
+class M6502;
+class System;
 
 // Function type for CpuDebug instance methods
+class CpuDebug;
 using CpuMethod = int (CpuDebug::*)() const;
+
+#include "DebuggerSystem.hxx"
 
 class CpuState : public DebuggerState
 {
@@ -44,23 +46,20 @@ class CpuDebug : public DebuggerSystem
     void saveOldState() override;
     string toString() override { return EmptyString; } // Not needed, since CPU stuff is always visible
 
-    // I know, we ain't supposed to do this...
-    M6502& m6502() const { return mySystem.m6502(); }
-
-    int pc() const { return mySystem.m6502().PC; }
-    int sp() const { return mySystem.m6502().SP; }
-    int a()  const { return mySystem.m6502().A;  }
-    int x()  const { return mySystem.m6502().X;  }
-    int y()  const { return mySystem.m6502().Y;  }
+    int pc() const;
+    int sp() const;
+    int a()  const;
+    int x()  const;
+    int y()  const;
 
     // These return int, not boolean!
-    int n() const { return mySystem.m6502().N;     }
-    int v() const { return mySystem.m6502().V;     }
-    int b() const { return mySystem.m6502().B;     }
-    int d() const { return mySystem.m6502().D;     }
-    int i() const { return mySystem.m6502().I;     }
-    int z() const { return !mySystem.m6502().notZ; }
-    int c() const { return mySystem.m6502().C;     }
+    int n() const;
+    int v() const;
+    int b() const;
+    int d() const;
+    int i() const;
+    int z() const;
+    int c() const;
 
     void setPC(int pc);
     void setSP(int sp);

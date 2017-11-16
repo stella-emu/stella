@@ -26,6 +26,8 @@ class Console;
 class Debugger;
 class Launcher;
 class Menu;
+class FrameBuffer;
+class PNGLibrary;
 class Properties;
 class PropertiesSet;
 class Random;
@@ -35,10 +37,9 @@ class Sound;
 class StateManager;
 class VideoDialog;
 
-#include "Cart.hxx"
+#include "EventHandler.hxx"
 #include "FSNode.hxx"
-#include "FrameBuffer.hxx"
-#include "PNGLibrary.hxx"
+#include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
 
 struct TimingInfo {

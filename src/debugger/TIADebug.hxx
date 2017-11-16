@@ -19,16 +19,15 @@
 #define TIA_DEBUG_HXX
 
 class Debugger;
-class TiaDebug;
 class TIA;
-
-#include "DebuggerSystem.hxx"
-#include "DelayQueueIterator.hxx"
-#include "bspf.hxx"
+class DelayQueueIterator;
 
 // Function type for TIADebug instance methods
 class TIADebug;
 using TiaMethod = int (TIADebug::*)() const;
+
+#include "DebuggerSystem.hxx"
+#include "bspf.hxx"
 
 // Indices for various IntArray in TiaState
 enum {
@@ -144,16 +143,16 @@ class TIADebug : public DebuggerSystem
     bool collM0_M1() const { return collision(Cx_M0M1); }
 
     // TIA strobe registers
-    void strobeWsync() { mySystem.poke(WSYNC, 0); }
-    void strobeRsync() { mySystem.poke(RSYNC, 0); }
-    void strobeResP0() { mySystem.poke(RESP0, 0); }
-    void strobeResP1() { mySystem.poke(RESP1, 0); }
-    void strobeResM0() { mySystem.poke(RESM0, 0); }
-    void strobeResM1() { mySystem.poke(RESM1, 0); }
-    void strobeResBL() { mySystem.poke(RESBL, 0); }
-    void strobeHmove() { mySystem.poke(HMOVE, 0); }
-    void strobeHmclr() { mySystem.poke(HMCLR, 0); }
-    void strobeCxclr() { mySystem.poke(CXCLR, 0); }
+    void strobeWsync();
+    void strobeRsync();
+    void strobeResP0();
+    void strobeResP1();
+    void strobeResM0();
+    void strobeResM1();
+    void strobeResBL();
+    void strobeHmove();
+    void strobeHmclr();
+    void strobeCxclr();
 
     // Read-only internal TIA state
     int scanlines() const;

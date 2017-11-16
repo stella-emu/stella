@@ -23,12 +23,11 @@
 #include <set>
 
 class Debugger;
+class Settings;
 class FilesystemNode;
 struct Command;
 
 #include "bspf.hxx"
-#include "FrameBuffer.hxx"
-#include "Settings.hxx"
 
 class DebuggerParser
 {

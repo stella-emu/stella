@@ -42,6 +42,7 @@
 #include "Switches.hxx"
 #include "M6532.hxx"
 #include "MouseControl.hxx"
+#include "PNGLibrary.hxx"
 #include "Version.hxx"
 
 #include "EventHandler.hxx"
@@ -79,6 +80,11 @@ EventHandler::EventHandler(OSystem& osystem)
 
   // Create joystick handler (to handle all joystick functionality)
   myJoyHandler = make_unique<JoystickHandler>(osystem);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventHandler::~EventHandler()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

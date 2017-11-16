@@ -15,8 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Cart.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "Settings.hxx"
 #include "TabWidget.hxx"
 #include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"

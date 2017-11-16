@@ -18,6 +18,9 @@
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#include "Props.hxx"
+#include "PNGLibrary.hxx"
+#include "Rect.hxx"
 #include "Widget.hxx"
 #include "TIAConstants.hxx"
 

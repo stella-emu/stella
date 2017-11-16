@@ -18,6 +18,7 @@
 #include "bspf.hxx"
 
 #include "OSystem.hxx"
+#include "Console.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "PointingDevice.hxx"

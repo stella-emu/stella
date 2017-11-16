@@ -22,6 +22,7 @@ class GuiObject;
 class ButtonWidget;
 
 #include "Widget.hxx"
+#include "Console.hxx"
 #include "Command.hxx"
 
 
