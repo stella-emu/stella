@@ -16,9 +16,6 @@
 //============================================================================
 
 #include <cassert>
-#include <sstream>
-#include <fstream>
-#include <algorithm>
 
 #include "bspf.hxx"
 

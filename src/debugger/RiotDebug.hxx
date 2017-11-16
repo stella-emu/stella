@@ -18,10 +18,10 @@
 #ifndef RIOT_DEBUG_HXX
 #define RIOT_DEBUG_HXX
 
+class M6532;
 class Debugger;
 class RiotDebug;
 
-#include "M6532.hxx"
 #include "DebuggerSystem.hxx"
 
 class RiotState : public DebuggerState
@@ -69,10 +69,10 @@ class RiotDebug : public DebuggerSystem
     uInt8 tim8T(int newVal = -1);
     uInt8 tim64T(int newVal = -1);
     uInt8 tim1024T(int newVal = -1);
-    uInt8 intim() const       { return mySystem.m6532().intim();       }
-    uInt8 timint() const      { return mySystem.m6532().timint();      }
-    Int32 timClocks() const   { return mySystem.m6532().timerClocks(); }
-    Int32 intimClocks() const { return mySystem.m6532().intimClocks(); }
+    uInt8 intim() const;
+    uInt8 timint() const;
+    Int32 timClocks() const;
+    Int32 intimClocks() const;
 
     /* Controller ports */
     Controller& controller(Controller::Jack jack) const;

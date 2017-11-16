@@ -15,9 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-#include <time.h>
-#include <fstream>
+#include <ctime>
 
 #include "SDL_lib.hxx"
 #include "bspf.hxx"

@@ -40,6 +40,7 @@ using uInt64 = uint64_t;
 // types: cout, cerr, string, ostream, istream, etc.
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <memory>
 #include <string>

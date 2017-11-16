@@ -19,8 +19,8 @@
 #define STATE_MANAGER_HXX
 
 class OSystem;
+class RewindManager;
 
-#include "RewindManager.hxx"
 #include "Serializer.hxx"
 
 /**
@@ -44,6 +44,7 @@ class StateManager
       Create a new statemananger class.
     */
     StateManager(OSystem& osystem);
+    ~StateManager();
 
   public:
     /**

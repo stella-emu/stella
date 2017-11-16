@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <fstream>
-#include <sstream>
-
 #include "FSNode.hxx"
 #include "Serializer.hxx"
 

@@ -15,10 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-
 #include "ScrollBarWidget.hxx"
 #include "FrameBuffer.hxx"
 #include "EventHandler.hxx"

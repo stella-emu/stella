@@ -32,6 +32,7 @@ class PromptWidget;
 class ButtonWidget;
 
 class M6502;
+class System;
 class CartDebug;
 class CpuDebug;
 class RiotDebug;
@@ -45,7 +46,6 @@ class RewindManager;
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "FrameBufferConstants.hxx"
-#include "System.hxx"
 #include "bspf.hxx"
 
 using FunctionMap = std::map<string, unique_ptr<Expression>>;
@@ -209,31 +209,18 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /** Convenience methods to access peek/poke from System */
-    uInt8 peek(uInt16 addr, uInt8 flags = 0) {
-      return mySystem.peek(addr, flags);
-    }
-    uInt16 dpeek(uInt16 addr, uInt8 flags = 0) {
-      return uInt16(mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8));
-    }
-    void poke(uInt16 addr, uInt8 value, uInt8 flags = 0) {
-      mySystem.poke(addr, value, flags);
-    }
+    uInt8 peek(uInt16 addr, uInt8 flags = 0);
+    uInt16 dpeek(uInt16 addr, uInt8 flags = 0);
+    void poke(uInt16 addr, uInt8 value, uInt8 flags = 0);
 
     /** Convenience method to access the 6502 from System */
-    M6502& m6502() const { return mySystem.m6502(); }
+    M6502& m6502() const;
 
     /** These are now exposed so Expressions can use them. */
-    int peekAsInt(int addr, uInt8 flags = 0) {
-      return mySystem.peek(uInt16(addr), flags);
-    }
-    int dpeekAsInt(int addr, uInt8 flags = 0) {
-      return mySystem.peek(uInt16(addr), flags) |
-             (mySystem.peek(uInt16(addr+1), flags) << 8);
-    }
-    int getAccessFlags(uInt16 addr) const
-      { return mySystem.getAccessFlags(addr); }
-    void setAccessFlags(uInt16 addr, uInt8 flags)
-      { mySystem.setAccessFlags(addr, flags); }
+    int peekAsInt(int addr, uInt8 flags = 0);
+    int dpeekAsInt(int addr, uInt8 flags = 0);
+    int getAccessFlags(uInt16 addr) const;
+    void setAccessFlags(uInt16 addr, uInt8 flags);
 
     void setBreakPoint(uInt16 bp, bool set);
     uInt32 getBaseAddress(uInt32 addr, bool read);

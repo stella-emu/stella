@@ -16,10 +16,7 @@
 //============================================================================
 
 #include <cassert>
-#include <iostream>
-#include <sstream>
 #include <stdexcept>
-#include <fstream>
 
 #include "AtariVox.hxx"
 #include "Booster.hxx"

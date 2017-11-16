@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "Console.hxx"
@@ -25,6 +23,7 @@
 #include "Switches.hxx"
 #include "System.hxx"
 #include "Serializable.hxx"
+#include "RewindManager.hxx"
 
 #include "StateManager.hxx"
 
@@ -39,6 +38,11 @@ StateManager::StateManager(OSystem& osystem)
 {
   myRewindManager = make_unique<RewindManager>(myOSystem, *this);
   reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StateManager::~StateManager()
+{
 }
 
 #if 0

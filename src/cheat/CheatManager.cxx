@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <fstream>
-#include <sstream>
-
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "Cheat.hxx"

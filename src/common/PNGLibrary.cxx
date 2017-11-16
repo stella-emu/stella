@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <fstream>
 #include <cmath>
 
 #include "bspf.hxx"

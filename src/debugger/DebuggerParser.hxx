@@ -19,7 +19,6 @@
 #define DEBUGGER_PARSER_HXX
 
 #include <functional>
-#include <sstream>
 #include <set>
 
 class Debugger;

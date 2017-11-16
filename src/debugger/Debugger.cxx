@@ -15,12 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "bspf.hxx"
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <map>
+
+#include "bspf.hxx"
 
 #include "Version.hxx"
 #include "OSystem.hxx"
@@ -30,6 +27,7 @@
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
 #include "StateManager.hxx"
+#include "RewindManager.hxx"
 
 #include "Console.hxx"
 #include "System.hxx"
@@ -386,6 +384,55 @@ bool Debugger::readTrap(uInt16 t)
 bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Debugger::peek(uInt16 addr, uInt8 flags)
+{
+  return mySystem.peek(addr, flags);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 Debugger::dpeek(uInt16 addr, uInt8 flags)
+{
+  return uInt16(mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::poke(uInt16 addr, uInt8 value, uInt8 flags)
+{
+  mySystem.poke(addr, value, flags);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+M6502& Debugger::m6502() const
+{
+  return mySystem.m6502();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::peekAsInt(int addr, uInt8 flags)
+{
+  return mySystem.peek(uInt16(addr), flags);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::dpeekAsInt(int addr, uInt8 flags)
+{
+  return mySystem.peek(uInt16(addr), flags) |
+      (mySystem.peek(uInt16(addr+1), flags) << 8);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Debugger::getAccessFlags(uInt16 addr) const
+{
+  return mySystem.getAccessFlags(addr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::setAccessFlags(uInt16 addr, uInt8 flags)
+{
+  mySystem.setAccessFlags(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

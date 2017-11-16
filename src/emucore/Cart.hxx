@@ -18,9 +18,6 @@
 #ifndef CARTRIDGE_HXX
 #define CARTRIDGE_HXX
 
-#include <fstream>
-#include <sstream>
-
 class Cartridge;
 class Properties;
 class CartDebugWidget;

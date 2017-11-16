@@ -19,7 +19,6 @@
 #define DISTELLA_HXX
 
 #include <queue>
-#include <sstream>
 
 #include "Base.hxx"
 #include "CartDebug.hxx"

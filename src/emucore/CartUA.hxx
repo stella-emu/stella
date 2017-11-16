@@ -18,10 +18,9 @@
 #ifndef CARTRIDGEUA_HXX
 #define CARTRIDGEUA_HXX
 
-class System;
-
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "CartUAWidget.hxx"
 #endif

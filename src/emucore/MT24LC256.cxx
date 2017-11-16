@@ -16,7 +16,6 @@
 //============================================================================
 
 #include <cstdio>
-#include <fstream>
 
 #include "System.hxx"
 #include "MT24LC256.hxx"

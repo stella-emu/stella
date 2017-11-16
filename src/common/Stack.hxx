@@ -21,6 +21,8 @@
 #include <array>
 #include <functional>
 
+#include "bspf.hxx"
+
 /**
  * Simple fixed size stack class.
  */

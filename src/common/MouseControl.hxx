@@ -19,10 +19,10 @@
 #define MOUSE_CONTROL_HXX
 
 class Console;
+class Controller;
 class Properties;
 
 #include "bspf.hxx"
-#include "Control.hxx"
 
 /**
   The mouse can control various virtual 'controllers' in many different

@@ -104,6 +104,11 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CheatCodeDialog::~CheatCodeDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::loadConfig()
 {
   // Load items from CheatManager

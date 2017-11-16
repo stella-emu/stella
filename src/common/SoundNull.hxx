@@ -18,8 +18,6 @@
 #ifndef SOUND_NULL_HXX
 #define SOUND_NULL_HXX
 
-class OSystem;
-
 #include "bspf.hxx"
 #include "Sound.hxx"
 #include "OSystem.hxx"

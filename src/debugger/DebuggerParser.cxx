@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <fstream>
 #include "bspf.hxx"
 
 #include "Dialog.hxx"

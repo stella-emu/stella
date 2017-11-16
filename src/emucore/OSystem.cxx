@@ -16,8 +16,6 @@
 //============================================================================
 
 #include <cassert>
-#include <sstream>
-#include <fstream>
 
 #include <ctime>
 #ifdef HAVE_GETTIMEOFDAY

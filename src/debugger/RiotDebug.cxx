@@ -15,10 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "System.hxx"
 #include "TIA.hxx"
+#include "M6532.hxx"
 #include "Debugger.hxx"
 #include "Switches.hxx"
 
@@ -192,6 +191,30 @@ uInt8 RiotDebug::tim1024T(int newVal)
     mySystem.poke(0x297, newVal);
 
   return mySystem.m6532().myOutTimer[3];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 RiotDebug::intim() const
+{
+  return mySystem.m6532().intim();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 RiotDebug::timint() const
+{
+  return mySystem.m6532().timint();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 RiotDebug::timClocks() const
+{
+  return mySystem.m6532().timerClocks();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 RiotDebug::intimClocks() const
+{
+  return mySystem.m6532().intimClocks();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
