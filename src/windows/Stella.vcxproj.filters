@@ -867,6 +867,9 @@
     <ClCompile Include="..\gui\DeveloperDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDebugWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">

@@ -262,6 +262,7 @@
     <ClCompile Include="..\debugger\gui\CartCVPlusWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartCVWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\CartDebugWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartDFSCWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartDFWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartDPCPlusWidget.cxx" />
