@@ -58,22 +58,26 @@ class DeveloperDialog : public Dialog
   private:
     enum
     {
-      kDevOptions       = 'DVop',
+      kDevSettings0     = 'DVs0',
       kRandRAMID        = 'DVrm',
       kRandCPUID        = 'DVcp',
       kTVJitter         = 'DVjt',
       kTVJitterChanged  = 'DVjr',
       kPPinCmd          = 'DVpn',
+      kDevSettings1     = 'DVs1',
+  #ifdef DEBUGGER_SUPPORT
       kDWidthChanged    = 'UIdw',
       kDHeightChanged   = 'UIdh',
       kDSmallSize       = 'UIds',
       kDMediumSize      = 'UIdm',
       kDLargeSize       = 'UIdl'
+  #endif
     };
 
     TabWidget* myTab;
 
-    CheckboxWidget*   myDevSettings;
+    CheckboxWidget*   myDevSettings0;
+    CheckboxWidget*   myDevSettings1;
 
     StaticTextWidget* myLoadingROMLabel;
     CheckboxWidget*   myRandomBank;
@@ -89,14 +93,14 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*   myDebugColors;
     CheckboxWidget*   myUndrivenPins;
 
-  #ifdef DEBUGGER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     // Debugger options
     SliderWidget*     myDebuggerWidthSlider;
     StaticTextWidget* myDebuggerWidthLabel;
     SliderWidget*     myDebuggerHeightSlider;
     StaticTextWidget* myDebuggerHeightLabel;
     PopUpWidget*      myDebuggerFontStyle;
-  #endif
+#endif
 
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;

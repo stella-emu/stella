@@ -31,7 +31,7 @@
 #include "Font.hxx"
 #ifdef DEBUGGER_SUPPORT
 #include "DebuggerDialog.hxx"
-#endif                       
+#endif
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "OSystem.hxx"
@@ -59,8 +59,8 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
 
   /*ypos = VBORDER;
-  myDevSettings = new CheckboxWidget(this, font, HBORDER, ypos, "Enable developer settings", kDevOptions);
-  wid.push_back(myDevSettings);
+  myDevSettings0 = new CheckboxWidget(this, font, HBORDER, ypos, "Enable developer settings", kDevSettings0);
+  wid.push_back(myDevSettings0);
   addToFocusList(wid);*/
 
   // The tab widget
@@ -97,8 +97,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   tabID = myTab->addTab(" Emulation ");
 
   ypos = VBORDER;
-  myDevSettings = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevOptions);
-  wid.push_back(myDevSettings);
+  myDevSettings0 = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings0);
+  wid.push_back(myDevSettings0);
 
   ypos += lineHeight + VGAP;
 
@@ -187,6 +187,32 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   addToFocusList(wid, myTab, tabID);
 }*/
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::addStatesTab(const GUI::Font& font)
+{
+  const int VGAP = 4;
+  const int INDENT = 13 + 3;
+  const int HBORDER = 10;
+  const int VBORDER = 8;
+
+  int ypos;
+  int lineHeight = font.getLineHeight();
+  StringList actions;
+  WidgetArray wid;
+  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
+
+  int tabID = myTab->addTab("States");
+
+  ypos = VBORDER;
+  myDevSettings1 = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings1);
+  wid.push_back(myDevSettings1);
+  ypos += lineHeight + VGAP;
+
+  new StaticTextWidget(myTab, font, HBORDER + INDENT, ypos, "TODO: Rewind-States");
+
+  addToFocusList(wid, myTab, tabID);
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
@@ -313,18 +339,6 @@ void DeveloperDialog::addUITab(const GUI::Font& font)
 }*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::addStatesTab(const GUI::Font& font)
-{
-  int tabID = myTab->addTab("States");
-  WidgetArray wid;
-
-  new StaticTextWidget(myTab, font, 10, 10, "TODO: Rewind-States");
-
-  addToFocusList(wid, myTab, tabID);
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDefaultOKCancelButtons(const GUI::Font& font)
 {
   const int buttonWidth = font.getStringWidth("Defaults") + 20,
@@ -342,7 +356,7 @@ void DeveloperDialog::addDefaultOKCancelButtons(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::loadConfig()
 {
-  myDevSettings->setState(instance().settings().getBool("dev.settings"));
+  myDevSettings0->setState(instance().settings().getBool("dev.settings"));
 
   myRandomBank->setState(instance().settings().getBool("dev.bankrandom"));
   myRandomizeRAM->setState(instance().settings().getBool("dev.ramrandom"));
@@ -397,7 +411,7 @@ void DeveloperDialog::saveConfig()
   // - thumbexception (commandline only yet)
   // - debugcolors (no effect yet)
 
-  bool devSettings = myDevSettings->getState();
+  bool devSettings = myDevSettings0->getState();
   instance().settings().setValue("dev.settings", devSettings);
 
   instance().settings().setValue("dev.bankrandom", myRandomBank->getState());
@@ -460,7 +474,7 @@ void DeveloperDialog::saveConfig()
 
 void DeveloperDialog::setDefaults()
 {
-  myDevSettings->setState(false);
+  myDevSettings0->setState(false);
 
   switch(myTab->getActiveTab())
   {
@@ -475,7 +489,7 @@ void DeveloperDialog::setDefaults()
       myColorLoss->setState(true);
       // jitter
       myTVJitter->setState(true);
-      myTVJitterRec->setValue(1);
+      myTVJitterRec->setValue(2);
       // debug colors
       myDebugColors->setState(false);
       // Undriven TIA pins
@@ -513,7 +527,12 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 {
   switch(cmd)
   {
-    case kDevOptions:
+    case kDevSettings0:
+      myDevSettings1->setState(myDevSettings0->getState());
+      enableOptions();
+      break;
+    case kDevSettings1:
+      myDevSettings0->setState(myDevSettings1->getState());
       enableOptions();
       break;
 
@@ -582,7 +601,7 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::enableOptions()
 {
-  bool enable = myDevSettings->getState();
+  bool enable = myDevSettings0->getState();
 
   // CPU
   myLoadingROMLabel->setEnabled(enable);
@@ -611,7 +630,7 @@ void DeveloperDialog::handleTVJitterChange(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColors()
 {
-  if(instance().hasConsole() && myDevSettings->getState())
+  if(instance().hasConsole() && myDevSettings0->getState())
   {
     bool fixed = instance().console().tia().usingFixedColors();
     if(fixed != myDebugColors->getState())

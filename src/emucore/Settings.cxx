@@ -155,7 +155,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.cpurandom", "SAXYP");
   setInternal("dev.colorloss", "true");
   setInternal("dev.tv.jitter", "true");
-  setInternal("dev.tv.jitter_recovery", "1");
+  setInternal("dev.tv.jitter_recovery", "2");
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
 
