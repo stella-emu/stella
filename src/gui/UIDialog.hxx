@@ -55,15 +55,6 @@ class UIDialog : public Dialog
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
 
-#ifdef DEBUGGER_SUPPORT
-    // Debugger options
-    SliderWidget*     myDebuggerWidthSlider;
-    StaticTextWidget* myDebuggerWidthLabel;
-    SliderWidget*     myDebuggerHeightSlider;
-    StaticTextWidget* myDebuggerHeightLabel;
-    PopUpWidget*      myDebuggerFontStyle;
-#endif
-
     // Misc options
     PopUpWidget*      myPalettePopup;
     PopUpWidget*      myListDelayPopup;
@@ -72,12 +63,6 @@ class UIDialog : public Dialog
     enum {
       kLWidthChanged  = 'UIlw',
       kLHeightChanged = 'UIlh',
-      kDWidthChanged  = 'UIdw',
-      kDHeightChanged = 'UIdh',
-
-      kDSmallSize  = 'UIds',
-      kDMediumSize = 'UIdm',
-      kDLargeSize  = 'UIdl'
     };
 
   private:

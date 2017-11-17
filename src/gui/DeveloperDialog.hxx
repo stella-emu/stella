@@ -39,7 +39,7 @@ class DeveloperDialog : public Dialog
 {
   public:
     DeveloperDialog(OSystem& osystem, DialogContainer& parent,
-                    const GUI::Font& font, int max_w, int max_h);
+                const GUI::Font& font, int max_w, int max_h);
     virtual ~DeveloperDialog() = default;
 
   private:
@@ -63,7 +63,12 @@ class DeveloperDialog : public Dialog
       kRandCPUID        = 'DVcp',
       kTVJitter         = 'DVjt',
       kTVJitterChanged  = 'DVjr',
-      kPPinCmd          = 'DVpn'
+      kPPinCmd          = 'DVpn',
+      kDWidthChanged    = 'UIdw',
+      kDHeightChanged   = 'UIdh',
+      kDSmallSize       = 'UIds',
+      kDMediumSize      = 'UIdm',
+      kDLargeSize       = 'UIdl'
     };
 
     TabWidget* myTab;
@@ -84,13 +89,22 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*   myDebugColors;
     CheckboxWidget*   myUndrivenPins;
 
+  #ifdef DEBUGGER_SUPPORT
+    // Debugger options
+    SliderWidget*     myDebuggerWidthSlider;
+    StaticTextWidget* myDebuggerWidthLabel;
+    SliderWidget*     myDebuggerHeightSlider;
+    StaticTextWidget* myDebuggerHeightLabel;
+    PopUpWidget*      myDebuggerFontStyle;
+  #endif
+
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;
 
   private:
     void addEmulationTab(const GUI::Font& font);
     //void addVideoTab(const GUI::Font& font);
-    //void addDebuggerTab(const GUI::Font& font);
+    void addDebuggerTab(const GUI::Font& font);
     //void addUITab(const GUI::Font& font);
     void addStatesTab(const GUI::Font& font);
     // Add Defaults, OK and Cancel buttons

@@ -29,6 +29,9 @@
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#ifdef DEBUGGER_SUPPORT
+#include "DebuggerDialog.hxx"
+#endif                       
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "OSystem.hxx"
@@ -44,33 +47,33 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth(),
     buttonHeight = font.getLineHeight() + 4;
-  const int VBORDER = 4+2;
-  const int HBORDER = 8;
+  const int VBORDER = 4;
+  //const int HBORDER = 8;
   int xpos, ypos, tabID;
   StringList actions;
 
   // Set real dimensions
-  _w = std::min(54 * fontWidth + 10, max_w);
-  _h = std::min(16 * (lineHeight + 4) + 14, max_h);
+  _w = std::min(51 * fontWidth + 10, max_w);
+  _h = std::min(14 * (lineHeight + 4) + 14, max_h);
 
   WidgetArray wid;
 
-  ypos = VBORDER;
+  /*ypos = VBORDER;
   myDevSettings = new CheckboxWidget(this, font, HBORDER, ypos, "Enable developer settings", kDevOptions);
   wid.push_back(myDevSettings);
-  addToFocusList(wid);
+  addToFocusList(wid);*/
 
   // The tab widget
-  ypos += lineHeight + 2;
-  xpos = 2;
+  //ypos += lineHeight + 2;
+  xpos = 2; ypos = VBORDER;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2 * xpos, _h - buttonHeight - 16 - ypos);
   addTabWidget(myTab);
 
   addEmulationTab(font);
   //addVideoTab(font);
-  //addDebuggerTab(font);
   //addUITab(font);
   addStatesTab(font);
+  addDebuggerTab(font);
   addDefaultOKCancelButtons(font);
 
   // Activate the first tab
@@ -94,36 +97,36 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   tabID = myTab->addTab(" Emulation ");
 
   ypos = VBORDER;
-  /*myDevSettings = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevOptions);
+  myDevSettings = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevOptions);
   wid.push_back(myDevSettings);
 
-  ypos += lineHeight + VGAP;*/
+  ypos += lineHeight + VGAP;
 
   // Randomize items
-  myLoadingROMLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT*0, ypos, "When loading a ROM:", kTextAlignLeft);
+  myLoadingROMLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT*1, ypos, "When loading a ROM:", kTextAlignLeft);
   wid.push_back(myLoadingROMLabel);
 
   ypos += lineHeight + VGAP;
-  myRandomBank = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Random startup bank (TODO)");
+  myRandomBank = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Random startup bank (TODO)");
   wid.push_back(myRandomBank);
 
   // Randomize RAM
   ypos += lineHeight + VGAP;
-  myRandomizeRAM = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+  myRandomizeRAM = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
                                       "Randomize zero-page and extended RAM", kRandRAMID);
   wid.push_back(myRandomizeRAM);
 
   // Randomize CPU
   ypos += lineHeight + VGAP;
   int lwidth = font.getStringWidth("Randomize CPU ");
-  myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Randomize CPU ");
+  myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Randomize CPU ");
   wid.push_back(myRandomizeCPULabel);
 
   int xpos = myRandomizeCPULabel->getRight() + 10;
   const char* const cpuregs[] = { "SP", "A", "X", "Y", "PS" };
   for(int i = 0; i < 5; ++i)
   {
-    myRandomizeCPU[i] = new CheckboxWidget(myTab, font, xpos, ypos + 1,
+    myRandomizeCPU[i] = new CheckboxWidget(myTab, font, xpos, ypos + 2,
                                            cpuregs[i], kRandCPUID);
     //myRandomizeCPU[i]->setID(kRandCPUID);
     //myRandomizeCPU[i]->setTarget(this);
@@ -137,12 +140,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myThumbException);*/
 
   //ypos += (lineHeight + VGAP) * 2;
-  myColorLoss = new CheckboxWidget(myTab, font, HBORDER + INDENT*0, ypos + 1, "PAL color-loss");
+  myColorLoss = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "PAL color-loss");
   wid.push_back(myColorLoss);
 
   // TV jitter effect
   ypos += lineHeight + VGAP;
-  myTVJitter = new CheckboxWidget(myTab, font, HBORDER + INDENT*0, ypos + 1, "Jitter/Roll Effect", kTVJitter);
+  myTVJitter = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/Roll Effect", kTVJitter);
   wid.push_back(myTVJitter);
   myTVJitterRec = new SliderWidget(myTab, font,
                                    myTVJitter->getRight()+ 16, ypos - 1,
@@ -159,12 +162,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   // debug colors
   ypos += lineHeight + VGAP;
-  myDebugColors = new CheckboxWidget(myTab, font, HBORDER + INDENT*0, ypos + 1, "Debug Colors");
+  myDebugColors = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Debug Colors");
   wid.push_back(myDebugColors);
 
   // How to handle undriven TIA pins
   ypos += lineHeight + VGAP;
-  myUndrivenPins = new CheckboxWidget(myTab, font, HBORDER + INDENT*0, ypos + 1,
+  myUndrivenPins = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1,
                                       "Drive unused TIA pins randomly on a read/peek");
   wid.push_back(myUndrivenPins);
 
@@ -183,19 +186,123 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   ypos += lineHeight + 4;
 
   addToFocusList(wid, myTab, tabID);
-}
+}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 {
-  int tabID = myTab->addTab(" Debugger ");
+  int tabID = myTab->addTab(" Debugger UI ");
+
+#ifdef DEBUGGER_SUPPORT
   WidgetArray wid;
+  VariantList items;
+  int fontWidth = font.getMaxCharWidth(),
+    fontHeight = font.getFontHeight(),
+    buttonHeight = font.getLineHeight() + 4,
+    lineHeight = font.getLineHeight();
+  const int VGAP = 4;
+  const int VBORDER = 8;
+  const int HBORDER = 10;
+  int xpos, ypos;
+  int lwidth, pwidth = font.getStringWidth("Standard");
+  ButtonWidget* b;
+  const GUI::Size& ds = instance().frameBuffer().desktopSize();
+
+  lwidth = font.getStringWidth("Debugger Height ");
+  xpos = HBORDER;
+  ypos = VBORDER;
+
+  // Debugger width and height
+  myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                           lineHeight, "Debugger Width  ",
+                                           lwidth, kDWidthChanged);
+  myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
+  myDebuggerWidthSlider->setMaxValue(ds.w);
+  myDebuggerWidthSlider->setStepValue(10);
+  wid.push_back(myDebuggerWidthSlider);
+  myDebuggerWidthLabel =
+    new StaticTextWidget(myTab, font,
+                         xpos + myDebuggerWidthSlider->getWidth() + 4,
+                         ypos + 1, 4 * fontWidth, fontHeight, "", kTextAlignLeft);
+  myDebuggerWidthLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + VGAP;
+
+  myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                            lineHeight, "Debugger Height ",
+                                            lwidth, kDHeightChanged);
+  myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
+  myDebuggerHeightSlider->setMaxValue(ds.h);
+  myDebuggerHeightSlider->setStepValue(10);
+  wid.push_back(myDebuggerHeightSlider);
+  myDebuggerHeightLabel =
+    new StaticTextWidget(myTab, font,
+                         xpos + myDebuggerHeightSlider->getWidth() + 4,
+                         ypos + 1, 4 * fontWidth, fontHeight, "", kTextAlignLeft);
+  myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
+
+  // Add minimum window size buttons for different fonts
+  ypos += lineHeight + VGAP * 2;
+  StaticTextWidget* t = new StaticTextWidget(myTab, font, HBORDER, ypos + 3, "Reset debugger size for");
+
+  int fbwidth = font.getStringWidth("Medium font") + 20;
+  //xpos = (_w - fbwidth - 2 * VBORDER) / 2;  ypos += 2 * lineHeight + 4;
+  xpos = t->getRight() + 8;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+                       "Small font", kDSmallSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + VGAP;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+                       "Medium font", kDMediumSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + VGAP;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+                       "Large font", kDLargeSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + VGAP * 4;
+
+  // Font style (bold label vs. text, etc)
+  lwidth = font.getStringWidth("Font Style ");
+  pwidth = font.getStringWidth("Bold non-labels only");
+  xpos = VBORDER;
+  items.clear();
+  VarList::push_back(items, "All Normal font", "0");
+  VarList::push_back(items, "Bold labels only", "1");
+  VarList::push_back(items, "Bold non-labels only", "2");
+  VarList::push_back(items, "All Bold font", "3");
+  myDebuggerFontStyle =
+    new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
+                    "Font Style ", lwidth);
+  wid.push_back(myDebuggerFontStyle);
+
+  // Debugger is only realistically available in windowed modes 800x600 or greater
+  // (and when it's actually been compiled into the app)
+  bool debuggerAvailable =
+#if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
+    (ds.w >= 800 && ds.h >= 600);  // TODO - maybe this logic can disappear?
+#else
+    false;
+#endif
+  if(!debuggerAvailable)
+  {
+    myDebuggerWidthSlider->clearFlags(WIDGET_ENABLED);
+    myDebuggerWidthLabel->clearFlags(WIDGET_ENABLED);
+    myDebuggerHeightSlider->clearFlags(WIDGET_ENABLED);
+    myDebuggerHeightLabel->clearFlags(WIDGET_ENABLED);
+  }
+
+  // Add items for tab 1
+  addToFocusList(wid, myTab, tabID);
+#else
+  new StaticTextWidget(myTab, font, 0, 20, _w - 20, fontHeight,
+                       "Debugger support not included", kTextAlignCenter);
+#endif
+
 
 
   addToFocusList(wid, myTab, tabID);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addUITab(const GUI::Font& font)
 {
   int tabID = myTab->addTab("UI");
@@ -258,6 +365,27 @@ void DeveloperDialog::loadConfig()
 
   enableOptions();
 
+#ifdef DEBUGGER_SUPPORT
+  uInt32 w, h;
+
+  // Debugger size
+  const GUI::Size& ds = instance().settings().getSize("dbg.res");
+  w = ds.w; h = ds.h;
+  w = std::max(w, uInt32(DebuggerDialog::kSmallFontMinW));
+  h = std::max(h, uInt32(DebuggerDialog::kSmallFontMinH));
+  w = std::min(w, ds.w);
+  h = std::min(h, ds.h);
+
+  myDebuggerWidthSlider->setValue(w);
+  myDebuggerWidthLabel->setValue(w);
+  myDebuggerHeightSlider->setValue(h);
+  myDebuggerHeightLabel->setValue(h);
+
+  // Debugger font style
+  int style = instance().settings().getInt("dbg.fontstyle");
+  myDebuggerFontStyle->setSelected(style, "0");
+#endif
+
   myTab->loadConfig();
 }
 
@@ -317,31 +445,67 @@ void DeveloperDialog::saveConfig()
 
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
+
+#ifdef DEBUGGER_SUPPORT
+  // Debugger size
+  instance().settings().setValue("dbg.res",
+                                 GUI::Size(myDebuggerWidthSlider->getValue(),
+                                 myDebuggerHeightSlider->getValue()));
+
+  // Debugger font style
+  instance().settings().setValue("dbg.fontstyle",
+                                 myDebuggerFontStyle->getSelectedTag().toString());
+#endif
 }
 
 void DeveloperDialog::setDefaults()
 {
   myDevSettings->setState(false);
 
-  myRandomBank->setState(true);
-  myRandomizeRAM->setState(true);
-  for(int i = 0; i < 5; ++i)
-    myRandomizeCPU[i]->setState(true);
-  //myThumbException->setState(false);
+  switch(myTab->getActiveTab())
+  {
+    case 0:
+      myRandomBank->setState(true);
+      myRandomizeRAM->setState(true);
+      for(int i = 0; i < 5; ++i)
+        myRandomizeCPU[i]->setState(true);
+      //myThumbException->setState(false);
 
-  // PAL color-loss effect
-  myColorLoss->setState(true);
-  // jitter
-  myTVJitter->setState(true);
-  myTVJitterRec->setValue(1);
-  // debug colors
-  myDebugColors->setState(false);
-  // Undriven TIA pins
-  myUndrivenPins->setState(true);
+      // PAL color-loss effect
+      myColorLoss->setState(true);
+      // jitter
+      myTVJitter->setState(true);
+      myTVJitterRec->setValue(1);
+      // debug colors
+      myDebugColors->setState(false);
+      // Undriven TIA pins
+      myUndrivenPins->setState(true);
 
-  enableOptions();
-  handleTVJitterChange(false);
-  handleDebugColors();
+      enableOptions();
+      handleTVJitterChange(false);
+      handleDebugColors();
+      break;
+
+    case 1:  // States
+      break;
+
+    case 2:  // Debugger options
+    {
+#ifdef DEBUGGER_SUPPORT
+      uInt32 w = std::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
+      uInt32 h = std::min(instance().frameBuffer().desktopSize().h, uInt32(DebuggerDialog::kMediumFontMinH));
+      myDebuggerWidthSlider->setValue(w);
+      myDebuggerWidthLabel->setValue(w);
+      myDebuggerHeightSlider->setValue(h);
+      myDebuggerHeightLabel->setValue(h);
+      myDebuggerFontStyle->setSelected("0");
+#endif
+      break;
+    }
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -364,6 +528,37 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
     case kPPinCmd:
       instance().console().tia().driveUnusedPinsRandom(myUndrivenPins->getState());
       break;
+
+#ifdef DEBUGGER_SUPPORT
+    case kDWidthChanged:
+      myDebuggerWidthLabel->setValue(myDebuggerWidthSlider->getValue());
+      break;
+
+    case kDHeightChanged:
+      myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
+      break;
+
+    case kDSmallSize:
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kSmallFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kSmallFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kSmallFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kSmallFontMinH);
+      break;
+
+    case kDMediumSize:
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kMediumFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kMediumFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kMediumFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kMediumFontMinH);
+      break;
+
+    case kDLargeSize:
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kLargeFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kLargeFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kLargeFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kLargeFontMinH);
+      break;
+#endif
 
     case GuiObject::kOKCmd:
       saveConfig();
