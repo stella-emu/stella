@@ -28,78 +28,84 @@ class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
 
-#include "Dialog.hxx"
+namespace GUI {
+  class Font;
+}
+
 #include "bspf.hxx"
-#include "d:\Users\Thomas\Documents\Atari\stella\src\gui\Dialog.hxx"
+#include "Dialog.hxx"
 
 class DeveloperDialog : public Dialog
 {
-public:
-  DeveloperDialog(OSystem& osystem, DialogContainer& parent,
-              const GUI::Font& font, int max_w, int max_h);
-  virtual ~DeveloperDialog() = default;
+  public:
+    DeveloperDialog(OSystem& osystem, DialogContainer& parent,
+                    const GUI::Font& font, int max_w, int max_h);
+    virtual ~DeveloperDialog() = default;
 
-private:
-  /*void handleKeyDown(StellaKey key, StellaMod mod) override;
-  void handleJoyDown(int stick, int button) override;
-  void handleJoyAxis(int stick, int axis, int value) override;
-  bool handleJoyHat(int stick, int hat, int value) override;*/
-  void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+  private:
+  #if 0
+    void handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleJoyDown(int stick, int button) override;
+    void handleJoyAxis(int stick, int axis, int value) override;
+    bool handleJoyHat(int stick, int hat, int value) override;
+  #endif
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-  void loadConfig() override;
-  void saveConfig() override;
-  void setDefaults() override;
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
 
-private:
-  enum
-  {
-    kDevOptions       = 'DVop',
-    kRandRAMID        = 'DVrm',
-    kRandCPUID        = 'DVcp',
-    kTVJitter         = 'DVjt',
-    kTVJitterChanged  = 'DVjr',
-    kPPinCmd          = 'DVpn'
-  };
+  private:
+    enum
+    {
+      kDevOptions       = 'DVop',
+      kRandRAMID        = 'DVrm',
+      kRandCPUID        = 'DVcp',
+      kTVJitter         = 'DVjt',
+      kTVJitterChanged  = 'DVjr',
+      kPPinCmd          = 'DVpn'
+    };
 
-  TabWidget* myTab;
+    TabWidget* myTab;
 
-  CheckboxWidget*   myDevSettings;
+    CheckboxWidget*   myDevSettings;
 
-  StaticTextWidget* myLoadingROMLabel;
-  CheckboxWidget*   myRandomBank;
-  CheckboxWidget*   myRandomizeRAM;
-  StaticTextWidget* myRandomizeCPULabel;
-  CheckboxWidget*   myRandomizeCPU[5];
-  //CheckboxWidget*   myThumbException;
+    StaticTextWidget* myLoadingROMLabel;
+    CheckboxWidget*   myRandomBank;
+    CheckboxWidget*   myRandomizeRAM;
+    StaticTextWidget* myRandomizeCPULabel;
+    CheckboxWidget*   myRandomizeCPU[5];
+    //CheckboxWidget*   myThumbException;
 
-  CheckboxWidget*   myColorLoss;
-  CheckboxWidget*   myTVJitter;
-  SliderWidget*     myTVJitterRec;
-  StaticTextWidget* myTVJitterRecLabel;
-  CheckboxWidget*   myDebugColors;
-  CheckboxWidget*   myUndrivenPins;
+    CheckboxWidget*   myColorLoss;
+    CheckboxWidget*   myTVJitter;
+    SliderWidget*     myTVJitterRec;
+    StaticTextWidget* myTVJitterRecLabel;
+    CheckboxWidget*   myDebugColors;
+    CheckboxWidget*   myUndrivenPins;
 
-  // Maximum width and height for this dialog
-  int myMaxWidth, myMaxHeight;
+    // Maximum width and height for this dialog
+    int myMaxWidth, myMaxHeight;
 
-private:
-  void addEmulationTab(const GUI::Font& font);
-  //void addVideoTab(const GUI::Font& font);
-  //void addDebuggerTab(const GUI::Font& font);
-  //void addUITab(const GUI::Font& font);
-  void addStatesTab(const GUI::Font& font);
-  // Add Defaults, OK and Cancel buttons
-  void addDefaultOKCancelButtons(const GUI::Font& font);
+  private:
+    void addEmulationTab(const GUI::Font& font);
+    //void addVideoTab(const GUI::Font& font);
+    //void addDebuggerTab(const GUI::Font& font);
+    //void addUITab(const GUI::Font& font);
+    void addStatesTab(const GUI::Font& font);
+    // Add Defaults, OK and Cancel buttons
+    void addDefaultOKCancelButtons(const GUI::Font& font);
 
-  void enableOptions();
-  void handleTVJitterChange(bool enable);
-  void handleDebugColors();
+    void enableOptions();
+    void handleTVJitterChange(bool enable);
+    void handleDebugColors();
 
-  // Following constructors and assignment operators not supported
-  DeveloperDialog() = delete;
-  DeveloperDialog(const DeveloperDialog&) = delete;
-  DeveloperDialog(DeveloperDialog&&) = delete;
-  DeveloperDialog& operator=(const DeveloperDialog&) = delete;
-  DeveloperDialog& operator=(DeveloperDialog&&) = delete;
+    // Following constructors and assignment operators not supported
+    DeveloperDialog() = delete;
+    DeveloperDialog(const DeveloperDialog&) = delete;
+    DeveloperDialog(DeveloperDialog&&) = delete;
+    DeveloperDialog& operator=(const DeveloperDialog&) = delete;
+    DeveloperDialog& operator=(DeveloperDialog&&) = delete;
 };
+
 #endif

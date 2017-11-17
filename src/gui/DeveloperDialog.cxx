@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
@@ -29,12 +28,11 @@
 #include "PopUpWidget.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "OSystem.hxx"
-
 #include "DeveloperDialog.hxx"
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
