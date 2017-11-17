@@ -10,6 +10,7 @@ MODULE_OBJS := \
 	src/gui/CommandMenu.o \
 	src/gui/ContextMenu.o \
 	src/gui/DialogContainer.o \
+	src/gui/DeveloperDialog.o \
 	src/gui/Dialog.o \
 	src/gui/EditableWidget.o \
 	src/gui/EditTextWidget.o \

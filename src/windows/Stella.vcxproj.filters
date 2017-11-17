@@ -864,7 +864,7 @@
     <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DeveloperDialog.cxx">
+    <ClCompile Include="..\gui\DeveloperDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
   </ItemGroup>
