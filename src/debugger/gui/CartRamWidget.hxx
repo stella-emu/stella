@@ -22,8 +22,8 @@ class GuiObject;
 class DataGridOpsWidget;
 class StringListWidget;
 class InternalRamWidget;
+class CartDebugWidget;
 
-#include "CartDebugWidget.hxx"
 #include "RamWidget.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"

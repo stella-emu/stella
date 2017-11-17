@@ -20,10 +20,9 @@
 
 class DataGridOpsWidget;
 class ScrollBarWidget;
+class CommandSender;
 
 #include "Widget.hxx"
-#include "Command.hxx"
-#include "Debugger.hxx"
 #include "EditableWidget.hxx"
 #include "Base.hxx"
 #include "Rect.hxx"

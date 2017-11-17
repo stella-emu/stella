@@ -18,12 +18,11 @@
 #ifndef DRIVING_WIDGET_HXX
 #define DRIVING_WIDGET_HXX
 
+class Controller;
 class ButtonWidget;
 class CheckboxWidget;
 class DataGridWidget;
 
-#include "Control.hxx"
-#include "Event.hxx"
 #include "ControllerWidget.hxx"
 
 class DrivingWidget : public ControllerWidget

@@ -19,6 +19,7 @@
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "Debugger.hxx"
 #include "TIADebug.hxx"
 #include "Widget.hxx"
 

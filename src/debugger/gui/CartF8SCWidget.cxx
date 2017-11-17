@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Debugger.hxx"
+#include "CartDebug.hxx"
 #include "CartF8SC.hxx"
 #include "PopUpWidget.hxx"
 #include "CartF8SCWidget.hxx"

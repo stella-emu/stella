@@ -20,6 +20,7 @@
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
 #include "OSystem.hxx"
+#include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "Widget.hxx"
 
@@ -155,6 +156,11 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Calculate final height
   if(_h == 0)  _h = ypos + myLineHeight - y;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+RamWidget::~RamWidget()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

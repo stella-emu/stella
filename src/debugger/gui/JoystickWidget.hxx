@@ -19,7 +19,6 @@
 #define JOYSTICK_WIDGET_HXX
 
 #include "Control.hxx"
-#include "Event.hxx"
 #include "ControllerWidget.hxx"
 
 class JoystickWidget : public ControllerWidget

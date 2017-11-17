@@ -18,8 +18,8 @@
 #ifndef PADDLE_WIDGET_HXX
 #define PADDLE_WIDGET_HXX
 
-#include "Control.hxx"
-#include "Event.hxx"
+class Controller;
+
 #include "ControllerWidget.hxx"
 
 class PaddleWidget : public ControllerWidget

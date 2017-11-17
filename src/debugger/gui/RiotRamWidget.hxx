@@ -25,8 +25,8 @@ class DataGridWidget;
 class DataGridOpsWidget;
 class EditTextWidget;
 class StaticTextWidget;
+class CartDebug;
 
-#include "CartDebug.hxx"
 #include "RamWidget.hxx"
 
 class RiotRamWidget : public RamWidget

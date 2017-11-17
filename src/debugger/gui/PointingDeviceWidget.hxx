@@ -18,9 +18,9 @@
 #ifndef POINTINGDEVICE_WIDGET_HXX
 #define POINTINGDEVICE_WIDGET_HXX
 
+class Controller;
 class DataGridWidget;
 
-#include "Control.hxx"
 #include "ControllerWidget.hxx"
 
 class PointingDeviceWidget : public ControllerWidget

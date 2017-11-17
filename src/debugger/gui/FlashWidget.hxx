@@ -18,9 +18,9 @@
 #ifndef FLASH_WIDGET_HXX
 #define FLASH_WIDGET_HXX
 
+class Controller;
 class ButtonWidget;
 
-#include "Control.hxx"
 #include "ControllerWidget.hxx"
 
 class FlashWidget : public ControllerWidget

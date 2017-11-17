@@ -19,7 +19,6 @@
 #define BOOSTER_WIDGET_HXX
 
 #include "Control.hxx"
-#include "Event.hxx"
 #include "ControllerWidget.hxx"
 
 class BoosterWidget : public ControllerWidget

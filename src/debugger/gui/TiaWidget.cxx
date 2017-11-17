@@ -21,6 +21,7 @@
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "TIA.hxx"
 #include "TIADebug.hxx"

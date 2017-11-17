@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <algorithm>
-#include <sstream>
-
 #include "bspf.hxx"
 
 #include "CommandMenu.hxx"

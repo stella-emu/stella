@@ -18,7 +18,8 @@
 #ifndef TRAKBALL_WIDGET_HXX
 #define TRAKBALL_WIDGET_HXX
 
-#include "Control.hxx"
+class Controller;
+
 #include "PointingDeviceWidget.hxx"
 
 class TrakBallWidget : public PointingDeviceWidget
