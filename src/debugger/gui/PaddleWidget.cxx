@@ -15,9 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "OSystem.hxx"
 #include "Paddles.hxx"
-#include "EventHandler.hxx"
 #include "PaddleWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

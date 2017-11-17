@@ -15,9 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FlashWidget.hxx"
-#include "MT24LC256.hxx"
 #include "Base.hxx"
+#include "MT24LC256.hxx"
+#include "FlashWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,

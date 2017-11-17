@@ -21,11 +21,11 @@
 class ScrollBarWidget;
 class PackedBitArray;
 class CheckListWidget;
+class RomListSettings;
 
 #include "Base.hxx"
 #include "CartDebug.hxx"
 #include "EditableWidget.hxx"
-#include "RomListSettings.hxx"
 
 /** RomListWidget */
 class RomListWidget : public EditableWidget

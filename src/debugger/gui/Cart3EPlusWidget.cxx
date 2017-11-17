@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Cart3EPlus.hxx"
+#include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Cart3EPlusWidget.hxx"
 

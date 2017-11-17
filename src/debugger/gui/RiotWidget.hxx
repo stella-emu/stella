@@ -24,8 +24,9 @@ class DataGridWidget;
 class PopUpWidget;
 class ToggleBitWidget;
 class ControllerWidget;
+class Controller;
 
-#include "Control.hxx"
+#include "Widget.hxx"
 #include "Command.hxx"
 
 class RiotWidget : public Widget, public CommandSender

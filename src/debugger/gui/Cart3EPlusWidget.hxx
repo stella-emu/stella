@@ -20,6 +20,7 @@
 
 class Cartridge3EPlus;
 class ButtonWidget;
+class EditTextWidget;
 class PopUpWidget;
 
 #include "CartDebugWidget.hxx"

@@ -20,10 +20,11 @@
 
 class GuiObject;
 class EditTextWidget;
+class RomListWidget;
 
 #include "Base.hxx"
 #include "Command.hxx"
-#include "RomListWidget.hxx"
+#include "Widget.hxx"
 
 class RomWidget : public Widget, public CommandSender
 {
@@ -41,7 +42,7 @@ class RomWidget : public Widget, public CommandSender
     void invalidate(bool forcereload = true)
     { myListIsDirty = true; if(forcereload) loadConfig(); }
 
-    void scrollTo(int line) { myRomList->setSelected(line); }
+    void scrollTo(int line);
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

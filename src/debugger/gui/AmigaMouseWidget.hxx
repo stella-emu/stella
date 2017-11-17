@@ -18,7 +18,8 @@
 #ifndef AMIGAMOUSE_WIDGET_HXX
 #define AMIGAMOUSE_WIDGET_HXX
 
-#include "Control.hxx"
+class Controller;
+
 #include "PointingDeviceWidget.hxx"
 
 class AmigaMouseWidget : public PointingDeviceWidget

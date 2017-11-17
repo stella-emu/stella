@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "Settings.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
@@ -227,4 +225,10 @@ void RomWidget::patchROM(int disasm_line, const string& bytes,
     // Restore previous base
     Common::Base::setFormat(oldbase);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::scrollTo(int line)
+{
+  myRomList->setSelected(line);
 }

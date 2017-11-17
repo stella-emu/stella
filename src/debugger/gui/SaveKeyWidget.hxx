@@ -18,7 +18,8 @@
 #ifndef SAVEKEY_WIDGET_HXX
 #define SAVEKEY_WIDGET_HXX
 
-#include "Control.hxx"
+class Controller;
+
 #include "FlashWidget.hxx"
 
 class SaveKeyWidget : public FlashWidget

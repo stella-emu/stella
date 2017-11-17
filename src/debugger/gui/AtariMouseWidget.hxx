@@ -18,7 +18,8 @@
 #ifndef ATARIMOUSE_WIDGET_HXX
 #define ATARIMOUSE_WIDGET_HXX
 
-#include "Control.hxx"
+class Controller;
+
 #include "PointingDeviceWidget.hxx"
 
 class AtariMouseWidget : public PointingDeviceWidget

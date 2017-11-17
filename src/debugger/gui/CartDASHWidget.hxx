@@ -20,6 +20,7 @@
 
 class CartridgeDASH;
 class ButtonWidget;
+class EditTextWidget;
 class PopUpWidget;
 
 #include "CartDebugWidget.hxx"

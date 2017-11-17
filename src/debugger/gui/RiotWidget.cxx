@@ -21,6 +21,7 @@
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "Debugger.hxx"
 #include "RiotDebug.hxx"
 #include "PopUpWidget.hxx"
 #include "ToggleBitWidget.hxx"

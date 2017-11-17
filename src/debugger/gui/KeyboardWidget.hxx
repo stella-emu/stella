@@ -18,7 +18,6 @@
 #ifndef KEYBOARD_WIDGET_HXX
 #define KEYBOARD_WIDGET_HXX
 
-#include "Control.hxx"
 #include "Event.hxx"
 #include "ControllerWidget.hxx"
 

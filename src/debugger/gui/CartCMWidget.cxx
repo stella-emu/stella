@@ -16,6 +16,8 @@
 //============================================================================
 
 #include "CartCM.hxx"
+#include "Debugger.hxx"
+#include "CartDebug.hxx"
 #include "RiotDebug.hxx"
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"

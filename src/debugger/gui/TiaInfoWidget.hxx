@@ -20,6 +20,7 @@
 
 class GuiObject;
 class EditTextWidget;
+class CheckboxWidget;
 
 #include "Widget.hxx"
 #include "Command.hxx"

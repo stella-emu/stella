@@ -32,6 +32,7 @@
 #include "CartDebug.hxx"
 #include "CartDebugWidget.hxx"
 #include "CartRamWidget.hxx"
+#include "RomWidget.hxx"
 #include "System.hxx"
 #include "Base.hxx"
 using Common::Base;

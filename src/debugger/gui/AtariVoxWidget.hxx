@@ -18,7 +18,8 @@
 #ifndef ATARIVOX_WIDGET_HXX
 #define ATARIVOX_WIDGET_HXX
 
-#include "Control.hxx"
+class Controller;
+
 #include "FlashWidget.hxx"
 
 class AtariVoxWidget : public FlashWidget

@@ -18,7 +18,7 @@
 #ifndef PROMPT_WIDGET_HXX
 #define PROMPT_WIDGET_HXX
 
-#include <stdarg.h>
+#include <cstdarg>
 
 class ScrollBarWidget;
 class FilesystemNode;

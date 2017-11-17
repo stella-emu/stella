@@ -19,6 +19,7 @@
 #define CARTRIDGE2K_WIDGET_HXX
 
 class Cartridge2K;
+
 #include "CartDebugWidget.hxx"
 
 class Cartridge2KWidget : public CartDebugWidget

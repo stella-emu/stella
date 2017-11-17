@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "CartDASH.hxx"
+#include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "CartDASHWidget.hxx"
 
