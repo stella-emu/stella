@@ -21,6 +21,7 @@
 #include "CartDebug.hxx"
 #include "StringParser.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "StringListWidget.hxx"
 #include "CartDebugWidget.hxx"
 #include "CartRamWidget.hxx"

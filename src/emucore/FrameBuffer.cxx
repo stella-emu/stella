@@ -52,6 +52,11 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::~FrameBuffer()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::initialize()
 {
   // Get desktop resolution and supported renderers

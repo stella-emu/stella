@@ -69,4 +69,17 @@ enum {
   kNumColors
 };
 
+// Text alignment modes for drawString()
+enum TextAlignment {
+  kTextAlignLeft,
+  kTextAlignCenter,
+  kTextAlignRight
+};
+
+// Line types for drawing rectangular frames
+enum FrameStyle {
+  kSolidLine,
+  kDashLine
+};
+
 #endif // FRAMEBUFFER_CONSTANTS_HXX

@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "Joystick.hxx"
@@ -30,9 +29,8 @@
 #include "PopUpWidget.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
 #include "InputDialog.hxx"
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,

@@ -16,15 +16,13 @@
 //============================================================================
 
 #include <cmath>
-#include <algorithm>
-#include <math.h>
 
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "TIA.hxx"
-
 #include "TIASurface.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

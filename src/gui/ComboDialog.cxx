@@ -15,19 +15,15 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "bspf.hxx"
-
 #include "Control.hxx"
 #include "Dialog.hxx"
-#include "DialogContainer.hxx"
 #include "EventHandler.hxx"
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
 #include "ComboDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

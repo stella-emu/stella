@@ -23,6 +23,8 @@
 class OSystem;
 class Console;
 class Settings;
+class FBSurface;
+class TIASurface;
 
 namespace GUI {
   class Font;
@@ -31,8 +33,6 @@ namespace GUI {
 #include "EventHandler.hxx"
 #include "Rect.hxx"
 #include "Variant.hxx"
-#include "FBSurface.hxx"
-#include "TIASurface.hxx"
 #include "TIAConstants.hxx"
 #include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
@@ -92,7 +92,7 @@ class FrameBuffer
       Creates a new Frame Buffer
     */
     FrameBuffer(OSystem& osystem);
-    virtual ~FrameBuffer() = default;
+    virtual ~FrameBuffer();
 
     /**
       Initialize the framebuffer object (set up the underlying hardware)

@@ -26,6 +26,7 @@
 #include "DialogContainer.hxx"
 #include "Event.hxx"
 #include "FrameBuffer.hxx"
+#include "TIASurface.hxx"
 #include "FSNode.hxx"
 #include "Launcher.hxx"
 #include "Menu.hxx"

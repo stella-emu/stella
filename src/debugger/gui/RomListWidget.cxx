@@ -20,6 +20,8 @@
 #include "DiStella.hxx"
 #include "PackedBitArray.hxx"
 #include "Widget.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "ScrollBarWidget.hxx"
 #include "RomListSettings.hxx"
 #include "RomListWidget.hxx"

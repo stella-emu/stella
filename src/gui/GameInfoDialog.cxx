@@ -29,6 +29,7 @@
 #include "TabWidget.hxx"
 #include "TIAConstants.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 
 #include "GameInfoDialog.hxx"
 

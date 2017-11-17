@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "Launcher.hxx"
 #include "LauncherFilterDialog.hxx"
 #include "BrowserDialog.hxx"
@@ -24,6 +23,7 @@
 #include "EditTextWidget.hxx"
 #include "ProgressDialog.hxx"
 #include "FSNode.hxx"
+#include "Font.hxx"
 #include "MessageBox.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"

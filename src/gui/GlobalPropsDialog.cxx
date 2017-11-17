@@ -16,16 +16,16 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "BSType.hxx"
 #include "Control.hxx"
 #include "Dialog.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "LauncherDialog.hxx"
-
 #include "GlobalPropsDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

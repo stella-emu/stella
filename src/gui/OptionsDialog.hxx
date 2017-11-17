@@ -47,7 +47,7 @@ class OptionsDialog : public Dialog
   public:
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
                   int max_w, int max_h, bool global);
-    virtual ~OptionsDialog() = default;
+    virtual ~OptionsDialog();
 
   private:
     void loadConfig() override;

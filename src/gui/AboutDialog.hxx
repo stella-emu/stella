@@ -24,6 +24,7 @@ class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
 
+#include "Dialog.hxx"
 
 class AboutDialog : public Dialog
 {

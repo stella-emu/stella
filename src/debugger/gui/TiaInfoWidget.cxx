@@ -16,8 +16,8 @@
 //============================================================================
 
 #include "Base.hxx"
+#include "Font.hxx"
 #include "OSystem.hxx"
-#include "FrameBuffer.hxx"
 #include "Debugger.hxx"
 #include "TIADebug.hxx"
 #include "Widget.hxx"

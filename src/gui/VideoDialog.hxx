@@ -29,6 +29,7 @@ class TabWidget;
 class OSystem;
 
 #include "Dialog.hxx"
+#include "NTSCFilter.hxx"
 #include "bspf.hxx"
 
 class VideoDialog : public Dialog

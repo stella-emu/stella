@@ -20,6 +20,8 @@
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "Menu.hxx"
 #include "Dialog.hxx"
 #include "Widget.hxx"

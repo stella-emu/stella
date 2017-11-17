@@ -18,7 +18,6 @@
 #ifndef DRIVING_HXX
 #define DRIVING_HXX
 
-#include "bspf.hxx"
 #include "Control.hxx"
 #include "Event.hxx"
 

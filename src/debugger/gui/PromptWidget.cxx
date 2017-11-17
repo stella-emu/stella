@@ -16,7 +16,8 @@
 //============================================================================
 
 #include "ScrollBarWidget.hxx"
-#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "EventHandler.hxx"
 #include "Version.hxx"
 #include "Debugger.hxx"

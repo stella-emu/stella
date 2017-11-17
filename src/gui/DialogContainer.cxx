@@ -20,6 +20,7 @@
 #include "Stack.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "Joystick.hxx"
 #include "bspf.hxx"
 #include "DialogContainer.hxx"

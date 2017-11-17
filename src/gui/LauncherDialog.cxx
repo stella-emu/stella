@@ -15,10 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "bspf.hxx"
-
 #include "BrowserDialog.hxx"
 #include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
@@ -32,15 +29,15 @@
 #include "LauncherFilterDialog.hxx"
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
 #include "Settings.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
 #include "LauncherDialog.hxx"
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,

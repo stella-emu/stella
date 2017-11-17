@@ -19,7 +19,7 @@
 #include "OSystem.hxx"
 #include "Version.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
 #include "AboutDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

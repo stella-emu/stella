@@ -18,8 +18,6 @@
 #ifndef LAUNCHER_DIALOG_HXX
 #define LAUNCHER_DIALOG_HXX
 
-#include "bspf.hxx"
-
 class ButtonWidget;
 class CommandSender;
 class ContextMenu;
@@ -36,6 +34,7 @@ class RomInfoWidget;
 class StaticTextWidget;
 class StringListWidget;
 
+#include "bspf.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
 #include "Stack.hxx"

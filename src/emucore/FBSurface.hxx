@@ -21,9 +21,13 @@
 class FrameBuffer;
 class TIASurface;
 
+namespace GUI {
+  class Font;
+  struct Rect;
+}
+
+#include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
-#include "Font.hxx"
-#include "Rect.hxx"
 
 /**
   This class is basically a thin wrapper around the video toolkit 'surface'
@@ -35,19 +39,6 @@ class TIASurface;
 
   @author  Stephen Anthony
 */
-
-// Text alignment modes for drawString()
-enum TextAlignment {
-  kTextAlignLeft,
-  kTextAlignCenter,
-  kTextAlignRight
-};
-// Line types for drawing rectangular frames
-enum FrameStyle {
-  kSolidLine,
-  kDashLine
-};
-
 class FBSurface
 {
   public:

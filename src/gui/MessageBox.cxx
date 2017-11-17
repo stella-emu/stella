@@ -19,8 +19,8 @@
 #include "OSystem.hxx"
 #include "Version.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "StringParser.hxx"
-
 #include "MessageBox.hxx"
 
 namespace GUI {

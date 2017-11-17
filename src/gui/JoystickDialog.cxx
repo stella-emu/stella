@@ -17,10 +17,10 @@
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Variant.hxx"
-
 #include "JoystickDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

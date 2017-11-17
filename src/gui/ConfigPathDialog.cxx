@@ -16,14 +16,13 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "BrowserDialog.hxx"
 #include "EditTextWidget.hxx"
 #include "FSNode.hxx"
+#include "Font.hxx"
 #include "LauncherDialog.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
-
 #include "ConfigPathDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -17,7 +17,7 @@
 
 #include "OSystem.hxx"
 #include "Dialog.hxx"
-#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "ScrollBarWidget.hxx"
 #include "bspf.hxx"
 

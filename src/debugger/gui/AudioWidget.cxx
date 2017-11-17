@@ -16,8 +16,8 @@
 //============================================================================
 
 #include "DataGridWidget.hxx"
-#include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
+#include "Font.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "TIADebug.hxx"

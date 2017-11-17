@@ -47,6 +47,7 @@
 #include "AtariMouse.hxx"
 #include "TrakBall.hxx"
 #include "FrameBuffer.hxx"
+#include "TIASurface.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
 #include "CommandMenu.hxx"

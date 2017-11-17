@@ -22,6 +22,7 @@
 #include "CheckListWidget.hxx"
 #include "DialogContainer.hxx"
 #include "Dialog.hxx"
+#include "Font.hxx"
 #include "InputTextDialog.hxx"
 #include "OSystem.hxx"
 #include "Props.hxx"

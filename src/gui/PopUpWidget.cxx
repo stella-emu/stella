@@ -16,11 +16,11 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
-
 #include "PopUpWidget.hxx"
 
 // Little up/down arrow

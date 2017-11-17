@@ -15,13 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "OSystem.hxx"
-#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "Dialog.hxx"
+#include "Font.hxx"
 #include "EditTextWidget.hxx"
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,

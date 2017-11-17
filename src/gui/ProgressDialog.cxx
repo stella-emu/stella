@@ -15,13 +15,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "bspf.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "Font.hxx"
 #include "DialogContainer.hxx"
 #include "ProgressDialog.hxx"
-
-#include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,

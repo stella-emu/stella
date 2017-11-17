@@ -25,6 +25,7 @@
 #include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "ComboDialog.hxx"
 #include "Variant.hxx"
 #include "EventMappingWidget.hxx"

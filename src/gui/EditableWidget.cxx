@@ -16,6 +16,8 @@
 //============================================================================
 
 #include "Dialog.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "EditableWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

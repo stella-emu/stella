@@ -19,6 +19,7 @@
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "ContextMenu.hxx"

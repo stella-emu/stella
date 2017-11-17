@@ -19,7 +19,8 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Debugger.hxx"
-#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "ToggleBitWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

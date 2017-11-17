@@ -18,6 +18,8 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "RomListWidget.hxx"

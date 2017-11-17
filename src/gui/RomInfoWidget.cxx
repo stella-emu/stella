@@ -16,6 +16,9 @@
 //============================================================================
 
 #include "FrameBuffer.hxx"
+#include "Dialog.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "Props.hxx"

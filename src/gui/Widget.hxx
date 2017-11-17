@@ -18,22 +18,20 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "Dialog.hxx"
-
 #ifndef WIDGET_HXX
 #define WIDGET_HXX
+
+class Dialog;
+
+namespace GUI {
+  class Font;
+}
 
 #include <cassert>
 
 #include "bspf.hxx"
-
 #include "Event.hxx"
-#include "Font.hxx"
-#include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
-#include "OSystem.hxx"
-#include "Rect.hxx"
-#include "StellaKeys.hxx"
 
 enum {
   WIDGET_ENABLED       = 1 << 0,

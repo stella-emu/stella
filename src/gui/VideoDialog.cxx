@@ -15,10 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "bspf.hxx"
-
 #include "Control.hxx"
 #include "Dialog.hxx"
 #include "Menu.hxx"
@@ -30,9 +27,10 @@
 #include "TIA.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "TabWidget.hxx"
 #include "NTSCFilter.hxx"
-
+#include "TIASurface.hxx"
 #include "VideoDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

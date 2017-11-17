@@ -16,11 +16,9 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "Dialog.hxx"
-#include "OSystem.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
 #include "HelpDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

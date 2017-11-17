@@ -22,6 +22,7 @@
 #include "Console.hxx"
 #include "Control.hxx"
 #include "Dialog.hxx"
+#include "Font.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"

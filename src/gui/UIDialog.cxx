@@ -15,19 +15,21 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <sstream>
-
 #include "bspf.hxx"
-
 #include "Dialog.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "ListWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "DebuggerDialog.hxx"
+#endif
 #include "UIDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

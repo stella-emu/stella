@@ -41,6 +41,8 @@
 #define ATARI_NTSC_HXX
 
 #include <cmath>
+#include <thread>
+
 #include "bspf.hxx"
 
 class AtariNTSC

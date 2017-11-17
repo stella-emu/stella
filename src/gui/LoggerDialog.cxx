@@ -16,18 +16,17 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "Dialog.hxx"
-#include "DialogContainer.hxx"
 #include "FSNode.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "PopUpWidget.hxx"
 #include "StringListWidget.hxx"
 #include "StringParser.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
 #include "LoggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -17,9 +17,9 @@
 
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "Dialog.hxx"
+#include "Font.hxx"
 #include "Debugger.hxx"
-#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "TogglePixelWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

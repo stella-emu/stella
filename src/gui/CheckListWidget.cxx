@@ -15,8 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Dialog.hxx"
+#include "FBSurface.hxx"
 #include "CheckListWidget.hxx"
-#include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,

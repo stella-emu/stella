@@ -19,6 +19,7 @@
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "FrameBuffer.hxx"
+#include "Font.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"

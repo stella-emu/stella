@@ -19,6 +19,7 @@
 #define FBSURFACE_SDL2_HXX
 
 #include "bspf.hxx"
+#include "FBSurface.hxx"
 #include "FrameBufferSDL2.hxx"
 
 /**

@@ -16,16 +16,14 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "Dialog.hxx"
-#include "DialogContainer.hxx"
 #include "FSNode.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"
 #include "FileListWidget.hxx"
 #include "Widget.hxx"
-
+#include "Font.hxx"
 #include "BrowserDialog.hxx"
 
 /* We want to use this as a general directory selector at some point... possible uses
@@ -33,7 +31,6 @@
  * - to select the place where save games are stored
  * - others???
  */
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                              int max_w, int max_h)

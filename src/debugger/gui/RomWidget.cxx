@@ -21,6 +21,7 @@
 #include "DiStella.hxx"
 #include "CpuDebug.hxx"
 #include "GuiObject.hxx"
+#include "Font.hxx"
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"

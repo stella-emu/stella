@@ -22,7 +22,6 @@ class SerialPort;
 
 #include "Control.hxx"
 #include "SaveKey.hxx"
-#include "MT24LC256.hxx"
 
 /**
   Richard Hutchinson's AtariVox "controller": A speech synthesizer and

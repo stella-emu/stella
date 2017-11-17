@@ -16,12 +16,11 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "Command.hxx"
-#include "FrameBuffer.hxx"
+#include "Dialog.hxx"
+#include "FBSurface.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
-
 #include "ColorWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

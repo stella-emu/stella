@@ -16,6 +16,8 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "Dialog.hxx"
+#include "FBSurface.hxx"
 #include "Settings.hxx"
 #include "ScrollBarWidget.hxx"
 #include "StringListWidget.hxx"

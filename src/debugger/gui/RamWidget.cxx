@@ -22,6 +22,7 @@
 #include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
+#include "Font.hxx"
 #include "Widget.hxx"
 
 #include "RamWidget.hxx"

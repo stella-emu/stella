@@ -23,6 +23,7 @@
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "ToggleBitWidget.hxx"

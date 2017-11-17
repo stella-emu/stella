@@ -15,19 +15,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <algorithm>
-#include <sstream>
-
 #include "bspf.hxx"
-
-#include "Control.hxx"
 #include "Dialog.hxx"
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "LauncherDialog.hxx"
-
 #include "LauncherFilterDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

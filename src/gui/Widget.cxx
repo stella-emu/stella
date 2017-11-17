@@ -19,13 +19,10 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "Command.hxx"
-#include "DialogContainer.hxx"
 #include "Dialog.hxx"
-#include "EditableWidget.hxx"
 #include "Font.hxx"
-#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 

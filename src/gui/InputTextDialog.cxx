@@ -16,14 +16,15 @@
 //============================================================================
 
 #include "bspf.hxx"
-
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
+#include "Font.hxx"
 #include "Widget.hxx"
-
 #include "InputTextDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

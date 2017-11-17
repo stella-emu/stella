@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Font.hxx"
+#include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 

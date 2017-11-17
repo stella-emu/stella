@@ -19,6 +19,7 @@
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "Props.hxx"
 #include "PNGLibrary.hxx"
 

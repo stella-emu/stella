@@ -19,6 +19,7 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "Widget.hxx"
+#include "Font.hxx"
 #include "Control.hxx"
 #include "VideoDialog.hxx"
 #include "AudioDialog.hxx"
@@ -147,6 +148,11 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   {
     myRomAuditButton->clearFlags(WIDGET_ENABLED);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+OptionsDialog::~OptionsDialog()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
