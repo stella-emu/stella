@@ -29,6 +29,7 @@
 #include "RomAuditDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "LoggerDialog.hxx"
+#include "DeveloperDialog.hxx"
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
@@ -47,7 +48,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     myIsGlobal(global)
 {
   const GUI::Font& font = instance().frameBuffer().font();
-  const int buttonWidth = font.getStringWidth("Snapshot Settings" + ELLIPSIS) + 20,
+  const int buttonWidth = font.getStringWidth("Developer Settings" + ELLIPSIS) + 20,
             buttonHeight = font.getLineHeight() + 6,
             rowHeight = font.getLineHeight() + 10;
 
@@ -105,6 +106,9 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd);
   wid.push_back(b);
 
+  b = ADD_OD_BUTTON("Developer Settings" + ELLIPSIS, kDevelopCmd);
+  wid.push_back(b);
+
   b = ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd);
   wid.push_back(b);
 
@@ -128,6 +132,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myCheatCodeDialog = make_unique<CheatCodeDialog>(osystem, parent, font);
 #endif
   myLoggerDialog    = make_unique<LoggerDialog>(osystem, parent, font, max_w, max_h);
+  myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, font, max_w, max_h);
   myHelpDialog      = make_unique<HelpDialog>(osystem, parent, font);
   myAboutDialog     = make_unique<AboutDialog>(osystem, parent, font);
 
@@ -222,6 +227,10 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
             instance().frameBuffer().font(), w, h, uselargefont);
       }
       myLoggerDialog->open();
+      break;
+
+    case kDevelopCmd:
+      myDeveloperDialog->open();
       break;
 
     case kHelpCmd:

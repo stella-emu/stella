@@ -79,7 +79,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySpriteEnabledBits(0xFF),
     myCollisionsEnabledBits(0xFF)
 {
-  myTIAPinsDriven = mySettings.getBool("tiadriven");
+  myTIAPinsDriven = mySettings.getBool("dev.tiadriven");
 
   myBackground.setTIA(this);
   myPlayfield.setTIA(this);
@@ -89,8 +89,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
-  myEnableJitter = mySettings.getBool("tv.jitter");
-  myJitterFactor = mySettings.getInt("tv.jitter_recovery");
+  bool devSettings = mySettings.getBool("dev.settings");
+  myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "tv.jitter");
+  myJitterFactor = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "tv.jitter_recovery");
 
   reset();
 }
@@ -172,7 +173,7 @@ void TIA::reset()
   frameReset();  // Recalculate the size of the display
 
   // Must be done last, after all other items have reset
-  enableFixedColors(false);
+  enableFixedColors(mySettings.getBool("dev.settings") && mySettings.getBool("dev.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
 #ifdef DEBUGGER_SUPPORT
@@ -185,7 +186,7 @@ void TIA::frameReset()
 {
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
-  enableColorLoss(mySettings.getBool("colorloss"));
+  enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1006,7 +1007,7 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
   if (mode == 0 || mode == 1)
   {
     myTIAPinsDriven = bool(mode);
-    mySettings.setValue("tiadriven", myTIAPinsDriven);
+    mySettings.setValue("dev.tiadriven", myTIAPinsDriven);
   }
   return myTIAPinsDriven;
 }

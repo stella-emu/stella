@@ -40,6 +40,8 @@ class OSystem;
 #include "LoggerDialog.hxx"
 #include "bspf.hxx"
 
+class DeveloperDialog;
+
 class OptionsDialog : public Dialog
 {
   public:
@@ -64,6 +66,7 @@ class OptionsDialog : public Dialog
     unique_ptr<CheatCodeDialog>  myCheatCodeDialog;
   #endif
     unique_ptr<LoggerDialog>     myLoggerDialog;
+    unique_ptr<DeveloperDialog>  myDeveloperDialog;
     unique_ptr<HelpDialog>       myHelpDialog;
     unique_ptr<AboutDialog>      myAboutDialog;
 
@@ -85,6 +88,7 @@ class OptionsDialog : public Dialog
       kInfoCmd     = 'INFO',
       kCheatCmd    = 'CHET',
       kLoggerCmd   = 'LOGG',
+      kDevelopCmd  = 'DEVL',
       kHelpCmd     = 'HELP',
       kAboutCmd    = 'ABOU',
       kExitCmd     = 'EXIM'

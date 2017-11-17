@@ -361,9 +361,9 @@ void RiotWidget::loadConfig()
   myLeftControl->loadConfig();
   myRightControl->loadConfig();
 
-  myRandomizeRAM->setState(instance().settings().getBool("ramrandom"));
+  myRandomizeRAM->setState(instance().settings().getBool("dev.ramrandom"));
 
-  const string& cpurandom = instance().settings().getString("cpurandom");
+  const string& cpurandom = instance().settings().getString("dev.cpurandom");
   const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
     myRandomizeCPU[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
@@ -451,7 +451,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           handleConsole();
           break;
         case kRandRAMID:
-          instance().settings().setValue("ramrandom", myRandomizeRAM->getState());
+          instance().settings().setValue("dev.ramrandom", myRandomizeRAM->getState());
           break;
         case kRandCPUID:
           handleRandomCPU();
@@ -523,7 +523,7 @@ void RiotWidget::handleConsole()
   {
     myTVType->setSelectedIndex(myPause->getState() ? 0 : 1);
     myRandomizeRAM->setState(false);
-    instance().settings().setValue("ramrandom", 0);
+    instance().settings().setValue("dev.ramrandom", 0);
   }
   else
   {
@@ -541,5 +541,5 @@ void RiotWidget::handleRandomCPU()
     if(myRandomizeCPU[i]->getState())
       cpurandom += cpuregs[i];
 
-  instance().settings().setValue("cpurandom", cpurandom);
+  instance().settings().setValue("dev.cpurandom", cpurandom);
 }

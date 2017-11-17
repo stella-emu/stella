@@ -130,10 +130,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("autoslot", "false");
   setInternal("loglevel", "1");
   setInternal("logtoconsole", "0");
-  setInternal("tiadriven", "false");
   setInternal("console", "2600"); // 7800
-  setInternal("cpurandom", "");
-  setInternal("ramrandom", "true");
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("fastscbios", "true");
@@ -150,6 +147,17 @@ Settings::Settings(OSystem& osystem)
   setInternal("dis.showaddr", "true");
   setInternal("dis.relocate", "false");
 #endif
+
+  // developer settings
+  setInternal("dev.settings", "false");
+  setInternal("dev.bankrandom", "true");
+  setInternal("dev.ramrandom", "true");
+  setInternal("dev.cpurandom", "SAXYP");
+  setInternal("dev.colorloss", "true");
+  setInternal("dev.tv.jitter", "true");
+  setInternal("dev.tv.jitter_recovery", "1");
+  setInternal("dev.debugcolors", "false");
+  setInternal("dev.tiadriven", "true");
 
 #ifdef DTHUMB_SUPPORT
   // Thumb ARM emulation options
@@ -291,6 +299,8 @@ void Settings::validate()
 
   i = getInt("tv.jitter_recovery");
   if(i < 1 || i > 20)  setInternal("tv.jitter_recovery", "10");
+  i = getInt("dev.tv.jitter_recovery");
+  if(i < 1 || i > 20)  setInternal("dev.tv.jitter_recovery", "10");
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
@@ -455,9 +465,6 @@ void Settings::usage() const
     << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
     << "  -holdjoy0     <U,D,L,R,F>    Start the emulator with the left joystick direction/fire button held down\n"
     << "  -holdjoy1     <U,D,L,R,F>    Start the emulator with the right joystick direction/fire button held down\n"
-    << "  -tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
-    << "  -cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
-    << "  -ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
@@ -492,8 +499,17 @@ void Settings::usage() const
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
   #endif
+
+    << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
+    << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
+    << "  -dev.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
+    << "  -dev.colorloss    <1|0>          Enable PAL color-loss effect\n"
+    << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
+    << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
+    << "  -dev.debugcolors  <1|0>          Enable debug colors\n"
+
   #ifdef DTHUMB_SUPPORT
-    << "   -thumb.trapfatal <1|0>      Determines whether errors in ARM emulation throw an exception\n"
+    << "   -dev.thumb.trapfatal <1|0>      Determines whether errors in ARM emulation throw an exception\n"
   #endif
     << endl << std::flush;
 }

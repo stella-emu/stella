@@ -61,6 +61,7 @@ class OSystem
 {
   friend class EventHandler;
   friend class VideoDialog;
+  friend class DeveloperDialog;
 
   public:
     OSystem();

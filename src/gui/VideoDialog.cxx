@@ -436,6 +436,7 @@ void VideoDialog::loadConfig()
 
   // PAL color-loss effect
   myColorLoss->setState(instance().settings().getBool("colorloss"));
+  myColorLoss->setEnabled(!instance().settings().getBool("dev.settings"));
 
   // Show UI messages
   myUIMessages->setState(instance().settings().getBool("uimessages"));
@@ -485,6 +486,8 @@ void VideoDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::saveConfig()
 {
+  bool devSettings = instance().settings().getBool("dev.settings");
+
   // Renderer setting
   instance().settings().setValue("video",
     myRenderer->getSelectedTag().toString());
@@ -524,7 +527,7 @@ void VideoDialog::saveConfig()
 
   // PAL color-loss effect
   instance().settings().setValue("colorloss", myColorLoss->getState());
-  if(instance().hasConsole())
+  if(instance().hasConsole() && !devSettings)
     instance().console().toggleColorLoss(myColorLoss->getState());
 
   // Fullscreen stretch setting
@@ -576,7 +579,7 @@ void VideoDialog::saveConfig()
   // TV jitter
   instance().settings().setValue("tv.jitter", myTVJitter->getState());
   instance().settings().setValue("tv.jitter_recovery", myTVJitterRecLabel->getLabel());
-  if(instance().hasConsole())
+  if(instance().hasConsole() && !devSettings)
   {
     instance().console().tia().toggleJitter(myTVJitter->getState() ? 1 : 0);
     instance().console().tia().setJitterRecoveryFactor(myTVJitterRec->getValue());
@@ -708,7 +711,10 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleTVJitterChange(bool enable)
 {
+  bool devSettings = instance().settings().getBool("dev.settings");
   myTVJitter->setState(enable);
+  enable &= !devSettings;
+  myTVJitter->setEnabled(!devSettings);
   myTVJitterRec->setEnabled(enable);
   myTVJitterRecLabel->setEnabled(enable);
 }

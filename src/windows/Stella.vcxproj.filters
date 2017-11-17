@@ -864,6 +864,9 @@
     <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DeveloperDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1762,6 +1765,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\tia\frame-manager\YStartDetector.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeveloperDialog.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

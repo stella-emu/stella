@@ -339,6 +339,7 @@
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
+    <ClCompile Include="DeveloperDialog.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
@@ -637,6 +638,7 @@
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />
     <ClInclude Include="..\libpng\pngstruct.h" />
+    <ClInclude Include="DeveloperDialog.hxx" />
     <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWINDOWS.hxx" />
