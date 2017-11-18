@@ -96,8 +96,6 @@ class TiaWidget : public Widget, public CommandSender
     CheckboxWidget* myScorePF;
     CheckboxWidget* myPriorityPF;
 
-    CheckboxWidget* myUndrivenPins;
-
     DelayQueueWidget* myDelayQueueWidget;
 
     // ID's for the various widgets
@@ -140,7 +138,6 @@ class TiaWidget : public Widget, public CommandSender
       kHmclrCmd = 'Shmc',
       kCxclrCmd = 'Scxl',
       kDbgClCmd = 'DBGc',
-      kPPinCmd  = 'PPin'
     };
 
     // Color registers

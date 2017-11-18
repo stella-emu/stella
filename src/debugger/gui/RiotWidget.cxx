@@ -201,15 +201,11 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myTVType);
 
   // 2600/7800 mode
-  items.clear();
-  VarList::push_back(items, "Atari 2600", "2600");
-  VarList::push_back(items, "Atari 7800", "7800");
   lwidth = lfont.getStringWidth("Console") + 29;
-  pwidth = lfont.getStringWidth("Atari 2600");
+  pwidth = lfont.getStringWidth("Atari 2600") + 4;
   new StaticTextWidget(boss, lfont, 10, ypos+1, "Console");
-  myConsole = new PopUpWidget(boss, lfont, 10, ypos, pwidth, lineHeight, items,
-                              "", lwidth, kConsoleChanged);
-  myConsole->setTarget(this);
+  myConsole = new EditTextWidget(boss, lfont, 10 + lwidth, ypos - 1, pwidth, lineHeight);
+  myConsole->setEditable(false, true);
   addFocusWidget(myConsole);
 
   // Select and Reset
@@ -233,37 +229,6 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myPause->setID(kPauseID);
   myPause->setTarget(this);
   addFocusWidget(myPause);
-
-  /*// Randomize items
-  xpos = 10;  ypos += 3 * lineHeight;
-  new StaticTextWidget(boss, lfont, xpos, ypos,
-      lfont.getStringWidth("When loading a ROM:"), fontHeight,
-      "When loading a ROM:", kTextAlignLeft);
-
-  // Randomize RAM
-  xpos += 16;  ypos += lineHeight + 4;
-  myRandomizeRAM = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-      "Randomize zero-page and extended RAM", CheckboxWidget::kCheckActionCmd);
-  myRandomizeRAM->setID(kRandRAMID);
-  myRandomizeRAM->setTarget(this);
-  addFocusWidget(myRandomizeRAM);
-
-  // Randomize CPU
-  ypos += lineHeight + 8;
-  lwidth = lfont.getStringWidth("Randomize CPU ");
-  new StaticTextWidget(boss, lfont, xpos, ypos+1,
-      lwidth, fontHeight, "Randomize CPU ", kTextAlignLeft);
-  xpos += lwidth + 10;
-  const char* const cpuregs[] = { "SP", "A", "X", "Y", "PS" };
-  for(int i = 0; i < 5; ++i)
-  {
-    myRandomizeCPU[i] = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-      cpuregs[i], CheckboxWidget::kCheckActionCmd);
-    myRandomizeCPU[i]->setID(kRandCPUID);
-    myRandomizeCPU[i]->setTarget(this);
-    addFocusWidget(myRandomizeCPU[i]);
-    xpos += CheckboxWidget::boxSize() + lfont.getStringWidth("XX") + 20;
-  }*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -356,8 +321,8 @@ void RiotWidget::loadConfig()
   myP1Diff->setSelectedIndex(riot.diffP1());
 
   bool devSettings = instance().settings().getBool("dev.settings");
-  myConsole->setSelectedIndex(devSettings && instance().settings().getString("dev.console") == "7800" ? 1 : 0);
-  myConsole->setEnabled(false);
+  myConsole->setText(instance().settings().getString("dev.console") == "7800" ? "Atari 7800" : "Atari 2600");
+  myConsole->setEditable(false, true);
 
   myTVType->setSelectedIndex(riot.tvType());
   mySelect->setState(!riot.select());
@@ -365,13 +330,6 @@ void RiotWidget::loadConfig()
 
   myLeftControl->loadConfig();
   myRightControl->loadConfig();
-
-  /*myRandomizeRAM->setState(instance().settings().getBool("dev.ramrandom"));
-
-  const string& cpurandom = instance().settings().getString("dev.cpurandom");
-  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
-  for(int i = 0; i < 5; ++i)
-    myRandomizeCPU[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));*/
 
   handleConsole();
 }
@@ -455,12 +413,6 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kPauseID:
           handleConsole();
           break;
-        /*case kRandRAMID:
-          instance().settings().setValue("dev.ramrandom", myRandomizeRAM->getState());
-          break;
-        case kRandCPUID:
-          handleRandomCPU();
-          break;*/
       }
       break;
 
@@ -473,7 +425,6 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kTVTypeChanged:
-    case kConsoleChanged:
       handleConsole();
       break;
   }
@@ -518,33 +469,13 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 void RiotWidget::handleConsole()
 {
   RiotDebug& riot = instance().debugger().riotDebug();
-  bool is7800 = myConsole->getSelected() == 1;
-  //instance().settings().setValue("dev.console", is7800 ? "7800" : "2600");
+  bool is7800 = instance().settings().getString("dev.console") == "7800";
 
   myTVType->setEnabled(!is7800);
   myPause->setEnabled(is7800);
-  //myRandomizeRAM->setEnabled(!is7800);
   if(is7800)
-  {
     myTVType->setSelectedIndex(myPause->getState() ? 0 : 1);
-    //myRandomizeRAM->setState(false);
-    //instance().settings().setValue("dev.ramrandom", 0);
-  }
   else
-  {
     myPause->setState(myTVType->getSelected() == 0);
-  }
   riot.tvType(myTVType->getSelected());
 }
-
-/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RiotWidget::handleRandomCPU()
-{
-  string cpurandom;
-  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
-  for(int i = 0; i < 5; ++i)
-    if(myRandomizeCPU[i]->getState())
-      cpurandom += cpuregs[i];
-
-  instance().settings().setValue("dev.cpurandom", cpurandom);
-}*/

@@ -646,13 +646,6 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
                        "HMCLR", kHmclrCmd);
   b->setTarget(this);
   addFocusWidget(b);
-
-  // How to handle undriven pins
-  xpos = 10;  ypos += (myDelayQueueWidget->getHeight() + lineHeight);
-  myUndrivenPins = new CheckboxWidget(boss, lfont, xpos, ypos+1,
-      "Drive unused TIA pins randomly on a read/peek", kPPinCmd);
-  myUndrivenPins->setTarget(this);
-  addFocusWidget(myUndrivenPins);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -705,10 +698,6 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kDbgClCmd:
       myFixedEnabled->setState(tia.tia().toggleFixedColors());
-      break;
-
-    case kPPinCmd:
-      tia.tia().driveUnusedPinsRandom(myUndrivenPins->getState());
       break;
 
     case DataGridWidget::kItemDataChangedCmd:
@@ -1102,9 +1091,6 @@ void TiaWidget::loadConfig()
 
   // Priority
   myPriorityPF->setState(tia.priorityPF());
-
-  // Undriven pins
-  myUndrivenPins->setState(tia.tia().driveUnusedPinsRandom());
 
   myDelayQueueWidget->loadConfig();
 }
