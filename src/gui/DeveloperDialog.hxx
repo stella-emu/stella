@@ -119,7 +119,7 @@ class DeveloperDialog : public Dialog
     void enableOptions();
     void handleTVJitterChange(bool enable);
     void handleDebugColors();
-    void DeveloperDialog::handleConsole();
+    void handleConsole();
 
     // Following constructors and assignment operators not supported
     DeveloperDialog() = delete;
