@@ -44,6 +44,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 {
   const int bwidth  = lfont.getStringWidth("Compare "),
             bheight = myLineHeight + 2;
+  const int VGAP = 4;
 
   int ypos = y + myLineHeight;
 
@@ -63,22 +64,22 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                                   "Undo", kUndoCmd);
   myUndoButton->setTarget(this);
 
-  by += bheight + 4;
+  by += bheight + VGAP;
   myRevertButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Revert", kRevertCmd);
   myRevertButton->setTarget(this);
 
-  by += bheight + 4 * 3;
+  by += bheight + VGAP * 6;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Search", kSearchCmd);
   mySearchButton->setTarget(this);
 
-  by += bheight + 4;
+  by += bheight + VGAP;
   myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Compare", kCmpCmd);
   myCompareButton->setTarget(this);
 
-  by += bheight + 4;
+  by += bheight + VGAP;
   myRestartButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Reset", kRestartCmd);
   myRestartButton->setTarget(this);
