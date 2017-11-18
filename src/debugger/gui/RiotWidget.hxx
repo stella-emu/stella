@@ -41,7 +41,7 @@ class RiotWidget : public Widget, public CommandSender
         int x, int y, Controller& controller);
 
     void handleConsole();
-    void handleRandomCPU();
+    //void handleRandomCPU();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void loadConfig() override;
@@ -69,8 +69,8 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* myReset;
     CheckboxWidget* myPause;
 
-    CheckboxWidget* myRandomizeCPU[5];
-    CheckboxWidget* myRandomizeRAM;
+    //CheckboxWidget* myRandomizeCPU[5];
+    //CheckboxWidget* myRandomizeRAM;
     PopUpWidget*    myConsole;
 
     // ID's for the various widgets
@@ -79,7 +79,8 @@ class RiotWidget : public Widget, public CommandSender
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID,
-      kRandCPUID, kRandRAMID, kSWCHARBitsID, kConsoleChanged, kPauseID
+      //kRandCPUID, kRandRAMID, 
+      kSWCHARBitsID, kConsoleChanged, kPauseID
     };
 
   private:

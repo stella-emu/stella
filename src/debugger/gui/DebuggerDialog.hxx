@@ -34,6 +34,8 @@ class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
 
+class OptionsDialog;
+
 namespace GUI {
   class MessageBox;
   struct Rect;
@@ -103,7 +105,8 @@ class DebuggerDialog : public Dialog
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
       kDDExitCmd      = 'DDex',
-      kDDExitFatalCmd = 'DDer'
+      kDDExitFatalCmd = 'DDer',
+      kDDOptionsCmd   = 'DDop'
     };
 
     TabWidget *myTab, *myRomTab;
@@ -120,7 +123,11 @@ class DebuggerDialog : public Dialog
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
     ButtonWidget*    myUnwindButton;
+
+    //ButtonWidget*    myOptionsButton;
+
     unique_ptr<GUI::MessageBox> myFatalError;
+    unique_ptr<OptionsDialog> myOptions;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text

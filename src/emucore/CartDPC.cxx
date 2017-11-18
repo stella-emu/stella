@@ -57,6 +57,9 @@ void CartridgeDPC::reset()
   myAudioCycles = 0;
   myFractionalClocks = 0.0;
 
+  // define random startup bank
+  randomizeStartBank();
+
   // Upon reset we switch to the startup bank
   bank(myStartBank);
 }

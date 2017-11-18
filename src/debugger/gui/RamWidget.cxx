@@ -24,7 +24,6 @@
 #include "CartDebug.hxx"
 #include "Font.hxx"
 #include "Widget.hxx"
-
 #include "RamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,6 +58,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create actions buttons to the left of the RAM grid
   int bx = xpos + myRamGrid->getWidth() + 4;
   int by = ypos;
+
   myUndoButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                   "Undo", kUndoCmd);
   myUndoButton->setTarget(this);
@@ -68,7 +68,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                                     "Revert", kRevertCmd);
   myRevertButton->setTarget(this);
 
-  by += 2 * bheight + 2;
+  by += bheight + 4 * 3;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Search", kSearchCmd);
   mySearchButton->setTarget(this);
@@ -116,18 +116,16 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // one resizes as much as possible
 
   // Add Binary display of selected RAM cell
-  xpos = x + w - 13*myFontWidth - 20;
-  new StaticTextWidget(boss, lfont, xpos, ypos, 3*myFontWidth, myFontHeight,
-                       "Bin", kTextAlignLeft);
+  xpos = x + w - 11*myFontWidth - 22;
+  new StaticTextWidget(boss, lfont, xpos, ypos, "Bin");
   myBinValue = new DataGridWidget(boss, nfont, xpos + 3*myFontWidth + 5, ypos-2,
                                   1, 1, 8, 8, Common::Base::F_2);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
   // Add Decimal display of selected RAM cell
-  xpos -= 8*myFontWidth + 5 + 20;
-  new StaticTextWidget(boss, lfont, xpos, ypos, 3*myFontWidth, myFontHeight,
-                       "Dec", kTextAlignLeft);
+  xpos -= 7*myFontWidth + 5 + 20;
+  new StaticTextWidget(boss, lfont, xpos, ypos, "Dec");
   myDecValue = new DataGridWidget(boss, nfont, xpos + 3*myFontWidth + 5, ypos-2,
                                   1, 1, 3, 8, Common::Base::F_10);
   myDecValue->setTarget(this);
@@ -138,9 +136,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Add Label of selected RAM cell
   int xpos_r = xpos - 20;
-  xpos = x + 10;
-  new StaticTextWidget(boss, lfont, xpos, ypos, 5*myFontWidth, myFontHeight,
-                       "Label", kTextAlignLeft);
+  xpos = x;
+  new StaticTextWidget(boss, lfont, xpos, ypos, "Label");
   xpos += 5*myFontWidth + 5;
   myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
                                myLineHeight);

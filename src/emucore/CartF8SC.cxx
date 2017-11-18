@@ -35,6 +35,9 @@ CartridgeF8SC::CartridgeF8SC(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8SC::reset()
 {
+  // define startup bank
+  randomizeStartBank();
+
   initializeRAM(myRAM, 128);
 
   // Upon reset we switch to the startup bank

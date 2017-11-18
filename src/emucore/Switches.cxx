@@ -55,7 +55,8 @@ Switches::Switches(const Event& event, const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Switches::update(const Settings& settings)
 {
-  bool is7800 = (settings.getString("console") == "7800");
+  bool devSettings = settings.getBool("dev.settings");
+  bool is7800 = devSettings && (settings.getString("dev.console") == "7800");
 
   if(is7800)
   {

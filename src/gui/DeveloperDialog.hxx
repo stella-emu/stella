@@ -59,6 +59,7 @@ class DeveloperDialog : public Dialog
     enum
     {
       kDevSettings0     = 'DVs0',
+      kConsole          = 'DVco',
       kRandRAMID        = 'DVrm',
       kRandCPUID        = 'DVcp',
       kTVJitter         = 'DVjt',
@@ -79,6 +80,7 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*   myDevSettings0;
     CheckboxWidget*   myDevSettings1;
 
+    PopUpWidget*      myConsole;
     StaticTextWidget* myLoadingROMLabel;
     CheckboxWidget*   myRandomBank;
     CheckboxWidget*   myRandomizeRAM;
@@ -117,6 +119,7 @@ class DeveloperDialog : public Dialog
     void enableOptions();
     void handleTVJitterChange(bool enable);
     void handleDebugColors();
+    void DeveloperDialog::handleConsole();
 
     // Following constructors and assignment operators not supported
     DeveloperDialog() = delete;

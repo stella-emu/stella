@@ -92,6 +92,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int lineHeight = font.getLineHeight();
   StringList actions;
   WidgetArray wid;
+  VariantList items;
   int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
 
   tabID = myTab->addTab(" Emulation ");
@@ -99,26 +100,36 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos = VBORDER;
   myDevSettings0 = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings0);
   wid.push_back(myDevSettings0);
+  ypos += lineHeight + VGAP;
 
+  // 2600/7800 mode
+  items.clear();
+  VarList::push_back(items, "Atari 2600", "2600");
+  VarList::push_back(items, "Atari 7800", "7800");
+  int lwidth = font.getStringWidth("Console ");
+  int pwidth = font.getStringWidth("Atari 2600");
+
+  myConsole = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items, "Console ", lwidth, kConsole);
+  wid.push_back(myConsole);
   ypos += lineHeight + VGAP;
 
   // Randomize items
   myLoadingROMLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT*1, ypos, "When loading a ROM:", kTextAlignLeft);
   wid.push_back(myLoadingROMLabel);
-
   ypos += lineHeight + VGAP;
+
   myRandomBank = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Random startup bank (TODO)");
   wid.push_back(myRandomBank);
+  ypos += lineHeight + VGAP;
 
   // Randomize RAM
-  ypos += lineHeight + VGAP;
   myRandomizeRAM = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
                                       "Randomize zero-page and extended RAM", kRandRAMID);
   wid.push_back(myRandomizeRAM);
+  ypos += lineHeight + VGAP;
 
   // Randomize CPU
-  ypos += lineHeight + VGAP;
-  int lwidth = font.getStringWidth("Randomize CPU ");
+  lwidth = font.getStringWidth("Randomize CPU ");
   myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Randomize CPU ");
   wid.push_back(myRandomizeCPULabel);
 
@@ -134,17 +145,17 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
     wid.push_back(myRandomizeCPU[i]);
     xpos += CheckboxWidget::boxSize() + font.getStringWidth("XX") + 20;
   }
-
   ypos += lineHeight + VGAP;
+
   /*myThumbException = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1, "Thumb ARM emulation can throw an exception");
   wid.push_back(myThumbException);*/
-
   //ypos += (lineHeight + VGAP) * 2;
+
   myColorLoss = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "PAL color-loss");
   wid.push_back(myColorLoss);
+  ypos += lineHeight + VGAP;
 
   // TV jitter effect
-  ypos += lineHeight + VGAP;
   myTVJitter = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/Roll Effect", kTVJitter);
   wid.push_back(myTVJitter);
   myTVJitterRec = new SliderWidget(myTab, font,
@@ -159,14 +170,14 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
                                          5 * fontWidth, fontHeight, "", kTextAlignLeft);
   myTVJitterRecLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTVJitterRecLabel);
+  ypos += lineHeight + VGAP;
 
   // debug colors
-  ypos += lineHeight + VGAP;
   myDebugColors = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Debug Colors");
   wid.push_back(myDebugColors);
+  ypos += lineHeight + VGAP;
 
   // How to handle undriven TIA pins
-  ypos += lineHeight + VGAP;
   myUndrivenPins = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1,
                                       "Drive unused TIA pins randomly on a read/peek");
   wid.push_back(myUndrivenPins);
@@ -358,6 +369,7 @@ void DeveloperDialog::loadConfig()
 {
   myDevSettings0->setState(instance().settings().getBool("dev.settings"));
 
+  myConsole->setSelectedIndex(instance().settings().getString("dev.console") == "7800" ? 1 : 0);
   myRandomBank->setState(instance().settings().getBool("dev.bankrandom"));
   myRandomizeRAM->setState(instance().settings().getBool("dev.ramrandom"));
 
@@ -409,10 +421,13 @@ void DeveloperDialog::saveConfig()
   //TODO
   // - bankrandom (not implemented yet)
   // - thumbexception (commandline only yet)
-  // - debugcolors (no effect yet)
+  // - remove settings from within debugger
 
   bool devSettings = myDevSettings0->getState();
   instance().settings().setValue("dev.settings", devSettings);
+
+  bool is7800 = myConsole->getSelected() == 1;
+  instance().settings().setValue("dev.console", is7800 ? "7800" : "2600");
 
   instance().settings().setValue("dev.bankrandom", myRandomBank->getState());
   instance().settings().setValue("dev.ramrandom", myRandomizeRAM->getState());
@@ -458,7 +473,7 @@ void DeveloperDialog::saveConfig()
   instance().settings().setValue("dev.tiadriven", myUndrivenPins->getState());
 
   // Finally, issue a complete framebuffer re-initialization
-  instance().createFrameBuffer();
+  //instance().createFrameBuffer();
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
@@ -479,6 +494,7 @@ void DeveloperDialog::setDefaults()
   switch(myTab->getActiveTab())
   {
     case 0:
+      myConsole->setSelectedIndex(0);
       myRandomBank->setState(true);
       myRandomizeRAM->setState(true);
       for(int i = 0; i < 5; ++i)
@@ -535,6 +551,10 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
       myDevSettings0->setState(myDevSettings1->getState());
       enableOptions();
       break;
+
+    case kConsole:
+      handleConsole();
+        break;
 
     case kTVJitter:
       handleTVJitterChange(myTVJitter->getState());
@@ -603,14 +623,16 @@ void DeveloperDialog::enableOptions()
 {
   bool enable = myDevSettings0->getState();
 
+  myConsole->setEnabled(enable);
   // CPU
   myLoadingROMLabel->setEnabled(enable);
-  myRandomBank->setEnabled(false/*enable*/);
+  myRandomBank->setEnabled(enable);
   myRandomizeRAM->setEnabled(enable);
   myRandomizeCPULabel->setEnabled(enable);
   for(int i = 0; i < 5; ++i)
     myRandomizeCPU[i]->setEnabled(enable);
   //myThumbException->setEnabled(enable);
+  handleConsole();
 
   // TIA
   myColorLoss->setEnabled(enable);
@@ -635,5 +657,19 @@ void DeveloperDialog::handleDebugColors()
     bool fixed = instance().console().tia().usingFixedColors();
     if(fixed != myDebugColors->getState())
       instance().console().tia().toggleFixedColors();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleConsole()
+{
+  bool is7800 = myConsole->getSelected() == 1;
+  bool enable = myDevSettings0->getState();
+
+  myRandomizeRAM->setEnabled(enable && !is7800);
+  if(is7800)
+  {
+    myRandomizeRAM->setState(false);
+    instance().settings().setValue("dev.ramrandom", 0);
   }
 }

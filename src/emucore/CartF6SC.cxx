@@ -35,6 +35,9 @@ CartridgeF6SC::CartridgeF6SC(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6SC::reset()
 {
+  // define random startup bank
+  randomizeStartBank();
+
   initializeRAM(myRAM, 128);
 
   // Upon reset we switch to the startup bank

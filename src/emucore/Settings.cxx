@@ -130,7 +130,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("autoslot", "false");
   setInternal("loglevel", "1");
   setInternal("logtoconsole", "0");
-  setInternal("console", "2600"); // 7800
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("fastscbios", "true");
@@ -158,6 +157,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.tv.jitter_recovery", "2");
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
+  setInternal("dev.console", "2600"); // 7800
 
 #ifdef DTHUMB_SUPPORT
   // Thumb ARM emulation options
@@ -500,6 +500,7 @@ void Settings::usage() const
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
   #endif
 
+    << "  -dev.console      <2600|7800>    Select console for B/W and Pause key handling\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
     << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
     << "  -dev.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"

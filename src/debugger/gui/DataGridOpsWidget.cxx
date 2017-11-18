@@ -31,9 +31,9 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
     _shiftLeftButton(nullptr),
     _shiftRightButton(nullptr)
 {
-  const int bwidth  = _font.getMaxCharWidth() * 4,
+  const int bwidth  = _font.getMaxCharWidth() * 4+2,
             bheight = _font.getFontHeight() + 3,
-            space = 6;
+            space = 4;
   int xpos, ypos;
 
   // Create operations buttons

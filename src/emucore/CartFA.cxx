@@ -35,6 +35,9 @@ CartridgeFA::CartridgeFA(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA::reset()
 {
+  // define random startup bank
+  randomizeStartBank();
+
   initializeRAM(myRAM, 256);
 
   // Upon reset we switch to the startup bank

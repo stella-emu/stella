@@ -43,6 +43,9 @@ CartridgeF8::CartridgeF8(const BytePtr& image, uInt32 size, const string& md5,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::reset()
 {
+  // define random startup bank
+  randomizeStartBank();
+
   // Upon reset we switch to the reset bank
   bank(myStartBank);
 }

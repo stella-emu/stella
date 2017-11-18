@@ -42,6 +42,7 @@
 #include "ConsoleMediumFont.hxx"
 #include "ConsoleMediumBFont.hxx"
 #include "StellaMediumFont.hxx"
+#include "OptionsDialog.hxx"
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,6 +62,8 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // Inform the TIA output widget about its associated zoom widget
   myTiaOutput->setZoomWidget(myTiaZoom);
+
+  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,6 +159,11 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDDExitFatalCmd:
       doExitRom();
+      break;
+
+    case kDDOptionsCmd:
+      myOptions->open();
+      loadConfig();
       break;
 
     case RomWidget::kInvalidateListing:
@@ -369,7 +377,8 @@ void DebuggerDialog::addStatusArea()
 void DebuggerDialog::addRomArea()
 {
   const GUI::Rect& r = getRomBounds();
-  const int vBorder = 4;
+  const int VBORDER = 4;
+  const string ELLIPSIS = "\x1d";
 
   int bwidth  = myLFont->getStringWidth("Frame +1 "),
       bheight = myLFont->getLineHeight() + 2;
@@ -405,8 +414,13 @@ void DebuggerDialog::addRomArea()
                      bwidth, bheight, ">", kDDUnwindCmd);
   myUnwindButton->clearFlags(WIDGET_ENABLED);
 
+  int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;
 
-  int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 20;
+  bwidth = myLFont->getStringWidth("Options" + ELLIPSIS) + 8;
+  bheight = myLFont->getLineHeight() + 2;
+
+  new ButtonWidget(this, *myLFont, xpos, r.top + 5, bwidth, bheight, "Options" + ELLIPSIS, kDDOptionsCmd);
+
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
   int max_w = xpos - r.left - 10;
@@ -426,8 +440,8 @@ void DebuggerDialog::addRomArea()
   ////////////////////////////////////////////////////////////////////
   // Disassembly area
 
-  xpos = r.left + vBorder;  ypos += myRam->getHeight() + 5;
-  const int tabWidth  = r.width() - vBorder - 1;
+  xpos = r.left + VBORDER;  ypos += myRam->getHeight() + 5;
+  const int tabWidth  = r.width() - VBORDER - 1;
   const int tabHeight = r.height() - ypos - 1;
   int tabID;
 

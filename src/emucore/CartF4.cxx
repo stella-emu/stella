@@ -36,6 +36,9 @@ CartridgeF4::CartridgeF4(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4::reset()
 {
+  // define random startup bank
+  randomizeStartBank();
+
   // Upon reset we switch to the startup bank
   bank(myStartBank);
 }

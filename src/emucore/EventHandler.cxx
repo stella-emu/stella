@@ -896,7 +896,8 @@ void EventHandler::handleEvent(Event::Type event, int state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
-  bool is7800 = (myOSystem.settings().getString("console") == "7800");
+  bool devSettings = myOSystem.settings().getBool("dev.settings");
+  bool is7800 = devSettings && (myOSystem.settings().getString("dev.console") == "7800");
 
   switch(event)
   {

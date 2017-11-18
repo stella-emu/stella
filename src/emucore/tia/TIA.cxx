@@ -79,7 +79,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySpriteEnabledBits(0xFF),
     myCollisionsEnabledBits(0xFF)
 {
-  myTIAPinsDriven = mySettings.getBool("dev.tiadriven");
+  bool devSettings = mySettings.getBool("dev.settings");
+  myTIAPinsDriven = devSettings && mySettings.getBool("dev.tiadriven");
 
   myBackground.setTIA(this);
   myPlayfield.setTIA(this);
@@ -89,7 +90,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
-  bool devSettings = mySettings.getBool("dev.settings");
   myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "tv.jitter");
   myJitterFactor = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "tv.jitter_recovery");
 
@@ -1007,7 +1007,7 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
   if (mode == 0 || mode == 1)
   {
     myTIAPinsDriven = bool(mode);
-    mySettings.setValue("dev.tiadriven", myTIAPinsDriven);
+    //mySettings.setValue("dev.tiadriven", myTIAPinsDriven);
   }
   return myTIAPinsDriven;
 }

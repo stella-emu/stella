@@ -35,6 +35,9 @@ CartridgeF0::CartridgeF0(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF0::reset()
 {
+  // define random startup bank
+  randomizeStartBank();
+
   // Upon reset we switch to the startup bank
   bank(myStartBank);
 }

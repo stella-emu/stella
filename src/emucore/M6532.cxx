@@ -58,10 +58,11 @@ void M6532::reset()
   };
 
   // Initialize the 128 bytes of memory
-  if(mySettings.getString("console") == "7800")
+  bool devSettings = mySettings.getBool("dev.settings");
+  if(devSettings && mySettings.getString("dev.console") == "7800")
     for(uInt32 t = 0; t < 128; ++t)
       myRAM[t] = RAM_7800[t];
-  else if(mySettings.getBool("dev.ramrandom"))
+  else if(devSettings && mySettings.getBool("dev.ramrandom"))
     for(uInt32 t = 0; t < 128; ++t)
       myRAM[t] = mySystem->randGenerator().next();
   else
