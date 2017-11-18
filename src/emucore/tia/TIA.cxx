@@ -90,8 +90,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
-  myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "tv.jitter");
-  myJitterFactor = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "tv.jitter_recovery");
+  myEnableJitter = devSettings ? mySettings.getBool("dev.tv.jitter") : false;
+  myJitterFactor = devSettings ? mySettings.getInt("dev.tv.jitter_recovery") : 10;
 
   reset();
 }
@@ -186,7 +186,7 @@ void TIA::frameReset()
 {
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
-  enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "colorloss"));
+  enableColorLoss(mySettings.getBool("dev.settings") && mySettings.getBool("dev.colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

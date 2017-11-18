@@ -452,8 +452,7 @@ void DeveloperDialog::saveConfig()
     }
     else
     {
-      instance().console().tia().toggleJitter(instance().settings().getBool("tv.jitter") ? 1 : 0);
-      instance().console().tia().setJitterRecoveryFactor(instance().settings().getInt("tv.jitter_recovery"));
+      instance().console().tia().toggleJitter(0);
     }
   }
 
@@ -467,7 +466,7 @@ void DeveloperDialog::saveConfig()
     if(devSettings)
       instance().console().toggleColorLoss(myColorLoss->getState());
     else
-      instance().console().toggleColorLoss(instance().settings().getBool("colorloss"));
+      instance().console().toggleColorLoss(false);
   }
 
   instance().settings().setValue("dev.tiadriven", myUndrivenPins->getState());

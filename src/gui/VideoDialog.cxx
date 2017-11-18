@@ -38,6 +38,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h, bool isGlobal)
   : Dialog(osystem, parent)
 {
+  const int VGAP = 4;
+  const int VBORDER = 8;
+  const int HBORDER = 8;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
@@ -56,7 +59,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   _h = std::min(16 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
-  xpos = ypos = 5;
+  xpos = HBORDER;  ypos = VBORDER;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
 
@@ -69,13 +72,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                                instance().frameBuffer().supportedRenderers(),
                                "Renderer ", lwidth);
   wid.push_back(myRenderer);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // TIA filters (will be dynamically filled later)
   myTIAZoom = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                               lineHeight, items, "TIA Zoom ", lwidth);
   wid.push_back(myTIAZoom);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // TIA Palette
   items.clear();
@@ -85,7 +88,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                  lineHeight, items, "TIA Palette ", lwidth);
   wid.push_back(myTIAPalette);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // TIA interpolation
   items.clear();
@@ -94,7 +97,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myTIAInterpolate = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                      items, "TIA Inter ", lwidth);
   wid.push_back(myTIAInterpolate);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Timing to use between frames
   items.clear();
@@ -103,11 +106,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myFrameTiming = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                   items, "Timing (*) ", lwidth);
   wid.push_back(myFrameTiming);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
   myNAspectRatio =
-    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,
                      "NTSC Aspect ", lwidth, kNAspectRatioChanged);
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
   wid.push_back(myNAspectRatio);
@@ -115,11 +118,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new StaticTextWidget(myTab, font, xpos + myNAspectRatio->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
   myNAspectRatioLabel->setFlags(WIDGET_CLEARBG);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Aspect ratio (PAL mode)
   myPAspectRatio =
-    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,
                      "PAL Aspect ", lwidth, kPAspectRatioChanged);
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
   wid.push_back(myPAspectRatio);
@@ -127,11 +130,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new StaticTextWidget(myTab, font, xpos + myPAspectRatio->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
   myPAspectRatioLabel->setFlags(WIDGET_CLEARBG);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Framerate
   myFrameRate =
-    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,
                      "Framerate ", lwidth, kFrameRateChanged);
   myFrameRate->setMinValue(0); myFrameRate->setMaxValue(300);
   myFrameRate->setStepValue(10);
@@ -150,45 +153,38 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Move over to the next column
   xpos += myNAspectRatio->getWidth() + myNAspectRatioLabel->getWidth() + 30;
-  ypos = 10;
+  ypos = VBORDER;
 
   // Fullscreen
   myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen");
   wid.push_back(myFullscreen);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // FS stretch
   myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen Fill");
   wid.push_back(myUseStretch);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Use sync to vblank
   myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos, "VSync");
   wid.push_back(myUseVSync);
-  ypos += lineHeight + 4;
-
-  ypos += lineHeight;
-
-  // PAL color-loss effect
-  myColorLoss = new CheckboxWidget(myTab, font, xpos, ypos, "PAL color-loss");
-  wid.push_back(myColorLoss);
-  ypos += lineHeight + 4;
+  ypos += (lineHeight + VGAP) * 2;
 
   // Skip progress load bars for SuperCharger ROMs
   // Doesn't really belong here, but I couldn't find a better place for it
   myFastSCBios = new CheckboxWidget(myTab, font, xpos, ypos, "Fast SC/AR BIOS");
   wid.push_back(myFastSCBios);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Show UI messages onscreen
   myUIMessages = new CheckboxWidget(myTab, font, xpos, ypos, "Show UI messages");
   wid.push_back(myUIMessages);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Center window (in windowed mode)
   myCenter = new CheckboxWidget(myTab, font, xpos, ypos, "Center window");
   wid.push_back(myCenter);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Use multi-threading
   myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos, "Use multi-threading");
@@ -201,7 +197,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // 2) TV effects options
   wid.clear();
   tabID = myTab->addTab(" TV Effects ");
-  xpos = ypos = 8;
+  xpos = HBORDER;
+  ypos = VBORDER;
 
   // TV Mode
   items.clear();
@@ -217,7 +214,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                     items, "TV Mode ", lwidth, kTVModeChanged);
   wid.push_back(myTVMode);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Custom adjustables (using macro voodoo)
   xpos += 8+1; ypos += 0;
@@ -226,7 +223,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc)                                 \
   myTV ## obj =                                                          \
-    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,        \
+    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,      \
                          desc, lwidth, kTV ## obj ##Changed);            \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
   wid.push_back(myTV ## obj);                                            \
@@ -234,7 +231,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new StaticTextWidget(myTab, font, xpos+myTV ## obj->getWidth()+4,    \
                     ypos+1, fontWidth*3, fontHeight, "", kTextAlignLeft);\
   myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
-  ypos += lineHeight + 4
+  ypos += lineHeight + VGAP;
 
   pwidth = swidth;
   CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ");
@@ -249,7 +246,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
   xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 36;
-  ypos = 8;
+  ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
   pwidth = font.getMaxCharWidth() * 6;
@@ -261,23 +258,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myTVPhosphor = new PopUpWidget(myTab, font, xpos, ypos,
       font.getStringWidth("Per-ROM"), lineHeight, items,
       "TV Phosphor ", font.getStringWidth("TV Phosphor "));
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // TV Phosphor default level
   xpos += 8-8+16;
   pwidth = swidth;
   CREATE_CUSTOM_SLIDERS(PhosLevel, "Default   ");
-  ypos += 6;
-
-  // TV jitter effect
-  xpos -= 8-8+16;
-  myTVJitter = new CheckboxWidget(myTab, font, xpos, ypos,
-                                  "Jitter/Roll Effect", kTVJitterChanged);
-  wid.push_back(myTVJitter);
-  xpos += 8+8;
-  ypos += lineHeight;
-  CREATE_CUSTOM_SLIDERS(JitterRec, "Recovery  ");
-  myTVJitterRec->setMinValue(1); myTVJitterRec->setMaxValue(20);
   ypos += 6;
 
   // Scanline intensity and interpolation
@@ -303,9 +289,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new ButtonWidget(myTab, font, xpos, ypos, cloneWidth, buttonHeight,\
                      desc, kClone ## obj ##Cmd);                       \
   wid.push_back(myClone ## obj);                                       \
-  ypos += lineHeight + 8
+  ypos += lineHeight + 4 + VGAP
 
-  ypos += 4;
+  ypos += VGAP;
   CREATE_CLONE_BUTTON(Composite, "Clone Composite");
   CREATE_CLONE_BUTTON(Svideo, "Clone S-Video");
   CREATE_CLONE_BUTTON(RGB, "Clone RGB");
@@ -319,7 +305,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // 3) TIA debug colours
   wid.clear();
   tabID = myTab->addTab(" Debug Colors ");
-  xpos = ypos = 8;
+  xpos = HBORDER;
+  ypos = VBORDER;
 
   items.clear();
   VarList::push_back(items, "Red", "r");
@@ -342,7 +329,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     x += myDbgColour[idx]->getWidth() + 10;
     myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos,
         uInt32(2*lineHeight), lineHeight);
-    ypos += lineHeight + 8;
+    ypos += lineHeight + VGAP*2;
     if(isGlobal)
     {
       myDbgColour[idx]->clearFlags(WIDGET_ENABLED);
@@ -432,10 +419,6 @@ void VideoDialog::loadConfig()
   // Use sync to vertical blank
   myUseVSync->setState(instance().settings().getBool("vsync"));
 
-  // PAL color-loss effect
-  myColorLoss->setState(instance().settings().getBool("colorloss"));
-  myColorLoss->setEnabled(!instance().settings().getBool("dev.settings"));
-
   // Show UI messages
   myUIMessages->setState(instance().settings().getBool("uimessages"));
 
@@ -464,11 +447,6 @@ void VideoDialog::loadConfig()
   // TV phosphor blend
   myTVPhosLevel->setValue(instance().settings().getInt("tv.phosblend"));
   myTVPhosLevelLabel->setLabel(instance().settings().getString("tv.phosblend"));
-
-  // TV jitter
-  myTVJitterRec->setValue(instance().settings().getInt("tv.jitter_recovery"));
-  myTVJitterRecLabel->setLabel(instance().settings().getString("tv.jitter_recovery"));
-  handleTVJitterChange(instance().settings().getBool("tv.jitter"));
 
   // TV scanline intensity and interpolation
   myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
@@ -523,11 +501,6 @@ void VideoDialog::saveConfig()
   // Fullscreen
   instance().settings().setValue("fullscreen", myFullscreen->getState());
 
-  // PAL color-loss effect
-  instance().settings().setValue("colorloss", myColorLoss->getState());
-  if(instance().hasConsole() && !devSettings)
-    instance().console().toggleColorLoss(myColorLoss->getState());
-
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fsfill", myUseStretch->getState());
 
@@ -574,15 +547,6 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tv.phosblend", myTVPhosLevelLabel->getLabel());
   Properties::setDefault(Display_PPBlend, myTVPhosLevelLabel->getLabel());
 
-  // TV jitter
-  instance().settings().setValue("tv.jitter", myTVJitter->getState());
-  instance().settings().setValue("tv.jitter_recovery", myTVJitterRecLabel->getLabel());
-  if(instance().hasConsole() && !devSettings)
-  {
-    instance().console().tia().toggleJitter(myTVJitter->getState() ? 1 : 0);
-    instance().console().tia().setJitterRecoveryFactor(myTVJitterRec->getValue());
-  }
-
   // TV scanline intensity and interpolation
   instance().settings().setValue("tv.scanlines", myTVScanIntenseLabel->getLabel());
   instance().settings().setValue("tv.scaninter", myTVScanInterpolate->getState());
@@ -621,7 +585,6 @@ void VideoDialog::setDefaults()
       myFullscreen->setState(false);
       myUseStretch->setState(true);
       myUseVSync->setState(true);
-      myColorLoss->setState(false);
       myUIMessages->setState(true);
       myCenter->setState(false);
       myFastSCBios->setState(true);
@@ -639,11 +602,6 @@ void VideoDialog::setDefaults()
       // TV phosphor blend
       myTVPhosLevel->setValue(50);
       myTVPhosLevelLabel->setLabel("50");
-
-      // TV jitter
-      myTVJitterRec->setValue(10);
-      myTVJitterRecLabel->setLabel("10");
-      handleTVJitterChange(true);
 
       // TV scanline intensity and interpolation
       myTVScanIntense->setValue(25);
@@ -704,17 +662,6 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
   myTVScanInterpolate->setEnabled(scanenable);
 
   _dirty = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleTVJitterChange(bool enable)
-{
-  bool devSettings = instance().settings().getBool("dev.settings");
-  myTVJitter->setState(enable);
-  enable &= !devSettings;
-  myTVJitter->setEnabled(!devSettings);
-  myTVJitterRec->setEnabled(enable);
-  myTVJitterRecLabel->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -844,10 +791,6 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
     case kTVGammaChanged:  myTVGammaLabel->setValue(myTVGamma->getValue());
       break;
     case kTVPhosLevelChanged:  myTVPhosLevelLabel->setValue(myTVPhosLevel->getValue());
-      break;
-    case kTVJitterChanged:  handleTVJitterChange(myTVJitter->getState());
-      break;
-    case kTVJitterRecChanged:  myTVJitterRecLabel->setValue(myTVJitterRec->getValue());
       break;
     case kTVScanIntenseChanged:  myTVScanIntenseLabel->setValue(myTVScanIntense->getValue());
       break;

@@ -38,7 +38,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("fullscreen", "false");
   setInternal("center", "false");
   setInternal("palette", "standard");
-  setInternal("colorloss", "false");
   setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
@@ -54,8 +53,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("tv.filter", "0");
   setInternal("tv.phosphor", "byrom");
   setInternal("tv.phosblend", "50");
-  setInternal("tv.jitter", "true");
-  setInternal("tv.jitter_recovery", "10");
   setInternal("tv.scanlines", "25");
   setInternal("tv.scaninter", "true");
   // TV options when using 'custom' mode
@@ -297,8 +294,6 @@ void Settings::validate()
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setInternal("tv.filter", "0");
 
-  i = getInt("tv.jitter_recovery");
-  if(i < 1 || i > 20)  setInternal("tv.jitter_recovery", "10");
   i = getInt("dev.tv.jitter_recovery");
   if(i < 1 || i > 20)  setInternal("dev.tv.jitter_recovery", "10");
 
@@ -378,7 +373,6 @@ void Settings::usage() const
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
-    << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
     << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
@@ -400,8 +394,6 @@ void Settings::usage() const
     << "  -tv.filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
     << "  -tv.phosphor  <always|byrom> When to use phosphor mode\n"
     << "  -tv.phosblend <0-100>        Set default blend level in phosphor mode\n"
-    << "  -tv.jitter    <1|0>          Enable TV jitter effect\n"
-    << "  -tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
     << "  -tv.scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
     << "  -tv.contrast    <value>      Set TV effects custom contrast to value 1.0 - 1.0\n"

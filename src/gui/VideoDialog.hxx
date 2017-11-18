@@ -44,9 +44,7 @@ class VideoDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    void handleFullscreenChange(bool enable);
     void handleTVModeChange(NTSCFilter::Preset);
-    void handleTVJitterChange(bool enable);
     void handleDebugColours(int cmd, int color);
     void handleDebugColours(const string& colors);
     void loadTVAdjustables(NTSCFilter::Preset preset);
@@ -71,7 +69,6 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myFullscreen;
     CheckboxWidget*   myUseStretch;
     CheckboxWidget*   myUseVSync;
-    CheckboxWidget*   myColorLoss;
     CheckboxWidget*   myUIMessages;
     CheckboxWidget*   myCenter;
     CheckboxWidget*   myFastSCBios;
@@ -99,11 +96,6 @@ class VideoDialog : public Dialog
     StaticTextWidget* myTVSaturLabel;
     SliderWidget*     myTVGamma;
     StaticTextWidget* myTVGammaLabel;
-
-    // TV jitter effects
-    CheckboxWidget*   myTVJitter;
-    SliderWidget*     myTVJitterRec;
-    StaticTextWidget* myTVJitterRecLabel;
 
     // TV phosphor effect
     PopUpWidget*      myTVPhosphor;
@@ -144,9 +136,6 @@ class VideoDialog : public Dialog
       kTVSaturChanged      = 'TVsa',
       kTVGammaChanged      = 'TVga',
       kTVScanIntenseChanged= 'TVsc',
-
-      kTVJitterChanged     = 'TVjt',
-      kTVJitterRecChanged  = 'TVjr',
 
       kTVPhosLevelChanged  = 'TVpl',
 
