@@ -321,7 +321,7 @@ void RiotWidget::loadConfig()
   myP1Diff->setSelectedIndex(riot.diffP1());
 
   bool devSettings = instance().settings().getBool("dev.settings");
-  myConsole->setText(instance().settings().getString("dev.console") == "7800" ? "Atari 7800" : "Atari 2600");
+  myConsole->setText(devSettings && instance().settings().getString("dev.console") == "7800" ? "Atari 7800" : "Atari 2600");
   myConsole->setEditable(false, true);
 
   myTVType->setSelectedIndex(riot.tvType());
@@ -469,7 +469,8 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 void RiotWidget::handleConsole()
 {
   RiotDebug& riot = instance().debugger().riotDebug();
-  bool is7800 = instance().settings().getString("dev.console") == "7800";
+  bool devSettings = instance().settings().getBool("dev.settings");
+  bool is7800 = devSettings && instance().settings().getString("dev.console") == "7800";
 
   myTVType->setEnabled(!is7800);
   myPause->setEnabled(is7800);
