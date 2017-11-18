@@ -304,6 +304,9 @@
 		DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */; };
 		DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */; };
 		DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */; };
+		DC5ACB5B1FBFCE8E00A213FD /* DeveloperDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5ACB591FBFCE8E00A213FD /* DeveloperDialog.cxx */; };
+		DC5ACB5C1FBFCE8E00A213FD /* DeveloperDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5ACB5A1FBFCE8E00A213FD /* DeveloperDialog.hxx */; };
+		DC5ACB5E1FBFCEB800A213FD /* CartDebugWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5ACB5D1FBFCEB800A213FD /* CartDebugWidget.cxx */; };
 		DC5BE4B317C913AC0091FD64 /* ConsoleBFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5BE4B117C913AC0091FD64 /* ConsoleBFont.hxx */; };
 		DC5BE4B417C913AC0091FD64 /* ConsoleMediumBFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5BE4B217C913AC0091FD64 /* ConsoleMediumBFont.hxx */; };
 		DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */; };
@@ -952,6 +955,9 @@
 		DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDevice.cxx; sourceTree = "<group>"; };
 		DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseControl.cxx; sourceTree = "<group>"; };
 		DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MouseControl.hxx; sourceTree = "<group>"; };
+		DC5ACB591FBFCE8E00A213FD /* DeveloperDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DeveloperDialog.cxx; sourceTree = "<group>"; };
+		DC5ACB5A1FBFCE8E00A213FD /* DeveloperDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DeveloperDialog.hxx; sourceTree = "<group>"; };
+		DC5ACB5D1FBFCEB800A213FD /* CartDebugWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDebugWidget.cxx; sourceTree = "<group>"; };
 		DC5BE4B117C913AC0091FD64 /* ConsoleBFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleBFont.hxx; sourceTree = "<group>"; };
 		DC5BE4B217C913AC0091FD64 /* ConsoleMediumBFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleMediumBFont.hxx; sourceTree = "<group>"; };
 		DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaKeys.hxx; sourceTree = "<group>"; };
@@ -1409,6 +1415,7 @@
 				DCAAE5BB1715887B0080BB82 /* CartCVWidget.hxx */,
 				DC74E5C4198AF12700F37E36 /* CartDASHWidget.cxx */,
 				DC74E5C5198AF12700F37E36 /* CartDASHWidget.hxx */,
+				DC5ACB5D1FBFCEB800A213FD /* CartDebugWidget.cxx */,
 				DCAAE5BC1715887B0080BB82 /* CartDebugWidget.hxx */,
 				DCAACB0A188D636F00A4D282 /* CartDFSCWidget.cxx */,
 				DCAACB0B188D636F00A4D282 /* CartDFSCWidget.hxx */,
@@ -1785,6 +1792,8 @@
 				DC8CF9BC17C15A27004B533D /* ConsoleMediumFont.hxx */,
 				DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */,
 				DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */,
+				DC5ACB591FBFCE8E00A213FD /* DeveloperDialog.cxx */,
+				DC5ACB5A1FBFCE8E00A213FD /* DeveloperDialog.hxx */,
 				2DDBEAAB084578BF00812C11 /* Dialog.cxx */,
 				2DDBEAAC084578BF00812C11 /* Dialog.hxx */,
 				2DDBEAAD084578BF00812C11 /* DialogContainer.cxx */,
@@ -2083,6 +2092,7 @@
 				2D9173E809BA90380026E9FF /* MD5.hxx in Headers */,
 				2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */,
 				2D9173EB09BA90380026E9FF /* Props.hxx in Headers */,
+				DC5ACB5C1FBFCE8E00A213FD /* DeveloperDialog.hxx in Headers */,
 				2D9173EC09BA90380026E9FF /* PropsSet.hxx in Headers */,
 				2D9173ED09BA90380026E9FF /* Random.hxx in Headers */,
 				2D9173EE09BA90380026E9FF /* Serializer.hxx in Headers */,
@@ -2463,6 +2473,7 @@
 				2D91747909BA90380026E9FF /* Cart4K.cxx in Sources */,
 				2D91747A09BA90380026E9FF /* CartAR.cxx in Sources */,
 				2D91747B09BA90380026E9FF /* CartCV.cxx in Sources */,
+				DC5ACB5E1FBFCEB800A213FD /* CartDebugWidget.cxx in Sources */,
 				DCF3A6FC1DFC75E3008A8AF3 /* Playfield.cxx in Sources */,
 				2D91747C09BA90380026E9FF /* CartDPC.cxx in Sources */,
 				2D91747D09BA90380026E9FF /* CartE0.cxx in Sources */,
@@ -2621,6 +2632,7 @@
 				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
+				DC5ACB5B1FBFCE8E00A213FD /* DeveloperDialog.cxx in Sources */,
 				DCD6FC7011C281ED005DA767 /* png.c in Sources */,
 				DCD6FC7311C281ED005DA767 /* pngerror.c in Sources */,
 				DCF3A6E71DFC75E3008A8AF3 /* Background.cxx in Sources */,
