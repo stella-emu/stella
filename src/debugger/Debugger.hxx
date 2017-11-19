@@ -65,6 +65,7 @@ class Debugger : public DialogContainer
   // directly, and not touch the instance variables
   friend class DebuggerParser;
   friend class EventHandler;
+  friend class M6502;
 
   public:
     /**

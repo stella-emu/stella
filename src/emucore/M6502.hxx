@@ -222,18 +222,20 @@ class M6502 : public Serializable
     void attach(Debugger& debugger);
 
     PackedBitArray& breakPoints() { return myBreakPoints; }
-    //PackedBitArray& readTraps()   { return myReadTraps;   }
-    //PackedBitArray& writeTraps()  { return myWriteTraps;  }
-    //PackedBitArray& readTrapIfs() { return myReadTrapIfs; }
-    //PackedBitArray& writeTrapIfs() { return myWriteTrapIfs; }
     TrapArray& readTraps() { return myReadTraps; }
     TrapArray& writeTraps() { return myWriteTraps; }
 
     // methods for 'breakif' handling
     uInt32 addCondBreak(Expression* e, const string& name);
-    bool delCondBreak(uInt32 brk);
+    bool delCondBreak(uInt32 idx);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
+
+    // methods for 'savestateif' handling
+    uInt32 addCondSaveState(Expression* e, const string& name);
+    bool delCondSaveState(uInt32 idx);
+    void clearCondSaveStates();
+    const StringList& getCondSaveStateNames() const;
 
     // methods for 'trapif' handling
     uInt32 addCondTrap(Expression* e, const string& name);
@@ -380,12 +382,27 @@ class M6502 : public Serializable
     bool myHaltRequested;
 
 #ifdef DEBUGGER_SUPPORT
+    enum CondAction
+    {
+      breakAction,
+      saveStateAction
+    };
+
     Int32 evalCondBreaks() {
-      for(uInt32 i = 0; i < myBreakConds.size(); i++)
-        if(myBreakConds[i]->evaluate())
+      for(uInt32 i = 0; i < myCondBreaks.size(); i++)
+        if(myCondBreaks[i]->evaluate())
           return i;
 
       return -1; // no break hit
+    }
+
+    Int32 evalCondSaveStates()
+    {
+      for(uInt32 i = 0; i < myCondSaveStates.size(); i++)
+        if(myCondSaveStates[i]->evaluate())
+          return i;
+
+      return -1; // no save state point hit
     }
 
     Int32 evalCondTraps()
@@ -413,10 +430,13 @@ class M6502 : public Serializable
     };
     HitTrapInfo myHitTrapInfo;
 
-    vector<unique_ptr<Expression>> myBreakConds;
-    StringList myBreakCondNames;
+    vector<unique_ptr<Expression>> myCondBreaks;
+    StringList myCondBreakNames;
+    vector<unique_ptr<Expression>> myCondSaveStates;
+    StringList myCondSaveStateNames;
     vector<unique_ptr<Expression>> myTrapConds;
     StringList myTrapCondNames;
+
 #endif  // DEBUGGER_SUPPORT
 
   private:

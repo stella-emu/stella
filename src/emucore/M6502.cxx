@@ -219,9 +219,15 @@ bool M6502::execute(uInt32 number)
       int cond = evalCondBreaks();
       if(cond > -1)
       {
-        string buf = "CBP: " + myBreakCondNames[cond];
+        string buf = "CBP: " + myCondBreakNames[cond];
         if(myDebugger && myDebugger->start(buf))
           return true;
+      }
+
+      cond = evalCondSaveStates();
+      if(cond > -1)
+      {
+        myDebugger->saveOldState("conditional savestate");
       }
 #endif  // DEBUGGER_SUPPORT
 
@@ -424,18 +430,18 @@ void M6502::attach(Debugger& debugger)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 M6502::addCondBreak(Expression* e, const string& name)
 {
-  myBreakConds.emplace_back(e);
-  myBreakCondNames.push_back(name);
-  return uInt32(myBreakConds.size() - 1);
+  myCondBreaks.emplace_back(e);
+  myCondBreakNames.push_back(name);
+  return uInt32(myCondBreaks.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::delCondBreak(uInt32 brk)
+bool M6502::delCondBreak(uInt32 idx)
 {
-  if(brk < myBreakConds.size())
+  if(idx < myCondBreaks.size())
   {
-    Vec::removeAt(myBreakConds, brk);
-    Vec::removeAt(myBreakCondNames, brk);
+    Vec::removeAt(myCondBreaks, idx);
+    Vec::removeAt(myCondBreakNames, idx);
     return true;
   }
   return false;
@@ -444,14 +450,47 @@ bool M6502::delCondBreak(uInt32 brk)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::clearCondBreaks()
 {
-  myBreakConds.clear();
-  myBreakCondNames.clear();
+  myCondBreaks.clear();
+  myCondBreakNames.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const StringList& M6502::getCondBreakNames() const
 {
-  return myBreakCondNames;
+  return myCondBreakNames;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 M6502::addCondSaveState(Expression* e, const string& name)
+{
+  myCondSaveStates.emplace_back(e);
+  myCondSaveStateNames.push_back(name);
+  return uInt32(myCondSaveStates.size() - 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6502::delCondSaveState(uInt32 idx)
+{
+  if(idx < myCondSaveStates.size())
+  {
+    Vec::removeAt(myCondSaveStates, idx);
+    Vec::removeAt(myCondSaveStateNames, idx);
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::clearCondSaveStates()
+{
+  myCondSaveStates.clear();
+  myCondSaveStateNames.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const StringList& M6502::getCondSaveStateNames() const
+{
+  return myCondSaveStateNames;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

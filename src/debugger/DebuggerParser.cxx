@@ -652,6 +652,10 @@ string DebuggerParser::saveScriptFile(string file)
   for(const auto& cond : conds)
     out << "breakif {" << cond << "}" << endl;
 
+  conds = debugger.m6502().getCondSaveStateNames();
+  for(const auto& cond : conds)
+    out << "savestateif {" << cond << "}" << endl;
+
   StringList names = debugger.m6502().getCondTrapNames();
   for(uInt32 i = 0; i < myTraps.size(); ++i)
   {
@@ -808,6 +812,14 @@ void DebuggerParser::executeClearconfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "clearbreaks"
+void DebuggerParser::executeClearsavestateifs()
+{
+  debugger.m6502().clearCondSaveStates();
+  commandResult << "all savestate points cleared";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "cleartraps"
 void DebuggerParser::executeCleartraps()
 {
@@ -930,6 +942,16 @@ void DebuggerParser::executeDelfunction()
     commandResult << "removed function " << argStrings[0];
   else
     commandResult << "function " << argStrings[0] << " built-in or not found";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "delsavestateif"
+void DebuggerParser::executeDelsavestateif()
+{
+  if(debugger.m6502().delCondSaveState(args[0]))
+    commandResult << "removed savestateif " << Base::toString(args[0]);
+  else
+    commandResult << red("no such savestateif");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1211,6 +1233,31 @@ void DebuggerParser::executeListfunctions()
   else
     commandResult << "no user-defined functions";
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "listsavestateifs"
+void DebuggerParser::executeListsavestateifs()
+{
+  ostringstream buf;
+  int count = 0;
+
+  StringList conds = debugger.m6502().getCondSaveStateNames();
+  if(conds.size() > 0)
+  {
+    if(count)
+      commandResult << endl;
+    commandResult << "savestateif:" << endl;
+    for(uInt32 i = 0; i < conds.size(); i++)
+    {
+      commandResult << Base::toString(i) << ": " << conds[i];
+      if(i != (conds.size() - 1)) commandResult << endl;
+    }
+  }
+
+  if(commandResult.str() == "")
+    commandResult << "no savestateifs defined";
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listtraps"
@@ -1540,6 +1587,21 @@ void DebuggerParser::executeSavestate()
     debugger.saveState(args[0]);
   else
     commandResult << red("invalid slot (must be 0-9)");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "savestateif"
+void DebuggerParser::executeSavestateif()
+{
+  int res = YaccParser::parse(argStrings[0].c_str());
+  if(res == 0)
+  {
+    uInt32 ret = debugger.m6502().addCondSaveState(
+      YaccParser::getResult(), argStrings[0]);
+    commandResult << "Added savestateif " << Base::toString(ret);
+  }
+  else
+    commandResult << red("invalid expression");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1982,6 +2044,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "clearsavestateifs",
+    "Clear all savestate points",
+    "Example: clearsavestateifss (no parameters)",
+    false,
+    true,
+    { kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeClearsavestateifs)
+  },
+
+  {
     "clearconfig",
     "Clear Distella config directives [bank xx]",
     "Example: clearconfig 0, clearconfig 1",
@@ -2099,6 +2171,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelfunction)
+  },
+
+  {
+    "delsavestateif",
+    "Delete conditional savestate point <xx>",
+    "Example: delsavestateif 0",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeDelsavestateif)
   },
 
   {
@@ -2243,6 +2325,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeListfunctions)
+  },
+
+  {
+    "listsavestateifs",
+    "List savestate points",
+    "Example: listsavestateifs (no parameters)",
+    false,
+    false,
+    { kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeListsavestateifs)
   },
 
   {
@@ -2500,6 +2592,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_BYTE, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavestate)
+  },
+
+  {
+    "savestateif",
+    "Create savestate on <condition>",
+    "Condition can include multiple items, see documentation\nExample: savestateif pc==f000",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeSavestateif)
   },
 
   {
