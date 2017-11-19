@@ -171,14 +171,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myConsoleTiming = ConsoleTiming::secam;
   }
 
-  // Bumper Bash always require all 4 directions
-  // Other ROMs can use it if the setting is enabled
-  // Hopefully this list should stay short
-  // If it starts to get too long, we should add a ROM properties entry
-  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" || // Bumper Bash
-                   md5 == "16ee443c990215f61f7dd1e55a0d2256" || // Bumper Bash (PAL)
-                   md5 == "1bf503c724001b09be79c515ecfcbd03" || // Bumper Bash (Unknown)
-                   myOSystem.settings().getBool("joyallow4");
+  bool joyallow4 = myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
 
   // Reset the system to its power-on state

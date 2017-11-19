@@ -1816,7 +1816,8 @@
 "Cartridge.Manufacturer" "Spectravideo, David Lubar"
 "Cartridge.ModelNo" "SA-218, SA-218C"
 "Cartridge.Name" "Bumper Bash (1983) (Spectravideo) (PAL)"
-"Controller.Left" "PADDLES_IAXIS"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
+"Controller.Left" "PADDLES"
 "Display.YStart" "54"
 ""
 
@@ -13339,6 +13340,8 @@
 "Cartridge.Manufacturer" "Spectravideo, David Lubar"
 "Cartridge.ModelNo" "SA-218"
 "Cartridge.Name" "Bumper Bash (1983) (Spectravideo)"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
+"Controller.Left" "PADDLES"
 "Display.YStart" "20"
 ""
 
