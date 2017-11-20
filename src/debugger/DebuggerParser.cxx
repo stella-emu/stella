@@ -2023,7 +2023,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "breakif",
-    "Set breakpoint on <condition>",
+    "Set/clear breakpoint on <condition>",
     "Condition can include multiple items, see documentation\nExample: breakif _scan>100",
     true,
     false,
@@ -2665,7 +2665,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trap",
     "Trap read/write access to address(es) xx [yy]",
-    "Set a R/W trap on the given address(es) and all mirrors\n"
+    "Set/clear a R/W trap on the given address(es) and all mirrors\n"
     "Example: trap f000, trap f000 f100",
     true,
     false,
@@ -2676,7 +2676,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trapif",
     "On <condition> trap R/W access to address(es) xx [yy]",
-    "Set a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Set/clear a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
     "Example: trapif _scan>#100 GRP0, trapif _bank==1 f000 f100",
       true,
       false,
@@ -2687,7 +2687,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trapread",
     "Trap read access to address(es) xx [yy]",
-    "Set a read trap on the given address(es) and all mirrors\n"
+    "Set/clear a read trap on the given address(es) and all mirrors\n"
     "Example: trapread f000, trapread f000 f100",
     true,
     false,
@@ -2698,7 +2698,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trapreadif",
     "On <condition> trap read access to address(es) xx [yy]",
-    "Set a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Set/clear a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
     "Example: trapreadif _scan>#100 GRP0, trapreadif _bank==1 f000 f100",
       true,
       false,
@@ -2709,7 +2709,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trapwrite",
     "Trap write access to address(es) xx [yy]",
-    "Set a write trap on the given address(es) and all mirrors\n"
+    "Set/clear a write trap on the given address(es) and all mirrors\n"
     "Example: trapwrite f000, trapwrite f000 f100",
     true,
     false,
@@ -2720,7 +2720,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "trapwriteif",
     "On <condition> trap write access to address(es) xx [yy]",
-    "Set a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
+    "Set/clear a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
     "Example: trapwriteif _scan>#100 GRP0, trapwriteif _bank==1 f000 f100",
       true,
       false,
