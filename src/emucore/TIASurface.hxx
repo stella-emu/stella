@@ -27,7 +27,6 @@ class VideoMode;
 
 #include <thread>
 
-#include "FrameManager.hxx"
 #include "Rect.hxx"
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"

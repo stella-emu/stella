@@ -18,6 +18,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "FSNode.hxx"
 #include "MD5.hxx"
 
 /*

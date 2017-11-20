@@ -18,6 +18,11 @@
 #ifndef M6502_HXX
 #define M6502_HXX
 
+#include <functional>
+
+class Settings;
+class System;
+
 #ifdef DEBUGGER_SUPPORT
   class Debugger;
   class CpuDebug;
@@ -27,12 +32,7 @@
   #include "TrapArray.hxx"
 #endif
 
-class Settings;
-
-#include <functional>
-
 #include "bspf.hxx"
-#include "System.hxx"
 #include "Serializable.hxx"
 
 /**

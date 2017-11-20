@@ -18,8 +18,9 @@
 #ifndef SAVEKEY_HXX
 #define SAVEKEY_HXX
 
+class MT24LC256;
+
 #include "Control.hxx"
-#include "MT24LC256.hxx"
 
 /**
   Richard Hutchinson's SaveKey "controller", consisting of a 32KB EEPROM
@@ -43,8 +44,7 @@ class SaveKey : public Controller
     */
     SaveKey(Jack jack, const Event& event, const System& system,
             const string& eepromfile);
-
-    virtual ~SaveKey() = default;
+    virtual ~SaveKey();
 
   protected:
     /**
@@ -86,21 +86,21 @@ class SaveKey : public Controller
       been called.  It may be necessary to override this method for
       controllers that need to know a reset has occurred.
     */
-    void reset() override { myEEPROM->systemReset(); }
+    void reset() override;
 
     /**
       Force the EEPROM object to cleanup
     */
-    void close() override { myEEPROM.reset(); }
+    void close() override;
 
     /** Erase entire EEPROM to known state ($FF) */
-    void eraseAll() { myEEPROM->eraseAll(); }
+    void eraseAll();
 
     /** Erase the pages used by the current ROM to known state ($FF) */
-    void eraseCurrent() { myEEPROM->eraseCurrent(); }
+    void eraseCurrent();
 
     /** Returns true if the page is used by the current ROM */
-    bool isPageUsed(const uInt32 page) const { return myEEPROM->isPageUsed(page); }
+    bool isPageUsed(const uInt32 page) const;
 
   private:
     // The EEPROM used in the SaveKey

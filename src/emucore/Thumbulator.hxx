@@ -27,6 +27,8 @@
 #ifndef THUMBULATOR_HXX
 #define THUMBULATOR_HXX
 
+class Cartridge;
+
 // FIXME - This code has many instances of shifting into signed integers
 //         Perhaps the int's should be changed to uInt32
 #ifdef __clang__
@@ -35,7 +37,6 @@
 #endif
 
 #include "bspf.hxx"
-#include "Cart.hxx"
 #include "Console.hxx"
 
 #define ROMADDMASK 0x7FFF

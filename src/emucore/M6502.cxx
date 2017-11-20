@@ -42,6 +42,7 @@
 #include "Settings.hxx"
 #include "Vec.hxx"
 
+#include "System.hxx"
 #include "M6502.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

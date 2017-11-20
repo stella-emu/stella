@@ -20,11 +20,11 @@
 
 class Console;
 class RiotDebug;
+class System;
 class Settings;
 
 #include "bspf.hxx"
 #include "Device.hxx"
-#include "System.hxx"
 
 /**
   This class models the M6532 RAM-I/O-Timer (aka RIOT) chip in the 2600

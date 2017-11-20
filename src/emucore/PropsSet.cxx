@@ -18,10 +18,9 @@
 #include <map>
 
 #include "bspf.hxx"
-
+#include "FSNode.hxx"
 #include "DefProps.hxx"
 #include "Props.hxx"
-
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

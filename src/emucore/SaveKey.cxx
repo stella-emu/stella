@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "MT24LC256.hxx"
 #include "System.hxx"
 #include "SaveKey.hxx"
 
@@ -32,6 +33,11 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
                  const string& eepromfile)
   : SaveKey(jack, event, system, eepromfile, Controller::SaveKey)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SaveKey::~SaveKey()
 {
 }
 
@@ -76,4 +82,34 @@ void SaveKey::write(DigitalPin pin, bool value)
     default:
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SaveKey::reset()
+{
+  myEEPROM->systemReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SaveKey::close()
+{
+  myEEPROM.reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SaveKey::eraseAll()
+{
+  myEEPROM->eraseAll();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SaveKey::eraseCurrent()
+{
+  myEEPROM->eraseCurrent();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SaveKey::isPageUsed(const uInt32 page) const
+{
+  return myEEPROM->isPageUsed(page);
 }

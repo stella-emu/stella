@@ -26,6 +26,7 @@
 
 #include "bspf.hxx"
 #include "Base.hxx"
+#include "Cart.hxx"
 #include "Thumbulator.hxx"
 using Common::Base;
 

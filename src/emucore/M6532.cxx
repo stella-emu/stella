@@ -16,15 +16,12 @@
 //============================================================================
 
 #include <cassert>
-#include <iostream>
-#include <bitset>
 
 #include "Console.hxx"
 #include "Settings.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
-  //#include "Debugger.hxx"
   #include "CartDebug.hxx"
 #endif
 

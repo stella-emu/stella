@@ -24,7 +24,6 @@ class OSystem;
 
 #include "bspf.hxx"
 #include "BSType.hxx"
-#include "Settings.hxx"
 
 /**
   Auto-detect cart type based on various attributes (file size, signatures,

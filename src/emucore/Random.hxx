@@ -66,18 +66,18 @@ class Random : public Serializable
     */
     bool save(Serializer& out) const override
     {
-        try
-        {
-          out.putString(name());
-          out.putInt(myValue);
-        }
-        catch(...)
-        {
-          cerr << "ERROR: Random::save" << endl;
-          return false;
-        }
+      try
+      {
+        out.putString(name());
+        out.putInt(myValue);
+      }
+      catch(...)
+      {
+        cerr << "ERROR: Random::save" << endl;
+        return false;
+      }
 
-        return true;
+      return true;
     }
 
     /**

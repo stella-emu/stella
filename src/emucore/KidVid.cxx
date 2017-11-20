@@ -17,6 +17,7 @@
 
 #include <cstdlib>
 
+#include "Event.hxx"
 #include "KidVid.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

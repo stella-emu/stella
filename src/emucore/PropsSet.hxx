@@ -20,11 +20,11 @@
 
 #include <map>
 
-#include "bspf.hxx"
-#include "FSNode.hxx"
-#include "Props.hxx"
-
+class FilesystemNode;
 class OSystem;
+
+#include "bspf.hxx"
+#include "Props.hxx"
 
 /**
   This class maintains an ordered collection of properties, maintained

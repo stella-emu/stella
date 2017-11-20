@@ -20,9 +20,10 @@
 
 #include <cstdio>
 
+class Event;
+
 #include "bspf.hxx"
 #include "Control.hxx"
-#include "Event.hxx"
 
 /**
   The KidVid Voice Module, created by Coleco.  This class emulates the
