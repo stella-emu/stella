@@ -1605,6 +1605,15 @@ void DebuggerParser::executeSavestateif()
   int res = YaccParser::parse(argStrings[0].c_str());
   if(res == 0)
   {
+    string condition = argStrings[0];
+    for(uInt32 i = 0; i < debugger.m6502().getCondSaveStateNames().size(); i++)
+    {
+      if(condition == debugger.m6502().getCondSaveStateNames()[i])
+      {
+        executeDelsavestateif();
+        return;
+      }
+    }
     uInt32 ret = debugger.m6502().addCondSaveState(
       YaccParser::getResult(), argStrings[0]);
     commandResult << "added savestateif " << Base::toString(ret);
