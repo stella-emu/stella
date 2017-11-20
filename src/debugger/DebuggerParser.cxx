@@ -735,9 +735,9 @@ void DebuggerParser::executeBreak()
   debugger.rom().invalidate();
 
   if(debugger.breakPoint(bp))
-    commandResult << "Set";
+    commandResult << "set";
   else
-    commandResult << "Cleared";
+    commandResult << "cleared";
 
   commandResult << " breakpoint at " << Base::toString(bp);
 }
@@ -749,9 +749,18 @@ void DebuggerParser::executeBreakif()
   int res = YaccParser::parse(argStrings[0].c_str());
   if(res == 0)
   {
+    string condition = argStrings[0];
+    for(uInt32 i = 0; i < debugger.m6502().getCondBreakNames().size(); i++)
+    {
+      if(condition == debugger.m6502().getCondBreakNames()[i])
+      {
+        executeDelbreakif();
+        return;
+      }
+    }
     uInt32 ret = debugger.m6502().addCondBreak(
                  YaccParser::getResult(), argStrings[0] );
-    commandResult << "Added breakif " << Base::toString(ret);
+    commandResult << "added breakif " << Base::toString(ret);
   }
   else
     commandResult << red("invalid expression");
@@ -783,7 +792,7 @@ void DebuggerParser::executeCheat()
   {
     const string& cheat = argStrings[arg];
     if(debugger.myOSystem.cheat().add("DBG", cheat))
-      commandResult << "Cheat code " << cheat << " enabled" << endl;
+      commandResult << "cheat code " << cheat << " enabled" << endl;
     else
       commandResult << red("invalid cheat code ") << cheat << endl;
   }
@@ -1089,7 +1098,7 @@ void DebuggerParser::executeFunction()
   if(res == 0)
   {
     debugger.addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
-    commandResult << "Added function " << argStrings[0] << " -> " << argStrings[1];
+    commandResult << "added function " << argStrings[0] << " -> " << argStrings[1];
   }
   else
     commandResult << red("invalid expression");
@@ -1569,7 +1578,7 @@ void DebuggerParser::executeSaveses()
   if(debugger.prompt().saveBuffer(file))
     commandResult << "saved " + file.getShortPath() + " OK";
   else
-    commandResult << "Unable to save session";
+    commandResult << "unable to save session";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1598,7 +1607,7 @@ void DebuggerParser::executeSavestateif()
   {
     uInt32 ret = debugger.m6502().addCondSaveState(
       YaccParser::getResult(), argStrings[0]);
-    commandResult << "Added savestateif " << Base::toString(ret);
+    commandResult << "added savestateif " << Base::toString(ret);
   }
   else
     commandResult << red("invalid expression");
@@ -1758,7 +1767,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
           add = false;
           // @sa666666: please check this:
           Vec::removeAt(myTraps, i);
-          commandResult << "Removed trap " << Base::toString(i);
+          commandResult << "removed trap " << Base::toString(i);
           break;
         }
         commandResult << "Internal error! Duplicate trap removal failed!";
@@ -1769,7 +1778,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
     {
       uInt32 ret = debugger.m6502().addCondTrap(
         YaccParser::getResult(), hasCond ? argStrings[0] : "");
-      commandResult << "Added trap " << Base::toString(ret);
+      commandResult << "added trap " << Base::toString(ret);
 
       // @sa666666: please check this:
       myTraps.emplace_back(new Trap{ read, write, begin, end, condition });

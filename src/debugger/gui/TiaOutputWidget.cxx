@@ -45,7 +45,7 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   // Create context menu for commands
   VariantList l;
   VarList::push_back(l, "Fill to scanline", "scanline");
-  VarList::push_back(l, "Set breakpoint", "bp");
+  VarList::push_back(l, "Toggle breakpoint", "bp");
   VarList::push_back(l, "Set zoom position", "zoom");
   VarList::push_back(l, "Save snapshot", "snap");
   myMenu = make_unique<ContextMenu>(this, font, l);
@@ -71,7 +71,7 @@ void TiaOutputWidget::saveSnapshot()
   FBSurface& s = dialog().surface();
 
   GUI::Rect rect(_x, _y, _x + width*2, _y + height);
-  string message = "Snapshot saved";
+  string message = "snapshot saved";
   try
   {
     instance().png().saveImage(sspath.str(), s, rect);
@@ -117,7 +117,8 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         if(lines > 0)
         {
           command << "scanline #" << lines;
-          instance().debugger().parser().run(command.str());
+          string message = instance().debugger().parser().run(command.str());
+          instance().frameBuffer().showMessage(message);
         }
       }
       else if(rmb == "bp")
@@ -125,7 +126,8 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         ostringstream command;
         int scanline = myClickY + ystart;
         command << "breakif _scan==#" << scanline;
-        instance().debugger().parser().run(command.str());
+        string message = instance().debugger().parser().run(command.str());
+        instance().frameBuffer().showMessage(message);
       }
       else if(rmb == "zoom")
       {
