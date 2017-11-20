@@ -19,12 +19,11 @@
 #define LIST_WIDGET_HXX
 
 class GuiObject;
+class ScrollBarWidget;
 
-#include "Widget.hxx"
+#include "Rect.hxx"
 #include "Command.hxx"
 #include "EditableWidget.hxx"
-#include "ScrollBarWidget.hxx"
-#include "Rect.hxx"
 
 /** ListWidget */
 class ListWidget : public EditableWidget
@@ -61,7 +60,7 @@ class ListWidget : public EditableWidget
     void scrollTo(int item);
 
     // Account for the extra width of embedded scrollbar
-    int getWidth() const override { return _w + kScrollBarWidth; }
+    int getWidth() const override;
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
 

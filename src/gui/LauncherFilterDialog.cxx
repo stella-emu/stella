@@ -18,6 +18,7 @@
 #include "bspf.hxx"
 #include "Dialog.hxx"
 #include "OSystem.hxx"
+#include "FSNode.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"

@@ -20,14 +20,14 @@
 
 class CommandSender;
 class DialogContainer;
+class FilesystemNode;
 class CheckboxWidget;
 class PopUpWidget;
 class OSystem;
 
-#include "Dialog.hxx"
-#include "FSNode.hxx"
-#include "Settings.hxx"
 #include "bspf.hxx"
+#include "Dialog.hxx"
+#include "Settings.hxx"
 
 class LauncherFilterDialog : public Dialog, public CommandSender
 {

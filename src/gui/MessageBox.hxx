@@ -23,7 +23,6 @@ class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
-#include "DialogContainer.hxx"
 
 namespace GUI {
 

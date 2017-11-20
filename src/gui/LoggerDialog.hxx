@@ -26,7 +26,6 @@ class StringListWidget;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
-
 class LoggerDialog : public Dialog
 {
   public:

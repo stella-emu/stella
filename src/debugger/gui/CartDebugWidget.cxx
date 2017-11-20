@@ -19,6 +19,7 @@
 #include "RomWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
+#include "ScrollBarWidget.hxx"
 #include "StringParser.hxx"
 #include "CartDebugWidget.hxx"
 

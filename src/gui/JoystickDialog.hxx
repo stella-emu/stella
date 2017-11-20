@@ -18,14 +18,13 @@
 #ifndef JOYSTICK_DIALOG_HXX
 #define JOYSTICK_DIALOG_HXX
 
+class CommandSender;
 class GuiObject;
 class ButtonWidget;
 class EditTextWidgetWidget;
 class StringListWidget;
 
 #include "Dialog.hxx"
-#include "Command.hxx"
-#include "DialogContainer.hxx"
 
 /**
  * Show a listing of joysticks currently stored in the eventhandler database,

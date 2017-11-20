@@ -26,10 +26,12 @@
 #include "Settings.hxx"
 #include "EventMappingWidget.hxx"
 #include "EditTextWidget.hxx"
+#include "JoystickDialog.hxx"
 #include "PopUpWidget.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "MessageBox.hxx"
 #include "InputDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,6 +95,11 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+InputDialog::~InputDialog()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

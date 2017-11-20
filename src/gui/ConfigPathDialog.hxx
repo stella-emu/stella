@@ -21,6 +21,7 @@
 class OSystem;
 class GuiObject;
 class DialogContainer;
+class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
 class EditTextWidget;
@@ -29,7 +30,6 @@ class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
-#include "BrowserDialog.hxx"
 
 class ConfigPathDialog : public Dialog, public CommandSender
 {

@@ -33,12 +33,14 @@ class EditTextWidget;
 class RomInfoWidget;
 class StaticTextWidget;
 class StringListWidget;
+namespace GUI {
+  class MessageBox;
+}
 
 #include "bspf.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
 #include "Stack.hxx"
-#include "MessageBox.hxx"
 
 class LauncherDialog : public Dialog
 {

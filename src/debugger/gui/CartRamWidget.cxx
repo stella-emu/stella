@@ -23,6 +23,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "StringListWidget.hxx"
+#include "ScrollBarWidget.hxx"
 #include "CartDebugWidget.hxx"
 #include "CartRamWidget.hxx"
 

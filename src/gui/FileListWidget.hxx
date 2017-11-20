@@ -18,7 +18,8 @@
 #ifndef FILE_LIST_WIDGET_HXX
 #define FILE_LIST_WIDGET_HXX
 
-#include "Command.hxx"
+class CommandSender;
+
 #include "FSNode.hxx"
 #include "GameList.hxx"
 #include "StringListWidget.hxx"

@@ -22,8 +22,8 @@ class Properties;
 class OSystem;
 class FilesystemNode;
 
+#include "FrameBufferConstants.hxx"
 #include "DialogContainer.hxx"
-#include "FrameBuffer.hxx"
 
 /**
   The base dialog for the ROM launcher in Stella.

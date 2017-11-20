@@ -20,11 +20,12 @@
 
 class Dialog;
 class OSystem;
+class EventHandler;
 
-#include "EventHandler.hxx"
+#include "EventHandlerConstants.hxx"
+#include "StellaKeys.hxx"
 #include "Stack.hxx"
 #include "bspf.hxx"
-
 
 /**
   The base class for groups of dialog boxes.  Each dialog box has a

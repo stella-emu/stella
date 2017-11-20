@@ -154,6 +154,12 @@ void ListWidget::scrollTo(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int ListWidget::getWidth() const
+{
+  return _w + kScrollBarWidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::recalc()
 {
   int size = int(_list.size());

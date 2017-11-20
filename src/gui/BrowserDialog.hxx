@@ -23,10 +23,10 @@ class ButtonWidget;
 class EditTextWidget;
 class FileListWidget;
 class StaticTextWidget;
+class FilesystemNode;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
-#include "FSNode.hxx"
 #include "bspf.hxx"
 
 class BrowserDialog : public Dialog, public CommandSender

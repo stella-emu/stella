@@ -24,6 +24,7 @@
 class Dialog;
 class DialogContainer;
 class Widget;
+class OSystem;
 
 #include "Command.hxx"
 #include "OSystem.hxx"

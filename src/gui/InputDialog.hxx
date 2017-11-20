@@ -24,13 +24,15 @@ class TabWidget;
 class EventMappingWidget;
 class CheckboxWidget;
 class EditTextWidget;
+class JoystickDialog;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
+namespace GUI {
+  class MessageBox;
+}
 
 #include "Dialog.hxx"
-#include "JoystickDialog.hxx"
-#include "MessageBox.hxx"
 #include "bspf.hxx"
 
 class InputDialog : public Dialog
@@ -38,7 +40,7 @@ class InputDialog : public Dialog
   public:
     InputDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font, int max_w, int max_h);
-    virtual ~InputDialog() = default;
+    virtual ~InputDialog();
 
   private:
     void handleKeyDown(StellaKey key, StellaMod mod) override;

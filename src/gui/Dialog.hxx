@@ -25,13 +25,12 @@ class FBSurface;
 class OSystem;
 class DialogContainer;
 class TabWidget;
+class CommandSender;
 
-#include "Command.hxx"
 #include "Stack.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "StellaKeys.hxx"
-
 #include "bspf.hxx"
 
 /**
