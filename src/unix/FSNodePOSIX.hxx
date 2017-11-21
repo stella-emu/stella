@@ -34,8 +34,6 @@
 #include <cstdlib>
 #include <unistd.h>
 
-#include <sstream>
-
 #ifndef MAXPATHLEN // No MAXPATHLEN, as happens on Hurd
   #define MAXPATHLEN 1024
 #endif
