@@ -66,7 +66,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = std::max(16, int(0.20 * (numchars - 12))) * fontWidth - 1;
+  _labelWidth = std::max(14, int(0.35 * (numchars - 18))) * fontWidth - 1;
   _bytesWidth = 12 * fontWidth;
 
   ///////////////////////////////////////////////////////
@@ -463,13 +463,13 @@ void RomListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  int ccountw = _fontWidth << 3,
-      large_disasmw = _w - l.x() - _labelWidth,
-      medium_disasmw = large_disasmw - r.width(),
-      small_disasmw = medium_disasmw - (ccountw << 1),
-      actualwidth = myDisasm->fieldwidth * _fontWidth;
-  if(actualwidth < small_disasmw)
-    small_disasmw = actualwidth;
+  int cycleCountW = _fontWidth * 8,
+      noTypeDisasmW = _w - l.x() - _labelWidth,
+      noCodeDisasmW = noTypeDisasmW - r.width(),
+      codeDisasmW = noCodeDisasmW - cycleCountW,
+      actualWidth = myDisasm->fieldwidth * _fontWidth;
+  if(actualWidth < codeDisasmW)
+    codeDisasmW = actualWidth;
 
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
@@ -504,15 +504,15 @@ void RomListWidget::drawWidget(bool hilite)
       {
         // Draw disassembly and cycle count
         s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                     small_disasmw, kTextColor);
-        s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + small_disasmw, ypos,
-                     ccountw, kTextColor);
+                     codeDisasmW, kTextColor);
+        s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + codeDisasmW, ypos,
+                     cycleCountW, kTextColor);
       }
       else
       {
         // Draw disassembly only
         s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                     medium_disasmw, kTextColor);
+                     noCodeDisasmW, kTextColor);
       }
 
       // Draw separator
@@ -538,7 +538,7 @@ void RomListWidget::drawWidget(bool hilite)
     {
       // Draw disassembly, giving it all remaining horizontal space
       s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                   large_disasmw, kTextColor);
+                   noTypeDisasmW, kTextColor);
     }
   }
 }

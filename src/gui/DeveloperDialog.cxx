@@ -279,13 +279,17 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // Add minimum window size buttons for different fonts
   ypos += lineHeight + VGAP * 2;
-  StaticTextWidget* t = new StaticTextWidget(myTab, font, HBORDER, ypos + 3, "Reset debugger size for");
+  StaticTextWidget* t = new StaticTextWidget(myTab, font, HBORDER, ypos + 3, "Select");
 
   int fbwidth = font.getStringWidth("Medium font") + 20;
   //xpos = (_w - fbwidth - 2 * VBORDER) / 2;  ypos += 2 * lineHeight + 4;
   xpos = t->getRight() + 8;
   b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
                        "Small font", kDSmallSize);
+
+  StaticTextWidget* t1 = new StaticTextWidget(myTab, font, b->getRight()+8, ypos + 3, "and reset debugger size");
+  wid.push_back(t1);
+
   wid.push_back(b);
   ypos += b->getHeight() + VGAP;
   b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
@@ -310,6 +314,10 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
                     "Font Style ", lwidth);
   wid.push_back(myDebuggerFontStyle);
+
+  ypos += b->getHeight() + VGAP * 4;
+  t = new StaticTextWidget(myTab, font, HBORDER, _h - lineHeight*5, "(*) Changes require application restart");
+  wid.push_back(t);
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
