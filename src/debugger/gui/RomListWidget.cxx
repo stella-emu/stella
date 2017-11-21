@@ -66,7 +66,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = std::max(14, int(0.40 * (numchars - 18))) * fontWidth - 1;
+  _labelWidth = std::max(14, int(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
   _bytesWidth = 9 * fontWidth;
 
   ///////////////////////////////////////////////////////
@@ -502,9 +502,14 @@ void RomListWidget::drawWidget(bool hilite)
     {
       if(dlist[pos].type == CartDebug::CODE)
       {
-        // Draw disassembly and cycle count
-        s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                     codeDisasmW, kTextColor);
+        // Draw mnemonic
+        s.drawString(_font, dlist[pos].disasm.substr(0, 7), xpos + _labelWidth, ypos,
+                     7 * _fontWidth, kTextColor);
+        // Draw operand
+        if (dlist[pos].disasm.length() > 8)
+          s.drawString(_font, dlist[pos].disasm.substr(8), xpos + _labelWidth + 7 * _fontWidth, ypos,
+                       codeDisasmW - 7 * _fontWidth, kTextColor);
+        // Draw cycle count
         s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + codeDisasmW, ypos,
                      cycleCountW, kTextColor);
       }
@@ -512,7 +517,7 @@ void RomListWidget::drawWidget(bool hilite)
       {
         // Draw disassembly only
         s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                     noCodeDisasmW, kTextColor);
+                     noCodeDisasmW - 4, kTextColor);
       }
 
       // Draw separator
