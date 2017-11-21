@@ -816,7 +816,11 @@ string CartDebug::loadSymbolFile()
         if(pos != string::npos)
           addLabel(label.substr(pos), value);
         else
-          addLabel(label, value);
+        {
+          pos = label.find_last_of("$");
+          if (pos == string::npos || pos != label.length() - 1)
+            addLabel(label, value);
+        }
       }
     }
   }
