@@ -19,13 +19,11 @@
 #define POPUP_WIDGET_HXX
 
 class GUIObject;
+class ContextMenu;
 
 #include "bspf.hxx"
-
 #include "Command.hxx"
-#include "ContextMenu.hxx"
 #include "Widget.hxx"
-
 
 /**
  * Popup or dropdown widget which, when clicked, "pop up" a list of items and
@@ -46,20 +44,19 @@ class PopUpWidget : public Widget, public CommandSender
     int getBottom() const override { return _y + 1 + getHeight(); }
 
     /** Add the given items to the widget. */
-    void addItems(const VariantList& items) { myMenu->addItems(items);     }
+    void addItems(const VariantList& items);
 
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */
     void setSelected(const Variant& tag,
-                     const Variant& def = EmptyVariant)
-                                          { myMenu->setSelected(tag, def); }
-    void setSelectedIndex(int idx)        { myMenu->setSelectedIndex(idx); }
-    void setSelectedMax()                 { myMenu->setSelectedMax();      }
-    void clearSelection()                 { myMenu->clearSelection();      }
+                     const Variant& def = EmptyVariant);
+    void setSelectedIndex(int idx);
+    void setSelectedMax();
+    void clearSelection();
 
-    int getSelected() const               { return myMenu->getSelected();     }
-    const string& getSelectedName() const { return myMenu->getSelectedName(); }
-    const Variant& getSelectedTag() const { return myMenu->getSelectedTag();  }
+    int getSelected() const;
+    const string& getSelectedName() const;
+    const Variant& getSelectedTag() const;
 
     bool wantsFocus() const override { return true; }
 

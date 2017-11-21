@@ -26,17 +26,17 @@ class PopUpWidget;
 class EditTextWidget;
 class SliderWidget;
 class StaticTextWidget;
+class BrowserDialog;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
-#include "BrowserDialog.hxx"
 
 class SnapshotDialog : public Dialog
 {
   public:
     SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font);
-    virtual ~SnapshotDialog() = default;
+    virtual ~SnapshotDialog();
 
   private:
     void loadConfig() override;

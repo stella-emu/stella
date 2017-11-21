@@ -129,6 +129,11 @@ ConfigPathDialog::ConfigPathDialog(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ConfigPathDialog::~ConfigPathDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ConfigPathDialog::loadConfig()
 {
   const Settings& settings = instance().settings();

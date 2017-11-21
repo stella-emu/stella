@@ -23,19 +23,21 @@ class GuiObject;
 class DialogContainer;
 class EditTextWidget;
 class StaticTextWidget;
+class BrowserDialog;
+namespace GUI {
+  class MessageBox;
+}
 
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "FSNode.hxx"
-#include "MessageBox.hxx"
-#include "BrowserDialog.hxx"
 
 class RomAuditDialog : public Dialog
 {
   public:
     RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, int max_w, int max_h);
-    virtual ~RomAuditDialog() = default;
+    virtual ~RomAuditDialog();
 
   private:
     void loadConfig() override;

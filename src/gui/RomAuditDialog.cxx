@@ -94,6 +94,11 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+RomAuditDialog::~RomAuditDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::loadConfig()
 {
   const string& currentdir =

@@ -22,22 +22,22 @@ class CommandSender;
 class DialogContainer;
 class GuiObject;
 class OSystem;
+class VideoDialog;
+class AudioDialog;
+class InputDialog;
+class UIDialog;
+class SnapshotDialog;
+class ConfigPathDialog;
+class RomAuditDialog;
+class GameInfoDialog;
+#ifdef CHEATCODE_SUPPORT
+  class CheatCodeDialog;
+#endif
+class HelpDialog;
+class AboutDialog;
+class LoggerDialog;
 
 #include "Dialog.hxx"
-#include "VideoDialog.hxx"
-#include "AudioDialog.hxx"
-#include "InputDialog.hxx"
-#include "UIDialog.hxx"
-#include "SnapshotDialog.hxx"
-#include "ConfigPathDialog.hxx"
-#include "RomAuditDialog.hxx"
-#include "GameInfoDialog.hxx"
-#ifdef CHEATCODE_SUPPORT
-#include "CheatCodeDialog.hxx"
-#endif
-#include "HelpDialog.hxx"
-#include "AboutDialog.hxx"
-#include "LoggerDialog.hxx"
 #include "bspf.hxx"
 
 class DeveloperDialog;

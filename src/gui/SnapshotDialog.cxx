@@ -124,6 +124,11 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SnapshotDialog::~SnapshotDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::loadConfig()
 {
   const Settings& settings = instance().settings();

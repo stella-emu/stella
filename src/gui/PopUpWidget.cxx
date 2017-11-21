@@ -63,6 +63,54 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::addItems(const VariantList& items)
+{
+  myMenu->addItems(items);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setSelected(const Variant& tag, const Variant& def)
+{
+  myMenu->setSelected(tag, def);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setSelectedIndex(int idx)
+{
+  myMenu->setSelectedIndex(idx);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setSelectedMax()
+{
+  myMenu->setSelectedMax();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::clearSelection()
+{
+  myMenu->clearSelection();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int PopUpWidget::getSelected() const
+{
+  return myMenu->getSelected();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& PopUpWidget::getSelectedName() const
+{
+  return myMenu->getSelectedName();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Variant& PopUpWidget::getSelectedTag() const
+{
+  return myMenu->getSelectedTag();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   if(isEnabled() && !myMenu->isVisible())
