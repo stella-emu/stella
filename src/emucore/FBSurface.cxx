@@ -213,6 +213,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
                            uInt32 color, TextAlignment align,
                            int deltax, bool useEllipsis)
 {
+  const string ELLIPSIS = "\x1d"; // "..."
   const int leftX = x, rightX = x + w;
   uInt32 i;
   int width = font.getStringWidth(s);
@@ -226,7 +227,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     // What is best really depends on the context; but unless we want to
     // make this configurable, replacing the middle probably is a good
     // compromise.
-    const int ellipsisWidth = font.getStringWidth("...");
+    const int ellipsisWidth = font.getStringWidth(ELLIPSIS);
 
     // SLOW algorithm to remove enough of the middle. But it is good enough for now.
     const int halfWidth = (w - ellipsisWidth) / 2;
@@ -244,7 +245,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 
     // At this point we know that the first 'i' chars are together 'w2'
     // pixels wide. We took the first i-1, and add "..." to them.
-    str += "...";
+    str += ELLIPSIS;
 
     // The original string is width wide. Of those we already skipped past
     // w2 pixels, which means (width - w2) remain.
