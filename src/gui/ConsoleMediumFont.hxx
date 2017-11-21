@@ -42,6 +42,45 @@ namespace GUI {
 // Font character bitmap data.
 static const uInt16 consoleMedium_font_bits[] = {
 
+  /* MODIFIED
+  Character 29 (0x1d): ellipsis
+  width 9
+  bbx ( 9, 15, 0, -3 )
+
+  +---------+
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  | XX XX XX|
+  | XX XX XX|
+  |         |
+  |         |
+  |         |
+  +---------+
+  */
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0b0110110110000000,
+  0b0110110110000000,
+  0x0000,
+  0x0000,
+  0x0000,
+
 /* MODIFIED
    Character 30 (0x1e): large centered rounded rectangle
    width 9
@@ -3738,8 +3777,8 @@ static const FontDesc consoleMediumDesc = {
   15,
   9, 15, 0, -3,
   12,
-  30,
-  97,
+  29,
+  98,
   consoleMedium_font_bits,
   nullptr,  /* no encode table*/
   nullptr,  /* fixed width*/

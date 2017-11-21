@@ -416,7 +416,7 @@ void DebuggerDialog::addRomArea()
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;
 
-  bwidth = myLFont->getStringWidth("Options" + ELLIPSIS) + 8;
+  bwidth = myLFont->getStringWidth("Options " + ELLIPSIS);
   bheight = myLFont->getLineHeight() + 2;
 
   new ButtonWidget(this, *myLFont, xpos, r.top + 5, bwidth, bheight, "Options" + ELLIPSIS, kDDOptionsCmd);
