@@ -245,12 +245,40 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   ButtonWidget* b;
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
-  lwidth = font.getStringWidth("Debugger Height ");
   xpos = HBORDER;
   ypos = VBORDER;
 
+  // font size
+  items.clear();
+  VarList::push_back(items, "Small", "small");
+  VarList::push_back(items, "Medium", "medium");
+  VarList::push_back(items, "Large", "large");
+  lwidth = font.getStringWidth("Font Style ");
+  pwidth = font.getStringWidth("Medium");
+  myDebuggerFontSize =
+    new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
+                    "Font Size  ", lwidth, kDFontSizeChanged);
+  wid.push_back(myDebuggerFontSize);
+  ypos += lineHeight + 4;
+
+  // Font style (bold label vs. text, etc)
+  pwidth = font.getStringWidth("Bold non-labels only");
+  items.clear();
+  VarList::push_back(items, "All Normal font", "0");
+  VarList::push_back(items, "Bold labels only", "1");
+  VarList::push_back(items, "Bold non-labels only", "2");
+  VarList::push_back(items, "All Bold font", "3");
+  myDebuggerFontStyle =
+    new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
+                    "Font Style ", lwidth);
+  wid.push_back(myDebuggerFontStyle);
+
+  ypos += lineHeight + VGAP * 4;
+
+  lwidth = font.getStringWidth("Debugger Height ");
+  pwidth = font.getStringWidth("0123456789");
   // Debugger width and height
-  myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+  myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
                                            lineHeight, "Debugger Width  ",
                                            lwidth, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
@@ -264,7 +292,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + VGAP;
 
-  myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+  myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
                                             lineHeight, "Debugger Height ",
                                             lwidth, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
@@ -277,47 +305,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
                          ypos + 1, 4 * fontWidth, fontHeight, "", kTextAlignLeft);
   myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
 
-  // Add minimum window size buttons for different fonts
-  ypos += lineHeight + VGAP * 2;
-  StaticTextWidget* t = new StaticTextWidget(myTab, font, HBORDER, ypos + 3, "Select");
-
-  int fbwidth = font.getStringWidth("Medium font") + 20;
-  //xpos = (_w - fbwidth - 2 * VBORDER) / 2;  ypos += 2 * lineHeight + 4;
-  xpos = t->getRight() + 8;
-  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
-                       "Small font", kDSmallSize);
-
-  StaticTextWidget* t1 = new StaticTextWidget(myTab, font, b->getRight()+8, ypos + 3, "and reset debugger size");
-  wid.push_back(t1);
-
-  wid.push_back(b);
-  ypos += b->getHeight() + VGAP;
-  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
-                       "Medium font", kDMediumSize);
-  wid.push_back(b);
-  ypos += b->getHeight() + VGAP;
-  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
-                       "Large font", kDLargeSize);
-  wid.push_back(b);
-  ypos += b->getHeight() + VGAP * 4;
-
-  // Font style (bold label vs. text, etc)
-  lwidth = font.getStringWidth("Font Style ");
-  pwidth = font.getStringWidth("Bold non-labels only");
-  xpos = VBORDER;
-  items.clear();
-  VarList::push_back(items, "All Normal font", "0");
-  VarList::push_back(items, "Bold labels only", "1");
-  VarList::push_back(items, "Bold non-labels only", "2");
-  VarList::push_back(items, "All Bold font", "3");
-  myDebuggerFontStyle =
-    new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
-                    "Font Style ", lwidth);
-  wid.push_back(myDebuggerFontStyle);
-
-  ypos += b->getHeight() + VGAP * 4;
-  t = new StaticTextWidget(myTab, font, HBORDER, _h - lineHeight*5, "(*) Changes require application restart");
-  wid.push_back(t);
+  StaticTextWidget* t = new StaticTextWidget(myTab, font, HBORDER, _h - lineHeight * 5, "(*) Changes require application restart");
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -341,8 +329,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   new StaticTextWidget(myTab, font, 0, 20, _w - 20, fontHeight,
                        "Debugger support not included", kTextAlignCenter);
 #endif
-
-
 
   addToFocusList(wid, myTab, tabID);
 }
@@ -405,31 +391,32 @@ void DeveloperDialog::loadConfig()
   // Debugger size
   const GUI::Size& ds = instance().settings().getSize("dbg.res");
   w = ds.w; h = ds.h;
-  w = std::max(w, uInt32(DebuggerDialog::kSmallFontMinW));
-  h = std::max(h, uInt32(DebuggerDialog::kSmallFontMinH));
-  w = std::min(w, ds.w);
-  h = std::min(h, ds.h);
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerWidthLabel->setValue(w);
   myDebuggerHeightSlider->setValue(h);
   myDebuggerHeightLabel->setValue(h);
 
+  // Debugger font size
+  string size = instance().settings().getString("dbg.fontsize");
+  myDebuggerFontSize->setSelected(size, "medium");
+
   // Debugger font style
   int style = instance().settings().getInt("dbg.fontstyle");
   myDebuggerFontStyle->setSelected(style, "0");
+
+  handleFontSize();
 #endif
 
   myTab->loadConfig();
+  handleFontSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
   //TODO
-  // - bankrandom (not implemented yet)
   // - thumbexception (commandline only yet)
-  // - remove settings from within debugger
 
   bool devSettings = myDevSettings0->getState();
   instance().settings().setValue("dev.settings", devSettings);
@@ -488,6 +475,9 @@ void DeveloperDialog::saveConfig()
                                  GUI::Size(myDebuggerWidthSlider->getValue(),
                                  myDebuggerHeightSlider->getValue()));
 
+  // Debugger font size
+  instance().settings().setValue("dbg.fontsize", myDebuggerFontSize->getSelectedTag().toString());
+
   // Debugger font style
   instance().settings().setValue("dbg.fontstyle",
                                  myDebuggerFontStyle->getSelectedTag().toString());
@@ -535,7 +525,9 @@ void DeveloperDialog::setDefaults()
       myDebuggerWidthLabel->setValue(w);
       myDebuggerHeightSlider->setValue(h);
       myDebuggerHeightLabel->setValue(h);
+      myDebuggerFontSize->setSelected("medium");
       myDebuggerFontStyle->setSelected("0");
+      handleFontSize();
 #endif
       break;
     }
@@ -584,25 +576,8 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
       myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
       break;
 
-    case kDSmallSize:
-      myDebuggerWidthSlider->setValue(DebuggerDialog::kSmallFontMinW);
-      myDebuggerWidthLabel->setValue(DebuggerDialog::kSmallFontMinW);
-      myDebuggerHeightSlider->setValue(DebuggerDialog::kSmallFontMinH);
-      myDebuggerHeightLabel->setValue(DebuggerDialog::kSmallFontMinH);
-      break;
-
-    case kDMediumSize:
-      myDebuggerWidthSlider->setValue(DebuggerDialog::kMediumFontMinW);
-      myDebuggerWidthLabel->setValue(DebuggerDialog::kMediumFontMinW);
-      myDebuggerHeightSlider->setValue(DebuggerDialog::kMediumFontMinH);
-      myDebuggerHeightLabel->setValue(DebuggerDialog::kMediumFontMinH);
-      break;
-
-    case kDLargeSize:
-      myDebuggerWidthSlider->setValue(DebuggerDialog::kLargeFontMinW);
-      myDebuggerWidthLabel->setValue(DebuggerDialog::kLargeFontMinW);
-      myDebuggerHeightSlider->setValue(DebuggerDialog::kLargeFontMinH);
-      myDebuggerHeightLabel->setValue(DebuggerDialog::kLargeFontMinH);
+    case kDFontSizeChanged:
+      handleFontSize();
       break;
 #endif
 
@@ -678,5 +653,44 @@ void DeveloperDialog::handleConsole()
   {
     myRandomizeRAM->setState(false);
     instance().settings().setValue("dev.ramrandom", 0);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleFontSize()
+{
+  uInt32 minW, minH;
+  int fontSize = myDebuggerFontSize->getSelected();
+
+  if(fontSize == 0)
+  {
+    minW = DebuggerDialog::kSmallFontMinW;
+    minH = DebuggerDialog::kSmallFontMinH;
+  }
+  else if(fontSize == 1)
+  {
+    minW = DebuggerDialog::kMediumFontMinW;
+    minH = DebuggerDialog::kMediumFontMinH;
+  }
+  else // large
+  {
+    minW = DebuggerDialog::kLargeFontMinW;
+    minH = DebuggerDialog::kLargeFontMinH;
+  }
+  minW = std::min(instance().frameBuffer().desktopSize().w, minW);
+  minH = std::min(instance().frameBuffer().desktopSize().h, minH);
+
+  myDebuggerWidthSlider->setMinValue(minW);
+  if(minW > myDebuggerWidthSlider->getValue())
+  {
+    myDebuggerWidthSlider->setValue(minW);
+    myDebuggerWidthLabel->setValue(minW);
+  }
+
+  myDebuggerHeightSlider->setMinValue(minH);
+  if(minH > myDebuggerHeightSlider->getValue())
+  {
+    myDebuggerHeightSlider->setValue(minH);
+    myDebuggerHeightLabel->setValue(minH);
   }
 }

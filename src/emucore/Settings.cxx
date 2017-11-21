@@ -136,6 +136,7 @@ Settings::Settings(OSystem& osystem)
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
+  setInternal("dbg.fontsize", "medium");
   setInternal("dbg.fontstyle", "0");
   setInternal("dbg.uhex", "true");
   setInternal("dis.resolve", "true");
@@ -337,6 +338,10 @@ void Settings::validate()
   if(s != "small" && s != "medium" && s != "large")
     setInternal("launcherfont", "medium");
 
+  s = getString("dbg.fontsize");
+  if(s != "small" && s != "medium" && s != "large")
+    setInternal("dbg.fontsize", "medium");
+
   i = getInt("romviewer");
   if(i < 0)       setInternal("romviewer", "0");
   else if(i > 2)  setInternal("romviewer", "2");
@@ -469,10 +474,12 @@ void Settings::usage() const
     << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
     << "   -dis.relocate  <1|0>        Relocate calls out of address range in disassembler\n"
     << endl
-    << "   -dbg.res       <WxH>        The resolution to use in debugger mode\n"
-    << "   -dbg.fontstyle <0-3>        Font style to use in debugger window (bold vs. normal)\n"
-    << "   -break         <address>    Set a breakpoint at 'address'\n"
-    << "   -debug                      Start in debugger mode\n"
+    << "   -dbg.res       <WxH>          The resolution to use in debugger mode\n"
+    << "   -dbg.fontsize  <small|medium| Font size to use in debugger window\n"
+    << "                  large>\n"
+    << "   -dbg.fontstyle <0-3>          Font style to use in debugger window (bold vs. normal)\n"
+    << "   -break         <address>      Set a breakpoint at 'address'\n"
+    << "   -debug                        Start in debugger mode\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"

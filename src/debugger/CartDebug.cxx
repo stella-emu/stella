@@ -319,7 +319,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
     return false;
 
   myDisassembly.list.clear();
-  myDisassembly.fieldwidth = 14 + myLabelLength;
+  myDisassembly.fieldwidth = 24 + myLabelLength;
   DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, myReserved);
 

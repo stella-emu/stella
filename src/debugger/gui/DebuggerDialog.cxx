@@ -227,59 +227,57 @@ void DebuggerDialog::doExitRom()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::createFont()
 {
-  int fontstyle = instance().settings().getInt("dbg.fontstyle");
+  string fontSize = instance().settings().getString("dbg.fontsize");
+  int fontStyle = instance().settings().getInt("dbg.fontstyle");
 
-  // For now, these sizes are hardcoded based on actual font size
-  if(_w >= kLargeFontMinW && _h >= kLargeFontMinH)
+  if(fontSize == "large")
   {
-    // Large font doesn't use fontstyle at all
+    // Large font doesn't use fontStyle at all
     myLFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
     myNFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
   }
-  else if(_w >= kMediumFontMinW && _h >= kMediumFontMinH)
-  {
-    if(fontstyle == 1)
+  else if(fontSize == "medium")
     {
-      myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+      switch(fontStyle)
+      {
+        case 1:
+          myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          break;
+        case 2:
+          myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          break;
+        case 3:
+          myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
+          break;
+        default: // default to zero
+          myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
+          break;
+      };
     }
-    else if(fontstyle == 2)
-    {
-      myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-    }
-    else if(fontstyle == 3)
-    {
-      myLFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc);
-    }
-    else  // default to zero
-    {
-      myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
-    }
-  }
   else
   {
-    if(fontstyle == 1)
+    switch(fontStyle)
     {
-      myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
-    }
-    else if(fontstyle == 2)
-    {
-      myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
-    }
-    else if(fontstyle == 3)
-    {
-      myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
-    }
-    else  // default to zero
-    {
-      myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
-      myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
+      case 1:
+        myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+        myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
+        break;
+      case 2:
+        myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
+        myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+        break;
+      case 3:
+        myLFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+        myNFont = make_unique<GUI::Font>(GUI::consoleBDesc);
+        break;
+      default: // default to zero
+        myLFont = make_unique<GUI::Font>(GUI::consoleDesc);
+        myNFont = make_unique<GUI::Font>(GUI::consoleDesc);
+        break;
     }
   }
 }

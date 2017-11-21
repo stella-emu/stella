@@ -66,8 +66,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = std::max(14, int(0.35 * (numchars - 18))) * fontWidth - 1;
-  _bytesWidth = 12 * fontWidth;
+  _labelWidth = std::max(14, int(0.40 * (numchars - 18))) * fontWidth - 1;
+  _bytesWidth = 9 * fontWidth;
 
   ///////////////////////////////////////////////////////
   // Add checkboxes

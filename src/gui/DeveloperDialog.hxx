@@ -43,12 +43,6 @@ class DeveloperDialog : public Dialog
     virtual ~DeveloperDialog() = default;
 
   private:
-  #if 0
-    void handleKeyDown(StellaKey key, StellaMod mod) override;
-    void handleJoyDown(int stick, int button) override;
-    void handleJoyAxis(int stick, int axis, int value) override;
-    bool handleJoyHat(int stick, int hat, int value) override;
-  #endif
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void loadConfig() override;
@@ -69,9 +63,7 @@ class DeveloperDialog : public Dialog
   #ifdef DEBUGGER_SUPPORT
       kDWidthChanged    = 'UIdw',
       kDHeightChanged   = 'UIdh',
-      kDSmallSize       = 'UIds',
-      kDMediumSize      = 'UIdm',
-      kDLargeSize       = 'UIdl'
+      kDFontSizeChanged = 'UIfs',
   #endif
     };
 
@@ -101,6 +93,7 @@ class DeveloperDialog : public Dialog
     StaticTextWidget* myDebuggerWidthLabel;
     SliderWidget*     myDebuggerHeightSlider;
     StaticTextWidget* myDebuggerHeightLabel;
+    PopUpWidget*      myDebuggerFontSize;
     PopUpWidget*      myDebuggerFontStyle;
 #endif
 
@@ -120,6 +113,7 @@ class DeveloperDialog : public Dialog
     void handleTVJitterChange(bool enable);
     void handleDebugColors();
     void handleConsole();
+    void handleFontSize();
 
     // Following constructors and assignment operators not supported
     DeveloperDialog() = delete;
