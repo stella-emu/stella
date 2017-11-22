@@ -59,8 +59,8 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
 
   /*ypos = VBORDER;
-  myDevSettings0 = new CheckboxWidget(this, font, HBORDER, ypos, "Enable developer settings", kDevSettings0);
-  wid.push_back(myDevSettings0);
+  myDevSettings = new CheckboxWidget(this, font, HBORDER, ypos, "Enable developer settings", kDevSettings);
+  wid.push_back(myDevSettings);
   addToFocusList(wid);*/
 
   // The tab widget
@@ -83,10 +83,10 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 {
-  const int VGAP = 4;
-  const int INDENT = 13+3;
   const int HBORDER = 10;
+  const int INDENT = 16;
   const int VBORDER = 8;
+  const int VGAP = 4;
 
   int ypos, tabID;
   int lineHeight = font.getLineHeight();
@@ -98,8 +98,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   tabID = myTab->addTab(" Emulation ");
 
   ypos = VBORDER;
-  myDevSettings0 = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings0);
-  wid.push_back(myDevSettings0);
+  myDevSettings = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings);
+  wid.push_back(myDevSettings);
   ypos += lineHeight + VGAP;
 
   // 2600/7800 mode
@@ -186,26 +186,13 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   addToFocusList(wid, myTab, tabID);
 }
 
-/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::addVideoTab(const GUI::Font& font)
-{
-  int tabID = myTab->addTab("Video");
-  WidgetArray wid;
-  // PAL color-loss effect
-  myColorLoss = new CheckboxWidget(myTab, font, xpos, ypos, "PAL color-loss");
-  wid.push_back(myColorLoss);
-  ypos += lineHeight + 4;
-
-  addToFocusList(wid, myTab, tabID);
-}*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addStatesTab(const GUI::Font& font)
 {
-  const int VGAP = 4;
-  const int INDENT = 13 + 3;
   const int HBORDER = 10;
+  const int INDENT = 16;
   const int VBORDER = 8;
+  const int VGAP = 4;
 
   int ypos;
   int lineHeight = font.getLineHeight();
@@ -216,11 +203,43 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   int tabID = myTab->addTab("States");
 
   ypos = VBORDER;
-  myDevSettings1 = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings1);
+  /*myDevSettings1 = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings1);
   wid.push_back(myDevSettings1);
+  ypos += lineHeight + VGAP*4;*/
+
+  myContinuousRewind = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Continuous Rewind", kRewind);
+  wid.push_back(myContinuousRewind);
   ypos += lineHeight + VGAP;
 
-  new StaticTextWidget(myTab, font, HBORDER + INDENT, ypos, "TODO: Rewind-States");
+  int sWidth = font.getMaxCharWidth() * 8;
+  myStateSize = new SliderWidget(myTab, font, HBORDER + INDENT, ypos - 1, sWidth, lineHeight,
+                                 "Buffer Size (*) ", 0, kSizeChanged);
+  myStateSize->setMinValue(100);
+  myStateSize->setMaxValue(1000);
+  myStateSize->setStepValue(100);
+  wid.push_back(myStateSize);
+  myStateSizeLabel = new StaticTextWidget(myTab, font, myStateSize->getRight() + 4, myStateSize->getTop() + 2, "100 ");
+
+  ypos += lineHeight + VGAP;
+  myStateInterval = new SliderWidget(myTab, font, HBORDER + INDENT, ypos - 1, sWidth, lineHeight,
+                                     "Interval        ", 0, kIntervalChanged);
+
+  myStateInterval->setMinValue(0);
+  myStateInterval->setMaxValue(NUM_INTERVALS - 1);
+  wid.push_back(myStateInterval);
+  myStateIntervalLabel = new StaticTextWidget(myTab, font, myStateInterval->getRight() + 4, myStateInterval->getTop() + 2, "50 scanlines");
+
+  ypos += lineHeight + VGAP;
+  myStateHorizon = new SliderWidget(myTab, font, HBORDER + INDENT, ypos - 1, sWidth, lineHeight,
+                                    "Horizon         ", 0, kHorizonChanged);
+  myStateHorizon->setMinValue(0);
+  myStateHorizon->setMaxValue(NUM_HORIZONS - 1);
+  wid.push_back(myStateHorizon);
+  myStateHorizonLabel = new StaticTextWidget(myTab, font, myStateHorizon->getRight() + 4, myStateHorizon->getTop() + 2, "~60 minutes");
+
+  // Add message concerning usage
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
+  StaticTextWidget* t = new StaticTextWidget(myTab, infofont, HBORDER, _h - lineHeight * 4 - 10, "(*) Requires application restart");
 
   addToFocusList(wid, myTab, tabID);
 }
@@ -228,20 +247,19 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 {
-  int tabID = myTab->addTab(" Debugger UI ");
+  int tabID = myTab->addTab(" Debugger ");
 
 #ifdef DEBUGGER_SUPPORT
+  const int HBORDER = 10;
+  const int VBORDER = 8;
+  const int VGAP = 4;
+
   WidgetArray wid;
   VariantList items;
   int fontWidth = font.getMaxCharWidth(),
     fontHeight = font.getFontHeight(),
-    buttonHeight = font.getLineHeight() + 4,
     lineHeight = font.getLineHeight();
-  const int VGAP = 4;
-  const int VBORDER = 8;
-  const int HBORDER = 10;
-  int xpos, ypos;
-  int lwidth, pwidth = font.getStringWidth("Standard");
+  int xpos, ypos, pwidth;
   ButtonWidget* b;
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
@@ -253,34 +271,32 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   VarList::push_back(items, "Small", "small");
   VarList::push_back(items, "Medium", "medium");
   VarList::push_back(items, "Large", "large");
-  lwidth = font.getStringWidth("Font Style ");
   pwidth = font.getStringWidth("Medium");
   myDebuggerFontSize =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
-                    "Font Size  ", lwidth, kDFontSizeChanged);
+                    "Font Size  ", 0, kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
   ypos += lineHeight + 4;
 
   // Font style (bold label vs. text, etc)
-  pwidth = font.getStringWidth("Bold non-labels only");
   items.clear();
   VarList::push_back(items, "All Normal font", "0");
   VarList::push_back(items, "Bold labels only", "1");
   VarList::push_back(items, "Bold non-labels only", "2");
   VarList::push_back(items, "All Bold font", "3");
+  pwidth = font.getStringWidth("Bold non-labels only");
   myDebuggerFontStyle =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
-                    "Font Style ", lwidth);
+                    "Font Style ", 0);
   wid.push_back(myDebuggerFontStyle);
 
   ypos += lineHeight + VGAP * 4;
 
-  lwidth = font.getStringWidth("Debugger Height ");
-  pwidth = font.getStringWidth("0123456789");
+  pwidth = font.getMaxCharWidth() * 8;
   // Debugger width and height
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
                                            lineHeight, "Debugger Width  ",
-                                           lwidth, kDWidthChanged);
+                                           0, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
@@ -294,7 +310,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
                                             lineHeight, "Debugger Height ",
-                                            lwidth, kDHeightChanged);
+                                            0, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);
@@ -305,7 +321,9 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
                          ypos + 1, 4 * fontWidth, fontHeight, "", kTextAlignLeft);
   myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
 
-  StaticTextWidget* t = new StaticTextWidget(myTab, font, HBORDER, _h - lineHeight * 5, "(*) Changes require application restart");
+  // Add message concerning usage
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
+  new StaticTextWidget(myTab, infofont, HBORDER, _h - lineHeight * 4 - 10, "(*) Changes require application restart");
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -333,16 +351,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   addToFocusList(wid, myTab, tabID);
 }
 
-/*// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::addUITab(const GUI::Font& font)
-{
-  int tabID = myTab->addTab("UI");
-  WidgetArray wid;
-
-
-  addToFocusList(wid, myTab, tabID);
-}*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDefaultOKCancelButtons(const GUI::Font& font)
 {
@@ -361,7 +369,7 @@ void DeveloperDialog::addDefaultOKCancelButtons(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::loadConfig()
 {
-  myDevSettings0->setState(instance().settings().getBool("dev.settings"));
+  myDevSettings->setState(instance().settings().getBool("dev.settings"));
 
   myConsole->setSelectedIndex(instance().settings().getString("dev.console") == "7800" ? 1 : 0);
   myRandomBank->setState(instance().settings().getBool("dev.bankrandom"));
@@ -383,7 +391,17 @@ void DeveloperDialog::loadConfig()
   // Undriven TIA pins
   myUndrivenPins->setState(instance().settings().getBool("dev.tiadriven"));
 
-  enableOptions();
+  handleDeveloperOptions();
+
+  myContinuousRewind->setState(instance().settings().getBool("dev.rewind"));
+  myStateSize->setValue(instance().settings().getInt("dev.rewind.size"));
+  myStateInterval->setValue(instance().settings().getInt("dev.rewind.interval"));
+  myStateHorizon->setValue(instance().settings().getInt("dev.rewind.horizon"));
+
+  handleRewind();
+  handleSize();
+  handleInterval();
+  handleHorizon();
 
 #ifdef DEBUGGER_SUPPORT
   uInt32 w, h;
@@ -418,7 +436,7 @@ void DeveloperDialog::saveConfig()
   //TODO
   // - thumbexception (commandline only yet)
 
-  bool devSettings = myDevSettings0->getState();
+  bool devSettings = myDevSettings->getState();
   instance().settings().setValue("dev.settings", devSettings);
 
   bool is7800 = myConsole->getSelected() == 1;
@@ -469,6 +487,42 @@ void DeveloperDialog::saveConfig()
   // Finally, issue a complete framebuffer re-initialization
   //instance().createFrameBuffer();
 
+  instance().settings().setValue("dev.rewind", myContinuousRewind->getState());
+  instance().settings().setValue("dev.rewind.size", myStateSize->getValue());
+  instance().settings().setValue("dev.rewind.interval", myStateInterval->getValue());
+  instance().settings().setValue("dev.rewind.horizon", myStateHorizon->getValue());
+
+  // define interval growth factor
+  uInt32 size = myStateSize->getValue();
+  uInt64 horizon = HORIZON_CYCLES[myStateHorizon->getValue()];
+  double factor, minFactor = 1, maxFactor = 2;
+
+  while(true)
+  {
+    double interval = INTERVAL_CYCLES[myStateInterval->getValue()];
+    double cycleSum = 0.0;
+    // calculate next factor
+    factor = (minFactor + maxFactor) / 2;
+    // sum up interval cycles
+    for(uInt32 i = 0; i < size; ++i)
+    {
+      cycleSum += interval;
+      interval *= factor;
+    }
+    double diff = cycleSum - horizon;
+//cerr << "factor " << factor << ", diff " << diff << endl;
+    // exit loop if result is close enough
+    if(abs(diff) < horizon * 1E-5)
+      break;
+    // define new boundary
+    if(cycleSum < horizon)
+      minFactor = factor;
+    else
+      maxFactor = factor;
+  }
+  // TODO factor calculation code above into RewindManager
+  //instance().settings().setValue("dev.rewind.factor", factor);
+
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
   instance().settings().setValue("dbg.res",
@@ -486,7 +540,7 @@ void DeveloperDialog::saveConfig()
 
 void DeveloperDialog::setDefaults()
 {
-  myDevSettings0->setState(false);
+  myDevSettings->setState(false);
 
   switch(myTab->getActiveTab())
   {
@@ -508,12 +562,20 @@ void DeveloperDialog::setDefaults()
       // Undriven TIA pins
       myUndrivenPins->setState(true);
 
-      enableOptions();
+      handleDeveloperOptions();
       handleTVJitterChange(false);
       handleDebugColors();
       break;
 
     case 1:  // States
+      myContinuousRewind->setState(false);
+      myStateSize->setValue(100);
+      myStateInterval->setValue(2);
+      myStateHorizon->setValue(3);
+      handleRewind();
+      handleSize();
+      handleInterval();
+      handleHorizon();
       break;
 
     case 2:  // Debugger options
@@ -542,14 +604,14 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 {
   switch(cmd)
   {
-    case kDevSettings0:
-      myDevSettings1->setState(myDevSettings0->getState());
-      enableOptions();
+    case kDevSettings:
+      //myDevSettings1->setState(myDevSettings->getState());
+      handleDeveloperOptions();
       break;
-    case kDevSettings1:
-      myDevSettings0->setState(myDevSettings1->getState());
-      enableOptions();
-      break;
+    /*case kDevSettings1:
+      myDevSettings->setState(myDevSettings1->getState());
+      handleDeveloperOptions();
+      break;*/
 
     case kConsole:
       handleConsole();
@@ -565,6 +627,22 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 
     case kPPinCmd:
       instance().console().tia().driveUnusedPinsRandom(myUndrivenPins->getState());
+      break;
+
+    case kRewind:
+      handleRewind();
+      break;
+
+    case kSizeChanged:
+      handleSize();
+      break;
+
+    case kIntervalChanged:
+      handleInterval();
+      break;
+
+    case kHorizonChanged:
+      handleHorizon();
       break;
 
 #ifdef DEBUGGER_SUPPORT
@@ -601,9 +679,9 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::enableOptions()
+void DeveloperDialog::handleDeveloperOptions()
 {
-  bool enable = myDevSettings0->getState();
+  bool enable = myDevSettings->getState();
 
   myConsole->setEnabled(enable);
   // CPU
@@ -634,7 +712,7 @@ void DeveloperDialog::handleTVJitterChange(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColors()
 {
-  if(instance().hasConsole() && myDevSettings0->getState())
+  if(instance().hasConsole() && myDevSettings->getState())
   {
     bool fixed = instance().console().tia().usingFixedColors();
     if(fixed != myDebugColors->getState())
@@ -646,14 +724,119 @@ void DeveloperDialog::handleDebugColors()
 void DeveloperDialog::handleConsole()
 {
   bool is7800 = myConsole->getSelected() == 1;
-  bool enable = myDevSettings0->getState();
+  bool enable = myDevSettings->getState();
 
   myRandomizeRAM->setEnabled(enable && !is7800);
   if(is7800)
-  {
     myRandomizeRAM->setState(false);
-    instance().settings().setValue("dev.ramrandom", 0);
-  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleRewind()
+{
+  bool enable = myContinuousRewind->getState();
+
+  myStateSize->setEnabled(enable);
+  myStateSizeLabel->setEnabled(enable);
+
+  myStateInterval->setEnabled(enable);
+  myStateIntervalLabel->setEnabled(enable);
+
+  myStateHorizon->setEnabled(enable);
+  myStateHorizonLabel->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleSize()
+{
+  bool found = false;
+  uInt64 size = myStateSize->getValue();
+  uInt64 interval = myStateInterval->getValue();
+  uInt64 horizon = myStateHorizon->getValue();
+  Int32 i;
+
+  myStateSizeLabel->setValue(size);
+  // adapt horizon and interval
+  do
+  {
+    for(i = horizon; i < NUM_HORIZONS; ++i)
+    {
+      if(size * INTERVAL_CYCLES[interval] <= HORIZON_CYCLES[i])
+      {
+        found = true;
+        break;
+      }
+    }
+    if(!found)
+      interval--;
+  } while(!found);
+
+  myStateHorizon->setValue(i);
+  myStateHorizonLabel->setLabel(HORIZONS[i]);
+  myStateInterval->setValue(interval);
+  myStateIntervalLabel->setLabel(INTERVALS[interval]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleInterval()
+{
+  bool found = false;
+  uInt64 size = myStateSize->getValue();
+  uInt64 interval = myStateInterval->getValue();
+  uInt64 horizon = myStateHorizon->getValue();
+  Int32 i;
+
+  myStateIntervalLabel->setLabel(INTERVALS[interval]);
+  // adapt horizon and size
+  do
+  {
+    for(i = horizon; i < NUM_HORIZONS; ++i)
+    {
+      if(size * INTERVAL_CYCLES[interval] <= HORIZON_CYCLES[i])
+      {
+        found = true;
+        break;
+      }
+    }
+    if(!found)
+      size -= myStateSize->getStepValue();
+  } while(!found);
+
+  myStateHorizon->setValue(i);
+  myStateHorizonLabel->setLabel(HORIZONS[i]);
+  myStateSize->setValue(size);
+  myStateSizeLabel->setValue(myStateSize->getValue());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleHorizon()
+{
+  bool found = false;
+  uInt64 size = myStateSize->getValue();
+  uInt64 interval = myStateInterval->getValue();
+  uInt64 horizon = myStateHorizon->getValue();
+  Int32 i;
+
+  myStateHorizonLabel->setLabel(HORIZONS[horizon]);
+  // adapt interval and size
+  do
+  {
+    for(i = interval; i >= 0; --i)
+    {
+      if(size * INTERVAL_CYCLES[i] <= HORIZON_CYCLES[horizon])
+      {
+        found = true;
+        break;
+      }
+    }
+    if(!found)
+      size -= myStateSize->getStepValue();
+  } while(!found);
+
+  myStateInterval->setValue(i);
+  myStateIntervalLabel->setLabel(INTERVALS[i]);
+  myStateSize->setValue(size);
+  myStateSizeLabel->setValue(myStateSize->getValue());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

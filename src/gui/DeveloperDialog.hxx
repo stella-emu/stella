@@ -52,14 +52,17 @@ class DeveloperDialog : public Dialog
   private:
     enum
     {
-      kDevSettings0     = 'DVs0',
+      kDevSettings      = 'DVst',
       kConsole          = 'DVco',
       kRandRAMID        = 'DVrm',
       kRandCPUID        = 'DVcp',
       kTVJitter         = 'DVjt',
       kTVJitterChanged  = 'DVjr',
       kPPinCmd          = 'DVpn',
-      kDevSettings1     = 'DVs1',
+      kRewind           = 'DSrw',
+      kSizeChanged      = 'DSsz',
+      kIntervalChanged  = 'DSin',
+      kHorizonChanged   = 'DShz',
   #ifdef DEBUGGER_SUPPORT
       kDWidthChanged    = 'UIdw',
       kDHeightChanged   = 'UIdh',
@@ -67,11 +70,20 @@ class DeveloperDialog : public Dialog
   #endif
     };
 
+    static const int NUM_INTERVALS = 6;
+    const string INTERVALS[NUM_INTERVALS] = { "1 scanline", "50 scanlines", "1 frame", "10 frames",
+      "1 second", "10 seconds" };
+    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
+      76 * 262 * 60, 76 * 262 * 60 * 10 };
+    static const int NUM_HORIZONS = 7;
+    const string HORIZONS[NUM_HORIZONS] = { "~1 frame", "~10 frames", "~1 second", "~10 seconds",
+      "~1 minute", "~10 minutes", "~60 minutes" };
+    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
+      76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, (uInt64)76 * 262 * 60 * 60 * 60 };
+
     TabWidget* myTab;
-
-    CheckboxWidget*   myDevSettings0;
-    CheckboxWidget*   myDevSettings1;
-
+    // Emulator
+    CheckboxWidget*   myDevSettings;
     PopUpWidget*      myConsole;
     StaticTextWidget* myLoadingROMLabel;
     CheckboxWidget*   myRandomBank;
@@ -79,13 +91,20 @@ class DeveloperDialog : public Dialog
     StaticTextWidget* myRandomizeCPULabel;
     CheckboxWidget*   myRandomizeCPU[5];
     //CheckboxWidget*   myThumbException;
-
     CheckboxWidget*   myColorLoss;
     CheckboxWidget*   myTVJitter;
     SliderWidget*     myTVJitterRec;
     StaticTextWidget* myTVJitterRecLabel;
     CheckboxWidget*   myDebugColors;
     CheckboxWidget*   myUndrivenPins;
+    // States
+    CheckboxWidget*   myContinuousRewind;
+    SliderWidget*     myStateSize;
+    StaticTextWidget* myStateSizeLabel;
+    SliderWidget*     myStateInterval;
+    StaticTextWidget* myStateIntervalLabel;
+    SliderWidget*     myStateHorizon;
+    StaticTextWidget* myStateHorizonLabel;
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger options
@@ -102,17 +121,20 @@ class DeveloperDialog : public Dialog
 
   private:
     void addEmulationTab(const GUI::Font& font);
-    //void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
-    //void addUITab(const GUI::Font& font);
     void addStatesTab(const GUI::Font& font);
     // Add Defaults, OK and Cancel buttons
     void addDefaultOKCancelButtons(const GUI::Font& font);
 
-    void enableOptions();
+    void handleDeveloperOptions();
     void handleTVJitterChange(bool enable);
     void handleDebugColors();
     void handleConsole();
+    void handleRewind();
+    void handleSize();
+    void handleInterval();
+    void handleHorizon();
+
     void handleFontSize();
 
     // Following constructors and assignment operators not supported

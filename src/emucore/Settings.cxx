@@ -156,6 +156,10 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
+  setInternal("dev.rewind", false);
+  setInternal("dev.rewind.size", 100);
+  setInternal("dev.rewind.interval", 2); // = 1 frame
+  setInternal("dev.rewind.horizon", 3); // = ~10 seconds
 
 #ifdef DTHUMB_SUPPORT
   // Thumb ARM emulation options
@@ -297,6 +301,15 @@ void Settings::validate()
 
   i = getInt("dev.tv.jitter_recovery");
   if(i < 1 || i > 20)  setInternal("dev.tv.jitter_recovery", "10");
+
+  i = getInt("dev.rewind.size");
+  if (i < 100 ||i > 1000) setInternal("dev.rewind.size", 100);
+
+  i = getInt("dev.rewind.interval");
+  if(i < 0 || i > 5) setInternal("dev.rewind.interval", 2);
+
+  i = getInt("dev.rewind.horizon");
+  if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 3);
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
