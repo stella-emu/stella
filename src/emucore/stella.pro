@@ -12124,7 +12124,7 @@
 "Cartridge.MD5" "9905f9f4706223dadee84f6867ede8e3"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.Name" "Challenge (HES) (PAL)"
-"Cartridge.Note" "ROM must be started in bank 1 (bank 0 contains Surfer's Paradise)"
+"Cartridge.Note" "ROM must be started in bank 1 (Surfer's Paradise if right difficulty = 'A')"
 ""
 
 "Cartridge.MD5" "9912d06eea42200a198dd3e2be18c601"
