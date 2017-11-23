@@ -53,7 +53,6 @@ class DeveloperDialog : public Dialog
     enum
     {
       kDevSettings      = 'DVst',
-      kFrameStats       = 'DVfs',
       kConsole          = 'DVco',
       kRandRAMID        = 'DVrm',
       kRandCPUID        = 'DVcp',
@@ -72,6 +71,7 @@ class DeveloperDialog : public Dialog
     };
 
     static const int NUM_INTERVALS = 6;
+    // TODO: check for intervals shorter than 1 frame (adjust horizon too!)
     const string INTERVALS[NUM_INTERVALS] = { "1 scanline", "50 scanlines", "1 frame", "10 frames",
       "1 second", "10 seconds" };
     const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
@@ -92,7 +92,6 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*   myRandomizeRAM;
     StaticTextWidget* myRandomizeCPULabel;
     CheckboxWidget*   myRandomizeCPU[5];
-    //CheckboxWidget*   myThumbException;
     CheckboxWidget*   myColorLoss;
     CheckboxWidget*   myTVJitter;
     SliderWidget*     myTVJitterRec;
@@ -109,7 +108,7 @@ class DeveloperDialog : public Dialog
     StaticTextWidget* myStateHorizonLabel;
 
 #ifdef DEBUGGER_SUPPORT
-    // Debugger options
+    // Debugger UI
     SliderWidget*     myDebuggerWidthSlider;
     StaticTextWidget* myDebuggerWidthLabel;
     SliderWidget*     myDebuggerHeightSlider;
@@ -135,8 +134,7 @@ class DeveloperDialog : public Dialog
     void handleRewind();
     void handleSize();
     void handleInterval();
-    void handleHorizon();
-
+    void handleHorizon();   
     void handleFontSize();
 
     // Following constructors and assignment operators not supported

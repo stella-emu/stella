@@ -47,31 +47,18 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth(),
     buttonHeight = font.getLineHeight() + 4;
-  const int VBORDER = 4;
-  //const int HBORDER = 8;
   int xpos, ypos, tabID;
-  StringList actions;
 
   // Set real dimensions
   _w = std::min(51 * fontWidth + 10, max_w);
   _h = std::min(15 * (lineHeight + 4) + 14, max_h);
 
-  WidgetArray wid;
-
-  /*ypos = VBORDER;
-  myDevSettings = new CheckboxWidget(this, font, HBORDER, ypos, "Enable developer settings", kDevSettings);
-  wid.push_back(myDevSettings);
-  addToFocusList(wid);*/
-
   // The tab widget
-  //ypos += lineHeight + 2;
-  xpos = 2; ypos = VBORDER;
+  xpos = 2; ypos = 4;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2 * xpos, _h - buttonHeight - 16 - ypos);
   addTabWidget(myTab);
 
   addEmulationTab(font);
-  //addVideoTab(font);
-  //addUITab(font);
   addStatesTab(font);
   addDebuggerTab(font);
   addDefaultOKCancelButtons(font);
@@ -87,23 +74,18 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   const int INDENT = 16;
   const int VBORDER = 8;
   const int VGAP = 4;
-
-  int ypos, tabID;
+  int ypos = VBORDER;
   int lineHeight = font.getLineHeight();
-  StringList actions;
+  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
   WidgetArray wid;
   VariantList items;
-  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
+  int tabID = myTab->addTab(" Emulation ");
 
-  tabID = myTab->addTab(" Emulation ");
-
-  ypos = VBORDER;
   myDevSettings = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings);
   wid.push_back(myDevSettings);
   ypos += lineHeight + VGAP;
 
-
-  myFrameStats = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Show frame statistics", kFrameStats);
+  myFrameStats = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Show frame statistics");
   wid.push_back(myFrameStats);
   ypos += lineHeight + VGAP;
 
@@ -144,17 +126,10 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   {
     myRandomizeCPU[i] = new CheckboxWidget(myTab, font, xpos, ypos + 2,
                                            cpuregs[i], kRandCPUID);
-    //myRandomizeCPU[i]->setID(kRandCPUID);
-    //myRandomizeCPU[i]->setTarget(this);
-    //addFocusWidget(myRandomizeCPU[i]);
     wid.push_back(myRandomizeCPU[i]);
     xpos += CheckboxWidget::boxSize() + font.getStringWidth("XX") + 20;
   }
   ypos += lineHeight + VGAP;
-
-  /*myThumbException = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1, "Thumb ARM emulation can throw an exception");
-  wid.push_back(myThumbException);*/
-  //ypos += (lineHeight + VGAP) * 2;
 
   // debug colors
   myDebugColors = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors");
@@ -198,19 +173,11 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   const int INDENT = 16;
   const int VBORDER = 8;
   const int VGAP = 4;
-
-  int ypos;
+  int ypos = VBORDER;
   int lineHeight = font.getLineHeight();
-  StringList actions;
-  WidgetArray wid;
   int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
-
+  WidgetArray wid;
   int tabID = myTab->addTab("States");
-
-  ypos = VBORDER;
-  /*myDevSettings1 = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings1);
-  wid.push_back(myDevSettings1);
-  ypos += lineHeight + VGAP*4;*/
 
   myContinuousRewind = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Continuous rewind", kRewind);
   wid.push_back(myContinuousRewind);
@@ -385,7 +352,6 @@ void DeveloperDialog::loadConfig()
   const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
     myRandomizeCPU[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
-  //myThumbException->setState(instance().settings().getBool("dev.thumb.trapfatal"));
 
   // PAL color-loss effect
   myColorLoss->setState(instance().settings().getBool("dev.colorloss"));
@@ -439,14 +405,11 @@ void DeveloperDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
-  //TODO
-  // - thumbexception (commandline only yet)
-
   bool devSettings = myDevSettings->getState();
   instance().settings().setValue("dev.settings", devSettings);
 
   instance().settings().setValue("dev.stats", myFrameStats->getState());
-  instance().frameBuffer().showFrameStats(myFrameStats->getState());
+  instance().frameBuffer().showFrameStats(devSettings && myFrameStats->getState());
 
   bool is7800 = myConsole->getSelected() == 1;
   instance().settings().setValue("dev.console", is7800 ? "7800" : "2600");
@@ -460,7 +423,6 @@ void DeveloperDialog::saveConfig()
     if(myRandomizeCPU[i]->getState())
       cpurandom += cpuregs[i];
   instance().settings().setValue("dev.cpurandom", cpurandom);
-  //instance().settings().setValue("dev.thumb.trapfatal", myThumbException->getState());
 
   // jitter
   instance().settings().setValue("dev.tv.jitter", myTVJitter->getState());
@@ -500,6 +462,7 @@ void DeveloperDialog::saveConfig()
   instance().settings().setValue("dev.rewind.size", myStateSize->getValue());
   instance().settings().setValue("dev.rewind.interval", myStateInterval->getValue());
   instance().settings().setValue("dev.rewind.horizon", myStateHorizon->getValue());
+  // TODO: update RewindManager
 
   // define interval growth factor
   uInt32 size = myStateSize->getValue();
@@ -560,7 +523,6 @@ void DeveloperDialog::setDefaults()
       myRandomizeRAM->setState(true);
       for(int i = 0; i < 5; ++i)
         myRandomizeCPU[i]->setState(true);
-      //myThumbException->setState(false);
 
       // PAL color-loss effect
       myColorLoss->setState(true);
@@ -615,13 +577,8 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
   switch(cmd)
   {
     case kDevSettings:
-      //myDevSettings1->setState(myDevSettings->getState());
       handleDeveloperOptions();
       break;
-    /*case kDevSettings1:
-      myDevSettings->setState(myDevSettings1->getState());
-      handleDeveloperOptions();
-      break;*/
 
     case kConsole:
       handleConsole();
@@ -702,7 +659,6 @@ void DeveloperDialog::handleDeveloperOptions()
   myRandomizeCPULabel->setEnabled(enable);
   for(int i = 0; i < 5; ++i)
     myRandomizeCPU[i]->setEnabled(enable);
-  //myThumbException->setEnabled(enable);
   handleConsole();
 
   // TIA
