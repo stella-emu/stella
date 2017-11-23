@@ -239,6 +239,13 @@ class TIA : public Device
     bool enableColorLoss(bool enabled);
 
     /**
+      Answers whether color-loss is enabled.
+
+      @return  Colour-loss is enabled
+    */
+    bool colorLossEnabled() const { return myColorLossEnabled; }
+
+    /**
       Answers whether colour-loss is applicable for the current frame.
 
       @return  Colour-loss is active for this frame

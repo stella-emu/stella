@@ -222,7 +222,7 @@ class Console : public Serializable
       Toggles the PAL color-loss effect.
     */
     void toggleColorLoss();
-    void toggleColorLoss(bool state);
+    void enableColorLoss(bool state);
 
     /**
       Initialize the video subsystem wrt this class.

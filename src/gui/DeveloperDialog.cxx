@@ -448,9 +448,9 @@ void DeveloperDialog::saveConfig()
   if(instance().hasConsole())
   {
     if(devSettings)
-      instance().console().toggleColorLoss(myColorLoss->getState());
+      instance().console().enableColorLoss(myColorLoss->getState());
     else
-      instance().console().toggleColorLoss(false);
+      instance().console().enableColorLoss(false);
   }
 
   instance().settings().setValue("dev.tiadriven", myUndrivenPins->getState());

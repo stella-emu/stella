@@ -530,7 +530,11 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
         case KBDK_G:  // Ctrl-g (un)grabs mouse
           if(!myOSystem.frameBuffer().fullScreen())
+          {
             myOSystem.frameBuffer().toggleGrabMouse();
+            myOSystem.frameBuffer().showMessage(myOSystem.frameBuffer().grabMouseEnabled()
+                                                ? "Grab mouse enabled" : "Grab mouse disabled");
+          }
           break;
 
         case KBDK_L:  // Ctrl-l toggles PAL color-loss effect

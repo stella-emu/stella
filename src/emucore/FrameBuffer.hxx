@@ -227,10 +227,19 @@ class FrameBuffer
     void setCursorState();
 
     /**
-      Toggles the use of grabmouse (only has effect in emulation mode).
-      The method changes the 'grabmouse' setting and saves it.
+      Sets the use of grabmouse.
+    */
+    void enableGrabMouse(bool enable);
+
+    /**
+      Toggles the use of grabmouse (only has effect in emulation mode).      
     */
     void toggleGrabMouse();
+
+    /**
+      Sets the use of grabmouse.
+    */
+    bool grabMouseEnabled() { return myGrabMouse; }
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
@@ -477,6 +486,9 @@ class FrameBuffer
     };
     Message myMsg;
     Message myStatsMsg;
+    bool myStatsEnabled;
+
+    bool myGrabMouse;
 
     // The list of all available video modes for this framebuffer
     VideoModeList* myCurrentModeList;

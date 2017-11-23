@@ -48,7 +48,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myCurrentModeList(nullptr)
 {
   myMsg.surface = myStatsMsg.surface = nullptr;
-  myMsg.enabled = myStatsMsg.enabled = false;
+  myStatsEnabled = myMsg.enabled = myStatsMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -141,6 +141,8 @@ bool FrameBuffer::initialize()
     myPalette[j] = mapRGB(r, g, b);
   }
   FBSurface::setPalette(myPalette);
+
+  myGrabMouse = myOSystem.settings().getBool("grabmouse");
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
@@ -368,14 +370,13 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFrameStats()
 {
-  showFrameStats(!myOSystem.settings().getBool("dev.stats"));
+  showFrameStats(!myStatsEnabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showFrameStats(bool enable)
 {
-  myOSystem.settings().setValue("dev.stats", enable);
-  myStatsMsg.enabled = enable;
+  myStatsEnabled = myStatsMsg.enabled = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -384,7 +385,7 @@ void FrameBuffer::enableMessages(bool enable)
   if(enable)
   {
     // Only re-enable frame stats if they were already enabled before
-    myStatsMsg.enabled = myOSystem.settings().getBool("dev.stats");
+    myStatsMsg.enabled = myStatsEnabled;
   }
   else
   {
@@ -593,7 +594,7 @@ void FrameBuffer::setCursorState()
        myOSystem.eventHandler().controllerIsAnalog(Controller::Right)) : false;
   bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
-  grabMouse(emulation && (analog || alwaysUseMouse) && myOSystem.settings().getBool("grabmouse"));
+  grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
 
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
   switch(myOSystem.settings().getInt("cursor"))
@@ -606,10 +607,16 @@ void FrameBuffer::setCursorState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::enableGrabMouse(bool enable)
+{
+  myGrabMouse = enable;
+  setCursorState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleGrabMouse()
 {
-  bool state = myOSystem.settings().getBool("grabmouse");
-  myOSystem.settings().setValue("grabmouse", !state);
+  myGrabMouse = !myGrabMouse;
   setCursorState();
 }
 

@@ -360,10 +360,9 @@ void Console::toggleFormat(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleColorLoss()
 {
-  bool colorloss = !myOSystem.settings().getBool("dev.colorloss");
+  bool colorloss = !myTIA->colorLossEnabled();
   if(myTIA->enableColorLoss(colorloss))
   {
-    myOSystem.settings().setValue("dev.colorloss", colorloss);
     string message = string("PAL color-loss ") +
                      (colorloss ? "enabled" : "disabled");
     myOSystem.frameBuffer().showMessage(message);
@@ -374,7 +373,7 @@ void Console::toggleColorLoss()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleColorLoss(bool state)
+void Console::enableColorLoss(bool state)
 {
   myTIA->enableColorLoss(state);
 }

@@ -352,7 +352,7 @@ void InputDialog::saveConfig()
   const string& cursor = myCursorState->getSelectedTag().toString();
   instance().settings().setValue("cursor", cursor);
   instance().settings().setValue("grabmouse", myGrabMouse->getState());
-  instance().frameBuffer().setCursorState();
+  instance().frameBuffer().enableGrabMouse(myGrabMouse->getState());  
 
   // Enable/disable control key-combos
   instance().settings().setValue("ctrlcombo", myCtrlCombo->getState());
