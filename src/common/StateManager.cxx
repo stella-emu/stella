@@ -354,8 +354,9 @@ bool StateManager::saveState(Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::reset()
 {
-  myActiveMode = Mode::Off;
   myRewindManager->clear();
+  myActiveMode = myOSystem.settings().getBool("dev.rewind") ? Mode::Rewind : Mode::Off;
+
 #if 0
   myCurrentSlot = 0;
 

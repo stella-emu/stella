@@ -54,7 +54,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(51 * fontWidth + 10, max_w);
-  _h = std::min(14 * (lineHeight + 4) + 14, max_h);
+  _h = std::min(15 * (lineHeight + 4) + 14, max_h);
 
   WidgetArray wid;
 
@@ -102,6 +102,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myDevSettings);
   ypos += lineHeight + VGAP;
 
+
+  myFrameStats = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Show frame statistics", kFrameStats);
+  wid.push_back(myFrameStats);
+  ypos += lineHeight + VGAP;
+
   // 2600/7800 mode
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
@@ -118,7 +123,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myLoadingROMLabel);
   ypos += lineHeight + VGAP;
 
-  myRandomBank = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Random startup bank (TODO)");
+  myRandomBank = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Random startup bank");
   wid.push_back(myRandomBank);
   ypos += lineHeight + VGAP;
 
@@ -151,17 +156,22 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myThumbException);*/
   //ypos += (lineHeight + VGAP) * 2;
 
+  // debug colors
+  myDebugColors = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors");
+  wid.push_back(myDebugColors);
+  ypos += lineHeight + VGAP;
+
   myColorLoss = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "PAL color-loss");
   wid.push_back(myColorLoss);
   ypos += lineHeight + VGAP;
 
   // TV jitter effect
-  myTVJitter = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/Roll Effect", kTVJitter);
+  myTVJitter = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/Roll effect", kTVJitter);
   wid.push_back(myTVJitter);
   myTVJitterRec = new SliderWidget(myTab, font,
                                    myTVJitter->getRight()+ 16, ypos - 1,
-                                   8 * fontWidth, lineHeight, "Recovery ",
-                                   font.getStringWidth("Recovery "), kTVJitterChanged);
+                                   8 * fontWidth, lineHeight, "recovery ",
+                                   font.getStringWidth("recovery "), kTVJitterChanged);
   myTVJitterRec->setMinValue(1); myTVJitterRec->setMaxValue(20);
   wid.push_back(myTVJitterRec);
 
@@ -170,11 +180,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
                                          5 * fontWidth, fontHeight, "", kTextAlignLeft);
   myTVJitterRecLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTVJitterRecLabel);
-  ypos += lineHeight + VGAP;
-
-  // debug colors
-  myDebugColors = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Debug Colors");
-  wid.push_back(myDebugColors);
   ypos += lineHeight + VGAP;
 
   // How to handle undriven TIA pins
@@ -207,13 +212,13 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   wid.push_back(myDevSettings1);
   ypos += lineHeight + VGAP*4;*/
 
-  myContinuousRewind = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Continuous Rewind", kRewind);
+  myContinuousRewind = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Continuous rewind", kRewind);
   wid.push_back(myContinuousRewind);
   ypos += lineHeight + VGAP;
 
   int sWidth = font.getMaxCharWidth() * 8;
   myStateSize = new SliderWidget(myTab, font, HBORDER + INDENT, ypos - 1, sWidth, lineHeight,
-                                 "Buffer Size (*) ", 0, kSizeChanged);
+                                 "Buffer size (*) ", 0, kSizeChanged);
   myStateSize->setMinValue(100);
   myStateSize->setMaxValue(1000);
   myStateSize->setStepValue(100);
@@ -274,7 +279,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   pwidth = font.getStringWidth("Medium");
   myDebuggerFontSize =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
-                    "Font Size  ", 0, kDFontSizeChanged);
+                    "Font size  ", 0, kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
   ypos += lineHeight + 4;
 
@@ -287,7 +292,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   pwidth = font.getStringWidth("Bold non-labels only");
   myDebuggerFontStyle =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
-                    "Font Style ", 0);
+                    "Font style ", 0);
   wid.push_back(myDebuggerFontStyle);
 
   ypos += lineHeight + VGAP * 4;
@@ -295,7 +300,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   pwidth = font.getMaxCharWidth() * 8;
   // Debugger width and height
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
-                                           lineHeight, "Debugger Width  ",
+                                           lineHeight, "Debugger width  ",
                                            0, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
@@ -309,7 +314,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
-                                            lineHeight, "Debugger Height ",
+                                            lineHeight, "Debugger height ",
                                             0, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
@@ -371,6 +376,7 @@ void DeveloperDialog::loadConfig()
 {
   myDevSettings->setState(instance().settings().getBool("dev.settings"));
 
+  myFrameStats->setState(instance().settings().getBool("dev.stats"));
   myConsole->setSelectedIndex(instance().settings().getString("dev.console") == "7800" ? 1 : 0);
   myRandomBank->setState(instance().settings().getBool("dev.bankrandom"));
   myRandomizeRAM->setState(instance().settings().getBool("dev.ramrandom"));
@@ -438,6 +444,9 @@ void DeveloperDialog::saveConfig()
 
   bool devSettings = myDevSettings->getState();
   instance().settings().setValue("dev.settings", devSettings);
+
+  instance().settings().setValue("dev.stats", myFrameStats->getState());
+  instance().frameBuffer().showFrameStats(myFrameStats->getState());
 
   bool is7800 = myConsole->getSelected() == 1;
   instance().settings().setValue("dev.console", is7800 ? "7800" : "2600");
@@ -545,6 +554,7 @@ void DeveloperDialog::setDefaults()
   switch(myTab->getActiveTab())
   {
     case 0:
+      myFrameStats->setState(true);
       myConsole->setSelectedIndex(0);
       myRandomBank->setState(true);
       myRandomizeRAM->setState(true);
@@ -683,6 +693,7 @@ void DeveloperDialog::handleDeveloperOptions()
 {
   bool enable = myDevSettings->getState();
 
+  myFrameStats->setEnabled(enable);
   myConsole->setEnabled(enable);
   // CPU
   myLoadingROMLabel->setEnabled(enable);

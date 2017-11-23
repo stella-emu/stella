@@ -368,13 +368,13 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFrameStats()
 {
-  showFrameStats(!myOSystem.settings().getBool("stats"));
+  showFrameStats(!myOSystem.settings().getBool("dev.stats"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showFrameStats(bool enable)
 {
-  myOSystem.settings().setValue("stats", enable);
+  myOSystem.settings().setValue("dev.stats", enable);
   myStatsMsg.enabled = enable;
 }
 
@@ -384,7 +384,7 @@ void FrameBuffer::enableMessages(bool enable)
   if(enable)
   {
     // Only re-enable frame stats if they were already enabled before
-    myStatsMsg.enabled = myOSystem.settings().getBool("stats");
+    myStatsMsg.enabled = myOSystem.settings().getBool("dev.stats");
   }
   else
   {

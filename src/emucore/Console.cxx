@@ -528,7 +528,8 @@ FBInitStatus Console::initializeVideo(bool full)
     if(fbstatus != kSuccess)
       return fbstatus;
 
-    myOSystem.frameBuffer().showFrameStats(myOSystem.settings().getBool("stats"));
+    myOSystem.frameBuffer().showFrameStats(myOSystem.settings().getBool("dev.settings") &&
+                                           myOSystem.settings().getBool("dev.stats"));
     generateColorLossPalette();
   }
   setPalette(myOSystem.settings().getString("palette"));

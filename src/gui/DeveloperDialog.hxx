@@ -53,6 +53,7 @@ class DeveloperDialog : public Dialog
     enum
     {
       kDevSettings      = 'DVst',
+      kFrameStats       = 'DVfs',
       kConsole          = 'DVco',
       kRandRAMID        = 'DVrm',
       kRandCPUID        = 'DVcp',
@@ -84,6 +85,7 @@ class DeveloperDialog : public Dialog
     TabWidget* myTab;
     // Emulator
     CheckboxWidget*   myDevSettings;
+    CheckboxWidget*   myFrameStats;
     PopUpWidget*      myConsole;
     StaticTextWidget* myLoadingROMLabel;
     CheckboxWidget*   myRandomBank;

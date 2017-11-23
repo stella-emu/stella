@@ -128,7 +128,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("loglevel", "1");
   setInternal("logtoconsole", "0");
   setInternal("avoxport", "");
-  setInternal("stats", "false");
   setInternal("fastscbios", "true");
   setInternal("threads", "false");
   setExternal("romloadcount", "0");
@@ -147,6 +146,7 @@ Settings::Settings(OSystem& osystem)
 
   // developer settings
   setInternal("dev.settings", "false");
+  setInternal("dev.stats", "false");
   setInternal("dev.bankrandom", "true");
   setInternal("dev.ramrandom", "true");
   setInternal("dev.cpurandom", "SAXYP");
@@ -441,7 +441,6 @@ void Settings::usage() const
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
-    << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -threads      <1|0>          Whether to using multi-threading during emulation\n"
     << "  -snapsavedir  <path>         The directory to save snapshot files to\n"
@@ -513,6 +512,7 @@ void Settings::usage() const
   #endif
 
     << "  -dev.console      <2600|7800>    Select console for B/W and Pause key handling\n"
+    << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
     << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
     << "  -dev.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
