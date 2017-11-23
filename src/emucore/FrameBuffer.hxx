@@ -187,6 +187,11 @@ class FrameBuffer
     */
     const VariantList& supportedTIAZoomLevels() const { return myTIAZoomLevels; }
 
+    /*
+      Set the current zoom mode.
+    */
+    void setZoomMode(uInt32 mode);
+
     /**
       Get the font object(s) of the framebuffer
     */
@@ -232,7 +237,7 @@ class FrameBuffer
     void enableGrabMouse(bool enable);
 
     /**
-      Toggles the use of grabmouse (only has effect in emulation mode).      
+      Toggles the use of grabmouse (only has effect in emulation mode).
     */
     void toggleGrabMouse();
 
@@ -497,6 +502,9 @@ class FrameBuffer
 
     // Names of the TIA zoom levels that can be used for this framebuffer
     VariantList myTIAZoomLevels;
+
+    // curently selected zoom mode
+    uInt32 myZoomMode;
 
     // Holds a reference to all the surfaces that have been created
     vector<shared_ptr<FBSurface>> mySurfaceList;

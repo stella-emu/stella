@@ -471,6 +471,7 @@ void VideoDialog::saveConfig()
   // TIA Filter
   instance().settings().setValue("tia.zoom",
     myTIAZoom->getSelectedTag().toString());
+  instance().frameBuffer().setZoomMode(instance().settings().getInt("tia.zoom"));
 
   // TIA Palette
   instance().settings().setValue("palette",
