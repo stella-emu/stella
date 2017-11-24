@@ -416,7 +416,7 @@ void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
   s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-               !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) : 
+               !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
                hilite ? _textcolorhi : _textcolor, _align);
 }
 
@@ -424,38 +424,38 @@ void ButtonWidget::drawWidget(bool hilite)
 /* 8x8 checkbox bitmap */
 static uInt32 checked_img_active[8] =
 {
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111
 };
 
 static uInt32 checked_img_inactive[8] =
 {
-	0x11111111,
-	0x11111111,
-	0x11100111,
-	0x11000011,
-	0x11000011,
-	0x11100111,
-	0x11111111,
-	0x11111111
+	0b11111111,
+	0b11111111,
+	0b11100111,
+	0b11000011,
+	0b11000011,
+	0b11100111,
+	0b11111111,
+	0b11111111
 };
 
 static uInt32 checked_img_circle[8] =
 {
-	0x00011000,
-	0x01111110,
-	0x01111110,
-	0x11111111,
-	0x11111111,
-	0x01111110,
-	0x01111110,
-	0x00011000
+	0b00011000,
+	0b01111110,
+	0b01111110,
+	0b11111111,
+	0b11111111,
+	0b01111110,
+	0b01111110,
+	0b00011000
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -559,14 +559,131 @@ void CheckboxWidget::drawWidget(bool hilite)
     s.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
 
   // Do we draw a square or cross?
-  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, _bgcolor);
-  if(isEnabled())
-  {
-    if(_state)
-      s.drawBitmap(_img, _x + 3, _y + _boxY + 3, kCheckColor);
-  }
+  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, isEnabled() ? _bgcolor : kColor);
+  if(_state)
+    s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
+
+  // Finally draw the label
+  s.drawString(_font, _label, _x + 20, _y + _textY, _w,
+               isEnabled() ? kTextColor : kColor);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* 8x8 radiobutton bitmap */
+static uInt32 radio_img_outercircle[14] =
+{
+  0b00001111110000,
+  0b00111111111100,
+  0b01110000001110,
+  0b01100000000110,
+  0b11000000000011,
+  0b11000000000011,
+  0b11000000000011,
+  0b11000000000011,
+  0b11000000000011,
+  0b11000000000011,
+  0b01100000000110,
+  0b01110000001110,
+  0b00111111111100,
+  0b00001111110000
+};
+
+static uInt32 radio_img_innercircle[10] =
+{
+  0b0011111100,
+  0b0111111110,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b0111111110,
+  0b0011111100
+};
+
+static uInt32 radio_img_active[8] =
+{
+  0b00111100,
+  0b01111110,
+  0b11111111,
+  0b11111111,
+  0b11111111,
+  0b11111111,
+  0b01111110,
+  0b00111100
+};
+
+static uInt32 radio_img_inactive[8] =
+{
+	0b00111100,
+	0b01111110,
+	0b11100111,
+	0b11000011,
+	0b11000011,
+	0b11100111,
+	0b01111110,
+	0b00111100
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
+                               int x, int y, const string& label,
+                               int cmd)
+  : CheckboxWidget(boss, font, x, y, label, cmd)
+{
+  _flags = WIDGET_ENABLED;
+  _bgcolor = _bgcolorhi = kWidColor;
+
+  _editable = true;
+
+  if(label == "")
+    _w = 14;
   else
-    s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, kColor);
+    _w = font.getStringWidth(label) + 20;
+  _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
+
+
+  // Depending on font size, either the font or box will need to be
+  // centered vertically
+  if(_h > 14)  // center box
+    _boxY = (_h - 14) / 2;
+  else         // center text
+    _textY = (14 - _font.getFontHeight()) / 2;
+
+  setFill(CheckboxWidget::Normal);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RadioButtonWidget::setFill(FillType type)
+{
+  switch(type)
+  {
+    case CheckboxWidget::Normal:
+      _img = radio_img_active;
+      break;
+    case CheckboxWidget::Inactive:
+      _img = radio_img_inactive;
+      break;
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RadioButtonWidget::drawWidget(bool hilite)
+{
+  FBSurface& s = _boss->dialog().surface();
+
+  // Draw the outer bounding circle
+  s.drawBitmap(radio_img_outercircle, _x, _y + _boxY, kShadowColor, 14, 14);
+
+  // Draw the inner bounding circle with enabled color
+  s.drawBitmap(radio_img_innercircle, _x + 2, _y + _boxY + 2, isEnabled() ? _bgcolor : kColor, 10, 10);
+
+  // draw state
+  if(_state)
+    s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,

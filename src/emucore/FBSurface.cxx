@@ -134,12 +134,19 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
 void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
                            uInt32 color, uInt32 h)
 {
+  drawBitmap(bitmap, tx, ty, color, h, h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
+                           uInt32 color, uInt32 w, uInt32 h)
+{
   uInt32* buffer = myPixels + ty * myPitch + tx;
 
   for(uInt32 y = 0; y < h; ++y)
   {
-    uInt32 mask = 0xF0000000;
-    for(uInt32 x = 0; x < 8; ++x, mask >>= 4)
+    uInt32 mask = 1 << (w - 1);
+    for(uInt32 x = 0; x < w; ++x, mask >>= 1)
       if(bitmap[y] & mask)
         buffer[x] = uInt32(myPalette[color]);
 

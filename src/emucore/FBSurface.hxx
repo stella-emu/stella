@@ -129,6 +129,19 @@ class FBSurface
                             uInt32 h = 8);
 
     /**
+    This method should be called to draw the bitmap image.
+
+    @param bitmap The data to draw
+    @param x      The x coordinate
+    @param y      The y coordinate
+    @param color  The color of the bitmap
+    @param w      The width of the data image
+    @param h      The height of the data image
+    */
+    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
+                            uInt32 w, uInt32 h);
+
+    /**
       This method should be called to convert and copy a given row of pixel
       data into a FrameBuffer surface.  The pixels must already be in the
       format used by the surface.

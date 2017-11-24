@@ -520,24 +520,24 @@ void ContextMenu::scrollDown(int distance)
 void ContextMenu::drawDialog()
 {
   static uInt32 up_arrow[8] = {
-    0x00011000,
-    0x00011000,
-    0x00111100,
-    0x00111100,
-    0x01111110,
-    0x01111110,
-    0x11111111,
-    0x11111111
+    0b00011000,
+    0b00011000,
+    0b00111100,
+    0b00111100,
+    0b01111110,
+    0b01111110,
+    0b11111111,
+    0b11111111
   };
   static uInt32 down_arrow[8] = {
-    0x11111111,
-    0x11111111,
-    0x01111110,
-    0x01111110,
-    0x00111100,
-    0x00111100,
-    0x00011000,
-    0x00011000
+    0b11111111,
+    0b11111111,
+    0b01111110,
+    0b01111110,
+    0b00111100,
+    0b00111100,
+    0b00011000,
+    0b00011000
   };
 
   // Normally we add widgets and let Dialog::draw() take care of this
