@@ -70,14 +70,14 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
   if (execDepth > 0 && !execPrefix.empty()) {
     sspath << execPrefix << "_";
   }
-  sspath << std::hex << std::setw(8) << std::setfill('0') << (instance().getTicks()/1000 & 0xffffffff) << ".png";
+  sspath << std::hex << std::setw(8) << std::setfill('0') << uInt32(instance().getTicks()/1000) << ".png";
 
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();
   FBSurface& s = dialog().surface();
 
   GUI::Rect rect(_x, _y, _x + width*2, _y + height);
-  string message = "snapshot saved";
+  string message = "Snapshot saved";
   try
   {
     instance().png().saveImage(sspath.str(), s, rect);

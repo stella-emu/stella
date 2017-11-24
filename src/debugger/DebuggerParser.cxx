@@ -1061,7 +1061,7 @@ void DebuggerParser::executeDump()
       file << execPrefix;
     }
     else {
-      file << std::hex << std::setw(8) << std::setfill('0') << (debugger.myOSystem.getTicks()/1000 & 0xffffffff);
+      file << std::hex << std::setw(8) << std::setfill('0') << uInt32(debugger.myOSystem.getTicks()/1000);
     }
     file << ".dump";
     FilesystemNode node(file.str());
@@ -1140,7 +1140,7 @@ void DebuggerParser::executeExec()
   }
   else {
     ostringstream prefix;
-    prefix << std::hex << std::setw(8) << std::setfill('0') << (debugger.myOSystem.getTicks()/1000 & 0xffffffff);
+    prefix << std::hex << std::setw(8) << std::setfill('0') << uInt32(debugger.myOSystem.getTicks()/1000);
     execPrefix = prefix.str();
   }
   execDepth++;
