@@ -58,7 +58,9 @@ using std::right;
 DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger(d),
     settings(s),
-    argCount(0)
+    argCount(0),
+    execDepth(0),
+    execPrefix("")
 {
 }
 
@@ -1020,23 +1022,28 @@ void DebuggerParser::executeDisasm()
 // "dump"
 void DebuggerParser::executeDump()
 {
-  auto dump = [&](int start, int end)
+  auto dump = [&](ostream& os, int start, int end)
   {
     for(int i = start; i <= end; i += 16)
     {
       // Print label every 16 bytes
-      commandResult << Base::toString(i) << ": ";
+      os << Base::toString(i) << ": ";
 
       for(int j = i; j < i+16 && j <= end; ++j)
       {
-        commandResult << Base::toString(debugger.peek(j)) << " ";
-        if(j == i+7 && j != end) commandResult << "- ";
+        os << Base::toString(debugger.peek(j)) << " ";
+        if(j == i+7 && j != end) os << "- ";
       }
-      commandResult << endl;
+      os << endl;
     }
   };
 
   // Error checking
+  if( argCount == 0 || argCount > 3)
+  {
+    outputCommandError("wrong number of arguments", myCommand);
+    return;
+  }
   if(argCount > 1 && args[1] < args[0])
   {
     commandResult << red("start address must be <= end address");
@@ -1044,14 +1051,75 @@ void DebuggerParser::executeDump()
   }
 
   if(argCount == 1)
-    dump(args[0], args[0] + 127);
-  else if(argCount == 2)
-    dump(args[0], args[1]);
-  else
+    dump(commandResult, args[0], args[0] + 127);
+  else if(argCount == 2 || args[2] == 0)
+    dump(commandResult, args[0], args[1]);
+  else {
+    ostringstream file;
+    file << debugger.myOSystem.snapshotSaveDir() << debugger.myOSystem.console().properties().get(Cartridge_Name) << "_dbg_";
+    if (execDepth > 0) {
+      file << execPrefix;
+    }
+    else {
+      file << std::hex << std::setw(8) << std::setfill('0') << uInt32(debugger.myOSystem.getTicks()/1000);
+    }
+    file << ".dump";
+    FilesystemNode node(file.str());
+    // cout << "dump " << args[0] << "-" << args[1] << " to " << file.str() << endl;
+    ofstream ofs(node.getPath(), ofstream::out | ofstream::app);
+    if(!ofs.is_open())
   {
-    outputCommandError("wrong number of arguments", myCommand);
+      outputCommandError("Unable to append dump to file " + node.getShortPath(), myCommand);
     return;
   }
+    if ((args[2] & 0x01) != 0) {
+      // dump memory
+      dump(ofs, args[0], args[1]);
+}
+    if ((args[2] & 0x02) != 0) {
+      // dump CPU state
+      CpuDebug& cpu = debugger.cpuDebug();
+      ofs << "XC: "
+          << Base::toString(cpu.pc()&0xff) << " "    // PC lsb
+          << Base::toString(cpu.pc()>>8)   << " "    // PC msb
+          << Base::toString(cpu.sp())      << " "    // SP
+          << Base::toString(cpu.a())       << " "    // A
+          << Base::toString(cpu.x())       << " "    // X
+          << Base::toString(cpu.y())       << " "    // Y
+          << Base::toString(0)             << " "    // unused
+          << Base::toString(0)             << " - "  // unused
+          << Base::toString(cpu.n())       << " "    // N (flag)
+          << Base::toString(cpu.v())       << " "    // V (flag)
+          << Base::toString(cpu.b())       << " "    // B (flag)
+          << Base::toString(cpu.d())       << " "    // D (flag)
+          << Base::toString(cpu.i())       << " "    // I (flag)
+          << Base::toString(cpu.z())       << " "    // Z (flag)
+          << Base::toString(cpu.c())       << " "    // C (flag)
+          << Base::toString(0)             << " "    // unused
+          << endl;
+    }
+    if ((args[2] & 0x04) != 0) {
+      // dump SWCHx/INPTx state
+      ofs << "XS: "
+          << Base::toString(debugger.peek(0x280)) << " "    // SWCHA
+          << Base::toString(0) << " "    // unused
+          << Base::toString(debugger.peek(0x282)) << " "    // SWCHB
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " - "  // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << Base::toString(debugger.peek(TIARegister::INPT4)) << " "
+          << Base::toString(debugger.peek(TIARegister::INPT5)) << " "
+          << Base::toString(0) << " "    // unused
+          << Base::toString(0) << " "    // unused
+          << endl;
+    }
+}
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1062,9 +1130,22 @@ void DebuggerParser::executeExec()
   string file = argStrings[0];
   if(file.find_last_of('.') == string::npos)
     file += ".script";
+  FilesystemNode node(file);
+  if (!node.exists()) {
+    node = FilesystemNode(debugger.myOSystem.defaultSaveDir() + file);
+  }
 
-  FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
+  if (argCount == 2) {
+    execPrefix = argStrings[1];
+  }
+  else {
+    ostringstream prefix;
+    prefix << std::hex << std::setw(8) << std::setfill('0') << uInt32(debugger.myOSystem.getTicks()/1000);
+    execPrefix = prefix.str();
+  }
+  execDepth++;
   commandResult << exec(node);
+  execDepth--;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1159,6 +1240,116 @@ void DebuggerParser::executeHelp()
       }
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0up"
+void DebuggerParser::executeJoy0Up()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::One, !controller.read(Controller::One));
+  else if(argCount == 1)
+    controller.set(Controller::One, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0down"
+void DebuggerParser::executeJoy0Down()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Two, !controller.read(Controller::Two));
+  else if(argCount == 1)
+    controller.set(Controller::Two, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0left"
+void DebuggerParser::executeJoy0Left()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Three, !controller.read(Controller::Three));
+  else if(argCount == 1)
+    controller.set(Controller::Three, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0right"
+void DebuggerParser::executeJoy0Right()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Four, !controller.read(Controller::Four));
+  else if(argCount == 1)
+    controller.set(Controller::Four, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy0fire"
+void DebuggerParser::executeJoy0Fire()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  if(argCount == 0)
+    controller.set(Controller::Six, !controller.read(Controller::Six));
+  else if(argCount == 1)
+    controller.set(Controller::Six, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1up"
+void DebuggerParser::executeJoy1Up()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::One, !controller.read(Controller::One));
+  else if(argCount == 1)
+    controller.set(Controller::One, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1down"
+void DebuggerParser::executeJoy1Down()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Two, !controller.read(Controller::Two));
+  else if(argCount == 1)
+    controller.set(Controller::Two, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1left"
+void DebuggerParser::executeJoy1Left()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Three, !controller.read(Controller::Three));
+  else if(argCount == 1)
+    controller.set(Controller::Three, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1right"
+void DebuggerParser::executeJoy1Right()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Four, !controller.read(Controller::Four));
+  else if(argCount == 1)
+    controller.set(Controller::Four, args[0] != 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "joy1fire"
+void DebuggerParser::executeJoy1Fire()
+{
+  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  if(argCount == 0)
+    controller.set(Controller::Six, !controller.read(Controller::Six));
+  else if(argCount == 1)
+    controller.set(Controller::Six, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1384,6 +1575,16 @@ void DebuggerParser::executeReset()
 {
   debugger.reset();
   debugger.rom().invalidate();
+  debugger.riotDebug().controller(Controller::Left).set(Controller::One, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Two, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Three, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Four, true);
+  debugger.riotDebug().controller(Controller::Left).set(Controller::Six, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::One, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Two, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Three, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Four, true);
+  debugger.riotDebug().controller(Controller::Right).set(Controller::Six, true);
   commandResult << "reset system";
 }
 
@@ -1585,7 +1786,7 @@ void DebuggerParser::executeSaveses()
 // "savesnap"
 void DebuggerParser::executeSavesnap()
 {
-  debugger.tiaOutput().saveSnapshot();
+  debugger.tiaOutput().saveSnapshot(execDepth, execPrefix);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1638,6 +1839,23 @@ void DebuggerParser::executeStep()
 {
   commandResult
     << "executed " << dec << debugger.step() << " cycles";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "stepwhile"
+void DebuggerParser::executeStepwhile()
+{
+  int res = YaccParser::parse(argStrings[0].c_str());
+  if(res != 0) {
+    commandResult << red("invalid expression");
+    return;
+  }
+  Expression* expr = YaccParser::getResult();
+  int ncycles = 0;
+  do {
+    ncycles += debugger.step();
+  } while (expr->evaluate());
+  commandResult << "executed " << ncycles << " cycles";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2246,11 +2464,11 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "exec",
-    "Execute script file <xx>",
+    "Execute script file <xx> [prefix]",
     "Example: exec script.dat, exec auto.txt",
     true,
     true,
-    { kARG_FILE, kARG_END_ARGS },
+    { kARG_FILE, kARG_LABEL, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeExec)
   },
 
@@ -2303,6 +2521,106 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_LABEL, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeHelp)
+  },
+
+  {
+    "joy0up",
+    "Set joystick 0 up direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0up 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Up)
+  },
+
+  {
+    "joy0down",
+    "Set joystick 0 down direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0down 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Down)
+  },
+
+  {
+    "joy0left",
+    "Set joystick 0 left direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Left)
+  },
+
+  {
+    "joy0right",
+    "Set joystick 0 right direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Right)
+  },
+
+  {
+    "joy0fire",
+    "Set joystick 0 fire button to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy0fire 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy0Fire)
+  },
+
+  {
+    "joy1up",
+    "Set joystick 1 up direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1up 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Up)
+  },
+
+  {
+    "joy1down",
+    "Set joystick 1 down direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1down 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Down)
+  },
+
+  {
+    "joy1left",
+    "Set joystick 1 left direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Left)
+  },
+
+  {
+    "joy1right",
+    "Set joystick 1 right direction to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1left 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Right)
+  },
+
+  {
+    "joy1fire",
+    "Set joystick 1 fire button to value <x> (0 or 1), or toggle (no arg)",
+    "Example: joy1fire 0",
+    false,
+    true,
+    { kARG_BOOL, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeJoy1Fire)
   },
 
   {
@@ -2640,6 +2958,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeStep)
+  },
+
+  {
+    "stepwhile",
+    "Single step CPU while <condition> is true",
+    "Example: stepwhile pc!=$f2a9",
+    true,
+    true,
+    { kARG_WORD, kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeStepwhile)
   },
 
   {
