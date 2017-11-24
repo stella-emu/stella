@@ -280,8 +280,6 @@ class CheckboxWidget : public ButtonWidget
     int _textY;
 
   private:
-
-  private:
     // Following constructors and assignment operators not supported
     CheckboxWidget() = delete;
     CheckboxWidget(const CheckboxWidget&) = delete;
@@ -289,26 +287,6 @@ class CheckboxWidget : public ButtonWidget
     CheckboxWidget& operator=(const CheckboxWidget&) = delete;
     CheckboxWidget& operator=(CheckboxWidget&&) = delete;
 };
-
-class RadioButtonWidget : public CheckboxWidget
-{
-public:
-  RadioButtonWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                    const string& label, int cmd = 0);
-
-protected:
-  void setFill(FillType type);
-  void drawWidget(bool hilite) override;
-
-private:
-  // Following constructors and assignment operators not supported
-  RadioButtonWidget() = delete;
-  RadioButtonWidget(const RadioButtonWidget&) = delete;
-  RadioButtonWidget(RadioButtonWidget&&) = delete;
-  RadioButtonWidget& operator=(const RadioButtonWidget&) = delete;
-  RadioButtonWidget& operator=(RadioButtonWidget&&) = delete;
-};
-
 
 /* SliderWidget */
 class SliderWidget : public ButtonWidget

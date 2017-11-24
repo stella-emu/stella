@@ -340,6 +340,7 @@
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
+    <ClCompile Include="..\gui\RadioButtonWidget.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
@@ -634,6 +635,7 @@
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
+    <ClInclude Include="..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
     <ClInclude Include="..\libpng\pnginfo.h" />

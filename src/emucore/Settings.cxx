@@ -144,6 +144,23 @@ Settings::Settings(OSystem& osystem)
   setInternal("dis.relocate", "false");
 #endif
 
+  // player settings
+  setInternal("plr.settings", "false");
+  setInternal("plr.stats", "false");
+  setInternal("plr.bankrandom", "true");
+  setInternal("plr.ramrandom", "true");
+  setInternal("plr.cpurandom", "SAXYP");
+  setInternal("plr.colorloss", "true");
+  setInternal("plr.tv.jitter", "true");
+  setInternal("plr.tv.jitter_recovery", "2");
+  setInternal("plr.debugcolors", "false");
+  setInternal("plr.tiadriven", "true");
+  setInternal("plr.console", "2600"); // 7800
+  setInternal("plr.rewind", false);
+  setInternal("plr.rewind.size", 100);
+  setInternal("plr.rewind.interval", 2); // = 1 frame
+  setInternal("plr.rewind.horizon", 3); // = ~10 seconds
+
   // developer settings
   setInternal("dev.settings", "false");
   setInternal("dev.stats", "false");
@@ -310,6 +327,18 @@ void Settings::validate()
 
   i = getInt("dev.rewind.horizon");
   if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 3);
+
+  i = getInt("plr.tv.jitter_recovery");
+  if(i < 1 || i > 20)  setInternal("plr.tv.jitter_recovery", "10");
+
+  i = getInt("plr.rewind.size");
+  if(i < 100 || i > 1000) setInternal("plr.rewind.size", 100);
+
+  i = getInt("plr.rewind.interval");
+  if(i < 0 || i > 5) setInternal("plr.rewind.interval", 2);
+
+  i = getInt("plr.rewind.horizon");
+  if(i < 0 || i > 6) setInternal("plr.rewind.horizon", 3);
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
@@ -509,8 +538,22 @@ void Settings::usage() const
     << "   -height      <arg>          Sets the 'Display.Height' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
+    << endl
   #endif
 
+    << " Various development related parameters for player settings mode\n"
+    << endl
+    << "  -plr.console      <2600|7800>    Select console for B/W and Pause key handling\n"
+    << "  -plr.stats        <1|0>          Overlay console info during emulation\n"
+    << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
+    << "  -plr.cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
+    << "  -plr.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
+    << "  -plr.colorloss    <1|0>          Enable PAL color-loss effect\n"
+    << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
+    << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
+    << "  -plr.debugcolors  <1|0>          Enable debug colors\n"
+    << endl
+    << " The same parameters but for developer settings mode\n"
     << "  -dev.console      <2600|7800>    Select console for B/W and Pause key handling\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
