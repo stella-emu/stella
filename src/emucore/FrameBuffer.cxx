@@ -372,6 +372,8 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 void FrameBuffer::toggleFrameStats()
 {
   showFrameStats(!myStatsEnabled);
+  myOSystem.settings().setValue(
+    myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats", myStatsEnabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -619,6 +621,7 @@ void FrameBuffer::toggleGrabMouse()
 {
   myGrabMouse = !myGrabMouse;
   setCursorState();
+  myOSystem.settings().setValue("grabmouse", myGrabMouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

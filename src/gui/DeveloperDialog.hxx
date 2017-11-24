@@ -25,6 +25,8 @@ class EventMappingWidget;
 class CheckboxWidget;
 class EditTextWidget;
 class PopUpWidget;
+class RadioButtonGroup;
+class RadioButtonWidget;
 class SliderWidget;
 class StaticTextWidget;
 
@@ -52,7 +54,8 @@ class DeveloperDialog : public Dialog
   private:
     enum
     {
-      kDevSettings      = 'DVst',
+      kPlrSettings      = 'DVpl',
+      kDevSettings      = 'DVdv',
       kConsole          = 'DVco',
       kRandRAMID        = 'DVrm',
       kRandCPUID        = 'DVcp',
@@ -69,6 +72,11 @@ class DeveloperDialog : public Dialog
       kDFontSizeChanged = 'UIfs',
   #endif
     };
+    enum SettingsSet
+    {
+      player,
+      developer
+    };
 
     static const int NUM_INTERVALS = 6;
     // TODO: check for intervals shorter than 1 frame (adjust horizon too!)
@@ -84,41 +92,54 @@ class DeveloperDialog : public Dialog
 
     TabWidget* myTab;
     // Emulator
-    CheckboxWidget*   myDevSettings;
-    CheckboxWidget*   myFrameStats;
-    PopUpWidget*      myConsole;
-    StaticTextWidget* myLoadingROMLabel;
-    CheckboxWidget*   myRandomBank;
-    CheckboxWidget*   myRandomizeRAM;
-    StaticTextWidget* myRandomizeCPULabel;
-    CheckboxWidget*   myRandomizeCPU[5];
-    CheckboxWidget*   myColorLoss;
-    CheckboxWidget*   myTVJitter;
-    SliderWidget*     myTVJitterRec;
-    StaticTextWidget* myTVJitterRecLabel;
-    CheckboxWidget*   myDebugColors;
-    CheckboxWidget*   myUndrivenPins;
+    RadioButtonGroup*   mySettingsGroup;
+    RadioButtonWidget*  myPlayerSettingsWidget;
+    RadioButtonWidget*  myDevSettingsWidget;
+    CheckboxWidget*     myFrameStatsWidget;
+    PopUpWidget*        myConsoleWidget;
+    StaticTextWidget*   myLoadingROMLabel;
+    CheckboxWidget*     myRandomBankWidget;
+    CheckboxWidget*     myRandomizeRAMWidget;
+    StaticTextWidget*   myRandomizeCPULabel;
+    CheckboxWidget*     myRandomizeCPUWidget[5];
+    CheckboxWidget*     myColorLossWidget;
+    CheckboxWidget*     myTVJitterWidget;
+    SliderWidget*       myTVJitterRecWidget;
+    StaticTextWidget*   myTVJitterRecLabelWidget;
+    CheckboxWidget*     myDebugColorsWidget;
+    CheckboxWidget*     myUndrivenPinsWidget;
     // States
-    CheckboxWidget*   myContinuousRewind;
-    SliderWidget*     myStateSize;
-    StaticTextWidget* myStateSizeLabel;
-    SliderWidget*     myStateInterval;
-    StaticTextWidget* myStateIntervalLabel;
-    SliderWidget*     myStateHorizon;
-    StaticTextWidget* myStateHorizonLabel;
+    CheckboxWidget*     myContinuousRewind;
+    SliderWidget*       myStateSize;
+    StaticTextWidget*   myStateSizeLabel;
+    SliderWidget*       myStateInterval;
+    StaticTextWidget*   myStateIntervalLabel;
+    SliderWidget*       myStateHorizon;
+    StaticTextWidget*   myStateHorizonLabel;
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI
-    SliderWidget*     myDebuggerWidthSlider;
-    StaticTextWidget* myDebuggerWidthLabel;
-    SliderWidget*     myDebuggerHeightSlider;
-    StaticTextWidget* myDebuggerHeightLabel;
-    PopUpWidget*      myDebuggerFontSize;
-    PopUpWidget*      myDebuggerFontStyle;
+    SliderWidget*       myDebuggerWidthSlider;
+    StaticTextWidget*   myDebuggerWidthLabel;
+    SliderWidget*       myDebuggerHeightSlider;
+    StaticTextWidget*   myDebuggerHeightLabel;
+    PopUpWidget*        myDebuggerFontSize;
+    PopUpWidget*        myDebuggerFontStyle;
 #endif
 
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;
+
+    bool    myFrameStats[2];
+    int     myConsole[2];
+    bool    myRandomBank[2];
+    bool    myRandomizeRAM[2];
+    string  myRandomizeCPU[2];
+    bool    myColorLoss[2];
+    bool    myTVJitter[2];
+    int     myTVJitterRec[2];
+    bool    myDebugColors[2];
+    bool    myUndrivenPins[2];
 
   private:
     void addEmulationTab(const GUI::Font& font);
@@ -127,14 +148,19 @@ class DeveloperDialog : public Dialog
     // Add Defaults, OK and Cancel buttons
     void addDefaultOKCancelButtons(const GUI::Font& font);
 
-    void handleDeveloperOptions();
+    void copySettingsToSet(SettingsSet set);
+    void copySetToSettings(SettingsSet set);
+    void copyStateToSet(SettingsSet set);
+    void copySetToState(SettingsSet set);
+
+    void handleSettings(bool devSettings);
     void handleTVJitterChange(bool enable);
     void handleDebugColors();
     void handleConsole();
     void handleRewind();
     void handleSize();
     void handleInterval();
-    void handleHorizon();   
+    void handleHorizon();
     void handleFontSize();
 
     // Following constructors and assignment operators not supported

@@ -87,7 +87,7 @@ void M6502::reset()
 
   // Set registers to random or default values
   bool devSettings = mySettings.getBool("dev.settings");
-  const string& cpurandom = devSettings ? mySettings.getString("dev.cpurandom") : "";
+  const string& cpurandom = mySettings.getString(devSettings ? "dev.cpurandom" : "plr.cpurandom");
   SP = BSPF::containsIgnoreCase(cpurandom, "S") ?
           mySystem->randGenerator().next() : 0xfd;
   A  = BSPF::containsIgnoreCase(cpurandom, "A") ?

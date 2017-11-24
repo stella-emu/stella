@@ -26,6 +26,7 @@
 #include "EventMappingWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "RadioButtonWidget.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
@@ -81,12 +82,18 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   VariantList items;
   int tabID = myTab->addTab(" Emulation ");
 
-  myDevSettings = new CheckboxWidget(myTab, font, HBORDER, ypos, "Enable developer settings", kDevSettings);
-  wid.push_back(myDevSettings);
+  mySettingsGroup = new RadioButtonGroup();
+
+  myPlayerSettingsWidget = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup, kPlrSettings);
+  wid.push_back(myPlayerSettingsWidget);
   ypos += lineHeight + VGAP;
 
-  myFrameStats = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Show frame statistics");
-  wid.push_back(myFrameStats);
+  myDevSettingsWidget = new RadioButtonWidget(myTab, font, HBORDER, ypos, "Developer settings", mySettingsGroup, kDevSettings);
+  wid.push_back(myDevSettingsWidget);
+  ypos += lineHeight + VGAP;
+
+  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Show frame statistics");
+  wid.push_back(myFrameStatsWidget);
   ypos += lineHeight + VGAP;
 
   // 2600/7800 mode
@@ -96,8 +103,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int lwidth = font.getStringWidth("Console ");
   int pwidth = font.getStringWidth("Atari 2600");
 
-  myConsole = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items, "Console ", lwidth, kConsole);
-  wid.push_back(myConsole);
+  myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items, "Console ", lwidth, kConsole);
+  wid.push_back(myConsoleWidget);
   ypos += lineHeight + VGAP;
 
   // Randomize items
@@ -105,14 +112,14 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myLoadingROMLabel);
   ypos += lineHeight + VGAP;
 
-  myRandomBank = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Random startup bank");
-  wid.push_back(myRandomBank);
+  myRandomBankWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Random startup bank");
+  wid.push_back(myRandomBankWidget);
   ypos += lineHeight + VGAP;
 
   // Randomize RAM
-  myRandomizeRAM = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+  myRandomizeRAMWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
                                       "Randomize zero-page and extended RAM", kRandRAMID);
-  wid.push_back(myRandomizeRAM);
+  wid.push_back(myRandomizeRAMWidget);
   ypos += lineHeight + VGAP;
 
   // Randomize CPU
@@ -124,43 +131,43 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   const char* const cpuregs[] = { "SP", "A", "X", "Y", "PS" };
   for(int i = 0; i < 5; ++i)
   {
-    myRandomizeCPU[i] = new CheckboxWidget(myTab, font, xpos, ypos + 2,
+    myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 2,
                                            cpuregs[i], kRandCPUID);
-    wid.push_back(myRandomizeCPU[i]);
+    wid.push_back(myRandomizeCPUWidget[i]);
     xpos += CheckboxWidget::boxSize() + font.getStringWidth("XX") + 20;
   }
   ypos += lineHeight + VGAP;
 
   // debug colors
-  myDebugColors = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors");
-  wid.push_back(myDebugColors);
+  myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors");
+  wid.push_back(myDebugColorsWidget);
   ypos += lineHeight + VGAP;
 
-  myColorLoss = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "PAL color-loss");
-  wid.push_back(myColorLoss);
+  myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "PAL color-loss");
+  wid.push_back(myColorLossWidget);
   ypos += lineHeight + VGAP;
 
   // TV jitter effect
-  myTVJitter = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/Roll effect", kTVJitter);
-  wid.push_back(myTVJitter);
-  myTVJitterRec = new SliderWidget(myTab, font,
-                                   myTVJitter->getRight()+ 16, ypos - 1,
+  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/Roll effect", kTVJitter);
+  wid.push_back(myTVJitterWidget);
+  myTVJitterRecWidget = new SliderWidget(myTab, font,
+                                   myTVJitterWidget->getRight()+ 16, ypos - 1,
                                    8 * fontWidth, lineHeight, "recovery ",
                                    font.getStringWidth("recovery "), kTVJitterChanged);
-  myTVJitterRec->setMinValue(1); myTVJitterRec->setMaxValue(20);
-  wid.push_back(myTVJitterRec);
+  myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
+  wid.push_back(myTVJitterRecWidget);
 
-  myTVJitterRecLabel = new StaticTextWidget(myTab, font,
-                                         myTVJitterRec->getRight() + 4, myTVJitterRec->getTop(),
+  myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
+                                         myTVJitterRecWidget->getRight() + 4, myTVJitterRecWidget->getTop(),
                                          5 * fontWidth, fontHeight, "", kTextAlignLeft);
-  myTVJitterRecLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myTVJitterRecLabel);
+  myTVJitterRecLabelWidget->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myTVJitterRecLabelWidget);
   ypos += lineHeight + VGAP;
 
   // How to handle undriven TIA pins
-  myUndrivenPins = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1,
+  myUndrivenPinsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1,
                                       "Drive unused TIA pins randomly on a read/peek");
-  wid.push_back(myUndrivenPins);
+  wid.push_back(myUndrivenPinsWidget);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -339,36 +346,119 @@ void DeveloperDialog::addDefaultOKCancelButtons(const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::loadConfig()
+void DeveloperDialog::copySettingsToSet(SettingsSet set)
 {
-  myDevSettings->setState(instance().settings().getBool("dev.settings"));
+  string prefix = set == SettingsSet::player ? "plr." : "dev.";
 
-  myFrameStats->setState(instance().settings().getBool("dev.stats"));
-  myConsole->setSelectedIndex(instance().settings().getString("dev.console") == "7800" ? 1 : 0);
-  myRandomBank->setState(instance().settings().getBool("dev.bankrandom"));
-  myRandomizeRAM->setState(instance().settings().getBool("dev.ramrandom"));
+  myFrameStats[set] = instance().settings().getBool(prefix + "stats");
+  myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
+  // Randomization
+  myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
+  myRandomizeRAM[set] = instance().settings().getBool(prefix + "ramrandom");
+  myRandomizeCPU[set] = instance().settings().getString(prefix + "cpurandom");
+  // Debug colors
+  myDebugColors[set] = instance().settings().getBool(prefix + "debugcolors");
+  // PAL color-loss effect
+  myColorLoss[set] = instance().settings().getBool(prefix + "colorloss");
+  // Jitter
+  myTVJitter[set] = instance().settings().getBool(prefix + "tv.jitter");
+  myTVJitterRec[set] = instance().settings().getInt(prefix + "tv.jitter_recovery");
+  // Undriven TIA pins
+  myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
+}
 
-  const string& cpurandom = instance().settings().getString("dev.cpurandom");
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::copySetToSettings(SettingsSet set)
+{
+  string prefix = set == SettingsSet::player ? "plr." : "dev.";
+
+  instance().settings().setValue(prefix + "stats", myFrameStats[set]);
+  instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
+  // Randomization
+  instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
+  instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);
+  instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
+  // Debug colors
+  instance().settings().setValue(prefix + "debugcolors", myDebugColors[set]);
+  // PAL color loss
+  instance().settings().setValue(prefix + "colorloss", myColorLoss[set]);
+  // Jitter
+  instance().settings().setValue(prefix + "tv.jitter", myTVJitter[set]);
+  instance().settings().setValue(prefix + "tv.jitter_recovery", myTVJitterRec[set]);
+
+  instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::copyStateToSet(SettingsSet set)
+{
+  myFrameStats[set] = myFrameStatsWidget->getState();
+  myConsole[set] = myConsoleWidget->getSelected() == 1;
+  // Randomization
+  myRandomBank[set] = myRandomBankWidget->getState();
+  myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
+  string cpurandom;
   const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
-    myRandomizeCPU[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
-
+    if(myRandomizeCPUWidget[i]->getState())
+      cpurandom += cpuregs[i];
+  myRandomizeCPU[set] = cpurandom;
+  // Debug colors
+  myDebugColors[set] = myDebugColorsWidget->getState();
   // PAL color-loss effect
-  myColorLoss->setState(instance().settings().getBool("dev.colorloss"));
-
-  myTVJitter->setState(instance().settings().getBool("dev.tv.jitter"));
-  myTVJitterRec->setValue(instance().settings().getInt("dev.tv.jitter_recovery"));
-
-  myDebugColors->setState(instance().settings().getBool("dev.debugcolors"));
+  myColorLoss[set] = myColorLossWidget->getState();
+  // Jitter
+  myTVJitter[set] = myTVJitterWidget->getState();
+  myTVJitterRec[set] = myTVJitterRecWidget->getValue();
   // Undriven TIA pins
-  myUndrivenPins->setState(instance().settings().getBool("dev.tiadriven"));
+  myUndrivenPins[set] = myUndrivenPinsWidget->getState();
+}
 
-  handleDeveloperOptions();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::copySetToState(SettingsSet set)
+{
+  myFrameStatsWidget->setState(myFrameStats[set]);
+  myConsoleWidget->setSelectedIndex(myConsole[set]);
+  // Randomization
+  myRandomBankWidget->setState(myRandomBank[set]);
+  myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
 
-  myContinuousRewind->setState(instance().settings().getBool("dev.rewind"));
-  myStateSize->setValue(instance().settings().getInt("dev.rewind.size"));
-  myStateInterval->setValue(instance().settings().getInt("dev.rewind.interval"));
-  myStateHorizon->setValue(instance().settings().getInt("dev.rewind.horizon"));
+  const string& cpurandom = myRandomizeCPU[set];
+  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
+  for(int i = 0; i < 5; ++i)
+    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
+  // Debug colors
+  myDebugColorsWidget->setState(myDebugColors[set]);
+  // PAL color-loss effect
+  myColorLossWidget->setState(myColorLoss[set]);
+  // Jitter
+  myTVJitterWidget->setState(myTVJitter[set]);
+  myTVJitterRecWidget->setValue(myTVJitterRec[set]);
+  // Undriven TIA pins
+  myUndrivenPinsWidget->setState(myUndrivenPins[set]);
+
+  handleConsole();
+  handleTVJitterChange(myTVJitterWidget->getState());
+  handleDebugColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::loadConfig()
+{
+  bool devSettings = instance().settings().getBool("dev.settings");
+  myDevSettingsWidget->setState(devSettings);
+  myPlayerSettingsWidget->setState(!devSettings);
+
+  // load both setting sets...
+  copySettingsToSet(SettingsSet::player);
+  copySettingsToSet(SettingsSet::developer);
+  // ...and select the current one
+  copySetToState(devSettings ? SettingsSet::developer : SettingsSet::player);
+
+  myContinuousRewind->setState(instance().settings().getBool(devSettings ? "dev.rewind" : "plr.rewind"));
+  myStateSize->setValue(instance().settings().getInt(devSettings ? "dev.rewind.size": "plr.rewind.size"));
+  myStateInterval->setValue(instance().settings().getInt(devSettings ? "dev.rewind.interval" : "plr.rewind.interval"));
+  myStateHorizon->setValue(instance().settings().getInt(devSettings ? "dev.rewind.horizon" : "plr.rewind.horizon"));
 
   handleRewind();
   handleSize();
@@ -405,55 +495,25 @@ void DeveloperDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
-  bool devSettings = myDevSettings->getState();
+  bool devSettings = myDevSettingsWidget->getState();
+
   instance().settings().setValue("dev.settings", devSettings);
+  copyStateToSet(devSettings ? SettingsSet::developer : SettingsSet::player);
+  copySetToSettings(SettingsSet::player);
+  copySetToSettings(SettingsSet::developer);
 
-  instance().settings().setValue("dev.stats", myFrameStats->getState());
-  instance().frameBuffer().showFrameStats(devSettings && myFrameStats->getState());
-
-  bool is7800 = myConsole->getSelected() == 1;
-  instance().settings().setValue("dev.console", is7800 ? "7800" : "2600");
-
-  instance().settings().setValue("dev.bankrandom", myRandomBank->getState());
-  instance().settings().setValue("dev.ramrandom", myRandomizeRAM->getState());
-
-  string cpurandom;
-  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
-  for(int i = 0; i < 5; ++i)
-    if(myRandomizeCPU[i]->getState())
-      cpurandom += cpuregs[i];
-  instance().settings().setValue("dev.cpurandom", cpurandom);
-
+  //activate the current ones
+  instance().frameBuffer().showFrameStats(myFrameStatsWidget->getState());
   // jitter
-  instance().settings().setValue("dev.tv.jitter", myTVJitter->getState());
-  instance().settings().setValue("dev.tv.jitter_recovery", myTVJitterRecLabel->getLabel());
   if(instance().hasConsole())
   {
-    if (devSettings)
-    {
-      instance().console().tia().toggleJitter(myTVJitter->getState() ? 1 : 0);
-      instance().console().tia().setJitterRecoveryFactor(myTVJitterRec->getValue());
-    }
-    else
-    {
-      instance().console().tia().toggleJitter(0);
-    }
+    instance().console().tia().toggleJitter(myTVJitterWidget->getState() ? 1 : 0);
+    instance().console().tia().setJitterRecoveryFactor(myTVJitterRecWidget->getValue());
   }
-
-  instance().settings().setValue("dev.debugcolors", myDebugColors->getState());
   handleDebugColors();
-
   // PAL color loss
-  instance().settings().setValue("dev.colorloss", myColorLoss->getState());
   if(instance().hasConsole())
-  {
-    if(devSettings)
-      instance().console().enableColorLoss(myColorLoss->getState());
-    else
-      instance().console().enableColorLoss(false);
-  }
-
-  instance().settings().setValue("dev.tiadriven", myUndrivenPins->getState());
+    instance().console().enableColorLoss(myColorLossWidget->getState());
 
   // Finally, issue a complete framebuffer re-initialization
   //instance().createFrameBuffer();
@@ -512,33 +572,33 @@ void DeveloperDialog::saveConfig()
 
 void DeveloperDialog::setDefaults()
 {
-  myDevSettings->setState(false);
+  bool devSettings = myDevSettingsWidget->getState();
 
   switch(myTab->getActiveTab())
   {
     case 0:
-      myFrameStats->setState(true);
-      myConsole->setSelectedIndex(0);
-      myRandomBank->setState(true);
-      myRandomizeRAM->setState(true);
-      for(int i = 0; i < 5; ++i)
-        myRandomizeCPU[i]->setState(true);
+    {
+      SettingsSet set = devSettings ? SettingsSet::developer : SettingsSet::player;
 
+      myFrameStats[set] = devSettings ? true : false;
+      myConsole[set] = 0;
+      // Randomization
+      myRandomBank[set] = devSettings ? true : false;
+      myRandomizeRAM[set] = devSettings ? true : false;
+      myRandomizeCPU[set] = devSettings ? "SAXYP" : "";
+      // Debug colors
+      myDebugColors[set] = false;
       // PAL color-loss effect
-      myColorLoss->setState(true);
-      // jitter
-      myTVJitter->setState(true);
-      myTVJitterRec->setValue(2);
-      // debug colors
-      myDebugColors->setState(false);
+      myColorLoss[set] = devSettings ? true : false;
+      // Jitter
+      myTVJitter[set] = true;
+      myTVJitterRec[set] = devSettings ? 2 : 10;
       // Undriven TIA pins
-      myUndrivenPins->setState(true);
+      myUndrivenPins[set] = devSettings ? true : false;
 
-      handleDeveloperOptions();
-      handleTVJitterChange(false);
-      handleDebugColors();
+      copySetToState(set);
       break;
-
+    }
     case 1:  // States
       myContinuousRewind->setState(false);
       myStateSize->setValue(100);
@@ -576,8 +636,12 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 {
   switch(cmd)
   {
+    case kPlrSettings:
+      handleSettings(false);
+      break;
+
     case kDevSettings:
-      handleDeveloperOptions();
+      handleSettings(true);
       break;
 
     case kConsole:
@@ -585,15 +649,15 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
         break;
 
     case kTVJitter:
-      handleTVJitterChange(myTVJitter->getState());
+      handleTVJitterChange(myTVJitterWidget->getState());
       break;
 
     case kTVJitterChanged:
-      myTVJitterRecLabel->setValue(myTVJitterRec->getValue());
+      myTVJitterRecLabelWidget->setValue(myTVJitterRecWidget->getValue());
       break;
 
     case kPPinCmd:
-      instance().console().tia().driveUnusedPinsRandom(myUndrivenPins->getState());
+      instance().console().tia().driveUnusedPinsRandom(myUndrivenPinsWidget->getState());
       break;
 
     case kRewind:
@@ -646,43 +710,28 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleDeveloperOptions()
+void DeveloperDialog::handleSettings(bool devSettings)
 {
-  bool enable = myDevSettings->getState();
+  myDevSettingsWidget->setState(devSettings );
 
-  myFrameStats->setEnabled(enable);
-  myConsole->setEnabled(enable);
-  // CPU
-  myLoadingROMLabel->setEnabled(enable);
-  myRandomBank->setEnabled(enable);
-  myRandomizeRAM->setEnabled(enable);
-  myRandomizeCPULabel->setEnabled(enable);
-  for(int i = 0; i < 5; ++i)
-    myRandomizeCPU[i]->setEnabled(enable);
-  handleConsole();
-
-  // TIA
-  myColorLoss->setEnabled(enable);
-  myTVJitter->setEnabled(enable);
-  handleTVJitterChange(enable && myTVJitter->getState());
-  myDebugColors->setEnabled(enable);
-  myUndrivenPins->setEnabled(enable);
+  copyStateToSet(devSettings ? SettingsSet::player : SettingsSet::developer);
+  copySetToState(devSettings ? SettingsSet::developer : SettingsSet::player);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleTVJitterChange(bool enable)
 {
-  myTVJitterRec->setEnabled(enable);
-  myTVJitterRecLabel->setEnabled(enable);
+  myTVJitterRecWidget->setEnabled(enable);
+  myTVJitterRecLabelWidget->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColors()
 {
-  if(instance().hasConsole() && myDevSettings->getState())
+  if(instance().hasConsole() && myDevSettingsWidget->getState())
   {
     bool fixed = instance().console().tia().usingFixedColors();
-    if(fixed != myDebugColors->getState())
+    if(fixed != myDebugColorsWidget->getState())
       instance().console().tia().toggleFixedColors();
   }
 }
@@ -690,12 +739,11 @@ void DeveloperDialog::handleDebugColors()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleConsole()
 {
-  bool is7800 = myConsole->getSelected() == 1;
-  bool enable = myDevSettings->getState();
+  bool is7800 = myConsoleWidget->getSelected() == 1;
 
-  myRandomizeRAM->setEnabled(enable && !is7800);
+  myRandomizeRAMWidget->setEnabled(!is7800);
   if(is7800)
-    myRandomizeRAM->setState(false);
+    myRandomizeRAMWidget->setState(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

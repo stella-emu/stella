@@ -114,12 +114,7 @@ void RadioButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
   if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)
   {
     if(!_state)
-    {
       setState(true);
-
-      // We only send a command when the widget has been changed interactively
-      sendCommand(_cmd, _state, _id);
-    }
   }
 }
 
@@ -130,7 +125,7 @@ void RadioButtonWidget::setState(bool state, bool send)
   {
     _state = state;
     setDirty();
-    if(send)
+    if(_state && send)
       sendCommand(_cmd, _state, _id);
     if (state)
       myGroup->select(this);

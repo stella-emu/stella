@@ -363,6 +363,9 @@ void Console::toggleColorLoss()
   bool colorloss = !myTIA->colorLossEnabled();
   if(myTIA->enableColorLoss(colorloss))
   {
+    myOSystem.settings().setValue(
+      myOSystem.settings().getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss", colorloss);
+
     string message = string("PAL color-loss ") +
                      (colorloss ? "enabled" : "disabled");
     myOSystem.frameBuffer().showMessage(message);
@@ -527,8 +530,8 @@ FBInitStatus Console::initializeVideo(bool full)
     if(fbstatus != kSuccess)
       return fbstatus;
 
-    myOSystem.frameBuffer().showFrameStats(myOSystem.settings().getBool("dev.settings") &&
-                                           myOSystem.settings().getBool("dev.stats"));
+    myOSystem.frameBuffer().showFrameStats(
+      myOSystem.settings().getBool(myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats"));
     generateColorLossPalette();
   }
   setPalette(myOSystem.settings().getString("palette"));

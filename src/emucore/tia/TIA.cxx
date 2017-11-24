@@ -80,7 +80,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myCollisionsEnabledBits(0xFF)
 {
   bool devSettings = mySettings.getBool("dev.settings");
-  myTIAPinsDriven = devSettings && mySettings.getBool("dev.tiadriven");
+  myTIAPinsDriven = mySettings.getBool(devSettings ? "dev.tiadriven" : "plr.tiadriven");
 
   myBackground.setTIA(this);
   myPlayfield.setTIA(this);
@@ -90,8 +90,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
-  myEnableJitter = devSettings ? mySettings.getBool("dev.tv.jitter") : false;
-  myJitterFactor = devSettings ? mySettings.getInt("dev.tv.jitter_recovery") : 10;
+  myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "plr.tv.jitter");
+  myJitterFactor = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "plr.tv.jitter_recovery");
 
   reset();
 }
@@ -173,7 +173,7 @@ void TIA::reset()
   frameReset();  // Recalculate the size of the display
 
   // Must be done last, after all other items have reset
-  enableFixedColors(mySettings.getBool("dev.settings") && mySettings.getBool("dev.debugcolors"));
+  enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
 #ifdef DEBUGGER_SUPPORT
@@ -186,7 +186,7 @@ void TIA::frameReset()
 {
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
   myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
-  enableColorLoss(mySettings.getBool("dev.settings") && mySettings.getBool("dev.colorloss"));
+  enableColorLoss(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1007,7 +1007,7 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
   if (mode == 0 || mode == 1)
   {
     myTIAPinsDriven = bool(mode);
-    //mySettings.setValue("dev.tiadriven", myTIAPinsDriven);
+    mySettings.setValue(mySettings.getBool("dev.settings") ? "dev.tiadriven" : "plr.tiadriven", myTIAPinsDriven);
   }
   return myTIAPinsDriven;
 }

@@ -145,25 +145,24 @@ Settings::Settings(OSystem& osystem)
 #endif
 
   // player settings
-  setInternal("plr.settings", "false");
   setInternal("plr.stats", "false");
-  setInternal("plr.bankrandom", "true");
-  setInternal("plr.ramrandom", "true");
-  setInternal("plr.cpurandom", "SAXYP");
-  setInternal("plr.colorloss", "true");
+  setInternal("plr.bankrandom", "false");
+  setInternal("plr.ramrandom", "false");
+  setInternal("plr.cpurandom", "");
+  setInternal("plr.colorloss", "false");
   setInternal("plr.tv.jitter", "true");
-  setInternal("plr.tv.jitter_recovery", "2");
+  setInternal("plr.tv.jitter_recovery", "10");
   setInternal("plr.debugcolors", "false");
-  setInternal("plr.tiadriven", "true");
+  setInternal("plr.tiadriven", "false");
   setInternal("plr.console", "2600"); // 7800
   setInternal("plr.rewind", false);
   setInternal("plr.rewind.size", 100);
-  setInternal("plr.rewind.interval", 2); // = 1 frame
-  setInternal("plr.rewind.horizon", 3); // = ~10 seconds
+  setInternal("plr.rewind.interval", 4); // = 1 frame
+  setInternal("plr.rewind.horizon", 5); // = ~10 minutes
 
   // developer settings
   setInternal("dev.settings", "false");
-  setInternal("dev.stats", "false");
+  setInternal("dev.stats", "true");
   setInternal("dev.bankrandom", "true");
   setInternal("dev.ramrandom", "true");
   setInternal("dev.cpurandom", "SAXYP");
@@ -554,6 +553,7 @@ void Settings::usage() const
     << "  -plr.debugcolors  <1|0>          Enable debug colors\n"
     << endl
     << " The same parameters but for developer settings mode\n"
+    << "  -dev.settings     <1|0>          Select developer settings mode\n"
     << "  -dev.console      <2600|7800>    Select console for B/W and Pause key handling\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"

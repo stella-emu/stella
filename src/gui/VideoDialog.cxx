@@ -462,8 +462,6 @@ void VideoDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::saveConfig()
 {
-  bool devSettings = instance().settings().getBool("dev.settings");
-
   // Renderer setting
   instance().settings().setValue("video",
     myRenderer->getSelectedTag().toString());
