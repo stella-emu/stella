@@ -82,17 +82,14 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   VariantList items;
   int tabID = myTab->addTab(" Emulation ");
 
+  // settings set
   mySettingsGroup = new RadioButtonGroup();
-
-  myPlayerSettingsWidget = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup, kPlrSettings);
-  wid.push_back(myPlayerSettingsWidget);
+  new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup, kPlrSettings);
   ypos += lineHeight + VGAP;
+  new RadioButtonWidget(myTab, font, HBORDER, ypos, "Developer settings", mySettingsGroup, kDevSettings);
+  ypos += lineHeight + VGAP * 2;
 
-  myDevSettingsWidget = new RadioButtonWidget(myTab, font, HBORDER, ypos, "Developer settings", mySettingsGroup, kDevSettings);
-  wid.push_back(myDevSettingsWidget);
-  ypos += lineHeight + VGAP;
-
-  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Show frame statistics");
+  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Frame statistics");
   wid.push_back(myFrameStatsWidget);
   ypos += lineHeight + VGAP;
 
@@ -148,17 +145,16 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   // TV jitter effect
-  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/Roll effect", kTVJitter);
+  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/roll effect", kTVJitter);
   wid.push_back(myTVJitterWidget);
   myTVJitterRecWidget = new SliderWidget(myTab, font,
-                                   myTVJitterWidget->getRight()+ 16, ypos - 1,
-                                   8 * fontWidth, lineHeight, "recovery ",
-                                   font.getStringWidth("recovery "), kTVJitterChanged);
+                                   myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
+                                   8 * fontWidth, lineHeight, "Recovery ",
+                                   font.getStringWidth("Recovery "), kTVJitterChanged);
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
   wid.push_back(myTVJitterRecWidget);
-
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
-                                         myTVJitterRecWidget->getRight() + 4, myTVJitterRecWidget->getTop(),
+                                         myTVJitterRecWidget->getRight() + 4, myTVJitterRecWidget->getTop() + 2,
                                          5 * fontWidth, fontHeight, "", kTextAlignLeft);
   myTVJitterRecLabelWidget->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTVJitterRecLabelWidget);
@@ -446,14 +442,13 @@ void DeveloperDialog::copySetToState(SettingsSet set)
 void DeveloperDialog::loadConfig()
 {
   bool devSettings = instance().settings().getBool("dev.settings");
-  myDevSettingsWidget->setState(devSettings);
-  myPlayerSettingsWidget->setState(!devSettings);
+  mySettingsGroup->setSelected(devSettings ? 1 : 0);
 
   // load both setting sets...
   copySettingsToSet(SettingsSet::player);
   copySettingsToSet(SettingsSet::developer);
   // ...and select the current one
-  copySetToState(devSettings ? SettingsSet::developer : SettingsSet::player);
+  copySetToState((SettingsSet)mySettingsGroup->getSelected());
 
   myContinuousRewind->setState(instance().settings().getBool(devSettings ? "dev.rewind" : "plr.rewind"));
   myStateSize->setValue(instance().settings().getInt(devSettings ? "dev.rewind.size": "plr.rewind.size"));
@@ -495,10 +490,8 @@ void DeveloperDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
-  bool devSettings = myDevSettingsWidget->getState();
-
-  instance().settings().setValue("dev.settings", devSettings);
-  copyStateToSet(devSettings ? SettingsSet::developer : SettingsSet::player);
+  instance().settings().setValue("dev.settings", mySettingsGroup->getSelected() == SettingsSet::developer);
+  copyStateToSet((SettingsSet)mySettingsGroup->getSelected());
   copySetToSettings(SettingsSet::player);
   copySetToSettings(SettingsSet::developer);
 
@@ -572,13 +565,12 @@ void DeveloperDialog::saveConfig()
 
 void DeveloperDialog::setDefaults()
 {
-  bool devSettings = myDevSettingsWidget->getState();
-
   switch(myTab->getActiveTab())
   {
     case 0:
     {
-      SettingsSet set = devSettings ? SettingsSet::developer : SettingsSet::player;
+      bool devSettings = mySettingsGroup->getSelected() == 1;
+      SettingsSet set = (SettingsSet)mySettingsGroup->getSelected();
 
       myFrameStats[set] = devSettings ? true : false;
       myConsole[set] = 0;
@@ -712,8 +704,7 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSettings(bool devSettings)
 {
-  myDevSettingsWidget->setState(devSettings );
-
+  mySettingsGroup->setSelected(devSettings ? 1 : 0);
   copyStateToSet(devSettings ? SettingsSet::player : SettingsSet::developer);
   copySetToState(devSettings ? SettingsSet::developer : SettingsSet::player);
 }
@@ -728,7 +719,7 @@ void DeveloperDialog::handleTVJitterChange(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColors()
 {
-  if(instance().hasConsole() && myDevSettingsWidget->getState())
+  if(instance().hasConsole())
   {
     bool fixed = instance().console().tia().usingFixedColors();
     if(fixed != myDebugColorsWidget->getState())

@@ -62,9 +62,12 @@ class RadioButtonGroup
     void addWidget(RadioButtonWidget* widget);
     // tell the group which widget was selected
     void select(RadioButtonWidget* widget);
+    void setSelected(uInt32 selected);
+    uInt32 getSelected() { return mySelected; };
 
   private:
     WidgetArray myWidgets;
+    uInt32 mySelected;
 
 private:
   // Following constructors and assignment operators not supported

@@ -174,13 +174,35 @@ void RadioButtonGroup::addWidget(RadioButtonWidget* widget)
   myWidgets.push_back(widget);
   // set first button as default
   widget->setState(myWidgets.size() == 1, false);
+  mySelected = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RadioButtonGroup::select(RadioButtonWidget* widget)
 {
+  uInt32 i = 0;
+
   for(const auto& w : myWidgets)
-    if(w != widget)
-      ((RadioButtonWidget*)w)->setState(false);
+  {
+    if(w == widget)
+    {
+      setSelected(i);
+      break;
+    }
+    i++;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RadioButtonGroup::setSelected(uInt32 selected)
+{
+  uInt32 i = 0;
+
+  mySelected = selected;
+  for(const auto& w : myWidgets)
+  {
+    ((RadioButtonWidget*)w)->setState(i == mySelected);
+    i++;
+  }
 }
 

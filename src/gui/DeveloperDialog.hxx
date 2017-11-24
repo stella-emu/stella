@@ -93,8 +93,6 @@ class DeveloperDialog : public Dialog
     TabWidget* myTab;
     // Emulator
     RadioButtonGroup*   mySettingsGroup;
-    RadioButtonWidget*  myPlayerSettingsWidget;
-    RadioButtonWidget*  myDevSettingsWidget;
     CheckboxWidget*     myFrameStatsWidget;
     PopUpWidget*        myConsoleWidget;
     StaticTextWidget*   myLoadingROMLabel;
