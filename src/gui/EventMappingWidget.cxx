@@ -94,7 +94,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     ypos += lineHeight + 20;
     myComboButton = new ButtonWidget(boss, font, xpos, ypos,
                                      buttonWidth, buttonHeight,
-                                     "Combo", kComboCmd);
+                                     "Combo" + ELLIPSIS, kComboCmd);
     myComboButton->setTarget(this);
     addFocusWidget(myComboButton);
 
