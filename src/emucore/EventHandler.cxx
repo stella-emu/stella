@@ -559,10 +559,9 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
         case KBDK_S:         // Ctrl-s saves properties to a file
         {
-          string filename = myOSystem.defaultSaveDir() +
+          string filename = myOSystem.baseDir() +
               myOSystem.console().properties().get(Cartridge_Name) + ".pro";
           ofstream out(filename);
-
           if(out)
           {
             out << myOSystem.console().properties();
