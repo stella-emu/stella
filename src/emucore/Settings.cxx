@@ -157,7 +157,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.console", "2600"); // 7800
   setInternal("plr.rewind", false);
   setInternal("plr.rewind.size", 100);
-  setInternal("plr.rewind.interval", 4); // = 1 frame
+  setInternal("plr.rewind.interval", 4); // = 1 second
   setInternal("plr.rewind.horizon", 5); // = ~10 minutes
 
   // developer settings
@@ -172,7 +172,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
-  setInternal("dev.rewind", false);
+  setInternal("dev.rewind", true);
   setInternal("dev.rewind.size", 100);
   setInternal("dev.rewind.interval", 2); // = 1 frame
   setInternal("dev.rewind.horizon", 3); // = ~10 seconds
@@ -316,7 +316,7 @@ void Settings::validate()
   if(i < 0 || i > 5)  setInternal("tv.filter", "0");
 
   i = getInt("dev.tv.jitter_recovery");
-  if(i < 1 || i > 20)  setInternal("dev.tv.jitter_recovery", "10");
+  if(i < 1 || i > 20) setInternal("dev.tv.jitter_recovery", "2");
 
   i = getInt("dev.rewind.size");
   if (i < 100 ||i > 1000) setInternal("dev.rewind.size", 100);
@@ -328,16 +328,16 @@ void Settings::validate()
   if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 3);
 
   i = getInt("plr.tv.jitter_recovery");
-  if(i < 1 || i > 20)  setInternal("plr.tv.jitter_recovery", "10");
+  if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
 
   i = getInt("plr.rewind.size");
   if(i < 100 || i > 1000) setInternal("plr.rewind.size", 100);
 
   i = getInt("plr.rewind.interval");
-  if(i < 0 || i > 5) setInternal("plr.rewind.interval", 2);
+  if(i < 0 || i > 5) setInternal("plr.rewind.interval", 4);
 
   i = getInt("plr.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("plr.rewind.horizon", 3);
+  if(i < 0 || i > 6) setInternal("plr.rewind.horizon", 5);
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");

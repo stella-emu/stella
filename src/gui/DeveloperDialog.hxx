@@ -91,8 +91,8 @@ class DeveloperDialog : public Dialog
       76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, (uInt64)76 * 262 * 60 * 60 * 60 };
 
     TabWidget* myTab;
-    // Emulator
-    RadioButtonGroup*   mySettingsGroup;
+    // Emulator widgets
+    RadioButtonGroup*   mySettingsGroup0;
     CheckboxWidget*     myFrameStatsWidget;
     PopUpWidget*        myConsoleWidget;
     StaticTextWidget*   myLoadingROMLabel;
@@ -106,17 +106,18 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myTVJitterRecLabelWidget;
     CheckboxWidget*     myDebugColorsWidget;
     CheckboxWidget*     myUndrivenPinsWidget;
-    // States
-    CheckboxWidget*     myContinuousRewind;
-    SliderWidget*       myStateSize;
-    StaticTextWidget*   myStateSizeLabel;
-    SliderWidget*       myStateInterval;
-    StaticTextWidget*   myStateIntervalLabel;
-    SliderWidget*       myStateHorizon;
-    StaticTextWidget*   myStateHorizonLabel;
+    // States widgets
+    RadioButtonGroup*   mySettingsGroup1;
+    CheckboxWidget*     myContinuousRewindWidget;
+    SliderWidget*       myStateSizeWidget;
+    StaticTextWidget*   myStateSizeLabelWidget;
+    SliderWidget*       myStateIntervalWidget;
+    StaticTextWidget*   myStateIntervalLabelWidget;
+    SliderWidget*       myStateHorizonWidget;
+    StaticTextWidget*   myStateHorizonLabelWidget;
 
 #ifdef DEBUGGER_SUPPORT
-    // Debugger UI
+    // Debugger UI widgets
     SliderWidget*       myDebuggerWidthSlider;
     StaticTextWidget*   myDebuggerWidthLabel;
     SliderWidget*       myDebuggerHeightSlider;
@@ -127,7 +128,8 @@ class DeveloperDialog : public Dialog
 
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;
-
+    bool    mySettings;
+    // Emulator sets
     bool    myFrameStats[2];
     int     myConsole[2];
     bool    myRandomBank[2];
@@ -138,6 +140,14 @@ class DeveloperDialog : public Dialog
     int     myTVJitterRec[2];
     bool    myDebugColors[2];
     bool    myUndrivenPins[2];
+    // States sets
+    bool    myContinuousRewind[2];
+    int     myStateSize[2];
+    //StaticTextWidget*   myStateSizeLabelWidget;
+    int     myStateInterval[2];
+    //StaticTextWidget*   myStateIntervalLabelWidget;
+    int     myStateHorizon[2];
+    //StaticTextWidget*   myStateHorizonLabelWidget;*/
 
   private:
     void addEmulationTab(const GUI::Font& font);
@@ -146,10 +156,10 @@ class DeveloperDialog : public Dialog
     // Add Defaults, OK and Cancel buttons
     void addDefaultOKCancelButtons(const GUI::Font& font);
 
-    void copySettingsToSet(SettingsSet set);
-    void copySetToSettings(SettingsSet set);
-    void copyStateToSet(SettingsSet set);
-    void copySetToState(SettingsSet set);
+    void loadSettings(SettingsSet set);
+    void saveSettings(SettingsSet set);
+    void getWidgetStates(SettingsSet set);
+    void setWidgetStates(SettingsSet set);
 
     void handleSettings(bool devSettings);
     void handleTVJitterChange(bool enable);

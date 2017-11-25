@@ -51,7 +51,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos, tabID;
 
   // Set real dimensions
-  _w = std::min(51 * fontWidth + 10, max_w);
+  _w = std::min(52 * fontWidth + 10, max_w);
   _h = std::min(15 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
@@ -72,7 +72,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 {
   const int HBORDER = 10;
-  const int INDENT = 16;
+  const int INDENT = 16+4;
   const int VBORDER = 8;
   const int VGAP = 4;
   int ypos = VBORDER;
@@ -83,13 +83,15 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int tabID = myTab->addTab(" Emulation ");
 
   // settings set
-  mySettingsGroup = new RadioButtonGroup();
-  new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup, kPlrSettings);
+  mySettingsGroup0 = new RadioButtonGroup();
+  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup0, kPlrSettings);
+  wid.push_back(r);
   ypos += lineHeight + VGAP;
-  new RadioButtonWidget(myTab, font, HBORDER, ypos, "Developer settings", mySettingsGroup, kDevSettings);
+  r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Developer settings", mySettingsGroup0, kDevSettings);
+  wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
-  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos, "Frame statistics");
+  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Frame statistics");
   wid.push_back(myFrameStatsWidget);
   ypos += lineHeight + VGAP;
 
@@ -105,7 +107,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   // Randomize items
-  myLoadingROMLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT*1, ypos, "When loading a ROM:", kTextAlignLeft);
+  myLoadingROMLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "When loading a ROM:", kTextAlignLeft);
   wid.push_back(myLoadingROMLabel);
   ypos += lineHeight + VGAP;
 
@@ -128,7 +130,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   const char* const cpuregs[] = { "SP", "A", "X", "Y", "PS" };
   for(int i = 0; i < 5; ++i)
   {
-    myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 2,
+    myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 1,
                                            cpuregs[i], kRandCPUID);
     wid.push_back(myRandomizeCPUWidget[i]);
     xpos += CheckboxWidget::boxSize() + font.getStringWidth("XX") + 20;
@@ -140,12 +142,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myDebugColorsWidget);
   ypos += lineHeight + VGAP;
 
-  myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "PAL color-loss");
+  myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "PAL color-loss");
   wid.push_back(myColorLossWidget);
   ypos += lineHeight + VGAP;
 
   // TV jitter effect
-  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "Jitter/roll effect", kTVJitter);
+  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Jitter/roll effect", kTVJitter);
   wid.push_back(myTVJitterWidget);
   myTVJitterRecWidget = new SliderWidget(myTab, font,
                                    myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
@@ -161,7 +163,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   // How to handle undriven TIA pins
-  myUndrivenPinsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT*1, ypos + 1,
+  myUndrivenPinsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                       "Drive unused TIA pins randomly on a read/peek");
   wid.push_back(myUndrivenPinsWidget);
 
@@ -173,7 +175,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 void DeveloperDialog::addStatesTab(const GUI::Font& font)
 {
   const int HBORDER = 10;
-  const int INDENT = 16;
+  const int INDENT = 16+4;
   const int VBORDER = 8;
   const int VGAP = 4;
   int ypos = VBORDER;
@@ -182,35 +184,44 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   WidgetArray wid;
   int tabID = myTab->addTab("States");
 
-  myContinuousRewind = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Continuous rewind", kRewind);
-  wid.push_back(myContinuousRewind);
+  // settings set
+  mySettingsGroup1 = new RadioButtonGroup();
+  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup1, kPlrSettings);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP;
+  r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Developer settings", mySettingsGroup1, kDevSettings);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP * 2;
+
+  myContinuousRewindWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1, "Continuous rewind", kRewind);
+  wid.push_back(myContinuousRewindWidget);
   ypos += lineHeight + VGAP;
 
   int sWidth = font.getMaxCharWidth() * 8;
-  myStateSize = new SliderWidget(myTab, font, HBORDER + INDENT, ypos - 1, sWidth, lineHeight,
+  myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
                                  "Buffer size (*) ", 0, kSizeChanged);
-  myStateSize->setMinValue(100);
-  myStateSize->setMaxValue(1000);
-  myStateSize->setStepValue(100);
-  wid.push_back(myStateSize);
-  myStateSizeLabel = new StaticTextWidget(myTab, font, myStateSize->getRight() + 4, myStateSize->getTop() + 2, "100 ");
+  myStateSizeWidget->setMinValue(100);
+  myStateSizeWidget->setMaxValue(1000);
+  myStateSizeWidget->setStepValue(100);
+  wid.push_back(myStateSizeWidget);
+  myStateSizeLabelWidget = new StaticTextWidget(myTab, font, myStateSizeWidget->getRight() + 4, myStateSizeWidget->getTop() + 2, "100 ");
 
   ypos += lineHeight + VGAP;
-  myStateInterval = new SliderWidget(myTab, font, HBORDER + INDENT, ypos - 1, sWidth, lineHeight,
+  myStateIntervalWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
                                      "Interval        ", 0, kIntervalChanged);
 
-  myStateInterval->setMinValue(0);
-  myStateInterval->setMaxValue(NUM_INTERVALS - 1);
-  wid.push_back(myStateInterval);
-  myStateIntervalLabel = new StaticTextWidget(myTab, font, myStateInterval->getRight() + 4, myStateInterval->getTop() + 2, "50 scanlines");
+  myStateIntervalWidget->setMinValue(0);
+  myStateIntervalWidget->setMaxValue(NUM_INTERVALS - 1);
+  wid.push_back(myStateIntervalWidget);
+  myStateIntervalLabelWidget = new StaticTextWidget(myTab, font, myStateIntervalWidget->getRight() + 4, myStateIntervalWidget->getTop() + 2, "50 scanlines");
 
   ypos += lineHeight + VGAP;
-  myStateHorizon = new SliderWidget(myTab, font, HBORDER + INDENT, ypos - 1, sWidth, lineHeight,
+  myStateHorizonWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
                                     "Horizon         ", 0, kHorizonChanged);
-  myStateHorizon->setMinValue(0);
-  myStateHorizon->setMaxValue(NUM_HORIZONS - 1);
-  wid.push_back(myStateHorizon);
-  myStateHorizonLabel = new StaticTextWidget(myTab, font, myStateHorizon->getRight() + 4, myStateHorizon->getTop() + 2, "~60 minutes");
+  myStateHorizonWidget->setMinValue(0);
+  myStateHorizonWidget->setMaxValue(NUM_HORIZONS - 1);
+  wid.push_back(myStateHorizonWidget);
+  myStateHorizonLabelWidget = new StaticTextWidget(myTab, font, myStateHorizonWidget->getRight() + 4, myStateHorizonWidget->getTop() + 2, "~60 minutes");
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
@@ -342,7 +353,7 @@ void DeveloperDialog::addDefaultOKCancelButtons(const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::copySettingsToSet(SettingsSet set)
+void DeveloperDialog::loadSettings(SettingsSet set)
 {
   string prefix = set == SettingsSet::player ? "plr." : "dev.";
 
@@ -361,10 +372,16 @@ void DeveloperDialog::copySettingsToSet(SettingsSet set)
   myTVJitterRec[set] = instance().settings().getInt(prefix + "tv.jitter_recovery");
   // Undriven TIA pins
   myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
+
+  // States
+  myContinuousRewind[set] = instance().settings().getBool(prefix + "rewind");
+  myStateSize[set] = instance().settings().getInt(prefix + "rewind.size");
+  myStateInterval[set] = instance().settings().getInt(prefix + "rewind.interval");
+  myStateHorizon[set] = instance().settings().getInt(prefix + "rewind.horizon");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::copySetToSettings(SettingsSet set)
+void DeveloperDialog::saveSettings(SettingsSet set)
 {
   string prefix = set == SettingsSet::player ? "plr." : "dev.";
 
@@ -381,12 +398,18 @@ void DeveloperDialog::copySetToSettings(SettingsSet set)
   // Jitter
   instance().settings().setValue(prefix + "tv.jitter", myTVJitter[set]);
   instance().settings().setValue(prefix + "tv.jitter_recovery", myTVJitterRec[set]);
-
+  // Undriven TIA pins
   instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
+
+  // States
+  instance().settings().setValue(prefix + "rewind", myContinuousRewind[set]);
+  instance().settings().setValue(prefix + "rewind.size", myStateSize[set]);
+  instance().settings().setValue(prefix + "rewind.interval", myStateInterval[set]);
+  instance().settings().setValue(prefix + "rewind.horizon", myStateHorizon[set]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::copyStateToSet(SettingsSet set)
+void DeveloperDialog::getWidgetStates(SettingsSet set)
 {
   myFrameStats[set] = myFrameStatsWidget->getState();
   myConsole[set] = myConsoleWidget->getSelected() == 1;
@@ -408,10 +431,16 @@ void DeveloperDialog::copyStateToSet(SettingsSet set)
   myTVJitterRec[set] = myTVJitterRecWidget->getValue();
   // Undriven TIA pins
   myUndrivenPins[set] = myUndrivenPinsWidget->getState();
+
+  // States
+  myContinuousRewind[set] = myContinuousRewindWidget->getState();
+  myStateSize[set] = myStateSizeWidget->getValue();
+  myStateInterval[set] = myStateIntervalWidget->getValue();
+  myStateHorizon[set] = myStateHorizonWidget->getValue();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::copySetToState(SettingsSet set)
+void DeveloperDialog::setWidgetStates(SettingsSet set)
 {
   myFrameStatsWidget->setState(myFrameStats[set]);
   myConsoleWidget->setSelectedIndex(myConsole[set]);
@@ -436,29 +465,32 @@ void DeveloperDialog::copySetToState(SettingsSet set)
   handleConsole();
   handleTVJitterChange(myTVJitterWidget->getState());
   handleDebugColors();
+
+  // States
+  myContinuousRewindWidget->setState(myContinuousRewind[set]);
+  myStateSizeWidget->setValue(myStateSize[set]);
+  myStateIntervalWidget->setValue(myStateInterval[set]);
+  myStateHorizonWidget->setValue(myStateHorizon[set]);
+
+  handleRewind();
+  handleSize();
+  handleInterval();
+  handleHorizon();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::loadConfig()
 {
   bool devSettings = instance().settings().getBool("dev.settings");
-  mySettingsGroup->setSelected(devSettings ? 1 : 0);
+  mySettings = devSettings;
+  mySettingsGroup0->setSelected(devSettings ? 1 : 0);
+  mySettingsGroup1->setSelected(devSettings ? 1 : 0);
 
   // load both setting sets...
-  copySettingsToSet(SettingsSet::player);
-  copySettingsToSet(SettingsSet::developer);
+  loadSettings(SettingsSet::player);
+  loadSettings(SettingsSet::developer);
   // ...and select the current one
-  copySetToState((SettingsSet)mySettingsGroup->getSelected());
-
-  myContinuousRewind->setState(instance().settings().getBool(devSettings ? "dev.rewind" : "plr.rewind"));
-  myStateSize->setValue(instance().settings().getInt(devSettings ? "dev.rewind.size": "plr.rewind.size"));
-  myStateInterval->setValue(instance().settings().getInt(devSettings ? "dev.rewind.interval" : "plr.rewind.interval"));
-  myStateHorizon->setValue(instance().settings().getInt(devSettings ? "dev.rewind.horizon" : "plr.rewind.horizon"));
-
-  handleRewind();
-  handleSize();
-  handleInterval();
-  handleHorizon();
+  setWidgetStates((SettingsSet)mySettingsGroup0->getSelected());
 
 #ifdef DEBUGGER_SUPPORT
   uInt32 w, h;
@@ -490,12 +522,14 @@ void DeveloperDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
-  instance().settings().setValue("dev.settings", mySettingsGroup->getSelected() == SettingsSet::developer);
-  copyStateToSet((SettingsSet)mySettingsGroup->getSelected());
-  copySetToSettings(SettingsSet::player);
-  copySetToSettings(SettingsSet::developer);
+  instance().settings().setValue("dev.settings", mySettingsGroup0->getSelected() == SettingsSet::developer);
+  // copy current widget status into set...
+  getWidgetStates((SettingsSet)mySettingsGroup0->getSelected());
+  // ...and save both sets
+  saveSettings(SettingsSet::player);
+  saveSettings(SettingsSet::developer);
 
-  //activate the current ones
+  // activate the current settings
   instance().frameBuffer().showFrameStats(myFrameStatsWidget->getState());
   // jitter
   if(instance().hasConsole())
@@ -511,20 +545,16 @@ void DeveloperDialog::saveConfig()
   // Finally, issue a complete framebuffer re-initialization
   //instance().createFrameBuffer();
 
-  instance().settings().setValue("dev.rewind", myContinuousRewind->getState());
-  instance().settings().setValue("dev.rewind.size", myStateSize->getValue());
-  instance().settings().setValue("dev.rewind.interval", myStateInterval->getValue());
-  instance().settings().setValue("dev.rewind.horizon", myStateHorizon->getValue());
   // TODO: update RewindManager
 
   // define interval growth factor
-  uInt32 size = myStateSize->getValue();
-  uInt64 horizon = HORIZON_CYCLES[myStateHorizon->getValue()];
+  uInt32 size = myStateSizeWidget->getValue();
+  uInt64 horizon = HORIZON_CYCLES[myStateHorizonWidget->getValue()];
   double factor, minFactor = 1, maxFactor = 2;
 
   while(true)
   {
-    double interval = INTERVAL_CYCLES[myStateInterval->getValue()];
+    double interval = INTERVAL_CYCLES[myStateIntervalWidget->getValue()];
     double cycleSum = 0.0;
     // calculate next factor
     factor = (minFactor + maxFactor) / 2;
@@ -565,13 +595,12 @@ void DeveloperDialog::saveConfig()
 
 void DeveloperDialog::setDefaults()
 {
+  bool devSettings = mySettingsGroup0->getSelected() == 1;
+  SettingsSet set = (SettingsSet)mySettingsGroup0->getSelected();
+
   switch(myTab->getActiveTab())
   {
-    case 0:
-    {
-      bool devSettings = mySettingsGroup->getSelected() == 1;
-      SettingsSet set = (SettingsSet)mySettingsGroup->getSelected();
-
+    case 0: // Emulation
       myFrameStats[set] = devSettings ? true : false;
       myConsole[set] = 0;
       // Randomization
@@ -588,21 +617,19 @@ void DeveloperDialog::setDefaults()
       // Undriven TIA pins
       myUndrivenPins[set] = devSettings ? true : false;
 
-      copySetToState(set);
-      break;
-    }
-    case 1:  // States
-      myContinuousRewind->setState(false);
-      myStateSize->setValue(100);
-      myStateInterval->setValue(2);
-      myStateHorizon->setValue(3);
-      handleRewind();
-      handleSize();
-      handleInterval();
-      handleHorizon();
+      setWidgetStates(set);
       break;
 
-    case 2:  // Debugger options
+    case 1: // States
+      myContinuousRewind[set] = devSettings ? true : false;
+      myStateSize[set] = 100;
+      myStateInterval[set] = devSettings ? 2 : 4;
+      myStateHorizon[set] = devSettings ? 3 : 5;
+
+      setWidgetStates(set);
+      break;
+
+    case 2: // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
       uInt32 w = std::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
@@ -704,9 +731,14 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSettings(bool devSettings)
 {
-  mySettingsGroup->setSelected(devSettings ? 1 : 0);
-  copyStateToSet(devSettings ? SettingsSet::player : SettingsSet::developer);
-  copySetToState(devSettings ? SettingsSet::developer : SettingsSet::player);
+  if (mySettings != devSettings)
+  {
+    mySettings = devSettings; // block redundant events first!
+    mySettingsGroup0->setSelected(devSettings ? 1 : 0);
+    mySettingsGroup1->setSelected(devSettings ? 1 : 0);
+    getWidgetStates(devSettings ? SettingsSet::player : SettingsSet::developer);
+    setWidgetStates(devSettings ? SettingsSet::developer : SettingsSet::player);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -740,28 +772,28 @@ void DeveloperDialog::handleConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleRewind()
 {
-  bool enable = myContinuousRewind->getState();
+  bool enable = myContinuousRewindWidget->getState();
 
-  myStateSize->setEnabled(enable);
-  myStateSizeLabel->setEnabled(enable);
+  myStateSizeWidget->setEnabled(enable);
+  myStateSizeLabelWidget->setEnabled(enable);
 
-  myStateInterval->setEnabled(enable);
-  myStateIntervalLabel->setEnabled(enable);
+  myStateIntervalWidget->setEnabled(enable);
+  myStateIntervalLabelWidget->setEnabled(enable);
 
-  myStateHorizon->setEnabled(enable);
-  myStateHorizonLabel->setEnabled(enable);
+  myStateHorizonWidget->setEnabled(enable);
+  myStateHorizonLabelWidget->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSize()
 {
   bool found = false;
-  uInt64 size = myStateSize->getValue();
-  uInt64 interval = myStateInterval->getValue();
-  uInt64 horizon = myStateHorizon->getValue();
+  uInt64 size = myStateSizeWidget->getValue();
+  uInt64 interval = myStateIntervalWidget->getValue();
+  uInt64 horizon = myStateHorizonWidget->getValue();
   Int32 i;
 
-  myStateSizeLabel->setValue(size);
+  myStateSizeLabelWidget->setValue(size);
   // adapt horizon and interval
   do
   {
@@ -777,22 +809,22 @@ void DeveloperDialog::handleSize()
       interval--;
   } while(!found);
 
-  myStateHorizon->setValue(i);
-  myStateHorizonLabel->setLabel(HORIZONS[i]);
-  myStateInterval->setValue(interval);
-  myStateIntervalLabel->setLabel(INTERVALS[interval]);
+  myStateHorizonWidget->setValue(i);
+  myStateHorizonLabelWidget->setLabel(HORIZONS[i]);
+  myStateIntervalWidget->setValue(interval);
+  myStateIntervalLabelWidget->setLabel(INTERVALS[interval]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleInterval()
 {
   bool found = false;
-  uInt64 size = myStateSize->getValue();
-  uInt64 interval = myStateInterval->getValue();
-  uInt64 horizon = myStateHorizon->getValue();
+  uInt64 size = myStateSizeWidget->getValue();
+  uInt64 interval = myStateIntervalWidget->getValue();
+  uInt64 horizon = myStateHorizonWidget->getValue();
   Int32 i;
 
-  myStateIntervalLabel->setLabel(INTERVALS[interval]);
+  myStateIntervalLabelWidget->setLabel(INTERVALS[interval]);
   // adapt horizon and size
   do
   {
@@ -805,25 +837,25 @@ void DeveloperDialog::handleInterval()
       }
     }
     if(!found)
-      size -= myStateSize->getStepValue();
+      size -= myStateSizeWidget->getStepValue();
   } while(!found);
 
-  myStateHorizon->setValue(i);
-  myStateHorizonLabel->setLabel(HORIZONS[i]);
-  myStateSize->setValue(size);
-  myStateSizeLabel->setValue(myStateSize->getValue());
+  myStateHorizonWidget->setValue(i);
+  myStateHorizonLabelWidget->setLabel(HORIZONS[i]);
+  myStateSizeWidget->setValue(size);
+  myStateSizeLabelWidget->setValue(myStateSizeWidget->getValue());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleHorizon()
 {
   bool found = false;
-  uInt64 size = myStateSize->getValue();
-  uInt64 interval = myStateInterval->getValue();
-  uInt64 horizon = myStateHorizon->getValue();
+  uInt64 size = myStateSizeWidget->getValue();
+  uInt64 interval = myStateIntervalWidget->getValue();
+  uInt64 horizon = myStateHorizonWidget->getValue();
   Int32 i;
 
-  myStateHorizonLabel->setLabel(HORIZONS[horizon]);
+  myStateHorizonLabelWidget->setLabel(HORIZONS[horizon]);
   // adapt interval and size
   do
   {
@@ -836,13 +868,13 @@ void DeveloperDialog::handleHorizon()
       }
     }
     if(!found)
-      size -= myStateSize->getStepValue();
+      size -= myStateSizeWidget->getStepValue();
   } while(!found);
 
-  myStateInterval->setValue(i);
-  myStateIntervalLabel->setLabel(INTERVALS[i]);
-  myStateSize->setValue(size);
-  myStateSizeLabel->setValue(myStateSize->getValue());
+  myStateIntervalWidget->setValue(i);
+  myStateIntervalLabelWidget->setLabel(INTERVALS[i]);
+  myStateSizeWidget->setValue(size);
+  myStateSizeLabelWidget->setValue(myStateSizeWidget->getValue());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
