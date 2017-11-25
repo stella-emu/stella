@@ -1792,11 +1792,6 @@
     </tr>
 
     <tr>
-      <td><pre>-colorloss &lt;1|0&gt;</pre></td>
-      <td>Enable/disable the PAL color-loss effect.</td>
-    </tr>
-
-    <tr>
       <td><pre>-framerate &lt;number&gt;</pre></td>
       <td>Display the given number of frames per second.  Normally, Stella
         will determine framerate based on number of scanlines.
@@ -1907,18 +1902,6 @@
         around 30, while fast switching gamer LCDs may need about 70 to look
         similar to a CRT.
       </td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.jitter &lt;1|0&gt;</pre></td>
-      <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
-        per frame.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.jitter_recovery &lt;1 - 20&gt;</pre></td>
-      <td>When TV jitter/roll effect is enabled, determines how long to delay recovery
-        time (recovery spread over multiple frames).</td>
     </tr>
 
     <tr>
@@ -2083,11 +2066,6 @@
       <td><pre>-autoslot &lt;1|0&gt;</pre></td>
       <td>Automatically switch to the next available save state slot after
         saving a ROM state file.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-stats &lt;1|0&gt;</pre></td>
-      <td>Overlay console info on the TIA image during emulation.</td>
     </tr>
 
     <tr>
@@ -2328,22 +2306,6 @@
     </tr>
 
     <tr>
-      <td><pre>-tiadriven &lt;1|0&gt;</pre></td>
-      <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
-          If disabled, use the last databus value for those pins instead.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-cpurandom &lt;S,A,X,Y,P&gt;</pre></td>
-      <td>On reset, randomize the content of the specified CPU registers.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-ramrandom &lt;1|0&gt;</pre></td>
-      <td>On reset, either randomize all RAM content, or zero it out instead.</td>
-    </tr>
-
-    <tr>
       <td><pre>-bs &lt;type&gt;</pre></td>
       <td>Set "Cartridge.Type" property.  See the <i>Game Properties</i> section
         for valid types.</td>
@@ -2442,6 +2404,75 @@
       fatal errors are simply logged, and emulation continues.  Do not use this
       unless you know exactly what you're doing, as it changes the behaviour as compared
       to real hardware.</td>
+    </tr>
+  </table>
+
+  <p>The following are available in two sets, one for players (prefixed by "plr.") and one
+    for developers (prefixd by "dev."). Only use them if you know what you're doing!  Note
+    that in all cases, the values supplied to the arguments are <b>not</b> case sensitive.</p>
+
+  <table BORDER=2>
+    <tr>
+      <th>Argument</th>
+      <th>Description</th>
+    </tr>
+
+    <tr>
+      <td><pre>-dev.settings &lt;1|0&gt;</pre></td>
+      <td>Select developer (1) or player (0) set.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;stats &lt;1|0&gt;</pre></td>
+      <td>Overlay console info on the TIA image during emulation.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;console &lt;2600|7800&gt;</pre></td>
+      <td>Select console for B/W and Pause key handling and RAM initialization.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;bankrandom &lt;1|0&gt;</pre></td>
+      <td>On reset, randomize the startup bank.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;ramrandom &lt;1|0&gt;</pre></td>
+      <td>On reset, either randomize all RAM content, or initialize with zero (console = 2600)/startup values (console = 7800) instead.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;cpurandom &lt;S,A,X,Y,P&gt;</pre></td>
+      <td>On reset, randomize the content of the specified CPU registers.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;debugcolors &lt;1|0&gt;</pre></td>
+      <td>Enable/disable the fixed debug colors.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;colorloss &lt;1|0&gt;</pre></td>
+      <td>Enable/disable the PAL color-loss effect.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;tv.jitter &lt;1|0&gt;</pre></td>
+      <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
+        per frame.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;tv.jitter_recovery &lt;1 - 20&gt;</pre></td>
+      <td>When TV jitter/roll effect is enabled, determines how long to delay recovery
+        time (recovery spread over multiple frames).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-&lt;plr.|dev.&gt;tiadriven &lt;1|0&gt;</pre></td>
+      <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
+          If disabled, use the last databus value for those pins instead.</td>
     </tr>
   </table>
   </blockquote>
