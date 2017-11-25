@@ -66,6 +66,12 @@ class StateManager
     void toggleRewindMode();
 
     /**
+      Sets state rewind recording mode; this uses the RewindManager
+      for its functionality.
+    */
+    void setRewindMode(Mode mode) { myActiveMode = mode; };
+
+    /**
       Rewinds one state; this uses the RewindManager for its functionality.
     */
     bool rewindState();

@@ -36,6 +36,7 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "OSystem.hxx"
+#include "StateManager.hxx"
 #include "DeveloperDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -546,6 +547,8 @@ void DeveloperDialog::saveConfig()
   //instance().createFrameBuffer();
 
   // TODO: update RewindManager
+  instance().state().setRewindMode(myContinuousRewindWidget->getState() ?
+                                   StateManager::Mode::Rewind : StateManager::Mode::Off);
 
   // define interval growth factor
   uInt32 size = myStateSizeWidget->getValue();
