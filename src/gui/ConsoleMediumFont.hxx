@@ -546,6 +546,8 @@ static const uInt16 consoleMedium_font_bits[] = {
    +---------+
    |         |
    |         |
+   |         |
+   |         |
    |    *    |
    | *  *  * |
    |  * * *  |
@@ -557,10 +559,10 @@ static const uInt16 consoleMedium_font_bits[] = {
    |         |
    |         |
    |         |
-   |         |
-   |         |
    +---------+
 */
+0x0000,
+0x0000,
 0x0000,
 0x0000,
 0x0800,
@@ -570,8 +572,6 @@ static const uInt16 consoleMedium_font_bits[] = {
 0x2a00,
 0x4900,
 0x0800,
-0x0000,
-0x0000,
 0x0000,
 0x0000,
 0x0000,

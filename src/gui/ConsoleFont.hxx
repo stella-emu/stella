@@ -494,6 +494,8 @@ static const uInt16 console_font_bits[] = {
    +--------+
    |        |
    |        |
+   |        |
+   |        |
    |  *  *  |
    |   **   |
    | ****** |
@@ -503,10 +505,10 @@ static const uInt16 console_font_bits[] = {
    |        |
    |        |
    |        |
-   |        |
-   |        |
    +--------+
 */
+0x0000,
+0x0000,
 0x0000,
 0x0000,
 0x2400,
@@ -514,8 +516,6 @@ static const uInt16 console_font_bits[] = {
 0x7e00,
 0x1800,
 0x2400,
-0x0000,
-0x0000,
 0x0000,
 0x0000,
 0x0000,
