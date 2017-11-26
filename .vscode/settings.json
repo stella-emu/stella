@@ -12,9 +12,5 @@
     "editor.trimAutoWhitespace": true,
     "editor.useTabStops": false,
     "C_Cpp.intelliSenseEngine": "Default",
-    "files.insertFinalNewline": true,
-    "files.associations": {
-        "locale": "cpp",
-        "string": "cpp"
-    }
+    "files.insertFinalNewline": true
 }
