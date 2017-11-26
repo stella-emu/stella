@@ -12,5 +12,19 @@
     "editor.trimAutoWhitespace": true,
     "editor.useTabStops": false,
     "C_Cpp.intelliSenseEngine": "Default",
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "files.associations": {
+        "__split_buffer": "cpp",
+        "__tree": "cpp",
+        "atomic": "cpp",
+        "deque": "cpp",
+        "ios": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "system_error": "cpp",
+        "vector": "cpp"
+    }
 }

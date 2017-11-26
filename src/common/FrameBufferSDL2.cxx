@@ -298,3 +298,10 @@ void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
 
   SDL_RenderReadPixels(myRenderer, &r, 0, pixels, pitch);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSDL2::clear()
+{
+  invalidate();
+  postFrameUpdate();
+}

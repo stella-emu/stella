@@ -95,6 +95,11 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const override;
 
+    /**
+      Clear the frame buffer
+    */
+    void clear() override;
+
   protected:
     //////////////////////////////////////////////////////////////////////
     // The following are derived from protected methods in FrameBuffer.hxx

@@ -304,6 +304,11 @@ class FrameBuffer
     */
     virtual void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const = 0;
 
+    /**
+      Clear the framebuffer.
+    */
+    virtual void clear() = 0;
+
   protected:
     /**
       This method is called to query and initialize the video hardware
