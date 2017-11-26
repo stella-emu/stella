@@ -117,6 +117,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   const string& md5 = myProperties.get(Cartridge_MD5);
   setControllers(md5);
 
+  // Mute audio while autodetection runs
+  myOSystem.sound().mute(1);
+
   if(myDisplayFormat == "AUTO" || myOSystem.settings().getBool("rominfo"))
   {
     autodetectFrameLayout();
