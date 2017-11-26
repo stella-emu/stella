@@ -604,7 +604,9 @@
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
+    <ClInclude Include="..\emucore\EventHandlerConstants.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
+    <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\emucore\TIASurface.hxx" />
