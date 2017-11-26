@@ -2507,7 +2507,6 @@
           <tr><td>Fullscreen</td><td>self-explanatory</td><td>-fullscreen</td></tr>
           <tr><td>Fullscreen Fill</td><td>completely fill TIA image in fullscreen</td><td>-tia.fsfill</td></tr>
           <tr><td>VSync</td><td>enable vertical sync'ed updates</td><td>-vsync</td></tr>
-          <tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
           <tr><td>Fast SC/AR BIOS</td><td>skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>attempt to center application window</td><td>-center</td></tr>
@@ -2530,8 +2529,6 @@
           <tr><td>TV Phosphor</td><td>enable phosphor mode under what conditions</td><td>-tv.phosphor</td></tr>
           <tr><td>Phosphor (Default)</td><td>default blend level to use in phosphor mode<br/>
                 (needs to be manually set for your particular hardware)</td><td>-tv.phosblend</td></tr>
-          <tr><td>Jitter/Roll effect</td><td>emulate screen roll with inconsistent scanline count</td><td>-tv.jitter</td></tr>
-          <tr><td>Jitter/Roll recovery</td><td>determines recovery time for screen rolling</td><td>-tv.jitter_recovery</td></tr>
           <tr><td>Scanline Intensity</td><td>sets scanline black-level intensity</td><td>-tv.scanlines</td></tr>
           <tr><td>Scanline Interpolation</td><td>smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
           <tr><td>Adjustable sliders</td><td>set specific attribute in 'Custom' mode</td><td>-tv.contrast, tv.hue, etc.</td></tr>
@@ -2590,28 +2587,13 @@
     </tr>
   </table>
   <br>
-  <p><b>UI Settings</b> dialog (3 tabs):</p>
+  <p><b>UI Settings</b> dialog (2 tabs):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_ui.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top"><br>This tab is described in further detail in
         <b>Advanced Configuration - <a href="#ROMInfo">ROM Launcher</a></b>.</td>
-    </tr>
-  </table>
-  <br>
-  <table border="5" cellpadding="2" frame="box" rules="none">
-    <tr>
-      <td><img src="graphics/options_debugger.png"></td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top">
-        <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Debugger Width/Height</td><td>self-explanatory (requires ROM reload)</td><td>-dbg.res</td></tr>
-          <tr><td>Set window size for ...</td><td>self-explanatory presets (requires ROM reload)</td><td>N/A</td></tr>
-          <tr><td>Font Style</td><td>self-explanatory (requires ROM reload)</td><td>-dbg.fontstyle</td></tr>
-        </table>
-      </td>
     </tr>
   </table>
   <br>
@@ -2686,6 +2668,18 @@
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top"><br>This dialog allows you to change all ROM properties
         as described in <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>.
+      </td>
+    </tr>
+  </table>
+
+  <br>
+  <p><b>Developer Settings</b> dialog:</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_developer.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top"><br>This tab is described in further detail in
+        <b>Advanced Configuration - <a href="#Debugger">Developer Options/Integrated Debugger</a></b>.</td>
       </td>
     </tr>
   </table>
@@ -3002,7 +2996,70 @@
   <h2><b><a name="Debugger">8. Developer Options/Integrated Debugger</a></b></h2>
   <blockquote>
 
-  <p>Many options are available for ROM developers, which are described in
+  <p>Several developer related settings can be configured in the 'Developer Settings' dialog.
+  Two sets ('Player settings', 'Developer settings') allow easy switching between different
+  settings (for playing or developing games) at once.</p>
+
+  <p><b>Developer Settings</b> dialog (Emulator)</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_developer.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Player/Developer settings</td><td>Selects the active settings set</td><td>-dev.settings</td></tr>
+          <tr><td>Frame Statistics</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
+          <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialzation</td><td>-plr.console <br/>-dev.console</td></tr>
+          <tr><td>Random startup bank</td><td>Randomize the startup bank for several bankswitch types</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
+          <tr><td>Randomize zero-page...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (console = 2600) or startup values (console = 7800)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
+          <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
+          <tr><td>PAL color-loss</td><td>Use PAL color-loss effect</td><td>-plr.colorloss<br/>-dev.colorloss</td></tr>
+          <tr><td>Debug colors</td><td>Use fixed debug colors</td><td>-plr.debugcolors<br/>-dev.debugcolors</td></tr>
+          <tr><td>Jitter/roll effect</td><td>Emulate screen roll with inconsistent scanline count</td><td>-plr.tv.jitter<br/>-dev.tv.jitter</td></tr>
+          <tr><td>Jitter/roll recovery</td><td>Determines recovery time for screen rolling</td><td>-plr.tv.jitter_recovery<br/>-dev.tv.jitter_recovery</td></tr>
+          <tr><td>Drive unused TIA pins...</td><td>Unused TIA pins are read random instead of the last databus value</td><td>-plr.tiadriven<br/>-dev.tiadriven</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Developer Settings</b> dialog (States) <b>TODO</b></p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
+          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
+          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
+          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
+          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Developer Settings</b> dialog (Debugger)</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_debugger.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Font Style</td><td>self-explanatory (requires ROM reload)</td><td>-dbg.fontstyle</td></tr>
+          <tr><td>Font Size</td><td>self-explanatory (requires ROM reload)</td><td>N/A</td></tr>
+          <tr><td>Debugger Width/Height</td><td>self-explanatory (requires ROM reload)</td><td>-dbg.res</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <p>Many more options are available for ROM developers, which are described in
   different sections of this manual, as follows:</p>
 
   <p><ul>
