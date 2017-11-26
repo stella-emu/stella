@@ -137,6 +137,7 @@ shared_ptr<Cheat> CheatManager::createCheat(const string& name, const string& co
   {
     case 4:  return make_shared<RamCheat>(myOSystem, name, code);
     case 6:  return make_shared<CheetahCheat>(myOSystem, name, code);
+    case 7:  return make_shared<BankRomCheat>(myOSystem, name, code);
     case 8:  return make_shared<BankRomCheat>(myOSystem, name, code);
     default: return nullptr;
   }
@@ -329,5 +330,5 @@ bool CheatManager::isValidCode(const string& code) const
       return false;
 
   uInt32 length = uInt32(code.length());
-  return (length == 4 || length == 6 || length == 8);
+  return (length == 4 || length == 6 || length == 7 || length == 8);
 }
