@@ -601,7 +601,12 @@
   keyboard as shown in the following tables.  However, most of these events can be
   remapped to other keys on your keyboard or buttons on your joystick (see
   <b>Advanced Configuration - <a href="#Remapping">Event Remapping</a></b>).
-  The tables below show the default settings.</p>
+  The tables below show the default settings.<br/><br/>
+
+  Note: All keys are based on the US QWERTY <a href="https://en.wikipedia.org/wiki/Keyboard_layout">
+  keyboard layout.</a>. If you use a different layout some keys may differ.
+  </p>
+  <p><img src="graphics/qwertz.png"></p>
 
   <p><b>Console Controls (can be remapped)</b></p>
 
@@ -1352,7 +1357,7 @@
     </tr>
 
     <tr>
-      <td>Toggle frame stats (scanline count/fps/bs type/etc.)</td>
+      <td>Toggle frame stats (scanline count/FPS/bs type/etc.)</td>
       <td>Alt + L</td>
       <td>Cmd + L</td>
     </tr>
@@ -1494,13 +1499,13 @@
     </tr>
 
     <tr>
-      <td>Toggle console type in increasing order (<i>NTSC/PAL/SECAM/etc.</i>)</td>
+      <td>Switch display format in <i>increasing</i> order (NTSC/PAL/SECAM/etc.)</td>
       <td>Control + f</td>
       <td>Control + f</td>
     </tr>
 
     <tr>
-      <td>Toggle console type in decreasing order (<i>NTSC/PAL/SECAM/etc.</i>)</td>
+      <td>Switch display format in <i>decreasing</i> order (NTSC/PAL/SECAM/etc.)</td>
       <td>Shift-Control + f</td>
       <td>Shift-Control + f</td>
     </tr>
@@ -1512,7 +1517,7 @@
     </tr>
 
     <tr>
-      <td>Switch mouse between controller emulation modes</td>
+      <td>Switch mouse between controller emulation modes (see <a href="#Controller">Game Properties - Controller</a>)</td>
       <td>Control + 0</td>
       <td>Control + 0</td>
     </tr>
@@ -1573,7 +1578,7 @@
     </tr>
 
     <tr>
-      <td>Toggle palette</td>
+      <td>Switch palette (Standard/Z26/User)</td>
       <td>Control + p</td>
       <td>Control + p</td>
     </tr>
@@ -1585,7 +1590,7 @@
     </tr>
 
     <tr>
-      <td>Save continuous PNG snapshots (per interval)</td>
+      <td>Save continuous PNG snapshots (per interval defined in <a href="#Snapshots">Snapshot Settings</a>)</td>
       <td>Alt + s</td>
       <td>Cmd + s</td>
     </tr>
@@ -1594,6 +1599,23 @@
       <td>Save continuous PNG snapshots (every frame)</td>
       <td>Shift-Alt + s</td>
       <td>Shift-Cmd + s</td>
+    </tr>
+
+    <tr>
+      <td>Toggle 'Continuous Rewind' mode</td>
+      <td>Alt + r</td>
+      <td>Cmd + r</td>
+    </tr>
+
+    <tr>
+      <td>Rewind by one state (pauses emulation)</td>
+      <td>Alt + Left arrow</td>
+      <td>Cmd + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Unwind by one state (pauses emulation)</td>
+      <td>Alt + Right arrow</td>
+      <td>Cmd + Right arrow</td>
     </tr>
   </table>
 
@@ -2609,7 +2631,7 @@
           <tr><td>Save snapshots according to</td><td>Specifies how to name saved snapshots</td><td>-snapname</td></tr>
           <tr><td>Continuous snapshot interval</td><td>Interval (in seconds) between snapshots</td><td>-ssinterval</td></tr>
           <tr><td>Overwrite existing files</td><td>Whether to overwrite old snapshots</td><td>-sssingle</td></tr>
-          <tr><td>Ignore scaling (1x mode)</td><td>Save snapshot in 1x mode, without scaling</td><td>-ss1x</td></tr>
+          <tr><td>Ignore scaling (1x mode)</td><td>Save snapshot in 1x mode without scaling</td><td>-ss1x</td></tr>
         </table>
       </td>
     </tr>
@@ -3470,7 +3492,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
   </table>
 
-  <a><img src="graphics/options_gameinfo_controller.png"></a>
+  <a name="Controller"><img src="graphics/options_gameinfo_controller.png"></a>
   <table CELLSPACING="10">
     <tr>
       <td VALIGN="TOP"><i>Controller.Left:</i><br><i>Controller.Right:</i></td>
