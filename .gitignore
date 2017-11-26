@@ -9,3 +9,4 @@ xcuserdata/
 build/
 src/macosx/M6502.ins
 *.dSYM
+.vscode/c_cpp_properties.json
