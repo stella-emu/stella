@@ -27,6 +27,7 @@
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "RadioButtonWidget.hxx"
+#include "ColorWidget.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
@@ -52,7 +53,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos, tabID;
 
   // Set real dimensions
-  _w = std::min(52 * fontWidth + 10, max_w);
+  _w = std::min(53 * fontWidth + 10, max_w);
   _h = std::min(15 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
@@ -62,6 +63,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   addEmulationTab(font);
   addStatesTab(font);
+  addDebugColorsTab(font);
   addDebuggerTab(font);
   addDefaultOKCancelButtons(font);
 
@@ -81,7 +83,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab(" Emulation ");
+  int tabID = myTab->addTab("Emulation");
 
   // settings set
   mySettingsGroup0 = new RadioButtonGroup();
@@ -226,15 +228,77 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  StaticTextWidget* t = new StaticTextWidget(myTab, infofont, HBORDER, _h - lineHeight * 4 - 10, "(*) Requires application restart");
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Requires application restart");
 
+  addToFocusList(wid, myTab, tabID);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::addDebugColorsTab(const GUI::Font& font)
+{
+  const int HBORDER = 10;
+  const int INDENT = 16 + 4;
+  const int VBORDER = 8;
+  const int VGAP = 4;
+  int ypos = VBORDER;
+  int lineHeight = font.getLineHeight();
+  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
+  int lwidth = font.getStringWidth("Intensity ");
+  int pwidth = font.getMaxCharWidth() * 6;
+  WidgetArray wid;
+  VariantList items;
+  int tabID = myTab->addTab("Debug Colors");
+
+  wid.clear();
+  ypos = VBORDER;
+
+  items.clear();
+  VarList::push_back(items, "Red", "r");
+  VarList::push_back(items, "Orange", "o");
+  VarList::push_back(items, "Yellow", "y");
+  VarList::push_back(items, "Green", "g");
+  VarList::push_back(items, "Blue", "b");
+  VarList::push_back(items, "Purple", "p");
+
+  static constexpr int dbg_cmds[6] = {
+    kP0ColourChangedCmd,  kM0ColourChangedCmd,  kP1ColourChangedCmd,
+    kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
+  };
+
+  auto createDebugColourWidgets = [&](int idx, const string& desc)
+  {
+    int x = HBORDER;
+    myDbgColour[idx] = new PopUpWidget(myTab, font, x, ypos,
+                                       pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
+    wid.push_back(myDbgColour[idx]);
+    x += myDbgColour[idx]->getWidth() + 10;
+    myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos,
+                                             uInt32(2 * lineHeight), lineHeight);
+    ypos += lineHeight + VGAP * 1;
+  };
+
+  createDebugColourWidgets(0, "Player 0 ");
+  createDebugColourWidgets(1, "Missile 0 ");
+  createDebugColourWidgets(2, "Player 1 ");
+  createDebugColourWidgets(3, "Missile 1 ");
+  createDebugColourWidgets(4, "Playfield ");
+  createDebugColourWidgets(5, "Ball ");
+
+  // Add message concerning usage
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, infofont, 10, ypos, "(*) Colors must be different for each object");
+
+  // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 {
-  int tabID = myTab->addTab(" Debugger ");
+  int tabID = myTab->addTab("Debugger");
 
 #ifdef DEBUGGER_SUPPORT
   const int HBORDER = 10;
@@ -310,7 +374,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  new StaticTextWidget(myTab, infofont, HBORDER, _h - lineHeight * 4 - 10, "(*) Changes require application restart");
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Changes require application restart");
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -465,7 +530,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 
   handleConsole();
   handleTVJitterChange(myTVJitterWidget->getState());
-  handleDebugColors();
+  handleEnableDebugColors();
 
   // States
   myContinuousRewindWidget->setState(myContinuousRewind[set]);
@@ -493,6 +558,9 @@ void DeveloperDialog::loadConfig()
   // ...and select the current one
   setWidgetStates((SettingsSet)mySettingsGroup0->getSelected());
 
+  // Debug colours
+  handleDebugColours(instance().settings().getString("tia.dbgcolors"));
+
 #ifdef DEBUGGER_SUPPORT
   uInt32 w, h;
 
@@ -517,7 +585,6 @@ void DeveloperDialog::loadConfig()
 #endif
 
   myTab->loadConfig();
-  handleFontSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -538,10 +605,18 @@ void DeveloperDialog::saveConfig()
     instance().console().tia().toggleJitter(myTVJitterWidget->getState() ? 1 : 0);
     instance().console().tia().setJitterRecoveryFactor(myTVJitterRecWidget->getValue());
   }
-  handleDebugColors();
+  handleEnableDebugColors();
   // PAL color loss
   if(instance().hasConsole())
     instance().console().enableColorLoss(myColorLossWidget->getState());
+
+  // Debug colours
+  string dbgcolors;
+  for(int i = 0; i < 6; ++i)
+    dbgcolors += myDbgColour[i]->getSelectedTag().toString();
+  if(instance().hasConsole() &&
+     instance().console().tia().setFixedColorPalette(dbgcolors))
+    instance().settings().setValue("tia.dbgcolors", dbgcolors);
 
   // Finally, issue a complete framebuffer re-initialization
   //instance().createFrameBuffer();
@@ -581,6 +656,10 @@ void DeveloperDialog::saveConfig()
   // TODO factor calculation code above into RewindManager
   //instance().settings().setValue("dev.rewind.factor", factor);
 
+  // Debugger font style
+  instance().settings().setValue("dbg.fontstyle",
+                                 myDebuggerFontStyle->getSelectedTag().toString());
+
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
   instance().settings().setValue("dbg.res",
@@ -589,10 +668,6 @@ void DeveloperDialog::saveConfig()
 
   // Debugger font size
   instance().settings().setValue("dbg.fontsize", myDebuggerFontSize->getSelectedTag().toString());
-
-  // Debugger font style
-  instance().settings().setValue("dbg.fontstyle",
-                                 myDebuggerFontStyle->getSelectedTag().toString());
 #endif
 }
 
@@ -632,7 +707,11 @@ void DeveloperDialog::setDefaults()
       setWidgetStates(set);
       break;
 
-    case 2: // Debugger options
+    case 2:  // Debug colours
+      handleDebugColours("roygpb");
+      break;
+
+    case 3: // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
       uInt32 w = std::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
@@ -698,6 +777,30 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
       handleHorizon();
       break;
 
+    case kP0ColourChangedCmd:
+      handleDebugColours(0, myDbgColour[0]->getSelected());
+      break;
+
+    case kM0ColourChangedCmd:
+      handleDebugColours(1, myDbgColour[1]->getSelected());
+      break;
+
+    case kP1ColourChangedCmd:
+      handleDebugColours(2, myDbgColour[2]->getSelected());
+      break;
+
+    case kM1ColourChangedCmd:
+      handleDebugColours(3, myDbgColour[3]->getSelected());
+      break;
+
+    case kPFColourChangedCmd:
+      handleDebugColours(4, myDbgColour[4]->getSelected());
+      break;
+
+    case kBLColourChangedCmd:
+      handleDebugColours(5, myDbgColour[5]->getSelected());
+      break;
+
 #ifdef DEBUGGER_SUPPORT
     case kDWidthChanged:
       myDebuggerWidthLabel->setValue(myDebuggerWidthSlider->getValue());
@@ -752,7 +855,7 @@ void DeveloperDialog::handleTVJitterChange(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleDebugColors()
+void DeveloperDialog::handleEnableDebugColors()
 {
   if(instance().hasConsole())
   {
@@ -878,6 +981,58 @@ void DeveloperDialog::handleHorizon()
   myStateIntervalLabelWidget->setLabel(INTERVALS[i]);
   myStateSizeWidget->setValue(size);
   myStateSizeLabelWidget->setValue(myStateSizeWidget->getValue());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleDebugColours(int idx, int color)
+{
+  if(idx < 0 || idx > 5)
+    return;
+
+  if(!instance().hasConsole())
+  {
+    myDbgColour[idx]->clearFlags(WIDGET_ENABLED);
+    myDbgColourSwatch[idx]->clearFlags(WIDGET_ENABLED);
+    return;
+  }
+
+  static constexpr int dbg_color[2][6] = {
+    { TIA::FixedColor::NTSC_RED,
+    TIA::FixedColor::NTSC_ORANGE,
+    TIA::FixedColor::NTSC_YELLOW,
+    TIA::FixedColor::NTSC_GREEN,
+    TIA::FixedColor::NTSC_BLUE,
+    TIA::FixedColor::NTSC_PURPLE
+    },
+    { TIA::FixedColor::PAL_RED,
+    TIA::FixedColor::PAL_ORANGE,
+    TIA::FixedColor::PAL_YELLOW,
+    TIA::FixedColor::PAL_GREEN,
+    TIA::FixedColor::PAL_BLUE,
+    TIA::FixedColor::PAL_PURPLE
+    }
+  };
+  int mode = instance().console().tia().frameLayout() == FrameLayout::ntsc ? 0 : 1;
+  myDbgColourSwatch[idx]->setColor(dbg_color[mode][color]);
+  myDbgColour[idx]->setSelectedIndex(color);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleDebugColours(const string& colors)
+{
+  for(int i = 0; i < 6; ++i)
+  {
+    switch(colors[i])
+    {
+      case 'r':  handleDebugColours(i, 0);  break;
+      case 'o':  handleDebugColours(i, 1);  break;
+      case 'y':  handleDebugColours(i, 2);  break;
+      case 'g':  handleDebugColours(i, 3);  break;
+      case 'b':  handleDebugColours(i, 4);  break;
+      case 'p':  handleDebugColours(i, 5);  break;
+      default:                              break;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

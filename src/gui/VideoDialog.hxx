@@ -21,7 +21,6 @@
 class CommandSender;
 class CheckboxWidget;
 class DialogContainer;
-class ColorWidget;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
@@ -45,8 +44,6 @@ class VideoDialog : public Dialog
     void setDefaults() override;
 
     void handleTVModeChange(NTSCFilter::Preset);
-    void handleDebugColours(int cmd, int color);
-    void handleDebugColours(const string& colors);
     void loadTVAdjustables(NTSCFilter::Preset preset);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -115,10 +112,6 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneBad;
     ButtonWidget*     myCloneCustom;
 
-    // Debug colours selection
-    PopUpWidget* myDbgColour[6];
-    ColorWidget* myDbgColourSwatch[6];
-
     enum {
       kNAspectRatioChanged = 'VDan',
       kPAspectRatioChanged = 'VDap',
@@ -143,14 +136,7 @@ class VideoDialog : public Dialog
       kCloneSvideoCmd      = 'CLsv',
       kCloneRGBCmd         = 'CLrb',
       kCloneBadCmd         = 'CLbd',
-      kCloneCustomCmd      = 'CLcu',
-
-      kP0ColourChangedCmd  = 'GOp0',
-      kM0ColourChangedCmd  = 'GOm0',
-      kP1ColourChangedCmd  = 'GOp1',
-      kM1ColourChangedCmd  = 'GOm1',
-      kPFColourChangedCmd  = 'GOpf',
-      kBLColourChangedCmd  = 'GObl'
+      kCloneCustomCmd      = 'CLcu'
     };
 
   private:

@@ -29,6 +29,7 @@ class RadioButtonGroup;
 class RadioButtonWidget;
 class SliderWidget;
 class StaticTextWidget;
+class ColorWidget;
 
 namespace GUI {
   class Font;
@@ -66,6 +67,12 @@ class DeveloperDialog : public Dialog
       kSizeChanged      = 'DSsz',
       kIntervalChanged  = 'DSin',
       kHorizonChanged   = 'DShz',
+      kP0ColourChangedCmd = 'GOp0',
+      kM0ColourChangedCmd = 'GOm0',
+      kP1ColourChangedCmd = 'GOp1',
+      kM1ColourChangedCmd = 'GOm1',
+      kPFColourChangedCmd = 'GOpf',
+      kBLColourChangedCmd = 'GObl',
   #ifdef DEBUGGER_SUPPORT
       kDWidthChanged    = 'UIdw',
       kDHeightChanged   = 'UIdh',
@@ -116,6 +123,10 @@ class DeveloperDialog : public Dialog
     SliderWidget*       myStateHorizonWidget;
     StaticTextWidget*   myStateHorizonLabelWidget;
 
+    // Debug colours selection
+    PopUpWidget*        myDbgColour[6];
+    ColorWidget*        myDbgColourSwatch[6];
+
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
     SliderWidget*       myDebuggerWidthSlider;
@@ -143,16 +154,14 @@ class DeveloperDialog : public Dialog
     // States sets
     bool    myContinuousRewind[2];
     int     myStateSize[2];
-    //StaticTextWidget*   myStateSizeLabelWidget;
     int     myStateInterval[2];
-    //StaticTextWidget*   myStateIntervalLabelWidget;
     int     myStateHorizon[2];
-    //StaticTextWidget*   myStateHorizonLabelWidget;*/
 
   private:
     void addEmulationTab(const GUI::Font& font);
-    void addDebuggerTab(const GUI::Font& font);
     void addStatesTab(const GUI::Font& font);
+    void addDebugColorsTab(const GUI::Font& font);
+    void addDebuggerTab(const GUI::Font& font);
     // Add Defaults, OK and Cancel buttons
     void addDefaultOKCancelButtons(const GUI::Font& font);
 
@@ -163,8 +172,12 @@ class DeveloperDialog : public Dialog
 
     void handleSettings(bool devSettings);
     void handleTVJitterChange(bool enable);
-    void handleDebugColors();
+    void handleEnableDebugColors();
     void handleConsole();
+
+    void handleDebugColours(int cmd, int color);
+    void handleDebugColours(const string& colors);
+
     void handleRewind();
     void handleSize();
     void handleInterval();
