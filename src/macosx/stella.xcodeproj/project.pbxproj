@@ -304,6 +304,10 @@
 		DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */; };
 		DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */; };
 		DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */; };
+		DC5AAC281FCB24AB00C420A6 /* EventHandlerConstants.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */; };
+		DC5AAC291FCB24AB00C420A6 /* FrameBufferConstants.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5AAC271FCB24AB00C420A6 /* FrameBufferConstants.hxx */; };
+		DC5AAC2C1FCB24DF00C420A6 /* RadioButtonWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */; };
+		DC5AAC2D1FCB24DF00C420A6 /* RadioButtonWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */; };
 		DC5ACB5B1FBFCE8E00A213FD /* DeveloperDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5ACB591FBFCE8E00A213FD /* DeveloperDialog.cxx */; };
 		DC5ACB5C1FBFCE8E00A213FD /* DeveloperDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5ACB5A1FBFCE8E00A213FD /* DeveloperDialog.hxx */; };
 		DC5ACB5E1FBFCEB800A213FD /* CartDebugWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5ACB5D1FBFCEB800A213FD /* CartDebugWidget.cxx */; };
@@ -955,6 +959,10 @@
 		DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDevice.cxx; sourceTree = "<group>"; };
 		DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseControl.cxx; sourceTree = "<group>"; };
 		DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MouseControl.hxx; sourceTree = "<group>"; };
+		DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerConstants.hxx; sourceTree = "<group>"; };
+		DC5AAC271FCB24AB00C420A6 /* FrameBufferConstants.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameBufferConstants.hxx; sourceTree = "<group>"; };
+		DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RadioButtonWidget.cxx; sourceTree = "<group>"; };
+		DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RadioButtonWidget.hxx; sourceTree = "<group>"; };
 		DC5ACB591FBFCE8E00A213FD /* DeveloperDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DeveloperDialog.cxx; sourceTree = "<group>"; };
 		DC5ACB5A1FBFCE8E00A213FD /* DeveloperDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DeveloperDialog.hxx; sourceTree = "<group>"; };
 		DC5ACB5D1FBFCEB800A213FD /* CartDebugWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDebugWidget.cxx; sourceTree = "<group>"; };
@@ -1701,11 +1709,13 @@
 				2DE2DF410627AE07006BEC99 /* Event.hxx */,
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
+				DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */,
 				DC5E473A19EC9A14000E45DF /* EventJoyHandler.cxx */,
 				DC73BD871915E5E3003FAFAD /* FBSurface.cxx */,
 				DC73BD881915E5E3003FAFAD /* FBSurface.hxx */,
 				2D733D70062895B2006265D9 /* FrameBuffer.cxx */,
 				2D733D71062895B2006265D9 /* FrameBuffer.hxx */,
+				DC5AAC271FCB24AB00C420A6 /* FrameBufferConstants.hxx */,
 				2DDBEB7208457B7D00812C11 /* FSNode.cxx */,
 				2DDBEB7308457B7D00812C11 /* FSNode.hxx */,
 				DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */,
@@ -1843,6 +1853,8 @@
 				2DDBEAC7084578BF00812C11 /* PopUpWidget.hxx */,
 				2DDBEAC8084578BF00812C11 /* ProgressDialog.cxx */,
 				2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */,
+				DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */,
+				DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */,
 				DC5D2C4E0F117CFD004D1660 /* Rect.hxx */,
 				DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */,
 				DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */,
@@ -2066,6 +2078,7 @@
 				2D9173D209BA90380026E9FF /* CartCV.hxx in Headers */,
 				2D9173D309BA90380026E9FF /* CartDPC.hxx in Headers */,
 				2D9173D409BA90380026E9FF /* CartE0.hxx in Headers */,
+				DC5AAC281FCB24AB00C420A6 /* EventHandlerConstants.hxx in Headers */,
 				DC73BD8A1915E5E3003FAFAD /* FBSurface.hxx in Headers */,
 				2D9173D509BA90380026E9FF /* CartE7.hxx in Headers */,
 				2D9173D609BA90380026E9FF /* CartF4.hxx in Headers */,
@@ -2081,6 +2094,7 @@
 				DC62E6481960E87B007AEF05 /* AtariVoxWidget.hxx in Headers */,
 				2D9173E009BA90380026E9FF /* Console.hxx in Headers */,
 				2D9173E109BA90380026E9FF /* Control.hxx in Headers */,
+				DC5AAC2D1FCB24DF00C420A6 /* RadioButtonWidget.hxx in Headers */,
 				2D9173E309BA90380026E9FF /* Driving.hxx in Headers */,
 				2D9173E409BA90380026E9FF /* Event.hxx in Headers */,
 				2D9173E509BA90380026E9FF /* Joystick.hxx in Headers */,
@@ -2203,6 +2217,7 @@
 				DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */,
 				DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */,
 				DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */,
+				DC5AAC291FCB24AB00C420A6 /* FrameBufferConstants.hxx in Headers */,
 				E0306E0D1F93E916003DDD52 /* FrameLayoutDetector.hxx in Headers */,
 				DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */,
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
@@ -2618,6 +2633,7 @@
 				DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */,
 				DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */,
 				DCF3A6EF1DFC75E3008A8AF3 /* DrawCounterDecodes.cxx in Sources */,
+				DC5AAC2C1FCB24DF00C420A6 /* RadioButtonWidget.cxx in Sources */,
 				DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */,
 				DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */,
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
