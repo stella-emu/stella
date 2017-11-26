@@ -232,7 +232,7 @@ then hit Tab. The "g" will change to "gfx" (since this is the only
 built-in command starting with a "g"). If there are multiple possible
 completions (try with "tr" instead of "g"), you'll see a list of them,
 and your partial name will be completed as far as possible.
-After the first character, the autocompletion completion considers all
+After the first character, the autocompletion considers all
 characters in the right order as a match (e.g. "twf" will be completed to
 "trapwriteif").</p>
 
@@ -298,7 +298,7 @@ to change the meaning of an expression. The prefixes are:</p>
     	  Dereference a byte pointer. "*a" means "the byte at the address that
 	      the A register points to". If A is 255 (hex $ff), the result will be
     	  the value currently stored in memory location 255. This operator
-	      will be very familiar to you if you're a C or C++ programmer. It's
+	      will be very familiar to you if you're a C or C++ developer. It's
     	  equivalent to the PEEK() function in most 8-bit BASICs. Also, the
 	      debugger supports array-like byte dereferences: *address can be
     	  written as address[0]. *(address+1) can be written as address[1],
@@ -740,7 +740,7 @@ clearsavestateifs - Clear all savestate points
 <p><img src="graphics/debugger_tiatab.png"></p>
 
 <p>Most of the values on the TIA tab will be self-explanatory to a 2600
-programmer.<p>
+developer.<p>
 
 <p>Many of the variables inside the TIA can only be written to by the
 6502.  The debugger lets you get inside the TIA and see the contents
@@ -794,7 +794,7 @@ in another part of the debugger).</p>
 <p><img src="graphics/debugger_iotab.png"></p>
 
 <p>As with the TIA tab, most of the values here will be self-explanatory to a 2600
-programmer, and almost all can be modified.  However, the SWCHx registers need
+developer, and almost all can be modified.  However, the SWCHx registers need
 further explanation:<p>
 <p>SWCHx(W) can be modified; here, the (W) stands for write.  Similarly,
 SWACNT/SWBCNT can be directly modified.  However, the results of reading back from
@@ -1153,7 +1153,7 @@ command; it will show either ROM or RAM space, not both at the same time.</li>
 <li>The standard VCS memory map has the cartridge port at locations
 $F000-$FFFF.  However, not all the address lines exist on a 6507, so
 the cartridge port is "mirrored" at every other 4K chunk of address
-space ($1000, $3000, up to $D000).  Some programmers find it easier
+space ($1000, $3000, up to $D000).  Some developers find it easier
 to think of the different banks of ROM as being at different addresses
 (such as: Bank 0 at $D000 and bank 1 at $F000). When such a ROM runs,
 the Program Counter can point to one of the mirrors instead of the main

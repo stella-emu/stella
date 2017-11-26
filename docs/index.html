@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 5.0.2</b></h4></center>
+  <center><h4><b>Release 5.1</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -281,14 +281,14 @@
       including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
-    <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual A26/BIN/ROM formats</li>
+    <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual raw A26/BIN/ROM formats</li>
     <li>Supports property file for setting the properties associated with games</li>
     <li>Supports the NTSC, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
     <li>Supports autodetection of display format for 50Hz vs. 60Hz modes</li>
     <li>Supports several "undocumented features" of the TIA graphics chip used by
       some games</li>
     <li>TIA emulation supports full collision checking, with ability to disable
-      both TIA sprites and collisions for each object separately</li>
+      TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
@@ -473,7 +473,7 @@
     <li>Search around the internet and find ROM images to download (websites such
       as <a href="http://atariage.com">AtariAge</a> and
       <a href="http://www.atarimania.com/rom_collection_archive_atari_2600_roms.html">
-      AtariMania/RomHunter</a> may be useful)</li>
+      AtariMania/RomHunter</a> may be useful). Many homebrewers make their ROMs available too.</li>
 
     <li>You can purchase the Atari 2600 Action Packs by Activision and use
     their ROM images</li>
@@ -1829,7 +1829,7 @@
 
     <tr>
       <td><pre>-freq &lt;number&gt;</pre></td>
-      <td>Set sound sample output frequency (11025,22050,31400,44100,48000)
+      <td>Set sound sample output frequency (11025, 22050, 31400, 44100, 48000)
         Default is 31400.  Do not change unless you experience sound
         issues.</td>
     </tr>
@@ -2056,7 +2056,7 @@
     <tr>
       <td><pre>-ctrlcombo &lt;1|0&gt;</pre></td>
       <td>Use control-x key combos.  This is normally enabled, since the
-      Quit command is tied to 'Control-q'.  However, there are times when
+      'Quit' command is tied to 'Control-q'.  However, there are times when
       a 2-player game is using either the 'f' or 'r' keys for movement,
       and pressing Control (for Fire) will perform an unwanted action
       associated with Control-r or Control-f.</td>
@@ -2108,7 +2108,7 @@
 
     <tr>
       <td><pre>-ssinterval &lt;number&gt;</pre></td>
-      <td>Set the interval in seconds between taking snapshots in continuous snapshot mode (currently, 1 - 10).</td>
+      <td>Set the interval in seconds between taking snapshots in continuous snapshot mode (currently 1 - 10).</td>
     </tr>
 
     <tr>
@@ -2974,7 +2974,7 @@
   initialized as a real EEPROM would be (containing all $FF).  The
   files can be manually deleted, which is very useful in testing
   cases where a ROM is accessing the EEPROM for the first time.  You can also
-  use the debugger to reset the EEPROM to a clean state.</p>
+  reset the EEPROM to a clean state.</p>
   </blockquote>
 
   <h2><b><a name="Debugger">8. Developer Options/Integrated Debugger</a></b></h2>
@@ -3036,7 +3036,7 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Player 0 <br/>Missile 0 <br/>Player 1 <br/>
             Missile 1 <br/>Playfield <br/>Ball </td>
-          <td>Set color for specific object in debug colors mode<br/>(disabled in ROM Launcher mode)</td><td>-tia.dbgcolors</td></tr>
+          <td>Set color for specific object in debug colors mode<br/>(PF0, PF1 and PF2 are have slightly different luminance,<br/>disabled in ROM Launcher mode)</td><td>-tia.dbgcolors</td></tr>
         </table>
       </td>
     </tr>
@@ -3175,7 +3175,7 @@
   <img src="graphics/cheat.png">
 
   <p>Currently, there are three types of cheatcodes available, all of which
-  must be entered in hexidecimal format:
+  must be entered in hexadecimal format:
   <ul>
     <li><p>Per-frame RAM cheats:<br>
       Evaluated each frame, and apply to RAM only.  Format as follows:
