@@ -135,7 +135,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myFrameRate =
     new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,
                      "Framerate ", lwidth, kFrameRateChanged);
-  myFrameRate->setMinValue(0); myFrameRate->setMaxValue(300);
+  myFrameRate->setMinValue(0); myFrameRate->setMaxValue(900);
   myFrameRate->setStepValue(10);
   wid.push_back(myFrameRate);
   myFrameRateLabel =
