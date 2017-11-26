@@ -2280,16 +2280,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
-    "clearsavestateifs",
-    "Clear all savestate points",
-    "Example: clearsavestateifss (no parameters)",
-    false,
-    true,
-    { kARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearsavestateifs)
-  },
-
-  {
     "clearconfig",
     "Clear Distella config directives [bank xx]",
     "Example: clearconfig 0, clearconfig 1",
@@ -2297,6 +2287,16 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeClearconfig)
+  },
+
+  {
+    "clearsavestateifs",
+    "Clear all savestate points",
+    "Example: clearsavestateifss (no parameters)",
+    false,
+    true,
+    { kARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeClearsavestateifs)
   },
 
   {
@@ -2776,7 +2776,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "rewind",
-    "Rewind state to last step/trace/scanline/frame...",
+    "Rewind state to last [xx] steps/traces/scanlines/frames...",
     "Example: rewind, rewind 5",
     false,
     true,
@@ -3089,7 +3089,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "unwind",
-    "Unwind state to next step/trace/scanline/frame...",
+    "Unwind state to next [xx] steps/traces/scanlines/frames...",
     "Example: unwind, unwind 5",
     false,
     true,

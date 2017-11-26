@@ -227,11 +227,14 @@ debugger without typing (or without typing much, anyway).</p>
 <p>While entering a command, label or function, you can type a partial name and
 press the Tab key to attempt to auto-complete it. If you've ever used
 "bash", this will be immediately familiar. If not, try it: load up
-a ROM, go to the debugger, type "print w" (but don't press Enter),
-then hit Tab. The "w" will change to "WSYNC" (since this is the only
-built-in label starting with a "w"). If there are multiple possible
-completions (try with "v" instead of "w"), you'll see a list of them,
-and your partial name will be completed as far as possible.</p>
+a ROM, go to the debugger, type "g" (but don't press Enter),
+then hit Tab. The "g" will change to "gfx" (since this is the only
+built-in command starting with a "g"). If there are multiple possible
+completions (try with "tr" instead of "g"), you'll see a list of them,
+and your partial name will be completed as far as possible.
+After the first character, the autocompletion completion considers all
+characters in the right order as a match (e.g. "twf" will be completed to
+"trapwriteif").</p>
 
 <p>Tab completion works on all labels: built-in, loaded from a symbol file,
 or set during debugging with the "define" command. It also works with
@@ -425,7 +428,7 @@ ROMs only check for input once per frame anyway.</p>
 
 <p>Conditional breaks appear in "listbreaks", numbered starting from
 zero.  You can remove a cond-break with "delbreakif number", where
-the number comes from "listbreaks".</p>
+the number comes from "listbreaks" or by entering the same conditional break again.</p>
 
 <p>Any time the debugger is entered due to a trap, breakpoint, or
 conditional break, the reason will be displayed in the status area
@@ -542,10 +545,13 @@ that holds 'number of scanlines' on an actual console).</p>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td> _bank</td><td> Currently selected bank</td></tr>
 <tr><td> _cclocks</td><td> Color clocks on a scanline</td></tr>
+<tr><td> _cycleshi</td><td> Higher 32 bits of number of cycles since emulation started</td></tr>
+<tr><td> _cycleslo</td><td> Lower 32 bits of number of cycles since emulation started</td></tr>
 <tr><td> _fcount</td><td> Number of frames since emulation started</td></tr>
 <tr><td> _fcycles</td><td> Number of cycles since frame started</td></tr>
 <tr><td> _rwport</td><td> Last address to attempt a read from the cart write port</td></tr>
 <tr><td> _scan</td><td> Current scanline count</td></tr>
+<tr><td> _scycles</td><td> Number of cycles in current scanline</td></tr>
 <tr><td> _vblank</td><td> Whether vertical blank is enabled (1 or 0)</td></tr>
 <tr><td> _vsync</td><td> Whether vertical sync is enabled (1 or 0)</td></tr>
 </table>
@@ -595,6 +601,11 @@ accesses to a memory address, rather than specific location in the
 program. They're useful for finding code that modifies TIA registers
 or memory.</p>
 
+<p>Traps can also combined with a condition ("trapif"). If an access
+to a memory access is caught, the condition is evaluated additionally.
+Only if the condition is true too, the emulations stops.
+</p>
+
 <p>An example: you are debugging a game, and you want to stop the
 emulation and enter the debugger whenever RESP0 is strobed. You'd use
 the command "trap RESP0" to set the trap, then exit the debugger. The
@@ -614,7 +625,7 @@ so the best we can do is stop before the next instruction runs.</p>
 <p>Traps come in two varieties: read access traps and write access traps.
 It is possible to set both types of trap on the same address (that's
 what the plain "trap" command does). To set a read or write only trap,
-use "trapread" or "trapwrite". To remove a trap, you just attempt
+use "trapread(if)" or "trapwrite(if)". To remove a trap, you just attempt
 to set it again: the commands actually toggle the trap on &amp; off. You
 can also get rid of all traps at once with the "cleartraps" command.</p>
 
@@ -626,78 +637,97 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
 Type "help 'cmd'" to see extended information about the given command.</p>
 
 <pre>
-            a - Set Accumulator to &lt;value&gt;
-         base - Set default base to &lt;base&gt;
-        break - Set/clear breakpoint at &lt;address&gt;
-      breakif - Set breakpoint on &lt;condition&gt;
-            c - Carry Flag: set (0 or 1), or toggle (no arg)
-        cheat - Use a cheat code (see manual for cheat types)
-  clearbreaks - Clear all breakpoints
-  clearconfig - Clear Distella config directives [bank xx]
-   cleartraps - Clear all traps
- clearwatches - Clear all watches
-          cls - Clear prompt area of text
-         code - Mark 'CODE' range in disassembly
-    colortest - Show value xx as TIA color
-            d - Carry Flag: set (0 or 1), or toggle (no arg)
-         data - Mark 'DATA' range in disassembly
-  debugcolors - Show Fixed Debug Colors information
-       define - Define label xx for address yy
-   delbreakif - Delete conditional breakif &lt;xx&gt;
-  delfunction - Delete function with label xx
-     delwatch - Delete watch &lt;xx&gt;
-       disasm - Disassemble address xx [yy lines] (default=PC)
-         dump - Dump data at address &lt;xx&gt; [to yy]
-         exec - Execute script file &lt;xx&gt;
-      exitrom - Exit emulator, return to ROM launcher
-        frame - Advance emulation by &lt;xx&gt; frames (default=1)
-     function - Define function name xx for expression yy
-          gfx - Mark 'GFX' range in disassembly
-         help - help &lt;command&gt;
-         jump - Scroll disassembly to address xx
-   listbreaks - List breakpoints
-   listconfig - List Distella config directives [bank xx]
-listfunctions - List user-defined functions
-    listtraps - List traps
-   loadconfig - Load Distella config file
-    loadstate - Load emulator state xx (0-9)
-            n - Negative Flag: set (0 or 1), or toggle (no arg)
-      palette - Show current TIA palette
-           pc - Set Program Counter to address xx
-         pgfx - Mark 'PGFX' range in disassembly
-        print - Evaluate/print expression xx in hex/dec/binary
-          ram - Show ZP RAM, or set address xx to yy1 [yy2 ...]
-        reset - Reset system to power-on state
-       rewind - Rewind state to last step/trace/scanline/frame
-         riot - Show RIOT timer/input status
-          rom - Set ROM address xx to yy1 [yy2 ...]
-          row - Mark 'ROW' range in disassembly
-          run - Exit debugger, return to emulator
-        runto - Run until string xx in disassembly
-      runtopc - Run until PC is set to value xx
-            s - Set Stack Pointer to value xx
-         save - Save breaks, watches, traps to file xx
-   saveconfig - Save Distella config file (with default name)
-      savedis - Save Distella disassembly (with default name)
-      saverom - Save (possibly patched) ROM (with default name)
-      saveses - Save console session to file xx
-     savesnap - Save current TIA image to PNG file
-    savestate - Save emulator state xx (valid args 0-9)
-     scanline - Advance emulation by &lt;xx&gt; scanlines (default=1)
-         step - Single step CPU [with count xx]
-          tia - Show TIA state
-        trace - Single step CPU over subroutines [with count xx]
-         trap - Trap read/write access to address(es) xx [yy]
-     trapread - Trap read access to address(es) xx [yy]
-    trapwrite - Trap write access to address(es) xx [yy]
-         type - Show disassembly type for address xx [yy]
-         uhex - Toggle upper/lowercase HEX display
-        undef - Undefine label xx (if defined)
-            v - Overflow Flag: set (0 or 1), or toggle (no arg)
-        watch - Print contents of address xx before every prompt
-            x - Set X Register to value xx
-            y - Set Y Register to value xx
-            z - Zero Flag: set (0 or 1), or toggle (no arg)
+                a - Set Accumulator to &lt;value&gt;
+             base - Set default base to &lt;base&gt;
+            break - Set/clear breakpoint at &lt;address&gt;
+          breakif - Set breakpoint on &lt;condition&gt;
+                c - Carry Flag: set (0 or 1), or toggle (no arg)
+            cheat - Use a cheat code (see manual for cheat types)
+      clearbreaks - Clear all breakpoints
+      clearconfig - Clear Distella config directives [bank xx]
+clearsavestateifs - Clear all savestate points
+       cleartraps - Clear all traps
+     clearwatches - Clear all watches
+              cls - Clear prompt area of text
+             code - Mark 'CODE' range in disassembly
+        colortest - Show value xx as TIA color
+                d - Carry Flag: set (0 or 1), or toggle (no arg)
+             data - Mark 'DATA' range in disassembly
+      debugcolors - Show Fixed Debug Colors information
+           define - Define label xx for address yy
+       delbreakif - Delete conditional breakif &lt;xx&gt;
+      delfunction - Delete function with label xx
+   delsavestateif - Delete conditional savestate point &lt;xx&gt;
+         delwatch - Delete watch &lt;xx&gt;
+           disasm - Disassemble address xx [yy lines] (default=PC)
+             dump - Dump data at address &lt;xx&gt; [to yy]
+             exec - Execute script file &lt;xx&gt;
+          exitrom - Exit emulator, return to ROM launcher
+            frame - Advance emulation by &lt;xx&gt; frames (default=1)
+         function - Define function name xx for expression yy
+              gfx - Mark 'GFX' range in disassembly
+             help - help &lt;command&gt;
+           joy0up - Set joystick 0 up direction to value &lt;x&gt; (0 or 1), or toggle (no arg)
+         joy0down - Set joystick 0 down direction to value &lt;x&gt; (0 or 1), or toggle (no arg)
+         joy0left - Set joystick 0 left direction to value &lt;x&gt; (0 or 1), or toggle (no arg)
+        joy0right - Set joystick 0 right direction to value <x> (0 or 1), or toggle (no arg)
+         joy0fire - Set joystick 0 fire button to value &lt;x&gt; (0 or 1), or toggle (no arg)
+           joy1up - Set joystick 1 up direction to value &lt;x&gt; (0 or 1), or toggle (no arg)
+         joy1down - Set joystick 1 down direction to value &lt;x&gt; (0 or 1), or toggle (no arg)
+         joy1left - Set joystick 1 left direction to value &lt;x&gt; (0 or 1), or toggle (no arg)
+        joy1right - Set joystick 1 right direction to value &lt;x&gt; (0 or 1), or toggle (no arg)
+         joy1fire - Set joystick 1 fire button to value &lt;x&gt; (0 or 1), or toggle (no arg)
+             jump - Scroll disassembly to address xx
+       listbreaks - List breakpoints
+       listconfig - List Distella config directives [bank xx]
+    listfunctions - List user-defined functions
+ listsavestateifs - List savestate points
+        listtraps - List traps
+       loadconfig - Load Distella config file
+        loadstate - Load emulator state xx (0-9)
+                n - Negative Flag: set (0 or 1), or toggle (no arg)
+          palette - Show current TIA palette
+               pc - Set Program Counter to address xx
+             pgfx - Mark 'PGFX' range in disassembly
+            print - Evaluate/print expression xx in hex/dec/binary
+              ram - Show ZP RAM, or set address xx to yy1 [yy2 ...]
+            reset - Reset system to power-on state
+           rewind - Rewind state to last [xx] steps/traces/scanlines/frames...
+             riot - Show RIOT timer/input status
+              rom - Set ROM address xx to yy1 [yy2 ...]
+              row - Mark 'ROW' range in disassembly
+              run - Exit debugger, return to emulator
+            runto - Run until string xx in disassembly
+          runtopc - Run until PC is set to value xx
+                s - Set Stack Pointer to value xx
+             save - Save breaks, watches, traps to file xx
+       saveconfig - Save Distella config file (with default name)
+          savedis - Save Distella disassembly (with default name)
+          saverom - Save (possibly patched) ROM (with default name)
+          saveses - Save console session to file xx
+         savesnap - Save current TIA image to PNG file
+        savestate - Save emulator state xx (valid args 0-9)
+      savestateif - Create savestate on &lt;condition&gt;
+         scanline - Advance emulation by &lt;xx&gt; scanlines (default=1)
+             step - Single step CPU [with count xx]
+        stepwhile - Single step CPU while &lt;condition&gt; is true
+              tia - Show TIA state
+            trace - Single step CPU over subroutines [with count xx]
+             trap - Trap read/write access to address(es) xx [yy]
+           trapif - On &lt;condition&gt; trap R/W access to address(es) xx [yy]
+         trapread - On Trap read access to address(es) xx [yy]
+       trapreadif - On &lt;condition&gt; trap read access to address(es) xx [yy]
+        trapwrite - Trap write access to address(es) xx [yy]
+      trapwriteif - On &lt;condition&gt; trap write access to address(es) xx [yy]
+             type - Show disassembly type for address xx [yy]
+             uhex - Toggle upper/lowercase HEX display
+            undef - Undefine label xx (if defined)
+           unwind - Unwind state to next [xx] steps/traces/scanlines/frames...
+                v - Overflow Flag: set (0 or 1), or toggle (no arg)
+            watch - Print contents of address xx before every prompt
+                x - Set X Register to value xx
+                y - Set Y Register to value xx
+                z - Zero Flag: set (0 or 1), or toggle (no arg)
 </pre>
 
 
@@ -806,8 +836,8 @@ as illustrated:</p>
 	option will draw all scanlines up to the vertical position where the
 	mouse was clicked.  Note that if you weren't in partial-frame mode,
 	this option will have no effect.</li>
-	<li><b>Set breakpoint</b>: Will set a conditional breakpoint at the
-	scanline where the mouse was clicked.  Currently, you'll need to use
+	<li><b>Toggle breakpoint</b>: Will toggle a conditional breakpoint at the
+	scanline where the mouse was clicked. You can to use
 	the Prompt Tab to turn the breakpoint off again.</li>
 	<li><b>Set zoom position</b>: Influences what is shown in the TIA
 	zoom area (further described in part (G).  The zoom area will
