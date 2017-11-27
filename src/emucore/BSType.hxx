@@ -26,9 +26,10 @@ enum class BSType {
   _64IN1, _128IN1,  _2K,    _3E,     _3EP,    _3F,    _4A50,
   _4K,    _4KSC,    _AR,    _BF,     _BFSC,   _BUS,   _CDF,
   _CM,    _CTY,     _CV,    _CVP,    _DASH,   _DF,    _DFSC,
-  _DPC,   _DPCP,    _E0,    _E7,     _EF,     _EFSC,  _F0,
-  _F4,    _F4SC,    _F6,    _F6SC,   _F8,     _F8SC,  _FA,
-  _FA2,   _FE,      _MDM,   _SB,     _UA,     _WD,    _X07,
+  _DPC,   _DPCP,    _E0,    _E7,     _E78K,   _EF,     _EFSC,
+  _F0,    _F4,    _F4SC,    _F6,    _F6SC,   _F8,     _F8SC,
+  _FA,    _FA2,   _FE,      _MDM,   _SB,     _UA,     _WD,
+  _X07,
 #ifdef CUSTOM_ARM
   _CUSTOM,
 #endif
@@ -75,6 +76,7 @@ static BSDescription BSList[int(BSType::NumSchemes)] = {
   { "DPC+",     "DPC+ (Enhanced DPC)"           },
   { "E0",       "E0 (8K Parker Bros)"           },
   { "E7",       "E7 (16K M-network)"            },
+  { "E78K",     "E78K (8K M-network)"           },
   { "EF",       "EF (64K H. Runner)"            },
   { "EFSC",     "EFSC (64K H. Runner + ram)"    },
   { "F0",       "F0 (Dynacom Megaboy)"          },

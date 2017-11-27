@@ -205,6 +205,11 @@ class CartDetector
     static bool isProbablyE7(const BytePtr& image, uInt32 size);
 
     /**
+    Returns true if the image is probably a E78K bankswitching cartridge
+    */
+    static bool isProbablyE78K(const BytePtr& image, uInt32 size);
+
+    /**
       Returns true if the image is probably an EF/EFSC bankswitching cartridge
     */
     static bool isProbablyEF(const BytePtr& image, uInt32 size, BSType& type);
@@ -212,7 +217,7 @@ class CartDetector
     /**
       Returns true if the image is probably an F6 bankswitching cartridge
     */
-    static bool isProbablyF6(const BytePtr& image, uInt32 size);
+    //static bool isProbablyF6(const BytePtr& image, uInt32 size);
 
     /**
       Returns true if the image is probably an FA2 bankswitching cartridge

@@ -37,6 +37,7 @@
 #include "CartDPCPlus.hxx"
 #include "CartE0.hxx"
 #include "CartE7.hxx"
+#include "CartE78K.hxx"
 #include "CartEF.hxx"
 #include "CartEFSC.hxx"
 #include "CartBF.hxx"
@@ -277,6 +278,8 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, BSType type,
       return make_unique<CartridgeE0>(image, size, osystem.settings());
     case BSType::_E7:
       return make_unique<CartridgeE7>(image, size, osystem.settings());
+    case BSType::_E78K:
+      return make_unique<CartridgeE78K>(image, size, osystem.settings());
     case BSType::_EF:
       return make_unique<CartridgeEF>(image, size, osystem.settings());
     case BSType::_EFSC:
@@ -378,6 +381,8 @@ BSType CartDetector::autodetectType(const BytePtr& image, uInt32 size)
       type = BSType::_FE;
     else if(isProbably0840(image, size))
       type = BSType::_0840;
+    else if(isProbablyE78K(image, size))
+      type = BSType::_E78K;
     else
       type = BSType::_F8;
   }
@@ -743,6 +748,27 @@ bool CartDetector::isProbablyE7(const BytePtr& image, uInt32 size)
     { 0x8D, 0xE7, 0x1F }   // STA $1FE7
   };
   for(uInt32 i = 0; i < 7; ++i)
+    if(searchForBytes(image.get(), size, signature[i], 3, 1))
+      return true;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyE78K(const BytePtr& image, uInt32 size)
+{
+  // E7 cart bankswitching is triggered by accessing addresses
+  // $FE0 to $FE6 using absolute non-indexed addressing
+  // To eliminate false positives (and speed up processing), we
+  // search for only certain known signatures
+  // Thanks to "stella@casperkitty.com" for this advice
+  // These signatures are attributed to the MESS project
+  uInt8 signature[3][3] = {
+    { 0xAD, 0xE4, 0xFF },  // LDA $FFE4
+    { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
+    { 0xAD, 0xE6, 0x1F },  // LDA $1FE6
+  };
+  for(uInt32 i = 0; i < 3; ++i)
     if(searchForBytes(image.get(), size, signature[i], 3, 1))
       return true;
 

@@ -268,6 +268,7 @@
     <ClCompile Include="..\debugger\gui\CartDPCPlusWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartDPCWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartE0Widget.cxx" />
+    <ClCompile Include="..\debugger\gui\CartE78KWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartE7Widget.cxx" />
     <ClCompile Include="..\debugger\gui\CartEFSCWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartEFWidget.cxx" />
@@ -282,6 +283,7 @@
     <ClCompile Include="..\debugger\gui\CartFAWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartFEWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartMDMWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\CartMNetworkWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartSBWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartUAWidget.cxx" />
@@ -314,6 +316,8 @@
     <ClCompile Include="..\emucore\CartDFSC.cxx" />
     <ClCompile Include="..\emucore\CartFA2.cxx" />
     <ClCompile Include="..\emucore\CartMDM.cxx" />
+    <ClCompile Include="..\emucore\CartMNetwork.cxx" />
+    <ClCompile Include="..\emucore\CartE78K.cxx" />
     <ClCompile Include="..\emucore\CartWD.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\EventJoyHandler.cxx" />
@@ -549,6 +553,7 @@
     <ClInclude Include="..\debugger\gui\CartDPCPlusWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartDPCWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartE0Widget.hxx" />
+    <ClInclude Include="..\debugger\gui\CartE78KWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartE7Widget.hxx" />
     <ClInclude Include="..\debugger\gui\CartEFSCWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartEFWidget.hxx" />
@@ -563,6 +568,7 @@
     <ClInclude Include="..\debugger\gui\CartFAWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartFEWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartMDMWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\CartMNetworkWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartSBWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartUAWidget.hxx" />
@@ -602,6 +608,8 @@
     <ClInclude Include="..\emucore\CartDFSC.hxx" />
     <ClInclude Include="..\emucore\CartFA2.hxx" />
     <ClInclude Include="..\emucore\CartMDM.hxx" />
+    <ClInclude Include="..\emucore\CartMNetwork.hxx" />
+    <ClInclude Include="..\emucore\CartE78K.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\EventHandlerConstants.hxx" />

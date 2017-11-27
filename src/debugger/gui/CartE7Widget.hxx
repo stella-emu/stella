@@ -18,51 +18,22 @@
 #ifndef CARTRIDGEE7_WIDGET_HXX
 #define CARTRIDGEE7_WIDGET_HXX
 
-class CartridgeE7;
-class PopUpWidget;
+#include "CartMNetworkWidget.hxx"
 
-#include "CartDebugWidget.hxx"
-
-class CartridgeE7Widget : public CartDebugWidget
+class CartridgeE7Widget : public CartridgeMNetworkWidget
 {
   public:
     CartridgeE7Widget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
-                      CartridgeE7& cart);
+                      CartridgeMNetwork& cart);
     virtual ~CartridgeE7Widget() = default;
 
-  private:
-    CartridgeE7& myCart;
-    PopUpWidget *myLower2K, *myUpper256B;
-
-    struct CartState {
-      ByteArray internalram;
-    };
-    CartState myOldState;
-
-    enum {
-      kLowerChanged = 'lwCH',
-      kUpperChanged = 'upCH'
-    };
+  protected:
+    const char* getSpotLower(int idx);
+    const char* getSpotUpper(int idx);
 
   private:
-    void saveOldState() override;
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    // end of functions for Cartridge RAM tab
-
     // Following constructors and assignment operators not supported
     CartridgeE7Widget() = delete;
     CartridgeE7Widget(const CartridgeE7Widget&) = delete;
