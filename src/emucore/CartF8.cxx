@@ -192,7 +192,7 @@ bool CartridgeF8::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeF8SC::load" << endl;
+    cerr << "ERROR: CartridgeF8::load" << endl;
     return false;
   }
 
