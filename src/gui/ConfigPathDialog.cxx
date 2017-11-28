@@ -54,7 +54,7 @@ ConfigPathDialog::ConfigPathDialog(
   // ROM path
   ButtonWidget* romButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Rom path" + ELLIPSIS, kChooseRomDirCmd);
+                     "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(romButton);
   xpos += buttonWidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
