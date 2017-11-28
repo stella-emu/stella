@@ -187,8 +187,8 @@ class CartridgeMNetwork : public Cartridge
     // Indicates which 256 byte bank of RAM is being used
     uInt16 myCurrentRAM;
 
-    // The number of the fixed slice (bankCount() - 1)
-    uInt32 myFixedSlice;
+    // The number of the RAM slice (== bankCount() - 1)
+    uInt32 myRAMSlice;
 
   private:
     // Following constructors and assignment operators not supported

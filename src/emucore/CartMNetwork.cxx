@@ -33,7 +33,7 @@ void CartridgeMNetwork::initialize(const BytePtr& image, uInt32 size)
 
   // Remember startup bank
   myStartBank = 0;
-  myFixedSlice = bankCount() - 1;
+  myRAMSlice = bankCount() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,11 +67,11 @@ void CartridgeMNetwork::install(System& system)
   for(uInt16 addr = 0x1A00; addr < (0x1FE0U & ~System::PAGE_MASK);
       addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[myFixedSlice * BANK_SIZE + (addr & (BANK_SIZE-1))];
-    access.codeAccessBase = &myCodeAccessBase[myFixedSlice * BANK_SIZE + (addr & (BANK_SIZE-1))];
+    access.directPeekBase = &myImage[myRAMSlice * BANK_SIZE + (addr & (BANK_SIZE-1))];
+    access.codeAccessBase = &myCodeAccessBase[myRAMSlice * BANK_SIZE + (addr & (BANK_SIZE-1))];
     mySystem->setPageAccess(addr, access);
   }
-  myCurrentSlice[1] = myFixedSlice;
+  myCurrentSlice[1] = myRAMSlice;
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);
@@ -87,7 +87,7 @@ uInt8 CartridgeMNetwork::peek(uInt16 address)
   // Switch banks if necessary
   checkSwitchBank(address);
 
-  if((myCurrentSlice[0] == myFixedSlice) && (address < 0x0400))
+  if((myCurrentSlice[0] == myRAMSlice) && (address < 0x0400))
   {
     // Reading from the 1K write port @ $1000 triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
@@ -173,7 +173,7 @@ bool CartridgeMNetwork::bank(uInt16 slice)
   uInt16 offset = slice << 11;
 
   // Setup the page access methods for the current bank
-  if(slice != myFixedSlice)
+  if(slice != myRAMSlice)
   {
     System::PageAccess access(this, System::PA_READ);
 
@@ -223,7 +223,7 @@ bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
 
   if(address < 0x0800)
   {
-    if(myCurrentSlice[0] == myFixedSlice)
+    if(myCurrentSlice[0] == myRAMSlice)
     {
       // Normally, a write to the read port won't do anything
       // However, the patch command is special in that ignores such
