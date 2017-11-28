@@ -43,5 +43,12 @@ void CartridgeE7::checkSwitchBank(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE7::bankCount() const
 {
-  return 8;
+  return BANK_COUNT;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeE7::romSize()
+{
+  return bankCount() * BANK_SIZE;
+}
+

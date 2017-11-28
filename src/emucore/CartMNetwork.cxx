@@ -28,8 +28,8 @@ CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
 void CartridgeMNetwork::initialize(const BytePtr& image, uInt32 size)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(bankCount() * BANK_SIZE, size));
-  createCodeAccessBase(bankCount() * BANK_SIZE + RAM_SIZE);
+  memcpy(myImage, image.get(), std::min(romSize(), size));
+  createCodeAccessBase(romSize() + RAM_SIZE);
 
   // Remember startup bank
   myStartBank = 0;
@@ -49,6 +49,25 @@ void CartridgeMNetwork::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size, uInt16 directOffset, uInt8* directData,
+                                  uInt16 codeOffset, System::PageAccessType type, uInt16 addrMask)
+{
+  if(addrMask == 0)
+    addrMask = size - 1;
+  System::PageAccess access(this, type);
+
+  for(uInt16 addr = addrFrom; addr < addrFrom + size; addr += System::PAGE_SIZE)
+  {
+    if (type == System::PA_READ)
+      access.directPeekBase = &directData[directOffset + (addr & addrMask)];
+    if(type == System::PA_WRITE)
+      access.directPokeBase = &directData[directOffset + (addr & addrMask)];
+    access.codeAccessBase = &myCodeAccessBase[codeOffset + (addr & addrMask)];
+    mySystem->setPageAccess(addr, access);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetwork::install(System& system)
 {
   mySystem = &system;
@@ -64,13 +83,8 @@ void CartridgeMNetwork::install(System& system)
   }
 
   // Setup the second segment to always point to the last ROM slice
-  for(uInt16 addr = 0x1A00; addr < (0x1FE0U & ~System::PAGE_MASK);
-      addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[myRAMSlice * BANK_SIZE + (addr & (BANK_SIZE-1))];
-    access.codeAccessBase = &myCodeAccessBase[myRAMSlice * BANK_SIZE + (addr & (BANK_SIZE-1))];
-    mySystem->setPageAccess(addr, access);
-  }
+  setAccess(0x1A00, 0x1FE0U & ~System::PAGE_MASK - 0x1A00,
+            myRAMSlice * BANK_SIZE, myImage, myRAMSlice * BANK_SIZE, System::PA_READ, BANK_SIZE - 1);
   myCurrentSlice[1] = myRAMSlice;
 
   // Install some default banks for the RAM and first segment
@@ -141,25 +155,11 @@ void CartridgeMNetwork::bankRAM(uInt16 bank)
   uInt16 offset = bank << 8; // * RAM_SLICE_SIZE (256)
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_WRITE);
-
-  // Set the page accessing method for the 256 bytes of RAM writing pages
-  for(uInt16 addr = 0x1800; addr < 0x1900; addr += System::PAGE_SIZE)
-  {
-    access.directPokeBase = &myRAM[1024 + offset + (addr & 0x00FF)];
-    access.codeAccessBase = &myCodeAccessBase[bankCount() * BANK_SIZE + BANK_SIZE / 2 + offset + (addr & 0x00FF)];
-    mySystem->setPageAccess(addr, access);
-  }
-
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  access.directPokeBase = nullptr;
-  access.type = System::PA_READ;
-  for(uInt16 addr = 0x1900; addr < 0x1A00; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myRAM[1024 + offset + (addr & 0x00FF)];
-    access.codeAccessBase = &myCodeAccessBase[bankCount() * BANK_SIZE + BANK_SIZE / 2 + offset + (addr & 0x00FF)];
-    mySystem->setPageAccess(addr, access);
-  }
+  setAccess(0x1800, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PA_WRITE);
+  // Set the page accessing method for the 256 bytes of RAM reading pages
+  setAccess(0x1900, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PA_READ);
+
   myBankChanged = true;
 }
 
@@ -170,42 +170,21 @@ bool CartridgeMNetwork::bank(uInt16 slice)
 
   // Remember what bank we're in
   myCurrentSlice[0] = slice;
-  uInt16 offset = slice << 11; // * BANK_SIZE (2048)
 
   // Setup the page access methods for the current bank
   if(slice != myRAMSlice)
   {
-    System::PageAccess access(this, System::PA_READ);
+    uInt16 offset = slice << 11; // * BANK_SIZE (2048)
 
     // Map ROM image into first segment
-    for(uInt16 addr = 0x1000; addr < 0x1000 + BANK_SIZE; addr += System::PAGE_SIZE)
-    {
-      access.directPeekBase = &myImage[offset + (addr & (BANK_SIZE - 1))];
-      access.codeAccessBase = &myCodeAccessBase[offset + (addr & (BANK_SIZE - 1))];
-      mySystem->setPageAccess(addr, access);
-    }
+    setAccess(0x1000, BANK_SIZE, offset, myImage, offset, System::PA_READ);
   }
   else
   {
-    System::PageAccess access(this, System::PA_WRITE);
-
     // Set the page accessing method for the 1K slice of RAM writing pages
-    for(uInt16 addr = 0x1000; addr < 0x1000 + BANK_SIZE / 2; addr += System::PAGE_SIZE)
-    {
-      access.directPokeBase = &myRAM[addr & (BANK_SIZE/2-1)];
-      access.codeAccessBase = &myCodeAccessBase[bankCount() * BANK_SIZE + (addr & (BANK_SIZE / 2 - 1))];
-      mySystem->setPageAccess(addr, access);
-    }
-
+    setAccess(0x1000,                 BANK_SIZE / 2, 0, myRAM, romSize(), System::PA_WRITE);
     // Set the page accessing method for the 1K slice of RAM reading pages
-    access.directPokeBase = nullptr;
-    access.type = System::PA_READ;
-    for(uInt16 addr = 0x1000 + BANK_SIZE / 2; addr < 0x1000 + BANK_SIZE; addr += System::PAGE_SIZE)
-    {
-      access.directPeekBase = &myRAM[addr & (BANK_SIZE / 2 - 1)];
-      access.codeAccessBase = &myCodeAccessBase[bankCount() * BANK_SIZE + (addr & (BANK_SIZE / 2 - 1))];
-      mySystem->setPageAccess(addr, access);
-    }
+    setAccess(0x1000 + BANK_SIZE / 2, BANK_SIZE / 2, 0, myRAM, romSize(), System::PA_READ);
   }
   return myBankChanged = true;
 }

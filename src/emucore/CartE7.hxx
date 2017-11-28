@@ -72,9 +72,19 @@ class CartridgeE7 : public CartridgeMNetwork
 
   private:
     /**
+      Query the size of the BS type.
+    */
+    uInt32 romSize();
+
+    /**
       Check hotspots and switch bank if triggered.
     */
     void checkSwitchBank(uInt16 address) override;
+
+    // Number of banks
+    static const uInt32 BANK_COUNT = 8;
+    // Size of ROM
+    static const uInt32 ROM_SIZE = BANK_COUNT * BANK_SIZE;
 
   private:
     // Following constructors and assignment operators not supported

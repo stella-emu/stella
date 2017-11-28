@@ -21,6 +21,8 @@
 
 class System;
 
+#include "System.hxx"
+
 #include "bspf.hxx"
 #include "Cart.hxx"
 
@@ -165,18 +167,27 @@ class CartridgeMNetwork : public Cartridge
     */
     void bankRAM(uInt16 bank);
 
-  private:
     // Size of a ROM or RAM bank
     static const uInt32 BANK_SIZE = 0x800; // 2K
+
+  private:
     // Size of RAM in the cart
     static const uInt32 RAM_SIZE = 0x800; // 1K + 4 * 256B = 2K
-    // number of slices with 4K address space
+    // Number of slices with 4K address space
     static const uInt32 NUM_SEGMENTS = 2;
+
+    /**
+      Query the size of the BS type.
+    */
+    virtual uInt32 romSize() = 0;
 
     /**
       Check hotspots and switch bank if triggered.
     */
     virtual void checkSwitchBank(uInt16 address) = 0;
+
+    void setAccess(uInt16 addrFrom, uInt16 size, uInt16 directOffset, uInt8* directData,
+                   uInt16 codeOffset, System::PageAccessType type, uInt16 addrMask = 0);
 
   private:
     // The 16K ROM image of the cartridge (works for E78K too)

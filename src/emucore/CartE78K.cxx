@@ -43,5 +43,12 @@ void CartridgeE78K::checkSwitchBank(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE78K::bankCount() const
 {
-  return 4;
+  return BANK_COUNT;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeE78K::romSize()
+{
+  return bankCount() * BANK_SIZE;
+}
+
