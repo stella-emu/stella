@@ -757,16 +757,14 @@ bool CartDetector::isProbablyE7(const BytePtr& image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyE78K(const BytePtr& image, uInt32 size)
 {
-  // E7 cart bankswitching is triggered by accessing addresses
-  // $FE0 to $FE6 using absolute non-indexed addressing
+  // E78K cart bankswitching is triggered by accessing addresses
+  // $FE4 to $FE6 using absolute non-indexed addressing
   // To eliminate false positives (and speed up processing), we
   // search for only certain known signatures
-  // Thanks to "stella@casperkitty.com" for this advice
-  // These signatures are attributed to the MESS project
   uInt8 signature[3][3] = {
     { 0xAD, 0xE4, 0xFF },  // LDA $FFE4
     { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
-    { 0xAD, 0xE6, 0x1F },  // LDA $1FE6
+    { 0xAD, 0xE6, 0xFF },  // LDA $FFE6
   };
   for(uInt32 i = 0; i < 3; ++i)
     if(searchForBytes(image.get(), size, signature[i], 3, 1))
