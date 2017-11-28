@@ -166,8 +166,12 @@ class CartridgeMNetwork : public Cartridge
     void bankRAM(uInt16 bank);
 
   private:
-    const uInt32 BANK_SIZE = 0x800;
-    const uInt32 RAM_SIZE = 0x800;
+    // Size of a ROM or RAM bank
+    static const uInt32 BANK_SIZE = 0x800; // 2K
+    // Size of RAM in the cart
+    static const uInt32 RAM_SIZE = 0x800; // 1K + 4 * 256B = 2K
+    // number of slices with 4K address space
+    static const uInt32 NUM_SEGMENTS = 2;
 
     /**
       Check hotspots and switch bank if triggered.
@@ -175,14 +179,14 @@ class CartridgeMNetwork : public Cartridge
     virtual void checkSwitchBank(uInt16 address) = 0;
 
   private:
-    // The 16K ROM image of the cartridge
-    uInt8 myImage[16384];
+    // The 16K ROM image of the cartridge (works for E78K too)
+    uInt8 myImage[BANK_SIZE * 8];
 
-    // The 2048 bytes of RAM
-    uInt8 myRAM[2048];
+    // The 2K of RAM
+    uInt8 myRAM[RAM_SIZE];
 
     // Indicates which slice is in the segment
-    uInt16 myCurrentSlice[2];
+    uInt16 myCurrentSlice[NUM_SEGMENTS];
 
     // Indicates which 256 byte bank of RAM is being used
     uInt16 myCurrentRAM;
