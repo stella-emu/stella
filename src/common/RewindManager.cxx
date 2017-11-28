@@ -185,7 +185,7 @@ string RewindManager::getMessage(RewindState& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getUnitString(Int64 cycles)
 {
-  const Int64 scanlines = myOSystem.console().tia().scanlinesLastFrame();
+  const Int64 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
   const bool isNTSC = scanlines <= 285; // TODO: replace magic number
   const Int64 NTSC_FREQ = 1193182; // ~76*262*60
   const Int64 PAL_FREQ = 1182298; // ~76*312*50

@@ -43,6 +43,10 @@ void CartridgeMNetwork::reset()
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);
+
+  // define random startup bank
+  randomizeStartBank();
+
   bank(myStartBank);
 
   myBankChanged = true;
