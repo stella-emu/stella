@@ -30,7 +30,7 @@ CartridgeF0Widget::CartridgeF0Widget(
 
   ostringstream info;
   info << "64K Megaboy F0 cartridge, 16 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "\n"
+       << "Startup bank = " << cart.myStartBank << "or undetermined\n"
        << "Bankswitch triggered by accessing $1FF0\n";
 
   // Eventually, we should query this from the debugger/disassembler

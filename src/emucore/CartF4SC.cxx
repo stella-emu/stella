@@ -37,6 +37,9 @@ void CartridgeF4SC::reset()
 {
   initializeRAM(myRAM, 128);
 
+  // define random startup bank
+  randomizeStartBank();
+
   // Upon reset we switch to the startup bank
   bank(myStartBank);
 }

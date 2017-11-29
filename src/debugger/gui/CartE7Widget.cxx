@@ -29,14 +29,14 @@ CartridgeE7Widget::CartridgeE7Widget(
   info << "E7 cartridge, 8 2K slices ROM + 2 1K RAM\n"
        << "Lower 2K accessible @ $F000 - $F7FF\n"
        << "  Slice 0 - 6 of ROM (hotspots $FE0 to $FE6)\n"
-       << "  Slice 0 (1K) of RAM (hotspot $FE7)\n"
+       << "  Slice 7 (1K) of RAM (hotspot $FE7)\n"
        << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
        << "256B RAM accessible @ $F800 - $F9FF\n"
        << "  Hotspots $FE8 - $FEB (256B of RAM slice 1)\n"
        << "    $F900 - $F9FF (R), $F800 - $F8FF (W)\n"
        << "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
        << "  Always points to last 1.5K of ROM\n"
-       << "Startup slices = " << cart.myStartBank << " / 0\n";
+       << "Startup slices = 0 / 0 or undetermined\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler

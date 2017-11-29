@@ -34,7 +34,7 @@ CartridgeF4SCWidget::CartridgeF4SCWidget(
   info << "Standard F4SC cartridge, eight 4K banks\n"
        << "128 bytes RAM @ $F000 - $F0FF\n"
        << "  $F080 - $F0FF (R), $F000 - $F07F (W)\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.myStartBank << "or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF4; i < 8; ++i, offset += 0x1000)

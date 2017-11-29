@@ -19,10 +19,7 @@
 #ifndef CARTRIDGE_MNETWORK_HXX
 #define CARTRIDGE_MNETWORK_HXX
 
-class System;
-
 #include "System.hxx"
-
 #include "bspf.hxx"
 #include "Cart.hxx"
 
@@ -57,7 +54,7 @@ class System;
   slices in the lower 2K area, and the last for RAM in the lower
   2K area."
 
-  There are 8K and 16K variations.
+  There are 8K, 12K and 16K variations, with or without RAM.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */

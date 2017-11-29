@@ -34,7 +34,7 @@ CartridgeFAWidget::CartridgeFAWidget(
   info << "CBS RAM+ FA cartridge, three 4K banks\n"
        << "256 bytes RAM @ $F000 - $F1FF\n"
        << "  $F100 - $F1FF (R), $F000 - $F0FF (W)\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.myStartBank << "or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF8; i < 3; ++i, offset += 0x1000)

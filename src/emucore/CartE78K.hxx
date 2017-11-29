@@ -80,8 +80,6 @@ class CartridgeE78K : public CartridgeMNetwork
 
     // Number of banks
     static const uInt32 BANK_COUNT = 4;
-    // Size of ROM
-    static const uInt32 ROM_SIZE = BANK_COUNT * BANK_SIZE;
 
   private:
     // Following constructors and assignment operators not supported

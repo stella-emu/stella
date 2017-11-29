@@ -41,12 +41,13 @@ void CartridgeMNetwork::reset()
 {
   initializeRAM(myRAM, RAM_SIZE);
 
-  // Install some default banks for the RAM and first segment
-  bankRAM(0);
-
-  // define random startup bank
+  // define random startup banks
   randomizeStartBank();
+  uInt32 ramBank = mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.bankrandom" : "plr.bankrandom") ?
+    mySystem->randGenerator().next() % 4 : 0;
 
+  // Install some default banks for the RAM and first segment
+  bankRAM(ramBank);
   bank(myStartBank);
 
   myBankChanged = true;

@@ -30,7 +30,7 @@ CartridgeF6Widget::CartridgeF6Widget(
 
   ostringstream info;
   info << "Standard F6 cartridge, four 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.myStartBank << "or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF6; i < 4; ++i, offset += 0x1000)

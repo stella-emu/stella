@@ -34,7 +34,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
        << "DPC registers accessible @ $F000 - $F07F\n"
        << "  $F000 - $F03F (R), $F040 - $F07F (W)\n"
 
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.myStartBank << "or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF8; i < 2; ++i, offset += 0x1000)
