@@ -30,7 +30,7 @@ CartridgeE78KWidget::CartridgeE78KWidget(
   info << "E78K cartridge, 4 2K slices ROM + 2 1K RAM\n"
        << "Lower 2K accessible @ $F000 - $F7FF\n"
        << "  Slice 0 - 2 of ROM (hotspots $FE4 to $FE6)\n"
-       << "  Slice 3 (1K) of RAM (hotspot $FE7)\n"
+       << "  Slice 7 (1K) of RAM (hotspot $FE7)\n"
        << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
        << "256B RAM accessible @ $F800 - $F9FF\n"
        << "  Hotspots $FE8 - $FEB (256B of RAM slice 1)\n"

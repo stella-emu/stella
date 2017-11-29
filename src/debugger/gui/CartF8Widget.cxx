@@ -30,7 +30,7 @@ CartridgeF8Widget::CartridgeF8Widget(
 
   ostringstream info;
   info << "Standard F8 cartridge, two 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "or undetermined\n";
+       << "Startup bank = " << cart.myStartBank << " or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF8; i < 2; ++i, offset += 0x1000)
