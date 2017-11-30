@@ -34,12 +34,20 @@ Cartridge3F::Cartridge3F(const BytePtr& image, uInt32 size,
   createCodeAccessBase(mySize);
 
   // Remember startup bank
-  myStartBank = 0;
+  myStartBank = bankCount() - 1; // last bank
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3F::reset()
 {
+  // define random startup banks
+  // Note: This works for all Tigervision ROMs except for one version of Polaris
+  //   (md5: 203049f4d8290bb4521cc4402415e737) which requires 3 as startup bank
+  //   (or non-randomized RAM). All other ROMs take care of other startup banks.
+  //   The problematic version is most likely an incorrect dump with wrong
+  //   startup vectors.
+  randomizeStartBank();
+
   // We'll map the startup bank into the first segment upon reset
   bank(myStartBank);
 }
