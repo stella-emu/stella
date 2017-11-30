@@ -80,7 +80,7 @@ class CartridgeE78K : public CartridgeMNetwork
     void checkSwitchBank(uInt16 address) override;
 
     // Number of banks
-    static const uInt32 BANK_COUNT = 4;
+    static constexpr uInt32 BANK_COUNT = 4;
 
   private:
     // Following constructors and assignment operators not supported

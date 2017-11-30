@@ -20,11 +20,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
-                         const Settings& settings)
+                                     const Settings& settings)
   : Cartridge(settings),
     myCurrentRAM(0)
-{}
+{
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetwork::initialize(const BytePtr& image, uInt32 size)
 {
   // Copy the ROM image into my buffer
@@ -54,8 +56,9 @@ void CartridgeMNetwork::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size, uInt16 directOffset, uInt8* directData,
-                                  uInt16 codeOffset, System::PageAccessType type, uInt16 addrMask)
+void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
+    uInt16 directOffset, uInt8* directData, uInt16 codeOffset,
+    System::PageAccessType type, uInt16 addrMask)
 {
   if(addrMask == 0)
     addrMask = size - 1;
@@ -90,7 +93,7 @@ void CartridgeMNetwork::install(System& system)
             0, nullptr, 0x1fc0, System::PA_NONE, 0x1fc0);*/
 
   // Setup the second segment to always point to the last ROM slice
-  setAccess(0x1A00, 0x1FE0U & ~System::PAGE_MASK - 0x1A00,
+  setAccess(0x1A00, 0x1FE0U & (~System::PAGE_MASK - 0x1A00),
             myRAMSlice * BANK_SIZE, myImage, myRAMSlice * BANK_SIZE, System::PA_READ, BANK_SIZE - 1);
   myCurrentSlice[1] = myRAMSlice;
 

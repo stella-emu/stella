@@ -165,13 +165,13 @@ class CartridgeMNetwork : public Cartridge
     void bankRAM(uInt16 bank);
 
     // Size of a ROM or RAM bank
-    static const uInt32 BANK_SIZE = 0x800; // 2K
+    static constexpr uInt32 BANK_SIZE = 0x800; // 2K
 
   private:
     // Size of RAM in the cart
-    static const uInt32 RAM_SIZE = 0x800; // 1K + 4 * 256B = 2K
+    static constexpr uInt32 RAM_SIZE = 0x800; // 1K + 4 * 256B = 2K
     // Number of slices with 4K address space
-    static const uInt32 NUM_SEGMENTS = 2;
+    static constexpr uInt32 NUM_SEGMENTS = 2;
 
     /**
       Query the size of the BS type.
