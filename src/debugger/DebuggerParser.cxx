@@ -1054,72 +1054,91 @@ void DebuggerParser::executeDump()
     dump(commandResult, args[0], args[0] + 127);
   else if(argCount == 2 || args[2] == 0)
     dump(commandResult, args[0], args[1]);
-  else {
+  else
+  {
     ostringstream file;
-    file << debugger.myOSystem.snapshotSaveDir() << debugger.myOSystem.console().properties().get(Cartridge_Name) << "_dbg_";
-    if (execDepth > 0) {
+    file << debugger.myOSystem.defaultSaveDir() << debugger.myOSystem.console().properties().get(Cartridge_Name) << "_dbg_";
+    if(execDepth > 0)
+    {
       file << execPrefix;
     }
-    else {
-      file << std::hex << std::setw(8) << std::setfill('0') << uInt32(debugger.myOSystem.getTicks()/1000);
+    else
+    {
+      file << std::hex << std::setw(8) << std::setfill('0') << uInt32(debugger.myOSystem.getTicks() / 1000);
     }
     file << ".dump";
     FilesystemNode node(file.str());
     // cout << "dump " << args[0] << "-" << args[1] << " to " << file.str() << endl;
     ofstream ofs(node.getPath(), ofstream::out | ofstream::app);
     if(!ofs.is_open())
-  {
+    {
       outputCommandError("Unable to append dump to file " + node.getShortPath(), myCommand);
-    return;
-  }
-    if ((args[2] & 0x01) != 0) {
+      return;
+    }
+    if((args[2] & 0x07) != 0)
+      commandResult << "dumped ";
+    if((args[2] & 0x01) != 0)
+    {
       // dump memory
       dump(ofs, args[0], args[1]);
-}
-    if ((args[2] & 0x02) != 0) {
+      commandResult << "bytes from $" << hex << args[0] << " to $" << hex << args[1];
+      if((args[2] & 0x06) != 0)
+        commandResult << ", ";
+    }
+    if((args[2] & 0x02) != 0)
+    {
       // dump CPU state
       CpuDebug& cpu = debugger.cpuDebug();
+      ofs << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n";
       ofs << "XC: "
-          << Base::toString(cpu.pc()&0xff) << " "    // PC lsb
-          << Base::toString(cpu.pc()>>8)   << " "    // PC msb
-          << Base::toString(cpu.sp())      << " "    // SP
-          << Base::toString(cpu.a())       << " "    // A
-          << Base::toString(cpu.x())       << " "    // X
-          << Base::toString(cpu.y())       << " "    // Y
-          << Base::toString(0)             << " "    // unused
-          << Base::toString(0)             << " - "  // unused
-          << Base::toString(cpu.n())       << " "    // N (flag)
-          << Base::toString(cpu.v())       << " "    // V (flag)
-          << Base::toString(cpu.b())       << " "    // B (flag)
-          << Base::toString(cpu.d())       << " "    // D (flag)
-          << Base::toString(cpu.i())       << " "    // I (flag)
-          << Base::toString(cpu.z())       << " "    // Z (flag)
-          << Base::toString(cpu.c())       << " "    // C (flag)
-          << Base::toString(0)             << " "    // unused
-          << endl;
+        << Base::toString(cpu.pc() & 0xff) << " "    // PC lsb
+        << Base::toString(cpu.pc() >> 8) << " "    // PC msb
+        << Base::toString(cpu.sp()) << " "    // SP
+        << Base::toString(cpu.a()) << " "    // A
+        << Base::toString(cpu.x()) << " "    // X
+        << Base::toString(cpu.y()) << " "    // Y
+        << Base::toString(0) << " "    // unused
+        << Base::toString(0) << " - "  // unused
+        << Base::toString(cpu.n()) << " "    // N (flag)
+        << Base::toString(cpu.v()) << " "    // V (flag)
+        << Base::toString(cpu.b()) << " "    // B (flag)
+        << Base::toString(cpu.d()) << " "    // D (flag)
+        << Base::toString(cpu.i()) << " "    // I (flag)
+        << Base::toString(cpu.z()) << " "    // Z (flag)
+        << Base::toString(cpu.c()) << " "    // C (flag)
+        << Base::toString(0) << " "    // unused
+        << endl;
+      commandResult << "CPU state";
+      if((args[2] & 0x04) != 0)
+        commandResult << ", ";
     }
-    if ((args[2] & 0x04) != 0) {
+    if((args[2] & 0x04) != 0)
+    {
       // dump SWCHx/INPTx state
+      ofs << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n";
       ofs << "XS: "
-          << Base::toString(debugger.peek(0x280)) << " "    // SWCHA
-          << Base::toString(0) << " "    // unused
-          << Base::toString(debugger.peek(0x282)) << " "    // SWCHB
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " - "  // unused
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " "    // unused
-          << Base::toString(debugger.peek(TIARegister::INPT4)) << " "
-          << Base::toString(debugger.peek(TIARegister::INPT5)) << " "
-          << Base::toString(0) << " "    // unused
-          << Base::toString(0) << " "    // unused
-          << endl;
+        << Base::toString(debugger.peek(0x280)) << " "    // SWCHA
+        << Base::toString(0) << " "    // unused
+        << Base::toString(debugger.peek(0x282)) << " "    // SWCHB
+        << Base::toString(0) << " "    // unused
+        << Base::toString(debugger.peek(0x284)) << " "    // INTIM
+        << Base::toString(0) << " "    // unused
+        << Base::toString(0) << " "    // unused
+        << Base::toString(0) << " - "  // unused
+        << Base::toString(debugger.peek(TIARegister::INPT0)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT1)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT2)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT3)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT4)) << " "
+        << Base::toString(debugger.peek(TIARegister::INPT5)) << " "
+        << Base::toString(0) << " "    // unused
+        << Base::toString(0) << " "    // unused
+        << endl;
+      commandResult << "switches and fire buttons";
     }
-}
+    if((args[2] & 0x07) != 0)
+      commandResult << " to file " << node.getShortPath();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2452,10 +2471,11 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "dump",
-    "Dump data at address <xx> [to yy]",
+    "Dump data at address <xx> [to yy] [1..7]",
     "Example:\n"
     "  dump f000 - dumps 128 bytes @ f000\n"
-    "  dump f000 f0ff - dumps all bytes from f000 to f0ff",
+    "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
+    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU and input states into a file",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
