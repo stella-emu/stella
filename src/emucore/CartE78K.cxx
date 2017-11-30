@@ -47,7 +47,7 @@ uInt16 CartridgeE78K::bankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeE78K::romSize()
+uInt32 CartridgeE78K::romSize() const
 {
   return bankCount() * BANK_SIZE;
 }

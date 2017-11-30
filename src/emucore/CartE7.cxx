@@ -47,7 +47,7 @@ uInt16 CartridgeE7::bankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeE7::romSize()
+uInt32 CartridgeE7::romSize() const
 {
   return bankCount() * BANK_SIZE;
 }

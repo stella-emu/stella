@@ -176,7 +176,7 @@ class CartridgeMNetwork : public Cartridge
     /**
       Query the size of the BS type.
     */
-    virtual uInt32 romSize() = 0;
+    virtual uInt32 romSize() const = 0;
 
     /**
       Check hotspots and switch bank if triggered.

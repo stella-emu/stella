@@ -86,6 +86,8 @@ void CartridgeMNetwork::install(System& system)
     access.codeAccessBase = &myCodeAccessBase[0x1fc0];
     mySystem->setPageAccess(addr, access);
   }
+  /*setAccess(0x1FE0 & ~System::PAGE_MASK, System::PAGE_SIZE,
+            0, nullptr, 0x1fc0, System::PA_NONE, 0x1fc0);*/
 
   // Setup the second segment to always point to the last ROM slice
   setAccess(0x1A00, 0x1FE0U & ~System::PAGE_MASK - 0x1A00,
