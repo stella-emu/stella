@@ -2004,7 +2004,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "98ef1593624b409b9fb83a1c272a0aa7", "CCE", "C-831", "Cosmic Ark (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "98f63949e656ff309cefa672146dc1b8", "Atari - Axlon, John Vifian", "CX26168", "Off the Wall (1989) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "98fa3ad778a668a79449350de4b3b95b", "", "", "Thrust (V1.1) (2000) (TJ)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "9905f9f4706223dadee84f6867ede8e3", "HES", "", "Challenge (HES) (PAL)", "ROM must be started in bank 0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "9905f9f4706223dadee84f6867ede8e3", "HES", "", "Challenge (HES) (PAL)", "ROM must be started in bank 1 (Surfer's Paradise if right difficulty = 'A')", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9912d06eea42200a198dd3e2be18c601", "Imagic, Michael Greene", "IA3312", "No Escape! (1982) (Imagic) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "991d57bbcd529ad62925098e0aec1241", "", "", "Gunfight 2600 - The Final Kernel (MP) [a1]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9945a22f60bbaf6d04a8d73b3cf3db75", "Activision, Dan Kitchen", "EAX-039-04B, EAX-039-04I", "Kung-Fu Master (1987) (Activision) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
