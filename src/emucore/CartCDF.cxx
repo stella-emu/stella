@@ -598,17 +598,6 @@ uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCDF::setDatastreamIncrement(uInt8 index, uInt32 value)
-{
-  uInt16 address = DSxINC[myVersion] + index * 4;
-
-  myCDFRAM[address + 0] = value & 0xff;          // low byte
-  myCDFRAM[address + 1] = (value >> 8) & 0xff;
-  myCDFRAM[address + 2] = (value >> 16) & 0xff;
-  myCDFRAM[address + 3] = (value >> 24) & 0xff;  // high byte
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
   uInt32 result;

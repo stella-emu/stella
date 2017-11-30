@@ -661,16 +661,6 @@ uInt32 CartridgeBUS::getDatastreamIncrement(uInt8 index) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeBUS::setDatastreamIncrement(uInt8 index, uInt32 value)
-{
-//  index &= 0x0f;
-  myBUSRAM[DSxINC + index*4 + 0] = value & 0xff;          // low byte
-  myBUSRAM[DSxINC + index*4 + 1] = (value >> 8) & 0xff;
-  myBUSRAM[DSxINC + index*4 + 2] = (value >> 16) & 0xff;
-  myBUSRAM[DSxINC + index*4 + 3] = (value >> 24) & 0xff;  // high byte
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeBUS::getAddressMap(uInt8 index) const
 {
   //  index &= 0x0f;
