@@ -704,7 +704,7 @@ void DebuggerParser::executeBase()
   else if(args[0] == 16 || argStrings[0] == "hex")
     Base::setFormat(Base::F_16);
 
-  commandResult << "default base set to ";
+  commandResult << "default number base set to ";
   switch(Base::format()) {
     case Base::F_2:
       commandResult << "#2/bin";
@@ -2239,8 +2239,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "base",
-    "Set default base to <base>",
-    "Base is hex, dec, or bin\nExample: base hex",
+    "Set default number base to <base>",
+    "Base is #2, #10, #16, bin, dec or hex\nExample: base hex",
     true,
     true,
     { kARG_BASE_SPCL, kARG_END_ARGS },
