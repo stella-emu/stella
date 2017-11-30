@@ -22,6 +22,7 @@
 CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
                                      const Settings& settings)
   : Cartridge(settings),
+    mySize(size),
     myCurrentRAM(0)
 {
 }
@@ -29,8 +30,11 @@ CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetwork::initialize(const BytePtr& image, uInt32 size)
 {
+  // Allocate array for the ROM image
+  myImage = make_unique<uInt8[]>(size);
+
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(romSize(), size));
+  memcpy(myImage.get(), image.get(), std::min(romSize(), size));
   createCodeAccessBase(romSize() + RAM_SIZE);
 
   // Remember startup bank
@@ -94,7 +98,7 @@ void CartridgeMNetwork::install(System& system)
 
   // Setup the second segment to always point to the last ROM slice
   setAccess(0x1A00, 0x1FE0U & (~System::PAGE_MASK - 0x1A00),
-            myRAMSlice * BANK_SIZE, myImage, myRAMSlice * BANK_SIZE, System::PA_READ, BANK_SIZE - 1);
+            myRAMSlice * BANK_SIZE, myImage.get(), myRAMSlice * BANK_SIZE, System::PA_READ, BANK_SIZE - 1);
   myCurrentSlice[1] = myRAMSlice;
 
   // Install some default banks for the RAM and first segment
@@ -187,7 +191,7 @@ bool CartridgeMNetwork::bank(uInt16 slice)
     uInt16 offset = slice << 11; // * BANK_SIZE (2048)
 
     // Map ROM image into first segment
-    setAccess(0x1000, BANK_SIZE, offset, myImage, offset, System::PA_READ);
+    setAccess(0x1000, BANK_SIZE, offset, myImage.get(), offset, System::PA_READ);
   }
   else
   {
@@ -239,7 +243,7 @@ bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeMNetwork::getImage(uInt32& size) const
 {
   size = bankCount() * BANK_SIZE;
-  return myImage;
+  return myImage.get();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -283,3 +287,16 @@ bool CartridgeMNetwork::load(Serializer& in)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeMNetwork::bankCount() const
+{
+  return mySize >> 11;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeMNetwork::romSize() const
+{
+  return bankCount() * BANK_SIZE;
+}
+

@@ -102,6 +102,11 @@ class CartridgeMNetwork : public Cartridge
     uInt16 getBank() const override;
 
     /**
+    Query the number of banks supported by the cartridge.
+    */
+    uInt16 bankCount() const override;
+
+    /**
       Patch the cartridge ROM.
 
       @param address  The ROM address to patch
@@ -176,7 +181,7 @@ class CartridgeMNetwork : public Cartridge
     /**
       Query the size of the BS type.
     */
-    virtual uInt32 romSize() const = 0;
+    uInt32 romSize() const;
 
     /**
       Check hotspots and switch bank if triggered.
@@ -187,8 +192,13 @@ class CartridgeMNetwork : public Cartridge
                    uInt16 codeOffset, System::PageAccessType type, uInt16 addrMask = 0);
 
   private:
+    // Pointer to a dynamically allocated ROM image of the cartridge
+    BytePtr myImage;
     // The 16K ROM image of the cartridge (works for E78K too)
-    uInt8 myImage[BANK_SIZE * 8];
+    //uInt8 myImage[BANK_SIZE * 8];
+
+    // Size of the ROM image
+    uInt32 mySize;
 
     // The 2K of RAM
     uInt8 myRAM[RAM_SIZE];

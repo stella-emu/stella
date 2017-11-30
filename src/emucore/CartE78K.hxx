@@ -45,11 +45,6 @@ class CartridgeE78K : public CartridgeMNetwork
 
   public:
     /**
-      Query the number of banks supported by the cartridge.
-    */
-    uInt16 bankCount() const override;
-
-    /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
@@ -70,17 +65,9 @@ class CartridgeE78K : public CartridgeMNetwork
 
   private:
     /**
-      Query the size of the BS type.
-    */
-    uInt32 romSize() const override;
-
-    /**
       Check hotspots and switch bank if triggered.
     */
     void checkSwitchBank(uInt16 address) override;
-
-    // Number of banks
-    static constexpr uInt32 BANK_COUNT = 4;
 
   private:
     // Following constructors and assignment operators not supported
