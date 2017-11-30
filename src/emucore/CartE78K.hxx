@@ -72,7 +72,7 @@ class CartridgeE78K : public CartridgeMNetwork
     /**
       Query the size of the BS type.
     */
-    uInt32 romSize();
+    uInt32 romSize() override;
     /**
       Check hotspots and switch bank if triggered.
     */

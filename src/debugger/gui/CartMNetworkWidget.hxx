@@ -60,11 +60,11 @@ class CartridgeMNetworkWidget : public CartDebugWidget
     void saveOldState() override;
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    string bankState();
+    string bankState() override;
     // start of functions for Cartridge RAM tab
     uInt32 internalRamSize() override;
     uInt32 internalRamRPort(int start) override;
-    string internalRamDescription();
+    string internalRamDescription() override;
     const ByteArray& internalRamOld(int start, int count) override;
     const ByteArray& internalRamCurrent(int start, int count) override;
     void internalRamSetValue(int addr, uInt8 value) override;
