@@ -984,9 +984,6 @@ string CartDebug::saveConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly()
 {
-  if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("disassembly for multi-bank ROM not yet supported");
-
   if(myDisasmFile == "")
   {
     const string& propsname =
@@ -1228,7 +1225,11 @@ string CartDebug::saveDisassembly()
   // And finally, output the disassembly
   out << buf.str();
 
-  return "saved " + node.getShortPath() + " OK";
+  stringstream retVal;
+  if(myConsole.cartridge().bankCount() > 1)
+    retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported, only currently enabled banks disassembled\n");
+  retVal << "saved " << node.getShortPath() << " OK";
+  return retVal.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
