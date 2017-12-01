@@ -31,10 +31,6 @@ void GameList::sortByName()
 
   auto cmp = [](const Entry& a, const Entry& b)
   {
-    // directories always first
-    if(a._isdir != b._isdir)
-      return a._isdir;
-
     auto it1 = a._name.cbegin(), it2 = b._name.cbegin();
 
     // Account for ending ']' character in directory entries
