@@ -32,9 +32,19 @@ CartridgeE0::CartridgeE0(const BytePtr& image, uInt32 size,
 void CartridgeE0::reset()
 {
   // Setup segments to some default slices
-  segmentZero(4);
-  segmentOne(5);
-  segmentTwo(6);
+  if(randomStartBank())
+  {
+    segmentZero(mySystem->randGenerator().next() % 8);
+    segmentOne(mySystem->randGenerator().next() % 8);
+    segmentTwo(mySystem->randGenerator().next() % 8);
+  }
+  else
+  {
+    segmentZero(4);
+    segmentOne(5);
+    segmentTwo(6);
+  }
+  myCurrentSlice[3] = 7; // fixed
 
   myBankChanged = true;
 }
@@ -54,7 +64,6 @@ void CartridgeE0::install(System& system)
     access.codeAccessBase = &myCodeAccessBase[7168 + (addr & 0x03FF)];
     mySystem->setPageAccess(addr, access);
   }
-  myCurrentSlice[3] = 7;
 
   // Set the page accessing methods for the hot spots in the last segment
   access.directPeekBase = nullptr;
@@ -63,11 +72,6 @@ void CartridgeE0::install(System& system)
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
-
-  // Install some default slices for the other segments
-  segmentZero(4);
-  segmentOne(5);
-  segmentTwo(6);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

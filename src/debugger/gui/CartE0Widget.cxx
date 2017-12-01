@@ -51,7 +51,7 @@ CartridgeE0Widget::CartridgeE0Widget(
     "  Hotspots $FF0 to $FF7\n"
     "Segment 3 accessible @ $FC00 - $FFFF\n"
     "  Always points to last 1K of ROM\n"
-    "Startup slices = 0 / 1 / 2\n";
+    "Startup slices = 4 / 5 / 6 or undetermined\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler

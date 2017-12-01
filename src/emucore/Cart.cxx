@@ -101,7 +101,13 @@ void Cartridge::initializeRAM(uInt8* arr, uInt32 size, uInt8 val) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::randomizeStartBank()
 {
-  if(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.bankrandom" : "plr.bankrandom"))
+  if(randomStartBank())
     myStartBank = mySystem->randGenerator().next() % bankCount();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::randomStartBank() const
+{
+  return mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.bankrandom" : "plr.bankrandom");
 }
 

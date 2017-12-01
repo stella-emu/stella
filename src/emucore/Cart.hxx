@@ -82,12 +82,6 @@ class Cartridge : public Device
     uInt16 startBank() const { return myStartBank; }
 
     /**
-      Defines the startup bank. if 'bank' is negative, a random bank will
-      be selected.
-    */
-    void randomizeStartBank();
-
-    /**
       Answer whether the bank has changed since the last time this
       method was called.  Each cart class is able to override this
       method to deal with its specific functionality.  In those cases,
@@ -200,6 +194,19 @@ class Cartridge : public Device
       @param val  If provided, the value to store in the RAM array
     */
     void initializeRAM(uInt8* arr, uInt32 size, uInt8 val = 0) const;
+
+    /**
+      Defines the startup bank. if 'bank' is negative, a random bank will
+      be selected.
+    */
+    void randomizeStartBank();
+
+    /**
+      Checks if startup bank randomization is enabled
+
+      @return Whether the startup bank(s) should be randomized
+    */
+    bool randomStartBank() const;
 
   protected:
     // Settings class for the application
