@@ -200,6 +200,7 @@ void AudioWidget::changeControlRegs()
       instance().debugger().tiaDebug().audC1(value);
       break;
   }
+  handleVolume();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,6 +231,6 @@ uInt32 AudioWidget::getEffectiveVolume()
     70, 72, 75, 78, 80, 82, 85, 87,
     89, 91, 93, 95, 97, 98,100};
 
-  return EFF_VOL[instance().debugger().tiaDebug().audV0() +
-    instance().debugger().tiaDebug().audV1()];
+  return EFF_VOL[(instance().debugger().tiaDebug().audC0() ? instance().debugger().tiaDebug().audV0() : 0) +
+    (instance().debugger().tiaDebug().audC1() ? instance().debugger().tiaDebug().audV1() : 0)];
 }
