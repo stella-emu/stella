@@ -294,14 +294,14 @@ void LauncherDialog::loadDirListing()
 
   // Add '[..]' to indicate previous folder
   if(myCurrentNode.hasParent())
-    myGameList->appendGame(" [..]", "", "", true);
+    myGameList->appendGame("[..]", "", "", true);
 
   // Now add the directory entries
   bool domatch = myPattern && myPattern->getText() != "";
   for(const auto& f: files)
   {
     bool isDir = f.isDirectory();
-    const string& name = isDir ? (" [" + f.getName() + "]") : f.getName();
+    const string& name = isDir ? ("[" + f.getName() + "]") : f.getName();
 
     // Honour the filtering settings
     // Showing only certain ROM extensions is determined by the extension
@@ -461,7 +461,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         if(romnode.isDirectory())
         {
           string dirname = "";
-          if(myGameList->name(item) == " [..]")
+          if(myGameList->name(item) == "[..]")
           {
             myCurrentNode = myCurrentNode.getParent();
             if(!myNodeNames.empty())

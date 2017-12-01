@@ -53,7 +53,7 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
 
   // Add '[..]' to indicate previous folder
   if(_node.hasParent())
-    _gameList.appendGame(" [..]", _node.getParent().getPath(), "", true);
+    _gameList.appendGame("[..]", _node.getParent().getPath(), "", true);
 
   // Now add the directory entries
   for(const auto& file: content)
@@ -61,7 +61,7 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
     string name = file.getName();
     bool isDir = file.isDirectory();
     if(isDir)
-      name = " [" + name + "]";
+      name = "[" + name + "]";
     else if(!BSPF::endsWithIgnoreCase(name, _extension))
       continue;
 
@@ -109,7 +109,7 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       if(_gameList.isDir(data))
       {
         cmd = ItemChanged;
-        if(_gameList.name(data) == " [..]")
+        if(_gameList.name(data) == "[..]")
           selectParent();
         else
           setLocation(FilesystemNode(_gameList.path(data)));
