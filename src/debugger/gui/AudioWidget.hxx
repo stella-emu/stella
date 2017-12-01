@@ -24,7 +24,6 @@ class DataGridWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
-
 class AudioWidget : public Widget, public CommandSender
 {
   public:
@@ -45,7 +44,17 @@ class AudioWidget : public Widget, public CommandSender
     DataGridWidget* myAudC;
     DataGridWidget* myAudV;
 
+    // Audio channels
+    enum
+    {
+      kAud0Addr,
+      kAud1Addr
+    };
+
   private:
+    void changeFrequencyRegs();
+    void changeControlRegs();
+    void changeVolumeRegs();
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void loadConfig() override;
 

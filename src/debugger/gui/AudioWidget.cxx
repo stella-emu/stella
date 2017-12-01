@@ -46,12 +46,11 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
                               2, 1, 2, 5, Common::Base::F_16);
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
-  myAudF->setEditable(false);
   addFocusWidget(myAudF);
 
   for(int col = 0; col < 2; ++col)
   {
-    new StaticTextWidget(boss, lfont, xpos + col*myAudF->colWidth() + 7,
+    new StaticTextWidget(boss, lfont, xpos + col * myAudF->colWidth() + (int)(myAudF->colWidth() / 2.5),
                          ypos - lineHeight, fontWidth, fontHeight,
                          Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
@@ -66,7 +65,6 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
                               2, 1, 2, 4, Common::Base::F_16);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
-  myAudC->setEditable(false);
   addFocusWidget(myAudC);
 
   // AudV registers
@@ -78,14 +76,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
                               2, 1, 2, 4, Common::Base::F_16);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
-  myAudV->setEditable(false);
   addFocusWidget(myAudV);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
-{
-  // TODO - implement this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,4 +120,86 @@ void AudioWidget::loadConfig()
     changed.push_back(state.aud[i] != oldstate.aud[i]);
   }
   myAudV->setList(alist, vlist, changed);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+{
+  switch(cmd)
+  {
+    case DataGridWidget::kItemDataChangedCmd:
+      switch(id)
+      {
+        case kAUDFID:
+          changeFrequencyRegs();
+          break;
+
+        case kAUDCID:
+          changeControlRegs();
+          break;
+
+        case kAUDVID:
+          changeVolumeRegs();
+          break;
+
+        default:
+          cerr << "AudioWidget DG changed\n";
+          break;
+      }
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::changeFrequencyRegs()
+{
+  int addr = myAudF->getSelectedAddr();
+  int value = myAudF->getSelectedValue();
+
+  switch(addr)
+  {
+    case kAud0Addr:
+      instance().debugger().tiaDebug().audF0(value);
+      break;
+
+    case kAud1Addr:
+      instance().debugger().tiaDebug().audF1(value);
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::changeControlRegs()
+{
+  int addr = myAudC->getSelectedAddr();
+  int value = myAudC->getSelectedValue();
+
+  switch(addr)
+  {
+    case kAud0Addr:
+      instance().debugger().tiaDebug().audC0(value);
+      break;
+
+    case kAud1Addr:
+      instance().debugger().tiaDebug().audC1(value);
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::changeVolumeRegs()
+{
+  int addr = myAudV->getSelectedAddr();
+  int value = myAudV->getSelectedValue();
+
+  switch(addr)
+  {
+    case kAud0Addr:
+      instance().debugger().tiaDebug().audV0(value);
+      break;
+
+    case kAud1Addr:
+      instance().debugger().tiaDebug().audV1(value);
+      break;
+  }
 }
