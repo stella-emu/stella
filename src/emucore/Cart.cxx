@@ -91,11 +91,17 @@ void Cartridge::createCodeAccessBase(uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::initializeRAM(uInt8* arr, uInt32 size, uInt8 val) const
 {
-  if(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.ramrandom" : "plr.ramrandom"))
+  if(randomInitialRAM())
     for(uInt32 i = 0; i < size; ++i)
       arr[i] = mySystem->randGenerator().next();
   else
     memset(arr, val, size);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::randomInitialRAM() const
+{
+  return mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.ramrandom" : "plr.ramrandom");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

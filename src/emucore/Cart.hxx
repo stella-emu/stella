@@ -196,6 +196,13 @@ class Cartridge : public Device
     void initializeRAM(uInt8* arr, uInt32 size, uInt8 val = 0) const;
 
     /**
+      Checks if initial RAM randomization is enabled
+
+      @return Whether the initial RAM should be randomized
+    */
+    bool randomInitialRAM() const;
+
+    /**
       Defines the startup bank. if 'bank' is negative, a random bank will
       be selected.
     */

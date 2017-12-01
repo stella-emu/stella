@@ -30,7 +30,7 @@ CartridgeFE::CartridgeFE(const BytePtr& image, uInt32 size,
   memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
 
-  myStartBank = 0;  // For now, we assume this; more research is needed
+  myStartBank = 0;  // Decathlon requires this, since there is no startup vector in bank 1
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
