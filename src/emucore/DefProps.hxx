@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3303
+#define DEF_PROPS_SIZE 3305
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1181,6 +1181,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "59e53894b3899ee164c91cfa7842da66", "Data Age", "", "Survival Run (1983) (Data Age) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "59e96de9628e8373d1c685f5e57dcf10", "PlayAround - J.H.M.", "204", "Beat 'Em & Eat 'Em (1982) (PlayAround)", "Uses the Paddle Controllers", "Extremely Rare", "", "", "", "", "", "", "PADDLES", "", "", "AUTO 45", "", "", "", "", "" },
   { "59f596285d174233c84597dee6f34f1f", "CCE", "C-811", "River Raid (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "5a0ff99ba10bd26d542e1d6f59f56850", "Champ Games", "CG-04-P", "Super Cobra Arcade (PAL60)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "YES", "" },
   { "5a17e30e6e911e74ccd7b716d02b16c6", "Activision, Dan Kitchen", "AX-029", "Crackpots (1983) (Activision) (8K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5a272012a62becabcd52920348c7c60b", "Star Game", "", "Pitfall (Star Game)", "AKA Pitfall!", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5a2f2dcd775207536d9299e768bcd2df", "Quelle", "781698", "Flippern (Double-Game Package) (1983) (Quelle) (PAL)", "AKA Video Pinball", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1754,6 +1755,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "83f50fa0fbae545e4b88bb53b788c341", "Atari, Larry Kaplan - Sears", "CX2643 - 6-99815", "Codebreaker (1978) (Atari) (4K)", "Uses Keypad Controllers", "", "", "", "", "", "", "", "KEYBOARD", "KEYBOARD", "", "", "", "", "", "", "" },
   { "83fafd7bd12e3335166c6314b3bde528", "Epyx, Steven A. Baker, Tod Frye, Peter Engelbrite", "80561-00251", "Winter Games (1987) (Epyx)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "840a5a2eaea24d95d289f514fd12f9bb", "", "", "GBImprov (Hack)", "Hack of Ghostbusters", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "841057f83ce3731e6bbfda1707cbca58", "Champ Games", "CG-04-N", "Super Cobra Arcade (NTSC)", "Compatible with Genesis controller", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "841b7bc1cad05f5408302308777d49dc", "Activision", "", "Unknown Activision Game (10-22-1982) (Activision) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "84290e333ff7567c2380f179430083b8", "Imagic, Dave Johnson", "13211, EIX-004-04I", "Quick Step! (1983) (Imagic) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "843435eb360ed72085f7ab9374f9749a", "Joe Grand", "", "SCSIcide (1.31) (Joe Grand)", "Uses the Paddle Controllers", "New Release", "", "", "", "", "", "", "PADDLES_IAXDR", "", "", "AUTO 65", "", "", "", "", "" },
