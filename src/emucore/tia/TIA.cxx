@@ -65,9 +65,8 @@ enum ResxCounter: uInt8 {
 static constexpr uInt8 resxLateHblankThreshold = 73;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(Console& console, Sound& sound, Settings& settings)
+TIA::TIA(Console& console, Settings& settings)
   : myConsole(console),
-    mySound(sound),
     mySettings(settings),
     myFrameManager(nullptr),
     myPlayfield(~CollisionMask::playfield & 0x7FFF),
@@ -163,7 +162,6 @@ void TIA::reset()
   for (PaddleReader& paddleReader : myPaddleReaders)
     paddleReader.reset(myTimestamp);
 
-  mySound.reset();
   myDelayQueue.reset();
 
   if (myFrameManager) myFrameManager->reset();
@@ -224,8 +222,6 @@ bool TIA::save(Serializer& out) const
   try
   {
     out.putString(name());
-
-    if(!mySound.save(out)) return false;
 
     if(!myDelayQueue.save(out))   return false;
     if(!myFrameManager->save(out)) return false;
@@ -295,8 +291,6 @@ bool TIA::load(Serializer& in)
   {
     if(in.getString() != name())
       return false;
-
-    if(!mySound.load(in)) return false;
 
     if(!myDelayQueue.load(in))   return false;
     if(!myFrameManager->load(in)) return false;
@@ -519,33 +513,24 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
       break;
 
-    ////////////////////////////////////////////////////////////
-    // FIXME - rework this when we add the new sound core
     case AUDV0:
-      mySound.set(address, value, mySystem->cycles());
       myShadowRegisters[address] = value;
       break;
     case AUDV1:
-      mySound.set(address, value, mySystem->cycles());
       myShadowRegisters[address] = value;
       break;
     case AUDF0:
-      mySound.set(address, value, mySystem->cycles());
       myShadowRegisters[address] = value;
       break;
     case AUDF1:
-      mySound.set(address, value, mySystem->cycles());
       myShadowRegisters[address] = value;
       break;
     case AUDC0:
-      mySound.set(address, value, mySystem->cycles());
       myShadowRegisters[address] = value;
       break;
     case AUDC1:
-      mySound.set(address, value, mySystem->cycles());
       myShadowRegisters[address] = value;
       break;
-    ////////////////////////////////////////////////////////////
 
     case HMOVE:
       myDelayQueue.push(HMOVE, value, Delay::hmove);

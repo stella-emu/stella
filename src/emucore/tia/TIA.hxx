@@ -20,7 +20,6 @@
 
 #include "bspf.hxx"
 #include "Console.hxx"
-#include "Sound.hxx"
 #include "Settings.hxx"
 #include "Device.hxx"
 #include "Serializer.hxx"
@@ -97,10 +96,9 @@ class TIA : public Device
       Create a new TIA for the specified console
 
       @param console   The console the TIA is associated with
-      @param sound     The sound object the TIA is associated with
       @param settings  The settings object for this TIA device
     */
-    TIA(Console& console, Sound& sound, Settings& settings);
+    TIA(Console& console, Settings& settings);
 
     virtual ~TIA() = default;
 
@@ -585,7 +583,6 @@ class TIA : public Device
   private:
 
     Console& myConsole;
-    Sound& mySound;
     Settings& mySettings;
 
     /**

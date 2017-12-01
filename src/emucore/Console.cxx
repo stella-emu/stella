@@ -89,7 +89,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Create subsystems for the console
   my6502 = make_unique<M6502>(myOSystem.settings());
   myRiot = make_unique<M6532>(*this, myOSystem.settings());
-  myTIA  = make_unique<TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  myTIA  = make_unique<TIA>(*this, myOSystem.settings());
   myFrameManager = make_unique<FrameManager>();
   mySwitches = make_unique<Switches>(myEvent, myProperties);
 
@@ -562,11 +562,13 @@ void Console::initializeAudio()
   // the commandline, but it can't be saved.
   int framerate = myOSystem.settings().getInt("framerate");
   if(framerate > 0) myFramerate = float(framerate);
-  const string& sound = myProperties.get(Cartridge_Sound);
 
   myOSystem.sound().close();
-  myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
-  myOSystem.sound().setFrameRate(myFramerate);
+
+  // SND_TODO Communicate channels to TIA
+  // const string& sound = myProperties.get(Cartridge_Sound);
+  // myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
+
   myOSystem.sound().open();
 
   // Make sure auto-frame calculation is only enabled when necessary
@@ -942,7 +944,7 @@ void Console::setFramerate(float framerate)
 {
   myFramerate = framerate;
   myOSystem.setFramerate(framerate);
-  myOSystem.sound().setFrameRate(framerate);
+  // myOSystem.sound().setFrameRate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

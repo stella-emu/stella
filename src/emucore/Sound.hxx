@@ -20,7 +20,6 @@
 
 class OSystem;
 
-#include "Serializable.hxx"
 #include "bspf.hxx"
 
 /**
@@ -29,7 +28,7 @@ class OSystem;
 
   @author Stephen Anthony
 */
-class Sound : public Serializable
+class Sound
 {
   public:
     /**
@@ -46,21 +45,6 @@ class Sound : public Serializable
       @param enable  Either true or false, to enable or disable the sound system
     */
     virtual void setEnabled(bool enable) = 0;
-
-    /**
-      Sets the number of channels (mono or stereo sound).
-
-      @param channels The number of channels
-    */
-    virtual void setChannels(uInt32 channels) = 0;
-
-    /**
-      Sets the display framerate.  Sound generation for NTSC and PAL games
-      depends on the framerate, so we need to set it here.
-
-      @param framerate The base framerate depending on NTSC or PAL ROM
-    */
-    virtual void setFrameRate(float framerate) = 0;
 
     /**
       Start the sound system, initializing it if necessary.  This must be
@@ -85,15 +69,6 @@ class Sound : public Serializable
       Reset the sound device.
     */
     virtual void reset() = 0;
-
-    /**
-      Sets the sound register to a given value.
-
-      @param addr  The register address
-      @param value The value to save into the register
-      @param cycle The system cycle at which the register is being updated
-    */
-    virtual void set(uInt16 addr, uInt8 value, uInt64 cycle) = 0;
 
     /**
       Sets the volume of the sound device to the specified level.  The

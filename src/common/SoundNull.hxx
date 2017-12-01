@@ -54,21 +54,6 @@ class SoundNull : public Sound
     void setEnabled(bool state) override { }
 
     /**
-      Sets the number of channels (mono or stereo sound).
-
-      @param channels The number of channels
-    */
-    void setChannels(uInt32 channels) override { }
-
-    /**
-      Sets the display framerate.  Sound generation for NTSC and PAL games
-      depends on the framerate, so we need to set it here.
-
-      @param framerate The base framerate depending on NTSC or PAL ROM
-    */
-    void setFrameRate(float framerate) override { }
-
-    /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
@@ -93,15 +78,6 @@ class SoundNull : public Sound
     void reset() override { }
 
     /**
-      Sets the sound register to a given value.
-
-      @param addr  The register address
-      @param value The value to save into the register
-      @param cycle The system cycle at which the register is being updated
-    */
-    void set(uInt16 addr, uInt8 value, uInt64 cycle) override { }
-
-    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.
@@ -117,54 +93,6 @@ class SoundNull : public Sound
                         amount based on the direction (1 = increase, -1 =decrease)
     */
     void adjustVolume(Int8 direction) override { }
-
-  public:
-    /**
-      Saves the current state of this device to the given Serializer.
-
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
-    */
-    bool save(Serializer& out) const override
-    {
-      out.putString("TIASound");
-
-      for(int i = 0; i < 6; ++i)
-        out.putByte(0);
-
-      // myLastRegisterSetCycle
-      out.putInt(0);
-
-      return true;
-    }
-
-    /**
-      Loads the current state of this device from the given Serializer.
-
-      @param in The Serializer device to load from.
-      @return The result of the load.  True on success, false on failure.
-    */
-    bool load(Serializer& in) override
-    {
-      if(in.getString() != "TIASound")
-        return false;
-
-      // Read sound registers and discard
-      for(int i = 0; i < 6; ++i)
-        in.getByte();
-
-      // myLastRegisterSetCycle
-      in.getInt();
-
-      return true;
-    }
-
-    /**
-      Get a descriptor for this console class (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "TIASound"; }
 
   private:
     // Following constructors and assignment operators not supported
