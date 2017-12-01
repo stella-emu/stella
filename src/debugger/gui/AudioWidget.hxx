@@ -43,6 +43,7 @@ class AudioWidget : public Widget, public CommandSender
     DataGridWidget* myAudF;
     DataGridWidget* myAudC;
     DataGridWidget* myAudV;
+    StaticTextWidget* myAudEffV;
 
     // Audio channels
     enum
@@ -57,6 +58,9 @@ class AudioWidget : public Widget, public CommandSender
     void changeVolumeRegs();
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void loadConfig() override;
+
+    void handleVolume();
+    uInt32 getEffectiveVolume();
 
     // Following constructors and assignment operators not supported
     AudioWidget() = delete;

@@ -22,6 +22,8 @@
 #include "Debugger.hxx"
 #include "TIADebug.hxx"
 #include "Widget.hxx"
+#include "Base.hxx"
+using Common::Base;
 
 #include "AudioWidget.hxx"
 
@@ -50,7 +52,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 
   for(int col = 0; col < 2; ++col)
   {
-    new StaticTextWidget(boss, lfont, xpos + col * myAudF->colWidth() + (int)(myAudF->colWidth() / 2.5),
+    new StaticTextWidget(boss, lfont, xpos + col * myAudF->colWidth() + (int)(myAudF->colWidth() / 2.75),
                          ypos - lineHeight, fontWidth, fontHeight,
                          Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
@@ -61,8 +63,8 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
                        "AUDC", kTextAlignLeft);
   xpos += lwidth;
-  myAudC = new DataGridWidget(boss, nfont, xpos, ypos,
-                              2, 1, 2, 4, Common::Base::F_16);
+  myAudC = new DataGridWidget(boss, nfont, xpos + (int)(myAudF->colWidth() / 2.75), ypos,
+                              2, 1, 1, 4, Common::Base::F_16_1);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
   addFocusWidget(myAudC);
@@ -72,11 +74,14 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
                        "AUDV", kTextAlignLeft);
   xpos += lwidth;
-  myAudV = new DataGridWidget(boss, nfont, xpos, ypos,
-                              2, 1, 2, 4, Common::Base::F_16);
+  myAudV = new DataGridWidget(boss, nfont, xpos + (int)(myAudF->colWidth() / 2.75), ypos,
+                              2, 1, 1, 4, Common::Base::F_16_1);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
   addFocusWidget(myAudV);
+
+  myAudEffV = new StaticTextWidget(boss, lfont, myAudV->getRight() + fontWidth, myAudV->getTop() + 2,
+                                   "100% (eff. volume)");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,6 +125,17 @@ void AudioWidget::loadConfig()
     changed.push_back(state.aud[i] != oldstate.aud[i]);
   }
   myAudV->setList(alist, vlist, changed);
+
+  handleVolume();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::handleVolume()
+{
+  stringstream s;
+
+  s << getEffectiveVolume() << "% (eff. volume)";
+  myAudEffV->setLabel(s.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,4 +218,18 @@ void AudioWidget::changeVolumeRegs()
       instance().debugger().tiaDebug().audV1(value);
       break;
   }
+  handleVolume();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 AudioWidget::getEffectiveVolume()
+{
+  const int EFF_VOL[] = {
+     0,  6, 13, 18, 24, 29, 33, 38,
+    42, 46, 50, 54, 57, 60, 64, 67,
+    70, 72, 75, 78, 80, 82, 85, 87,
+    89, 91, 93, 95, 97, 98,100};
+
+  return EFF_VOL[instance().debugger().tiaDebug().audV0() +
+    instance().debugger().tiaDebug().audV1()];
 }

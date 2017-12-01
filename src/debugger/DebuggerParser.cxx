@@ -234,7 +234,7 @@ int DebuggerParser::decipher_arg(const string& str)
 
   // Special cases (registers):
   const CpuState& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
-  if(arg == "a") result = state.A;
+  if(arg == "a" && str != "$a") result = state.A;
   else if(arg == "x") result = state.X;
   else if(arg == "y") result = state.Y;
   else if(arg == "p") result = state.PS;
