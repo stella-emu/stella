@@ -7,7 +7,7 @@
 <h1>Stella Integrated Debugger (a work in progress)</h1>
 
 <p>The debugger in Stella may never be complete, as we're constantly
-adding new features requested by homebrew developers.  However, even in its
+adding new features requested by homebrew developers. However, even in its
 current form it's still quite powerful, and is able to boast at least one
 feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.</p>
 
@@ -42,17 +42,17 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 		You can advance multiple frames with one command.</li>
 
   <li>Supports Distella 'configuration directives', which may be used to
-    override automatic code/data determination in the disassembly.  For now,
+    override automatic code/data determination in the disassembly. For now,
     the following directives are supported: CODE, GFX, PGFX, DATA, ROW.
     These directives can be entered at the debugger prompt, or (automatically)
     loaded and saved in configuration files.</li>
 
 	<li>Extensive disassembly support, both from the emulation core and with help
-    from Distella.  Where possible, the disassembly differentiates between code,
+    from Distella. Where possible, the disassembly differentiates between code,
     player graphics and playfield graphics (ie, addresses stored in GRPx and PFx)
-    and data (addresses used as an operand of a command).  Code sections are also
+    and data (addresses used as an operand of a command). Code sections are also
     differentiated between actual code, and 'tentative' code (ie, areas that may
-    represent code sections, but haven't actually been executed yet).  Such
+    represent code sections, but haven't actually been executed yet). Such
     tentative code is marked with a '*' symbol.</li>
 
   <li>Supports visual representation of the bitmap data of graphics areas,
@@ -142,9 +142,9 @@ present in the debugger):</p>
 
 <p>For space reasons, the Prompt, TIA, I/O and Audio displays are split into
 4 tabs, only one of which is visible at a time. You can use the mouse or
-keyboard to select which tab you want to view.  Pressing Shift with the left
+keyboard to select which tab you want to view. Pressing Shift with the left
 or right arrow keys cycles between tabs from right-to-left and left-to-right,
-respectively.  Pressing Tab cycles between widgets in the current tab (except
+respectively. Pressing Tab cycles between widgets in the current tab (except
 for in the Prompt area, where 'tab' is used for something else).</p>
 
 <p>You can also enter the debugger at emulator startup by use the 'debug' command on the command line, or alternatively within the ROM launcher in 'Power-on options':
@@ -164,7 +164,7 @@ for in the Prompt area, where 'tab' is used for something else).</p>
 frame (scanline 262, for NTSC games). This is because Stella only checks
 for keystrokes once per frame. Once in the debugger, you can control
 execution by stepping one instruction, scanline, or frame at a time
-(or more than one at a time, using commands in the prompt).  You can
+(or more than one at a time, using commands in the prompt). You can
 also set breakpoints or traps, which will cause the emulator to enter
 the debugger when they are triggered, even if it happens in mid-frame.</p>
 
@@ -209,11 +209,11 @@ Bash-style commands are also supported:</p>
 	<tr><td>Shift-Home</td><td>Scroll to beginning of commands</td></tr>
 	<tr><td>Shift-End</td><td>Scroll to end of commands</td></tr>
 </table>
-<p>You can also scroll with the mouse.  Copy and paste is not yet supported.</p>
+<p>You can also scroll with the mouse. Copy and paste is not yet supported.</p>
 
-<p>To see the available commands, enter "help".  For extended help, type "help cmd",
-where 'cmd' is the command you wish to know about.  The available commands are listed
-at the end of this section.  Bash-style tab completion is supported for commands,
+<p>To see the available commands, enter "help". For extended help, type "help cmd",
+where 'cmd' is the command you wish to know about. The available commands are listed
+at the end of this section. Bash-style tab completion is supported for commands,
 labels and functions (see below).</p>
 
 <p>For now, there are some functions that only exist in the prompt. We
@@ -427,7 +427,7 @@ end of a frame. This is different from how a real 2600 works, but most
 ROMs only check for input once per frame anyway.</p>
 
 <p>Conditional breaks appear in "listbreaks", numbered starting from
-zero.  You can remove a cond-break with "delbreakif number", where
+zero. You can remove a cond-break with "delbreakif number", where
 the number comes from "listbreaks" or by entering the same conditional break again.</p>
 
 <p>Any time the debugger is entered due to a trap, breakpoint, or
@@ -460,7 +460,7 @@ presses both Select and Reset:</p>
 </pre>
 
 <p>User-defined functions appear in "listfunctions", which shows the label
-and expression for each function.  Functions can be removed with
+and expression for each function. Functions can be removed with
 "delfunction label", where the labels come from "listfunctions".</p>
 
 <p>If you've defined a lot of complex functions, you probably will
@@ -494,14 +494,14 @@ of this file will depend on the version of Stella, as follows:</p>
 		</tr>
 	</table>
 <p>Note that these '.stella' script files are only accessed if you enter
-the debugger at least once during a program run.  This means you can create
+the debugger at least once during a program run. This means you can create
 these files, and not worry about slowing down emulation unless you're
 actively using the debugger.</p>
 
 <h4>Built-in Functions</h4>
 
 <p>Stella has some pre-defined functions for use with the "breakif"
-command.  These allow you to break and enter the debugger on various
+command. These allow you to break and enter the debugger on various
 conditions without having to define the conditions yourself.</p>
 
 <p>Built-in functions and pseudo-registers always start with an _
@@ -538,7 +538,7 @@ will show you a list of them.</p>
 
 <p>These "registers" are provided for you to use in your conditional breaks.
 They're not registers in the conventional sense, since they don't exist in
-a real system.  For example, while the debugger keeps track of the number
+a real system. For example, while the debugger keeps track of the number
 of scanlines in a frame, a real system would not (there is no register
 that holds 'number of scanlines' on an actual console).</p>
 <table border="1" cellpadding="3">
@@ -603,8 +603,8 @@ or memory.</p>
 
 <p>Traps can also combined with a condition ("trapif"). If an access
 to a memory address is caught, the condition is evaluated additionally.
-Only if the condition is true too, the emulations stops.
-</p>
+Only if the condition is true too, the emulations stops. For details
+about conditions see <b>Conditional Breaks</b> described above.</p>
 
 <p>An example: you are debugging a game, and you want to stop the
 emulation and enter the debugger whenever RESP0 is strobed. You'd use
@@ -619,17 +619,18 @@ that triggered the trap. The reason for this is simple: until the
 instruction is executed, the emulator can't know it's going to hit a
 trap. After the trap is hit, the instruction is done executing, and
 whatever effects it may have had on e.g. the TIA state have already
-happened...  but we don't have a way to run the emulated VCS in reverse,
+happened... but we don't have a way to run the emulated VCS in reverse,
 so the best we can do is stop before the next instruction runs.</p>
 
 <p>Traps come in two varieties: read access traps and write access traps.
 It is possible to set both types of trap on the same address (that's
 what the plain "trap" command does). To set a read or write only trap,
-use "trapread(if)" or "trapwrite(if)". To remove a trap, you just attempt
-to set it again: the commands actually toggle the trap on &amp; off. You
-can also get rid of all traps at once with the "cleartraps" command.</p>
+use "trapread(if)" or "trapwrite(if)".
 
-<p>Use "listtraps" to see all enabled traps.</p>
+<p>All traps appear in "listtraps", numbered starting from zero. You
+can remove a trap with "deltrap number", where the number comes from
+"listtraps" or by entering the identical trap again. You can get rid of
+all traps at once with the "cleartraps" command.</p></p>
 
 <h3>Prompt commands:</h3>
 
@@ -658,6 +659,7 @@ clearsavestateifs - Clear all savestate points
        delbreakif - Delete conditional breakif &lt;xx&gt;
       delfunction - Delete function with label xx
    delsavestateif - Delete conditional savestate point &lt;xx&gt;
+          deltrap - Delete trap &lt;xx&gt;
          delwatch - Delete watch &lt;xx&gt;
            disasm - Disassemble address xx [yy lines] (default=PC)
              dump - Dump data at address &lt;xx&gt; [to yy] [0..7, dumps to file]
@@ -743,7 +745,7 @@ clearsavestateifs - Clear all savestate points
 developer.<p>
 
 <p>Many of the variables inside the TIA can only be written to by the
-6502.  The debugger lets you get inside the TIA and see the contents
+6502. The debugger lets you get inside the TIA and see the contents
 of these variables. These include the color registers, player/missile
 graphics and positions, and the playfield.</p>
 
@@ -794,10 +796,10 @@ in another part of the debugger).</p>
 <p><img src="graphics/debugger_iotab.png"></p>
 
 <p>As with the TIA tab, most of the values here will be self-explanatory to a 2600
-developer, and almost all can be modified.  However, the SWCHx registers need
+developer, and almost all can be modified. However, the SWCHx registers need
 further explanation:<p>
-<p>SWCHx(W) can be modified; here, the (W) stands for write.  Similarly,
-SWACNT/SWBCNT can be directly modified.  However, the results of reading back from
+<p>SWCHx(W) can be modified; here, the (W) stands for write. Similarly,
+SWACNT/SWBCNT can be directly modified. However, the results of reading back from
 the SWCHx register are influenced by SWACNT/SWBCNT, and SWCHx(R) is a read-only display
 reflecting this result.</p>
 
@@ -822,7 +824,7 @@ volume resulting from the two channel volumes.</p>
 video as generated by the TIA. If a complete frame hasn't been drawn,
 the partial contents of the current frame will be displayed up to the
 current scanline, with the contents of the old frame (in black &amp;
-white) filling the rest of the display.  Note that if 'phosphor mode'
+white) filling the rest of the display. Note that if 'phosphor mode'
 or TV effects are enabled, you won't see the effects here; this shows the
 raw TIA image only.</p>
 
@@ -837,13 +839,13 @@ as illustrated:</p>
 	<li><b>Fill to scanline</b>: If you've already started a partial frame
 	draw (ie, the frame is already partially 'greyed' out), selecting this
 	option will draw all scanlines up to the vertical position where the
-	mouse was clicked.  Note that if you weren't in partial-frame mode,
+	mouse was clicked. Note that if you weren't in partial-frame mode,
 	this option will have no effect.</li>
 	<li><b>Toggle breakpoint</b>: Will toggle a conditional breakpoint at the
 	scanline where the mouse was clicked. You can to use
 	the Prompt Tab to turn the breakpoint off again.</li>
 	<li><b>Set zoom position</b>: Influences what is shown in the TIA
-	zoom area (further described in part (G).  The zoom area will
+	zoom area (further described in part (G). The zoom area will
 	contain the area centered at the position where the mouse was
 	clicked.</li>
 	<li><b>Save snapshot</b>: Saves the TIA image currently shown,
@@ -884,9 +886,9 @@ Position, and will range from 0 to 228).</li>
 <br>
 <h2><u>(G)</u> TIA Zoom</h2>
 <p>Below the TIA Info (F) is the TIA Zoom area. This allows you to enlarge
-part of the TIA display, so you can see fine details.  Note that unlike
+part of the TIA display, so you can see fine details. Note that unlike
 the TIA display area, this one <b>does</b> generate frames as the real
-system would.  So, if you've enabled 'phosphor mode' for a ROM, it
+system would. So, if you've enabled 'phosphor mode' for a ROM, it
 won't be honoured here (ie, you'll see alternating frames at 30Hz display,
 just like on a real system).</p>
 <p>You can also right-click anywhere in this window to show a context menu,
@@ -894,7 +896,7 @@ as illustrated:</p>
 <p><img src="graphics/debugger_tiazoomcmenu.png"></p>
 <p>These options allow you to zoom in on the image for even greater detail.
 If you click on the output window, you can scroll around using the cursor,
-PageUp/Dn and Home/End keys.  You can also select the zoom position from
+PageUp/Dn and Home/End keys. You can also select the zoom position from
 a context menu in the TIA Display.</p>
 
 
@@ -904,7 +906,7 @@ a context menu in the TIA Display.</p>
 <p>Below the TIA Zoom (G), there is a status line that shows the reason the
 debugger was entered (if a breakpoint/trap was hit), as shown:</p>
 <p><img src="graphics/debugger_bpstatus.png"></p>
-<p>The output here will generally be self-explanatory.  Due to space concerns,
+<p>The output here will generally be self-explanatory. Due to space concerns,
 conditional breakpoints will be shown as "CBP: ...", normal breakpoints
 as "BP: ...", read traps as "RTrap: ..." and write traps as "WTrap: ...".
 See the "Breakpoints" section for details.</p>
@@ -918,13 +920,13 @@ See the "Breakpoints" section for details.</p>
 <p>All the registers and flags are displayed, and can be changed by
 double-clicking on them (to the left). Flags are toggled on double-click.
 Selected registers here can also be changed by using the "Data Operations" buttons,
-further described in (J).  All items are shown in hex.  Any label defined for the
-current PC value is shown to the right.  Decimal and binary equivalents
+further described in (J). All items are shown in hex. Any label defined for the
+current PC value is shown to the right. Decimal and binary equivalents
 are shown for SP/A/X/Y to the right (first decimal, then binary).</p>
 <p>The column to the far right shows the 'source' of contents of the respective
-registers.  For example, consider the command 'LDA ($80),Y'.  The operand of
+registers. For example, consider the command 'LDA ($80),Y'. The operand of
 the command resolves to some address, which isn't always easy to determine at
-first glance.  The 'Src Addr' area shows the actual resulting operand/address
+first glance. The 'Src Addr' area shows the actual resulting operand/address
 being used with the given opcode.</p>
 <p>There's not much else to say about the CPU widget: if you know 6502
 assembly, it's pretty self-explanatory. If you don't, well, you should
@@ -938,8 +940,8 @@ learn :)</p>
 the RIOT RAM (K), depending on which of these widgets is currently active.
 <p><img src="graphics/debugger_dataops.png"></p>
 <p>Each of these buttons also have a keyboard shortcut (indicated in square
-brackets).  In fact, many of the inputboxes in various parts of the debugger
-respond to these same keyboard shortcuts.  If in doubt, give them a try.</p>
+brackets). In fact, many of the inputboxes in various parts of the debugger
+respond to these same keyboard shortcuts. If in doubt, give them a try.</p>
 <pre>
   0   [z]    - Set the current location/register to zero.
   Inv [i !]  - Invert the current location/register [toggle all its bits].
@@ -963,13 +965,13 @@ of the 2600's zero-page RAM.</p>
 To change a RAM location, either double-click on it or press Enter while
 it's highlighted. Enter the new value (hex only for now, sorry), then
 press Enter to make the change. If you change your mind, press Escape
-and the original value will be restored.  The currently selected RAM cell
+and the original value will be restored. The currently selected RAM cell
 can also be changed by using the Data operations buttons/associated
 shortcut keys (J).</p>
 <p><img src="graphics/debugger_ram.png"></p>
 <p>The 'Undo' button in the upper right should be self-explanatory; it will
-undo the most previous operation to one cell only.  The 'Revert' button is
-more comprehensive.  It will undo <i>all</i> operations on <i>all</i> cells
+undo the most previous operation to one cell only. The 'Revert' button is
+more comprehensive. It will undo <i>all</i> operations on <i>all</i> cells
 since you first made a change.</p>
 <p>The UI objects at the bottom refer to the currently selected RAM cell.
 The 'label' textbox shows the label attached to this RAM location (if any),
@@ -985,19 +987,19 @@ energy, but it's also very useful when debugging to determine which
 memory location holds which quantity.</p>
 <p><img src="graphics/debugger_ramsearch.png"></p>
 <p>To search RAM, click 'Search' and enter a byte value into the search editbox (0-255).
-All matching values will be highlighted in the RAM widget.  If 'Search' is clicked
+All matching values will be highlighted in the RAM widget. If 'Search' is clicked
 and the input is empty, all RAM locations are highlighted.</p>
 
 <p>The 'Compare' button is used to compare the given value using all
-addresses currently highlighted.  This may be an absolute number (such as 2),
-or a comparative number (such as -1).  Using a '+' or '-' operator
+addresses currently highlighted. This may be an absolute number (such as 2),
+or a comparative number (such as -1). Using a '+' or '-' operator
 means 'search addresses for values that have changed by that amount'.</p>
 <p>The 'Reset' button resets the entire operation; it clears the highlighted
 addresses and allows another search.</p>
 <p>The following is an example of inspecting all addresses that have
 decreased by 1:</p>
 <ul>
-	<li>Click 'Search' with empty input.  All address/values are highlighted</li>
+	<li>Click 'Search' with empty input. All address/values are highlighted</li>
 	<li>Exit debugger mode and lose a life, let your energy decrease, or
 		do whatever it is you're trying to debug</li>
 	<li>Enter debugger mode again, click 'Compare' and and enter a '-1' for input.
@@ -1014,28 +1016,28 @@ decreased by 1:</p>
 <br>
 <h2><u>(M)</u> ROM Disassembly</h2>
 <p>This area contains a disassembly of the current bank of ROM. If a symbol
-file is loaded, the disassembly will have labels.  Even without a symbol file, the standard TIA/RIOT labels will still be present.</p>
+file is loaded, the disassembly will have labels. Even without a symbol file, the standard TIA/RIOT labels will still be present.</p>
 <p>The disassembly is often quite extensive, and whenever possible tries to automatically
-differentiate between code, graphics, data and unused bytes.  There are actually two
-levels of disassembly in Stella.  First, the emulation core tracks accesses as a game
-is running, making for very accurate results.  This is known as a <b>dynamic</b> analysis.
+differentiate between code, graphics, data and unused bytes. There are actually two
+levels of disassembly in Stella. First, the emulation core tracks accesses as a game
+is running, making for very accurate results. This is known as a <b>dynamic</b> analysis.
 Second, the built-in Distella code does a <b>static</b> analysis, which tentatively fills
 in sections that the dynamic disassembler missed (usually because the addresses haven't
 been accessed at runtime yet).</p>
 <p>As such, code can be marked in two ways (absolute, when done by the emulation core),
 and tentative (when done by Distella, and the emulation core hasn't accessed it yet).
 Such 'tentative' code is marked with the '*' symbol, indicating that it has the potential
-to be accessed as code sometime during the program run.  This gives very useful information,
+to be accessed as code sometime during the program run. This gives very useful information,
 since it can indicate areas toggled by an option in the game (ie, when a player dies,
-when difficulty level changes, etc).  It can also indicate whether blocks of code after
+when difficulty level changes, etc). It can also indicate whether blocks of code after
 a relative jump are in fact code, or simply data.</p>
 
 
 <p><img src="graphics/debugger_rom.png"></p>
 
 <p>The <B>"Bank state"</B> is self-explanatory, and shows a summary of the current
-bank information.  For normal bankswitched ROMs, this will be the current bank number,
-however more advanced schemes will show other types of information here.  More detailed
+bank information. For normal bankswitched ROMs, this will be the current bank number,
+however more advanced schemes will show other types of information here. More detailed
 information is available in Detailed Bankswitch Information (N).</p>
 
 <p>Each line of disassembly has four fields:</p>
@@ -1050,32 +1052,32 @@ by the "break" command, <b>not</b> the conditional "breakif" breakpoints
 Counter isn't necessarily involved).</li>
 <li><b>Labels</b>: Any labels assigned to the given address, either generated
 automatically by Distella, read from a DASM symbol file or custom
-labels created by the user.  If 'PC addresses' is enabled, the address will
+labels created by the user. If 'PC addresses' is enabled, the address will
 be shown in grey.</li>
 <li><b>Disassembled bytes</b>: This is either a standard 6502 mnemonic (possibly with operand),
-or information about graphics and/or data.  For instructions, the cycle count will be
-included, separated by a semicolon.  For graphics, a bitmap of the data, and the address
-of the data is included.  For actual data, only the address is included.</li>
+or information about graphics and/or data. For instructions, the cycle count will be
+included, separated by a semicolon. For graphics, a bitmap of the data, and the address
+of the data is included. For actual data, only the address is included.</li>
 <li><b>Hex bytes</b>: These are the raw machine bytes for the code/graphics/data.
 Note that only code, graphics or data will show bytes and can be edited.</li>
 </ul>
 
 <p>At this point, we should explain the various 'types' that the disassembler
-can use.  These are known as 'directives', and partly correspond to configuration
-options from the standalone Distella program.  They are listed in order of
+can use. These are known as 'directives', and partly correspond to configuration
+options from the standalone Distella program. They are listed in order of
 decreasing hierarchy:</p>
 <table border="1" cellpadding="3">
 <tr><td><b>CODE</b></td><td>Addresses which have appeared in the program counter, or
-which tentatively can appear in the program counter.  These can be edited in hex.</td></tr>
+which tentatively can appear in the program counter. These can be edited in hex.</td></tr>
 <tr><td><b>GFX</b></td><td>Addresses which contain data stored in the player graphics registers
-(GRP0/GRP1).  These addresses are shown with a bitmap of the graphics, which
-can be edited in either hex or binary.  The bitmap is shown as large blocks.</td></tr>
+(GRP0/GRP1). These addresses are shown with a bitmap of the graphics, which
+can be edited in either hex or binary. The bitmap is shown as large blocks.</td></tr>
 <tr><td><b>PGFX</b></td><td>Addresses which contain data stored in the playfield graphics registers
-(PF0/PF1/PF2).  These addresses are shown with a bitmap of the graphics, which
-can be edited in either hex or binary.  The bitmap is shown as small dashes.</td></tr>
-<tr><td><b>DATA</b></td><td>Addresses used as an operand for some opcode.  These can be edited
+(PF0/PF1/PF2). These addresses are shown with a bitmap of the graphics, which
+can be edited in either hex or binary. The bitmap is shown as small dashes.</td></tr>
+<tr><td><b>DATA</b></td><td>Addresses used as an operand for some opcode. These can be edited
 in hex.</td></tr>
-<tr><td><b>ROW</b></td><td>Addresses not used as any of the above.  These are shown up
+<tr><td><b>ROW</b></td><td>Addresses not used as any of the above. These are shown up
 to 8 per line, and cannot be edited.</td></tr>
 </table>
 
@@ -1083,7 +1085,7 @@ to 8 per line, and cannot be edited.</td></tr>
 <p>For code sections, the 6502 mnemonic will be UPPERCASE for all standard instructions,
 or lowercase for "illegal" 6502 instructions (like "dcp"). If automatic resolving
 of code sections has been disabled for any reason, you'll likely see a lot
-of illegal opcodes if you scroll to a data table in ROM.  This can also
+of illegal opcodes if you scroll to a data table in ROM. This can also
 occur if the disassembler hasn't yet encountered addresses in the PC.
 If you step/trace/scanline/frame advance into such an area, the disassembler
 will make note of it, and disassemble it correctly from that point on.</p>
@@ -1103,17 +1105,17 @@ or Scanline advance, or manually setting the PC), the disassembly will
 scroll to the current PC location.</p>
 
 <p>Even though ROM is supposed to be Read Only Memory, this is an
-emulator: you can change ROM all you want within the debugger.  The hex
+emulator: you can change ROM all you want within the debugger. The hex
 bytes in the ROM Widget are editable. Double-click on them to edit
 them. When you're done, press Enter to accept the changes (in which case
 the cart will be re-disasembled) or Escape to cancel them.
 Note that only instructions that have been fully disassembled
-can be edited.  In particular, blank lines or 'ROW' directives
-cannot be edited.  Also note that certain ROMs can have
-sections of address space swapped in and out dynamically.  As such, changing
+can be edited. In particular, blank lines or 'ROW' directives
+cannot be edited. Also note that certain ROMs can have
+sections of address space swapped in and out dynamically. As such, changing
 the contents of a certain address will change the area pointed to <b>at
-that time</b>.  In particular, modifying an address that points to internal
-RAM will change the RAM, not the underlying ROM.  A future release may
+that time</b>. In particular, modifying an address that points to internal
+RAM will change the RAM, not the underlying ROM. A future release may
 graphically differentiate between RAM and ROM areas.</p>
 
 <p>The ROM Disassembly also contains a Settings dialog, accessible by right-clicking
@@ -1149,14 +1151,14 @@ in either binary or hexidecimal.</li>
 
 <li>The ROM Widget only works on ROM or zero-page RAM separately. If your game runs
 code from zero-page RAM, the disassembly will show addresses $80 to $FF (zero-page
-RAM address space) only.  Once your RAM routine returns, the ROM Widget will switch
-back to ROM space ($1000 - $1FFF and mirrors).  The same is true of the "disasm"
+RAM address space) only. Once your RAM routine returns, the ROM Widget will switch
+back to ROM space ($1000 - $1FFF and mirrors). The same is true of the "disasm"
 command; it will show either ROM or RAM space, not both at the same time.</li>
 
 <li>The standard VCS memory map has the cartridge port at locations
-$F000-$FFFF.  However, not all the address lines exist on a 6507, so
+$F000-$FFFF. However, not all the address lines exist on a 6507, so
 the cartridge port is "mirrored" at every other 4K chunk of address
-space ($1000, $3000, up to $D000).  Some developers find it easier
+space ($1000, $3000, up to $D000). Some developers find it easier
 to think of the different banks of ROM as being at different addresses
 (such as: Bank 0 at $D000 and bank 1 at $F000). When such a ROM runs,
 the Program Counter can point to one of the mirrors instead of the main
@@ -1175,7 +1177,7 @@ the same address.</li>
 <br>
 <h2><u>(N)</u> Detailed Bankswitch Information</h2>
 
-<p>This area shows a detailed breakdown of the bankswitching scheme.  Since
+<p>This area shows a detailed breakdown of the bankswitching scheme. Since
 the bankswitch schemes can greatly vary in operation, this tab will be
 different for each scheme, but its specific functionality should be self-explanatory.
 An example of both 4K (non-bankswitched) and DPC (Pitfall II) is as follows:</p>
@@ -1192,22 +1194,22 @@ Go ahead and try to change something!</p>
 <h2><u>(O)</u> Detailed Cartridge extended RAM Information</h2>
 
 <p>If applicable, this area shows a detailed breakdown of any extra RAM supported by
-the bankswitching scheme.  Since the bankswitch schemes can greatly vary in operation,
+the bankswitching scheme. Since the bankswitch schemes can greatly vary in operation,
 this tab will be different for each scheme, but its specific functionality should be
-self-explanatory.  An example of both F8SC (8K Atari + ram) and DPC (Pitfall II) is
+self-explanatory. An example of both F8SC (8K Atari + ram) and DPC (Pitfall II) is
 as follows:</p>
 
 <p><img src="graphics/debugger_ram-f8sc.png"></p>
 <p><img src="graphics/debugger_ram-dpc.png"></p>
 
 <p>The RAM is shown in a grid similar to how zero-page RAM is shown in M6532/RIOT RAM
-(K) and (L).  See those sections for a description of usage.
+(K) and (L). See those sections for a description of usage.
 
 <p>In the cases where RAM is always mapped into the same place in the cartridge
-address space (such as Sara-chip), the RAM addresses are labeled as such.  In other
+address space (such as Sara-chip), the RAM addresses are labeled as such. In other
 cases, such as when the RAM is either quiescent (and mapped in at different places),
 or not viewable by the 6507 at all, the RAM addresses are labeled as the cart sees them.
-In the examples above, F8SC RAM is labeled starting at its read port, or $F080.  However,
+In the examples above, F8SC RAM is labeled starting at its read port, or $F080. However,
 the RAM in the DPC scheme is not viewable by the 6507, so its addresses start from $0.
 
 
@@ -1239,21 +1241,21 @@ Control-R and Control-Shift-R.</p>
 <br>
 <h2>Distella Configuration Files</h2>
 <p>As mentioned in ROM Disassembly (M), Stella supports the following directives:
-CODE/GFX/PGFX/DATA/ROW.  While the debugger will try to automatically mark address
-space with the appropriate directive, there are times when it will fail.  There are
+CODE/GFX/PGFX/DATA/ROW. While the debugger will try to automatically mark address
+space with the appropriate directive, there are times when it will fail. There are
 several options in this case:</p>
 <ol>
 <li><b>Manually set the directives</b>: Directives can be set in the debugger
-prompt with the code/gfx/pgfx/data/row commands.  These accept an address range
-for the given directive type.  Setting a range with the same type a second time
+prompt with the code/gfx/pgfx/data/row commands. These accept an address range
+for the given directive type. Setting a range with the same type a second time
 will remove that directive from the range.</li>
 <li><b>Use configuration files</b>: Configuration files can be used to automatically
-load a list of directives when a ROM is loaded.  These files can be generated with the
-'saveconfig' command, and loaded with the 'loadconfig' command.  There are also
+load a list of directives when a ROM is loaded. These files can be generated with the
+'saveconfig' command, and loaded with the 'loadconfig' command. There are also
 'listconfig' and 'clearconfig' commands to show and erase (respectively) the current
-directive listing.  Upon opening the debugger for the first time, Stella attempts
-to load a configuration file from several places.  For this example, assume a ROM
-named "rr.a26", with properties entry "River Raid".  Attempts will be made as follows:
+directive listing. Upon opening the debugger for the first time, Stella attempts
+to load a configuration file from several places. For this example, assume a ROM
+named "rr.a26", with properties entry "River Raid". Attempts will be made as follows:
 <ul>
 <li>ROM dir based on properties entry name: <i>River Raid.cfg</i></li>
 <li>ROM dir based on actual ROM name: <i>rr.cfg</i></li>
@@ -1307,15 +1309,15 @@ but it helps to know at least a little about 6502 programming.</p>
 		symbols at the bottom of the screen).</li>
 
 	<li>Enter the debugger by pressing the ` (backquote) key. Don't get
-		killed before you do this, though.  You should still have all 5 lives.</li>
+		killed before you do this, though. You should still have all 5 lives.</li>
 
 	<li>In the RAM display, click the "Search" button and enter "5" for input.
 		This searches RAM for your value and highlights all addresses that match
-		the input.  You should see two addresses highlighted: "00a5" and "00ba".
+		the input. You should see two addresses highlighted: "00a5" and "00ba".
 		These are the only two addresses that currently have the value 5, so they're
 		the most likely candidates for "number of lives" counter. (However, some
 		games might actually store one less than the real number of lives, or
-		one more, so you might have to experiment a bit.  Since this is a "rigged
+		one more, so you might have to experiment a bit. Since this is a "rigged
 		demo", I already know Battlezone stores the actual number of lives.
 		Most games do, actually).</li>
 
@@ -1325,9 +1327,9 @@ but it helps to know at least a little about 6502 programming.</p>
 	<li>Get killed! Ram an enemy tank, or let him shoot you. Wait for
 		the explosion to finish. You will now have 4 lives.</li>
 
-	<li>Enter the debugger again.  Click the "Compare" button in RAM widget and enter
-		a value of 4.  Now the RAM widget should only show one highlighted address:
-		"00ba".  What we did was search within our previous results (the ones that
+	<li>Enter the debugger again. Click the "Compare" button in RAM widget and enter
+		a value of 4. Now the RAM widget should only show one highlighted address:
+		"00ba". What we did was search within our previous results (the ones that
 		were 5 before) for the new value 4. Address $00ba used to have the value 5,
 		but now it has 4. This means that Battlezone (almost certainly) stores the
 		current number of lives at address $00ba.</li>
@@ -1355,9 +1357,9 @@ but it helps to know at least a little about 6502 programming.</p>
 		Program Counter pointing to the instruction *after* the one that wrote
 		to location $ba.</li>
 
-	<li>Once in the debugger, look at the ROM display.  The PC should be at address
+	<li>Once in the debugger, look at the ROM display. The PC should be at address
 		$f238, instruction "LDA $e1". You want to examine a few instructions before
-		the PC, so scroll up using the mouse or arrow keys.  Do you see
+		the PC, so scroll up using the mouse or arrow keys. Do you see
 		the one that affects the lives counter? That's right, it's the "DEC $ba"
 		at location $f236.</li>
 
@@ -1382,9 +1384,9 @@ but it helps to know at least a little about 6502 programming.</p>
 
 		<pre>    $ea $ea</pre>
 
-		<p>Select the line at address $f236 and enter 'ROM patch' mode.  This is done
-		by either double-clicking the line, or pressing enter.  Then delete the bytes
-		with backspace key and enter "ea ea".  Another way to do this would have been
+		<p>Select the line at address $f236 and enter 'ROM patch' mode. This is done
+		by either double-clicking the line, or pressing enter. Then delete the bytes
+		with backspace key and enter "ea ea". Another way to do this would have been
 		to enter "rom $f236 $ea $ea" in the Prompt widget.
 	</li>
 
