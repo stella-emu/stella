@@ -2370,7 +2370,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "d",
-    "Carry Flag: set (0 or 1), or toggle (no arg)",
+    "Decimal Flag: set (0 or 1), or toggle (no arg)",
     "Example: d, d 0, d 1",
     false,
     true,
@@ -2471,7 +2471,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "dump",
-    "Dump data at address <xx> [to yy] [1..7]",
+    "Dump data at address <xx> [to yy] [0-7] (dump to file options)",
     "Example:\n"
     "  dump f000 - dumps 128 bytes @ f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
@@ -2796,7 +2796,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "rewind",
-    "Rewind state to last [xx] steps/traces/scanlines/frames...",
+    "Rewind state by one or [xx] steps/traces/scanlines/frames...",
     "Example: rewind, rewind 5",
     false,
     true,
@@ -3109,7 +3109,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "unwind",
-    "Unwind state to next [xx] steps/traces/scanlines/frames...",
+    "Unwind state by one or [xx] steps/traces/scanlines/frames...",
     "Example: unwind, unwind 5",
     false,
     true,
