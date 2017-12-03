@@ -831,9 +831,6 @@ string CartDebug::loadSymbolFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadConfigFile()
 {
-  if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("config file for multi-bank ROM not yet supported");
-
   // There are two possible locations for loading config files
   //   (in order of decreasing relevance):
   // 1) ROM dir based on properties entry name
@@ -934,15 +931,17 @@ string CartDebug::loadConfigFile()
   }
   myDebugger.rom().invalidate();
 
-  return "loaded " + node.getShortPath() + " OK";
+  stringstream retVal;
+  if(myConsole.cartridge().bankCount() > 1)
+    retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+  retVal << "loaded " << node.getShortPath() << " OK";
+  return retVal.str();
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveConfigFile()
 {
-  if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("config file for multi-bank ROM not yet supported");
-
   // While there are two possible locations for loading config files,
   // the main 'config' directory is used whenever possible when saving,
   // unless the rom-specific file already exists
@@ -977,7 +976,11 @@ string CartDebug::saveConfigFile()
     getBankDirectives(out, myBankInfo[b]);
   }
 
-  return "saved " + node.getShortPath() + " OK";
+  stringstream retVal;
+  if(myConsole.cartridge().bankCount() > 1)
+    retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+  retVal << "saved " << node.getShortPath() << " OK";
+  return retVal.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1363,7 +1366,7 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
   buf << "ORG " << Base::HEX4 << info.offset << endl;
 
   // Now consider each byte
-  uInt16 prev = info.offset, addr = prev + 1;
+  uInt32 prev = info.offset, addr = prev + 1;
   DisasmType prevType = disasmTypeAbsolute(mySystem.getAccessFlags(prev));
   for( ; addr < info.offset + info.size; ++addr)
   {

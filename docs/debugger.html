@@ -349,7 +349,7 @@ to change the meaning of an expression. The prefixes are:</p>
 		assumed to be in the default base. When you first start Stella,
 		the default base is 16 (hexadecimal). You can change it with the
 		"base" command. If you want to change the default base to decimal permanently,
-		you can put a "base #10" command in your "autoexec.stella" file (see
+		you can put a "base #10" command in your "autoexec.script" file (see
 		the section on "Startup").</p>
 
 		<p>Remember, you can use arbitrarily complex expressions with any
@@ -357,7 +357,7 @@ to change the meaning of an expression. The prefixes are:</p>
 	</li>
 </ul>
 
-
+</br>
 <h3>Breakpoints, watches and traps, oh my!</h3>
 
 <h4>Breakpoints</h4>
@@ -462,41 +462,6 @@ presses both Select and Reset:</p>
 <p>User-defined functions appear in "listfunctions", which shows the label
 and expression for each function. Functions can be removed with
 "delfunction label", where the labels come from "listfunctions".</p>
-
-<p>If you've defined a lot of complex functions, you probably will
-want to re-use them in future runs of the debugger. You can save all
-your functions, breakpoints, conditional breaks, and watches with the
-"save" command. If you name your saved file the same as the ROM filename
-and place it in the ROM directory, it'll be auto-loaded next time you
-load the same ROM in Stella. The save file is just a plain text file
-called "rom_filename.stella", so you can edit it and add new functions, etc.</p>
-<p>You can also create a file called "autoexec.stella" which will be loaded
-when the debugger starts, no matter what ROM you have loaded. The location
-of this file will depend on the version of Stella, as follows:</p>
-
-	<p><table cellpadding="5" border="1">
-		<tr>
-			<td><b>Linux/Unix</b></td>
-			<td><i>~/.stella/autoexec.stella</i></td>
-		</tr>
-		<tr>
-			<td><b>Macintosh</b></td>
-			<td><i>~/Library/Application Support/Stella/autoexec.stella</i></td>
-		</tr>
-		<tr>
-			<td><b>Windows</b></td>
-			<td><i>%APPDATA%\Stella\autoexec.stella</i>&nbsp;&nbsp;&nbsp;
-				<b>OR</b><br>
-				<i>_BASEDIR_\autoexec.stella</i>
-					(if a file named 'basedir.txt' exists in the application
-					directory containing the full pathname for _BASEDIR_)
-			</td>
-		</tr>
-	</table>
-<p>Note that these '.stella' script files are only accessed if you enter
-the debugger at least once during a program run. This means you can create
-these files, and not worry about slowing down emulation unless you're
-actively using the debugger.</p>
 
 <h4>Built-in Functions</h4>
 
@@ -632,6 +597,81 @@ can remove a trap with "deltrap number", where the number comes from
 "listtraps" or by entering the identical trap again. You can get rid of
 all traps at once with the "cleartraps" command.</p></p>
 
+</br>
+<h3>Save your work!</h3>
+Stella offers several commands to save your work inside the debugger for
+later re-use.
+
+<h4>save</h4>
+<p>If you've defined a lot of complex functions, you probably will
+want to re-use them in future runs of the debugger. You can save all
+your functions, breakpoints, conditional breaks, traps and watches with the
+"save" command. If you name your saved file the same as the ROM filename
+and place it in the ROM directory, it'll be auto-loaded next time you
+load the same ROM in Stella. The save file is just a plain text file
+called "rom_filename.script", so you can edit it and add new functions, etc.</p>
+<p>While "save" is ROM specific, you can also create a file called
+"autoexec.script" which will be loaded when the debugger starts, no matter
+what ROM you have loaded. The location of this file will depend on the
+version of Stella, as follows:</p>
+
+  <p><table cellpadding="5" border="1">
+    <tr>
+      <td><b>Linux/Unix</b></td>
+      <td><i>~/.stella/autoexec.script</i></td>
+    </tr>
+    <tr>
+      <td><b>Macintosh</b></td>
+      <td><i>~/Library/Application Support/Stella/autoexec.script</i></td>
+    </tr>
+    <tr>
+      <td><b>Windows</b></td>
+      <td><i>%APPDATA%\Stella\autoexec.script</i>&nbsp;&nbsp;&nbsp;
+        <b>OR</b><br>
+        <i>_BASEDIR_\autoexec.script</i>
+          (if a file named 'basedir.txt' exists in the application
+          directory containing the full pathname for _BASEDIR_)
+      </td>
+    </tr>
+  </table>
+<p>Note that these '.script' script files are only accessed if you enter
+the debugger at least once during a program run. This means you can create
+these files, and not worry about slowing down emulation unless you're
+actively using the debugger.</p>
+
+<h4>saveconfig</h4>
+The "saveconfig" command creates a DiStella configuration file which is
+based on Stella's runtime and static analsyis of the current ROM.
+<p>This will be automatically loaded the next time your start the debugger.
+From there on, you can continue analyzing the ROM and then use "saveconfig"
+again to update the configuration. You can also use "loadconfig" to load it
+manually.
+<p>Note that this is not tested for multi-banked ROMs.</p>
+
+<h4>savedis</h4>
+While your are playing or debugging a game, Stella will gather runtime
+information about the ROM. It can then use that information together with
+a static analysis of the ROM and therefore create a better disassembly
+than DiStella alone. "savedis" allows you to save that disassembly as the
+result of this combined analysis.
+<p>Note that this currently only works for single banked ROMs. For larger
+ROMs, the created disassembly is incomplete.</p>
+
+<h4>saverom</h4>
+If you have manipulated a ROM, you can save it with "saverom". The file is
+named '&lt;rom_filename&gt;.a26'.
+
+<h4>saveses</h4>
+The "saveses" command dumps the whole prompt session into a file named
+"YYYY-MM-DD_HH-mm-ss.txt". So you can later lookup what you did exactly
+when you were debugging at that time.
+
+<h4>savestate</h4>
+<p>This command work identical to the save state hotkey (F9) during emulation.
+Any previously saved state can be loaded with "loadstate" plus the slot
+number (0-9).</p>
+</br>
+
 <h3>Prompt commands:</h3>
 
 <p>Type "help" to see this list in the debugger.<br/>
@@ -702,11 +742,11 @@ clearsavestateifs - Clear all savestate points
             runto - Run until string xx in disassembly
           runtopc - Run until PC is set to value xx
                 s - Set Stack Pointer to value xx
-             save - Save breaks, watches, traps to file xx
+             save - Save breaks, watches, traps and functions to file xx
        saveconfig - Save Distella config file (with default name)
           savedis - Save Distella disassembly (with default name)
           saverom - Save (possibly patched) ROM (with default name)
-          saveses - Save console session to file xx
+          saveses - Save console session (with default name)
          savesnap - Save current TIA image to PNG file
         savestate - Save emulator state xx (valid args 0-9)
       savestateif - Create savestate on &lt;condition&gt;
@@ -731,7 +771,6 @@ clearsavestateifs - Clear all savestate points
                 y - Set Y Register to value xx
                 z - Zero Flag: set (0 or 1), or toggle (no arg)
 </pre>
-
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>

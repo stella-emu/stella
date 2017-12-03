@@ -2878,8 +2878,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "save",
-    "Save breaks, watches, traps to file xx",
-    "Example: save commands.txt",
+    "Save breaks, watches, traps and functions to file xx",
+    "Example: save commands.script",
     true,
     false,
     { kARG_FILE, kARG_END_ARGS },
@@ -2920,7 +2920,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saveses",
-    "Save console session",
+    "Save console session (with default name)",
     "Example: saveses\n"
     "NOTE: saves to default save location",
     false,
