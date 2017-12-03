@@ -1236,7 +1236,7 @@ string CartDebug::saveRom()
 {
   const string& rom = myConsole.properties().get(Cartridge_Name) + ".a26";
 
-  FilesystemNode node(myOSystem.defaultSaveDir() + "ROMs\\" + rom);
+  FilesystemNode node(myOSystem.defaultSaveDir() + rom);
   ofstream out(node.getPath(), std::ios::binary);
   if(out && myConsole.cartridge().saveROM(out))
     return "saved ROM as " + node.getShortPath();
