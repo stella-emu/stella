@@ -69,6 +69,10 @@
 
 #include "Console.hxx"
 
+namespace {
+  constexpr uInt8 YSTART_EXTRA = 2;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
                  const Properties& props)
@@ -245,7 +249,7 @@ void Console::autodetectYStart()
 
   myTIA->setFrameManager(myFrameManager.get());
 
-  myAutodetectedYstart = ystartDetector.detectedYStart();
+  myAutodetectedYstart = ystartDetector.detectedYStart() - YSTART_EXTRA;
 
   // Don't forget to reset the SC progress bars again
   myOSystem.settings().setValue("fastscbios", fastscbios);
