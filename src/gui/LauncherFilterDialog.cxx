@@ -47,7 +47,7 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
 
   // Types of files to show
   VarList::push_back(items, "All files", "allfiles");
-  VarList::push_back(items, "All roms", "allroms");
+  VarList::push_back(items, "All ROMs", "allroms");
   VarList::push_back(items, "ROMs ending with", "__EXTS");
   myFileType =
     new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items,
