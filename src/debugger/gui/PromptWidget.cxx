@@ -508,6 +508,8 @@ void PromptWidget::loadConfig()
   // Show the prompt the first time we draw this widget
   if(_firstTime)
   {
+    _firstTime = false;
+
     // Display greetings & prompt
     string version = string("Stella ") + STELLA_VERSION + "\n";
     print(version);
@@ -528,7 +530,6 @@ void PromptWidget::loadConfig()
     print(PROMPT);
 
     _promptStartPos = _promptEndPos = _currentPos;
-    _firstTime = false;
     _exitedEarly = false;
   }
   else if(_exitedEarly)
