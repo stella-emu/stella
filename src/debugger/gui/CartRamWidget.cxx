@@ -77,7 +77,7 @@ CartRamWidget::CartRamWidget(
   myDesc->setList(sl);
   addFocusWidget(myDesc);
 
-  ypos += myDesc->getHeight() + myLineHeight + 4;
+  ypos += myDesc->getHeight() + myFontHeight / 2;
 
   // Add RAM widget
   xpos = x + _font.getStringWidth("xxxx");
