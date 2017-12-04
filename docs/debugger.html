@@ -45,7 +45,7 @@
         <li><a href="#IOTab">I/O Tab</a></li>
         <li><a href="#AudioTab">Audio Tab</a></li>
         <li><a href="#TIADisplay">TIA Display</a></li>
-        <li><a href="#TIAInfo">TIA Info</a></li>
+        <li><a href="#TIAInfo">TIA Information</a></li>
         <li><a href="#TIAZoom">TIA Zoom</a></li>
         <li><a href="#BreakpointStatus">Breakpoint/Trap Status</a></li>
         <li><a href="#CPURegisters">CPU Registers</a></li>
@@ -214,7 +214,7 @@ present in the debugger):</p>
 <p>For space reasons, the Prompt, TIA, I/O and Audio displays are split into
 4 tabs, only one of which is visible at a time. You can use the mouse or
 keyboard to select which tab you want to view. Control/Cmd + Tab cycles between
-tabs from left-to-right, Control/Cmd + Shift + Tab cycles right-to-left.
+tabs from left-to-right, Shift + Control/Cmd + Tab cycles right-to-left.
 Pressing Tab (or Shift + Tab) cycles between widgets in the current tab (except
 for in the Prompt Tab, where 'tab' is used for something else).</p>
 
@@ -308,8 +308,8 @@ actively using the debugger.</p>
 <h2><a name="GlobalButtons">Global Buttons</a></h2>
 
 <p>There are some buttons on the right top that always show up no matter which
-tab you are looking at. This is because these are the ones which you will use
-most.</p>
+tab you are looking at. This is because these are the ones that are most frequently
+used.</p>
 
 <ul>
   <p><img src="graphics/debugger_globalbuttons.png"></p>
@@ -323,34 +323,34 @@ previous rewind operation. The rewind buffer is 100 levels deep by default.<p>
 <p>The other operations are Step, Trace, Scan+1, Frame+1 and Exit (debugger).</p>
 
 <p>You can also use the buttons from anywhere in the GUI via hotkeys.</p>
-
+<p>
 <table BORDER=1 cellpadding=3>
   <tr>
     <th>Key</th>
     <th>Function</th>
   </tr>
   <tr>
-    <td>Control + s</td>
+    <td>Control-s</td>
     <td>Step</td>
   </tr>
   <tr>
-    <td>Control + t</td>
+    <td>Control-t</td>
     <td>Trace</td>
   </tr>
   <tr>
-    <td>Control + L</td>
+    <td>Control-L</td>
     <td>Scan+1</td>
   </tr>
   <tr>
-    <td>Control + f</td>
+    <td>Control-f</td>
     <td>Frame+1</td>
   </tr>
   <tr>
-    <td>Control + r</td>
+    <td>Control-r</td>
     <td>Rewind</td>
   </tr>
   <tr>
-    <td>Control + Shift + r</td>
+    <td>Shift-Control-r</td>
     <td>Unwind</td>
   </tr>
   <tr>
@@ -358,10 +358,7 @@ previous rewind operation. The rewind buffer is 100 levels deep by default.<p>
     <td>Exit</td>
   </tr>
 </table>
-<p>When you use these buttons, the prompt doesn't change. This means the
-status lines with the registers and disassembly will be "stale". You
-can update them just by re-running the relevant commands in the prompt.</p>
-
+</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
@@ -419,6 +416,10 @@ intend to add GUI equivalents for all (or almost all?) of the prompt
 commands in future releases. People who like command prompts will be able to
 use the prompt, but people who hate them will have a fully functional
 debugger without typing (or without typing much, anyway).</p>
+
+<p>Note: unlike the rest of the UI, whatever is shown in the prompt will not
+be updated during debugging and thus eventually become "stale". You can update it
+just by re-running the relevant commands in the prompt.</p>
 </br>
 
 <h3><a name="TabCompletion">Tab Key Auto-Complete</a></h3>
@@ -494,7 +495,7 @@ to change the meaning of an expression. The prefixes are:</p>
 <ul>
 	<li>Dereference prefixes:<br>
 
-		<p>"*"<br>
+    <p><pre>'*'</pre>
     	  Dereference a byte pointer. "*a" means "the byte at the address that
 	      the A register points to". If A is 255 (hex $ff), the result will be
     	  the value currently stored in memory location 255. This operator
@@ -504,7 +505,7 @@ to change the meaning of an expression. The prefixes are:</p>
     	  written as address[0]. *(address+1) can be written as address[1],
 	      etc.</p>
 
-		<p>"@"<br>
+    <p><pre>'@'</pre>
     	  Dereference a pointer to a word. This is just like the "*" byte deref,
 	      except it refers to a 16-bit value, occupying 2 locations, in
     	  low-byte-first format (standard for the 6507).</p>
@@ -520,24 +521,24 @@ to change the meaning of an expression. The prefixes are:</p>
 	</li>
 
 	<li>Hi/Lo Byte Prefixes:<br>
-		<p>"&lt;"<br>
+    <p><pre>'&lt;'</pre>
 		Take the low byte of a 16-bit value. This has no effect on an 8-bit
 		value: "a" is equal to "&lt;a". However, "&lt;$1234" equals "$34".</p>
 
-		<p>"&gt;"<br>
+    <p><pre>'&gt;'</pre>
 		Take the high byte of a 16-bit value. For 8-bit values such as
 		the Accumulator, this will always result in zero. For 16-bit values,
 		"&lt;$1234" = "$12".</p>
 	</li>
 
 	<li>Number Base Prefixes:<br>
-		<p>"#"<br>
+    <p><pre>'#'</pre>
 		Treat the input as a decimal number.</p>
 
-		<p>"$"<br>
+    <p><pre>'$'</pre>
 		Treat the input as a hex number.</p>
 
-		<p>"\"<br>
+    <p><pre>'\'</pre>
 		Treat the input as a binary number.</p>
 
 		<p>These only have meaning when they come before a number, not a
@@ -549,7 +550,11 @@ to change the meaning of an expression. The prefixes are:</p>
 		assumed to be in the default base. When you first start Stella,
 		the default base is 16 (hexadecimal). You can change it with the
 		"base" command. If you want to change the default base to decimal permanently,
-		you can put a "base #10" command in your "autoexec.script" file (for details
+		you can put a
+    <pre>
+      base #10
+    </pre>
+    command in your "autoexec.script" file (for details
     see <a href="#Startup"><b>Startup</b></a>).</p>
   </li>
 </ul>
@@ -630,8 +635,8 @@ zero. You can remove a cond-break with "delbreakif number", where
 the number comes from "listbreaks" or by entering the same conditional break again.</p>
 
 <p>Any time the debugger is entered due to a trap, breakpoint, or
-conditional break, the reason will be displayed in the status area
-near the TIA Zoom display (area <b>H</b>).</p>
+conditional break, the reason will be displayed in the
+<a href="#BreakpointStatus"><b>Breakpoint/Trap Status</b></a> area.
 
 <h4><a name="Functions">Functions</a></h4>
 
@@ -1006,7 +1011,7 @@ GRP1</p>
 <p>For many registers, writes don't take effect immediatelly as the
 TIA takes some color clocks to change state. In Stella's TIA core, this
 is implemented by queueing the writes, and the contents of this queue
-are visualized in the debugger in the queued writes area of the TIA tab.</p>
+are visualized in the debugger in the "Queued Writes" area of the TIA tab.</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
@@ -1050,8 +1055,8 @@ white) filling the rest of the display. Note that if 'phosphor mode'
 or TV effects are enabled, you won't see the effects here; this shows the
 <b>raw</b> TIA image only.</p>
 
-<p>You can use the "Scan+1" button, the prompt "scan" command, or the
-Control-L key to watch the TIA draw the frame one scanline at a time.</p>
+<p>To e.g. watch the TIA draw the frame one scanline at a time, you can
+use the "Scan+1" button, the prompt "scan" command or the Control-L key.</p>
 
 <p>You can also right-click anywhere in this window to show a context menu,
 as illustrated:</p>
@@ -1067,9 +1072,9 @@ as illustrated:</p>
 	scanline where the mouse was clicked. You can also use
 	the Prompt Tab commands to list and turn off the breakpoint.</li>
 	<li><b>Set zoom position</b>: Influences what is shown in the TIA
-	zoom area (further described in part (G). The zoom area will
-	contain the area centered at the position where the mouse was
-	clicked.</li>
+  zoom area (further described in <a href="#TIAZoom"><b>TIA Zoom</b></a>).
+  The zoom area will contain the area centered at the position where the
+  mouse was	clicked.</li>
 	<li><b>Save snapshot</b>: Saves the TIA image currently shown,
 	including any current 'effects' (fixed debug colors, partial fill, etc).
   </li>
@@ -1078,8 +1083,8 @@ as illustrated:</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
-<h2><a name="TIAInfo"><u>(F)</u> TIA Info</a></h2>
-<p>To the right of the TIA display (E) there is TIA information, as shown:</p>
+<h2><a name="TIAInfo"><u>(F)</u> TIA Information</a></h2>
+<p>To the right of the <a href="#TIADisplay"><b>TIA Display</b></a> area, TIA information is displayed:</p>
 <p><img src="graphics/debugger_tiainfo.png"></p>
 <p>The indicators are as follows (note that all these are read-only):</p>
 <ul>
@@ -1107,12 +1112,10 @@ Position, and will range from 0 to 228).</li>
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2><a name="TIAZoom"><u>(G)</u> TIA Zoom</a></h2>
-<p>Below the TIA Info (F) is the TIA Zoom area. This allows you to enlarge
-part of the TIA display, so you can see fine details. Note that unlike
-the TIA display area, this one <b>does</b> generate frames as the real
-system would. So, if you've enabled 'phosphor mode' for a ROM, it
-won't be honoured here (ie, you'll see alternating frames at 30Hz display,
-just like on a real system).</p>
+<p>Below the <a href="#TIAInfo"><b>TIA Information</b></a> is the TIA Zoom area. This allows you to enlarge
+part of the TIA display, so you can see fine details. Like the
+<a href="#TIADisplay"><b>TIA Display</b></a> area,
+this one does generate frames as the real system would.</p>
 <p>You can also right-click anywhere in this window to show a context menu,
 as illustrated:</p>
 <p><img src="graphics/debugger_tiazoomcmenu.png"></p>
@@ -1125,11 +1128,12 @@ a context menu in the <a href="#TIADisplay"><b>TIA Display</b></a>.</p>
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2><a name="BreakpointStatus"></a><u>(H)</u> Breakpoint/Trap Status</a></h2>
-<p>Below the TIA Zoom (G), there is a status line that shows the reason and the
-address the debugger was entered (if a breakpoint or trap was hit), as shown:</p>
+<p>Below the <a href="#TIAZoom"><b>TIA Zoom</b></a> there is a status line that
+shows the reason and the address the debugger was entered (if a breakpoint or
+trap was hit), as shown:</p>
 <p><img src="graphics/debugger_bpstatus.png"></p>
 <p>The output here will generally be self-explanatory. Due to space concerns,
-the reasons will be shown as follows:
+the reason will be shown as follows:
 <ul>
   <li>"CBP:" for conditional breakpoints</li>
   <li>"BP:" for normal breakpoints</li>
@@ -1167,24 +1171,37 @@ learn :)</p>
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2><a name="DataOpButtons"><u>(J)</u> Data Operations Buttons</a></h2>
-<p>These buttons can be used to change values in either CPU Registers (I), or
-the RIOT RAM (K), depending on which of these widgets is currently active.
+<p>These buttons can be used to change values in either
+<a href="#CPURegisters"><b>CPU Registers</b></a>,
+the <a href="#M6532"><b>M6532/RIOT RAM</b></a> or
+<a href="#CartridgeRAMInformation"><b>Detailed Cartridge Extended RAM Information</b></a>,
+depending on which of these widgets is currently in focus.
 <p><img src="graphics/debugger_dataops.png"></p>
 <p>Each of these buttons also have a keyboard shortcut (indicated in square
 brackets). In fact, many of the inputboxes in various parts of the debugger
 respond to these same keyboard shortcuts. If in doubt, give them a try.</p>
-<pre>
-  0   [z]    - Set the current location/register to zero.
-  Inv [i !]  - Invert the current location/register [toggle all its bits].
-  Neg [n]    - Negate the current location/register [twos' complement negative].
-  ++  [+ =]  - Increment the current location/register
-  --  [-]    - Decrement the current location/register
-  &lt;&lt;  [&lt; ,]  - Shift the current location/register left.
-  &gt;&gt;  [&gt; .]  - Shift the current location/register right.
-
-  Any bits shifted out of the location/register with &lt;&lt; or &gt;&gt;
-  are lost (they will NOT end up in the Carry flag).
-</pre>
+<table border="1" cellpadding="3">
+  <tr>
+    <th>Button</th><th>Shortut</th><th>Description</th>
+  </tr>
+  <tr>
+    <td>0</td><td><pre>'z'</pre></td><td>Set the current location/register to zero.</td>
+  </tr><tr>
+    <td>Inv</td><td><pre>'i' or '!'</pre></td><td>Invert the current location/register (toggle all its bits)</td>
+  </tr><tr>
+    <td>Neg</td><td><pre>'n'</pre></td><td>Negate the current location/register (twos' complement negative)</td>
+  </tr><tr>
+    <td>++</td><td><pre>'+' or '='</pre></td><td>Increment the current location/register.</td>
+  </tr><tr>
+    <td>--</td><td><pre>'-'</pre></td><td>Decrement the current location/register.</td>
+  </tr><tr>
+    <td>&lt;&lt;</td><td><pre>'&lt;' or ','</pre></td><td>Shift the current location/register left.</td>
+  </tr><tr>
+    <td>&gt;&gt;</td><td><pre>'&gt;' or '.'</pre></td><td>Shift the current location/register right.</td>
+  </tr>
+</table>
+<p>Any bits shifted out of the location/register with &lt;&lt; or &gt;&gt;
+are lost (they will NOT end up in the Carry flag).</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -1471,7 +1488,7 @@ named "rr.a26", with properties entry "River Raid". Attempts will be made as fol
 <li>ROM dir based on actual ROM name: <i>rr.cfg</i></li>
 <li>CFG dir based on properties entry name: <i>configdir/River Raid.cfg</i></li>
 </ul>
-<p>The location of 'configdir' will depend on the version of Stella, as follows:</p>
+<p>The location of 'configdir' will depend on the OS as follows:</p>
 
 	<p><table cellpadding="3" border="1">
 		<tr>
