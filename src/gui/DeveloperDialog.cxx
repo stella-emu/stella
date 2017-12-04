@@ -671,6 +671,7 @@ void DeveloperDialog::saveConfig()
 #endif
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::setDefaults()
 {
   bool devSettings = mySettingsGroup0->getSelected() == 1;

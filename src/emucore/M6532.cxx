@@ -106,7 +106,7 @@ void M6532::update()
   // Update entire port state
   port0.update();
   port1.update();
-  myConsole.switches().update(mySettings);
+  myConsole.switches().update();
 
   // Get new PA7 state
   bool currPA7 = port0.myDigitalPinState[Controller::Four];

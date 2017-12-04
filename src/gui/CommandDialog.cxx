@@ -184,7 +184,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
   {
     instance().eventHandler().leaveMenuMode();
     instance().eventHandler().handleEvent(event, 1);
-    instance().console().switches().update(instance().settings());
+    instance().console().switches().update();
     instance().console().tia().update();
     instance().eventHandler().handleEvent(event, 0);
   }

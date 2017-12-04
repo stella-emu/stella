@@ -95,7 +95,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myRiot = make_unique<M6532>(*this, myOSystem.settings());
   myTIA  = make_unique<TIA>(*this, myOSystem.sound(), myOSystem.settings());
   myFrameManager = make_unique<FrameManager>();
-  mySwitches = make_unique<Switches>(myEvent, myProperties);
+  mySwitches = make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
   myTIA->setFrameManager(myFrameManager.get());
 

@@ -65,6 +65,7 @@ EventHandler::EventHandler(OSystem& osystem)
     myFryingFlag(false),
     myUseCtrlKeyFlag(true),
     mySkipMouseMotion(true),
+    myIs7800(false),
     myAltKeyCounter(0),
     myContSnapshotInterval(0),
     myContSnapshotCounter(0)
@@ -117,6 +118,9 @@ void EventHandler::initialize()
   // Default phosphor blend
   Properties::setDefault(Display_PPBlend,
                          myOSystem.settings().getString("tv.phosblend"));
+
+  // Toggle 7800 mode
+  set7800Mode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,6 +194,15 @@ void EventHandler::toggleSAPortOrder()
     myOSystem.frameBuffer().showMessage("Stelladaptor ports left/right");
   }
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::set7800Mode()
+{
+  if(myOSystem.hasConsole())
+    myIs7800 = myOSystem.console().switches().toggle7800Mode(myOSystem.settings());
+  else
+    myIs7800 = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -900,9 +913,6 @@ void EventHandler::handleEvent(Event::Type event, int state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
-  bool devSettings = myOSystem.settings().getBool("dev.settings");
-  bool is7800 = (myOSystem.settings().getString(devSettings ? "dev.console" : "plr.console") == "7800");
-
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
@@ -1026,21 +1036,21 @@ void EventHandler::handleEvent(Event::Type event, int state)
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
-      if(state && !is7800)
+      if(state && !myIs7800)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myOSystem.frameBuffer().showMessage("Color Mode");
       }
       break;
     case Event::ConsoleBlackWhite:
-      if(state && !is7800)
+      if(state && !myIs7800)
       {
         myEvent.set(Event::ConsoleColor, 0);
         myOSystem.frameBuffer().showMessage("BW Mode");
       }
       break;
     case Event::ConsoleColorToggle:
-      if(state && !is7800)
+      if(state && !myIs7800)
       {
         if(myOSystem.console().switches().tvColor())
         {
@@ -1054,7 +1064,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleColor, 1);
           myOSystem.frameBuffer().showMessage("Color Mode");
         }
-        myOSystem.console().switches().update(myOSystem.settings());
+        myOSystem.console().switches().update();
       }
       return;
 
@@ -1087,7 +1097,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleLeftDiffB, 0);
           myOSystem.frameBuffer().showMessage("Left Difficulty A");
         }
-        myOSystem.console().switches().update(myOSystem.settings());
+        myOSystem.console().switches().update();
       }
       return;
 
@@ -1120,7 +1130,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleRightDiffB, 0);
           myOSystem.frameBuffer().showMessage("Right Difficulty A");
         }
-        myOSystem.console().switches().update(myOSystem.settings());
+        myOSystem.console().switches().update();
       }
       return;
     ////////////////////////////////////////////////////////////////////////

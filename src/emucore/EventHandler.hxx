@@ -92,6 +92,13 @@ class EventHandler
     void toggleSAPortOrder();
 
     /**
+      Toggle whether the console is in 2600 or 7800 mode.
+      Note that for now, this only affects whether the 7800 pause button is
+      supported; there is no further emulation of the 7800 itself.
+    */
+    void set7800Mode();
+
+    /**
       Collects and dispatches any pending events.  This method should be
       called regularly (at X times per second, where X is the game framerate).
 
@@ -557,6 +564,10 @@ class EventHandler
     // Sometimes an extraneous mouse motion event occurs after a video
     // state change; we detect when this happens and discard the event
     bool mySkipMouseMotion;
+
+    // Whether the currently enabled console is emulating certain aspects
+    // of the 7800 (for now, only the switches are notified)
+    bool myIs7800;
 
     // Sometimes key combos with the Alt key become 'stuck' after the
     // window changes state, and we want to ignore that event

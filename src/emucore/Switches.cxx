@@ -17,12 +17,15 @@
 
 #include "Event.hxx"
 #include "Props.hxx"
+#include "Settings.hxx"
 #include "Switches.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Switches::Switches(const Event& event, const Properties& properties)
+Switches::Switches(const Event& event, const Properties& properties,
+                   const Settings& settings)
   : myEvent(event),
-    mySwitches(0xFF)
+    mySwitches(0xFF),
+    myIs7800(false)
 {
   if(properties.get(Console_RightDifficulty) == "B")
   {
@@ -50,15 +53,14 @@ Switches::Switches(const Event& event, const Properties& properties)
   {
     mySwitches &= ~0x08;
   }
+
+  toggle7800Mode(settings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Switches::update(const Settings& settings)
+void Switches::update()
 {
-  bool devSettings = settings.getBool("dev.settings");
-  bool is7800 = devSettings && (settings.getString("dev.console") == "7800");
-
-  if(is7800)
+  if(myIs7800)
   {
     if(myEvent.get(Event::Console7800Pause) != 0)
     {
@@ -146,4 +148,13 @@ bool Switches::load(Serializer& in)
     return false;
   }
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Switches::toggle7800Mode(const Settings& settings)
+{
+  bool devSettings = settings.getBool("dev.settings");
+  myIs7800 = devSettings && (settings.getString("dev.console") == "7800");
+
+  return myIs7800;
 }
