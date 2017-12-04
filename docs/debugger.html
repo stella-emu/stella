@@ -56,6 +56,7 @@
         </li>
         <li><a href="#Disassembly">ROM Disassembly</a>
           <ul>
+            <li><a href="#DisassemblySettings">ROM Disassembly Settings</a></li>
             <li><a href="#Limitations">Limitations</a></li>
           </ul>
         </li>
@@ -260,50 +261,40 @@ previous rewind operation. The rewind buffer is 100 levels deep by default.<p>
 
 <p>You can also use the buttons from anywhere in the GUI via hotkeys.</p>
 
-<ul>
-  <table BORDER=1 cellpadding=5>
-    <tr>
-      <th>Function</th>
-      <th>Key (Standard)</th>
-      <th>Key (MacOSX)</th>
-    </tr>
-    <tr>
-      <td>Step</td>
-      <td>Control + s</td>
-      <td>Cmd + s</td>
-    </tr>
-    <tr>
-      <td>Trace</td>
-      <td>Control + t</td>
-      <td>Cmd + t</td>
-    </tr>
-    <tr>
-      <td>Scan+1</td>
-      <td>Control + L</td>
-      <td>Cmd + L</td>
-    </tr>
-    <tr>
-      <td>Frame+1</td>
-      <td>Control + f</td>
-      <td>Cmd + f</td>
-    </tr>
-    <tr>
-      <td>Rewind</td>
-      <td>Control + r</td>
-      <td>Cmd + r</td>
-    </tr>
-    <tr>
-      <td>Unwind</td>
-      <td>Control + Shift + r</td>
-      <td>Cmd + Shift + r</td>
-    </tr>
-    <tr>
-      <td>Exit</td>
-      <td>Backquote (`)</td>
-      <td>Backquote (`)</td>
-    </tr>
-  </table>
-</ul>
+<table BORDER=1 cellpadding=3>
+  <tr>
+    <th>Key</th>
+    <th>Function</th>
+  </tr>
+  <tr>
+    <td>Control + s</td>
+    <td>Step</td>
+  </tr>
+  <tr>
+    <td>Control + t</td>
+    <td>Trace</td>
+  </tr>
+  <tr>
+    <td>Control + L</td>
+    <td>Scan+1</td>
+  </tr>
+  <tr>
+    <td>Control + f</td>
+    <td>Frame+1</td>
+  </tr>
+  <tr>
+    <td>Control + r</td>
+    <td>Rewind</td>
+  </tr>
+  <tr>
+    <td>Control + Shift + r</td>
+    <td>Unwind</td>
+  </tr>
+  <tr>
+    <td>Backquote (`)</td>
+    <td>Exit</td>
+  </tr>
+</table>
 <p>When you use these buttons, the prompt doesn't change. This means the
 status lines with the registers and disassembly will be "stale". You
 can update them just by re-running the relevant commands in the prompt.</p>
@@ -335,6 +326,7 @@ or Supermon for the C=64.</p>
 Bash-style commands are also supported:</p>
 
 <table border="1" cellpadding="3">
+  <tr><th>Key</th><th>Function</th></tr>
 	<tr><td>Home</td><td>Move cursor to beginning of line</td></tr>
 	<tr><td>End</td><td>Move cursor to end of line</td></tr>
 	<tr><td>Delete</td><td>Remove character to right of cursor</td></tr>
@@ -356,7 +348,7 @@ Bash-style commands are also supported:</p>
 
 <p>To see the available commands, enter "help". For extended help, type "help cmd",
 where 'cmd' is the command you wish to know about. The available commands are listed
-at the end of this section. Bash-style tab completion is supported for commands,
+in <a href="#PromptCommands"><b>Prompt Commands</b></a> at the end of this section. Bash-style tab completion is supported for commands,
 labels and functions (see below).</p>
 
 <p>For now, there are some functions that only exist in the prompt. We
@@ -364,6 +356,7 @@ intend to add GUI equivalents for all (or almost all?) of the prompt
 commands in future releases. People who like command prompts will be able to
 use the prompt, but people who hate them will have a fully functional
 debugger without typing (or without typing much, anyway).</p>
+</br>
 
 <h3><a name="TabCompletion">Tab Key Auto-Complete</a></h3>
 
@@ -383,6 +376,7 @@ characters in the right order as a match (e.g. "twf" will be completed to
 or set during debugging with the "define" command. It also works with
 built-in functions and those defined with the "function" command,
 but it doesn't (yet) work on filenames.</p>
+</br>
 
 <h3><a name="Expressions">Expressions</a></h3>
 
@@ -700,7 +694,7 @@ also delete them all with the "clearwatches" command.</p>
 
 <p>Note that there's no real point in watching a label or CPU register
 without dereferencing it: Labels are constants, and CPU registers
-are already visible in the CPU Widget</p>
+are already visible in the <a href="#CPURegisters"><b>CPU Registers</b></a> widget</p>
 
 <h4><a name="Traps">Traps</a></h4>
 
@@ -712,7 +706,7 @@ or memory.</p>
 <p>Traps can also combined with a condition ("trapif"). If an access
 to a memory address is caught, the condition is evaluated additionally.
 Only if the condition is true too, the emulations stops. For details
-about conditions see <b>Conditional Breaks</b> described above.</p>
+about conditions see <a href="#ConditionalBreaks"><b>Conditional Breaks</b></a> described above.</p>
 
 <p>An example: you are debugging a game, and you want to stop the
 emulation and enter the debugger whenever RESP0 is strobed. You'd use
@@ -750,7 +744,7 @@ later re-use.
 want to re-use them in future runs of the debugger. You can save all
 your functions, breakpoints, conditional breaks, traps and watches with the
 "save" command. If you name your saved file the same as the ROM filename
-and place it in the ROM directory, it'll be auto-loaded next time you
+and place it in the ROM directory, it will be auto-loaded next time you
 load the same ROM in Stella. The save file is just a plain text file
 called "rom_filename.script", so you can edit it and add new functions, etc.</p>
 <p>While "save" is ROM specific, you can also create a file called
@@ -758,7 +752,7 @@ called "rom_filename.script", so you can edit it and add new functions, etc.</p>
 what ROM you have loaded. The location of this file will depend on the
 version of Stella, as follows:</p>
 
-  <p><table cellpadding="5" border="1">
+  <p><table cellpadding="3" border="1">
     <tr>
       <td><b>Linux/Unix</b></td>
       <td><i>~/.stella/autoexec.script</i></td>
@@ -783,8 +777,8 @@ these files, and not worry about slowing down emulation unless you're
 actively using the debugger.</p>
 
 <h4>saveconfig</h4>
-The "saveconfig" command creates a DiStella configuration file which is
-based on Stella's runtime and static analsyis of the current ROM.
+The "saveconfig" command creates a <a href="#DistellaConfiguration"><b>DiStella Configuration File</b></a> which is
+based on Stella's dynamic and static analysis of the current ROM.
 <p>This will be automatically loaded the next time your start the debugger.
 From there on, you can continue analyzing the ROM and then use "saveconfig"
 again to update the configuration. You can also use "loadconfig" to load it
@@ -792,7 +786,7 @@ manually.
 <p>Note that this is not tested for multi-banked ROMs.</p>
 
 <h4>savedis</h4>
-While your are playing or debugging a game, Stella will gather runtime
+While your are playing or debugging a game, Stella will gather dynamic
 information about the ROM. It can then use that information together with
 a static analysis of the ROM and therefore create a better disassembly
 than DiStella alone. "savedis" allows you to save that disassembly as the
@@ -810,7 +804,7 @@ The "saveses" command dumps the whole prompt session into a file named
 when you were debugging at that time.
 
 <h4>savestate</h4>
-<p>This command work identical to the save state hotkey (F9) during emulation.
+<p>This command works identical to the save state hotkey (F9) during emulation.
 Any previously saved state can be loaded with "loadstate" plus the slot
 number (0-9).</p>
 </br>
@@ -1008,7 +1002,7 @@ the partial contents of the current frame will be displayed up to the
 current scanline, with the contents of the old frame (in black &amp;
 white) filling the rest of the display. Note that if 'phosphor mode'
 or TV effects are enabled, you won't see the effects here; this shows the
-raw TIA image only.</p>
+<b>raw</b> TIA image only.</p>
 
 <p>You can use the "Scan+1" button, the prompt "scan" command, or the
 Control-L key to watch the TIA draw the frame one scanline at a time.</p>
@@ -1024,8 +1018,8 @@ as illustrated:</p>
 	mouse was clicked. Note that if you weren't in partial-frame mode,
 	this option will have no effect.</li>
 	<li><b>Toggle breakpoint</b>: Will toggle a conditional breakpoint at the
-	scanline where the mouse was clicked. You can to use
-	the Prompt Tab to turn the breakpoint off again.</li>
+	scanline where the mouse was clicked. You can also use
+	the Prompt Tab commands to list and turn off the breakpoint.</li>
 	<li><b>Set zoom position</b>: Influences what is shown in the TIA
 	zoom area (further described in part (G). The zoom area will
 	contain the area centered at the position where the mouse was
@@ -1079,19 +1073,28 @@ as illustrated:</p>
 <p>These options allow you to zoom in on the image for even greater detail.
 If you click on the output window, you can scroll around using the cursor,
 PageUp/Dn and Home/End keys. You can also select the zoom position from
-a context menu in the TIA Display.</p>
+a context menu in the <a href="#TIADisplay"><b>TIA Display</b></a>.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2><a name="BreakpointStatus"></a><u>(H)</u> Breakpoint/Trap Status</a></h2>
-<p>Below the TIA Zoom (G), there is a status line that shows the reason the
-debugger was entered (if a breakpoint/trap was hit), as shown:</p>
+<p>Below the TIA Zoom (G), there is a status line that shows the reason and the
+address the debugger was entered (if a breakpoint or trap was hit), as shown:</p>
 <p><img src="graphics/debugger_bpstatus.png"></p>
 <p>The output here will generally be self-explanatory. Due to space concerns,
-conditional breakpoints will be shown as "CBP: ...", normal breakpoints
-as "BP: ...", read traps as "RTrap: ..." and write traps as "WTrap: ...".
-See the "Breakpoints" section for details.</p>
+the reasons will be shown as follows:
+<ul>
+  <li>"CBP:" for conditional breakpoints</li>
+  <li>"BP:" for normal breakpoints</li>
+  <li>"RTrap:" for read traps</li>
+  <li>"WTrap:" for write traps</li>
+  <li>"RTrapIf:" for conditional read traps</li>
+  <li>"WTrapIf:" for conditional write traps</li>
+</ul>
+</p>
+See the <a href="#BreakpointsEtc"><b>Breakpoints, watches and traps...</b></a>
+section for details.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -1110,7 +1113,7 @@ registers. For example, consider the command 'LDA ($80),Y'. The operand of
 the command resolves to some address, which isn't always easy to determine at
 first glance. The 'Src Addr' area shows the actual resulting operand/address
 being used with the given opcode.</p>
-<p>There's not much else to say about the CPU widget: if you know 6502
+<p>There's not much else to say about the CPU Registers widget: if you know 6502
 assembly, it's pretty self-explanatory. If you don't, well, you should
 learn :)</p>
 
@@ -1148,17 +1151,19 @@ To change a RAM location, either double-click on it or press Enter while
 it's highlighted. Enter the new value (hex only for now, sorry), then
 press Enter to make the change. If you change your mind, press Escape
 and the original value will be restored. The currently selected RAM cell
-can also be changed by using the Data operations buttons/associated
-shortcut keys (J).</p>
+can also be changed by using the
+<a href="#DataOpButtons"><b>Data Operations Buttons</b></a> or the associated
+shortcut keys.</p>
 <p><img src="graphics/debugger_ram.png"></p>
 <p>The 'Undo' button in the upper right should be self-explanatory; it will
 undo the most previous operation to one cell only. The 'Revert' button is
-more comprehensive. It will undo <i>all</i> operations on <i>all</i> cells
+more comprehensive. It will undo <b>all</b> operations on <b>all</b> cells
 since you first made a change.</p>
 <p>The UI objects at the bottom refer to the currently selected RAM cell.
-The 'label' textbox shows the label attached to this RAM location (if any),
-and the other textboxes show the decimal and binary equivalent value.
-The remaining buttons to the right are further explained in section (L).</p>
+The 'Label' textbox shows the label attached to this RAM location (if any),
+and the other two textboxes show the decimal and binary equivalent value.</p>
+
+<p>The remaining buttons to the right are further explained in the next section.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -1167,11 +1172,11 @@ The remaining buttons to the right are further explained in section (L).</p>
 energy, but it's also very useful when debugging to determine which
 memory location holds which quantity.</p>
 <p><img src="graphics/debugger_ramsearch.png"></p>
-<p>To search RAM, click 'Search' and enter a byte value into the search editbox (0-255).
-All matching values will be highlighted in the RAM widget. If 'Search' is clicked
-and the input is empty, all RAM locations are highlighted.</p>
+<p>To search the RAM, click 'Search...' and enter a byte value into the search editbox (0-255).
+All matching values will be highlighted in the RAM widget. If no value was entered,
+all RAM locations will be highlighted.</p>
 
-<p>The 'Compare' button is used to compare the given value using all
+<p>The 'Compare...' button is used to compare the given value using all
 addresses currently highlighted. This may be an absolute number (such as 2),
 or a comparative number (such as -1). Using a '+' or '-' operator
 means 'search addresses for values that have changed by that amount'.</p>
@@ -1180,10 +1185,10 @@ addresses and allows another search.</p>
 <p>The following is an example of inspecting all addresses that have
 decreased by 1:</p>
 <ul>
-	<li>Click 'Search' with empty input. All address/values are highlighted</li>
+	<li>Click 'Search...' and then 'OK' (no value entered). All address/values are highlighted</li>
 	<li>Exit debugger mode and lose a life, let your energy decrease, or
 		do whatever it is you're trying to debug</li>
-	<li>Enter debugger mode again, click 'Compare' and and enter a '-1' for input.
+	<li>Enter debugger mode again, click 'Compare...' and and enter a '-1' for input.
 		This finds all values that have decreased by 1 (as compared to their current
 		values)</li>
 	<li>Repeatedly following these steps may help to narrow number of
@@ -1219,7 +1224,7 @@ a relative jump are in fact code, or simply data.</p>
 <p>The <B>"Bank state"</B> is self-explanatory, and shows a summary of the current
 bank information. For normal bankswitched ROMs, this will be the current bank number,
 however more advanced schemes will show other types of information here. More detailed
-information is available in Detailed Bankswitch Information (N).</p>
+information is available in <a href="#BankswitchInformation"><b>Detailed Bankswitch Information</b></a>.</p>
 
 <p>Each line of disassembly has four fields:</p>
 <ul>
@@ -1228,13 +1233,14 @@ labels. Normally there will be nothing there: this indicates that there's
 no breakpoint set at that address. You can set and clear breakpoints by
 clicking in this area. When a breakpoint is set, there will be a
 red circle in this area. These are the same breakpoints as used
-by the "break" command, <b>not</b> the conditional "breakif" breakpoints
-(which makes sense: cond-breaks can break on any condition, the Program
+by the <a href="#Breakpoints">break</a> command, <b>not</b> the conditional "breakif" breakpoints
+(which makes sense: conditional breaks can break on any condition, the Program
 Counter isn't necessarily involved).</li>
 <li><b>Labels</b>: Any labels assigned to the given address, either generated
 automatically by Distella, read from a DASM symbol file or custom
-labels created by the user. If 'PC addresses' is enabled, the address will
-be shown in grey.</li>
+labels created by the user. If 'Show PC addresses'
+(see <a href="#DisassemblySettings"><b>ROM Disassembly Settings</b></a>) is enabled,
+the address will be shown in grey.</li>
 <li><b>Disassembled bytes</b>: This is either a standard 6502 mnemonic (possibly with operand),
 or information about graphics and/or data. For instructions, the cycle count will be
 included, separated by a semicolon. For graphics, a bitmap of the data, and the address
@@ -1298,6 +1304,8 @@ the contents of a certain address will change the area pointed to <b>at
 that time</b>. In particular, modifying an address that points to internal
 RAM will change the RAM, not the underlying ROM. A future release may
 graphically differentiate between RAM and ROM areas.</p>
+
+<h3><a name="DisassemblySettings"></a>ROM Disassembly Settings</a></h3>
 
 <p>The ROM Disassembly also contains a Settings dialog, accessible by right-clicking
 anywhere in the listing:</p>
@@ -1396,7 +1404,7 @@ the RAM in the DPC scheme is not viewable by the 6507, so its addresses start fr
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h1><a name="DistellaConfiguration">Distella Configuration Files</a></h1>
-<p>As mentioned in ROM Disassembly (M), Stella supports the following directives:
+<p>As mentioned in <a href="#Disassembly"><b>ROM Disassembly</b></a>, Stella supports the following directives:
 CODE/GFX/PGFX/DATA/ROW. While the debugger will try to automatically mark address
 space with the appropriate directive, there are times when it will fail. There are
 several options in this case:</p>
@@ -1419,7 +1427,7 @@ named "rr.a26", with properties entry "River Raid". Attempts will be made as fol
 </ul>
 <p>The location of 'configdir' will depend on the version of Stella, as follows:</p>
 
-	<p><table cellpadding="5" border="1">
+	<p><table cellpadding="3" border="1">
 		<tr>
 			<td><b>Linux/Unix</b></td>
 			<td><i>~/.stella/cfg/</i></td>

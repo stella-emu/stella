@@ -47,9 +47,9 @@ class DebuggerDialog : public Dialog
 {
   public:
     enum {
-      kSmallFontMinW  = 1070, kSmallFontMinH  = 720,
-      kMediumFontMinW = 1150, kMediumFontMinH = 770,
-      kLargeFontMinW  = 1150, kLargeFontMinH  = 870
+      kSmallFontMinW  = 1090, kSmallFontMinH  = 720,
+      kMediumFontMinW = 1160, kMediumFontMinH = 790,
+      kLargeFontMinW  = 1160, kLargeFontMinH  = 920
     };
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,

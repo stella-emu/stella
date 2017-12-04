@@ -252,7 +252,8 @@ string CartridgeDPCWidget::internalRamDescription()
   ostringstream desc;
   desc << "$0000 - $07FF - 2K display data\n"
        << "                indirectly accessible to 6507\n"
-       << "                via DPC+'s Data Fetcher registers\n";
+       << "                via DPC+'s Data Fetcher\n"
+       << "                registers\n";
 
   return desc.str();
 }

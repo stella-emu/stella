@@ -65,7 +65,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   WidgetArray wid;
 
   // Calculate real dimensions
-  _w = fontWidth * 35;
+  _w = fontWidth * 41;
   _h = lineHeight * 4 + int(labels.size()) * (lineHeight + 5);
 
   // Determine longest label
@@ -84,7 +84,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   for(i = 0; i < labels.size(); ++i)
   {
     xpos = 10;
-    new StaticTextWidget(this, lfont, xpos, ypos,
+    new StaticTextWidget(this, lfont, xpos, ypos + 2,
                          lwidth, fontHeight,
                          labels[i], kTextAlignLeft);
 
@@ -99,7 +99,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
   xpos = 10;
   myTitle = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
-                                 "", kTextAlignCenter);
+                                 "", kTextAlignLeft);
   myTitle->setTextColor(kTextColorEm);
 
   addToFocusList(wid);

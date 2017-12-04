@@ -42,7 +42,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myNumRows(numrows),
     myPageSize(pagesize)
 {
-  const int bwidth  = lfont.getStringWidth("Compare "),
+  const string ELLIPSIS = "\x1d";
+  const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;
   const int VGAP = 4;
 
@@ -71,12 +72,12 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   by += bheight + VGAP * 6;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
-                                    "Search", kSearchCmd);
+                                    "Search" + ELLIPSIS, kSearchCmd);
   mySearchButton->setTarget(this);
 
   by += bheight + VGAP;
   myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
-                                     "Compare", kCmpCmd);
+                                     "Compare" + ELLIPSIS, kCmpCmd);
   myCompareButton->setTarget(this);
 
   by += bheight + VGAP;
