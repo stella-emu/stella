@@ -355,6 +355,8 @@ bool Thumbulator::isProtected(uInt32 addr)
     case ConfigureFor::BUS:
       return  (addr < 0x06d8) && (addr > 0x0028);
   }
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
