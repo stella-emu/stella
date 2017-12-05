@@ -104,6 +104,7 @@ class Thumbulator
     uInt32 fetch32(uInt32 addr);
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
+    bool isProtected(uInt32 addr);
     void write16(uInt32 addr, uInt32 data);
     void write32(uInt32 addr, uInt32 data);
     void updateTimer(uInt32 cycles);
