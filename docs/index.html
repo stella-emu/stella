@@ -2421,15 +2421,6 @@
       <td>Set "Display.PPBlend" property, used for phosphor effect (0-100).
         Default is whatever is specified for tv.phosblend.</td>
     </tr>
-
-    <tr>
-      <td><pre>-thumb.trapfatal &lt;1|0&gt;</pre></td>
-      <td>The default of true allows the Thumb ARM emulation to
-      throw an exception and enter the debugger on fatal errors. When disabled, such
-      fatal errors are simply logged, and emulation continues. Do not use this
-      unless you know exactly what you're doing, as it changes the behaviour as compared
-      to real hardware.</td>
-    </tr>
   </table>
 
   <p>The following are available in two sets, one for players (prefixed by "plr.") and one
@@ -2440,64 +2431,67 @@
     <tr>
       <th>Argument</th>
       <th>Description</th>
-    </tr>
-
-    <tr>
+    </tr><tr>
       <td><pre>-dev.settings &lt;1|0&gt;</pre></td>
       <td>Select developer (1) or player (0) set.</td>
-    </tr>
-
-    <tr>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;stats &lt;1|0&gt;</pre></td>
       <td>Overlay console info on the TIA image during emulation.</td>
-    </tr>
-
-    <tr>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;console &lt;2600|7800&gt;</pre></td>
       <td>Select console for B/W and Pause key handling and RAM initialization.</td>
-    </tr>
-
-    <tr>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;bankrandom &lt;1|0&gt;</pre></td>
       <td>On reset, randomize the startup bank (only for selected bankswitch types).</td>
-    </tr>
-
-    <tr>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;ramrandom &lt;1|0&gt;</pre></td>
       <td>On reset, either randomize all RAM content, or initialize with zero (console = 2600)/startup values (console = 7800) instead.</td>
-    </tr>
-
-    <tr>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;cpurandom &lt;S,A,X,Y,P&gt;</pre></td>
       <td>On reset, randomize the content of the specified CPU registers.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-&lt;plr.|dev.&gt;debugcolors &lt;1|0&gt;</pre></td>
-      <td>Enable/disable the fixed debug colors.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-&lt;plr.|dev.&gt;colorloss &lt;1|0&gt;</pre></td>
-      <td>Enable/disable the PAL color-loss effect.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-&lt;plr.|dev.&gt;tv.jitter &lt;1|0&gt;</pre></td>
-      <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
-        per frame.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-&lt;plr.|dev.&gt;tv.jitter_recovery &lt;1 - 20&gt;</pre></td>
-      <td>When TV jitter/roll effect is enabled, determines how long to delay recovery
-        time (recovery spread over multiple frames).</td>
-    </tr>
-
-    <tr>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;tiadriven &lt;1|0&gt;</pre></td>
       <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
           If disabled, use the last databus value for those pins instead.</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;thumb.trapfatal &lt;1|0&gt;</pre></td>
+      <td>The default of true allows the Thumb ARM emulation to
+      throw an exception and enter the debugger on fatal errors. When disabled, such
+      fatal errors are simply logged, and emulation continues. Do not use this
+      unless you know exactly what you're doing, as it changes the behaviour as compared
+      to real hardware.</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;tv.jitter &lt;1|0&gt;</pre></td>
+      <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
+        per frame.</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;tv.jitter_recovery &lt;1 - 20&gt;</pre></td>
+      <td>When TV jitter/roll effect is enabled, determines how long to delay recovery
+        time (recovery spread over multiple frames).</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;colorloss &lt;1|0&gt;</pre></td>
+      <td>Enable/disable the PAL color-loss effect.</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;debugcolors &lt;1|0&gt;</pre></td>
+      <td>Enable/disable the fixed debug colors.</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;rewind &lt;1|0&gt;</pre></td>
+      <td>Enables continuous rewind</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;rewind.size &lt;100 - 1000&gt;</pre></td>
+      <td>Defines the rewind buffer size.</td>
+    </tr><tr>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;rewind.uncompressed &lt;100 - 1000&gt;</pre></td>
+      <td>Defines the uncompressed rewind buffer size. Must be &lt;= rewind buffer size.</td>
+    </tr><tr>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;rewind.interval &lt;0 - 5&gt;</pre></td>
+      <td>Defines the interval between two save states.</td>
+    </tr><tr>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;rewind.horizon &lt;0 - 6&gt;</pre></td>
+      <td>Defines the horizon of the rewind buffer.</td>
     </tr>
   </table>
   </blockquote>
@@ -3023,11 +3017,28 @@
           <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
           <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
+          <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-plr.tiadriven<br/>-dev.tiadriven</td></tr>
+          <tr><td>Fatal ARM emulation ...</td><td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors.</td><td><span style="white-space:nowrap">-plr.thumb.trapfatal<br/>-dev.thumb.trapfatal</span></td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Developer Settings</b> dialog (Video):</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_developer_dbgcolors.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Jitter/roll effect</td><td>Emulate screen roll with inconsistent scanline count</td><td>-plr.tv.jitter<br/>-dev.tv.jitter</td></tr>
+          <tr><td>(Jitter/roll) Recovery</td><td>Determines recovery time for screen rolling</td><td><span style="white-space:nowrap">-plr.tv.jitter_recovery<br/>-dev.tv.jitter_recovery</span></td></tr>
           <tr><td>PAL color-loss</td><td>Use PAL color-loss effect</td><td>-plr.colorloss<br/>-dev.colorloss</td></tr>
           <tr><td>Debug colors</td><td>Use fixed debug colors</td><td>-plr.debugcolors<br/>-dev.debugcolors</td></tr>
-          <tr><td>Jitter/roll effect</td><td>Emulate screen roll with inconsistent scanline count</td><td>-plr.tv.jitter<br/>-dev.tv.jitter</td></tr>
-          <tr><td>(Jitter/roll) Recovery</td><td>Determines recovery time for screen rolling</td><td>-plr.tv.jitter_recovery<br/>-dev.tv.jitter_recovery</td></tr>
-          <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-plr.tiadriven<br/>-dev.tiadriven</td></tr>
+          <tr><td>Player 0 <br/>Missile 0 <br/>Player 1 <br/>
+            Missile 1 <br/>Playfield <br/>Ball </td>
+          <td>Set color for specific object in debug colors mode<br/>(PF0, PF1 and PF2 are have slightly different luminance,<br/>disabled in ROM launcher mode)</td><td>-tia.dbgcolors</td></tr>
         </table>
       </td>
     </tr>
@@ -3036,38 +3047,55 @@
   <p><b>Developer Settings</b> dialog (States) <b>TODO</b></p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
-
+      <td><img src="graphics/options_developer_states.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
-          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
-          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
-          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
-          <tr><td></td><td></td><td>-.plr<br>-.dev</td></tr>
+          <tr>
+            <th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th>
+          </tr><tr>
+            <td>Continuous rewind</td>
+            <td>
+              When continuous rewind is enabled, Stella will automatically
+              create new save states in the interval described below.</br>
+              Note: This buffer is identical with the one described in
+              <a href="debugger.html#GlobalButtons"><b>Debugger/Global Buttons</b></a>.
+              It is independent from the save states manually created
+              with F9.
+            </td>
+            <td>-plr.rewind<br>-dev.rewind</td>
+          </tr><tr>
+            <td>Buffer size</td>
+            <td>
+              Defines the rewind buffer size. The larger the buffer, the less
+              save states have to be compressed to reach the horizon.
+            </td>
+            <td>-plr.rewind.size<br>-dev.rewind.size</td>
+          </tr><tr>
+            <td>Uncompressed size</td>
+            <td>
+              Defines the uncompressed rewind buffer size. States within this
+              area will not be compressed and keep their initial interval.</td>
+            <td><span style="white-space:nowrap">-plr.rewind.uncompressed<br>-dev.rewind.uncompressed</span></td>
+          </tr><tr>
+            <td>Interval</td>
+            <td>Defines the interval between two save states when they are created.</td>
+            <td>-plr.rewind.interval<br>-dev.rewind.interval</td>
+          </tr><tr>
+            <td>Horizon</td>
+            <td>
+              Defines the horizon of the rewind buffer. A large horizon allows
+              going back further in time. To reach the horizon, save states
+              will be compressed. This means that more and more intermediate
+              states will be removed and the interval between compressed states
+              becomes larger the further they are back in time.
+            </td>
+            <td>-plr.rewind.horizon<br>-dev.rewind.horizon</td>
+          </tr>
         </table>
       </td>
     </tr>
   </table>
-
-  <p><b>Developer Settings</b> dialog (Debug Colors):</p>
-  <table border="5" cellpadding="2" frame="box" rules="none">
-    <tr>
-      <td><img src="graphics/options_developer_dbgcolors.png"></td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top">
-        <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Player 0 <br/>Missile 0 <br/>Player 1 <br/>
-            Missile 1 <br/>Playfield <br/>Ball </td>
-          <td>Set color for specific object in debug colors mode<br/>(PF0, PF1 and PF2 are have slightly different luminance,<br/>disabled in ROM launcher mode)</td><td>-tia.dbgcolors</td></tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-  <br>
-
 
   <p><b>Developer Settings</b> dialog (Debugger)</p>
   <table border="5" cellpadding="2" frame="box" rules="none">

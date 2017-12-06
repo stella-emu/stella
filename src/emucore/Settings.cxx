@@ -157,8 +157,13 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.console", "2600"); // 7800
   setInternal("plr.rewind", false);
   setInternal("plr.rewind.size", 100);
+  setInternal("plr.rewind.uncompressed", 30);
   setInternal("plr.rewind.interval", 4); // = 1 second
   setInternal("plr.rewind.horizon", 5); // = ~10 minutes
+#ifdef DTHUMB_SUPPORT
+  // Thumb ARM emulation options
+  setInternal("plr.thumb.trapfatal", "false");
+#endif
 
   // developer settings
   setInternal("dev.settings", "false");
@@ -174,12 +179,13 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.console", "2600"); // 7800
   setInternal("dev.rewind", true);
   setInternal("dev.rewind.size", 100);
+  setInternal("dev.rewind.uncompressed", 60);
   setInternal("dev.rewind.interval", 2); // = 1 frame
   setInternal("dev.rewind.horizon", 3); // = ~10 seconds
 
 #ifdef DTHUMB_SUPPORT
   // Thumb ARM emulation options
-  setInternal("thumb.trapfatal", "true");
+  setInternal("dev.thumb.trapfatal", "true");
 #endif
 }
 
@@ -318,8 +324,15 @@ void Settings::validate()
   i = getInt("dev.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("dev.tv.jitter_recovery", "2");
 
-  i = getInt("dev.rewind.size");
-  if (i < 100 ||i > 1000) setInternal("dev.rewind.size", 100);
+  int size = getInt("dev.rewind.size");
+  if(size < 100 || size > 1000)
+  {
+    setInternal("dev.rewind.size", 100);
+    size = 100;
+  }
+
+  i = getInt("dev.rewind.uncompressed");
+  if(i < 0 || i > size) setInternal("dev.rewind.uncompressed", size);
 
   i = getInt("dev.rewind.interval");
   if(i < 0 || i > 5) setInternal("dev.rewind.interval", 2);
@@ -330,8 +343,15 @@ void Settings::validate()
   i = getInt("plr.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
 
-  i = getInt("plr.rewind.size");
-  if(i < 100 || i > 1000) setInternal("plr.rewind.size", 100);
+  size = getInt("plr.rewind.size");
+  if(size < 100 || size > 1000)
+  {
+    setInternal("plr.rewind.size", 100);
+    size = 100;
+  }
+
+  i = getInt("plr.rewind.uncompressed");
+  if(i < 0 || i > size) setInternal("plr.rewind.uncompressed", size);
 
   i = getInt("plr.rewind.interval");
   if(i < 0 || i > 5) setInternal("plr.rewind.interval", 4);

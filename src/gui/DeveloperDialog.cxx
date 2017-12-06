@@ -47,6 +47,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   myMaxWidth(max_w),
   myMaxHeight(max_h)
 {
+  const int VGAP = 4;
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth(),
     buttonHeight = font.getLineHeight() + 4;
@@ -54,7 +55,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(53 * fontWidth + 10, max_w);
-  _h = std::min(15 * (lineHeight + 4) + 14, max_h);
+  _h = std::min(15 * (lineHeight + VGAP) + 14, max_h);
 
   // The tab widget
   xpos = 2; ypos = 4;
@@ -62,8 +63,8 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   addTabWidget(myTab);
 
   addEmulationTab(font);
+  addVideoTab(font);
   addStatesTab(font);
-  addDebugColorsTab(font);
   addDebuggerTab(font);
   addDefaultOKCancelButtons(font);
 
@@ -83,7 +84,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("Emulation");
+  int tabID = myTab->addTab(" Emulation ");
 
   // settings set
   mySettingsGroup0 = new RadioButtonGroup();
@@ -92,7 +93,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Developer settings", mySettingsGroup0, kDevSettings);
   wid.push_back(r);
-  ypos += lineHeight + VGAP * 2;
+  ypos += lineHeight + VGAP * 1;
 
   myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Frame statistics");
   wid.push_back(myFrameStatsWidget);
@@ -105,22 +106,24 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int lwidth = font.getStringWidth("Console ");
   int pwidth = font.getStringWidth("Atari 2600");
 
-  myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items, "Console ", lwidth, kConsole);
+  myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items,
+                                    "Console ", lwidth, kConsole);
   wid.push_back(myConsoleWidget);
   ypos += lineHeight + VGAP;
 
   // Randomize items
-  myLoadingROMLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "When loading a ROM:", kTextAlignLeft);
+  myLoadingROMLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT*1, ypos + 1, "When loading a ROM:");
   wid.push_back(myLoadingROMLabel);
   ypos += lineHeight + VGAP;
 
-  myRandomBankWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Random startup bank");
+  myRandomBankWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Random startup bank");
   wid.push_back(myRandomBankWidget);
   ypos += lineHeight + VGAP;
 
   // Randomize RAM
   myRandomizeRAMWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                      "Randomize zero-page and extended RAM", kRandRAMID);
+                                            "Randomize zero-page and extended RAM", kRandRAMID);
   wid.push_back(myRandomizeRAMWidget);
   ypos += lineHeight + VGAP;
 
@@ -140,37 +143,119 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   }
   ypos += lineHeight + VGAP;
 
-  // debug colors
-  myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors");
-  wid.push_back(myDebugColorsWidget);
+
+  // How to handle undriven TIA pins
+  myUndrivenPinsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                            "Drive unused TIA pins randomly on a read/peek");
+  wid.push_back(myUndrivenPinsWidget);
+  ypos += lineHeight + VGAP;
+
+#ifdef DTHUMB_SUPPORT
+  // Thumb ARM emulation exception
+  myThumbExceptionWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                              "Fatal ARM emulation error throws exception");
+  wid.push_back(myThumbExceptionWidget);
+#endif
+
+  // Add items for tab 0
+  addToFocusList(wid, myTab, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::addVideoTab(const GUI::Font& font)
+{
+  const int HBORDER = 10;
+  const int INDENT = 16 + 4;
+  const int VBORDER = 8;
+  const int VGAP = 4;
+  int ypos = VBORDER;
+  int lineHeight = font.getLineHeight();
+  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
+  int lwidth = font.getStringWidth("Intensity ");
+  int pwidth = font.getMaxCharWidth() * 6;
+  WidgetArray wid;
+  VariantList items;
+  int tabID = myTab->addTab("Video");
+
+  wid.clear();
+  ypos = VBORDER;
+
+  // settings set
+  mySettingsGroup1 = new RadioButtonGroup();
+  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup1, kPlrSettings);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP;
+  r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Developer settings", mySettingsGroup1, kDevSettings);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP * 1;
+
+  // TV jitter effect
+  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Jitter/roll effect", kTVJitter);
+  wid.push_back(myTVJitterWidget);
+  myTVJitterRecWidget = new SliderWidget(myTab, font,
+                                         myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
+                                         8 * fontWidth, lineHeight, "Recovery ",
+                                         font.getStringWidth("Recovery "), kTVJitterChanged);
+  myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
+  wid.push_back(myTVJitterRecWidget);
+  myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
+                                                  myTVJitterRecWidget->getRight() + 4, myTVJitterRecWidget->getTop() + 2,
+                                                  5 * fontWidth, fontHeight, "", kTextAlignLeft);
+  myTVJitterRecLabelWidget->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myTVJitterRecLabelWidget);
   ypos += lineHeight + VGAP;
 
   myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "PAL color-loss");
   wid.push_back(myColorLossWidget);
   ypos += lineHeight + VGAP;
 
-  // TV jitter effect
-  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Jitter/roll effect", kTVJitter);
-  wid.push_back(myTVJitterWidget);
-  myTVJitterRecWidget = new SliderWidget(myTab, font,
-                                   myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
-                                   8 * fontWidth, lineHeight, "Recovery ",
-                                   font.getStringWidth("Recovery "), kTVJitterChanged);
-  myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
-  wid.push_back(myTVJitterRecWidget);
-  myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
-                                         myTVJitterRecWidget->getRight() + 4, myTVJitterRecWidget->getTop() + 2,
-                                         5 * fontWidth, fontHeight, "", kTextAlignLeft);
-  myTVJitterRecLabelWidget->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myTVJitterRecLabelWidget);
-  ypos += lineHeight + VGAP;
+  // debug colors
+  myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors (*)");
+  wid.push_back(myDebugColorsWidget);
+  ypos += lineHeight + VGAP + 2;
 
-  // How to handle undriven TIA pins
-  myUndrivenPinsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
-                                      "Drive unused TIA pins randomly on a read/peek");
-  wid.push_back(myUndrivenPinsWidget);
+  //StaticTextWidget* s = new StaticTextWidget(myTab, font, HBORDER, ypos, "Debug Colors  ");
+  //ypos += lineHeight + VGAP;
 
-  // Add items for tab 0
+  items.clear();
+  VarList::push_back(items, "Red", "r");
+  VarList::push_back(items, "Orange", "o");
+  VarList::push_back(items, "Yellow", "y");
+  VarList::push_back(items, "Green", "g");
+  VarList::push_back(items, "Purple", "p");
+  VarList::push_back(items, "Blue", "b");
+
+  static constexpr int dbg_cmds[DEBUG_COLORS] = {
+    kP0ColourChangedCmd,  kM0ColourChangedCmd,  kP1ColourChangedCmd,
+    kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
+  };
+
+  auto createDebugColourWidgets = [&](int idx, const string& desc)
+  {
+    int x = HBORDER + INDENT * 1;
+    myDbgColour[idx] = new PopUpWidget(myTab, font, x, ypos - 1,
+                                       pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
+    wid.push_back(myDbgColour[idx]);
+    x += myDbgColour[idx]->getWidth() + 10;
+    myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos - 1,
+                                             uInt32(2 * lineHeight), lineHeight);
+    ypos += lineHeight + VGAP * 1;
+  };
+
+  createDebugColourWidgets(0, "Player 0  ");
+  createDebugColourWidgets(1, "Missile 0 ");
+  createDebugColourWidgets(2, "Player 1  ");
+  createDebugColourWidgets(3, "Missile 1 ");
+  createDebugColourWidgets(4, "Playfield ");
+  createDebugColourWidgets(5, "Ball      ");
+
+  // Add message concerning usage
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
+  //new StaticTextWidget(myTab, infofont, 10, ypos, "(*) Colors must be different for each object");
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) colors identical for player and developer settings");
+
+  // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
 }
 
@@ -188,13 +273,13 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   int tabID = myTab->addTab("States");
 
   // settings set
-  mySettingsGroup1 = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup1, kPlrSettings);
+  mySettingsGroup2 = new RadioButtonGroup();
+  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Player settings", mySettingsGroup2, kPlrSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
-  r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Developer settings", mySettingsGroup1, kDevSettings);
+  r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1, "Developer settings", mySettingsGroup2, kDevSettings);
   wid.push_back(r);
-  ypos += lineHeight + VGAP * 2;
+  ypos += lineHeight + VGAP * 1;
 
   myContinuousRewindWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1, "Continuous rewind", kRewind);
   wid.push_back(myContinuousRewindWidget);
@@ -202,96 +287,48 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
 
   int sWidth = font.getMaxCharWidth() * 8;
   myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
-                                 "Buffer size (*) ", 0, kSizeChanged);
+                                       "Buffer size (*)       ", 0, kSizeChanged);
   myStateSizeWidget->setMinValue(100);
   myStateSizeWidget->setMaxValue(1000);
-  myStateSizeWidget->setStepValue(100);
+  myStateSizeWidget->setStepValue(20);
   wid.push_back(myStateSizeWidget);
-  myStateSizeLabelWidget = new StaticTextWidget(myTab, font, myStateSizeWidget->getRight() + 4, myStateSizeWidget->getTop() + 2, "100 ");
-
+  myStateSizeLabelWidget = new StaticTextWidget(myTab, font, myStateSizeWidget->getRight() + 4,
+                                                myStateSizeWidget->getTop() + 2, "100 ");
   ypos += lineHeight + VGAP;
+
+  myUncompressedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
+                                          "Uncompressed size (*) ", 0, kUncompressedChanged);
+  myUncompressedWidget->setMinValue(0);
+  myUncompressedWidget->setMaxValue(1000);
+  myUncompressedWidget->setStepValue(20);
+  wid.push_back(myUncompressedWidget);
+  myUncompressedLabelWidget = new StaticTextWidget(myTab, font, myUncompressedWidget->getRight() + 4,
+                                                       myUncompressedWidget->getTop() + 2, "50  ");
+  ypos += lineHeight + VGAP;
+
   myStateIntervalWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
-                                     "Interval        ", 0, kIntervalChanged);
+                                           "Interval              ", 0, kIntervalChanged);
 
   myStateIntervalWidget->setMinValue(0);
   myStateIntervalWidget->setMaxValue(NUM_INTERVALS - 1);
   wid.push_back(myStateIntervalWidget);
-  myStateIntervalLabelWidget = new StaticTextWidget(myTab, font, myStateIntervalWidget->getRight() + 4, myStateIntervalWidget->getTop() + 2, "50 scanlines");
-
+  myStateIntervalLabelWidget = new StaticTextWidget(myTab, font, myStateIntervalWidget->getRight() + 4,
+                                                    myStateIntervalWidget->getTop() + 2, "50 scanlines");
   ypos += lineHeight + VGAP;
+
   myStateHorizonWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
-                                    "Horizon         ", 0, kHorizonChanged);
+                                          "Horizon               ", 0, kHorizonChanged);
   myStateHorizonWidget->setMinValue(0);
   myStateHorizonWidget->setMaxValue(NUM_HORIZONS - 1);
   wid.push_back(myStateHorizonWidget);
-  myStateHorizonLabelWidget = new StaticTextWidget(myTab, font, myStateHorizonWidget->getRight() + 4, myStateHorizonWidget->getTop() + 2, "~60 minutes");
+  myStateHorizonLabelWidget = new StaticTextWidget(myTab, font, myStateHorizonWidget->getRight() + 4,
+                                                   myStateHorizonWidget->getTop() + 2, "~60 minutes");
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
   new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Requires application restart");
 
-  addToFocusList(wid, myTab, tabID);
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::addDebugColorsTab(const GUI::Font& font)
-{
-  const int HBORDER = 10;
-  const int INDENT = 16 + 4;
-  const int VBORDER = 8;
-  const int VGAP = 4;
-  int ypos = VBORDER;
-  int lineHeight = font.getLineHeight();
-  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
-  int lwidth = font.getStringWidth("Intensity ");
-  int pwidth = font.getMaxCharWidth() * 6;
-  WidgetArray wid;
-  VariantList items;
-  int tabID = myTab->addTab("Debug Colors");
-
-  wid.clear();
-  ypos = VBORDER;
-
-  items.clear();
-  VarList::push_back(items, "Red", "r");
-  VarList::push_back(items, "Orange", "o");
-  VarList::push_back(items, "Yellow", "y");
-  VarList::push_back(items, "Green", "g");
-  VarList::push_back(items, "Blue", "b");
-  VarList::push_back(items, "Purple", "p");
-
-  static constexpr int dbg_cmds[6] = {
-    kP0ColourChangedCmd,  kM0ColourChangedCmd,  kP1ColourChangedCmd,
-    kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
-  };
-
-  auto createDebugColourWidgets = [&](int idx, const string& desc)
-  {
-    int x = HBORDER;
-    myDbgColour[idx] = new PopUpWidget(myTab, font, x, ypos,
-                                       pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
-    wid.push_back(myDbgColour[idx]);
-    x += myDbgColour[idx]->getWidth() + 10;
-    myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos,
-                                             uInt32(2 * lineHeight), lineHeight);
-    ypos += lineHeight + VGAP * 1;
-  };
-
-  createDebugColourWidgets(0, "Player 0 ");
-  createDebugColourWidgets(1, "Missile 0 ");
-  createDebugColourWidgets(2, "Player 1 ");
-  createDebugColourWidgets(3, "Missile 1 ");
-  createDebugColourWidgets(4, "Playfield ");
-  createDebugColourWidgets(5, "Ball ");
-
-  // Add message concerning usage
-  const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, 10, ypos, "(*) Colors must be different for each object");
-
-  // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
 }
 
@@ -429,6 +466,11 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
   myRandomizeRAM[set] = instance().settings().getBool(prefix + "ramrandom");
   myRandomizeCPU[set] = instance().settings().getString(prefix + "cpurandom");
+  // Undriven TIA pins
+  myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
+  // Thumb ARM emulation exception
+  myThumbException[set] = instance().settings().getBool(prefix + "thumb.trapfatal");
+
   // Debug colors
   myDebugColors[set] = instance().settings().getBool(prefix + "debugcolors");
   // PAL color-loss effect
@@ -436,12 +478,11 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   // Jitter
   myTVJitter[set] = instance().settings().getBool(prefix + "tv.jitter");
   myTVJitterRec[set] = instance().settings().getInt(prefix + "tv.jitter_recovery");
-  // Undriven TIA pins
-  myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
 
   // States
   myContinuousRewind[set] = instance().settings().getBool(prefix + "rewind");
   myStateSize[set] = instance().settings().getInt(prefix + "rewind.size");
+  myUncompressed[set] = instance().settings().getInt(prefix + "rewind.uncompressed");
   myStateInterval[set] = instance().settings().getInt(prefix + "rewind.interval");
   myStateHorizon[set] = instance().settings().getInt(prefix + "rewind.horizon");
 }
@@ -457,6 +498,11 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
   instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);
   instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
+  // Undriven TIA pins
+  instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
+  // Thumb ARM emulation exception
+  instance().settings().setValue(prefix + "thumb.trapfatal", myThumbException[set]);
+
   // Debug colors
   instance().settings().setValue(prefix + "debugcolors", myDebugColors[set]);
   // PAL color loss
@@ -464,12 +510,11 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   // Jitter
   instance().settings().setValue(prefix + "tv.jitter", myTVJitter[set]);
   instance().settings().setValue(prefix + "tv.jitter_recovery", myTVJitterRec[set]);
-  // Undriven TIA pins
-  instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
 
   // States
   instance().settings().setValue(prefix + "rewind", myContinuousRewind[set]);
   instance().settings().setValue(prefix + "rewind.size", myStateSize[set]);
+  instance().settings().setValue(prefix + "rewind.uncompressed", myUncompressed[set]);
   instance().settings().setValue(prefix + "rewind.interval", myStateInterval[set]);
   instance().settings().setValue(prefix + "rewind.horizon", myStateHorizon[set]);
 }
@@ -488,6 +533,11 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
     if(myRandomizeCPUWidget[i]->getState())
       cpurandom += cpuregs[i];
   myRandomizeCPU[set] = cpurandom;
+  // Undriven TIA pins
+  myUndrivenPins[set] = myUndrivenPinsWidget->getState();
+  // Thumb ARM emulation exception
+  myThumbException[set] = myThumbExceptionWidget->getState();
+
   // Debug colors
   myDebugColors[set] = myDebugColorsWidget->getState();
   // PAL color-loss effect
@@ -495,12 +545,11 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   // Jitter
   myTVJitter[set] = myTVJitterWidget->getState();
   myTVJitterRec[set] = myTVJitterRecWidget->getValue();
-  // Undriven TIA pins
-  myUndrivenPins[set] = myUndrivenPinsWidget->getState();
 
   // States
   myContinuousRewind[set] = myContinuousRewindWidget->getState();
   myStateSize[set] = myStateSizeWidget->getValue();
+  myUncompressed[set] = myUncompressedWidget->getValue();
   myStateInterval[set] = myStateIntervalWidget->getValue();
   myStateHorizon[set] = myStateHorizonWidget->getValue();
 }
@@ -518,6 +567,13 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
     myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
+  // Undriven TIA pins
+  myUndrivenPinsWidget->setState(myUndrivenPins[set]);
+  // Thumb ARM emulation exception
+  myThumbExceptionWidget->setState(myThumbException[set]);
+
+  handleConsole();
+
   // Debug colors
   myDebugColorsWidget->setState(myDebugColors[set]);
   // PAL color-loss effect
@@ -525,21 +581,20 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   // Jitter
   myTVJitterWidget->setState(myTVJitter[set]);
   myTVJitterRecWidget->setValue(myTVJitterRec[set]);
-  // Undriven TIA pins
-  myUndrivenPinsWidget->setState(myUndrivenPins[set]);
 
-  handleConsole();
   handleTVJitterChange(myTVJitterWidget->getState());
   handleEnableDebugColors();
 
   // States
   myContinuousRewindWidget->setState(myContinuousRewind[set]);
   myStateSizeWidget->setValue(myStateSize[set]);
+  myUncompressedWidget->setValue(myUncompressed[set]);
   myStateIntervalWidget->setValue(myStateInterval[set]);
   myStateHorizonWidget->setValue(myStateHorizon[set]);
 
   handleRewind();
   handleSize();
+  handleUncompressed();
   handleInterval();
   handleHorizon();
 }
@@ -551,6 +606,7 @@ void DeveloperDialog::loadConfig()
   mySettings = devSettings;
   mySettingsGroup0->setSelected(devSettings ? 1 : 0);
   mySettingsGroup1->setSelected(devSettings ? 1 : 0);
+  mySettingsGroup2->setSelected(devSettings ? 1 : 0);
 
   // load both setting sets...
   loadSettings(SettingsSet::player);
@@ -612,7 +668,7 @@ void DeveloperDialog::saveConfig()
 
   // Debug colours
   string dbgcolors;
-  for(int i = 0; i < 6; ++i)
+  for(int i = 0; i < DEBUG_COLORS; ++i)
     dbgcolors += myDbgColour[i]->getSelectedTag().toString();
   if(instance().hasConsole() &&
      instance().console().tia().setFixedColorPalette(dbgcolors))
@@ -627,17 +683,18 @@ void DeveloperDialog::saveConfig()
 
   // define interval growth factor
   uInt32 size = myStateSizeWidget->getValue();
+  uInt32 uncompressed = myUncompressedWidget->getValue();
   uInt64 horizon = HORIZON_CYCLES[myStateHorizonWidget->getValue()];
   double factor, minFactor = 1, maxFactor = 2;
 
   while(true)
   {
     double interval = INTERVAL_CYCLES[myStateIntervalWidget->getValue()];
-    double cycleSum = 0.0;
+    double cycleSum = interval * uncompressed;
     // calculate next factor
     factor = (minFactor + maxFactor) / 2;
     // sum up interval cycles
-    for(uInt32 i = 0; i < size; ++i)
+    for(uInt32 i = uncompressed; i < size; ++i)
     {
       cycleSum += interval;
       interval *= factor;
@@ -686,30 +743,35 @@ void DeveloperDialog::setDefaults()
       myRandomBank[set] = devSettings ? true : false;
       myRandomizeRAM[set] = devSettings ? true : false;
       myRandomizeCPU[set] = devSettings ? "SAXYP" : "";
-      // Debug colors
-      myDebugColors[set] = false;
-      // PAL color-loss effect
-      myColorLoss[set] = devSettings ? true : false;
-      // Jitter
-      myTVJitter[set] = true;
-      myTVJitterRec[set] = devSettings ? 2 : 10;
       // Undriven TIA pins
       myUndrivenPins[set] = devSettings ? true : false;
+      // Thumb ARM emulation exception
+      myThumbException[set] = devSettings ? true : false;
 
       setWidgetStates(set);
       break;
 
-    case 1: // States
+    case 1: // Video
+      // Jitter
+      myTVJitter[set] = true;
+      myTVJitterRec[set] = devSettings ? 2 : 10;
+      // PAL color-loss effect
+      myColorLoss[set] = devSettings ? true : false;
+      // Debug colors
+      myDebugColors[set] = false;
+      handleDebugColours("roygpb");
+
+      setWidgetStates(set);
+      break;
+
+    case 2: // States
       myContinuousRewind[set] = devSettings ? true : false;
       myStateSize[set] = 100;
+      myUncompressed[set] = devSettings ? 60 : 30;
       myStateInterval[set] = devSettings ? 2 : 4;
       myStateHorizon[set] = devSettings ? 3 : 5;
 
       setWidgetStates(set);
-      break;
-
-    case 2:  // Debug colours
-      handleDebugColours("roygpb");
       break;
 
     case 3: // Debugger options
@@ -768,6 +830,10 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 
     case kSizeChanged:
       handleSize();
+      break;
+
+    case kUncompressedChanged:
+      handleUncompressed();
       break;
 
     case kIntervalChanged:
@@ -843,6 +909,7 @@ void DeveloperDialog::handleSettings(bool devSettings)
     mySettings = devSettings; // block redundant events first!
     mySettingsGroup0->setSelected(devSettings ? 1 : 0);
     mySettingsGroup1->setSelected(devSettings ? 1 : 0);
+    mySettingsGroup2->setSelected(devSettings ? 1 : 0);
     getWidgetStates(devSettings ? SettingsSet::player : SettingsSet::developer);
     setWidgetStates(devSettings ? SettingsSet::developer : SettingsSet::player);
   }
@@ -884,6 +951,9 @@ void DeveloperDialog::handleRewind()
   myStateSizeWidget->setEnabled(enable);
   myStateSizeLabelWidget->setEnabled(enable);
 
+  myUncompressedWidget->setEnabled(enable);
+  myUncompressedLabelWidget->setEnabled(enable);
+
   myStateIntervalWidget->setEnabled(enable);
   myStateIntervalLabelWidget->setEnabled(enable);
 
@@ -896,6 +966,7 @@ void DeveloperDialog::handleSize()
 {
   bool found = false;
   uInt64 size = myStateSizeWidget->getValue();
+  uInt64 uncompressed = myUncompressedWidget->getValue();
   uInt64 interval = myStateIntervalWidget->getValue();
   uInt64 horizon = myStateHorizonWidget->getValue();
   Int32 i;
@@ -916,6 +987,12 @@ void DeveloperDialog::handleSize()
       interval--;
   } while(!found);
 
+  if(size < uncompressed)
+  {
+    myUncompressedWidget->setValue(size);
+    myUncompressedLabelWidget->setValue(myStateSizeWidget->getValue());
+  }
+
   myStateHorizonWidget->setValue(i);
   myStateHorizonLabelWidget->setLabel(HORIZONS[i]);
   myStateIntervalWidget->setValue(interval);
@@ -923,10 +1000,25 @@ void DeveloperDialog::handleSize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleUncompressed()
+{
+  uInt64 size = myStateSizeWidget->getValue();
+  uInt64 uncompressed = myUncompressedWidget->getValue();
+
+  myUncompressedLabelWidget->setValue(myUncompressedWidget->getValue());
+  if(uncompressed > size)
+  {
+    myStateSizeWidget->setValue(uncompressed);
+    myStateSizeLabelWidget->setValue(myUncompressedWidget->getValue());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleInterval()
 {
   bool found = false;
   uInt64 size = myStateSizeWidget->getValue();
+  uInt64 uncompressed = myUncompressedWidget->getValue();
   uInt64 interval = myStateIntervalWidget->getValue();
   uInt64 horizon = myStateHorizonWidget->getValue();
   Int32 i;
@@ -951,6 +1043,12 @@ void DeveloperDialog::handleInterval()
   myStateHorizonLabelWidget->setLabel(HORIZONS[i]);
   myStateSizeWidget->setValue(size);
   myStateSizeLabelWidget->setValue(myStateSizeWidget->getValue());
+
+  if(size < uncompressed)
+  {
+    myUncompressedWidget->setValue(size);
+    myUncompressedLabelWidget->setValue(myStateSizeWidget->getValue());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -958,6 +1056,7 @@ void DeveloperDialog::handleHorizon()
 {
   bool found = false;
   uInt64 size = myStateSizeWidget->getValue();
+  uInt64 uncompressed = myUncompressedWidget->getValue();
   uInt64 interval = myStateIntervalWidget->getValue();
   uInt64 horizon = myStateHorizonWidget->getValue();
   Int32 i;
@@ -981,13 +1080,15 @@ void DeveloperDialog::handleHorizon()
   myStateIntervalWidget->setValue(i);
   myStateIntervalLabelWidget->setLabel(INTERVALS[i]);
   myStateSizeWidget->setValue(size);
+  if(size < uncompressed)
+    myUncompressedWidget->setValue(size);
   myStateSizeLabelWidget->setValue(myStateSizeWidget->getValue());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColours(int idx, int color)
 {
-  if(idx < 0 || idx > 5)
+  if(idx < 0 || idx >= DEBUG_COLORS)
     return;
 
   if(!instance().hasConsole())
@@ -997,31 +1098,68 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
     return;
   }
 
-  static constexpr int dbg_color[2][6] = {
-    { TIA::FixedColor::NTSC_RED,
-    TIA::FixedColor::NTSC_ORANGE,
-    TIA::FixedColor::NTSC_YELLOW,
-    TIA::FixedColor::NTSC_GREEN,
-    TIA::FixedColor::NTSC_BLUE,
-    TIA::FixedColor::NTSC_PURPLE
+  static constexpr int dbg_color[2][DEBUG_COLORS] = {
+    {
+      TIA::FixedColor::NTSC_RED,
+      TIA::FixedColor::NTSC_ORANGE,
+      TIA::FixedColor::NTSC_YELLOW,
+      TIA::FixedColor::NTSC_GREEN,
+      TIA::FixedColor::NTSC_PURPLE,
+      TIA::FixedColor::NTSC_BLUE
     },
-    { TIA::FixedColor::PAL_RED,
-    TIA::FixedColor::PAL_ORANGE,
-    TIA::FixedColor::PAL_YELLOW,
-    TIA::FixedColor::PAL_GREEN,
-    TIA::FixedColor::PAL_BLUE,
-    TIA::FixedColor::PAL_PURPLE
+    {
+      TIA::FixedColor::PAL_RED,
+      TIA::FixedColor::PAL_ORANGE,
+      TIA::FixedColor::PAL_YELLOW,
+      TIA::FixedColor::PAL_GREEN,
+      TIA::FixedColor::PAL_PURPLE,
+      TIA::FixedColor::PAL_BLUE
     }
   };
+
   int mode = instance().console().tia().frameLayout() == FrameLayout::ntsc ? 0 : 1;
   myDbgColourSwatch[idx]->setColor(dbg_color[mode][color]);
   myDbgColour[idx]->setSelectedIndex(color);
+
+  // make sure the selected debug colors are all different
+  bool usedCol[DEBUG_COLORS];
+
+  // identify used colors
+  for(int i = 0; i < DEBUG_COLORS; ++i)
+  {
+    usedCol[i] = false;
+    for(int j = 0; j < DEBUG_COLORS; ++j)
+    {
+      if(myDbgColourSwatch[j]->getColor() == dbg_color[mode][i])
+      {
+        usedCol[i] = true;
+        break;
+      }
+    }
+  }
+  // check if currently changed color was used somewhere else
+  for(int i = 0; i < DEBUG_COLORS; ++i)
+  {
+    if (i != idx && myDbgColourSwatch[i]->getColor() == dbg_color[mode][color])
+    {
+      // if already used, change the other color to an unused one
+      for(int j = 0; j < DEBUG_COLORS; ++j)
+      {
+        if(!usedCol[j])
+        {
+          myDbgColourSwatch[i]->setColor(dbg_color[mode][j]);
+          myDbgColour[i]->setSelectedIndex(j);
+          break;
+        }
+      }
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleDebugColours(const string& colors)
 {
-  for(int i = 0; i < 6; ++i)
+  for(int i = 0; i < DEBUG_COLORS; ++i)
   {
     switch(colors[i])
     {
@@ -1029,8 +1167,8 @@ void DeveloperDialog::handleDebugColours(const string& colors)
       case 'o':  handleDebugColours(i, 1);  break;
       case 'y':  handleDebugColours(i, 2);  break;
       case 'g':  handleDebugColours(i, 3);  break;
-      case 'b':  handleDebugColours(i, 4);  break;
-      case 'p':  handleDebugColours(i, 5);  break;
+      case 'p':  handleDebugColours(i, 4);  break;
+      case 'b':  handleDebugColours(i, 5);  break;
       default:                              break;
     }
   }

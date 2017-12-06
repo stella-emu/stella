@@ -55,28 +55,29 @@ class DeveloperDialog : public Dialog
   private:
     enum
     {
-      kPlrSettings      = 'DVpl',
-      kDevSettings      = 'DVdv',
-      kConsole          = 'DVco',
-      kRandRAMID        = 'DVrm',
-      kRandCPUID        = 'DVcp',
-      kTVJitter         = 'DVjt',
-      kTVJitterChanged  = 'DVjr',
-      kPPinCmd          = 'DVpn',
-      kRewind           = 'DSrw',
-      kSizeChanged      = 'DSsz',
-      kIntervalChanged  = 'DSin',
-      kHorizonChanged   = 'DShz',
-      kP0ColourChangedCmd = 'GOp0',
-      kM0ColourChangedCmd = 'GOm0',
-      kP1ColourChangedCmd = 'GOp1',
-      kM1ColourChangedCmd = 'GOm1',
-      kPFColourChangedCmd = 'GOpf',
-      kBLColourChangedCmd = 'GObl',
+      kPlrSettings          = 'DVpl',
+      kDevSettings          = 'DVdv',
+      kConsole              = 'DVco',
+      kRandRAMID            = 'DVrm',
+      kRandCPUID            = 'DVcp',
+      kTVJitter             = 'DVjt',
+      kTVJitterChanged      = 'DVjr',
+      kPPinCmd              = 'DVpn',
+      kRewind               = 'DSrw',
+      kSizeChanged          = 'DSsz',
+      kUncompressedChanged  = 'DSuc',
+      kIntervalChanged      = 'DSin',
+      kHorizonChanged       = 'DShz',
+      kP0ColourChangedCmd   = 'GOp0',
+      kM0ColourChangedCmd   = 'GOm0',
+      kP1ColourChangedCmd   = 'GOp1',
+      kM1ColourChangedCmd   = 'GOm1',
+      kPFColourChangedCmd   = 'GOpf',
+      kBLColourChangedCmd   = 'GObl',
   #ifdef DEBUGGER_SUPPORT
-      kDWidthChanged    = 'UIdw',
-      kDHeightChanged   = 'UIdh',
-      kDFontSizeChanged = 'UIfs',
+      kDWidthChanged        = 'UIdw',
+      kDHeightChanged       = 'UIdh',
+      kDFontSizeChanged     = 'UIfs',
   #endif
     };
     enum SettingsSet
@@ -97,6 +98,8 @@ class DeveloperDialog : public Dialog
     const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
       76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, (uInt64)76 * 262 * 60 * 60 * 60 };
 
+    static const int DEBUG_COLORS = 6;
+
     TabWidget* myTab;
     // Emulator widgets
     RadioButtonGroup*   mySettingsGroup0;
@@ -107,25 +110,30 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myRandomizeRAMWidget;
     StaticTextWidget*   myRandomizeCPULabel;
     CheckboxWidget*     myRandomizeCPUWidget[5];
-    CheckboxWidget*     myColorLossWidget;
+    CheckboxWidget*     myUndrivenPinsWidget;
+    CheckboxWidget*     myThumbExceptionWidget;
+
+    // Video widgets
+    RadioButtonGroup*   mySettingsGroup1;
     CheckboxWidget*     myTVJitterWidget;
     SliderWidget*       myTVJitterRecWidget;
     StaticTextWidget*   myTVJitterRecLabelWidget;
+    CheckboxWidget*     myColorLossWidget;
     CheckboxWidget*     myDebugColorsWidget;
-    CheckboxWidget*     myUndrivenPinsWidget;
+    PopUpWidget*        myDbgColour[DEBUG_COLORS];
+    ColorWidget*        myDbgColourSwatch[DEBUG_COLORS];
+
     // States widgets
-    RadioButtonGroup*   mySettingsGroup1;
+    RadioButtonGroup*   mySettingsGroup2;
     CheckboxWidget*     myContinuousRewindWidget;
     SliderWidget*       myStateSizeWidget;
     StaticTextWidget*   myStateSizeLabelWidget;
+    SliderWidget*       myUncompressedWidget;
+    StaticTextWidget*   myUncompressedLabelWidget;
     SliderWidget*       myStateIntervalWidget;
     StaticTextWidget*   myStateIntervalLabelWidget;
     SliderWidget*       myStateHorizonWidget;
     StaticTextWidget*   myStateHorizonLabelWidget;
-
-    // Debug colours selection
-    PopUpWidget*        myDbgColour[6];
-    ColorWidget*        myDbgColourSwatch[6];
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
@@ -151,16 +159,18 @@ class DeveloperDialog : public Dialog
     int     myTVJitterRec[2];
     bool    myDebugColors[2];
     bool    myUndrivenPins[2];
+    bool    myThumbException[2];
     // States sets
     bool    myContinuousRewind[2];
     int     myStateSize[2];
+    int     myUncompressed[2];
     int     myStateInterval[2];
     int     myStateHorizon[2];
 
   private:
     void addEmulationTab(const GUI::Font& font);
     void addStatesTab(const GUI::Font& font);
-    void addDebugColorsTab(const GUI::Font& font);
+    void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
     // Add Defaults, OK and Cancel buttons
     void addDefaultOKCancelButtons(const GUI::Font& font);
@@ -180,6 +190,7 @@ class DeveloperDialog : public Dialog
 
     void handleRewind();
     void handleSize();
+    void handleUncompressed();
     void handleInterval();
     void handleHorizon();
     void handleFontSize();
