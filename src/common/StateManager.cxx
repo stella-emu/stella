@@ -131,11 +131,14 @@ void StateManager::toggleRecordMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::toggleRewindMode()
 {
+  bool devSettings = myOSystem.settings().getBool("dev.settings");
+
   myActiveMode = myActiveMode == Mode::Rewind ? Mode::Off : Mode::Rewind;
   if(myActiveMode == Mode::Rewind)
     myOSystem.frameBuffer().showMessage("Continuous rewind enabled");
   else
     myOSystem.frameBuffer().showMessage("Continuous rewind disabled");
+  myOSystem.settings().setValue(devSettings ? "dev.rewind" : "plr.rewind", myActiveMode == Mode::Rewind);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
