@@ -1520,7 +1520,7 @@
     </tr>
 
     <tr>
-      <td>Switch mouse between controller emulation modes (see <a href="#Controller">Game Properties - Controller</a>)</td>
+      <td>Switch mouse between controller emulation modes (see <b>Game Properties - <a href="#Controller">Controller</a></b>)</td>
       <td>Control + 0</td>
       <td>Control + 0</td>
     </tr>
@@ -1593,7 +1593,7 @@
     </tr>
 
     <tr>
-      <td>Save continuous PNG snapshots (per interval defined in <a href="#Snapshots">Snapshot Settings</a>)</td>
+      <td>Save continuous PNG snapshots (per interval defined in <a href="#Snapshots"><b>Snapshot Settings</b></a>)</td>
       <td>Alt + s</td>
       <td>Cmd + s</td>
     </tr>
@@ -2002,7 +2002,7 @@
 
     <tr>
       <td><pre>-cheat &lt;code&gt;</pre></td>
-      <td>Use the specified cheatcode (see Cheat section for description).</td>
+      <td>Use the specified cheatcode (see <a href="#Cheats"><b>Cheat</b></a> section for description).</td>
     </tr>
 
     <tr>
@@ -2028,8 +2028,7 @@
     <tr>
       <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
       <td>Allow all 4 directions on a joystick to be pressed
-        simultaneously. Bumper Bash ignores this setting,
-        and always allows all 4 directions.</td>
+        simultaneously.</td>
     </tr>
 
     <tr>
@@ -2262,7 +2261,7 @@
     <tr>
       <td><pre>-dis.resolve &lt;1|0&gt;</pre></td>
       <td>Try to differentiate between code vs. data sections in the
-      disassembler. See the Debugger section for more information.</td>
+      disassembler. See the <b>Debugger - <a href="debugger.html#DisassemblySettings">ROM Disassembly Settings</b></a> for more information.</td>
     </tr>
 
     <tr>
@@ -2332,7 +2331,7 @@
 
     <tr>
       <td><pre>-bs &lt;type&gt;</pre></td>
-      <td>Set "Cartridge.Type" property. See the <i>Game Properties</i> section
+      <td>Set "Cartridge.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
         for valid types.</td>
     </tr>
 
@@ -2368,20 +2367,20 @@
 
     <tr>
       <td><pre>-lc &lt;type&gt;</pre></td>
-      <td>Set "Controller.Left" property. See the <i>Game Properties</i>
+      <td>Set "Controller.Left" property. See the <a href="#Properties"><b>Game Properties</b></a>
         section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-rc &lt;type&gt;</pre></td>
-      <td>Set "Controller.Right" property. See the <i>Game Properties</i>
+      <td>Set "Controller.Right" property. See the <a href="#Properties"><b>Game Properties</b></a>
         section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-bc &lt;type&gt;</pre></td>
       <td>Sets both "Controller.Left" and "Controller.Right" properties.
-        See the <i>Game Properties</i> section for valid types.</td>
+        See the <a href="#Properties"><b>Game Properties</b></a> section for valid types.</td>
     </tr>
 
     <tr>
@@ -2392,12 +2391,12 @@
     <tr>
       <td><pre>-ma &lt;Auto|XY&gt;</pre></td>
       <td>Set "Controller.MouseAxis" property.
-        See the <i>Game Properties</i> section for valid types.</td>
+        See the <a href="#Properties"><b>Game Properties</b></a> section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-format &lt;format&gt;</pre></td>
-      <td>Set "Display.Format" property. See the <i>Game Properties</i> section
+      <td>Set "Display.Format" property. See the <a href="#Properties"><b>Game Properties</b></a> section
         for valid formats.</td></td>
     </tr>
 
@@ -2829,7 +2828,7 @@
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>For more information,<br>see Commandline</th></tr>
+          <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
           <tr><td>Bankswitch type</td><td>-bs</td></tr>
           <tr><td>Left Difficulty</td><td>-ld</td></tr>
           <tr><td>Right Difficulty</td><td>-rd</td></tr>
@@ -2929,7 +2928,7 @@
     <li>Any other devices will be ignored.</li>
 
     <li>The assignment ordering of Stelladaptor/2600-daptor to port can be redefined with
-    'saport' (see description in 'Starting a Game') and dynamically with the 'Control-1' key
+    'saport' (see description in <a href="#CommandLine"><b>Using the Command Line</b></a>) and dynamically with the 'Control-1' key
     combo.</li>
   </ul>
   </blockquote>
@@ -3018,7 +3017,11 @@
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
           <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
           <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-plr.tiadriven<br/>-dev.tiadriven</td></tr>
-          <tr><td>Fatal ARM emulation ...</td><td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors.</td><td><span style="white-space:nowrap">-plr.thumb.trapfatal<br/>-dev.thumb.trapfatal</span></td></tr>
+          <tr>
+            <td>Fatal ARM emulation ...</td>
+            <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
+            <td><span style="white-space:nowrap">-plr.thumb.trapfatal<br/>-dev.thumb.trapfatal</span></td>
+          </tr>
         </table>
       </td>
     </tr>
@@ -3036,9 +3039,16 @@
           <tr><td>(Jitter/roll) Recovery</td><td>Determines recovery time for screen rolling</td><td><span style="white-space:nowrap">-plr.tv.jitter_recovery<br/>-dev.tv.jitter_recovery</span></td></tr>
           <tr><td>PAL color-loss</td><td>Use PAL color-loss effect</td><td>-plr.colorloss<br/>-dev.colorloss</td></tr>
           <tr><td>Debug colors</td><td>Use fixed debug colors</td><td>-plr.debugcolors<br/>-dev.debugcolors</td></tr>
-          <tr><td>Player 0 <br/>Missile 0 <br/>Player 1 <br/>
-            Missile 1 <br/>Playfield <br/>Ball </td>
-          <td>Set color for specific object in debug colors mode<br/>(PF0, PF1 and PF2 are have slightly different luminance,<br/>disabled in ROM launcher mode)</td><td>-tia.dbgcolors</td></tr>
+          <tr>
+            <td>Player 0 <br/>Missile 0 <br/>Player 1 <br/>
+              Missile 1 <br/>Playfield <br/>Ball
+            </td>
+            <td>
+              Set color for specific object in 'Debug Colors' mode
+              (PF0, PF1 and PF2 have a slightly different luminance)<br/><br/>
+              Disabled in ROM launcher mode</td><td>-tia.dbgcolors
+            </td>
+          </tr>
         </table>
       </td>
     </tr>
@@ -3087,7 +3097,7 @@
               Defines the horizon of the rewind buffer. A large horizon allows
               going back further in time. To reach the horizon, save states
               will be compressed. This means that more and more intermediate
-              states will be removed and the interval between compressed states
+              states will be removed and the interval between save states
               becomes larger the further they are back in time.
             </td>
             <td>-plr.rewind.horizon<br>-dev.rewind.horizon</td>
@@ -3332,7 +3342,7 @@ Ms Pac-Man (Stella extended codes):
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>For more information,<br>see Commandline</th></tr>
+          <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
           <tr><td>Log level</td><td>-loglevel</td></tr>
           <tr><td>Print to console</td><td>-logtoconsole</td></tr>
         </table>
@@ -3446,8 +3456,8 @@ Ms Pac-Man (Stella extended codes):
       <td VALIGN="TOP"><i>Cartridge.Type:</i></td>
       <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
-      (for more information about bank-switching see Kevin Horton's 2600 bankswitching
-      document or the documentation in each cartridges source code file). Types marked
+      (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt"><b>2600 bankswitching
+      document</b></a> or the documentation in each cartridges source code file). Types marked
       as (&#185;) do not currently have reliable auto-detection, those marked as (&#178;)
       are not fully supported in the debugger:
       <table cellpadding="2" border="1">
@@ -3544,19 +3554,21 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Keyboard </td><td>Also known as the Star Raiders controller, functionally identical to the Kid's Controller and Keyboard Controller. Game included an overlay with commands, for use with Star Raiders.</td></tr>
         <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
         <tr><td>AtariMouse </td><td>Atari ST computer mouse.</td></tr>
-        <tr><td>Trakball </td><td>Standard Atari 2600 CX22/CX80 trakball controller.</td></tr>
+        <tr><td>Trakball </td><td>Standard Atari 2600 CX22/CX80 'Trak-Ball' controller.</td></tr>
         <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech / sound synthesizer with 32K EEPROM.</td></tr>
-        <tr><td><a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a></td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
+        <tr><td>SaveKey </td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
         <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
         <tr><td>CompuMate </td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
         <tr><td>Mindlink </td><td>Mindlink controller.</td></tr>
       </table></td>
+
+      https://atariage.com/2600/programming/atarivox_mem_list.html
     </tr>
 
     <tr>
       <td VALIGN="TOP"><i>Console.SwapPorts:</i></td>
       <td>Indicates that the left and right ports should be
-      swapped internally. This is used for ROMs like 'Raiders' where the
+      swapped internally. This is used for ROMs like 'Raiders of the Lost Ark' where the
       Player 0 joystick is plugged into the right joystick port.
       The value must be <b>Yes</b> or <b>No</b>.</td>
     </tr>
