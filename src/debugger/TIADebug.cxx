@@ -869,17 +869,17 @@ string TIADebug::debugColors() const
   ostringstream buf;
 
   int mode = myTIA.frameLayout() == FrameLayout::ntsc ? 0 : 1;
-  buf << " Red    " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P0])
+  buf << " " << myTIA.myFixedColorNames[TIA::P0] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P0])
       << " Player 0\n"
-      << " Orange " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M0])
+      << " " << myTIA.myFixedColorNames[TIA::M0] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M0])
       << " Missile 0\n"
-      << " Yellow " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P1])
+      << " " << myTIA.myFixedColorNames[TIA::P1] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P1])
       << " Player 1\n"
-      << " Green  " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M1])
+      << " " << myTIA.myFixedColorNames[TIA::M1] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M1])
       << " Missile 1\n"
-      << " Blue   " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::PF])
+      << " " << myTIA.myFixedColorNames[TIA::PF] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::PF])
       << " Playfield\n"
-      << " Purple " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BL])
+      << " " << myTIA.myFixedColorNames[TIA::BL] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BL])
       << " Ball\n"
       << " Grey   " << colorSwatch(TIA::FixedColor::BK_GREY)
       << " Background\n"

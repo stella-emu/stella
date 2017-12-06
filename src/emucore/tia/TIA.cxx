@@ -968,26 +968,32 @@ bool TIA::setFixedColorPalette(const string& colors)
       case 'r':
         myFixedColorPalette[0][i] = FixedColor::NTSC_RED;
         myFixedColorPalette[1][i] = FixedColor::PAL_RED;
+        myFixedColorNames[i] = "Red   ";
         break;
       case 'o':
         myFixedColorPalette[0][i] = FixedColor::NTSC_ORANGE;
         myFixedColorPalette[1][i] = FixedColor::PAL_ORANGE;
+        myFixedColorNames[i] = "Orange";
         break;
       case 'y':
         myFixedColorPalette[0][i] = FixedColor::NTSC_YELLOW;
         myFixedColorPalette[1][i] = FixedColor::PAL_YELLOW;
+        myFixedColorNames[i] = "Yellow";
         break;
       case 'g':
         myFixedColorPalette[0][i] = FixedColor::NTSC_GREEN;
         myFixedColorPalette[1][i] = FixedColor::PAL_GREEN;
+        myFixedColorNames[i] = "Green ";
         break;
       case 'b':
         myFixedColorPalette[0][i] = FixedColor::NTSC_BLUE;
         myFixedColorPalette[1][i] = FixedColor::PAL_BLUE;
+        myFixedColorNames[i] = "Blue  ";
         break;
       case 'p':
         myFixedColorPalette[0][i] = FixedColor::NTSC_PURPLE;
         myFixedColorPalette[1][i] = FixedColor::PAL_PURPLE;
+        myFixedColorNames[i] = "Purple";
         break;
     }
   }

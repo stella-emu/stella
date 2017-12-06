@@ -460,6 +460,7 @@ class TIA : public Device
      */
     enum FixedObject { P0, M0, P1, M1, PF, BL };
     FixedColor myFixedColorPalette[2][6];
+    string myFixedColorNames[6];
 
   private:
 
