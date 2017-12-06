@@ -59,7 +59,7 @@ class Serializer
     /**
       Resets the read/write location to the beginning of the stream.
     */
-    void reset();
+    void rewind();
 
     /**
       Reads a byte value (unsigned 8-bit) from the current input stream.

@@ -35,7 +35,7 @@ Serializer::Serializer(const string& filename, bool readonly)
       {
         myStream = std::move(str);
         myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
-        reset();
+        rewind();
       }
     }
   }
@@ -56,7 +56,7 @@ Serializer::Serializer(const string& filename, bool readonly)
     {
       myStream = std::move(str);
       myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
-      reset();
+      rewind();
     }
   }
 }
@@ -73,12 +73,12 @@ Serializer::Serializer()
   {
     myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
     putBool(true);
-    reset();
+    rewind();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::reset()
+void Serializer::rewind()
 {
   myStream->clear();
   myStream->seekg(ios_base::beg);

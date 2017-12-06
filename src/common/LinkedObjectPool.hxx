@@ -42,7 +42,8 @@
 
         In the case of methods which wrap the C++ 'splice()' method, the
         semantics of splice are followed wrt invalid/out-of-range/etc
-        iterators.  See the applicable documentation for such behaviour.
+        iterators.  See the applicable C++ STL documentation for such
+        behaviour.
 
   @author Stephen Anthony
 */

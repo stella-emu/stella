@@ -34,8 +34,9 @@ class StateManager;
   Unwinding involves moving the internal iterator forwards in time (towards
   the end of the list).
 
-  Any time a new state is added, the internal iterator moves back to the
-  insertion point of the data (the end of the list).
+  Any time a new state is added, all states from the current iterator position
+  to the end of the list (aka, all future states) are removed, and the internal
+  iterator moves to the insertion point of the data (the end of the list).
 
   @author  Stephen Anthony
 */

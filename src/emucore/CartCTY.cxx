@@ -466,7 +466,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     memcpy(scoreRAM + (index << 6) + 4, myRAM+4, 60);
 
     // Save score RAM
-    serializer.reset();
+    serializer.rewind();
     try
     {
       serializer.putByteArray(scoreRAM, 256);

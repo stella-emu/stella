@@ -48,7 +48,7 @@ bool RewindManager::addState(const string& message)
   RewindState& state = myStateList.current();
   Serializer& s = state.data;
 
-  s.reset();  // rewind Serializer internal buffers
+  s.rewind();  // rewind Serializer internal buffers
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
     state.message = message;
@@ -70,7 +70,7 @@ bool RewindManager::rewindState()
     string message = getMessage(state);
 cerr << "rewind " << state.count << endl;
 
-    s.reset();  // rewind Serializer internal buffers
+    s.rewind();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
     myOSystem.console().tia().loadDisplay(s);
 
