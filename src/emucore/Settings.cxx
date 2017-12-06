@@ -160,7 +160,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.rewind.uncompressed", 30);
   setInternal("plr.rewind.interval", 4); // = 1 second
   setInternal("plr.rewind.horizon", 5); // = ~10 minutes
-#ifdef DTHUMB_SUPPORT
+#ifdef THUMB_SUPPORT
   // Thumb ARM emulation options
   setInternal("plr.thumb.trapfatal", "false");
 #endif
@@ -182,8 +182,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.rewind.uncompressed", 60);
   setInternal("dev.rewind.interval", 2); // = 1 frame
   setInternal("dev.rewind.horizon", 3); // = ~10 seconds
-
-#ifdef DTHUMB_SUPPORT
+#ifdef THUMB_SUPPORT
   // Thumb ARM emulation options
   setInternal("dev.thumb.trapfatal", "true");
 #endif
@@ -587,7 +586,7 @@ void Settings::usage() const
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
 
-  #ifdef DTHUMB_SUPPORT
+  #ifdef THUMB_SUPPORT
     << "   -dev.thumb.trapfatal <1|0>      Determines whether errors in ARM emulation throw an exception\n"
   #endif
     << endl << std::flush;
