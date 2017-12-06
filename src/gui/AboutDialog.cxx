@@ -124,6 +124,8 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\L\\c2""    Emulation core development");
       ADD_ATEXT("\\L\\c0""  Brian Watson");
       ADD_ATEXT("\\L\\c2""    Emulation core enhancement, debugger support");
+      ADD_ATEXT("\\L\\c0""  Christian Speckner");
+      ADD_ATEXT("\\L\\c2""    TIA emulation development");
       break;
 
     case 3:

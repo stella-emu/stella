@@ -28,6 +28,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
     myPage(1),
     myNumPages(5)
 {
+  const string ELLIPSIS = "\x1d";
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
@@ -65,7 +66,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
                                  "", kTextAlignCenter);
 
-  int lwidth = 15 * fontWidth;
+  int lwidth = 12 * fontWidth;
   xpos += 5;  ypos += lineHeight + 4;
   for(uInt8 i = 0; i < kLINES_PER_PAGE; i++)
   {
@@ -108,7 +109,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Cmd Q",     "Quit emulation");
 #endif
       ADD_BIND("Escape",     "Exit current game");
-      ADD_BIND("Tab",        "Enter options menu");
+      ADD_BIND("Tab",        "Enter 'Options' menu");
       ADD_BIND("\\",         "Toggle command menu");
       ADD_BIND(ALT_" =",     "Increase window size");
       ADD_BIND(ALT_" -",     "Decrease window size");
@@ -122,8 +123,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       title = "Special commands";
       ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
       ADD_BIND("Ctrl f", "Switch between NTSC/PAL/SECAM");
-      ADD_BIND("Ctrl s", "Save game properties");
-      ADD_BIND("",       "  to a new file");
+      ADD_BIND("Ctrl s", "Save game properties to a");
+      ADD_BIND("",       "  new file");
       ADD_LINE();
       ADD_BIND("Ctrl 0", "Toggle controller for Mouse");
       ADD_BIND("Ctrl 1", "Toggle Stelladaptor left/right");
@@ -145,21 +146,25 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 
     case 4:
       title = "Developer commands";
-      ADD_BIND("~",         "Enter/exit debugger");
+      ADD_BIND("`",         "Enter/exit debugger");
       ADD_LINE();
       ADD_BIND(ALT_" PgUp", "Increase Display.YStart");
       ADD_BIND(ALT_" PgDn", "Decrease Display.YStart");
       ADD_BIND("Ctrl PgUp", "Increase Display.Height");
       ADD_BIND("Ctrl PgDn", "Decrease Display.Height");
+      ADD_LINE();
+      ADD_BIND("Alt L", "Toggle frame stats");
+      ADD_BIND("Alt ,", "Toggle 'Debug Colors' mode");
+      ADD_BIND("Alt r", "Toggle continuous rewind");
       break;
 
     case 5:
       title = "All other commands";
       ADD_LINE();
-      ADD_BIND("Remapped Events", "");
+      ADD_BIND("Remapped Eve", "nts");
       ADD_TEXT("Most other commands can be");
-      ADD_TEXT("remapped.  Please consult the");
-      ADD_TEXT("'Input Settings' section for");
+      ADD_TEXT("remapped. Please consult the");
+      ADD_TEXT("'Input Settings" + ELLIPSIS + "' menu for");
       ADD_TEXT("more information.");
       break;
   }
