@@ -12,7 +12,7 @@
   <br>
 
   <h2>Contents</h2>
-  <ol>
+  <ul>
     <li><a href="#Features">Features</a></li>
     <li><a href="#HowToDebugger">How to use the Debugger</a>
       <ul>
@@ -68,8 +68,7 @@
     <li><a href="#DistellaConfiguration">Distella Configuration Files</a></li>
     <li><a href="#Howtohack">Tutorial: How to hack a ROM</a></li>
     </li>
-  </ol>
-
+  </ul>
   <br>
 
 <h1><a name="Features">Features</a></h1>
@@ -240,8 +239,9 @@ execution by stepping one instruction, scanline, or frame at a time
 (or more than one at a time, using commands in the prompt). You can
 also set breakpoints or traps, which will cause the emulator to enter
 the debugger when they are triggered, even if it happens in mid-frame.</p>
+</br>
 
-<h3><a name="Startup">Startup</a></h3>
+<h2><a name="Startup">Startup</a></h2>
 At startup, the debugger automatically tries load a number of files which
 will provide additional information for the debugger and can make debugging
 more convenient.
@@ -254,7 +254,7 @@ more convenient.
 
     <p>The location of this file will depend on the OS as follows:</p>
     <p>
-    <table cellpadding="3" border="1">
+    <table cellpadding=4 border="1">
       <tr>
         <td><b>Linux/Unix</b></td>
         <td><i>~/.stella/autoexec.script</i></td>
@@ -324,7 +324,7 @@ previous rewind operation. The rewind buffer is 100 levels deep by default.<p>
 
 <p>You can also use the buttons from anywhere in the GUI via hotkeys.</p>
 <p>
-<table BORDER=1 cellpadding=3>
+<table BORDER=1 cellpadding=4>
   <tr>
     <th>Key</th>
     <th>Function</th>
@@ -391,7 +391,7 @@ or Supermon for the C=64.</p>
 <p>Editing keys work about like you'd expect them to in Windows, but many
 Bash-style commands are also supported:</p>
 
-<table border="1" cellpadding="3">
+<table border="1" cellpadding=4>
   <tr><th>Key</th><th>Function</th></tr>
 	<tr><td>Home</td><td>Move cursor to beginning of line</td></tr>
 	<tr><td>End</td><td>Move cursor to end of line</td></tr>
@@ -684,7 +684,7 @@ conditions without having to define the conditions yourself.</p>
 your game's source with underscores, if you plan to use them with the
 Stella debugger.</p>
 
-<table border="1" cellpadding="3">
+<table border="1" cellpadding=4>
 <tr><th>Function</th><th>Definition</th><th>Description</th></tr>
 <tr><td> _joy0left</td><td> !(*SWCHA &amp; $40)</td><td> Left joystick moved left</td></tr>
 <tr><td> _joy0right</td><td> !(*SWCHA &amp; $80)</td><td> Left joystick moved right</td></tr>
@@ -716,7 +716,7 @@ They're not registers in the conventional sense, since they don't exist in
 a real system. For example, while the debugger keeps track of the number
 of scanlines in a frame, a real system would not (there is no register
 that holds 'number of scanlines' on an actual console).</p>
-<table border="1" cellpadding="3">
+<table border="1" cellpadding=4>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td> _bank</td><td> Currently selected bank</td></tr>
 <tr><td> _cclocks</td><td> Color clocks on a scanline</td></tr>
@@ -1186,7 +1186,7 @@ depending on which of these widgets is currently in focus.
 <p>Each of these buttons also have a keyboard shortcut (indicated in square
 brackets). In fact, many of the inputboxes in various parts of the debugger
 respond to these same keyboard shortcuts. If in doubt, give them a try.</p>
-<table border="1" cellpadding="3">
+<table border="1" cellpadding=4>
   <tr>
     <th>Button</th><th>Shortut</th><th>Description</th>
   </tr>
@@ -1322,7 +1322,7 @@ Note that only code, graphics or data will show bytes and can be edited.</li>
 can use. These are known as 'directives', and partly correspond to configuration
 options from the standalone Distella program. They are listed in order of
 decreasing hierarchy:</p>
-<table border="1" cellpadding="3">
+<table border="1" cellpadding=4>
 <tr><td><b>CODE</b></td><td>Addresses which have appeared in the program counter, or
 which tentatively can appear in the program counter. These can be edited in hex.</td></tr>
 <tr><td><b>GFX</b></td><td>Addresses which contain data stored in the player graphics registers
@@ -1496,7 +1496,7 @@ named "rr.a26", with properties entry "River Raid". Attempts will be made as fol
 </ul>
 <p>The location of 'configdir' will depend on the OS as follows:</p>
 
-	<p><table cellpadding="3" border="1">
+	<p><table cellpadding=4 border="1">
 		<tr>
 			<td><b>Linux/Unix</b></td>
 			<td><i>~/.stella/cfg/</i></td>
