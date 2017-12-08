@@ -145,8 +145,6 @@ class DeveloperDialog : public Dialog
     PopUpWidget*        myDebuggerFontStyle;
 #endif
 
-    // Maximum width and height for this dialog
-    int myMaxWidth, myMaxHeight;
     bool    mySettings;
     // Emulator sets
     bool    myFrameStats[2];

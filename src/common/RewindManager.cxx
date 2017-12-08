@@ -116,7 +116,7 @@ void RewindManager::compressStates()
 #if 0
   myStateList.removeFirst();  // remove the oldest state file
 #else
-  bool debugMode = myOSystem.eventHandler().state() == EventHandler::S_DEBUGGER;
+  //bool debugMode = myOSystem.eventHandler().state() == EventHandler::S_DEBUGGER;
   // TODO: let user control these:
   const double DENSITY = 1.15; // exponential growth of cycle intervals
   const uInt32 STEP_STATES = 60; // single step rewind length
@@ -171,7 +171,7 @@ void RewindManager::compressStates()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getMessage(RewindState& state)
 {
-  Int64 diff = myOSystem.console().tia().cycles() - state.cycle;
+  Int32 diff = Int32(myOSystem.console().tia().cycles() - state.cycle);
   stringstream message;
 
   message << (diff >= 0 ? "Rewind" : "Unwind") << " " << getUnitString(diff);
@@ -183,18 +183,19 @@ string RewindManager::getMessage(RewindState& state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RewindManager::getUnitString(Int64 cycles)
+string RewindManager::getUnitString(Int32 cycles)
 {
-  const Int64 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
+  const Int32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
   const bool isNTSC = scanlines <= 285; // TODO: replace magic number
-  const Int64 NTSC_FREQ = 1193182; // ~76*262*60
-  const Int64 PAL_FREQ = 1182298; // ~76*312*50
-  const Int64 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
+  const Int32 NTSC_FREQ = 1193182; // ~76*262*60
+  const Int32 PAL_FREQ = 1182298; // ~76*312*50
+  const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
   // TODO: do we need hours here? don't think so
   const Int32 NUM_UNITS = 5;
   const string UNIT_NAMES[NUM_UNITS] = { "cycle", "scanline", "frame", "second", "minute" };
-  const Int64 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq, freq * 60, (Int64)1 << 63 };
+  const Int32 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq,
+      freq * 60, 1 << 31 };
 
   stringstream result;
   Int32 i;

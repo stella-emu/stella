@@ -43,15 +43,13 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent),
-  myMaxWidth(max_w),
-  myMaxHeight(max_h)
+  : Dialog(osystem, parent)
 {
   const int VGAP = 4;
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth(),
     buttonHeight = font.getLineHeight() + 4;
-  int xpos, ypos, tabID;
+  int xpos, ypos;
 
   // Set real dimensions
   _w = std::min(53 * fontWidth + 10, max_w);
@@ -81,7 +79,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   const int VGAP = 4;
   int ypos = VBORDER;
   int lineHeight = font.getLineHeight();
-  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
   WidgetArray wid;
   VariantList items;
   int tabID = myTab->addTab(" Emulation ");
@@ -268,7 +265,7 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   const int VGAP = 4;
   int ypos = VBORDER;
   int lineHeight = font.getLineHeight();
-  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
+  int fontHeight = font.getFontHeight();
   WidgetArray wid;
   int tabID = myTab->addTab("States");
 
@@ -348,7 +345,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
     fontHeight = font.getFontHeight(),
     lineHeight = font.getLineHeight();
   int xpos, ypos, pwidth;
-  ButtonWidget* b;
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
   xpos = HBORDER;
@@ -702,7 +698,7 @@ void DeveloperDialog::saveConfig()
     double diff = cycleSum - horizon;
 //cerr << "factor " << factor << ", diff " << diff << endl;
     // exit loop if result is close enough
-    if(abs(diff) < horizon * 1E-5)
+    if(std::abs(diff) < horizon * 1E-5)
       break;
     // define new boundary
     if(cycleSum < horizon)
@@ -965,10 +961,10 @@ void DeveloperDialog::handleRewind()
 void DeveloperDialog::handleSize()
 {
   bool found = false;
-  uInt64 size = myStateSizeWidget->getValue();
-  uInt64 uncompressed = myUncompressedWidget->getValue();
-  uInt64 interval = myStateIntervalWidget->getValue();
-  uInt64 horizon = myStateHorizonWidget->getValue();
+  uInt32 size = myStateSizeWidget->getValue();
+  uInt32 uncompressed = myUncompressedWidget->getValue();
+  uInt32 interval = myStateIntervalWidget->getValue();
+  uInt32 horizon = myStateHorizonWidget->getValue();
   Int32 i;
 
   myStateSizeLabelWidget->setValue(size);
@@ -1002,8 +998,8 @@ void DeveloperDialog::handleSize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleUncompressed()
 {
-  uInt64 size = myStateSizeWidget->getValue();
-  uInt64 uncompressed = myUncompressedWidget->getValue();
+  uInt32 size = myStateSizeWidget->getValue();
+  uInt32 uncompressed = myUncompressedWidget->getValue();
 
   myUncompressedLabelWidget->setValue(myUncompressedWidget->getValue());
   if(uncompressed > size)
@@ -1017,10 +1013,10 @@ void DeveloperDialog::handleUncompressed()
 void DeveloperDialog::handleInterval()
 {
   bool found = false;
-  uInt64 size = myStateSizeWidget->getValue();
-  uInt64 uncompressed = myUncompressedWidget->getValue();
-  uInt64 interval = myStateIntervalWidget->getValue();
-  uInt64 horizon = myStateHorizonWidget->getValue();
+  uInt32 size = myStateSizeWidget->getValue();
+  uInt32 uncompressed = myUncompressedWidget->getValue();
+  uInt32 interval = myStateIntervalWidget->getValue();
+  uInt32 horizon = myStateHorizonWidget->getValue();
   Int32 i;
 
   myStateIntervalLabelWidget->setLabel(INTERVALS[interval]);
@@ -1055,10 +1051,10 @@ void DeveloperDialog::handleInterval()
 void DeveloperDialog::handleHorizon()
 {
   bool found = false;
-  uInt64 size = myStateSizeWidget->getValue();
-  uInt64 uncompressed = myUncompressedWidget->getValue();
-  uInt64 interval = myStateIntervalWidget->getValue();
-  uInt64 horizon = myStateHorizonWidget->getValue();
+  uInt32 size = myStateSizeWidget->getValue();
+  uInt32 uncompressed = myUncompressedWidget->getValue();
+  uInt32 interval = myStateIntervalWidget->getValue();
+  uInt32 horizon = myStateHorizonWidget->getValue();
   Int32 i;
 
   myStateHorizonLabelWidget->setLabel(HORIZONS[horizon]);
