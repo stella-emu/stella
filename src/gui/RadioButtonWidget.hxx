@@ -56,14 +56,14 @@ class RadioButtonWidget : public CheckboxWidget
 class RadioButtonGroup
 {
   public:
-    RadioButtonGroup() {};
+    RadioButtonGroup() = default;
 
     // add widget to group
     void addWidget(RadioButtonWidget* widget);
     // tell the group which widget was selected
     void select(RadioButtonWidget* widget);
     void setSelected(uInt32 selected);
-    uInt32 getSelected() { return mySelected; };
+    uInt32 getSelected() { return mySelected; }
 
   private:
     WidgetArray myWidgets;

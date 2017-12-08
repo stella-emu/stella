@@ -171,7 +171,7 @@ void RewindManager::compressStates()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getMessage(RewindState& state)
 {
-  Int32 diff = Int32(myOSystem.console().tia().cycles() - state.cycle);
+  Int64 diff = myOSystem.console().tia().cycles() - state.cycle;
   stringstream message;
 
   message << (diff >= 0 ? "Rewind" : "Unwind") << " " << getUnitString(diff);
@@ -183,7 +183,7 @@ string RewindManager::getMessage(RewindState& state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RewindManager::getUnitString(Int32 cycles)
+string RewindManager::getUnitString(Int64 cycles)
 {
   const Int32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
   const bool isNTSC = scanlines <= 285; // TODO: replace magic number
@@ -194,8 +194,8 @@ string RewindManager::getUnitString(Int32 cycles)
   // TODO: do we need hours here? don't think so
   const Int32 NUM_UNITS = 5;
   const string UNIT_NAMES[NUM_UNITS] = { "cycle", "scanline", "frame", "second", "minute" };
-  const Int32 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq,
-      freq * 60, 1 << 31 };
+  const Int64 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq,
+      freq * 60, Int64(1) << 62 };
 
   stringstream result;
   Int32 i;

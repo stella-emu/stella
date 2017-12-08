@@ -96,7 +96,7 @@ class DeveloperDialog : public Dialog
     const string HORIZONS[NUM_HORIZONS] = { "~1 frame", "~10 frames", "~1 second", "~10 seconds",
       "~1 minute", "~10 minutes", "~60 minutes" };
     const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
-      76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, (uInt64)76 * 262 * 60 * 60 * 60 };
+      76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, uInt64(76) * 262 * 60 * 60 * 60 };
 
     static const int DEBUG_COLORS = 6;
 

@@ -608,7 +608,7 @@ void DeveloperDialog::loadConfig()
   loadSettings(SettingsSet::player);
   loadSettings(SettingsSet::developer);
   // ...and select the current one
-  setWidgetStates((SettingsSet)mySettingsGroup0->getSelected());
+  setWidgetStates(SettingsSet(mySettingsGroup0->getSelected()));
 
   // Debug colours
   handleDebugColours(instance().settings().getString("tia.dbgcolors"));
@@ -644,7 +644,7 @@ void DeveloperDialog::saveConfig()
 {
   instance().settings().setValue("dev.settings", mySettingsGroup0->getSelected() == SettingsSet::developer);
   // copy current widget status into set...
-  getWidgetStates((SettingsSet)mySettingsGroup0->getSelected());
+  getWidgetStates(SettingsSet(mySettingsGroup0->getSelected()));
   // ...and save both sets
   saveSettings(SettingsSet::player);
   saveSettings(SettingsSet::developer);
@@ -728,7 +728,7 @@ void DeveloperDialog::saveConfig()
 void DeveloperDialog::setDefaults()
 {
   bool devSettings = mySettingsGroup0->getSelected() == 1;
-  SettingsSet set = (SettingsSet)mySettingsGroup0->getSelected();
+  SettingsSet set = SettingsSet(mySettingsGroup0->getSelected());
 
   switch(myTab->getActiveTab())
   {
@@ -1195,14 +1195,14 @@ void DeveloperDialog::handleFontSize()
   minH = std::min(instance().frameBuffer().desktopSize().h, minH);
 
   myDebuggerWidthSlider->setMinValue(minW);
-  if(minW > myDebuggerWidthSlider->getValue())
+  if(minW > uInt32(myDebuggerWidthSlider->getValue()))
   {
     myDebuggerWidthSlider->setValue(minW);
     myDebuggerWidthLabel->setValue(minW);
   }
 
   myDebuggerHeightSlider->setMinValue(minH);
-  if(minH > myDebuggerHeightSlider->getValue())
+  if(minH > uInt32(myDebuggerHeightSlider->getValue()))
   {
     myDebuggerHeightSlider->setValue(minH);
     myDebuggerHeightLabel->setValue(minH);

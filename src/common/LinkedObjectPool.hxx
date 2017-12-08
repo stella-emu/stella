@@ -199,6 +199,8 @@ class LinkedObjectPool
     const_iter begin() const { return myList.cbegin(); }
     const_iter end() const   { return myList.cend();   }
 
+    uInt32 capacity() const { return CAPACITY; }
+
     uInt32 size() const { return myList.size();             }
     bool empty() const  { return myList.size() == 0;        }
     bool full() const   { return myList.size() >= CAPACITY; }

@@ -544,7 +544,7 @@ uInt16 Debugger::windStates(uInt16 states, bool unwind, string& message)
       winds++;
     else
       break;
-  message = r.getUnitString(Int32(myOSystem.console().tia().cycles() - startCycles));
+  message = r.getUnitString(myOSystem.console().tia().cycles() - startCycles);
 
   lockBankswitchState();
 

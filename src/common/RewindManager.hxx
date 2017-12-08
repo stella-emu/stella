@@ -73,7 +73,7 @@ class RewindManager
     /**
       Convert the cycles into a unit string.
     */
-    string getUnitString(Int32 cycles);
+    string getUnitString(Int64 cycles);
 
   private:
     // Maximum number of states to save
