@@ -97,17 +97,15 @@ class LinkedObjectPool
         myCurrent = std::next(myCurrent, 1);
     }
 
-#if 0
     /**
-      Return a reference to the element at the first node in the active list.
+      Return an iterator to the first node in the active list.
     */
-    T& first() { return myList.front(); }
+    iter first() { return myList.begin(); }
 
     /**
-      Return a reference to the element at the last node in the active list.
+      Return an iterator to the last node in the active list.
     */
-    T& last() { return myList.back(); }
-#endif
+    iter last() { return std::prev(myList.end(), 1); }
 
     /**
       Add a new node at the beginning of the active list, and update 'current'
@@ -193,12 +191,13 @@ class LinkedObjectPool
       myCurrent = myList.end();
     }
 
+#if 0
     /** Access the list with iterators, just as you would a normal C++ STL list */
     iter begin() { return myList.begin(); }
     iter end()   { return myList.end();   }
     const_iter begin() const { return myList.cbegin(); }
     const_iter end() const   { return myList.cend();   }
-
+#endif
     uInt32 capacity() const { return CAPACITY; }
 
     uInt32 size() const { return myList.size();             }
