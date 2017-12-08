@@ -36,8 +36,12 @@
       <ul>
         <li><a href="#CommandLine">Using the Command Line</a></li>
         <li><a href="#Options">Changing Options</a></li>
-        <li><a href="#Remapping">Event Remapping / Input Devices</a></li>
+        <li><a href="#Remapping">Event Remapping/Input Devices</a></li>
         <li><a href="#ROMInfo">ROM Launcher</a></li>
+        <ul>
+          <li><a href="#ROMInfoViewer">ROM Launcher Viewer</a></li>
+          <li><a href="#ROMLauchnerContextMenu">ROM Launcher Context Menu</a></li>
+        </ul>
         <li><a href="#ROMAudit">ROM Audit Mode</a></li>
         <li><a href="#Adaptor">Stelladaptor/2600-daptor Support</a></li>
         <li><a href="#AtariVox">AtariVox/SaveKey Support</a></li>
@@ -270,7 +274,7 @@
     <li>Emulates the Mindlink Controller using your computer's mouse</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
-      <a href="http://2600-daptor.com">2600-adaptor/2600-daptor II</a></li>
+      <a href="http://2600-daptor.com">2600-daptor/2600-aptor II</a></li>
     <li>Support for the speech portion of a real
       <a href="http://atariage.com/store/index.php?l=product_list&c=98">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
@@ -324,8 +328,8 @@
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>Enough RAM for the OS + 256MB RAM for the emulation; 512MB+ highly recommended</li>
     <li>Joysticks or gamepads are highly recommended</li>
-    <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> /
-    <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
+    <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a>/<a href="http://2600-daptor.com">2600-daptor</a>
+    with real paddles required for paddle emulation</li>
     <li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
   </ul>
 
@@ -465,7 +469,7 @@
   microprocessor to access the program stored on the cartridge.</p>
 
   <p>In a similar way you must "plug" a copy of a cartridge into Stella when you
-  want to play it. Having a ROM image / BIN file, of the cartridge allows you to
+  want to play it. Having a ROM image/BIN file of the cartridge allows you to
   do this. A ROM image is a file, which contains the actual data and code read
   from the cartridge. There are several ways to obtain a ROM image of a
   cartridge:</p>
@@ -733,7 +737,7 @@
   </table>
 
 
-  <p><b>Joystick / BoosterGrip Controller (can be remapped)</b></p>
+  <p><b>Joystick/BoosterGrip Controller (can be remapped)</b></p>
 
   <table BORDER=2>
     <tr>
@@ -1363,7 +1367,7 @@
     </tr>
 
     <tr>
-      <td>Toggle frame stats (scanline count/FPS/bs type/etc.)</td>
+      <td>Toggle frame stats (scanline count/FPS/BS type etc.)</td>
       <td>Alt + L</td>
       <td>Cmd + L</td>
     </tr>
@@ -1465,7 +1469,7 @@
     </tr>
   </table>
 
-  <p><b>Other Keys (cannot be remapped, except those marked with '*')</b></p>
+  <p><b>Other Keys (cannot be remapped, except those marked with (*) )</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
@@ -1505,13 +1509,13 @@
     </tr>
 
     <tr>
-      <td>Switch display format in <i>increasing</i> order (NTSC/PAL/SECAM/etc.)</td>
+      <td>Switch display format in <i>increasing</i> order (NTSC/PAL/SECAM etc.)</td>
       <td>Control + f</td>
       <td>Control + f</td>
     </tr>
 
     <tr>
-      <td>Switch display format in <i>decreasing</i> order (NTSC/PAL/SECAM/etc.)</td>
+      <td>Switch display format in <i>decreasing</i> order (NTSC/PAL/SECAM etc.)</td>
       <td>Shift-Control + f</td>
       <td>Shift-Control + f</td>
     </tr>
@@ -1652,7 +1656,7 @@
   <p>Some Atari (virtual) controllers are simulated with more than one computer controller, and
   there are several special cases where controllers are active in certain modes only, as the table
   below shows. Items marked as <b>(+ extra)</b> indicate that the computer controller may not have
-  enough buttons/axes/etc. to fully emulate the device, so extra functionality must be mapped to other
+  enough buttons/axes etc. to fully emulate the device, so extra functionality must be mapped to other
   controllers.</p>
 
   <table BORDER=2 cellpadding=4>
@@ -1717,7 +1721,7 @@
       <td> &#x2713;</td>
     </tr>
     <tr>
-      <th> Trakball/mouse</th>
+      <th> Trakball/Mouse</th>
       <td> &#x2715;</td>
       <td> &#x2715;</td>
       <td> &#x2713;</td>
@@ -2176,7 +2180,7 @@
 
     <tr>
       <td><pre>-romviewer &lt;0|1|2&gt;</pre></td>
-      <td>Hide ROM info viewer in ROM launcher mode (0), or use the
+      <td>Hide ROM Info Viewer in ROM launcher mode (0), or use the
         given zoom level (1 or 2).</td>
     </tr>
 
@@ -2689,7 +2693,7 @@
   </table>
   </blockquote>
 
-  <h2><b><a name="Remapping">Event Remapping / Input Devices</a></b></h2>
+  <h2><b><a name="Remapping">Event Remapping/Input Devices</a></b></h2>
   <blockquote>
 
   <p>Almost every event in Stella can be remapped to another key on the keyboard or
@@ -2707,7 +2711,7 @@
 
   <p>To remap an event:
   <ol>
-    <li>Enter <b>Options menu</b> and click the <b>Input Settings</b> button.</li>
+    <li>Enter <b>Options Menu</b> and click the <b>Input Settings</b> button.</li>
     <li>If you wish to remap emulation events, click the 'Emul. Events' tab.
       Otherwise, click the 'UI Events' tab for user interface events.</li>
     <li>Select event you want to remap and click the 'Map' button.</li>
@@ -2724,7 +2728,7 @@
   <img src="graphics/eventmapping.png">
   <img src="graphics/eventmapping_remap.png">
 
-  <p>There is also a 'Combo' button in the 'Emulation Events' tab, accessible
+  <p>There is also a 'Combo' button in the 'Emul. Events' tab, accessible
   when a Combo event has been selected from the list of events on the left.
   Clicking 'Combo' will show a dialog similar to the following:</p>
   <img src="graphics/eventmapping_combo.png">
@@ -2766,11 +2770,13 @@
   <blockquote>
 
   <p>Several options are configurable in the ROM launcher. The size of the
-  launcher and fonts, as well as the 'ROM info viewer' can be changed in
-  <b>UI Settings =&gt; Launcher</b> dialog, as shown below:</p>
+  launcher and fonts, as well as the 'ROM Info Viewer' can be changed in
+  <b>UI Settings - Launcher</b> dialog, as shown below:</p>
   <img src="graphics/options_ui.png">
   <p>Most of the options are self-explanatory, except for the 'ROM Info
   viewer', which is described below.</p>
+
+  <h3><b><a name="ROMInfoViewer">ROM Info Viewer</a></b></h3>
 
   <p>Stella supports viewing snapshots and ROM properties of the currently
   selected ROM in the ROM launcher. Support is automatic, as long as your
@@ -2782,7 +2788,7 @@
 
   <p>Currently, there are several restrictions for this feature:</p>
   <ol>
-    <li>The ROM info viewer can be shown in 1x or 2x mode only.</li>
+    <li>The ROM Info Viewer can be shown in 1x or 2x mode only.</li>
     <li>To view snapshots in 1x mode, the ROM launcher window must be sized at
       least 640x480. If the launcher isn't large enough, the functionality
       will be disabled.</li>
@@ -2794,13 +2800,13 @@
   <p>The following snapshots illustrate the various font sizes and rom info
   zoom levels:</p>
 
-  <p>ROM info viewer in 1x mode, UI sized 800x480, small launcher font:</p>
+  <p>ROM Info Viewer in 1x mode, UI sized 800x480, small launcher font:</p>
   <img src="graphics/rominfo_1x_small.png">
 
-  <p>ROM info viewer in 1x mode, UI sized 1000x760, medium launcher font:</p>
+  <p>ROM Info Viewer in 1x mode, UI sized 1000x760, medium launcher font:</p>
   <img src="graphics/rominfo_1x_large.png">
 
-  <p>ROM info viewer in 2x mode, UI sized 1400x900, large launcher font:</p>
+  <p>ROM Info Viewer in 2x mode, UI sized 1400x900, large launcher font:</p>
   <img src="graphics/rominfo_2x_small.png">
 
   <p>The text box in the upper right corner can be used to narrow down the
@@ -2812,6 +2818,8 @@
   quickly finding a group of related ROMs. Note that the search is not
   case sensitive, so you don't need to worry about capital or lower-case
   letters.</p>
+
+  <h3><b><a name="ROMLauchnerContextMenu">ROM Lauchner Context Menu</a></b></h3>
 
   <p>The ROM launcher also contains a context menu, selected by clicking the
   right mouse button anywhere in the current window. This context menu
@@ -2908,7 +2916,7 @@
 
   <p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
   using the <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
-  <a href="http://2600-daptor.com">2600-adaptor</a> devices.</p>
+  <a href="http://2600-daptor.com">2600-daptor</a> devices.</p>
 
   <p>Stella can use up to <b>two</b> adaptors; any extra ones are ignored.
   Stelladaptor devices will be automatically detected and configured. The
@@ -3001,7 +3009,7 @@
   <h2><b><a name="Debugger">Developer Options/Integrated Debugger</a></b></h2>
   <blockquote>
 
-  <p>Several developer related settings can be configured in the 'Developer Settings' dialog.
+  <p>Several developer related options can be configured in the 'Developer Settings' dialog.
   Two sets ('Player settings', 'Developer settings') allow easy adjustment of all settings
   for different use cases (playing or developing games) at once.</p>
 
@@ -3433,7 +3441,7 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP"><i>Cartridge.Name:</i></td>
       <td>Indicates the actual name of the game. When you save snapshots,
-        load/save state files, or use the 'ROM Audit' functionality,
+        load/save state files, or use the <a href="#ROMAudit"><b>ROM Audit Mode</b></a> functionality,
         this is the name that will be used for the respective file(s).</td>
     </tr>
 
@@ -3452,15 +3460,15 @@ Ms Pac-Man (Stella extended codes):
       <td>Indicates if the game should use 1 or 2 channels for sound output.
       All original Atari 2600 machines supported 1 channel only,
       but some homebrew games have been written to take advantage of stereo
-      sound. The value must be <b>Mono</b> or <b>Stereo</b>.</td>
+      sound mods. The value must be <b>Mono</b> or <b>Stereo</b>.</td>
     </tr>
 
     <tr>
       <td VALIGN="TOP"><i>Cartridge.Type:</i></td>
       <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
-      (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt"><b>2600 bankswitching
-      document</b></a> or the documentation in each cartridges source code file). Types marked
+      (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
+      document</a> or the documentation in each cartridges source code file). Types marked
       as (&#185;) do not currently have reliable auto-detection, those marked as (&#178;)
       are not fully supported in the debugger:
       <table cellpadding="2" border="1">
@@ -3558,7 +3566,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
         <tr><td>AtariMouse </td><td>Atari ST computer mouse.</td></tr>
         <tr><td>Trakball </td><td>Standard Atari 2600 CX22/CX80 'Trak-Ball' controller.</td></tr>
-        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech / sound synthesizer with 32K EEPROM.</td></tr>
+        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td>SaveKey </td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
         <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
         <tr><td>CompuMate </td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
