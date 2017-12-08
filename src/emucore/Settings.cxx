@@ -44,8 +44,8 @@ Settings::Settings(OSystem& osystem)
   // TIA specific options
   setInternal("tia.zoom", "3");
   setInternal("tia.inter", "false");
-  setInternal("tia.aspectn", "90");
-  setInternal("tia.aspectp", "100");
+  setInternal("tia.aspectn", "91");
+  setInternal("tia.aspectp", "109");
   setInternal("tia.fsfill", "false");
   setInternal("tia.dbgcolors", "roygpb");
 

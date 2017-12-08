@@ -511,9 +511,9 @@ void VideoDialog::setDefaults()
       myFrameTiming->setSelected("sleep", "");
       myTIAInterpolate->setSelected("nearest", "");
       myNAspectRatio->setValue(90);
-      myNAspectRatioLabel->setLabel("90");
+      myNAspectRatioLabel->setLabel("91");
       myPAspectRatio->setValue(100);
-      myPAspectRatioLabel->setLabel("100");
+      myPAspectRatioLabel->setLabel("109");
       myFrameRate->setValue(0);
       myFrameRateLabel->setLabel("Auto");
 
