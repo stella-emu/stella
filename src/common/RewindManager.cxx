@@ -128,16 +128,10 @@ void RewindManager::compressStates()
   double maxDelta = 0;
   uInt32 removeIdx = 0;
 
-  uInt32 idx = 0;
-  for(auto it = myStateList.begin(); it != myStateList.end(); ++it)
+  uInt32 idx = myStateList.size() - 1;
+  for(auto it = myStateList.last(); it != myStateList.first(); --it)
   {
-    // test and never remove the very first saved state
-    if(++it == myStateList.end())
-    {
-      break;
-    }
-    --it; // UGLY!
-
+cerr << *it << endl << endl;  // debug code
     if(idx >= STEP_STATES)
     {
       expectedCycles *= DENSITY;
@@ -154,7 +148,7 @@ void RewindManager::compressStates()
       }
     }
     lastCycle = it->cycle;
-    idx++;
+    --idx;
   }
   if (maxDelta < 1)
   {

@@ -77,7 +77,7 @@ class RewindManager
 
   private:
     // Maximum number of states to save
-    static constexpr uInt32 MAX_SIZE = 100; // TODO: use a parameter here and allow user to define size in UI
+    static constexpr uInt32 MAX_SIZE = 10; // TODO: use a parameter here and allow user to define size in UI
 
     OSystem& myOSystem;
     StateManager& myStateManager;
@@ -92,6 +92,11 @@ class RewindManager
       // The goal of LinkedObjectPool is to not do any allocations at all
       RewindState() { }
       RewindState(const RewindState&) { }
+
+      // Output object info; used for debugging only
+      friend ostream& operator<<(ostream& os, const RewindState& s) {
+        return os << "msg: " << s.message << "   cycle: " << s.cycle << "   count: " << s.count;
+      }
     };
 
     // The linked-list to store states (internally it takes care of reducing
