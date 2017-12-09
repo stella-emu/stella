@@ -28,7 +28,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent),
     myPage(1),
     myNumPages(4),
-    myLinesPerPage(12)
+    myLinesPerPage(13)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -40,7 +40,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 55 * fontWidth + 8;
-  _h = 14 * lineHeight + 20;
+  _h = 15 * lineHeight + 20;
 
   // Add Previous, Next and Close buttons
   xpos = 10;  ypos = _h - buttonHeight - 10;
@@ -110,44 +110,47 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\CStella is now DonationWare!");
       ADD_ATEXT("\\C(https://stella-emu.github.io/donations.html)");
       ADD_ALINE();
-      ADD_ATEXT("\\CStella is free software released under the GNU GPL");
-      ADD_ATEXT("\\CSee manual for further details");
+      ADD_ATEXT("\\CStella is free software released under the GNU GPL.");
+      ADD_ATEXT("\\CSee manual for further details.");
       break;
 
     case 2:
       title = "The Stella Team";
-      ADD_ATEXT("\\L\\c0""  Bradford W. Mott");
-      ADD_ATEXT("\\L\\c2""    Original author");
       ADD_ATEXT("\\L\\c0""  Stephen Anthony");
-      ADD_ATEXT("\\L\\c2""    Lead developer, Linux/MacOS X/Windows maintainer");
+      ADD_ATEXT("\\L\\c2""    Lead developer, current maintainer for the");
+      ADD_ATEXT("\\L\\c2""    Linux/OSX and Windows ports ");
+      ADD_ATEXT("\\L\\c0""  Christian Speckner");
+      ADD_ATEXT("\\L\\c2""    Emulation core development, TIA core");
       ADD_ATEXT("\\L\\c0""  Eckhard Stolberg");
       ADD_ATEXT("\\L\\c2""    Emulation core development");
+      ADD_ATEXT("\\L\\c0""  Thomas Jentzsch");
+      ADD_ATEXT("\\L\\c2""    Emulation core development, jack-of-all-trades");
       ADD_ATEXT("\\L\\c0""  Brian Watson");
       ADD_ATEXT("\\L\\c2""    Emulation core enhancement, debugger support");
-      ADD_ATEXT("\\L\\c0""  Christian Speckner");
-      ADD_ATEXT("\\L\\c2""    TIA emulation development");
+      ADD_ATEXT("\\L\\c0""  Bradford W. Mott");
+      ADD_ATEXT("\\L\\c2""    Original author of Stella");
       break;
 
     case 3:
       title = "Contributors";
       ADD_ATEXT("\\L\\c0""  See https://stella-emu.github.io/credits.html for");
-      ADD_ATEXT("\\L\\c0""  people that have contributed to Stella");
+      ADD_ATEXT("\\L\\c0""  people that have contributed to Stella.");
       ADD_ALINE();
-      ADD_ATEXT("\\L\\c0""  Thanks to the ScummVM project for the GUI code");
+      ADD_ATEXT("\\L\\c0""  Thanks to the ScummVM project for the GUI code.");
       ADD_ALINE();
       ADD_ATEXT("\\L\\c0""  Thanks to Ian Bogost and the Georgia Tech");
-      ADD_ATEXT("\\L\\c0""  Atari Team for the CRT Simulation effects");
+      ADD_ATEXT("\\L\\c0""  Atari Team for the CRT Simulation effects.");
       break;
 
     case 4:
       title = "Cast of thousands";
       ADD_ATEXT("\\L\\c0""Special thanks to AtariAge for introducing the");
-      ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation");
+      ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation.");
       ADD_ATEXT("\\L\\c2""  http://www.atariage.com");
       ADD_ALINE();
       ADD_ATEXT("\\L\\c0""Finally, a huge thanks to the original Atari 2600");
       ADD_ATEXT("\\L\\c0""VCS team for giving us the magic, and to the");
-      ADD_ATEXT("\\L\\c0""homebrew developers for keeping the magic alive");
+      ADD_ATEXT("\\L\\c0""homebrew developers for keeping the magic alive.");
       break;
   }
 
