@@ -680,8 +680,10 @@ void DeveloperDialog::saveConfig()
   // define interval growth factor
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
+
+  const double MAX_FACTOR = 1E8;
   uInt64 horizon = HORIZON_CYCLES[myStateHorizonWidget->getValue()];
-  double factor, minFactor = 1, maxFactor = 2;
+  double factor, minFactor = 1, maxFactor = MAX_FACTOR;
 
   while(true)
   {
@@ -689,15 +691,18 @@ void DeveloperDialog::saveConfig()
     double cycleSum = interval * uncompressed;
     // calculate next factor
     factor = (minFactor + maxFactor) / 2;
+    // horizon not reachable?
+    if(factor == MAX_FACTOR)
+      break;
     // sum up interval cycles
     for(uInt32 i = uncompressed; i < size; ++i)
     {
-      cycleSum += interval;
       interval *= factor;
+      cycleSum += interval;
     }
     double diff = cycleSum - horizon;
-//cerr << "factor " << factor << ", diff " << diff << endl;
-    // exit loop if result is close enough
+    //cerr << "factor " << factor << ", diff " << diff << endl;
+        // exit loop if result is close enough
     if(std::abs(diff) < horizon * 1E-5)
       break;
     // define new boundary
@@ -960,11 +965,11 @@ void DeveloperDialog::handleRewind()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSize()
 {
-  bool found = false;
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
   uInt32 interval = myStateIntervalWidget->getValue();
   uInt32 horizon = myStateHorizonWidget->getValue();
+  bool found = false;
   Int32 i;
 
   myStateSizeLabelWidget->setValue(size);
@@ -984,15 +989,9 @@ void DeveloperDialog::handleSize()
   } while(!found);
 
   if(size < uncompressed)
-  {
     myUncompressedWidget->setValue(size);
-    myUncompressedLabelWidget->setValue(myStateSizeWidget->getValue());
-  }
-
-  myStateHorizonWidget->setValue(i);
-  myStateHorizonLabelWidget->setLabel(HORIZONS[i]);
   myStateIntervalWidget->setValue(interval);
-  myStateIntervalLabelWidget->setLabel(INTERVALS[interval]);
+  myStateHorizonWidget->setValue(i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1002,21 +1001,19 @@ void DeveloperDialog::handleUncompressed()
   uInt32 uncompressed = myUncompressedWidget->getValue();
 
   myUncompressedLabelWidget->setValue(myUncompressedWidget->getValue());
-  if(uncompressed > size)
-  {
+
+  if(size < uncompressed)
     myStateSizeWidget->setValue(uncompressed);
-    myStateSizeLabelWidget->setValue(myUncompressedWidget->getValue());
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleInterval()
 {
-  bool found = false;
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
   uInt32 interval = myStateIntervalWidget->getValue();
   uInt32 horizon = myStateHorizonWidget->getValue();
+  bool found = false;
   Int32 i;
 
   myStateIntervalLabelWidget->setLabel(INTERVALS[interval]);
@@ -1035,26 +1032,20 @@ void DeveloperDialog::handleInterval()
       size -= myStateSizeWidget->getStepValue();
   } while(!found);
 
-  myStateHorizonWidget->setValue(i);
-  myStateHorizonLabelWidget->setLabel(HORIZONS[i]);
   myStateSizeWidget->setValue(size);
-  myStateSizeLabelWidget->setValue(myStateSizeWidget->getValue());
-
   if(size < uncompressed)
-  {
     myUncompressedWidget->setValue(size);
-    myUncompressedLabelWidget->setValue(myStateSizeWidget->getValue());
-  }
+  myStateHorizonWidget->setValue(i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleHorizon()
 {
-  bool found = false;
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
   uInt32 interval = myStateIntervalWidget->getValue();
   uInt32 horizon = myStateHorizonWidget->getValue();
+  bool found = false;
   Int32 i;
 
   myStateHorizonLabelWidget->setLabel(HORIZONS[horizon]);
@@ -1073,12 +1064,10 @@ void DeveloperDialog::handleHorizon()
       size -= myStateSizeWidget->getStepValue();
   } while(!found);
 
-  myStateIntervalWidget->setValue(i);
-  myStateIntervalLabelWidget->setLabel(INTERVALS[i]);
   myStateSizeWidget->setValue(size);
   if(size < uncompressed)
     myUncompressedWidget->setValue(size);
-  myStateSizeLabelWidget->setValue(myStateSizeWidget->getValue());
+  myStateIntervalWidget->setValue(i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

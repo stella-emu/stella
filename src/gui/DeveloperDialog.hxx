@@ -191,6 +191,7 @@ class DeveloperDialog : public Dialog
     void handleUncompressed();
     void handleInterval();
     void handleHorizon();
+
     void handleFontSize();
 
     // Following constructors and assignment operators not supported
