@@ -200,7 +200,7 @@ class LinkedObjectPool
 #endif
     uInt32 capacity() const { return CAPACITY; }
 
-    uInt32 size() const { return myList.size();             }
+    size_t size() const { return myList.size();             }
     bool empty() const  { return myList.size() == 0;        }
     bool full() const   { return myList.size() >= CAPACITY; }
 
