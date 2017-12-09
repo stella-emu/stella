@@ -52,7 +52,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
   // Pointer to the Frequency RAM
   myFrequencyImage = myDisplayImage + 0x1000;
 
-#ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage),
@@ -60,7 +59,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
        settings.getBool("thumb.trapfatal"),
        Thumbulator::ConfigureFor::DPCplus,
        this);
-#endif
+
   setInitialState();
 
   // DPC+ always starts in bank 5
@@ -103,9 +102,7 @@ void CartridgeDPCPlus::setInitialState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlus::consoleChanged(ConsoleTiming timing)
 {
-#ifdef THUMB_SUPPORT
   myThumbEmulator->setConsoleTiming(timing);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,7 +174,6 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
         myDisplayImage[myCounters[myParameter[2]]+i] = myParameter[0];
       myParameterPointer = 0;
       break;
-  #ifdef THUMB_SUPPORT
       // Call user written ARM code (most likely be C compiled for ARM)
     case 254: // call with IRQ driven audio, no special handling needed at this
               // time for Stella as ARM code "runs in zero 6507 cycles".
@@ -199,7 +195,6 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
         }
       }
       break;
-  #endif
     // reserved
   }
 }

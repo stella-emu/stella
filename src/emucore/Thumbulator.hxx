@@ -22,8 +22,6 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
-#ifdef THUMB_SUPPORT
-
 #ifndef THUMBULATOR_HXX
 #define THUMBULATOR_HXX
 
@@ -162,5 +160,3 @@ class Thumbulator
 };
 
 #endif  // THUMBULATOR_HXX
-
-#endif

@@ -19,9 +19,7 @@
 #define CARTRIDGE_CDF_HXX
 
 class System;
-#ifdef THUMB_SUPPORT
-  class Thumbulator;
-#endif
+class Thumbulator;
 #ifdef DEBUGGER_SUPPORT
   #include "CartCDFWidget.hxx"
 #endif
@@ -221,10 +219,8 @@ class CartridgeCDF : public Cartridge
     //   $1800 - 2K C Variable & Stack
     uInt8 myCDFRAM[8192];
 
-  #ifdef THUMB_SUPPORT
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
-  #endif
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;

@@ -19,9 +19,8 @@
 #define CARTRIDGE_DPC_PLUS_HXX
 
 class System;
-#ifdef THUMB_SUPPORT
-  #include "Thumbulator.hxx"
-#endif
+
+#include "Thumbulator.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "CartDPCPlusWidget.hxx"
 #endif
@@ -212,10 +211,8 @@ class CartridgeDPCPlus : public Cartridge
     //   1K Frequency Data
     uInt8 myDPCRAM[8192];
 
-#ifdef THUMB_SUPPORT
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
-#endif
 
     // Pointer to the 1K frequency table
     uInt8* myFrequencyImage;
