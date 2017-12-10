@@ -147,12 +147,10 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myUndrivenPinsWidget);
   ypos += lineHeight + VGAP;
 
-#ifdef THUMB_SUPPORT
   // Thumb ARM emulation exception
   myThumbExceptionWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                               "Fatal ARM emulation error throws exception");
   wid.push_back(myThumbExceptionWidget);
-#endif
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);

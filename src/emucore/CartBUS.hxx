@@ -19,9 +19,7 @@
 #define CARTRIDGE_BUS_HXX
 
 class System;
-#ifdef THUMB_SUPPORT
-  class Thumbulator;
-#endif
+class Thumbulator;
 #ifdef DEBUGGER_SUPPORT
   #include "CartBUSWidget.hxx"
 #endif
@@ -226,10 +224,8 @@ class CartridgeBUS : public Cartridge
     //   $1800 - 2K C Variable & Stack
     uInt8 myBUSRAM[8192];
 
-#ifdef THUMB_SUPPORT
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
-#endif
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;

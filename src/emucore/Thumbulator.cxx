@@ -22,8 +22,6 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
-#ifdef THUMB_SUPPORT
-
 #include "bspf.hxx"
 #include "Base.hxx"
 #include "Cart.hxx"
@@ -2361,5 +2359,3 @@ int Thumbulator::reset()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::trapOnFatal = true;
-
-#endif

@@ -99,6 +99,8 @@ class RewindManager
       }
     };
 
+    using size_type = Common::LinkedObjectPool<RewindState>::size_type;
+
     // The linked-list to store states (internally it takes care of reducing
     // frequent (de)-allocations)
     Common::LinkedObjectPool<RewindState, MAX_SIZE> myStateList;

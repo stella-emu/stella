@@ -63,12 +63,12 @@ CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
   // Pointer to the display RAM
   myDisplayImage = myBUSRAM + DSRAM;
 
-#ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myBUSRAM),
-    settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this);
-#endif
+    settings.getBool("thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this
+  );
+
   setInitialState();
 }
 
@@ -107,9 +107,7 @@ void CartridgeBUS::setInitialState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::consoleChanged(ConsoleTiming timing)
 {
-#ifdef THUMB_SUPPORT
   myThumbEmulator->setConsoleTiming(timing);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,8 +152,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
 {
   switch (value)
   {
-  #ifdef THUMB_SUPPORT
-      // Call user written ARM code (will most likely be C compiled for ARM)
+    // Call user written ARM code (will most likely be C compiled for ARM)
     case 254: // call with IRQ driven audio, no special handling needed at this
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
@@ -176,7 +173,6 @@ inline void CartridgeBUS::callFunction(uInt8 value)
         }
       }
       break;
-  #endif
   }
 }
 

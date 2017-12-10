@@ -126,9 +126,9 @@ void RewindManager::compressStates()
   uInt64 lastCycle = currentCycle;
   double expectedCycles = 76 * 262.0; // == cycles of 1 frame, TODO: use actual number of scanlines
   double maxDelta = 0;
-  uInt32 removeIdx = 0;
+  size_type removeIdx = 0;
 
-  uInt32 idx = myStateList.size() - 1;
+  size_type idx = myStateList.size() - 1;
   for(auto it = myStateList.last(); it != myStateList.first(); --it)
   {
 cerr << *it << endl << endl;  // debug code

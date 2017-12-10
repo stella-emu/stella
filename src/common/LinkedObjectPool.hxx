@@ -55,6 +55,7 @@ class LinkedObjectPool
   public:
     using iter = typename std::list<T>::iterator;
     using const_iter = typename std::list<T>::const_iterator;
+    using size_type = typename std::list<T>::size_type;
 
     /*
       Create a pool of size CAPACITY; the active list starts out empty.
@@ -200,7 +201,7 @@ class LinkedObjectPool
 #endif
     uInt32 capacity() const { return CAPACITY; }
 
-    uInt32 size() const { return myList.size();             }
+    size_type size() const { return myList.size();             }
     bool empty() const  { return myList.size() == 0;        }
     bool full() const   { return myList.size() >= CAPACITY; }
 
