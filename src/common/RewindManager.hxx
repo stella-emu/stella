@@ -66,8 +66,8 @@ class RewindManager
     */
     bool unwindState();
 
-    bool atLast() const { return myStateList.empty(); }
-    bool atFirst() const { return false; } // TODO
+    bool atFirst() const { return myStateList.atFirst(); }
+    bool atLast() const  { return myStateList.atLast();  }
     void clear() { myStateList.clear(); }
 
     /**
@@ -98,8 +98,6 @@ class RewindManager
         return os << "msg: " << s.message << "   cycle: " << s.cycle << "   count: " << s.count;
       }
     };
-
-    using size_type = Common::LinkedObjectPool<RewindState>::size_type;
 
     // The linked-list to store states (internally it takes care of reducing
     // frequent (de)-allocations)

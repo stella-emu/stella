@@ -119,27 +119,29 @@ void RewindManager::compressStates()
   //bool debugMode = myOSystem.eventHandler().state() == EventHandler::S_DEBUGGER;
   // TODO: let user control these:
   const double DENSITY = 1.15; // exponential growth of cycle intervals
-  const uInt32 STEP_STATES = 60; // single step rewind length
+  const uInt32 STEP_STATES = 6;  // single step rewind length (change back to '60')
   //const uInt32 SECONDS_STATES = 10; // TODO: one second rewind length
 
   uInt64 currentCycle = myOSystem.console().tia().cycles();
   uInt64 lastCycle = currentCycle;
   double expectedCycles = 76 * 262.0; // == cycles of 1 frame, TODO: use actual number of scanlines
   double maxDelta = 0;
-  size_type removeIdx = 0;
+  uInt32 removeIdx = 0;
 
-  size_type idx = myStateList.size() - 1;
+  uInt32 idx = myStateList.size() - 1;
+cerr << "idx: " << idx << endl;
   for(auto it = myStateList.last(); it != myStateList.first(); --it)
   {
-cerr << *it << endl << endl;  // debug code
     if(idx >= STEP_STATES)
     {
+cerr << *it << endl << endl;  // debug code
       expectedCycles *= DENSITY;
 
       double expected = expectedCycles * (1 + DENSITY);
-      uInt64 prev = (--it)->cycle; ++it; // UGLY!
-      uInt64 next = (++it)->cycle; --it; // UGLY!
+      uInt64 prev = myStateList.previous(it)->cycle;
+      uInt64 next = myStateList.next(it)->cycle;
       double delta = expected / (prev - next);
+cerr << "prev: " << prev << ", next: " << next << ", delta: " << delta << endl;
 
       if(delta > maxDelta)
       {
@@ -150,6 +152,7 @@ cerr << *it << endl << endl;  // debug code
     lastCycle = it->cycle;
     --idx;
   }
+cerr << "END\n";
   if (maxDelta < 1)
   {
     // the horizon is getting too big

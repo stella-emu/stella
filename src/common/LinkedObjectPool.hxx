@@ -55,7 +55,6 @@ class LinkedObjectPool
   public:
     using iter = typename std::list<T>::iterator;
     using const_iter = typename std::list<T>::const_iterator;
-    using size_type = typename std::list<T>::size_type;
 
     /*
       Create a pool of size CAPACITY; the active list starts out empty.
@@ -72,13 +71,13 @@ class LinkedObjectPool
 
       Make sure to call 'currentIsValid()' before accessing this method.
     */
-    T& current() { return *myCurrent; }
+    T& current() const { return *myCurrent; }
 
     /**
       Does the 'current' iterator point to a valid node in the active list?
       This must be called before 'current()' is called.
     */
-    bool currentIsValid() { return myCurrent != myList.end(); }
+    bool currentIsValid() const { return myCurrent != myList.end(); }
 
     /**
       Advance 'current' iterator to previous position in the active list.
@@ -101,12 +100,28 @@ class LinkedObjectPool
     /**
       Return an iterator to the first node in the active list.
     */
-    iter first() { return myList.begin(); }
+    const_iter first() const { return myList.begin(); }
 
     /**
       Return an iterator to the last node in the active list.
     */
-    iter last() { return std::prev(myList.end(), 1); }
+    const_iter last() const { return std::prev(myList.end(), 1); }
+
+    /**
+      Return an iterator to the previous node of 'i' in the active list.
+    */
+    const_iter previous(const_iter i) const { return std::prev(i, 1); }
+
+    /**
+      Return an iterator to the next node to 'current' in the active list.
+    */
+    const_iter next(const_iter i) const { return std::next(i, 1); }
+
+    /**
+      Answer whether 'current' is at the specified iterator.
+    */
+    bool atFirst() const { return myCurrent == first(); }
+    bool atLast() const  { return myCurrent == last();  }
 
     /**
       Add a new node at the beginning of the active list, and update 'current'
@@ -131,7 +146,7 @@ class LinkedObjectPool
       happens to be the one removed.
     */
     void removeFirst() {
-      const_iter i = myList.begin();
+      const_iter i = myList.cbegin();
       myPool.splice(myPool.end(), myList, i);
       if(myCurrent == i)  // did we just invalidate 'current'
         moveToNext();     // if so, move to the next node
@@ -201,9 +216,9 @@ class LinkedObjectPool
 #endif
     uInt32 capacity() const { return CAPACITY; }
 
-    size_type size() const { return myList.size();             }
-    bool empty() const  { return myList.size() == 0;        }
-    bool full() const   { return myList.size() >= CAPACITY; }
+    uInt32 size() const { return uInt32(myList.size()); }
+    bool empty() const  { return size() == 0;           }
+    bool full() const   { return size() >= CAPACITY;    }
 
   private:
     std::list<T> myList, myPool;
