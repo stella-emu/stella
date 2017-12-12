@@ -167,7 +167,7 @@ class RewindManager
 
     void compressStates();
 
-    string getMessage(RewindState& state);
+    string getMessage(RewindState& state, RewindState& lastState);
 
   private:
     // Following constructors and assignment operators not supported

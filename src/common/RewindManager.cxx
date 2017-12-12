@@ -134,13 +134,15 @@ bool RewindManager::rewindState()
 {
   if(!atFirst())
   {
+    RewindState& lastState = myStateList.current();
+
     // Set internal current iterator to previous state (back in time),
     // since we will now processed this state
     myStateList.moveToPrevious();
 
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
-    string message = getMessage(state);
+    string message = getMessage(state, lastState);
 cerr << "rewind " << state.count << endl;
 
     s.rewind();  // rewind Serializer internal buffers
@@ -166,7 +168,7 @@ bool RewindManager::unwindState()
 
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
-    string message = getMessage(state);
+    string message = getMessage(state, state);
 cerr << "unwind " << state.count << endl;
 
     s.rewind();  // rewind Serializer internal buffers
@@ -232,7 +234,7 @@ cerr << "remove " << removeIdx << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RewindManager::getMessage(RewindState& state)
+string RewindManager::getMessage(RewindState& state, RewindState& lastState)
 {
   Int64 diff = myOSystem.console().tia().cycles() - state.cycle;
   stringstream message;
@@ -240,8 +242,8 @@ string RewindManager::getMessage(RewindState& state)
   message << (diff >= 0 ? "Rewind" : "Unwind") << " " << getUnitString(diff);
 
   // add optional message (TODO: when smart removal works, we have to do something smart with this part too)
-  if(!state.message.empty())
-    message << " (" << state.message << ")";
+  if(!lastState.message.empty())
+    message << " (" << lastState.message << ")";
   return message.str();
 }
 

@@ -270,7 +270,6 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
-  saveOldState("1 step");
   mySystem.clearDirtyPages();
 
   uInt64 startCycle = mySystem.cycles();
@@ -279,6 +278,7 @@ int Debugger::step()
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockBankswitchState();
 
+  saveOldState("step");
   return int(mySystem.cycles() - startCycle);
 }
 
@@ -297,7 +297,6 @@ int Debugger::trace()
   // 32 is the 6502 JSR instruction:
   if(mySystem.peek(myCpuDebug->pc()) == 32)
   {
-    saveOldState("1 trace");
     mySystem.clearDirtyPages();
 
     uInt64 startCycle = mySystem.cycles();
@@ -307,6 +306,7 @@ int Debugger::trace()
     myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
     lockBankswitchState();
 
+    saveOldState("trace");
     return int(mySystem.cycles() - startCycle);
   }
   else
@@ -483,11 +483,8 @@ uInt32 Debugger::getBaseAddress(uInt32 addr, bool read)
 void Debugger::nextScanline(int lines)
 {
   ostringstream buf;
-  buf << lines << " scanline";
-  if(lines > 1)
-    buf << "s";
+  buf << "scanline + " << lines;
 
-  saveOldState(buf.str());
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
@@ -498,6 +495,7 @@ void Debugger::nextScanline(int lines)
   }
   lockBankswitchState();
 
+  saveOldState(buf.str());
   myOSystem.console().tia().flushLineCache();
 }
 
@@ -505,11 +503,8 @@ void Debugger::nextScanline(int lines)
 void Debugger::nextFrame(int frames)
 {
   ostringstream buf;
-  buf << frames << " frame";
-  if(frames > 1)
-    buf << "s";
+  buf << "frame + " << frames;
 
-  saveOldState(buf.str());
   mySystem.clearDirtyPages();
 
   unlockBankswitchState();
@@ -519,6 +514,8 @@ void Debugger::nextFrame(int frames)
     --frames;
   }
   lockBankswitchState();
+
+  saveOldState(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -618,11 +615,8 @@ void Debugger::setStartState()
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
 
-  RewindManager& r = myOSystem.state().rewindManager();
-  updateRewindbuttons(r);
-
-  // Save initial state, but don't add it to the rewind list
-  saveOldState();
+  // Save initial state and add it to the rewind list
+  saveOldState("enter debugger");
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);
@@ -633,9 +627,6 @@ void Debugger::setQuitState()
 {
   // Bus must be unlocked for normal operation when leaving debugger mode
   unlockBankswitchState();
-
-  // Save state when leaving the debugger
-  saveOldState("exit debugger");
 
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.

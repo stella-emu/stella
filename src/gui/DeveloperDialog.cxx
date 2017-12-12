@@ -143,7 +143,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   }
   ypos += lineHeight + VGAP;
 
-
   // How to handle undriven TIA pins
   myUndrivenPinsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                             "Drive unused TIA pins randomly on a read/peek");
@@ -213,9 +212,6 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors (*)");
   wid.push_back(myDebugColorsWidget);
   ypos += lineHeight + VGAP + 2;
-
-  //StaticTextWidget* s = new StaticTextWidget(myTab, font, HBORDER, ypos, "Debug Colors  ");
-  //ypos += lineHeight + VGAP;
 
   items.clear();
   VarList::push_back(items, "Red", "r");
@@ -521,8 +517,6 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myContinuousRewind[set] = instance().settings().getBool(prefix + "rewind");
   myStateSize[set] = instance().settings().getInt(prefix + "rewind.size");
   myUncompressed[set] = instance().settings().getInt(prefix + "rewind.uncompressed");
-  /*myStateInterval[set] = instance().settings().getInt(prefix + "rewind.interval");
-  myStateHorizon[set] = instance().settings().getInt(prefix + "rewind.horizon");*/
   myStateInterval[set] = instance().settings().getString(prefix + "rewind.interval");
   myStateHorizon[set] = instance().settings().getString(prefix + "rewind.horizon");
 
@@ -631,9 +625,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myContinuousRewindWidget->setState(myContinuousRewind[set]);
   myStateSizeWidget->setValue(myStateSize[set]);
   myUncompressedWidget->setValue(myUncompressed[set]);
-  //myStateIntervalWidget->setSelectedIndex(myStateInterval[set]);
   myStateIntervalWidget->setSelected(myStateInterval[set]);
-  //myStateHorizonWidget->setSelectedIndex(myStateHorizon[set]);
   myStateHorizonWidget->setSelected(myStateHorizon[set]);
 
   handleRewind();
@@ -726,16 +718,14 @@ void DeveloperDialog::saveConfig()
   instance().state().setRewindMode(myContinuousRewindWidget->getState() ?
                                    StateManager::Mode::Rewind : StateManager::Mode::Off);
 
+#ifdef DEBUGGER_SUPPORT
   // Debugger font style
   instance().settings().setValue("dbg.fontstyle",
                                  myDebuggerFontStyle->getSelectedTag().toString());
-
-#ifdef DEBUGGER_SUPPORT
   // Debugger size
   instance().settings().setValue("dbg.res",
                                  GUI::Size(myDebuggerWidthSlider->getValue(),
                                  myDebuggerHeightSlider->getValue()));
-
   // Debugger font size
   instance().settings().setValue("dbg.fontsize", myDebuggerFontSize->getSelectedTag().toString());
 #endif
@@ -982,6 +972,7 @@ void DeveloperDialog::handleSize()
   bool found = false;
   Int32 i;
 
+  // handle illegal values
   if(interval == -1)
     interval = 0;
   if(horizon == -1)
@@ -1032,6 +1023,7 @@ void DeveloperDialog::handleInterval()
   bool found = false;
   Int32 i;
 
+  // handle illegal values
   if(interval == -1)
     interval = 0;
   if(horizon == -1)
@@ -1069,6 +1061,7 @@ void DeveloperDialog::handleHorizon()
   bool found = false;
   Int32 i;
 
+  // handle illegal values
   if(interval == -1)
     interval = 0;
   if(horizon == -1)
