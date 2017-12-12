@@ -615,8 +615,9 @@ void Debugger::setStartState()
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
 
-  // Save initial state and add it to the rewind list
-  saveOldState("enter debugger");
+  // Save initial state and add it to the rewind list (except when in currently rewinding)
+  RewindManager& r = myOSystem.state().rewindManager();
+  saveOldState(r.atLast() ? "enter debugger" : "");
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);

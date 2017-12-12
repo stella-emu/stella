@@ -152,7 +152,6 @@ class DeveloperDialog : public Dialog
     bool    myContinuousRewind[2];
     int     myStateSize[2];
     int     myUncompressed[2];
-    //int     myStateInterval[2];
     string  myStateInterval[2];
     string  myStateHorizon[2];
 
@@ -182,8 +181,9 @@ class DeveloperDialog : public Dialog
     void handleUncompressed();
     void handleInterval();
     void handleHorizon();
-
+#ifdef DEBUGGER_SUPPORT
     void handleFontSize();
+#endif
 
     // Following constructors and assignment operators not supported
     DeveloperDialog() = delete;

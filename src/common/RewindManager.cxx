@@ -24,7 +24,7 @@
 
 #include "RewindManager.hxx"
 
-static int count = 1;
+//static int count = 1;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
   : myOSystem(system),
@@ -36,18 +36,13 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::setup()
 {
-  /*static const int NUM_INTERVALS = 6;
-  // TODO: check for intervals shorter than 1 frame (adjust horizon too!)
-  const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
-    76 * 262 * 60, 76 * 262 * 60 * 10 };
-  static const int NUM_HORIZONS = 7;
-  const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
-    76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, uInt64(76) * 262 * 60 * 60 * 60 };*/
-  bool devSettings = myOSystem.settings().getBool("dev.settings");
-  string prefix = devSettings ? "dev." : "plr.";
+  string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
 
-  mySize = MAX_SIZE; // myOSystem.settings().getInt(prefix + "rewind.size");
-  myUncompressed = MAX_SIZE / 4; // myOSystem.settings().getInt(prefix + "rewind.uncompressed");
+  mySize = myOSystem.settings().getInt(prefix + "rewind.size");
+  if(mySize != myStateList.capacity())
+    myStateList.resize(mySize);
+
+  myUncompressed = myOSystem.settings().getInt(prefix + "rewind.uncompressed");
 
   myInterval = INTERVAL_CYCLES[0];
   for(int i = 0; i < NUM_INTERVALS; ++i)
@@ -89,7 +84,7 @@ void RewindManager::setup()
     else
       maxFactor = myFactor;
   }
-cerr << "factor " << myFactor << endl;
+//cerr << "factor " << myFactor << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,8 +117,8 @@ bool RewindManager::addState(const string& message, bool continuous)
   {
     state.message = message;
     state.cycle = myOSystem.console().tia().cycles();
-    state.count = count++;
-cerr << "add " << state.count << endl;
+    //state.count = count++;
+//cerr << "add " << state.count << endl;
     return true;
   }
   return false;
@@ -143,7 +138,7 @@ bool RewindManager::rewindState()
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
     string message = getMessage(state, lastState);
-cerr << "rewind " << state.count << endl;
+//cerr << "rewind " << state.count << endl;
 
     s.rewind();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
@@ -169,7 +164,7 @@ bool RewindManager::unwindState()
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
     string message = getMessage(state, state);
-cerr << "unwind " << state.count << endl;
+//cerr << "unwind " << state.count << endl;
 
     s.rewind();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
@@ -222,14 +217,14 @@ void RewindManager::compressStates()
   }
   if (maxDelta < 1)
   {
-    // the horizon is getting too big
+    // the horizon is getting too big (can happen after changing settings)
     myStateList.remove(1); // remove oldest but one
-cerr << "remove oldest + 1" << endl;
+//cerr << "remove oldest + 1" << endl;
   }
   else
   {
     myStateList.remove(removeIdx); // remove
-cerr << "remove " << removeIdx << endl;
+//cerr << "remove " << removeIdx << endl;
   }
 }
 
@@ -259,8 +254,7 @@ string RewindManager::getUnitString(Int64 cycles)
   // TODO: do we need hours here? don't think so
   const Int32 NUM_UNITS = 5;
   const string UNIT_NAMES[NUM_UNITS] = { "cycle", "scanline", "frame", "second", "minute" };
-  const Int64 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq,
-      freq * 60, Int64(1) << 62 };
+  const Int64 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq, freq * 60, Int64(1) << 62 };
 
   stringstream result;
   Int32 i;
@@ -280,4 +274,3 @@ string RewindManager::getUnitString(Int64 cycles)
 
   return result.str();
 }
-

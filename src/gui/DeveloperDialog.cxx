@@ -189,7 +189,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   ypos += lineHeight + VGAP * 1;
 
   // TV jitter effect
-  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Jitter/roll effect", kTVJitter);
+  myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                        "Jitter/roll effect", kTVJitter);
   wid.push_back(myTVJitterWidget);
   myTVJitterRecWidget = new SliderWidget(myTab, font,
                                          myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
@@ -198,18 +199,21 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
   wid.push_back(myTVJitterRecWidget);
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
-                                                  myTVJitterRecWidget->getRight() + 4, myTVJitterRecWidget->getTop() + 2,
+                                                  myTVJitterRecWidget->getRight() + 4,
+                                                  myTVJitterRecWidget->getTop() + 2,
                                                   5 * fontWidth, fontHeight, "", kTextAlignLeft);
   myTVJitterRecLabelWidget->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTVJitterRecLabelWidget);
   ypos += lineHeight + VGAP;
 
-  myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "PAL color-loss");
+  myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                         "PAL color-loss");
   wid.push_back(myColorLossWidget);
   ypos += lineHeight + VGAP;
 
   // debug colors
-  myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Debug colors (*)");
+  myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                           "Debug colors (*)");
   wid.push_back(myDebugColorsWidget);
   ypos += lineHeight + VGAP + 2;
 
@@ -258,12 +262,12 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 void DeveloperDialog::addStatesTab(const GUI::Font& font)
 {
   const string INTERVALS[NUM_INTERVALS] = {
-    "1 frame",
-    "3 frames",
+    " 1 frame",
+    " 3 frames",
     "10 frames",
     "30 frames",
-    "1 second",
-    "3 seconds",
+    " 1 second",
+    " 3 seconds",
     "10 seconds"
   };
   const string INT_SETTINGS[NUM_INTERVALS] = {
@@ -276,14 +280,14 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
     "10s"
   };
   const string HORIZONS[NUM_HORIZONS] = {
-    "~3 seconds",
-    "~10 seconds",
-    "~30 seconds",
-    "~1 minute",
-    "~3 minutes",
-    "~10 minutes",
-    "~30 minutes",
-    "~60 minutes"
+    " 3 seconds",
+    "10 seconds",
+    "30 seconds",
+    " 1 minute",
+    " 3 minutes",
+    "10 minutes",
+    "30 minutes",
+    "60 minutes"
   };
   const string HOR_SETTINGS[NUM_HORIZONS] = {
     "3s",
@@ -325,7 +329,7 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   int sWidth = font.getMaxCharWidth() * 8;
   myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
                                        "Buffer size (*)   ", 0, kSizeChanged);
-  myStateSizeWidget->setMinValue(100);
+  myStateSizeWidget->setMinValue(20);
   myStateSizeWidget->setMaxValue(1000);
   myStateSizeWidget->setStepValue(20);
   wid.push_back(myStateSizeWidget);
@@ -346,7 +350,7 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < NUM_INTERVALS; ++i)
     VarList::push_back(items, INTERVALS[i], INT_SETTINGS[i]);
-  int pwidth = font.getStringWidth("~10 seconds");
+  int pwidth = font.getStringWidth("10 seconds");
   myStateIntervalWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 2, ypos, pwidth,
                                           lineHeight, items, "Interval          ", 0, kIntervalChanged);
   wid.push_back(myStateIntervalWidget);
@@ -356,7 +360,7 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   for(int i = 0; i < NUM_HORIZONS; ++i)
     VarList::push_back(items, HORIZONS[i], HOR_SETTINGS[i]);
   myStateHorizonWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 2, ypos, pwidth,
-                                         lineHeight, items, "Horizon           ", 0, kHorizonChanged);
+                                         lineHeight, items, "Horizon         ~ ", 0, kHorizonChanged);
   wid.push_back(myStateHorizonWidget);
 
   // Add message concerning usage
@@ -519,7 +523,6 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myUncompressed[set] = instance().settings().getInt(prefix + "rewind.uncompressed");
   myStateInterval[set] = instance().settings().getString(prefix + "rewind.interval");
   myStateHorizon[set] = instance().settings().getString(prefix + "rewind.horizon");
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -709,9 +712,6 @@ void DeveloperDialog::saveConfig()
   if(instance().hasConsole() &&
      instance().console().tia().setFixedColorPalette(dbgcolors))
     instance().settings().setValue("tia.dbgcolors", dbgcolors);
-
-  // Finally, issue a complete framebuffer re-initialization
-  //instance().createFrameBuffer();
 
   // update RewindManager
   instance().state().rewindManager().setup();
@@ -967,10 +967,16 @@ void DeveloperDialog::handleSize()
 {
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
-  uInt32 interval = myStateIntervalWidget->getSelected();
-  uInt32 horizon = myStateHorizonWidget->getSelected();
+  Int32 interval = myStateIntervalWidget->getSelected();
+  Int32 horizon = myStateHorizonWidget->getSelected();
   bool found = false;
   Int32 i;
+
+  // handle illegal values
+  if(interval == -1)
+    interval = 0;
+  if(horizon == -1)
+    horizon = 0;
 
   myStateSizeLabelWidget->setValue(size);
   // adapt horizon and interval
@@ -1012,10 +1018,16 @@ void DeveloperDialog::handleInterval()
 {
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
-  uInt32 interval = myStateIntervalWidget->getSelected();
-  uInt32 horizon = myStateHorizonWidget->getSelected();
+  Int32 interval = myStateIntervalWidget->getSelected();
+  Int32 horizon = myStateHorizonWidget->getSelected();
   bool found = false;
   Int32 i;
+
+  // handle illegal values
+  if(interval == -1)
+    interval = 0;
+  if(horizon == -1)
+    horizon = 0;
 
   // adapt horizon and size
   do
@@ -1044,17 +1056,23 @@ void DeveloperDialog::handleHorizon()
 {
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
-  uInt32 interval = myStateIntervalWidget->getSelected();
-  uInt32 horizon = myStateHorizonWidget->getSelected();
+  Int32 interval = myStateIntervalWidget->getSelected();
+  Int32 horizon = myStateHorizonWidget->getSelected();
   bool found = false;
   Int32 i;
+
+  // handle illegal values
+  if(interval == -1)
+    interval = 0;
+  if(horizon == -1)
+    horizon = 0;
 
   // adapt interval and size
   do
   {
     for(i = interval; i >= 0; --i)
     {
-      if(size * instance().state().rewindManager().INTERVAL_CYCLES[i]
+      if(uInt64(size) * instance().state().rewindManager().INTERVAL_CYCLES[i]
          <= instance().state().rewindManager().HORIZON_CYCLES[horizon])
       {
         found = true;
