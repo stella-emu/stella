@@ -46,13 +46,69 @@ class RewindManager
     RewindManager(OSystem& system, StateManager& statemgr);
 
   public:
+    static const int NUM_INTERVALS = 7;
+    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
+      76 * 262,
+      76 * 262 * 3,
+      76 * 262 * 10,
+      76 * 262 * 30,
+      76 * 262 * 60,
+      76 * 262 * 60 * 3,
+      76 * 262 * 60 * 10
+    };
+    /*static const int NUM_INTERVALS = 6;
+    const string INTERVALS[NUM_INTERVALS] = { "1 scanline", "50 scanlines", "1 frame", "10 frames",
+    "1 second", "10 seconds" };
+    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
+    76 * 262 * 60, 76 * 262 * 60 * 10 };*/
+    const string INT_SETTINGS[NUM_INTERVALS] = {
+      "1f",
+      "3f",
+      "10f",
+      "30f",
+      "1s",
+      "3s",
+      "10s"
+    };
+
+    static const int NUM_HORIZONS = 8;
+    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
+      76 * 262 * 60 * 3,
+      76 * 262 * 60 * 10,
+      76 * 262 * 60 * 30,
+      76 * 262 * 60 * 60,
+      76 * 262 * 60 * 60 * 3,
+      76 * 262 * 60 * 60 * 10,
+      uInt64(76) * 262 * 60 * 60 * 30,
+      uInt64(76) * 262 * 60 * 60 * 60
+    };
+    /*static const int NUM_HORIZONS = 7;
+    const string HORIZONS[NUM_HORIZONS] = { "~1 frame", "~10 frames", "~1 second", "~10 seconds",
+    "~1 minute", "~10 minutes", "~60 minutes" };
+    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
+    76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, uInt64(76) * 262 * 60 * 60 * 60 };*/
+    const string HOR_SETTINGS[NUM_HORIZONS] = {
+      "3s",
+      "10s",
+      "30s",
+      "1m",
+      "3m",
+      "10m",
+      "30m",
+      "60m"
+    };
+
+    /**
+    */
+    void setup();
+
     /**
       Add a new state file with the given message; this message will be
       displayed when the state is replayed.
 
       @param message  Message to display when replaying this state
     */
-    bool addState(const string& message);
+    bool addState(const string& message, bool continuous = false);
 
     /**
       Rewind one level of the state list, and display the message associated
@@ -77,10 +133,16 @@ class RewindManager
 
   private:
     // Maximum number of states to save
-    static constexpr uInt32 MAX_SIZE = 10; // TODO: use a parameter here and allow user to define size in UI
+    static constexpr uInt32 MAX_SIZE = 20; // TODO: use a parameter here and allow user to define size in UI
 
     OSystem& myOSystem;
     StateManager& myStateManager;
+
+    uInt32 mySize;
+    uInt32 myUncompressed;
+    uInt32 myInterval;
+    uInt64 myHorizon;
+    double myFactor;
 
     struct RewindState {
       Serializer data;

@@ -145,7 +145,6 @@ void StateManager::toggleRewindMode()
 bool StateManager::rewindState()
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  // TODO: add parameter to indicate rewinding from within emulation
   return r.rewindState();
 }
 
@@ -153,7 +152,6 @@ bool StateManager::rewindState()
 bool StateManager::unwindState()
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  // TODO: add parameter to indicate unwinding from within emulation
   return r.unwindState();
 }
 
@@ -163,7 +161,7 @@ void StateManager::update()
   switch(myActiveMode)
   {
     case Mode::Rewind:
-      myRewindManager->addState("add 1 frame");
+      myRewindManager->addState("1 frame", true);
       break;
 
 #if 0

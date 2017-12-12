@@ -524,8 +524,8 @@ void Debugger::nextFrame(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::updateRewindbuttons(const RewindManager& r)
 {
-  myDialog->rewindButton().setEnabled(!r.atLast());
-  myDialog->unwindButton().setEnabled(!r.atFirst());
+  myDialog->rewindButton().setEnabled(!r.atFirst());
+  myDialog->unwindButton().setEnabled(!r.atLast());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

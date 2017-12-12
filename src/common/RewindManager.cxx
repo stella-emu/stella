@@ -30,11 +30,80 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
   : myOSystem(system),
     myStateManager(statemgr)
 {
+  setup();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RewindManager::addState(const string& message)
+void RewindManager::setup()
 {
+  /*static const int NUM_INTERVALS = 6;
+  // TODO: check for intervals shorter than 1 frame (adjust horizon too!)
+  const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
+    76 * 262 * 60, 76 * 262 * 60 * 10 };
+  static const int NUM_HORIZONS = 7;
+  const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
+    76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, uInt64(76) * 262 * 60 * 60 * 60 };*/
+  bool devSettings = myOSystem.settings().getBool("dev.settings");
+  string prefix = devSettings ? "dev." : "plr.";
+
+  mySize = MAX_SIZE; // myOSystem.settings().getInt(prefix + "rewind.size");
+  myUncompressed = MAX_SIZE / 4; // myOSystem.settings().getInt(prefix + "rewind.uncompressed");
+
+  myInterval = INTERVAL_CYCLES[0];
+  for(int i = 0; i < NUM_INTERVALS; ++i)
+    if(INT_SETTINGS[i] == myOSystem.settings().getString(prefix + "rewind.interval"))
+      myInterval = INTERVAL_CYCLES[i];
+
+  myHorizon = HORIZON_CYCLES[NUM_HORIZONS-1];
+  for(int i = 0; i < NUM_HORIZONS; ++i)
+    if(HOR_SETTINGS[i] == myOSystem.settings().getString(prefix + "rewind.horizon"))
+      myHorizon = HORIZON_CYCLES[i];
+
+  // calc interval growth factor
+  const double MAX_FACTOR = 1E8;
+  double minFactor = 1, maxFactor = MAX_FACTOR;
+
+  while(true)
+  {
+    double interval = myInterval;
+    double cycleSum = interval * myUncompressed;
+    // calculate next factor
+    myFactor = (minFactor + maxFactor) / 2;
+    // horizon not reachable?
+    if(myFactor == MAX_FACTOR)
+      break;
+    // sum up interval cycles
+    for(uInt32 i = myUncompressed; i < mySize; ++i)
+    {
+      interval *= myFactor;
+      cycleSum += interval;
+    }
+    double diff = cycleSum - myHorizon;
+
+    // exit loop if result is close enough
+    if(std::abs(diff) < myHorizon * 1E-5)
+      break;
+    // define new boundary
+    if(cycleSum < myHorizon)
+      minFactor = myFactor;
+    else
+      maxFactor = myFactor;
+  }
+cerr << "factor " << myFactor << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RewindManager::addState(const string& message, bool continuous)
+{
+  // only check for continuous rewind states, ignore for debugger
+  if(continuous)
+  {
+    // check if the current state has the right interval from the last state
+    RewindState& lastState = myStateList.current();
+    if(myOSystem.console().tia().cycles() - lastState.cycle < myInterval)
+      return false;
+  }
+
   // Remove all future states
   myStateList.removeToLast();
 
@@ -63,8 +132,12 @@ cerr << "add " << state.count << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::rewindState()
 {
-  if(myStateList.currentIsValid())
+  if(!atFirst())
   {
+    // Set internal current iterator to previous state (back in time),
+    // since we will now processed this state
+    myStateList.moveToPrevious();
+
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
     string message = getMessage(state);
@@ -76,72 +149,65 @@ cerr << "rewind " << state.count << endl;
 
     // Show message indicating the rewind state
     myOSystem.frameBuffer().showMessage(message);
-
-    // Set internal current iterator to previous state (back in time),
-    // since we've now processed this state
-    myStateList.moveToPrevious();
-
     return true;
   }
-  else
-    return false;
+  myOSystem.frameBuffer().showMessage("Rewind not possible");
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RewindManager::unwindState()
 {
-#if 0
-  if(!atFirst()) // or last???
+  if(!atLast())
   {
-    // TODO: get state next to the current state
-    /*RewindState& state = myStateList.???()
+    // Set internal current iterator to next state (forward in time),
+    // since we've now processed this state
+    myStateList.moveToNext();
+
+    RewindState& state = myStateList.current();
     Serializer& s = state.data;
     string message = getMessage(state);
+cerr << "unwind " << state.count << endl;
 
-    s.reset();  // rewind Serializer internal buffers
+    s.rewind();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
     myOSystem.console().tia().loadDisplay(s);
 
     // Show message indicating the rewind state
-    myOSystem.frameBuffer().showMessage(message);*/
+    myOSystem.frameBuffer().showMessage(message);
     return true;
   }
-#endif
+  myOSystem.frameBuffer().showMessage("Unwind not possible");
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::compressStates()
 {
-#if 0
-  myStateList.removeFirst();  // remove the oldest state file
-#else
   //bool debugMode = myOSystem.eventHandler().state() == EventHandler::S_DEBUGGER;
-  // TODO: let user control these:
-  const double DENSITY = 1.15; // exponential growth of cycle intervals
-  const uInt32 STEP_STATES = 6;  // single step rewind length (change back to '60')
-  //const uInt32 SECONDS_STATES = 10; // TODO: one second rewind length
 
   uInt64 currentCycle = myOSystem.console().tia().cycles();
   uInt64 lastCycle = currentCycle;
-  double expectedCycles = 76 * 262.0; // == cycles of 1 frame, TODO: use actual number of scanlines
+  double expectedCycles = myInterval; // == cycles of 1 frame, TODO: use actual number of scanlines
   double maxDelta = 0;
   uInt32 removeIdx = 0;
 
   uInt32 idx = myStateList.size() - 1;
-cerr << "idx: " << idx << endl;
+//cerr << "idx: " << idx << endl;
   for(auto it = myStateList.last(); it != myStateList.first(); --it)
   {
-    if(idx >= STEP_STATES)
+    if(idx < mySize - myUncompressed)
     {
-cerr << *it << endl << endl;  // debug code
-      expectedCycles *= DENSITY;
+//cerr << *it << endl << endl;  // debug code
+      expectedCycles *= myFactor;
 
-      double expected = expectedCycles * (1 + DENSITY);
+      double expected = expectedCycles * (1 + myFactor);
       uInt64 prev = myStateList.previous(it)->cycle;
       uInt64 next = myStateList.next(it)->cycle;
-      double delta = expected / (prev - next);
-cerr << "prev: " << prev << ", next: " << next << ", delta: " << delta << endl;
+      if(next != lastCycle)
+        lastCycle++;
+      double delta = expected / (next - prev);
+//cerr << "prev: " << prev << ", next: " << next << ", delta: " << delta << endl;
 
       if(delta > maxDelta)
       {
@@ -152,17 +218,17 @@ cerr << "prev: " << prev << ", next: " << next << ", delta: " << delta << endl;
     lastCycle = it->cycle;
     --idx;
   }
-cerr << "END\n";
   if (maxDelta < 1)
   {
     // the horizon is getting too big
-    //myStateList.remove(idx - 1); // remove oldest but one
+    myStateList.remove(1); // remove oldest but one
+cerr << "remove oldest + 1" << endl;
   }
   else
   {
-    //myStateList.remove(removeIdx); // remove
+    myStateList.remove(removeIdx); // remove
+cerr << "remove " << removeIdx << endl;
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

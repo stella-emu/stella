@@ -172,7 +172,7 @@ class LinkedObjectPool
       myPool.splice(myPool.end(), myList,
                     offset >= 0 ? std::next(i, offset) : std::prev(i, -offset));
     }
-
+#endif
     /**
       Convenience method to remove a single element from the active list by
       index, offset from the beginning of the list. (ie, '0' means first
@@ -181,7 +181,7 @@ class LinkedObjectPool
     void remove(uInt32 index) {
       myPool.splice(myPool.end(), myList, std::next(myList.begin(), index));
     }
-#endif
+
 
     /**
       Remove range of elements from the beginning of the active list to

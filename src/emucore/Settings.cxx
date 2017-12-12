@@ -158,8 +158,8 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.rewind", false);
   setInternal("plr.rewind.size", 100);
   setInternal("plr.rewind.uncompressed", 30);
-  setInternal("plr.rewind.interval", 4); // = 1 second
-  setInternal("plr.rewind.horizon", 5); // = ~10 minutes
+  setInternal("plr.rewind.interval", "30f"); // = 0.5 seconds
+  setInternal("plr.rewind.horizon", "10m"); // = ~10 minutes
   // Thumb ARM emulation options
   setInternal("plr.thumb.trapfatal", "false");
 
@@ -178,8 +178,8 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.rewind", true);
   setInternal("dev.rewind.size", 100);
   setInternal("dev.rewind.uncompressed", 60);
-  setInternal("dev.rewind.interval", 2); // = 1 frame
-  setInternal("dev.rewind.horizon", 3); // = ~10 seconds
+  setInternal("dev.rewind.interval", "1f"); // = 1 frame
+  setInternal("dev.rewind.horizon", "10s"); // = ~10 seconds
   // Thumb ARM emulation options
   setInternal("dev.thumb.trapfatal", "true");
 }
@@ -330,10 +330,10 @@ void Settings::validate()
   if(i < 0 || i > size) setInternal("dev.rewind.uncompressed", size);
 
   i = getInt("dev.rewind.interval");
-  if(i < 0 || i > 5) setInternal("dev.rewind.interval", 2);
+  if(i < 0 || i > 5) setInternal("dev.rewind.interval", 0);
 
   i = getInt("dev.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 3);
+  if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 1);
 
   i = getInt("plr.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
@@ -348,11 +348,11 @@ void Settings::validate()
   i = getInt("plr.rewind.uncompressed");
   if(i < 0 || i > size) setInternal("plr.rewind.uncompressed", size);
 
-  i = getInt("plr.rewind.interval");
-  if(i < 0 || i > 5) setInternal("plr.rewind.interval", 4);
+  /*i = getInt("plr.rewind.interval");
+  if(i < 0 || i > 5) setInternal("plr.rewind.interval", 3);
 
   i = getInt("plr.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("plr.rewind.horizon", 5);
+  if(i < 0 || i > 6) setInternal("plr.rewind.horizon", 5);*/
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");

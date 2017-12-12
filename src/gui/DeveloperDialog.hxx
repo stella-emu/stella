@@ -86,17 +86,9 @@ class DeveloperDialog : public Dialog
       developer
     };
 
-    static const int NUM_INTERVALS = 6;
-    // TODO: check for intervals shorter than 1 frame (adjust horizon too!)
-    const string INTERVALS[NUM_INTERVALS] = { "1 scanline", "50 scanlines", "1 frame", "10 frames",
-      "1 second", "10 seconds" };
-    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
-      76 * 262 * 60, 76 * 262 * 60 * 10 };
-    static const int NUM_HORIZONS = 7;
-    const string HORIZONS[NUM_HORIZONS] = { "~1 frame", "~10 frames", "~1 second", "~10 seconds",
-      "~1 minute", "~10 minutes", "~60 minutes" };
-    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
-      76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, uInt64(76) * 262 * 60 * 60 * 60 };
+    // MUST be aligned with RewindManager!
+    static const int NUM_INTERVALS = 7;
+    static const int NUM_HORIZONS = 8;
 
     static const int DEBUG_COLORS = 6;
 
@@ -130,10 +122,8 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myStateSizeLabelWidget;
     SliderWidget*       myUncompressedWidget;
     StaticTextWidget*   myUncompressedLabelWidget;
-    SliderWidget*       myStateIntervalWidget;
-    StaticTextWidget*   myStateIntervalLabelWidget;
-    SliderWidget*       myStateHorizonWidget;
-    StaticTextWidget*   myStateHorizonLabelWidget;
+    PopUpWidget*        myStateIntervalWidget;
+    PopUpWidget*        myStateHorizonWidget;
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
@@ -162,8 +152,9 @@ class DeveloperDialog : public Dialog
     bool    myContinuousRewind[2];
     int     myStateSize[2];
     int     myUncompressed[2];
-    int     myStateInterval[2];
-    int     myStateHorizon[2];
+    //int     myStateInterval[2];
+    string  myStateInterval[2];
+    string  myStateHorizon[2];
 
   private:
     void addEmulationTab(const GUI::Font& font);
