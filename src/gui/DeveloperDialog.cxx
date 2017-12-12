@@ -972,19 +972,13 @@ void DeveloperDialog::handleSize()
   bool found = false;
   Int32 i;
 
-  // handle illegal values
-  if(interval == -1)
-    interval = 0;
-  if(horizon == -1)
-    horizon = 0;
-
   myStateSizeLabelWidget->setValue(size);
   // adapt horizon and interval
   do
   {
     for(i = horizon; i < NUM_HORIZONS; ++i)
     {
-      if((uInt64)size * instance().state().rewindManager().INTERVAL_CYCLES[interval]
+      if(uInt64(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
          <= instance().state().rewindManager().HORIZON_CYCLES[i])
       {
         found = true;
@@ -1023,18 +1017,12 @@ void DeveloperDialog::handleInterval()
   bool found = false;
   Int32 i;
 
-  // handle illegal values
-  if(interval == -1)
-    interval = 0;
-  if(horizon == -1)
-    horizon = 0;
-
   // adapt horizon and size
   do
   {
     for(i = horizon; i < NUM_HORIZONS; ++i)
     {
-      if((uInt64)size * instance().state().rewindManager().INTERVAL_CYCLES[interval]
+      if(uInt64(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
          <= instance().state().rewindManager().HORIZON_CYCLES[i])
       {
         found = true;
@@ -1060,12 +1048,6 @@ void DeveloperDialog::handleHorizon()
   uInt32 horizon = myStateHorizonWidget->getSelected();
   bool found = false;
   Int32 i;
-
-  // handle illegal values
-  if(interval == -1)
-    interval = 0;
-  if(horizon == -1)
-    horizon = 0;
 
   // adapt interval and size
   do

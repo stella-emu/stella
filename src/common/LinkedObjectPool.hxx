@@ -59,9 +59,8 @@ class LinkedObjectPool
     /*
       Create a pool of size CAPACITY; the active list starts out empty.
     */
-    LinkedObjectPool<T, CAPACITY>() : myCurrent(myList.end()) {
-      for(uInt32 i = 0; i < CAPACITY; ++i)
-        myPool.emplace_back(T());
+    LinkedObjectPool<T, CAPACITY>() : myCurrent(myList.end()), myCapacity(0) {
+      resize(CAPACITY);
     }
 
     /**
@@ -200,6 +199,22 @@ class LinkedObjectPool
     }
 
     /**
+      Resize the pool to specified size, invalidating the list in the process
+      (ie, the list essentially becomes empty again).
+    */
+    void resize(uInt32 capacity) {
+      if(myCapacity != capacity)  // only resize when necessary
+      {
+        myList.clear();  myPool.clear();
+        myCurrent = myList.end();
+        myCapacity = capacity;
+
+        for(uInt32 i = 0; i < myCapacity; ++i)
+          myPool.emplace_back(T());
+      }
+    }
+
+    /**
       Erase entire contents of active list.
     */
     void clear() {
@@ -207,24 +222,20 @@ class LinkedObjectPool
       myCurrent = myList.end();
     }
 
-#if 0
-    /** Access the list with iterators, just as you would a normal C++ STL list */
-    iter begin() { return myList.begin(); }
-    iter end()   { return myList.end();   }
-    const_iter begin() const { return myList.cbegin(); }
-    const_iter end() const   { return myList.cend();   }
-#endif
-    uInt32 capacity() const { return CAPACITY; }
+    uInt32 capacity() const { return myCapacity; }
 
     uInt32 size() const { return uInt32(myList.size()); }
     bool empty() const  { return size() == 0;           }
-    bool full() const   { return size() >= CAPACITY;    }
+    bool full() const   { return size() >= capacity();  }
 
   private:
     std::list<T> myList, myPool;
 
     // Current position in the active list (end() indicates an invalid position)
     iter myCurrent;
+
+    // Total capacity of the pool
+    uInt32 myCapacity;
 
   private:
     // Following constructors and assignment operators not supported

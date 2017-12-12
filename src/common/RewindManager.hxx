@@ -46,7 +46,7 @@ class RewindManager
     RewindManager(OSystem& system, StateManager& statemgr);
 
   public:
-    static const int NUM_INTERVALS = 7;
+    static constexpr int NUM_INTERVALS = 7;
     const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
       76 * 262,
       76 * 262 * 3,
@@ -71,7 +71,7 @@ class RewindManager
       "10s"
     };
 
-    static const int NUM_HORIZONS = 8;
+    static constexpr int NUM_HORIZONS = 8;
     const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
       76 * 262 * 60 * 3,
       76 * 262 * 60 * 10,
@@ -124,6 +124,7 @@ class RewindManager
 
     bool atFirst() const { return myStateList.atFirst(); }
     bool atLast() const  { return myStateList.atLast();  }
+    void resize(uInt32 size) { myStateList.resize(size); }
     void clear() { myStateList.clear(); }
 
     /**
