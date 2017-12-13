@@ -73,6 +73,19 @@ class LinkedObjectPool
     T& current() const { return *myCurrent; }
 
     /**
+      Returns current's position in the list
+
+      SLOW, but only required for messages
+    */
+    uInt32 currentIdx() const {
+      iter it = myCurrent;
+      uInt32 idx = 1;
+
+      while(it-- != myList.begin()) idx++;
+      return idx;
+    }
+
+    /**
       Does the 'current' iterator point to a valid node in the active list?
       This must be called before 'current()' is called.
     */

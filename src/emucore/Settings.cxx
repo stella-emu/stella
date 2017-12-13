@@ -320,10 +320,10 @@ void Settings::validate()
   if(i < 1 || i > 20) setInternal("dev.tv.jitter_recovery", "2");
 
   int size = getInt("dev.rewind.size");
-  if(size < 100 || size > 1000)
+  if(size < 20 || size > 1000)
   {
-    setInternal("dev.rewind.size", 100);
-    size = 100;
+    setInternal("dev.rewind.size", 20);
+    size = 20;
   }
 
   i = getInt("dev.rewind.uncompressed");
@@ -339,10 +339,10 @@ void Settings::validate()
   if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
 
   size = getInt("plr.rewind.size");
-  if(size < 100 || size > 1000)
+  if(size < 20 || size > 1000)
   {
-    setInternal("plr.rewind.size", 100);
-    size = 100;
+    setInternal("plr.rewind.size", 20);
+    size = 20;
   }
 
   i = getInt("plr.rewind.uncompressed");

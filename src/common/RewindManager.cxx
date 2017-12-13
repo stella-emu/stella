@@ -56,13 +56,13 @@ void RewindManager::setup()
 
   // calc interval growth factor
   const double MAX_FACTOR = 1E8;
-  double minFactor = 1, maxFactor = MAX_FACTOR;
+  double minFactor = 0, maxFactor = MAX_FACTOR;
 
   while(true)
   {
     double interval = myInterval;
     double cycleSum = interval * myUncompressed;
-    // calculate next factor
+    // calculate nextCycles factor
     myFactor = (minFactor + maxFactor) / 2;
     // horizon not reachable?
     if(myFactor == MAX_FACTOR)
@@ -91,11 +91,11 @@ void RewindManager::setup()
 bool RewindManager::addState(const string& message, bool continuous)
 {
   // only check for continuous rewind states, ignore for debugger
-  if(continuous)
+  if(continuous && myStateList.currentIsValid())
   {
     // check if the current state has the right interval from the last state
     RewindState& lastState = myStateList.current();
-    if(myOSystem.console().tia().cycles() - lastState.cycle < myInterval)
+    if(myOSystem.console().tia().cycles() - lastState.cycles < myInterval)
       return false;
   }
 
@@ -116,7 +116,7 @@ bool RewindManager::addState(const string& message, bool continuous)
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
     state.message = message;
-    state.cycle = myOSystem.console().tia().cycles();
+    state.cycles = myOSystem.console().tia().cycles();
     //state.count = count++;
 //cerr << "add " << state.count << endl;
     return true;
@@ -157,7 +157,7 @@ bool RewindManager::unwindState()
 {
   if(!atLast())
   {
-    // Set internal current iterator to next state (forward in time),
+    // Set internal current iterator to nextCycles state (forward in time),
     // since we've now processed this state
     myStateList.moveToNext();
 
@@ -181,41 +181,35 @@ bool RewindManager::unwindState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::compressStates()
 {
-  //bool debugMode = myOSystem.eventHandler().state() == EventHandler::S_DEBUGGER;
-
-  uInt64 currentCycle = myOSystem.console().tia().cycles();
-  uInt64 lastCycle = currentCycle;
-  double expectedCycles = myInterval; // == cycles of 1 frame, TODO: use actual number of scanlines
-  double maxDelta = 0;
+  uInt64 currentCycles = myOSystem.console().tia().cycles();
+  double expectedCycles = myInterval * (1*0 + myFactor);
+  double maxError = 0;
   uInt32 removeIdx = 0;
+  uInt32 idx = myStateList.size() - 2;
 
-  uInt32 idx = myStateList.size() - 1;
-//cerr << "idx: " << idx << endl;
-  for(auto it = myStateList.last(); it != myStateList.first(); --it)
+  //cerr << "idx: " << idx << endl;
+  // iterate from last but one to first but one
+  for(auto it = myStateList.previous(myStateList.last()); it != myStateList.first(); --it)
   {
     if(idx < mySize - myUncompressed)
     {
 //cerr << *it << endl << endl;  // debug code
       expectedCycles *= myFactor;
 
-      double expected = expectedCycles * (1 + myFactor);
-      uInt64 prev = myStateList.previous(it)->cycle;
-      uInt64 next = myStateList.next(it)->cycle;
-      if(next != lastCycle)
-        lastCycle++;
-      double delta = expected / (next - prev);
-//cerr << "prev: " << prev << ", next: " << next << ", delta: " << delta << endl;
+      uInt64 prevCycles = myStateList.previous(it)->cycles;
+      uInt64 nextCycles = myStateList.next(it)->cycles;
+      double error = expectedCycles / (nextCycles - prevCycles);
+//cerr << "prevCycles: " << prevCycles << ", nextCycles: " << nextCycles << ", error: " << error << endl;
 
-      if(delta > maxDelta)
+      if(error > maxError)
       {
-        maxDelta = delta;
+        maxError = error;
         removeIdx = idx;
       }
     }
-    lastCycle = it->cycle;
     --idx;
   }
-  if (maxDelta < 1)
+  if (maxError < 1)
   {
     // the horizon is getting too big (can happen after changing settings)
     myStateList.remove(1); // remove oldest but one
@@ -231,7 +225,7 @@ void RewindManager::compressStates()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getMessage(RewindState& state, RewindState& lastState)
 {
-  Int64 diff = myOSystem.console().tia().cycles() - state.cycle;
+  Int64 diff = myOSystem.console().tia().cycles() - state.cycles;
   stringstream message;
 
   message << (diff >= 0 ? "Rewind" : "Unwind") << " " << getUnitString(diff);
@@ -239,6 +233,7 @@ string RewindManager::getMessage(RewindState& state, RewindState& lastState)
   // add optional message (TODO: when smart removal works, we have to do something smart with this part too)
   if(!lastState.message.empty())
     message << " (" << lastState.message << ")";
+  message << " [" << myStateList.currentIdx() << "/" << myStateList.size() << "]";
   return message.str();
 }
 
@@ -263,7 +258,7 @@ string RewindManager::getUnitString(Int64 cycles)
 
   for(i = 0; i < NUM_UNITS - 1; ++i)
   {
-    // use the lower unit up to twice the next unit, except for an exact match of the next unit
+    // use the lower unit up to twice the nextCycles unit, except for an exact match of the nextCycles unit
     // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
     if(cycles < UNIT_CYCLES[i + 1] * 2 && cycles % UNIT_CYCLES[i + 1] != 0)
       break;

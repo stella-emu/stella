@@ -148,7 +148,7 @@ class RewindManager
     struct RewindState {
       Serializer data;
       string message;
-      uInt64 cycle;
+      uInt64 cycles;
       //int count; //  TODO - remove this
 
       // We do nothing on object instantiation or copy
@@ -158,7 +158,7 @@ class RewindManager
 
       // Output object info; used for debugging only
       friend ostream& operator<<(ostream& os, const RewindState& s) {
-        return os << "msg: " << s.message << "   cycle: " << s.cycle; // << "   count: " << s.count;
+        return os << "msg: " << s.message << "   cycle: " << s.cycles; // << "   count: " << s.count;
       }
     };
 
