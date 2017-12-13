@@ -144,6 +144,7 @@ class RewindManager
     uInt32 myInterval;
     uInt64 myHorizon;
     double myFactor;
+    bool   myLastContinuousAdd;
 
     struct RewindState {
       Serializer data;
@@ -168,7 +169,7 @@ class RewindManager
 
     void compressStates();
 
-    string getMessage(RewindState& state, RewindState& lastState);
+    string getMessage(RewindState& state);
 
   private:
     // Following constructors and assignment operators not supported

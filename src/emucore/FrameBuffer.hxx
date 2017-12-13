@@ -145,6 +145,11 @@ class FrameBuffer
     void enableMessages(bool enable);
 
     /**
+      Reset 'Paused' display delay counter
+    */
+    void resetPauseDelay();
+
+    /**
       Allocate a new surface.  The FrameBuffer class takes all responsibility
       for freeing this surface (ie, other classes must not delete it directly).
 

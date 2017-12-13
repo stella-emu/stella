@@ -3107,9 +3107,12 @@
             <td>
               Defines the horizon of the rewind buffer. A large horizon allows
               going back further in time. To reach the horizon, save states
-              will be compressed. This means that more and more intermediate
+              will be compressed (*). This means that more and more intermediate
               states will be removed and the interval between save states
-              becomes larger the further they are back in time.
+              becomes larger the further they are back in time. The very first
+              save state will not be removed.<br>
+              (*) Compresion only works if 'Uncompressed size' is smaller than
+              'Buffer size'.
             </td>
             <td>-plr.rewind.horizon<br>-dev.rewind.horizon</td>
           </tr>

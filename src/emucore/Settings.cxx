@@ -329,11 +329,11 @@ void Settings::validate()
   i = getInt("dev.rewind.uncompressed");
   if(i < 0 || i > size) setInternal("dev.rewind.uncompressed", size);
 
-  i = getInt("dev.rewind.interval");
+  /*i = getInt("dev.rewind.interval");
   if(i < 0 || i > 5) setInternal("dev.rewind.interval", 0);
 
   i = getInt("dev.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 1);
+  if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 1);*/
 
   i = getInt("plr.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");

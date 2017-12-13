@@ -36,6 +36,8 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::setup()
 {
+  myLastContinuousAdd = false;
+
   string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
 
   mySize = myOSystem.settings().getInt(prefix + "rewind.size");
@@ -55,20 +57,22 @@ void RewindManager::setup()
       myHorizon = HORIZON_CYCLES[i];
 
   // calc interval growth factor
+  // this factor defines the backward horizon
   const double MAX_FACTOR = 1E8;
   double minFactor = 0, maxFactor = MAX_FACTOR;
+  myFactor = 1;
 
-  while(true)
+  while(myUncompressed < mySize)
   {
     double interval = myInterval;
-    double cycleSum = interval * myUncompressed;
+    double cycleSum = interval * (myUncompressed + 1);
     // calculate nextCycles factor
     myFactor = (minFactor + maxFactor) / 2;
     // horizon not reachable?
     if(myFactor == MAX_FACTOR)
       break;
-    // sum up interval cycles
-    for(uInt32 i = myUncompressed; i < mySize; ++i)
+    // sum up interval cycles (first and last state are not compressed)
+    for(uInt32 i = myUncompressed + 1; i < mySize - 1; ++i)
     {
       interval *= myFactor;
       cycleSum += interval;
@@ -119,6 +123,7 @@ bool RewindManager::addState(const string& message, bool continuous)
     state.cycles = myOSystem.console().tia().cycles();
     //state.count = count++;
 //cerr << "add " << state.count << endl;
+    myLastContinuousAdd = continuous;
     return true;
   }
   return false;
@@ -129,15 +134,17 @@ bool RewindManager::rewindState()
 {
   if(!atFirst())
   {
-    RewindState& lastState = myStateList.current();
-
+    if (!myLastContinuousAdd)
     // Set internal current iterator to previous state (back in time),
     // since we will now processed this state
-    myStateList.moveToPrevious();
+      myStateList.moveToPrevious();
+    myLastContinuousAdd = false;
+
+    //RewindState& lastState = myStateList.current();
 
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
-    string message = getMessage(state, lastState);
+    string message = getMessage(state);
 //cerr << "rewind " << state.count << endl;
 
     s.rewind();  // rewind Serializer internal buffers
@@ -163,7 +170,7 @@ bool RewindManager::unwindState()
 
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
-    string message = getMessage(state, state);
+    string message = getMessage(state);
 //cerr << "unwind " << state.count << endl;
 
     s.rewind();  // rewind Serializer internal buffers
@@ -182,8 +189,8 @@ bool RewindManager::unwindState()
 void RewindManager::compressStates()
 {
   uInt64 currentCycles = myOSystem.console().tia().cycles();
-  double expectedCycles = myInterval * (1*0 + myFactor);
-  double maxError = 0;
+  double expectedCycles = myInterval * myFactor * (1 + myFactor);
+  double maxError = 1;
   uInt32 removeIdx = 0;
   uInt32 idx = myStateList.size() - 2;
 
@@ -223,17 +230,18 @@ void RewindManager::compressStates()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RewindManager::getMessage(RewindState& state, RewindState& lastState)
+string RewindManager::getMessage(RewindState& state)
 {
   Int64 diff = myOSystem.console().tia().cycles() - state.cycles;
   stringstream message;
 
   message << (diff >= 0 ? "Rewind" : "Unwind") << " " << getUnitString(diff);
 
-  // add optional message (TODO: when smart removal works, we have to do something smart with this part too)
-  if(!lastState.message.empty())
-    message << " (" << lastState.message << ")";
   message << " [" << myStateList.currentIdx() << "/" << myStateList.size() << "]";
+  // add optional message
+  if(!state.message.empty())
+    message << " (" << state.message << ")";
+
   return message.str();
 }
 

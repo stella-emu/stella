@@ -299,13 +299,15 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       switch(key)
       {
         case KBDK_LEFT:  // Alt-left rewinds states
-          if(myOSystem.state().rewindState() && myState != S_PAUSE)
-            setEventState(S_PAUSE);
+          myOSystem.frameBuffer().resetPauseDelay();
+          setEventState(S_PAUSE);
+          myOSystem.state().rewindState();
           break;
 
         case KBDK_RIGHT:  // Alt-right unwinds states
-          if(myOSystem.state().unwindState() && myState != S_PAUSE)
-            setEventState(S_PAUSE);
+          myOSystem.frameBuffer().resetPauseDelay();
+          setEventState(S_PAUSE);
+          myOSystem.state().unwindState();
           break;
 
         default:

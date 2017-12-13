@@ -999,6 +999,7 @@ void DeveloperDialog::handleSize()
     myUncompressedWidget->setValue(size);
   myStateIntervalWidget->setSelectedIndex(interval);
   myStateHorizonWidget->setSelectedIndex(i);
+  myStateHorizonWidget->setEnabled(size > uncompressed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1011,6 +1012,7 @@ void DeveloperDialog::handleUncompressed()
 
   if(size < uncompressed)
     myStateSizeWidget->setValue(uncompressed);
+  myStateHorizonWidget->setEnabled(size > uncompressed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

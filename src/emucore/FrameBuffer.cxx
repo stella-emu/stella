@@ -301,7 +301,7 @@ void FrameBuffer::update()
       // Show a pause message immediately and then every 7 seconds
       if (myPausedCount-- <= 0)
       {
-        myPausedCount = uInt32(7 * myOSystem.frameRate());
+        resetPauseDelay();
         showMessage("Paused", kMiddleCenter);
       }
       break;  // S_PAUSE
@@ -469,6 +469,12 @@ inline void FrameBuffer::drawMessage()
   }
   else
     myMsg.enabled = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::resetPauseDelay()
+{
+  myPausedCount = uInt32(7 * myOSystem.frameRate());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
