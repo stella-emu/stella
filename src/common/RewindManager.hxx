@@ -99,6 +99,7 @@ class RewindManager
     };
 
     /**
+      Initializes state list and calculates compression factor.
     */
     void setup();
 
@@ -113,14 +114,20 @@ class RewindManager
     /**
       Rewind one level of the state list, and display the message associated
       with that state.
+
+      @param numStates  Number of states to rewind
+      @return           Number of states to rewinded
     */
-    bool rewindState();
+    uInt32 rewindState(uInt32 numStates = 1);
 
     /**
       Unwind one level of the state list, and display the message associated
       with that state.
+
+      @param numStates  Number of states to unwind
+      @return           Number of states to unwinded
     */
-    bool unwindState();
+    uInt32 unwindState(uInt32 numStates = 1);
 
     bool atFirst() const { return myStateList.atFirst(); }
     bool atLast() const  { return myStateList.atLast();  }
@@ -167,9 +174,17 @@ class RewindManager
     // frequent (de)-allocations)
     Common::LinkedObjectPool<RewindState, INITIAL_SIZE> myStateList;
 
+    /**
+      Remove a save state from the list
+    */
     void compressStates();
 
-    string getMessage(RewindState& state);
+    /**
+      Get the message string for the rewind/unwind
+
+      @return  The message
+    */
+    string getMessage(Int64 startCycles, uInt32 numStates);
 
   private:
     // Following constructors and assignment operators not supported

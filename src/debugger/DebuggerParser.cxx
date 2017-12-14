@@ -2177,7 +2177,6 @@ void DebuggerParser::executeWatch()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // wrapper function for rewind/unwind commands
-// TODO: return and output (formatted) cycles
 void DebuggerParser::executeWinds(bool unwind)
 {
   uInt16 states;

@@ -316,9 +316,11 @@ used.</p>
 </ul>
 
 <p>The larger button at the left top (labeled '&lt;') performs the rewind operation,
-which will undo the previous Step/Trace/Scan/Frame advance, the smaller button at
+which will undo the previous Step/Trace/Scan/Frame... advance, the smaller button at
 the left bottom (labeled '&gt;') performs the unwind operation, which will undo the
-previous rewind operation. The rewind buffer is 100 levels deep by default.<p>
+previous rewind operation. The rewind buffer is 100 levels deep by default, the
+size can be configured e.g. in the
+<b><a href="index.html#Debugger">Developer Settings</a> - States</b> dialog.<p>
 
 <p>The other operations are Step, Trace, Scan+1, Frame+1 and Exit (debugger).</p>
 
@@ -347,11 +349,27 @@ previous rewind operation. The rewind buffer is 100 levels deep by default.<p>
   </tr>
   <tr>
     <td>Control-r</td>
-    <td>Rewind</td>
+    <td>Rewind 1</td>
   </tr>
   <tr>
-    <td>Shift-Control-r</td>
-    <td>Unwind</td>
+    <td>Control-Shift-r</td>
+    <td>Rewind 10</td>
+  </tr>
+  <tr>
+    <td>Control-Alt-r</td>
+    <td>Rewind all</td>
+  </tr>
+  <tr>
+    <td>Control-y</td>
+    <td>Unwind 1</td>
+  </tr>
+  <tr>
+    <td>Control-Shift-y</td>
+    <td>Unwind 10</td>
+  </tr>
+  <tr>
+    <td>Control-Alt-y</td>
+    <td>Unwind all</td>
   </tr>
   <tr>
     <td>Backquote (`)</td>

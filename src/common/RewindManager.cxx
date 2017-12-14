@@ -130,59 +130,90 @@ bool RewindManager::addState(const string& message, bool continuous)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RewindManager::rewindState()
+uInt32 RewindManager::rewindState(uInt32 numStates)
 {
-  if(!atFirst())
+  uInt64 startCycles = myOSystem.console().tia().cycles();
+  uInt32 i;
+  string message;
+
+  for(i = 0; i < numStates; ++i)
   {
-    if (!myLastContinuousAdd)
-    // Set internal current iterator to previous state (back in time),
-    // since we will now processed this state
-      myStateList.moveToPrevious();
-    myLastContinuousAdd = false;
+    if(!atFirst())
+    {
+      if(!myLastContinuousAdd)
+        // Set internal current iterator to previous state (back in time),
+        // since we will now processed this state
+        myStateList.moveToPrevious();
+      myLastContinuousAdd = false;
 
-    //RewindState& lastState = myStateList.current();
+      RewindState& state = myStateList.current();
+      Serializer& s = state.data;
+//cerr << "rewind " << state.count << endl;
+      s.rewind();  // rewind Serializer internal buffers
+    }
+    else
+      break;
+  }
 
+  if(i)
+  {
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
-    string message = getMessage(state);
-//cerr << "rewind " << state.count << endl;
 
-    s.rewind();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
     myOSystem.console().tia().loadDisplay(s);
 
-    // Show message indicating the rewind state
-    myOSystem.frameBuffer().showMessage(message);
-    return true;
+    // Get message indicating the rewind state
+    message = getMessage(startCycles, i);
   }
-  myOSystem.frameBuffer().showMessage("Rewind not possible");
-  return false;
+  else
+    message = "Rewind not possible";
+
+  myOSystem.frameBuffer().showMessage(message);
+  return i;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RewindManager::unwindState()
+uInt32 RewindManager::unwindState(uInt32 numStates)
 {
-  if(!atLast())
-  {
-    // Set internal current iterator to nextCycles state (forward in time),
-    // since we've now processed this state
-    myStateList.moveToNext();
+  uInt64 startCycles = myOSystem.console().tia().cycles();
+  uInt32 i;
+  string message;
 
+  for(i = 0; i < numStates; ++i)
+  {
+    if(!atLast())
+    {
+      // Set internal current iterator to nextCycles state (forward in time),
+      // since we've now processed this state
+      myStateList.moveToNext();
+
+      RewindState& state = myStateList.current();
+      Serializer& s = state.data;
+//cerr << "unwind " << state.count << endl;
+      s.rewind();  // rewind Serializer internal buffers
+    }
+    else
+      break;
+  }
+
+  if(i)
+  {
     RewindState& state = myStateList.current();
     Serializer& s = state.data;
-    string message = getMessage(state);
-//cerr << "unwind " << state.count << endl;
 
-    s.rewind();  // rewind Serializer internal buffers
     myStateManager.loadState(s);
     myOSystem.console().tia().loadDisplay(s);
 
-    // Show message indicating the rewind state
+    // Get message indicating the rewind state
+    message = getMessage(startCycles, i);
     myOSystem.frameBuffer().showMessage(message);
-    return true;
   }
-  myOSystem.frameBuffer().showMessage("Unwind not possible");
-  return false;
+  else
+    message = "Unwind not possible";
+
+  myOSystem.frameBuffer().showMessage(message);
+  return i;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,8 +222,8 @@ void RewindManager::compressStates()
   uInt64 currentCycles = myOSystem.console().tia().cycles();
   double expectedCycles = myInterval * myFactor * (1 + myFactor);
   double maxError = 1;
-  uInt32 removeIdx = 0;
   uInt32 idx = myStateList.size() - 2;
+  Common::LinkedObjectPool<RewindState>::const_iter removeIter = myStateList.first();
 
   //cerr << "idx: " << idx << endl;
   // iterate from last but one to first but one
@@ -211,7 +242,7 @@ void RewindManager::compressStates()
       if(error > maxError)
       {
         maxError = error;
-        removeIdx = idx;
+        removeIter = it;
       }
     }
     --idx;
@@ -224,22 +255,23 @@ void RewindManager::compressStates()
   }
   else
   {
-    myStateList.remove(removeIdx); // remove
+    myStateList.remove(removeIter); // remove
 //cerr << "remove " << removeIdx << endl;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RewindManager::getMessage(RewindState& state)
+string RewindManager::getMessage(Int64 startCycles, uInt32 numStates)
 {
-  Int64 diff = myOSystem.console().tia().cycles() - state.cycles;
+  RewindState& state = myStateList.current();
+  Int64 diff = startCycles - state.cycles;
   stringstream message;
 
   message << (diff >= 0 ? "Rewind" : "Unwind") << " " << getUnitString(diff);
-
   message << " [" << myStateList.currentIdx() << "/" << myStateList.size() << "]";
+
   // add optional message
-  if(!state.message.empty())
+  if(numStates == 1 && !state.message.empty())
     message << " (" << state.message << ")";
 
   return message.str();

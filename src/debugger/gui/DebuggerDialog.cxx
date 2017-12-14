@@ -97,8 +97,18 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
     switch(key)
     {
       case KBDK_R:
-        if(!instance().eventHandler().kbdShift(mod))
+        if(instance().eventHandler().kbdAlt(mod))
+          doRewindAll();
+        else if(instance().eventHandler().kbdShift(mod))
+          doRewind10();
+        else
           doRewind();
+        break;
+      case KBDK_Y:
+        if(instance().eventHandler().kbdAlt(mod))
+          doUnwindAll();
+        else if(instance().eventHandler().kbdShift(mod))
+          doUnwind10();
         else
           doUnwind();
         break;
@@ -210,6 +220,30 @@ void DebuggerDialog::doRewind()
 void DebuggerDialog::doUnwind()
 {
   instance().debugger().parser().run("unwind");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doRewind10()
+{
+  instance().debugger().parser().run("rewind #10");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doUnwind10()
+{
+  instance().debugger().parser().run("unwind #10");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doRewindAll()
+{
+  instance().debugger().parser().run("rewind #1000");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doUnwindAll()
+{
+  instance().debugger().parser().run("unwind #1000");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

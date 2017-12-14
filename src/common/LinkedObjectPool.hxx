@@ -175,25 +175,21 @@ class LinkedObjectPool
         moveToPrevious(); // if so, move to the previous node
     }
 
-#if 0
     /**
-      Convenience method to remove a single element from the active list at
-      position of the iterator +- the offset.
+      Remove a single element from the active list at position of the iterator.
     */
-    void remove(const_iter i, Int32 offset = 0) {
-      myPool.splice(myPool.end(), myList,
-                    offset >= 0 ? std::next(i, offset) : std::prev(i, -offset));
+    void remove(const_iter i) {
+      myPool.splice(myPool.end(), myList, i);
     }
-#endif
+
     /**
-      Convenience method to remove a single element from the active list by
-      index, offset from the beginning of the list. (ie, '0' means first
-      element, '1' is second, and so on).
+      Remove a single element from the active list by index, offset from
+      the beginning of the list. (ie, '0' means first element, '1' is second,
+      and so on).
     */
     void remove(uInt32 index) {
       myPool.splice(myPool.end(), myList, std::next(myList.begin(), index));
     }
-
 
     /**
       Remove range of elements from the beginning of the active list to

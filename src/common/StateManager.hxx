@@ -74,12 +74,12 @@ class StateManager
     /**
       Rewinds one state; this uses the RewindManager for its functionality.
     */
-    bool rewindState();
+    bool rewindState(uInt32 numStates = 1);
 
     /**
       Unwinds one state; this uses the RewindManager for its functionality.
     */
-    bool unwindState();
+    bool unwindState(uInt32 numStates = 1);
 
     /**
       Updates the state of the system based on the currently active mode.

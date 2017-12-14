@@ -142,17 +142,17 @@ void StateManager::toggleRewindMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::rewindState()
+bool StateManager::rewindState(uInt32 numStates)
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  return r.rewindState();
+  return r.rewindState(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::unwindState()
+bool StateManager::unwindState(uInt32 numStates)
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  return r.unwindState();
+  return r.unwindState(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

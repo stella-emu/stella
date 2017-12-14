@@ -84,6 +84,10 @@ class DebuggerDialog : public Dialog
     void doAdvance();
     void doRewind();
     void doUnwind();
+    void doRewind10();
+    void doUnwind10();
+    void doRewindAll();
+    void doUnwindAll();
     void doExitDebugger();
     void doExitRom();
 
