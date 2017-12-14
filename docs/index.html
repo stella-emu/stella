@@ -282,7 +282,7 @@
       AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers,
       as well as FLASH support in various cartridge schemes</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
-    <li>Supports DPC+ bankswitching scheme from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
+    <li>Supports DPC+/CDF bankswitching schemes from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
       including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
@@ -295,6 +295,7 @@
     <li>TIA emulation supports full collision checking, with ability to disable
       TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
+    <li>Automatic save state creation which allows moving back and forth in the recorded timeline</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
       and dynamic analysis at runtime by tracking code/graphics/data sections, and
@@ -3098,7 +3099,8 @@
             <td>Continuous rewind</td>
             <td>
               When continuous rewind is enabled, Stella will automatically
-              create new save states in the interval described below.</br>
+              create new save states in the interval described below. The user
+              can then navigate back and forth within the recorded timeline.</br>
               Note: This buffer is identical with the one described in
               <a href="debugger.html#GlobalButtons"><b>Debugger/Global Buttons</b></a>.
               It is independent from the save states manually created
