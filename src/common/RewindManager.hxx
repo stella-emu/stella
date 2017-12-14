@@ -48,7 +48,7 @@ class RewindManager
   public:
     static constexpr int NUM_INTERVALS = 7;
     // cycle values for the intervals
-    static constexpr uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
+    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
       76 * 262,
       76 * 262 * 3,
       76 * 262 * 10,
@@ -70,7 +70,7 @@ class RewindManager
 
     static constexpr int NUM_HORIZONS = 8;
     // cycle values for the horzions
-    static constexpr uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
+    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
       76 * 262 * 60 * 3,
       76 * 262 * 60 * 10,
       76 * 262 * 60 * 30,
