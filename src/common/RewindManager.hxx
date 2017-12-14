@@ -47,7 +47,8 @@ class RewindManager
 
   public:
     static constexpr int NUM_INTERVALS = 7;
-    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
+    // cycle values for the intervals
+    static constexpr uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
       76 * 262,
       76 * 262 * 3,
       76 * 262 * 10,
@@ -56,11 +57,7 @@ class RewindManager
       76 * 262 * 60 * 3,
       76 * 262 * 60 * 10
     };
-    /*static const int NUM_INTERVALS = 6;
-    const string INTERVALS[NUM_INTERVALS] = { "1 scanline", "50 scanlines", "1 frame", "10 frames",
-    "1 second", "10 seconds" };
-    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
-    76 * 262 * 60, 76 * 262 * 60 * 10 };*/
+    // settings values for the intervals
     const string INT_SETTINGS[NUM_INTERVALS] = {
       "1f",
       "3f",
@@ -72,7 +69,8 @@ class RewindManager
     };
 
     static constexpr int NUM_HORIZONS = 8;
-    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
+    // cycle values for the horzions
+    static constexpr uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
       76 * 262 * 60 * 3,
       76 * 262 * 60 * 10,
       76 * 262 * 60 * 30,
@@ -82,11 +80,7 @@ class RewindManager
       uInt64(76) * 262 * 60 * 60 * 30,
       uInt64(76) * 262 * 60 * 60 * 60
     };
-    /*static const int NUM_HORIZONS = 7;
-    const string HORIZONS[NUM_HORIZONS] = { "~1 frame", "~10 frames", "~1 second", "~10 seconds",
-    "~1 minute", "~10 minutes", "~60 minutes" };
-    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
-    76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, uInt64(76) * 262 * 60 * 60 * 60 };*/
+    // settings values for the horzions
     const string HOR_SETTINGS[NUM_HORIZONS] = {
       "3s",
       "10s",
@@ -140,9 +134,6 @@ class RewindManager
     string getUnitString(Int64 cycles);
 
   private:
-    // Maximum number of states to save
-    static constexpr uInt32 INITIAL_SIZE = 100;
-
     OSystem& myOSystem;
     StateManager& myStateManager;
 
@@ -154,10 +145,9 @@ class RewindManager
     bool   myLastContinuousAdd;
 
     struct RewindState {
-      Serializer data;
-      string message;
-      uInt64 cycles;
-      //int count; //  TODO - remove this
+      Serializer data;  // actual save state
+      string message;   // describes save state origin
+      uInt64 cycles;    // cycles since emulation started
 
       // We do nothing on object instantiation or copy
       // The goal of LinkedObjectPool is to not do any allocations at all
@@ -166,13 +156,13 @@ class RewindManager
 
       // Output object info; used for debugging only
       friend ostream& operator<<(ostream& os, const RewindState& s) {
-        return os << "msg: " << s.message << "   cycle: " << s.cycles; // << "   count: " << s.count;
+        return os << "msg: " << s.message << "   cycle: " << s.cycles;
       }
     };
 
     // The linked-list to store states (internally it takes care of reducing
     // frequent (de)-allocations)
-    Common::LinkedObjectPool<RewindState, INITIAL_SIZE> myStateList;
+    Common::LinkedObjectPool<RewindState> myStateList;
 
     /**
       Remove a save state from the list

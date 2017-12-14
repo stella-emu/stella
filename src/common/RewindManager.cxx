@@ -24,7 +24,6 @@
 
 #include "RewindManager.hxx"
 
-//static int count = 1;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
   : myOSystem(system),
@@ -99,7 +98,17 @@ bool RewindManager::addState(const string& message, bool continuous)
   {
     // check if the current state has the right interval from the last state
     RewindState& lastState = myStateList.current();
-    if(myOSystem.console().tia().cycles() - lastState.cycles < myInterval)
+    uInt32 interval = myInterval;
+
+    // adjust frame timed intervals to actual scanlines (vs 262)
+    if(interval >= 76 * 262 && interval <= 76 * 262 * 30)
+    {
+      const uInt32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
+
+      interval = interval * scanlines / 262;
+    }
+
+    if(myOSystem.console().tia().cycles() - lastState.cycles < interval)
       return false;
   }
 
@@ -121,8 +130,6 @@ bool RewindManager::addState(const string& message, bool continuous)
   {
     state.message = message;
     state.cycles = myOSystem.console().tia().cycles();
-    //state.count = count++;
-//cerr << "add " << state.count << endl;
     myLastContinuousAdd = continuous;
     return true;
   }
@@ -144,11 +151,13 @@ uInt32 RewindManager::rewindState(uInt32 numStates)
         // Set internal current iterator to previous state (back in time),
         // since we will now processed this state
         myStateList.moveToPrevious();
-      myLastContinuousAdd = false;
+      else
+        // except fif the last state was added automatically,
+        // because that already happened one interval before
+        myLastContinuousAdd = false;
 
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
-//cerr << "rewind " << state.count << endl;
       s.rewind();  // rewind Serializer internal buffers
     }
     else
@@ -190,7 +199,6 @@ uInt32 RewindManager::unwindState(uInt32 numStates)
 
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
-//cerr << "unwind " << state.count << endl;
       s.rewind();  // rewind Serializer internal buffers
     }
     else
