@@ -125,6 +125,7 @@ bool AbstractFrameManager::save(Serializer& out) const
     out.putBool(myIsRendering);
     out.putBool(myVsync);
     out.putBool(myVblank);
+    out.putInt(myCurrentFrameTotalLines);
     out.putInt(myCurrentFrameFinalLines);
     out.putInt(myPreviousFrameFinalLines);
     out.putInt(myTotalFrames);
@@ -149,6 +150,7 @@ bool AbstractFrameManager::load(Serializer& in)
     myIsRendering = in.getBool();
     myVsync = in.getBool();
     myVblank = in.getBool();
+    myCurrentFrameTotalLines = in.getInt();
     myCurrentFrameFinalLines = in.getInt();
     myPreviousFrameFinalLines = in.getInt();
     myTotalFrames = in.getInt();
