@@ -86,11 +86,14 @@
   * Added 'Options...' button to debugger which gives access to the options
     menu during debugging.
 
-  * Added debugger pseudo-register '_fcycles', which gives the number of
-    CPU cycles that have occurred since the frame started.
+  * Added debugger pseudo-register '_cycles', which gives the number of
+    CPU cycles of the last instruction.
 
   * Added debugger pseudo-register '_cyclesLo' and '_cyclesHi', which give
     the number of CPU cycles that have occurred since emulation started.
+
+  * Added debugger pseudo-register '_fcycles', which gives the number of
+    CPU cycles that have occurred since the frame started.
 
   * Extended debugger 'dump' command to take a second argument, indicating
     the end of the range to dump data.
