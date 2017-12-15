@@ -52,7 +52,7 @@ M6502::M6502(const Settings& settings)
     mySettings(settings),
     A(0), X(0), Y(0), SP(0), IR(0), PC(0),
     N(false), V(false), B(false), D(false), I(false), notZ(false), C(false),
-    cycles(0),
+    icycles(0),
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),
     myLastPeekAddress(0),
@@ -100,7 +100,7 @@ void M6502::reset()
   PS(BSPF::containsIgnoreCase(cpurandom, "P") ?
           mySystem->randGenerator().next() : 0x20);
 
-  cycles = 0;
+  icycles = 0;
 
   // Load PC from the reset vector
   PC = uInt16(mySystem->peek(0xfffc)) | (uInt16(mySystem->peek(0xfffd)) << 8);
@@ -127,7 +127,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   }
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
-  cycles += SYSTEM_CYCLES_PER_CPU;
+  icycles += SYSTEM_CYCLES_PER_CPU;
   uInt8 result = mySystem->peek(address, flags);
   myLastPeekAddress = address;
 
@@ -161,7 +161,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
   }
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
-  cycles += SYSTEM_CYCLES_PER_CPU;
+  icycles += SYSTEM_CYCLES_PER_CPU;
   mySystem->poke(address, value, flags);
   myLastPokeAddress = address;
 
@@ -243,7 +243,7 @@ bool M6502::execute(uInt32 number)
       // Reset the peek/poke address pointers
       myLastPeekAddress = myLastPokeAddress = myDataAddressForPoke = 0;
 
-      cycles = 0;
+      icycles = 0;
       // Fetch instruction at the program counter
       IR = peek(PC++, DISASM_CODE);  // This address represents a code section
 

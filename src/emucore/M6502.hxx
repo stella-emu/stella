@@ -348,7 +348,7 @@ class M6502 : public Serializable
     bool notZ;  // Z flag complement for processor status register
     bool C;     // C flag for processor status register
 
-    uInt8 cycles; // cycles of last instruction
+    uInt8 icycles; // cycles of last instruction
 
     /// Indicates the numer of distinct memory accesses
     uInt32 myNumberOfDistinctAccesses;

@@ -143,9 +143,9 @@ int CpuDebug::c() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CpuDebug::cycles() const
+int CpuDebug::icycles() const
 {
-  return mySystem.m6502().cycles;
+  return mySystem.m6502().icycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,7 +229,7 @@ void CpuDebug::setC(bool on)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setCycles(int cycles)
 {
-  my6502.cycles = cycles;
+  my6502.icycles = cycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
