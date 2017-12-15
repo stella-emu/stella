@@ -31,6 +31,7 @@ class CommandSender;
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "StellaKeys.hxx"
+#include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
 /**
@@ -93,7 +94,7 @@ class Dialog : public GuiObject
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);
-    virtual bool handleJoyHat(int stick, int hat, int value);
+    virtual bool handleJoyHat(int stick, int hat, JoyHat value);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any

@@ -303,7 +303,7 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
+bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHat value)
 {
   // Remap joystick hats in remap mode
   // There are two phases to detection:
@@ -312,19 +312,19 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
   if(myRemapStatus && myActionSelected >= 0)
   {
     // Detect the first hat event that represents a valid direction
-    if(myLastStick == -1 && myLastHat == -1 && value != EVENT_HATCENTER)
+    if(myLastStick == -1 && myLastHat == -1 && value != JoyHat::CENTER)
     {
       myLastStick = stick;
       myLastHat = hat;
-      myLastValue = value;
+      myLastValue = int(value);
 
       return true;
     }
     // Detect the first hat event that matches a previously set
     // stick and hat, but centers the hat
-    else if(myLastStick == stick && hat == myLastHat && value == EVENT_HATCENTER)
+    else if(myLastStick == stick && hat == myLastHat && value == JoyHat::CENTER)
     {
-      value = myLastValue;
+      value = JoyHat(myLastValue);
 
       Event::Type event =
         instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);

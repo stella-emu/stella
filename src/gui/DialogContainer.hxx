@@ -196,7 +196,7 @@ class DialogContainer
     struct {
       int stick;
       int hat;
-      int value;
+      JoyHat value;
     } myCurrentHatDown;
     uInt64 myHatRepeatTime;
 

@@ -15,28 +15,27 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-// FIXME - perhaps add to namespace or something
-
 #ifndef EVENTHANDLER_CONSTANTS_HXX
 #define EVENTHANDLER_CONSTANTS_HXX
 
-enum MouseButton {
-  EVENT_LBUTTONDOWN,
-  EVENT_LBUTTONUP,
-  EVENT_RBUTTONDOWN,
-  EVENT_RBUTTONUP,
-  EVENT_WHEELDOWN,
-  EVENT_WHEELUP
+enum class MouseButton {
+  LBUTTONDOWN,
+  LBUTTONUP,
+  RBUTTONDOWN,
+  RBUTTONUP,
+  WHEELDOWN,
+  WHEELUP
 };
 
-enum JoyHat {
-  EVENT_HATUP     = 0,  // make sure these are set correctly,
-  EVENT_HATDOWN   = 1,  // since they'll be used as array indices
-  EVENT_HATLEFT   = 2,
-  EVENT_HATRIGHT  = 3,
-  EVENT_HATCENTER = 4
+enum class JoyHat {
+  UP     = 0,  // make sure these are set correctly,
+  DOWN   = 1,  // since they'll be used as array indices
+  LEFT   = 2,
+  RIGHT  = 3,
+  CENTER = 4
 };
 
+// TODO - add bitmask class for 'enum class' and convert this
 enum JoyHatMask {
   EVENT_HATUP_M     = 1<<0,
   EVENT_HATDOWN_M   = 1<<1,
@@ -45,6 +44,7 @@ enum JoyHatMask {
   EVENT_HATCENTER_M = 1<<4
 };
 
+// TODO - make this 'enum class' somehow
 enum EventMode {
   kEmulationMode = 0,  // make sure these are set correctly,
   kMenuMode      = 1,  // since they'll be used as array indices

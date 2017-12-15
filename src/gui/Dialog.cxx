@@ -522,7 +522,7 @@ void Dialog::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::handleJoyHat(int stick, int hat, int value)
+bool Dialog::handleJoyHat(int stick, int hat, JoyHat value)
 {
   Event::Type e =
     instance().eventHandler().eventForJoyHat(stick, hat, value, kMenuMode);

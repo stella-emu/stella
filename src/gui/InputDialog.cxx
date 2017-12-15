@@ -453,7 +453,7 @@ void InputDialog::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool InputDialog::handleJoyHat(int stick, int hat, int value)
+bool InputDialog::handleJoyHat(int stick, int hat, JoyHat value)
 {
   // Remap joystick hat in remap mode, otherwise pass to parent dialog
   if(myEmulEventMapper->remapMode())

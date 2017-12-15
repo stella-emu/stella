@@ -205,11 +205,11 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y)
   Dialog* activeDialog = myDialogStack.top();
   activeDialog->surface().translateCoords(x, y);
 
-  int button = (b == EVENT_LBUTTONDOWN || b == EVENT_LBUTTONUP) ? 1 : 2;
+  int button = (b == MouseButton::LBUTTONDOWN || b == MouseButton::LBUTTONUP) ? 1 : 2;
   switch(b)
   {
-    case EVENT_LBUTTONDOWN:
-    case EVENT_RBUTTONDOWN:
+    case MouseButton::LBUTTONDOWN:
+    case MouseButton::RBUTTONDOWN:
       // If more than two clicks have been recorded, we start over
       if(myLastClick.count == 2)
       {
@@ -249,8 +249,8 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y)
                                     button, myLastClick.count);
       break;
 
-    case EVENT_LBUTTONUP:
-    case EVENT_RBUTTONUP:
+    case MouseButton::LBUTTONUP:
+    case MouseButton::RBUTTONUP:
       activeDialog->handleMouseUp(x - activeDialog->_x, y - activeDialog->_y,
                                   button, myLastClick.count);
 
@@ -258,11 +258,11 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y)
         myCurrentMouseDown.button = -1;
       break;
 
-    case EVENT_WHEELUP:
+    case MouseButton::WHEELUP:
       activeDialog->handleMouseWheel(x - activeDialog->_x, y - activeDialog->_y, -1);
       break;
 
-    case EVENT_WHEELDOWN:
+    case MouseButton::WHEELDOWN:
       activeDialog->handleMouseWheel(x - activeDialog->_x, y - activeDialog->_y, 1);
       break;
   }
@@ -324,11 +324,11 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
     return;
 
   // Only stop firing events if it's the current stick
-  if(myCurrentHatDown.stick == stick && value == EVENT_HATCENTER)
+  if(myCurrentHatDown.stick == stick && value == JoyHat::CENTER)
   {
     myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
   }
-  else if(value != EVENT_HATCENTER)  // never repeat the 'center' direction
+  else if(value != JoyHat::CENTER)  // never repeat the 'center' direction
   {
     // Now account for repeated hat events (press and hold)
     myCurrentHatDown.stick = stick;

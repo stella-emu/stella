@@ -71,11 +71,11 @@ void EventHandlerSDL2::pollEvent()
         switch(myEvent.button.button)
         {
           case SDL_BUTTON_LEFT:
-            handleMouseButtonEvent(pressed ? EVENT_LBUTTONDOWN : EVENT_LBUTTONUP,
+            handleMouseButtonEvent(pressed ? MouseButton::LBUTTONDOWN : MouseButton::LBUTTONUP,
                                    myEvent.button.x, myEvent.button.y);
             break;
           case SDL_BUTTON_RIGHT:
-            handleMouseButtonEvent(pressed ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP,
+            handleMouseButtonEvent(pressed ? MouseButton::RBUTTONDOWN : MouseButton::RBUTTONUP,
                                    myEvent.button.x, myEvent.button.y);
             break;
         }
@@ -87,9 +87,9 @@ void EventHandlerSDL2::pollEvent()
         int x, y;
         SDL_GetMouseState(&x, &y);  // we need mouse position too
         if(myEvent.wheel.y < 0)
-          handleMouseButtonEvent(EVENT_WHEELDOWN, x, y);
+          handleMouseButtonEvent(MouseButton::WHEELDOWN, x, y);
         else if(myEvent.wheel.y > 0)
-          handleMouseButtonEvent(EVENT_WHEELUP, x, y);
+          handleMouseButtonEvent(MouseButton::WHEELUP, x, y);
         break;
       }
 
@@ -112,11 +112,15 @@ void EventHandlerSDL2::pollEvent()
       case SDL_JOYHATMOTION:
       {
         int v = myEvent.jhat.value, value = 0;
-        if(v & SDL_HAT_UP)        value |= EVENT_HATUP_M;
-        if(v & SDL_HAT_DOWN)      value |= EVENT_HATDOWN_M;
-        if(v & SDL_HAT_LEFT)      value |= EVENT_HATLEFT_M;
-        if(v & SDL_HAT_RIGHT)     value |= EVENT_HATRIGHT_M;
-        if(v == SDL_HAT_CENTERED) value  = EVENT_HATCENTER_M;
+        if(v & SDL_HAT_CENTERED)
+          value  = EVENT_HATCENTER_M;
+        else
+        {
+          if(v & SDL_HAT_UP)    value |= EVENT_HATUP_M;
+          if(v & SDL_HAT_DOWN)  value |= EVENT_HATDOWN_M;
+          if(v & SDL_HAT_LEFT)  value |= EVENT_HATLEFT_M;
+          if(v & SDL_HAT_RIGHT) value |= EVENT_HATRIGHT_M;
+        }
 
         handleJoyHatEvent(myEvent.jhat.which, myEvent.jhat.hat, value);
         break;  // SDL_JOYHATMOTION

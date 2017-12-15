@@ -671,16 +671,16 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, int x, int y)
   {
     switch(b)
     {
-      case EVENT_LBUTTONDOWN:
+      case MouseButton::LBUTTONDOWN:
         myEvent.set(Event::MouseButtonLeftValue, 1);
         break;
-      case EVENT_LBUTTONUP:
+      case MouseButton::LBUTTONUP:
         myEvent.set(Event::MouseButtonLeftValue, 0);
         break;
-      case EVENT_RBUTTONDOWN:
+      case MouseButton::RBUTTONDOWN:
         myEvent.set(Event::MouseButtonRightValue, 1);
         break;
-      case EVENT_RBUTTONUP:
+      case MouseButton::RBUTTONUP:
         myEvent.set(Event::MouseButtonRightValue, 0);
         break;
       default:
@@ -869,29 +869,29 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
   // when we get a diagonal hat event
   if(myState == S_EMULATE)
   {
-    handleEvent(joy->hatTable[hat][EVENT_HATUP][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::UP)][kEmulationMode],
                 value & EVENT_HATUP_M);
-    handleEvent(joy->hatTable[hat][EVENT_HATRIGHT][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::RIGHT)][kEmulationMode],
                 value & EVENT_HATRIGHT_M);
-    handleEvent(joy->hatTable[hat][EVENT_HATDOWN][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::DOWN)][kEmulationMode],
                 value & EVENT_HATDOWN_M);
-    handleEvent(joy->hatTable[hat][EVENT_HATLEFT][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::LEFT)][kEmulationMode],
                 value & EVENT_HATLEFT_M);
   }
   else if(myOverlay)
   {
     if(value == EVENT_HATCENTER_M)
-      myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
+      myOverlay->handleJoyHatEvent(stick, hat, JoyHat::CENTER);
     else
     {
       if(value & EVENT_HATUP_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATUP);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::UP);
       if(value & EVENT_HATRIGHT_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATRIGHT);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::RIGHT);
       if(value & EVENT_HATDOWN_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::DOWN);
       if(value & EVENT_HATLEFT_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::LEFT);
     }
   }
 }
@@ -1354,12 +1354,13 @@ void EventHandler::setActionMappings(EventMode mode)
           {
             buf.str("");
             buf << "J" << stick << "/H" << hat;
-            switch(dir)
+            switch(JoyHat(dir))
             {
-              case EVENT_HATUP:    buf << "/up";    break;
-              case EVENT_HATDOWN:  buf << "/down";  break;
-              case EVENT_HATLEFT:  buf << "/left";  break;
-              case EVENT_HATRIGHT: buf << "/right"; break;
+              case JoyHat::UP:    buf << "/up";    break;
+              case JoyHat::DOWN:  buf << "/down";  break;
+              case JoyHat::LEFT:  buf << "/left";  break;
+              case JoyHat::RIGHT: buf << "/right"; break;
+              case JoyHat::CENTER:                 break;
             }
             if(key == "")
               key = key + buf.str();
@@ -1563,7 +1564,7 @@ bool EventHandler::addJoyButtonMapping(Event::Type event, EventMode mode,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
-                                    int stick, int hat, int value,
+                                    int stick, int hat, JoyHat value,
                                     bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
@@ -1571,9 +1572,9 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
   if(joy)
   {
     if(hat >= 0 && hat < joy->numHats && event < Event::LastType &&
-       value != EVENT_HATCENTER)
+       value != JoyHat::CENTER)
     {
-      joy->hatTable[hat][value][mode] = event;
+      joy->hatTable[hat][int(value)][mode] = event;
       if(updateMenus)
         setActionMappings(mode);
       return true;

@@ -78,7 +78,7 @@ class Widget : public GuiObject
     virtual void handleJoyDown(int stick, int button) { }
     virtual void handleJoyUp(int stick, int button) { }
     virtual void handleJoyAxis(int stick, int axis, int value) { }
-    virtual bool handleJoyHat(int stick, int hat, int value) { return false; }
+    virtual bool handleJoyHat(int stick, int hat, JoyHat value) { return false; }
     virtual bool handleEvent(Event::Type event) { return false; }
 
     void draw() override;

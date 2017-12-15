@@ -203,9 +203,9 @@ class EventHandler
       const StellaJoystick* joy = myJoyHandler->joy(stick);
       return joy ? joy->btnTable[button][mode] : Event::NoType;
     }
-    Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const {
+    Event::Type eventForJoyHat(int stick, int hat, JoyHat value, EventMode mode) const {
       const StellaJoystick* joy = myJoyHandler->joy(stick);
-      return joy ? joy->hatTable[hat][value][mode] : Event::NoType;
+      return joy ? joy->hatTable[hat][int(value)][mode] : Event::NoType;
     }
 
     Event::Type eventAtIndex(int idx, EventMode mode) const;
@@ -267,7 +267,7 @@ class EventHandler
                           'adds', in which case it's delayed until the end
     */
     bool addJoyHatMapping(Event::Type event, EventMode mode,
-                          int stick, int hat, int value,
+                          int stick, int hat, JoyHat value,
                           bool updateMenus = true);
 
     /**

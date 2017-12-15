@@ -297,7 +297,7 @@ void ContextMenu::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ContextMenu::handleJoyHat(int stick, int hat, int value)
+bool ContextMenu::handleJoyHat(int stick, int hat, JoyHat value)
 {
   handleEvent(instance().eventHandler().eventForJoyHat(stick, hat, value, kMenuMode));
   return true;
