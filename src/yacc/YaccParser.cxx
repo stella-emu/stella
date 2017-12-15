@@ -219,6 +219,8 @@ CpuMethod getCpuSpecial(char* ch)
     return &CpuDebug::i;
   else if(BSPF::equalsIgnoreCase(ch, "b"))
     return &CpuDebug::b;
+  else if(BSPF::equalsIgnoreCase(ch, "_cycles"))
+    return &CpuDebug::cycles;
   else
     return nullptr;
 }

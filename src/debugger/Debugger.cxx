@@ -802,6 +802,7 @@ Debugger::BuiltinFunction Debugger::ourBuiltinFunctions[NUM_BUILTIN_FUNCS] = {
 Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_bank",      "Currently selected bank" },
   { "_cclocks",   "Color clocks on current scanline" },
+  { "_cycles",    "Number of cycles of last instruction" },
   { "_cycleshi",  "Higher 32 bits of number of cycles since emulation started" },
   { "_cycleslo",  "Lower 32 bits of number of cycles since emulation started" },
   { "_fcount",    "Number of frames since emulation started" },
