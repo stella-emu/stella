@@ -62,7 +62,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   myVolumeLabel = new StaticTextWidget(this, font,
                                        xpos + myVolumeSlider->getWidth() + 4,
                                        ypos + 1,
-                                       3*fontWidth, fontHeight, "", kTextAlignLeft);
+                                       3*fontWidth, fontHeight, "", TextAlign::Left);
 
   myVolumeLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
@@ -105,7 +105,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   new StaticTextWidget(this, infofont, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
-        "(*) Requires application restart", kTextAlignLeft);
+        "(*) Requires application restart", TextAlign::Left);
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;

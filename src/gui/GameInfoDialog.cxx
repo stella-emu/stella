@@ -76,49 +76,49 @@ GameInfoDialog::GameInfoDialog(
   lwidth = font.getStringWidth("Manufacturer ");
   fwidth = _w - xpos - lwidth - hSpace - hBorder * 2;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Name", kTextAlignLeft);
+                       "Name", TextAlign::Left);
   myName = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
                               fwidth, lineHeight, "");
   wid.push_back(myName);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "MD5", kTextAlignLeft);
+                       "MD5", TextAlign::Left);
   myMD5 = new EditTextWidget(myTab, font, xpos + lwidth, ypos-1,
                      fwidth, lineHeight, "");
   myMD5->setEditable(false);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Manufacturer", kTextAlignLeft);
+                       "Manufacturer", TextAlign::Left);
   myManufacturer = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
                                       fwidth, lineHeight, "");
   wid.push_back(myManufacturer);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Model", kTextAlignLeft);
+                       "Model", TextAlign::Left);
   myModelNo = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
                                  fwidth, lineHeight, "");
   wid.push_back(myModelNo);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Rarity", kTextAlignLeft);
+                       "Rarity", TextAlign::Left);
   myRarity = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
                                 fwidth, lineHeight, "");
   wid.push_back(myRarity);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Note", kTextAlignLeft);
+                       "Note", TextAlign::Left);
   myNote = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
                               fwidth, lineHeight, "");
   wid.push_back(myNote);
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Sound", kTextAlignLeft);
+                       "Sound", TextAlign::Left);
   pwidth = font.getStringWidth("Stereo");
   items.clear();
   VarList::push_back(items, "Mono", "MONO");
@@ -129,7 +129,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Type", kTextAlignLeft);
+                       "Type", TextAlign::Left);
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
   for(int i = 0; i < int(BSType::NumSchemes); ++i)
@@ -150,7 +150,7 @@ GameInfoDialog::GameInfoDialog(
   lwidth = font.getStringWidth("Right Difficulty ");
   pwidth = font.getStringWidth("B & W");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Left Difficulty", kTextAlignLeft);
+                       "Left Difficulty", TextAlign::Left);
   items.clear();
   VarList::push_back(items, "B", "B");
   VarList::push_back(items, "A", "A");
@@ -160,7 +160,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Right Difficulty", kTextAlignLeft);
+                       "Right Difficulty", TextAlign::Left);
   // ... use same items as above
   myRightDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                 pwidth, lineHeight, items, "", 0, 0);
@@ -168,7 +168,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + vGap;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "TV Type", kTextAlignLeft);
+                       "TV Type", TextAlign::Left);
   items.clear();
   VarList::push_back(items, "Color", "COLOR");
   VarList::push_back(items, "B & W", "BW");
@@ -187,7 +187,7 @@ GameInfoDialog::GameInfoDialog(
   ypos = vBorder;
   pwidth = font.getStringWidth("Paddles_IAxis");
   myP0Label = new StaticTextWidget(myTab, font, hSpace, ypos+1,
-      "P0 Controller ", kTextAlignLeft);
+      "P0 Controller ", TextAlign::Left);
   ctrls.clear();
   VarList::push_back(ctrls, "Joystick",      "JOYSTICK"     );
   VarList::push_back(ctrls, "Paddles",       "PADDLES"      );
@@ -213,7 +213,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + vGap;
   pwidth = font.getStringWidth("Paddles_IAxis");
   myP1Label = new StaticTextWidget(myTab, font, hSpace, ypos+1,
-      "P1 Controller ", kTextAlignLeft);
+      "P1 Controller ", TextAlign::Left);
   myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myP1Controller);
@@ -281,7 +281,7 @@ GameInfoDialog::GameInfoDialog(
 
   myMouseRangeLabel = new StaticTextWidget(myTab, font,
                             myMouseRange->getRight() + 4, myMouseRange->getTop()+1,
-                            "   ", kTextAlignLeft);
+                            "   ", TextAlign::Left);
   myMouseRangeLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 2
@@ -294,7 +294,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos = vBorder;
   pwidth = font.getStringWidth("Auto-detect");
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Format ", kTextAlignLeft);
+  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Format ", TextAlign::Left);
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
   VarList::push_back(items, "NTSC",    "NTSC");
@@ -308,25 +308,25 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myFormat);
 
   ypos += lineHeight + vGap;
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "YStart ", kTextAlignLeft);
+  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "YStart ", TextAlign::Left);
   myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, 8*fontWidth, lineHeight,
                               "", 0, kYStartChanged);
   myYStart->setMinValue(TIAConstants::minYStart-1);
   myYStart->setMaxValue(TIAConstants::maxYStart);
   wid.push_back(myYStart);
   myYStartLabel = new StaticTextWidget(myTab, font, myYStart->getRight() + 4,
-                                       ypos+1, 5*fontWidth, fontHeight, "", kTextAlignLeft);
+                                       ypos+1, 5*fontWidth, fontHeight, "", TextAlign::Left);
   myYStartLabel->setFlags(WIDGET_CLEARBG);
 
   ypos += lineHeight + vGap;
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Height ", kTextAlignLeft);
+  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Height ", TextAlign::Left);
   myHeight = new SliderWidget(myTab, font, t->getRight(), ypos, 8*fontWidth, lineHeight,
                               "", 0, kHeightChanged);
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
   wid.push_back(myHeight);
   myHeightLabel = new StaticTextWidget(myTab, font, myHeight->getRight() + 4,
-                                       ypos+1, 5*fontWidth, fontHeight, "", kTextAlignLeft);
+                                       ypos+1, 5*fontWidth, fontHeight, "", TextAlign::Left);
   myHeightLabel->setFlags(WIDGET_CLEARBG);
 
   // Phosphor
@@ -344,7 +344,7 @@ GameInfoDialog::GameInfoDialog(
 
   myPPBlendLabel = new StaticTextWidget(myTab, font,
                                         myPPBlend->getRight() + 4, myPhosphor->getTop(),
-                                        5*fontWidth, fontHeight, "", kTextAlignLeft);
+                                        5*fontWidth, fontHeight, "", TextAlign::Left);
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 3
@@ -359,7 +359,7 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(this, ifont, hSpace, _h - (buttonHeight + fontHeight + 20),
                        lwidth, fontHeight,
                        "(*) Changes to properties require a ROM reload",
-                       kTextAlignLeft);
+                       TextAlign::Left);
 
   // Add Defaults, OK and Cancel buttons
   wid.clear();

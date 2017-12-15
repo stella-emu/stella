@@ -162,7 +162,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   xpos = hSpace + myDeadzone->getWidth() + 5;
   myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
-                                         lineHeight, "", kTextAlignLeft);
+                                         lineHeight, "", TextAlign::Left);
   myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDeadzone);
 
@@ -174,7 +174,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   xpos = hSpace + myDPaddleSpeed->getWidth() + 5;
   myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", kTextAlignLeft);
+                                        "", TextAlign::Left);
   myDPaddleLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDPaddleSpeed);
 
@@ -186,7 +186,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   xpos = hSpace + myMPaddleSpeed->getWidth() + 5;
   myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", kTextAlignLeft);
+                                        "", TextAlign::Left);
   myMPaddleSpeed->setFlags(WIDGET_CLEARBG);
   wid.push_back(myMPaddleSpeed);
 
@@ -198,7 +198,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
   xpos = hSpace + myTrackBallSpeed->getWidth() + 5;
   myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                          "", kTextAlignLeft);
+                                          "", TextAlign::Left);
   myTrackBallSpeed->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTrackBallSpeed);
 

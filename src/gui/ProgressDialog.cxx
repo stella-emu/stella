@@ -46,7 +46,7 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 
   xpos = fontWidth; ypos = lineHeight;
   myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                                   message, kTextAlignCenter);
+                                   message, TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
   xpos = fontWidth; ypos += 2 * lineHeight;

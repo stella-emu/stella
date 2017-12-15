@@ -69,13 +69,13 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // Show results of ROM audit
   ypos += buttonHeight + 16;
   new StaticTextWidget(this, font, hBorder, ypos, lwidth, fontHeight,
-                       "ROMs with properties (renamed) ", kTextAlignLeft);
+                       "ROMs with properties (renamed) ", TextAlign::Left);
   myResults1 = new EditTextWidget(this, font, hBorder + lwidth, ypos - 2,
                                   _w - hBorder*2 - lwidth, lineHeight, "");
   myResults1->setEditable(false, true);
   ypos += buttonHeight;
   new StaticTextWidget(this, font, hBorder, ypos, lwidth, fontHeight,
-                       "ROMs without properties (skipped) ", kTextAlignLeft);
+                       "ROMs without properties (skipped) ", TextAlign::Left);
   myResults2 = new EditTextWidget(this, font, hBorder + lwidth, ypos - 2,
                                   _w - hBorder*2 - lwidth, lineHeight, "");
   myResults2->setEditable(false, true);
@@ -83,7 +83,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   ypos += buttonHeight + 8;
   new StaticTextWidget(this, font, hBorder, ypos, _w - 20, fontHeight,
                        "(*) WARNING: operation cannot be undone!",
-                       kTextAlignLeft);
+                       TextAlign::Left);
 
   // Add OK and Cancel buttons
   addOKCancelBGroup(wid, font, "Audit", "Done");

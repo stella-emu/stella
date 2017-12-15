@@ -179,7 +179,7 @@ class FBSurface
       @param style  The 'FrameStyle' to use for the surrounding frame
     */
     virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           uInt32 color, FrameStyle style = kSolidLine);
+                           uInt32 color, FrameStyle style = FrameStyle::Solid);
 
     /**
       This method should be called to draw the specified string.
@@ -196,7 +196,7 @@ class FBSurface
     */
     virtual void drawString(
         const GUI::Font& font, const string& s, int x, int y, int w,
-        uInt32 color, TextAlignment align = kTextAlignLeft,
+        uInt32 color, TextAlign align = TextAlign::Left,
         int deltax = 0, bool useEllipsis = true);
 
     /**

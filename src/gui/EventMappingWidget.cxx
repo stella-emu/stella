@@ -108,7 +108,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   xpos = 10;  ypos = 5 + myActionsList->getHeight() + 5;
   StaticTextWidget* t;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
-                           fontHeight, "Action", kTextAlignLeft);
+                           fontHeight, "Action", TextAlign::Left);
   t->setFlags(WIDGET_CLEARBG);
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,

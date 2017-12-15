@@ -268,7 +268,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   else
     tmp->_hasFocus = true;
 
-  s.frameRect(x, y, w, h, kWidFrameColor, kDashLine);
+  s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
 
   tmp->setDirty();
   s.setDirty();
@@ -289,7 +289,7 @@ void Widget::setDirtyInChain(Widget* start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h,
-                                   const string& text, TextAlignment align)
+                                   const string& text, TextAlign align)
   : Widget(boss, font, x, y, w, h),
     _align(align)
 {
@@ -306,7 +306,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
-                                   const string& text, TextAlignment align)
+                                   const string& text, TextAlign align)
   : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(), text, align)
 {
 }
@@ -341,7 +341,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int cmd)
-  : StaticTextWidget(boss, font, x, y, w, h, label, kTextAlignCenter),
+  : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
     _cmd(cmd)
 {
@@ -704,7 +704,7 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, kTextAlignRight);
+                 isEnabled() ? kTextColor : kColor, TextAlign::Right);
 
   // Draw the box
   s.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);

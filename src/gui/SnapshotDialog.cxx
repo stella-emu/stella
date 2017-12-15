@@ -99,7 +99,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   fwidth = font.getStringWidth("When saving snapshots:");
   xpos = vBorder;  ypos += buttonHeight + 5;
   new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
-                       "When saving snapshots:", kTextAlignLeft);
+                       "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
   xpos += 30;  ypos += lineHeight + 3;

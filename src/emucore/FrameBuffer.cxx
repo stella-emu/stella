@@ -176,7 +176,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
   if(myDesktopSize.w < kFBMinW && myDesktopSize.h < kFBMinH &&
      (myDesktopSize.w < width || myDesktopSize.h < height))
-    return kFailTooLarge;
+    return FBInitStatus::FailTooLarge;
 
   useFullscreen = myOSystem.settings().getBool("fullscreen");
 #else
@@ -184,7 +184,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // We only really need to worry about it in non-windowed environments,
   // where requesting a window that's too large will probably cause a crash
   if(myDesktopSize.w < width || myDesktopSize.h < height)
-    return kFailTooLarge;
+    return FBInitStatus::FailTooLarge;
 #endif
 
   // Set the available video modes for this framebuffer
@@ -213,11 +213,11 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     else
     {
       myOSystem.logMessage("ERROR: Couldn't initialize video subsystem", 0);
-      return kFailNotSupported;
+      return FBInitStatus::FailNotSupported;
     }
   }
   else
-    return kFailTooLarge;
+    return FBInitStatus::FailTooLarge;
 
   // Erase any messages from a previous run
   myMsg.counter = 0;
@@ -245,7 +245,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
       myOSystem.logMessage(post_about, 1);
   }
 
-  return kSuccess;
+  return FBInitStatus::Success;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -283,9 +283,9 @@ void FrameBuffer::update()
                 myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
         myStatsMsg.surface->drawString(infoFont(),
-          msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
+          msg, 1, 1, myStatsMsg.w, myStatsMsg.color, TextAlign::Left);
         myStatsMsg.surface->drawString(infoFont(),
-          info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
+          info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, TextAlign::Left);
         myStatsMsg.surface->setDirty();
         myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->render();
@@ -302,7 +302,7 @@ void FrameBuffer::update()
       if (myPausedCount-- <= 0)
       {
         resetPauseDelay();
-        showMessage("Paused", kMiddleCenter);
+        showMessage("Paused", MessagePosition::MiddleCenter);
       }
       break;  // S_PAUSE
     }
@@ -408,47 +408,47 @@ inline void FrameBuffer::drawMessage()
   // Draw the bounded box and text
   switch(myMsg.position)
   {
-    case kTopLeft:
+    case MessagePosition::TopLeft:
       myMsg.x = 5;
       myMsg.y = 5;
       break;
 
-    case kTopCenter:
+    case MessagePosition::TopCenter:
       myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
       myMsg.y = 5;
       break;
 
-    case kTopRight:
+    case MessagePosition::TopRight:
       myMsg.x = myImageRect.width() - myMsg.w - 5;
       myMsg.y = 5;
       break;
 
-    case kMiddleLeft:
+    case MessagePosition::MiddleLeft:
       myMsg.x = 5;
       myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
       break;
 
-    case kMiddleCenter:
+    case MessagePosition::MiddleCenter:
       myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
       myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
       break;
 
-    case kMiddleRight:
+    case MessagePosition::MiddleRight:
       myMsg.x = myImageRect.width() - myMsg.w - 5;
       myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
       break;
 
-    case kBottomLeft:
+    case MessagePosition::BottomLeft:
       myMsg.x = 5;
       myMsg.y = myImageRect.height() - myMsg.h - 5;
       break;
 
-    case kBottomCenter:
+    case MessagePosition::BottomCenter:
       myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
       myMsg.y = myImageRect.height() - myMsg.h - 5;
       break;
 
-    case kBottomRight:
+    case MessagePosition::BottomRight:
       myMsg.x = myImageRect.width() - myMsg.w - 5;
       myMsg.y = myImageRect.height() - myMsg.h - 5;
       break;
@@ -458,7 +458,7 @@ inline void FrameBuffer::drawMessage()
   myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
   myMsg.surface->drawString(font(), myMsg.text, 4, 4,
-                            myMsg.w, myMsg.color, kTextAlignLeft);
+                            myMsg.w, myMsg.color, TextAlign::Left);
 
   // Either erase the entire message (when time is reached),
   // or show again this frame

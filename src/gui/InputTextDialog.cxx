@@ -86,7 +86,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
     xpos = 10;
     new StaticTextWidget(this, lfont, xpos, ypos + 2,
                          lwidth, fontHeight,
-                         labels[i], kTextAlignLeft);
+                         labels[i], TextAlign::Left);
 
     xpos += lwidth + fontWidth;
     EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
@@ -99,7 +99,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
   xpos = 10;
   myTitle = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
-                                 "", kTextAlignLeft);
+                                 "", TextAlign::Left);
   myTitle->setTextColor(kTextColorEm);
 
   addToFocusList(wid);

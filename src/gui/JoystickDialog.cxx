@@ -46,7 +46,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   ypos = _h - buttonHeight - 10;
   StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos,
       font.getStringWidth("Joystick ID "), font.getFontHeight(),
-      "Joystick ID ", kTextAlignLeft);
+      "Joystick ID ", TextAlign::Left);
   xpos += t->getWidth() + 4;
   myJoyText = new EditTextWidget(this, font, xpos, ypos-2,
       font.getStringWidth("Unplugged")+8, font.getLineHeight(), "");

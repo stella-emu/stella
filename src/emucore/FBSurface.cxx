@@ -184,14 +184,14 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 {
   switch(style)
   {
-    case kSolidLine:
+    case FrameStyle::Solid:
       hLine(x,         y,         x + w - 1, color);
       hLine(x,         y + h - 1, x + w - 1, color);
       vLine(x,         y,         y + h - 1, color);
       vLine(x + w - 1, y,         y + h - 1, color);
       break;
 
-    case kDashLine:
+    case FrameStyle::Dashed:
       uInt32 i, skip, lwidth = 1;
 
       for(i = x, skip = 1; i < x+w-1; i=i+lwidth+1, ++skip)
@@ -217,7 +217,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
-                           uInt32 color, TextAlignment align,
+                           uInt32 color, TextAlign align,
                            int deltax, bool useEllipsis)
 {
   const string ELLIPSIS = "\x1d"; // "..."
@@ -273,9 +273,9 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
   else
     str = s;
 
-  if(align == kTextAlignCenter)
+  if(align == TextAlign::Center)
     x = x + (w - width - 1)/2;
-  else if(align == kTextAlignRight)
+  else if(align == TextAlign::Right)
     x = x + w - width;
 
   x += deltax;

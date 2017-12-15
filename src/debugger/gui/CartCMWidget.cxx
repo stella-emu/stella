@@ -61,7 +61,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   int lwidth = _font.getStringWidth("Current column ");
   ypos += myLineHeight + 8;
   new StaticTextWidget(boss, _font, xpos, ypos+2, lwidth, myFontHeight,
-                       "Current SWCHA ", kTextAlignLeft);
+                       "Current SWCHA ", TextAlign::Left);
   xpos += lwidth;
   mySWCHA = new ToggleBitWidget(boss, _nfont, xpos, ypos, 8, 1);
   mySWCHA->setTarget(this);
@@ -70,7 +70,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   // Current column number
   xpos = 10;  ypos += myLineHeight + 5;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current column ", kTextAlignLeft);
+        myFontHeight, "Current column ", TextAlign::Left);
   xpos += lwidth;
 
   myColumn = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
@@ -140,7 +140,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   ypos += myLineHeight + 8;
   lwidth = _font.getStringWidth("Ram State ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Ram State ", kTextAlignLeft);
+        myFontHeight, "Ram State ", TextAlign::Left);
   myRAM = new EditTextWidget(boss, _nfont, xpos+lwidth, ypos-2,
               _nfont.getStringWidth(" Write-only "), myLineHeight, "");
   myRAM->setEditable(false, true);

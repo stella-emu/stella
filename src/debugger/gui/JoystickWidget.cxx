@@ -28,7 +28,7 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                           fontHeight, label, kTextAlignLeft);
+                           fontHeight, label, TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 20;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
                                     CheckboxWidget::kCheckActionCmd);

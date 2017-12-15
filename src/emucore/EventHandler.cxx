@@ -2097,20 +2097,20 @@ bool EventHandler::enterDebugMode()
   setEventState(S_DEBUGGER);
 
   FBInitStatus fbstatus = myOSystem.createFrameBuffer();
-  if(fbstatus != kSuccess)
+  if(fbstatus != FBInitStatus::Success)
   {
     myOSystem.debugger().setQuitState();
     setEventState(S_EMULATE);
-    if(fbstatus == kFailTooLarge)
+    if(fbstatus == FBInitStatus::FailTooLarge)
       myOSystem.frameBuffer().showMessage("Debugger window too large for screen",
-                                           kBottomCenter, true);
+                                          MessagePosition::BottomCenter, true);
     return false;
   }
   myOverlay->reStack();
   myOSystem.sound().mute(true);
 #else
   myOSystem.frameBuffer().showMessage("Debugger support not included",
-                                       kBottomCenter, true);
+                                      MessagePosition::BottomCenter, true);
 #endif
 
   return true;

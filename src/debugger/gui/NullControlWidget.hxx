@@ -36,12 +36,12 @@ class NullControlWidget : public ControllerWidget
                 lwidth = std::max(font.getStringWidth(buf.str()),
                 font.getStringWidth("Controller input"));
       new StaticTextWidget(boss, font, x, y+2, lwidth,
-                           fontHeight, buf.str(), kTextAlignLeft);
+                           fontHeight, buf.str(), TextAlign::Left);
       new StaticTextWidget(boss, font, x, y+2+2*lineHeight, lwidth,
-                           fontHeight, "Controller input", kTextAlignCenter);
+                           fontHeight, "Controller input", TextAlign::Center);
       new StaticTextWidget(boss, font, x, y+2+3*lineHeight, lwidth,
                            fontHeight, "not available",
-                           kTextAlignCenter);
+                           TextAlign::Center);
     }
 
     virtual ~NullControlWidget() = default;

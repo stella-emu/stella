@@ -529,7 +529,7 @@ void RomListWidget::drawWidget(bool hilite)
         {
           adjustOffset();
           s.drawString(_font, editString(), _x + r.x(), ypos, r.width(), kTextColor,
-                       kTextAlignLeft, -_editScrollOffset, false);
+                       TextAlign::Left, -_editScrollOffset, false);
 
           drawCaret();
         }

@@ -115,7 +115,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myNAspectRatio);
   myNAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myNAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
+                         ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
   myNAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + VGAP;
 
@@ -127,7 +127,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myPAspectRatio);
   myPAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myPAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
+                         ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
   myPAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + VGAP;
 
@@ -140,7 +140,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myFrameRate);
   myFrameRateLabel =
     new StaticTextWidget(myTab, font, xpos + myFrameRate->getWidth() + 4,
-                         ypos + 1, fontWidth * 4, fontHeight, "", kTextAlignLeft);
+                         ypos + 1, fontWidth * 4, fontHeight, "", TextAlign::Left);
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Add message concerning usage
@@ -148,7 +148,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
   new StaticTextWidget(myTab, infofont, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
-        "(*) Requires application restart", kTextAlignLeft);
+        "(*) Requires application restart", TextAlign::Left);
 
   // Move over to the next column
   xpos += myNAspectRatio->getWidth() + myNAspectRatioLabel->getWidth() + 30;
@@ -228,7 +228,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myTV ## obj);                                            \
   myTV ## obj ## Label =                                                 \
     new StaticTextWidget(myTab, font, xpos+myTV ## obj->getWidth()+4,    \
-                    ypos+1, fontWidth*3, fontHeight, "", kTextAlignLeft);\
+                    ypos+1, fontWidth*3, fontHeight, "", TextAlign::Left);\
   myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
   ypos += lineHeight + VGAP;
 
@@ -269,7 +269,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   xpos -= 8+8;
   myTVScanLabel =
     new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings"),
-                         fontHeight, "Scanline settings", kTextAlignLeft);
+                         fontHeight, "Scanline settings", TextAlign::Left);
   ypos += lineHeight;
 
   xpos += 8+8;

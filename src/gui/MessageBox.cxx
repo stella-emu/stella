@@ -70,7 +70,7 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   for(const auto& s: text)
   {
     new StaticTextWidget(this, font, xpos, ypos, _w - 20,
-                         fontHeight, s, kTextAlignLeft);
+                         fontHeight, s, TextAlign::Left);
     ypos += fontHeight;
   }
 }

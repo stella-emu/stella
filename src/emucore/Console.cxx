@@ -527,7 +527,7 @@ void Console::setProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Console::initializeVideo(bool full)
 {
-  FBInitStatus fbstatus = kSuccess;
+  FBInitStatus fbstatus = FBInitStatus::Success;
 
   if(full)
   {
@@ -535,7 +535,7 @@ FBInitStatus Console::initializeVideo(bool full)
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
                  myTIA->width() << 1, myTIA->height());
-    if(fbstatus != kSuccess)
+    if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 
     myOSystem.frameBuffer().showFrameStats(

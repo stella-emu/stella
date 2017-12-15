@@ -33,7 +33,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                           fontHeight, label, kTextAlignLeft);
+                           fontHeight, label, TextAlign::Left);
 
   ypos += t->getHeight() + 20;
   myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,

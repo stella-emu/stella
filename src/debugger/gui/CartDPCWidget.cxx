@@ -63,13 +63,13 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Data fetchers
   int lwidth = _font.getStringWidth("Data Fetchers ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Data Fetchers ", kTextAlignLeft);
+        myFontHeight, "Data Fetchers ", TextAlign::Left);
 
   // Top registers
   lwidth = _font.getStringWidth("Counter Registers ");
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Top Registers ", kTextAlignLeft);
+        myFontHeight, "Top Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -79,7 +79,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Bottom registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers ", kTextAlignLeft);
+        myFontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -89,7 +89,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Counter registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Counter Registers ", kTextAlignLeft);
+        myFontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
@@ -99,7 +99,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Flag registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Flag Registers ", kTextAlignLeft);
+        myFontHeight, "Flag Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -110,7 +110,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   xpos = 10;  ypos += myLineHeight + 12;
   lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7) ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music mode (DF5/DF6/DF7) ", kTextAlignLeft);
+        myFontHeight, "Music mode (DF5/DF6/DF7) ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::F_16);
@@ -120,7 +120,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Current random number
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current random number ", kTextAlignLeft);
+        myFontHeight, "Current random number ", TextAlign::Left);
   xpos += lwidth;
 
   myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);

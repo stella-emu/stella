@@ -52,7 +52,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         6*fontWidth, fontHeight, regNames[row], kTextAlignLeft);
+                         6*fontWidth, fontHeight, regNames[row], TextAlign::Left);
   }
   xpos += 6*fontWidth + 8;
   myColorRegs = new DataGridWidget(boss, nfont, xpos, ypos,
@@ -92,7 +92,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   {
     ypos += lineHeight;
     t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
-                             dbgLabels[row], kTextAlignLeft);
+                             dbgLabels[row], TextAlign::Left);
     myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
                                ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
@@ -103,7 +103,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   {
     ypos += lineHeight;
     t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
-                             dbgLabels[row], kTextAlignLeft);
+                             dbgLabels[row], TextAlign::Left);
     myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
                                ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
@@ -125,7 +125,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     // Add vertical label
     new StaticTextWidget(boss, lfont, xpos, ypos + row*(lineHeight+3),
                          2*fontWidth, fontHeight,
-                         rowLabel[row], kTextAlignLeft);
+                         rowLabel[row], TextAlign::Left);
 
     for(uInt32 col = 0; col < 5 - row; ++col)
     {
@@ -147,7 +147,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
         labelx += (myCollision[idx]->getWidth() - lwidth) / 2;
 
       new StaticTextWidget(boss, lfont, labelx, ypos-lineHeight, lwidth, fontHeight,
-                           colLabel[col], kTextAlignLeft);
+                           colLabel[col], TextAlign::Left);
 
       collX += myCollision[idx]->getWidth() + 10;
       idx++;
@@ -170,7 +170,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // grP0 (new)
   xpos = 10;  ypos = collY + 4;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "P0", kTextAlignLeft);
+                       "P0", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myGRP0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP0->setTarget(this);
@@ -181,7 +181,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // posP0
   xpos += myGRP0->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", kTextAlignLeft);
+                           "Pos#", TextAlign::Left);
   xpos += t->getWidth() + 2;
   myPosP0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -193,7 +193,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // hmP0
   xpos += myPosP0->getWidth() + fontWidth + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", kTextAlignLeft);
+                       "HM", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myHMP0 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
@@ -236,7 +236,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // NUSIZ0 (player portion)
   xpos += myDelP0->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                       "NuSiz", kTextAlignLeft);
+                       "NuSiz", TextAlign::Left);
   xpos += 5*fontWidth + 5;
   myNusizP0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 3, Common::Base::F_16_1);
@@ -255,7 +255,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // grP1 (new)
   xpos = 10;  ypos += lineHeight + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "P1", kTextAlignLeft);
+                       "P1", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myGRP1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP1->setTarget(this);
@@ -266,7 +266,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // posP1
   xpos += myGRP1->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", kTextAlignLeft);
+                           "Pos#", TextAlign::Left);
   xpos += t->getWidth() + 2;
   myPosP1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -278,7 +278,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // hmP1
   xpos += myPosP1->getWidth() + fontWidth + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", kTextAlignLeft);
+                       "HM", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myHMP1 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
@@ -320,7 +320,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // NUSIZ1 (player portion)
   xpos += myDelP1->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 5*fontWidth, fontHeight,
-                       "NuSiz", kTextAlignLeft);
+                       "NuSiz", TextAlign::Left);
   xpos += 5*fontWidth + 5;
   myNusizP1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 3, Common::Base::F_16_1);
@@ -339,7 +339,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // enaM0
   xpos = 10;  ypos += lineHeight + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "M0", kTextAlignLeft);
+                       "M0", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myEnaM0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaM0->setTarget(this);
@@ -350,7 +350,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // posM0
   xpos += myEnaM0->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", kTextAlignLeft);
+                           "Pos#", TextAlign::Left);
   xpos += t->getWidth() + 2;
   myPosM0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -362,7 +362,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // hmM0
   xpos += myPosM0->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", kTextAlignLeft);
+                       "HM", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myHMM0 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
@@ -373,7 +373,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // NUSIZ0 (missile portion)
   xpos += myHMM0->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                       "Size", kTextAlignLeft);
+                       "Size", TextAlign::Left);
   xpos += 4*fontWidth + 5;
   myNusizM0 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 2, Common::Base::F_16_1);
@@ -402,7 +402,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // enaM1
   xpos = 10;  ypos += lineHeight + 4;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "M1", kTextAlignLeft);
+                       "M1", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myEnaM1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaM1->setTarget(this);
@@ -413,7 +413,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // posM0
   xpos += myEnaM1->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", kTextAlignLeft);
+                           "Pos#", TextAlign::Left);
   xpos += t->getWidth() + 2;
   myPosM1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -425,7 +425,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // hmM0
   xpos += myPosM1->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", kTextAlignLeft);
+                       "HM", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myHMM1 = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
@@ -436,7 +436,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // NUSIZ1 (missile portion)
   xpos += myHMM1->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                       "Size", kTextAlignLeft);
+                       "Size", TextAlign::Left);
   xpos += 4*fontWidth + 5;
   myNusizM1 = new DataGridWidget(boss, nfont, xpos, ypos,
                                  1, 1, 1, 2, Common::Base::F_16_1);
@@ -465,7 +465,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // enaBL
   xpos = 10;  ypos += lineHeight + 4;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "BL", kTextAlignLeft);
+                       "BL", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myEnaBL = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaBL->setTarget(this);
@@ -476,7 +476,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // posBL
   xpos += myEnaBL->getWidth() + 12;
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                           "Pos#", kTextAlignLeft);
+                           "Pos#", TextAlign::Left);
   xpos += t->getWidth() + 2;
   myPosBL = new DataGridWidget(boss, nfont, xpos, ypos,
                                1, 1, 3, 8, Common::Base::F_10);
@@ -488,7 +488,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // hmBL
   xpos += myPosBL->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "HM", kTextAlignLeft);
+                       "HM", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myHMBL = new DataGridWidget(boss, nfont, xpos, ypos,
                               1, 1, 1, 4, Common::Base::F_16_1);
@@ -499,7 +499,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // CTRLPF (size portion)
   xpos += myHMBL->getWidth() + 12;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 4*fontWidth, fontHeight,
-                       "Size", kTextAlignLeft);
+                       "Size", TextAlign::Left);
   xpos += 4*fontWidth + 5;
   mySizeBL = new DataGridWidget(boss, nfont, xpos, ypos,
                                 1, 1, 1, 2, Common::Base::F_16_1);
@@ -541,7 +541,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // PF0
   xpos = 10;  ypos += lineHeight + sfHeight + 6;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
-                       "PF", kTextAlignLeft);
+                       "PF", TextAlign::Left);
   xpos += 2*fontWidth + 5;
   myPF[0] = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 4, 1);
   myPF[0]->setTarget(this);
@@ -570,14 +570,14 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int i = 4; i <= 7; ++i)
   {
     new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
-                         bitNames[i], kTextAlignLeft);
+                         bitNames[i], TextAlign::Left);
     xpos += colw;
   }
   xpos = 10 + 2*fontWidth + 5 + myPF[0]->getWidth() + 2 + start(colw);
   for(int i = 7; i >= 0; --i)
   {
     new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
-                         bitNames[i], kTextAlignLeft);
+                         bitNames[i], TextAlign::Left);
     xpos += colw;
   }
   xpos = 10 + 2*fontWidth + 5 + myPF[0]->getWidth() + 2 +
@@ -585,7 +585,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int i = 0; i <= 7; ++i)
   {
     new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
-                         bitNames[i], kTextAlignLeft);
+                         bitNames[i], TextAlign::Left);
     xpos += colw;
   }
 
@@ -614,7 +614,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos = 10;
   ypos += 2 * lineHeight;
   t = new StaticTextWidget(boss, lfont, xpos, ypos, 13*fontWidth, fontHeight,
-    "Queued Writes", kTextAlignLeft);
+    "Queued Writes", TextAlign::Left);
 
   xpos += t->getWidth() + 10;
   myDelayQueueWidget = new DelayQueueWidget(boss, lfont, xpos, ypos);

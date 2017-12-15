@@ -64,7 +64,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   xpos = 5;  ypos = 5;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
-                                 "", kTextAlignCenter);
+                                 "", TextAlign::Center);
 
   int lwidth = 12 * fontWidth;
   xpos += 5;  ypos += lineHeight + 4;
@@ -72,10 +72,10 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   {
     myKey[i] =
       new StaticTextWidget(this, font, xpos, ypos, lwidth,
-                           fontHeight, "", kTextAlignLeft);
+                           fontHeight, "", TextAlign::Left);
     myDesc[i] =
       new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - 5,
-                           fontHeight, "", kTextAlignLeft);
+                           fontHeight, "", TextAlign::Left);
     ypos += fontHeight;
   }
 

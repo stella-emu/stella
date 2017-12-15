@@ -52,7 +52,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 
   // Label for dialog, indicating which combo is being changed
   myComboName = new StaticTextWidget(this, font, xpos, ypos, _w - xpos - 10,
-                                     fontHeight, "", kTextAlignCenter);
+                                     fontHeight, "", TextAlign::Center);
   ypos += (lineHeight + 4) + 5;
 
   // Add event popup for 8 events

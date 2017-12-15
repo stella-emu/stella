@@ -45,7 +45,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   t = new StaticTextWidget(boss, lfont, xpos, ypos,
                            lfont.getStringWidth("Bank"),
                            lfont.getFontHeight(),
-                           "Bank", kTextAlignLeft);
+                           "Bank", TextAlign::Left);
 
   xpos += t->getWidth() + 5;
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,

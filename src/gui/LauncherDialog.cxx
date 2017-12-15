@@ -66,13 +66,13 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = font.getStringWidth("Select an item from the list ...");
   xpos += 10;  ypos += 8;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                       "Select an item from the list ...", kTextAlignLeft);
+                       "Select an item from the list ...", TextAlign::Left);
 
   lwidth2 = font.getStringWidth("XXXX items found");
   xpos = _w - lwidth2 - 10;
   myRomCount = new StaticTextWidget(this, font, xpos, ypos,
                                     lwidth2, fontHeight,
-                                    "", kTextAlignRight);
+                                    "", TextAlign::Right);
 
   // Add filter that can narrow the results shown in the listing
   // It has to fit between both labels
@@ -116,7 +116,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   xpos += 5;  ypos += myList->getHeight() + 4;
   lwidth = font.getStringWidth("Dir ");
   myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwidth, fontHeight,
-                                    "Dir", kTextAlignLeft);
+                                    "Dir", TextAlign::Left);
   xpos += lwidth + 5;
   myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - 10, lineHeight, "");
   myDir->setEditable(false, true);
@@ -481,7 +481,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           if(result == EmptyString)
             instance().settings().setValue("lastrom", myList->getSelectedString());
           else
-            instance().frameBuffer().showMessage(result, kMiddleCenter, true);
+            instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
         }
       }
       break;

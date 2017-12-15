@@ -76,7 +76,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherWidthLabel =
       new StaticTextWidget(myTab, font,
                            xpos + myLauncherWidthSlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
   myLauncherWidthLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
@@ -90,7 +90,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherHeightLabel =
       new StaticTextWidget(myTab, font,
                            xpos + myLauncherHeightSlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
   myLauncherHeightLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
@@ -133,7 +133,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = ifont.getStringWidth("(*) Changes require application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Changes require application restart",
-                       kTextAlignLeft);
+                       TextAlign::Left);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -194,7 +194,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = ifont.getStringWidth("(*) Requires application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Requires application restart",
-                       kTextAlignLeft);
+                       TextAlign::Left);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);

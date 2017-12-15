@@ -289,7 +289,7 @@ void TabWidget::drawWidget(bool hilite)
     box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, boxcolor, boxcolor, (i == _activeTab));
     s.drawString(_font, _tabs[i].title, x + kTabPadding,
                  _y + yOffset / 2 + (_tabHeight - _fontHeight - 1),
-                 _tabWidth - 2 * kTabPadding, fontcolor, kTextAlignCenter);
+                 _tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
     x += _tabWidth + kTabSpacing;
   }
 

@@ -609,7 +609,7 @@ void DataGridWidget::drawWidget(bool hilite)
       {
         adjustOffset();
         s.drawString(_font, editString(), x, y, _colWidth, kTextColor,
-                     kTextAlignLeft, -_editScrollOffset, false);
+                     TextAlign::Left, -_editScrollOffset, false);
       }
       else
       {

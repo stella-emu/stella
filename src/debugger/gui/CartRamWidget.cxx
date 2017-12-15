@@ -48,7 +48,7 @@ CartRamWidget::CartRamWidget(
 
   // Add RAM size
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "RAM Size ", kTextAlignLeft);
+                       myFontHeight, "RAM Size ", TextAlign::Left);
 
   uInt32 ramsize = cartDebug.internalRamSize();
   buf << ramsize << " bytes";
@@ -70,7 +70,7 @@ CartRamWidget::CartRamWidget(
   if(lines > maxlines) lines = maxlines;
 
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Description ", kTextAlignLeft);
+                       myFontHeight, "Description ", TextAlign::Left);
   myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos,
                                 fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);

@@ -73,7 +73,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 
   StaticTextWidget* t = new StaticTextWidget(boss, _font, xpos, ypos,
       _font.getStringWidth("Harmony Flash "),
-      myFontHeight, "Harmony Flash ", kTextAlignLeft);
+      myFontHeight, "Harmony Flash ", TextAlign::Left);
 
   xpos += t->getWidth() + 4;
   myFlashErase =

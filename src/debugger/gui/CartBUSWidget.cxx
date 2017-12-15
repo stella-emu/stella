@@ -74,7 +74,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   xpos = DS_X;
   ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Datastream Pointers", kTextAlignLeft);
+                       myFontHeight, "Datastream Pointers", TextAlign::Left);
   xpos += lwidth;
 
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X, ypos+myLineHeight-2, 4, 4, 6, 32, Common::Base::F_16_3_2);
@@ -91,23 +91,23 @@ CartridgeBUSWidget::CartridgeBUSWidget(
     myDatastreamLabels[row] =
     new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                          ypos+myLineHeight-2 + row*myLineHeight + 2,
-                         myFontWidth*2, myFontHeight, "", kTextAlignLeft);
+                         myFontWidth*2, myFontHeight, "", TextAlign::Left);
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
   }
   lwidth = _font.getStringWidth("Write Data (stream 16)");
   myDatastreamLabels[4] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                        ypos+myLineHeight-2 + 4*myLineHeight + 2,
-                       lwidth, myFontHeight, "Write Data (stream 16)", kTextAlignLeft);
+                       lwidth, myFontHeight, "Write Data (stream 16)", TextAlign::Left);
   myDatastreamLabels[5] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                        ypos+myLineHeight-2 + 5*myLineHeight + 2,
-                       lwidth, myFontHeight, "Jump Data (stream 17)", kTextAlignLeft);
+                       lwidth, myFontHeight, "Jump Data (stream 17)", TextAlign::Left);
 
   // Datastream Increments
   xpos = DS_X + myDatastreamPointers->getWidth() + 20;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Datastream Increments", kTextAlignLeft);
+                       myFontHeight, "Datastream Increments", TextAlign::Left);
 
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2, 4, 4, 5, 32, Common::Base::F_16_2_2);
   myDatastreamIncrements->setTarget(this);
@@ -120,7 +120,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   // Datastream Maps
   xpos = 0;  ypos += myLineHeight*7 + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Address Maps", kTextAlignLeft);
+                       myFontHeight, "Address Maps", TextAlign::Left);
 
   myAddressMaps = new DataGridWidget(boss, _nfont, 0, ypos+myLineHeight-2, 8, 5, 8, 32, Common::Base::F_16_8);
   myAddressMaps->setTarget(this);
@@ -129,7 +129,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   // Music counters
   xpos = 10;  ypos += myLineHeight*6 + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Counters", kTextAlignLeft);
+        myFontHeight, "Music Counters", TextAlign::Left);
   xpos += lwidth;
 
   myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -139,7 +139,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   // Music frequencies
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Frequencies", kTextAlignLeft);
+        myFontHeight, "Music Frequencies", TextAlign::Left);
   xpos += lwidth;
 
   myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -149,7 +149,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   // Music waveforms
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Waveforms", kTextAlignLeft);
+        myFontHeight, "Music Waveforms", TextAlign::Left);
   xpos += lwidth;
 
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);
@@ -159,7 +159,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   int xpossp = xpos + myMusicWaveforms->getWidth() + 20;
   int lwidth2 = _font.getStringWidth("Sample Pointer ");
   new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
-                       myFontHeight, "Sample Pointer ", kTextAlignLeft);
+                       myFontHeight, "Sample Pointer ", TextAlign::Left);
 
   mySamplePointer = new DataGridWidget(boss, _nfont, xpossp + lwidth2, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
   mySamplePointer->setTarget(this);
@@ -168,7 +168,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   // Music waveform sizes
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Music Waveform Sizes", kTextAlignLeft);
+                       myFontHeight, "Music Waveform Sizes", TextAlign::Left);
   xpos += lwidth;
 
   myMusicWaveformSizes = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_2);

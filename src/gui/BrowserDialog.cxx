@@ -53,13 +53,13 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   xpos = 10;  ypos = 4;
   _title = new StaticTextWidget(this, font, xpos, ypos,
                                 _w - 2 * xpos, lineHeight,
-                                "", kTextAlignCenter);
+                                "", TextAlign::Center);
 
   // Current path - TODO: handle long paths ?
   ypos += lineHeight + 4;
   _currentPath = new StaticTextWidget(this, font, xpos, ypos,
                                        _w - 2 * xpos, lineHeight,
-                                      "", kTextAlignLeft);
+                                      "", TextAlign::Left);
 
   // Add file list
   ypos += lineHeight + 4;
@@ -73,7 +73,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
   _type = new StaticTextWidget(this, font, xpos, ypos+2,
                                font.getStringWidth("Name "), lineHeight,
-                               "Name", kTextAlignCenter);
+                               "Name", TextAlign::Center);
   _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos,
                                  _w - _type->getWidth() - 2 * xpos, lineHeight, "");
   _selected->setEditable(false);

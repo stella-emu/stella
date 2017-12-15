@@ -69,7 +69,7 @@ void StringListWidget::drawWidget(bool hilite)
     {
       adjustOffset();
       s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
-                   kTextAlignLeft, -_editScrollOffset, false);
+                   TextAlign::Left, -_editScrollOffset, false);
     }
     else
       s.drawString(_font, _list[pos], _x + r.left, y, r.width(), kTextColor);

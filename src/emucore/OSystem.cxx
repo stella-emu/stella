@@ -245,25 +245,25 @@ void OSystem::setFramerate(float framerate)
 FBInitStatus OSystem::createFrameBuffer()
 {
   // Re-initialize the framebuffer to current settings
-  FBInitStatus fbstatus = kFailComplete;
+  FBInitStatus fbstatus = FBInitStatus::FailComplete;
   switch(myEventHandler->state())
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_PAUSE:
     case EventHandler::S_MENU:
     case EventHandler::S_CMDMENU:
-      if((fbstatus = myConsole->initializeVideo()) != kSuccess)
+      if((fbstatus = myConsole->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
       break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:
-      if((fbstatus = myLauncher->initializeVideo()) != kSuccess)
+      if((fbstatus = myLauncher->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
       break;  // S_LAUNCHER
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
-      if((fbstatus = myDebugger->initializeVideo()) != kSuccess)
+      if((fbstatus = myDebugger->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
       break;  // S_DEBUGGER
 #endif
@@ -333,7 +333,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   #endif
     myEventHandler->reset(EventHandler::S_EMULATE);
     myEventHandler->setMouseControllerMode(mySettings->getString("usemouse"));
-    if(createFrameBuffer() != kSuccess)  // Takes care of initializeVideo()
+    if(createFrameBuffer() != FBInitStatus::Success)  // Takes care of initializeVideo()
     {
       logMessage("ERROR: Couldn't create framebuffer for console", 0);
       myEventHandler->reset(EventHandler::S_LAUNCHER);
@@ -392,7 +392,7 @@ bool OSystem::createLauncher(const string& startdir)
   bool status = false;
 
   myEventHandler->reset(EventHandler::S_LAUNCHER);
-  if(createFrameBuffer() == kSuccess)
+  if(createFrameBuffer() == FBInitStatus::Success)
   {
     myLauncher->reStack();
     myFrameBuffer->setCursorState();

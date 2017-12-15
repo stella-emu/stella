@@ -65,14 +65,14 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 
   xpos = 5;  ypos = 5;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
-                                 "", kTextAlignCenter);
+                                 "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
   xpos = 10;  ypos += lineHeight + 4;
   for(int i = 0; i < myLinesPerPage; i++)
   {
     myDesc.push_back(new StaticTextWidget(this, font, xpos, ypos, _w - 20,
-                                          fontHeight, "", kTextAlignLeft));
+                                          fontHeight, "", TextAlign::Left));
     myDescStr.push_back("");
     ypos += fontHeight;
   }
@@ -168,7 +168,7 @@ void AboutDialog::displayInfo()
   for(int i = 0; i < myLinesPerPage; i++)
   {
     const char* str = myDescStr[i].c_str();
-    TextAlignment align = kTextAlignCenter;
+    TextAlign align = TextAlign::Center;
     uInt32 color  = kTextColor;
 
     while (str[0] == '\\')
@@ -176,15 +176,15 @@ void AboutDialog::displayInfo()
       switch (str[1])
       {
         case 'C':
-          align = kTextAlignCenter;
+          align = TextAlign::Center;
           break;
 
         case 'L':
-          align = kTextAlignLeft;
+          align = TextAlign::Left;
           break;
 
         case 'R':
-          align = kTextAlignRight;
+          align = TextAlign::Right;
           break;
 
         case 'c':

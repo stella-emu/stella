@@ -90,7 +90,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     new StaticTextWidget(_boss, lfont, xpos - _font.getStringWidth("xxxx"),
                          ypos - myLineHeight,
                          lfont.getStringWidth("xxxx"), myFontHeight,
-                        "00xx", kTextAlignLeft);
+                        "00xx", TextAlign::Left);
 
   for(int col = 0; col < 16; ++col)
   {
@@ -98,7 +98,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                          ypos - myLineHeight,
                          myFontWidth, myFontHeight,
                          Common::Base::toString(col, Common::Base::F_16_1),
-                         kTextAlignLeft);
+                         TextAlign::Left);
   }
 
   uInt32 row;
@@ -107,7 +107,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myRamLabels[row] =
       new StaticTextWidget(_boss, _font, xpos - _font.getStringWidth("x "),
                            ypos + row*myLineHeight + 2,
-                           myFontWidth, myFontHeight, "", kTextAlignLeft);
+                           myFontWidth, myFontHeight, "", TextAlign::Left);
   }
 
   // For smaller grids, make sure RAM cell detail fields are below the RESET button

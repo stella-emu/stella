@@ -188,7 +188,7 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if (_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
-                 isEnabled() ? _textcolor : uInt32(kColor), kTextAlignRight);
+                 isEnabled() ? _textcolor : uInt32(kColor), TextAlign::Right);
 
   // Draw a thin frame around us.
   s.hLine(x, _y, x + w - 1, kColor);
@@ -205,8 +205,8 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the selected entry, if any
   const string& name = myMenu->getSelectedName();
-  TextAlignment align = (_font.getStringWidth(name) > w-6) ?
-                         kTextAlignRight : kTextAlignLeft;
+  TextAlign align = (_font.getStringWidth(name) > w-6) ?
+                     TextAlign::Right : TextAlign::Left;
   s.drawString(_font, name, x+2, _y+myTextY, w-6,
                !isEnabled() ? kColor : kTextColor, align);
 }

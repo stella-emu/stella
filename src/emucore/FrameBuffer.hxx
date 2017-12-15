@@ -125,7 +125,7 @@ class FrameBuffer
       @param force    Force showing this message, even if messages are disabled
     */
     void showMessage(const string& message,
-                     MessagePosition position = kBottomCenter,
+                     MessagePosition position = MessagePosition::BottomCenter,
                      bool force = false);
 
     /**

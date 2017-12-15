@@ -176,23 +176,23 @@ class StaticTextWidget : public Widget
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
-                     const string& text, TextAlignment align = kTextAlignLeft);
+                     const string& text, TextAlign align = TextAlign::Left);
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y,
-                     const string& text, TextAlignment align = kTextAlignLeft);
+                     const string& text, TextAlign align = TextAlign::Left);
     void setValue(int value);
     void setLabel(const string& label);
-    void setAlign(TextAlignment align)  { _align = align; }
-    const string& getLabel() const      { return _label; }
-    bool isEditable() const { return _editable;  }
+    void setAlign(TextAlign align) { _align = align; }
+    const string& getLabel() const { return _label; }
+    bool isEditable() const { return _editable; }
 
   protected:
     void drawWidget(bool hilite) override;
 
   protected:
-    string        _label;
-    bool          _editable;
-    TextAlignment _align;
+    string    _label;
+    bool      _editable;
+    TextAlign _align;
 
   private:
     // Following constructors and assignment operators not supported

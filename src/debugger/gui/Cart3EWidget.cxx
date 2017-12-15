@@ -65,7 +65,7 @@ Cartridge3EWidget::Cartridge3EWidget(
         << (start+0x7FF) << "): ";
 
   new StaticTextWidget(_boss, _font, xpos, ypos, _font.getStringWidth(label.str()),
-    myFontHeight, label.str(), kTextAlignLeft);
+    myFontHeight, label.str(), TextAlign::Left);
   ypos += myLineHeight + 8;
 
   xpos += 40;
