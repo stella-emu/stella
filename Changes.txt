@@ -23,7 +23,7 @@
     - improved cycle count (page penalties, sums created in disassembly)
     - improved handling of instruction masking opcodes (e.g. BIT)
 
-  * Added "Continuous Rewind" mode, which automatically creates save states
+  * Added "Time Machine" mode, which automatically creates save states
     in user-defined intervals.  The user can navigate back and forth within
     these states inside the emulator and the debugger.
 

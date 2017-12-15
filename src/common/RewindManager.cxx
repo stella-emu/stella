@@ -35,24 +35,24 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::setup()
 {
-  myLastContinuousAdd = false;
+  myLastTimeMachineAdd = false;
 
   string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
 
-  mySize = myOSystem.settings().getInt(prefix + "rewind.size");
+  mySize = myOSystem.settings().getInt(prefix + "tm.size");
   if(mySize != myStateList.capacity())
     myStateList.resize(mySize);
 
-  myUncompressed = myOSystem.settings().getInt(prefix + "rewind.uncompressed");
+  myUncompressed = myOSystem.settings().getInt(prefix + "tm.uncompressed");
 
   myInterval = INTERVAL_CYCLES[0];
   for(int i = 0; i < NUM_INTERVALS; ++i)
-    if(INT_SETTINGS[i] == myOSystem.settings().getString(prefix + "rewind.interval"))
+    if(INT_SETTINGS[i] == myOSystem.settings().getString(prefix + "tm.interval"))
       myInterval = INTERVAL_CYCLES[i];
 
   myHorizon = HORIZON_CYCLES[NUM_HORIZONS-1];
   for(int i = 0; i < NUM_HORIZONS; ++i)
-    if(HOR_SETTINGS[i] == myOSystem.settings().getString(prefix + "rewind.horizon"))
+    if(HOR_SETTINGS[i] == myOSystem.settings().getString(prefix + "tm.horizon"))
       myHorizon = HORIZON_CYCLES[i];
 
   // calc interval growth factor
@@ -91,10 +91,10 @@ void RewindManager::setup()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RewindManager::addState(const string& message, bool continuous)
+bool RewindManager::addState(const string& message, bool timeMachine)
 {
-  // only check for continuous rewind states, ignore for debugger
-  if(continuous && myStateList.currentIsValid())
+  // only check for Time Machine states, ignore for debugger
+  if(timeMachine && myStateList.currentIsValid())
   {
     // check if the current state has the right interval from the last state
     RewindState& lastState = myStateList.current();
@@ -130,7 +130,7 @@ bool RewindManager::addState(const string& message, bool continuous)
   {
     state.message = message;
     state.cycles = myOSystem.console().tia().cycles();
-    myLastContinuousAdd = continuous;
+    myLastTimeMachineAdd = timeMachine;
     return true;
   }
   return false;
@@ -147,14 +147,14 @@ uInt32 RewindManager::rewindState(uInt32 numStates)
   {
     if(!atFirst())
     {
-      if(!myLastContinuousAdd)
+      if(!myLastTimeMachineAdd)
         // Set internal current iterator to previous state (back in time),
         // since we will now processed this state
         myStateList.moveToPrevious();
       else
         // except fif the last state was added automatically,
         // because that already happened one interval before
-        myLastContinuousAdd = false;
+        myLastTimeMachineAdd = false;
 
       RewindState& state = myStateList.current();
       Serializer& s = state.data;

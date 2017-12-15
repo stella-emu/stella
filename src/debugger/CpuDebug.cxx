@@ -143,6 +143,12 @@ int CpuDebug::c() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CpuDebug::cycles() const
+{
+  return mySystem.m6502().cycles;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPC(int pc)
 {
   my6502.PC = uInt16(pc);
@@ -218,6 +224,12 @@ void CpuDebug::setZ(bool on)
 void CpuDebug::setC(bool on)
 {
   my6502.C = on;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuDebug::setCycles(int cycles)
+{
+  my6502.cycles = cycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

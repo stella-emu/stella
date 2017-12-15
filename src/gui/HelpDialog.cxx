@@ -153,9 +153,9 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Ctrl PgUp", "Increase Display.Height");
       ADD_BIND("Ctrl PgDn", "Decrease Display.Height");
       ADD_LINE();
-      ADD_BIND("Alt L", "Toggle frame stats");
-      ADD_BIND("Alt ,", "Toggle 'Debug Colors' mode");
-      ADD_BIND("Alt r", "Toggle continuous rewind");
+      ADD_BIND(ALT_" L", "Toggle frame stats");
+      ADD_BIND(ALT_" ,", "Toggle 'Debug Colors' mode");
+      ADD_BIND(ALT_" t", "Toggle 'Time Machine' mode");
       break;
 
     case 5:

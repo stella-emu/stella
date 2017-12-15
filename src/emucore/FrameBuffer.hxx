@@ -147,7 +147,7 @@ class FrameBuffer
     /**
       Reset 'Paused' display delay counter
     */
-    void resetPauseDelay();
+    void setPauseDelay();
 
     /**
       Allocate a new surface.  The FrameBuffer class takes all responsibility

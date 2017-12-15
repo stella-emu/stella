@@ -63,7 +63,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   addEmulationTab(font);
   addVideoTab(font);
-  addStatesTab(font);
+  addTimeMachineTab(font);
   addDebuggerTab(font);
   addDefaultOKCancelButtons(font);
 
@@ -259,7 +259,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::addStatesTab(const GUI::Font& font)
+void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 {
   const string INTERVALS[NUM_INTERVALS] = {
     " 1 frame",
@@ -308,7 +308,7 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   int fontHeight = font.getFontHeight();
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("States");
+  int tabID = myTab->addTab("Time Machine");
 
   // settings set
   mySettingsGroup2 = new RadioButtonGroup();
@@ -321,9 +321,9 @@ void DeveloperDialog::addStatesTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
-  myContinuousRewindWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                                "Continuous rewind", kRewind);
-  wid.push_back(myContinuousRewindWidget);
+  myTimeMachineWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+                                           "Time Machine", kTimeMachine);
+  wid.push_back(myTimeMachineWidget);
   ypos += lineHeight + VGAP;
 
   int sWidth = font.getMaxCharWidth() * 8;
@@ -518,11 +518,11 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myTVJitterRec[set] = instance().settings().getInt(prefix + "tv.jitter_recovery");
 
   // States
-  myContinuousRewind[set] = instance().settings().getBool(prefix + "rewind");
-  myStateSize[set] = instance().settings().getInt(prefix + "rewind.size");
-  myUncompressed[set] = instance().settings().getInt(prefix + "rewind.uncompressed");
-  myStateInterval[set] = instance().settings().getString(prefix + "rewind.interval");
-  myStateHorizon[set] = instance().settings().getString(prefix + "rewind.horizon");
+  myTimeMachine[set] = instance().settings().getBool(prefix + "timemachine");
+  myStateSize[set] = instance().settings().getInt(prefix + "tm.size");
+  myUncompressed[set] = instance().settings().getInt(prefix + "tm.uncompressed");
+  myStateInterval[set] = instance().settings().getString(prefix + "tm.interval");
+  myStateHorizon[set] = instance().settings().getString(prefix + "tm.horizon");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -550,11 +550,11 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "tv.jitter_recovery", myTVJitterRec[set]);
 
   // States
-  instance().settings().setValue(prefix + "rewind", myContinuousRewind[set]);
-  instance().settings().setValue(prefix + "rewind.size", myStateSize[set]);
-  instance().settings().setValue(prefix + "rewind.uncompressed", myUncompressed[set]);
-  instance().settings().setValue(prefix + "rewind.interval", myStateInterval[set]);
-  instance().settings().setValue(prefix + "rewind.horizon", myStateHorizon[set]);
+  instance().settings().setValue(prefix + "timemachine", myTimeMachine[set]);
+  instance().settings().setValue(prefix + "tm.size", myStateSize[set]);
+  instance().settings().setValue(prefix + "tm.uncompressed", myUncompressed[set]);
+  instance().settings().setValue(prefix + "tm.interval", myStateInterval[set]);
+  instance().settings().setValue(prefix + "tm.horizon", myStateHorizon[set]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -585,7 +585,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myTVJitterRec[set] = myTVJitterRecWidget->getValue();
 
   // States
-  myContinuousRewind[set] = myContinuousRewindWidget->getState();
+  myTimeMachine[set] = myTimeMachineWidget->getState();
   myStateSize[set] = myStateSizeWidget->getValue();
   myUncompressed[set] = myUncompressedWidget->getValue();
   myStateInterval[set] = myStateIntervalWidget->getSelected();
@@ -625,13 +625,13 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   handleEnableDebugColors();
 
   // States
-  myContinuousRewindWidget->setState(myContinuousRewind[set]);
+  myTimeMachineWidget->setState(myTimeMachine[set]);
   myStateSizeWidget->setValue(myStateSize[set]);
   myUncompressedWidget->setValue(myUncompressed[set]);
   myStateIntervalWidget->setSelected(myStateInterval[set]);
   myStateHorizonWidget->setSelected(myStateHorizon[set]);
 
-  handleRewind();
+  handleTimeMachine();
   handleSize();
   handleUncompressed();
   handleInterval();
@@ -715,8 +715,8 @@ void DeveloperDialog::saveConfig()
 
   // update RewindManager
   instance().state().rewindManager().setup();
-  instance().state().setRewindMode(myContinuousRewindWidget->getState() ?
-                                   StateManager::Mode::Rewind : StateManager::Mode::Off);
+  instance().state().setRewindMode(myTimeMachineWidget->getState() ?
+                                   StateManager::Mode::TimeMachine : StateManager::Mode::Off);
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger font style
@@ -768,7 +768,7 @@ void DeveloperDialog::setDefaults()
       break;
 
     case 2: // States
-      myContinuousRewind[set] = devSettings ? true : false;
+      myTimeMachine[set] = devSettings ? true : false;
       myStateSize[set] = 100;
       myUncompressed[set] = devSettings ? 60 : 30;
       myStateInterval[set] = devSettings ? "1f" : "30f";
@@ -827,8 +827,8 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
       instance().console().tia().driveUnusedPinsRandom(myUndrivenPinsWidget->getState());
       break;
 
-    case kRewind:
-      handleRewind();
+    case kTimeMachine:
+      handleTimeMachine();
       break;
 
     case kSizeChanged:
@@ -947,9 +947,9 @@ void DeveloperDialog::handleConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleRewind()
+void DeveloperDialog::handleTimeMachine()
 {
-  bool enable = myContinuousRewindWidget->getState();
+  bool enable = myTimeMachineWidget->getState();
 
   myStateSizeWidget->setEnabled(enable);
   myStateSizeLabelWidget->setEnabled(enable);

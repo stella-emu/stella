@@ -295,7 +295,7 @@
     <li>TIA emulation supports full collision checking, with ability to disable
       TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
-    <li>Automatic save state creation which allows moving back and forth in the recorded timeline</li>
+    <li>Automatic save state creation ('Time Machine') which allows moving back and forth in the recorded timeline</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
       and dynamic analysis at runtime by tracking code/graphics/data sections, and
@@ -1613,9 +1613,9 @@
     </tr>
 
     <tr>
-      <td>Toggle 'Continuous Rewind' mode</td>
-      <td>Alt + r</td>
-      <td>Cmd + r</td>
+      <td>Toggle 'Time Machine' mode</td>
+      <td>Alt + t</td>
+      <td>Cmd + t</td>
     </tr>
 
     <tr>
@@ -2314,6 +2314,11 @@
     </tr>
 
     <tr>
+      <td><pre>-dbg.fontsize &lt;small|medium|large|&gt;</pre></td>
+      <td>Set the font size in the debugger window.</td>
+    </tr>
+
+    <tr>
       <td><pre>-dbg.fontstyle &lt;0|1|2|3&gt;</pre></td>
       <td>How to use bold fonts in the debugger window. '0' means all normal font,
       '1' is bold labels only, '2' is bold non-labels only, '3' is all bold font.</td>
@@ -2502,23 +2507,23 @@
       <td><pre>-&lt;plr.|dev.&gt;debugcolors &lt;1|0&gt;</pre></td>
       <td>Enable/disable the fixed debug colors.</td>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;rewind &lt;1|0&gt;</pre></td>
-      <td>Enables continuous rewind</td>
+      <td><pre>-&lt;plr.|dev.&gt;timemachine &lt;1|0&gt;</pre></td>
+      <td>Enables the Time Machine</td>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;rewind.size &lt;20 - 1000&gt;</pre></td>
-      <td>Defines the rewind buffer size.</td>
-    </tr><tr>
-    </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;rewind.uncompressed &lt;0 - 1000&gt;</pre></td>
-      <td>Defines the uncompressed rewind buffer size. Must be &lt;= rewind buffer size.</td>
+      <td><pre>-&lt;plr.|dev.&gt;tm.size &lt;20 - 1000&gt;</pre></td>
+      <td>Defines the Time Machine buffer size.</td>
     </tr><tr>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;rewind.interval &lt;1f|3f|10f|30f|1s|3s|10s&gt;</pre></td>
+      <td><pre>-&lt;plr.|dev.&gt;tm.uncompressed &lt;0 - 1000&gt;</pre></td>
+      <td>Defines the uncompressed Time Machine buffer size. Must be &lt;= Time Machine buffer size.</td>
+    </tr><tr>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;tm.interval &lt;1f|3f|10f|30f|1s|3s|10s&gt;</pre></td>
       <td>Defines the interval between two save states.</td>
     </tr><tr>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;rewind.horizon &lt;3s|10s|30s|1m|3m|10m|30m|60m&gt;</pre></td>
-      <td>Defines the horizon of the rewind buffer.</td>
+      <td><pre>-&lt;plr.|dev.&gt;tm.horizon &lt;3s|10s|30s|1m|3m|10m|30m|60m&gt;</pre></td>
+      <td>Defines the horizon of the Time Machine.</td>
     </tr>
   </table>
   </blockquote>
@@ -3062,7 +3067,7 @@
   <p><b>Developer Settings</b> dialog (Video):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
-      <td><img src="graphics/options_developer_dbgcolors.png"></td>
+      <td><img src="graphics/options_developer_video.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
@@ -3086,48 +3091,47 @@
     </tr>
   </table>
 
-  <p><b>Developer Settings</b> dialog (States) <b>TODO</b></p>
+  <p><b>Developer Settings</b> dialog (Time Machine)</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
-      <td><img src="graphics/options_developer_states.png"></td>
+      <td><img src="graphics/options_developer_timemachine.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr>
             <th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th>
           </tr><tr>
-            <td>Continuous rewind</td>
+            <td>Time Machine</td>
             <td>
-              When continuous rewind is enabled, Stella will automatically
-              create new save states in the interval described below. The user
+              When the Time Machine is enabled, Stella will automatically
+              buffer save states in the interval described below. The user
               can then navigate back and forth within the recorded timeline.</br>
               Note: This buffer is identical with the one described in
-              <a href="debugger.html#GlobalButtons"><b>Debugger/Global Buttons</b></a>.
-              It is independent from the save states manually created
-              with F9.
+              <a href="debugger.html#GlobalButtons"><b>Debugger - Global Buttons</b></a>.
+              It is independent from the save states manually created with F9.
             </td>
-            <td>-plr.rewind<br>-dev.rewind</td>
+            <td>-plr.timemachine<br>-dev.timemachine</td>
           </tr><tr>
             <td>Buffer size</td>
             <td>
-              Defines the rewind buffer size. The larger the buffer, the less
+              Defines the Time Machine buffer size. The larger the buffer, the less
               save states have to be compressed to reach the horizon.
             </td>
-            <td>-plr.rewind.size<br>-dev.rewind.size</td>
+            <td>-plr.tm.size<br>-dev.tm.size</td>
           </tr><tr>
-            <td>Uncompressed size</td>
+            <td>Uncompressed size (*)</td>
             <td>
-              Defines the uncompressed rewind buffer size. States within this
+              Defines the uncompressed Time Machine buffer size. States within this
               area will not be compressed and keep their initial interval.</td>
-            <td><span style="white-space:nowrap">-plr.rewind.uncompressed<br>-dev.rewind.uncompressed</span></td>
+            <td><span style="white-space:nowrap">-plr.tm.uncompressed<br>-dev.tm.uncompressed</span></td>
           </tr><tr>
             <td>Interval</td>
             <td>Defines the interval between two save states when they are created.</td>
-            <td>-plr.rewind.interval<br>-dev.rewind.interval</td>
+            <td>-plr.tm.interval<br>-dev.tm.interval</td>
           </tr><tr>
             <td>Horizon</td>
             <td>
-              Defines the horizon of the rewind buffer. A large horizon allows
+              Defines the horizon of the Time Machine. A large horizon allows
               going back further in time. To reach the horizon, save states
               will be compressed (*). This means that more and more intermediate
               states will be removed and the interval between save states
@@ -3136,7 +3140,7 @@
               (*) Compresion only works if 'Uncompressed size' is smaller than
               'Buffer size'.
             </td>
-            <td>-plr.rewind.horizon<br>-dev.rewind.horizon</td>
+            <td>-plr.tm.horizon<br>-dev.tm.horizon</td>
           </tr>
         </table>
       </td>
@@ -3151,8 +3155,8 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Font size</td><td>Self-explanatory (requires ROM reload)</td><td>-dbg.fontsize</td></tr>
           <tr><td>Font style</td><td>Self-explanatory (requires ROM reload)</td><td>-dbg.fontstyle</td></tr>
-          <tr><td>Font size</td><td>Self-explanatory (requires ROM reload)</td><td>N/A</td></tr>
           <tr><td>Debugger width/height</td><td>Self-explanatory (requires ROM reload)</td><td>-dbg.res</td></tr>
         </table>
       </td>

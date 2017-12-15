@@ -103,7 +103,7 @@ class RewindManager
 
       @param message  Message to display when replaying this state
     */
-    bool addState(const string& message, bool continuous = false);
+    bool addState(const string& message, bool timeMachine = false);
 
     /**
       Rewind one level of the state list, and display the message associated
@@ -142,7 +142,7 @@ class RewindManager
     uInt32 myInterval;
     uInt64 myHorizon;
     double myFactor;
-    bool   myLastContinuousAdd;
+    bool   myLastTimeMachineAdd;
 
     struct RewindState {
       Serializer data;  // actual save state

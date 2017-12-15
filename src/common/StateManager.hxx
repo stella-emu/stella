@@ -35,7 +35,7 @@ class StateManager
   public:
     enum class Mode {
       Off,
-      Rewind,
+      TimeMachine,
       MovieRecord,
       MoviePlayback
     };
@@ -63,7 +63,7 @@ class StateManager
       Toggle state rewind recording mode; this uses the RewindManager
       for its functionality.
     */
-    void toggleRewindMode();
+    void toggleTimeMachine();
 
     /**
       Sets state rewind recording mode; this uses the RewindManager

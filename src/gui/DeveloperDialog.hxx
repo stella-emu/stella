@@ -63,11 +63,11 @@ class DeveloperDialog : public Dialog
       kTVJitter             = 'DVjt',
       kTVJitterChanged      = 'DVjr',
       kPPinCmd              = 'DVpn',
-      kRewind               = 'DSrw',
-      kSizeChanged          = 'DSsz',
-      kUncompressedChanged  = 'DSuc',
-      kIntervalChanged      = 'DSin',
-      kHorizonChanged       = 'DShz',
+      kTimeMachine          = 'DTtm',
+      kSizeChanged          = 'DTsz',
+      kUncompressedChanged  = 'DTuc',
+      kIntervalChanged      = 'DTin',
+      kHorizonChanged       = 'DThz',
       kP0ColourChangedCmd   = 'GOp0',
       kM0ColourChangedCmd   = 'GOm0',
       kP1ColourChangedCmd   = 'GOp1',
@@ -117,7 +117,7 @@ class DeveloperDialog : public Dialog
 
     // States widgets
     RadioButtonGroup*   mySettingsGroup2;
-    CheckboxWidget*     myContinuousRewindWidget;
+    CheckboxWidget*     myTimeMachineWidget;
     SliderWidget*       myStateSizeWidget;
     StaticTextWidget*   myStateSizeLabelWidget;
     SliderWidget*       myUncompressedWidget;
@@ -149,7 +149,7 @@ class DeveloperDialog : public Dialog
     bool    myUndrivenPins[2];
     bool    myThumbException[2];
     // States sets
-    bool    myContinuousRewind[2];
+    bool    myTimeMachine[2];
     int     myStateSize[2];
     int     myUncompressed[2];
     string  myStateInterval[2];
@@ -157,7 +157,7 @@ class DeveloperDialog : public Dialog
 
   private:
     void addEmulationTab(const GUI::Font& font);
-    void addStatesTab(const GUI::Font& font);
+    void addTimeMachineTab(const GUI::Font& font);
     void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
     // Add Defaults, OK and Cancel buttons
@@ -176,7 +176,7 @@ class DeveloperDialog : public Dialog
     void handleDebugColours(int cmd, int color);
     void handleDebugColours(const string& colors);
 
-    void handleRewind();
+    void handleTimeMachine();
     void handleSize();
     void handleUncompressed();
     void handleInterval();

@@ -129,16 +129,16 @@ void StateManager::toggleRecordMode()
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StateManager::toggleRewindMode()
+void StateManager::toggleTimeMachine()
 {
   bool devSettings = myOSystem.settings().getBool("dev.settings");
 
-  myActiveMode = myActiveMode == Mode::Rewind ? Mode::Off : Mode::Rewind;
-  if(myActiveMode == Mode::Rewind)
-    myOSystem.frameBuffer().showMessage("Continuous rewind enabled");
+  myActiveMode = myActiveMode == Mode::TimeMachine ? Mode::Off : Mode::TimeMachine;
+  if(myActiveMode == Mode::TimeMachine)
+    myOSystem.frameBuffer().showMessage("Time Machine enabled");
   else
-    myOSystem.frameBuffer().showMessage("Continuous rewind disabled");
-  myOSystem.settings().setValue(devSettings ? "dev.rewind" : "plr.rewind", myActiveMode == Mode::Rewind);
+    myOSystem.frameBuffer().showMessage("Time Machine disabled");
+  myOSystem.settings().setValue(devSettings ? "dev.timemachine" : "plr.timemachine", myActiveMode == Mode::TimeMachine);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,8 +160,8 @@ void StateManager::update()
 {
   switch(myActiveMode)
   {
-    case Mode::Rewind:
-      myRewindManager->addState("continuous rewind", true);
+    case Mode::TimeMachine:
+      myRewindManager->addState("Time Machine", true);
       break;
 
 #if 0
@@ -357,7 +357,7 @@ void StateManager::reset()
 {
   myRewindManager->clear();
   myActiveMode = myOSystem.settings().getBool(
-    myOSystem.settings().getBool("dev.settings") ? "dev.rewind" : "plr.rewind") ? Mode::Rewind : Mode::Off;
+    myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine") ? Mode::TimeMachine : Mode::Off;
 
 #if 0
   myCurrentSlot = 0;

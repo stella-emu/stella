@@ -155,11 +155,11 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.debugcolors", "false");
   setInternal("plr.tiadriven", "false");
   setInternal("plr.console", "2600"); // 7800
-  setInternal("plr.rewind", false);
-  setInternal("plr.rewind.size", 100);
-  setInternal("plr.rewind.uncompressed", 30);
-  setInternal("plr.rewind.interval", "30f"); // = 0.5 seconds
-  setInternal("plr.rewind.horizon", "10m"); // = ~10 minutes
+  setInternal("plr.timemachine", false);
+  setInternal("plr.tm.size", 100);
+  setInternal("plr.tm.uncompressed", 30);
+  setInternal("plr.tm.interval", "30f"); // = 0.5 seconds
+  setInternal("plr.tm.horizon", "10m"); // = ~10 minutes
   // Thumb ARM emulation options
   setInternal("plr.thumb.trapfatal", "false");
 
@@ -175,11 +175,11 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
-  setInternal("dev.rewind", true);
-  setInternal("dev.rewind.size", 100);
-  setInternal("dev.rewind.uncompressed", 60);
-  setInternal("dev.rewind.interval", "1f"); // = 1 frame
-  setInternal("dev.rewind.horizon", "10s"); // = ~10 seconds
+  setInternal("dev.timemachine", true);
+  setInternal("dev.tm.size", 100);
+  setInternal("dev.tm.uncompressed", 60);
+  setInternal("dev.tm.interval", "1f"); // = 1 frame
+  setInternal("dev.tm.horizon", "10s"); // = ~10 seconds
   // Thumb ARM emulation options
   setInternal("dev.thumb.trapfatal", "true");
 }
@@ -319,40 +319,40 @@ void Settings::validate()
   i = getInt("dev.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("dev.tv.jitter_recovery", "2");
 
-  int size = getInt("dev.rewind.size");
+  int size = getInt("dev.tm.size");
   if(size < 20 || size > 1000)
   {
-    setInternal("dev.rewind.size", 20);
+    setInternal("dev.tm.size", 20);
     size = 20;
   }
 
-  i = getInt("dev.rewind.uncompressed");
-  if(i < 0 || i > size) setInternal("dev.rewind.uncompressed", size);
+  i = getInt("dev.tm.uncompressed");
+  if(i < 0 || i > size) setInternal("dev.tm.uncompressed", size);
 
-  /*i = getInt("dev.rewind.interval");
-  if(i < 0 || i > 5) setInternal("dev.rewind.interval", 0);
+  /*i = getInt("dev.tm.interval");
+  if(i < 0 || i > 5) setInternal("dev.tm.interval", 0);
 
-  i = getInt("dev.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 1);*/
+  i = getInt("dev.tm.horizon");
+  if(i < 0 || i > 6) setInternal("dev.tm.horizon", 1);*/
 
   i = getInt("plr.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
 
-  size = getInt("plr.rewind.size");
+  size = getInt("plr.tm.size");
   if(size < 20 || size > 1000)
   {
-    setInternal("plr.rewind.size", 20);
+    setInternal("plr.tm.size", 20);
     size = 20;
   }
 
-  i = getInt("plr.rewind.uncompressed");
-  if(i < 0 || i > size) setInternal("plr.rewind.uncompressed", size);
+  i = getInt("plr.tm.uncompressed");
+  if(i < 0 || i > size) setInternal("plr.tm.uncompressed", size);
 
-  /*i = getInt("plr.rewind.interval");
-  if(i < 0 || i > 5) setInternal("plr.rewind.interval", 3);
+  /*i = getInt("plr.tm.interval");
+  if(i < 0 || i > 5) setInternal("plr.tm.interval", 3);
 
-  i = getInt("plr.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("plr.rewind.horizon", 5);*/
+  i = getInt("plr.tm.horizon");
+  if(i < 0 || i > 6) setInternal("plr.tm.horizon", 5);*/
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");

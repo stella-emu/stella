@@ -61,6 +61,8 @@ class CpuDebug : public DebuggerSystem
     int z() const;
     int c() const;
 
+    int cycles() const;
+
     void setPC(int pc);
     void setSP(int sp);
     void setPS(int ps);
@@ -75,6 +77,8 @@ class CpuDebug : public DebuggerSystem
     void setI(bool on);
     void setZ(bool on);
     void setC(bool on);
+
+    void setCycles(int cycles);
 
     void toggleN();
     void toggleV();
