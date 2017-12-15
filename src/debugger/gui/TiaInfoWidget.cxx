@@ -128,8 +128,8 @@ void TiaInfoWidget::loadConfig()
   Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
 
-  myFrameCount->setText(Common::Base::toString(tia.frameCount(), Common::Base::F_10));
-  myFrameCycles->setText(Common::Base::toString(tia.frameCycles(), Common::Base::F_10));
+  myFrameCount->setText("  " + Common::Base::toString(tia.frameCount(), Common::Base::F_10));
+  myFrameCycles->setText("  " + Common::Base::toString(tia.frameCycles(), Common::Base::F_10));
 
   myVSync->setState(tia.vsync());
   myVBlank->setState(tia.vblank());
