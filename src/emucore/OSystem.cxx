@@ -47,6 +47,7 @@
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Launcher.hxx"
+#include "Rewinder.hxx"
 #include "PNGLibrary.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
@@ -140,6 +141,7 @@ bool OSystem::create()
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
   myLauncher = make_unique<Launcher>(*this);
+  myRewinder = make_unique<Rewinder>(*this);
   myStateManager = make_unique<StateManager>(*this);
 
   // Create the sound object; the sound subsystem isn't actually

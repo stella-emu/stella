@@ -26,6 +26,7 @@ class Console;
 class Debugger;
 class Launcher;
 class Menu;
+class Rewinder;
 class FrameBuffer;
 class PNGLibrary;
 class Properties;
@@ -151,6 +152,13 @@ class OSystem
       @return The launcher object
     */
     Launcher& launcher() const { return *myLauncher; }
+
+    /**
+      Get the state rewinder of the system.
+
+      @return The rewinder object
+    */
+    Rewinder& rewinder() const { return *myRewinder; }
 
     /**
       Get the state manager of the system.
@@ -460,6 +468,9 @@ class OSystem
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;
     bool myLauncherUsed;
+
+    // Pointer to the Rewinder object
+    unique_ptr<Rewinder> myRewinder;
 
   #ifdef DEBUGGER_SUPPORT
     // Pointer to the Debugger object

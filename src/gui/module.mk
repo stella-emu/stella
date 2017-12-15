@@ -37,6 +37,8 @@ MODULE_OBJS := \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \
 	src/gui/RadioButtonWidget.o \
+	src/gui/Rewinder.o \
+	src/gui/RewindDialog.o \
 	src/gui/RomAuditDialog.o \
 	src/gui/RomInfoWidget.o \
 	src/gui/ScrollBarWidget.o \
