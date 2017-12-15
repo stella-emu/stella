@@ -408,6 +408,35 @@ void DebuggerDialog::addStatusArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addRomArea()
 {
+  static uInt32 LEFT_ARROW[11] =
+  {
+    0b0000010,
+    0b0000110,
+    0b0001110,
+    0b0011110,
+    0b0111110,
+    0b1111110,
+    0b0111110,
+    0b0011110,
+    0b0001110,
+    0b0000110,
+    0b0000010
+  };
+  static uInt32 RIGHT_ARROW[11] =
+  {
+    0b0100000,
+    0b0110000,
+    0b0111000,
+    0b0111100,
+    0b0111110,
+    0b0111111,
+    0b0111110,
+    0b0111100,
+    0b0111000,
+    0b0110000,
+    0b0100000
+  };
+
   const GUI::Rect& r = getRomBounds();
   const int VBORDER = 4;
   const string ELLIPSIS = "\x1d";
@@ -430,20 +459,23 @@ void DebuggerDialog::addRomArea()
   new ButtonWidget(this, *myLFont, buttonX, buttonY,
                    bwidth, bheight, "Exit", kDDExitCmd);
 
-  bwidth = myLFont->getStringWidth("< ") + 4;
+  bwidth = bheight; // 7 + 12;
   bheight = bheight * 3 + 4 * 2;
   buttonX -= (bwidth + 5);
   buttonY = r.top + 5;
+
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, "<", kDDRewindCmd);
+                     bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd);
+
   myRewindButton->clearFlags(WIDGET_ENABLED);
 
   buttonY += bheight + 4;
   bheight = (myLFont->getLineHeight() + 2) * 2 + 4 * 1;
+
   myUnwindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, ">", kDDUnwindCmd);
+                     bwidth, bheight, RIGHT_ARROW, 7, 11, kDDUnwindCmd);
   myUnwindButton->clearFlags(WIDGET_ENABLED);
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;

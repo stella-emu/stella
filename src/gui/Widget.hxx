@@ -217,6 +217,10 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  const string& label, int cmd = 0);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int dw, int dh,
+                 uInt32* bitmap, int bmw, int bmh,
+                 int cmd = 0);
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
@@ -230,7 +234,10 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void drawWidget(bool hilite) override;
 
   protected:
-    int    _cmd;
+    int     _cmd;
+    bool    _useBitmap;
+    uInt32* _bitmap;
+    int     _bmw, _bmh;
 
   private:
     // Following constructors and assignment operators not supported

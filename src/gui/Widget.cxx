@@ -343,7 +343,8 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            const string& label, int cmd)
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
-    _cmd(cmd)
+    _cmd(cmd),
+    _useBitmap(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _bgcolor = kBtnColor;
@@ -368,6 +369,19 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            const string& label, int cmd)
   : ButtonWidget(boss, font, x, y, 20, label, cmd)
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y, int w, int h,
+                           uInt32* bitmap, int bmw, int bmh,
+                           int cmd)
+  : ButtonWidget(boss, font, x, y, w, h, "", cmd)
+{
+  _bitmap = bitmap;
+  _bmh = bmh;
+  _bmw = bmw;
+  _useBitmap = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -415,9 +429,15 @@ void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-               !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
-               hilite ? _textcolorhi : _textcolor, _align);
+  if (!_useBitmap)
+    s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
+                 !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
+                 hilite ? _textcolorhi : _textcolor, _align);
+  else
+    s.drawBitmap(_bitmap, _x + (_w - _bmw) / 2, _y + (_h - _bmh) / 2,
+                 !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
+                 hilite ? _textcolorhi : _textcolor,
+                 _bmw, _bmh);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
