@@ -48,6 +48,9 @@
     information).  In the case of 'saveses', the filename is now named
     based on the date and time of when the command was entered.
 
+	* Fixed change tracking bug during rewind; changes were accumulated
+	  instead of being displayed only for the last rewind step.
+
   * Fixed bug with saving snapshots in 1x mode; there was graphical
     corruption in some cases.  Such snapshots also now include any TV
     effects / phosphor blending currently in use.
