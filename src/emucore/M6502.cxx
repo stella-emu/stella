@@ -20,6 +20,8 @@
   #include "Expression.hxx"
   #include "CartDebug.hxx"
   #include "PackedBitArray.hxx"
+  #include "TIA.hxx"
+  #include "M6532.hxx"
 
   // Flags for disassembly types
   #define DISASM_CODE  CartDebug::CODE
@@ -65,7 +67,8 @@ M6502::M6502(const Settings& settings)
     myLastSrcAddressY(-1),
     myDataAddressForPoke(0),
     myOnHaltCallback(nullptr),
-    myHaltRequested(false)
+    myHaltRequested(false),
+    myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
@@ -198,10 +201,21 @@ inline void M6502::handleHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::updateStepStateByInstruction()
+{
+  myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() || myTrapConds.size();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::execute(uInt32 number)
 {
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
+
+#ifdef DEBUGGER_SUPPORT
+  TIA& tia = mySystem->tia();
+  M6532& riot = mySystem->m6532();
+#endif
 
   // Loop until execution is stopped or a fatal error occurs
   for(;;)
@@ -258,6 +272,13 @@ bool M6502::execute(uInt32 number)
           myExecutionStatus |= FatalErrorBit;
       }
       //cycles = mySystem->cycles() - c0;
+
+#ifdef DEBUGGER_SUPPORT
+      if (myStepStateByInstruction) {
+        tia.updateEmulation();
+        riot.updateEmulation();
+      }
+#endif
     }
 
     // See if we need to handle an interrupt
@@ -367,6 +388,7 @@ bool M6502::save(Serializer& out) const
     out.putInt(myLastSrcAddressY);
 
     out.putBool(myHaltRequested);
+    out.putBool(myStepStateByInstruction);
   }
   catch(...)
   {
@@ -417,6 +439,7 @@ bool M6502::load(Serializer& in)
     myLastSrcAddressY = in.getInt();
 
     myHaltRequested = in.getBool();
+    myStepStateByInstruction = in.getBool();
   }
   catch(...)
   {
@@ -440,6 +463,9 @@ uInt32 M6502::addCondBreak(Expression* e, const string& name)
 {
   myCondBreaks.emplace_back(e);
   myCondBreakNames.push_back(name);
+
+  updateStepStateByInstruction();
+
   return uInt32(myCondBreaks.size() - 1);
 }
 
@@ -450,6 +476,9 @@ bool M6502::delCondBreak(uInt32 idx)
   {
     Vec::removeAt(myCondBreaks, idx);
     Vec::removeAt(myCondBreakNames, idx);
+
+    updateStepStateByInstruction();
+
     return true;
   }
   return false;
@@ -460,6 +489,8 @@ void M6502::clearCondBreaks()
 {
   myCondBreaks.clear();
   myCondBreakNames.clear();
+
+  updateStepStateByInstruction();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -473,6 +504,9 @@ uInt32 M6502::addCondSaveState(Expression* e, const string& name)
 {
   myCondSaveStates.emplace_back(e);
   myCondSaveStateNames.push_back(name);
+
+  updateStepStateByInstruction();
+
   return uInt32(myCondSaveStates.size() - 1);
 }
 
@@ -483,6 +517,9 @@ bool M6502::delCondSaveState(uInt32 idx)
   {
     Vec::removeAt(myCondSaveStates, idx);
     Vec::removeAt(myCondSaveStateNames, idx);
+
+    updateStepStateByInstruction();
+
     return true;
   }
   return false;
@@ -493,6 +530,8 @@ void M6502::clearCondSaveStates()
 {
   myCondSaveStates.clear();
   myCondSaveStateNames.clear();
+
+  updateStepStateByInstruction();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -506,6 +545,9 @@ uInt32 M6502::addCondTrap(Expression* e, const string& name)
 {
   myTrapConds.emplace_back(e);
   myTrapCondNames.push_back(name);
+
+  updateStepStateByInstruction();
+
   return uInt32(myTrapConds.size() - 1);
 }
 
@@ -516,6 +558,9 @@ bool M6502::delCondTrap(uInt32 brk)
   {
     Vec::removeAt(myTrapConds, brk);
     Vec::removeAt(myTrapCondNames, brk);
+
+    updateStepStateByInstruction();
+
     return true;
   }
   return false;
@@ -526,6 +571,8 @@ void M6502::clearCondTraps()
 {
   myTrapConds.clear();
   myTrapCondNames.clear();
+
+  updateStepStateByInstruction();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

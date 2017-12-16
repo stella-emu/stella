@@ -443,6 +443,11 @@ class TIA : public Device
     */
     string name() const override { return "TIA"; }
 
+    /**
+     * Run and forward TIA emulation to the current system clock.
+     */
+    void updateEmulation();
+
   private:
     /**
      * During each line, the TIA cycles through these two states.
@@ -480,11 +485,6 @@ class TIA : public Device
      * for the cycles the 6502 spent in halt state.
      */
     void onHalt();
-
-    /**
-     * Run and forward TIA emulation to the current system clock.
-     */
-    void updateEmulation();
 
     /**
      * Execute colorClocks cycles of TIA simulation.
