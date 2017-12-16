@@ -312,6 +312,12 @@ class M6502 : public Serializable
     */
     void handleHalt();
 
+    /**
+      Check whether we are required to update hardware (TIA + RIOT) in lockstep
+      with the CPU and update the flag accordingly.
+    */
+    void updateStepStateByInstruction();
+
   private:
     /**
       Bit fields used to indicate that certain conditions need to be
@@ -438,6 +444,8 @@ class M6502 : public Serializable
     StringList myCondSaveStateNames;
     vector<unique_ptr<Expression>> myTrapConds;
     StringList myTrapCondNames;
+
+    bool myStepStateByInstruction;
 
 #endif  // DEBUGGER_SUPPORT
 
