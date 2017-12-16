@@ -241,12 +241,15 @@ class Debugger : public DialogContainer
 
   private:
     /**
-      Save state of each debugger subsystem.
-
-      If a message is provided, we assume that a rewind state should
-      be saved with the given message.
+      Save state of each debugger subsystem and, by default, mark all
+      pages as clean (ie, turn off the dirty flag).
     */
-    void saveOldState(string rewindMsg = "");
+    void saveOldState(bool clearDirtyPages = true);
+
+    /**
+      Saves a rewind state with the given message.
+    */
+    void addState(string rewindMsg);
 
     /**
       Set initial state before entering the debugger.

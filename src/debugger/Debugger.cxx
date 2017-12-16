@@ -270,7 +270,7 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   uInt64 startCycle = mySystem.cycles();
 
@@ -278,7 +278,7 @@ int Debugger::step()
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockBankswitchState();
 
-  saveOldState("step");
+  addState("step");
   return int(mySystem.cycles() - startCycle);
 }
 
@@ -297,7 +297,7 @@ int Debugger::trace()
   // 32 is the 6502 JSR instruction:
   if(mySystem.peek(myCpuDebug->pc()) == 32)
   {
-    mySystem.clearDirtyPages();
+    saveOldState();
 
     uInt64 startCycle = mySystem.cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
@@ -306,7 +306,7 @@ int Debugger::trace()
     myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
     lockBankswitchState();
 
-    saveOldState("trace");
+    addState("trace");
     return int(mySystem.cycles() - startCycle);
   }
   else
@@ -485,7 +485,7 @@ void Debugger::nextScanline(int lines)
   ostringstream buf;
   buf << "scanline + " << lines;
 
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   unlockBankswitchState();
   while(lines)
@@ -495,7 +495,7 @@ void Debugger::nextScanline(int lines)
   }
   lockBankswitchState();
 
-  saveOldState(buf.str());
+  addState(buf.str());
   myOSystem.console().tia().flushLineCache();
 }
 
@@ -505,7 +505,7 @@ void Debugger::nextFrame(int frames)
   ostringstream buf;
   buf << "frame + " << frames;
 
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   unlockBankswitchState();
   while(frames)
@@ -515,7 +515,7 @@ void Debugger::nextFrame(int frames)
   }
   lockBankswitchState();
 
-  saveOldState(buf.str());
+  addState(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -588,20 +588,24 @@ bool Debugger::patchROM(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveOldState(string rewindMsg)
+void Debugger::saveOldState(bool clearDirtyPages)
 {
+  if (clearDirtyPages)
+    mySystem.clearDirtyPages();
+
   myCartDebug->saveOldState();
   myCpuDebug->saveOldState();
   myRiotDebug->saveOldState();
   myTiaDebug->saveOldState();
+}
 
-  // Add another rewind level to the Undo list
-  if(rewindMsg != "")
-  {
-    RewindManager& r = myOSystem.state().rewindManager();
-    r.addState(rewindMsg);
-    updateRewindbuttons(r);
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::addState(string rewindMsg)
+{
+  // Add another rewind level to the Time Machine buffer
+  RewindManager& r = myOSystem.state().rewindManager();
+  r.addState(rewindMsg);
+  updateRewindbuttons(r);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -612,7 +616,9 @@ void Debugger::setStartState()
 
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
-  saveOldState(r.atLast() ? "enter debugger" : "");
+  saveOldState(false);
+  if (r.atLast())
+    addState("enter debugger");
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);

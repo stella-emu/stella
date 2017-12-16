@@ -233,7 +233,7 @@ bool M6502::execute(uInt32 number)
       cond = evalCondSaveStates();
       if(cond > -1)
       {
-        myDebugger->saveOldState("conditional savestate");
+        myDebugger->addState("conditional savestate");
       }
 #endif  // DEBUGGER_SUPPORT
 
