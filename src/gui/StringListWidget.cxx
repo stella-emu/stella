@@ -68,11 +68,20 @@ void StringListWidget::drawWidget(bool hilite)
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
+#ifndef FLAT_UI
       s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
       s.drawString(_font, _list[pos], _x + r.left, y, r.width(), kTextColor);
+#else
+      s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
+                   TextAlign::Left, -_editScrollOffset, false);
+    }
+    else
+      s.drawString(_font, _list[pos], _x + r.left, y, r.width(),
+                   _selectedItem == pos && _hilite && _hasFocus && !_editMode ? kWidColor : kTextColor);
+#endif
   }
 
   // Only draw the caret while editing, and if it's in the current viewport

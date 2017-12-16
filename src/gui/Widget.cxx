@@ -90,7 +90,11 @@ void Widget::draw()
   // Draw border
   if(hasBorder)
   {
+#ifndef FLAT_UI
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
+#else
+    s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) ? kScrollColorHi : kColor);
+#endif // !FLAT_UI
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -442,6 +446,7 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
+#ifndef FLAT_UI
 static uInt32 checked_img_active[8] =
 {
 	0b11111111,
@@ -477,7 +482,49 @@ static uInt32 checked_img_circle[8] =
 	0b01111110,
 	0b00011000
 };
+#else
+static uInt32 checked_img_active[10] =
+{
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111
+};
 
+static uInt32 checked_img_inactive[10] =
+{
+  0b1111111111,
+  0b1111111111,
+  0b1111001111,
+  0b1110000111,
+  0b1100000011,
+  0b1100000011,
+  0b1110000111,
+  0b1111001111,
+  0b1111111111,
+  0b1111111111
+};
+
+static uInt32 checked_img_circle[10] =
+{
+  0b0001111000,
+  0b0111111110,
+  0b0111111110,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b0111111110,
+  0b0111111110,
+  0b0001111000
+};
+#endif // !FLAT_UI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, const string& label,
@@ -510,6 +557,20 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _textY = (14 - _font.getFontHeight()) / 2;
 
   setFill(CheckboxWidget::Normal);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::handleMouseEntered(int button)
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::handleMouseLeft(int button)
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -574,14 +635,24 @@ void CheckboxWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
+#ifndef FLAT_UI
   // Draw the box
   if(_drawBox)
     s.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
-
   // Do we draw a square or cross?
   s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, isEnabled() ? _bgcolor : kColor);
   if(_state)
     s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
+#else
+  if(_drawBox)
+    s.frameRect(_x, _y + _boxY, 14, 14, hilite ? kScrollColorHi : kShadowColor);
+  // Do we draw a square or cross?
+  s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, isEnabled() ? _bgcolor : kColor);
+  if(_state)
+    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled()
+                 ? hilite ? kScrollColorHi : kCheckColor
+                 : kShadowColor, 10);
+#endif
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,
@@ -725,17 +796,25 @@ void SliderWidget::drawWidget(bool hilite)
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,
                  isEnabled() ? kTextColor : kColor, TextAlign::Right);
-
+#ifndef FLAT_UI
   // Draw the box
   s.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
-
   // Fill the box
   s.fillRect(_x + _labelWidth + 2, _y + 2, _w - _labelWidth - 4, _h - 4,
              !isEnabled() ? kBGColorHi : kWidColor);
-
   // Draw the 'bar'
   s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+#else
+  // Draw the box
+  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, hilite ? kSliderColorHi : kShadowColor);
+  // Fill the box
+  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
+             !isEnabled() ? kBGColorHi : kWidColor);
+  // Draw the 'bar'
+  s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
+             !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

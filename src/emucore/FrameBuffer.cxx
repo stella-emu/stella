@@ -130,7 +130,11 @@ bool FrameBuffer::initialize()
   }
 
   // Set palette for GUI (upper area of array, doesn't change during execution)
-  int palID = myOSystem.settings().getString("uipalette") == "classic" ? 1 : 0;
+  int palID = 0;
+  if(myOSystem.settings().getString("uipalette") == "classic")
+    palID = 1;
+  else if(myOSystem.settings().getString("uipalette") == "light")
+    palID = 2;
 
   for(int i = 0, j = 256; i < kNumColors-256; ++i, ++j)
   {
@@ -937,12 +941,16 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
 
+    // Slider colors
+    kSliderColor,
+    kSliderColorHi
+
     // Debugger colors
     kDbgChangedColor      Background color for changed cells
     kDbgChangedTextColor  Text color for changed cells
     kDbgColorHi           Highlighted color in debugger data cells
 */
-uInt32 FrameBuffer::ourGUIColors[2][kNumColors-256] = {
+uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Standard
   { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040, 0x000000, 0x62a108, 0x9f0000,
     0xc9af7c, 0xf0f0cf, 0xc80000,
@@ -961,5 +969,15 @@ uInt32 FrameBuffer::ourGUIColors[2][kNumColors-256] = {
     0x20a020, 0x00ff00,
     0x20a020, 0x00ff00,
     0xc80000, 0x00ff00, 0xc8c8ff
+  },
+  // Light
+  {
+    0x686868, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, 0x000000, 0x0078d7, 0x0078d7,     // base
+    0xf0f0f0, 0xffffff, 0x0f0f0f,                                                       // elements
+    0xe1e1e1, 0xe5f1fb, 0x202020, 0x000000,                                             // buttons
+    0x333333,                                                                           // checkbox
+    0x808080, 0x0078d7,                                                                 // scrollbar
+    0x333333, 0x0078d7,                                                                 // slider
+    0x800000, 0xffff80, 0x00e0e0                                                        // debugger
   }
 };

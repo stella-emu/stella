@@ -58,7 +58,11 @@ void ContextMenu::addItems(const VariantList& items)
     maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
+#ifndef FLAT_UI
   _w = maxwidth + 10;
+#else
+  _w = maxwidth + 10 + 5;
+#endif
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;

@@ -599,21 +599,26 @@ void DataGridWidget::drawWidget(bool hilite)
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
+      uInt32 color = kTextColor;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col &&
           _hasFocus && !_editMode)
+      {
         s.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
+#ifdef FLAT_UI
+        color = kWidColor;
+#endif
+      }
 
       if (_selectedItem == pos && _editMode)
       {
         adjustOffset();
-        s.drawString(_font, editString(), x, y, _colWidth, kTextColor,
+        s.drawString(_font, editString(), x, y, _colWidth, color,
                      TextAlign::Left, -_editScrollOffset, false);
       }
       else
       {
-        uInt32 color = kTextColor;
         if(_changedList[pos])
         {
           s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);

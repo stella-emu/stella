@@ -520,7 +520,7 @@ class FrameBuffer
     vector<shared_ptr<FBSurface>> mySurfaceList;
 
     // Holds UI palette data (standard and classic colours)
-    static uInt32 ourGUIColors[2][kNumColors-256];
+    static uInt32 ourGUIColors[3][kNumColors-256];
 
   private:
     // Following constructors and assignment operators not supported

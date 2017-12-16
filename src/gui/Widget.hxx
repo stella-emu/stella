@@ -268,8 +268,8 @@ class CheckboxWidget : public ButtonWidget
     bool getState() const  { return _state;     }
 
     void handleMouseUp(int x, int y, int button, int clickCount) override;
-    void handleMouseEntered(int button) override	{ }
-    void handleMouseLeft(int button) override	{ }
+    void handleMouseEntered(int button) override;
+    void handleMouseLeft(int button) override;
 
     static int boxSize() { return 14; }  // box is square
 

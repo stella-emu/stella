@@ -194,6 +194,20 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::handleMouseEntered(int button)
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::handleMouseLeft(int button)
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
@@ -239,11 +253,12 @@ void TabWidget::loadConfig()
   updateActiveTab();
 }
 
+#ifndef FLAT_UI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::box(int x, int y, int width, int height,
                     uInt32 colorA, uInt32 colorB, bool omitBottom)
 {
-//cerr << "TabWidget::box\n";
+  //cerr << "TabWidget::box\n";
   FBSurface& s = _boss->dialog().surface();
 
   s.hLine(x + 1, y, x + width - 2, colorA);
@@ -259,6 +274,7 @@ void TabWidget::box(int x, int y, int width, int height,
   s.vLine(x + width - 1, y + 1, y + height - (omitBottom ? 1 : 2), colorB);
   s.vLine(x + width - 2, y + 1, y + height - (omitBottom ? 2 : 1), colorB);
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::drawWidget(bool hilite)
@@ -275,9 +291,11 @@ void TabWidget::drawWidget(bool hilite)
   const int left2  = right1 + _tabWidth;
   const int right2 = _x + _w - 2;
 
+#ifndef FLAT_UI
   // Draw horizontal line
   s.hLine(left1, _y + _tabHeight - 2, right1, kShadowColor);
   s.hLine(left2, _y + _tabHeight - 2, right2, kShadowColor);
+#endif
 
   // Iterate over all tabs and draw them
   int i, x = _x + kTabLeftOffset;
@@ -285,14 +303,24 @@ void TabWidget::drawWidget(bool hilite)
   {
     uInt32 fontcolor = _tabs[i].enabled ? kTextColor : kColor;
     uInt32 boxcolor = (i == _activeTab) ? kColor : kShadowColor;
+#ifndef FLAT_UI
     int yOffset = (i == _activeTab) ? 0 : 2;
     box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, boxcolor, boxcolor, (i == _activeTab));
     s.drawString(_font, _tabs[i].title, x + kTabPadding,
                  _y + yOffset / 2 + (_tabHeight - _fontHeight - 1),
                  _tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
+#else
+    int yOffset = (i == _activeTab) ? 0 : 1;
+    s.fillRect(x, _y, _tabWidth, _tabHeight, (i == _activeTab)
+               ? kDlgColor : kBGColorHi);
+    s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
+                 _y + yOffset + (_tabHeight - _fontHeight - 1),
+                 _tabWidth - 2 * kTabPadding, (i == _activeTab |true) ? fontcolor : kColor, TextAlign::Center);
+#endif
     x += _tabWidth + kTabSpacing;
   }
 
+#ifndef FLAT_UI
   // Draw a frame around the widget area (belows the tabs)
   s.hLine(left1, _y + _tabHeight - 1, right1, kColor);
   s.hLine(left2, _y + _tabHeight - 1, right2, kColor);
@@ -300,6 +328,9 @@ void TabWidget::drawWidget(bool hilite)
   s.hLine(_x+1, _y + _h - 1, _x + _w - 2, kColor);
   s.vLine(_x + _w - 2, _y + _tabHeight - 1, _y + _h - 2, kColor);
   s.vLine(_x + _w - 1, _y + _tabHeight - 1, _y + _h - 2, kShadowColor);
+#else
+  s.hLine(right1, _y, left2, kScrollColorHi);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -60,6 +60,9 @@ class TabWidget : public Widget, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseEntered(int button) override;
+    void handleMouseLeft(int button) override;
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     bool handleEvent(Event::Type event) override;
 
@@ -93,9 +96,10 @@ class TabWidget : public Widget, public CommandSender
     };
 
   private:
+#ifndef FLAT_UI
     void box(int x, int y, int width, int height,
              uInt32 colorA, uInt32 colorB, bool omitBottom);
-
+#endif
     void updateActiveTab();
 
   private:
