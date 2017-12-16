@@ -530,7 +530,7 @@ uInt16 Debugger::windStates(uInt16 numStates, bool unwind, string& message)
 {
   RewindManager& r = myOSystem.state().rewindManager();
 
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   unlockBankswitchState();
 
@@ -617,6 +617,7 @@ void Debugger::setStartState()
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
   saveOldState(false);
+  // avoid invalidating future states when entering the debugger during rewind
   if (r.atLast())
     addState("enter debugger");
 
