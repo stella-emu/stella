@@ -2470,11 +2470,11 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "dump",
-    "Dump data at address <xx> [to yy] [0-7] (dump to file options)",
+    "Dump data at address <xx> [to yy] [1: memory; 2: CPU state; 4: input regs]",
     "Example:\n"
     "  dump f000 - dumps 128 bytes @ f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
-    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU and input states into a file",
+    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU state and input registers into a file",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
