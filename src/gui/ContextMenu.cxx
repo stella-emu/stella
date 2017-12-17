@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
-                         const VariantList& items, int cmd)
+                         const VariantList& items, int cmd, int width)
   : Dialog(boss->instance(), boss->parent()),
     CommandSender(boss),
     _rowHeight(font.getLineHeight()),
@@ -41,7 +41,8 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _font(font),
     _cmd(cmd),
     _xorig(0),
-    _yorig(0)
+    _yorig(0),
+    _maxWidth(width)
 {
   addItems(items);
 }
@@ -53,15 +54,15 @@ void ContextMenu::addItems(const VariantList& items)
   _entries = items;
 
   // Resize to largest string
-  int maxwidth = 0;
+  int maxwidth = _maxWidth;
   for(const auto& e: _entries)
     maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
 #ifndef FLAT_UI
-  _w = maxwidth + 10;
+  _w = maxwidth + 15;
 #else
-  _w = maxwidth + 10 + 5;
+  _w = maxwidth + 23;
 #endif
   _h = 1;  // recalculate this in ::recalc()
 
@@ -553,10 +554,17 @@ void ContextMenu::drawDialog()
   {
     // Draw menu border and background
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
+#ifndef FLAT_UI
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
     // Draw the entries, taking scroll buttons into account
     int x = _x + 2, y = _y + 2, w = _w - 4;
+#else
+    s.frameRect(_x, _y, _w, _h, kTextColor);
+
+    // Draw the entries, taking scroll buttons into account
+    int x = _x + 1, y = _y + 1, w = _w - 2;
+#endif
 
     // Show top scroll area
     int offset = _selectedOffset;

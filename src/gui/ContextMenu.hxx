@@ -42,7 +42,7 @@ class ContextMenu : public Dialog, public CommandSender
 
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
-                const VariantList& items, int cmd = 0);
+                const VariantList& items, int cmd = 0, int width = 0);
     virtual ~ContextMenu() = default;
 
     /** Add the given items to the widget. */
@@ -124,6 +124,7 @@ class ContextMenu : public Dialog, public CommandSender
     int _cmd;
 
     uInt32 _xorig, _yorig;
+    uInt32 _maxWidth;
 
   private:
     // Following constructors and assignment operators not supported

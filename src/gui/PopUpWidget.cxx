@@ -59,9 +59,9 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _bgcolor = kDlgColor;
-  _bgcolorhi = kWidColor;
+  _bgcolorhi = kDlgColor;     // do not highlight the label
   _textcolor = kTextColor;
-  _textcolorhi = kTextColor;
+  _textcolorhi = kTextColor;  // do not highlight the label
 
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font.getStringWidth(_label);
@@ -76,7 +76,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   myTextY   = (_h - _font.getFontHeight()) / 2;
   myArrowsY = (_h - 8) / 2;
 
-  myMenu = make_unique<ContextMenu>(this, font, list, cmd);
+  myMenu = make_unique<ContextMenu>(this, font, list, cmd, w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,8 +230,8 @@ void PopUpWidget::drawWidget(bool hilite)
   s.vLine(x, _y, _y+_h-1, kColor);
   s.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
 #else
-  s.frameRect(x, _y, w - 16, _h, kColor);
-  s.frameRect(x + w - 17, _y, 17, _h, hilite ? kTextColorHi : kColor);
+  s.frameRect(x, _y, w, _h, kColor);
+  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, hilite ? kTextColorHi : kBGColorLo);
 #endif // !FLAT_UI
 
 #ifndef FLAT_UI
@@ -242,12 +242,12 @@ void PopUpWidget::drawWidget(bool hilite)
                !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);
 #else
   // Fill the background
-  s.fillRect(x + 1, _y + 1, w - 2 - 16, _h - 2, kWidColor);
-  s.fillRect(x + w - 15 - 1, _y + 1, 15, _h - 2, kBGColorHi);
+  s.fillRect(x + 1, _y + 1, w - 17, _h - 2, kWidColor);
+  s.fillRect(x + w - 15, _y + 2, 13, _h - 4, kBGColorHi);
   //s.vLine(x + w - 17, _y, _y + _h - 1, kShadowColor);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(down_arrow, x + w - 13, _y + myArrowsY + 1,
-               !isEnabled() ? kCheckColor : kTextColor, 9u, 8u);
+               !isEnabled() ? kColor : kTextColor, 9u, 8u);
 #endif
 
   // Draw the selected entry, if any
