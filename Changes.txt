@@ -75,6 +75,8 @@
     dialog. These settings now come in two groups (player/developer) and
     allow switching all settings at once.
 
+  * added new interface palette 'Light'
+
   * Improved tab auto-complete in debugger
 
   * Added conditional traps and savestate creation to debugger
