@@ -89,13 +89,17 @@ void ToggleBitWidget::drawWidget(bool hilite)
   {
     for (col = 0; col < _cols; col++)
     {
+      uInt32 textColor = kTextColor;
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.
-      if (_currentRow == row && _currentCol == col && _hasFocus)
-        s.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
+      if(_currentRow == row && _currentCol == col && _hasFocus)
+      {
+        s.fillRect(x - 4, y - 2, _colWidth + 1, _rowHeight + 1, kTextColorHi);
+        textColor = kTextColorInv;
+      }
 
       if(_stateList[pos])
         buffer = _onList[pos];
@@ -111,7 +115,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
           s.drawString(_font, buffer, x, y, _colWidth, kDbgChangedTextColor);
         }
         else
-          s.drawString(_font, buffer, x, y, _colWidth, kTextColor);
+          s.drawString(_font, buffer, x, y, _colWidth, textColor);
       }
       else
       {

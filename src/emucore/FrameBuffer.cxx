@@ -913,71 +913,71 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*
   Palette is defined as follows:
-    // Base colors
+    *** Base colors ***
     kColor            Normal foreground color (non-text)
     kBGColor          Normal background color (non-text)
     kBGColorLo        Disabled background color dark (non-text)
     kBGColorHi        Disabled background color light (non-text)
     kShadowColor      Item is disabled
+    *** Text colors ***
     kTextColor        Normal text color
     kTextColorHi      Highlighted text color
     kTextColorEm      Emphasized text color
-
-    // UI elements (dialog and widgets)
+    kTextColorSel     Color for selected text
+    *** UI elements (dialog and widgets) ***
     kDlgColor         Dialog background
     kWidColor         Widget background
     kWidFrameColor    Border for currently selected widget
-
-    // Button colors
+    *** Button colors ***
     kBtnColor         Normal button background
     kBtnColorHi       Highlighted button background
     kBtnTextColor     Normal button font color
     kBtnTextColorHi   Highlighted button font color
-
-    // Checkbox colors
+    *** Checkbox colors ***
     kCheckColor       Color of 'X' in checkbox
-
-    // Scrollbar colors
+    *** Scrollbar colors ***
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
-
-    // Slider colors
+    *** Slider colors ***
     kSliderColor,
     kSliderColorHi
-
-    // Debugger colors
+    *** Debugger colors ***
     kDbgChangedColor      Background color for changed cells
     kDbgChangedTextColor  Text color for changed cells
     kDbgColorHi           Highlighted color in debugger data cells
+    kDbgColorRed          Red color in debugger
 */
 uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Standard
-  { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040, 0x000000, 0x62a108, 0x9f0000,
+  { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,
+    0x000000, 0x62a108, 0x9f0000, 0x000000,
     0xc9af7c, 0xf0f0cf, 0xc80000,
     0xac3410, 0xd55941, 0xffffff, 0xffd652,
     0xac3410,
     0xac3410, 0xd55941,
     0xac3410, 0xd55941,
-    0xc80000, 0x00ff00, 0xc8c8ff
+    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,
   },
 
   // Classic
-  { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040, 0x20a020, 0x00ff00, 0xc80000,
+  { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,
+    0x20a020, 0x00ff00, 0xc80000, 0x20a020,
     0x000000, 0x000000, 0xc80000,
     0x000000, 0x000000, 0x20a020, 0x00ff00,
     0x20a020,
     0x20a020, 0x00ff00,
     0x20a020, 0x00ff00,
-    0xc80000, 0x00ff00, 0xc8c8ff
+    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000
   },
   // Light
   {
-    0x686868, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, 0x000000, 0x0078d7, 0x0078d7,     // base
-    0xf0f0f0, 0xffffff, 0x0f0f0f,                                                       // elements
-    0xe1e1e1, 0xe5f1fb, 0x202020, 0x000000,                                             // buttons
-    0x333333,                                                                           // checkbox
-    0x808080, 0x0078d7,                                                                 // scrollbar
-    0x333333, 0x0078d7,                                                                 // slider
-    0x800000, 0xffff80, 0x00e0e0                                                        // debugger
+    0x686868, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
+    0x000000, 0x0078d7, 0x0078d7, 0xffffff,           // text
+    0xf0f0f0, 0xffffff, 0x0f0f0f,                     // elements
+    0xe1e1e1, 0xe5f1fb, 0x202020, 0x000000,           // buttons
+    0x333333,                                         // checkbox
+    0x808080, 0x0078d7,                               // scrollbar
+    0x333333, 0x0078d7,                               // slider
+    0xffc0c0, 0x000000, 0xe00000, 0x800000            // debugger
   }
 };

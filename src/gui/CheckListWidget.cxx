@@ -100,15 +100,19 @@ void CheckListWidget::drawWidget(bool hilite)
     _checkList[i]->draw();
 
     const int y = _y + 2 + _fontHeight * i + 2;
+    uInt32 textColor = kTextColor;
 
     GUI::Rect r(getEditRect());
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
     {
-      if (_hasFocus && !_editMode)
+      if(_hasFocus && !_editMode)
+      {
         s.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
                    _w - r.left, _fontHeight, kTextColorHi);
+        textColor = kTextColorInv;
+      }
       else
         s.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
                     _w - r.left, _fontHeight, kTextColorHi);
@@ -117,20 +121,11 @@ void CheckListWidget::drawWidget(bool hilite)
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
-#ifndef FLAT_UI
       s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), kTextColor);
-#else
-      s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
-                   TextAlign::Left, -_editScrollOffset, false);
-    }
-    else
-      s.drawString(_font, _list[pos], _x + r.left, y, r.width(),
-                   _selectedItem == pos && hilite && _hasFocus && !_editMode ? kWidColor : kTextColor);
-#endif
+      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), textColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport

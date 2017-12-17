@@ -50,6 +50,7 @@ enum {
   kTextColor,
   kTextColorHi,
   kTextColorEm,
+  kTextColorInv,
   kDlgColor,
   kWidColor,
   kWidFrameColor,
@@ -65,6 +66,7 @@ enum {
   kDbgChangedColor,
   kDbgChangedTextColor,
   kDbgColorHi,
+  kDbgColorRed,
   kNumColors
 };
 

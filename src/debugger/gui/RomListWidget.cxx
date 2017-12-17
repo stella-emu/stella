@@ -474,6 +474,8 @@ void RomListWidget::drawWidget(bool hilite)
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
+    uInt32 bytesColor = kTextColor;
+
     // Draw checkboxes for correct lines (takes scrolling into account)
     myCheckList[i]->setState(myBPState->isSet(dlist[pos].address));
     myCheckList[i]->setDirty();
@@ -484,10 +486,13 @@ void RomListWidget::drawWidget(bool hilite)
       s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kTextColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos && _hasFocus)
+    if(_selectedItem == pos && _hasFocus)
     {
-      if (!_editMode)
+      if(!_editMode)
+      {
         s.fillRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
+        bytesColor = kTextColorInv;
+      }
       else
         s.frameRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
     }
@@ -535,7 +540,7 @@ void RomListWidget::drawWidget(bool hilite)
         }
         else
         {
-          s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.width(), kTextColor);
+          s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.width(), bytesColor);
         }
       }
     }

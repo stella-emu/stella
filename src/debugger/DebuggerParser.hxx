@@ -51,7 +51,7 @@ class DebuggerParser
 
     static inline string red(const string& msg = "")
     {
-      return char(kDbgChangedColor) + msg;
+      return char(kDbgColorRed) + msg;
     }
     static inline string inverse(const string& msg = "")
     {

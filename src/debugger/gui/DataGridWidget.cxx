@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "OSystem.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
@@ -599,22 +598,20 @@ void DataGridWidget::drawWidget(bool hilite)
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
-      uInt32 color = kTextColor;
+      uInt32 textColor = kTextColor;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col &&
           _hasFocus && !_editMode)
       {
         s.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
-#ifdef FLAT_UI
-        color = kWidColor;
-#endif
+        textColor = kTextColorInv;
       }
 
       if (_selectedItem == pos && _editMode)
       {
         adjustOffset();
-        s.drawString(_font, editString(), x, y, _colWidth, color,
+        s.drawString(_font, editString(), x, y, _colWidth, textColor,
                      TextAlign::Left, -_editScrollOffset, false);
       }
       else
@@ -624,14 +621,14 @@ void DataGridWidget::drawWidget(bool hilite)
           s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
 
           if(_hiliteList[pos])
-            color = kDbgColorHi;
+            textColor = kDbgColorHi;
           else
-            color = kDbgChangedTextColor;
+            textColor = kDbgChangedTextColor;
         }
         else if(_hiliteList[pos])
-          color = kDbgColorHi;
+          textColor = kDbgColorHi;
 
-        s.drawString(_font, _valueStringList[pos], x, y, _colWidth, color);
+        s.drawString(_font, _valueStringList[pos], x, y, _colWidth, textColor);
       }
     }
   }
