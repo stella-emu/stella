@@ -194,6 +194,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
     case FrameStyle::Dashed:
       uInt32 i, skip, lwidth = 1;
 
+#ifndef FLAT_UI
       for(i = x, skip = 1; i < x+w-1; i=i+lwidth+1, ++skip)
       {
         if(skip % 2)
@@ -210,6 +211,18 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
           vLine(x + w - 1, i, i + lwidth, color);
         }
       }
+#else
+      for(i = x; i < x + w; i += 2)
+      {
+        hLine(i, y, i, color);
+        hLine(i, y + h - 1, i, color);
+      }
+      for(i = y; i < y + h; i += 2)
+      {
+        vLine(x, i, i, color);
+        vLine(x + w - 1, i, i, color);
+      }
+#endif
       break;
   }
 }

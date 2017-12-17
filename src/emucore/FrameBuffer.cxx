@@ -971,13 +971,13 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   },
   // Light
   {
-    0x686868, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
+    0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
     0x000000, 0x0078d7, 0x0078d7, 0xffffff,           // text
     0xf0f0f0, 0xffffff, 0x0f0f0f,                     // elements
     0xe1e1e1, 0xe5f1fb, 0x202020, 0x000000,           // buttons
     0x333333,                                         // checkbox
     0x808080, 0x0078d7,                               // scrollbar
     0x333333, 0x0078d7,                               // slider
-    0xffc0c0, 0x000000, 0xe00000, 0x800000            // debugger
+    0xffc0c0, 0x000000, 0xe00000, 0xc00000            // debugger
   }
 };
