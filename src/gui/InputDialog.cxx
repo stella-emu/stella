@@ -163,7 +163,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   xpos = hSpace + myDeadzone->getWidth() + 5;
   myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
                                          lineHeight, "", TextAlign::Left);
-  myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDeadzone);
 
   // Add paddle speed (digital emulation)
@@ -175,7 +174,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   xpos = hSpace + myDPaddleSpeed->getWidth() + 5;
   myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", TextAlign::Left);
-  myDPaddleLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDPaddleSpeed);
 
   // Add paddle speed (mouse emulation)
@@ -187,7 +185,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   xpos = hSpace + myMPaddleSpeed->getWidth() + 5;
   myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                         "", TextAlign::Left);
-  myMPaddleSpeed->setFlags(WIDGET_CLEARBG);
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
@@ -199,7 +196,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   xpos = hSpace + myTrackBallSpeed->getWidth() + 5;
   myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
                                           "", TextAlign::Left);
-  myTrackBallSpeed->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick

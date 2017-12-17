@@ -282,7 +282,6 @@ GameInfoDialog::GameInfoDialog(
   myMouseRangeLabel = new StaticTextWidget(myTab, font,
                             myMouseRange->getRight() + 4, myMouseRange->getTop()+1,
                             "   ", TextAlign::Left);
-  myMouseRangeLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -316,7 +315,6 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myYStart);
   myYStartLabel = new StaticTextWidget(myTab, font, myYStart->getRight() + 4,
                                        ypos+1, 5*fontWidth, fontHeight, "", TextAlign::Left);
-  myYStartLabel->setFlags(WIDGET_CLEARBG);
 
   ypos += lineHeight + vGap;
   t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Height ", TextAlign::Left);
@@ -327,7 +325,6 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myHeight);
   myHeightLabel = new StaticTextWidget(myTab, font, myHeight->getRight() + 4,
                                        ypos+1, 5*fontWidth, fontHeight, "", TextAlign::Left);
-  myHeightLabel->setFlags(WIDGET_CLEARBG);
 
   // Phosphor
   ypos += lineHeight + vGap*4;
@@ -345,7 +342,6 @@ GameInfoDialog::GameInfoDialog(
   myPPBlendLabel = new StaticTextWidget(myTab, font,
                                         myPPBlend->getRight() + 4, myPhosphor->getTop(),
                                         5*fontWidth, fontHeight, "", TextAlign::Left);
-  myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);

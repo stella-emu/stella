@@ -312,7 +312,7 @@ void TabWidget::drawWidget(bool hilite)
 #else
     int yOffset = (i == _activeTab) ? 0 : 1;
     s.fillRect(x, _y, _tabWidth, _tabHeight, (i == _activeTab)
-               ? kDlgColor : kBGColorHi);
+               ? kDlgColor : kBGColorHi); // ? kWidColor : kDlgColor
     s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
                  _y + yOffset + (_tabHeight - _fontHeight - 1),
                  _tabWidth - 2 * kTabPadding, (i == _activeTab |true) ? fontcolor : kColor, TextAlign::Center);

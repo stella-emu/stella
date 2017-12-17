@@ -116,7 +116,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myNAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myNAspectRatio->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
-  myNAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (PAL mode)
@@ -128,7 +127,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myPAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myPAspectRatio->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
-  myPAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + VGAP;
 
   // Framerate
@@ -141,7 +139,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myFrameRateLabel =
     new StaticTextWidget(myTab, font, xpos + myFrameRate->getWidth() + 4,
                          ypos + 1, fontWidth * 4, fontHeight, "", TextAlign::Left);
-  myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
@@ -229,7 +226,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myTV ## obj ## Label =                                                 \
     new StaticTextWidget(myTab, font, xpos+myTV ## obj->getWidth()+4,    \
                     ypos+1, fontWidth*3, fontHeight, "", TextAlign::Left);\
-  myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
   ypos += lineHeight + VGAP;
 
   pwidth = swidth;

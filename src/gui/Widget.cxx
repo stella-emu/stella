@@ -297,7 +297,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     _align(align)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
+  _flags = WIDGET_ENABLED;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -671,7 +671,7 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _isDragging(false),
     _labelWidth(labelWidth)
 {
-  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
+  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 

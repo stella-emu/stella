@@ -77,7 +77,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
       new StaticTextWidget(myTab, font,
                            xpos + myLauncherWidthSlider->getWidth() + 4,
                            ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
-  myLauncherWidthLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
@@ -91,7 +90,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
       new StaticTextWidget(myTab, font,
                            xpos + myLauncherHeightSlider->getWidth() + 4,
                            ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
-  myLauncherHeightLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   // Launcher font

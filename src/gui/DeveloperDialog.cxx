@@ -202,7 +202,6 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
                                                   myTVJitterRecWidget->getRight() + 4,
                                                   myTVJitterRecWidget->getTop() + 2,
                                                   5 * fontWidth, fontHeight, "", TextAlign::Left);
-  myTVJitterRecLabelWidget->setFlags(WIDGET_CLEARBG);
   wid.push_back(myTVJitterRecLabelWidget);
   ypos += lineHeight + VGAP;
 
@@ -431,7 +430,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
     new StaticTextWidget(myTab, font,
                          xpos + myDebuggerWidthSlider->getWidth() + 4,
                          ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
-  myDebuggerWidthLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + VGAP;
 
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
@@ -445,7 +443,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
     new StaticTextWidget(myTab, font,
                          xpos + myDebuggerHeightSlider->getWidth() + 4,
                          ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
-  myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
