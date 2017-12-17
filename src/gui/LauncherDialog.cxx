@@ -160,7 +160,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
   // Create an options dialog, similar to the in-game one
-  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, true);
+  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, OptionsDialog::launcher);
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs

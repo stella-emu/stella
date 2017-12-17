@@ -63,7 +63,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   // Inform the TIA output widget about its associated zoom widget
   myTiaOutput->setZoomWidget(myTiaZoom);
 
-  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, false);
+  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, OptionsDialog::debugger);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

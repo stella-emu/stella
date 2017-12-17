@@ -45,9 +45,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
-                             GuiObject* boss, int max_w, int max_h, bool global)
+                             GuiObject* boss, int max_w, int max_h, stellaMode mode)
   : Dialog(osystem, parent),
-    myIsGlobal(global)
+    myMode(mode)
 {
   const GUI::Font& font = instance().frameBuffer().font();
   const int buttonWidth = font.getStringWidth("Developer Settings" + ELLIPSIS) + 20,
@@ -122,7 +122,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h, myIsGlobal);
+  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h, myMode == launcher);
   myAudioDialog    = make_unique<AudioDialog>(osystem, parent, font);
   myInputDialog    = make_unique<InputDialog>(osystem, parent, font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, font);
@@ -141,7 +141,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
-  if(myIsGlobal)
+  if(myMode == launcher)
   {
     myCheatCodeButton->clearFlags(WIDGET_ENABLED);
   }
@@ -225,7 +225,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     case kLoggerCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      if(!myIsGlobal)
+      if(myMode != launcher)
       {
         uInt32 w = 0, h = 0;
         bool uselargefont = getResizableBounds(w, h);
@@ -249,7 +249,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      if(myIsGlobal)
+      if(myMode != emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

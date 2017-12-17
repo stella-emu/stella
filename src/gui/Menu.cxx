@@ -26,5 +26,5 @@ Menu::Menu(OSystem& osystem)
   : DialogContainer(osystem)
 {
   myBaseDialog = new OptionsDialog(myOSystem, *this, nullptr,
-      FrameBuffer::kFBMinW, FrameBuffer::kFBMinH, false);
+      FrameBuffer::kFBMinW, FrameBuffer::kFBMinH, OptionsDialog::emulator);
 }
