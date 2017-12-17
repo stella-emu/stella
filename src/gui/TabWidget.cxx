@@ -329,7 +329,7 @@ void TabWidget::drawWidget(bool hilite)
   s.vLine(_x + _w - 2, _y + _tabHeight - 1, _y + _h - 2, kColor);
   s.vLine(_x + _w - 1, _y + _tabHeight - 1, _y + _h - 2, kShadowColor);
 #else
-  s.hLine(right1, _y, left2, kScrollColorHi);
+  s.hLine(right1, _y, left2 - 1, kScrollColorHi);
 #endif
 }
 

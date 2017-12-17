@@ -159,6 +159,9 @@ void TiaOutputWidget::drawWidget(bool hilite)
                height = instance().console().tia().height();
   FBSurface& s = dialog().surface();
 
+  s.vLine(_x + _w + 1, _y, height, kColor);
+  s.hLine(_x, _y + height + 1, _x +_w + 1, kColor);
+
   // Get current scanline position
   // This determines where the frame greying should start, and where a
   // scanline 'pointer' should be drawn
@@ -176,10 +179,14 @@ void TiaOutputWidget::drawWidget(bool hilite)
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;
     }
-    s.drawPixels(myLineBuffer, _x, _y+y, width << 1);
+    s.drawPixels(myLineBuffer, _x + 1, _y + 1 + y, width << 1);
   }
+
+  uInt32 beamColor = kBtnTextColor;
+  if(instance().settings().getString("uipalette") == "light")
+    beamColor = kWidColor;
 
   // Show electron beam position
   if(visible && scanx < width && scany+2u < height)
-    s.fillRect(_x+(scanx<<1), _y+scany, 3, 3, kBtnTextColor);
+    s.fillRect(_x + 1 + (scanx<<1), _y + 1 + scany, 3, 3, beamColor);
 }

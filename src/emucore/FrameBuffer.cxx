@@ -460,8 +460,12 @@ inline void FrameBuffer::drawMessage()
 
   myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
   myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
+#ifndef FLAT_UI
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
-  myMsg.surface->drawString(font(), myMsg.text, 4, 4,
+#else
+  myMsg.surface->frameRect(0, 0, myMsg.w, myMsg.h, kColor);
+#endif
+  myMsg.surface->drawString(font(), myMsg.text, 5, 4,
                             myMsg.w, myMsg.color, TextAlign::Left);
 
   // Either erase the entire message (when time is reached),
