@@ -959,7 +959,10 @@ void DeveloperDialog::handleTimeMachine()
 
   myStateIntervalWidget->setEnabled(enable);
 
-  myStateHorizonWidget->setEnabled(enable);
+  uInt32 size = myStateSizeWidget->getValue();
+  uInt32 uncompressed = myUncompressedWidget->getValue();
+
+  myStateHorizonWidget->setEnabled(enable && size > uncompressed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
