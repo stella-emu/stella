@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "Font.hxx"
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
@@ -53,6 +55,73 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) c
       memcpy(dst, src, w * 4);
       src += myPitch * 4;
       dst += pitch * 4;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::pixel(uInt32 x, uInt32 y, uInt32 color)
+{
+  uInt32* buffer = myPixels + y * myPitch + x;
+
+  *buffer = uInt32(myPalette[color]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, uInt32 color)
+{
+  // draw line using Bresenham algorithm
+  Int32 dx = (x2 - x);
+  Int32 dy = (y2 - y);
+
+  if(abs(dx) >= abs(dy))
+  {
+    // x is major axis
+    if(dx < 0)
+    {
+      uInt32 tx = x; x = x2; x2 = tx;
+      uInt32 ty = y; y = y2; y2 = ty;
+      dx = -dx;
+      dy = -dy;
+    }
+    Int32 yd = dy > 0 ? 1 : -1;
+    dy = abs(dy);
+    Int32 err = dx / 2;
+    // now draw the line
+    for(; x <= x2; ++x)
+    {
+      pixel(x, y, color);
+      err -= dy;
+      if(err < 0)
+      {
+        err += dx;
+        y += yd;
+      }
+    }
+  }
+  else
+  {
+    // y is major axis
+    if(dy < 0)
+    {
+      uInt32 tx = x; x = x2; x2 = tx;
+      uInt32 ty = y; y = y2; y2 = ty;
+      dx = -dx;
+      dy = -dy;
+    }
+    Int32 xd = dx > 0 ? 1 : -1;
+    dx = abs(dx);
+    Int32 err = dy / 2;
+    // now draw the line
+    for(; y <= y2; ++y)
+    {
+      pixel(x, y, color);
+      err -= dx;
+      if(err < 0)
+      {
+        err += dy;
+        x += xd;
+      }
     }
   }
 }

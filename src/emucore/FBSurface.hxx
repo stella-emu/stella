@@ -73,6 +73,26 @@ class FBSurface
     //////////////////////////////////////////////////////////////////////////
 
     /**
+      This method should be called to draw a single pixel.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the line
+    */
+    virtual void pixel(uInt32 x, uInt32 y, uInt32 color);
+
+    /**
+      This method should be called to draw a line.
+
+      @param x      The first x coordinate
+      @param y      The y coordinate
+      @param x2     The second x coordinate
+      @param xy     The second y coordinate
+      @param color  The color of the line
+    */
+    virtual void line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, uInt32 color);
+
+    /**
       This method should be called to draw a horizontal line.
 
       @param x      The first x coordinate

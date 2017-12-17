@@ -138,6 +138,18 @@ void TogglePixelWidget::drawWidget(bool hilite)
 
   // Cross out the bits?
   if(_crossBits)
+  {
+#ifndef FLAT_UI
     for(row = 1; row < 4; ++row)
-      s.hLine(_x, _y + (row * lineheight/4), _x + linewidth, kColor);
+      s.hLine(_x, _y + (row * lineheight / 4), _x + linewidth, kColor);
+#else
+    for(col = 0; col < _cols; ++col)
+    {
+      int x = _x + col * _colWidth;
+
+      s.line(x + 1, _y + 1, x + _colWidth - 1, _y + lineheight - 1, kColor);
+      s.line(x + _colWidth - 1, _y + 1, x + 1, _y + lineheight - 1, kColor);
+    }
+#endif
+  }
 }
