@@ -84,7 +84,11 @@ void Widget::draw()
     {
       x++; y++; w-=2; h-=2;
     }
+#ifndef FLAT_UI
     s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) ? _bgcolorhi : _bgcolor);
+#else
+    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+#endif
   }
 
   // Draw border
@@ -93,7 +97,7 @@ void Widget::draw()
 #ifndef FLAT_UI
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
 #else
-    s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) ? kScrollColorHi : kColor);
+    s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) && isEnabled() ? kScrollColorHi : kColor);
 #endif // !FLAT_UI
     _x += 4;
     _y += 4;
@@ -813,7 +817,7 @@ void SliderWidget::drawWidget(bool hilite)
                  isEnabled() ? kTextColor : kColor, TextAlign::Left);
 
   // Draw the box
-  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, hilite ? kSliderColorHi : kShadowColor);
+  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, isEnabled() && hilite ? kSliderColorHi : kShadowColor);
   // Fill the box
   s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
              !isEnabled() ? kBGColorHi : kWidColor);

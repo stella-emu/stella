@@ -978,7 +978,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
     0x000000, 0x0078d7, 0x0078d7, 0xffffff,           // text
     0xf0f0f0, 0xffffff, 0x0f0f0f,                     // elements
-    0xe1e1e1, 0xe5f1fb, 0x202020, 0x000000,           // buttons
+    0xe1e1e1, 0xe5f1fb, 0x000000, 0x000000,           // buttons
     0x333333,                                         // checkbox
     0x808080, 0x0078d7,                               // scrollbar
     0x333333, 0x0078d7,                               // slider

@@ -328,7 +328,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 
   int sWidth = font.getMaxCharWidth() * 8;
   myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
-                                       "Buffer size       ", 0, kSizeChanged);
+                                       "Buffer size (*)   ", 0, kSizeChanged);
   myStateSizeWidget->setMinValue(20);
   myStateSizeWidget->setMaxValue(1000);
   myStateSizeWidget->setStepValue(20);
@@ -362,6 +362,11 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateHorizonWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 2, ypos, pwidth,
                                          lineHeight, items, "Horizon         ~ ", 0, kHorizonChanged);
   wid.push_back(myStateHorizonWidget);
+
+  // Add message concerning usage
+  const GUI::Font& infofont = instance().frameBuffer().infoFont();
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Any size change clears the buffer");
 
   addToFocusList(wid, myTab, tabID);
 }
@@ -1010,7 +1015,7 @@ void DeveloperDialog::handleSize()
     myUncompressedWidget->setValue(size);
   myStateIntervalWidget->setSelectedIndex(interval);
   myStateHorizonWidget->setSelectedIndex(i);
-  myStateHorizonWidget->setEnabled(size > uncompressed);
+  myStateHorizonWidget->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1023,7 +1028,7 @@ void DeveloperDialog::handleUncompressed()
 
   if(size < uncompressed)
     myStateSizeWidget->setValue(uncompressed);
-  myStateHorizonWidget->setEnabled(size > uncompressed);
+  myStateHorizonWidget->setEnabled(myTimeMachineWidget->getState() && size > uncompressed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
