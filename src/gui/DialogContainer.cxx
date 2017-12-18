@@ -116,7 +116,7 @@ void DialogContainer::draw(bool full)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::addDialog(Dialog* d)
 {
-  GUI::Rect r = myOSystem.frameBuffer().imageRect();
+  const GUI::Rect& r = myOSystem.frameBuffer().imageRect();
   if(uInt32(d->getWidth()) > r.width() || uInt32(d->getHeight()) > r.height())
     myOSystem.frameBuffer().showMessage(
         "Unable to show dialog box; resize current window");

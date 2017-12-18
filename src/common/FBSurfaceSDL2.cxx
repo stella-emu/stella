@@ -122,8 +122,8 @@ void FBSurfaceSDL2::setVisible(bool visible)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 {
-  x -= myDstR.x;
-  y -= myDstR.y;
+  x -= myDstR.x;  x /= myDstR.w / mySrcR.w;
+  y -= myDstR.y;  y /= myDstR.h / mySrcR.h;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -210,9 +210,10 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 
   // We start out with the src and dst rectangles containing the same
   // dimensions, indicating no scaling or re-positioning
-  mySrcR.x = mySrcR.y = myDstR.x = myDstR.y = 0;
-  mySrcR.w = myDstR.w = width;
-  mySrcR.h = myDstR.h = height;
+  setSrcPos(0, 0);
+  setDstPos(0, 0);
+  setSrcSize(width, height);
+  setDstSize(width, height);
 
   ////////////////////////////////////////////////////
   // These *must* be set for the parent class

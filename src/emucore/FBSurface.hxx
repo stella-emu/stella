@@ -85,9 +85,9 @@ class FBSurface
       This method should be called to draw a line.
 
       @param x      The first x coordinate
-      @param y      The y coordinate
+      @param y      The first y coordinate
       @param x2     The second x coordinate
-      @param xy     The second y coordinate
+      @param y2     The second y coordinate
       @param color  The color of the line
     */
     virtual void line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, uInt32 color);
@@ -149,14 +149,14 @@ class FBSurface
                             uInt32 h = 8);
 
     /**
-    This method should be called to draw the bitmap image.
+      This method should be called to draw the bitmap image.
 
-    @param bitmap The data to draw
-    @param x      The x coordinate
-    @param y      The y coordinate
-    @param color  The color of the bitmap
-    @param w      The width of the data image
-    @param h      The height of the data image
+      @param bitmap The data to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the bitmap
+      @param w      The width of the data image
+      @param h      The height of the data image
     */
     virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
                             uInt32 w, uInt32 h);
