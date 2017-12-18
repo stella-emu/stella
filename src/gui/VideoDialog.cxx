@@ -55,13 +55,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(52 * fontWidth + 10, max_w);
-  _h = std::min(16 * (lineHeight + 4) + 14, max_h);
+  _h = std::min(16 * (lineHeight + VGAP) + 14, max_h);
 
   // The tab widget
-  xpos = HBORDER;  ypos = VBORDER;
+  xpos = 2;  ypos = 4;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
 
+  xpos = HBORDER;  ypos = VBORDER;
   //////////////////////////////////////////////////////////
   // 1) General options
   tabID = myTab->addTab(" General ");

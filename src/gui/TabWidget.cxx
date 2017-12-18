@@ -302,8 +302,8 @@ void TabWidget::drawWidget(bool hilite)
   for (i = 0; i < int(_tabs.size()); ++i)
   {
     uInt32 fontcolor = _tabs[i].enabled ? kTextColor : kColor;
-    uInt32 boxcolor = (i == _activeTab) ? kColor : kShadowColor;
 #ifndef FLAT_UI
+    uInt32 boxcolor = (i == _activeTab) ? kColor : kShadowColor;
     int yOffset = (i == _activeTab) ? 0 : 2;
     box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, boxcolor, boxcolor, (i == _activeTab));
     s.drawString(_font, _tabs[i].title, x + kTabPadding,
@@ -311,11 +311,18 @@ void TabWidget::drawWidget(bool hilite)
                  _tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
 #else
     int yOffset = (i == _activeTab) ? 0 : 1;
-    s.fillRect(x, _y, _tabWidth, _tabHeight, (i == _activeTab)
+    s.fillRect(x, _y + 1, _tabWidth, _tabHeight - 1, (i == _activeTab)
                ? kDlgColor : kBGColorHi); // ? kWidColor : kDlgColor
     s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
                  _y + yOffset + (_tabHeight - _fontHeight - 1),
-                 _tabWidth - 2 * kTabPadding, (i == _activeTab |true) ? fontcolor : kColor, TextAlign::Center);
+                 _tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
+    if(i == _activeTab)
+    {
+      s.hLine(x, _y, x + _tabWidth - 1, kWidColor);
+      s.vLine(x + _tabWidth, _y + 1, _y + _tabHeight - 1, kBGColorHi);
+    }
+    else
+      s.hLine(x, _y + _tabHeight, x + _tabWidth, kWidColor);
 #endif
     x += _tabWidth + kTabSpacing;
   }
@@ -329,10 +336,9 @@ void TabWidget::drawWidget(bool hilite)
   s.vLine(_x + _w - 2, _y + _tabHeight - 1, _y + _h - 2, kColor);
   s.vLine(_x + _w - 1, _y + _tabHeight - 1, _y + _h - 2, kShadowColor);
 #else
-  /*s.fillRect(x, _y, _w - x, _tabHeight - 1, kDlgColor); // ? kWidColor : kDlgColor
-  s.hLine(x, _y + _tabHeight, _w - x, kScrollColorHi);*/
-
-  s.hLine(right1, _y, left2 - 1, kScrollColorHi);
+  // fill empty right space
+  s.hLine(x - kTabSpacing + 1, _y + _tabHeight, _x + _w - 1, kWidColor);
+  s.hLine(_x, _y + _h - 1, _x + _w - 1, kBGColorHi);
 #endif
 }
 
