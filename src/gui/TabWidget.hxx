@@ -92,11 +92,13 @@ class TabWidget : public Widget, public CommandSender
     enum {
 #ifndef FLAT_UI
       kTabLeftOffset = 4,
-#else
-      kTabLeftOffset = 0,
-#endif
       kTabSpacing = 2,
       kTabPadding = 3
+#else
+      kTabLeftOffset = 0,
+      kTabSpacing = 1,
+      kTabPadding = 4
+#endif
     };
 
   private:

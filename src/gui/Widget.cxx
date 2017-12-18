@@ -792,11 +792,12 @@ void SliderWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
+#ifndef FLAT_UI
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,
                  isEnabled() ? kTextColor : kColor, TextAlign::Right);
-#ifndef FLAT_UI
+
   // Draw the box
   s.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
   // Fill the box
@@ -806,6 +807,11 @@ void SliderWidget::drawWidget(bool hilite)
   s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 #else
+  // Draw the label, if any
+  if(_labelWidth > 0)
+    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
+                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
+
   // Draw the box
   s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, hilite ? kSliderColorHi : kShadowColor);
   // Fill the box

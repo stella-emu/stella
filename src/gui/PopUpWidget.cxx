@@ -59,7 +59,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
   _bgcolor = kDlgColor;
-  _bgcolorhi = kDlgColor;     // do not highlight the label
+  _bgcolorhi = kDlgColor;     // do not highlight the background
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;  // do not highlight the label
 
@@ -218,29 +218,33 @@ void PopUpWidget::drawWidget(bool hilite)
   int x = _x + _labelWidth;
   int w = _w - _labelWidth;
 
+#ifndef FLAT_UI
   // Draw the label, if any
-  if (_labelWidth > 0)
+  if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
                  isEnabled() ? _textcolor : uInt32(kColor), TextAlign::Right);
 
-#ifndef FLAT_UI
   // Draw a thin frame around us.
   s.hLine(x, _y, x + w - 1, kColor);
   s.hLine(x, _y +_h-1, x + w - 1, kShadowColor);
   s.vLine(x, _y, _y+_h-1, kColor);
   s.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
-#else
-  s.frameRect(x, _y, w, _h, kColor);
-  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, hilite ? kTextColorHi : kBGColorLo);
-#endif // !FLAT_UI
 
-#ifndef FLAT_UI
   // Fill the background
   s.fillRect(x + 1, _y + 1, w - 2, _h - 2, kWidColor);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-  s.drawBitmap(up_down_arrows, x+w - 10, _y + myArrowsY,
+  s.drawBitmap(up_down_arrows, x + w - 10, _y + myArrowsY,
                !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);
 #else
+  // Draw the label, if any
+  if(_labelWidth > 0)
+    s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
+                 isEnabled() ? _textcolor : uInt32(kColor), TextAlign::Left);
+
+  // Draw a thin frame around us.
+  s.frameRect(x, _y, w, _h, kColor);
+  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, hilite ? kTextColorHi : kBGColorLo);
+
   // Fill the background
   s.fillRect(x + 1, _y + 1, w - 17, _h - 2, kWidColor);
   s.fillRect(x + w - 15, _y + 2, 13, _h - 4, kBGColorHi);

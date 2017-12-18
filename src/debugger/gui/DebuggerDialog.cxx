@@ -351,9 +351,15 @@ void DebuggerDialog::addTabArea()
   int tabID;
 
   // The Prompt/console tab
+#ifndef FLAT_UI
   tabID = myTab->addTab(" Prompt ");
   myPrompt = new PromptWidget(myTab, *myNFont,
                               2, 2, widWidth, widHeight);
+#else
+  tabID = myTab->addTab("Prompt");
+  myPrompt = new PromptWidget(myTab, *myNFont,
+                              2, 2, widWidth - 4, widHeight);
+#endif
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
