@@ -225,8 +225,9 @@ bool M6502::execute(uInt32 number)
 #ifdef DEBUGGER_SUPPORT
       if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
       {
+        bool read = myJustHitReadTrapFlag;
         myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
-        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, myJustHitReadTrapFlag))
+        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, read))
         {
           return true;
         }
