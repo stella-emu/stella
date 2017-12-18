@@ -21,6 +21,7 @@
   #include "CartDebug.hxx"
   #include "PackedBitArray.hxx"
   #include "TIA.hxx"
+  #include "Base.hxx"
   #include "M6532.hxx"
 
   // Flags for disassembly types
@@ -142,8 +143,9 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     if(cond > -1)
     {
       myJustHitReadTrapFlag = true;
-      myHitTrapInfo.message = "RTrap"
-        + (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      stringstream msg;
+      msg << "RTrap[" << Common::Base::HEX2 << cond << "]" << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      myHitTrapInfo.message = msg.str();
       myHitTrapInfo.address = address;
     }
   }
@@ -176,8 +178,9 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     if(cond > -1)
     {
       myJustHitWriteTrapFlag = true;
-      myHitTrapInfo.message = "WTrap"
-        + (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      stringstream msg;
+      msg << "WTrap[" << Common::Base::HEX2 << cond << "]" << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      myHitTrapInfo.message = msg.str();
       myHitTrapInfo.address = address;
     }
   }
@@ -240,15 +243,18 @@ bool M6502::execute(uInt32 number)
       int cond = evalCondBreaks();
       if(cond > -1)
       {
-        string buf = "CBP: " + myCondBreakNames[cond];
-        if(myDebugger && myDebugger->start(buf))
+        stringstream msg;
+        msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
+        if(myDebugger && myDebugger->start(msg.str()))
           return true;
       }
 
       cond = evalCondSaveStates();
       if(cond > -1)
       {
-        myDebugger->addState("conditional savestate");
+        stringstream msg;
+        msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
+        myDebugger->addState(msg.str());
       }
 #endif  // DEBUGGER_SUPPORT
 
