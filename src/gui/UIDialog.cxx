@@ -167,7 +167,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "900 ms", "900");
   VarList::push_back(items, "1 second", "1000");
   myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "List quick delay (*) ", lwidth);
+                                     items, "List quick delay ", lwidth);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 
