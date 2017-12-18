@@ -25,10 +25,11 @@
 ""
 
 "Cartridge.MD5" "00b7b4cbec81570642283e7fc1ef17af"
-"Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech - Teldec"
+"Cartridge.Manufacturer" "Sega - Beck-Tech, Steve Beck, Phat Ho"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega)"
-"Display.YStart" "34"
+"Display.YStart" "26"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "00ce0bdd43aed84a983bef38fe7f5ee3"
@@ -189,7 +190,7 @@
 ""
 
 "Cartridge.MD5" "028024fb8e5e5f18ea586652f9799c96"
-"Cartridge.Manufacturer" "Coleco, Steve 'Jessica' Kitchen"
+"Cartridge.Manufacturer" "Coleco - Woodside Design Associates, Steve 'Jessica Stevens' Kitchen"
 "Cartridge.ModelNo" "2468"
 "Cartridge.Name" "Carnival (1982) (Coleco)"
 ""
@@ -896,7 +897,7 @@
 ""
 
 "Cartridge.MD5" "0b17ed42984000da8b727ca46143f87a"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
+"Cartridge.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (05-17-1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controller"
@@ -1067,9 +1068,9 @@
 ""
 
 "Cartridge.MD5" "0d5af65ad3f19558e6f8e29bf2a9d0f8"
-"Cartridge.Manufacturer" "Atari, Adam Clayton, John Howard Palevich"
+"Cartridge.Manufacturer" "Atari - Sculptured Software, Adam Clayton"
 "Cartridge.ModelNo" "CX26151, CX26151P"
-"Cartridge.Name" "Dark Chambers (1988) (Atari) (PAL)"
+"Cartridge.Name" "Dark Chambers (1989) (Atari) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -1185,7 +1186,7 @@
 ""
 
 "Cartridge.MD5" "0ef64cdbecccb7049752a3de0b7ade14"
-"Cartridge.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner"
+"Cartridge.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Combat (32 in 1) (1988) (Atari) (PAL)"
 "Display.Height" "256"
@@ -1323,9 +1324,9 @@
 ""
 
 "Cartridge.MD5" "106855474c69d08c8ffa308d47337269"
-"Cartridge.Manufacturer" "Atari, Adam Clayton, John Howard Palevich"
+"Cartridge.Manufacturer" "Atari - Sculptured Software, Adam Clayton"
 "Cartridge.ModelNo" "CX26151"
-"Cartridge.Name" "Dark Chambers (1988) (Atari)"
+"Cartridge.Name" "Dark Chambers (1989) (Atari)"
 "Display.Phosphor" "YES"
 ""
 
@@ -1696,7 +1697,7 @@
 ""
 
 "Cartridge.MD5" "151fa3218d8d7600114eb5bcd79c85cb"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
+"Cartridge.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (05-02-1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controller"
@@ -1931,7 +1932,7 @@
 "Cartridge.MD5" "17d000a2882f9fdaa8b4a391ad367f00"
 "Cartridge.Manufacturer" "Atari - GCC"
 "Cartridge.ModelNo" "CX2676"
-"Cartridge.Name" "Centipede (1982) (Atari) (PAL)"
+"Cartridge.Name" "Centipede (1983) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "17ee158d15e4a34f57a837bc1ce2b0ce"
@@ -1951,7 +1952,7 @@
 ""
 
 "Cartridge.MD5" "1802cc46b879b229272501998c5de04f"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
+"Cartridge.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (1983) (Atari)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -2289,7 +2290,7 @@
 ""
 
 "Cartridge.MD5" "1da2da7974d2ca73a823523f82f517b3"
-"Cartridge.Manufacturer" "Spectravision, Spectravideo, David Lubar"
+"Cartridge.Manufacturer" "Spectravision - Spectravideo - Sirius Software, David Lubar"
 "Cartridge.ModelNo" "SA-206"
 "Cartridge.Name" "Challenge of.... Nexar, The (1982) (Spectravision) (PAL)"
 ""
@@ -2465,7 +2466,7 @@
 ""
 
 "Cartridge.MD5" "1fa7a42c2c7d6b7a0c6a05d38c7508f4"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (09-04-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -3158,9 +3159,9 @@
 ""
 
 "Cartridge.MD5" "282a77841cb3d33af5b56151acba770e"
-"Cartridge.Manufacturer" "Quelle"
+"Cartridge.Manufacturer" "Otto Versand"
 "Cartridge.ModelNo" "311388"
-"Cartridge.Name" "Black Hole (1983) (Quelle) (PAL)"
+"Cartridge.Name" "Black Hole (1983) (Otto Versand) (PAL)"
 "Cartridge.Note" "AKA Cosmic Ark (Double-Game Package)"
 ""
 
@@ -3519,7 +3520,7 @@
 ""
 
 "Cartridge.MD5" "2c8835aed7f52a0da9ade5226ee5aa75"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4101"
 "Cartridge.Name" "Communist Mutants from Space (1982) (Arcadia)"
 ""
@@ -4129,7 +4130,7 @@
 ""
 
 "Cartridge.MD5" "335a7c5cfa6fee0f35f5824d1fa09aed"
-"Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech - Teldec"
+"Cartridge.Manufacturer" "Sega - Beck-Tech, Steve Beck, Phat Ho - Teldec"
 "Cartridge.ModelNo" "006-01 - 3.60105 VG"
 "Cartridge.Name" "Congo Bongo (1983) (Sega) (PAL)"
 ""
@@ -4510,7 +4511,7 @@
 "Cartridge.MD5" "384f5fbf57b5e92ed708935ebf8a8610"
 "Cartridge.Manufacturer" "20th Century Fox Video Games, John W.S. Marvin"
 "Cartridge.ModelNo" "11009"
-"Cartridge.Name" "Crypts of Chaos (1982) (20th Century Fox)"
+"Cartridge.Name" "Crypts of Chaos (1983) (20th Century Fox)"
 ""
 
 "Cartridge.MD5" "3856b9425cc0185ed770376a62af0282"
@@ -5354,7 +5355,7 @@
 ""
 
 "Cartridge.MD5" "41f252a66c6301f1e8ab3612c19bc5d4"
-"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Brad Rice"
 "Cartridge.ModelNo" "CX2681"
 "Cartridge.Name" "Battlezone (1983) (Atari)"
 "Cartridge.Rarity" "Uncommon"
@@ -5619,7 +5620,7 @@
 ""
 
 "Cartridge.MD5" "4605a00f5b44a9cbd5803a7a55de150e"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (07-03-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -5919,10 +5920,10 @@
 ""
 
 "Cartridge.MD5" "4981cefe5493ea512284e7f9f27d1e54"
-"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cartridge.ModelNo" "VCS83136"
 "Cartridge.Name" "Cosmic War (1983) (Home Vision) (PAL)"
-"Cartridge.Note" "AKA Space Tunnel"
+"Cartridge.Note" "AKA Cosmic Corridor"
 "Display.Height" "256"
 ""
 
@@ -6409,7 +6410,7 @@
 "Cartridge.MD5" "4f89b897444e7c3b36aed469b8836839"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26190"
-"Cartridge.Name" "BMX Air Master (1990) (Atari) (PAL)"
+"Cartridge.Name" "BMX Air Master (1989) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "4fae08027365d31c558e400b687adf21"
@@ -6883,9 +6884,9 @@
 ""
 
 "Cartridge.MD5" "55ef7b65066428367844342ed59f956c"
-"Cartridge.Manufacturer" "Atari, Joe Gaucher, Alex Leavens"
+"Cartridge.Manufacturer" "Atari - Roklan, Joe Gaucher, Alex Leavens"
 "Cartridge.ModelNo" "CX2683"
-"Cartridge.Name" "Crazy Climber (1982) (Atari)"
+"Cartridge.Name" "Crazy Climber (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "562acb1b7ff182aba133bda8e21ad7c1"
@@ -6965,7 +6966,7 @@
 ""
 
 "Cartridge.MD5" "57c5b351d4de021785cf8ed8191a195c"
-"Cartridge.Manufacturer" "Atari, Gary Stark"
+"Cartridge.Manufacturer" "Atari - CCW, Gary Stark"
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Name" "Cookie Monster Munch (1983) (Atari)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -6979,7 +6980,7 @@
 ""
 
 "Cartridge.MD5" "5846b1d34c296bf7afc2fa05bbc16e98"
-"Cartridge.Manufacturer" "Atari, Larry Kaplan - Sears"
+"Cartridge.Manufacturer" "Atari - Sears"
 "Cartridge.ModelNo" "CX2643 - 6-99815"
 "Cartridge.Name" "Codebreaker (1978) (Atari)"
 "Cartridge.Note" "Uses Keypad Controllers"
@@ -7263,7 +7264,7 @@
 ""
 
 "Cartridge.MD5" "5b85e987e2b1618769d97ba9182333d0"
-"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Brad Rice"
 "Cartridge.ModelNo" "CX2681"
 "Cartridge.Name" "Battlezone (05-12-1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -7391,7 +7392,7 @@
 ""
 
 "Cartridge.MD5" "5d0e8a25cbd23e76f843c75a86b7e15b"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (09-07-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -7413,13 +7414,13 @@
 ""
 
 "Cartridge.MD5" "5d2cc33ca798783dee435eb29debf6d6"
-"Cartridge.Manufacturer" "Activision, Mike Riedel"
+"Cartridge.Manufacturer" "Activision - Imagineering, Mike Reidel"
 "Cartridge.ModelNo" "AK-043-04"
 "Cartridge.Name" "Commando (1988) (Activision)"
 ""
 
 "Cartridge.MD5" "5d799bfa9e1e7b6224877162accada0d"
-"Cartridge.Manufacturer" "Spectravision, Spectravideo, David Lubar"
+"Cartridge.Manufacturer" "Spectravision - Spectravideo - Sirius Software, David Lubar"
 "Cartridge.ModelNo" "SA-206"
 "Cartridge.Name" "Challenge of.... Nexar, The (1982) (Spectravision)"
 ""
@@ -7786,7 +7787,7 @@
 ""
 
 "Cartridge.MD5" "61631c2f96221527e7da9802b4704f93"
-"Cartridge.Manufacturer" "Activision, Mike Riedel"
+"Cartridge.Manufacturer" "Activision - Imagineering, Mike Reidel"
 "Cartridge.ModelNo" "AK-043-04"
 "Cartridge.Name" "Commando (1988) (Activision) [different logo]"
 ""
@@ -8253,7 +8254,7 @@
 ""
 
 "Cartridge.MD5" "66fcf7643d554f5e15d4d06bab59fe70"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (09-13-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -9366,7 +9367,7 @@
 ""
 
 "Cartridge.MD5" "749fec9918160921576f850b2375b516"
-"Cartridge.Manufacturer" "Spectravision, Spectravideo"
+"Cartridge.Manufacturer" "Spectravision - Spectravideo"
 "Cartridge.ModelNo" "SA-205"
 "Cartridge.Name" "China Syndrome (1982) (Spectravision)"
 "Display.Phosphor" "YES"
@@ -9728,7 +9729,7 @@
 ""
 
 "Cartridge.MD5" "798b8921276eec9e332dfcb47a2dbb17"
-"Cartridge.Manufacturer" "Atari, Gary Stark"
+"Cartridge.Manufacturer" "Atari - CCW, Gary Stark"
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Name" "Cookie Monster Munch (1983) (Atari) (PAL) [a]"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -9753,7 +9754,7 @@
 ""
 
 "Cartridge.MD5" "79ab4123a83dc11d468fb2108ea09e2e"
-"Cartridge.Manufacturer" "Activision, David Rolfe - Cheshire Engineering"
+"Cartridge.Manufacturer" "Activision - Cheshire Engineering, David Rolfe, Larry Zwick"
 "Cartridge.ModelNo" "AZ-037-04"
 "Cartridge.Name" "Beamrider (1984) (Activision)"
 "Cartridge.Rarity" "Rare"
@@ -9952,7 +9953,7 @@
 ""
 
 "Cartridge.MD5" "7ba07d4ea18bf3b3245c374d8720ad30"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4101"
 "Cartridge.Name" "Communist Mutants from Space (Preview) (1982) (Arcadia) (PAL)"
 ""
@@ -9983,7 +9984,7 @@
 ""
 
 "Cartridge.MD5" "7c757bb151269b2a626c907a22f5dae7"
-"Cartridge.Manufacturer" "TNT Games, Adam Clayton"
+"Cartridge.Manufacturer" "TNT Games - Sculptured Software, Adam Clayton"
 "Cartridge.ModelNo" "26192"
 "Cartridge.Name" "BMX Air Master (1989) (TNT Games) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
@@ -10068,7 +10069,7 @@
 ""
 
 "Cartridge.MD5" "7d726fa494f706784bafeb1b50d87f23"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (07-27-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -10154,9 +10155,9 @@
 ""
 
 "Cartridge.MD5" "7e4783a59972ae2cd8384f231757ea0b"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - Imagineering, Dan Kichen"
 "Cartridge.ModelNo" "CX26139P"
-"Cartridge.Name" "Crossbow (1987) (Atari) (PAL)"
+"Cartridge.Name" "Crossbow (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "7e51a58de2c0db7d33715f518893b0db"
@@ -10423,7 +10424,7 @@
 ""
 
 "Cartridge.MD5" "80e5400470ac788143e6db9bc8dd88cf"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (06-XX-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -11044,7 +11045,7 @@
 ""
 
 "Cartridge.MD5" "8905d54f48b8024fc718ed643e9033f7"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (05-24-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -11333,9 +11334,9 @@
 ""
 
 "Cartridge.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - Imagineering, Dan Kichen"
 "Cartridge.ModelNo" "CX26139"
-"Cartridge.Name" "Crossbow (1987) (Atari)"
+"Cartridge.Name" "Crossbow (1988) (Atari)"
 ""
 
 "Cartridge.MD5" "8ce9126066f2ddd5173e9f1f9ce1494e"
@@ -11509,7 +11510,7 @@
 ""
 
 "Cartridge.MD5" "8f88309afad108936ca70f8b2b084718"
-"Cartridge.Manufacturer" "Spectravision, Spectravideo - Quelle"
+"Cartridge.Manufacturer" "Spectravision - Spectravideo - Quelle"
 "Cartridge.ModelNo" "SA-203 - 413.223 9"
 "Cartridge.Name" "Cross Force (1982) (Spectravision) (PAL)"
 "Cartridge.Note" "AKA Kreuzfeuer (Cross Fire)"
@@ -11663,7 +11664,7 @@
 "Cartridge.MD5" "91c2098e88a6b13f977af8c003e0bca5"
 "Cartridge.Manufacturer" "Atari - GCC"
 "Cartridge.ModelNo" "CX2676"
-"Cartridge.Name" "Centipede (1982) (Atari)"
+"Cartridge.Name" "Centipede (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "91d1c82ceaf8af2add3973a3c34bc0cb"
@@ -11716,7 +11717,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG205"
 "Cartridge.Name" "Dancing Plate (1982) (BitCorp) (PAL)"
-"Cartridge.Note" "AKA Dancing Plates, Tanzende Teller"
+"Cartridge.Note" "AKA Dishaster, Dancing Plates, Tanzende Teller"
 "Display.Phosphor" "YES"
 ""
 
@@ -11900,7 +11901,7 @@
 ""
 
 "Cartridge.MD5" "951e8cec7a1a1d6c01fd649e7ff7743a"
-"Cartridge.Manufacturer" "Atari, Adam Clayton, John Howard Palevich"
+"Cartridge.Manufacturer" "Atari - Sculptured Software, Adam Clayton"
 "Cartridge.ModelNo" "CX26151, CX26151P"
 "Cartridge.Name" "Dark Chambers (1988) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
@@ -11995,9 +11996,9 @@
 ""
 
 "Cartridge.MD5" "968efc79d500dce52a906870a97358ab"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26190"
-"Cartridge.Name" "BMX Air Master (1990) (Atari)"
+"Cartridge.Manufacturer" "TNT Games - Sculptured Software, Adam Clayton"
+"Cartridge.ModelNo" "26192"
+"Cartridge.Name" "BMX Air Master (1989) (TNT Games)"
 ""
 
 "Cartridge.MD5" "969b968383d9f0e9d8ffd1056bcaef49"
@@ -12660,7 +12661,7 @@
 ""
 
 "Cartridge.MD5" "a0297c4788f9e91d43e522f4c561b4ad"
-"Cartridge.Manufacturer" "Atari, Gary Stark"
+"Cartridge.Manufacturer" "Atari - CCW, Gary Stark"
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Name" "Cookie Monster Munch (1983) (Atari) (PAL)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -12959,7 +12960,7 @@
 ""
 
 "Cartridge.MD5" "a422194290c64ef9d444da9d6a207807"
-"Cartridge.Manufacturer" "M Network, Hal Finney"
+"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Hal Finney"
 "Cartridge.ModelNo" "MT5667"
 "Cartridge.Name" "Dark Cavern (1982) (M Network)"
 ""
@@ -12979,7 +12980,7 @@
 ""
 
 "Cartridge.MD5" "a47e26096de6f6487bf5dd2d1cced294"
-"Cartridge.Manufacturer" "Atari, Larry Kaplan"
+"Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2643"
 "Cartridge.Name" "Codebreaker (1978) (Atari) (PAL)"
 "Cartridge.Note" "Uses Keypad Controllers"
@@ -13794,7 +13795,7 @@
 ""
 
 "Cartridge.MD5" "afd2cf258d51ae4965ee21abba3627ab"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
+"Cartridge.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (12-08-1982) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controller"
@@ -14451,7 +14452,7 @@
 "Cartridge.MD5" "b8ed78afdb1e6cfe44ef6e3428789d5f"
 "Cartridge.Manufacturer" "Data Age, J. Ray Dettling"
 "Cartridge.ModelNo" "112-007"
-"Cartridge.Name" "Bermuda Triangle (1982) (Data Age)"
+"Cartridge.Name" "Bermuda Triangle (1983) (Data Age)"
 "Cartridge.Rarity" "Rare"
 ""
 
@@ -14681,7 +14682,7 @@
 ""
 
 "Cartridge.MD5" "bce93984b920e9b56cf24064f740fe78"
-"Cartridge.Manufacturer" "Atari, Carol Shaw"
+"Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Checkers (32 in 1) (1988) (Atari) (PAL)"
 ""
@@ -14957,7 +14958,7 @@
 ""
 
 "Cartridge.MD5" "c17bdc7d14a36e10837d039f43ee5fa3"
-"Cartridge.Manufacturer" "Spectravision, Spectravideo"
+"Cartridge.Manufacturer" "Spectravision - Spectravideo"
 "Cartridge.ModelNo" "SA-203"
 "Cartridge.Name" "Cross Force (1982) (Spectravision)"
 ""
@@ -16279,9 +16280,10 @@
 ""
 
 "Cartridge.MD5" "d078d25873c5b99f78fa267245a2af02"
-"Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech"
+"Cartridge.Manufacturer" "Sega - Beck-Tech, Steve Beck, Phat Ho"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega) [a]"
+"Display.YStart" "26"
 "Display.Height" "220"
 ""
 
@@ -16643,7 +16645,7 @@
 ""
 
 "Cartridge.MD5" "d541b20eae221a8ee321375e5971e766"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4101"
 "Cartridge.Name" "Communist Mutants from Space (Preview) (1982) (Arcadia)"
 ""
@@ -17368,7 +17370,7 @@
 ""
 
 "Cartridge.MD5" "de1e9fb700baf8d2e5ae242bffe2dbda"
-"Cartridge.Manufacturer" "Activision, Mike Riedel"
+"Cartridge.Manufacturer" "Activision - Imagineering, Mike Reidel"
 "Cartridge.ModelNo" "EAK-043-04I"
 "Cartridge.Name" "Commando (1988) (Activision) (PAL)"
 ""
@@ -17379,9 +17381,9 @@
 ""
 
 "Cartridge.MD5" "de29e46dbea003c3c09c892d668b9413"
-"Cartridge.Manufacturer" "CBS Electronics, Steve 'Jessica' Kitchen"
+"Cartridge.Manufacturer" "Coleco - Woodside Design Associates, Steve 'Jessica Stevens' Kitchen"
 "Cartridge.ModelNo" "4L1717, 4L1718, 4L1719, 4L2277"
-"Cartridge.Name" "Carnival (1982) (CBS Electronics) (PAL)"
+"Cartridge.Name" "Carnival (1983) (CBS Electronics) (PAL)"
 ""
 
 "Cartridge.MD5" "de3d0e37729d85afcb25a8d052a6e236"
@@ -17681,7 +17683,7 @@
 ""
 
 "Cartridge.MD5" "e1486c7822c07117b4f94a32e5ed68c1"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (06-14-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -17701,7 +17703,7 @@
 ""
 
 "Cartridge.MD5" "e150f0d14f013a104b032305c0ce23ef"
-"Cartridge.Manufacturer" "Spectravision, Spectravideo"
+"Cartridge.Manufacturer" "Spectravision - Spectravideo"
 "Cartridge.ModelNo" "SA-205"
 "Cartridge.Name" "China Syndrome (1982) (Spectravision) (PAL)"
 "Display.Phosphor" "YES"
@@ -17839,7 +17841,7 @@
 ""
 
 "Cartridge.MD5" "e2c89f270f72cd256ed667507fa038a2"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4101"
 "Cartridge.Name" "Communist Mutants from Space (1982) (Arcadia) (PAL)"
 ""
@@ -17951,7 +17953,7 @@
 ""
 
 "Cartridge.MD5" "e434c0e161dd3c3fb435eb6bad2e182c"
-"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Brad Rice"
 "Cartridge.ModelNo" "CX2681"
 "Cartridge.Name" "Battlezone (05-02-1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -18329,7 +18331,7 @@
 ""
 
 "Cartridge.MD5" "e8aa36e3d49e9bfa654c25dcc19c74e6"
-"Cartridge.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner"
+"Cartridge.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cartridge.ModelNo" "CX2601, CX2601P"
 "Cartridge.Name" "Combat (1977) (Atari) (PAL)"
 "Display.Height" "260"
@@ -18641,6 +18643,7 @@
 "Cartridge.Manufacturer" "Puzzy - Bit Corporation"
 "Cartridge.ModelNo" "PG205"
 "Cartridge.Name" "Dancing Plate (1982) (Puzzy) (PAL)"
+"Cartridge.Note" "AKA Dishaster"
 "Display.Phosphor" "YES"
 ""
 
@@ -19149,7 +19152,7 @@
 ""
 
 "Cartridge.MD5" "f283cc294ece520c2badf9da20cfc025"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
+"Cartridge.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (1983) (Atari) (PAL)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -19239,7 +19242,6 @@
 "Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
 "Cartridge.ModelNo" "708-111 - GN-040"
 "Cartridge.Name" "Cosmic Corridor (1983) (ZiMAG)"
-"Cartridge.Note" "AKA Space Tunnel"
 "Display.Height" "220"
 ""
 
@@ -19304,7 +19306,7 @@
 ""
 
 "Cartridge.MD5" "f457674cef449cfd85f21db2b4f631a7"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Wes Trager, Henry Will IV"
+"Cartridge.Manufacturer" "U.S. Games Corporation - JWDA, Todd Marshall, Wes Trager, Henry Will IV"
 "Cartridge.ModelNo" "VC1004"
 "Cartridge.Name" "Commando Raid (1982) (U.S. Games)"
 ""
@@ -19365,7 +19367,7 @@
 ""
 
 "Cartridge.MD5" "f4dabd5bcc603e8464a478208037d423"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (08-21-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -19481,7 +19483,7 @@
 ""
 
 "Cartridge.MD5" "f6b5ebb65cbb2981af4d546c470629d7"
-"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.Manufacturer" "Coleco - Individeo, Ed Temple"
 "Cartridge.Name" "Cabbage Patch Kids (09-13-1984) (Coleco) (Prototype) [a]"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
@@ -20053,7 +20055,7 @@
 ""
 
 "Cartridge.MD5" "fbe554aa8f759226d251ba6b64a9cce4"
-"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Brad Rice"
 "Cartridge.ModelNo" "CX2681, CX2681P"
 "Cartridge.Name" "Battlezone (1983) (Atari) (PAL)"
 "Cartridge.Rarity" "Uncommon"
@@ -20227,7 +20229,7 @@
 ""
 
 "Cartridge.MD5" "fe67087f9c22655ce519616fc6c6ef4d"
-"Cartridge.Manufacturer" "Atari, Randy Bowker"
+"Cartridge.Manufacturer" "Atari - Zip Technology, Randy Bowker, Bruce Williams"
 "Cartridge.ModelNo" "CX26142"
 "Cartridge.Name" "Crack'ed (11-28-1988) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -20259,7 +20261,7 @@
 ""
 
 "Cartridge.MD5" "fec0c2e2ab0588ed20c750b58cf3baa3"
-"Cartridge.Manufacturer" "Activision, David Rolfe - Cheshire Engineering"
+"Cartridge.Manufacturer" "Activision - Cheshire Engineering, David Rolfe, Larry Zwick"
 "Cartridge.ModelNo" "EAZ-037-04, EAZ-037-04I"
 "Cartridge.Name" "Beamrider (1984) (Activision) (PAL)"
 "Cartridge.Rarity" "Rare"
