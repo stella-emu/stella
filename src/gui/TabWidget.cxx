@@ -319,7 +319,7 @@ void TabWidget::drawWidget(bool hilite)
     if(i == _activeTab)
     {
       s.hLine(x, _y, x + _tabWidth - 1, kWidColor);
-      s.vLine(x + _tabWidth, _y + 1, _y + _tabHeight - 1, kBGColorHi);
+      s.vLine(x + _tabWidth, _y + 1, _y + _tabHeight - 1, kBGColorLo);
     }
     else
       s.hLine(x, _y + _tabHeight, x + _tabWidth, kWidColor);
@@ -338,7 +338,7 @@ void TabWidget::drawWidget(bool hilite)
 #else
   // fill empty right space
   s.hLine(x - kTabSpacing + 1, _y + _tabHeight, _x + _w - 1, kWidColor);
-  s.hLine(_x, _y + _h - 1, _x + _w - 1, kBGColorHi);
+  s.hLine(_x, _y + _h - 1, _x + _w - 1, kBGColorLo);
 #endif
 }
 

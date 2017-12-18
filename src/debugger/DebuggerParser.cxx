@@ -756,6 +756,7 @@ void DebuggerParser::executeBreakif()
     {
       if(condition == debugger.m6502().getCondBreakNames()[i])
       {
+        args[0] = i;
         executeDelbreakif();
         return;
       }
@@ -1830,6 +1831,7 @@ void DebuggerParser::executeSavestateif()
     {
       if(condition == debugger.m6502().getCondSaveStateNames()[i])
       {
+        args[0] = i;
         executeDelsavestateif();
         return;
       }
