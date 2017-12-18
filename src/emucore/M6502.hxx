@@ -242,6 +242,8 @@ class M6502 : public Serializable
     bool delCondTrap(uInt32 brk);
     void clearCondTraps();
     const StringList& getCondTrapNames() const;
+
+    void setGhostReadsTrap(bool enable) { myGhostReadsTrap = enable; }
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -437,6 +439,8 @@ class M6502 : public Serializable
       int address;
     };
     HitTrapInfo myHitTrapInfo;
+    // trap on ghost reads
+    bool myGhostReadsTrap;
 
     vector<unique_ptr<Expression>> myCondBreaks;
     StringList myCondBreakNames;

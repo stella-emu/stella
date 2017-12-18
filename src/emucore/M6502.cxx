@@ -74,6 +74,7 @@ M6502::M6502(const Settings& settings)
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
   myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
+  myGhostReadsTrap = true;
 #endif
 }
 
@@ -115,6 +116,7 @@ void M6502::reset()
   myDataAddressForPoke = 0;
 
   myHaltRequested = false;
+  myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,7 +138,8 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   myLastPeekAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
-  if(myReadTraps.isInitialized() && myReadTraps.isSet(address))
+  if(myReadTraps.isInitialized() && myReadTraps.isSet(address)
+     && (myGhostReadsTrap || flags != DISASM_NONE))
   {
     myLastPeekBaseAddress = myDebugger->getBaseAddress(myLastPeekAddress, true); // mirror handling
     int cond = evalCondTraps();
@@ -396,6 +399,7 @@ bool M6502::save(Serializer& out) const
 
     out.putBool(myHaltRequested);
     out.putBool(myStepStateByInstruction);
+    out.putBool(myGhostReadsTrap);
   }
   catch(...)
   {
@@ -447,6 +451,7 @@ bool M6502::load(Serializer& in)
 
     myHaltRequested = in.getBool();
     myStepStateByInstruction = in.getBool();
+    myGhostReadsTrap = in.getBool();
   }
   catch(...)
   {

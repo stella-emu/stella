@@ -39,6 +39,7 @@
 #include "OSystem.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
+#include "M6502.hxx"
 #include "DeveloperDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -327,7 +328,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 
   int sWidth = font.getMaxCharWidth() * 8;
   myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
-                                       "Buffer size (*)   ", 0, kSizeChanged);
+                                       "Buffer size       ", 0, kSizeChanged);
   myStateSizeWidget->setMinValue(20);
   myStateSizeWidget->setMaxValue(1000);
   myStateSizeWidget->setStepValue(20);
@@ -362,11 +363,6 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
                                          lineHeight, items, "Horizon         ~ ", 0, kHorizonChanged);
   wid.push_back(myStateHorizonWidget);
 
-  // Add message concerning usage
-  const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Requires application restart");
-
   addToFocusList(wid, myTab, tabID);
 }
 
@@ -399,7 +395,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   pwidth = font.getStringWidth("Medium");
   myDebuggerFontSize =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
-                    "Font size  ", 0, kDFontSizeChanged);
+                    "Font size (*)  ", 0, kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
   ypos += lineHeight + 4;
 
@@ -412,7 +408,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   pwidth = font.getStringWidth("Bold non-labels only");
   myDebuggerFontStyle =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
-                    "Font style ", 0);
+                    "Font style (*) ", 0);
   wid.push_back(myDebuggerFontStyle);
 
   ypos += lineHeight + VGAP * 4;
@@ -420,7 +416,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   pwidth = font.getMaxCharWidth() * 8;
   // Debugger width and height
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
-                                           lineHeight, "Debugger width  ",
+                                           lineHeight, "Debugger width (*)  ",
                                            0, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
@@ -433,7 +429,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
-                                            lineHeight, "Debugger height ",
+                                            lineHeight, "Debugger height (*) ",
                                             0, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
@@ -444,10 +440,14 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
                          xpos + myDebuggerHeightSlider->getWidth() + 4,
                          ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
 
+  ypos += lineHeight + VGAP * 4;
+  myGhostReadsTrapWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1,
+                                             "Trap on 'ghost' reads", kGhostReads);
+
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Changes require application restart");
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Changes require a ROM reload");
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -673,6 +673,9 @@ void DeveloperDialog::loadConfig()
   int style = instance().settings().getInt("dbg.fontstyle");
   myDebuggerFontStyle->setSelected(style, "0");
 
+  // Ghost reads trap
+  myGhostReadsTrapWidget->setState(instance().settings().getBool("dbg.ghostreadstrap"));
+
   handleFontSize();
 #endif
 
@@ -725,6 +728,11 @@ void DeveloperDialog::saveConfig()
                                  myDebuggerHeightSlider->getValue()));
   // Debugger font size
   instance().settings().setValue("dbg.fontsize", myDebuggerFontSize->getSelectedTag().toString());
+
+  // Ghost reads trap
+  instance().settings().setValue("dbg.ghostreadstrap", myGhostReadsTrapWidget->getState());
+  if(instance().hasConsole())
+    instance().console().system().m6502().setGhostReadsTrap(myGhostReadsTrapWidget->getState());
 #endif
 }
 
@@ -785,6 +793,9 @@ void DeveloperDialog::setDefaults()
       myDebuggerHeightLabel->setValue(h);
       myDebuggerFontSize->setSelected("medium");
       myDebuggerFontStyle->setSelected("0");
+
+      myGhostReadsTrapWidget->setState(true);
+
       handleFontSize();
 #endif
       break;

@@ -2325,6 +2325,16 @@
     </tr>
 
     <tr>
+      <td><pre>-dbg.ghostreadstrap &lt;1|0&gt;</pre></td>
+      <td>Debugger considers/ignores 'ghost' reads for trap addresses</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dbg.uhex &lt;0|1&gt;</pre></td>
+      <td>Lower-/uppercase HEX display</td>
+    </tr>
+
+    <tr>
       <td><pre>-break &lt;address&gt;</pre></td>
       <td>Set a breakpoint at specified address.</td>
     </tr>
@@ -3160,9 +3170,10 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Font size</td><td>Self-explanatory (requires ROM reload)</td><td>-dbg.fontsize</td></tr>
-          <tr><td>Font style</td><td>Self-explanatory (requires ROM reload)</td><td>-dbg.fontstyle</td></tr>
-          <tr><td>Debugger width/height</td><td>Self-explanatory (requires ROM reload)</td><td>-dbg.res</td></tr>
+          <tr><td>Font size</td><td>Self-explanatory</td><td>-dbg.fontsize</td></tr>
+          <tr><td>Font style</td><td>Self-explanatory</td><td>-dbg.fontstyle</td></tr>
+          <tr><td>Debugger width/height</td><td>Self-explanatory</td><td>-dbg.res</td></tr>
+          <tr><td>Trap on 'ghost' reads</td><td>Defines whether the debugger should consider CPU 'ghost' reads for trap adresses.</td><td><span style="white-space:nowrap">-dbg.ghostreadstrap</span></td></tr>
         </table>
       </td>
     </tr>

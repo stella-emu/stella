@@ -78,6 +78,7 @@ class DeveloperDialog : public Dialog
       kDWidthChanged        = 'UIdw',
       kDHeightChanged       = 'UIdh',
       kDFontSizeChanged     = 'UIfs',
+      kGhostReads           = 'Dbgh'
   #endif
     };
     enum SettingsSet
@@ -133,6 +134,7 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myDebuggerHeightLabel;
     PopUpWidget*        myDebuggerFontSize;
     PopUpWidget*        myDebuggerFontStyle;
+    CheckboxWidget*     myGhostReadsTrapWidget;
 #endif
 
     bool    mySettings;

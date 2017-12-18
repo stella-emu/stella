@@ -137,7 +137,8 @@ Settings::Settings(OSystem& osystem)
   // Debugger/disassembly options
   setInternal("dbg.fontsize", "medium");
   setInternal("dbg.fontstyle", "0");
-  setInternal("dbg.uhex", "true");
+  setInternal("dbg.uhex", "false");
+  setInternal("dbg.ghostreadstrap", "true");
   setInternal("dis.resolve", "true");
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");
@@ -533,6 +534,8 @@ void Settings::usage() const
     << "   -dbg.fontsize  <small|medium| Font size to use in debugger window\n"
     << "                  large>\n"
     << "   -dbg.fontstyle <0-3>          Font style to use in debugger window (bold vs. normal)\n"
+    << "   -dbg.ghostreadstrap <1|0>     Debugger traps on 'ghost' reads\n"
+    << "   -dbg.uhex      <0|1>          lower-/uppercase HEX display\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
     << "   -debug                        Start in debugger mode\n"
     << endl
@@ -569,6 +572,7 @@ void Settings::usage() const
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
+    << "  -plr.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
     << endl
     << " The same parameters but for developer settings mode\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
@@ -581,7 +585,7 @@ void Settings::usage() const
     << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
-    << "  -dev.thumb.trapfatal <1|0>      Determines whether errors in ARM emulation throw an exception\n"
+    << "  -dev.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
     << endl << std::flush;
 }
 
