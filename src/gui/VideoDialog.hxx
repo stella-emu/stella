@@ -35,7 +35,7 @@ class VideoDialog : public Dialog
 {
   public:
     VideoDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                int max_w, int max_h, bool isGlobal);
+                int max_w, int max_h);
     virtual ~VideoDialog() = default;
 
   private:

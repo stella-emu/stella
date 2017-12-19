@@ -122,7 +122,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h, myMode == launcher);
+  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h);
   myAudioDialog    = make_unique<AudioDialog>(osystem, parent, font);
   myInputDialog    = make_unique<InputDialog>(osystem, parent, font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, font);

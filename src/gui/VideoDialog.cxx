@@ -34,7 +34,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
-                         const GUI::Font& font, int max_w, int max_h, bool isGlobal)
+                         const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent)
 {
   const int VGAP = 4;
