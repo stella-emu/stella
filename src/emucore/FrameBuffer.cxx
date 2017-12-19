@@ -227,7 +227,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   myMsg.counter = 0;
 
   // Create surfaces for TIA statistics and general messages
-  myStatsMsg.color = kBtnTextColor;
+  myStatsMsg.color = kColorInfo;
   myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
   myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
@@ -950,6 +950,8 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     kDbgChangedTextColor  Text color for changed cells
     kDbgColorHi           Highlighted color in debugger data cells
     kDbgColorRed          Red color in debugger
+    *** Info color ***
+    kColorinfo
 */
 uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Standard
@@ -961,8 +963,8 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xac3410, 0xd55941,
     0xac3410, 0xd55941,
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,
-  },
-
+    0xffffff
+  },              
   // Classic
   { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,
     0x20a020, 0x00ff00, 0xc80000, 0x20a020,
@@ -971,7 +973,8 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x20a020,
     0x20a020, 0x00ff00,
     0x20a020, 0x00ff00,
-    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000
+    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,
+    0x20a020
   },
   // Light
   {
@@ -982,6 +985,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x333333,                                         // checkbox
     0x808080, 0x0078d7,                               // scrollbar
     0x333333, 0x0078d7,                               // slider
-    0xffc0c0, 0x000000, 0xe00000, 0xc00000            // debugger
+    0xffc0c0, 0x000000, 0xe00000, 0xc00000,           // debugger
+    0xffffff                                          // info
   }
 };
