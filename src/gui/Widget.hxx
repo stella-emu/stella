@@ -263,7 +263,7 @@ class CheckboxWidget : public ButtonWidget
     void setEditable(bool editable);
     void setFill(FillType type);
 
-    void setState(bool state);
+    void setState(bool state, bool changed = false);
     void toggleState()     { setState(!_state); }
     bool getState() const  { return _state;     }
 
@@ -280,6 +280,7 @@ class CheckboxWidget : public ButtonWidget
     bool _state;
     bool _holdFocus;
     bool _drawBox;
+    bool _changed;
 
     uInt32* _img;
     uInt32  _fillColor;

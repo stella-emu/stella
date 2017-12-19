@@ -544,6 +544,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _state(false),
     _holdFocus(true),
     _drawBox(true),
+    _changed(false),
     _fillColor(kColor),
     _boxY(0),
     _textY(0)
@@ -632,13 +633,14 @@ void CheckboxWidget::setFill(FillType type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::setState(bool state)
+void CheckboxWidget::setState(bool state, bool changed)
 {
   if(_state != state)
   {
     _state = state;
     setDirty();
   }
+  _changed = changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -651,14 +653,14 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(_drawBox)
     s.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
   // Do we draw a square or cross?
-  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, isEnabled() ? _bgcolor : kColor);
+  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, _changed ? kDbgChangedColor : isEnabled() ? _bgcolor : kColor);
   if(_state)
     s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
 #else
   if(_drawBox)
     s.frameRect(_x, _y + _boxY, 14, 14, hilite ? kScrollColorHi : kShadowColor);
   // Do we draw a square or cross?
-  s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, isEnabled() ? _bgcolor : kColor);
+  s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, _changed ? kDbgChangedColor : isEnabled() ? _bgcolor : kColor);
   if(_state)
     s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled()
                  ? hilite ? kScrollColorHi : kCheckColor

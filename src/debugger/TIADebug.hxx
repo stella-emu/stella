@@ -45,6 +45,7 @@ class TiaState : public DebuggerState
     IntArray pf;
     IntArray size;
     IntArray aud;
+    IntArray info;
 };
 
 class TIADebug : public DebuggerSystem

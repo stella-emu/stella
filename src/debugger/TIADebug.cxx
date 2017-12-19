@@ -108,6 +108,16 @@ const DebuggerState& TIADebug::getState()
   myState.aud.push_back(audV0());
   myState.aud.push_back(audV1());
 
+  // internal TIA state
+  myState.info.clear();
+  myState.info.push_back(frameCount());
+  myState.info.push_back(frameCycles());
+  myState.info.push_back(vsyncAsInt());
+  myState.info.push_back(vblankAsInt());
+  myState.info.push_back(scanlines());
+  myState.info.push_back(scanlinesLastFrame());
+  myState.info.push_back(clocksThisLine());
+
   return myState;
 }
 
@@ -168,6 +178,16 @@ void TIADebug::saveOldState()
   myOldState.aud.push_back(audC1());
   myOldState.aud.push_back(audV0());
   myOldState.aud.push_back(audV1());
+
+  // internal TIA state
+  myOldState.info.clear();
+  myOldState.info.push_back(frameCount());
+  myOldState.info.push_back(frameCycles());
+  myOldState.info.push_back(vsyncAsInt());
+  myOldState.info.push_back(vblankAsInt());
+  myOldState.info.push_back(scanlines());
+  myOldState.info.push_back(scanlinesLastFrame());
+  myOldState.info.push_back(clocksThisLine());
 }
 
 /* the set methods now use mySystem.poke(). This will save us the
