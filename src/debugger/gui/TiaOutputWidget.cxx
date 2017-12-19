@@ -182,9 +182,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     s.drawPixels(myLineBuffer, _x + 1, _y + 1 + y, width << 1);
   }
 
-  uInt32 beamColor = kColorInfo;
-
   // Show electron beam position
   if(visible && scanx < width && scany+2u < height)
-    s.fillRect(_x + 1 + (scanx<<1), _y + 1 + scany, 3, 3, beamColor);
+    s.fillRect(_x + 1 + (scanx<<1), _y + 1 + scany, 3, 3, kColorInfo);
 }
