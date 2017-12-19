@@ -50,6 +50,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos += t->getWidth() + 5;
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
                               _w - 2 - xpos, nfont.getLineHeight());
+  myBank->setEditable(false);
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
