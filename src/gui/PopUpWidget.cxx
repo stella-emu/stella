@@ -248,7 +248,6 @@ void PopUpWidget::drawWidget(bool hilite)
   // Fill the background
   s.fillRect(x + 1, _y + 1, w - 17, _h - 2, kWidColor);
   s.fillRect(x + w - 15, _y + 2, 13, _h - 4, isEnabled() && hilite ? kWidColor : kBGColorHi);
-  //s.vLine(x + w - 17, _y, _y + _h - 1, kShadowColor);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(down_arrow, x + w - 13, _y + myArrowsY + 1,
                !isEnabled() ? kColor : kTextColor, 9u, 8u);

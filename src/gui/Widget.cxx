@@ -241,24 +241,31 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     return nullptr;
   else
   {
-    switch(direction)
+    int oldPos = pos;
+    do
     {
-      case -1:  // previous widget
-        pos--;
-        if(pos < 0)
-          pos = size - 1;
-        break;
+      switch(direction)
+      {
+        case -1:  // previous widget
+          pos--;
+          if(pos < 0)
+            pos = size - 1;
+          break;
 
-      case +1:  // next widget
-        pos++;
-        if(pos >= size)
-          pos = 0;
-        break;
+        case +1:  // next widget
+          pos++;
+          if(pos >= size)
+            pos = 0;
+          break;
 
-      default:
-        // pos already set
+        default:
+          // pos already set
+          break;
+      }
+      // break if all widgets should be disabled
+      if(oldPos == pos)
         break;
-    }
+    } while(!arr[pos]->isEnabled());
   }
 
   // Now highlight the active widget

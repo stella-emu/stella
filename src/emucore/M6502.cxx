@@ -147,7 +147,8 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     {
       myJustHitReadTrapFlag = true;
       stringstream msg;
-      msg << "RTrap[" << Common::Base::HEX2 << cond << "]" << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      msg << "RTrap" << (flags == DISASM_NONE ? "G[" : "[") << Common::Base::HEX2 << cond << "]"
+        << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
       myHitTrapInfo.message = msg.str();
       myHitTrapInfo.address = address;
     }
