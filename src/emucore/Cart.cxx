@@ -116,4 +116,3 @@ bool Cartridge::randomStartBank() const
 {
   return mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.bankrandom" : "plr.bankrandom");
 }
-
