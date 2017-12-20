@@ -39,7 +39,11 @@ class TiaState : public DebuggerState
   public:
     IntArray coluRegs;
     IntArray fixedCols;
+    BoolArray cx;
     IntArray gr;
+    BoolArray ref;
+    BoolArray vdel;
+    BoolArray res;
     IntArray pos;
     IntArray hm;
     IntArray pf;

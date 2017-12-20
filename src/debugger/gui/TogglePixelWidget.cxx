@@ -40,11 +40,25 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   // Changed state isn't used, but we still need to fill it
   while(int(_changedList.size()) < rows * cols)
     _changedList.push_back(false);
+  // prepare _stateList for change tracking
+  while(int(_stateList.size()) < rows * cols)
+    _stateList.push_back(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TogglePixelWidget::setState(const BoolArray& state)
 {
+  // track changes automatically
+  for(int row = 0; row < _rows; row++)
+  {
+    for(int col = 0; col < _cols; col++)
+    {
+      int pos = row * _cols + col;
+
+       _changedList[pos] = _stateList[pos] != state[pos];
+    }
+  }
+
   _stateList.clear();
   _stateList = state;
 
@@ -133,6 +147,8 @@ void TogglePixelWidget::drawWidget(bool hilite)
       // Either draw the pixel in given color, or erase (show background)
       s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
                  _stateList[pos] ? _pixelColor : _backgroundColor);
+      if (_changedList[pos])
+        s.frameRect(x - 3, y - 1, _colWidth - 1, _rowHeight - 1, kDbgChangedColor);
     }
   }
 

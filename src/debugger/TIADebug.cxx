@@ -60,6 +60,24 @@ const DebuggerState& TIADebug::getState()
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::BL]);
   myState.fixedCols.push_back(TIA::FixedColor::HBLANK_WHITE);
 
+  // Collisions
+  myState.cx.clear();
+  myState.cx.push_back(collP0_PF());
+  myState.cx.push_back(collP0_BL());
+  myState.cx.push_back(collM1_P0());
+  myState.cx.push_back(collM0_P0());
+  myState.cx.push_back(collP0_P1());
+  myState.cx.push_back(collP1_PF());
+  myState.cx.push_back(collP1_BL());
+  myState.cx.push_back(collM1_P1());
+  myState.cx.push_back(collM0_P1());
+  myState.cx.push_back(collM0_PF());
+  myState.cx.push_back(collM0_BL());
+  myState.cx.push_back(collM0_M1());
+  myState.cx.push_back(collM1_PF());
+  myState.cx.push_back(collM1_BL());
+  myState.cx.push_back(collBL_PF());
+
   // Player 0 & 1 and Ball graphics registers
   myState.gr.clear();
   myState.gr.push_back(myTIA.myPlayer0.getGRPNew());
@@ -68,6 +86,18 @@ const DebuggerState& TIADebug::getState()
   myState.gr.push_back(myTIA.myPlayer1.getGRPOld());
   myState.gr.push_back(myTIA.myBall.getENABLNew());
   myState.gr.push_back(myTIA.myBall.getENABLOld());
+
+  // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
+  myState.ref.clear();
+  myState.ref.push_back(refP0());
+  myState.ref.push_back(refP1());
+  myState.vdel.clear();
+  myState.vdel.push_back(vdelP0());
+  myState.vdel.push_back(vdelP1());
+  myState.vdel.push_back(vdelBL());
+  myState.res.clear();
+  myState.res.push_back(resMP0());
+  myState.res.push_back(resMP1());
 
   // Position registers
   myState.pos.clear();
@@ -90,6 +120,9 @@ const DebuggerState& TIADebug::getState()
   myState.pf.push_back(pf0());
   myState.pf.push_back(pf1());
   myState.pf.push_back(pf2());
+  myState.pf.push_back(refPF());
+  myState.pf.push_back(scorePF());
+  myState.pf.push_back(priorityPF());
 
   // Size registers
   myState.size.clear();
@@ -131,6 +164,24 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
 
+  // Collisions
+  myOldState.cx.clear();
+  myOldState.cx.push_back(collP0_PF());
+  myOldState.cx.push_back(collP0_BL());
+  myOldState.cx.push_back(collM1_P0());
+  myOldState.cx.push_back(collM0_P0());
+  myOldState.cx.push_back(collP0_P1());
+  myOldState.cx.push_back(collP1_PF());
+  myOldState.cx.push_back(collP1_BL());
+  myOldState.cx.push_back(collM1_P1());
+  myOldState.cx.push_back(collM0_P1());
+  myOldState.cx.push_back(collM0_PF());
+  myOldState.cx.push_back(collM0_BL());
+  myOldState.cx.push_back(collM0_M1());
+  myOldState.cx.push_back(collM1_PF());
+  myOldState.cx.push_back(collM1_BL());
+  myOldState.cx.push_back(collBL_PF());
+
   // Player 0 & 1 graphics registers
   myOldState.gr.clear();
   myOldState.gr.push_back(myTIA.myPlayer0.getGRPNew());
@@ -139,6 +190,18 @@ void TIADebug::saveOldState()
   myOldState.gr.push_back(myTIA.myPlayer1.getGRPOld());
   myOldState.gr.push_back(myTIA.myBall.getENABLNew());
   myOldState.gr.push_back(myTIA.myBall.getENABLOld());
+
+  // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
+  myOldState.ref.clear();
+  myOldState.ref.push_back(refP0());
+  myOldState.ref.push_back(refP1());
+  myOldState.vdel.clear();
+  myOldState.vdel.push_back(vdelP0());
+  myOldState.vdel.push_back(vdelP1());
+  myOldState.vdel.push_back(vdelBL());
+  myOldState.res.clear();
+  myOldState.res.push_back(resMP0());
+  myOldState.res.push_back(resMP1());
 
   // Position registers
   myOldState.pos.clear();
@@ -161,6 +224,9 @@ void TIADebug::saveOldState()
   myOldState.pf.push_back(pf0());
   myOldState.pf.push_back(pf1());
   myOldState.pf.push_back(pf2());
+  myOldState.pf.push_back(refPF());
+  myOldState.pf.push_back(scorePF());
+  myOldState.pf.push_back(priorityPF());
 
   // Size registers
   myOldState.size.clear();
