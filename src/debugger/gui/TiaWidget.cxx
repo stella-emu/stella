@@ -129,10 +129,9 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
     for(uInt32 col = 0; col < 5 - row; ++col)
     {
-      myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY, "");
+      myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY, "", CheckboxWidget::kCheckActionCmd);
       myCollision[idx]->setTarget(this);
       myCollision[idx]->setID(idx);
-      myCollision[idx]->setEditable(false);  // TODO - enable this?
 
       // We need to know where the PF_BL register is, to properly position
       // the CXCLR button
@@ -827,6 +826,64 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case CheckboxWidget::kCheckActionCmd:
       switch(id)
       {
+        case kP0_PFID:
+          tia.collision(Cx_P0PF, true);
+          break;
+
+        case kP0_BLID:
+          tia.collision(Cx_P0BL, true);
+          break;
+
+        case kP0_M1ID:
+          tia.collision(Cx_M1P0, true);
+          break;
+
+        case kP0_M0ID:
+          tia.collision(Cx_M0P0, true);
+          break;
+
+        case kP0_P1ID:
+          tia.collision(Cx_P0P1, true);
+          break;
+
+        case kP1_PFID:
+          tia.collision(Cx_P1PF, true);
+          break;
+        case kP1_BLID:
+          tia.collision(Cx_P1BL, true);
+          break;
+
+        case kP1_M1ID:
+          tia.collision(Cx_M1P1, true);
+          break;
+        case kP1_M0ID:
+          tia.collision(Cx_M0P1, true);
+          break;
+
+        case kM0_PFID:
+          tia.collision(Cx_M0PF, true);
+          break;
+
+        case kM0_BLID:
+          tia.collision(Cx_M0BL, true);
+          break;
+
+        case kM0_M1ID:
+          tia.collision(Cx_M0M1, true);
+          break;
+
+        case kM1_PFID:
+          tia.collision(Cx_M1PF, true);
+          break;
+
+        case kM1_BLID:
+          tia.collision(Cx_M1BL, true);
+          break;
+
+        case kBL_PFID:
+          tia.collision(Cx_BLPF, true);
+          break;
+
         case kRefP0ID:
           tia.refP0(myRefP0->getState() ? 1 : 0);
           break;

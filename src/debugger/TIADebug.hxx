@@ -130,6 +130,9 @@ class TIADebug : public DebuggerSystem
     bool scorePF(int newVal = -1);
     bool priorityPF(int newVal = -1);
 
+    /** Get specific bits in the collision register (used by collXX_XX) */
+    bool collision(CollisionBit id, bool toggle = false) const;
+
     // Collision registers
     bool collM0_P1() const { return collision(Cx_M0P1); }
     bool collM0_P0() const { return collision(Cx_M0P0); }
@@ -178,9 +181,6 @@ class TIADebug : public DebuggerSystem
   private:
     /** Display a color patch for color at given index in the palette */
     string colorSwatch(uInt8 c) const;
-
-    /** Get specific bits in the collision register (used by collXX_XX) */
-    bool collision(CollisionBit id) const;
 
     string audFreq(uInt8 div);
     string booleanWithLabel(string label, bool value);

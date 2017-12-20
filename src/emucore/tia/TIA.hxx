@@ -565,6 +565,25 @@ class TIA : public Device
     uInt8 collCXPPMM() const;
     uInt8 collCXBLPF() const;
 
+    /**
+      Toggle the specified collision bits
+    */
+    void toggleCollP0PF();
+    void toggleCollP0BL();
+    void toggleCollP0M1();
+    void toggleCollP0M0();
+    void toggleCollP0P1();
+    void toggleCollP1PF();
+    void toggleCollP1BL();
+    void toggleCollP1M1();
+    void toggleCollP1M0();
+    void toggleCollM0PF();
+    void toggleCollM0BL();
+    void toggleCollM0M1();
+    void toggleCollM1PF();
+    void toggleCollM1BL();
+    void toggleCollBLPF();
+
   #ifdef DEBUGGER_SUPPORT
     void createAccessBase();
 

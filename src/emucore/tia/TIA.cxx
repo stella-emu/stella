@@ -1618,6 +1618,96 @@ uInt8 TIA::collCXBLPF() const
   return (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0PF()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0BL()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0M1()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::missile1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0M0()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::missile0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0P1()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::player1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1PF()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1BL()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1M1()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::missile1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1M0()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::missile0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM0PF()
+{
+  myCollisionMask ^= (CollisionMask::missile0 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM0BL()
+{
+  myCollisionMask ^= (CollisionMask::missile0 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM0M1()
+{
+  myCollisionMask ^= (CollisionMask::missile0 & CollisionMask::missile1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM1PF()
+{
+  myCollisionMask ^= (CollisionMask::missile1 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM1BL()
+{
+  myCollisionMask ^= (CollisionMask::missile1 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollBLPF()
+{
+  myCollisionMask ^= (CollisionMask::ball & CollisionMask::playfield);
+}
+
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::createAccessBase()

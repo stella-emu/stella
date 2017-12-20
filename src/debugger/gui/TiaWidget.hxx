@@ -136,6 +136,7 @@ class TiaWidget : public Widget, public CommandSender
       kResBLCmd = 'Srbl',
       kHmoveCmd = 'Shmv',
       kHmclrCmd = 'Shmc',
+      kCxChgCmd = 'Sccc',
       kCxclrCmd = 'Scxl',
       kDbgClCmd = 'DBGc',
     };
