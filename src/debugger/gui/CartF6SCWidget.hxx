@@ -35,6 +35,7 @@ class CartridgeF6SCWidget : public CartDebugWidget
   private:
     struct CartState {
       ByteArray internalram;
+      uInt16 bank;
     };
     CartridgeF6SC& myCart;
     PopUpWidget* myBank;

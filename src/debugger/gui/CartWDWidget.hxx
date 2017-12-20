@@ -38,6 +38,7 @@ class CartridgeWDWidget : public CartDebugWidget
 
     struct CartState {
       ByteArray internalram;
+      uInt16 bank;      // Current banking layout
     };
     CartState myOldState;
 

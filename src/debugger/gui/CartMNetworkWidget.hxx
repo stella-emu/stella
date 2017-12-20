@@ -42,6 +42,8 @@ class CartridgeMNetworkWidget : public CartDebugWidget
     struct CartState
     {
       ByteArray internalram;
+      uInt16 lowerBank;
+      uInt16 upperBank;
     };
     CartState myOldState;
 

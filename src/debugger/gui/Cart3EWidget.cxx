@@ -94,6 +94,8 @@ void Cartridge3EWidget::saveOldState()
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
   }
+
+  myOldState.bank = myCart.myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,13 +103,13 @@ void Cartridge3EWidget::loadConfig()
 {
   if(myCart.myCurrentBank < 256)
   {
-    myROMBank->setSelectedIndex(myCart.myCurrentBank % myNumRomBanks);
-    myRAMBank->setSelectedMax();
+    myROMBank->setSelectedIndex(myCart.myCurrentBank % myNumRomBanks, myOldState.bank != myCart.myCurrentBank);
+    myRAMBank->setSelectedMax(myOldState.bank >= 256);
   }
   else
   {
-    myROMBank->setSelectedMax();
-    myRAMBank->setSelectedIndex(myCart.myCurrentBank - 256);
+    myROMBank->setSelectedMax(myOldState.bank < 256);
+    myRAMBank->setSelectedIndex(myCart.myCurrentBank - 256, myOldState.bank != myCart.myCurrentBank);
   }
 
   CartDebugWidget::loadConfig();

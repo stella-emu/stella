@@ -69,13 +69,16 @@ void CartridgeMNetworkWidget::saveOldState()
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
   }
+
+  myOldState.lowerBank = myCart.myCurrentSlice[0];
+  myOldState.upperBank = myCart.myCurrentRAM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetworkWidget::loadConfig()
 {
-  myLower2K->setSelectedIndex(myCart.myCurrentSlice[0]);
-  myUpper256B->setSelectedIndex(myCart.myCurrentRAM);
+  myLower2K->setSelectedIndex(myCart.myCurrentSlice[0], myCart.myCurrentSlice[0] != myOldState.lowerBank);
+  myUpper256B->setSelectedIndex(myCart.myCurrentRAM, myCart.myCurrentRAM != myOldState.upperBank);
 
   CartDebugWidget::loadConfig();
 }

@@ -51,7 +51,7 @@ class PopUpWidget : public Widget, public CommandSender
     void setSelected(const Variant& tag,
                      const Variant& def = EmptyVariant);
     void setSelectedIndex(int idx, bool changed = false);
-    void setSelectedMax();
+    void setSelectedMax(bool changed = false);
     void clearSelection();
 
     int getSelected() const;

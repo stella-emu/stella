@@ -29,6 +29,8 @@ namespace GUI {
 #include "Base.hxx"  // not needed here, but all child classes need it
 #include "Command.hxx"
 #include "Widget.hxx"
+#include "Debugger.hxx"
+#include "CartDebug.hxx"
 
 class CartDebugWidget : public Widget, public CommandSender
 {

@@ -40,6 +40,7 @@ class CartridgeFA2Widget : public CartDebugWidget
 
     struct CartState {
       ByteArray internalram;
+      uInt16 bank;
     };
     CartState myOldState;
 

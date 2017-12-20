@@ -65,7 +65,12 @@ CartridgeSBWidget::CartridgeSBWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeSBWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank());
+  Debugger& dbg = instance().debugger();
+  CartDebug& cart = dbg.cartDebug();
+  const CartState& state = static_cast<const CartState&>(cart.getState());
+  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
+
+  myBank->setSelectedIndex(myCart.getBank(), state.bank != oldstate.bank);
 
   CartDebugWidget::loadConfig();
 }

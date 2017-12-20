@@ -40,6 +40,7 @@ class Cartridge3EWidget : public CartDebugWidget
 
     struct CartState {
       ByteArray internalram;
+      uInt16 bank;
     };
     CartState myOldState;
 

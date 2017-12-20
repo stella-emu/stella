@@ -100,8 +100,9 @@ void PopUpWidget::setSelectedIndex(int idx, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::setSelectedMax()
+void PopUpWidget::setSelectedMax(bool changed)
 {
+  _changed = changed;
   myMenu->setSelectedMax();
 }
 
@@ -248,7 +249,7 @@ void PopUpWidget::drawWidget(bool hilite)
   s.frameRect(x + w - 16, _y + 1, 15, _h - 2, isEnabled() && hilite ? kTextColorHi : kBGColorLo);
 
   // Fill the background
-  s.fillRect(x + 1, _y + 1, w - 17, _h - 2, kWidColor);
+  s.fillRect(x + 1, _y + 1, w - 17, _h - 2, _changed ? kDbgChangedColor : kWidColor);
   s.fillRect(x + w - 15, _y + 2, 13, _h - 4, isEnabled() && hilite ? kWidColor : kBGColorHi);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(down_arrow, x + w - 13, _y + myArrowsY + 1,
