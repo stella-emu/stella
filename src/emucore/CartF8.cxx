@@ -22,8 +22,7 @@
 CartridgeF8::CartridgeF8(const BytePtr& image, uInt32 size, const string& md5,
                          const Settings& settings)
   : Cartridge(settings),
-    myBankOffset(0),
-    myHardcodedStartBank(false)
+    myBankOffset(0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(8192u, size));
@@ -31,23 +30,21 @@ CartridgeF8::CartridgeF8(const BytePtr& image, uInt32 size, const string& md5,
 
   // Normally bank 1 is the reset bank, unless we're dealing with ROMs
   // that have been incorrectly created with banks in the opposite order
-  myHardcodedStartBank =
-    md5 == "bc24440b59092559a1ec26055fd1270e" ||  // Private Eye [a]
-    md5 == "75ea60884c05ba496473c23a58edf12f" ||  // 8-in-1 Yars Revenge
-    md5 == "75ee371ccfc4f43e7d9b8f24e1266b55" ||  // Snow White
-    md5 == "74c8a6f20f8adaa7e05183f796eda796" ||  // Tricade Demo
-    md5 == "9905f9f4706223dadee84f6867ede8e3" ||  // Challenge
-    md5 == "3c7a7b3a0a7e6319b2fa0f923ef6c9af";    // Racer Prototype
+  myStartBank =
+    (md5 == "bc24440b59092559a1ec26055fd1270e" ||  // Private Eye [a]
+     md5 == "75ea60884c05ba496473c23a58edf12f" ||  // 8-in-1 Yars Revenge
+     md5 == "75ee371ccfc4f43e7d9b8f24e1266b55" ||  // Snow White
+     md5 == "74c8a6f20f8adaa7e05183f796eda796" ||  // Tricade Demo
+     md5 == "9905f9f4706223dadee84f6867ede8e3" ||  // Challenge
+     md5 == "3c7a7b3a0a7e6319b2fa0f923ef6c9af")    // Racer Prototype
+    ? 0 : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::reset()
 {
-  // Define random startup bank (only for those not hardcoded)
-  if(myHardcodedStartBank)
-    myStartBank = 0;
-  else
-    randomizeStartBank();
+  // define random startup bank
+  randomizeStartBank();
 
   // Upon reset we switch to the reset bank
   bank(myStartBank);
@@ -173,7 +170,6 @@ bool CartridgeF8::save(Serializer& out) const
   {
     out.putString(name());
     out.putShort(myBankOffset);
-    out.putBool(myHardcodedStartBank);
   }
   catch(...)
   {
@@ -193,7 +189,6 @@ bool CartridgeF8::load(Serializer& in)
       return false;
 
     myBankOffset = in.getShort();
-    myHardcodedStartBank = in.getBool();
   }
   catch(...)
   {
