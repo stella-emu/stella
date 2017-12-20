@@ -79,6 +79,8 @@ Debugger::Debugger(OSystem& osystem, Console& console)
   // there will only be ever one instance of debugger in Stella,
   // I don't care :)
   myStaticDebugger = this;
+
+  saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -616,7 +618,6 @@ void Debugger::setStartState()
 
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
-  saveOldState(false);
   // avoid invalidating future states when entering the debugger during rewind
   if (r.atLast())
     addState("enter debugger");
@@ -628,6 +629,8 @@ void Debugger::setStartState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
+  saveOldState();
+
   // Bus must be unlocked for normal operation when leaving debugger mode
   unlockBankswitchState();
 
