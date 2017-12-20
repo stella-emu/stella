@@ -235,7 +235,7 @@
 ""
 
 "Cartridge.MD5" "033e21521e0bf4e54e8816873943406d"
-"Cartridge.Manufacturer" "20th Century Fox Video Games, Dan Thompson"
+"Cartridge.Manufacturer" "20th Century Fox Video Games - Sirius Software, Dan Thompson"
 "Cartridge.ModelNo" "11020"
 "Cartridge.Name" "Earth Dies Screaming, The (1983) (20th Century Fox)"
 "Cartridge.Note" "The Day the Earth Stood Still"
@@ -986,7 +986,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane - Ariola"
 "Cartridge.ModelNo" "EAG-001, PAG-001, EAG-001-04B, EAG-001-04I - 711 001-715"
 "Cartridge.Name" "Dragster (1980) (Activision) (PAL)"
-"Cartridge.Note" "AKA Dragster Rennen"
+"Cartridge.Note" "AKA Dragster Rennen, Drag Strip"
 ""
 
 "Cartridge.MD5" "0c7926d660f903a2d6910c254660c32c"
@@ -2150,8 +2150,8 @@
 ""
 
 "Cartridge.MD5" "1b4b06c2a14ed3ee73b7d0fd61b6aaf5"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
+"Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype) [a]"
 ""
 
@@ -2455,6 +2455,7 @@
 "Cartridge.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday"
 "Cartridge.ModelNo" "CX26115"
 "Cartridge.Name" "Dumbo's Flying Circus (07-11-1983) (Atari) (Prototype) (PAL)"
+"Cartridge.Note" "AKA Dumbo Flies Home"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -2537,7 +2538,7 @@
 ""
 
 "Cartridge.MD5" "2091af29b4e7b86914d79d9aaa4cbd20"
-"Cartridge.Manufacturer" "CBS Electronics, Harley H. Puthuff Jr."
+"Cartridge.Manufacturer" "CBS Electronics - Woodside Design Associates, Harley H. Puthuff Jr."
 "Cartridge.ModelNo" "4L1802"
 "Cartridge.Name" "Donkey Kong Junior (1983) (CBS Electronics) (PAL)"
 "Display.Height" "251"
@@ -3408,7 +3409,7 @@
 ""
 
 "Cartridge.MD5" "2b1589c7e1f394ae6a1c046944f06688"
-"Cartridge.Manufacturer" "Carrere Video, Todd Marshall, Wes Trager, Henry Will IV - Teldec"
+"Cartridge.Manufacturer" "Carrere Video - JWDA, Todd Marshall, Robin McDaniel, Wes Trager, Henry Will IV - Teldec - Prism"
 "Cartridge.ModelNo" "USC2003"
 "Cartridge.Name" "Eggomania (1983) (Carrere Video) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
@@ -3640,9 +3641,9 @@
 ""
 
 "Cartridge.MD5" "2d9e65959808a6098c16c82a59c9d9dc"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Arcadia) (PAL)"
+"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "2dbc92688f9ba92a7e086d62be9df79d"
@@ -3734,8 +3735,8 @@
 ""
 
 "Cartridge.MD5" "2eaf8fa9e9fdf1fcfc896926a4bdbf85"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
+"Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Excalibur Version 39 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
 ""
 
@@ -4001,6 +4002,7 @@
 "Cartridge.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday"
 "Cartridge.ModelNo" "CX26115"
 "Cartridge.Name" "Dumbo's Flying Circus (1983) (Atari) (Prototype) (PAL)"
+"Cartridge.Note" "AKA Dumbo Flies Home"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -4333,7 +4335,7 @@
 ""
 
 "Cartridge.MD5" "3624e5568368929fabb55d7f9df1022e"
-"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.Manufacturer" "Activision - Imagineering, Dan Kitchen"
 "Cartridge.ModelNo" "EAK-050-04"
 "Cartridge.Name" "Double Dragon (1989) (Activision) (PAL)"
 ""
@@ -4545,6 +4547,7 @@
 "Cartridge.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday"
 "Cartridge.ModelNo" "CX26115"
 "Cartridge.Name" "Dumbo's Flying Circus (05-05-1983) (Atari) (Prototype)"
+"Cartridge.Note" "AKA Dumbo Flies Home"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -4699,7 +4702,7 @@
 "Cartridge.MD5" "3a771876e4b61d42e3a3892ad885d889"
 "Cartridge.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
 "Cartridge.ModelNo" "CX26120"
-"Cartridge.Name" "Defender II (1988) (Atari)"
+"Cartridge.Name" "Defender II (1987) (Atari)"
 "Cartridge.Note" "AKA Stargate"
 ""
 
@@ -4726,8 +4729,8 @@
 ""
 
 "Cartridge.MD5" "3ad58b53a1e972396890bd86c735e78d"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
+"Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Excalibur Version 36 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
 ""
 
@@ -5404,12 +5407,13 @@
 ""
 
 "Cartridge.MD5" "42b2c3b4545f1499a083cfbc4a3b7640"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Todd Marshall, Wes Trager, Henry Will IV"
+"Cartridge.Manufacturer" "U.S. Games Corporation - JWDA, Todd Marshall, Robin McDaniel, Wes Trager, Henry Will IV"
 "Cartridge.ModelNo" "VC2003"
 "Cartridge.Name" "Eggomania (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 60"
+"Display.YStart" "26"
 ""
 
 "Cartridge.MD5" "42b3ab3cf661929bdc77b621a8c37574"
@@ -6553,7 +6557,7 @@
 ""
 
 "Cartridge.MD5" "519f007c0e14fb90208dbb5199dfb604"
-"Cartridge.Manufacturer" "Amiga"
+"Cartridge.Manufacturer" "Amiga - Video Soft"
 "Cartridge.Name" "Depth Charge (1983) (Amiga) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
@@ -7258,9 +7262,9 @@
 ""
 
 "Cartridge.MD5" "5b7ea6aa6b35dc947c65ce665fde624b"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Arcadia)"
+"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "5b85e987e2b1618769d97ba9182333d0"
@@ -7618,7 +7622,7 @@
 "Cartridge.MD5" "5f786b67e05fb9985b77d4beb35e06ee"
 "Cartridge.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
 "Cartridge.ModelNo" "CX26120"
-"Cartridge.Name" "Defender II (1988) (Atari) (PAL)"
+"Cartridge.Name" "Defender II (1987) (Atari) (PAL)"
 "Cartridge.Note" "AKA Stargate"
 ""
 
@@ -8248,9 +8252,9 @@
 ""
 
 "Cartridge.MD5" "66c4e0298d4120df333bc2f3e163657e"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Arcadia) (PAL)"
+"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "66fcf7643d554f5e15d4d06bab59fe70"
@@ -8640,9 +8644,9 @@
 ""
 
 "Cartridge.MD5" "6b683be69f92958abe0e2a9945157ad5"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Paul Allen Newell, Steve Sidley, Tom Sloper"
+"Cartridge.Manufacturer" "U.S. Games Corporation - Western Technologies, Jeff Corsiglia, Paul Allen Newell, Steven B. Sidley, Tom Sloper"
 "Cartridge.ModelNo" "VC2007"
-"Cartridge.Name" "Entombed (1982) (U.S. Games)"
+"Cartridge.Name" "Entombed (1983) (U.S. Games)"
 "Cartridge.Note" "Released as Name That Game for a contest (winning name was Entombed)"
 "Display.Phosphor" "YES"
 ""
@@ -9597,6 +9601,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-001"
 "Cartridge.Name" "Dragster (1980) (Activision)"
+"Cartridge.Note" "AKA Drag Strip"
 "Display.YStart" "20"
 ""
 
@@ -9687,9 +9692,9 @@
 ""
 
 "Cartridge.MD5" "78b84cfb1c57b0488d674d2374e656e6"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Arcadia)"
+"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "78c2de58e42cd1faac2ea7df783eaeb3"
@@ -10135,14 +10140,14 @@
 ""
 
 "Cartridge.MD5" "7dfd100bda9abb0f3744361bc7112681"
-"Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn"
+"Cartridge.Manufacturer" "Telesys, Don Ruffcorn"
 "Cartridge.ModelNo" "1006"
 "Cartridge.Name" "Demolition Herby (1983) (Telesys) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "7e2fe40a788e56765fe56a3576019968"
-"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.Manufacturer" "Activision - Imagineering, Dan Kitchen"
 "Cartridge.ModelNo" "AK-050-04"
 "Cartridge.Name" "Double Dragon (1989) (Activision)"
 ""
@@ -11200,9 +11205,9 @@
 ""
 
 "Cartridge.MD5" "8b04e9d132b8e30d447acaa6bd049c32"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1982) (Arcadia) (PAL)"
+"Cartridge.Name" "Dragonstomper (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "8b40a9ca1cfcd14822e2547eaa9df5c1"
@@ -11226,9 +11231,9 @@
 ""
 
 "Cartridge.MD5" "8b5b1e3a434ebbdc2c2a49dc68f46360"
-"Cartridge.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
+"Cartridge.Manufacturer" "CBS Electronics - Woodside Design Associates - Imaginative Systems Software, Dan Kitchen, Garry Kitchen"
 "Cartridge.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
-"Cartridge.Name" "Donkey Kong (1982) (CBS Electronics) (PAL)"
+"Cartridge.Name" "Donkey Kong (1983) (CBS Electronics) (PAL)"
 ""
 
 "Cartridge.MD5" "8b7ca29a55432f886cee3d452fb00481"
@@ -11601,9 +11606,9 @@
 ""
 
 "Cartridge.MD5" "90ccf4f30a5ad8c801090b388ddd5613"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1982) (Arcadia)"
+"Cartridge.Name" "Dragonstomper (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "90d77e966793754ab4312c47b42900b1"
@@ -12770,7 +12775,7 @@
 ""
 
 "Cartridge.MD5" "a1f9159121142d42e63e6fb807d337aa"
-"Cartridge.Manufacturer" "Quelle"
+"Cartridge.Manufacturer" "Quelle - Otto Versand"
 "Cartridge.ModelNo" "700.223 1 - 781627"
 "Cartridge.Name" "Der moderne Ritter (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Fast Eddie"
@@ -12859,9 +12864,9 @@
 ""
 
 "Cartridge.MD5" "a302b922a8dbec47743f28b7f91d4cd8"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (Preview) (1982) (Arcadia)"
+"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "a30ece6dc4787e474fbc4090512838dc"
@@ -13781,7 +13786,7 @@
 ""
 
 "Cartridge.MD5" "afb3bc45c6a82739cc82582127cd96e6"
-"Cartridge.Manufacturer" "Atari, John Howard Palevich"
+"Cartridge.Manufacturer" "Atari - Sculptured Software, Adam Clayton"
 "Cartridge.ModelNo" "CX26151, CX26151P"
 "Cartridge.Name" "Dungeon (11-22-1985) (Atari) (Prototype)"
 "Cartridge.Note" "Dark Chambers Beta"
@@ -13828,9 +13833,9 @@
 ""
 
 "Cartridge.MD5" "aff8cba0f2d2eb239953dd7116894a08"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Arcadia) (PAL)"
+"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "b00088418fc891f3faa3d4ddde6ace94"
@@ -14216,8 +14221,8 @@
 ""
 
 "Cartridge.MD5" "b5657d4c1c732fbb6af150668464247f"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
+"Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
 ""
 
@@ -14290,7 +14295,7 @@
 
 "Cartridge.MD5" "b6812eaf87127f043e78f91f2028f9f4"
 "Cartridge.Manufacturer" "Simage"
-"Cartridge.Name" "Eli's Ladder (1982) (Simage)"
+"Cartridge.Name" "Eli's Ladder (1984) (Simage)"
 ""
 
 "Cartridge.MD5" "b6821ac51c4c1dcb283f01be2f047dc1"
@@ -16300,7 +16305,7 @@
 ""
 
 "Cartridge.MD5" "d09935802d6760ae58253685ff649268"
-"Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn"
+"Cartridge.Manufacturer" "Telesys, Don Ruffcorn"
 "Cartridge.ModelNo" "1006"
 "Cartridge.Name" "Demolition Herby (1983) (Telesys)"
 "Display.Phosphor" "YES"
@@ -16613,7 +16618,7 @@
 ""
 
 "Cartridge.MD5" "d4806775693fcaaa24cf00fc00edcdf3"
-"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
+"Cartridge.Manufacturer" "Atari - Bobco, Robert C. Polaro"
 "Cartridge.ModelNo" "CX26140, CX26140P"
 "Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
@@ -17333,9 +17338,9 @@
 ""
 
 "Cartridge.MD5" "dd8a2124d4eda200df715c698a6ea887"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Arcadia)"
+"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "dd92d6ad50976f881d86b52d38616118"
@@ -18430,9 +18435,10 @@
 ""
 
 "Cartridge.MD5" "e9e6ad30549a6e2cd89fe93b7691d447"
-"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
+"Cartridge.Manufacturer" "Atari - Bobco, Robert C. Polaro"
 "Cartridge.ModelNo" "CX26140, CX26140P"
 "Cartridge.Name" "Desert Falcon (05-27-1987) (Atari) (Prototype) (PAL)"
+"Cartridge.Note" "AKA Nile Flyer, Sphinx"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -19329,7 +19335,7 @@
 ""
 
 "Cartridge.MD5" "f48735115ec302ba8bb2d2f3a442e814"
-"Cartridge.Name" "Dancing Plate (Unknown) (PAL)"
+"Cartridge.Name" "Dishaster (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -20032,9 +20038,9 @@
 ""
 
 "Cartridge.MD5" "fbac6476e7b2b20d246202af81662c88"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (Preview) (1982) (Arcadia) (PAL)"
+"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "fbb0151ea2108e33b2dbaae14a1831dd"
@@ -20156,7 +20162,7 @@
 ""
 
 "Cartridge.MD5" "fd4f5536fd80f35c64d365df85873418"
-"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
+"Cartridge.Manufacturer" "Atari - Bobco, Robert C. Polaro"
 "Cartridge.ModelNo" "CX26140"
 "Cartridge.Name" "Desert Falcon (1987) (Atari)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
@@ -20356,3 +20362,7 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cartridge.MD5" "62d1f50219edf9a429a9f004c19f31b3"
+"Cartridge.Manufacturer" "JWDA, Todd Marshall"
+"Cartridge.Name" "Euro Gen (02-01-83) (JWDA) (PAL)"
+""
