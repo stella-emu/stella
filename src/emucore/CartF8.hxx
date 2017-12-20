@@ -156,6 +156,9 @@ class CartridgeF8 : public Cartridge
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
 
+    // Certain ROMs have hardcoded start banks
+    bool myHardcodedStartBank;
+
   private:
     // Following constructors and assignment operators not supported
     CartridgeF8() = delete;
