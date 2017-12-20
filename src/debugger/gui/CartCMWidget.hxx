@@ -41,6 +41,7 @@ class CartridgeCMWidget : public CartDebugWidget
       uInt8 swcha;
       uInt8 column;
       ByteArray internalram;
+      uInt16 bank;
     };
 
     CartridgeCM& myCart;

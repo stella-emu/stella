@@ -37,6 +37,7 @@ class CartridgeCVPlusWidget : public CartDebugWidget
     PopUpWidget* myBank;
     struct CartState {
       ByteArray internalram;
+      uInt16 bank;
     };
     CartState myOldState;
 

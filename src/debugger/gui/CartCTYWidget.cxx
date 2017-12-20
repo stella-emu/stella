@@ -64,12 +64,13 @@ void CartridgeCTYWidget::saveOldState()
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
   }
+  myOldState.bank = myCart.getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTYWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank()-1);
+  myBank->setSelectedIndex(myCart.getBank()-1, myCart.getBank() != myOldState.bank);
 
   CartDebugWidget::loadConfig();
 }

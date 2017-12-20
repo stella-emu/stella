@@ -42,6 +42,7 @@ class CartridgeDPCWidget : public CartDebugWidget
       BoolArray music;
       uInt8 random;
       ByteArray internalram;
+      uInt16 bank;
     };
 
     CartridgeDPC& myCart;

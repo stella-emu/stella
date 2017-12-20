@@ -155,12 +155,14 @@ void CartridgeCMWidget::saveOldState()
   myOldState.internalram.clear();
   for(uInt32 i = 0; i < this->internalRamSize();i++)
     myOldState.internalram.push_back(myCart.myRAM[i]);
+
+  myOldState.bank = myCart.getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCMWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank());
+  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
 
   RiotDebug& riot = Debugger::debugger().riotDebug();
   const RiotState& state = static_cast<const RiotState&>(riot.getState());

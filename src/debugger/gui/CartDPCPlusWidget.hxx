@@ -47,6 +47,7 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
       IntArray mwaves;
       uInt32 random;
       ByteArray internalram;
+      uInt16 bank;
     };
 
     CartridgeDPCPlus& myCart;
