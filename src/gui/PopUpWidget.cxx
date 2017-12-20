@@ -55,7 +55,8 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y - 1, w, h + 2),
     CommandSender(boss),
     _label(label),
-    _labelWidth(labelWidth)
+    _labelWidth(labelWidth),
+    _changed(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
   _bgcolor = kDlgColor;
@@ -92,8 +93,9 @@ void PopUpWidget::setSelected(const Variant& tag, const Variant& def)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::setSelectedIndex(int idx)
+void PopUpWidget::setSelectedIndex(int idx, bool changed)
 {
+  _changed = changed;
   myMenu->setSelectedIndex(idx);
 }
 
@@ -231,7 +233,7 @@ void PopUpWidget::drawWidget(bool hilite)
   s.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
 
   // Fill the background
-  s.fillRect(x + 1, _y + 1, w - 2, _h - 2, kWidColor);
+  s.fillRect(x + 1, _y + 1, w - 2, _h - 2, _changed ? kDbgChangedColor : kWidColor);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(up_down_arrows, x + w - 10, _y + myArrowsY,
                !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);

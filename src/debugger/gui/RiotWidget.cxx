@@ -288,8 +288,8 @@ void RiotWidget::loadConfig()
   myRightINPT->setList(alist, vlist, changed);
 
   // Update TIA VBLANK bits
-  myINPTLatch->setState(riot.vblank(6));
-  myINPTDump->setState(riot.vblank(7));
+  myINPTLatch->setState(riot.vblank(6), state.INPTLatch != oldstate.INPTLatch);
+  myINPTDump->setState(riot.vblank(7), state.INPTDump != oldstate.INPTDump);
 
   // Update timer write registers
   alist.clear();  vlist.clear();  changed.clear();
@@ -317,16 +317,17 @@ void RiotWidget::loadConfig()
 
   // Console switches (inverted, since 'selected' in the UI
   // means 'grounded' in the system)
-  myP0Diff->setSelectedIndex(riot.diffP0());
-  myP1Diff->setSelectedIndex(riot.diffP1());
+  myP0Diff->setSelectedIndex(riot.diffP0(), state.swchbReadBits[1] != oldstate.swchbReadBits[1]);
+  myP1Diff->setSelectedIndex(riot.diffP1(), state.swchbReadBits[0] != oldstate.swchbReadBits[0]);
 
   bool devSettings = instance().settings().getBool("dev.settings");
   myConsole->setText(instance().settings().getString(devSettings ? "dev.console" : "plr.console") == "7800" ? "Atari 7800" : "Atari 2600");
   myConsole->setEditable(false, true);
 
-  myTVType->setSelectedIndex(riot.tvType());
-  mySelect->setState(!riot.select());
-  myReset->setState(!riot.reset());
+  myTVType->setSelectedIndex(riot.tvType(), state.swchbReadBits[4] != oldstate.swchbReadBits[4]);
+  myPause->setState(!riot.tvType(), state.swchbReadBits[4] != oldstate.swchbReadBits[4]);
+  mySelect->setState(!riot.select(), state.swchbReadBits[6] != oldstate.swchbReadBits[6]);
+  myReset->setState(!riot.reset(), state.swchbReadBits[7] != oldstate.swchbReadBits[7]);
 
   myLeftControl->loadConfig();
   myRightControl->loadConfig();

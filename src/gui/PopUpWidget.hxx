@@ -50,7 +50,7 @@ class PopUpWidget : public Widget, public CommandSender
         See ContextMenu.hxx for more information. */
     void setSelected(const Variant& tag,
                      const Variant& def = EmptyVariant);
-    void setSelectedIndex(int idx);
+    void setSelectedIndex(int idx, bool changed = false);
     void setSelectedMax();
     void clearSelection();
 
@@ -78,6 +78,7 @@ class PopUpWidget : public Widget, public CommandSender
 
     string _label;
     int    _labelWidth;
+    bool   _changed;
 
   private:
     // Following constructors and assignment operators not supported

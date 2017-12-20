@@ -40,6 +40,7 @@ class RiotState : public DebuggerState
 
     // These are actually from the TIA, but are I/O related
     uInt8 INPT0, INPT1, INPT2, INPT3, INPT4, INPT5;
+    bool INPTLatch, INPTDump;
 };
 
 class RiotDebug : public DebuggerSystem
