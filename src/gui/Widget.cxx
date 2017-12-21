@@ -85,7 +85,7 @@ void Widget::draw()
       x++; y++; w-=2; h-=2;
     }
 #ifndef FLAT_UI
-    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) ? _bgcolorhi : _bgcolor);
+    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
 #else
     s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
 #endif
