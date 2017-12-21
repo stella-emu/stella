@@ -21,11 +21,11 @@
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "RewindDialog.hxx"
+#include "TimeMachineDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RewindDialog::RewindDialog(OSystem& osystem, DialogContainer& parent,
-                           int max_w, int max_h)
+TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
+                                     int max_w, int max_h)
   : Dialog(osystem, parent)
 {
   const GUI::Font& font = instance().frameBuffer().font();

@@ -15,31 +15,31 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef REWINDER_HXX
-#define REWINDER_HXX
+#ifndef TIME_MACHINE_HXX
+#define TIME_MACHINE_HXX
 
 class OSystem;
 
 #include "DialogContainer.hxx"
 
 /**
-  The base dialog for all rewind-related UI items in Stella.
+  The base dialog for all time machine related UI items in Stella.
 
   @author  Stephen Anthony
 */
-class Rewinder : public DialogContainer
+class TimeMachine : public DialogContainer
 {
   public:
-    Rewinder(OSystem& osystem);
-    virtual ~Rewinder() = default;
+    TimeMachine(OSystem& osystem);
+    virtual ~TimeMachine() = default;
 
   private:
     // Following constructors and assignment operators not supported
-    Rewinder() = delete;
-    Rewinder(const Rewinder&) = delete;
-    Rewinder(Rewinder&&) = delete;
-    Rewinder& operator=(const Rewinder&) = delete;
-    Rewinder& operator=(Rewinder&&) = delete;
+    TimeMachine() = delete;
+    TimeMachine(const TimeMachine&) = delete;
+    TimeMachine(TimeMachine&&) = delete;
+    TimeMachine& operator=(const TimeMachine&) = delete;
+    TimeMachine& operator=(TimeMachine&&) = delete;
 };
 
 #endif

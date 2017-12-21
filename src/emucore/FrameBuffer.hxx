@@ -30,11 +30,11 @@ namespace GUI {
   class Font;
 }
 
-#include "EventHandler.hxx"
 #include "Rect.hxx"
 #include "Variant.hxx"
 #include "TIAConstants.hxx"
 #include "FrameBufferConstants.hxx"
+#include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
 // Contains all relevant info for the dimensions of a video screen
@@ -261,7 +261,7 @@ class FrameBuffer
     /**
       Informs the Framebuffer of a change in EventHandler state.
     */
-    void stateChanged(EventHandler::State state);
+    void stateChanged(EventHandlerState state);
 
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and can/must be

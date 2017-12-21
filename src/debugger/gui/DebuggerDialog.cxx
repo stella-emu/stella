@@ -19,6 +19,7 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Settings.hxx"
+#include "EventHandler.hxx"
 #include "TabWidget.hxx"
 #include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"

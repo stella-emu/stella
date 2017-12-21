@@ -19,6 +19,7 @@
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "Debugger.hxx"
+#include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "DataGridWidget.hxx"

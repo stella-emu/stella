@@ -47,7 +47,7 @@
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Launcher.hxx"
-#include "Rewinder.hxx"
+#include "TimeMachine.hxx"
 #include "PNGLibrary.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
@@ -140,8 +140,8 @@ bool OSystem::create()
   // Create menu and launcher GUI objects
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
+  myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
-  myRewinder = make_unique<Rewinder>(*this);
   myStateManager = make_unique<StateManager>(*this);
 
   // Create the sound object; the sound subsystem isn't actually
@@ -250,27 +250,28 @@ FBInitStatus OSystem::createFrameBuffer()
   FBInitStatus fbstatus = FBInitStatus::FailComplete;
   switch(myEventHandler->state())
   {
-    case EventHandler::S_EMULATE:
-    case EventHandler::S_PAUSE:
-    case EventHandler::S_MENU:
-    case EventHandler::S_CMDMENU:
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::PAUSE:
+    case EventHandlerState::OPTIONSMENU:
+    case EventHandlerState::CMDMENU:
+    case EventHandlerState::TIMEMACHINE:
       if((fbstatus = myConsole->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
-      break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
+      break;
 
-    case EventHandler::S_LAUNCHER:
+    case EventHandlerState::LAUNCHER:
       if((fbstatus = myLauncher->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
-      break;  // S_LAUNCHER
+      break;
 
 #ifdef DEBUGGER_SUPPORT
-    case EventHandler::S_DEBUGGER:
+    case EventHandlerState::DEBUGGER:
       if((fbstatus = myDebugger->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
-      break;  // S_DEBUGGER
+      break;
 #endif
 
-    default:  // Should never happen
+    case EventHandlerState::NONE:  // Should never happen
       logMessage("ERROR: Unknown emulation state in createFrameBuffer()", 0);
       break;
   }
@@ -333,12 +334,12 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif
-    myEventHandler->reset(EventHandler::S_EMULATE);
+    myEventHandler->reset(EventHandlerState::EMULATION);
     myEventHandler->setMouseControllerMode(mySettings->getString("usemouse"));
     if(createFrameBuffer() != FBInitStatus::Success)  // Takes care of initializeVideo()
     {
       logMessage("ERROR: Couldn't create framebuffer for console", 0);
-      myEventHandler->reset(EventHandler::S_LAUNCHER);
+      myEventHandler->reset(EventHandlerState::LAUNCHER);
       return "ERROR: Couldn't create framebuffer for console";
     }
     myConsole->initializeAudio();
@@ -379,7 +380,7 @@ bool OSystem::reloadConsole()
 bool OSystem::hasConsole() const
 {
   return myConsole != nullptr &&
-         myEventHandler->state() != EventHandler::S_LAUNCHER;
+         myEventHandler->state() != EventHandlerState::LAUNCHER;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -393,7 +394,7 @@ bool OSystem::createLauncher(const string& startdir)
   mySettings->setValue("tmpromdir", startdir);
   bool status = false;
 
-  myEventHandler->reset(EventHandler::S_LAUNCHER);
+  myEventHandler->reset(EventHandlerState::LAUNCHER);
   if(createFrameBuffer() == FBInitStatus::Success)
   {
     myLauncher->reStack();

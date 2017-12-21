@@ -26,8 +26,9 @@ class Console;
 class Debugger;
 class Launcher;
 class Menu;
-class Rewinder;
+class TimeMachine;
 class FrameBuffer;
+class EventHandler;
 class PNGLibrary;
 class Properties;
 class PropertiesSet;
@@ -38,9 +39,9 @@ class Sound;
 class StateManager;
 class VideoDialog;
 
-#include "EventHandler.hxx"
 #include "FSNode.hxx"
 #include "FrameBufferConstants.hxx"
+#include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
 struct TimingInfo {
@@ -154,11 +155,11 @@ class OSystem
     Launcher& launcher() const { return *myLauncher; }
 
     /**
-      Get the state rewinder of the system.
+      Get the time machine of the system (manages state files).
 
-      @return The rewinder object
+      @return The time machine object
     */
-    Rewinder& rewinder() const { return *myRewinder; }
+    TimeMachine& timeMachine() const { return *myTimeMachine; }
 
     /**
       Get the state manager of the system.
@@ -410,7 +411,7 @@ class OSystem
     /**
       Informs the OSystem of a change in EventHandler state.
     */
-    virtual void stateChanged(EventHandler::State state) { }
+    virtual void stateChanged(EventHandlerState state) { }
 
     /**
       Returns the default save and load paths for various files
@@ -469,8 +470,8 @@ class OSystem
     unique_ptr<Launcher> myLauncher;
     bool myLauncherUsed;
 
-    // Pointer to the Rewinder object
-    unique_ptr<Rewinder> myRewinder;
+    // Pointer to the TimeMachine object
+    unique_ptr<TimeMachine> myTimeMachine;
 
   #ifdef DEBUGGER_SUPPORT
     // Pointer to the Debugger object

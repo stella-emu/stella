@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "Widget.hxx"
 #include "ToggleWidget.hxx"
 

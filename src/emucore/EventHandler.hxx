@@ -56,17 +56,6 @@ class EventHandler
     EventHandler(OSystem& osystem);
     virtual ~EventHandler();
 
-    // Enumeration representing the different states of operation
-    enum State {
-      S_NONE,
-      S_EMULATE,
-      S_PAUSE,
-      S_LAUNCHER,
-      S_MENU,
-      S_CMDMENU,
-      S_DEBUGGER
-    };
-
     /**
       Returns the event object associated with this handler class.
 
@@ -109,16 +98,16 @@ class EventHandler
     /**
       Returns the current state of the EventHandler
 
-      @return The State type
+      @return The EventHandlerState type
     */
-    State state() const { return myState; }
+    EventHandlerState state() const { return myState; }
 
     /**
       Resets the state machine of the EventHandler to the defaults
 
       @param state  The current state to set
     */
-    void reset(State state);
+    void reset(EventHandlerState state);
 
     /**
       This method indicates that the system should terminate.
@@ -131,7 +120,7 @@ class EventHandler
 
       @param enable  Whether to use the mouse to emulate controllers
                      Currently, this will be one of the following values:
-                       'always', 'analog', 'never'
+                     'always', 'analog', 'never'
     */
     void setMouseControllerMode(const string& enable);
 
@@ -163,7 +152,7 @@ class EventHandler
       return (mod & KBDM_SHIFT);
     }
 
-    void enterMenuMode(State state);
+    void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
@@ -519,7 +508,7 @@ class EventHandler
     */
     bool eventIsAnalog(Event::Type event) const;
 
-    void setEventState(State state);
+    void setEventState(EventHandlerState state);
 
   private:
     // Structure used for action menu items
@@ -547,7 +536,7 @@ class EventHandler
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
 
     // Indicates the current state of the system (ie, which mode is current)
-    State myState;
+    EventHandlerState myState;
 
     // Indicates whether the joystick emulates 'impossible' directions
     bool myAllowAllDirectionsFlag;

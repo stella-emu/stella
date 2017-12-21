@@ -22,6 +22,7 @@ class GUIObject;
 class ContextMenu;
 
 #include "bspf.hxx"
+#include "Variant.hxx"
 #include "Command.hxx"
 #include "Widget.hxx"
 

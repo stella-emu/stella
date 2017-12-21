@@ -19,6 +19,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"

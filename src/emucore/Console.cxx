@@ -1008,11 +1008,11 @@ void Console::attachDebugger(Debugger& dbg)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::stateChanged(EventHandler::State state)
+void Console::stateChanged(EventHandlerState state)
 {
   // For now, only the CompuMate cares about state changes
   if(myCMHandler)
-    myCMHandler->enableKeyHandling(state == EventHandler::S_EMULATE);
+    myCMHandler->enableKeyHandling(state == EventHandlerState::EMULATION);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

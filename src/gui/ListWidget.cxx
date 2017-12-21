@@ -23,6 +23,7 @@
 #include "ScrollBarWidget.hxx"
 #include "Dialog.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
 #include "ListWidget.hxx"
 #include "bspf.hxx"
 

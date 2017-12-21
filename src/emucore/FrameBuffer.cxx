@@ -17,7 +17,6 @@
 
 #include "bspf.hxx"
 
-#include "CommandMenu.hxx"
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "Event.hxx"
@@ -28,6 +27,8 @@
 #include "ConsoleFont.hxx"
 #include "Launcher.hxx"
 #include "Menu.hxx"
+#include "CommandMenu.hxx"
+#include "TimeMachine.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "TIA.hxx"
@@ -205,8 +206,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
       myScreenSize = mode.screen;
 
       // Inform TIA surface about new mode
-      if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
-         myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
+      if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
+         myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
         myTIASurface->initialize(myOSystem.console(), mode);
 
       // Did we get the requested fullscreen state?
@@ -262,14 +263,14 @@ void FrameBuffer::update()
   invalidate();
   switch(myOSystem.eventHandler().state())
   {
-    case EventHandler::S_EMULATE:
+    case EventHandlerState::EMULATION:
     {
       // Run the console for one frame
       // Note that the debugger can cause a breakpoint to occur, which changes
       // the EventHandler state 'behind our back' - we need to check for that
       myOSystem.console().tia().update();
   #ifdef DEBUGGER_SUPPORT
-      if(myOSystem.eventHandler().state() != EventHandler::S_EMULATE) break;
+      if(myOSystem.eventHandler().state() != EventHandlerState::EMULATION) break;
   #endif
       if(myOSystem.eventHandler().frying())
         myOSystem.console().fry();
@@ -295,10 +296,10 @@ void FrameBuffer::update()
         myStatsMsg.surface->render();
       }
       myPausedCount = 0;
-      break;  // S_EMULATE
+      break;  // EventHandlerState::EMULATION
     }
 
-    case EventHandler::S_PAUSE:
+    case EventHandlerState::PAUSE:
     {
       myTIASurface->render();
 
@@ -308,38 +309,45 @@ void FrameBuffer::update()
         myPausedCount = uInt32(7 * myOSystem.frameRate());
         showMessage("Paused", MessagePosition::MiddleCenter);
       }
-      break;  // S_PAUSE
+      break;  // EventHandlerState::PAUSE
     }
 
-    case EventHandler::S_MENU:
+    case EventHandlerState::OPTIONSMENU:
     {
       myTIASurface->render();
       myOSystem.menu().draw(true);
-      break;  // S_MENU
+      break;  // EventHandlerState::OPTIONSMENU
     }
 
-    case EventHandler::S_CMDMENU:
+    case EventHandlerState::CMDMENU:
     {
       myTIASurface->render();
       myOSystem.commandMenu().draw(true);
-      break;  // S_CMDMENU
+      break;  // EventHandlerState::CMDMENU
     }
 
-    case EventHandler::S_LAUNCHER:
+    case EventHandlerState::TIMEMACHINE:
+    {
+      myTIASurface->render();
+      myOSystem.timeMachine().draw(true);
+      break;  // EventHandlerState::TIMEMACHINE
+    }
+
+    case EventHandlerState::LAUNCHER:
     {
       myOSystem.launcher().draw(true);
-      break;  // S_LAUNCHER
+      break;  // EventHandlerState::LAUNCHER
     }
 
 #ifdef DEBUGGER_SUPPORT
-    case EventHandler::S_DEBUGGER:
+    case EventHandlerState::DEBUGGER:
     {
       myOSystem.debugger().draw(true);
-      break;  // S_DEBUGGER
+      break;  // EventHandlerState::DEBUGGER
     }
 #endif
 
-    default:
+    case EventHandlerState::NONE:
       return;
   }
 
@@ -528,7 +536,7 @@ void FrameBuffer::setPalette(const uInt32* raw_palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::stateChanged(EventHandler::State state)
+void FrameBuffer::stateChanged(EventHandlerState state)
 {
   // Make sure any onscreen messages are removed
   myMsg.enabled = false;
@@ -545,8 +553,8 @@ void FrameBuffer::setFullscreen(bool enable)
     myScreenSize = mode.screen;
 
     // Inform TIA surface about new mode
-    if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
-       myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
+    if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
+       myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
       myTIASurface->initialize(myOSystem.console(), mode);
 
     // Did we get the requested fullscreen state?
@@ -566,9 +574,9 @@ void FrameBuffer::toggleFullscreen()
 bool FrameBuffer::changeWindowedVidMode(int direction)
 {
 #ifdef WINDOWED_SUPPORT
-  EventHandler::State state = myOSystem.eventHandler().state();
-  bool tiaMode = (state != EventHandler::S_DEBUGGER &&
-                  state != EventHandler::S_LAUNCHER);
+  EventHandlerState state = myOSystem.eventHandler().state();
+  bool tiaMode = (state != EventHandlerState::DEBUGGER &&
+                  state != EventHandlerState::LAUNCHER);
 
   // Ignore any attempts to change video size while in invalid modes
   if(!tiaMode || fullScreen())
@@ -605,7 +613,7 @@ void FrameBuffer::setCursorState()
   // Always grab mouse in emulation (if enabled) and emulating a controller
   // that always uses the mouse
   bool emulation =
-      myOSystem.eventHandler().state() == EventHandler::S_EMULATE;
+      myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
   bool analog = myOSystem.hasConsole() ?
       (myOSystem.eventHandler().controllerIsAnalog(Controller::Left) ||
        myOSystem.eventHandler().controllerIsAnalog(Controller::Right)) : false;
@@ -669,9 +677,9 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
   // Check if zooming is allowed for this state (currently only allowed
   // for TIA screens)
-  EventHandler::State state = myOSystem.eventHandler().state();
-  bool tiaMode = (state != EventHandler::S_DEBUGGER &&
-                  state != EventHandler::S_LAUNCHER);
+  EventHandlerState state = myOSystem.eventHandler().state();
+  bool tiaMode = (state != EventHandlerState::DEBUGGER &&
+                  state != EventHandlerState::LAUNCHER);
 
   // TIA mode allows zooming at integral factors in windowed modes,
   // and also non-integral factors in fullscreen mode
@@ -730,7 +738,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 {
-  EventHandler::State state = myOSystem.eventHandler().state();
+  EventHandlerState state = myOSystem.eventHandler().state();
 
   if(fullscreen)
   {
@@ -748,7 +756,7 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   // Now select the best resolution depending on the state
   // UI modes (launcher and debugger) have only one supported resolution
   // so the 'current' one is the only valid one
-  if(state == EventHandler::S_DEBUGGER || state == EventHandler::S_LAUNCHER)
+  if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
     myCurrentModeList->setZoom(1);
   else
     myCurrentModeList->setZoom(myZoomMode);

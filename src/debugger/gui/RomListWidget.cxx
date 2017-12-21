@@ -20,6 +20,7 @@
 #include "DiStella.hxx"
 #include "PackedBitArray.hxx"
 #include "Widget.hxx"
+#include "EventHandler.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "ScrollBarWidget.hxx"

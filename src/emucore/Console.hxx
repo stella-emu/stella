@@ -34,6 +34,7 @@ class Debugger;
 #include "TIATypes.hxx"
 #include "FrameBuffer.hxx"
 #include "Serializable.hxx"
+#include "EventHandlerConstants.hxx"
 #include "NTSCFilter.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
 
@@ -184,7 +185,7 @@ class Console : public Serializable
     /**
       Informs the Console of a change in EventHandler state.
     */
-    void stateChanged(EventHandler::State state);
+    void stateChanged(EventHandlerState state);
 
   public:
     /**

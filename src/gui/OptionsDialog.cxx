@@ -17,6 +17,7 @@
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "Widget.hxx"
@@ -164,10 +165,10 @@ void OptionsDialog::loadConfig()
   // in launcher mode
   switch(instance().eventHandler().state())
   {
-    case EventHandler::S_EMULATE:
+    case EventHandlerState::EMULATION:
       myGameInfoButton->setFlags(WIDGET_ENABLED);
       break;
-    case EventHandler::S_LAUNCHER:
+    case EventHandlerState::LAUNCHER:
       if(instance().launcher().selectedRomMD5() != "")
         myGameInfoButton->setFlags(WIDGET_ENABLED);
       else

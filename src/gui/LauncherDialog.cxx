@@ -30,6 +30,7 @@
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"

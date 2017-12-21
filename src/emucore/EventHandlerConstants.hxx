@@ -18,6 +18,18 @@
 #ifndef EVENTHANDLER_CONSTANTS_HXX
 #define EVENTHANDLER_CONSTANTS_HXX
 
+// Enumeration representing the different states of operation
+enum class EventHandlerState {
+  NONE,
+  EMULATION,
+  TIMEMACHINE,
+  PAUSE,
+  LAUNCHER,
+  OPTIONSMENU,
+  CMDMENU,
+  DEBUGGER
+};
+
 enum class MouseButton {
   LBUTTONDOWN,
   LBUTTONUP,

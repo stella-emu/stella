@@ -20,6 +20,7 @@
 
 class OSystem;
 class Console;
+class EventHandler;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;

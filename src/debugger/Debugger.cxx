@@ -22,6 +22,7 @@
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"

@@ -227,7 +227,7 @@ uInt32 RewindManager::unwindState(uInt32 numStates)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::compressStates()
 {
-  uInt64 currentCycles = myOSystem.console().tia().cycles();
+//  uInt64 currentCycles = myOSystem.console().tia().cycles();
   double expectedCycles = myInterval * myFactor * (1 + myFactor);
   double maxError = 1;
   uInt32 idx = myStateList.size() - 2;
@@ -302,7 +302,7 @@ string RewindManager::getUnitString(Int64 cycles)
   stringstream result;
   Int32 i;
 
-  cycles = abs(cycles);
+  cycles = std::abs(cycles);
 
   for(i = 0; i < NUM_UNITS - 1; ++i)
   {

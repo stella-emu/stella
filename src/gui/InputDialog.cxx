@@ -18,6 +18,7 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "EventHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "PointingDevice.hxx"
@@ -348,7 +349,7 @@ void InputDialog::saveConfig()
   const string& cursor = myCursorState->getSelectedTag().toString();
   instance().settings().setValue("cursor", cursor);
   instance().settings().setValue("grabmouse", myGrabMouse->getState());
-  instance().frameBuffer().enableGrabMouse(myGrabMouse->getState());  
+  instance().frameBuffer().enableGrabMouse(myGrabMouse->getState());
 
   // Enable/disable control key-combos
   instance().settings().setValue("ctrlcombo", myCtrlCombo->getState());

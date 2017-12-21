@@ -15,15 +15,28 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Dialog.hxx"
-#include "FrameBuffer.hxx"
-#include "RewindDialog.hxx"
-#include "Rewinder.hxx"
+#ifndef TIME_MACHINE_DIALOG_HXX
+#define TIME_MACHINE_DIALOG_HXX
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Rewinder::Rewinder(OSystem& osystem)
-  : DialogContainer(osystem)
+class CommandSender;
+class DialogContainer;
+class OSystem;
+
+#include "Dialog.hxx"
+
+class TimeMachineDialog : public Dialog
 {
-  myBaseDialog = new RewindDialog(myOSystem, *this,
-      FrameBuffer::kFBMinW, FrameBuffer::kFBMinH);
-}
+  public:
+    TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int max_w, int max_h);
+    virtual ~TimeMachineDialog() = default;
+
+  private:
+    // Following constructors and assignment operators not supported
+    TimeMachineDialog() = delete;
+    TimeMachineDialog(const TimeMachineDialog&) = delete;
+    TimeMachineDialog(TimeMachineDialog&&) = delete;
+    TimeMachineDialog& operator=(const TimeMachineDialog&) = delete;
+    TimeMachineDialog& operator=(TimeMachineDialog&&) = delete;
+};
+
+#endif
