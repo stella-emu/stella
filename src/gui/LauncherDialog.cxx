@@ -31,6 +31,7 @@
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "EventHandler.hxx"
+#include "StellaKeys.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
@@ -424,7 +425,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Grab the key before passing it to the actual dialog and check for
   // Control-R (reload ROM listing)
-  if(instance().eventHandler().kbdControl(mod) && key == KBDK_R)
+  if(StellaModTest::isControl(mod) && key == KBDK_R)
     updateListing();
   else
     Dialog::handleKeyDown(key, mod);

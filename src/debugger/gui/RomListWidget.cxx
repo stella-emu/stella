@@ -20,7 +20,7 @@
 #include "DiStella.hxx"
 #include "PackedBitArray.hxx"
 #include "Widget.hxx"
-#include "EventHandler.hxx"
+#include "StellaKeys.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "ScrollBarWidget.hxx"
@@ -303,7 +303,7 @@ bool RomListWidget::handleText(char text)
 bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all Alt-mod keys
-  if(instance().eventHandler().kbdAlt(mod))
+  if(StellaModTest::isAlt(mod))
     return true;
 
   bool handled = true;

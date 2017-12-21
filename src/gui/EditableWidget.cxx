@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "Dialog.hxx"
-#include "EventHandler.hxx"
+#include "StellaKeys.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "EditableWidget.hxx"
@@ -113,7 +113,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     return true;
 
   // Ignore all alt-mod keys
-  if(instance().eventHandler().kbdAlt(mod))
+  if(StellaModTest::isAlt(mod))
     return true;
 
   bool handled = true;
@@ -146,14 +146,14 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_LEFT:
-      if(instance().eventHandler().kbdControl(mod))
+      if(StellaModTest::isControl(mod))
         dirty = specialKeys(key);
       else if(_caretPos > 0)
         dirty = setCaretPos(_caretPos - 1);
       break;
 
     case KBDK_RIGHT:
-      if(instance().eventHandler().kbdControl(mod))
+      if(StellaModTest::isControl(mod))
         dirty = specialKeys(key);
       else if(_caretPos < int(_editString.size()))
         dirty = setCaretPos(_caretPos + 1);
@@ -168,7 +168,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     default:
-      if (instance().eventHandler().kbdControl(mod))
+      if (StellaModTest::isControl(mod))
       {
         dirty = specialKeys(key);
       }

@@ -412,4 +412,27 @@ enum StellaMod
     KBDM_GUI = (KBDM_LGUI|KBDM_RGUI)
 };
 
+// Test if specified modifier is pressed
+namespace StellaModTest
+{
+  inline bool isAlt(int mod)
+  {
+#if defined(BSPF_MAC_OSX) || defined(OSX_KEYS)
+    return (mod & KBDM_GUI);
+#else
+    return (mod & KBDM_ALT);
+#endif
+  }
+
+  inline bool isControl(int mod)
+  {
+    return (mod & KBDM_CTRL);
+  }
+
+  inline bool isShift(int mod)
+  {
+    return (mod & KBDM_SHIFT);
+  }
+};
+
 #endif /* StellaKeys */

@@ -133,25 +133,6 @@ class EventHandler
     */
     void setContinuousSnapshots(uInt32 interval);
 
-    inline bool kbdAlt(int mod) const
-    {
-  #if defined(BSPF_MAC_OSX) || defined(OSX_KEYS)
-      return (mod & KBDM_GUI);
-  #else
-      return (mod & KBDM_ALT);
-  #endif
-    }
-
-    inline bool kbdControl(int mod) const
-    {
-      return (mod & KBDM_CTRL);
-    }
-
-    inline bool kbdShift(int mod) const
-    {
-      return (mod & KBDM_SHIFT);
-    }
-
     void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
     bool enterDebugMode();

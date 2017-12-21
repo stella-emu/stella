@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
-#include "EventHandler.hxx"
+#include "StellaKeys.hxx"
 #include "Widget.hxx"
 #include "ToggleWidget.hxx"
 
@@ -94,8 +94,7 @@ int ToggleWidget::findItem(int x, int y)
 bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all mod keys
-  if(instance().eventHandler().kbdControl(mod) ||
-     instance().eventHandler().kbdAlt(mod))
+  if(StellaModTest::isControl(mod) || StellaModTest::isAlt(mod))
     return true;
 
   bool handled = true;

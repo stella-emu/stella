@@ -23,7 +23,7 @@
 #include "ScrollBarWidget.hxx"
 #include "Dialog.hxx"
 #include "FrameBuffer.hxx"
-#include "EventHandler.hxx"
+#include "StellaKeys.hxx"
 #include "ListWidget.hxx"
 #include "bspf.hxx"
 
@@ -298,7 +298,7 @@ bool ListWidget::handleText(char text)
 bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all Alt-mod keys
-  if(instance().eventHandler().kbdAlt(mod))
+  if(StellaModTest::isAlt(mod))
     return true;
 
   bool handled = true;

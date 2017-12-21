@@ -19,13 +19,13 @@
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "Debugger.hxx"
-#include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "DataGridWidget.hxx"
 #include "DataGridOpsWidget.hxx"
 #include "RamWidget.hxx"
 #include "ScrollBarWidget.hxx"
+#include "StellaKeys.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
@@ -332,8 +332,7 @@ bool DataGridWidget::handleText(char text)
 bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all mod keys
-  if(instance().eventHandler().kbdControl(mod) ||
-     instance().eventHandler().kbdAlt(mod))
+  if(StellaModTest::isControl(mod) || StellaModTest::isAlt(mod))
     return true;
 
   bool handled = true;
@@ -415,7 +414,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_PAGEUP:
-        if(instance().eventHandler().kbdShift(mod) && _scrollBar)
+        if(StellaModTest::isShift(mod) && _scrollBar)
           handleMouseWheel(0, 0, -1);
         else if (_currentRow > 0)
         {
@@ -425,7 +424,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_PAGEDOWN:
-        if(instance().eventHandler().kbdShift(mod) && _scrollBar)
+        if(StellaModTest::isShift(mod) && _scrollBar)
           handleMouseWheel(0, 0, +1);
         else if (_currentRow < int(_rows) - 1)
         {

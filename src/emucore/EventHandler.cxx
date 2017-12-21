@@ -274,7 +274,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
   // An attempt to speed up event processing; we quickly check for
   // Control or Alt/Cmd combos first
-  if(kbdAlt(mod) && state)
+  if(StellaModTest::isAlt(mod) && state)
   {
 #ifdef BSPF_MAC_OSX
     // These keys work in all states
@@ -302,13 +302,13 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
         case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
           myOSystem.frameBuffer().setPauseDelay();
           setEventState(EventHandlerState::PAUSE);
-          myOSystem.state().rewindState((kbdShift(mod) && state) ? 10 : 1);
+          myOSystem.state().rewindState((StellaModTest::isShift(mod) && state) ? 10 : 1);
           break;
 
         case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
           myOSystem.frameBuffer().setPauseDelay();
           setEventState(EventHandlerState::PAUSE);
-          myOSystem.state().unwindState((kbdShift(mod) && state) ? 10 : 1);
+          myOSystem.state().unwindState((StellaModTest::isShift(mod) && state) ? 10 : 1);
           break;
 
         case KBDK_DOWN:  // Alt-down rewinds to start of list
@@ -531,7 +531,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     else
       handled = false;
   }
-  else if(kbdControl(mod) && state && myUseCtrlKeyFlag)
+  else if(StellaModTest::isControl(mod) && state && myUseCtrlKeyFlag)
   {
     // These keys work in all states
     if(key == KBDK_Q)
@@ -616,7 +616,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
   // Handle keys which switch eventhandler state
   // Arrange the logic to take advantage of short-circuit evaluation
-  if(!(kbdControl(mod) || kbdShift(mod) || kbdAlt(mod)) &&
+  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)) &&
       !state && eventStateChange(myKeyTable[key][kEmulationMode]))
     return;
 

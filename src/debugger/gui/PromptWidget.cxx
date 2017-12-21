@@ -18,7 +18,7 @@
 #include "ScrollBarWidget.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
-#include "EventHandler.hxx"
+#include "StellaKeys.hxx"
 #include "Version.hxx"
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
@@ -329,7 +329,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_PAGEUP:
-      if (instance().eventHandler().kbdShift(mod))
+      if (StellaModTest::isShift(mod))
       {
         // Don't scroll up when at top of buffer
         if(_scrollLine < _linesPerPage)
@@ -345,7 +345,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_PAGEDOWN:
-      if (instance().eventHandler().kbdShift(mod))
+      if (StellaModTest::isShift(mod))
       {
         // Don't scroll down when at bottom of buffer
         if(_scrollLine >= _promptEndPos / _lineWidth)
@@ -361,7 +361,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_HOME:
-      if (instance().eventHandler().kbdShift(mod))
+      if (StellaModTest::isShift(mod))
       {
         _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
         updateScrollBuffer();
@@ -373,7 +373,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_END:
-      if (instance().eventHandler().kbdShift(mod))
+      if (StellaModTest::isShift(mod))
       {
         _scrollLine = _promptEndPos / _lineWidth;
         if (_scrollLine < _linesPerPage - 1)
@@ -387,7 +387,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_UP:
-      if (instance().eventHandler().kbdShift(mod))
+      if (StellaModTest::isShift(mod))
       {
         if(_scrollLine <= _firstLineInBuffer + _linesPerPage - 1)
           break;
@@ -402,7 +402,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_DOWN:
-      if (instance().eventHandler().kbdShift(mod))
+      if (StellaModTest::isShift(mod))
       {
         // Don't scroll down when at bottom of buffer
         if(_scrollLine >= _promptEndPos / _lineWidth)
@@ -432,11 +432,11 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     default:
-      if (instance().eventHandler().kbdControl(mod))
+      if (StellaModTest::isControl(mod))
       {
         specialKeys(key);
       }
-      else if (instance().eventHandler().kbdAlt(mod))
+      else if (StellaModTest::isAlt(mod))
       {
         // Placeholder only - this will never be reached
       }

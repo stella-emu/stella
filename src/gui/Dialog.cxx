@@ -334,18 +334,18 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Detect selection of previous and next tab headers and objects
   if(key == KBDK_TAB)
   {
-    if(instance().eventHandler().kbdControl(mod))
+    if(StellaModTest::isControl(mod))
     {
       // tab header navigation
-      if(instance().eventHandler().kbdShift(mod) && cycleTab(-1))
+      if(StellaModTest::isShift(mod) && cycleTab(-1))
         return;
-      else if(!instance().eventHandler().kbdShift(mod) && cycleTab(+1))
+      else if(!StellaModTest::isShift(mod) && cycleTab(+1))
         return;
     }
     else
     {
       // object navigation
-      if(instance().eventHandler().kbdShift(mod))
+      if(StellaModTest::isShift(mod))
         e = Event::UINavPrev;
       else
         e = Event::UINavNext;

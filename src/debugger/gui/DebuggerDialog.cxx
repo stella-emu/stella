@@ -19,6 +19,7 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Settings.hxx"
+#include "StellaKeys.hxx"
 #include "EventHandler.hxx"
 #include "TabWidget.hxx"
 #include "TiaInfoWidget.hxx"
@@ -84,7 +85,7 @@ void DebuggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  if(key == KBDK_GRAVE && !instance().eventHandler().kbdShift(mod))
+  if(key == KBDK_GRAVE && !StellaModTest::isShift(mod))
   {
     // Swallow backtick, so we don't see it when exiting the debugger
     instance().eventHandler().enableTextEvents(false);
@@ -93,22 +94,22 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
   {
     instance().debugger().parser().run("savesnap");
   }
-  else if(instance().eventHandler().kbdControl(mod))
+  else if(StellaModTest::isControl(mod))
   {
     switch(key)
     {
       case KBDK_R:
-        if(instance().eventHandler().kbdAlt(mod))
+        if(StellaModTest::isAlt(mod))
           doRewindAll();
-        else if(instance().eventHandler().kbdShift(mod))
+        else if(StellaModTest::isShift(mod))
           doRewind10();
         else
           doRewind();
         break;
       case KBDK_Y:
-        if(instance().eventHandler().kbdAlt(mod))
+        if(StellaModTest::isAlt(mod))
           doUnwindAll();
-        else if(instance().eventHandler().kbdShift(mod))
+        else if(StellaModTest::isShift(mod))
           doUnwind10();
         else
           doUnwind();
