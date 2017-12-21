@@ -902,18 +902,18 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 {
   switch(e)
   {
-    case EVENT_WINDOW_EXPOSED:
+    case SystemEvent::WINDOW_EXPOSED:
       myOSystem.frameBuffer().update();
       break;
 
-    case EVENT_WINDOW_FOCUS_GAINED:
+    case SystemEvent::WINDOW_FOCUS_GAINED:
       // Used to handle Alt-x key combos; sometimes the key associated with
       // Alt gets 'stuck'  and is passed to the core for processing
       if(myAltKeyCounter > 0)
         myAltKeyCounter = 2;
       break;
 #if 0
-    case EVENT_WINDOW_MINIMIZED:
+    case SystemEvent::WINDOW_MINIMIZED:
       if(myState == EventHandlerState::EMULATION) enterMenuMode(EventHandlerState::OPTIONSMENU);
         break;
 #endif

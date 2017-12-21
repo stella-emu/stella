@@ -322,19 +322,19 @@ class EventHandler
     virtual void pollEvent() = 0;
 
     // Other events that can be received from the underlying event handler
-    enum SystemEvent {
-      EVENT_WINDOW_SHOWN,
-      EVENT_WINDOW_HIDDEN,
-      EVENT_WINDOW_EXPOSED,
-      EVENT_WINDOW_MOVED,
-      EVENT_WINDOW_RESIZED,
-      EVENT_WINDOW_MINIMIZED,
-      EVENT_WINDOW_MAXIMIZED,
-      EVENT_WINDOW_RESTORED,
-      EVENT_WINDOW_ENTER,
-      EVENT_WINDOW_LEAVE,
-      EVENT_WINDOW_FOCUS_GAINED,
-      EVENT_WINDOW_FOCUS_LOST
+    enum class SystemEvent {
+      WINDOW_SHOWN,
+      WINDOW_HIDDEN,
+      WINDOW_EXPOSED,
+      WINDOW_MOVED,
+      WINDOW_RESIZED,
+      WINDOW_MINIMIZED,
+      WINDOW_MAXIMIZED,
+      WINDOW_RESTORED,
+      WINDOW_ENTER,
+      WINDOW_LEAVE,
+      WINDOW_FOCUS_GAINED,
+      WINDOW_FOCUS_LOST
     };
     void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
 

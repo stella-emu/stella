@@ -148,42 +148,42 @@ void EventHandlerSDL2::pollEvent()
         switch(myEvent.window.event)
         {
           case SDL_WINDOWEVENT_SHOWN:
-            handleSystemEvent(EVENT_WINDOW_SHOWN);
+            handleSystemEvent(SystemEvent::WINDOW_SHOWN);
             break;
           case SDL_WINDOWEVENT_HIDDEN:
-            handleSystemEvent(EVENT_WINDOW_HIDDEN);
+            handleSystemEvent(SystemEvent::WINDOW_HIDDEN);
             break;
           case SDL_WINDOWEVENT_EXPOSED:
-            handleSystemEvent(EVENT_WINDOW_EXPOSED);
+            handleSystemEvent(SystemEvent::WINDOW_EXPOSED);
             break;
           case SDL_WINDOWEVENT_MOVED:
-            handleSystemEvent(EVENT_WINDOW_MOVED,
+            handleSystemEvent(SystemEvent::WINDOW_MOVED,
                               myEvent.window.data1, myEvent.window.data1);
             break;
           case SDL_WINDOWEVENT_RESIZED:
-            handleSystemEvent(EVENT_WINDOW_RESIZED,
+            handleSystemEvent(SystemEvent::WINDOW_RESIZED,
                               myEvent.window.data1, myEvent.window.data1);
             break;
           case SDL_WINDOWEVENT_MINIMIZED:
-            handleSystemEvent(EVENT_WINDOW_MINIMIZED);
+            handleSystemEvent(SystemEvent::WINDOW_MINIMIZED);
             break;
           case SDL_WINDOWEVENT_MAXIMIZED:
-            handleSystemEvent(EVENT_WINDOW_MAXIMIZED);
+            handleSystemEvent(SystemEvent::WINDOW_MAXIMIZED);
             break;
           case SDL_WINDOWEVENT_RESTORED:
-            handleSystemEvent(EVENT_WINDOW_RESTORED);
+            handleSystemEvent(SystemEvent::WINDOW_RESTORED);
             break;
           case SDL_WINDOWEVENT_ENTER:
-            handleSystemEvent(EVENT_WINDOW_ENTER);
+            handleSystemEvent(SystemEvent::WINDOW_ENTER);
             break;
           case SDL_WINDOWEVENT_LEAVE:
-            handleSystemEvent(EVENT_WINDOW_LEAVE);
+            handleSystemEvent(SystemEvent::WINDOW_LEAVE);
             break;
           case SDL_WINDOWEVENT_FOCUS_GAINED:
-            handleSystemEvent(EVENT_WINDOW_FOCUS_GAINED);
+            handleSystemEvent(SystemEvent::WINDOW_FOCUS_GAINED);
             break;
           case SDL_WINDOWEVENT_FOCUS_LOST:
-            handleSystemEvent(EVENT_WINDOW_FOCUS_LOST);
+            handleSystemEvent(SystemEvent::WINDOW_FOCUS_LOST);
             break;
         }
         break;  // SDL_WINDOWEVENT
