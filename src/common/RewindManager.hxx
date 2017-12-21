@@ -170,11 +170,11 @@ class RewindManager
     void compressStates();
 
     /**
-      Get the message string for the rewind/unwind
+      Load the current state and get the message string for the rewind/unwind
 
       @return  The message
     */
-    string getMessage(Int64 startCycles, uInt32 numStates);
+    string loadState(Int64 startCycles, uInt32 numStates);
 
   private:
     // Following constructors and assignment operators not supported
