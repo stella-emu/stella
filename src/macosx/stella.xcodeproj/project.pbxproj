@@ -427,6 +427,10 @@
 		DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
+		DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */; };
+		DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */; };
+		DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */; };
+		DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */; };
 		DCAACAF6188D631500A4D282 /* Cart4KSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAACAEC188D631500A4D282 /* Cart4KSC.cxx */; };
 		DCAACAF7188D631500A4D282 /* Cart4KSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAACAED188D631500A4D282 /* Cart4KSC.hxx */; };
 		DCAACAF8188D631500A4D282 /* CartBF.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAACAEE188D631500A4D282 /* CartBF.cxx */; };
@@ -1091,6 +1095,10 @@
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CartX07.cxx; sourceTree = "<group>"; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CartX07.hxx; sourceTree = "<group>"; };
 		DCA43BFF10DED5890070CEFD /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
+		DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachine.cxx; sourceTree = "<group>"; };
+		DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachine.hxx; sourceTree = "<group>"; };
+		DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeMachineDialog.cxx; sourceTree = "<group>"; };
+		DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeMachineDialog.hxx; sourceTree = "<group>"; };
 		DCAACAEC188D631500A4D282 /* Cart4KSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart4KSC.cxx; sourceTree = "<group>"; };
 		DCAACAED188D631500A4D282 /* Cart4KSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart4KSC.hxx; sourceTree = "<group>"; };
 		DCAACAEE188D631500A4D282 /* CartBF.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBF.cxx; sourceTree = "<group>"; };
@@ -1895,6 +1903,10 @@
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
 				2DDBEAD0084578BF00812C11 /* TabWidget.cxx */,
 				2DDBEAD1084578BF00812C11 /* TabWidget.hxx */,
+				DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */,
+				DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */,
+				DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */,
+				DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */,
 				DC8078E60B4BD697005E9305 /* UIDialog.cxx */,
 				DC8078E70B4BD697005E9305 /* UIDialog.hxx */,
 				2DDBEAD2084578BF00812C11 /* VideoDialog.cxx */,
@@ -2280,6 +2292,7 @@
 				DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */,
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
 				DC68F8901FA64C5300F4A2CC /* TIAConstants.hxx in Headers */,
+				DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
 				DC3EE8641E2C0E6D00905161 /* inffixed.h in Headers */,
 				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
@@ -2392,6 +2405,7 @@
 				DCAACAFF188D631500A4D282 /* CartDFSC.hxx in Headers */,
 				DCAACB0F188D636F00A4D282 /* Cart4KSCWidget.hxx in Headers */,
 				DCAACB11188D636F00A4D282 /* CartBFSCWidget.hxx in Headers */,
+				DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */,
 				DC6A18FD19B3E67A00DEB242 /* CartMDM.hxx in Headers */,
 				DCDDEAC51F5DBF0400C67366 /* RewindManager.hxx in Headers */,
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
@@ -2614,6 +2628,7 @@
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
 				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
 				2D9174FE09BA90380026E9FF /* RomWidget.cxx in Sources */,
+				DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */,
 				2D9174FF09BA90380026E9FF /* TiaInfoWidget.cxx in Sources */,
 				2D91750009BA90380026E9FF /* TiaOutputWidget.cxx in Sources */,
 				2D91750109BA90380026E9FF /* TiaWidget.cxx in Sources */,
@@ -2677,6 +2692,7 @@
 				DCB20EC71A0C506C0048F595 /* main.cxx in Sources */,
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
+				DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
 				DC5ACB5B1FBFCE8E00A213FD /* DeveloperDialog.cxx in Sources */,
