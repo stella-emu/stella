@@ -84,21 +84,19 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
     displays.emplace_back(display.w, display.h);
   }
 
-#if 0
   struct RenderName
   {
     string sdlName;
     string stellaName;
   };
-  // create name map for all currently known SDL renderers
-  const int NUM_RENDERES = 5;
-  static const RenderName RENDERER_NAMES[NUM_RENDERES] =
-  {
-    {"direct3d",  "Direct3D"},
-    {"opengl",    "OpenGL"},
-    {"opengles",  "OpenGLES"},
-    {"opengles2", "OpenGLES2"},
-    {"software",  "Software"}
+  // Create name map for all currently known SDL renderers
+  const int NUM_RENDERERS = 5;
+  static const RenderName RENDERER_NAMES[NUM_RENDERERS] = {
+    { "direct3d",  "Direct3D"  },
+    { "opengl",    "OpenGL"    },
+    { "opengles",  "OpenGLES"  },
+    { "opengles2", "OpenGLES2" },
+    { "software",  "Software"  }
   };
 
   int numDrivers = SDL_GetNumRenderDrivers();
@@ -107,9 +105,9 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
     SDL_RendererInfo info;
     if(SDL_GetRenderDriverInfo(i, &info) == 0)
     {
-      // map SDL names into nicer Stella names
+      // Map SDL names into nicer Stella names (if available)
       bool found = false;
-      for(int j = 0; j < NUM_RENDERES; ++j)
+      for(int j = 0; j < NUM_RENDERERS; ++j)
       {
         if(RENDERER_NAMES[j].sdlName == info.name)
         {
@@ -118,21 +116,10 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
           break;
         }
       }
-      if (!found)
+      if(!found)
         VarList::push_back(renderers, info.name, info.name);
     }
   }
-#endif
-
-  // For now, supported render types are hardcoded; eventually, SDL may
-  // provide a method to query this
-#if defined(BSPF_WINDOWS)
-  VarList::push_back(renderers, "Direct3D", "direct3d");
-#endif
-  VarList::push_back(renderers, "OpenGL", "opengl");
-  VarList::push_back(renderers, "OpenGLES2", "opengles2");
-  VarList::push_back(renderers, "OpenGLES", "opengles");
-  VarList::push_back(renderers, "Software", "software");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
