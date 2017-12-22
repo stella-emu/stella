@@ -1227,7 +1227,7 @@ bool EventHandler::eventStateChange(Event::Type type)
         handled = false;
       break;
 
-    case Event::MenuMode:
+    case Event::OptionsMenuMode:
       if(myState == EventHandlerState::EMULATION)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       else
@@ -1238,6 +1238,15 @@ bool EventHandler::eventStateChange(Event::Type type)
       if(myState == EventHandlerState::EMULATION)
         enterMenuMode(EventHandlerState::CMDMENU);
       else if(myState == EventHandlerState::CMDMENU)
+        leaveMenuMode();
+      else
+        handled = false;
+      break;
+
+    case Event::TimeMachineMode:
+      if(myState == EventHandlerState::EMULATION)
+        enterMenuMode(EventHandlerState::TIMEMACHINE);
+      else if(myState == EventHandlerState::TIMEMACHINE)
         leaveMenuMode();
       else
         handled = false;
@@ -1688,8 +1697,9 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       setDefaultKey( KBDK_F12,       Event::TakeSnapshot      );
       setDefaultKey( KBDK_BACKSPACE, Event::Fry               );
       setDefaultKey( KBDK_PAUSE,     Event::PauseMode         );
-      setDefaultKey( KBDK_TAB,       Event::MenuMode          );
+      setDefaultKey( KBDK_TAB,       Event::OptionsMenuMode   );
       setDefaultKey( KBDK_BACKSLASH, Event::CmdMenuMode       );
+      setDefaultKey( KBDK_T,         Event::TimeMachineMode   );
       setDefaultKey( KBDK_GRAVE,     Event::DebuggerMode      );
       setDefaultKey( KBDK_ESCAPE,    Event::LauncherMode      );
       break;
@@ -2228,8 +2238,9 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::VolumeDecrease,         "Decrease volume",          "", false },
   { Event::VolumeIncrease,         "Increase volume",          "", false },
   { Event::PauseMode,              "Pause",                    "", false },
-  { Event::MenuMode,               "Enter options menu mode",  "", false },
-  { Event::CmdMenuMode,            "Toggle command menu mode", "", false },
+  { Event::OptionsMenuMode,        "Enter options menu UI",    "", false },
+  { Event::CmdMenuMode,            "Toggle command menu UI",   "", false },
+  { Event::TimeMachineMode,        "Toggle time machine UI",   "", false },
   { Event::DebuggerMode,           "Toggle debugger mode",     "", false },
   { Event::LauncherMode,           "Enter ROM launcher",       "", false },
   { Event::Quit,                   "Quit",                     "", false },

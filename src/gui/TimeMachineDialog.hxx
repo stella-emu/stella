@@ -31,6 +31,13 @@ class TimeMachineDialog : public Dialog
     virtual ~TimeMachineDialog() = default;
 
   private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    /** This dialog uses its own positioning, so we override Dialog::center() */
+    void center() override;
+
+  private:
     // Following constructors and assignment operators not supported
     TimeMachineDialog() = delete;
     TimeMachineDialog(const TimeMachineDialog&) = delete;

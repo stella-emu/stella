@@ -71,7 +71,7 @@ class Event
       MouseButtonLeftValue, MouseButtonRightValue,
 
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
-      PauseMode, MenuMode, CmdMenuMode, DebuggerMode, LauncherMode,
+      PauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, LauncherMode,
       Fry, VolumeDecrease, VolumeIncrease,
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
