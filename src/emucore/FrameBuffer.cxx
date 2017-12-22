@@ -418,6 +418,8 @@ void FrameBuffer::enableMessages(bool enable)
 inline void FrameBuffer::drawMessage()
 {
   // Draw the bounded box and text
+  const GUI::Rect& dst = myMsg.surface->dstRect();
+
   switch(myMsg.position)
   {
     case MessagePosition::TopLeft:
@@ -426,43 +428,43 @@ inline void FrameBuffer::drawMessage()
       break;
 
     case MessagePosition::TopCenter:
-      myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
+      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
       myMsg.y = 5;
       break;
 
     case MessagePosition::TopRight:
-      myMsg.x = myImageRect.width() - myMsg.w - 5;
+      myMsg.x = myImageRect.width() - dst.width() - 5;
       myMsg.y = 5;
       break;
 
     case MessagePosition::MiddleLeft:
       myMsg.x = 5;
-      myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
+      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
       break;
 
     case MessagePosition::MiddleCenter:
-      myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
-      myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
+      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
+      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
       break;
 
     case MessagePosition::MiddleRight:
-      myMsg.x = myImageRect.width() - myMsg.w - 5;
-      myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
+      myMsg.x = myImageRect.width() - dst.width() - 5;
+      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
       break;
 
     case MessagePosition::BottomLeft:
       myMsg.x = 5;
-      myMsg.y = myImageRect.height() - myMsg.h - 5;
+      myMsg.y = myImageRect.height() - dst.height() - 5;
       break;
 
     case MessagePosition::BottomCenter:
-      myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
-      myMsg.y = myImageRect.height() - myMsg.h - 5;
+      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
+      myMsg.y = myImageRect.height() - dst.height() - 5;
       break;
 
     case MessagePosition::BottomRight:
-      myMsg.x = myImageRect.width() - myMsg.w - 5;
-      myMsg.y = myImageRect.height() - myMsg.h - 5;
+      myMsg.x = myImageRect.width() - dst.width() - 5;
+      myMsg.y = myImageRect.height() - dst.height() - 5;
       break;
   }
 
