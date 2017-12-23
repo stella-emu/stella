@@ -24,7 +24,6 @@
 #include "Settings.hxx"
 #include "Device.hxx"
 #include "Serializer.hxx"
-#include "TIATypes.hxx"
 #include "TIAConstants.hxx"
 #include "DelayQueue.hxx"
 #include "DelayQueueIterator.hxx"

@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <time.h>
+#include <ctime>
 
 #include "bspf.hxx"
 #include "System.hxx"

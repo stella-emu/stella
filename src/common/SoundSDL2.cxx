@@ -23,7 +23,7 @@
 
 #include "SDL_lib.hxx"
 #include "TIASnd.hxx"
-#include "TIATypes.hxx"
+#include "TIAConstants.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"

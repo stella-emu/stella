@@ -18,8 +18,6 @@
 #ifndef RANDOM_HXX
 #define RANDOM_HXX
 
-#include <time.h>
-
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Serializable.hxx"

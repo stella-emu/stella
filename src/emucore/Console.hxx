@@ -31,7 +31,7 @@ class Debugger;
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
-#include "TIATypes.hxx"
+#include "TIAConstants.hxx"
 #include "FrameBuffer.hxx"
 #include "Serializable.hxx"
 #include "EventHandlerConstants.hxx"
