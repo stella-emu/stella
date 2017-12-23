@@ -50,23 +50,23 @@ enum TIAColor {
   HBLANKColor = 7   // Color index for HMove blank area
 };
 
-enum CollisionBit
+enum class CollisionBit
 {
-  Cx_M0P1 = 1 << 0,   // Missle0 - Player1   collision
-  Cx_M0P0 = 1 << 1,   // Missle0 - Player0   collision
-  Cx_M1P0 = 1 << 2,   // Missle1 - Player0   collision
-  Cx_M1P1 = 1 << 3,   // Missle1 - Player1   collision
-  Cx_P0PF = 1 << 4,   // Player0 - Playfield collision
-  Cx_P0BL = 1 << 5,   // Player0 - Ball      collision
-  Cx_P1PF = 1 << 6,   // Player1 - Playfield collision
-  Cx_P1BL = 1 << 7,   // Player1 - Ball      collision
-  Cx_M0PF = 1 << 8,   // Missle0 - Playfield collision
-  Cx_M0BL = 1 << 9,   // Missle0 - Ball      collision
-  Cx_M1PF = 1 << 10,  // Missle1 - Playfield collision
-  Cx_M1BL = 1 << 11,  // Missle1 - Ball      collision
-  Cx_BLPF = 1 << 12,  // Ball - Playfield    collision
-  Cx_P0P1 = 1 << 13,  // Player0 - Player1   collision
-  Cx_M0M1 = 1 << 14   // Missle0 - Missle1   collision
+  M0P1 = 1 << 0,   // Missle0 - Player1   collision
+  M0P0 = 1 << 1,   // Missle0 - Player0   collision
+  M1P0 = 1 << 2,   // Missle1 - Player0   collision
+  M1P1 = 1 << 3,   // Missle1 - Player1   collision
+  P0PF = 1 << 4,   // Player0 - Playfield collision
+  P0BL = 1 << 5,   // Player0 - Ball      collision
+  P1PF = 1 << 6,   // Player1 - Playfield collision
+  P1BL = 1 << 7,   // Player1 - Ball      collision
+  M0PF = 1 << 8,   // Missle0 - Playfield collision
+  M0BL = 1 << 9,   // Missle0 - Ball      collision
+  M1PF = 1 << 10,  // Missle1 - Playfield collision
+  M1BL = 1 << 11,  // Missle1 - Ball      collision
+  BLPF = 1 << 12,  // Ball - Playfield    collision
+  P0P1 = 1 << 13,  // Player0 - Player1   collision
+  M0M1 = 1 << 14   // Missle0 - Missle1   collision
 };
 
 // TIA Write/Read register names

@@ -827,61 +827,61 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       switch(id)
       {
         case kP0_PFID:
-          tia.collision(Cx_P0PF, true);
+          tia.collision(CollisionBit::P0PF, true);
           break;
 
         case kP0_BLID:
-          tia.collision(Cx_P0BL, true);
+          tia.collision(CollisionBit::P0BL, true);
           break;
 
         case kP0_M1ID:
-          tia.collision(Cx_M1P0, true);
+          tia.collision(CollisionBit::M1P0, true);
           break;
 
         case kP0_M0ID:
-          tia.collision(Cx_M0P0, true);
+          tia.collision(CollisionBit::M0P0, true);
           break;
 
         case kP0_P1ID:
-          tia.collision(Cx_P0P1, true);
+          tia.collision(CollisionBit::P0P1, true);
           break;
 
         case kP1_PFID:
-          tia.collision(Cx_P1PF, true);
+          tia.collision(CollisionBit::P1PF, true);
           break;
         case kP1_BLID:
-          tia.collision(Cx_P1BL, true);
+          tia.collision(CollisionBit::P1BL, true);
           break;
 
         case kP1_M1ID:
-          tia.collision(Cx_M1P1, true);
+          tia.collision(CollisionBit::M1P1, true);
           break;
         case kP1_M0ID:
-          tia.collision(Cx_M0P1, true);
+          tia.collision(CollisionBit::M0P1, true);
           break;
 
         case kM0_PFID:
-          tia.collision(Cx_M0PF, true);
+          tia.collision(CollisionBit::M0PF, true);
           break;
 
         case kM0_BLID:
-          tia.collision(Cx_M0BL, true);
+          tia.collision(CollisionBit::M0BL, true);
           break;
 
         case kM0_M1ID:
-          tia.collision(Cx_M0M1, true);
+          tia.collision(CollisionBit::M0M1, true);
           break;
 
         case kM1_PFID:
-          tia.collision(Cx_M1PF, true);
+          tia.collision(CollisionBit::M1PF, true);
           break;
 
         case kM1_BLID:
-          tia.collision(Cx_M1BL, true);
+          tia.collision(CollisionBit::M1BL, true);
           break;
 
         case kBL_PFID:
-          tia.collision(Cx_BLPF, true);
+          tia.collision(CollisionBit::BLPF, true);
           break;
 
         case kRefP0ID:

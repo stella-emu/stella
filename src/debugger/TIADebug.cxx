@@ -421,76 +421,76 @@ bool TIADebug::collision(CollisionBit id, bool toggle) const
 {
   switch(id)
   {
-    case Cx_M0P1:
+    case CollisionBit::M0P1:
       if(toggle)
         myTIA.toggleCollP1M0();
       return myTIA.collCXM0P()  & 0x80;
 
-    case Cx_M0P0:
+    case CollisionBit::M0P0:
       if(toggle)
         myTIA.toggleCollP0M0();
       return myTIA.collCXM0P()  & 0x40;
 
-    case Cx_M1P0:
+    case CollisionBit::M1P0:
       if(toggle)
         myTIA.toggleCollP0M1();
       return myTIA.collCXM1P()  & 0x80;
 
-    case Cx_M1P1:
+    case CollisionBit::M1P1:
       if(toggle)
         myTIA.toggleCollP1M1();
       return myTIA.collCXM1P() & 0x40;
 
-    case Cx_P0PF:
+    case CollisionBit::P0PF:
       if(toggle)
         myTIA.toggleCollP0PF();
       return myTIA.collCXP0FB() & 0x80;
-    case Cx_P0BL:
+    case CollisionBit::P0BL:
       if(toggle)
         myTIA.toggleCollP0BL();
       return myTIA.collCXP0FB() & 0x40;
 
-    case Cx_P1PF:
+    case CollisionBit::P1PF:
       if(toggle)
         myTIA.toggleCollP1PF();
       return myTIA.collCXP1FB() & 0x80;
 
-    case Cx_P1BL:
+    case CollisionBit::P1BL:
       if(toggle)
         myTIA.toggleCollP1BL();
       return myTIA.collCXP1FB() & 0x40;
 
-    case Cx_M0PF:
+    case CollisionBit::M0PF:
       if(toggle)
         myTIA.toggleCollM0PF();
       return myTIA.collCXM0FB() & 0x80;
 
-    case Cx_M0BL:
+    case CollisionBit::M0BL:
       if(toggle)
         myTIA.toggleCollM0BL();
       return myTIA.collCXM0FB() & 0x40;
 
-    case Cx_M1PF:
+    case CollisionBit::M1PF:
       if(toggle)
         myTIA.toggleCollM1PF();
       return myTIA.collCXM1FB() & 0x80;
 
-    case Cx_M1BL:
+    case CollisionBit::M1BL:
       if(toggle)
         myTIA.toggleCollM1BL();
       return myTIA.collCXM1FB() & 0x40;
 
-    case Cx_BLPF:
+    case CollisionBit::BLPF:
       if(toggle)
         myTIA.toggleCollBLPF();
       return myTIA.collCXBLPF() & 0x80;
 
-    case Cx_P0P1:
+    case CollisionBit::P0P1:
       if(toggle)
         myTIA.toggleCollP0P1();
       return myTIA.collCXPPMM() & 0x80;
 
-    case Cx_M0M1:
+    case CollisionBit::M0M1:
       if(toggle)
         myTIA.toggleCollM0M1();
       return myTIA.collCXPPMM() & 0x40;
