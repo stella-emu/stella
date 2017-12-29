@@ -31,10 +31,8 @@ enum class EventHandlerState {
 };
 
 enum class MouseButton {
-  LBUTTONDOWN,
-  LBUTTONUP,
-  RBUTTONDOWN,
-  RBUTTONUP,
+  LEFT,
+  RIGHT,
   WHEELDOWN,
   WHEELUP
 };

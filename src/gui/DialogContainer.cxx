@@ -196,7 +196,8 @@ void DialogContainer::handleMouseMotionEvent(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y)
+void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
+                                             int x, int y)
 {
   if(myDialogStack.empty())
     return;
@@ -205,57 +206,59 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y)
   Dialog* activeDialog = myDialogStack.top();
   activeDialog->surface().translateCoords(x, y);
 
-  int button = (b == MouseButton::LBUTTONDOWN || b == MouseButton::LBUTTONUP) ? 1 : 2;
+  int button = b == MouseButton::LEFT ? 1 : 2;
   switch(b)
   {
-    case MouseButton::LBUTTONDOWN:
-    case MouseButton::RBUTTONDOWN:
-      // If more than two clicks have been recorded, we start over
-      if(myLastClick.count == 2)
+    case MouseButton::LEFT:
+    case MouseButton::RIGHT:
+      if(pressed)
       {
-        myLastClick.x = myLastClick.y = 0;
-        myLastClick.time = 0;
-        myLastClick.count = 0;
-      }
+        // If more than two clicks have been recorded, we start over
+        if(myLastClick.count == 2)
+        {
+          myLastClick.x = myLastClick.y = 0;
+          myLastClick.time = 0;
+          myLastClick.count = 0;
+        }
 
-      if(myLastClick.count && (myTime < myLastClick.time + kDoubleClickDelay)
-         && std::abs(myLastClick.x - x) < 3
-         && std::abs(myLastClick.y - y) < 3)
-      {
-        myLastClick.count++;
+        if(myLastClick.count && (myTime < myLastClick.time + kDoubleClickDelay)
+           && std::abs(myLastClick.x - x) < 3
+           && std::abs(myLastClick.y - y) < 3)
+        {
+          myLastClick.count++;
+        }
+        else
+        {
+          myLastClick.x = x;
+          myLastClick.y = y;
+          myLastClick.count = 1;
+        }
+        myLastClick.time = myTime;
+
+        // Now account for repeated mouse events (click and hold), but only
+        // if the dialog wants them
+        if(activeDialog->handleMouseClicks(x - activeDialog->_x, y - activeDialog->_y,
+                                           button))
+        {
+          myCurrentMouseDown.x = x;
+          myCurrentMouseDown.y = y;
+          myCurrentMouseDown.button = button;
+          myClickRepeatTime = myTime + kRepeatInitialDelay;
+        }
+        else
+          myCurrentMouseDown.button = -1;
+
+        activeDialog->handleMouseDown(x - activeDialog->_x, y - activeDialog->_y,
+                                      button, myLastClick.count);
       }
       else
       {
-        myLastClick.x = x;
-        myLastClick.y = y;
-        myLastClick.count = 1;
-      }
-      myLastClick.time = myTime;
-
-      // Now account for repeated mouse events (click and hold), but only
-      // if the dialog wants them
-      if(activeDialog->handleMouseClicks(x - activeDialog->_x, y - activeDialog->_y,
-                                         button))
-      {
-        myCurrentMouseDown.x = x;
-        myCurrentMouseDown.y = y;
-        myCurrentMouseDown.button = button;
-        myClickRepeatTime = myTime + kRepeatInitialDelay;
-      }
-      else
-        myCurrentMouseDown.button = -1;
-
-      activeDialog->handleMouseDown(x - activeDialog->_x, y - activeDialog->_y,
+        activeDialog->handleMouseUp(x - activeDialog->_x, y - activeDialog->_y,
                                     button, myLastClick.count);
-      break;
 
-    case MouseButton::LBUTTONUP:
-    case MouseButton::RBUTTONUP:
-      activeDialog->handleMouseUp(x - activeDialog->_x, y - activeDialog->_y,
-                                  button, myLastClick.count);
-
-      if(button == myCurrentMouseDown.button)
-        myCurrentMouseDown.button = -1;
+        if(button == myCurrentMouseDown.button)
+          myCurrentMouseDown.button = -1;
+      }
       break;
 
     case MouseButton::WHEELUP:

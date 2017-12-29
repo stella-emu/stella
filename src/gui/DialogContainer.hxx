@@ -86,11 +86,12 @@ class DialogContainer
     /**
       Handle a mouse button event.
 
-      @param b     The mouse button
-      @param x     The x location
-      @param y     The y location
+      @param b        The mouse button
+      @param pressed  Whether the button was pressed (true) or released (false)
+      @param x        The x location
+      @param y        The y location
     */
-    void handleMouseButtonEvent(MouseButton b, int x, int y);
+    void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
 
     /**
       Handle a joystick button event.

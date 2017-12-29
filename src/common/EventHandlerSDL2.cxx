@@ -67,15 +67,14 @@ void EventHandlerSDL2::pollEvent()
       case SDL_MOUSEBUTTONDOWN:
       case SDL_MOUSEBUTTONUP:
       {
-        bool pressed = myEvent.button.type == SDL_MOUSEBUTTONDOWN;
         switch(myEvent.button.button)
         {
           case SDL_BUTTON_LEFT:
-            handleMouseButtonEvent(pressed ? MouseButton::LBUTTONDOWN : MouseButton::LBUTTONUP,
+            handleMouseButtonEvent(MouseButton::LEFT, myEvent.button.type == SDL_MOUSEBUTTONDOWN,
                                    myEvent.button.x, myEvent.button.y);
             break;
           case SDL_BUTTON_RIGHT:
-            handleMouseButtonEvent(pressed ? MouseButton::RBUTTONDOWN : MouseButton::RBUTTONUP,
+            handleMouseButtonEvent(MouseButton::RIGHT, myEvent.button.type == SDL_MOUSEBUTTONDOWN,
                                    myEvent.button.x, myEvent.button.y);
             break;
         }
@@ -87,9 +86,9 @@ void EventHandlerSDL2::pollEvent()
         int x, y;
         SDL_GetMouseState(&x, &y);  // we need mouse position too
         if(myEvent.wheel.y < 0)
-          handleMouseButtonEvent(MouseButton::WHEELDOWN, x, y);
+          handleMouseButtonEvent(MouseButton::WHEELDOWN, true, x, y);
         else if(myEvent.wheel.y > 0)
-          handleMouseButtonEvent(MouseButton::WHEELUP, x, y);
+          handleMouseButtonEvent(MouseButton::WHEELUP, true, x, y);
         break;
       }
 

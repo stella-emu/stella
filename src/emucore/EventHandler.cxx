@@ -665,31 +665,26 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel, int 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseButtonEvent(MouseButton b, int x, int y)
+void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
+                                          int x, int y)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
   {
     switch(b)
     {
-      case MouseButton::LBUTTONDOWN:
-        myEvent.set(Event::MouseButtonLeftValue, 1);
+      case MouseButton::LEFT:
+        myEvent.set(Event::MouseButtonLeftValue, int(pressed));
         break;
-      case MouseButton::LBUTTONUP:
-        myEvent.set(Event::MouseButtonLeftValue, 0);
-        break;
-      case MouseButton::RBUTTONDOWN:
-        myEvent.set(Event::MouseButtonRightValue, 1);
-        break;
-      case MouseButton::RBUTTONUP:
-        myEvent.set(Event::MouseButtonRightValue, 0);
+      case MouseButton::RIGHT:
+        myEvent.set(Event::MouseButtonRightValue, int(pressed));
         break;
       default:
         return;
     }
   }
   else if(myOverlay)
-    myOverlay->handleMouseButtonEvent(b, x, y);
+    myOverlay->handleMouseButtonEvent(b, pressed, x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
