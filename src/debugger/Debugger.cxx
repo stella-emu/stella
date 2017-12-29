@@ -80,8 +80,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
   // there will only be ever one instance of debugger in Stella,
   // I don't care :)
   myStaticDebugger = this;
-
-  saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,6 +108,8 @@ void Debugger::initialize()
   myBaseDialog = myDialog;
 
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
+
+  saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
