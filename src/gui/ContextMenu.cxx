@@ -233,13 +233,13 @@ bool ContextMenu::sendSelectionLast()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
+void ContextMenu::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Compute over which item the mouse is...
   int item = findItem(x, y);
 
   // Only do a selection when the left button is in the dialog
-  if(button == 1)
+  if(b == MouseButton::LEFT)
   {
     if(item != -1)
     {
@@ -252,7 +252,7 @@ void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleMouseMoved(int x, int y, int button)
+void ContextMenu::handleMouseMoved(int x, int y)
 {
   // Compute over which item the mouse is...
   int item = findItem(x, y);
@@ -264,7 +264,7 @@ void ContextMenu::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ContextMenu::handleMouseClicks(int x, int y, int button)
+bool ContextMenu::handleMouseClicks(int x, int y, MouseButton b)
 {
   // Let continuous mouse clicks come through, as the scroll buttons need them
   return true;

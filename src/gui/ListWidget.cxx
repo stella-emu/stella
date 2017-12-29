@@ -191,7 +191,7 @@ void ListWidget::scrollBarRecalc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void ListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
     return;
@@ -216,7 +216,7 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void ListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command

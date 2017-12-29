@@ -59,9 +59,9 @@ class TabWidget : public Widget, public CommandSender
     void loadConfig() override;
 
   protected:
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
-    void handleMouseEntered(int button) override;
-    void handleMouseLeft(int button) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     bool handleEvent(Event::Type event) override;

@@ -60,7 +60,7 @@ void EventHandlerSDL2::pollEvent()
       case SDL_MOUSEMOTION:
       {
         handleMouseMotionEvent(myEvent.motion.x, myEvent.motion.y,
-                               myEvent.motion.xrel, myEvent.motion.yrel, 0);
+                               myEvent.motion.xrel, myEvent.motion.yrel);
         break;
       }
 

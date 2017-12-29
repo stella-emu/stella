@@ -164,7 +164,7 @@ bool CheckListWidget::handleEvent(Event::Type e)
   {
     case Event::UISelect:
       // Simulate a mouse button click
-      _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, 1, 0);
+      _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, MouseButton::LEFT, 0);
       return true;
 
     default:

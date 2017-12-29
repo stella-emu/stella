@@ -20,21 +20,22 @@
 
 // Enumeration representing the different states of operation
 enum class EventHandlerState {
-  NONE,
   EMULATION,
   TIMEMACHINE,
   PAUSE,
   LAUNCHER,
   OPTIONSMENU,
   CMDMENU,
-  DEBUGGER
+  DEBUGGER,
+  NONE
 };
 
 enum class MouseButton {
   LEFT,
   RIGHT,
   WHEELDOWN,
-  WHEELUP
+  WHEELUP,
+  NONE
 };
 
 enum class JoyHat {

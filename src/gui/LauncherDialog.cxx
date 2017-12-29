@@ -432,16 +432,16 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleMouseDown(int x, int y, int button, int clickCount)
+void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Grab right mouse button for context menu, send left to base class
-  if(button == 2)
+  if(b == MouseButton::RIGHT)
   {
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY());
   }
   else
-    Dialog::handleMouseDown(x, y, button, clickCount);
+    Dialog::handleMouseDown(x, y, b, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

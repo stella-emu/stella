@@ -41,7 +41,7 @@ void EditTextWidget::setText(const string& str, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if(!isEditable())
     return;

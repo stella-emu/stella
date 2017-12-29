@@ -42,7 +42,7 @@ class EditTextWidget : public EditableWidget
 
     GUI::Rect getEditRect() const override;
 
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
   protected:
     string _backupString;

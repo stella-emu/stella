@@ -131,7 +131,7 @@ const Variant& PopUpWidget::getSelectedTag() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && !myMenu->isVisible())
   {
@@ -159,14 +159,14 @@ void PopUpWidget::handleMouseWheel(int x, int y, int direction)
 
 #ifdef FLAT_UI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleMouseEntered(int button)
+void PopUpWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleMouseLeft(int button)
+void PopUpWidget::handleMouseLeft()
 {
   clearFlags(WIDGET_HILITED);
   setDirty();
@@ -182,7 +182,7 @@ bool PopUpWidget::handleEvent(Event::Type e)
   switch(e)
   {
     case Event::UISelect:
-      handleMouseDown(0, 0, 1, 0);
+      handleMouseDown(0, 0, MouseButton::LEFT, 0);
       return true;
     case Event::UIUp:
     case Event::UILeft:

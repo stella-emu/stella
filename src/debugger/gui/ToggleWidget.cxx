@@ -41,7 +41,7 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void ToggleWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
     return;
@@ -62,7 +62,7 @@ void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void ToggleWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled() || !_editable)
     return;

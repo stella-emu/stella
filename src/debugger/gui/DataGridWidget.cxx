@@ -251,7 +251,7 @@ void DataGridWidget::setRange(int lower, int upper)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
     return;
@@ -277,7 +277,7 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void DataGridWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command

@@ -106,7 +106,7 @@ void PromptWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void PromptWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
 //  cerr << "PromptWidget::handleMouseDown\n";
 }

@@ -58,8 +58,8 @@ class RomListWidget : public EditableWidget
     void setHighlighted(int item);
 
   protected:
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;

@@ -52,7 +52,7 @@ class RomListSettings : public Dialog, public CommandSender
 
   private:
     void loadConfig() override;
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     // Following constructors and assignment operators not supported

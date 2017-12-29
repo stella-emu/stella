@@ -90,7 +90,7 @@ void Dialog::close(bool refresh)
 {
   if (_mouseWidget)
   {
-    _mouseWidget->handleMouseLeft(0);
+    _mouseWidget->handleMouseLeft();
     _mouseWidget = nullptr;
   }
 
@@ -377,7 +377,7 @@ void Dialog::handleKeyUp(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
+void Dialog::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   Widget* w = findWidget(x, y);
 
@@ -386,11 +386,11 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
 
   if(w)
     w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
-                       button, clickCount);
+                       b, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
+void Dialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(_focusedWidget)
   {
@@ -402,7 +402,7 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
   Widget* w = _dragWidget;
   if(w)
     w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
-                     button, clickCount);
+                     b, clickCount);
 
   _dragWidget = nullptr;
 }
@@ -422,7 +422,7 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseMoved(int x, int y, int button)
+void Dialog::handleMouseMoved(int x, int y)
 {
   Widget* w;
 
@@ -438,17 +438,17 @@ void Dialog::handleMouseMoved(int x, int y, int button)
     if(mouseInFocusedWidget && _mouseWidget != w)
     {
       if(_mouseWidget)
-        _mouseWidget->handleMouseLeft(button);
+        _mouseWidget->handleMouseLeft();
       _mouseWidget = w;
-      w->handleMouseEntered(button);
+      w->handleMouseEntered();
     }
     else if (!mouseInFocusedWidget && _mouseWidget == w)
     {
       _mouseWidget = nullptr;
-      w->handleMouseLeft(button);
+      w->handleMouseLeft();
     }
 
-    w->handleMouseMoved(x - wx, y - wy, button);
+    w->handleMouseMoved(x - wx, y - wy);
   }
 
   // While a "drag" is in process (i.e. mouse is moved while a button is pressed),
@@ -461,24 +461,24 @@ void Dialog::handleMouseMoved(int x, int y, int button)
   if (_mouseWidget != w)
   {
     if (_mouseWidget)
-      _mouseWidget->handleMouseLeft(button);
+      _mouseWidget->handleMouseLeft();
     if (w)
-      w->handleMouseEntered(button);
+      w->handleMouseEntered();
     _mouseWidget = w;
   }
 
   if (w && (w->getFlags() & WIDGET_TRACK_MOUSE))
-    w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);
+    w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::handleMouseClicks(int x, int y, int button)
+bool Dialog::handleMouseClicks(int x, int y, MouseButton b)
 {
   Widget* w = findWidget(x, y);
 
   if(w)
     return w->handleMouseClicks(x - (w->getAbsX() - _x),
-                                y - (w->getAbsY() - _y), button);
+                                y - (w->getAbsY() - _y), b);
   else
     return false;
 }

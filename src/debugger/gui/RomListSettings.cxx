@@ -123,12 +123,12 @@ void RomListSettings::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListSettings::handleMouseDown(int x, int y, int button, int clickCount)
+void RomListSettings::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Close dialog if mouse click is outside it (simulates a context menu)
   // Otherwise let the base dialog class process it
   if(x >= 0 && x < _w && y >= 0 && y < _h)
-    Dialog::handleMouseDown(x, y, button, clickCount);
+    Dialog::handleMouseDown(x, y, b, clickCount);
   else
     close();
 }

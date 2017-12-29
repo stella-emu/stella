@@ -400,14 +400,14 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseEntered(int button)
+void ButtonWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseLeft(int button)
+void ButtonWidget::handleMouseLeft()
 {
   clearFlags(WIDGET_HILITED);
   setDirty();
@@ -423,7 +423,7 @@ bool ButtonWidget::handleEvent(Event::Type e)
   {
     case Event::UISelect:
       // Simulate mouse event
-      handleMouseUp(0, 0, 1, 0);
+      handleMouseUp(0, 0, MouseButton::LEFT, 0);
       return true;
     default:
       return false;
@@ -431,7 +431,7 @@ bool ButtonWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
@@ -572,21 +572,21 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseEntered(int button)
+void CheckboxWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseLeft(int button)
+void CheckboxWidget::handleMouseLeft()
 {
   clearFlags(WIDGET_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void CheckboxWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)
   {
@@ -728,7 +728,7 @@ void SliderWidget::setStepValue(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseMoved(int x, int y, int button)
+void SliderWidget::handleMouseMoved(int x, int y)
 {
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
@@ -737,17 +737,17 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void SliderWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if(isEnabled())
+  if(isEnabled() && b == MouseButton::LEFT)
   {
     _isDragging = true;
-    handleMouseMoved(x, y, button);
+    handleMouseMoved(x, y);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void SliderWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && _isDragging)
     sendCommand(_cmd, _value, _id);

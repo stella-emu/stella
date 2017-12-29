@@ -34,7 +34,7 @@ class RadioButtonWidget : public CheckboxWidget
                       const string& label, RadioButtonGroup* group,
                       int cmd = 0);
 
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void setState(bool state, bool send = true);
 
   protected:

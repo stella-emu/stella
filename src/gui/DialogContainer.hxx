@@ -77,11 +77,10 @@ class DialogContainer
     /**
       Handle a mouse motion event.
 
-      @param x      The x location
-      @param y      The y location
-      @param button The currently pressed button
+      @param x  The x location
+      @param y  The y location
     */
-    void handleMouseMotionEvent(int x, int y, int button);
+    void handleMouseMotionEvent(int x, int y);
 
     /**
       Handle a mouse button event.
@@ -174,7 +173,7 @@ class DialogContainer
     struct {
       int x;
       int y;
-      int button;
+      MouseButton b;
     } myCurrentMouseDown;
     uInt64 myClickRepeatTime;
 

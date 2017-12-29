@@ -66,8 +66,8 @@ class ToggleWidget : public Widget, public CommandSender
     void drawWidget(bool hilite) override = 0;
     int findItem(int x, int y);
 
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

@@ -648,7 +648,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel, int button)
+void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == EventHandlerState::EMULATION)
@@ -661,7 +661,7 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel, int 
     mySkipMouseMotion = false;
   }
   else if(myOverlay)
-    myOverlay->handleMouseMotionEvent(x, y, button);
+    myOverlay->handleMouseMotionEvent(x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

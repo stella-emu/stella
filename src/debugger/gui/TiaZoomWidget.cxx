@@ -102,18 +102,18 @@ void TiaZoomWidget::recalc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Button 1 is for 'drag'/movement of the image
   // Button 2 is for context menu
-  if(button == 1)
+  if(b == MouseButton::LEFT)
   {
     // Indicate mouse drag started/in progress
     myMouseMoving = true;
     myXClick = x;
     myYClick = y;
   }
-  else if(button == 2)
+  else if(b == MouseButton::RIGHT)
   {
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY());
@@ -121,7 +121,7 @@ void TiaZoomWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void TiaZoomWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   myMouseMoving = false;
 }
@@ -136,7 +136,7 @@ void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseMoved(int x, int y, int button)
+void TiaZoomWidget::handleMouseMoved(int x, int y)
 {
   // TODO: Not yet working - finish for next release
 #if 0
@@ -165,7 +165,7 @@ void TiaZoomWidget::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseLeft(int button)
+void TiaZoomWidget::handleMouseLeft()
 {
   myMouseMoving = false;
 }

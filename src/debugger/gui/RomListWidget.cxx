@@ -238,13 +238,13 @@ void RomListWidget::scrollToCurrent(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
     return;
 
   // Grab right mouse button for context menu, left for selection/edit mode
-  if(button == 2)
+  if(b == MouseButton::RIGHT)
   {
     // Set selected and add menu at current x,y mouse location
     _selectedItem = findItem(x, y);
@@ -270,7 +270,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void RomListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command

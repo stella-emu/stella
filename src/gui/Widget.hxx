@@ -68,13 +68,13 @@ class Widget : public GuiObject
     virtual bool handleText(char text)                        { return false; }
     virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }
     virtual bool handleKeyUp(StellaKey key, StellaMod mod)    { return false; }
-    virtual void handleMouseDown(int x, int y, int button, int clickCount) { }
-    virtual void handleMouseUp(int x, int y, int button, int clickCount) { }
-    virtual void handleMouseEntered(int button) { }
-    virtual void handleMouseLeft(int button) { }
-    virtual void handleMouseMoved(int x, int y, int button) { }
+    virtual void handleMouseDown(int x, int y, MouseButton b, int clickCount) { }
+    virtual void handleMouseUp(int x, int y, MouseButton b, int clickCount) { }
+    virtual void handleMouseEntered() { }
+    virtual void handleMouseLeft() { }
+    virtual void handleMouseMoved(int x, int y) { }
     virtual void handleMouseWheel(int x, int y, int direction) { }
-    virtual bool handleMouseClicks(int x, int y, int button) { return false; }
+    virtual bool handleMouseClicks(int x, int y, MouseButton b) { return false; }
     virtual void handleJoyDown(int stick, int button) { }
     virtual void handleJoyUp(int stick, int button) { }
     virtual void handleJoyAxis(int stick, int axis, int value) { }
@@ -226,9 +226,9 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     int getCmd() const    { return _cmd; }
 
   protected:
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
-    void handleMouseEntered(int button) override;
-    void handleMouseLeft(int button) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
     bool handleEvent(Event::Type event) override;
 
     void drawWidget(bool hilite) override;
@@ -267,9 +267,9 @@ class CheckboxWidget : public ButtonWidget
     void toggleState()     { setState(!_state); }
     bool getState() const  { return _state;     }
 
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
-    void handleMouseEntered(int button) override;
-    void handleMouseLeft(int button) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
 
     static int boxSize() { return 14; }  // box is square
 
@@ -315,9 +315,9 @@ class SliderWidget : public ButtonWidget
     int  getStepValue() const     { return _stepValue; }
 
   protected:
-    void handleMouseMoved(int x, int y, int button) override;
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type event) override;
 

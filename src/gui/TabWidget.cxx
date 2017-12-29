@@ -171,7 +171,7 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   assert(y < _tabHeight);
 
@@ -194,14 +194,14 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseEntered(int button)
+void TabWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseLeft(int button)
+void TabWidget::handleMouseLeft()
 {
   clearFlags(WIDGET_HILITED);
   setDirty();

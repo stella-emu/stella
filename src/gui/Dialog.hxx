@@ -86,11 +86,11 @@ class Dialog : public GuiObject
     virtual void handleText(char text);
     virtual void handleKeyDown(StellaKey key, StellaMod modifiers);
     virtual void handleKeyUp(StellaKey key, StellaMod modifiers);
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual void handleMouseDown(int x, int y, MouseButton b, int clickCount);
+    virtual void handleMouseUp(int x, int y, MouseButton b, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
-    virtual void handleMouseMoved(int x, int y, int button);
-    virtual bool handleMouseClicks(int x, int y, int button);
+    virtual void handleMouseMoved(int x, int y);
+    virtual bool handleMouseClicks(int x, int y, MouseButton b);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);

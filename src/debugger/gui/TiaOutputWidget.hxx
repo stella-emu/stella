@@ -42,7 +42,7 @@ class TiaOutputWidget : public Widget, public CommandSender
 // For example, clicking an area may cause an action
 // (fill to this scanline, etc).
 /*
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
@@ -58,7 +58,7 @@ class TiaOutputWidget : public Widget, public CommandSender
     uInt32 myLineBuffer[320];
 
   private:
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;

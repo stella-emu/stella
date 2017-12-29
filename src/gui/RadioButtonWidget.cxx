@@ -173,7 +173,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RadioButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void RadioButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)
   {

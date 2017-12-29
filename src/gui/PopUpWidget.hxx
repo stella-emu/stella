@@ -62,11 +62,11 @@ class PopUpWidget : public Widget, public CommandSender
     bool wantsFocus() const override { return true; }
 
   protected:
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
 #ifdef FLAT_UI
-    void handleMouseEntered(int button) override;
-    void handleMouseLeft(int button) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
 #endif
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

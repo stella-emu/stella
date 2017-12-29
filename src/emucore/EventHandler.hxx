@@ -304,7 +304,7 @@ class EventHandler
     */
     void handleTextEvent(char text);
     void handleKeyEvent(StellaKey key, StellaMod mod, bool state);
-    void handleMouseMotionEvent(int x, int y, int xrel, int yrel, int button);
+    void handleMouseMotionEvent(int x, int y, int xrel, int yrel);
     void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
     void handleJoyEvent(int stick, int button, uInt8 state);
     void handleJoyAxisEvent(int stick, int axis, int value);

@@ -112,7 +112,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaInfoWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void TiaInfoWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
 //cerr << "TiaInfoWidget button press: x = " << x << ", y = " << y << endl;
 }

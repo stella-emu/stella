@@ -45,12 +45,12 @@ class ScrollBarWidget : public Widget, public CommandSender
     void drawWidget(bool hilite) override;
     void checkBounds(int old_pos);
 
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
-    void handleMouseMoved(int x, int y, int button) override;
-    bool handleMouseClicks(int x, int y, int button) override;
-    void handleMouseEntered(int button) override;
-    void handleMouseLeft(int button) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
+    bool handleMouseClicks(int x, int y, MouseButton b) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
 
   public:
     int _numEntries;
