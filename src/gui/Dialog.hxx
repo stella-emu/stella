@@ -79,6 +79,10 @@ class Dialog : public GuiObject
     */
     void addSurface(shared_ptr<FBSurface> surface);
 
+    void setFlags(int flags) { _flags |= flags;  setDirty(); }
+    void clearFlags(int flags) { _flags &= ~flags; setDirty(); }
+    int  getFlags() const { return _flags; }
+
   protected:
     virtual void draw() override { }
     void releaseFocus() override;
@@ -165,6 +169,7 @@ class Dialog : public GuiObject
     shared_ptr<FBSurface> _surface;
 
     int _tabID;
+    int _flags;
 
   private:
     // Following constructors and assignment operators not supported

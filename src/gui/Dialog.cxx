@@ -49,7 +49,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
     _visible(false),
     _processCancel(false),
     _surface(nullptr),
-    _tabID(0)
+    _tabID(0),
+    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
 {
 }
 
@@ -269,12 +270,14 @@ void Dialog::drawDialog()
 
   if(_dirty)
   {
-//    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-    s.fillRect(_x, _y, _w, _h, kDlgColor);
+    if(_flags & WIDGET_CLEARBG)
+      //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
+      s.fillRect(_x, _y, _w, _h, kDlgColor);
+    if(_flags & WIDGET_BORDER)
 #ifndef FLAT_UI
-    s.box(_x, _y, _w, _h, kColor, kShadowColor);
+      s.box(_x, _y, _w, _h, kColor, kShadowColor);
 #else
-    s.frameRect(_x, _y, _w, _h, kColor);
+      s.frameRect(_x, _y, _w, _h, kColor);
 #endif // !FLAT_UI
 
     // Make all child widget dirty

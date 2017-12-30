@@ -37,6 +37,30 @@ class TimeMachineDialog : public Dialog
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center() override;
 
+    void handleWinds(Int32 numWinds = 0);
+
+  private:
+    enum
+    {
+      kPause     = 'TMps',
+      kPlay      = 'TMpl',
+      kRewindAll = 'TMra',
+      kRewind10  = 'TMr1',
+      kRewind1   = 'TMre',
+      kUnwindAll = 'TMua',
+      kUnwind10  = 'TMu1',
+      kUnwind1   = 'TMun',
+    };
+
+    ButtonWidget* myPauseWidget;
+    ButtonWidget* myPlayWidget;
+    ButtonWidget* myRewindAllWidget;
+    ButtonWidget* myRewind10Widget;
+    ButtonWidget* myRewind1Widget;
+    ButtonWidget* myUnwind1Widget;
+    ButtonWidget* myUnwind10Widget;
+    ButtonWidget* myUnwindAllWidget;
+
   private:
     // Following constructors and assignment operators not supported
     TimeMachineDialog() = delete;
