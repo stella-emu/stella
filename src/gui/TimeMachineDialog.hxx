@@ -37,6 +37,9 @@ class TimeMachineDialog : public Dialog
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center() override;
 
+    /** convert cycles into time */
+    string getTimeString(uInt64 cycles);
+    /** re/unwind and update display */
     void handleWinds(Int32 numWinds = 0);
 
   private:
@@ -60,6 +63,13 @@ class TimeMachineDialog : public Dialog
     ButtonWidget* myUnwind1Widget;
     ButtonWidget* myUnwind10Widget;
     ButtonWidget* myUnwindAllWidget;
+
+    StaticTextWidget* myCurrentTimeWidget;
+    StaticTextWidget* myLastTimeWidget;
+
+    StaticTextWidget* myCurrentIdxWidget;
+    StaticTextWidget* myLastIdxWidget;
+    StaticTextWidget* myMessageWidget;
 
   private:
     // Following constructors and assignment operators not supported

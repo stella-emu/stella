@@ -24,7 +24,17 @@
 #include "Widget.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
+
+
+#include "Console.hxx"
+#include "TIA.hxx"
+#include "System.hxx"
+
+
 #include "TimeMachineDialog.hxx"
+#include "Base.hxx"
+using Common::Base;
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
@@ -188,17 +198,19 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   xpos = H_BORDER;
   ypos = V_BORDER;
 
-  // Add frame info
-  new StaticTextWidget(this, font, xpos, ypos, "04:32 190");
-
-  new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("XX:XX XXX"), ypos, "12:25 144");
-
+  // Add index info
+  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ");
+  myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos,
+                                         "    ", TextAlign::Right);
   ypos += rowHeight;
 
-  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 3, "999");
-  new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos + 3, "1000");
-  xpos = t->getRight() + 16;
+  // Add time info
+  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59");
+  myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("XX:XX XX"), ypos + 3,
+                                          "12:25 59");
+  xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
+  // Add buttons
   myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_ALL,
                                        BUTTON_W, BUTTON_H, kRewindAll);
   wid.push_back(myRewindAllWidget);
@@ -236,7 +248,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
                                        BUTTON_W, BUTTON_H, kUnwindAll);
   wid.push_back(myUnwindAllWidget);
-  xpos += buttonWidth + BUTTON_GAP;
+  xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 3;
+
+  // Add message
+  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -252,6 +267,7 @@ void TimeMachineDialog::center()
 void TimeMachineDialog::loadConfig()
 {
   handleWinds();
+  myMessageWidget->setLabel("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -294,20 +310,51 @@ cerr << cmd << endl;
   }
 }
 
+string TimeMachineDialog::getTimeString(uInt64 cycles)
+{
+  const Int32 scanlines = std::max(instance().console().tia().scanlinesLastFrame(), 240u);
+  const bool isNTSC = scanlines <= 287;
+  const Int32 NTSC_FREQ = 1193182; // ~76*262*60
+  const Int32 PAL_FREQ = 1182298; // ~76*312*50
+  const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
+
+  uInt32 minutes = cycles / (freq * 60);
+  cycles -= minutes * (freq * 60);
+  uInt32 seconds = cycles / freq;
+  cycles -= seconds * freq;
+  uInt32 frames = cycles / (scanlines * 76);
+
+  stringstream time;
+  time << Common::Base::toString(minutes, Common::Base::F_10_2) << ":";
+  time << Common::Base::toString(seconds, Common::Base::F_10_2) << ".";
+  time << Common::Base::toString(frames, Common::Base::F_10_2);
+
+  return time.str();
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::handleWinds(Int32 numWinds)
 {
   RewindManager& r = instance().state().rewindManager();
 
-  if(numWinds < 0)
-    r.rewindState(-numWinds);
-  else if(numWinds > 0)
-    r.unwindState(numWinds);
+  if(numWinds)
+  {
+    uInt64 startCycles = instance().console().tia().cycles();
+    uInt32 winds = numWinds < 0 ? r.rewindState(-numWinds) : r.unwindState(numWinds);
+    string message = r.getUnitString(instance().console().tia().cycles() - startCycles);
 
+    myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
+  }
+  // Update time
+  myCurrentTimeWidget->setLabel(getTimeString(r.getCurrentCycles() - r.getFirstCycles()));
+  myLastTimeWidget->setLabel(getTimeString(r.getLastCycles() - r.getFirstCycles()));
+  // Update index
+  myCurrentIdxWidget->setValue(r.getCurrentIdx());
+  myLastIdxWidget->setValue(r.getLastIdx());
+  // enable/disable buttons
   myRewindAllWidget->setEnabled(!r.atFirst());
   myRewind10Widget->setEnabled(!r.atFirst());
   myRewind1Widget->setEnabled(!r.atFirst());
-
   myUnwindAllWidget->setEnabled(!r.atLast());
   myUnwind10Widget->setEnabled(!r.atLast());
   myUnwind1Widget->setEnabled(!r.atLast());

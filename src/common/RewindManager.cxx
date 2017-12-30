@@ -21,6 +21,7 @@
 #include "Serializer.hxx"
 #include "StateManager.hxx"
 #include "TIA.hxx"
+#include "EventHandler.hxx"
 
 #include "RewindManager.hxx"
 
@@ -170,7 +171,8 @@ uInt32 RewindManager::rewindState(uInt32 numStates)
   else
     message = "Rewind not possible";
 
-  myOSystem.frameBuffer().showMessage(message);
+  if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE)
+    myOSystem.frameBuffer().showMessage(message);
   return i;
 }
 
@@ -203,7 +205,8 @@ uInt32 RewindManager::unwindState(uInt32 numStates)
   else
     message = "Unwind not possible";
 
-  myOSystem.frameBuffer().showMessage(message);
+  if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE)
+    myOSystem.frameBuffer().showMessage(message);
   return i;
 }
 
@@ -276,7 +279,7 @@ string RewindManager::loadState(Int64 startCycles, uInt32 numStates)
 string RewindManager::getUnitString(Int64 cycles)
 {
   const Int32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
-  const bool isNTSC = scanlines <= 285; // TODO: replace magic number
+  const bool isNTSC = scanlines <= 287;
   const Int32 NTSC_FREQ = 1193182; // ~76*262*60
   const Int32 PAL_FREQ = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
@@ -304,3 +307,27 @@ string RewindManager::getUnitString(Int64 cycles)
 
   return result.str();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 RewindManager::getFirstCycles()
+{
+  // TODO: check if valid
+  return Common::LinkedObjectPool<RewindState>::const_iter(myStateList.first())->cycles;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 RewindManager::getCurrentCycles()
+{
+  if(myStateList.currentIsValid())
+    return myStateList.current().cycles;
+  else
+    return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 RewindManager::getLastCycles()
+{
+  // TODO: check if valid
+  return Common::LinkedObjectPool<RewindState>::const_iter(myStateList.last())->cycles;
+}
+

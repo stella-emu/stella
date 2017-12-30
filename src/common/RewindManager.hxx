@@ -133,6 +133,13 @@ class RewindManager
     */
     string getUnitString(Int64 cycles);
 
+    uInt32 getCurrentIdx() { return myStateList.currentIdx(); }
+    uInt32 getLastIdx() { return myStateList.size(); }
+
+    uInt32 getFirstCycles();
+    uInt32 getCurrentCycles();
+    uInt32 getLastCycles();
+
   private:
     OSystem& myOSystem;
     StateManager& myStateManager;
