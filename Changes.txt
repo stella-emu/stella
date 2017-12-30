@@ -34,8 +34,8 @@
     information).  In the case of 'saveses', the filename is now named
     based on the date and time of when the command was entered.
 
-	* Fixed change tracking bug during rewind; changes were accumulated
-	  instead of being displayed only for the last rewind step.
+  * Fixed change tracking bug during rewind; changes were accumulated
+    instead of being displayed only for the last rewind step.
 
   * Fixed bug with saving snapshots in 1x mode; there was graphical
     corruption in some cases.  Such snapshots also now include any TV
@@ -89,8 +89,8 @@
   * Extended debugger 'dump' command to take a second argument, indicating
     the end of the range to dump data.
 
-	* Improved change tracking; more values are tracked and change tracking
-	  now works in case of a break too.
+  * Improved change tracking; more values are tracked and change tracking
+    now works in case of a break too.
 
   * Added widgets for trackball and SaveKey/AtariVox controllers
 
@@ -99,7 +99,7 @@
     real thing).  Related to this, improved the debugger support for this
     scheme (you can now switch banks in the debugger view).
 
-	* Added emulation of 7800 initial RAM values and Pause key.
+  * Added emulation of 7800 initial RAM values and Pause key.
 
   * Added ROM properties for 'Scramble' ROMs, and updated info for all
     "Champ Games" ROMs.
