@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-5.0.2 to 5.1: (December xx, 2017)
+5.0.2 to 5.1: (January xx, 2018)
 
   * Huge improvements to the disassembly view in the debugger and
     disassembly files created:
@@ -68,14 +68,14 @@
 
   * Fixed swapped ports being displayed wrong in System Logs and debugger.
 
-  * Added options to erase the AtariVox/Savekey for all ROMs or the current
-    one.
+  * Added options to erase the AtariVox/Savekey flash memory, either for
+    all ROMs or only the current one.
 
   * Moved various developer related settings in new Developer Settings
     dialog. These settings now come in two groups (player/developer) and
     allow switching all settings at once.
 
-  * added new interface palette 'Light'
+  * Added new interface palette 'Light'
 
   * Improved tab auto-complete in debugger
 
@@ -103,6 +103,9 @@
   * Extended debugger 'dump' command to take a second argument, indicating
     the end of the range to dump data.
 
+	* Improved change tracking; more values are tracked and change tracking
+	  now works in case of a break too.
+
   * Added widgets for trackball and SaveKey/AtariVox controllers
 
   * Improved emulation of 'FE' bankswitch scheme (no user-visible changes,
@@ -110,13 +113,16 @@
     real thing).  Related to this, improved the debugger support for this
     scheme (you can now switch banks in the debugger view).
 
+	* Added emulation of 7800 initial RAM values and Pause key.
+
   * Added ROM properties for 'Scramble' ROMs, and updated info for all
     "Champ Games" ROMs.
 
   * Added ROM properties for 'Zippy the Porcupine' ROMs, and updated
     info for all "Chris Spry (Sprybug)" ROMs.
 
-  * Fix error when building with uClibc-ng for ARM (thanks to Sergio Prado).
+  * Fixed error when building with uClibc-ng for ARM (thanks to Sergio
+    Prado).
 
   * Updated included PNG library to latest stable version.
 
@@ -2102,11 +2108,14 @@
   * Fixed crash which sometimes occurred when viewing snapshots in the
     ROM Info viewer.
 
-  * Allow setting window sizes for the ROM launcher and debugger to be larger
-    than your desktop resolution.  Be careful with this feature, as switching
+  * Allow setting window sizes for the ROM launcher and debugger to be
+  larger
+    than your desktop resolution.  Be careful with this feature, as
+    switching
     to fullscreen mode may cause problems in such cases.
 
-  * Made the ROM launcher filename filtering be case-insensitive.  This fixes
+  * Made the ROM launcher filename filtering be case-insensitive.  This
+  fixes
     a bug whereby ROMs with uppercase extensions were marked as invalid.
 
   * Added a pattern matching textbox to the ROM launcher, used to
@@ -2180,7 +2189,8 @@
     the current directory and '~/' (or '~\') to mean your home directory
     (for Windows, home directory will be your 'My Documents' folder).
 
-  * Large speedup in loading directories with many files in the ROM launcher.
+  * Large speedup in loading directories with many files in the ROM
+  launcher.
 
   * Fixed reset issue in 3E, 4A50, AR, CV, E7, F4SC, F6SC, F8SC, FASC and MC
     ROMs; the internal RAM wasn't being randomized after the initial reset.
@@ -2220,7 +2230,8 @@
     'tia_filter' (which can be zoom1x, zoom2x, etc).  There is no equivalent
     for ui_zoom, since the UI can no longer be scaled.
 
-  * Added experimental 64-bit version for Vista64 (may also work on WinXP64).
+  * Added experimental 64-bit version for Vista64 (may also work on
+  WinXP64).
     This hasn't been extensively tested, and is probably quite a bit slower
     than the 32-bit version.
 
@@ -2228,7 +2239,8 @@
     but I no longer have access to older systems to compile for 10.2.
 
   * Huge updates to the documentation, particularly concerning the debugger.
-    Many features that have been in Stella for a while are now documented for
+    Many features that have been in Stella for a while are now documented
+    for
     the first time.
 
 
@@ -2305,7 +2317,8 @@
   * Added TIA emulation fixes for graphical glitches in Escape from the
     Mindmaster, Mission Survive, Solaris, and SWOOPS!
 
-  * Fixed bug where fullscreen OpenGL scaling wasn't working on 4:3 monitors.
+  * Fixed bug where fullscreen OpenGL scaling wasn't working on 4:3
+  monitors.
 
   * Further improvements to the M6532/RIOT emulation, which unfortunately
     have broken old state files (again).
@@ -2333,9 +2346,11 @@
     the ROM to be frozen afterwords.
 
   * Removed logic whereby starting a ROM from something other than the
-    built-in launcher wouldn't allow the user to go back to the ROM launcher.
+    built-in launcher wouldn't allow the user to go back to the ROM
+    launcher.
 
-  * Fixed bug (hopefully) with the app icon not showing on the Stella window.
+  * Fixed bug (hopefully) with the app icon not showing on the Stella
+  window.
     Further testing is needed, since I can't duplicate the error myself.
 
   * Fixed default snapshot folder issues; the folder will now be
@@ -2353,16 +2368,19 @@
 2.4.2 to 2.5: (March 28, 2008)
 
   * Added RomInfo widget to the ROM launcher, which shows properties
-    information and a snapshot of the currently selected ROM.  Updated the UI
+    information and a snapshot of the currently selected ROM.  Updated the
+    UI
     and added '-romviewer' commandline argument to activate this setting.
-    Note that the ROM launcher will have to be sized at least 640x480 for this
+    Note that the ROM launcher will have to be sized at least 640x480 for
+    this
     to be used.  Also note that the snapshots must be in 1x mode with a
     maximum size of 320x260.  This will be expanded on in a future release.
 
   * Added ROM audit functionality, whereby ROMs can be physically renamed
     according to their properties' name.
 
-  * Added bankswitching support for 0840, SB, X07 and 4A50.  A special thanks
+  * Added bankswitching support for 0840, SB, X07 and 4A50.  A special
+  thanks
     to Eckhard Stolberg for much help in this area.
 
   * Removed "non-browse" functionality from the ROM launcher; it now always
@@ -2383,7 +2401,8 @@
     have to start a ROM to do so.
 
   * Added support for configurable font to ROM launcher (currently only
-    'small' and 'large').  Updated the UI and added -launcherfont' commandline
+    'small' and 'large').  Updated the UI and added -launcherfont'
+    commandline
     argument to change this setting.
 
   * Added SECAM, NTSC50, PAL60 and SECAM60 to the list of formats that can
@@ -2406,7 +2425,8 @@
     from DASM for proper functionality.
 
   * Updated state file format, creating smaller files (and in preparation
-    for state rewinding in a future release).  Old state saves will no longer
+    for state rewinding in a future release).  Old state saves will no
+    longer
     work.
 
   * Added '-bs' commandline argument, which is an alias for '-type' (which
@@ -2461,13 +2481,16 @@
 
   * Re-added non-browser mode to the ROM launcher.
 
-  * For the Linux/UNIX port; fixed OpenGL vsync issue with Nvidia video cards.
+  * For the Linux/UNIX port; fixed OpenGL vsync issue with Nvidia video
+  cards.
 
 
 2.3.5 to 2.4: (August 20, 2007)
 
-  * Added new video sub-system where fullscreen and windowed modes are treated
-    differently.  Windowed modes now use '-zoom_tia' and '-zoom_ui' arguments,
+  * Added new video sub-system where fullscreen and windowed modes are
+  treated
+    differently.  Windowed modes now use '-zoom_tia' and '-zoom_ui'
+    arguments,
     while fullscreen modes can be specified by resolution using the new
     '-fullres' argument.
 
@@ -2504,8 +2527,10 @@
   * Removed OpenGL aspect ratio setting favour of the previously mentioned
     video changes.  We'll see how this goes.
 
-  * Removed dirty-rect support from software rendering, since it was actually
-    sub-optimal in Windows and OSX and defaulted to off in previous versions.
+  * Removed dirty-rect support from software rendering, since it was
+  actually
+    sub-optimal in Windows and OSX and defaulted to off in previous
+    versions.
 
   * Added support for gzipped ROMs.
 
@@ -2521,7 +2546,8 @@
   * Removed PSP support, since it hasn't been updated in over a year, and
     someone else is maintaining another port elsewhere.
 
-  * For the Unix/Linux port; fixed 'make install' issues, and changed icon to
+  * For the Unix/Linux port; fixed 'make install' issues, and changed icon
+  to
     PNG format.
 
 
@@ -2554,18 +2580,22 @@
     Related to this, added 'colorloss' commandline argument.
 
   * Added rudimentary support for configuring the UI palette ('uipalette'
-    commandline argument) and ability to change the size of the launcher window
-    ('launchersize' commandline argument).  This will be expanded on in future
+    commandline argument) and ability to change the size of the launcher
+    window
+    ('launchersize' commandline argument).  This will be expanded on in
+    future
     releases.
 
   * Reworked options menu so it's now accessible from the ROM launcher as
     well as while playing a ROM.
 
-  * Re-added ability to change the width and height of a Console.  Related to
+  * Re-added ability to change the width and height of a Console.  Related
+  to
     this, changing XStart/YStart/Width/Height dynamically no longer resets
     the ROM.
 
-  * Removed 'tiadefaults' commandline argument, since Stella will now default
+  * Removed 'tiadefaults' commandline argument, since Stella will now
+  default
     to using accurate positioning, and not use 'tweaks'.
 
   * Joystick code now allows all 4 directions; 'Bumper Bash' now works
@@ -2576,14 +2606,16 @@
 
   * Reworked GUI code, so that all dialog boxes are automatically centered.
 
-  * Added 'rominfo' commandline argument, which prints some detailed info for
+  * Added 'rominfo' commandline argument, which prints some detailed info
+  for
     a ROM.
 
   * For the OSX port; fixed crashes in OpenGL mode.
 
   * For the GP2X port; some improvements to the sound code.
 
-  * For the GP2X port; added vertical centering of the TIA image (when possible).
+  * For the GP2X port; added vertical centering of the TIA image (when
+  possible).
 
 
 2.2 to 2.3: (December 22, 2006)
@@ -2598,7 +2630,8 @@
 
   * For UI navigation, changed from using 'joymouse' to the more familiar
     'tabbing' functionality, where you move from object to object by use of
-    some tab key.  As a result, completely removed the 'joymouse' commandline
+    some tab key.  As a result, completely removed the 'joymouse'
+    commandline
     argument and all associated functionality.
 
   * Added event remapping for UI events, separate from events while in
@@ -2608,7 +2641,8 @@
     but run at NTSC timing (60Hz).  Added ROM property for this, and updated
     the internal properties database for many PAL60 ROMs.
 
-  * Added support for user-definable palettes.  For now, only one extra palette
+  * Added support for user-definable palettes.  For now, only one extra
+  palette
     is supported, but in the future we may have them specified per-ROM.
 
   * Fixed bug in PAL colour-loss emulation, which wasn't actually being done
@@ -2617,8 +2651,10 @@
   * Fixed several TIA-related emulation bugs as reported on AtariAge.  More
     fixes will come with the TIA rewrite, due in the next release.
 
-  * Added new scaler infrastructure, replacing the '-zoom' commandline argument
-    with '-scale_ui' and '-scale_tia'.  This means the UI and emulation can now
+  * Added new scaler infrastructure, replacing the '-zoom' commandline
+  argument
+    with '-scale_ui' and '-scale_tia'.  This means the UI and emulation can
+    now
     be scaled independently.
 
   * Added '-gl_vsync' commandline argument and associated UI elements, which
@@ -2635,7 +2671,8 @@
     succession.
 
   * Added a 'Previous directory' entry to the top of each listing while
-    in ROM Browse mode, which is equivalent to the 'Go Up' button.  This makes
+    in ROM Browse mode, which is equivalent to the 'Go Up' button.  This
+    makes
     it easier to navigate the filesystem, since you never have to 'tab out'
     of the ROM listing.
 
@@ -2643,11 +2680,13 @@
     longer have to use the commandline to set those options.
 
   * Added new property to ROM properties specifying whether to swap paddles
-    plugged into a virtual port.  This eliminates the need to manually set the
+    plugged into a virtual port.  This eliminates the need to manually set
+    the
     paddle mode for those ROMs that don't use paddle zero by default.
 
   * Added a 'Defaults' button to the Game Properties dialog, which resets
-    the ROM properties to the internal defaults, deleting that ROMs properties
+    the ROM properties to the internal defaults, deleting that ROMs
+    properties
     from the external properties file.
 
   * Fixed bug whereby modified ROM properties weren't being reloaded when
@@ -2657,7 +2696,8 @@
     set per-ROM.
 
   * Added support for relocating the base Stella directory, by setting the
-    environment variable 'STELLA_BASEDIR'.  This must be done each time before
+    environment variable 'STELLA_BASEDIR'.  This must be done each time
+    before
     Stella starts.
 
   * Added '-fastscbios' commandline argument, which speeds up loading of
@@ -2673,7 +2713,8 @@
   * Updated configure/build toolchain so patching is no longer required for
     Debian packages.
 
-  * Removed dependency on PNG library (PNG snapshots are still present, but the
+  * Removed dependency on PNG library (PNG snapshots are still present, but
+  the
     actual library is no longer required).
 
   * For the OSX port, improved OpenGL performance on Mac Mini using Intel
@@ -2755,7 +2796,8 @@
 
   * Added phosphor effect, similar to z26.  Useful on ROMs which alternate
     sprites from one frame to another, resulting in an annoying flicker.
-    When using phosphor mode, a pixels colour is mixed with its previous value,
+    When using phosphor mode, a pixels colour is mixed with its previous
+    value,
     resulting in a blended image that doesn't flicker, emulating the
     phosphoresence effect on a real television.
 
@@ -2786,7 +2828,8 @@
 
   * Added mapping of multiple SDL joystick axis to Event Mapping.
 
-  * Added joystick hat support, and mapping of multiple hats to Event Mapping.
+  * Added joystick hat support, and mapping of multiple hats to Event
+  Mapping.
 
   * Added remapping of paddle emulation to the keyboard or joystick axis
     (the mouse is still used by default for paddles).  Related to this,
@@ -2822,7 +2865,8 @@
 
 2.0 to 2.0.1: (October 24, 2005)
 
-  * Added 'dirtyrects' support, which speeds up rendering for some Windows users.
+  * Added 'dirtyrects' support, which speeds up rendering for some Windows
+  users.
 
   * Fixed bug where taking snapshots would fail if the snapshot directory
     wasn't specified.
@@ -2837,12 +2881,14 @@
     'Untitled' in the Stella window or when taking snapshots.  The actual
     ROM name is now used.
 
-  * Changed minimum height of debugger to be 27 lines in the prompt, or approx.
+  * Changed minimum height of debugger to be 27 lines in the prompt, or
+  approx.
     700 pixels high.  This should make using the debugger easier for users
     with lower resolution monitors.  Related to this, the RomWidget now uses
     all possible vertical space when changing the debugger height.
 
-  * Fixed bug related to upgrading Stella and event mappings being incorrect.
+  * Fixed bug related to upgrading Stella and event mappings being
+  incorrect.
     Stella now detects this, and uses the default mappings.  So upgrading
     to version 2.0.1 means your event mappings will be reset.
 
@@ -2860,12 +2906,15 @@
 
 1.4.2 to 2.0: (October 16, 2005)
 
-  * Added integrated GUI.  Stella is now a fully graphical application, and all
-    settings can be changed dynamically while the application is running.  That
+  * Added integrated GUI.  Stella is now a fully graphical application, and
+  all
+    settings can be changed dynamically while the application is running.
+    That
     means the commandline is no longer required (but support is still there
     for those who want to use it).
 
-  * Added ROM launcher.  You can now exit a game and start playing another one
+  * Added ROM launcher.  You can now exit a game and start playing another
+  one
     from directly within Stella (you no longer have to quit Stella and
     restart it).
 
@@ -2878,7 +2927,8 @@
     usable.
 
   * Added new sound subsystem, which is much faster and more accurate.
-    Related to this, added stereo sound output (used by some homebrew games).
+    Related to this, added stereo sound output (used by some homebrew
+    games).
 
   * Added ZIP support.  Stella can now open ROM's compressed in zip
     format.
@@ -2969,21 +3019,25 @@
 
 1.4.1 to 1.4.2: (February 19, 2005)
 
-  * Updated the sound system. All popping and cracking sounds that previously
+  * Updated the sound system. All popping and cracking sounds that
+  previously
     occurred at program start/stop and when entering/exiting menu or pause
     mode have been eliminated.
 
   * Fixed the gl_fsmax argument to mean "switch to desktop resolution on
-    fullscreen OpenGL", instead of to the maximum possible resolution (the two
+    fullscreen OpenGL", instead of to the maximum possible resolution (the
+    two
     are not always the same).
 
   * Added Alt [ and Alt ] keys to dynamically adjust the sound volume during
     emulation.
 
-  * Added Control 0, Control 1, Control 2, Control 3 keys to dynamically change
+  * Added Control 0, Control 1, Control 2, Control 3 keys to dynamically
+  change
     which paddle the mouse should emulate.
 
-  * Added video_driver argument. This accepts the different options that can be
+  * Added video_driver argument. This accepts the different options that can
+  be
     specified for SDL_VIDEODRIVER (see SDL homepage for more information).
     Basically, it eliminates the need to set the SDL_VIDEODRIVER environment
     variable.
@@ -3001,30 +3055,38 @@
 
 1.4 to 1.4.1: (August 15, 2004)
 
-  * Fixed PAL sound issues.  PAL games now should sound correct (no distortion
-    or missing sounds), but some games may still run too fast.  This is still
+  * Fixed PAL sound issues.  PAL games now should sound correct (no
+  distortion
+    or missing sounds), but some games may still run too fast.  This is
+    still
     a work-in-progress, and will be fixed in Stella 1.5.
 
   * Cleaned up the SDL event gathering loop.  This should hopefully fix the
     problems with "double-pumping events" reported by some Windows users.
     Event gathering and dispatching is now much faster as well.
 
-  * Fixed a bug where the Control or Alt keys could be assigned to some event,
-    but they could never be used.  Control/Alt can now be used for any event.
+  * Fixed a bug where the Control or Alt keys could be assigned to some
+  event,
+    but they could never be used.  Control/Alt can now be used for any
+    event.
 
   * Updated stella.pro file to work with the latest Good2600 ROMset release
     (Thanks go to Voch for helping to maintain the stella.pro file).
 
-  * For the Windows port; removed requirement for ROM files to be named *.bin
-    in the StellaX frontend.  The ROM's can now have any name, but ZIP-files are
+  * For the Windows port; removed requirement for ROM files to be named
+  *.bin
+    in the StellaX frontend.  The ROM's can now have any name, but ZIP-files
+    are
     not yet supported.
 
   * For the Windows port; fixed the problems with the included modified SDL
     library and Windows 98 users.  Stella should now run in Windows 98.
 
   * For the OSX port; added preference to allow user to select the directory
-    in which ROM images are stored.  This sets the default directory to start
-    the browsing for a ROM in, and doesn't preclude the user from selecting a
+    in which ROM images are stored.  This sets the default directory to
+    start
+    the browsing for a ROM in, and doesn't preclude the user from selecting
+    a
     file outside that directory.
 
   * For the OSX port; fixed preferences bug where Preferences changed before
@@ -3056,7 +3118,8 @@
 
   * Added more refined in-game GUI.
 
-  * Added event remapping. Emulation keys can now be remapped to the keyboard
+  * Added event remapping. Emulation keys can now be remapped to the
+  keyboard
     or up to 4 joysticks.
 
   * Added native Stelladaptor support. Joysticks, paddles, and driving
@@ -3070,7 +3133,8 @@
     the current Stella palette, original Stella palette (pre-1.2 versions),
     and the z26 palette.
 
-  * Added support for UA Limited style bankswitching (Funky Fish and Pleiades).
+  * Added support for UA Limited style bankswitching (Funky Fish and
+  Pleiades).
 
   * Switched to using high compatibility M6502 mode by default. This means
     old state saves from previous Stella versions will no longer work.
@@ -3145,21 +3209,26 @@
   * Latest stella.pro file included in distribution
 
   * Added some developer options to the core, and the ability to change game
-    width, height, xstart, ystart, and others while the emulation is running.
+    width, height, xstart, ystart, and others while the emulation is
+    running.
     Added ability to switch between NTSC and PAL at runtime, and the ability
-    to save the current properties to a file or to merge the changes into the
+    to save the current properties to a file or to merge the changes into
+    the
     stella.pro file; X11 and SDL versions supported for now (compile option)
 
-  * External sound server for the X11 and SDL versions no longer required, as
+  * External sound server for the X11 and SDL versions no longer required,
+  as
     all sound code is now integrated into the core
 
-  * Changed locations of the user's config files for the X11 and SDL versions;
+  * Changed locations of the user's config files for the X11 and SDL
+  versions;
     the user's stellarc file is now located in $HOME/.stella/stellarc, state
     files are located in $HOME/.stella/state/ and the stella.pro file is
     located in $HOME/.stella/stella.pro
 
   * Changed the way options are supplied on the commandline for the X11 and
-    SDL versions. Now all commandline options take exactly the same arguments
+    SDL versions. Now all commandline options take exactly the same
+    arguments
     as in the INI file.
 
   * Added "-accurate" command line option to choose between accurate
@@ -3453,3 +3522,4 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Power Macintosh port (Aaron Giles)
 
   * Windows 95 & NT port (Jeff Miller)
+
