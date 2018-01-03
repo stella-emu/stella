@@ -181,7 +181,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   };
 
   const GUI::Font& font = instance().frameBuffer().font();
-  const int H_BORDER = 8, BUTTON_GAP = 4, V_BORDER = 4, V_GAP = 4;
+  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4, V_GAP = 4;
   const int buttonWidth = BUTTON_W + 8,
             buttonHeight = BUTTON_H + 10,
             rowHeight = font.getLineHeight();
@@ -191,9 +191,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 20 * (buttonWidth + BUTTON_GAP) + 20;
-  _h = V_BORDER * 2 + rowHeight + buttonHeight + 4;
+  _h = V_BORDER * 2 + rowHeight + buttonHeight + 2;
 
-  //this->clearFlags(WIDGET_CLEARBG); // TODO: does NOT work as expected
+  //this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending!
+  //this->clearFlags(WIDGET_BORDER);
 
   xpos = H_BORDER;
   ypos = V_BORDER;
@@ -206,6 +207,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add time info
   myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59");
+  //myCurrentTimeWidget->setFlags(WIDGET_CLEARBG);
   myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("XX:XX XX"), ypos + 3,
                                           "12:25 59");
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
@@ -230,10 +232,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                    BUTTON_W, BUTTON_H, kPause);
   wid.push_back(myPauseWidget);
   myPauseWidget->clearFlags(WIDGET_ENABLED);*/
-  myPlayWidget = new ButtonWidget(this, font, xpos, ypos - 2, buttonWidth + 4, buttonHeight + 4, PLAY,
+  myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, PLAY,
                                   BUTTON_W, BUTTON_H, kPlay);
   wid.push_back(myPlayWidget);
-  xpos += buttonWidth + BUTTON_GAP*2 + 4;
+  xpos += buttonWidth + BUTTON_GAP*2;
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
                                      BUTTON_W, BUTTON_H, kUnwind1);
@@ -266,6 +268,10 @@ void TimeMachineDialog::center()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::loadConfig()
 {
+  surface().attributes().blending = true;
+  surface().attributes().blendalpha = 80;
+  surface().applyAttributes();
+
   handleWinds();
   myMessageWidget->setLabel("");
 }
@@ -274,7 +280,7 @@ void TimeMachineDialog::loadConfig()
 void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
                                       int data, int id)
 {
-cerr << cmd << endl;
+//cerr << cmd << endl;
   switch(cmd)
   {
     case kPlay:
