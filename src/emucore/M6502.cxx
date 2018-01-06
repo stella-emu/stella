@@ -216,7 +216,7 @@ void M6502::updateStepStateByInstruction()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::execute(uInt32 number)
 {
-  const ExecuteResult result = _execute(number);
+  const bool status = _execute(number);
 
   // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
   // beginning of the next line (otherwise, the next instruction would be stepped in order for
@@ -225,20 +225,15 @@ bool M6502::execute(uInt32 number)
   handleHalt();
 
   // Make sure that the hardware state matches the current system clock. This is necessary
-  // to ensure that the state is displayed correctly in the debugger. The performance impact
-  // on emulation is negligible as M6502::execute is called only once per frame.
+  // to maintain a consistent state for the debugger after stepping.
   mySystem->tia().updateEmulation();
   mySystem->m6532().updateEmulation();
 
-#ifdef DEBUGGER_SUPPORT
-  if (result == ExecuteResult::debuggerTrap && myDebugger) myDebugger->update();
-#endif
-
-  return result != ExecuteResult::failure;
+  return status;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline M6502::ExecuteResult M6502::_execute(uInt32 number)
+inline bool M6502::_execute(uInt32 number)
 {
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
@@ -260,13 +255,13 @@ inline M6502::ExecuteResult M6502::_execute(uInt32 number)
         myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
         if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, read))
         {
-          return ExecuteResult::debuggerTrap;
+          return true;
         }
       }
 
       if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC))
         if(myDebugger && myDebugger->start("BP: ", PC))
-          return ExecuteResult::debuggerTrap;
+          return true;
 
       int cond = evalCondBreaks();
       if(cond > -1)
@@ -274,7 +269,7 @@ inline M6502::ExecuteResult M6502::_execute(uInt32 number)
         stringstream msg;
         msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
         if(myDebugger && myDebugger->start(msg.str()))
-          return ExecuteResult::debuggerTrap;
+          return true;
       }
 
       cond = evalCondSaveStates();
@@ -310,6 +305,9 @@ inline M6502::ExecuteResult M6502::_execute(uInt32 number)
 
 #ifdef DEBUGGER_SUPPORT
       if (myStepStateByInstruction) {
+        // Check out M6502::execute for an explanation.
+        handleHalt();
+
         tia.updateEmulation();
         riot.updateEmulation();
       }
@@ -328,21 +326,21 @@ inline M6502::ExecuteResult M6502::_execute(uInt32 number)
     if(myExecutionStatus & StopExecutionBit)
     {
       // Yes, so answer that everything finished fine
-      return ExecuteResult::success;
+      return true;
     }
 
     // See if a fatal error has occured
     if(myExecutionStatus & FatalErrorBit)
     {
       // Yes, so answer that something when wrong
-      return ExecuteResult::failure;
+      return false;
     }
 
     // See if we've executed the specified number of instructions
     if(number == 0)
     {
       // Yes, so answer that everything finished fine
-      return ExecuteResult::success;
+      return true;
     }
   }
 }
