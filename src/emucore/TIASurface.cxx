@@ -54,7 +54,7 @@ TIASurface::TIASurface(OSystem& system)
   // Base TIA surface for use in taking snapshots in 1x mode
   myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
 
-  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH);
+  memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
 
   // Enable/disable threading in the NTSC TV effects renderer
   myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
@@ -229,7 +229,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 
   myTiaSurface->setDirty();
   mySLineSurface->setDirty();
-  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH * 4);
+  memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
 
   // Precalculate the average colors for the 'phosphor' effect
   if(myUsePhosphor)
@@ -281,7 +281,7 @@ void TIASurface::enableNTSC(bool enable)
 
   myTiaSurface->setDirty();
   mySLineSurface->setDirty();
-  memset(myRGBFramebuffer, 0, AtariNTSC::outWidth(kTIAW) * kTIAH * 4);
+  memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
