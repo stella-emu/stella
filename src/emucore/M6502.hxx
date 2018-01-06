@@ -320,6 +320,21 @@ class M6502 : public Serializable
     */
     void updateStepStateByInstruction();
 
+    /**
+      The dispatch result.
+    */
+    enum ExecuteResult {
+      success,
+      failure,
+      debuggerTrap
+    };
+
+    /**
+      This is the actual dispatch function that does the grunt work. M6502::execute
+      wraps it and makes sure that any pending halt is processed before returning.
+    */
+    ExecuteResult _execute(uInt32 number);
+
   private:
     /**
       Bit fields used to indicate that certain conditions need to be

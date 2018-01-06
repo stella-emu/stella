@@ -240,6 +240,11 @@ class Debugger : public DialogContainer
     void lockBankswitchState();
     void unlockBankswitchState();
 
+    /**
+      Update debugger status.
+    */
+    void update();
+
   private:
     /**
       Save state of each debugger subsystem and, by default, mark all

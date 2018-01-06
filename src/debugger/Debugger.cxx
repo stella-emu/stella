@@ -782,6 +782,19 @@ void Debugger::unlockBankswitchState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::update()
+{
+  if (myDialog) {
+    myDialog->setDirty();
+
+    // loadConfig is redeclared static in DebuggerDialog, hence the cast
+    static_cast<Dialog*>(myDialog)->loadConfig();
+
+    myDialog->drawDialog();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::BuiltinFunction Debugger::ourBuiltinFunctions[NUM_BUILTIN_FUNCS] = {
   // left joystick:
   { "_joy0left",    "!(*SWCHA & $40)", "Left joystick moved left" },

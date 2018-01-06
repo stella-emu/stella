@@ -216,6 +216,30 @@ void M6502::updateStepStateByInstruction()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::execute(uInt32 number)
 {
+  const ExecuteResult result = _execute(number);
+
+  // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
+  // beginning of the next line (otherwise, the next instruction would be stepped in order for
+  // the halt to take effect). This is safe because as we know that the next cycle will be a read
+  // cycle anyway.
+  handleHalt();
+
+  // Make sure that the hardware state matches the current system clock. This is necessary
+  // to ensure that the state is displayed correctly in the debugger. The performance impact
+  // on emulation is negligible as M6502::execute is called only once per frame.
+  mySystem->tia().updateEmulation();
+  mySystem->m6532().updateEmulation();
+
+#ifdef DEBUGGER_SUPPORT
+  if (result == ExecuteResult::debuggerTrap && myDebugger) myDebugger->update();
+#endif
+
+  return result != ExecuteResult::failure;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline M6502::ExecuteResult M6502::_execute(uInt32 number)
+{
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
 
@@ -236,13 +260,13 @@ bool M6502::execute(uInt32 number)
         myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
         if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, read))
         {
-          return true;
+          return ExecuteResult::debuggerTrap;
         }
       }
 
       if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC))
         if(myDebugger && myDebugger->start("BP: ", PC))
-          return true;
+          return ExecuteResult::debuggerTrap;
 
       int cond = evalCondBreaks();
       if(cond > -1)
@@ -250,7 +274,7 @@ bool M6502::execute(uInt32 number)
         stringstream msg;
         msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
         if(myDebugger && myDebugger->start(msg.str()))
-          return true;
+          return ExecuteResult::debuggerTrap;
       }
 
       cond = evalCondSaveStates();
@@ -303,31 +327,22 @@ bool M6502::execute(uInt32 number)
     // See if execution has been stopped
     if(myExecutionStatus & StopExecutionBit)
     {
-      // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
-      // beginning of the next line (otherwise, the next instruction would be stepped in order for
-      // the halt to take effect). This is safe because as we know that the next cycle will be a read
-      // cycle anyway.
-      handleHalt();
-
       // Yes, so answer that everything finished fine
-      return true;
+      return ExecuteResult::success;
     }
 
     // See if a fatal error has occured
     if(myExecutionStatus & FatalErrorBit)
     {
       // Yes, so answer that something when wrong
-      return false;
+      return ExecuteResult::failure;
     }
 
     // See if we've executed the specified number of instructions
     if(number == 0)
     {
-      // See above
-      handleHalt();
-
       // Yes, so answer that everything finished fine
-      return true;
+      return ExecuteResult::success;
     }
   }
 }
