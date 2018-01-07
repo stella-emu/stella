@@ -1,5 +1,19 @@
 5.0.2 to 5.1: (January xx, 2018)
 
+  * Thumbulator support is not conditional any more.
+
+  * Don't trap write accesses to the datastream pointers in CDF  and BUS.
+    This fixes -dev.thumb.trapfatal 1.
+
+  * Complete rework of TV mode and ystart autodetection. The new
+    implementation is more robust and reduces startup time.
+
+  * Add two "grace lines" of black to the top of the frame when
+    autodetecting ystart.
+
+  * Support UNIX style builds (configure / make) on OSX with both
+    XCode / clang and g++.
+
   * Huge improvements to the disassembly view in the debugger and
     disassembly files created:
     - reformatting in debugger for better space utilization
