@@ -619,9 +619,11 @@ void Debugger::setStartState()
 
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
-  // avoid invalidating future states when entering the debugger during rewind
-  if (r.atLast())
+  // avoid invalidating future states when entering the debugger e.g. during rewind
+  if(myOSystem.eventHandler().state() == EventHandlerState::EMULATION)
     addState("enter debugger");
+  else
+    updateRewindbuttons(r);
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);
