@@ -44,7 +44,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
-                         const GUI::Font& font, int max_w, int max_h)
+                                 const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent)
 {
   const int VGAP = 4;
@@ -375,13 +375,13 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 {
   int tabID = myTab->addTab("Debugger");
+  WidgetArray wid;
 
 #ifdef DEBUGGER_SUPPORT
   const int HBORDER = 10;
   const int VBORDER = 8;
   const int VGAP = 4;
 
-  WidgetArray wid;
   VariantList items;
   int fontWidth = font.getMaxCharWidth(),
     fontHeight = font.getFontHeight(),
@@ -473,7 +473,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
 #else
-  new StaticTextWidget(myTab, font, 0, 20, _w - 20, fontHeight,
+  new StaticTextWidget(myTab, font, 0, 20, _w - 20, font.getFontHeight(),
                        "Debugger support not included", TextAlign::Center);
 #endif
 
@@ -1199,6 +1199,7 @@ void DeveloperDialog::handleDebugColours(const string& colors)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleFontSize()
 {
+#ifdef DEBUGGER_SUPPORT
   uInt32 minW, minH;
   int fontSize = myDebuggerFontSize->getSelected();
 
@@ -1233,4 +1234,5 @@ void DeveloperDialog::handleFontSize()
     myDebuggerHeightSlider->setValue(minH);
     myDebuggerHeightLabel->setValue(minH);
   }
+#endif
 }

@@ -2189,12 +2189,12 @@ void EventHandler::setEventState(EventHandlerState state)
       myEvent.clear();
       break;
 
-#ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
+  #ifdef DEBUGGER_SUPPORT
       myOverlay = &myOSystem.debugger();
       enableTextEvents(true);
+  #endif
       break;
-#endif
 
     case EventHandlerState::NONE:
       myOverlay = nullptr;

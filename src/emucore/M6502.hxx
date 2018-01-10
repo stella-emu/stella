@@ -445,8 +445,6 @@ class M6502 : public Serializable
       int address;
     };
     HitTrapInfo myHitTrapInfo;
-    // trap on ghost reads
-    bool myGhostReadsTrap;
 
     vector<unique_ptr<Expression>> myCondBreaks;
     StringList myCondBreakNames;
@@ -454,10 +452,12 @@ class M6502 : public Serializable
     StringList myCondSaveStateNames;
     vector<unique_ptr<Expression>> myTrapConds;
     StringList myTrapCondNames;
-
-    bool myStepStateByInstruction;
-
 #endif  // DEBUGGER_SUPPORT
+
+    // These are both used only by the debugger, but since they're included
+    // in save states, they cannot be conditionally compiled
+    bool myGhostReadsTrap;    // trap on ghost reads
+    bool myStepStateByInstruction;
 
   private:
     // Following constructors and assignment operators not supported
