@@ -183,9 +183,7 @@ class DeveloperDialog : public Dialog
     void handleUncompressed();
     void handleInterval();
     void handleHorizon();
-#ifdef DEBUGGER_SUPPORT
     void handleFontSize();
-#endif
 
     // Following constructors and assignment operators not supported
     DeveloperDialog() = delete;

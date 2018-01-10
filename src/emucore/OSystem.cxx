@@ -264,12 +264,12 @@ FBInitStatus OSystem::createFrameBuffer()
         return fbstatus;
       break;
 
-#ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
+  #ifdef DEBUGGER_SUPPORT
       if((fbstatus = myDebugger->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
+  #endif
       break;
-#endif
 
     case EventHandlerState::NONE:  // Should never happen
       logMessage("ERROR: Unknown emulation state in createFrameBuffer()", 0);

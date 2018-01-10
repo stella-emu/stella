@@ -1709,14 +1709,10 @@ void TIA::toggleCollBLPF()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::createAccessBase()
 {
-#ifdef DEBUGGER_SUPPORT
   myAccessBase = make_unique<uInt8[]>(TIA_SIZE);
   memset(myAccessBase.get(), CartDebug::NONE, TIA_SIZE);
   myAccessDelay = make_unique<uInt8[]>(TIA_SIZE);
   memset(myAccessDelay.get(), TIA_DELAY, TIA_SIZE);
-#else
-  myAccessBase = nullptr;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
