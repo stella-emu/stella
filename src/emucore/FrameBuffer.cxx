@@ -357,13 +357,13 @@ void FrameBuffer::update()
       break;  // EventHandlerState::LAUNCHER
     }
 
-#ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
+  #ifdef DEBUGGER_SUPPORT
       myOSystem.debugger().draw(true);
+  #endif
       break;  // EventHandlerState::DEBUGGER
     }
-#endif
 
     case EventHandlerState::NONE:
       return;

@@ -69,12 +69,12 @@ M6502::M6502(const Settings& settings)
     myDataAddressForPoke(0),
     myOnHaltCallback(nullptr),
     myHaltRequested(false),
+    myGhostReadsTrap(true),
     myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
   myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
-  myGhostReadsTrap = true;
 #endif
 }
 
@@ -210,7 +210,10 @@ inline void M6502::handleHalt()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::updateStepStateByInstruction()
 {
+  // Currently only used in debugger mode
+#ifdef DEBUGGER_SUPPORT
   myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() || myTrapConds.size();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -218,6 +221,7 @@ bool M6502::execute(uInt32 number)
 {
   const bool status = _execute(number);
 
+#ifdef DEBUGGER_SUPPORT
   // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
   // beginning of the next line (otherwise, the next instruction would be stepped in order for
   // the halt to take effect). This is safe because as we know that the next cycle will be a read
@@ -228,6 +232,7 @@ bool M6502::execute(uInt32 number)
   // to maintain a consistent state for the debugger after stepping.
   mySystem->tia().updateEmulation();
   mySystem->m6532().updateEmulation();
+#endif
 
   return status;
 }
@@ -248,7 +253,7 @@ inline bool M6502::_execute(uInt32 number)
   {
     for(; !myExecutionStatus && (number != 0); --number)
     {
-#ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
       if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
       {
         bool read = myJustHitReadTrapFlag;
@@ -279,7 +284,7 @@ inline bool M6502::_execute(uInt32 number)
         msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
         myDebugger->addState(msg.str());
       }
-#endif  // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
       uInt16 operandAddress = 0, intermediateAddress = 0;
       uInt8 operand = 0;
@@ -301,17 +306,17 @@ inline bool M6502::_execute(uInt32 number)
           // Oops, illegal instruction executed so set fatal error flag
           myExecutionStatus |= FatalErrorBit;
       }
-      //cycles = mySystem->cycles() - c0;
 
-#ifdef DEBUGGER_SUPPORT
-      if (myStepStateByInstruction) {
+  #ifdef DEBUGGER_SUPPORT
+      if(myStepStateByInstruction)
+      {
         // Check out M6502::execute for an explanation.
         handleHalt();
 
         tia.updateEmulation();
         riot.updateEmulation();
       }
-#endif
+  #endif
     }
 
     // See if we need to handle an interrupt

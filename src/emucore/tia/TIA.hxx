@@ -776,13 +776,14 @@ class TIA : public Device
     bool myEnableJitter;
     uInt8 myJitterFactor;
 
-#ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
     BytePtr myAccessBase;
+
     // The array used to skip the first two TIA access trackings
     BytePtr myAccessDelay;
-#endif // DEBUGGER_SUPPORT
+  #endif // DEBUGGER_SUPPORT
 
     static constexpr uInt16
       TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;
