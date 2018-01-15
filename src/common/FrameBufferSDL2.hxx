@@ -46,11 +46,13 @@ class FrameBufferSDL2 : public FrameBuffer
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
+
     /**
-      Toggles the use of grabmouse (only has effect in emulation mode).
-      The method changes the 'grabmouse' setting and saves it.
+      Updates window title
+
+      @param title   The title of the application / window
     */
-    void toggleGrabMouse();
+    void setTitle(const string& title);
 
     /**
       Shows or hides the cursor based on the given boolean value.

@@ -269,6 +269,13 @@ class FrameBuffer
   //////////////////////////////////////////////////////////////////////
   public:
     /**
+      Updates window title
+
+      @param title   The title of the application / window
+    */
+    virtual void setTitle(const string& title) = 0;
+
+    /**
       Shows or hides the cursor based on the given boolean value.
     */
     virtual void showCursor(bool show) = 0;
@@ -446,6 +453,10 @@ class FrameBuffer
         int myIdx;
     };
 
+  protected:
+    // Title of the main window/screen
+    string myScreenTitle;
+
   private:
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;
@@ -459,9 +470,6 @@ class FrameBuffer
 
     // Dimensions of the main window (not always the same as the image)
     GUI::Size myScreenSize;
-
-    // Title of the main window/screen
-    string myScreenTitle;
 
     // Maximum dimensions of the desktop area
     GUI::Size myDesktopSize;
