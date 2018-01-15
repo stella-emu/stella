@@ -180,7 +180,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
   if(myDesktopSize.w < kFBMinW && myDesktopSize.h < kFBMinH &&
-     (myDesktopSize.w < width || myDesktopSize.h < height))
+    (myDesktopSize.w < width || myDesktopSize.h < height))
     return FBInitStatus::FailTooLarge;
 
   useFullscreen = myOSystem.settings().getBool("fullscreen");
@@ -233,7 +233,12 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
   if(!myStatsMsg.surface)
+  {
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
+    myStatsMsg.surface->attributes().blending = true;
+    //myStatsMsg.surface->attributes().blendalpha = 80;
+    myStatsMsg.surface->applyAttributes();
+  }
 
   if(!myMsg.surface)
     myMsg.surface = allocateSurface(kFBMinW, font().getFontHeight()+10);
@@ -286,11 +291,24 @@ void FrameBuffer::update()
         std::snprintf(msg, 30, "%3u @ %3.2ffps => %s",
                 myOSystem.console().tia().scanlinesLastFrame(),
                 myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
-        myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(),
-          msg, 1, 1, myStatsMsg.w, myStatsMsg.color, TextAlign::Left);
-        myStatsMsg.surface->drawString(infoFont(),
-          info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, TextAlign::Left);
+        myStatsMsg.surface->invalidate();
+        // draw shadowed text
+        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 0,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 0, 1 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), msg, 1, 1,
+                                       myStatsMsg.w, myStatsMsg.color);
+        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1 + 1, 15 + 0,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1 + 0, 15 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1 + 1, 15 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1, 15,
+                                       myStatsMsg.w, myStatsMsg.color);
         myStatsMsg.surface->setDirty();
         myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->render();
