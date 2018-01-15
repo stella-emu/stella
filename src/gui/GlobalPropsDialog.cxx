@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -53,7 +53,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Bankswitch type", kTextAlignLeft);
+                       "Bankswitch type", TextAlign::Left);
   for(int i = 0; i < int(BSType::NumSchemes); ++i)
     VarList::push_back(items, BSList[i].desc, BSList[i].name);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
@@ -64,7 +64,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   // Left difficulty
   pwidth = font.getStringWidth("Debugger");
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Left Difficulty", kTextAlignLeft);
+                       "Left Difficulty", TextAlign::Left);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "B", "B");
@@ -76,7 +76,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Right difficulty
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Right Difficulty", kTextAlignLeft);
+                       "Right Difficulty", TextAlign::Left);
   // ... use same items as above
   myRightDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                 pwidth, lineHeight, items, "", 0, 0);
@@ -85,7 +85,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // TV type
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "TV Type", kTextAlignLeft);
+                       "TV Type", TextAlign::Left);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
@@ -97,7 +97,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Start in debugger mode
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Startup Mode", kTextAlignLeft);
+                       "Startup Mode", TextAlign::Left);
   items.clear();
   VarList::push_back(items, "Console", "false");
   VarList::push_back(items, "Debugger", "true");
@@ -110,15 +110,15 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1,
       font.getStringWidth("Start console with the following held down:"),
       fontHeight, "Start console with the following held down:",
-      kTextAlignLeft);
+      TextAlign::Left);
   xpos += 10;  ypos += lineHeight;
   new StaticTextWidget(this, infofont, xpos, ypos+1, _w - 40, infofont.getFontHeight(),
       "(*) Buttons are automatically released shortly",
-      kTextAlignLeft);
+      TextAlign::Left);
   ypos += infofont.getLineHeight();
   new StaticTextWidget(this, infofont, xpos, ypos+1, _w - 40, infofont.getFontHeight(),
       "    after emulation has started",
-      kTextAlignLeft);
+      TextAlign::Left);
 
   // Start with console joystick direction/buttons held down
   xpos = 30;  ypos += lineHeight + 10;
@@ -127,10 +127,10 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   // Add message concerning usage
   xpos = 10;  ypos += 2 * fontHeight;
   new StaticTextWidget(this, infofont, xpos, ypos,  _w - 20, infofont.getFontHeight(),
-    "(*) These options are not saved, but apply to all", kTextAlignLeft);
+    "(*) These options are not saved, but apply to all", TextAlign::Left);
   ypos += infofont.getLineHeight();
   new StaticTextWidget(this, infofont, xpos, ypos,  _w - 20, infofont.getFontHeight(),
-    "    further ROMs until clicking 'Defaults'", kTextAlignLeft);
+    "    further ROMs until clicking 'Defaults'", TextAlign::Left);
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
@@ -152,7 +152,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   // Left joystick
   StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2,
     font.getStringWidth("Left Joy"), fontHeight, "Left Joy",
-    kTextAlignLeft);
+    TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myJoy[kJ0Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Up);
   ypos += myJoy[kJ0Up]->getHeight() * 2 + 10;
@@ -172,7 +172,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   // Right joystick
   t = new StaticTextWidget(this, font, xpos, ypos+2,
     font.getStringWidth("Right Joy"), fontHeight, "Right Joy",
-    kTextAlignLeft);
+    TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myJoy[kJ1Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Up);
   ypos += myJoy[kJ1Up]->getHeight() * 2 + 10;
@@ -191,7 +191,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   // Console Select/Reset
   t = new StaticTextWidget(this, font, xpos, ypos+2,
     font.getStringWidth("Console"), fontHeight, "Console",
-    kTextAlignLeft);
+    TextAlign::Left);
   xpos -= 10;  ypos += t->getHeight() + 10;
   myHoldSelect = new CheckboxWidget(this, font, xpos, ypos, "Select");
   ypos += myHoldSelect->getHeight() + 5;

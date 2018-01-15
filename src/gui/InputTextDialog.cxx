@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -65,7 +65,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   WidgetArray wid;
 
   // Calculate real dimensions
-  _w = fontWidth * 35;
+  _w = fontWidth * 41;
   _h = lineHeight * 4 + int(labels.size()) * (lineHeight + 5);
 
   // Determine longest label
@@ -84,9 +84,9 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   for(i = 0; i < labels.size(); ++i)
   {
     xpos = 10;
-    new StaticTextWidget(this, lfont, xpos, ypos,
+    new StaticTextWidget(this, lfont, xpos, ypos + 2,
                          lwidth, fontHeight,
-                         labels[i], kTextAlignLeft);
+                         labels[i], TextAlign::Left);
 
     xpos += lwidth + fontWidth;
     EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
@@ -99,7 +99,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
   xpos = 10;
   myTitle = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
-                                 "", kTextAlignCenter);
+                                 "", TextAlign::Left);
   myTitle->setTextColor(kTextColorEm);
 
   addToFocusList(wid);

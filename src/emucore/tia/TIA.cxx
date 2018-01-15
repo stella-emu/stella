@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -953,26 +953,32 @@ bool TIA::setFixedColorPalette(const string& colors)
       case 'r':
         myFixedColorPalette[0][i] = FixedColor::NTSC_RED;
         myFixedColorPalette[1][i] = FixedColor::PAL_RED;
+        myFixedColorNames[i] = "Red   ";
         break;
       case 'o':
         myFixedColorPalette[0][i] = FixedColor::NTSC_ORANGE;
         myFixedColorPalette[1][i] = FixedColor::PAL_ORANGE;
+        myFixedColorNames[i] = "Orange";
         break;
       case 'y':
         myFixedColorPalette[0][i] = FixedColor::NTSC_YELLOW;
         myFixedColorPalette[1][i] = FixedColor::PAL_YELLOW;
+        myFixedColorNames[i] = "Yellow";
         break;
       case 'g':
         myFixedColorPalette[0][i] = FixedColor::NTSC_GREEN;
         myFixedColorPalette[1][i] = FixedColor::PAL_GREEN;
+        myFixedColorNames[i] = "Green ";
         break;
       case 'b':
         myFixedColorPalette[0][i] = FixedColor::NTSC_BLUE;
         myFixedColorPalette[1][i] = FixedColor::PAL_BLUE;
+        myFixedColorNames[i] = "Blue  ";
         break;
       case 'p':
         myFixedColorPalette[0][i] = FixedColor::NTSC_PURPLE;
         myFixedColorPalette[1][i] = FixedColor::PAL_PURPLE;
+        myFixedColorNames[i] = "Purple";
         break;
     }
   }
@@ -1043,8 +1049,7 @@ TIA& TIA::updateScanline()
 {
   // Update frame by one scanline at a time
   uInt32 line = scanlines();
-  while (line == scanlines() && mySystem->m6502().execute(1))
-    updateEmulation();
+  while (line == scanlines() && mySystem->m6502().execute(1));
 
   return *this;
 }
@@ -1053,8 +1058,7 @@ TIA& TIA::updateScanline()
 TIA& TIA::updateScanlineByStep()
 {
   // Update frame by one CPU instruction/color clock
-  if (mySystem->m6502().execute(1))
-    updateEmulation();
+  mySystem->m6502().execute(1);
 
   return *this;
 }
@@ -1064,8 +1068,7 @@ TIA& TIA::updateScanlineByTrace(int target)
 {
   uInt32 count = 100;  // only try up to 100 steps
   while (mySystem->m6502().getPC() != target && count-- &&
-         mySystem->m6502().execute(1))
-    updateEmulation();
+         mySystem->m6502().execute(1));
 
   return *this;
 }
@@ -1597,18 +1600,104 @@ uInt8 TIA::collCXBLPF() const
   return (myCollisionMask & CollisionMask::ball & CollisionMask::playfield) ? 0x80 : 0;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0PF()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0BL()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0M1()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::missile1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0M0()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::missile0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP0P1()
+{
+  myCollisionMask ^= (CollisionMask::player0 & CollisionMask::player1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1PF()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1BL()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1M1()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::missile1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollP1M0()
+{
+  myCollisionMask ^= (CollisionMask::player1 & CollisionMask::missile0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM0PF()
+{
+  myCollisionMask ^= (CollisionMask::missile0 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM0BL()
+{
+  myCollisionMask ^= (CollisionMask::missile0 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM0M1()
+{
+  myCollisionMask ^= (CollisionMask::missile0 & CollisionMask::missile1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM1PF()
+{
+  myCollisionMask ^= (CollisionMask::missile1 & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollM1BL()
+{
+  myCollisionMask ^= (CollisionMask::missile1 & CollisionMask::ball);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::toggleCollBLPF()
+{
+  myCollisionMask ^= (CollisionMask::ball & CollisionMask::playfield);
+}
+
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::createAccessBase()
 {
-#ifdef DEBUGGER_SUPPORT
   myAccessBase = make_unique<uInt8[]>(TIA_SIZE);
   memset(myAccessBase.get(), CartDebug::NONE, TIA_SIZE);
   myAccessDelay = make_unique<uInt8[]>(TIA_SIZE);
   memset(myAccessDelay.get(), TIA_DELAY, TIA_SIZE);
-#else
-  myAccessBase = nullptr;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

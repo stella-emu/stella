@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -47,6 +47,7 @@ class Base
       F_16_4,    // base 16: 4 bytes wide
       F_16_8,    // base 16: 8 bytes wide
       F_10,      // base 10: 3 or 5 bytes (depending on value)
+      F_10_2,    // base 10: 2 digits
       F_2,       // base 2:  8 or 16 bits (depending on value)
       F_2_8,     // base 2:  1 byte (8 bits) wide
       F_2_16,    // base 2:  2 bytes (16 bits) wide

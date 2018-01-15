@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -45,11 +45,12 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   t = new StaticTextWidget(boss, lfont, xpos, ypos,
                            lfont.getStringWidth("Bank"),
                            lfont.getFontHeight(),
-                           "Bank", kTextAlignLeft);
+                           "Bank", TextAlign::Left);
 
   xpos += t->getWidth() + 5;
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
                               _w - 2 - xpos, nfont.getLineHeight());
+  myBank->setEditable(false);
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;

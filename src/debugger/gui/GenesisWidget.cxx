@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -29,7 +29,7 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                           fontHeight, label, kTextAlignLeft);
+                           fontHeight, label, TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 20;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
                                     CheckboxWidget::kCheckActionCmd);

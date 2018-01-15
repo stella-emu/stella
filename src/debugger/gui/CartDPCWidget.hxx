@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -42,6 +42,7 @@ class CartridgeDPCWidget : public CartDebugWidget
       BoolArray music;
       uInt8 random;
       ByteArray internalram;
+      uInt16 bank;
     };
 
     CartridgeDPC& myCart;

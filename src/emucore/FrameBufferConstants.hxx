@@ -8,39 +8,38 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-// FIXME - perhaps add to namespace or something
-
 #ifndef FRAMEBUFFER_CONSTANTS_HXX
 #define FRAMEBUFFER_CONSTANTS_HXX
 
 // Return values for initialization of framebuffer window
-enum FBInitStatus {
-  kSuccess,
-  kFailComplete,
-  kFailTooLarge,
-  kFailNotSupported
+enum class FBInitStatus {
+  Success,
+  FailComplete,
+  FailTooLarge,
+  FailNotSupported
 };
 
 // Positions for onscreen/overlaid messages
-enum MessagePosition {
-  kTopLeft,
-  kTopCenter,
-  kTopRight,
-  kMiddleLeft,
-  kMiddleCenter,
-  kMiddleRight,
-  kBottomLeft,
-  kBottomCenter,
-  kBottomRight
+enum class MessagePosition {
+  TopLeft,
+  TopCenter,
+  TopRight,
+  MiddleLeft,
+  MiddleCenter,
+  MiddleRight,
+  BottomLeft,
+  BottomCenter,
+  BottomRight
 };
 
+// TODO - make this 'enum class'
 // Colors indices to use for the various GUI elements
 enum {
   kColor = 256,
@@ -51,6 +50,7 @@ enum {
   kTextColor,
   kTextColorHi,
   kTextColorEm,
+  kTextColorInv,
   kDlgColor,
   kWidColor,
   kWidFrameColor,
@@ -66,20 +66,22 @@ enum {
   kDbgChangedColor,
   kDbgChangedTextColor,
   kDbgColorHi,
+  kDbgColorRed,
+  kColorInfo,
   kNumColors
 };
 
 // Text alignment modes for drawString()
-enum TextAlignment {
-  kTextAlignLeft,
-  kTextAlignCenter,
-  kTextAlignRight
+enum class TextAlign {
+  Left,
+  Center,
+  Right
 };
 
 // Line types for drawing rectangular frames
-enum FrameStyle {
-  kSolidLine,
-  kDashLine
+enum class FrameStyle {
+  Solid,
+  Dashed
 };
 
 #endif // FRAMEBUFFER_CONSTANTS_HXX

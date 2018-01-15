@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -52,7 +52,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 
   // Label for dialog, indicating which combo is being changed
   myComboName = new StaticTextWidget(this, font, xpos, ypos, _w - xpos - 10,
-                                     fontHeight, "", kTextAlignCenter);
+                                     fontHeight, "", TextAlign::Center);
   ypos += (lineHeight + 4) + 5;
 
   // Add event popup for 8 events

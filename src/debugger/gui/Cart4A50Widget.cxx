@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -65,7 +65,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   // Lower bank/region configuration
   xpos = 10;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    myFontHeight, lowerlabel, kTextAlignLeft);
+    myFontHeight, lowerlabel, TextAlign::Left);
   ypos += myLineHeight + 8;
 
   xpos += 40;
@@ -85,7 +85,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   // Middle bank/region configuration
   xpos = 10;  ypos += myLineHeight + 14;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    myFontHeight, middlelabel, kTextAlignLeft);
+    myFontHeight, middlelabel, TextAlign::Left);
   ypos += myLineHeight + 8;
 
   xpos += 40;
@@ -105,7 +105,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   // High bank/region configuration
   xpos = 10;  ypos += myLineHeight + 14;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-    myFontHeight, highlabel, kTextAlignLeft);
+    myFontHeight, highlabel, TextAlign::Left);
   ypos += myLineHeight + 8;
 
   xpos += 40;

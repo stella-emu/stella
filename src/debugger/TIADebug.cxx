@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -60,6 +60,24 @@ const DebuggerState& TIADebug::getState()
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::BL]);
   myState.fixedCols.push_back(TIA::FixedColor::HBLANK_WHITE);
 
+  // Collisions
+  myState.cx.clear();
+  myState.cx.push_back(collP0_PF());
+  myState.cx.push_back(collP0_BL());
+  myState.cx.push_back(collM1_P0());
+  myState.cx.push_back(collM0_P0());
+  myState.cx.push_back(collP0_P1());
+  myState.cx.push_back(collP1_PF());
+  myState.cx.push_back(collP1_BL());
+  myState.cx.push_back(collM1_P1());
+  myState.cx.push_back(collM0_P1());
+  myState.cx.push_back(collM0_PF());
+  myState.cx.push_back(collM0_BL());
+  myState.cx.push_back(collM0_M1());
+  myState.cx.push_back(collM1_PF());
+  myState.cx.push_back(collM1_BL());
+  myState.cx.push_back(collBL_PF());
+
   // Player 0 & 1 and Ball graphics registers
   myState.gr.clear();
   myState.gr.push_back(myTIA.myPlayer0.getGRPNew());
@@ -68,6 +86,18 @@ const DebuggerState& TIADebug::getState()
   myState.gr.push_back(myTIA.myPlayer1.getGRPOld());
   myState.gr.push_back(myTIA.myBall.getENABLNew());
   myState.gr.push_back(myTIA.myBall.getENABLOld());
+
+  // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
+  myState.ref.clear();
+  myState.ref.push_back(refP0());
+  myState.ref.push_back(refP1());
+  myState.vdel.clear();
+  myState.vdel.push_back(vdelP0());
+  myState.vdel.push_back(vdelP1());
+  myState.vdel.push_back(vdelBL());
+  myState.res.clear();
+  myState.res.push_back(resMP0());
+  myState.res.push_back(resMP1());
 
   // Position registers
   myState.pos.clear();
@@ -90,6 +120,9 @@ const DebuggerState& TIADebug::getState()
   myState.pf.push_back(pf0());
   myState.pf.push_back(pf1());
   myState.pf.push_back(pf2());
+  myState.pf.push_back(refPF());
+  myState.pf.push_back(scorePF());
+  myState.pf.push_back(priorityPF());
 
   // Size registers
   myState.size.clear();
@@ -108,6 +141,16 @@ const DebuggerState& TIADebug::getState()
   myState.aud.push_back(audV0());
   myState.aud.push_back(audV1());
 
+  // internal TIA state
+  myState.info.clear();
+  myState.info.push_back(frameCount());
+  myState.info.push_back(frameCycles());
+  myState.info.push_back(vsyncAsInt());
+  myState.info.push_back(vblankAsInt());
+  myState.info.push_back(scanlines());
+  myState.info.push_back(scanlinesLastFrame());
+  myState.info.push_back(clocksThisLine());
+
   return myState;
 }
 
@@ -121,6 +164,24 @@ void TIADebug::saveOldState()
   myOldState.coluRegs.push_back(coluPF());
   myOldState.coluRegs.push_back(coluBK());
 
+  // Collisions
+  myOldState.cx.clear();
+  myOldState.cx.push_back(collP0_PF());
+  myOldState.cx.push_back(collP0_BL());
+  myOldState.cx.push_back(collM1_P0());
+  myOldState.cx.push_back(collM0_P0());
+  myOldState.cx.push_back(collP0_P1());
+  myOldState.cx.push_back(collP1_PF());
+  myOldState.cx.push_back(collP1_BL());
+  myOldState.cx.push_back(collM1_P1());
+  myOldState.cx.push_back(collM0_P1());
+  myOldState.cx.push_back(collM0_PF());
+  myOldState.cx.push_back(collM0_BL());
+  myOldState.cx.push_back(collM0_M1());
+  myOldState.cx.push_back(collM1_PF());
+  myOldState.cx.push_back(collM1_BL());
+  myOldState.cx.push_back(collBL_PF());
+
   // Player 0 & 1 graphics registers
   myOldState.gr.clear();
   myOldState.gr.push_back(myTIA.myPlayer0.getGRPNew());
@@ -129,6 +190,18 @@ void TIADebug::saveOldState()
   myOldState.gr.push_back(myTIA.myPlayer1.getGRPOld());
   myOldState.gr.push_back(myTIA.myBall.getENABLNew());
   myOldState.gr.push_back(myTIA.myBall.getENABLOld());
+
+  // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
+  myOldState.ref.clear();
+  myOldState.ref.push_back(refP0());
+  myOldState.ref.push_back(refP1());
+  myOldState.vdel.clear();
+  myOldState.vdel.push_back(vdelP0());
+  myOldState.vdel.push_back(vdelP1());
+  myOldState.vdel.push_back(vdelBL());
+  myOldState.res.clear();
+  myOldState.res.push_back(resMP0());
+  myOldState.res.push_back(resMP1());
 
   // Position registers
   myOldState.pos.clear();
@@ -151,6 +224,9 @@ void TIADebug::saveOldState()
   myOldState.pf.push_back(pf0());
   myOldState.pf.push_back(pf1());
   myOldState.pf.push_back(pf2());
+  myOldState.pf.push_back(refPF());
+  myOldState.pf.push_back(scorePF());
+  myOldState.pf.push_back(priorityPF());
 
   // Size registers
   myOldState.size.clear();
@@ -168,6 +244,16 @@ void TIADebug::saveOldState()
   myOldState.aud.push_back(audC1());
   myOldState.aud.push_back(audV0());
   myOldState.aud.push_back(audV1());
+
+  // internal TIA state
+  myOldState.info.clear();
+  myOldState.info.push_back(frameCount());
+  myOldState.info.push_back(frameCycles());
+  myOldState.info.push_back(vsyncAsInt());
+  myOldState.info.push_back(vblankAsInt());
+  myOldState.info.push_back(scanlines());
+  myOldState.info.push_back(scanlinesLastFrame());
+  myOldState.info.push_back(clocksThisLine());
 }
 
 /* the set methods now use mySystem.poke(). This will save us the
@@ -331,25 +417,83 @@ bool TIADebug::priorityPF(int newVal)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIADebug::collision(CollisionBit id) const
+bool TIADebug::collision(CollisionBit id, bool toggle) const
 {
   switch(id)
   {
-    case Cx_M0P1:  return myTIA.collCXM0P()  & 0x80;
-    case Cx_M0P0:  return myTIA.collCXM0P()  & 0x40;
-    case Cx_M1P0:  return myTIA.collCXM1P()  & 0x80;
-    case Cx_M1P1:  return myTIA.collCXM1P()  & 0x40;
-    case Cx_P0PF:  return myTIA.collCXP0FB() & 0x80;
-    case Cx_P0BL:  return myTIA.collCXP0FB() & 0x40;
-    case Cx_P1PF:  return myTIA.collCXP1FB() & 0x80;
-    case Cx_P1BL:  return myTIA.collCXP1FB() & 0x40;
-    case Cx_M0PF:  return myTIA.collCXM0FB() & 0x80;
-    case Cx_M0BL:  return myTIA.collCXM0FB() & 0x40;
-    case Cx_M1PF:  return myTIA.collCXM1FB() & 0x80;
-    case Cx_M1BL:  return myTIA.collCXM1FB() & 0x40;
-    case Cx_BLPF:  return myTIA.collCXBLPF() & 0x80;
-    case Cx_P0P1:  return myTIA.collCXPPMM() & 0x80;
-    case Cx_M0M1:  return myTIA.collCXPPMM() & 0x40;
+    case CollisionBit::M0P1:
+      if(toggle)
+        myTIA.toggleCollP1M0();
+      return myTIA.collCXM0P()  & 0x80;
+
+    case CollisionBit::M0P0:
+      if(toggle)
+        myTIA.toggleCollP0M0();
+      return myTIA.collCXM0P()  & 0x40;
+
+    case CollisionBit::M1P0:
+      if(toggle)
+        myTIA.toggleCollP0M1();
+      return myTIA.collCXM1P()  & 0x80;
+
+    case CollisionBit::M1P1:
+      if(toggle)
+        myTIA.toggleCollP1M1();
+      return myTIA.collCXM1P() & 0x40;
+
+    case CollisionBit::P0PF:
+      if(toggle)
+        myTIA.toggleCollP0PF();
+      return myTIA.collCXP0FB() & 0x80;
+    case CollisionBit::P0BL:
+      if(toggle)
+        myTIA.toggleCollP0BL();
+      return myTIA.collCXP0FB() & 0x40;
+
+    case CollisionBit::P1PF:
+      if(toggle)
+        myTIA.toggleCollP1PF();
+      return myTIA.collCXP1FB() & 0x80;
+
+    case CollisionBit::P1BL:
+      if(toggle)
+        myTIA.toggleCollP1BL();
+      return myTIA.collCXP1FB() & 0x40;
+
+    case CollisionBit::M0PF:
+      if(toggle)
+        myTIA.toggleCollM0PF();
+      return myTIA.collCXM0FB() & 0x80;
+
+    case CollisionBit::M0BL:
+      if(toggle)
+        myTIA.toggleCollM0BL();
+      return myTIA.collCXM0FB() & 0x40;
+
+    case CollisionBit::M1PF:
+      if(toggle)
+        myTIA.toggleCollM1PF();
+      return myTIA.collCXM1FB() & 0x80;
+
+    case CollisionBit::M1BL:
+      if(toggle)
+        myTIA.toggleCollM1BL();
+      return myTIA.collCXM1FB() & 0x40;
+
+    case CollisionBit::BLPF:
+      if(toggle)
+        myTIA.toggleCollBLPF();
+      return myTIA.collCXBLPF() & 0x80;
+
+    case CollisionBit::P0P1:
+      if(toggle)
+        myTIA.toggleCollP0P1();
+      return myTIA.collCXPPMM() & 0x80;
+
+    case CollisionBit::M0M1:
+      if(toggle)
+        myTIA.toggleCollM0M1();
+      return myTIA.collCXPPMM() & 0x40;
   }
   return false;  // make compiler happy
 }
@@ -869,17 +1013,17 @@ string TIADebug::debugColors() const
   ostringstream buf;
 
   int mode = myTIA.frameLayout() == FrameLayout::ntsc ? 0 : 1;
-  buf << " Red    " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P0])
+  buf << " " << myTIA.myFixedColorNames[TIA::P0] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P0])
       << " Player 0\n"
-      << " Orange " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M0])
+      << " " << myTIA.myFixedColorNames[TIA::M0] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M0])
       << " Missile 0\n"
-      << " Yellow " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P1])
+      << " " << myTIA.myFixedColorNames[TIA::P1] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P1])
       << " Player 1\n"
-      << " Green  " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M1])
+      << " " << myTIA.myFixedColorNames[TIA::M1] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M1])
       << " Missile 1\n"
-      << " Blue   " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::PF])
+      << " " << myTIA.myFixedColorNames[TIA::PF] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::PF])
       << " Playfield\n"
-      << " Purple " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BL])
+      << " " << myTIA.myFixedColorNames[TIA::BL] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BL])
       << " Ball\n"
       << " Grey   " << colorSwatch(TIA::FixedColor::BK_GREY)
       << " Background\n"

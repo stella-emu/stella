@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -66,6 +66,10 @@ string Base::toString(int value, Common::Base::Format outputBase)
         std::snprintf(vToS_buf, 4, "%3d", value);
       else
         std::snprintf(vToS_buf, 6, "%5d", value);
+      break;
+
+    case Base::F_10_2:  // base 10: 2 digits
+      std::snprintf(vToS_buf, 3, "%02d", value);
       break;
 
     case Base::F_16_1:  // base 16: 1 byte wide

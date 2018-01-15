@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -73,6 +73,26 @@ class FBSurface
     //////////////////////////////////////////////////////////////////////////
 
     /**
+      This method should be called to draw a single pixel.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the line
+    */
+    virtual void pixel(uInt32 x, uInt32 y, uInt32 color);
+
+    /**
+      This method should be called to draw a line.
+
+      @param x      The first x coordinate
+      @param y      The first y coordinate
+      @param x2     The second x coordinate
+      @param y2     The second y coordinate
+      @param color  The color of the line
+    */
+    virtual void line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, uInt32 color);
+
+    /**
       This method should be called to draw a horizontal line.
 
       @param x      The first x coordinate
@@ -129,14 +149,14 @@ class FBSurface
                             uInt32 h = 8);
 
     /**
-    This method should be called to draw the bitmap image.
+      This method should be called to draw the bitmap image.
 
-    @param bitmap The data to draw
-    @param x      The x coordinate
-    @param y      The y coordinate
-    @param color  The color of the bitmap
-    @param w      The width of the data image
-    @param h      The height of the data image
+      @param bitmap The data to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the bitmap
+      @param w      The width of the data image
+      @param h      The height of the data image
     */
     virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
                             uInt32 w, uInt32 h);
@@ -179,7 +199,7 @@ class FBSurface
       @param style  The 'FrameStyle' to use for the surrounding frame
     */
     virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           uInt32 color, FrameStyle style = kSolidLine);
+                           uInt32 color, FrameStyle style = FrameStyle::Solid);
 
     /**
       This method should be called to draw the specified string.
@@ -196,7 +216,7 @@ class FBSurface
     */
     virtual void drawString(
         const GUI::Font& font, const string& s, int x, int y, int w,
-        uInt32 color, TextAlignment align = kTextAlignLeft,
+        uInt32 color, TextAlign align = TextAlign::Left,
         int deltax = 0, bool useEllipsis = true);
 
     /**

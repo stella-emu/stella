@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -70,7 +70,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   int lwidth = _font.getStringWidth("Counter Registers ");
   xpos = 10;  ypos += myLineHeight + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Top Registers ", kTextAlignLeft);
+        myFontHeight, "Top Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -80,7 +80,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Bottom registers
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers ", kTextAlignLeft);
+        myFontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -90,7 +90,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Counter registers
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Counter Registers ", kTextAlignLeft);
+        myFontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
@@ -100,7 +100,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Fractional counter registers
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Frac Counters ", kTextAlignLeft);
+        myFontHeight, "Frac Counters ", TextAlign::Left);
   xpos += lwidth;
 
   myFracCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 4, 2, 8, 32, Common::Base::F_16_8);
@@ -110,7 +110,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Fractional increment registers
   xpos = 10;  ypos += myFracCounters->getHeight() + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Frac Increments ", kTextAlignLeft);
+        myFontHeight, "Frac Increments ", TextAlign::Left);
   xpos += lwidth;
 
   myFracIncrements = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -120,7 +120,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Special function parameters
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Function Params ", kTextAlignLeft);
+        myFontHeight, "Function Params ", TextAlign::Left);
   xpos += lwidth;
 
   myParameter = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -130,7 +130,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Music counters
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Counters ", kTextAlignLeft);
+        myFontHeight, "Music Counters ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -140,7 +140,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Music frequencies
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Frequencies ", kTextAlignLeft);
+        myFontHeight, "Music Frequencies ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
@@ -150,7 +150,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   // Music waveforms
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music Waveforms ", kTextAlignLeft);
+        myFontHeight, "Music Waveforms ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_4);
@@ -161,7 +161,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   lwidth = _font.getStringWidth("Current random number ");
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current random number ", kTextAlignLeft);
+        myFontHeight, "Current random number ", TextAlign::Left);
   xpos += lwidth;
 
   myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
@@ -213,12 +213,14 @@ void CartridgeDPCPlusWidget::saveOldState()
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myDisplayImage[i]);
+
+  myOldState.bank = myCart.getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlusWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank());
+  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
 
   // Get registers, using change tracking
   IntArray alist;

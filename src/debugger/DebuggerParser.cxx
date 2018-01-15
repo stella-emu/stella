@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -234,7 +234,7 @@ int DebuggerParser::decipher_arg(const string& str)
 
   // Special cases (registers):
   const CpuState& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
-  if(arg == "a") result = state.A;
+  if(arg == "a" && str != "$a") result = state.A;
   else if(arg == "x") result = state.X;
   else if(arg == "y") result = state.Y;
   else if(arg == "p") result = state.PS;
@@ -756,6 +756,7 @@ void DebuggerParser::executeBreakif()
     {
       if(condition == debugger.m6502().getCondBreakNames()[i])
       {
+        args[0] = i;
         executeDelbreakif();
         return;
       }
@@ -1830,6 +1831,7 @@ void DebuggerParser::executeSavestateif()
     {
       if(condition == debugger.m6502().getCondSaveStateNames()[i])
       {
+        args[0] = i;
         executeDelsavestateif();
         return;
       }
@@ -2177,7 +2179,6 @@ void DebuggerParser::executeWatch()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // wrapper function for rewind/unwind commands
-// TODO: return and output (formatted) cycles
 void DebuggerParser::executeWinds(bool unwind)
 {
   uInt16 states;
@@ -2370,7 +2371,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "d",
-    "Carry Flag: set (0 or 1), or toggle (no arg)",
+    "Decimal Flag: set (0 or 1), or toggle (no arg)",
     "Example: d, d 0, d 1",
     false,
     true,
@@ -2471,11 +2472,11 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "dump",
-    "Dump data at address <xx> [to yy] [1..7]",
+    "Dump data at address <xx> [to yy] [1: memory; 2: CPU state; 4: input regs]",
     "Example:\n"
     "  dump f000 - dumps 128 bytes @ f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
-    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU and input states into a file",
+    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU state and input registers into a file",
     true,
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
@@ -2796,7 +2797,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "rewind",
-    "Rewind state to last [xx] steps/traces/scanlines/frames...",
+    "Rewind state by one or [xx] steps/traces/scanlines/frames...",
     "Example: rewind, rewind 5",
     false,
     true,
@@ -2878,8 +2879,8 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "save",
-    "Save breaks, watches, traps to file xx",
-    "Example: save commands.txt",
+    "Save breaks, watches, traps and functions to file xx",
+    "Example: save commands.script",
     true,
     false,
     { kARG_FILE, kARG_END_ARGS },
@@ -2920,7 +2921,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "saveses",
-    "Save console session",
+    "Save console session (with default name)",
     "Example: saveses\n"
     "NOTE: saves to default save location",
     false,
@@ -3109,7 +3110,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "unwind",
-    "Unwind state to next [xx] steps/traces/scanlines/frames...",
+    "Unwind state by one or [xx] steps/traces/scanlines/frames...",
     "Example: unwind, unwind 5",
     false,
     true,

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -472,7 +472,7 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
     if(eraseAll || b_event == event)
       handler.addJoyButtonMapping(b_event, mode, b_stick, b_button, false);
   };
-  auto setDefaultHat = [&](int h_stick, int h_hat, int h_dir, Event::Type h_event)
+  auto setDefaultHat = [&](int h_stick, int h_hat, JoyHat h_dir, Event::Type h_event)
   {
     if(eraseAll || h_event == event)
       handler.addJoyHatMapping(h_event, mode, h_stick, h_hat, h_dir, false);
@@ -492,11 +492,11 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
         // Left joystick (assume joystick zero, button zero)
         setDefaultBtn( 0, 0, Event::JoystickZeroFire );
         // Left joystick left/right directions (assume joystick zero and hat 0)
-        setDefaultHat( 0, 0, EVENT_HATLEFT,  Event::JoystickZeroLeft  );
-        setDefaultHat( 0, 0, EVENT_HATRIGHT, Event::JoystickZeroRight );
+        setDefaultHat( 0, 0, JoyHat::LEFT,  Event::JoystickZeroLeft  );
+        setDefaultHat( 0, 0, JoyHat::RIGHT, Event::JoystickZeroRight );
         // Left joystick up/down directions (assume joystick zero and hat 0)
-        setDefaultHat( 0, 0, EVENT_HATUP,    Event::JoystickZeroUp    );
-        setDefaultHat( 0, 0, EVENT_HATDOWN,  Event::JoystickZeroDown  );
+        setDefaultHat( 0, 0, JoyHat::UP,    Event::JoystickZeroUp    );
+        setDefaultHat( 0, 0, JoyHat::DOWN,  Event::JoystickZeroDown  );
       }
       else if(stick == 1)
       {
@@ -509,11 +509,11 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
         // Right joystick (assume joystick one, button zero)
         setDefaultBtn( 1, 0, Event::JoystickOneFire );
         // Right joystick left/right directions (assume joystick one and hat 0)
-        setDefaultHat( 1, 0, EVENT_HATLEFT,  Event::JoystickOneLeft  );
-        setDefaultHat( 1, 0, EVENT_HATRIGHT, Event::JoystickOneRight );
+        setDefaultHat( 1, 0, JoyHat::LEFT,  Event::JoystickOneLeft  );
+        setDefaultHat( 1, 0, JoyHat::RIGHT, Event::JoystickOneRight );
         // Right joystick up/down directions (assume joystick one and hat 0)
-        setDefaultHat( 1, 0, EVENT_HATUP,    Event::JoystickOneUp    );
-        setDefaultHat( 1, 0, EVENT_HATDOWN,  Event::JoystickOneDown  );
+        setDefaultHat( 1, 0, JoyHat::UP,    Event::JoystickOneUp    );
+        setDefaultHat( 1, 0, JoyHat::DOWN,  Event::JoystickOneDown  );
       }
       break;
 
@@ -528,10 +528,10 @@ void EventHandler::JoystickHandler::setStickDefaultMapping(int stick,
         // Left joystick (assume joystick zero, button zero)
         setDefaultBtn( 0, 0, Event::UISelect );
 
-        setDefaultHat( 0, 0, EVENT_HATLEFT,  Event::UILeft  );
-        setDefaultHat( 0, 0, EVENT_HATRIGHT, Event::UIRight );
-        setDefaultHat( 0, 0, EVENT_HATUP,    Event::UIUp    );
-        setDefaultHat( 0, 0, EVENT_HATDOWN,  Event::UIDown  );
+        setDefaultHat( 0, 0, JoyHat::LEFT,  Event::UILeft  );
+        setDefaultHat( 0, 0, JoyHat::RIGHT, Event::UIRight );
+        setDefaultHat( 0, 0, JoyHat::UP,    Event::UIUp    );
+        setDefaultHat( 0, 0, JoyHat::DOWN,  Event::UIDown  );
       }
       break;
 

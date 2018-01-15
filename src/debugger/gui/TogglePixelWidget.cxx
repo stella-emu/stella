@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -40,11 +40,25 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   // Changed state isn't used, but we still need to fill it
   while(int(_changedList.size()) < rows * cols)
     _changedList.push_back(false);
+  // prepare _stateList for change tracking
+  while(int(_stateList.size()) < rows * cols)
+    _stateList.push_back(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TogglePixelWidget::setState(const BoolArray& state)
 {
+  // track changes automatically
+  for(int row = 0; row < _rows; row++)
+  {
+    for(int col = 0; col < _cols; col++)
+    {
+      int pos = row * _cols + col;
+
+       _changedList[pos] = _stateList[pos] != state[pos];
+    }
+  }
+
   _stateList.clear();
   _stateList = state;
 
@@ -133,11 +147,25 @@ void TogglePixelWidget::drawWidget(bool hilite)
       // Either draw the pixel in given color, or erase (show background)
       s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
                  _stateList[pos] ? _pixelColor : _backgroundColor);
+      if (_changedList[pos])
+        s.frameRect(x - 3, y - 1, _colWidth - 1, _rowHeight - 1, kDbgChangedColor);
     }
   }
 
   // Cross out the bits?
   if(_crossBits)
+  {
+#ifndef FLAT_UI
     for(row = 1; row < 4; ++row)
-      s.hLine(_x, _y + (row * lineheight/4), _x + linewidth, kColor);
+      s.hLine(_x, _y + (row * lineheight / 4), _x + linewidth, kColor);
+#else
+    for(col = 0; col < _cols; ++col)
+    {
+      int x = _x + col * _colWidth;
+
+      s.line(x + 1, _y + 1, x + _colWidth - 1, _y + lineheight - 1, kColor);
+      s.line(x + _colWidth - 1, _y + 1, x + 1, _y + lineheight - 1, kColor);
+    }
+#endif
+  }
 }

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "StellaKeys.hxx"
 #include "Widget.hxx"
 #include "ToggleWidget.hxx"
 
@@ -40,7 +41,7 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void ToggleWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
     return;
@@ -61,7 +62,7 @@ void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToggleWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void ToggleWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled() || !_editable)
     return;
@@ -93,8 +94,7 @@ int ToggleWidget::findItem(int x, int y)
 bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all mod keys
-  if(instance().eventHandler().kbdControl(mod) ||
-     instance().eventHandler().kbdAlt(mod))
+  if(StellaModTest::isControl(mod) || StellaModTest::isAlt(mod))
     return true;
 
   bool handled = true;

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -49,7 +49,7 @@ int CartDebugWidget::addBaseInformation(int bytes, const string& manufacturer,
 
   // Add ROM size, manufacturer and bankswitch info
   new StaticTextWidget(_boss, _font, x, y, lwidth,
-        myFontHeight, "ROM Size ", kTextAlignLeft);
+        myFontHeight, "ROM Size ", TextAlign::Left);
   buf << bytes << " bytes";
   if(bytes >= 1024)
     buf << " / " << (bytes/1024) << "KB";
@@ -60,7 +60,7 @@ int CartDebugWidget::addBaseInformation(int bytes, const string& manufacturer,
   y += myLineHeight + 4;
 
   new StaticTextWidget(_boss, _font, x, y, lwidth,
-        myFontHeight, "Manufacturer ", kTextAlignLeft);
+        myFontHeight, "Manufacturer ", TextAlign::Left);
   w = new EditTextWidget(_boss, _nfont, x+lwidth, y,
         fwidth, myLineHeight, manufacturer);
   w->setEditable(false);
@@ -73,7 +73,7 @@ int CartDebugWidget::addBaseInformation(int bytes, const string& manufacturer,
   if(lines > maxlines) lines = maxlines;
 
   new StaticTextWidget(_boss, _font, x, y, lwidth,
-        myFontHeight, "Description ", kTextAlignLeft);
+        myFontHeight, "Description ", TextAlign::Left);
   myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y,
                fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);

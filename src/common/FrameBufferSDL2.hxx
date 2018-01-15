@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -46,11 +46,13 @@ class FrameBufferSDL2 : public FrameBuffer
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
+
     /**
-      Toggles the use of grabmouse (only has effect in emulation mode).
-      The method changes the 'grabmouse' setting and saves it.
+      Updates window title
+
+      @param title   The title of the application / window
     */
-    void toggleGrabMouse();
+    void setTitle(const string& title);
 
     /**
       Shows or hides the cursor based on the given boolean value.

@@ -1,21 +1,31 @@
-===========================================================================
+5.0.2 to 5.1: (January xx, 2018)
 
-     SSSS    tt          lll  lll
-    SS  SS   tt           ll   ll
-    SS     tttttt  eeee   ll   ll   aaaa
-     SSSS    tt   ee  ee  ll   ll      aa
-        SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
-    SS  SS   tt   ee      ll   ll  aa  aa
-     SSSS     ttt  eeeee llll llll  aaaaa
+  * Thumbulator support is not conditional any more.
 
-===========================================================================
-                              Release History
-===========================================================================
+  * Don't trap write accesses to the datastream pointers in CDF  and BUS.
+    This fixes -dev.thumb.trapfatal 1.
 
-5.0.2 to 5.0.3: (August xx, 2017)
+  * Complete rework of TV mode and ystart autodetection. The new
+    implementation is more robust and reduces startup time.
 
-  * Huge improvements to the disassembly view in the debugger:
-    - TODO: add items ...
+  * Add two "grace lines" of black to the top of the frame when
+    autodetecting ystart.
+
+  * Support UNIX style builds (configure / make) on OSX with both
+    XCode / clang and g++.
+
+  * Huge improvements to the disassembly view in the debugger and
+    disassembly files created:
+    - reformatting in debugger for better space utilization
+    - much improved code and data detection
+    - access tracking and indicators for TIA/IO/RAM adresses in disassembly
+    - break vector is tracked (if used)
+    - improved cycle count (page penalties, sums created in disassembly)
+    - improved handling of instruction masking opcodes (e.g. BIT)
+
+  * Added "Time Machine" mode, which automatically creates save states
+    in user-defined intervals.  The user can navigate back and forth within
+    these states inside the emulator and the debugger.
 
   * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc).
 
@@ -38,6 +48,9 @@
     information).  In the case of 'saveses', the filename is now named
     based on the date and time of when the command was entered.
 
+  * Fixed change tracking bug during rewind; changes were accumulated
+    instead of being displayed only for the last rewind step.
+
   * Fixed bug with saving snapshots in 1x mode; there was graphical
     corruption in some cases.  Such snapshots also now include any TV
     effects / phosphor blending currently in use.
@@ -50,16 +63,57 @@
     CompuMate ROM; this controller type can no longer be manually
     selected, and will be used automatically used for CompuMate ROMs.
 
+  * Fixed cheat codes, so 7 digits codes are now accepted as described in
+    the doc.
+
+  * Fixed swapped ports being displayed wrong in System Logs and debugger.
+
+  * Added options to erase the AtariVox/Savekey flash memory, either for
+    all ROMs or only the current one.
+
+  * Moved various developer related settings in new Developer Settings
+    dialog. These settings now come in two groups (player/developer) and
+    allow switching all settings at once.
+
+  * Added new interface palette 'Light'
+
+  * Improved tab auto-complete in debugger
+
+  * Added conditional traps and savestate creation to debugger
+
+  * Extended 'rewind' to take a second parameter which allows rewinding
+    multiple states.
+
+  * Added 'unwind' command, which undoes the latest rewind(s)
+
+  * Added '<' (unwind) button to debugger.
+
+  * Added 'Options...' button to debugger which gives access to the options
+    menu during debugging.
+
+  * Added debugger pseudo-register '_cyclesLo' and '_cyclesHi', which give
+    the number of CPU cycles that have occurred since emulation started.
+
   * Added debugger pseudo-register '_fcycles', which gives the number of
     CPU cycles that have occurred since the frame started.
 
+  * Added debugger pseudo-register '_icycles', which gives the number of
+    CPU cycles of the last instruction.
+
   * Extended debugger 'dump' command to take a second argument, indicating
     the end of the range to dump data.
+
+  * Improved change tracking; more values are tracked and change tracking
+    now works in case of a break too.
+
+  * Added widgets for trackball and SaveKey/AtariVox controllers
 
   * Improved emulation of 'FE' bankswitch scheme (no user-visible changes,
     but internally the emulation is much more accurate compared to the
     real thing).  Related to this, improved the debugger support for this
     scheme (you can now switch banks in the debugger view).
+
+  * Added emulation of 7800 initial RAM values and Pause key.
 
   * Added ROM properties for 'Scramble' ROMs, and updated info for all
     "Champ Games" ROMs.
@@ -67,7 +121,8 @@
   * Added ROM properties for 'Zippy the Porcupine' ROMs, and updated
     info for all "Chris Spry (Sprybug)" ROMs.
 
-  * Fix error when building with uClibc-ng for ARM (thanks to Sergio Prado).
+  * Fixed error when building with uClibc-ng for ARM (thanks to Sergio
+    Prado).
 
   * Updated included PNG library to latest stable version.
 

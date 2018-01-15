@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -19,6 +19,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -48,7 +49,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
     _visible(false),
     _processCancel(false),
     _surface(nullptr),
-    _tabID(0)
+    _tabID(0),
+    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
 {
 }
 
@@ -89,7 +91,7 @@ void Dialog::close(bool refresh)
 {
   if (_mouseWidget)
   {
-    _mouseWidget->handleMouseLeft(0);
+    _mouseWidget->handleMouseLeft();
     _mouseWidget = nullptr;
   }
 
@@ -106,9 +108,8 @@ void Dialog::center()
   if(_surface)
   {
     const GUI::Size& screen = instance().frameBuffer().screenSize();
-    uInt32 x = (screen.w - getWidth()) >> 1;
-    uInt32 y = (screen.h - getHeight()) >> 1;
-    _surface->setDstPos(x, y);
+    const GUI::Rect& dst = _surface->dstRect();
+    _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
   }
 }
 
@@ -269,9 +270,15 @@ void Dialog::drawDialog()
 
   if(_dirty)
   {
-//    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-    s.fillRect(_x, _y, _w, _h, kDlgColor);
-    s.box(_x, _y, _w, _h, kColor, kShadowColor);
+    if(_flags & WIDGET_CLEARBG)
+      //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
+      s.fillRect(_x, _y, _w, _h, kDlgColor);
+    if(_flags & WIDGET_BORDER)
+#ifndef FLAT_UI
+      s.box(_x, _y, _w, _h, kColor, kShadowColor);
+#else
+      s.frameRect(_x, _y, _w, _h, kColor);
+#endif // !FLAT_UI
 
     // Make all child widget dirty
     Widget* w = _firstWidget;
@@ -330,18 +337,18 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Detect selection of previous and next tab headers and objects
   if(key == KBDK_TAB)
   {
-    if(instance().eventHandler().kbdControl(mod))
+    if(StellaModTest::isControl(mod))
     {
       // tab header navigation
-      if(instance().eventHandler().kbdShift(mod) && cycleTab(-1))
+      if(StellaModTest::isShift(mod) && cycleTab(-1))
         return;
-      else if(!instance().eventHandler().kbdShift(mod) && cycleTab(+1))
+      else if(!StellaModTest::isShift(mod) && cycleTab(+1))
         return;
     }
     else
     {
       // object navigation
-      if(instance().eventHandler().kbdShift(mod))
+      if(StellaModTest::isShift(mod))
         e = Event::UINavPrev;
       else
         e = Event::UINavNext;
@@ -373,7 +380,7 @@ void Dialog::handleKeyUp(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
+void Dialog::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   Widget* w = findWidget(x, y);
 
@@ -382,11 +389,11 @@ void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
 
   if(w)
     w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
-                       button, clickCount);
+                       b, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
+void Dialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(_focusedWidget)
   {
@@ -398,7 +405,7 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
   Widget* w = _dragWidget;
   if(w)
     w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
-                     button, clickCount);
+                     b, clickCount);
 
   _dragWidget = nullptr;
 }
@@ -418,7 +425,7 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseMoved(int x, int y, int button)
+void Dialog::handleMouseMoved(int x, int y)
 {
   Widget* w;
 
@@ -434,17 +441,17 @@ void Dialog::handleMouseMoved(int x, int y, int button)
     if(mouseInFocusedWidget && _mouseWidget != w)
     {
       if(_mouseWidget)
-        _mouseWidget->handleMouseLeft(button);
+        _mouseWidget->handleMouseLeft();
       _mouseWidget = w;
-      w->handleMouseEntered(button);
+      w->handleMouseEntered();
     }
     else if (!mouseInFocusedWidget && _mouseWidget == w)
     {
       _mouseWidget = nullptr;
-      w->handleMouseLeft(button);
+      w->handleMouseLeft();
     }
 
-    w->handleMouseMoved(x - wx, y - wy, button);
+    w->handleMouseMoved(x - wx, y - wy);
   }
 
   // While a "drag" is in process (i.e. mouse is moved while a button is pressed),
@@ -457,24 +464,24 @@ void Dialog::handleMouseMoved(int x, int y, int button)
   if (_mouseWidget != w)
   {
     if (_mouseWidget)
-      _mouseWidget->handleMouseLeft(button);
+      _mouseWidget->handleMouseLeft();
     if (w)
-      w->handleMouseEntered(button);
+      w->handleMouseEntered();
     _mouseWidget = w;
   }
 
   if (w && (w->getFlags() & WIDGET_TRACK_MOUSE))
-    w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);
+    w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::handleMouseClicks(int x, int y, int button)
+bool Dialog::handleMouseClicks(int x, int y, MouseButton b)
 {
   Widget* w = findWidget(x, y);
 
   if(w)
     return w->handleMouseClicks(x - (w->getAbsX() - _x),
-                                y - (w->getAbsY() - _y), button);
+                                y - (w->getAbsY() - _y), b);
   else
     return false;
 }
@@ -522,7 +529,7 @@ void Dialog::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::handleJoyHat(int stick, int hat, int value)
+bool Dialog::handleJoyHat(int stick, int hat, JoyHat value)
 {
   Event::Type e =
     instance().eventHandler().eventForJoyHat(stick, hat, value, kMenuMode);

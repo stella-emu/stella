@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -46,10 +46,12 @@ namespace GUI {
 class DebuggerDialog : public Dialog
 {
   public:
+    // Note: these sizes make sure that all major tabs are fully visible
+    //  cart dependend information (e.g. DPC+) may require more space
     enum {
-      kSmallFontMinW  = 1070, kSmallFontMinH  = 720,
-      kMediumFontMinW = 1150, kMediumFontMinH = 770,
-      kLargeFontMinW  = 1150, kLargeFontMinH  = 870
+      kSmallFontMinW  = 1090, kSmallFontMinH  = 720,
+      kMediumFontMinW = 1160, kMediumFontMinH = 770,
+      kLargeFontMinW  = 1160, kLargeFontMinH  = 870
     };
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
@@ -82,6 +84,10 @@ class DebuggerDialog : public Dialog
     void doAdvance();
     void doRewind();
     void doUnwind();
+    void doRewind10();
+    void doUnwind10();
+    void doRewindAll();
+    void doUnwindAll();
     void doExitDebugger();
     void doExitRom();
 

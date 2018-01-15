@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -66,13 +66,12 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
 
   setVersion();
 
-#ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM),
     settings.getBool("thumb.trapfatal"), myVersion ?
     Thumbulator::ConfigureFor::CDF1 : Thumbulator::ConfigureFor::CDF, this);
-#endif
+
   setInitialState();
 }
 
@@ -112,9 +111,7 @@ void CartridgeCDF::setInitialState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::consoleChanged(ConsoleTiming timing)
 {
-#ifdef THUMB_SUPPORT
   myThumbEmulator->setConsoleTiming(timing);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,7 +151,6 @@ inline void CartridgeCDF::callFunction(uInt8 value)
 {
   switch (value)
   {
-#ifdef THUMB_SUPPORT
     // Call user written ARM code (will most likely be C compiled for ARM)
     case 254: // call with IRQ driven audio, no special handling needed at this
               // time for Stella as ARM code "runs in zero 6507 cycles".
@@ -176,7 +172,6 @@ inline void CartridgeCDF::callFunction(uInt8 value)
         }
       }
       break;
-#endif
   }
 }
 

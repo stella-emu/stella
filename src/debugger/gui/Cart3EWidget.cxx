@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -65,7 +65,7 @@ Cartridge3EWidget::Cartridge3EWidget(
         << (start+0x7FF) << "): ";
 
   new StaticTextWidget(_boss, _font, xpos, ypos, _font.getStringWidth(label.str()),
-    myFontHeight, label.str(), kTextAlignLeft);
+    myFontHeight, label.str(), TextAlign::Left);
   ypos += myLineHeight + 8;
 
   xpos += 40;
@@ -94,6 +94,8 @@ void Cartridge3EWidget::saveOldState()
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
   }
+
+  myOldState.bank = myCart.myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,13 +103,13 @@ void Cartridge3EWidget::loadConfig()
 {
   if(myCart.myCurrentBank < 256)
   {
-    myROMBank->setSelectedIndex(myCart.myCurrentBank % myNumRomBanks);
-    myRAMBank->setSelectedMax();
+    myROMBank->setSelectedIndex(myCart.myCurrentBank % myNumRomBanks, myOldState.bank != myCart.myCurrentBank);
+    myRAMBank->setSelectedMax(myOldState.bank >= 256);
   }
   else
   {
-    myROMBank->setSelectedMax();
-    myRAMBank->setSelectedIndex(myCart.myCurrentBank - 256);
+    myROMBank->setSelectedMax(myOldState.bank < 256);
+    myRAMBank->setSelectedIndex(myCart.myCurrentBank - 256, myOldState.bank != myCart.myCurrentBank);
   }
 
   CartDebugWidget::loadConfig();

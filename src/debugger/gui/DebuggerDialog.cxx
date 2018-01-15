@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -19,6 +19,8 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Settings.hxx"
+#include "StellaKeys.hxx"
+#include "EventHandler.hxx"
 #include "TabWidget.hxx"
 #include "TiaInfoWidget.hxx"
 #include "TiaOutputWidget.hxx"
@@ -63,7 +65,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   // Inform the TIA output widget about its associated zoom widget
   myTiaOutput->setZoomWidget(myTiaZoom);
 
-  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, true);
+  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h, OptionsDialog::debugger);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,7 +85,7 @@ void DebuggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  if(key == KBDK_GRAVE && !instance().eventHandler().kbdShift(mod))
+  if(key == KBDK_GRAVE && !StellaModTest::isShift(mod))
   {
     // Swallow backtick, so we don't see it when exiting the debugger
     instance().eventHandler().enableTextEvents(false);
@@ -92,13 +94,23 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
   {
     instance().debugger().parser().run("savesnap");
   }
-  else if(instance().eventHandler().kbdControl(mod))
+  else if(StellaModTest::isControl(mod))
   {
     switch(key)
     {
       case KBDK_R:
-        if(!instance().eventHandler().kbdShift(mod))
+        if(StellaModTest::isAlt(mod))
+          doRewindAll();
+        else if(StellaModTest::isShift(mod))
+          doRewind10();
+        else
           doRewind();
+        break;
+      case KBDK_Y:
+        if(StellaModTest::isAlt(mod))
+          doUnwindAll();
+        else if(StellaModTest::isShift(mod))
+          doUnwind10();
         else
           doUnwind();
         break;
@@ -213,6 +225,30 @@ void DebuggerDialog::doUnwind()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doRewind10()
+{
+  instance().debugger().parser().run("rewind #10");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doUnwind10()
+{
+  instance().debugger().parser().run("unwind #10");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doRewindAll()
+{
+  instance().debugger().parser().run("rewind #1000");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doUnwindAll()
+{
+  instance().debugger().parser().run("unwind #1000");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExitDebugger()
 {
   instance().debugger().parser().run("run");
@@ -317,9 +353,15 @@ void DebuggerDialog::addTabArea()
   int tabID;
 
   // The Prompt/console tab
+#ifndef FLAT_UI
   tabID = myTab->addTab(" Prompt ");
   myPrompt = new PromptWidget(myTab, *myNFont,
                               2, 2, widWidth, widHeight);
+#else
+  tabID = myTab->addTab("Prompt");
+  myPrompt = new PromptWidget(myTab, *myNFont,
+                              2, 2, widWidth - 4, widHeight);
+#endif
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
@@ -374,6 +416,35 @@ void DebuggerDialog::addStatusArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addRomArea()
 {
+  static uInt32 LEFT_ARROW[11] =
+  {
+    0b0000010,
+    0b0000110,
+    0b0001110,
+    0b0011110,
+    0b0111110,
+    0b1111110,
+    0b0111110,
+    0b0011110,
+    0b0001110,
+    0b0000110,
+    0b0000010
+  };
+  static uInt32 RIGHT_ARROW[11] =
+  {
+    0b0100000,
+    0b0110000,
+    0b0111000,
+    0b0111100,
+    0b0111110,
+    0b0111111,
+    0b0111110,
+    0b0111100,
+    0b0111000,
+    0b0110000,
+    0b0100000
+  };
+
   const GUI::Rect& r = getRomBounds();
   const int VBORDER = 4;
   const string ELLIPSIS = "\x1d";
@@ -396,20 +467,23 @@ void DebuggerDialog::addRomArea()
   new ButtonWidget(this, *myLFont, buttonX, buttonY,
                    bwidth, bheight, "Exit", kDDExitCmd);
 
-  bwidth = myLFont->getStringWidth("< ") + 4;
+  bwidth = bheight; // 7 + 12;
   bheight = bheight * 3 + 4 * 2;
   buttonX -= (bwidth + 5);
   buttonY = r.top + 5;
+
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, "<", kDDRewindCmd);
+                     bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd);
+
   myRewindButton->clearFlags(WIDGET_ENABLED);
 
   buttonY += bheight + 4;
   bheight = (myLFont->getLineHeight() + 2) * 2 + 4 * 1;
+
   myUnwindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, ">", kDDUnwindCmd);
+                     bwidth, bheight, RIGHT_ARROW, 7, 11, kDDUnwindCmd);
   myUnwindButton->clearFlags(WIDGET_ENABLED);
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;

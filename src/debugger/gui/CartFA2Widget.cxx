@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -73,7 +73,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 
   StaticTextWidget* t = new StaticTextWidget(boss, _font, xpos, ypos,
       _font.getStringWidth("Harmony Flash "),
-      myFontHeight, "Harmony Flash ", kTextAlignLeft);
+      myFontHeight, "Harmony Flash ", TextAlign::Left);
 
   xpos += t->getWidth() + 4;
   myFlashErase =
@@ -106,12 +106,14 @@ void CartridgeFA2Widget::saveOldState()
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
   }
+
+  myOldState.bank = myCart.getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2Widget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank());
+  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
 
   CartDebugWidget::loadConfig();
 }

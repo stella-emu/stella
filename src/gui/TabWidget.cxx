@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -171,7 +171,7 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   assert(y < _tabHeight);
 
@@ -191,6 +191,20 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
     setActiveTab(tabID, true);
     updateActiveTab();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::handleMouseEntered()
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::handleMouseLeft()
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,11 +253,12 @@ void TabWidget::loadConfig()
   updateActiveTab();
 }
 
+#ifndef FLAT_UI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::box(int x, int y, int width, int height,
                     uInt32 colorA, uInt32 colorB, bool omitBottom)
 {
-//cerr << "TabWidget::box\n";
+  //cerr << "TabWidget::box\n";
   FBSurface& s = _boss->dialog().surface();
 
   s.hLine(x + 1, y, x + width - 2, colorA);
@@ -259,6 +274,7 @@ void TabWidget::box(int x, int y, int width, int height,
   s.vLine(x + width - 1, y + 1, y + height - (omitBottom ? 1 : 2), colorB);
   s.vLine(x + width - 2, y + 1, y + height - (omitBottom ? 2 : 1), colorB);
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::drawWidget(bool hilite)
@@ -275,24 +291,43 @@ void TabWidget::drawWidget(bool hilite)
   const int left2  = right1 + _tabWidth;
   const int right2 = _x + _w - 2;
 
+#ifndef FLAT_UI
   // Draw horizontal line
   s.hLine(left1, _y + _tabHeight - 2, right1, kShadowColor);
   s.hLine(left2, _y + _tabHeight - 2, right2, kShadowColor);
+#endif
 
   // Iterate over all tabs and draw them
   int i, x = _x + kTabLeftOffset;
   for (i = 0; i < int(_tabs.size()); ++i)
   {
     uInt32 fontcolor = _tabs[i].enabled ? kTextColor : kColor;
+#ifndef FLAT_UI
     uInt32 boxcolor = (i == _activeTab) ? kColor : kShadowColor;
     int yOffset = (i == _activeTab) ? 0 : 2;
     box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, boxcolor, boxcolor, (i == _activeTab));
     s.drawString(_font, _tabs[i].title, x + kTabPadding,
                  _y + yOffset / 2 + (_tabHeight - _fontHeight - 1),
-                 _tabWidth - 2 * kTabPadding, fontcolor, kTextAlignCenter);
+                 _tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
+#else
+    int yOffset = (i == _activeTab) ? 0 : 1;
+    s.fillRect(x, _y + 1, _tabWidth, _tabHeight - 1, (i == _activeTab)
+               ? kDlgColor : kBGColorHi); // ? kWidColor : kDlgColor
+    s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
+                 _y + yOffset + (_tabHeight - _fontHeight - 1),
+                 _tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
+    if(i == _activeTab)
+    {
+      s.hLine(x, _y, x + _tabWidth - 1, kWidColor);
+      s.vLine(x + _tabWidth, _y + 1, _y + _tabHeight - 1, kBGColorLo);
+    }
+    else
+      s.hLine(x, _y + _tabHeight, x + _tabWidth, kWidColor);
+#endif
     x += _tabWidth + kTabSpacing;
   }
 
+#ifndef FLAT_UI
   // Draw a frame around the widget area (belows the tabs)
   s.hLine(left1, _y + _tabHeight - 1, right1, kColor);
   s.hLine(left2, _y + _tabHeight - 1, right2, kColor);
@@ -300,6 +335,11 @@ void TabWidget::drawWidget(bool hilite)
   s.hLine(_x+1, _y + _h - 1, _x + _w - 2, kColor);
   s.vLine(_x + _w - 2, _y + _tabHeight - 1, _y + _h - 2, kColor);
   s.vLine(_x + _w - 1, _y + _tabHeight - 1, _y + _h - 2, kShadowColor);
+#else
+  // fill empty right space
+  s.hLine(x - kTabSpacing + 1, _y + _tabHeight, _x + _w - 1, kWidColor);
+  s.hLine(_x, _y + _h - 1, _x + _w - 1, kBGColorLo);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

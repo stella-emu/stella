@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -27,7 +27,7 @@
 
 #include "StateManager.hxx"
 
-#define STATE_HEADER "05000304state"
+#define STATE_HEADER "05009901state"
 // #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,29 +129,30 @@ void StateManager::toggleRecordMode()
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StateManager::toggleRewindMode()
+void StateManager::toggleTimeMachine()
 {
-  myActiveMode = myActiveMode == Mode::Rewind ? Mode::Off : Mode::Rewind;
-  if(myActiveMode == Mode::Rewind)
-    myOSystem.frameBuffer().showMessage("Continuous rewind enabled");
+  bool devSettings = myOSystem.settings().getBool("dev.settings");
+
+  myActiveMode = myActiveMode == Mode::TimeMachine ? Mode::Off : Mode::TimeMachine;
+  if(myActiveMode == Mode::TimeMachine)
+    myOSystem.frameBuffer().showMessage("Time Machine enabled");
   else
-    myOSystem.frameBuffer().showMessage("Continuous rewind disabled");
+    myOSystem.frameBuffer().showMessage("Time Machine disabled");
+  myOSystem.settings().setValue(devSettings ? "dev.timemachine" : "plr.timemachine", myActiveMode == Mode::TimeMachine);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::rewindState()
+bool StateManager::rewindState(uInt32 numStates)
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  // TODO: add parameter to indicate rewinding from within emulation
-  return r.rewindState();
+  return r.rewindState(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::unwindState()
+bool StateManager::unwindState(uInt32 numStates)
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  // TODO: add parameter to indicate unwinding from within emulation
-  return r.unwindState();
+  return r.unwindState(numStates);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,8 +160,8 @@ void StateManager::update()
 {
   switch(myActiveMode)
   {
-    case Mode::Rewind:
-      myRewindManager->addState("add 1 frame");
+    case Mode::TimeMachine:
+      myRewindManager->addState("Time Machine", true);
       break;
 
 #if 0
@@ -356,7 +357,7 @@ void StateManager::reset()
 {
   myRewindManager->clear();
   myActiveMode = myOSystem.settings().getBool(
-    myOSystem.settings().getBool("dev.settings") ? "dev.rewind" : "plr.rewind") ? Mode::Rewind : Mode::Off;
+    myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine") ? Mode::TimeMachine : Mode::Off;
 
 #if 0
   myCurrentSlot = 0;

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -40,6 +40,7 @@ class RiotState : public DebuggerState
 
     // These are actually from the TIA, but are I/O related
     uInt8 INPT0, INPT1, INPT2, INPT3, INPT4, INPT5;
+    bool INPTLatch, INPTDump;
 };
 
 class RiotDebug : public DebuggerSystem

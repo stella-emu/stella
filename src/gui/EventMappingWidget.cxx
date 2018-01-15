@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -108,8 +108,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   xpos = 10;  ypos = 5 + myActionsList->getHeight() + 5;
   StaticTextWidget* t;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
-                           fontHeight, "Action", kTextAlignLeft);
-  t->setFlags(WIDGET_CLEARBG);
+                           fontHeight, "Action", TextAlign::Left);
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,
                                     _w - xpos - t->getWidth() - 15, lineHeight, "");
@@ -303,7 +302,7 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
+bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHat value)
 {
   // Remap joystick hats in remap mode
   // There are two phases to detection:
@@ -312,19 +311,19 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
   if(myRemapStatus && myActionSelected >= 0)
   {
     // Detect the first hat event that represents a valid direction
-    if(myLastStick == -1 && myLastHat == -1 && value != EVENT_HATCENTER)
+    if(myLastStick == -1 && myLastHat == -1 && value != JoyHat::CENTER)
     {
       myLastStick = stick;
       myLastHat = hat;
-      myLastValue = value;
+      myLastValue = int(value);
 
       return true;
     }
     // Detect the first hat event that matches a previously set
     // stick and hat, but centers the hat
-    else if(myLastStick == stick && hat == myLastHat && value == EVENT_HATCENTER)
+    else if(myLastStick == stick && hat == myLastHat && value == JoyHat::CENTER)
     {
-      value = myLastValue;
+      value = JoyHat(myLastValue);
 
       Event::Type event =
         instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -21,6 +21,7 @@
 #include "RadioButtonWidget.hxx"
 
 /*  Radiobutton bitmaps */
+#ifndef FLAT_UI
 static uInt32 radio_img_outercircle[14] =
 {
   0b00001111110000,
@@ -76,6 +77,69 @@ static uInt32 radio_img_inactive[8] =
   0b01111110,
   0b00111100
 };
+#else
+static uInt32 radio_img_outercircle[14] =
+{
+  0b00001111110000,
+  0b00110000001100,
+  0b01000000000010,
+  0b01000000000010,
+  0b10000000000001,
+  0b10000000000001,
+  0b10000000000001,
+  0b10000000000001,
+  0b10000000000001,
+  0b10000000000001,
+  0b01000000000010,
+  0b01000000000010,
+  0b00110000001100,
+  0b00001111110000
+};
+
+static uInt32 radio_img_innercircle[12] =
+{
+  0b000111111000,
+  0b011111111110,
+  0b011111111110,
+  0b111111111111,
+  0b111111111111,
+  0b111111111111,
+  0b111111111111,
+  0b111111111111,
+  0b111111111111,
+  0b011111111110,
+  0b011111111110,
+  0b000111111000
+};
+
+static uInt32 radio_img_active[10] =
+{
+  0b0011111100,
+  0b0111111110,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b0111111110,
+  0b0011111100,
+};
+
+static uInt32 radio_img_inactive[10] =
+{
+  0b0011111100,
+  0b0111111110,
+  0b1111001111,
+  0b1110000111,
+  0b1100000011,
+  0b1100000011,
+  0b1110000111,
+  0b1111001111,
+  0b0111111110,
+  0b0011111100
+};
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
@@ -109,7 +173,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RadioButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void RadioButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)
   {
@@ -153,6 +217,7 @@ void RadioButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
+#ifndef FLAT_UI
   // Draw the outer bounding circle
   s.drawBitmap(radio_img_outercircle, _x, _y + _boxY, kShadowColor, 14, 14);
 
@@ -162,6 +227,20 @@ void RadioButtonWidget::drawWidget(bool hilite)
   // draw state
   if(_state)
     s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
+#else
+  // Draw the outer bounding circle
+  s.drawBitmap(radio_img_outercircle, _x, _y + _boxY, hilite ? kScrollColorHi : kShadowColor, 14, 14);
+
+  // Draw the inner bounding circle with enabled color
+  s.drawBitmap(radio_img_innercircle, _x + 1, _y + _boxY + 1, isEnabled()
+               ? _bgcolor : kColor, 12, 12);
+
+  // draw state
+  if(_state)
+    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled()
+                 ? hilite ? kScrollColorHi : kCheckColor
+                 : kShadowColor, 10);
+#endif
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,
@@ -201,7 +280,7 @@ void RadioButtonGroup::setSelected(uInt32 selected)
   mySelected = selected;
   for(const auto& w : myWidgets)
   {
-    ((RadioButtonWidget*)w)->setState(i == mySelected);
+    (static_cast<RadioButtonWidget*>(w))->setState(i == mySelected);
     i++;
   }
 }

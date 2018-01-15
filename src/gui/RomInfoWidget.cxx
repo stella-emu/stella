@@ -8,13 +8,14 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "Dialog.hxx"
 #include "FBSurface.hxx"
@@ -26,7 +27,6 @@
 #include "Rect.hxx"
 #include "Widget.hxx"
 #include "TIAConstants.hxx"
-
 #include "RomInfoWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,7 +59,7 @@ void RomInfoWidget::setProperties(const Properties& props)
   myProperties = props;
 
   // Decide whether the information should be shown immediately
-  if(instance().eventHandler().state() == EventHandler::S_LAUNCHER)
+  if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     parseProperties();
 }
 
@@ -71,7 +71,7 @@ void RomInfoWidget::clearProperties()
     mySurface->setVisible(mySurfaceIsValid);
 
   // Decide whether the information should be shown immediately
-  if(instance().eventHandler().state() == EventHandler::S_LAUNCHER)
+  if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
 }
 

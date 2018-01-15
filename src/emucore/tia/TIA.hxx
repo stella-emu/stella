@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -23,7 +23,6 @@
 #include "Settings.hxx"
 #include "Device.hxx"
 #include "Serializer.hxx"
-#include "TIATypes.hxx"
 #include "TIAConstants.hxx"
 #include "DelayQueue.hxx"
 #include "DelayQueueIterator.hxx"
@@ -441,6 +440,11 @@ class TIA : public Device
     */
     string name() const override { return "TIA"; }
 
+    /**
+     * Run and forward TIA emulation to the current system clock.
+     */
+    void updateEmulation();
+
   private:
     /**
      * During each line, the TIA cycles through these two states.
@@ -458,6 +462,7 @@ class TIA : public Device
      */
     enum FixedObject { P0, M0, P1, M1, PF, BL };
     FixedColor myFixedColorPalette[2][6];
+    string myFixedColorNames[6];
 
   private:
 
@@ -477,11 +482,6 @@ class TIA : public Device
      * for the cycles the 6502 spent in halt state.
      */
     void onHalt();
-
-    /**
-     * Run and forward TIA emulation to the current system clock.
-     */
-    void updateEmulation();
 
     /**
      * Execute colorClocks cycles of TIA simulation.
@@ -561,6 +561,25 @@ class TIA : public Device
     uInt8 collCXM1FB() const;
     uInt8 collCXPPMM() const;
     uInt8 collCXBLPF() const;
+
+    /**
+      Toggle the specified collision bits
+    */
+    void toggleCollP0PF();
+    void toggleCollP0BL();
+    void toggleCollP0M1();
+    void toggleCollP0M0();
+    void toggleCollP0P1();
+    void toggleCollP1PF();
+    void toggleCollP1BL();
+    void toggleCollP1M1();
+    void toggleCollP1M0();
+    void toggleCollM0PF();
+    void toggleCollM0BL();
+    void toggleCollM0M1();
+    void toggleCollM1PF();
+    void toggleCollM1BL();
+    void toggleCollBLPF();
 
   #ifdef DEBUGGER_SUPPORT
     void createAccessBase();
@@ -754,13 +773,14 @@ class TIA : public Device
     bool myEnableJitter;
     uInt8 myJitterFactor;
 
-#ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
     BytePtr myAccessBase;
+
     // The array used to skip the first two TIA access trackings
     BytePtr myAccessDelay;
-#endif // DEBUGGER_SUPPORT
+  #endif // DEBUGGER_SUPPORT
 
     static constexpr uInt16
       TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;

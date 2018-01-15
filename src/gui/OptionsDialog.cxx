@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -17,6 +17,7 @@
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "Widget.hxx"
@@ -45,9 +46,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
-                             GuiObject* boss, int max_w, int max_h, bool global)
+                             GuiObject* boss, int max_w, int max_h, stellaMode mode)
   : Dialog(osystem, parent),
-    myIsGlobal(global)
+    myMode(mode)
 {
   const GUI::Font& font = instance().frameBuffer().font();
   const int buttonWidth = font.getStringWidth("Developer Settings" + ELLIPSIS) + 20,
@@ -122,7 +123,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h, myIsGlobal);
+  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h);
   myAudioDialog    = make_unique<AudioDialog>(osystem, parent, font);
   myInputDialog    = make_unique<InputDialog>(osystem, parent, font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, font);
@@ -141,7 +142,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
-  if(myIsGlobal)
+  if(myMode == launcher)
   {
     myCheatCodeButton->clearFlags(WIDGET_ENABLED);
   }
@@ -164,10 +165,10 @@ void OptionsDialog::loadConfig()
   // in launcher mode
   switch(instance().eventHandler().state())
   {
-    case EventHandler::S_EMULATE:
+    case EventHandlerState::EMULATION:
       myGameInfoButton->setFlags(WIDGET_ENABLED);
       break;
-    case EventHandler::S_LAUNCHER:
+    case EventHandlerState::LAUNCHER:
       if(instance().launcher().selectedRomMD5() != "")
         myGameInfoButton->setFlags(WIDGET_ENABLED);
       else
@@ -225,7 +226,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     case kLoggerCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      if(!myIsGlobal)
+      if(myMode != launcher)
       {
         uInt32 w = 0, h = 0;
         bool uselargefont = getResizableBounds(w, h);
@@ -249,7 +250,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      if(myIsGlobal)
+      if(myMode != emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

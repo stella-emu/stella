@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -77,20 +77,20 @@ class DialogContainer
     /**
       Handle a mouse motion event.
 
-      @param x      The x location
-      @param y      The y location
-      @param button The currently pressed button
+      @param x  The x location
+      @param y  The y location
     */
-    void handleMouseMotionEvent(int x, int y, int button);
+    void handleMouseMotionEvent(int x, int y);
 
     /**
       Handle a mouse button event.
 
-      @param b     The mouse button
-      @param x     The x location
-      @param y     The y location
+      @param b        The mouse button
+      @param pressed  Whether the button was pressed (true) or released (false)
+      @param x        The x location
+      @param y        The y location
     */
-    void handleMouseButtonEvent(MouseButton b, int x, int y);
+    void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
 
     /**
       Handle a joystick button event.
@@ -173,7 +173,7 @@ class DialogContainer
     struct {
       int x;
       int y;
-      int button;
+      MouseButton b;
     } myCurrentMouseDown;
     uInt64 myClickRepeatTime;
 
@@ -196,7 +196,7 @@ class DialogContainer
     struct {
       int stick;
       int hat;
-      int value;
+      JoyHat value;
     } myCurrentHatDown;
     uInt64 myHatRepeatTime;
 

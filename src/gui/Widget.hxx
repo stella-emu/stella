@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -68,17 +68,17 @@ class Widget : public GuiObject
     virtual bool handleText(char text)                        { return false; }
     virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }
     virtual bool handleKeyUp(StellaKey key, StellaMod mod)    { return false; }
-    virtual void handleMouseDown(int x, int y, int button, int clickCount) { }
-    virtual void handleMouseUp(int x, int y, int button, int clickCount) { }
-    virtual void handleMouseEntered(int button) { }
-    virtual void handleMouseLeft(int button) { }
-    virtual void handleMouseMoved(int x, int y, int button) { }
+    virtual void handleMouseDown(int x, int y, MouseButton b, int clickCount) { }
+    virtual void handleMouseUp(int x, int y, MouseButton b, int clickCount) { }
+    virtual void handleMouseEntered() { }
+    virtual void handleMouseLeft() { }
+    virtual void handleMouseMoved(int x, int y) { }
     virtual void handleMouseWheel(int x, int y, int direction) { }
-    virtual bool handleMouseClicks(int x, int y, int button) { return false; }
+    virtual bool handleMouseClicks(int x, int y, MouseButton b) { return false; }
     virtual void handleJoyDown(int stick, int button) { }
     virtual void handleJoyUp(int stick, int button) { }
     virtual void handleJoyAxis(int stick, int axis, int value) { }
-    virtual bool handleJoyHat(int stick, int hat, int value) { return false; }
+    virtual bool handleJoyHat(int stick, int hat, JoyHat value) { return false; }
     virtual bool handleEvent(Event::Type event) { return false; }
 
     void draw() override;
@@ -176,23 +176,23 @@ class StaticTextWidget : public Widget
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
-                     const string& text, TextAlignment align = kTextAlignLeft);
+                     const string& text, TextAlign align = TextAlign::Left);
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y,
-                     const string& text, TextAlignment align = kTextAlignLeft);
+                     const string& text, TextAlign align = TextAlign::Left);
     void setValue(int value);
     void setLabel(const string& label);
-    void setAlign(TextAlignment align)  { _align = align; }
-    const string& getLabel() const      { return _label; }
-    bool isEditable() const { return _editable;  }
+    void setAlign(TextAlign align) { _align = align; }
+    const string& getLabel() const { return _label; }
+    bool isEditable() const { return _editable; }
 
   protected:
     void drawWidget(bool hilite) override;
 
   protected:
-    string        _label;
-    bool          _editable;
-    TextAlignment _align;
+    string    _label;
+    bool      _editable;
+    TextAlign _align;
 
   private:
     // Following constructors and assignment operators not supported
@@ -217,20 +217,27 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  const string& label, int cmd = 0);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int dw, int dh,
+                 uInt32* bitmap, int bmw, int bmh,
+                 int cmd = 0);
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
 
   protected:
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
-    void handleMouseEntered(int button) override;
-    void handleMouseLeft(int button) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
     bool handleEvent(Event::Type event) override;
 
     void drawWidget(bool hilite) override;
 
   protected:
-    int    _cmd;
+    int     _cmd;
+    bool    _useBitmap;
+    uInt32* _bitmap;
+    int     _bmw, _bmh;
 
   private:
     // Following constructors and assignment operators not supported
@@ -256,13 +263,13 @@ class CheckboxWidget : public ButtonWidget
     void setEditable(bool editable);
     void setFill(FillType type);
 
-    void setState(bool state);
+    void setState(bool state, bool changed = false);
     void toggleState()     { setState(!_state); }
     bool getState() const  { return _state;     }
 
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
-    void handleMouseEntered(int button) override	{ }
-    void handleMouseLeft(int button) override	{ }
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
 
     static int boxSize() { return 14; }  // box is square
 
@@ -273,6 +280,7 @@ class CheckboxWidget : public ButtonWidget
     bool _state;
     bool _holdFocus;
     bool _drawBox;
+    bool _changed;
 
     uInt32* _img;
     uInt32  _fillColor;
@@ -307,9 +315,9 @@ class SliderWidget : public ButtonWidget
     int  getStepValue() const     { return _stepValue; }
 
   protected:
-    void handleMouseMoved(int x, int y, int button) override;
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
-    void handleMouseUp(int x, int y, int button, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type event) override;
 

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -34,7 +34,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
-                         const GUI::Font& font, int max_w, int max_h, bool isGlobal)
+                         const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent)
 {
   const int VGAP = 4;
@@ -55,13 +55,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(52 * fontWidth + 10, max_w);
-  _h = std::min(16 * (lineHeight + 4) + 14, max_h);
+  _h = std::min(16 * (lineHeight + VGAP) + 14, max_h);
 
   // The tab widget
-  xpos = HBORDER;  ypos = VBORDER;
+  xpos = 2;  ypos = 4;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
 
+  xpos = HBORDER;  ypos = VBORDER;
   //////////////////////////////////////////////////////////
   // 1) General options
   tabID = myTab->addTab(" General ");
@@ -115,8 +116,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myNAspectRatio);
   myNAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myNAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
-  myNAspectRatioLabel->setFlags(WIDGET_CLEARBG);
+                         ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (PAL mode)
@@ -127,8 +127,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myPAspectRatio);
   myPAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myPAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
-  myPAspectRatioLabel->setFlags(WIDGET_CLEARBG);
+                         ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
   ypos += lineHeight + VGAP;
 
   // Framerate
@@ -140,15 +139,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myFrameRate);
   myFrameRateLabel =
     new StaticTextWidget(myTab, font, xpos + myFrameRate->getWidth() + 4,
-                         ypos + 1, fontWidth * 4, fontHeight, "", kTextAlignLeft);
-  myFrameRateLabel->setFlags(WIDGET_CLEARBG);
+                         ypos + 1, fontWidth * 4, fontHeight, "", TextAlign::Left);
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
   new StaticTextWidget(myTab, infofont, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
-        "(*) Requires application restart", kTextAlignLeft);
+        "(*) Requires application restart", TextAlign::Left);
 
   // Move over to the next column
   xpos += myNAspectRatio->getWidth() + myNAspectRatioLabel->getWidth() + 30;
@@ -228,8 +226,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myTV ## obj);                                            \
   myTV ## obj ## Label =                                                 \
     new StaticTextWidget(myTab, font, xpos+myTV ## obj->getWidth()+4,    \
-                    ypos+1, fontWidth*3, fontHeight, "", kTextAlignLeft);\
-  myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
+                    ypos+1, fontWidth*3, fontHeight, "", TextAlign::Left);\
   ypos += lineHeight + VGAP;
 
   pwidth = swidth;
@@ -269,7 +266,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   xpos -= 8+8;
   myTVScanLabel =
     new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings"),
-                         fontHeight, "Scanline settings", kTextAlignLeft);
+                         fontHeight, "Scanline settings", TextAlign::Left);
   ypos += lineHeight;
 
   xpos += 8+8;
@@ -511,9 +508,9 @@ void VideoDialog::setDefaults()
       myFrameTiming->setSelected("sleep", "");
       myTIAInterpolate->setSelected("nearest", "");
       myNAspectRatio->setValue(90);
-      myNAspectRatioLabel->setLabel("90");
+      myNAspectRatioLabel->setLabel("91");
       myPAspectRatio->setValue(100);
-      myPAspectRatioLabel->setLabel("100");
+      myPAspectRatioLabel->setLabel("109");
       myFrameRate->setValue(0);
       myFrameRateLabel->setLabel("Auto");
 

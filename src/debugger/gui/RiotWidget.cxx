@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -67,7 +67,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
 #define CREATE_IO_REGS(desc, bits, bitsID, editable)                     \
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,\
-                           desc, kTextAlignLeft);                        \
+                           desc, TextAlign::Left);                        \
   xpos += t->getWidth() + 5;                                             \
   bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1);             \
   bits->setTarget(this);                                                 \
@@ -106,7 +106,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int row = 0; row < 4; ++row)
   {
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                             lwidth, fontHeight, writeNames[row], kTextAlignLeft);
+                             lwidth, fontHeight, writeNames[row], TextAlign::Left);
   }
   xpos += t->getWidth() + 5;
   myTimWrite = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::F_16);
@@ -120,7 +120,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int row = 0; row < 4; ++row)
   {
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                             10*fontWidth, fontHeight, readNames[row], kTextAlignLeft);
+                             10*fontWidth, fontHeight, readNames[row], TextAlign::Left);
   }
   xpos += t->getWidth() + 5;
   myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::F_16);
@@ -142,7 +142,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int row = 0; row < 3; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         5*fontWidth, fontHeight, contLeftReadNames[row], kTextAlignLeft);
+                         5*fontWidth, fontHeight, contLeftReadNames[row], TextAlign::Left);
   }
   xpos += 5*fontWidth + 5;
   myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
@@ -155,7 +155,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   for(int row = 0; row < 3; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                         5*fontWidth, fontHeight, contRightReadNames[row], kTextAlignLeft);
+                         5*fontWidth, fontHeight, contRightReadNames[row], TextAlign::Left);
   }
   xpos += 5*fontWidth + 5;
   myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
@@ -288,8 +288,8 @@ void RiotWidget::loadConfig()
   myRightINPT->setList(alist, vlist, changed);
 
   // Update TIA VBLANK bits
-  myINPTLatch->setState(riot.vblank(6));
-  myINPTDump->setState(riot.vblank(7));
+  myINPTLatch->setState(riot.vblank(6), state.INPTLatch != oldstate.INPTLatch);
+  myINPTDump->setState(riot.vblank(7), state.INPTDump != oldstate.INPTDump);
 
   // Update timer write registers
   alist.clear();  vlist.clear();  changed.clear();
@@ -317,16 +317,17 @@ void RiotWidget::loadConfig()
 
   // Console switches (inverted, since 'selected' in the UI
   // means 'grounded' in the system)
-  myP0Diff->setSelectedIndex(riot.diffP0());
-  myP1Diff->setSelectedIndex(riot.diffP1());
+  myP0Diff->setSelectedIndex(riot.diffP0(), state.swchbReadBits[1] != oldstate.swchbReadBits[1]);
+  myP1Diff->setSelectedIndex(riot.diffP1(), state.swchbReadBits[0] != oldstate.swchbReadBits[0]);
 
   bool devSettings = instance().settings().getBool("dev.settings");
   myConsole->setText(instance().settings().getString(devSettings ? "dev.console" : "plr.console") == "7800" ? "Atari 7800" : "Atari 2600");
   myConsole->setEditable(false, true);
 
-  myTVType->setSelectedIndex(riot.tvType());
-  mySelect->setState(!riot.select());
-  myReset->setState(!riot.reset());
+  myTVType->setSelectedIndex(riot.tvType(), state.swchbReadBits[4] != oldstate.swchbReadBits[4]);
+  myPause->setState(!riot.tvType(), state.swchbReadBits[4] != oldstate.swchbReadBits[4]);
+  mySelect->setState(!riot.select(), state.swchbReadBits[6] != oldstate.swchbReadBits[6]);
+  myReset->setState(!riot.reset(), state.swchbReadBits[7] != oldstate.swchbReadBits[7]);
 
   myLeftControl->loadConfig();
   myRightControl->loadConfig();

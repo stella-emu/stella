@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -123,12 +123,12 @@ void RomListSettings::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListSettings::handleMouseDown(int x, int y, int button, int clickCount)
+void RomListSettings::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Close dialog if mouse click is outside it (simulates a context menu)
   // Otherwise let the base dialog class process it
   if(x >= 0 && x < _w && y >= 0 && y < _h)
-    Dialog::handleMouseDown(x, y, button, clickCount);
+    Dialog::handleMouseDown(x, y, b, clickCount);
   else
     close();
 }

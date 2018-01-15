@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -69,13 +69,16 @@ void CartridgeMNetworkWidget::saveOldState()
   {
     myOldState.internalram.push_back(myCart.myRAM[i]);
   }
+
+  myOldState.lowerBank = myCart.myCurrentSlice[0];
+  myOldState.upperBank = myCart.myCurrentRAM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetworkWidget::loadConfig()
 {
-  myLower2K->setSelectedIndex(myCart.myCurrentSlice[0]);
-  myUpper256B->setSelectedIndex(myCart.myCurrentRAM);
+  myLower2K->setSelectedIndex(myCart.myCurrentSlice[0], myCart.myCurrentSlice[0] != myOldState.lowerBank);
+  myUpper256B->setSelectedIndex(myCart.myCurrentRAM, myCart.myCurrentRAM != myOldState.upperBank);
 
   CartDebugWidget::loadConfig();
 }

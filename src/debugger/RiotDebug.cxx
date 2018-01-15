@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -54,6 +54,9 @@ const DebuggerState& RiotDebug::getState()
   myState.INPT4 = inpt(4);
   myState.INPT5 = inpt(5);
 
+  myState.INPTLatch = vblank(6);
+  myState.INPTDump = vblank(7);
+
   // Timer registers
   myState.TIM1T     = tim1T();
   myState.TIM8T     = tim8T();
@@ -91,6 +94,9 @@ void RiotDebug::saveOldState()
   myOldState.INPT3 = inpt(3);
   myOldState.INPT4 = inpt(4);
   myOldState.INPT5 = inpt(5);
+
+  myOldState.INPTLatch = vblank(6);
+  myOldState.INPTDump = vblank(7);
 
   // Timer registers
   myOldState.TIM1T     = tim1T();

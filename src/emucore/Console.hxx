@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -31,9 +31,10 @@ class Debugger;
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
-#include "TIATypes.hxx"
+#include "TIAConstants.hxx"
 #include "FrameBuffer.hxx"
 #include "Serializable.hxx"
+#include "EventHandlerConstants.hxx"
 #include "NTSCFilter.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
 
@@ -184,7 +185,7 @@ class Console : public Serializable
     /**
       Informs the Console of a change in EventHandler state.
     */
-    void stateChanged(EventHandler::State state);
+    void stateChanged(EventHandlerState state);
 
   public:
     /**

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -76,8 +76,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherWidthLabel =
       new StaticTextWidget(myTab, font,
                            xpos + myLauncherWidthSlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
-  myLauncherWidthLabel->setFlags(WIDGET_CLEARBG);
+                           ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
   ypos += lineHeight + 4;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
@@ -90,8 +89,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherHeightLabel =
       new StaticTextWidget(myTab, font,
                            xpos + myLauncherHeightSlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
-  myLauncherHeightLabel->setFlags(WIDGET_CLEARBG);
+                           ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
   ypos += lineHeight + 4;
 
   // Launcher font
@@ -133,7 +131,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = ifont.getStringWidth("(*) Changes require application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Changes require application restart",
-                       kTextAlignLeft);
+                       TextAlign::Left);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -151,6 +149,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   items.clear();
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
+  VarList::push_back(items, "Light", "light");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Interface Palette (*) ", lwidth);
   wid.push_back(myPalettePopup);
@@ -168,7 +167,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "900 ms", "900");
   VarList::push_back(items, "1 second", "1000");
   myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "List quick delay (*) ", lwidth);
+                                     items, "List quick delay ", lwidth);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 
@@ -194,7 +193,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = ifont.getStringWidth("(*) Requires application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Requires application restart",
-                       kTextAlignLeft);
+                       TextAlign::Left);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);

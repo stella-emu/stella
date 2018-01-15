@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -21,8 +21,6 @@
 // Modified by Fred Quimby
 // Code is public domain and used with the author's consent
 //============================================================================
-
-#ifdef THUMB_SUPPORT
 
 #include "bspf.hxx"
 #include "Base.hxx"
@@ -226,28 +224,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
   if((addr > 0x40001fff) && (addr < 0x50000000))
     fatalError("write16", addr, "abort - out of range");
 
-  switch(configuration)
-  {
-    // this protects 2K Harmony/Melody Drivers
-    // Initial section of driver is the bootstrap which copies the driver
-    // from ROM to RAM, so it can safely be used by the custom ARM code
-    // as additional RAM
-    case ConfigureFor::BUS:
-    case ConfigureFor::CDF:
-    case ConfigureFor::CDF1:
-      if((addr > 0x40000028) && (addr < 0x40000800))
-        fatalError("write16", addr, "to bankswitch code area");
-      break;
-
-    // this protects 3K Harmony/Melody Drivers
-    // Initial section of driver is the bootstrap which copies the driver
-    // from ROM to RAM, so it can safely be used by the custom ARM code
-    // as additional RAM
-    case ConfigureFor::DPCplus:
-      if((addr > 0x40000028) && (addr < 0x40000c00))
-        fatalError("write16", addr, "to bankswitch code area");
-      break;
-  }
+  if (isProtected(addr)) fatalError("write16", addr, "to driver area");
 
   if(addr & 1)
     fatalError("write16", addr, "abort - misaligned");
@@ -281,6 +258,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
   if(addr & 3)
     fatalError("write32", addr, "abort - misaligned");
 
+  if (isProtected(addr)) fatalError("write32", addr, "to driver area");
   DO_DBUG(statusMsg << "write32(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")" << endl);
 
   switch(addr & 0xF0000000)
@@ -354,6 +332,29 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       return;
   }
   fatalError("write32", addr, data, "abort");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Thumbulator::isProtected(uInt32 addr)
+{
+  if (addr < 0x40000000) return false;
+  addr -= 0x40000000;
+
+  switch (configuration) {
+    case ConfigureFor::DPCplus:
+      return (addr < 0x0c00) && (addr > 0x0028);
+
+    case ConfigureFor::CDF:
+      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x06e0) && (addr < (0x0e60 + 284)));
+
+    case ConfigureFor::CDF1:
+      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x00a0) && (addr < (0x00a0 + 284)));
+
+    case ConfigureFor::BUS:
+      return  (addr < 0x06d8) && (addr > 0x0028);
+  }
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2358,5 +2359,3 @@ int Thumbulator::reset()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::trapOnFatal = true;
-
-#endif

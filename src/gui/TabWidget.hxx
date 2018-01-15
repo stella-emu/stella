@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -59,7 +59,10 @@ class TabWidget : public Widget, public CommandSender
     void loadConfig() override;
 
   protected:
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     bool handleEvent(Event::Type event) override;
 
@@ -87,15 +90,22 @@ class TabWidget : public Widget, public CommandSender
     bool    _firstTime;
 
     enum {
+#ifndef FLAT_UI
       kTabLeftOffset = 4,
       kTabSpacing = 2,
       kTabPadding = 3
+#else
+      kTabLeftOffset = 0,
+      kTabSpacing = 1,
+      kTabPadding = 4
+#endif
     };
 
   private:
+#ifndef FLAT_UI
     void box(int x, int y, int width, int height,
              uInt32 colorA, uInt32 colorB, bool omitBottom);
-
+#endif
     void updateActiveTab();
 
   private:

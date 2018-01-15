@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -30,11 +30,11 @@ namespace GUI {
   class Font;
 }
 
-#include "EventHandler.hxx"
 #include "Rect.hxx"
 #include "Variant.hxx"
 #include "TIAConstants.hxx"
 #include "FrameBufferConstants.hxx"
+#include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
 // Contains all relevant info for the dimensions of a video screen
@@ -125,7 +125,7 @@ class FrameBuffer
       @param force    Force showing this message, even if messages are disabled
     */
     void showMessage(const string& message,
-                     MessagePosition position = kBottomCenter,
+                     MessagePosition position = MessagePosition::BottomCenter,
                      bool force = false);
 
     /**
@@ -143,6 +143,11 @@ class FrameBuffer
       from the message queue; they're just not redrawn into the framebuffer.
     */
     void enableMessages(bool enable);
+
+    /**
+      Reset 'Paused' display delay counter
+    */
+    void setPauseDelay();
 
     /**
       Allocate a new surface.  The FrameBuffer class takes all responsibility
@@ -256,13 +261,20 @@ class FrameBuffer
     /**
       Informs the Framebuffer of a change in EventHandler state.
     */
-    void stateChanged(EventHandler::State state);
+    void stateChanged(EventHandlerState state);
 
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and can/must be
   // implemented in derived classes.
   //////////////////////////////////////////////////////////////////////
   public:
+    /**
+      Updates window title
+
+      @param title   The title of the application / window
+    */
+    virtual void setTitle(const string& title) = 0;
+
     /**
       Shows or hides the cursor based on the given boolean value.
     */
@@ -441,6 +453,10 @@ class FrameBuffer
         int myIdx;
     };
 
+  protected:
+    // Title of the main window/screen
+    string myScreenTitle;
+
   private:
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;
@@ -454,9 +470,6 @@ class FrameBuffer
 
     // Dimensions of the main window (not always the same as the image)
     GUI::Size myScreenSize;
-
-    // Title of the main window/screen
-    string myScreenTitle;
 
     // Maximum dimensions of the desktop area
     GUI::Size myDesktopSize;
@@ -515,7 +528,7 @@ class FrameBuffer
     vector<shared_ptr<FBSurface>> mySurfaceList;
 
     // Holds UI palette data (standard and classic colours)
-    static uInt32 ourGUIColors[2][kNumColors-256];
+    static uInt32 ourGUIColors[3][kNumColors-256];
 
   private:
     // Following constructors and assignment operators not supported

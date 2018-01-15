@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -39,12 +39,17 @@ class TiaState : public DebuggerState
   public:
     IntArray coluRegs;
     IntArray fixedCols;
+    BoolArray cx;
     IntArray gr;
+    BoolArray ref;
+    BoolArray vdel;
+    BoolArray res;
     IntArray pos;
     IntArray hm;
     IntArray pf;
     IntArray size;
     IntArray aud;
+    IntArray info;
 };
 
 class TIADebug : public DebuggerSystem
@@ -125,22 +130,25 @@ class TIADebug : public DebuggerSystem
     bool scorePF(int newVal = -1);
     bool priorityPF(int newVal = -1);
 
+    /** Get specific bits in the collision register (used by collXX_XX) */
+    bool collision(CollisionBit id, bool toggle = false) const;
+
     // Collision registers
-    bool collM0_P1() const { return collision(Cx_M0P1); }
-    bool collM0_P0() const { return collision(Cx_M0P0); }
-    bool collM1_P0() const { return collision(Cx_M1P0); }
-    bool collM1_P1() const { return collision(Cx_M1P1); }
-    bool collP0_PF() const { return collision(Cx_P0PF); }
-    bool collP0_BL() const { return collision(Cx_P0BL); }
-    bool collP1_PF() const { return collision(Cx_P1PF); }
-    bool collP1_BL() const { return collision(Cx_P1BL); }
-    bool collM0_PF() const { return collision(Cx_M0PF); }
-    bool collM0_BL() const { return collision(Cx_M0BL); }
-    bool collM1_PF() const { return collision(Cx_M1PF); }
-    bool collM1_BL() const { return collision(Cx_M1BL); }
-    bool collBL_PF() const { return collision(Cx_BLPF); }
-    bool collP0_P1() const { return collision(Cx_P0P1); }
-    bool collM0_M1() const { return collision(Cx_M0M1); }
+    bool collM0_P1() const { return collision(CollisionBit::M0P1); }
+    bool collM0_P0() const { return collision(CollisionBit::M0P0); }
+    bool collM1_P0() const { return collision(CollisionBit::M1P0); }
+    bool collM1_P1() const { return collision(CollisionBit::M1P1); }
+    bool collP0_PF() const { return collision(CollisionBit::P0PF); }
+    bool collP0_BL() const { return collision(CollisionBit::P0BL); }
+    bool collP1_PF() const { return collision(CollisionBit::P1PF); }
+    bool collP1_BL() const { return collision(CollisionBit::P1BL); }
+    bool collM0_PF() const { return collision(CollisionBit::M0PF); }
+    bool collM0_BL() const { return collision(CollisionBit::M0BL); }
+    bool collM1_PF() const { return collision(CollisionBit::M1PF); }
+    bool collM1_BL() const { return collision(CollisionBit::M1BL); }
+    bool collBL_PF() const { return collision(CollisionBit::BLPF); }
+    bool collP0_P1() const { return collision(CollisionBit::P0P1); }
+    bool collM0_M1() const { return collision(CollisionBit::M0M1); }
 
     // TIA strobe registers
     void strobeWsync();
@@ -173,9 +181,6 @@ class TIADebug : public DebuggerSystem
   private:
     /** Display a color patch for color at given index in the palette */
     string colorSwatch(uInt8 c) const;
-
-    /** Get specific bits in the collision register (used by collXX_XX) */
-    bool collision(CollisionBit id) const;
 
     string audFreq(uInt8 div);
     string booleanWithLabel(string label, bool value);

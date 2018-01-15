@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -51,7 +51,7 @@ class DebuggerParser
 
     static inline string red(const string& msg = "")
     {
-      return char(kDbgChangedColor) + msg;
+      return char(kDbgColorRed) + msg;
     }
     static inline string inverse(const string& msg = "")
     {

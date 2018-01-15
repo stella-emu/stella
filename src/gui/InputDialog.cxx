@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -18,6 +18,7 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "EventHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "PointingDevice.hxx"
@@ -162,8 +163,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   xpos = hSpace + myDeadzone->getWidth() + 5;
   myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
-                                         lineHeight, "", kTextAlignLeft);
-  myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
+                                         lineHeight, "", TextAlign::Left);
   wid.push_back(myDeadzone);
 
   // Add paddle speed (digital emulation)
@@ -174,8 +174,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   xpos = hSpace + myDPaddleSpeed->getWidth() + 5;
   myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", kTextAlignLeft);
-  myDPaddleLabel->setFlags(WIDGET_CLEARBG);
+                                        "", TextAlign::Left);
   wid.push_back(myDPaddleSpeed);
 
   // Add paddle speed (mouse emulation)
@@ -186,8 +185,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   xpos = hSpace + myMPaddleSpeed->getWidth() + 5;
   myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", kTextAlignLeft);
-  myMPaddleSpeed->setFlags(WIDGET_CLEARBG);
+                                        "", TextAlign::Left);
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
@@ -198,8 +196,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
   xpos = hSpace + myTrackBallSpeed->getWidth() + 5;
   myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                          "", kTextAlignLeft);
-  myTrackBallSpeed->setFlags(WIDGET_CLEARBG);
+                                          "", TextAlign::Left);
   wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick
@@ -352,7 +349,7 @@ void InputDialog::saveConfig()
   const string& cursor = myCursorState->getSelectedTag().toString();
   instance().settings().setValue("cursor", cursor);
   instance().settings().setValue("grabmouse", myGrabMouse->getState());
-  instance().frameBuffer().enableGrabMouse(myGrabMouse->getState());  
+  instance().frameBuffer().enableGrabMouse(myGrabMouse->getState());
 
   // Enable/disable control key-combos
   instance().settings().setValue("ctrlcombo", myCtrlCombo->getState());
@@ -453,7 +450,7 @@ void InputDialog::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool InputDialog::handleJoyHat(int stick, int hat, int value)
+bool InputDialog::handleJoyHat(int stick, int hat, JoyHat value)
 {
   // Remap joystick hat in remap mode, otherwise pass to parent dialog
   if(myEmulEventMapper->remapMode())

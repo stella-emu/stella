@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -34,6 +34,7 @@ Settings::Settings(OSystem& osystem)
 {
   // Video-related options
   setInternal("video", "");
+  setInternal("framerate", "0");
   setInternal("vsync", "true");
   setInternal("fullscreen", "false");
   setInternal("center", "false");
@@ -44,8 +45,8 @@ Settings::Settings(OSystem& osystem)
   // TIA specific options
   setInternal("tia.zoom", "3");
   setInternal("tia.inter", "false");
-  setInternal("tia.aspectn", "90");
-  setInternal("tia.aspectp", "100");
+  setInternal("tia.aspectn", "91");
+  setInternal("tia.aspectp", "109");
   setInternal("tia.fsfill", "false");
   setInternal("tia.dbgcolors", "roygpb");
 
@@ -137,7 +138,8 @@ Settings::Settings(OSystem& osystem)
   // Debugger/disassembly options
   setInternal("dbg.fontsize", "medium");
   setInternal("dbg.fontstyle", "0");
-  setInternal("dbg.uhex", "true");
+  setInternal("dbg.uhex", "false");
+  setInternal("dbg.ghostreadstrap", "true");
   setInternal("dis.resolve", "true");
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");
@@ -155,10 +157,13 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.debugcolors", "false");
   setInternal("plr.tiadriven", "false");
   setInternal("plr.console", "2600"); // 7800
-  setInternal("plr.rewind", false);
-  setInternal("plr.rewind.size", 100);
-  setInternal("plr.rewind.interval", 4); // = 1 second
-  setInternal("plr.rewind.horizon", 5); // = ~10 minutes
+  setInternal("plr.timemachine", false);
+  setInternal("plr.tm.size", 100);
+  setInternal("plr.tm.uncompressed", 30);
+  setInternal("plr.tm.interval", "30f"); // = 0.5 seconds
+  setInternal("plr.tm.horizon", "10m"); // = ~10 minutes
+  // Thumb ARM emulation options
+  setInternal("plr.thumb.trapfatal", "false");
 
   // developer settings
   setInternal("dev.settings", "false");
@@ -172,15 +177,13 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
-  setInternal("dev.rewind", true);
-  setInternal("dev.rewind.size", 100);
-  setInternal("dev.rewind.interval", 2); // = 1 frame
-  setInternal("dev.rewind.horizon", 3); // = ~10 seconds
-
-#ifdef DTHUMB_SUPPORT
+  setInternal("dev.timemachine", true);
+  setInternal("dev.tm.size", 100);
+  setInternal("dev.tm.uncompressed", 60);
+  setInternal("dev.tm.interval", "1f"); // = 1 frame
+  setInternal("dev.tm.horizon", "10s"); // = ~10 seconds
   // Thumb ARM emulation options
-  setInternal("thumb.trapfatal", "true");
-#endif
+  setInternal("dev.thumb.trapfatal", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -318,26 +321,40 @@ void Settings::validate()
   i = getInt("dev.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("dev.tv.jitter_recovery", "2");
 
-  i = getInt("dev.rewind.size");
-  if (i < 100 ||i > 1000) setInternal("dev.rewind.size", 100);
+  int size = getInt("dev.tm.size");
+  if(size < 20 || size > 1000)
+  {
+    setInternal("dev.tm.size", 20);
+    size = 20;
+  }
 
-  i = getInt("dev.rewind.interval");
-  if(i < 0 || i > 5) setInternal("dev.rewind.interval", 2);
+  i = getInt("dev.tm.uncompressed");
+  if(i < 0 || i > size) setInternal("dev.tm.uncompressed", size);
 
-  i = getInt("dev.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("dev.rewind.horizon", 3);
+  /*i = getInt("dev.tm.interval");
+  if(i < 0 || i > 5) setInternal("dev.tm.interval", 0);
+
+  i = getInt("dev.tm.horizon");
+  if(i < 0 || i > 6) setInternal("dev.tm.horizon", 1);*/
 
   i = getInt("plr.tv.jitter_recovery");
   if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
 
-  i = getInt("plr.rewind.size");
-  if(i < 100 || i > 1000) setInternal("plr.rewind.size", 100);
+  size = getInt("plr.tm.size");
+  if(size < 20 || size > 1000)
+  {
+    setInternal("plr.tm.size", 20);
+    size = 20;
+  }
 
-  i = getInt("plr.rewind.interval");
-  if(i < 0 || i > 5) setInternal("plr.rewind.interval", 4);
+  i = getInt("plr.tm.uncompressed");
+  if(i < 0 || i > size) setInternal("plr.tm.uncompressed", size);
 
-  i = getInt("plr.rewind.horizon");
-  if(i < 0 || i > 6) setInternal("plr.rewind.horizon", 5);
+  /*i = getInt("plr.tm.interval");
+  if(i < 0 || i > 5) setInternal("plr.tm.interval", 3);
+
+  i = getInt("plr.tm.horizon");
+  if(i < 0 || i > 6) setInternal("plr.tm.horizon", 5);*/
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
@@ -518,6 +535,8 @@ void Settings::usage() const
     << "   -dbg.fontsize  <small|medium| Font size to use in debugger window\n"
     << "                  large>\n"
     << "   -dbg.fontstyle <0-3>          Font style to use in debugger window (bold vs. normal)\n"
+    << "   -dbg.ghostreadstrap <1|0>     Debugger traps on 'ghost' reads\n"
+    << "   -dbg.uhex      <0|1>          lower-/uppercase HEX display\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
     << "   -debug                        Start in debugger mode\n"
     << endl
@@ -554,6 +573,7 @@ void Settings::usage() const
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
+    << "  -plr.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
     << endl
     << " The same parameters but for developer settings mode\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
@@ -566,10 +586,7 @@ void Settings::usage() const
     << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
-
-  #ifdef DTHUMB_SUPPORT
-    << "   -dev.thumb.trapfatal <1|0>      Determines whether errors in ARM emulation throw an exception\n"
-  #endif
+    << "  -dev.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
     << endl << std::flush;
 }
 

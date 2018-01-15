@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -26,7 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
-                         const VariantList& items, int cmd)
+                         const VariantList& items, int cmd, int width)
   : Dialog(boss->instance(), boss->parent()),
     CommandSender(boss),
     _rowHeight(font.getLineHeight()),
@@ -41,7 +42,8 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _font(font),
     _cmd(cmd),
     _xorig(0),
-    _yorig(0)
+    _yorig(0),
+    _maxWidth(width)
 {
   addItems(items);
 }
@@ -53,12 +55,16 @@ void ContextMenu::addItems(const VariantList& items)
   _entries = items;
 
   // Resize to largest string
-  int maxwidth = 0;
+  int maxwidth = _maxWidth;
   for(const auto& e: _entries)
     maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
-  _w = maxwidth + 10;
+#ifndef FLAT_UI
+  _w = maxwidth + 15;
+#else
+  _w = maxwidth + 23;
+#endif
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
@@ -227,13 +233,13 @@ bool ContextMenu::sendSelectionLast()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
+void ContextMenu::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Compute over which item the mouse is...
   int item = findItem(x, y);
 
   // Only do a selection when the left button is in the dialog
-  if(button == 1)
+  if(b == MouseButton::LEFT)
   {
     if(item != -1)
     {
@@ -246,7 +252,7 @@ void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleMouseMoved(int x, int y, int button)
+void ContextMenu::handleMouseMoved(int x, int y)
 {
   // Compute over which item the mouse is...
   int item = findItem(x, y);
@@ -258,7 +264,7 @@ void ContextMenu::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ContextMenu::handleMouseClicks(int x, int y, int button)
+bool ContextMenu::handleMouseClicks(int x, int y, MouseButton b)
 {
   // Let continuous mouse clicks come through, as the scroll buttons need them
   return true;
@@ -297,7 +303,7 @@ void ContextMenu::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ContextMenu::handleJoyHat(int stick, int hat, int value)
+bool ContextMenu::handleJoyHat(int stick, int hat, JoyHat value)
 {
   handleEvent(instance().eventHandler().eventForJoyHat(stick, hat, value, kMenuMode));
   return true;
@@ -549,10 +555,17 @@ void ContextMenu::drawDialog()
   {
     // Draw menu border and background
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
+#ifndef FLAT_UI
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
     // Draw the entries, taking scroll buttons into account
     int x = _x + 2, y = _y + 2, w = _w - 4;
+#else
+    s.frameRect(_x, _y, _w, _h, kTextColor);
+
+    // Draw the entries, taking scroll buttons into account
+    int x = _x + 1, y = _y + 1, w = _w - 2;
+#endif
 
     // Show top scroll area
     int offset = _selectedOffset;

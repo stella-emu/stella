@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -54,12 +54,16 @@ void StringListWidget::drawWidget(bool hilite)
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     const int y = _y + 2 + _fontHeight * i;
+    uInt32 textColor = kTextColor;
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos && _hilite)
     {
-      if (_hasFocus && !_editMode)
+      if(_hasFocus && !_editMode)
+      {
         s.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
+        textColor = kTextColorInv;
+      }
       else
         s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
     }
@@ -68,11 +72,12 @@ void StringListWidget::drawWidget(bool hilite)
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
-      s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
-                   kTextAlignLeft, -_editScrollOffset, false);
+
+      s.drawString(_font, editString(), _x + r.left, y, r.width(), textColor,
+                   TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), kTextColor);
+      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), textColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport

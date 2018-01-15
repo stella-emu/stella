@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -20,6 +20,7 @@
 
 class OSystem;
 class Console;
+class EventHandler;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
@@ -241,12 +242,15 @@ class Debugger : public DialogContainer
 
   private:
     /**
-      Save state of each debugger subsystem.
-
-      If a message is provided, we assume that a rewind state should
-      be saved with the given message.
+      Save state of each debugger subsystem and, by default, mark all
+      pages as clean (ie, turn off the dirty flag).
     */
-    void saveOldState(string rewindMsg = "");
+    void saveOldState(bool clearDirtyPages = true);
+
+    /**
+      Saves a rewind state with the given message.
+    */
+    void addState(string rewindMsg);
 
     /**
       Set initial state before entering the debugger.
@@ -262,8 +266,8 @@ class Debugger : public DialogContainer
     int trace();
     void nextScanline(int lines);
     void nextFrame(int frames);
-    uInt16 rewindStates(const uInt16 states, string& message);
-    uInt16 unwindStates(const uInt16 states, string& message);
+    uInt16 rewindStates(const uInt16 numStates, string& message);
+    uInt16 unwindStates(const uInt16 numStates, string& message);
 
     void toggleBreakPoint(uInt16 bp);
 
@@ -315,13 +319,13 @@ class Debugger : public DialogContainer
       string name, help;
     };
     static const uInt32 NUM_BUILTIN_FUNCS = 18;
-    static const uInt32 NUM_PSEUDO_REGS = 11;
+    static const uInt32 NUM_PSEUDO_REGS = 12;
     static BuiltinFunction ourBuiltinFunctions[NUM_BUILTIN_FUNCS];
     static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
 
   private:
     // rewind/unwind n states
-    uInt16 windStates(uInt16 states, bool unwind, string& message);
+    uInt16 windStates(uInt16 numStates, bool unwind, string& message);
     // update the rewind/unwind button state
     void updateRewindbuttons(const RewindManager& r);
 

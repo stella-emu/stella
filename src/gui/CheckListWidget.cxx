@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -100,15 +100,19 @@ void CheckListWidget::drawWidget(bool hilite)
     _checkList[i]->draw();
 
     const int y = _y + 2 + _fontHeight * i + 2;
+    uInt32 textColor = kTextColor;
 
     GUI::Rect r(getEditRect());
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
     {
-      if (_hasFocus && !_editMode)
+      if(_hasFocus && !_editMode)
+      {
         s.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
                    _w - r.left, _fontHeight, kTextColorHi);
+        textColor = kTextColorInv;
+      }
       else
         s.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
                     _w - r.left, _fontHeight, kTextColorHi);
@@ -118,10 +122,10 @@ void CheckListWidget::drawWidget(bool hilite)
     {
       adjustOffset();
       s.drawString(_font, editString(), _x + r.left, y, r.width(), kTextColor,
-                   kTextAlignLeft, -_editScrollOffset, false);
+                   TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), kTextColor);
+      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), textColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport
@@ -160,7 +164,7 @@ bool CheckListWidget::handleEvent(Event::Type e)
   {
     case Event::UISelect:
       // Simulate a mouse button click
-      _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, 1, 0);
+      _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, MouseButton::LEFT, 0);
       return true;
 
     default:

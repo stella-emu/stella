@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -26,5 +26,5 @@ Menu::Menu(OSystem& osystem)
   : DialogContainer(osystem)
 {
   myBaseDialog = new OptionsDialog(myOSystem, *this, nullptr,
-      FrameBuffer::kFBMinW, FrameBuffer::kFBMinH, false);
+      FrameBuffer::kFBMinW, FrameBuffer::kFBMinH, OptionsDialog::emulator);
 }

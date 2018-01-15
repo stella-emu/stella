@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -63,7 +63,7 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
     label << "Set segment " << i << " as ";
 
     new StaticTextWidget(boss, _font, xpos, ypos, _font.getStringWidth(label.str()),
-      myFontHeight, label.str(), kTextAlignLeft);
+      myFontHeight, label.str(), TextAlign::Left);
     ypos += myLineHeight + 8;
 
     xpos += 20;
@@ -95,7 +95,7 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
     label.str("");
     label << Common::Base::HEX4 << addr1 << "-" << Common::Base::HEX4 << addr2;
     t = new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
-          _font.getStringWidth(label.str()), myFontHeight, label.str(), kTextAlignLeft);
+          _font.getStringWidth(label.str()), myFontHeight, label.str(), TextAlign::Left);
 
     int xoffset = xpos_s+t->getWidth() + 10;
     myBankState[2*i] = new EditTextWidget(boss, _font, xoffset, ypos_s,
@@ -106,7 +106,7 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
     label.str("");
     label << Common::Base::HEX4 << (addr2 + 1) << "-" << Common::Base::HEX4 << (addr2 + 1 + 0x1FF);
     new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
-        _font.getStringWidth(label.str()), myFontHeight, label.str(), kTextAlignLeft);
+        _font.getStringWidth(label.str()), myFontHeight, label.str(), TextAlign::Left);
 
     myBankState[2*i+1] = new EditTextWidget(boss, _font, xoffset, ypos_s,
               w - xoffset - 10, myLineHeight, "");

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -26,7 +26,9 @@ class Console;
 class Debugger;
 class Launcher;
 class Menu;
+class TimeMachine;
 class FrameBuffer;
+class EventHandler;
 class PNGLibrary;
 class Properties;
 class PropertiesSet;
@@ -37,9 +39,9 @@ class Sound;
 class StateManager;
 class VideoDialog;
 
-#include "EventHandler.hxx"
 #include "FSNode.hxx"
 #include "FrameBufferConstants.hxx"
+#include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
 struct TimingInfo {
@@ -151,6 +153,13 @@ class OSystem
       @return The launcher object
     */
     Launcher& launcher() const { return *myLauncher; }
+
+    /**
+      Get the time machine of the system (manages state files).
+
+      @return The time machine object
+    */
+    TimeMachine& timeMachine() const { return *myTimeMachine; }
 
     /**
       Get the state manager of the system.
@@ -402,7 +411,7 @@ class OSystem
     /**
       Informs the OSystem of a change in EventHandler state.
     */
-    virtual void stateChanged(EventHandler::State state) { }
+    virtual void stateChanged(EventHandlerState state) { }
 
     /**
       Returns the default save and load paths for various files
@@ -460,6 +469,9 @@ class OSystem
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;
     bool myLauncherUsed;
+
+    // Pointer to the TimeMachine object
+    unique_ptr<TimeMachine> myTimeMachine;
 
   #ifdef DEBUGGER_SUPPORT
     // Pointer to the Debugger object

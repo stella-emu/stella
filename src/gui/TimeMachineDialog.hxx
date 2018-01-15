@@ -1,0 +1,83 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#ifndef TIME_MACHINE_DIALOG_HXX
+#define TIME_MACHINE_DIALOG_HXX
+
+class CommandSender;
+class DialogContainer;
+class OSystem;
+
+#include "Dialog.hxx"
+
+class TimeMachineDialog : public Dialog
+{
+  public:
+    TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int max_w, int max_h);
+    virtual ~TimeMachineDialog() = default;
+
+  private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    /** This dialog uses its own positioning, so we override Dialog::center() */
+    void center() override;
+
+    /** convert cycles into time */
+    string getTimeString(uInt64 cycles);
+    /** re/unwind and update display */
+    void handleWinds(Int32 numWinds = 0);
+
+  private:
+    enum
+    {
+      kPause     = 'TMps',
+      kPlay      = 'TMpl',
+      kRewindAll = 'TMra',
+      kRewind10  = 'TMr1',
+      kRewind1   = 'TMre',
+      kUnwindAll = 'TMua',
+      kUnwind10  = 'TMu1',
+      kUnwind1   = 'TMun',
+    };
+
+    ButtonWidget* myPauseWidget;
+    ButtonWidget* myPlayWidget;
+    ButtonWidget* myRewindAllWidget;
+    ButtonWidget* myRewind10Widget;
+    ButtonWidget* myRewind1Widget;
+    ButtonWidget* myUnwind1Widget;
+    ButtonWidget* myUnwind10Widget;
+    ButtonWidget* myUnwindAllWidget;
+
+    StaticTextWidget* myCurrentTimeWidget;
+    StaticTextWidget* myLastTimeWidget;
+
+    StaticTextWidget* myCurrentIdxWidget;
+    StaticTextWidget* myLastIdxWidget;
+    StaticTextWidget* myMessageWidget;
+
+  private:
+    // Following constructors and assignment operators not supported
+    TimeMachineDialog() = delete;
+    TimeMachineDialog(const TimeMachineDialog&) = delete;
+    TimeMachineDialog(TimeMachineDialog&&) = delete;
+    TimeMachineDialog& operator=(const TimeMachineDialog&) = delete;
+    TimeMachineDialog& operator=(TimeMachineDialog&&) = delete;
+};
+
+#endif

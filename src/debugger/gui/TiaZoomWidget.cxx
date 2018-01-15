@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -102,18 +102,18 @@ void TiaZoomWidget::recalc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Button 1 is for 'drag'/movement of the image
   // Button 2 is for context menu
-  if(button == 1)
+  if(b == MouseButton::LEFT)
   {
     // Indicate mouse drag started/in progress
     myMouseMoving = true;
     myXClick = x;
     myYClick = y;
   }
-  else if(button == 2)
+  else if(b == MouseButton::RIGHT)
   {
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY());
@@ -121,7 +121,7 @@ void TiaZoomWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void TiaZoomWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   myMouseMoving = false;
 }
@@ -136,7 +136,7 @@ void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseMoved(int x, int y, int button)
+void TiaZoomWidget::handleMouseMoved(int x, int y)
 {
   // TODO: Not yet working - finish for next release
 #if 0
@@ -165,7 +165,7 @@ void TiaZoomWidget::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseLeft(int button)
+void TiaZoomWidget::handleMouseLeft()
 {
   myMouseMoving = false;
 }
@@ -242,7 +242,11 @@ void TiaZoomWidget::drawWidget(bool hilite)
   FBSurface& s = dialog().surface();
 
   s.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
+#ifndef FLAT_UI
   s.box(_x, _y, _w, _h, kColor, kShadowColor);
+#else
+  s.frameRect(_x, _y, _w, _h, kColor);
+#endif
 
   // Draw the zoomed image
   // This probably isn't as efficient as it can be, but it's a small area
@@ -265,7 +269,11 @@ void TiaZoomWidget::drawWidget(bool hilite)
     {
       uInt32 idx = y*width + x;
       uInt32 color = currentFrame[idx] | (idx > scanoffset ? 1 : 0);
+#ifndef FLAT_UI
       s.fillRect(_x + col + 2, _y + row + 2, wzoom, hzoom, color);
+#else
+      s.fillRect(_x + col + 1, _y + row + 1, wzoom, hzoom, color);
+#endif
     }
   }
 }

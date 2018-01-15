@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -95,7 +95,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myRiot = make_unique<M6532>(*this, myOSystem.settings());
   myTIA  = make_unique<TIA>(*this, myOSystem.settings());
   myFrameManager = make_unique<FrameManager>();
-  mySwitches = make_unique<Switches>(myEvent, myProperties);
+  mySwitches = make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
   myTIA->setFrameManager(myFrameManager.get());
 
@@ -527,19 +527,20 @@ void Console::setProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Console::initializeVideo(bool full)
 {
-  FBInitStatus fbstatus = kSuccess;
+  FBInitStatus fbstatus = FBInitStatus::Success;
 
   if(full)
   {
+    bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
                  myTIA->width() << 1, myTIA->height());
-    if(fbstatus != kSuccess)
+    if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 
     myOSystem.frameBuffer().showFrameStats(
-      myOSystem.settings().getBool(myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats"));
+      myOSystem.settings().getBool(devSettings ? "dev.stats" : "plr.stats"));
     generateColorLossPalette();
   }
   setPalette(myOSystem.settings().getString("palette"));
@@ -1010,11 +1011,11 @@ void Console::attachDebugger(Debugger& dbg)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::stateChanged(EventHandler::State state)
+void Console::stateChanged(EventHandlerState state)
 {
   // For now, only the CompuMate cares about state changes
   if(myCMHandler)
-    myCMHandler->enableKeyHandling(state == EventHandler::S_EMULATE);
+    myCMHandler->enableKeyHandling(state == EventHandlerState::EMULATION);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -29,6 +29,7 @@
 #include "TIASurface.hxx"
 #include "FSNode.hxx"
 #include "Launcher.hxx"
+#include "TimeMachine.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "Joystick.hxx"
@@ -60,11 +61,12 @@
 EventHandler::EventHandler(OSystem& osystem)
   : myOSystem(osystem),
     myOverlay(nullptr),
-    myState(S_NONE),
+    myState(EventHandlerState::NONE),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
     myUseCtrlKeyFlag(true),
     mySkipMouseMotion(true),
+    myIs7800(false),
     myAltKeyCounter(0),
     myContSnapshotInterval(0),
     myContSnapshotCounter(0)
@@ -117,10 +119,13 @@ void EventHandler::initialize()
   // Default phosphor blend
   Properties::setDefault(Display_PPBlend,
                          myOSystem.settings().getString("tv.phosblend"));
+
+  // Toggle 7800 mode
+  set7800Mode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::reset(State state)
+void EventHandler::reset(EventHandlerState state)
 {
   setEventState(state);
   myOSystem.state().reset();
@@ -193,6 +198,15 @@ void EventHandler::toggleSAPortOrder()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::set7800Mode()
+{
+  if(myOSystem.hasConsole())
+    myIs7800 = myOSystem.console().switches().toggle7800Mode(myOSystem.settings());
+  else
+    myIs7800 = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt64 time)
 {
   // Process events from the underlying hardware
@@ -200,7 +214,7 @@ void EventHandler::poll(uInt64 time)
 
   // Update controllers and console switches, and in general all other things
   // related to emulation
-  if(myState == S_EMULATE)
+  if(myState == EventHandlerState::EMULATION)
   {
     myOSystem.console().riot().update();
 
@@ -260,7 +274,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
   // An attempt to speed up event processing; we quickly check for
   // Control or Alt/Cmd combos first
-  if(kbdAlt(mod) && state)
+  if(StellaModTest::isAlt(mod) && state)
   {
 #ifdef BSPF_MAC_OSX
     // These keys work in all states
@@ -281,18 +295,32 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       myOSystem.frameBuffer().toggleFullscreen();
     }
     // state rewinding must work in pause mode too
-    else if(myState == S_EMULATE || myState == S_PAUSE)
+    else if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
     {
       switch(key)
       {
-        case KBDK_LEFT:  // Alt-left rewinds states
-          if(myOSystem.state().rewindState() && myState != S_PAUSE)
-            setEventState(S_PAUSE);
+        case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
+          myOSystem.frameBuffer().setPauseDelay();
+          setEventState(EventHandlerState::PAUSE);
+          myOSystem.state().rewindState((StellaModTest::isShift(mod) && state) ? 10 : 1);
           break;
 
-        case KBDK_RIGHT:  // Alt-right unwinds states
-          if(myOSystem.state().unwindState() && myState != S_PAUSE)
-            setEventState(S_PAUSE);
+        case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
+          myOSystem.frameBuffer().setPauseDelay();
+          setEventState(EventHandlerState::PAUSE);
+          myOSystem.state().unwindState((StellaModTest::isShift(mod) && state) ? 10 : 1);
+          break;
+
+        case KBDK_DOWN:  // Alt-down rewinds to start of list
+          myOSystem.frameBuffer().setPauseDelay();
+          setEventState(EventHandlerState::PAUSE);
+          myOSystem.state().rewindState(1000);
+          break;
+
+        case KBDK_UP:  // Alt-up rewinds to end of list
+          myOSystem.frameBuffer().setPauseDelay();
+          setEventState(EventHandlerState::PAUSE);
+          myOSystem.state().unwindState(1000);
           break;
 
         default:
@@ -301,7 +329,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       }
     }
     // These only work when in emulation mode
-    if(!handled && myState == S_EMULATE)
+    if(!handled && myState == EventHandlerState::EMULATION)
     {
       handled = true;
       switch(key)
@@ -462,8 +490,8 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           myOSystem.frameBuffer().toggleFrameStats();
           break;
 
-        case KBDK_R:  // Alt-r toggles continuous store rewind states
-          myOSystem.state().toggleRewindMode();
+        case KBDK_T:  // Alt-t toggles Time Machine
+          myOSystem.state().toggleTimeMachine();
           break;
 
         case KBDK_S:
@@ -503,7 +531,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     else
       handled = false;
   }
-  else if(kbdControl(mod) && state && myUseCtrlKeyFlag)
+  else if(StellaModTest::isControl(mod) && state && myUseCtrlKeyFlag)
   {
     // These keys work in all states
     if(key == KBDK_Q)
@@ -511,7 +539,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       handleEvent(Event::Quit, 1);
     }
     // These only work when in emulation mode
-    else if(myState == S_EMULATE)
+    else if(myState == EventHandlerState::EMULATION)
     {
       switch(key)
       {
@@ -588,18 +616,18 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 
   // Handle keys which switch eventhandler state
   // Arrange the logic to take advantage of short-circuit evaluation
-  if(!(kbdControl(mod) || kbdShift(mod) || kbdAlt(mod)) &&
+  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)) &&
       !state && eventStateChange(myKeyTable[key][kEmulationMode]))
     return;
 
   // Otherwise, let the event handler deal with it
   switch(myState)
   {
-    case S_EMULATE:
+    case EventHandlerState::EMULATION:
       handleEvent(myKeyTable[key][kEmulationMode], state);
       break;
 
-    case S_PAUSE:
+    case EventHandlerState::PAUSE:
       switch(myKeyTable[key][kEmulationMode])
       {
         case Event::TakeSnapshot:
@@ -620,10 +648,10 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel, int button)
+void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
 {
   // Determine which mode we're in, then send the event to the appropriate place
-  if(myState == S_EMULATE)
+  if(myState == EventHandlerState::EMULATION)
   {
     if(!mySkipMouseMotion)
     {
@@ -633,35 +661,30 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel, int 
     mySkipMouseMotion = false;
   }
   else if(myOverlay)
-    myOverlay->handleMouseMotionEvent(x, y, button);
+    myOverlay->handleMouseMotionEvent(x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseButtonEvent(MouseButton b, int x, int y)
+void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
+                                          int x, int y)
 {
   // Determine which mode we're in, then send the event to the appropriate place
-  if(myState == S_EMULATE)
+  if(myState == EventHandlerState::EMULATION)
   {
     switch(b)
     {
-      case EVENT_LBUTTONDOWN:
-        myEvent.set(Event::MouseButtonLeftValue, 1);
+      case MouseButton::LEFT:
+        myEvent.set(Event::MouseButtonLeftValue, int(pressed));
         break;
-      case EVENT_LBUTTONUP:
-        myEvent.set(Event::MouseButtonLeftValue, 0);
-        break;
-      case EVENT_RBUTTONDOWN:
-        myEvent.set(Event::MouseButtonRightValue, 1);
-        break;
-      case EVENT_RBUTTONUP:
-        myEvent.set(Event::MouseButtonRightValue, 0);
+      case MouseButton::RIGHT:
+        myEvent.set(Event::MouseButtonRightValue, int(pressed));
         break;
       default:
         return;
     }
   }
   else if(myOverlay)
-    myOverlay->handleMouseButtonEvent(b, x, y);
+    myOverlay->handleMouseButtonEvent(b, pressed, x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -679,7 +702,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
         return;
 
       // Determine which mode we're in, then send the event to the appropriate place
-      if(myState == S_EMULATE)
+      if(myState == EventHandlerState::EMULATION)
         handleEvent(joy->btnTable[button][kEmulationMode], state);
       else if(myOverlay)
         myOverlay->handleJoyEvent(stick, button, state);
@@ -699,7 +722,7 @@ void EventHandler::handleJoyEvent(int stick, int button, uInt8 state)
       // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
       // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
       // enum; subtracting four gives us Controller 0 and 1
-      if(myState == S_EMULATE)
+      if(myState == EventHandlerState::EMULATION)
       {
         switch(myOSystem.console().leftController().type())
         {
@@ -734,7 +757,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   switch(joy->type)
   {
     case StellaJoystick::JT_REGULAR:
-      if(myState == S_EMULATE)
+      if(myState == EventHandlerState::EMULATION)
       {
         // Every axis event has two associated values, negative and positive
         Event::Type eventAxisNeg = joy->axisTable[axis][0][kEmulationMode];
@@ -840,31 +863,31 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
   // Preprocess all hat events, converting to Stella JoyHat type
   // Generate multiple equivalent hat events representing combined direction
   // when we get a diagonal hat event
-  if(myState == S_EMULATE)
+  if(myState == EventHandlerState::EMULATION)
   {
-    handleEvent(joy->hatTable[hat][EVENT_HATUP][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::UP)][kEmulationMode],
                 value & EVENT_HATUP_M);
-    handleEvent(joy->hatTable[hat][EVENT_HATRIGHT][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::RIGHT)][kEmulationMode],
                 value & EVENT_HATRIGHT_M);
-    handleEvent(joy->hatTable[hat][EVENT_HATDOWN][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::DOWN)][kEmulationMode],
                 value & EVENT_HATDOWN_M);
-    handleEvent(joy->hatTable[hat][EVENT_HATLEFT][kEmulationMode],
+    handleEvent(joy->hatTable[hat][int(JoyHat::LEFT)][kEmulationMode],
                 value & EVENT_HATLEFT_M);
   }
   else if(myOverlay)
   {
     if(value == EVENT_HATCENTER_M)
-      myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
+      myOverlay->handleJoyHatEvent(stick, hat, JoyHat::CENTER);
     else
     {
       if(value & EVENT_HATUP_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATUP);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::UP);
       if(value & EVENT_HATRIGHT_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATRIGHT);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::RIGHT);
       if(value & EVENT_HATDOWN_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::DOWN);
       if(value & EVENT_HATLEFT_M)
-        myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
+        myOverlay->handleJoyHatEvent(stick, hat, JoyHat::LEFT);
     }
   }
 }
@@ -874,19 +897,19 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 {
   switch(e)
   {
-    case EVENT_WINDOW_EXPOSED:
+    case SystemEvent::WINDOW_EXPOSED:
       myOSystem.frameBuffer().update();
       break;
 
-    case EVENT_WINDOW_FOCUS_GAINED:
+    case SystemEvent::WINDOW_FOCUS_GAINED:
       // Used to handle Alt-x key combos; sometimes the key associated with
       // Alt gets 'stuck'  and is passed to the core for processing
       if(myAltKeyCounter > 0)
         myAltKeyCounter = 2;
       break;
 #if 0
-    case EVENT_WINDOW_MINIMIZED:
-      if(myState == S_EMULATE) enterMenuMode(S_MENU);
+    case SystemEvent::WINDOW_MINIMIZED:
+      if(myState == EventHandlerState::EMULATION) enterMenuMode(EventHandlerState::OPTIONSMENU);
         break;
 #endif
     default:  // handle other events as testing requires
@@ -900,9 +923,6 @@ void EventHandler::handleEvent(Event::Type event, int state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
-  bool devSettings = myOSystem.settings().getBool("dev.settings");
-  bool is7800 = (myOSystem.settings().getString(devSettings ? "dev.console" : "plr.console") == "7800");
-
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
@@ -977,8 +997,8 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
 
     case Event::LauncherMode:
-      if((myState == S_EMULATE || myState == S_CMDMENU ||
-          myState == S_DEBUGGER) && state)
+      if((myState == EventHandlerState::EMULATION || myState == EventHandlerState::CMDMENU ||
+          myState == EventHandlerState::DEBUGGER) && state)
       {
         // Go back to the launcher, or immediately quit
         if(myOSystem.settings().getBool("exitlauncher") ||
@@ -1026,21 +1046,21 @@ void EventHandler::handleEvent(Event::Type event, int state)
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
-      if(state && !is7800)
+      if(state && !myIs7800)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myOSystem.frameBuffer().showMessage("Color Mode");
       }
       break;
     case Event::ConsoleBlackWhite:
-      if(state && !is7800)
+      if(state && !myIs7800)
       {
         myEvent.set(Event::ConsoleColor, 0);
         myOSystem.frameBuffer().showMessage("BW Mode");
       }
       break;
     case Event::ConsoleColorToggle:
-      if(state && !is7800)
+      if(state && !myIs7800)
       {
         if(myOSystem.console().switches().tvColor())
         {
@@ -1054,7 +1074,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleColor, 1);
           myOSystem.frameBuffer().showMessage("Color Mode");
         }
-        myOSystem.console().switches().update(myOSystem.settings());
+        myOSystem.console().switches().update();
       }
       return;
 
@@ -1087,7 +1107,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleLeftDiffB, 0);
           myOSystem.frameBuffer().showMessage("Left Difficulty A");
         }
-        myOSystem.console().switches().update(myOSystem.settings());
+        myOSystem.console().switches().update();
       }
       return;
 
@@ -1120,7 +1140,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myEvent.set(Event::ConsoleRightDiffB, 0);
           myOSystem.frameBuffer().showMessage("Right Difficulty A");
         }
-        myOSystem.console().switches().update(myOSystem.settings());
+        myOSystem.console().switches().update();
       }
       return;
     ////////////////////////////////////////////////////////////////////////
@@ -1194,34 +1214,43 @@ bool EventHandler::eventStateChange(Event::Type type)
   switch(type)
   {
     case Event::PauseMode:
-      if(myState == S_EMULATE)
-        setEventState(S_PAUSE);
-      else if(myState == S_PAUSE)
-        setEventState(S_EMULATE);
+      if(myState == EventHandlerState::EMULATION)
+        setEventState(EventHandlerState::PAUSE);
+      else if(myState == EventHandlerState::PAUSE)
+        setEventState(EventHandlerState::EMULATION);
       else
         handled = false;
       break;
 
-    case Event::MenuMode:
-      if(myState == S_EMULATE)
-        enterMenuMode(S_MENU);
+    case Event::OptionsMenuMode:
+      if(myState == EventHandlerState::EMULATION)
+        enterMenuMode(EventHandlerState::OPTIONSMENU);
       else
         handled = false;
       break;
 
     case Event::CmdMenuMode:
-      if(myState == S_EMULATE)
-        enterMenuMode(S_CMDMENU);
-      else if(myState == S_CMDMENU)
+      if(myState == EventHandlerState::EMULATION)
+        enterMenuMode(EventHandlerState::CMDMENU);
+      else if(myState == EventHandlerState::CMDMENU)
+        leaveMenuMode();
+      else
+        handled = false;
+      break;
+
+    case Event::TimeMachineMode:
+      if(myState == EventHandlerState::EMULATION)
+        enterMenuMode(EventHandlerState::TIMEMACHINE);
+      else if(myState == EventHandlerState::TIMEMACHINE)
         leaveMenuMode();
       else
         handled = false;
       break;
 
     case Event::DebuggerMode:
-      if(myState == S_EMULATE || myState == S_PAUSE)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterDebugMode();
-      else if(myState == S_DEBUGGER)
+      else if(myState == EventHandlerState::DEBUGGER)
         leaveDebugMode();
       else
         handled = false;
@@ -1330,12 +1359,13 @@ void EventHandler::setActionMappings(EventMode mode)
           {
             buf.str("");
             buf << "J" << stick << "/H" << hat;
-            switch(dir)
+            switch(JoyHat(dir))
             {
-              case EVENT_HATUP:    buf << "/up";    break;
-              case EVENT_HATDOWN:  buf << "/down";  break;
-              case EVENT_HATLEFT:  buf << "/left";  break;
-              case EVENT_HATRIGHT: buf << "/right"; break;
+              case JoyHat::UP:    buf << "/up";    break;
+              case JoyHat::DOWN:  buf << "/down";  break;
+              case JoyHat::LEFT:  buf << "/left";  break;
+              case JoyHat::RIGHT: buf << "/right"; break;
+              case JoyHat::CENTER:                 break;
             }
             if(key == "")
               key = key + buf.str();
@@ -1539,7 +1569,7 @@ bool EventHandler::addJoyButtonMapping(Event::Type event, EventMode mode,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
-                                    int stick, int hat, int value,
+                                    int stick, int hat, JoyHat value,
                                     bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
@@ -1547,9 +1577,9 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
   if(joy)
   {
     if(hat >= 0 && hat < joy->numHats && event < Event::LastType &&
-       value != EVENT_HATCENTER)
+       value != JoyHat::CENTER)
     {
-      joy->hatTable[hat][value][mode] = event;
+      joy->hatTable[hat][int(value)][mode] = event;
       if(updateMenus)
         setActionMappings(mode);
       return true;
@@ -1662,8 +1692,9 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       setDefaultKey( KBDK_F12,       Event::TakeSnapshot      );
       setDefaultKey( KBDK_BACKSPACE, Event::Fry               );
       setDefaultKey( KBDK_PAUSE,     Event::PauseMode         );
-      setDefaultKey( KBDK_TAB,       Event::MenuMode          );
+      setDefaultKey( KBDK_TAB,       Event::OptionsMenuMode   );
       setDefaultKey( KBDK_BACKSLASH, Event::CmdMenuMode       );
+      setDefaultKey( KBDK_T,         Event::TimeMachineMode   );
       setDefaultKey( KBDK_GRAVE,     Event::DebuggerMode      );
       setDefaultKey( KBDK_ESCAPE,    Event::LauncherMode      );
       break;
@@ -2043,7 +2074,7 @@ void EventHandler::setContinuousSnapshots(uInt32 interval)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::enterMenuMode(State state)
+void EventHandler::enterMenuMode(EventHandlerState state)
 {
   setEventState(state);
   myOverlay->reStack();
@@ -2053,7 +2084,7 @@ void EventHandler::enterMenuMode(State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
 {
-  setEventState(S_EMULATE);
+  setEventState(EventHandlerState::EMULATION);
   myOSystem.sound().mute(false);
 }
 
@@ -2061,7 +2092,7 @@ void EventHandler::leaveMenuMode()
 bool EventHandler::enterDebugMode()
 {
 #ifdef DEBUGGER_SUPPORT
-  if(myState == S_DEBUGGER || !myOSystem.hasConsole())
+  if(myState == EventHandlerState::DEBUGGER || !myOSystem.hasConsole())
     return false;
 
   // Make sure debugger starts in a consistent state
@@ -2069,23 +2100,23 @@ bool EventHandler::enterDebugMode()
   // mode, since it takes care of locking the debugger state, which will
   // probably be modified below
   myOSystem.debugger().setStartState();
-  setEventState(S_DEBUGGER);
+  setEventState(EventHandlerState::DEBUGGER);
 
   FBInitStatus fbstatus = myOSystem.createFrameBuffer();
-  if(fbstatus != kSuccess)
+  if(fbstatus != FBInitStatus::Success)
   {
     myOSystem.debugger().setQuitState();
-    setEventState(S_EMULATE);
-    if(fbstatus == kFailTooLarge)
+    setEventState(EventHandlerState::EMULATION);
+    if(fbstatus == FBInitStatus::FailTooLarge)
       myOSystem.frameBuffer().showMessage("Debugger window too large for screen",
-                                           kBottomCenter, true);
+                                          MessagePosition::BottomCenter, true);
     return false;
   }
   myOverlay->reStack();
   myOSystem.sound().mute(true);
 #else
   myOSystem.frameBuffer().showMessage("Debugger support not included",
-                                       kBottomCenter, true);
+                                      MessagePosition::BottomCenter, true);
 #endif
 
   return true;
@@ -2096,20 +2127,20 @@ void EventHandler::leaveDebugMode()
 {
 #ifdef DEBUGGER_SUPPORT
   // paranoia: this should never happen:
-  if(myState != S_DEBUGGER)
+  if(myState != EventHandlerState::DEBUGGER)
     return;
 
   // Make sure debugger quits in a consistent state
   myOSystem.debugger().setQuitState();
 
-  setEventState(S_EMULATE);
+  setEventState(EventHandlerState::EMULATION);
   myOSystem.createFrameBuffer();
   myOSystem.sound().mute(false);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setEventState(State state)
+void EventHandler::setEventState(EventHandlerState state)
 {
   myState = state;
 
@@ -2121,7 +2152,7 @@ void EventHandler::setEventState(State state)
   // keyboard acts as one large joystick with many (single) buttons
   switch(myState)
   {
-    case S_EMULATE:
+    case EventHandlerState::EMULATION:
       myOverlay = nullptr;
       myOSystem.sound().mute(false);
       enableTextEvents(false);
@@ -2129,36 +2160,41 @@ void EventHandler::setEventState(State state)
         myUseCtrlKeyFlag = false;
       break;
 
-    case S_PAUSE:
+    case EventHandlerState::PAUSE:
       myOverlay = nullptr;
       myOSystem.sound().mute(true);
       enableTextEvents(false);
       break;
 
-    case S_MENU:
+    case EventHandlerState::OPTIONSMENU:
       myOverlay = &myOSystem.menu();
       enableTextEvents(true);
       break;
 
-    case S_CMDMENU:
+    case EventHandlerState::CMDMENU:
       myOverlay = &myOSystem.commandMenu();
       enableTextEvents(true);
       break;
 
-    case S_LAUNCHER:
+    case EventHandlerState::TIMEMACHINE:
+      myOverlay = &myOSystem.timeMachine();
+      enableTextEvents(true);
+      break;
+
+    case EventHandlerState::LAUNCHER:
       myOverlay = &myOSystem.launcher();
       enableTextEvents(true);
       myEvent.clear();
       break;
 
-#ifdef DEBUGGER_SUPPORT
-    case S_DEBUGGER:
+    case EventHandlerState::DEBUGGER:
+  #ifdef DEBUGGER_SUPPORT
       myOverlay = &myOSystem.debugger();
       enableTextEvents(true);
+  #endif
       break;
-#endif
 
-    default:
+    case EventHandlerState::NONE:
       myOverlay = nullptr;
       break;
   }
@@ -2197,8 +2233,9 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::VolumeDecrease,         "Decrease volume",          "", false },
   { Event::VolumeIncrease,         "Increase volume",          "", false },
   { Event::PauseMode,              "Pause",                    "", false },
-  { Event::MenuMode,               "Enter options menu mode",  "", false },
-  { Event::CmdMenuMode,            "Toggle command menu mode", "", false },
+  { Event::OptionsMenuMode,        "Enter options menu UI",    "", false },
+  { Event::CmdMenuMode,            "Toggle command menu UI",   "", false },
+  { Event::TimeMachineMode,        "Toggle time machine UI",   "", false },
   { Event::DebuggerMode,           "Toggle debugger mode",     "", false },
   { Event::LauncherMode,           "Enter ROM launcher",       "", false },
   { Event::Quit,                   "Quit",                     "", false },

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -99,7 +99,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   fwidth = font.getStringWidth("When saving snapshots:");
   xpos = vBorder;  ypos += buttonHeight + 5;
   new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
-                       "When saving snapshots:", kTextAlignLeft);
+                       "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
   xpos += 30;  ypos += lineHeight + 3;

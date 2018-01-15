@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -18,10 +18,10 @@
 #include "DelayQueueWidget.hxx"
 #include "DelayQueueIterator.hxx"
 #include "OSystem.hxx"
-#include "TIATypes.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "TIADebug.hxx"
+#include "TIAConstants.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "Base.hxx"

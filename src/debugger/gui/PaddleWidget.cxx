@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -32,7 +32,7 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Paddles)");
 
   new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                       fontHeight, label, kTextAlignLeft);
+                       fontHeight, label, TextAlign::Left);
 
   ypos += lineHeight + 20;
   const string& p0string = leftport ? "P0 pot " : "P2 pot ";

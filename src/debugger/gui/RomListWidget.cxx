@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -20,6 +20,7 @@
 #include "DiStella.hxx"
 #include "PackedBitArray.hxx"
 #include "Widget.hxx"
+#include "StellaKeys.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "ScrollBarWidget.hxx"
@@ -237,13 +238,13 @@ void RomListWidget::scrollToCurrent(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
     return;
 
   // Grab right mouse button for context menu, left for selection/edit mode
-  if(button == 2)
+  if(b == MouseButton::RIGHT)
   {
     // Set selected and add menu at current x,y mouse location
     _selectedItem = findItem(x, y);
@@ -269,7 +270,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void RomListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
@@ -302,7 +303,7 @@ bool RomListWidget::handleText(char text)
 bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all Alt-mod keys
-  if(instance().eventHandler().kbdAlt(mod))
+  if(StellaModTest::isAlt(mod))
     return true;
 
   bool handled = true;
@@ -474,6 +475,8 @@ void RomListWidget::drawWidget(bool hilite)
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
+    uInt32 bytesColor = kTextColor;
+
     // Draw checkboxes for correct lines (takes scrolling into account)
     myCheckList[i]->setState(myBPState->isSet(dlist[pos].address));
     myCheckList[i]->setDirty();
@@ -484,10 +487,13 @@ void RomListWidget::drawWidget(bool hilite)
       s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kTextColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos && _hasFocus)
+    if(_selectedItem == pos && _hasFocus)
     {
-      if (!_editMode)
+      if(!_editMode)
+      {
         s.fillRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
+        bytesColor = kTextColorInv;
+      }
       else
         s.frameRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
     }
@@ -529,13 +535,13 @@ void RomListWidget::drawWidget(bool hilite)
         {
           adjustOffset();
           s.drawString(_font, editString(), _x + r.x(), ypos, r.width(), kTextColor,
-                       kTextAlignLeft, -_editScrollOffset, false);
+                       TextAlign::Left, -_editScrollOffset, false);
 
           drawCaret();
         }
         else
         {
-          s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.width(), kTextColor);
+          s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.width(), bytesColor);
         }
       }
     }

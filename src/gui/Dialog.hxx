@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -31,6 +31,7 @@ class CommandSender;
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "StellaKeys.hxx"
+#include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
 /**
@@ -78,6 +79,10 @@ class Dialog : public GuiObject
     */
     void addSurface(shared_ptr<FBSurface> surface);
 
+    void setFlags(int flags) { _flags |= flags;  setDirty(); }
+    void clearFlags(int flags) { _flags &= ~flags; setDirty(); }
+    int  getFlags() const { return _flags; }
+
   protected:
     virtual void draw() override { }
     void releaseFocus() override;
@@ -85,15 +90,15 @@ class Dialog : public GuiObject
     virtual void handleText(char text);
     virtual void handleKeyDown(StellaKey key, StellaMod modifiers);
     virtual void handleKeyUp(StellaKey key, StellaMod modifiers);
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
-    virtual void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual void handleMouseDown(int x, int y, MouseButton b, int clickCount);
+    virtual void handleMouseUp(int x, int y, MouseButton b, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
-    virtual void handleMouseMoved(int x, int y, int button);
-    virtual bool handleMouseClicks(int x, int y, int button);
+    virtual void handleMouseMoved(int x, int y);
+    virtual bool handleMouseClicks(int x, int y, MouseButton b);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);
-    virtual bool handleJoyHat(int stick, int hat, int value);
+    virtual bool handleJoyHat(int stick, int hat, JoyHat value);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
@@ -164,6 +169,7 @@ class Dialog : public GuiObject
     shared_ptr<FBSurface> _surface;
 
     int _tabID;
+    int _flags;
 
   private:
     // Following constructors and assignment operators not supported

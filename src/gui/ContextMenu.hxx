@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -42,7 +42,7 @@ class ContextMenu : public Dialog, public CommandSender
 
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
-                const VariantList& items, int cmd = 0);
+                const VariantList& items, int cmd = 0, int width = 0);
     virtual ~ContextMenu() = default;
 
     /** Add the given items to the widget. */
@@ -82,14 +82,14 @@ class ContextMenu : public Dialog, public CommandSender
     bool sendSelectionLast();
 
   private:
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
-    void handleMouseMoved(int x, int y, int button) override;
-    bool handleMouseClicks(int x, int y, int button) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
+    bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseWheel(int x, int y, int direction) override;
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button) override;
     void handleJoyAxis(int stick, int axis, int value) override;
-    bool handleJoyHat(int stick, int hat, int value) override;
+    bool handleJoyHat(int stick, int hat, JoyHat value) override;
     void handleEvent(Event::Type e);
 
     void drawDialog() override;
@@ -124,6 +124,7 @@ class ContextMenu : public Dialog, public CommandSender
     int _cmd;
 
     uInt32 _xorig, _yorig;
+    uInt32 _maxWidth;
 
   private:
     // Following constructors and assignment operators not supported

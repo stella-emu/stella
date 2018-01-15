@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -35,7 +35,7 @@ class VideoDialog : public Dialog
 {
   public:
     VideoDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                int max_w, int max_h, bool isGlobal);
+                int max_w, int max_h);
     virtual ~VideoDialog() = default;
 
   private:

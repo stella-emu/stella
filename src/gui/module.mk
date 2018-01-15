@@ -4,20 +4,20 @@ MODULE_OBJS := \
 	src/gui/AboutDialog.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
+	src/gui/CheckListWidget.o \
 	src/gui/ColorWidget.o \
 	src/gui/ComboDialog.o \
 	src/gui/CommandDialog.o \
 	src/gui/CommandMenu.o \
+	src/gui/ConfigPathDialog.o \
 	src/gui/ContextMenu.o \
-	src/gui/DialogContainer.o \
 	src/gui/DeveloperDialog.o \
+	src/gui/DialogContainer.o \
 	src/gui/Dialog.o \
 	src/gui/EditableWidget.o \
 	src/gui/EditTextWidget.o \
 	src/gui/EventMappingWidget.o \
 	src/gui/FileListWidget.o \
-	src/gui/ConfigPathDialog.o \
-	src/gui/SnapshotDialog.o \
 	src/gui/Font.o \
 	src/gui/GameInfoDialog.o \
 	src/gui/GameList.o \
@@ -26,11 +26,11 @@ MODULE_OBJS := \
 	src/gui/InputDialog.o \
 	src/gui/InputTextDialog.o \
 	src/gui/JoystickDialog.o \
-	src/gui/Launcher.o \
 	src/gui/LauncherDialog.o \
 	src/gui/LauncherFilterDialog.o \
-	src/gui/LoggerDialog.o \
+	src/gui/Launcher.o \
 	src/gui/ListWidget.o \
+	src/gui/LoggerDialog.o \
 	src/gui/Menu.o \
 	src/gui/MessageBox.o \
 	src/gui/OptionsDialog.o \
@@ -40,9 +40,11 @@ MODULE_OBJS := \
 	src/gui/RomAuditDialog.o \
 	src/gui/RomInfoWidget.o \
 	src/gui/ScrollBarWidget.o \
-	src/gui/CheckListWidget.o \
+	src/gui/SnapshotDialog.o \
 	src/gui/StringListWidget.o \
 	src/gui/TabWidget.o \
+	src/gui/TimeMachineDialog.o \
+	src/gui/TimeMachine.o \
 	src/gui/UIDialog.o \
 	src/gui/VideoDialog.o \
 	src/gui/Widget.o

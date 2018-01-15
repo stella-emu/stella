@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -70,7 +70,7 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   for(const auto& s: text)
   {
     new StaticTextWidget(this, font, xpos, ypos, _w - 20,
-                         fontHeight, s, kTextAlignLeft);
+                         fontHeight, s, TextAlign::Left);
     ypos += fontHeight;
   }
 }

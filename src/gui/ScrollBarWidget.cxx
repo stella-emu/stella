@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -74,7 +74,7 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseDown(int x, int y, int button,
+void ScrollBarWidget::handleMouseDown(int x, int y, MouseButton b,
                                       int clickCount)
 {
   // Ignore subsequent mouse clicks when the slider is being moved
@@ -118,7 +118,7 @@ void ScrollBarWidget::handleMouseDown(int x, int y, int button,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseUp(int x, int y, int button,
+void ScrollBarWidget::handleMouseUp(int x, int y, MouseButton b,
                                     int clickCount)
 {
   _draggingPart = kNoPart;
@@ -142,7 +142,7 @@ void ScrollBarWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
+void ScrollBarWidget::handleMouseMoved(int x, int y)
 {
   // Do nothing if there are less items than fit on one page
   if(_numEntries <= _entriesPerPage)
@@ -184,7 +184,7 @@ void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ScrollBarWidget::handleMouseClicks(int x, int y, int button)
+bool ScrollBarWidget::handleMouseClicks(int x, int y, MouseButton b)
 {
   // Let continuous mouse clicks come through, as the scroll buttons need them
   return true;
@@ -206,13 +206,13 @@ void ScrollBarWidget::checkBounds(int old_pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseEntered(int button)
+void ScrollBarWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseLeft(int button)
+void ScrollBarWidget::handleMouseLeft()
 {
   _part = kNoPart;
   clearFlags(WIDGET_HILITED);

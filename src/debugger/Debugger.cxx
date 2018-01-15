@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -22,6 +22,7 @@
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
@@ -107,6 +108,8 @@ void Debugger::initialize()
   myBaseDialog = myDialog;
 
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
+
+  saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,8 +273,7 @@ void Debugger::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::step()
 {
-  saveOldState("1 step");
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   uInt64 startCycle = mySystem.cycles();
 
@@ -279,6 +281,7 @@ int Debugger::step()
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockBankswitchState();
 
+  addState("step");
   return int(mySystem.cycles() - startCycle);
 }
 
@@ -297,8 +300,7 @@ int Debugger::trace()
   // 32 is the 6502 JSR instruction:
   if(mySystem.peek(myCpuDebug->pc()) == 32)
   {
-    saveOldState("1 trace");
-    mySystem.clearDirtyPages();
+    saveOldState();
 
     uInt64 startCycle = mySystem.cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
@@ -307,6 +309,7 @@ int Debugger::trace()
     myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
     lockBankswitchState();
 
+    addState("trace");
     return int(mySystem.cycles() - startCycle);
   }
   else
@@ -483,12 +486,9 @@ uInt32 Debugger::getBaseAddress(uInt32 addr, bool read)
 void Debugger::nextScanline(int lines)
 {
   ostringstream buf;
-  buf << lines << " scanline";
-  if(lines > 1)
-    buf << "s";
+  buf << "scanline + " << lines;
 
-  saveOldState(buf.str());
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   unlockBankswitchState();
   while(lines)
@@ -498,6 +498,7 @@ void Debugger::nextScanline(int lines)
   }
   lockBankswitchState();
 
+  addState(buf.str());
   myOSystem.console().tia().flushLineCache();
 }
 
@@ -505,12 +506,9 @@ void Debugger::nextScanline(int lines)
 void Debugger::nextFrame(int frames)
 {
   ostringstream buf;
-  buf << frames << " frame";
-  if(frames > 1)
-    buf << "s";
+  buf << "frame + " << frames;
 
-  saveOldState(buf.str());
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   unlockBankswitchState();
   while(frames)
@@ -519,31 +517,28 @@ void Debugger::nextFrame(int frames)
     --frames;
   }
   lockBankswitchState();
+
+  addState(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::updateRewindbuttons(const RewindManager& r)
 {
-  myDialog->rewindButton().setEnabled(!r.atLast());
-  myDialog->unwindButton().setEnabled(!r.atFirst());
+  myDialog->rewindButton().setEnabled(!r.atFirst());
+  myDialog->unwindButton().setEnabled(!r.atLast());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::windStates(uInt16 states, bool unwind, string& message)
+uInt16 Debugger::windStates(uInt16 numStates, bool unwind, string& message)
 {
   RewindManager& r = myOSystem.state().rewindManager();
 
-  mySystem.clearDirtyPages();
+  saveOldState();
 
   unlockBankswitchState();
 
-  uInt16 winds = 0;
   uInt64 startCycles = myOSystem.console().tia().cycles();
-  for(uInt16 i = 0; i < states; ++i)
-    if(unwind ? r.unwindState() : r.rewindState())
-      winds++;
-    else
-      break;
+  uInt16 winds = unwind ? r.unwindState(numStates) : r.rewindState(numStates);
   message = r.getUnitString(myOSystem.console().tia().cycles() - startCycles);
 
   lockBankswitchState();
@@ -553,15 +548,15 @@ uInt16 Debugger::windStates(uInt16 states, bool unwind, string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::rewindStates(const uInt16 states, string& message)
+uInt16 Debugger::rewindStates(const uInt16 numStates, string& message)
 {
-  return windStates(states, false, message);
+  return windStates(numStates, false, message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::unwindStates(const uInt16 states, string& message)
+uInt16 Debugger::unwindStates(const uInt16 numStates, string& message)
 {
-  return windStates(states, true, message);
+  return windStates(numStates, true, message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -596,20 +591,24 @@ bool Debugger::patchROM(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveOldState(string rewindMsg)
+void Debugger::saveOldState(bool clearDirtyPages)
 {
+  if (clearDirtyPages)
+    mySystem.clearDirtyPages();
+
   myCartDebug->saveOldState();
   myCpuDebug->saveOldState();
   myRiotDebug->saveOldState();
   myTiaDebug->saveOldState();
+}
 
-  // Add another rewind level to the Undo list
-  if(rewindMsg != "")
-  {
-    RewindManager& r = myOSystem.state().rewindManager();
-    r.addState(rewindMsg);
-    updateRewindbuttons(r);
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::addState(string rewindMsg)
+{
+  // Add another rewind level to the Time Machine buffer
+  RewindManager& r = myOSystem.state().rewindManager();
+  r.addState(rewindMsg);
+  updateRewindbuttons(r);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -618,11 +617,13 @@ void Debugger::setStartState()
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
 
+  // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
-  updateRewindbuttons(r);
-
-  // Save initial state, but don't add it to the rewind list
-  saveOldState();
+  // avoid invalidating future states when entering the debugger e.g. during rewind
+  if(myOSystem.eventHandler().state() == EventHandlerState::EMULATION)
+    addState("enter debugger");
+  else
+    updateRewindbuttons(r);
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
   myDialog->rom().invalidate(false);
@@ -631,11 +632,10 @@ void Debugger::setStartState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
+  saveOldState();
+
   // Bus must be unlocked for normal operation when leaving debugger mode
   unlockBankswitchState();
-
-  // Save state when leaving the debugger
-  saveOldState("exit debugger");
 
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
@@ -819,6 +819,7 @@ Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_cycleslo",  "Lower 32 bits of number of cycles since emulation started" },
   { "_fcount",    "Number of frames since emulation started" },
   { "_fcycles",   "Number of cycles since frame started" },
+  { "_icycles",    "Number of cycles of last instruction" },
   { "_rwport",    "Address at which a read from a write port occurred" },
   { "_scan",      "Current scanline count" },
   { "_scycles",   "Number of cycles in current scanline" },

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -42,7 +42,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myNumRows(numrows),
     myPageSize(pagesize)
 {
-  const int bwidth  = lfont.getStringWidth("Compare "),
+  const string ELLIPSIS = "\x1d";
+  const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;
   const int VGAP = 4;
 
@@ -71,12 +72,12 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   by += bheight + VGAP * 6;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
-                                    "Search", kSearchCmd);
+                                    "Search" + ELLIPSIS, kSearchCmd);
   mySearchButton->setTarget(this);
 
   by += bheight + VGAP;
   myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
-                                     "Compare", kCmpCmd);
+                                     "Compare" + ELLIPSIS, kCmpCmd);
   myCompareButton->setTarget(this);
 
   by += bheight + VGAP;
@@ -89,7 +90,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     new StaticTextWidget(_boss, lfont, xpos - _font.getStringWidth("xxxx"),
                          ypos - myLineHeight,
                          lfont.getStringWidth("xxxx"), myFontHeight,
-                        "00xx", kTextAlignLeft);
+                        "00xx", TextAlign::Left);
 
   for(int col = 0; col < 16; ++col)
   {
@@ -97,7 +98,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                          ypos - myLineHeight,
                          myFontWidth, myFontHeight,
                          Common::Base::toString(col, Common::Base::F_16_1),
-                         kTextAlignLeft);
+                         TextAlign::Left);
   }
 
   uInt32 row;
@@ -106,7 +107,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myRamLabels[row] =
       new StaticTextWidget(_boss, _font, xpos - _font.getStringWidth("x "),
                            ypos + row*myLineHeight + 2,
-                           myFontWidth, myFontHeight, "", kTextAlignLeft);
+                           myFontWidth, myFontHeight, "", TextAlign::Left);
   }
 
   // For smaller grids, make sure RAM cell detail fields are below the RESET button

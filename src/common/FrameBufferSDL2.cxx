@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -84,15 +84,42 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
     displays.emplace_back(display.w, display.h);
   }
 
-  // For now, supported render types are hardcoded; eventually, SDL may
-  // provide a method to query this
-#if defined(BSPF_WINDOWS)
-  VarList::push_back(renderers, "Direct3D", "direct3d");
-#endif
-  VarList::push_back(renderers, "OpenGL", "opengl");
-  VarList::push_back(renderers, "OpenGLES2", "opengles2");
-  VarList::push_back(renderers, "OpenGLES", "opengles");
-  VarList::push_back(renderers, "Software", "software");
+  struct RenderName
+  {
+    string sdlName;
+    string stellaName;
+  };
+  // Create name map for all currently known SDL renderers
+  const int NUM_RENDERERS = 5;
+  static const RenderName RENDERER_NAMES[NUM_RENDERERS] = {
+    { "direct3d",  "Direct3D"  },
+    { "opengl",    "OpenGL"    },
+    { "opengles",  "OpenGLES"  },
+    { "opengles2", "OpenGLES2" },
+    { "software",  "Software"  }
+  };
+
+  int numDrivers = SDL_GetNumRenderDrivers();
+  for(int i = 0; i < numDrivers; ++i)
+  {
+    SDL_RendererInfo info;
+    if(SDL_GetRenderDriverInfo(i, &info) == 0)
+    {
+      // Map SDL names into nicer Stella names (if available)
+      bool found = false;
+      for(int j = 0; j < NUM_RENDERERS; ++j)
+      {
+        if(RENDERER_NAMES[j].sdlName == info.name)
+        {
+          VarList::push_back(renderers, RENDERER_NAMES[j].stellaName, info.name);
+          found = true;
+          break;
+        }
+      }
+      if(!found)
+        VarList::push_back(renderers, info.name, info.name);
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,6 +233,14 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     myOSystem.settings().setValue("video", renderinfo.name);
 
   return true;
+}
+
+void FrameBufferSDL2::setTitle(const string& title)
+{
+  myScreenTitle = title;
+
+  if(myWindow)
+    SDL_SetWindowTitle(myWindow, title.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -47,6 +47,7 @@
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Launcher.hxx"
+#include "TimeMachine.hxx"
 #include "PNGLibrary.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
@@ -139,6 +140,7 @@ bool OSystem::create()
   // Create menu and launcher GUI objects
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
+  myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
   myStateManager = make_unique<StateManager>(*this);
 
@@ -245,30 +247,31 @@ void OSystem::setFramerate(float framerate)
 FBInitStatus OSystem::createFrameBuffer()
 {
   // Re-initialize the framebuffer to current settings
-  FBInitStatus fbstatus = kFailComplete;
+  FBInitStatus fbstatus = FBInitStatus::FailComplete;
   switch(myEventHandler->state())
   {
-    case EventHandler::S_EMULATE:
-    case EventHandler::S_PAUSE:
-    case EventHandler::S_MENU:
-    case EventHandler::S_CMDMENU:
-      if((fbstatus = myConsole->initializeVideo()) != kSuccess)
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::PAUSE:
+    case EventHandlerState::OPTIONSMENU:
+    case EventHandlerState::CMDMENU:
+    case EventHandlerState::TIMEMACHINE:
+      if((fbstatus = myConsole->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
-      break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
+      break;
 
-    case EventHandler::S_LAUNCHER:
-      if((fbstatus = myLauncher->initializeVideo()) != kSuccess)
+    case EventHandlerState::LAUNCHER:
+      if((fbstatus = myLauncher->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
-      break;  // S_LAUNCHER
+      break;
 
-#ifdef DEBUGGER_SUPPORT
-    case EventHandler::S_DEBUGGER:
-      if((fbstatus = myDebugger->initializeVideo()) != kSuccess)
+    case EventHandlerState::DEBUGGER:
+  #ifdef DEBUGGER_SUPPORT
+      if((fbstatus = myDebugger->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
-      break;  // S_DEBUGGER
-#endif
+  #endif
+      break;
 
-    default:  // Should never happen
+    case EventHandlerState::NONE:  // Should never happen
       logMessage("ERROR: Unknown emulation state in createFrameBuffer()", 0);
       break;
   }
@@ -331,12 +334,12 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif
-    myEventHandler->reset(EventHandler::S_EMULATE);
+    myEventHandler->reset(EventHandlerState::EMULATION);
     myEventHandler->setMouseControllerMode(mySettings->getString("usemouse"));
-    if(createFrameBuffer() != kSuccess)  // Takes care of initializeVideo()
+    if(createFrameBuffer() != FBInitStatus::Success)  // Takes care of initializeVideo()
     {
       logMessage("ERROR: Couldn't create framebuffer for console", 0);
-      myEventHandler->reset(EventHandler::S_LAUNCHER);
+      myEventHandler->reset(EventHandlerState::LAUNCHER);
       return "ERROR: Couldn't create framebuffer for console";
     }
     myConsole->initializeAudio();
@@ -377,7 +380,7 @@ bool OSystem::reloadConsole()
 bool OSystem::hasConsole() const
 {
   return myConsole != nullptr &&
-         myEventHandler->state() != EventHandler::S_LAUNCHER;
+         myEventHandler->state() != EventHandlerState::LAUNCHER;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -391,8 +394,8 @@ bool OSystem::createLauncher(const string& startdir)
   mySettings->setValue("tmpromdir", startdir);
   bool status = false;
 
-  myEventHandler->reset(EventHandler::S_LAUNCHER);
-  if(createFrameBuffer() == kSuccess)
+  myEventHandler->reset(EventHandlerState::LAUNCHER);
+  if(createFrameBuffer() == FBInitStatus::Success)
   {
     myLauncher->reStack();
     myFrameBuffer->setCursorState();

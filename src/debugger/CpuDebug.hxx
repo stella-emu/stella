@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -61,6 +61,8 @@ class CpuDebug : public DebuggerSystem
     int z() const;
     int c() const;
 
+    int icycles() const;
+
     void setPC(int pc);
     void setSP(int sp);
     void setPS(int ps);
@@ -75,6 +77,8 @@ class CpuDebug : public DebuggerSystem
     void setI(bool on);
     void setZ(bool on);
     void setC(bool on);
+
+    void setCycles(int cycles);
 
     void toggleN();
     void toggleV();

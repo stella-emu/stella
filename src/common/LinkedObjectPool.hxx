@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -42,7 +42,8 @@
 
         In the case of methods which wrap the C++ 'splice()' method, the
         semantics of splice are followed wrt invalid/out-of-range/etc
-        iterators.  See the applicable documentation for such behaviour.
+        iterators.  See the applicable C++ STL documentation for such
+        behaviour.
 
   @author Stephen Anthony
 */
@@ -58,9 +59,8 @@ class LinkedObjectPool
     /*
       Create a pool of size CAPACITY; the active list starts out empty.
     */
-    LinkedObjectPool<T, CAPACITY>() : myCurrent(myList.end()) {
-      for(uInt32 i = 0; i < CAPACITY; ++i)
-        myPool.emplace_back(T());
+    LinkedObjectPool<T, CAPACITY>() : myCurrent(myList.end()), myCapacity(0) {
+      resize(CAPACITY);
     }
 
     /**
@@ -70,13 +70,26 @@ class LinkedObjectPool
 
       Make sure to call 'currentIsValid()' before accessing this method.
     */
-    T& current() { return *myCurrent; }
+    T& current() const { return *myCurrent; }
+
+    /**
+      Returns current's position in the list
+
+      SLOW, but only required for messages
+    */
+    uInt32 currentIdx() const {
+      iter it = myCurrent;
+      uInt32 idx = 1;
+
+      while(it-- != myList.begin()) idx++;
+      return idx;
+    }
 
     /**
       Does the 'current' iterator point to a valid node in the active list?
       This must be called before 'current()' is called.
     */
-    bool currentIsValid() { return myCurrent != myList.end(); }
+    bool currentIsValid() const { return myCurrent != myList.end(); }
 
     /**
       Advance 'current' iterator to previous position in the active list.
@@ -96,17 +109,31 @@ class LinkedObjectPool
         myCurrent = std::next(myCurrent, 1);
     }
 
-#if 0
     /**
-      Return a reference to the element at the first node in the active list.
+      Return an iterator to the first node in the active list.
     */
-    T& first() { return myList.front(); }
+    const_iter first() const { return myList.begin(); }
 
     /**
-      Return a reference to the element at the last node in the active list.
+      Return an iterator to the last node in the active list.
     */
-    T& last() { return myList.back(); }
-#endif
+    const_iter last() const { return std::prev(myList.end(), 1); }
+
+    /**
+      Return an iterator to the previous node of 'i' in the active list.
+    */
+    const_iter previous(const_iter i) const { return std::prev(i, 1); }
+
+    /**
+      Return an iterator to the next node to 'current' in the active list.
+    */
+    const_iter next(const_iter i) const { return std::next(i, 1); }
+
+    /**
+      Answer whether 'current' is at the specified iterator.
+    */
+    bool atFirst() const { return myCurrent == first(); }
+    bool atLast() const  { return myCurrent == last();  }
 
     /**
       Add a new node at the beginning of the active list, and update 'current'
@@ -131,7 +158,7 @@ class LinkedObjectPool
       happens to be the one removed.
     */
     void removeFirst() {
-      const_iter i = myList.begin();
+      const_iter i = myList.cbegin();
       myPool.splice(myPool.end(), myList, i);
       if(myCurrent == i)  // did we just invalidate 'current'
         moveToNext();     // if so, move to the next node
@@ -148,25 +175,21 @@ class LinkedObjectPool
         moveToPrevious(); // if so, move to the previous node
     }
 
-#if 0
     /**
-      Convenience method to remove a single element from the active list at
-      position of the iterator +- the offset.
+      Remove a single element from the active list at position of the iterator.
     */
-    void remove(const_iter i, Int32 offset = 0) {
-      myPool.splice(myPool.end(), myList,
-                    offset >= 0 ? std::next(i, offset) : std::prev(i, -offset));
+    void remove(const_iter i) {
+      myPool.splice(myPool.end(), myList, i);
     }
 
     /**
-      Convenience method to remove a single element from the active list by
-      index, offset from the beginning of the list. (ie, '0' means first
-      element, '1' is second, and so on).
+      Remove a single element from the active list by index, offset from
+      the beginning of the list. (ie, '0' means first element, '1' is second,
+      and so on).
     */
     void remove(uInt32 index) {
       myPool.splice(myPool.end(), myList, std::next(myList.begin(), index));
     }
-#endif
 
     /**
       Remove range of elements from the beginning of the active list to
@@ -185,6 +208,22 @@ class LinkedObjectPool
     }
 
     /**
+      Resize the pool to specified size, invalidating the list in the process
+      (ie, the list essentially becomes empty again).
+    */
+    void resize(uInt32 capacity) {
+      if(myCapacity != capacity)  // only resize when necessary
+      {
+        myList.clear();  myPool.clear();
+        myCurrent = myList.end();
+        myCapacity = capacity;
+
+        for(uInt32 i = 0; i < myCapacity; ++i)
+          myPool.emplace_back(T());
+      }
+    }
+
+    /**
       Erase entire contents of active list.
     */
     void clear() {
@@ -192,21 +231,20 @@ class LinkedObjectPool
       myCurrent = myList.end();
     }
 
-    /** Access the list with iterators, just as you would a normal C++ STL list */
-    iter begin() { return myList.begin(); }
-    iter end()   { return myList.end();   }
-    const_iter begin() const { return myList.cbegin(); }
-    const_iter end() const   { return myList.cend();   }
+    uInt32 capacity() const { return myCapacity; }
 
-    uInt32 size() const { return myList.size();             }
-    bool empty() const  { return myList.size() == 0;        }
-    bool full() const   { return myList.size() >= CAPACITY; }
+    uInt32 size() const { return uInt32(myList.size()); }
+    bool empty() const  { return size() == 0;           }
+    bool full() const   { return size() >= capacity();  }
 
   private:
     std::list<T> myList, myPool;
 
     // Current position in the active list (end() indicates an invalid position)
     iter myCurrent;
+
+    // Total capacity of the pool
+    uInt32 myCapacity;
 
   private:
     // Following constructors and assignment operators not supported

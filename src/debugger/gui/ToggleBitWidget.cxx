@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -78,24 +78,38 @@ void ToggleBitWidget::drawWidget(bool hilite)
 
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
+#ifndef FLAT_UI
   for (row = 0; row <= _rows; row++)
     s.hLine(_x, _y + (row * _rowHeight), _x + linewidth, kColor);
   int lineheight = _rows * _rowHeight;
   for (col = 0; col <= _cols; col++)
     s.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
+#else
+  s.frameRect(_x, _y, _w, _h, kColor);
+  for(row = 1; row <= _rows - 1; row++)
+    s.hLine(_x + 1, _y + (row * _rowHeight), _x + linewidth - 1, kBGColorLo);
+
+  int lineheight = _rows * _rowHeight;
+  for(col = 1; col <= _cols - 1; col++)
+    s.vLine(_x + (col * _colWidth), _y + 1, _y + lineheight - 1, kBGColorLo);
+#endif
 
   // Draw the list items
   for (row = 0; row < _rows; row++)
   {
     for (col = 0; col < _cols; col++)
     {
+      uInt32 textColor = kTextColor;
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.
-      if (_currentRow == row && _currentCol == col && _hasFocus)
-        s.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
+      if(_currentRow == row && _currentCol == col && _hasFocus)
+      {
+        s.fillRect(x - 4, y - 2, _colWidth + 1, _rowHeight + 1, kTextColorHi);
+        textColor = kTextColorInv;
+      }
 
       if(_stateList[pos])
         buffer = _onList[pos];
@@ -111,7 +125,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
           s.drawString(_font, buffer, x, y, _colWidth, kDbgChangedTextColor);
         }
         else
-          s.drawString(_font, buffer, x, y, _colWidth, kTextColor);
+          s.drawString(_font, buffer, x, y, _colWidth, textColor);
       }
       else
       {

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -36,12 +36,12 @@ class NullControlWidget : public ControllerWidget
                 lwidth = std::max(font.getStringWidth(buf.str()),
                 font.getStringWidth("Controller input"));
       new StaticTextWidget(boss, font, x, y+2, lwidth,
-                           fontHeight, buf.str(), kTextAlignLeft);
+                           fontHeight, buf.str(), TextAlign::Left);
       new StaticTextWidget(boss, font, x, y+2+2*lineHeight, lwidth,
-                           fontHeight, "Controller input", kTextAlignCenter);
+                           fontHeight, "Controller input", TextAlign::Center);
       new StaticTextWidget(boss, font, x, y+2+3*lineHeight, lwidth,
                            fontHeight, "not available",
-                           kTextAlignCenter);
+                           TextAlign::Center);
     }
 
     virtual ~NullControlWidget() = default;

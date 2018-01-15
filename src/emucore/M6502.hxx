@@ -8,7 +8,7 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -242,6 +242,8 @@ class M6502 : public Serializable
     bool delCondTrap(uInt32 brk);
     void clearCondTraps();
     const StringList& getCondTrapNames() const;
+
+    void setGhostReadsTrap(bool enable) { myGhostReadsTrap = enable; }
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -312,6 +314,18 @@ class M6502 : public Serializable
     */
     void handleHalt();
 
+    /**
+      Check whether we are required to update hardware (TIA + RIOT) in lockstep
+      with the CPU and update the flag accordingly.
+    */
+    void updateStepStateByInstruction();
+
+    /**
+      This is the actual dispatch function that does the grunt work. M6502::execute
+      wraps it and makes sure that any pending halt is processed before returning.
+    */
+    bool _execute(uInt32 number);
+
   private:
     /**
       Bit fields used to indicate that certain conditions need to be
@@ -347,6 +361,8 @@ class M6502 : public Serializable
     bool I;     // I flag for processor status register
     bool notZ;  // Z flag complement for processor status register
     bool C;     // C flag for processor status register
+
+    uInt8 icycles; // cycles of last instruction
 
     /// Indicates the numer of distinct memory accesses
     uInt32 myNumberOfDistinctAccesses;
@@ -436,8 +452,12 @@ class M6502 : public Serializable
     StringList myCondSaveStateNames;
     vector<unique_ptr<Expression>> myTrapConds;
     StringList myTrapCondNames;
-
 #endif  // DEBUGGER_SUPPORT
+
+    // These are both used only by the debugger, but since they're included
+    // in save states, they cannot be conditionally compiled
+    bool myGhostReadsTrap;    // trap on ghost reads
+    bool myStepStateByInstruction;
 
   private:
     // Following constructors and assignment operators not supported

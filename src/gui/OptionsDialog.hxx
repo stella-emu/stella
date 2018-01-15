@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -45,8 +45,16 @@ class DeveloperDialog;
 class OptionsDialog : public Dialog
 {
   public:
+    // Current Stella mode
+    enum stellaMode
+    {
+      launcher,
+      emulator,
+      debugger
+    };
+
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
-                  int max_w, int max_h, bool global);
+                  int max_w, int max_h, stellaMode mode);
     virtual ~OptionsDialog();
 
   private:
@@ -75,7 +83,7 @@ class OptionsDialog : public Dialog
     ButtonWidget* myCheatCodeButton;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    bool myIsGlobal;
+    stellaMode myMode;
 
     enum {
       kVidCmd      = 'VIDO',

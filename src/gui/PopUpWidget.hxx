@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -22,6 +22,7 @@ class GUIObject;
 class ContextMenu;
 
 #include "bspf.hxx"
+#include "Variant.hxx"
 #include "Command.hxx"
 #include "Widget.hxx"
 
@@ -50,8 +51,8 @@ class PopUpWidget : public Widget, public CommandSender
         See ContextMenu.hxx for more information. */
     void setSelected(const Variant& tag,
                      const Variant& def = EmptyVariant);
-    void setSelectedIndex(int idx);
-    void setSelectedMax();
+    void setSelectedIndex(int idx, bool changed = false);
+    void setSelectedMax(bool changed = false);
     void clearSelection();
 
     int getSelected() const;
@@ -61,8 +62,12 @@ class PopUpWidget : public Widget, public CommandSender
     bool wantsFocus() const override { return true; }
 
   protected:
-    void handleMouseDown(int x, int y, int button, int clickCount) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
+#ifdef FLAT_UI
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
+#endif
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void drawWidget(bool hilite) override;
@@ -74,6 +79,7 @@ class PopUpWidget : public Widget, public CommandSender
 
     string _label;
     int    _labelWidth;
+    bool   _changed;
 
   private:
     // Following constructors and assignment operators not supported

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -92,10 +92,10 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Grab right mouse button for command context menu
-  if(button == 2)
+  if(b == MouseButton::RIGHT)
   {
     myClickX = x;
     myClickY = y;
@@ -159,6 +159,9 @@ void TiaOutputWidget::drawWidget(bool hilite)
                height = instance().console().tia().height();
   FBSurface& s = dialog().surface();
 
+  s.vLine(_x + _w + 1, _y, height, kColor);
+  s.hLine(_x, _y + height + 1, _x +_w + 1, kColor);
+
   // Get current scanline position
   // This determines where the frame greying should start, and where a
   // scanline 'pointer' should be drawn
@@ -176,10 +179,10 @@ void TiaOutputWidget::drawWidget(bool hilite)
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;
     }
-    s.drawPixels(myLineBuffer, _x, _y+y, width << 1);
+    s.drawPixels(myLineBuffer, _x + 1, _y + 1 + y, width << 1);
   }
 
   // Show electron beam position
   if(visible && scanx < width && scany+2u < height)
-    s.fillRect(_x+(scanx<<1), _y+scany, 3, 3, kBtnTextColor);
+    s.fillRect(_x + 1 + (scanx<<1), _y + 1 + scany, 3, 3, kColorInfo);
 }

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -125,12 +125,15 @@ class M6532 : public Device
     */
     bool poke(uInt16 address, uInt8 value) override;
 
+    /**
+     * Update RIOT state to the current timestamp.
+     */
+    void updateEmulation();
+
   private:
 
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
-
-    void updateEmulation();
 
     // The following are used by the debugger to read INTIM/TIMINT
     // We need separate methods to do this, so the state of the system

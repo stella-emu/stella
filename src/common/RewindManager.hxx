@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -34,8 +34,9 @@ class StateManager;
   Unwinding involves moving the internal iterator forwards in time (towards
   the end of the list).
 
-  Any time a new state is added, the internal iterator moves back to the
-  insertion point of the data (the end of the list).
+  Any time a new state is added, all states from the current iterator position
+  to the end of the list (aka, all future states) are removed, and the internal
+  iterator moves to the insertion point of the data (the end of the list).
 
   @author  Stephen Anthony
 */
@@ -45,28 +46,86 @@ class RewindManager
     RewindManager(OSystem& system, StateManager& statemgr);
 
   public:
+    static constexpr int NUM_INTERVALS = 7;
+    // cycle values for the intervals
+    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
+      76 * 262,
+      76 * 262 * 3,
+      76 * 262 * 10,
+      76 * 262 * 30,
+      76 * 262 * 60,
+      76 * 262 * 60 * 3,
+      76 * 262 * 60 * 10
+    };
+    // settings values for the intervals
+    const string INT_SETTINGS[NUM_INTERVALS] = {
+      "1f",
+      "3f",
+      "10f",
+      "30f",
+      "1s",
+      "3s",
+      "10s"
+    };
+
+    static constexpr int NUM_HORIZONS = 8;
+    // cycle values for the horzions
+    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
+      76 * 262 * 60 * 3,
+      76 * 262 * 60 * 10,
+      76 * 262 * 60 * 30,
+      76 * 262 * 60 * 60,
+      76 * 262 * 60 * 60 * 3,
+      76 * 262 * 60 * 60 * 10,
+      uInt64(76) * 262 * 60 * 60 * 30,
+      uInt64(76) * 262 * 60 * 60 * 60
+    };
+    // settings values for the horzions
+    const string HOR_SETTINGS[NUM_HORIZONS] = {
+      "3s",
+      "10s",
+      "30s",
+      "1m",
+      "3m",
+      "10m",
+      "30m",
+      "60m"
+    };
+
+    /**
+      Initializes state list and calculates compression factor.
+    */
+    void setup();
+
     /**
       Add a new state file with the given message; this message will be
       displayed when the state is replayed.
 
       @param message  Message to display when replaying this state
     */
-    bool addState(const string& message);
+    bool addState(const string& message, bool timeMachine = false);
 
     /**
       Rewind one level of the state list, and display the message associated
       with that state.
+
+      @param numStates  Number of states to rewind
+      @return           Number of states to rewinded
     */
-    bool rewindState();
+    uInt32 rewindState(uInt32 numStates = 1);
 
     /**
       Unwind one level of the state list, and display the message associated
       with that state.
-    */
-    bool unwindState();
 
-    bool atLast() const { return myStateList.empty(); }
-    bool atFirst() const { return false; } // TODO
+      @param numStates  Number of states to unwind
+      @return           Number of states to unwinded
+    */
+    uInt32 unwindState(uInt32 numStates = 1);
+
+    bool atFirst() const { return myStateList.atFirst(); }
+    bool atLast() const  { return myStateList.atLast();  }
+    void resize(uInt32 size) { myStateList.resize(size); }
     void clear() { myStateList.clear(); }
 
     /**
@@ -74,32 +133,55 @@ class RewindManager
     */
     string getUnitString(Int64 cycles);
 
-  private:
-    // Maximum number of states to save
-    static constexpr uInt32 MAX_SIZE = 100; // TODO: use a parameter here and allow user to define size in UI
+    uInt32 getCurrentIdx() { return myStateList.currentIdx(); }
+    uInt32 getLastIdx() { return myStateList.size(); }
 
+    uInt32 getFirstCycles();
+    uInt32 getCurrentCycles();
+    uInt32 getLastCycles();
+
+  private:
     OSystem& myOSystem;
     StateManager& myStateManager;
 
+    uInt32 mySize;
+    uInt32 myUncompressed;
+    uInt32 myInterval;
+    uInt64 myHorizon;
+    double myFactor;
+    bool   myLastTimeMachineAdd;
+
     struct RewindState {
-      Serializer data;
-      string message;
-      uInt64 cycle;
-      int count; //  TODO - remove this
+      Serializer data;  // actual save state
+      string message;   // describes save state origin
+      uInt64 cycles;    // cycles since emulation started
 
       // We do nothing on object instantiation or copy
       // The goal of LinkedObjectPool is to not do any allocations at all
       RewindState() { }
       RewindState(const RewindState&) { }
+
+      // Output object info; used for debugging only
+      friend ostream& operator<<(ostream& os, const RewindState& s) {
+        return os << "msg: " << s.message << "   cycle: " << s.cycles;
+      }
     };
 
     // The linked-list to store states (internally it takes care of reducing
     // frequent (de)-allocations)
-    Common::LinkedObjectPool<RewindState, MAX_SIZE> myStateList;
+    Common::LinkedObjectPool<RewindState> myStateList;
 
+    /**
+      Remove a save state from the list
+    */
     void compressStates();
 
-    string getMessage(RewindState& state);
+    /**
+      Load the current state and get the message string for the rewind/unwind
+
+      @return  The message
+    */
+    string loadState(Int64 startCycles, uInt32 numStates);
 
   private:
     // Following constructors and assignment operators not supported

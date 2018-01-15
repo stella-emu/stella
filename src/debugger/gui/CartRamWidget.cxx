@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -48,7 +48,7 @@ CartRamWidget::CartRamWidget(
 
   // Add RAM size
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "RAM Size ", kTextAlignLeft);
+                       myFontHeight, "RAM Size ", TextAlign::Left);
 
   uInt32 ramsize = cartDebug.internalRamSize();
   buf << ramsize << " bytes";
@@ -70,14 +70,14 @@ CartRamWidget::CartRamWidget(
   if(lines > maxlines) lines = maxlines;
 
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Description ", kTextAlignLeft);
+                       myFontHeight, "Description ", TextAlign::Left);
   myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos,
                                 fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);
   myDesc->setList(sl);
   addFocusWidget(myDesc);
 
-  ypos += myDesc->getHeight() + myLineHeight + 4;
+  ypos += myDesc->getHeight() + myFontHeight / 2;
 
   // Add RAM widget
   xpos = x + _font.getStringWidth("xxxx");

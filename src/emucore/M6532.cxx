@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -106,7 +106,7 @@ void M6532::update()
   // Update entire port state
   port0.update();
   port1.update();
-  myConsole.switches().update(mySettings);
+  myConsole.switches().update();
 
   // Get new PA7 state
   bool currPA7 = port0.myDigitalPinState[Controller::Four];

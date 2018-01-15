@@ -8,7 +8,7 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -20,6 +20,9 @@
   #include "Expression.hxx"
   #include "CartDebug.hxx"
   #include "PackedBitArray.hxx"
+  #include "TIA.hxx"
+  #include "Base.hxx"
+  #include "M6532.hxx"
 
   // Flags for disassembly types
   #define DISASM_CODE  CartDebug::CODE
@@ -52,6 +55,7 @@ M6502::M6502(const Settings& settings)
     mySettings(settings),
     A(0), X(0), Y(0), SP(0), IR(0), PC(0),
     N(false), V(false), B(false), D(false), I(false), notZ(false), C(false),
+    icycles(0),
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),
     myLastPeekAddress(0),
@@ -64,7 +68,9 @@ M6502::M6502(const Settings& settings)
     myLastSrcAddressY(-1),
     myDataAddressForPoke(0),
     myOnHaltCallback(nullptr),
-    myHaltRequested(false)
+    myHaltRequested(false),
+    myGhostReadsTrap(true),
+    myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
@@ -99,6 +105,8 @@ void M6502::reset()
   PS(BSPF::containsIgnoreCase(cpurandom, "P") ?
           mySystem->randGenerator().next() : 0x20);
 
+  icycles = 0;
+
   // Load PC from the reset vector
   PC = uInt16(mySystem->peek(0xfffc)) | (uInt16(mySystem->peek(0xfffd)) << 8);
 
@@ -108,6 +116,7 @@ void M6502::reset()
   myDataAddressForPoke = 0;
 
   myHaltRequested = false;
+  myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,19 +133,23 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   }
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
+  icycles += SYSTEM_CYCLES_PER_CPU;
   uInt8 result = mySystem->peek(address, flags);
   myLastPeekAddress = address;
 
 #ifdef DEBUGGER_SUPPORT
-  if(myReadTraps.isInitialized() && myReadTraps.isSet(address))
+  if(myReadTraps.isInitialized() && myReadTraps.isSet(address)
+     && (myGhostReadsTrap || flags != DISASM_NONE))
   {
     myLastPeekBaseAddress = myDebugger->getBaseAddress(myLastPeekAddress, true); // mirror handling
     int cond = evalCondTraps();
     if(cond > -1)
     {
       myJustHitReadTrapFlag = true;
-      myHitTrapInfo.message = "RTrap"
-        + (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      stringstream msg;
+      msg << "RTrap" << (flags == DISASM_NONE ? "G[" : "[") << Common::Base::HEX2 << cond << "]"
+        << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      myHitTrapInfo.message = msg.str();
       myHitTrapInfo.address = address;
     }
   }
@@ -157,6 +170,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
   }
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
+  icycles += SYSTEM_CYCLES_PER_CPU;
   mySystem->poke(address, value, flags);
   myLastPokeAddress = address;
 
@@ -168,8 +182,9 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
     if(cond > -1)
     {
       myJustHitWriteTrapFlag = true;
-      myHitTrapInfo.message = "WTrap"
-        + (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      stringstream msg;
+      msg << "WTrap[" << Common::Base::HEX2 << cond << "]" << (myTrapCondNames[cond].empty() ? ": " : "If: {" + myTrapCondNames[cond] + "} ");
+      myHitTrapInfo.message = msg.str();
       myHitTrapInfo.address = address;
     }
   }
@@ -193,21 +208,57 @@ inline void M6502::handleHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::updateStepStateByInstruction()
+{
+  // Currently only used in debugger mode
+#ifdef DEBUGGER_SUPPORT
+  myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() || myTrapConds.size();
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::execute(uInt32 number)
+{
+  const bool status = _execute(number);
+
+#ifdef DEBUGGER_SUPPORT
+  // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
+  // beginning of the next line (otherwise, the next instruction would be stepped in order for
+  // the halt to take effect). This is safe because as we know that the next cycle will be a read
+  // cycle anyway.
+  handleHalt();
+
+  // Make sure that the hardware state matches the current system clock. This is necessary
+  // to maintain a consistent state for the debugger after stepping.
+  mySystem->tia().updateEmulation();
+  mySystem->m6532().updateEmulation();
+#endif
+
+  return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline bool M6502::_execute(uInt32 number)
 {
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
+
+#ifdef DEBUGGER_SUPPORT
+  TIA& tia = mySystem->tia();
+  M6532& riot = mySystem->m6532();
+#endif
 
   // Loop until execution is stopped or a fatal error occurs
   for(;;)
   {
     for(; !myExecutionStatus && (number != 0); --number)
     {
-#ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
       if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
       {
+        bool read = myJustHitReadTrapFlag;
         myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
-        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, myJustHitReadTrapFlag))
+        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, read))
         {
           return true;
         }
@@ -220,17 +271,20 @@ bool M6502::execute(uInt32 number)
       int cond = evalCondBreaks();
       if(cond > -1)
       {
-        string buf = "CBP: " + myCondBreakNames[cond];
-        if(myDebugger && myDebugger->start(buf))
+        stringstream msg;
+        msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
+        if(myDebugger && myDebugger->start(msg.str()))
           return true;
       }
 
       cond = evalCondSaveStates();
       if(cond > -1)
       {
-        myDebugger->saveOldState("conditional savestate");
+        stringstream msg;
+        msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
+        myDebugger->addState(msg.str());
       }
-#endif  // DEBUGGER_SUPPORT
+  #endif  // DEBUGGER_SUPPORT
 
       uInt16 operandAddress = 0, intermediateAddress = 0;
       uInt8 operand = 0;
@@ -238,6 +292,7 @@ bool M6502::execute(uInt32 number)
       // Reset the peek/poke address pointers
       myLastPeekAddress = myLastPokeAddress = myDataAddressForPoke = 0;
 
+      icycles = 0;
       // Fetch instruction at the program counter
       IR = peek(PC++, DISASM_CODE);  // This address represents a code section
 
@@ -251,6 +306,17 @@ bool M6502::execute(uInt32 number)
           // Oops, illegal instruction executed so set fatal error flag
           myExecutionStatus |= FatalErrorBit;
       }
+
+  #ifdef DEBUGGER_SUPPORT
+      if(myStepStateByInstruction)
+      {
+        // Check out M6502::execute for an explanation.
+        handleHalt();
+
+        tia.updateEmulation();
+        riot.updateEmulation();
+      }
+  #endif
     }
 
     // See if we need to handle an interrupt
@@ -264,12 +330,6 @@ bool M6502::execute(uInt32 number)
     // See if execution has been stopped
     if(myExecutionStatus & StopExecutionBit)
     {
-      // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
-      // beginning of the next line (otherwise, the next instruction would be stepped in order for
-      // the halt to take effect). This is safe because as we know that the next cycle will be a read
-      // cycle anyway.
-      handleHalt();
-
       // Yes, so answer that everything finished fine
       return true;
     }
@@ -284,9 +344,6 @@ bool M6502::execute(uInt32 number)
     // See if we've executed the specified number of instructions
     if(number == 0)
     {
-      // See above
-      handleHalt();
-
       // Yes, so answer that everything finished fine
       return true;
     }
@@ -360,6 +417,8 @@ bool M6502::save(Serializer& out) const
     out.putInt(myLastSrcAddressY);
 
     out.putBool(myHaltRequested);
+    out.putBool(myStepStateByInstruction);
+    out.putBool(myGhostReadsTrap);
   }
   catch(...)
   {
@@ -410,6 +469,8 @@ bool M6502::load(Serializer& in)
     myLastSrcAddressY = in.getInt();
 
     myHaltRequested = in.getBool();
+    myStepStateByInstruction = in.getBool();
+    myGhostReadsTrap = in.getBool();
   }
   catch(...)
   {
@@ -433,6 +494,9 @@ uInt32 M6502::addCondBreak(Expression* e, const string& name)
 {
   myCondBreaks.emplace_back(e);
   myCondBreakNames.push_back(name);
+
+  updateStepStateByInstruction();
+
   return uInt32(myCondBreaks.size() - 1);
 }
 
@@ -443,6 +507,9 @@ bool M6502::delCondBreak(uInt32 idx)
   {
     Vec::removeAt(myCondBreaks, idx);
     Vec::removeAt(myCondBreakNames, idx);
+
+    updateStepStateByInstruction();
+
     return true;
   }
   return false;
@@ -453,6 +520,8 @@ void M6502::clearCondBreaks()
 {
   myCondBreaks.clear();
   myCondBreakNames.clear();
+
+  updateStepStateByInstruction();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -466,6 +535,9 @@ uInt32 M6502::addCondSaveState(Expression* e, const string& name)
 {
   myCondSaveStates.emplace_back(e);
   myCondSaveStateNames.push_back(name);
+
+  updateStepStateByInstruction();
+
   return uInt32(myCondSaveStates.size() - 1);
 }
 
@@ -476,6 +548,9 @@ bool M6502::delCondSaveState(uInt32 idx)
   {
     Vec::removeAt(myCondSaveStates, idx);
     Vec::removeAt(myCondSaveStateNames, idx);
+
+    updateStepStateByInstruction();
+
     return true;
   }
   return false;
@@ -486,6 +561,8 @@ void M6502::clearCondSaveStates()
 {
   myCondSaveStates.clear();
   myCondSaveStateNames.clear();
+
+  updateStepStateByInstruction();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -499,6 +576,9 @@ uInt32 M6502::addCondTrap(Expression* e, const string& name)
 {
   myTrapConds.emplace_back(e);
   myTrapCondNames.push_back(name);
+
+  updateStepStateByInstruction();
+
   return uInt32(myTrapConds.size() - 1);
 }
 
@@ -509,6 +589,9 @@ bool M6502::delCondTrap(uInt32 brk)
   {
     Vec::removeAt(myTrapConds, brk);
     Vec::removeAt(myTrapCondNames, brk);
+
+    updateStepStateByInstruction();
+
     return true;
   }
   return false;
@@ -519,6 +602,8 @@ void M6502::clearCondTraps()
 {
   myTrapConds.clear();
   myTrapCondNames.clear();
+
+  updateStepStateByInstruction();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

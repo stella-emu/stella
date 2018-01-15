@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -61,7 +61,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   int lwidth = _font.getStringWidth("Current column ");
   ypos += myLineHeight + 8;
   new StaticTextWidget(boss, _font, xpos, ypos+2, lwidth, myFontHeight,
-                       "Current SWCHA ", kTextAlignLeft);
+                       "Current SWCHA ", TextAlign::Left);
   xpos += lwidth;
   mySWCHA = new ToggleBitWidget(boss, _nfont, xpos, ypos, 8, 1);
   mySWCHA->setTarget(this);
@@ -70,7 +70,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   // Current column number
   xpos = 10;  ypos += myLineHeight + 5;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current column ", kTextAlignLeft);
+        myFontHeight, "Current column ", TextAlign::Left);
   xpos += lwidth;
 
   myColumn = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
@@ -140,7 +140,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   ypos += myLineHeight + 8;
   lwidth = _font.getStringWidth("Ram State ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Ram State ", kTextAlignLeft);
+        myFontHeight, "Ram State ", TextAlign::Left);
   myRAM = new EditTextWidget(boss, _nfont, xpos+lwidth, ypos-2,
               _nfont.getStringWidth(" Write-only "), myLineHeight, "");
   myRAM->setEditable(false, true);
@@ -155,12 +155,14 @@ void CartridgeCMWidget::saveOldState()
   myOldState.internalram.clear();
   for(uInt32 i = 0; i < this->internalRamSize();i++)
     myOldState.internalram.push_back(myCart.myRAM[i]);
+
+  myOldState.bank = myCart.getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCMWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank());
+  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
 
   RiotDebug& riot = Debugger::debugger().riotDebug();
   const RiotState& state = static_cast<const RiotState&>(riot.getState());

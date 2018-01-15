@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -63,13 +63,13 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Data fetchers
   int lwidth = _font.getStringWidth("Data Fetchers ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Data Fetchers ", kTextAlignLeft);
+        myFontHeight, "Data Fetchers ", TextAlign::Left);
 
   // Top registers
   lwidth = _font.getStringWidth("Counter Registers ");
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Top Registers ", kTextAlignLeft);
+        myFontHeight, "Top Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -79,7 +79,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Bottom registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers ", kTextAlignLeft);
+        myFontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -89,7 +89,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Counter registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Counter Registers ", kTextAlignLeft);
+        myFontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
@@ -99,7 +99,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Flag registers
   xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Flag Registers ", kTextAlignLeft);
+        myFontHeight, "Flag Registers ", TextAlign::Left);
   xpos += lwidth;
 
   myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
@@ -110,7 +110,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   xpos = 10;  ypos += myLineHeight + 12;
   lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7) ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music mode (DF5/DF6/DF7) ", kTextAlignLeft);
+        myFontHeight, "Music mode (DF5/DF6/DF7) ", TextAlign::Left);
   xpos += lwidth;
 
   myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::F_16);
@@ -120,7 +120,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   // Current random number
   xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current random number ", kTextAlignLeft);
+        myFontHeight, "Current random number ", TextAlign::Left);
   xpos += lwidth;
 
   myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
@@ -151,12 +151,14 @@ void CartridgeDPCWidget::saveOldState()
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myDisplayImage[i]);
+
+  myOldState.bank = myCart.getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank());
+  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
 
   // Get registers, using change tracking
   IntArray alist;
@@ -252,7 +254,8 @@ string CartridgeDPCWidget::internalRamDescription()
   ostringstream desc;
   desc << "$0000 - $07FF - 2K display data\n"
        << "                indirectly accessible to 6507\n"
-       << "                via DPC+'s Data Fetcher registers\n";
+       << "                via DPC+'s Data Fetcher\n"
+       << "                registers\n";
 
   return desc.str();
 }

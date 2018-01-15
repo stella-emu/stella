@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -55,28 +55,30 @@ class DeveloperDialog : public Dialog
   private:
     enum
     {
-      kPlrSettings      = 'DVpl',
-      kDevSettings      = 'DVdv',
-      kConsole          = 'DVco',
-      kRandRAMID        = 'DVrm',
-      kRandCPUID        = 'DVcp',
-      kTVJitter         = 'DVjt',
-      kTVJitterChanged  = 'DVjr',
-      kPPinCmd          = 'DVpn',
-      kRewind           = 'DSrw',
-      kSizeChanged      = 'DSsz',
-      kIntervalChanged  = 'DSin',
-      kHorizonChanged   = 'DShz',
-      kP0ColourChangedCmd = 'GOp0',
-      kM0ColourChangedCmd = 'GOm0',
-      kP1ColourChangedCmd = 'GOp1',
-      kM1ColourChangedCmd = 'GOm1',
-      kPFColourChangedCmd = 'GOpf',
-      kBLColourChangedCmd = 'GObl',
+      kPlrSettings          = 'DVpl',
+      kDevSettings          = 'DVdv',
+      kConsole              = 'DVco',
+      kRandRAMID            = 'DVrm',
+      kRandCPUID            = 'DVcp',
+      kTVJitter             = 'DVjt',
+      kTVJitterChanged      = 'DVjr',
+      kPPinCmd              = 'DVpn',
+      kTimeMachine          = 'DTtm',
+      kSizeChanged          = 'DTsz',
+      kUncompressedChanged  = 'DTuc',
+      kIntervalChanged      = 'DTin',
+      kHorizonChanged       = 'DThz',
+      kP0ColourChangedCmd   = 'GOp0',
+      kM0ColourChangedCmd   = 'GOm0',
+      kP1ColourChangedCmd   = 'GOp1',
+      kM1ColourChangedCmd   = 'GOm1',
+      kPFColourChangedCmd   = 'GOpf',
+      kBLColourChangedCmd   = 'GObl',
   #ifdef DEBUGGER_SUPPORT
-      kDWidthChanged    = 'UIdw',
-      kDHeightChanged   = 'UIdh',
-      kDFontSizeChanged = 'UIfs',
+      kDWidthChanged        = 'UIdw',
+      kDHeightChanged       = 'UIdh',
+      kDFontSizeChanged     = 'UIfs',
+      kGhostReads           = 'Dbgh'
   #endif
     };
     enum SettingsSet
@@ -85,17 +87,11 @@ class DeveloperDialog : public Dialog
       developer
     };
 
-    static const int NUM_INTERVALS = 6;
-    // TODO: check for intervals shorter than 1 frame (adjust horizon too!)
-    const string INTERVALS[NUM_INTERVALS] = { "1 scanline", "50 scanlines", "1 frame", "10 frames",
-      "1 second", "10 seconds" };
-    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = { 76, 76 * 50, 76 * 262, 76 * 262 * 10,
-      76 * 262 * 60, 76 * 262 * 60 * 10 };
-    static const int NUM_HORIZONS = 7;
-    const string HORIZONS[NUM_HORIZONS] = { "~1 frame", "~10 frames", "~1 second", "~10 seconds",
-      "~1 minute", "~10 minutes", "~60 minutes" };
-    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = { 76 * 262, 76 * 262 * 10, 76 * 262 * 60, 76 * 262 * 60 * 10,
-      76 * 262 * 60 * 60, 76 * 262 * 60 * 60 * 10, (uInt64)76 * 262 * 60 * 60 * 60 };
+    // MUST be aligned with RewindManager!
+    static const int NUM_INTERVALS = 7;
+    static const int NUM_HORIZONS = 8;
+
+    static const int DEBUG_COLORS = 6;
 
     TabWidget* myTab;
     // Emulator widgets
@@ -107,25 +103,28 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myRandomizeRAMWidget;
     StaticTextWidget*   myRandomizeCPULabel;
     CheckboxWidget*     myRandomizeCPUWidget[5];
-    CheckboxWidget*     myColorLossWidget;
+    CheckboxWidget*     myUndrivenPinsWidget;
+    CheckboxWidget*     myThumbExceptionWidget;
+
+    // Video widgets
+    RadioButtonGroup*   mySettingsGroup1;
     CheckboxWidget*     myTVJitterWidget;
     SliderWidget*       myTVJitterRecWidget;
     StaticTextWidget*   myTVJitterRecLabelWidget;
+    CheckboxWidget*     myColorLossWidget;
     CheckboxWidget*     myDebugColorsWidget;
-    CheckboxWidget*     myUndrivenPinsWidget;
+    PopUpWidget*        myDbgColour[DEBUG_COLORS];
+    ColorWidget*        myDbgColourSwatch[DEBUG_COLORS];
+
     // States widgets
-    RadioButtonGroup*   mySettingsGroup1;
-    CheckboxWidget*     myContinuousRewindWidget;
+    RadioButtonGroup*   mySettingsGroup2;
+    CheckboxWidget*     myTimeMachineWidget;
     SliderWidget*       myStateSizeWidget;
     StaticTextWidget*   myStateSizeLabelWidget;
-    SliderWidget*       myStateIntervalWidget;
-    StaticTextWidget*   myStateIntervalLabelWidget;
-    SliderWidget*       myStateHorizonWidget;
-    StaticTextWidget*   myStateHorizonLabelWidget;
-
-    // Debug colours selection
-    PopUpWidget*        myDbgColour[6];
-    ColorWidget*        myDbgColourSwatch[6];
+    SliderWidget*       myUncompressedWidget;
+    StaticTextWidget*   myUncompressedLabelWidget;
+    PopUpWidget*        myStateIntervalWidget;
+    PopUpWidget*        myStateHorizonWidget;
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
@@ -135,10 +134,9 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myDebuggerHeightLabel;
     PopUpWidget*        myDebuggerFontSize;
     PopUpWidget*        myDebuggerFontStyle;
+    CheckboxWidget*     myGhostReadsTrapWidget;
 #endif
 
-    // Maximum width and height for this dialog
-    int myMaxWidth, myMaxHeight;
     bool    mySettings;
     // Emulator sets
     bool    myFrameStats[2];
@@ -151,16 +149,18 @@ class DeveloperDialog : public Dialog
     int     myTVJitterRec[2];
     bool    myDebugColors[2];
     bool    myUndrivenPins[2];
+    bool    myThumbException[2];
     // States sets
-    bool    myContinuousRewind[2];
+    bool    myTimeMachine[2];
     int     myStateSize[2];
-    int     myStateInterval[2];
-    int     myStateHorizon[2];
+    int     myUncompressed[2];
+    string  myStateInterval[2];
+    string  myStateHorizon[2];
 
   private:
     void addEmulationTab(const GUI::Font& font);
-    void addStatesTab(const GUI::Font& font);
-    void addDebugColorsTab(const GUI::Font& font);
+    void addTimeMachineTab(const GUI::Font& font);
+    void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
     // Add Defaults, OK and Cancel buttons
     void addDefaultOKCancelButtons(const GUI::Font& font);
@@ -178,8 +178,9 @@ class DeveloperDialog : public Dialog
     void handleDebugColours(int cmd, int color);
     void handleDebugColours(const string& colors);
 
-    void handleRewind();
+    void handleTimeMachine();
     void handleSize();
+    void handleUncompressed();
     void handleInterval();
     void handleHorizon();
     void handleFontSize();

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -17,7 +17,6 @@
 
 #include "bspf.hxx"
 
-#include "CommandMenu.hxx"
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "Event.hxx"
@@ -28,6 +27,8 @@
 #include "ConsoleFont.hxx"
 #include "Launcher.hxx"
 #include "Menu.hxx"
+#include "CommandMenu.hxx"
+#include "TimeMachine.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "TIA.hxx"
@@ -130,7 +131,11 @@ bool FrameBuffer::initialize()
   }
 
   // Set palette for GUI (upper area of array, doesn't change during execution)
-  int palID = myOSystem.settings().getString("uipalette") == "classic" ? 1 : 0;
+  int palID = 0;
+  if(myOSystem.settings().getString("uipalette") == "classic")
+    palID = 1;
+  else if(myOSystem.settings().getString("uipalette") == "light")
+    palID = 2;
 
   for(int i = 0, j = 256; i < kNumColors-256; ++i, ++j)
   {
@@ -175,8 +180,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
   if(myDesktopSize.w < kFBMinW && myDesktopSize.h < kFBMinH &&
-     (myDesktopSize.w < width || myDesktopSize.h < height))
-    return kFailTooLarge;
+    (myDesktopSize.w < width || myDesktopSize.h < height))
+    return FBInitStatus::FailTooLarge;
 
   useFullscreen = myOSystem.settings().getBool("fullscreen");
 #else
@@ -184,7 +189,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // We only really need to worry about it in non-windowed environments,
   // where requesting a window that's too large will probably cause a crash
   if(myDesktopSize.w < width || myDesktopSize.h < height)
-    return kFailTooLarge;
+    return FBInitStatus::FailTooLarge;
 #endif
 
   // Set the available video modes for this framebuffer
@@ -201,8 +206,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
       myScreenSize = mode.screen;
 
       // Inform TIA surface about new mode
-      if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
-         myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
+      if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
+         myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
         myTIASurface->initialize(myOSystem.console(), mode);
 
       // Did we get the requested fullscreen state?
@@ -213,22 +218,27 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     else
     {
       myOSystem.logMessage("ERROR: Couldn't initialize video subsystem", 0);
-      return kFailNotSupported;
+      return FBInitStatus::FailNotSupported;
     }
   }
   else
-    return kFailTooLarge;
+    return FBInitStatus::FailTooLarge;
 
   // Erase any messages from a previous run
   myMsg.counter = 0;
 
   // Create surfaces for TIA statistics and general messages
-  myStatsMsg.color = kBtnTextColor;
+  myStatsMsg.color = kColorInfo;
   myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
   myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
   if(!myStatsMsg.surface)
+  {
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
+    myStatsMsg.surface->attributes().blending = true;
+    //myStatsMsg.surface->attributes().blendalpha = 80;
+    myStatsMsg.surface->applyAttributes();
+  }
 
   if(!myMsg.surface)
     myMsg.surface = allocateSurface(kFBMinW, font().getFontHeight()+10);
@@ -245,7 +255,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
       myOSystem.logMessage(post_about, 1);
   }
 
-  return kSuccess;
+  return FBInitStatus::Success;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,14 +268,14 @@ void FrameBuffer::update()
   invalidate();
   switch(myOSystem.eventHandler().state())
   {
-    case EventHandler::S_EMULATE:
+    case EventHandlerState::EMULATION:
     {
       // Run the console for one frame
       // Note that the debugger can cause a breakpoint to occur, which changes
       // the EventHandler state 'behind our back' - we need to check for that
       myOSystem.console().tia().update();
   #ifdef DEBUGGER_SUPPORT
-      if(myOSystem.eventHandler().state() != EventHandler::S_EMULATE) break;
+      if(myOSystem.eventHandler().state() != EventHandlerState::EMULATION) break;
   #endif
       if(myOSystem.eventHandler().frying())
         myOSystem.console().fry();
@@ -281,20 +291,35 @@ void FrameBuffer::update()
         std::snprintf(msg, 30, "%3u @ %3.2ffps => %s",
                 myOSystem.console().tia().scanlinesLastFrame(),
                 myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
-        myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(),
-          msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->drawString(infoFont(),
-          info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
+        myStatsMsg.surface->invalidate();
+        string bsinfo = info.BankSwitch +
+          (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "| Player");
+        // draw shadowed text
+        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 0,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 0, 1 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), msg, 1, 1,
+                                       myStatsMsg.w, myStatsMsg.color);
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 0,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 0, 15 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 1,
+                                       myStatsMsg.w, kBGColor);
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1, 15,
+                                       myStatsMsg.w, myStatsMsg.color);
         myStatsMsg.surface->setDirty();
         myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->render();
       }
       myPausedCount = 0;
-      break;  // S_EMULATE
+      break;  // EventHandlerState::EMULATION
     }
 
-    case EventHandler::S_PAUSE:
+    case EventHandlerState::PAUSE:
     {
       myTIASurface->render();
 
@@ -302,40 +327,47 @@ void FrameBuffer::update()
       if (myPausedCount-- <= 0)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
-        showMessage("Paused", kMiddleCenter);
+        showMessage("Paused", MessagePosition::MiddleCenter);
       }
-      break;  // S_PAUSE
+      break;  // EventHandlerState::PAUSE
     }
 
-    case EventHandler::S_MENU:
+    case EventHandlerState::OPTIONSMENU:
     {
       myTIASurface->render();
       myOSystem.menu().draw(true);
-      break;  // S_MENU
+      break;  // EventHandlerState::OPTIONSMENU
     }
 
-    case EventHandler::S_CMDMENU:
+    case EventHandlerState::CMDMENU:
     {
       myTIASurface->render();
       myOSystem.commandMenu().draw(true);
-      break;  // S_CMDMENU
+      break;  // EventHandlerState::CMDMENU
     }
 
-    case EventHandler::S_LAUNCHER:
+    case EventHandlerState::TIMEMACHINE:
+    {
+      myTIASurface->render();
+      myOSystem.timeMachine().draw(true);
+      break;  // EventHandlerState::TIMEMACHINE
+    }
+
+    case EventHandlerState::LAUNCHER:
     {
       myOSystem.launcher().draw(true);
-      break;  // S_LAUNCHER
+      break;  // EventHandlerState::LAUNCHER
     }
 
-#ifdef DEBUGGER_SUPPORT
-    case EventHandler::S_DEBUGGER:
+    case EventHandlerState::DEBUGGER:
     {
+  #ifdef DEBUGGER_SUPPORT
       myOSystem.debugger().draw(true);
-      break;  // S_DEBUGGER
+  #endif
+      break;  // EventHandlerState::DEBUGGER
     }
-#endif
 
-    default:
+    case EventHandlerState::NONE:
       return;
   }
 
@@ -406,59 +438,65 @@ void FrameBuffer::enableMessages(bool enable)
 inline void FrameBuffer::drawMessage()
 {
   // Draw the bounded box and text
+  const GUI::Rect& dst = myMsg.surface->dstRect();
+
   switch(myMsg.position)
   {
-    case kTopLeft:
+    case MessagePosition::TopLeft:
       myMsg.x = 5;
       myMsg.y = 5;
       break;
 
-    case kTopCenter:
-      myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
+    case MessagePosition::TopCenter:
+      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
       myMsg.y = 5;
       break;
 
-    case kTopRight:
-      myMsg.x = myImageRect.width() - myMsg.w - 5;
+    case MessagePosition::TopRight:
+      myMsg.x = myImageRect.width() - dst.width() - 5;
       myMsg.y = 5;
       break;
 
-    case kMiddleLeft:
+    case MessagePosition::MiddleLeft:
       myMsg.x = 5;
-      myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
+      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
       break;
 
-    case kMiddleCenter:
-      myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
-      myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
+    case MessagePosition::MiddleCenter:
+      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
+      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
       break;
 
-    case kMiddleRight:
-      myMsg.x = myImageRect.width() - myMsg.w - 5;
-      myMsg.y = (myImageRect.height() - myMsg.h) >> 1;
+    case MessagePosition::MiddleRight:
+      myMsg.x = myImageRect.width() - dst.width() - 5;
+      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
       break;
 
-    case kBottomLeft:
+    case MessagePosition::BottomLeft:
       myMsg.x = 5;
-      myMsg.y = myImageRect.height() - myMsg.h - 5;
+      myMsg.y = myImageRect.height() - dst.height() - 5;
       break;
 
-    case kBottomCenter:
-      myMsg.x = (myImageRect.width() - myMsg.w) >> 1;
-      myMsg.y = myImageRect.height() - myMsg.h - 5;
+    case MessagePosition::BottomCenter:
+      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
+      myMsg.y = myImageRect.height() - dst.height() - 5;
       break;
 
-    case kBottomRight:
-      myMsg.x = myImageRect.width() - myMsg.w - 5;
-      myMsg.y = myImageRect.height() - myMsg.h - 5;
+    case MessagePosition::BottomRight:
+      myMsg.x = myImageRect.width() - dst.width() - 5;
+      myMsg.y = myImageRect.height() - dst.height() - 5;
       break;
   }
 
   myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
   myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
+#ifndef FLAT_UI
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
-  myMsg.surface->drawString(font(), myMsg.text, 4, 4,
-                            myMsg.w, myMsg.color, kTextAlignLeft);
+#else
+  myMsg.surface->frameRect(0, 0, myMsg.w, myMsg.h, kColor);
+#endif
+  myMsg.surface->drawString(font(), myMsg.text, 5, 4,
+                            myMsg.w, myMsg.color, TextAlign::Left);
 
   // Either erase the entire message (when time is reached),
   // or show again this frame
@@ -469,6 +507,12 @@ inline void FrameBuffer::drawMessage()
   }
   else
     myMsg.enabled = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setPauseDelay()
+{
+  myPausedCount = uInt32(2 * myOSystem.frameRate());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -514,7 +558,7 @@ void FrameBuffer::setPalette(const uInt32* raw_palette)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::stateChanged(EventHandler::State state)
+void FrameBuffer::stateChanged(EventHandlerState state)
 {
   // Make sure any onscreen messages are removed
   myMsg.enabled = false;
@@ -531,8 +575,8 @@ void FrameBuffer::setFullscreen(bool enable)
     myScreenSize = mode.screen;
 
     // Inform TIA surface about new mode
-    if(myOSystem.eventHandler().state() != EventHandler::S_LAUNCHER &&
-       myOSystem.eventHandler().state() != EventHandler::S_DEBUGGER)
+    if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
+       myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
       myTIASurface->initialize(myOSystem.console(), mode);
 
     // Did we get the requested fullscreen state?
@@ -552,9 +596,9 @@ void FrameBuffer::toggleFullscreen()
 bool FrameBuffer::changeWindowedVidMode(int direction)
 {
 #ifdef WINDOWED_SUPPORT
-  EventHandler::State state = myOSystem.eventHandler().state();
-  bool tiaMode = (state != EventHandler::S_DEBUGGER &&
-                  state != EventHandler::S_LAUNCHER);
+  EventHandlerState state = myOSystem.eventHandler().state();
+  bool tiaMode = (state != EventHandlerState::DEBUGGER &&
+                  state != EventHandlerState::LAUNCHER);
 
   // Ignore any attempts to change video size while in invalid modes
   if(!tiaMode || fullScreen())
@@ -591,7 +635,7 @@ void FrameBuffer::setCursorState()
   // Always grab mouse in emulation (if enabled) and emulating a controller
   // that always uses the mouse
   bool emulation =
-      myOSystem.eventHandler().state() == EventHandler::S_EMULATE;
+      myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
   bool analog = myOSystem.hasConsole() ?
       (myOSystem.eventHandler().controllerIsAnalog(Controller::Left) ||
        myOSystem.eventHandler().controllerIsAnalog(Controller::Right)) : false;
@@ -655,9 +699,9 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
   // Check if zooming is allowed for this state (currently only allowed
   // for TIA screens)
-  EventHandler::State state = myOSystem.eventHandler().state();
-  bool tiaMode = (state != EventHandler::S_DEBUGGER &&
-                  state != EventHandler::S_LAUNCHER);
+  EventHandlerState state = myOSystem.eventHandler().state();
+  bool tiaMode = (state != EventHandlerState::DEBUGGER &&
+                  state != EventHandlerState::LAUNCHER);
 
   // TIA mode allows zooming at integral factors in windowed modes,
   // and also non-integral factors in fullscreen mode
@@ -716,7 +760,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 {
-  EventHandler::State state = myOSystem.eventHandler().state();
+  EventHandlerState state = myOSystem.eventHandler().state();
 
   if(fullscreen)
   {
@@ -734,7 +778,7 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   // Now select the best resolution depending on the state
   // UI modes (launcher and debugger) have only one supported resolution
   // so the 'current' one is the only valid one
-  if(state == EventHandler::S_DEBUGGER || state == EventHandler::S_LAUNCHER)
+  if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
     myCurrentModeList->setZoom(1);
   else
     myCurrentModeList->setZoom(myZoomMode);
@@ -903,57 +947,75 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*
   Palette is defined as follows:
-    // Base colors
+    *** Base colors ***
     kColor            Normal foreground color (non-text)
     kBGColor          Normal background color (non-text)
     kBGColorLo        Disabled background color dark (non-text)
     kBGColorHi        Disabled background color light (non-text)
     kShadowColor      Item is disabled
+    *** Text colors ***
     kTextColor        Normal text color
     kTextColorHi      Highlighted text color
     kTextColorEm      Emphasized text color
-
-    // UI elements (dialog and widgets)
+    kTextColorSel     Color for selected text
+    *** UI elements (dialog and widgets) ***
     kDlgColor         Dialog background
     kWidColor         Widget background
     kWidFrameColor    Border for currently selected widget
-
-    // Button colors
+    *** Button colors ***
     kBtnColor         Normal button background
     kBtnColorHi       Highlighted button background
     kBtnTextColor     Normal button font color
     kBtnTextColorHi   Highlighted button font color
-
-    // Checkbox colors
+    *** Checkbox colors ***
     kCheckColor       Color of 'X' in checkbox
-
-    // Scrollbar colors
+    *** Scrollbar colors ***
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
-
-    // Debugger colors
+    *** Slider colors ***
+    kSliderColor,
+    kSliderColorHi
+    *** Debugger colors ***
     kDbgChangedColor      Background color for changed cells
     kDbgChangedTextColor  Text color for changed cells
     kDbgColorHi           Highlighted color in debugger data cells
+    kDbgColorRed          Red color in debugger
+    *** Info color ***
+    kColorinfo
 */
-uInt32 FrameBuffer::ourGUIColors[2][kNumColors-256] = {
+uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Standard
-  { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040, 0x000000, 0x62a108, 0x9f0000,
+  { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,
+    0x000000, 0x62a108, 0x9f0000, 0x000000,
     0xc9af7c, 0xf0f0cf, 0xc80000,
     0xac3410, 0xd55941, 0xffffff, 0xffd652,
     0xac3410,
     0xac3410, 0xd55941,
     0xac3410, 0xd55941,
-    0xc80000, 0x00ff00, 0xc8c8ff
+    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,
+    0xffffff
   },
-
   // Classic
-  { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040, 0x20a020, 0x00ff00, 0xc80000,
+  { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,
+    0x20a020, 0x00ff00, 0xc80000, 0x20a020,
     0x000000, 0x000000, 0xc80000,
     0x000000, 0x000000, 0x20a020, 0x00ff00,
     0x20a020,
     0x20a020, 0x00ff00,
     0x20a020, 0x00ff00,
-    0xc80000, 0x00ff00, 0xc8c8ff
+    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,
+    0x20a020
+  },
+  // Light
+  {
+    0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
+    0x000000, 0x0078d7, 0x0078d7, 0xffffff,           // text
+    0xf0f0f0, 0xffffff, 0x0f0f0f,                     // elements
+    0xe1e1e1, 0xe5f1fb, 0x000000, 0x000000,           // buttons
+    0x333333,                                         // checkbox
+    0x808080, 0x0078d7,                               // scrollbar
+    0x333333, 0x0078d7,                               // slider
+    0xffc0c0, 0x000000, 0xe00000, 0xc00000,           // debugger
+    0xffffff                                          // info
   }
 };

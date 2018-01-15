@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -125,6 +125,7 @@ bool AbstractFrameManager::save(Serializer& out) const
     out.putBool(myIsRendering);
     out.putBool(myVsync);
     out.putBool(myVblank);
+    out.putInt(myCurrentFrameTotalLines);
     out.putInt(myCurrentFrameFinalLines);
     out.putInt(myPreviousFrameFinalLines);
     out.putInt(myTotalFrames);
@@ -149,6 +150,7 @@ bool AbstractFrameManager::load(Serializer& in)
     myIsRendering = in.getBool();
     myVsync = in.getBool();
     myVblank = in.getBool();
+    myCurrentFrameTotalLines = in.getInt();
     myCurrentFrameFinalLines = in.getInt();
     myPreviousFrameFinalLines = in.getInt();
     myTotalFrames = in.getInt();

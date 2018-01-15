@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -21,8 +21,6 @@
 // Modified by Fred Quimby
 // Code is public domain and used with the author's consent
 //============================================================================
-
-#ifdef THUMB_SUPPORT
 
 #ifndef THUMBULATOR_HXX
 #define THUMBULATOR_HXX
@@ -104,6 +102,7 @@ class Thumbulator
     uInt32 fetch32(uInt32 addr);
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
+    bool isProtected(uInt32 addr);
     void write16(uInt32 addr, uInt32 data);
     void write32(uInt32 addr, uInt32 data);
     void updateTimer(uInt32 cycles);
@@ -161,5 +160,3 @@ class Thumbulator
 };
 
 #endif  // THUMBULATOR_HXX
-
-#endif

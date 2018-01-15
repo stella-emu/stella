@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -56,17 +56,6 @@ class EventHandler
     EventHandler(OSystem& osystem);
     virtual ~EventHandler();
 
-    // Enumeration representing the different states of operation
-    enum State {
-      S_NONE,
-      S_EMULATE,
-      S_PAUSE,
-      S_LAUNCHER,
-      S_MENU,
-      S_CMDMENU,
-      S_DEBUGGER
-    };
-
     /**
       Returns the event object associated with this handler class.
 
@@ -92,6 +81,13 @@ class EventHandler
     void toggleSAPortOrder();
 
     /**
+      Toggle whether the console is in 2600 or 7800 mode.
+      Note that for now, this only affects whether the 7800 pause button is
+      supported; there is no further emulation of the 7800 itself.
+    */
+    void set7800Mode();
+
+    /**
       Collects and dispatches any pending events.  This method should be
       called regularly (at X times per second, where X is the game framerate).
 
@@ -102,16 +98,16 @@ class EventHandler
     /**
       Returns the current state of the EventHandler
 
-      @return The State type
+      @return The EventHandlerState type
     */
-    State state() const { return myState; }
+    EventHandlerState state() const { return myState; }
 
     /**
       Resets the state machine of the EventHandler to the defaults
 
       @param state  The current state to set
     */
-    void reset(State state);
+    void reset(EventHandlerState state);
 
     /**
       This method indicates that the system should terminate.
@@ -124,7 +120,7 @@ class EventHandler
 
       @param enable  Whether to use the mouse to emulate controllers
                      Currently, this will be one of the following values:
-                       'always', 'analog', 'never'
+                     'always', 'analog', 'never'
     */
     void setMouseControllerMode(const string& enable);
 
@@ -137,26 +133,7 @@ class EventHandler
     */
     void setContinuousSnapshots(uInt32 interval);
 
-    inline bool kbdAlt(int mod) const
-    {
-  #if defined(BSPF_MAC_OSX) || defined(OSX_KEYS)
-      return (mod & KBDM_GUI);
-  #else
-      return (mod & KBDM_ALT);
-  #endif
-    }
-
-    inline bool kbdControl(int mod) const
-    {
-      return (mod & KBDM_CTRL);
-    }
-
-    inline bool kbdShift(int mod) const
-    {
-      return (mod & KBDM_SHIFT);
-    }
-
-    void enterMenuMode(State state);
+    void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
@@ -196,9 +173,9 @@ class EventHandler
       const StellaJoystick* joy = myJoyHandler->joy(stick);
       return joy ? joy->btnTable[button][mode] : Event::NoType;
     }
-    Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const {
+    Event::Type eventForJoyHat(int stick, int hat, JoyHat value, EventMode mode) const {
       const StellaJoystick* joy = myJoyHandler->joy(stick);
-      return joy ? joy->hatTable[hat][value][mode] : Event::NoType;
+      return joy ? joy->hatTable[hat][int(value)][mode] : Event::NoType;
     }
 
     Event::Type eventAtIndex(int idx, EventMode mode) const;
@@ -260,7 +237,7 @@ class EventHandler
                           'adds', in which case it's delayed until the end
     */
     bool addJoyHatMapping(Event::Type event, EventMode mode,
-                          int stick, int hat, int value,
+                          int stick, int hat, JoyHat value,
                           bool updateMenus = true);
 
     /**
@@ -327,8 +304,8 @@ class EventHandler
     */
     void handleTextEvent(char text);
     void handleKeyEvent(StellaKey key, StellaMod mod, bool state);
-    void handleMouseMotionEvent(int x, int y, int xrel, int yrel, int button);
-    void handleMouseButtonEvent(MouseButton b, int x, int y);
+    void handleMouseMotionEvent(int x, int y, int xrel, int yrel);
+    void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
     void handleJoyEvent(int stick, int button, uInt8 state);
     void handleJoyAxisEvent(int stick, int axis, int value);
     void handleJoyHatEvent(int stick, int hat, int value);
@@ -345,19 +322,19 @@ class EventHandler
     virtual void pollEvent() = 0;
 
     // Other events that can be received from the underlying event handler
-    enum SystemEvent {
-      EVENT_WINDOW_SHOWN,
-      EVENT_WINDOW_HIDDEN,
-      EVENT_WINDOW_EXPOSED,
-      EVENT_WINDOW_MOVED,
-      EVENT_WINDOW_RESIZED,
-      EVENT_WINDOW_MINIMIZED,
-      EVENT_WINDOW_MAXIMIZED,
-      EVENT_WINDOW_RESTORED,
-      EVENT_WINDOW_ENTER,
-      EVENT_WINDOW_LEAVE,
-      EVENT_WINDOW_FOCUS_GAINED,
-      EVENT_WINDOW_FOCUS_LOST
+    enum class SystemEvent {
+      WINDOW_SHOWN,
+      WINDOW_HIDDEN,
+      WINDOW_EXPOSED,
+      WINDOW_MOVED,
+      WINDOW_RESIZED,
+      WINDOW_MINIMIZED,
+      WINDOW_MAXIMIZED,
+      WINDOW_RESTORED,
+      WINDOW_ENTER,
+      WINDOW_LEAVE,
+      WINDOW_FOCUS_GAINED,
+      WINDOW_FOCUS_LOST
     };
     void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
 
@@ -480,7 +457,7 @@ class EventHandler
     enum {
       kComboSize          = 16,
       kEventsPerCombo     = 8,
-      kEmulActionListSize = 79 + kComboSize,
+      kEmulActionListSize = 80 + kComboSize,
       kMenuActionListSize = 14
     };
 
@@ -512,7 +489,7 @@ class EventHandler
     */
     bool eventIsAnalog(Event::Type event) const;
 
-    void setEventState(State state);
+    void setEventState(EventHandlerState state);
 
   private:
     // Structure used for action menu items
@@ -540,7 +517,7 @@ class EventHandler
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
 
     // Indicates the current state of the system (ie, which mode is current)
-    State myState;
+    EventHandlerState myState;
 
     // Indicates whether the joystick emulates 'impossible' directions
     bool myAllowAllDirectionsFlag;
@@ -557,6 +534,10 @@ class EventHandler
     // Sometimes an extraneous mouse motion event occurs after a video
     // state change; we detect when this happens and discard the event
     bool mySkipMouseMotion;
+
+    // Whether the currently enabled console is emulating certain aspects
+    // of the 7800 (for now, only the switches are notified)
+    bool myIs7800;
 
     // Sometimes key combos with the Alt key become 'stuck' after the
     // window changes state, and we want to ignore that event

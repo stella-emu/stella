@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2017 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -84,13 +84,21 @@ void Widget::draw()
     {
       x++; y++; w-=2; h-=2;
     }
-    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) ? _bgcolorhi : _bgcolor);
+#ifndef FLAT_UI
+    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+#else
+    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+#endif
   }
 
   // Draw border
   if(hasBorder)
   {
+#ifndef FLAT_UI
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
+#else
+    s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) && isEnabled() ? kScrollColorHi : kColor);
+#endif // !FLAT_UI
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -233,24 +241,31 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     return nullptr;
   else
   {
-    switch(direction)
+    int oldPos = pos;
+    do
     {
-      case -1:  // previous widget
-        pos--;
-        if(pos < 0)
-          pos = size - 1;
-        break;
+      switch(direction)
+      {
+        case -1:  // previous widget
+          pos--;
+          if(pos < 0)
+            pos = size - 1;
+          break;
 
-      case +1:  // next widget
-        pos++;
-        if(pos >= size)
-          pos = 0;
-        break;
+        case +1:  // next widget
+          pos++;
+          if(pos >= size)
+            pos = 0;
+          break;
 
-      default:
-        // pos already set
+        default:
+          // pos already set
+          break;
+      }
+      // break if all widgets should be disabled
+      if(oldPos == pos)
         break;
-    }
+    } while(!arr[pos]->isEnabled());
   }
 
   // Now highlight the active widget
@@ -268,7 +283,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   else
     tmp->_hasFocus = true;
 
-  s.frameRect(x, y, w, h, kWidFrameColor, kDashLine);
+  s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
 
   tmp->setDirty();
   s.setDirty();
@@ -289,11 +304,11 @@ void Widget::setDirtyInChain(Widget* start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h,
-                                   const string& text, TextAlignment align)
+                                   const string& text, TextAlign align)
   : Widget(boss, font, x, y, w, h),
     _align(align)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
+  _flags = WIDGET_ENABLED;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -306,7 +321,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
-                                   const string& text, TextAlignment align)
+                                   const string& text, TextAlign align)
   : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(), text, align)
 {
 }
@@ -341,9 +356,10 @@ void StaticTextWidget::drawWidget(bool hilite)
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int cmd)
-  : StaticTextWidget(boss, font, x, y, w, h, label, kTextAlignCenter),
+  : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
-    _cmd(cmd)
+    _cmd(cmd),
+    _useBitmap(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _bgcolor = kBtnColor;
@@ -371,14 +387,27 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseEntered(int button)
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y, int w, int h,
+                           uInt32* bitmap, int bmw, int bmh,
+                           int cmd)
+  : ButtonWidget(boss, font, x, y, w, h, "", cmd)
+{
+  _bitmap = bitmap;
+  _bmh = bmh;
+  _bmw = bmw;
+  _useBitmap = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseLeft(int button)
+void ButtonWidget::handleMouseLeft()
 {
   clearFlags(WIDGET_HILITED);
   setDirty();
@@ -394,7 +423,7 @@ bool ButtonWidget::handleEvent(Event::Type e)
   {
     case Event::UISelect:
       // Simulate mouse event
-      handleMouseUp(0, 0, 1, 0);
+      handleMouseUp(0, 0, MouseButton::LEFT, 0);
       return true;
     default:
       return false;
@@ -402,7 +431,7 @@ bool ButtonWidget::handleEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
@@ -415,13 +444,20 @@ void ButtonWidget::handleMouseUp(int x, int y, int button, int clickCount)
 void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-               !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
-               hilite ? _textcolorhi : _textcolor, _align);
+  if (!_useBitmap)
+    s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
+                 !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
+                 hilite ? _textcolorhi : _textcolor, _align);
+  else
+    s.drawBitmap(_bitmap, _x + (_w - _bmw) / 2, _y + (_h - _bmh) / 2,
+                 !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
+                 hilite ? _textcolorhi : _textcolor,
+                 _bmw, _bmh);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
+#ifndef FLAT_UI
 static uInt32 checked_img_active[8] =
 {
 	0b11111111,
@@ -457,7 +493,49 @@ static uInt32 checked_img_circle[8] =
 	0b01111110,
 	0b00011000
 };
+#else
+static uInt32 checked_img_active[10] =
+{
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111
+};
 
+static uInt32 checked_img_inactive[10] =
+{
+  0b1111111111,
+  0b1111111111,
+  0b1111001111,
+  0b1110000111,
+  0b1100000011,
+  0b1100000011,
+  0b1110000111,
+  0b1111001111,
+  0b1111111111,
+  0b1111111111
+};
+
+static uInt32 checked_img_circle[10] =
+{
+  0b0001111000,
+  0b0111111110,
+  0b0111111110,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b1111111111,
+  0b0111111110,
+  0b0111111110,
+  0b0001111000
+};
+#endif // !FLAT_UI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, const string& label,
@@ -466,6 +544,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _state(false),
     _holdFocus(true),
     _drawBox(true),
+    _changed(false),
     _fillColor(kColor),
     _boxY(0),
     _textY(0)
@@ -493,7 +572,21 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void CheckboxWidget::handleMouseEntered()
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::handleMouseLeft()
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && _editable && x >= 0 && x < _w && y >= 0 && y < _h)
   {
@@ -540,13 +633,14 @@ void CheckboxWidget::setFill(FillType type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::setState(bool state)
+void CheckboxWidget::setState(bool state, bool changed)
 {
   if(_state != state)
   {
     _state = state;
     setDirty();
   }
+  _changed = changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -554,14 +648,25 @@ void CheckboxWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
+#ifndef FLAT_UI
   // Draw the box
   if(_drawBox)
     s.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
-
   // Do we draw a square or cross?
-  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, isEnabled() ? _bgcolor : kColor);
+  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, _changed ? kDbgChangedColor
+             : isEnabled() ? _bgcolor : kColor);
   if(_state)
     s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
+#else
+  if(_drawBox)
+    s.frameRect(_x, _y + _boxY, 14, 14, hilite ? kScrollColorHi : kShadowColor);
+  // Do we draw a square or cross?
+  s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, _changed ? kDbgChangedColor
+             : isEnabled() ? _bgcolor : kColor);
+  if(_state)
+    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite ? kScrollColorHi : kCheckColor
+                 : kShadowColor, 10);
+#endif
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,
@@ -580,7 +685,7 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _isDragging(false),
     _labelWidth(labelWidth)
 {
-  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
+  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 
@@ -623,7 +728,7 @@ void SliderWidget::setStepValue(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseMoved(int x, int y, int button)
+void SliderWidget::handleMouseMoved(int x, int y)
 {
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
@@ -632,17 +737,17 @@ void SliderWidget::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseDown(int x, int y, int button, int clickCount)
+void SliderWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if(isEnabled())
+  if(isEnabled() && b == MouseButton::LEFT)
   {
     _isDragging = true;
-    handleMouseMoved(x, y, button);
+    handleMouseMoved(x, y);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
+void SliderWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && _isDragging)
     sendCommand(_cmd, _value, _id);
@@ -701,21 +806,35 @@ void SliderWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
+#ifndef FLAT_UI
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, kTextAlignRight);
+                 isEnabled() ? kTextColor : kColor, TextAlign::Right);
 
   // Draw the box
   s.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
-
   // Fill the box
   s.fillRect(_x + _labelWidth + 2, _y + 2, _w - _labelWidth - 4, _h - 4,
              !isEnabled() ? kBGColorHi : kWidColor);
-
   // Draw the 'bar'
   s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+#else
+  // Draw the label, if any
+  if(_labelWidth > 0)
+    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
+                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
+
+  // Draw the box
+  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, isEnabled() && hilite ? kSliderColorHi : kShadowColor);
+  // Fill the box
+  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
+             !isEnabled() ? kBGColorHi : kWidColor);
+  // Draw the 'bar'
+  s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
+             !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
