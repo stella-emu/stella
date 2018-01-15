@@ -531,6 +531,7 @@ FBInitStatus Console::initializeVideo(bool full)
 
   if(full)
   {
+    bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
@@ -539,7 +540,7 @@ FBInitStatus Console::initializeVideo(bool full)
       return fbstatus;
 
     myOSystem.frameBuffer().showFrameStats(
-      myOSystem.settings().getBool(myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats"));
+      myOSystem.settings().getBool(devSettings ? "dev.stats" : "plr.stats"));
     generateColorLossPalette();
   }
   setPalette(myOSystem.settings().getString("palette"));

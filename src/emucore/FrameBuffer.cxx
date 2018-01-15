@@ -292,6 +292,8 @@ void FrameBuffer::update()
                 myOSystem.console().tia().scanlinesLastFrame(),
                 myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->invalidate();
+        string bsinfo = info.BankSwitch +
+          (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "| Player");
         // draw shadowed text
         myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 0,
                                        myStatsMsg.w, kBGColor);
@@ -301,13 +303,13 @@ void FrameBuffer::update()
                                        myStatsMsg.w, kBGColor);
         myStatsMsg.surface->drawString(infoFont(), msg, 1, 1,
                                        myStatsMsg.w, myStatsMsg.color);
-        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1 + 1, 15 + 0,
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 0,
                                        myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1 + 0, 15 + 1,
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 0, 15 + 1,
                                        myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1 + 1, 15 + 1,
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 1,
                                        myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), info.BankSwitch, 1, 15,
+        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1, 15,
                                        myStatsMsg.w, myStatsMsg.color);
         myStatsMsg.surface->setDirty();
         myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);

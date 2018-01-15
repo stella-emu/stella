@@ -235,6 +235,14 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   return true;
 }
 
+void FrameBufferSDL2::setTitle(const string& title)
+{
+  myScreenTitle = title;
+
+  if(myWindow)
+    SDL_SetWindowTitle(myWindow, title.c_str());
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FrameBufferSDL2::about() const
 {
