@@ -320,42 +320,21 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     // String is too wide. So we shorten it "intelligently", by replacing
     // parts of it by an ellipsis ("..."). There are three possibilities
     // for this: replace the start, the end, or the middle of the string.
-    // What is best really depends on the context; but unless we want to
-    // make this configurable, replacing the middle probably is a good
-    // compromise.
-    const int ellipsisWidth = font.getStringWidth(ELLIPSIS);
+    // What is best really depends on the context; but most applications
+    // replace the end. So we use that too.
+    int w2 = font.getStringWidth(ELLIPSIS);
 
-    // SLOW algorithm to remove enough of the middle. But it is good enough for now.
-    const int halfWidth = (w - ellipsisWidth) / 2;
-    int w2 = 0;
-
+    // SLOW algorithm to find the acceptable length. But it is good enough for now.
     for(i = 0; i < s.size(); ++i)
     {
       int charWidth = font.getCharWidth(s[i]);
-      if(w2 + charWidth > halfWidth)
+      if(w2 + charWidth > w)
         break;
 
       w2 += charWidth;
       str += s[i];
     }
-
-    // At this point we know that the first 'i' chars are together 'w2'
-    // pixels wide. We took the first i-1, and add "..." to them.
     str += ELLIPSIS;
-
-    // The original string is width wide. Of those we already skipped past
-    // w2 pixels, which means (width - w2) remain.
-    // The new str is (w2+ellipsisWidth) wide, so we can accomodate about
-    // (w - (w2+ellipsisWidth)) more pixels.
-    // Thus we skip ((width - w2) - (w - (w2+ellipsisWidth))) =
-    // (width + ellipsisWidth - w)
-    int skip = width + ellipsisWidth - w;
-    for(; i < s.size() && skip > 0; ++i)
-      skip -= font.getCharWidth(s[i]);
-
-    // Append the remaining chars, if any
-    for(; i < s.size(); ++i)
-      str += s[i];
 
     width = font.getStringWidth(str);
   }
