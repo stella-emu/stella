@@ -273,6 +273,8 @@ void Dialog::drawDialog()
     if(_flags & WIDGET_CLEARBG)
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
       s.fillRect(_x, _y, _w, _h, kDlgColor);
+    else
+      s.invalidate();
     if(_flags & WIDGET_BORDER)
 #ifndef FLAT_UI
       s.box(_x, _y, _w, _h, kColor, kShadowColor);

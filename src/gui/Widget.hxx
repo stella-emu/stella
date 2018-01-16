@@ -111,6 +111,7 @@ class Widget : public GuiObject
     void setTextColorHi(uInt32 color) { _textcolorhi = color; }
     void setBGColor(uInt32 color)     { _bgcolor = color;     }
     void setBGColorHi(uInt32 color)   { _bgcolorhi = color;   }
+    void setShadowColor(uInt32 color) { _shadowcolor = color; }
 
     virtual void loadConfig() { }
 
@@ -141,6 +142,7 @@ class Widget : public GuiObject
     uInt32     _bgcolorhi;
     uInt32     _textcolor;
     uInt32     _textcolorhi;
+    uInt32     _shadowcolor;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -176,10 +178,12 @@ class StaticTextWidget : public Widget
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
-                     const string& text, TextAlign align = TextAlign::Left);
+                     const string& text, TextAlign align = TextAlign::Left,
+                     uInt32 shadowColor = 0);
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y,
-                     const string& text, TextAlign align = TextAlign::Left);
+                     const string& text, TextAlign align = TextAlign::Left,
+                     uInt32 shadowColor = 0);
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; }

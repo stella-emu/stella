@@ -304,7 +304,8 @@ void Widget::setDirtyInChain(Widget* start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h,
-                                   const string& text, TextAlign align)
+                                   const string& text, TextAlign align,
+                                   uInt32 shadowColor)
   : Widget(boss, font, x, y, w, h),
     _align(align)
 {
@@ -313,6 +314,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
+  _shadowcolor = shadowColor;
 
   _label = text;
   _editable = false;
@@ -321,8 +323,9 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
-                                   const string& text, TextAlign align)
-  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(), text, align)
+                                   const string& text, TextAlign align,
+                                   uInt32 shadowColor)
+  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(), text, align, shadowColor)
 {
 }
 
@@ -349,7 +352,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
   s.drawString(_font, _label, _x, _y, _w,
-               isEnabled() ? _textcolor : uInt32(kColor), _align);
+               isEnabled() ? _textcolor : uInt32(kColor), _align, 0, true, _shadowcolor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

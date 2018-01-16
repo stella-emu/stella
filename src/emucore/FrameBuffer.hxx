@@ -510,6 +510,9 @@ class FrameBuffer
     Message myMsg;
     Message myStatsMsg;
     bool myStatsEnabled;
+    uInt32 myLastScanlines;
+    float myLastFrameRate;
+
 
     bool myGrabMouse;
 
