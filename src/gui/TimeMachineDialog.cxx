@@ -193,23 +193,26 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   _w = 20 * (buttonWidth + BUTTON_GAP) + 20;
   _h = V_BORDER * 2 + rowHeight + buttonHeight + 2;
 
-  //this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending!
-  //this->clearFlags(WIDGET_BORDER);
+  this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending (0..100)!
+  this->clearFlags(WIDGET_BORDER);
 
   xpos = H_BORDER;
   ypos = V_BORDER;
 
   // Add index info
-  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ");
+  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ", TextAlign::Left, kBGColor);
+  myCurrentIdxWidget->setTextColor(kWidColor);
   myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos,
-                                         "    ", TextAlign::Right);
+                                         "    ", TextAlign::Right, kBGColor);
+  myLastIdxWidget->setTextColor(kWidColor);
   ypos += rowHeight;
 
   // Add time info
-  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59");
-  //myCurrentTimeWidget->setFlags(WIDGET_CLEARBG);
+  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget->setTextColor(kWidColor);
   myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("XX:XX XX"), ypos + 3,
-                                          "12:25 59");
+                                          "12:25 59", TextAlign::Right, kBGColor);
+  myLastTimeWidget->setTextColor(kWidColor);
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
   // Add buttons
@@ -253,7 +256,9 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 3;
 
   // Add message
-  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ");
+  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ",
+                                         TextAlign::Left, kBGColor);
+  myMessageWidget->setTextColor(kWidColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

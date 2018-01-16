@@ -154,8 +154,15 @@ void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
-                         uInt32 tx, uInt32 ty, uInt32 color)
+                         uInt32 tx, uInt32 ty, uInt32 color, uInt32 shadowColor)
 {
+  if(shadowColor != 0)
+  {
+    drawChar(font, chr, tx + 1, ty + 0, shadowColor);
+    drawChar(font, chr, tx + 0, ty + 1, shadowColor);
+    drawChar(font, chr, tx + 1, ty + 1, shadowColor);
+  }
+
   const FontDesc& desc = font.desc();
 
   // If this character is not included in the font, use the default char.
@@ -300,7 +307,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
                            uInt32 color, TextAlign align,
-                           int deltax, bool useEllipsis)
+                           int deltax, bool useEllipsis, uInt32 shadowColor)
 {
   const string ELLIPSIS = "\x1d"; // "..."
   const int leftX = x, rightX = x + w;
@@ -367,7 +374,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     if(x+w > rightX)
       break;
     if(x >= leftX)
-      drawChar(font, str[i], x, y, color);
+      drawChar(font, str[i], x, y, color, shadowColor);
 
     x += w;
   }

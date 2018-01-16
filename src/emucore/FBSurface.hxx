@@ -134,7 +134,7 @@ class FBSurface
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
-                          uInt32 color);
+                          uInt32 color, uInt32 shadowColor = 0);
 
     /**
       This method should be called to draw the bitmap image.
@@ -217,7 +217,7 @@ class FBSurface
     virtual void drawString(
         const GUI::Font& font, const string& s, int x, int y, int w,
         uInt32 color, TextAlign align = TextAlign::Left,
-        int deltax = 0, bool useEllipsis = true);
+        int deltax = 0, bool useEllipsis = true, uInt32 shadowColor = 0);
 
     /**
       This method should be called to indicate that the surface has been

@@ -229,7 +229,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kColorInfo;
-  myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
+  myStatsMsg.w = infoFont().getMaxCharWidth() * 30 + 2;
   myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
 
   if(!myStatsMsg.surface)
@@ -288,33 +288,32 @@ void FrameBuffer::update()
       {
         const ConsoleInfo& info = myOSystem.console().about();
         char msg[30];
-        std::snprintf(msg, 30, "%3u @ %3.2ffps => %s",
-                myOSystem.console().tia().scanlinesLastFrame(),
-                myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
+        uInt32 color;
+
         myStatsMsg.surface->invalidate();
         string bsinfo = info.BankSwitch +
           (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "| Player");
         // draw shadowed text
-        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 0,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 0, 1 + 1,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 1,
-                                       myStatsMsg.w, kBGColor);
+        color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
+        std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
         myStatsMsg.surface->drawString(infoFont(), msg, 1, 1,
-                                       myStatsMsg.w, myStatsMsg.color);
-        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 0,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 0, 15 + 1,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 1,
-                                       myStatsMsg.w, kBGColor);
+                                       myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+        color = myOSystem.console().getFramerate() != myLastFrameRate ? kDbgColorRed : myStatsMsg.color;
+        std::snprintf(msg, 30, "@ %3.2ffps", myOSystem.console().getFramerate());
+        myStatsMsg.surface->drawString(infoFont(), msg, 1 + infoFont().getStringWidth("262 "), 1,
+                                       myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+        std::snprintf(msg, 30, "=> %s", info.DisplayFormat.c_str());
+        myStatsMsg.surface->drawString(infoFont(), msg, 1+ infoFont().getStringWidth("262 @ 60.00fps "), 1,
+                                       myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+
         myStatsMsg.surface->drawString(infoFont(), bsinfo, 1, 15,
-                                       myStatsMsg.w, myStatsMsg.color);
+                                       myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
         myStatsMsg.surface->setDirty();
         myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->render();
       }
+      myLastScanlines = myOSystem.console().tia().scanlinesLastFrame();
+      myLastFrameRate = myOSystem.console().getFramerate();
       myPausedCount = 0;
       break;  // EventHandlerState::EMULATION
     }
