@@ -214,9 +214,14 @@ uInt32 RewindManager::unwindState(uInt32 numStates)
 void RewindManager::compressStates()
 {
   double expectedCycles = myInterval * myFactor * (1 + myFactor);
-  double maxError = 1;
+  double maxError = 1.5;
   uInt32 idx = myStateList.size() - 2;
+  //uInt32 removeIdx = 0;
+  // in case maxError is <= 1.5 remove first state by default:
   Common::LinkedObjectPool<RewindState>::const_iter removeIter = myStateList.first();
+  if(myUncompressed < mySize)
+    //  if compression is enabled, the first but one state is removed by default:
+    removeIter++;
 
   //cerr << "idx: " << idx << endl;
   // iterate from last but one to first but one
@@ -236,21 +241,13 @@ void RewindManager::compressStates()
       {
         maxError = error;
         removeIter = it;
+        //removeIdx = idx;
       }
     }
     --idx;
   }
-  if (maxError < 1)
-  {
-    // the horizon is getting too big (can happen after changing settings)
-    myStateList.remove(1); // remove oldest but one
-//cerr << "remove oldest + 1" << endl;
-  }
-  else
-  {
-    myStateList.remove(removeIter); // remove
+   myStateList.remove(removeIter); // remove
 //cerr << "remove " << removeIdx << endl;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

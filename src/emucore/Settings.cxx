@@ -34,6 +34,7 @@ Settings::Settings(OSystem& osystem)
 {
   // Video-related options
   setInternal("video", "");
+  setInternal("framerate", "0");
   setInternal("vsync", "true");
   setInternal("fullscreen", "false");
   setInternal("center", "false");
