@@ -12,7 +12,8 @@ MODULE_OBJS := \
 	src/common/MouseControl.o \
 	src/common/RewindManager.o \
 	src/common/StateManager.o \
-	src/common/ZipHandler.o
+	src/common/ZipHandler.o \
+	src/common/AudioQueue.o
 
 MODULE_DIRS += \
 	src/common
