@@ -48,7 +48,7 @@ class FrameBufferSDL2 : public FrameBuffer
     //////////////////////////////////////////////////////////////////////
 
     /**
-      Updates window title/
+      Updates window title.
 
       @param title  The title of the application / window
     */
