@@ -83,7 +83,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int lineHeight = font.getLineHeight();
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab(" Emulation ");
+  int tabID = myTab->addTab("Emulation");
 
   // settings set
   mySettingsGroup0 = new RadioButtonGroup();
@@ -154,6 +154,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myThumbExceptionWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                               "Fatal ARM emulation error throws exception");
   wid.push_back(myThumbExceptionWidget);
+  ypos += lineHeight + VGAP;
+
+  // AtariVox/SaveKey EEPROM access
+  myEEPROMAccessWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                            "Display AtariVox/SaveKey EEPROM R/W access");
+  wid.push_back(myEEPROMAccessWidget);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -510,6 +516,8 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
   // Thumb ARM emulation exception
   myThumbException[set] = instance().settings().getBool(prefix + "thumb.trapfatal");
+  // AtariVox/SaveKey EEPROM access
+  myEEPROMAccess[set] = instance().settings().getBool(prefix + "eepromaccess");
 
   // Debug colors
   myDebugColors[set] = instance().settings().getBool(prefix + "debugcolors");
@@ -542,6 +550,8 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
   // Thumb ARM emulation exception
   instance().settings().setValue(prefix + "thumb.trapfatal", myThumbException[set]);
+  // AtariVox/SaveKey EEPROM access
+  instance().settings().setValue(prefix + "eepromaccess", myEEPROMAccess[set]);
 
   // Debug colors
   instance().settings().setValue(prefix + "debugcolors", myDebugColors[set]);
@@ -577,6 +587,8 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myUndrivenPins[set] = myUndrivenPinsWidget->getState();
   // Thumb ARM emulation exception
   myThumbException[set] = myThumbExceptionWidget->getState();
+  // AtariVox/SaveKey EEPROM access
+  myEEPROMAccess[set] = myEEPROMAccessWidget->getState();
 
   // Debug colors
   myDebugColors[set] = myDebugColorsWidget->getState();
@@ -612,6 +624,8 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myUndrivenPinsWidget->setState(myUndrivenPins[set]);
   // Thumb ARM emulation exception
   myThumbExceptionWidget->setState(myThumbException[set]);
+  // AtariVox/SaveKey EEPROM access
+  myEEPROMAccessWidget->setState(myEEPROMAccess[set]);
 
   handleConsole();
 
@@ -760,6 +774,8 @@ void DeveloperDialog::setDefaults()
       myUndrivenPins[set] = devSettings ? true : false;
       // Thumb ARM emulation exception
       myThumbException[set] = devSettings ? true : false;
+      // AtariVox/SaveKey EEPROM access
+      myEEPROMAccess[set] = devSettings ? true : false;
 
       setWidgetStates(set);
       break;
