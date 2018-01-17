@@ -49,7 +49,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myCurrentModeList(nullptr),
     myTotalTime(0),
     myTotalFrames(0),
-    myLastRunFrameRate(0)
+    myLastFrameRate(60)
 {
   myMsg.surface = myStatsMsg.surface = nullptr;
   myStatsEnabled = myMsg.enabled = myStatsMsg.enabled = false;
