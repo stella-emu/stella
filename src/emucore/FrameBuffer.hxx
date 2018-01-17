@@ -458,6 +458,9 @@ class FrameBuffer
     string myScreenTitle;
 
   private:
+    // Draws the frame stats overlay
+    void drawFrameStats();
+
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;
 
@@ -512,8 +515,7 @@ class FrameBuffer
     bool myStatsEnabled;
     uInt32 myLastScanlines;
     float myLastFrameRate;
-
-
+    
     bool myGrabMouse;
 
     // The list of all available video modes for this framebuffer
@@ -532,6 +534,10 @@ class FrameBuffer
 
     // Holds UI palette data (standard and classic colours)
     static uInt32 ourGUIColors[3][kNumColors-256];
+
+    uInt64 myTotalTime;
+    uInt64 myTotalFrames;
+    float myLastRunFrameRate;
 
   private:
     // Following constructors and assignment operators not supported
