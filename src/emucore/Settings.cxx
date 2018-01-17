@@ -164,6 +164,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.tm.horizon", "10m"); // = ~10 minutes
   // Thumb ARM emulation options
   setInternal("plr.thumb.trapfatal", "false");
+  setInternal("plr.eepromaccess", "false");
 
   // developer settings
   setInternal("dev.settings", "false");
@@ -184,6 +185,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.tm.horizon", "10s"); // = ~10 seconds
   // Thumb ARM emulation options
   setInternal("dev.thumb.trapfatal", "true");
+  setInternal("dev.eepromaccess", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -574,6 +576,7 @@ void Settings::usage() const
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
     << "  -plr.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
+    << "  -plr.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access messages\n"
     << endl
     << " The same parameters but for developer settings mode\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
@@ -587,6 +590,7 @@ void Settings::usage() const
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
     << "  -dev.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
+    << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access messages\n"
     << endl << std::flush;
 }
 

@@ -89,6 +89,13 @@ class System : public Serializable
 
   public:
     /**
+      Answer the OSystem attached to the system.
+
+      @return The attached OSystem
+    */
+    const OSystem& oSystem() const { return myOSystem; }
+
+    /**
       Answer the 6502 microprocessor attached to the system.  If a
       processor has not been attached calling this function will fail.
 

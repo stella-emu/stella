@@ -105,6 +105,7 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myRandomizeCPUWidget[5];
     CheckboxWidget*     myUndrivenPinsWidget;
     CheckboxWidget*     myThumbExceptionWidget;
+    CheckboxWidget*     myEEPROMAccessWidget;
 
     // Video widgets
     RadioButtonGroup*   mySettingsGroup1;
@@ -150,6 +151,7 @@ class DeveloperDialog : public Dialog
     bool    myDebugColors[2];
     bool    myUndrivenPins[2];
     bool    myThumbException[2];
+    bool    myEEPROMAccess[2];
     // States sets
     bool    myTimeMachine[2];
     int     myStateSize[2];
