@@ -232,8 +232,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kColorInfo;
-  myStatsMsg.w = infoFont().getMaxCharWidth() * 30 + 2;
-  myStatsMsg.h = (infoFont().getFontHeight() + 2) * 3;
+  myStatsMsg.w = font().getMaxCharWidth() * 30 + 3;
+  myStatsMsg.h = (font().getFontHeight() + 2) * 2;
 
   if(!myStatsMsg.surface)
   {
@@ -383,6 +383,7 @@ void FrameBuffer::drawFrameStats()
   const ConsoleInfo& info = myOSystem.console().about();
   char msg[30];
   uInt32 color;
+  const int XPOS = 2, YPOS = 0;
 
   myStatsMsg.surface->invalidate();
   string bsinfo = info.BankSwitch +
@@ -390,7 +391,7 @@ void FrameBuffer::drawFrameStats()
   // draw shadowed text
   color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
   std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
-  myStatsMsg.surface->drawString(infoFont(), msg, 1, 1,
+  myStatsMsg.surface->drawString(font(), msg, XPOS, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   // draw framerate
   float frameRate;
@@ -417,13 +418,13 @@ void FrameBuffer::drawFrameStats()
   color = frameRate != myLastFrameRate ? kDbgColorRed : myStatsMsg.color;
   myLastFrameRate = frameRate;
   std::snprintf(msg, 30, "@%6.2ffps", frameRate);
-  myStatsMsg.surface->drawString(infoFont(), msg, 1 + infoFont().getStringWidth("262 "), 1,
+  myStatsMsg.surface->drawString(font(), msg, XPOS + font().getStringWidth("262 "), YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   std::snprintf(msg, 30, "=> %s", info.DisplayFormat.c_str());
-  myStatsMsg.surface->drawString(infoFont(), msg, 1 + infoFont().getStringWidth("262 @ 60.00fps "), 1,
+  myStatsMsg.surface->drawString(font(), msg, XPOS + font().getStringWidth("262 @ 60.00fps "), YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
-  myStatsMsg.surface->drawString(infoFont(), bsinfo, 1, 15,
+  myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   myStatsMsg.surface->setDirty();
