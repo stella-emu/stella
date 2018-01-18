@@ -59,6 +59,7 @@ class RiotWidget : public Widget, public CommandSender
 
     DataGridWidget* myTimWrite;
     DataGridWidget* myTimRead;
+    DataGridWidget* myTimDivider;
 
     ControllerWidget *myLeftControl, *myRightControl;
     PopUpWidget *myP0Diff, *myP1Diff;

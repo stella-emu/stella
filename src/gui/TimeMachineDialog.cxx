@@ -336,9 +336,9 @@ string TimeMachineDialog::getTimeString(uInt64 cycles)
   uInt32 frames = cycles / (scanlines * 76);
 
   stringstream time;
-  time << Common::Base::toString(minutes, Common::Base::F_10_2) << ":";
-  time << Common::Base::toString(seconds, Common::Base::F_10_2) << ".";
-  time << Common::Base::toString(frames, Common::Base::F_10_2);
+  time << Common::Base::toString(minutes, Common::Base::F_10_02) << ":";
+  time << Common::Base::toString(seconds, Common::Base::F_10_02) << ".";
+  time << Common::Base::toString(frames, Common::Base::F_10_02);
 
   return time.str();
 }
