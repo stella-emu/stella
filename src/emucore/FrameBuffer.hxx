@@ -515,7 +515,7 @@ class FrameBuffer
     bool myStatsEnabled;
     uInt32 myLastScanlines;
     float myLastFrameRate;
-    
+
     bool myGrabMouse;
 
     // The list of all available video modes for this framebuffer
