@@ -509,6 +509,8 @@ class FrameBuffer
       uInt32 color;
       shared_ptr<FBSurface> surface;
       bool enabled;
+
+      Message() : counter(0), x(0), y(0), w(0), h(0), color(0), enabled(false) { }
     };
     Message myMsg;
     Message myStatsMsg;
@@ -537,7 +539,6 @@ class FrameBuffer
 
     uInt64 myTotalTime;
     uInt64 myTotalFrames;
-    float myLastRunFrameRate;
 
   private:
     // Following constructors and assignment operators not supported
