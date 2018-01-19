@@ -919,7 +919,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleEvent(Event::Type event, int state)
+void EventHandler::handleEvent(Event::Type event, Int32 state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
