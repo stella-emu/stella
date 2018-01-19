@@ -1248,7 +1248,9 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::DebuggerMode:
-      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if(myState == EventHandlerState::EMULATION
+         || myState == EventHandlerState::PAUSE
+         || myState == EventHandlerState::TIMEMACHINE)
         enterDebugMode();
       else if(myState == EventHandlerState::DEBUGGER)
         leaveDebugMode();
