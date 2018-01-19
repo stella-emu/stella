@@ -46,13 +46,12 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem(osystem),
     myInitializedCount(0),
     myPausedCount(0),
+    myStatsEnabled(false),
+    myLastFrameRate(60),
     myCurrentModeList(nullptr),
     myTotalTime(0),
-    myTotalFrames(0),
-    myLastFrameRate(60)
+    myTotalFrames(0)
 {
-  myMsg.surface = myStatsMsg.surface = nullptr;
-  myStatsEnabled = myMsg.enabled = myStatsMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
