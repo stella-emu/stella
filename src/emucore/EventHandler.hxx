@@ -473,7 +473,6 @@ class EventHandler
       The following methods take care of assigning action mappings.
     */
     void setActionMappings(EventMode mode);
-    void setKeyNames();
     void setKeymap();
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);

@@ -1256,6 +1256,19 @@ bool EventHandler::eventStateChange(Event::Type type)
         handled = false;
       break;
 
+    case Event::LauncherMode:
+      if (myState == EventHandlerState::PAUSE ||
+          myState == EventHandlerState::TIMEMACHINE)
+        setEventState(EventHandlerState::EMULATION);
+      else if(myState == EventHandlerState::CMDMENU)
+        leaveMenuMode();
+      // TODO: this currently does not work, because it exits all open dialogs too
+      /*else if(myState == EventHandlerState::DEBUGGER)
+        leaveDebugMode();*/
+      else
+        handled = false;
+      break;
+
     default:
       handled = false;
   }
