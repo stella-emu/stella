@@ -64,8 +64,7 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     mySystem(console.system()),
     myDialog(nullptr),
     myWidth(DebuggerDialog::kSmallFontMinW),
-    myHeight(DebuggerDialog::kSmallFontMinH),
-    myMenuMode(false)
+    myHeight(DebuggerDialog::kSmallFontMinH)
 {
   // Init parser
   myParser = make_unique<DebuggerParser>(*this, osystem.settings());
@@ -782,6 +781,12 @@ void Debugger::unlockBankswitchState()
 {
   mySystem.unlockDataBus();
   myConsole.cartridge().unlockBank();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::canExit() const
+{
+  return myDialogStack.top() == baseDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

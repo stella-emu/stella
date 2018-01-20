@@ -36,7 +36,6 @@
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
-#include "Debugger.hxx"
 #include "Launcher.hxx"
 
 #ifdef CHEATCODE_SUPPORT
@@ -252,10 +251,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kExitCmd:
       if(myMode != emulator)
-      {
-        instance().debugger().setMenuMode(false);
         close();
-      }
       else
         instance().eventHandler().leaveMenuMode();
       break;

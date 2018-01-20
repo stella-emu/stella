@@ -1275,7 +1275,7 @@ bool EventHandler::eventStateChange(Event::Type type)
     case Event::DebuggerMode:
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterDebugMode();
-      else if(myState == EventHandlerState::DEBUGGER && !myOSystem.debugger().inMenuMode())
+      else if(myState == EventHandlerState::DEBUGGER && myOSystem.debugger().canExit())
         leaveDebugMode();
       else
         handled = false;
