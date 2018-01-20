@@ -618,7 +618,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
   if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
   {
     // special handling for Escape key
-    if(KBDK_ESCAPE)
+    if(key == KBDK_ESCAPE)
     {
       if(state)
       {
