@@ -618,21 +618,18 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
   if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
   {
     // special handling for Escape key
-    if(key == KBDK_ESCAPE)
+    if(state && key == KBDK_ESCAPE)
     {
-      if(state)
+      if(myState == EventHandlerState::PAUSE)
       {
-        if(myState == EventHandlerState::PAUSE)
-        {
-          setEventState(EventHandlerState::EMULATION);
-          return;
-        }
-        else if(myState == EventHandlerState::CMDMENU ||
-                myState == EventHandlerState::TIMEMACHINE)
-        {
-          leaveMenuMode();
-          return;
-        }
+        setEventState(EventHandlerState::EMULATION);
+        return;
+      }
+      else if(myState == EventHandlerState::CMDMENU ||
+              myState == EventHandlerState::TIMEMACHINE)
+      {
+        leaveMenuMode();
+        return;
       }
       else if(myState == EventHandlerState::DEBUGGER && myOSystem.debugger().canExit())
       {
