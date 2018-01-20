@@ -329,7 +329,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       }
     }
     // These only work when in emulation mode
-    if(!handled && myState == EventHandlerState::EMULATION)
+    if(!handled && (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE))
     {
       handled = true;
       switch(key)
@@ -539,7 +539,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       handleEvent(Event::Quit, 1);
     }
     // These only work when in emulation mode
-    else if(myState == EventHandlerState::EMULATION)
+    else if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
     {
       switch(key)
       {
@@ -631,13 +631,11 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
         leaveMenuMode();
         return;
       }
-      // TODO: this currently does not work, because it exits the search dialog too
-      // How can we identify if the focus is in a different dialog?
-      /*else if(myState == EventHandlerState::DEBUGGER && !myOSystem.debugger().inMenuMode())
+      else if(myState == EventHandlerState::DEBUGGER && myOSystem.debugger().canExit())
       {
         leaveDebugMode();
         return;
-      }*/
+      }
     }
 
     // Handle keys which switch eventhandler state
@@ -1248,14 +1246,14 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::OptionsMenuMode:
-      if(myState == EventHandlerState::EMULATION)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       else
         handled = false;
       break;
 
     case Event::CmdMenuMode:
-      if(myState == EventHandlerState::EMULATION)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterMenuMode(EventHandlerState::CMDMENU);
       else if(myState == EventHandlerState::CMDMENU)
         leaveMenuMode();
@@ -1264,7 +1262,7 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::TimeMachineMode:
-      if(myState == EventHandlerState::EMULATION)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterMenuMode(EventHandlerState::TIMEMACHINE);
       else if(myState == EventHandlerState::TIMEMACHINE)
         leaveMenuMode();
