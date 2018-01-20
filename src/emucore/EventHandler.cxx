@@ -614,11 +614,36 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
   // Don't pass the key on if we've already taken care of it
   if(handled) return;
 
-  // Handle keys which switch eventhandler state
   // Arrange the logic to take advantage of short-circuit evaluation
-  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)) &&
-      !state && eventStateChange(myKeyTable[key][kEmulationMode]))
-    return;
+  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
+  {
+    // special handling for Escape key
+    if(state && key == KBDK_ESCAPE)
+    {
+      if(myState == EventHandlerState::PAUSE)
+      {
+        setEventState(EventHandlerState::EMULATION);
+        return;
+      }
+      else if(myState == EventHandlerState::CMDMENU ||
+              myState == EventHandlerState::TIMEMACHINE)
+      {
+        leaveMenuMode();
+        return;
+      }
+      // TODO: this currently does not work, because it exits the search dialog too
+      // How can we identify if the focus is in a different dialog?
+      /*else if(myState == EventHandlerState::DEBUGGER && !myOSystem.debugger().inMenuMode())
+      {
+        leaveDebugMode();
+        return;
+      }*/
+    }
+
+    // Handle keys which switch eventhandler state
+    if(!state && eventStateChange(myKeyTable[key][kEmulationMode]))
+      return;
+  }
 
   // Otherwise, let the event handler deal with it
   switch(myState)
@@ -1250,21 +1275,8 @@ bool EventHandler::eventStateChange(Event::Type type)
     case Event::DebuggerMode:
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterDebugMode();
-      else if(myState == EventHandlerState::DEBUGGER)
+      else if(myState == EventHandlerState::DEBUGGER && !myOSystem.debugger().inMenuMode())
         leaveDebugMode();
-      else
-        handled = false;
-      break;
-
-    case Event::LauncherMode:
-      if (myState == EventHandlerState::PAUSE ||
-          myState == EventHandlerState::TIMEMACHINE)
-        setEventState(EventHandlerState::EMULATION);
-      else if(myState == EventHandlerState::CMDMENU)
-        leaveMenuMode();
-      // TODO: this currently does not work, because it exits all open dialogs too
-      /*else if(myState == EventHandlerState::DEBUGGER)
-        leaveDebugMode();*/
       else
         handled = false;
       break;

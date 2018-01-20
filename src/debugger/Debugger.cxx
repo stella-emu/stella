@@ -64,7 +64,8 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     mySystem(console.system()),
     myDialog(nullptr),
     myWidth(DebuggerDialog::kSmallFontMinW),
-    myHeight(DebuggerDialog::kSmallFontMinH)
+    myHeight(DebuggerDialog::kSmallFontMinH),
+    myMenuMode(false)
 {
   // Init parser
   myParser = make_unique<DebuggerParser>(*this, osystem.settings());

@@ -240,6 +240,13 @@ class Debugger : public DialogContainer
     void lockBankswitchState();
     void unlockBankswitchState();
 
+    /**
+      Used to make sure that debugger cannot be exited while Options dialog is open.
+      (ugly hack!)
+    */
+    void setMenuMode(bool enable) { myMenuMode = enable; };
+    bool inMenuMode() { return myMenuMode; };
+
   private:
     /**
       Save state of each debugger subsystem and, by default, mark all
@@ -322,6 +329,8 @@ class Debugger : public DialogContainer
     static const uInt32 NUM_PSEUDO_REGS = 12;
     static BuiltinFunction ourBuiltinFunctions[NUM_BUILTIN_FUNCS];
     static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
+
+    bool myMenuMode;
 
   private:
     // rewind/unwind n states

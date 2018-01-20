@@ -216,7 +216,6 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       Dialog::handleCommand(sender, GuiObject::kCloseCmd, data, id);
       break;
 
-
     default:
       Dialog::handleCommand(sender, cmd, data, id);
       break;

@@ -174,6 +174,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDDOptionsCmd:
+      instance().debugger().setMenuMode(true);
       myOptions->open();
       loadConfig();
       break;
