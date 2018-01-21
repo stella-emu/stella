@@ -24,17 +24,15 @@
 #include "Widget.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
-
+#include "TimeLineWidget.hxx"
 
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "System.hxx"
 
-
 #include "TimeMachineDialog.hxx"
 #include "Base.hxx"
 using Common::Base;
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
@@ -205,6 +203,14 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos,
                                          "    ", TextAlign::Right, kBGColor);
   myLastIdxWidget->setTextColor(kWidColor);
+
+  // Add timeline
+  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2,
+               tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
+               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2,
+               tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
+  myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
+  wid.push_back(myTimeline);
   ypos += rowHeight;
 
   // Add time info
@@ -231,10 +237,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myRewind1Widget);
   xpos += buttonWidth + BUTTON_GAP*2;
 
-  /*myPauseWidget = new ButtonWidget(this, font, xpos, ypos - 2, buttonWidth + 4, buttonHeight + 4, PAUSE,
-                                   BUTTON_W, BUTTON_H, kPause);
-  wid.push_back(myPauseWidget);
-  myPauseWidget->clearFlags(WIDGET_ENABLED);*/
   myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, PLAY,
                                   BUTTON_W, BUTTON_H, kPlay);
   wid.push_back(myPlayWidget);
@@ -259,6 +261,8 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ",
                                          TextAlign::Left, kBGColor);
   myMessageWidget->setTextColor(kWidColor);
+
+  // FIXME - add wid list to focus list
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -273,6 +277,10 @@ void TimeMachineDialog::center()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::loadConfig()
 {
+cerr << "loadConfig()\n";
+  // FIXME - set range for timeline
+  //myTimeline->setMinValue(..); myTimeline->setMaxValue(..);
+
   surface().attributes().blending = true;
   surface().attributes().blendalpha = 80;
   surface().applyAttributes();
@@ -285,9 +293,12 @@ void TimeMachineDialog::loadConfig()
 void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
                                       int data, int id)
 {
-//cerr << cmd << endl;
   switch(cmd)
   {
+    case kTimeline:
+      cerr << "timeline: " << myTimeline->getValue() << endl;
+      break;
+
     case kPlay:
       instance().eventHandler().leaveMenuMode();
       break;
@@ -321,6 +332,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TimeMachineDialog::getTimeString(uInt64 cycles)
 {
   const Int32 scanlines = std::max(instance().console().tia().scanlinesLastFrame(), 240u);
@@ -365,7 +377,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   // Update index
   myCurrentIdxWidget->setValue(r.getCurrentIdx());
   myLastIdxWidget->setValue(r.getLastIdx());
-  // enable/disable buttons
+  // Enable/disable buttons
   myRewindAllWidget->setEnabled(!r.atFirst());
   myRewind10Widget->setEnabled(!r.atFirst());
   myRewind1Widget->setEnabled(!r.atFirst());

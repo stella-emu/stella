@@ -21,6 +21,7 @@
 class CommandSender;
 class DialogContainer;
 class OSystem;
+class TimeLineWidget;
 
 #include "Dialog.hxx"
 
@@ -45,7 +46,7 @@ class TimeMachineDialog : public Dialog
   private:
     enum
     {
-      kPause     = 'TMps',
+      kTimeline  = 'TMtl',
       kPlay      = 'TMpl',
       kRewindAll = 'TMra',
       kRewind10  = 'TMr1',
@@ -55,7 +56,8 @@ class TimeMachineDialog : public Dialog
       kUnwind1   = 'TMun',
     };
 
-    // FIXME ButtonWidget* myPauseWidget;
+    TimeLineWidget* myTimeline;
+
     ButtonWidget* myPlayWidget;
     ButtonWidget* myRewindAllWidget;
     ButtonWidget* myRewind10Widget;
