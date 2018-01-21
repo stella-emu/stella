@@ -394,12 +394,12 @@ void FrameBuffer::drawFrameStats()
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   // draw framerate
   float frameRate;
-  if(myOSystem.settings().getInt("framerate") == 0)
+  /*if(myOSystem.settings().getInt("framerate") == 0)
   {
     // if 'Auto' is selected, draw the calculated framerate
     frameRate = myOSystem.console().getFramerate();
   }
-  else
+  else*/
   {
     // if 'Auto' is not selected, draw the effective framerate
     const TimingInfo& ti = myOSystem.timingInfo();
