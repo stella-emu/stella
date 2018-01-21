@@ -383,6 +383,7 @@ void FrameBuffer::drawFrameStats()
   char msg[30];
   uInt32 color;
   const int XPOS = 2, YPOS = 0;
+  int xPos = XPOS;
 
   myStatsMsg.surface->invalidate();
   string bsinfo = info.BankSwitch +
@@ -390,8 +391,15 @@ void FrameBuffer::drawFrameStats()
   // draw shadowed text
   color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
   std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
-  myStatsMsg.surface->drawString(font(), msg, XPOS, YPOS,
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+  xPos += font().getStringWidth(msg);
+
+  std::snprintf(msg, 30, " => %s", info.DisplayFormat.c_str());
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
+                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  xPos += font().getStringWidth(msg);
+
   // draw framerate
   float frameRate;
   /*if(myOSystem.settings().getInt("framerate") == 0)
@@ -414,13 +422,9 @@ void FrameBuffer::drawFrameStats()
     else
       frameRate = myLastFrameRate;
   }
-  color = frameRate != myLastFrameRate ? kDbgColorRed : myStatsMsg.color;
   myLastFrameRate = frameRate;
-  std::snprintf(msg, 30, "@%6.2ffps", frameRate);
-  myStatsMsg.surface->drawString(font(), msg, XPOS + font().getStringWidth("262 "), YPOS,
-                                 myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
-  std::snprintf(msg, 30, "=> %s", info.DisplayFormat.c_str());
-  myStatsMsg.surface->drawString(font(), msg, XPOS + font().getStringWidth("262 @ 60.00fps "), YPOS,
+  std::snprintf(msg, 30, " @ %5.2ffps", frameRate);
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
