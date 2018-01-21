@@ -55,7 +55,7 @@ class TimeMachineDialog : public Dialog
       kUnwind1   = 'TMun',
     };
 
-    ButtonWidget* myPauseWidget;
+    // FIXME ButtonWidget* myPauseWidget;
     ButtonWidget* myPlayWidget;
     ButtonWidget* myRewindAllWidget;
     ButtonWidget* myRewind10Widget;
