@@ -181,7 +181,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   };
 
   const GUI::Font& font = instance().frameBuffer().font();
-  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4, V_GAP = 4;
+  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4; // FIXME, V_GAP = 4;
   const int buttonWidth = BUTTON_W + 8,
             buttonHeight = BUTTON_H + 10,
             rowHeight = font.getLineHeight();
@@ -351,7 +351,10 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   if(numWinds)
   {
     uInt64 startCycles = instance().console().tia().cycles();
-    uInt32 winds = numWinds < 0 ? r.rewindState(-numWinds) : r.unwindState(numWinds);
+    if(numWinds < 0)
+      r.rewindState(-numWinds);
+    else
+      r.unwindState(numWinds);
     string message = r.getUnitString(instance().console().tia().cycles() - startCycles);
 
     myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
