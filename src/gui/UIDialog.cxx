@@ -43,7 +43,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
-  const int vBorder = 5;
+  const int VBORDER = 5;
+  const int HBORDER = 10;
   int xpos, ypos, tabID;
   int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
@@ -56,7 +57,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   _h = 11 * (lineHeight + 4) + 10;
 
   // The tab widget
-  xpos = ypos = vBorder;
+  xpos = ypos = VBORDER;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
 
@@ -127,7 +128,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Add message concerning usage
-  xpos = vBorder; ypos += 1*(lineHeight + 4);
+  xpos = VBORDER; ypos += 1*(lineHeight + 4);
   lwidth = ifont.getStringWidth("(*) Changes require application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Changes require application restart",
@@ -142,7 +143,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" Misc. ");
   lwidth = font.getStringWidth("Interface Palette (*) ");
   pwidth = font.getStringWidth("Standard");
-  xpos = ypos = vBorder;
+  xpos = ypos = VBORDER;
 
   // UI Palette
   ypos += 1;
@@ -189,7 +190,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Add message concerning usage
-  xpos = vBorder; ypos += 1*(lineHeight + 4);
+  xpos = VBORDER; ypos += 1*(lineHeight + 4);
   lwidth = ifont.getStringWidth("(*) Requires application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Requires application restart",

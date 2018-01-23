@@ -60,7 +60,6 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
-  addOKWidget(b);  addCancelWidget(b);
 
   xpos = 5;  ypos = 5;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,

@@ -57,7 +57,6 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   ypos += myLogInfo->getHeight() + 8;
 
   // Level of logging (how much info to print)
-  xpos += 20;
   VariantList items;
   VarList::push_back(items, "None", "0");
   VarList::push_back(items, "Basic", "1");
@@ -69,8 +68,8 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
-  xpos += myLogLevel->getWidth() + 30;
-  myLogToConsole = new CheckboxWidget(this, font, xpos, ypos, "Print to console");
+  xpos += myLogLevel->getWidth() + 32;
+  myLogToConsole = new CheckboxWidget(this, font, xpos, ypos + 1, "Print to console");
   wid.push_back(myLogToConsole);
 
   // Add Save, OK and Cancel buttons
