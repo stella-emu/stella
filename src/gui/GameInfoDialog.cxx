@@ -48,8 +48,8 @@ GameInfoDialog::GameInfoDialog(
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
-  const int vBorder = 4;
-  const int hBorder = 2;
+  const int vBorder = 8;
+  const int hBorder = 8;
 
   const int hSpace = 10;
   const int vGap = 4;
@@ -65,7 +65,7 @@ GameInfoDialog::GameInfoDialog(
 
   // The tab widget
   xpos = hBorder; ypos = vBorder;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2 * hBorder,
+  myTab = new TabWidget(this, font, 2, 4, _w - 2 * 2,
                         _h - (buttonHeight + fontHeight + ifont.getLineHeight() + 20));
   addTabWidget(myTab);
 

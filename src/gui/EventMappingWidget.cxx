@@ -50,17 +50,19 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
             lineHeight   = font.getLineHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 10,
             buttonHeight = font.getLineHeight() + 4;
-  int xpos = 5, ypos = 5;
+  const int HBORDER = 8;
+  const int VBORDER = 8;
+  int xpos = HBORDER, ypos = VBORDER;
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos,
-                                       _w - buttonWidth - 20, _h - 3*lineHeight);
+                                       _w - buttonWidth - HBORDER * 2 - 8, _h - 3*lineHeight - VBORDER);
   myActionsList->setTarget(this);
   myActionsList->setEditable(false);
   myActionsList->setList(actions);
   addFocusWidget(myActionsList);
 
   // Add remap, erase, cancel and default buttons
-  xpos += myActionsList->getWidth() + 5;  ypos += 5;
+  xpos = _w - HBORDER - buttonWidth;
   myMapButton = new ButtonWidget(boss, font, xpos, ypos,
                                  buttonWidth, buttonHeight,
                                  "Map" + ELLIPSIS, kStartMapCmd);
@@ -105,13 +107,13 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myComboButton = nullptr;
 
   // Show message for currently selected event
-  xpos = 10;  ypos = 5 + myActionsList->getHeight() + 5;
+  xpos = HBORDER;  ypos = VBORDER + myActionsList->getHeight() + 8;
   StaticTextWidget* t;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
                            fontHeight, "Action", TextAlign::Left);
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,
-                                    _w - xpos - t->getWidth() - 15, lineHeight, "");
+                                    _w - xpos - t->getWidth() - 8 - HBORDER, lineHeight, "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(WIDGET_RETAIN_FOCUS);
 }

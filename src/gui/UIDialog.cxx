@@ -43,7 +43,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
-  const int VBORDER = 5;
+  const int VBORDER = 8;
   const int HBORDER = 10;
   int xpos, ypos, tabID;
   int lwidth, pwidth = font.getStringWidth("Standard");
@@ -54,11 +54,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
-  _h = 11 * (lineHeight + 4) + 10;
+  _h = 10 * (lineHeight + 4) + 10;
 
   // The tab widget
-  xpos = ypos = VBORDER;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
+  xpos = HBORDER;  ypos = VBORDER;
+  myTab = new TabWidget(this, font, 2, 4, _w - 2*2, _h - buttonHeight - 20);
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Add message concerning usage
-  xpos = VBORDER; ypos += 1*(lineHeight + 4);
+  xpos = HBORDER; ypos += 1*(lineHeight + 4);
   lwidth = ifont.getStringWidth("(*) Changes require application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Changes require application restart",
@@ -143,7 +143,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" Misc. ");
   lwidth = font.getStringWidth("Interface Palette (*) ");
   pwidth = font.getStringWidth("Standard");
-  xpos = ypos = VBORDER;
+  xpos = HBORDER;  ypos = VBORDER;
 
   // UI Palette
   ypos += 1;
@@ -190,7 +190,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Add message concerning usage
-  xpos = VBORDER; ypos += 1*(lineHeight + 4);
+  xpos = HBORDER; ypos += 1*(lineHeight + 4);
   lwidth = ifont.getStringWidth("(*) Requires application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Requires application restart",
