@@ -64,6 +64,7 @@ class VideoDialog : public Dialog
     SliderWidget*     myFrameRate;
     StaticTextWidget* myFrameRateLabel;
     CheckboxWidget*   myFullscreen;
+    PopUpWidget*      myFullScreenMode;
     CheckboxWidget*   myUseStretch;
     CheckboxWidget*   myUseVSync;
     CheckboxWidget*   myUIMessages;

@@ -70,11 +70,7 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   _h = ypos + buttonHeight + 20;
 
   // Add Defaults, OK and Cancel buttons
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 }

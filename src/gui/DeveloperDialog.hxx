@@ -164,8 +164,6 @@ class DeveloperDialog : public Dialog
     void addTimeMachineTab(const GUI::Font& font);
     void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
-    // Add Defaults, OK and Cancel buttons
-    void addDefaultOKCancelButtons(const GUI::Font& font);
 
     void loadSettings(SettingsSet set);
     void saveSettings(SettingsSet set);

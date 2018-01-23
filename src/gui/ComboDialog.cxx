@@ -75,11 +75,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   myEvents[7] = nullptr;  ADD_EVENT_POPUP(7, "Event 8 ");
 
   // Add Defaults, OK and Cancel buttons
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 }

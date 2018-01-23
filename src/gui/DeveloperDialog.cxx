@@ -66,7 +66,10 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   addVideoTab(font);
   addTimeMachineTab(font);
   addDebuggerTab(font);
-  addDefaultOKCancelButtons(font);
+
+  WidgetArray wid;
+  addDefaultsOKCancelBGroup(wid, font);
+  addBGroupToFocusList(wid);
 
   // Activate the first tab
   myTab->setActiveTab(0);
@@ -484,21 +487,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 #endif
 
   addToFocusList(wid, myTab, tabID);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::addDefaultOKCancelButtons(const GUI::Font& font)
-{
-  const int buttonWidth = font.getStringWidth("Defaults") + 20,
-    buttonHeight = font.getLineHeight() + 4;
-  WidgetArray wid;
-
-  wid.clear();
-  ButtonWidget* btn = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(btn);
-  addOKCancelBGroup(wid, font);
-  addBGroupToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -90,11 +90,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add Defaults, OK and Cancel buttons
   WidgetArray wid;
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
 }
 

@@ -37,6 +37,9 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent)
 {
+  const int VBORDER = 10;
+  const int HBORDER = 10;
+  const int INDENT = 20;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
@@ -49,13 +52,21 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = 35 * fontWidth + 10;
-  _h = 7 * (lineHeight + 4) + 10;
+  _w = 35 * fontWidth + HBORDER * 2;
+  _h = 7 * (lineHeight + 4) + VBORDER;
+
+  xpos = HBORDER;  ypos = VBORDER;
+
+  // Enable sound
+  xpos = HBORDER;
+  mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+                                             "Enable sound", kSoundEnableChanged);
+  wid.push_back(mySoundEnableCheckbox);
+  ypos += lineHeight + 4;
+  xpos += INDENT;
 
   // Volume
-  xpos = 3 * fontWidth;  ypos = 10;
-
-  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 6*fontWidth, lineHeight,
+  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 8*fontWidth, lineHeight,
                                     "Volume ", lwidth, kVolumeChanged);
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   wid.push_back(myVolumeSlider);
@@ -75,7 +86,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "2 KB", "2048");
   VarList::push_back(items, "4 KB", "4096");
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
-                                    pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
+                                    pwidth, lineHeight,
                                     items, "Sample size (*) ", lwidth);
   wid.push_back(myFragsizePopup);
   ypos += lineHeight + 4;
@@ -88,31 +99,19 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "44100 Hz", "44100");
   VarList::push_back(items, "48000 Hz", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
-                                pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
+                                pwidth, lineHeight,
                                 items, "Frequency (*) ", lwidth);
   wid.push_back(myFreqPopup);
-  ypos += lineHeight + 4;
-
-  // Enable sound
-  xpos = (_w - (font.getStringWidth("Enable sound") + 10)) / 2;
-  ypos += 4;
-  mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos, ypos,
-                                             "Enable sound", kSoundEnableChanged);
-  wid.push_back(mySoundEnableCheckbox);
 
   // Add message concerning usage
-  ypos += lineHeight + 12;
+  ypos = _h - fontHeight * 2 - 24;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  new StaticTextWidget(this, infofont, 10, ypos,
+  new StaticTextWidget(this, infofont, HBORDER, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
         "(*) Requires application restart", TextAlign::Left);
 
   // Add Defaults, OK and Cancel buttons
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 }

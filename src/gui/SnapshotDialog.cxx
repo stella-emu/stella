@@ -114,11 +114,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySnap1x);
 
   // Add Defaults, OK and Cancel buttons
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       font.getStringWidth("Defaults") + 20, buttonHeight,
-                       "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 }

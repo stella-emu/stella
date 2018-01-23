@@ -65,6 +65,7 @@ class Dialog : public GuiObject
     void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
     void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
+    void addDefaultWidget(Widget* w) { _defaultWidget = w; }
     void addOKWidget(Widget* w)     { _okWidget = w;     }
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
@@ -106,7 +107,14 @@ class Dialog : public GuiObject
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                            const string& okText = "OK",
                            const string& cancelText = "Cancel",
-                           bool focusOKButton = true);
+                           bool focusOKButton = true,
+                           int buttonWidth = 0);
+
+    void addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
+                                   const string& okText = "OK",
+                                   const string& cancelText = "Cancel",
+                                   const string& defaultsText = "Defaults",
+                                   bool focusOKButton = true);
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
 
@@ -125,6 +133,7 @@ class Dialog : public GuiObject
     Widget* _mouseWidget;
     Widget* _focusedWidget;
     Widget* _dragWidget;
+    Widget* _defaultWidget;
     Widget* _okWidget;
     Widget* _cancelWidget;
     bool    _visible;

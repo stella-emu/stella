@@ -50,7 +50,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   myPrevButton->clearFlags(WIDGET_ENABLED);
   wid.push_back(myPrevButton);
 
-  xpos += buttonWidth + 7;
+  xpos += buttonWidth + 8;
   myNextButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Next", GuiObject::kNextCmd);

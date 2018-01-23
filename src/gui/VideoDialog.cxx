@@ -39,7 +39,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 {
   const int VGAP = 4;
   const int VBORDER = 8;
-  const int HBORDER = 8;
+  const int HBORDER = 10;
+  const int INDENT = 18;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
@@ -54,8 +55,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = std::min(52 * fontWidth + 10, max_w);
-  _h = std::min(16 * (lineHeight + VGAP) + 14, max_h);
+  _w = std::min((52+4) * fontWidth + HBORDER * 2, max_w);
+  _h = std::min((16-2) * (lineHeight + VGAP) + 14, max_h);
 
   // The tab widget
   xpos = 2;  ypos = 4;
@@ -155,6 +156,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Fullscreen
   myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen");
   wid.push_back(myFullscreen);
+  ypos += lineHeight + VGAP;
+
+  pwidth = font.getStringWidth("0: 3840x2860@120Hz");
+  myFullScreenMode = new PopUpWidget(myTab, font, xpos + INDENT + 2, ypos, pwidth, lineHeight,
+                                     instance().frameBuffer().supportedScreenModes(), "Mode ");
+  wid.push_back(myFullScreenMode);
   ypos += lineHeight + VGAP;
 
   // FS stretch
@@ -257,19 +264,19 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // TV Phosphor default level
-  xpos += 8-8+16;
+  xpos += INDENT;
   pwidth = swidth;
   CREATE_CUSTOM_SLIDERS(PhosLevel, "Default   ");
   ypos += 6;
 
   // Scanline intensity and interpolation
-  xpos -= 8+8;
+  xpos -= INDENT;
   myTVScanLabel =
     new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings"),
                          fontHeight, "Scanline settings", TextAlign::Left);
   ypos += lineHeight;
 
-  xpos += 8+8;
+  xpos += INDENT;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ");
 
   myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos,
@@ -278,7 +285,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 6;
 
   // Adjustable presets
-  xpos -= 8+8;
+  xpos -= INDENT;
   int cloneWidth = font.getStringWidth("Clone Bad Adjust") + 20;
 #define CREATE_CLONE_BUTTON(obj, desc)                                 \
   myClone ## obj =                                                     \
@@ -302,11 +309,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add Defaults, OK and Cancel buttons
   wid.clear();
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
 
   // Disable certain functions when we know they aren't present
@@ -356,6 +359,8 @@ void VideoDialog::loadConfig()
 
   // Fullscreen
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
+  string mode = instance().settings().getString("fullscreenmode");
+  myFullScreenMode->setSelected(mode);
 
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fsfill"));
@@ -440,7 +445,8 @@ void VideoDialog::saveConfig()
 
   // Fullscreen
   instance().settings().setValue("fullscreen", myFullscreen->getState());
-
+  instance().settings().setValue("fullscreenmode",
+                                 myFullScreenMode->getSelectedTag().toString());
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fsfill", myUseStretch->getState());
 
@@ -515,6 +521,7 @@ void VideoDialog::setDefaults()
       myFrameRateLabel->setLabel("Auto");
 
       myFullscreen->setState(false);
+      myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(true);
       myUseVSync->setState(true);
       myUIMessages->setState(true);

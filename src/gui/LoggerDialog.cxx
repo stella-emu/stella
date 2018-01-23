@@ -73,7 +73,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   myLogToConsole = new CheckboxWidget(this, font, xpos, ypos, "Print to console");
   wid.push_back(myLogToConsole);
 
-  // Add Defaults, OK and Cancel buttons
+  // Add Save, OK and Cancel buttons
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Save log to disk",

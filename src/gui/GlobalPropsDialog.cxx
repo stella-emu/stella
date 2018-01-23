@@ -133,11 +133,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
     "    further ROMs until clicking 'Defaults'", TextAlign::Left);
 
   // Add Defaults, OK and Cancel buttons
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font, "Load ROM", "Close");
+  addDefaultsOKCancelBGroup(wid, font, "Load ROM", "Close");
 
   addToFocusList(wid);
 }
