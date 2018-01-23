@@ -55,6 +55,7 @@
 #include "Version.hxx"
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
+#include "AudioQueue.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
 #include "frame-manager/YStartDetector.hxx"
@@ -71,6 +72,8 @@
 
 namespace {
   constexpr uInt8 YSTART_EXTRA = 2;
+  constexpr uInt8 AUDIO_QUEUE_CAPACITY_FRAGMENTS = 20;
+  constexpr uInt8 AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,6 +181,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCurrentFormat = 6;
     myConsoleTiming = ConsoleTiming::secam;
   }
+
+  createAudioQueue();
+  myTIA->setAudioQueue(myAudioQueue.get());
 
   bool joyallow4 = myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
@@ -725,6 +731,35 @@ void Console::setTIAProperties()
 
   myTIA->setYStart(ystart != 0 ? ystart : myAutodetectedYstart);
   myTIA->setHeight(height);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::createAudioQueue()
+{
+  uInt32 fragmentSize, sampleRate;
+
+  switch (myConsoleTiming) {
+    case ConsoleTiming::ntsc:
+      fragmentSize = 262 * AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT;
+      sampleRate = 2 * 262 * 60;
+      break;
+
+    case ConsoleTiming::pal:
+    case ConsoleTiming::secam:
+      fragmentSize = 312 * AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT;
+      sampleRate = 2 * 312 * 50;
+      break;
+
+    default:
+      throw runtime_error("invalid console timing");
+  }
+
+  myAudioQueue = make_unique<AudioQueue>(
+    fragmentSize,
+    AUDIO_QUEUE_CAPACITY_FRAGMENTS,
+    myProperties.get(Cartridge_Sound) == "STEREO",
+    sampleRate
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

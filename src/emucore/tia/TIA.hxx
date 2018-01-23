@@ -28,6 +28,7 @@
 #include "DelayQueueIterator.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
 #include "FrameLayout.hxx"
+#include "Audio.hxx"
 #include "Background.hxx"
 #include "Playfield.hxx"
 #include "Missile.hxx"
@@ -38,6 +39,8 @@
 #include "DelayQueueIterator.hxx"
 #include "Control.hxx"
 #include "System.hxx"
+
+class AudioQueue;
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -103,12 +106,18 @@ class TIA : public Device
 
   public:
     /**
-     * Configure the frame manager.
+      Configure the frame manager.
      */
     void setFrameManager(AbstractFrameManager *frameManager);
 
     /**
-     * Clear the configured frame manager and deteach the lifecycle callbacks.
+      Set the audio queue. This needs to be dynamic as the queue is created after
+      the timing has been determined.
+    */
+    void setAudioQueue(AudioQueue *audioQueue);
+
+    /**
+      Clear the configured frame manager and deteach the lifecycle callbacks.
      */
     void clearFrameManager();
 
@@ -637,6 +646,8 @@ class TIA : public Device
     Player myPlayer0;
     Player myPlayer1;
     Ball myBall;
+
+    Audio myAudio;
 
     /**
      * The paddle readout circuits.

@@ -23,6 +23,7 @@
 #include "DelayQueueIteratorImpl.hxx"
 #include "TIAConstants.hxx"
 #include "frame-manager/FrameManager.hxx"
+#include "AudioQueue.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -113,6 +114,12 @@ void TIA::setFrameManager(AbstractFrameManager *frameManager)
 
   myFrameManager->enableJitter(myEnableJitter);
   myFrameManager->setJitterFactor(myJitterFactor);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setAudioQueue(AudioQueue* queue)
+{
+  myAudio.setAudioQueue(queue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

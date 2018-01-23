@@ -9,7 +9,8 @@ MODULE_OBJS := \
 	src/emucore/tia/Ball.o \
 	src/emucore/tia/Background.o \
 	src/emucore/tia/LatchedInput.o \
-	src/emucore/tia/PaddleReader.o
+	src/emucore/tia/PaddleReader.o \
+	src/emucore/tia/Audio.o
 
 MODULE_DIRS += \
 	src/emucore/tia

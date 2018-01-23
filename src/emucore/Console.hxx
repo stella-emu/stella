@@ -27,6 +27,7 @@ class M6532;
 class Cartridge;
 class CompuMate;
 class Debugger;
+class AudioQueue;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -323,6 +324,11 @@ class Console : public Serializable
     void setTIAProperties();
 
     /**
+      Create the audio queue
+     */
+    void createAudioQueue();
+
+    /**
       Adds the left and right controllers to the console.
     */
     void setControllers(const string& rommd5);
@@ -380,6 +386,9 @@ class Console : public Serializable
 
     // The frame manager instance that is used during emulation.
     unique_ptr<AbstractFrameManager> myFrameManager;
+
+    // The audio fragment queue that connects TIA and audio driver
+    unique_ptr<AudioQueue> myAudioQueue;
 
     // Pointer to the Cartridge (the debugger needs it)
     unique_ptr<Cartridge> myCart;
