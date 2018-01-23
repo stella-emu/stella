@@ -276,11 +276,7 @@ void Dialog::drawDialog()
     else
       s.invalidate();
     if(_flags & WIDGET_BORDER)
-#ifndef FLAT_UI
-      s.box(_x, _y, _w, _h, kColor, kShadowColor);
-#else
       s.frameRect(_x, _y, _w, _h, kColor);
-#endif // !FLAT_UI
 
     // Make all child widget dirty
     Widget* w = _firstWidget;

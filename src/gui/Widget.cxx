@@ -84,21 +84,13 @@ void Widget::draw()
     {
       x++; y++; w-=2; h-=2;
     }
-#ifndef FLAT_UI
     s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
-#else
-    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
-#endif
   }
 
   // Draw border
   if(hasBorder)
   {
-#ifndef FLAT_UI
-    s.box(_x, _y, _w, _h, kColor, kShadowColor);
-#else
     s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) && isEnabled() ? kScrollColorHi : kColor);
-#endif // !FLAT_UI
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -460,43 +452,6 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
-#ifndef FLAT_UI
-static uInt32 checked_img_active[8] =
-{
-	0b11111111,
-	0b11111111,
-	0b11111111,
-	0b11111111,
-	0b11111111,
-	0b11111111,
-	0b11111111,
-	0b11111111
-};
-
-static uInt32 checked_img_inactive[8] =
-{
-	0b11111111,
-	0b11111111,
-	0b11100111,
-	0b11000011,
-	0b11000011,
-	0b11100111,
-	0b11111111,
-	0b11111111
-};
-
-static uInt32 checked_img_circle[8] =
-{
-	0b00011000,
-	0b01111110,
-	0b01111110,
-	0b11111111,
-	0b11111111,
-	0b01111110,
-	0b01111110,
-	0b00011000
-};
-#else
 static uInt32 checked_img_active[10] =
 {
   0b1111111111,
@@ -538,7 +493,7 @@ static uInt32 checked_img_circle[10] =
   0b0111111110,
   0b0001111000
 };
-#endif // !FLAT_UI
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, const string& label,
@@ -651,16 +606,6 @@ void CheckboxWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-#ifndef FLAT_UI
-  // Draw the box
-  if(_drawBox)
-    s.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
-  // Do we draw a square or cross?
-  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, _changed ? kDbgChangedColor
-             : isEnabled() ? _bgcolor : kColor);
-  if(_state)
-    s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
-#else
   if(_drawBox)
     s.frameRect(_x, _y + _boxY, 14, 14, hilite ? kScrollColorHi : kShadowColor);
   // Do we draw a square or cross?
@@ -669,7 +614,6 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(_state)
     s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite ? kScrollColorHi : kCheckColor
                  : kShadowColor, 10);
-#endif
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,
@@ -809,21 +753,6 @@ void SliderWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-#ifndef FLAT_UI
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, TextAlign::Right);
-
-  // Draw the box
-  s.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
-  // Fill the box
-  s.fillRect(_x + _labelWidth + 2, _y + 2, _w - _labelWidth - 4, _h - 4,
-             !isEnabled() ? kBGColorHi : kWidColor);
-  // Draw the 'bar'
-  s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
-             !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
-#else
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,
@@ -837,7 +766,6 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the 'bar'
   s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

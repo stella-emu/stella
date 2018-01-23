@@ -60,11 +60,7 @@ void ContextMenu::addItems(const VariantList& items)
     maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
-#ifndef FLAT_UI
-  _w = maxwidth + 15;
-#else
   _w = maxwidth + 23;
-#endif
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
@@ -555,17 +551,10 @@ void ContextMenu::drawDialog()
   {
     // Draw menu border and background
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
-#ifndef FLAT_UI
-    s.box(_x, _y, _w, _h, kColor, kShadowColor);
-
-    // Draw the entries, taking scroll buttons into account
-    int x = _x + 2, y = _y + 2, w = _w - 4;
-#else
     s.frameRect(_x, _y, _w, _h, kTextColor);
 
     // Draw the entries, taking scroll buttons into account
     int x = _x + 1, y = _y + 1, w = _w - 2;
-#endif
 
     // Show top scroll area
     int offset = _selectedOffset;
