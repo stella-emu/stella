@@ -115,11 +115,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add textfield to show current directory
   xpos = 10;
-  xpos += 5;  ypos += myList->getHeight() + 4;
-  lwidth = font.getStringWidth("Dir ");
+  ypos += myList->getHeight() + 4;
+  lwidth = font.getStringWidth("Path ");
   myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwidth, fontHeight,
-                                    "Dir", TextAlign::Left);
-  xpos += lwidth + 5;
+                                    "Path", TextAlign::Left);
+  xpos += lwidth;
   myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - 10, lineHeight, "");
   myDir->setEditable(false, true);
   myDir->clearFlags(WIDGET_RETAIN_FOCUS);

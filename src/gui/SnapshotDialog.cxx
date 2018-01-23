@@ -31,38 +31,41 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent),
     myFont(font)
 {
+  const int VBORDER = 10;
+  const int HBORDER = 10;
+  const int INDENT = 20;
+  const int V_GAP = 4;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             buttonWidth  = font.getStringWidth("Save path" + ELLIPSIS) + 20,
             buttonHeight = font.getLineHeight() + 4;
-  const int vBorder = 10;
   int xpos, ypos, lwidth, fwidth;
   WidgetArray wid;
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = 53 * fontWidth + 8;
+  _w = 64 * fontWidth + HBORDER * 2;
   _h = 10 * (lineHeight + 4) + 10;
 
-  xpos = vBorder;  ypos = vBorder;
+  xpos = HBORDER;  ypos = VBORDER;
 
   // Snapshot path (save files)
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 10;
-  mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                  _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + 8;
+  mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + 1,
+                                  _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(mySnapSavePath);
 
   // Snapshot path (load files)
-  xpos = vBorder;  ypos += buttonHeight + 3;
+  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Load path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 10;
-  mySnapLoadPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                  _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + 8;
+  mySnapLoadPath = new EditTextWidget(this, font, xpos, ypos + 1,
+                                  _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(mySnapLoadPath);
 
   // Snapshot naming
@@ -71,7 +74,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
   VarList::push_back(items, "actual ROM name", "rom");
   VarList::push_back(items, "internal database", "int");
-  xpos = vBorder+10;  ypos += buttonHeight + 8;
+  xpos = HBORDER;  ypos += buttonHeight + V_GAP * 4;
   mySnapName =
     new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
                     "Save snapshots according to ", lwidth);
@@ -97,18 +100,18 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Booleans for saving snapshots
   fwidth = font.getStringWidth("When saving snapshots:");
-  xpos = vBorder;  ypos += buttonHeight + 5;
+  xpos = HBORDER;  ypos += lineHeight + V_GAP * 3;
   new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
                        "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
-  xpos += 30;  ypos += lineHeight + 3;
+  xpos += INDENT;  ypos += lineHeight + V_GAP;
   mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
                                     "Overwrite existing files");
   wid.push_back(mySnapSingle);
 
   // Snapshot in 1x mode (ignore scaling)
-  ypos += mySnapSingle->getHeight() + 4;
+  ypos += lineHeight + V_GAP;
   mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
                                 "Ignore scaling (1x mode)");
   wid.push_back(mySnap1x);

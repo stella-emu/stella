@@ -35,80 +35,82 @@ ConfigPathDialog::ConfigPathDialog(
     myBrowser(nullptr),
     myIsGlobal(boss != nullptr)
 {
+  const int VBORDER = 10;
+  const int HBORDER = 10;
+  const int V_GAP = 4;
+  const int H_GAP = 8;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             buttonWidth  = font.getStringWidth("Properties file") + 20,
             buttonHeight = font.getLineHeight() + 4;
-  const int vBorder = 8;
-  const int hBorder = 10;
   int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = 56 * fontWidth + 8;
-  _h = 9 * (lineHeight + 4) + 10;
+  _w = 64 * fontWidth + HBORDER*2;
+  _h = 9 * (lineHeight + V_GAP) + 10;
 
-  xpos = hBorder;  ypos = vBorder;
+  xpos = HBORDER;  ypos = VBORDER;
 
   // ROM path
   ButtonWidget* romButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(romButton);
-  xpos += buttonWidth + 10;
-  myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                 _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + H_GAP;
+  myRomPath = new EditTextWidget(this, font, xpos, ypos + 1,
+                                 _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myRomPath);
 
   // Cheat file
-  xpos = hBorder;  ypos += romButton->getHeight() + 3;
+  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Cheat file" + ELLIPSIS, kChooseCheatFileCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 10;
-  myCheatFile = new EditTextWidget(this, font, xpos, ypos + 2,
-                                   _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + H_GAP;
+  myCheatFile = new EditTextWidget(this, font, xpos, ypos + 1,
+                                   _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myCheatFile);
 
   // Palette file
-  xpos = hBorder;  ypos += b->getHeight() + 3;
+  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Palette file" + ELLIPSIS, kChoosePaletteFileCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 10;
-  myPaletteFile = new EditTextWidget(this, font, xpos, ypos + 2,
-                                     _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + H_GAP;
+  myPaletteFile = new EditTextWidget(this, font, xpos, ypos + 1,
+                                     _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myPaletteFile);
 
   // Properties file
-  xpos = hBorder;  ypos += b->getHeight() + 3;
+  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Properties file" + ELLIPSIS, kChoosePropsFileCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 10;
-  myPropsFile = new EditTextWidget(this, font, xpos, ypos + 2,
-                                   _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + H_GAP;
+  myPropsFile = new EditTextWidget(this, font, xpos, ypos + 1,
+                                   _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myPropsFile);
 
   // State directory
-  xpos = hBorder;  ypos += b->getHeight() + 3;
+  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "State path" + ELLIPSIS, kChooseStateDirCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 10;
-  myStatePath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                   _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + H_GAP;
+  myStatePath = new EditTextWidget(this, font, xpos, ypos + 1,
+                                   _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myStatePath);
 
   // NVRAM directory
-  xpos = hBorder;  ypos += b->getHeight() + 3;
+  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "NVRAM path" + ELLIPSIS, kChooseNVRamDirCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 10;
-  myNVRamPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                   _w - xpos - 10, lineHeight, "");
+  xpos += buttonWidth + H_GAP;
+  myNVRamPath = new EditTextWidget(this, font, xpos, ypos + 1,
+                                   _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myNVRamPath);
 
   // Add Defaults, OK and Cancel buttons
