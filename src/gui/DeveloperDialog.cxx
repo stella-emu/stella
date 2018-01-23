@@ -23,7 +23,6 @@
 #include "SaveKey.hxx"
 #include "AtariVox.hxx"
 #include "Settings.hxx"
-#include "EventMappingWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "RadioButtonWidget.hxx"

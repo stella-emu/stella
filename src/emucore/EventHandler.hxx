@@ -24,7 +24,6 @@ class Console;
 class OSystem;
 class MouseControl;
 class DialogContainer;
-class EventMappingWidget;
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"

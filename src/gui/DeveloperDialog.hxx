@@ -21,7 +21,6 @@
 class OSystem;
 class GuiObject;
 class TabWidget;
-class EventMappingWidget;
 class CheckboxWidget;
 class EditTextWidget;
 class PopUpWidget;
