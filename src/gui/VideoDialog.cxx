@@ -55,7 +55,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = std::min((52+4) * fontWidth + HBORDER * 2, max_w);
+  _w = std::min((52+4*0) * fontWidth + HBORDER * 2, max_w);
   _h = std::min((16-2) * (lineHeight + VGAP) + 14, max_h);
 
   // The tab widget
@@ -158,11 +158,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myFullscreen);
   ypos += lineHeight + VGAP;
 
-  pwidth = font.getStringWidth("0: 3840x2860@120Hz");
+  /*pwidth = font.getStringWidth("0: 3840x2860@120Hz");
   myFullScreenMode = new PopUpWidget(myTab, font, xpos + INDENT + 2, ypos, pwidth, lineHeight,
                                      instance().frameBuffer().supportedScreenModes(), "Mode ");
   wid.push_back(myFullScreenMode);
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP;*/
 
   // FS stretch
   myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen Fill");
@@ -359,8 +359,8 @@ void VideoDialog::loadConfig()
 
   // Fullscreen
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
-  string mode = instance().settings().getString("fullscreenmode");
-  myFullScreenMode->setSelected(mode);
+  /*string mode = instance().settings().getString("fullscreenmode");
+  myFullScreenMode->setSelected(mode);*/
 
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fsfill"));
@@ -445,8 +445,8 @@ void VideoDialog::saveConfig()
 
   // Fullscreen
   instance().settings().setValue("fullscreen", myFullscreen->getState());
-  instance().settings().setValue("fullscreenmode",
-                                 myFullScreenMode->getSelectedTag().toString());
+  /*instance().settings().setValue("fullscreenmode",
+                                 myFullScreenMode->getSelectedTag().toString());*/
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fsfill", myUseStretch->getState());
 
@@ -521,7 +521,7 @@ void VideoDialog::setDefaults()
       myFrameRateLabel->setLabel("Auto");
 
       myFullscreen->setState(false);
-      myFullScreenMode->setSelectedIndex(0);
+      //myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(true);
       myUseVSync->setState(true);
       myUIMessages->setState(true);
