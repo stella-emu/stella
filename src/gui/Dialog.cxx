@@ -38,9 +38,34 @@
  * ...
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font, const string& title,
+               int x, int y, int w, int h)
+  : GuiObject(instance, parent, *this, x, y, w, h),
+    _font(&font),
+    _title(title),
+    _th(0),
+    _mouseWidget(nullptr),
+    _focusedWidget(nullptr),
+    _dragWidget(nullptr),
+    _okWidget(nullptr),
+    _cancelWidget(nullptr),
+    _visible(false),
+    _processCancel(false),
+    _surface(nullptr),
+    _tabID(0),
+    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
+{
+  initTitle(font, title);
+}
+
 Dialog::Dialog(OSystem& instance, DialogContainer& parent,
                int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
+    _font(nullptr),
+    _title(""),
+    _th(0),
+    _fh(0),
     _mouseWidget(nullptr),
     _focusedWidget(nullptr),
     _dragWidget(nullptr),
@@ -100,6 +125,29 @@ void Dialog::close(bool refresh)
   _visible = false;
 
   parent().removeDialog();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::initTitle(const GUI::Font& font, const string& title)
+{
+  _font = &font;
+  _fh = font.getLineHeight();
+  setTitle(title);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setTitle(const string& title)
+{
+  if(_font != nullptr)
+  {
+    _title = title;
+    _h -= _th;
+    if(title.empty())
+      _th = 0;
+    else
+      _th = _fh + 4;
+    _h += _th;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -271,8 +319,19 @@ void Dialog::drawDialog()
   if(_dirty)
   {
     if(_flags & WIDGET_CLEARBG)
+    {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-      s.fillRect(_x, _y, _w, _h, kDlgColor);
+      s.fillRect(_x, _y + _th, _w, _h - _th, kDlgColor);
+      if(_th)
+      {
+        s.fillRect(_x, _y, _w, _th, kColorTitleBar);
+        s.drawString(*_font, _title, _x + 10, _y + 2 + 1, _font->getStringWidth(_title), kColorTitleText);
+        /*int lSize = _th * 1 / 2;
+        int lBorder = (_th - lSize) / 2;
+        s.line(_w - lSize - lBorder, _y + lBorder, _w - lBorder, _y + lBorder + lSize, kColorTitleText);
+        s.line(_w - lSize - lBorder + 1, _y + lBorder, _w - lBorder + 1, _y + lBorder + lSize, kColorTitleText);*/
+      }
+    }
     else
       s.invalidate();
     if(_flags & WIDGET_BORDER)

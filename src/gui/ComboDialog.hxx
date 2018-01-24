@@ -45,7 +45,6 @@ class ComboDialog : public Dialog
   private:
     Event::Type myComboEvent;
 
-    StaticTextWidget* myComboName;
     PopUpWidget*      myEvents[8];
 
   private:

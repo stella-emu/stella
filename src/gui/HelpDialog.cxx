@@ -24,7 +24,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "Help"),
     myPage(1),
     myNumPages(5)
 {
@@ -39,7 +39,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 46 * fontWidth + 10;
-  _h = 12 * lineHeight + 20;
+  _h = 12 * lineHeight + 20 + _th;
 
   // Add Previous, Next and Close buttons
   xpos = 10;  ypos = _h - buttonHeight - 10;
@@ -61,7 +61,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                      "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
 
-  xpos = 5;  ypos = 5;
+  xpos = 5;  ypos = 5 + _th;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
                                  "", TextAlign::Center);
 

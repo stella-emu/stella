@@ -215,8 +215,8 @@ void LauncherDialog::loadConfig()
       instance().settings().getString("romdir");
 
   // When romdir hasn't been set, it probably indicates that this is the first
-  // time running Stella; in this case, we should prompt the user
-  if(romdir == "")
+  // time running Stella; in this case, we should prompt the user  
+  if(true || romdir == "")
   {
     if(!myFirstRunMsg)
     {
@@ -225,11 +225,12 @@ void LauncherDialog::loadConfig()
       msg.push_back("Before you can start a game, you need to");
       msg.push_back("specify where your ROMs are located.");
       msg.push_back("");
-      msg.push_back("Click 'OK' to select a default ROM directory,");
-      msg.push_back("or 'Cancel' to browse the filesystem manually.");
+      msg.push_back("Click 'Default' to select a default ROM directory,");
+      msg.push_back("or 'Browse' to browse the filesystem manually.");
       myFirstRunMsg = make_unique<GUI::MessageBox>
                           (this, instance().frameBuffer().font(),
-                          msg, _w, _h, kFirstRunMsgChosenCmd);
+                          msg, _w, _h, kFirstRunMsgChosenCmd,
+                           "Default", "Browse", "ROM directory");
     }
     myFirstRunMsg->show();
   }

@@ -68,6 +68,8 @@ enum {
   kDbgColorHi,
   kDbgColorRed,
   kColorInfo,
+  kColorTitleBar,
+  kColorTitleText,
   kNumColors
 };
 

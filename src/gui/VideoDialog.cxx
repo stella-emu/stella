@@ -35,7 +35,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent, font, "Video settings")
 {
   const int VGAP = 4;
   const int VBORDER = 8;
@@ -56,11 +56,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min((52+4*0) * fontWidth + HBORDER * 2, max_w);
-  _h = std::min((16-2) * (lineHeight + VGAP) + 14, max_h);
+  _h = std::min((16-2) * (lineHeight + VGAP) + 14 + _th, max_h);
 
   // The tab widget
   xpos = 2;  ypos = 4;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
+  myTab = new TabWidget(this, font, xpos, ypos + _th, _w - 2*xpos, _h - _th - buttonHeight - 20);
   addTabWidget(myTab);
 
   xpos = HBORDER;  ypos = VBORDER;

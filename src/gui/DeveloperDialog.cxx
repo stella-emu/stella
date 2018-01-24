@@ -44,7 +44,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent, font, "Developer settings")
 {
   const int VGAP = 4;
   const int lineHeight = font.getLineHeight(),
@@ -54,11 +54,11 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(53 * fontWidth + 10, max_w);
-  _h = std::min(15 * (lineHeight + VGAP) + 14, max_h);
+  _h = std::min(15 * (lineHeight + VGAP) + 14 + _th, max_h);
 
   // The tab widget
   xpos = 2; ypos = 4;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2 * xpos, _h - buttonHeight - 16 - ypos);
+  myTab = new TabWidget(this, font, xpos, ypos + _th, _w - 2 * xpos, _h - _th - buttonHeight - 16 - ypos);
   addTabWidget(myTab);
 
   addEmulationTab(font);

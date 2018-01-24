@@ -28,7 +28,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "Snapshot settings"),
     myFont(font)
 {
   const int VBORDER = 10;
@@ -45,9 +45,9 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 64 * fontWidth + HBORDER * 2;
-  _h = 10 * (lineHeight + 4) + 10;
+  _h = 10 * (lineHeight + 4) + VBORDER + _th;
 
-  xpos = HBORDER;  ypos = VBORDER;
+  xpos = HBORDER;  ypos = VBORDER + _th;
 
   // Snapshot path (save files)
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,

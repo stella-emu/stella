@@ -146,8 +146,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myLabel->setEditable(false, true);
 
   // Inputbox which will pop up when searching RAM
-  StringList labels = { "Search " };
-  myInputBox = make_unique<InputTextDialog>(boss, lfont, nfont, labels);
+  StringList labels = { "Value" };
+  myInputBox = make_unique<InputTextDialog>(boss, lfont, nfont, labels, " ");
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled
@@ -247,7 +247,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     {
       const string& result = doSearch(myInputBox->getResult());
       if(result != "")
-        myInputBox->setTitle(result);
+        myInputBox->setMessage(result);
       else
         myInputBox->close();
       break;
@@ -257,7 +257,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     {
       const string& result = doCompare(myInputBox->getResult());
       if(result != "")
-        myInputBox->setTitle(result);
+        myInputBox->setMessage(result);
       else
         myInputBox->close();
       break;
@@ -322,11 +322,13 @@ void RamWidget::showInputBox(int cmd)
   // Add inputbox in the middle of the RAM widget
   uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
   uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
+
   myInputBox->show(x, y);
   myInputBox->setText("");
-  myInputBox->setTitle("");
+  myInputBox->setMessage("");
   myInputBox->setFocus(0);
   myInputBox->setEmitSignal(cmd);
+  myInputBox->setTitle(cmd == kSValEntered ? "Search" : "Compare");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

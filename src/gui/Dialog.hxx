@@ -46,6 +46,8 @@ class Dialog : public GuiObject
   public:
     Dialog(OSystem& instance, DialogContainer& parent,
            int x = 0, int y = 0, int w = 0, int h = 0);
+    Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font, const string& title,
+           int x = 0, int y = 0, int w = 0, int h = 0);
 
     virtual ~Dialog();
 
@@ -83,6 +85,8 @@ class Dialog : public GuiObject
     void setFlags(int flags) { _flags |= flags;  setDirty(); }
     void clearFlags(int flags) { _flags &= ~flags; setDirty(); }
     int  getFlags() const { return _flags; }
+
+    void setTitle(const string& title);
 
   protected:
     virtual void draw() override { }
@@ -123,6 +127,8 @@ class Dialog : public GuiObject
     */
     bool getResizableBounds(uInt32& w, uInt32& h) const;
 
+    void initTitle(const GUI::Font& font, const string& title);
+
   private:
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);
@@ -138,6 +144,10 @@ class Dialog : public GuiObject
     Widget* _cancelWidget;
     bool    _visible;
     bool    _processCancel;
+    string  _title;
+    int     _th;
+    const GUI::Font* _font;
+    int     _fh;
 
     Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 

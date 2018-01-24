@@ -29,13 +29,13 @@
 ConfigPathDialog::ConfigPathDialog(
       OSystem& osystem, DialogContainer& parent,
       const GUI::Font& font, GuiObject* boss)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "Configure paths"),
     CommandSender(boss),
     myFont(font),
     myBrowser(nullptr),
     myIsGlobal(boss != nullptr)
 {
-  const int VBORDER = 10;
+  const int VBORDER = 10 + _th;
   const int HBORDER = 10;
   const int V_GAP = 4;
   const int H_GAP = 8;
@@ -49,7 +49,7 @@ ConfigPathDialog::ConfigPathDialog(
 
   // Set real dimensions
   _w = 64 * fontWidth + HBORDER*2;
-  _h = 9 * (lineHeight + V_GAP) + 10;
+  _h = 9 * (lineHeight + V_GAP) + VBORDER;
 
   xpos = HBORDER;  ypos = VBORDER;
 

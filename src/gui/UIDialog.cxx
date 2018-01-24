@@ -35,7 +35,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent, font, "UI settings")
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),
@@ -54,11 +54,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
-  _h = 10 * (lineHeight + 4) + 10;
+  _h = 10 * (lineHeight + 4) + VBORDER + _th;
 
   // The tab widget
   xpos = HBORDER;  ypos = VBORDER;
-  myTab = new TabWidget(this, font, 2, 4, _w - 2*2, _h - buttonHeight - 20);
+  myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2*2, _h - _th - buttonHeight - 20);
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////

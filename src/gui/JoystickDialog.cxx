@@ -27,7 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
                                int max_w, int max_h)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, max_w, max_h)
+  : Dialog(boss->instance(), boss->parent(), font, "Joystick database", 0, 0, max_w, max_h)
 {
   int xpos, ypos;
   WidgetArray wid;
@@ -36,7 +36,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
       buttonHeight = font.getLineHeight() + 4;
 
   // Joystick list
-  xpos = 10;  ypos = 10;
+  xpos = 10;  ypos = 10 + _th;
   int w = _w - 2 * xpos;
   int h = _h - buttonHeight - ypos - 20;
   myJoyList = new StringListWidget(this, font, xpos, ypos, w, h);

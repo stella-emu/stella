@@ -29,7 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
                          const VariantList& combolist)
-  : Dialog(boss->instance(), boss->parent()),
+  : Dialog(boss->instance(), boss->parent(), font, ""),
     myComboEvent(Event::NoType)
 {
   const int lineHeight   = font.getLineHeight(),
@@ -42,18 +42,14 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 
   // Set real dimensions
   _w = 35 * fontWidth + 10;
-  _h = 11 * (lineHeight + 4) + 10;
-  xpos = ypos = 5;
+  _h = 10 * (lineHeight + 4) + 10 + _th;
+  xpos = 10;
+  ypos = 10 + _th;
 
   // Get maximum width of popupwidget
   int pwidth = 0;
   for(const auto& s: combolist)
     pwidth = std::max(font.getStringWidth(s.first), pwidth);
-
-  // Label for dialog, indicating which combo is being changed
-  myComboName = new StaticTextWidget(this, font, xpos, ypos, _w - xpos - 10,
-                                     fontHeight, "", TextAlign::Center);
-  ypos += (lineHeight + 4) + 5;
 
   // Add event popup for 8 events
   auto ADD_EVENT_POPUP = [&](int idx, const string& label)
@@ -87,7 +83,7 @@ void ComboDialog::show(Event::Type event, const string& name)
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
     myComboEvent = event;
-    myComboName->setLabel("Add events for " + name);
+    setTitle("Add events for " + name);
     open();
   }
   else

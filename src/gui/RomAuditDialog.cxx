@@ -35,12 +35,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "Audit ROMs"),
     myConfirmMsg(nullptr),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {
-  const int VBORDER = 10;
+  const int VBORDER = 10 + _th;
   const int HBORDER = 10;
 
   const int lineHeight   = font.getLineHeight(),
@@ -54,7 +54,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 64 * fontWidth + HBORDER * 2;
-  _h = 7 * (lineHeight + 4) + 10;
+  _h = 7 * (lineHeight + 4) + VBORDER;
 
   // Audit path
   ButtonWidget* romButton =
@@ -189,7 +189,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         myConfirmMsg = make_unique<GUI::MessageBox>
                           (this, instance().frameBuffer().font(), msg,
                           myMaxWidth, myMaxHeight, kConfirmAuditCmd,
-                           "OK", "Cancel", false);
+                           "OK", "Cancel", "ROM Audit", false);
       }
       myConfirmMsg->show();
       break;

@@ -37,7 +37,7 @@
 GameInfoDialog::GameInfoDialog(
       OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
       GuiObject* boss)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "Game properties"),
     CommandSender(boss),
     myPropertiesLoaded(false),
     myDefaultsSelected(false)
@@ -61,12 +61,12 @@ GameInfoDialog::GameInfoDialog(
 
   // Set real dimensions
   _w = 52 * fontWidth + 8;
-  _h = 9 * (lineHeight + vGap) + vBorder * 2 + buttonHeight + fontHeight + ifont.getLineHeight() + 20;
+  _h = 9 * (lineHeight + vGap) + vBorder * 2 + _th + buttonHeight + fontHeight + ifont.getLineHeight() + 20;
 
   // The tab widget
   xpos = hBorder; ypos = vBorder;
-  myTab = new TabWidget(this, font, 2, 4, _w - 2 * 2,
-                        _h - (buttonHeight + fontHeight + ifont.getLineHeight() + 20));
+  myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2 * 2,
+                        _h - (_th + buttonHeight + fontHeight + ifont.getLineHeight() + 20));
   addTabWidget(myTab);
 
   // 1) Cartridge properties

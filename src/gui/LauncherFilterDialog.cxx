@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& font)
-  : Dialog(boss->instance(), boss->parent()),
+  : Dialog(boss->instance(), boss->parent(), font, "Filter file list"),
     CommandSender(boss)
 {
   const int lineHeight   = font.getLineHeight(),
@@ -41,9 +41,9 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   VariantList items;
 
   // Set real dimensions
-  _w = 3 * buttonWidth;//lwidth + pwidth + fontWidth*5 + 10;
+  _w = 3 * buttonWidth + 20 + 4 * 8;
 
-  xpos = 10;  ypos = 10;
+  xpos = 10;  ypos = 10 + _th;
 
   // Types of files to show
   VarList::push_back(items, "All files", "allfiles");
@@ -56,13 +56,13 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   ypos += lineHeight + 10;
 
   // Different types of ROM extensions
-  xpos = 40;
+  xpos += font.getStringWidth("Show ");
   myRomType[0] = new CheckboxWidget(this, font, xpos, ypos, ourRomTypes[0][0]);
-  int rightcol = xpos + myRomType[0]->getWidth() + 10;
-  myRomType[3] = new CheckboxWidget(this, font, xpos+rightcol, ypos, ourRomTypes[0][3]);
+  int rightcol = xpos + myRomType[0]->getWidth() + 8 * 3;
+  myRomType[3] = new CheckboxWidget(this, font, rightcol, ypos, ourRomTypes[0][3]);
   ypos += lineHeight + 4;
   myRomType[1] = new CheckboxWidget(this, font, xpos, ypos, ourRomTypes[0][1]);
-  myRomType[4] = new CheckboxWidget(this, font, xpos+rightcol, ypos, ourRomTypes[0][4]);
+  myRomType[4] = new CheckboxWidget(this, font, rightcol, ypos, ourRomTypes[0][4]);
   ypos += lineHeight + 4;
   myRomType[2] = new CheckboxWidget(this, font, xpos, ypos, ourRomTypes[0][2]);
   ypos += lineHeight + 10;
@@ -177,7 +177,7 @@ void LauncherFilterDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFilterDialog::setDefaults()
 {
-  handleFileTypeChange("allfiles");
+  handleFileTypeChange("allroms");
 
   _dirty = true;
 }

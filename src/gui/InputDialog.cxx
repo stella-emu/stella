@@ -38,11 +38,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "Input settings"),
     myConfirmMsg(nullptr),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
-
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -54,11 +53,11 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = std::min(50 * fontWidth + 10, max_w);
-  _h = std::min(16 * (lineHeight + 4) + 16, max_h);
+  _h = std::min(16 * (lineHeight + 4) + 16 + _th, max_h);
 
   // The tab widget
-  xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
+  xpos = 2; ypos = vBorder + _th;
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h -_th - buttonHeight - 20);
   addTabWidget(myTab);
 
   // 1) Event mapper for emulation actions
@@ -536,7 +535,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
         myConfirmMsg = make_unique<GUI::MessageBox>
           (this, instance().frameBuffer().font(), msg,
            myMaxWidth, myMaxHeight, kConfirmEEEraseCmd,
-           "OK", "Cancel", false);
+           "OK", "Cancel", "Erase EEPROM", false);
       }
       myConfirmMsg->show();
       break;

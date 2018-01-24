@@ -35,7 +35,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent, font, "Audio settings")
 {
   const int VBORDER = 10;
   const int HBORDER = 10;
@@ -53,9 +53,9 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 35 * fontWidth + HBORDER * 2;
-  _h = 7 * (lineHeight + 4) + VBORDER;
+  _h = 7 * (lineHeight + 4) + VBORDER + _th;
 
-  xpos = HBORDER;  ypos = VBORDER;
+  xpos = HBORDER;  ypos = VBORDER + _th;
 
   // Enable sound
   xpos = HBORDER;
