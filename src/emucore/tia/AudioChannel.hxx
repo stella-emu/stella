@@ -15,51 +15,47 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_AUDIO_HXX
-#define TIA_AUDIO_HXX
+#ifndef TIA_AUDIO_CHANNEL_HXX
+#define TIA_AUDIO_CHANNEL_HXX
 
 #include "bspf.hxx"
-#include "AudioChannel.hxx"
 
-class AudioQueue;
-
-class Audio
+class AudioChannel
 {
   public:
-    Audio();
+    AudioChannel();
 
     void reset();
 
-    void setAudioQueue(AudioQueue *queue);
+    void phase0();
 
-    void tick();
+    uInt8 phase1();
 
-    AudioChannel& channel0();
+    void audc(uInt8 value);
 
-    AudioChannel& channel1();
+    void audf(uInt8 value);
 
-  private:
-    void phase1();
-
-  private:
-    AudioQueue* myAudioQueue;
-
-    uInt8 myCounter;
-
-    AudioChannel myChannel0;
-    AudioChannel myChannel1;
-
-    Int16 myMixingTableSum[0x1e + 1];
-    Int16 myMixingTableIndividual[0x0f + 1];
-
-    Int16* myCurrentFragment;
-    uInt32 mySampleIndex;
+    void audv(uInt8 value);
 
   private:
-    Audio(const Audio&) = delete;
-    Audio(Audio&&) = delete;
-    Audio& operator=(const Audio&) = delete;
-    Audio& operator=(Audio&&) = delete;
+    uInt8 myAudc;
+    uInt8 myAudv;
+    uInt8 myAudf;
+
+    bool myClockEnable;
+    bool myNoiseFeedback;
+    bool myNoiseCounterBit4;
+    bool myPulseCounterHold;
+
+    uInt8 myDivCounter;
+    uInt8 myPulseCounter;
+    uInt8 myNoiseCounter;
+
+  private:
+    AudioChannel(const AudioChannel&);
+    AudioChannel(AudioChannel&&);
+    AudioChannel& operator=(const AudioChannel&);
+    AudioChannel& operator=(AudioChannel&&);
 };
 
-#endif // TIA_AUDIO_HXX
+#endif // TIA_AUDIO_CHANNEL_HXX

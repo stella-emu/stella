@@ -521,21 +521,32 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case AUDV0:
+      myAudio.channel0().audv(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDV1:
+      myAudio.channel1().audv(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDF0:
+      myAudio.channel0().audf(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDF1:
+      myAudio.channel1().audf(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDC0:
+      myAudio.channel0().audc(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDC1:
+      myAudio.channel1().audc(value);
       myShadowRegisters[address] = value;
       break;
 
@@ -1178,6 +1189,8 @@ void TIA::cycle(uInt32 colorClocks)
 
     if (++myHctr >= 228)
       nextLine();
+
+    myAudio.tick();
 
     myTimestamp++;
   }
