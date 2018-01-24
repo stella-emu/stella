@@ -215,8 +215,8 @@ void LauncherDialog::loadConfig()
       instance().settings().getString("romdir");
 
   // When romdir hasn't been set, it probably indicates that this is the first
-  // time running Stella; in this case, we should prompt the user  
-  if(true || romdir == "")
+  // time running Stella; in this case, we should prompt the user
+  if(romdir == "")
   {
     if(!myFirstRunMsg)
     {
