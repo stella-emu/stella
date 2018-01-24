@@ -90,7 +90,7 @@ void Widget::draw()
   // Draw border
   if(hasBorder)
   {
-    s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) && isEnabled() ? kScrollColorHi : kColor);
+    s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) && isEnabled() ? kWidColorHi : kColor);
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -607,12 +607,12 @@ void CheckboxWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
 
   if(_drawBox)
-    s.frameRect(_x, _y + _boxY, 14, 14, hilite ? kScrollColorHi : kShadowColor);
+    s.frameRect(_x, _y + _boxY, 14, 14, hilite ? kWidColorHi : kShadowColor);
   // Do we draw a square or cross?
   s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, _changed ? kDbgChangedColor
              : isEnabled() ? _bgcolor : kColor);
   if(_state)
-    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite ? kScrollColorHi : kCheckColor
+    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite ? kWidColorHi : kCheckColor
                  : kShadowColor, 10);
 
   // Finally draw the label

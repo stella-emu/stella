@@ -993,6 +993,7 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     *** UI elements (dialog and widgets) ***
     kDlgColor         Dialog background
     kWidColor         Widget background
+    kWidColorHi       Widget highlight color
     kWidFrameColor    Border for currently selected widget
     *** Button colors ***
     kBtnColor         Normal button background
@@ -1021,7 +1022,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Standard
   { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040, // base
     0x000000, 0x62a108, 0x9f0000, 0x000000,           // text
-    0xc9af7c, 0xf0f0cf, 0xc80000,                     // elements
+    0xc9af7c, 0xf0f0cf, 0xd55941, 0xc80000,           // UI elements
     0xac3410, 0xd55941, 0xffffff, 0xffd652,           // buttons
     0xac3410,                                         // checkbox
     0xac3410, 0xd55941,                               // scrollbar
@@ -1032,7 +1033,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Classic
   { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040, // base
     0x20a020, 0x00ff00, 0xc80000, 0x20a020,           // text
-    0x000000, 0x000000, 0xc80000,                     // elements
+    0x000000, 0x000000, 0x00ff00, 0xc80000,           // UI elements
     0x000000, 0x000000, 0x20a020, 0x00ff00,           // buttons
     0x20a020,                                         // checkbox
     0x20a020, 0x00ff00,                               // scrollbar
@@ -1044,10 +1045,10 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   {
     0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
     0x000000, 0x0078d7, 0x0078d7, 0xffffff,           // text
-    0xf0f0f0, 0xffffff, 0x0f0f0f,                     // elements
+    0xf0f0f0, 0xffffff, 0x0078d7, 0x0f0f0f,           // UI elements
     0xe1e1e1, 0xe5f1fb, 0x000000, 0x000000,           // buttons
     0x333333,                                         // checkbox
-    0x808080, 0x0078d7,                               // scrollbar
+    0xc0c0c0, 0x808080,                               // scrollbar
     0x333333, 0x0078d7,                               // slider
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,           // debugger
     0xffffff, 0x808080, 0xffffff                      // other

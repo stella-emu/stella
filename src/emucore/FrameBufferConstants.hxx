@@ -53,6 +53,7 @@ enum {
   kTextColorInv,
   kDlgColor,
   kWidColor,
+  kWidColorHi,
   kWidFrameColor,
   kBtnColor,
   kBtnColorHi,
