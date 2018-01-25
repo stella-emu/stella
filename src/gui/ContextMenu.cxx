@@ -102,18 +102,18 @@ void ContextMenu::recalc(const GUI::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  uInt32 maxentries = std::min(18u, (image.height() - 4) / _rowHeight);
+  uInt32 maxentries = std::min(18u, (image.height() - 2) / _rowHeight);
   if(_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
     _numEntries = maxentries - 2;
-    _h = maxentries * _rowHeight + 4;
+    _h = maxentries * _rowHeight + 2;
     _showScroll = true;
   }
   else
   {
     _numEntries = int(_entries.size());
-    _h = int(_entries.size()) * _rowHeight + 4;
+    _h = int(_entries.size()) * _rowHeight + 2;
     _showScroll = false;
   }
   _isScrolling = false;
