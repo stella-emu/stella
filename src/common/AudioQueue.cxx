@@ -24,6 +24,7 @@ using std::lock_guard;
 AudioQueue::AudioQueue(uInt32 fragmentSize, uInt8 capacity, bool isStereo, uInt16 sampleRate)
   : myFragmentSize(fragmentSize),
     myIsStereo(isStereo),
+    mySampleRate(sampleRate),
     myFragmentQueue(capacity),
     myAllFragments(capacity + 2),
     mySize(0),

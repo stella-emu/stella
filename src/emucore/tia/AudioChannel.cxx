@@ -139,5 +139,5 @@ void AudioChannel::audv(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioChannel::audf(uInt8 value)
 {
-  myAudc = value & 0x1f;
+  myAudf = value & 0x1f;
 }

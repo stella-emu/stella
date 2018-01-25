@@ -45,7 +45,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
   // This fixes a bug most prevalent with ATI video cards in Windows,
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
-  desired.freq   = myOSystem.settings().getInt("freq");
+  // desired.freq   = myOSystem.settings().getInt("freq");
+  desired.freq = 48000;
   desired.format = AUDIO_S16SYS;
   desired.channels = 2;
   desired.samples  = myOSystem.settings().getInt("fragsize");
@@ -213,17 +214,17 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
     return;
   }
 
-  bool isStereoTIA = myAudioQueue->isStereo();
-  bool isStereo = myHardwareSpec.channels == 2;
-  uInt32 sampleRateTIA = myAudioQueue->sampleRate();
-  uInt32 sampleRate = myHardwareSpec.freq;
-  uInt32 fragmentSize = myAudioQueue->fragmentSize();
-  uInt32 outputSamples = isStereo ? (length >> 1) : length;
+  const bool isStereoTIA = myAudioQueue->isStereo();
+  const bool isStereo = myHardwareSpec.channels == 2;
+  const uInt32 sampleRateTIA = myAudioQueue->sampleRate();
+  const uInt32 sampleRate = myHardwareSpec.freq;
+  const uInt32 fragmentSize = myAudioQueue->fragmentSize();
+  const uInt32 outputSamples = isStereo ? (length >> 1) : length;
 
   for (uInt32 i = 0; i < outputSamples; i++) {
     myTimeIndex += sampleRateTIA;
 
-    if (myTimeIndex > sampleRate) {
+    if (myTimeIndex >= sampleRate) {
       myFragmentIndex += myTimeIndex / sampleRate;
       myTimeIndex %= sampleRate;
     }
