@@ -21,6 +21,7 @@
 #define SOUND_SDL2_HXX
 
 class OSystem;
+class AudioQueue;
 
 #include "SDL_lib.hxx"
 
@@ -58,7 +59,7 @@ class SoundSDL2 : public Sound
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
-    void open() override;
+    void open(AudioQueue* audioQueue) override;
 
     /**
       Should be called to close the sound device.  Once called the sound
@@ -115,6 +116,13 @@ class SoundSDL2 : public Sound
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
+
+    AudioQueue* myAudioQueue;
+
+    Int16* myCurrentFragment;
+    uInt32 myTimeIndex;
+    uInt32 myFragmentIndex;
+    bool myUnderrun;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data

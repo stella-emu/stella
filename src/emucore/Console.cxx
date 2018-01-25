@@ -580,7 +580,7 @@ void Console::initializeAudio()
   // const string& sound = myProperties.get(Cartridge_Sound);
   // myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
 
-  myOSystem.sound().open();
+  myOSystem.sound().open(myAudioQueue.get());
 
   // Make sure auto-frame calculation is only enabled when necessary
   myTIA->enableAutoFrame(framerate <= 0);

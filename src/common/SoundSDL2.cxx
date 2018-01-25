@@ -28,12 +28,15 @@
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "SoundSDL2.hxx"
+#include "AudioQueue.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem)
   : Sound(osystem),
     myIsInitializedFlag(false),
-    myVolume(100)
+    myVolume(100),
+    myAudioQueue(0),
+    myCurrentFragment(0)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
@@ -96,7 +99,7 @@ void SoundSDL2::setEnabled(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::open()
+void SoundSDL2::open(AudioQueue* audioQueue)
 {
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
   mute(true);
@@ -106,6 +109,12 @@ void SoundSDL2::open()
     myOSystem.logMessage("Sound disabled\n", 1);
     return;
   }
+
+  myAudioQueue = audioQueue;
+  myUnderrun = true;
+  myCurrentFragment = 0;
+  myTimeIndex = 0;
+  myFragmentIndex = 0;
 
   // Adjust volume to that defined in settings
   setVolume(myOSystem.settings().getInt("volume"));
@@ -130,6 +139,9 @@ void SoundSDL2::open()
 void SoundSDL2::close()
 {
   if(!myIsInitializedFlag) return;
+
+  myAudioQueue = 0;
+  myCurrentFragment = 0;
 
   mute(true);
   myOSystem.logMessage("SoundSDL2::close", 2);
@@ -189,12 +201,70 @@ void SoundSDL2::adjustVolume(Int8 direction)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(Int16* stream, uInt32 length)
-{}
+{
+  if (myUnderrun && myAudioQueue->size() > 1) {
+    myUnderrun = false;
+    myCurrentFragment = myAudioQueue->dequeue(myCurrentFragment);
+    myFragmentIndex = 0;
+  }
+
+  if (!myCurrentFragment) {
+    memset(stream, 0, 2 * length);
+    return;
+  }
+
+  bool isStereoTIA = myAudioQueue->isStereo();
+  bool isStereo = myHardwareSpec.channels == 2;
+  uInt32 sampleRateTIA = myAudioQueue->sampleRate();
+  uInt32 sampleRate = myHardwareSpec.freq;
+  uInt32 fragmentSize = myAudioQueue->fragmentSize();
+  uInt32 outputSamples = isStereo ? (length >> 1) : length;
+
+  for (uInt32 i = 0; i < outputSamples; i++) {
+    myTimeIndex += sampleRateTIA;
+
+    if (myTimeIndex > sampleRate) {
+      myFragmentIndex += myTimeIndex / sampleRate;
+      myTimeIndex %= sampleRate;
+    }
+
+    if (myFragmentIndex >= fragmentSize) {
+      myFragmentIndex %= fragmentSize;
+
+      Int16* nextFragment = myAudioQueue->dequeue(myCurrentFragment);
+      if (nextFragment)
+        myCurrentFragment = nextFragment;
+      else
+        myUnderrun = true;
+    }
+
+    if (isStereo) {
+      if (isStereoTIA) {
+        stream[2*i] = myCurrentFragment[2*myFragmentIndex];
+        stream[2*i + 1] = myCurrentFragment[2*myFragmentIndex + 1];
+      } else {
+        stream[2*i] = stream[2*i + 1] = myCurrentFragment[myFragmentIndex];
+      }
+    } else {
+      if (isStereoTIA) {
+        stream[i] =
+          ((myCurrentFragment[2*myFragmentIndex] / 2) + (myCurrentFragment[2*myFragmentIndex + 1] / 2));
+      } else {
+        stream[i] = myCurrentFragment[myFragmentIndex];
+      }
+    }
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 {
-  SDL_memset(stream, 0, len);  // Write 'silence'
+  SoundSDL2* self = static_cast<SoundSDL2*>(udata);
+
+  if (self->myAudioQueue)
+    self->processFragment(reinterpret_cast<Int16*>(stream), len >> 1);
+  else
+    SDL_memset(stream, 0, len);
 }
 
 #endif  // SOUND_SUPPORT
