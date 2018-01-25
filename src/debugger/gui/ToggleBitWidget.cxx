@@ -76,9 +76,10 @@ void ToggleBitWidget::drawWidget(bool hilite)
   int row, col;
   string buffer;
 
+  s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
+
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
-  s.frameRect(_x, _y, _w, _h, kColor);
   for(row = 1; row <= _rows - 1; row++)
     s.hLine(_x + 1, _y + (row * _rowHeight), _x + linewidth - 1, kBGColorLo);
 

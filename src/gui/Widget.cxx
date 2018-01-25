@@ -21,7 +21,6 @@
 #include "bspf.hxx"
 #include "Command.hxx"
 #include "Dialog.hxx"
-#include "Font.hxx"
 #include "FBSurface.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
@@ -643,6 +642,28 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth = _font.getStringWidth(_label);
 
   _w = w + _labelWidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y,
+                           const string& label, int labelWidth, int cmd)
+  : ButtonWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(), label, cmd),
+  _value(0),
+  _stepValue(1),
+  _valueMin(0),
+  _valueMax(100),
+  _isDragging(false),
+  _labelWidth(labelWidth)
+{
+  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
+  _bgcolor = kDlgColor;
+  _bgcolorhi = kDlgColor;
+
+  if(!_label.empty() && _labelWidth == 0)
+    _labelWidth = _font.getStringWidth(_label);
+
+  _w = _font.getMaxCharWidth() * 10 + _labelWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

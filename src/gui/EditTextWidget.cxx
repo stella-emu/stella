@@ -54,7 +54,6 @@ void EditTextWidget::handleMouseLeft()
   setDirty();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {

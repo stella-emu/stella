@@ -49,7 +49,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos, tabID;
   int lwidth = font.getStringWidth("NTSC Aspect "),
     pwidth = font.getStringWidth("XXXXxXXXX"),
-    swidth = 69;
+    swidth = font.getMaxCharWidth() * 9 - 3;
 
   WidgetArray wid;
   VariantList items;
@@ -111,36 +111,36 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Aspect ratio (NTSC mode)
   myNAspectRatio =
-    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos-1, 
                      "NTSC Aspect ", lwidth, kNAspectRatioChanged);
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
   wid.push_back(myNAspectRatio);
   myNAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myNAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
+                         ypos + 1, fontWidth * 3, fontHeight, "");
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (PAL mode)
   myPAspectRatio =
-    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos-1,
                      "PAL Aspect ", lwidth, kPAspectRatioChanged);
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
   wid.push_back(myPAspectRatio);
   myPAspectRatioLabel =
     new StaticTextWidget(myTab, font, xpos + myPAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "", TextAlign::Left);
+                         ypos + 1, fontWidth * 3, fontHeight, "");
   ypos += lineHeight + VGAP;
 
   // Framerate
   myFrameRate =
-    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos-1,
                      "Framerate ", lwidth, kFrameRateChanged);
   myFrameRate->setMinValue(0); myFrameRate->setMaxValue(900);
   myFrameRate->setStepValue(10);
   wid.push_back(myFrameRate);
   myFrameRateLabel =
     new StaticTextWidget(myTab, font, xpos + myFrameRate->getWidth() + 4,
-                         ypos + 1, fontWidth * 4, fontHeight, "", TextAlign::Left);
+                         ypos + 1, fontWidth * 4, fontHeight, "");
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
@@ -150,7 +150,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
         "(*) Requires application restart", TextAlign::Left);
 
   // Move over to the next column
-  xpos += myNAspectRatio->getWidth() + myNAspectRatioLabel->getWidth() + 30;
+  xpos += myFrameRate->getWidth() + 4 + myFrameRateLabel->getWidth() + 28;
   ypos = VBORDER;
 
   // Fullscreen
@@ -248,7 +248,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
-  xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 36;
+  xpos += myTVContrast->getWidth() + 4 + myTVContrastLabel->getWidth() + 28;
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
@@ -261,6 +261,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myTVPhosphor = new PopUpWidget(myTab, font, xpos, ypos,
       font.getStringWidth("Per-ROM"), lineHeight, items,
       "TV Phosphor ", font.getStringWidth("TV Phosphor "));
+  wid.push_back(myTVPhosphor);
   ypos += lineHeight + VGAP;
 
   // TV Phosphor default level

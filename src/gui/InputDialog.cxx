@@ -154,45 +154,41 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add joystick deadzone setting
   ypos += lineHeight + VGAP*3;
-  myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight,
+  myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos,
                                 "Joystick deadzone size ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   xpos = HBORDER + myDeadzone->getWidth() + 5;
-  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
-                                         lineHeight, "", TextAlign::Left);
+  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth, lineHeight, "");
   wid.push_back(myDeadzone);
 
   // Add paddle speed (digital emulation)
   ypos += lineHeight + VGAP;
-  myDPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight,
+  myDPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos,
                                     "Digital paddle sensitivity ",
                                     lwidth, kDPSpeedChanged);
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   xpos = HBORDER + myDPaddleSpeed->getWidth() + 5;
-  myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", TextAlign::Left);
+  myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myDPaddleSpeed);
 
   // Add paddle speed (mouse emulation)
   ypos += lineHeight + VGAP;
-  myMPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight,
+  myMPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos,
                                     "Mouse paddle sensitivity ",
                                     lwidth, kMPSpeedChanged);
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   xpos = HBORDER + myMPaddleSpeed->getWidth() + 5;
-  myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", TextAlign::Left);
+  myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
   ypos += lineHeight + VGAP;
-  myTrackBallSpeed = new SliderWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight,
+  myTrackBallSpeed = new SliderWidget(myTab, font, HBORDER, ypos,
                                       "Trackball sensitivity ",
                                       lwidth, kTBSpeedChanged);
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
   xpos = HBORDER + myTrackBallSpeed->getWidth() + 5;
-  myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                          "", TextAlign::Left);
+  myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick
@@ -235,6 +231,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myEraseEEPROMButton = new ButtonWidget(myTab, font, _w - HBORDER - 4 - fwidth, ypos,
                                          fwidth, lineHeight+4,
                                         "Erase EEPROM", kEEButtonPressed);
+  wid.push_back(myEraseEEPROMButton);
 
   // Add AtariVox serial port
   ypos += lineHeight + VGAP*2;

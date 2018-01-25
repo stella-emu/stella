@@ -232,6 +232,7 @@ GameInfoDialog::GameInfoDialog(
   myEraseEEPROMLabel = new StaticTextWidget(myTab, font, hSpace, ypos, "AtariVox/SaveKey ");
   myEraseEEPROMButton = new ButtonWidget(myTab, font, myEraseEEPROMLabel->getRight(), ypos - 4,
                                            "Erase EEPROM", kEEButtonPressed);
+  wid.push_back(myEraseEEPROMButton);
   myEraseEEPROMInfo = new StaticTextWidget(myTab, ifont, myEraseEEPROMButton->getRight() + 4, myEraseEEPROMLabel->getTop() + 3,
                                            "(for this game only)");
 
@@ -274,7 +275,7 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = hSpace;  ypos += lineHeight + vGap;
   lwidth = font.getStringWidth("Mouse axis range ");
-  myMouseRange = new SliderWidget(myTab, font, hSpace, ypos, 8*fontWidth, lineHeight,
+  myMouseRange = new SliderWidget(myTab, font, hSpace, ypos,
                                   "Mouse axis range ", lwidth, kMRangeChanged);
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   wid.push_back(myMouseRange);
@@ -308,7 +309,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + vGap;
   t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "YStart ", TextAlign::Left);
-  myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, 8*fontWidth, lineHeight,
+  myYStart = new SliderWidget(myTab, font, t->getRight(), ypos,
                               "", 0, kYStartChanged);
   myYStart->setMinValue(TIAConstants::minYStart-1);
   myYStart->setMaxValue(TIAConstants::maxYStart);
@@ -318,7 +319,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + vGap;
   t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Height ", TextAlign::Left);
-  myHeight = new SliderWidget(myTab, font, t->getRight(), ypos, 8*fontWidth, lineHeight,
+  myHeight = new SliderWidget(myTab, font, t->getRight(), ypos,
                               "", 0, kHeightChanged);
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
@@ -328,14 +329,12 @@ GameInfoDialog::GameInfoDialog(
 
   // Phosphor
   ypos += lineHeight + vGap*4;
-  myPhosphor = new CheckboxWidget(myTab, font, hSpace, ypos+1, "Use Phosphor", kPhosphorChanged);
+  myPhosphor = new CheckboxWidget(myTab, font, hSpace, ypos+1, "TV Phosphor", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
   myPPBlend = new SliderWidget(myTab, font,
-                               myPhosphor->getRight() + 16, myPhosphor->getTop()-2,
-                               8*fontWidth, lineHeight, "Blend ",
-                               font.getStringWidth("Blend "),
-                               kPPBlendChanged);
+                               myPhosphor->getRight() + fontWidth * 3, myPhosphor->getTop()-2,
+                               "Blend ", 0, kPPBlendChanged);
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   wid.push_back(myPPBlend);
 

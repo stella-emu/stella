@@ -203,8 +203,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   wid.push_back(myTVJitterWidget);
   myTVJitterRecWidget = new SliderWidget(myTab, font,
                                          myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
-                                         8 * fontWidth, lineHeight, "Recovery ",
-                                         font.getStringWidth("Recovery "), kTVJitterChanged);
+                                         "Recovery ", 0, kTVJitterChanged);
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
   wid.push_back(myTVJitterRecWidget);
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
@@ -334,8 +333,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(myTimeMachineWidget);
   ypos += lineHeight + VGAP;
 
-  int sWidth = font.getMaxCharWidth() * 8;
-  myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
+  myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1,
                                        "Buffer size (*)   ", 0, kSizeChanged);
   myStateSizeWidget->setMinValue(20);
   myStateSizeWidget->setMaxValue(1000);
@@ -345,7 +343,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
                                                 myStateSizeWidget->getTop() + 2, "100 ");
   ypos += lineHeight + VGAP;
 
-  myUncompressedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, sWidth, lineHeight,
+  myUncompressedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1,
                                           "Uncompressed size ", 0, kUncompressedChanged);
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(1000);
@@ -426,10 +424,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   ypos += lineHeight + VGAP * 4;
 
-  pwidth = font.getMaxCharWidth() * 8;
   // Debugger width and height
-  myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
-                                           lineHeight, "Debugger width (*)  ",
+  myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos-1, "Debugger width (*)  ",
                                            0, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
@@ -441,8 +437,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
                          ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
   ypos += lineHeight + VGAP;
 
-  myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, pwidth,
-                                            lineHeight, "Debugger height (*) ",
+  myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, "Debugger height (*) ",
                                             0, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
@@ -456,6 +451,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   ypos += lineHeight + VGAP * 4;
   myGhostReadsTrapWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1,
                                              "Trap on 'ghost' reads", kGhostReads);
+  wid.push_back(myGhostReadsTrapWidget);
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
@@ -478,8 +474,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
     myDebuggerHeightLabel->clearFlags(WIDGET_ENABLED);
   }
 
-  // Add items for tab 1
-  addToFocusList(wid, myTab, tabID);
 #else
   new StaticTextWidget(myTab, font, 0, 20, _w - 20, font.getFontHeight(),
                        "Debugger support not included", TextAlign::Center);

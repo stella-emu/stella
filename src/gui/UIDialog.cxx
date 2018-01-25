@@ -67,8 +67,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = font.getStringWidth("Exit to Launcher ");
 
   // Launcher width and height
-  myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                           lineHeight, "Launcher Width ",
+  myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Width ",
                                            lwidth, kLWidthChanged);
   myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
   myLauncherWidthSlider->setMaxValue(ds.w);
@@ -77,11 +76,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherWidthLabel =
       new StaticTextWidget(myTab, font,
                            xpos + myLauncherWidthSlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
+                           ypos + 1, 4*fontWidth, fontHeight, "");
   ypos += lineHeight + 4;
 
-  myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                            lineHeight, "Launcher Height ",
+  myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Height ",
                                             lwidth, kLHeightChanged);
   myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
   myLauncherHeightSlider->setMaxValue(ds.h);

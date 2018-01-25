@@ -123,12 +123,14 @@ void TogglePixelWidget::drawWidget(bool hilite)
   FBSurface& s = dialog().surface();
   int row, col;
 
+  s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
+
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
-  for (row = 0; row <= _rows; row++)
+  for (row = 1; row <= _rows - 1; row++)
     s.hLine(_x, _y + (row * _rowHeight), _x + linewidth, kColor);
   int lineheight = _rows * _rowHeight;
-  for (col = 0; col <= _cols; col++)
+  for (col = 1; col <= _cols - 1; col++)
     s.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
 
   // Draw the pixels

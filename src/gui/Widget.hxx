@@ -32,6 +32,7 @@ namespace GUI {
 #include "bspf.hxx"
 #include "Event.hxx"
 #include "GuiObject.hxx"
+#include "Font.hxx"
 
 enum {
   WIDGET_ENABLED       = 1 << 0,
@@ -306,6 +307,9 @@ class SliderWidget : public ButtonWidget
   public:
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h, const string& label = "",
+                 int labelWidth = 0, int cmd = 0);
+    SliderWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, const string& label = "",
                  int labelWidth = 0, int cmd = 0);
 
     void setValue(int value);

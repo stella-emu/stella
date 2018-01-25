@@ -66,7 +66,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   xpos += INDENT;
 
   // Volume
-  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 8*fontWidth, lineHeight,
+  myVolumeSlider = new SliderWidget(this, font, xpos, ypos,
                                     "Volume ", lwidth, kVolumeChanged);
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   wid.push_back(myVolumeSlider);
