@@ -208,48 +208,48 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
     case kChooseRomDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select ROM directory", myRomPath->getText(),
+      createBrowser("Select ROM directory");
+      myBrowser->show(myRomPath->getText(),
                       BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select cheat file", myCheatFile->getText(),
+      createBrowser("Select cheat file");
+      myBrowser->show(myCheatFile->getText(),
                       BrowserDialog::FileLoad, kCheatFileChosenCmd);
       break;
 
     case kChoosePaletteFileCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select palette file", myPaletteFile->getText(),
+      createBrowser("Select palette file");
+      myBrowser->show(myPaletteFile->getText(),
                       BrowserDialog::FileLoad, kPaletteFileChosenCmd);
       break;
 
     case kChoosePropsFileCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select properties file", myPropsFile->getText(),
+      createBrowser("Select properties file");
+      myBrowser->show(myPropsFile->getText(),
                       BrowserDialog::FileLoad, kPropsFileChosenCmd);
       break;
 
     case kChooseNVRamDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select NVRAM directory", myNVRamPath->getText(),
+      createBrowser("Select NVRAM directory");
+      myBrowser->show(myNVRamPath->getText(),
                       BrowserDialog::Directories, kNVRamDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select state directory", myStatePath->getText(),
+      createBrowser("Select state directory");
+      myBrowser->show(myStatePath->getText(),
                       BrowserDialog::Directories, kStateDirChosenCmd);
       break;
 
@@ -288,13 +288,15 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ConfigPathDialog::createBrowser()
+void ConfigPathDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
   getResizableBounds(w, h);
 
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-                   uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h);
+     uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
+  else
+    myBrowser->setTitle(title);
 }

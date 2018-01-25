@@ -185,16 +185,16 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
     case kChooseSnapSaveDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select snapshot save directory", mySnapSavePath->getText(),
+      createBrowser("Select snapshot save directory");
+      myBrowser->show(mySnapSavePath->getText(),
                       BrowserDialog::Directories, kSnapSaveDirChosenCmd);
       break;
 
     case kChooseSnapLoadDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser();
-      myBrowser->show("Select snapshot load directory", mySnapLoadPath->getText(),
+      createBrowser("Select snapshot load directory");
+      myBrowser->show(mySnapLoadPath->getText(),
                       BrowserDialog::Directories, kSnapLoadDirChosenCmd);
       break;
 
@@ -213,13 +213,15 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SnapshotDialog::createBrowser()
+void SnapshotDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
   getResizableBounds(w, h);
 
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-                   uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h);
+     uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
+  else
+    myBrowser->setTitle(title);
 }

@@ -516,10 +516,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kFirstRunMsgChosenCmd:
       // Show a file browser, starting from the users' home directory
       if(!myRomDir)
-        myRomDir = make_unique<BrowserDialog>(this, instance().frameBuffer().font(), _w, _h);
-
-      myRomDir->show("Select ROM directory", "~",
-                     BrowserDialog::Directories, kStartupRomDirChosenCmd);
+        myRomDir = make_unique<BrowserDialog>(this, instance().frameBuffer().font(),
+                                              _w, _h, "Select ROM directory");
+      myRomDir->show("~", BrowserDialog::Directories, kStartupRomDirChosenCmd);
       break;
 
     case kStartupRomDirChosenCmd:

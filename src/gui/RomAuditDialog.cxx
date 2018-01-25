@@ -90,7 +90,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = make_unique<BrowserDialog>(this, font, myMaxWidth, myMaxHeight);
+  myBrowser = make_unique<BrowserDialog>(this, font, myMaxWidth, myMaxHeight, "Select ROM directory to audit");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -200,7 +200,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      myBrowser->show("Select ROM directory to audit", myRomPath->getText(),
+      myBrowser->show(myRomPath->getText(),
                       BrowserDialog::Directories, kAuditDirChosenCmd);
       break;
 

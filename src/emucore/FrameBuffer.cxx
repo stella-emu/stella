@@ -998,6 +998,8 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     *** Button colors ***
     kBtnColor         Normal button background
     kBtnColorHi       Highlighted button background
+    kBtnBorderColor,
+    kBtnBorderColorHi,
     kBtnTextColor     Normal button font color
     kBtnTextColorHi   Highlighted button font color
     *** Checkbox colors ***
@@ -1023,7 +1025,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040, // base
     0x000000, 0x62a108, 0x9f0000, 0x000000,           // text
     0xc9af7c, 0xf0f0cf, 0xd55941, 0xc80000,           // UI elements
-    0xac3410, 0xd55941, 0xffffff, 0xffd652,           // buttons
+    0xac3410, 0xd55941, 0x686868, 0xdccfa5, 0xffffff, 0xf0f0cf/*0xffd652*/,           // buttons
     0xac3410,                                         // checkbox
     0xac3410, 0xd55941,                               // scrollbar
     0xac3410, 0xd55941,                               // slider
@@ -1034,7 +1036,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040, // base
     0x20a020, 0x00ff00, 0xc80000, 0x20a020,           // text
     0x000000, 0x000000, 0x00ff00, 0xc80000,           // UI elements
-    0x000000, 0x000000, 0x20a020, 0x00ff00,           // buttons
+    0x000000, 0x000000, 0x686868, 0x00ff00, 0x20a020, 0x00ff00,           // buttons
     0x20a020,                                         // checkbox
     0x20a020, 0x00ff00,                               // scrollbar
     0x20a020, 0x00ff00,                               // slider
@@ -1046,7 +1048,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
     0x000000, 0x0078d7, 0x0078d7, 0xffffff,           // text
     0xf0f0f0, 0xffffff, 0x0078d7, 0x0f0f0f,           // UI elements
-    0xe1e1e1, 0xe5f1fb, 0x000000, 0x000000,           // buttons
+    0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000,           // buttons
     0x333333,                                         // checkbox
     0xc0c0c0, 0x808080,                               // scrollbar
     0x333333, 0x0078d7,                               // slider

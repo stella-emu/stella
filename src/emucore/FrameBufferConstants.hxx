@@ -57,6 +57,8 @@ enum {
   kWidFrameColor,
   kBtnColor,
   kBtnColorHi,
+  kBtnBorderColor,
+  kBtnBorderColorHi,
   kBtnTextColor,
   kBtnTextColorHi,
   kCheckColor,

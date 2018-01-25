@@ -44,7 +44,7 @@ class SnapshotDialog : public Dialog
     void setDefaults() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void createBrowser();
+    void createBrowser(const string& title);
 
   private:
     enum {

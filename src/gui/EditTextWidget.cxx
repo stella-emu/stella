@@ -41,6 +41,21 @@ void EditTextWidget::setText(const string& str, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditTextWidget::handleMouseEntered()
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditTextWidget::handleMouseLeft()
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if(!isEditable())
@@ -74,7 +89,7 @@ void EditTextWidget::drawWidget(bool hilite)
     s.fillRect(_x, _y, _w, _h, kDlgColor);
 
   // Draw a thin frame around us.
-  s.frameRect(_x, _y, _w, _h, kColor);
+  s.frameRect(_x, _y, _w, _h, hilite && isEditable() && isEnabled() ? kWidColorHi : kColor);
 
   // Draw the text
   adjustOffset();

@@ -356,7 +356,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
     _cmd(cmd),
     _useBitmap(false)
 {
-  _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
   _textcolor = kBtnTextColor;
@@ -439,13 +439,16 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+
+  s.frameRect(_x, _y, _w, _h, hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
+
   if (!_useBitmap)
     s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-                 !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
+                 !isEnabled() ? /*hilite ? uInt32(kColor) :*/ uInt32(kBGColorLo) :
                  hilite ? _textcolorhi : _textcolor, _align);
   else
     s.drawBitmap(_bitmap, _x + (_w - _bmw) / 2, _y + (_h - _bmh) / 2,
-                 !isEnabled() ? hilite ? uInt32(kColor) : uInt32(kBGColorLo) :
+                 !isEnabled() ? /*hilite ? uInt32(kColor) :*/ uInt32(kBGColorLo) :
                  hilite ? _textcolorhi : _textcolor,
                  _bmw, _bmh);
 }
@@ -755,16 +758,21 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Draw the label, if any
   if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
+    s.drawString(_font, _label, _x, _y + 2, _labelWidth, isEnabled() ? kTextColor : kColor);
 
-  // Draw the box
-  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, isEnabled() && hilite ? kSliderColorHi : kShadowColor);
+  int p = valueToPos(_value),
+    h = _h - 10,
+    x = _x + _labelWidth,
+    y = _y + (_h - h) / 2 + 1;
+
   // Fill the box
-  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
-             !isEnabled() ? kBGColorHi : kWidColor);
+  s.fillRect(x, y, _w - _labelWidth, h,
+             !isEnabled() ? kBGColorHi : kBGColorLo);
   // Draw the 'bar'
-  s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
+  s.fillRect(x, y, p, h,
+             !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+  // Draw the 'handle'
+  s.fillRect(x + p, y - 2, 2, h + 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 }
 
@@ -775,7 +783,7 @@ int SliderWidget::valueToPos(int value)
   else if(value > _valueMax) value = _valueMax;
   int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
 
-  return ((_w - _labelWidth - 4) * (value - _valueMin) / range);
+  return ((_w - _labelWidth - 2) * (value - _valueMin) / range);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

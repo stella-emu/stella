@@ -39,11 +39,12 @@ class BrowserDialog : public Dialog, public CommandSender
     };
 
   public:
-    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
+    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
+                  const string& title = "");
     virtual ~BrowserDialog() = default;
 
     /** Place the browser window onscreen, using the given attributes */
-    void show(const string& title, const string& startpath,
+    void show(const string& startpath,
               BrowserDialog::ListMode mode, int cmd, const string& ext = "");
 
     /** Get resulting file node (called after receiving kChooseCmd) */
@@ -63,8 +64,7 @@ class BrowserDialog : public Dialog, public CommandSender
     int	_cmd;
 
     FileListWidget*   _fileList;
-    StaticTextWidget* _currentPath;
-    StaticTextWidget* _title;
+    EditTextWidget*   _currentPath;
     StaticTextWidget* _type;
     EditTextWidget*   _selected;
     ButtonWidget*     _goUpButton;

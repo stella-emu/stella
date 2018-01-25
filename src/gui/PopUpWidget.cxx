@@ -208,8 +208,8 @@ void PopUpWidget::drawWidget(bool hilite)
                  isEnabled() ? _textcolor : uInt32(kColor), TextAlign::Left);
 
   // Draw a thin frame around us.
-  s.frameRect(x, _y, w, _h, kColor);
-  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, isEnabled() && hilite ? kTextColorHi : kBGColorLo);
+  s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
+  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, isEnabled() && hilite ? kWidColorHi : kBGColorLo);
 
   // Fill the background
   s.fillRect(x + 1, _y + 1, w - 17, _h - 2, _changed ? kDbgChangedColor : kWidColor);
