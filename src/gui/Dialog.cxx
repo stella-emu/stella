@@ -314,28 +314,26 @@ void Dialog::drawDialog()
   if(!isVisible())
     return;
 
-  FBSurface& s = surface();
-
   if(_dirty)
   {
+    FBSurface& s = surface();
+    bool onTop = parent().myDialogStack.top() == this;
+
     if(_flags & WIDGET_CLEARBG)
     {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
       s.fillRect(_x, _y + _th, _w, _h - _th, kDlgColor);
       if(_th)
       {
-        s.fillRect(_x, _y, _w, _th, kColorTitleBar);
-        s.drawString(*_font, _title, _x + 10, _y + 2 + 1, _font->getStringWidth(_title), kColorTitleText);
-        /*int lSize = _th * 1 / 2;
-        int lBorder = (_th - lSize) / 2;
-        s.line(_w - lSize - lBorder, _y + lBorder, _w - lBorder, _y + lBorder + lSize, kColorTitleText);
-        s.line(_w - lSize - lBorder + 1, _y + lBorder, _w - lBorder + 1, _y + lBorder + lSize, kColorTitleText);*/
+        s.fillRect(_x, _y, _w, _th, onTop ? kColorTitleBar : kColorTitleBarLo);
+        s.drawString(*_font, _title, _x + 10, _y + 2 + 1, _font->getStringWidth(_title),
+                     onTop ? kColorTitleText : kColorTitleTextLo);
       }
     }
     else
       s.invalidate();
     if(_flags & WIDGET_BORDER)
-      s.frameRect(_x, _y, _w, _h, kColor);
+      s.frameRect(_x, _y, _w, _h, onTop ? kColor : kShadowColor);
 
     // Make all child widget dirty
     Widget* w = _firstWidget;
