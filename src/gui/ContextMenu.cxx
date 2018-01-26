@@ -560,7 +560,7 @@ void ContextMenu::drawDialog()
     int offset = _selectedOffset;
     if(_showScroll)
     {
-      s.hLine(x, y+_rowHeight-1, w+2, kShadowColor);
+      s.hLine(x, y+_rowHeight-1, w+2, kColor);
       s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
       y += _rowHeight;
       offset--;
@@ -571,14 +571,14 @@ void ContextMenu::drawDialog()
       bool hilite = offset == current;
       if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
       s.drawString(_font, _entries[i].first, x + 1, y + 2, w,
-                   !hilite ? kTextColor : kWidColor);
+                   !hilite ? kTextColor : kTextColorInv);
       y += _rowHeight;
     }
 
     // Show bottom scroll area
     if(_showScroll)
     {
-      s.hLine(x, y, w+2, kShadowColor);
+      s.hLine(x, y, w+2, kColor);
       s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
     }
 

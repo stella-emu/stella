@@ -209,8 +209,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
                                                   myTVJitterRecWidget->getRight() + 4,
                                                   myTVJitterRecWidget->getTop() + 2,
-                                                  5 * fontWidth, fontHeight, "", TextAlign::Left);
-  wid.push_back(myTVJitterRecLabelWidget);
+                                                  5 * fontWidth, fontHeight, "");
   ypos += lineHeight + VGAP;
 
   myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
@@ -434,7 +433,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthLabel =
     new StaticTextWidget(myTab, font,
                          xpos + myDebuggerWidthSlider->getWidth() + 4,
-                         ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
+                         ypos + 1, 4 * fontWidth, fontHeight, "");
   ypos += lineHeight + VGAP;
 
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, "Debugger height (*) ",
@@ -446,7 +445,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerHeightLabel =
     new StaticTextWidget(myTab, font,
                          xpos + myDebuggerHeightSlider->getWidth() + 4,
-                         ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
+                         ypos + 1, 4 * fontWidth, fontHeight, "");
 
   ypos += lineHeight + VGAP * 4;
   myGhostReadsTrapWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1,

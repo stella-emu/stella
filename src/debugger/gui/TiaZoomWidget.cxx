@@ -165,8 +165,17 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TiaZoomWidget::handleMouseEntered()
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseLeft()
 {
+  clearFlags(WIDGET_HILITED);
+  setDirty();
   myMouseMoving = false;
 }
 
@@ -242,7 +251,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   FBSurface& s = dialog().surface();
 
   s.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
-  s.frameRect(_x, _y, _w, _h, kColor);
+  s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
 
   // Draw the zoomed image
   // This probably isn't as efficient as it can be, but it's a small area

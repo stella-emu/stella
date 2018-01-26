@@ -442,24 +442,32 @@ void DebuggerDialog::addRomArea()
   const GUI::Rect& r = getRomBounds();
   const int VBORDER = 4;
   const string ELLIPSIS = "\x1d";
+  WidgetArray wid1, wid2;
+  ButtonWidget* b;
 
   int bwidth  = myLFont->getStringWidth("Frame +1 "),
       bheight = myLFont->getLineHeight() + 2;
   int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Step", kDDStepCmd);
+
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Step", kDDStepCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Trace", kDDTraceCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Trace", kDDTraceCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Scan +1", kDDSAdvCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Scan +1", kDDSAdvCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Frame +1", kDDAdvCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Frame +1", kDDAdvCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Exit", kDDExitCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Exit", kDDExitCmd);
+  wid2.push_back(b);
 
   bwidth = bheight; // 7 + 12;
   bheight = bheight * 3 + 4 * 2;
@@ -469,7 +477,6 @@ void DebuggerDialog::addRomArea()
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd);
-
   myRewindButton->clearFlags(WIDGET_ENABLED);
 
   buttonY += bheight + 4;
@@ -485,7 +492,11 @@ void DebuggerDialog::addRomArea()
   bwidth = myLFont->getStringWidth("Options " + ELLIPSIS);
   bheight = myLFont->getLineHeight() + 2;
 
-  new ButtonWidget(this, *myLFont, xpos, r.top + 5, bwidth, bheight, "Options" + ELLIPSIS, kDDOptionsCmd);
+  b = new ButtonWidget(this, *myLFont, xpos, r.top + 5, bwidth, bheight,
+                       "Options" + ELLIPSIS, kDDOptionsCmd);
+  wid1.push_back(b);
+  wid1.push_back(myRewindButton);
+  wid1.push_back(myUnwindButton);
 
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
@@ -493,6 +504,9 @@ void DebuggerDialog::addRomArea()
   xpos = r.left + 10;  ypos = 10;
   myCpu = new CpuWidget(this, *myLFont, *myNFont, xpos, ypos, max_w);
   addToFocusList(myCpu->getFocusList());
+
+  addToFocusList(wid1);
+  addToFocusList(wid2);
 
   xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
   myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.width() - 10);

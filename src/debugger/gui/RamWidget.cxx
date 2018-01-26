@@ -46,6 +46,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;
   const int VGAP = 4;
+  WidgetArray wid;
 
   int ypos = y + myLineHeight;
 
@@ -63,27 +64,34 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   myUndoButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                   "Undo", kUndoCmd);
+  wid.push_back(myUndoButton);
   myUndoButton->setTarget(this);
 
   by += bheight + VGAP;
   myRevertButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Revert", kRevertCmd);
+  wid.push_back(myRevertButton);
   myRevertButton->setTarget(this);
 
   by += bheight + VGAP * 6;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Search" + ELLIPSIS, kSearchCmd);
+  wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
   by += bheight + VGAP;
   myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Compare" + ELLIPSIS, kCmpCmd);
+  wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
   by += bheight + VGAP;
   myRestartButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Reset", kRestartCmd);
+  wid.push_back(myRestartButton);
   myRestartButton->setTarget(this);
+
+  addToFocusList(wid);
 
   // Labels for RAM grid
   myRamStart =

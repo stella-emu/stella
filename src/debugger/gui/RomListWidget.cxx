@@ -289,6 +289,20 @@ void RomListWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::handleMouseEntered()
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::handleMouseLeft()
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomListWidget::handleText(char text)
 {
   if(_editMode)
@@ -458,9 +472,7 @@ void RomListWidget::drawWidget(bool hilite)
   const GUI::Rect& l = getLineRect();
 
   // Draw a thin frame around the list and to separate columns
-  s.hLine(_x, _y, _x + _w - 1, kColor);
-  s.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
-  s.vLine(_x, _y, _y + _h - 1, kColor);
+  s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items

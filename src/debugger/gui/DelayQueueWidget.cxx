@@ -96,12 +96,12 @@ void DelayQueueWidget::drawWidget(bool hilite)
       w = _w,
       lineHeight = _font.getLineHeight();
 
-  surface.frameRect(x, y, w, _h, kShadowColor);
+  surface.frameRect(x, y, w, _h, kColor);
 
   y += 1;
   x += 1;
   w -= 1;
-  surface.fillRect(x, y, w - 1, _h - 2, kBGColorHi);
+  surface.fillRect(x, y, w - 1, _h - 2, kDlgColor);
 
   y += 2;
   x += 2;

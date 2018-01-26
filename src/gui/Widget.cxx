@@ -609,13 +609,13 @@ void CheckboxWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
 
   if(_drawBox)
-    s.frameRect(_x, _y + _boxY, 14, 14, hilite ? kWidColorHi : kShadowColor);
+    s.frameRect(_x, _y + _boxY, 14, 14, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
   // Do we draw a square or cross?
   s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, _changed ? kDbgChangedColor
              : isEnabled() ? _bgcolor : kColor);
   if(_state)
-    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite ? kWidColorHi : kCheckColor
-                 : kShadowColor, 10);
+    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
+                 : kColor, 10);
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,

@@ -209,6 +209,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
 void ScrollBarWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,6 +217,7 @@ void ScrollBarWidget::handleMouseLeft()
 {
   _part = kNoPart;
   clearFlags(WIDGET_HILITED);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -250,7 +252,7 @@ void ScrollBarWidget::drawWidget(bool hilite)
   int bottomY = _y + _h;
   bool isSinglePage = (_numEntries <= _entriesPerPage);
 
-  s.frameRect(_x, _y, _w, _h, kShadowColor);
+  s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
 
   if(_draggingPart != kNoPart)
     _part = _draggingPart;

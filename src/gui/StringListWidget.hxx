@@ -32,6 +32,8 @@ class StringListWidget : public ListWidget
     bool wantsFocus() const override { return true; }
 
   protected:
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
     void drawWidget(bool hilite) override;
     GUI::Rect getEditRect() const override;
 
