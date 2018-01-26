@@ -47,15 +47,15 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos, tabID;
-  int lwidth = font.getStringWidth("NTSC Aspect "),
+  int lwidth = font.getStringWidth("Interpolation "),
     pwidth = font.getStringWidth("XXXXxXXXX"),
-    swidth = font.getMaxCharWidth() * 9 - 3;
+    swidth = font.getMaxCharWidth() * 10 - 2;
 
   WidgetArray wid;
   VariantList items;
 
   // Set real dimensions
-  _w = std::min((52+4*0) * fontWidth + HBORDER * 2, max_w);
+  _w = std::min(53 * fontWidth + HBORDER * 2, max_w);
   _h = std::min((16-2) * (lineHeight + VGAP) + 14 + _th, max_h);
 
   // The tab widget
@@ -93,10 +93,10 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // TIA interpolation
   items.clear();
-  VarList::push_back(items, "Linear", "linear");
-  VarList::push_back(items, "Nearest", "nearest");
+  VarList::push_back(items, "On", "linear");
+  VarList::push_back(items, "Off", "nearest");
   myTIAInterpolate = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "TIA Inter ", lwidth);
+                                     items, "Interpolation ", lwidth);
   wid.push_back(myTIAInterpolate);
   ypos += lineHeight + VGAP;
 
@@ -111,7 +111,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Aspect ratio (NTSC mode)
   myNAspectRatio =
-    new SliderWidget(myTab, font, xpos, ypos-1, 
+    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
                      "NTSC Aspect ", lwidth, kNAspectRatioChanged);
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
   wid.push_back(myNAspectRatio);
@@ -122,7 +122,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Aspect ratio (PAL mode)
   myPAspectRatio =
-    new SliderWidget(myTab, font, xpos, ypos-1,
+    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight, 
                      "PAL Aspect ", lwidth, kPAspectRatioChanged);
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
   wid.push_back(myPAspectRatio);
@@ -133,7 +133,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Framerate
   myFrameRate =
-    new SliderWidget(myTab, font, xpos, ypos-1,
+    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
                      "Framerate ", lwidth, kFrameRateChanged);
   myFrameRate->setMinValue(0); myFrameRate->setMaxValue(900);
   myFrameRate->setStepValue(10);
@@ -154,7 +154,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos = VBORDER;
 
   // Fullscreen
-  myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen");
+  myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen");
   wid.push_back(myFullscreen);
   ypos += lineHeight + VGAP;
 
@@ -165,33 +165,33 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;*/
 
   // FS stretch
-  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos, "Fullscreen Fill");
+  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen Fill");
   wid.push_back(myUseStretch);
   ypos += lineHeight + VGAP;
 
   // Use sync to vblank
-  myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos, "VSync");
+  myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos + 1, "VSync");
   wid.push_back(myUseVSync);
   ypos += (lineHeight + VGAP) * 2;
 
   // Skip progress load bars for SuperCharger ROMs
   // Doesn't really belong here, but I couldn't find a better place for it
-  myFastSCBios = new CheckboxWidget(myTab, font, xpos, ypos, "Fast SC/AR BIOS");
+  myFastSCBios = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fast SC/AR BIOS");
   wid.push_back(myFastSCBios);
   ypos += lineHeight + VGAP;
 
   // Show UI messages onscreen
-  myUIMessages = new CheckboxWidget(myTab, font, xpos, ypos, "Show UI messages");
+  myUIMessages = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Show UI messages");
   wid.push_back(myUIMessages);
   ypos += lineHeight + VGAP;
 
   // Center window (in windowed mode)
-  myCenter = new CheckboxWidget(myTab, font, xpos, ypos, "Center window");
+  myCenter = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Center window");
   wid.push_back(myCenter);
   ypos += lineHeight + VGAP;
 
   // Use multi-threading
-  myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos, "Use multi-threading");
+  myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Use multi-threading");
   wid.push_back(myUseThreads);
 
   // Add items for tab 0
@@ -203,6 +203,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" TV Effects ");
   xpos = HBORDER;
   ypos = VBORDER;
+  swidth = font.getMaxCharWidth() * 9 - 4;
 
   // TV Mode
   items.clear();
@@ -221,7 +222,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // Custom adjustables (using macro voodoo)
-  xpos += 8+1; ypos += 0;
+  xpos += fontWidth * 2; ypos += 0;
   pwidth = lwidth;
   lwidth = font.getStringWidth("Saturation ");
 
@@ -248,7 +249,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
-  xpos += myTVContrast->getWidth() + 4 + myTVContrastLabel->getWidth() + 28;
+  xpos += myTVContrast->getWidth() + 4 + myTVContrastLabel->getWidth() + 32;
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");

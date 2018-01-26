@@ -62,84 +62,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////
-  // 1) Launcher options
-  tabID = myTab->addTab(" Launcher ");
-  lwidth = font.getStringWidth("Exit to Launcher ");
-
-  // Launcher width and height
-  myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Width ",
-                                           lwidth, kLWidthChanged);
-  myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
-  myLauncherWidthSlider->setMaxValue(ds.w);
-  myLauncherWidthSlider->setStepValue(10);
-  wid.push_back(myLauncherWidthSlider);
-  myLauncherWidthLabel =
-      new StaticTextWidget(myTab, font,
-                           xpos + myLauncherWidthSlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "");
-  ypos += lineHeight + 4;
-
-  myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Height ",
-                                            lwidth, kLHeightChanged);
-  myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
-  myLauncherHeightSlider->setMaxValue(ds.h);
-  myLauncherHeightSlider->setStepValue(10);
-  wid.push_back(myLauncherHeightSlider);
-  myLauncherHeightLabel =
-      new StaticTextWidget(myTab, font,
-                           xpos + myLauncherHeightSlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "", TextAlign::Left);
-  ypos += lineHeight + 4;
-
-  // Launcher font
-  pwidth = font.getStringWidth("2x (1000x760)");
-  items.clear();
-  VarList::push_back(items, "Small",  "small");
-  VarList::push_back(items, "Medium", "medium");
-  VarList::push_back(items, "Large",  "large");
-  myLauncherFontPopup =
-    new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
-                    "Launcher Font ", lwidth);
-  wid.push_back(myLauncherFontPopup);
-  ypos += lineHeight + 4;
-
-  // ROM launcher info/snapshot viewer
-  items.clear();
-  VarList::push_back(items, "Off", "0");
-  VarList::push_back(items, "1x (640x480) ", "1");
-  VarList::push_back(items, "2x (1000x760)", "2");
-  myRomViewerPopup =
-    new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
-                    "ROM Info viewer ", lwidth);
-  wid.push_back(myRomViewerPopup);
-  ypos += lineHeight + 4;
-
-  // Exit to Launcher
-  pwidth = font.getStringWidth("If in use");
-  items.clear();
-  VarList::push_back(items, "If in use", "0");
-  VarList::push_back(items, "Always", "1");
-  myLauncherExitPopup =
-    new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
-                    "Exit to Launcher ", lwidth);
-  wid.push_back(myLauncherExitPopup);
-  ypos += lineHeight + 4;
-
-  // Add message concerning usage
-  xpos = HBORDER; ypos += 1*(lineHeight + 4);
-  lwidth = ifont.getStringWidth("(*) Changes require application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
-                       "(*) Changes require application restart",
-                       TextAlign::Left);
-
-  // Add items for tab 0
-  addToFocusList(wid, myTab, tabID);
-
-  //////////////////////////////////////////////////////////
-  // 3) Misc. options
+  // 1) Misc. options
   wid.clear();
-  tabID = myTab->addTab(" Misc. ");
-  lwidth = font.getStringWidth("Interface Palette (*) ");
+  tabID = myTab->addTab(" Look & Feel ");
+  lwidth = font.getStringWidth("Mouse wheel scroll ");
   pwidth = font.getStringWidth("Standard");
   xpos = HBORDER;  ypos = VBORDER;
 
@@ -150,7 +76,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   items, "Interface Palette (*) ", lwidth);
+                                   items, "Theme (*) ", lwidth);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
@@ -166,7 +92,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "900 ms", "900");
   VarList::push_back(items, "1 second", "1000");
   myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "List quick delay ", lwidth);
+                                     items, "List input delay ", lwidth);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 
@@ -185,16 +111,92 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myWheelLinesPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                       items, "Mouse wheel scroll ", lwidth);
   wid.push_back(myWheelLinesPopup);
-  ypos += lineHeight + 4;
 
   // Add message concerning usage
-  xpos = HBORDER; ypos += 1*(lineHeight + 4);
+  xpos = HBORDER;
+  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
   lwidth = ifont.getStringWidth("(*) Requires application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
                        "(*) Requires application restart",
                        TextAlign::Left);
 
-  // Add items for tab 2
+  // Add items for tab 0
+  addToFocusList(wid, myTab, tabID);
+
+  //////////////////////////////////////////////////////////
+  // 2) Launcher options
+  wid.clear();
+  tabID = myTab->addTab(" Launcher ");
+  lwidth = font.getStringWidth("Exit to Launcher ");
+  xpos = HBORDER;  ypos = VBORDER;
+
+  // Launcher width and height
+  myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Width ",
+                                           lwidth, kLWidthChanged);
+  myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
+  myLauncherWidthSlider->setMaxValue(ds.w);
+  myLauncherWidthSlider->setStepValue(10);
+  wid.push_back(myLauncherWidthSlider);
+  myLauncherWidthLabel =
+    new StaticTextWidget(myTab, font,
+                         xpos + myLauncherWidthSlider->getWidth() + 4,
+                         ypos + 1, 4 * fontWidth, fontHeight, "");
+  ypos += lineHeight + 4;
+
+  myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Height ",
+                                            lwidth, kLHeightChanged);
+  myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
+  myLauncherHeightSlider->setMaxValue(ds.h);
+  myLauncherHeightSlider->setStepValue(10);
+  wid.push_back(myLauncherHeightSlider);
+  myLauncherHeightLabel =
+    new StaticTextWidget(myTab, font,
+                         xpos + myLauncherHeightSlider->getWidth() + 4,
+                         ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
+  ypos += lineHeight + 4;
+
+  // Launcher font
+  pwidth = font.getStringWidth("2x (1000x760)");
+  items.clear();
+  VarList::push_back(items, "Small", "small");
+  VarList::push_back(items, "Medium", "medium");
+  VarList::push_back(items, "Large", "large");
+  myLauncherFontPopup =
+    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
+                    "Launcher Font ", lwidth);
+  wid.push_back(myLauncherFontPopup);
+  ypos += lineHeight + 4;
+
+  // ROM launcher info/snapshot viewer
+  items.clear();
+  VarList::push_back(items, "Off", "0");
+  VarList::push_back(items, "1x (640x480) ", "1");
+  VarList::push_back(items, "2x (1000x760)", "2");
+  myRomViewerPopup =
+    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
+                    "ROM Info viewer ", lwidth);
+  wid.push_back(myRomViewerPopup);
+  ypos += lineHeight + 4*4;
+
+  // Exit to Launcher
+  pwidth = font.getStringWidth("If in use");
+  items.clear();
+  VarList::push_back(items, "If in use", "0");
+  VarList::push_back(items, "Always", "1");
+  myLauncherExitPopup =
+    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
+                    "Exit to Launcher ", lwidth);
+  wid.push_back(myLauncherExitPopup);
+
+  // Add message concerning usage
+  xpos = HBORDER;
+  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
+  lwidth = ifont.getStringWidth("(*) Changes require application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w - 20), fontHeight,
+                       "(*) Changes require application restart",
+                       TextAlign::Left);
+
+  // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
 
   // Activate the first tab
