@@ -472,7 +472,7 @@ void RomListWidget::drawWidget(bool hilite)
   const GUI::Rect& l = getLineRect();
 
   // Draw a thin frame around the list and to separate columns
-  s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
+  s.frameRect(_x, _y, _w + 1, _h, hilite ? kWidColorHi : kColor);
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
@@ -496,7 +496,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
-      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kTextColorHi);
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kWidColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
     if(_selectedItem == pos && _hasFocus)
@@ -507,7 +507,7 @@ void RomListWidget::drawWidget(bool hilite)
         bytesColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
+        s.frameRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kWidColorHi);
     }
 
     // Draw labels
