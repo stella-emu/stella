@@ -87,6 +87,7 @@ class Dialog : public GuiObject
     int  getFlags() const { return _flags; }
 
     void setTitle(const string& title);
+    bool hasTitle() { return !_title.empty(); }
 
   protected:
     virtual void draw() override { }

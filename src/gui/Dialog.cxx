@@ -27,6 +27,10 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
+
+#include "ContextMenu.hxx"
+#include "PopUpWidget.hxx"
+
 #include "Vec.hxx"
 
 /*
@@ -318,7 +322,10 @@ void Dialog::drawDialog()
 
   if(_dirty)
   {
-    bool onTop = parent().myDialogStack.top() == this;
+    // dialog is still on top if e.g a ContextMenu is opened
+    bool onTop = parent().myDialogStack.top() == this
+      || parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+      && !parent().myDialogStack.top()->hasTitle();
 
     if(_flags & WIDGET_CLEARBG)
     {
