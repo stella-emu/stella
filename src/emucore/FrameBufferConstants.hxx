@@ -73,6 +73,8 @@ enum {
   kColorInfo,
   kColorTitleBar,
   kColorTitleText,
+  kColorTitleBarLo,
+  kColorTitleTextLo,
   kNumColors
 };
 

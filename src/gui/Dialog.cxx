@@ -314,15 +314,16 @@ void Dialog::drawDialog()
   if(!isVisible())
     return;
 
+  FBSurface& s = surface();
+
   if(_dirty)
   {
-    FBSurface& s = surface();
     bool onTop = parent().myDialogStack.top() == this;
 
     if(_flags & WIDGET_CLEARBG)
     {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-      s.fillRect(_x, _y + _th, _w, _h - _th, kDlgColor);
+      s.fillRect(_x, _y + _th, _w, _h - _th, onTop ? kDlgColor : kBGColorLo);
       if(_th)
       {
         s.fillRect(_x, _y, _w, _th, onTop ? kColorTitleBar : kColorTitleBarLo);

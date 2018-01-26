@@ -1017,8 +1017,8 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     kDbgColorRed          Red color in debugger
     *** Other colors ***
     kColorInfo            TIA output position color
-    kTitleBarColor        Title bar color
-    kTitleTextColor       Title text color
+    kColorTitleBar        Title bar color
+    kColorTitleText       Title text color
 */
 uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Standard
@@ -1030,7 +1030,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xac3410, 0xd55941,                                         // scrollbar
     0xac3410, 0xd55941,                                         // slider
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
-    0xffffff, 0xac3410, 0xf0f0cf                                // other
+    0xffffff, 0xac3410, 0xf0f0cf, 0x686868, 0xdccfa5            // other
   },
   // Classic
   { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,           // base
@@ -1041,7 +1041,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x20a020, 0x00ff00,                                         // scrollbar
     0x20a020, 0x00ff00,                                         // slider
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
-    0x20a020, 0x20a020, 0x000000                                // other
+    0x20a020, 0x20a020, 0x000000, 0x686868, 0x404040            // other
   },
   // Light
   { 0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333,           // base
@@ -1052,6 +1052,6 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xc0c0c0, 0x808080,                                         // scrollbar
     0x333333, 0x0078d7,                                         // slider
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
-    0xffffff, 0x808080, 0xffffff                                // other
+    0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
   }
 };
