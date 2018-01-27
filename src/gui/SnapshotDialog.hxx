@@ -60,7 +60,6 @@ class SnapshotDialog : public Dialog
     EditTextWidget* mySnapSavePath;
     EditTextWidget* mySnapLoadPath;
 
-    //PopUpWidget* mySnapName;
     CheckboxWidget* mySnapName;
     PopUpWidget* mySnapInterval;
 

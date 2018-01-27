@@ -45,12 +45,10 @@ class AudioDialog : public Dialog
 
   private:
     enum {
-      kVolumeChanged      = 'ADvc',
       kSoundEnableChanged = 'ADse'
     };
 
     SliderWidget*     myVolumeSlider;
-    StaticTextWidget* myVolumeLabel;
     PopUpWidget*      myFragsizePopup;
     PopUpWidget*      myFreqPopup;
     CheckboxWidget*   mySoundEnableCheckbox;

@@ -67,15 +67,9 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Volume
   myVolumeSlider = new SliderWidget(this, font, xpos, ypos,
-                                    "Volume ", lwidth, kVolumeChanged);
+                                    "Volume ", lwidth, 0, 3 * fontWidth);
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   wid.push_back(myVolumeSlider);
-  myVolumeLabel = new StaticTextWidget(this, font,
-                                       xpos + myVolumeSlider->getWidth() + 4,
-                                       ypos + 1,
-                                       3*fontWidth, fontHeight, "", TextAlign::Left);
-
-  myVolumeLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   // Fragment size
@@ -120,8 +114,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 void AudioDialog::loadConfig()
 {
   // Volume
-  myVolumeSlider->setValue(instance().settings().getInt("volume"));
-  myVolumeLabel->setLabel(instance().settings().getString("volume"));
+  myVolumeSlider->setValue(instance().settings().getInt("volume"));  
 
   // Fragsize
   myFragsizePopup->setSelected(instance().settings().getString("fragsize"), "512");
@@ -165,8 +158,7 @@ void AudioDialog::saveConfig()
 void AudioDialog::setDefaults()
 {
   myVolumeSlider->setValue(100);
-  myVolumeLabel->setLabel("100");
-
+  
   myFragsizePopup->setSelected("512", "");
   myFreqPopup->setSelected("31400", "");
 
@@ -182,7 +174,6 @@ void AudioDialog::setDefaults()
 void AudioDialog::handleSoundEnableChange(bool active)
 {
   myVolumeSlider->setEnabled(active);
-  myVolumeLabel->setEnabled(active);
   myFragsizePopup->setEnabled(active);
   myFreqPopup->setEnabled(active);
 }
@@ -200,10 +191,6 @@ void AudioDialog::handleCommand(CommandSender* sender, int cmd,
 
     case GuiObject::kDefaultsCmd:
       setDefaults();
-      break;
-
-    case kVolumeChanged:
-      myVolumeLabel->setValue(myVolumeSlider->getValue());
       break;
 
     case kSoundEnableChanged:
