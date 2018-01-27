@@ -114,7 +114,7 @@ class TIA : public Device
       Set the audio queue. This needs to be dynamic as the queue is created after
       the timing has been determined.
     */
-    void setAudioQueue(AudioQueue *audioQueue);
+    void setAudioQueue(shared_ptr<AudioQueue> audioQueue);
 
     /**
       Clear the configured frame manager and deteach the lifecycle callbacks.

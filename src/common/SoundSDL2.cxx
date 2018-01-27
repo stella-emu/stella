@@ -100,7 +100,7 @@ void SoundSDL2::setEnabled(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::open(AudioQueue* audioQueue)
+void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue)
 {
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
   mute(true);
@@ -141,10 +141,11 @@ void SoundSDL2::close()
 {
   if(!myIsInitializedFlag) return;
 
+  mute(true);
+
   myAudioQueue = 0;
   myCurrentFragment = 0;
 
-  mute(true);
   myOSystem.logMessage("SoundSDL2::close", 2);
 
 }

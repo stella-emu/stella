@@ -30,7 +30,7 @@ class Audio
 
     void reset();
 
-    void setAudioQueue(AudioQueue *queue);
+    void setAudioQueue(shared_ptr<AudioQueue> queue);
 
     void tick();
 
@@ -42,7 +42,7 @@ class Audio
     void phase1();
 
   private:
-    AudioQueue* myAudioQueue;
+    shared_ptr<AudioQueue> myAudioQueue;
 
     uInt8 myCounter;
 

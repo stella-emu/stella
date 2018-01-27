@@ -388,7 +388,7 @@ class Console : public Serializable
     unique_ptr<AbstractFrameManager> myFrameManager;
 
     // The audio fragment queue that connects TIA and audio driver
-    unique_ptr<AudioQueue> myAudioQueue;
+    shared_ptr<AudioQueue> myAudioQueue;
 
     // Pointer to the Cartridge (the debugger needs it)
     unique_ptr<Cartridge> myCart;

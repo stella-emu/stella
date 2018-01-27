@@ -117,7 +117,7 @@ void TIA::setFrameManager(AbstractFrameManager *frameManager)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAudioQueue(AudioQueue* queue)
+void TIA::setAudioQueue(shared_ptr<AudioQueue> queue)
 {
   myAudio.setAudioQueue(queue);
 }

@@ -183,7 +183,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   }
 
   createAudioQueue();
-  myTIA->setAudioQueue(myAudioQueue.get());
+  myTIA->setAudioQueue(myAudioQueue);
 
   bool joyallow4 = myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
@@ -580,7 +580,7 @@ void Console::initializeAudio()
   // const string& sound = myProperties.get(Cartridge_Sound);
   // myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
 
-  myOSystem.sound().open(myAudioQueue.get());
+  myOSystem.sound().open(myAudioQueue);
 
   // Make sure auto-frame calculation is only enabled when necessary
   myTIA->enableAutoFrame(framerate <= 0);
@@ -754,7 +754,7 @@ void Console::createAudioQueue()
       throw runtime_error("invalid console timing");
   }
 
-  myAudioQueue = make_unique<AudioQueue>(
+  myAudioQueue = make_shared<AudioQueue>(
     fragmentSize,
     AUDIO_QUEUE_CAPACITY_FRAGMENTS,
     myProperties.get(Cartridge_Sound) == "STEREO",
