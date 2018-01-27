@@ -23,6 +23,7 @@ class GuiObject;
 class EditTextWidget;
 class PopUpWidget;
 class StaticTextWidget;
+class RadioButtonGroup;
 class TabWidget;
 class SliderWidget;
 
@@ -58,13 +59,13 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myModelNo;
     EditTextWidget*   myRarity;
     EditTextWidget*   myNote;
-    PopUpWidget*      mySound;
     PopUpWidget*      myType;
+    CheckboxWidget*   mySound;
 
     // Console properties
-    PopUpWidget* myLeftDiff;
-    PopUpWidget* myRightDiff;
-    PopUpWidget* myTVType;
+    RadioButtonGroup* myLeftDiffGroup;
+    RadioButtonGroup* myRightDiffGroup;
+    RadioButtonGroup* myTVTypeGroup;
 
     // Controller properties
     StaticTextWidget* myP0Label;
@@ -76,11 +77,10 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myEraseEEPROMLabel;
     ButtonWidget*     myEraseEEPROMButton;
     StaticTextWidget* myEraseEEPROMInfo;
-    PopUpWidget*      myMouseControl;
+    CheckboxWidget*   myMouseControl;
     PopUpWidget*      myMouseX;
     PopUpWidget*      myMouseY;
     SliderWidget*     myMouseRange;
-    StaticTextWidget* myMouseRangeLabel;
 
     // Display properties
     PopUpWidget*      myFormat;
@@ -95,7 +95,6 @@ class GameInfoDialog : public Dialog, public CommandSender
     enum {
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
-      kMRangeChanged   = 'MRch',
       kYStartChanged   = 'YSch',
       kHeightChanged   = 'HTch',
       kPhosphorChanged = 'PPch',

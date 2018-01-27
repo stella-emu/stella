@@ -77,7 +77,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 
   // Row 5
   xoffset = 10;  yoffset += buttonHeight + 8;
-  b[12] = ADD_CD_BUTTON("NTSC/PAL", kFormatCmd);
+  b[12] = ADD_CD_BUTTON("TV Format", kFormatCmd);
   b[13] = ADD_CD_BUTTON("Palette", kPaletteCmd);
   b[14] = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd);
 

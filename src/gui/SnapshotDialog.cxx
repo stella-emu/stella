@@ -33,7 +33,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 {
   const int VBORDER = 10;
   const int HBORDER = 10;
-  const int INDENT = 20;
+  const int INDENT = 16;
   const int V_GAP = 4;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -69,16 +69,10 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySnapLoadPath);
 
   // Snapshot naming
-  lwidth = font.getStringWidth("Continuous snapshot interval ");
-  fwidth = font.getStringWidth("internal database");
-  VariantList items;
-  VarList::push_back(items, "actual ROM name", "rom");
-  VarList::push_back(items, "internal database", "int");
   xpos = HBORDER;  ypos += buttonHeight + V_GAP * 4;
-  mySnapName =
-    new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
-                    "Save snapshots according to ", lwidth);
-  wid.push_back(mySnapName);
+  VariantList items;
+  lwidth = font.getStringWidth("Continuous snapshot interval ");
+  fwidth = font.getStringWidth("10 seconds");
 
   // Snapshot interval (continuous mode)
   items.clear();
@@ -92,7 +86,6 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "8 seconds", "8");
   VarList::push_back(items, "9 seconds", "9");
   VarList::push_back(items, "10 seconds", "10");
-  ypos += buttonHeight;
   mySnapInterval =
     new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
                     "Continuous snapshot interval ", lwidth);
@@ -106,6 +99,10 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Snapshot single or multiple saves
   xpos += INDENT;  ypos += lineHeight + V_GAP;
+  mySnapName = new CheckboxWidget(this, font, xpos, ypos, "Use actualy ROM name");
+  wid.push_back(mySnapName);
+  ypos += lineHeight + V_GAP;
+
   mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
                                     "Overwrite existing files");
   wid.push_back(mySnapSingle);
@@ -133,7 +130,7 @@ void SnapshotDialog::loadConfig()
   const Settings& settings = instance().settings();
   mySnapSavePath->setText(settings.getString("snapsavedir"));
   mySnapLoadPath->setText(settings.getString("snaploaddir"));
-  mySnapName->setSelected(instance().settings().getString("snapname"), "int");
+  mySnapName->setState(instance().settings().getString("snapname") == "rom");
   mySnapInterval->setSelected(instance().settings().getString("ssinterval"), "2");
   mySnapSingle->setState(settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
@@ -144,8 +141,7 @@ void SnapshotDialog::saveConfig()
 {
   instance().settings().setValue("snapsavedir", mySnapSavePath->getText());
   instance().settings().setValue("snaploaddir", mySnapLoadPath->getText());
-  instance().settings().setValue("snapname",
-    mySnapName->getSelectedTag().toString());
+  instance().settings().setValue("snapname", mySnapName->getState() ? "rom" : "int");
   instance().settings().setValue("sssingle", mySnapSingle->getState());
   instance().settings().setValue("ss1x", mySnap1x->getState());
   instance().settings().setValue("ssinterval",

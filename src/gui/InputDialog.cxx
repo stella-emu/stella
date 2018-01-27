@@ -108,25 +108,17 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   WidgetArray wid;
   VariantList items;
   const int VGAP = 4;
-  const int VBORDER = 8;
+  const int VBORDER = 9;
   const int HBORDER = 8;
 
   // Devices/ports
   tabID = myTab->addTab("Devices & Ports");
 
-  // Stelladaptor mappings
   ypos = VBORDER;
   lwidth = font.getStringWidth("Digital paddle sensitivity "); // was: "Use mouse as a controller "
   pwidth = font.getStringWidth("-UI, -Emulation");
 
-  VarList::push_back(items, "Left / Right", "lr");
-  VarList::push_back(items, "Right / Left", "rl");
-  mySAPort = new PopUpWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight, items,
-                             "Stelladaptor port order ", lwidth);
-  wid.push_back(mySAPort);
-
   // Use mouse as controller
-  ypos += lineHeight + VGAP;
   items.clear();
   VarList::push_back(items, "Always", "always");
   VarList::push_back(items, "Analog devices", "analog");
@@ -211,6 +203,12 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myCtrlCombo = new CheckboxWidget(myTab, font, HBORDER, ypos,
 	                "Use Control key combos");
   wid.push_back(myCtrlCombo);
+  ypos += lineHeight + VGAP;
+
+  // Stelladaptor mappings
+  mySAPort = new CheckboxWidget(myTab, font, HBORDER, ypos,
+                                "Swap Stelladaptor ports");
+  wid.push_back(mySAPort);
 
   int fwidth;
 
@@ -251,7 +249,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 void InputDialog::loadConfig()
 {
   // Left & right ports
-  mySAPort->setSelected(instance().settings().getString("saport"), "lr");
+  mySAPort->setState(instance().settings().getString("saport") == "rl");
 
   // Use mouse as a controller
   myMouseControl->setSelected(
@@ -305,7 +303,7 @@ void InputDialog::loadConfig()
 void InputDialog::saveConfig()
 {
   // Left & right ports
-  instance().eventHandler().mapStelladaptors(mySAPort->getSelectedTag().toString());
+  instance().eventHandler().mapStelladaptors(mySAPort->getState() ? "rl": "lr");
 
   // Use mouse as a controller
   const string& usemouse = myMouseControl->getSelectedTag().toString();
@@ -364,7 +362,7 @@ void InputDialog::setDefaults()
     case 2:  // Virtual devices
     {
       // Left & right ports
-      mySAPort->setSelected("lr");
+      mySAPort->setState(false);
 
       // Use mouse as a controller
       myMouseControl->setSelected("analog");

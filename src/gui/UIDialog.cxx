@@ -127,7 +127,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // 2) Launcher options
   wid.clear();
   tabID = myTab->addTab(" Launcher ");
-  lwidth = font.getStringWidth("Exit to Launcher ");
+  lwidth = font.getStringWidth("Launcher Height ");
   xpos = HBORDER;  ypos = VBORDER;
 
   // Launcher width and height
@@ -179,14 +179,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4*4;
 
   // Exit to Launcher
-  pwidth = font.getStringWidth("If in use");
-  items.clear();
-  VarList::push_back(items, "If in use", "0");
-  VarList::push_back(items, "Always", "1");
-  myLauncherExitPopup =
-    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
-                    "Exit to Launcher ", lwidth);
-  wid.push_back(myLauncherExitPopup);
+  myLauncherExitWidget = new CheckboxWidget(myTab, font, xpos + 1, ypos, "Always exit to Launcher");
+  wid.push_back(myLauncherExitWidget);
 
   // Add message concerning usage
   xpos = HBORDER;
@@ -235,7 +229,7 @@ void UIDialog::loadConfig()
 
   // Exit to launcher
   bool exitlauncher = instance().settings().getBool("exitlauncher");
-  myLauncherExitPopup->setSelected(exitlauncher ? "1" : "0", "0");
+  myLauncherExitWidget->setState(exitlauncher);
 
   // UI palette
   const string& pal = instance().settings().getString("uipalette");
@@ -269,8 +263,7 @@ void UIDialog::saveConfig()
     myRomViewerPopup->getSelectedTag().toString());
 
   // Exit to Launcher
-  instance().settings().setValue("exitlauncher",
-    myLauncherExitPopup->getSelectedTag().toString());
+  instance().settings().setValue("exitlauncher", myLauncherExitWidget->getState());
 
   // UI palette
   instance().settings().setValue("uipalette",
@@ -302,7 +295,7 @@ void UIDialog::setDefaults()
       myLauncherHeightLabel->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerPopup->setSelected("1", "");
-      myLauncherExitPopup->setSelected("0", "");
+      myLauncherExitWidget->setState(false);
       break;
     }
 

@@ -155,7 +155,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Skip progress load bars for SuperCharger ROMs
   // Doesn't really belong here, but I couldn't find a better place for it
-  myFastSCBios = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fast SC/AR BIOS");
+  myFastSCBios = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fast SuperCharger load");
   wid.push_back(myFastSCBios);
   ypos += lineHeight + VGAP;
 
