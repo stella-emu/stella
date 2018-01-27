@@ -112,45 +112,37 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Aspect ratio (NTSC mode)
   myNAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "NTSC Aspect ", lwidth, kNAspectRatioChanged);
+                     "NTSC Aspect ", lwidth, 0,
+                     fontWidth * 3);
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
   wid.push_back(myNAspectRatio);
-  myNAspectRatioLabel =
-    new StaticTextWidget(myTab, font, xpos + myNAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "");
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (PAL mode)
   myPAspectRatio =
-    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight, 
-                     "PAL Aspect ", lwidth, kPAspectRatioChanged);
+    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
+                     "PAL Aspect ", lwidth, 0,
+                     fontWidth * 3);
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
   wid.push_back(myPAspectRatio);
-  myPAspectRatioLabel =
-    new StaticTextWidget(myTab, font, xpos + myPAspectRatio->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "");
   ypos += lineHeight + VGAP;
 
   // Framerate
   myFrameRate =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "Framerate ", lwidth, kFrameRateChanged);
+                     "Framerate ", lwidth, 0, fontWidth * 4);
   myFrameRate->setMinValue(0); myFrameRate->setMaxValue(900);
   myFrameRate->setStepValue(10);
   wid.push_back(myFrameRate);
-  myFrameRateLabel =
-    new StaticTextWidget(myTab, font, xpos + myFrameRate->getWidth() + 4,
-                         ypos + 1, fontWidth * 4, fontHeight, "");
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
   new StaticTextWidget(myTab, infofont, 10, ypos,
-        font.getStringWidth("(*) Requires application restart"), fontHeight,
-        "(*) Requires application restart", TextAlign::Left);
+                       "(*) Requires application restart");
 
   // Move over to the next column
-  xpos += myFrameRate->getWidth() + 4 + myFrameRateLabel->getWidth() + 28;
+  xpos += myFrameRate->getWidth() + 28;
   ypos = VBORDER;
 
   // Fullscreen
@@ -203,7 +195,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" TV Effects ");
   xpos = HBORDER;
   ypos = VBORDER;
-  swidth = font.getMaxCharWidth() * 9 - 4;
+  swidth = font.getMaxCharWidth() * 8 - 4;
 
   // TV Mode
   items.clear();
@@ -222,22 +214,18 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // Custom adjustables (using macro voodoo)
-  xpos += fontWidth * 2; ypos += 0;
+  xpos += INDENT; ypos += 0;
   pwidth = lwidth;
   lwidth = font.getStringWidth("Saturation ");
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc)                                 \
   myTV ## obj =                                                          \
-    new SliderWidget(myTab, font, xpos, ypos-1, pwidth, lineHeight,      \
-                         desc, lwidth, kTV ## obj ##Changed);            \
+    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,      \
+                     desc, lwidth, 0, fontWidth*3);   \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
   wid.push_back(myTV ## obj);                                            \
-  myTV ## obj ## Label =                                                 \
-    new StaticTextWidget(myTab, font, xpos+myTV ## obj->getWidth()+4,    \
-                    ypos+1, fontWidth*3, fontHeight, "", TextAlign::Left);\
   ypos += lineHeight + VGAP;
 
-  pwidth = swidth;
   CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ");
   CREATE_CUSTOM_SLIDERS(Bright, "Brightness ");
   CREATE_CUSTOM_SLIDERS(Hue, "Hue ");
@@ -249,7 +237,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
-  xpos += myTVContrast->getWidth() + 4 + myTVContrastLabel->getWidth() + 32;
+  xpos += myTVContrast->getWidth() + 28;
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
@@ -261,28 +249,25 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Per-ROM", "byrom");
   myTVPhosphor = new PopUpWidget(myTab, font, xpos, ypos,
       font.getStringWidth("Per-ROM"), lineHeight, items,
-      "TV Phosphor ", font.getStringWidth("TV Phosphor "));
+      "TV Phosphor ");
   wid.push_back(myTVPhosphor);
   ypos += lineHeight + VGAP;
 
   // TV Phosphor default level
   xpos += INDENT;
-  pwidth = swidth;
+  swidth = font.getMaxCharWidth() * 10;
   CREATE_CUSTOM_SLIDERS(PhosLevel, "Default   ");
   ypos += 6;
 
   // Scanline intensity and interpolation
   xpos -= INDENT;
-  myTVScanLabel =
-    new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings"),
-                         fontHeight, "Scanline settings", TextAlign::Left);
+  myTVScanLabel = new StaticTextWidget(myTab, font, xpos, ypos, "Scanline settings");
   ypos += lineHeight;
 
   xpos += INDENT;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ");
 
-  myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos,
-                                           "Interpolation");
+  myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos, "Interpolation");
   wid.push_back(myTVScanInterpolate);
   ypos += lineHeight + 6;
 
@@ -349,15 +334,13 @@ void VideoDialog::loadConfig()
 
   // Aspect ratio setting (NTSC and PAL)
   myNAspectRatio->setValue(instance().settings().getInt("tia.aspectn"));
-  myNAspectRatioLabel->setLabel(instance().settings().getString("tia.aspectn"));
   myPAspectRatio->setValue(instance().settings().getInt("tia.aspectp"));
-  myPAspectRatioLabel->setLabel(instance().settings().getString("tia.aspectp"));
 
   // Framerate (0 or -1 means automatic framerate calculation)
   int rate = instance().settings().getInt("framerate");
   myFrameRate->setValue(rate < 0 ? 0 : rate);
-  myFrameRateLabel->setLabel(rate <= 0 ? "Auto" :
-    instance().settings().getString("framerate"));
+  myFrameRate->setValueLabel(rate <= 0 ? "Auto" :
+                             instance().settings().getString("framerate"));
 
   // Fullscreen
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
@@ -397,11 +380,9 @@ void VideoDialog::loadConfig()
 
   // TV phosphor blend
   myTVPhosLevel->setValue(instance().settings().getInt("tv.phosblend"));
-  myTVPhosLevelLabel->setLabel(instance().settings().getString("tv.phosblend"));
 
   // TV scanline intensity and interpolation
   myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
-  myTVScanIntenseLabel->setLabel(instance().settings().getString("tv.scanlines"));
   myTVScanInterpolate->setState(instance().settings().getBool("tv.scaninter"));
 
   myTab->loadConfig();
@@ -432,8 +413,8 @@ void VideoDialog::saveConfig()
     myTIAInterpolate->getSelectedTag().toString() == "linear" ? true : false);
 
   // Aspect ratio setting (NTSC and PAL)
-  instance().settings().setValue("tia.aspectn", myNAspectRatioLabel->getLabel());
-  instance().settings().setValue("tia.aspectp", myPAspectRatioLabel->getLabel());
+  instance().settings().setValue("tia.aspectn", myNAspectRatio->getValueLabel());
+  instance().settings().setValue("tia.aspectp", myPAspectRatio->getValueLabel());
 
   // Framerate
   int f = myFrameRate->getValue();
@@ -492,11 +473,11 @@ void VideoDialog::saveConfig()
       myTVPhosphor->getSelectedTag().toString());
 
   // TV phosphor blend
-  instance().settings().setValue("tv.phosblend", myTVPhosLevelLabel->getLabel());
-  Properties::setDefault(Display_PPBlend, myTVPhosLevelLabel->getLabel());
+  instance().settings().setValue("tv.phosblend", myTVPhosLevel->getValueLabel());
+  Properties::setDefault(Display_PPBlend, myTVPhosLevel->getValueLabel());
 
   // TV scanline intensity and interpolation
-  instance().settings().setValue("tv.scanlines", myTVScanIntenseLabel->getLabel());
+  instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
   instance().settings().setValue("tv.scaninter", myTVScanInterpolate->getState());
 
   // Finally, issue a complete framebuffer re-initialization
@@ -515,12 +496,9 @@ void VideoDialog::setDefaults()
       myTIAPalette->setSelected("standard", "");
       myFrameTiming->setSelected("sleep", "");
       myTIAInterpolate->setSelected("nearest", "");
-      myNAspectRatio->setValue(90);
-      myNAspectRatioLabel->setLabel("91");
-      myPAspectRatio->setValue(100);
-      myPAspectRatioLabel->setLabel("109");
+      myNAspectRatio->setValue(91);
+      myPAspectRatio->setValue(109);
       myFrameRate->setValue(0);
-      myFrameRateLabel->setLabel("Auto");
 
       myFullscreen->setState(false);
       //myFullScreenMode->setSelectedIndex(0);
@@ -542,11 +520,9 @@ void VideoDialog::setDefaults()
 
       // TV phosphor blend
       myTVPhosLevel->setValue(50);
-      myTVPhosLevelLabel->setLabel("50");
 
       // TV scanline intensity and interpolation
       myTVScanIntense->setValue(25);
-      myTVScanIntenseLabel->setLabel("25");
       myTVScanInterpolate->setState(true);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
@@ -566,25 +542,15 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
   bool scanenable = preset != NTSCFilter::PRESET_OFF;
 
   myTVSharp->setEnabled(enable);
-  myTVSharpLabel->setEnabled(enable);
   myTVHue->setEnabled(enable);
-  myTVHueLabel->setEnabled(enable);
   myTVRes->setEnabled(enable);
-  myTVResLabel->setEnabled(enable);
   myTVArtifacts->setEnabled(enable);
-  myTVArtifactsLabel->setEnabled(enable);
   myTVFringe->setEnabled(enable);
-  myTVFringeLabel->setEnabled(enable);
   myTVBleed->setEnabled(enable);
-  myTVBleedLabel->setEnabled(enable);
   myTVBright->setEnabled(enable);
-  myTVBrightLabel->setEnabled(enable);
   myTVContrast->setEnabled(enable);
-  myTVContrastLabel->setEnabled(enable);
   myTVSatur->setEnabled(enable);
-  myTVSaturLabel->setEnabled(enable);
   myTVGamma->setEnabled(enable);
-  myTVGammaLabel->setEnabled(enable);
   myCloneComposite->setEnabled(enable);
   myCloneSvideo->setEnabled(enable);
   myCloneRGB->setEnabled(enable);
@@ -593,7 +559,6 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 
   myTVScanLabel->setEnabled(scanenable);
   myTVScanIntense->setEnabled(scanenable);
-  myTVScanIntenseLabel->setEnabled(scanenable);
   myTVScanInterpolate->setEnabled(scanenable);
 
   _dirty = true;
@@ -606,25 +571,15 @@ void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
   instance().frameBuffer().tiaSurface().ntsc().getAdjustables(
       adj, NTSCFilter::Preset(preset));
   myTVSharp->setValue(adj.sharpness);
-  myTVSharpLabel->setValue(adj.sharpness);
   myTVHue->setValue(adj.hue);
-  myTVHueLabel->setValue(adj.hue);
   myTVRes->setValue(adj.resolution);
-  myTVResLabel->setValue(adj.resolution);
   myTVArtifacts->setValue(adj.artifacts);
-  myTVArtifactsLabel->setValue(adj.artifacts);
   myTVFringe->setValue(adj.fringing);
-  myTVFringeLabel->setValue(adj.fringing);
   myTVBleed->setValue(adj.bleed);
-  myTVBleedLabel->setValue(adj.bleed);
   myTVBright->setValue(adj.brightness);
-  myTVBrightLabel->setValue(adj.brightness);
   myTVContrast->setValue(adj.contrast);
-  myTVContrastLabel->setValue(adj.contrast);
   myTVSatur->setValue(adj.saturation);
-  myTVSaturLabel->setValue(adj.saturation);
   myTVGamma->setValue(adj.gamma);
-  myTVGammaLabel->setValue(adj.gamma);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -642,48 +597,15 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kNAspectRatioChanged:
-      myNAspectRatioLabel->setValue(myNAspectRatio->getValue());
-      break;
-
-    case kPAspectRatioChanged:
-      myPAspectRatioLabel->setValue(myPAspectRatio->getValue());
-      break;
-
     case kFrameRateChanged:
       if(myFrameRate->getValue() == 0)
-        myFrameRateLabel->setLabel("Auto");
-      else
-        myFrameRateLabel->setValue(myFrameRate->getValue());
+        myFrameRate->setValueLabel("Auto");
       break;
 
     case kTVModeChanged:
       handleTVModeChange(NTSCFilter::Preset(myTVMode->getSelectedTag().toInt()));
       break;
-    case kTVSharpChanged:  myTVSharpLabel->setValue(myTVSharp->getValue());
-      break;
-    case kTVHueChanged:  myTVHueLabel->setValue(myTVHue->getValue());
-      break;
-    case kTVResChanged:  myTVResLabel->setValue(myTVRes->getValue());
-      break;
-    case kTVArtifactsChanged:  myTVArtifactsLabel->setValue(myTVArtifacts->getValue());
-      break;
-    case kTVFringeChanged:  myTVFringeLabel->setValue(myTVFringe->getValue());
-      break;
-    case kTVBleedChanged:  myTVBleedLabel->setValue(myTVBleed->getValue());
-      break;
-    case kTVBrightChanged:  myTVBrightLabel->setValue(myTVBright->getValue());
-      break;
-    case kTVContrastChanged:  myTVContrastLabel->setValue(myTVContrast->getValue());
-      break;
-    case kTVSaturChanged:  myTVSaturLabel->setValue(myTVSatur->getValue());
-      break;
-    case kTVGammaChanged:  myTVGammaLabel->setValue(myTVGamma->getValue());
-      break;
-    case kTVPhosLevelChanged:  myTVPhosLevelLabel->setValue(myTVPhosLevel->getValue());
-      break;
-    case kTVScanIntenseChanged:  myTVScanIntenseLabel->setValue(myTVScanIntense->getValue());
-      break;
+
     case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::PRESET_COMPOSITE);
       break;
     case kCloneSvideoCmd: loadTVAdjustables(NTSCFilter::PRESET_SVIDEO);
