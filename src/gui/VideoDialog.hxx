@@ -52,10 +52,10 @@ class VideoDialog : public Dialog
 
     // General options
     PopUpWidget*      myRenderer;
-    PopUpWidget*      myTIAZoom;
+    PopUpWidget*      myTIAZoom; // TODO: SliderWidget
     PopUpWidget*      myTIAPalette;
-    PopUpWidget*      myFrameTiming;
-    PopUpWidget*      myTIAInterpolate;
+    CheckboxWidget*   myFrameTiming;
+    CheckboxWidget*   myTIAInterpolate;
     SliderWidget*     myNAspectRatio;
     SliderWidget*     myPAspectRatio;
     SliderWidget*     myFrameRate;
@@ -83,7 +83,7 @@ class VideoDialog : public Dialog
     SliderWidget*     myTVGamma;
 
     // TV phosphor effect
-    PopUpWidget*      myTVPhosphor;
+    CheckboxWidget*   myTVPhosphor;
     SliderWidget*     myTVPhosLevel;
 
     // TV scanline intensity and interpolation

@@ -329,7 +329,7 @@ GameInfoDialog::GameInfoDialog(
 
   // Phosphor
   ypos += lineHeight + vGap*4;
-  myPhosphor = new CheckboxWidget(myTab, font, hSpace, ypos+1, "TV Phosphor", kPhosphorChanged);
+  myPhosphor = new CheckboxWidget(myTab, font, hSpace, ypos+1, "Phosphor", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
   myPPBlend = new SliderWidget(myTab, font,

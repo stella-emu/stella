@@ -40,14 +40,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   const int VGAP = 4;
   const int VBORDER = 8;
   const int HBORDER = 10;
-  const int INDENT = 18;
+  const int INDENT = 20;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos, tabID;
-  int lwidth = font.getStringWidth("Interpolation "),
+  int lwidth = font.getStringWidth("TIA Palette "),
     pwidth = font.getStringWidth("XXXXxXXXX"),
     swidth = font.getMaxCharWidth() * 10 - 2;
 
@@ -55,7 +55,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = std::min(53 * fontWidth + HBORDER * 2, max_w);
+  _w = std::min(55 * fontWidth + HBORDER * 2, max_w);
   _h = std::min((16-2) * (lineHeight + VGAP) + 14 + _th, max_h);
 
   // The tab widget
@@ -75,44 +75,31 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myRenderer);
   ypos += lineHeight + VGAP;
 
-  // TIA filters (will be dynamically filled later)
-  myTIAZoom = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                              lineHeight, items, "TIA Zoom ", lwidth);
-  wid.push_back(myTIAZoom);
-  ypos += lineHeight + VGAP;
-
   // TIA Palette
   items.clear();
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Z26", "z26");
   VarList::push_back(items, "User", "user");
   myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                 lineHeight, items, "TIA Palette ", lwidth);
+                                 lineHeight, items, "TIA palette ", lwidth);
   wid.push_back(myTIAPalette);
   ypos += lineHeight + VGAP;
 
-  // TIA interpolation
-  items.clear();
-  VarList::push_back(items, "On", "linear");
-  VarList::push_back(items, "Off", "nearest");
-  myTIAInterpolate = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "Interpolation ", lwidth);
-  wid.push_back(myTIAInterpolate);
+  // TIA filters (will be dynamically filled later)
+  myTIAZoom = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
+                              lineHeight, items, "TIA zoom ", lwidth);
+  wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
-  // Timing to use between frames
-  items.clear();
-  VarList::push_back(items, "Sleep", "sleep");
-  VarList::push_back(items, "Busy-wait", "busy");
-  myFrameTiming = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                  items, "Timing (*) ", lwidth);
-  wid.push_back(myFrameTiming);
+  // TIA interpolation
+  myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "TIA interpolation ");
+  wid.push_back(myTIAInterpolate);
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
   myNAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "NTSC Aspect ", lwidth, 0,
+                     "NTSC aspect ", lwidth, 0,
                      fontWidth * 3);
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
   wid.push_back(myNAspectRatio);
@@ -121,7 +108,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Aspect ratio (PAL mode)
   myPAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "PAL Aspect ", lwidth, 0,
+                     "PAL aspect ", lwidth, 0,
                      fontWidth * 3);
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
   wid.push_back(myPAspectRatio);
@@ -130,10 +117,15 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Framerate
   myFrameRate =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "Framerate ", lwidth, 0, fontWidth * 4);
+                     "Frame rate ", lwidth, 0, fontWidth * 4);
   myFrameRate->setMinValue(0); myFrameRate->setMaxValue(900);
   myFrameRate->setStepValue(10);
   wid.push_back(myFrameRate);
+  ypos += lineHeight + VGAP;
+
+  // Use sync to vblank
+  myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos + 1, "VSync");
+  wid.push_back(myUseVSync);
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
@@ -152,18 +144,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   /*pwidth = font.getStringWidth("0: 3840x2860@120Hz");
   myFullScreenMode = new PopUpWidget(myTab, font, xpos + INDENT + 2, ypos, pwidth, lineHeight,
-                                     instance().frameBuffer().supportedScreenModes(), "Mode ");
+  instance().frameBuffer().supportedScreenModes(), "Mode ");
   wid.push_back(myFullScreenMode);
   ypos += lineHeight + VGAP;*/
 
   // FS stretch
-  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen Fill");
+  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen fill");
   wid.push_back(myUseStretch);
-  ypos += lineHeight + VGAP;
-
-  // Use sync to vblank
-  myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos + 1, "VSync");
-  wid.push_back(myUseVSync);
   ypos += (lineHeight + VGAP) * 2;
 
   // Skip progress load bars for SuperCharger ROMs
@@ -180,10 +167,15 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Center window (in windowed mode)
   myCenter = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Center window");
   wid.push_back(myCenter);
+  ypos += (lineHeight + VGAP) * 2;
+
+  // Timing to use between frames
+  myFrameTiming = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Idle between frames (*)");
+  wid.push_back(myFrameTiming);
   ypos += lineHeight + VGAP;
 
   // Use multi-threading
-  myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Use multi-threading");
+  myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Multi-threading");
   wid.push_back(myUseThreads);
 
   // Add items for tab 0
@@ -209,12 +201,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   pwidth = font.getStringWidth("Bad adjust");
   myTVMode =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                    items, "TV Mode ", lwidth, kTVModeChanged);
+                    items, "TV mode ", lwidth, kTVModeChanged);
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP;
 
   // Custom adjustables (using macro voodoo)
-  xpos += INDENT; ypos += 0;
+  xpos += INDENT - 2; ypos += 0;
   pwidth = lwidth;
   lwidth = font.getStringWidth("Saturation ");
 
@@ -237,19 +229,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
-  xpos += myTVContrast->getWidth() + 28;
+  xpos += myTVContrast->getWidth() + 40;
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
   pwidth = font.getMaxCharWidth() * 6;
 
   // TV Phosphor effect
-  items.clear();
-  VarList::push_back(items, "Always", "always");
-  VarList::push_back(items, "Per-ROM", "byrom");
-  myTVPhosphor = new PopUpWidget(myTab, font, xpos, ypos,
-      font.getStringWidth("Per-ROM"), lineHeight, items,
-      "TV Phosphor ");
+  myTVPhosphor = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Phosphor for all ROMs");
   wid.push_back(myTVPhosphor);
   ypos += lineHeight + VGAP;
 
@@ -324,13 +311,10 @@ void VideoDialog::loadConfig()
     instance().settings().getString("palette"), "standard");
 
   // TIA interpolation
-  const string& tia_inter = instance().settings().getBool("tia.inter") ?
-                           "linear" : "nearest";
-  myTIAInterpolate->setSelected(tia_inter, "nearest");
+  myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
   // Wait between frames
-  myFrameTiming->setSelected(
-    instance().settings().getString("timing"), "sleep");
+  myFrameTiming->setState(instance().settings().getString("timing") == "sleep");
 
   // Aspect ratio setting (NTSC and PAL)
   myNAspectRatio->setValue(instance().settings().getInt("tia.aspectn"));
@@ -375,8 +359,7 @@ void VideoDialog::loadConfig()
   loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
 
   // TV phosphor mode
-  myTVPhosphor->setSelected(
-      instance().settings().getString("tv.phosphor"), "byrom");
+  myTVPhosphor->setState(instance().settings().getString("tv.phosphor") == "always");
 
   // TV phosphor blend
   myTVPhosLevel->setValue(instance().settings().getInt("tv.phosblend"));
@@ -405,12 +388,10 @@ void VideoDialog::saveConfig()
     myTIAPalette->getSelectedTag().toString());
 
   // Wait between frames
-  instance().settings().setValue("timing",
-    myFrameTiming->getSelectedTag().toString());
+  instance().settings().setValue("timing", myFrameTiming->getState() ? "sleep" : "busy");
 
   // TIA interpolation
-  instance().settings().setValue("tia.inter",
-    myTIAInterpolate->getSelectedTag().toString() == "linear" ? true : false);
+  instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
   // Aspect ratio setting (NTSC and PAL)
   instance().settings().setValue("tia.aspectn", myNAspectRatio->getValueLabel());
@@ -470,7 +451,7 @@ void VideoDialog::saveConfig()
 
   // TV phosphor mode
   instance().settings().setValue("tv.phosphor",
-      myTVPhosphor->getSelectedTag().toString());
+                                 myTVPhosphor->getState() ? "always" : "byrom");
 
   // TV phosphor blend
   instance().settings().setValue("tv.phosblend", myTVPhosLevel->getValueLabel());
@@ -494,8 +475,8 @@ void VideoDialog::setDefaults()
       myRenderer->setSelectedIndex(0);
       myTIAZoom->setSelected("3", "");
       myTIAPalette->setSelected("standard", "");
-      myFrameTiming->setSelected("sleep", "");
-      myTIAInterpolate->setSelected("nearest", "");
+      myFrameTiming->setState(true);
+      myTIAInterpolate->setState(false);
       myNAspectRatio->setValue(91);
       myPAspectRatio->setValue(109);
       myFrameRate->setValue(0);
@@ -516,7 +497,7 @@ void VideoDialog::setDefaults()
       myTVMode->setSelected("0", "0");
 
       // TV phosphor mode
-      myTVPhosphor->setSelected("byrom", "byrom");
+      myTVPhosphor->setState(false);
 
       // TV phosphor blend
       myTVPhosLevel->setValue(50);
