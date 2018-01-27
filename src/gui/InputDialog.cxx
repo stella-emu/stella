@@ -224,7 +224,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Show joystick database
   ypos += lineHeight;
   myJoyDlgButton = new ButtonWidget(myTab, font, HBORDER, ypos, 20,
-    "Joystick database" + ELLIPSIS, kDBButtonPressed);
+    "Joystick Database" + ELLIPSIS, kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
 
   // Add EEPROM erase (part 1/2)
@@ -513,8 +513,11 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDBButtonPressed:
       if(!myJoyDialog)
+      {
+        const GUI::Font& font = instance().frameBuffer().font();
         myJoyDialog = make_unique<JoystickDialog>
-                          (this, instance().frameBuffer().font(), _w-60, _h-60);
+          (this, font, font.getMaxCharWidth() * 56 + 20, font.getFontHeight() * 18 + 20);
+      }
       myJoyDialog->show();
       break;
 
