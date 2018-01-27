@@ -316,7 +316,8 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
                                    const string& text, TextAlign align,
                                    uInt32 shadowColor)
-  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(), text, align, shadowColor)
+  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(),
+                     text, align, shadowColor)
 {
 }
 
@@ -625,14 +626,18 @@ void CheckboxWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           const string& label, int labelWidth, int cmd)
+                           const string& label, int labelWidth, int cmd,
+                           int valueLabelWidth, int valueLabelGap)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
     _value(0),
     _stepValue(1),
     _valueMin(0),
     _valueMax(100),
     _isDragging(false),
-    _labelWidth(labelWidth)
+    _labelWidth(labelWidth),
+    _valueLabelGap(valueLabelGap),
+    _valueLabelWidth(valueLabelWidth),
+    _valueLabel("")
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
   _bgcolor = kDlgColor;
@@ -641,29 +646,20 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font.getStringWidth(_label);
 
-  _w = w + _labelWidth;
+  if(_valueLabelWidth == 0)
+    _valueLabelGap = 0;
+
+  _w = w + _labelWidth + _valueLabelGap + _valueLabelWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
-                           const string& label, int labelWidth, int cmd)
-  : ButtonWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(), label, cmd),
-  _value(0),
-  _stepValue(1),
-  _valueMin(0),
-  _valueMax(100),
-  _isDragging(false),
-  _labelWidth(labelWidth)
+                           const string& label, int labelWidth, int cmd,
+                           int valueLabelWidth, int valueLabelGap)
+  : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(),
+                 label, labelWidth, cmd, valueLabelWidth, valueLabelGap)
 {
-  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
-  _bgcolor = kDlgColor;
-  _bgcolorhi = kDlgColor;
-
-  if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font.getStringWidth(_label);
-
-  _w = _font.getMaxCharWidth() * 10 + _labelWidth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -676,6 +672,8 @@ void SliderWidget::setValue(int value)
   {
     _value = value;
     setDirty();
+    if (_valueLabelWidth)
+      setValueLabel(_value); // update label
     sendCommand(_cmd, _value, _id);
   }
 }
@@ -699,11 +697,30 @@ void SliderWidget::setStepValue(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setValueLabel(const string& valueLabel)
+{
+  _valueLabel = valueLabel;
+
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setValueLabel(int value)
+{
+  char buf[256];
+  std::snprintf(buf, 255, "%d", value);
+  _valueLabel = buf;
+
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::handleMouseMoved(int x, int y)
 {
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
-  if(isEnabled() && _isDragging && x >= int(_labelWidth))
+  if(isEnabled() && _isDragging &&
+     x >= int(_labelWidth) && x <= int(_w - _valueLabelGap - _valueLabelWidth))
     setValue(posToValue(x - _labelWidth));
 }
 
@@ -787,7 +804,7 @@ void SliderWidget::drawWidget(bool hilite)
     y = _y + (_h - h) / 2 + 1;
 
   // Fill the box
-  s.fillRect(x, y, _w - _labelWidth, h,
+  s.fillRect(x, y, _w - _labelWidth - _valueLabelGap - _valueLabelWidth, h,
              !isEnabled() ? kBGColorHi : kBGColorLo);
   // Draw the 'bar'
   s.fillRect(x, y, p, h,
@@ -795,6 +812,10 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the 'handle'
   s.fillRect(x + p, y - 2, 2, h + 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+
+  if(_valueLabelWidth > 0)
+    s.drawString(_font, _valueLabel, _x + _w - _valueLabelWidth, _y + 2,
+                 _valueLabelWidth, isEnabled() ? kTextColor : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -804,13 +825,13 @@ int SliderWidget::valueToPos(int value)
   else if(value > _valueMax) value = _valueMax;
   int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
 
-  return ((_w - _labelWidth - 2) * (value - _valueMin) / range);
+  return ((_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 2) * (value - _valueMin) / range);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int SliderWidget::posToValue(int pos)
 {
-  int value = (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - 4) + _valueMin;
+  int value = (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 4) + _valueMin;
 
   // Scale the position to the correct interval (according to step value)
   return value - (value % _stepValue);
