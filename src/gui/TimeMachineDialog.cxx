@@ -179,12 +179,12 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   };
 
   const GUI::Font& font = instance().frameBuffer().font();
-  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4; // FIXME, V_GAP = 4;
+  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;
   const int buttonWidth = BUTTON_W + 8,
             buttonHeight = BUTTON_H + 10,
             rowHeight = font.getLineHeight();
 
-  WidgetArray wid;
+//  WidgetArray wid;
   int xpos, ypos;
 
   // Set real dimensions
@@ -210,7 +210,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2,
                tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
   myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
-  wid.push_back(myTimeline);
+//  wid.push_back(myTimeline);
   ypos += rowHeight;
 
   // Add time info
@@ -224,37 +224,37 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add buttons
   myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_ALL,
                                        BUTTON_W, BUTTON_H, kRewindAll);
-  wid.push_back(myRewindAllWidget);
+//  wid.push_back(myRewindAllWidget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myRewind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_10,
                                       BUTTON_W, BUTTON_H, kRewind10);
-  wid.push_back(myRewind10Widget);
+//  wid.push_back(myRewind10Widget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_1,
                                      BUTTON_W, BUTTON_H, kRewind1);
-  wid.push_back(myRewind1Widget);
+//  wid.push_back(myRewind1Widget);
   xpos += buttonWidth + BUTTON_GAP*2;
 
   myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, PLAY,
                                   BUTTON_W, BUTTON_H, kPlay);
-  wid.push_back(myPlayWidget);
+//  wid.push_back(myPlayWidget);
   xpos += buttonWidth + BUTTON_GAP*2;
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
                                      BUTTON_W, BUTTON_H, kUnwind1);
-  wid.push_back(myUnwind1Widget);
+//  wid.push_back(myUnwind1Widget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_10,
                                       BUTTON_W, BUTTON_H, kUnwind10);
-  wid.push_back(myUnwind10Widget);
+//  wid.push_back(myUnwind10Widget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
                                        BUTTON_W, BUTTON_H, kUnwindAll);
-  wid.push_back(myUnwindAllWidget);
+//  wid.push_back(myUnwindAllWidget);
   xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 3;
 
   // Add message
@@ -262,7 +262,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                          TextAlign::Left, kBGColor);
   myMessageWidget->setTextColor(kWidColor);
 
-  // FIXME - add wid list to focus list
+//  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,13 +277,29 @@ void TimeMachineDialog::center()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::loadConfig()
 {
-cerr << "loadConfig()\n";
-  // FIXME - set range for timeline
-  //myTimeline->setMinValue(..); myTimeline->setMaxValue(..);
+  RewindManager& r = instance().state().rewindManager();
+  IntArray cycles = r.cyclesList();
 
-  surface().attributes().blending = true;
-  surface().attributes().blendalpha = 80;
-  surface().applyAttributes();
+#if 0  // if we won't be using focused widget, this code can disappear
+  // Set default focus
+  bool timelineEnabled = cycles.size() > 0;
+  myTimeline->setEnabled(timelineEnabled);
+  if(timelineEnabled)
+    setFocus(myTimeline);
+  else
+    setFocus(myPlayWidget);
+#endif
+
+  // Set range for timeline
+  myTimeline->setMaxValue(std::max(Int32(cycles.size()), 1));
+
+  // Enable blending (only once is necessary)
+  if(!surface().attributes().blending)
+  {
+    surface().attributes().blending = true;
+    surface().attributes().blendalpha = 80;
+    surface().applyAttributes();
+  }
 
   handleWinds();
   myMessageWidget->setLabel("");
@@ -296,8 +312,12 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kTimeline:
-      cerr << "timeline: " << myTimeline->getValue() << endl;
+    {
+      Int32 winds = myTimeline->getValue() -
+          instance().state().rewindManager().getCurrentIdx() + 1;
+      handleWinds(winds);
       break;
+    }
 
     case kPlay:
       instance().eventHandler().leaveMenuMode();
@@ -338,7 +358,7 @@ string TimeMachineDialog::getTimeString(uInt64 cycles)
   const Int32 scanlines = std::max(instance().console().tia().scanlinesLastFrame(), 240u);
   const bool isNTSC = scanlines <= 287;
   const Int32 NTSC_FREQ = 1193182; // ~76*262*60
-  const Int32 PAL_FREQ = 1182298; // ~76*312*50
+  const Int32 PAL_FREQ  = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
   uInt32 minutes = cycles / (freq * 60);
@@ -347,7 +367,7 @@ string TimeMachineDialog::getTimeString(uInt64 cycles)
   cycles -= seconds * freq;
   uInt32 frames = cycles / (scanlines * 76);
 
-  stringstream time;
+  ostringstream time;
   time << Common::Base::toString(minutes, Common::Base::F_10_2) << ":";
   time << Common::Base::toString(seconds, Common::Base::F_10_2) << ".";
   time << Common::Base::toString(frames, Common::Base::F_10_2);
@@ -363,10 +383,8 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   if(numWinds)
   {
     uInt64 startCycles = instance().console().tia().cycles();
-    if(numWinds < 0)
-      r.rewindState(-numWinds);
-    else
-      r.unwindState(numWinds);
+    if(numWinds < 0)      r.rewindState(-numWinds);
+    else if(numWinds > 0) r.unwindState(numWinds);
     string message = r.getUnitString(instance().console().tia().cycles() - startCycles);
 
     myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
@@ -374,6 +392,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   // Update time
   myCurrentTimeWidget->setLabel(getTimeString(r.getCurrentCycles() - r.getFirstCycles()));
   myLastTimeWidget->setLabel(getTimeString(r.getLastCycles() - r.getFirstCycles()));
+  myTimeline->setValue(r.getCurrentIdx()-1);
   // Update index
   myCurrentIdxWidget->setValue(r.getCurrentIdx());
   myLastIdxWidget->setValue(r.getLastIdx());

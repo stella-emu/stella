@@ -42,7 +42,7 @@ void RewindManager::setup()
 
   mySize = myOSystem.settings().getInt(prefix + "tm.size");
   if(mySize != myStateList.capacity())
-    myStateList.resize(mySize);
+    resize(mySize);
 
   myUncompressed = myOSystem.settings().getInt(prefix + "tm.uncompressed");
 
@@ -146,7 +146,7 @@ uInt32 RewindManager::rewindState(uInt32 numStates)
 
   for(i = 0; i < numStates; ++i)
   {
-     if(!atFirst())
+    if(!atFirst())
     {
       if(!myLastTimeMachineAdd)
         // Set internal current iterator to previous state (back in time),
@@ -306,14 +306,14 @@ string RewindManager::getUnitString(Int64 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getFirstCycles()
+uInt32 RewindManager::getFirstCycles() const
 {
   // TODO: check if valid
   return Common::LinkedObjectPool<RewindState>::const_iter(myStateList.first())->cycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getCurrentCycles()
+uInt32 RewindManager::getCurrentCycles() const
 {
   if(myStateList.currentIsValid())
     return myStateList.current().cycles;
@@ -322,9 +322,20 @@ uInt32 RewindManager::getCurrentCycles()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getLastCycles()
+uInt32 RewindManager::getLastCycles() const
 {
   // TODO: check if valid
   return Common::LinkedObjectPool<RewindState>::const_iter(myStateList.last())->cycles;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+IntArray RewindManager::cyclesList() const
+{
+  IntArray arr;
+
+  uInt64 firstCycle = getFirstCycles();
+  for(auto it = myStateList.first(); it != myStateList.last(); ++it)
+    arr.push_back(uInt32(it->cycles - firstCycle));
+
+  return arr;
+}

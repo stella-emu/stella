@@ -73,11 +73,13 @@ void TimeLineWidget::setMaxValue(int value)
   _valueMax = value;
 }
 
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::setStepValue(int value)
 {
   _stepValue = value;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::handleMouseMoved(int x, int y)

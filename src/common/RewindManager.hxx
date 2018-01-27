@@ -136,9 +136,15 @@ class RewindManager
     uInt32 getCurrentIdx() { return myStateList.currentIdx(); }
     uInt32 getLastIdx() { return myStateList.size(); }
 
-    uInt32 getFirstCycles();
-    uInt32 getCurrentCycles();
-    uInt32 getLastCycles();
+    uInt32 getFirstCycles() const;
+    uInt32 getCurrentCycles() const;
+    uInt32 getLastCycles() const;
+
+    /**
+      Get a collection of cycle timestamps, offset from the first one in
+      the list.  This also determines the number of states in the list.
+    */
+    IntArray cyclesList() const;
 
   private:
     OSystem& myOSystem;

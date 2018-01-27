@@ -34,8 +34,10 @@ class TimeLineWidget : public ButtonWidget
     int  getMinValue() const      { return _valueMin; }
     void setMaxValue(int value);
     int  getMaxValue() const      { return _valueMax; }
+#if 0
     void setStepValue(int value);
     int  getStepValue() const     { return _stepValue; }
+#endif
 
   protected:
     void handleMouseMoved(int x, int y) override;
