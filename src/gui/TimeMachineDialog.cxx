@@ -181,10 +181,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add index info
   myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ", TextAlign::Left, kBGColor);
-  myCurrentIdxWidget->setTextColor(kWidColor);
+  myCurrentIdxWidget->setTextColor(kColorInfo);
   myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos,
                                          "    ", TextAlign::Right, kBGColor);
-  myLastIdxWidget->setTextColor(kWidColor);
+  myLastIdxWidget->setTextColor(kColorInfo);
 
   // Add timeline
   const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2,
@@ -196,10 +196,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add time info
   myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59", TextAlign::Left, kBGColor);
-  myCurrentTimeWidget->setTextColor(kWidColor);
+  myCurrentTimeWidget->setTextColor(kColorInfo);
   myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("XX:XX XX"), ypos + 3,
                                           "12:25 59", TextAlign::Right, kBGColor);
-  myLastTimeWidget->setTextColor(kWidColor);
+  myLastTimeWidget->setTextColor(kColorInfo);
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
   // Add buttons
@@ -234,7 +234,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add message
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ",
                                          TextAlign::Left, kBGColor);
-  myMessageWidget->setTextColor(kWidColor);
+  myMessageWidget->setTextColor(kColorInfo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
