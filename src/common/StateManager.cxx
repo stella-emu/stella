@@ -142,17 +142,31 @@ void StateManager::toggleTimeMachine()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::rewindState(uInt32 numStates)
+bool StateManager::addState(const string& message, bool timeMachine)
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  return r.rewindState(numStates);
+  return r.addState(message, timeMachine);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::unwindState(uInt32 numStates)
+bool StateManager::rewindStates(uInt32 numStates)
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  return r.unwindState(numStates);
+  return r.rewindStates(numStates);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::unwindStates(uInt32 numStates)
+{
+  RewindManager& r = myOSystem.state().rewindManager();
+  return r.unwindStates(numStates);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::windStates(uInt32 numStates, bool unwind)
+{
+  RewindManager& r = myOSystem.state().rewindManager();
+  return r.windStates(numStates, unwind);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

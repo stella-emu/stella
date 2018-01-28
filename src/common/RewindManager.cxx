@@ -138,7 +138,7 @@ bool RewindManager::addState(const string& message, bool timeMachine)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::rewindState(uInt32 numStates)
+uInt32 RewindManager::rewindStates(uInt32 numStates)
 {
   uInt64 startCycles = myOSystem.console().tia().cycles();
   uInt32 i;
@@ -177,7 +177,7 @@ uInt32 RewindManager::rewindState(uInt32 numStates)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::unwindState(uInt32 numStates)
+uInt32 RewindManager::unwindStates(uInt32 numStates)
 {
   uInt64 startCycles = myOSystem.console().tia().cycles();
   uInt32 i;
@@ -209,6 +209,16 @@ uInt32 RewindManager::unwindState(uInt32 numStates)
     myOSystem.frameBuffer().showMessage(message);
   return i;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 RewindManager::windStates(uInt32 numStates, bool unwind)
+{
+  if(unwind)
+    return unwindStates(numStates);
+  else
+    return rewindStates(numStates);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::compressStates()

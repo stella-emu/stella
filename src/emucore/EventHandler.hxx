@@ -137,6 +137,7 @@ class EventHandler
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
+    void enterTimeMachineMenuMode(uInt32 numWinds, bool unwind);
     void takeSnapshot(uInt32 number = 0);
 
     /**

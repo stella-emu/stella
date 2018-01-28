@@ -383,10 +383,11 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   if(numWinds)
   {
     uInt64 startCycles = instance().console().tia().cycles();
-    if(numWinds < 0)      r.rewindState(-numWinds);
-    else if(numWinds > 0) r.unwindState(numWinds);
+    if(numWinds < 0)      r.rewindStates(-numWinds);
+    else if(numWinds > 0) r.unwindStates(numWinds);
     string message = r.getUnitString(instance().console().tia().cycles() - startCycles);
 
+    // TODO: add message text from addState()
     myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
   }
   // Update time

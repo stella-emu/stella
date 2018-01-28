@@ -106,22 +106,32 @@ class RewindManager
     bool addState(const string& message, bool timeMachine = false);
 
     /**
-      Rewind one level of the state list, and display the message associated
+      Rewind numStates levels of the state list, and display the message associated
       with that state.
 
       @param numStates  Number of states to rewind
       @return           Number of states to rewinded
     */
-    uInt32 rewindState(uInt32 numStates = 1);
+    uInt32 rewindStates(uInt32 numStates = 1);
 
     /**
-      Unwind one level of the state list, and display the message associated
+      Unwind numStates levels of the state list, and display the message associated
       with that state.
 
       @param numStates  Number of states to unwind
       @return           Number of states to unwinded
     */
-    uInt32 unwindState(uInt32 numStates = 1);
+    uInt32 unwindStates(uInt32 numStates = 1);
+
+    /**
+      Rewind/unwind numStates levels of the state list, and display the message associated
+      with that state.
+
+      @param numStates  Number of states to wind
+      @param unwind     unwind or rewind
+      @return           Number of states to winded
+    */
+    uInt32 windStates(uInt32 numStates, bool unwind);
 
     bool atFirst() const { return myStateList.atFirst(); }
     bool atLast() const  { return myStateList.atLast();  }
