@@ -192,6 +192,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2,
                tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
   myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
+  myTimeline->setMinValue(0);
   ypos += rowHeight;
 
   // Add time info
@@ -252,8 +253,9 @@ void TimeMachineDialog::loadConfig()
   RewindManager& r = instance().state().rewindManager();
   IntArray cycles = r.cyclesList();
 
-  // Set range for timeline
-  myTimeline->setMaxValue(std::max(Int32(cycles.size()), 1));
+  // Set range and intervals for timeline
+  myTimeline->setMaxValue(cycles.size() - 1);
+  myTimeline->setStepValues(cycles);
 
   // Enable blending (only once is necessary)
   if(!surface().attributes().blending)

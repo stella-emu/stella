@@ -25,13 +25,16 @@
 
 #include "TimeLineWidget.hxx"
 
+// TODO - remove all references to _stepValue__
+//      - fix posToValue to use _stepValue
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h,
                                const string& label, int labelWidth, int cmd)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
     _value(0),
-    _stepValue(1),
+    _stepValue__(1),
     _valueMin(0),
     _valueMax(100),
     _isDragging(false),
@@ -45,6 +48,8 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth = _font.getStringWidth(_label);
 
   _w = w + _labelWidth;
+
+  _stepValue.reserve(100);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,13 +78,24 @@ void TimeLineWidget::setMaxValue(int value)
   _valueMax = value;
 }
 
-#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeLineWidget::setStepValue(int value)
+void TimeLineWidget::setStepValues(const IntArray& steps)
 {
-  _stepValue = value;
+  // Try to allocate as infrequently as possible
+  if(steps.size() > _stepValue.capacity())
+    _stepValue.reserve(2 * steps.size());
+  _stepValue.clear();
+
+  double scale = (_w - _labelWidth - 4) / double(steps.back());
+
+  // Skip the very last value; we take care of it outside the end of the loop
+  for(uInt32 i = 0; i < steps.size() - 1; ++i)
+    _stepValue.push_back(int(steps[i] * scale));
+
+  // Due to integer <-> double conversion, the last value is sometimes
+  // slightly less than the maximum value; we assign it manually to fix this
+  _stepValue.push_back(_w - _labelWidth - 4);
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::handleMouseMoved(int x, int y)
@@ -132,13 +148,13 @@ bool TimeLineWidget::handleEvent(Event::Type e)
     case Event::UIDown:
     case Event::UILeft:
     case Event::UIPgDown:
-      setValue(_value - _stepValue);
+      setValue(_value - _stepValue__);
       break;
 
     case Event::UIUp:
     case Event::UIRight:
     case Event::UIPgUp:
-      setValue(_value + _stepValue);
+      setValue(_value + _stepValue__);
       break;
 
     case Event::UIHome:
@@ -196,9 +212,14 @@ int TimeLineWidget::valueToPos(int value)
 {
   if(value < _valueMin)      value = _valueMin;
   else if(value > _valueMax) value = _valueMax;
-  int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
 
-  return ((_w - _labelWidth - 4) * (value - _valueMin) / range);
+  int real = _stepValue[BSPF::clamp(value, _valueMin, _valueMax)];
+#if 0
+  int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
+  int actual = ((_w - _labelWidth - 4) * (value - _valueMin) / range);
+cerr << "i=" << value << " real=" << real << endl << "actual=" << actual << endl << endl;
+#endif
+  return real;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,5 +228,5 @@ int TimeLineWidget::posToValue(int pos)
   int value = (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - 4) + _valueMin;
 
   // Scale the position to the correct interval (according to step value)
-  return value - (value % _stepValue);
+  return value - (value % _stepValue__);
 }

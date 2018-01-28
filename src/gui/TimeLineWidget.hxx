@@ -34,10 +34,12 @@ class TimeLineWidget : public ButtonWidget
     int  getMinValue() const      { return _valueMin; }
     void setMaxValue(int value);
     int  getMaxValue() const      { return _valueMax; }
-#if 0
-    void setStepValue(int value);
-    int  getStepValue() const     { return _stepValue; }
-#endif
+
+    /**
+      Steps are not necessarily linear in a timeline, so we need info
+      on each interval instead.
+    */
+    void setStepValues(const IntArray& steps);
 
   protected:
     void handleMouseMoved(int x, int y) override;
@@ -52,10 +54,12 @@ class TimeLineWidget : public ButtonWidget
     int posToValue(int pos);
 
   protected:
-    int  _value, _stepValue;
+    int  _value, _stepValue__;
     int  _valueMin, _valueMax;
     bool _isDragging;
     int  _labelWidth;
+
+    IntArray _stepValue;
 
   private:
     // Following constructors and assignment operators not supported

@@ -344,7 +344,7 @@ IntArray RewindManager::cyclesList() const
   IntArray arr;
 
   uInt64 firstCycle = getFirstCycles();
-  for(auto it = myStateList.first(); it != myStateList.last(); ++it)
+  for(auto it = myStateList.cbegin(); it != myStateList.cend(); ++it)
     arr.push_back(uInt32(it->cycles - firstCycle));
 
   return arr;
