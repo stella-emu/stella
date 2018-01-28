@@ -294,7 +294,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     {
       myOSystem.frameBuffer().toggleFullscreen();
     }
-    // state rewinding must work in pause mode too
+    // State rewinding must work in pause mode too
     else if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
     {
       switch(key)
@@ -2138,8 +2138,6 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
   // add one extra state if we are in Time Machine mode
   // TODO: maybe remove this state if we leave the menu at this new state
   myOSystem.state().addExtraState("enter Time Machine dialog"); // force new state
-  if (numWinds)
-    myOSystem.state().windStates(numWinds, unwind);
 
   // TODO: display last wind message (numWinds != 0) in time machine dialog
   enterMenuMode(EventHandlerState::TIMEMACHINE);

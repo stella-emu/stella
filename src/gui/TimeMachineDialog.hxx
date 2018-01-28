@@ -33,6 +33,7 @@ class TimeMachineDialog : public Dialog
 
   private:
     void loadConfig() override;
+    void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
