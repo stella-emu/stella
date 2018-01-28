@@ -48,9 +48,7 @@ class UIDialog : public Dialog
 
     // Launcher options
     SliderWidget*     myLauncherWidthSlider;
-    StaticTextWidget* myLauncherWidthLabel;
     SliderWidget*     myLauncherHeightSlider;
-    StaticTextWidget* myLauncherHeightLabel;
     CheckboxWidget*   myLauncherExitWidget;
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
@@ -59,11 +57,6 @@ class UIDialog : public Dialog
     PopUpWidget*      myPalettePopup;
     PopUpWidget*      myListDelayPopup;
     PopUpWidget*      myWheelLinesPopup;
-
-    enum {
-      kLWidthChanged  = 'UIlw',
-      kLHeightChanged = 'UIlh',
-    };
 
   private:
     // Following constructors and assignment operators not supported

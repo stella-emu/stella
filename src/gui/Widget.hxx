@@ -308,11 +308,11 @@ class SliderWidget : public ButtonWidget
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, int valueLabelGap = 4);
+                 int valueLabelWidth = 0, const string& valueUnit = "", int valueLabelGap = 4);
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, int valueLabelGap = 4);
+                 int valueLabelWidth = 0, const string& valueUnit = "", int valueLabelGap = 4);
 
     void setValue(int value);
     int getValue() const { return _value; }
@@ -326,6 +326,7 @@ class SliderWidget : public ButtonWidget
     void setValueLabel(const string& valueLabel);
     void setValueLabel(int value);
     const string& getValueLabel() const { return _valueLabel; }
+    void setValueUnit(const string& valueUnit);
 
   protected:
     void handleMouseMoved(int x, int y) override;
@@ -345,6 +346,7 @@ class SliderWidget : public ButtonWidget
     bool   _isDragging;
     int    _labelWidth;
     string _valueLabel;
+    string _valueUnit;
     int    _valueLabelWidth;
     int    _valueLabelGap;
 

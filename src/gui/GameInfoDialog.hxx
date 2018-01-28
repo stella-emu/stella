@@ -85,12 +85,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     // Display properties
     PopUpWidget*      myFormat;
     SliderWidget*     myYStart;
-    StaticTextWidget* myYStartLabel;
     SliderWidget*     myHeight;
-    StaticTextWidget* myHeightLabel;
     CheckboxWidget*   myPhosphor;
     SliderWidget*     myPPBlend;
-    StaticTextWidget* myPPBlendLabel;
 
     enum {
       kLeftCChanged    = 'LCch',

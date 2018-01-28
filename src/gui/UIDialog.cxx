@@ -132,27 +132,19 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Width ",
-                                           lwidth, kLWidthChanged);
+                                           lwidth, 0, 6 * fontWidth, "px");
   myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
-  myLauncherWidthLabel =
-    new StaticTextWidget(myTab, font,
-                         xpos + myLauncherWidthSlider->getWidth() + 4,
-                         ypos + 1, 4 * fontWidth, fontHeight, "");
   ypos += lineHeight + 4;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Height ",
-                                            lwidth, kLHeightChanged);
+                                            lwidth, 0, 6 * fontWidth, "px");
   myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
-  myLauncherHeightLabel =
-    new StaticTextWidget(myTab, font,
-                         xpos + myLauncherHeightSlider->getWidth() + 4,
-                         ypos + 1, 4 * fontWidth, fontHeight, "", TextAlign::Left);
   ypos += lineHeight + 4;
 
   // Launcher font
@@ -215,9 +207,7 @@ void UIDialog::loadConfig()
   h = std::min(h, instance().frameBuffer().desktopSize().h);
 
   myLauncherWidthSlider->setValue(w);
-  myLauncherWidthLabel->setValue(w);
   myLauncherHeightSlider->setValue(h);
-  myLauncherHeightLabel->setValue(h);
 
   // Launcher font
   const string& font = instance().settings().getString("launcherfont");
@@ -290,9 +280,7 @@ void UIDialog::setDefaults()
       uInt32 w = std::min(instance().frameBuffer().desktopSize().w, 900u);
       uInt32 h = std::min(instance().frameBuffer().desktopSize().h, 600u);
       myLauncherWidthSlider->setValue(w);
-      myLauncherWidthLabel->setValue(w);
       myLauncherHeightSlider->setValue(h);
-      myLauncherHeightLabel->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerPopup->setSelected("1", "");
       myLauncherExitWidget->setState(false);
@@ -317,14 +305,6 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kLWidthChanged:
-      myLauncherWidthLabel->setValue(myLauncherWidthSlider->getValue());
-      break;
-
-    case kLHeightChanged:
-      myLauncherHeightLabel->setValue(myLauncherHeightSlider->getValue());
-      break;
-
     case GuiObject::kOKCmd:
       saveConfig();
       close();

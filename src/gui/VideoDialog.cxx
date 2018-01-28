@@ -55,7 +55,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = std::min(55 * fontWidth + HBORDER * 2, max_w);
+  _w = std::min(57 * fontWidth + HBORDER * 2, max_w);
   _h = std::min((16-2) * (lineHeight + VGAP) + 14 + _th, max_h);
 
   // The tab widget
@@ -91,6 +91,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
+  SliderWidget* s = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
+                                     "TIA zoom", lwidth, 0, fontWidth * 4, "%");
+  s->setMinValue(200); s->setMaxValue(500);
+  wid.push_back(s);
+  ypos += lineHeight + VGAP;
+
+
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "TIA interpolation ");
   wid.push_back(myTIAInterpolate);
@@ -100,7 +107,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myNAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
                      "NTSC aspect ", lwidth, 0,
-                     fontWidth * 3);
+                     fontWidth * 4, "%");
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
   wid.push_back(myNAspectRatio);
   ypos += lineHeight + VGAP;
@@ -109,7 +116,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myPAspectRatio =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
                      "PAL aspect ", lwidth, 0,
-                     fontWidth * 3);
+                     fontWidth * 4, "%");
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
   wid.push_back(myPAspectRatio);
   ypos += lineHeight + VGAP;
@@ -117,7 +124,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Framerate
   myFrameRate =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "Frame rate ", lwidth, 0, fontWidth * 4);
+                     "Frame rate ", lwidth, kFrameRateChanged, fontWidth * 6, "fps");
   myFrameRate->setMinValue(0); myFrameRate->setMaxValue(900);
   myFrameRate->setStepValue(10);
   wid.push_back(myFrameRate);
@@ -213,7 +220,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 #define CREATE_CUSTOM_SLIDERS(obj, desc)                                 \
   myTV ## obj =                                                          \
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,      \
-                     desc, lwidth, 0, fontWidth*3);   \
+                     desc, lwidth, 0, fontWidth*4, "%");   \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
   wid.push_back(myTV ## obj);                                            \
   ypos += lineHeight + VGAP;
@@ -325,6 +332,7 @@ void VideoDialog::loadConfig()
   myFrameRate->setValue(rate < 0 ? 0 : rate);
   myFrameRate->setValueLabel(rate <= 0 ? "Auto" :
                              instance().settings().getString("framerate"));
+  myFrameRate->setValueUnit(rate <= 0 ? "" : "fps");
 
   // Fullscreen
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
@@ -581,6 +589,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
     case kFrameRateChanged:
       if(myFrameRate->getValue() == 0)
         myFrameRate->setValueLabel("Auto");
+      myFrameRate->setValueUnit(myFrameRate->getValue() == 0 ? "" : "fps");
       break;
 
     case kTVModeChanged:

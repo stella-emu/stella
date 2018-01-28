@@ -74,8 +74,6 @@ class DeveloperDialog : public Dialog
       kPFColourChangedCmd   = 'GOpf',
       kBLColourChangedCmd   = 'GObl',
   #ifdef DEBUGGER_SUPPORT
-      kDWidthChanged        = 'UIdw',
-      kDHeightChanged       = 'UIdh',
       kDFontSizeChanged     = 'UIfs',
       kGhostReads           = 'Dbgh'
   #endif
@@ -120,18 +118,14 @@ class DeveloperDialog : public Dialog
     RadioButtonGroup*   mySettingsGroup2;
     CheckboxWidget*     myTimeMachineWidget;
     SliderWidget*       myStateSizeWidget;
-    StaticTextWidget*   myStateSizeLabelWidget;
     SliderWidget*       myUncompressedWidget;
-    StaticTextWidget*   myUncompressedLabelWidget;
     PopUpWidget*        myStateIntervalWidget;
     PopUpWidget*        myStateHorizonWidget;
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
     SliderWidget*       myDebuggerWidthSlider;
-    StaticTextWidget*   myDebuggerWidthLabel;
     SliderWidget*       myDebuggerHeightSlider;
-    StaticTextWidget*   myDebuggerHeightLabel;
     PopUpWidget*        myDebuggerFontSize;
     PopUpWidget*        myDebuggerFontStyle;
     CheckboxWidget*     myGhostReadsTrapWidget;

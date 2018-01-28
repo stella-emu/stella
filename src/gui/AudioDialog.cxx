@@ -66,8 +66,8 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   xpos += INDENT;
 
   // Volume
-  myVolumeSlider = new SliderWidget(this, font, xpos, ypos,
-                                    "Volume ", lwidth, 0, 3 * fontWidth);
+  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 11 * fontWidth + 5, lineHeight,
+                                    "Volume ", lwidth, 0, 4 * fontWidth, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   wid.push_back(myVolumeSlider);
   ypos += lineHeight + 4;
@@ -114,7 +114,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 void AudioDialog::loadConfig()
 {
   // Volume
-  myVolumeSlider->setValue(instance().settings().getInt("volume"));  
+  myVolumeSlider->setValue(instance().settings().getInt("volume"));
 
   // Fragsize
   myFragsizePopup->setSelected(instance().settings().getString("fragsize"), "512");
@@ -158,7 +158,7 @@ void AudioDialog::saveConfig()
 void AudioDialog::setDefaults()
 {
   myVolumeSlider->setValue(100);
-  
+
   myFragsizePopup->setSelected("512", "");
   myFreqPopup->setSelected("31400", "");
 

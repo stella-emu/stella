@@ -310,8 +310,10 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   const int VBORDER = 8;
   const int VGAP = 4;
   int ypos = VBORDER;
-  int lineHeight = font.getLineHeight();
-  int fontHeight = font.getFontHeight();
+  int lineHeight = font.getLineHeight(),
+    fontHeight = font.getFontHeight(),
+    fontWidth = font.getMaxCharWidth(),
+    lwidth = fontWidth * 11;
   WidgetArray wid;
   VariantList items;
   int tabID = myTab->addTab("Time Machine");
@@ -332,24 +334,21 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(myTimeMachineWidget);
   ypos += lineHeight + VGAP;
 
-  myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1,
-                                       "Buffer size (*)   ", 0, kSizeChanged);
+  int swidth = fontWidth * 12 + 5; // width of PopUpWidgets below
+  myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, swidth, lineHeight,
+                                       "Buffer size (*)   ", 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(20);
   myStateSizeWidget->setMaxValue(1000);
   myStateSizeWidget->setStepValue(20);
   wid.push_back(myStateSizeWidget);
-  myStateSizeLabelWidget = new StaticTextWidget(myTab, font, myStateSizeWidget->getRight() + 4,
-                                                myStateSizeWidget->getTop() + 2, "100 ");
   ypos += lineHeight + VGAP;
 
-  myUncompressedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1,
-                                          "Uncompressed size ", 0, kUncompressedChanged);
+  myUncompressedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, swidth, lineHeight,
+                                          "Uncompressed size ", 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(1000);
   myUncompressedWidget->setStepValue(20);
   wid.push_back(myUncompressedWidget);
-  myUncompressedLabelWidget = new StaticTextWidget(myTab, font, myUncompressedWidget->getRight() + 4,
-                                                   myUncompressedWidget->getTop() + 2, "50  ");
   ypos += lineHeight + VGAP;
 
   items.clear();
@@ -425,29 +424,21 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // Debugger width and height
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos-1, "Debugger width (*)  ",
-                                           0, kDWidthChanged);
+                                           0, 0, 6 * fontWidth, "px");
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
   wid.push_back(myDebuggerWidthSlider);
-  myDebuggerWidthLabel =
-    new StaticTextWidget(myTab, font,
-                         xpos + myDebuggerWidthSlider->getWidth() + 4,
-                         ypos + 1, 4 * fontWidth, fontHeight, "");
   ypos += lineHeight + VGAP;
 
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos-1, "Debugger height (*) ",
-                                            0, kDHeightChanged);
+                                            0, 0, 6 * fontWidth, "px");
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
-  myDebuggerHeightLabel =
-    new StaticTextWidget(myTab, font,
-                         xpos + myDebuggerHeightSlider->getWidth() + 4,
-                         ypos + 1, 4 * fontWidth, fontHeight, "");
-
   ypos += lineHeight + VGAP * 4;
+
   myGhostReadsTrapWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1,
                                              "Trap on 'ghost' reads", kGhostReads);
   wid.push_back(myGhostReadsTrapWidget);
@@ -468,11 +459,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   if(!debuggerAvailable)
   {
     myDebuggerWidthSlider->clearFlags(WIDGET_ENABLED);
-    myDebuggerWidthLabel->clearFlags(WIDGET_ENABLED);
     myDebuggerHeightSlider->clearFlags(WIDGET_ENABLED);
-    myDebuggerHeightLabel->clearFlags(WIDGET_ENABLED);
   }
-
 #else
   new StaticTextWidget(myTab, font, 0, 20, _w - 20, font.getFontHeight(),
                        "Debugger support not included", TextAlign::Center);
@@ -660,9 +648,7 @@ void DeveloperDialog::loadConfig()
   w = ds.w; h = ds.h;
 
   myDebuggerWidthSlider->setValue(w);
-  myDebuggerWidthLabel->setValue(w);
   myDebuggerHeightSlider->setValue(h);
-  myDebuggerHeightLabel->setValue(h);
 
   // Debugger font size
   string size = instance().settings().getString("dbg.fontsize");
@@ -789,9 +775,7 @@ void DeveloperDialog::setDefaults()
       uInt32 w = std::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
       uInt32 h = std::min(instance().frameBuffer().desktopSize().h, uInt32(DebuggerDialog::kMediumFontMinH));
       myDebuggerWidthSlider->setValue(w);
-      myDebuggerWidthLabel->setValue(w);
       myDebuggerHeightSlider->setValue(h);
-      myDebuggerHeightLabel->setValue(h);
       myDebuggerFontSize->setSelected("medium");
       myDebuggerFontStyle->setSelected("0");
 
@@ -881,14 +865,6 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
       break;
 
 #ifdef DEBUGGER_SUPPORT
-    case kDWidthChanged:
-      myDebuggerWidthLabel->setValue(myDebuggerWidthSlider->getValue());
-      break;
-
-    case kDHeightChanged:
-      myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
-      break;
-
     case kDFontSizeChanged:
       handleFontSize();
       break;
@@ -961,11 +937,7 @@ void DeveloperDialog::handleTimeMachine()
   bool enable = myTimeMachineWidget->getState();
 
   myStateSizeWidget->setEnabled(enable);
-  myStateSizeLabelWidget->setEnabled(enable);
-
   myUncompressedWidget->setEnabled(enable);
-  myUncompressedLabelWidget->setEnabled(enable);
-
   myStateIntervalWidget->setEnabled(enable);
 
   uInt32 size = myStateSizeWidget->getValue();
@@ -990,7 +962,6 @@ void DeveloperDialog::handleSize()
   if(horizon == -1)
     horizon = 0;
 
-  myStateSizeLabelWidget->setValue(size);
   // adapt horizon and interval
   do
   {
@@ -1019,8 +990,6 @@ void DeveloperDialog::handleUncompressed()
 {
   uInt32 size = myStateSizeWidget->getValue();
   uInt32 uncompressed = myUncompressedWidget->getValue();
-
-  myUncompressedLabelWidget->setValue(myUncompressedWidget->getValue());
 
   if(size < uncompressed)
     myStateSizeWidget->setValue(uncompressed);
@@ -1219,16 +1188,10 @@ void DeveloperDialog::handleFontSize()
 
   myDebuggerWidthSlider->setMinValue(minW);
   if(minW > uInt32(myDebuggerWidthSlider->getValue()))
-  {
     myDebuggerWidthSlider->setValue(minW);
-    myDebuggerWidthLabel->setValue(minW);
-  }
 
   myDebuggerHeightSlider->setMinValue(minH);
   if(minH > uInt32(myDebuggerHeightSlider->getValue()))
-  {
     myDebuggerHeightSlider->setValue(minH);
-    myDebuggerHeightLabel->setValue(minH);
-  }
 #endif
 }

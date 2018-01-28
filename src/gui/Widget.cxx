@@ -627,9 +627,9 @@ void CheckboxWidget::drawWidget(bool hilite)
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int labelWidth, int cmd,
-                           int valueLabelWidth, int valueLabelGap)
+                           int valueLabelWidth, const string& valueUnit, int valueLabelGap)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
-    _value(0),
+    _value(-1),
     _stepValue(1),
     _valueMin(0),
     _valueMax(100),
@@ -637,7 +637,8 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth(labelWidth),
     _valueLabelGap(valueLabelGap),
     _valueLabelWidth(valueLabelWidth),
-    _valueLabel("")
+    _valueLabel(""),
+    _valueUnit(valueUnit)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
   _bgcolor = kDlgColor;
@@ -656,9 +657,9 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
                            const string& label, int labelWidth, int cmd,
-                           int valueLabelWidth, int valueLabelGap)
+                           int valueLabelWidth, const string& valueUnit, int valueLabelGap)
   : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(),
-                 label, labelWidth, cmd, valueLabelWidth, valueLabelGap)
+                 label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap)
 {
 }
 
@@ -700,7 +701,6 @@ void SliderWidget::setStepValue(int value)
 void SliderWidget::setValueLabel(const string& valueLabel)
 {
   _valueLabel = valueLabel;
-
   setDirty();
 }
 
@@ -711,6 +711,13 @@ void SliderWidget::setValueLabel(int value)
   std::snprintf(buf, 255, "%d", value);
   _valueLabel = buf;
 
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setValueUnit(const string& valueUnit)
+{
+  _valueUnit = valueUnit;
   setDirty();
 }
 
@@ -805,7 +812,7 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Fill the box
   s.fillRect(x, y, _w - _labelWidth - _valueLabelGap - _valueLabelWidth, h,
-             !isEnabled() ? kBGColorHi : kBGColorLo);
+             !isEnabled() ? kSliderBGColorLo : hilite ? kSliderBGColorHi : kSliderBGColor);
   // Draw the 'bar'
   s.fillRect(x, y, p, h,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
@@ -814,7 +821,7 @@ void SliderWidget::drawWidget(bool hilite)
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
   if(_valueLabelWidth > 0)
-    s.drawString(_font, _valueLabel, _x + _w - _valueLabelWidth, _y + 2,
+    s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth, _y + 2,
                  _valueLabelWidth, isEnabled() ? kTextColor : kColor);
 }
 

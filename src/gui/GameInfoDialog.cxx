@@ -55,7 +55,7 @@ GameInfoDialog::GameInfoDialog(
   const int hSpace = 10;
   const int VGAP = 4;
 
-  int xpos, ypos, lwidth, fwidth, pwidth, tabID;
+  int xpos, ypos, lwidth, fwidth, pwidth, swidth, tabID;
   WidgetArray wid;
   VariantList items, ports, ctrls;
   StaticTextWidget* t;
@@ -178,7 +178,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos = vBorder;
   pwidth = font.getStringWidth("Paddles_IAxis");
-  myP0Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P0 Controller    ");
+  myP0Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P0 controller    ");
   ctrls.clear();
   VarList::push_back(ctrls, "Joystick",      "JOYSTICK"     );
   VarList::push_back(ctrls, "Paddles",       "PADDLES"      );
@@ -203,18 +203,18 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + VGAP;
   pwidth = font.getStringWidth("Paddles_IAxis");
-  myP1Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P1 Controller    ");
+  myP1Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P1 controller    ");
   myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myP1Controller);
 
   //ypos += lineHeight + VGAP;
   mySwapPorts = new CheckboxWidget(myTab, font, myP0Controller->getRight() + fontWidth*4, myP0Controller->getTop()+1,
-                                   "Swap Ports");
+                                   "Swap ports");
   wid.push_back(mySwapPorts);
   //ypos += lineHeight + VGAP;
   mySwapPaddles = new CheckboxWidget(myTab, font, myP1Controller->getRight() + fontWidth*4, myP1Controller->getTop()+1,
-                                     "Swap Paddles");
+                                     "Swap paddles");
   wid.push_back(mySwapPaddles);
 
   // EEPROM erase button for P0/P1
@@ -259,7 +259,7 @@ GameInfoDialog::GameInfoDialog(
   xpos = hSpace; ypos += lineHeight + VGAP;
   lwidth = font.getStringWidth("Mouse axis range ");
   myMouseRange = new SliderWidget(myTab, font, hSpace, ypos,
-                                  "Mouse axis range ", lwidth, 0, fontWidth * 3);
+                                  "Mouse axis range ", lwidth, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   wid.push_back(myMouseRange);
 
@@ -273,7 +273,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos = vBorder;
   pwidth = font.getStringWidth("Auto-detect");
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Format ");
+  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Format  ");
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
   VarList::push_back(items, "NTSC",    "NTSC");
@@ -287,24 +287,21 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myFormat);
 
   ypos += lineHeight + VGAP;
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "YStart ");
-  myYStart = new SliderWidget(myTab, font, t->getRight(), ypos,
-                              "", 0, kYStartChanged);
+  swidth = myFormat->getWidth();
+  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Y-Start ");
+  myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
+                              "", 0, kYStartChanged, 4 * fontWidth, "px");
   myYStart->setMinValue(TIAConstants::minYStart-1);
   myYStart->setMaxValue(TIAConstants::maxYStart);
   wid.push_back(myYStart);
-  myYStartLabel = new StaticTextWidget(myTab, font, myYStart->getRight() + 4,
-                                       ypos+1, 5*fontWidth, fontHeight);
 
   ypos += lineHeight + VGAP;
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Height ");
-  myHeight = new SliderWidget(myTab, font, t->getRight(), ypos,
-                              "", 0, kHeightChanged);
+  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Height  ");
+  myHeight = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
+                              "", 0, kHeightChanged, 5 * fontWidth, "px");
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
   wid.push_back(myHeight);
-  myHeightLabel = new StaticTextWidget(myTab, font, myHeight->getRight() + 4,
-                                       ypos+1, 5*fontWidth, fontHeight);
 
   // Phosphor
   ypos += lineHeight + VGAP*4;
@@ -313,12 +310,9 @@ GameInfoDialog::GameInfoDialog(
 
   myPPBlend = new SliderWidget(myTab, font,
                                myPhosphor->getRight() + fontWidth * 3, myPhosphor->getTop()-2,
-                               "Blend ", 0, kPPBlendChanged);
+                               "Blend ", 0, kPPBlendChanged, 7 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   wid.push_back(myPPBlend);
-
-  myPPBlendLabel = new StaticTextWidget(myTab, font,
-                                        myPPBlend->getRight() + 4, myPhosphor->getTop(), "   ");
 
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
@@ -425,20 +419,22 @@ void GameInfoDialog::loadView()
 
   const string& ystart = myGameProperties.get(Display_YStart);
   myYStart->setValue(atoi(ystart.c_str()));
-  myYStartLabel->setLabel(ystart == "0" ? "Auto" : ystart);
+  myYStart->setValueLabel(ystart == "0" ? "Auto" : ystart);
+  myYStart->setValueUnit(ystart == "0" ? "" : "px");
 
   const string& height = myGameProperties.get(Display_Height);
   myHeight->setValue(atoi(height.c_str()));
-  myHeightLabel->setLabel(height == "0" ? "Auto" : height);
+  myHeight->setValueLabel(height == "0" ? "Auto" : height);
+  myHeight->setValueUnit(height == "0" ? "" : "px");
 
   bool usePhosphor = myGameProperties.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPPBlend->setEnabled(usePhosphor);
-  myPPBlendLabel->setEnabled(usePhosphor);
 
   const string& blend = myGameProperties.get(Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
-  myPPBlendLabel->setLabel(blend == "0" ? "Auto" : blend);
+  myPPBlend->setValueLabel(blend == "0" ? "Default" : blend);
+  myPPBlend->setValueUnit(blend == "0" ? "" : "%");
 
   myTab->loadConfig();
 }
@@ -481,14 +477,14 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
-  myGameProperties.set(Display_YStart, myYStartLabel->getLabel() == "Auto" ? "0" :
-                       myYStartLabel->getLabel());
-  myGameProperties.set(Display_Height, myHeightLabel->getLabel() == "Auto" ? "0" :
-                       myHeightLabel->getLabel());
+  myGameProperties.set(Display_YStart, myYStart->getValueLabel() == "Auto" ? "0" :
+                       myYStart->getValueLabel());
+  myGameProperties.set(Display_Height, myHeight->getValueLabel() == "Auto" ? "0" :
+                       myHeight->getValueLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
 
-  myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel() == "Auto" ? "0" :
-                       myPPBlendLabel->getLabel());
+  myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Default" ? "0" :
+                       myPPBlend->getValueLabel());
 
   // Determine whether to add or remove an entry from the properties set
   if(myDefaultsSelected)
@@ -609,29 +605,38 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     {
       bool status = myPhosphor->getState();
       myPPBlend->setEnabled(status);
-      myPPBlendLabel->setEnabled(status);
       break;
     }
 
     case kYStartChanged:
       if(myYStart->getValue() == TIAConstants::minYStart-1)
-        myYStartLabel->setLabel("Auto");
+      {
+        myYStart->setValueLabel("Auto");
+        myYStart->setValueUnit("");
+      }
       else
-        myYStartLabel->setValue(myYStart->getValue());
+        myYStart->setValueUnit("px");
+
       break;
 
     case kHeightChanged:
       if(myHeight->getValue() == TIAConstants::minViewableHeight-1)
-        myHeightLabel->setLabel("Auto");
+      {
+        myHeight->setValueLabel("Auto");
+        myHeight->setValueUnit("");
+      }
       else
-        myHeightLabel->setValue(myHeight->getValue());
+        myHeight->setValueUnit("px");
       break;
 
     case kPPBlendChanged:
       if(myPPBlend->getValue() == 0)
-        myPPBlendLabel->setLabel("Auto");
+      {
+        myPPBlend->setValueLabel("Default");
+        myPPBlend->setValueUnit("");
+      }
       else
-        myPPBlendLabel->setValue(myPPBlend->getValue());
+        myPPBlend->setValueUnit("%");
       break;
 
     case kMCtrlChanged:
