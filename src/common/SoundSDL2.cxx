@@ -44,7 +44,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
     myVolume(100),
     myVolumeFactor(0xffff),
     myAudioQueue(0),
-    myCurrentFragment(0)
+    myCurrentFragment(0),
+    myFragmentBufferSize(0)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
@@ -124,6 +125,12 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue)
   myCurrentFragment = 0;
   myTimeIndex = 0;
   myFragmentIndex = 0;
+  myFragmentBufferSize = static_cast<uInt32>(
+    ceil(
+      1.5 * static_cast<double>(myHardwareSpec.samples) / static_cast<double>(myAudioQueue->fragmentSize())
+          * static_cast<double>(myAudioQueue->sampleRate()) / static_cast<double>(myHardwareSpec.freq)
+    )
+  );
 
   // Adjust volume to that defined in settings
   setVolume(myOSystem.settings().getInt("volume"));
@@ -215,7 +222,7 @@ void SoundSDL2::adjustVolume(Int8 direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 {
-  if (myUnderrun && myAudioQueue->size() > 1) {
+  if (myUnderrun && myAudioQueue->size() > myFragmentBufferSize) {
     myUnderrun = false;
     myCurrentFragment = myAudioQueue->dequeue(myCurrentFragment);
     myFragmentIndex = 0;

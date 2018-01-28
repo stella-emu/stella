@@ -123,6 +123,7 @@ class SoundSDL2 : public Sound
     Int16* myCurrentFragment;
     uInt32 myTimeIndex;
     uInt32 myFragmentIndex;
+    uInt32 myFragmentBufferSize;
     bool myUnderrun;
 
   private:
