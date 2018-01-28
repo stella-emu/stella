@@ -26,7 +26,9 @@ namespace {
 
   Int16 mixingTableEntry(uInt8 v, uInt8 vMax)
   {
-    return floor(0x7fff * double(v) / double(vMax) * (R_MAX + R * double(vMax)) / (R_MAX + R * double(v)));
+    return static_cast<Int16>(
+      floor(0x7fff * double(v) / double(vMax) * (R_MAX + R * double(vMax)) / (R_MAX + R * double(v)))
+    );
   }
 }
 
