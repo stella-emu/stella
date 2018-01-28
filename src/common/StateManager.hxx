@@ -72,9 +72,10 @@ class StateManager
     void setRewindMode(Mode mode) { myActiveMode = mode; }
 
     /**
-      Adds one state ; this uses the RewindManager for its functionality.
+      Optionally adds one extra state when entering the Time Machine dialog;
+      this uses the RewindManager for its functionality.
     */
-    bool addState(const string& message, bool timeMachine = false);
+    bool addExtraState(const string& message);
 
     /**
       Rewinds states; this uses the RewindManager for its functionality.

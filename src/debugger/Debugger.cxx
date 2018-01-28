@@ -620,7 +620,8 @@ void Debugger::setStartState()
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
   // avoid invalidating future states when entering the debugger e.g. during rewind
-  if(myOSystem.eventHandler().state() == EventHandlerState::EMULATION)
+  if(r.atLast() && (myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
+     || myOSystem.state().mode() == StateManager::Mode::Off))
     addState("enter debugger");
   else
     updateRewindbuttons(r);

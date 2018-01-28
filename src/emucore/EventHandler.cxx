@@ -1232,7 +1232,7 @@ bool EventHandler::eventStateChange(Event::Type type)
 
     case Event::TimeMachineMode:
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
-        enterMenuMode(EventHandlerState::TIMEMACHINE);
+        enterTimeMachineMenuMode(0, false);
       else if(myState == EventHandlerState::TIMEMACHINE)
         leaveMenuMode();
       else
@@ -2135,14 +2135,14 @@ void EventHandler::leaveDebugMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
 {
-  // TODO: maybe remove this state if we leave the menu at the last state
-  myOSystem.state().addState("enter Time Machine menu", false); // force new state
-  myOSystem.state().windStates(numWinds, unwind);
+  // add one extra state if we are in Time Machine mode
+  // TODO: maybe remove this state if we leave the menu at this new state
+  myOSystem.state().addExtraState("enter Time Machine menu"); // force new state
+  if (numWinds)
+    myOSystem.state().windStates(numWinds, unwind);
 
-  // TODO: probably this check is not necessary
-  if(myState != EventHandlerState::TIMEMACHINE)
-    // TODO: display last wind message in time machine dialog
-    enterMenuMode(EventHandlerState::TIMEMACHINE);
+  // TODO: display last wind message (numWinds != 0) in time machine dialog
+  enterMenuMode(EventHandlerState::TIMEMACHINE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

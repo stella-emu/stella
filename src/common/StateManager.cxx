@@ -142,10 +142,14 @@ void StateManager::toggleTimeMachine()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::addState(const string& message, bool timeMachine)
+bool StateManager::addExtraState(const string& message)
 {
-  RewindManager& r = myOSystem.state().rewindManager();
-  return r.addState(message, timeMachine);
+  if(myActiveMode == Mode::TimeMachine)
+  {
+    RewindManager& r = myOSystem.state().rewindManager();
+    return r.addState(message);
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
