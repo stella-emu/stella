@@ -104,7 +104,6 @@
 		2D91746109BA90380026E9FF /* TogglePixelWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20F9FF08C603EC00A73076 /* TogglePixelWidget.hxx */; };
 		2D91746209BA90380026E9FF /* ToggleWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20FA0108C603EC00A73076 /* ToggleWidget.hxx */; };
 		2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */; };
-		2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE7242E08CE910900C889A8 /* TIASnd.hxx */; };
 		2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D2331900900B5EF00613B1F /* AudioWidget.hxx */; };
 		2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */; };
 		2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF61096E269100A518FE /* InputDialog.hxx */; };
@@ -202,7 +201,6 @@
 		2D91750309BA90380026E9FF /* TogglePixelWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20F9FE08C603EC00A73076 /* TogglePixelWidget.cxx */; };
 		2D91750409BA90380026E9FF /* ToggleWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20FA0008C603EC00A73076 /* ToggleWidget.cxx */; };
 		2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */; };
-		2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE7242D08CE910900C889A8 /* TIASnd.cxx */; };
 		2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D23318F0900B5EF00613B1F /* AudioWidget.cxx */; };
 		2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */; };
 		2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF60096E269100A518FE /* InputDialog.cxx */; };
@@ -595,7 +593,6 @@
 		DCF3A6FD1DFC75E3008A8AF3 /* Playfield.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */; };
 		DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */; };
 		DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */; };
-		DCF3A7021DFC76BC008A8AF3 /* TIATypes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */; };
 		DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B40F93993B00B25D7A /* SoundNull.hxx */; };
 		DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467BC0F9399F500B25D7A /* Version.hxx */; };
 		DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF467BE0F939A1400B25D7A /* CartEF.cxx */; };
@@ -620,6 +617,12 @@
 		E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */; };
 		E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */; };
 		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
+		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
+		E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413A201E901D004A3391 /* AudioQueue.cxx */; };
+		E09F4141201E9050004A3391 /* Audio.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F413D201E904F004A3391 /* Audio.hxx */; };
+		E09F4142201E9050004A3391 /* Audio.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413E201E904F004A3391 /* Audio.cxx */; };
+		E09F4143201E9050004A3391 /* AudioChannel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413F201E904F004A3391 /* AudioChannel.cxx */; };
+		E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4140201E904F004A3391 /* AudioChannel.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -867,8 +870,6 @@
 		2DE2DF8D0627AE34006BEC99 /* Sound.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Sound.hxx; sourceTree = "<group>"; };
 		2DE2DF8E0627AE34006BEC99 /* Switches.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Switches.cxx; sourceTree = "<group>"; };
 		2DE2DF8F0627AE34006BEC99 /* Switches.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Switches.hxx; sourceTree = "<group>"; };
-		2DE7242D08CE910900C889A8 /* TIASnd.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TIASnd.cxx; sourceTree = "<group>"; };
-		2DE7242E08CE910900C889A8 /* TIASnd.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = TIASnd.hxx; sourceTree = "<group>"; };
 		2DEB3D4C0629BD24007EBBD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CheckListWidget.cxx; sourceTree = "<group>"; };
 		2DEF21F908BC033500B246B4 /* CheckListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CheckListWidget.hxx; sourceTree = "<group>"; };
@@ -1264,7 +1265,6 @@
 		DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Playfield.hxx; sourceTree = "<group>"; };
 		DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TIA.cxx; sourceTree = "<group>"; };
 		DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TIA.hxx; sourceTree = "<group>"; };
-		DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TIATypes.hxx; sourceTree = "<group>"; };
 		DCF467B40F93993B00B25D7A /* SoundNull.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundNull.hxx; sourceTree = "<group>"; };
 		DCF467BC0F9399F500B25D7A /* Version.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Version.hxx; sourceTree = "<group>"; };
 		DCF467BE0F939A1400B25D7A /* CartEF.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartEF.cxx; sourceTree = "<group>"; };
@@ -1287,6 +1287,12 @@
 		E0306E091F93E915003DDD52 /* JitterEmulation.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JitterEmulation.cxx; sourceTree = "<group>"; };
 		E0306E0A1F93E916003DDD52 /* FrameLayoutDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameLayoutDetector.cxx; sourceTree = "<group>"; };
 		E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JitterEmulation.hxx; sourceTree = "<group>"; };
+		E09F4139201E901C004A3391 /* AudioQueue.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioQueue.hxx; sourceTree = "<group>"; };
+		E09F413A201E901D004A3391 /* AudioQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioQueue.cxx; sourceTree = "<group>"; };
+		E09F413D201E904F004A3391 /* Audio.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Audio.hxx; sourceTree = "<group>"; };
+		E09F413E201E904F004A3391 /* Audio.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cxx; sourceTree = "<group>"; };
+		E09F413F201E904F004A3391 /* AudioChannel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioChannel.cxx; sourceTree = "<group>"; };
+		E09F4140201E904F004A3391 /* AudioChannel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioChannel.hxx; sourceTree = "<group>"; };
 		E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractFrameManager.cxx; sourceTree = "<group>"; };
 		E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FrameManager.cxx; sourceTree = "<group>"; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
@@ -1564,6 +1570,8 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
+				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DC79F81117A88D9E00288B91 /* Base.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
@@ -1796,11 +1804,8 @@
 				DCD2839612E39F1200A808DC /* Thumbulator.cxx */,
 				DCD2839712E39F1200A808DC /* Thumbulator.hxx */,
 				DCE903E31DF5DCD10080A7F3 /* tia */,
-				2DE7242D08CE910900C889A8 /* TIASnd.cxx */,
-				2DE7242E08CE910900C889A8 /* TIASnd.hxx */,
 				DC2AADAC194F389C0026C7A4 /* TIASurface.cxx */,
 				DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */,
-				DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */,
 				DC1B2EC21E50036100F62837 /* TrakBall.hxx */,
 			);
 			path = emucore;
@@ -2049,6 +2054,10 @@
 		DCE903E31DF5DCD10080A7F3 /* tia */ = {
 			isa = PBXGroup;
 			children = (
+				E09F413E201E904F004A3391 /* Audio.cxx */,
+				E09F413D201E904F004A3391 /* Audio.hxx */,
+				E09F413F201E904F004A3391 /* AudioChannel.cxx */,
+				E09F4140201E904F004A3391 /* AudioChannel.hxx */,
 				DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */,
 				DCF3A6CE1DFC75E3008A8AF3 /* Background.hxx */,
 				DCF3A6CF1DFC75E3008A8AF3 /* Ball.cxx */,
@@ -2103,6 +2112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D9173CB09BA90380026E9FF /* SDLMain.h in Headers */,
+				E09F4141201E9050004A3391 /* Audio.hxx in Headers */,
 				2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */,
 				2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */,
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
@@ -2150,6 +2160,7 @@
 				2D9173EE09BA90380026E9FF /* Serializer.hxx in Headers */,
 				2D9173EF09BA90380026E9FF /* Sound.hxx in Headers */,
 				2D9173F009BA90380026E9FF /* Switches.hxx in Headers */,
+				E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */,
 				2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */,
 				2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
@@ -2165,6 +2176,7 @@
 				2D91740309BA90380026E9FF /* Command.hxx in Headers */,
 				DC3EE85B1E2C0E6D00905161 /* deflate.h in Headers */,
 				2D91740409BA90380026E9FF /* Dialog.hxx in Headers */,
+				E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */,
 				2D91740509BA90380026E9FF /* DialogContainer.hxx in Headers */,
 				DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */,
 				2D91740609BA90380026E9FF /* GameInfoDialog.hxx in Headers */,
@@ -2245,7 +2257,6 @@
 				2D91746109BA90380026E9FF /* TogglePixelWidget.hxx in Headers */,
 				2D91746209BA90380026E9FF /* ToggleWidget.hxx in Headers */,
 				2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */,
-				2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */,
 				2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
@@ -2285,7 +2296,6 @@
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
-				DCF3A7021DFC76BC008A8AF3 /* TIATypes.hxx in Headers */,
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
 				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
@@ -2552,6 +2562,7 @@
 				2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */,
 				2D91749009BA90380026E9FF /* M6532.cxx in Sources */,
 				2D91749109BA90380026E9FF /* MD5.cxx in Sources */,
+				E09F4143201E9050004A3391 /* AudioChannel.cxx in Sources */,
 				DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */,
 				2D91749309BA90380026E9FF /* Paddles.cxx in Sources */,
 				2D91749409BA90380026E9FF /* Props.cxx in Sources */,
@@ -2641,7 +2652,7 @@
 				DC71EA9D1FDA06D2008827CB /* CartE78K.cxx in Sources */,
 				DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */,
 				DCDDEAC41F5DBF0400C67366 /* RewindManager.cxx in Sources */,
-				2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */,
+				E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */,
 				DC71EA9F1FDA06D2008827CB /* CartMNetwork.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
@@ -2725,6 +2736,7 @@
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
+				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
 				DCCF49B714B7544A00814FAB /* PaddleWidget.cxx in Sources */,
