@@ -93,11 +93,39 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
   else if(key == KBDK_F12)
   {
     instance().debugger().parser().run("savesnap");
+    return;
+  }
+  else if(StellaModTest::isAlt(mod) && !StellaModTest::isControl(mod))
+  {
+    switch(key)
+    {
+      case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
+        if(StellaModTest::isShift(mod))
+          doRewind10();
+        else
+          doRewind();
+        return;
+      case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
+        if(StellaModTest::isShift(mod))
+          doUnwind10();
+        else
+          doUnwind();
+        return;
+      case KBDK_DOWN:  // Alt-down rewinds to start of list
+        doRewindAll();
+        return;
+      case KBDK_UP:  // Alt-up rewinds to end of list
+        doUnwindAll();
+        return;
+      default:
+        break;
+    }
   }
   else if(StellaModTest::isControl(mod))
   {
     switch(key)
     {
+#if 0
       case KBDK_R:
         if(StellaModTest::isAlt(mod))
           doRewindAll();
@@ -105,7 +133,7 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
           doRewind10();
         else
           doRewind();
-        break;
+        return;
       case KBDK_Y:
         if(StellaModTest::isAlt(mod))
           doUnwindAll();
@@ -113,19 +141,20 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
           doUnwind10();
         else
           doUnwind();
-        break;
+        return;
+#endif
       case KBDK_S:
         doStep();
-        break;
+        return;
       case KBDK_T:
         doTrace();
-        break;
+        return;
       case KBDK_L:
         doScanlineAdvance();
-        break;
+        return;
       case KBDK_F:
         doAdvance();
-        break;
+        return;
       default:
         break;
     }
