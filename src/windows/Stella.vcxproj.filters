@@ -237,9 +237,6 @@
     <ClCompile Include="..\emucore\Thumbulator.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\TIASnd.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\cheat\BankRomCheat.cxx">
       <Filter>Source Files\cheat</Filter>
     </ClCompile>
@@ -891,6 +888,15 @@
     <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\AudioQueue.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\AudioChannel.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\Audio.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1101,9 +1107,6 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\Thumbulator.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\TIASnd.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx">
@@ -1821,6 +1824,15 @@
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\tia\TIAConstants.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\AudioQueue.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\AudioChannel.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\Audio.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
   </ItemGroup>
