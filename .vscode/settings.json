@@ -40,6 +40,7 @@
         "ratio": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "fstream": "cpp"
     }
 }

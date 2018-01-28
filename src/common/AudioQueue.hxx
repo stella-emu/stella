@@ -86,14 +86,20 @@ class AudioQueue
     Int16* enqueue(Int16* fragment = 0);
 
     /**
-     * Dequeue a fragment for playback and return the played fragment. This may
-     * return 0 if there is no queued fragment to return (in this case, the returned
-     * fragment is not enqueued and must be passed in the next invocation).
-     *
-     * @param fragment  The returned fragment. This must be empty on the first call (when
-     *                  there is nothing to return).
+       Dequeue a fragment for playback and return the played fragment. This may
+       return 0 if there is no queued fragment to return (in this case, the returned
+       fragment is not enqueued and must be passed in the next invocation).
+
+       @param fragment  The returned fragment. This must be empty on the first call (when
+                        there is nothing to return).
      */
     Int16* dequeue(Int16* fragment = 0);
+
+    /**
+      Return the currently playing fragment without drawing a new one. This is called
+      if the sink is closed and prepares the queue to be reopened.
+     */
+    void closeSink(Int16* fragment);
 
   private:
 

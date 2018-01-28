@@ -143,6 +143,7 @@ void SoundSDL2::close()
 
   mute(true);
 
+  if (myAudioQueue) myAudioQueue->closeSink(myCurrentFragment);
   myAudioQueue = 0;
   myCurrentFragment = 0;
 

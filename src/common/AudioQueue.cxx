@@ -132,3 +132,15 @@ Int16* AudioQueue::dequeue(Int16* fragment)
 
   return nextFragment;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioQueue::closeSink(Int16* fragment)
+{
+  lock_guard<mutex> guard(myMutex);
+
+  if (myFirstFragmentForDequeue && fragment)
+    throw new runtime_error("attempt to return unknown buffer on closeSink");
+
+  if (!myFirstFragmentForDequeue)
+    myFirstFragmentForDequeue = fragment;
+}
