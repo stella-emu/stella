@@ -30,11 +30,19 @@
 #include "SoundSDL2.hxx"
 #include "AudioQueue.hxx"
 
+namespace {
+  inline Int16 applyVolume(Int16 sample, Int32 volumeFactor)
+  {
+    return static_cast<Int16>(static_cast<Int32>(sample) * volumeFactor / 0xffff);
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem)
   : Sound(osystem),
     myIsInitializedFlag(false),
     myVolume(100),
+    myVolumeFactor(0xffff),
     myAudioQueue(0),
     myCurrentFragment(0)
 {
@@ -170,8 +178,10 @@ void SoundSDL2::setVolume(Int32 percent)
   if(myIsInitializedFlag && (percent >= 0) && (percent <= 100))
   {
     myOSystem.settings().setValue("volume", percent);
-    SDL_LockAudio();
     myVolume = percent;
+
+    SDL_LockAudio();
+    myVolumeFactor = static_cast<Int32>(floor(static_cast<double>(0xffff) * static_cast<double>(myVolume) / 100.));
     SDL_UnlockAudio();
   }
 }
@@ -243,17 +253,19 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 
     if (isStereo) {
       if (isStereoTIA) {
-        stream[2*i] = myCurrentFragment[2*myFragmentIndex];
-        stream[2*i + 1] = myCurrentFragment[2*myFragmentIndex + 1];
+        stream[2*i]     = applyVolume(myCurrentFragment[2*myFragmentIndex], myVolumeFactor);
+        stream[2*i + 1] = applyVolume(myCurrentFragment[2*myFragmentIndex + 1], myVolumeFactor);
       } else {
-        stream[2*i] = stream[2*i + 1] = myCurrentFragment[myFragmentIndex];
+        stream[2*i] = stream[2*i + 1] = applyVolume(myCurrentFragment[myFragmentIndex], myVolumeFactor);
       }
     } else {
       if (isStereoTIA) {
-        stream[i] =
-          ((myCurrentFragment[2*myFragmentIndex] / 2) + (myCurrentFragment[2*myFragmentIndex + 1] / 2));
+        stream[i] = applyVolume(
+          (myCurrentFragment[2*myFragmentIndex] / 2) + (myCurrentFragment[2*myFragmentIndex + 1] / 2),
+          myVolumeFactor
+        );
       } else {
-        stream[i] = myCurrentFragment[myFragmentIndex];
+        stream[i] = applyVolume(myCurrentFragment[myFragmentIndex], myVolumeFactor);
       }
     }
   }

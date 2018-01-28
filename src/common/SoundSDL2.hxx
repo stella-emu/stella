@@ -113,6 +113,7 @@ class SoundSDL2 : public Sound
 
     // Current volume as a percentage (0 - 100)
     uInt32 myVolume;
+    Int32 myVolumeFactor;
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
