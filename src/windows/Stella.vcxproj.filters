@@ -888,7 +888,6 @@
     <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\common\AudioQueue.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -897,10 +896,8 @@
     </ClCompile>
     <ClCompile Include="..\emucore\tia\Audio.cxx">
       <Filter>Source Files\emucore\tia</Filter>
-=======
     <ClCompile Include="..\gui\TimeLineWidget.cxx">
       <Filter>Source Files\gui</Filter>
->>>>>>> master
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1831,7 +1828,6 @@
     <ClInclude Include="..\emucore\tia\TIAConstants.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\common\AudioQueue.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -1840,10 +1836,8 @@
     </ClInclude>
     <ClInclude Include="..\emucore\tia\Audio.hxx">
       <Filter>Header Files\emucore\tia</Filter>
-=======
     <ClInclude Include="..\gui\TimeLineWidget.hxx">
       <Filter>Header Files\gui</Filter>
->>>>>>> master
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
